@@ -1,3 +1,10 @@
+import {
+  containerRuntimeAvailable,
+  type ProtocolDidProfile,
+  provisionDidProfile,
+  StandaloneEnvironment,
+  verifierChallengeForProfile,
+} from "@midnight-ntwrk/midnight-did-standalone-environment";
 import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { afterAll,beforeAll, describe, expect, it } from "vitest";
 
@@ -7,13 +14,6 @@ import {
   createSigner,
   withVerificationMethodRef,
 } from "../../../../credentials-birth/src/test/credential-fixtures.js";
-import {
-  containerRuntimeAvailable,
-  type ProtocolDidProfile,
-  provisionDidProfile,
-  StandaloneEnvironment,
-  verifierChallengeForProfile,
-} from "../../../../standalone-environment/src/index.js";
 import { CredentialsDemoSimulator } from "../../simulator.js";
 
 const canRunContainers = await containerRuntimeAvailable();

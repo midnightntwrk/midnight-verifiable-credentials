@@ -25,6 +25,7 @@
     "@midnight-ntwrk/midnight-did-credentials-birth": "*",
     "@midnight-ntwrk/midnight-did-credentials-birth-secret": "*",
     "@midnight-ntwrk/midnight-did-credentials-demo-contract": "*",
-    "@midnight-ntwrk/midnight-did-credentials-same-holder": "*"
+    "@midnight-ntwrk/midnight-did-credentials-same-holder": "*",
+    "@midnight-ntwrk/midnight-did-standalone-environment": "*"
   }
 }

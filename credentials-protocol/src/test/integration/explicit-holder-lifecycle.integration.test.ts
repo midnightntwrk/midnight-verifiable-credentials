@@ -1,12 +1,12 @@
-import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
-
 import {
   containerRuntimeAvailable,
   type ProtocolDidProfile,
   provisionDidProfile,
   StandaloneEnvironment,
-} from "../../../../standalone-environment/src/index.js";
+} from "@midnight-ntwrk/midnight-did-standalone-environment";
+import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
+
 import { HolderAgent } from "../../agents/holder-agent.js";
 import { IssuerAgent } from "../../agents/issuer-agent.js";
 import type { DIDProfile } from "../../agents/types.js";

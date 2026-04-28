@@ -6,4 +6,4 @@ export {
   provisionDidProfile,
   StandaloneEnvironment as StandaloneProtocolEnvironment,
   verifierChallengeForProfile,
-} from "../../../../standalone-environment/src/index.js";
+} from "@midnight-ntwrk/midnight-did-standalone-environment";

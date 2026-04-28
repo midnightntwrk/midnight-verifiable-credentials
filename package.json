@@ -16,7 +16,8 @@
     "credentials-protocol",
     "credentials-birth",
     "credentials-birth-secret",
-    "credentials-demo-contract"
+    "credentials-demo-contract",
+    "standalone-environment"
   ],
   "scripts": {
     "clean": "npm run clean -w credentials && npm run clean -w credentials-same-holder && npm run clean -w credentials-iso-registry && npm run clean -w credentials-birth && npm run clean -w credentials-birth-secret && npm run clean -w credentials-openid && npm run clean -w credentials-demo-contract && npm run clean -w credentials-protocol",
@@ -67,5 +68,12 @@
     "rxjs": "^7.8.2",
     "ws": "^8.18.2",
     "zod": "^4.1.0"
+  },
+  "overrides": {
+    "@midnight-ntwrk/midnight-did-api": "file:libs/midnight-did/midnight-ntwrk-midnight-did-api-0.1.0.tgz",
+    "@midnight-ntwrk/midnight-did-domain": "file:libs/midnight-did/midnight-ntwrk-midnight-did-domain-0.1.0.tgz",
+    "@midnight-ntwrk/midnight-did-contract": "file:libs/midnight-did/midnight-ntwrk-midnight-did-contract-0.1.0.tgz",
+    "@midnight-ntwrk/midnight-did": "file:libs/midnight-did/midnight-ntwrk-midnight-did-0.1.0.tgz",
+    "@midnight-ntwrk/midnight-did-secret-storage": "file:libs/midnight-did/midnight-ntwrk-midnight-did-secret-storage-0.1.0.tgz"
   }
 }
