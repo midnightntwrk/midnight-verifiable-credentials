@@ -12,3 +12,13 @@ Expected future transitional inputs if needed:
 - `libs/midnight-verifiable-credentials/*.tgz`
 
 Do not hand-copy `dist/` output here.
+
+## Packaging helper
+
+Refresh the local tarballs for this repository with:
+
+```bash
+./scripts/pack-midnight-vc-libs.sh ./libs
+```
+
+The default pack script intentionally skips `credentials-demo-contract` because that workspace composes Passport-specific packages that now live in `midnight-identity-solution-examples`.

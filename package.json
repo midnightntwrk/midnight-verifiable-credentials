@@ -24,7 +24,8 @@
     "lint:fix": "npm run lint:fix -w credentials && npm run lint:fix -w credentials-same-holder && npm run lint:fix -w credentials-iso-registry && npm run lint:fix -w credentials-birth && npm run lint:fix -w credentials-birth-secret && npm run lint:fix -w credentials-openid && npm run lint:fix -w credentials-demo-contract && npm run lint:fix -w credentials-protocol",
     "build:all": "npm run build -w credentials && npm run build -w credentials-same-holder && npm run build -w credentials-iso-registry && npm run build -w credentials-birth && npm run build -w credentials-birth-secret && npm run build -w credentials-openid && npm run build -w credentials-demo-contract && npm run build -w credentials-protocol",
     "test:all": "npm run all -w credentials && npm run all -w credentials-same-holder && npm run all -w credentials-iso-registry && npm run all -w credentials-birth && npm run all -w credentials-birth-secret && npm run all -w credentials-openid && npm run all -w credentials-demo-contract && npm run all -w credentials-protocol",
-    "docs:vc-spec": "echo 'Add VC docs build once docs layout is bootstrapped'"
+    "docs:vc-spec": "echo 'Add VC docs build once docs layout is bootstrapped'",
+    "pack:libs": "./scripts/pack-midnight-vc-libs.sh ./libs"
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
