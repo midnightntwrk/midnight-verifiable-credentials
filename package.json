@@ -1,0 +1,69 @@
+{
+  "name": "midnight-verifiable-credentials",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "npm@10.8.2",
+  "engines": {
+    "node": ">=24",
+    "npm": ">=10"
+  },
+  "workspaces": [
+    "credentials",
+    "credentials-same-holder",
+    "credentials-iso-registry",
+    "credentials-openid",
+    "credentials-protocol",
+    "credentials-birth",
+    "credentials-birth-secret",
+    "credentials-demo-contract"
+  ],
+  "scripts": {
+    "clean": "npm run clean -w credentials && npm run clean -w credentials-same-holder && npm run clean -w credentials-iso-registry && npm run clean -w credentials-birth && npm run clean -w credentials-birth-secret && npm run clean -w credentials-openid && npm run clean -w credentials-demo-contract && npm run clean -w credentials-protocol",
+    "lint": "npm run lint -w credentials && npm run lint -w credentials-same-holder && npm run lint -w credentials-iso-registry && npm run lint -w credentials-birth && npm run lint -w credentials-birth-secret && npm run lint -w credentials-openid && npm run lint -w credentials-demo-contract && npm run lint -w credentials-protocol",
+    "lint:fix": "npm run lint:fix -w credentials && npm run lint:fix -w credentials-same-holder && npm run lint:fix -w credentials-iso-registry && npm run lint:fix -w credentials-birth && npm run lint:fix -w credentials-birth-secret && npm run lint:fix -w credentials-openid && npm run lint:fix -w credentials-demo-contract && npm run lint:fix -w credentials-protocol",
+    "build:all": "npm run build -w credentials && npm run build -w credentials-same-holder && npm run build -w credentials-iso-registry && npm run build -w credentials-birth && npm run build -w credentials-birth-secret && npm run build -w credentials-openid && npm run build -w credentials-demo-contract && npm run build -w credentials-protocol",
+    "test:all": "npm run all -w credentials && npm run all -w credentials-same-holder && npm run all -w credentials-iso-registry && npm run all -w credentials-birth && npm run all -w credentials-birth-secret && npm run all -w credentials-openid && npm run all -w credentials-demo-contract && npm run all -w credentials-protocol",
+    "docs:vc-spec": "echo 'Add VC docs build once docs layout is bootstrapped'"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.28.0",
+    "@types/node": "^22.15.29",
+    "@typescript-eslint/eslint-plugin": "^8.33.1",
+    "@typescript-eslint/parser": "^8.33.1",
+    "@vitest/coverage-v8": "^3.2.0",
+    "eslint": "^9.28.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-import-resolver-typescript": "^3.6.3",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-prettier": "^5.4.1",
+    "eslint-plugin-simple-import-sort": "^12.0.0",
+    "testcontainers": "^11.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.0"
+  },
+  "dependencies": {
+    "@midnight-ntwrk/compact-runtime": "0.15.0",
+    "@midnight-ntwrk/midnight-js-contracts": "^4.0.0",
+    "@midnight-ntwrk/midnight-js-http-client-proof-provider": "^4.0.0",
+    "@midnight-ntwrk/midnight-js-indexer-public-data-provider": "^4.0.0",
+    "@midnight-ntwrk/midnight-js-level-private-state-provider": "^4.0.0",
+    "@midnight-ntwrk/midnight-js-network-id": "^4.0.0",
+    "@midnight-ntwrk/midnight-js-node-zk-config-provider": "^4.0.0",
+    "@midnight-ntwrk/midnight-js-types": "^4.0.0",
+    "@midnight-ntwrk/midnight-js-utils": "^4.0.0",
+    "@midnight-ntwrk/wallet-sdk-address-format": "^3.0.0",
+    "@midnight-ntwrk/wallet-sdk-dust-wallet": "^3.0.0",
+    "@midnight-ntwrk/wallet-sdk-facade": "^3.0.0",
+    "@midnight-ntwrk/wallet-sdk-hd": "^3.0.0",
+    "@midnight-ntwrk/wallet-sdk-shielded": "^2.0.0",
+    "@midnight-ntwrk/wallet-sdk-unshielded-wallet": "^2.0.0",
+    "@midnight-ntwrk/ledger-v8": "^8.0.0",
+    "pino": "^9.7.0",
+    "pino-pretty": "^13.0.0",
+    "rxjs": "^7.8.2",
+    "ws": "^8.18.2",
+    "zod": "^4.1.0"
+  }
+}
