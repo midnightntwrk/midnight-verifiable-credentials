@@ -7,6 +7,8 @@ run_common_apply_light_mode "$@"
 run_common_setup_cleanup_trap
 run_common_ensure_node
 run_common_ensure_runtime_helpers
+node ./scripts/ensure-midnight-did-package-aliases.mjs
+node ./scripts/ensure-midnight-did-api-paths.mjs
 run_common_auto_proof_server_image "credentials"
 
 run_credentials_integration_target() {
