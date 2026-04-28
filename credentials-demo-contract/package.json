@@ -27,7 +27,7 @@
   },
   "scripts": {
     "contract": "npm run compact",
-    "compact": "npm run compact:demo && npm run compact:passport-compliance && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
+    "compact": "npm run compact:demo && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
     "compact:demo": "compact compile src/demo.compact src/managed/demo",
     "compact:passport-compliance": "compact compile src/passport-compliance-demo.compact src/managed/passport-compliance-demo",
     "test": "vitest run --exclude src/test/integration/**/*.test.ts",
@@ -35,7 +35,7 @@
     "test:ci": "vitest run --exclude src/test/integration/**/*.test.ts",
     "prepack": "npm run build",
     "clean": "rm -rf dist && rm -rf coverage && rm -rf reports && rm -rf src/managed",
-    "build": "npm run compact && rm -rf dist && tsc -b tsconfig.build.json --force && mkdir -p dist && cp -Rf ./src/managed ./dist/ && cp ./src/demo.compact ./src/passport-compliance-demo.compact ./dist",
+    "build": "npm run compact && rm -rf dist && tsc -b tsconfig.build.json --force && mkdir -p dist && cp -Rf ./src/managed ./dist/ && cp ./src/demo.compact ./dist",
     "lint": "eslint src --ignore-pattern 'src/managed/**'",
     "lint:fix": "eslint src --fix --ignore-pattern 'src/managed/**'",
     "typecheck": "npm run compact && tsc -p tsconfig.json --noEmit",
