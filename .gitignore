@@ -104,3 +104,7 @@ research/*.pdf
 midnight-passport-prototype/*.zip
 midnight-passport-prototype/app/prototype-state.json
 midnight-passport-prototype/.tmp/
+
+# Compact package alias symlinks
+midnight-did-credentials
+midnight-did-credentials-*
