@@ -18,7 +18,7 @@ Do not hand-copy `dist/` output here.
 Refresh the local tarballs for this repository with:
 
 ```bash
-./scripts/pack-midnight-vc-libs.sh ./libs
+./upgrade-libs.sh --destination ./libs
 ```
 
 The default pack script intentionally skips `credentials-demo-contract` because that workspace composes Passport-specific packages that now live in `midnight-identity-solution-examples`.

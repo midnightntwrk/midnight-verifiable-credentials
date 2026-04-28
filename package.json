@@ -25,7 +25,8 @@
     "build:all": "npm run build -w credentials && npm run build -w credentials-same-holder && npm run build -w credentials-iso-registry && npm run build -w credentials-birth && npm run build -w credentials-birth-secret && npm run build -w credentials-openid && npm run build -w credentials-demo-contract && npm run build -w credentials-protocol",
     "test:all": "npm run all -w credentials && npm run all -w credentials-same-holder && npm run all -w credentials-iso-registry && npm run all -w credentials-birth && npm run all -w credentials-birth-secret && npm run all -w credentials-openid && npm run all -w credentials-demo-contract && npm run all -w credentials-protocol",
     "docs:vc-spec": "echo 'Add VC docs build once docs layout is bootstrapped'",
-    "pack:libs": "./scripts/pack-midnight-vc-libs.sh ./libs"
+    "pack:libs": "./scripts/pack-midnight-vc-libs.sh ./libs",
+    "upgrade:libs": "./upgrade-libs.sh --destination ./libs"
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
