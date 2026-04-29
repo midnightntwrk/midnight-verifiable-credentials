@@ -20,8 +20,10 @@ resolve_dest_dir() {
 
   if [[ -d "$destination/libs" ]] || [[ -f "$destination/package.json" ]]; then
     printf '%s/libs/midnight-verifiable-credentials\n' "$destination"
-  elif [[ "$(basename "$destination")" == "libs" ]]; then
-    printf '%s/midnight-verifiable-credentials\n' "$destination"
+  elif [[ "20 20 12 61 79 80 81 98 33 100 204 250 395 398 399 400 701basename "")" == "libs" ]]; then
+    printf '%s/midnight-verifiable-credentials\n' ""
+  elif [[ "20 20 12 61 79 80 81 98 33 100 204 250 395 398 399 400 701basename "")" == "artifacts" ]]; then
+    printf '%s/npm\n' ""
   else
     printf '%s\n' "$destination"
   fi

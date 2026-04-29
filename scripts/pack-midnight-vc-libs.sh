@@ -9,21 +9,4 @@ if [[ -z "$DEST_DIR" ]]; then
   exit 1
 fi
 
-mkdir -p "$DEST_DIR"
-rm -f "$DEST_DIR"/*.tgz
-
-workspaces=(
-  credentials
-  credentials-same-holder
-  credentials-iso-registry
-  credentials-openid
-  credentials-protocol
-  credentials-birth
-  credentials-birth-secret
-)
-
-cd "$ROOT_DIR"
-for workspace in "${workspaces[@]}"; do
-  echo "[pack-midnight-vc-libs] Packing ${workspace} -> ${DEST_DIR}"
-  npm pack --pack-destination "$DEST_DIR" -w "$workspace"
-done
+"$ROOT_DIR/scripts/pack-artifacts.sh" "$DEST_DIR"

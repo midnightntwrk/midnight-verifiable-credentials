@@ -28,7 +28,8 @@
     "docs:vc-spec": "echo 'Add VC docs build once docs layout is bootstrapped'",
     "pack:libs": "./scripts/pack-midnight-vc-libs.sh ./libs",
     "upgrade:libs": "./upgrade-libs.sh --destination ./libs",
-    "postinstall": "node ./scripts/ensure-midnight-did-package-aliases.mjs && node ./scripts/ensure-midnight-did-api-paths.mjs && node ./scripts/ensure-compact-package-aliases.mjs"
+    "postinstall": "node ./scripts/ensure-midnight-did-package-aliases.mjs && node ./scripts/ensure-midnight-did-api-paths.mjs && node ./scripts/ensure-compact-package-aliases.mjs",
+    "artifacts:pack": "./scripts/pack-artifacts.sh"
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",

@@ -8,6 +8,29 @@ Primary documents in this repository:
 - [Dependency composition note](./midnight-credentials-dependency-composition.md)
 - [Test strategy](./midnight-credentials-test-strategy.md)
 
+## Artifact Packaging
+
+Use `artifacts/npm/` as the stable local tarball output for unpublished VC packages.
+
+Commands:
+- `npm run artifacts:pack`
+- `./upgrade-libs.sh --destination /path/to/downstream-repo`
+
+What gets packed:
+- `@midnight-ntwrk/midnight-did-credentials`
+- `@midnight-ntwrk/midnight-did-credentials-same-holder`
+- `@midnight-ntwrk/midnight-did-credentials-iso-registry`
+- `@midnight-ntwrk/midnight-did-credentials-openid`
+- `@midnight-ntwrk/midnight-did-credentials-protocol`
+- `@midnight-ntwrk/midnight-did-credentials-birth`
+- `@midnight-ntwrk/midnight-did-credentials-birth-secret`
+- `@midnight-ntwrk/midnight-did-standalone-environment`
+
+Excluded on purpose:
+- `@midnight-ntwrk/midnight-did-credentials-demo-contract`
+
+The generated tarballs are intentionally gitignored under [`artifacts/`](./artifacts/README.md).
+
 # Midnight Template Repository
 
 This GitHub repository should be used as a template when creating a new Midnight GitHub repository.

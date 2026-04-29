@@ -15,6 +15,15 @@ Do not hand-copy `dist/` output here.
 
 ## Packaging helper
 
+For a stable local export surface before copying into `libs/`, build tarballs into
+`artifacts/npm/` first:
+
+```bash
+npm run artifacts:pack
+```
+
+Then refresh `libs/` directly if needed:
+
 Refresh the local tarballs for this repository with:
 
 ```bash
