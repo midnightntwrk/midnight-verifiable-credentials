@@ -18,18 +18,42 @@ const aliases = [
 
 for (const [alias, targetDir] of aliases) {
   const aliasPath = path.join(repoRoot, alias);
+  const packagePath = path.join(repoRoot, targetDir);
+  let aliasReady = false;
   try {
     const stat = await lstat(aliasPath);
     if (stat.isSymbolicLink()) {
       const existingTarget = await readlink(aliasPath);
-      if (existingTarget === targetDir) continue;
-      await rm(aliasPath, { force: true, recursive: true });
+      if (existingTarget === targetDir) {
+        aliasReady = true;
+      } else {
+        await rm(aliasPath, { force: true, recursive: true });
+      }
+    } else {
+      aliasReady = true;
+    }
+  } catch (error) {
+    if (!(error && typeof error === 'object' && 'code' in error && error.code === 'ENOENT')) throw error;
+  }
+
+  if (!aliasReady) {
+    await mkdir(path.dirname(aliasPath), { recursive: true });
+    await symlink(targetDir, aliasPath, 'dir');
+  }
+
+  const distPath = path.join(packagePath, 'dist');
+  try {
+    const distStat = await lstat(distPath);
+    if (distStat.isSymbolicLink()) {
+      const existingTarget = await readlink(distPath);
+      if (existingTarget === 'src') continue;
+      await rm(distPath, { force: true, recursive: true });
     } else {
       continue;
     }
   } catch (error) {
     if (!(error && typeof error === 'object' && 'code' in error && error.code === 'ENOENT')) throw error;
   }
-  await mkdir(path.dirname(aliasPath), { recursive: true });
-  await symlink(targetDir, aliasPath, 'dir');
+
+  await symlink('src', distPath, 'dir');
 }
