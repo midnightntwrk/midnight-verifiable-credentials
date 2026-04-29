@@ -1,3 +1,13 @@
+# Midnight Verifiable Credentials
+
+Primary documents in this repository:
+
+- [Specification](./midnight-credentials.md)
+- [Companion guide](./midnight-credentials-for-dummies.md)
+- [AnonCreds comparison](./midnight-credentials-vs-anoncreds.md)
+- [Dependency composition note](./midnight-credentials-dependency-composition.md)
+- [Test strategy](./midnight-credentials-test-strategy.md)
+
 # Midnight Template Repository
 
 This GitHub repository should be used as a template when creating a new Midnight GitHub repository.

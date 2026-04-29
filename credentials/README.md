@@ -4,8 +4,8 @@ Generic Midnight VC/VP core for Compact-first credential families.
 
 Docs entry points:
 
-- spec: [`research/midnight-credentials.md`](../research/midnight-credentials.md)
-- companion guide: [`research/midnight-credentials-for-dummies.md`](../research/midnight-credentials-for-dummies.md)
+- spec: [`midnight-credentials.md`](../midnight-credentials.md)
+- companion guide: [`midnight-credentials-for-dummies.md`](../midnight-credentials-for-dummies.md)
 - docs site: `docs-site/spec/midnight-credentials.md`
 
 ## Purpose
@@ -127,8 +127,8 @@ allowing business contracts to import same-holder composition only when needed.
 
 If you are new to the model, read in this order:
 
-1. [`../research/midnight-credentials-for-dummies.md`](../research/midnight-credentials-for-dummies.md)
-2. [`../research/midnight-credentials.md`](../research/midnight-credentials.md)
+1. [`../midnight-credentials-for-dummies.md`](../midnight-credentials-for-dummies.md)
+2. [`../midnight-credentials.md`](../midnight-credentials.md)
 3. this package README
 
 ## Naming choices

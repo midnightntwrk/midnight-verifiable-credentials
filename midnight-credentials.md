@@ -8,7 +8,7 @@ Repository scope: `midnight-did`
 
 Companion guide:
 
-- `research/midnight-credentials-for-dummies.md`
+- `midnight-credentials-for-dummies.md`
 - docs site entry: `/spec/midnight-credentials`
 - docs site companion: `/spec/midnight-credentials-for-dummies`
 

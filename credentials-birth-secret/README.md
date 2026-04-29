@@ -4,8 +4,8 @@ Secret-holder-binding birth-credential specialization for the generic Midnight V
 
 Related docs:
 
-- spec: [`../research/midnight-credentials.md`](../research/midnight-credentials.md)
-- companion guide: [`../research/midnight-credentials-for-dummies.md`](../research/midnight-credentials-for-dummies.md)
+- spec: [`../midnight-credentials.md`](../midnight-credentials.md)
+- companion guide: [`../midnight-credentials-for-dummies.md`](../midnight-credentials-for-dummies.md)
 
 ## Purpose
 
