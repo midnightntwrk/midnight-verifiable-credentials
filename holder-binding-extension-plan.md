@@ -15,18 +15,21 @@
 Add lightweight Midnight VC holder-binding profiles for prototypes and demos
 that do not want to require full DID deployment and DID resolution.
 
-## Why `JubjubHolderBinding` is still needed
+## `JubjubHolderBinding` transition status
 
-Yes, we really need it.
+`JubjubHolderBinding` should not be the preferred profile for new DID-shaped demos.
 
-Reason:
+Current role:
 
-- it is the smallest viable prototype binding profile
-- it matches the current Midnight proof suite directly
-- it works for NightFi and Passport-style demos immediately
-- it remains useful even after offchain Midnight DID exists
+- minimal legacy public-key profile
+- reusable internal proof-matching primitive for richer bindings
+- acceptable only for the smallest non-DID examples
 
-`OffchainMidnightHolderBinding` should build on the same idea, not replace it.
+Direction:
+
+- prefer `OffchainMidnightHolderBinding` for new prototype flows
+- keep `JubjubHolderBinding` only until downstream packages no longer need it as a standalone profile
+- do not add new DID-shaped examples that stop at raw Jubjub binding
 
 ## New binding profiles
 
@@ -34,11 +37,10 @@ Reason:
 
 Bind the credential holder directly to a JubJub public key.
 
-Purpose:
+Status:
 
-- local issuer/holder demos
-- contract examples
-- prototype issuance and presentation without DID resolution
+- legacy minimal profile
+- not preferred for new DID-shaped flows
 
 ### 2. `OffchainMidnightHolderBinding`
 
