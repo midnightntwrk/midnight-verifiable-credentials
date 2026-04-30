@@ -37,8 +37,6 @@ export default [
         'error',
         {
           paths: [
-            '@midnight-ntwrk/midnight-did-domain',
-            '@midnight-ntwrk/midnight-did',
             '@midnight-ntwrk/midnight-did-api',
           ],
         },

@@ -47,7 +47,11 @@ const replacements = [
 ];
 
 for (const replacement of replacements) {
-  await access(replacement.file);
+  try {
+    await access(replacement.file);
+  } catch {
+    continue;
+  }
   const current = await readFile(replacement.file, 'utf8');
   if (current.includes(replacement.to)) {
     continue;
