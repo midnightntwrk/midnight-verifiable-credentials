@@ -107,12 +107,12 @@ const decodeBigEndianUnsigned = (value: Uint8Array): bigint => {
   return result;
 };
 
-const hashNormalizedMethodReference = (value: string): Uint8Array =>
+export const hashOffchainMidnightMethodId = (normalizedFragment: string): Uint8Array =>
   new Uint8Array(
     createHash("sha256")
       .update(OFFCHAIN_METHOD_ID_DOMAIN)
       .update("\0")
-      .update(textEncoder.encode(value))
+      .update(textEncoder.encode(normalizedFragment))
       .digest(),
   );
 
@@ -123,7 +123,7 @@ const hexToBytes32 = (value: string): Uint8Array => {
   return Uint8Array.from(Buffer.from(value, "hex"));
 };
 
-const normalizeMethodReference = (
+export const normalizeOffchainMidnightMethodReference = (
   methodReference: string,
   did: string,
 ): string => {
@@ -162,7 +162,7 @@ const selectMethod = ({
   readonly methodId?: string;
 }): ResolvedPortableOffchainMidnightDID["state"]["verificationMethod"][number] => {
   if (methodId) {
-    const normalizedMethodId = normalizeMethodReference(methodId, did);
+    const normalizedMethodId = normalizeOffchainMidnightMethodReference(methodId, did);
     const selected = verificationMethod.find(
       (method) => method.id === normalizedMethodId,
     );
@@ -221,7 +221,7 @@ export const createOffchainMidnightHolderBindingFromDidUrl = ({
     method,
     binding: {
       holderDidStateHash: hexToBytes32(resolved.parsed.stateHash),
-      holderMethodId: hashNormalizedMethodReference(method.id),
+      holderMethodId: hashOffchainMidnightMethodId(method.id),
       holderPublicKey: {
         x: decodeBigEndianUnsigned(decodeBase64Url(publicKeyJwk.x)),
         y: decodeBigEndianUnsigned(decodeBase64Url(publicKeyJwk.y)),

@@ -66,6 +66,12 @@ Purpose:
 - DID-shaped demo flows
 - portable examples that use the offchain Midnight DID extension
 
+Scope boundary:
+
+- this profile is for flows where the participating DID-shaped actors use the offchain Midnight DID profile
+- mixed onchain/offchain Midnight DID combinations are intentionally out of scope for this binding profile
+- that boundary prevents a combinatorial explosion of issuer/holder/signer resolution variants in lightweight demos
+
 ## Current implementation constraint
 
 The generic `Proof` type still carries a DID-oriented `VerificationMethodRef`.

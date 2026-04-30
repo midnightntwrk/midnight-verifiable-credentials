@@ -1,10 +1,11 @@
-import { createHash } from "node:crypto";
-import { TextEncoder } from "node:util";
-
 import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { describe, expect, it } from "vitest";
 
-import { createOffchainMidnightHolderBindingFromDidUrl } from "../offchain-midnight-holder-binding.js";
+import {
+  createOffchainMidnightHolderBindingFromDidUrl,
+  hashOffchainMidnightMethodId,
+  normalizeOffchainMidnightMethodReference,
+} from "../offchain-midnight-holder-binding.js";
 
 setNetworkId("undeployed");
 
@@ -14,16 +15,6 @@ const NON_JUBJUB_DID_URL =
   "did:midnight:offchain:7504b09f89e228b168119f0db74229a41aaa586a456531622849f14f6f9e297e?state=TU9EMQAAAC0AAAABAQAAAAAAAAAAAAAAAAAAAAAAAAABAQAAAA0jaG9sZGVyLWtleS0xAAAAAQIAAAACQVEAAAAAAAAAAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 const NON_AUTH_DID_URL =
   "did:midnight:offchain:36a4e7ace1d95d4519cba44ae8cbaa08fd41c89052cffb91ecfef2658289b3be?state=TU9EMQAAAC0AAAABAQAAAAAAAAAAAAAAAAAAAAAAAAABAQAAAA0jaG9sZGVyLWtleS0xAAAAAQEAAAACQVEAAAACQWcAAAABAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-const OFFCHAIN_METHOD_ID_DOMAIN = "midnight:offchain:holder-method-id:v1";
-const hashMethodId = (value: string): Uint8Array =>
-  new Uint8Array(
-    createHash("sha256")
-      .update(OFFCHAIN_METHOD_ID_DOMAIN)
-      .update("\0")
-      .update(new TextEncoder().encode(value))
-      .digest(),
-  );
-
 describe("credentials core: offchain Midnight holder binding runtime", () => {
   it("derives a holder binding from a portable offchain Midnight DID URL", () => {
     const resolved = createOffchainMidnightHolderBindingFromDidUrl({
@@ -33,7 +24,7 @@ describe("credentials core: offchain Midnight holder binding runtime", () => {
     expect(resolved.did.startsWith("did:midnight:offchain:")).toEqual(true);
     expect(resolved.method.id).toEqual("#holder-key-1");
     expect(Array.from(resolved.binding.holderMethodId)).toEqual(
-      Array.from(hashMethodId("#holder-key-1")),
+      Array.from(hashOffchainMidnightMethodId("#holder-key-1")),
     );
     expect(resolved.binding.holderPublicKey).toEqual({
       x: 1n,
@@ -52,7 +43,28 @@ describe("credentials core: offchain Midnight holder binding runtime", () => {
 
     expect(resolved.method.id).toEqual("#holder-key-1");
     expect(Array.from(resolved.binding.holderMethodId)).toEqual(
-      Array.from(hashMethodId("#holder-key-1")),
+      Array.from(hashOffchainMidnightMethodId("#holder-key-1")),
+    );
+  });
+
+  it("exports canonical method reference normalization", () => {
+    expect(
+      normalizeOffchainMidnightMethodReference(
+        "holder-key-1",
+        "did:midnight:offchain:abc",
+      ),
+    ).toEqual("#holder-key-1");
+    expect(
+      normalizeOffchainMidnightMethodReference(
+        "did:midnight:offchain:abc#holder-key-1",
+        "did:midnight:offchain:abc",
+      ),
+    ).toEqual("#holder-key-1");
+  });
+
+  it("exports canonical method id hashing", () => {
+    expect(Array.from(hashOffchainMidnightMethodId("#holder-key-1"))).toEqual(
+      Array.from(hashOffchainMidnightMethodId("#holder-key-1")),
     );
   });
 
