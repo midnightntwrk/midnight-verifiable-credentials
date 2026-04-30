@@ -48,6 +48,19 @@ Carry:
 - holder method id
 - holder JubJub public key
 
+Canonical encoding rule:
+
+- normalize the holder method reference to relative fragment form (`#key-1`)
+- hash `midnight:offchain:holder-method-id:v1 || 0x00 || normalizedFragment`
+- store the resulting 32-byte digest in `holderMethodId`
+
+Reason:
+
+- fixed 32-byte Compact shape
+- stable across absolute-vs-relative caller input
+- no truncation risk for longer method ids
+- keeps `holderDidStateHash` and method selection as separate concerns
+
 Purpose:
 
 - DID-shaped demo flows

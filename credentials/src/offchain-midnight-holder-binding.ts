@@ -1,4 +1,5 @@
 import { Buffer } from "node:buffer";
+import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -9,6 +10,7 @@ import type { OffchainMidnightHolderBinding } from "./managed/credentials/contra
 const textEncoder = new TextEncoder();
 const BYTES32_LENGTH = 32;
 const HEX_BYTES32_LENGTH = BYTES32_LENGTH * 2;
+const OFFCHAIN_METHOD_ID_DOMAIN = "midnight:offchain:holder-method-id:v1";
 
 type ResolvedPortableOffchainMidnightDID = {
   readonly did: string;
@@ -105,17 +107,14 @@ const decodeBigEndianUnsigned = (value: Uint8Array): bigint => {
   return result;
 };
 
-const encodeBytes32Text = (value: string): Uint8Array => {
-  const bytes = textEncoder.encode(value);
-  if (bytes.length > BYTES32_LENGTH) {
-    throw new Error(
-      "Offchain Midnight holder method id must fit into 32 bytes",
-    );
-  }
-  const padded = new Uint8Array(BYTES32_LENGTH);
-  padded.set(bytes);
-  return padded;
-};
+const hashNormalizedMethodReference = (value: string): Uint8Array =>
+  new Uint8Array(
+    createHash("sha256")
+      .update(OFFCHAIN_METHOD_ID_DOMAIN)
+      .update("\0")
+      .update(textEncoder.encode(value))
+      .digest(),
+  );
 
 const hexToBytes32 = (value: string): Uint8Array => {
   if (value.length !== HEX_BYTES32_LENGTH) {
@@ -222,7 +221,7 @@ export const createOffchainMidnightHolderBindingFromDidUrl = ({
     method,
     binding: {
       holderDidStateHash: hexToBytes32(resolved.parsed.stateHash),
-      holderMethodId: encodeBytes32Text(method.id),
+      holderMethodId: hashNormalizedMethodReference(method.id),
       holderPublicKey: {
         x: decodeBigEndianUnsigned(decodeBase64Url(publicKeyJwk.x)),
         y: decodeBigEndianUnsigned(decodeBase64Url(publicKeyJwk.y)),
