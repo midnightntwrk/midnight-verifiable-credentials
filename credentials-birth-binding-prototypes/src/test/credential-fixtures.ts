@@ -15,6 +15,7 @@ import {
 import {
   type BirthCredentialClaims,
   type BirthCredentialDisclosures,
+  type BirthCredentialPresentationRequest,
   pureCircuits as birthPureCircuits,
 } from "../../../credentials-birth/src/managed/birth-credential/contract/index.js";
 import {
@@ -170,6 +171,20 @@ const createBirthClaims = (
   ),
 });
 
+const createPresentationRequest = (
+  issuerVerificationMethodRef: VerificationMethodRef,
+  verifierChallengeHash: Uint8Array,
+): BirthCredentialPresentationRequest => ({
+  version: 1n,
+  schema,
+  issuerVerificationMethodRef,
+  requireSubjectIdCommitmentDisclosure: false,
+  requireBirthCountryDisclosure: true,
+  requireAgeOverThreshold: true,
+  requestedAgeThresholdYears: 18n,
+  verifierChallengeHash,
+});
+
 const createBirthDisclosures = (
   witness: ReturnType<typeof createBirthWitness>,
 ): BirthCredentialDisclosures => ({
@@ -235,6 +250,10 @@ export const createExplicitBirthPrototypeFixture = () => {
     witness,
     credential,
     credentialProof,
+    presentationRequest: createPresentationRequest(
+      issuer.verificationMethodRef,
+      witness.verifierChallengeHash,
+    ),
     presentation,
     presentationProof,
   };
@@ -286,6 +305,10 @@ export const createJubjubBirthPrototypeFixture = () => {
     witness,
     credential,
     credentialProof,
+    presentationRequest: createPresentationRequest(
+      issuer.verificationMethodRef,
+      witness.verifierChallengeHash,
+    ),
     presentation,
     presentationProof,
   };
@@ -341,6 +364,10 @@ export const createOffchainBirthPrototypeFixture = () => {
     witness,
     credential,
     credentialProof,
+    presentationRequest: createPresentationRequest(
+      issuer.verificationMethodRef,
+      witness.verifierChallengeHash,
+    ),
     presentation,
     presentationProof,
   };
@@ -393,7 +420,17 @@ export const createSecretBirthPrototypeFixture = () => {
     },
     disclosed: createBirthDisclosures(witness),
   };
-  return { issuer, witness, credential, credentialProof, presentation };
+  return {
+    issuer,
+    witness,
+    credential,
+    credentialProof,
+    presentationRequest: createPresentationRequest(
+      issuer.verificationMethodRef,
+      witness.verifierChallengeHash,
+    ),
+    presentation,
+  };
 };
 
 export const createBlindedSecretBirthPrototypeFixture = () => {
@@ -451,5 +488,15 @@ export const createBlindedSecretBirthPrototypeFixture = () => {
     },
     disclosed: createBirthDisclosures(witness),
   };
-  return { issuer, witness, credential, credentialProof, presentation };
+  return {
+    issuer,
+    witness,
+    credential,
+    credentialProof,
+    presentationRequest: createPresentationRequest(
+      issuer.verificationMethodRef,
+      witness.verifierChallengeHash,
+    ),
+    presentation,
+  };
 };

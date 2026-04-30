@@ -22,6 +22,7 @@ export type BirthSecretCredential = BirthSecret_Credential;
 export type BirthSecretPresentation = BirthSecret_Presentation;
 export type BirthBlindedSecretCredential = BirthBlindedSecret_Credential;
 export type BirthBlindedSecretPresentation = BirthBlindedSecret_Presentation;
+export type BirthBindingPrototypePresentationRequest = BirthCredentialPresentationRequest;
 
 circuit prototypeSchema(): SchemaRef {
   return SchemaRef {
@@ -71,6 +72,70 @@ export circuit birthBlindedSecretCredentialBodyRoot(credential: BirthBlindedSecr
 
 export circuit birthBlindedSecretPresentationBodyRoot(presentation: BirthBlindedSecretPresentation): Bytes<32> {
   return BirthBlindedSecret_presentationBodyRoot(presentation);
+}
+
+
+
+export circuit assertValidBirthBindingPrototypePresentationRequest(
+  request: BirthBindingPrototypePresentationRequest
+): [] {
+  assert(request.version == 1, "Presentation request version mismatch");
+  assertValidBirthBindingPrototypeSchema(request.schema);
+  assertValidVerificationMethodRef(request.issuerVerificationMethodRef);
+  if (request.requireAgeOverThreshold) {
+    assert(
+      request.requestedAgeThresholdYears > 0,
+      "Requested age threshold must be positive"
+    );
+  } else {
+    assert(
+      request.requestedAgeThresholdYears == 0,
+      "Requested age threshold must be zero when disabled"
+    );
+  }
+}
+
+circuit assertBirthPresentationMatchesRequestCommon(
+  credentialSchema: SchemaRef,
+  credentialIssuer: VerificationMethodRef,
+  request: BirthBindingPrototypePresentationRequest,
+  presentationSchema: SchemaRef,
+  disclosed: BirthCredentialDisclosures
+): [] {
+  assertValidBirthBindingPrototypePresentationRequest(request);
+  assertValidBirthBindingPrototypeSchema(presentationSchema);
+  assertMatchingSchemaRefs(request.schema, credentialSchema);
+  assertMatchingSchemaRefs(request.schema, presentationSchema);
+  assert(
+    request.issuerVerificationMethodRef.didContractAddress == credentialIssuer.didContractAddress,
+    "Presentation request issuer contract does not match the credential issuer"
+  );
+  assert(
+    request.issuerVerificationMethodRef.methodId == credentialIssuer.methodId,
+    "Presentation request issuer method reference does not match the credential issuer"
+  );
+  if (request.requireSubjectIdCommitmentDisclosure) {
+    assert(
+      disclosed.revealSubjectIdCommitment,
+      "Presentation request requires the subject-id commitment disclosure"
+    );
+  }
+  if (request.requireBirthCountryDisclosure) {
+    assert(
+      disclosed.revealBirthCountryCode,
+      "Presentation request requires the birth-country disclosure"
+    );
+  }
+  if (request.requireAgeOverThreshold) {
+    assert(
+      disclosed.proveAgeOverThreshold,
+      "Presentation request requires the age-over-threshold predicate"
+    );
+    assert(
+      disclosed.ageThresholdYears == request.requestedAgeThresholdYears,
+      "Presentation age threshold does not match the request"
+    );
+  }
 }
 
 export circuit assertValidBirthBindingPrototypeSchema(schema: SchemaRef): [] {
@@ -144,6 +209,32 @@ export circuit assertValidBirthExplicitPresentation(
   );
 }
 
+export circuit assertBirthExplicitPresentationSatisfiesRequest(
+  credential: BirthExplicitCredential,
+  credentialProof: Proof,
+  request: BirthBindingPrototypePresentationRequest,
+  presentation: BirthExplicitPresentation,
+  presentationProof: Proof
+): [] {
+  assertValidBirthExplicitPresentation(
+    credential,
+    credentialProof,
+    presentation,
+    presentationProof
+  );
+  assertBirthPresentationMatchesRequestCommon(
+    credential.schema,
+    credential.issuerVerificationMethodRef,
+    request,
+    presentation.schema,
+    presentation.disclosed
+  );
+  assert(
+    presentationProof.challengeHash == request.verifierChallengeHash,
+    "Presentation proof challenge does not match the request challenge"
+  );
+}
+
 export circuit assertValidBirthJubjubCredential(
   credential: BirthJubjubCredential,
   proof: Proof
@@ -176,6 +267,32 @@ export circuit assertValidBirthJubjubPresentation(
   assertValidPresentationContextProof(
     BirthJubjub_presentationBodyRoot(presentation),
     presentationProof
+  );
+}
+
+export circuit assertBirthJubjubPresentationSatisfiesRequest(
+  credential: BirthJubjubCredential,
+  credentialProof: Proof,
+  request: BirthBindingPrototypePresentationRequest,
+  presentation: BirthJubjubPresentation,
+  presentationProof: Proof
+): [] {
+  assertValidBirthJubjubPresentation(
+    credential,
+    credentialProof,
+    presentation,
+    presentationProof
+  );
+  assertBirthPresentationMatchesRequestCommon(
+    credential.schema,
+    credential.issuerVerificationMethodRef,
+    request,
+    presentation.schema,
+    presentation.disclosed
+  );
+  assert(
+    presentationProof.challengeHash == request.verifierChallengeHash,
+    "Presentation proof challenge does not match the request challenge"
   );
 }
 
@@ -217,6 +334,32 @@ export circuit assertValidBirthOffchainPresentation(
   );
 }
 
+export circuit assertBirthOffchainPresentationSatisfiesRequest(
+  credential: BirthOffchainCredential,
+  credentialProof: Proof,
+  request: BirthBindingPrototypePresentationRequest,
+  presentation: BirthOffchainPresentation,
+  presentationProof: Proof
+): [] {
+  assertValidBirthOffchainPresentation(
+    credential,
+    credentialProof,
+    presentation,
+    presentationProof
+  );
+  assertBirthPresentationMatchesRequestCommon(
+    credential.schema,
+    credential.issuerVerificationMethodRef,
+    request,
+    presentation.schema,
+    presentation.disclosed
+  );
+  assert(
+    presentationProof.challengeHash == request.verifierChallengeHash,
+    "Presentation proof challenge does not match the request challenge"
+  );
+}
+
 export circuit assertValidBirthSecretCredential(
   credential: BirthSecretCredential,
   proof: Proof
@@ -252,6 +395,31 @@ export circuit assertValidBirthSecretPresentation(
     verifierChallengeHash,
     holderSecret,
     holderSecretOpening
+  );
+}
+
+export circuit assertBirthSecretPresentationSatisfiesRequest(
+  credential: BirthSecretCredential,
+  credentialProof: Proof,
+  request: BirthBindingPrototypePresentationRequest,
+  presentation: BirthSecretPresentation,
+  holderSecret: Bytes<32>,
+  holderSecretOpening: Bytes<32>
+): [] {
+  assertValidBirthSecretPresentation(
+    credential,
+    credentialProof,
+    presentation,
+    request.verifierChallengeHash,
+    holderSecret,
+    holderSecretOpening
+  );
+  assertBirthPresentationMatchesRequestCommon(
+    credential.schema,
+    credential.issuerVerificationMethodRef,
+    request,
+    presentation.schema,
+    presentation.disclosed
   );
 }
 
@@ -292,5 +460,32 @@ export circuit assertValidBirthBlindedSecretPresentation(
     holderSecret,
     holderSecretOpening,
     holderBindingBlindingFactor
+  );
+}
+
+export circuit assertBirthBlindedSecretPresentationSatisfiesRequest(
+  credential: BirthBlindedSecretCredential,
+  credentialProof: Proof,
+  request: BirthBindingPrototypePresentationRequest,
+  presentation: BirthBlindedSecretPresentation,
+  holderSecret: Bytes<32>,
+  holderSecretOpening: Bytes<32>,
+  holderBindingBlindingFactor: Bytes<32>
+): [] {
+  assertValidBirthBlindedSecretPresentation(
+    credential,
+    credentialProof,
+    presentation,
+    request.verifierChallengeHash,
+    holderSecret,
+    holderSecretOpening,
+    holderBindingBlindingFactor
+  );
+  assertBirthPresentationMatchesRequestCommon(
+    credential.schema,
+    credential.issuerVerificationMethodRef,
+    request,
+    presentation.schema,
+    presentation.disclosed
   );
 }

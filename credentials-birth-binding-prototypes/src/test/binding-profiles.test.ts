@@ -16,18 +16,20 @@ describe("birth binding prototypes", () => {
   it("supports explicit DID holder binding over birth claims", () => {
     const fixture = createExplicitBirthPrototypeFixture();
     expect(() =>
-      pureCircuits.assertValidBirthExplicitPresentation(
+      pureCircuits.assertBirthExplicitPresentationSatisfiesRequest(
         fixture.credential,
         fixture.credentialProof,
+        fixture.presentationRequest,
         fixture.presentation,
         fixture.presentationProof,
       ),
     ).not.toThrow();
 
     expect(() =>
-      pureCircuits.assertValidBirthExplicitPresentation(
+      pureCircuits.assertBirthExplicitPresentationSatisfiesRequest(
         fixture.credential,
         fixture.credentialProof,
+        fixture.presentationRequest,
         {
           ...fixture.presentation,
           holderBinding: {
@@ -44,18 +46,20 @@ describe("birth binding prototypes", () => {
   it("supports Jubjub holder binding over birth claims", () => {
     const fixture = createJubjubBirthPrototypeFixture();
     expect(() =>
-      pureCircuits.assertValidBirthJubjubPresentation(
+      pureCircuits.assertBirthJubjubPresentationSatisfiesRequest(
         fixture.credential,
         fixture.credentialProof,
+        fixture.presentationRequest,
         fixture.presentation,
         fixture.presentationProof,
       ),
     ).not.toThrow();
 
     expect(() =>
-      pureCircuits.assertValidBirthJubjubPresentation(
+      pureCircuits.assertBirthJubjubPresentationSatisfiesRequest(
         fixture.credential,
         fixture.credentialProof,
+        fixture.presentationRequest,
         fixture.presentation,
         {
           ...fixture.presentationProof,
@@ -70,18 +74,20 @@ describe("birth binding prototypes", () => {
   it("supports offchain Midnight DID binding over birth claims", () => {
     const fixture = createOffchainBirthPrototypeFixture();
     expect(() =>
-      pureCircuits.assertValidBirthOffchainPresentation(
+      pureCircuits.assertBirthOffchainPresentationSatisfiesRequest(
         fixture.credential,
         fixture.credentialProof,
+        fixture.presentationRequest,
         fixture.presentation,
         fixture.presentationProof,
       ),
     ).not.toThrow();
 
     expect(() =>
-      pureCircuits.assertValidBirthOffchainPresentation(
+      pureCircuits.assertBirthOffchainPresentationSatisfiesRequest(
         fixture.credential,
         fixture.credentialProof,
+        fixture.presentationRequest,
         {
           ...fixture.presentation,
           holderBinding: {
@@ -99,22 +105,22 @@ describe("birth binding prototypes", () => {
   it("supports secret holder binding over birth claims", () => {
     const fixture = createSecretBirthPrototypeFixture();
     expect(() =>
-      pureCircuits.assertValidBirthSecretPresentation(
+      pureCircuits.assertBirthSecretPresentationSatisfiesRequest(
         fixture.credential,
         fixture.credentialProof,
+        fixture.presentationRequest,
         fixture.presentation,
-        fixture.witness.verifierChallengeHash,
         fixture.witness.holderSecret,
         fixture.witness.holderSecretOpening,
       ),
     ).not.toThrow();
 
     expect(() =>
-      pureCircuits.assertValidBirthSecretPresentation(
+      pureCircuits.assertBirthSecretPresentationSatisfiesRequest(
         fixture.credential,
         fixture.credentialProof,
+        fixture.presentationRequest,
         fixture.presentation,
-        fixture.witness.verifierChallengeHash,
         new Uint8Array(32).fill(3),
         fixture.witness.holderSecretOpening,
       ),
@@ -126,11 +132,11 @@ describe("birth binding prototypes", () => {
   it("supports blinded secret holder binding over birth claims", () => {
     const fixture = createBlindedSecretBirthPrototypeFixture();
     expect(() =>
-      pureCircuits.assertValidBirthBlindedSecretPresentation(
+      pureCircuits.assertBirthBlindedSecretPresentationSatisfiesRequest(
         fixture.credential,
         fixture.credentialProof,
+        fixture.presentationRequest,
         fixture.presentation,
-        fixture.witness.verifierChallengeHash,
         fixture.witness.holderSecret,
         fixture.witness.holderSecretOpening,
         fixture.witness.holderBindingBlindingFactor,
@@ -138,17 +144,37 @@ describe("birth binding prototypes", () => {
     ).not.toThrow();
 
     expect(() =>
-      pureCircuits.assertValidBirthBlindedSecretPresentation(
+      pureCircuits.assertBirthBlindedSecretPresentationSatisfiesRequest(
         fixture.credential,
         fixture.credentialProof,
+        fixture.presentationRequest,
         fixture.presentation,
-        fixture.witness.verifierChallengeHash,
         fixture.witness.holderSecret,
         fixture.witness.holderSecretOpening,
         new Uint8Array(32).fill(4),
       ),
     ).toThrow(
       /Blinded holder commitment does not match the hidden holder secret witness/,
+    );
+  });
+
+  it("enforces verifier request challenges across public-key presentation profiles", () => {
+    const explicit = createExplicitBirthPrototypeFixture();
+    const mismatchedRequest = {
+      ...explicit.presentationRequest,
+      verifierChallengeHash: new Uint8Array(32).fill(6),
+    };
+
+    expect(() =>
+      pureCircuits.assertBirthExplicitPresentationSatisfiesRequest(
+        explicit.credential,
+        explicit.credentialProof,
+        mismatchedRequest,
+        explicit.presentation,
+        explicit.presentationProof,
+      ),
+    ).toThrow(
+      /Presentation proof challenge does not match the request challenge/,
     );
   });
 });
