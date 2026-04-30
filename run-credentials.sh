@@ -27,6 +27,7 @@ npm run lint -w credentials-same-holder
 npm run lint -w credentials-iso-registry
 npm run lint -w credentials-birth
 npm run lint -w credentials-birth-secret
+npm run lint -w credentials-birth-binding-prototypes
 npm run lint -w credentials-openid
 npm run lint -w credentials-demo-contract
 npm run lint -w credentials-protocol
@@ -37,6 +38,7 @@ npm run typecheck -w credentials-same-holder
 npm run typecheck -w credentials-iso-registry
 npm run typecheck -w credentials-birth
 npm run typecheck -w credentials-birth-secret
+npm run typecheck -w credentials-birth-binding-prototypes
 npm run build -w credentials-openid
 npm run typecheck -w credentials-openid
 if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
@@ -60,6 +62,9 @@ npm run all -w credentials-birth
 
 echo "[credentials] Secret birth credential family"
 npm run all -w credentials-birth-secret
+
+echo "[credentials] Birth binding prototypes"
+npm run all -w credentials-birth-binding-prototypes
 
 echo "[credentials] OpenID domain schemas"
 npm run all -w credentials-openid

@@ -107,7 +107,9 @@ const decodeBigEndianUnsigned = (value: Uint8Array): bigint => {
   return result;
 };
 
-export const hashOffchainMidnightMethodId = (normalizedFragment: string): Uint8Array =>
+export const hashOffchainMidnightMethodId = (
+  normalizedFragment: string,
+): Uint8Array =>
   new Uint8Array(
     createHash("sha256")
       .update(OFFCHAIN_METHOD_ID_DOMAIN)
@@ -162,7 +164,10 @@ const selectMethod = ({
   readonly methodId?: string;
 }): ResolvedPortableOffchainMidnightDID["state"]["verificationMethod"][number] => {
   if (methodId) {
-    const normalizedMethodId = normalizeOffchainMidnightMethodReference(methodId, did);
+    const normalizedMethodId = normalizeOffchainMidnightMethodReference(
+      methodId,
+      did,
+    );
     const selected = verificationMethod.find(
       (method) => method.id === normalizedMethodId,
     );

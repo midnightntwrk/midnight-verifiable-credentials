@@ -1,0 +1,296 @@
+pragma language_version >= 0.20;
+
+import CompactStandardLibrary;
+
+include "../../midnight-did-credentials/dist/credentials";
+include "../../midnight-did-credentials-birth/dist/birth-credential/claims";
+include "../../midnight-did-credentials-birth/dist/birth-credential/model";
+
+import VC<BirthCredentialClaims, BirthCredentialDisclosures, ExplicitHolderBinding> prefix BirthExplicit_;
+import VC<BirthCredentialClaims, BirthCredentialDisclosures, JubjubHolderBinding> prefix BirthJubjub_;
+import VC<BirthCredentialClaims, BirthCredentialDisclosures, OffchainMidnightHolderBinding> prefix BirthOffchain_;
+import VC<BirthCredentialClaims, BirthCredentialDisclosures, SecretHolderBinding> prefix BirthSecret_;
+import VC<BirthCredentialClaims, BirthCredentialDisclosures, BlindedSecretHolderBinding> prefix BirthBlindedSecret_;
+
+export type BirthExplicitCredential = BirthExplicit_Credential;
+export type BirthExplicitPresentation = BirthExplicit_Presentation;
+export type BirthJubjubCredential = BirthJubjub_Credential;
+export type BirthJubjubPresentation = BirthJubjub_Presentation;
+export type BirthOffchainCredential = BirthOffchain_Credential;
+export type BirthOffchainPresentation = BirthOffchain_Presentation;
+export type BirthSecretCredential = BirthSecret_Credential;
+export type BirthSecretPresentation = BirthSecret_Presentation;
+export type BirthBlindedSecretCredential = BirthBlindedSecret_Credential;
+export type BirthBlindedSecretPresentation = BirthBlindedSecret_Presentation;
+
+circuit prototypeSchema(): SchemaRef {
+  return SchemaRef {
+    packageId: pad(32, "midnight-did:vc:birth-proto"),
+    schemaId: pad(32, "birth-bindings:v1"),
+    majorVersion: 1,
+    minorVersion: 0,
+  };
+}
+
+
+export circuit birthExplicitCredentialBodyRoot(credential: BirthExplicitCredential): Bytes<32> {
+  return BirthExplicit_credentialBodyRoot(credential);
+}
+
+export circuit birthExplicitPresentationBodyRoot(presentation: BirthExplicitPresentation): Bytes<32> {
+  return BirthExplicit_presentationBodyRoot(presentation);
+}
+
+export circuit birthJubjubCredentialBodyRoot(credential: BirthJubjubCredential): Bytes<32> {
+  return BirthJubjub_credentialBodyRoot(credential);
+}
+
+export circuit birthJubjubPresentationBodyRoot(presentation: BirthJubjubPresentation): Bytes<32> {
+  return BirthJubjub_presentationBodyRoot(presentation);
+}
+
+export circuit birthOffchainCredentialBodyRoot(credential: BirthOffchainCredential): Bytes<32> {
+  return BirthOffchain_credentialBodyRoot(credential);
+}
+
+export circuit birthOffchainPresentationBodyRoot(presentation: BirthOffchainPresentation): Bytes<32> {
+  return BirthOffchain_presentationBodyRoot(presentation);
+}
+
+export circuit birthSecretCredentialBodyRoot(credential: BirthSecretCredential): Bytes<32> {
+  return BirthSecret_credentialBodyRoot(credential);
+}
+
+export circuit birthSecretPresentationBodyRoot(presentation: BirthSecretPresentation): Bytes<32> {
+  return BirthSecret_presentationBodyRoot(presentation);
+}
+
+export circuit birthBlindedSecretCredentialBodyRoot(credential: BirthBlindedSecretCredential): Bytes<32> {
+  return BirthBlindedSecret_credentialBodyRoot(credential);
+}
+
+export circuit birthBlindedSecretPresentationBodyRoot(presentation: BirthBlindedSecretPresentation): Bytes<32> {
+  return BirthBlindedSecret_presentationBodyRoot(presentation);
+}
+
+export circuit assertValidBirthBindingPrototypeSchema(schema: SchemaRef): [] {
+  assert(
+    schema.packageId == prototypeSchema().packageId,
+    "Unexpected birth binding prototype package identifier"
+  );
+  assert(
+    schema.schemaId == prototypeSchema().schemaId,
+    "Unexpected birth binding prototype schema identifier"
+  );
+  assert(schema.majorVersion == 1, "Birth binding prototype major version mismatch");
+}
+
+circuit assertBirthDisclosuresMatchClaims(
+  claims: BirthCredentialClaims,
+  disclosed: BirthCredentialDisclosures
+): [] {
+  if (disclosed.revealSubjectIdCommitment) {
+    assert(
+      disclosed.subjectIdCommitment == claims.subjectIdCommitment,
+      "Presentation subject commitment does not match the credential"
+    );
+  }
+  if (disclosed.revealBirthCountryCode) {
+    assert(
+      birthCountryCodeCommitment(
+        disclosed.birthCountryCodePadded,
+        disclosed.birthCountryCodeOpening
+      ) == claims.birthCountryCodeCommitment,
+      "Presentation birth-country disclosure does not match the credential"
+    );
+  }
+  if (disclosed.proveAgeOverThreshold) {
+    assert(disclosed.ageThresholdYears > 0, "Age threshold must be positive");
+  }
+}
+
+export circuit assertValidBirthExplicitCredential(
+  credential: BirthExplicitCredential,
+  proof: Proof
+): [] {
+  assertValidBirthBindingPrototypeSchema(credential.schema);
+  BirthExplicit_assertValidCredentialEnvelope(
+    credential,
+    birthCredentialClaimRoot(credential.claims)
+  );
+  assertValidExplicitHolderBinding(credential.holderBinding);
+  BirthExplicit_assertValidCredentialProof(credential, proof);
+}
+
+export circuit assertValidBirthExplicitPresentation(
+  credential: BirthExplicitCredential,
+  credentialProof: Proof,
+  presentation: BirthExplicitPresentation,
+  presentationProof: Proof
+): [] {
+  assertValidBirthExplicitCredential(credential, credentialProof);
+  assertValidBirthBindingPrototypeSchema(presentation.schema);
+  BirthExplicit_assertValidPresentationEnvelope(credential, presentation);
+  assertValidExplicitHolderBinding(presentation.holderBinding);
+  assertMatchingExplicitHolderBindings(
+    credential.holderBinding,
+    presentation.holderBinding
+  );
+  assertBirthDisclosuresMatchClaims(credential.claims, presentation.disclosed);
+  assertProofMatchesExplicitHolderBinding(presentation.holderBinding, presentationProof);
+  assertValidPresentationContextProof(
+    BirthExplicit_presentationBodyRoot(presentation),
+    presentationProof
+  );
+}
+
+export circuit assertValidBirthJubjubCredential(
+  credential: BirthJubjubCredential,
+  proof: Proof
+): [] {
+  assertValidBirthBindingPrototypeSchema(credential.schema);
+  BirthJubjub_assertValidCredentialEnvelope(
+    credential,
+    birthCredentialClaimRoot(credential.claims)
+  );
+  assertValidJubjubHolderBinding(credential.holderBinding);
+  BirthJubjub_assertValidCredentialProof(credential, proof);
+}
+
+export circuit assertValidBirthJubjubPresentation(
+  credential: BirthJubjubCredential,
+  credentialProof: Proof,
+  presentation: BirthJubjubPresentation,
+  presentationProof: Proof
+): [] {
+  assertValidBirthJubjubCredential(credential, credentialProof);
+  assertValidBirthBindingPrototypeSchema(presentation.schema);
+  BirthJubjub_assertValidPresentationEnvelope(credential, presentation);
+  assertValidJubjubHolderBinding(presentation.holderBinding);
+  assertMatchingJubjubHolderBindings(
+    credential.holderBinding,
+    presentation.holderBinding
+  );
+  assertBirthDisclosuresMatchClaims(credential.claims, presentation.disclosed);
+  assertProofMatchesJubjubHolderBinding(presentation.holderBinding, presentationProof);
+  assertValidPresentationContextProof(
+    BirthJubjub_presentationBodyRoot(presentation),
+    presentationProof
+  );
+}
+
+export circuit assertValidBirthOffchainCredential(
+  credential: BirthOffchainCredential,
+  proof: Proof
+): [] {
+  assertValidBirthBindingPrototypeSchema(credential.schema);
+  BirthOffchain_assertValidCredentialEnvelope(
+    credential,
+    birthCredentialClaimRoot(credential.claims)
+  );
+  assertValidOffchainMidnightHolderBinding(credential.holderBinding);
+  BirthOffchain_assertValidCredentialProof(credential, proof);
+}
+
+export circuit assertValidBirthOffchainPresentation(
+  credential: BirthOffchainCredential,
+  credentialProof: Proof,
+  presentation: BirthOffchainPresentation,
+  presentationProof: Proof
+): [] {
+  assertValidBirthOffchainCredential(credential, credentialProof);
+  assertValidBirthBindingPrototypeSchema(presentation.schema);
+  BirthOffchain_assertValidPresentationEnvelope(credential, presentation);
+  assertValidOffchainMidnightHolderBinding(presentation.holderBinding);
+  assertMatchingOffchainMidnightHolderBindings(
+    credential.holderBinding,
+    presentation.holderBinding
+  );
+  assertBirthDisclosuresMatchClaims(credential.claims, presentation.disclosed);
+  assertProofMatchesOffchainMidnightHolderBinding(
+    presentation.holderBinding,
+    presentationProof
+  );
+  assertValidPresentationContextProof(
+    BirthOffchain_presentationBodyRoot(presentation),
+    presentationProof
+  );
+}
+
+export circuit assertValidBirthSecretCredential(
+  credential: BirthSecretCredential,
+  proof: Proof
+): [] {
+  assertValidBirthBindingPrototypeSchema(credential.schema);
+  BirthSecret_assertValidCredentialEnvelope(
+    credential,
+    birthCredentialClaimRoot(credential.claims)
+  );
+  assertValidSecretHolderCredentialBinding(credential.holderBinding);
+  BirthSecret_assertValidCredentialProof(credential, proof);
+}
+
+export circuit assertValidBirthSecretPresentation(
+  credential: BirthSecretCredential,
+  credentialProof: Proof,
+  presentation: BirthSecretPresentation,
+  verifierChallengeHash: Bytes<32>,
+  holderSecret: Bytes<32>,
+  holderSecretOpening: Bytes<32>
+): [] {
+  assertValidBirthSecretCredential(credential, credentialProof);
+  assertValidBirthBindingPrototypeSchema(presentation.schema);
+  BirthSecret_assertValidPresentationEnvelope(credential, presentation);
+  assertValidSecretHolderPresentationBinding(presentation.holderBinding);
+  assertMatchingSecretHolderBindings(
+    credential.holderBinding,
+    presentation.holderBinding
+  );
+  assertBirthDisclosuresMatchClaims(credential.claims, presentation.disclosed);
+  assertSecretHolderBindingWitness(
+    presentation.holderBinding,
+    verifierChallengeHash,
+    holderSecret,
+    holderSecretOpening
+  );
+}
+
+export circuit assertValidBirthBlindedSecretCredential(
+  credential: BirthBlindedSecretCredential,
+  proof: Proof
+): [] {
+  assertValidBirthBindingPrototypeSchema(credential.schema);
+  BirthBlindedSecret_assertValidCredentialEnvelope(
+    credential,
+    birthCredentialClaimRoot(credential.claims)
+  );
+  assertValidBlindedSecretHolderCredentialBinding(credential.holderBinding);
+  BirthBlindedSecret_assertValidCredentialProof(credential, proof);
+}
+
+export circuit assertValidBirthBlindedSecretPresentation(
+  credential: BirthBlindedSecretCredential,
+  credentialProof: Proof,
+  presentation: BirthBlindedSecretPresentation,
+  verifierChallengeHash: Bytes<32>,
+  holderSecret: Bytes<32>,
+  holderSecretOpening: Bytes<32>,
+  holderBindingBlindingFactor: Bytes<32>
+): [] {
+  assertValidBirthBlindedSecretCredential(credential, credentialProof);
+  assertValidBirthBindingPrototypeSchema(presentation.schema);
+  BirthBlindedSecret_assertValidPresentationEnvelope(credential, presentation);
+  assertValidBlindedSecretHolderPresentationBinding(presentation.holderBinding);
+  assertMatchingBlindedSecretHolderBindings(
+    credential.holderBinding,
+    presentation.holderBinding
+  );
+  assertBirthDisclosuresMatchClaims(credential.claims, presentation.disclosed);
+  assertBlindedSecretHolderBindingWitness(
+    presentation.holderBinding,
+    verifierChallengeHash,
+    holderSecret,
+    holderSecretOpening,
+    holderBindingBlindingFactor
+  );
+}
