@@ -30,6 +30,15 @@ This repository owns the Midnight Verifiable Credentials stack:
   - `AGENT.md`
   - GitHub/community-health files such as `SECURITY.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`
 
+## Documentation entry points
+
+- `docs/spec/midnight-credentials.md`: normative working draft
+- `docs/spec/profiles.md`: normative profile catalog
+- `docs/spec/conformance.md`: normative conformance model
+- `docs/guides/package-selection.md`: package-selection guide
+- `docs/architecture/overview.md`: repository architecture map
+- `docs/testing/test-matrix.md`: current implementation/test evidence
+
 ## Engineering rules
 
 - Prefer updating docs together with capability changes.

@@ -45,9 +45,11 @@ Start here:
   - [`docs/spec/profiles.md`](./docs/spec/profiles.md)
 - conformance draft:
   - [`docs/spec/conformance.md`](./docs/spec/conformance.md)
-- companion guide:
+- companion guides:
   - [`docs/guides/midnight-credentials-for-dummies.md`](./docs/guides/midnight-credentials-for-dummies.md)
+  - [`docs/guides/package-selection.md`](./docs/guides/package-selection.md)
 - architecture:
+  - [`docs/architecture/overview.md`](./docs/architecture/overview.md)
   - [`docs/architecture/dependency-composition.md`](./docs/architecture/dependency-composition.md)
 - testing:
   - [`docs/testing/test-strategy.md`](./docs/testing/test-strategy.md)
