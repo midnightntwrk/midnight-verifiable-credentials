@@ -17,9 +17,15 @@
 - companion explainer:
   - [`guides/midnight-credentials-for-dummies.md`](./guides/midnight-credentials-for-dummies.md)
   - for readers new to Midnight VC concepts
+- package selection:
+  - [`guides/package-selection.md`](./guides/package-selection.md)
+  - for engineers choosing the right workspace package or layer
 
 ## Architecture
 
+- overview:
+  - [`architecture/overview.md`](./architecture/overview.md)
+  - for readers orienting themselves in the repository layer model
 - dependency composition:
   - [`architecture/dependency-composition.md`](./architecture/dependency-composition.md)
   - for package and contract authors composing capability layers
