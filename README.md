@@ -25,11 +25,11 @@ Current maturity is mixed by package:
   - [`credentials`](./credentials/README.md)
   - [`credentials-birth`](./credentials-birth/README.md)
   - [`credentials-birth-secret`](./credentials-birth-secret/README.md)
+  - [`credentials-iso-registry`](./credentials-iso-registry/README.md)
   - [`credentials-openid`](./credentials-openid/README.md)
 - prototype / experimental packages:
   - [`credentials-protocol`](./credentials-protocol/README.md)
   - [`credentials-demo-contract`](./credentials-demo-contract/README.md)
-  - [`credentials-birth-binding-prototypes`](./credentials-birth-binding-prototypes/README.md)
 - shared integration infrastructure:
   - [`standalone-environment`](./standalone-environment/README.md)
 
@@ -68,8 +68,6 @@ Start here:
   - explicit-holder birth credential family
 - [`credentials-birth-secret`](./credentials-birth-secret/README.md)
   - secret-holder birth credential family
-- [`credentials-birth-binding-prototypes`](./credentials-birth-binding-prototypes/README.md)
-  - experimental binding matrix over birth claims
 - [`credentials-openid`](./credentials-openid/README.md)
   - OID4VCI / OID4VP-inspired transport/domain adapters
 - [`credentials-protocol`](./credentials-protocol/README.md)

@@ -202,11 +202,10 @@ Binding mechanism:
 
 Current implementation packages:
 - [`../../credentials/README.md`](../../credentials/README.md)
-- exercised in [`../../credentials-birth-binding-prototypes/README.md`](../../credentials-birth-binding-prototypes/README.md)
 
 Current test coverage:
 - lightweight holder-binding tests
-- birth binding prototype matrix tests
+- profile-specific negative-path tests in the core credentials package
 
 Current limitations:
 - not preferred for new DID-shaped flows
@@ -228,4 +227,3 @@ Use:
 Avoid for new DID-shaped work:
 
 - raw `JubjubHolderBinding`
-

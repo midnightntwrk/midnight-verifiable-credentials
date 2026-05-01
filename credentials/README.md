@@ -6,7 +6,6 @@ Docs entry points:
 
 - spec: [`../docs/spec/midnight-credentials.md`](../docs/spec/midnight-credentials.md)
 - companion guide: [`../docs/guides/midnight-credentials-for-dummies.md`](../docs/guides/midnight-credentials-for-dummies.md)
-- docs site: `docs-site/spec/midnight-credentials.md`
 
 ## Purpose
 
