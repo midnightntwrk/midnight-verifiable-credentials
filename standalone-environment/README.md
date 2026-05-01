@@ -2,6 +2,16 @@
 
 Shared Midnight standalone integration harness for the credentials prototype.
 
+Status:
+
+- reference implementation
+
+Related docs:
+
+- spec: [`../docs/spec/midnight-credentials.md`](../docs/spec/midnight-credentials.md)
+- conformance: [`../docs/spec/conformance.md`](../docs/spec/conformance.md)
+- test matrix: [`../docs/testing/test-matrix.md`](../docs/testing/test-matrix.md)
+
 ## Purpose
 
 This package centralizes the Docker-backed environment used by credentials

@@ -2,6 +2,17 @@
 
 Demo business contract for the Compact-first VC/VP prototype.
 
+Status:
+
+- prototype
+
+Related docs:
+
+- spec: [`../docs/spec/midnight-credentials.md`](../docs/spec/midnight-credentials.md)
+- conformance: [`../docs/spec/conformance.md`](../docs/spec/conformance.md)
+- companion guide: [`../docs/guides/midnight-credentials-for-dummies.md`](../docs/guides/midnight-credentials-for-dummies.md)
+- test matrix: [`../docs/testing/test-matrix.md`](../docs/testing/test-matrix.md)
+
 ## Purpose
 
 This package sits above two layers:
