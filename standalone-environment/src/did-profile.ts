@@ -141,7 +141,7 @@ export const provisionDidProfile = async (
   }
 
   const methodFound = resolution.didDocument.verificationMethod?.some(
-    (method) => method.id === verificationMethodRef,
+    (method: { id: string }) => method.id === verificationMethodRef,
   );
   if (!methodFound) {
     throw new Error(

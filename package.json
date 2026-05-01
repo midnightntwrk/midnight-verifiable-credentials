@@ -29,7 +29,10 @@
     "pack:libs": "./scripts/pack-midnight-vc-libs.sh ./libs",
     "upgrade:libs": "./upgrade-libs.sh --destination ./libs",
     "postinstall": "node ./scripts/ensure-midnight-did-package-aliases.mjs && node ./scripts/ensure-midnight-did-api-paths.mjs && node ./scripts/ensure-compact-package-aliases.mjs",
-    "artifacts:pack": "./scripts/pack-artifacts.sh"
+    "artifacts:pack": "./scripts/pack-artifacts.sh",
+    "typecheck:all": "npm run typecheck -w credentials && npm run typecheck -w credentials-same-holder && npm run typecheck -w credentials-iso-registry && npm run typecheck -w credentials-birth && npm run typecheck -w credentials-birth-secret && npm run build -w credentials-openid && npm run typecheck -w credentials-openid && npm run typecheck -w credentials-demo-contract && npm run typecheck -w credentials-protocol",
+    "ci:build": "npm run lint && npm run typecheck:all && npm run build:all && npm run test:all",
+    "ci:integration": "./run-credentials-standalone.sh"
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
