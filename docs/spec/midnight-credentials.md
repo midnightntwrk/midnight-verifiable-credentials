@@ -2,13 +2,13 @@
 
 Version: `0.1-draft`
 
-Status: Draft specification with partial Compact prototype coverage
+Status: Normative draft with active reference implementation coverage
 
-Repository scope: `midnight-did`
+Repository scope: `midnight-verifiable-credentials`
 
 Companion guide:
 
-- `midnight-credentials-for-dummies.md`
+- `../guides/midnight-credentials-for-dummies.md`
 - docs site entry: `/spec/midnight-credentials`
 - docs site companion: `/spec/midnight-credentials-for-dummies`
 
@@ -23,7 +23,7 @@ Companion guide:
 - records current standards alignment, transport fit, and AnonCreds comparison
 
 ## Abstract
-This draft specification defines a Compact-first model for Midnight-native Verifiable Credentials and Verifiable Presentations.
+This document is the normative draft specification for Compact-first Midnight-native Verifiable Credentials and Verifiable Presentations.
 
 The current draft covers:
 
@@ -37,9 +37,31 @@ The current draft covers:
 Transport protocols and web serialization formats are explicitly out of scope as canonical representations. They may be added later as adapters around the Compact-native model.
 
 ## Scope
-This document defines the current specification draft for Midnight-native Verifiable Credentials (VCs) and Verifiable Presentations (VPs) in the `midnight-did` repository.
+This document defines the current specification draft for Midnight-native Verifiable Credentials (VCs) and Verifiable Presentations (VPs) in the `midnight-verifiable-credentials` repository.
 
-It is not a final standard and should be treated as an evolving specification for the current prototype and follow-on implementation work.
+It is not a final standard and should be treated as an evolving normative draft aligned to the current reference implementation and test matrix in this repository.
+
+Informative companion material lives outside this document:
+
+- companion guide:
+  - [`../guides/midnight-credentials-for-dummies.md`](../guides/midnight-credentials-for-dummies.md)
+- architecture note:
+  - [`../architecture/dependency-composition.md`](../architecture/dependency-composition.md)
+- test strategy:
+  - [`../testing/test-strategy.md`](../testing/test-strategy.md)
+- test matrix:
+  - [`../testing/test-matrix.md`](../testing/test-matrix.md)
+- AnonCreds comparison:
+  - [`../decisions/anoncreds-comparison.md`](../decisions/anoncreds-comparison.md)
+- holder-binding roadmap:
+  - [`../plans/holder-binding-extension-plan.md`](../plans/holder-binding-extension-plan.md)
+
+Normative companion documents:
+
+- profile catalog:
+  - [`./profiles.md`](./profiles.md)
+- conformance model:
+  - [`./conformance.md`](./conformance.md)
 
 ## Objectives
 Define a credential model that:
@@ -367,7 +389,7 @@ The current implementation lives in:
 - [`../standalone-environment/`](../standalone-environment/) (TypeScript shared integration test infrastructure)
 
 
-Dependency-composition research is tracked separately in [Midnight Credentials Dependency Composition Model](./midnight-credentials-dependency-composition.md). That document defines the recommended split between Compact source entry points, generated TS/JS runtime artifacts, and Layer 3 business-contract imports.
+Dependency-composition research is tracked separately in [Midnight Credentials Dependency Composition Model](../architecture/dependency-composition.md). That document defines the recommended split between Compact source entry points, generated TS/JS runtime artifacts, and Layer 3 business-contract imports.
 
 The package split is now intentional:
 
@@ -1651,7 +1673,7 @@ That is an acceptable trade-off for this phase because the goal is contract-nati
 5. Decide whether a W3C adapter should target JSON-LD, SD-JWT VC, or another exchange format.
 6. Extend the schema package with more selective disclosures and predicates only when they have a clear contract use case.
 7. Keep the schema package separate from business contracts.
-8. Continue hardening the dependency composition model for Compact credential packages so Layer 3 smart contracts can import concrete VC/VP/protocol types and compose business logic without depending on generated TS/JS internals. The first Passport + Compliance composition spike is documented in [Midnight Credentials Dependency Composition Model](./midnight-credentials-dependency-composition.md).
+8. Continue hardening the dependency composition model for Compact credential packages so Layer 3 smart contracts can import concrete VC/VP/protocol types and compose business logic without depending on generated TS/JS internals. The first Passport + Compliance composition spike is documented in [Midnight Credentials Dependency Composition Model](../architecture/dependency-composition.md).
 
 ## Appendix A: Comparison with AnonCreds
 

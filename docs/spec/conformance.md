@@ -1,0 +1,134 @@
+# Midnight VC Conformance
+
+Status: draft conformance model for the current specification suite.
+
+This document defines what it means to claim conformance with the Midnight VC
+draft specification at the package/profile level.
+
+Companion document:
+
+- [`midnight-credentials.md`](./midnight-credentials.md)
+
+## Scope
+
+This is a draft conformance model. It does not define a formal certification
+program. It defines practical categories for implementation and review.
+
+## Conformance categories
+
+### 1. Core VC implementation
+
+A core VC implementation conforms when it:
+
+- implements the canonical Compact-first data model
+- computes credential and presentation body roots in Compact
+- uses the Midnight proof context separation rules
+- preserves the holder-binding invariants defined for its chosen profile
+- rejects malformed or schema-mismatched payloads before accepting proofs
+
+In this repository, the primary reference is:
+
+- [`../../credentials/README.md`](../../credentials/README.md)
+
+### 2. Credential family implementation
+
+A credential family implementation conforms when it:
+
+- specializes the generic VC/VP model with a concrete claim schema
+- defines explicit disclosure and predicate semantics
+- computes claim roots deterministically
+- validates schema-specific credential and presentation bodies
+- states which holder-binding profiles it supports
+
+Reference implementations:
+
+- [`../../credentials-birth/README.md`](../../credentials-birth/README.md)
+- [`../../credentials-birth-secret/README.md`](../../credentials-birth-secret/README.md)
+
+### 3. Holder-binding profile implementation
+
+A holder-binding profile implementation conforms when it:
+
+- implements the profile-specific binding struct and validation rules
+- preserves the proof-to-binding matching semantics defined by the profile
+- documents the trust boundary and known limitations of the profile
+
+Reference profile catalog:
+
+- [`profiles.md`](./profiles.md)
+
+### 4. Transport/domain adapter implementation
+
+A transport/domain adapter conforms when it:
+
+- treats Compact payloads as canonical and transport JSON as envelope metadata
+- preserves schema/version identification
+- encodes and decodes payloads using the declared framing/profile
+- does not redefine canonical body-root semantics outside Compact
+
+Reference implementation:
+
+- [`../../credentials-openid/README.md`](../../credentials-openid/README.md)
+
+### 5. Protocol/reference orchestration implementation
+
+A protocol/orchestration implementation conforms when it:
+
+- preserves the underlying credential-family semantics
+- does not weaken proof or holder-binding invariants
+- treats transport/orchestration as an outer layer, not a replacement for the
+  canonical verification model
+
+Reference implementation:
+
+- [`../../credentials-protocol/README.md`](../../credentials-protocol/README.md)
+
+### 6. Verifier contract implementation
+
+A verifier contract implementation conforms when it:
+
+- composes the credential-family verification logic without redefining core
+  proof semantics
+- enforces only the disclosures and predicates it explicitly models
+- preserves the contract/business boundary between VC verification and state
+  mutation
+
+Reference implementation:
+
+- [`../../credentials-demo-contract/README.md`](../../credentials-demo-contract/README.md)
+
+## Required implementation disclosures
+
+Any implementation claiming conformance should document:
+
+- which holder-binding profiles it supports
+- which credential families it supports
+- whether it is:
+  - normative draft aligned
+  - reference implementation
+  - prototype
+  - experimental
+- which test surfaces it executes
+- any security/privacy limitations that are intentionally deferred
+
+## Non-conformance examples
+
+An implementation is not conformant if it:
+
+- treats JSON field order or `JSON.stringify(...)` as canonical signing input
+- bypasses Compact body-root recomputation during verification
+- silently changes holder-binding semantics without documenting a new profile
+- claims resolver-backed DID semantics while only checking structural metadata
+- presents prototype/experimental flows as production-ready profiles
+
+## Current repository stance
+
+This repository contains a mix of:
+
+- normative draft material
+- reference implementation packages
+- prototype packages
+- experimental packages
+
+Conformance claims should therefore be package-specific, not repository-global.
+

@@ -6,7 +6,7 @@ Status: Working comparison for design decisions
 
 Primary Midnight source:
 
-- `midnight-credentials.md`
+- `../spec/midnight-credentials.md`
 
 Primary AnonCreds sources:
 
@@ -511,7 +511,7 @@ the answer is:
 
 ## References
 
-- Midnight Credentials draft: `midnight-credentials.md`
-- Midnight companion guide: `midnight-credentials-for-dummies.md`
+- Midnight Credentials draft: `../spec/midnight-credentials.md`
+- Midnight companion guide: `../guides/midnight-credentials-for-dummies.md`
 - AnonCreds specification draft: https://anoncreds.github.io/anoncreds-spec/
 - AnonCreds v2 specification overview: https://anoncreds.github.io/anoncreds-spec-v2/

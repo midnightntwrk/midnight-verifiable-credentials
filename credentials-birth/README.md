@@ -4,8 +4,8 @@ Birth-credential specialization for the generic Midnight VC/VP core.
 
 Related docs:
 
-- spec: [`../midnight-credentials.md`](../midnight-credentials.md)
-- companion guide: [`../midnight-credentials-for-dummies.md`](../midnight-credentials-for-dummies.md)
+- spec: [`../docs/spec/midnight-credentials.md`](../docs/spec/midnight-credentials.md)
+- companion guide: [`../docs/guides/midnight-credentials-for-dummies.md`](../docs/guides/midnight-credentials-for-dummies.md)
 
 ## Purpose
 

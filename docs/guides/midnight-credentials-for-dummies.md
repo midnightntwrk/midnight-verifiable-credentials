@@ -2,7 +2,7 @@
 
 Version: `0.1-draft`
 
-This document is the friendly companion to `midnight-credentials.md`.
+This document is the friendly companion to [`../spec/midnight-credentials.md`](../spec/midnight-credentials.md).
 
 The specification is still the source of truth.
 This guide is the comic-book director's cut:
@@ -1854,7 +1854,7 @@ Mohawk: "That is the whole point of composable credentials. Not one giant bundle
 
 ### Where These Use Cases Are Defined
 
-Both use cases are specified in `midnight-credentials-test-strategy.md` as UC-1 (Age-Gated Venue Access) and UC-2 (Cross-Border Financial Onboarding). The test strategy defines the full configuration dimensions — credential family, holder binding profile, disclosures, predicates, pseudonym, same-holder composition, and verifier mode — for each use case.
+Both use cases are specified in [`../testing/test-strategy.md`](../testing/test-strategy.md) as UC-1 (Age-Gated Venue Access) and UC-2 (Cross-Border Financial Onboarding). The test strategy defines the full configuration dimensions — credential family, holder binding profile, disclosures, predicates, pseudonym, same-holder composition, and verifier mode — for each use case.
 
 ## Chapter 20: The Protocol Layer
 
