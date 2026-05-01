@@ -2,7 +2,7 @@
 
 Version: `0.2-draft`
 
-Status: Draft — companion to `midnight-credentials.md`
+Status: Draft — companion to `../spec/midnight-credentials.md`
 
 ## Purpose
 
