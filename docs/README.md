@@ -4,6 +4,10 @@
 
 - normative draft:
   - [`spec/midnight-credentials.md`](./spec/midnight-credentials.md)
+- profiles:
+  - [`spec/profiles.md`](./spec/profiles.md)
+- conformance:
+  - [`spec/conformance.md`](./spec/conformance.md)
 
 ## Guides
 
@@ -28,4 +32,3 @@
   - [`decisions/anoncreds-comparison.md`](./decisions/anoncreds-comparison.md)
 - holder-binding roadmap / extension plan:
   - [`plans/holder-binding-extension-plan.md`](./plans/holder-binding-extension-plan.md)
-

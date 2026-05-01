@@ -17,6 +17,10 @@ Current maturity is mixed by package:
 
 - normative spec draft:
   - [`docs/spec/midnight-credentials.md`](./docs/spec/midnight-credentials.md)
+- profile catalog:
+  - [`docs/spec/profiles.md`](./docs/spec/profiles.md)
+- conformance draft:
+  - [`docs/spec/conformance.md`](./docs/spec/conformance.md)
 - reference implementation packages:
   - [`credentials`](./credentials/README.md)
   - [`credentials-birth`](./credentials-birth/README.md)
@@ -37,6 +41,10 @@ Start here:
   - [`docs/README.md`](./docs/README.md)
 - normative spec draft:
   - [`docs/spec/midnight-credentials.md`](./docs/spec/midnight-credentials.md)
+- profile catalog:
+  - [`docs/spec/profiles.md`](./docs/spec/profiles.md)
+- conformance draft:
+  - [`docs/spec/conformance.md`](./docs/spec/conformance.md)
 - companion guide:
   - [`docs/guides/midnight-credentials-for-dummies.md`](./docs/guides/midnight-credentials-for-dummies.md)
 - architecture:
@@ -114,4 +122,3 @@ Published/exported local tarball set currently includes:
 Intentionally excluded:
 
 - `@midnight-ntwrk/midnight-did-credentials-demo-contract`
-
