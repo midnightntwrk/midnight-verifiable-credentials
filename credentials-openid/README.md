@@ -1,5 +1,16 @@
 # Midnight Credentials OpenID Domain Schemas
 
+Status:
+
+- reference implementation
+
+Related docs:
+
+- spec: [`../docs/spec/midnight-credentials.md`](../docs/spec/midnight-credentials.md)
+- conformance: [`../docs/spec/conformance.md`](../docs/spec/conformance.md)
+- companion guide: [`../docs/guides/midnight-credentials-for-dummies.md`](../docs/guides/midnight-credentials-for-dummies.md)
+- test matrix: [`../docs/testing/test-matrix.md`](../docs/testing/test-matrix.md)
+
 This package contains a small, transport-neutral TypeScript model inspired by
 OID4VCI and OID4VP. It intentionally does not implement OAuth, HTTP routing,
 DID resolution, JWT proof generation, or wallet UI behavior.
