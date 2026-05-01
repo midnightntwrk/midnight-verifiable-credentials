@@ -37,6 +37,7 @@ This repository owns the Midnight Verifiable Credentials stack:
 - `docs/spec/conformance.md`: normative conformance model
 - `docs/guides/package-selection.md`: package-selection guide
 - `docs/architecture/overview.md`: repository architecture map
+- `docs/architecture/dependency-composition.md`: deeper composition note
 - `docs/testing/test-matrix.md`: current implementation/test evidence
 
 ## Engineering rules

@@ -117,6 +117,8 @@ Start with:
 - `credentials-openid`
 
 These are outer-layer packages. They are not the canonical spec source.
+For the full holder-binding profile catalog, including verifier-domain pseudonym
+and legacy Jubjub guidance, see [`../spec/profiles.md`](../spec/profiles.md).
 
 ## Maturity Guidance
 ### Reference implementation packages
@@ -128,11 +130,15 @@ These are the strongest package surfaces to build on first:
 - `credentials-iso-registry`
 - `credentials-openid`
 
+`credentials-openid` is treated here as the current reference transport-adapter
+surface, even though it lives in the outer orchestration layer.
+
 ### Prototype packages
 These are valuable, but should be treated as evolving:
 
 - `credentials-protocol`
 - `credentials-demo-contract`
+- `credentials-birth-binding-prototypes`
 
 ### Capability package
 This package is stable in purpose, but not a standalone family:

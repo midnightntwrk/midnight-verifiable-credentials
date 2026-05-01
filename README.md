@@ -27,9 +27,11 @@ Current maturity is mixed by package:
   - [`credentials-birth-secret`](./credentials-birth-secret/README.md)
   - [`credentials-iso-registry`](./credentials-iso-registry/README.md)
   - [`credentials-openid`](./credentials-openid/README.md)
+    - current reference transport-adapter surface
 - prototype / experimental packages:
   - [`credentials-protocol`](./credentials-protocol/README.md)
   - [`credentials-demo-contract`](./credentials-demo-contract/README.md)
+  - `credentials-birth-binding-prototypes`
 - shared integration infrastructure:
   - [`standalone-environment`](./standalone-environment/README.md)
 
@@ -76,6 +78,8 @@ Start here:
   - reference off-chain orchestration and protocol simulation
 - [`credentials-demo-contract`](./credentials-demo-contract/README.md)
   - verifier/business contract demo
+- `credentials-birth-binding-prototypes`
+  - experimental cross-profile birth-credential prototype matrix
 - [`standalone-environment`](./standalone-environment/README.md)
   - shared Docker-backed integration harness
 

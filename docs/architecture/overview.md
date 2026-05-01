@@ -30,6 +30,7 @@ The repository is organized as a layered Compact-first stack.
 | Layer 2 | Concrete credential families | `credentials-birth`, `credentials-birth-secret` |
 | Layer 3 | Verifier/business contract composition | `credentials-demo-contract` |
 | Layer 4 | Transport and protocol orchestration | `credentials-openid`, `credentials-protocol` |
+| Experimental prototype matrix | Cross-profile binding prototypes | `credentials-birth-binding-prototypes` |
 | Shared infra | Standalone integration/runtime support | `standalone-environment` |
 
 ## Package Responsibilities
@@ -77,7 +78,9 @@ Examples currently in scope as strong repository surfaces are:
 This package is a transport/domain adapter layer.
 
 Its role is to move Compact-native payloads through OpenID-inspired or web
-transport shapes without redefining canonical VC/VP semantics.
+transport shapes without redefining canonical VC/VP semantics. Within the current
+repository maturity model, it is treated as a reference implementation of the
+transport-adapter role, even though it sits in the Layer 4 orchestration band.
 
 ### `credentials-protocol`
 This package is a protocol/reference orchestration layer.
@@ -90,6 +93,14 @@ This package demonstrates verifier/business contract composition.
 
 It should consume credential-family verification logic rather than redefining VC
 semantics locally.
+
+### `credentials-birth-binding-prototypes`
+This package is an experimental prototype matrix for exercising multiple
+holder-binding profiles over the same birth-credential claim family.
+
+It exists to prove profile coverage and request-satisfaction behavior across a
+common claim baseline. It is intentionally not part of the main production-oriented
+package spine.
 
 ### `standalone-environment`
 This package provides shared integration infrastructure for docker-backed or
@@ -162,10 +173,13 @@ The repository contains a mix of maturity levels.
 
 - reference implementation:
   - core VC package and key credential families
+- reference transport adapter:
+  - `credentials-openid`
 - prototype:
-  - some orchestration and profile surfaces
+  - `credentials-protocol` and selected profile-oriented surfaces
 - experimental:
-  - selected privacy-oriented or demo-oriented capabilities
+  - `credentials-birth-binding-prototypes` and selected privacy-oriented or
+    demo-oriented capabilities
 
 Readers should evaluate maturity at the package and profile level, not at the
 repository level.

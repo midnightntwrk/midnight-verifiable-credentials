@@ -41,6 +41,13 @@ Companion documents have narrower roles:
 - normative companion documents:
   - [`./profiles.md`](./profiles.md)
   - [`./conformance.md`](./conformance.md)
+
+Those normative companion documents are authoritative within their narrower scopes:
+
+- `profiles.md` owns the current holder-binding and verification profile catalog
+- `conformance.md` owns the repository's conformance categories and non-conformance examples
+
+This document takes precedence only where a broader repository-level requirement in this document overlaps with a narrower companion rule.
 - informative documents:
   - [`../guides/midnight-credentials-for-dummies.md`](../guides/midnight-credentials-for-dummies.md)
   - [`../guides/package-selection.md`](../guides/package-selection.md)
@@ -309,7 +316,7 @@ A transport or domain adapter implementation:
 
 Current repository transport and orchestration surfaces are described in:
 
-- [`../guides/package-selection.md`](../guides/package-selection.md)
+- [`../guides/package-selection.md`](../guides/package-selection.md) (informative)
 - [`./conformance.md`](./conformance.md)
 
 ## Security And Privacy Considerations
