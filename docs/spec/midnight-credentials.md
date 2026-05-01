@@ -56,6 +56,13 @@ Informative companion material lives outside this document:
 - holder-binding roadmap:
   - [`../plans/holder-binding-extension-plan.md`](../plans/holder-binding-extension-plan.md)
 
+Normative companion documents:
+
+- profile catalog:
+  - [`./profiles.md`](./profiles.md)
+- conformance model:
+  - [`./conformance.md`](./conformance.md)
+
 ## Objectives
 Define a credential model that:
 

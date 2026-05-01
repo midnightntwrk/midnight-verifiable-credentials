@@ -60,4 +60,3 @@ Light validation:
 ```
 
 Package-local integration and protocol work may require Docker.
-
