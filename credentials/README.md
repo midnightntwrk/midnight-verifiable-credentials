@@ -113,10 +113,11 @@ Current reusable holder-binding helper sets are:
   - `assertMatchingExplicitHolderBindings(...)`
   - `assertProofMatchesExplicitHolderBinding(...)`
 - lightweight Jubjub key holder binding:
+- legacy compatibility Jubjub key holder binding:
   - `assertValidJubjubHolderBinding(...)`
   - `assertMatchingJubjubHolderBindings(...)`
   - `assertProofMatchesJubjubHolderBinding(...)`
-- offchain Midnight DID holder binding:
+- offchain DID holder binding:
   - `assertValidOffchainMidnightHolderBinding(...)`
   - `assertMatchingOffchainMidnightHolderBindings(...)`
   - `assertProofMatchesOffchainMidnightHolderBinding(...)`

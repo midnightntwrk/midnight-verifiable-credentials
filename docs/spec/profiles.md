@@ -157,7 +157,7 @@ Current limitations:
 ### 6. Offchain DID holder binding
 
 Status:
-- reference implementation for lightweight DID-shaped prototypes
+- preferred lightweight DID-shaped profile for offchain/prototype flows
 
 Purpose:
 - support portable, lightweight Midnight DID-shaped flows without full DID
@@ -181,21 +181,22 @@ Current implementation packages:
 - [`../../credentials-offchain-did/README.md`](../../credentials-offchain-did/README.md)
 
 Current test coverage:
-- lightweight holder-binding tests
-- offchain DID holder-binding runtime tests
+- core lightweight holder-binding tests
+- `credentials-offchain-did` runtime helper tests
 
 Current limitations:
 - intended for offchain-DID-only prototype flows
 - mixed onchain/offchain DID combinations are intentionally out of scope
 - the profile does not by itself prove resolver-backed DID semantics
 
-### 7. Legacy minimal Jubjub holder binding
+### 7. Legacy compatibility Jubjub holder binding
 
 Status:
-- legacy minimal profile
+- legacy compatibility profile
 
 Purpose:
-- smallest possible public-key holder binding for non-DID demo flows
+- smallest possible public-key holder binding for compatibility and non-DID
+  demo flows
 
 Binding mechanism:
 - `JubjubHolderBinding`
@@ -220,7 +221,7 @@ Use:
   - when on-chain DID verification method references are part of the trust model
 - secret holder binding:
   - when privacy and hidden holder control are the primary concern
-- offchain Midnight DID holder binding:
+- offchain DID holder binding:
   - for lightweight DID-shaped prototypes and demos
 - same-holder:
   - only when multi-credential holder correlation is required

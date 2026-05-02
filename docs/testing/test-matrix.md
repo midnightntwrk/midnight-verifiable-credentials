@@ -11,11 +11,16 @@ Status: current implemented test surface as of 2026-05-01.
 - `credentials/src/test/secret-holder-binding.test.ts`
   - secret holder-binding primitives
 - `credentials/src/test/lightweight-holder-binding.test.ts`
-  - Jubjub and offchain holder-binding checks
-- `credentials/src/test/offchain-midnight-holder-binding-runtime.test.ts`
-  - offchain DID runtime helper behavior
+  - legacy Jubjub and Compact-side offchain holder-binding checks
 - `credentials/src/test/package-surfaces.test.ts`
   - exported package surfaces
+
+## DID-aware adapter package tests
+
+### `credentials-offchain-did`
+
+- `credentials-offchain-did/src/test/offchain-did-holder-binding.test.ts`
+  - offchain DID runtime helper behavior
 
 ## Credential family tests
 
@@ -39,8 +44,8 @@ Status: current implemented test surface as of 2026-05-01.
   - explicit DID holder binding
   - secret holder binding
   - blinded secret holder binding
-  - offchain Midnight DID holder binding
-  - legacy/minimal Jubjub holder binding
+  - offchain DID holder binding
+  - legacy compatibility Jubjub holder binding
 
 ## Transport/domain tests
 

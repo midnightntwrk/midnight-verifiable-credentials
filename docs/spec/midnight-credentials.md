@@ -192,8 +192,8 @@ That companion document defines the current repository profiles, including:
 - blinded secret holder binding
 - verifier-domain pseudonym profile
 - same-holder composition capability
-- offchain Midnight DID holder binding
-- legacy minimal Jubjub holder binding
+- offchain DID holder binding
+- legacy compatibility Jubjub holder binding
 
 This document does not restate the entire profile catalog. It defines the
 normative relationship:
