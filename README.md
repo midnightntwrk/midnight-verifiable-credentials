@@ -26,6 +26,7 @@ Current maturity is mixed by package:
   - [`credentials-birth`](./credentials-birth/README.md)
   - [`credentials-birth-secret`](./credentials-birth-secret/README.md)
   - [`credentials-iso-registry`](./credentials-iso-registry/README.md)
+  - [`credentials-offchain-did`](./credentials-offchain-did/README.md)
   - [`credentials-openid`](./credentials-openid/README.md)
     - current reference transport-adapter surface
 - prototype / experimental packages:
@@ -69,6 +70,8 @@ Start here:
   - same-holder composition capability
 - [`credentials-iso-registry`](./credentials-iso-registry/README.md)
   - shared Compact-native ISO code types
+- [`credentials-offchain-did`](./credentials-offchain-did/README.md)
+  - DID-aware runtime adapter for offchain DID holder binding
 - [`credentials-birth`](./credentials-birth/README.md)
   - explicit-holder birth credential family
 - [`credentials-birth-secret`](./credentials-birth-secret/README.md)
@@ -118,6 +121,7 @@ Published/exported local tarball set currently includes:
 - `@midnight-ntwrk/midnight-did-credentials`
 - `@midnight-ntwrk/midnight-did-credentials-same-holder`
 - `@midnight-ntwrk/midnight-did-credentials-iso-registry`
+- `@midnight-ntwrk/midnight-did-credentials-offchain-did`
 - `@midnight-ntwrk/midnight-did-credentials-openid`
 - `@midnight-ntwrk/midnight-did-credentials-protocol`
 - `@midnight-ntwrk/midnight-did-credentials-birth`

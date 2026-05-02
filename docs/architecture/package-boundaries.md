@@ -90,11 +90,7 @@ They are allowed to depend on:
 
 They are not allowed to redefine canonical VC semantics.
 
-Current state:
-
-- no dedicated package yet on `develop`
-
-Target package:
+Current packages:
 
 - `credentials-offchain-did`
 

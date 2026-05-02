@@ -25,6 +25,7 @@ echo "[credentials] Lint"
 npm run lint -w credentials
 npm run lint -w credentials-same-holder
 npm run lint -w credentials-iso-registry
+npm run lint -w credentials-offchain-did
 npm run lint -w credentials-birth
 npm run lint -w credentials-birth-secret
 npm run lint -w credentials-openid
@@ -35,6 +36,7 @@ echo "[credentials] Typecheck"
 npm run typecheck -w credentials
 npm run typecheck -w credentials-same-holder
 npm run typecheck -w credentials-iso-registry
+npm run typecheck -w credentials-offchain-did
 npm run typecheck -w credentials-birth
 npm run typecheck -w credentials-birth-secret
 npm run build -w credentials-openid
@@ -54,6 +56,9 @@ npm run all -w credentials-same-holder
 
 echo "[credentials] ISO registry package"
 npm run all -w credentials-iso-registry
+
+echo "[credentials] Offchain DID adapter package"
+npm run all -w credentials-offchain-did
 
 echo "[credentials] Birth credential family"
 npm run all -w credentials-birth

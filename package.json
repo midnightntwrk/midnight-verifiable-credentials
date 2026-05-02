@@ -12,6 +12,7 @@
     "credentials",
     "credentials-same-holder",
     "credentials-iso-registry",
+    "credentials-offchain-did",
     "credentials-openid",
     "credentials-protocol",
     "credentials-birth",
@@ -20,17 +21,17 @@
     "standalone-environment"
   ],
   "scripts": {
-    "clean": "npm run clean -w credentials && npm run clean -w credentials-same-holder && npm run clean -w credentials-iso-registry && npm run clean -w credentials-birth && npm run clean -w credentials-birth-secret && npm run clean -w credentials-openid && npm run clean -w credentials-demo-contract && npm run clean -w credentials-protocol",
-    "lint": "npm run lint -w credentials && npm run lint -w credentials-same-holder && npm run lint -w credentials-iso-registry && npm run lint -w credentials-birth && npm run lint -w credentials-birth-secret && npm run lint -w credentials-openid && npm run lint -w credentials-demo-contract && npm run lint -w credentials-protocol",
-    "lint:fix": "npm run lint:fix -w credentials && npm run lint:fix -w credentials-same-holder && npm run lint:fix -w credentials-iso-registry && npm run lint:fix -w credentials-birth && npm run lint:fix -w credentials-birth-secret && npm run lint:fix -w credentials-openid && npm run lint:fix -w credentials-demo-contract && npm run lint:fix -w credentials-protocol",
-    "build:all": "npm run build -w credentials && npm run build -w credentials-same-holder && npm run build -w credentials-iso-registry && npm run build -w credentials-birth && npm run build -w credentials-birth-secret && npm run build -w credentials-openid && npm run build -w credentials-demo-contract && npm run build -w credentials-protocol",
-    "test:all": "npm run all -w credentials && npm run all -w credentials-same-holder && npm run all -w credentials-iso-registry && npm run all -w credentials-birth && npm run all -w credentials-birth-secret && npm run all -w credentials-openid && npm run all -w credentials-demo-contract && npm run all -w credentials-protocol",
+    "clean": "npm run clean -w credentials && npm run clean -w credentials-same-holder && npm run clean -w credentials-iso-registry && npm run clean -w credentials-offchain-did && npm run clean -w credentials-birth && npm run clean -w credentials-birth-secret && npm run clean -w credentials-openid && npm run clean -w credentials-demo-contract && npm run clean -w credentials-protocol",
+    "lint": "npm run lint -w credentials && npm run lint -w credentials-same-holder && npm run lint -w credentials-iso-registry && npm run lint -w credentials-offchain-did && npm run lint -w credentials-birth && npm run lint -w credentials-birth-secret && npm run lint -w credentials-openid && npm run lint -w credentials-demo-contract && npm run lint -w credentials-protocol",
+    "lint:fix": "npm run lint:fix -w credentials && npm run lint:fix -w credentials-same-holder && npm run lint:fix -w credentials-iso-registry && npm run lint:fix -w credentials-offchain-did && npm run lint:fix -w credentials-birth && npm run lint:fix -w credentials-birth-secret && npm run lint:fix -w credentials-openid && npm run lint:fix -w credentials-demo-contract && npm run lint:fix -w credentials-protocol",
+    "build:all": "npm run build -w credentials && npm run build -w credentials-same-holder && npm run build -w credentials-iso-registry && npm run build -w credentials-offchain-did && npm run build -w credentials-birth && npm run build -w credentials-birth-secret && npm run build -w credentials-openid && npm run build -w credentials-demo-contract && npm run build -w credentials-protocol",
+    "test:all": "npm run all -w credentials && npm run all -w credentials-same-holder && npm run all -w credentials-iso-registry && npm run all -w credentials-offchain-did && npm run all -w credentials-birth && npm run all -w credentials-birth-secret && npm run all -w credentials-openid && npm run all -w credentials-demo-contract && npm run all -w credentials-protocol",
     "docs:vc-spec": "echo 'Add VC docs build once docs layout is bootstrapped'",
     "pack:libs": "./scripts/pack-midnight-vc-libs.sh ./libs",
     "upgrade:libs": "./upgrade-libs.sh --destination ./libs",
     "postinstall": "node ./scripts/ensure-midnight-did-package-aliases.mjs && node ./scripts/ensure-midnight-did-api-paths.mjs && node ./scripts/ensure-compact-package-aliases.mjs",
     "artifacts:pack": "./scripts/pack-artifacts.sh",
-    "typecheck:all": "npm run typecheck -w credentials && npm run typecheck -w credentials-same-holder && npm run typecheck -w credentials-iso-registry && npm run typecheck -w credentials-birth && npm run typecheck -w credentials-birth-secret && npm run build -w credentials-openid && npm run typecheck -w credentials-openid && npm run typecheck -w credentials-demo-contract && npm run typecheck -w credentials-protocol",
+    "typecheck:all": "npm run typecheck -w credentials && npm run typecheck -w credentials-same-holder && npm run typecheck -w credentials-iso-registry && npm run typecheck -w credentials-offchain-did && npm run typecheck -w credentials-birth && npm run typecheck -w credentials-birth-secret && npm run build -w credentials-openid && npm run typecheck -w credentials-openid && npm run typecheck -w credentials-demo-contract && npm run typecheck -w credentials-protocol",
     "ci:build": "npm run lint && npm run typecheck:all && npm run build:all && npm run test:all",
     "ci:integration": "./run-credentials-standalone.sh"
   },
@@ -73,12 +74,5 @@
     "rxjs": "^7.8.2",
     "ws": "^8.18.2",
     "zod": "^4.1.0"
-  },
-  "overrides": {
-    "@midnight-ntwrk/midnight-did-api": "file:libs/midnight-did/midnight-ntwrk-midnight-did-api-0.1.0.tgz",
-    "@midnight-ntwrk/midnight-did-domain": "file:libs/midnight-did/midnight-ntwrk-midnight-did-domain-0.1.0.tgz",
-    "@midnight-ntwrk/midnight-did-contract": "file:libs/midnight-did/midnight-ntwrk-midnight-did-contract-0.1.0.tgz",
-    "@midnight-ntwrk/midnight-did": "file:libs/midnight-did/midnight-ntwrk-midnight-did-0.1.0.tgz",
-    "@midnight-ntwrk/midnight-did-secret-storage": "file:libs/midnight-did/midnight-ntwrk-midnight-did-secret-storage-0.1.0.tgz"
   }
 }

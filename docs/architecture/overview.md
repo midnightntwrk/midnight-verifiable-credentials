@@ -30,6 +30,7 @@ The repository is organized as a layered Compact-first stack.
 | --- | --- | --- |
 | Layer 1 | Generic VC/VP capabilities | `credentials`, `credentials-same-holder`, `credentials-iso-registry` |
 | Layer 2 | Concrete credential families | `credentials-birth`, `credentials-birth-secret` |
+| Layer 2.5 | DID-aware runtime adapters | `credentials-offchain-did` |
 | Layer 3 | Verifier/business contract composition | `credentials-demo-contract` |
 | Layer 4 | Transport and protocol orchestration | `credentials-openid`, `credentials-protocol` |
 | Experimental prototype matrix | Cross-profile binding prototypes | `credentials-birth-binding-prototypes` |
@@ -75,6 +76,13 @@ Examples currently in scope as strong repository surfaces are:
 
 - `credentials-birth`
 - `credentials-birth-secret`
+
+### `credentials-offchain-did`
+This package is the dedicated DID-aware adapter layer for offchain DID holder
+binding.
+
+It owns runtime parsing and conversion from portable offchain Midnight DID
+inputs into the canonical VC holder-binding shape defined by `credentials`.
 
 ### `credentials-openid`
 This package is a transport/domain adapter layer.

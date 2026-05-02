@@ -8,6 +8,7 @@ workspaces=(
   credentials
   credentials-same-holder
   credentials-iso-registry
+  credentials-offchain-did
   credentials-openid
   credentials-protocol
   credentials-birth

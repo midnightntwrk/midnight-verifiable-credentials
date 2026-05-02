@@ -154,7 +154,7 @@ Current limitations:
 - currently specialized to hidden-holder flows
 - not yet generalized as a universal multi-credential presentation bundle
 
-### 6. Offchain Midnight DID holder binding
+### 6. Offchain DID holder binding
 
 Status:
 - reference implementation for lightweight DID-shaped prototypes
@@ -164,7 +164,10 @@ Purpose:
   deployment/resolution
 
 Binding mechanism:
-- `OffchainMidnightHolderBinding`
+- public-facing runtime name:
+  - `OffchainDIDHolderBinding`
+- current Compact/core shape:
+  - `OffchainMidnightHolderBinding`
 - carries:
   - holder DID state hash
   - holder method id digest
@@ -175,13 +178,11 @@ Binding mechanism:
 
 Current implementation packages:
 - [`../../credentials/README.md`](../../credentials/README.md)
-- runtime helper:
-  - `credentials/src/offchain-midnight-holder-binding.ts`
+- [`../../credentials-offchain-did/README.md`](../../credentials-offchain-did/README.md)
 
 Current test coverage:
 - lightweight holder-binding tests
-- offchain Midnight holder-binding runtime tests
-- birth binding prototype matrix tests
+- offchain DID holder-binding runtime tests
 
 Current limitations:
 - intended for offchain-DID-only prototype flows
