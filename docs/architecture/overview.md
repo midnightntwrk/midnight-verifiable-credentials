@@ -33,7 +33,7 @@ The repository is organized as a layered Compact-first stack.
 | Layer 2.5 | DID-aware runtime adapters | `credentials-offchain-did` |
 | Layer 3 | Verifier/business contract composition | `credentials-demo-contract` |
 | Layer 4 | Transport and protocol orchestration | `credentials-openid`, `credentials-protocol` |
-| Experimental prototype matrix | Cross-profile binding prototypes | `credentials-birth-binding-prototypes` |
+| Dormant prototype residue | Placeholder for future cross-profile prototype restoration | `credentials-birth-binding-prototypes` |
 | Shared infra | Standalone integration/runtime support | `standalone-environment` |
 
 ## Package Responsibilities
@@ -105,12 +105,15 @@ It should consume credential-family verification logic rather than redefining VC
 semantics locally.
 
 ### `credentials-birth-binding-prototypes`
-This package is an experimental prototype matrix for exercising multiple
-holder-binding profiles over the same birth-credential claim family.
+This directory is currently dormant prototype residue, not an active workspace
+package.
 
-It exists to prove profile coverage and request-satisfaction behavior across a
-common claim baseline. It is intentionally not part of the main production-oriented
-package spine.
+The intended role is still a cross-profile birth-credential prototype matrix
+for exercising multiple holder-binding profiles over the same claim family, but
+that surface has not yet been restored as a real source package on `develop`.
+
+Until restoration, it should be treated as a placeholder rather than as part of
+the validated package spine.
 
 ### `standalone-environment`
 This package provides shared integration infrastructure for docker-backed or
@@ -192,8 +195,10 @@ The repository contains a mix of maturity levels.
 - prototype:
   - `credentials-protocol` and selected profile-oriented surfaces
 - experimental:
-  - `credentials-birth-binding-prototypes` and selected privacy-oriented or
-    demo-oriented capabilities
+  - selected privacy-oriented or demo-oriented capabilities
+- planned/dormant:
+  - `credentials-birth-binding-prototypes` until it is restored as a real
+    package
 
 Readers should evaluate maturity at the package and profile level, not at the
 repository level.

@@ -126,6 +126,13 @@ Example target package:
 
 - `credentials-birth-binding-prototypes`
 
+Current state:
+
+- the repository still contains dormant residue under
+  `credentials-birth-binding-prototypes`
+- it is not yet a real workspace package on `develop`
+- docs and engineering work should treat it as planned until restored
+
 ## What belongs in each package class
 
 ### `credentials`

@@ -140,7 +140,11 @@ These are valuable, but should be treated as evolving:
 
 - `credentials-protocol`
 - `credentials-demo-contract`
+
+Planned but not currently active on `develop`:
+
 - `credentials-birth-binding-prototypes`
+  - retained only as dormant prototype residue until restored as a real package
 
 ### Capability package
 This package is stable in purpose, but not a standalone family:
@@ -167,3 +171,5 @@ Avoid:
 - inventing custom transport formats before checking `credentials-openid`
 - copying shared ISO code types locally
 - treating prototype packages as a substitute for the canonical spec
+- treating `credentials-birth-binding-prototypes` as a supported package until
+  it is restored as a real workspace package
