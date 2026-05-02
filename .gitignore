@@ -35,6 +35,7 @@ jspm_packages/
 .npm-cache
 cli/.npm-cache
 contract/.npm-cache
+.turbo/
 
 # Optional eslint cache
 .eslintcache

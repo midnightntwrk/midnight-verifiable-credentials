@@ -17,10 +17,7 @@ if ! docker info >/dev/null 2>&1; then
 fi
 
 echo "[credentials-standalone] Demo verifier contract integration"
-npm run build -w credentials
-npm run build -w credentials-birth
-npm run build -w credentials-birth-secret
-npm run build -w credentials-demo-contract
+npm run build:integration-prereqs
 npm run test:integration -w credentials-demo-contract
 
 echo "[credentials-standalone] Birth protocol integration"

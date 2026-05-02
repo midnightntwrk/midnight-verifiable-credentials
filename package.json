@@ -21,19 +21,25 @@
     "standalone-environment"
   ],
   "scripts": {
-    "clean": "npm run clean -w credentials && npm run clean -w credentials-same-holder && npm run clean -w credentials-iso-registry && npm run clean -w credentials-offchain-did && npm run clean -w credentials-birth && npm run clean -w credentials-birth-secret && npm run clean -w credentials-openid && npm run clean -w credentials-demo-contract && npm run clean -w credentials-protocol",
-    "lint": "npm run lint -w credentials && npm run lint -w credentials-same-holder && npm run lint -w credentials-iso-registry && npm run lint -w credentials-offchain-did && npm run lint -w credentials-birth && npm run lint -w credentials-birth-secret && npm run lint -w credentials-openid && npm run lint -w credentials-demo-contract && npm run lint -w credentials-protocol",
-    "lint:fix": "npm run lint:fix -w credentials && npm run lint:fix -w credentials-same-holder && npm run lint:fix -w credentials-iso-registry && npm run lint:fix -w credentials-offchain-did && npm run lint:fix -w credentials-birth && npm run lint:fix -w credentials-birth-secret && npm run lint:fix -w credentials-openid && npm run lint:fix -w credentials-demo-contract && npm run lint:fix -w credentials-protocol",
-    "build:all": "npm run build -w credentials && npm run build -w credentials-same-holder && npm run build -w credentials-iso-registry && npm run build -w credentials-offchain-did && npm run build -w credentials-birth && npm run build -w credentials-birth-secret && npm run build -w credentials-openid && npm run build -w credentials-demo-contract && npm run build -w credentials-protocol",
-    "test:all": "npm run all -w credentials && npm run all -w credentials-same-holder && npm run all -w credentials-iso-registry && npm run all -w credentials-offchain-did && npm run all -w credentials-birth && npm run all -w credentials-birth-secret && npm run all -w credentials-openid && npm run all -w credentials-demo-contract && npm run all -w credentials-protocol",
+    "clean": "turbo run clean --filter=./credentials --filter=./credentials-same-holder --filter=./credentials-iso-registry --filter=./credentials-offchain-did --filter=./credentials-birth --filter=./credentials-birth-secret --filter=./credentials-openid --filter=./credentials-demo-contract --filter=./credentials-protocol --continue",
+    "lint": "turbo run lint --filter=./credentials --filter=./credentials-same-holder --filter=./credentials-iso-registry --filter=./credentials-offchain-did --filter=./credentials-birth --filter=./credentials-birth-secret --filter=./credentials-openid --filter=./credentials-demo-contract --filter=./credentials-protocol --continue",
+    "lint:fix": "turbo run lint:fix --filter=./credentials --filter=./credentials-same-holder --filter=./credentials-iso-registry --filter=./credentials-offchain-did --filter=./credentials-birth --filter=./credentials-birth-secret --filter=./credentials-openid --filter=./credentials-demo-contract --filter=./credentials-protocol --continue",
+    "build:core": "turbo run build --filter=./credentials --filter=./credentials-same-holder --filter=./credentials-iso-registry --filter=./credentials-offchain-did --filter=./credentials-openid --continue",
+    "build:light": "npm run build:core && npm run build -w credentials-birth && npm run build -w credentials-birth-secret",
+    "build:all": "npm run build:core && npm run build -w credentials-birth && npm run build -w credentials-birth-secret && npm run build -w credentials-demo-contract && npm run build -w credentials-protocol",
+    "test:light": "npm run test:ci -w credentials && npm run test:ci -w credentials-same-holder && npm run test:ci -w credentials-iso-registry && npm run test:ci -w credentials-offchain-did && npm run test:ci -w credentials-birth && npm run test:ci -w credentials-birth-secret && npm run test:ci -w credentials-openid",
+    "test:all": "npm run test:light && npm run test:ci -w credentials-demo-contract && npm run test:ci -w credentials-protocol",
     "docs:vc-spec": "echo 'Add VC docs build once docs layout is bootstrapped'",
     "pack:libs": "./scripts/pack-midnight-vc-libs.sh ./libs",
     "upgrade:libs": "./upgrade-libs.sh --destination ./libs",
     "postinstall": "node ./scripts/ensure-midnight-did-package-aliases.mjs && node ./scripts/ensure-midnight-did-api-paths.mjs && node ./scripts/ensure-compact-package-aliases.mjs",
     "artifacts:pack": "./scripts/pack-artifacts.sh",
-    "typecheck:all": "npm run typecheck -w credentials && npm run typecheck -w credentials-same-holder && npm run typecheck -w credentials-iso-registry && npm run typecheck -w credentials-offchain-did && npm run typecheck -w credentials-birth && npm run typecheck -w credentials-birth-secret && npm run build -w credentials-openid && npm run typecheck -w credentials-openid && npm run typecheck -w credentials-demo-contract && npm run typecheck -w credentials-protocol",
+    "typecheck:light": "npm run typecheck -w credentials && npm run typecheck -w credentials-same-holder && npm run typecheck -w credentials-iso-registry && npm run typecheck -w credentials-offchain-did && npm run typecheck -w credentials-openid && npm run typecheck -w credentials-birth && npm run typecheck -w credentials-birth-secret",
+    "typecheck:all": "npm run typecheck:light && npm run typecheck -w credentials-demo-contract && npm run typecheck -w credentials-protocol",
+    "ci:build:light": "npm run lint && npm run typecheck:light && npm run build:light && npm run test:light",
     "ci:build": "npm run lint && npm run typecheck:all && npm run build:all && npm run test:all",
-    "ci:integration": "./run-credentials-standalone.sh"
+    "ci:integration": "./run-credentials-standalone.sh",
+    "build:integration-prereqs": "npm run build -w credentials && npm run build -w credentials-birth && npm run build -w credentials-birth-secret && npm run build -w credentials-demo-contract"
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
@@ -49,6 +55,7 @@
     "eslint-plugin-simple-import-sort": "^12.0.0",
     "testcontainers": "^11.0.0",
     "ts-node": "^10.9.2",
+    "turbo": "^2.5.4",
     "typescript": "^5.8.3",
     "vitest": "^3.2.0"
   },
