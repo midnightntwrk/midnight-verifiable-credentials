@@ -100,7 +100,7 @@ Current implementation packages:
 
 Current test coverage:
 - core holder-binding tests
-- birth binding prototype matrix tests
+- no active cross-profile prototype-matrix package on `develop`
 
 Current limitations:
 - not yet a finished blind-issuance protocol

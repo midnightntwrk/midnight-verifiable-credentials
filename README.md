@@ -32,9 +32,11 @@ Current maturity is mixed by package:
 - prototype / experimental packages:
   - [`credentials-protocol`](./credentials-protocol/README.md)
   - [`credentials-demo-contract`](./credentials-demo-contract/README.md)
-  - `credentials-birth-binding-prototypes`
 - shared integration infrastructure:
   - [`standalone-environment`](./standalone-environment/README.md)
+- planned prototype restoration work:
+  - `credentials-birth-binding-prototypes`
+    - currently not a real workspace package on `develop`
 
 ## Documentation
 
@@ -82,10 +84,14 @@ Start here:
   - reference off-chain orchestration and protocol simulation
 - [`credentials-demo-contract`](./credentials-demo-contract/README.md)
   - verifier/business contract demo
-- `credentials-birth-binding-prototypes`
-  - experimental cross-profile birth-credential prototype matrix
 - [`standalone-environment`](./standalone-environment/README.md)
   - shared Docker-backed integration harness
+
+Dormant prototype residue currently exists at:
+
+- `credentials-birth-binding-prototypes`
+  - retained as a placeholder for future restoration
+  - not currently a validated workspace package
 
 ## Validation
 

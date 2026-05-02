@@ -38,14 +38,11 @@ Status: current implemented test surface as of 2026-05-01.
 - capability profile tests
 - same-holder composition tests
 
-### `credentials-birth-binding-prototypes`
+### Dormant prototype residue
 
-- binding matrix tests across:
-  - explicit DID holder binding
-  - secret holder binding
-  - blinded secret holder binding
-  - offchain DID holder binding
-  - legacy compatibility Jubjub holder binding
+- `credentials-birth-binding-prototypes`
+  - no active checked-in source package or validated test surface on `develop`
+  - future restoration should reintroduce explicit binding-matrix coverage
 
 ## Transport/domain tests
 
