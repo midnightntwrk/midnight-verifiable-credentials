@@ -107,6 +107,7 @@ Start with:
 Start with:
 
 - `credentials`
+- `credentials-offchain-did`
 - then the offchain Midnight DID profile support described in:
   - [`../spec/profiles.md`](../spec/profiles.md)
 
@@ -125,6 +126,7 @@ and legacy Jubjub guidance, see [`../spec/profiles.md`](../spec/profiles.md).
 These are the strongest package surfaces to build on first:
 
 - `credentials`
+- `credentials-offchain-did`
 - `credentials-birth`
 - `credentials-birth-secret`
 - `credentials-iso-registry`

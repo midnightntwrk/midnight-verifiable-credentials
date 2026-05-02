@@ -18,6 +18,8 @@ Related documents:
   - [`../spec/conformance.md`](../spec/conformance.md)
 - deeper package-composition note:
   - [`./dependency-composition.md`](./dependency-composition.md)
+- package-boundary decision:
+  - [`./package-boundaries.md`](./package-boundaries.md)
 - package-selection guide:
   - [`../guides/package-selection.md`](../guides/package-selection.md)
 
@@ -28,6 +30,7 @@ The repository is organized as a layered Compact-first stack.
 | --- | --- | --- |
 | Layer 1 | Generic VC/VP capabilities | `credentials`, `credentials-same-holder`, `credentials-iso-registry` |
 | Layer 2 | Concrete credential families | `credentials-birth`, `credentials-birth-secret` |
+| Layer 2.5 | DID-aware runtime adapters | `credentials-offchain-did` |
 | Layer 3 | Verifier/business contract composition | `credentials-demo-contract` |
 | Layer 4 | Transport and protocol orchestration | `credentials-openid`, `credentials-protocol` |
 | Experimental prototype matrix | Cross-profile binding prototypes | `credentials-birth-binding-prototypes` |
@@ -74,6 +77,13 @@ Examples currently in scope as strong repository surfaces are:
 - `credentials-birth`
 - `credentials-birth-secret`
 
+### `credentials-offchain-did`
+This package is the dedicated DID-aware adapter layer for offchain DID holder
+binding.
+
+It owns runtime parsing and conversion from portable offchain Midnight DID
+inputs into the canonical VC holder-binding shape defined by `credentials`.
+
 ### `credentials-openid`
 This package is a transport/domain adapter layer.
 
@@ -113,8 +123,8 @@ The intended dependency direction is:
 
 1. generic VC core and shared code types
 2. concrete credential families
-3. business/verifier contracts
-4. transport or protocol orchestration
+3. DID-aware adapter packages
+4. business/verifier contracts and transport/protocol orchestration
 
 The important architectural rule is:
 
@@ -127,6 +137,10 @@ In practice that means:
 - verifier contracts should reuse family validation logic
 - OpenID/protocol layers should wrap Compact payloads rather than invent a new
   canonical model
+
+The formal package-boundary rules for that layering are defined in:
+
+- [`./package-boundaries.md`](./package-boundaries.md)
 
 ## Canonical Boundary
 The canonical VC/VP model lives in Compact.
