@@ -35,8 +35,8 @@ Current maturity is mixed by package:
 - shared integration infrastructure:
   - [`standalone-environment`](./standalone-environment/README.md)
 - planned prototype restoration work:
-  - `credentials-birth-binding-prototypes`
-    - currently not a real workspace package on `develop`
+  - future `credentials-birth-binding-prototypes` restoration
+    - not currently present as a real workspace package on `develop`
 
 ## Documentation
 
@@ -87,11 +87,11 @@ Start here:
 - [`standalone-environment`](./standalone-environment/README.md)
   - shared Docker-backed integration harness
 
-Dormant prototype residue currently exists at:
+No checked-in prototype matrix package currently exists for cross-profile birth
+binding restoration work.
 
-- `credentials-birth-binding-prototypes`
-  - retained as a placeholder for future restoration
-  - not currently a validated workspace package
+If that work returns, it should come back as an explicit workspace package
+rather than as artifact-only residue.
 
 ## Validation
 

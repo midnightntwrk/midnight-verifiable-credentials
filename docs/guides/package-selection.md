@@ -144,7 +144,7 @@ These are valuable, but should be treated as evolving:
 Planned but not currently active on `develop`:
 
 - `credentials-birth-binding-prototypes`
-  - retained only as dormant prototype residue until restored as a real package
+  - roadmap-only until restored as a real package
 
 ### Capability package
 This package is stable in purpose, but not a standalone family:
