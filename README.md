@@ -52,6 +52,7 @@ Start here:
   - [`docs/guides/package-selection.md`](./docs/guides/package-selection.md)
 - architecture:
   - [`docs/architecture/overview.md`](./docs/architecture/overview.md)
+  - [`docs/architecture/package-boundaries.md`](./docs/architecture/package-boundaries.md)
   - [`docs/architecture/dependency-composition.md`](./docs/architecture/dependency-composition.md)
 - testing:
   - [`docs/testing/test-strategy.md`](./docs/testing/test-strategy.md)

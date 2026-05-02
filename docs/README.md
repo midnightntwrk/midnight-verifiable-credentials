@@ -26,6 +26,9 @@
 - overview:
   - [`architecture/overview.md`](./architecture/overview.md)
   - for readers orienting themselves in the repository layer model
+- package boundaries:
+  - [`architecture/package-boundaries.md`](./architecture/package-boundaries.md)
+  - for package authors deciding where new VC, DID-aware, protocol, or demo logic belongs
 - dependency composition:
   - [`architecture/dependency-composition.md`](./architecture/dependency-composition.md)
   - for package and contract authors composing capability layers

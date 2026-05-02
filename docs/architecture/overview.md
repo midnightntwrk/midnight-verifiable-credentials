@@ -18,6 +18,8 @@ Related documents:
   - [`../spec/conformance.md`](../spec/conformance.md)
 - deeper package-composition note:
   - [`./dependency-composition.md`](./dependency-composition.md)
+- package-boundary decision:
+  - [`./package-boundaries.md`](./package-boundaries.md)
 - package-selection guide:
   - [`../guides/package-selection.md`](../guides/package-selection.md)
 
@@ -113,8 +115,8 @@ The intended dependency direction is:
 
 1. generic VC core and shared code types
 2. concrete credential families
-3. business/verifier contracts
-4. transport or protocol orchestration
+3. DID-aware adapter packages
+4. business/verifier contracts and transport/protocol orchestration
 
 The important architectural rule is:
 
@@ -127,6 +129,10 @@ In practice that means:
 - verifier contracts should reuse family validation logic
 - OpenID/protocol layers should wrap Compact payloads rather than invent a new
   canonical model
+
+The formal package-boundary rules for that layering are defined in:
+
+- [`./package-boundaries.md`](./package-boundaries.md)
 
 ## Canonical Boundary
 The canonical VC/VP model lives in Compact.
