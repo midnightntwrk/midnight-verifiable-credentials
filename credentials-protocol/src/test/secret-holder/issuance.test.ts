@@ -1,10 +1,10 @@
-import { describe, expect,it } from "vitest";
-
-import { pureCircuits as genericPureCircuits } from "../../../../credentials/src/managed/credentials/contract/index.js";
+import { pureCircuits as genericPureCircuits } from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
 import {
   pureCircuits,
   type SecretBirthCredentialIssuanceRequest,
-} from "../../../../credentials-birth-secret/src/managed/secret-birth-credential/contract/index.js";
+} from "@midnight-ntwrk/midnight-did-credentials-birth-secret/managed/secret-birth-credential/contract/index.js";
+import { describe, expect,it } from "vitest";
+
 import { SecretHolderAgent } from "../../agents/secret-holder-agent.js";
 import {
   type SecretClaimWitness,

@@ -1,7 +1,7 @@
+import { pureCircuits as credentialsPureCircuits } from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
 import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { describe, expect, it } from "vitest";
 
-import { pureCircuits as credentialsPureCircuits } from "../../../credentials/src/managed/credentials/contract/index.js";
 import { pureCircuits } from "../managed/same-holder/contract/index.js";
 
 setNetworkId("undeployed");

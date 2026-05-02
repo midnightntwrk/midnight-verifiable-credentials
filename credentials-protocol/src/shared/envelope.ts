@@ -1,7 +1,8 @@
 import {
   type ProtocolMessageEnvelope,
   pureCircuits as genericPureCircuits,
-} from "../../../credentials/src/managed/credentials/contract/index.js";
+} from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
+
 import { sha256 } from "./crypto.js";
 
 let envelopeCounter = 0;

@@ -1,7 +1,7 @@
 import {
   type Proof,
   type VerificationMethodRef,
-} from "../../../credentials/src/managed/credentials/contract/index.js";
+} from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
 import {
   type BirthCredential,
   type BirthCredentialPresentation,
@@ -11,13 +11,14 @@ import {
   type BirthCredentialVerificationSubmission,
   HolderBindingProfile,
   pureCircuits,
-} from "../../../credentials-birth/src/managed/birth-credential/contract/index.js";
+} from "@midnight-ntwrk/midnight-did-credentials-birth/managed/birth-credential/contract/index.js";
 import {
   pureCircuits as secretPureCircuits,
   type SecretBirthCredentialVerificationRequest,
   type SecretBirthCredentialVerificationResult,
   type SecretBirthCredentialVerificationSubmission,
-} from "../../../credentials-birth-secret/src/managed/secret-birth-credential/contract/index.js";
+} from "@midnight-ntwrk/midnight-did-credentials-birth-secret/managed/secret-birth-credential/contract/index.js";
+
 import { padText,sha256 } from "../shared/crypto.js";
 import { createEnvelope } from "../shared/envelope.js";
 import { assertBodyHasFields,assertMessageType } from "../shared/validation.js";

@@ -4,7 +4,7 @@ import {
   HolderBindingProfile,
   type Proof,
   pureCircuits as genericPureCircuits,
-} from "../../../credentials/src/managed/credentials/contract/index.js";
+} from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
 import {
   type SecretBirthCredential,
   type SecretBirthCredentialIssuanceOffer,
@@ -13,7 +13,8 @@ import {
   type SecretBirthCredentialPresentation,
   type SecretBirthCredentialVerificationRequest,
   type SecretBirthCredentialVerificationSubmission,
-} from "../../../credentials-birth-secret/src/managed/secret-birth-credential/contract/index.js";
+} from "@midnight-ntwrk/midnight-did-credentials-birth-secret/managed/secret-birth-credential/contract/index.js";
+
 import { padText,sha256 } from "../shared/crypto.js";
 import { createEnvelope } from "../shared/envelope.js";
 import { assertBodyHasFields,assertMessageType } from "../shared/validation.js";

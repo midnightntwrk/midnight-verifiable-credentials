@@ -1,4 +1,4 @@
-import type { ProtocolMessageEnvelope } from "../../../credentials/src/managed/credentials/contract/index.js";
+import type { ProtocolMessageEnvelope } from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
 
 export type PartyId = string;
 

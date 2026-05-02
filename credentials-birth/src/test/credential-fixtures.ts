@@ -5,12 +5,12 @@ import {
   ecMulGenerator,
   type JubjubPoint,
 } from "@midnight-ntwrk/compact-runtime";
-
 import {
   type Proof,
   pureCircuits as genericPureCircuits,
   type VerificationMethodRef,
-} from "../../../credentials/src/managed/credentials/contract/index.js";
+} from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
+
 import {
   type BirthCredential,
   type BirthCredentialIssuanceOffer,

@@ -23,6 +23,16 @@
       "require": "./dist/testing.js",
       "import": "./dist/testing.js",
       "default": "./dist/testing.js"
+    },
+    "./managed/demo/contract/index.js": {
+      "types": "./dist/managed/demo/contract/index.d.ts",
+      "import": "./dist/managed/demo/contract/index.js",
+      "default": "./dist/managed/demo/contract/index.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "managed/demo/contract/index.js": ["dist/managed/demo/contract/index.d.ts"]
     }
   },
   "scripts": {

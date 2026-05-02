@@ -17,6 +17,16 @@
       "require": "./dist/index.js",
       "import": "./dist/index.js",
       "default": "./dist/index.js"
+    },
+    "./managed/birth-credential/contract/index.js": {
+      "types": "./dist/managed/birth-credential/contract/index.d.ts",
+      "import": "./dist/managed/birth-credential/contract/index.js",
+      "default": "./dist/managed/birth-credential/contract/index.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "managed/birth-credential/contract/index.js": ["dist/managed/birth-credential/contract/index.d.ts"]
     }
   },
   "scripts": {
