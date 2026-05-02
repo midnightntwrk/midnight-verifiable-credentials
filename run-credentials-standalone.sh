@@ -19,6 +19,8 @@ fi
 echo "[credentials-standalone] Demo verifier contract integration"
 npm run build -w credentials
 npm run build -w credentials-birth
+npm run build -w credentials-birth-secret
+npm run build -w credentials-demo-contract
 npm run test:integration -w credentials-demo-contract
 
 echo "[credentials-standalone] Birth protocol integration"
