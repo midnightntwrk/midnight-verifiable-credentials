@@ -44,6 +44,7 @@ contract/.npm-cache
 
 # Output of 'npm pack'
 *.tgz
+!libs/midnight-did/*.tgz
 
 # Yarn Integrity file
 .yarn-integrity

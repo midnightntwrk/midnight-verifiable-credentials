@@ -47,7 +47,15 @@ const replacements = [
 ];
 
 for (const replacement of replacements) {
-  await access(replacement.file);
+  try {
+    await access(replacement.file);
+  } catch (error) {
+    if (error && typeof error === 'object' && 'code' in error && error.code === 'ENOENT') {
+      console.warn(`[ensure-midnight-did-api-paths] Skip missing file: ${replacement.file}`);
+      continue;
+    }
+    throw error;
+  }
   const current = await readFile(replacement.file, 'utf8');
   if (current.includes(replacement.to)) {
     continue;
