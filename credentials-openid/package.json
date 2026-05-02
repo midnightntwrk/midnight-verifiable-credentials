@@ -22,12 +22,13 @@
   },
   "scripts": {
     "build": "rm -rf dist && tsc -b tsconfig.build.json --force",
+    "pretypecheck": "npm run build",
     "test": "vitest run --config vitest.config.ts",
     "test:ci": "vitest run --config vitest.config.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "lint": "eslint src --ext .ts",
-    "lint:fix": "eslint src --ext .ts --fix",
-    "clean": "rm -rf dist && rm -rf coverage",
+    "lint": "eslint \"src/**/*.ts\" --ignore-pattern '**/*.d.ts'",
+    "lint:fix": "eslint \"src/**/*.ts\" --ignore-pattern '**/*.d.ts' --fix",
+    "clean": "rm -rf dist && rm -rf coverage && rm -f src/*.js src/*.js.map src/*.d.ts src/*.d.ts.map",
     "all": "npm run build && npm run test:ci"
   },
   "dependencies": {
