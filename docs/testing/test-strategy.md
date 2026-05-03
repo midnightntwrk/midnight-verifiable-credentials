@@ -124,9 +124,14 @@ Current repository stance:
 
 - the reference protocol layer now proves explicit rejection results for
   blinded-secret issuance, including malformed requests, offer/request
-  mismatches, unknown offer references, and replayed requests
-- holder-side tests also prove local rejection behavior for duplicate or
-  uncorrelated blinded-secret issuance outcomes
+  mismatches and unknown offer references
+- the same reference layer now proves idempotent re-delivery for duplicate
+  blinded-secret issuance requests and duplicate blinded-secret issuance
+  outcomes
+- holder-side tests still prove local rejection behavior for uncorrelated
+  blinded-secret issuance outcomes
+- the repository still does not carry explicit message-level offer/request
+  expiry fields, so real timeout semantics remain deferred
 - the repository does not yet define a final interoperable rejection result
   contract across transport adapters
 

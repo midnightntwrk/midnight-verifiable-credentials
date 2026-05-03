@@ -71,7 +71,9 @@ validate:
 - response envelope threading
 - request/result matching rules for blinded-secret issuance
 - explicit blinded-secret issuance rejection messages for malformed requests,
-  offer/request mismatches, unknown offer references, and replayed requests
+  offer/request mismatches, and unknown offer references
+- idempotent re-delivery of duplicate blinded-secret issuance requests and
+  duplicate blinded-secret issuance outcomes
 - request/submission and submission/result alignment enforced by Compact circuits
 - blinded holder-binding and pseudonym-specific validation through
   `credentials-birth-secret`

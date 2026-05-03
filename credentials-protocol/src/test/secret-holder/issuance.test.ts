@@ -533,7 +533,7 @@ describe("secret-holder issuance", () => {
     expect(holder.credentialCount).toBe(0);
   });
 
-  it("sends an explicit replay rejection when the same request is processed twice", () => {
+  it("re-delivers the same success result when the same request is processed twice", () => {
     const bus = new MessageBus();
     const issuer = new SecretIssuerAgent(issuerProfile, bus);
     const holder = new SecretHolderAgent(holderConfig, bus);
@@ -550,12 +550,16 @@ describe("secret-holder issuance", () => {
 
     issuer.receiveRequestAndRespond(request, claimWitness);
     const replayMessage = bus.receive("holder")!;
-    expect(replayMessage.type).toBe("issuance:rejection");
+    expect(replayMessage.type).toBe("issuance:result");
 
-    const replayRejection =
-      replayMessage.body as SecretBirthCredentialIssuanceRejection;
-    expect(replayRejection.body.category).toBe("replayed_request");
-    expect(replayRejection.body.detail).toMatch(/already finalized/i);
+    const secondOutcome = holder.receiveIssuanceOutcome(replayMessage);
+    expect(secondOutcome.kind).toBe("issued");
+    expect(holder.credentialCount).toBe(1);
+    if (firstOutcome.kind === "issued" && secondOutcome.kind === "issued") {
+      expect(secondOutcome.stored.credential.claimRoot).toEqual(
+        firstOutcome.stored.credential.claimRoot,
+      );
+    }
   });
 
   it("sends an explicit rejection result when the request does not match a pending offer", () => {
@@ -592,7 +596,7 @@ describe("secret-holder issuance", () => {
     }
   });
 
-  it("rejects duplicate success results at the holder boundary", () => {
+  it("treats duplicate success results as idempotent at the holder outcome boundary", () => {
     const bus = new MessageBus();
     const issuer = new SecretIssuerAgent(issuerProfile, bus);
     const holder = new SecretHolderAgent(holderConfig, bus);
@@ -608,12 +612,12 @@ describe("secret-holder issuance", () => {
     const firstOutcome = holder.receiveIssuanceOutcome(result);
     expect(firstOutcome.kind).toBe("issued");
 
-    expect(() => holder.receiveIssuanceOutcome(result)).toThrow(
-      /already finalized/i,
-    );
+    const secondOutcome = holder.receiveIssuanceOutcome(result);
+    expect(secondOutcome.kind).toBe("issued");
+    expect(holder.credentialCount).toBe(1);
   });
 
-  it("rejects duplicate issuance rejections at the holder boundary", () => {
+  it("treats duplicate issuance rejections as idempotent at the holder outcome boundary", () => {
     const bus = new MessageBus();
     const issuer = new SecretIssuerAgent(issuerProfile, bus);
     const holder = new SecretHolderAgent(holderConfig, bus);
@@ -644,9 +648,54 @@ describe("secret-holder issuance", () => {
     const firstOutcome = holder.receiveIssuanceOutcome(rejectionMessage);
     expect(firstOutcome.kind).toBe("rejected");
 
-    expect(() => holder.receiveIssuanceOutcome(rejectionMessage)).toThrow(
-      /already finalized/i,
-    );
+    const secondOutcome = holder.receiveIssuanceOutcome(rejectionMessage);
+    expect(secondOutcome.kind).toBe("rejected");
+    expect(holder.credentialCount).toBe(0);
+  });
+
+  it("re-delivers the same rejection result when the same malformed request is processed twice", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    holder.receiveOfferAndSendRequest(offer);
+
+    const request = bus.receive("issuer")!;
+    const requestBody = request.body as SecretBirthCredentialIssuanceRequest;
+    const tamperedRequest: SecretBirthCredentialIssuanceRequest = {
+      ...requestBody,
+      body: {
+        ...requestBody.body,
+        holderChallengeHash: genericPureCircuits.noProtocolResponseReference(),
+      },
+    };
+
+    const malformedRequest = {
+      ...request,
+      body: tamperedRequest,
+    };
+
+    issuer.receiveRequestAndRespond(malformedRequest, claimWitness);
+    const firstRejectionMessage = bus.receive("holder")!;
+    expect(firstRejectionMessage.type).toBe("issuance:rejection");
+    const firstOutcome = holder.receiveIssuanceOutcome(firstRejectionMessage);
+    expect(firstOutcome.kind).toBe("rejected");
+
+    issuer.receiveRequestAndRespond(malformedRequest, claimWitness);
+    const secondRejectionMessage = bus.receive("holder")!;
+    expect(secondRejectionMessage.type).toBe("issuance:rejection");
+    const secondOutcome = holder.receiveIssuanceOutcome(secondRejectionMessage);
+    expect(secondOutcome.kind).toBe("rejected");
+    if (firstOutcome.kind === "rejected" && secondOutcome.kind === "rejected") {
+      expect(secondOutcome.rejection.body.category).toBe(
+        firstOutcome.rejection.body.category,
+      );
+      expect(secondOutcome.rejection.body.detail).toBe(
+        firstOutcome.rejection.body.detail,
+      );
+    }
   });
 
   it("rejects rejection messages with no matching pending request at the holder boundary", () => {

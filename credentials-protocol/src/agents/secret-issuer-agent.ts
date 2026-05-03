@@ -62,6 +62,7 @@ export class SecretIssuerAgent {
     SecretBirthCredentialIssuanceOffer
   >();
   private readonly finalizedRequestIds = new Set<string>();
+  private readonly completedOutcomes = new Map<string, ProtocolMessage>();
 
   constructor(profile: DIDProfile, bus: MessageBus) {
     this.profile = profile;
@@ -123,13 +124,9 @@ export class SecretIssuerAgent {
   }
 
   private classifyIssuanceError(
-    requestMessageId: string,
     error: unknown,
   ): SecretBirthCredentialIssuanceRejectionCategory {
     const message = error instanceof Error ? error.message : String(error);
-    if (this.finalizedRequestIds.has(requestMessageId)) {
-      return "replayed_request";
-    }
     if (message.includes("No pending issuance offer found")) {
       return "unknown_offer_reference";
     }
@@ -267,14 +264,16 @@ export class SecretIssuerAgent {
       },
     };
 
-    this.bus.send({
+    const resultMessage: ProtocolMessage = {
       type: "issuance:result",
       from: this.profile.label,
       to: request.from,
       envelope: result.envelope,
       body: result,
-    });
+    };
+    this.bus.send(resultMessage);
     this.finalizedRequestIds.add(requestMessageId);
+    this.completedOutcomes.set(requestMessageId, resultMessage);
   }
 
   receiveRequestAndRespond(
@@ -284,6 +283,11 @@ export class SecretIssuerAgent {
     const requestMessageId = Buffer.from(
       request.envelope.messageId,
     ).toString("hex");
+    const completedOutcome = this.completedOutcomes.get(requestMessageId);
+    if (completedOutcome) {
+      this.bus.send(completedOutcome);
+      return;
+    }
     const respondsToId = Buffer.from(
       request.envelope.respondsToMessageId,
     ).toString("hex");
@@ -293,17 +297,19 @@ export class SecretIssuerAgent {
       this.pendingOffers.delete(respondsToId);
       const rejection = this.buildIssuanceRejection(
         request,
-        this.classifyIssuanceError(requestMessageId, error),
+        this.classifyIssuanceError(error),
         error instanceof Error ? error.message : String(error),
       );
-      this.bus.send({
+      const rejectionMessage: ProtocolMessage = {
         type: "issuance:rejection",
         from: this.profile.label,
         to: request.from,
         envelope: rejection.envelope,
         body: rejection,
-      });
+      };
+      this.bus.send(rejectionMessage);
       this.finalizedRequestIds.add(requestMessageId);
+      this.completedOutcomes.set(requestMessageId, rejectionMessage);
     }
   }
 }

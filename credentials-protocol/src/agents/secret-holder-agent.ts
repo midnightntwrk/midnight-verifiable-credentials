@@ -100,6 +100,10 @@ export class SecretHolderAgent {
     }
   >();
   private readonly finalizedIssuanceRequestIds = new Set<string>();
+  private readonly completedIssuanceOutcomes = new Map<
+    string,
+    SecretIssuanceOutcome
+  >();
 
   constructor(
     config: {
@@ -227,18 +231,38 @@ export class SecretHolderAgent {
   }
 
   receiveIssuanceOutcome(message: ProtocolMessage): SecretIssuanceOutcome {
+    const respondsToId = Buffer.from(
+      message.envelope.respondsToMessageId,
+    ).toString("hex");
+    const completedOutcome =
+      this.completedIssuanceOutcomes.get(respondsToId);
+    if (completedOutcome) {
+      if (
+        (message.type === "issuance:result" &&
+          completedOutcome.kind === "issued") ||
+        (message.type === "issuance:rejection" &&
+          completedOutcome.kind === "rejected")
+      ) {
+        return completedOutcome;
+      }
+    }
+
     if (message.type === "issuance:result") {
       this.receiveCredentialResult(message);
-      return {
+      const outcome = {
         kind: "issued",
         stored: this.getCredential(this.credentialCount - 1),
-      };
+      } as const;
+      this.completedIssuanceOutcomes.set(respondsToId, outcome);
+      return outcome;
     }
     const rejection = this.receiveIssuanceRejection(message);
-    return {
+    const outcome = {
       kind: "rejected",
       rejection,
-    };
+    } as const;
+    this.completedIssuanceOutcomes.set(respondsToId, outcome);
+    return outcome;
   }
 
   get credentialCount(): number {

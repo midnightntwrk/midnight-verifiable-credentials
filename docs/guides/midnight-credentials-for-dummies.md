@@ -1051,7 +1051,9 @@ Today the repository has a supported reference happy path for this capability:
 - real DID-backed secret-holder integration coverage
 - verifier-scoped pseudonym and same-holder composition built on the same hidden-secret family
 - explicit blinded-secret rejection results in the reference protocol layer for
-  malformed, mismatched, unknown-offer, and replayed issuance requests
+  malformed, mismatched, and unknown-offer issuance requests
+- idempotent re-delivery of the same blinded-secret issuance outcome when the
+  same request or the same issuer reply is delivered twice
 
 In plain language, Rita can now answer Alice in two ways during the reference
 issuance flow:
@@ -1064,7 +1066,12 @@ Simple rejection examples now covered by the tests:
 - the request forgot a required holder challenge
 - the request no longer matches the offer Rita sent
 - the request points at an offer Rita does not know about
-- the same request is replayed after it was already finalized
+
+Simple idempotency examples now covered by the tests:
+
+- the same valid request can be redelivered and yields the same issuance result
+- the same malformed request can be redelivered and yields the same rejection result
+- the same issuer result can be delivered twice without storing two credentials
 
 What is still not being claimed:
 
@@ -1078,7 +1085,10 @@ So the honest summary is:
 - yes, the issuance and presentation happy path is supported
 - yes, the reference protocol now emits explicit rejection results for common
   blinded-secret issuance failures
+- yes, duplicate blinded-secret issuance deliveries now behave idempotently in
+  the reference protocol layer
 - no, this is not yet the last word on production transport hardening
+- no, real message-level timeout handling is not implemented yet
 
 Mohawk calls it "a respectable intermediate state".
 Which is the closest he gets to romance.

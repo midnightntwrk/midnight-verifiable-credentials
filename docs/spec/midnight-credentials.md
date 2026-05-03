@@ -281,6 +281,8 @@ Today:
 - success results are explicit protocol messages
 - the reference `credentials-protocol` layer now defines explicit rejection
   messages for blinded-secret issuance
+- the same reference layer now treats duplicate blinded-secret issuance
+  deliveries as idempotent re-delivery of the prior outcome
 - many other rejection outcomes are still modeled as local exceptions at the
   agent boundary
 
