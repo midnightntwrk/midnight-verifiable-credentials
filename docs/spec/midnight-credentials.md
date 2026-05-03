@@ -335,8 +335,8 @@ Examples:
 - explicit DID holder binding is less private than hidden-secret binding
 - offchain Midnight DID binding is suitable for lightweight DID-shaped
   prototypes but does not by itself prove resolver-backed DID semantics
-- blinded-secret binding is still part of an evolving privacy-oriented profile
-  family rather than a final blind-issuance standard
+- blinded-secret binding has a supported reference issuance/presentation path,
+  but it is still not a final blind-issuance transport standard
 
 ### Mixed Maturity Repository
 This repository contains a mix of:

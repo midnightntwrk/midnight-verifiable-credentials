@@ -78,13 +78,14 @@ Current test coverage:
 - protocol secret-holder lifecycle tests
 
 Current limitations:
-- blind issuance is not yet production-ready
+- reference blinded-secret issuance exists, but production transport hardening
+  is not yet complete
 - revocation/non-revocation is not implemented
 
 ### 3. Blinded secret holder binding
 
 Status:
-- prototype / partial reference implementation
+- reference implementation / supported happy path
 
 Purpose:
 - support privacy-oriented issuance/presentation flows where the issuer should
@@ -96,15 +97,17 @@ Binding mechanism:
 
 Current implementation packages:
 - [`../../credentials/README.md`](../../credentials/README.md)
-- referenced by the secret-holder and prototype capability surfaces
+- [`../../credentials-birth-secret/README.md`](../../credentials-birth-secret/README.md)
+- [`../../credentials-protocol/README.md`](../../credentials-protocol/README.md)
 
 Current test coverage:
 - core holder-binding tests
-- no active cross-profile prototype-matrix package on `develop`
+- secret-holder issuance tests with Compact offer/request/result validation
+- secret-holder lifecycle integration tests
 
 Current limitations:
-- not yet a finished blind-issuance protocol
-- still part of an evolving privacy-oriented profile family
+- production transport interoperability is still evolving
+- revocation/non-revocation is not implemented
 
 ### 4. Verifier-domain pseudonym profile
 

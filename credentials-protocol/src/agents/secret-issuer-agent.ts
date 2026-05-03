@@ -1,3 +1,5 @@
+import { Buffer } from "node:buffer";
+
 import { ecMulGenerator } from "@midnight-ntwrk/compact-runtime";
 import {
   HolderBindingProfile,
@@ -50,6 +52,10 @@ export class SecretIssuerAgent {
   private readonly profile: DIDProfile;
   private readonly bus: MessageBus;
   private issuanceCounter = 0;
+  private readonly pendingOffers = new Map<
+    string,
+    SecretBirthCredentialIssuanceOffer
+  >();
 
   constructor(profile: DIDProfile, bus: MessageBus) {
     this.profile = profile;
@@ -81,6 +87,8 @@ export class SecretIssuerAgent {
       envelope: offer.envelope,
       body: offer,
     });
+    const offerMessageId = Buffer.from(offer.envelope.messageId).toString("hex");
+    this.pendingOffers.set(offerMessageId, offer);
   }
 
   receiveRequestAndIssueCredential(
@@ -90,6 +98,24 @@ export class SecretIssuerAgent {
     assertMessageType(request, "issuance:request");
     assertBodyHasFields(request, ["envelope", "schema", "body"]);
     const issuanceRequest = request.body as SecretBirthCredentialIssuanceRequest;
+    pureCircuits.assertValidSecretBirthCredentialIssuanceRequest(
+      issuanceRequest,
+    );
+    const respondsToId = Buffer.from(
+      request.envelope.respondsToMessageId,
+    ).toString("hex");
+    const offer = this.pendingOffers.get(respondsToId);
+    if (!offer) {
+      throw new Error(
+        "No pending issuance offer found for this credential request. " +
+        "Ensure createAndSendOffer was called first.",
+      );
+    }
+    pureCircuits.assertSecretBirthCredentialIssuanceRequestMatchesOffer(
+      offer,
+      issuanceRequest,
+    );
+    this.pendingOffers.delete(respondsToId);
     const requestBody = issuanceRequest.body;
 
     // TEST ONLY: production must use a unique random nonce per issuance.

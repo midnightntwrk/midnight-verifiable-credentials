@@ -6,6 +6,7 @@ import {
   pureCircuits as genericPureCircuits,
 } from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
 import {
+  pureCircuits,
   type SecretBirthCredential,
   type SecretBirthCredentialIssuanceOffer,
   type SecretBirthCredentialIssuanceRequest,
@@ -78,6 +79,13 @@ export class SecretHolderAgent {
   private readonly holderSecretOpening: Uint8Array;
   private readonly bus: MessageBus;
   private readonly credentials: SecretStoredCredential[] = [];
+  private readonly pendingIssuanceRequests = new Map<
+    string,
+    {
+      readonly request: SecretBirthCredentialIssuanceRequest;
+      readonly holderBindingBlindingFactor: Uint8Array;
+    }
+  >();
 
   constructor(
     config: {
@@ -97,6 +105,7 @@ export class SecretHolderAgent {
     assertMessageType(offer, "issuance:offer");
     assertBodyHasFields(offer, ["envelope", "schema", "body"]);
     const issuanceOffer = offer.body as SecretBirthCredentialIssuanceOffer;
+    pureCircuits.assertValidSecretBirthCredentialIssuanceOffer(issuanceOffer);
     const challengeHash = sha256("challenge:issuance");
 
     const holderSecretCommitment =
@@ -129,9 +138,12 @@ export class SecretHolderAgent {
       },
     };
 
-    // Store the blinding factor keyed by request message ID for later retrieval
+    // Store request metadata keyed by request message ID for later validation.
     const requestMessageId = Buffer.from(request.envelope.messageId).toString("hex");
-    this.pendingBlindingFactors.set(requestMessageId, holderBindingBlindingFactor);
+    this.pendingIssuanceRequests.set(requestMessageId, {
+      request,
+      holderBindingBlindingFactor,
+    });
 
     this.bus.send({
       type: "issuance:request",
@@ -142,26 +154,30 @@ export class SecretHolderAgent {
     });
   }
 
-  private readonly pendingBlindingFactors = new Map<string, Uint8Array>();
-
   receiveCredentialResult(result: ProtocolMessage): void {
     assertMessageType(result, "issuance:result");
     assertBodyHasFields(result, ["envelope", "schema", "body"]);
     const issuanceResult = result.body as SecretBirthCredentialIssuanceResult;
+    pureCircuits.assertValidSecretBirthCredentialIssuanceResult(issuanceResult);
     const respondsToId = Buffer.from(result.envelope.respondsToMessageId).toString("hex");
-    const blindingFactor = this.pendingBlindingFactors.get(respondsToId);
-    if (!blindingFactor) {
+    const pendingIssuance = this.pendingIssuanceRequests.get(respondsToId);
+    if (!pendingIssuance) {
       throw new Error(
-        "No pending blinding factor found for this credential result. " +
+        "No pending issuance request found for this credential result. " +
         "Ensure receiveOfferAndSendRequest was called first.",
       );
     }
-    this.pendingBlindingFactors.delete(respondsToId);
+    pureCircuits.assertSecretBirthCredentialIssuanceResultMatchesRequest(
+      pendingIssuance.request,
+      issuanceResult,
+    );
+    this.pendingIssuanceRequests.delete(respondsToId);
 
     this.credentials.push({
       credential: issuanceResult.body.credential,
       credentialProof: issuanceResult.body.credentialProof,
-      holderBindingBlindingFactor: blindingFactor,
+      holderBindingBlindingFactor:
+        pendingIssuance.holderBindingBlindingFactor,
     });
   }
 

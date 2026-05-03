@@ -53,6 +53,12 @@ A holder-binding profile implementation conforms when it:
 - preserves the proof-to-binding matching semantics defined by the profile
 - documents the trust boundary and known limitations of the profile
 
+For evolving privacy-oriented profiles such as blinded-secret binding,
+conformance claims must distinguish between:
+
+- a supported reference happy path validated by checked-in tests
+- production transport/interoperability guarantees that remain deferred
+
 Reference profile catalog:
 
 - [`profiles.md`](./profiles.md)
@@ -119,7 +125,8 @@ An implementation is not conformant if it:
 - bypasses Compact body-root recomputation during verification
 - silently changes holder-binding semantics without documenting a new profile
 - claims resolver-backed DID semantics while only checking structural metadata
-- presents prototype/experimental flows as production-ready profiles
+- presents supported reference happy paths as production-ready profiles without
+  disclosing deferred transport or revocation limitations
 
 ## Current repository stance
 
@@ -131,4 +138,3 @@ This repository contains a mix of:
 - experimental packages
 
 Conformance claims should therefore be package-specific, not repository-global.
-

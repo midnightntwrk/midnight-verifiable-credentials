@@ -4,7 +4,8 @@ Reference protocol orchestration layer for Midnight Credentials.
 
 Status:
 
-- prototype
+- reference implementation
+- evolving API surface
 
 Related docs:
 
@@ -16,7 +17,7 @@ Related docs:
 
 ## Purpose
 
-This package prototypes the off-chain party interactions around the Compact
+This package exercises the off-chain party interactions around the Compact
 credential circuits:
 
 - issuer creates offers and issues credentials
@@ -68,11 +69,16 @@ validate:
 
 - offer, request, submission, and result message shapes
 - response envelope threading
+- request/result matching rules for blinded-secret issuance
 - request/submission and submission/result alignment enforced by Compact circuits
 - blinded holder-binding and pseudonym-specific validation through
   `credentials-birth-secret`
 - same-holder composition flows through the agent layer, including a
   three-credential verifier session
+
+The blinded-secret issuance happy path is a supported reference flow in this
+package. The package remains intentionally narrow and transport-agnostic; it is
+not yet a production network library.
 
 ## Where To Start
 
