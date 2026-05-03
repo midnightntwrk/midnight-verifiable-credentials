@@ -50,3 +50,6 @@
 - holder-binding roadmap / extension plan:
   - [`plans/holder-binding-extension-plan.md`](./plans/holder-binding-extension-plan.md)
   - for roadmap and extension context
+- blinded-secret transport hardening plan:
+  - [`plans/blinded-secret-transport-hardening.md`](./plans/blinded-secret-transport-hardening.md)
+  - for the next production-readiness hardening phase of blinded-secret issuance

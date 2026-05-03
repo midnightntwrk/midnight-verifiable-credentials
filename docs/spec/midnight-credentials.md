@@ -95,6 +95,7 @@ It does not attempt to define:
 - a universal dynamic claim-map model
 - a final OpenID or HTTP interoperability profile
 - a general-purpose DID resolution standard
+- a final interoperable rejection wire format for every protocol adapter
 
 ## Normative Language
 The key words `MUST`, `MUST NOT`, `SHOULD`, `SHOULD NOT`, and `MAY` in this
@@ -127,6 +128,8 @@ An implementation aligned to this draft should provide a credential model that:
 | `Credential family` | A concrete schema package that specializes the generic VC/VP model |
 | `Profile` | A named holder-binding or verification model with explicit trust boundaries |
 | `Transport adapter` | A package or protocol layer that carries Compact values over JSON/OpenID/network envelopes without changing canonical VC/VP semantics |
+| `Protocol success result` | A protocol message that confirms a request succeeded and carries the success artifact for that stage |
+| `Protocol rejection result` | A protocol message or outcome that confirms a request failed and carries failure semantics instead of a success artifact |
 
 ## Canonical Model
 ### Canonical Representation
@@ -246,6 +249,42 @@ that credential family.
 A request implementation `MUST NOT` be treated as a generic untyped filter over
 arbitrary claims.
 
+## Protocol Outcome Semantics
+Where a package defines an offer / request / result protocol, that package
+`MUST` distinguish between:
+
+- a success result
+- a rejection result or rejection outcome
+
+A success result:
+
+- confirms that the protocol stage completed successfully
+- carries the success artifact for that stage
+- remains bound to the accepted prior message in the thread
+
+A rejection result or rejection outcome:
+
+- confirms that the protocol stage did not complete successfully
+- `MUST NOT` be treated as a success artifact with missing fields
+- `SHOULD` carry or imply a failure category that distinguishes malformed
+  input, mismatch, expiry, replay, or issuer/verifier refusal
+
+Repository-aligned implementations `MUST NOT` collapse success and rejection
+semantics into one ambiguous result shape.
+
+### Current repository stance
+The current reference protocol layer does not yet define a final interoperable
+rejection message family for every protocol.
+
+Today:
+
+- success results are explicit protocol messages
+- many rejection outcomes are still modeled as local exceptions at the agent
+  boundary
+
+That is acceptable for a reference implementation, but it `MUST NOT` be
+described as a final transport/interoperability contract.
+
 ## Canonical Serialization
 ### Core Rule
 The canonical VC/VP representation is the Compact value, not JSON.
@@ -312,6 +351,8 @@ A transport or domain adapter implementation:
 - `MUST` preserve schema and version identity
 - `MUST` reject malformed framing or schema/type mismatches before accepting
   proofs
+- `MUST` distinguish between successful protocol outcomes and rejection
+  outcomes
 - `MUST NOT` redefine proof semantics outside the canonical Compact model
 
 Current repository transport and orchestration surfaces are described in:
