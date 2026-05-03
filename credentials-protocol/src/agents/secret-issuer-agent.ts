@@ -63,6 +63,22 @@ type SecretIssuanceProcessingOptions = {
   readonly currentDay?: bigint;
 };
 
+class IssuanceProtocolError extends Error {
+  readonly category: SecretBirthCredentialIssuanceRejectionCategory;
+  readonly retryable: boolean;
+
+  constructor(
+    category: SecretBirthCredentialIssuanceRejectionCategory,
+    message: string,
+    retryable = false,
+  ) {
+    super(message);
+    this.name = "IssuanceProtocolError";
+    this.category = category;
+    this.retryable = retryable;
+  }
+}
+
 export class SecretIssuerAgent {
   private readonly profile: DIDProfile;
   private readonly bus: MessageBus;
@@ -144,24 +160,78 @@ export class SecretIssuerAgent {
     category: SecretBirthCredentialIssuanceRejectionCategory;
     retryable: boolean;
   } {
-    const message = error instanceof Error ? error.message : String(error);
-    if (message.includes("No pending issuance offer found")) {
-      return { category: "unknown_offer_reference", retryable: false };
-    }
-    if (message.includes("issuance offer expired")) {
-      return { category: "expired_offer", retryable: true };
-    }
-    if (message.includes("issuance request expired")) {
-      return { category: "expired_request", retryable: true };
-    }
-    if (
-      message.includes("cannot require expiration when the offer disables it") ||
-      message.includes("issuer verification method") ||
-      message.includes("holder binding profile")
-    ) {
-      return { category: "offer_request_mismatch", retryable: false };
+    if (error instanceof IssuanceProtocolError) {
+      return {
+        category: error.category,
+        retryable: error.retryable,
+      };
     }
     return { category: "malformed_request", retryable: false };
+  }
+
+  private assertValidIssuanceRequest(
+    issuanceRequest: SecretBirthCredentialIssuanceRequest,
+  ): void {
+    try {
+      pureCircuits.assertValidSecretBirthCredentialIssuanceRequest(
+        issuanceRequest,
+      );
+    } catch (error) {
+      throw new IssuanceProtocolError(
+        "malformed_request",
+        error instanceof Error ? error.message : String(error),
+      );
+    }
+  }
+
+  private assertRequestMatchesOffer(
+    offer: SecretBirthCredentialIssuanceOffer,
+    issuanceRequest: SecretBirthCredentialIssuanceRequest,
+  ): void {
+    const offerMethod = offer.issuerVerificationMethodRef;
+    const requestMethod = issuanceRequest.issuerVerificationMethodRef;
+
+    const sameDidAddress =
+      Buffer.compare(
+        Buffer.from(offerMethod.didContractAddress.bytes),
+        Buffer.from(requestMethod.didContractAddress.bytes),
+      ) === 0;
+    const sameMethodId = offerMethod.methodId === requestMethod.methodId;
+    if (!sameDidAddress || !sameMethodId) {
+      throw new IssuanceProtocolError(
+        "offer_request_mismatch",
+        "Secret birth credential issuance request issuer verification method must match the offer",
+      );
+    }
+
+    if (issuanceRequest.holderBindingProfile !== offer.holderBindingProfile) {
+      throw new IssuanceProtocolError(
+        "offer_request_mismatch",
+        "Secret birth credential issuance request holder binding profile must match the offer",
+      );
+    }
+
+    if (
+      issuanceRequest.body.requestExpiration &&
+      !offer.body.supportsExpiration
+    ) {
+      throw new IssuanceProtocolError(
+        "offer_request_mismatch",
+        "Secret birth credential issuance request cannot require expiration when the offer disables it",
+      );
+    }
+
+    try {
+      pureCircuits.assertSecretBirthCredentialIssuanceRequestMatchesOffer(
+        offer,
+        issuanceRequest,
+      );
+    } catch (error) {
+      throw new IssuanceProtocolError(
+        "offer_request_mismatch",
+        error instanceof Error ? error.message : String(error),
+      );
+    }
   }
 
   receiveRequestAndIssueCredential(
@@ -173,37 +243,38 @@ export class SecretIssuerAgent {
     assertBodyHasFields(request, ["envelope", "schema", "body"]);
     const requestMessageId = Buffer.from(request.envelope.messageId).toString("hex");
     if (this.finalizedRequestIds.has(requestMessageId)) {
-      throw new Error(
+      throw new IssuanceProtocolError(
+        "malformed_request",
         "This blinded-secret issuance request was already finalized and cannot be processed again.",
       );
     }
     const issuanceRequest = request.body as SecretBirthCredentialIssuanceRequest;
-    pureCircuits.assertValidSecretBirthCredentialIssuanceRequest(
-      issuanceRequest,
-    );
+    this.assertValidIssuanceRequest(issuanceRequest);
     const respondsToId = Buffer.from(
       request.envelope.respondsToMessageId,
     ).toString("hex");
     const offer = this.pendingOffers.get(respondsToId);
     if (!offer) {
-      throw new Error(
+      throw new IssuanceProtocolError(
+        "unknown_offer_reference",
         "No pending issuance offer found for this credential request. " +
         "Ensure createAndSendOffer was called first.",
       );
     }
-    pureCircuits.assertSecretBirthCredentialIssuanceRequestMatchesOffer(
-      offer,
-      issuanceRequest,
-    );
+    this.assertRequestMatchesOffer(offer, issuanceRequest);
     const currentDay = options.currentDay ?? claimWitness.issuedAt;
     if (currentDay > offer.body.offerExpiresAtDay) {
-      throw new Error(
+      throw new IssuanceProtocolError(
+        "expired_offer",
         "This blinded-secret issuance offer expired before the holder request was processed.",
+        true,
       );
     }
     if (currentDay > issuanceRequest.body.requestExpiresAtDay) {
-      throw new Error(
+      throw new IssuanceProtocolError(
+        "expired_request",
         "This blinded-secret issuance request expired before the issuer responded.",
+        true,
       );
     }
     this.pendingOffers.delete(respondsToId);

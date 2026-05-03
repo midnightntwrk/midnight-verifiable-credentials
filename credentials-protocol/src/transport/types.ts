@@ -21,9 +21,7 @@ export type SecretBirthCredentialIssuanceRejectionCategory =
   | "offer_request_mismatch"
   | "unknown_offer_reference"
   | "expired_offer"
-  | "expired_request"
-  | "replayed_request"
-  | "issuer_refused";
+  | "expired_request";
 
 export type SecretBirthCredentialIssuanceRejection = {
   readonly envelope: ProtocolMessageEnvelope;

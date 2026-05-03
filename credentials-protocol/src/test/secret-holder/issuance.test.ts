@@ -890,4 +890,44 @@ describe("secret-holder issuance", () => {
       }),
     ).toThrow(/No pending issuance request found/);
   });
+
+  it("rejects outcome messages whose type does not match the previously finalized outcome", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    holder.receiveOfferAndSendRequest(offer);
+
+    const request = bus.receive("issuer")!;
+    issuer.receiveRequestAndRespond(request, claimWitness);
+
+    const resultMessage = bus.receive("holder")!;
+    const issuedOutcome = holder.receiveIssuanceOutcome(resultMessage);
+    expect(issuedOutcome.kind).toBe("issued");
+
+    const resultBody = resultMessage.body as SecretBirthCredentialIssuanceResult;
+    const forgedRejection: SecretBirthCredentialIssuanceRejection = {
+      envelope: {
+        ...resultMessage.envelope,
+      },
+      schema: resultBody.schema,
+      issuerVerificationMethodRef: resultBody.issuerVerificationMethodRef,
+      holderBindingProfile: resultBody.holderBindingProfile,
+      body: {
+        category: "malformed_request",
+        detail: "Synthetic mismatched outcome for holder-boundary testing",
+        retryable: false,
+      },
+    };
+
+    expect(() =>
+      holder.receiveIssuanceOutcome({
+        ...resultMessage,
+        type: "issuance:rejection",
+        body: forgedRejection,
+      }),
+    ).toThrow(/outcome type does not match the previously finalized outcome/i);
+  });
 });

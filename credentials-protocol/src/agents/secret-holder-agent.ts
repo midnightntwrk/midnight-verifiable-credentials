@@ -257,12 +257,15 @@ export class SecretHolderAgent {
     if (completedOutcome) {
       if (
         (message.type === "issuance:result" &&
-          completedOutcome.kind === "issued") ||
+          completedOutcome.kind !== "issued") ||
         (message.type === "issuance:rejection" &&
-          completedOutcome.kind === "rejected")
+          completedOutcome.kind !== "rejected")
       ) {
-        return completedOutcome;
+        throw new Error(
+          "This blinded-secret issuance outcome type does not match the previously finalized outcome for the same request.",
+        );
       }
+      return completedOutcome;
     }
 
     if (message.type === "issuance:result") {
