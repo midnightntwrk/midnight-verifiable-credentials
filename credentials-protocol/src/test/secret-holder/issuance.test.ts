@@ -15,6 +15,7 @@ import {
 import { MessageBus } from "../../transport/message-bus.js";
 import {
   createDIDProfile,
+  mod,
   padText,
   sha256,
 } from "../helpers/did-provider.js";
@@ -200,7 +201,7 @@ describe("secret-holder issuance", () => {
     );
   });
 
-  it("rejects issuance requests with a missing holder challenge", () => {
+  it("rejects issuance requests when the holder challenge is missing", () => {
     const bus = new MessageBus();
     const issuer = new SecretIssuerAgent(issuerProfile, bus);
     const holder = new SecretHolderAgent(holderConfig, bus);
@@ -234,7 +235,7 @@ describe("secret-holder issuance", () => {
     ).toThrow(/holder challenge must be set/);
   });
 
-  it("rejects issuance requests that require expiration when the offer disables it", () => {
+  it("rejects issuance request/offer pairs that disagree about expiration support", () => {
     const bus = new MessageBus();
     const issuer = new SecretIssuerAgent(issuerProfile, bus);
     const holder = new SecretHolderAgent(holderConfig, bus);
@@ -278,18 +279,49 @@ describe("secret-holder issuance", () => {
 
     const result = bus.receive("holder")!;
     const resultBody = result.body as SecretBirthCredentialIssuanceResult;
-    const tamperedRequest: SecretBirthCredentialIssuanceRequest = {
-      ...requestBody,
+    const originalProof = resultBody.body.credentialProof;
+    const bodyRoot = pureCircuits.secretBirthCredentialBodyRoot(
+      resultBody.body.credential,
+    );
+    const originalChallenge = genericPureCircuits.issuanceProofChallenge(
+      bodyRoot,
+      originalProof,
+    );
+    const tamperedChallengeHash = sha256("challenge:wrong");
+    const interimProof = {
+      ...originalProof,
+      challengeHash: tamperedChallengeHash,
+    };
+    const tamperedChallenge = genericPureCircuits.issuanceProofChallenge(
+      bodyRoot,
+      interimProof,
+    );
+    const nonceScalar = mod(
+      originalProof.signature.s -
+        originalChallenge * issuerProfile.signer.secretKey,
+    );
+    const tamperedResult: SecretBirthCredentialIssuanceResult = {
+      ...resultBody,
       body: {
-        ...requestBody.body,
-        holderChallengeHash: sha256("challenge:wrong"),
+        ...resultBody.body,
+        issuanceChallengeHash: tamperedChallengeHash,
+        credentialProof: {
+          ...interimProof,
+          signature: {
+            ...originalProof.signature,
+            s: mod(
+              nonceScalar +
+                tamperedChallenge * issuerProfile.signer.secretKey,
+            ),
+          },
+        },
       },
     };
 
     expect(() =>
       pureCircuits.assertSecretBirthCredentialIssuanceResultMatchesRequest(
-        tamperedRequest,
-        resultBody,
+        requestBody,
+        tamperedResult,
       ),
     ).toThrow(/challenge must match the request challenge/);
   });
