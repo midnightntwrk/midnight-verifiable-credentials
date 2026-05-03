@@ -18,6 +18,10 @@ export circuit assertValidSecretBirthCredentialIssuanceOffer(
       "Secret birth credential issuance offer default expiration must be zero when expiration is disabled"
     );
   }
+  assert(
+    offer.body.offerExpiresAtDay > 0,
+    "Secret birth credential issuance offer expiry day must be positive"
+  );
 }
 
 export circuit assertValidSecretBirthCredentialIssuanceRequest(
@@ -52,6 +56,10 @@ export circuit assertValidSecretBirthCredentialIssuanceRequest(
       "Secret birth credential issuance request expiration days must be zero when disabled"
     );
   }
+  assert(
+    request.body.requestExpiresAtDay > 0,
+    "Secret birth credential issuance request expiry day must be positive"
+  );
 }
 
 export circuit assertSecretBirthCredentialIssuanceRequestMatchesOffer(

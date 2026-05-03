@@ -88,6 +88,13 @@ A protocol/orchestration implementation conforms when it:
 - documents whether rejections are explicit protocol messages or only local
   implementation outcomes
 
+For the current reference protocol layer, conformance claims about
+blinded-secret issuance may include explicit rejection messages for malformed
+requests, offer/request mismatches, unknown offer references, expired offers,
+and expired requests. The same flow may also claim explicit idempotent
+re-delivery semantics for duplicate blinded-secret issuance deliveries. Broader
+transport interoperability guarantees remain deferred.
+
 Reference implementation:
 
 - [`../../credentials-protocol/README.md`](../../credentials-protocol/README.md)

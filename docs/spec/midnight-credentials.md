@@ -279,8 +279,14 @@ rejection message family for every protocol.
 Today:
 
 - success results are explicit protocol messages
-- many rejection outcomes are still modeled as local exceptions at the agent
-  boundary
+- the reference `credentials-protocol` layer now defines explicit rejection
+  messages for blinded-secret issuance
+- the same reference layer now treats duplicate blinded-secret issuance
+  deliveries as idempotent re-delivery of the prior outcome
+- the same reference layer now models explicit offer and request expiry fields
+  for blinded-secret issuance and rejects expired sessions before success
+- many other rejection outcomes are still modeled as local exceptions at the
+  agent boundary
 
 That is acceptable for a reference implementation, but it `MUST NOT` be
 described as a final transport/interoperability contract.

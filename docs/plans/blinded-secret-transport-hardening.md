@@ -29,14 +29,19 @@ What the repository now proves:
 
 - a secret-holder issuance flow exists
 - the flow validates Compact-generated offer / request / result messages
-- the holder and issuer agents reject malformed blinded-secret issuance
-  messages at the agent boundary
+- the flow now carries explicit offer and request expiry fields
+- the holder and issuer agents reject malformed or expired blinded-secret
+  issuance messages through explicit rejection results in the reference
+  transport-shaped API
+- duplicate blinded-secret issuance deliveries are idempotent in the reference
+  transport-shaped API
+- the reference transport-shaped API uses caller-supplied `currentDay` for
+  expiry enforcement and otherwise defaults to a no-time-advance `0n` model
 - real DID-backed integration tests exercise the happy path
 
 What the repository does not yet prove:
 
 - a final production blind-signature transport protocol
-- explicit interoperable rejection/result messages
 - durable pending-state behavior across retries, restarts, or delayed delivery
 - revocation / non-revocation
 - cross-implementation interoperability guarantees

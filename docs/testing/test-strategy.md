@@ -122,8 +122,18 @@ Each credential family defines its own disclosure struct with per-field reveal f
 
 Current repository stance:
 
-- the reference protocol layer already proves local rejection behavior for
-  malformed blinded-secret issuance messages
+- the reference protocol layer now proves explicit rejection results for
+  blinded-secret issuance, including malformed requests, offer/request
+  mismatches, unknown offer references, expired offers, and expired requests
+- the same reference layer now proves idempotent re-delivery for duplicate
+  blinded-secret issuance requests and duplicate blinded-secret issuance
+  outcomes
+- the reference transport-shaped API now uses one normalized default time rule:
+  omitted `currentDay` means `0n`
+- holder-side tests still prove local rejection behavior for uncorrelated
+  blinded-secret issuance outcomes
+- the repository now carries explicit message-level offer/request expiry fields
+  in the blinded-secret issuance reference flow
 - the repository does not yet define a final interoperable rejection result
   contract across transport adapters
 

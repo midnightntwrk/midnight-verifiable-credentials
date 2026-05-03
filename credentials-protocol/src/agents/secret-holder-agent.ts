@@ -20,7 +20,10 @@ import { padText,sha256 } from "../shared/crypto.js";
 import { createEnvelope } from "../shared/envelope.js";
 import { assertBodyHasFields,assertMessageType } from "../shared/validation.js";
 import type { MessageBus } from "../transport/message-bus.js";
-import type { ProtocolMessage } from "../transport/types.js";
+import type {
+  ProtocolMessage,
+  SecretBirthCredentialIssuanceRejection,
+} from "../transport/types.js";
 
 const SECRET_BIRTH_SCHEMA = {
   packageId: padText("midnight-did:vc:birth-secret"),
@@ -36,11 +39,29 @@ const SECRET_HOLDER_FEATURES = {
   supportsSameHolderProof: true,
 };
 
+const DEFAULT_PROTOCOL_CURRENT_DAY = 0n;
+const DEFAULT_ISSUANCE_REQUEST_EXPIRY_DAY = 1_000_000n;
+
+type SecretIssuanceRequestOptions = {
+  readonly currentDay?: bigint;
+  readonly requestExpiresAtDay?: bigint;
+};
+
 export type SecretStoredCredential = {
   readonly credential: SecretBirthCredential;
   readonly credentialProof: Proof;
   readonly holderBindingBlindingFactor: Uint8Array;
 };
+
+export type SecretIssuanceOutcome =
+  | {
+      readonly kind: "issued";
+      readonly stored: SecretStoredCredential;
+    }
+  | {
+      readonly kind: "rejected";
+      readonly rejection: SecretBirthCredentialIssuanceRejection;
+    };
 
 /**
  * Protocol data for a same-holder composition proof.
@@ -86,6 +107,10 @@ export class SecretHolderAgent {
       readonly holderBindingBlindingFactor: Uint8Array;
     }
   >();
+  private readonly completedIssuanceOutcomes = new Map<
+    string,
+    SecretIssuanceOutcome
+  >();
 
   constructor(
     config: {
@@ -101,11 +126,20 @@ export class SecretHolderAgent {
     this.bus = bus;
   }
 
-  receiveOfferAndSendRequest(offer: ProtocolMessage): void {
+  receiveOfferAndSendRequest(
+    offer: ProtocolMessage,
+    options: SecretIssuanceRequestOptions = {},
+  ): void {
     assertMessageType(offer, "issuance:offer");
     assertBodyHasFields(offer, ["envelope", "schema", "body"]);
     const issuanceOffer = offer.body as SecretBirthCredentialIssuanceOffer;
     pureCircuits.assertValidSecretBirthCredentialIssuanceOffer(issuanceOffer);
+    const currentDay = options.currentDay ?? DEFAULT_PROTOCOL_CURRENT_DAY;
+    if (currentDay > issuanceOffer.body.offerExpiresAtDay) {
+      throw new Error(
+        "This blinded-secret issuance offer expired before the holder could answer it.",
+      );
+    }
     const challengeHash = sha256("challenge:issuance");
 
     const holderSecretCommitment =
@@ -135,6 +169,8 @@ export class SecretHolderAgent {
         holderChallengeHash: challengeHash,
         requestExpiration: true,
         requestedExpirationDays: 365n,
+        requestExpiresAtDay:
+          options.requestExpiresAtDay ?? DEFAULT_ISSUANCE_REQUEST_EXPIRY_DAY,
       },
     };
 
@@ -162,6 +198,11 @@ export class SecretHolderAgent {
     const respondsToId = Buffer.from(result.envelope.respondsToMessageId).toString("hex");
     const pendingIssuance = this.pendingIssuanceRequests.get(respondsToId);
     if (!pendingIssuance) {
+      if (this.completedIssuanceOutcomes.has(respondsToId)) {
+        throw new Error(
+          "This blinded-secret issuance result was already finalized and cannot be accepted again.",
+        );
+      }
       throw new Error(
         "No pending issuance request found for this credential result. " +
         "Ensure receiveOfferAndSendRequest was called first.",
@@ -179,6 +220,68 @@ export class SecretHolderAgent {
       holderBindingBlindingFactor:
         pendingIssuance.holderBindingBlindingFactor,
     });
+  }
+
+  receiveIssuanceRejection(rejectionMessage: ProtocolMessage): SecretBirthCredentialIssuanceRejection {
+    assertMessageType(rejectionMessage, "issuance:rejection");
+    assertBodyHasFields(rejectionMessage, ["envelope", "schema", "body"]);
+    const rejection =
+      rejectionMessage.body as SecretBirthCredentialIssuanceRejection;
+    const respondsToId = Buffer.from(
+      rejectionMessage.envelope.respondsToMessageId,
+    ).toString("hex");
+    const pendingIssuance = this.pendingIssuanceRequests.get(respondsToId);
+    if (!pendingIssuance) {
+      if (this.completedIssuanceOutcomes.has(respondsToId)) {
+        throw new Error(
+          "This blinded-secret issuance rejection was already finalized and cannot be accepted again.",
+        );
+      }
+      throw new Error(
+        "No pending issuance request found for this credential rejection. " +
+        "Ensure receiveOfferAndSendRequest was called first.",
+      );
+    }
+    this.pendingIssuanceRequests.delete(respondsToId);
+    return rejection;
+  }
+
+  receiveIssuanceOutcome(message: ProtocolMessage): SecretIssuanceOutcome {
+    const respondsToId = Buffer.from(
+      message.envelope.respondsToMessageId,
+    ).toString("hex");
+    const completedOutcome =
+      this.completedIssuanceOutcomes.get(respondsToId);
+    if (completedOutcome) {
+      if (
+        (message.type === "issuance:result" &&
+          completedOutcome.kind !== "issued") ||
+        (message.type === "issuance:rejection" &&
+          completedOutcome.kind !== "rejected")
+      ) {
+        throw new Error(
+          "This blinded-secret issuance outcome type does not match the previously finalized outcome for the same request.",
+        );
+      }
+      return completedOutcome;
+    }
+
+    if (message.type === "issuance:result") {
+      this.receiveCredentialResult(message);
+      const outcome = {
+        kind: "issued",
+        stored: this.getCredential(this.credentialCount - 1),
+      } as const;
+      this.completedIssuanceOutcomes.set(respondsToId, outcome);
+      return outcome;
+    }
+    const rejection = this.receiveIssuanceRejection(message);
+    const outcome = {
+      kind: "rejected",
+      rejection,
+    } as const;
+    this.completedIssuanceOutcomes.set(respondsToId, outcome);
+    return outcome;
   }
 
   get credentialCount(): number {

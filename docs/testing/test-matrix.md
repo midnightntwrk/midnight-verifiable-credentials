@@ -62,6 +62,12 @@ Status: current implemented test surface as of 2026-05-01.
 - secret-holder issuance/presentation
   - Compact offer/request/result validation in unit tests
   - negative-path coverage for malformed offer/request/result issuance messages
+  - explicit blinded-secret issuance rejection messages in the reference
+    protocol layer for malformed requests, offer/request mismatches, unknown
+    offer references, expired offers, and expired requests
+  - idempotent re-delivery of duplicate blinded-secret issuance requests and
+    duplicate blinded-secret issuance outcomes
+  - holder-side rejection of uncorrelated issuance outcomes
   - agent-boundary rejection of forged issuance results
   - real DID-backed secret-holder lifecycle integration
 - verifier-domain pseudonym flows
