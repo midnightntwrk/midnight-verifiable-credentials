@@ -112,6 +112,21 @@ Each credential family defines its own disclosure struct with per-field reveal f
 | Direct circuit | Pure circuit assertions without protocol message wrapping |
 | Protocol messages | Full issuance (offer → request → result) and presentation (request → submission → result) with threaded envelopes |
 
+### Dimension 10: Protocol Outcome Semantics
+
+| Outcome model | What it means |
+|---------------|---------------|
+| Success result only | Happy-path protocol currently proves only successful completion messages |
+| Local rejection outcome | Malformed or mismatched messages are rejected locally, for example by exceptions at the agent boundary |
+| Explicit rejection result | The protocol defines a distinct rejection message or typed rejection outcome with stable failure semantics |
+
+Current repository stance:
+
+- the reference protocol layer already proves local rejection behavior for
+  malformed blinded-secret issuance messages
+- the repository does not yet define a final interoperable rejection result
+  contract across transport adapters
+
 ## Shared ISO Registry
 
 ### Package: `credentials-iso-registry`

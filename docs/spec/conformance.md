@@ -78,6 +78,9 @@ A protocol/orchestration implementation conforms when it:
 - does not weaken proof or holder-binding invariants
 - treats transport/orchestration as an outer layer, not a replacement for the
   canonical verification model
+- distinguishes success results from rejection results or rejection outcomes
+- documents whether rejections are explicit protocol messages or only local
+  implementation outcomes
 
 Reference implementation:
 
@@ -109,6 +112,8 @@ Any implementation claiming conformance should document:
   - prototype
   - experimental
 - which test surfaces it executes
+- whether it has explicit rejection message semantics or only local rejection
+  behavior
 - any security/privacy limitations that are intentionally deferred
 
 ## Non-conformance examples
@@ -119,6 +124,8 @@ An implementation is not conformant if it:
 - bypasses Compact body-root recomputation during verification
 - silently changes holder-binding semantics without documenting a new profile
 - claims resolver-backed DID semantics while only checking structural metadata
+- treats a rejection as an empty or partial success result without documenting a
+  distinct rejection outcome
 - presents prototype/experimental flows as production-ready profiles
 
 ## Current repository stance
@@ -131,4 +138,3 @@ This repository contains a mix of:
 - experimental packages
 
 Conformance claims should therefore be package-specific, not repository-global.
-
