@@ -38,10 +38,10 @@ Status: current implemented test surface as of 2026-05-01.
 - capability profile tests
 - same-holder composition tests
 
-### Dormant prototype residue
+### Planned prototype restoration
 
 - `credentials-birth-binding-prototypes`
-  - no active checked-in source package or validated test surface on `develop`
+  - no checked-in source package or validated test surface on `develop`
   - future restoration should reintroduce explicit binding-matrix coverage
 
 ## Transport/domain tests

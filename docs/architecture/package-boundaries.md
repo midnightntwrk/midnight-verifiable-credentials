@@ -128,10 +128,9 @@ Example target package:
 
 Current state:
 
-- the repository still contains dormant residue under
-  `credentials-birth-binding-prototypes`
-- it is not yet a real workspace package on `develop`
-- docs and engineering work should treat it as planned until restored
+- no real workspace package currently exists under
+  `credentials-birth-binding-prototypes` on `develop`
+- docs and engineering work should treat that name as planned until restored
 
 ## What belongs in each package class
 
