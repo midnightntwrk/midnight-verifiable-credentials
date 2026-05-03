@@ -125,6 +125,12 @@ Current repository stance:
 - the reference protocol layer now proves explicit rejection results for
   blinded-secret issuance, including malformed requests, offer/request
   mismatches, unknown offer references, expired offers, and expired requests
+- the same reference protocol layer now proves explicit rejection results for
+  blinded-secret presentation, including malformed submissions,
+  request/submission mismatches, and unsatisfied verifier requests
+- the same reference protocol layer now proves idempotent re-delivery for
+  duplicate blinded-secret presentation submissions and duplicate presentation
+  outcomes
 - the same reference layer now proves idempotent re-delivery for duplicate
   blinded-secret issuance requests and duplicate blinded-secret issuance
   outcomes
@@ -132,8 +138,12 @@ Current repository stance:
   omitted `currentDay` means `0n`
 - holder-side tests still prove local rejection behavior for uncorrelated
   blinded-secret issuance outcomes
+- holder-side tests now also prove local rejection behavior for uncorrelated
+  blinded-secret presentation outcomes
 - the repository now carries explicit message-level offer/request expiry fields
   in the blinded-secret issuance reference flow
+- the repository does not yet carry explicit message-level expiry fields in the
+  blinded-secret presentation reference flow
 - the repository does not yet define a final interoperable rejection result
   contract across transport adapters
 

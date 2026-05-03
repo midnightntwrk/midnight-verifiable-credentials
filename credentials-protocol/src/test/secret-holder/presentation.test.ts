@@ -2,8 +2,9 @@ import { pureCircuits as genericPureCircuits } from "@midnight-ntwrk/midnight-di
 import {
   pureCircuits,
   type SecretBirthCredentialVerificationRequest,
+  type SecretBirthCredentialVerificationSubmission,
 } from "@midnight-ntwrk/midnight-did-credentials-birth-secret/managed/secret-birth-credential/contract/index.js";
-import { describe, expect,it } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import {
   SecretHolderAgent,
@@ -13,7 +14,10 @@ import {
   type SecretClaimWitness,
   SecretIssuerAgent,
 } from "../../agents/secret-issuer-agent.js";
-import { type SecretSimulatorWitness,VerifierAgent } from "../../agents/verifier-agent.js";
+import {
+  type SecretSimulatorWitness,
+  VerifierAgent,
+} from "../../agents/verifier-agent.js";
 import { MessageBus } from "../../transport/message-bus.js";
 import {
   createDIDProfile,
@@ -44,9 +48,6 @@ describe("secret-holder presentation", () => {
     expiresAt: 20_000n,
   };
 
-  /**
-   * Run the full issuance flow and return a holder with one stored credential.
-   */
   const issueCredential = (bus: MessageBus): SecretHolderAgent => {
     const issuer = new SecretIssuerAgent(issuerProfile, bus);
     const holder = new SecretHolderAgent(holderConfig, bus);
@@ -61,10 +62,7 @@ describe("secret-holder presentation", () => {
       offer.envelope,
       request.envelope,
     );
-    issuer.receiveRequestAndIssueCredential(
-      request,
-      claimWitness,
-    );
+    issuer.receiveRequestAndIssueCredential(request, claimWitness);
     const result = bus.receive("holder")!;
     genericPureCircuits.assertValidProtocolMessageEnvelope(result.envelope);
     genericPureCircuits.assertProtocolResponseEnvelope(
@@ -76,41 +74,39 @@ describe("secret-holder presentation", () => {
     return holder;
   };
 
-  it("presents a secret-holder credential with age predicate", () => {
-    const bus = new MessageBus();
+  const preparePresentation = (
+    bus: MessageBus,
+    requestedAgeThresholdYears: number,
+  ): {
+    holder: SecretHolderAgent;
+    verifier: VerifierAgent;
+    requestMessage: NonNullable<ReturnType<MessageBus["receive"]>>;
+    submission: NonNullable<ReturnType<MessageBus["receive"]>>;
+    simulatorWitness: SecretSimulatorWitness;
+  } => {
     const holder = issueCredential(bus);
     const verifier = new VerifierAgent(verifierProfile, bus);
 
-    expect(holder.credentialCount).toBe(1);
-
-    // Step 1: Verifier sends a secret presentation request to the holder
     verifier.createAndSendSecretPresentationRequest("holder", {
       issuerVerificationMethodRef: issuerProfile.signer.verificationMethodRef,
       requireSubjectIdCommitmentDisclosure: false,
       requireBirthCountryDisclosure: true,
       requireVerifierScopedPseudonym: false,
       requireAgeOverThreshold: true,
-      requestedAgeThresholdYears: 18,
+      requestedAgeThresholdYears,
     });
-    expect(bus.pending("holder")).toBe(1);
 
-    // Step 2: Holder receives request and builds presentation
-    const requestMessage = bus.receive("holder");
-    expect(requestMessage).toBeDefined();
-    expect(requestMessage!.type).toBe("presentation:request");
+    const requestMessage = bus.receive("holder")!;
+    expect(requestMessage.type).toBe("presentation:request");
     genericPureCircuits.assertValidProtocolMessageEnvelope(
-      requestMessage!.envelope,
+      requestMessage.envelope,
     );
     const requestBody =
-      requestMessage!.body as SecretBirthCredentialVerificationRequest;
+      requestMessage.body as SecretBirthCredentialVerificationRequest;
     pureCircuits.assertValidSecretBirthCredentialVerificationRequestMessage(
       requestBody,
     );
 
-    // Capture the request for the simulator witness
-    const presentationRequest = requestBody;
-
-    // Alice is 25 years old: birthDateDays=3650, currentDay = 3650 + 365*25 = 12775
     const presentationWitness: SecretPresentationWitness = {
       credentialIndex: 0,
       currentDay: 3650n + 365n * 25n,
@@ -120,24 +116,19 @@ describe("secret-holder presentation", () => {
       birthCountryCodeOpening: claimWitness.birthCountryCodeOpening,
     };
 
-    holder.receiveRequestAndSendPresentation(requestMessage!, presentationWitness);
-    expect(bus.pending("verifier")).toBe(1);
-
-    // Step 3: Verifier receives submission and evaluates
-    const submission = bus.receive("verifier");
-    expect(submission).toBeDefined();
-    expect(submission!.type).toBe("presentation:submission");
-    genericPureCircuits.assertValidProtocolMessageEnvelope(submission!.envelope);
+    holder.receiveRequestAndSendPresentation(requestMessage, presentationWitness);
+    const submission = bus.receive("verifier")!;
+    expect(submission.type).toBe("presentation:submission");
+    genericPureCircuits.assertValidProtocolMessageEnvelope(submission.envelope);
     genericPureCircuits.assertProtocolResponseEnvelope(
-      requestMessage!.envelope,
-      submission!.envelope,
+      requestMessage.envelope,
+      submission.envelope,
     );
 
-    // Simulator witness: private data passed directly to the verifier (not via bus)
     const stored = holder.getCredential(0);
     const { holderSecret, holderSecretOpening } = holder.secretWitness;
     const simulatorWitness: SecretSimulatorWitness = {
-      request: presentationRequest,
+      request: requestBody,
       currentDay: 3650n + 365n * 25n,
       birthDateDays: claimWitness.birthDateDays,
       birthDateOpening: claimWitness.birthDateOpening,
@@ -146,7 +137,199 @@ describe("secret-holder presentation", () => {
       holderBindingBlindingFactor: stored.holderBindingBlindingFactor,
     };
 
-    const result = verifier.receiveSecretSubmissionAndEvaluate(submission!, simulatorWitness);
+    return {
+      holder,
+      verifier,
+      requestMessage,
+      submission,
+      simulatorWitness,
+    };
+  };
+
+  it("presents a secret-holder credential with age predicate", () => {
+    const bus = new MessageBus();
+    const { holder, verifier, submission, simulatorWitness } =
+      preparePresentation(bus, 18);
+
+    expect(holder.credentialCount).toBe(1);
+
+    const result = verifier.receiveSecretSubmissionAndEvaluate(
+      submission,
+      simulatorWitness,
+    );
     expect(result.approved).toBe(true);
+  });
+
+  it("rejects a presentation when the holder does not meet the age threshold", () => {
+    const bus = new MessageBus();
+    const { verifier, submission, simulatorWitness } =
+      preparePresentation(bus, 30);
+
+    expect(() =>
+      verifier.receiveSecretSubmissionAndEvaluate(submission, simulatorWitness),
+    ).toThrow();
+  });
+
+  it("returns an approved presentation outcome over the transport-shaped API", () => {
+    const bus = new MessageBus();
+    const { holder, verifier, submission, simulatorWitness } =
+      preparePresentation(bus, 18);
+
+    verifier.receiveSecretSubmissionAndRespond(submission, simulatorWitness);
+    const outcome = holder.receivePresentationOutcome(bus.receive("holder")!);
+
+    expect(outcome.kind).toBe("approved");
+    if (outcome.kind === "approved") {
+      expect(outcome.result.approved).toBe(true);
+    }
+  });
+
+  it("returns an explicit rejection for a malformed secret presentation submission", () => {
+    const bus = new MessageBus();
+    const { holder, verifier, submission, simulatorWitness } =
+      preparePresentation(bus, 18);
+
+    const malformedSubmission = globalThis.structuredClone(submission);
+    const malformedBody =
+      malformedSubmission.body as SecretBirthCredentialVerificationSubmission;
+    malformedBody.body.presentation.credentialClaimRoot = new Uint8Array(31);
+
+    verifier.receiveSecretSubmissionAndRespond(
+      malformedSubmission,
+      simulatorWitness,
+    );
+    const outcome = holder.receivePresentationOutcome(bus.receive("holder")!);
+
+    expect(outcome.kind).toBe("rejected");
+    if (outcome.kind === "rejected") {
+      expect(outcome.rejection.body.category).toBe("malformed_submission");
+      expect(outcome.rejection.body.retryable).toBe(false);
+    }
+  });
+
+  it("returns an explicit rejection for a request/submission mismatch", () => {
+    const bus = new MessageBus();
+    const { holder, verifier, submission, simulatorWitness } =
+      preparePresentation(bus, 18);
+
+    const mismatchedSubmission = globalThis.structuredClone(submission);
+    const mismatchedBody =
+      mismatchedSubmission.body as SecretBirthCredentialVerificationSubmission;
+    mismatchedBody.challengeHash = sha256("tampered-presentation-challenge");
+
+    verifier.receiveSecretSubmissionAndRespond(
+      mismatchedSubmission,
+      simulatorWitness,
+    );
+    const outcome = holder.receivePresentationOutcome(bus.receive("holder")!);
+
+    expect(outcome.kind).toBe("rejected");
+    if (outcome.kind === "rejected") {
+      expect(outcome.rejection.body.category).toBe(
+        "request_submission_mismatch",
+      );
+    }
+  });
+
+  it("returns an explicit rejection when the presentation does not satisfy the request", () => {
+    const bus = new MessageBus();
+    const { holder, verifier, submission, simulatorWitness } =
+      preparePresentation(bus, 30);
+
+    verifier.receiveSecretSubmissionAndRespond(submission, simulatorWitness);
+    const outcome = holder.receivePresentationOutcome(bus.receive("holder")!);
+
+    expect(outcome.kind).toBe("rejected");
+    if (outcome.kind === "rejected") {
+      expect(outcome.rejection.body.category).toBe("unsatisfied_request");
+      expect(outcome.rejection.body.retryable).toBe(false);
+    }
+  });
+
+  it("re-delivers the same approved presentation outcome for a duplicate submission", () => {
+    const bus = new MessageBus();
+    const { holder, verifier, submission, simulatorWitness } =
+      preparePresentation(bus, 18);
+
+    verifier.receiveSecretSubmissionAndRespond(submission, simulatorWitness);
+    const firstOutcome = holder.receivePresentationOutcome(bus.receive("holder")!);
+
+    verifier.receiveSecretSubmissionAndRespond(submission, simulatorWitness);
+    const secondOutcome = holder.receivePresentationOutcome(bus.receive("holder")!);
+
+    expect(firstOutcome.kind).toBe("approved");
+    expect(secondOutcome.kind).toBe("approved");
+    if (firstOutcome.kind === "approved" && secondOutcome.kind === "approved") {
+      expect(secondOutcome.result).toEqual(firstOutcome.result);
+    }
+  });
+
+  it("re-delivers the same rejected presentation outcome for a duplicate malformed submission", () => {
+    const bus = new MessageBus();
+    const { holder, verifier, submission, simulatorWitness } =
+      preparePresentation(bus, 18);
+
+    const malformedSubmission = globalThis.structuredClone(submission);
+    const malformedBody =
+      malformedSubmission.body as SecretBirthCredentialVerificationSubmission;
+    malformedBody.body.presentation.credentialClaimRoot = new Uint8Array(31);
+
+    verifier.receiveSecretSubmissionAndRespond(
+      malformedSubmission,
+      simulatorWitness,
+    );
+    const firstOutcome = holder.receivePresentationOutcome(bus.receive("holder")!);
+
+    verifier.receiveSecretSubmissionAndRespond(
+      malformedSubmission,
+      simulatorWitness,
+    );
+    const secondOutcome = holder.receivePresentationOutcome(bus.receive("holder")!);
+
+    expect(firstOutcome.kind).toBe("rejected");
+    expect(secondOutcome.kind).toBe("rejected");
+    if (firstOutcome.kind === "rejected" && secondOutcome.kind === "rejected") {
+      expect(secondOutcome.rejection).toEqual(firstOutcome.rejection);
+    }
+  });
+
+  it("rejects an uncorrelated approved presentation outcome at the holder boundary", () => {
+    const bus = new MessageBus();
+    const { holder, verifier, submission, simulatorWitness } =
+      preparePresentation(bus, 18);
+
+    verifier.receiveSecretSubmissionAndRespond(submission, simulatorWitness);
+    const approvedMessage = bus.receive("holder")!;
+    const uncorrelatedApproved = {
+      ...globalThis.structuredClone(approvedMessage),
+      envelope: {
+        ...approvedMessage.envelope,
+        respondsToMessageId: sha256("unknown-presentation-submission"),
+      },
+    };
+
+    expect(() =>
+      holder.receivePresentationOutcome(uncorrelatedApproved),
+    ).toThrow(/No pending presentation submission found/);
+  });
+
+  it("rejects an uncorrelated presentation rejection at the holder boundary", () => {
+    const bus = new MessageBus();
+    const { holder, verifier, submission, simulatorWitness } =
+      preparePresentation(bus, 30);
+
+    verifier.receiveSecretSubmissionAndRespond(submission, simulatorWitness);
+    const rejectionMessage = bus.receive("holder")!;
+    const uncorrelatedRejection = {
+      ...globalThis.structuredClone(rejectionMessage),
+      envelope: {
+        ...rejectionMessage.envelope,
+        respondsToMessageId: sha256("unknown-presentation-submission"),
+      },
+    };
+
+    expect(() =>
+      holder.receivePresentationOutcome(uncorrelatedRejection),
+    ).toThrow(/No pending presentation submission found/);
   });
 });

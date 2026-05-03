@@ -75,6 +75,11 @@ validate:
   expired requests
 - idempotent re-delivery of duplicate blinded-secret issuance requests and
   duplicate blinded-secret issuance outcomes
+- explicit blinded-secret presentation rejection messages for malformed
+  submissions, request/submission mismatches, and unsatisfied verifier
+  requests
+- idempotent re-delivery of duplicate blinded-secret presentation submissions
+  and duplicate blinded-secret presentation outcomes
 - request/submission and submission/result alignment enforced by Compact circuits
 - blinded holder-binding and pseudonym-specific validation through
   `credentials-birth-secret`
@@ -83,8 +88,9 @@ validate:
 
 The blinded-secret issuance happy path is a supported reference flow in this
 package. The reference protocol layer now also exposes explicit rejection
-messages for that issuance flow. The package remains intentionally narrow and
-transport-agnostic; it is not yet a production network library.
+messages for the blinded-secret issuance and presentation flows. The package
+remains intentionally narrow and transport-agnostic; it is not yet a
+production network library.
 
 For blinded-secret issuance, the transport-shaped API is now the preferred
 reference surface:
@@ -92,12 +98,27 @@ reference surface:
 - issuer: `receiveRequestAndRespond(...)`
 - holder: `receiveIssuanceOutcome(...)`
 
+For blinded-secret presentation, the transport-shaped API is now the preferred
+reference surface:
+
+- verifier: `receiveSecretSubmissionAndRespond(...)`
+- holder: `receivePresentationOutcome(...)`
+
+Reference outcome rule:
+
+- duplicate blinded-secret presentation submissions re-deliver the same prior
+  approved or rejected outcome
+- uncorrelated approved or rejected presentation outcomes are still rejected at
+  the holder boundary
+
 Reference timing rule:
 
 - if a caller does not supply `currentDay`, the reference agents default to
   `0n`
 - callers that want expiry enforcement for offer/request lifetime should pass
   an explicit `currentDay`
+- blinded-secret presentation does not yet carry explicit message-level expiry
+  fields, so the presentation transport path does not claim timeout semantics
 
 The lower-level strict helpers still exist for narrow tests and internal
 composition:

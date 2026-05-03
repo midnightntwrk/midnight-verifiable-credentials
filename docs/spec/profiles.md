@@ -80,6 +80,8 @@ Current test coverage:
 Current limitations:
 - reference blinded-secret issuance exists, but production transport hardening
   is not yet complete
+- reference blinded-secret presentation now carries explicit rejection
+  outcomes, but production transport hardening is not yet complete there either
 - revocation/non-revocation is not implemented
 
 ### 3. Blinded secret holder binding

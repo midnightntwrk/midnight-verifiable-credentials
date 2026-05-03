@@ -15,6 +15,10 @@
 Move blinded-secret issuance from a supported reference happy path to a
 production-shaped transport and rejection contract.
 
+The next repository slice extends the same transport-shaping work to
+blinded-secret presentation, but presentation still remains behind issuance in
+transport maturity.
+
 This plan does not try to solve revocation or interoperability all at once.
 Its purpose is narrower:
 
@@ -35,6 +39,12 @@ What the repository now proves:
   transport-shaped API
 - duplicate blinded-secret issuance deliveries are idempotent in the reference
   transport-shaped API
+- the holder and verifier agents now also exchange explicit blinded-secret
+  presentation rejection results in the reference transport-shaped API for
+  malformed submissions, request/submission mismatches, and unsatisfied
+  verifier requests
+- duplicate blinded-secret presentation deliveries are now idempotent in the
+  same reference transport-shaped API
 - the reference transport-shaped API uses caller-supplied `currentDay` for
   expiry enforcement and otherwise defaults to a no-time-advance `0n` model
 - real DID-backed integration tests exercise the happy path
@@ -42,6 +52,7 @@ What the repository now proves:
 What the repository does not yet prove:
 
 - a final production blind-signature transport protocol
+- explicit message-level expiry fields for blinded-secret presentation
 - durable pending-state behavior across retries, restarts, or delayed delivery
 - revocation / non-revocation
 - cross-implementation interoperability guarantees

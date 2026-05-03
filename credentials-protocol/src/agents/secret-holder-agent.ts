@@ -13,6 +13,7 @@ import {
   type SecretBirthCredentialIssuanceResult,
   type SecretBirthCredentialPresentation,
   type SecretBirthCredentialVerificationRequest,
+  type SecretBirthCredentialVerificationResult,
   type SecretBirthCredentialVerificationSubmission,
 } from "@midnight-ntwrk/midnight-did-credentials-birth-secret/managed/secret-birth-credential/contract/index.js";
 
@@ -23,6 +24,7 @@ import type { MessageBus } from "../transport/message-bus.js";
 import type {
   ProtocolMessage,
   SecretBirthCredentialIssuanceRejection,
+  SecretBirthCredentialVerificationRejection,
 } from "../transport/types.js";
 
 const SECRET_BIRTH_SCHEMA = {
@@ -61,6 +63,16 @@ export type SecretIssuanceOutcome =
   | {
       readonly kind: "rejected";
       readonly rejection: SecretBirthCredentialIssuanceRejection;
+    };
+
+export type SecretPresentationOutcome =
+  | {
+      readonly kind: "approved";
+      readonly result: SecretBirthCredentialVerificationResult;
+    }
+  | {
+      readonly kind: "rejected";
+      readonly rejection: SecretBirthCredentialVerificationRejection;
     };
 
 /**
@@ -110,6 +122,14 @@ export class SecretHolderAgent {
   private readonly completedIssuanceOutcomes = new Map<
     string,
     SecretIssuanceOutcome
+  >();
+  private readonly pendingPresentationSubmissions = new Map<
+    string,
+    SecretBirthCredentialVerificationSubmission
+  >();
+  private readonly completedPresentationOutcomes = new Map<
+    string,
+    SecretPresentationOutcome
   >();
 
   constructor(
@@ -390,6 +410,88 @@ export class SecretHolderAgent {
       envelope: submission.envelope,
       body: submission,
     });
+    const submissionMessageId = Buffer.from(submission.envelope.messageId).toString(
+      "hex",
+    );
+    this.pendingPresentationSubmissions.set(submissionMessageId, submission);
+  }
+
+  receivePresentationRejection(
+    rejectionMessage: ProtocolMessage,
+  ): SecretBirthCredentialVerificationRejection {
+    assertMessageType(rejectionMessage, "presentation:rejection");
+    assertBodyHasFields(rejectionMessage, ["envelope", "schema", "body"]);
+    const rejection =
+      rejectionMessage.body as SecretBirthCredentialVerificationRejection;
+    const respondsToId = Buffer.from(
+      rejectionMessage.envelope.respondsToMessageId,
+    ).toString("hex");
+    const pendingSubmission =
+      this.pendingPresentationSubmissions.get(respondsToId);
+    if (!pendingSubmission) {
+      if (this.completedPresentationOutcomes.has(respondsToId)) {
+        throw new Error(
+          "This blinded-secret presentation rejection was already finalized and cannot be accepted again through the strict helper.",
+        );
+      }
+      throw new Error(
+        "No pending presentation submission found for this rejection outcome. " +
+        "Ensure receiveRequestAndSendPresentation was called first.",
+      );
+    }
+    this.pendingPresentationSubmissions.delete(respondsToId);
+    return rejection;
+  }
+
+  receivePresentationOutcome(message: ProtocolMessage): SecretPresentationOutcome {
+    const respondsToId = Buffer.from(
+      message.envelope.respondsToMessageId,
+    ).toString("hex");
+    const completedOutcome =
+      this.completedPresentationOutcomes.get(respondsToId);
+    if (completedOutcome) {
+      if (
+        (message.type === "presentation:result" &&
+          completedOutcome.kind !== "approved") ||
+        (message.type === "presentation:rejection" &&
+          completedOutcome.kind !== "rejected")
+      ) {
+        throw new Error(
+          "This blinded-secret presentation outcome type does not match the previously finalized outcome for the same submission.",
+        );
+      }
+      return completedOutcome;
+    }
+
+    if (message.type === "presentation:result") {
+      assertBodyHasFields(message, ["envelope", "approved", "body"]);
+      const pendingSubmission =
+        this.pendingPresentationSubmissions.get(respondsToId);
+      if (!pendingSubmission) {
+        throw new Error(
+          "No pending presentation submission found for this approved outcome. " +
+          "Ensure receiveRequestAndSendPresentation was called first.",
+        );
+      }
+      this.pendingPresentationSubmissions.delete(respondsToId);
+      const outcome = {
+        kind: "approved",
+        result: message.body as SecretBirthCredentialVerificationResult,
+      } as const;
+      this.completedPresentationOutcomes.set(respondsToId, outcome);
+      return outcome;
+    }
+    if (message.type === "presentation:rejection") {
+      const outcome = {
+        kind: "rejected",
+        rejection: this.receivePresentationRejection(message),
+      } as const;
+      this.completedPresentationOutcomes.set(respondsToId, outcome);
+      return outcome;
+    }
+    throw new Error(
+      `Expected message type "presentation:result" or "presentation:rejection", got "${message.type}"`,
+    );
   }
 
   /**

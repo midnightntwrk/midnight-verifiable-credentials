@@ -1,3 +1,5 @@
+import { Buffer } from "node:buffer";
+
 import {
   type Proof,
   type VerificationMethodRef,
@@ -23,7 +25,12 @@ import { padText,sha256 } from "../shared/crypto.js";
 import { createEnvelope } from "../shared/envelope.js";
 import { assertBodyHasFields,assertMessageType } from "../shared/validation.js";
 import type { MessageBus } from "../transport/message-bus.js";
-import type { PartyId,ProtocolMessage } from "../transport/types.js";
+import type {
+  PartyId,
+  ProtocolMessage,
+  SecretBirthCredentialVerificationRejection,
+  SecretBirthCredentialVerificationRejectionCategory,
+} from "../transport/types.js";
 import type {
   SameHolderPresentation,
   SameHolderTriplePresentation,
@@ -58,6 +65,22 @@ const SECRET_HOLDER_FEATURES = {
   supportsVerifierScopedPseudonym: true,
   supportsSameHolderProof: true,
 };
+
+class PresentationProtocolError extends Error {
+  readonly category: SecretBirthCredentialVerificationRejectionCategory;
+  readonly retryable: boolean;
+
+  constructor(
+    category: SecretBirthCredentialVerificationRejectionCategory,
+    message: string,
+    retryable = false,
+  ) {
+    super(message);
+    this.name = "PresentationProtocolError";
+    this.category = category;
+    this.retryable = retryable;
+  }
+}
 
 export type PresentationSubmissionBody = {
   readonly credential: BirthCredential;
@@ -129,6 +152,10 @@ export class VerifierAgent {
   private readonly profile: DIDProfile;
   private readonly bus: MessageBus;
   private challengeCounter = 0;
+  private readonly completedSecretPresentationOutcomes = new Map<
+    string,
+    ProtocolMessage
+  >();
 
   constructor(profile: DIDProfile, bus: MessageBus) {
     this.profile = profile;
@@ -322,7 +349,8 @@ export class VerifierAgent {
     secretPureCircuits.assertValidSecretBirthCredentialVerificationRequestMessage(
       simulatorWitness.request,
     );
-    secretPureCircuits.assertSecretBirthCredentialVerificationSubmissionMatchesRequest(
+    this.assertValidSecretSubmission(submissionMessage);
+    this.assertSecretSubmissionMatchesRequest(
       simulatorWitness.request,
       submissionMessage,
       simulatorWitness.holderSecret,
@@ -331,35 +359,10 @@ export class VerifierAgent {
     );
 
     // Validate the credential and presentation
-    secretPureCircuits.assertValidSecretBirthCredentialPresentation(
-      body.credential,
-      body.credentialProof,
-      body.presentation,
-    );
+    this.assertValidSecretPresentation(body);
 
     // Verify the presentation satisfies the request (requires witness for simulator)
-    secretPureCircuits.assertSecretBirthPresentationSatisfiesRequest(
-      body.credential,
-      body.credentialProof,
-      secretPureCircuits.secretBirthCredentialPresentationRequestFromProtocol(
-        simulatorWitness.request,
-      ),
-      body.presentation,
-      simulatorWitness.holderSecret,
-      simulatorWitness.holderSecretOpening,
-      simulatorWitness.holderBindingBlindingFactor,
-    );
-
-    // If an age predicate was requested, validate it
-    if (simulatorWitness.request.body.requireAgeOverThreshold) {
-      secretPureCircuits.assertValidSecretBirthCredentialAgePredicate(
-        body.credential,
-        body.presentation,
-        simulatorWitness.currentDay,
-        simulatorWitness.birthDateDays,
-        simulatorWitness.birthDateOpening,
-      );
-    }
+    this.assertSecretPresentationSatisfiesRequest(body, simulatorWitness);
 
     // Extract pseudonym if it was disclosed
     const pseudonym = body.presentation.disclosed.revealVerifierScopedPseudonym
@@ -392,6 +395,181 @@ export class VerifierAgent {
     );
 
     return { approved: true, pseudonym, result };
+  }
+
+  receiveSecretSubmissionAndRespond(
+    submission: ProtocolMessage,
+    simulatorWitness: SecretSimulatorWitness,
+  ): void {
+    const submissionMessageId = Buffer.from(
+      submission.envelope.messageId,
+    ).toString("hex");
+    const completedOutcome =
+      this.completedSecretPresentationOutcomes.get(submissionMessageId);
+    if (completedOutcome) {
+      this.bus.send(completedOutcome);
+      return;
+    }
+    try {
+      const evaluation = this.receiveSecretSubmissionAndEvaluate(
+        submission,
+        simulatorWitness,
+      );
+      const resultMessage: ProtocolMessage = {
+        type: "presentation:result",
+        from: this.profile.label,
+        to: submission.from,
+        envelope: evaluation.result.envelope,
+        body: evaluation.result,
+      };
+      this.bus.send(resultMessage);
+      this.completedSecretPresentationOutcomes.set(
+        submissionMessageId,
+        resultMessage,
+      );
+    } catch (error) {
+      const rejection = this.buildSecretPresentationRejection(
+        submission,
+        error instanceof PresentationProtocolError
+          ? error.category
+          : "malformed_submission",
+        error instanceof Error ? error.message : String(error),
+        error instanceof PresentationProtocolError
+          ? error.retryable
+          : false,
+      );
+      const rejectionMessage: ProtocolMessage = {
+        type: "presentation:rejection",
+        from: this.profile.label,
+        to: submission.from,
+        envelope: rejection.envelope,
+        body: rejection,
+      };
+      this.bus.send(rejectionMessage);
+      this.completedSecretPresentationOutcomes.set(
+        submissionMessageId,
+        rejectionMessage,
+      );
+    }
+  }
+
+  private buildSecretPresentationRejection(
+    submission: ProtocolMessage,
+    category: SecretBirthCredentialVerificationRejectionCategory,
+    detail: string,
+    retryable = false,
+  ): SecretBirthCredentialVerificationRejection {
+    return {
+      envelope: createEnvelope(
+        "secret-presentation-rejection",
+        "secret-birth-presentation",
+        false,
+        submission.envelope.messageId,
+        submission.envelope.threadId,
+      ),
+      schema: {
+        packageId: padText("midnight-did:vc:birth-secret"),
+        schemaId: padText("birth-credential:v1"),
+        majorVersion: 1n,
+        minorVersion: 0n,
+      },
+      issuerVerificationMethodRef: this.profile.signer.verificationMethodRef,
+      holderBindingProfile: HolderBindingProfile.blindedSecretHolder,
+      body: {
+        category,
+        detail,
+        retryable,
+      },
+    };
+  }
+
+  private assertValidSecretSubmission(
+    submission: SecretBirthCredentialVerificationSubmission,
+  ): void {
+    try {
+      secretPureCircuits.assertValidSecretBirthCredentialVerificationSubmissionMessage(
+        submission,
+      );
+    } catch (error) {
+      throw new PresentationProtocolError(
+        "malformed_submission",
+        error instanceof Error ? error.message : String(error),
+      );
+    }
+  }
+
+  private assertSecretSubmissionMatchesRequest(
+    request: SecretBirthCredentialVerificationRequest,
+    submission: SecretBirthCredentialVerificationSubmission,
+    holderSecret: Uint8Array,
+    holderSecretOpening: Uint8Array,
+    holderBindingBlindingFactor: Uint8Array,
+  ): void {
+    try {
+      secretPureCircuits.assertSecretBirthCredentialVerificationSubmissionMatchesRequest(
+        request,
+        submission,
+        holderSecret,
+        holderSecretOpening,
+        holderBindingBlindingFactor,
+      );
+    } catch (error) {
+      throw new PresentationProtocolError(
+        "request_submission_mismatch",
+        error instanceof Error ? error.message : String(error),
+      );
+    }
+  }
+
+  private assertValidSecretPresentation(
+    body: SecretBirthCredentialVerificationSubmission["body"],
+  ): void {
+    try {
+      secretPureCircuits.assertValidSecretBirthCredentialPresentation(
+        body.credential,
+        body.credentialProof,
+        body.presentation,
+      );
+    } catch (error) {
+      throw new PresentationProtocolError(
+        "malformed_submission",
+        error instanceof Error ? error.message : String(error),
+      );
+    }
+  }
+
+  private assertSecretPresentationSatisfiesRequest(
+    body: SecretBirthCredentialVerificationSubmission["body"],
+    simulatorWitness: SecretSimulatorWitness,
+  ): void {
+    try {
+      secretPureCircuits.assertSecretBirthPresentationSatisfiesRequest(
+        body.credential,
+        body.credentialProof,
+        secretPureCircuits.secretBirthCredentialPresentationRequestFromProtocol(
+          simulatorWitness.request,
+        ),
+        body.presentation,
+        simulatorWitness.holderSecret,
+        simulatorWitness.holderSecretOpening,
+        simulatorWitness.holderBindingBlindingFactor,
+      );
+
+      if (simulatorWitness.request.body.requireAgeOverThreshold) {
+        secretPureCircuits.assertValidSecretBirthCredentialAgePredicate(
+          body.credential,
+          body.presentation,
+          simulatorWitness.currentDay,
+          simulatorWitness.birthDateDays,
+          simulatorWitness.birthDateOpening,
+        );
+      }
+    } catch (error) {
+      throw new PresentationProtocolError(
+        "unsatisfied_request",
+        error instanceof Error ? error.message : String(error),
+      );
+    }
   }
 
   // --- Same-holder composition methods ---
