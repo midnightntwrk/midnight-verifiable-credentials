@@ -1,9 +1,9 @@
-import { describe, expect,it } from "vitest";
-
 import {
   pureCircuits as genericPureCircuits,
   type SecretBirthCredentialVerificationRequest,
-} from "../../../../credentials-birth-secret/src/managed/secret-birth-credential/contract/index.js";
+} from "@midnight-ntwrk/midnight-did-credentials-birth-secret/managed/secret-birth-credential/contract/index.js";
+import { describe, expect,it } from "vitest";
+
 import {
   SecretHolderAgent,
   type SecretPresentationWitness,

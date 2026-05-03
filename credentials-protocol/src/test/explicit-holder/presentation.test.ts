@@ -1,5 +1,3 @@
-import { describe, expect,it } from "vitest";
-
 import {
   type BirthCredentialIssuanceOffer,
   type BirthCredentialIssuanceRequest,
@@ -7,7 +5,9 @@ import {
   type BirthCredentialVerificationRequest,
   type BirthCredentialVerificationSubmission,
   pureCircuits,
-} from "../../../../credentials-birth/src/managed/birth-credential/contract/index.js";
+} from "@midnight-ntwrk/midnight-did-credentials-birth/managed/birth-credential/contract/index.js";
+import { describe, expect,it } from "vitest";
+
 import {
   HolderAgent,
   type PresentationWitness,

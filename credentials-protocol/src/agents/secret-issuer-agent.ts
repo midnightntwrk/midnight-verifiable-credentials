@@ -1,17 +1,17 @@
 import { ecMulGenerator } from "@midnight-ntwrk/compact-runtime";
-
 import {
   HolderBindingProfile,
   type Proof,
   pureCircuits as genericPureCircuits,
-} from "../../../credentials/src/managed/credentials/contract/index.js";
+} from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
 import {
   pureCircuits,
   type SecretBirthCredential,
   type SecretBirthCredentialIssuanceOffer,
   type SecretBirthCredentialIssuanceRequest,
   type SecretBirthCredentialIssuanceResult,
-} from "../../../credentials-birth-secret/src/managed/secret-birth-credential/contract/index.js";
+} from "@midnight-ntwrk/midnight-did-credentials-birth-secret/managed/secret-birth-credential/contract/index.js";
+
 import { mod, padText,sha256 } from "../shared/crypto.js";
 import { createEnvelope } from "../shared/envelope.js";
 import { assertBodyHasFields,assertMessageType } from "../shared/validation.js";

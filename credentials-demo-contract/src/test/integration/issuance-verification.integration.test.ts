@@ -1,3 +1,4 @@
+import { pureCircuits } from "@midnight-ntwrk/midnight-did-credentials-birth/managed/birth-credential/contract/index.js";
 import {
   containerRuntimeAvailable,
   type ProtocolDidProfile,
@@ -8,7 +9,6 @@ import {
 import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { afterAll,beforeAll, describe, expect, it } from "vitest";
 
-import { pureCircuits } from "../../../../credentials-birth/src/managed/birth-credential/contract/index.js";
 import {
   createBirthCredentialProtocolFixtureForParticipants,
   createSigner,

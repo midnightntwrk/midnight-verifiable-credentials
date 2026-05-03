@@ -2,18 +2,17 @@ import { createHash } from "node:crypto";
 import { TextEncoder } from "node:util";
 
 import { ecMulGenerator, type JubjubPoint } from "@midnight-ntwrk/compact-runtime";
-
 import {
   type Proof,
   pureCircuits as genericPureCircuits,
   type VerificationMethodRef,
-} from "../../../credentials/src/managed/credentials/contract/index.js";
+} from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
 import {
   type BirthCredential,
   type BirthCredentialPresentation,
   type BirthCredentialPresentationRequest,
   pureCircuits,
-} from "../../../credentials-birth/src/managed/birth-credential/contract/index.js";
+} from "@midnight-ntwrk/midnight-did-credentials-birth/managed/birth-credential/contract/index.js";
 
 const JUBJUB_FIELD_MODULUS =
   6554484396890773809930967563523245729705921265872317281365359162392183254199n;
