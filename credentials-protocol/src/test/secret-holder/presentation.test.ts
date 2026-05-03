@@ -245,4 +245,91 @@ describe("secret-holder presentation", () => {
       expect(outcome.rejection.body.retryable).toBe(false);
     }
   });
+
+  it("re-delivers the same approved presentation outcome for a duplicate submission", () => {
+    const bus = new MessageBus();
+    const { holder, verifier, submission, simulatorWitness } =
+      preparePresentation(bus, 18);
+
+    verifier.receiveSecretSubmissionAndRespond(submission, simulatorWitness);
+    const firstOutcome = holder.receivePresentationOutcome(bus.receive("holder")!);
+
+    verifier.receiveSecretSubmissionAndRespond(submission, simulatorWitness);
+    const secondOutcome = holder.receivePresentationOutcome(bus.receive("holder")!);
+
+    expect(firstOutcome.kind).toBe("approved");
+    expect(secondOutcome.kind).toBe("approved");
+    if (firstOutcome.kind === "approved" && secondOutcome.kind === "approved") {
+      expect(secondOutcome.result).toEqual(firstOutcome.result);
+    }
+  });
+
+  it("re-delivers the same rejected presentation outcome for a duplicate malformed submission", () => {
+    const bus = new MessageBus();
+    const { holder, verifier, submission, simulatorWitness } =
+      preparePresentation(bus, 18);
+
+    const malformedSubmission = globalThis.structuredClone(submission);
+    const malformedBody =
+      malformedSubmission.body as SecretBirthCredentialVerificationSubmission;
+    malformedBody.body.presentation.credentialClaimRoot = new Uint8Array(31);
+
+    verifier.receiveSecretSubmissionAndRespond(
+      malformedSubmission,
+      simulatorWitness,
+    );
+    const firstOutcome = holder.receivePresentationOutcome(bus.receive("holder")!);
+
+    verifier.receiveSecretSubmissionAndRespond(
+      malformedSubmission,
+      simulatorWitness,
+    );
+    const secondOutcome = holder.receivePresentationOutcome(bus.receive("holder")!);
+
+    expect(firstOutcome.kind).toBe("rejected");
+    expect(secondOutcome.kind).toBe("rejected");
+    if (firstOutcome.kind === "rejected" && secondOutcome.kind === "rejected") {
+      expect(secondOutcome.rejection).toEqual(firstOutcome.rejection);
+    }
+  });
+
+  it("rejects an uncorrelated approved presentation outcome at the holder boundary", () => {
+    const bus = new MessageBus();
+    const { holder, verifier, submission, simulatorWitness } =
+      preparePresentation(bus, 18);
+
+    verifier.receiveSecretSubmissionAndRespond(submission, simulatorWitness);
+    const approvedMessage = bus.receive("holder")!;
+    const uncorrelatedApproved = {
+      ...globalThis.structuredClone(approvedMessage),
+      envelope: {
+        ...approvedMessage.envelope,
+        respondsToMessageId: sha256("unknown-presentation-submission"),
+      },
+    };
+
+    expect(() =>
+      holder.receivePresentationOutcome(uncorrelatedApproved),
+    ).toThrow(/No pending presentation submission found/);
+  });
+
+  it("rejects an uncorrelated presentation rejection at the holder boundary", () => {
+    const bus = new MessageBus();
+    const { holder, verifier, submission, simulatorWitness } =
+      preparePresentation(bus, 30);
+
+    verifier.receiveSecretSubmissionAndRespond(submission, simulatorWitness);
+    const rejectionMessage = bus.receive("holder")!;
+    const uncorrelatedRejection = {
+      ...globalThis.structuredClone(rejectionMessage),
+      envelope: {
+        ...rejectionMessage.envelope,
+        respondsToMessageId: sha256("unknown-presentation-submission"),
+      },
+    };
+
+    expect(() =>
+      holder.receivePresentationOutcome(uncorrelatedRejection),
+    ).toThrow(/No pending presentation submission found/);
+  });
 });

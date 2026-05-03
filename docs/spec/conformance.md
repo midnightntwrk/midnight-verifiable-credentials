@@ -96,8 +96,10 @@ re-delivery semantics for duplicate blinded-secret issuance deliveries. Broader
 transport interoperability guarantees remain deferred. The same reference
 protocol layer may also claim explicit blinded-secret presentation rejection
 messages for malformed submissions, request/submission mismatches, and
-unsatisfied verifier requests. Presentation-side message-level expiry semantics
-remain deferred.
+unsatisfied verifier requests. It may also claim explicit idempotent
+re-delivery semantics for duplicate blinded-secret presentation submissions and
+presentation outcomes. Presentation-side message-level expiry semantics remain
+deferred.
 
 Reference implementation:
 

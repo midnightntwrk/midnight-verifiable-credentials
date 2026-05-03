@@ -43,6 +43,8 @@ What the repository now proves:
   presentation rejection results in the reference transport-shaped API for
   malformed submissions, request/submission mismatches, and unsatisfied
   verifier requests
+- duplicate blinded-secret presentation deliveries are now idempotent in the
+  same reference transport-shaped API
 - the reference transport-shaped API uses caller-supplied `currentDay` for
   expiry enforcement and otherwise defaults to a no-time-advance `0n` model
 - real DID-backed integration tests exercise the happy path

@@ -1058,6 +1058,8 @@ Today the repository has a supported reference happy path for this capability:
   unsatisfied verifier requests
 - idempotent re-delivery of the same blinded-secret issuance outcome when the
   same request or the same issuer reply is delivered twice
+- idempotent re-delivery of the same blinded-secret presentation outcome when
+  the same presentation submission is delivered twice
 
 In plain language, Rita can now answer Alice in two ways during the reference
 issuance flow:
@@ -1086,6 +1088,15 @@ Simple presentation rejection examples now covered by the tests:
 - the presentation stays well-formed, but Alice still does not satisfy the age
   threshold Vera asked for
 
+Simple presentation replay examples now covered by the tests:
+
+- the same valid presentation submission can be redelivered and yields the same
+  approved outcome
+- the same malformed presentation submission can be redelivered and yields the
+  same rejection outcome
+- an approved or rejected presentation outcome that does not point at a known
+  submission is rejected locally by the holder reference agent
+
 Simple idempotency examples now covered by the tests:
 
 - the same valid request can be redelivered and yields the same issuance result
@@ -1106,6 +1117,8 @@ So the honest summary is:
   blinded-secret issuance and presentation failures
 - yes, duplicate blinded-secret issuance deliveries now behave idempotently in
   the reference protocol layer
+- yes, duplicate blinded-secret presentation deliveries now behave
+  idempotently in the reference protocol layer
 - yes, the reference protocol now carries explicit offer and request expiry
   fields for blinded-secret issuance
 - no, the presentation-side reference flow does not yet carry explicit

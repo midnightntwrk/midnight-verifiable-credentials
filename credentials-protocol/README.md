@@ -78,6 +78,8 @@ validate:
 - explicit blinded-secret presentation rejection messages for malformed
   submissions, request/submission mismatches, and unsatisfied verifier
   requests
+- idempotent re-delivery of duplicate blinded-secret presentation submissions
+  and duplicate blinded-secret presentation outcomes
 - request/submission and submission/result alignment enforced by Compact circuits
 - blinded holder-binding and pseudonym-specific validation through
   `credentials-birth-secret`
@@ -101,6 +103,13 @@ reference surface:
 
 - verifier: `receiveSecretSubmissionAndRespond(...)`
 - holder: `receivePresentationOutcome(...)`
+
+Reference outcome rule:
+
+- duplicate blinded-secret presentation submissions re-deliver the same prior
+  approved or rejected outcome
+- uncorrelated approved or rejected presentation outcomes are still rejected at
+  the holder boundary
 
 Reference timing rule:
 

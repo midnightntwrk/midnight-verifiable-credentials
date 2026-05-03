@@ -1,3 +1,5 @@
+import { Buffer } from "node:buffer";
+
 import {
   type Proof,
   type VerificationMethodRef,
@@ -150,6 +152,10 @@ export class VerifierAgent {
   private readonly profile: DIDProfile;
   private readonly bus: MessageBus;
   private challengeCounter = 0;
+  private readonly completedSecretPresentationOutcomes = new Map<
+    string,
+    ProtocolMessage
+  >();
 
   constructor(profile: DIDProfile, bus: MessageBus) {
     this.profile = profile;
@@ -395,18 +401,32 @@ export class VerifierAgent {
     submission: ProtocolMessage,
     simulatorWitness: SecretSimulatorWitness,
   ): void {
+    const submissionMessageId = Buffer.from(
+      submission.envelope.messageId,
+    ).toString("hex");
+    const completedOutcome =
+      this.completedSecretPresentationOutcomes.get(submissionMessageId);
+    if (completedOutcome) {
+      this.bus.send(completedOutcome);
+      return;
+    }
     try {
       const evaluation = this.receiveSecretSubmissionAndEvaluate(
         submission,
         simulatorWitness,
       );
-      this.bus.send({
+      const resultMessage: ProtocolMessage = {
         type: "presentation:result",
         from: this.profile.label,
         to: submission.from,
         envelope: evaluation.result.envelope,
         body: evaluation.result,
-      });
+      };
+      this.bus.send(resultMessage);
+      this.completedSecretPresentationOutcomes.set(
+        submissionMessageId,
+        resultMessage,
+      );
     } catch (error) {
       const rejection = this.buildSecretPresentationRejection(
         submission,
@@ -418,13 +438,18 @@ export class VerifierAgent {
           ? error.retryable
           : false,
       );
-      this.bus.send({
+      const rejectionMessage: ProtocolMessage = {
         type: "presentation:rejection",
         from: this.profile.label,
         to: submission.from,
         envelope: rejection.envelope,
         body: rejection,
-      });
+      };
+      this.bus.send(rejectionMessage);
+      this.completedSecretPresentationOutcomes.set(
+        submissionMessageId,
+        rejectionMessage,
+      );
     }
   }
 

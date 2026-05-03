@@ -283,6 +283,8 @@ Today:
   messages for blinded-secret issuance and blinded-secret presentation
 - the same reference layer now treats duplicate blinded-secret issuance
   deliveries as idempotent re-delivery of the prior outcome
+- the same reference layer now treats duplicate blinded-secret presentation
+  deliveries as idempotent re-delivery of the prior outcome
 - the same reference layer now models explicit offer and request expiry fields
   for blinded-secret issuance and rejects expired sessions before success
 - the same reference layer does not yet model explicit message-level expiry
