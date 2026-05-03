@@ -13,8 +13,8 @@ import {
   createSigner,
   withVerificationMethodRef,
 } from "../../../../credentials-birth/src/test/credential-fixtures.js";
+import { pureCircuits } from "@midnight-ntwrk/midnight-did-credentials-birth/managed/birth-credential/contract/index.js";
 import { CredentialsDemoSimulator } from "../../simulator.js";
-import { pureCircuits } from "../@midnight-ntwrk/midnight-did-credentials-birth/managed/birth-credential/contract/index.js";
 
 const canRunContainers = await containerRuntimeAvailable();
 const describeIntegration = canRunContainers ? describe : describe.skip;
