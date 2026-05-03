@@ -122,8 +122,11 @@ Each credential family defines its own disclosure struct with per-field reveal f
 
 Current repository stance:
 
-- the reference protocol layer already proves local rejection behavior for
-  malformed blinded-secret issuance messages
+- the reference protocol layer now proves explicit rejection results for
+  blinded-secret issuance, including malformed requests, offer/request
+  mismatches, unknown offer references, and replayed requests
+- holder-side tests also prove local rejection behavior for duplicate or
+  uncorrelated blinded-secret issuance outcomes
 - the repository does not yet define a final interoperable rejection result
   contract across transport adapters
 

@@ -99,6 +99,7 @@ export class SecretHolderAgent {
       readonly holderBindingBlindingFactor: Uint8Array;
     }
   >();
+  private readonly finalizedIssuanceRequestIds = new Set<string>();
 
   constructor(
     config: {
@@ -175,6 +176,11 @@ export class SecretHolderAgent {
     const respondsToId = Buffer.from(result.envelope.respondsToMessageId).toString("hex");
     const pendingIssuance = this.pendingIssuanceRequests.get(respondsToId);
     if (!pendingIssuance) {
+      if (this.finalizedIssuanceRequestIds.has(respondsToId)) {
+        throw new Error(
+          "This blinded-secret issuance result was already finalized and cannot be accepted again.",
+        );
+      }
       throw new Error(
         "No pending issuance request found for this credential result. " +
         "Ensure receiveOfferAndSendRequest was called first.",
@@ -185,6 +191,7 @@ export class SecretHolderAgent {
       issuanceResult,
     );
     this.pendingIssuanceRequests.delete(respondsToId);
+    this.finalizedIssuanceRequestIds.add(respondsToId);
 
     this.credentials.push({
       credential: issuanceResult.body.credential,
@@ -204,12 +211,18 @@ export class SecretHolderAgent {
     ).toString("hex");
     const pendingIssuance = this.pendingIssuanceRequests.get(respondsToId);
     if (!pendingIssuance) {
+      if (this.finalizedIssuanceRequestIds.has(respondsToId)) {
+        throw new Error(
+          "This blinded-secret issuance rejection was already finalized and cannot be accepted again.",
+        );
+      }
       throw new Error(
         "No pending issuance request found for this credential rejection. " +
         "Ensure receiveOfferAndSendRequest was called first.",
       );
     }
     this.pendingIssuanceRequests.delete(respondsToId);
+    this.finalizedIssuanceRequestIds.add(respondsToId);
     return rejection;
   }
 

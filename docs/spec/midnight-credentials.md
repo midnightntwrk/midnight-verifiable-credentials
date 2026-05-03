@@ -279,8 +279,10 @@ rejection message family for every protocol.
 Today:
 
 - success results are explicit protocol messages
-- many rejection outcomes are still modeled as local exceptions at the agent
-  boundary
+- the reference `credentials-protocol` layer now defines explicit rejection
+  messages for blinded-secret issuance
+- many other rejection outcomes are still modeled as local exceptions at the
+  agent boundary
 
 That is acceptable for a reference implementation, but it `MUST NOT` be
 described as a final transport/interoperability contract.

@@ -20,6 +20,7 @@ export type SecretBirthCredentialIssuanceRejectionCategory =
   | "malformed_request"
   | "offer_request_mismatch"
   | "unknown_offer_reference"
+  | "replayed_request"
   | "issuer_refused";
 
 export type SecretBirthCredentialIssuanceRejection = {

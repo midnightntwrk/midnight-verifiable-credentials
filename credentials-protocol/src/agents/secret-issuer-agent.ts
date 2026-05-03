@@ -61,6 +61,7 @@ export class SecretIssuerAgent {
     string,
     SecretBirthCredentialIssuanceOffer
   >();
+  private readonly finalizedRequestIds = new Set<string>();
 
   constructor(profile: DIDProfile, bus: MessageBus) {
     this.profile = profile;
@@ -122,9 +123,13 @@ export class SecretIssuerAgent {
   }
 
   private classifyIssuanceError(
+    requestMessageId: string,
     error: unknown,
   ): SecretBirthCredentialIssuanceRejectionCategory {
     const message = error instanceof Error ? error.message : String(error);
+    if (this.finalizedRequestIds.has(requestMessageId)) {
+      return "replayed_request";
+    }
     if (message.includes("No pending issuance offer found")) {
       return "unknown_offer_reference";
     }
@@ -144,6 +149,12 @@ export class SecretIssuerAgent {
   ): void {
     assertMessageType(request, "issuance:request");
     assertBodyHasFields(request, ["envelope", "schema", "body"]);
+    const requestMessageId = Buffer.from(request.envelope.messageId).toString("hex");
+    if (this.finalizedRequestIds.has(requestMessageId)) {
+      throw new Error(
+        "This blinded-secret issuance request was already finalized and cannot be processed again.",
+      );
+    }
     const issuanceRequest = request.body as SecretBirthCredentialIssuanceRequest;
     pureCircuits.assertValidSecretBirthCredentialIssuanceRequest(
       issuanceRequest,
@@ -263,12 +274,16 @@ export class SecretIssuerAgent {
       envelope: result.envelope,
       body: result,
     });
+    this.finalizedRequestIds.add(requestMessageId);
   }
 
   receiveRequestAndRespond(
     request: ProtocolMessage,
     claimWitness: SecretClaimWitness,
   ): void {
+    const requestMessageId = Buffer.from(
+      request.envelope.messageId,
+    ).toString("hex");
     const respondsToId = Buffer.from(
       request.envelope.respondsToMessageId,
     ).toString("hex");
@@ -278,7 +293,7 @@ export class SecretIssuerAgent {
       this.pendingOffers.delete(respondsToId);
       const rejection = this.buildIssuanceRejection(
         request,
-        this.classifyIssuanceError(error),
+        this.classifyIssuanceError(requestMessageId, error),
         error instanceof Error ? error.message : String(error),
       );
       this.bus.send({
@@ -288,6 +303,7 @@ export class SecretIssuerAgent {
         envelope: rejection.envelope,
         body: rejection,
       });
+      this.finalizedRequestIds.add(requestMessageId);
     }
   }
 }

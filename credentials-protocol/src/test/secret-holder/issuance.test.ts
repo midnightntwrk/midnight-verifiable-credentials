@@ -2,6 +2,7 @@ import { pureCircuits as genericPureCircuits } from "@midnight-ntwrk/midnight-di
 import {
   pureCircuits,
   type SecretBirthCredentialIssuanceOffer,
+  type SecretBirthCredentialIssuanceRejection,
   type SecretBirthCredentialIssuanceRequest,
   type SecretBirthCredentialIssuanceResult,
 } from "@midnight-ntwrk/midnight-did-credentials-birth-secret/managed/secret-birth-credential/contract/index.js";
@@ -530,5 +531,169 @@ describe("secret-holder issuance", () => {
       );
     }
     expect(holder.credentialCount).toBe(0);
+  });
+
+  it("sends an explicit replay rejection when the same request is processed twice", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    holder.receiveOfferAndSendRequest(offer);
+
+    const request = bus.receive("issuer")!;
+    issuer.receiveRequestAndRespond(request, claimWitness);
+    const firstOutcomeMessage = bus.receive("holder")!;
+    const firstOutcome = holder.receiveIssuanceOutcome(firstOutcomeMessage);
+    expect(firstOutcome.kind).toBe("issued");
+
+    issuer.receiveRequestAndRespond(request, claimWitness);
+    const replayMessage = bus.receive("holder")!;
+    expect(replayMessage.type).toBe("issuance:rejection");
+
+    const replayRejection =
+      replayMessage.body as SecretBirthCredentialIssuanceRejection;
+    expect(replayRejection.body.category).toBe("replayed_request");
+    expect(replayRejection.body.detail).toMatch(/already finalized/i);
+  });
+
+  it("sends an explicit rejection result when the request does not match a pending offer", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    holder.receiveOfferAndSendRequest(offer);
+
+    const request = bus.receive("issuer")!;
+    issuer.receiveRequestAndRespond(
+      {
+        ...request,
+        envelope: {
+          ...request.envelope,
+          respondsToMessageId: sha256("unknown-offer"),
+        },
+      },
+      claimWitness,
+    );
+
+    const rejectionMessage = bus.receive("holder")!;
+    expect(rejectionMessage.type).toBe("issuance:rejection");
+
+    const outcome = holder.receiveIssuanceOutcome(rejectionMessage);
+    expect(outcome.kind).toBe("rejected");
+    if (outcome.kind === "rejected") {
+      expect(outcome.rejection.body.category).toBe("unknown_offer_reference");
+      expect(outcome.rejection.body.detail).toMatch(
+        /No pending issuance offer found/i,
+      );
+    }
+  });
+
+  it("rejects duplicate success results at the holder boundary", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    holder.receiveOfferAndSendRequest(offer);
+
+    const request = bus.receive("issuer")!;
+    issuer.receiveRequestAndRespond(request, claimWitness);
+    const result = bus.receive("holder")!;
+
+    const firstOutcome = holder.receiveIssuanceOutcome(result);
+    expect(firstOutcome.kind).toBe("issued");
+
+    expect(() => holder.receiveIssuanceOutcome(result)).toThrow(
+      /already finalized/i,
+    );
+  });
+
+  it("rejects duplicate issuance rejections at the holder boundary", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    holder.receiveOfferAndSendRequest(offer);
+
+    const request = bus.receive("issuer")!;
+    const requestBody = request.body as SecretBirthCredentialIssuanceRequest;
+    const tamperedRequest: SecretBirthCredentialIssuanceRequest = {
+      ...requestBody,
+      body: {
+        ...requestBody.body,
+        holderChallengeHash: genericPureCircuits.noProtocolResponseReference(),
+      },
+    };
+
+    issuer.receiveRequestAndRespond(
+      {
+        ...request,
+        body: tamperedRequest,
+      },
+      claimWitness,
+    );
+
+    const rejectionMessage = bus.receive("holder")!;
+    const firstOutcome = holder.receiveIssuanceOutcome(rejectionMessage);
+    expect(firstOutcome.kind).toBe("rejected");
+
+    expect(() => holder.receiveIssuanceOutcome(rejectionMessage)).toThrow(
+      /already finalized/i,
+    );
+  });
+
+  it("rejects rejection messages with no matching pending request at the holder boundary", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    holder.receiveOfferAndSendRequest(offer);
+
+    const request = bus.receive("issuer")!;
+    const requestBody = request.body as SecretBirthCredentialIssuanceRequest;
+    const tamperedRequest: SecretBirthCredentialIssuanceRequest = {
+      ...requestBody,
+      body: {
+        ...requestBody.body,
+        holderChallengeHash: genericPureCircuits.noProtocolResponseReference(),
+      },
+    };
+
+    issuer.receiveRequestAndRespond(
+      {
+        ...request,
+        body: tamperedRequest,
+      },
+      claimWitness,
+    );
+
+    const rejectionMessage = bus.receive("holder")!;
+    const rejectionBody =
+      rejectionMessage.body as SecretBirthCredentialIssuanceRejection;
+    expect(() =>
+      holder.receiveIssuanceRejection({
+        ...rejectionMessage,
+        envelope: {
+          ...rejectionMessage.envelope,
+          respondsToMessageId: sha256("unknown-request"),
+        },
+        body: {
+          ...rejectionBody,
+          envelope: {
+            ...rejectionBody.envelope,
+            respondsToMessageId: sha256("unknown-request"),
+          },
+        },
+      }),
+    ).toThrow(/No pending issuance request found/);
   });
 });

@@ -70,6 +70,8 @@ validate:
 - offer, request, submission, and result message shapes
 - response envelope threading
 - request/result matching rules for blinded-secret issuance
+- explicit blinded-secret issuance rejection messages for malformed requests,
+  offer/request mismatches, unknown offer references, and replayed requests
 - request/submission and submission/result alignment enforced by Compact circuits
 - blinded holder-binding and pseudonym-specific validation through
   `credentials-birth-secret`
@@ -77,8 +79,9 @@ validate:
   three-credential verifier session
 
 The blinded-secret issuance happy path is a supported reference flow in this
-package. The package remains intentionally narrow and transport-agnostic; it is
-not yet a production network library.
+package. The reference protocol layer now also exposes explicit rejection
+messages for that issuance flow. The package remains intentionally narrow and
+transport-agnostic; it is not yet a production network library.
 
 ## Where To Start
 

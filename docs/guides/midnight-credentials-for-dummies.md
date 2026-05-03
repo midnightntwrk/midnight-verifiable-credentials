@@ -1050,6 +1050,21 @@ Today the repository has a supported reference happy path for this capability:
 - blinded-secret presentation through `credentials-protocol`
 - real DID-backed secret-holder integration coverage
 - verifier-scoped pseudonym and same-holder composition built on the same hidden-secret family
+- explicit blinded-secret rejection results in the reference protocol layer for
+  malformed, mismatched, unknown-offer, and replayed issuance requests
+
+In plain language, Rita can now answer Alice in two ways during the reference
+issuance flow:
+
+- "here is your credential result"
+- "this request is rejected, and here is the reason"
+
+Simple rejection examples now covered by the tests:
+
+- the request forgot a required holder challenge
+- the request no longer matches the offer Rita sent
+- the request points at an offer Rita does not know about
+- the same request is replayed after it was already finalized
 
 What is still not being claimed:
 
@@ -1061,6 +1076,8 @@ So the honest summary is:
 
 - yes, the blinded-secret capability is real
 - yes, the issuance and presentation happy path is supported
+- yes, the reference protocol now emits explicit rejection results for common
+  blinded-secret issuance failures
 - no, this is not yet the last word on production transport hardening
 
 Mohawk calls it "a respectable intermediate state".
