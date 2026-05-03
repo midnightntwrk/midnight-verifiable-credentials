@@ -125,6 +125,9 @@ Current repository stance:
 - the reference protocol layer now proves explicit rejection results for
   blinded-secret issuance, including malformed requests, offer/request
   mismatches, unknown offer references, expired offers, and expired requests
+- the same reference protocol layer now proves explicit rejection results for
+  blinded-secret presentation, including malformed submissions,
+  request/submission mismatches, and unsatisfied verifier requests
 - the same reference layer now proves idempotent re-delivery for duplicate
   blinded-secret issuance requests and duplicate blinded-secret issuance
   outcomes
@@ -134,6 +137,8 @@ Current repository stance:
   blinded-secret issuance outcomes
 - the repository now carries explicit message-level offer/request expiry fields
   in the blinded-secret issuance reference flow
+- the repository does not yet carry explicit message-level expiry fields in the
+  blinded-secret presentation reference flow
 - the repository does not yet define a final interoperable rejection result
   contract across transport adapters
 

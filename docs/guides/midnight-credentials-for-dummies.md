@@ -1053,6 +1053,9 @@ Today the repository has a supported reference happy path for this capability:
 - explicit blinded-secret rejection results in the reference protocol layer for
   malformed, mismatched, unknown-offer, expired-offer, and expired-request
   issuance requests
+- explicit blinded-secret presentation rejection results in the same reference
+  protocol layer for malformed submissions, request/submission mismatches, and
+  unsatisfied verifier requests
 - idempotent re-delivery of the same blinded-secret issuance outcome when the
   same request or the same issuer reply is delivered twice
 
@@ -1069,6 +1072,19 @@ Simple rejection examples now covered by the tests:
 - the request points at an offer Rita does not know about
 - the holder answers too late and the offer has already expired
 - the issuer answers too late and the request has already expired
+
+Vera now has the same kind of structured answer for the reference presentation
+flow:
+
+- "this presentation is approved"
+- "this presentation is rejected, and here is the reason"
+
+Simple presentation rejection examples now covered by the tests:
+
+- the holder sends a malformed presentation package
+- the presentation no longer matches Vera's request
+- the presentation stays well-formed, but Alice still does not satisfy the age
+  threshold Vera asked for
 
 Simple idempotency examples now covered by the tests:
 
@@ -1087,11 +1103,13 @@ So the honest summary is:
 - yes, the blinded-secret capability is real
 - yes, the issuance and presentation happy path is supported
 - yes, the reference protocol now emits explicit rejection results for common
-  blinded-secret issuance failures
+  blinded-secret issuance and presentation failures
 - yes, duplicate blinded-secret issuance deliveries now behave idempotently in
   the reference protocol layer
 - yes, the reference protocol now carries explicit offer and request expiry
   fields for blinded-secret issuance
+- no, the presentation-side reference flow does not yet carry explicit
+  message-level expiry fields
 - no, this is not yet the last word on production transport hardening
 - no, these timeout semantics are still reference-layer behavior, not a final
   interoperable transport standard

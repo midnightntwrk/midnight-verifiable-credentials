@@ -73,6 +73,8 @@ witness plus a verifier challenge.
 What it does prove:
 
 - Compact-generated blinded issuance offer/request/result message families
+- Compact-generated secret-holder presentation request/submission/result
+  message families
 - issuer proof over the credential body
 - matching secret holder-binding commitment between credential and presentation
 - holder knowledge of the committed secret through a private witness
@@ -83,6 +85,7 @@ What it does prove:
 What it does not yet prove:
 
 - production transport interoperability for the blinded-secret issuance path
+- production transport interoperability for the blinded-secret presentation path
 - revocation
 
 ## Why this package exists

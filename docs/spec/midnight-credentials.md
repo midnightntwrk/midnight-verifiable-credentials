@@ -280,11 +280,13 @@ Today:
 
 - success results are explicit protocol messages
 - the reference `credentials-protocol` layer now defines explicit rejection
-  messages for blinded-secret issuance
+  messages for blinded-secret issuance and blinded-secret presentation
 - the same reference layer now treats duplicate blinded-secret issuance
   deliveries as idempotent re-delivery of the prior outcome
 - the same reference layer now models explicit offer and request expiry fields
   for blinded-secret issuance and rejects expired sessions before success
+- the same reference layer does not yet model explicit message-level expiry
+  fields for blinded-secret presentation
 - many other rejection outcomes are still modeled as local exceptions at the
   agent boundary
 

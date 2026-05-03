@@ -14,6 +14,7 @@ export type ProtocolMessageType =
   | "issuance:rejection"
   | "presentation:request"
   | "presentation:submission"
+  | "presentation:rejection"
   | "presentation:result";
 
 export type SecretBirthCredentialIssuanceRejectionCategory =
@@ -30,6 +31,23 @@ export type SecretBirthCredentialIssuanceRejection = {
   readonly holderBindingProfile: HolderBindingProfile;
   readonly body: {
     readonly category: SecretBirthCredentialIssuanceRejectionCategory;
+    readonly detail: string;
+    readonly retryable: boolean;
+  };
+};
+
+export type SecretBirthCredentialVerificationRejectionCategory =
+  | "malformed_submission"
+  | "request_submission_mismatch"
+  | "unsatisfied_request";
+
+export type SecretBirthCredentialVerificationRejection = {
+  readonly envelope: ProtocolMessageEnvelope;
+  readonly schema: SchemaRef;
+  readonly issuerVerificationMethodRef: VerificationMethodRef;
+  readonly holderBindingProfile: HolderBindingProfile;
+  readonly body: {
+    readonly category: SecretBirthCredentialVerificationRejectionCategory;
     readonly detail: string;
     readonly retryable: boolean;
   };

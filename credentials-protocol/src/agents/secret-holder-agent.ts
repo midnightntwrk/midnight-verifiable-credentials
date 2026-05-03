@@ -13,6 +13,7 @@ import {
   type SecretBirthCredentialIssuanceResult,
   type SecretBirthCredentialPresentation,
   type SecretBirthCredentialVerificationRequest,
+  type SecretBirthCredentialVerificationResult,
   type SecretBirthCredentialVerificationSubmission,
 } from "@midnight-ntwrk/midnight-did-credentials-birth-secret/managed/secret-birth-credential/contract/index.js";
 
@@ -23,6 +24,7 @@ import type { MessageBus } from "../transport/message-bus.js";
 import type {
   ProtocolMessage,
   SecretBirthCredentialIssuanceRejection,
+  SecretBirthCredentialVerificationRejection,
 } from "../transport/types.js";
 
 const SECRET_BIRTH_SCHEMA = {
@@ -61,6 +63,16 @@ export type SecretIssuanceOutcome =
   | {
       readonly kind: "rejected";
       readonly rejection: SecretBirthCredentialIssuanceRejection;
+    };
+
+export type SecretPresentationOutcome =
+  | {
+      readonly kind: "approved";
+      readonly result: SecretBirthCredentialVerificationResult;
+    }
+  | {
+      readonly kind: "rejected";
+      readonly rejection: SecretBirthCredentialVerificationRejection;
     };
 
 /**
@@ -390,6 +402,33 @@ export class SecretHolderAgent {
       envelope: submission.envelope,
       body: submission,
     });
+  }
+
+  receivePresentationRejection(
+    rejectionMessage: ProtocolMessage,
+  ): SecretBirthCredentialVerificationRejection {
+    assertMessageType(rejectionMessage, "presentation:rejection");
+    assertBodyHasFields(rejectionMessage, ["envelope", "schema", "body"]);
+    return rejectionMessage.body as SecretBirthCredentialVerificationRejection;
+  }
+
+  receivePresentationOutcome(message: ProtocolMessage): SecretPresentationOutcome {
+    if (message.type === "presentation:result") {
+      assertBodyHasFields(message, ["envelope", "approved", "body"]);
+      return {
+        kind: "approved",
+        result: message.body as SecretBirthCredentialVerificationResult,
+      };
+    }
+    if (message.type === "presentation:rejection") {
+      return {
+        kind: "rejected",
+        rejection: this.receivePresentationRejection(message),
+      };
+    }
+    throw new Error(
+      `Expected message type "presentation:result" or "presentation:rejection", got "${message.type}"`,
+    );
   }
 
   /**

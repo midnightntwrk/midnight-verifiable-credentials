@@ -67,6 +67,9 @@ Status: current implemented test surface as of 2026-05-01.
     offer references, expired offers, and expired requests
   - idempotent re-delivery of duplicate blinded-secret issuance requests and
     duplicate blinded-secret issuance outcomes
+  - explicit blinded-secret presentation rejection messages in the reference
+    protocol layer for malformed submissions, request/submission mismatches,
+    and unsatisfied verifier requests
   - holder-side rejection of uncorrelated issuance outcomes
   - agent-boundary rejection of forged issuance results
   - real DID-backed secret-holder lifecycle integration
