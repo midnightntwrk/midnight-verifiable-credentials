@@ -429,4 +429,106 @@ describe("secret-holder issuance", () => {
       }),
     ).toThrow(/challenge must match the request challenge/);
   });
+
+  it("can respond with an explicit success result through the transport-shaped API", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    holder.receiveOfferAndSendRequest(offer);
+
+    const request = bus.receive("issuer")!;
+    issuer.receiveRequestAndRespond(request, claimWitness);
+
+    const outcomeMessage = bus.receive("holder")!;
+    expect(outcomeMessage.type).toBe("issuance:result");
+
+    const outcome = holder.receiveIssuanceOutcome(outcomeMessage);
+    expect(outcome.kind).toBe("issued");
+    expect(holder.credentialCount).toBe(1);
+  });
+
+  it("sends an explicit rejection result for malformed blinded-secret issuance requests", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    holder.receiveOfferAndSendRequest(offer);
+
+    const request = bus.receive("issuer")!;
+    const requestBody = request.body as SecretBirthCredentialIssuanceRequest;
+    const tamperedRequest: SecretBirthCredentialIssuanceRequest = {
+      ...requestBody,
+      body: {
+        ...requestBody.body,
+        holderChallengeHash: genericPureCircuits.noProtocolResponseReference(),
+      },
+    };
+
+    issuer.receiveRequestAndRespond(
+      {
+        ...request,
+        body: tamperedRequest,
+      },
+      claimWitness,
+    );
+
+    const rejectionMessage = bus.receive("holder")!;
+    expect(rejectionMessage.type).toBe("issuance:rejection");
+
+    const outcome = holder.receiveIssuanceOutcome(rejectionMessage);
+    expect(outcome.kind).toBe("rejected");
+    if (outcome.kind === "rejected") {
+      expect(outcome.rejection.body.category).toBe("malformed_request");
+      expect(outcome.rejection.body.retryable).toBe(false);
+      expect(outcome.rejection.body.detail).toMatch(/holder challenge must be set/);
+    }
+    expect(holder.credentialCount).toBe(0);
+  });
+
+  it("sends an explicit rejection result for offer/request mismatches", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    holder.receiveOfferAndSendRequest(offer);
+
+    const request = bus.receive("issuer")!;
+    const requestBody = request.body as SecretBirthCredentialIssuanceRequest;
+    const tamperedRequest: SecretBirthCredentialIssuanceRequest = {
+      ...requestBody,
+      issuerVerificationMethodRef: createDIDProfile(
+        "issuer",
+        "rogue-issuer",
+        222222222n,
+      ).signer.verificationMethodRef,
+    };
+
+    issuer.receiveRequestAndRespond(
+      {
+        ...request,
+        body: tamperedRequest,
+      },
+      claimWitness,
+    );
+
+    const rejectionMessage = bus.receive("holder")!;
+    expect(rejectionMessage.type).toBe("issuance:rejection");
+
+    const outcome = holder.receiveIssuanceOutcome(rejectionMessage);
+    expect(outcome.kind).toBe("rejected");
+    if (outcome.kind === "rejected") {
+      expect(outcome.rejection.body.category).toBe("offer_request_mismatch");
+      expect(outcome.rejection.body.detail).toMatch(
+        /issuer verification method/i,
+      );
+    }
+    expect(holder.credentialCount).toBe(0);
+  });
 });

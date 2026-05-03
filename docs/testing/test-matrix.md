@@ -63,6 +63,8 @@ Status: current implemented test surface as of 2026-05-01.
   - Compact offer/request/result validation in unit tests
   - negative-path coverage for malformed offer/request/result issuance messages
   - agent-boundary rejection of forged issuance results
+  - explicit blinded-secret issuance rejection messages in the reference
+    protocol layer
   - real DID-backed secret-holder lifecycle integration
 - verifier-domain pseudonym flows
 - same-holder flows

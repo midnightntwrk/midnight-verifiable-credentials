@@ -18,7 +18,12 @@ import { mod, padText,sha256 } from "../shared/crypto.js";
 import { createEnvelope } from "../shared/envelope.js";
 import { assertBodyHasFields,assertMessageType } from "../shared/validation.js";
 import type { MessageBus } from "../transport/message-bus.js";
-import type { PartyId,ProtocolMessage } from "../transport/types.js";
+import type {
+  PartyId,
+  ProtocolMessage,
+  SecretBirthCredentialIssuanceRejection,
+  SecretBirthCredentialIssuanceRejectionCategory,
+} from "../transport/types.js";
 import type { DIDProfile } from "./types.js";
 
 export type SecretClaimWitness = {
@@ -89,6 +94,48 @@ export class SecretIssuerAgent {
     });
     const offerMessageId = Buffer.from(offer.envelope.messageId).toString("hex");
     this.pendingOffers.set(offerMessageId, offer);
+  }
+
+  private buildIssuanceRejection(
+    request: ProtocolMessage,
+    category: SecretBirthCredentialIssuanceRejectionCategory,
+    detail: string,
+    retryable = false,
+  ): SecretBirthCredentialIssuanceRejection {
+    return {
+      envelope: createEnvelope(
+        "secret-issuance-rejection",
+        "secret-birth-issuance",
+        false,
+        request.envelope.messageId,
+        request.envelope.threadId,
+      ),
+      schema: SECRET_BIRTH_SCHEMA,
+      issuerVerificationMethodRef: this.profile.signer.verificationMethodRef,
+      holderBindingProfile: HolderBindingProfile.blindedSecretHolder,
+      body: {
+        category,
+        detail,
+        retryable,
+      },
+    };
+  }
+
+  private classifyIssuanceError(
+    error: unknown,
+  ): SecretBirthCredentialIssuanceRejectionCategory {
+    const message = error instanceof Error ? error.message : String(error);
+    if (message.includes("No pending issuance offer found")) {
+      return "unknown_offer_reference";
+    }
+    if (
+      message.includes("cannot require expiration when the offer disables it") ||
+      message.includes("issuer verification method") ||
+      message.includes("holder binding profile")
+    ) {
+      return "offer_request_mismatch";
+    }
+    return "malformed_request";
   }
 
   receiveRequestAndIssueCredential(
@@ -216,5 +263,31 @@ export class SecretIssuerAgent {
       envelope: result.envelope,
       body: result,
     });
+  }
+
+  receiveRequestAndRespond(
+    request: ProtocolMessage,
+    claimWitness: SecretClaimWitness,
+  ): void {
+    const respondsToId = Buffer.from(
+      request.envelope.respondsToMessageId,
+    ).toString("hex");
+    try {
+      this.receiveRequestAndIssueCredential(request, claimWitness);
+    } catch (error) {
+      this.pendingOffers.delete(respondsToId);
+      const rejection = this.buildIssuanceRejection(
+        request,
+        this.classifyIssuanceError(error),
+        error instanceof Error ? error.message : String(error),
+      );
+      this.bus.send({
+        type: "issuance:rejection",
+        from: this.profile.label,
+        to: request.from,
+        envelope: rejection.envelope,
+        body: rejection,
+      });
+    }
   }
 }
