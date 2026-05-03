@@ -1,3 +1,4 @@
+import { pureCircuits } from "@midnight-ntwrk/midnight-did-credentials-birth/managed/birth-credential/contract/index.js";
 import {
   containerRuntimeAvailable,
   type ProtocolDidProfile,
@@ -13,7 +14,6 @@ import {
   createSigner,
   withVerificationMethodRef,
 } from "../../../../credentials-birth/src/test/credential-fixtures.js";
-import { pureCircuits } from "@midnight-ntwrk/midnight-did-credentials-birth/managed/birth-credential/contract/index.js";
 import { CredentialsDemoSimulator } from "../../simulator.js";
 
 const canRunContainers = await containerRuntimeAvailable();
