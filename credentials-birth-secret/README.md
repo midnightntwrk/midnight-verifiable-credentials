@@ -16,7 +16,9 @@ Related docs:
 
 ## Purpose
 
-This package defines a birth-credential prototype that uses a hidden holder-binding secret instead of an explicit holder DID method reference.
+This package defines the reference birth-credential family for flows that use a
+hidden holder-binding secret instead of an explicit holder DID method
+reference.
 
 It sits next to the explicit holder-binding package:
 
@@ -61,12 +63,16 @@ This package owns:
 - generated protocol message families built on the generic issuance / presentation protocol modules
 - concrete same-holder composition for secret birth credentials by composing the dedicated same-holder capability package
 
-## Prototype scope
+## Current supported scope
 
-This package proves that a credential can be bound to a hidden holder secret commitment and later satisfied with a private holder witness plus a verifier challenge.
+This package supports the reference blinded-secret issuance and presentation
+happy path used by `credentials-protocol`. A credential can be bound to a
+hidden holder secret commitment and later satisfied with a private holder
+witness plus a verifier challenge.
 
 What it does prove:
 
+- Compact-generated blinded issuance offer/request/result message families
 - issuer proof over the credential body
 - matching secret holder-binding commitment between credential and presentation
 - holder knowledge of the committed secret through a private witness
@@ -76,7 +82,7 @@ What it does prove:
 
 What it does not yet prove:
 
-- blind issuance of the holder secret
+- production transport interoperability for the blinded-secret issuance path
 - revocation
 
 ## Why this package exists

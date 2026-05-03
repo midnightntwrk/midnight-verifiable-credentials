@@ -1,9 +1,11 @@
 import { pureCircuits as genericPureCircuits } from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
 import {
   pureCircuits,
+  type SecretBirthCredentialIssuanceOffer,
   type SecretBirthCredentialIssuanceRequest,
+  type SecretBirthCredentialIssuanceResult,
 } from "@midnight-ntwrk/midnight-did-credentials-birth-secret/managed/secret-birth-credential/contract/index.js";
-import { describe, expect,it } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import { SecretHolderAgent } from "../../agents/secret-holder-agent.js";
 import {
@@ -52,7 +54,9 @@ describe("secret-holder issuance", () => {
     const offer = bus.receive("holder");
     expect(offer).toBeDefined();
     expect(offer!.type).toBe("issuance:offer");
+    const offerBody = offer!.body as SecretBirthCredentialIssuanceOffer;
     genericPureCircuits.assertValidProtocolMessageEnvelope(offer!.envelope);
+    pureCircuits.assertValidSecretBirthCredentialIssuanceOffer(offerBody);
     holder.receiveOfferAndSendRequest(offer!);
     expect(bus.pending("issuer")).toBe(1);
 
@@ -60,10 +64,16 @@ describe("secret-holder issuance", () => {
     const request = bus.receive("issuer");
     expect(request).toBeDefined();
     expect(request!.type).toBe("issuance:request");
+    const requestBody = request!.body as SecretBirthCredentialIssuanceRequest;
     genericPureCircuits.assertValidProtocolMessageEnvelope(request!.envelope);
     genericPureCircuits.assertProtocolResponseEnvelope(
       offer!.envelope,
       request!.envelope,
+    );
+    pureCircuits.assertValidSecretBirthCredentialIssuanceRequest(requestBody);
+    pureCircuits.assertSecretBirthCredentialIssuanceRequestMatchesOffer(
+      offerBody,
+      requestBody,
     );
     issuer.receiveRequestAndIssueCredential(request!, claimWitness);
     expect(bus.pending("holder")).toBe(1);
@@ -72,10 +82,16 @@ describe("secret-holder issuance", () => {
     const result = bus.receive("holder");
     expect(result).toBeDefined();
     expect(result!.type).toBe("issuance:result");
+    const resultBody = result!.body as SecretBirthCredentialIssuanceResult;
     genericPureCircuits.assertValidProtocolMessageEnvelope(result!.envelope);
     genericPureCircuits.assertProtocolResponseEnvelope(
       request!.envelope,
       result!.envelope,
+    );
+    pureCircuits.assertValidSecretBirthCredentialIssuanceResult(resultBody);
+    pureCircuits.assertSecretBirthCredentialIssuanceResultMatchesRequest(
+      requestBody,
+      resultBody,
     );
     holder.receiveCredentialResult(result!);
 
@@ -100,6 +116,16 @@ describe("secret-holder issuance", () => {
     expect(binding.blindedHolderSecretCommitment.length).toBe(32);
     expect(binding.issuerNonce).toBeDefined();
     expect(binding.issuerNonce.length).toBe(32);
+    expect(resultBody.body.issuanceChallengeHash).toEqual(
+      requestBody.body.holderChallengeHash,
+    );
+    expect(binding.blindedHolderSecretCommitment).toEqual(
+      genericPureCircuits.blindedSecretHolderCommitment(
+        requestBody.body.holderSecretCommitment,
+        binding.issuerNonce,
+        requestBody.body.holderBindingBlindingFactor,
+      ),
+    );
   });
 
   it("binds the blinded commitment to the holder secret without revealing it to the issuer", () => {
@@ -110,17 +136,25 @@ describe("secret-holder issuance", () => {
     // Run the issuance flow
     issuer.createAndSendOffer("holder");
     const offer = bus.receive("holder")!;
+    const offerBody = offer.body as SecretBirthCredentialIssuanceOffer;
     genericPureCircuits.assertValidProtocolMessageEnvelope(offer.envelope);
+    pureCircuits.assertValidSecretBirthCredentialIssuanceOffer(offerBody);
     holder.receiveOfferAndSendRequest(offer);
 
     // Intercept the request message to inspect what the holder sent
     const requestMsg = bus.receive("issuer")!;
+    const request = requestMsg.body as SecretBirthCredentialIssuanceRequest;
     genericPureCircuits.assertValidProtocolMessageEnvelope(requestMsg.envelope);
     genericPureCircuits.assertProtocolResponseEnvelope(
       offer.envelope,
       requestMsg.envelope,
     );
-    const requestBody = (requestMsg.body as SecretBirthCredentialIssuanceRequest).body;
+    pureCircuits.assertValidSecretBirthCredentialIssuanceRequest(request);
+    pureCircuits.assertSecretBirthCredentialIssuanceRequestMatchesOffer(
+      offerBody,
+      request,
+    );
+    const requestBody = request.body;
 
     // The request should contain a commitment, NOT the raw secret
     expect(requestBody.holderSecretCommitment).toBeDefined();
@@ -136,10 +170,16 @@ describe("secret-holder issuance", () => {
     // Complete the issuance
     issuer.receiveRequestAndIssueCredential(requestMsg, claimWitness);
     const result = bus.receive("holder")!;
+    const resultBody = result.body as SecretBirthCredentialIssuanceResult;
     genericPureCircuits.assertValidProtocolMessageEnvelope(result.envelope);
     genericPureCircuits.assertProtocolResponseEnvelope(
       requestMsg.envelope,
       result.envelope,
+    );
+    pureCircuits.assertValidSecretBirthCredentialIssuanceResult(resultBody);
+    pureCircuits.assertSecretBirthCredentialIssuanceResultMatchesRequest(
+      request,
+      resultBody,
     );
     holder.receiveCredentialResult(result);
 
