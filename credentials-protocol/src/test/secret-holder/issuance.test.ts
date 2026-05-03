@@ -42,6 +42,50 @@ describe("secret-holder issuance", () => {
     expiresAt: 20_000n,
   };
 
+  const forgeIssuanceResultWithChallenge = (
+    resultBody: SecretBirthCredentialIssuanceResult,
+    challengeHash: Uint8Array,
+  ): SecretBirthCredentialIssuanceResult => {
+    const originalProof = resultBody.body.credentialProof;
+    const bodyRoot = pureCircuits.secretBirthCredentialBodyRoot(
+      resultBody.body.credential,
+    );
+    const originalChallenge = genericPureCircuits.issuanceProofChallenge(
+      bodyRoot,
+      originalProof,
+    );
+    const interimProof = {
+      ...originalProof,
+      challengeHash,
+    };
+    const tamperedChallenge = genericPureCircuits.issuanceProofChallenge(
+      bodyRoot,
+      interimProof,
+    );
+    const nonceScalar = mod(
+      originalProof.signature.s -
+        originalChallenge * issuerProfile.signer.secretKey,
+    );
+
+    return {
+      ...resultBody,
+      body: {
+        ...resultBody.body,
+        issuanceChallengeHash: challengeHash,
+        credentialProof: {
+          ...interimProof,
+          signature: {
+            ...originalProof.signature,
+            s: mod(
+              nonceScalar +
+                tamperedChallenge * issuerProfile.signer.secretKey,
+            ),
+          },
+        },
+      },
+    };
+  };
+
   it("issues a credential with blinded secret holder binding", () => {
     const bus = new MessageBus();
     const issuer = new SecretIssuerAgent(issuerProfile, bus);
@@ -235,6 +279,72 @@ describe("secret-holder issuance", () => {
     ).toThrow(/holder challenge must be set/);
   });
 
+  it("rejects issuance offers with invalid expiration defaults", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    const offerBody = offer.body as SecretBirthCredentialIssuanceOffer;
+    const tamperedOffer: SecretBirthCredentialIssuanceOffer = {
+      ...offerBody,
+      body: {
+        ...offerBody.body,
+        supportsExpiration: true,
+        defaultExpirationDays: 0n,
+      },
+    };
+
+    expect(() =>
+      pureCircuits.assertValidSecretBirthCredentialIssuanceOffer(tamperedOffer),
+    ).toThrow(/default expiration must be positive/);
+
+    expect(() =>
+      holder.receiveOfferAndSendRequest({
+        ...offer,
+        body: tamperedOffer,
+      }),
+    ).toThrow(/default expiration must be positive/);
+  });
+
+  it("rejects issuance requests with a missing holder binding blinding factor", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    holder.receiveOfferAndSendRequest(offer);
+
+    const request = bus.receive("issuer")!;
+    const requestBody = request.body as SecretBirthCredentialIssuanceRequest;
+    const tamperedRequest: SecretBirthCredentialIssuanceRequest = {
+      ...requestBody,
+      body: {
+        ...requestBody.body,
+        holderBindingBlindingFactor:
+          genericPureCircuits.noProtocolResponseReference(),
+      },
+    };
+
+    expect(() =>
+      pureCircuits.assertValidSecretBirthCredentialIssuanceRequest(
+        tamperedRequest,
+      ),
+    ).toThrow(/holder binding blinding factor must be set/);
+
+    expect(() =>
+      issuer.receiveRequestAndIssueCredential(
+        {
+          ...request,
+          body: tamperedRequest,
+        },
+        claimWitness,
+      ),
+    ).toThrow(/holder binding blinding factor must be set/);
+  });
+
   it("rejects issuance request/offer pairs that disagree about expiration support", () => {
     const bus = new MessageBus();
     const issuer = new SecretIssuerAgent(issuerProfile, bus);
@@ -279,50 +389,44 @@ describe("secret-holder issuance", () => {
 
     const result = bus.receive("holder")!;
     const resultBody = result.body as SecretBirthCredentialIssuanceResult;
-    const originalProof = resultBody.body.credentialProof;
-    const bodyRoot = pureCircuits.secretBirthCredentialBodyRoot(
-      resultBody.body.credential,
-    );
-    const originalChallenge = genericPureCircuits.issuanceProofChallenge(
-      bodyRoot,
-      originalProof,
-    );
     const tamperedChallengeHash = sha256("challenge:wrong");
-    const interimProof = {
-      ...originalProof,
-      challengeHash: tamperedChallengeHash,
-    };
-    const tamperedChallenge = genericPureCircuits.issuanceProofChallenge(
-      bodyRoot,
-      interimProof,
+    const tamperedResult = forgeIssuanceResultWithChallenge(
+      resultBody,
+      tamperedChallengeHash,
     );
-    const nonceScalar = mod(
-      originalProof.signature.s -
-        originalChallenge * issuerProfile.signer.secretKey,
-    );
-    const tamperedResult: SecretBirthCredentialIssuanceResult = {
-      ...resultBody,
-      body: {
-        ...resultBody.body,
-        issuanceChallengeHash: tamperedChallengeHash,
-        credentialProof: {
-          ...interimProof,
-          signature: {
-            ...originalProof.signature,
-            s: mod(
-              nonceScalar +
-                tamperedChallenge * issuerProfile.signer.secretKey,
-            ),
-          },
-        },
-      },
-    };
 
     expect(() =>
       pureCircuits.assertSecretBirthCredentialIssuanceResultMatchesRequest(
         requestBody,
         tamperedResult,
       ),
+    ).toThrow(/challenge must match the request challenge/);
+  });
+
+  it("rejects forged issuance results at the holder agent boundary", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    holder.receiveOfferAndSendRequest(offer);
+
+    const request = bus.receive("issuer")!;
+    issuer.receiveRequestAndIssueCredential(request, claimWitness);
+
+    const result = bus.receive("holder")!;
+    const resultBody = result.body as SecretBirthCredentialIssuanceResult;
+    const tamperedResult = forgeIssuanceResultWithChallenge(
+      resultBody,
+      sha256("challenge:forged-result"),
+    );
+
+    expect(() =>
+      holder.receiveCredentialResult({
+        ...result,
+        body: tamperedResult,
+      }),
     ).toThrow(/challenge must match the request challenge/);
   });
 });
