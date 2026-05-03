@@ -128,6 +128,8 @@ Current repository stance:
 - the same reference layer now proves idempotent re-delivery for duplicate
   blinded-secret issuance requests and duplicate blinded-secret issuance
   outcomes
+- the reference transport-shaped API now uses one normalized default time rule:
+  omitted `currentDay` means `0n`
 - holder-side tests still prove local rejection behavior for uncorrelated
   blinded-secret issuance outcomes
 - the repository now carries explicit message-level offer/request expiry fields

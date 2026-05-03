@@ -53,6 +53,7 @@ const FEATURES = {
   supportsSameHolderProof: true,
 };
 
+const DEFAULT_PROTOCOL_CURRENT_DAY = 0n;
 const DEFAULT_ISSUANCE_OFFER_EXPIRY_DAY = 1_000_000n;
 
 type SecretIssuanceOfferOptions = {
@@ -87,7 +88,6 @@ export class SecretIssuerAgent {
     string,
     SecretBirthCredentialIssuanceOffer
   >();
-  private readonly finalizedRequestIds = new Set<string>();
   private readonly completedOutcomes = new Map<string, ProtocolMessage>();
 
   constructor(profile: DIDProfile, bus: MessageBus) {
@@ -242,7 +242,7 @@ export class SecretIssuerAgent {
     assertMessageType(request, "issuance:request");
     assertBodyHasFields(request, ["envelope", "schema", "body"]);
     const requestMessageId = Buffer.from(request.envelope.messageId).toString("hex");
-    if (this.finalizedRequestIds.has(requestMessageId)) {
+    if (this.completedOutcomes.has(requestMessageId)) {
       throw new IssuanceProtocolError(
         "malformed_request",
         "This blinded-secret issuance request was already finalized and cannot be processed again.",
@@ -262,7 +262,7 @@ export class SecretIssuerAgent {
       );
     }
     this.assertRequestMatchesOffer(offer, issuanceRequest);
-    const currentDay = options.currentDay ?? claimWitness.issuedAt;
+    const currentDay = options.currentDay ?? DEFAULT_PROTOCOL_CURRENT_DAY;
     if (currentDay > offer.body.offerExpiresAtDay) {
       throw new IssuanceProtocolError(
         "expired_offer",
@@ -379,7 +379,6 @@ export class SecretIssuerAgent {
       body: result,
     };
     this.bus.send(resultMessage);
-    this.finalizedRequestIds.add(requestMessageId);
     this.completedOutcomes.set(requestMessageId, resultMessage);
   }
 
@@ -418,7 +417,6 @@ export class SecretIssuerAgent {
         body: rejection,
       };
       this.bus.send(rejectionMessage);
-      this.finalizedRequestIds.add(requestMessageId);
       this.completedOutcomes.set(requestMessageId, rejectionMessage);
     }
   }

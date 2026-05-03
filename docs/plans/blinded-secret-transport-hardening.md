@@ -35,6 +35,8 @@ What the repository now proves:
   transport-shaped API
 - duplicate blinded-secret issuance deliveries are idempotent in the reference
   transport-shaped API
+- the reference transport-shaped API uses caller-supplied `currentDay` for
+  expiry enforcement and otherwise defaults to a no-time-advance `0n` model
 - real DID-backed integration tests exercise the happy path
 
 What the repository does not yet prove:

@@ -92,6 +92,13 @@ reference surface:
 - issuer: `receiveRequestAndRespond(...)`
 - holder: `receiveIssuanceOutcome(...)`
 
+Reference timing rule:
+
+- if a caller does not supply `currentDay`, the reference agents default to
+  `0n`
+- callers that want expiry enforcement for offer/request lifetime should pass
+  an explicit `currentDay`
+
 The lower-level strict helpers still exist for narrow tests and internal
 composition:
 

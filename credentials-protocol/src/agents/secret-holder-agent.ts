@@ -39,6 +39,7 @@ const SECRET_HOLDER_FEATURES = {
   supportsSameHolderProof: true,
 };
 
+const DEFAULT_PROTOCOL_CURRENT_DAY = 0n;
 const DEFAULT_ISSUANCE_REQUEST_EXPIRY_DAY = 1_000_000n;
 
 type SecretIssuanceRequestOptions = {
@@ -106,7 +107,6 @@ export class SecretHolderAgent {
       readonly holderBindingBlindingFactor: Uint8Array;
     }
   >();
-  private readonly finalizedIssuanceRequestIds = new Set<string>();
   private readonly completedIssuanceOutcomes = new Map<
     string,
     SecretIssuanceOutcome
@@ -134,7 +134,7 @@ export class SecretHolderAgent {
     assertBodyHasFields(offer, ["envelope", "schema", "body"]);
     const issuanceOffer = offer.body as SecretBirthCredentialIssuanceOffer;
     pureCircuits.assertValidSecretBirthCredentialIssuanceOffer(issuanceOffer);
-    const currentDay = options.currentDay ?? 0n;
+    const currentDay = options.currentDay ?? DEFAULT_PROTOCOL_CURRENT_DAY;
     if (currentDay > issuanceOffer.body.offerExpiresAtDay) {
       throw new Error(
         "This blinded-secret issuance offer expired before the holder could answer it.",
@@ -198,7 +198,7 @@ export class SecretHolderAgent {
     const respondsToId = Buffer.from(result.envelope.respondsToMessageId).toString("hex");
     const pendingIssuance = this.pendingIssuanceRequests.get(respondsToId);
     if (!pendingIssuance) {
-      if (this.finalizedIssuanceRequestIds.has(respondsToId)) {
+      if (this.completedIssuanceOutcomes.has(respondsToId)) {
         throw new Error(
           "This blinded-secret issuance result was already finalized and cannot be accepted again.",
         );
@@ -213,7 +213,6 @@ export class SecretHolderAgent {
       issuanceResult,
     );
     this.pendingIssuanceRequests.delete(respondsToId);
-    this.finalizedIssuanceRequestIds.add(respondsToId);
 
     this.credentials.push({
       credential: issuanceResult.body.credential,
@@ -233,7 +232,7 @@ export class SecretHolderAgent {
     ).toString("hex");
     const pendingIssuance = this.pendingIssuanceRequests.get(respondsToId);
     if (!pendingIssuance) {
-      if (this.finalizedIssuanceRequestIds.has(respondsToId)) {
+      if (this.completedIssuanceOutcomes.has(respondsToId)) {
         throw new Error(
           "This blinded-secret issuance rejection was already finalized and cannot be accepted again.",
         );
@@ -244,7 +243,6 @@ export class SecretHolderAgent {
       );
     }
     this.pendingIssuanceRequests.delete(respondsToId);
-    this.finalizedIssuanceRequestIds.add(respondsToId);
     return rejection;
   }
 
