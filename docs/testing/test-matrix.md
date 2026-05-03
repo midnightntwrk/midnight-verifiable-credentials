@@ -37,6 +37,8 @@ Status: current implemented test surface as of 2026-05-01.
 - age predicate tests
 - capability profile tests
 - same-holder composition tests
+- blinded-secret issuance offer/request/result validation through
+  `credentials-protocol`
 
 ### Planned prototype restoration
 
@@ -58,6 +60,10 @@ Status: current implemented test surface as of 2026-05-01.
 
 - explicit-holder issuance/presentation/full lifecycle
 - secret-holder issuance/presentation
+  - Compact offer/request/result validation in unit tests
+  - negative-path coverage for malformed offer/request/result issuance messages
+  - agent-boundary rejection of forged issuance results
+  - real DID-backed secret-holder lifecycle integration
 - verifier-domain pseudonym flows
 - same-holder flows
 - contract-verifier capability lifecycle
