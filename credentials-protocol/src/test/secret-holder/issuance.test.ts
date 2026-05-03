@@ -199,4 +199,98 @@ describe("secret-holder issuance", () => {
       issuerProfile.signer.verificationMethodRef.methodId,
     );
   });
+
+  it("rejects issuance requests with a missing holder challenge", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    const offerBody = offer.body as SecretBirthCredentialIssuanceOffer;
+    holder.receiveOfferAndSendRequest(offer);
+
+    const request = bus.receive("issuer")!;
+    const requestBody = request.body as SecretBirthCredentialIssuanceRequest;
+    const tamperedRequest: SecretBirthCredentialIssuanceRequest = {
+      ...requestBody,
+      body: {
+        ...requestBody.body,
+        holderChallengeHash: genericPureCircuits.noProtocolResponseReference(),
+      },
+    };
+
+    expect(() =>
+      pureCircuits.assertValidSecretBirthCredentialIssuanceRequest(
+        tamperedRequest,
+      ),
+    ).toThrow(/holder challenge must be set/);
+
+    expect(() =>
+      pureCircuits.assertSecretBirthCredentialIssuanceRequestMatchesOffer(
+        offerBody,
+        tamperedRequest,
+      ),
+    ).toThrow(/holder challenge must be set/);
+  });
+
+  it("rejects issuance requests that require expiration when the offer disables it", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    const offerBody = offer.body as SecretBirthCredentialIssuanceOffer;
+    holder.receiveOfferAndSendRequest(offer);
+
+    const request = bus.receive("issuer")!;
+    const requestBody = request.body as SecretBirthCredentialIssuanceRequest;
+    const nonExpiringOffer: SecretBirthCredentialIssuanceOffer = {
+      ...offerBody,
+      body: {
+        ...offerBody.body,
+        supportsExpiration: false,
+        defaultExpirationDays: 0n,
+      },
+    };
+
+    expect(() =>
+      pureCircuits.assertSecretBirthCredentialIssuanceRequestMatchesOffer(
+        nonExpiringOffer,
+        requestBody,
+      ),
+    ).toThrow(/cannot require expiration when the offer disables it/);
+  });
+
+  it("rejects issuance results whose challenge does not match the request", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    holder.receiveOfferAndSendRequest(offer);
+
+    const request = bus.receive("issuer")!;
+    const requestBody = request.body as SecretBirthCredentialIssuanceRequest;
+    issuer.receiveRequestAndIssueCredential(request, claimWitness);
+
+    const result = bus.receive("holder")!;
+    const resultBody = result.body as SecretBirthCredentialIssuanceResult;
+    const tamperedRequest: SecretBirthCredentialIssuanceRequest = {
+      ...requestBody,
+      body: {
+        ...requestBody.body,
+        holderChallengeHash: sha256("challenge:wrong"),
+      },
+    };
+
+    expect(() =>
+      pureCircuits.assertSecretBirthCredentialIssuanceResultMatchesRequest(
+        tamperedRequest,
+        resultBody,
+      ),
+    ).toThrow(/challenge must match the request challenge/);
+  });
 });

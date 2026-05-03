@@ -907,8 +907,8 @@ Then derive a safer issuance anchor.
 
 ### What This Is Not
 
-It is not full blind issuance yet.
-That distinction matters.
+It is not a finished production blind-signature issuance protocol.
+That distinction still matters.
 
 This is:
 
@@ -1633,9 +1633,9 @@ Not inside the generic credential envelope.
 
 Mohawk is happier now, but not done.
 
-The current prototype still does not give us everything:
+The current reference path still does not give us everything:
 
-- full blind issuance is not implemented
+- production blind-issuance transport hardening is not finished
 - revocation is still out of scope
 - application orchestration is prototyped in `credentials-protocol` but not yet production-hardened
 - governance is acknowledged but intentionally abstract
@@ -2124,7 +2124,7 @@ Mohawk summarizes it less diplomatically:
 | --- | --- | --- |
 | Is it strong for privacy-preserving VC exchange? | yes | partially, but still maturing |
 | Does it support hidden holder binding well? | yes | yes, in the new secret-holder profiles |
-| Does it have mature blind issuance? | yes | not yet fully |
+| Does it have mature blind issuance? | yes | supported reference happy path, but not yet a finished production transport standard |
 | Does it support same-holder proofs across credentials? | yes | yes, prototyped as reusable capabilities |
 | Is it naturally shaped for smart contracts? | not really | yes |
 | Can the proof directly drive contract state changes? | usually not the core model | yes |
