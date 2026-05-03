@@ -939,6 +939,130 @@ In `credentials/src/credentials.compact`:
 
 This gives us a stronger privacy-oriented substrate for future work.
 
+### The Easy Mental Model
+
+Think about three different things:
+
+1. Alice's real secret
+2. a normal commitment to that secret
+3. a blinded version of that commitment that is safe to place inside a credential
+
+The issuer never needs to learn item 1.
+The credential never needs to expose item 2 directly.
+The verifier later checks proofs against item 3.
+
+So the practical story is:
+
+- Alice keeps the real secret local
+- Alice sends a commitment plus a blinding factor in the issuance request
+- Rita the issuer turns that into a blinded credential anchor
+- later Alice proves she knows the underlying secret without revealing it
+
+That is why this capability matters.
+It reduces issuance-time exposure and still gives us a usable holder-binding story later.
+
+### Simple Issuance Example
+
+Use this cast:
+
+- Rita = issuer
+- Alice = holder
+- Vera = future verifier
+
+The issuance flow in easy terms is:
+
+1. Rita sends Alice an offer:
+   - "I can issue a secret-bound birth credential"
+   - "expiration is supported"
+2. Alice prepares local inputs:
+   - holder secret
+   - holder secret opening
+   - holder binding blinding factor
+3. Alice sends Rita an issuance request containing:
+   - holder secret commitment
+   - holder binding blinding factor
+   - holder challenge hash
+4. Rita issues a credential whose holder binding contains:
+   - blinded holder secret commitment
+   - issuer nonce
+5. Alice stores:
+   - the credential
+   - the credential proof
+   - the holder binding blinding factor
+
+What Rita learns:
+
+- a commitment
+- a blinding factor
+- the claim witness she is certifying
+
+What Rita does not learn:
+
+- Alice's raw holder secret
+- Alice's secret opening
+
+### Simple Presentation Example
+
+Later Vera wants proof that Alice is over 18.
+
+The flow becomes:
+
+1. Vera sends a presentation request with:
+   - a verifier challenge
+   - a policy such as "prove age over 18"
+2. Alice uses her local secret and witness material to build:
+   - a challenge response
+   - the age predicate witness
+   - any requested disclosures
+3. Alice sends a presentation submission
+4. Vera checks that:
+   - the presentation matches the request
+   - the holder response matches the blinded credential binding
+   - the age proof is satisfied
+
+The verifier learns:
+
+- whether the proof is valid
+- any disclosures she explicitly requested
+
+The verifier does not learn:
+
+- Alice's raw holder secret
+- Alice's secret opening
+
+### Why The Blinding Step Helps
+
+If we stopped at a plain secret commitment, the credential would carry a more directly reusable anchor.
+
+With the blinding step:
+
+- the issuer contributes an issuer nonce
+- the holder contributes a blinding factor
+- the credential stores the blinded anchor, not the raw secret and not just the raw commitment
+
+So the stored holder-binding data is safer to reuse across later privacy-oriented flows.
+
+### What The Current Repository Supports Today
+
+Today the repository has a supported reference happy path for this capability:
+
+- blinded-secret issuance through `credentials-protocol`
+- blinded-secret presentation through `credentials-protocol`
+- real DID-backed secret-holder integration coverage
+- verifier-scoped pseudonym and same-holder composition built on the same hidden-secret family
+
+What is still not being claimed:
+
+- a final production blind-signature transport protocol
+- revocation/non-revocation support
+- broad application-level interoperability guarantees
+
+So the honest summary is:
+
+- yes, the blinded-secret capability is real
+- yes, the issuance and presentation happy path is supported
+- no, this is not yet the last word on production transport hardening
+
 Mohawk calls it "a respectable intermediate state".
 Which is the closest he gets to romance.
 
