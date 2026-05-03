@@ -53,6 +53,16 @@ const FEATURES = {
   supportsSameHolderProof: true,
 };
 
+const DEFAULT_ISSUANCE_OFFER_EXPIRY_DAY = 1_000_000n;
+
+type SecretIssuanceOfferOptions = {
+  readonly offerExpiresAtDay?: bigint;
+};
+
+type SecretIssuanceProcessingOptions = {
+  readonly currentDay?: bigint;
+};
+
 export class SecretIssuerAgent {
   private readonly profile: DIDProfile;
   private readonly bus: MessageBus;
@@ -69,7 +79,10 @@ export class SecretIssuerAgent {
     this.bus = bus;
   }
 
-  createAndSendOffer(holderLabel: PartyId): void {
+  createAndSendOffer(
+    holderLabel: PartyId,
+    options: SecretIssuanceOfferOptions = {},
+  ): void {
     const offer: SecretBirthCredentialIssuanceOffer = {
       envelope: createEnvelope(
         "secret-issuance-offer",
@@ -83,6 +96,8 @@ export class SecretIssuerAgent {
       body: {
         supportsExpiration: true,
         defaultExpirationDays: 365n,
+        offerExpiresAtDay:
+          options.offerExpiresAtDay ?? DEFAULT_ISSUANCE_OFFER_EXPIRY_DAY,
         requiresHolderSecret: true,
       },
     };
@@ -125,24 +140,34 @@ export class SecretIssuerAgent {
 
   private classifyIssuanceError(
     error: unknown,
-  ): SecretBirthCredentialIssuanceRejectionCategory {
+  ): {
+    category: SecretBirthCredentialIssuanceRejectionCategory;
+    retryable: boolean;
+  } {
     const message = error instanceof Error ? error.message : String(error);
     if (message.includes("No pending issuance offer found")) {
-      return "unknown_offer_reference";
+      return { category: "unknown_offer_reference", retryable: false };
+    }
+    if (message.includes("issuance offer expired")) {
+      return { category: "expired_offer", retryable: true };
+    }
+    if (message.includes("issuance request expired")) {
+      return { category: "expired_request", retryable: true };
     }
     if (
       message.includes("cannot require expiration when the offer disables it") ||
       message.includes("issuer verification method") ||
       message.includes("holder binding profile")
     ) {
-      return "offer_request_mismatch";
+      return { category: "offer_request_mismatch", retryable: false };
     }
-    return "malformed_request";
+    return { category: "malformed_request", retryable: false };
   }
 
   receiveRequestAndIssueCredential(
     request: ProtocolMessage,
     claimWitness: SecretClaimWitness,
+    options: SecretIssuanceProcessingOptions = {},
   ): void {
     assertMessageType(request, "issuance:request");
     assertBodyHasFields(request, ["envelope", "schema", "body"]);
@@ -170,6 +195,17 @@ export class SecretIssuerAgent {
       offer,
       issuanceRequest,
     );
+    const currentDay = options.currentDay ?? claimWitness.issuedAt;
+    if (currentDay > offer.body.offerExpiresAtDay) {
+      throw new Error(
+        "This blinded-secret issuance offer expired before the holder request was processed.",
+      );
+    }
+    if (currentDay > issuanceRequest.body.requestExpiresAtDay) {
+      throw new Error(
+        "This blinded-secret issuance request expired before the issuer responded.",
+      );
+    }
     this.pendingOffers.delete(respondsToId);
     const requestBody = issuanceRequest.body;
 
@@ -279,6 +315,7 @@ export class SecretIssuerAgent {
   receiveRequestAndRespond(
     request: ProtocolMessage,
     claimWitness: SecretClaimWitness,
+    options: SecretIssuanceProcessingOptions = {},
   ): void {
     const requestMessageId = Buffer.from(
       request.envelope.messageId,
@@ -292,13 +329,15 @@ export class SecretIssuerAgent {
       request.envelope.respondsToMessageId,
     ).toString("hex");
     try {
-      this.receiveRequestAndIssueCredential(request, claimWitness);
+      this.receiveRequestAndIssueCredential(request, claimWitness, options);
     } catch (error) {
       this.pendingOffers.delete(respondsToId);
+      const classification = this.classifyIssuanceError(error);
       const rejection = this.buildIssuanceRejection(
         request,
-        this.classifyIssuanceError(error),
+        classification.category,
         error instanceof Error ? error.message : String(error),
+        classification.retryable,
       );
       const rejectionMessage: ProtocolMessage = {
         type: "issuance:rejection",

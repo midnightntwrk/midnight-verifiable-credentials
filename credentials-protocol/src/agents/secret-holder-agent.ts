@@ -39,6 +39,13 @@ const SECRET_HOLDER_FEATURES = {
   supportsSameHolderProof: true,
 };
 
+const DEFAULT_ISSUANCE_REQUEST_EXPIRY_DAY = 1_000_000n;
+
+type SecretIssuanceRequestOptions = {
+  readonly currentDay?: bigint;
+  readonly requestExpiresAtDay?: bigint;
+};
+
 export type SecretStoredCredential = {
   readonly credential: SecretBirthCredential;
   readonly credentialProof: Proof;
@@ -119,11 +126,20 @@ export class SecretHolderAgent {
     this.bus = bus;
   }
 
-  receiveOfferAndSendRequest(offer: ProtocolMessage): void {
+  receiveOfferAndSendRequest(
+    offer: ProtocolMessage,
+    options: SecretIssuanceRequestOptions = {},
+  ): void {
     assertMessageType(offer, "issuance:offer");
     assertBodyHasFields(offer, ["envelope", "schema", "body"]);
     const issuanceOffer = offer.body as SecretBirthCredentialIssuanceOffer;
     pureCircuits.assertValidSecretBirthCredentialIssuanceOffer(issuanceOffer);
+    const currentDay = options.currentDay ?? 0n;
+    if (currentDay > issuanceOffer.body.offerExpiresAtDay) {
+      throw new Error(
+        "This blinded-secret issuance offer expired before the holder could answer it.",
+      );
+    }
     const challengeHash = sha256("challenge:issuance");
 
     const holderSecretCommitment =
@@ -153,6 +169,8 @@ export class SecretHolderAgent {
         holderChallengeHash: challengeHash,
         requestExpiration: true,
         requestedExpirationDays: 365n,
+        requestExpiresAtDay:
+          options.requestExpiresAtDay ?? DEFAULT_ISSUANCE_REQUEST_EXPIRY_DAY,
       },
     };
 

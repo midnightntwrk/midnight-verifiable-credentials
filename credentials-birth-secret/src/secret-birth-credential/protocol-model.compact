@@ -1,6 +1,7 @@
 export struct SecretBirthCredentialIssuanceOfferBody {
   supportsExpiration: Boolean,
   defaultExpirationDays: Uint<16>,
+  offerExpiresAtDay: Uint<32>,
   requiresHolderSecret: Boolean,
 }
 
@@ -10,6 +11,7 @@ export struct SecretBirthCredentialIssuanceRequestBody {
   holderChallengeHash: Bytes<32>,
   requestExpiration: Boolean,
   requestedExpirationDays: Uint<16>,
+  requestExpiresAtDay: Uint<32>,
 }
 
 export struct SecretBirthCredentialIssuanceResultBody {

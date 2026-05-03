@@ -71,7 +71,8 @@ validate:
 - response envelope threading
 - request/result matching rules for blinded-secret issuance
 - explicit blinded-secret issuance rejection messages for malformed requests,
-  offer/request mismatches, and unknown offer references
+  offer/request mismatches, unknown offer references, expired offers, and
+  expired requests
 - idempotent re-delivery of duplicate blinded-secret issuance requests and
   duplicate blinded-secret issuance outcomes
 - request/submission and submission/result alignment enforced by Compact circuits
@@ -84,6 +85,18 @@ The blinded-secret issuance happy path is a supported reference flow in this
 package. The reference protocol layer now also exposes explicit rejection
 messages for that issuance flow. The package remains intentionally narrow and
 transport-agnostic; it is not yet a production network library.
+
+For blinded-secret issuance, the transport-shaped API is now the preferred
+reference surface:
+
+- issuer: `receiveRequestAndRespond(...)`
+- holder: `receiveIssuanceOutcome(...)`
+
+The lower-level strict helpers still exist for narrow tests and internal
+composition:
+
+- issuer: `receiveRequestAndIssueCredential(...)`
+- holder: `receiveCredentialResult(...)`
 
 ## Where To Start
 

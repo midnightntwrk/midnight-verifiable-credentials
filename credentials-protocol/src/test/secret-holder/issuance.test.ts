@@ -2,7 +2,6 @@ import { pureCircuits as genericPureCircuits } from "@midnight-ntwrk/midnight-di
 import {
   pureCircuits,
   type SecretBirthCredentialIssuanceOffer,
-  type SecretBirthCredentialIssuanceRejection,
   type SecretBirthCredentialIssuanceRequest,
   type SecretBirthCredentialIssuanceResult,
 } from "@midnight-ntwrk/midnight-did-credentials-birth-secret/managed/secret-birth-credential/contract/index.js";
@@ -14,6 +13,7 @@ import {
   SecretIssuerAgent,
 } from "../../agents/secret-issuer-agent.js";
 import { MessageBus } from "../../transport/message-bus.js";
+import type { SecretBirthCredentialIssuanceRejection } from "../../transport/types.js";
 import {
   createDIDProfile,
   mod,
@@ -309,6 +309,51 @@ describe("secret-holder issuance", () => {
     ).toThrow(/default expiration must be positive/);
   });
 
+  it("rejects issuance offers whose explicit expiry day is not positive", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    const offerBody = offer.body as SecretBirthCredentialIssuanceOffer;
+    const tamperedOffer: SecretBirthCredentialIssuanceOffer = {
+      ...offerBody,
+      body: {
+        ...offerBody.body,
+        offerExpiresAtDay: 0n,
+      },
+    };
+
+    expect(() =>
+      pureCircuits.assertValidSecretBirthCredentialIssuanceOffer(tamperedOffer),
+    ).toThrow(/offer expiry day must be positive/i);
+
+    expect(() =>
+      holder.receiveOfferAndSendRequest({
+        ...offer,
+        body: tamperedOffer,
+      }),
+    ).toThrow(/offer expiry day must be positive/i);
+  });
+
+  it("rejects expired issuance offers at the holder boundary", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder", {
+      offerExpiresAtDay: 5n,
+    });
+    const offer = bus.receive("holder")!;
+
+    expect(() =>
+      holder.receiveOfferAndSendRequest(offer, {
+        currentDay: 6n,
+      }),
+    ).toThrow(/offer expired/i);
+  });
+
   it("rejects issuance requests with a missing holder binding blinding factor", () => {
     const bus = new MessageBus();
     const issuer = new SecretIssuerAgent(issuerProfile, bus);
@@ -373,6 +418,42 @@ describe("secret-holder issuance", () => {
         requestBody,
       ),
     ).toThrow(/cannot require expiration when the offer disables it/);
+  });
+
+  it("rejects issuance requests whose explicit expiry day is not positive", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    holder.receiveOfferAndSendRequest(offer);
+
+    const request = bus.receive("issuer")!;
+    const requestBody = request.body as SecretBirthCredentialIssuanceRequest;
+    const tamperedRequest: SecretBirthCredentialIssuanceRequest = {
+      ...requestBody,
+      body: {
+        ...requestBody.body,
+        requestExpiresAtDay: 0n,
+      },
+    };
+
+    expect(() =>
+      pureCircuits.assertValidSecretBirthCredentialIssuanceRequest(
+        tamperedRequest,
+      ),
+    ).toThrow(/request expiry day must be positive/i);
+
+    expect(() =>
+      issuer.receiveRequestAndIssueCredential(
+        {
+          ...request,
+          body: tamperedRequest,
+        },
+        claimWitness,
+      ),
+    ).toThrow(/request expiry day must be positive/i);
   });
 
   it("rejects issuance results whose challenge does not match the request", () => {
@@ -529,6 +610,70 @@ describe("secret-holder issuance", () => {
       expect(outcome.rejection.body.detail).toMatch(
         /issuer verification method/i,
       );
+    }
+    expect(holder.credentialCount).toBe(0);
+  });
+
+  it("sends an explicit rejection result for expired offers", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder", {
+      offerExpiresAtDay: 5n,
+    });
+    const offer = bus.receive("holder")!;
+    holder.receiveOfferAndSendRequest(offer, {
+      currentDay: 4n,
+      requestExpiresAtDay: 10n,
+    });
+
+    const request = bus.receive("issuer")!;
+    issuer.receiveRequestAndRespond(request, claimWitness, {
+      currentDay: 6n,
+    });
+
+    const rejectionMessage = bus.receive("holder")!;
+    expect(rejectionMessage.type).toBe("issuance:rejection");
+
+    const outcome = holder.receiveIssuanceOutcome(rejectionMessage);
+    expect(outcome.kind).toBe("rejected");
+    if (outcome.kind === "rejected") {
+      expect(outcome.rejection.body.category).toBe("expired_offer");
+      expect(outcome.rejection.body.retryable).toBe(true);
+      expect(outcome.rejection.body.detail).toMatch(/offer expired/i);
+    }
+    expect(holder.credentialCount).toBe(0);
+  });
+
+  it("sends an explicit rejection result for expired requests", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder", {
+      offerExpiresAtDay: 20n,
+    });
+    const offer = bus.receive("holder")!;
+    holder.receiveOfferAndSendRequest(offer, {
+      currentDay: 4n,
+      requestExpiresAtDay: 5n,
+    });
+
+    const request = bus.receive("issuer")!;
+    issuer.receiveRequestAndRespond(request, claimWitness, {
+      currentDay: 6n,
+    });
+
+    const rejectionMessage = bus.receive("holder")!;
+    expect(rejectionMessage.type).toBe("issuance:rejection");
+
+    const outcome = holder.receiveIssuanceOutcome(rejectionMessage);
+    expect(outcome.kind).toBe("rejected");
+    if (outcome.kind === "rejected") {
+      expect(outcome.rejection.body.category).toBe("expired_request");
+      expect(outcome.rejection.body.retryable).toBe(true);
+      expect(outcome.rejection.body.detail).toMatch(/request expired/i);
     }
     expect(holder.credentialCount).toBe(0);
   });
