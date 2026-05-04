@@ -14,7 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - verifier-supplied `RevokedSetStatusRequest`
   - authority-attested status proof helpers
   - witness-builder helpers
-- added `demo-revocation` as a focused Layer 3 status-aware demo contract
+- added a focused Layer 3 status-aware revocation demo under
+  `credentials-demo-contract`:
+  - `src/demo-revocation.compact`
+  - revocation simulator and witness helpers
+  - dedicated test coverage
 - added `ci:revocation` and a dedicated GitHub Actions lane for the revocation
   demo path
 - added an integration surface map and package maturity backlog for VC

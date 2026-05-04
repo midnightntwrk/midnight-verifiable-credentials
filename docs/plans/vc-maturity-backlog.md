@@ -398,7 +398,8 @@ Required outcome:
 
 Current progress:
 
-- `demo-revocation` is now a dedicated narrow demo root
+- `credentials-demo-contract` now hosts a dedicated narrow
+  `demo-revocation.compact` module
 - the repository documents the “small business-facing demos” rule explicitly
 - dormant artifact cleanup and export-surface reduction are still pending
 
