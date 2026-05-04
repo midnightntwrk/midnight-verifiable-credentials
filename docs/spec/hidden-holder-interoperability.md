@@ -140,6 +140,11 @@ because repository state values can include:
 - `bigint`
 - nested Compact-derived protocol messages
 
+Codec implementations are part of the adapter trust boundary. Production
+integrators should treat codec versioning and backward/forward compatibility as
+explicit deployment concerns rather than copying a test-only serializer
+verbatim.
+
 ## Transport mapping rule
 
 A transport adapter may wrap Compact protocol messages inside:

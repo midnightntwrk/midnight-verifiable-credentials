@@ -81,6 +81,19 @@ const SECRET_HOLDER_FEATURES = {
   supportsSameHolderProof: true,
 };
 
+const earlierExpiryMs = (
+  first?: bigint,
+  second?: bigint,
+): bigint | undefined => {
+  if (first === undefined) {
+    return second;
+  }
+  if (second === undefined) {
+    return first;
+  }
+  return first < second ? first : second;
+};
+
 class PresentationProtocolError extends Error {
   readonly category: SecretBirthCredentialVerificationRejectionCategory;
   readonly retryable: boolean;
@@ -497,6 +510,16 @@ export class VerifierAgent {
       submissionMessageId,
       resolveCurrentTimeMs(options.currentTimeMs),
     );
+    const requestExpiresAtMs = simulatorWitness.request.envelope.hasExpiresAt
+      ? simulatorWitness.request.envelope.expiresAt
+      : undefined;
+    const submissionExpiresAtMs = submission.envelope.hasExpiresAt
+      ? submission.envelope.expiresAt
+      : undefined;
+    const retentionExpiresAtMs = earlierExpiryMs(
+      requestExpiresAtMs,
+      submissionExpiresAtMs,
+    );
     if (completedOutcome) {
       this.bus.send(completedOutcome);
       return;
@@ -521,9 +544,7 @@ export class VerifierAgent {
         resultMessage,
         resolveCurrentTimeMs(options.currentTimeMs),
         this.retentionPolicy,
-        resultMessage.envelope.hasExpiresAt
-          ? resultMessage.envelope.expiresAt
-          : undefined,
+        retentionExpiresAtMs,
       );
     } catch (error) {
       const rejection = this.buildSecretPresentationRejection(
@@ -550,9 +571,7 @@ export class VerifierAgent {
         rejectionMessage,
         resolveCurrentTimeMs(options.currentTimeMs),
         this.retentionPolicy,
-        rejectionMessage.envelope.hasExpiresAt
-          ? rejectionMessage.envelope.expiresAt
-          : undefined,
+        retentionExpiresAtMs,
       );
     }
   }
