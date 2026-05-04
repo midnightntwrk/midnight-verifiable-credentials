@@ -55,7 +55,7 @@ Current limitations:
 - less privacy-preserving than hidden-holder profiles
 - this explicit-holder family currently remains at the zero-status end of the
   repository taxonomy
-- current status capability is:
+- current status binding is:
   - `NoStatusCapability`
 
 ### 2. Secret holder binding
@@ -90,9 +90,10 @@ Current limitations:
 - the secret birth family now carries prototype status-aware verification
   surfaces, but the repository does not yet claim final production revocation
   support
-- current prototype status capabilities are:
-  - `AuthorityAttestedStatusCapability`
-  - `RevokedSetNonMembershipStatusCapability`
+- current prototype status model is:
+  - shared registry-bound status binding in the VC family
+  - `AuthorityAttestedStatusProofProtocol`
+  - `RevokedSetNonMembershipStatusProofProtocol`
 
 ### 3. Blinded secret holder binding
 
@@ -129,9 +130,10 @@ Current limitations:
 - the credential family now carries prototype status-aware verification
   surfaces, but the repository does not yet claim final production revocation
   support
-- current prototype status capabilities are:
-  - `AuthorityAttestedStatusCapability`
-  - `RevokedSetNonMembershipStatusCapability`
+- current prototype status model is:
+  - shared registry-bound status binding in the VC family
+  - `AuthorityAttestedStatusProofProtocol`
+  - `RevokedSetNonMembershipStatusProofProtocol`
 
 ### 4. Verifier-domain pseudonym profile
 

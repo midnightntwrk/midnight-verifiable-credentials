@@ -66,6 +66,9 @@ Purpose:
 - bind the holder flow to one accepted revocation root
 - bind the resulting proof or attestation to one verifier request
 
+This request object is shared by different status proof protocols. It is not a
+different VC shape.
+
 ## Contract-facing verification modes
 
 ### 1. Canonical target: embedded non-revocation proof
@@ -90,7 +93,7 @@ This is the preferred final architecture.
 
 Current implemented prototype:
 
-- `AuthorityAttestedStatusCapability`
+- registry-bound status binding in the VC family
 - `AuthorityAttestedStatusProof`
 
 Purpose:
@@ -137,7 +140,7 @@ but they are a different capability.
 For the authority-attested prototype, a Layer 3 contract should verify:
 
 1. the ordinary VC/VP proof
-2. the status capability bound into the credential family
+2. the status binding bound into the credential family
 3. the verifier-supplied `RevokedSetStatusRequest`
 4. the `AuthorityAttestedStatusProof`
 5. optional expiration of that attestation
@@ -170,16 +173,45 @@ the VC/VP they are presenting.
 
 In the current prototype, this is achieved by:
 
-- carrying a credential-bound status capability
-- binding that capability to:
+- carrying a credential-bound status binding
+- binding that status object to:
   - `registryId`
   - `statusHandleCommitment`
 - requiring the authority attestation or witness inputs to match that same
-  capability
+  binding
 
 So the holder does not merely present "some registry root"; they present status
 evidence bound to the exact registry and commitment domain already carried by
 the VC family.
+
+## Normalized target architecture
+
+The repository should distinguish:
+
+- VC / VP status binding
+- presentation-time status proof protocol
+
+Recommended target model:
+
+- VC / VP binding layer:
+  - `NoStatusBinding`
+  - `RegistryBoundStatusBinding`
+- presentation-time proof-protocol layer:
+  - `AuthorityAttestedStatusProofProtocol`
+  - `RevokedSetNonMembershipStatusProofProtocol`
+
+In that model:
+
+- credential families import only the binding layer
+- verifier flows and Layer 3 contracts choose a proof protocol separately
+- different trust semantics stay explicit without multiplying VC shapes
+
+Current compatibility note:
+
+- the repository still exposes `AuthorityAttestedStatusCapability` and
+  `RevokedSetNonMembershipStatusCapability`
+- those names should be read as compatibility-era wrappers over one shared
+  registry-bound status shape
 
 ## Prototype limitations
 
@@ -190,9 +222,9 @@ Current limitations remain:
 - the revocation registry contract does not yet prove that a supplied
   `revokedRoot` equals the live Merkle root inside Compact
 - freshness is still verifier/application enforced, not contract-discovered
-- the current wrapped credential families validate status capability objects
-  and status proofs consistently, but they do not yet cryptographically commit
-  the full status capability into the issuer-signed credential body root
+- the current wrapped credential families validate status binding objects and
+  status proofs consistently, but they do not yet cryptographically commit the
+  full status binding into the issuer-signed credential body root
 - the current off-chain authority-attestation builder requires the caller to
   provide a fresh JubJub subgroup nonce scalar; nonce generation policy is
   still an application-side responsibility

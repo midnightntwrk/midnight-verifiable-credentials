@@ -38,6 +38,7 @@ Purpose:
 | 13 | Public surface classification is missing for onchain-only / offchain-only / dual-use exports | `Accepted` | P1 | Add one canonical classification guide and propagate the labels into package READMEs |
 | 14 | Protocol-state hardening items from earlier review rounds remain open | `Accepted (narrowed)` | P1 | Track concrete protocol-state fixes separately from the broader seam redesign so tactical fixes do not get lost |
 | 15 | Layer-3 and family package public surfaces are too broad or misleading | `Accepted` | P1 | Reduce accidental exports, make demo surfaces intentionally narrow, and clarify that the core stub contract is not deployable |
+| 16 | Status capability types conflate VC-side binding with verifier-facing proof semantics | `Accepted` | P1 | Split shared VC-side status binding from presentation-time status proof protocols, then migrate specs and code in phases |
 
 ## Backlog Items
 
@@ -108,6 +109,35 @@ Current grouped execution:
 
 - stacked docs/spec slice:
   - status taxonomy + conformance alignment
+
+### VC-MAT-16: Split status binding from status proof protocol
+
+Priority: P1
+
+Problem:
+
+- the current repository uses `StatusCapability` names for two different jobs:
+  - VC-side binding shape
+  - verifier-facing proof semantics
+- `AuthorityAttestedStatusCapability` and
+  `RevokedSetNonMembershipStatusCapability` already share the same credential
+  fields but imply different trust models
+
+Required outcome:
+
+- normalize the architecture around:
+  - shared `NoStatusBinding` / `RegistryBoundStatusBinding`
+  - separate `AuthorityAttestedStatusProofProtocol` /
+    `RevokedSetNonMembershipStatusProofProtocol`
+- keep compatibility aliases while the current runtime types migrate
+- make package ownership explicit:
+  - `credentials` owns shared VC-side binding types
+  - `credentials-status-registry` owns verifier-facing status proof protocols
+
+Current grouped execution:
+
+- architectural terminology/spec slice:
+  - status binding and proof-protocol split
 
 ### VC-MAT-04: Resolve `OffchainDIDHolderBinding` vs `OffchainMidnightHolderBinding`
 
@@ -361,6 +391,7 @@ Required outcome:
 13. `VC-MAT-13`
 14. `VC-MAT-14`
 15. `VC-MAT-15`
+16. `VC-MAT-16`
 
 ## Notes
 
