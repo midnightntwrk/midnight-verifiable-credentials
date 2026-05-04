@@ -282,6 +282,11 @@ Required outcome:
     migration period
 - document the choice in architecture and package-boundary docs
 
+Current grouped execution:
+
+- stacked docs slice:
+  - status DSL ownership and import normalization
+
 ### VC-MAT-12: Add a dedicated status capability conformance category
 
 Priority: P1

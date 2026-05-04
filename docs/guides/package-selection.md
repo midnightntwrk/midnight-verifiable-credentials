@@ -54,6 +54,7 @@ This is a capability package, not a standalone credential family.
 ### I need status / revocation registry support
 Start with:
 
+- [`../../credentials/README.md`](../../credentials/README.md)
 - [`../../credentials-status-registry/README.md`](../../credentials-status-registry/README.md)
 - then read:
   - [`../spec/credential-status.md`](../spec/credential-status.md)
@@ -62,16 +63,32 @@ Start with:
 
 Use this when you need:
 
+- the VC-side status binding types used by credential families
 - the current prototype revocation-registry Compact contract
 - verifier-supplied `(registryId, revokedRoot)` request helpers
 - authority-attested status proof builders
 - off-chain status witness and status-handle helpers
 
-This is a capability package, not a standalone credential family.
-This package is mixed-surface:
+Status ownership split:
 
-- Compact registry contract for on-chain usage
-- TypeScript builders for off-chain usage
+- `credentials`
+  - owns shared VC-side status binding and policy vocabulary
+  - examples:
+    - `StatusRegistryRef`
+    - `NoStatusBinding`
+    - `RegistryBoundStatusBinding`
+- `credentials-status-registry`
+  - owns registry-specific and verifier-facing proof-protocol helpers
+  - examples:
+    - `RevokedSetStatusRequest`
+    - `AuthorityAttestedStatusProofProtocol`
+    - `RevokedSetNonMembershipStatusProofProtocol`
+
+This is not a standalone credential family.
+This capability area is intentionally split across two packages:
+
+- core VC binding vocabulary in `credentials`
+- registry contract and verifier/holder helpers in `credentials-status-registry`
 
 ### I need shared ISO code types
 Start with:

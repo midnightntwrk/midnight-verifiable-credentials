@@ -110,6 +110,19 @@ Important note:
 - contracts still consume verifier-supplied roots or attested status evidence
 - freshness and root selection remain off-chain responsibilities today
 
+Integrator split:
+
+- define VC/family status shape with:
+  - `StatusRegistryRef`
+  - `NoStatusBinding`
+  - `RegistryBoundStatusBinding`
+  from `credentials`
+- define verification semantics with:
+  - `RevokedSetStatusRequest`
+  - `AuthorityAttestedStatusProofProtocol`
+  - `RevokedSetNonMembershipStatusProofProtocol`
+  from `credentials-status-registry` and the corresponding shared core types
+
 ### `credentials-demo-contract`
 
 | Surface | Class | Use |

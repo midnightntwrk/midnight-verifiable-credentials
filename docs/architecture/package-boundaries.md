@@ -141,6 +141,14 @@ Normalized ownership target:
 
 They must not silently blur those two roles into one generic runtime API.
 
+Import normalization rule:
+
+- if the code is defining VC or VP family shape, import status binding from
+  `credentials`
+- if the code is defining verifier-request semantics, Layer 3 status checks, or
+  off-chain status builders, import proof-protocol helpers from
+  `credentials-status-registry`
+
 ### 5. Protocol / transport / application-composition packages
 
 These packages orchestrate issuance, presentation, transport framing, session
