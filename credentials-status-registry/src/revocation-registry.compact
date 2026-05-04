@@ -33,10 +33,19 @@ export circuit initializeRegistry(nextRegistryId: Bytes<32>): [] {
     nextRegistryId != pad(32, ""),
     "Revocation registry id must be set"
   );
+  assert(
+    nextRegistryId != pad(32, "midnight:vc:status:unset"),
+    "Revocation registry id must not reuse the unset sentinel"
+  );
   registryId = disclose(nextRegistryId);
   initialized = true;
 }
 
+// Current prototype limitation: Compact does not yet expose an in-circuit
+// getter for the current MerkleTree root here, so this circuit only binds the
+// caller-provided snapshot to this registry's id and current epoch window.
+// Callers must not treat `state.revokedRoot` as contract-verified until the
+// final in-circuit non-membership/root-binding path lands.
 export circuit assertStateUsesThisRegistry(
   state: RevocationRegistryState
 ): [] {

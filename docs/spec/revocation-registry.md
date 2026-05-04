@@ -188,6 +188,20 @@ The critical rule is:
 So the revocation registry should be a dedicated contract or dedicated state
 surface, not a mixed-purpose contract with unrelated writes.
 
+Current prototype implementation note:
+
+- the repository's current Compact implementation does not yet expose an
+  in-circuit Merkle-root equality check for the revoked-set tree
+- so `assertStateUsesThisRegistry(...)` currently binds a supplied snapshot to:
+  - the contract's `registryId`
+  - and the current `version` / epoch window
+- but it does not yet prove that the supplied `revokedRoot` equals the live
+  contract Merkle root
+
+Until the final in-circuit non-membership path lands, the current repository
+implementation must treat `revokedRoot` as an off-chain coordinated snapshot
+value, not as a fully contract-proven root.
+
 ## Status handle model
 
 The canonical proof model should not use a raw credential hash directly as the
@@ -202,6 +216,13 @@ Why:
 - easier migration/versioning
 - avoids overloading a generic credential hash with status semantics
 - allows hidden-holder-friendly derivation patterns later
+
+Issuer requirement:
+
+- `issuerStatusSalt` must be unique per credential instance
+- reusing the same salt across multiple credentials weakens the privacy goal of
+  the revoked-set design and increases correlation risk if status handles are
+  ever observed or derived
 
 ## VC extension point
 
@@ -290,6 +311,9 @@ Therefore:
 - registry binding must be explicit
 - issuer proof validity remains separate from non-revocation
 - domain separation for handles and related commitments is mandatory
+- the current prototype implementation must not over-claim root binding before
+  the final in-circuit Merkle-root equality and non-membership proof path is
+  implemented
 
 ## Why no revocation reason/date in the core model
 
