@@ -4,11 +4,27 @@ export struct SecretBirthCredentialWithStatusCapability {
   statusCapability: RevokedSetNonMembershipStatusCapability,
 }
 
+export struct SecretBirthCredentialWithAuthorityAttestedStatusCapability {
+  credential: SecretBirthCredential,
+  credentialProof: Proof,
+  statusCapability: AuthorityAttestedStatusCapability,
+}
+
 export struct SecretBirthCredentialVerificationStatusRequest {
   verificationRequest: SecretBirthCredentialVerificationRequest,
   statusPolicy: VerifierStatusPolicy,
 }
 
+export struct SecretBirthCredentialVerificationAuthorityAttestedStatusRequest {
+  verificationRequest: SecretBirthCredentialVerificationRequest,
+  statusPolicy: VerifierStatusPolicy,
+  statusRequest: RevokedSetStatusRequest,
+}
+
 export struct SecretBirthCredentialVerificationStatusInputs {
   nonRevocationWitness: RevokedSetNonMembershipWitnessInput,
+}
+
+export struct SecretBirthCredentialVerificationAuthorityAttestedStatusInputs {
+  statusAttestation: AuthorityAttestedStatusProof,
 }

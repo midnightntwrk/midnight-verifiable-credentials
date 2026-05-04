@@ -41,6 +41,21 @@ describe("credentials core: status capabilities", () => {
     ).not.toThrow();
   });
 
+  it("accepts a valid authority-attested status capability", () => {
+    const signer = createSigner("status-authority", 889n);
+    const capability = {
+      registryRef: {
+        registryId: sha256Bytes("registry:hidden-holder"),
+        authorityVerificationMethodRef: signer.verificationMethodRef,
+      },
+      statusHandleCommitment: sha256Bytes("status-handle-commitment"),
+    };
+
+    expect(() =>
+      pureCircuits.assertValidAuthorityAttestedStatusCapability(capability),
+    ).not.toThrow();
+  });
+
   it("derives a deterministic revoked-set status handle", () => {
     const first = pureCircuits.revokedSetStatusHandle(
       sha256Bytes("credential-root:alice"),

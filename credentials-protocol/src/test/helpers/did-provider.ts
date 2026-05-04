@@ -15,12 +15,12 @@ const padText = (value: string, length = 32): Uint8Array => {
   return padded;
 };
 
-const JUBJUB_FIELD_MODULUS =
+const JUBJUB_SUBGROUP_ORDER =
   6554484396890773809930967563523245729705921265872317281365359162392183254199n;
 
 const mod = (value: bigint): bigint => {
-  const reduced = value % JUBJUB_FIELD_MODULUS;
-  return reduced >= 0n ? reduced : reduced + JUBJUB_FIELD_MODULUS;
+  const reduced = value % JUBJUB_SUBGROUP_ORDER;
+  return reduced >= 0n ? reduced : reduced + JUBJUB_SUBGROUP_ORDER;
 };
 
 const contractAddress = (label: string): { bytes: Uint8Array } => ({
@@ -54,4 +54,4 @@ const createDIDProfile = (
 const fill = (value: number, length = 32): Uint8Array =>
   new Uint8Array(length).fill(value);
 
-export { createDIDProfile, createSigner, fill, JUBJUB_FIELD_MODULUS,mod, padText, sha256 };
+export { createDIDProfile, createSigner, fill, JUBJUB_SUBGROUP_ORDER,mod, padText, sha256 };

@@ -12,7 +12,7 @@ import {
   type VerificationMethodRef,
 } from "../managed/credentials/contract/index.js";
 
-const JUBJUB_FIELD_MODULUS =
+const JUBJUB_SUBGROUP_ORDER =
   6554484396890773809930967563523245729705921265872317281365359162392183254199n;
 
 export type Signer = {
@@ -36,8 +36,8 @@ const padText = (value: string, length = 32): Uint8Array => {
 };
 
 const mod = (value: bigint): bigint => {
-  const reduced = value % JUBJUB_FIELD_MODULUS;
-  return reduced >= 0n ? reduced : reduced + JUBJUB_FIELD_MODULUS;
+  const reduced = value % JUBJUB_SUBGROUP_ORDER;
+  return reduced >= 0n ? reduced : reduced + JUBJUB_SUBGROUP_ORDER;
 };
 
 const contractAddress = (label: string): { bytes: Uint8Array } => ({
@@ -59,15 +59,18 @@ export const createSigner = (
 });
 
 export type ProofContext = "issuance" | "presentation";
+export type ExtendedProofContext = ProofContext | "statusAttestation";
 
 const deriveProofChallenge = (
   bodyRoot: Uint8Array,
   proof: Proof,
-  context: ProofContext,
+  context: ExtendedProofContext,
 ): bigint =>
   context === "issuance"
     ? pureCircuits.issuanceProofChallenge(bodyRoot, proof)
-    : pureCircuits.presentationProofChallenge(bodyRoot, proof);
+    : context === "presentation"
+      ? pureCircuits.presentationProofChallenge(bodyRoot, proof)
+      : pureCircuits.statusAttestationProofChallenge(bodyRoot, proof);
 
 export const signProof = ({
   bodyRoot,
@@ -78,7 +81,7 @@ export const signProof = ({
   nonceScalar,
 }: {
   readonly bodyRoot: Uint8Array;
-  readonly context: ProofContext;
+  readonly context: ExtendedProofContext;
   readonly signer: Signer;
   readonly createdAt: bigint;
   readonly challengeHash: Uint8Array;

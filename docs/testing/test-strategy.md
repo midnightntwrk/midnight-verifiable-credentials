@@ -128,8 +128,21 @@ Each credential family defines its own disclosure struct with per-field reveal f
 | Level 1 | Public status lookup with explicit freshness rules |
 | Level 2 | Privacy-preserving non-revocation proof with explicit witness freshness rules |
 
-Current repository packages still operate at Level 0. See
+Current repository packages now include prototype status capability surfaces,
+but they do not yet claim full production-ready Level 2 support. See
 [`../spec/credential-status.md`](../spec/credential-status.md).
+
+Current implementation note:
+
+- the repository now includes prototype status capability and authority
+  attestation surfaces
+- but it still does not claim final production-ready Level 2
+  non-revocation support
+- verifier/application-supplied root freshness remains an external policy
+  decision in the current prototype
+- current authority-attested coverage proves request binding, registry/root
+  consistency, wrong-authority rejection, and expiration handling for the
+  transitional Layer 3 status path
 
 Current repository stance:
 

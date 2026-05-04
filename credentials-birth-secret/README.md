@@ -12,6 +12,7 @@ Related docs:
 - profiles: [`../docs/spec/profiles.md`](../docs/spec/profiles.md)
 - conformance: [`../docs/spec/conformance.md`](../docs/spec/conformance.md)
 - credential status: [`../docs/spec/credential-status.md`](../docs/spec/credential-status.md)
+- status verification protocol: [`../docs/spec/status-verification-protocol.md`](../docs/spec/status-verification-protocol.md)
 - companion guide: [`../docs/guides/midnight-credentials-for-dummies.md`](../docs/guides/midnight-credentials-for-dummies.md)
 - test matrix: [`../docs/testing/test-matrix.md`](../docs/testing/test-matrix.md)
 
@@ -82,6 +83,10 @@ What it does prove:
 - challenge-bound response derived from the holder secret
 - verifier-scoped pseudonym derivation from the hidden holder secret
 - same-holder composition across two or three secret birth credentials when the verifier coordinates a shared challenge
+- prototype status-aware verification using:
+  - verifier-supplied `(registryId, revokedRoot)`
+  - revoked-set status capability binding
+  - authority-attested status proofs for Layer 3 transitional verification
 
 What it does not yet prove:
 
@@ -92,8 +97,9 @@ What it does not yet prove:
   production-grade implementation over the now-injectable protocol randomness
   interface
 - presentation-side message-level expiry semantics
-- repository status/revocation support is still Level 0 as defined in
-  `../docs/spec/credential-status.md`
+- final in-circuit revoked-set non-membership verification
+- final contract-proven live Merkle-root binding for revocation state
+- production-ready revocation semantics
 
 Important distinction:
 
@@ -101,6 +107,8 @@ Important distinction:
   stable reference hidden-holder capability
 - the blinded-secret issuance/presentation transport contract layered around
   that capability is still a production-hardening track
+- the status-aware verification additions in this package are prototype
+  capability surfaces, not final production revocation support
 
 ## Why this package exists
 
