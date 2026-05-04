@@ -1,0 +1,61 @@
+pragma language_version >= 0.20;
+
+import CompactStandardLibrary;
+
+include "../../midnight-did-credentials/dist/credentials";
+
+export ledger registryId: Bytes<32>;
+export ledger initialized: Boolean;
+export ledger version: Counter;
+export ledger revokedStatusHandleCount: Counter;
+export ledger revokedStatusHandles: MerkleTree<32, Bytes<32>>;
+
+constructor() {
+  registryId = pad(32, "midnight:vc:status:unset");
+  initialized = false;
+}
+
+pure circuit revocationRegistryState(
+  registryIdValue: Bytes<32>,
+  revokedRoot: Bytes<32>,
+  epoch: Uint<64>
+): RevocationRegistryState {
+  return RevocationRegistryState {
+    registryId: registryIdValue,
+    revokedRoot: revokedRoot,
+    epoch: epoch,
+  };
+}
+
+export circuit initializeRegistry(nextRegistryId: Bytes<32>): [] {
+  assert(!initialized, "Revocation registry has already been initialized");
+  assert(
+    nextRegistryId != pad(32, ""),
+    "Revocation registry id must be set"
+  );
+  registryId = disclose(nextRegistryId);
+  initialized = true;
+}
+
+export circuit assertStateUsesThisRegistry(
+  state: RevocationRegistryState
+): [] {
+  assert(initialized, "Revocation registry is not initialized");
+  assertValidRevocationRegistryState(state);
+  assert(
+    state.registryId == registryId,
+    "Revocation registry state does not belong to this registry"
+  );
+  assert(
+    state.epoch <= version.read(),
+    "Revocation registry state epoch cannot exceed the current registry epoch"
+  );
+}
+
+export circuit revokeStatusHandle(statusHandle: Bytes<32>): [] {
+  assert(initialized, "Revocation registry is not initialized");
+  assert(statusHandle != pad(32, ""), "Revoked status handle must be set");
+  revokedStatusHandles.insert(disclose(statusHandle));
+  revokedStatusHandleCount.increment(1);
+  version.increment(1);
+}

@@ -1,0 +1,14 @@
+export struct SecretBirthCredentialWithStatusCapability {
+  credential: SecretBirthCredential,
+  credentialProof: Proof,
+  statusCapability: RevokedSetNonMembershipStatusCapability,
+}
+
+export struct SecretBirthCredentialVerificationStatusRequest {
+  verificationRequest: SecretBirthCredentialVerificationRequest,
+  statusPolicy: VerifierStatusPolicy,
+}
+
+export struct SecretBirthCredentialVerificationStatusInputs {
+  nonRevocationWitness: RevokedSetNonMembershipWitnessInput,
+}
