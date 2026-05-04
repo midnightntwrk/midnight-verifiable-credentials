@@ -170,6 +170,15 @@ The generic core now uses:
 
 - `Proof` instead of `JubjubCredentialProof`
 - `issuanceProofChallenge(...)` and `presentationProofChallenge(...)` instead of a stored purpose enum
+- `OffchainMidnightHolderBinding` as the canonical Compact/core struct name for
+  the offchain DID-shaped holder-binding profile
+
+Runtime/public-facing naming rule:
+
+- `credentials-offchain-did` exposes `OffchainDIDHolderBinding` as the
+  preferred adapter-facing name
+- compatibility aliases may exist during migration, but the Compact/core struct
+  remains `OffchainMidnightHolderBinding`
 
 This is intentionally shorter because the same proof container is reused for both VC and VP flows.
 
