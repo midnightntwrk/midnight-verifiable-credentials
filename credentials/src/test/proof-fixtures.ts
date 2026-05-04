@@ -59,15 +59,18 @@ export const createSigner = (
 });
 
 export type ProofContext = "issuance" | "presentation";
+export type ExtendedProofContext = ProofContext | "statusAttestation";
 
 const deriveProofChallenge = (
   bodyRoot: Uint8Array,
   proof: Proof,
-  context: ProofContext,
+  context: ExtendedProofContext,
 ): bigint =>
   context === "issuance"
     ? pureCircuits.issuanceProofChallenge(bodyRoot, proof)
-    : pureCircuits.presentationProofChallenge(bodyRoot, proof);
+    : context === "presentation"
+      ? pureCircuits.presentationProofChallenge(bodyRoot, proof)
+      : pureCircuits.statusAttestationProofChallenge(bodyRoot, proof);
 
 export const signProof = ({
   bodyRoot,
@@ -78,7 +81,7 @@ export const signProof = ({
   nonceScalar,
 }: {
   readonly bodyRoot: Uint8Array;
-  readonly context: ProofContext;
+  readonly context: ExtendedProofContext;
   readonly signer: Signer;
   readonly createdAt: bigint;
   readonly challengeHash: Uint8Array;

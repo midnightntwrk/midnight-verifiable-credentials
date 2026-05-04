@@ -10,6 +10,7 @@ import {
   type Proof,
   type ProtocolMessageEnvelope,
   pureCircuits as genericPureCircuits,
+  type RevokedSetStatusRequest,
   StatusCapabilityKind,
   type VerificationMethodRef,
 } from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
@@ -19,9 +20,12 @@ import {
   type SecretBirthCredential,
   type SecretBirthCredentialPresentation,
   type SecretBirthCredentialPresentationRequest,
+  type SecretBirthCredentialVerificationAuthorityAttestedStatusInputs,
+  type SecretBirthCredentialVerificationAuthorityAttestedStatusRequest,
   type SecretBirthCredentialVerificationRequest,
   type SecretBirthCredentialVerificationStatusInputs,
   type SecretBirthCredentialVerificationStatusRequest,
+  type SecretBirthCredentialWithAuthorityAttestedStatusCapability,
   type SecretBirthCredentialWithStatusCapability,
 } from "../managed/secret-birth-credential/contract/index.js";
 
@@ -42,8 +46,11 @@ export type BirthCredentialFixture = {
   readonly presentationRequest: SecretBirthCredentialPresentationRequest;
   readonly verificationRequest: SecretBirthCredentialVerificationRequest;
   readonly credentialWithStatus: SecretBirthCredentialWithStatusCapability;
+  readonly credentialWithAuthorityAttestedStatus: SecretBirthCredentialWithAuthorityAttestedStatusCapability;
   readonly statusVerificationRequest: SecretBirthCredentialVerificationStatusRequest;
+  readonly authorityAttestedStatusVerificationRequest: SecretBirthCredentialVerificationAuthorityAttestedStatusRequest;
   readonly statusVerificationInputs: SecretBirthCredentialVerificationStatusInputs;
+  readonly authorityAttestedStatusVerificationInputs: SecretBirthCredentialVerificationAuthorityAttestedStatusInputs;
   readonly presentation: SecretBirthCredentialPresentation;
   readonly witness: {
     readonly holderSecret: Uint8Array;
@@ -146,12 +153,14 @@ export const signProof = ({
   createdAt,
   challengeHash,
   nonceScalar,
+  context = "issuance",
 }: {
   readonly bodyRoot: Uint8Array;
   readonly signer: Signer;
   readonly createdAt: bigint;
   readonly challengeHash: Uint8Array;
   readonly nonceScalar: bigint;
+  readonly context?: "issuance" | "statusAttestation";
 }): Proof => {
   const proof: Proof = {
     signerVerificationMethodRef: signer.verificationMethodRef,
@@ -163,7 +172,10 @@ export const signProof = ({
       s: 0n,
     },
   };
-  const challenge = genericPureCircuits.issuanceProofChallenge(bodyRoot, proof);
+  const challenge =
+    context === "issuance"
+      ? genericPureCircuits.issuanceProofChallenge(bodyRoot, proof)
+      : genericPureCircuits.statusAttestationProofChallenge(bodyRoot, proof);
   return {
     ...proof,
     signature: {
@@ -338,6 +350,14 @@ export const createSecretBirthCredentialFixture = (
       },
     };
 
+  const statusRequest: RevokedSetStatusRequest = {
+    registryState: {
+      registryId: witness.statusRegistryId,
+      revokedRoot: witness.statusRevokedRoot,
+    },
+    verifierChallengeHash: verificationRequest.verifierChallengeHash,
+  };
+
   const statusVerificationInputs: SecretBirthCredentialVerificationStatusInputs =
     {
       nonRevocationWitness: {
@@ -347,6 +367,62 @@ export const createSecretBirthCredentialFixture = (
         },
         statusHandle: witness.statusHandle,
         statusHandleOpening: witness.statusHandleOpening,
+      },
+    };
+
+  const credentialWithAuthorityAttestedStatus: SecretBirthCredentialWithAuthorityAttestedStatusCapability =
+    {
+      credential,
+      credentialProof,
+      statusCapability: {
+        registryRef: {
+          registryId: witness.statusRegistryId,
+          authorityVerificationMethodRef: issuer.verificationMethodRef,
+        },
+        statusHandleCommitment:
+          genericPureCircuits.revokedSetStatusHandleCommitment(
+            witness.statusHandle,
+            witness.statusHandleOpening,
+          ),
+      },
+    };
+
+  const authorityAttestedStatusVerificationRequest: SecretBirthCredentialVerificationAuthorityAttestedStatusRequest =
+    {
+      verificationRequest,
+      statusPolicy: {
+        requireStatus: true,
+        acceptedStatusCapability: StatusCapabilityKind.authorityAttestedStatus,
+        enforceRegistryId: true,
+        acceptedRegistryId: witness.statusRegistryId,
+      },
+      statusRequest,
+    };
+
+  const statusAttestationStatement = {
+    registryState: statusRequest.registryState,
+    statusHandleCommitment:
+      credentialWithAuthorityAttestedStatus.statusCapability
+        .statusHandleCommitment,
+    verifierChallengeHash: statusRequest.verifierChallengeHash,
+    hasExpiration: true,
+    expiresAt: verificationRequest.envelope.createdAt + 100n,
+  };
+
+  const authorityAttestedStatusVerificationInputs: SecretBirthCredentialVerificationAuthorityAttestedStatusInputs =
+    {
+      statusAttestation: {
+        statement: statusAttestationStatement,
+        proof: signProof({
+          bodyRoot: genericPureCircuits.authorityAttestedStatusStatementRoot(
+            statusAttestationStatement,
+          ),
+          signer: issuer,
+          createdAt: verificationRequest.envelope.createdAt + 1n,
+          challengeHash: statusRequest.verifierChallengeHash,
+          nonceScalar: 21n,
+          context: "statusAttestation",
+        }),
       },
     };
 
@@ -388,8 +464,11 @@ export const createSecretBirthCredentialFixture = (
     presentationRequest,
     verificationRequest,
     credentialWithStatus,
+    credentialWithAuthorityAttestedStatus,
     statusVerificationRequest,
+    authorityAttestedStatusVerificationRequest,
     statusVerificationInputs,
+    authorityAttestedStatusVerificationInputs,
     presentation,
     witness,
   };

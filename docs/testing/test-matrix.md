@@ -50,10 +50,40 @@ Status: current implemented test surface as of 2026-05-01.
 
 Current repository stance:
 
-- Level 0 only
-- no checked-in revocation or non-revocation test surface yet
-- claim expiry and protocol/session expiry tests do not count as revocation
-  coverage
+- prototype status/revocation surfaces now exist, but the repository still does
+  not claim final production-ready non-revocation proofs
+
+Implemented prototype coverage:
+
+- `credentials/src/test/status-capability.test.ts`
+  - status registry refs
+  - revoked-set capability validation
+  - authority-attested capability validation
+- `credentials/src/test/status-policy.test.ts`
+  - verifier status policy validation and registry binding checks
+- `credentials/src/test/status-attestation.test.ts`
+  - request-bound authority attestation validation
+  - authority signer binding
+  - revoked-root mismatch rejection
+  - attestation expiry rejection
+- `credentials-status-registry/src/test/witness-builder.test.ts`
+  - deterministic status-handle derivation
+  - revoked-set witness/capability construction
+  - revoked snapshot rejection
+- `credentials-status-registry/src/test/attestation-builder.test.ts`
+  - verifier-supplied status request construction
+  - authority attestation statement and proof construction
+- `credentials-status-registry/src/test/revocation-registry.test.ts`
+  - registry initialization
+  - registry/state binding semantics
+  - append-only revocation bookkeeping
+  - current prototype root-binding limitation disclosure
+- `credentials-birth-secret/src/test/status.test.ts`
+  - hidden-holder revoked-set status request wiring
+- `credentials-birth-secret/src/test/status-attestation.test.ts`
+  - hidden-holder authority-attested status verification
+  - verifier-root mismatch rejection
+  - attestation expiry rejection
 
 ## Transport/domain tests
 

@@ -8,6 +8,7 @@ Companion documents:
 - [`./profiles.md`](./profiles.md)
 - [`./conformance.md`](./conformance.md)
 - [`./revocation-registry.md`](./revocation-registry.md)
+- [`./status-verification-protocol.md`](./status-verification-protocol.md)
 
 ## Purpose
 
@@ -132,12 +133,18 @@ The capability contributes:
 The current taxonomy is:
 
 - `NoStatusCapability`
+- `AuthorityAttestedStatusCapability`
 - `RevokedSetNonMembershipStatusCapability`
 
 The detailed prototype revocation target for
 `RevokedSetNonMembershipStatusCapability` is defined in:
 
 - [`./revocation-registry.md`](./revocation-registry.md)
+
+The current transitional Layer 3 contract-facing prototype for trusted
+authority-attested status is defined in:
+
+- [`./status-verification-protocol.md`](./status-verification-protocol.md)
 
 ## Required status disclosures
 
@@ -195,17 +202,18 @@ In plain terms:
 
 ## Repository stance today
 
-Current repository packages claim:
+Current repository packages now contain:
 
-- Level 0 status support only
-- revocation/non-revocation is deferred
-- claim-level expiry and protocol/session expiry do not equal revocation support
-- current repository families therefore behave as `NoStatusCapability`
+- explicit zero-status modeling through `NoStatusCapability`
+- prototype status capability surfaces and validators
+- a prototype authority-attested status flow for hidden-holder verification
+- a prototype revoked-set witness/capability flow without final in-circuit
+  Merkle non-membership verification
 
-Current repository packages do not claim:
+Current repository packages still do not claim:
 
-- public status check interoperability
-- privacy-preserving non-revocation proofs
+- final public status interoperability
+- final privacy-preserving non-revocation proofs
 - production-ready revocation semantics
 
 ## Conformance linkage
@@ -225,8 +233,7 @@ its chosen status level.
 
 The next likely status/revocation engineering phases are:
 
-1. add typed status capability structs and package surfaces for credential
-   families
-2. define verifier/application freshness-root semantics
-3. implement `RevokedSetNonMembershipStatusCapability`
-4. add tests and package claims only after the chosen model exists
+1. complete in-circuit revoked-set non-membership verification
+2. strengthen root-binding semantics for the revocation registry contract
+3. add a dedicated revocation demo / Layer 3 consumer flow
+4. then upgrade conformance claims from prototype to production-shaped support

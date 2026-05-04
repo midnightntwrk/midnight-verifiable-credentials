@@ -7,11 +7,16 @@ Current scope:
 - append-only revoked handle `MerkleTree`
 - monotonic internal `version` counter for registry-side bookkeeping
 - typed `RevocationRegistryState` snapshot helpers
+- typed `RevokedSetStatusRequest` helpers for verifier-supplied roots
 - off-chain witness-builder helpers for:
   - deterministic status-handle derivation
   - status capability construction
   - witness-input construction
   - snapshot-based revoked-handle rejection
+- authority-attested status helpers for:
+  - request-bound attestation statements
+  - status authority signatures
+  - Layer 3 transitional verification flows
 
 This package does not yet implement privacy-preserving non-membership verification inside Compact. It provides the authoritative state surface that status-aware VC/VP flows can anchor to.
 

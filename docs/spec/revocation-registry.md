@@ -7,6 +7,7 @@ Companion documents:
 
 - [`./midnight-credentials.md`](./midnight-credentials.md)
 - [`./credential-status.md`](./credential-status.md)
+- [`./status-verification-protocol.md`](./status-verification-protocol.md)
 - [`./profiles.md`](./profiles.md)
 - [`./conformance.md`](./conformance.md)
 
@@ -167,6 +168,24 @@ The taxonomy leaves room for future additions such as:
 - `DelegatedStatusAuthorityCapability`
 
 But those are not the prototype target.
+
+### Transitional implemented capability
+
+The repository now also carries a transitional contract-facing capability:
+
+- `AuthorityAttestedStatusCapability`
+
+This is not the final revoked-set non-membership proof.
+
+Instead, it is a bridge capability for current Layer 3 usage:
+
+- the verifier supplies an accepted `(registryId, revokedRoot)`
+- a trusted authority signs a request-bound status attestation over that root
+- the business contract verifies that attestation alongside the VC/VP
+
+The detailed flow is defined in:
+
+- [`./status-verification-protocol.md`](./status-verification-protocol.md)
 
 ## Registry model
 

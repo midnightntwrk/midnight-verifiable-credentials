@@ -17,6 +17,9 @@
 - revocation registry:
   - [`spec/revocation-registry.md`](./spec/revocation-registry.md)
   - for readers implementing the prototype Midnight-native revoked-set non-membership model
+- status verification protocol:
+  - [`spec/status-verification-protocol.md`](./spec/status-verification-protocol.md)
+  - for readers implementing verifier-supplied roots and Layer 3 status-aware verification
 
 ## Guides
 
