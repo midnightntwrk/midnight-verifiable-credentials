@@ -6,6 +6,7 @@ DEST_DIR="${1:-$ROOT_DIR/artifacts/npm}"
 
 workspaces=(
   credentials
+  credentials-status-registry
   credentials-same-holder
   credentials-iso-registry
   credentials-offchain-did

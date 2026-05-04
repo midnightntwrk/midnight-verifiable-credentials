@@ -48,7 +48,7 @@ That means:
 
 ## Package classes
 
-The repository is divided into five package classes.
+The repository is divided into six package classes.
 
 ### 1. Core VC packages
 
@@ -94,7 +94,27 @@ Current packages:
 
 - `credentials-offchain-did`
 
-### 4. Protocol / transport / application-composition packages
+### 4. Status capability / registry packages
+
+These packages own typed status/revocation capability surfaces where the
+repository currently needs both:
+
+- Compact contract state or validation surfaces
+- off-chain builder/runtime helpers
+
+Current packages:
+
+- `credentials-status-registry`
+
+These packages may expose mixed surfaces, but they must keep the boundary
+explicit:
+
+- on-chain contract-facing Compact entrypoints
+- off-chain helper/builders in TypeScript
+
+They must not silently blur those two roles into one generic runtime API.
+
+### 5. Protocol / transport / application-composition packages
 
 These packages orchestrate issuance, presentation, transport framing, session
 flows, or app-facing workflows.
@@ -107,7 +127,7 @@ Current packages:
 These are where engineers should compose concrete VC capabilities into
 off-chain or transport-facing flows.
 
-### 5. Demo / prototype / integration packages
+### 6. Demo / prototype / integration packages
 
 These packages prove capability breadth or business-flow viability, but they are
 not the core product surface.
@@ -208,6 +228,29 @@ They must not contain:
 Key rule:
 
 - DID-aware helpers are allowed here and only here.
+
+### Status capability / registry packages
+
+These packages should contain:
+
+- status-aware contract state or contract validation surfaces
+- typed status request / witness / attestation helpers
+- clearly separated on-chain and off-chain integration seams
+
+They may depend on:
+
+- `credentials`
+- selected credential-family packages when the capability is family-aware
+
+They must not contain:
+
+- transport/session orchestration that belongs in protocol layers
+- ambiguous APIs that hide whether a surface is contract-facing or runtime-only
+
+Key rule:
+
+- mixed-surface status packages are allowed, but they must label the contract
+  surface and the runtime-helper surface explicitly.
 
 ### Protocol / transport / application-composition packages
 
