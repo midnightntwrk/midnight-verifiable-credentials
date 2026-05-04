@@ -6,6 +6,8 @@ import {
   type AuthorityAttestedStatusCapability,
   type AuthorityAttestedStatusProof,
   type AuthorityAttestedStatusStatement,
+  JUBJUB_SUBGROUP_ORDER,
+  modJubjubSubgroupOrder,
   type Proof,
   pureCircuits,
   type RevocationRegistryState,
@@ -13,18 +15,10 @@ import {
   type VerificationMethodRef,
 } from "@midnight-ntwrk/midnight-did-credentials";
 
-const JUBJUB_SUBGROUP_ORDER =
-  6554484396890773809930967563523245729705921265872317281365359162392183254199n;
-
 export type StatusAuthoritySigner = {
   readonly secretKey: bigint;
   readonly publicKey: JubjubPoint;
   readonly verificationMethodRef: VerificationMethodRef;
-};
-
-const mod = (value: bigint): bigint => {
-  const reduced = value % JUBJUB_SUBGROUP_ORDER;
-  return reduced >= 0n ? reduced : reduced + JUBJUB_SUBGROUP_ORDER;
 };
 
 export const buildRevokedSetStatusRequest = ({
@@ -42,6 +36,8 @@ export const buildRevokedSetStatusRequest = ({
   return request;
 };
 
+// Transitional alias: the authority-attested path currently uses the same
+// verifier-supplied request shape as the basic revoked-set status path.
 export const buildAuthorityAttestedStatusRequest = buildRevokedSetStatusRequest;
 
 export const buildAuthorityAttestedStatusCapability = ({
@@ -90,6 +86,15 @@ export const signAuthorityAttestedStatusProof = ({
   readonly createdAt: bigint;
   readonly nonceScalar: bigint;
 }): AuthorityAttestedStatusProof => {
+  // Callers must supply a fresh scalar in the JubJub subgroup interval
+  // `[1, JUBJUB_SUBGROUP_ORDER)`. Reusing or biasing this nonce breaks Schnorr
+  // signature security. The current prototype keeps nonce generation explicit
+  // so application code can integrate its own RNG / deterministic signer.
+  if (nonceScalar <= 0n || nonceScalar >= JUBJUB_SUBGROUP_ORDER) {
+    throw new Error(
+      "Authority-attested status proof nonce scalar must be in [1, JUBJUB_SUBGROUP_ORDER)",
+    );
+  }
   const bodyRoot = pureCircuits.authorityAttestedStatusStatementRoot(statement);
   const provisionalProof: Proof = {
     signerVerificationMethodRef: signer.verificationMethodRef,
@@ -109,7 +114,7 @@ export const signAuthorityAttestedStatusProof = ({
     ...provisionalProof,
     signature: {
       r: provisionalProof.signature.r,
-      s: mod(nonceScalar + challenge * signer.secretKey),
+      s: modJubjubSubgroupOrder(nonceScalar + challenge * signer.secretKey),
     },
   };
   const attestation = {

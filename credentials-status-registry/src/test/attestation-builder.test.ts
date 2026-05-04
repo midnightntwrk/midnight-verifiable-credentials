@@ -1,6 +1,7 @@
 import { Buffer } from "node:buffer";
 
 import { ecMulGenerator } from "@midnight-ntwrk/compact-runtime";
+import { JUBJUB_SUBGROUP_ORDER } from "@midnight-ntwrk/midnight-did-credentials";
 import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { describe, expect, it } from "vitest";
 
@@ -73,5 +74,28 @@ describe("authority-attested status builder", () => {
     expect(attestation.proof.signerVerificationMethodRef).toEqual(
       authoritySigner.verificationMethodRef,
     );
+  });
+
+  it("rejects an out-of-range nonce scalar", () => {
+    const request = buildAuthorityAttestedStatusRequest({
+      registryState: {
+        registryId: bytes32("registry:hidden-holder"),
+        revokedRoot: bytes32("revoked-root:current"),
+      },
+      verifierChallengeHash: bytes32("challenge:status"),
+    });
+    const statement = buildAuthorityAttestedStatusStatement({
+      request,
+      statusHandleCommitment: bytes32("status-handle-commitment"),
+    });
+
+    expect(() =>
+      signAuthorityAttestedStatusProof({
+        statement,
+        signer: authoritySigner,
+        createdAt: 100n,
+        nonceScalar: JUBJUB_SUBGROUP_ORDER,
+      }),
+    ).toThrow(/nonce scalar/i);
   });
 });

@@ -190,6 +190,12 @@ Current limitations remain:
 - the revocation registry contract does not yet prove that a supplied
   `revokedRoot` equals the live Merkle root inside Compact
 - freshness is still verifier/application enforced, not contract-discovered
+- the current wrapped credential families validate status capability objects
+  and status proofs consistently, but they do not yet cryptographically commit
+  the full status capability into the issuer-signed credential body root
+- the current off-chain authority-attestation builder requires the caller to
+  provide a fresh JubJub subgroup nonce scalar; nonce generation policy is
+  still an application-side responsibility
 
 So the implemented authority-attested path is a meaningful prototype, not the
 final non-revocation architecture.
