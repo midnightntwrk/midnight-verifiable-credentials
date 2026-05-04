@@ -202,6 +202,12 @@ Current grouped execution:
   - core TS alias export for `OffchainDIDHolderBinding`
   - docs aligned around Compact/core name vs public-facing TS name
 
+Current grouped execution:
+
+- stacked additive runtime/docs slice:
+  - core TS alias export for `OffchainDIDHolderBinding`
+  - docs aligned around Compact/core name vs public-facing TS name
+
 ### VC-MAT-05: Tighten prototype/reference trust-boundary signaling
 
 Priority: P1
