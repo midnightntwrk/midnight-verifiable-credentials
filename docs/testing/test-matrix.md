@@ -142,13 +142,29 @@ Implemented prototype coverage:
 ### `credentials-demo-contract`
 
 - local/unit verifier contract tests
+- local/unit revocation demo contract tests:
+  - verifier-supplied-root hidden-holder status path
+  - authority-attested hidden-holder status path
+  - reusable capability lifecycle under revocation-aware verification
 - standalone integration test:
   - issuance-verification lifecycle
 
 Current gap:
 
-- no dedicated `demo-revocation` consumer package or status-aware Layer 3
-  integration demo yet
+- no standalone integration test yet for the revocation-aware demo contract
+
+## Focused CI lanes
+
+- root `ci:revocation`
+  - lint, typecheck, build, and test the current revocation slice across:
+    - `credentials`
+    - `credentials-status-registry`
+    - `credentials-same-holder`
+    - `credentials-birth`
+    - `credentials-birth-secret`
+    - `credentials-demo-contract`
+- GitHub Actions job:
+  - `Revocation Demo Lane`
 
 ## Standalone integration tests
 

@@ -19,8 +19,19 @@ This package sits above two layers:
 
 - [`../credentials`](../credentials): generic VC/VP envelope and proof core
 - [`../credentials-birth`](../credentials-birth): birth-credential specialization
+- [`../credentials-birth-secret`](../credentials-birth-secret): hidden-holder birth-credential specialization with prototype status-aware verification
 
-The demo contract models:
+The package currently contains two demo contract roots:
+
+1. `src/demo.compact`
+   - explicit-holder age-gate demo
+2. `src/demo-revocation.compact`
+   - hidden-holder status-aware age-gate demo using:
+     - verifier-supplied `(registryId, revokedRoot)` coordination
+     - prototype revoked-set status capability wiring
+     - prototype authority-attested status proofs for the current Layer 3 path
+
+The original explicit-holder demo contract models:
 
 1. issuer submits an issued birth credential plus issuer proof
 2. contract anchors the issued credential root and the expected holder binding
@@ -28,6 +39,16 @@ The demo contract models:
 4. holder later submits a presentation plus holder proof
 5. contract checks the holder's private birth-date witness against the committed claim
 6. contract verifies `age >= threshold` without disclosing the birth date
+
+The revocation demo contract models:
+
+1. issuer submits an issued hidden-holder birth credential plus issuer proof
+2. verifier/application supplies the accepted `registryId` and `revokedRoot`
+3. holder submits a hidden-holder presentation plus either:
+   - verifier-supplied-root status inputs
+   - or an authority-attested status proof
+4. contract checks request alignment, status-capability binding, and age predicate satisfaction
+5. contract issues a reusable business capability on success
 
 ## SSI capabilities exercised
 
@@ -40,6 +61,7 @@ The demo contract models:
 | Selective disclosure | the presentation can disclose birth-country data with its opening |
 | ZK predicate | the contract checks the age predicate from a private birth-date witness |
 | Anti-replay | both issuer and holder proofs carry a `challengeHash` |
+| Status-aware verification | `src/demo-revocation.compact` demonstrates verifier-supplied-root and authority-attested status-gated verification |
 
 ## Build and test
 
