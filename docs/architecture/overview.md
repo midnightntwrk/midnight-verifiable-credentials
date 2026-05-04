@@ -28,7 +28,7 @@ The repository is organized as a layered Compact-first stack.
 
 | Layer | Role | Package examples |
 | --- | --- | --- |
-| Layer 1 | Generic VC/VP capabilities | `credentials`, `credentials-same-holder`, `credentials-iso-registry` |
+| Layer 1 | Generic VC/VP capabilities | `credentials`, `credentials-same-holder`, `credentials-iso-registry`, `credentials-status-registry` |
 | Layer 2 | Concrete credential families | `credentials-birth`, `credentials-birth-secret` |
 | Layer 2.5 | DID-aware runtime adapters | `credentials-offchain-did` |
 | Layer 3 status prototype | Status-aware contract surface plus off-chain builders | `credentials-status-registry` |
@@ -64,6 +64,21 @@ This package provides shared Compact-native ISO code types.
 It exists to keep country/currency/gender/related codes consistent across
 credential families.
 
+### `credentials-status-registry`
+This package provides the current prototype status / revocation registry
+surface.
+
+It owns:
+
+- the reference Compact revocation-registry contract
+- off-chain status witness and authority-attestation builders
+- request-bound status-attestation helpers for current Layer 3 flows
+
+In the current repository shape, it should be treated as a Layer 1 capability
+package with its own contract/runtime mix. The longer-term ownership of the
+status DSL relative to the generic core remains an explicit backlog item rather
+than a settled architecture fact.
+
 ### Credential-family packages
 Credential-family packages define:
 
@@ -84,21 +99,6 @@ binding.
 
 It owns runtime parsing and conversion from portable offchain Midnight DID
 inputs into the canonical VC holder-binding shape defined by `credentials`.
-
-### `credentials-status-registry`
-This package is the current prototype status/revocation package.
-
-It owns:
-
-- the Compact revocation registry contract surface
-- verifier-supplied status request helpers
-- status-handle witness-builder helpers
-- transitional authority-attested status builder helpers
-
-It is intentionally mixed-surface:
-
-- the Compact registry contract belongs to on-chain integration
-- the witness/attestation builders belong to off-chain integration
 
 ### `credentials-openid`
 This package is a transport/domain adapter layer.
@@ -217,11 +217,26 @@ overview.
 ## Current Maturity Model
 The repository contains a mix of maturity levels.
 
+<<<<<<< HEAD
 For the current package-by-package snapshot, see:
 
 - [`../spec/conformance.md`](../spec/conformance.md)
   - `Current Package Maturity Table`
 - [`../guides/integration-surface-map.md`](../guides/integration-surface-map.md)
+=======
+- reference implementation:
+  - core VC package and key credential families
+- prototype capability package:
+  - `credentials-status-registry`
+- reference transport adapter:
+  - `credentials-openid`
+- prototype:
+  - `credentials-protocol` and selected profile-oriented surfaces
+- experimental:
+  - selected privacy-oriented or demo-oriented capabilities
+- planned:
+  - `credentials-birth-binding-prototypes` if it is restored as a real package
+>>>>>>> db4bef3 (Document status registry package discoverability)
 
 Readers should evaluate maturity at the package and profile level, not at the
 repository level.

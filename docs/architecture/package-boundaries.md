@@ -59,8 +59,19 @@ Current packages:
 - `credentials`
 - `credentials-same-holder`
 - `credentials-iso-registry`
+- `credentials-status-registry`
 
 These packages form the compositional substrate used by the rest of the repo.
+
+Current note on `credentials-status-registry`:
+
+- it mixes a Compact registry contract with off-chain witness/attestation
+  helpers
+- in the current repository it is still best treated as a core-capability
+  package because it defines the current status/revocation support surface used
+  by higher layers
+- the final ownership split between generic core status DSL and registry-owned
+  status helpers remains an explicit follow-up architecture decision
 
 ### 2. Credential-family packages
 

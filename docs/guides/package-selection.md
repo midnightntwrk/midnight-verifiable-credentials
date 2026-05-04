@@ -51,7 +51,7 @@ Start with:
 
 This is a capability package, not a standalone credential family.
 
-### I need prototype revocation/status registry support
+### I need status / revocation registry support
 Start with:
 
 - [`../../credentials-status-registry/README.md`](../../credentials-status-registry/README.md)
@@ -62,10 +62,12 @@ Start with:
 
 Use this when you need:
 
-- the prototype revoked-set registry contract surface
-- verifier-supplied revocation-root requests
-- off-chain witness/status-attestation helpers
+- the current prototype revocation-registry Compact contract
+- verifier-supplied `(registryId, revokedRoot)` request helpers
+- authority-attested status proof builders
+- off-chain status witness and status-handle helpers
 
+This is a capability package, not a standalone credential family.
 This package is mixed-surface:
 
 - Compact registry contract for on-chain usage
@@ -148,6 +150,7 @@ and legacy Jubjub guidance, see [`../spec/profiles.md`](../spec/profiles.md).
 These are the strongest package surfaces to build on first:
 
 - `credentials`
+- `credentials-status-registry`
 - `credentials-offchain-did`
 - `credentials-birth`
 - `credentials-birth-secret`
@@ -156,6 +159,13 @@ These are the strongest package surfaces to build on first:
 
 `credentials-openid` is treated here as the current reference transport-adapter
 surface, even though it lives in the outer orchestration layer.
+
+Current note:
+
+- `credentials-status-registry` is a real workspace package and the current
+  entry point for status/revocation registry work
+- its trust model is still prototype-grade, especially for final in-circuit
+  non-membership enforcement
 
 ### Prototype packages
 These are valuable, but should be treated as evolving:
