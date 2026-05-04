@@ -215,6 +215,9 @@ Current limitations:
 - intended for offchain-DID-only prototype flows
 - mixed onchain/offchain DID combinations are intentionally out of scope
 - the profile does not by itself prove resolver-backed DID semantics
+- the naming transition is intentionally split:
+  - Compact/core struct remains `OffchainMidnightHolderBinding`
+  - runtime/public-facing adapter name is `OffchainDIDHolderBinding`
 
 ### 7. Legacy compatibility Jubjub holder binding
 

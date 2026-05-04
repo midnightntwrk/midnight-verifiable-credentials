@@ -26,7 +26,9 @@ Reason:
 - it works for NightFi and Passport-style demos immediately
 - it remains useful even after offchain Midnight DID exists
 
-`OffchainMidnightHolderBinding` should build on the same idea, not replace it.
+The canonical Compact/core shape remains `OffchainMidnightHolderBinding`.
+The preferred runtime/public-facing adapter name is `OffchainDIDHolderBinding`.
+That split should build on the same idea, not replace it.
 
 ## New binding profiles
 
@@ -52,6 +54,12 @@ Purpose:
 
 - DID-shaped demo flows
 - portable examples that use the offchain Midnight DID extension
+
+Public naming note:
+
+- keep `OffchainMidnightHolderBinding` as the Compact/core struct
+- expose `OffchainDIDHolderBinding` as the preferred runtime/public-facing name
+- preserve compatibility aliases while downstream code migrates
 
 ## Current implementation constraint
 

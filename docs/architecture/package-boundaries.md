@@ -188,9 +188,12 @@ It must not contain:
 
 Key rule:
 
-- `credentials` may define a generic holder-binding shape such as
-  `OffchainDIDHolderBinding`, but it must not own the runtime TS helper that
-  parses a portable DID URL and produces one.
+- `credentials` owns the canonical Compact/core struct
+  `OffchainMidnightHolderBinding`
+- `credentials-offchain-did` owns the preferred runtime/public-facing adapter
+  name `OffchainDIDHolderBinding`
+- `credentials` must not own the runtime TS helper that parses a portable DID
+  URL and produces that binding
 
 ### Credential-family packages
 
@@ -361,16 +364,20 @@ Reason:
 
 Decision:
 
-- the repository should move toward a developer-facing public profile name:
-  - `OffchainDIDHolderBinding`
-- the older internal name:
+- keep the canonical Compact/core struct name:
   - `OffchainMidnightHolderBinding`
-  may remain as a temporary compatibility alias during migration
+- expose the preferred runtime/public-facing adapter name:
+  - `OffchainDIDHolderBinding`
+- preserve compatibility aliases while downstream runtime code migrates
 
 Reason:
 
-- the shorter public name is easier for engineers to understand and compose
-- it describes the role more clearly than the current longer historical name
+- Compact/source compatibility is less disruptive if the core struct name stays
+  stable
+- the shorter runtime/public-facing name is easier for engineers to understand
+  and compose
+- this keeps the boundary between core Compact semantics and runtime adapter
+  ergonomics explicit
 
 ## Specific decision: raw Jubjub public holder binding
 

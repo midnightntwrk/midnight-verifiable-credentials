@@ -10,6 +10,47 @@ Purpose:
   findings
 - provide a stable backlog for follow-up engineering and documentation slices
 
+## Status Update: 2026-05-05
+
+Merged in the last completed iteration:
+
+- revocation demo and focused CI lane:
+  - `#50`
+- discoverability and onchain/offchain surface guidance:
+  - `#44`
+  - `#46`
+  - `#51`
+- current-workspace vs adjacent-prototype clarification:
+  - `#47`
+  - `#48`
+- package maturity and status-taxonomy/conformance alignment:
+  - `#49`
+  - `#53`
+
+Substantially addressed on `develop`:
+
+- `VC-MAT-01`
+- `VC-MAT-02`
+- `VC-MAT-03`
+- `VC-MAT-05`
+- `VC-MAT-12`
+- `VC-MAT-13`
+
+Partially advanced, but still active:
+
+- `VC-MAT-09`
+- `VC-MAT-15`
+
+Next active queue:
+
+1. `VC-MAT-04`
+2. `VC-MAT-10`
+3. `VC-MAT-06`
+4. `VC-MAT-14`
+5. `VC-MAT-07`
+6. `VC-MAT-11`
+7. `VC-MAT-08`
+
 ## Triage Legend
 
 - `Accepted`: valid finding, should remain on the backlog until fixed
@@ -118,13 +159,12 @@ Problem:
 - docs and package surfaces use overlapping names for the same conceptual
   holder-binding family
 
-Decision needed:
+Current decision:
 
-- either:
-  - keep `OffchainMidnightHolderBinding` as canonical and document
-    `OffchainDIDHolderBinding` as descriptive language only
-- or:
-  - add a stable alias and migrate docs plus runtime exports fully
+- keep `OffchainMidnightHolderBinding` as the canonical Compact/core struct
+- expose `OffchainDIDHolderBinding` as the preferred runtime/public-facing
+  adapter name
+- preserve compatibility aliases while downstream code migrates
 
 ### VC-MAT-05: Tighten prototype/reference trust-boundary signaling
 
@@ -178,6 +218,11 @@ Required outcome:
 - define intentional public package entrypoints and subpaths
 - decide where namespace-only re-exports are acceptable
 - prefer narrow package surfaces for new packages/demos
+
+Related carry-over work:
+
+- revive and merge stale guardrail PR:
+  - `#20` `codex/vc-boundary-guardrail`
 
 ### VC-MAT-08: Add starter templates and “Hello World” integration paths
 
@@ -251,6 +296,13 @@ Required outcome:
   - keep the registry package as the owner and re-export through core during a
     migration period
 - document the choice in architecture and package-boundary docs
+
+Current architectural direction to evaluate:
+
+- unify the VC-side status binding shape
+- separate presentation-time proof modes, for example:
+  - authority-attested status proof
+  - revoked-set non-membership proof
 
 ### VC-MAT-12: Add a dedicated status capability conformance category
 
@@ -343,6 +395,12 @@ Required outcome:
   `passport-compliance-demo.compact`
 - make it explicit that the core `credentials` contract shell is not a
   deployable business contract
+
+Current progress:
+
+- `demo-revocation` is now a dedicated narrow demo root
+- the repository documents the “small business-facing demos” rule explicitly
+- dormant artifact cleanup and export-surface reduction are still pending
 
 ## Recommended Execution Order
 
