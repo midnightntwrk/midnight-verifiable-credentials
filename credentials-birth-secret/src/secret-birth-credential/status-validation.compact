@@ -1,0 +1,68 @@
+export circuit assertValidSecretBirthCredentialWithStatusCapability(
+  credentialWithStatus: SecretBirthCredentialWithStatusCapability
+): [] {
+  assertValidSecretBirthCredential(
+    credentialWithStatus.credential,
+    credentialWithStatus.credentialProof
+  );
+  assertValidRevokedSetNonMembershipStatusCapability(
+    credentialWithStatus.statusCapability
+  );
+}
+
+export circuit assertValidSecretBirthCredentialVerificationStatusRequest(
+  request: SecretBirthCredentialVerificationStatusRequest
+): [] {
+  assertValidSecretBirthCredentialVerificationRequestMessage(
+    request.verificationRequest
+  );
+  assertValidVerifierStatusPolicy(request.statusPolicy);
+  assert(
+    request.statusPolicy.requireStatus,
+    "Secret birth status-aware verification request must require credential status"
+  );
+}
+
+export circuit assertValidSecretBirthCredentialVerificationStatusInputs(
+  statusInputs: SecretBirthCredentialVerificationStatusInputs
+): [] {
+  assertValidRevokedSetNonMembershipWitnessInput(
+    statusInputs.nonRevocationWitness
+  );
+}
+
+export circuit assertSecretBirthCredentialVerificationSubmissionMatchesStatusRequest(
+  credentialWithStatus: SecretBirthCredentialWithStatusCapability,
+  request: SecretBirthCredentialVerificationStatusRequest,
+  submission: SecretBirthCredentialVerificationSubmission,
+  statusInputs: SecretBirthCredentialVerificationStatusInputs,
+  holderSecret: Bytes<32>,
+  holderSecretOpening: Bytes<32>,
+  holderBindingBlindingFactor: Bytes<32>
+): [] {
+  assertValidSecretBirthCredentialWithStatusCapability(credentialWithStatus);
+  assertValidSecretBirthCredentialVerificationStatusRequest(request);
+  assertValidSecretBirthCredentialVerificationStatusInputs(statusInputs);
+  assert(
+    secretBirthCredentialBodyRoot(submission.body.credential)
+      == secretBirthCredentialBodyRoot(credentialWithStatus.credential),
+    "Status-aware verification submission credential does not match the status-bound credential body"
+  );
+  assert(
+    submission.body.credentialProof.challengeHash
+      == credentialWithStatus.credentialProof.challengeHash,
+    "Status-aware verification submission credential proof does not match the status-bound credential proof"
+  );
+  assertSecretBirthCredentialVerificationSubmissionMatchesRequest(
+    request.verificationRequest,
+    submission,
+    holderSecret,
+    holderSecretOpening,
+    holderBindingBlindingFactor
+  );
+  assertVerifierStatusPolicyAcceptsRevokedSetNonMembership(
+    request.statusPolicy,
+    credentialWithStatus.statusCapability,
+    statusInputs.nonRevocationWitness
+  );
+}

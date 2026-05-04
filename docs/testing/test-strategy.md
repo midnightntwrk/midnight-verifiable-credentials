@@ -120,6 +120,17 @@ Each credential family defines its own disclosure struct with per-field reveal f
 | Local rejection outcome | Malformed or mismatched messages are rejected locally, for example by exceptions at the agent boundary |
 | Explicit rejection result | The protocol defines a distinct rejection message or typed rejection outcome with stable failure semantics |
 
+### Dimension 11: Credential Status Support
+
+| Status level | What it means |
+|--------------|---------------|
+| Level 0 | No revocation/non-revocation support; claim expiry or session expiry only |
+| Level 1 | Public status lookup with explicit freshness rules |
+| Level 2 | Privacy-preserving non-revocation proof with explicit witness freshness rules |
+
+Current repository packages still operate at Level 0. See
+[`../spec/credential-status.md`](../spec/credential-status.md).
+
 Current repository stance:
 
 - the reference protocol layer now proves explicit rejection results for

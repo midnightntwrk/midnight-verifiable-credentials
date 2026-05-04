@@ -11,6 +11,7 @@ Related docs:
 - spec: [`../docs/spec/midnight-credentials.md`](../docs/spec/midnight-credentials.md)
 - profiles: [`../docs/spec/profiles.md`](../docs/spec/profiles.md)
 - conformance: [`../docs/spec/conformance.md`](../docs/spec/conformance.md)
+- credential status: [`../docs/spec/credential-status.md`](../docs/spec/credential-status.md)
 - companion guide: [`../docs/guides/midnight-credentials-for-dummies.md`](../docs/guides/midnight-credentials-for-dummies.md)
 - test matrix: [`../docs/testing/test-matrix.md`](../docs/testing/test-matrix.md)
 
@@ -91,7 +92,8 @@ What it does not yet prove:
   production-grade implementation over the now-injectable protocol randomness
   interface
 - presentation-side message-level expiry semantics
-- revocation
+- repository status/revocation support is still Level 0 as defined in
+  `../docs/spec/credential-status.md`
 
 Important distinction:
 

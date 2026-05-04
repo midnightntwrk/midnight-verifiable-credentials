@@ -10,6 +10,8 @@ import {
   type Proof,
   type ProtocolMessageEnvelope,
   pureCircuits as genericPureCircuits,
+  StatusCapabilityKind,
+  StatusSupportLevel,
   type VerificationMethodRef,
 } from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
 
@@ -19,6 +21,9 @@ import {
   type SecretBirthCredentialPresentation,
   type SecretBirthCredentialPresentationRequest,
   type SecretBirthCredentialVerificationRequest,
+  type SecretBirthCredentialVerificationStatusInputs,
+  type SecretBirthCredentialVerificationStatusRequest,
+  type SecretBirthCredentialWithStatusCapability,
 } from "../managed/secret-birth-credential/contract/index.js";
 
 const JUBJUB_FIELD_MODULUS =
@@ -37,6 +42,9 @@ export type BirthCredentialFixture = {
   readonly credentialProof: Proof;
   readonly presentationRequest: SecretBirthCredentialPresentationRequest;
   readonly verificationRequest: SecretBirthCredentialVerificationRequest;
+  readonly credentialWithStatus: SecretBirthCredentialWithStatusCapability;
+  readonly statusVerificationRequest: SecretBirthCredentialVerificationStatusRequest;
+  readonly statusVerificationInputs: SecretBirthCredentialVerificationStatusInputs;
   readonly presentation: SecretBirthCredentialPresentation;
   readonly witness: {
     readonly holderSecret: Uint8Array;
@@ -53,6 +61,11 @@ export type BirthCredentialFixture = {
     readonly birthCountryCodePadded: Uint8Array;
     readonly birthCountryCodeOpening: Uint8Array;
     readonly currentDay: bigint;
+    readonly statusHandle: Uint8Array;
+    readonly statusHandleOpening: Uint8Array;
+    readonly statusRegistryId: Uint8Array;
+    readonly statusRevokedRoot: Uint8Array;
+    readonly statusEpoch: bigint;
   };
 };
 
@@ -73,6 +86,11 @@ export type SecretBirthCredentialFixtureOptions = {
   readonly birthCountryCodePadded?: Uint8Array;
   readonly birthCountryCodeOpening?: Uint8Array;
   readonly currentDay?: bigint;
+  readonly statusHandle?: Uint8Array;
+  readonly statusHandleOpening?: Uint8Array;
+  readonly statusRegistryId?: Uint8Array;
+  readonly statusRevokedRoot?: Uint8Array;
+  readonly statusEpoch?: bigint;
 };
 
 const sha256 = (value: string): Uint8Array =>
@@ -187,6 +205,15 @@ export const createSecretBirthCredentialFixture = (
     birthCountryCodeOpening:
       options.birthCountryCodeOpening ?? sha256("opening:birth-country"),
     currentDay: options.currentDay ?? 3650n + 365n * 25n,
+    statusHandle:
+      options.statusHandle ?? sha256("status-handle:birth-secret:alice"),
+    statusHandleOpening:
+      options.statusHandleOpening ?? sha256("opening:status-handle"),
+    statusRegistryId:
+      options.statusRegistryId ?? sha256("registry:birth-secret-status"),
+    statusRevokedRoot:
+      options.statusRevokedRoot ?? sha256("revoked-root:epoch-42"),
+    statusEpoch: options.statusEpoch ?? 42n,
   };
 
   const claims = {
@@ -288,6 +315,49 @@ export const createSecretBirthCredentialFixture = (
     },
   };
 
+  const credentialWithStatus: SecretBirthCredentialWithStatusCapability = {
+    credential,
+    credentialProof,
+    statusCapability: {
+      registryRef: {
+        registryId: witness.statusRegistryId,
+        authorityVerificationMethodRef: issuer.verificationMethodRef,
+      },
+      statusHandleCommitment:
+        genericPureCircuits.revokedSetStatusHandleCommitment(
+          witness.statusHandle,
+          witness.statusHandleOpening,
+        ),
+    },
+  };
+
+  const statusVerificationRequest: SecretBirthCredentialVerificationStatusRequest =
+    {
+      verificationRequest,
+      statusPolicy: {
+        requireStatus: true,
+        minimumStatusSupportLevel: StatusSupportLevel.level2,
+        acceptedStatusCapability: StatusCapabilityKind.revokedSetNonMembership,
+        enforceRegistryId: true,
+        acceptedRegistryId: witness.statusRegistryId,
+        hasMinimumAcceptedEpoch: true,
+        minimumAcceptedEpoch: 40n,
+      },
+    };
+
+  const statusVerificationInputs: SecretBirthCredentialVerificationStatusInputs =
+    {
+      nonRevocationWitness: {
+        registryState: {
+          registryId: witness.statusRegistryId,
+          revokedRoot: witness.statusRevokedRoot,
+          epoch: witness.statusEpoch,
+        },
+        statusHandle: witness.statusHandle,
+        statusHandleOpening: witness.statusHandleOpening,
+      },
+    };
+
   const presentation: SecretBirthCredentialPresentation = {
     version: 1n,
     schema: credential.schema,
@@ -325,6 +395,9 @@ export const createSecretBirthCredentialFixture = (
     credentialProof,
     presentationRequest,
     verificationRequest,
+    credentialWithStatus,
+    statusVerificationRequest,
+    statusVerificationInputs,
     presentation,
     witness,
   };

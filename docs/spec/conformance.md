@@ -8,6 +8,8 @@ draft specification at the package/profile level.
 Companion document:
 
 - [`midnight-credentials.md`](./midnight-credentials.md)
+- [`credential-status.md`](./credential-status.md)
+- [`revocation-registry.md`](./revocation-registry.md)
 
 ## Scope
 
@@ -67,6 +69,10 @@ state:
 - whether replay/idempotency behavior is defined
 - whether expiry semantics are defined for each protocol stage
 - whether revocation/non-revocation is implemented or explicitly deferred
+- which status support level is claimed:
+  - Level 0
+  - Level 1
+  - or Level 2, as defined in `credential-status.md`
 - which external adapter or wire contract carries the Compact protocol values
 
 An injectable randomness interface is helpful evidence, but not sufficient by
@@ -158,6 +164,10 @@ Any implementation claiming conformance should document:
   reference-local/in-memory
 - for hidden-holder profiles, whether randomness/nonce generation is production
   hardening or only test/reference behavior
+- whether status support is Level 0, Level 1, or Level 2
+- which `StatusCapability` is implemented:
+  - `NoStatusCapability`
+  - or `RevokedSetNonMembershipStatusCapability`
 - any security/privacy limitations that are intentionally deferred
 
 ## Non-conformance examples
@@ -174,6 +184,8 @@ An implementation is not conformant if it:
   disclosing deferred transport or revocation limitations
 - claims production-ready hidden-holder behavior without disclosing randomness,
   durable-state, expiry, replay, or adapter limitations
+- claims revocation/non-revocation support without documenting its declared
+  status level and freshness/privacy assumptions
 
 ## Current repository stance
 

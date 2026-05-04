@@ -11,6 +11,12 @@
 - conformance:
   - [`spec/conformance.md`](./spec/conformance.md)
   - for readers defining implementation or review criteria
+- credential status:
+  - [`spec/credential-status.md`](./spec/credential-status.md)
+  - for readers defining revocation, freshness, and non-revocation claim boundaries
+- revocation registry:
+  - [`spec/revocation-registry.md`](./spec/revocation-registry.md)
+  - for readers implementing the prototype Midnight-native revoked-set non-membership model
 
 ## Guides
 
@@ -56,3 +62,6 @@
 - hidden-holder production contract:
   - [`plans/hidden-holder-production-contract.md`](./plans/hidden-holder-production-contract.md)
   - for separating plain secret-holder claims from blinded-secret transport/session claims
+- revocation capability options:
+  - [`plans/revocation-capability-options.md`](./plans/revocation-capability-options.md)
+  - for choosing the first Midnight-native status/revocation implementation path

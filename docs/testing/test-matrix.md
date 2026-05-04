@@ -46,6 +46,15 @@ Status: current implemented test surface as of 2026-05-01.
   - no checked-in source package or validated test surface on `develop`
   - future restoration should reintroduce explicit binding-matrix coverage
 
+## Credential status / revocation tests
+
+Current repository stance:
+
+- Level 0 only
+- no checked-in revocation or non-revocation test surface yet
+- claim expiry and protocol/session expiry tests do not count as revocation
+  coverage
+
 ## Transport/domain tests
 
 ### `credentials-openid`
