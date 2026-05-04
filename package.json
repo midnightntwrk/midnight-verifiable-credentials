@@ -39,11 +39,14 @@
     "ci:build:light": "npm run lint && npm run typecheck:light && npm run build:light && npm run test:light",
     "ci:build": "npm run lint && npm run typecheck:all && npm run build:all && npm run test:all",
     "ci:integration": "./run-credentials-standalone.sh",
-    "ci:integration:demo-contract": "npm run build:integration-prereqs:demo-contract && npm run test:integration -w credentials-demo-contract",
-    "ci:integration:protocol": "npm run build:integration-prereqs:protocol && npm run test:integration -w credentials-protocol",
-    "build:integration-prereqs": "npm run build:integration-prereqs:demo-contract",
-    "build:integration-prereqs:demo-contract": "npm run build -w credentials && npm run build -w credentials-birth && npm run build -w credentials-birth-secret && npm run build -w credentials-demo-contract",
-    "build:integration-prereqs:protocol": "npm run build:integration-prereqs:demo-contract"
+    "ci:integration:demo-contract": "npm run build:integration-prereqs:demo-contract && npm run test:integration:demo-contract",
+    "ci:integration:protocol": "npm run build:integration-prereqs:protocol && npm run test:integration:protocol",
+    "test:integration:demo-contract": "npm run test:integration -w credentials-demo-contract",
+    "test:integration:protocol": "npm run test:integration -w credentials-protocol",
+    "build:integration-prereqs": "npm run build:integration-prereqs:shared",
+    "build:integration-prereqs:shared": "npm run build -w credentials && npm run build -w credentials-birth && npm run build -w credentials-birth-secret && npm run build -w credentials-demo-contract",
+    "build:integration-prereqs:demo-contract": "npm run build:integration-prereqs:shared",
+    "build:integration-prereqs:protocol": "npm run build:integration-prereqs:shared"
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
