@@ -61,6 +61,9 @@ describe("revoked-set witness builder", () => {
     expect(built.statusCapability.registryRef.registryId).toEqual(
       bytes32("registry:hidden-holder"),
     );
+    expect(built.statusBinding.registryRef.registryId).toEqual(
+      bytes32("registry:hidden-holder"),
+    );
     expect(built.witnessInput.registryState.revokedRoot).toEqual(
       bytes32("revoked-root:current"),
     );

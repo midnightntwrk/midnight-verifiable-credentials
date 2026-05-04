@@ -70,8 +70,9 @@ Current note on `credentials-status-registry`:
 - in the current repository it is still best treated as a core-capability
   package because it defines the current status/revocation support surface used
   by higher layers
-- the final ownership split between generic core status DSL and registry-owned
-  status helpers remains an explicit follow-up architecture decision
+- the generic VC-side status binding should remain in `credentials`, while
+  verifier-facing proof protocols and registry-specific helpers should live in
+  `credentials-status-registry`
 
 ### 2. Credential-family packages
 
@@ -122,6 +123,21 @@ explicit:
 
 - on-chain contract-facing Compact entrypoints
 - off-chain helper/builders in TypeScript
+
+Normalized ownership target:
+
+- `credentials`
+  - owns shared VC/VP status binding types
+  - examples:
+    - `StatusRegistryRef`
+    - `NoStatusBinding`
+    - `RegistryBoundStatusBinding`
+- `credentials-status-registry`
+  - owns verifier-facing status proof protocols and registry-specific helpers
+  - examples:
+    - `RevokedSetStatusRequest`
+    - `AuthorityAttestedStatusProofProtocol`
+    - `RevokedSetNonMembershipStatusProofProtocol`
 
 They must not silently blur those two roles into one generic runtime API.
 
@@ -264,7 +280,10 @@ They must not contain:
 Key rule:
 
 - mixed-surface status packages are allowed, but they must label the contract
-  surface and the runtime-helper surface explicitly.
+  surface and the runtime-helper surface explicitly
+- status proof semantics are not a credential-family shape decision
+- credential families bind status once
+- verifier flows and Layer 3 contracts choose how to verify that binding
 
 ### Protocol / transport / application-composition packages
 

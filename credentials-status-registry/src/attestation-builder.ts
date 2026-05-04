@@ -5,6 +5,7 @@ import {
 import {
   type AuthorityAttestedStatusCapability,
   type AuthorityAttestedStatusProof,
+  type AuthorityAttestedStatusProofProtocol,
   type AuthorityAttestedStatusStatement,
   JUBJUB_SUBGROUP_ORDER,
   modJubjubSubgroupOrder,
@@ -123,4 +124,19 @@ export const signAuthorityAttestedStatusProof = ({
   };
   pureCircuits.assertValidAuthorityAttestedStatusProof(attestation);
   return attestation;
+};
+
+export const buildAuthorityAttestedStatusProofProtocol = ({
+  request,
+  attestation,
+}: {
+  readonly request: RevokedSetStatusRequest;
+  readonly attestation: AuthorityAttestedStatusProof;
+}): AuthorityAttestedStatusProofProtocol => {
+  const protocol = {
+    request,
+    attestation,
+  };
+  pureCircuits.assertValidAuthorityAttestedStatusProofProtocol(protocol);
+  return protocol;
 };

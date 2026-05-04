@@ -31,8 +31,8 @@ already exists in the repository.
 This document defines:
 
 - the prototype revocation registry shape
-- the status capability taxonomy for VC/VP/protocol extensions
-- the canonical Level 2 target capability
+- the status binding and proof-protocol model for VC/VP/protocol extensions
+- the canonical Level 2 target proof protocol
 - why this direction is preferred over alternatives
 - extension points for future richer status models
 
@@ -108,23 +108,25 @@ Revocation should compose like holder binding does:
 That makes the contract surface clearer and lets conformance claims state
 precisely whether status logic is absent, public, or privacy-preserving.
 
-## Status capability taxonomy
+## Status binding and proof-protocol model
 
-The repository should model credential status through a `StatusCapability`.
+The repository should model credential status through:
+
+- a VC/VP status binding layer
+- a presentation-time status proof-protocol layer
 
 Conceptually:
 
-- a VC/VP family chooses one status capability
-- that capability contributes:
-  - additional typed fields
-  - additional witness inputs
-  - additional verifier-request semantics
-  - additional proof/validation circuits
-  - optional protocol message extensions
+- a VC/VP family chooses one status binding shape
+- the verifier/protocol chooses one status proof protocol for that binding
 
-### 1. `NoStatusCapability`
+### 1. `NoStatusBinding`
 
-This is the explicit zero-status capability.
+This is the explicit zero-status binding.
+
+Current compatibility name in code:
+
+- `NoStatusCapability`
 
 Purpose:
 
@@ -139,53 +141,75 @@ Semantics:
 - only claim expiry or session expiry may still exist where the family defines
   them
 
-This capability complements all VC/VP families that currently have no
-revocation support.
+This binding complements all VC/VP families that currently have no revocation
+support.
 
-### 2. `RevokedSetNonMembershipStatusCapability`
+### 2. `RegistryBoundStatusBinding`
 
-This is the prototype Level 2 target capability.
+This is the normalized target binding shape for status-aware credentials.
 
 Purpose:
 
-- bind a credential to a revocation registry without requiring a public lookup
-  during proof verification
+- bind a credential to one revocation registry domain and one committed
+  status-handle domain without choosing the verifier-facing proof mode yet
 
 Semantics:
 
-- the credential binds a committed `StatusHandle`
+- the credential binds:
+  - `registryRef`
+  - `statusHandleCommitment`
+- later verifier-facing proof modes must match that same binding
+
+Current compatibility names in code:
+
+- `AuthorityAttestedStatusCapability`
+- `RevokedSetNonMembershipStatusCapability`
+
+Those current capability structs should be read as two proof-mode wrappers over
+one shared registry-bound binding model.
+
+### 3. `RevokedSetNonMembershipStatusProofProtocol`
+
+This is the prototype Level 2 target proof protocol.
+
+Purpose:
+
+- prove non-revocation for a registry-bound status handle without requiring a
+  public lookup during proof verification
+
+Semantics:
+
 - the verifier accepts a published `(registryId, revokedRoot)`
 - the holder proves non-membership of the status handle in the revoked set
 - the VP proof includes status consistency and non-revocation logic
+
+### 4. `AuthorityAttestedStatusProofProtocol`
+
+This is the current transitional proof protocol.
+
+Purpose:
+
+- bridge the current Layer 3 contract story before final in-circuit
+  non-membership verification lands
+
+Semantics:
+
+- the verifier supplies an accepted `(registryId, revokedRoot)`
+- a trusted authority signs a request-bound status attestation over that root
+- the business contract verifies that attestation alongside the VC/VP
+- the attestation must match the same registry-bound status binding already
+  carried by the credential
 
 ### Deferred capability families
 
 The taxonomy leaves room for future additions such as:
 
-- `PublicStatusListCapability`
-- `SuspensionAwareStatusCapability`
-- `ReasonCarryingStatusCapability`
-- `DelegatedStatusAuthorityCapability`
+- `PublicStatusListProofProtocol`
+- `SuspensionAwareStatusBinding`
+- `ReasonCarryingStatusBinding`
+- `DelegatedStatusAuthorityProofProtocol`
 
 But those are not the prototype target.
-
-### Transitional implemented capability
-
-The repository now also carries a transitional contract-facing capability:
-
-- `AuthorityAttestedStatusCapability`
-
-This is not the final revoked-set non-membership proof.
-
-Instead, it is a bridge capability for current Layer 3 usage:
-
-- the verifier supplies an accepted `(registryId, revokedRoot)`
-- a trusted authority signs a request-bound status attestation over that root
-- the business contract verifies that attestation alongside the VC/VP
-
-The detailed flow is defined in:
-
-- [`./status-verification-protocol.md`](./status-verification-protocol.md)
 
 ## Registry model
 
@@ -240,12 +264,12 @@ Issuer requirement:
 ## VC extension point
 
 Credential families that opt into status support should extend their credential
-model with a status capability binding.
+model with a status binding.
 
 At the spec level, the VC needs to bind:
 
 - `StatusRegistryRef`
-- the chosen `StatusCapability`
+- the chosen status binding shape
 - any family-specific status commitment fields
 
 The prototype target is that a status-aware VC carries enough information to
@@ -256,10 +280,12 @@ link the credential to:
 
 without exposing the raw status handle publicly.
 
+The proof protocol chosen later by the verifier or contract should not require
+the VC shape itself to change.
+
 ## VP extension point
 
-Presentations using a status-aware capability should extend the proof model
-with:
+Presentations using a status-aware binding should extend the proof model with:
 
 - status public inputs:
   - `registryId`
@@ -276,12 +302,13 @@ The VP proof should show:
 
 ## Verifier request extension point
 
-Status-aware verifier requests should define a typed status policy.
+Status-aware verifier requests should define a typed status policy and proof
+protocol.
 
 That policy should be able to say:
 
 - whether status is required
-- which capability is accepted
+- which proof protocol is accepted
 - which registry is accepted
 - how the verifier/application determines that the supplied root is fresh enough
 
@@ -304,6 +331,18 @@ In particular:
 
 This is important because current smart-contract composability is not yet the
 right primitive to rely on for this repository's production target.
+
+## Best current implementation direction
+
+The repository's current best direction is:
+
+1. keep `NoStatusCapability` as the compatibility name for the explicit
+   zero-status case, while moving architecture language toward
+   `NoStatusBinding`
+2. normalize status-aware credentials around one registry-bound status binding
+3. model current authority-attested and future non-membership paths as
+   verifier-facing proof protocols over that shared binding
+4. keep final proof-protocol choice outside the VC shape itself
 
 ## Threat model notes
 
@@ -340,7 +379,8 @@ If we force reason/date into the first canonical proof model:
 - public semantics become heavier
 - privacy and disclosure choices get more complicated earlier than needed
 
-So the prototype spec keeps them out of the core capability.
+So the prototype spec keeps them out of the core status binding and proof
+protocol.
 
 They can be added later as optional or higher-level extensions.
 
@@ -362,10 +402,11 @@ This minimal design still leaves room for:
 The repository's preferred prototype implementation target is now:
 
 - `NoStatusCapability` for current families by default
-- `RevokedSetNonMembershipStatusCapability` as the first real status-aware
-  capability
+- `RegistryBoundStatusBinding` as the normalized status-aware VC shape
+- `RevokedSetNonMembershipStatusProofProtocol` as the first real status-aware
+  proof protocol
 - `MerkleTree` as the canonical registry primitive
-- dedicated revocation registry contract with `(registryId, revokedRoot,
-  version)`
+- dedicated revocation registry contract with `(registryId, revokedRoot)` plus
+  optional internal update bookkeeping
 - VP-embedded non-revocation proof, not a separate business-contract
   revocation call

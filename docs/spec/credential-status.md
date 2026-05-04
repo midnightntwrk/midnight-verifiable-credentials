@@ -30,7 +30,7 @@ This document defines:
 
 - the current status terminology
 - conformance levels for status support
-- the status capability taxonomy
+- the status binding and proof-protocol model
 - verifier obligations when requesting status-aware proofs
 - hidden-holder privacy obligations when status is involved
 - the repository's current implementation stance
@@ -87,7 +87,7 @@ An implementation at this level:
 Some current packages still remain at this level, especially families that do
 not bind a status registry at all.
 
-The corresponding explicit zero-status capability is:
+The corresponding explicit zero-status compatibility name is:
 
 - `NoStatusCapability`
 
@@ -121,34 +121,63 @@ An implementation at this level:
 This level is the likely long-term target for hidden-holder and
 blinded-secret-heavy deployments.
 
-The corresponding prototype target capability is:
+The corresponding prototype target proof-protocol direction is:
 
-- `RevokedSetNonMembershipStatusCapability`
+- `RevokedSetNonMembershipStatusProofProtocol`
 
-## Status capability taxonomy
+## Status binding and proof-protocol model
 
-The repository should model status through an explicit `StatusCapability`.
+The repository should model status through two related but distinct layers.
 
-The capability contributes:
+### VC / VP status binding
+
+The binding contributes:
 
 - credential-bound status fields
+- the registry domain that the credential belongs to
+- the committed status-handle domain that later proofs must match
+
+The normalized target binding model is:
+
+- `NoStatusCapability`
+- `RegistryBoundStatusBinding`
+
+The current code still uses the compatibility name `NoStatusCapability` for the
+explicit zero-status case. For registry-bound status, the current code exposes
+two wrappers that already share the same VC-side data:
+
+- `AuthorityAttestedStatusCapability`
+- `RevokedSetNonMembershipStatusCapability`
+
+Those two wrappers should be understood as different proof modes over one
+shared registry-bound binding shape, not as fundamentally different VC shapes.
+
+### Presentation-time status proof protocol
+
+The proof protocol contributes:
+
 - presentation-time witness requirements
 - verifier-request status policy fields
 - additional proof and validation circuits
 
-The current taxonomy is:
+The normalized target proof-protocol model is:
 
-- `NoStatusCapability`
-- `AuthorityAttestedStatusCapability`
-- `RevokedSetNonMembershipStatusCapability`
+- `AuthorityAttestedStatusProofProtocol`
+- `RevokedSetNonMembershipStatusProofProtocol`
 
-The detailed prototype revocation target for
-`RevokedSetNonMembershipStatusCapability` is defined in:
+The current repository already contains the corresponding proof payloads:
+
+- `AuthorityAttestedStatusProof`
+- `RevokedSetNonMembershipWitnessInput`
+- shared verifier-supplied request inputs such as `RevokedSetStatusRequest`
+
+The detailed prototype revocation target for the revoked-set proof protocol is
+defined in:
 
 - [`./revocation-registry.md`](./revocation-registry.md)
 
 The current transitional Layer 3 contract-facing prototype for trusted
-authority-attested status is defined in:
+authority-attested status proof is defined in:
 
 - [`./status-verification-protocol.md`](./status-verification-protocol.md)
 
@@ -157,7 +186,7 @@ authority-attested status is defined in:
 Any implementation claiming status support `MUST` document:
 
 - whether it is Level 0, 1, or 2
-- which credential families carry a status handle
+- which credential families carry a status binding
 - which authority controls status transitions
 - which status states exist:
   - active
@@ -169,6 +198,7 @@ Any implementation claiming status support `MUST` document:
   - online lookup
   - cached evidence
   - embedded witness material
+- which status proof protocol is used for verifier-facing checks
 - the freshness window the verifier enforces
 - whether hidden-holder privacy is reduced by the status path
 
@@ -211,9 +241,10 @@ In plain terms:
 Current repository packages now contain:
 
 - explicit zero-status modeling through `NoStatusCapability`
-- prototype status capability surfaces and validators
-- a prototype authority-attested status flow for hidden-holder verification
-- a prototype revoked-set witness/capability flow without final in-circuit
+- prototype registry-bound status surfaces and validators
+- a prototype authority-attested status proof flow for hidden-holder
+  verification
+- a prototype revoked-set witness/proof-protocol flow without final in-circuit
   Merkle non-membership verification
 
 Current repository packages still do not claim:
@@ -239,8 +270,10 @@ its chosen status level.
 
 The next likely status/revocation engineering phases are:
 
-1. complete in-circuit revoked-set non-membership verification
-2. strengthen root-binding semantics for the revocation registry contract
-3. promote the current `demo-revocation` path into a broader integration
+1. normalize runtime types around shared status binding plus separate proof
+   protocols
+2. complete in-circuit revoked-set non-membership verification
+3. strengthen root-binding semantics for the revocation registry contract
+4. promote the current `demo-revocation` path into a broader integration
    template once its contract/API story stabilizes
-4. then upgrade conformance claims from prototype to production-shaped support
+5. then upgrade conformance claims from prototype to production-shaped support

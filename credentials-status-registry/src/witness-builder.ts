@@ -2,12 +2,17 @@ import { Buffer } from "node:buffer";
 
 import {
   pureCircuits,
+  type RegistryBoundStatusBinding,
   type RevocationRegistryState,
   type RevokedSetNonMembershipStatusCapability,
+  type RevokedSetNonMembershipStatusProofProtocol,
   type RevokedSetNonMembershipWitnessInput,
+  type RevokedSetStatusRequest,
   type StatusRegistryRef,
   type VerifierStatusPolicy,
 } from "@midnight-ntwrk/midnight-did-credentials";
+
+import { buildRegistryBoundStatusBinding } from "./status-binding.js";
 
 export type RevokedSetRegistrySnapshot = {
   readonly registryState: RevocationRegistryState;
@@ -26,6 +31,7 @@ export type BuildRevokedSetStatusWitnessOptions = {
 
 export type BuiltRevokedSetStatusWitness = {
   readonly statusHandle: Uint8Array;
+  readonly statusBinding: RegistryBoundStatusBinding;
   readonly statusCapability: RevokedSetNonMembershipStatusCapability;
   readonly witnessInput: RevokedSetNonMembershipWitnessInput;
 };
@@ -85,6 +91,21 @@ export const buildRevokedSetWitnessInput = ({
   statusHandleOpening,
 });
 
+export const buildRevokedSetNonMembershipStatusProofProtocol = ({
+  request,
+  witnessInput,
+}: {
+  readonly request: RevokedSetStatusRequest;
+  readonly witnessInput: RevokedSetNonMembershipWitnessInput;
+}): RevokedSetNonMembershipStatusProofProtocol => {
+  const protocol = {
+    request,
+    witnessInput,
+  };
+  pureCircuits.assertValidRevokedSetNonMembershipStatusProofProtocol(protocol);
+  return protocol;
+};
+
 export const assertStatusHandleNotRevoked = (
   snapshot: RevokedSetRegistrySnapshot,
   statusHandle: Uint8Array,
@@ -118,6 +139,10 @@ export const buildRevokedSetStatusWitness = ({
     statusHandle,
     statusHandleOpening,
   });
+  const statusBinding = buildRegistryBoundStatusBinding({
+    registryRef,
+    statusHandleCommitment: statusCapability.statusHandleCommitment,
+  });
   const witnessInput = buildRevokedSetWitnessInput({
     registryState,
     statusHandle,
@@ -149,6 +174,7 @@ export const buildRevokedSetStatusWitness = ({
 
   return {
     statusHandle,
+    statusBinding,
     statusCapability,
     witnessInput,
   };
