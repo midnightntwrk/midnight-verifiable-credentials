@@ -204,3 +204,34 @@ This repository contains a mix of:
 - experimental packages
 
 Conformance claims should therefore be package-specific, not repository-global.
+
+## Current Package Maturity Table
+
+This table is the current repository snapshot for integrators on `develop`.
+Use it together with:
+
+- [`../guides/integration-surface-map.md`](../guides/integration-surface-map.md)
+- package READMEs
+
+| Package | Primary surface class | Current maturity | Integrator stance |
+| --- | --- | --- | --- |
+| `credentials` | `On-chain + off-chain` | reference implementation | safe core starting point for contract authors and runtime consumers |
+| `credentials-same-holder` | `On-chain + off-chain` | reference implementation | use when hidden-holder same-holder correlation is required |
+| `credentials-iso-registry` | `On-chain + off-chain` | reference implementation | safe shared vocabulary layer |
+| `credentials-birth` | `On-chain + off-chain` | reference implementation | current concrete explicit-holder family |
+| `credentials-birth-secret` | `On-chain + off-chain` | reference implementation with prototype status-aware additions | current concrete hidden-holder family; status-aware pieces remain prototype-scoped |
+| `credentials-status-registry` | mixed: on-chain registry + off-chain builders | prototype | use only with explicit awareness of current revocation/root-freshness limitations |
+| `credentials-demo-contract` | `On-chain only` for Compact roots, off-chain mirror for tests | prototype | consumer/demo contract, not canonical generic API |
+| `credentials-openid` | `Off-chain only` | reference implementation | transport/domain adapter only |
+| `credentials-offchain-did` | `Off-chain only` | reference implementation adapter | runtime DID helper only |
+| `credentials-protocol` | `Off-chain only` | prototype / evolving API | reference orchestration only, not a stable network library |
+| `standalone-environment` | `Off-chain only` | infrastructure / test support | integration infrastructure, not VC semantics |
+
+Interpretation rules:
+
+- `reference implementation` means the package is a checked-in repository
+  surface used as the primary example for that role
+- `prototype` means the package is useful and intentional, but its API,
+  interoperability contract, or security model still has declared gaps
+- `infrastructure / test support` means the package is important for validation
+  but is not itself part of the canonical VC/VP semantics
