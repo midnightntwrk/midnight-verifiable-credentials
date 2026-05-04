@@ -68,6 +68,7 @@ Today the repository can already claim:
 - explicit blinded-secret rejection outcomes in the reference protocol layer
 - reference replay/idempotency behavior for blinded-secret issuance and
   presentation outcomes
+- an injectable protocol state-store seam for pending/session transport state
 
 Today the repository should not yet claim:
 
@@ -89,5 +90,9 @@ Current progress note:
 
 - the reference protocol layer can now hide randomness/challenge generation
   behind an injectable interface
+- pending offer/request/submission/outcome state can now sit behind an
+  injectable `ProtocolStateStore` interface with an in-memory reference store
 - production hardening still requires the caller to supply a real randomness
   implementation and document that policy
+- production hardening still requires persistent store implementations and
+  explicit retention / eviction policy

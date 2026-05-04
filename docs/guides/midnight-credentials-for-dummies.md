@@ -1129,6 +1129,8 @@ So the honest summary is:
   fields for blinded-secret issuance
 - yes, challenge/nonce/blinding generation is now hidden behind an interface so
   integrators can plug in their own implementation
+- yes, pending blinded-secret session state is now hidden behind a
+  `ProtocolStateStore` interface so integrators can plug in persistent storage
 - no, the presentation-side reference flow does not yet carry explicit
   message-level expiry fields
 - no, this is not yet the last word on production transport hardening
@@ -1140,6 +1142,10 @@ Important qualifier:
 - the default repository implementation behind that interface is still an
   explicitly unsafe deterministic reference source for tests
 - real deployments should replace it with production randomness
+- the default repository implementation behind the state-store interface is
+  still an in-memory reference store
+- real deployments should replace it with persistent storage if they need
+  restart-safe protocol sessions
 
 Mohawk calls it "a respectable intermediate state".
 Which is the closest he gets to romance.

@@ -27,6 +27,11 @@ import type {
   SecretBirthCredentialVerificationRejection,
 } from "../transport/types.js";
 import {
+  InMemoryProtocolStateStore,
+  type ProtocolStateCollection,
+  type ProtocolStateStore,
+} from "./protocol-state-store.js";
+import {
   type ProtocolRandomnessSource,
   unsafeReferenceDeterministicRandomnessSource,
 } from "./randomness.js";
@@ -117,25 +122,13 @@ export class SecretHolderAgent {
   private readonly bus: MessageBus;
   private readonly randomness: ProtocolRandomnessSource;
   private readonly credentials: SecretStoredCredential[] = [];
-  private readonly pendingIssuanceRequests = new Map<
-    string,
-    {
-      readonly request: SecretBirthCredentialIssuanceRequest;
-      readonly holderBindingBlindingFactor: Uint8Array;
-    }
-  >();
-  private readonly completedIssuanceOutcomes = new Map<
-    string,
-    SecretIssuanceOutcome
-  >();
-  private readonly pendingPresentationSubmissions = new Map<
-    string,
-    SecretBirthCredentialVerificationSubmission
-  >();
-  private readonly completedPresentationOutcomes = new Map<
-    string,
-    SecretPresentationOutcome
-  >();
+  private readonly pendingIssuanceRequests: ProtocolStateCollection<{
+    readonly request: SecretBirthCredentialIssuanceRequest;
+    readonly holderBindingBlindingFactor: Uint8Array;
+  }>;
+  private readonly completedIssuanceOutcomes: ProtocolStateCollection<SecretIssuanceOutcome>;
+  private readonly pendingPresentationSubmissions: ProtocolStateCollection<SecretBirthCredentialVerificationSubmission>;
+  private readonly completedPresentationOutcomes: ProtocolStateCollection<SecretPresentationOutcome>;
   private issuanceRequestCounter = 0;
 
   constructor(
@@ -147,6 +140,7 @@ export class SecretHolderAgent {
     bus: MessageBus,
     options: {
       readonly randomness?: ProtocolRandomnessSource;
+      readonly stateStore?: ProtocolStateStore;
     } = {},
   ) {
     this.label = config.label;
@@ -155,6 +149,20 @@ export class SecretHolderAgent {
     this.bus = bus;
     this.randomness =
       options.randomness ?? unsafeReferenceDeterministicRandomnessSource;
+    const stateStore = options.stateStore ?? new InMemoryProtocolStateStore();
+    const stateScope = `secret-holder:${this.label}`;
+    this.pendingIssuanceRequests = stateStore.collection(
+      `${stateScope}:pending-issuance-requests`,
+    );
+    this.completedIssuanceOutcomes = stateStore.collection(
+      `${stateScope}:completed-issuance-outcomes`,
+    );
+    this.pendingPresentationSubmissions = stateStore.collection(
+      `${stateScope}:pending-presentation-submissions`,
+    );
+    this.completedPresentationOutcomes = stateStore.collection(
+      `${stateScope}:completed-presentation-outcomes`,
+    );
   }
 
   receiveOfferAndSendRequest(

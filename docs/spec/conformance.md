@@ -73,6 +73,11 @@ An injectable randomness interface is helpful evidence, but not sufficient by
 itself. A production-shaped claim still has to document the actual randomness
 policy and implementation that sits behind that interface.
 
+An injectable protocol state-store interface is also helpful evidence, but not
+sufficient by itself. A production-shaped claim still has to document whether
+that store is persistent, how finalized session state is retained, and how
+replay/idempotency data is expired or evicted.
+
 Reference profile catalog:
 
 - [`profiles.md`](./profiles.md)

@@ -25,6 +25,11 @@ import type {
   SecretBirthCredentialIssuanceRejectionCategory,
 } from "../transport/types.js";
 import {
+  InMemoryProtocolStateStore,
+  type ProtocolStateCollection,
+  type ProtocolStateStore,
+} from "./protocol-state-store.js";
+import {
   type ProtocolRandomnessSource,
   unsafeReferenceDeterministicRandomnessSource,
 } from "./randomness.js";
@@ -89,23 +94,29 @@ export class SecretIssuerAgent {
   private readonly bus: MessageBus;
   private readonly randomness: ProtocolRandomnessSource;
   private issuanceCounter = 0;
-  private readonly pendingOffers = new Map<
-    string,
-    SecretBirthCredentialIssuanceOffer
-  >();
-  private readonly completedOutcomes = new Map<string, ProtocolMessage>();
+  private readonly pendingOffers: ProtocolStateCollection<SecretBirthCredentialIssuanceOffer>;
+  private readonly completedOutcomes: ProtocolStateCollection<ProtocolMessage>;
 
   constructor(
     profile: DIDProfile,
     bus: MessageBus,
     options: {
       readonly randomness?: ProtocolRandomnessSource;
+      readonly stateStore?: ProtocolStateStore;
     } = {},
   ) {
     this.profile = profile;
     this.bus = bus;
     this.randomness =
       options.randomness ?? unsafeReferenceDeterministicRandomnessSource;
+    const stateStore = options.stateStore ?? new InMemoryProtocolStateStore();
+    const stateScope = `secret-issuer:${this.profile.label}`;
+    this.pendingOffers = stateStore.collection(
+      `${stateScope}:pending-offers`,
+    );
+    this.completedOutcomes = stateStore.collection(
+      `${stateScope}:completed-outcomes`,
+    );
   }
 
   createAndSendOffer(
