@@ -98,6 +98,8 @@ Current progress note:
   count policy in the reference store seam
 - the reference protocol now supports envelope-level presentation request and
   submission expiry checks
+- integrators now have a byte-backed codec adapter seam for wiring persistent
+  state into `ProtocolStateStore`
 - production hardening still requires the caller to supply a real randomness
   implementation and document that policy
 - production hardening still requires persistent store implementations

@@ -10,6 +10,27 @@ export interface ProtocolStateStore {
   collection<T>(name: string): ProtocolStateCollection<T>;
 }
 
+export interface ProtocolStateByteCollection {
+  get(key: string): Uint8Array | undefined;
+  set(key: string, value: Uint8Array): void;
+  delete(key: string): boolean;
+  has(key: string): boolean;
+  entries(): IterableIterator<[string, Uint8Array]>;
+}
+
+export interface ProtocolStateByteStore {
+  collection(name: string): ProtocolStateByteCollection;
+}
+
+export interface ProtocolStateCodec<T> {
+  encode(value: T): Uint8Array;
+  decode(encodedValue: Uint8Array): T;
+}
+
+export interface ProtocolStateCodecResolver {
+  getCodec<T>(collectionName: string): ProtocolStateCodec<T>;
+}
+
 export type ProtocolStateRetentionPolicy = {
   /**
    * Optional retention window for finalized protocol outcomes.
@@ -54,6 +75,66 @@ class InMemoryProtocolStateCollection<T> implements ProtocolStateCollection<T> {
   }
 }
 
+class InMemoryProtocolStateByteCollection
+  implements ProtocolStateByteCollection
+{
+  constructor(private readonly backingMap: Map<string, Uint8Array>) {}
+
+  get(key: string): Uint8Array | undefined {
+    return this.backingMap.get(key);
+  }
+
+  set(key: string, value: Uint8Array): void {
+    this.backingMap.set(key, value);
+  }
+
+  delete(key: string): boolean {
+    return this.backingMap.delete(key);
+  }
+
+  has(key: string): boolean {
+    return this.backingMap.has(key);
+  }
+
+  entries(): IterableIterator<[string, Uint8Array]> {
+    return this.backingMap.entries();
+  }
+}
+
+class CodecBackedProtocolStateCollection<T>
+  implements ProtocolStateCollection<T>
+{
+  constructor(
+    private readonly byteCollection: ProtocolStateByteCollection,
+    private readonly codec: ProtocolStateCodec<T>,
+  ) {}
+
+  get(key: string): T | undefined {
+    const encodedValue = this.byteCollection.get(key);
+    return encodedValue === undefined
+      ? undefined
+      : this.codec.decode(encodedValue);
+  }
+
+  set(key: string, value: T): void {
+    this.byteCollection.set(key, this.codec.encode(value));
+  }
+
+  delete(key: string): boolean {
+    return this.byteCollection.delete(key);
+  }
+
+  has(key: string): boolean {
+    return this.byteCollection.has(key);
+  }
+
+  *entries(): IterableIterator<[string, T]> {
+    for (const [key, encodedValue] of this.byteCollection.entries()) {
+      yield [key, this.codec.decode(encodedValue)];
+    }
+  }
+}
+
 export class InMemoryProtocolStateStore implements ProtocolStateStore {
   private readonly collections = new Map<string, Map<string, unknown>>();
 
@@ -68,6 +149,41 @@ export class InMemoryProtocolStateStore implements ProtocolStateStore {
     return new InMemoryProtocolStateCollection(created);
   }
 }
+
+export class InMemoryProtocolStateByteStore implements ProtocolStateByteStore {
+  private readonly collections = new Map<string, Map<string, Uint8Array>>();
+
+  collection(name: string): ProtocolStateByteCollection {
+    const existing = this.collections.get(name);
+    if (existing) {
+      return new InMemoryProtocolStateByteCollection(existing);
+    }
+
+    const created = new Map<string, Uint8Array>();
+    this.collections.set(name, created);
+    return new InMemoryProtocolStateByteCollection(created);
+  }
+}
+
+export class CodecBackedProtocolStateStore implements ProtocolStateStore {
+  constructor(
+    private readonly byteStore: ProtocolStateByteStore,
+    private readonly codecResolver: ProtocolStateCodecResolver,
+  ) {}
+
+  collection<T>(name: string): ProtocolStateCollection<T> {
+    return new CodecBackedProtocolStateCollection(
+      this.byteStore.collection(name),
+      this.codecResolver.getCodec<T>(name),
+    );
+  }
+}
+
+export const createCodecBackedProtocolStateStore = (
+  byteStore: ProtocolStateByteStore,
+  codecResolver: ProtocolStateCodecResolver,
+): ProtocolStateStore =>
+  new CodecBackedProtocolStateStore(byteStore, codecResolver);
 
 const resolveExpirationMs = (
   currentTimeMs: bigint,

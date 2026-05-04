@@ -50,6 +50,8 @@ The current public exports are intentionally narrow:
   blinding factors, and signing nonces
 - a generic `ProtocolStateStore` interface plus an in-memory reference
   implementation for protocol session state
+- a byte-backed codec adapter seam so persistent stores can expose
+  `ProtocolStateStore` without reimplementing typed collection logic
 - shared crypto and envelope helpers
 - the typed in-memory message bus transport seam
 
@@ -167,9 +169,15 @@ Reference timing rule:
 
 Persistent state adapter rule:
 
+- integrators can either implement `ProtocolStateStore` directly or expose a
+  lower-level byte store plus per-collection codecs
 - integrators can satisfy `ProtocolStateStore` with a persistent backend as
   long as it preserves named collection boundaries, stable key lookup, and
   typed value serialization
+- the package now exports `ProtocolStateByteStore`,
+  `ProtocolStateCodecResolver`, and `createCodecBackedProtocolStateStore(...)`
+  as the preferred integration path when the persistence layer naturally
+  stores bytes or blobs
 - finalized outcome retention currently relies on `entries()` iteration, so a
   persistent adapter must support collection scans for TTL pruning and oldest-
   first eviction

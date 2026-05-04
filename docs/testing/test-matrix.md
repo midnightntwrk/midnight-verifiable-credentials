@@ -113,6 +113,8 @@ Implemented prototype coverage:
     reference flows
   - injectable protocol state-store coverage for blinded-secret issuance and
     presentation reference flows
+  - codec-backed protocol state-store coverage for blinded-secret presentation
+    replay across verifier recreation
   - helper-level finalized-outcome retention coverage for TTL expiry and
     bounded-count eviction
   - explicit blinded-secret issuance rejection messages in the reference
