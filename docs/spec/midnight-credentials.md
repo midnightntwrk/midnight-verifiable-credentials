@@ -44,6 +44,7 @@ Companion documents have narrower roles:
   - [`./conformance.md`](./conformance.md)
   - [`./credential-status.md`](./credential-status.md)
   - [`./revocation-registry.md`](./revocation-registry.md)
+  - [`./hidden-holder-interoperability.md`](./hidden-holder-interoperability.md)
 
 Those normative companion documents are authoritative within their narrower scopes:
 
@@ -51,6 +52,7 @@ Those normative companion documents are authoritative within their narrower scop
 - `conformance.md` owns the repository's conformance categories and non-conformance examples
 - `credential-status.md` owns the repository's current status/revocation claim contract
 - `revocation-registry.md` owns the repository's prototype revocation registry target
+- `hidden-holder-interoperability.md` owns the current adapter and transport obligations for hidden-holder flows
 
 This document takes precedence only where a broader repository-level requirement in this document overlaps with a narrower companion rule.
 - informative documents:

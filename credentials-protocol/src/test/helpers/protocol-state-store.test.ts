@@ -1,13 +1,18 @@
 import { Buffer } from "node:buffer";
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { deserialize, serialize } from "node:v8";
 
 import { describe, expect, it } from "vitest";
 
+import { FileSystemProtocolStateByteStore } from "../../adapters/file-protocol-state-store.js";
 import {
   createCodecBackedProtocolStateStore,
   InMemoryProtocolStateByteStore,
   InMemoryProtocolStateStore,
   type ProtocolStateCodecResolver,
+  type ProtocolStateCollection,
   readRetainedProtocolState,
   type RetainedProtocolState,
   writeRetainedProtocolState,
@@ -102,5 +107,37 @@ describe("ProtocolStateStore retention helpers", () => {
 
     expect(collection.get("message-1")).toEqual(value);
     expect(Array.from(collection.entries())).toEqual([["message-1", value]]);
+  });
+
+  it("persists codec-backed values across file-backed store recreation", () => {
+    const rootDir = mkdtempSync(join(tmpdir(), "vc-protocol-state-"));
+
+    try {
+      const createCollection = (): ProtocolStateCollection<{
+        id: string;
+        payload: Uint8Array;
+        expiresAt: bigint;
+      }> =>
+        createCodecBackedProtocolStateStore(
+          new FileSystemProtocolStateByteStore(rootDir),
+          v8CodecResolver,
+        ).collection("test:file-backed");
+
+      const value = {
+        id: "message-1",
+        payload: new Uint8Array([9, 8, 7]),
+        expiresAt: 999n,
+      };
+
+      createCollection().set("message-1", value);
+
+      const recreatedCollection = createCollection();
+      expect(recreatedCollection.get("message-1")).toEqual(value);
+      expect(Array.from(recreatedCollection.entries())).toEqual([
+        ["message-1", value],
+      ]);
+    } finally {
+      rmSync(rootDir, { recursive: true, force: true });
+    }
   });
 });

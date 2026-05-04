@@ -84,9 +84,16 @@ sufficient by itself. A production-shaped claim still has to document whether
 that store is persistent, how finalized session state is retained, and how
 replay/idempotency data is expired or evicted.
 
+For hidden-holder adapters that claim interoperability, the same
+implementation should also disclose whether it follows the repository-aligned
+adapter rules in:
+
+- [`hidden-holder-interoperability.md`](./hidden-holder-interoperability.md)
+
 Reference profile catalog:
 
 - [`profiles.md`](./profiles.md)
+- [`hidden-holder-interoperability.md`](./hidden-holder-interoperability.md)
 
 ### 4. Transport/domain adapter implementation
 

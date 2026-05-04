@@ -1,4 +1,7 @@
 import { Buffer } from "node:buffer";
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { deserialize, serialize } from "node:v8";
 
 import { pureCircuits as genericPureCircuits } from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
@@ -9,6 +12,7 @@ import {
 } from "@midnight-ntwrk/midnight-did-credentials-birth-secret/managed/secret-birth-credential/contract/index.js";
 import { describe, expect, it } from "vitest";
 
+import { FileSystemProtocolStateByteStore } from "../../adapters/file-protocol-state-store.js";
 import {
   createCodecBackedProtocolStateStore,
   InMemoryProtocolStateByteStore,
@@ -328,6 +332,76 @@ describe("secret-holder presentation", () => {
     const replayedOutcome = bus.receive("holder")!;
 
     expect(replayedOutcome).toEqual(firstOutcome);
+  });
+
+  it("can re-deliver blinded-secret presentation outcomes through a file-backed codec store", () => {
+    const rootDir = mkdtempSync(join(tmpdir(), "vc-protocol-state-"));
+
+    try {
+      const bus = new MessageBus();
+      const stateStore = createCodecBackedProtocolStateStore(
+        new FileSystemProtocolStateByteStore(rootDir),
+        v8CodecResolver,
+      );
+      const holder = issueCredential(bus);
+      const verifier = new VerifierAgent(verifierProfile, bus, {
+        stateStore,
+      });
+
+      verifier.createAndSendSecretPresentationRequest("holder", {
+        issuerVerificationMethodRef: issuerProfile.signer.verificationMethodRef,
+        requireSubjectIdCommitmentDisclosure: false,
+        requireBirthCountryDisclosure: true,
+        requireVerifierScopedPseudonym: false,
+        requireAgeOverThreshold: true,
+        requestedAgeThresholdYears: 18,
+      });
+
+      const requestMessage = bus.receive("holder")!;
+      const requestBody =
+        requestMessage.body as SecretBirthCredentialVerificationRequest;
+      const presentationWitness: SecretPresentationWitness = {
+        credentialIndex: 0,
+        currentDay: 3650n + 365n * 25n,
+        birthDateDays: claimWitness.birthDateDays,
+        birthDateOpening: claimWitness.birthDateOpening,
+        birthCountryCodePadded: claimWitness.birthCountryCodePadded,
+        birthCountryCodeOpening: claimWitness.birthCountryCodeOpening,
+      };
+
+      holder.receiveRequestAndSendPresentation(
+        requestMessage,
+        presentationWitness,
+      );
+      const submission = bus.receive("verifier")!;
+      const stored = holder.getCredential(0);
+      const { holderSecret, holderSecretOpening } = holder.secretWitness;
+      const simulatorWitness: SecretSimulatorWitness = {
+        request: requestBody,
+        currentDay: 3650n + 365n * 25n,
+        birthDateDays: claimWitness.birthDateDays,
+        birthDateOpening: claimWitness.birthDateOpening,
+        holderSecret,
+        holderSecretOpening,
+        holderBindingBlindingFactor: stored.holderBindingBlindingFactor,
+      };
+
+      verifier.receiveSecretSubmissionAndRespond(submission, simulatorWitness);
+      const firstOutcome = bus.receive("holder")!;
+
+      const restartedVerifier = new VerifierAgent(verifierProfile, bus, {
+        stateStore,
+      });
+      restartedVerifier.receiveSecretSubmissionAndRespond(
+        submission,
+        simulatorWitness,
+      );
+      const replayedOutcome = bus.receive("holder")!;
+
+      expect(replayedOutcome).toEqual(firstOutcome);
+    } finally {
+      rmSync(rootDir, { recursive: true, force: true });
+    }
   });
 
   it("allows integrators to inject custom blinded-secret presentation randomness", () => {
