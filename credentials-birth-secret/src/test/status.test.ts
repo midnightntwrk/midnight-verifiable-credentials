@@ -42,8 +42,8 @@ describe("secret birth credential: status-aware verification", () => {
     ).not.toThrow();
   });
 
-  it("rejects a status witness that does not satisfy the minimum epoch policy", () => {
-    const fixture = createSecretBirthCredentialFixture({ statusEpoch: 39n });
+  it("rejects a status witness that uses a different registry than the verifier policy", () => {
+    const fixture = createSecretBirthCredentialFixture();
     const submission = {
       envelope: {
         ...fixture.verificationRequest.envelope,
@@ -67,14 +67,20 @@ describe("secret birth credential: status-aware verification", () => {
     expect(() =>
       pureCircuits.assertSecretBirthCredentialVerificationSubmissionMatchesStatusRequest(
         fixture.credentialWithStatus,
-        fixture.statusVerificationRequest,
+        {
+          ...fixture.statusVerificationRequest,
+          statusPolicy: {
+            ...fixture.statusVerificationRequest.statusPolicy,
+            acceptedRegistryId: new Uint8Array(32).fill(3),
+          },
+        },
         submission,
         fixture.statusVerificationInputs,
         fixture.witness.holderSecret,
         fixture.witness.holderSecretOpening,
         fixture.witness.holderBindingBlindingFactor,
       ),
-    ).toThrow(/does not satisfy the verifier status freshness policy/i);
+    ).toThrow(/registry id does not match/i);
   });
 
   it("rejects a status witness that does not match the committed status handle", () => {

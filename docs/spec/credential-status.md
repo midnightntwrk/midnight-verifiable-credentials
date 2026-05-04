@@ -108,7 +108,7 @@ An implementation at this level:
 
 - defines a status witness that can be consumed inside the proof model
 - proves non-revocation without revealing unnecessary correlation data
-- defines freshness/epoch semantics for that witness
+- defines how the verifier obtains and accepts fresh-enough status evidence
 - states exactly what the verifier learns from the non-revocation proof
 
 This level is the likely long-term target for hidden-holder and
@@ -164,7 +164,7 @@ Any implementation claiming status support `MUST` document:
 If a verifier claims status-aware verification, it `MUST` define:
 
 - whether status is mandatory or optional for that request
-- the freshness window for acceptable status evidence
+- how it determines that the supplied status root is fresh enough
 - whether stale status evidence is:
   - a hard rejection
   - a soft failure
@@ -227,6 +227,6 @@ The next likely status/revocation engineering phases are:
 
 1. add typed status capability structs and package surfaces for credential
    families
-2. define verifier freshness-request semantics
+2. define verifier/application freshness-root semantics
 3. implement `RevokedSetNonMembershipStatusCapability`
 4. add tests and package claims only after the chosen model exists

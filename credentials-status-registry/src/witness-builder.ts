@@ -30,6 +30,10 @@ export type BuiltRevokedSetStatusWitness = {
   readonly witnessInput: RevokedSetNonMembershipWitnessInput;
 };
 
+// Freshness of `registryState.revokedRoot` is intentionally external to this
+// helper. The verifier or orchestrating application must supply an accepted
+// current-enough root before calling into the proof layer.
+
 const toHex = (value: Uint8Array): string => Buffer.from(value).toString("hex");
 
 const equalBytes = (left: Uint8Array, right: Uint8Array): boolean =>

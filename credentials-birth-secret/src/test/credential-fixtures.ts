@@ -11,7 +11,6 @@ import {
   type ProtocolMessageEnvelope,
   pureCircuits as genericPureCircuits,
   StatusCapabilityKind,
-  StatusSupportLevel,
   type VerificationMethodRef,
 } from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
 
@@ -65,7 +64,6 @@ export type BirthCredentialFixture = {
     readonly statusHandleOpening: Uint8Array;
     readonly statusRegistryId: Uint8Array;
     readonly statusRevokedRoot: Uint8Array;
-    readonly statusEpoch: bigint;
   };
 };
 
@@ -90,7 +88,6 @@ export type SecretBirthCredentialFixtureOptions = {
   readonly statusHandleOpening?: Uint8Array;
   readonly statusRegistryId?: Uint8Array;
   readonly statusRevokedRoot?: Uint8Array;
-  readonly statusEpoch?: bigint;
 };
 
 const sha256 = (value: string): Uint8Array =>
@@ -212,8 +209,7 @@ export const createSecretBirthCredentialFixture = (
     statusRegistryId:
       options.statusRegistryId ?? sha256("registry:birth-secret-status"),
     statusRevokedRoot:
-      options.statusRevokedRoot ?? sha256("revoked-root:epoch-42"),
-    statusEpoch: options.statusEpoch ?? 42n,
+      options.statusRevokedRoot ?? sha256("revoked-root:current"),
   };
 
   const claims = {
@@ -336,12 +332,9 @@ export const createSecretBirthCredentialFixture = (
       verificationRequest,
       statusPolicy: {
         requireStatus: true,
-        minimumStatusSupportLevel: StatusSupportLevel.level2,
         acceptedStatusCapability: StatusCapabilityKind.revokedSetNonMembership,
         enforceRegistryId: true,
         acceptedRegistryId: witness.statusRegistryId,
-        hasMinimumAcceptedEpoch: true,
-        minimumAcceptedEpoch: 40n,
       },
     };
 
@@ -351,7 +344,6 @@ export const createSecretBirthCredentialFixture = (
         registryState: {
           registryId: witness.statusRegistryId,
           revokedRoot: witness.statusRevokedRoot,
-          epoch: witness.statusEpoch,
         },
         statusHandle: witness.statusHandle,
         statusHandleOpening: witness.statusHandleOpening,

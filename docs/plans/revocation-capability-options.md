@@ -170,16 +170,15 @@ So this option is a useful primitive, not the final architecture.
 ### Model
 
 - the credential carries a hidden-holder-compatible status handle commitment
-- the authority publishes epoch-based status roots
-- the holder maintains or fetches a status witness for the latest acceptable
-  epoch
+- the authority publishes accepted status roots
+- the holder maintains or fetches a status witness for a verifier-accepted
+  current-enough root
 - the presentation proof includes a non-revocation witness check in Compact
 
 ### Midnight shape
 
 - on-chain or anchored state publishes:
   - `statusRegistryId`
-  - `epoch`
   - `statusRoot`
   - metadata for freshness and authority
 - the credential binds:
@@ -191,7 +190,7 @@ So this option is a useful primitive, not the final architecture.
   - consistency between the credential and the status witness
 - the verifier checks:
   - proof validity
-  - accepted epoch/freshness window
+  - accepted freshness/root-selection policy
   - authority metadata
 
 ### Advantages
@@ -205,7 +204,7 @@ So this option is a useful primitive, not the final architecture.
 
 - hardest construction
 - requires witness update semantics
-- requires careful root/epoch governance
+- requires careful root/freshness governance
 - more protocol complexity for wallets and holders
 
 ### Recommendation
@@ -260,7 +259,7 @@ repository in a public-lookup-only design.
    - verifier request must state:
      - whether status is required
      - which status level is accepted
-     - maximum status age / accepted epoch window
+     - how the accepted revocation root is selected and judged fresh enough
 
 4. do not require chain transactions for ordinary presentation-time
    non-revocation proofs

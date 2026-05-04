@@ -78,7 +78,7 @@ The revoked-set model is preferred because:
 - auditors and operators can reason about a monotonic set of revoked handles
 - the proof statement is clean:
   - "this credential's status handle is not in the revoked set under the
-    accepted root and epoch"
+    accepted root"
 
 ### 3. Minimal canonical state
 
@@ -153,7 +153,7 @@ Purpose:
 Semantics:
 
 - the credential binds a committed `StatusHandle`
-- the verifier accepts a published `(registryId, epoch, revokedRoot)`
+- the verifier accepts a published `(registryId, revokedRoot)`
 - the holder proves non-membership of the status handle in the revoked set
 - the VP proof includes status consistency and non-revocation logic
 
@@ -176,17 +176,12 @@ The prototype registry model is:
 - ledger state publishes:
   - `registryId`
   - `revokedRoot`
-  - `version`
+- an internal monotonic update counter may exist for registry-side bookkeeping
 
-The registry's `version` is the canonical `epoch`.
-
-The critical rule is:
-
-- `version` must advance when revocation state changes
-- it should not be shared with unrelated business state transitions
-
-So the revocation registry should be a dedicated contract or dedicated state
-surface, not a mixed-purpose contract with unrelated writes.
+The canonical VC/VP/protocol surface does not need to expose a registry epoch.
+For the current prototype target, freshness is enforced by who supplies and
+accepts the revocation root, not by an in-band epoch field carried in the
+credential status witness.
 
 Current prototype implementation note:
 
@@ -194,7 +189,6 @@ Current prototype implementation note:
   in-circuit Merkle-root equality check for the revoked-set tree
 - so `assertStateUsesThisRegistry(...)` currently binds a supplied snapshot to:
   - the contract's `registryId`
-  - and the current `version` / epoch window
 - but it does not yet prove that the supplied `revokedRoot` equals the live
   contract Merkle root
 
@@ -250,7 +244,6 @@ with:
 
 - status public inputs:
   - `registryId`
-  - `epoch`
   - `revokedRoot`
 - private witness inputs:
   - `StatusHandle`
@@ -269,9 +262,9 @@ Status-aware verifier requests should define a typed status policy.
 That policy should be able to say:
 
 - whether status is required
-- which capability or support level is accepted
+- which capability is accepted
 - which registry is accepted
-- which minimum epoch or freshness rule is required
+- how the verifier/application determines that the supplied root is fresh enough
 
 The verifier request is where freshness becomes explicit.
 
@@ -286,7 +279,7 @@ In particular:
 
 - business-contract verification should consume one VP proof bundle that
   already contains the non-revocation proof
-- protocol/orchestration may fetch or prepare the accepted root/epoch off-chain
+- protocol/orchestration may fetch or prepare the accepted root off-chain
 - but the final contract verification should not rely on a separate live
   revocation-contract call inside the business proof
 
