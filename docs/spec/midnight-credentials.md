@@ -384,10 +384,47 @@ explicitly not provided.
 Examples:
 
 - explicit DID holder binding is less private than hidden-secret binding
+- plain secret-holder binding can already be treated as a stable hidden-holder
+  proof profile at the Compact/family level, but production deployments still
+  need to disclose randomness, storage, revocation, and adapter assumptions
 - offchain Midnight DID binding is suitable for lightweight DID-shaped
   prototypes but does not by itself prove resolver-backed DID semantics
 - blinded-secret binding has a supported reference issuance/presentation path,
   but it is still not a final blind-issuance transport standard
+
+### Hidden-Holder Production Claims
+Repository-aligned implementations `MUST` distinguish between:
+
+- a hidden-holder proof profile
+- a hidden-holder issuance/presentation transport contract
+
+For the current repository, `SecretHolderBinding` and
+`BlindedSecretHolderBinding` are related but not identical maturity claims.
+
+A production-shaped claim for the plain secret-holder profile `MUST` disclose:
+
+- how holder secrets are generated and stored
+- how issuer and holder signing nonces are generated
+- which verifier challenge/session correlation rules are authoritative
+- whether revocation or non-revocation is implemented
+- which external adapter or wire-format assumptions remain outside the package
+
+A production-shaped claim for the blinded-secret profile `MUST` disclose all of
+the above and also define:
+
+- offer/request/submission correlation rules
+- replay and idempotency behavior
+- expiry semantics for each protocol stage
+- durable pending-state behavior across retries, restarts, or delayed delivery
+- explicit rejection semantics for malformed, mismatched, expired, replayed, or
+  refused sessions
+- the external adapter/interoperability contract that carries the Compact
+  protocol values
+
+The current repository reference implementations do not yet satisfy the full
+blinded-secret production-shaped claim. They do provide supported reference
+issuance and presentation flows with explicit rejection outcomes and documented
+deferred areas.
 
 ### Mixed Maturity Repository
 This repository contains a mix of:

@@ -59,6 +59,16 @@ conformance claims must distinguish between:
 - a supported reference happy path validated by checked-in tests
 - production transport/interoperability guarantees that remain deferred
 
+For hidden-holder profiles, a production-shaped conformance claim should also
+state:
+
+- how randomness and signing nonces are generated
+- whether pending protocol state is durable or only in-memory
+- whether replay/idempotency behavior is defined
+- whether expiry semantics are defined for each protocol stage
+- whether revocation/non-revocation is implemented or explicitly deferred
+- which external adapter or wire contract carries the Compact protocol values
+
 Reference profile catalog:
 
 - [`profiles.md`](./profiles.md)
@@ -133,6 +143,10 @@ Any implementation claiming conformance should document:
 - which test surfaces it executes
 - whether it has explicit rejection message semantics or only local rejection
   behavior
+- for hidden-holder profiles, whether protocol state is durable or only
+  reference-local/in-memory
+- for hidden-holder profiles, whether randomness/nonce generation is production
+  hardening or only test/reference behavior
 - any security/privacy limitations that are intentionally deferred
 
 ## Non-conformance examples
@@ -147,6 +161,8 @@ An implementation is not conformant if it:
   distinct rejection outcome
 - presents supported reference happy paths as production-ready profiles without
   disclosing deferred transport or revocation limitations
+- claims production-ready hidden-holder behavior without disclosing randomness,
+  durable-state, expiry, replay, or adapter limitations
 
 ## Current repository stance
 

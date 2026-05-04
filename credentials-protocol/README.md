@@ -92,6 +92,22 @@ messages for the blinded-secret issuance and presentation flows. The package
 remains intentionally narrow and transport-agnostic; it is not yet a
 production network library.
 
+Production-facing readers should separate two claims:
+
+- plain secret-holder proof/profile behavior
+- blinded-secret transport/session behavior
+
+The first is already stable enough to describe as a repository reference hidden
+holder profile. The second is still a production-hardening track. In
+particular, this package does not yet claim:
+
+- durable pending state across restarts or delayed delivery
+- production randomness/nonce interfaces instead of test/reference generation
+- presentation-side message-level expiry semantics
+- a final external interoperability contract for OIDC, DIDComm, or another wire
+  protocol
+- revocation/non-revocation
+
 For blinded-secret issuance, the transport-shaped API is now the preferred
 reference surface:
 

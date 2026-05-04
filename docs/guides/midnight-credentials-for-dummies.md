@@ -1106,11 +1106,17 @@ Simple idempotency examples now covered by the tests:
 What is still not being claimed:
 
 - a final production blind-signature transport protocol
+- durable protocol state across retries, restarts, or delayed delivery
+- production randomness / nonce interfaces instead of the current
+  reference-friendly deterministic paths
+- presentation-side message-level expiry semantics
 - revocation/non-revocation support
 - broad application-level interoperability guarantees
 
 So the honest summary is:
 
+- yes, the plain secret-holder profile is already a real hidden-holder binding
+  model, not just a sketch
 - yes, the blinded-secret capability is real
 - yes, the issuance and presentation happy path is supported
 - yes, the reference protocol now emits explicit rejection results for common
