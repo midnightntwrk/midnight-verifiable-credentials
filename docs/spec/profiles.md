@@ -85,9 +85,12 @@ Current test coverage:
 Current limitations:
 - production deployments still need explicit disclosure of holder-secret
   storage, randomness/nonce handling, and external adapter assumptions
-- repository status/revocation support is still Level 0 as defined in
-  `credential-status.md`
-- current status capability is effectively `NoStatusCapability`
+- the secret birth family now carries prototype status-aware verification
+  surfaces, but the repository does not yet claim final production revocation
+  support
+- current prototype status capabilities are:
+  - `AuthorityAttestedStatusCapability`
+  - `RevokedSetNonMembershipStatusCapability`
 
 ### 3. Blinded secret holder binding
 
@@ -120,9 +123,12 @@ Current limitations:
   submission expiry, but the credential family still does not define final
   body-level timeout fields or an external interoperable timeout contract
 - production transport interoperability is still evolving
-- repository status/revocation support is still Level 0 as defined in
-  `credential-status.md`
-- current status capability is effectively `NoStatusCapability`
+- the credential family now carries prototype status-aware verification
+  surfaces, but the repository does not yet claim final production revocation
+  support
+- current prototype status capabilities are:
+  - `AuthorityAttestedStatusCapability`
+  - `RevokedSetNonMembershipStatusCapability`
 
 ### 4. Verifier-domain pseudonym profile
 

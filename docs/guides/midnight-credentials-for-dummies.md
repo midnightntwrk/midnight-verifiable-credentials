@@ -1845,11 +1845,14 @@ Mohawk is happier now, but not done.
 The current reference path still does not give us everything:
 
 - production blind-issuance transport hardening is not finished
-- the repository now has a status/revocation contract, but current packages are
-  still only at Level 0:
-  - no implemented revocation
-  - no implemented non-revocation proof
-  - only claim expiry or protocol/session expiry where documented
+- the repository now has prototype status/revocation capability surfaces:
+  - verifier-supplied revocation roots
+  - a dedicated revocation registry
+  - a hidden-holder authority-attested status path for Layer 3 verification
+  - a revoked-set witness/capability path that is not yet the final in-circuit
+    non-revocation proof
+  - only claim expiry or protocol/session expiry where documented still do not
+    count as real revocation support by themselves
 - the chosen prototype direction is now clear:
   - a dedicated revocation registry
   - a revoked-set `MerkleTree`
