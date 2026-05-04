@@ -152,6 +152,12 @@ two wrappers that already share the same VC-side data:
 Those two wrappers should be understood as different proof modes over one
 shared registry-bound binding shape, not as fundamentally different VC shapes.
 
+Ownership rule:
+
+- shared VC-side status binding belongs to `credentials`
+- registry-specific request/proof-protocol helpers belong to
+  `credentials-status-registry`
+
 ### Presentation-time status proof protocol
 
 The proof protocol contributes:
