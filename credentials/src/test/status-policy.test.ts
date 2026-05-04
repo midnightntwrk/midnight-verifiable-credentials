@@ -6,7 +6,6 @@ import { describe, expect, it } from "vitest";
 import {
   pureCircuits,
   StatusCapabilityKind,
-  StatusSupportLevel,
 } from "../managed/credentials/contract/index.js";
 import { createSigner } from "./proof-fixtures.js";
 
@@ -19,12 +18,9 @@ describe("credentials core: verifier status policy", () => {
   it("accepts the explicit NoStatusCapability policy", () => {
     const policy = {
       requireStatus: false,
-      minimumStatusSupportLevel: StatusSupportLevel.level0,
       acceptedStatusCapability: StatusCapabilityKind.noStatus,
       enforceRegistryId: false,
       acceptedRegistryId: new Uint8Array(32),
-      hasMinimumAcceptedEpoch: false,
-      minimumAcceptedEpoch: 0n,
     };
 
     expect(() =>
@@ -35,12 +31,9 @@ describe("credentials core: verifier status policy", () => {
   it("accepts a required non-revocation policy", () => {
     const policy = {
       requireStatus: true,
-      minimumStatusSupportLevel: StatusSupportLevel.level2,
       acceptedStatusCapability: StatusCapabilityKind.revokedSetNonMembership,
       enforceRegistryId: true,
       acceptedRegistryId: bytes32("registry:hidden-holder"),
-      hasMinimumAcceptedEpoch: true,
-      minimumAcceptedEpoch: 42n,
     };
 
     expect(() =>
@@ -51,12 +44,9 @@ describe("credentials core: verifier status policy", () => {
   it("rejects an optional policy that still constrains status", () => {
     const policy = {
       requireStatus: false,
-      minimumStatusSupportLevel: StatusSupportLevel.level0,
       acceptedStatusCapability: StatusCapabilityKind.noStatus,
       enforceRegistryId: true,
       acceptedRegistryId: bytes32("registry:hidden-holder"),
-      hasMinimumAcceptedEpoch: false,
-      minimumAcceptedEpoch: 0n,
     };
 
     expect(() => pureCircuits.assertValidVerifierStatusPolicy(policy)).toThrow(
@@ -67,12 +57,9 @@ describe("credentials core: verifier status policy", () => {
   it("rejects a required policy that still claims NoStatusCapability", () => {
     const policy = {
       requireStatus: true,
-      minimumStatusSupportLevel: StatusSupportLevel.level2,
       acceptedStatusCapability: StatusCapabilityKind.noStatus,
       enforceRegistryId: false,
       acceptedRegistryId: new Uint8Array(32),
-      hasMinimumAcceptedEpoch: false,
-      minimumAcceptedEpoch: 0n,
     };
 
     expect(() => pureCircuits.assertValidVerifierStatusPolicy(policy)).toThrow(
@@ -93,19 +80,15 @@ describe("credentials core: verifier status policy", () => {
       registryState: {
         registryId: bytes32("registry:witness"),
         revokedRoot: bytes32("revoked-root"),
-        epoch: 42n,
       },
       statusHandle: bytes32("status-handle"),
       statusHandleOpening: bytes32("status-opening"),
     };
     const policy = {
       requireStatus: true,
-      minimumStatusSupportLevel: StatusSupportLevel.level2,
       acceptedStatusCapability: StatusCapabilityKind.revokedSetNonMembership,
       enforceRegistryId: true,
       acceptedRegistryId: bytes32("registry:policy"),
-      hasMinimumAcceptedEpoch: false,
-      minimumAcceptedEpoch: 0n,
     };
 
     expect(() =>
@@ -134,19 +117,15 @@ describe("credentials core: verifier status policy", () => {
       registryState: {
         registryId,
         revokedRoot: bytes32("revoked-root"),
-        epoch: 42n,
       },
       statusHandle: bytes32("status-handle"),
       statusHandleOpening: bytes32("status-opening"),
     };
     const policy = {
       requireStatus: false,
-      minimumStatusSupportLevel: StatusSupportLevel.level0,
       acceptedStatusCapability: StatusCapabilityKind.noStatus,
       enforceRegistryId: false,
       acceptedRegistryId: new Uint8Array(32),
-      hasMinimumAcceptedEpoch: false,
-      minimumAcceptedEpoch: 0n,
     };
 
     expect(() =>

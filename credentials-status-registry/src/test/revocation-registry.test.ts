@@ -44,8 +44,7 @@ describe("revocation registry contract", () => {
   it("builds a typed revocation registry state snapshot", () => {
     const state = {
       registryId: bytes32("registry:hidden-holder"),
-      revokedRoot: bytes32("revoked-root:epoch-42"),
-      epoch: 42n,
+      revokedRoot: bytes32("revoked-root:current"),
     };
 
     expect(() =>
@@ -57,8 +56,7 @@ describe("revocation registry contract", () => {
     expect(() =>
       pureCircuits.assertValidRevocationRegistryState({
         registryId: new Uint8Array(32),
-        revokedRoot: bytes32("revoked-root:epoch-42"),
-        epoch: 42n,
+        revokedRoot: bytes32("revoked-root:current"),
       }),
     ).toThrow(/Revocation registry id must be set/);
 
@@ -66,7 +64,6 @@ describe("revocation registry contract", () => {
       pureCircuits.assertValidRevocationRegistryState({
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: new Uint8Array(32),
-        epoch: 42n,
       }),
     ).toThrow(/Revocation registry root must be set/);
   });
@@ -104,12 +101,11 @@ describe("revocation registry contract", () => {
     ).toThrow(/already been initialized/);
   });
 
-  it("binds state snapshots to registry id and epoch, and rejects use before initialization", () => {
+  it("binds state snapshots to registry id and rejects use before initialization", () => {
     const { contract, context } = createRegistryFixture();
     const snapshot = {
       registryId: bytes32("registry:hidden-holder"),
-      revokedRoot: bytes32("revoked-root:epoch-0"),
-      epoch: 0n,
+      revokedRoot: bytes32("revoked-root:current"),
     };
 
     expect(() =>
@@ -134,13 +130,6 @@ describe("revocation registry contract", () => {
         registryId: bytes32("registry:wrong"),
       }),
     ).toThrow(/does not belong to this registry/);
-
-    expect(() =>
-      contract.impureCircuits.assertStateUsesThisRegistry(initialized.context, {
-        ...snapshot,
-        epoch: 1n,
-      }),
-    ).toThrow(/cannot exceed the current registry epoch/);
   });
 
   it("currently does not bind a supplied revokedRoot to the live merkle root", () => {
@@ -154,12 +143,11 @@ describe("revocation registry contract", () => {
       contract.impureCircuits.assertStateUsesThisRegistry(initialized.context, {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("fabricated-root"),
-        epoch: 0n,
       }),
     ).not.toThrow();
   });
 
-  it("records revoked status handles and advances the registry epoch", () => {
+  it("records revoked status handles and advances the internal version counter", () => {
     const { contract, context } = createRegistryFixture();
     const initialized = contract.impureCircuits.initializeRegistry(
       context,

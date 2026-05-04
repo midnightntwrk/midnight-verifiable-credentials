@@ -7,7 +7,6 @@ import {
   buildRevokedSetStatusWitness,
   deriveRevokedSetStatusHandle,
   StatusCapabilityKind,
-  StatusSupportLevel,
 } from "../index.js";
 
 setNetworkId("undeployed");
@@ -47,17 +46,13 @@ describe("revoked-set witness builder", () => {
       statusHandleOpening: bytes32("status-opening:alpha"),
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
-        revokedRoot: bytes32("revoked-root:epoch-42"),
-        epoch: 42n,
+        revokedRoot: bytes32("revoked-root:current"),
       },
       verifierStatusPolicy: {
         requireStatus: true,
-        minimumStatusSupportLevel: StatusSupportLevel.level2,
         acceptedStatusCapability: StatusCapabilityKind.revokedSetNonMembership,
         enforceRegistryId: true,
         acceptedRegistryId: bytes32("registry:hidden-holder"),
-        hasMinimumAcceptedEpoch: true,
-        minimumAcceptedEpoch: 40n,
       },
       revokedStatusHandles: [bytes32("revoked-handle:someone-else")],
     });
@@ -66,7 +61,9 @@ describe("revoked-set witness builder", () => {
     expect(built.statusCapability.registryRef.registryId).toEqual(
       bytes32("registry:hidden-holder"),
     );
-    expect(built.witnessInput.registryState.epoch).toBe(42n);
+    expect(built.witnessInput.registryState.revokedRoot).toEqual(
+      bytes32("revoked-root:current"),
+    );
   });
 
   it("rejects a snapshot that already lists the derived handle as revoked", () => {
@@ -87,8 +84,7 @@ describe("revoked-set witness builder", () => {
         statusHandleOpening: bytes32("status-opening:alpha"),
         registryState: {
           registryId: bytes32("registry:hidden-holder"),
-          revokedRoot: bytes32("revoked-root:epoch-42"),
-          epoch: 42n,
+          revokedRoot: bytes32("revoked-root:current"),
         },
         revokedStatusHandles: [revokedHandle],
       }),
