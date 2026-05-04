@@ -17,12 +17,6 @@ export enum RevocationAccessDecision {
   alreadyConsumed
 }
 
-export struct SecretBirthCredentialVerificationRevokedSetStatusRequest {
-  verificationRequest: SecretBirthCredentialVerificationRequest,
-  statusPolicy: VerifierStatusPolicy,
-  statusRequest: RevokedSetStatusRequest,
-}
-
 export ledger contractVersion: Uint<32>;
 export ledger issuedCredentialCount: Counter;
 export ledger verifiedPresentationCount: Counter;

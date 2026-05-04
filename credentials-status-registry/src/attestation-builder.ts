@@ -11,13 +11,10 @@ import {
   modJubjubSubgroupOrder,
   type Proof,
   pureCircuits,
-  type RegistryBoundStatusBinding,
   type RevocationRegistryState,
   type RevokedSetStatusRequest,
   type VerificationMethodRef,
 } from "@midnight-ntwrk/midnight-did-credentials";
-
-import { buildRegistryBoundStatusBinding } from "./status-binding.js";
 
 export type StatusAuthoritySigner = {
   readonly secretKey: bigint;
