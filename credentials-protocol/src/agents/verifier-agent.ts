@@ -21,7 +21,7 @@ import {
   type SecretBirthCredentialVerificationSubmission,
 } from "@midnight-ntwrk/midnight-did-credentials-birth-secret/managed/secret-birth-credential/contract/index.js";
 
-import { padText,sha256 } from "../shared/crypto.js";
+import { padText } from "../shared/crypto.js";
 import { createEnvelope } from "../shared/envelope.js";
 import { assertBodyHasFields,assertMessageType } from "../shared/validation.js";
 import type { MessageBus } from "../transport/message-bus.js";
@@ -31,6 +31,11 @@ import type {
   SecretBirthCredentialVerificationRejection,
   SecretBirthCredentialVerificationRejectionCategory,
 } from "../transport/types.js";
+import {
+  type ProtocolRandomnessFlow,
+  type ProtocolRandomnessSource,
+  unsafeReferenceDeterministicRandomnessSource,
+} from "./randomness.js";
 import type {
   SameHolderPresentation,
   SameHolderTriplePresentation,
@@ -151,25 +156,48 @@ export type SameHolderTripleSimulatorWitness = SameHolderSimulatorWitness & {
 export class VerifierAgent {
   private readonly profile: DIDProfile;
   private readonly bus: MessageBus;
+  private readonly randomness: ProtocolRandomnessSource;
   private challengeCounter = 0;
   private readonly completedSecretPresentationOutcomes = new Map<
     string,
     ProtocolMessage
   >();
 
-  constructor(profile: DIDProfile, bus: MessageBus) {
+  constructor(
+    profile: DIDProfile,
+    bus: MessageBus,
+    options: {
+      readonly randomness?: ProtocolRandomnessSource;
+    } = {},
+  ) {
     this.profile = profile;
     this.bus = bus;
+    this.randomness =
+      options.randomness ?? unsafeReferenceDeterministicRandomnessSource;
   }
 
-  /** Generate a unique challenge hash per interaction. */
+  private generateChallengeHashFor(
+    flow: ProtocolRandomnessFlow,
+    threadId?: Uint8Array,
+  ): Uint8Array {
+    return this.randomness.nextChallengeHash({
+      partyLabel: this.profile.label,
+      flow,
+      purpose: "verifier-challenge",
+      sequence: this.challengeCounter++,
+      threadId,
+    });
+  }
+
+  /** Generate a unique challenge hash for explicit-holder presentation. */
   generateChallengeHash(): Uint8Array {
-    return sha256(
-      `midnight:vc:verifier:${this.profile.label}:challenge:${this.challengeCounter++}`,
-    );
+    return this.generateChallengeHashFor("explicit-presentation");
   }
 
-  /** @deprecated Use generateChallengeHash() for unique per-interaction challenges. */
+  /**
+   * @deprecated Use generateChallengeHash() or createAndSend*Request(...) to avoid
+   * ambiguous flow selection.
+   */
   get verifierChallengeHash(): Uint8Array {
     return this.generateChallengeHash();
   }
@@ -188,7 +216,9 @@ export class VerifierAgent {
       issuerVerificationMethodRef: requirements.issuerVerificationMethodRef,
       holderBindingProfile: HolderBindingProfile.explicitDid,
       features: EXPLICIT_HOLDER_FEATURES,
-      verifierChallengeHash: this.generateChallengeHash(),
+      verifierChallengeHash: this.generateChallengeHashFor(
+        "explicit-presentation",
+      ),
       body: {
         requireSubjectIdCommitmentDisclosure:
           requirements.requireSubjectIdCommitmentDisclosure,
@@ -306,7 +336,9 @@ export class VerifierAgent {
       issuerVerificationMethodRef: requirements.issuerVerificationMethodRef,
       holderBindingProfile: HolderBindingProfile.blindedSecretHolder,
       features: SECRET_HOLDER_FEATURES,
-      verifierChallengeHash: this.generateChallengeHash(),
+      verifierChallengeHash: this.generateChallengeHashFor(
+        "blinded-secret-presentation",
+      ),
       body: {
         requireSubjectIdCommitmentDisclosure:
           requirements.requireSubjectIdCommitmentDisclosure,

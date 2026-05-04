@@ -1,3 +1,4 @@
+import { ecMulGenerator } from "@midnight-ntwrk/compact-runtime";
 import {
   type BirthCredentialIssuanceOffer,
   type BirthCredentialIssuanceRequest,
@@ -8,6 +9,7 @@ import { describe, expect,it } from "vitest";
 
 import { HolderAgent } from "../../agents/holder-agent.js";
 import { type ClaimWitness,IssuerAgent } from "../../agents/issuer-agent.js";
+import type { ProtocolRandomnessSource } from "../../agents/randomness.js";
 import { MessageBus } from "../../transport/message-bus.js";
 import {
   createDIDProfile,
@@ -32,6 +34,13 @@ describe("explicit-holder issuance", () => {
     issuedAt: 10_000n,
     expiresAt: 20_000n,
   };
+
+  const createCustomRandomness = (): ProtocolRandomnessSource => ({
+    nextChallengeHash: () => sha256("custom:explicit:holder-challenge"),
+    nextIssuerNonce: () => sha256("custom:explicit:issuer-nonce"),
+    nextBlindingFactor: () => sha256("custom:explicit:blinding-factor"),
+    nextSigningNonceScalar: () => 23n,
+  });
 
   it("completes an issuance flow through offer -> request -> credential", () => {
     const bus = new MessageBus();
@@ -140,6 +149,32 @@ describe("explicit-holder issuance", () => {
     );
     expect(proof.signerVerificationMethodRef.methodId).toEqual(
       issuerProfile.signer.verificationMethodRef.methodId,
+    );
+  });
+
+  it("allows integrators to inject custom explicit-holder randomness", () => {
+    const bus = new MessageBus();
+    const randomness = createCustomRandomness();
+    const issuer = new IssuerAgent(issuerProfile, bus, { randomness });
+    const holder = new HolderAgent(holderProfile, bus, { randomness });
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    holder.receiveOfferAndSendRequest(offer);
+
+    const request = bus.receive("issuer")!;
+    const requestBody = request.body as BirthCredentialIssuanceRequest;
+    expect(requestBody.body.holderChallengeHash).toEqual(
+      sha256("custom:explicit:holder-challenge"),
+    );
+
+    issuer.receiveRequestAndIssueCredential(request, claimWitness);
+    const result = bus.receive("holder")!;
+    holder.receiveCredentialResult(result);
+
+    const resultBody = result.body as BirthCredentialIssuanceResult;
+    expect(resultBody.body.credentialProof.signature.r).toEqual(
+      ecMulGenerator(23n),
     );
   });
 });

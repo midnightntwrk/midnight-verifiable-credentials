@@ -69,6 +69,10 @@ state:
 - whether revocation/non-revocation is implemented or explicitly deferred
 - which external adapter or wire contract carries the Compact protocol values
 
+An injectable randomness interface is helpful evidence, but not sufficient by
+itself. A production-shaped claim still has to document the actual randomness
+policy and implementation that sits behind that interface.
+
 Reference profile catalog:
 
 - [`profiles.md`](./profiles.md)

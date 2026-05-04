@@ -1,3 +1,4 @@
+import { ecMulGenerator } from "@midnight-ntwrk/compact-runtime";
 import {
   type BirthCredentialIssuanceOffer,
   type BirthCredentialIssuanceRequest,
@@ -13,6 +14,7 @@ import {
   type PresentationWitness,
 } from "../../agents/holder-agent.js";
 import { type ClaimWitness,IssuerAgent } from "../../agents/issuer-agent.js";
+import type { ProtocolRandomnessSource } from "../../agents/randomness.js";
 import { type SimulatorWitness,VerifierAgent } from "../../agents/verifier-agent.js";
 import { MessageBus } from "../../transport/message-bus.js";
 import {
@@ -39,12 +41,29 @@ describe("explicit-holder presentation", () => {
     expiresAt: 20_000n,
   };
 
+  const verifierRandomness = (): ProtocolRandomnessSource => ({
+    nextChallengeHash: () => sha256("custom:verifier:challenge"),
+    nextIssuerNonce: () => sha256("custom:verifier:issuer-nonce"),
+    nextBlindingFactor: () => sha256("custom:verifier:blinding-factor"),
+    nextSigningNonceScalar: () => 29n,
+  });
+
   /**
    * Run the full issuance flow and return a holder with one stored credential.
    */
-  const issueCredential = (bus: MessageBus): HolderAgent => {
-    const issuer = new IssuerAgent(issuerProfile, bus);
-    const holder = new HolderAgent(holderProfile, bus);
+  const issueCredential = (
+    bus: MessageBus,
+    options: {
+      readonly issuerRandomness?: ProtocolRandomnessSource;
+      readonly holderRandomness?: ProtocolRandomnessSource;
+    } = {},
+  ): HolderAgent => {
+    const issuer = new IssuerAgent(issuerProfile, bus, {
+      randomness: options.issuerRandomness,
+    });
+    const holder = new HolderAgent(holderProfile, bus, {
+      randomness: options.holderRandomness,
+    });
 
     issuer.createAndSendOffer("holder");
     const offer = bus.receive("holder")!;
@@ -194,5 +213,46 @@ describe("explicit-holder presentation", () => {
 
     // The verifier evaluation should throw because the age predicate fails
     expect(() => verifier.receiveSubmissionAndEvaluate(submission, simulatorWitness)).toThrow();
+  });
+
+  it("allows integrators to inject custom presentation randomness and challenges", () => {
+    const bus = new MessageBus();
+    const holderRandomness = verifierRandomness();
+    const verifier = new VerifierAgent(verifierProfile, bus, {
+      randomness: verifierRandomness(),
+    });
+    const holder = issueCredential(bus, {
+      holderRandomness,
+    });
+
+    verifier.createAndSendPresentationRequest("holder", {
+      issuerVerificationMethodRef: issuerProfile.signer.verificationMethodRef,
+      requireSubjectIdCommitmentDisclosure: false,
+      requireBirthCountryDisclosure: true,
+      requireAgeOverThreshold: true,
+      requestedAgeThresholdYears: 18,
+    });
+    const requestMessage = bus.receive("holder")!;
+    const requestBody = requestMessage.body as BirthCredentialVerificationRequest;
+    expect(requestBody.verifierChallengeHash).toEqual(
+      sha256("custom:verifier:challenge"),
+    );
+
+    const presentationWitness: PresentationWitness = {
+      credentialIndex: 0,
+      currentDay: 3650n + 365n * 25n,
+      birthDateDays: claimWitness.birthDateDays,
+      birthDateOpening: claimWitness.birthDateOpening,
+      birthCountryCodePadded: claimWitness.birthCountryCodePadded,
+      birthCountryCodeOpening: claimWitness.birthCountryCodeOpening,
+    };
+
+    holder.receiveRequestAndSendPresentation(requestMessage, presentationWitness);
+    const submission = bus.receive("verifier")!;
+    const submissionBody =
+      submission.body as BirthCredentialVerificationSubmission;
+    expect(submissionBody.body.presentationProof.signature.r).toEqual(
+      ecMulGenerator(29n),
+    );
   });
 });

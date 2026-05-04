@@ -1,5 +1,6 @@
 export * from "./agents/holder-agent.js";
 export * from "./agents/issuer-agent.js";
+export * from "./agents/randomness.js";
 export * from "./agents/secret-holder-agent.js";
 export * from "./agents/secret-issuer-agent.js";
 export * from "./agents/types.js";

@@ -45,6 +45,8 @@ transport adapters such as OID4VCI, OID4VP, SIOP, or DIDComm.
 The current public exports are intentionally narrow:
 
 - explicit-holder and secret-holder agent classes
+- injectable randomness interfaces for protocol challenges, issuer nonces,
+  blinding factors, and signing nonces
 - shared crypto and envelope helpers
 - the typed in-memory message bus transport seam
 
@@ -107,6 +109,15 @@ particular, this package does not yet claim:
 - a final external interoperability contract for OIDC, DIDComm, or another wire
   protocol
 - revocation/non-revocation
+
+Randomness hardening rule:
+
+- agent-local challenge/nonce/blinding generation now sits behind an injectable
+  `ProtocolRandomnessSource` interface
+- the exported default implementation is intentionally marked as unsafe and
+  deterministic for repository tests
+- production integrators should supply their own randomness source rather than
+  relying on the default
 
 For blinded-secret issuance, the transport-shaped API is now the preferred
 reference surface:

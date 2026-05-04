@@ -1127,11 +1127,19 @@ So the honest summary is:
   idempotently in the reference protocol layer
 - yes, the reference protocol now carries explicit offer and request expiry
   fields for blinded-secret issuance
+- yes, challenge/nonce/blinding generation is now hidden behind an interface so
+  integrators can plug in their own implementation
 - no, the presentation-side reference flow does not yet carry explicit
   message-level expiry fields
 - no, this is not yet the last word on production transport hardening
 - no, these timeout semantics are still reference-layer behavior, not a final
   interoperable transport standard
+
+Important qualifier:
+
+- the default repository implementation behind that interface is still an
+  explicitly unsafe deterministic reference source for tests
+- real deployments should replace it with production randomness
 
 Mohawk calls it "a respectable intermediate state".
 Which is the closest he gets to romance.

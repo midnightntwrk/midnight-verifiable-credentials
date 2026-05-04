@@ -144,6 +144,8 @@ Current repository stance:
   in the blinded-secret issuance reference flow
 - the repository does not yet carry explicit message-level expiry fields in the
   blinded-secret presentation reference flow
+- protocol-facing randomness is now injectable in the reference agent layer,
+  but the default implementation remains deterministic for test/reference use
 - the repository does not yet define a final interoperable rejection result
   contract across transport adapters
 

@@ -17,7 +17,7 @@ import {
   type SecretBirthCredentialVerificationSubmission,
 } from "@midnight-ntwrk/midnight-did-credentials-birth-secret/managed/secret-birth-credential/contract/index.js";
 
-import { padText,sha256 } from "../shared/crypto.js";
+import { padText } from "../shared/crypto.js";
 import { createEnvelope } from "../shared/envelope.js";
 import { assertBodyHasFields,assertMessageType } from "../shared/validation.js";
 import type { MessageBus } from "../transport/message-bus.js";
@@ -26,6 +26,10 @@ import type {
   SecretBirthCredentialIssuanceRejection,
   SecretBirthCredentialVerificationRejection,
 } from "../transport/types.js";
+import {
+  type ProtocolRandomnessSource,
+  unsafeReferenceDeterministicRandomnessSource,
+} from "./randomness.js";
 
 const SECRET_BIRTH_SCHEMA = {
   packageId: padText("midnight-did:vc:birth-secret"),
@@ -111,6 +115,7 @@ export class SecretHolderAgent {
   private readonly holderSecret: Uint8Array;
   private readonly holderSecretOpening: Uint8Array;
   private readonly bus: MessageBus;
+  private readonly randomness: ProtocolRandomnessSource;
   private readonly credentials: SecretStoredCredential[] = [];
   private readonly pendingIssuanceRequests = new Map<
     string,
@@ -131,6 +136,7 @@ export class SecretHolderAgent {
     string,
     SecretPresentationOutcome
   >();
+  private issuanceRequestCounter = 0;
 
   constructor(
     config: {
@@ -139,11 +145,16 @@ export class SecretHolderAgent {
       readonly holderSecretOpening: Uint8Array;
     },
     bus: MessageBus,
+    options: {
+      readonly randomness?: ProtocolRandomnessSource;
+    } = {},
   ) {
     this.label = config.label;
     this.holderSecret = config.holderSecret;
     this.holderSecretOpening = config.holderSecretOpening;
     this.bus = bus;
+    this.randomness =
+      options.randomness ?? unsafeReferenceDeterministicRandomnessSource;
   }
 
   receiveOfferAndSendRequest(
@@ -160,7 +171,15 @@ export class SecretHolderAgent {
         "This blinded-secret issuance offer expired before the holder could answer it.",
       );
     }
-    const challengeHash = sha256("challenge:issuance");
+    const issuanceSequence = this.issuanceRequestCounter++;
+    const challengeHash = this.randomness.nextChallengeHash({
+      partyLabel: this.label,
+      flow: "blinded-secret-issuance",
+      purpose: "holder-challenge",
+      sequence: issuanceSequence,
+      threadId: issuanceOffer.envelope.threadId,
+      respondsToMessageId: issuanceOffer.envelope.messageId,
+    });
 
     const holderSecretCommitment =
       genericPureCircuits.secretHolderBindingCommitment(
@@ -168,9 +187,14 @@ export class SecretHolderAgent {
         this.holderSecretOpening,
       );
 
-    // TEST ONLY: production must use a unique random blinding factor per issuance.
-    const blindingIndex = this.credentials.length;
-    const holderBindingBlindingFactor = sha256(`blinding:holder-secret:${blindingIndex}`);
+    const holderBindingBlindingFactor = this.randomness.nextBlindingFactor({
+      partyLabel: this.label,
+      flow: "blinded-secret-issuance",
+      purpose: "holder-binding-blinding-factor",
+      sequence: issuanceSequence,
+      threadId: issuanceOffer.envelope.threadId,
+      respondsToMessageId: issuanceOffer.envelope.messageId,
+    });
 
     const request: SecretBirthCredentialIssuanceRequest = {
       envelope: createEnvelope(

@@ -6,6 +6,7 @@ import {
 } from "@midnight-ntwrk/midnight-did-credentials-birth-secret/managed/secret-birth-credential/contract/index.js";
 import { describe, expect, it } from "vitest";
 
+import type { ProtocolRandomnessSource } from "../../agents/randomness.js";
 import {
   SecretHolderAgent,
   type SecretPresentationWitness,
@@ -47,6 +48,13 @@ describe("secret-holder presentation", () => {
     issuedAt: 10_000n,
     expiresAt: 20_000n,
   };
+
+  const secretPresentationRandomness = (): ProtocolRandomnessSource => ({
+    nextChallengeHash: () => sha256("custom:secret-presentation:challenge"),
+    nextIssuerNonce: () => sha256("custom:secret-presentation:issuer-nonce"),
+    nextBlindingFactor: () => sha256("custom:secret-presentation:blinding-factor"),
+    nextSigningNonceScalar: () => 41n,
+  });
 
   const issueCredential = (bus: MessageBus): SecretHolderAgent => {
     const issuer = new SecretIssuerAgent(issuerProfile, bus);
@@ -182,6 +190,48 @@ describe("secret-holder presentation", () => {
     if (outcome.kind === "approved") {
       expect(outcome.result.approved).toBe(true);
     }
+  });
+
+  it("allows integrators to inject custom blinded-secret presentation randomness", () => {
+    const bus = new MessageBus();
+    const randomness = secretPresentationRandomness();
+    const holder = issueCredential(bus);
+    const verifier = new VerifierAgent(verifierProfile, bus, {
+      randomness,
+    });
+
+    verifier.createAndSendSecretPresentationRequest("holder", {
+      issuerVerificationMethodRef: issuerProfile.signer.verificationMethodRef,
+      requireSubjectIdCommitmentDisclosure: false,
+      requireBirthCountryDisclosure: true,
+      requireVerifierScopedPseudonym: false,
+      requireAgeOverThreshold: true,
+      requestedAgeThresholdYears: 18,
+    });
+
+    const requestMessage = bus.receive("holder")!;
+    const requestBody =
+      requestMessage.body as SecretBirthCredentialVerificationRequest;
+    expect(requestBody.verifierChallengeHash).toEqual(
+      sha256("custom:secret-presentation:challenge"),
+    );
+
+    const presentationWitness: SecretPresentationWitness = {
+      credentialIndex: 0,
+      currentDay: 3650n + 365n * 25n,
+      birthDateDays: claimWitness.birthDateDays,
+      birthDateOpening: claimWitness.birthDateOpening,
+      birthCountryCodePadded: claimWitness.birthCountryCodePadded,
+      birthCountryCodeOpening: claimWitness.birthCountryCodeOpening,
+    };
+
+    holder.receiveRequestAndSendPresentation(requestMessage, presentationWitness);
+    const submission = bus.receive("verifier")!;
+    const submissionBody =
+      submission.body as SecretBirthCredentialVerificationSubmission;
+    expect(submissionBody.challengeHash).toEqual(
+      sha256("custom:secret-presentation:challenge"),
+    );
   });
 
   it("returns an explicit rejection for a malformed secret presentation submission", () => {

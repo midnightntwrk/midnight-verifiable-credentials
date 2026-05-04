@@ -1,3 +1,4 @@
+import { ecMulGenerator } from "@midnight-ntwrk/compact-runtime";
 import { pureCircuits as genericPureCircuits } from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
 import {
   pureCircuits,
@@ -7,6 +8,7 @@ import {
 } from "@midnight-ntwrk/midnight-did-credentials-birth-secret/managed/secret-birth-credential/contract/index.js";
 import { describe, expect, it } from "vitest";
 
+import type { ProtocolRandomnessSource } from "../../agents/randomness.js";
 import { SecretHolderAgent } from "../../agents/secret-holder-agent.js";
 import {
   type SecretClaimWitness,
@@ -42,6 +44,20 @@ describe("secret-holder issuance", () => {
     issuedAt: 10_000n,
     expiresAt: 20_000n,
   };
+
+  const holderRandomness = (): ProtocolRandomnessSource => ({
+    nextChallengeHash: () => sha256("custom:secret-holder:challenge"),
+    nextIssuerNonce: () => sha256("custom:secret-holder:issuer-nonce"),
+    nextBlindingFactor: () => sha256("custom:secret-holder:blinding-factor"),
+    nextSigningNonceScalar: () => 31n,
+  });
+
+  const issuerRandomness = (): ProtocolRandomnessSource => ({
+    nextChallengeHash: () => sha256("custom:secret-issuer:challenge"),
+    nextIssuerNonce: () => sha256("custom:secret-issuer:issuer-nonce"),
+    nextBlindingFactor: () => sha256("custom:secret-issuer:blinding-factor"),
+    nextSigningNonceScalar: () => 37n,
+  });
 
   const forgeIssuanceResultWithChallenge = (
     resultBody: SecretBirthCredentialIssuanceResult,
@@ -243,6 +259,39 @@ describe("secret-holder issuance", () => {
     );
     expect(proof.signerVerificationMethodRef.methodId).toEqual(
       issuerProfile.signer.verificationMethodRef.methodId,
+    );
+  });
+
+  it("allows integrators to inject custom blinded-secret randomness", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus, {
+      randomness: issuerRandomness(),
+    });
+    const holder = new SecretHolderAgent(holderConfig, bus, {
+      randomness: holderRandomness(),
+    });
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    holder.receiveOfferAndSendRequest(offer);
+
+    const request = bus.receive("issuer")!;
+    const requestBody = request.body as SecretBirthCredentialIssuanceRequest;
+    expect(requestBody.body.holderChallengeHash).toEqual(
+      sha256("custom:secret-holder:challenge"),
+    );
+    expect(requestBody.body.holderBindingBlindingFactor).toEqual(
+      sha256("custom:secret-holder:blinding-factor"),
+    );
+
+    issuer.receiveRequestAndIssueCredential(request, claimWitness);
+    const result = bus.receive("holder")!;
+    const resultBody = result.body as SecretBirthCredentialIssuanceResult;
+    expect(resultBody.body.credential.holderBinding.issuerNonce).toEqual(
+      sha256("custom:secret-issuer:issuer-nonce"),
+    );
+    expect(resultBody.body.credentialProof.signature.r).toEqual(
+      ecMulGenerator(37n),
     );
   });
 

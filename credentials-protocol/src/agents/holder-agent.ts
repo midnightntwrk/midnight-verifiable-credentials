@@ -16,11 +16,15 @@ import {
   pureCircuits,
 } from "@midnight-ntwrk/midnight-did-credentials-birth/managed/birth-credential/contract/index.js";
 
-import { mod, sha256 } from "../shared/crypto.js";
+import { mod } from "../shared/crypto.js";
 import { createEnvelope } from "../shared/envelope.js";
 import { assertBodyHasFields,assertMessageType } from "../shared/validation.js";
 import type { MessageBus } from "../transport/message-bus.js";
 import type { ProtocolMessage } from "../transport/types.js";
+import {
+  type ProtocolRandomnessSource,
+  unsafeReferenceDeterministicRandomnessSource,
+} from "./randomness.js";
 import type { DIDProfile } from "./types.js";
 
 export type StoredCredential = {
@@ -40,18 +44,37 @@ export type PresentationWitness = {
 export class HolderAgent {
   private readonly profile: DIDProfile;
   private readonly bus: MessageBus;
+  private readonly randomness: ProtocolRandomnessSource;
   private readonly credentials: StoredCredential[] = [];
+  private issuanceRequestCounter = 0;
+  private presentationCounter = 0;
 
-  constructor(profile: DIDProfile, bus: MessageBus) {
+  constructor(
+    profile: DIDProfile,
+    bus: MessageBus,
+    options: {
+      readonly randomness?: ProtocolRandomnessSource;
+    } = {},
+  ) {
     this.profile = profile;
     this.bus = bus;
+    this.randomness =
+      options.randomness ?? unsafeReferenceDeterministicRandomnessSource;
   }
 
   receiveOfferAndSendRequest(offer: ProtocolMessage): void {
     assertMessageType(offer, "issuance:offer");
     assertBodyHasFields(offer, ["envelope", "schema", "body"]);
     const issuanceOffer = offer.body as BirthCredentialIssuanceOffer;
-    const challengeHash = sha256("challenge:issuance");
+    const issuanceSequence = this.issuanceRequestCounter++;
+    const challengeHash = this.randomness.nextChallengeHash({
+      partyLabel: this.profile.label,
+      flow: "explicit-issuance",
+      purpose: "holder-challenge",
+      sequence: issuanceSequence,
+      threadId: issuanceOffer.envelope.threadId,
+      respondsToMessageId: issuanceOffer.envelope.messageId,
+    });
 
     const request: BirthCredentialIssuanceRequest = {
       envelope: createEnvelope(
@@ -112,6 +135,10 @@ export class HolderAgent {
     credentialIndex: number,
     request: BirthCredentialPresentationRequest,
     witnessData: PresentationWitness,
+    requestContext?: {
+      readonly threadId: Uint8Array;
+      readonly requestMessageId: Uint8Array;
+    },
   ): { presentation: BirthCredentialPresentation; presentationProof: Proof } {
     const stored = this.getCredential(credentialIndex);
     const credential = stored.credential;
@@ -141,9 +168,15 @@ export class HolderAgent {
 
     const bodyRoot =
       pureCircuits.birthCredentialPresentationBodyRoot(presentation);
-    // TEST ONLY: production must use cryptographically random nonces.
-    // Reusing a nonce across Schnorr signatures leaks the private key.
-    const nonceScalar = 17n;
+    const presentationSequence = this.presentationCounter++;
+    const nonceScalar = this.randomness.nextSigningNonceScalar({
+      partyLabel: this.profile.label,
+      flow: "explicit-presentation",
+      purpose: "signing-nonce",
+      sequence: presentationSequence,
+      threadId: requestContext?.threadId,
+      respondsToMessageId: requestContext?.requestMessageId,
+    });
 
     const proof: Proof = {
       signerVerificationMethodRef: this.profile.signer.verificationMethodRef,
@@ -191,6 +224,10 @@ export class HolderAgent {
         witnessData.credentialIndex,
         request,
         witnessData,
+        {
+          threadId: requestMessage.envelope.threadId,
+          requestMessageId: requestMessage.envelope.messageId,
+        },
       );
 
     const submissionBody: BirthCredentialVerificationSubmission = {
