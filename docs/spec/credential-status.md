@@ -7,6 +7,7 @@ Companion documents:
 - [`./midnight-credentials.md`](./midnight-credentials.md)
 - [`./profiles.md`](./profiles.md)
 - [`./conformance.md`](./conformance.md)
+- [`./revocation-registry.md`](./revocation-registry.md)
 
 ## Purpose
 
@@ -28,16 +29,13 @@ This document defines:
 
 - the current status terminology
 - conformance levels for status support
+- the status capability taxonomy
 - verifier obligations when requesting status-aware proofs
 - hidden-holder privacy obligations when status is involved
 - the repository's current implementation stance
 
-This document does not yet define:
-
-- a Compact-native revocation accumulator
-- a final non-revocation proof circuit family
-- a final HTTP/OpenID transport profile for status evidence
-- a status registry governance system
+The revocation-registry companion defines the repository's current prototype
+target for a Level 2 non-revocation model.
 
 ## Terminology
 
@@ -87,6 +85,10 @@ An implementation at this level:
 
 This is the repository's current package-level position today.
 
+The corresponding explicit zero-status capability is:
+
+- `NoStatusCapability`
+
 ### Level 1: Public status check
 
 An implementation at this level:
@@ -111,6 +113,31 @@ An implementation at this level:
 
 This level is the likely long-term target for hidden-holder and
 blinded-secret-heavy deployments.
+
+The corresponding prototype target capability is:
+
+- `RevokedSetNonMembershipStatusCapability`
+
+## Status capability taxonomy
+
+The repository should model status through an explicit `StatusCapability`.
+
+The capability contributes:
+
+- credential-bound status fields
+- presentation-time witness requirements
+- verifier-request status policy fields
+- additional proof and validation circuits
+
+The current taxonomy is:
+
+- `NoStatusCapability`
+- `RevokedSetNonMembershipStatusCapability`
+
+The detailed prototype revocation target for
+`RevokedSetNonMembershipStatusCapability` is defined in:
+
+- [`./revocation-registry.md`](./revocation-registry.md)
 
 ## Required status disclosures
 
@@ -173,6 +200,7 @@ Current repository packages claim:
 - Level 0 status support only
 - revocation/non-revocation is deferred
 - claim-level expiry and protocol/session expiry do not equal revocation support
+- current repository families therefore behave as `NoStatusCapability`
 
 Current repository packages do not claim:
 
@@ -197,9 +225,8 @@ its chosen status level.
 
 The next likely status/revocation engineering phases are:
 
-1. add a typed status capability contract for credential families
+1. add typed status capability structs and package surfaces for credential
+   families
 2. define verifier freshness-request semantics
-3. choose the first reference status model:
-   - public status lookup
-   - or privacy-preserving non-revocation
+3. implement `RevokedSetNonMembershipStatusCapability`
 4. add tests and package claims only after the chosen model exists

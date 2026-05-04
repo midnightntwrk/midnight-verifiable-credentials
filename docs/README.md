@@ -14,6 +14,9 @@
 - credential status:
   - [`spec/credential-status.md`](./spec/credential-status.md)
   - for readers defining revocation, freshness, and non-revocation claim boundaries
+- revocation registry:
+  - [`spec/revocation-registry.md`](./spec/revocation-registry.md)
+  - for readers implementing the prototype Midnight-native revoked-set non-membership model
 
 ## Guides
 

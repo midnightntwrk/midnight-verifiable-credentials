@@ -9,6 +9,7 @@ It is companion material to:
 
 - [`midnight-credentials.md`](./midnight-credentials.md)
 - [`credential-status.md`](./credential-status.md)
+- [`revocation-registry.md`](./revocation-registry.md)
 
 ## Purpose
 
@@ -54,6 +55,7 @@ Current limitations:
 - less privacy-preserving than hidden-holder profiles
 - repository status/revocation support is still Level 0 as defined in
   `credential-status.md`
+- current status capability is effectively `NoStatusCapability`
 
 ### 2. Secret holder binding
 
@@ -85,6 +87,7 @@ Current limitations:
   storage, randomness/nonce handling, and external adapter assumptions
 - repository status/revocation support is still Level 0 as defined in
   `credential-status.md`
+- current status capability is effectively `NoStatusCapability`
 
 ### 3. Blinded secret holder binding
 
@@ -119,6 +122,7 @@ Current limitations:
 - production transport interoperability is still evolving
 - repository status/revocation support is still Level 0 as defined in
   `credential-status.md`
+- current status capability is effectively `NoStatusCapability`
 
 ### 4. Verifier-domain pseudonym profile
 

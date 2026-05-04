@@ -9,6 +9,7 @@ Companion document:
 
 - [`midnight-credentials.md`](./midnight-credentials.md)
 - [`credential-status.md`](./credential-status.md)
+- [`revocation-registry.md`](./revocation-registry.md)
 
 ## Scope
 
@@ -164,6 +165,9 @@ Any implementation claiming conformance should document:
 - for hidden-holder profiles, whether randomness/nonce generation is production
   hardening or only test/reference behavior
 - whether status support is Level 0, Level 1, or Level 2
+- which `StatusCapability` is implemented:
+  - `NoStatusCapability`
+  - or `RevokedSetNonMembershipStatusCapability`
 - any security/privacy limitations that are intentionally deferred
 
 ## Non-conformance examples

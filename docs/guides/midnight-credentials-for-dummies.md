@@ -1850,6 +1850,11 @@ The current reference path still does not give us everything:
   - no implemented revocation
   - no implemented non-revocation proof
   - only claim expiry or protocol/session expiry where documented
+- the chosen prototype direction is now clear:
+  - a dedicated revocation registry
+  - a revoked-set `MerkleTree`
+  - non-membership proof inside the VP
+  - no canonical reason/date fields in the first proof model
 - application orchestration is prototyped in `credentials-protocol` but not yet production-hardened
 - governance is acknowledged but intentionally abstract
 - more credential families still need to be modeled

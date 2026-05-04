@@ -43,12 +43,14 @@ Companion documents have narrower roles:
   - [`./profiles.md`](./profiles.md)
   - [`./conformance.md`](./conformance.md)
   - [`./credential-status.md`](./credential-status.md)
+  - [`./revocation-registry.md`](./revocation-registry.md)
 
 Those normative companion documents are authoritative within their narrower scopes:
 
 - `profiles.md` owns the current holder-binding and verification profile catalog
 - `conformance.md` owns the repository's conformance categories and non-conformance examples
 - `credential-status.md` owns the repository's current status/revocation claim contract
+- `revocation-registry.md` owns the repository's prototype revocation registry target
 
 This document takes precedence only where a broader repository-level requirement in this document overlaps with a narrower companion rule.
 - informative documents:

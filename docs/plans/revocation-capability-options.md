@@ -8,6 +8,7 @@ Companion material:
 - [`../spec/midnight-credentials.md`](../spec/midnight-credentials.md)
 - [`../spec/profiles.md`](../spec/profiles.md)
 - [`../spec/conformance.md`](../spec/conformance.md)
+- [`../spec/revocation-registry.md`](../spec/revocation-registry.md)
 - [`../decisions/anoncreds-comparison.md`](../decisions/anoncreds-comparison.md)
 
 ## Why this exists
@@ -24,6 +25,10 @@ The next unresolved production gap is revocation.
 
 This document is not yet the final revocation spec. It defines the main design
 options and recommends which direction the repository should take.
+
+The current chosen prototype target now lives in:
+
+- [`../spec/revocation-registry.md`](../spec/revocation-registry.md)
 
 ## Non-goals
 
