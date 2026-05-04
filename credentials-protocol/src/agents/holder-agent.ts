@@ -135,6 +135,10 @@ export class HolderAgent {
     credentialIndex: number,
     request: BirthCredentialPresentationRequest,
     witnessData: PresentationWitness,
+    requestContext?: {
+      readonly threadId: Uint8Array;
+      readonly requestMessageId: Uint8Array;
+    },
   ): { presentation: BirthCredentialPresentation; presentationProof: Proof } {
     const stored = this.getCredential(credentialIndex);
     const credential = stored.credential;
@@ -170,6 +174,8 @@ export class HolderAgent {
       flow: "explicit-presentation",
       purpose: "signing-nonce",
       sequence: presentationSequence,
+      threadId: requestContext?.threadId,
+      respondsToMessageId: requestContext?.requestMessageId,
     });
 
     const proof: Proof = {
@@ -218,6 +224,10 @@ export class HolderAgent {
         witnessData.credentialIndex,
         request,
         witnessData,
+        {
+          threadId: requestMessage.envelope.threadId,
+          requestMessageId: requestMessage.envelope.messageId,
+        },
       );
 
     const submissionBody: BirthCredentialVerificationSubmission = {
