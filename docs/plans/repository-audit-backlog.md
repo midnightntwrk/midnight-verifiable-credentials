@@ -83,6 +83,16 @@ Backlog:
 3. trim or reframe the for-dummies package map so it does not imply current
    workspace support for absent packages
 
+Progress:
+
+- completed on audit follow-up branch:
+  - `docs/testing/test-strategy.md` now separates:
+    - current validated repository scope
+    - future design-space expansion
+    - template full-matrix planning material
+- remaining work under this finding is to keep that split honest as new
+  families land or adjacent example material grows
+
 ### P1. Missing integrator-facing surface classification
 
 Before this audit, the repo did not provide one clear place telling
@@ -141,7 +151,7 @@ Why this matters:
 
 Backlog:
 
-1. split the strategy doc into:
+1. keep the strategy doc split between:
    - current validated repo scope
    - future matrix / design-space expansion
 2. keep the matrix doc strictly current and implementation-shaped

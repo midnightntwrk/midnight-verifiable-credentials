@@ -8,11 +8,11 @@ Status: Draft — companion to `../spec/midnight-credentials.md`
 
 This document defines the test strategy for the Midnight Verifiable Credentials system. It covers:
 
-1. The configuration dimensions that produce the full combinatorial space
-2. The credential families and their claim structures
-3. The shared ISO registry for interoperable field values
-4. Concrete use cases that exercise meaningful subsets of the combination space
-5. The test matrix mapping every combination to a test scenario
+1. The currently validated repository scope on `develop`
+2. The configuration dimensions that define the wider design space
+3. The credential families and claim structures used by future/example matrices
+4. Concrete use cases that exercise meaningful subsets of that wider space
+5. The template full-matrix model used to reason about eventual coverage
 6. The test pyramid: which layer owns which tests
 
 ## Architecture Recap
@@ -39,11 +39,127 @@ Current-repository note:
   design space or adjacent prototype work, not current workspace packages on
   `develop`
 
+## Scope Model
+
+This strategy document has two distinct roles:
+
+1. Current validated repository scope
+   - This is the authoritative statement of what the repository currently
+     implements and tests on `develop`.
+   - It should stay aligned with [`test-matrix.md`](./test-matrix.md).
+2. Future design-space expansion
+   - This is an architectural and test-planning model for additional families,
+     use cases, and matrix growth that may land later in this repository or in
+     adjacent prototype repositories.
+   - It is intentionally non-authoritative for current package availability.
+
+Integrators should read the documents in this order:
+
+1. [`test-matrix.md`](./test-matrix.md) for current implemented coverage
+2. this document's "Current validated repository scope" section for the
+   current testing shape and layer ownership
+3. the later "Future design-space expansion" sections only when planning
+   additional package families or broader product examples
+
+## Current Validated Repository Scope
+
+The current validated repository surface is narrower than the full matrix shown
+later in this document.
+
+### Current package spine
+
+The current repository's tested package spine is:
+
+- `credentials`
+- `credentials-birth`
+- `credentials-birth-secret`
+- `credentials-same-holder`
+- `credentials-iso-registry`
+- `credentials-offchain-did`
+- `credentials-openid`
+- `credentials-status-registry`
+- `credentials-protocol`
+- `credentials-demo-contract`
+- `standalone-environment`
+
+### Current implemented coverage shape
+
+The current implementation emphasis is:
+
+- one concrete explicit-holder family:
+  - `credentials-birth`
+- one concrete hidden-holder family:
+  - `credentials-birth-secret`
+- shared holder-binding and same-holder primitives in:
+  - `credentials`
+  - `credentials-same-holder`
+- protocol/reference-agent coverage in:
+  - `credentials-protocol`
+- current prototype status/revocation surfaces in:
+  - `credentials-status-registry`
+  - `credentials`
+  - `credentials-birth-secret`
+- one current Layer 3 consumer/demo in:
+  - `credentials-demo-contract`
+
+### Current truth source
+
+For current implemented tests, the authoritative inventory is:
+
+- [`test-matrix.md`](./test-matrix.md)
+
+This document does not attempt to duplicate that inventory line by line.
+Instead, it defines:
+
+- why the current tested layers look the way they do
+- which parts of the broader matrix are already instantiated
+- which parts remain future expansion only
+
+### Current instantiated dimensions
+
+The current repository instantiates these parts of the wider matrix:
+
+- credential families:
+  - birth
+  - hidden-holder birth
+- holder-binding:
+  - explicit DID
+  - blinded secret
+  - same-holder primitives
+- verifier mode:
+  - off-chain verifier agent
+  - on-chain demo/business contract
+- protocol envelope:
+  - direct circuit/unit validation
+  - protocol-shaped issuance and presentation flows
+- protocol outcomes:
+  - success paths
+  - explicit rejection outcomes for hidden-holder reference flows
+  - idempotent replay handling for duplicate hidden-holder outcomes
+- status support:
+  - no-status capability
+  - prototype verifier-supplied-root path
+  - prototype authority-attested status path
+
+The current repository does not yet instantiate the full multi-family business
+matrix shown later in this document.
+
+## Future Design-Space Expansion
+
+The remaining sections describe the broader combinatorial matrix that the
+current repository architecture is designed to support over time. Unless a
+family or use case is also listed in [`test-matrix.md`](./test-matrix.md), do
+not treat it as a current package or current validated repository surface.
+
 ## Configuration Dimensions
 
 Every credential interaction is a point in a multi-dimensional configuration space.
 
-### Dimension 1: Credential Family
+### Dimension 1: Credential Family (future/full family matrix)
+
+Only the `Birth` family is part of the current validated repository spine
+today. The remaining rows are forward-looking family targets or adjacent
+prototype examples.
 
 | Family | Package | Claims | ISO Codes Used |
 |--------|---------|--------|----------------|
@@ -226,9 +342,9 @@ Design principles:
 - Compact circuits can assert equality, inequality, and range checks on numeric codes
 - All credential families import from this shared registry
 
-## Credential Family Claim Structures
+## Credential Family Claim Structures (future/example family set)
 
-### Birth Credential (existing)
+### Birth Credential (existing current family)
 
 ```compact
 export struct BirthCredentialClaims {
@@ -313,7 +429,11 @@ export struct EmployeeClaims {
 }
 ```
 
-## Use Cases
+## Use Cases (future/product example set)
+
+These use cases are product-shaping examples for the wider matrix. They are
+not a claim that all corresponding packages or contract flows currently exist
+in this repository.
 
 ### UC-1: Age-Gated Venue Access
 
@@ -479,7 +599,12 @@ export struct EmployeeClaims {
 - Cross-jurisdiction acceptance
 - Off-chain verifier with pseudonym
 
-## Test Matrix
+## Template Full-Matrix Model
+
+The following matrix is a planning template for the eventual full combinatorial
+surface. It is not the authoritative statement of what the current repository
+implements today. For current implementation truth, use
+[`test-matrix.md`](./test-matrix.md).
 
 ### Layer 1: Generic Core Tests (credentials/)
 
@@ -627,20 +752,22 @@ Each credential family gets the same test template, parameterized by its specifi
 
 **Estimated total:** ~200+ tests across the full matrix
 
-## Coverage by Dimension
+## Coverage by Dimension (future/full matrix target)
 
 ### Holder Binding × Credential Family
 
 | | Explicit DID | Blinded Secret |
 |---|---|---|
-| Birth | L2-BIRTH-* (done, 13 tests) | L2-BIRTHS-* (done, 11 tests) |
-| Passport | L2-PASS-* (done, 14 tests) | L2-PASSS-* (done, 11 tests) |
-| Driving License | L2-DL-* | L2-DLS-* |
-| National ID | L2-NID-* | L2-NIDS-* |
-| AML/KYC | L2-COMP-* | L2-COMPS-* |
-| Employee | L2-EMP-* | L2-EMPS-* |
+| Birth | L2-BIRTH-* (current repo family) | L2-BIRTHS-* (current repo family) |
+| Passport | L2-PASS-* (future target) | L2-PASSS-* (future target) |
+| Driving License | L2-DL-* (future target) | L2-DLS-* (future target) |
+| National ID | L2-NID-* (future target) | L2-NIDS-* (future target) |
+| AML/KYC | L2-COMP-* (future target) | L2-COMPS-* (future target) |
+| Employee | L2-EMP-* (future target) | L2-EMPS-* (future target) |
 
-**12 family × profile combinations**, each with ~16 tests = **~192 Layer 2 tests**
+At the full design-space level this is **12 family × profile combinations**,
+each with ~16 tests = **~192 Layer 2 tests**. The current repository only
+instantiates the `Birth` rows from this table.
 
 ### Disclosure Level × Credential Family
 
@@ -680,9 +807,13 @@ Each credential family gets the same test template, parameterized by its specifi
 | Off-chain agent | UC-3, UC-8 |
 | On-chain contract | UC-1, UC-2, UC-4, UC-5, UC-6, UC-7 |
 
-## Implementation Priority
+## Implementation Priority (roadmap-oriented)
 
-### Phase 1: Foundation (current — done)
+This section is a repository-roadmap sketch. Checked items should be read as
+"implemented in the current workspace on `develop`." Unchecked items are future
+targets for this repository unless stated otherwise.
+
+### Phase 1: Foundation (current repository base)
 
 - [x] Generic core (Layer 1) — 9 tests
 - [x] Birth credential family, both profiles (Layer 2) — 24 tests
@@ -693,8 +824,8 @@ Each credential family gets the same test template, parameterized by its specifi
 ### Phase 2: ISO Registry + Credential Families
 
 - [x] `credentials-iso-registry` package with country, region, currency, language, gender codes — 5 tests
-- [x] Passport credential family (explicit + secret variants) — 25 tests
-- [x] Passport standalone smoke tests (explicit + secret profiles with real Midnight DIDs) — 2 tests
+- [ ] Passport credential family (explicit + secret variants)
+- [ ] Passport standalone smoke tests (explicit + secret profiles with real Midnight DIDs)
 - [ ] Driving License credential family (explicit + secret variants)
 - [ ] National ID credential family (explicit + secret variants)
 - [ ] AML/KYC Compliance credential family (explicit + secret variants)
