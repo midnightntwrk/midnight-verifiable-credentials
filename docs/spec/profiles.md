@@ -78,16 +78,14 @@ Current test coverage:
 - protocol secret-holder lifecycle tests
 
 Current limitations:
-- reference blinded-secret issuance exists, but production transport hardening
-  is not yet complete
-- reference blinded-secret presentation now carries explicit rejection
-  outcomes, but production transport hardening is not yet complete there either
+- production deployments still need explicit disclosure of holder-secret
+  storage, randomness/nonce handling, and external adapter assumptions
 - revocation/non-revocation is not implemented
 
 ### 3. Blinded secret holder binding
 
 Status:
-- reference implementation / supported happy path
+- reference implementation / production-hardening in progress
 
 Purpose:
 - support privacy-oriented issuance/presentation flows where the issuer should
@@ -108,6 +106,10 @@ Current test coverage:
 - secret-holder lifecycle integration tests
 
 Current limitations:
+- durable pending-state behavior across retries, restarts, or delayed delivery
+  is not yet complete
+- production randomness / nonce interfaces are not yet complete
+- presentation-side message-level expiry semantics are not yet modeled
 - production transport interoperability is still evolving
 - revocation/non-revocation is not implemented
 

@@ -53,3 +53,6 @@
 - blinded-secret transport hardening plan:
   - [`plans/blinded-secret-transport-hardening.md`](./plans/blinded-secret-transport-hardening.md)
   - for the next production-readiness hardening phase of blinded-secret issuance
+- hidden-holder production contract:
+  - [`plans/hidden-holder-production-contract.md`](./plans/hidden-holder-production-contract.md)
+  - for separating plain secret-holder claims from blinded-secret transport/session claims

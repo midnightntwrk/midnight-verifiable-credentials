@@ -86,7 +86,17 @@ What it does not yet prove:
 
 - production transport interoperability for the blinded-secret issuance path
 - production transport interoperability for the blinded-secret presentation path
+- durable protocol state across retries, restarts, or delayed delivery
+- production randomness / nonce interfaces for transport-facing flows
+- presentation-side message-level expiry semantics
 - revocation
+
+Important distinction:
+
+- the plain secret-holder proof/profile semantics in this family are already a
+  stable reference hidden-holder capability
+- the blinded-secret issuance/presentation transport contract layered around
+  that capability is still a production-hardening track
 
 ## Why this package exists
 
