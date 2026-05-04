@@ -16,10 +16,13 @@ if ! docker info >/dev/null 2>&1; then
   exit 1
 fi
 
+echo "[credentials-standalone] Shared integration prerequisites"
+npm run build:integration-prereqs
+
 echo "[credentials-standalone] Demo verifier contract integration"
-npm run ci:integration:demo-contract
+npm run test:integration:demo-contract
 
 echo "[credentials-standalone] Birth protocol integration"
-npm run ci:integration:protocol
+npm run test:integration:protocol
 
 echo "[credentials-standalone] Done"
