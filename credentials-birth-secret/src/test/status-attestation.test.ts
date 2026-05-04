@@ -89,6 +89,48 @@ describe("secret birth credential: authority-attested status verification", () =
     ).toThrow(/revoked root does not match/i);
   });
 
+  it("rejects an authority-attested status request when its challenge diverges from the verification request", () => {
+    const fixture = createSecretBirthCredentialFixture();
+    const submission = {
+      envelope: {
+        ...fixture.verificationRequest.envelope,
+        initialMessage: false,
+        respondsToMessageId: fixture.verificationRequest.envelope.messageId,
+        messageId: new Uint8Array(32).fill(15),
+        createdAt: fixture.verificationRequest.envelope.createdAt + 2n,
+      },
+      schema: fixture.credential.schema,
+      issuerVerificationMethodRef:
+        fixture.credential.issuerVerificationMethodRef,
+      holderBindingProfile: fixture.verificationRequest.holderBindingProfile,
+      challengeHash: fixture.verificationRequest.verifierChallengeHash,
+      body: {
+        credential: fixture.credential,
+        credentialProof: fixture.credentialProof,
+        presentation: fixture.presentation,
+      },
+    };
+
+    expect(() =>
+      pureCircuits.assertSecretBirthCredentialVerificationSubmissionMatchesAuthorityAttestedStatusRequest(
+        fixture.credentialWithAuthorityAttestedStatus,
+        {
+          ...fixture.authorityAttestedStatusVerificationRequest,
+          statusRequest: {
+            ...fixture.authorityAttestedStatusVerificationRequest.statusRequest,
+            verifierChallengeHash: new Uint8Array(32).fill(6),
+          },
+        },
+        submission,
+        fixture.authorityAttestedStatusVerificationInputs,
+        fixture.witness.holderSecret,
+        fixture.witness.holderSecretOpening,
+        fixture.witness.holderBindingBlindingFactor,
+        fixture.verificationRequest.envelope.createdAt + 10n,
+      ),
+    ).toThrow(/request challenge must match the verification request challenge/i);
+  });
+
   it("rejects an authority-attested status proof after expiration", () => {
     const fixture = createSecretBirthCredentialFixture();
     const submission = {

@@ -47,6 +47,11 @@ export circuit assertValidSecretBirthCredentialVerificationAuthorityAttestedStat
     request.statusPolicy.requireStatus,
     "Secret birth authority-attested status verification request must require credential status"
   );
+  assert(
+    request.statusRequest.verifierChallengeHash
+      == request.verificationRequest.verifierChallengeHash,
+    "Secret birth authority-attested status request challenge must match the verification request challenge"
+  );
 }
 
 export circuit assertValidSecretBirthCredentialVerificationStatusInputs(

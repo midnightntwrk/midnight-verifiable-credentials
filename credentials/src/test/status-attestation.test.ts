@@ -111,6 +111,59 @@ describe("credentials core: authority-attested status", () => {
     ).toThrow(/status authority/i);
   });
 
+  it("rejects an authority-attested status proof signed by the wrong authority through the full policy path", () => {
+    const authority = createSigner("status-authority", 326n);
+    const wrongAuthority = createSigner("other-authority", 327n);
+    const request = {
+      registryState: {
+        registryId: bytes32("registry:hidden-holder"),
+        revokedRoot: bytes32("revoked-root:current"),
+      },
+      verifierChallengeHash: bytes32("challenge:status"),
+    };
+    const capability = {
+      registryRef: {
+        registryId: request.registryState.registryId,
+        authorityVerificationMethodRef: authority.verificationMethodRef,
+      },
+      statusHandleCommitment: bytes32("status-handle-commitment"),
+    };
+    const statement = {
+      registryState: request.registryState,
+      statusHandleCommitment: capability.statusHandleCommitment,
+      verifierChallengeHash: request.verifierChallengeHash,
+      hasExpiration: true,
+      expiresAt: 200n,
+    };
+    const attestation = {
+      statement,
+      proof: signProof({
+        bodyRoot: pureCircuits.authorityAttestedStatusStatementRoot(statement),
+        context: "statusAttestation",
+        signer: wrongAuthority,
+        createdAt: 100n,
+        challengeHash: request.verifierChallengeHash,
+        nonceScalar: 31n,
+      }),
+    };
+    const policy = {
+      requireStatus: true,
+      acceptedStatusCapability: StatusCapabilityKind.authorityAttestedStatus,
+      enforceRegistryId: true,
+      acceptedRegistryId: request.registryState.registryId,
+    };
+
+    expect(() =>
+      pureCircuits.assertVerifierStatusPolicyAcceptsAuthorityAttestedStatus(
+        policy,
+        capability,
+        request,
+        attestation,
+        150n,
+      ),
+    ).toThrow(/status authority/i);
+  });
+
   it("rejects an authority-attested status proof when the verifier root differs", () => {
     const signer = createSigner("status-authority", 324n);
     const request = {
