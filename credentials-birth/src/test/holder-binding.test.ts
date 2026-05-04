@@ -2,7 +2,7 @@ import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { describe, expect, it } from "vitest";
 
 import { pureCircuits } from "../managed/birth-credential/contract/index.js";
-import { createBirthCredentialFixture } from "./credential-fixtures.js";
+import { createBirthCredentialFixture } from "../testing/credential-fixtures.js";
 
 setNetworkId("undeployed");
 

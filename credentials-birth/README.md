@@ -11,6 +11,10 @@ Surface classification:
 - `On-chain + off-chain`
 - `src/birth-credential.compact` is the authoritative contract-authoring surface
 - generated/runtime TypeScript exports are off-chain mirrors only
+- `./testing` is an `Off-chain only` fixture surface for integration tests;
+  do not import `../<package>/src/...` from sibling workspaces
+- example:
+  `import { createBirthCredentialProtocolFixtureForParticipants } from "@midnight-ntwrk/midnight-did-credentials-birth/testing";`
 
 Start here:
 

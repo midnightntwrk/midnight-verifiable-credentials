@@ -249,9 +249,16 @@ Required outcome:
 - decide where namespace-only re-exports are acceptable
 - prefer narrow package surfaces for new packages/demos
 
+Current grouped execution:
+
+- boundary-hardening slice:
+  - refresh the package-boundary regression guard and land it through `#20`
+  - block sibling `../<package>/src/...` imports in repo validation
+  - replace direct cross-package `src/test` imports with exported testing surfaces
+
 Related carry-over work:
 
-- revive and merge stale guardrail PR:
+- merge and maintain the revived guardrail PR:
   - `#20` `codex/vc-boundary-guardrail`
 
 ### VC-MAT-08: Add starter templates and “Hello World” integration paths
