@@ -8,6 +8,7 @@ verification profiles.
 It is companion material to:
 
 - [`midnight-credentials.md`](./midnight-credentials.md)
+- [`credential-status.md`](./credential-status.md)
 
 ## Purpose
 
@@ -51,6 +52,8 @@ Current test coverage:
 Current limitations:
 - on-chain DID-centric
 - less privacy-preserving than hidden-holder profiles
+- repository status/revocation support is still Level 0 as defined in
+  `credential-status.md`
 
 ### 2. Secret holder binding
 
@@ -80,7 +83,8 @@ Current test coverage:
 Current limitations:
 - production deployments still need explicit disclosure of holder-secret
   storage, randomness/nonce handling, and external adapter assumptions
-- revocation/non-revocation is not implemented
+- repository status/revocation support is still Level 0 as defined in
+  `credential-status.md`
 
 ### 3. Blinded secret holder binding
 
@@ -113,7 +117,8 @@ Current limitations:
   submission expiry, but the credential family still does not define final
   body-level timeout fields or an external interoperable timeout contract
 - production transport interoperability is still evolving
-- revocation/non-revocation is not implemented
+- repository status/revocation support is still Level 0 as defined in
+  `credential-status.md`
 
 ### 4. Verifier-domain pseudonym profile
 

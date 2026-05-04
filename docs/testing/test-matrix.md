@@ -40,6 +40,15 @@ Status: current implemented test surface as of 2026-05-01.
 - blinded-secret issuance offer/request/result validation through
   `credentials-protocol`
 
+## Credential status / revocation tests
+
+Current repository stance:
+
+- Level 0 only
+- no checked-in revocation or non-revocation test surface yet
+- claim expiry and protocol/session expiry tests do not count as revocation
+  coverage
+
 ### Planned prototype restoration
 
 - `credentials-birth-binding-prototypes`

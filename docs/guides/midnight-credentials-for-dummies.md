@@ -1845,7 +1845,11 @@ Mohawk is happier now, but not done.
 The current reference path still does not give us everything:
 
 - production blind-issuance transport hardening is not finished
-- revocation is still out of scope
+- the repository now has a status/revocation contract, but current packages are
+  still only at Level 0:
+  - no implemented revocation
+  - no implemented non-revocation proof
+  - only claim expiry or protocol/session expiry where documented
 - application orchestration is prototyped in `credentials-protocol` but not yet production-hardened
 - governance is acknowledged but intentionally abstract
 - more credential families still need to be modeled

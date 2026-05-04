@@ -20,6 +20,7 @@ This draft defines:
 - proof and verification requirements
 - deterministic serialization expectations
 - the role of holder-binding profiles
+- the repository's current credential-status claim model
 - repository-level document authority boundaries
 
 This draft does not define a final standards-track publication process or a
@@ -41,11 +42,13 @@ Companion documents have narrower roles:
 - normative companion documents:
   - [`./profiles.md`](./profiles.md)
   - [`./conformance.md`](./conformance.md)
+  - [`./credential-status.md`](./credential-status.md)
 
 Those normative companion documents are authoritative within their narrower scopes:
 
 - `profiles.md` owns the current holder-binding and verification profile catalog
 - `conformance.md` owns the repository's conformance categories and non-conformance examples
+- `credential-status.md` owns the repository's current status/revocation claim contract
 
 This document takes precedence only where a broader repository-level requirement in this document overlaps with a narrower companion rule.
 - informative documents:
@@ -84,6 +87,7 @@ It covers:
 - proof verification boundaries
 - deterministic Compact-native serialization expectations
 - holder-binding profile selection and verification requirements
+- credential-status claim boundaries
 - repository-level conformance categories
 
 It does not attempt to define:
@@ -92,6 +96,7 @@ It does not attempt to define:
 - JWT or SD-JWT as canonical signing inputs
 - a final production blind-issuance standard
 - a privacy-preserving revocation design
+- a final production credential-status or non-revocation construction
 - a universal dynamic claim-map model
 - a final OpenID or HTTP interoperability profile
 - a general-purpose DID resolution standard
