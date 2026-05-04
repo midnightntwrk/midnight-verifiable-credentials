@@ -185,6 +185,9 @@ export const createCodecBackedProtocolStateStore = (
 ): ProtocolStateStore =>
   new CodecBackedProtocolStateStore(byteStore, codecResolver);
 
+export const resolveCurrentTimeMs = (value?: bigint): bigint =>
+  value ?? BigInt(Date.now());
+
 const resolveExpirationMs = (
   currentTimeMs: bigint,
   policy: ProtocolStateRetentionPolicy,

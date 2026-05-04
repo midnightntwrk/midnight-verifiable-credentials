@@ -1,5 +1,6 @@
 import { Buffer } from "node:buffer";
 import {
+  existsSync,
   mkdirSync,
   readdirSync,
   readFileSync,
@@ -21,6 +22,11 @@ const encodePathSegment = (value: string): string =>
 const decodePathSegment = (value: string): string =>
   Buffer.from(value, "hex").toString("utf8");
 
+let tempWriteCounter = 0;
+
+const isMissingFileError = (error: unknown): boolean =>
+  error instanceof Error && "code" in error && error.code === "ENOENT";
+
 class FileSystemProtocolStateByteCollection
   implements ProtocolStateByteCollection
 {
@@ -32,17 +38,34 @@ class FileSystemProtocolStateByteCollection
     return join(this.collectionDir, `${encodePathSegment(key)}.bin`);
   }
 
+  private nextTempPath(filePath: string): string {
+    tempWriteCounter += 1;
+    return `${filePath}.tmp-${process.pid}-${Date.now()}-${tempWriteCounter}`;
+  }
+
+  private entryPath(entryName: string): string {
+    return join(this.collectionDir, entryName);
+  }
+
   get(key: string): Uint8Array | undefined {
     try {
       return readFileSync(this.filePathFor(key));
-    } catch {
-      return undefined;
+    } catch (error) {
+      if (isMissingFileError(error)) {
+        return undefined;
+      }
+      throw error;
     }
   }
 
+  /**
+   * This adapter is restart-safe for ordinary process restarts, but it remains
+   * reference-grade: it does not fsync file and directory metadata for crash
+   * consistency under abrupt power loss.
+   */
   set(key: string, value: Uint8Array): void {
     const filePath = this.filePathFor(key);
-    const tempPath = `${filePath}.tmp-${process.pid}-${Date.now()}`;
+    const tempPath = this.nextTempPath(filePath);
     writeFileSync(tempPath, value);
     renameSync(tempPath, filePath);
   }
@@ -51,13 +74,16 @@ class FileSystemProtocolStateByteCollection
     try {
       rmSync(this.filePathFor(key));
       return true;
-    } catch {
-      return false;
+    } catch (error) {
+      if (isMissingFileError(error)) {
+        return false;
+      }
+      throw error;
     }
   }
 
   has(key: string): boolean {
-    return this.get(key) !== undefined;
+    return existsSync(this.filePathFor(key));
   }
 
   *entries(): IterableIterator<[string, Uint8Array]> {
@@ -69,7 +95,14 @@ class FileSystemProtocolStateByteCollection
       }
       const encodedKey = entry.name.slice(0, -4);
       const key = decodePathSegment(encodedKey);
-      yield [key, readFileSync(join(this.collectionDir, entry.name))];
+      try {
+        yield [key, readFileSync(this.entryPath(entry.name))];
+      } catch (error) {
+        if (isMissingFileError(error)) {
+          continue;
+        }
+        throw error;
+      }
     }
   }
 }
