@@ -60,7 +60,7 @@ const encodeContext = (
 };
 
 export class ReferenceDeterministicRandomnessSource
-implements ProtocolRandomnessSource
+  implements ProtocolRandomnessSource
 {
   nextChallengeHash(context: ProtocolRandomnessContext): Uint8Array {
     return sha256(encodeContext("challenge-hash", context));
@@ -75,10 +75,22 @@ implements ProtocolRandomnessSource
   }
 
   nextSigningNonceScalar(context: ProtocolRandomnessContext): bigint {
-    const scalar = mod( bytesToBigInt(sha256(encodeContext("signing-nonce", context))) );
-    return scalar === 0n ? 1n : scalar;
+    // Reference-only deterministic derivation. Production sources should use
+    // real randomness rather than copying this strategy.
+    let attempt = 0;
+    while (true) {
+      const scalar = mod(
+        bytesToBigInt(
+          sha256(`${encodeContext("signing-nonce", context)}:attempt:${attempt}`),
+        ),
+      );
+      if (scalar !== 0n) {
+        return scalar;
+      }
+      attempt += 1;
+    }
   }
 }
 
-export const referenceProtocolRandomnessSource =
+export const unsafeReferenceDeterministicRandomnessSource =
   new ReferenceDeterministicRandomnessSource();

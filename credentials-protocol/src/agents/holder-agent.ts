@@ -23,7 +23,7 @@ import type { MessageBus } from "../transport/message-bus.js";
 import type { ProtocolMessage } from "../transport/types.js";
 import {
   type ProtocolRandomnessSource,
-  referenceProtocolRandomnessSource,
+  unsafeReferenceDeterministicRandomnessSource,
 } from "./randomness.js";
 import type { DIDProfile } from "./types.js";
 
@@ -58,7 +58,8 @@ export class HolderAgent {
   ) {
     this.profile = profile;
     this.bus = bus;
-    this.randomness = options.randomness ?? referenceProtocolRandomnessSource;
+    this.randomness =
+      options.randomness ?? unsafeReferenceDeterministicRandomnessSource;
   }
 
   receiveOfferAndSendRequest(offer: ProtocolMessage): void {

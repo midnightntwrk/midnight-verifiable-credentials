@@ -28,7 +28,7 @@ import type {
 } from "../transport/types.js";
 import {
   type ProtocolRandomnessSource,
-  referenceProtocolRandomnessSource,
+  unsafeReferenceDeterministicRandomnessSource,
 } from "./randomness.js";
 
 const SECRET_BIRTH_SCHEMA = {
@@ -153,7 +153,8 @@ export class SecretHolderAgent {
     this.holderSecret = config.holderSecret;
     this.holderSecretOpening = config.holderSecretOpening;
     this.bus = bus;
-    this.randomness = options.randomness ?? referenceProtocolRandomnessSource;
+    this.randomness =
+      options.randomness ?? unsafeReferenceDeterministicRandomnessSource;
   }
 
   receiveOfferAndSendRequest(

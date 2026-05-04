@@ -114,8 +114,8 @@ Randomness hardening rule:
 
 - agent-local challenge/nonce/blinding generation now sits behind an injectable
   `ProtocolRandomnessSource` interface
-- the default implementation remains deterministic and reference-friendly for
-  repository tests
+- the exported default implementation is intentionally marked as unsafe and
+  deterministic for repository tests
 - production integrators should supply their own randomness source rather than
   relying on the default
 

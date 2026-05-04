@@ -14,7 +14,7 @@ import {
   type SecretBirthCredentialIssuanceResult,
 } from "@midnight-ntwrk/midnight-did-credentials-birth-secret/managed/secret-birth-credential/contract/index.js";
 
-import { mod, padText,sha256 } from "../shared/crypto.js";
+import { mod, padText } from "../shared/crypto.js";
 import { createEnvelope } from "../shared/envelope.js";
 import { assertBodyHasFields,assertMessageType } from "../shared/validation.js";
 import type { MessageBus } from "../transport/message-bus.js";
@@ -26,7 +26,7 @@ import type {
 } from "../transport/types.js";
 import {
   type ProtocolRandomnessSource,
-  referenceProtocolRandomnessSource,
+  unsafeReferenceDeterministicRandomnessSource,
 } from "./randomness.js";
 import type { DIDProfile } from "./types.js";
 
@@ -104,7 +104,8 @@ export class SecretIssuerAgent {
   ) {
     this.profile = profile;
     this.bus = bus;
-    this.randomness = options.randomness ?? referenceProtocolRandomnessSource;
+    this.randomness =
+      options.randomness ?? unsafeReferenceDeterministicRandomnessSource;
   }
 
   createAndSendOffer(

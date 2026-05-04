@@ -1137,8 +1137,8 @@ So the honest summary is:
 
 Important qualifier:
 
-- the default repository implementation behind that interface is still a
-  deterministic reference source for tests
+- the default repository implementation behind that interface is still an
+  explicitly unsafe deterministic reference source for tests
 - real deployments should replace it with production randomness
 
 Mohawk calls it "a respectable intermediate state".

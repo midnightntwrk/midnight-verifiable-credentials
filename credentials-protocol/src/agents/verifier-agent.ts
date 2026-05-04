@@ -21,7 +21,7 @@ import {
   type SecretBirthCredentialVerificationSubmission,
 } from "@midnight-ntwrk/midnight-did-credentials-birth-secret/managed/secret-birth-credential/contract/index.js";
 
-import { padText,sha256 } from "../shared/crypto.js";
+import { padText } from "../shared/crypto.js";
 import { createEnvelope } from "../shared/envelope.js";
 import { assertBodyHasFields,assertMessageType } from "../shared/validation.js";
 import type { MessageBus } from "../transport/message-bus.js";
@@ -32,8 +32,9 @@ import type {
   SecretBirthCredentialVerificationRejectionCategory,
 } from "../transport/types.js";
 import {
+  type ProtocolRandomnessFlow,
   type ProtocolRandomnessSource,
-  referenceProtocolRandomnessSource,
+  unsafeReferenceDeterministicRandomnessSource,
 } from "./randomness.js";
 import type {
   SameHolderPresentation,
@@ -171,20 +172,32 @@ export class VerifierAgent {
   ) {
     this.profile = profile;
     this.bus = bus;
-    this.randomness = options.randomness ?? referenceProtocolRandomnessSource;
+    this.randomness =
+      options.randomness ?? unsafeReferenceDeterministicRandomnessSource;
   }
 
-  /** Generate a unique challenge hash per interaction. */
-  generateChallengeHash(): Uint8Array {
+  private generateChallengeHashFor(
+    flow: ProtocolRandomnessFlow,
+    threadId?: Uint8Array,
+  ): Uint8Array {
     return this.randomness.nextChallengeHash({
       partyLabel: this.profile.label,
-      flow: "blinded-secret-presentation",
+      flow,
       purpose: "verifier-challenge",
       sequence: this.challengeCounter++,
+      threadId,
     });
   }
 
-  /** @deprecated Use generateChallengeHash() for unique per-interaction challenges. */
+  /** Generate a unique challenge hash for explicit-holder presentation. */
+  generateChallengeHash(): Uint8Array {
+    return this.generateChallengeHashFor("explicit-presentation");
+  }
+
+  /**
+   * @deprecated Use generateChallengeHash() or createAndSend*Request(...) to avoid
+   * ambiguous flow selection.
+   */
   get verifierChallengeHash(): Uint8Array {
     return this.generateChallengeHash();
   }
@@ -203,7 +216,9 @@ export class VerifierAgent {
       issuerVerificationMethodRef: requirements.issuerVerificationMethodRef,
       holderBindingProfile: HolderBindingProfile.explicitDid,
       features: EXPLICIT_HOLDER_FEATURES,
-      verifierChallengeHash: this.generateChallengeHash(),
+      verifierChallengeHash: this.generateChallengeHashFor(
+        "explicit-presentation",
+      ),
       body: {
         requireSubjectIdCommitmentDisclosure:
           requirements.requireSubjectIdCommitmentDisclosure,
@@ -321,7 +336,9 @@ export class VerifierAgent {
       issuerVerificationMethodRef: requirements.issuerVerificationMethodRef,
       holderBindingProfile: HolderBindingProfile.blindedSecretHolder,
       features: SECRET_HOLDER_FEATURES,
-      verifierChallengeHash: this.generateChallengeHash(),
+      verifierChallengeHash: this.generateChallengeHashFor(
+        "blinded-secret-presentation",
+      ),
       body: {
         requireSubjectIdCommitmentDisclosure:
           requirements.requireSubjectIdCommitmentDisclosure,
