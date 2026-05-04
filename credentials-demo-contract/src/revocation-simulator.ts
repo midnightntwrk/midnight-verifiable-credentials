@@ -1,0 +1,205 @@
+import {
+  type CircuitContext,
+  type CircuitResults,
+  createCircuitContext,
+  createConstructorContext,
+  sampleContractAddress,
+} from "@midnight-ntwrk/compact-runtime";
+
+import {
+  Contract,
+  type Ledger,
+  ledger,
+  type Proof,
+  type RevocationAccessDecision,
+  type RevocationRegistryState,
+  type SecretBirthCredential,
+  type SecretBirthCredentialVerificationAuthorityAttestedStatusInputs,
+  type SecretBirthCredentialVerificationAuthorityAttestedStatusRequest,
+  type SecretBirthCredentialVerificationRevokedSetStatusRequest,
+  type SecretBirthCredentialVerificationStatusInputs,
+  type SecretBirthCredentialVerificationSubmission,
+  type SecretBirthCredentialWithAuthorityAttestedStatusCapability,
+  type SecretBirthCredentialWithStatusCapability,
+  type VerificationMethodRef,
+} from "./managed/demo-revocation/contract/index.js";
+import {
+  type CredentialsDemoRevocationPrivateState,
+  revocationWitnesses,
+} from "./revocation-witnesses.js";
+
+export class CredentialsDemoRevocationSimulator {
+  readonly contract: Contract<CredentialsDemoRevocationPrivateState>;
+  circuitContext: CircuitContext<CredentialsDemoRevocationPrivateState>;
+
+  constructor() {
+    this.contract = new Contract<CredentialsDemoRevocationPrivateState>(
+      revocationWitnesses,
+    );
+    const {
+      currentPrivateState,
+      currentContractState,
+      currentZswapLocalState,
+    } = this.contract.initialState(
+      createConstructorContext(
+        {
+          holderSecret: new Uint8Array(32),
+          holderSecretOpening: new Uint8Array(32),
+          holderBindingBlindingFactor: new Uint8Array(32),
+          holderBirthDateDays: 0n,
+          holderBirthDateOpening: new Uint8Array(32),
+        },
+        "0".repeat(64),
+      ),
+    );
+    this.circuitContext = createCircuitContext(
+      sampleContractAddress(),
+      currentZswapLocalState,
+      currentContractState,
+      currentPrivateState,
+    );
+  }
+
+  public getLedger(): Ledger {
+    return ledger(this.circuitContext.currentQueryContext.state);
+  }
+
+  public setHolderWitnesses({
+    holderSecret,
+    holderSecretOpening,
+    holderBindingBlindingFactor,
+    holderBirthDateDays,
+    holderBirthDateOpening,
+  }: {
+    readonly holderSecret: Uint8Array;
+    readonly holderSecretOpening: Uint8Array;
+    readonly holderBindingBlindingFactor: Uint8Array;
+    readonly holderBirthDateDays: bigint;
+    readonly holderBirthDateOpening: Uint8Array;
+  }): void {
+    this.circuitContext = createCircuitContext(
+      sampleContractAddress(),
+      this.circuitContext.currentZswapLocalState,
+      this.circuitContext.currentQueryContext.state,
+      {
+        ...this.circuitContext.currentPrivateState,
+        holderSecret,
+        holderSecretOpening,
+        holderBindingBlindingFactor,
+        holderBirthDateDays,
+        holderBirthDateOpening,
+      },
+    );
+  }
+
+  private executeCircuit<T>(
+    circuitFn: () => CircuitResults<CredentialsDemoRevocationPrivateState, T>,
+  ): T {
+    const result = circuitFn();
+    this.circuitContext = createCircuitContext(
+      sampleContractAddress(),
+      result.context.currentZswapLocalState,
+      result.context.currentQueryContext.state,
+      result.context.currentPrivateState,
+    );
+    return result.result;
+  }
+
+  public issueSecretBirthCredential(
+    credential: SecretBirthCredential,
+    credentialProof: Proof,
+  ): void {
+    this.executeCircuit(() =>
+      this.contract.impureCircuits.issueSecretBirthCredential(
+        this.circuitContext,
+        credential,
+        credentialProof,
+      ),
+    );
+  }
+
+  public revocationAwareVerifierSuppliedRootRequest(
+    issuerVerificationMethodRef: VerificationMethodRef,
+    verifierDomainHash: Uint8Array,
+    verifierChallengeHash: Uint8Array,
+    registryState: RevocationRegistryState,
+  ): SecretBirthCredentialVerificationRevokedSetStatusRequest {
+    return this.executeCircuit(() =>
+      this.contract.impureCircuits.revocationAwareVerifierSuppliedRootRequest(
+        this.circuitContext,
+        issuerVerificationMethodRef,
+        verifierDomainHash,
+        verifierChallengeHash,
+        registryState,
+      ),
+    );
+  }
+
+  public revocationAwareAuthorityAttestedRequest(
+    issuerVerificationMethodRef: VerificationMethodRef,
+    verifierDomainHash: Uint8Array,
+    verifierChallengeHash: Uint8Array,
+    registryState: RevocationRegistryState,
+  ): SecretBirthCredentialVerificationAuthorityAttestedStatusRequest {
+    return this.executeCircuit(() =>
+      this.contract.impureCircuits.revocationAwareAuthorityAttestedRequest(
+        this.circuitContext,
+        issuerVerificationMethodRef,
+        verifierDomainHash,
+        verifierChallengeHash,
+        registryState,
+      ),
+    );
+  }
+
+  public issueRevocationAwareCapabilityWithVerifierSuppliedRoot(
+    credentialWithStatus: SecretBirthCredentialWithStatusCapability,
+    request: SecretBirthCredentialVerificationRevokedSetStatusRequest,
+    submission: SecretBirthCredentialVerificationSubmission,
+    statusInputs: SecretBirthCredentialVerificationStatusInputs,
+    currentDay: bigint,
+  ): Uint8Array {
+    return this.executeCircuit(() =>
+      this.contract.impureCircuits.issueRevocationAwareCapabilityWithVerifierSuppliedRoot(
+        this.circuitContext,
+        credentialWithStatus,
+        request,
+        submission,
+        statusInputs,
+        currentDay,
+      ),
+    );
+  }
+
+  public issueRevocationAwareCapabilityWithAuthorityAttestation(
+    credentialWithStatus: SecretBirthCredentialWithAuthorityAttestedStatusCapability,
+    request: SecretBirthCredentialVerificationAuthorityAttestedStatusRequest,
+    submission: SecretBirthCredentialVerificationSubmission,
+    statusInputs: SecretBirthCredentialVerificationAuthorityAttestedStatusInputs,
+    currentDay: bigint,
+    currentTime: bigint,
+  ): Uint8Array {
+    return this.executeCircuit(() =>
+      this.contract.impureCircuits.issueRevocationAwareCapabilityWithAuthorityAttestation(
+        this.circuitContext,
+        credentialWithStatus,
+        request,
+        submission,
+        statusInputs,
+        currentDay,
+        currentTime,
+      ),
+    );
+  }
+
+  public claimRevocationAwareCapability(
+    capability: Uint8Array,
+  ): RevocationAccessDecision {
+    return this.executeCircuit(() =>
+      this.contract.impureCircuits.claimRevocationAwareCapability(
+        this.circuitContext,
+        capability,
+      ),
+    );
+  }
+}
