@@ -7,8 +7,10 @@ import { describe, expect, it } from "vitest";
 
 import {
   buildAuthorityAttestedStatusCapability,
+  buildAuthorityAttestedStatusProofProtocol,
   buildAuthorityAttestedStatusRequest,
   buildAuthorityAttestedStatusStatement,
+  buildRegistryBoundStatusBinding,
   signAuthorityAttestedStatusProof,
 } from "../index.js";
 
@@ -73,6 +75,45 @@ describe("authority-attested status builder", () => {
     );
     expect(attestation.proof.signerVerificationMethodRef).toEqual(
       authoritySigner.verificationMethodRef,
+    );
+  });
+
+  it("builds a shared status binding and authority-attested proof protocol", () => {
+    const request = buildAuthorityAttestedStatusRequest({
+      registryState: {
+        registryId: bytes32("registry:hidden-holder"),
+        revokedRoot: bytes32("revoked-root:current"),
+      },
+      verifierChallengeHash: bytes32("challenge:status"),
+    });
+    const binding = buildRegistryBoundStatusBinding({
+      registryRef: {
+        registryId: request.registryState.registryId,
+        authorityVerificationMethodRef: authoritySigner.verificationMethodRef,
+      },
+      statusHandleCommitment: bytes32("status-handle-commitment"),
+    });
+    const statement = buildAuthorityAttestedStatusStatement({
+      request,
+      statusHandleCommitment: binding.statusHandleCommitment,
+      expiresAt: 200n,
+    });
+    const attestation = signAuthorityAttestedStatusProof({
+      statement,
+      signer: authoritySigner,
+      createdAt: 100n,
+      nonceScalar: 19n,
+    });
+    const protocol = buildAuthorityAttestedStatusProofProtocol({
+      request,
+      attestation,
+    });
+
+    expect(protocol.request.verifierChallengeHash).toEqual(
+      request.verifierChallengeHash,
+    );
+    expect(protocol.attestation.statement.statusHandleCommitment).toEqual(
+      binding.statusHandleCommitment,
     );
   });
 

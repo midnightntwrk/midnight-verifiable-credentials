@@ -7,6 +7,42 @@ import { createSecretBirthCredentialFixture } from "./credential-fixtures.js";
 setNetworkId("undeployed");
 
 describe("secret birth credential: authority-attested status verification", () => {
+  it("accepts an authority-attested status protocol submission when the shared status binding and proof protocol align", () => {
+    const fixture = createSecretBirthCredentialFixture();
+    const submission = {
+      envelope: {
+        ...fixture.verificationRequest.envelope,
+        initialMessage: false,
+        respondsToMessageId: fixture.verificationRequest.envelope.messageId,
+        messageId: new Uint8Array(32).fill(18),
+        createdAt: fixture.verificationRequest.envelope.createdAt + 2n,
+      },
+      schema: fixture.credential.schema,
+      issuerVerificationMethodRef:
+        fixture.credential.issuerVerificationMethodRef,
+      holderBindingProfile: fixture.verificationRequest.holderBindingProfile,
+      challengeHash: fixture.verificationRequest.verifierChallengeHash,
+      body: {
+        credential: fixture.credential,
+        credentialProof: fixture.credentialProof,
+        presentation: fixture.presentation,
+      },
+    };
+
+    expect(() =>
+      pureCircuits.assertSecretBirthCredentialVerificationSubmissionMatchesAuthorityAttestedStatusProtocolRequest(
+        fixture.credentialWithStatusBinding,
+        fixture.authorityAttestedStatusVerificationRequest,
+        submission,
+        fixture.authorityAttestedStatusProtocolInputs,
+        fixture.witness.holderSecret,
+        fixture.witness.holderSecretOpening,
+        fixture.witness.holderBindingBlindingFactor,
+        fixture.verificationRequest.envelope.createdAt + 10n,
+      ),
+    ).not.toThrow();
+  });
+
   it("accepts an authority-attested status proof bound to the verifier request root", () => {
     const fixture = createSecretBirthCredentialFixture();
     const submission = {

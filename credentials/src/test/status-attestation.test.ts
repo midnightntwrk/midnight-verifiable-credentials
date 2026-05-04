@@ -67,6 +67,54 @@ describe("credentials core: authority-attested status", () => {
     ).not.toThrow();
   });
 
+  it("accepts an authority-attested status proof protocol bound to a shared status binding", () => {
+    const signer = createSigner("status-authority", 320n);
+    const request = {
+      registryState: {
+        registryId: bytes32("registry:hidden-holder"),
+        revokedRoot: bytes32("revoked-root:current"),
+      },
+      verifierChallengeHash: bytes32("challenge:status"),
+    };
+    const binding = {
+      registryRef: {
+        registryId: request.registryState.registryId,
+        authorityVerificationMethodRef: signer.verificationMethodRef,
+      },
+      statusHandleCommitment: bytes32("status-handle-commitment"),
+    };
+    const statement = {
+      registryState: request.registryState,
+      statusHandleCommitment: binding.statusHandleCommitment,
+      verifierChallengeHash: request.verifierChallengeHash,
+      hasExpiration: true,
+      expiresAt: 200n,
+    };
+    const protocol = {
+      request,
+      attestation: {
+        statement,
+        proof: signProof({
+          bodyRoot:
+            pureCircuits.authorityAttestedStatusStatementRoot(statement),
+          context: "statusAttestation",
+          signer,
+          createdAt: 100n,
+          challengeHash: request.verifierChallengeHash,
+          nonceScalar: 13n,
+        }),
+      },
+    };
+
+    expect(() =>
+      pureCircuits.assertRegistryBoundStatusBindingMatchesAuthorityAttestedStatusProofProtocol(
+        binding,
+        protocol,
+        150n,
+      ),
+    ).not.toThrow();
+  });
+
   it("rejects an authority-attested status proof signed by the wrong authority", () => {
     const authority = createSigner("status-authority", 322n);
     const wrongAuthority = createSigner("other-authority", 323n);

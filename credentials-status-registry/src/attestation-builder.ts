@@ -5,15 +5,19 @@ import {
 import {
   type AuthorityAttestedStatusCapability,
   type AuthorityAttestedStatusProof,
+  type AuthorityAttestedStatusProofProtocol,
   type AuthorityAttestedStatusStatement,
   JUBJUB_SUBGROUP_ORDER,
   modJubjubSubgroupOrder,
   type Proof,
   pureCircuits,
+  type RegistryBoundStatusBinding,
   type RevocationRegistryState,
   type RevokedSetStatusRequest,
   type VerificationMethodRef,
 } from "@midnight-ntwrk/midnight-did-credentials";
+
+import { buildRegistryBoundStatusBinding } from "./status-binding.js";
 
 export type StatusAuthoritySigner = {
   readonly secretKey: bigint;
@@ -123,4 +127,19 @@ export const signAuthorityAttestedStatusProof = ({
   };
   pureCircuits.assertValidAuthorityAttestedStatusProof(attestation);
   return attestation;
+};
+
+export const buildAuthorityAttestedStatusProofProtocol = ({
+  request,
+  attestation,
+}: {
+  readonly request: RevokedSetStatusRequest;
+  readonly attestation: AuthorityAttestedStatusProof;
+}): AuthorityAttestedStatusProofProtocol => {
+  const protocol = {
+    request,
+    attestation,
+  };
+  pureCircuits.assertValidAuthorityAttestedStatusProofProtocol(protocol);
+  return protocol;
 };

@@ -12,6 +12,21 @@ const sha256Bytes = (label: string): Uint8Array =>
   new Uint8Array(Buffer.from(label.padEnd(32, "_").slice(0, 32)));
 
 describe("credentials core: status capabilities", () => {
+  it("accepts a valid registry-bound status binding", () => {
+    const signer = createSigner("status-authority", 778n);
+    const binding = {
+      registryRef: {
+        registryId: sha256Bytes("registry:primary"),
+        authorityVerificationMethodRef: signer.verificationMethodRef,
+      },
+      statusHandleCommitment: sha256Bytes("status-handle-commitment"),
+    };
+
+    expect(() =>
+      pureCircuits.assertValidRegistryBoundStatusBinding(binding),
+    ).not.toThrow();
+  });
+
   it("accepts a valid status registry reference", () => {
     const signer = createSigner("status-authority", 777n);
     const registryRef = {
@@ -69,6 +84,44 @@ describe("credentials core: status capabilities", () => {
     );
 
     expect(Buffer.from(first).equals(Buffer.from(second))).toBe(true);
+  });
+
+  it("accepts a revoked-set status proof protocol bound to the verifier request", () => {
+    const signer = createSigner("status-authority", 890n);
+    const protocol = {
+      request: {
+        registryState: {
+          registryId: sha256Bytes("registry:hidden-holder"),
+          revokedRoot: sha256Bytes("revoked-root:current"),
+        },
+        verifierChallengeHash: sha256Bytes("challenge:status"),
+      },
+      witnessInput: {
+        registryState: {
+          registryId: sha256Bytes("registry:hidden-holder"),
+          revokedRoot: sha256Bytes("revoked-root:current"),
+        },
+        statusHandle: sha256Bytes("status-handle"),
+        statusHandleOpening: sha256Bytes("status-handle-opening"),
+      },
+    };
+    const binding = {
+      registryRef: {
+        registryId: protocol.request.registryState.registryId,
+        authorityVerificationMethodRef: signer.verificationMethodRef,
+      },
+      statusHandleCommitment: pureCircuits.revokedSetStatusHandleCommitment(
+        protocol.witnessInput.statusHandle,
+        protocol.witnessInput.statusHandleOpening,
+      ),
+    };
+
+    expect(() =>
+      pureCircuits.assertRegistryBoundStatusBindingMatchesRevokedSetNonMembershipStatusProofProtocol(
+        binding,
+        protocol,
+      ),
+    ).not.toThrow();
   });
 
   it("rejects a revoked-set non-membership status capability with an empty handle commitment", () => {
