@@ -40,9 +40,11 @@ jobs:
         shell: bash
         run: |
           mkdir -p "$RUNNER_TEMP/compact-toolchain"
-          tar -C "$HOME" -czf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz" \
-            .local/bin/compact \
-            .local/share/compact
+          compact_paths=(.local/bin/compact)
+          if [ -d "$HOME/.local/share/compact" ]; then
+            compact_paths+=(.local/share/compact)
+          fi
+          tar -C "$HOME" -czf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz" "${compact_paths[@]}"
 
       - name: Upload Compact toolchain artifact
         uses: actions/upload-artifact@v4
@@ -78,6 +80,7 @@ jobs:
         run: |
           mkdir -p "$HOME/.local/bin" "$HOME/.local/share"
           tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
+          mkdir -p "$HOME/.local/share"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Verify Compact installation
@@ -126,6 +129,7 @@ jobs:
         run: |
           mkdir -p "$HOME/.local/bin" "$HOME/.local/share"
           tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
+          mkdir -p "$HOME/.local/share"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Verify Compact installation
@@ -174,6 +178,7 @@ jobs:
         run: |
           mkdir -p "$HOME/.local/bin" "$HOME/.local/share"
           tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
+          mkdir -p "$HOME/.local/share"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Verify Compact installation
@@ -222,6 +227,7 @@ jobs:
         run: |
           mkdir -p "$HOME/.local/bin" "$HOME/.local/share"
           tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
+          mkdir -p "$HOME/.local/share"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Verify Compact installation
@@ -261,6 +267,7 @@ jobs:
         run: |
           mkdir -p "$HOME/.local/bin" "$HOME/.local/share"
           tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
+          mkdir -p "$HOME/.local/share"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Verify Compact installation
