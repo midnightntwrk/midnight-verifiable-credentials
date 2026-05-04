@@ -24,6 +24,10 @@ import type {
   SecretBirthCredentialIssuanceRejection,
   SecretBirthCredentialIssuanceRejectionCategory,
 } from "../transport/types.js";
+import {
+  type ProtocolRandomnessSource,
+  referenceProtocolRandomnessSource,
+} from "./randomness.js";
 import type { DIDProfile } from "./types.js";
 
 export type SecretClaimWitness = {
@@ -83,6 +87,7 @@ class IssuanceProtocolError extends Error {
 export class SecretIssuerAgent {
   private readonly profile: DIDProfile;
   private readonly bus: MessageBus;
+  private readonly randomness: ProtocolRandomnessSource;
   private issuanceCounter = 0;
   private readonly pendingOffers = new Map<
     string,
@@ -90,9 +95,16 @@ export class SecretIssuerAgent {
   >();
   private readonly completedOutcomes = new Map<string, ProtocolMessage>();
 
-  constructor(profile: DIDProfile, bus: MessageBus) {
+  constructor(
+    profile: DIDProfile,
+    bus: MessageBus,
+    options: {
+      readonly randomness?: ProtocolRandomnessSource;
+    } = {},
+  ) {
     this.profile = profile;
     this.bus = bus;
+    this.randomness = options.randomness ?? referenceProtocolRandomnessSource;
   }
 
   createAndSendOffer(
@@ -279,9 +291,15 @@ export class SecretIssuerAgent {
     }
     this.pendingOffers.delete(respondsToId);
     const requestBody = issuanceRequest.body;
-
-    // TEST ONLY: production must use a unique random nonce per issuance.
-    const issuerNonce = sha256(`issuer-nonce:${this.profile.label}:${this.issuanceCounter++}`);
+    const issuanceSequence = this.issuanceCounter++;
+    const issuerNonce = this.randomness.nextIssuerNonce({
+      partyLabel: this.profile.label,
+      flow: "blinded-secret-issuance",
+      purpose: "issuer-nonce",
+      sequence: issuanceSequence,
+      threadId: issuanceRequest.envelope.threadId,
+      respondsToMessageId: issuanceRequest.envelope.respondsToMessageId,
+    });
 
     const claims = {
       subjectIdCommitment: pureCircuits.subjectIdCommitment(
@@ -326,8 +344,14 @@ export class SecretIssuerAgent {
 
     const bodyRoot = pureCircuits.secretBirthCredentialBodyRoot(credential);
     const challengeHash = requestBody.holderChallengeHash;
-    // TEST ONLY: production must use cryptographically random nonces.
-    const nonceScalar = 11n;
+    const nonceScalar = this.randomness.nextSigningNonceScalar({
+      partyLabel: this.profile.label,
+      flow: "blinded-secret-issuance",
+      purpose: "signing-nonce",
+      sequence: issuanceSequence,
+      threadId: issuanceRequest.envelope.threadId,
+      respondsToMessageId: issuanceRequest.envelope.respondsToMessageId,
+    });
 
     const proof: Proof = {
       signerVerificationMethodRef: this.profile.signer.verificationMethodRef,

@@ -31,6 +31,10 @@ import type {
   SecretBirthCredentialVerificationRejection,
   SecretBirthCredentialVerificationRejectionCategory,
 } from "../transport/types.js";
+import {
+  type ProtocolRandomnessSource,
+  referenceProtocolRandomnessSource,
+} from "./randomness.js";
 import type {
   SameHolderPresentation,
   SameHolderTriplePresentation,
@@ -151,22 +155,33 @@ export type SameHolderTripleSimulatorWitness = SameHolderSimulatorWitness & {
 export class VerifierAgent {
   private readonly profile: DIDProfile;
   private readonly bus: MessageBus;
+  private readonly randomness: ProtocolRandomnessSource;
   private challengeCounter = 0;
   private readonly completedSecretPresentationOutcomes = new Map<
     string,
     ProtocolMessage
   >();
 
-  constructor(profile: DIDProfile, bus: MessageBus) {
+  constructor(
+    profile: DIDProfile,
+    bus: MessageBus,
+    options: {
+      readonly randomness?: ProtocolRandomnessSource;
+    } = {},
+  ) {
     this.profile = profile;
     this.bus = bus;
+    this.randomness = options.randomness ?? referenceProtocolRandomnessSource;
   }
 
   /** Generate a unique challenge hash per interaction. */
   generateChallengeHash(): Uint8Array {
-    return sha256(
-      `midnight:vc:verifier:${this.profile.label}:challenge:${this.challengeCounter++}`,
-    );
+    return this.randomness.nextChallengeHash({
+      partyLabel: this.profile.label,
+      flow: "blinded-secret-presentation",
+      purpose: "verifier-challenge",
+      sequence: this.challengeCounter++,
+    });
   }
 
   /** @deprecated Use generateChallengeHash() for unique per-interaction challenges. */

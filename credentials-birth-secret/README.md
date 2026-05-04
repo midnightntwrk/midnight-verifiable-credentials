@@ -87,7 +87,9 @@ What it does not yet prove:
 - production transport interoperability for the blinded-secret issuance path
 - production transport interoperability for the blinded-secret presentation path
 - durable protocol state across retries, restarts, or delayed delivery
-- production randomness / nonce interfaces for transport-facing flows
+- production randomness / nonce policy by itself; callers must still provide a
+  production-grade implementation over the now-injectable protocol randomness
+  interface
 - presentation-side message-level expiry semantics
 - revocation
 

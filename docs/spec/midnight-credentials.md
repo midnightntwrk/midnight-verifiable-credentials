@@ -421,6 +421,14 @@ the above and also define:
 - the external adapter/interoperability contract that carries the Compact
   protocol values
 
+Repository note:
+
+- the reference protocol layer now exposes randomness generation behind an
+  injectable interface for challenge hashes, issuer nonces, blinding factors,
+  and signing nonces
+- that interface reduces hardcoded deterministic behavior inside the agents, but
+  it does not by itself make the default source production-grade
+
 The current repository reference implementations do not yet satisfy the full
 blinded-secret production-shaped claim. They do provide supported reference
 issuance and presentation flows with explicit rejection outcomes and documented

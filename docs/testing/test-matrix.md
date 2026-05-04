@@ -62,6 +62,8 @@ Status: current implemented test surface as of 2026-05-01.
 - secret-holder issuance/presentation
   - Compact offer/request/result validation in unit tests
   - negative-path coverage for malformed offer/request/result issuance messages
+  - injectable randomness coverage for explicit-holder and blinded-secret
+    reference flows
   - explicit blinded-secret issuance rejection messages in the reference
     protocol layer for malformed requests, offer/request mismatches, unknown
     offer references, expired offers, and expired requests

@@ -72,7 +72,7 @@ Today the repository can already claim:
 Today the repository should not yet claim:
 
 - durable hidden-holder session state
-- production randomness/nonce interfaces across transport-facing flows
+- production randomness/nonce policy across transport-facing flows
 - presentation-side message-level expiry semantics
 - revocation/non-revocation
 - final external transport interoperability
@@ -84,3 +84,10 @@ Today the repository should not yet claim:
 3. presentation-side expiry / timeout semantics
 4. adapter/interoperability contract
 5. revocation direction
+
+Current progress note:
+
+- the reference protocol layer can now hide randomness/challenge generation
+  behind an injectable interface
+- production hardening still requires the caller to supply a real randomness
+  implementation and document that policy

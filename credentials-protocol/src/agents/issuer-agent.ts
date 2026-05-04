@@ -17,6 +17,10 @@ import { createEnvelope } from "../shared/envelope.js";
 import { assertBodyHasFields,assertMessageType } from "../shared/validation.js";
 import type { MessageBus } from "../transport/message-bus.js";
 import type { PartyId,ProtocolMessage } from "../transport/types.js";
+import {
+  type ProtocolRandomnessSource,
+  referenceProtocolRandomnessSource,
+} from "./randomness.js";
 import type { DIDProfile } from "./types.js";
 
 export type ClaimWitness = {
@@ -49,10 +53,19 @@ const FEATURES = {
 export class IssuerAgent {
   private readonly profile: DIDProfile;
   private readonly bus: MessageBus;
+  private readonly randomness: ProtocolRandomnessSource;
+  private issuanceCounter = 0;
 
-  constructor(profile: DIDProfile, bus: MessageBus) {
+  constructor(
+    profile: DIDProfile,
+    bus: MessageBus,
+    options: {
+      readonly randomness?: ProtocolRandomnessSource;
+    } = {},
+  ) {
     this.profile = profile;
     this.bus = bus;
+    this.randomness = options.randomness ?? referenceProtocolRandomnessSource;
   }
 
   createAndSendOffer(holderLabel: PartyId): void {
@@ -119,9 +132,15 @@ export class IssuerAgent {
 
     const bodyRoot = pureCircuits.birthCredentialBodyRoot(credential);
     const challengeHash = issuanceRequest.body.holderChallengeHash;
-    // TEST ONLY: production must use cryptographically random nonces.
-    // Reusing a nonce across Schnorr signatures leaks the private key.
-    const nonceScalar = 11n;
+    const issuanceSequence = this.issuanceCounter++;
+    const nonceScalar = this.randomness.nextSigningNonceScalar({
+      partyLabel: this.profile.label,
+      flow: "explicit-issuance",
+      purpose: "signing-nonce",
+      sequence: issuanceSequence,
+      threadId: issuanceRequest.envelope.threadId,
+      respondsToMessageId: issuanceRequest.envelope.respondsToMessageId,
+    });
 
     const proof: Proof = {
       signerVerificationMethodRef: this.profile.signer.verificationMethodRef,
