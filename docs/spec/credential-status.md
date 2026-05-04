@@ -84,7 +84,8 @@ An implementation at this level:
 - may only rely on claim-level expiry or application policy
 - `MUST` disclose that status is deferred
 
-This is the repository's current package-level position today.
+Some current packages still remain at this level, especially families that do
+not bind a status registry at all.
 
 The corresponding explicit zero-status capability is:
 
@@ -102,6 +103,11 @@ An implementation at this level:
 This level can be production-acceptable for explicit-holder deployments, but it
 may leak verifier, holder, or credential correlation to the status authority or
 transport path.
+
+The repository's current authority-attested Layer 3 bridge is not a pure public
+lookup scheme, but it occupies the same delegated-freshness space: the
+verifier/application still chooses the accepted root and the contract does not
+discover status freshness by itself.
 
 ### Level 2: Privacy-preserving non-revocation
 
@@ -235,5 +241,6 @@ The next likely status/revocation engineering phases are:
 
 1. complete in-circuit revoked-set non-membership verification
 2. strengthen root-binding semantics for the revocation registry contract
-3. add a dedicated revocation demo / Layer 3 consumer flow
+3. promote the current `demo-revocation` path into a broader integration
+   template once its contract/API story stabilizes
 4. then upgrade conformance claims from prototype to production-shaped support

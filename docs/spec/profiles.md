@@ -53,9 +53,10 @@ Current test coverage:
 Current limitations:
 - on-chain DID-centric
 - less privacy-preserving than hidden-holder profiles
-- repository status/revocation support is still Level 0 as defined in
-  `credential-status.md`
-- current status capability is effectively `NoStatusCapability`
+- this explicit-holder family currently remains at the zero-status end of the
+  repository taxonomy
+- current status capability is:
+  - `NoStatusCapability`
 
 ### 2. Secret holder binding
 

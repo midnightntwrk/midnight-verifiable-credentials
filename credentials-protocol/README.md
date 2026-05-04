@@ -116,6 +116,15 @@ messages for the blinded-secret issuance and presentation flows. The package
 remains intentionally narrow and transport-agnostic; it is not yet a
 production network library.
 
+Status capability note:
+
+- the repository now includes prototype status-aware VC/VP capability surfaces
+  in the hidden-holder family
+- this protocol package does not yet add a full end-to-end transport contract
+  for those status capabilities
+- current status root selection/freshness remains a verifier/application
+  responsibility outside this package
+
 Production-facing readers should separate two claims:
 
 - plain secret-holder proof/profile behavior

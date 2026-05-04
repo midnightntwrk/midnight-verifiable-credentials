@@ -125,6 +125,11 @@ Important distinction:
   that capability is still a production-hardening track
 - the status-aware verification additions in this package are prototype
   capability surfaces, not final production revocation support
+- in particular:
+  - `AuthorityAttestedStatusCapability` is a transitional Layer 3 bridge that
+    still depends on verifier/application-supplied `(registryId, revokedRoot)`
+  - `RevokedSetNonMembershipStatusCapability` is currently a capability and
+    witness surface, not yet final in-circuit non-membership enforcement
 
 ## Why this package exists
 

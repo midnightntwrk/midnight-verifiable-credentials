@@ -47,7 +47,42 @@ Reference implementations:
 - [`../../credentials-birth/README.md`](../../credentials-birth/README.md)
 - [`../../credentials-birth-secret/README.md`](../../credentials-birth-secret/README.md)
 
-### 3. Holder-binding profile implementation
+### 3. Status capability implementation
+
+A status capability implementation conforms when it:
+
+- declares one explicit `StatusCapability`
+- documents whether that capability is:
+  - `NoStatusCapability`
+  - `AuthorityAttestedStatusCapability`
+  - `RevokedSetNonMembershipStatusCapability`
+- documents the verifier/application responsibilities that sit outside Compact
+- states whether the capability is:
+  - reference-shaped and fully enforced in Compact
+  - or prototype-shaped and coordinated partly off-chain
+
+Additional expectations by capability:
+
+- `NoStatusCapability`
+  - must disclose that revocation/non-revocation is deferred
+- `AuthorityAttestedStatusCapability`
+  - must disclose the trusted authority role
+  - must disclose that the verifier/application supplies the accepted
+    `(registryId, revokedRoot)`
+  - must disclose whether expiration is required by local policy
+- `RevokedSetNonMembershipStatusCapability`
+  - must disclose whether the implementation is only a witness/capability
+    surface or a final in-circuit non-membership verification path
+  - must disclose whether root freshness and root selection remain
+    verifier/application responsibilities
+
+Reference companion material:
+
+- [`credential-status.md`](./credential-status.md)
+- [`revocation-registry.md`](./revocation-registry.md)
+- [`status-verification-protocol.md`](./status-verification-protocol.md)
+
+### 4. Holder-binding profile implementation
 
 A holder-binding profile implementation conforms when it:
 
@@ -69,10 +104,7 @@ state:
 - whether replay/idempotency behavior is defined
 - whether expiry semantics are defined for each protocol stage
 - whether revocation/non-revocation is implemented or explicitly deferred
-- which status support level is claimed:
-  - Level 0
-  - Level 1
-  - or Level 2, as defined in `credential-status.md`
+- which status capability, if any, is integrated by the credential family
 - which external adapter or wire contract carries the Compact protocol values
 
 An injectable randomness interface is helpful evidence, but not sufficient by
@@ -95,7 +127,7 @@ Reference profile catalog:
 - [`profiles.md`](./profiles.md)
 - [`hidden-holder-interoperability.md`](./hidden-holder-interoperability.md)
 
-### 4. Transport/domain adapter implementation
+### 5. Transport/domain adapter implementation
 
 A transport/domain adapter conforms when it:
 
@@ -108,7 +140,7 @@ Reference implementation:
 
 - [`../../credentials-openid/README.md`](../../credentials-openid/README.md)
 
-### 5. Protocol/reference orchestration implementation
+### 6. Protocol/reference orchestration implementation
 
 A protocol/orchestration implementation conforms when it:
 
@@ -139,7 +171,7 @@ Reference implementation:
 
 - [`../../credentials-protocol/README.md`](../../credentials-protocol/README.md)
 
-### 6. Verifier contract implementation
+### 7. Verifier contract implementation
 
 A verifier contract implementation conforms when it:
 
@@ -171,10 +203,13 @@ Any implementation claiming conformance should document:
   reference-local/in-memory
 - for hidden-holder profiles, whether randomness/nonce generation is production
   hardening or only test/reference behavior
-- whether status support is Level 0, Level 1, or Level 2
+- whether status support is deferred or implemented
 - which `StatusCapability` is implemented:
   - `NoStatusCapability`
+  - `AuthorityAttestedStatusCapability`
   - or `RevokedSetNonMembershipStatusCapability`
+- whether the verifier/application must supply off-chain status inputs such as
+  an accepted `(registryId, revokedRoot)`
 - any security/privacy limitations that are intentionally deferred
 
 ## Non-conformance examples
@@ -192,7 +227,7 @@ An implementation is not conformant if it:
 - claims production-ready hidden-holder behavior without disclosing randomness,
   durable-state, expiry, replay, or adapter limitations
 - claims revocation/non-revocation support without documenting its declared
-  status level and freshness/privacy assumptions
+  status capability and freshness/privacy assumptions
 
 ## Current repository stance
 
