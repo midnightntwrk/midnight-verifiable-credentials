@@ -104,6 +104,11 @@ Required outcome:
 - explicit note that current non-membership support is not yet final
   cryptographic enforcement in Layer 3 contracts
 
+Current grouped execution:
+
+- stacked docs/spec slice:
+  - status taxonomy + conformance alignment
+
 ### VC-MAT-04: Resolve `OffchainDIDHolderBinding` vs `OffchainMidnightHolderBinding`
 
 Priority: P1
@@ -137,6 +142,11 @@ Required outcome:
   - what is final enough for reference use
   - what is still prototype-only
   - what the verifier/application must supply off-chain
+
+Current grouped execution:
+
+- stacked docs/spec slice:
+  - status taxonomy + conformance alignment
 
 ### VC-MAT-06: Harden the protocol state-store seam
 
@@ -261,6 +271,11 @@ Required outcome:
   - `RevokedSetNonMembershipStatusCapability`
   - `AuthorityAttestedStatusCapability`
 - clarify prototype vs reference claims for each path
+
+Current grouped execution:
+
+- stacked docs/spec slice:
+  - status taxonomy + conformance alignment
 
 ### VC-MAT-13: Publish a canonical onchain/offchain/dual surface map
 
