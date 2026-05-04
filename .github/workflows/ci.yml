@@ -44,6 +44,9 @@ jobs:
           if [ -d "$HOME/.local/share/compact" ]; then
             compact_paths+=(.local/share/compact)
           fi
+          if [ -d "$HOME/.config/compact" ]; then
+            compact_paths+=(.config/compact)
+          fi
           tar -C "$HOME" -czf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz" "${compact_paths[@]}"
 
       - name: Upload Compact toolchain artifact
@@ -78,9 +81,9 @@ jobs:
       - name: Restore Compact toolchain
         shell: bash
         run: |
-          mkdir -p "$HOME/.local/bin" "$HOME/.local/share"
+          mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config"
           tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
-          mkdir -p "$HOME/.local/share"
+          mkdir -p "$HOME/.local/share" "$HOME/.config"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Verify Compact installation
@@ -127,9 +130,9 @@ jobs:
       - name: Restore Compact toolchain
         shell: bash
         run: |
-          mkdir -p "$HOME/.local/bin" "$HOME/.local/share"
+          mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config"
           tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
-          mkdir -p "$HOME/.local/share"
+          mkdir -p "$HOME/.local/share" "$HOME/.config"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Verify Compact installation
@@ -176,9 +179,9 @@ jobs:
       - name: Restore Compact toolchain
         shell: bash
         run: |
-          mkdir -p "$HOME/.local/bin" "$HOME/.local/share"
+          mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config"
           tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
-          mkdir -p "$HOME/.local/share"
+          mkdir -p "$HOME/.local/share" "$HOME/.config"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Verify Compact installation
@@ -225,9 +228,9 @@ jobs:
       - name: Restore Compact toolchain
         shell: bash
         run: |
-          mkdir -p "$HOME/.local/bin" "$HOME/.local/share"
+          mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config"
           tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
-          mkdir -p "$HOME/.local/share"
+          mkdir -p "$HOME/.local/share" "$HOME/.config"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Verify Compact installation
@@ -265,9 +268,9 @@ jobs:
       - name: Restore Compact toolchain
         shell: bash
         run: |
-          mkdir -p "$HOME/.local/bin" "$HOME/.local/share"
+          mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config"
           tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
-          mkdir -p "$HOME/.local/share"
+          mkdir -p "$HOME/.local/share" "$HOME/.config"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Verify Compact installation
