@@ -126,6 +126,12 @@ Required outcome:
 - `credentials-demo-contract/src/passport-compliance-demo.compact` is labeled as
   adjacent-prototype/example material rather than current validated workspace
 
+Current grouped execution:
+
+- stacked package/docs slice:
+  - remove the dormant passport/compliance compile script surface
+  - mark the artifact as historical and unsupported in package/architecture docs
+
 ### VC-MAT-03: Normalize status capability taxonomy and maturity language
 
 Priority: P0
@@ -463,6 +469,12 @@ Current progress:
   `demo-revocation.compact` module
 - the repository documents the “small business-facing demos” rule explicitly
 - dormant artifact cleanup and export-surface reduction are still pending
+
+Current grouped execution:
+
+- stacked package/docs slice:
+  - quarantine the dormant `passport-compliance-demo.compact` artifact from the
+    supported demo package surface
 
 ## Recommended Execution Order
 

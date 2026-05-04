@@ -44,6 +44,14 @@ The package currently contains two demo contract roots:
      - prototype revoked-set status capability wiring
      - prototype authority-attested status proofs for the current Layer 3 path
 
+Historical dormant artifact:
+
+- `src/passport-compliance-demo.compact` remains in the tree as an
+  architecture/prototyping reference tied to a sibling prototype checkout
+- it is not part of the supported `credentials-demo-contract` package surface
+- it is not compiled by the default package scripts
+- it is not exported through the package `exports` map
+
 ## Demo design rule
 
 Demo contracts in this package are intentionally small and business-facing.

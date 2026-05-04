@@ -128,9 +128,16 @@ Integrator split:
 | Surface | Class | Use |
 | --- | --- | --- |
 | `src/demo.compact` | `On-chain only` | Demo verifier/business contract. |
-| `src/passport-compliance-demo.compact` | `On-chain only` | Additional composition spike/demo surface. |
+| `src/demo-revocation.compact` | `On-chain only` | Status-aware hidden-holder demo verifier/business contract. |
 | managed contract exports via `src/index.ts` | `Off-chain only` | Runtime mirror for tests/integration code. |
 | `src/testing.ts`, `src/simulator.ts`, `src/witnesses.ts` | `Off-chain only` | Test/demo support code. |
+
+Dormant artifact:
+
+- `src/passport-compliance-demo.compact` is a dormant adjacent-prototype
+  artifact
+- it is not part of the supported package surface, default build, or exports
+  map
 
 ### `credentials-offchain-did`
 
