@@ -33,6 +33,11 @@ Purpose:
 | 8 | No “Hello World” / scaffold / verifier-template exists | `Accepted` | P1 | Add minimal issuer/verifier/wallet-oriented starter templates and a first “new family” scaffold |
 | 9 | Test matrix and strategy docs are stale/incomplete | `Accepted` | P1 | Keep test docs aligned with real packages, demo coverage, and focused lanes such as `ci:revocation` |
 | 10 | `CHANGELOG.md` misses breaking surface changes | `Accepted` | P1 | Start recording user-visible/breaking surface changes for package APIs, required interfaces, and protocol semantics |
+| 11 | Status capability types live in core while the registry contract/package owns the feature boundary | `Accepted` | P1 | Decide and document whether status is a Layer-1 core capability, a dedicated status package, or a registry-owned DSL |
+| 12 | Conformance model has no dedicated status capability category | `Accepted` | P1 | Add a status capability conformance category and align it with shipped capability taxonomy |
+| 13 | Public surface classification is missing for onchain-only / offchain-only / dual-use exports | `Accepted` | P1 | Add one canonical classification guide and propagate the labels into package READMEs |
+| 14 | Protocol-state hardening items from earlier review rounds remain open | `Accepted (narrowed)` | P1 | Track concrete protocol-state fixes separately from the broader seam redesign so tactical fixes do not get lost |
+| 15 | Layer-3 and family package public surfaces are too broad or misleading | `Accepted` | P1 | Reduce accidental exports, make demo surfaces intentionally narrow, and clarify that the core stub contract is not deployable |
 
 ## Backlog Items
 
@@ -213,6 +218,117 @@ Required outcome:
   - verifier status capability changes
   - future package entrypoint changes
 
+### VC-MAT-11: Decide ownership of the status DSL and package layer placement
+
+Priority: P1
+
+Problem:
+
+- the status capability structs and policy types currently live in
+  `credentials` core
+- the actual registry contract and most off-chain status workflow code live in
+  `credentials-status-registry`
+- the architecture docs do not clearly explain whether this is:
+  - intentional Layer-1 core ownership
+  - temporary migration staging
+  - or a misplaced package boundary
+
+Required outcome:
+
+- decide one of:
+  - keep status DSL in `credentials` and document it as a core capability
+  - move status DSL into a dedicated status capability package
+  - keep the registry package as the owner and re-export through core during a
+    migration period
+- document the choice in architecture and package-boundary docs
+
+### VC-MAT-12: Add a dedicated status capability conformance category
+
+Priority: P1
+
+Problem:
+
+- status support is orthogonal to holder binding
+- current conformance text folds status into hidden-holder/profile language,
+  which makes the model harder to reason about and contradicts shipped
+  authority-attested status behavior
+
+Required outcome:
+
+- add a dedicated conformance category for status capability implementations
+- list conformance expectations separately for:
+  - `NoStatusCapability`
+  - `RevokedSetNonMembershipStatusCapability`
+  - `AuthorityAttestedStatusCapability`
+- clarify prototype vs reference claims for each path
+
+### VC-MAT-13: Publish a canonical onchain/offchain/dual surface map
+
+Priority: P1
+
+Problem:
+
+- integrators cannot reliably tell which exported types/functions are:
+  - onchain-only
+  - offchain-only
+  - or dual-use bridges
+- this is especially risky for:
+  - `pureCircuits.*`
+  - status verification helpers
+  - off-chain DID helpers
+  - demo simulators and generated `Contract` shells
+
+Required outcome:
+
+- add one canonical architecture guide that classifies public surfaces as:
+  - `ONCHAIN-ONLY`
+  - `OFFCHAIN-ONLY`
+  - `DUAL`
+- propagate the classification to package READMEs for the most-used surfaces
+
+### VC-MAT-14: Close the tactical protocol-state hardening gaps
+
+Priority: P1
+
+Problem:
+
+- in addition to the larger seam redesign, there are specific open issues that
+  should be fixed quickly:
+  - mid-iteration deletion during expiry pruning
+  - self-eviction edge case during finalized-outcome retention
+  - sync-vs-async interface ambiguity
+  - in-memory-only holder credential retention
+  - O(n) write-path scans and persistent-adapter contract drift
+
+Required outcome:
+
+- track and close the tactical fixes independently of any larger storage
+  refactor
+- keep the persistent-adapter contract documented in one place instead of
+  expanding it ad hoc across PRs
+
+### VC-MAT-15: Curate Layer 3 and family package public surfaces
+
+Priority: P1
+
+Problem:
+
+- family bundles and demo packages expose more surface than intended:
+  - broad transitive re-exports
+  - duplicate namespace exports
+  - deploy-looking empty core stubs
+  - dormant demo artifacts that are not part of the validated workspace
+
+Required outcome:
+
+- keep demo packages intentionally narrow and business-facing
+- reduce accidental family re-export inflation
+- decide whether namespace exports stay or go
+- either remove or quarantine dormant artifacts such as
+  `passport-compliance-demo.compact`
+- make it explicit that the core `credentials` contract shell is not a
+  deployable business contract
+
 ## Recommended Execution Order
 
 1. `VC-MAT-01`
@@ -225,6 +341,11 @@ Required outcome:
 8. `VC-MAT-06`
 9. `VC-MAT-07`
 10. `VC-MAT-08`
+11. `VC-MAT-11`
+12. `VC-MAT-12`
+13. `VC-MAT-13`
+14. `VC-MAT-14`
+15. `VC-MAT-15`
 
 ## Notes
 
