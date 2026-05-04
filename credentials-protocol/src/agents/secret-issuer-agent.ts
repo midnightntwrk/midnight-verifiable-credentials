@@ -16,7 +16,7 @@ import {
 
 import { mod, padText } from "../shared/crypto.js";
 import { createEnvelope } from "../shared/envelope.js";
-import { assertBodyHasFields,assertMessageType } from "../shared/validation.js";
+import { assertBodyHasFields, assertMessageType } from "../shared/validation.js";
 import type { MessageBus } from "../transport/message-bus.js";
 import type {
   PartyId,
@@ -27,7 +27,11 @@ import type {
 import {
   InMemoryProtocolStateStore,
   type ProtocolStateCollection,
+  type ProtocolStateRetentionPolicy,
   type ProtocolStateStore,
+  readRetainedProtocolState,
+  type RetainedProtocolState,
+  writeRetainedProtocolState,
 } from "./protocol-state-store.js";
 import {
   type ProtocolRandomnessSource,
@@ -71,7 +75,10 @@ type SecretIssuanceOfferOptions = {
 
 type SecretIssuanceProcessingOptions = {
   readonly currentDay?: bigint;
+  readonly currentTimeMs?: bigint;
 };
+
+const currentTimeMs = (value?: bigint): bigint => value ?? BigInt(Date.now());
 
 class IssuanceProtocolError extends Error {
   readonly category: SecretBirthCredentialIssuanceRejectionCategory;
@@ -93,9 +100,12 @@ export class SecretIssuerAgent {
   private readonly profile: DIDProfile;
   private readonly bus: MessageBus;
   private readonly randomness: ProtocolRandomnessSource;
+  private readonly retentionPolicy: ProtocolStateRetentionPolicy;
   private issuanceCounter = 0;
   private readonly pendingOffers: ProtocolStateCollection<SecretBirthCredentialIssuanceOffer>;
-  private readonly completedOutcomes: ProtocolStateCollection<ProtocolMessage>;
+  private readonly completedOutcomes: ProtocolStateCollection<
+    RetainedProtocolState<ProtocolMessage>
+  >;
 
   constructor(
     profile: DIDProfile,
@@ -103,12 +113,14 @@ export class SecretIssuerAgent {
     options: {
       readonly randomness?: ProtocolRandomnessSource;
       readonly stateStore?: ProtocolStateStore;
+      readonly stateRetention?: ProtocolStateRetentionPolicy;
     } = {},
   ) {
     this.profile = profile;
     this.bus = bus;
     this.randomness =
       options.randomness ?? unsafeReferenceDeterministicRandomnessSource;
+    this.retentionPolicy = options.stateRetention ?? {};
     const stateStore = options.stateStore ?? new InMemoryProtocolStateStore();
     const stateScope = `secret-issuer:${this.profile.label}`;
     this.pendingOffers = stateStore.collection(
@@ -266,7 +278,13 @@ export class SecretIssuerAgent {
     assertMessageType(request, "issuance:request");
     assertBodyHasFields(request, ["envelope", "schema", "body"]);
     const requestMessageId = Buffer.from(request.envelope.messageId).toString("hex");
-    if (this.completedOutcomes.has(requestMessageId)) {
+    if (
+      readRetainedProtocolState(
+        this.completedOutcomes,
+        requestMessageId,
+        currentTimeMs(options.currentTimeMs),
+      )
+    ) {
       throw new IssuanceProtocolError(
         "malformed_request",
         "This blinded-secret issuance request was already finalized and cannot be processed again.",
@@ -415,7 +433,16 @@ export class SecretIssuerAgent {
       body: result,
     };
     this.bus.send(resultMessage);
-    this.completedOutcomes.set(requestMessageId, resultMessage);
+    writeRetainedProtocolState(
+      this.completedOutcomes,
+      requestMessageId,
+      resultMessage,
+      currentTimeMs(options.currentTimeMs),
+      this.retentionPolicy,
+      issuanceRequest.envelope.hasExpiresAt
+        ? issuanceRequest.envelope.expiresAt
+        : undefined,
+    );
   }
 
   receiveRequestAndRespond(
@@ -426,7 +453,11 @@ export class SecretIssuerAgent {
     const requestMessageId = Buffer.from(
       request.envelope.messageId,
     ).toString("hex");
-    const completedOutcome = this.completedOutcomes.get(requestMessageId);
+    const completedOutcome = readRetainedProtocolState(
+      this.completedOutcomes,
+      requestMessageId,
+      currentTimeMs(options.currentTimeMs),
+    );
     if (completedOutcome) {
       this.bus.send(completedOutcome);
       return;
@@ -453,7 +484,16 @@ export class SecretIssuerAgent {
         body: rejection,
       };
       this.bus.send(rejectionMessage);
-      this.completedOutcomes.set(requestMessageId, rejectionMessage);
+      writeRetainedProtocolState(
+        this.completedOutcomes,
+        requestMessageId,
+        rejectionMessage,
+        currentTimeMs(options.currentTimeMs),
+        this.retentionPolicy,
+        request.envelope.hasExpiresAt
+          ? request.envelope.expiresAt
+          : undefined,
+      );
     }
   }
 }

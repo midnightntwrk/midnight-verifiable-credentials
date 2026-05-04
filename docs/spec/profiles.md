@@ -109,7 +109,9 @@ Current limitations:
 - durable pending-state behavior across retries, restarts, or delayed delivery
   is not yet complete
 - production randomness / nonce interfaces are not yet complete
-- presentation-side message-level expiry semantics are not yet modeled
+- the reference protocol now models envelope-level presentation request and
+  submission expiry, but the credential family still does not define final
+  body-level timeout fields or an external interoperable timeout contract
 - production transport interoperability is still evolving
 - revocation/non-revocation is not implemented
 

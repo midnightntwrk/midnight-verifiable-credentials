@@ -1109,7 +1109,6 @@ What is still not being claimed:
 - durable protocol state across retries, restarts, or delayed delivery
 - production randomness / nonce interfaces instead of the current
   reference-friendly deterministic paths
-- presentation-side message-level expiry semantics
 - revocation/non-revocation support
 - broad application-level interoperability guarantees
 
@@ -1127,12 +1126,14 @@ So the honest summary is:
   idempotently in the reference protocol layer
 - yes, the reference protocol now carries explicit offer and request expiry
   fields for blinded-secret issuance
+- yes, the reference protocol now carries envelope-level request and
+  submission expiry semantics for blinded-secret presentation
 - yes, challenge/nonce/blinding generation is now hidden behind an interface so
   integrators can plug in their own implementation
 - yes, pending blinded-secret session state is now hidden behind a
   `ProtocolStateStore` interface so integrators can plug in persistent storage
-- no, the presentation-side reference flow does not yet carry explicit
-  message-level expiry fields
+- no, the credential family still does not define final body-level
+  presentation timeout fields
 - no, this is not yet the last word on production transport hardening
 - no, these timeout semantics are still reference-layer behavior, not a final
   interoperable transport standard

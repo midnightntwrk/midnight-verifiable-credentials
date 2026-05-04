@@ -29,7 +29,11 @@ import type {
 import {
   InMemoryProtocolStateStore,
   type ProtocolStateCollection,
+  type ProtocolStateRetentionPolicy,
   type ProtocolStateStore,
+  readRetainedProtocolState,
+  type RetainedProtocolState,
+  writeRetainedProtocolState,
 } from "./protocol-state-store.js";
 import {
   type ProtocolRandomnessSource,
@@ -53,9 +57,21 @@ const SECRET_HOLDER_FEATURES = {
 const DEFAULT_PROTOCOL_CURRENT_DAY = 0n;
 const DEFAULT_ISSUANCE_REQUEST_EXPIRY_DAY = 1_000_000n;
 
+const currentTimeMs = (value?: bigint): bigint => value ?? BigInt(Date.now());
+
 type SecretIssuanceRequestOptions = {
   readonly currentDay?: bigint;
   readonly requestExpiresAtDay?: bigint;
+  readonly currentTimeMs?: bigint;
+};
+
+type SecretPresentationSubmissionOptions = {
+  readonly currentTimeMs?: bigint;
+  readonly submissionExpiresAtMs?: bigint;
+};
+
+type SecretOutcomeReadOptions = {
+  readonly currentTimeMs?: bigint;
 };
 
 export type SecretStoredCredential = {
@@ -121,14 +137,19 @@ export class SecretHolderAgent {
   private readonly holderSecretOpening: Uint8Array;
   private readonly bus: MessageBus;
   private readonly randomness: ProtocolRandomnessSource;
+  private readonly retentionPolicy: ProtocolStateRetentionPolicy;
   private readonly credentials: SecretStoredCredential[] = [];
   private readonly pendingIssuanceRequests: ProtocolStateCollection<{
     readonly request: SecretBirthCredentialIssuanceRequest;
     readonly holderBindingBlindingFactor: Uint8Array;
   }>;
-  private readonly completedIssuanceOutcomes: ProtocolStateCollection<SecretIssuanceOutcome>;
+  private readonly completedIssuanceOutcomes: ProtocolStateCollection<
+    RetainedProtocolState<SecretIssuanceOutcome>
+  >;
   private readonly pendingPresentationSubmissions: ProtocolStateCollection<SecretBirthCredentialVerificationSubmission>;
-  private readonly completedPresentationOutcomes: ProtocolStateCollection<SecretPresentationOutcome>;
+  private readonly completedPresentationOutcomes: ProtocolStateCollection<
+    RetainedProtocolState<SecretPresentationOutcome>
+  >;
   private issuanceRequestCounter = 0;
 
   constructor(
@@ -141,6 +162,7 @@ export class SecretHolderAgent {
     options: {
       readonly randomness?: ProtocolRandomnessSource;
       readonly stateStore?: ProtocolStateStore;
+      readonly stateRetention?: ProtocolStateRetentionPolicy;
     } = {},
   ) {
     this.label = config.label;
@@ -149,6 +171,7 @@ export class SecretHolderAgent {
     this.bus = bus;
     this.randomness =
       options.randomness ?? unsafeReferenceDeterministicRandomnessSource;
+    this.retentionPolicy = options.stateRetention ?? {};
     const stateStore = options.stateStore ?? new InMemoryProtocolStateStore();
     const stateScope = `secret-holder:${this.label}`;
     this.pendingIssuanceRequests = stateStore.collection(
@@ -211,6 +234,9 @@ export class SecretHolderAgent {
         false,
         issuanceOffer.envelope.messageId,
         issuanceOffer.envelope.threadId,
+        {
+          createdAtMs: options.currentTimeMs,
+        },
       ),
       schema: issuanceOffer.schema,
       issuerVerificationMethodRef: issuanceOffer.issuerVerificationMethodRef,
@@ -242,7 +268,10 @@ export class SecretHolderAgent {
     });
   }
 
-  receiveCredentialResult(result: ProtocolMessage): void {
+  receiveCredentialResult(
+    result: ProtocolMessage,
+    options: SecretOutcomeReadOptions = {},
+  ): void {
     assertMessageType(result, "issuance:result");
     assertBodyHasFields(result, ["envelope", "schema", "body"]);
     const issuanceResult = result.body as SecretBirthCredentialIssuanceResult;
@@ -250,7 +279,13 @@ export class SecretHolderAgent {
     const respondsToId = Buffer.from(result.envelope.respondsToMessageId).toString("hex");
     const pendingIssuance = this.pendingIssuanceRequests.get(respondsToId);
     if (!pendingIssuance) {
-      if (this.completedIssuanceOutcomes.has(respondsToId)) {
+      if (
+        readRetainedProtocolState(
+          this.completedIssuanceOutcomes,
+          respondsToId,
+          currentTimeMs(options.currentTimeMs),
+        )
+      ) {
         throw new Error(
           "This blinded-secret issuance result was already finalized and cannot be accepted again.",
         );
@@ -274,7 +309,10 @@ export class SecretHolderAgent {
     });
   }
 
-  receiveIssuanceRejection(rejectionMessage: ProtocolMessage): SecretBirthCredentialIssuanceRejection {
+  receiveIssuanceRejection(
+    rejectionMessage: ProtocolMessage,
+    options: SecretOutcomeReadOptions = {},
+  ): SecretBirthCredentialIssuanceRejection {
     assertMessageType(rejectionMessage, "issuance:rejection");
     assertBodyHasFields(rejectionMessage, ["envelope", "schema", "body"]);
     const rejection =
@@ -284,7 +322,13 @@ export class SecretHolderAgent {
     ).toString("hex");
     const pendingIssuance = this.pendingIssuanceRequests.get(respondsToId);
     if (!pendingIssuance) {
-      if (this.completedIssuanceOutcomes.has(respondsToId)) {
+      if (
+        readRetainedProtocolState(
+          this.completedIssuanceOutcomes,
+          respondsToId,
+          currentTimeMs(options.currentTimeMs),
+        )
+      ) {
         throw new Error(
           "This blinded-secret issuance rejection was already finalized and cannot be accepted again.",
         );
@@ -298,12 +342,19 @@ export class SecretHolderAgent {
     return rejection;
   }
 
-  receiveIssuanceOutcome(message: ProtocolMessage): SecretIssuanceOutcome {
+  receiveIssuanceOutcome(
+    message: ProtocolMessage,
+    options: SecretOutcomeReadOptions = {},
+  ): SecretIssuanceOutcome {
+    const nowMs = currentTimeMs(options.currentTimeMs);
     const respondsToId = Buffer.from(
       message.envelope.respondsToMessageId,
     ).toString("hex");
-    const completedOutcome =
-      this.completedIssuanceOutcomes.get(respondsToId);
+    const completedOutcome = readRetainedProtocolState(
+      this.completedIssuanceOutcomes,
+      respondsToId,
+      nowMs,
+    );
     if (completedOutcome) {
       if (
         (message.type === "issuance:result" &&
@@ -319,20 +370,40 @@ export class SecretHolderAgent {
     }
 
     if (message.type === "issuance:result") {
-      this.receiveCredentialResult(message);
+      const pendingIssuance = this.pendingIssuanceRequests.get(respondsToId);
+      this.receiveCredentialResult(message, options);
       const outcome = {
         kind: "issued",
         stored: this.getCredential(this.credentialCount - 1),
       } as const;
-      this.completedIssuanceOutcomes.set(respondsToId, outcome);
+      writeRetainedProtocolState(
+        this.completedIssuanceOutcomes,
+        respondsToId,
+        outcome,
+        nowMs,
+        this.retentionPolicy,
+        pendingIssuance?.request.envelope.hasExpiresAt
+          ? pendingIssuance.request.envelope.expiresAt
+          : undefined,
+      );
       return outcome;
     }
-    const rejection = this.receiveIssuanceRejection(message);
+    const pendingIssuance = this.pendingIssuanceRequests.get(respondsToId);
+    const rejection = this.receiveIssuanceRejection(message, options);
     const outcome = {
       kind: "rejected",
       rejection,
     } as const;
-    this.completedIssuanceOutcomes.set(respondsToId, outcome);
+    writeRetainedProtocolState(
+      this.completedIssuanceOutcomes,
+      respondsToId,
+      outcome,
+      nowMs,
+      this.retentionPolicy,
+      pendingIssuance?.request.envelope.hasExpiresAt
+        ? pendingIssuance.request.envelope.expiresAt
+        : undefined,
+    );
     return outcome;
   }
 
@@ -367,11 +438,21 @@ export class SecretHolderAgent {
   receiveRequestAndSendPresentation(
     requestMessage: ProtocolMessage,
     witnessData: SecretPresentationWitness,
+    options: SecretPresentationSubmissionOptions = {},
   ): void {
     assertMessageType(requestMessage, "presentation:request");
     assertBodyHasFields(requestMessage, ["envelope", "schema", "verifierChallengeHash", "body"]);
     const request =
       requestMessage.body as SecretBirthCredentialVerificationRequest;
+    const nowMs = currentTimeMs(options.currentTimeMs);
+    if (
+      requestMessage.envelope.hasExpiresAt &&
+      nowMs > requestMessage.envelope.expiresAt
+    ) {
+      throw new Error(
+        "This blinded-secret presentation request expired before the holder could answer it.",
+      );
+    }
     const stored = this.getCredential(witnessData.credentialIndex);
     const credential = stored.credential;
 
@@ -423,6 +504,10 @@ export class SecretHolderAgent {
         false,
         requestMessage.envelope.messageId,
         requestMessage.envelope.threadId,
+        {
+          createdAtMs: nowMs,
+          expiresAtMs: options.submissionExpiresAtMs,
+        },
       ),
       schema: request.schema,
       issuerVerificationMethodRef: request.issuerVerificationMethodRef,
@@ -450,6 +535,7 @@ export class SecretHolderAgent {
 
   receivePresentationRejection(
     rejectionMessage: ProtocolMessage,
+    options: SecretOutcomeReadOptions = {},
   ): SecretBirthCredentialVerificationRejection {
     assertMessageType(rejectionMessage, "presentation:rejection");
     assertBodyHasFields(rejectionMessage, ["envelope", "schema", "body"]);
@@ -461,7 +547,13 @@ export class SecretHolderAgent {
     const pendingSubmission =
       this.pendingPresentationSubmissions.get(respondsToId);
     if (!pendingSubmission) {
-      if (this.completedPresentationOutcomes.has(respondsToId)) {
+      if (
+        readRetainedProtocolState(
+          this.completedPresentationOutcomes,
+          respondsToId,
+          currentTimeMs(options.currentTimeMs),
+        )
+      ) {
         throw new Error(
           "This blinded-secret presentation rejection was already finalized and cannot be accepted again through the strict helper.",
         );
@@ -475,12 +567,19 @@ export class SecretHolderAgent {
     return rejection;
   }
 
-  receivePresentationOutcome(message: ProtocolMessage): SecretPresentationOutcome {
+  receivePresentationOutcome(
+    message: ProtocolMessage,
+    options: SecretOutcomeReadOptions = {},
+  ): SecretPresentationOutcome {
+    const nowMs = currentTimeMs(options.currentTimeMs);
     const respondsToId = Buffer.from(
       message.envelope.respondsToMessageId,
     ).toString("hex");
-    const completedOutcome =
-      this.completedPresentationOutcomes.get(respondsToId);
+    const completedOutcome = readRetainedProtocolState(
+      this.completedPresentationOutcomes,
+      respondsToId,
+      nowMs,
+    );
     if (completedOutcome) {
       if (
         (message.type === "presentation:result" &&
@@ -510,15 +609,35 @@ export class SecretHolderAgent {
         kind: "approved",
         result: message.body as SecretBirthCredentialVerificationResult,
       } as const;
-      this.completedPresentationOutcomes.set(respondsToId, outcome);
+      writeRetainedProtocolState(
+        this.completedPresentationOutcomes,
+        respondsToId,
+        outcome,
+        nowMs,
+        this.retentionPolicy,
+        pendingSubmission.envelope.hasExpiresAt
+          ? pendingSubmission.envelope.expiresAt
+          : undefined,
+      );
       return outcome;
     }
     if (message.type === "presentation:rejection") {
+      const pendingSubmission =
+        this.pendingPresentationSubmissions.get(respondsToId);
       const outcome = {
         kind: "rejected",
-        rejection: this.receivePresentationRejection(message),
+        rejection: this.receivePresentationRejection(message, options),
       } as const;
-      this.completedPresentationOutcomes.set(respondsToId, outcome);
+      writeRetainedProtocolState(
+        this.completedPresentationOutcomes,
+        respondsToId,
+        outcome,
+        nowMs,
+        this.retentionPolicy,
+        pendingSubmission?.envelope.hasExpiresAt
+          ? pendingSubmission.envelope.expiresAt
+          : undefined,
+      );
       return outcome;
     }
     throw new Error(
