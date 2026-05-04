@@ -17,6 +17,8 @@ Related documents:
   - [`../spec/profiles.md`](../spec/profiles.md)
 - architecture overview:
   - [`../architecture/overview.md`](../architecture/overview.md)
+- integration surface map:
+  - [`./integration-surface-map.md`](./integration-surface-map.md)
 
 ## Quick Selection
 ### I need the generic VC/VP model
@@ -48,6 +50,26 @@ Start with:
 - [`../../credentials-same-holder/README.md`](../../credentials-same-holder/README.md)
 
 This is a capability package, not a standalone credential family.
+
+### I need prototype revocation/status registry support
+Start with:
+
+- [`../../credentials-status-registry/README.md`](../../credentials-status-registry/README.md)
+- then read:
+  - [`../spec/credential-status.md`](../spec/credential-status.md)
+  - [`../spec/revocation-registry.md`](../spec/revocation-registry.md)
+  - [`../spec/status-verification-protocol.md`](../spec/status-verification-protocol.md)
+
+Use this when you need:
+
+- the prototype revoked-set registry contract surface
+- verifier-supplied revocation-root requests
+- off-chain witness/status-attestation helpers
+
+This package is mixed-surface:
+
+- Compact registry contract for on-chain usage
+- TypeScript builders for off-chain usage
 
 ### I need shared ISO code types
 Start with:
@@ -140,6 +162,7 @@ These are valuable, but should be treated as evolving:
 
 - `credentials-protocol`
 - `credentials-demo-contract`
+- `credentials-status-registry`
 
 Planned but not currently active on `develop`:
 

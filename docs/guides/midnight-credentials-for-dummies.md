@@ -183,6 +183,16 @@ So in the current work:
 | `credentials-protocol` | party-boundary simulation layer with IssuerAgent, HolderAgent, VerifierAgent, and a MessageBus transport seam |
 | `standalone-environment` | shared Docker environment for integration tests — provisions real Midnight DIDs for issuer, holder, and verifier |
 
+Important repository-state note:
+
+- the current validated workspace in this repository is centered on the generic
+  core, the birth families, status/revocation prototype surfaces, protocol,
+  demo contract, and standalone environment
+- later examples in this guide may still discuss passport/compliance-style
+  families from adjacent prototype work or future package directions
+- do not read those examples as proof that those families are current workspace
+  packages on `develop`
+
 ## Chapter 1: Rita Issues A Very Boring, Very Important Credential
 
 Rita works in an imaginary office where every drawer has a policy and every policy has a form.

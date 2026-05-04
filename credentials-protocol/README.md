@@ -114,8 +114,12 @@ particular, this package does not yet claim:
 - production randomness/nonce interfaces instead of test/reference generation
 - a final external interoperability contract for OIDC, DIDComm, or another wire
   protocol
-- repository status/revocation support is still Level 0 as defined in
-  `../docs/spec/credential-status.md`
+- a final protocol-level status/revocation interoperability contract
+- final production revocation/non-revocation support
+
+The broader repository now carries prototype status/revocation capability
+surfaces, but this package still treats status-aware transport behavior as an
+evolving off-chain integration concern rather than a finished protocol claim.
 
 Randomness hardening rule:
 
