@@ -118,6 +118,7 @@ Each credential family defines its own disclosure struct with per-field reveal f
 |---------------|---------------|
 | Success result only | Happy-path protocol currently proves only successful completion messages |
 | Local rejection outcome | Malformed or mismatched messages are rejected locally, for example by exceptions at the agent boundary |
+| Explicit rejection result | The protocol defines a distinct rejection message or typed rejection outcome with stable failure semantics |
 
 ### Dimension 11: Credential Status Support
 
@@ -129,7 +130,6 @@ Each credential family defines its own disclosure struct with per-field reveal f
 
 Current repository packages still operate at Level 0. See
 [`../spec/credential-status.md`](../spec/credential-status.md).
-| Explicit rejection result | The protocol defines a distinct rejection message or typed rejection outcome with stable failure semantics |
 
 Current repository stance:
 

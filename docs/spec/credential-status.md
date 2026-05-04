@@ -168,13 +168,13 @@ In plain terms:
 
 ## Repository stance today
 
-Current repository packages should claim:
+Current repository packages claim:
 
 - Level 0 status support only
 - revocation/non-revocation is deferred
 - claim-level expiry and protocol/session expiry do not equal revocation support
 
-Current repository packages should not claim:
+Current repository packages do not claim:
 
 - public status check interoperability
 - privacy-preserving non-revocation proofs
