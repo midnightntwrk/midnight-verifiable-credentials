@@ -23,6 +23,8 @@ Current maturity is mixed by package:
   - [`docs/spec/conformance.md`](./docs/spec/conformance.md)
 - reference implementation packages:
   - [`credentials`](./credentials/README.md)
+  - [`credentials-status-registry`](./credentials-status-registry/README.md)
+    - current prototype status / revocation registry support package
   - [`credentials-birth`](./credentials-birth/README.md)
   - [`credentials-birth-secret`](./credentials-birth-secret/README.md)
   - [`credentials-iso-registry`](./credentials-iso-registry/README.md)
@@ -72,6 +74,8 @@ Start here:
   - generic VC/VP envelopes, proof model, holder-binding profiles
 - [`credentials-same-holder`](./credentials-same-holder/README.md)
   - same-holder composition capability
+- [`credentials-status-registry`](./credentials-status-registry/README.md)
+  - prototype status / revocation registry contract and off-chain witness helpers
 - [`credentials-iso-registry`](./credentials-iso-registry/README.md)
   - shared Compact-native ISO code types
 - [`credentials-offchain-did`](./credentials-offchain-did/README.md)

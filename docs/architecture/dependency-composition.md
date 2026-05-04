@@ -25,7 +25,7 @@ The current repository already uses a layered package split:
 
 | Layer | Package examples | Role |
 |---|---|---|
-| Layer 1 generic capabilities | `credentials`, `credentials-same-holder`, `credentials-iso-registry` | Generic VC/VP envelope, proof helpers, holder-binding profiles, same-holder circuits, shared code types |
+| Layer 1 generic capabilities | `credentials`, `credentials-same-holder`, `credentials-iso-registry`, `credentials-status-registry` | Generic VC/VP envelope, proof helpers, holder-binding profiles, same-holder circuits, shared code types, and current prototype status/revocation registry support |
 | Layer 2 credential families | `credentials-birth`, `credentials-birth-secret` | Concrete claims, disclosures, requests, predicates, schema checks in the current workspace |
 | Layer 3 business contracts | `credentials-demo-contract` | Contract state and business rules that compose one or more credential families |
 | Layer 4 application/protocol orchestration | `credentials-protocol`, `credentials-openid`, `credentials-offchain-did`, `standalone-environment` | Transport/session/app coordination around Compact artifacts |
@@ -55,6 +55,13 @@ Adjacent prototype note:
 
 The current contracts use `include` for local Compact source composition and
 module imports/prefixes for generic module instantiation, for example:
+
+Current note on status support:
+
+- `credentials-status-registry` is a real workspace package and part of the
+  current capability stack
+- it owns the current prototype revocation-registry contract plus the off-chain
+  witness/attestation builders used by status-aware Layer 3 flows
 
 ```compact
 include "../../credentials-birth/src/birth-credential";

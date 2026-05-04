@@ -35,6 +35,9 @@
 - integration surface map:
   - [`guides/integration-surface-map.md`](./guides/integration-surface-map.md)
   - for integrators deciding which surfaces belong on-chain, off-chain, or both
+- current status-registry package surface:
+  - [`../credentials-status-registry/README.md`](../credentials-status-registry/README.md)
+  - for engineers implementing the current prototype revocation/status registry package
 
 ## Architecture
 
@@ -74,6 +77,6 @@
 - revocation capability options:
   - [`plans/revocation-capability-options.md`](./plans/revocation-capability-options.md)
   - for choosing the first Midnight-native status/revocation implementation path
-- repository audit backlog:
-  - [`plans/repository-audit-backlog.md`](./plans/repository-audit-backlog.md)
-  - for current documentation, architecture, and integration-surface gaps
+- VC maturity backlog:
+  - [`plans/vc-maturity-backlog.md`](./plans/vc-maturity-backlog.md)
+  - for the current repository-audit backlog and gap-tracking work
