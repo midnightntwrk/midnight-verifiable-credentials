@@ -153,6 +153,14 @@ Current reusable holder-binding helper sets are:
   - `assertValidOffchainMidnightHolderBinding(...)`
   - `assertMatchingOffchainMidnightHolderBindings(...)`
   - `assertProofMatchesOffchainMidnightHolderBinding(...)`
+
+TypeScript compatibility note:
+
+- the Compact/core struct name remains:
+  - `OffchainMidnightHolderBinding`
+- the top-level TypeScript package also exports:
+  - `OffchainDIDHolderBinding`
+  as the preferred public-facing alias for integrators
 - hidden holder-secret binding:
   - `secretHolderBindingCommitment(...)`
   - `secretHolderBindingChallengeResponse(...)`
