@@ -16,7 +16,7 @@ import {
 
 import { mod, padText } from "../shared/crypto.js";
 import { createEnvelope } from "../shared/envelope.js";
-import { assertBodyHasFields,assertMessageType } from "../shared/validation.js";
+import { assertBodyHasFields, assertMessageType } from "../shared/validation.js";
 import type { MessageBus } from "../transport/message-bus.js";
 import type {
   PartyId,
@@ -439,7 +439,9 @@ export class SecretIssuerAgent {
       resultMessage,
       currentTimeMs(options.currentTimeMs),
       this.retentionPolicy,
-      result.envelope.hasExpiresAt ? result.envelope.expiresAt : undefined,
+      issuanceRequest.envelope.hasExpiresAt
+        ? issuanceRequest.envelope.expiresAt
+        : undefined,
     );
   }
 
@@ -488,8 +490,8 @@ export class SecretIssuerAgent {
         rejectionMessage,
         currentTimeMs(options.currentTimeMs),
         this.retentionPolicy,
-        rejection.envelope.hasExpiresAt
-          ? rejection.envelope.expiresAt
+        request.envelope.hasExpiresAt
+          ? request.envelope.expiresAt
           : undefined,
       );
     }

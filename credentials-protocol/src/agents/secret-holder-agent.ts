@@ -268,7 +268,10 @@ export class SecretHolderAgent {
     });
   }
 
-  receiveCredentialResult(result: ProtocolMessage): void {
+  receiveCredentialResult(
+    result: ProtocolMessage,
+    options: SecretOutcomeReadOptions = {},
+  ): void {
     assertMessageType(result, "issuance:result");
     assertBodyHasFields(result, ["envelope", "schema", "body"]);
     const issuanceResult = result.body as SecretBirthCredentialIssuanceResult;
@@ -280,7 +283,7 @@ export class SecretHolderAgent {
         readRetainedProtocolState(
           this.completedIssuanceOutcomes,
           respondsToId,
-          currentTimeMs(),
+          currentTimeMs(options.currentTimeMs),
         )
       ) {
         throw new Error(
@@ -306,7 +309,10 @@ export class SecretHolderAgent {
     });
   }
 
-  receiveIssuanceRejection(rejectionMessage: ProtocolMessage): SecretBirthCredentialIssuanceRejection {
+  receiveIssuanceRejection(
+    rejectionMessage: ProtocolMessage,
+    options: SecretOutcomeReadOptions = {},
+  ): SecretBirthCredentialIssuanceRejection {
     assertMessageType(rejectionMessage, "issuance:rejection");
     assertBodyHasFields(rejectionMessage, ["envelope", "schema", "body"]);
     const rejection =
@@ -320,7 +326,7 @@ export class SecretHolderAgent {
         readRetainedProtocolState(
           this.completedIssuanceOutcomes,
           respondsToId,
-          currentTimeMs(),
+          currentTimeMs(options.currentTimeMs),
         )
       ) {
         throw new Error(
@@ -340,13 +346,14 @@ export class SecretHolderAgent {
     message: ProtocolMessage,
     options: SecretOutcomeReadOptions = {},
   ): SecretIssuanceOutcome {
+    const nowMs = currentTimeMs(options.currentTimeMs);
     const respondsToId = Buffer.from(
       message.envelope.respondsToMessageId,
     ).toString("hex");
     const completedOutcome = readRetainedProtocolState(
       this.completedIssuanceOutcomes,
       respondsToId,
-      currentTimeMs(options.currentTimeMs),
+      nowMs,
     );
     if (completedOutcome) {
       if (
@@ -363,7 +370,8 @@ export class SecretHolderAgent {
     }
 
     if (message.type === "issuance:result") {
-      this.receiveCredentialResult(message);
+      const pendingIssuance = this.pendingIssuanceRequests.get(respondsToId);
+      this.receiveCredentialResult(message, options);
       const outcome = {
         kind: "issued",
         stored: this.getCredential(this.credentialCount - 1),
@@ -372,13 +380,16 @@ export class SecretHolderAgent {
         this.completedIssuanceOutcomes,
         respondsToId,
         outcome,
-        currentTimeMs(options.currentTimeMs),
+        nowMs,
         this.retentionPolicy,
-        message.envelope.hasExpiresAt ? message.envelope.expiresAt : undefined,
+        pendingIssuance?.request.envelope.hasExpiresAt
+          ? pendingIssuance.request.envelope.expiresAt
+          : undefined,
       );
       return outcome;
     }
-    const rejection = this.receiveIssuanceRejection(message);
+    const pendingIssuance = this.pendingIssuanceRequests.get(respondsToId);
+    const rejection = this.receiveIssuanceRejection(message, options);
     const outcome = {
       kind: "rejected",
       rejection,
@@ -387,9 +398,11 @@ export class SecretHolderAgent {
       this.completedIssuanceOutcomes,
       respondsToId,
       outcome,
-      currentTimeMs(options.currentTimeMs),
+      nowMs,
       this.retentionPolicy,
-      message.envelope.hasExpiresAt ? message.envelope.expiresAt : undefined,
+      pendingIssuance?.request.envelope.hasExpiresAt
+        ? pendingIssuance.request.envelope.expiresAt
+        : undefined,
     );
     return outcome;
   }
@@ -522,6 +535,7 @@ export class SecretHolderAgent {
 
   receivePresentationRejection(
     rejectionMessage: ProtocolMessage,
+    options: SecretOutcomeReadOptions = {},
   ): SecretBirthCredentialVerificationRejection {
     assertMessageType(rejectionMessage, "presentation:rejection");
     assertBodyHasFields(rejectionMessage, ["envelope", "schema", "body"]);
@@ -537,7 +551,7 @@ export class SecretHolderAgent {
         readRetainedProtocolState(
           this.completedPresentationOutcomes,
           respondsToId,
-          currentTimeMs(),
+          currentTimeMs(options.currentTimeMs),
         )
       ) {
         throw new Error(
@@ -557,13 +571,14 @@ export class SecretHolderAgent {
     message: ProtocolMessage,
     options: SecretOutcomeReadOptions = {},
   ): SecretPresentationOutcome {
+    const nowMs = currentTimeMs(options.currentTimeMs);
     const respondsToId = Buffer.from(
       message.envelope.respondsToMessageId,
     ).toString("hex");
     const completedOutcome = readRetainedProtocolState(
       this.completedPresentationOutcomes,
       respondsToId,
-      currentTimeMs(options.currentTimeMs),
+      nowMs,
     );
     if (completedOutcome) {
       if (
@@ -598,24 +613,30 @@ export class SecretHolderAgent {
         this.completedPresentationOutcomes,
         respondsToId,
         outcome,
-        currentTimeMs(options.currentTimeMs),
+        nowMs,
         this.retentionPolicy,
-        message.envelope.hasExpiresAt ? message.envelope.expiresAt : undefined,
+        pendingSubmission.envelope.hasExpiresAt
+          ? pendingSubmission.envelope.expiresAt
+          : undefined,
       );
       return outcome;
     }
     if (message.type === "presentation:rejection") {
+      const pendingSubmission =
+        this.pendingPresentationSubmissions.get(respondsToId);
       const outcome = {
         kind: "rejected",
-        rejection: this.receivePresentationRejection(message),
+        rejection: this.receivePresentationRejection(message, options),
       } as const;
       writeRetainedProtocolState(
         this.completedPresentationOutcomes,
         respondsToId,
         outcome,
-        currentTimeMs(options.currentTimeMs),
+        nowMs,
         this.retentionPolicy,
-        message.envelope.hasExpiresAt ? message.envelope.expiresAt : undefined,
+        pendingSubmission?.envelope.hasExpiresAt
+          ? pendingSubmission.envelope.expiresAt
+          : undefined,
       );
       return outcome;
     }

@@ -11,7 +11,16 @@ export interface ProtocolStateStore {
 }
 
 export type ProtocolStateRetentionPolicy = {
+  /**
+   * Optional retention window for finalized protocol outcomes.
+   * A value of `0n` means the record expires immediately after the write-time
+   * instant and will disappear on the next strictly later read/prune.
+   */
   readonly finalizedOutcomeTtlMs?: bigint;
+  /**
+   * Optional cap on retained finalized outcomes inside one collection.
+   * Values less than or equal to zero effectively retain no finalized records.
+   */
   readonly maxFinalizedOutcomes?: number;
 };
 
@@ -104,6 +113,8 @@ export const pruneExpiredRetainedProtocolState = <T>(
   collection: ProtocolStateCollection<RetainedProtocolState<T>>,
   currentTimeMs: bigint,
 ): void => {
+  // Reference-grade pruning currently relies on collection scans. Persistent
+  // adapters may want to implement equivalent retention more efficiently.
   for (const [key, retained] of collection.entries()) {
     if (
       retained.expiresAtMs !== undefined &&
@@ -122,6 +133,9 @@ export const writeRetainedProtocolState = <T>(
   policy: ProtocolStateRetentionPolicy,
   explicitExpiresAtMs?: bigint,
 ): void => {
+  // Reference-grade retention currently uses full collection iteration for TTL
+  // cleanup and oldest-first eviction. Persistent adapters can preserve the
+  // same semantics behind a more efficient storage-native implementation.
   pruneExpiredRetainedProtocolState(collection, currentTimeMs);
 
   collection.set(key, {

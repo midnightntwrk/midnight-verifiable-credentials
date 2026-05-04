@@ -171,6 +171,9 @@ Persistent state adapter rule:
 - finalized outcome retention currently relies on `entries()` iteration, so a
   persistent adapter must support collection scans for TTL pruning and oldest-
   first eviction
+- if a persistent adapter wants better write-time complexity, it should
+  preserve the same semantics behind storage-native pruning/eviction rather
+  than copying the reference in-memory scan literally
 
 Illustrative sketch:
 
