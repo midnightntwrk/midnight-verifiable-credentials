@@ -217,16 +217,11 @@ overview.
 ## Current Maturity Model
 The repository contains a mix of maturity levels.
 
-- reference implementation:
-  - core VC package and key credential families
-- reference transport adapter:
-  - `credentials-openid`
-- prototype:
-  - `credentials-protocol` and selected profile-oriented surfaces
-- experimental:
-  - selected privacy-oriented or demo-oriented capabilities
-- planned:
-  - `credentials-birth-binding-prototypes` if it is restored as a real package
+For the current package-by-package snapshot, see:
+
+- [`../spec/conformance.md`](../spec/conformance.md)
+  - `Current Package Maturity Table`
+- [`../guides/integration-surface-map.md`](../guides/integration-surface-map.md)
 
 Readers should evaluate maturity at the package and profile level, not at the
 repository level.
