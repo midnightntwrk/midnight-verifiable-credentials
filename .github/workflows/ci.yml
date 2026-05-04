@@ -86,6 +86,15 @@ jobs:
           mkdir -p "$HOME/.local/share" "$HOME/.config"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
+      - name: Activate Compact compiler
+        shell: bash
+        run: |
+          if [ "$COMPACT_COMPILER_VERSION" = "latest" ]; then
+            compact update || true
+          else
+            compact update "$COMPACT_COMPILER_VERSION" || compact update || true
+          fi
+
       - name: Verify Compact installation
         run: |
           compact compile --version
@@ -134,6 +143,15 @@ jobs:
           tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
           mkdir -p "$HOME/.local/share" "$HOME/.config"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Activate Compact compiler
+        shell: bash
+        run: |
+          if [ "$COMPACT_COMPILER_VERSION" = "latest" ]; then
+            compact update || true
+          else
+            compact update "$COMPACT_COMPILER_VERSION" || compact update || true
+          fi
 
       - name: Verify Compact installation
         run: |
@@ -184,6 +202,15 @@ jobs:
           mkdir -p "$HOME/.local/share" "$HOME/.config"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
+      - name: Activate Compact compiler
+        shell: bash
+        run: |
+          if [ "$COMPACT_COMPILER_VERSION" = "latest" ]; then
+            compact update || true
+          else
+            compact update "$COMPACT_COMPILER_VERSION" || compact update || true
+          fi
+
       - name: Verify Compact installation
         run: |
           compact compile --version
@@ -233,6 +260,15 @@ jobs:
           mkdir -p "$HOME/.local/share" "$HOME/.config"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
+      - name: Activate Compact compiler
+        shell: bash
+        run: |
+          if [ "$COMPACT_COMPILER_VERSION" = "latest" ]; then
+            compact update || true
+          else
+            compact update "$COMPACT_COMPILER_VERSION" || compact update || true
+          fi
+
       - name: Verify Compact installation
         run: |
           compact compile --version
@@ -272,6 +308,15 @@ jobs:
           tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
           mkdir -p "$HOME/.local/share" "$HOME/.config"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Activate Compact compiler
+        shell: bash
+        run: |
+          if [ "$COMPACT_COMPILER_VERSION" = "latest" ]; then
+            compact update || true
+          else
+            compact update "$COMPACT_COMPILER_VERSION" || compact update || true
+          fi
 
       - name: Verify Compact installation
         run: |
