@@ -135,9 +135,9 @@ Midnight Credentials in the current prototype are built in five layers.
 | Layer | Purpose | Current packages or status |
 | --- | --- | --- |
 | Layer 1 | reusable generic credential capabilities | `credentials`, `credentials-same-holder` |
-| Layer 2 | concrete credential-family logic | `credentials-birth`, `credentials-birth-secret`, `credentials-passport`, `credentials-passport-secret` |
+| Layer 2 | concrete credential-family logic | `credentials-birth`, `credentials-birth-secret` in the current workspace; additional families are future or adjacent prototype examples |
 | Layer 3 | business smart-contract behavior | `credentials-demo-contract` |
-| Layer 4 | application orchestration outside Compact | `credentials-protocol` |
+| Layer 4 | application orchestration outside Compact | `credentials-protocol`, `credentials-openid`, `credentials-offchain-did`, `standalone-environment` |
 | Layer 5 | governance and trust policy | abstract future scope for now |
 
 Think of it this way:
@@ -170,6 +170,8 @@ So in the current work:
 
 ## Quick Package Map
 
+### Current validated workspace packages
+
 | Package | What it does in simple words |
 | --- | --- |
 | `credentials` | the generic VC/VP envelope, proof logic, and holder-binding primitives |
@@ -177,11 +179,23 @@ So in the current work:
 | `credentials-birth` | a birth credential family using explicit DID-based holder binding |
 | `credentials-birth-secret` | the same birth family, but with hidden holder binding and better privacy |
 | `credentials-iso-registry` | shared numeric ISO code types — countries, currencies, languages, regions, and genders as circuit-friendly integers |
-| `credentials-passport` | a passport credential family using explicit DID-based holder binding, with nationality, gender, age, and expiry |
-| `credentials-passport-secret` | the same passport family, but with hidden holder binding, pseudonyms, and same-holder composition |
+| `credentials-status-registry` | prototype status/revocation package with a registry contract surface and off-chain builders |
 | `credentials-demo-contract` | a verifier-like business contract that turns successful proof into reusable access capability |
+| `credentials-offchain-did` | off-chain DID-aware adapter helpers for deriving holder-binding values |
+| `credentials-openid` | OpenID-shaped transport/domain schemas for Compact VC/VP payloads |
 | `credentials-protocol` | party-boundary simulation layer with IssuerAgent, HolderAgent, VerifierAgent, and a MessageBus transport seam |
 | `standalone-environment` | shared Docker environment for integration tests — provisions real Midnight DIDs for issuer, holder, and verifier |
+
+### Adjacent prototype or future example packages mentioned later
+
+These examples are still useful for understanding the design space, but they
+are not current workspace packages on `develop` in this repository.
+
+| Package | Why it appears later in this guide |
+| --- | --- |
+| `credentials-passport` | example of a richer explicit-holder family with mixed public/private claims |
+| `credentials-passport-secret` | example of a richer hidden-holder family with pseudonyms and same-holder composition |
+| `credentials-compliance` | example of policy-heavy verifier use cases such as AML/KYC freshness and thresholds |
 
 Important repository-state note:
 
@@ -1601,6 +1615,14 @@ That is a better engineering habit because it tells you exactly what combination
 | hidden-holder flow | Alice proves control using a hidden holder secret instead of a visible DID method | `credentials-birth-secret/src/test/capability-profiles.test.ts` |
 | advanced privacy flow | Alice uses hidden holder binding, a blinded anchor, selective disclosure, verifier pseudonym, and age predicate | `credentials-birth-secret/src/test/capability-profiles.test.ts` |
 | same-holder composition | Alice proves two or three credentials belong to the same hidden holder | `credentials-birth-secret/src/test/same-holder-composition.test.ts` |
+
+### Adjacent prototype profiles used later in this guide
+
+These are not current workspace tests on `develop`; they come from adjacent
+prototype work and are used later as design-space examples.
+
+| Profile | What it means in simple words | Test |
+| --- | --- | --- |
 | passport explicit-holder flow | Alice presents a passport with mixed public/private claims and explicit DID binding | `midnight-passport-prototype/packages/credentials-passport/src/test/capability-profiles.test.ts` |
 | passport predicates | Alice proves age and expiry from a passport without revealing personal data | `midnight-passport-prototype/packages/credentials-passport/src/test/predicates.test.ts` |
 | passport hidden-holder flow | Alice presents a passport with hidden holder binding and verifier pseudonym | `midnight-passport-prototype/packages/credentials-passport-secret/src/test/capability-profiles.test.ts` |
@@ -1927,6 +1949,21 @@ Mohawk considers this "the minimum acceptable encoding discipline for a system t
 
 - `credentials-iso-registry/src/iso-registry/codes.compact`
 
+## Design-Space Appendix Transition
+
+Up to this point, the guide has stayed centered on the current validated
+workspace packages in this repository.
+
+From the next chapter onward, the guide uses richer passport/compliance-style
+examples to explain the broader architecture and future family expansion.
+
+Those chapters are still useful, but read them with the right stance:
+
+- they illustrate how the current architecture generalizes
+- they may refer to adjacent prototype repositories
+- they are not evidence that those package families already exist on current
+  `develop` in this repository
+
 ## Chapter 18: Alice Gets a Passport
 
 Rita is back. She has a new form, a new stamp, and a new credential family.
@@ -2002,8 +2039,9 @@ Mohawk approves because: "More predicates. Same privacy. Better verification."
 
 ### Tests For This Chapter
 
-- `midnight-passport-prototype/packages/credentials-passport/src/test/capability-profiles.test.ts`
-- `midnight-passport-prototype/packages/credentials-passport/src/test/predicates.test.ts`
+- adjacent prototype references:
+  - `midnight-passport-prototype/packages/credentials-passport/src/test/capability-profiles.test.ts`
+  - `midnight-passport-prototype/packages/credentials-passport/src/test/predicates.test.ts`
 
 ## Chapter 19: Two Use Cases Walk Into a Contract
 
@@ -2085,7 +2123,13 @@ Mohawk: "That is the whole point of composable credentials. Not one giant bundle
 
 ### Where These Use Cases Are Defined
 
-Both use cases are specified in [`../testing/test-strategy.md`](../testing/test-strategy.md) as UC-1 (Age-Gated Venue Access) and UC-2 (Cross-Border Financial Onboarding). The test strategy defines the full configuration dimensions — credential family, holder binding profile, disclosures, predicates, pseudonym, same-holder composition, and verifier mode — for each use case.
+Both use cases are specified in [`../testing/test-strategy.md`](../testing/test-strategy.md)
+as future design-space examples: UC-1 (Age-Gated Venue Access) and UC-2
+(Cross-Border Financial Onboarding). They help explain the full configuration
+dimensions — credential family, holder binding profile, disclosures,
+predicates, pseudonym, same-holder composition, and verifier mode — but they
+are not the authoritative current test inventory for this repository. Use
+[`../testing/test-matrix.md`](../testing/test-matrix.md) for that.
 
 ## Chapter 20: The Protocol Layer
 
