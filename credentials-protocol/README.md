@@ -47,6 +47,8 @@ The current public exports are intentionally narrow:
 - explicit-holder and secret-holder agent classes
 - injectable randomness interfaces for protocol challenges, issuer nonces,
   blinding factors, and signing nonces
+- a generic `ProtocolStateStore` interface plus an in-memory reference
+  implementation for protocol session state
 - shared crypto and envelope helpers
 - the typed in-memory message bus transport seam
 
@@ -118,6 +120,14 @@ Randomness hardening rule:
   deterministic for repository tests
 - production integrators should supply their own randomness source rather than
   relying on the default
+
+State hardening rule:
+
+- agent-local pending offers, requests, submissions, and completed transport
+  outcomes now sit behind an injectable `ProtocolStateStore` interface
+- the exported default implementation is an in-memory reference store
+- production integrators should supply a persistent implementation if they need
+  restart-safe protocol session handling
 
 For blinded-secret issuance, the transport-shaped API is now the preferred
 reference surface:

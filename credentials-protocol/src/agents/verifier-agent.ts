@@ -32,6 +32,11 @@ import type {
   SecretBirthCredentialVerificationRejectionCategory,
 } from "../transport/types.js";
 import {
+  InMemoryProtocolStateStore,
+  type ProtocolStateCollection,
+  type ProtocolStateStore,
+} from "./protocol-state-store.js";
+import {
   type ProtocolRandomnessFlow,
   type ProtocolRandomnessSource,
   unsafeReferenceDeterministicRandomnessSource,
@@ -158,22 +163,24 @@ export class VerifierAgent {
   private readonly bus: MessageBus;
   private readonly randomness: ProtocolRandomnessSource;
   private challengeCounter = 0;
-  private readonly completedSecretPresentationOutcomes = new Map<
-    string,
-    ProtocolMessage
-  >();
+  private readonly completedSecretPresentationOutcomes: ProtocolStateCollection<ProtocolMessage>;
 
   constructor(
     profile: DIDProfile,
     bus: MessageBus,
     options: {
       readonly randomness?: ProtocolRandomnessSource;
+      readonly stateStore?: ProtocolStateStore;
     } = {},
   ) {
     this.profile = profile;
     this.bus = bus;
     this.randomness =
       options.randomness ?? unsafeReferenceDeterministicRandomnessSource;
+    const stateStore = options.stateStore ?? new InMemoryProtocolStateStore();
+    this.completedSecretPresentationOutcomes = stateStore.collection(
+      `verifier:${this.profile.label}:completed-secret-presentation-outcomes`,
+    );
   }
 
   private generateChallengeHashFor(

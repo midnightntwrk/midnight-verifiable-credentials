@@ -6,6 +6,7 @@ import {
 } from "@midnight-ntwrk/midnight-did-credentials-birth-secret/managed/secret-birth-credential/contract/index.js";
 import { describe, expect, it } from "vitest";
 
+import { InMemoryProtocolStateStore } from "../../agents/protocol-state-store.js";
 import type { ProtocolRandomnessSource } from "../../agents/randomness.js";
 import {
   SecretHolderAgent,
@@ -190,6 +191,64 @@ describe("secret-holder presentation", () => {
     if (outcome.kind === "approved") {
       expect(outcome.result.approved).toBe(true);
     }
+  });
+
+  it("can re-deliver blinded-secret presentation outcomes across verifier restarts with a shared protocol state store", () => {
+    const bus = new MessageBus();
+    const stateStore = new InMemoryProtocolStateStore();
+    const holder = issueCredential(bus);
+    const verifier = new VerifierAgent(verifierProfile, bus, {
+      stateStore,
+    });
+
+    verifier.createAndSendSecretPresentationRequest("holder", {
+      issuerVerificationMethodRef: issuerProfile.signer.verificationMethodRef,
+      requireSubjectIdCommitmentDisclosure: false,
+      requireBirthCountryDisclosure: true,
+      requireVerifierScopedPseudonym: false,
+      requireAgeOverThreshold: true,
+      requestedAgeThresholdYears: 18,
+    });
+
+    const requestMessage = bus.receive("holder")!;
+    const requestBody =
+      requestMessage.body as SecretBirthCredentialVerificationRequest;
+    const presentationWitness: SecretPresentationWitness = {
+      credentialIndex: 0,
+      currentDay: 3650n + 365n * 25n,
+      birthDateDays: claimWitness.birthDateDays,
+      birthDateOpening: claimWitness.birthDateOpening,
+      birthCountryCodePadded: claimWitness.birthCountryCodePadded,
+      birthCountryCodeOpening: claimWitness.birthCountryCodeOpening,
+    };
+
+    holder.receiveRequestAndSendPresentation(requestMessage, presentationWitness);
+    const submission = bus.receive("verifier")!;
+    const stored = holder.getCredential(0);
+    const { holderSecret, holderSecretOpening } = holder.secretWitness;
+    const simulatorWitness: SecretSimulatorWitness = {
+      request: requestBody,
+      currentDay: 3650n + 365n * 25n,
+      birthDateDays: claimWitness.birthDateDays,
+      birthDateOpening: claimWitness.birthDateOpening,
+      holderSecret,
+      holderSecretOpening,
+      holderBindingBlindingFactor: stored.holderBindingBlindingFactor,
+    };
+
+    verifier.receiveSecretSubmissionAndRespond(submission, simulatorWitness);
+    const firstOutcome = bus.receive("holder")!;
+
+    const restartedVerifier = new VerifierAgent(verifierProfile, bus, {
+      stateStore,
+    });
+    restartedVerifier.receiveSecretSubmissionAndRespond(
+      submission,
+      simulatorWitness,
+    );
+    const replayedOutcome = bus.receive("holder")!;
+
+    expect(replayedOutcome).toEqual(firstOutcome);
   });
 
   it("allows integrators to inject custom blinded-secret presentation randomness", () => {

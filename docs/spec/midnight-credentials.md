@@ -426,8 +426,13 @@ Repository note:
 - the reference protocol layer now exposes randomness generation behind an
   injectable interface for challenge hashes, issuer nonces, blinding factors,
   and signing nonces
+- the same reference protocol layer now exposes pending/session protocol state
+  behind an injectable `ProtocolStateStore` interface with an in-memory
+  reference implementation
 - that interface reduces hardcoded deterministic behavior inside the agents, but
   it does not by itself make the default source production-grade
+- the state-store interface reduces hardcoded agent-local `Map` usage, but it
+  does not by itself make protocol durability production-grade
 
 The current repository reference implementations do not yet satisfy the full
 blinded-secret production-shaped claim. They do provide supported reference

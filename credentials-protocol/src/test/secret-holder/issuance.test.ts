@@ -8,6 +8,7 @@ import {
 } from "@midnight-ntwrk/midnight-did-credentials-birth-secret/managed/secret-birth-credential/contract/index.js";
 import { describe, expect, it } from "vitest";
 
+import { InMemoryProtocolStateStore } from "../../agents/protocol-state-store.js";
 import type { ProtocolRandomnessSource } from "../../agents/randomness.js";
 import { SecretHolderAgent } from "../../agents/secret-holder-agent.js";
 import {
@@ -293,6 +294,37 @@ describe("secret-holder issuance", () => {
     expect(resultBody.body.credentialProof.signature.r).toEqual(
       ecMulGenerator(37n),
     );
+  });
+
+  it("can resume blinded-secret issuance across agent restarts with a shared protocol state store", () => {
+    const bus = new MessageBus();
+    const issuerStateStore = new InMemoryProtocolStateStore();
+    const holderStateStore = new InMemoryProtocolStateStore();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus, {
+      stateStore: issuerStateStore,
+    });
+    const holder = new SecretHolderAgent(holderConfig, bus, {
+      stateStore: holderStateStore,
+    });
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    holder.receiveOfferAndSendRequest(offer);
+    const request = bus.receive("issuer")!;
+
+    const restartedIssuer = new SecretIssuerAgent(issuerProfile, bus, {
+      stateStore: issuerStateStore,
+    });
+    const restartedHolder = new SecretHolderAgent(holderConfig, bus, {
+      stateStore: holderStateStore,
+    });
+
+    restartedIssuer.receiveRequestAndRespond(request, claimWitness);
+    const outcomeMessage = bus.receive("holder")!;
+    const outcome = restartedHolder.receiveIssuanceOutcome(outcomeMessage);
+
+    expect(outcome.kind).toBe("issued");
+    expect(restartedHolder.credentialCount).toBe(1);
   });
 
   it("rejects issuance requests when the holder challenge is missing", () => {
