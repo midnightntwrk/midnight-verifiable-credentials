@@ -140,6 +140,9 @@ Current implementation note:
   non-revocation support
 - verifier/application-supplied root freshness remains an external policy
   decision in the current prototype
+- current authority-attested coverage proves request binding, registry/root
+  consistency, wrong-authority rejection, and expiration handling for the
+  transitional Layer 3 status path
 
 Current repository stance:
 

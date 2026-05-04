@@ -1,6 +1,6 @@
 # Midnight VC Test Matrix
 
-Status: current implemented test surface as of 2026-05-01.
+Status: current implemented test surface as of 2026-05-04.
 
 ## Core package tests
 
@@ -59,22 +59,29 @@ Implemented prototype coverage:
   - status registry refs
   - revoked-set capability validation
   - authority-attested capability validation
+  - deterministic revoked-set status-handle derivation
 - `credentials/src/test/status-policy.test.ts`
   - verifier status policy validation and registry binding checks
+  - rejection of optional or internally inconsistent status policies
 - `credentials/src/test/status-attestation.test.ts`
   - request-bound authority attestation validation
+  - verifier challenge binding through the full policy path
   - authority signer binding
+  - wrong-authority rejection through the full policy path
   - revoked-root mismatch rejection
   - attestation expiry rejection
 - `credentials-status-registry/src/test/witness-builder.test.ts`
   - deterministic status-handle derivation
   - revoked-set witness/capability construction
+  - verifier policy compatibility checks
   - revoked snapshot rejection
 - `credentials-status-registry/src/test/attestation-builder.test.ts`
   - verifier-supplied status request construction
   - authority attestation statement and proof construction
+  - request-bound status attestation payload construction
 - `credentials-status-registry/src/test/revocation-registry.test.ts`
   - registry initialization
+  - double-init / zero-id / unset-sentinel rejection
   - registry/state binding semantics
   - append-only revocation bookkeeping
   - current prototype root-binding limitation disclosure
@@ -82,6 +89,7 @@ Implemented prototype coverage:
   - hidden-holder revoked-set status request wiring
 - `credentials-birth-secret/src/test/status-attestation.test.ts`
   - hidden-holder authority-attested status verification
+  - verification-request challenge / status-request challenge consistency
   - verifier-root mismatch rejection
   - attestation expiry rejection
 
@@ -134,6 +142,11 @@ Implemented prototype coverage:
 - local/unit verifier contract tests
 - standalone integration test:
   - issuance-verification lifecycle
+
+Current gap:
+
+- no dedicated `demo-revocation` consumer package or status-aware Layer 3
+  integration demo yet
 
 ## Standalone integration tests
 
