@@ -72,6 +72,8 @@ describe("secret-holder presentation", () => {
   const v8CodecResolver: ProtocolStateCodecResolver = {
     getCodec<T>() {
       return {
+        // Reference test codec only. Production adapters must own explicit
+        // codec versioning and compatibility behavior.
         encode: (value: T) => serialize(value),
         decode: (encodedValue: Uint8Array) =>
           deserialize(Buffer.from(encodedValue)) as T,
@@ -568,6 +570,74 @@ describe("secret-holder presentation", () => {
       expect(outcome.rejection.body.category).toBe("expired_request");
       expect(outcome.rejection.body.retryable).toBe(true);
     }
+  });
+
+  it("re-delivers the same rejection when a duplicate submission arrives after request expiry", () => {
+    const bus = new MessageBus();
+    const stateStore = new InMemoryProtocolStateStore();
+    const holder = issueCredential(bus);
+    const verifier = new VerifierAgent(verifierProfile, bus, {
+      stateStore,
+    });
+
+    verifier.createAndSendSecretPresentationRequest(
+      "holder",
+      {
+        issuerVerificationMethodRef: issuerProfile.signer.verificationMethodRef,
+        requireSubjectIdCommitmentDisclosure: false,
+        requireBirthCountryDisclosure: true,
+        requireVerifierScopedPseudonym: false,
+        requireAgeOverThreshold: true,
+        requestedAgeThresholdYears: 18,
+      },
+      {
+        currentTimeMs: 10n,
+        requestExpiresAtMs: 100n,
+      },
+    );
+
+    const requestMessage = bus.receive("holder")!;
+    const requestBody =
+      requestMessage.body as SecretBirthCredentialVerificationRequest;
+    const presentationWitness: SecretPresentationWitness = {
+      credentialIndex: 0,
+      currentDay: 3650n + 365n * 25n,
+      birthDateDays: claimWitness.birthDateDays,
+      birthDateOpening: claimWitness.birthDateOpening,
+      birthCountryCodePadded: claimWitness.birthCountryCodePadded,
+      birthCountryCodeOpening: claimWitness.birthCountryCodeOpening,
+    };
+
+    holder.receiveRequestAndSendPresentation(requestMessage, presentationWitness, {
+      currentTimeMs: 90n,
+    });
+    const submission = bus.receive("verifier")!;
+    const stored = holder.getCredential(0);
+    const { holderSecret, holderSecretOpening } = holder.secretWitness;
+    const simulatorWitness: SecretSimulatorWitness = {
+      request: requestBody,
+      currentDay: 3650n + 365n * 25n,
+      birthDateDays: claimWitness.birthDateDays,
+      birthDateOpening: claimWitness.birthDateOpening,
+      holderSecret,
+      holderSecretOpening,
+      holderBindingBlindingFactor: stored.holderBindingBlindingFactor,
+    };
+
+    verifier.receiveSecretSubmissionAndRespond(submission, simulatorWitness, {
+      currentTimeMs: 101n,
+    });
+    const firstOutcomeMessage = bus.receive("holder")!;
+
+    verifier.receiveSecretSubmissionAndRespond(submission, simulatorWitness, {
+      currentTimeMs: 120n,
+    });
+    const secondOutcomeMessage = bus.receive("holder")!;
+
+    expect(secondOutcomeMessage.type).toBe("presentation:rejection");
+    expect(secondOutcomeMessage.envelope.messageId).toEqual(
+      firstOutcomeMessage.envelope.messageId,
+    );
   });
 
   it("returns an explicit rejection when the verifier processes a submission after the submission expired", () => {

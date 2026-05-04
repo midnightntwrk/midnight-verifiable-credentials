@@ -201,6 +201,13 @@ const resolveExpirationMs = (
   if (explicitExpiresAtMs === undefined) {
     return ttlExpiresAtMs;
   }
+  // A finalized outcome may be written only after the correlated request or
+  // submission has already expired. Once the outcome exists, that past expiry
+  // should not immediately erase replay/idempotency state; only future expiry
+  // bounds are meaningful at this point.
+  if (explicitExpiresAtMs <= currentTimeMs) {
+    return ttlExpiresAtMs;
+  }
   if (ttlExpiresAtMs === undefined) {
     return explicitExpiresAtMs;
   }
