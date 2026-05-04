@@ -104,6 +104,17 @@ This package demonstrates verifier/business contract composition.
 It should consume credential-family verification logic rather than redefining VC
 semantics locally.
 
+Repository convention for demo packages:
+
+- demos should be small and business-facing
+- each demo should focus on one capability composition or trust boundary
+- demos should export the circuits an integrator would actually call
+- intermediate verification helpers should remain internal unless there is a
+  strong reuse case
+
+This keeps demo artifacts easier to review, easier to explain to integrators,
+and materially cheaper to compile in CI.
+
 ### `credentials-birth-binding-prototypes`
 This is a planned future package name, not a current workspace package on
 `develop`.
@@ -140,6 +151,8 @@ In practice that means:
 - verifier contracts should reuse family validation logic
 - OpenID/protocol layers should wrap Compact payloads rather than invent a new
   canonical model
+- demo contracts should stay narrow and add new roots for new capability
+  combinations instead of exporting every intermediate verification path
 
 The formal package-boundary rules for that layering are defined in:
 

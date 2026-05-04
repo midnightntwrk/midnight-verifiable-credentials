@@ -31,6 +31,28 @@ The package currently contains two demo contract roots:
      - prototype revoked-set status capability wiring
      - prototype authority-attested status proofs for the current Layer 3 path
 
+## Demo design rule
+
+Demo contracts in this package are intentionally small and business-facing.
+
+They should:
+
+- export the circuits that an integrator would actually call from a business contract flow
+- model one capability composition or trust boundary at a time
+- stay cheap enough to compile and test in focused CI lanes
+
+They should not:
+
+- export every intermediate verification helper as a standalone public circuit
+- turn a demo into a general-purpose test harness
+- duplicate lower-layer validation semantics that already live in credential-family packages
+
+When a new capability combination needs an example, the preferred approach is:
+
+- add a new small demo contract root
+- keep existing demos narrow
+- reuse lower-layer family validation logic internally
+
 The original explicit-holder demo contract models:
 
 1. issuer submits an issued birth credential plus issuer proof
@@ -49,6 +71,11 @@ The revocation demo contract models:
    - or an authority-attested status proof
 4. contract checks request alignment, status-capability binding, and age predicate satisfaction
 5. contract issues a reusable business capability on success
+
+The revocation demo intentionally keeps the presentation verification circuits
+internal and exposes the business-facing capability issuance and claim paths.
+That keeps the demo honest about how an integrator would typically consume the
+Layer 3 surface while avoiding unnecessary proof-key generation cost.
 
 ## SSI capabilities exercised
 
