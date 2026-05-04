@@ -19,16 +19,16 @@ The design goal is:
 - Published packages remain understandable for contract authors and wallet/app
   developers.
 
-## Current Facts
+## Current Workspace Facts
 
 The current repository already uses a layered package split:
 
 | Layer | Package examples | Role |
 |---|---|---|
 | Layer 1 generic capabilities | `credentials`, `credentials-same-holder`, `credentials-iso-registry` | Generic VC/VP envelope, proof helpers, holder-binding profiles, same-holder circuits, shared code types |
-| Layer 2 credential families | `credentials-birth`, `credentials-birth-secret`, `credentials-passport-secret`, `credentials-compliance` | Concrete claims, disclosures, requests, predicates, schema checks |
+| Layer 2 credential families | `credentials-birth`, `credentials-birth-secret` | Concrete claims, disclosures, requests, predicates, schema checks in the current workspace |
 | Layer 3 business contracts | `credentials-demo-contract` | Contract state and business rules that compose one or more credential families |
-| Layer 4 application/protocol orchestration | `credentials-protocol`, `credentials-openid`, `midnight-passport-prototype` | Transport/session/app coordination around Compact artifacts |
+| Layer 4 application/protocol orchestration | `credentials-protocol`, `credentials-openid`, `credentials-offchain-did`, `standalone-environment` | Transport/session/app coordination around Compact artifacts |
 
 Important implementation detail:
 
@@ -43,6 +43,15 @@ Repository-scope note:
   from adjacent prototype work to illustrate multi-family composition pressure
 - those examples are useful design stress tests, but they are not evidence that
   those families are current first-class workspace packages in this repository
+
+Adjacent prototype note:
+
+- the repository does contain one composition spike contract,
+  `credentials-demo-contract/src/passport-compliance-demo.compact`
+- that spike composes current-repo shared modules with credential-family
+  sources from a sibling `midnight-passport-prototype` checkout
+- treat it as an architecture/prototyping reference, not as proof that
+  passport/compliance families are part of the current npm workspace here
 
 The current contracts use `include` for local Compact source composition and
 module imports/prefixes for generic module instantiation, for example:
@@ -66,9 +75,9 @@ recommendation is to keep the public package surface stable and compiler-tested
 rather than expose arbitrary internal file paths.
 
 
-## Compiler Spike Findings
+## Adjacent Prototype Spike Findings
 
-A first Layer 3 compiler spike tried to compose the current top-level
+A first Layer 3 compiler spike tried to compose the adjacent-prototype top-level
 `credentials-passport-secret` and `credentials-compliance` entry points in one
 business contract. That failed because both entry points transitively include
 `credentials-same-holder` and `credentials`, causing shared symbols such as
@@ -88,8 +97,9 @@ surface problem:
   wrapped by family-prefixed circuits
 
 This is a useful result. It means the current package split is conceptually
-right, but the current Compact source surface is optimized for standalone
-credential-family compilation, not for multi-family Layer 3 composition.
+right, but the current Compact source surface in the adjacent prototype is
+optimized for standalone credential-family compilation, not for multi-family
+Layer 3 composition.
 
 The implementation model should therefore introduce composition-friendly
 entry points before publishing packages.
@@ -153,6 +163,9 @@ include "credentials-iso-registry/src/iso-registry";
 include "credentials-passport-secret/src/secret-passport-credential/composable";
 include "credentials-compliance/src/sanction-screening-credential/composable";
 ```
+
+Those family paths are design targets or adjacent prototype examples, not
+current workspace package paths in this repository.
 
 Open design choice:
 
@@ -259,10 +272,12 @@ Shared package surfaces:
 | `credentials-same-holder` | `src/same-holder/composable.compact` | same-holder capability without re-including the whole `credentials` bundle |
 | `credentials-iso-registry` | `src/iso-registry.compact` | flat shared vocabulary surface; no extra composable split needed today |
 
-This is enough decomposition for the current Passport + Screening prototype:
+This is enough decomposition for the current Passport + Screening prototype
+spike:
 
-- Passport and Screening credential-family composables include the full shared
-  `credentials/composable.compact` surface once in Layer 3.
+- Passport and Screening credential-family composables in the adjacent
+  prototype include the full shared `credentials/composable.compact` surface
+  once in Layer 3.
 - `same-holder/composable.compact` can depend on the narrower
   `bindings.compact` surface when used in a smaller capability-only contract.
 - `iso-registry` stays flat because it does not transitively include any other
@@ -369,7 +384,16 @@ export circuit verifyBusinessEligibility(
 ```
 
 For multi-credential policies, the Layer 3 contract should compose concrete
-families through composition-safe entry points:
+families through composition-safe entry points.
+
+Current-workspace example:
+
+```compact
+include "../../credentials/src/credentials/composable";
+include "../../credentials-birth/src/birth-credential";
+```
+
+Adjacent-prototype example:
 
 ```compact
 include "../../credentials/src/credentials";
@@ -404,8 +428,9 @@ Layer 1 generic core
 Layer 2 concrete credential families
   credentials-birth
   credentials-birth-secret
-  credentials-passport-secret
-  credentials-compliance
+  future / adjacent prototype families
+    credentials-passport-secret
+    credentials-compliance
         ↑
 Layer 3 business contracts
   credentials-demo-contract
@@ -414,7 +439,9 @@ Layer 3 business contracts
 Layer 4 application orchestration
   credentials-protocol
   credentials-openid
-  midnight-passport-prototype
+  credentials-offchain-did
+  standalone-environment
+  adjacent prototype apps when present
 ```
 
 Recommended constraints:
@@ -512,13 +539,22 @@ Rule of thumb:
 
 ## Recommended Next Prototype Task
 
-The first dependency-composition spike is now represented by
+The first dependency-composition spike is currently represented by
 `credentials-demo-contract/src/passport-compliance-demo.compact`. It composes:
 
 - `credentials-same-holder`
 - `credentials-iso-registry`
 - `credentials-passport-secret/src/secret-passport-credential/composable`
 - `credentials-compliance/src/sanction-screening-credential/composable`
+
+Important scope note:
+
+- the first two dependencies are current workspace packages in this repository
+- the Passport and Compliance family paths resolve into the sibling
+  `midnight-passport-prototype` checkout, not into this repository's npm
+  workspace
+- this makes the spike useful as an architecture proof, but not a current
+  package-availability claim for this repository
 
 The contract verifies a Passport presentation and a Sanction Screening
 presentation under one verifier challenge, checks the same hidden holder through
@@ -542,15 +578,18 @@ The spike validates these points:
 Next, harden this from a spike into a reusable pattern:
 
 1. Add or generate a minimal Layer 3 contract that imports two concrete
-   credential families and one optional capability package. Done for Passport +
-   Compliance.
+   credential families and one optional capability package.
+   - current state: prototype spike exists for Passport + Compliance through an
+     adjacent checkout
 2. Keep all credential checks family-specific and all business state mutation in
-   the Layer 3 contract. Done for the current eligibility check.
-3. Verify Compact compilation and generated TS artifacts. Done in
-   `credentials-demo-contract`.
+   the Layer 3 contract.
+   - current state: demonstrated in the current eligibility spike
+3. Verify Compact compilation and generated TS artifacts.
+   - current state: demonstrated in `credentials-demo-contract`
 4. Add a TypeScript test that imports the Layer 3 generated contract and proves
-   the expected public types are usable. Done in
-   `passport-compliance-composition.test.ts`.
+   the expected public types are usable.
+   - current state: demonstrated in
+     `credentials-demo-contract/src/test/passport-compliance-composition.test.ts`
 5. Add fixture-backed tests that execute the composed eligibility circuit with
    successful and failing Passport + Compliance presentations.
 6. Document the exact import paths that worked in each package README. Started.
