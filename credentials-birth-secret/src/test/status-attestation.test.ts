@@ -128,7 +128,9 @@ describe("secret birth credential: authority-attested status verification", () =
         fixture.witness.holderBindingBlindingFactor,
         fixture.verificationRequest.envelope.createdAt + 10n,
       ),
-    ).toThrow(/request challenge must match the verification request challenge/i);
+    ).toThrow(
+      /request challenge must match the verification request challenge/i,
+    );
   });
 
   it("rejects an authority-attested status proof after expiration", () => {
