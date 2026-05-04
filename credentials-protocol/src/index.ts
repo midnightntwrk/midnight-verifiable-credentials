@@ -1,3 +1,4 @@
+export * from "./adapters/file-protocol-state-store.js";
 export * from "./agents/holder-agent.js";
 export * from "./agents/issuer-agent.js";
 export * from "./agents/protocol-state-store.js";

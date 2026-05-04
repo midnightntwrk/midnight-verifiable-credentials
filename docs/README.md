@@ -20,6 +20,9 @@
 - status verification protocol:
   - [`spec/status-verification-protocol.md`](./spec/status-verification-protocol.md)
   - for readers implementing verifier-supplied roots and Layer 3 status-aware verification
+- hidden-holder interoperability:
+  - [`spec/hidden-holder-interoperability.md`](./spec/hidden-holder-interoperability.md)
+  - for readers defining transport and adapter obligations for hidden-holder flows
 
 ## Guides
 

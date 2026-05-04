@@ -32,6 +32,7 @@ import {
   type ProtocolStateRetentionPolicy,
   type ProtocolStateStore,
   readRetainedProtocolState,
+  resolveCurrentTimeMs,
   type RetainedProtocolState,
   writeRetainedProtocolState,
 } from "./protocol-state-store.js";
@@ -56,8 +57,6 @@ const SECRET_HOLDER_FEATURES = {
 
 const DEFAULT_PROTOCOL_CURRENT_DAY = 0n;
 const DEFAULT_ISSUANCE_REQUEST_EXPIRY_DAY = 1_000_000n;
-
-const currentTimeMs = (value?: bigint): bigint => value ?? BigInt(Date.now());
 
 type SecretIssuanceRequestOptions = {
   readonly currentDay?: bigint;
@@ -283,7 +282,7 @@ export class SecretHolderAgent {
         readRetainedProtocolState(
           this.completedIssuanceOutcomes,
           respondsToId,
-          currentTimeMs(options.currentTimeMs),
+          resolveCurrentTimeMs(options.currentTimeMs),
         )
       ) {
         throw new Error(
@@ -326,7 +325,7 @@ export class SecretHolderAgent {
         readRetainedProtocolState(
           this.completedIssuanceOutcomes,
           respondsToId,
-          currentTimeMs(options.currentTimeMs),
+          resolveCurrentTimeMs(options.currentTimeMs),
         )
       ) {
         throw new Error(
@@ -346,7 +345,7 @@ export class SecretHolderAgent {
     message: ProtocolMessage,
     options: SecretOutcomeReadOptions = {},
   ): SecretIssuanceOutcome {
-    const nowMs = currentTimeMs(options.currentTimeMs);
+    const nowMs = resolveCurrentTimeMs(options.currentTimeMs);
     const respondsToId = Buffer.from(
       message.envelope.respondsToMessageId,
     ).toString("hex");
@@ -444,7 +443,7 @@ export class SecretHolderAgent {
     assertBodyHasFields(requestMessage, ["envelope", "schema", "verifierChallengeHash", "body"]);
     const request =
       requestMessage.body as SecretBirthCredentialVerificationRequest;
-    const nowMs = currentTimeMs(options.currentTimeMs);
+    const nowMs = resolveCurrentTimeMs(options.currentTimeMs);
     if (
       requestMessage.envelope.hasExpiresAt &&
       nowMs > requestMessage.envelope.expiresAt
@@ -551,7 +550,7 @@ export class SecretHolderAgent {
         readRetainedProtocolState(
           this.completedPresentationOutcomes,
           respondsToId,
-          currentTimeMs(options.currentTimeMs),
+          resolveCurrentTimeMs(options.currentTimeMs),
         )
       ) {
         throw new Error(
@@ -571,7 +570,7 @@ export class SecretHolderAgent {
     message: ProtocolMessage,
     options: SecretOutcomeReadOptions = {},
   ): SecretPresentationOutcome {
-    const nowMs = currentTimeMs(options.currentTimeMs);
+    const nowMs = resolveCurrentTimeMs(options.currentTimeMs);
     const respondsToId = Buffer.from(
       message.envelope.respondsToMessageId,
     ).toString("hex");

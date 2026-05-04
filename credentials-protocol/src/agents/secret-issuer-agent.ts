@@ -30,6 +30,7 @@ import {
   type ProtocolStateRetentionPolicy,
   type ProtocolStateStore,
   readRetainedProtocolState,
+  resolveCurrentTimeMs,
   type RetainedProtocolState,
   writeRetainedProtocolState,
 } from "./protocol-state-store.js";
@@ -77,8 +78,6 @@ type SecretIssuanceProcessingOptions = {
   readonly currentDay?: bigint;
   readonly currentTimeMs?: bigint;
 };
-
-const currentTimeMs = (value?: bigint): bigint => value ?? BigInt(Date.now());
 
 class IssuanceProtocolError extends Error {
   readonly category: SecretBirthCredentialIssuanceRejectionCategory;
@@ -282,7 +281,7 @@ export class SecretIssuerAgent {
       readRetainedProtocolState(
         this.completedOutcomes,
         requestMessageId,
-        currentTimeMs(options.currentTimeMs),
+        resolveCurrentTimeMs(options.currentTimeMs),
       )
     ) {
       throw new IssuanceProtocolError(
@@ -437,7 +436,7 @@ export class SecretIssuerAgent {
       this.completedOutcomes,
       requestMessageId,
       resultMessage,
-      currentTimeMs(options.currentTimeMs),
+      resolveCurrentTimeMs(options.currentTimeMs),
       this.retentionPolicy,
       issuanceRequest.envelope.hasExpiresAt
         ? issuanceRequest.envelope.expiresAt
@@ -456,7 +455,7 @@ export class SecretIssuerAgent {
     const completedOutcome = readRetainedProtocolState(
       this.completedOutcomes,
       requestMessageId,
-      currentTimeMs(options.currentTimeMs),
+      resolveCurrentTimeMs(options.currentTimeMs),
     );
     if (completedOutcome) {
       this.bus.send(completedOutcome);
@@ -488,7 +487,7 @@ export class SecretIssuerAgent {
         this.completedOutcomes,
         requestMessageId,
         rejectionMessage,
-        currentTimeMs(options.currentTimeMs),
+        resolveCurrentTimeMs(options.currentTimeMs),
         this.retentionPolicy,
         request.envelope.hasExpiresAt
           ? request.envelope.expiresAt

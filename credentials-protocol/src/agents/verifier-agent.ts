@@ -37,6 +37,7 @@ import {
   type ProtocolStateRetentionPolicy,
   type ProtocolStateStore,
   readRetainedProtocolState,
+  resolveCurrentTimeMs,
   type RetainedProtocolState,
   writeRetainedProtocolState,
 } from "./protocol-state-store.js";
@@ -80,7 +81,18 @@ const SECRET_HOLDER_FEATURES = {
   supportsSameHolderProof: true,
 };
 
-const currentTimeMs = (value?: bigint): bigint => value ?? BigInt(Date.now());
+const earlierExpiryMs = (
+  first?: bigint,
+  second?: bigint,
+): bigint | undefined => {
+  if (first === undefined) {
+    return second;
+  }
+  if (second === undefined) {
+    return first;
+  }
+  return first < second ? first : second;
+};
 
 class PresentationProtocolError extends Error {
   readonly category: SecretBirthCredentialVerificationRejectionCategory;
@@ -412,7 +424,7 @@ export class VerifierAgent {
     const submissionMessage =
       submission.body as SecretBirthCredentialVerificationSubmission;
     const body = submissionMessage.body;
-    const nowMs = currentTimeMs(options.currentTimeMs);
+    const nowMs = resolveCurrentTimeMs(options.currentTimeMs);
     if (
       simulatorWitness.request.envelope.hasExpiresAt &&
       nowMs > simulatorWitness.request.envelope.expiresAt
@@ -496,7 +508,17 @@ export class VerifierAgent {
     const completedOutcome = readRetainedProtocolState(
       this.completedSecretPresentationOutcomes,
       submissionMessageId,
-      currentTimeMs(options.currentTimeMs),
+      resolveCurrentTimeMs(options.currentTimeMs),
+    );
+    const requestExpiresAtMs = simulatorWitness.request.envelope.hasExpiresAt
+      ? simulatorWitness.request.envelope.expiresAt
+      : undefined;
+    const submissionExpiresAtMs = submission.envelope.hasExpiresAt
+      ? submission.envelope.expiresAt
+      : undefined;
+    const retentionExpiresAtMs = earlierExpiryMs(
+      requestExpiresAtMs,
+      submissionExpiresAtMs,
     );
     if (completedOutcome) {
       this.bus.send(completedOutcome);
@@ -520,11 +542,9 @@ export class VerifierAgent {
         this.completedSecretPresentationOutcomes,
         submissionMessageId,
         resultMessage,
-        currentTimeMs(options.currentTimeMs),
+        resolveCurrentTimeMs(options.currentTimeMs),
         this.retentionPolicy,
-        resultMessage.envelope.hasExpiresAt
-          ? resultMessage.envelope.expiresAt
-          : undefined,
+        retentionExpiresAtMs,
       );
     } catch (error) {
       const rejection = this.buildSecretPresentationRejection(
@@ -549,11 +569,9 @@ export class VerifierAgent {
         this.completedSecretPresentationOutcomes,
         submissionMessageId,
         rejectionMessage,
-        currentTimeMs(options.currentTimeMs),
+        resolveCurrentTimeMs(options.currentTimeMs),
         this.retentionPolicy,
-        rejectionMessage.envelope.hasExpiresAt
-          ? rejectionMessage.envelope.expiresAt
-          : undefined,
+        retentionExpiresAtMs,
       );
     }
   }
