@@ -6,6 +6,14 @@ Status:
 
 - prototype / evolving capability package
 
+Ownership:
+
+- `credentials`
+  - owns the shared VC-side status binding vocabulary
+- `credentials-status-registry`
+  - owns the registry contract surface
+  - owns verifier-facing status proof protocols and off-chain builders
+
 Surface classification:
 
 - mixed surface package
@@ -30,7 +38,7 @@ Current scope:
 - typed `RevokedSetStatusRequest` helpers for verifier-supplied roots
 - off-chain witness-builder helpers for:
   - deterministic status-handle derivation
-  - status capability construction
+  - registry-bound status binding construction
   - witness-input construction
   - snapshot-based revoked-handle rejection
 - authority-attested status helpers for:
@@ -46,6 +54,13 @@ Nonce requirement for authority-attested proofs:
 - nonce generation policy is still application-side in the current prototype
 
 This package does not yet implement privacy-preserving non-membership verification inside Compact. It provides the authoritative state surface that status-aware VC/VP flows can anchor to.
+
+Import rule:
+
+- credential families should import shared status binding types from
+  `credentials`
+- verifiers, holders, and Layer 3 status-aware application code should import
+  registry-facing proof-protocol helpers from this package
 
 Current prototype limitation:
 - `assertStateUsesThisRegistry(...)` binds the supplied snapshot to this

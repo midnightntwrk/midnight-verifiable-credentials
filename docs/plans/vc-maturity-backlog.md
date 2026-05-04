@@ -341,6 +341,11 @@ Current architectural direction to evaluate:
   - authority-attested status proof
   - revoked-set non-membership proof
 
+Current grouped execution:
+
+- stacked docs slice:
+  - status DSL ownership and import normalization
+
 ### VC-MAT-12: Add a dedicated status capability conformance category
 
 Priority: P1

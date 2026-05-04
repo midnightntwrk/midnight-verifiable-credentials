@@ -206,6 +206,14 @@ In that model:
 - verifier flows and Layer 3 contracts choose a proof protocol separately
 - different trust semantics stay explicit without multiplying VC shapes
 
+Import guidance:
+
+- VC/family shape:
+  - import shared status binding from `credentials`
+- verifier/session/business-contract status semantics:
+  - import registry-facing request/proof-protocol helpers from
+    `credentials-status-registry`
+
 Current compatibility note:
 
 - the repository still exposes `AuthorityAttestedStatusCapability` and
