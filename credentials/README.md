@@ -6,6 +6,23 @@ Status:
 
 - reference implementation
 
+Surface classification:
+
+- `On-chain + off-chain`
+- Compact entrypoints are the authoritative contract-authoring surface
+- generated/runtime TypeScript exports are off-chain mirrors only
+
+Start here:
+
+1. write on-chain contracts against:
+   - `src/credentials.compact`
+   - `src/credentials/composable.compact`
+   - narrower support entrypoints when composition requires less surface
+2. use `src/index.ts` and generated/runtime exports only in wallets,
+   verifiers, tests, and adapter code
+3. read [`../docs/guides/integration-surface-map.md`](../docs/guides/integration-surface-map.md)
+   when choosing between Compact and TypeScript surfaces
+
 Related docs:
 
 - spec: [`../docs/spec/midnight-credentials.md`](../docs/spec/midnight-credentials.md)

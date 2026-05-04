@@ -6,6 +6,19 @@ Status:
 
 - prototype
 
+Surface classification:
+
+- `On-chain only` for `src/demo.compact` and related Compact contract roots
+- managed/runtime exports are `Off-chain only` mirrors for tests and integration
+
+Start here:
+
+1. use this package as a demo/business-contract consumer of the VC/VP stack
+2. do not treat it as the canonical generic API surface; start from
+   [`../credentials`](../credentials) and the relevant family package first
+3. read [`../docs/guides/integration-surface-map.md`](../docs/guides/integration-surface-map.md)
+   before copying demo patterns into production contracts
+
 Related docs:
 
 - spec: [`../docs/spec/midnight-credentials.md`](../docs/spec/midnight-credentials.md)

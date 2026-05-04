@@ -4,6 +4,18 @@ Status:
 
 - reference implementation
 
+Surface classification:
+
+- `Off-chain only`
+
+Start here:
+
+1. use this package for OpenID-shaped JSON/domain envelopes around Compact VC/VP
+   payloads
+2. keep verification semantics in Compact/family packages, not here
+3. read [`../docs/guides/integration-surface-map.md`](../docs/guides/integration-surface-map.md)
+   if you are deciding between transport schemas and contract-authoring surfaces
+
 Related docs:
 
 - spec: [`../docs/spec/midnight-credentials.md`](../docs/spec/midnight-credentials.md)

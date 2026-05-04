@@ -6,6 +6,22 @@ Status:
 
 - reference implementation
 
+Surface classification:
+
+- `On-chain + off-chain`
+- Compact family entrypoints are the authoritative contract-authoring surface
+- generated/runtime TypeScript exports are off-chain mirrors only
+
+Start here:
+
+1. use this package when you need the current hidden-holder reference family
+2. write contracts and family composition against the Compact entrypoints
+3. use generated/runtime exports only in off-chain verifiers, wallets,
+   protocol adapters, and tests
+4. read [`../docs/guides/integration-surface-map.md`](../docs/guides/integration-surface-map.md)
+   and [`../docs/spec/status-verification-protocol.md`](../docs/spec/status-verification-protocol.md)
+   before adopting prototype status-aware flows
+
 Related docs:
 
 - spec: [`../docs/spec/midnight-credentials.md`](../docs/spec/midnight-credentials.md)

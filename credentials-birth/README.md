@@ -6,6 +6,22 @@ Status:
 
 - reference implementation
 
+Surface classification:
+
+- `On-chain + off-chain`
+- `src/birth-credential.compact` is the authoritative contract-authoring surface
+- generated/runtime TypeScript exports are off-chain mirrors only
+
+Start here:
+
+1. use this package when you want the simplest current concrete credential
+   family in the repository
+2. write contracts against the Compact family entrypoint
+3. use generated/runtime exports only in tests, wallets, verifiers, and
+   adapter code
+4. read [`../docs/guides/integration-surface-map.md`](../docs/guides/integration-surface-map.md)
+   for the Compact/runtime split
+
 Related docs:
 
 - spec: [`../docs/spec/midnight-credentials.md`](../docs/spec/midnight-credentials.md)

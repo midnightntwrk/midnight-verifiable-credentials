@@ -7,6 +7,18 @@ Status:
 
 - reference implementation adapter package
 
+Surface classification:
+
+- `Off-chain only`
+
+Start here:
+
+1. use this package only in runtime code that derives holder-binding values
+   from off-chain Midnight DID material
+2. do not use this package inside Compact contracts
+3. read [`../docs/guides/integration-surface-map.md`](../docs/guides/integration-surface-map.md)
+   for the canonical split between Compact authority and runtime adapters
+
 Related docs:
 
 - spec: [`../docs/spec/midnight-credentials.md`](../docs/spec/midnight-credentials.md)
