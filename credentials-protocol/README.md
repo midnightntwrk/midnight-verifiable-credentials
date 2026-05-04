@@ -7,6 +7,21 @@ Status:
 - reference implementation
 - evolving API surface
 
+Surface classification:
+
+- `Off-chain only`
+- this package is a runtime/orchestration layer, not a Compact contract surface
+
+Start here:
+
+1. use this package for:
+   - reference agent flows
+   - protocol-state management patterns
+   - transport-shaped integration experiments
+2. do not use this package as an on-chain API or contract-authoring surface
+3. read [`../docs/guides/integration-surface-map.md`](../docs/guides/integration-surface-map.md)
+   before mixing it with Compact package entrypoints
+
 Related docs:
 
 - spec: [`../docs/spec/midnight-credentials.md`](../docs/spec/midnight-credentials.md)

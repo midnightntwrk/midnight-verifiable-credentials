@@ -2,6 +2,26 @@
 
 Reference Compact surface for a revoked-set status registry.
 
+Status:
+
+- prototype / evolving capability package
+
+Surface classification:
+
+- mixed surface package
+- `src/revocation-registry.compact` is `On-chain only`
+- TypeScript builders and managed exports are `Off-chain only`
+
+Start here:
+
+1. use `src/revocation-registry.compact` when authoring a registry contract
+2. use `src/witness-builder.ts` and `src/attestation-builder.ts` only in
+   off-chain verifier/holder/application code
+3. read:
+   - [`../docs/spec/revocation-registry.md`](../docs/spec/revocation-registry.md)
+   - [`../docs/spec/status-verification-protocol.md`](../docs/spec/status-verification-protocol.md)
+   - [`../docs/guides/integration-surface-map.md`](../docs/guides/integration-surface-map.md)
+
 Current scope:
 - dedicated registry id
 - append-only revoked handle `MerkleTree`
