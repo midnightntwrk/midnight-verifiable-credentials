@@ -13,6 +13,7 @@ import {
   InMemoryProtocolStateStore,
   type ProtocolStateCodecResolver,
   type ProtocolStateCollection,
+  pruneExpiredRetainedProtocolState,
   readRetainedProtocolState,
   type RetainedProtocolState,
   writeRetainedProtocolState,
@@ -84,6 +85,102 @@ describe("ProtocolStateStore retention helpers", () => {
     expect(readRetainedProtocolState(collection, "message-3", 102n)).toEqual({
       id: "three",
     });
+  });
+
+  it("keeps the just-written finalized outcome when timestamps tie and capacity remains positive", () => {
+    const store = new InMemoryProtocolStateStore();
+    const collection = store.collection<RetainedProtocolState<{ id: string }>>(
+      "test:max-finalized-tie",
+    );
+
+    writeRetainedProtocolState(
+      collection,
+      "message-b",
+      { id: "older" },
+      100n,
+      { maxFinalizedOutcomes: 1 },
+    );
+    writeRetainedProtocolState(
+      collection,
+      "message-a",
+      { id: "newer" },
+      100n,
+      { maxFinalizedOutcomes: 1 },
+    );
+
+    expect(readRetainedProtocolState(collection, "message-b", 100n)).toBeUndefined();
+    expect(readRetainedProtocolState(collection, "message-a", 100n)).toEqual({
+      id: "newer",
+    });
+  });
+
+  it("retains no finalized outcomes when the configured capacity is zero", () => {
+    const store = new InMemoryProtocolStateStore();
+    const collection = store.collection<RetainedProtocolState<{ id: string }>>(
+      "test:max-finalized-zero",
+    );
+
+    writeRetainedProtocolState(
+      collection,
+      "message-1",
+      { id: "one" },
+      100n,
+      { maxFinalizedOutcomes: 0 },
+    );
+
+    expect(readRetainedProtocolState(collection, "message-1", 100n)).toBeUndefined();
+  });
+
+  it("prunes expired retained state from a snapshot before deleting entries", () => {
+    const backing = new Map<string, RetainedProtocolState<{ id: string }>>([
+      [
+        "message-1",
+        {
+          value: { id: "one" },
+          storedAtMs: 100n,
+          expiresAtMs: 101n,
+        },
+      ],
+      [
+        "message-2",
+        {
+          value: { id: "two" },
+          storedAtMs: 100n,
+          expiresAtMs: 101n,
+        },
+      ],
+    ]);
+
+    let iterating = false;
+    const collection: ProtocolStateCollection<RetainedProtocolState<{ id: string }>> =
+      {
+        get: (key) => backing.get(key),
+        set: (key, value) => {
+          backing.set(key, value);
+        },
+        delete: (key) => {
+          if (iterating) {
+            throw new Error("delete during iteration");
+          }
+          return backing.delete(key);
+        },
+        has: (key) => backing.has(key),
+        entries: function* () {
+          iterating = true;
+          try {
+            for (const entry of backing.entries()) {
+              yield entry;
+            }
+          } finally {
+            iterating = false;
+          }
+        },
+      };
+
+    expect(() =>
+      pruneExpiredRetainedProtocolState(collection, 102n),
+    ).not.toThrow();
+    expect(Array.from(backing.keys())).toEqual([]);
   });
 
   it("round-trips typed values through a codec-backed byte store", () => {

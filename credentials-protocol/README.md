@@ -208,9 +208,11 @@ Persistent state adapter rule:
   `ProtocolStateCodecResolver`, and `createCodecBackedProtocolStateStore(...)`
   as the preferred integration path when the persistence layer naturally
   stores bytes or blobs
-- finalized outcome retention currently relies on `entries()` iteration, so a
-  persistent adapter must support collection scans for TTL pruning and oldest-
-  first eviction
+- finalized outcome retention currently relies on `entries()` enumeration, so a
+  persistent adapter must support full collection scans for TTL pruning and
+  oldest-first eviction semantics
+- the helper implementation snapshots `entries()` before deleting records, so
+  adapters do not need to tolerate mutation during active iteration
 - if a persistent adapter wants better write-time complexity, it should
   preserve the same semantics behind storage-native pruning/eviction rather
   than copying the reference in-memory scan literally

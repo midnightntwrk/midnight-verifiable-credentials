@@ -241,7 +241,8 @@ export const pruneExpiredRetainedProtocolState = <T>(
 ): void => {
   // Reference-grade pruning currently relies on collection scans. Persistent
   // adapters may want to implement equivalent retention more efficiently.
-  for (const [key, retained] of collection.entries()) {
+  const retainedEntries = Array.from(collection.entries());
+  for (const [key, retained] of retainedEntries) {
     if (
       retained.expiresAtMs !== undefined &&
       currentTimeMs > retained.expiresAtMs
@@ -284,15 +285,26 @@ export const writeRetainedProtocolState = <T>(
     return;
   }
 
-  retainedEntries
+  const evictionCandidates = retainedEntries
+    .filter(([entryKey]) => entryKey !== key)
     .sort((a, b) => {
       if (a[1].storedAtMs === b[1].storedAtMs) {
         return a[0].localeCompare(b[0]);
       }
       return a[1].storedAtMs < b[1].storedAtMs ? -1 : 1;
-    })
-    .slice(0, overflow)
+    });
+
+  const evictionsFromOtherEntries = overflow < evictionCandidates.length
+    ? overflow
+    : evictionCandidates.length;
+
+  evictionCandidates
+    .slice(0, evictionsFromOtherEntries)
     .forEach(([entryKey]) => {
       collection.delete(entryKey);
     });
+
+  if (overflow > evictionsFromOtherEntries) {
+    collection.delete(key);
+  }
 };
