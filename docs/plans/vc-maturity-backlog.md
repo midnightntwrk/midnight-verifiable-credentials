@@ -322,6 +322,13 @@ Required outcome:
   - verifier status capability changes
   - future package entrypoint changes
 
+Current grouped execution:
+
+- stacked docs slice:
+  - initialize `CHANGELOG.md` with Keep a Changelog sections
+  - record compatibility-significant VC status, revocation-demo, and holder
+    binding surface changes
+
 ### VC-MAT-11: Decide ownership of the status DSL and package layer placement
 
 Priority: P1

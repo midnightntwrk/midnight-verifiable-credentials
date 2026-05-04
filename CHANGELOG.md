@@ -23,9 +23,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   demo path
 - added an integration surface map and package maturity backlog for VC
   integrators and maintainers
+- the core TypeScript package now exports `OffchainDIDHolderBinding` as the
+  preferred public-facing alias for the existing
+  `OffchainMidnightHolderBinding` Compact/runtime shape.
 
 ### Changed
 
+- BREAKING: the VC status model no longer carries runtime `epoch` and
+  `StatusSupportLevel` fields. Freshness remains a verifier/application
+  responsibility via the accepted `(registryId, revokedRoot)` pair.
+- BREAKING: status architecture is being normalized around shared VC-side
+  status binding plus presentation-time status proof protocols. New additive
+  runtime types include:
+  - `NoStatusBinding`
+  - `RegistryBoundStatusBinding`
+  - `AuthorityAttestedStatusProofProtocol`
+  - `RevokedSetNonMembershipStatusProofProtocol`
 - clarified the current status capability taxonomy across the specs and package
   READMEs:
   - `NoStatusCapability`
@@ -36,15 +49,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - documented `credentials-status-registry` as a first-class workspace package
 - documented the rule that demo contracts stay small, business-facing, and
   capability-specific
+- Holder-binding naming is now explicitly split between:
+  - Compact/core struct name:
+    `OffchainMidnightHolderBinding`
+  - preferred public-facing TypeScript alias:
+    `OffchainDIDHolderBinding`
 
-### Removed
-
-- removed runtime `StatusSupportLevel` from the status surface
-- removed runtime `epoch` from the first revocation/status verification model
-
-### Breaking
+### Fixed
 
 - `ProtocolStateCollection` now requires `entries()` for retention/pruning
-  semantics in protocol state adapters
-- status runtime surfaces no longer expose `StatusSupportLevel`
-- status runtime surfaces no longer expose revocation `epoch`
+  semantics in protocol state adapters; the reference helpers now handle
+  snapshot-based pruning and tied-timestamp retention more explicitly.
+- The revocation demo no longer duplicates the revoked-set status request
+  struct that now lives in the shared hidden-holder family surface.
