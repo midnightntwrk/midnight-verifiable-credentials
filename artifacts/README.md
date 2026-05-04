@@ -16,4 +16,7 @@ npm run artifacts:pack
 
 Notes:
 - `credentials-demo-contract` is intentionally excluded. It is a repo-local demo contract, not a reusable dependency surface.
+- `credentials-status-registry` is included. It is a reusable status/revocation
+  prototype surface even though its contract-facing and off-chain builder
+  responsibilities are still evolving.
 - `artifacts/npm/*.tgz` are generated outputs and are gitignored.

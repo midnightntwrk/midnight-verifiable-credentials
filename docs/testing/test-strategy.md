@@ -27,6 +27,18 @@ The Midnight Credentials system has five layers:
 | 3 | `credentials-demo-contract`, business contracts | Business logic, capabilities, state mutation |
 | 4 | `credentials-protocol`, `standalone-environment` | Protocol simulation, party agents, integration infrastructure |
 
+Current-repository note:
+
+- the fully validated workspace spine in this repository is currently centered
+  on `credentials`, `credentials-birth`, `credentials-birth-secret`,
+  `credentials-same-holder`, `credentials-iso-registry`,
+  `credentials-offchain-did`, `credentials-openid`,
+  `credentials-status-registry`, `credentials-protocol`,
+  `credentials-demo-contract`, and `standalone-environment`
+- additional families listed later in this strategy document describe the wider
+  design space or adjacent prototype work, not current workspace packages on
+  `develop`
+
 ## Configuration Dimensions
 
 Every credential interaction is a point in a multi-dimensional configuration space.

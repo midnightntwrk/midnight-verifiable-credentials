@@ -31,6 +31,7 @@ The repository is organized as a layered Compact-first stack.
 | Layer 1 | Generic VC/VP capabilities | `credentials`, `credentials-same-holder`, `credentials-iso-registry` |
 | Layer 2 | Concrete credential families | `credentials-birth`, `credentials-birth-secret` |
 | Layer 2.5 | DID-aware runtime adapters | `credentials-offchain-did` |
+| Layer 3 status prototype | Status-aware contract surface plus off-chain builders | `credentials-status-registry` |
 | Layer 3 | Verifier/business contract composition | `credentials-demo-contract` |
 | Layer 4 | Transport and protocol orchestration | `credentials-openid`, `credentials-protocol` |
 | Planned prototype restoration | Future cross-profile prototype package, if restored explicitly | `credentials-birth-binding-prototypes` |
@@ -83,6 +84,21 @@ binding.
 
 It owns runtime parsing and conversion from portable offchain Midnight DID
 inputs into the canonical VC holder-binding shape defined by `credentials`.
+
+### `credentials-status-registry`
+This package is the current prototype status/revocation package.
+
+It owns:
+
+- the Compact revocation registry contract surface
+- verifier-supplied status request helpers
+- status-handle witness-builder helpers
+- transitional authority-attested status builder helpers
+
+It is intentionally mixed-surface:
+
+- the Compact registry contract belongs to on-chain integration
+- the witness/attestation builders belong to off-chain integration
 
 ### `credentials-openid`
 This package is a transport/domain adapter layer.

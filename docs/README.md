@@ -32,6 +32,9 @@
 - package selection:
   - [`guides/package-selection.md`](./guides/package-selection.md)
   - for engineers choosing the right workspace package or layer
+- integration surface map:
+  - [`guides/integration-surface-map.md`](./guides/integration-surface-map.md)
+  - for integrators deciding which surfaces belong on-chain, off-chain, or both
 
 ## Architecture
 
@@ -71,3 +74,6 @@
 - revocation capability options:
   - [`plans/revocation-capability-options.md`](./plans/revocation-capability-options.md)
   - for choosing the first Midnight-native status/revocation implementation path
+- repository audit backlog:
+  - [`plans/repository-audit-backlog.md`](./plans/repository-audit-backlog.md)
+  - for current documentation, architecture, and integration-surface gaps

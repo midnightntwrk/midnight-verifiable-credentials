@@ -37,6 +37,13 @@ Important implementation detail:
   application code, and package users, but Layer 3 Compact contracts should not
   treat generated TS/JS as an input dependency.
 
+Repository-scope note:
+
+- several examples in this document use passport/compliance credential families
+  from adjacent prototype work to illustrate multi-family composition pressure
+- those examples are useful design stress tests, but they are not evidence that
+  those families are current first-class workspace packages in this repository
+
 The current contracts use `include` for local Compact source composition and
 module imports/prefixes for generic module instantiation, for example:
 
