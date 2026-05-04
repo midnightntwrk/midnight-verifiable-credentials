@@ -41,6 +41,21 @@ describe("credentials core: status capabilities", () => {
     ).not.toThrow();
   });
 
+  it("derives a deterministic revoked-set status handle", () => {
+    const first = pureCircuits.revokedSetStatusHandle(
+      sha256Bytes("credential-root:alice"),
+      sha256Bytes("registry:hidden-holder"),
+      sha256Bytes("issuer-status-salt"),
+    );
+    const second = pureCircuits.revokedSetStatusHandle(
+      sha256Bytes("credential-root:alice"),
+      sha256Bytes("registry:hidden-holder"),
+      sha256Bytes("issuer-status-salt"),
+    );
+
+    expect(Buffer.from(first).equals(Buffer.from(second))).toBe(true);
+  });
+
   it("rejects a revoked-set non-membership status capability with an empty handle commitment", () => {
     const signer = createSigner("status-authority", 999n);
     const capability = {

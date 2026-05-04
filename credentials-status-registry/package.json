@@ -20,18 +20,19 @@
     }
   },
   "scripts": {
+    "prepare:credentials": "npm --prefix ../credentials run build",
     "contract": "npm run compact",
     "compact": "node ../scripts/ensure-compact-package-aliases.mjs && compact compile src/revocation-registry.compact src/managed/revocation-registry && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
-    "pretest": "npm --prefix ../credentials run build && npm run compact",
-    "pretest:ci": "npm --prefix ../credentials run build && npm run compact",
+    "pretest": "npm run prepare:credentials && npm run compact",
+    "pretest:ci": "npm run prepare:credentials && npm run compact",
     "test": "vitest run",
     "test:ci": "vitest run",
     "prepack": "npm run build",
     "clean": "rm -rf dist && rm -rf coverage && rm -rf reports && rm -rf src/managed",
-    "build": "npm run compact && rm -rf dist && tsc -b tsconfig.build.json --force && mkdir -p dist && cp -Rf ./src/managed ./dist/ && cp ./src/revocation-registry.compact ./dist",
+    "build": "npm run prepare:credentials && npm run compact && rm -rf dist && tsc -b tsconfig.build.json --force && mkdir -p dist && cp -Rf ./src/managed ./dist/ && cp ./src/revocation-registry.compact ./dist",
     "lint": "eslint src --ignore-pattern 'src/managed/**'",
     "lint:fix": "eslint src --fix --ignore-pattern 'src/managed/**'",
-    "typecheck": "npm run compact && tsc -p tsconfig.json --noEmit",
+    "typecheck": "npm run prepare:credentials && npm run compact && tsc -p tsconfig.json --noEmit",
     "all": "npm run build && npm run test:ci"
   },
   "dependencies": {

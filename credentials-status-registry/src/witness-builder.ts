@@ -1,0 +1,151 @@
+import { Buffer } from "node:buffer";
+
+import {
+  pureCircuits,
+  type RevocationRegistryState,
+  type RevokedSetNonMembershipStatusCapability,
+  type RevokedSetNonMembershipWitnessInput,
+  type StatusRegistryRef,
+  type VerifierStatusPolicy,
+} from "@midnight-ntwrk/midnight-did-credentials";
+
+export type RevokedSetRegistrySnapshot = {
+  readonly registryState: RevocationRegistryState;
+  readonly revokedStatusHandles: readonly Uint8Array[];
+};
+
+export type BuildRevokedSetStatusWitnessOptions = {
+  readonly credentialClaimRoot: Uint8Array;
+  readonly registryRef: StatusRegistryRef;
+  readonly issuerStatusSalt: Uint8Array;
+  readonly statusHandleOpening: Uint8Array;
+  readonly registryState: RevocationRegistryState;
+  readonly verifierStatusPolicy?: VerifierStatusPolicy;
+  readonly revokedStatusHandles?: readonly Uint8Array[];
+};
+
+export type BuiltRevokedSetStatusWitness = {
+  readonly statusHandle: Uint8Array;
+  readonly statusCapability: RevokedSetNonMembershipStatusCapability;
+  readonly witnessInput: RevokedSetNonMembershipWitnessInput;
+};
+
+const toHex = (value: Uint8Array): string => Buffer.from(value).toString("hex");
+
+const equalBytes = (left: Uint8Array, right: Uint8Array): boolean =>
+  left.length === right.length &&
+  left.every((value, index) => value === right[index]);
+
+export const deriveRevokedSetStatusHandle = ({
+  credentialClaimRoot,
+  registryId,
+  issuerStatusSalt,
+}: {
+  readonly credentialClaimRoot: Uint8Array;
+  readonly registryId: Uint8Array;
+  readonly issuerStatusSalt: Uint8Array;
+}): Uint8Array =>
+  pureCircuits.revokedSetStatusHandle(
+    credentialClaimRoot,
+    registryId,
+    issuerStatusSalt,
+  );
+
+export const buildRevokedSetStatusCapability = ({
+  registryRef,
+  statusHandle,
+  statusHandleOpening,
+}: {
+  readonly registryRef: StatusRegistryRef;
+  readonly statusHandle: Uint8Array;
+  readonly statusHandleOpening: Uint8Array;
+}): RevokedSetNonMembershipStatusCapability => ({
+  registryRef,
+  statusHandleCommitment: pureCircuits.revokedSetStatusHandleCommitment(
+    statusHandle,
+    statusHandleOpening,
+  ),
+});
+
+export const buildRevokedSetWitnessInput = ({
+  registryState,
+  statusHandle,
+  statusHandleOpening,
+}: {
+  readonly registryState: RevocationRegistryState;
+  readonly statusHandle: Uint8Array;
+  readonly statusHandleOpening: Uint8Array;
+}): RevokedSetNonMembershipWitnessInput => ({
+  registryState,
+  statusHandle,
+  statusHandleOpening,
+});
+
+export const assertStatusHandleNotRevoked = (
+  snapshot: RevokedSetRegistrySnapshot,
+  statusHandle: Uint8Array,
+): void => {
+  const match = snapshot.revokedStatusHandles.find((candidate) =>
+    equalBytes(candidate, statusHandle),
+  );
+  if (match) {
+    throw new Error(
+      `Status handle ${toHex(statusHandle)} is already present in the revoked set snapshot`,
+    );
+  }
+};
+
+export const buildRevokedSetStatusWitness = ({
+  credentialClaimRoot,
+  registryRef,
+  issuerStatusSalt,
+  statusHandleOpening,
+  registryState,
+  verifierStatusPolicy,
+  revokedStatusHandles,
+}: BuildRevokedSetStatusWitnessOptions): BuiltRevokedSetStatusWitness => {
+  const statusHandle = deriveRevokedSetStatusHandle({
+    credentialClaimRoot,
+    registryId: registryRef.registryId,
+    issuerStatusSalt,
+  });
+  const statusCapability = buildRevokedSetStatusCapability({
+    registryRef,
+    statusHandle,
+    statusHandleOpening,
+  });
+  const witnessInput = buildRevokedSetWitnessInput({
+    registryState,
+    statusHandle,
+    statusHandleOpening,
+  });
+
+  pureCircuits.assertRevokedSetNonMembershipWitnessMatchesCapability(
+    statusCapability,
+    witnessInput,
+  );
+
+  if (verifierStatusPolicy) {
+    pureCircuits.assertVerifierStatusPolicyAcceptsRevokedSetNonMembership(
+      verifierStatusPolicy,
+      statusCapability,
+      witnessInput,
+    );
+  }
+
+  if (revokedStatusHandles) {
+    assertStatusHandleNotRevoked(
+      {
+        registryState,
+        revokedStatusHandles,
+      },
+      statusHandle,
+    );
+  }
+
+  return {
+    statusHandle,
+    statusCapability,
+    witnessInput,
+  };
+};
