@@ -107,7 +107,6 @@ particular, this package does not yet claim:
 
 - durable pending state across restarts or delayed delivery
 - production randomness/nonce interfaces instead of test/reference generation
-- presentation-side message-level expiry semantics
 - a final external interoperability contract for OIDC, DIDComm, or another wire
   protocol
 - revocation/non-revocation
@@ -128,6 +127,8 @@ State hardening rule:
 - the exported default implementation is an in-memory reference store
 - production integrators should supply a persistent implementation if they need
   restart-safe protocol session handling
+- finalized replay/idempotency outcomes can now be retained with a configurable
+  TTL and/or bounded count
 
 For blinded-secret issuance, the transport-shaped API is now the preferred
 reference surface:
@@ -154,8 +155,41 @@ Reference timing rule:
   `0n`
 - callers that want expiry enforcement for offer/request lifetime should pass
   an explicit `currentDay`
-- blinded-secret presentation does not yet carry explicit message-level expiry
-  fields, so the presentation transport path does not claim timeout semantics
+- blinded-secret presentation requests and submissions can now carry envelope-
+  level expiry timestamps in the reference protocol layer
+- callers that want blinded-secret presentation timeout enforcement should pass
+  explicit `currentTimeMs` values together with request/submission expiry
+  timestamps
+- the Compact credential family still does not define body-level presentation
+  expiry fields or a final interoperable timeout contract
+
+Persistent state adapter rule:
+
+- integrators can satisfy `ProtocolStateStore` with a persistent backend as
+  long as it preserves named collection boundaries, stable key lookup, and
+  typed value serialization
+- finalized outcome retention currently relies on `entries()` iteration, so a
+  persistent adapter must support collection scans for TTL pruning and oldest-
+  first eviction
+
+Illustrative sketch:
+
+```ts
+class SqlProtocolStateStore implements ProtocolStateStore {
+  collection<T>(name: string): ProtocolStateCollection<T> {
+    return {
+      get: (key) => loadTypedRow<T>(name, key),
+      set: (key, value) => upsertTypedRow(name, key, value),
+      delete: (key) => deleteRow(name, key),
+      has: (key) => hasRow(name, key),
+      entries: () => iterateTypedRows<T>(name),
+    };
+  }
+}
+```
+
+The adapter does not need to understand VC semantics. It only needs to
+preserve collection names, keys, and typed value bytes/JSON consistently.
 
 The lower-level strict helpers still exist for narrow tests and internal
 composition:

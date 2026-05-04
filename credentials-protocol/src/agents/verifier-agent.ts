@@ -23,7 +23,7 @@ import {
 
 import { padText } from "../shared/crypto.js";
 import { createEnvelope } from "../shared/envelope.js";
-import { assertBodyHasFields,assertMessageType } from "../shared/validation.js";
+import { assertBodyHasFields, assertMessageType } from "../shared/validation.js";
 import type { MessageBus } from "../transport/message-bus.js";
 import type {
   PartyId,
@@ -34,7 +34,11 @@ import type {
 import {
   InMemoryProtocolStateStore,
   type ProtocolStateCollection,
+  type ProtocolStateRetentionPolicy,
   type ProtocolStateStore,
+  readRetainedProtocolState,
+  type RetainedProtocolState,
+  writeRetainedProtocolState,
 } from "./protocol-state-store.js";
 import {
   type ProtocolRandomnessFlow,
@@ -75,6 +79,8 @@ const SECRET_HOLDER_FEATURES = {
   supportsVerifierScopedPseudonym: true,
   supportsSameHolderProof: true,
 };
+
+const currentTimeMs = (value?: bigint): bigint => value ?? BigInt(Date.now());
 
 class PresentationProtocolError extends Error {
   readonly category: SecretBirthCredentialVerificationRejectionCategory;
@@ -122,6 +128,15 @@ export type SecretPresentationRequirements = {
   readonly requestedAgeThresholdYears: number;
 };
 
+type SecretPresentationRequestOptions = {
+  readonly currentTimeMs?: bigint;
+  readonly requestExpiresAtMs?: bigint;
+};
+
+type SecretPresentationProcessingOptions = {
+  readonly currentTimeMs?: bigint;
+};
+
 /**
  * Private witness data needed only by the Compact simulator to evaluate
  * secret-holder presentations. In a real ZK deployment the verifier never
@@ -162,8 +177,11 @@ export class VerifierAgent {
   private readonly profile: DIDProfile;
   private readonly bus: MessageBus;
   private readonly randomness: ProtocolRandomnessSource;
+  private readonly retentionPolicy: ProtocolStateRetentionPolicy;
   private challengeCounter = 0;
-  private readonly completedSecretPresentationOutcomes: ProtocolStateCollection<ProtocolMessage>;
+  private readonly completedSecretPresentationOutcomes: ProtocolStateCollection<
+    RetainedProtocolState<ProtocolMessage>
+  >;
 
   constructor(
     profile: DIDProfile,
@@ -171,12 +189,14 @@ export class VerifierAgent {
     options: {
       readonly randomness?: ProtocolRandomnessSource;
       readonly stateStore?: ProtocolStateStore;
+      readonly stateRetention?: ProtocolStateRetentionPolicy;
     } = {},
   ) {
     this.profile = profile;
     this.bus = bus;
     this.randomness =
       options.randomness ?? unsafeReferenceDeterministicRandomnessSource;
+    this.retentionPolicy = options.stateRetention ?? {};
     const stateStore = options.stateStore ?? new InMemoryProtocolStateStore();
     this.completedSecretPresentationOutcomes = stateStore.collection(
       `verifier:${this.profile.label}:completed-secret-presentation-outcomes`,
@@ -325,6 +345,7 @@ export class VerifierAgent {
   createAndSendSecretPresentationRequest(
     holderLabel: PartyId,
     requirements: SecretPresentationRequirements,
+    options: SecretPresentationRequestOptions = {},
   ): void {
     const SECRET_BIRTH_SCHEMA = {
       packageId: padText("midnight-did:vc:birth-secret"),
@@ -338,6 +359,12 @@ export class VerifierAgent {
         "secret-presentation-request",
         "secret-birth-presentation",
         true,
+        undefined,
+        undefined,
+        {
+          createdAtMs: options.currentTimeMs,
+          expiresAtMs: options.requestExpiresAtMs,
+        },
       ),
       schema: SECRET_BIRTH_SCHEMA,
       issuerVerificationMethodRef: requirements.issuerVerificationMethodRef,
@@ -374,6 +401,7 @@ export class VerifierAgent {
   receiveSecretSubmissionAndEvaluate(
     submission: ProtocolMessage,
     simulatorWitness: SecretSimulatorWitness,
+    options: SecretPresentationProcessingOptions = {},
   ): {
     approved: boolean;
     pseudonym?: Uint8Array;
@@ -384,6 +412,27 @@ export class VerifierAgent {
     const submissionMessage =
       submission.body as SecretBirthCredentialVerificationSubmission;
     const body = submissionMessage.body;
+    const nowMs = currentTimeMs(options.currentTimeMs);
+    if (
+      simulatorWitness.request.envelope.hasExpiresAt &&
+      nowMs > simulatorWitness.request.envelope.expiresAt
+    ) {
+      throw new PresentationProtocolError(
+        "expired_request",
+        "This blinded-secret presentation request expired before the verifier processed the submission.",
+        true,
+      );
+    }
+    if (
+      submissionMessage.envelope.hasExpiresAt &&
+      nowMs > submissionMessage.envelope.expiresAt
+    ) {
+      throw new PresentationProtocolError(
+        "expired_submission",
+        "This blinded-secret presentation submission expired before the verifier processed it.",
+        true,
+      );
+    }
 
     secretPureCircuits.assertValidSecretBirthCredentialVerificationRequestMessage(
       simulatorWitness.request,
@@ -439,12 +488,16 @@ export class VerifierAgent {
   receiveSecretSubmissionAndRespond(
     submission: ProtocolMessage,
     simulatorWitness: SecretSimulatorWitness,
+    options: SecretPresentationProcessingOptions = {},
   ): void {
     const submissionMessageId = Buffer.from(
       submission.envelope.messageId,
     ).toString("hex");
-    const completedOutcome =
-      this.completedSecretPresentationOutcomes.get(submissionMessageId);
+    const completedOutcome = readRetainedProtocolState(
+      this.completedSecretPresentationOutcomes,
+      submissionMessageId,
+      currentTimeMs(options.currentTimeMs),
+    );
     if (completedOutcome) {
       this.bus.send(completedOutcome);
       return;
@@ -453,6 +506,7 @@ export class VerifierAgent {
       const evaluation = this.receiveSecretSubmissionAndEvaluate(
         submission,
         simulatorWitness,
+        options,
       );
       const resultMessage: ProtocolMessage = {
         type: "presentation:result",
@@ -462,9 +516,15 @@ export class VerifierAgent {
         body: evaluation.result,
       };
       this.bus.send(resultMessage);
-      this.completedSecretPresentationOutcomes.set(
+      writeRetainedProtocolState(
+        this.completedSecretPresentationOutcomes,
         submissionMessageId,
         resultMessage,
+        currentTimeMs(options.currentTimeMs),
+        this.retentionPolicy,
+        resultMessage.envelope.hasExpiresAt
+          ? resultMessage.envelope.expiresAt
+          : undefined,
       );
     } catch (error) {
       const rejection = this.buildSecretPresentationRejection(
@@ -485,9 +545,15 @@ export class VerifierAgent {
         body: rejection,
       };
       this.bus.send(rejectionMessage);
-      this.completedSecretPresentationOutcomes.set(
+      writeRetainedProtocolState(
+        this.completedSecretPresentationOutcomes,
         submissionMessageId,
         rejectionMessage,
+        currentTimeMs(options.currentTimeMs),
+        this.retentionPolicy,
+        rejectionMessage.envelope.hasExpiresAt
+          ? rejectionMessage.envelope.expiresAt
+          : undefined,
       );
     }
   }

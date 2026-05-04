@@ -13,8 +13,13 @@ export const createEnvelope = (
   initial: boolean,
   respondsTo?: Uint8Array,
   threadId?: Uint8Array,
+  options: {
+    readonly createdAtMs?: bigint;
+    readonly expiresAtMs?: bigint;
+  } = {},
 ): ProtocolMessageEnvelope => {
   const seq = envelopeCounter++;
+  const createdAt = options.createdAtMs ?? BigInt(Date.now());
   return {
     version: 1n,
     messageId: sha256(`protocol:message:${label}:${seq}`),
@@ -22,9 +27,9 @@ export const createEnvelope = (
     initialMessage: initial,
     respondsToMessageId:
       respondsTo ?? genericPureCircuits.noProtocolResponseReference(),
-    createdAt: BigInt(Date.now()),
-    hasExpiresAt: false,
-    expiresAt: 0n,
+    createdAt,
+    hasExpiresAt: options.expiresAtMs !== undefined,
+    expiresAt: options.expiresAtMs ?? 0n,
   };
 };
 

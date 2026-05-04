@@ -39,6 +39,8 @@ export type SecretBirthCredentialIssuanceRejection = {
 export type SecretBirthCredentialVerificationRejectionCategory =
   | "malformed_submission"
   | "request_submission_mismatch"
+  | "expired_request"
+  | "expired_submission"
   | "unsatisfied_request";
 
 export type SecretBirthCredentialVerificationRejection = {

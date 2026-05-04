@@ -69,12 +69,14 @@ Today the repository can already claim:
 - reference replay/idempotency behavior for blinded-secret issuance and
   presentation outcomes
 - an injectable protocol state-store seam for pending/session transport state
+- configurable retention/eviction policy for finalized replay/idempotency state
+- envelope-level request/submission expiry semantics for blinded-secret
+  presentation in the reference protocol layer
 
 Today the repository should not yet claim:
 
 - durable hidden-holder session state
 - production randomness/nonce policy across transport-facing flows
-- presentation-side message-level expiry semantics
 - revocation/non-revocation
 - final external transport interoperability
 
@@ -92,7 +94,11 @@ Current progress note:
   behind an injectable interface
 - pending offer/request/submission/outcome state can now sit behind an
   injectable `ProtocolStateStore` interface with an in-memory reference store
+- finalized replay/idempotency state can now be retained with TTL and bounded
+  count policy in the reference store seam
+- the reference protocol now supports envelope-level presentation request and
+  submission expiry checks
 - production hardening still requires the caller to supply a real randomness
   implementation and document that policy
-- production hardening still requires persistent store implementations and
-  explicit retention / eviction policy
+- production hardening still requires persistent store implementations
+- production hardening still requires a final interoperable timeout contract

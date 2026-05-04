@@ -66,6 +66,8 @@ Status: current implemented test surface as of 2026-05-01.
     reference flows
   - injectable protocol state-store coverage for blinded-secret issuance and
     presentation reference flows
+  - helper-level finalized-outcome retention coverage for TTL expiry and
+    bounded-count eviction
   - explicit blinded-secret issuance rejection messages in the reference
     protocol layer for malformed requests, offer/request mismatches, unknown
     offer references, expired offers, and expired requests
@@ -73,9 +75,10 @@ Status: current implemented test surface as of 2026-05-01.
     duplicate blinded-secret issuance outcomes
   - explicit blinded-secret presentation rejection messages in the reference
     protocol layer for malformed submissions, request/submission mismatches,
-    and unsatisfied verifier requests
+    unsatisfied verifier requests, expired requests, and expired submissions
   - idempotent re-delivery of duplicate blinded-secret presentation
     submissions and duplicate presentation outcomes
+  - re-evaluation of finalized presentation submissions after retention expiry
   - holder-side rejection of uncorrelated presentation outcomes
   - holder-side rejection of uncorrelated issuance outcomes
   - agent-boundary rejection of forged issuance results

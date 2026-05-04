@@ -127,7 +127,8 @@ Current repository stance:
   mismatches, unknown offer references, expired offers, and expired requests
 - the same reference protocol layer now proves explicit rejection results for
   blinded-secret presentation, including malformed submissions,
-  request/submission mismatches, and unsatisfied verifier requests
+  request/submission mismatches, unsatisfied verifier requests, expired
+  requests, and expired submissions
 - the same reference protocol layer now proves idempotent re-delivery for
   duplicate blinded-secret presentation submissions and duplicate presentation
   outcomes
@@ -142,8 +143,8 @@ Current repository stance:
   blinded-secret presentation outcomes
 - the repository now carries explicit message-level offer/request expiry fields
   in the blinded-secret issuance reference flow
-- the repository does not yet carry explicit message-level expiry fields in the
-  blinded-secret presentation reference flow
+- the repository now carries envelope-level request/submission expiry
+  semantics in the blinded-secret presentation reference flow
 - protocol-facing randomness is now injectable in the reference agent layer,
   but the default implementation remains deterministic for test/reference use
 - the repository does not yet define a final interoperable rejection result
