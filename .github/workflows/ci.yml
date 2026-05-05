@@ -27,7 +27,7 @@ jobs:
     name: Classify Changes
     runs-on: ubuntu-latest
     outputs:
-      docs_only: ${{ steps.filter.outputs.docs_only }}
+      docs_only: ${{ steps.classify.outputs.docs_only }}
       bdd_only: ${{ steps.classify.outputs.bdd_only }}
     steps:
       - name: Checkout repository
@@ -35,17 +35,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Detect docs-only changes
-        id: filter
-        uses: dorny/paths-filter@v3
-        with:
-          predicate-quantifier: every
-          filters: |
-            docs_only:
-              - '**/*.md'
-              - 'docs/**'
-
-      - name: Detect BDD-only changes
+      - name: Classify docs-only and BDD-only changes
         id: classify
         shell: bash
         run: |
@@ -62,14 +52,26 @@ jobs:
           mapfile -t changed_files < <(git diff --name-only "$range")
 
           if [[ ${#changed_files[@]} -eq 0 ]]; then
+            echo "docs_only=false" >> "$GITHUB_OUTPUT"
             echo "bdd_only=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
+          docs_only=true
+          docs_related=false
           bdd_only=true
           bdd_related=false
 
           for file in "${changed_files[@]}"; do
+            case "$file" in
+              *.md|docs/*)
+                docs_related=true
+                ;;
+              *)
+                docs_only=false
+                ;;
+            esac
+
             case "$file" in
               vc-bdd-scenarios/*|docs/plans/serenity-js-bdd-layer.md|docs/testing/test-strategy.md|docs/testing/test-matrix.md|docs/README.md|package.json|package-lock.json|run.sh|run-credentials.sh)
                 ;;
@@ -85,10 +87,19 @@ jobs:
             esac
           done
 
+          if [[ "$docs_related" != true ]]; then
+            docs_only=false
+          fi
+
           if [[ "$bdd_related" != true ]]; then
             bdd_only=false
           fi
 
+          if [[ "$bdd_only" == true ]]; then
+            docs_only=false
+          fi
+
+          echo "docs_only=$docs_only" >> "$GITHUB_OUTPUT"
           echo "bdd_only=$bdd_only" >> "$GITHUB_OUTPUT"
 
   docs-only-validation:

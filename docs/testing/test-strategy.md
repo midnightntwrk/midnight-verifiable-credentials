@@ -48,6 +48,10 @@ Current validated CI shape:
 - living-documentation scenarios now have a separate TypeScript BDD lane shape
   under `vc-bdd-scenarios/`; this is not a docs-only change class and should be
   treated as code
+- CI change classes are mutually exclusive:
+  - `docs_only` for markdown/docs-only diffs
+  - `bdd_only` for the focused Serenity/JS scenario surface
+  - full CI for everything else
 
 ## Configuration Dimensions
 
