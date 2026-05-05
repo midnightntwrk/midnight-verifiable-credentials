@@ -39,6 +39,13 @@ Current-repository note:
   design space or adjacent prototype work, not current workspace packages on
   `develop`
 
+Current validated CI shape:
+
+- code-changing PRs run the full CI matrix
+- docs-only PRs now use the workflow-level `Docs-only Validation` fast path
+- boundary hygiene runs inside `ci:lint` through `check:package-boundaries`
+- the current revocation/status slice also has a focused `ci:revocation` lane
+
 ## Configuration Dimensions
 
 Every credential interaction is a point in a multi-dimensional configuration space.
@@ -53,6 +60,13 @@ Every credential interaction is a point in a multi-dimensional configuration spa
 | National ID | `credentials-national-id` | documentNumber, issuingCountry, givenName, familyName, birthDate, birthPlace, residenceRegion, taxIdentifier | country (3166-1), region (3166-2) |
 | AML/KYC Compliance | `credentials-compliance` | subjectId, amlStatus, sanctionsScreening, pepStatus, riskScore, jurisdiction, checkedAt, validUntilDay | country (3166-1) |
 | Employee | `credentials-employee` | employeeId, organizationName, organizationId, department, role, clearanceLevel, employedSince | — |
+
+Current workspace note for this dimension:
+
+- `credentials-birth` is the current explicit-holder family on `develop`
+- `credentials-birth-secret` is the current hidden-holder family on `develop`
+- the remaining families in this table are design-space or adjacent-prototype
+  examples, not validated local workspace packages
 
 ### Dimension 2: Holder Binding Profile
 
@@ -155,6 +169,19 @@ Current implementation note:
 - current authority-attested coverage proves request binding, registry/root
   consistency, wrong-authority rejection, and expiration handling for the
   transitional Layer 3 status path
+
+Current validated repository surfaces for this strategy:
+
+- Layer 1: `credentials`, `credentials-same-holder`, `credentials-iso-registry`,
+  `credentials-status-registry`
+- Layer 2: `credentials-birth`, `credentials-birth-secret`
+- Layer 2.5: `credentials-offchain-did`
+- Layer 3: `credentials-demo-contract`
+- Layer 4: `credentials-openid`, `credentials-protocol`, `standalone-environment`
+
+When later sections discuss Passport, Compliance, Driving License, National ID,
+or Employee families, read them as design-space matrix entries unless the repo
+actually restores those packages on `develop`.
 
 Current repository stance:
 

@@ -22,6 +22,8 @@ Start here:
    verifiers, tests, and adapter code
 3. read [`../docs/guides/integration-surface-map.md`](../docs/guides/integration-surface-map.md)
    when choosing between Compact and TypeScript surfaces
+4. do not deploy this package root as a business contract; use it as a library surface
+   for credential families and Layer 3 verifier/business contracts
 
 Related docs:
 
@@ -78,6 +80,12 @@ proof-protocol helpers from `credentials-status-registry`.
 
 These narrower entry points exist so capability packages can depend on less
 than the full generic bundle when they do not need VC envelopes or protocols.
+
+Deployability rule:
+
+- `credentials` provides Compact library/build roots
+- it is not the final business-contract surface an application should deploy
+- deploy Layer 3 contracts that compose these roots through a family or demo/business package
 They are alternative public surfaces, not internal layers underneath
 `composable.compact`, because Compact does not deduplicate repeated includes.
 

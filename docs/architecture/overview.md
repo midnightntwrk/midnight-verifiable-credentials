@@ -50,7 +50,8 @@ It provides:
 - generic transport framing helpers where they are part of the core runtime
 
 This package defines repository-wide semantics. Concrete credential families
-should depend on it rather than duplicating generic VC logic.
+should depend on it rather than duplicating generic VC logic. It is not a
+deployable business contract by itself.
 
 ### `credentials-same-holder`
 This package provides holder-correlation capability for hidden-holder flows.
@@ -217,13 +218,8 @@ overview.
 ## Current Maturity Model
 The repository contains a mix of maturity levels.
 
-<<<<<<< HEAD
-For the current package-by-package snapshot, see:
+Current shorthand:
 
-- [`../spec/conformance.md`](../spec/conformance.md)
-  - `Current Package Maturity Table`
-- [`../guides/integration-surface-map.md`](../guides/integration-surface-map.md)
-=======
 - reference implementation:
   - core VC package and key credential families
 - prototype capability package:
@@ -236,7 +232,12 @@ For the current package-by-package snapshot, see:
   - selected privacy-oriented or demo-oriented capabilities
 - planned:
   - `credentials-birth-binding-prototypes` if it is restored as a real package
->>>>>>> db4bef3 (Document status registry package discoverability)
+
+For the current package-by-package snapshot, see:
+
+- [`../spec/conformance.md`](../spec/conformance.md)
+  - `Current Package Maturity Table`
+- [`../guides/integration-surface-map.md`](../guides/integration-surface-map.md)
 
 Readers should evaluate maturity at the package and profile level, not at the
 repository level.

@@ -30,11 +30,12 @@ Merged in the last completed iteration:
 - status binding/proof split and protocol-state hardening:
   - `#55`
   - `#56`
-- holder-binding alias, changelog discipline, boundary guardrail, and docs-only CI fast path:
+- holder-binding alias, changelog discipline, boundary guardrail, docs-only CI fast path, and starter templates:
   - `#58`
   - `#59`
   - `#61`
   - `#62`
+  - `#63`
 
 Substantially addressed on `develop`:
 
@@ -53,18 +54,19 @@ Partially advanced, but still active:
 
 - `VC-MAT-06`
 - `VC-MAT-07`
+- `VC-MAT-08`
 - `VC-MAT-09`
 - `VC-MAT-14`
 - `VC-MAT-15`
 
 Next active queue:
 
-1. `VC-MAT-08`
-2. `VC-MAT-07`
-3. `VC-MAT-09`
-4. `VC-MAT-14`
-5. `VC-MAT-15`
-6. `VC-MAT-06`
+1. `VC-MAT-07`
+2. `VC-MAT-14`
+3. `VC-MAT-15`
+4. `VC-MAT-06`
+5. `VC-MAT-09`
+6. `VC-MAT-08`
 
 ## Triage Legend
 
@@ -285,7 +287,7 @@ Required outcome:
 Current grouped execution:
 
 - boundary-hardening slice:
-  - refresh the package-boundary regression guard and land it through `#20`
+  - refresh the package-boundary regression guard and land it through `#61`
   - block sibling `../<package>/src/...` imports in repo validation
   - replace direct cross-package `src/test` imports with exported testing surfaces
 - follow-up contract-surface slice:
@@ -320,10 +322,14 @@ Required outcome:
 
 Current grouped execution:
 
-- starter-template slice:
+- starter-template slice landed through `#63`:
   - docs-only verifier contract template
   - docs-only family scaffold template
   - docs-only hidden-holder hello-world walkthrough
+- still missing if deeper onboarding is needed later:
+  - issuer-oriented starter path
+  - wallet-oriented starter path
+  - a generated scaffold or copy script
 
 ### VC-MAT-09: Keep test docs aligned with real package/test coverage
 
