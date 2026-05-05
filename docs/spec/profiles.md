@@ -197,6 +197,9 @@ Binding mechanism:
   - `OffchainDIDHolderBinding`
 - current Compact/core shape:
   - `OffchainMidnightHolderBinding`
+- current core TypeScript package export:
+  - `OffchainDIDHolderBinding`
+  - as an alias over the core Compact/runtime shape
 - carries:
   - holder DID state hash
   - holder method id digest

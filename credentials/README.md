@@ -48,6 +48,20 @@ It owns the generic pieces that should be shared across many credential families
 - generic credential/presentation linking rules
 - generic issuer proof-binding rules
 - reusable holder-binding helper circuits for explicit and secret profiles
+- shared VC-side status binding vocabulary for status-aware families:
+  - `StatusRegistryRef`
+  - `NoStatusBinding`
+  - `RegistryBoundStatusBinding`
+
+Status package-boundary rule:
+
+- `credentials` owns the VC-side status binding shape
+- `credentials-status-registry` owns registry-specific proof protocols,
+  verifier-facing request helpers, and off-chain builders
+
+This means a credential family should import status binding from this package,
+while verifier applications and Layer 3 status workflows should import the
+proof-protocol helpers from `credentials-status-registry`.
 
 ## Compact Entry Points
 
@@ -139,6 +153,14 @@ Current reusable holder-binding helper sets are:
   - `assertValidOffchainMidnightHolderBinding(...)`
   - `assertMatchingOffchainMidnightHolderBindings(...)`
   - `assertProofMatchesOffchainMidnightHolderBinding(...)`
+
+TypeScript compatibility note:
+
+- the Compact/core struct name remains:
+  - `OffchainMidnightHolderBinding`
+- the top-level TypeScript package also exports:
+  - `OffchainDIDHolderBinding`
+  as the preferred public-facing alias for integrators
 - hidden holder-secret binding:
   - `secretHolderBindingCommitment(...)`
   - `secretHolderBindingChallengeResponse(...)`

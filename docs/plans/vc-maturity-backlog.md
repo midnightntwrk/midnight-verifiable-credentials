@@ -196,6 +196,12 @@ Current decision:
   adapter name
 - preserve compatibility aliases while downstream code migrates
 
+Current grouped execution:
+
+- stacked additive runtime/docs slice:
+  - core TS alias export for `OffchainDIDHolderBinding`
+  - docs aligned around Compact/core name vs public-facing TS name
+
 ### VC-MAT-05: Tighten prototype/reference trust-boundary signaling
 
 Priority: P1
@@ -340,6 +346,11 @@ Current architectural direction to evaluate:
 - separate presentation-time proof modes, for example:
   - authority-attested status proof
   - revoked-set non-membership proof
+
+Current grouped execution:
+
+- stacked docs slice:
+  - status DSL ownership and import normalization
 
 ### VC-MAT-12: Add a dedicated status capability conformance category
 
