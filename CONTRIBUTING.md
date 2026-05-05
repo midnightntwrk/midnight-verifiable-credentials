@@ -41,6 +41,90 @@ Ensure the title is a clear summary of the requirement and provides enough conte
 * **Code Review:** All pull requests undergo code review by project maintainers.
   Be prepared to address feedback from reviewers.
 
+## Commit Message Convention
+
+Use Conventional Commits for new contributions:
+
+```text
+<type>(<scope>): <summary>
+```
+
+Examples:
+
+```text
+feat(credentials-status-registry): add status proof protocol helpers
+fix(credentials-protocol): retain latest finalized outcome on tied timestamps
+docs(spec): clarify status binding versus proof protocol split
+test(credentials-demo-contract): add revocation demo smoke coverage
+ci(root): skip heavy lanes for docs-only pull requests
+```
+
+Recommended types:
+
+* `feat`
+* `fix`
+* `docs`
+* `refactor`
+* `test`
+* `build`
+* `ci`
+* `chore`
+
+Recommended scopes for this repository:
+
+* `root`
+* `docs`
+* `spec`
+* `credentials`
+* `credentials-status-registry`
+* `credentials-same-holder`
+* `credentials-iso-registry`
+* `credentials-offchain-did`
+* `credentials-openid`
+* `credentials-protocol`
+* `credentials-birth`
+* `credentials-birth-secret`
+* `credentials-demo-contract`
+* `standalone-environment`
+* `serenity-vc-scenarios`
+
+Rules:
+
+* keep the summary imperative and concise
+* use a real scope whenever the change is package- or area-specific
+* use `root` when the change spans the repository without a better single scope
+* if one PR has multiple commits, each commit should still be meaningful on its own
+
+## Pull Request Description Convention
+
+Pull request bodies should use real Markdown with actual newlines. Do not pass a
+single escaped string containing literal `\n` sequences.
+
+Use this structure:
+
+```md
+## Summary
+- what changed
+- what changed
+
+## Why
+- why the change was needed
+
+## Validation
+- command
+- command
+
+## Follow-ups
+- optional
+```
+
+Rules:
+
+* prefer short bullets over long prose
+* include the real validation commands that were run
+* add follow-ups only when there is material deferred work
+* if the PR is docs-only, say so plainly in `Summary` or `Why`
+
 ## Requirements for Acceptable Contributions:
 
 * **Coding Standards:** Code must adhere to the coding style guides defined in our documentation
