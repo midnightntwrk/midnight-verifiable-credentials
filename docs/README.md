@@ -35,6 +35,13 @@
 - integration surface map:
   - [`guides/integration-surface-map.md`](./guides/integration-surface-map.md)
   - for integrators deciding which surfaces belong on-chain, off-chain, or both
+- hidden-holder hello world:
+  - [`guides/hidden-holder-hello-world.md`](./guides/hidden-holder-hello-world.md)
+  - for engineers who need the shortest current reference hidden-holder integration path
+- starter templates:
+  - [`templates/verifier-contract-template.compact.md`](./templates/verifier-contract-template.compact.md)
+  - [`templates/family-scaffold-template.md`](./templates/family-scaffold-template.md)
+  - for copyable contract and family starting points
 - current status-registry package surface:
   - [`../credentials-status-registry/README.md`](../credentials-status-registry/README.md)
   - for engineers implementing the current prototype revocation/status registry package
