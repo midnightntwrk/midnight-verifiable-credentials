@@ -52,6 +52,10 @@ Adjacent prototype note:
   sources from a sibling `midnight-passport-prototype` checkout
 - treat it as an architecture/prototyping reference, not as proof that
   passport/compliance families are part of the current npm workspace here
+- it is a dormant artifact, not part of the supported `credentials-demo-contract`
+  package surface:
+  - not compiled by default package scripts
+  - not exported through the package `exports` map
 
 The current contracts use `include` for local Compact source composition and
 module imports/prefixes for generic module instantiation, for example:
@@ -544,9 +548,9 @@ Rule of thumb:
 > source. If the question is "how does TypeScript carry this credential?", use
 > generated TS/JS and codecs.
 
-## Recommended Next Prototype Task
+## Historical Prototype Spike
 
-The first dependency-composition spike is currently represented by
+The first dependency-composition spike was prototyped in
 `credentials-demo-contract/src/passport-compliance-demo.compact`. It composes:
 
 - `credentials-same-holder`
