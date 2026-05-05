@@ -120,6 +120,11 @@ Start with:
 
 Use this as a composition example, not as a generic VC library.
 
+If you need the smallest copyable starting point rather than a full demo package, continue with:
+
+- [`../templates/verifier-contract-template.compact.md`](../templates/verifier-contract-template.compact.md)
+- [`./hidden-holder-hello-world.md`](./hidden-holder-hello-world.md)
+
 ### I need standalone integration infrastructure
 Start with:
 

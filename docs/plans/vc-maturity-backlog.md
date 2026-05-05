@@ -23,33 +23,48 @@ Merged in the last completed iteration:
 - current-workspace vs adjacent-prototype clarification:
   - `#47`
   - `#48`
+  - `#60`
 - package maturity and status-taxonomy/conformance alignment:
   - `#49`
   - `#53`
+- status binding/proof split and protocol-state hardening:
+  - `#55`
+  - `#56`
+- holder-binding alias, changelog discipline, boundary guardrail, and docs-only CI fast path:
+  - `#58`
+  - `#59`
+  - `#61`
+  - `#62`
 
 Substantially addressed on `develop`:
 
 - `VC-MAT-01`
 - `VC-MAT-02`
 - `VC-MAT-03`
+- `VC-MAT-04`
 - `VC-MAT-05`
+- `VC-MAT-10`
+- `VC-MAT-11`
 - `VC-MAT-12`
 - `VC-MAT-13`
+- `VC-MAT-16`
 
 Partially advanced, but still active:
 
+- `VC-MAT-06`
+- `VC-MAT-07`
 - `VC-MAT-09`
+- `VC-MAT-14`
 - `VC-MAT-15`
 
 Next active queue:
 
-1. `VC-MAT-04`
-2. `VC-MAT-10`
-3. `VC-MAT-06`
+1. `VC-MAT-08`
+2. `VC-MAT-07`
+3. `VC-MAT-09`
 4. `VC-MAT-14`
-5. `VC-MAT-07`
-6. `VC-MAT-11`
-7. `VC-MAT-08`
+5. `VC-MAT-15`
+6. `VC-MAT-06`
 
 ## Triage Legend
 
@@ -294,6 +309,13 @@ Required outcome:
   - minimal verifier contract template
   - minimal family scaffold
   - minimal hidden-holder demo walkthrough
+
+Current grouped execution:
+
+- starter-template slice:
+  - docs-only verifier contract template
+  - docs-only family scaffold template
+  - docs-only hidden-holder hello-world walkthrough
 
 ### VC-MAT-09: Keep test docs aligned with real package/test coverage
 

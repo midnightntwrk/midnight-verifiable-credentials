@@ -172,6 +172,19 @@ Do not use this package as an on-chain API surface.
 | --- | --- | --- |
 | `StandaloneEnvironment`, `provisionDidProfile`, Docker/runtime helpers | `Off-chain only` | Integration-test bootstrap infrastructure. |
 
+## Starter paths
+
+If you need the shortest copyable entrypoint instead of a full package README, use:
+
+- verifier contract starter:
+  - `docs/templates/verifier-contract-template.compact.md`
+- family package starter:
+  - `docs/templates/family-scaffold-template.md`
+- hidden-holder reference walkthrough:
+  - `docs/guides/hidden-holder-hello-world.md`
+
+These stay docs-only on purpose so they remain easy to copy without adding another compiled package surface.
+
 ## Recommended integrator workflow
 
 ### If you are writing a Layer 3 contract
