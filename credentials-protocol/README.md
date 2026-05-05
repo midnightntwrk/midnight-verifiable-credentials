@@ -219,6 +219,17 @@ Persistent state adapter rule:
   preserve the same semantics behind storage-native pruning/eviction rather
   than copying the reference in-memory scan literally
 
+Persistent adapter checklist:
+
+- preserve stable collection names and key encoding
+- preserve typed value serialization across restarts and process boundaries
+- support full collection scans or storage-native equivalents for TTL pruning
+  and oldest-first eviction
+- preserve deterministic replay/idempotency behavior after restart
+- document whether retention is bounded by TTL, count, or both
+- document whether the adapter is sync-only facade over async storage or a
+  truly synchronous backend
+
 Illustrative sketch:
 
 ```ts

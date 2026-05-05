@@ -145,6 +145,16 @@ integrators should treat codec versioning and backward/forward compatibility as
 explicit deployment concerns rather than copying a test-only serializer
 verbatim.
 
+Repository-aligned persistent adapter checklist:
+
+- preserve stable collection names
+- preserve stable key encoding across restart
+- preserve typed value serialization for Compact-derived messages
+- support retention scans or storage-native equivalents for TTL/count eviction
+- preserve deterministic replay/idempotency answers after restart
+- document whether the deployed adapter is truly synchronous or a synchronous
+  facade over async storage
+
 ## Transport mapping rule
 
 A transport adapter may wrap Compact protocol messages inside:
