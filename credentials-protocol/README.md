@@ -158,9 +158,9 @@ State hardening rule:
 
 - agent-local pending offers, requests, submissions, and completed transport
   outcomes now sit behind an injectable `ProtocolStateStore` interface
-- hidden-holder stored credentials now also sit behind that state-store seam,
-  so a restarted `SecretHolderAgent` can recover issued credentials when the
-  backend is persistent
+- explicit-holder and hidden-holder stored credentials now also sit behind that
+  state-store seam, so restarted holder agents can recover issued credentials
+  when the backend is persistent
 - the exported default implementation is an in-memory reference store
 - production integrators should supply a persistent implementation if they need
   restart-safe protocol session handling
@@ -229,8 +229,8 @@ Persistent adapter checklist:
 
 - preserve stable collection names and key encoding
 - preserve typed value serialization across restarts and process boundaries
-- preserve hidden-holder stored credential records and credential indexes if
-  the holder agent is expected to survive restart
+- preserve explicit-holder and hidden-holder stored credential records and
+  credential indexes if the holder agent is expected to survive restart
 - support full collection scans or storage-native equivalents for TTL pruning
   and oldest-first eviction
 - preserve deterministic replay/idempotency behavior after restart
