@@ -131,13 +131,15 @@ export type SecretPresentationWitness = {
 };
 
 export class SecretHolderAgent {
+  private static readonly CREDENTIAL_COUNT_KEY = "credential-count";
   readonly label: string;
   private readonly holderSecret: Uint8Array;
   private readonly holderSecretOpening: Uint8Array;
   private readonly bus: MessageBus;
   private readonly randomness: ProtocolRandomnessSource;
   private readonly retentionPolicy: ProtocolStateRetentionPolicy;
-  private readonly credentials: SecretStoredCredential[] = [];
+  private readonly storedCredentials: ProtocolStateCollection<SecretStoredCredential>;
+  private readonly metadata: ProtocolStateCollection<number>;
   private readonly pendingIssuanceRequests: ProtocolStateCollection<{
     readonly request: SecretBirthCredentialIssuanceRequest;
     readonly holderBindingBlindingFactor: Uint8Array;
@@ -173,6 +175,10 @@ export class SecretHolderAgent {
     this.retentionPolicy = options.stateRetention ?? {};
     const stateStore = options.stateStore ?? new InMemoryProtocolStateStore();
     const stateScope = `secret-holder:${this.label}`;
+    this.storedCredentials = stateStore.collection(
+      `${stateScope}:stored-credentials`,
+    );
+    this.metadata = stateStore.collection(`${stateScope}:metadata`);
     this.pendingIssuanceRequests = stateStore.collection(
       `${stateScope}:pending-issuance-requests`,
     );
@@ -300,12 +306,17 @@ export class SecretHolderAgent {
     );
     this.pendingIssuanceRequests.delete(respondsToId);
 
-    this.credentials.push({
+    const credentialIndex = this.credentialCount;
+    this.storedCredentials.set(String(credentialIndex), {
       credential: issuanceResult.body.credential,
       credentialProof: issuanceResult.body.credentialProof,
       holderBindingBlindingFactor:
         pendingIssuance.holderBindingBlindingFactor,
     });
+    this.metadata.set(
+      SecretHolderAgent.CREDENTIAL_COUNT_KEY,
+      credentialIndex + 1,
+    );
   }
 
   receiveIssuanceRejection(
@@ -407,16 +418,42 @@ export class SecretHolderAgent {
   }
 
   get credentialCount(): number {
-    return this.credentials.length;
+    return this.recoverCredentialCount();
   }
 
   getCredential(index: number): SecretStoredCredential {
-    if (index < 0 || index >= this.credentials.length) {
+    const credentialCount = this.credentialCount;
+    if (index < 0 || index >= credentialCount) {
       throw new RangeError(
-        `Credential index ${index} out of range [0, ${this.credentials.length})`,
+        `Credential index ${index} out of range [0, ${credentialCount})`,
       );
     }
-    return this.credentials[index];
+    const stored = this.storedCredentials.get(String(index));
+    if (!stored) {
+      throw new Error(
+        `Credential index ${index} is missing from protocol state storage.`,
+      );
+    }
+    return stored;
+  }
+
+  private recoverCredentialCount(): number {
+    const recordedCount =
+      this.metadata.get(SecretHolderAgent.CREDENTIAL_COUNT_KEY) ?? 0;
+    let recoveredCount = recordedCount;
+    for (const [key] of this.storedCredentials.entries()) {
+      const index = Number(key);
+      if (Number.isInteger(index) && index >= recoveredCount) {
+        recoveredCount = index + 1;
+      }
+    }
+    if (recoveredCount !== recordedCount) {
+      this.metadata.set(
+        SecretHolderAgent.CREDENTIAL_COUNT_KEY,
+        recoveredCount,
+      );
+    }
+    return recoveredCount;
   }
 
   /**

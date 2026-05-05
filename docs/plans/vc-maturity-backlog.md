@@ -36,6 +36,14 @@ Merged in the last completed iteration:
   - `#61`
   - `#62`
   - `#63`
+- remaining documentation backlog, curated contract surfaces, contribution conventions, and the TypeScript BDD/CI classifier slices:
+  - `#64`
+  - `#65`
+  - `#66`
+  - `#68`
+  - `#70`
+  - `#71`
+  - `#72`
 
 Substantially addressed on `develop`:
 
@@ -49,11 +57,11 @@ Substantially addressed on `develop`:
 - `VC-MAT-12`
 - `VC-MAT-13`
 - `VC-MAT-16`
+- `VC-MAT-07`
 
 Partially advanced, but still active:
 
 - `VC-MAT-06`
-- `VC-MAT-07`
 - `VC-MAT-08`
 - `VC-MAT-09`
 - `VC-MAT-14`
@@ -62,13 +70,12 @@ Partially advanced, but still active:
 
 Next active queue:
 
-1. `VC-MAT-07`
-2. `VC-MAT-14`
-3. `VC-MAT-15`
-4. `VC-MAT-06`
-5. `VC-MAT-09`
-6. `VC-MAT-08`
-7. `VC-MAT-17`
+1. `VC-MAT-14`
+2. `VC-MAT-06`
+3. `VC-MAT-17`
+4. `VC-MAT-09`
+5. `VC-MAT-08`
+6. `VC-MAT-15`
 
 ## Triage Legend
 
@@ -246,20 +253,13 @@ Current grouped execution:
   - Cucumber.js
   - Serenity/JS
   - TypeScript
-- first smoke scenario:
+- smoke scenarios now on `develop`:
   - birth credential age-gate happy path
-
-Current grouped execution:
-
-- stacked additive runtime/docs slice:
-  - core TS alias export for `OffchainDIDHolderBinding`
-  - docs aligned around Compact/core name vs public-facing TS name
-
-Current grouped execution:
-
-- stacked additive runtime/docs slice:
-  - core TS alias export for `OffchainDIDHolderBinding`
-  - docs aligned around Compact/core name vs public-facing TS name
+  - hidden-holder verifier-supplied-root revocation-aware age-gate happy path
+- follow-up work:
+  - add more scenario coverage without turning the BDD layer into a second full
+    regression matrix
+  - keep the BDD-only CI lane focused and trustworthy
 
 ### VC-MAT-05: Tighten prototype/reference trust-boundary signaling
 
@@ -338,11 +338,6 @@ Current grouped execution:
 - follow-up boundary-guard slice:
   - extend `check:package-boundaries` to block duplicate root `*Contract`
     namespace aliases in the curated package entrypoints
-
-Related carry-over work:
-
-- merge and maintain the revived guardrail PR:
-  - `#20` `codex/vc-boundary-guardrail`
 
 ### VC-MAT-08: Add starter templates and “Hello World” integration paths
 

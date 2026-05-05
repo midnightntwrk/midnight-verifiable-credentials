@@ -1,3 +1,10 @@
+/**
+ * Synchronous per-collection state surface for the reference protocol layer.
+ *
+ * Durable adapters may sit on top of async backends internally, but the agent
+ * seam exposed here is intentionally synchronous today. Callers should not
+ * expect promise-based state access from this interface.
+ */
 export interface ProtocolStateCollection<T> {
   get(key: string): T | undefined;
   set(key: string, value: T): void;
@@ -7,10 +14,16 @@ export interface ProtocolStateCollection<T> {
   entries(): IterableIterator<[string, T]>;
 }
 
+/**
+ * Synchronous named-collection store for protocol session state.
+ */
 export interface ProtocolStateStore {
   collection<T>(name: string): ProtocolStateCollection<T>;
 }
 
+/**
+ * Synchronous byte-oriented collection surface used by codec-backed adapters.
+ */
 export interface ProtocolStateByteCollection {
   get(key: string): Uint8Array | undefined;
   set(key: string, value: Uint8Array): void;
@@ -20,6 +33,9 @@ export interface ProtocolStateByteCollection {
   entries(): IterableIterator<[string, Uint8Array]>;
 }
 
+/**
+ * Synchronous byte store for persistence layers that naturally store blobs.
+ */
 export interface ProtocolStateByteStore {
   collection(name: string): ProtocolStateByteCollection;
 }
