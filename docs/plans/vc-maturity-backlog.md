@@ -202,6 +202,12 @@ Current grouped execution:
   - core TS alias export for `OffchainDIDHolderBinding`
   - docs aligned around Compact/core name vs public-facing TS name
 
+Current grouped execution:
+
+- stacked additive runtime/docs slice:
+  - core TS alias export for `OffchainDIDHolderBinding`
+  - docs aligned around Compact/core name vs public-facing TS name
+
 ### VC-MAT-05: Tighten prototype/reference trust-boundary signaling
 
 Priority: P1
@@ -315,6 +321,13 @@ Required outcome:
   - status model simplification
   - verifier status capability changes
   - future package entrypoint changes
+
+Current grouped execution:
+
+- stacked docs slice:
+  - initialize `CHANGELOG.md` with Keep a Changelog sections
+  - record compatibility-significant VC status, revocation-demo, and holder
+    binding surface changes
 
 ### VC-MAT-11: Decide ownership of the status DSL and package layer placement
 
