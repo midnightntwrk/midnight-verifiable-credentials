@@ -37,6 +37,15 @@ Use a separate Node workspace package with:
 
 Do not introduce Java source or Maven into the repository.
 
+Current reporting choice:
+
+- author scenarios in TypeScript only
+- keep Serenity BDD HTML aggregation through the Serenity CLI runtime for now
+
+If the repository later requires zero Java runtime as well, replace only the
+reporting backend with a pure Node reporting stack. The Cucumber + Serenity/JS
+screenplay authoring layer should stay intact.
+
 For browser-backed scenarios in later phases, add Playwright through
 `@serenity-js/playwright`. The first slice does not need browser automation
 because this repository is still library-first.
@@ -81,6 +90,8 @@ This keeps the first layer:
 - add revocation demo happy path once the scenario boundary is stable
 - add a dedicated scenario-only CI lane instead of relying on the docs-only
   classifier
+- if needed later, swap the current Java-backed Serenity report aggregation for
+  a pure Node reporting backend without changing scenario authoring
 
 ### Phase 3
 

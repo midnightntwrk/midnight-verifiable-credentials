@@ -28,6 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       docs_only: ${{ steps.filter.outputs.docs_only }}
+      bdd_only: ${{ steps.classify.outputs.bdd_only }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -43,6 +44,52 @@ jobs:
             docs_only:
               - '**/*.md'
               - 'docs/**'
+
+      - name: Detect BDD-only changes
+        id: classify
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            range="${{ github.event.pull_request.base.sha }}...${{ github.sha }}"
+          elif [[ -n "${{ github.event.before }}" && "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]]; then
+            range="${{ github.event.before }}...${{ github.sha }}"
+          else
+            range="${{ github.sha }}^...${{ github.sha }}"
+          fi
+
+          mapfile -t changed_files < <(git diff --name-only "$range")
+
+          if [[ ${#changed_files[@]} -eq 0 ]]; then
+            echo "bdd_only=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          bdd_only=true
+          bdd_related=false
+
+          for file in "${changed_files[@]}"; do
+            case "$file" in
+              vc-bdd-scenarios/*|docs/plans/serenity-js-bdd-layer.md|docs/testing/test-strategy.md|docs/testing/test-matrix.md|docs/README.md|package.json|package-lock.json|run.sh|run-credentials.sh)
+                ;;
+              *)
+                bdd_only=false
+                ;;
+            esac
+
+            case "$file" in
+              vc-bdd-scenarios/*|docs/plans/serenity-js-bdd-layer.md|run.sh|run-credentials.sh)
+                bdd_related=true
+                ;;
+            esac
+          done
+
+          if [[ "$bdd_related" != true ]]; then
+            bdd_only=false
+          fi
+
+          echo "bdd_only=$bdd_only" >> "$GITHUB_OUTPUT"
 
   docs-only-validation:
     name: Docs-only Validation
@@ -61,6 +108,56 @@ jobs:
         run: |
           echo 'Docs-only change detected.'
           echo 'Skipping Compact setup, builds, and test lanes.'
+
+  bdd-scenarios:
+    name: BDD Scenarios Smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: [changes, prepare-compact]
+    if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only == 'true'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Download Compact toolchain artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: compact-toolchain
+          path: ${{ runner.temp }}/compact-toolchain
+
+      - name: Restore Compact toolchain
+        shell: bash
+        run: |
+          mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config"
+          tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
+          mkdir -p "$HOME/.local/share" "$HOME/.config"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Activate Compact compiler
+        shell: bash
+        run: |
+          if [ "$COMPACT_COMPILER_VERSION" = "latest" ]; then
+            compact update || true
+          else
+            compact update "$COMPACT_COMPILER_VERSION" || compact update || true
+          fi
+
+      - name: Verify Compact installation
+        run: |
+          compact compile --version
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+
+      - name: Run BDD smoke lane
+        run: npm run test:bdd:smoke
 
   prepare-compact:
     name: Prepare Compact Toolchain
@@ -102,7 +199,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     needs: [changes, prepare-compact]
-    if: needs.changes.outputs.docs_only != 'true'
+    if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -161,7 +258,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     needs: [changes, prepare-compact]
-    if: needs.changes.outputs.docs_only != 'true'
+    if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -220,7 +317,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 75
     needs: [changes, prepare-compact]
-    if: needs.changes.outputs.docs_only != 'true'
+    if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -279,7 +376,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 75
     needs: [changes, prepare-compact]
-    if: needs.changes.outputs.docs_only != 'true'
+    if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -338,7 +435,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     needs: [changes, prepare-compact]
-    if: needs.changes.outputs.docs_only != 'true'
+    if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -388,7 +485,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     needs: [changes, prepare-compact]
-    if: needs.changes.outputs.docs_only != 'true'
+    if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
