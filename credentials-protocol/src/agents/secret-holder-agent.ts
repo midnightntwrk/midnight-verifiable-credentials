@@ -151,6 +151,7 @@ export class SecretHolderAgent {
   private readonly completedPresentationOutcomes: ProtocolStateCollection<
     RetainedProtocolState<SecretPresentationOutcome>
   >;
+  private credentialCountCache = 0;
   private issuanceRequestCounter = 0;
 
   constructor(
@@ -191,6 +192,7 @@ export class SecretHolderAgent {
     this.completedPresentationOutcomes = stateStore.collection(
       `${stateScope}:completed-presentation-outcomes`,
     );
+    this.credentialCountCache = this.recoverCredentialCount();
   }
 
   receiveOfferAndSendRequest(
@@ -306,16 +308,17 @@ export class SecretHolderAgent {
     );
     this.pendingIssuanceRequests.delete(respondsToId);
 
-    const credentialIndex = this.credentialCount;
+    const credentialIndex = this.credentialCountCache;
     this.storedCredentials.set(String(credentialIndex), {
       credential: issuanceResult.body.credential,
       credentialProof: issuanceResult.body.credentialProof,
       holderBindingBlindingFactor:
         pendingIssuance.holderBindingBlindingFactor,
     });
+    this.credentialCountCache += 1;
     this.metadata.set(
       SecretHolderAgent.CREDENTIAL_COUNT_KEY,
-      credentialIndex + 1,
+      this.credentialCountCache,
     );
   }
 
@@ -418,7 +421,7 @@ export class SecretHolderAgent {
   }
 
   get credentialCount(): number {
-    return this.recoverCredentialCount();
+    return this.credentialCountCache;
   }
 
   getCredential(index: number): SecretStoredCredential {
@@ -441,6 +444,9 @@ export class SecretHolderAgent {
     const recordedCount =
       this.metadata.get(SecretHolderAgent.CREDENTIAL_COUNT_KEY) ?? 0;
     let recoveredCount = recordedCount;
+    // Credential indexes are append-only. If metadata lags behind a stored
+    // record after a partial write, recover by trusting the largest stored
+    // ordinal rather than the stale count.
     for (const [key] of this.storedCredentials.entries()) {
       const index = Number(key);
       if (Number.isInteger(index) && index >= recoveredCount) {
