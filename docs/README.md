@@ -87,3 +87,6 @@
 - VC maturity backlog:
   - [`plans/vc-maturity-backlog.md`](./plans/vc-maturity-backlog.md)
   - for the current repository-audit backlog and gap-tracking work
+- Serenity/JS BDD layer plan:
+  - [`plans/serenity-js-bdd-layer.md`](./plans/serenity-js-bdd-layer.md)
+  - for the TypeScript screenplay-style living-documentation test layer
