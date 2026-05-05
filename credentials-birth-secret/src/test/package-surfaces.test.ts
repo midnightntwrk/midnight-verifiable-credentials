@@ -19,17 +19,10 @@ const packageJson = JSON.parse(
   readFileSync(path.resolve(packageRoot, "package.json"), "utf8"),
 ) as { exports?: Record<string, unknown> };
 
-describe("credentials-same-holder package surfaces", () => {
+describe("credentials-birth-secret package surfaces", () => {
   it("declares a stable contract subpath export", () => {
     expect(packageJson.exports?.["./contract"]).toBeDefined();
     expect(existsSync(sourceSurface("contract.ts"))).toEqual(true);
-  });
-
-  it("keeps the standalone and composable Compact entrypoints in source control", () => {
-    expect(existsSync(sourceSurface("same-holder.compact"))).toEqual(true);
-    expect(existsSync(sourceSurface("same-holder/composable.compact"))).toEqual(
-      true,
-    );
   });
 
   it("publishes the stable contract subpath after build", () => {
@@ -37,15 +30,5 @@ describe("credentials-same-holder package surfaces", () => {
       return;
     }
     expect(existsSync(distSurface("contract.js"))).toEqual(true);
-  });
-
-  it("publishes the standalone and composable Compact entrypoints after build", () => {
-    if (!existsSync(distRoot) || !existsSync(distSurface("index.js"))) {
-      return;
-    }
-    expect(existsSync(distSurface("same-holder.compact"))).toEqual(true);
-    expect(existsSync(distSurface("same-holder/composable.compact"))).toEqual(
-      true,
-    );
   });
 });
