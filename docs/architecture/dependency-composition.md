@@ -550,7 +550,7 @@ Rule of thumb:
 
 ## Historical Prototype Spike
 
-The first dependency-composition spike was prototyped in
+The first dependency-composition spike was prototyped in the now-dormant
 `credentials-demo-contract/src/passport-compliance-demo.compact`. It composes:
 
 - `credentials-same-holder`
@@ -565,7 +565,7 @@ Important scope note:
   `midnight-passport-prototype` checkout, not into this repository's npm
   workspace
 - this makes the spike useful as an architecture proof, but not a current
-  package-availability claim for this repository
+  package-availability claim or supported package surface for this repository
 
 The contract verifies a Passport presentation and a Sanction Screening
 presentation under one verifier challenge, checks the same hidden holder through
@@ -586,7 +586,7 @@ The spike validates these points:
 - generated TypeScript for the Layer 3 contract exposes both concrete family
   types and the composed business circuit
 
-Next, harden this from a spike into a reusable pattern:
+If this pattern is revived later, harden it from a dormant spike into a reusable pattern:
 
 1. Add or generate a minimal Layer 3 contract that imports two concrete
    credential families and one optional capability package.

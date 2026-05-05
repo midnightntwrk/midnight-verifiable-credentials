@@ -32,6 +32,8 @@ Integrators should not guess which side a package belongs to.
 1. Compact source is authoritative.
    - If a package exposes `.compact` entrypoints, those are the contract-author
      surfaces.
+   - That does not mean every `.compact` package root is a final deployable
+     business contract; some are library/build roots only.
 2. Generated `managed` TypeScript is off-chain only.
    - It is for applications, tests, codecs, and helper tooling.
 3. Transport/orchestration packages are off-chain only.
@@ -59,6 +61,8 @@ Integrator rule:
 
 - write contracts against the Compact entrypoints
 - use the generated/runtime exports only in off-chain code
+- treat this package as a library/build surface, not as a final business
+  contract to deploy directly
 
 ### `credentials-birth`
 

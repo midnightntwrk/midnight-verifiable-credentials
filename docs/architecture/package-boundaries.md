@@ -204,6 +204,8 @@ It should contain:
 
 It must not contain:
 
+- business-specific verifier contract state or policy
+- deploy-looking application contract wrappers around the generic core
 - runtime DID URL parsing
 - runtime DID resolution helpers
 - filesystem-based package discovery
