@@ -269,6 +269,13 @@ Required outcome:
 - document or redesign durable backend expectations
 - add explicit guidance for storage-native pruning/eviction
 
+Current grouped execution:
+
+- follow-up protocol-state helper slice:
+  - add optional batch-delete support for protocol-state collections
+  - skip unnecessary retained-state scans when finalized capacity is zero
+  - keep the persistent-adapter contract documented in one place
+
 ### VC-MAT-07: Reduce accidental public surface inflation
 
 Priority: P1
@@ -476,6 +483,12 @@ Required outcome:
   refactor
 - keep the persistent-adapter contract documented in one place instead of
   expanding it ad hoc across PRs
+
+Current grouped execution:
+
+- follow-up protocol-state helper slice:
+  - use optional `deleteMany(keys)` support during retention pruning/eviction
+  - add a zero-capacity fast path for finalized outcome retention
 
 ### VC-MAT-15: Curate Layer 3 and family package public surfaces
 

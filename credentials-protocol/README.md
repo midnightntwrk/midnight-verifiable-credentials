@@ -211,6 +211,8 @@ Persistent state adapter rule:
 - finalized outcome retention currently relies on `entries()` enumeration, so a
   persistent adapter must support full collection scans for TTL pruning and
   oldest-first eviction semantics
+- adapters may optionally implement `deleteMany(keys)` to let the shared
+  helpers prune or evict retained records without repeated single-key deletes
 - the helper implementation snapshots `entries()` before deleting records, so
   adapters do not need to tolerate mutation during active iteration
 - if a persistent adapter wants better write-time complexity, it should
@@ -237,6 +239,7 @@ class SqlProtocolStateStore implements ProtocolStateStore {
       get: (key) => loadTypedRow<T>(name, key),
       set: (key, value) => upsertTypedRow(name, key, value),
       delete: (key) => deleteRow(name, key),
+      deleteMany: (keys) => deleteRows(name, keys),
       has: (key) => hasRow(name, key),
       entries: () => iterateTypedRows<T>(name),
     };

@@ -2,6 +2,7 @@ export interface ProtocolStateCollection<T> {
   get(key: string): T | undefined;
   set(key: string, value: T): void;
   delete(key: string): boolean;
+  deleteMany?(keys: readonly string[]): number;
   has(key: string): boolean;
   entries(): IterableIterator<[string, T]>;
 }
@@ -14,6 +15,7 @@ export interface ProtocolStateByteCollection {
   get(key: string): Uint8Array | undefined;
   set(key: string, value: Uint8Array): void;
   delete(key: string): boolean;
+  deleteMany?(keys: readonly string[]): number;
   has(key: string): boolean;
   entries(): IterableIterator<[string, Uint8Array]>;
 }
@@ -66,6 +68,16 @@ class InMemoryProtocolStateCollection<T> implements ProtocolStateCollection<T> {
     return this.backingMap.delete(key);
   }
 
+  deleteMany(keys: readonly string[]): number {
+    let deleted = 0;
+    for (const key of keys) {
+      if (this.backingMap.delete(key)) {
+        deleted += 1;
+      }
+    }
+    return deleted;
+  }
+
   has(key: string): boolean {
     return this.backingMap.has(key);
   }
@@ -90,6 +102,16 @@ class InMemoryProtocolStateByteCollection
 
   delete(key: string): boolean {
     return this.backingMap.delete(key);
+  }
+
+  deleteMany(keys: readonly string[]): number {
+    let deleted = 0;
+    for (const key of keys) {
+      if (this.backingMap.delete(key)) {
+        deleted += 1;
+      }
+    }
+    return deleted;
   }
 
   has(key: string): boolean {
@@ -122,6 +144,12 @@ class CodecBackedProtocolStateCollection<T>
 
   delete(key: string): boolean {
     return this.byteCollection.delete(key);
+  }
+
+  deleteMany(keys: readonly string[]): number {
+    return this.byteCollection.deleteMany
+      ? this.byteCollection.deleteMany(keys)
+      : keys.reduce((deleted, key) => deleted + Number(this.delete(key)), 0);
   }
 
   has(key: string): boolean {
@@ -188,6 +216,14 @@ export const createCodecBackedProtocolStateStore = (
 export const resolveCurrentTimeMs = (value?: bigint): bigint =>
   value ?? BigInt(Date.now());
 
+const deleteProtocolStateKeys = <T>(
+  collection: ProtocolStateCollection<T>,
+  keys: readonly string[],
+): number =>
+  collection.deleteMany
+    ? collection.deleteMany(keys)
+    : keys.reduce((deleted, key) => deleted + Number(collection.delete(key)), 0);
+
 const resolveExpirationMs = (
   currentTimeMs: bigint,
   policy: ProtocolStateRetentionPolicy,
@@ -241,15 +277,12 @@ export const pruneExpiredRetainedProtocolState = <T>(
 ): void => {
   // Reference-grade pruning currently relies on collection scans. Persistent
   // adapters may want to implement equivalent retention more efficiently.
-  const retainedEntries = Array.from(collection.entries());
-  for (const [key, retained] of retainedEntries) {
-    if (
-      retained.expiresAtMs !== undefined &&
-      currentTimeMs > retained.expiresAtMs
-    ) {
-      collection.delete(key);
-    }
-  }
+  const expiredKeys = Array.from(collection.entries(), ([key, retained]) =>
+    retained.expiresAtMs !== undefined && currentTimeMs > retained.expiresAtMs
+      ? key
+      : undefined,
+  ).filter((key): key is string => key !== undefined);
+  deleteProtocolStateKeys(collection, expiredKeys);
 };
 
 export const writeRetainedProtocolState = <T>(
@@ -263,6 +296,14 @@ export const writeRetainedProtocolState = <T>(
   // Reference-grade retention currently uses full collection iteration for TTL
   // cleanup and oldest-first eviction. Persistent adapters can preserve the
   // same semantics behind a more efficient storage-native implementation.
+  if (
+    policy.maxFinalizedOutcomes !== undefined &&
+    policy.maxFinalizedOutcomes <= 0
+  ) {
+    collection.delete(key);
+    return;
+  }
+
   pruneExpiredRetainedProtocolState(collection, currentTimeMs);
 
   collection.set(key, {
@@ -298,11 +339,12 @@ export const writeRetainedProtocolState = <T>(
     ? overflow
     : evictionCandidates.length;
 
-  evictionCandidates
-    .slice(0, evictionsFromOtherEntries)
-    .forEach(([entryKey]) => {
-      collection.delete(entryKey);
-    });
+  deleteProtocolStateKeys(
+    collection,
+    evictionCandidates
+      .slice(0, evictionsFromOtherEntries)
+      .map(([entryKey]) => entryKey),
+  );
 
   if (overflow > evictionsFromOtherEntries) {
     collection.delete(key);

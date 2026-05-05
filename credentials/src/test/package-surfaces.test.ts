@@ -22,10 +22,6 @@ const packageJson = JSON.parse(
   readFileSync(path.resolve(packageRoot, "package.json"), "utf8"),
 ) as { exports?: Record<string, unknown> };
 
-const packageJson = JSON.parse(
-  readFileSync(path.resolve(packageRoot, "package.json"), "utf8"),
-) as { exports?: Record<string, unknown> };
-
 describe("credentials package surfaces", () => {
   it("declares a stable contract subpath export", () => {
     expect(packageJson.exports?.["./contract"]).toBeDefined();
