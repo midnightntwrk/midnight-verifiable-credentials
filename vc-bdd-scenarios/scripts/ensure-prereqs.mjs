@@ -1,14 +1,36 @@
-import { access } from "node:fs/promises";
+import { access, stat } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
-const requiredArtifacts = [
-  "credentials/dist/index.js",
-  "credentials-birth/dist/testing.js",
-  "credentials-birth-secret/dist/index.js",
-  "credentials-demo-contract/dist/testing.js",
+const requiredBuildSurfaces = [
+  {
+    artifactPath: "credentials/dist/index.js",
+    sourcePaths: ["credentials/src/index.ts"],
+  },
+  {
+    artifactPath: "credentials-birth/dist/testing.js",
+    sourcePaths: ["credentials-birth/src/testing.ts"],
+  },
+  {
+    artifactPath: "credentials-birth-secret/dist/index.js",
+    sourcePaths: ["credentials-birth-secret/src/index.ts"],
+  },
+  {
+    artifactPath: "credentials-demo-contract/dist/testing.js",
+    sourcePaths: [
+      "credentials-demo-contract/src/testing.ts",
+      "credentials-demo-contract/src/demo-revocation-fixtures.ts",
+    ],
+  },
+  {
+    artifactPath: "credentials-demo-contract/dist/contract-revocation.js",
+    sourcePaths: [
+      "credentials-demo-contract/src/contract-revocation.ts",
+      "credentials-demo-contract/src/demo-revocation.compact",
+    ],
+  },
 ];
 
 async function exists(relativePath) {
@@ -22,9 +44,29 @@ async function exists(relativePath) {
 
 const missingArtifacts = [];
 
-for (const artifactPath of requiredArtifacts) {
+const needsRebuild = async ({ artifactPath, sourcePaths }) => {
   if (!(await exists(artifactPath))) {
-    missingArtifacts.push(artifactPath);
+    return true;
+  }
+
+  const artifactStat = await stat(path.join(repoRoot, artifactPath));
+
+  for (const sourcePath of sourcePaths) {
+    if (!(await exists(sourcePath))) {
+      continue;
+    }
+    const sourceStat = await stat(path.join(repoRoot, sourcePath));
+    if (sourceStat.mtimeMs > artifactStat.mtimeMs) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
+for (const buildSurface of requiredBuildSurfaces) {
+  if (await needsRebuild(buildSurface)) {
+    missingArtifacts.push(buildSurface.artifactPath);
   }
 }
 

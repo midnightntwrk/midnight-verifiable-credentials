@@ -253,10 +253,12 @@ Current grouped execution:
   - Cucumber.js
   - Serenity/JS
   - TypeScript
-- smoke scenarios now on `develop`:
+- current smoke scenario on `develop`:
   - birth credential age-gate happy path
+- active follow-up slice:
   - hidden-holder verifier-supplied-root revocation-aware age-gate happy path
-- follow-up work:
+  - freshness-aware BDD prerequisite detection for generated VC artifacts
+- follow-up work after that:
   - add more scenario coverage without turning the BDD layer into a second full
     regression matrix
   - keep the BDD-only CI lane focused and trustworthy
