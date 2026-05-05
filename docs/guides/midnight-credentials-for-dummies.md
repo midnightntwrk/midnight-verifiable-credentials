@@ -207,6 +207,13 @@ Important repository-state note:
 - do not read those examples as proof that those families are current workspace
   packages on `develop`
 
+Reading rule for the rest of this guide:
+
+- when a later example points at `midnight-passport-prototype/...`, read it as
+  adjacent prototype context, not as a package path shipped by this repository
+- when a later example points at a local `credentials-*` package, treat it as
+  current workspace material unless the text says otherwise
+
 ## Chapter 1: Rita Issues A Very Boring, Very Important Credential
 
 Rita works in an imaginary office where every drawer has a policy and every policy has a form.
