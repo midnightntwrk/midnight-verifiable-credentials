@@ -181,14 +181,16 @@ Current gap:
 
 - package:
   - `vc-bdd-scenarios`
-- current smoke scenario:
+- current smoke scenarios:
   - `vc-bdd-scenarios/features/age_gate_happy_path.feature`
+  - `vc-bdd-scenarios/features/hidden_holder_age_gate_happy_path.feature`
 - root command:
   - `npm run test:bdd:smoke`
 - purpose:
   - living-documentation scenario coverage for the current VC prototype
 - current scope:
   - non-Docker birth-credential age-gate happy path
+  - non-Docker hidden-holder verifier-supplied-root age-gate happy path
 
 ## Standalone integration tests
 

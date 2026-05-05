@@ -6,6 +6,7 @@ import { Cast, configure, engage, serenity } from "@serenity-js/core";
 import { ConsoleReporter } from "@serenity-js/console-reporter";
 
 import { UseAgeGateScenario } from "./age-gate-scenario.js";
+import { UseHiddenHolderScenario } from "./hidden-holder-scenario.js";
 
 const thisFile = fileURLToPath(import.meta.url);
 const packageRoot = path.resolve(path.dirname(thisFile), "..", "..");
@@ -29,7 +30,14 @@ BeforeAll(() => {
 });
 
 Before(() => {
-  engage(Cast.where((actor) => actor.whoCan(UseAgeGateScenario.locally())));
+  engage(
+    Cast.where((actor) =>
+      actor.whoCan(
+        UseAgeGateScenario.locally(),
+        UseHiddenHolderScenario.locally(),
+      ),
+    ),
+  );
 });
 
 AfterAll(async () => {
