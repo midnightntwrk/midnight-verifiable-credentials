@@ -183,6 +183,80 @@ describe("ProtocolStateStore retention helpers", () => {
     expect(Array.from(backing.keys())).toEqual([]);
   });
 
+  it("uses batch deletion when the collection exposes deleteMany", () => {
+    const deletedKeyBatches: string[][] = [];
+    const collection: ProtocolStateCollection<RetainedProtocolState<{ id: string }>> =
+      {
+        get: () => undefined,
+        set: () => undefined,
+        delete: () => {
+          throw new Error("expected deleteMany to be used");
+        },
+        deleteMany: (keys) => {
+          deletedKeyBatches.push([...keys]);
+          return keys.length;
+        },
+        has: () => false,
+        entries: function* () {
+          yield [
+            "message-1",
+            {
+              value: { id: "one" },
+              storedAtMs: 100n,
+              expiresAtMs: 101n,
+            },
+          ];
+          yield [
+            "message-2",
+            {
+              value: { id: "two" },
+              storedAtMs: 100n,
+            },
+          ];
+          yield [
+            "message-3",
+            {
+              value: { id: "three" },
+              storedAtMs: 100n,
+              expiresAtMs: 100n,
+            },
+          ];
+        },
+      };
+
+    pruneExpiredRetainedProtocolState(collection, 102n);
+    expect(deletedKeyBatches).toEqual([["message-1", "message-3"]]);
+  });
+
+  it("skips collection scans when finalized retention capacity is zero", () => {
+    let scanned = false;
+    const backing = new Map<string, RetainedProtocolState<{ id: string }>>();
+    const collection: ProtocolStateCollection<RetainedProtocolState<{ id: string }>> =
+      {
+        get: (key) => backing.get(key),
+        set: (key, value) => {
+          backing.set(key, value);
+        },
+        delete: (key) => backing.delete(key),
+        has: (key) => backing.has(key),
+        entries: function* () {
+          scanned = true;
+          yield* backing.entries();
+        },
+      };
+
+    writeRetainedProtocolState(
+      collection,
+      "message-1",
+      { id: "one" },
+      100n,
+      { maxFinalizedOutcomes: 0 },
+    );
+
+    expect(scanned).toEqual(false);
+    expect(backing.size).toEqual(0);
+  });
+
   it("round-trips typed values through a codec-backed byte store", () => {
     const store = createCodecBackedProtocolStateStore(
       new InMemoryProtocolStateByteStore(),

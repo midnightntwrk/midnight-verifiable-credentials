@@ -74,5 +74,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ProtocolStateCollection` now requires `entries()` for retention/pruning
   semantics in protocol state adapters; the reference helpers now handle
   snapshot-based pruning and tied-timestamp retention more explicitly.
+- protocol-state retention helpers now support optional batch deletion via
+  `deleteMany(keys)` and skip unnecessary collection scans when finalized
+  outcome capacity is zero.
 - The revocation demo no longer duplicates the revoked-set status request
   struct that now lives in the shared hidden-holder family surface.
