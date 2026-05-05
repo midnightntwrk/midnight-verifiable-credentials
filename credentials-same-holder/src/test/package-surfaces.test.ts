@@ -27,7 +27,9 @@ describe("credentials-same-holder package surfaces", () => {
   });
 
   it("keeps the root package surface free of duplicate contract namespaces", () => {
-    expect(indexSource).not.toContain("export * as SameHolderCapabilityContract");
+    expect(indexSource).not.toContain(
+      "export * as SameHolderCapabilityContract",
+    );
   });
 
   it("keeps the standalone and composable Compact entrypoints in source control", () => {
