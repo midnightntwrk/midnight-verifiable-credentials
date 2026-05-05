@@ -32,6 +32,7 @@ import {
   type ProtocolStateRetentionPolicy,
   type ProtocolStateStore,
   readRetainedProtocolState,
+  recoverAppendOnlyOrdinalCount,
   resolveCurrentTimeMs,
   type RetainedProtocolState,
   writeRetainedProtocolState,
@@ -441,25 +442,11 @@ export class SecretHolderAgent {
   }
 
   private recoverCredentialCount(): number {
-    const recordedCount =
-      this.metadata.get(SecretHolderAgent.CREDENTIAL_COUNT_KEY) ?? 0;
-    let recoveredCount = recordedCount;
-    // Credential indexes are append-only. If metadata lags behind a stored
-    // record after a partial write, recover by trusting the largest stored
-    // ordinal rather than the stale count.
-    for (const [key] of this.storedCredentials.entries()) {
-      const index = Number(key);
-      if (Number.isInteger(index) && index >= recoveredCount) {
-        recoveredCount = index + 1;
-      }
-    }
-    if (recoveredCount !== recordedCount) {
-      this.metadata.set(
-        SecretHolderAgent.CREDENTIAL_COUNT_KEY,
-        recoveredCount,
-      );
-    }
-    return recoveredCount;
+    return recoverAppendOnlyOrdinalCount(
+      this.metadata,
+      SecretHolderAgent.CREDENTIAL_COUNT_KEY,
+      this.storedCredentials,
+    );
   }
 
   /**
