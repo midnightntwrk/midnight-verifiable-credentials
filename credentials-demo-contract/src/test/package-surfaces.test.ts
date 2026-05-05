@@ -19,33 +19,19 @@ const packageJson = JSON.parse(
   readFileSync(path.resolve(packageRoot, "package.json"), "utf8"),
 ) as { exports?: Record<string, unknown> };
 
-describe("credentials-same-holder package surfaces", () => {
-  it("declares a stable contract subpath export", () => {
+describe("credentials-demo-contract package surfaces", () => {
+  it("declares stable subpath exports for both demo contracts", () => {
     expect(packageJson.exports?.["./contract"]).toBeDefined();
+    expect(packageJson.exports?.["./contract-revocation"]).toBeDefined();
     expect(existsSync(sourceSurface("contract.ts"))).toEqual(true);
+    expect(existsSync(sourceSurface("contract-revocation.ts"))).toEqual(true);
   });
 
-  it("keeps the standalone and composable Compact entrypoints in source control", () => {
-    expect(existsSync(sourceSurface("same-holder.compact"))).toEqual(true);
-    expect(existsSync(sourceSurface("same-holder/composable.compact"))).toEqual(
-      true,
-    );
-  });
-
-  it("publishes the stable contract subpath after build", () => {
+  it("publishes the stable contract subpaths after build", () => {
     if (!existsSync(distRoot) || !existsSync(distSurface("index.js"))) {
       return;
     }
     expect(existsSync(distSurface("contract.js"))).toEqual(true);
-  });
-
-  it("publishes the standalone and composable Compact entrypoints after build", () => {
-    if (!existsSync(distRoot) || !existsSync(distSurface("index.js"))) {
-      return;
-    }
-    expect(existsSync(distSurface("same-holder.compact"))).toEqual(true);
-    expect(existsSync(distSurface("same-holder/composable.compact"))).toEqual(
-      true,
-    );
+    expect(existsSync(distSurface("contract-revocation.js"))).toEqual(true);
   });
 });

@@ -1,4 +1,4 @@
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -17,7 +17,16 @@ const distSurface = (relativePath: string) =>
   path.resolve(packageRoot, "dist", relativePath);
 const distRoot = path.resolve(packageRoot, "dist");
 
+const packageJson = JSON.parse(
+  readFileSync(path.resolve(packageRoot, "package.json"), "utf8"),
+) as { exports?: Record<string, unknown> };
+
 describe("credentials package surfaces", () => {
+  it("declares a stable contract subpath export", () => {
+    expect(packageJson.exports?.["./contract"]).toBeDefined();
+    expect(existsSync(sourceSurface("contract.ts"))).toEqual(true);
+  });
+
   it("keeps the shared composition entrypoints in source control", () => {
     expect(existsSync(sourceSurface("credentials.compact"))).toEqual(true);
     expect(existsSync(sourceSurface("credentials/composable.compact"))).toEqual(
@@ -34,8 +43,15 @@ describe("credentials package surfaces", () => {
     );
   });
 
+  it("publishes the stable contract subpath after build", () => {
+    if (!existsSync(distRoot) || !existsSync(distSurface("index.js"))) {
+      return;
+    }
+    expect(existsSync(distSurface("contract.js"))).toEqual(true);
+  });
+
   it("publishes the shared composition entrypoints after build", () => {
-    if (!existsSync(distRoot)) {
+    if (!existsSync(distRoot) || !existsSync(distSurface("index.js"))) {
       return;
     }
     expect(existsSync(distSurface("credentials.compact"))).toEqual(true);

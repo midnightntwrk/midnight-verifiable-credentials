@@ -26,6 +26,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - the core TypeScript package now exports `OffchainDIDHolderBinding` as the
   preferred public-facing alias for the existing
   `OffchainMidnightHolderBinding` Compact/runtime shape.
+- added stable `./contract` package subpaths for the primary VC/family/demo
+  packages so integrators can import explicit contract-facing surfaces without
+  depending on duplicate root namespace exports:
+  - `credentials`
+  - `credentials-birth`
+  - `credentials-birth-secret`
+  - `credentials-same-holder`
+  - `credentials-demo-contract`
+- added a stable `./contract-revocation` package subpath for
+  `credentials-demo-contract`.
 
 ### Changed
 

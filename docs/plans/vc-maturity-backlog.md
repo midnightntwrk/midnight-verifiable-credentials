@@ -290,6 +290,10 @@ Current grouped execution:
   - refresh the package-boundary regression guard and land it through `#61`
   - block sibling `../<package>/src/...` imports in repo validation
   - replace direct cross-package `src/test` imports with exported testing surfaces
+- follow-up contract-surface slice:
+  - add stable `./contract` subpaths for the primary VC/family/demo packages
+  - add a dedicated `./contract-revocation` subpath for the revocation demo
+  - preserve existing root exports during the transition
 
 ### VC-MAT-08: Add starter templates and “Hello World” integration paths
 
@@ -491,6 +495,9 @@ Current progress:
 - `credentials-demo-contract` now hosts a dedicated narrow
   `demo-revocation.compact` module
 - the repository documents the “small business-facing demos” rule explicitly
+- stable contract-facing subpath exports are being added for the main
+  VC/family/demo packages so integrators can depend on narrower package
+  surfaces
 - dormant artifact cleanup and export-surface reduction are still pending
 
 Current grouped execution:

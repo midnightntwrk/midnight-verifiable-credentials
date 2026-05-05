@@ -18,6 +18,18 @@
       "import": "./dist/index.js",
       "default": "./dist/index.js"
     },
+    "./contract": {
+      "types": "./dist/contract.d.ts",
+      "require": "./dist/contract.js",
+      "import": "./dist/contract.js",
+      "default": "./dist/contract.js"
+    },
+    "./contract-revocation": {
+      "types": "./dist/contract-revocation.d.ts",
+      "require": "./dist/contract-revocation.js",
+      "import": "./dist/contract-revocation.js",
+      "default": "./dist/contract-revocation.js"
+    },
     "./testing": {
       "types": "./dist/testing.d.ts",
       "require": "./dist/testing.js",
@@ -37,8 +49,18 @@
   },
   "typesVersions": {
     "*": {
-      "managed/demo/contract/index.js": ["dist/managed/demo/contract/index.d.ts"],
-      "managed/demo-revocation/contract/index.js": ["dist/managed/demo-revocation/contract/index.d.ts"]
+      "contract": [
+        "dist/contract.d.ts"
+      ],
+      "contract-revocation": [
+        "dist/contract-revocation.d.ts"
+      ],
+      "managed/demo/contract/index.js": [
+        "dist/managed/demo/contract/index.d.ts"
+      ],
+      "managed/demo-revocation/contract/index.js": [
+        "dist/managed/demo-revocation/contract/index.d.ts"
+      ]
     }
   },
   "scripts": {
