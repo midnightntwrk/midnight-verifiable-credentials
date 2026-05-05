@@ -66,7 +66,6 @@ Substantially addressed on `develop`:
 - `VC-MAT-13`
 - `VC-MAT-14`
 - `VC-MAT-15`
-- `VC-MAT-17`
 
 Partially advanced, but still active:
 
@@ -75,6 +74,7 @@ Partially advanced, but still active:
 - `VC-MAT-09`
 - `VC-MAT-11`
 - `VC-MAT-16`
+- `VC-MAT-17`
 
 New audit-derived items:
 
@@ -231,6 +231,10 @@ The same Claude pass also repeated some findings that are now stale on
 - `Deferred`: valid but not the best next move relative to more urgent gaps
 
 ## Triage of Prior VC Repository Audit Findings
+
+This table is retained as historical input. The status update, architecture
+audit, and recommended execution order above are the authoritative current
+view.
 
 | # | Finding | Triage | Priority | Backlog action |
 | --- | --- | --- | --- | --- |
@@ -828,7 +832,6 @@ Required outcome:
 7. `VC-MAT-09`
 8. `VC-MAT-08`
 9. `VC-MAT-17`
-10. `VC-MAT-15`
 
 ## Notes
 
