@@ -42,6 +42,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - BREAKING: the VC status model no longer carries runtime `epoch` and
   `StatusSupportLevel` fields. Freshness remains a verifier/application
   responsibility via the accepted `(registryId, revokedRoot)` pair.
+- BREAKING: the primary VC/family/demo root TypeScript entrypoints no longer
+  publish duplicate `*Contract` namespace aliases. Contract-facing imports
+  should now use the explicit stable package subpaths such as `./contract` and
+  `./contract-revocation`.
 - BREAKING: status architecture is being normalized around shared VC-side
   status binding plus presentation-time status proof protocols. New additive
   runtime types include:

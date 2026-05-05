@@ -16,6 +16,11 @@ const sourceSurface = (relativePath: string) =>
 const distSurface = (relativePath: string) =>
   path.resolve(packageRoot, "dist", relativePath);
 const distRoot = path.resolve(packageRoot, "dist");
+const indexSource = readFileSync(sourceSurface("index.ts"), "utf8");
+
+const packageJson = JSON.parse(
+  readFileSync(path.resolve(packageRoot, "package.json"), "utf8"),
+) as { exports?: Record<string, unknown> };
 
 const packageJson = JSON.parse(
   readFileSync(path.resolve(packageRoot, "package.json"), "utf8"),
@@ -25,6 +30,10 @@ describe("credentials package surfaces", () => {
   it("declares a stable contract subpath export", () => {
     expect(packageJson.exports?.["./contract"]).toBeDefined();
     expect(existsSync(sourceSurface("contract.ts"))).toEqual(true);
+  });
+
+  it("keeps the root package surface free of duplicate contract namespaces", () => {
+    expect(indexSource).not.toContain("export * as CredentialsContract");
   });
 
   it("keeps the shared composition entrypoints in source control", () => {

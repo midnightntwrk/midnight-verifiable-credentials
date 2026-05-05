@@ -294,6 +294,15 @@ Current grouped execution:
   - add stable `./contract` subpaths for the primary VC/family/demo packages
   - add a dedicated `./contract-revocation` subpath for the revocation demo
   - preserve existing root exports during the transition
+- follow-up root-surface slice:
+  - remove duplicate `*Contract` namespace aliases from the root TypeScript
+    entrypoints
+  - make the stable subpaths the canonical contract-facing imports
+
+Related carry-over work:
+
+- merge and maintain the revived guardrail PR:
+  - `#20` `codex/vc-boundary-guardrail`
 
 ### VC-MAT-08: Add starter templates and “Hello World” integration paths
 
@@ -498,6 +507,8 @@ Current progress:
 - stable contract-facing subpath exports are being added for the main
   VC/family/demo packages so integrators can depend on narrower package
   surfaces
+- duplicate root `*Contract` namespace aliases are being removed in follow-up
+  slices so the narrower subpaths become the single obvious import path
 - dormant artifact cleanup and export-surface reduction are still pending
 
 Current grouped execution:
