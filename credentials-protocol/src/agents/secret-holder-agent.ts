@@ -131,6 +131,7 @@ export type SecretPresentationWitness = {
 };
 
 export class SecretHolderAgent {
+  private static readonly CREDENTIAL_COUNT_KEY = "credential-count";
   readonly label: string;
   private readonly holderSecret: Uint8Array;
   private readonly holderSecretOpening: Uint8Array;
@@ -312,7 +313,10 @@ export class SecretHolderAgent {
       holderBindingBlindingFactor:
         pendingIssuance.holderBindingBlindingFactor,
     });
-    this.metadata.set("credential-count", credentialIndex + 1);
+    this.metadata.set(
+      SecretHolderAgent.CREDENTIAL_COUNT_KEY,
+      credentialIndex + 1,
+    );
   }
 
   receiveIssuanceRejection(
@@ -414,7 +418,7 @@ export class SecretHolderAgent {
   }
 
   get credentialCount(): number {
-    return this.metadata.get("credential-count") ?? 0;
+    return this.recoverCredentialCount();
   }
 
   getCredential(index: number): SecretStoredCredential {
@@ -431,6 +435,25 @@ export class SecretHolderAgent {
       );
     }
     return stored;
+  }
+
+  private recoverCredentialCount(): number {
+    const recordedCount =
+      this.metadata.get(SecretHolderAgent.CREDENTIAL_COUNT_KEY) ?? 0;
+    let recoveredCount = recordedCount;
+    for (const [key] of this.storedCredentials.entries()) {
+      const index = Number(key);
+      if (Number.isInteger(index) && index >= recoveredCount) {
+        recoveredCount = index + 1;
+      }
+    }
+    if (recoveredCount !== recordedCount) {
+      this.metadata.set(
+        SecretHolderAgent.CREDENTIAL_COUNT_KEY,
+        recoveredCount,
+      );
+    }
+    return recoveredCount;
   }
 
   /**

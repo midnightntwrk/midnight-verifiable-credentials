@@ -398,6 +398,38 @@ describe("secret-holder issuance", () => {
     }
   });
 
+  it("recovers the hidden-holder credential count when stored credentials outpace metadata", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus, {
+      stateStore: new InMemoryProtocolStateStore(),
+    });
+    const holderStateStore = new InMemoryProtocolStateStore();
+    const holder = new SecretHolderAgent(holderConfig, bus, {
+      stateStore: holderStateStore,
+    });
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    holder.receiveOfferAndSendRequest(offer);
+    const request = bus.receive("issuer")!;
+    issuer.receiveRequestAndIssueCredential(request, claimWitness);
+    const outcomeMessage = bus.receive("holder")!;
+    holder.receiveIssuanceOutcome(outcomeMessage);
+    const originalStored = holder.getCredential(0);
+
+    holderStateStore.collection<number>("secret-holder:holder:metadata").set(
+      "credential-count",
+      0,
+    );
+
+    const restartedHolder = new SecretHolderAgent(holderConfig, bus, {
+      stateStore: holderStateStore,
+    });
+
+    expect(restartedHolder.credentialCount).toBe(1);
+    expect(restartedHolder.getCredential(0)).toEqual(originalStored);
+  });
+
   it("rejects issuance requests when the holder challenge is missing", () => {
     const bus = new MessageBus();
     const issuer = new SecretIssuerAgent(issuerProfile, bus);
