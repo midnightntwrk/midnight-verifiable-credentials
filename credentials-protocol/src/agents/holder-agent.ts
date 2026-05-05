@@ -22,6 +22,11 @@ import { assertBodyHasFields,assertMessageType } from "../shared/validation.js";
 import type { MessageBus } from "../transport/message-bus.js";
 import type { ProtocolMessage } from "../transport/types.js";
 import {
+  InMemoryProtocolStateStore,
+  type ProtocolStateCollection,
+  type ProtocolStateStore,
+} from "./protocol-state-store.js";
+import {
   type ProtocolRandomnessSource,
   unsafeReferenceDeterministicRandomnessSource,
 } from "./randomness.js";
@@ -42,10 +47,13 @@ export type PresentationWitness = {
 };
 
 export class HolderAgent {
+  private static readonly CREDENTIAL_COUNT_KEY = "credential-count";
   private readonly profile: DIDProfile;
   private readonly bus: MessageBus;
   private readonly randomness: ProtocolRandomnessSource;
-  private readonly credentials: StoredCredential[] = [];
+  private readonly storedCredentials: ProtocolStateCollection<StoredCredential>;
+  private readonly metadata: ProtocolStateCollection<number>;
+  private credentialCountCache = 0;
   private issuanceRequestCounter = 0;
   private presentationCounter = 0;
 
@@ -54,12 +62,20 @@ export class HolderAgent {
     bus: MessageBus,
     options: {
       readonly randomness?: ProtocolRandomnessSource;
+      readonly stateStore?: ProtocolStateStore;
     } = {},
   ) {
     this.profile = profile;
     this.bus = bus;
     this.randomness =
       options.randomness ?? unsafeReferenceDeterministicRandomnessSource;
+    const stateStore = options.stateStore ?? new InMemoryProtocolStateStore();
+    const stateScope = `holder:${this.profile.label}`;
+    this.storedCredentials = stateStore.collection(
+      `${stateScope}:stored-credentials`,
+    );
+    this.metadata = stateStore.collection(`${stateScope}:metadata`);
+    this.credentialCountCache = this.recoverCredentialCount();
   }
 
   receiveOfferAndSendRequest(offer: ProtocolMessage): void {
@@ -112,23 +128,50 @@ export class HolderAgent {
     assertMessageType(result, "issuance:result");
     assertBodyHasFields(result, ["envelope", "schema", "body"]);
     const issuanceResult = result.body as BirthCredentialIssuanceResult;
-    this.credentials.push({
+    this.storedCredentials.set(String(this.credentialCountCache), {
       credential: issuanceResult.body.credential,
       credentialProof: issuanceResult.body.credentialProof,
     });
+    this.credentialCountCache += 1;
+    this.metadata.set(
+      HolderAgent.CREDENTIAL_COUNT_KEY,
+      this.credentialCountCache,
+    );
   }
 
   get credentialCount(): number {
-    return this.credentials.length;
+    return this.credentialCountCache;
   }
 
   getCredential(index: number): StoredCredential {
-    if (index < 0 || index >= this.credentials.length) {
+    if (index < 0 || index >= this.credentialCountCache) {
       throw new RangeError(
-        `Credential index ${index} out of range [0, ${this.credentials.length})`,
+        `Credential index ${index} out of range [0, ${this.credentialCountCache})`,
       );
     }
-    return this.credentials[index];
+    const stored = this.storedCredentials.get(String(index));
+    if (!stored) {
+      throw new Error(
+        `Credential index ${index} is missing from protocol state storage.`,
+      );
+    }
+    return stored;
+  }
+
+  private recoverCredentialCount(): number {
+    const recordedCount =
+      this.metadata.get(HolderAgent.CREDENTIAL_COUNT_KEY) ?? 0;
+    let recoveredCount = recordedCount;
+    for (const [key] of this.storedCredentials.entries()) {
+      const index = Number(key);
+      if (Number.isInteger(index) && index >= recoveredCount) {
+        recoveredCount = index + 1;
+      }
+    }
+    if (recoveredCount !== recordedCount) {
+      this.metadata.set(HolderAgent.CREDENTIAL_COUNT_KEY, recoveredCount);
+    }
+    return recoveredCount;
   }
 
   buildPresentationForContract(

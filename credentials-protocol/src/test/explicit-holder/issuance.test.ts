@@ -1,3 +1,9 @@
+import { Buffer } from "node:buffer";
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { deserialize, serialize } from "node:v8";
+
 import { ecMulGenerator } from "@midnight-ntwrk/compact-runtime";
 import {
   type BirthCredentialIssuanceOffer,
@@ -7,8 +13,14 @@ import {
 } from "@midnight-ntwrk/midnight-did-credentials-birth/managed/birth-credential/contract/index.js";
 import { describe, expect,it } from "vitest";
 
+import { FileSystemProtocolStateByteStore } from "../../adapters/file-protocol-state-store.js";
 import { HolderAgent } from "../../agents/holder-agent.js";
 import { type ClaimWitness,IssuerAgent } from "../../agents/issuer-agent.js";
+import {
+  createCodecBackedProtocolStateStore,
+  InMemoryProtocolStateStore,
+  type ProtocolStateCodecResolver,
+} from "../../agents/protocol-state-store.js";
 import type { ProtocolRandomnessSource } from "../../agents/randomness.js";
 import { MessageBus } from "../../transport/message-bus.js";
 import {
@@ -41,6 +53,16 @@ describe("explicit-holder issuance", () => {
     nextBlindingFactor: () => sha256("custom:explicit:blinding-factor"),
     nextSigningNonceScalar: () => 23n,
   });
+
+  const v8CodecResolver: ProtocolStateCodecResolver = {
+    getCodec<T>() {
+      return {
+        encode: (value: T) => serialize(value),
+        decode: (encodedValue: Uint8Array) =>
+          deserialize(Buffer.from(encodedValue)) as T,
+      };
+    },
+  };
 
   it("completes an issuance flow through offer -> request -> credential", () => {
     const bus = new MessageBus();
@@ -176,5 +198,139 @@ describe("explicit-holder issuance", () => {
     expect(resultBody.body.credentialProof.signature.r).toEqual(
       ecMulGenerator(23n),
     );
+  });
+
+  it("persists explicit-holder credentials across agent restarts with a shared state store", () => {
+    const bus = new MessageBus();
+    const issuer = new IssuerAgent(issuerProfile, bus);
+    const holderStateStore = new InMemoryProtocolStateStore();
+    const holder = new HolderAgent(holderProfile, bus, {
+      stateStore: holderStateStore,
+    });
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    const offerBody = offer.body as BirthCredentialIssuanceOffer;
+    pureCircuits.assertValidBirthCredentialIssuanceOffer(offerBody);
+    holder.receiveOfferAndSendRequest(offer);
+    const request = bus.receive("issuer")!;
+    const requestBody = request.body as BirthCredentialIssuanceRequest;
+    pureCircuits.assertValidBirthCredentialIssuanceRequest(requestBody);
+    pureCircuits.assertBirthCredentialIssuanceRequestMatchesOffer(
+      offerBody,
+      requestBody,
+    );
+    issuer.receiveRequestAndIssueCredential(request, claimWitness);
+    const result = bus.receive("holder")!;
+    const resultBody = result.body as BirthCredentialIssuanceResult;
+    pureCircuits.assertValidBirthCredentialIssuanceResult(resultBody);
+    pureCircuits.assertBirthCredentialIssuanceResultMatchesRequest(
+      requestBody,
+      resultBody,
+    );
+    holder.receiveCredentialResult(result);
+    const originalStored = holder.getCredential(0);
+
+    const restartedHolder = new HolderAgent(holderProfile, bus, {
+      stateStore: holderStateStore,
+    });
+
+    expect(restartedHolder.credentialCount).toBe(1);
+    expect(restartedHolder.getCredential(0)).toEqual(originalStored);
+  });
+
+  it("persists explicit-holder credentials across file-backed agent restarts", () => {
+    const rootDir = mkdtempSync(join(tmpdir(), "vc-explicit-holder-state-"));
+
+    try {
+      const bus = new MessageBus();
+      const issuer = new IssuerAgent(issuerProfile, bus);
+      const holderStateStore = createCodecBackedProtocolStateStore(
+        new FileSystemProtocolStateByteStore(rootDir),
+        v8CodecResolver,
+      );
+      const holder = new HolderAgent(holderProfile, bus, {
+        stateStore: holderStateStore,
+      });
+
+      issuer.createAndSendOffer("holder");
+      const offer = bus.receive("holder")!;
+      const offerBody = offer.body as BirthCredentialIssuanceOffer;
+      pureCircuits.assertValidBirthCredentialIssuanceOffer(offerBody);
+      holder.receiveOfferAndSendRequest(offer);
+      const request = bus.receive("issuer")!;
+      const requestBody = request.body as BirthCredentialIssuanceRequest;
+      pureCircuits.assertValidBirthCredentialIssuanceRequest(requestBody);
+      pureCircuits.assertBirthCredentialIssuanceRequestMatchesOffer(
+        offerBody,
+        requestBody,
+      );
+      issuer.receiveRequestAndIssueCredential(request, claimWitness);
+      const result = bus.receive("holder")!;
+      const resultBody = result.body as BirthCredentialIssuanceResult;
+      pureCircuits.assertValidBirthCredentialIssuanceResult(resultBody);
+      pureCircuits.assertBirthCredentialIssuanceResultMatchesRequest(
+        requestBody,
+        resultBody,
+      );
+      holder.receiveCredentialResult(result);
+      const originalStored = holder.getCredential(0);
+
+      const restartedHolder = new HolderAgent(holderProfile, bus, {
+        stateStore: createCodecBackedProtocolStateStore(
+          new FileSystemProtocolStateByteStore(rootDir),
+          v8CodecResolver,
+        ),
+      });
+
+      expect(restartedHolder.credentialCount).toBe(1);
+      expect(restartedHolder.getCredential(0)).toEqual(originalStored);
+    } finally {
+      rmSync(rootDir, { recursive: true, force: true });
+    }
+  });
+
+  it("recovers the explicit-holder credential count when stored credentials outpace metadata", () => {
+    const bus = new MessageBus();
+    const issuer = new IssuerAgent(issuerProfile, bus);
+    const holderStateStore = new InMemoryProtocolStateStore();
+    const holder = new HolderAgent(holderProfile, bus, {
+      stateStore: holderStateStore,
+    });
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    const offerBody = offer.body as BirthCredentialIssuanceOffer;
+    pureCircuits.assertValidBirthCredentialIssuanceOffer(offerBody);
+    holder.receiveOfferAndSendRequest(offer);
+    const request = bus.receive("issuer")!;
+    const requestBody = request.body as BirthCredentialIssuanceRequest;
+    pureCircuits.assertValidBirthCredentialIssuanceRequest(requestBody);
+    pureCircuits.assertBirthCredentialIssuanceRequestMatchesOffer(
+      offerBody,
+      requestBody,
+    );
+    issuer.receiveRequestAndIssueCredential(request, claimWitness);
+    const result = bus.receive("holder")!;
+    const resultBody = result.body as BirthCredentialIssuanceResult;
+    pureCircuits.assertValidBirthCredentialIssuanceResult(resultBody);
+    pureCircuits.assertBirthCredentialIssuanceResultMatchesRequest(
+      requestBody,
+      resultBody,
+    );
+    holder.receiveCredentialResult(result);
+    const originalStored = holder.getCredential(0);
+
+    holderStateStore.collection<number>("holder:holder:metadata").set(
+      "credential-count",
+      0,
+    );
+
+    const restartedHolder = new HolderAgent(holderProfile, bus, {
+      stateStore: holderStateStore,
+    });
+
+    expect(restartedHolder.credentialCount).toBe(1);
+    expect(restartedHolder.getCredential(0)).toEqual(originalStored);
   });
 });
