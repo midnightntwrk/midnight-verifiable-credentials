@@ -328,6 +328,30 @@ describe("ProtocolStateStore retention helpers", () => {
     expect(metadata.get("count")).toEqual(3);
   });
 
+  it("prefers maxOrdinalKey when the collection provides one", () => {
+    const metadata = new InMemoryProtocolStateStore().collection<number>(
+      "test:metadata-ordinal-hint",
+    );
+    let scanned = false;
+    const values: ProtocolStateCollection<{ id: string }> = {
+      get: () => undefined,
+      set: () => undefined,
+      delete: () => false,
+      has: () => false,
+      maxOrdinalKey: () => 4,
+      entries: function* () {
+        scanned = true;
+        yield ["0", { id: "unexpected" }];
+      },
+    };
+
+    metadata.set("count", 1);
+
+    expect(recoverAppendOnlyOrdinalCount(metadata, "count", values)).toEqual(5);
+    expect(metadata.get("count")).toEqual(5);
+    expect(scanned).toEqual(false);
+  });
+
   it("leaves append-only ordinal metadata unchanged when it is already current", () => {
     const store = new InMemoryProtocolStateStore();
     const metadata = store.collection<number>("test:metadata-current");
@@ -340,5 +364,29 @@ describe("ProtocolStateStore retention helpers", () => {
       recoverAppendOnlyOrdinalCount(metadata, "count", values),
     ).toEqual(1);
     expect(metadata.get("count")).toEqual(1);
+  });
+
+  it("recovers append-only ordinals through codec-backed file stores", () => {
+    const rootDir = mkdtempSync(join(tmpdir(), "vc-protocol-state-ordinal-"));
+
+    try {
+      const store = createCodecBackedProtocolStateStore(
+        new FileSystemProtocolStateByteStore(rootDir),
+        v8CodecResolver,
+      );
+      const metadata = store.collection<number>("test:file-metadata");
+      const values = store.collection<{ id: string }>("test:file-values");
+
+      values.set("0", { id: "one" });
+      values.set("3", { id: "four" });
+      metadata.set("count", 1);
+
+      expect(recoverAppendOnlyOrdinalCount(metadata, "count", values)).toEqual(
+        4,
+      );
+      expect(metadata.get("count")).toEqual(4);
+    } finally {
+      rmSync(rootDir, { recursive: true, force: true });
+    }
   });
 });
