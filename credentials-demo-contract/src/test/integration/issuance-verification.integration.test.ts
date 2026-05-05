@@ -1,5 +1,10 @@
 import { pureCircuits } from "@midnight-ntwrk/midnight-did-credentials-birth/managed/birth-credential/contract/index.js";
 import {
+  createBirthCredentialProtocolFixtureForParticipants,
+  createSigner,
+  withVerificationMethodRef,
+} from "@midnight-ntwrk/midnight-did-credentials-birth/testing";
+import {
   containerRuntimeAvailable,
   type ProtocolDidProfile,
   provisionDidProfile,
@@ -7,13 +12,8 @@ import {
   verifierChallengeForProfile,
 } from "@midnight-ntwrk/midnight-did-standalone-environment";
 import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
-import { afterAll,beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import {
-  createBirthCredentialProtocolFixtureForParticipants,
-  createSigner,
-  withVerificationMethodRef,
-} from "../../../../credentials-birth/src/test/credential-fixtures.js";
 import { CredentialsDemoSimulator } from "../../simulator.js";
 
 const canRunContainers = await containerRuntimeAvailable();

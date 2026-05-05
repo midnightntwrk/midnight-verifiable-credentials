@@ -5,7 +5,7 @@ import { pureCircuits } from "../managed/birth-credential/contract/index.js";
 import {
   createBirthCredentialFixture,
   signProof,
-} from "./credential-fixtures.js";
+} from "../testing/credential-fixtures.js";
 
 setNetworkId("undeployed");
 
