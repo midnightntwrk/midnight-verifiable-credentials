@@ -146,18 +146,21 @@ jobs:
       - name: Restore Compact toolchain
         shell: bash
         run: |
-          mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config"
+          mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
           tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
-          mkdir -p "$HOME/.local/share" "$HOME/.config"
+          mkdir -p "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Activate Compact compiler
         shell: bash
         run: |
+          if compact compile --version >/dev/null 2>&1; then
+            exit 0
+          fi
           if [ "$COMPACT_COMPILER_VERSION" = "latest" ]; then
-            compact update || true
+            compact update
           else
-            compact update "$COMPACT_COMPILER_VERSION" || compact update || true
+            compact update "$COMPACT_COMPILER_VERSION" || compact update
           fi
 
       - name: Verify Compact installation
@@ -190,6 +193,9 @@ jobs:
         run: |
           mkdir -p "$RUNNER_TEMP/compact-toolchain"
           compact_paths=(.local/bin/compact)
+          if [ -d "$HOME/.compact" ]; then
+            compact_paths+=(.compact)
+          fi
           if [ -d "$HOME/.local/share/compact" ]; then
             compact_paths+=(.local/share/compact)
           fi
@@ -231,18 +237,21 @@ jobs:
       - name: Restore Compact toolchain
         shell: bash
         run: |
-          mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config"
+          mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
           tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
-          mkdir -p "$HOME/.local/share" "$HOME/.config"
+          mkdir -p "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Activate Compact compiler
         shell: bash
         run: |
+          if compact compile --version >/dev/null 2>&1; then
+            exit 0
+          fi
           if [ "$COMPACT_COMPILER_VERSION" = "latest" ]; then
-            compact update || true
+            compact update
           else
-            compact update "$COMPACT_COMPILER_VERSION" || compact update || true
+            compact update "$COMPACT_COMPILER_VERSION" || compact update
           fi
 
       - name: Verify Compact installation
@@ -290,18 +299,21 @@ jobs:
       - name: Restore Compact toolchain
         shell: bash
         run: |
-          mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config"
+          mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
           tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
-          mkdir -p "$HOME/.local/share" "$HOME/.config"
+          mkdir -p "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Activate Compact compiler
         shell: bash
         run: |
+          if compact compile --version >/dev/null 2>&1; then
+            exit 0
+          fi
           if [ "$COMPACT_COMPILER_VERSION" = "latest" ]; then
-            compact update || true
+            compact update
           else
-            compact update "$COMPACT_COMPILER_VERSION" || compact update || true
+            compact update "$COMPACT_COMPILER_VERSION" || compact update
           fi
 
       - name: Verify Compact installation
@@ -349,18 +361,21 @@ jobs:
       - name: Restore Compact toolchain
         shell: bash
         run: |
-          mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config"
+          mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
           tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
-          mkdir -p "$HOME/.local/share" "$HOME/.config"
+          mkdir -p "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Activate Compact compiler
         shell: bash
         run: |
+          if compact compile --version >/dev/null 2>&1; then
+            exit 0
+          fi
           if [ "$COMPACT_COMPILER_VERSION" = "latest" ]; then
-            compact update || true
+            compact update
           else
-            compact update "$COMPACT_COMPILER_VERSION" || compact update || true
+            compact update "$COMPACT_COMPILER_VERSION" || compact update
           fi
 
       - name: Verify Compact installation
@@ -408,18 +423,21 @@ jobs:
       - name: Restore Compact toolchain
         shell: bash
         run: |
-          mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config"
+          mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
           tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
-          mkdir -p "$HOME/.local/share" "$HOME/.config"
+          mkdir -p "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Activate Compact compiler
         shell: bash
         run: |
+          if compact compile --version >/dev/null 2>&1; then
+            exit 0
+          fi
           if [ "$COMPACT_COMPILER_VERSION" = "latest" ]; then
-            compact update || true
+            compact update
           else
-            compact update "$COMPACT_COMPILER_VERSION" || compact update || true
+            compact update "$COMPACT_COMPILER_VERSION" || compact update
           fi
 
       - name: Verify Compact installation
@@ -467,18 +485,21 @@ jobs:
       - name: Restore Compact toolchain
         shell: bash
         run: |
-          mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config"
+          mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
           tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
-          mkdir -p "$HOME/.local/share" "$HOME/.config"
+          mkdir -p "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Activate Compact compiler
         shell: bash
         run: |
+          if compact compile --version >/dev/null 2>&1; then
+            exit 0
+          fi
           if [ "$COMPACT_COMPILER_VERSION" = "latest" ]; then
-            compact update || true
+            compact update
           else
-            compact update "$COMPACT_COMPILER_VERSION" || compact update || true
+            compact update "$COMPACT_COMPILER_VERSION" || compact update
           fi
 
       - name: Verify Compact installation
@@ -517,18 +538,21 @@ jobs:
       - name: Restore Compact toolchain
         shell: bash
         run: |
-          mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config"
+          mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
           tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
-          mkdir -p "$HOME/.local/share" "$HOME/.config"
+          mkdir -p "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Activate Compact compiler
         shell: bash
         run: |
+          if compact compile --version >/dev/null 2>&1; then
+            exit 0
+          fi
           if [ "$COMPACT_COMPILER_VERSION" = "latest" ]; then
-            compact update || true
+            compact update
           else
-            compact update "$COMPACT_COMPILER_VERSION" || compact update || true
+            compact update "$COMPACT_COMPILER_VERSION" || compact update
           fi
 
       - name: Verify Compact installation
