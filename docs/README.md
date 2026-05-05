@@ -66,6 +66,9 @@
 - matrix:
   - [`testing/test-matrix.md`](./testing/test-matrix.md)
   - for the currently implemented test surface
+- Serenity BDD layer plan:
+  - [`plans/serenity-bdd-layer.md`](./plans/serenity-bdd-layer.md)
+  - for the living-documentation scenario layer and rollout plan
 
 ## Decisions and plans
 
@@ -87,3 +90,6 @@
 - VC maturity backlog:
   - [`plans/vc-maturity-backlog.md`](./plans/vc-maturity-backlog.md)
   - for the current repository-audit backlog and gap-tracking work
+- Serenity BDD layer plan:
+  - [`plans/serenity-bdd-layer.md`](./plans/serenity-bdd-layer.md)
+  - for the living-documentation test layer and its first rollout slice

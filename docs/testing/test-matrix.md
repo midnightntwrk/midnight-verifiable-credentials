@@ -1,6 +1,6 @@
 # Midnight VC Test Matrix
 
-Status: current implemented test surface as of 2026-05-04.
+Status: current implemented test surface as of 2026-05-05.
 
 ## Core package tests
 
@@ -180,3 +180,10 @@ Executed through:
 ```
 
 or directly through package-level `test:integration` commands when Docker is available.
+
+## Serenity BDD living-documentation scenarios
+
+- `serenity-vc-scenarios/src/test/resources/features/age_gate_happy_path.feature`
+  - narrated non-Docker birth-credential age-gate happy path
+  - driven through a small Node bridge over existing fixture and simulator exports
+  - generated as a Serenity report rather than a Vitest report

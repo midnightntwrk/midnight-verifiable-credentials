@@ -56,6 +56,7 @@ Partially advanced, but still active:
 - `VC-MAT-09`
 - `VC-MAT-14`
 - `VC-MAT-15`
+- `VC-MAT-17`
 
 Next active queue:
 
@@ -65,6 +66,7 @@ Next active queue:
 4. `VC-MAT-14`
 5. `VC-MAT-15`
 6. `VC-MAT-06`
+7. `VC-MAT-17`
 
 ## Triage Legend
 
@@ -200,6 +202,31 @@ Current grouped execution:
 
 - architectural terminology/spec slice:
   - status binding and proof-protocol split
+
+### VC-MAT-17: Add a Serenity BDD living-documentation layer
+
+Priority: P1
+
+Problem:
+
+- the repository has strong unit and integration coverage, but it still lacks a
+  report-oriented scenario layer that engineers and integrators can use as
+  executable prototype documentation
+
+Required outcome:
+
+- add a separate Serenity BDD module for curated use-case scenarios
+- keep the layer additive rather than replacing Vitest
+- start with non-Docker happy-path scenarios that reuse existing package
+  exports and simulators
+- generate stable Serenity HTML reports for the curated scenarios
+
+Current grouped execution:
+
+- initial scenario slice:
+  - add a standalone Maven/Serenity module
+  - document the rollout plan
+  - add one birth-credential age-gate happy-path smoke scenario
 
 ### VC-MAT-04: Resolve `OffchainDIDHolderBinding` vs `OffchainMidnightHolderBinding`
 

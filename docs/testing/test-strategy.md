@@ -14,6 +14,7 @@ This document defines the test strategy for the Midnight Verifiable Credentials 
 4. Concrete use cases that exercise meaningful subsets of the combination space
 5. The test matrix mapping every combination to a test scenario
 6. The test pyramid: which layer owns which tests
+7. The living-documentation Serenity BDD layer
 
 ## Architecture Recap
 
@@ -38,6 +39,33 @@ Current-repository note:
 - additional families listed later in this strategy document describe the wider
   design space or adjacent prototype work, not current workspace packages on
   `develop`
+
+## Serenity BDD Layer
+
+The repository now has an additional scenario layer under
+`serenity-vc-scenarios/`.
+
+This layer does not replace Vitest. It exists for a different job:
+
+- Vitest:
+  - correctness, regression, package-local behavior, integration mechanics
+- Serenity BDD:
+  - narrated use-case examples
+  - living documentation for engineers and integrators
+  - HTML reports that show the scenario flow without reading the package internals first
+
+Current scope:
+
+- one non-Docker smoke scenario for the birth-credential age-gate happy path
+- implemented as a small Node bridge over existing fixture/simulator exports
+- invoked through:
+  - `npm run test:serenity:smoke`
+
+Guardrails:
+
+- do not duplicate the full Vitest matrix in Serenity
+- keep Serenity scenarios curated, business-facing, and documentation-oriented
+- add Docker-backed or real-DID flows only after the smoke layer is stable
 
 ## Configuration Dimensions
 
