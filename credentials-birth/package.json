@@ -18,6 +18,12 @@
       "import": "./dist/index.js",
       "default": "./dist/index.js"
     },
+    "./contract": {
+      "types": "./dist/contract.d.ts",
+      "require": "./dist/contract.js",
+      "import": "./dist/contract.js",
+      "default": "./dist/contract.js"
+    },
     "./testing": {
       "types": "./dist/testing.d.ts",
       "require": "./dist/testing.js",
@@ -32,8 +38,15 @@
   },
   "typesVersions": {
     "*": {
-      "testing": ["dist/testing.d.ts"],
-      "managed/birth-credential/contract/index.js": ["dist/managed/birth-credential/contract/index.d.ts"]
+      "contract": [
+        "dist/contract.d.ts"
+      ],
+      "testing": [
+        "dist/testing.d.ts"
+      ],
+      "managed/birth-credential/contract/index.js": [
+        "dist/managed/birth-credential/contract/index.d.ts"
+      ]
     }
   },
   "scripts": {

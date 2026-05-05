@@ -82,6 +82,16 @@ class FileSystemProtocolStateByteCollection
     }
   }
 
+  deleteMany(keys: readonly string[]): number {
+    let deleted = 0;
+    for (const key of keys) {
+      if (this.delete(key)) {
+        deleted += 1;
+      }
+    }
+    return deleted;
+  }
+
   has(key: string): boolean {
     return existsSync(this.filePathFor(key));
   }

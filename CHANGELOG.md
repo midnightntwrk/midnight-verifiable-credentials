@@ -26,12 +26,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - the core TypeScript package now exports `OffchainDIDHolderBinding` as the
   preferred public-facing alias for the existing
   `OffchainMidnightHolderBinding` Compact/runtime shape.
+- added stable `./contract` package subpaths for the primary VC/family/demo
+  packages so integrators can import explicit contract-facing surfaces without
+  depending on duplicate root namespace exports:
+  - `credentials`
+  - `credentials-birth`
+  - `credentials-birth-secret`
+  - `credentials-same-holder`
+  - `credentials-demo-contract`
+- added a stable `./contract-revocation` package subpath for
+  `credentials-demo-contract`.
 
 ### Changed
 
 - BREAKING: the VC status model no longer carries runtime `epoch` and
   `StatusSupportLevel` fields. Freshness remains a verifier/application
   responsibility via the accepted `(registryId, revokedRoot)` pair.
+- BREAKING: the primary VC/family/demo root TypeScript entrypoints no longer
+  publish duplicate `*Contract` namespace aliases. Contract-facing imports
+  should now use the explicit stable package subpaths such as `./contract` and
+  `./contract-revocation`.
 - BREAKING: status architecture is being normalized around shared VC-side
   status binding plus presentation-time status proof protocols. New additive
   runtime types include:
@@ -60,5 +74,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ProtocolStateCollection` now requires `entries()` for retention/pruning
   semantics in protocol state adapters; the reference helpers now handle
   snapshot-based pruning and tied-timestamp retention more explicitly.
+- protocol-state retention helpers now support optional batch deletion via
+  `deleteMany(keys)` and skip unnecessary collection scans when finalized
+  outcome capacity is zero.
+- the package-boundary guard now also blocks duplicate root `*Contract`
+  namespace aliases for the curated VC/family/demo package entrypoints.
 - The revocation demo no longer duplicates the revoked-set status request
   struct that now lives in the shared hidden-holder family surface.
