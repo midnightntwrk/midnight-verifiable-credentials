@@ -212,6 +212,11 @@ The narrower Claude audit agreed on three high-value remaining gaps:
   nonce footgun
 - deeper starter material is still secondary work after the core status/protocol
   decisions
+- the protocol-state seam should stop drifting through optional methods and
+  either:
+  - freeze as a synchronous capability-typed contract
+  - or move intentionally to an async facade once a real async backend is
+    committed
 
 The same Claude pass also repeated some findings that are now stale on
 `develop`:
@@ -465,6 +470,9 @@ Current grouped execution:
 - remaining seam decision:
   - decide whether the current synchronous interface is final
   - or redesign around an explicit async durability contract
+  - if no real async adapter is on the near-term roadmap, prefer freezing the
+    current synchronous seam as a capability-typed contract instead of adding
+    more ad hoc optional methods
 
 ### VC-MAT-07: Reduce accidental public surface inflation
 
@@ -771,6 +779,12 @@ Required outcome:
 - align package READMEs and conformance language to that inventory
 - make the maturity tiers explicit enough that integrators do not infer
   stability from package presence alone
+- standardize a per-package header that states:
+  - tier
+  - stability
+  - allowed dependency direction
+  - whether the package is reusable outside this repo
+- add CI/load-bearing checks so the tier classification cannot silently drift
 
 ### VC-MAT-19: Separate reusable core protocols from Layer 3 / Layer 4 wiring protocols
 
@@ -794,6 +808,11 @@ Required outcome:
   Layer 4 transport/orchestration helpers
 - tighten package-boundary, overview, and README language so “reference
   protocol” does not get mistaken for “core reusable protocol”
+- evaluate whether shared proof-protocol Compact types should live in a
+  dedicated lower shared package rather than forcing the final ownership choice
+  to be only:
+  - `credentials`
+  - or `credentials-status-registry`
 
 ### VC-MAT-20: Finish the cryptographic status contract
 
@@ -815,9 +834,24 @@ Required outcome:
   `revokedRoot` as an externally coordinated snapshot
 - ship the end-to-end non-membership proof protocol as the canonical
   non-authority-attested path
-- commit the full status binding into the issuer-signed credential body root
+- commit the full status binding into the issuer-signed credential body root,
+  including:
+  - registry id
+  - list/index or handle location
+  - status type
+  - authority key material where applicable
+- anchor status root freshness to a trust-bound source instead of a
+  verifier-chosen root alone
+- add freshness semantics to authority-attested proofs with verifier-enforced
+  max-age policy
 - remove or narrow unsafe caller-supplied nonce handling in
   authority-attested helper APIs
+- add adversarial conformance coverage for:
+  - registry swap
+  - root substitution
+  - stale attestation replay
+  - index mismatch
+  - missing-binding cases
 - document the resulting status maturity claim clearly in the core spec,
   conformance, and package READMEs
 
