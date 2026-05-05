@@ -303,6 +303,9 @@ Current grouped execution:
   - remove duplicate `*Contract` namespace aliases from the root TypeScript
     entrypoints
   - make the stable subpaths the canonical contract-facing imports
+- follow-up boundary-guard slice:
+  - extend `check:package-boundaries` to block duplicate root `*Contract`
+    namespace aliases in the curated package entrypoints
 
 Related carry-over work:
 
@@ -516,6 +519,8 @@ Current progress:
   surfaces
 - duplicate root `*Contract` namespace aliases are being removed in follow-up
   slices so the narrower subpaths become the single obvious import path
+- `check:package-boundaries` is being extended to keep those duplicate root
+  aliases from reappearing after the cleanup lands
 - dormant artifact cleanup and export-surface reduction are still pending
 
 Current grouped execution:

@@ -77,5 +77,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - protocol-state retention helpers now support optional batch deletion via
   `deleteMany(keys)` and skip unnecessary collection scans when finalized
   outcome capacity is zero.
+- the package-boundary guard now also blocks duplicate root `*Contract`
+  namespace aliases for the curated VC/family/demo package entrypoints.
 - The revocation demo no longer duplicates the revoked-set status request
   struct that now lives in the shared hidden-holder family surface.
