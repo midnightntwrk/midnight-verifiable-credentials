@@ -1,3 +1,9 @@
+import { Buffer } from "node:buffer";
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { deserialize, serialize } from "node:v8";
+
 import { ecMulGenerator } from "@midnight-ntwrk/compact-runtime";
 import { pureCircuits as genericPureCircuits } from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
 import {
@@ -8,7 +14,12 @@ import {
 } from "@midnight-ntwrk/midnight-did-credentials-birth-secret/managed/secret-birth-credential/contract/index.js";
 import { describe, expect, it } from "vitest";
 
-import { InMemoryProtocolStateStore } from "../../agents/protocol-state-store.js";
+import { FileSystemProtocolStateByteStore } from "../../adapters/file-protocol-state-store.js";
+import {
+  createCodecBackedProtocolStateStore,
+  InMemoryProtocolStateStore,
+  type ProtocolStateCodecResolver,
+} from "../../agents/protocol-state-store.js";
 import type { ProtocolRandomnessSource } from "../../agents/randomness.js";
 import { SecretHolderAgent } from "../../agents/secret-holder-agent.js";
 import {
@@ -59,6 +70,16 @@ describe("secret-holder issuance", () => {
     nextBlindingFactor: () => sha256("custom:secret-issuer:blinding-factor"),
     nextSigningNonceScalar: () => 37n,
   });
+
+  const v8CodecResolver: ProtocolStateCodecResolver = {
+    getCodec<T>() {
+      return {
+        encode: (value: T) => serialize(value),
+        decode: (encodedValue: Uint8Array) =>
+          deserialize(Buffer.from(encodedValue)) as T,
+      };
+    },
+  };
 
   const forgeIssuanceResultWithChallenge = (
     resultBody: SecretBirthCredentialIssuanceResult,
@@ -311,6 +332,7 @@ describe("secret-holder issuance", () => {
     const offer = bus.receive("holder")!;
     holder.receiveOfferAndSendRequest(offer);
     const request = bus.receive("issuer")!;
+    const requestBody = request.body as SecretBirthCredentialIssuanceRequest;
 
     const restartedIssuer = new SecretIssuerAgent(issuerProfile, bus, {
       stateStore: issuerStateStore,
@@ -325,6 +347,55 @@ describe("secret-holder issuance", () => {
 
     expect(outcome.kind).toBe("issued");
     expect(restartedHolder.credentialCount).toBe(1);
+    const stored = restartedHolder.getCredential(0);
+    expect(stored.credential.issuedAt).toBe(claimWitness.issuedAt);
+    expect(stored.credential.expiresAt).toBe(claimWitness.expiresAt);
+    expect(stored.holderBindingBlindingFactor).toEqual(
+      requestBody.body.holderBindingBlindingFactor,
+    );
+  });
+
+  it("persists stored hidden-holder credentials across file-backed holder restarts", () => {
+    const rootDir = mkdtempSync(join(tmpdir(), "vc-secret-holder-state-"));
+
+    try {
+      const bus = new MessageBus();
+      const issuer = new SecretIssuerAgent(issuerProfile, bus, {
+        stateStore: new InMemoryProtocolStateStore(),
+      });
+      const holderStateStore = createCodecBackedProtocolStateStore(
+        new FileSystemProtocolStateByteStore(rootDir),
+        v8CodecResolver,
+      );
+      const holder = new SecretHolderAgent(holderConfig, bus, {
+        stateStore: holderStateStore,
+      });
+
+      issuer.createAndSendOffer("holder");
+      const offer = bus.receive("holder")!;
+      holder.receiveOfferAndSendRequest(offer);
+      const request = bus.receive("issuer")!;
+      issuer.receiveRequestAndIssueCredential(request, claimWitness);
+      const outcomeMessage = bus.receive("holder")!;
+      holder.receiveIssuanceOutcome(outcomeMessage);
+      const originalStored = holder.getCredential(0);
+
+      const restartedHolder = new SecretHolderAgent(holderConfig, bus, {
+        stateStore: createCodecBackedProtocolStateStore(
+          new FileSystemProtocolStateByteStore(rootDir),
+          v8CodecResolver,
+        ),
+      });
+
+      expect(restartedHolder.credentialCount).toBe(1);
+      const stored = restartedHolder.getCredential(0);
+      expect(stored).toEqual(originalStored);
+      expect(stored.credential.issuedAt).toBe(claimWitness.issuedAt);
+      expect(stored.credential.expiresAt).toBe(claimWitness.expiresAt);
+      expect(stored.credentialProof.signature).toBeDefined();
+    } finally {
+      rmSync(rootDir, { recursive: true, force: true });
+    }
   });
 
   it("rejects issuance requests when the holder challenge is missing", () => {
