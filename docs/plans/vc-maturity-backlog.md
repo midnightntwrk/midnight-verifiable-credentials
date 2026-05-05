@@ -10,7 +10,7 @@ Purpose:
   findings
 - provide a stable backlog for follow-up engineering and documentation slices
 
-## Status Update: 2026-05-05
+## Status Update: 2026-05-06
 
 Merged in the last completed iteration:
 
@@ -44,6 +44,14 @@ Merged in the last completed iteration:
   - `#70`
   - `#71`
   - `#72`
+- protocol-state persistence, ordinal recovery hardening, and the second
+  living-documentation scenario:
+  - `#73`
+  - `#74`
+  - `#75`
+  - `#76`
+  - `#77`
+  - `#78`
 
 Substantially addressed on `develop`:
 
@@ -52,30 +60,166 @@ Substantially addressed on `develop`:
 - `VC-MAT-03`
 - `VC-MAT-04`
 - `VC-MAT-05`
+- `VC-MAT-07`
 - `VC-MAT-10`
-- `VC-MAT-11`
 - `VC-MAT-12`
 - `VC-MAT-13`
-- `VC-MAT-16`
-- `VC-MAT-07`
+- `VC-MAT-14`
+- `VC-MAT-15`
+- `VC-MAT-17`
 
 Partially advanced, but still active:
 
 - `VC-MAT-06`
 - `VC-MAT-08`
 - `VC-MAT-09`
-- `VC-MAT-14`
-- `VC-MAT-15`
-- `VC-MAT-17`
+- `VC-MAT-11`
+- `VC-MAT-16`
+
+New audit-derived items:
+
+- `VC-MAT-18`
+- `VC-MAT-19`
+- `VC-MAT-20`
+
+Current highest-risk remaining area:
+
+- the repository still lacks one canonical, spec-first inventory that
+  separates:
+  - reusable core VC components
+  - reusable core protocols
+  - prototype-only surfaces
+  - Layer 3 / Layer 4 wiring and helpers
+- the biggest unfinished core-spec gap is still status/revocation:
+  the repository does not yet provide final in-circuit root binding and
+  non-membership proof semantics
+- the most important unresolved ownership seam is still status/revocation:
+  docs normalize the split, but Compact proof-protocol types still live in
+  `credentials` while `credentials-status-registry` owns most runtime builders
+  and workflow glue
 
 Next active queue:
 
-1. `VC-MAT-14`
-2. `VC-MAT-06`
-3. `VC-MAT-17`
-4. `VC-MAT-09`
-5. `VC-MAT-08`
-6. `VC-MAT-15`
+1. `VC-MAT-11`
+2. `VC-MAT-16`
+3. `VC-MAT-20`
+4. `VC-MAT-19`
+5. `VC-MAT-18`
+6. `VC-MAT-06`
+7. `VC-MAT-09`
+8. `VC-MAT-08`
+9. `VC-MAT-17`
+
+## Architecture Audit: 2026-05-06
+
+This audit combined:
+
+- repo-local spec/package/code review on current `develop`
+- a Claude-composed second-pass audit checklist focused on:
+  - package-boundary drift
+  - spec/doc drift
+  - public-surface ambiguity
+  - prototype-vs-core classification
+
+### Reusable core VC components
+
+- `credentials`
+- `credentials-same-holder`
+- `credentials-iso-registry`
+- reusable family-level schema, predicate, and proof surfaces in:
+  - `credentials-birth`
+  - `credentials-birth-secret`
+
+Current reading:
+
+- these packages define the canonical Compact-native VC/VP envelopes,
+  holder-binding shapes, proof containers, claim layouts, and family-specific
+  verification logic that other packages should compose rather than redefine
+
+### Reusable core protocols
+
+- generic issuance and presentation protocol modules in `credentials`
+- family-specific request/submission/result semantics in:
+  - `credentials-birth`
+  - `credentials-birth-secret`
+- same-holder composition semantics in `credentials-same-holder`
+- shared VC-side status binding plus verifier-request vocabulary for
+  status-aware flows
+
+Main caveat:
+
+- status proof-protocol ownership is still mixed:
+  - Compact proof-protocol types and validators live in `credentials`
+  - registry-specific runtime builders and witness helpers live in
+    `credentials-status-registry`
+
+### Prototype-only surfaces
+
+- current verifier-supplied-root and authority-attested status stories remain
+  prototype trust models rather than final production non-revocation claims
+- `credentials-demo-contract` proves business-flow composition and demo-shaped
+  Layer 3 patterns, but it is not the canonical reusable VC package surface
+- `vc-bdd-scenarios` is living documentation, not a conformance contract or a
+  second regression matrix
+- historical adjacent-prototype artifacts are now quarantined rather than
+  presented as supported workspace packages
+
+### Layer 3 / Layer 4 wiring and helpers
+
+- `credentials-protocol`
+- `credentials-openid`
+- `credentials-offchain-did`
+- `standalone-environment`
+- off-chain builders and witness helpers in `credentials-status-registry`
+- `vc-bdd-scenarios`
+
+Current reading:
+
+- these packages are important composition surfaces, but they are not the same
+  thing as the reusable core VC spec
+- `credentials-protocol` is the main reference orchestration layer and should
+  be treated as off-chain wiring, not as a stable on-chain or canonical core
+  protocol package
+
+### Main gaps from this audit
+
+- there is still no single canonical inventory that tells integrators which
+  public packages and protocol surfaces are:
+  - reusable core
+  - reusable core protocol
+  - prototype-only
+  - Layer 3 / Layer 4 wiring
+- docs now describe status binding and proof-protocol ownership better than the
+  code actually enforces
+- `credentials-protocol` still exposes a broad root runtime surface without a
+  curated `exports` map, unlike the narrower entrypoint posture adopted by the
+  newer package slices
+- the spec and README set still describe some reusable core protocol semantics
+  and some reference orchestration behavior too close together, especially
+  where “reference protocol” language can be misread as “core reusable
+  protocol”
+
+### Claude Second-Pass Triage
+
+The narrower Claude audit agreed on three high-value remaining gaps:
+
+- the final cryptographic status contract is still incomplete:
+  - live `revokedRoot` binding is not yet proven inside Compact
+  - final non-membership proof semantics are not yet shipped end to end
+  - the full status binding is not yet committed into the issuer-signed
+    credential body root
+- the authority-attested helper surface still exposes a caller-supplied signing
+  nonce footgun
+- deeper starter material is still secondary work after the core status/protocol
+  decisions
+
+The same Claude pass also repeated some findings that are now stale on
+`develop`:
+
+- the broad tactical `VC-MAT-14` hardening bucket is no longer the main open
+  problem after `#73` through `#78`
+- the earlier Layer 3/family export and dormant-demo cleanup findings are now
+  mostly closed for the current workspace
 
 ## Triage Legend
 
@@ -86,7 +230,7 @@ Next active queue:
   in another stacked docs/spec slice and should remain open until merged
 - `Deferred`: valid but not the best next move relative to more urgent gaps
 
-## Triage of Current VC Repository Audit Findings
+## Triage of Prior VC Repository Audit Findings
 
 | # | Finding | Triage | Priority | Backlog action |
 | --- | --- | --- | --- | --- |
@@ -209,8 +353,13 @@ Required outcome:
 
 Current grouped execution:
 
-- architectural terminology/spec slice:
-  - status binding and proof-protocol split
+- landed slices now cover:
+  - architectural terminology/spec split
+  - additive runtime binding/protocol types
+  - verifier-facing builder/import normalization
+- remaining gap:
+  - Compact proof-protocol types still live in `credentials`
+  - package ownership is clearer in docs than in the canonical Compact surface
 
 ### VC-MAT-04: Resolve `OffchainDIDHolderBinding` vs `OffchainMidnightHolderBinding`
 
@@ -301,10 +450,17 @@ Required outcome:
 
 Current grouped execution:
 
-- follow-up protocol-state helper slice:
-  - add optional batch-delete support for protocol-state collections
-  - skip unnecessary retained-state scans when finalized capacity is zero
-  - keep the persistent-adapter contract documented in one place
+- landed protocol-state hardening slices now cover:
+  - optional batch-delete support for protocol-state collections
+  - zero-capacity fast path for finalized-outcome retention
+  - hidden-holder credential persistence behind `ProtocolStateStore`
+  - explicit-holder credential persistence behind `ProtocolStateStore`
+  - startup credential-count recovery after metadata drift
+  - shared ordinal recovery helpers
+  - optional `maxOrdinalKey()` hints for append-only collections
+- remaining seam decision:
+  - decide whether the current synchronous interface is final
+  - or redesign around an explicit async durability contract
 
 ### VC-MAT-07: Reduce accidental public surface inflation
 
@@ -383,6 +539,17 @@ Required outcome:
   - `demo-revocation`
   - focused lanes such as `ci:revocation`
 
+Current progress:
+
+- the docs now cover:
+  - docs-only CI fast path
+  - BDD-only CI lane classification
+  - `vc-bdd-scenarios`
+  - the revocation demo lane
+- remaining risk:
+  - the test docs will keep drifting unless every new lane and scenario slice
+    updates them in the same PR
+
 ### VC-MAT-10: Start maintaining `CHANGELOG.md` for compatibility-significant changes
 
 Priority: P1
@@ -439,8 +606,16 @@ Current architectural direction to evaluate:
 
 Current grouped execution:
 
-- stacked docs slice:
-  - status DSL ownership and import normalization
+- docs/spec direction already landed:
+  - `credentials` owns VC-side status binding shape
+  - `credentials-status-registry` owns registry-specific proof-protocol helpers
+    and off-chain builders
+- remaining architectural gap:
+  - Compact proof-protocol types and validators still live in `credentials`
+  - runtime builders and witness helpers still live in
+    `credentials-status-registry`
+  - the repository must either accept that split as intentional core ownership
+    or finish moving the proof-protocol boundary outward
 
 ### VC-MAT-12: Add a dedicated status capability conformance category
 
@@ -514,9 +689,17 @@ Required outcome:
 
 Current grouped execution:
 
-- follow-up protocol-state helper slice:
-  - use optional `deleteMany(keys)` support during retention pruning/eviction
-  - add a zero-capacity fast path for finalized outcome retention
+- landed tactical fixes now include:
+  - snapshot-based expiry pruning
+  - tied-timestamp retention behavior
+  - optional `deleteMany(keys)` support during pruning/eviction
+  - zero-capacity fast path for finalized outcome retention
+  - hidden-holder credential persistence
+  - explicit-holder credential persistence
+  - metadata-drift recovery for holder credential counters
+  - shared ordinal recovery helpers and `maxOrdinalKey()` hints
+- remaining work, if any, should now fold into `VC-MAT-06` rather than reopen a
+  separate tactical bucket
 
 ### VC-MAT-15: Curate Layer 3 and family package public surfaces
 
@@ -545,39 +728,107 @@ Current progress:
 - `credentials-demo-contract` now hosts a dedicated narrow
   `demo-revocation.compact` module
 - the repository documents the “small business-facing demos” rule explicitly
-- stable contract-facing subpath exports are being added for the main
-  VC/family/demo packages so integrators can depend on narrower package
-  surfaces
-- duplicate root `*Contract` namespace aliases are being removed in follow-up
-  slices so the narrower subpaths become the single obvious import path
-- `check:package-boundaries` is being extended to keep those duplicate root
-  aliases from reappearing after the cleanup lands
-- dormant artifact cleanup and export-surface reduction are still pending
+- stable contract-facing subpath exports now exist for the main
+  VC/family/demo packages
+- duplicate root `*Contract` namespace aliases were removed so the narrower
+  subpaths are the single obvious import path
+- `check:package-boundaries` now blocks those aliases from reappearing
+- the dormant `passport-compliance-demo.compact` artifact is quarantined from
+  the supported demo surface
+- this item is now mostly closed for the current workspace; any remaining work
+  is incremental public-surface curation rather than a repo-shaping gap
 
 Current grouped execution:
 
-- stacked package/docs slice:
-  - quarantine the dormant `passport-compliance-demo.compact` artifact from the
-    supported demo package surface
+- maintain the current guardrails as new packages land rather than reopening
+  the same broad-surface cleanup track
+
+### VC-MAT-18: Publish a canonical reusable-core / prototype / wiring inventory
+
+Priority: P1
+
+Problem:
+
+- the repository now has good pieces of this story spread across:
+  - the core VC spec
+  - architecture docs
+  - package READMEs
+  - integration guides
+- but there is still no single canonical inventory that tells integrators which
+  packages and public surfaces are:
+  - reusable core VC components
+  - reusable core protocols
+  - prototype-only surfaces
+  - Layer 3 / Layer 4 wiring and helpers
+
+Required outcome:
+
+- publish one canonical inventory in the architecture/spec set
+- align package READMEs and conformance language to that inventory
+- make the maturity tiers explicit enough that integrators do not infer
+  stability from package presence alone
+
+### VC-MAT-19: Separate reusable core protocols from Layer 3 / Layer 4 wiring protocols
+
+Priority: P1
+
+Problem:
+
+- the repository correctly says transport is not canonical, but it still
+  describes some reusable core protocol semantics and some off-chain reference
+  orchestration too close together
+- this is most visible in:
+  - generic issuance/presentation semantics in `credentials`
+  - reference orchestration in `credentials-protocol`
+  - status/revocation request and proof vocabulary split across `credentials`
+    and `credentials-status-registry`
+
+Required outcome:
+
+- explicitly classify which protocols belong to the reusable core spec
+- explicitly classify which protocols are Layer 3 business-composition or
+  Layer 4 transport/orchestration helpers
+- tighten package-boundary, overview, and README language so “reference
+  protocol” does not get mistaken for “core reusable protocol”
+
+### VC-MAT-20: Finish the cryptographic status contract
+
+Priority: P1
+
+Problem:
+
+- the current status/revocation model still depends on prototype trust seams:
+  - `revokedRoot` freshness and authenticity are verifier/application-side
+  - the final in-circuit non-membership proof path is not shipped
+  - current wrapped families do not yet commit the full status binding into the
+    issuer-signed credential body root
+- the authority-attested helper path still exposes caller-managed signing nonce
+  generation as a prototype API footgun
+
+Required outcome:
+
+- bind the live registry root inside Compact rather than treating
+  `revokedRoot` as an externally coordinated snapshot
+- ship the end-to-end non-membership proof protocol as the canonical
+  non-authority-attested path
+- commit the full status binding into the issuer-signed credential body root
+- remove or narrow unsafe caller-supplied nonce handling in
+  authority-attested helper APIs
+- document the resulting status maturity claim clearly in the core spec,
+  conformance, and package READMEs
 
 ## Recommended Execution Order
 
-1. `VC-MAT-01`
-2. `VC-MAT-02`
-3. `VC-MAT-03`
-4. `VC-MAT-05`
-5. `VC-MAT-09`
-6. `VC-MAT-10`
-7. `VC-MAT-04`
-8. `VC-MAT-06`
-9. `VC-MAT-07`
-10. `VC-MAT-08`
-11. `VC-MAT-11`
-12. `VC-MAT-12`
-13. `VC-MAT-13`
-14. `VC-MAT-14`
-15. `VC-MAT-15`
-16. `VC-MAT-16`
+1. `VC-MAT-11`
+2. `VC-MAT-16`
+3. `VC-MAT-20`
+4. `VC-MAT-19`
+5. `VC-MAT-18`
+6. `VC-MAT-06`
+7. `VC-MAT-09`
+8. `VC-MAT-08`
+9. `VC-MAT-17`
+10. `VC-MAT-15`
 
 ## Notes
 
