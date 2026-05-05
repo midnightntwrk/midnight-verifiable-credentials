@@ -177,6 +177,19 @@ Current gap:
   - skips Compact setup, build, unit, and integration lanes when every changed
     file is documentation-only
 
+## Serenity/JS BDD scenarios
+
+- package:
+  - `vc-bdd-scenarios`
+- current smoke scenario:
+  - `vc-bdd-scenarios/features/age_gate_happy_path.feature`
+- root command:
+  - `npm run test:bdd:smoke`
+- purpose:
+  - living-documentation scenario coverage for the current VC prototype
+- current scope:
+  - non-Docker birth-credential age-gate happy path
+
 ## Standalone integration tests
 
 Docker-backed integration runs currently exist in:

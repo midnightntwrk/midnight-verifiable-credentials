@@ -3,6 +3,8 @@ node_modules/
 dist/
 **/dist/
 build/
+target/
+**/target/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

@@ -19,6 +19,7 @@
     "credentials-birth",
     "credentials-birth-secret",
     "credentials-demo-contract",
+    "vc-bdd-scenarios",
     "standalone-environment"
   ],
   "scripts": {
@@ -51,6 +52,8 @@
     "ci:integration": "./run-credentials-standalone.sh",
     "ci:integration:demo-contract": "npm run build:integration-prereqs:demo-contract && npm run test:integration:demo-contract",
     "ci:integration:protocol": "npm run build:integration-prereqs:protocol && npm run test:integration:protocol",
+    "build:bdd:prereqs": "node ./vc-bdd-scenarios/scripts/ensure-prereqs.mjs",
+    "test:bdd:smoke": "npm run build:bdd:prereqs && npm run test:smoke -w vc-bdd-scenarios",
     "test:integration:demo-contract": "npm run test:integration -w credentials-demo-contract",
     "test:integration:protocol": "npm run test:integration -w credentials-protocol",
     "build:integration-prereqs": "npm run build:integration-prereqs:shared",

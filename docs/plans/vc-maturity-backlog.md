@@ -58,6 +58,7 @@ Partially advanced, but still active:
 - `VC-MAT-09`
 - `VC-MAT-14`
 - `VC-MAT-15`
+- `VC-MAT-17`
 
 Next active queue:
 
@@ -67,6 +68,7 @@ Next active queue:
 4. `VC-MAT-06`
 5. `VC-MAT-09`
 6. `VC-MAT-08`
+7. `VC-MAT-17`
 
 ## Triage Legend
 
@@ -218,6 +220,34 @@ Current decision:
 - expose `OffchainDIDHolderBinding` as the preferred runtime/public-facing
   adapter name
 - preserve compatibility aliases while downstream code migrates
+
+### VC-MAT-17: Add a TypeScript BDD living-documentation layer
+
+Priority: P1
+
+Problem:
+
+- Vitest covers correctness and regression well, but it is not a good living
+  documentation surface for engineers or integrators
+- the repository still needs a curated scenario layer that demonstrates current
+  VC use cases end-to-end without becoming a second regression matrix
+
+Required outcome:
+
+- add a TypeScript BDD workspace package
+- use Serenity/JS with screenplay-style tasks and questions
+- keep the first scenario non-Docker and library-first
+- generate report artifacts suitable for living documentation
+
+Current grouped execution:
+
+- replace the discarded JVM Serenity prototype with:
+  - `vc-bdd-scenarios/`
+  - Cucumber.js
+  - Serenity/JS
+  - TypeScript
+- first smoke scenario:
+  - birth credential age-gate happy path
 
 Current grouped execution:
 
