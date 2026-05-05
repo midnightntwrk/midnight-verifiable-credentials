@@ -1,6 +1,6 @@
 # Midnight VC Test Matrix
 
-Status: current implemented test surface as of 2026-05-04.
+Status: current implemented test surface as of 2026-05-05.
 
 ## Core package tests
 
@@ -14,6 +14,8 @@ Status: current implemented test surface as of 2026-05-04.
   - legacy Jubjub and Compact-side offchain holder-binding checks
 - `credentials/src/test/package-surfaces.test.ts`
   - exported package surfaces
+- `credentials/src/test/offchain-did-holder-binding-alias.test.ts`
+  - public TypeScript alias compatibility for `OffchainDIDHolderBinding`
 
 ## DID-aware adapter package tests
 
@@ -30,6 +32,7 @@ Status: current implemented test surface as of 2026-05-04.
 - age predicate tests
 - capability profile tests
 - protocol tests
+- exported `./testing` fixture surface compatibility
 
 ### `credentials-birth-secret`
 
@@ -155,6 +158,10 @@ Current gap:
 
 ## Focused CI lanes
 
+- root `ci:lint`
+  - includes `check:package-boundaries`
+  - blocks sibling `../<package>/src/...` imports in repository validation
+
 - root `ci:revocation`
   - lint, typecheck, build, and test the current revocation slice across:
     - `credentials`
@@ -165,6 +172,23 @@ Current gap:
     - `credentials-demo-contract`
 - GitHub Actions job:
   - `Revocation Demo Lane`
+- docs-only PR fast path:
+  - `Classify Changes` + `Docs-only Validation`
+  - skips Compact setup, build, unit, and integration lanes when every changed
+    file is documentation-only
+
+## Serenity/JS BDD scenarios
+
+- package:
+  - `vc-bdd-scenarios`
+- current smoke scenario:
+  - `vc-bdd-scenarios/features/age_gate_happy_path.feature`
+- root command:
+  - `npm run test:bdd:smoke`
+- purpose:
+  - living-documentation scenario coverage for the current VC prototype
+- current scope:
+  - non-Docker birth-credential age-gate happy path
 
 ## Standalone integration tests
 

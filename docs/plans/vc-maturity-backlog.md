@@ -30,11 +30,12 @@ Merged in the last completed iteration:
 - status binding/proof split and protocol-state hardening:
   - `#55`
   - `#56`
-- holder-binding alias, changelog discipline, boundary guardrail, and docs-only CI fast path:
+- holder-binding alias, changelog discipline, boundary guardrail, docs-only CI fast path, and starter templates:
   - `#58`
   - `#59`
   - `#61`
   - `#62`
+  - `#63`
 
 Substantially addressed on `develop`:
 
@@ -53,18 +54,21 @@ Partially advanced, but still active:
 
 - `VC-MAT-06`
 - `VC-MAT-07`
+- `VC-MAT-08`
 - `VC-MAT-09`
 - `VC-MAT-14`
 - `VC-MAT-15`
+- `VC-MAT-17`
 
 Next active queue:
 
-1. `VC-MAT-08`
-2. `VC-MAT-07`
-3. `VC-MAT-09`
-4. `VC-MAT-14`
-5. `VC-MAT-15`
-6. `VC-MAT-06`
+1. `VC-MAT-07`
+2. `VC-MAT-14`
+3. `VC-MAT-15`
+4. `VC-MAT-06`
+5. `VC-MAT-09`
+6. `VC-MAT-08`
+7. `VC-MAT-17`
 
 ## Triage Legend
 
@@ -217,6 +221,34 @@ Current decision:
   adapter name
 - preserve compatibility aliases while downstream code migrates
 
+### VC-MAT-17: Add a TypeScript BDD living-documentation layer
+
+Priority: P1
+
+Problem:
+
+- Vitest covers correctness and regression well, but it is not a good living
+  documentation surface for engineers or integrators
+- the repository still needs a curated scenario layer that demonstrates current
+  VC use cases end-to-end without becoming a second regression matrix
+
+Required outcome:
+
+- add a TypeScript BDD workspace package
+- use Serenity/JS with screenplay-style tasks and questions
+- keep the first scenario non-Docker and library-first
+- generate report artifacts suitable for living documentation
+
+Current grouped execution:
+
+- replace the discarded JVM Serenity prototype with:
+  - `vc-bdd-scenarios/`
+  - Cucumber.js
+  - Serenity/JS
+  - TypeScript
+- first smoke scenario:
+  - birth credential age-gate happy path
+
 Current grouped execution:
 
 - stacked additive runtime/docs slice:
@@ -267,6 +299,13 @@ Required outcome:
 - document or redesign durable backend expectations
 - add explicit guidance for storage-native pruning/eviction
 
+Current grouped execution:
+
+- follow-up protocol-state helper slice:
+  - add optional batch-delete support for protocol-state collections
+  - skip unnecessary retained-state scans when finalized capacity is zero
+  - keep the persistent-adapter contract documented in one place
+
 ### VC-MAT-07: Reduce accidental public surface inflation
 
 Priority: P1
@@ -285,9 +324,20 @@ Required outcome:
 Current grouped execution:
 
 - boundary-hardening slice:
-  - refresh the package-boundary regression guard and land it through `#20`
+  - refresh the package-boundary regression guard and land it through `#61`
   - block sibling `../<package>/src/...` imports in repo validation
   - replace direct cross-package `src/test` imports with exported testing surfaces
+- follow-up contract-surface slice:
+  - add stable `./contract` subpaths for the primary VC/family/demo packages
+  - add a dedicated `./contract-revocation` subpath for the revocation demo
+  - preserve existing root exports during the transition
+- follow-up root-surface slice:
+  - remove duplicate `*Contract` namespace aliases from the root TypeScript
+    entrypoints
+  - make the stable subpaths the canonical contract-facing imports
+- follow-up boundary-guard slice:
+  - extend `check:package-boundaries` to block duplicate root `*Contract`
+    namespace aliases in the curated package entrypoints
 
 Related carry-over work:
 
@@ -312,10 +362,14 @@ Required outcome:
 
 Current grouped execution:
 
-- starter-template slice:
+- starter-template slice landed through `#63`:
   - docs-only verifier contract template
   - docs-only family scaffold template
   - docs-only hidden-holder hello-world walkthrough
+- still missing if deeper onboarding is needed later:
+  - issuer-oriented starter path
+  - wallet-oriented starter path
+  - a generated scaffold or copy script
 
 ### VC-MAT-09: Keep test docs aligned with real package/test coverage
 
@@ -463,6 +517,12 @@ Required outcome:
 - keep the persistent-adapter contract documented in one place instead of
   expanding it ad hoc across PRs
 
+Current grouped execution:
+
+- follow-up protocol-state helper slice:
+  - use optional `deleteMany(keys)` support during retention pruning/eviction
+  - add a zero-capacity fast path for finalized outcome retention
+
 ### VC-MAT-15: Curate Layer 3 and family package public surfaces
 
 Priority: P1
@@ -490,6 +550,13 @@ Current progress:
 - `credentials-demo-contract` now hosts a dedicated narrow
   `demo-revocation.compact` module
 - the repository documents the “small business-facing demos” rule explicitly
+- stable contract-facing subpath exports are being added for the main
+  VC/family/demo packages so integrators can depend on narrower package
+  surfaces
+- duplicate root `*Contract` namespace aliases are being removed in follow-up
+  slices so the narrower subpaths become the single obvious import path
+- `check:package-boundaries` is being extended to keep those duplicate root
+  aliases from reappearing after the cleanup lands
 - dormant artifact cleanup and export-surface reduction are still pending
 
 Current grouped execution:

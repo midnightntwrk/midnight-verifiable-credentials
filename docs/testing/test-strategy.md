@@ -39,6 +39,16 @@ Current-repository note:
   design space or adjacent prototype work, not current workspace packages on
   `develop`
 
+Current validated CI shape:
+
+- code-changing PRs run the full CI matrix
+- docs-only PRs now use the workflow-level `Docs-only Validation` fast path
+- boundary hygiene runs inside `ci:lint` through `check:package-boundaries`
+- the current revocation/status slice also has a focused `ci:revocation` lane
+- living-documentation scenarios now have a separate TypeScript BDD lane shape
+  under `vc-bdd-scenarios/`; this is not a docs-only change class and should be
+  treated as code
+
 ## Configuration Dimensions
 
 Every credential interaction is a point in a multi-dimensional configuration space.
@@ -53,6 +63,13 @@ Every credential interaction is a point in a multi-dimensional configuration spa
 | National ID | `credentials-national-id` | documentNumber, issuingCountry, givenName, familyName, birthDate, birthPlace, residenceRegion, taxIdentifier | country (3166-1), region (3166-2) |
 | AML/KYC Compliance | `credentials-compliance` | subjectId, amlStatus, sanctionsScreening, pepStatus, riskScore, jurisdiction, checkedAt, validUntilDay | country (3166-1) |
 | Employee | `credentials-employee` | employeeId, organizationName, organizationId, department, role, clearanceLevel, employedSince | — |
+
+Current workspace note for this dimension:
+
+- `credentials-birth` is the current explicit-holder family on `develop`
+- `credentials-birth-secret` is the current hidden-holder family on `develop`
+- the remaining families in this table are design-space or adjacent-prototype
+  examples, not validated local workspace packages
 
 ### Dimension 2: Holder Binding Profile
 
@@ -156,6 +173,19 @@ Current implementation note:
   consistency, wrong-authority rejection, and expiration handling for the
   transitional Layer 3 status path
 
+Current validated repository surfaces for this strategy:
+
+- Layer 1: `credentials`, `credentials-same-holder`, `credentials-iso-registry`,
+  `credentials-status-registry`
+- Layer 2: `credentials-birth`, `credentials-birth-secret`
+- Layer 2.5: `credentials-offchain-did`
+- Layer 3: `credentials-demo-contract`
+- Layer 4: `credentials-openid`, `credentials-protocol`, `standalone-environment`
+
+When later sections discuss Passport, Compliance, Driving License, National ID,
+or Employee families, read them as design-space matrix entries unless the repo
+actually restores those packages on `develop`.
+
 Current repository stance:
 
 - the reference protocol layer now proves explicit rejection results for
@@ -185,6 +215,27 @@ Current repository stance:
   but the default implementation remains deterministic for test/reference use
 - the repository does not yet define a final interoperable rejection result
   contract across transport adapters
+
+## Serenity/JS BDD Layer
+
+The repository now also carries a TypeScript BDD layer under
+`vc-bdd-scenarios/`.
+
+Purpose:
+
+- express a small number of curated use-case scenarios with Cucumber
+- use Serenity/JS screenplay abstractions for readable tasks and questions
+- generate report artifacts that engineers and integrators can read as living
+  documentation
+
+Boundary:
+
+- this layer does not replace Vitest
+- this layer should stay small and scenario-oriented
+- this layer should reuse existing package exports and simulators rather than
+  reimplement business logic
+- Playwright belongs only in scenarios that exercise a real browser-facing flow;
+  it is not required for the first library-first scenario slice
 
 ## Shared ISO Registry
 

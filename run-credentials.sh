@@ -30,6 +30,9 @@ else
   npm run ci:build
 fi
 
+echo "[credentials] BDD smoke lane"
+npm run test:bdd:smoke
+
 if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
   echo "[credentials] Skip standalone integrations (SKIP_LONG_RUNNING=1)"
 elif docker info >/dev/null 2>&1; then
