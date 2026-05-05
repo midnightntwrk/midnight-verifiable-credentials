@@ -8,13 +8,16 @@ small number of curated use-case scenarios that generate Serenity/JS-compatible
 outcomes and Serenity BDD reports as living documentation for engineers and
 integrators.
 
-## First scenario
+## Current scenarios
 
-The initial slice covers a non-Docker birth-credential age-gate flow:
+The current slice covers two non-Docker VC flows:
 
 - issue a birth credential from test fixtures
 - verify an age-gate presentation through the demo contract simulator
 - claim the resulting access capability
+- issue a hidden-holder birth credential with status capability wiring
+- verify a verifier-supplied-root age-gate presentation through the revocation demo simulator
+- claim the resulting revocation-aware access capability
 
 ## Run
 

@@ -60,12 +60,13 @@ because this repository is still library-first.
 
 ## Initial scope
 
-Start with one smoke scenario:
+Start with two smoke scenarios:
 
 - birth credential age-gate happy path
+- hidden-holder verifier-supplied-root revocation-aware age-gate happy path
 - no Docker
 - no browser automation yet
-- uses existing birth fixture helpers and demo simulator
+- use existing birth and demo-contract testing surfaces
 
 This keeps the first layer:
 
@@ -86,8 +87,8 @@ This keeps the first layer:
 
 ### Phase 2
 
-- add secret-holder happy path
-- add revocation demo happy path once the scenario boundary is stable
+- add authority-attested hidden-holder happy path
+- add same-holder composition once the scenario boundary is stable
 - add a dedicated scenario-only CI lane instead of relying on the docs-only
   classifier
 - if needed later, swap the current Java-backed Serenity report aggregation for
@@ -103,9 +104,9 @@ This keeps the first layer:
 ## Candidate scenario backlog
 
 1. explicit-holder age-gate
-2. hidden-holder age-gate
-3. same-holder proof composition
-4. revocation-aware demo path
+2. hidden-holder verifier-supplied-root age-gate
+3. hidden-holder authority-attested age-gate
+4. same-holder proof composition
 5. protocol agent lifecycle with real DIDs
 
 ## Non-goals for the first spike

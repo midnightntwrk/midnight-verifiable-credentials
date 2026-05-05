@@ -2,7 +2,7 @@ import { Ability, type UsesAbilities } from "@serenity-js/core";
 
 import { pureCircuits } from "@midnight-ntwrk/midnight-did-credentials-birth/managed/birth-credential/contract/index.js";
 import { createBirthCredentialFixture } from "@midnight-ntwrk/midnight-did-credentials-birth/testing";
-import { AccessDecision } from "@midnight-ntwrk/midnight-did-credentials-demo-contract";
+import { AccessDecision } from "@midnight-ntwrk/midnight-did-credentials-demo-contract/contract";
 import { CredentialsDemoSimulator } from "@midnight-ntwrk/midnight-did-credentials-demo-contract/testing";
 
 export type AgeGateScenarioResult = {
