@@ -197,6 +197,8 @@ A verifier contract implementation conforms when it:
 - enforces only the disclosures and predicates it explicitly models
 - preserves the contract/business boundary between VC verification and state
   mutation
+- does not present a generic core package root as if it were the final
+  deployable business contract surface
 
 Reference implementation:
 
