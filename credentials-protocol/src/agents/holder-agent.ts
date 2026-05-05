@@ -25,6 +25,7 @@ import {
   InMemoryProtocolStateStore,
   type ProtocolStateCollection,
   type ProtocolStateStore,
+  recoverAppendOnlyOrdinalCount,
 } from "./protocol-state-store.js";
 import {
   type ProtocolRandomnessSource,
@@ -159,19 +160,11 @@ export class HolderAgent {
   }
 
   private recoverCredentialCount(): number {
-    const recordedCount =
-      this.metadata.get(HolderAgent.CREDENTIAL_COUNT_KEY) ?? 0;
-    let recoveredCount = recordedCount;
-    for (const [key] of this.storedCredentials.entries()) {
-      const index = Number(key);
-      if (Number.isInteger(index) && index >= recoveredCount) {
-        recoveredCount = index + 1;
-      }
-    }
-    if (recoveredCount !== recordedCount) {
-      this.metadata.set(HolderAgent.CREDENTIAL_COUNT_KEY, recoveredCount);
-    }
-    return recoveredCount;
+    return recoverAppendOnlyOrdinalCount(
+      this.metadata,
+      HolderAgent.CREDENTIAL_COUNT_KEY,
+      this.storedCredentials,
+    );
   }
 
   buildPresentationForContract(

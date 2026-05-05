@@ -15,6 +15,7 @@ import {
   type ProtocolStateCollection,
   pruneExpiredRetainedProtocolState,
   readRetainedProtocolState,
+  recoverAppendOnlyOrdinalCount,
   type RetainedProtocolState,
   writeRetainedProtocolState,
 } from "../../agents/protocol-state-store.js";
@@ -310,5 +311,34 @@ describe("ProtocolStateStore retention helpers", () => {
     } finally {
       rmSync(rootDir, { recursive: true, force: true });
     }
+  });
+
+  it("recovers append-only ordinal counts when metadata lags behind stored keys", () => {
+    const store = new InMemoryProtocolStateStore();
+    const metadata = store.collection<number>("test:metadata");
+    const values = store.collection<{ id: string }>("test:values");
+
+    values.set("0", { id: "one" });
+    values.set("2", { id: "three" });
+    metadata.set("count", 1);
+
+    expect(
+      recoverAppendOnlyOrdinalCount(metadata, "count", values),
+    ).toEqual(3);
+    expect(metadata.get("count")).toEqual(3);
+  });
+
+  it("leaves append-only ordinal metadata unchanged when it is already current", () => {
+    const store = new InMemoryProtocolStateStore();
+    const metadata = store.collection<number>("test:metadata-current");
+    const values = store.collection<{ id: string }>("test:values-current");
+
+    values.set("0", { id: "one" });
+    metadata.set("count", 1);
+
+    expect(
+      recoverAppendOnlyOrdinalCount(metadata, "count", values),
+    ).toEqual(1);
+    expect(metadata.get("count")).toEqual(1);
   });
 });

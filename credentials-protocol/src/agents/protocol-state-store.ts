@@ -229,6 +229,30 @@ export const createCodecBackedProtocolStateStore = (
 ): ProtocolStateStore =>
   new CodecBackedProtocolStateStore(byteStore, codecResolver);
 
+/**
+ * Recover an append-only ordinal count from stored records when metadata lags
+ * behind due to a partial write. The helper trusts the largest stored integer
+ * key and writes the repaired count back into metadata when needed.
+ */
+export const recoverAppendOnlyOrdinalCount = <T>(
+  metadataCollection: ProtocolStateCollection<number>,
+  countKey: string,
+  valueCollection: ProtocolStateCollection<T>,
+): number => {
+  const recordedCount = metadataCollection.get(countKey) ?? 0;
+  let recoveredCount = recordedCount;
+  for (const [key] of valueCollection.entries()) {
+    const index = Number(key);
+    if (Number.isInteger(index) && index >= recoveredCount) {
+      recoveredCount = index + 1;
+    }
+  }
+  if (recoveredCount !== recordedCount) {
+    metadataCollection.set(countKey, recoveredCount);
+  }
+  return recoveredCount;
+};
+
 export const resolveCurrentTimeMs = (value?: bigint): bigint =>
   value ?? BigInt(Date.now());
 
