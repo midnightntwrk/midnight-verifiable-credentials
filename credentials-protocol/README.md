@@ -219,6 +219,9 @@ Persistent state adapter rule:
 - finalized outcome retention currently relies on `entries()` enumeration, so a
   persistent adapter must support full collection scans for TTL pruning and
   oldest-first eviction semantics
+- adapters that back append-only ordinal-keyed collections can optionally
+  expose `maxOrdinalKey()` so holder-agent credential-count recovery can avoid
+  decoding or scanning full typed entries during startup repair
 - adapters may optionally implement `deleteMany(keys)` to let the shared
   helpers prune or evict retained records without repeated single-key deletes
 - the helper implementation snapshots `entries()` before deleting records, so
@@ -235,6 +238,8 @@ Persistent adapter checklist:
   credential indexes if the holder agent is expected to survive restart
 - support full collection scans or storage-native equivalents for TTL pruning
   and oldest-first eviction
+- expose `maxOrdinalKey()` for append-only ordinal-keyed collections when the
+  backend can answer that query more directly than replaying every entry
 - preserve deterministic replay/idempotency behavior after restart
 - document whether retention is bounded by TTL, count, or both
 - document whether the adapter is sync-only facade over async storage or a

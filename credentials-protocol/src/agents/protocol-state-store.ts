@@ -11,6 +11,7 @@ export interface ProtocolStateCollection<T> {
   delete(key: string): boolean;
   deleteMany?(keys: readonly string[]): number;
   has(key: string): boolean;
+  maxOrdinalKey?(): number | undefined;
   entries(): IterableIterator<[string, T]>;
 }
 
@@ -30,6 +31,7 @@ export interface ProtocolStateByteCollection {
   delete(key: string): boolean;
   deleteMany?(keys: readonly string[]): number;
   has(key: string): boolean;
+  maxOrdinalKey?(): number | undefined;
   entries(): IterableIterator<[string, Uint8Array]>;
 }
 
@@ -98,6 +100,19 @@ class InMemoryProtocolStateCollection<T> implements ProtocolStateCollection<T> {
     return this.backingMap.has(key);
   }
 
+  maxOrdinalKey(): number | undefined {
+    let maxOrdinalKey: number | undefined;
+    for (const key of this.backingMap.keys()) {
+      const index = Number(key);
+      if (!Number.isInteger(index)) {
+        continue;
+      }
+      maxOrdinalKey =
+        maxOrdinalKey === undefined ? index : Math.max(maxOrdinalKey, index);
+    }
+    return maxOrdinalKey;
+  }
+
   entries(): IterableIterator<[string, T]> {
     return this.backingMap.entries();
   }
@@ -132,6 +147,19 @@ class InMemoryProtocolStateByteCollection
 
   has(key: string): boolean {
     return this.backingMap.has(key);
+  }
+
+  maxOrdinalKey(): number | undefined {
+    let maxOrdinalKey: number | undefined;
+    for (const key of this.backingMap.keys()) {
+      const index = Number(key);
+      if (!Number.isInteger(index)) {
+        continue;
+      }
+      maxOrdinalKey =
+        maxOrdinalKey === undefined ? index : Math.max(maxOrdinalKey, index);
+    }
+    return maxOrdinalKey;
   }
 
   entries(): IterableIterator<[string, Uint8Array]> {
@@ -170,6 +198,10 @@ class CodecBackedProtocolStateCollection<T>
 
   has(key: string): boolean {
     return this.byteCollection.has(key);
+  }
+
+  maxOrdinalKey(): number | undefined {
+    return this.byteCollection.maxOrdinalKey?.();
   }
 
   *entries(): IterableIterator<[string, T]> {
@@ -240,11 +272,18 @@ export const recoverAppendOnlyOrdinalCount = <T>(
   valueCollection: ProtocolStateCollection<T>,
 ): number => {
   const recordedCount = metadataCollection.get(countKey) ?? 0;
-  let recoveredCount = recordedCount;
-  for (const [key] of valueCollection.entries()) {
-    const index = Number(key);
-    if (Number.isInteger(index) && index >= recoveredCount) {
-      recoveredCount = index + 1;
+  const maxOrdinalKey = valueCollection.maxOrdinalKey?.();
+  let recoveredCount =
+    maxOrdinalKey === undefined || maxOrdinalKey < recordedCount
+      ? recordedCount
+      : maxOrdinalKey + 1;
+
+  if (maxOrdinalKey === undefined) {
+    for (const [key] of valueCollection.entries()) {
+      const index = Number(key);
+      if (Number.isInteger(index) && index >= recoveredCount) {
+        recoveredCount = index + 1;
+      }
     }
   }
   if (recoveredCount !== recordedCount) {

@@ -96,6 +96,25 @@ class FileSystemProtocolStateByteCollection
     return existsSync(this.filePathFor(key));
   }
 
+  maxOrdinalKey(): number | undefined {
+    let maxOrdinalKey: number | undefined;
+    for (const entry of readdirSync(this.collectionDir, {
+      withFileTypes: true,
+    })) {
+      if (!entry.isFile() || !entry.name.endsWith(".bin")) {
+        continue;
+      }
+      const key = decodePathSegment(entry.name.slice(0, -4));
+      const index = Number(key);
+      if (!Number.isInteger(index)) {
+        continue;
+      }
+      maxOrdinalKey =
+        maxOrdinalKey === undefined ? index : Math.max(maxOrdinalKey, index);
+    }
+    return maxOrdinalKey;
+  }
+
   *entries(): IterableIterator<[string, Uint8Array]> {
     for (const entry of readdirSync(this.collectionDir, {
       withFileTypes: true,
