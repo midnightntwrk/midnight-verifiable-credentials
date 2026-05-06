@@ -154,6 +154,7 @@ That means the contract checks:
 - the attestation root matches the verifier-supplied root
 - the attestation challenge matches the verifier challenge
 - the attestation status-handle commitment matches the credential capability
+- future-dated authority attestations are rejected
 - if enabled, the attestation age does not exceed the verifier freshness window
 
 ## Freshness responsibility
