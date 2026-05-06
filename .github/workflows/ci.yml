@@ -29,13 +29,16 @@ jobs:
     outputs:
       docs_only: ${{ steps.classify.outputs.docs_only }}
       bdd_only: ${{ steps.classify.outputs.bdd_only }}
+      run_revocation: ${{ steps.classify.outputs.run_revocation }}
+      run_integration_demo_contract: ${{ steps.classify.outputs.run_integration_demo_contract }}
+      run_integration_protocol: ${{ steps.classify.outputs.run_integration_protocol }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Classify docs-only and BDD-only changes
+      - name: Classify docs-only, BDD-only, and heavy-lane changes
         id: classify
         shell: bash
         run: |
@@ -54,6 +57,9 @@ jobs:
           if [[ ${#changed_files[@]} -eq 0 ]]; then
             echo "docs_only=false" >> "$GITHUB_OUTPUT"
             echo "bdd_only=false" >> "$GITHUB_OUTPUT"
+            echo "run_revocation=false" >> "$GITHUB_OUTPUT"
+            echo "run_integration_demo_contract=false" >> "$GITHUB_OUTPUT"
+            echo "run_integration_protocol=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
@@ -61,6 +67,61 @@ jobs:
           docs_related=false
           bdd_only=true
           bdd_related=false
+          run_revocation=false
+          run_integration_demo_contract=false
+          run_integration_protocol=false
+
+          matches_any() {
+            local file="$1"
+            shift
+            local pattern
+            for pattern in "$@"; do
+              if [[ "$file" == $pattern ]]; then
+                return 0
+              fi
+            done
+            return 1
+          }
+
+          global_heavy_lane_patterns=(
+            '.github/workflows/*'
+            'package.json'
+            'package-lock.json'
+            'turbo.json'
+            'tsconfig*.json'
+            '.eslintrc.json'
+            'run.sh'
+            'run-credentials.sh'
+            'run-credentials-standalone.sh'
+            'scripts/*'
+          )
+
+          revocation_patterns=(
+            'credentials/*'
+            'credentials-status-registry/*'
+            'credentials-same-holder/*'
+            'credentials-birth/*'
+            'credentials-birth-secret/*'
+            'credentials-demo-contract/*'
+          )
+
+          integration_demo_contract_patterns=(
+            'credentials/*'
+            'credentials-birth/*'
+            'credentials-birth-secret/*'
+            'credentials-demo-contract/*'
+            'standalone-environment/*'
+          )
+
+          integration_protocol_patterns=(
+            'credentials/*'
+            'credentials-same-holder/*'
+            'credentials-birth/*'
+            'credentials-birth-secret/*'
+            'credentials-demo-contract/*'
+            'credentials-protocol/*'
+            'standalone-environment/*'
+          )
 
           for file in "${changed_files[@]}"; do
             case "$file" in
@@ -85,6 +146,25 @@ jobs:
                 bdd_related=true
                 ;;
             esac
+
+            if matches_any "$file" "${global_heavy_lane_patterns[@]}"; then
+              run_revocation=true
+              run_integration_demo_contract=true
+              run_integration_protocol=true
+              continue
+            fi
+
+            if matches_any "$file" "${revocation_patterns[@]}"; then
+              run_revocation=true
+            fi
+
+            if matches_any "$file" "${integration_demo_contract_patterns[@]}"; then
+              run_integration_demo_contract=true
+            fi
+
+            if matches_any "$file" "${integration_protocol_patterns[@]}"; then
+              run_integration_protocol=true
+            fi
           done
 
           if [[ "$docs_related" != true ]]; then
@@ -101,6 +181,9 @@ jobs:
 
           echo "docs_only=$docs_only" >> "$GITHUB_OUTPUT"
           echo "bdd_only=$bdd_only" >> "$GITHUB_OUTPUT"
+          echo "run_revocation=$run_revocation" >> "$GITHUB_OUTPUT"
+          echo "run_integration_demo_contract=$run_integration_demo_contract" >> "$GITHUB_OUTPUT"
+          echo "run_integration_protocol=$run_integration_protocol" >> "$GITHUB_OUTPUT"
 
   docs-only-validation:
     name: Docs-only Validation
@@ -391,7 +474,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 75
     needs: [changes, build-artifacts]
-    if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true'
+    if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true' && needs.changes.outputs.run_revocation == 'true'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -425,7 +508,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     needs: [changes, build-artifacts]
-    if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true'
+    if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true' && needs.changes.outputs.run_integration_demo_contract == 'true'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -459,7 +542,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     needs: [changes, build-artifacts]
-    if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true'
+    if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true' && needs.changes.outputs.run_integration_protocol == 'true'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
