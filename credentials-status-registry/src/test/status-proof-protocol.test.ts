@@ -97,7 +97,7 @@ describe("status registry: proof protocols", () => {
     ).toThrow(/revoked root does not match/i);
   });
 
-  it("rejects a revoked-set status proof protocol when the binding commitment is missing", () => {
+  it("rejects a revoked-set status proof protocol when the binding commitment is unset", () => {
     const signer = createSigner("status-authority", 891n);
     const protocol = {
       request: {
@@ -130,6 +130,43 @@ describe("status registry: proof protocols", () => {
         protocol,
       ),
     ).toThrow(/Status handle commitment must be set/i);
+  });
+
+  it("rejects a revoked-set status proof protocol when the binding commitment differs from the witness", () => {
+    const signer = createSigner("status-authority", 892n);
+    const protocol = {
+      request: {
+        registryState: {
+          registryId: bytes32("registry:hidden-holder"),
+          revokedRoot: bytes32("revoked-root:current"),
+        },
+        verifierChallengeHash: bytes32("challenge:status"),
+      },
+      witnessInput: {
+        registryState: {
+          registryId: bytes32("registry:hidden-holder"),
+          revokedRoot: bytes32("revoked-root:current"),
+        },
+        statusHandle: bytes32("status-handle"),
+        statusHandleOpening: bytes32("status-handle-opening"),
+      },
+    };
+    const binding = {
+      registryRef: {
+        registryId: protocol.request.registryState.registryId,
+        authorityVerificationMethodRef: signer.verificationMethodRef,
+      },
+      statusHandleCommitment: bytes32("binding-commitment"),
+    };
+
+    expect(() =>
+      pureCircuits.assertRegistryBoundStatusBindingMatchesRevokedSetNonMembershipStatusProofProtocol(
+        binding,
+        protocol,
+      ),
+    ).toThrow(
+      /revoked-set status proof protocol does not match the status handle commitment/i,
+    );
   });
 
   it("accepts an authority-attested status proof bound to the request and capability", () => {
