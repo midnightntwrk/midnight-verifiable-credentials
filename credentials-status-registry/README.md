@@ -6,6 +6,21 @@ Status:
 
 - prototype / evolving capability package
 
+Tier:
+
+- reusable core capability package with prototype trust semantics
+
+Dependency direction:
+
+- higher-layer families, verifier workflows, and demos may depend on it
+- must not depend on protocol/orchestration packages, demos, or standalone
+  integration harnesses
+- shared VC-side binding shape remains in `credentials`
+
+Reusable outside this repo:
+
+- yes, with prototype status-path caveats
+
 Ownership:
 
 - `credentials`

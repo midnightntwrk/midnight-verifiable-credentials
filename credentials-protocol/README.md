@@ -7,6 +7,20 @@ Status:
 - reference implementation
 - evolving API surface
 
+Tier:
+
+- Layer 4 wiring/orchestration package
+
+Dependency direction:
+
+- depends downward on reusable core and family packages
+- must not be treated as a reusable core protocol package
+- core, family, and reusable capability packages must not depend on this layer
+
+Reusable outside this repo:
+
+- limited; use as reference orchestration, not as canonical core semantics
+
 Surface classification:
 
 - `Off-chain only`

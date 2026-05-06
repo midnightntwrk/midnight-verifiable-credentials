@@ -15,6 +15,8 @@ This repository contains:
 
 Current maturity is mixed by package:
 
+- canonical package/protocol tier inventory:
+  - [`docs/architecture/package-tier-inventory.md`](./docs/architecture/package-tier-inventory.md)
 - normative spec draft:
   - [`docs/spec/midnight-credentials.md`](./docs/spec/midnight-credentials.md)
 - profile catalog:
@@ -60,6 +62,7 @@ Start here:
 - architecture:
   - [`docs/architecture/overview.md`](./docs/architecture/overview.md)
   - [`docs/architecture/package-boundaries.md`](./docs/architecture/package-boundaries.md)
+  - [`docs/architecture/package-tier-inventory.md`](./docs/architecture/package-tier-inventory.md)
   - [`docs/architecture/dependency-composition.md`](./docs/architecture/dependency-composition.md)
 - testing:
   - [`docs/testing/test-strategy.md`](./docs/testing/test-strategy.md)

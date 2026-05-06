@@ -6,6 +6,21 @@ Status:
 
 - reference implementation
 
+Tier:
+
+- credential-family package
+
+Dependency direction:
+
+- depends on reusable core packages
+- may be composed by Layer 3 contracts and Layer 4 adapters
+- should not depend on protocol/orchestration packages, demos, or standalone
+  integration harnesses
+
+Reusable outside this repo:
+
+- yes
+
 Surface classification:
 
 - `On-chain + off-chain`

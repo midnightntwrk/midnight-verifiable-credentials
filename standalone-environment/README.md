@@ -6,6 +6,25 @@ Status:
 
 - reference implementation
 
+Tier:
+
+- shared integration infrastructure package
+
+Surface classification:
+
+- `Off-chain only`
+- Docker/runtime bootstrap support for integration tests
+
+Dependency direction:
+
+- may depend on runtime/test infrastructure and downstream packages under test
+- must not be treated as reusable core VC semantics
+- core, family, and reusable capability packages must not depend on this harness
+
+Reusable outside this repo:
+
+- limited; primarily repo-local integration support
+
 Related docs:
 
 - spec: [`../docs/spec/midnight-credentials.md`](../docs/spec/midnight-credentials.md)

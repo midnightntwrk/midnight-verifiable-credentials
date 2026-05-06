@@ -6,6 +6,20 @@ Status:
 
 - prototype
 
+Tier:
+
+- Layer 3 demo / prototype package
+
+Dependency direction:
+
+- depends downward on reusable core, family, and capability packages
+- must not be treated as a reusable core API surface
+- lower-layer packages must not depend on this demo package
+
+Reusable outside this repo:
+
+- no; copy patterns selectively rather than integrating the package as a core dependency
+
 Surface classification:
 
 - `On-chain only` for `src/demo.compact` and related Compact contract roots

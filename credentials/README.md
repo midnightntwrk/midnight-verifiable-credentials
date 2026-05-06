@@ -6,6 +6,20 @@ Status:
 
 - reference implementation
 
+Tier:
+
+- reusable core package
+
+Dependency direction:
+
+- may depend only on lower shared primitives
+- must not depend on DID-aware adapters, transport/orchestration packages,
+  demos, or standalone integration harnesses
+
+Reusable outside this repo:
+
+- yes
+
 Surface classification:
 
 - `On-chain + off-chain`

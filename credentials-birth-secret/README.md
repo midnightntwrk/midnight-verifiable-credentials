@@ -6,6 +6,21 @@ Status:
 
 - reference implementation
 
+Tier:
+
+- credential-family package
+
+Dependency direction:
+
+- depends on reusable core packages and selected reusable capability packages
+- may be composed by Layer 3 contracts and Layer 4 adapters
+- status-aware consumers must treat the current status path as prototype-shaped
+  until the final cryptographic contract lands
+
+Reusable outside this repo:
+
+- yes, with prototype status-path caveats
+
 Surface classification:
 
 - `On-chain + off-chain`

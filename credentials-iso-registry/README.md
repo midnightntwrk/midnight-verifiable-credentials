@@ -6,6 +6,27 @@ Status:
 
 - reference implementation
 
+Tier:
+
+- reusable core helper package
+
+Surface classification:
+
+- `On-chain + off-chain`
+- Compact type definitions are the authoritative source
+- generated/runtime TypeScript exports are off-chain mirrors only
+
+Dependency direction:
+
+- may depend on lower shared primitives only
+- higher-layer families and contracts may compose it
+- must not depend on DID-aware adapters, transport/orchestration packages,
+  demos, or standalone integration harnesses
+
+Reusable outside this repo:
+
+- yes
+
 Related docs:
 
 - spec: [`../docs/spec/midnight-credentials.md`](../docs/spec/midnight-credentials.md)

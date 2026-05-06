@@ -20,6 +20,8 @@ Related documents:
   - [`./dependency-composition.md`](./dependency-composition.md)
 - package-boundary decision:
   - [`./package-boundaries.md`](./package-boundaries.md)
+- package tier inventory:
+  - [`./package-tier-inventory.md`](./package-tier-inventory.md)
 - package-selection guide:
   - [`../guides/package-selection.md`](../guides/package-selection.md)
 
@@ -36,6 +38,16 @@ The repository is organized as a layered Compact-first stack.
 | Layer 4 | Transport and protocol orchestration | `credentials-openid`, `credentials-protocol` |
 | Planned prototype restoration | Future cross-profile prototype package, if restored explicitly | `credentials-birth-binding-prototypes` |
 | Shared infra | Standalone integration/runtime support | `standalone-environment` |
+
+Use [`./package-tier-inventory.md`](./package-tier-inventory.md) when you need
+the canonical classification of which packages are:
+
+- reusable core
+- credential families
+- DID-aware adapters
+- Layer 3 / Layer 4 wiring helpers
+- demos / prototypes
+- shared integration infrastructure
 
 ## Package Responsibilities
 ### `credentials`

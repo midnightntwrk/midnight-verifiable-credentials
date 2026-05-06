@@ -25,6 +25,8 @@ Related documents:
 
 - architecture overview:
   - [`./overview.md`](./overview.md)
+- package tier inventory:
+  - [`./package-tier-inventory.md`](./package-tier-inventory.md)
 - dependency composition model:
   - [`./dependency-composition.md`](./dependency-composition.md)
 - package-selection guide:

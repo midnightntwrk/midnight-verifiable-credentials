@@ -4,6 +4,20 @@ Status:
 
 - reference implementation
 
+Tier:
+
+- Layer 4 transport/domain adapter package
+
+Dependency direction:
+
+- depends downward on Compact-generated VC/family payloads
+- must not be treated as a source of canonical verification semantics
+- core and family packages must not depend on this transport layer
+
+Reusable outside this repo:
+
+- yes, as a transport/domain adapter surface
+
 Surface classification:
 
 - `Off-chain only`
