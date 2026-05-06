@@ -2,43 +2,37 @@
 set -euo pipefail
 
 ROOT_DIR="$(git rev-parse --show-toplevel)"
-DEST_PATH="${1:-$ROOT_DIR/.artifacts/ci-build-outputs.tar.gz}"
+source "$ROOT_DIR/tooling/scripts/ci-build-output-groups.sh"
 
-paths=(
-  credentials/src/managed
-  credentials/dist
-  credentials-status-registry/src/managed
-  credentials-status-registry/dist
-  credentials-same-holder/src/managed
-  credentials-same-holder/dist
-  credentials-iso-registry/src/managed
-  credentials-iso-registry/dist
-  credentials-birth/src/managed
-  credentials-birth/dist
-  credentials-birth-secret/src/managed
-  credentials-birth-secret/dist
-  use-cases/age-gate/contract/src/managed
-  use-cases/age-gate/contract/dist
-  components/adapters/offchain-did/dist
-  protocols/openid/dist
-  components/orchestration/protocol/dist
-)
+DEST_DIR="${1:-$ROOT_DIR/.artifacts/ci-build-outputs}"
+shift || true
 
-existing_paths=()
-for relative_path in "${paths[@]}"; do
-  if [[ -e "$ROOT_DIR/$relative_path" ]]; then
-    existing_paths+=("$relative_path")
-  fi
-done
-
-if [[ ${#existing_paths[@]} -eq 0 ]]; then
-  echo "[pack-ci-build-outputs] No build outputs found to archive" >&2
-  exit 1
+groups=("$@")
+if [[ ${#groups[@]} -eq 0 ]]; then
+  while IFS= read -r group; do
+    [[ -z "$group" ]] && continue
+    groups+=("$group")
+  done < <(ci_build_output_groups)
 fi
 
-mkdir -p "$(dirname "$DEST_PATH")"
-rm -f "$DEST_PATH"
+mkdir -p "$DEST_DIR"
 
-tar -C "$ROOT_DIR" -czf "$DEST_PATH" "${existing_paths[@]}"
+for group in "${groups[@]}"; do
+  existing_paths=()
+  while IFS= read -r relative_path; do
+    [[ -z "$relative_path" ]] && continue
+    if [[ -e "$ROOT_DIR/$relative_path" ]]; then
+      existing_paths+=("$relative_path")
+    fi
+  done < <(ci_build_output_paths "$group")
 
-echo "[pack-ci-build-outputs] Packed ${#existing_paths[@]} paths into $DEST_PATH"
+  if [[ ${#existing_paths[@]} -eq 0 ]]; then
+    echo "[pack-ci-build-outputs] No build outputs found for group: $group" >&2
+    exit 1
+  fi
+
+  archive_path="$DEST_DIR/ci-build-${group}.tar.gz"
+  rm -f "$archive_path"
+  tar -C "$ROOT_DIR" -czf "$archive_path" "${existing_paths[@]}"
+  echo "[pack-ci-build-outputs] Packed group '$group' with ${#existing_paths[@]} paths into $archive_path"
+done
