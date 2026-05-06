@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+ROOT_DIR="$(git rev-parse --show-toplevel)"
 ARCHIVE_PATH="${1:?usage: restore-ci-build-outputs.sh <archive.tar.gz>}"
 
 if [[ ! -f "$ARCHIVE_PATH" ]]; then

@@ -54,5 +54,5 @@ if [[ -z "$DESTINATION" ]]; then
 fi
 
 VC_DEST="$(resolve_dest_dir "$DESTINATION")"
-"$ROOT_DIR/scripts/pack-midnight-vc-libs.sh" "$VC_DEST"
+"$ROOT_DIR/tooling/scripts/pack-midnight-vc-libs.sh" "$VC_DEST"
 echo "[upgrade-libs] VC tarballs refreshed in $VC_DEST"

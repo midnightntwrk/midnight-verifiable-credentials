@@ -63,6 +63,9 @@
 - protocol classification:
   - [`architecture/protocol-classification.md`](./architecture/protocol-classification.md)
   - for separating reusable core protocols from Layer 3 / Layer 4 wiring
+- restructure execution plan:
+  - [`architecture/restructure-execution-plan.md`](./architecture/restructure-execution-plan.md)
+  - for the phased migration from legacy workspace paths to the target top-level architecture
 - dependency composition:
   - [`architecture/dependency-composition.md`](./architecture/dependency-composition.md)
   - for package and contract authors composing capability layers

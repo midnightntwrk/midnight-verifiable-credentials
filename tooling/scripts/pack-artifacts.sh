@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-DEST_DIR="${1:-$ROOT_DIR/artifacts/npm}"
+ROOT_DIR="$(git rev-parse --show-toplevel)"
+DEST_DIR="${1:-$ROOT_DIR/tooling/artifacts/npm}"
 
 workspaces=(
   credentials

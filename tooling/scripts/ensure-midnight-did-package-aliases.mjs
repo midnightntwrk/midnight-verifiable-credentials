@@ -3,7 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const repoRoot = path.resolve(__dirname, '..');
+const repoRoot = path.resolve(__dirname, '..', '..');
 const aliasPath = path.join(repoRoot, 'node_modules', '@midnight-ntwrk', 'contract');
 const target = 'midnight-did-contract';
 const didDistDir = path.join(

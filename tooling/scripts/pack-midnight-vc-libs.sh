@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+ROOT_DIR="$(git rev-parse --show-toplevel)"
 DEST_DIR="${1:-}"
 
 if [[ -z "$DEST_DIR" ]]; then
@@ -9,4 +9,4 @@ if [[ -z "$DEST_DIR" ]]; then
   exit 1
 fi
 
-"$ROOT_DIR/scripts/pack-artifacts.sh" "$DEST_DIR"
+"$ROOT_DIR/tooling/scripts/pack-artifacts.sh" "$DEST_DIR"

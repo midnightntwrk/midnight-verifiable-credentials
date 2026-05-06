@@ -6,7 +6,7 @@ fi
 MIDNIGHT_RUN_COMMON_SH_LOADED=1
 
 run_common_cleanup_test_infra() {
-  ./scripts/cleanup-test-infra.sh || true
+  "$(git rev-parse --show-toplevel)/tooling/scripts/cleanup-test-infra.sh" || true
 }
 
 run_common_apply_light_mode() {
@@ -26,12 +26,12 @@ run_common_setup_cleanup_trap() {
 }
 
 run_common_ensure_node() {
-  node ./scripts/ensure-node-24.mjs
+  node "$(git rev-parse --show-toplevel)/tooling/scripts/ensure-node-24.mjs"
 }
 
 run_common_ensure_runtime_helpers() {
-  node ./scripts/ensure-onchain-runtime-cjs.mjs
-  node ./scripts/ensure-rollup-native.mjs
+  node "$(git rev-parse --show-toplevel)/tooling/scripts/ensure-onchain-runtime-cjs.mjs"
+  node "$(git rev-parse --show-toplevel)/tooling/scripts/ensure-rollup-native.mjs"
 }
 
 run_common_auto_proof_server_image() {

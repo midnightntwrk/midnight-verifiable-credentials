@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+ROOT_DIR="$(git rev-parse --show-toplevel)"
 DEST_PATH="${1:-$ROOT_DIR/.artifacts/ci-build-outputs.tar.gz}"
 
 paths=(

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+ROOT_DIR="$(git rev-parse --show-toplevel)"
 
 root_inputs=(
   package.json
@@ -52,7 +52,7 @@ done < <(git -C "$ROOT_DIR" ls-files -z -- "${package_inputs[@]}")
 while IFS= read -r -d '' path; do
   include_file "$path" || continue
   inputs+=("$path")
-done < <(git -C "$ROOT_DIR" ls-files -z -- scripts)
+done < <(git -C "$ROOT_DIR" ls-files -z -- tooling/scripts)
 
 if [[ ${#inputs[@]} -eq 0 ]]; then
   echo "[hash-ci-build-inputs] No build inputs found" >&2

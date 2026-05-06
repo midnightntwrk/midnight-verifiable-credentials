@@ -72,9 +72,22 @@ Recommended types:
 
 Recommended scopes for this repository:
 
+High-level architecture scopes:
+
 * `root`
 * `docs`
 * `spec`
+* `core`
+* `registry`
+* `protocols`
+* `components`
+* `prototypes`
+* `use-cases`
+* `tooling`
+* `assets`
+
+Legacy package scopes still allowed during migration:
+
 * `credentials`
 * `credentials-status-registry`
 * `credentials-same-holder`
@@ -92,7 +105,10 @@ Rules:
 
 * keep the summary imperative and concise
 * use a real scope whenever the change is package- or area-specific
+* prefer the high-level architecture scope when a change is best described by the target repository shape
+* use the legacy package scope when the change is isolated to one legacy workspace during the migration
 * use `root` when the change spans the repository without a better single scope
+* all pull requests in this repository should target `develop` by default
 * if one PR has multiple commits, each commit should still be meaningful on its own
 
 ## Pull Request Description Convention
