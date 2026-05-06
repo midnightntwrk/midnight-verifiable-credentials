@@ -105,8 +105,17 @@ The revocation demo contract models:
 3. holder submits a hidden-holder presentation plus either:
    - verifier-supplied-root status inputs
    - or an authority-attested status proof
-4. contract checks request alignment, status-capability binding, and age predicate satisfaction
+4. contract checks request alignment, status-capability binding, freshness
+   policy, and age predicate satisfaction
 5. contract issues a reusable business capability on success
+
+For the authority-attested path specifically, the current demo now enforces:
+
+- absolute attestation expiration
+- verifier-configured max-age replay window
+
+Those checks apply to the attestation timestamp. They do not prove that the
+verifier-supplied `revokedRoot` is the live canonical registry root.
 
 The revocation demo intentionally keeps the presentation verification circuits
 internal and exposes the business-facing capability issuance and claim paths.
@@ -124,7 +133,7 @@ Layer 3 surface while avoiding unnecessary proof-key generation cost.
 | Selective disclosure | the presentation can disclose birth-country data with its opening |
 | ZK predicate | the contract checks the age predicate from a private birth-date witness |
 | Anti-replay | both issuer and holder proofs carry a `challengeHash` |
-| Status-aware verification | `src/demo-revocation.compact` demonstrates verifier-supplied-root and authority-attested status-gated verification |
+| Status-aware verification | `src/demo-revocation.compact` demonstrates verifier-supplied-root and authority-attested status-gated verification, including verifier max-age freshness policy for authority attestations |
 
 ## Build and test
 

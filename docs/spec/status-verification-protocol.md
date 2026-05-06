@@ -143,7 +143,9 @@ For the authority-attested prototype, a Layer 3 contract should verify:
 2. the status binding bound into the credential family
 3. the verifier-supplied `RevokedSetStatusRequest`
 4. the `AuthorityAttestedStatusProof`
-5. optional expiration of that attestation
+5. verifier freshness policy for that attestation:
+   - optional absolute expiration
+   - optional verifier-enforced max-age window
 
 That means the contract checks:
 
@@ -152,10 +154,11 @@ That means the contract checks:
 - the attestation root matches the verifier-supplied root
 - the attestation challenge matches the verifier challenge
 - the attestation status-handle commitment matches the credential capability
+- if enabled, the attestation age does not exceed the verifier freshness window
 
 ## Freshness responsibility
 
-Freshness remains outside the contract in the current prototype.
+Freshness still splits across two layers in the current prototype.
 
 The verifier or application must decide:
 
@@ -163,8 +166,27 @@ The verifier or application must decide:
 - how that root was obtained
 - whether cached or delegated status evidence is acceptable
 
-The contract only verifies that the holder's status evidence matches the
-verifier-selected root.
+The contract now enforces one freshness dimension for authority-attested proofs
+when the verifier enables it:
+
+- `VerifierStatusPolicy.enforceAttestationMaxAge`
+- `VerifierStatusPolicy.maxAttestationAge`
+
+That verifier max-age uses the same unit as:
+
+- the verifier-supplied `currentTime`
+- the attestation `createdAt`
+
+So the contract can now reject an authority attestation that is:
+
+- not expired in absolute terms
+- but older than the verifier's accepted replay window
+
+What still remains outside the contract:
+
+- whether the supplied `revokedRoot` is actually the latest live root
+- whether the verifier's chosen root source is trustworthy enough
+- how a verifier rotates accepted roots over time
 
 ## Holder responsibility
 
@@ -229,7 +251,7 @@ Current limitations remain:
   non-membership proof
 - the revocation registry contract does not yet prove that a supplied
   `revokedRoot` equals the live Merkle root inside Compact
-- freshness is still verifier/application enforced, not contract-discovered
+- root freshness is still verifier/application enforced, not contract-discovered
 - the current wrapped credential families validate status binding objects and
   status proofs consistently, but they do not yet cryptographically commit the
   full status binding into the issuer-signed credential body root
@@ -238,10 +260,13 @@ Current limitations remain:
   - the safe default helper, which now derives the signing nonce
     deterministically from signer secret material plus attestation context
   - an explicit unsafe override for tests or tightly controlled integrations
-- freshness max-age policy is still pending as follow-up status-contract work;
-  the current prototype only enforces:
+- authority-attested proof freshness is now partially enforceable through
+  verifier max-age policy, but root freshness is still off-chain and
+  verifier-selected
+- the current prototype therefore enforces:
   - request challenge binding
   - optional absolute expiration
+  - optional verifier max-age
   - authority identity and registry consistency
 
 So the implemented authority-attested path is a meaningful prototype, not the

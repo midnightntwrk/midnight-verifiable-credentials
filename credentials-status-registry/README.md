@@ -79,6 +79,20 @@ Nonce requirement for authority-attested proofs:
 - callers should treat that unsafe override as test-only or tightly controlled
   integration glue rather than a normal application path
 
+Freshness requirement for authority-attested proofs:
+
+- verifier policy can now require a bounded freshness window by setting:
+  - `enforceAttestationMaxAge`
+  - `maxAttestationAge`
+- that freshness window uses the same unit as:
+  - the verifier-supplied `currentTime`
+  - the attestation `createdAt`
+- this is separate from the attestation's optional absolute `expiresAt`
+- recommended prototype posture:
+  - use absolute expiration to cap overall lifetime
+  - use verifier max-age to bound replay of otherwise still-unexpired
+    authority attestations
+
 This package does not yet implement privacy-preserving non-membership verification inside Compact. It provides the authoritative state surface that status-aware VC/VP flows can anchor to.
 
 Import rule:
@@ -102,8 +116,11 @@ Current prototype limitation:
   registry's `registryId`
 - it does not yet prove that the supplied `revokedRoot` equals the live
   contract Merkle root inside Compact
-- freshness of the supplied root is currently an application/verifier
+- freshness of the supplied root is still an application/verifier
   responsibility, not an in-circuit property
+- authority-attested proof freshness is now partially contract-enforced when
+  the verifier enables `enforceAttestationMaxAge`, but that does not make the
+  supplied root itself live or canonical
 - callers must therefore treat `revokedRoot` as an off-chain coordinated
   snapshot value until the final in-circuit root-binding/non-membership path
   lands
