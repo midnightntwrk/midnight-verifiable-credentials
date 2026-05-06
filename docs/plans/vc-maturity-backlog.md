@@ -97,18 +97,22 @@ Current highest-risk remaining area:
   docs normalize the split, but Compact proof-protocol types still live in
   `credentials` while `credentials-status-registry` owns most runtime builders
   and workflow glue
+- the strongest remaining integrator-adoption gap is now execution, not
+  discovery:
+  the repo has templates and guides, but it still lacks a generated family
+  scaffold and a concise DID + VC handoff kit
 
 Next active queue:
 
-1. `VC-MAT-11`
-2. `VC-MAT-16`
-3. `VC-MAT-20`
-4. `VC-MAT-19`
-5. `VC-MAT-18`
-6. `VC-MAT-06`
-7. `VC-MAT-09`
-8. `VC-MAT-08`
-9. `VC-MAT-17`
+1. `VC-MAT-18`
+2. `VC-MAT-19`
+3. `VC-MAT-11`
+4. `VC-MAT-16`
+5. `VC-MAT-20`
+6. `VC-MAT-08`
+7. `VC-MAT-17`
+8. `VC-MAT-06`
+9. `VC-MAT-09`
 
 ## Architecture Audit: 2026-05-06
 
@@ -415,9 +419,13 @@ Current grouped execution:
   - birth credential age-gate happy path
   - hidden-holder verifier-supplied-root revocation-aware age-gate happy path
 - follow-up work:
+  - add the next scenarios only when they materially improve living
+    documentation for integrators or reviewers
   - add more scenario coverage without turning the BDD layer into a second full
     regression matrix
   - keep the BDD-only CI lane focused and trustworthy
+  - add scenario coverage that clarifies status trust models, not just happy
+    path feature breadth
 
 ### VC-MAT-05: Tighten prototype/reference trust-boundary signaling
 
@@ -530,9 +538,13 @@ Current grouped execution:
   - docs-only family scaffold template
   - docs-only hidden-holder hello-world walkthrough
 - still missing if deeper onboarding is needed later:
+  - a generated family scaffold or copy script
   - issuer-oriented starter path
   - wallet-oriented starter path
-  - a generated scaffold or copy script
+  - a DID + VC handoff checklist for downstream repos consuming DID tarballs
+    plus VC packages
+  - one authoritative cross-repo smoke path that starts from the DID packaging
+    boundary and ends in one VC issuance/presentation/verification flow
 
 ### VC-MAT-09: Keep test docs aligned with real package/test coverage
 
@@ -561,6 +573,8 @@ Current progress:
 - remaining risk:
   - the test docs will keep drifting unless every new lane and scenario slice
     updates them in the same PR
+  - the split-repo architecture is still under-tested as one authoritative
+    consumer journey unless a thin DID + VC cross-repo smoke path is kept alive
 
 ### VC-MAT-10: Start maintaining `CHANGELOG.md` for compatibility-significant changes
 
@@ -785,6 +799,13 @@ Required outcome:
   - allowed dependency direction
   - whether the package is reusable outside this repo
 - add CI/load-bearing checks so the tier classification cannot silently drift
+- make the inventory explicit for both:
+  - package classes
+  - protocol classes
+- give integrators one obvious answer to:
+  - which packages are reusable core
+  - which are prototype-only
+  - which are wiring/helpers
 
 ### VC-MAT-19: Separate reusable core protocols from Layer 3 / Layer 4 wiring protocols
 
@@ -813,6 +834,11 @@ Required outcome:
   to be only:
   - `credentials`
   - or `credentials-status-registry`
+- keep the rule explicit that:
+  - `credentials-protocol` is orchestration/wiring, not a reusable core
+    protocol package
+- make the preferred end-state legible enough that core proof-protocol
+  semantics can be reused without dragging in Layer 3 or Layer 4 helpers
 
 ### VC-MAT-20: Finish the cryptographic status contract
 
@@ -854,6 +880,11 @@ Required outcome:
   - missing-binding cases
 - document the resulting status maturity claim clearly in the core spec,
   conformance, and package READMEs
+- make the resulting trust-model choice obvious to integrators:
+  - when verifier-supplied-root is acceptable as a prototype
+  - when authority-attested status is acceptable as a prototype bridge
+  - when the canonical non-membership path becomes the preferred reference
+    architecture
 
 ## Recommended Execution Order
 
