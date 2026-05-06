@@ -1042,37 +1042,28 @@ Priority: P1
 
 Problem:
 
-- the repository now has good pieces of this story spread across:
-  - the core VC spec
-  - architecture docs
-  - package READMEs
-  - integration guides
-- but there is still no single canonical inventory that tells integrators which
-  packages and public surfaces are:
-  - reusable core VC components
-  - reusable core protocols
-  - prototype-only surfaces
-  - Layer 3 / Layer 4 wiring and helpers
+- this item is now substantially addressed on `develop`
+- the repository now has:
+  - a canonical package-tier inventory
+  - protocol classification docs
+  - standardized package-header expectations
+  - boundary/CI guardrails that keep the classification from drifting silently
+- the remaining gap is maintenance, not missing architecture taxonomy:
+  keep the inventory, README headers, and package exports synchronized as new
+  packages land
 
 Required outcome:
 
-- publish one canonical inventory in the architecture/spec set
-- align package READMEs and conformance language to that inventory
-- make the maturity tiers explicit enough that integrators do not infer
-  stability from package presence alone
-- standardize a per-package header that states:
-  - tier
-  - stability
-  - allowed dependency direction
-  - whether the package is reusable outside this repo
-- add CI/load-bearing checks so the tier classification cannot silently drift
-- make the inventory explicit for both:
-  - package classes
-  - protocol classes
-- give integrators one obvious answer to:
-  - which packages are reusable core
-  - which are prototype-only
-  - which are wiring/helpers
+- keep the current inventory load-bearing
+- update package headers and package-selection guidance when repo structure
+  changes
+- route future cleanup through `VC-MAT-09` rather than reopening this as a
+  fresh taxonomy problem
+
+Current grouped execution:
+
+- treat this as a maintenance discipline under `TEST-DOC-ALIGNMENT`
+- do not reopen it unless the canonical inventory itself becomes ambiguous
 
 ### VC-MAT-19: Separate reusable core protocols from Layer 3 / Layer 4 wiring protocols
 
@@ -1080,32 +1071,33 @@ Priority: P1
 
 Problem:
 
-- the repository correctly says transport is not canonical, but it still
-  describes some reusable core protocol semantics and some off-chain reference
-  orchestration too close together
-- this is most visible in:
-  - generic issuance/presentation semantics in `credentials`
-  - reference orchestration in `credentials-protocol`
-  - status/revocation request and proof vocabulary split across `credentials`
-    and `credentials-status-registry`
+- this item is now substantially addressed on `develop`
+- the repository now explicitly separates:
+  - reusable core VC/proof semantics
+  - VC-side status binding
+  - registry-facing proof protocols
+  - Layer 3 / Layer 4 orchestration and transport helpers
+- the remaining gap is no longer protocol-classification absence; it is
+  integrator-facing curation of `credentials-protocol` and adjacent exports so
+  reference orchestration does not drift back into a broad implicit root
+  surface
 
 Required outcome:
 
-- explicitly classify which protocols belong to the reusable core spec
-- explicitly classify which protocols are Layer 3 business-composition or
-  Layer 4 transport/orchestration helpers
-- tighten package-boundary, overview, and README language so “reference
-  protocol” does not get mistaken for “core reusable protocol”
-- evaluate whether shared proof-protocol Compact types should live in a
-  dedicated lower shared package rather than forcing the final ownership choice
-  to be only:
-  - `credentials`
-  - or `credentials-status-registry`
+- keep the protocol-classification docs and README language aligned with the
+  actual package/export surfaces
 - keep the rule explicit that:
   - `credentials-protocol` is orchestration/wiring, not a reusable core
     protocol package
-- make the preferred end-state legible enough that core proof-protocol
-  semantics can be reused without dragging in Layer 3 or Layer 4 helpers
+- route any remaining root-exports / curated-entrypoint cleanup through the
+  active orchestration and doc-alignment work instead of reopening this as a
+  fresh architecture split problem
+
+Current grouped execution:
+
+- treat this as a maintenance/curation track under:
+  - `VC-MAT-06`
+  - `VC-MAT-09`
 
 ### VC-MAT-20: Finish the cryptographic status contract
 
