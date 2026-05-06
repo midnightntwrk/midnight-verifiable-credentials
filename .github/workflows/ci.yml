@@ -314,7 +314,48 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Compute build input hash
+        id: build-input-hash
+        shell: bash
+        run: |
+          echo "hash=$(./scripts/hash-ci-build-inputs.sh)" >> "$GITHUB_OUTPUT"
+
+      - name: Restore cached build outputs
+        id: restore-build-output-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            credentials/src/managed
+            credentials/dist
+            credentials-status-registry/src/managed
+            credentials-status-registry/dist
+            credentials-same-holder/src/managed
+            credentials-same-holder/dist
+            credentials-iso-registry/src/managed
+            credentials-iso-registry/dist
+            credentials-birth/src/managed
+            credentials-birth/dist
+            credentials-birth-secret/src/managed
+            credentials-birth-secret/dist
+            credentials-demo-contract/src/managed
+            credentials-demo-contract/dist
+            credentials-offchain-did/dist
+            credentials-openid/dist
+            credentials-protocol/dist
+          key: ${{ runner.os }}-ci-build-outputs-${{ env.COMPACT_COMPILER_VERSION }}-${{ steps.build-input-hash.outputs.hash }}
+
+      - name: Verify cached build outputs
+        id: verify-build-output-cache
+        shell: bash
+        run: |
+          if ./scripts/verify-ci-build-outputs.sh; then
+            echo "cache_ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "cache_ready=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Set up Node.js
+        if: steps.verify-build-output-cache.outputs.cache_ready != 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '24'
@@ -322,12 +363,14 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: Download Compact toolchain artifact
+        if: steps.verify-build-output-cache.outputs.cache_ready != 'true'
         uses: actions/download-artifact@v4
         with:
           name: compact-toolchain
           path: ${{ runner.temp }}/compact-toolchain
 
       - name: Restore Compact toolchain
+        if: steps.verify-build-output-cache.outputs.cache_ready != 'true'
         shell: bash
         run: |
           mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
@@ -336,6 +379,7 @@ jobs:
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Activate Compact compiler
+        if: steps.verify-build-output-cache.outputs.cache_ready != 'true'
         shell: bash
         run: |
           if compact compile --version >/dev/null 2>&1; then
@@ -348,13 +392,16 @@ jobs:
           fi
 
       - name: Verify Compact installation
+        if: steps.verify-build-output-cache.outputs.cache_ready != 'true'
         run: |
           compact compile --version
 
       - name: Install dependencies
+        if: steps.verify-build-output-cache.outputs.cache_ready != 'true'
         run: npm ci --prefer-offline
 
       - name: Restore turbo cache
+        if: steps.verify-build-output-cache.outputs.cache_ready != 'true'
         uses: actions/cache@v4
         with:
           path: .turbo
@@ -364,7 +411,32 @@ jobs:
             ${{ runner.os }}-turbo-
 
       - name: Build reusable CI artifacts
+        if: steps.verify-build-output-cache.outputs.cache_ready != 'true'
         run: npm run build:ci-artifacts
+
+      - name: Save cached build outputs
+        if: steps.verify-build-output-cache.outputs.cache_ready != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            credentials/src/managed
+            credentials/dist
+            credentials-status-registry/src/managed
+            credentials-status-registry/dist
+            credentials-same-holder/src/managed
+            credentials-same-holder/dist
+            credentials-iso-registry/src/managed
+            credentials-iso-registry/dist
+            credentials-birth/src/managed
+            credentials-birth/dist
+            credentials-birth-secret/src/managed
+            credentials-birth-secret/dist
+            credentials-demo-contract/src/managed
+            credentials-demo-contract/dist
+            credentials-offchain-did/dist
+            credentials-openid/dist
+            credentials-protocol/dist
+          key: ${{ runner.os }}-ci-build-outputs-${{ env.COMPACT_COMPILER_VERSION }}-${{ steps.build-input-hash.outputs.hash }}
 
       - name: Pack reusable CI artifacts
         run: |
