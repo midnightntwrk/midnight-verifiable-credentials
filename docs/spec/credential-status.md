@@ -160,8 +160,8 @@ The first hidden-holder family rollout now lives in
 - the wrapper names remain compatibility-era status-capability labels, but the
   committed VC-side binding is now the canonical shared shape
 
-Other families may still be in transition until they adopt the same
-status-bound body-root pattern.
+Other or future status-aware family surfaces may still be in transition until
+they adopt the same status-bound body-root pattern.
 
 Ownership rule:
 
@@ -205,7 +205,7 @@ credential body root is defined in:
 
 `credentials-birth-secret` is the current first-family implementation of that
 target. The broader repository-wide rollout is still incomplete until the same
-pattern is lifted into the remaining status-aware family surfaces.
+pattern is lifted into other or future status-aware family surfaces.
 
 ## Required status disclosures
 
