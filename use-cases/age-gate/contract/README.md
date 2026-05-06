@@ -133,7 +133,8 @@ Layer 3 surface while avoiding unnecessary proof-key generation cost.
 | Selective disclosure | the presentation can disclose birth-country data with its opening |
 | ZK predicate | the contract checks the age predicate from a private birth-date witness |
 | Anti-replay | both issuer and holder proofs carry a `challengeHash` |
-| Status-aware verification | `src/demo-revocation.compact` demonstrates verifier-supplied-root and authority-attested status-gated verification, including verifier max-age freshness policy for authority attestations |
+| Status-aware verification | `src/demo-revocation.compact` demonstrates verifier-supplied-root and authority-attested status-gated verification |
+| Status freshness policy | the authority-attested path adds verifier max-age freshness checks on top of attestation expiration |
 
 ## Build and test
 

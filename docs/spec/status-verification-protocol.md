@@ -144,8 +144,8 @@ For the authority-attested prototype, a Layer 3 contract should verify:
 3. the verifier-supplied `RevokedSetStatusRequest`
 4. the `AuthorityAttestedStatusProof`
 5. verifier freshness policy for that attestation:
-   - optional absolute expiration
-   - optional verifier-enforced max-age window
+   - optional absolute expiration carried by the attestation
+   - optional verifier-enforced max-age window carried by the policy
 
 That means the contract checks:
 
@@ -158,7 +158,8 @@ That means the contract checks:
 
 ## Freshness responsibility
 
-Freshness still splits across two layers in the current prototype.
+Freshness is now split between the contract and the verifier in the current
+prototype.
 
 The verifier or application must decide:
 
