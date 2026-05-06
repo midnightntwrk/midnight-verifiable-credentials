@@ -211,10 +211,10 @@ jobs:
           path: ${{ runner.temp }}/compact-toolchain/compact-toolchain.tar.gz
           if-no-files-found: error
 
-  lint:
-    name: Lint
+  build-artifacts:
+    name: Build Shared Artifacts
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 90
     needs: [changes, prepare-compact]
     if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true'
     steps:
@@ -257,6 +257,51 @@ jobs:
       - name: Verify Compact installation
         run: |
           compact compile --version
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+
+      - name: Restore turbo cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.job }}-${{ hashFiles('package-lock.json', 'turbo.json') }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-${{ github.job }}-
+            ${{ runner.os }}-turbo-
+
+      - name: Build reusable CI artifacts
+        run: npm run build:ci-artifacts
+
+      - name: Pack reusable CI artifacts
+        run: |
+          mkdir -p "$RUNNER_TEMP/ci-build-outputs"
+          ./scripts/pack-ci-build-outputs.sh \
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-outputs.tar.gz"
+
+      - name: Upload reusable CI artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-build-outputs
+          path: ${{ runner.temp }}/ci-build-outputs/ci-build-outputs.tar.gz
+          if-no-files-found: error
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    needs: changes
+    if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
         run: npm ci --prefer-offline
@@ -277,7 +322,7 @@ jobs:
     name: Typecheck
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    needs: [changes, prepare-compact]
+    needs: [changes, build-artifacts]
     if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true'
     steps:
       - name: Checkout repository
@@ -290,56 +335,28 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
 
-      - name: Download Compact toolchain artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: compact-toolchain
-          path: ${{ runner.temp }}/compact-toolchain
-
-      - name: Restore Compact toolchain
-        shell: bash
-        run: |
-          mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
-          tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
-          mkdir -p "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-
-      - name: Activate Compact compiler
-        shell: bash
-        run: |
-          if compact compile --version >/dev/null 2>&1; then
-            exit 0
-          fi
-          if [ "$COMPACT_COMPILER_VERSION" = "latest" ]; then
-            compact update
-          else
-            compact update "$COMPACT_COMPILER_VERSION" || compact update
-          fi
-
-      - name: Verify Compact installation
-        run: |
-          compact compile --version
-
       - name: Install dependencies
         run: npm ci --prefer-offline
 
-      - name: Restore turbo cache
-        uses: actions/cache@v4
+      - name: Download reusable CI artifacts
+        uses: actions/download-artifact@v4
         with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ github.job }}-${{ hashFiles('package-lock.json', 'turbo.json') }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-${{ github.job }}-
-            ${{ runner.os }}-turbo-
+          name: ci-build-outputs
+          path: ${{ runner.temp }}/ci-build-outputs
+
+      - name: Restore reusable CI artifacts
+        run: |
+          ./scripts/restore-ci-build-outputs.sh \
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-outputs.tar.gz"
 
       - name: Run typecheck lane
-        run: npm run ci:typecheck
+        run: npm run ci:typecheck:from-artifacts
 
   package-tests:
     name: Build and Package Tests
     runs-on: ubuntu-latest
     timeout-minutes: 75
-    needs: [changes, prepare-compact]
+    needs: [changes, build-artifacts]
     if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true'
     steps:
       - name: Checkout repository
@@ -352,56 +369,28 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
 
-      - name: Download Compact toolchain artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: compact-toolchain
-          path: ${{ runner.temp }}/compact-toolchain
-
-      - name: Restore Compact toolchain
-        shell: bash
-        run: |
-          mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
-          tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
-          mkdir -p "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-
-      - name: Activate Compact compiler
-        shell: bash
-        run: |
-          if compact compile --version >/dev/null 2>&1; then
-            exit 0
-          fi
-          if [ "$COMPACT_COMPILER_VERSION" = "latest" ]; then
-            compact update
-          else
-            compact update "$COMPACT_COMPILER_VERSION" || compact update
-          fi
-
-      - name: Verify Compact installation
-        run: |
-          compact compile --version
-
       - name: Install dependencies
         run: npm ci --prefer-offline
 
-      - name: Restore turbo cache
-        uses: actions/cache@v4
+      - name: Download reusable CI artifacts
+        uses: actions/download-artifact@v4
         with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ github.job }}-${{ hashFiles('package-lock.json', 'turbo.json') }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-${{ github.job }}-
-            ${{ runner.os }}-turbo-
+          name: ci-build-outputs
+          path: ${{ runner.temp }}/ci-build-outputs
+
+      - name: Restore reusable CI artifacts
+        run: |
+          ./scripts/restore-ci-build-outputs.sh \
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-outputs.tar.gz"
 
       - name: Run package build and test lane
-        run: npm run ci:package-tests
+        run: npm run ci:package-tests:from-artifacts
 
   revocation:
     name: Revocation Demo Lane
     runs-on: ubuntu-latest
     timeout-minutes: 75
-    needs: [changes, prepare-compact]
+    needs: [changes, build-artifacts]
     if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true'
     steps:
       - name: Checkout repository
@@ -414,56 +403,28 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
 
-      - name: Download Compact toolchain artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: compact-toolchain
-          path: ${{ runner.temp }}/compact-toolchain
-
-      - name: Restore Compact toolchain
-        shell: bash
-        run: |
-          mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
-          tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
-          mkdir -p "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-
-      - name: Activate Compact compiler
-        shell: bash
-        run: |
-          if compact compile --version >/dev/null 2>&1; then
-            exit 0
-          fi
-          if [ "$COMPACT_COMPILER_VERSION" = "latest" ]; then
-            compact update
-          else
-            compact update "$COMPACT_COMPILER_VERSION" || compact update
-          fi
-
-      - name: Verify Compact installation
-        run: |
-          compact compile --version
-
       - name: Install dependencies
         run: npm ci --prefer-offline
 
-      - name: Restore turbo cache
-        uses: actions/cache@v4
+      - name: Download reusable CI artifacts
+        uses: actions/download-artifact@v4
         with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ github.job }}-${{ hashFiles('package-lock.json', 'turbo.json') }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-${{ github.job }}-
-            ${{ runner.os }}-turbo-
+          name: ci-build-outputs
+          path: ${{ runner.temp }}/ci-build-outputs
+
+      - name: Restore reusable CI artifacts
+        run: |
+          ./scripts/restore-ci-build-outputs.sh \
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-outputs.tar.gz"
 
       - name: Run revocation-focused lane
-        run: npm run ci:revocation
+        run: npm run ci:revocation:from-artifacts
 
   integration-demo-contract:
     name: "Standalone Integration: Demo Contract"
     runs-on: ubuntu-latest
     timeout-minutes: 90
-    needs: [changes, prepare-compact]
+    needs: [changes, build-artifacts]
     if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true'
     steps:
       - name: Checkout repository
@@ -476,47 +437,28 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
 
-      - name: Download Compact toolchain artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: compact-toolchain
-          path: ${{ runner.temp }}/compact-toolchain
-
-      - name: Restore Compact toolchain
-        shell: bash
-        run: |
-          mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
-          tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
-          mkdir -p "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-
-      - name: Activate Compact compiler
-        shell: bash
-        run: |
-          if compact compile --version >/dev/null 2>&1; then
-            exit 0
-          fi
-          if [ "$COMPACT_COMPILER_VERSION" = "latest" ]; then
-            compact update
-          else
-            compact update "$COMPACT_COMPILER_VERSION" || compact update
-          fi
-
-      - name: Verify Compact installation
-        run: |
-          compact compile --version
-
       - name: Install dependencies
         run: npm ci --prefer-offline
 
+      - name: Download reusable CI artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: ci-build-outputs
+          path: ${{ runner.temp }}/ci-build-outputs
+
+      - name: Restore reusable CI artifacts
+        run: |
+          ./scripts/restore-ci-build-outputs.sh \
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-outputs.tar.gz"
+
       - name: Run demo-contract integration lane
-        run: npm run ci:integration:demo-contract
+        run: npm run ci:integration:demo-contract:from-artifacts
 
   integration-protocol:
     name: "Standalone Integration: Protocol"
     runs-on: ubuntu-latest
     timeout-minutes: 90
-    needs: [changes, prepare-compact]
+    needs: [changes, build-artifacts]
     if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true'
     steps:
       - name: Checkout repository
@@ -529,38 +471,19 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
 
-      - name: Download Compact toolchain artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: compact-toolchain
-          path: ${{ runner.temp }}/compact-toolchain
-
-      - name: Restore Compact toolchain
-        shell: bash
-        run: |
-          mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
-          tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
-          mkdir -p "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-
-      - name: Activate Compact compiler
-        shell: bash
-        run: |
-          if compact compile --version >/dev/null 2>&1; then
-            exit 0
-          fi
-          if [ "$COMPACT_COMPILER_VERSION" = "latest" ]; then
-            compact update
-          else
-            compact update "$COMPACT_COMPILER_VERSION" || compact update
-          fi
-
-      - name: Verify Compact installation
-        run: |
-          compact compile --version
-
       - name: Install dependencies
         run: npm ci --prefer-offline
 
+      - name: Download reusable CI artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: ci-build-outputs
+          path: ${{ runner.temp }}/ci-build-outputs
+
+      - name: Restore reusable CI artifacts
+        run: |
+          ./scripts/restore-ci-build-outputs.sh \
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-outputs.tar.gz"
+
       - name: Run protocol integration lane
-        run: npm run ci:integration:protocol
+        run: npm run ci:integration:protocol:from-artifacts
