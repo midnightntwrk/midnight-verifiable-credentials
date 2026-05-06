@@ -111,11 +111,15 @@ Current highest-risk remaining area:
 
 Next active queue:
 
-1. `VC-MAT-20`
-2. `VC-MAT-08`
-3. `VC-MAT-17`
-4. `VC-MAT-06`
-5. `VC-MAT-09`
+This older `VC-MAT-XX` queue is superseded by the category split and
+twenty-slice execution plan below. Keep it only as a compact pointer to the
+same top-level priorities:
+
+1. `STATUS-CONTRACT` / `VC-MAT-20`
+2. `INTEGRATOR-EXECUTION` / `VC-MAT-08`
+3. `BDD-LIVE-DOCS` / `VC-MAT-17`
+4. `ORCHESTRATION-PROD-SAFETY` / `VC-MAT-06`
+5. `TEST-DOC-ALIGNMENT` / `VC-MAT-09`
 
 ## Category Split
 
@@ -169,13 +173,11 @@ it is applied as a per-slice discipline instead of a separate numbered queue.
 ### `STATUS-CONTRACT`
 
 1. deterministic signing-nonce defaults for authority attestation, plus
-   helper/API narrowing (`#97`, in flight)
+   helper/API narrowing
 2. adversarial status protocol coverage:
    - root substitution
    - registry swap
    - missing-binding rejection
-   - current delivery:
-     - `#98` (in flight)
 3. authority-attested freshness policy:
    verifier-enforced max-age semantics
 4. status-proof protocol docs and README updates for the narrowed helper trust
@@ -211,6 +213,10 @@ it is applied as a per-slice discipline instead of a separate numbered queue.
 The first ten slices are status-contract work because that remains the highest
 core-spec risk. The latter categories remain active, but they should stack on a
 clearer status boundary rather than race ahead of it.
+
+`TEST-DOC-ALIGNMENT` intentionally has no numbered slot in this plan. Treat it
+as a per-slice acceptance requirement rather than as a standalone execution
+queue.
 
 ## Architecture Audit: 2026-05-06
 
