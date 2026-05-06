@@ -1,11 +1,16 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const scriptDir = path.dirname(fileURLToPath(import.meta.url));
+const repoRoot = path.resolve(scriptDir, "..", "..");
 
 const usage = `Usage:
   node ./tooling/scripts/scaffold-vc-family.mjs --slug my-family [--out credentials-my-family] [--holder explicit|hidden]
 
 Behavior:
   - generates a minimal repo-aligned family package scaffold
+  - requires the output directory to stay inside the current VC repository
   - does not add the package to root workspaces automatically
   - does not overwrite an existing directory
 `;
@@ -95,6 +100,8 @@ ${packageDirName}/
 ├── tsconfig.build.json
 ├── scripts/
 │   ├── align-runtime-version.mjs
+│   ├── ensure-compact-package-aliases.mjs
+│   ├── find-repo-root.mjs
 │   └── strip-managed-sourcemaps.mjs
 └── src/
     ├── ${familyStem}.compact
@@ -155,7 +162,7 @@ Next steps:
           },
           scripts: {
             contract: "npm run compact",
-            compact: `node ../tooling/scripts/ensure-compact-package-aliases.mjs && compact compile src/${familyStem}.compact src/managed/${familyStem} && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs`,
+            compact: `node ./scripts/ensure-compact-package-aliases.mjs && compact compile src/${familyStem}.compact src/managed/${familyStem} && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs`,
             test: "vitest run",
             "test:ci": "vitest run",
             prepack: "npm run build",
@@ -224,14 +231,66 @@ Next steps:
 `,
     ],
     [
+      "scripts/find-repo-root.mjs",
+      `import { readFile } from "node:fs/promises";
+import path from "node:path";
+
+export const findRepoRoot = async (startDir) => {
+  let currentDir = startDir;
+
+  while (true) {
+    const packageJsonPath = path.join(currentDir, "package.json");
+    try {
+      const packageJson = JSON.parse(await readFile(packageJsonPath, "utf8"));
+      if (Array.isArray(packageJson.workspaces)) {
+        return currentDir;
+      }
+    } catch (error) {
+      if (!(error instanceof Error) || !("code" in error) || error.code !== "ENOENT") {
+        throw error;
+      }
+    }
+
+    const parentDir = path.dirname(currentDir);
+    if (parentDir === currentDir) {
+      throw new Error("Could not locate the Midnight VC repository root");
+    }
+    currentDir = parentDir;
+  }
+};
+`,
+    ],
+    [
+      "scripts/ensure-compact-package-aliases.mjs",
+      `import path from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
+
+import { findRepoRoot } from "./find-repo-root.mjs";
+
+const scriptDir = path.dirname(fileURLToPath(import.meta.url));
+const packageRoot = path.resolve(scriptDir, "..");
+const repoRoot = await findRepoRoot(packageRoot);
+const helperPath = path.join(
+  repoRoot,
+  "tooling",
+  "scripts",
+  "ensure-compact-package-aliases.mjs",
+);
+
+await import(pathToFileURL(helperPath).href);
+`,
+    ],
+    [
       "scripts/align-runtime-version.mjs",
       `import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { findRepoRoot } from "./find-repo-root.mjs";
+
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const packageRoot = path.resolve(scriptDir, "..");
-const repoRoot = path.resolve(packageRoot, "..");
+const repoRoot = await findRepoRoot(packageRoot);
 const runtimePackage = JSON.parse(
   await readFile(
     path.join(
@@ -408,6 +467,15 @@ const main = async () => {
     const { slug, out, holder } = parseArgs(process.argv.slice(2));
     const requestedOutputPath = out ?? `credentials-${slug}`;
     const packageRoot = path.resolve(process.cwd(), requestedOutputPath);
+    const packageRelativeToRepo = path.relative(repoRoot, packageRoot);
+    if (
+      packageRelativeToRepo.startsWith("..") ||
+      path.isAbsolute(packageRelativeToRepo)
+    ) {
+      throw new Error(
+        "--out must resolve to a path inside the Midnight VC repository",
+      );
+    }
     const packageDirName = path.basename(packageRoot);
     const familyStem = `${slug}-credential`;
     const familyPascal = `${toPascalCase(slug)}Credential`;
