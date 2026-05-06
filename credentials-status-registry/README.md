@@ -143,6 +143,8 @@ Observed-root integration helper path:
 
 - use `buildObservedRevocationRegistryState(...)` to normalize a verifier-side
   snapshot plus observation time
+- use `assertObservedRevocationRegistryStateFreshEnough(...)` when the caller
+  already has a normalized snapshot and only needs the freshness decision
 - use `buildRevokedSetStatusRequestFromObservedState(...)` when request
   construction must reject stale or future-dated snapshots before entering the
   Compact proof path

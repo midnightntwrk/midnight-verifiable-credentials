@@ -4,6 +4,7 @@ import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { describe, expect, it } from "vitest";
 
 import {
+  assertObservedRevocationRegistryStateFreshEnough,
   buildFreshRevokedSetNonMembershipInputs,
   buildObservedRevocationRegistryState,
   buildRevokedSetStatusRequestFromObservedState,
@@ -21,6 +22,27 @@ const authorityVerificationMethodRef = {
 };
 
 describe("revocation registry observed-root helpers", () => {
+  it("accepts a snapshot observed at the current verifier time", () => {
+    const observedState = buildObservedRevocationRegistryState({
+      registryState: {
+        registryId: bytes32("registry:hidden-holder"),
+        revokedRoot: bytes32("revoked-root:current"),
+      },
+      observedAt: 150n,
+    });
+
+    expect(() =>
+      assertObservedRevocationRegistryStateFreshEnough({
+        observedState,
+        currentTime: 150n,
+        policy: {
+          enforceSnapshotMaxAge: true,
+          maxSnapshotAge: 0n,
+        },
+      }),
+    ).not.toThrow();
+  });
+
   it("accepts a snapshot at the verifier max-age boundary", () => {
     const observedState = buildObservedRevocationRegistryState({
       registryState: {
@@ -67,6 +89,27 @@ describe("revocation registry observed-root helpers", () => {
     ).toThrow(/snapshot exceeds the verifier max-age policy/i);
   });
 
+  it("skips snapshot max-age enforcement when the verifier disables it", () => {
+    const observedState = buildObservedRevocationRegistryState({
+      registryState: {
+        registryId: bytes32("registry:hidden-holder"),
+        revokedRoot: bytes32("revoked-root:current"),
+      },
+      observedAt: 100n,
+    });
+
+    expect(() =>
+      assertObservedRevocationRegistryStateFreshEnough({
+        observedState,
+        currentTime: 1_000n,
+        policy: {
+          enforceSnapshotMaxAge: false,
+          maxSnapshotAge: 0n,
+        },
+      }),
+    ).not.toThrow();
+  });
+
   it("rejects a future-dated observed snapshot", () => {
     const observedState = buildObservedRevocationRegistryState({
       registryState: {
@@ -87,6 +130,58 @@ describe("revocation registry observed-root helpers", () => {
         },
       }),
     ).toThrow(/snapshot time cannot be in the future/i);
+  });
+
+  it("rejects negative timing inputs and malformed observed states", () => {
+    expect(() =>
+      buildObservedRevocationRegistryState({
+        registryState: {
+          registryId: bytes32("registry:hidden-holder"),
+          revokedRoot: bytes32("revoked-root:current"),
+        },
+        observedAt: -1n,
+      }),
+    ).toThrow(/must be >= 0/i);
+
+    const observedState = buildObservedRevocationRegistryState({
+      registryState: {
+        registryId: bytes32("registry:hidden-holder"),
+        revokedRoot: bytes32("revoked-root:current"),
+      },
+      observedAt: 100n,
+    });
+
+    expect(() =>
+      assertObservedRevocationRegistryStateFreshEnough({
+        observedState,
+        currentTime: -1n,
+        policy: {
+          enforceSnapshotMaxAge: true,
+          maxSnapshotAge: 0n,
+        },
+      }),
+    ).toThrow(/must be >= 0/i);
+
+    expect(() =>
+      assertObservedRevocationRegistryStateFreshEnough({
+        observedState,
+        currentTime: 100n,
+        policy: {
+          enforceSnapshotMaxAge: true,
+          maxSnapshotAge: -1n,
+        },
+      }),
+    ).toThrow(/must be >= 0/i);
+
+    expect(() =>
+      buildObservedRevocationRegistryState({
+        registryState: {
+          registryId: new Uint8Array(),
+          revokedRoot: bytes32("revoked-root:current"),
+        },
+        observedAt: 100n,
+      }),
+    ).toThrow();
   });
 
   it("builds a fresh canonical non-membership bundle from an observed snapshot", () => {

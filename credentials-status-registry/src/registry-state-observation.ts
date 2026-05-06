@@ -1,7 +1,6 @@
 import {
   pureCircuits,
   type RevocationRegistryState,
-  type RevokedSetNonMembershipStatusProofProtocol,
   type RevokedSetStatusRequest,
 } from "./managed/revocation-registry/contract/index.js";
 import {
@@ -21,7 +20,21 @@ export type RevocationRegistrySnapshotFreshnessPolicy = {
   readonly maxSnapshotAge: bigint;
 };
 
-const assertNonNegativeUint64 = (value: bigint, label: string): void => {
+export type BuildFreshRevokedSetNonMembershipInputsOptions = Omit<
+  BuildRevokedSetNonMembershipInputsOptions,
+  "registryState"
+> & {
+  readonly observedState: ObservedRevocationRegistryState;
+  readonly currentTime: bigint;
+  readonly snapshotFreshnessPolicy: RevocationRegistrySnapshotFreshnessPolicy;
+};
+
+export type BuiltFreshRevokedSetNonMembershipInputs =
+  BuiltRevokedSetNonMembershipInputs & {
+    readonly observedState: ObservedRevocationRegistryState;
+  };
+
+const assertNonNegative = (value: bigint, label: string): void => {
   if (value < 0n) {
     throw new Error(`${label} must be >= 0`);
   }
@@ -32,7 +45,7 @@ export const buildObservedRevocationRegistryState = ({
   observedAt,
 }: ObservedRevocationRegistryState): ObservedRevocationRegistryState => {
   pureCircuits.assertValidRevocationRegistryState(registryState);
-  assertNonNegativeUint64(observedAt, "Observed revocation registry time");
+  assertNonNegative(observedAt, "Observed revocation registry time");
   return {
     registryState,
     observedAt,
@@ -49,8 +62,8 @@ export const assertObservedRevocationRegistryStateFreshEnough = ({
   readonly policy: RevocationRegistrySnapshotFreshnessPolicy;
 }): void => {
   buildObservedRevocationRegistryState(observedState);
-  assertNonNegativeUint64(currentTime, "Current time");
-  assertNonNegativeUint64(policy.maxSnapshotAge, "Snapshot max age");
+  assertNonNegative(currentTime, "Current time");
+  assertNonNegative(policy.maxSnapshotAge, "Snapshot max age");
 
   if (currentTime < observedState.observedAt) {
     throw new Error(
@@ -97,18 +110,11 @@ export const buildFreshRevokedSetNonMembershipInputs = ({
   currentTime,
   snapshotFreshnessPolicy,
   ...witnessOptions
-}: Omit<BuildRevokedSetNonMembershipInputsOptions, "registryState"> & {
-  readonly observedState: ObservedRevocationRegistryState;
-  readonly currentTime: bigint;
-  readonly snapshotFreshnessPolicy: RevocationRegistrySnapshotFreshnessPolicy;
-}): BuiltRevokedSetNonMembershipInputs & {
-  readonly observedState: ObservedRevocationRegistryState;
-} => {
-  const request = buildRevokedSetStatusRequestFromObservedState({
+}: BuildFreshRevokedSetNonMembershipInputsOptions): BuiltFreshRevokedSetNonMembershipInputs => {
+  assertObservedRevocationRegistryStateFreshEnough({
     observedState,
-    verifierChallengeHash,
     currentTime,
-    snapshotFreshnessPolicy,
+    policy: snapshotFreshnessPolicy,
   });
   const built = buildRevokedSetNonMembershipInputs({
     ...witnessOptions,
@@ -116,16 +122,8 @@ export const buildFreshRevokedSetNonMembershipInputs = ({
     verifierChallengeHash,
   });
 
-  const protocol: RevokedSetNonMembershipStatusProofProtocol = {
-    ...built.protocol,
-    request,
-  };
-  pureCircuits.assertValidRevokedSetNonMembershipStatusProofProtocol(protocol);
-
   return {
     ...built,
-    request,
-    protocol,
     observedState,
   };
 };
