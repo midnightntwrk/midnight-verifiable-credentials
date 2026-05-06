@@ -345,6 +345,9 @@ export circuit assertAuthorityAttestedStatusProofFreshEnough(
 ): [] {
   assertValidVerifierStatusPolicy(policy);
   assertValidAuthorityAttestedStatusProof(attestation);
+  // Keep the future-time check here so this freshness helper remains safe as a
+  // standalone entrypoint, even though higher-level acceptance circuits also
+  // reach the same guard through `assertAuthorityAttestedStatusProofMatchesRequest`.
   assert(
     currentTime >= attestation.proof.createdAt,
     "Authority-attested status proof creation time cannot be in the future"

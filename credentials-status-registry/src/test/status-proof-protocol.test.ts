@@ -169,7 +169,7 @@ describe("status registry: proof protocols", () => {
     );
   });
 
-  it("accepts an authority-attested status proof bound to the request and capability", () => {
+  it("accepts an authority-attested status proof at the verifier max-age boundary", () => {
     const signer = createSigner("status-authority", 321n);
     const request = {
       registryState: {
@@ -259,9 +259,18 @@ describe("status registry: proof protocols", () => {
         }),
       },
     };
+    const policy = {
+      requireStatus: true,
+      acceptedStatusCapability: StatusCapabilityKind.authorityAttestedStatus,
+      enforceRegistryId: true,
+      acceptedRegistryId: request.registryState.registryId,
+      enforceAttestationMaxAge: true,
+      maxAttestationAge: 50n,
+    };
 
     expect(() =>
-      pureCircuits.assertRegistryBoundStatusBindingMatchesAuthorityAttestedStatusProofProtocol(
+      pureCircuits.assertVerifierStatusPolicyAcceptsAuthorityAttestedStatusProofProtocol(
+        policy,
         binding,
         protocol,
         150n,
