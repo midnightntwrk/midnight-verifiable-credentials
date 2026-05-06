@@ -136,8 +136,8 @@ Midnight Credentials in the current prototype are built in five layers.
 | --- | --- | --- |
 | Layer 1 | reusable generic credential capabilities | `credentials`, `credentials-same-holder` |
 | Layer 2 | concrete credential-family logic | `credentials-birth`, `credentials-birth-secret` in the current workspace; additional families are future or adjacent prototype examples |
-| Layer 3 | business smart-contract behavior | `credentials-demo-contract` |
-| Layer 4 | application orchestration outside Compact | `credentials-protocol`, `credentials-openid`, `credentials-offchain-did`, `standalone-environment` |
+| Layer 3 | concrete verifier and business use-cases | `use-cases/hello-verifier/contract`, `use-cases/age-gate/contract` |
+| Layer 4 | application orchestration, adapters, transports, and integration harnesses | `components/orchestration/protocol`, `protocols/openid`, `components/adapters/offchain-did`, `components/integration/standalone-environment` |
 | Layer 5 | governance and trust policy | abstract future scope for now |
 
 Think of it this way:
@@ -180,39 +180,33 @@ So in the current work:
 | `credentials-birth-secret` | the same birth family, but with hidden holder binding and better privacy |
 | `credentials-iso-registry` | shared numeric ISO code types — countries, currencies, languages, regions, and genders as circuit-friendly integers |
 | `credentials-status-registry` | prototype status/revocation package with a registry contract surface and off-chain builders |
-| `credentials-demo-contract` | a verifier-like business contract that turns successful proof into reusable access capability |
-| `credentials-offchain-did` | off-chain DID-aware adapter helpers for deriving holder-binding values |
-| `credentials-openid` | OpenID-shaped transport/domain schemas for Compact VC/VP payloads |
-| `credentials-protocol` | party-boundary simulation layer with IssuerAgent, HolderAgent, VerifierAgent, and a MessageBus transport seam |
-| `standalone-environment` | shared Docker environment for integration tests — provisions real Midnight DIDs for issuer, holder, and verifier |
+| `use-cases/hello-verifier/contract` | the smallest current verifier contract that checks one typed request against one birth-credential presentation |
+| `use-cases/age-gate/contract` | a richer business use-case package that issues reusable access capabilities from explicit-holder and hidden-holder flows |
+| `use-cases/age-gate/scenarios` | BDD living-documentation scenarios for the concrete age-gate use case |
+| `components/adapters/offchain-did` | off-chain DID-aware adapter helpers for deriving holder-binding values |
+| `protocols/openid` | OpenID-shaped transport/domain schemas for Compact VC/VP payloads |
+| `components/orchestration/protocol` | party-boundary simulation layer with IssuerAgent, HolderAgent, VerifierAgent, and a MessageBus transport seam |
+| `components/integration/standalone-environment` | shared Docker environment for integration tests — provisions real Midnight DIDs for issuer, holder, and verifier |
 
-### Adjacent prototype or future example packages mentioned later
+## Sequential Learning Path Through The Current Prototypes
 
-These examples are still useful for understanding the design space, but they
-are not current workspace packages on `develop` in this repository.
+If you want a low-confusion reading order, use this one.
 
-| Package | Why it appears later in this guide |
-| --- | --- |
-| `credentials-passport` | example of a richer explicit-holder family with mixed public/private claims |
-| `credentials-passport-secret` | example of a richer hidden-holder family with pseudonyms and same-holder composition |
-| `credentials-compliance` | example of policy-heavy verifier use cases such as AML/KYC freshness and thresholds |
+| Step | Start here | What you learn before moving on |
+| --- | --- | --- |
+| 1 | `credentials-birth` | the smallest current concrete credential family with explicit holder binding |
+| 2 | `use-cases/hello-verifier/contract` | the smallest verifier contract that consumes that family |
+| 3 | `use-cases/age-gate/contract/src/demo.compact` | how a business contract turns successful verification into a reusable capability |
+| 4 | `credentials-birth-secret` | hidden holder binding, blinded issuance anchors, pseudonyms, and same-holder composition |
+| 5 | `use-cases/age-gate/contract/src/demo-revocation.compact` | how the current prototype status and revocation path changes verifier requirements |
+| 6 | `use-cases/age-gate/scenarios` | the same flows written as living documentation for integrators |
+| 7 | `components/orchestration/protocol` | how the same families behave when issuer, holder, and verifier are isolated into agents |
+| 8 | `components/integration/standalone-environment` | how the same flows are exercised against a real Midnight stack |
 
-Important repository-state note:
+Practical rule for the rest of this guide:
 
-- the current validated workspace in this repository is centered on the generic
-  core, the birth families, status/revocation prototype surfaces, protocol,
-  demo contract, and standalone environment
-- later examples in this guide may still discuss passport/compliance-style
-  families from adjacent prototype work or future package directions
-- do not read those examples as proof that those families are current workspace
-  packages on `develop`
-
-Reading rule for the rest of this guide:
-
-- when a later example points at `midnight-passport-prototype/...`, read it as
-  adjacent prototype context, not as a package path shipped by this repository
-- when a later example points at a local `credentials-*` package, treat it as
-  current workspace material unless the text says otherwise
+- when a section names a package or use-case path from this list, treat it as current workspace material on `develop`
+- when a section talks about possible future families, treat it as design-space commentary rather than current repository scope
 
 ## Chapter 1: Rita Issues A Very Boring, Very Important Credential
 
@@ -1077,8 +1071,8 @@ So the stored holder-binding data is safer to reuse across later privacy-oriente
 
 Today the repository has a supported reference happy path for this capability:
 
-- blinded-secret issuance through `credentials-protocol`
-- blinded-secret presentation through `credentials-protocol`
+- blinded-secret issuance through `components/orchestration/protocol`
+- blinded-secret presentation through `components/orchestration/protocol`
 - real DID-backed secret-holder integration coverage
 - verifier-scoped pseudonym and same-holder composition built on the same hidden-secret family
 - explicit blinded-secret rejection results in the reference protocol layer for
@@ -1545,7 +1539,7 @@ Mohawk likes this because it proves exactly the relation Vera needs, and no more
 
 Natural language:
 
-- Vera asks Alice to prove that passport credential A and compliance credential B belong to the same hidden holder.
+- Vera asks Alice to prove that secret birth credential A and secret birth credential B belong to the same hidden holder.
 - Alice should not reveal one global DID method to do that.
 
 TypeScript:
@@ -1586,7 +1580,7 @@ The verifier does not automatically learn:
 
 - Alice's long-term public DID method
 - Alice's name
-- Alice's passport number
+- Alice's subject identifier
 
 ### Tests For This Chapter
 
@@ -1622,18 +1616,17 @@ That is a better engineering habit because it tells you exactly what combination
 | hidden-holder flow | Alice proves control using a hidden holder secret instead of a visible DID method | `credentials-birth-secret/src/test/capability-profiles.test.ts` |
 | advanced privacy flow | Alice uses hidden holder binding, a blinded anchor, selective disclosure, verifier pseudonym, and age predicate | `credentials-birth-secret/src/test/capability-profiles.test.ts` |
 | same-holder composition | Alice proves two or three credentials belong to the same hidden holder | `credentials-birth-secret/src/test/same-holder-composition.test.ts` |
+| status-aware hidden-holder flow | Alice satisfies a revocation-aware verifier request with registry-bound status inputs | `credentials-birth-secret/src/test/status.test.ts` |
+| authority-attested status flow | Alice satisfies a freshness-gated status request with an authority-attested status proof | `credentials-birth-secret/src/test/status-attestation.test.ts` |
 
-### Adjacent prototype profiles used later in this guide
+### Current prototype use-cases used later in this guide
 
-These are not current workspace tests on `develop`; they come from adjacent
-prototype work and are used later as design-space examples.
-
-| Profile | What it means in simple words | Test |
+| Surface | What it demonstrates | Test or scenario |
 | --- | --- | --- |
-| passport explicit-holder flow | Alice presents a passport with mixed public/private claims and explicit DID binding | `midnight-passport-prototype/packages/credentials-passport/src/test/capability-profiles.test.ts` |
-| passport predicates | Alice proves age and expiry from a passport without revealing personal data | `midnight-passport-prototype/packages/credentials-passport/src/test/predicates.test.ts` |
-| passport hidden-holder flow | Alice presents a passport with hidden holder binding and verifier pseudonym | `midnight-passport-prototype/packages/credentials-passport-secret/src/test/capability-profiles.test.ts` |
-| passport same-holder composition | Alice proves two or three passport-backed credentials belong to the same hidden holder | `midnight-passport-prototype/packages/credentials-passport-secret/src/test/same-holder-composition.test.ts` |
+| `use-cases/hello-verifier/contract` | smallest verifier contract that consumes the explicit-holder birth family | `use-cases/hello-verifier/contract/src/test/hello-verifier.test.ts` |
+| `use-cases/age-gate/contract` | explicit-holder business contract that mints and consumes an access capability | `use-cases/age-gate/contract/src/test/demo.test.ts` |
+| `use-cases/age-gate/contract/src/demo-revocation.compact` | hidden-holder, status-aware business contract with verifier-supplied-root and authority-attested modes | `use-cases/age-gate/contract/src/test/demo-revocation.test.ts` |
+| `use-cases/age-gate/scenarios` | BDD living documentation for the explicit-holder and hidden-holder age-gate flows | `use-cases/age-gate/scenarios/features/*.feature` |
 
 ### Why This Matters
 
@@ -1897,7 +1890,7 @@ The current reference path still does not give us everything:
   - a revoked-set `MerkleTree`
   - non-membership proof inside the VP
   - no canonical reason/date fields in the first proof model
-- application orchestration is prototyped in `credentials-protocol` but not yet production-hardened
+- application orchestration is prototyped in `components/orchestration/protocol` but not yet production-hardened
 - governance is acknowledged but intentionally abstract
 - more credential families still need to be modeled
 
@@ -1948,7 +1941,7 @@ The registry also provides assertion circuits like `assertCountryEquals(...)` an
 
 ### Where The Codes Land
 
-The ISO types show up in credential claims structs. The passport family uses `CountryCode` for `issuingCountry` and `GenderCode` for gender. The birth family uses `CountryCode` for `birthCountryCode`. The presentation layer — the human-facing app — is responsible for rendering 276 as "Germany" on screen. The circuit layer never needs to know the word.
+The ISO types show up in credential claims structs. The current birth family uses `CountryCode` for `birthCountryCode`. A future family with public issuer-country or gender fields could use `CountryCode` and `GenderCode` with the same circuit-friendly approach. The presentation layer — the human-facing app — is responsible for rendering 276 as "Germany" on screen. The circuit layer never needs to know the word.
 
 Mohawk considers this "the minimum acceptable encoding discipline for a system that intends to survive contact with more than one country."
 
@@ -1956,187 +1949,145 @@ Mohawk considers this "the minimum acceptable encoding discipline for a system t
 
 - `credentials-iso-registry/src/iso-registry/codes.compact`
 
-## Design-Space Appendix Transition
+## Chapter 18: Vera Starts With The Smallest Verifier
 
-Up to this point, the guide has stayed centered on the current validated
-workspace packages in this repository.
+Before Vera adopts a full business contract, she often wants one smaller question answered first:
 
-From the next chapter onward, the guide uses richer passport/compliance-style
-examples to explain the broader architecture and future family expansion.
+- can I verify one credential family against one typed request without dragging in every other concern?
 
-Those chapters are still useful, but read them with the right stance:
+That is exactly what `use-cases/hello-verifier/contract` exists to do.
 
-- they illustrate how the current architecture generalizes
-- they may refer to adjacent prototype repositories
-- they are not evidence that those package families already exist on current
-  `develop` in this repository
+It is the smallest current verifier-side prototype in the repository.
 
-## Chapter 18: Alice Gets a Passport
+### What It Proves
 
-Rita is back. She has a new form, a new stamp, and a new credential family.
+The hello-verifier contract uses the explicit-holder `credentials-birth` family and does four things:
 
-Alice needs a passport credential. It attests to more facts than the birth credential, and it introduces two structural novelties that Mohawk has been waiting for.
+1. builds a typed verifier request with an age threshold
+2. accepts one birth presentation
+3. checks that the presentation satisfies the request
+4. records the accepted credential root and request challenge in ledger state
 
-### What Is Different From Birth
+What it deliberately does not do:
 
-The birth credential was all commitments, all the time. Every claim was hidden behind a Pedersen commitment and revealed only through selective disclosure or predicates.
+- manage issuance state
+- mint reusable business capabilities
+- handle status or revocation
+- simulate an external transport protocol
 
-The passport credential breaks that pattern.
+That is why it is a good first stop after the birth family itself.
 
-It has **mixed public and private claims**:
+### Sequence
 
-| Claim | Type | Visibility |
-| --- | --- | --- |
-| `documentNumberCommitment` | `Bytes<32>` | committed (private) |
-| `issuingCountry` | `CountryCode` | **public** — visible in the credential body |
-| `nationalityCommitment` | `Bytes<32>` | committed (private) |
-| `givenNameCommitment` | `Bytes<32>` | committed (private) |
-| `familyNameCommitment` | `Bytes<32>` | committed (private) |
-| `birthDateCommitment` | `Bytes<32>` | committed (private) |
-| `genderCommitment` | `Bytes<32>` | committed (private) |
-| `expiryDate` | `Uint<32>` | **public** — visible in the credential body |
+```mermaid
+sequenceDiagram
+    participant Vera as Vera
+    participant Alice as Alice
+    participant Contract as Hello Verifier
 
-Two fields are public: `issuingCountry` and `expiryDate`.
+    Vera->>Contract: derive helloVerifierRequest(...)
+    Contract-->>Vera: typed age-threshold request
+    Vera->>Alice: request + verifier challenge
+    Alice->>Alice: build birth presentation locally
+    Alice->>Contract: verifyBirthPresentationForHelloVerifier(...)
+    Contract->>Contract: verify issuer proof, holder proof, request match, and age predicate
+    Contract-->>Vera: record successful verification state
+```
 
-This is a deliberate design choice. The issuing country is not sensitive — it is printed on the cover of the physical passport. The expiry date is operational metadata that verifiers routinely need. Making them public means the verifier can check them directly, without a predicate circuit, without a commitment opening, without any extra witness material.
+### In Plain Words
 
-### The ISO Types In Action
+The contract is saying:
 
-Look at the claims struct and you will see the ISO registry earning its keep:
+- give me a birth credential from the expected issuer
+- give me a presentation that matches this challenge
+- prove the holder satisfies the requested age threshold
+- if all of that checks out, I will record the successful verification
 
-- `issuingCountry` is a `CountryCode` — `Uint<16>` from ISO 3166-1 numeric
-- `nationality` is committed as a `Uint<16>` — same ISO standard, but hidden
-- `gender` is committed as a `Uint<8>` — ISO 5218
-
-The commitment circuits reflect the underlying types. `nationalityCommitment(nationality: Uint<16>, opening: Bytes<32>)` commits a 16-bit integer, not a string. `genderCommitment(gender: Uint<8>, opening: Bytes<32>)` commits an 8-bit integer. Tiny, deterministic, comparison-safe.
-
-### How Rita Issues It
-
-The flow mirrors the birth credential issuance from Chapter 1:
-
-1. Rita collects Alice's passport data
-2. Rita computes commitments for the private claims
-3. Rita computes the claim root from the ordered commitment set
-4. Rita builds the credential envelope with issuer proof
-5. Alice stores the credential
-
-The claim root uses the domain separator `"midnight:vc:passport:v1"` to prevent cross-family collision.
-
-### How Vera Uses It
-
-Vera runs a service that needs three things from Alice:
-
-1. **Nationality disclosure** — reveal the committed nationality value
-2. **Age predicate** — prove age >= 18 without revealing birth date
-3. **Passport not expired** — check that the public expiry date is still valid
-
-This is the first time we see three verification conditions in one request.
-
-The interesting part: the expiry check is almost free. Because `expiryDate` is a public field, Vera can read it directly from the credential body and compare it to the current date. No commitment opening. No witness. No predicate circuit. Just a direct comparison on a `Uint<32>`.
-
-Alice's presentation reveals nationality (276 = Germany) and proves the age threshold. The verifier sees:
-
-- nationality: 276
-- age >= 18: true
-- expiry: valid
-
-The verifier does not see: document number, given name, family name, birth date, gender.
-
-Mohawk approves because: "More predicates. Same privacy. Better verification."
+This is not yet the business story.
+It is the smallest useful verifier story.
 
 ### Tests For This Chapter
 
-- adjacent prototype references:
-  - `midnight-passport-prototype/packages/credentials-passport/src/test/capability-profiles.test.ts`
-  - `midnight-passport-prototype/packages/credentials-passport/src/test/predicates.test.ts`
+- `use-cases/hello-verifier/contract/src/test/hello-verifier.test.ts`
 
-## Chapter 19: Two Use Cases Walk Into a Contract
+## Chapter 19: Two Current Use Cases From The Prototypes
 
-Now that we have two credential families — birth and passport — things get interesting.
+Now we can move from the smallest verifier to the two concrete business flows that the repository currently carries as use-cases.
 
-Real-world verifiers do not care which credential family Alice uses. They care whether the proof satisfies their requirements. So let us look at two concrete use cases from the test strategy that exercise this principle.
+### Use Case 1: Explicit-Holder Age Gate
 
-### Use Case 1: The Nightclub Door
+This is the simplest business composition currently implemented in-tree.
 
-A nightclub in Berlin needs to verify that patrons are 18 or older. The contract does not care whether the patron has a passport, a national ID, or a birth credential. It cares about one predicate: `age >= 18`.
+The flow in `use-cases/age-gate/contract/src/demo.compact` is:
 
-Alice decides to use her passport with secret holder binding. Here is what happens:
+1. the issuer submits an explicit-holder birth credential plus issuer proof
+2. the contract records that credential as one it recognizes
+3. the verifier or caller derives the age-gate request and challenge
+4. the holder builds a presentation locally and submits it
+5. the contract checks issuer proof, holder binding, request alignment, and the private age predicate
+6. on success, the contract issues a reusable access capability
+7. the holder can later claim that capability
 
-1. Alice receives the nightclub's verification request
-2. Alice builds a presentation from her passport credential
-3. The presentation proves `age >= 18` using the committed birth date
-4. The presentation includes a verifier-scoped pseudonym for the nightclub's domain
-5. Alice submits the proof to the nightclub contract
-6. The contract verifies the predicate and issues an entry capability
+This is the first current prototype where credentials clearly stop being the goal and start being an input into application logic.
 
-What the nightclub gets:
+What the contract cares about:
 
-- a "yes, over 18" answer
-- a pairwise pseudonym for counting unique visitors
-- a capability token for the door scanner
+- was the credential issued under the expected issuer surface?
+- does the presentation satisfy the typed request?
+- is the holder old enough?
 
-What the nightclub does not get:
+What the contract does not need:
 
-- Alice's name
-- Alice's birthday
-- Alice's nationality
-- Alice's document number
-- Alice's gender
-- any identifier that works outside the nightclub's domain
+- Alice's raw birth date
+- Alice's full identity
+- any off-chain transport assumptions
 
-The pseudonym is scoped to the nightclub's verifier domain. If Alice visits a different club next week, that club gets a different pseudonym. Neither club can correlate her to the other.
+### Use Case 2: Hidden-Holder Revocation-Aware Age Gate
 
-Mohawk: "Two different credential families. Same verifier requirement. Same answer."
+The second current use-case raises the difficulty in a way that matters architecturally.
 
-The nightclub contract could accept a birth credential with the exact same interface. The verifier requirement is family-agnostic. The predicate is family-agnostic. Only the witness preparation differs, and that happens on Alice's side, locally, before the proof reaches the contract.
+In `use-cases/age-gate/contract/src/demo-revocation.compact`, the holder uses the hidden-holder birth family and the verifier must also reason about status.
 
-### Use Case 2: The DeFi Onboarding
+The flow is:
 
-A DeFi lending contract is pickier. It needs two things from two different issuers:
+1. the issuer submits a hidden-holder birth credential plus issuer proof
+2. the verifier chooses a registry state and verification mode
+3. the holder builds a hidden-holder presentation plus status-aware submission inputs
+4. the contract checks request alignment, hidden holder binding, age predicate, and status inputs
+5. if the status mode is authority-attested, the contract also checks expiration and verifier freshness windows
+6. on success, the contract issues a reusable revocation-aware capability
 
-1. **Passport**: nationality disclosure (to check jurisdiction eligibility)
-2. **AML/KYC Compliance**: status disclosure + risk score predicate + freshness check
+This use-case currently supports two transitional verifier modes:
 
-And — critically — both credentials must belong to the same hidden holder.
+- verifier-supplied root
+- authority-attested status proof
 
-This is the first cross-family same-holder composition. Alice proves:
+That is useful, but Mohawk would immediately add the caveat:
 
-1. Nationality from her passport (issued by the passport authority)
-2. AML compliance status from her compliance credential (issued by a KYC provider)
-3. That both credentials are bound to the same hidden holder secret
+- this is still prototype status machinery, not the final in-circuit live-root non-membership contract
 
-The same-holder proof works exactly as described in Chapter 10. Both credential presentations share the same verifier challenge. Both holder bindings are checked against the same hidden holder secret witness. The `assertSameBlindedSecretHolderBindingWitnesses(...)` circuit from `credentials-same-holder` does the heavy lifting.
+So the right mental model is:
 
-What the DeFi contract gets:
+- the VC-side status binding is now real and shared
+- the current verifier/business flow is good enough to exercise trust boundaries
+- the final cryptographic revocation contract is still an active maturity track
 
-- nationality: 276 (Germany — eligible jurisdiction)
-- AML status: passing
-- risk score: below threshold
-- same-holder proof: verified
-- a verifier-scoped pseudonym for the DeFi domain
+### Where These Use Cases Live As Code And Living Docs
 
-What the DeFi contract does not get:
+| Surface | Why it matters |
+| --- | --- |
+| `use-cases/age-gate/contract/src/demo.compact` | explicit-holder business verifier and capability issuance |
+| `use-cases/age-gate/contract/src/demo-revocation.compact` | hidden-holder, status-aware business verifier |
+| `use-cases/age-gate/contract/src/test/demo.test.ts` | executable explicit-holder age-gate story |
+| `use-cases/age-gate/contract/src/test/demo-revocation.test.ts` | executable hidden-holder status-aware story |
+| `use-cases/age-gate/scenarios/features/age_gate_happy_path.feature` | BDD live documentation for the explicit-holder flow |
+| `use-cases/age-gate/scenarios/features/hidden_holder_age_gate_happy_path.feature` | BDD live documentation for the hidden-holder status-aware flow |
 
-- Alice's name
-- Alice's document number
-- Alice's birth date
-- Alice's gender
-- the identity of the KYC provider (beyond the issuer proof)
-- any cross-domain tracking handle
+The important separation is now explicit:
 
-Different issuers. Different credential types. One hidden holder secret. One verifier challenge. Zero identity leakage.
-
-Mohawk: "That is the whole point of composable credentials. Not one giant bundle. Not one universal format. Just small capabilities that compose when the verifier asks for composition."
-
-### Where These Use Cases Are Defined
-
-Both use cases are specified in [`../testing/test-strategy.md`](../testing/test-strategy.md)
-as future design-space examples: UC-1 (Age-Gated Venue Access) and UC-2
-(Cross-Border Financial Onboarding). They help explain the full configuration
-dimensions — credential family, holder binding profile, disclosures,
-predicates, pseudonym, same-holder composition, and verifier mode — but they
-are not the authoritative current test inventory for this repository. Use
-[`../testing/test-matrix.md`](../testing/test-matrix.md) for that.
+- prototype families prove capability shapes
+- use-case packages prove business composition
+- BDD scenarios live with the use-case because they are documentation for the business flow, not low-level circuit tests
 
 ## Chapter 20: The Protocol Layer
 
@@ -2165,7 +2116,7 @@ They show up in the integration layer, which is exactly where most SSI systems g
 
 ### The Agent Model
 
-`credentials-protocol` introduces three agent types:
+`components/orchestration/protocol` introduces three agent types:
 
 | Agent | What it does |
 | --- | --- |
@@ -2330,7 +2281,7 @@ Those are different claims.
 
 ### What The Standalone Environment Provides
 
-The `standalone-environment` package spins up a Docker-based Midnight stack:
+The `components/integration/standalone-environment` package spins up a Docker-based Midnight stack:
 
 - a Midnight node
 - an indexer
@@ -2344,7 +2295,7 @@ In the standalone environment, DIDs are provisioned on a real ledger, which mean
 
 ### How It Connects To The Protocol Agents
 
-The integration tests use the same `IssuerAgent`, `HolderAgent`, and `VerifierAgent` from `credentials-protocol`.
+The integration tests use the same `IssuerAgent`, `HolderAgent`, and `VerifierAgent` from `components/orchestration/protocol`.
 The only difference is the profile: real DID documents backed by on-ledger resolution instead of simulated identities.
 
 That is the whole trick.
@@ -2637,48 +2588,50 @@ Mohawk approves of this because it is the rare architectural plan that is both:
 
 ## Where To Start In The Code
 
-If you want the shortest path:
+If you want the shortest path through the current repository, use this sequence.
 
 1. `credentials/src/credentials.compact`
-   - generic VC/VP model, proof contexts, holder-binding primitives
+   - generic VC/VP model, proof contexts, and holder-binding primitives
 2. `credentials/src/test/proof-context.test.ts`
    - proof basics and domain separation
-3. `credentials/src/test/secret-holder-binding.test.ts`
-   - hidden-holder basics and blinded variants
-4. `credentials-same-holder/src/same-holder.compact`
-   - the reusable same-holder capability
-5. `credentials-same-holder/src/test/same-holder-capability.test.ts`
-   - same-holder in isolation
-6. `credentials-birth/src/birth-credential.compact`
+3. `credentials-birth/src/birth-credential.compact`
    - explicit-holder birth family
-7. `credentials-birth/src/test/capability-profiles.test.ts`
+4. `credentials-birth/src/test/capability-profiles.test.ts`
    - explicit-holder family profiles
-8. `credentials-birth-secret/src/secret-birth-credential.compact`
-   - privacy-oriented birth family
-9. `credentials-birth-secret/src/test/capability-profiles.test.ts`
-   - hidden-holder profiles
-10. `credentials-birth-secret/src/test/same-holder-composition.test.ts`
+5. `use-cases/hello-verifier/contract/src/hello-verifier.compact`
+   - smallest current verifier contract
+6. `use-cases/hello-verifier/contract/src/test/hello-verifier.test.ts`
+   - minimal verifier request and verification flow
+7. `use-cases/age-gate/contract/src/demo.compact`
+   - explicit-holder age-gate business composition
+8. `use-cases/age-gate/contract/src/test/demo.test.ts`
+   - explicit-holder capability issuance and claim flow
+9. `credentials-birth-secret/src/secret-birth-credential.compact`
+   - hidden-holder birth family
+10. `credentials-birth-secret/src/test/capability-profiles.test.ts`
+   - hidden-holder base profiles
+11. `credentials-birth-secret/src/test/same-holder-composition.test.ts`
    - same-holder composition in a real family
-11. `credentials-iso-registry/src/iso-registry/codes.compact`
-   - shared ISO code types
-12. `midnight-passport-prototype/packages/credentials-passport/src/passport-credential/claims.compact`
-   - passport claims with ISO types
-13. `midnight-passport-prototype/packages/credentials-passport/src/test/predicates.test.ts`
-   - passport predicates: age and expiry
-14. `midnight-passport-prototype/packages/credentials-passport-secret/src/test/same-holder-composition.test.ts`
-   - same-holder composition with passport credentials
-15. `use-cases/age-gate/contract/src/demo.compact`
-   - business contract composition
-16. `use-cases/age-gate/contract/src/test/demo.test.ts`
-   - the end-to-end business story
-17. `components/orchestration/protocol/src/test/explicit-holder/issuance.test.ts`
-   - protocol-level issuance with party boundaries
-18. `components/orchestration/protocol/src/test/secret-holder/same-holder.test.ts`
-   - same-holder composition through the protocol layer
+12. `credentials-birth-secret/src/test/status-binding-commitment.test.ts`
+   - issuer-signed status-binding commitment in the family wrapper proof
+13. `credentials-birth-secret/src/test/status.test.ts`
+   - verifier-supplied-root status-aware verification
+14. `credentials-birth-secret/src/test/status-attestation.test.ts`
+   - authority-attested status-aware verification
+15. `use-cases/age-gate/contract/src/demo-revocation.compact`
+   - hidden-holder revocation-aware business composition
+16. `use-cases/age-gate/contract/src/test/demo-revocation.test.ts`
+   - status-aware capability issuance and freshness behavior
+17. `use-cases/age-gate/scenarios/features/age_gate_happy_path.feature`
+   - BDD live documentation for the explicit-holder path
+18. `use-cases/age-gate/scenarios/features/hidden_holder_age_gate_happy_path.feature`
+   - BDD live documentation for the hidden-holder status-aware path
 19. `components/orchestration/protocol/src/test/contract-verifier/age-gate.test.ts`
-   - contract verifier age-gate through the protocol layer
+   - contract-verifier age-gate through isolated agents
 20. `components/orchestration/protocol/src/test/integration/explicit-holder-lifecycle.integration.test.ts`
-   - integration test with real Midnight DIDs (requires Docker)
+   - protocol flow against real Midnight-backed infrastructure (requires Docker)
+21. `tooling/scripts/scaffold-vc-family.mjs`
+   - starter scaffold when you want to create the next family without inventing the package layout from scratch
 
 ## Final Mental Model
 
