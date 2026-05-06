@@ -4,6 +4,7 @@ import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { describe, expect, it } from "vitest";
 
 import {
+  buildRevokedSetNonMembershipInputs,
   buildRevokedSetStatusWitness,
   deriveRevokedSetStatusHandle,
   StatusCapabilityKind,
@@ -69,6 +70,73 @@ describe("revoked-set witness builder", () => {
     expect(built.witnessInput.registryState.revokedRoot).toEqual(
       bytes32("revoked-root:current"),
     );
+  });
+
+  it("builds the canonical revoked-set request, binding, witness, and protocol bundle", () => {
+    const built = buildRevokedSetNonMembershipInputs({
+      credentialClaimRoot: bytes32("credential-root:alice"),
+      registryRef: {
+        registryId: bytes32("registry:hidden-holder"),
+        authorityVerificationMethodRef,
+      },
+      issuerStatusSalt: bytes32("issuer-salt:alpha"),
+      statusHandleOpening: bytes32("status-opening:alpha"),
+      registryState: {
+        registryId: bytes32("registry:hidden-holder"),
+        revokedRoot: bytes32("revoked-root:current"),
+      },
+      verifierChallengeHash: bytes32("challenge:status"),
+      verifierStatusPolicy: {
+        requireStatus: true,
+        acceptedStatusCapability: StatusCapabilityKind.revokedSetNonMembership,
+        enforceRegistryId: true,
+        acceptedRegistryId: bytes32("registry:hidden-holder"),
+        enforceAttestationMaxAge: false,
+        maxAttestationAge: 0n,
+      },
+      revokedStatusHandles: [bytes32("revoked-handle:someone-else")],
+    });
+
+    expect(built.request.registryState.revokedRoot).toEqual(
+      bytes32("revoked-root:current"),
+    );
+    expect(built.protocol.request.verifierChallengeHash).toEqual(
+      bytes32("challenge:status"),
+    );
+    expect(built.protocol.witnessInput.statusHandle).toEqual(
+      built.statusHandle,
+    );
+    expect(built.statusBinding.statusHandleCommitment).toEqual(
+      built.statusCapability.statusHandleCommitment,
+    );
+  });
+
+  it("rejects the canonical revoked-set bundle when verifier policy expects another registry", () => {
+    expect(() =>
+      buildRevokedSetNonMembershipInputs({
+        credentialClaimRoot: bytes32("credential-root:alice"),
+        registryRef: {
+          registryId: bytes32("registry:hidden-holder"),
+          authorityVerificationMethodRef,
+        },
+        issuerStatusSalt: bytes32("issuer-salt:alpha"),
+        statusHandleOpening: bytes32("status-opening:alpha"),
+        registryState: {
+          registryId: bytes32("registry:hidden-holder"),
+          revokedRoot: bytes32("revoked-root:current"),
+        },
+        verifierChallengeHash: bytes32("challenge:status"),
+        verifierStatusPolicy: {
+          requireStatus: true,
+          acceptedStatusCapability:
+            StatusCapabilityKind.revokedSetNonMembership,
+          enforceRegistryId: true,
+          acceptedRegistryId: bytes32("registry:other"),
+          enforceAttestationMaxAge: false,
+          maxAttestationAge: 0n,
+        },
+      }),
+    ).toThrow(/registry id does not match/i);
   });
 
   it("rejects a snapshot that already lists the derived handle as revoked", () => {
