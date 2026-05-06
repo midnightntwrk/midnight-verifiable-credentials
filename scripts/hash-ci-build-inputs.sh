@@ -24,16 +24,10 @@ package_inputs=(
   credentials-protocol
 )
 
-script_inputs=(
-  scripts/ensure-midnight-did-package-aliases.mjs
-  scripts/ensure-midnight-did-api-paths.mjs
-  scripts/ensure-compact-package-aliases.mjs
-)
-
 include_file() {
   local path="$1"
   case "$path" in
-    *.md|review/*|*/coverage/*|*/dist/*|*/reports/*|*/src/test/*)
+    *.md|review/*|*/coverage/*|*/dist/*|*/reports/*|*/src/managed/*|*/src/test/*)
       return 1
       ;;
     *)
@@ -44,7 +38,7 @@ include_file() {
 
 inputs=()
 
-for path in "${root_inputs[@]}" "${script_inputs[@]}"; do
+for path in "${root_inputs[@]}"; do
   if [[ -f "$ROOT_DIR/$path" ]]; then
     inputs+=("$path")
   fi
@@ -54,6 +48,11 @@ while IFS= read -r -d '' path; do
   include_file "$path" || continue
   inputs+=("$path")
 done < <(git -C "$ROOT_DIR" ls-files -z -- "${package_inputs[@]}")
+
+while IFS= read -r -d '' path; do
+  include_file "$path" || continue
+  inputs+=("$path")
+done < <(git -C "$ROOT_DIR" ls-files -z -- scripts)
 
 if [[ ${#inputs[@]} -eq 0 ]]; then
   echo "[hash-ci-build-inputs] No build inputs found" >&2

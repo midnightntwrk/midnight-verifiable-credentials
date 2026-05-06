@@ -30,9 +30,16 @@ for relative_path in "${required_paths[@]}"; do
     exit 1
   fi
 
-  if [[ -d "$absolute_path" ]] && [[ -z "$(find "$absolute_path" -mindepth 1 -print -quit)" ]]; then
-    echo "[verify-ci-build-outputs] Empty directory: $relative_path" >&2
-    exit 1
+  if [[ -d "$absolute_path" ]]; then
+    if [[ -z "$(find "$absolute_path" -type f -print -quit)" ]]; then
+      echo "[verify-ci-build-outputs] Directory has no files: $relative_path" >&2
+      exit 1
+    fi
+
+    if [[ "$relative_path" == */src/managed ]] && [[ -z "$(find "$absolute_path" -path '*/compiler/contract-info.json' -print -quit)" ]]; then
+      echo "[verify-ci-build-outputs] Missing compiler metadata in: $relative_path" >&2
+      exit 1
+    fi
   fi
 done
 
