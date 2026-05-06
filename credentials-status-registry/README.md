@@ -67,10 +67,17 @@ Current scope:
 
 Nonce requirement for authority-attested proofs:
 
-- `signAuthorityAttestedStatusProof(...)` currently expects the caller to supply
-  a fresh JubJub subgroup nonce scalar in `[1, JUBJUB_SUBGROUP_ORDER)`
-- callers must not reuse or bias that nonce
-- nonce generation policy is still application-side in the current prototype
+- `signAuthorityAttestedStatusProof(...)` now derives a deterministic JubJub
+  subgroup nonce scalar from:
+  - the attestation statement
+  - signer verification-method identity
+  - signer secret key
+  - `createdAt`
+- this is now the default safe helper path
+- the low-level escape hatch is
+  `unsafeSignAuthorityAttestedStatusProofWithNonceScalar(...)`
+- callers should treat that unsafe override as test-only or tightly controlled
+  integration glue rather than a normal application path
 
 This package does not yet implement privacy-preserving non-membership verification inside Compact. It provides the authoritative state surface that status-aware VC/VP flows can anchor to.
 

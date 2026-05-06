@@ -11,7 +11,9 @@ import {
   buildAuthorityAttestedStatusRequest,
   buildAuthorityAttestedStatusStatement,
   buildRegistryBoundStatusBinding,
+  deriveAuthorityAttestedStatusProofNonceScalar,
   signAuthorityAttestedStatusProof,
+  unsafeSignAuthorityAttestedStatusProofWithNonceScalar,
 } from "../index.js";
 
 setNetworkId("undeployed");
@@ -67,7 +69,6 @@ describe("authority-attested status builder", () => {
       statement,
       signer: authoritySigner,
       createdAt: 100n,
-      nonceScalar: 17n,
     });
 
     expect(attestation.statement.verifierChallengeHash).toEqual(
@@ -102,7 +103,6 @@ describe("authority-attested status builder", () => {
       statement,
       signer: authoritySigner,
       createdAt: 100n,
-      nonceScalar: 19n,
     });
     const protocol = buildAuthorityAttestedStatusProofProtocol({
       request,
@@ -117,7 +117,64 @@ describe("authority-attested status builder", () => {
     );
   });
 
-  it("rejects an out-of-range nonce scalar", () => {
+  it("derives a deterministic nonce scalar for the same attestation input", () => {
+    const request = buildAuthorityAttestedStatusRequest({
+      registryState: {
+        registryId: bytes32("registry:hidden-holder"),
+        revokedRoot: bytes32("revoked-root:current"),
+      },
+      verifierChallengeHash: bytes32("challenge:status"),
+    });
+    const statement = buildAuthorityAttestedStatusStatement({
+      request,
+      statusHandleCommitment: bytes32("status-handle-commitment"),
+      expiresAt: 200n,
+    });
+
+    const first = deriveAuthorityAttestedStatusProofNonceScalar({
+      statement,
+      signer: authoritySigner,
+      createdAt: 100n,
+    });
+    const second = deriveAuthorityAttestedStatusProofNonceScalar({
+      statement,
+      signer: authoritySigner,
+      createdAt: 100n,
+    });
+
+    expect(first).toEqual(second);
+    expect(first).toBeGreaterThan(0n);
+  });
+
+  it("changes the derived nonce scalar when the attestation context changes", () => {
+    const request = buildAuthorityAttestedStatusRequest({
+      registryState: {
+        registryId: bytes32("registry:hidden-holder"),
+        revokedRoot: bytes32("revoked-root:current"),
+      },
+      verifierChallengeHash: bytes32("challenge:status"),
+    });
+    const statement = buildAuthorityAttestedStatusStatement({
+      request,
+      statusHandleCommitment: bytes32("status-handle-commitment"),
+      expiresAt: 200n,
+    });
+
+    const first = deriveAuthorityAttestedStatusProofNonceScalar({
+      statement,
+      signer: authoritySigner,
+      createdAt: 100n,
+    });
+    const second = deriveAuthorityAttestedStatusProofNonceScalar({
+      statement,
+      signer: authoritySigner,
+      createdAt: 101n,
+    });
+
+    expect(first).not.toEqual(second);
+  });
+
+  it("rejects an out-of-range unsafe nonce scalar override", () => {
     const request = buildAuthorityAttestedStatusRequest({
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
@@ -131,7 +188,7 @@ describe("authority-attested status builder", () => {
     });
 
     expect(() =>
-      signAuthorityAttestedStatusProof({
+      unsafeSignAuthorityAttestedStatusProofWithNonceScalar({
         statement,
         signer: authoritySigner,
         createdAt: 100n,
