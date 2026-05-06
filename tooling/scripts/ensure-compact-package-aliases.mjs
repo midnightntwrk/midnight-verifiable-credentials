@@ -14,7 +14,7 @@ const aliases = [
   ['midnight-did-credentials-status-registry', 'credentials-status-registry'],
   ['midnight-did-credentials-openid', 'protocols/openid'],
   ['midnight-did-credentials-protocol', 'components/orchestration/protocol'],
-  ['midnight-did-credentials-demo-contract', 'credentials-demo-contract']
+  ['midnight-did-credentials-demo-contract', 'use-cases/age-gate/contract']
 ];
 
 for (const [alias, targetDir] of aliases) {

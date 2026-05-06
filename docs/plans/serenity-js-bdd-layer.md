@@ -78,7 +78,7 @@ This keeps the first layer:
 
 ### Phase 1
 
-- create `vc-bdd-scenarios/`
+- create `use-cases/age-gate/scenarios/`
 - add Serenity/JS + Cucumber + TypeScript wiring
 - add one small happy-path scenario
 - add one repository command to run it

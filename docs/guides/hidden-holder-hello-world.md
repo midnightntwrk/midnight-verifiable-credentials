@@ -22,7 +22,7 @@ On-chain roots:
 
 - `credentials/src/credentials/composable.compact`
 - `credentials-birth-secret/src/secret-birth-credential.compact`
-- optional: `credentials-demo-contract/src/demo-revocation.compact` as the
+- optional: `use-cases/age-gate/contract/src/demo-revocation.compact` as the
   status-aware reference
 
 Off-chain helpers:
@@ -104,7 +104,7 @@ If you also need revocation/status today:
 
 The best current contract reference is:
 
-- `credentials-demo-contract/src/demo-revocation.compact`
+- `use-cases/age-gate/contract/src/demo-revocation.compact`
 
 ## On-chain / off-chain split
 
@@ -126,4 +126,4 @@ Off-chain:
 1. `credentials-birth-secret/README.md`
 2. `docs/guides/integration-surface-map.md`
 3. `docs/spec/status-verification-protocol.md` if you need status-aware flows
-4. `credentials-demo-contract/README.md` for business-contract examples
+4. `use-cases/age-gate/contract/README.md` for business-contract examples

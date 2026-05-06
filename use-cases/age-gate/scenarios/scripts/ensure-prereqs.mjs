@@ -3,7 +3,13 @@ import { spawn } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
+const repoRoot = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "..",
+  "..",
+  "..",
+  "..",
+);
 const requiredBuildSurfaces = [
   {
     artifactPath: "credentials/dist/index.js",
@@ -18,17 +24,17 @@ const requiredBuildSurfaces = [
     sourcePaths: ["credentials-birth-secret/src/index.ts"],
   },
   {
-    artifactPath: "credentials-demo-contract/dist/testing.js",
+    artifactPath: "use-cases/age-gate/contract/dist/testing.js",
     sourcePaths: [
-      "credentials-demo-contract/src/testing.ts",
-      "credentials-demo-contract/src/demo-revocation-fixtures.ts",
+      "use-cases/age-gate/contract/src/testing.ts",
+      "use-cases/age-gate/contract/src/demo-revocation-fixtures.ts",
     ],
   },
   {
-    artifactPath: "credentials-demo-contract/dist/contract-revocation.js",
+    artifactPath: "use-cases/age-gate/contract/dist/contract-revocation.js",
     sourcePaths: [
-      "credentials-demo-contract/src/contract-revocation.ts",
-      "credentials-demo-contract/src/demo-revocation.compact",
+      "use-cases/age-gate/contract/src/contract-revocation.ts",
+      "use-cases/age-gate/contract/src/demo-revocation.compact",
     ],
   },
 ];

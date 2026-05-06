@@ -325,7 +325,7 @@ Required outcome:
   - current workspace packages
   - sibling or adjacent prototype repos
   - future roadmap examples
-- `credentials-demo-contract/src/passport-compliance-demo.compact` is labeled as
+- `prototypes/passport-compliance/reference/passport-compliance-demo.compact` is labeled as
   adjacent-prototype/example material rather than current validated workspace
 
 Current grouped execution:
@@ -434,7 +434,7 @@ Required outcome:
 Current grouped execution:
 
 - replace the discarded JVM Serenity prototype with:
-  - `vc-bdd-scenarios/`
+  - `use-cases/age-gate/scenarios/`
   - Cucumber.js
   - Serenity/JS
   - TypeScript

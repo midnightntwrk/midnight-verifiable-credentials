@@ -46,7 +46,7 @@ Current validated CI shape:
 - boundary hygiene runs inside `ci:lint` through `check:package-boundaries`
 - the current revocation/status slice also has a focused `ci:revocation` lane
 - living-documentation scenarios now have a separate TypeScript BDD lane shape
-  under `vc-bdd-scenarios/`; this is not a docs-only change class and should be
+  under `use-cases/age-gate/scenarios/`; this is not a docs-only change class and should be
   treated as code
 - CI change classes are mutually exclusive:
   - `docs_only` for markdown/docs-only diffs
@@ -223,7 +223,11 @@ Current repository stance:
 ## Serenity/JS BDD Layer
 
 The repository now also carries a TypeScript BDD layer under
-`vc-bdd-scenarios/`.
+`use-cases/age-gate/scenarios/`.
+
+Workspace package name:
+
+- `vc-bdd-scenarios`
 
 Purpose:
 

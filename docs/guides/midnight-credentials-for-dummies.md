@@ -1778,7 +1778,7 @@ sequenceDiagram
 
 ### What The Demo Contract Circuits Are Actually Doing
 
-In `credentials-demo-contract/src/demo.compact`:
+In `use-cases/age-gate/contract/src/demo.compact`:
 
 - `ageGateRequest(...)`
 - `verifyBirthPresentation(...)`
@@ -1801,7 +1801,7 @@ This is the important architectural point:
 
 ### Tests For This Chapter
 
-- `credentials-demo-contract/src/test/demo.test.ts`
+- `use-cases/age-gate/contract/src/test/demo.test.ts`
 
 ## Chapter 14: How Capabilities Compose
 
@@ -2667,9 +2667,9 @@ If you want the shortest path:
    - passport predicates: age and expiry
 14. `midnight-passport-prototype/packages/credentials-passport-secret/src/test/same-holder-composition.test.ts`
    - same-holder composition with passport credentials
-15. `credentials-demo-contract/src/demo.compact`
+15. `use-cases/age-gate/contract/src/demo.compact`
    - business contract composition
-16. `credentials-demo-contract/src/test/demo.test.ts`
+16. `use-cases/age-gate/contract/src/test/demo.test.ts`
    - the end-to-end business story
 17. `components/orchestration/protocol/src/test/explicit-holder/issuance.test.ts`
    - protocol-level issuance with party boundaries

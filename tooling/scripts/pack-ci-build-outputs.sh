@@ -17,8 +17,8 @@ paths=(
   credentials-birth/dist
   credentials-birth-secret/src/managed
   credentials-birth-secret/dist
-  credentials-demo-contract/src/managed
-  credentials-demo-contract/dist
+  use-cases/age-gate/contract/src/managed
+  use-cases/age-gate/contract/dist
   components/adapters/offchain-did/dist
   protocols/openid/dist
   components/orchestration/protocol/dist

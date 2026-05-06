@@ -2,7 +2,7 @@ pragma language_version >= 0.20;
 
 import CompactStandardLibrary;
 
-include "../../credentials-birth/src/birth-credential";
+include "../../../../credentials-birth/src/birth-credential";
 
 export enum AccessDecision {
   noDecision,

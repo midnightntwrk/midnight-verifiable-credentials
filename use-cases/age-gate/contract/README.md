@@ -1,14 +1,14 @@
 # @midnight-ntwrk/midnight-did-credentials-demo-contract
 
-Demo business contract for the Compact-first VC/VP prototype.
+Concrete age-gate business contract for the Compact-first VC/VP prototype.
 
 Status:
 
-- prototype
+- prototype use-case contract
 
 Tier:
 
-- Layer 3 demo / prototype package
+- use-case contract package
 
 Dependency direction:
 
@@ -27,26 +27,26 @@ Surface classification:
 
 Start here:
 
-1. use this package as a demo/business-contract consumer of the VC/VP stack
+1. use this package as a concrete age-gate/business-contract consumer of the VC/VP stack
 2. do not treat it as the canonical generic API surface; start from
-   [`../credentials`](../credentials) and the relevant family package first
-3. read [`../docs/guides/integration-surface-map.md`](../docs/guides/integration-surface-map.md)
+   [`../../../credentials`](../../../credentials) and the relevant family package first
+3. read [`../../../docs/guides/integration-surface-map.md`](../../../docs/guides/integration-surface-map.md)
    before copying demo patterns into production contracts
 
 Related docs:
 
-- spec: [`../docs/spec/midnight-credentials.md`](../docs/spec/midnight-credentials.md)
-- conformance: [`../docs/spec/conformance.md`](../docs/spec/conformance.md)
-- companion guide: [`../docs/guides/midnight-credentials-for-dummies.md`](../docs/guides/midnight-credentials-for-dummies.md)
-- test matrix: [`../docs/testing/test-matrix.md`](../docs/testing/test-matrix.md)
+- spec: [`../../../docs/spec/midnight-credentials.md`](../../../docs/spec/midnight-credentials.md)
+- conformance: [`../../../docs/spec/conformance.md`](../../../docs/spec/conformance.md)
+- companion guide: [`../../../docs/guides/midnight-credentials-for-dummies.md`](../../../docs/guides/midnight-credentials-for-dummies.md)
+- test matrix: [`../../../docs/testing/test-matrix.md`](../../../docs/testing/test-matrix.md)
 
 ## Purpose
 
 This package sits above two layers:
 
-- [`../credentials`](../credentials): generic VC/VP envelope and proof core
-- [`../credentials-birth`](../credentials-birth): birth-credential specialization
-- [`../credentials-birth-secret`](../credentials-birth-secret): hidden-holder birth-credential specialization with prototype status-aware verification
+- [`../../../credentials`](../../../credentials): generic VC/VP envelope and proof core
+- [`../../../credentials-birth`](../../../credentials-birth): birth-credential specialization
+- [`../../../credentials-birth-secret`](../../../credentials-birth-secret): hidden-holder birth-credential specialization with prototype status-aware verification
 
 The package currently contains two demo contract roots:
 
@@ -58,11 +58,12 @@ The package currently contains two demo contract roots:
      - prototype revoked-set status capability wiring
      - prototype authority-attested status proofs for the current Layer 3 path
 
-Historical dormant artifact:
+Dormant adjacent prototype:
 
-- `src/passport-compliance-demo.compact` remains in the tree as an
-  architecture/prototyping reference tied to a sibling prototype checkout
-- it is not part of the supported `credentials-demo-contract` package surface
+- [`../../../prototypes/passport-compliance/reference/passport-compliance-demo.compact`](../../../prototypes/passport-compliance/reference/passport-compliance-demo.compact)
+  is preserved as an architecture/prototyping reference tied to a sibling
+  prototype checkout
+- it is intentionally separated from this concrete age-gate use-case package
 - it is not compiled by the default package scripts
 - it is not exported through the package `exports` map
 
@@ -127,6 +128,6 @@ Layer 3 surface while avoiding unnecessary proof-key generation cost.
 
 ## Build and test
 
-- Compile Compact artifacts: `npm run contract -w credentials-demo-contract`
-- Build TS exports: `npm run build -w credentials-demo-contract`
-- Run tests: `npm test -w credentials-demo-contract`
+- Compile Compact artifacts: `npm run contract -w use-cases/age-gate/contract`
+- Build TS exports: `npm run build -w use-cases/age-gate/contract`
+- Run tests: `npm test -w use-cases/age-gate/contract`

@@ -86,7 +86,7 @@ jobs:
           # Keep these pattern sets in sync with the heavy lane jobs below.
           global_heavy_lane_patterns=(
             '.github/workflows/*'
-            'infrastructure/*'
+            'components/integration/infrastructure/*'
             'libs/*'
             'package.json'
             'package-lock.json'
@@ -105,14 +105,14 @@ jobs:
             'credentials-same-holder/*'
             'credentials-birth/*'
             'credentials-birth-secret/*'
-            'credentials-demo-contract/*'
+            'use-cases/*/contract/*'
           )
 
           integration_demo_contract_patterns=(
             'credentials/*'
             'credentials-birth/*'
             'credentials-birth-secret/*'
-            'credentials-demo-contract/*'
+            'use-cases/*/contract/*'
             'components/integration/standalone-environment/*'
           )
 
@@ -121,7 +121,7 @@ jobs:
             'credentials-same-holder/*'
             'credentials-birth/*'
             'credentials-birth-secret/*'
-            'credentials-demo-contract/*'
+            'use-cases/*/contract/*'
             'components/orchestration/protocol/*'
             'components/integration/standalone-environment/*'
           )
@@ -137,7 +137,7 @@ jobs:
             esac
 
             case "$file" in
-              vc-bdd-scenarios/*|docs/plans/serenity-js-bdd-layer.md|docs/testing/test-strategy.md|docs/testing/test-matrix.md|docs/README.md|package.json|package-lock.json|run.sh|run-credentials.sh)
+              use-cases/*/scenarios/*|docs/plans/serenity-js-bdd-layer.md|docs/testing/test-strategy.md|docs/testing/test-matrix.md|docs/README.md|package.json|package-lock.json|run.sh|run-credentials.sh)
                 ;;
               *)
                 bdd_only=false
@@ -145,7 +145,7 @@ jobs:
             esac
 
             case "$file" in
-              vc-bdd-scenarios/*|docs/plans/serenity-js-bdd-layer.md|run.sh|run-credentials.sh)
+              use-cases/*/scenarios/*|docs/plans/serenity-js-bdd-layer.md|run.sh|run-credentials.sh)
                 bdd_related=true
                 ;;
             esac
@@ -337,8 +337,8 @@ jobs:
             credentials-birth/dist
             credentials-birth-secret/src/managed
             credentials-birth-secret/dist
-            credentials-demo-contract/src/managed
-            credentials-demo-contract/dist
+            use-cases/age-gate/contract/src/managed
+            use-cases/age-gate/contract/dist
             components/adapters/offchain-did/dist
             protocols/openid/dist
             components/orchestration/protocol/dist
@@ -431,8 +431,8 @@ jobs:
             credentials-birth/dist
             credentials-birth-secret/src/managed
             credentials-birth-secret/dist
-            credentials-demo-contract/src/managed
-            credentials-demo-contract/dist
+            use-cases/age-gate/contract/src/managed
+            use-cases/age-gate/contract/dist
             components/adapters/offchain-did/dist
             protocols/openid/dist
             components/orchestration/protocol/dist

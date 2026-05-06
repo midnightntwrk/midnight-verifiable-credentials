@@ -38,7 +38,7 @@ if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
 elif docker info >/dev/null 2>&1; then
   run_credentials_integration_target \
     "Standalone demo-contract integration" \
-    npm run test:integration -w credentials-demo-contract
+    npm run test:integration -w use-cases/age-gate/contract
   run_credentials_integration_target \
     "Standalone protocol integration" \
     npm run test:integration -w components/orchestration/protocol

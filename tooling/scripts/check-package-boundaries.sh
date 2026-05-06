@@ -35,7 +35,7 @@ readonly -a root_contract_surface_files=(
   credentials/src/index.ts
   credentials-birth/src/index.ts
   credentials-birth-secret/src/index.ts
-  credentials-demo-contract/src/index.ts
+  use-cases/age-gate/contract/src/index.ts
   credentials-same-holder/src/index.ts
 )
 
