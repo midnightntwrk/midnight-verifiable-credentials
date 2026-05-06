@@ -3,6 +3,7 @@ pragma language_version >= 0.20;
 import CompactStandardLibrary;
 
 include "../../midnight-did-credentials/dist/credentials";
+include "./status-proof-protocol";
 
 export ledger registryId: Bytes<32>;
 export ledger initialized: Boolean;

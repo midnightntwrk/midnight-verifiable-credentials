@@ -128,7 +128,7 @@ explicit:
 - on-chain contract-facing Compact entrypoints
 - off-chain helper/builders in TypeScript
 
-Normalized ownership target:
+Normalized ownership rule:
 
 - `credentials`
   - owns shared VC/VP status binding types

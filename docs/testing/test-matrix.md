@@ -88,6 +88,11 @@ Implemented prototype coverage:
   - registry/state binding semantics
   - append-only revocation bookkeeping
   - current prototype root-binding limitation disclosure
+- `credentials-status-registry/src/test/status-proof-protocol.test.ts`
+  - registry-facing proof-protocol validation ownership
+  - request/binding consistency checks
+  - authority-attested proof acceptance and rejection paths
+  - verifier policy compatibility for revoked-set and authority-attested flows
 - `credentials-birth-secret/src/test/status.test.ts`
   - hidden-holder revoked-set status request wiring
 - `credentials-birth-secret/src/test/status-attestation.test.ts`

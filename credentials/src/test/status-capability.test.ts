@@ -71,59 +71,6 @@ describe("credentials core: status capabilities", () => {
     ).not.toThrow();
   });
 
-  it("derives a deterministic revoked-set status handle", () => {
-    const first = pureCircuits.revokedSetStatusHandle(
-      sha256Bytes("credential-root:alice"),
-      sha256Bytes("registry:hidden-holder"),
-      sha256Bytes("issuer-status-salt"),
-    );
-    const second = pureCircuits.revokedSetStatusHandle(
-      sha256Bytes("credential-root:alice"),
-      sha256Bytes("registry:hidden-holder"),
-      sha256Bytes("issuer-status-salt"),
-    );
-
-    expect(Buffer.from(first).equals(Buffer.from(second))).toBe(true);
-  });
-
-  it("accepts a revoked-set status proof protocol bound to the verifier request", () => {
-    const signer = createSigner("status-authority", 890n);
-    const protocol = {
-      request: {
-        registryState: {
-          registryId: sha256Bytes("registry:hidden-holder"),
-          revokedRoot: sha256Bytes("revoked-root:current"),
-        },
-        verifierChallengeHash: sha256Bytes("challenge:status"),
-      },
-      witnessInput: {
-        registryState: {
-          registryId: sha256Bytes("registry:hidden-holder"),
-          revokedRoot: sha256Bytes("revoked-root:current"),
-        },
-        statusHandle: sha256Bytes("status-handle"),
-        statusHandleOpening: sha256Bytes("status-handle-opening"),
-      },
-    };
-    const binding = {
-      registryRef: {
-        registryId: protocol.request.registryState.registryId,
-        authorityVerificationMethodRef: signer.verificationMethodRef,
-      },
-      statusHandleCommitment: pureCircuits.revokedSetStatusHandleCommitment(
-        protocol.witnessInput.statusHandle,
-        protocol.witnessInput.statusHandleOpening,
-      ),
-    };
-
-    expect(() =>
-      pureCircuits.assertRegistryBoundStatusBindingMatchesRevokedSetNonMembershipStatusProofProtocol(
-        binding,
-        protocol,
-      ),
-    ).not.toThrow();
-  });
-
   it("rejects a revoked-set non-membership status capability with an empty handle commitment", () => {
     const signer = createSigner("status-authority", 999n);
     const capability = {

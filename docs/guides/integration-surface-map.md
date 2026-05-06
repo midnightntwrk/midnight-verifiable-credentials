@@ -103,6 +103,7 @@ Important note:
 | Surface | Class | Use |
 | --- | --- | --- |
 | `src/revocation-registry.compact` | `On-chain only` | Status registry contract surface. |
+| `src/status-proof-protocol.compact` | `On-chain + off-chain` | Registry-facing proof-protocol types and validators for families and Layer 3 contracts. |
 | managed registry contract exports | `Off-chain only` | Runtime contract interface mirror. |
 | `src/witness-builder.ts` | `Off-chain only` | Status-handle derivation and witness-input helpers. |
 | `src/attestation-builder.ts` | `Off-chain only` | Transitional authority-attested status builder/signing helpers. |
@@ -227,6 +228,9 @@ Use:
 
 - `credentials-status-registry/src/revocation-registry.compact` for the
   on-chain registry contract
+- `credentials-status-registry/src/status-proof-protocol.compact` for
+  verifier-facing status proof-protocol Compact types and validators in
+  families or Layer 3 contracts
 - `credentials-status-registry` TS builders off-chain
 - `status-verification-protocol.md` for the current trust boundary
 
