@@ -6,20 +6,20 @@ import {
   type JubjubPoint,
 } from "@midnight-ntwrk/compact-runtime";
 import {
-  type AuthorityAttestedStatusProofProtocol,
   HolderBindingProfile,
   type Proof,
   type ProtocolMessageEnvelope,
   pureCircuits as genericPureCircuits,
   type RegistryBoundStatusBinding,
-  type RevokedSetNonMembershipStatusProofProtocol,
-  type RevokedSetStatusRequest,
   StatusCapabilityKind,
   type VerificationMethodRef,
 } from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
 
 import {
+  type AuthorityAttestedStatusProofProtocol,
   pureCircuits,
+  type RevokedSetNonMembershipStatusProofProtocol,
+  type RevokedSetStatusRequest,
   type SecretBirthCredential,
   type SecretBirthCredentialPresentation,
   type SecretBirthCredentialPresentationRequest,
@@ -342,11 +342,10 @@ export const createSecretBirthCredentialFixture = (
         registryId: witness.statusRegistryId,
         authorityVerificationMethodRef: issuer.verificationMethodRef,
       },
-      statusHandleCommitment:
-        genericPureCircuits.revokedSetStatusHandleCommitment(
-          witness.statusHandle,
-          witness.statusHandleOpening,
-        ),
+      statusHandleCommitment: pureCircuits.revokedSetStatusHandleCommitment(
+        witness.statusHandle,
+        witness.statusHandleOpening,
+      ),
     },
   };
 
@@ -425,11 +424,10 @@ export const createSecretBirthCredentialFixture = (
           registryId: witness.statusRegistryId,
           authorityVerificationMethodRef: issuer.verificationMethodRef,
         },
-        statusHandleCommitment:
-          genericPureCircuits.revokedSetStatusHandleCommitment(
-            witness.statusHandle,
-            witness.statusHandleOpening,
-          ),
+        statusHandleCommitment: pureCircuits.revokedSetStatusHandleCommitment(
+          witness.statusHandle,
+          witness.statusHandleOpening,
+        ),
       },
     };
 
@@ -460,7 +458,7 @@ export const createSecretBirthCredentialFixture = (
       statusAttestation: {
         statement: statusAttestationStatement,
         proof: signProof({
-          bodyRoot: genericPureCircuits.authorityAttestedStatusStatementRoot(
+          bodyRoot: pureCircuits.authorityAttestedStatusStatementRoot(
             statusAttestationStatement,
           ),
           signer: issuer,

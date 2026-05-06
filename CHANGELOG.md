@@ -63,6 +63,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - documented `credentials-status-registry` as a first-class workspace package
 - documented the rule that demo contracts stay small, business-facing, and
   capability-specific
+- normalized status ownership in code:
+  - shared VC-side status binding remains in `credentials`
+  - registry-facing proof-protocol Compact types and validators now live in
+    `credentials-status-registry`
+  - hidden-holder family and revocation-aware demo flows now import the
+    registry-facing proof surface from `credentials-status-registry`
+  - managed/runtime consumers should now import
+    `RevokedSetStatusRequest`,
+    `AuthorityAttestedStatusProofProtocol`, and
+    `RevokedSetNonMembershipStatusProofProtocol` from
+    `credentials-status-registry` rather than `credentials`
 - Holder-binding naming is now explicitly split between:
   - Compact/core struct name:
     `OffchainMidnightHolderBinding`

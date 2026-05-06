@@ -59,6 +59,7 @@
   "dependencies": {
     "@midnight-ntwrk/compact-runtime": "*",
     "@midnight-ntwrk/midnight-did-credentials": "*",
+    "@midnight-ntwrk/midnight-did-credentials-status-registry": "*",
     "@midnight-ntwrk/midnight-did-credentials-same-holder": "*"
   },
   "files": [

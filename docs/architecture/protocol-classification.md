@@ -90,7 +90,7 @@ Reading rule:
 
 Status is the most important place where the boundary must stay explicit.
 
-Current normalized target:
+Current normalized ownership:
 
 - `credentials`
   - owns VC-side status binding
@@ -105,10 +105,15 @@ Current normalized target:
     - `AuthorityAttestedStatusProofProtocol`
     - `RevokedSetNonMembershipStatusProofProtocol`
 
-Current gap:
+Current state:
 
-- the docs already describe that split more clearly than the canonical Compact
-  package layout currently reflects it
+- the canonical Compact package layout now reflects this ownership split:
+  - family and Layer 3 contracts import shared VC-side binding from
+    `credentials`
+  - registry-facing proof-protocol Compact types and validators live in
+    `credentials-status-registry`
+- the remaining status work is no longer package ownership drift; it is the
+  final cryptographic status contract under `VC-MAT-20`
 
 ## Import guidance
 
