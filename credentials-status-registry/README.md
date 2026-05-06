@@ -81,9 +81,9 @@ Nonce requirement for authority-attested proofs:
 
 Freshness requirement for authority-attested proofs:
 
-- verifier policy can now require a bounded freshness window by setting:
-  - `enforceAttestationMaxAge`
-  - `maxAttestationAge`
+- verifier policy can now require a bounded freshness window by:
+  - enabling `enforceAttestationMaxAge`
+  - supplying a non-zero `maxAttestationAge`
 - that freshness window uses the same unit as:
   - the verifier-supplied `currentTime`
   - the attestation `createdAt`
