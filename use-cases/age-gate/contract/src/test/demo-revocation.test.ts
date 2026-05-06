@@ -33,6 +33,7 @@ describe("credentials demo revocation contract", () => {
     expect(request.statusPolicy.acceptedRegistryId).toEqual(
       fixture.witness.statusRegistryId,
     );
+    expect(request.statusPolicy.enforceAttestationMaxAge).toEqual(false);
     expect(request.statusRequest.registryState).toEqual(registryState);
     expect(request.verificationRequest.verifierChallengeHash).toEqual(
       fixture.verificationRequest.verifierChallengeHash,
@@ -132,6 +133,44 @@ describe("credentials demo revocation contract", () => {
       fixture.witness.statusRegistryId,
     );
     expect(state.activeAccessCapabilities.member(capability)).toEqual(true);
+  });
+
+  it("rejects authority-attested verification when the attestation exceeds the verifier freshness window", () => {
+    const fixture = createDemoRevocationFixture();
+    const simulator = new CredentialsDemoRevocationSimulator();
+    const request = simulator.revocationAwareAuthorityAttestedRequest(
+      fixture.credential.issuerVerificationMethodRef,
+      fixture.witness.verifierDomainHash,
+      fixture.verificationRequest.verifierChallengeHash,
+      fixtureRegistryState(fixture),
+    );
+    const submission = buildSubmissionForAuthorityAttestedRequest(
+      fixture,
+      request,
+    );
+
+    simulator.issueSecretBirthCredential(
+      fixture.credential,
+      fixture.credentialProof,
+    );
+    simulator.setHolderWitnesses({
+      holderSecret: fixture.witness.holderSecret,
+      holderSecretOpening: fixture.witness.holderSecretOpening,
+      holderBindingBlindingFactor: fixture.witness.holderBindingBlindingFactor,
+      holderBirthDateDays: fixture.witness.birthDateDays,
+      holderBirthDateOpening: fixture.witness.birthDateOpening,
+    });
+
+    expect(() =>
+      simulator.issueRevocationAwareCapabilityWithAuthorityAttestation(
+        fixture.credentialWithAuthorityAttestedStatus,
+        request,
+        submission,
+        fixture.authorityAttestedStatusVerificationInputs,
+        fixture.witness.currentDay,
+        request.verificationRequest.envelope.createdAt + 60n,
+      ),
+    ).toThrow(/exceeds the verifier max-age policy/i);
   });
 
   it("rejects verifier-supplied-root verification when the supplied revoked root diverges from the request", () => {

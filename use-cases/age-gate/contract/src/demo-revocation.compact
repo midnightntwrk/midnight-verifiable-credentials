@@ -91,6 +91,21 @@ pure circuit revocationDemoStatusPolicy(
     acceptedStatusCapability: capabilityKind,
     enforceRegistryId: true,
     acceptedRegistryId: registryId,
+    enforceAttestationMaxAge: false,
+    maxAttestationAge: 0,
+  };
+}
+
+pure circuit revocationDemoAuthorityAttestedStatusPolicy(
+  registryId: Bytes<32>
+): VerifierStatusPolicy {
+  return VerifierStatusPolicy {
+    requireStatus: true,
+    acceptedStatusCapability: StatusCapabilityKind.authorityAttestedStatus,
+    enforceRegistryId: true,
+    acceptedRegistryId: registryId,
+    enforceAttestationMaxAge: true,
+    maxAttestationAge: 50,
   };
 }
 
@@ -177,8 +192,7 @@ export circuit revocationAwareAuthorityAttestedRequest(
       verifierDomainHash,
       verifierChallengeHash
     ),
-    statusPolicy: revocationDemoStatusPolicy(
-      StatusCapabilityKind.authorityAttestedStatus,
+    statusPolicy: revocationDemoAuthorityAttestedStatusPolicy(
       registryState.registryId
     ),
     statusRequest: RevokedSetStatusRequest {

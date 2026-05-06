@@ -207,6 +207,8 @@ describe("status registry: proof protocols", () => {
       acceptedStatusCapability: StatusCapabilityKind.authorityAttestedStatus,
       enforceRegistryId: true,
       acceptedRegistryId: request.registryState.registryId,
+      enforceAttestationMaxAge: true,
+      maxAttestationAge: 50n,
     };
 
     expect(() =>
@@ -349,6 +351,8 @@ describe("status registry: proof protocols", () => {
       acceptedStatusCapability: StatusCapabilityKind.authorityAttestedStatus,
       enforceRegistryId: true,
       acceptedRegistryId: request.registryState.registryId,
+      enforceAttestationMaxAge: true,
+      maxAttestationAge: 50n,
     };
 
     expect(() =>
@@ -435,6 +439,59 @@ describe("status registry: proof protocols", () => {
         110n,
       ),
     ).toThrow(/challenge hash does not match/i);
+  });
+
+  it("rejects an authority-attested status proof when it exceeds the verifier max-age policy", () => {
+    const signer = createSigner("status-authority", 3242n);
+    const request = {
+      registryState: {
+        registryId: bytes32("registry:hidden-holder"),
+        revokedRoot: bytes32("revoked-root:current"),
+      },
+      verifierChallengeHash: bytes32("challenge:status"),
+    };
+    const capability = {
+      registryRef: {
+        registryId: request.registryState.registryId,
+        authorityVerificationMethodRef: signer.verificationMethodRef,
+      },
+      statusHandleCommitment: bytes32("status-handle-commitment"),
+    };
+    const statement = {
+      registryState: request.registryState,
+      statusHandleCommitment: capability.statusHandleCommitment,
+      verifierChallengeHash: request.verifierChallengeHash,
+      hasExpiration: true,
+      expiresAt: 200n,
+    };
+    const attestation = {
+      statement,
+      proof: signStatusProof({
+        bodyRoot: pureCircuits.authorityAttestedStatusStatementRoot(statement),
+        signer,
+        createdAt: 100n,
+        challengeHash: request.verifierChallengeHash,
+        nonceScalar: 38n,
+      }),
+    };
+    const policy = {
+      requireStatus: true,
+      acceptedStatusCapability: StatusCapabilityKind.authorityAttestedStatus,
+      enforceRegistryId: true,
+      acceptedRegistryId: request.registryState.registryId,
+      enforceAttestationMaxAge: true,
+      maxAttestationAge: 25n,
+    };
+
+    expect(() =>
+      pureCircuits.assertVerifierStatusPolicyAcceptsAuthorityAttestedStatus(
+        policy,
+        capability,
+        request,
+        attestation,
+        130n,
+      ),
+    ).toThrow(/exceeds the verifier max-age policy/i);
   });
 
   it("rejects an expired authority-attested status proof", () => {
@@ -546,6 +603,8 @@ describe("status registry: proof protocols", () => {
       acceptedStatusCapability: StatusCapabilityKind.noStatus,
       enforceRegistryId: false,
       acceptedRegistryId: new Uint8Array(32),
+      enforceAttestationMaxAge: false,
+      maxAttestationAge: 0n,
     };
 
     expect(() =>
@@ -582,6 +641,8 @@ describe("status registry: proof protocols", () => {
       acceptedStatusCapability: StatusCapabilityKind.revokedSetNonMembership,
       enforceRegistryId: true,
       acceptedRegistryId: bytes32("registry:policy"),
+      enforceAttestationMaxAge: false,
+      maxAttestationAge: 0n,
     };
 
     expect(() =>
