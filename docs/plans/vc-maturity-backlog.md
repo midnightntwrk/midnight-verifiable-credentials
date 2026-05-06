@@ -88,7 +88,6 @@ Substantially addressed on `develop`:
 - `VC-MAT-14`
 - `VC-MAT-15`
 - `VC-MAT-16`
-- `VC-MAT-18`
 - `VC-MAT-19`
 
 Partially advanced, but still active:
@@ -96,6 +95,7 @@ Partially advanced, but still active:
 - `VC-MAT-06`
 - `VC-MAT-08`
 - `VC-MAT-09`
+- `VC-MAT-18`
 - `VC-MAT-17`
 - `VC-MAT-20`
 
@@ -135,6 +135,10 @@ Current highest-risk remaining area:
   safety:
   `credentials-protocol` still needs a more explicit durable-state, RNG, and
   deployment-checklist story for real integrations
+- the strongest remaining repository-convergence gap is now physical package
+  relocation:
+  the target top-level architecture areas exist, but legacy top-level package
+  roots like `credentials*` still remain alongside them
 
 ## Self-Audit: 2026-05-07
 
@@ -146,6 +150,8 @@ Evidence reviewed:
 - current starter/template surfaces under `docs/templates` and
   `docs/guides`
 - current BDD feature inventory under `use-cases/age-gate/scenarios/features`
+- constrained Claude second-pass decisions on a repo-grounded digest captured
+  under `review/`
 - status/revocation implementation and specs in:
   - `credentials`
   - `credentials-status-registry`
@@ -156,11 +162,14 @@ Evidence reviewed:
 
 Main findings:
 
-1. repository shape and CI are no longer the dominant maturity risks
+1. repository shape and CI improved materially, but physical convergence is
+   still unfinished
 
-- the restructure wave and the Turbo/per-cone CI wave have materially reduced
-  architectural ambiguity and PR latency
-- they should stay maintained, but they are no longer the first backlog driver
+- the restructure wave and the Turbo/per-cone CI wave reduced architectural
+  ambiguity and PR latency
+- but the physical repo migration is still incomplete:
+  target top-level architecture areas coexist with legacy top-level package
+  roots, so package-taxonomy cleanup remains an active maintenance item
 
 2. at least one family now commits the status binding, so the gap is narrower
 
@@ -209,6 +218,16 @@ Main findings:
   surfaces plus a filesystem byte-store adapter
 - but the repo still lacks one obvious production-safe checklist / reference
   path that closes the loop for real integrations
+
+7. package taxonomy is documented more cleanly than it is converged on disk
+
+- `VC-MAT-18` is substantially addressed at the inventory / documentation
+  level
+- it is not fully done at the physical layout level while the legacy
+  `credentials*` package roots still remain next to the target top-level
+  architecture areas
+- that follow-on cleanup should be tracked explicitly instead of being treated
+  as already finished
 
 ## Legacy VC-MAT Pointer Queue
 
@@ -261,6 +280,10 @@ The remaining backlog now falls into five execution categories:
   and cross-repo smoke-path expectations
 - primary item:
   - `VC-MAT-09`
+- active maintenance follow-on:
+  - `VC-MAT-18` package-taxonomy convergence:
+    finish physical package relocation / legacy-root cleanup so the on-disk
+    layout matches the documented target architecture areas
 - execution rule:
   - treat this as a cross-cutting discipline that applies to every numbered
     slice below rather than as its own dedicated PR slot
@@ -332,13 +355,15 @@ clearer status boundary rather than race ahead of it.
 1. `STATUS-CONTRACT` slice `8`
 2. `STATUS-CONTRACT` slice `9`
 3. `STATUS-CONTRACT` slice `10`
-4. `INTEGRATOR-EXECUTION` slice `11`
-5. `INTEGRATOR-EXECUTION` slices `12` and `13`
+4. `VC-MAT-18` follow-on maintenance slice:
+   finish physical package relocation / legacy-root cleanup
+5. `INTEGRATOR-EXECUTION` slice `11`
+6. `INTEGRATOR-EXECUTION` slices `12` and `13`
    - slices `14` through `16` stay intentionally behind these runnable starter
      slices so issuer/wallet/handoff work grows from executable examples
      instead of another docs-only wave
-6. `BDD-LIVE-DOCS` slices `17` through `19`
-7. `ORCHESTRATION-PROD-SAFETY` slice `20`
+7. `BDD-LIVE-DOCS` slices `17` through `19`
+8. `ORCHESTRATION-PROD-SAFETY` slice `20`
 
 `TEST-DOC-ALIGNMENT` intentionally has no numbered slot in this plan. Treat it
 as a per-slice acceptance requirement rather than as a standalone execution
