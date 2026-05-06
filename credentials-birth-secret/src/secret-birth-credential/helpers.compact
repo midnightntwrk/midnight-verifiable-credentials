@@ -4,6 +4,51 @@ export circuit secretBirthCredentialBodyRoot(
   return credentialBodyRoot(credential);
 }
 
+export circuit secretBirthCredentialRegistryBoundStatusBodyRoot(
+  credential: SecretBirthCredential,
+  statusBinding: RegistryBoundStatusBinding
+): Bytes<32> {
+  return persistentHash<SecretBirthCredentialStatusBoundBody>(
+    SecretBirthCredentialStatusBoundBody {
+      credential,
+      statusBindingMode: StatusBindingKind.registryBoundStatus,
+      statusBindingRoot: registryBoundStatusBindingRoot(statusBinding),
+    }
+  );
+}
+
+export circuit secretBirthCredentialWithStatusBindingBodyRoot(
+  credentialWithStatus: SecretBirthCredentialWithStatusBinding
+): Bytes<32> {
+  assertValidRegistryBoundStatusBinding(credentialWithStatus.statusBinding);
+  return secretBirthCredentialRegistryBoundStatusBodyRoot(
+    credentialWithStatus.credential,
+    credentialWithStatus.statusBinding
+  );
+}
+
+export circuit secretBirthCredentialWithStatusCapabilityBodyRoot(
+  credentialWithStatus: SecretBirthCredentialWithStatusCapability
+): Bytes<32> {
+  return secretBirthCredentialRegistryBoundStatusBodyRoot(
+    credentialWithStatus.credential,
+    registryBoundStatusBindingFromRevokedSetNonMembershipStatusCapability(
+      credentialWithStatus.statusCapability
+    )
+  );
+}
+
+export circuit secretBirthCredentialWithAuthorityAttestedStatusCapabilityBodyRoot(
+  credentialWithStatus: SecretBirthCredentialWithAuthorityAttestedStatusCapability
+): Bytes<32> {
+  return secretBirthCredentialRegistryBoundStatusBodyRoot(
+    credentialWithStatus.credential,
+    registryBoundStatusBindingFromAuthorityAttestedStatusCapability(
+      credentialWithStatus.statusCapability
+    )
+  );
+}
+
 export circuit secretBirthCredentialPresentationBodyRoot(
   presentation: SecretBirthCredentialPresentation
 ): Bytes<32> {

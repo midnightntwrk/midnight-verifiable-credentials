@@ -300,6 +300,24 @@ export const createDemoRevocationFixture = (): DemoRevocationFixture => {
     },
   };
 
+  const statusBinding = {
+    registryRef: credentialWithStatus.statusCapability.registryRef,
+    statusHandleCommitment,
+  };
+
+  const statusBoundCredentialProof = signProof({
+    bodyRoot: pureCircuits.secretBirthCredentialRegistryBoundStatusBodyRoot(
+      credential,
+      statusBinding,
+    ),
+    signer: issuer,
+    createdAt: credentialProof.createdAt,
+    challengeHash: credentialProof.challengeHash,
+    nonceScalar: 12n,
+  });
+
+  credentialWithStatus.credentialProof = statusBoundCredentialProof;
+
   const statusVerificationRequest: SecretBirthCredentialVerificationStatusRequest =
     {
       verificationRequest,
@@ -336,7 +354,7 @@ export const createDemoRevocationFixture = (): DemoRevocationFixture => {
   const credentialWithAuthorityAttestedStatus: SecretBirthCredentialWithAuthorityAttestedStatusCapability =
     {
       credential,
-      credentialProof,
+      credentialProof: statusBoundCredentialProof,
       statusCapability: {
         registryRef: {
           registryId: witness.statusRegistryId,

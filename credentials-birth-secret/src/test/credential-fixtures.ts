@@ -361,6 +361,20 @@ export const createSecretBirthCredentialFixture = (
     statusBinding,
   };
 
+  const statusBoundCredentialProof = signProof({
+    bodyRoot: pureCircuits.secretBirthCredentialRegistryBoundStatusBodyRoot(
+      credential,
+      statusBinding,
+    ),
+    signer: issuer,
+    createdAt: credentialProof.createdAt,
+    challengeHash: credentialProof.challengeHash,
+    nonceScalar: 12n,
+  });
+
+  credentialWithStatus.credentialProof = statusBoundCredentialProof;
+  credentialWithStatusBinding.credentialProof = statusBoundCredentialProof;
+
   const statusVerificationRequest: SecretBirthCredentialVerificationStatusRequest =
     {
       verificationRequest,
@@ -369,6 +383,8 @@ export const createSecretBirthCredentialFixture = (
         acceptedStatusCapability: StatusCapabilityKind.revokedSetNonMembership,
         enforceRegistryId: true,
         acceptedRegistryId: witness.statusRegistryId,
+        enforceAttestationMaxAge: false,
+        maxAttestationAge: 0n,
       },
     };
 
@@ -406,6 +422,8 @@ export const createSecretBirthCredentialFixture = (
         acceptedStatusCapability: StatusCapabilityKind.revokedSetNonMembership,
         enforceRegistryId: true,
         acceptedRegistryId: witness.statusRegistryId,
+        enforceAttestationMaxAge: false,
+        maxAttestationAge: 0n,
       },
       statusRequest,
     };
@@ -418,7 +436,7 @@ export const createSecretBirthCredentialFixture = (
   const credentialWithAuthorityAttestedStatus: SecretBirthCredentialWithAuthorityAttestedStatusCapability =
     {
       credential,
-      credentialProof,
+      credentialProof: statusBoundCredentialProof,
       statusCapability: {
         registryRef: {
           registryId: witness.statusRegistryId,
@@ -439,6 +457,8 @@ export const createSecretBirthCredentialFixture = (
         acceptedStatusCapability: StatusCapabilityKind.authorityAttestedStatus,
         enforceRegistryId: true,
         acceptedRegistryId: witness.statusRegistryId,
+        enforceAttestationMaxAge: true,
+        maxAttestationAge: 50n,
       },
       statusRequest,
     };

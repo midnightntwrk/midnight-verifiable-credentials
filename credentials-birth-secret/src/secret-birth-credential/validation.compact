@@ -213,10 +213,38 @@ export circuit assertValidSecretBirthCredential(
   credential: SecretBirthCredential,
   proof: Proof
 ): [] {
+  assertValidSecretBirthCredentialEnvelopeOnly(credential);
+  assertValidSecretBirthCredentialIssuanceProofForBodyRoot(
+    credential,
+    proof,
+    secretBirthCredentialBodyRoot(credential)
+  );
+}
+
+circuit assertValidSecretBirthCredentialEnvelopeOnly(
+  credential: SecretBirthCredential
+): [] {
   assertValidSecretBirthSchemaRef(credential.schema);
   assertValidCredentialEnvelope(credential, birthCredentialClaimRoot(credential.claims));
   assertValidBlindedSecretHolderCredentialBinding(credential.holderBinding);
-  assertValidCredentialProof(credential, proof);
+}
+
+circuit assertValidSecretBirthCredentialIssuanceProofForBodyRoot(
+  credential: SecretBirthCredential,
+  proof: Proof,
+  bodyRoot: Bytes<32>
+): [] {
+  assert(
+    credential.issuerVerificationMethodRef.didContractAddress
+      == proof.signerVerificationMethodRef.didContractAddress,
+    "Issuer proof contract address does not match issuer verification method"
+  );
+  assert(
+    credential.issuerVerificationMethodRef.methodId
+      == proof.signerVerificationMethodRef.methodId,
+    "Issuer proof method reference does not match issuer verification method"
+  );
+  assertValidIssuanceContextProof(bodyRoot, proof);
 }
 
 export circuit assertValidSecretBirthCredentialPresentation(
