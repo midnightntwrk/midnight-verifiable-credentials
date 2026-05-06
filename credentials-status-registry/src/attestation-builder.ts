@@ -20,6 +20,7 @@ import {
   type RevocationRegistryState,
   type RevokedSetStatusRequest,
 } from "./managed/revocation-registry/contract/index.js";
+import { buildRevokedSetStatusRequest } from "./witness-builder.js";
 
 export type StatusAuthoritySigner = {
   readonly secretKey: bigint;
@@ -87,9 +88,7 @@ export const deriveAuthorityAttestedStatusProofNonceScalar = ({
       .update(statement.registryState.registryId)
       .update(statement.registryState.revokedRoot)
       .update(statement.statusHandleCommitment)
-      .update(
-        signer.verificationMethodRef.didContractAddress.bytes,
-      )
+      .update(signer.verificationMethodRef.didContractAddress.bytes)
       .update(signer.verificationMethodRef.methodId)
       .update(bigintToBytes(createdAt, 32))
       .update(bigintToBytes(signer.secretKey, 32))
@@ -104,21 +103,6 @@ export const deriveAuthorityAttestedStatusProofNonceScalar = ({
     }
     attempt += 1n;
   }
-};
-
-export const buildRevokedSetStatusRequest = ({
-  registryState,
-  verifierChallengeHash,
-}: {
-  readonly registryState: RevocationRegistryState;
-  readonly verifierChallengeHash: Uint8Array;
-}): RevokedSetStatusRequest => {
-  const request = {
-    registryState,
-    verifierChallengeHash,
-  };
-  pureCircuits.assertValidRevokedSetStatusRequest(request);
-  return request;
 };
 
 // Transitional alias: the authority-attested path currently uses the same

@@ -38,6 +38,17 @@ export type BuiltRevokedSetStatusWitness = {
   readonly witnessInput: RevokedSetNonMembershipWitnessInput;
 };
 
+export type BuildRevokedSetNonMembershipInputsOptions =
+  BuildRevokedSetStatusWitnessOptions & {
+    readonly verifierChallengeHash: Uint8Array;
+  };
+
+export type BuiltRevokedSetNonMembershipInputs =
+  BuiltRevokedSetStatusWitness & {
+    readonly request: RevokedSetStatusRequest;
+    readonly protocol: RevokedSetNonMembershipStatusProofProtocol;
+  };
+
 // Freshness of `registryState.revokedRoot` is intentionally external to this
 // helper. The verifier or orchestrating application must supply an accepted
 // current-enough root before calling into the proof layer.
@@ -106,6 +117,21 @@ export const buildRevokedSetNonMembershipStatusProofProtocol = ({
   };
   pureCircuits.assertValidRevokedSetNonMembershipStatusProofProtocol(protocol);
   return protocol;
+};
+
+export const buildRevokedSetStatusRequest = ({
+  registryState,
+  verifierChallengeHash,
+}: {
+  readonly registryState: RevocationRegistryState;
+  readonly verifierChallengeHash: Uint8Array;
+}): RevokedSetStatusRequest => {
+  const request = {
+    registryState,
+    verifierChallengeHash,
+  };
+  pureCircuits.assertValidRevokedSetStatusRequest(request);
+  return request;
 };
 
 export const assertStatusHandleNotRevoked = (
@@ -179,5 +205,39 @@ export const buildRevokedSetStatusWitness = ({
     statusBinding,
     statusCapability,
     witnessInput,
+  };
+};
+
+export const buildRevokedSetNonMembershipInputs = ({
+  verifierChallengeHash,
+  ...witnessOptions
+}: BuildRevokedSetNonMembershipInputsOptions): BuiltRevokedSetNonMembershipInputs => {
+  const builtWitness = buildRevokedSetStatusWitness(witnessOptions);
+  const request = buildRevokedSetStatusRequest({
+    registryState: witnessOptions.registryState,
+    verifierChallengeHash,
+  });
+  const protocol = buildRevokedSetNonMembershipStatusProofProtocol({
+    request,
+    witnessInput: builtWitness.witnessInput,
+  });
+
+  pureCircuits.assertRegistryBoundStatusBindingMatchesRevokedSetNonMembershipStatusProofProtocol(
+    builtWitness.statusBinding,
+    protocol,
+  );
+
+  if (witnessOptions.verifierStatusPolicy) {
+    pureCircuits.assertVerifierStatusPolicyAcceptsRevokedSetNonMembershipStatusProofProtocol(
+      witnessOptions.verifierStatusPolicy,
+      builtWitness.statusBinding,
+      protocol,
+    );
+  }
+
+  return {
+    ...builtWitness,
+    request,
+    protocol,
   };
 };
