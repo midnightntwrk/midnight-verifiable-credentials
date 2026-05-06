@@ -27,17 +27,17 @@ Start here:
 1. use this package for OpenID-shaped JSON/domain envelopes around Compact VC/VP
    payloads
 2. keep verification semantics in Compact/family packages, not here
-3. read [`../docs/guides/integration-surface-map.md`](../docs/guides/integration-surface-map.md)
+3. read [`../../docs/guides/integration-surface-map.md`](../../docs/guides/integration-surface-map.md)
    if you are deciding between transport schemas and contract-authoring surfaces
 
 Related docs:
 
-- spec: [`../docs/spec/midnight-credentials.md`](../docs/spec/midnight-credentials.md)
+- spec: [`../../docs/spec/midnight-credentials.md`](../../docs/spec/midnight-credentials.md)
 - protocol classification:
-  [`../docs/architecture/protocol-classification.md`](../docs/architecture/protocol-classification.md)
-- conformance: [`../docs/spec/conformance.md`](../docs/spec/conformance.md)
-- companion guide: [`../docs/guides/midnight-credentials-for-dummies.md`](../docs/guides/midnight-credentials-for-dummies.md)
-- test matrix: [`../docs/testing/test-matrix.md`](../docs/testing/test-matrix.md)
+  [`../../docs/architecture/protocol-classification.md`](../../docs/architecture/protocol-classification.md)
+- conformance: [`../../docs/spec/conformance.md`](../../docs/spec/conformance.md)
+- companion guide: [`../../docs/guides/midnight-credentials-for-dummies.md`](../../docs/guides/midnight-credentials-for-dummies.md)
+- test matrix: [`../../docs/testing/test-matrix.md`](../../docs/testing/test-matrix.md)
 
 This package contains a small, transport-neutral TypeScript model inspired by
 OID4VCI and OID4VP. It intentionally does not implement OAuth, HTTP routing,

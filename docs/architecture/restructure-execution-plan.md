@@ -51,7 +51,7 @@ Goals:
 
 Expected package moves:
 - `credentials-openid` -> `protocols/openid`
-- `credentials-protocol` -> `components/protocol`
+- `credentials-protocol` -> `components/orchestration/protocol`
 - `credentials-offchain-did` -> `components/adapters/offchain-did`
 - `standalone-environment` -> `components/integration/standalone-environment`
 - `infrastructure/standalone` -> `components/integration/infrastructure/standalone`

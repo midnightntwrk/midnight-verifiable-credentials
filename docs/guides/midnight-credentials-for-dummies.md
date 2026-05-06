@@ -2296,16 +2296,16 @@ That is the same design principle repeated everywhere:
 
 | Test file | What it proves |
 | --- | --- |
-| `credentials-protocol/src/test/explicit-holder/issuance.test.ts` | protocol-level issuance with party boundaries |
-| `credentials-protocol/src/test/explicit-holder/presentation.test.ts` | presentation flow through the MessageBus |
-| `credentials-protocol/src/test/explicit-holder/full-lifecycle.test.ts` | issuance through verification in one protocol run |
-| `credentials-protocol/src/test/secret-holder/issuance.test.ts` | secret-holder issuance through agents |
-| `credentials-protocol/src/test/secret-holder/presentation.test.ts` | hidden-holder presentation through agents |
-| `credentials-protocol/src/test/secret-holder/pseudonym.test.ts` | verifier-scoped pseudonym through the protocol layer |
-| `credentials-protocol/src/test/secret-holder/same-holder.test.ts` | same-holder composition through party-isolated agents, including a three-credential flow |
-| `credentials-protocol/src/test/contract-verifier/age-gate.test.ts` | contract verifier age-gate with protocol-issued credentials |
-| `credentials-protocol/src/test/contract-verifier/capability-lifecycle.test.ts` | full capability lifecycle through the contract verifier |
-| `credentials-protocol/src/test/helpers/message-bus.test.ts` | MessageBus transport primitives |
+| `components/orchestration/protocol/src/test/explicit-holder/issuance.test.ts` | protocol-level issuance with party boundaries |
+| `components/orchestration/protocol/src/test/explicit-holder/presentation.test.ts` | presentation flow through the MessageBus |
+| `components/orchestration/protocol/src/test/explicit-holder/full-lifecycle.test.ts` | issuance through verification in one protocol run |
+| `components/orchestration/protocol/src/test/secret-holder/issuance.test.ts` | secret-holder issuance through agents |
+| `components/orchestration/protocol/src/test/secret-holder/presentation.test.ts` | hidden-holder presentation through agents |
+| `components/orchestration/protocol/src/test/secret-holder/pseudonym.test.ts` | verifier-scoped pseudonym through the protocol layer |
+| `components/orchestration/protocol/src/test/secret-holder/same-holder.test.ts` | same-holder composition through party-isolated agents, including a three-credential flow |
+| `components/orchestration/protocol/src/test/contract-verifier/age-gate.test.ts` | contract verifier age-gate with protocol-issued credentials |
+| `components/orchestration/protocol/src/test/contract-verifier/capability-lifecycle.test.ts` | full capability lifecycle through the contract verifier |
+| `components/orchestration/protocol/src/test/helpers/message-bus.test.ts` | MessageBus transport primitives |
 
 ### Why This Chapter Exists
 
@@ -2373,7 +2373,7 @@ Mohawk considers this "the minimum acceptable level of paranoia".
 
 ### Tests For This Chapter
 
-- `credentials-protocol/src/test/integration/explicit-holder-lifecycle.integration.test.ts`
+- `components/orchestration/protocol/src/test/integration/explicit-holder-lifecycle.integration.test.ts`
 - Integration tests require Docker and skip automatically when unavailable
 
 ## Chapter 23: Midnight Vs AnonCreds, In Human Language
@@ -2671,13 +2671,13 @@ If you want the shortest path:
    - business contract composition
 16. `credentials-demo-contract/src/test/demo.test.ts`
    - the end-to-end business story
-17. `credentials-protocol/src/test/explicit-holder/issuance.test.ts`
+17. `components/orchestration/protocol/src/test/explicit-holder/issuance.test.ts`
    - protocol-level issuance with party boundaries
-18. `credentials-protocol/src/test/secret-holder/same-holder.test.ts`
+18. `components/orchestration/protocol/src/test/secret-holder/same-holder.test.ts`
    - same-holder composition through the protocol layer
-19. `credentials-protocol/src/test/contract-verifier/age-gate.test.ts`
+19. `components/orchestration/protocol/src/test/contract-verifier/age-gate.test.ts`
    - contract verifier age-gate through the protocol layer
-20. `credentials-protocol/src/test/integration/explicit-holder-lifecycle.integration.test.ts`
+20. `components/orchestration/protocol/src/test/integration/explicit-holder-lifecycle.integration.test.ts`
    - integration test with real Midnight DIDs (requires Docker)
 
 ## Final Mental Model

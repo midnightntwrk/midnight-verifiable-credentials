@@ -155,7 +155,7 @@ A transport/domain adapter conforms when it:
 
 Reference implementation:
 
-- [`../../credentials-openid/README.md`](../../credentials-openid/README.md)
+- [`../../protocols/openid/README.md`](../../protocols/openid/README.md)
 
 ### 7. Protocol/reference orchestration implementation
 
@@ -186,7 +186,7 @@ deferred.
 
 Reference implementation:
 
-- [`../../credentials-protocol/README.md`](../../credentials-protocol/README.md)
+- [`../../components/orchestration/protocol/README.md`](../../components/orchestration/protocol/README.md)
 
 ### 8. Verifier contract implementation
 

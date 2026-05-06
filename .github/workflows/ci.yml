@@ -113,7 +113,7 @@ jobs:
             'credentials-birth/*'
             'credentials-birth-secret/*'
             'credentials-demo-contract/*'
-            'standalone-environment/*'
+            'components/integration/standalone-environment/*'
           )
 
           integration_protocol_patterns=(
@@ -122,8 +122,8 @@ jobs:
             'credentials-birth/*'
             'credentials-birth-secret/*'
             'credentials-demo-contract/*'
-            'credentials-protocol/*'
-            'standalone-environment/*'
+            'components/orchestration/protocol/*'
+            'components/integration/standalone-environment/*'
           )
 
           for file in "${changed_files[@]}"; do
@@ -339,9 +339,9 @@ jobs:
             credentials-birth-secret/dist
             credentials-demo-contract/src/managed
             credentials-demo-contract/dist
-            credentials-offchain-did/dist
-            credentials-openid/dist
-            credentials-protocol/dist
+            components/adapters/offchain-did/dist
+            protocols/openid/dist
+            components/orchestration/protocol/dist
           key: ${{ runner.os }}-ci-build-outputs-${{ env.COMPACT_COMPILER_VERSION }}-${{ steps.build-input-hash.outputs.hash }}
 
       - name: Verify cached build outputs
@@ -433,9 +433,9 @@ jobs:
             credentials-birth-secret/dist
             credentials-demo-contract/src/managed
             credentials-demo-contract/dist
-            credentials-offchain-did/dist
-            credentials-openid/dist
-            credentials-protocol/dist
+            components/adapters/offchain-did/dist
+            protocols/openid/dist
+            components/orchestration/protocol/dist
           key: ${{ runner.os }}-ci-build-outputs-${{ env.COMPACT_COMPILER_VERSION }}-${{ steps.build-input-hash.outputs.hash }}
 
       - name: Pack reusable CI artifacts

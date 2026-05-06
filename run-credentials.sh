@@ -41,7 +41,7 @@ elif docker info >/dev/null 2>&1; then
     npm run test:integration -w credentials-demo-contract
   run_credentials_integration_target \
     "Standalone protocol integration" \
-    npm run test:integration -w credentials-protocol
+    npm run test:integration -w components/orchestration/protocol
 else
   echo "[credentials] Skipping standalone integrations (docker unavailable)"
 fi

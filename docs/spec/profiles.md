@@ -76,7 +76,7 @@ Current implementation packages:
 - [`../../credentials/README.md`](../../credentials/README.md)
 - [`../../credentials-birth-secret/README.md`](../../credentials-birth-secret/README.md)
 - [`../../credentials-status-registry/README.md`](../../credentials-status-registry/README.md)
-- [`../../credentials-protocol/README.md`](../../credentials-protocol/README.md)
+- [`../../components/orchestration/protocol/README.md`](../../components/orchestration/protocol/README.md)
 
 Current test coverage:
 - core secret-holder-binding tests
@@ -112,7 +112,7 @@ Current implementation packages:
 - [`../../credentials/README.md`](../../credentials/README.md)
 - [`../../credentials-birth-secret/README.md`](../../credentials-birth-secret/README.md)
 - [`../../credentials-status-registry/README.md`](../../credentials-status-registry/README.md)
-- [`../../credentials-protocol/README.md`](../../credentials-protocol/README.md)
+- [`../../components/orchestration/protocol/README.md`](../../components/orchestration/protocol/README.md)
 
 Current test coverage:
 - core holder-binding tests
@@ -149,7 +149,7 @@ Binding mechanism:
 
 Current implementation packages:
 - [`../../credentials/README.md`](../../credentials/README.md)
-- [`../../credentials-protocol/README.md`](../../credentials-protocol/README.md)
+- [`../../components/orchestration/protocol/README.md`](../../components/orchestration/protocol/README.md)
 
 Current test coverage:
 - secret-holder pseudonym protocol tests
@@ -210,7 +210,7 @@ Binding mechanism:
 
 Current implementation packages:
 - [`../../credentials/README.md`](../../credentials/README.md)
-- [`../../credentials-offchain-did/README.md`](../../credentials-offchain-did/README.md)
+- [`../../components/adapters/offchain-did/README.md`](../../components/adapters/offchain-did/README.md)
 
 Current test coverage:
 - core lightweight holder-binding tests

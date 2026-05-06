@@ -16,12 +16,12 @@ package_inputs=(
   credentials-status-registry
   credentials-same-holder
   credentials-iso-registry
-  credentials-offchain-did
-  credentials-openid
+  components/adapters/offchain-did
+  protocols/openid
   credentials-birth
   credentials-birth-secret
   credentials-demo-contract
-  credentials-protocol
+  components/orchestration/protocol
 )
 
 include_file() {

@@ -19,9 +19,9 @@ paths=(
   credentials-birth-secret/dist
   credentials-demo-contract/src/managed
   credentials-demo-contract/dist
-  credentials-offchain-did/dist
-  credentials-openid/dist
-  credentials-protocol/dist
+  components/adapters/offchain-did/dist
+  protocols/openid/dist
+  components/orchestration/protocol/dist
 )
 
 existing_paths=()
