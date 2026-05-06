@@ -408,8 +408,21 @@ jobs:
             echo "cache_ready=false" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Summarize cone cache state
+        id: cone-cache
+        shell: bash
+        run: |
+          if [[ "${{ steps.verify-foundation-cache.outputs.cache_ready }}" == 'true' \
+             && "${{ steps.verify-birth-family-cache.outputs.cache_ready }}" == 'true' \
+             && "${{ steps.verify-age-gate-cache.outputs.cache_ready }}" == 'true' \
+             && "${{ steps.verify-protocol-cache.outputs.cache_ready }}" == 'true' ]]; then
+            echo "any_missing=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "any_missing=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Set up Node.js
-        if: steps.verify-foundation-cache.outputs.cache_ready != 'true' || steps.verify-birth-family-cache.outputs.cache_ready != 'true' || steps.verify-age-gate-cache.outputs.cache_ready != 'true' || steps.verify-protocol-cache.outputs.cache_ready != 'true'
+        if: steps.cone-cache.outputs.any_missing == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '24'
@@ -417,14 +430,14 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: Download Compact toolchain artifact
-        if: steps.verify-foundation-cache.outputs.cache_ready != 'true' || steps.verify-birth-family-cache.outputs.cache_ready != 'true' || steps.verify-age-gate-cache.outputs.cache_ready != 'true' || steps.verify-protocol-cache.outputs.cache_ready != 'true'
+        if: steps.cone-cache.outputs.any_missing == 'true'
         uses: actions/download-artifact@v4
         with:
           name: compact-toolchain
           path: ${{ runner.temp }}/compact-toolchain
 
       - name: Restore Compact toolchain
-        if: steps.verify-foundation-cache.outputs.cache_ready != 'true' || steps.verify-birth-family-cache.outputs.cache_ready != 'true' || steps.verify-age-gate-cache.outputs.cache_ready != 'true' || steps.verify-protocol-cache.outputs.cache_ready != 'true'
+        if: steps.cone-cache.outputs.any_missing == 'true'
         shell: bash
         run: |
           mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
@@ -433,7 +446,7 @@ jobs:
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Activate Compact compiler
-        if: steps.verify-foundation-cache.outputs.cache_ready != 'true' || steps.verify-birth-family-cache.outputs.cache_ready != 'true' || steps.verify-age-gate-cache.outputs.cache_ready != 'true' || steps.verify-protocol-cache.outputs.cache_ready != 'true'
+        if: steps.cone-cache.outputs.any_missing == 'true'
         shell: bash
         run: |
           if compact compile --version >/dev/null 2>&1; then
@@ -446,16 +459,16 @@ jobs:
           fi
 
       - name: Verify Compact installation
-        if: steps.verify-foundation-cache.outputs.cache_ready != 'true' || steps.verify-birth-family-cache.outputs.cache_ready != 'true' || steps.verify-age-gate-cache.outputs.cache_ready != 'true' || steps.verify-protocol-cache.outputs.cache_ready != 'true'
+        if: steps.cone-cache.outputs.any_missing == 'true'
         run: |
           compact compile --version
 
       - name: Install dependencies
-        if: steps.verify-foundation-cache.outputs.cache_ready != 'true' || steps.verify-birth-family-cache.outputs.cache_ready != 'true' || steps.verify-age-gate-cache.outputs.cache_ready != 'true' || steps.verify-protocol-cache.outputs.cache_ready != 'true'
+        if: steps.cone-cache.outputs.any_missing == 'true'
         run: npm ci --prefer-offline
 
       - name: Restore turbo cache
-        if: steps.verify-foundation-cache.outputs.cache_ready != 'true' || steps.verify-birth-family-cache.outputs.cache_ready != 'true' || steps.verify-age-gate-cache.outputs.cache_ready != 'true' || steps.verify-protocol-cache.outputs.cache_ready != 'true'
+        if: steps.cone-cache.outputs.any_missing == 'true'
         uses: actions/cache@v4
         with:
           path: .turbo
