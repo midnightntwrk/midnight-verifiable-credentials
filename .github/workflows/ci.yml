@@ -442,13 +442,34 @@ jobs:
         run: |
           mkdir -p "$RUNNER_TEMP/ci-build-outputs"
           ./tooling/scripts/pack-ci-build-outputs.sh \
-            "$RUNNER_TEMP/ci-build-outputs/ci-build-outputs.tar.gz"
+            "$RUNNER_TEMP/ci-build-outputs"
 
-      - name: Upload reusable CI artifacts
+      - name: Upload foundation CI artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ci-build-outputs
-          path: ${{ runner.temp }}/ci-build-outputs/ci-build-outputs.tar.gz
+          name: ci-build-foundation
+          path: ${{ runner.temp }}/ci-build-outputs/ci-build-foundation.tar.gz
+          if-no-files-found: error
+
+      - name: Upload birth-family CI artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-build-birth-family
+          path: ${{ runner.temp }}/ci-build-outputs/ci-build-birth-family.tar.gz
+          if-no-files-found: error
+
+      - name: Upload age-gate CI artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-build-age-gate
+          path: ${{ runner.temp }}/ci-build-outputs/ci-build-age-gate.tar.gz
+          if-no-files-found: error
+
+      - name: Upload protocol CI artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-build-protocol
+          path: ${{ runner.temp }}/ci-build-outputs/ci-build-protocol.tar.gz
           if-no-files-found: error
 
   lint:
@@ -503,16 +524,37 @@ jobs:
       - name: Install dependencies
         run: npm ci --prefer-offline
 
-      - name: Download reusable CI artifacts
+      - name: Download foundation CI artifact
         uses: actions/download-artifact@v4
         with:
-          name: ci-build-outputs
+          name: ci-build-foundation
+          path: ${{ runner.temp }}/ci-build-outputs
+
+      - name: Download birth-family CI artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ci-build-birth-family
+          path: ${{ runner.temp }}/ci-build-outputs
+
+      - name: Download age-gate CI artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ci-build-age-gate
+          path: ${{ runner.temp }}/ci-build-outputs
+
+      - name: Download protocol CI artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ci-build-protocol
           path: ${{ runner.temp }}/ci-build-outputs
 
       - name: Restore reusable CI artifacts
         run: |
           ./tooling/scripts/restore-ci-build-outputs.sh \
-            "$RUNNER_TEMP/ci-build-outputs/ci-build-outputs.tar.gz"
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-foundation.tar.gz" \
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-birth-family.tar.gz" \
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-age-gate.tar.gz" \
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-protocol.tar.gz"
 
       - name: Run typecheck lane
         run: npm run ci:typecheck:from-artifacts
@@ -537,16 +579,37 @@ jobs:
       - name: Install dependencies
         run: npm ci --prefer-offline
 
-      - name: Download reusable CI artifacts
+      - name: Download foundation CI artifact
         uses: actions/download-artifact@v4
         with:
-          name: ci-build-outputs
+          name: ci-build-foundation
+          path: ${{ runner.temp }}/ci-build-outputs
+
+      - name: Download birth-family CI artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ci-build-birth-family
+          path: ${{ runner.temp }}/ci-build-outputs
+
+      - name: Download age-gate CI artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ci-build-age-gate
+          path: ${{ runner.temp }}/ci-build-outputs
+
+      - name: Download protocol CI artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ci-build-protocol
           path: ${{ runner.temp }}/ci-build-outputs
 
       - name: Restore reusable CI artifacts
         run: |
           ./tooling/scripts/restore-ci-build-outputs.sh \
-            "$RUNNER_TEMP/ci-build-outputs/ci-build-outputs.tar.gz"
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-foundation.tar.gz" \
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-birth-family.tar.gz" \
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-age-gate.tar.gz" \
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-protocol.tar.gz"
 
       - name: Run package build and test lane
         run: npm run ci:package-tests:from-artifacts
@@ -571,16 +634,30 @@ jobs:
       - name: Install dependencies
         run: npm ci --prefer-offline
 
-      - name: Download reusable CI artifacts
+      - name: Download foundation CI artifact
         uses: actions/download-artifact@v4
         with:
-          name: ci-build-outputs
+          name: ci-build-foundation
+          path: ${{ runner.temp }}/ci-build-outputs
+
+      - name: Download birth-family CI artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ci-build-birth-family
+          path: ${{ runner.temp }}/ci-build-outputs
+
+      - name: Download age-gate CI artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ci-build-age-gate
           path: ${{ runner.temp }}/ci-build-outputs
 
       - name: Restore reusable CI artifacts
         run: |
           ./tooling/scripts/restore-ci-build-outputs.sh \
-            "$RUNNER_TEMP/ci-build-outputs/ci-build-outputs.tar.gz"
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-foundation.tar.gz" \
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-birth-family.tar.gz" \
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-age-gate.tar.gz"
 
       - name: Run revocation-focused lane
         run: npm run ci:revocation:from-artifacts
@@ -605,16 +682,30 @@ jobs:
       - name: Install dependencies
         run: npm ci --prefer-offline
 
-      - name: Download reusable CI artifacts
+      - name: Download foundation CI artifact
         uses: actions/download-artifact@v4
         with:
-          name: ci-build-outputs
+          name: ci-build-foundation
+          path: ${{ runner.temp }}/ci-build-outputs
+
+      - name: Download birth-family CI artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ci-build-birth-family
+          path: ${{ runner.temp }}/ci-build-outputs
+
+      - name: Download age-gate CI artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ci-build-age-gate
           path: ${{ runner.temp }}/ci-build-outputs
 
       - name: Restore reusable CI artifacts
         run: |
           ./tooling/scripts/restore-ci-build-outputs.sh \
-            "$RUNNER_TEMP/ci-build-outputs/ci-build-outputs.tar.gz"
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-foundation.tar.gz" \
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-birth-family.tar.gz" \
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-age-gate.tar.gz"
 
       - name: Run demo-contract integration lane
         run: npm run ci:integration:demo-contract:from-artifacts
@@ -639,16 +730,37 @@ jobs:
       - name: Install dependencies
         run: npm ci --prefer-offline
 
-      - name: Download reusable CI artifacts
+      - name: Download foundation CI artifact
         uses: actions/download-artifact@v4
         with:
-          name: ci-build-outputs
+          name: ci-build-foundation
+          path: ${{ runner.temp }}/ci-build-outputs
+
+      - name: Download birth-family CI artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ci-build-birth-family
+          path: ${{ runner.temp }}/ci-build-outputs
+
+      - name: Download age-gate CI artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ci-build-age-gate
+          path: ${{ runner.temp }}/ci-build-outputs
+
+      - name: Download protocol CI artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ci-build-protocol
           path: ${{ runner.temp }}/ci-build-outputs
 
       - name: Restore reusable CI artifacts
         run: |
           ./tooling/scripts/restore-ci-build-outputs.sh \
-            "$RUNNER_TEMP/ci-build-outputs/ci-build-outputs.tar.gz"
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-foundation.tar.gz" \
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-birth-family.tar.gz" \
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-age-gate.tar.gz" \
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-protocol.tar.gz"
 
       - name: Run protocol integration lane
         run: npm run ci:integration:protocol:from-artifacts

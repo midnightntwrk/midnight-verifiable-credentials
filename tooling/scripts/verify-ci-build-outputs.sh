@@ -2,26 +2,23 @@
 set -euo pipefail
 
 ROOT_DIR="$(git rev-parse --show-toplevel)"
+source "$ROOT_DIR/tooling/scripts/ci-build-output-groups.sh"
 
-required_paths=(
-  credentials/src/managed
-  credentials/dist
-  credentials-status-registry/src/managed
-  credentials-status-registry/dist
-  credentials-same-holder/src/managed
-  credentials-same-holder/dist
-  credentials-iso-registry/src/managed
-  credentials-iso-registry/dist
-  credentials-birth/src/managed
-  credentials-birth/dist
-  credentials-birth-secret/src/managed
-  credentials-birth-secret/dist
-  use-cases/age-gate/contract/src/managed
-  use-cases/age-gate/contract/dist
-  components/adapters/offchain-did/dist
-  protocols/openid/dist
-  components/orchestration/protocol/dist
-)
+groups=("$@")
+if [[ ${#groups[@]} -eq 0 ]]; then
+  while IFS= read -r group; do
+    [[ -z "$group" ]] && continue
+    groups+=("$group")
+  done < <(ci_build_output_groups)
+fi
+
+required_paths=()
+for group in "${groups[@]}"; do
+  while IFS= read -r relative_path; do
+    [[ -z "$relative_path" ]] && continue
+    required_paths+=("$relative_path")
+  done < <(ci_build_output_paths "$group")
+done
 
 for relative_path in "${required_paths[@]}"; do
   absolute_path="$ROOT_DIR/$relative_path"
@@ -43,4 +40,4 @@ for relative_path in "${required_paths[@]}"; do
   fi
 done
 
-echo "[verify-ci-build-outputs] Verified ${#required_paths[@]} build output paths"
+echo "[verify-ci-build-outputs] Verified ${#required_paths[@]} build output paths across ${#groups[@]} groups"
