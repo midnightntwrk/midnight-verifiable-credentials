@@ -286,10 +286,13 @@ it is applied as a per-slice discipline instead of a separate numbered queue.
 6. first birth-family rollout of full status-binding commitment into body-root
    logic
    - advanced in the current open stack (`#102`)
+   - rollout-state doc sync is advanced in the current open stack (`#103`)
 7. shared helper rollout plus next-family adoption of full status-binding
    commitment
-   - partially advanced in the current open stack via shared proof-helper hoist
-     (`#104`)
+   - helper-rollout half is partially advanced in the current open stack via
+     shared proof-helper hoist (`#104`)
+   - next-family adoption is still open because there is no second active
+     status-aware family in the tree today
 8. canonical non-membership proof-protocol docs and witness shape
 9. canonical non-membership proof implementation slice
 10. live-root binding feasibility / integration slice for the registry surface
@@ -410,21 +413,22 @@ Current reading:
 
 ### Main gaps from this audit
 
-- there is still no single canonical inventory that tells integrators which
-  public packages and protocol surfaces are:
-  - reusable core
-  - reusable core protocol
-  - prototype-only
-  - Layer 3 / Layer 4 wiring
-- docs now describe status binding and proof-protocol ownership better than the
-  code actually enforces
+- the repository now has a canonical package and protocol inventory, but the
+  integrator-facing maintenance task is still to keep:
+  - package READMEs
+  - exported surfaces
+  - cross-repo guidance
+  aligned with that inventory
+- docs and code are now closer on status binding and proof-protocol
+  ownership, but the final status contract is still incomplete because
+  in-circuit root binding and non-membership remain pending
 - `credentials-protocol` still exposes a broad root runtime surface without a
   curated `exports` map, unlike the narrower entrypoint posture adopted by the
   newer package slices
-- the spec and README set still describe some reusable core protocol semantics
-  and some reference orchestration behavior too close together, especially
-  where “reference protocol” language can be misread as “core reusable
-  protocol”
+- the remaining protocol-classification gap is no longer the inventory itself;
+  it is execution-oriented curation of `credentials-protocol` and the
+  integrator-facing export/documentation surfaces so "reference protocol"
+  language cannot be misread as "core reusable protocol"
 
 ### Claude Second-Pass Triage
 
