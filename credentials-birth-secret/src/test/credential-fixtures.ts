@@ -458,7 +458,7 @@ export const createSecretBirthCredentialFixture = (
       statusAttestation: {
         statement: statusAttestationStatement,
         proof: signProof({
-          bodyRoot: genericPureCircuits.authorityAttestedStatusStatementRoot(
+          bodyRoot: pureCircuits.authorityAttestedStatusStatementRoot(
             statusAttestationStatement,
           ),
           signer: issuer,
