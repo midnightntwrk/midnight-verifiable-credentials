@@ -1,0 +1,93 @@
+pragma language_version >= 0.20;
+
+import CompactStandardLibrary;
+
+include "../../../../credentials-birth/src/birth-credential";
+
+export ledger contractVersion: Uint<32>;
+export ledger successfulVerificationCount: Counter;
+export ledger lastVerifiedCredentialRoot: Bytes<32>;
+export ledger lastVerifiedCurrentDay: Uint<32>;
+export ledger lastVerifiedThresholdYears: Uint<8>;
+export ledger lastVerifiedRequestChallenge: Bytes<32>;
+
+witness holderBirthDateDays(): Uint<32>;
+witness holderBirthDateOpening(): Bytes<32>;
+
+constructor() {
+  contractVersion = 1;
+  lastVerifiedCredentialRoot = pad(32, "hello-verifier:none");
+  lastVerifiedCurrentDay = 0;
+  lastVerifiedThresholdYears = 0;
+  lastVerifiedRequestChallenge = pad(32, "hello-verifier:no-request");
+}
+
+export circuit helloVerifierRequest(
+  issuerVerificationMethodRef: VerificationMethodRef,
+  verifierChallengeHash: Bytes<32>,
+  requestedAgeThresholdYears: Uint<8>
+): BirthCredentialPresentationRequest {
+  return BirthCredentialPresentationRequest {
+    version: 1,
+    schema: SchemaRef {
+      packageId: pad(32, "midnight-did:vc:birth"),
+      schemaId: pad(32, "birth-credential:v1"),
+      majorVersion: 1,
+      minorVersion: 0,
+    },
+    issuerVerificationMethodRef: issuerVerificationMethodRef,
+    requireSubjectIdCommitmentDisclosure: false,
+    requireBirthCountryDisclosure: false,
+    requireAgeOverThreshold: true,
+    requestedAgeThresholdYears: requestedAgeThresholdYears,
+    verifierChallengeHash: verifierChallengeHash,
+  };
+}
+
+// TRUST BOUNDARY: currentDay is still caller-supplied. This starter demonstrates
+// request/presentation verification shape, not production-safe time binding.
+export circuit verifyBirthPresentationForHelloVerifier(
+  credential: BirthCredential,
+  credentialProof: Proof,
+  request: BirthCredentialPresentationRequest,
+  presentation: BirthCredentialPresentation,
+  presentationProof: Proof,
+  currentDay: Uint<32>
+): [] {
+  const credentialRoot = disclose(birthCredentialBodyRoot(credential));
+
+  assertValidBirthCredentialPresentation(
+    credential,
+    credentialProof,
+    presentation,
+    presentationProof
+  );
+
+  assertBirthPresentationSatisfiesRequest(
+    credential,
+    request,
+    presentation,
+    presentationProof
+  );
+
+  if (credential.hasExpiration) {
+    assert(
+      currentDay <= credential.expiresAt,
+      "Credential has expired for the supplied verification day"
+    );
+  }
+
+  assertValidBirthCredentialAgePredicate(
+    credential,
+    presentation,
+    currentDay,
+    holderBirthDateDays(),
+    holderBirthDateOpening()
+  );
+
+  lastVerifiedCredentialRoot = credentialRoot;
+  lastVerifiedCurrentDay = disclose(currentDay);
+  lastVerifiedThresholdYears = disclose(presentation.disclosed.ageThresholdYears);
+  lastVerifiedRequestChallenge = disclose(request.verifierChallengeHash);
+  successfulVerificationCount.increment(1);
+}
