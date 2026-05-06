@@ -10,7 +10,7 @@ Purpose:
   findings
 - provide a stable backlog for follow-up engineering and documentation slices
 
-## Status Update: 2026-05-06
+## Status Update: 2026-05-07
 
 Merged in the last completed iteration:
 
@@ -62,6 +62,16 @@ Merged in the last completed iteration:
   - `#84`
   - `#85`
   - `#86`
+- status ownership, repository restructure, and the Turbo-native CI wave:
+  - `#87`
+  - `#88`
+  - `#89`
+  - `#90`
+  - `#91`
+  - `#92`
+  - `#93`
+  - `#94`
+  - `#95`
 
 Substantially addressed on `develop`:
 
@@ -89,6 +99,22 @@ Partially advanced, but still active:
 - `VC-MAT-17`
 - `VC-MAT-20`
 
+Advanced in the current open maturity stack, but not yet on `develop`:
+
+- category split and active twenty-slice execution plan:
+  - `#96`
+- authority-attestation helper hardening, adversarial coverage, and freshness:
+  - `#97`
+  - `#98`
+  - `#99`
+  - `#100`
+- status-binding commitment design, first-family rollout, rollout-state doc
+  sync, and reusable proof-helper hoist:
+  - `#101`
+  - `#102`
+  - `#103`
+  - `#104`
+
 New audit-derived items:
 
 - `VC-MAT-18`
@@ -97,17 +123,92 @@ New audit-derived items:
 
 Current highest-risk remaining area:
 
-- the biggest unfinished core-spec gap is still status/revocation:
-  the repository does not yet provide final in-circuit root binding and
-  non-membership proof semantics
+- the biggest unfinished core-spec gap is still status/revocation, but it is
+  now narrower than the previous audit cycle:
+  `credentials-birth-secret` can commit shared VC-side status binding into an
+  issuer-signed body root in the current maturity stack, but the repository
+  still does not provide final in-circuit root binding and non-membership
+  proof semantics
 - the strongest remaining integrator-adoption gap is now execution, not
   discovery:
   the repo has templates and guides, but it still lacks a generated family
   scaffold and a concise DID + VC handoff kit
+- the strongest remaining use-case documentation gap is now negative-path BDD:
+  the current `use-cases/age-gate/scenarios/features` tree still contains only
+  two happy-path scenarios and no stale-root / wrong-registry /
+  revoked-unsatisfied scenarios
 - the strongest remaining orchestration-layer adoption gap is now production
   safety:
   `credentials-protocol` still needs a more explicit durable-state, RNG, and
   deployment-checklist story for real integrations
+
+## Self-Audit: 2026-05-07
+
+Evidence reviewed:
+
+- current `develop` history through `#95`
+- open maturity-stack work through `#104`
+- package and protocol inventory under the restructured top-level areas
+- current starter/template surfaces under `docs/templates` and
+  `docs/guides`
+- current BDD feature inventory under `use-cases/age-gate/scenarios/features`
+- status/revocation implementation and specs in:
+  - `credentials`
+  - `credentials-status-registry`
+  - `credentials-birth-secret`
+  - `docs/spec`
+- protocol-state / randomness / retention docs and adapters in
+  `components/orchestration/protocol`
+
+Main findings:
+
+1. repository shape and CI are no longer the dominant maturity risks
+- the restructure wave and the Turbo/per-cone CI wave have materially reduced
+  architectural ambiguity and PR latency
+- they should stay maintained, but they are no longer the first backlog driver
+
+2. the status-binding gap is no longer “no family commits the binding”
+- the current open stack makes `credentials-birth-secret` the first family
+  that commits shared VC-side status binding into an issuer-signed body root
+- the remaining status-contract risk is now concentrated in:
+  - final non-membership proof semantics
+  - live-root binding
+  - rollout reuse beyond the first family
+
+3. the backlog must not imply a hidden second status-aware family
+- today the repository has one active status-aware family rollout:
+  `credentials-birth-secret`
+- so the next status-contract slice should emphasize:
+  - reusable helper rollout
+  - canonical non-membership proof shape
+  - future-family adoption
+  rather than implying another in-tree family is already waiting for migration
+
+4. starter material is still documentation-shaped
+- the repo now has:
+  - a hidden-holder hello-world guide
+  - a verifier contract template
+  - a family scaffold template
+- it still does not have:
+  - a generated scaffold or copy script
+  - a compiling hello-family starter
+  - a compiling hello-verifier starter
+  - a concrete DID + VC handoff kit
+
+5. BDD remains underpowered as a trust-boundary layer
+- the current age-gate use-case BDD tree has only:
+  - `age_gate_happy_path.feature`
+  - `hidden_holder_age_gate_happy_path.feature`
+- there are still no curated negative scenarios for:
+  - stale root
+  - wrong registry
+  - revoked or unsatisfied status
+
+6. orchestration hardening is improved but still mostly documentary
+- `credentials-protocol` now has better state-store, randomness, and retention
+  surfaces plus a filesystem byte-store adapter
+- but the repo still lacks one obvious production-safe checklist / reference
+  path that closes the loop for real integrations
 
 Next active queue:
 
@@ -174,18 +275,27 @@ it is applied as a per-slice discipline instead of a separate numbered queue.
 
 1. deterministic signing-nonce defaults for authority attestation, plus
    helper/API narrowing
+   - advanced in the current open stack (`#97`)
 2. adversarial status protocol coverage:
    - root substitution
    - registry swap
    - missing-binding rejection
+   - advanced in the current open stack (`#98`)
 3. authority-attested freshness policy:
    verifier-enforced max-age semantics
+   - advanced in the current open stack (`#99`)
 4. status-proof protocol docs and README updates for the narrowed helper trust
    surface
+   - advanced in the current open stack (`#100`)
 5. full status-binding commitment design for issuer-signed body roots
+   - advanced in the current open stack (`#101`)
 6. first birth-family rollout of full status-binding commitment into body-root
    logic
-7. shared family rollout of full status-binding commitment
+   - advanced in the current open stack (`#102`)
+7. shared helper rollout plus next-family adoption of full status-binding
+   commitment
+   - partially advanced in the current open stack via shared proof-helper hoist
+     (`#104`)
 8. canonical non-membership proof-protocol docs and witness shape
 9. canonical non-membership proof implementation slice
 10. live-root binding feasibility / integration slice for the registry surface
@@ -213,6 +323,16 @@ it is applied as a per-slice discipline instead of a separate numbered queue.
 The first ten slices are status-contract work because that remains the highest
 core-spec risk. The latter categories remain active, but they should stack on a
 clearer status boundary rather than race ahead of it.
+
+Immediate next queue after the current open stack:
+
+1. `STATUS-CONTRACT` slice `8`
+2. `STATUS-CONTRACT` slice `9`
+3. `STATUS-CONTRACT` slice `10`
+4. `INTEGRATOR-EXECUTION` slice `11`
+5. `INTEGRATOR-EXECUTION` slices `12` and `13`
+6. `BDD-LIVE-DOCS` slices `17` through `19`
+7. `ORCHESTRATION-PROD-SAFETY` slice `20`
 
 `TEST-DOC-ALIGNMENT` intentionally has no numbered slot in this plan. Treat it
 as a per-slice acceptance requirement rather than as a standalone execution
