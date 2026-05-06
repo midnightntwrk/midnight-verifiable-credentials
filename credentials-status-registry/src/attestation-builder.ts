@@ -31,13 +31,39 @@ const bytesToBigInt = (bytes: Uint8Array): bigint =>
   bytes.reduce((accumulator, byte) => (accumulator << 8n) + BigInt(byte), 0n);
 
 const bigintToBytes = (value: bigint, widthBytes: number): Uint8Array => {
+  if (value < 0n) {
+    throw new Error("Cannot encode a negative bigint into bytes");
+  }
   const encoded = new Uint8Array(widthBytes);
   let remaining = value;
   for (let index = widthBytes - 1; index >= 0; index -= 1) {
     encoded[index] = Number(remaining & 0xffn);
     remaining >>= 8n;
   }
+  if (remaining !== 0n) {
+    throw new Error(
+      `Cannot encode bigint into ${widthBytes} bytes without truncation`,
+    );
+  }
   return encoded;
+};
+
+const assertValidAuthorityAttestedSigningInputs = ({
+  signer,
+  createdAt,
+}: {
+  readonly signer: StatusAuthoritySigner;
+  readonly createdAt: bigint;
+}): void => {
+  if (signer.secretKey <= 0n || signer.secretKey >= JUBJUB_SUBGROUP_ORDER) {
+    throw new Error(
+      "Authority-attested status proof signer secret key must be in (0, JUBJUB_SUBGROUP_ORDER)",
+    );
+  }
+  if (createdAt < 0n) {
+    throw new Error("Authority-attested status proof createdAt must be >= 0");
+  }
+  bigintToBytes(createdAt, 32);
 };
 
 export const deriveAuthorityAttestedStatusProofNonceScalar = ({
@@ -49,6 +75,7 @@ export const deriveAuthorityAttestedStatusProofNonceScalar = ({
   readonly signer: StatusAuthoritySigner;
   readonly createdAt: bigint;
 }): bigint => {
+  assertValidAuthorityAttestedSigningInputs({ signer, createdAt });
   const bodyRoot = pureCircuits.authorityAttestedStatusStatementRoot(statement);
 
   let attempt = 0n;
@@ -133,6 +160,11 @@ export const buildAuthorityAttestedStatusStatement = ({
   return statement;
 };
 
+/**
+ * Unsafe escape hatch for tests or tightly controlled deterministic replay.
+ * Production integrations should use `signAuthorityAttestedStatusProof(...)`
+ * so nonce derivation stays internal to the helper.
+ */
 export const unsafeSignAuthorityAttestedStatusProofWithNonceScalar = ({
   statement,
   signer,
@@ -144,6 +176,7 @@ export const unsafeSignAuthorityAttestedStatusProofWithNonceScalar = ({
   readonly createdAt: bigint;
   readonly nonceScalar: bigint;
 }): AuthorityAttestedStatusProof => {
+  assertValidAuthorityAttestedSigningInputs({ signer, createdAt });
   if (nonceScalar <= 0n || nonceScalar >= JUBJUB_SUBGROUP_ORDER) {
     throw new Error(
       "Authority-attested status proof nonce scalar must be in [1, JUBJUB_SUBGROUP_ORDER)",
