@@ -355,6 +355,10 @@ This audit combined:
   - public-surface ambiguity
   - prototype-vs-core classification
 
+This heading preserves the original audit date. The gap bullets below were
+refreshed by the `2026-05-07` self-audit above; treat that newer self-audit as
+the authoritative current priority reading when the two sections overlap.
+
 ### Reusable core VC components
 
 - `credentials`
