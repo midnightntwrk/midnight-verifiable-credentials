@@ -987,7 +987,7 @@ Problem:
   - the final in-circuit non-membership proof path is not shipped
   - the first hidden-holder family rollout now lands in
     `credentials-birth-secret`, but the broader repository still has not
-    completed the status-binding body-root rollout across the remaining
+    completed the status-binding body-root rollout across other or future
     status-aware family surfaces
 - the authority-attested helper path still exposes caller-managed signing nonce
   generation as a prototype API footgun
