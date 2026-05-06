@@ -61,6 +61,8 @@ When a cone cache is missing, the workflow rebuilds only that cone:
 
 Each step uses Turbo filters so the build stays topological and reuses local `.turbo` cache entries inside the job.
 
+One important consequence: restored upstream `dist` trees are not, by themselves, enough to stop Turbo from traversing lower cones when a downstream cone misses. If the matching `.turbo` task entries are cold, Turbo may still rebuild transitive dependencies even though their output trees were restored from the cone cache. The current model prioritizes correctness and finer invalidation over eliminating every partial-miss rebuild.
+
 ## Artifact Rule
 
 The workflow uploads four stable artifact names:
