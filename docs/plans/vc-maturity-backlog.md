@@ -115,12 +115,6 @@ Advanced in the current open maturity stack, but not yet on `develop`:
   - `#103`
   - `#104`
 
-New audit-derived items:
-
-- `VC-MAT-18`
-- `VC-MAT-19`
-- `VC-MAT-20`
-
 Current highest-risk remaining area:
 
 - the biggest unfinished core-spec gap is still status/revocation, but it is
@@ -167,7 +161,7 @@ Main findings:
   architectural ambiguity and PR latency
 - they should stay maintained, but they are no longer the first backlog driver
 
-2. the status-binding gap is no longer “no family commits the binding”
+2. the status-binding gap is no longer "no family commits the binding"
 - the current open stack makes `credentials-birth-secret` the first family
   that commits shared VC-side status binding into an issuer-signed body root
 - the remaining status-contract risk is now concentrated in:
@@ -210,7 +204,7 @@ Main findings:
 - but the repo still lacks one obvious production-safe checklist / reference
   path that closes the loop for real integrations
 
-Next active queue:
+## Next Active Queue
 
 This older `VC-MAT-XX` queue is superseded by the category split and
 twenty-slice execution plan below. Keep it only as a compact pointer to the
@@ -331,6 +325,9 @@ Immediate next queue after the current open stack:
 3. `STATUS-CONTRACT` slice `10`
 4. `INTEGRATOR-EXECUTION` slice `11`
 5. `INTEGRATOR-EXECUTION` slices `12` and `13`
+   - slices `14` through `16` stay intentionally behind these runnable starter
+     slices so issuer/wallet/handoff work grows from executable examples
+     instead of another docs-only wave
 6. `BDD-LIVE-DOCS` slices `17` through `19`
 7. `ORCHESTRATION-PROD-SAFETY` slice `20`
 
