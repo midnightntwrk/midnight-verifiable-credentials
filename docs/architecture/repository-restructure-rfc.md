@@ -24,6 +24,15 @@ The goal is to separate:
 - concrete use-case subprojects
 - repo-local tooling and automation
 
+This RFC also makes one repository-policy change explicit:
+
+- `*demo*` is not a durable architectural category
+- current `*demo*` packages should be split into:
+  - prototype matrices when they exist to prove VC core solidity or capability
+    composition
+  - concrete `use-cases/` subprojects when they exist to model a real
+    application flow
+
 This RFC is about repository structure, dependency direction, CI policy, and
 contribution discipline.
 
@@ -56,6 +65,8 @@ the top level:
 - orchestration and agent logic
 - integration harnesses
 - documentation and quality evidence
+- generic `demo` buckets that blur prototype validation and concrete business
+  flows
 
 That makes several things harder than they should be:
 
@@ -64,11 +75,15 @@ That makes several things harder than they should be:
 2. transport bindings and runtime wiring sit too close to core capability
    packages
 3. prototype families and concrete business use cases are not clearly separated
-4. CI policy can only reason about package names, not stable architectural
+4. generic `demo` packages hide whether a flow is proving core maturity or
+   illustrating a concrete application scenario
+5. BDD living documentation is easier to misplace next to prototypes or
+   low-level package tests when it should be attached to concrete use cases
+6. CI policy can only reason about package names, not stable architectural
    areas
-5. Conventional Commit scopes and review expectations drift toward package-local
+7. Conventional Commit scopes and review expectations drift toward package-local
    history instead of high-level architecture boundaries
-6. future extraction of reusable areas such as status registry becomes harder
+8. future extraction of reusable areas such as status registry becomes harder
 
 ## Design goals
 
@@ -81,6 +96,7 @@ The restructured repository should make these things obvious:
 5. what is only runtime wiring or integration machinery
 6. which areas are allowed to depend on which other areas
 7. how CI should validate those boundaries
+8. where BDD living documentation belongs
 
 ## Non-goals
 
@@ -295,6 +311,11 @@ Rules:
   prototype explicitly exists to validate that integration surface
 - the default expectation is that prototype families stay close to the core and
   prove capability composition, not transport complexity
+- prototypes should split by VC + capability + protocol combination whenever
+  that combination is the thing being proven
+- prototypes should not own repository-level BDD living documentation
+- prototypes should rely on low-level tests, quality baselines, and targeted
+  integration evidence rather than scenario narratives
 - prototype quality evidence should track:
   - circuit complexity
   - proving-key/prover size
@@ -323,16 +344,27 @@ Meaning:
 
 - concrete VC + protocol + wiring combinations for real business flows
 - each use case is a compositional consumer of the lower layers
+- each use case is the correct home for living-documentation scenarios
 
 Rules:
 
 - `use-cases/` may depend on `core/`, `registry/`, `protocols/`,
   `components/`, and `prototypes/`
 - BDD scenarios should live here, not in a generic repo-level bucket forever
+- BDD scenarios must not be mixed into prototype package trees or low-level
+  package test suites as if they were another unit or integration layer
 - each use case should own:
   - its contract/app surface
   - its living-documentation scenarios
   - its flow-specific documentation
+
+Use-case rule:
+
+- if an artifact exists to explain a concrete business flow to integrators,
+  product engineers, or application developers, it belongs under `use-cases/`
+- if an artifact exists to prove a reusable VC + capability + protocol
+  combination is sound independent of any one business story, it belongs under
+  `prototypes/`
 
 ### 8. `tooling/`
 
@@ -389,6 +421,10 @@ Important notes:
 3. `prototypes/` and `use-cases/` are not the same thing
    - prototypes prove core solidity and composition breadth
    - use cases prove that a real flow is understandable and usable
+4. BDD is a use-case concern, not a prototype concern
+   - prototypes may have low-level tests and quality evidence
+   - use cases own human-readable scenario narratives and Serenity-style
+     reports
 
 ## Target mapping from current packages
 
@@ -409,7 +445,7 @@ Important notes:
 | message bus | `components/message-bus` | if/when split further |
 | protocol state store | `components/storage` | if/when split further |
 | `standalone-environment` | `components/integration/standalone-environment` | integration harness |
-| `credentials-demo-contract` | `use-cases/.../contract` | should split by concrete use case, not remain one generic demo bucket |
+| `credentials-demo-contract` | `prototypes/...` and `use-cases/.../contract` | split the current generic demo bucket into prototype combination proofs and concrete use-case contracts |
 | `vc-bdd-scenarios` | `use-cases/.../scenarios` | living docs should sit under concrete flows |
 | complexity / latency collectors | `tooling/metrics` | executable collectors |
 | complexity / latency baselines | `prototypes/quality` | prototype evidence set |
@@ -531,7 +567,8 @@ This structure makes several important facts obvious:
 4. `components/` is wiring, not core
 5. `prototypes/` prove maturity
 6. `use-cases/` prove concrete value and provide live docs
-7. `docs/architecture` remains the authoritative place for architecture
+7. `demo` stops being a catch-all architectural label
+8. `docs/architecture` remains the authoritative place for architecture
    reasoning
 
 ## Migration plan
@@ -556,7 +593,11 @@ This structure makes several important facts obvious:
 ### Phase 4: prototype and use-case split
 
 - move credential-family prototypes under `prototypes/`
-- move business/demo flows and BDD scenarios under `use-cases/`
+- split the current `*demo*` surfaces by intent:
+  - reusable combination proofs into `prototypes/`
+  - concrete business/application flows into `use-cases/`
+- move BDD scenarios under the corresponding `use-cases/` flow instead of
+  keeping them in a generic shared bucket
 - attach complexity/latency evidence to prototypes
 
 ### Phase 5: registry isolation
@@ -581,6 +622,11 @@ This structure makes several important facts obvious:
 4. should use-case BDD scenarios stay colocated under each use case, or should
    the repository keep a thin shared scenario runtime under `components/` or
    `tooling/`?
+
+Current recommendation:
+
+- keep any reusable scenario runtime thin and shareable if needed
+- keep the scenarios themselves under `use-cases/`
 
 ## Immediate recommendation
 
