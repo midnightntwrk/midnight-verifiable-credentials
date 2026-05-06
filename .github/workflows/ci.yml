@@ -96,7 +96,7 @@ jobs:
             'run.sh'
             'run-credentials.sh'
             'run-credentials-standalone.sh'
-            'scripts/*'
+            'tooling/*'
           )
 
           revocation_patterns=(
@@ -318,7 +318,7 @@ jobs:
         id: build-input-hash
         shell: bash
         run: |
-          echo "hash=$(./scripts/hash-ci-build-inputs.sh)" >> "$GITHUB_OUTPUT"
+          echo "hash=$(./tooling/scripts/hash-ci-build-inputs.sh)" >> "$GITHUB_OUTPUT"
 
       - name: Restore cached build outputs
         id: restore-build-output-cache
@@ -348,7 +348,7 @@ jobs:
         id: verify-build-output-cache
         shell: bash
         run: |
-          if ./scripts/verify-ci-build-outputs.sh; then
+          if ./tooling/scripts/verify-ci-build-outputs.sh; then
             echo "cache_ready=true" >> "$GITHUB_OUTPUT"
           else
             echo "cache_ready=false" >> "$GITHUB_OUTPUT"
@@ -441,7 +441,7 @@ jobs:
       - name: Pack reusable CI artifacts
         run: |
           mkdir -p "$RUNNER_TEMP/ci-build-outputs"
-          ./scripts/pack-ci-build-outputs.sh \
+          ./tooling/scripts/pack-ci-build-outputs.sh \
             "$RUNNER_TEMP/ci-build-outputs/ci-build-outputs.tar.gz"
 
       - name: Upload reusable CI artifacts
@@ -511,7 +511,7 @@ jobs:
 
       - name: Restore reusable CI artifacts
         run: |
-          ./scripts/restore-ci-build-outputs.sh \
+          ./tooling/scripts/restore-ci-build-outputs.sh \
             "$RUNNER_TEMP/ci-build-outputs/ci-build-outputs.tar.gz"
 
       - name: Run typecheck lane
@@ -545,7 +545,7 @@ jobs:
 
       - name: Restore reusable CI artifacts
         run: |
-          ./scripts/restore-ci-build-outputs.sh \
+          ./tooling/scripts/restore-ci-build-outputs.sh \
             "$RUNNER_TEMP/ci-build-outputs/ci-build-outputs.tar.gz"
 
       - name: Run package build and test lane
@@ -579,7 +579,7 @@ jobs:
 
       - name: Restore reusable CI artifacts
         run: |
-          ./scripts/restore-ci-build-outputs.sh \
+          ./tooling/scripts/restore-ci-build-outputs.sh \
             "$RUNNER_TEMP/ci-build-outputs/ci-build-outputs.tar.gz"
 
       - name: Run revocation-focused lane
@@ -613,7 +613,7 @@ jobs:
 
       - name: Restore reusable CI artifacts
         run: |
-          ./scripts/restore-ci-build-outputs.sh \
+          ./tooling/scripts/restore-ci-build-outputs.sh \
             "$RUNNER_TEMP/ci-build-outputs/ci-build-outputs.tar.gz"
 
       - name: Run demo-contract integration lane
@@ -647,7 +647,7 @@ jobs:
 
       - name: Restore reusable CI artifacts
         run: |
-          ./scripts/restore-ci-build-outputs.sh \
+          ./tooling/scripts/restore-ci-build-outputs.sh \
             "$RUNNER_TEMP/ci-build-outputs/ci-build-outputs.tar.gz"
 
       - name: Run protocol integration lane

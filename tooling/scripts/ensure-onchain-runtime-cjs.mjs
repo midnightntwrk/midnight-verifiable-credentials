@@ -11,6 +11,7 @@ const runtimeDir = path.join(
 );
 const sourceFile = path.join(
   repoRoot,
+  "tooling",
   "scripts",
   "patches",
   "midnight_onchain_runtime_wasm_fs.cjs",

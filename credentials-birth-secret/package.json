@@ -42,7 +42,7 @@
   },
   "scripts": {
     "contract": "npm run compact",
-    "compact": "node ../scripts/ensure-compact-package-aliases.mjs && compact compile src/secret-birth-credential.compact src/managed/secret-birth-credential && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
+    "compact": "node ../tooling/scripts/ensure-compact-package-aliases.mjs && compact compile src/secret-birth-credential.compact src/managed/secret-birth-credential && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
     "pretypecheck": "npm --prefix ../credentials run build && npm --prefix ../credentials-same-holder run build && npm --prefix ../credentials-birth run build",
     "pretest": "npm --prefix ../credentials run build && npm --prefix ../credentials-same-holder run build && npm --prefix ../credentials-birth run build && npm run compact",
     "pretest:ci": "npm --prefix ../credentials run build && npm --prefix ../credentials-same-holder run build && npm --prefix ../credentials-birth run build && npm run compact",
@@ -66,7 +66,7 @@
     "dist/**",
     "src/**/*.compact",
     "README.md",
-    "scripts/*.mjs",
+    "tooling/scripts/*.mjs",
     "package.json",
     "tsconfig.json",
     "tsconfig.build.json"

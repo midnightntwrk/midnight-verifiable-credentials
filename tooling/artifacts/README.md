@@ -1,6 +1,6 @@
 # Artifacts
 
-Generated tarballs live under `artifacts/npm/`.
+Generated tarballs live under `tooling/artifacts/npm/`.
 
 Purpose:
 - provide a stable packaging target for unpublished VC and standalone-environment packages
@@ -19,4 +19,4 @@ Notes:
 - `credentials-status-registry` is included. It is a reusable status/revocation
   prototype surface even though its contract-facing and off-chain builder
   responsibilities are still evolving.
-- `artifacts/npm/*.tgz` are generated outputs and are gitignored.
+- `tooling/artifacts/npm/*.tgz` are generated outputs and are gitignored.
