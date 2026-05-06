@@ -112,7 +112,9 @@ credentialBodyRoot = persistentHash(
 ```
 
 Equivalent inlining is acceptable, but the commitment boundary must be
-unambiguous:
+unambiguous. If a family inlines the binding fields directly instead of hashing
+a standalone `statusBindingRoot`, the field order and encoding must stay
+canonical across every implementation of that family:
 
 - changing the VC-side status binding must change the issuer-signed body root
 - the issuer proof must no longer validate against a tampered status binding
@@ -151,7 +153,7 @@ level.
 
 ### Slice A: design and terminology
 
-- land this design note (this PR)
+- land this design note
 - update status specs to point at this commitment target
 - keep the terminology focused on `RegistryBoundStatusBinding`
 
