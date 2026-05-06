@@ -1,3 +1,5 @@
+import { createHash } from "node:crypto";
+
 import {
   ecMulGenerator,
   type JubjubPoint,
@@ -23,6 +25,58 @@ export type StatusAuthoritySigner = {
   readonly secretKey: bigint;
   readonly publicKey: JubjubPoint;
   readonly verificationMethodRef: VerificationMethodRef;
+};
+
+const bytesToBigInt = (bytes: Uint8Array): bigint =>
+  bytes.reduce((accumulator, byte) => (accumulator << 8n) + BigInt(byte), 0n);
+
+const bigintToBytes = (value: bigint, widthBytes: number): Uint8Array => {
+  const encoded = new Uint8Array(widthBytes);
+  let remaining = value;
+  for (let index = widthBytes - 1; index >= 0; index -= 1) {
+    encoded[index] = Number(remaining & 0xffn);
+    remaining >>= 8n;
+  }
+  return encoded;
+};
+
+export const deriveAuthorityAttestedStatusProofNonceScalar = ({
+  statement,
+  signer,
+  createdAt,
+}: {
+  readonly statement: AuthorityAttestedStatusStatement;
+  readonly signer: StatusAuthoritySigner;
+  readonly createdAt: bigint;
+}): bigint => {
+  const bodyRoot = pureCircuits.authorityAttestedStatusStatementRoot(statement);
+
+  let attempt = 0n;
+  while (true) {
+    const digest = createHash("sha256")
+      .update("midnight:vc:status-attestation:signing-nonce:v1")
+      .update(bodyRoot)
+      .update(statement.verifierChallengeHash)
+      .update(statement.registryState.registryId)
+      .update(statement.registryState.revokedRoot)
+      .update(statement.statusHandleCommitment)
+      .update(
+        signer.verificationMethodRef.didContractAddress.bytes,
+      )
+      .update(signer.verificationMethodRef.methodId)
+      .update(bigintToBytes(createdAt, 32))
+      .update(bigintToBytes(signer.secretKey, 32))
+      .update(bigintToBytes(attempt, 8))
+      .digest();
+
+    const scalar = modJubjubSubgroupOrder(
+      bytesToBigInt(new Uint8Array(digest)),
+    );
+    if (scalar !== 0n) {
+      return scalar;
+    }
+    attempt += 1n;
+  }
 };
 
 export const buildRevokedSetStatusRequest = ({
@@ -79,7 +133,7 @@ export const buildAuthorityAttestedStatusStatement = ({
   return statement;
 };
 
-export const signAuthorityAttestedStatusProof = ({
+export const unsafeSignAuthorityAttestedStatusProofWithNonceScalar = ({
   statement,
   signer,
   createdAt,
@@ -90,10 +144,6 @@ export const signAuthorityAttestedStatusProof = ({
   readonly createdAt: bigint;
   readonly nonceScalar: bigint;
 }): AuthorityAttestedStatusProof => {
-  // Callers must supply a fresh scalar in the JubJub subgroup interval
-  // `[1, JUBJUB_SUBGROUP_ORDER)`. Reusing or biasing this nonce breaks Schnorr
-  // signature security. The current prototype keeps nonce generation explicit
-  // so application code can integrate its own RNG / deterministic signer.
   if (nonceScalar <= 0n || nonceScalar >= JUBJUB_SUBGROUP_ORDER) {
     throw new Error(
       "Authority-attested status proof nonce scalar must be in [1, JUBJUB_SUBGROUP_ORDER)",
@@ -128,6 +178,26 @@ export const signAuthorityAttestedStatusProof = ({
   pureCircuits.assertValidAuthorityAttestedStatusProof(attestation);
   return attestation;
 };
+
+export const signAuthorityAttestedStatusProof = ({
+  statement,
+  signer,
+  createdAt,
+}: {
+  readonly statement: AuthorityAttestedStatusStatement;
+  readonly signer: StatusAuthoritySigner;
+  readonly createdAt: bigint;
+}): AuthorityAttestedStatusProof =>
+  unsafeSignAuthorityAttestedStatusProofWithNonceScalar({
+    statement,
+    signer,
+    createdAt,
+    nonceScalar: deriveAuthorityAttestedStatusProofNonceScalar({
+      statement,
+      signer,
+      createdAt,
+    }),
+  });
 
 export const buildAuthorityAttestedStatusProofProtocol = ({
   request,
