@@ -92,6 +92,15 @@ Additional expectations by proof protocol:
     surface or a final in-circuit non-membership verification path
   - must disclose whether root freshness and root selection remain
     verifier/application responsibilities
+  - must disclose the canonical witness shape it consumes:
+    - `RevokedSetStatusRequest`
+    - `RevokedSetNonMembershipWitnessInput`
+    - any additional Merkle witness material beyond that base shape
+  - must disclose which parts are already enforced:
+    - request binding
+    - registry-domain binding
+    - status-handle-opening consistency
+    - final Merkle non-membership, if present
 
 Reference companion material:
 

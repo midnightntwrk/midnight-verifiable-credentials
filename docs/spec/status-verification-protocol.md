@@ -89,6 +89,37 @@ The business contract verifies one proof bundle plus the public status inputs:
 
 This is the preferred final architecture.
 
+Current canonical prototype vocabulary for that target is already normalized
+around:
+
+- `RevokedSetStatusRequest`
+- `RevokedSetNonMembershipWitnessInput`
+- `RevokedSetNonMembershipStatusProofProtocol`
+
+The request remains the public verifier-supplied input:
+
+- `registryState.registryId`
+- `registryState.revokedRoot`
+- `verifierChallengeHash`
+
+The witness input remains the holder-private status-binding side:
+
+- `registryState`
+- `statusHandle`
+- `statusHandleOpening`
+
+That split is intentional:
+
+- the verifier chooses the accepted registry snapshot and challenge
+- the holder proves they control a credential whose committed
+  `statusHandleCommitment` opens to one concrete `statusHandle`
+- the contract verifies that both sides are bound to the same registry domain
+  and request
+
+Future final Merkle non-membership work may add a proof-path witness, but it
+should extend this protocol shape rather than replace the request/witness
+separation entirely.
+
 ### 2. Transitional prototype: authority-attested status proof
 
 Current implemented prototype:
@@ -208,6 +239,19 @@ So the holder does not merely present "some registry root"; they present status
 evidence bound to the exact registry and commitment domain already carried by
 the VC family.
 
+For the revoked-set non-membership target specifically, that means the holder
+must be able to supply one canonical witness shape:
+
+- the accepted `registryState`
+- the derived `statusHandle`
+- the `statusHandleOpening` that reproduces the committed
+  `statusHandleCommitment`
+
+The holder does not get to replace that witness shape with ad hoc app-local
+status metadata. If a future implementation adds Merkle non-membership witness
+material, that additional witness must stay subordinate to the same canonical
+request plus status-handle-opening model.
+
 ## Normalized target architecture
 
 The repository should distinguish:
@@ -255,6 +299,11 @@ Current limitations remain:
 
 - the repository does not yet implement the final in-circuit revoked-set
   non-membership proof
+- the current canonical witness shape therefore proves:
+  - request binding
+  - registry-domain binding
+  - status-handle-opening consistency
+  and not yet the final Merkle non-membership statement itself
 - the revocation registry contract does not yet prove that a supplied
   `revokedRoot` equals the live Merkle root inside Compact
 - root freshness is still verifier/application enforced, not contract-discovered
