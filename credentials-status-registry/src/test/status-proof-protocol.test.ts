@@ -71,6 +71,67 @@ describe("status registry: proof protocols", () => {
     ).not.toThrow();
   });
 
+  it("rejects a revoked-set status proof protocol when the witness root differs from the request", () => {
+    const protocol = {
+      request: {
+        registryState: {
+          registryId: bytes32("registry:hidden-holder"),
+          revokedRoot: bytes32("revoked-root:request"),
+        },
+        verifierChallengeHash: bytes32("challenge:status"),
+      },
+      witnessInput: {
+        registryState: {
+          registryId: bytes32("registry:hidden-holder"),
+          revokedRoot: bytes32("revoked-root:witness"),
+        },
+        statusHandle: bytes32("status-handle"),
+        statusHandleOpening: bytes32("status-handle-opening"),
+      },
+    };
+
+    expect(() =>
+      pureCircuits.assertValidRevokedSetNonMembershipStatusProofProtocol(
+        protocol,
+      ),
+    ).toThrow(/revoked root does not match/i);
+  });
+
+  it("rejects a revoked-set status proof protocol when the binding commitment is missing", () => {
+    const signer = createSigner("status-authority", 891n);
+    const protocol = {
+      request: {
+        registryState: {
+          registryId: bytes32("registry:hidden-holder"),
+          revokedRoot: bytes32("revoked-root:current"),
+        },
+        verifierChallengeHash: bytes32("challenge:status"),
+      },
+      witnessInput: {
+        registryState: {
+          registryId: bytes32("registry:hidden-holder"),
+          revokedRoot: bytes32("revoked-root:current"),
+        },
+        statusHandle: bytes32("status-handle"),
+        statusHandleOpening: bytes32("status-handle-opening"),
+      },
+    };
+    const binding = {
+      registryRef: {
+        registryId: protocol.request.registryState.registryId,
+        authorityVerificationMethodRef: signer.verificationMethodRef,
+      },
+      statusHandleCommitment: new Uint8Array(32),
+    };
+
+    expect(() =>
+      pureCircuits.assertRegistryBoundStatusBindingMatchesRevokedSetNonMembershipStatusProofProtocol(
+        binding,
+        protocol,
+      ),
+    ).toThrow(/Status handle commitment must be set/i);
+  });
+
   it("accepts an authority-attested status proof bound to the request and capability", () => {
     const signer = createSigner("status-authority", 321n);
     const request = {
@@ -303,6 +364,42 @@ describe("status registry: proof protocols", () => {
     ).toThrow(/revoked root does not match/i);
   });
 
+  it("rejects an authority-attested status proof when the verifier challenge differs", () => {
+    const signer = createSigner("status-authority", 3241n);
+    const request = {
+      registryState: {
+        registryId: bytes32("registry:hidden-holder"),
+        revokedRoot: bytes32("revoked-root:current"),
+      },
+      verifierChallengeHash: bytes32("challenge:request"),
+    };
+    const statement = {
+      registryState: request.registryState,
+      statusHandleCommitment: bytes32("status-handle-commitment"),
+      verifierChallengeHash: bytes32("challenge:attested"),
+      hasExpiration: false,
+      expiresAt: 0n,
+    };
+    const attestation = {
+      statement,
+      proof: signStatusProof({
+        bodyRoot: pureCircuits.authorityAttestedStatusStatementRoot(statement),
+        signer,
+        createdAt: 100n,
+        challengeHash: statement.verifierChallengeHash,
+        nonceScalar: 37n,
+      }),
+    };
+
+    expect(() =>
+      pureCircuits.assertAuthorityAttestedStatusProofMatchesRequest(
+        request,
+        attestation,
+        110n,
+      ),
+    ).toThrow(/challenge hash does not match/i);
+  });
+
   it("rejects an expired authority-attested status proof", () => {
     const signer = createSigner("status-authority", 325n);
     const request = {
@@ -337,6 +434,53 @@ describe("status registry: proof protocols", () => {
         121n,
       ),
     ).toThrow(/has expired/i);
+  });
+
+  it("rejects an authority-attested status proof protocol when the binding commitment differs", () => {
+    const signer = createSigner("status-authority", 3251n);
+    const request = {
+      registryState: {
+        registryId: bytes32("registry:hidden-holder"),
+        revokedRoot: bytes32("revoked-root:current"),
+      },
+      verifierChallengeHash: bytes32("challenge:status"),
+    };
+    const binding = {
+      registryRef: {
+        registryId: request.registryState.registryId,
+        authorityVerificationMethodRef: signer.verificationMethodRef,
+      },
+      statusHandleCommitment: bytes32("binding-commitment"),
+    };
+    const statement = {
+      registryState: request.registryState,
+      statusHandleCommitment: bytes32("attested-commitment"),
+      verifierChallengeHash: request.verifierChallengeHash,
+      hasExpiration: true,
+      expiresAt: 200n,
+    };
+    const protocol = {
+      request,
+      attestation: {
+        statement,
+        proof: signStatusProof({
+          bodyRoot:
+            pureCircuits.authorityAttestedStatusStatementRoot(statement),
+          signer,
+          createdAt: 100n,
+          challengeHash: request.verifierChallengeHash,
+          nonceScalar: 41n,
+        }),
+      },
+    };
+
+    expect(() =>
+      pureCircuits.assertRegistryBoundStatusBindingMatchesAuthorityAttestedStatusProofProtocol(
+        binding,
+        protocol,
+        150n,
+      ),
+    ).toThrow(/status handle commitment does not match the status binding/i);
   });
 
   it("rejects revoked-set acceptance when the policy does not require status", () => {
