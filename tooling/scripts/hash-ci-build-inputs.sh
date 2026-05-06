@@ -2,6 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(git rev-parse --show-toplevel)"
+source "$ROOT_DIR/tooling/scripts/ci-build-output-groups.sh"
 
 root_inputs=(
   package.json
@@ -9,19 +10,6 @@ root_inputs=(
   turbo.json
   tsconfig.json
   .eslintrc.json
-)
-
-package_inputs=(
-  credentials
-  credentials-status-registry
-  credentials-same-holder
-  credentials-iso-registry
-  components/adapters/offchain-did
-  protocols/openid
-  credentials-birth
-  credentials-birth-secret
-  use-cases/age-gate/contract
-  components/orchestration/protocol
 )
 
 include_file() {
@@ -37,6 +25,13 @@ include_file() {
 }
 
 inputs=()
+groups=("$@")
+if [[ ${#groups[@]} -eq 0 ]]; then
+  while IFS= read -r group; do
+    [[ -z "$group" ]] && continue
+    groups+=("$group")
+  done < <(ci_build_output_groups)
+fi
 
 for path in "${root_inputs[@]}"; do
   if [[ -f "$ROOT_DIR/$path" ]]; then
@@ -44,10 +39,20 @@ for path in "${root_inputs[@]}"; do
   fi
 done
 
-while IFS= read -r -d '' path; do
-  include_file "$path" || continue
-  inputs+=("$path")
-done < <(git -C "$ROOT_DIR" ls-files -z -- "${package_inputs[@]}")
+package_inputs=()
+for group in "${groups[@]}"; do
+  while IFS= read -r package_path; do
+    [[ -z "$package_path" ]] && continue
+    package_inputs+=("$package_path")
+  done < <(ci_build_input_packages "$group")
+done
+
+if [[ ${#package_inputs[@]} -gt 0 ]]; then
+  while IFS= read -r -d '' path; do
+    include_file "$path" || continue
+    inputs+=("$path")
+  done < <(git -C "$ROOT_DIR" ls-files -z -- "${package_inputs[@]}")
+fi
 
 while IFS= read -r -d '' path; do
   include_file "$path" || continue

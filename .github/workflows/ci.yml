@@ -314,14 +314,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Compute build input hash
-        id: build-input-hash
+      - name: Compute build input hashes
+        id: build-input-hashes
         shell: bash
         run: |
-          echo "hash=$(./tooling/scripts/hash-ci-build-inputs.sh)" >> "$GITHUB_OUTPUT"
+          echo "foundation=$(./tooling/scripts/hash-ci-build-inputs.sh foundation)" >> "$GITHUB_OUTPUT"
+          echo "birth_family=$(./tooling/scripts/hash-ci-build-inputs.sh birth-family)" >> "$GITHUB_OUTPUT"
+          echo "age_gate=$(./tooling/scripts/hash-ci-build-inputs.sh age-gate)" >> "$GITHUB_OUTPUT"
+          echo "protocol=$(./tooling/scripts/hash-ci-build-inputs.sh protocol)" >> "$GITHUB_OUTPUT"
 
-      - name: Restore cached build outputs
-        id: restore-build-output-cache
+      - name: Restore foundation build outputs
+        id: restore-foundation-cache
         uses: actions/cache/restore@v4
         with:
           path: |
@@ -333,29 +336,80 @@ jobs:
             credentials-same-holder/dist
             credentials-iso-registry/src/managed
             credentials-iso-registry/dist
+            components/adapters/offchain-did/dist
+            protocols/openid/dist
+          key: ${{ runner.os }}-ci-build-foundation-${{ env.COMPACT_COMPILER_VERSION }}-${{ steps.build-input-hashes.outputs.foundation }}
+
+      - name: Verify foundation build outputs
+        id: verify-foundation-cache
+        shell: bash
+        run: |
+          if ./tooling/scripts/verify-ci-build-outputs.sh foundation; then
+            echo "cache_ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "cache_ready=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Restore birth-family build outputs
+        id: restore-birth-family-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
             credentials-birth/src/managed
             credentials-birth/dist
             credentials-birth-secret/src/managed
             credentials-birth-secret/dist
-            use-cases/age-gate/contract/src/managed
-            use-cases/age-gate/contract/dist
-            components/adapters/offchain-did/dist
-            protocols/openid/dist
-            components/orchestration/protocol/dist
-          key: ${{ runner.os }}-ci-build-outputs-${{ env.COMPACT_COMPILER_VERSION }}-${{ steps.build-input-hash.outputs.hash }}
+          key: ${{ runner.os }}-ci-build-birth-family-${{ env.COMPACT_COMPILER_VERSION }}-${{ steps.build-input-hashes.outputs.birth_family }}
 
-      - name: Verify cached build outputs
-        id: verify-build-output-cache
+      - name: Verify birth-family build outputs
+        id: verify-birth-family-cache
         shell: bash
         run: |
-          if ./tooling/scripts/verify-ci-build-outputs.sh; then
+          if ./tooling/scripts/verify-ci-build-outputs.sh birth-family; then
+            echo "cache_ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "cache_ready=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Restore age-gate build outputs
+        id: restore-age-gate-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            use-cases/age-gate/contract/src/managed
+            use-cases/age-gate/contract/dist
+          key: ${{ runner.os }}-ci-build-age-gate-${{ env.COMPACT_COMPILER_VERSION }}-${{ steps.build-input-hashes.outputs.age_gate }}
+
+      - name: Verify age-gate build outputs
+        id: verify-age-gate-cache
+        shell: bash
+        run: |
+          if ./tooling/scripts/verify-ci-build-outputs.sh age-gate; then
+            echo "cache_ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "cache_ready=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Restore protocol build outputs
+        id: restore-protocol-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            components/orchestration/protocol/dist
+          key: ${{ runner.os }}-ci-build-protocol-${{ env.COMPACT_COMPILER_VERSION }}-${{ steps.build-input-hashes.outputs.protocol }}
+
+      - name: Verify protocol build outputs
+        id: verify-protocol-cache
+        shell: bash
+        run: |
+          if ./tooling/scripts/verify-ci-build-outputs.sh protocol; then
             echo "cache_ready=true" >> "$GITHUB_OUTPUT"
           else
             echo "cache_ready=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Set up Node.js
-        if: steps.verify-build-output-cache.outputs.cache_ready != 'true'
+        if: steps.verify-foundation-cache.outputs.cache_ready != 'true' || steps.verify-birth-family-cache.outputs.cache_ready != 'true' || steps.verify-age-gate-cache.outputs.cache_ready != 'true' || steps.verify-protocol-cache.outputs.cache_ready != 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '24'
@@ -363,14 +417,14 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: Download Compact toolchain artifact
-        if: steps.verify-build-output-cache.outputs.cache_ready != 'true'
+        if: steps.verify-foundation-cache.outputs.cache_ready != 'true' || steps.verify-birth-family-cache.outputs.cache_ready != 'true' || steps.verify-age-gate-cache.outputs.cache_ready != 'true' || steps.verify-protocol-cache.outputs.cache_ready != 'true'
         uses: actions/download-artifact@v4
         with:
           name: compact-toolchain
           path: ${{ runner.temp }}/compact-toolchain
 
       - name: Restore Compact toolchain
-        if: steps.verify-build-output-cache.outputs.cache_ready != 'true'
+        if: steps.verify-foundation-cache.outputs.cache_ready != 'true' || steps.verify-birth-family-cache.outputs.cache_ready != 'true' || steps.verify-age-gate-cache.outputs.cache_ready != 'true' || steps.verify-protocol-cache.outputs.cache_ready != 'true'
         shell: bash
         run: |
           mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
@@ -379,7 +433,7 @@ jobs:
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Activate Compact compiler
-        if: steps.verify-build-output-cache.outputs.cache_ready != 'true'
+        if: steps.verify-foundation-cache.outputs.cache_ready != 'true' || steps.verify-birth-family-cache.outputs.cache_ready != 'true' || steps.verify-age-gate-cache.outputs.cache_ready != 'true' || steps.verify-protocol-cache.outputs.cache_ready != 'true'
         shell: bash
         run: |
           if compact compile --version >/dev/null 2>&1; then
@@ -392,16 +446,16 @@ jobs:
           fi
 
       - name: Verify Compact installation
-        if: steps.verify-build-output-cache.outputs.cache_ready != 'true'
+        if: steps.verify-foundation-cache.outputs.cache_ready != 'true' || steps.verify-birth-family-cache.outputs.cache_ready != 'true' || steps.verify-age-gate-cache.outputs.cache_ready != 'true' || steps.verify-protocol-cache.outputs.cache_ready != 'true'
         run: |
           compact compile --version
 
       - name: Install dependencies
-        if: steps.verify-build-output-cache.outputs.cache_ready != 'true'
+        if: steps.verify-foundation-cache.outputs.cache_ready != 'true' || steps.verify-birth-family-cache.outputs.cache_ready != 'true' || steps.verify-age-gate-cache.outputs.cache_ready != 'true' || steps.verify-protocol-cache.outputs.cache_ready != 'true'
         run: npm ci --prefer-offline
 
       - name: Restore turbo cache
-        if: steps.verify-build-output-cache.outputs.cache_ready != 'true'
+        if: steps.verify-foundation-cache.outputs.cache_ready != 'true' || steps.verify-birth-family-cache.outputs.cache_ready != 'true' || steps.verify-age-gate-cache.outputs.cache_ready != 'true' || steps.verify-protocol-cache.outputs.cache_ready != 'true'
         uses: actions/cache@v4
         with:
           path: .turbo
@@ -410,12 +464,24 @@ jobs:
             ${{ runner.os }}-turbo-${{ github.job }}-
             ${{ runner.os }}-turbo-
 
-      - name: Build reusable CI artifacts
-        if: steps.verify-build-output-cache.outputs.cache_ready != 'true'
-        run: npm run build:ci-artifacts
+      - name: Build foundation outputs
+        if: steps.verify-foundation-cache.outputs.cache_ready != 'true'
+        run: npm run build:cone:foundation
 
-      - name: Save cached build outputs
-        if: steps.verify-build-output-cache.outputs.cache_ready != 'true'
+      - name: Build birth-family outputs
+        if: steps.verify-birth-family-cache.outputs.cache_ready != 'true'
+        run: npm run build:cone:birth-family
+
+      - name: Build age-gate outputs
+        if: steps.verify-age-gate-cache.outputs.cache_ready != 'true'
+        run: npm run build:cone:age-gate
+
+      - name: Build protocol outputs
+        if: steps.verify-protocol-cache.outputs.cache_ready != 'true'
+        run: npm run build:cone:protocol
+
+      - name: Save foundation build outputs
+        if: steps.verify-foundation-cache.outputs.cache_ready != 'true'
         uses: actions/cache/save@v4
         with:
           path: |
@@ -427,16 +493,37 @@ jobs:
             credentials-same-holder/dist
             credentials-iso-registry/src/managed
             credentials-iso-registry/dist
+            components/adapters/offchain-did/dist
+            protocols/openid/dist
+          key: ${{ runner.os }}-ci-build-foundation-${{ env.COMPACT_COMPILER_VERSION }}-${{ steps.build-input-hashes.outputs.foundation }}
+
+      - name: Save birth-family build outputs
+        if: steps.verify-birth-family-cache.outputs.cache_ready != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
             credentials-birth/src/managed
             credentials-birth/dist
             credentials-birth-secret/src/managed
             credentials-birth-secret/dist
+          key: ${{ runner.os }}-ci-build-birth-family-${{ env.COMPACT_COMPILER_VERSION }}-${{ steps.build-input-hashes.outputs.birth_family }}
+
+      - name: Save age-gate build outputs
+        if: steps.verify-age-gate-cache.outputs.cache_ready != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
             use-cases/age-gate/contract/src/managed
             use-cases/age-gate/contract/dist
-            components/adapters/offchain-did/dist
-            protocols/openid/dist
+          key: ${{ runner.os }}-ci-build-age-gate-${{ env.COMPACT_COMPILER_VERSION }}-${{ steps.build-input-hashes.outputs.age_gate }}
+
+      - name: Save protocol build outputs
+        if: steps.verify-protocol-cache.outputs.cache_ready != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
             components/orchestration/protocol/dist
-          key: ${{ runner.os }}-ci-build-outputs-${{ env.COMPACT_COMPILER_VERSION }}-${{ steps.build-input-hash.outputs.hash }}
+          key: ${{ runner.os }}-ci-build-protocol-${{ env.COMPACT_COMPILER_VERSION }}-${{ steps.build-input-hashes.outputs.protocol }}
 
       - name: Pack reusable CI artifacts
         run: |
@@ -450,6 +537,7 @@ jobs:
           name: ci-build-foundation
           path: ${{ runner.temp }}/ci-build-outputs/ci-build-foundation.tar.gz
           if-no-files-found: error
+          compression-level: 0
 
       - name: Upload birth-family CI artifact
         uses: actions/upload-artifact@v4
@@ -457,6 +545,7 @@ jobs:
           name: ci-build-birth-family
           path: ${{ runner.temp }}/ci-build-outputs/ci-build-birth-family.tar.gz
           if-no-files-found: error
+          compression-level: 0
 
       - name: Upload age-gate CI artifact
         uses: actions/upload-artifact@v4
@@ -464,6 +553,7 @@ jobs:
           name: ci-build-age-gate
           path: ${{ runner.temp }}/ci-build-outputs/ci-build-age-gate.tar.gz
           if-no-files-found: error
+          compression-level: 0
 
       - name: Upload protocol CI artifact
         uses: actions/upload-artifact@v4
@@ -471,6 +561,7 @@ jobs:
           name: ci-build-protocol
           path: ${{ runner.temp }}/ci-build-outputs/ci-build-protocol.tar.gz
           if-no-files-found: error
+          compression-level: 0
 
   lint:
     name: Lint
