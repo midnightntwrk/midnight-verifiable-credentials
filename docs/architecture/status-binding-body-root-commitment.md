@@ -75,6 +75,8 @@ issuer-signed body:
 - no status
 - registry-bound status
 
+For this rollout, treat that as a closed set.
+
 Prototype compatibility names such as:
 
 - `NoStatusCapability`
@@ -139,7 +141,8 @@ but they must satisfy both conditions:
    already commits the status binding
 2. wrapper-level status objects are either:
    - direct views of the embedded binding
-   - or validated aliases that cannot diverge from the embedded binding
+   - or validated aliases that family-level validation proves equal to the
+     embedded binding at runtime
 
 Wrapper validation alone is not enough once the family claims this maturity
 level.
@@ -148,7 +151,7 @@ level.
 
 ### Slice A: design and terminology
 
-- land this design note
+- land this design note (this PR)
 - update status specs to point at this commitment target
 - keep the terminology focused on `RegistryBoundStatusBinding`
 
@@ -180,7 +183,8 @@ following:
 2. issuer proof verification fails after any such tamper
 3. wrapper-level aliases cannot diverge from the embedded binding
 4. presentation-time status proof protocols still validate only when they match
-   the same committed binding
+   the same committed binding; the first alignment tests should live in
+   `credentials-birth-secret`
 5. specs and conformance docs clearly state that status binding is carried in
    the issuer-signed body, not just in a wrapper
 
