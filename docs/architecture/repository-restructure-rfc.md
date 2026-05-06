@@ -110,6 +110,17 @@ This RFC does not require:
 
 Those are follow-up execution decisions.
 
+## Decision: RFCs and ADRs are documentation
+
+RFCs and ADRs must be treated as documentation artifacts.
+
+They belong under `docs/`, not as top-level siblings of code.
+
+Repository policy:
+
+- RFCs live under `docs/architecture/`
+- ADRs live under `docs/decisions/`
+
 ## Decision: `architecture` stays under `docs`
 
 `architecture` should not become a top-level sibling of code.
@@ -165,8 +176,8 @@ docs/
 Rules:
 
 - normative specs live in `docs/spec`
-- architecture decisions and RFCs live in `docs/architecture` and
-  `docs/decisions`
+- architecture overviews and RFCs live in `docs/architecture`
+- ADRs and decision records live in `docs/decisions`
 - prototype limitations must be labeled explicitly in docs, not blended into
   normative spec without markers
 - generated quality summaries may be linked from docs, but raw measurement data
