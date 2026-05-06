@@ -102,7 +102,7 @@ Use this package instead of inventing local country/currency/gender code types.
 ### I need OpenID-oriented or web transport adaptation
 Start with:
 
-- [`../../credentials-openid/README.md`](../../credentials-openid/README.md)
+- [`../../protocols/openid/README.md`](../../protocols/openid/README.md)
 
 Use this when the problem is transport, issuance/presentation envelope shape,
 or payload framing around Compact-native values.
@@ -110,7 +110,7 @@ or payload framing around Compact-native values.
 ### I need reference issuance/presentation orchestration
 Start with:
 
-- [`../../credentials-protocol/README.md`](../../credentials-protocol/README.md)
+- [`../../components/orchestration/protocol/README.md`](../../components/orchestration/protocol/README.md)
 
 Use this when you need off-chain flow orchestration, simulation, or reference
 protocol behavior rather than the canonical VC data model alone.
@@ -135,7 +135,7 @@ If you need the smallest copyable starting point rather than a full demo package
 ### I need standalone integration infrastructure
 Start with:
 
-- [`../../standalone-environment/README.md`](../../standalone-environment/README.md)
+- [`../../components/integration/standalone-environment/README.md`](../../components/integration/standalone-environment/README.md)
 
 Use this when the task is environment setup, docker-backed testing, or shared
 integration harness behavior.

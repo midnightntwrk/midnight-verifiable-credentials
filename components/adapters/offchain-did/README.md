@@ -30,16 +30,16 @@ Start here:
 1. use this package only in runtime code that derives holder-binding values
    from off-chain Midnight DID material
 2. do not use this package inside Compact contracts
-3. read [`../docs/guides/integration-surface-map.md`](../docs/guides/integration-surface-map.md)
+3. read [`../../../docs/guides/integration-surface-map.md`](../../../docs/guides/integration-surface-map.md)
    for the canonical split between Compact authority and runtime adapters
 
 Related docs:
 
-- spec: [`../docs/spec/midnight-credentials.md`](../docs/spec/midnight-credentials.md)
-- profiles: [`../docs/spec/profiles.md`](../docs/spec/profiles.md)
-- conformance: [`../docs/spec/conformance.md`](../docs/spec/conformance.md)
-- package boundaries: [`../docs/architecture/package-boundaries.md`](../docs/architecture/package-boundaries.md)
-- package selection: [`../docs/guides/package-selection.md`](../docs/guides/package-selection.md)
+- spec: [`../../../docs/spec/midnight-credentials.md`](../../../docs/spec/midnight-credentials.md)
+- profiles: [`../../../docs/spec/profiles.md`](../../../docs/spec/profiles.md)
+- conformance: [`../../../docs/spec/conformance.md`](../../../docs/spec/conformance.md)
+- package boundaries: [`../../../docs/architecture/package-boundaries.md`](../../../docs/architecture/package-boundaries.md)
+- package selection: [`../../../docs/guides/package-selection.md`](../../../docs/guides/package-selection.md)
 
 ## Purpose
 
@@ -67,6 +67,6 @@ Compatibility aliases are also exported temporarily for the historical
 
 ## Build
 
-- Build: `npm run build -w credentials-offchain-did`
-- Test: `npm test -w credentials-offchain-did`
-- Typecheck: `npm run typecheck -w credentials-offchain-did`
+- Build: `npm run build -w components/adapters/offchain-did`
+- Test: `npm run test:ci -w components/adapters/offchain-did`
+- Typecheck: `npm run typecheck -w components/adapters/offchain-did`

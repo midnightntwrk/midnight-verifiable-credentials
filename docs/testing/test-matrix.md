@@ -21,7 +21,7 @@ Status: current implemented test surface as of 2026-05-05.
 
 ### `credentials-offchain-did`
 
-- `credentials-offchain-did/src/test/offchain-did-holder-binding.test.ts`
+- `components/adapters/offchain-did/src/test/offchain-did-holder-binding.test.ts`
   - offchain DID runtime helper behavior
 
 ## Credential family tests

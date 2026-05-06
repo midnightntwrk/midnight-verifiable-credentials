@@ -9,12 +9,12 @@ workspaces=(
   credentials-status-registry
   credentials-same-holder
   credentials-iso-registry
-  credentials-offchain-did
-  credentials-openid
-  credentials-protocol
+  components/adapters/offchain-did
+  protocols/openid
+  components/orchestration/protocol
   credentials-birth
   credentials-birth-secret
-  standalone-environment
+  components/integration/standalone-environment
 )
 
 mkdir -p "$DEST_DIR"

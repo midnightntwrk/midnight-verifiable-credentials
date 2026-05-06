@@ -27,9 +27,9 @@ Reusable outside this repo:
 
 Related docs:
 
-- spec: [`../docs/spec/midnight-credentials.md`](../docs/spec/midnight-credentials.md)
-- conformance: [`../docs/spec/conformance.md`](../docs/spec/conformance.md)
-- test matrix: [`../docs/testing/test-matrix.md`](../docs/testing/test-matrix.md)
+- spec: [`../../../docs/spec/midnight-credentials.md`](../../../docs/spec/midnight-credentials.md)
+- conformance: [`../../../docs/spec/conformance.md`](../../../docs/spec/conformance.md)
+- test matrix: [`../../../docs/testing/test-matrix.md`](../../../docs/testing/test-matrix.md)
 
 ## Purpose
 
@@ -60,17 +60,17 @@ It exists so package-level integration tests do not each reinvent:
 ## Current Consumers
 
 - `credentials-demo-contract/src/test/integration/`
-- `credentials-protocol/src/test/integration/`
+- `components/orchestration/protocol/src/test/integration/`
 
 ## Validation
 
 ```sh
-npm run typecheck -w standalone-environment
+npm run typecheck -w components/integration/standalone-environment
 ```
 
 Integration execution happens through the consuming packages:
 
 ```sh
 npm run test:integration -w credentials-demo-contract
-npm run test:integration -w credentials-protocol
+npm run test:integration -w components/orchestration/protocol
 ```

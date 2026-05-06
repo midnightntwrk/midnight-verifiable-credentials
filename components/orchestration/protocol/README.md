@@ -33,21 +33,21 @@ Start here:
    - protocol-state management patterns
    - transport-shaped integration experiments
 2. do not use this package as an on-chain API or contract-authoring surface
-3. read [`../docs/guides/integration-surface-map.md`](../docs/guides/integration-surface-map.md)
+3. read [`../../../docs/guides/integration-surface-map.md`](../../../docs/guides/integration-surface-map.md)
    before mixing it with Compact package entrypoints
 
 Related docs:
 
-- spec: [`../docs/spec/midnight-credentials.md`](../docs/spec/midnight-credentials.md)
+- spec: [`../../../docs/spec/midnight-credentials.md`](../../../docs/spec/midnight-credentials.md)
 - protocol classification:
-  [`../docs/architecture/protocol-classification.md`](../docs/architecture/protocol-classification.md)
-- profiles: [`../docs/spec/profiles.md`](../docs/spec/profiles.md)
-- conformance: [`../docs/spec/conformance.md`](../docs/spec/conformance.md)
-- credential status: [`../docs/spec/credential-status.md`](../docs/spec/credential-status.md)
+  [`../../../docs/architecture/protocol-classification.md`](../../../docs/architecture/protocol-classification.md)
+- profiles: [`../../../docs/spec/profiles.md`](../../../docs/spec/profiles.md)
+- conformance: [`../../../docs/spec/conformance.md`](../../../docs/spec/conformance.md)
+- credential status: [`../../../docs/spec/credential-status.md`](../../../docs/spec/credential-status.md)
 - hidden-holder interoperability:
-  [`../docs/spec/hidden-holder-interoperability.md`](../docs/spec/hidden-holder-interoperability.md)
-- companion guide: [`../docs/guides/midnight-credentials-for-dummies.md`](../docs/guides/midnight-credentials-for-dummies.md)
-- test matrix: [`../docs/testing/test-matrix.md`](../docs/testing/test-matrix.md)
+  [`../../../docs/spec/hidden-holder-interoperability.md`](../../../docs/spec/hidden-holder-interoperability.md)
+- companion guide: [`../../../docs/guides/midnight-credentials-for-dummies.md`](../../../docs/guides/midnight-credentials-for-dummies.md)
+- test matrix: [`../../../docs/testing/test-matrix.md`](../../../docs/testing/test-matrix.md)
 
 ## Purpose
 
@@ -318,8 +318,8 @@ composition:
 Run the package in isolation:
 
 ```sh
-npm run lint -w credentials-protocol
-npm run typecheck -w credentials-protocol
-npm run all -w credentials-protocol
-npm run test:integration -w credentials-protocol
+npm run lint -w components/orchestration/protocol
+npm run typecheck -w components/orchestration/protocol
+npm run all -w components/orchestration/protocol
+npm run test:integration -w components/orchestration/protocol
 ```
