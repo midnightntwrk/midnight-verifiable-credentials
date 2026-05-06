@@ -16,6 +16,12 @@ export struct SecretBirthCredentialWithAuthorityAttestedStatusCapability {
   statusCapability: AuthorityAttestedStatusCapability,
 }
 
+struct SecretBirthCredentialStatusBoundBody {
+  credential: SecretBirthCredential,
+  statusBindingMode: StatusBindingKind,
+  statusBindingRoot: Bytes<32>,
+}
+
 export struct SecretBirthCredentialVerificationStatusRequest {
   verificationRequest: SecretBirthCredentialVerificationRequest,
   statusPolicy: VerifierStatusPolicy,
