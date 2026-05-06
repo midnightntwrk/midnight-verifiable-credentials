@@ -83,8 +83,11 @@ jobs:
             return 1
           }
 
+          # Keep these pattern sets in sync with the heavy lane jobs below.
           global_heavy_lane_patterns=(
             '.github/workflows/*'
+            'infrastructure/*'
+            'libs/*'
             'package.json'
             'package-lock.json'
             'turbo.json'
@@ -151,8 +154,15 @@ jobs:
               run_revocation=true
               run_integration_demo_contract=true
               run_integration_protocol=true
+              # Global heavy changes short-circuit the narrower package matchers.
               continue
             fi
+
+            case "$file" in
+              *.md|docs/*)
+                continue
+                ;;
+            esac
 
             if matches_any "$file" "${revocation_patterns[@]}"; then
               run_revocation=true
