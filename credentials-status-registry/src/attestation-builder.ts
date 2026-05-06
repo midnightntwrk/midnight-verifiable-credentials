@@ -3,18 +3,21 @@ import {
   type JubjubPoint,
 } from "@midnight-ntwrk/compact-runtime";
 import {
+  JUBJUB_SUBGROUP_ORDER,
+  modJubjubSubgroupOrder,
+  type Proof,
+  type VerificationMethodRef,
+} from "@midnight-ntwrk/midnight-did-credentials";
+
+import {
   type AuthorityAttestedStatusCapability,
   type AuthorityAttestedStatusProof,
   type AuthorityAttestedStatusProofProtocol,
   type AuthorityAttestedStatusStatement,
-  JUBJUB_SUBGROUP_ORDER,
-  modJubjubSubgroupOrder,
-  type Proof,
   pureCircuits,
   type RevocationRegistryState,
   type RevokedSetStatusRequest,
-  type VerificationMethodRef,
-} from "@midnight-ntwrk/midnight-did-credentials";
+} from "./managed/revocation-registry/contract/index.js";
 
 export type StatusAuthoritySigner = {
   readonly secretKey: bigint;

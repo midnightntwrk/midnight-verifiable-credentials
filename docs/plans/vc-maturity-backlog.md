@@ -52,6 +52,16 @@ Merged in the last completed iteration:
   - `#76`
   - `#77`
   - `#78`
+- architecture audit, CI optimization, package/protocol taxonomy, and Claude
+  audit triage:
+  - `#79`
+  - `#80`
+  - `#81`
+  - `#82`
+  - `#83`
+  - `#84`
+  - `#85`
+  - `#86`
 
 Substantially addressed on `develop`:
 
@@ -66,15 +76,18 @@ Substantially addressed on `develop`:
 - `VC-MAT-13`
 - `VC-MAT-14`
 - `VC-MAT-15`
+- `VC-MAT-11`
+- `VC-MAT-16`
+- `VC-MAT-18`
+- `VC-MAT-19`
 
 Partially advanced, but still active:
 
 - `VC-MAT-06`
 - `VC-MAT-08`
 - `VC-MAT-09`
-- `VC-MAT-11`
-- `VC-MAT-16`
 - `VC-MAT-17`
+- `VC-MAT-20`
 
 New audit-derived items:
 
@@ -84,19 +97,9 @@ New audit-derived items:
 
 Current highest-risk remaining area:
 
-- the repository still lacks one canonical, spec-first inventory that
-  separates:
-  - reusable core VC components
-  - reusable core protocols
-  - prototype-only surfaces
-  - Layer 3 / Layer 4 wiring and helpers
 - the biggest unfinished core-spec gap is still status/revocation:
   the repository does not yet provide final in-circuit root binding and
   non-membership proof semantics
-- the most important unresolved ownership seam is still status/revocation:
-  docs normalize the split, but Compact proof-protocol types still live in
-  `credentials` while `credentials-status-registry` owns most runtime builders
-  and workflow glue
 - the strongest remaining integrator-adoption gap is now execution, not
   discovery:
   the repo has templates and guides, but it still lacks a generated family
@@ -108,15 +111,11 @@ Current highest-risk remaining area:
 
 Next active queue:
 
-1. `VC-MAT-18`
-2. `VC-MAT-19`
-3. `VC-MAT-11`
-4. `VC-MAT-16`
-5. `VC-MAT-20`
-6. `VC-MAT-08`
-7. `VC-MAT-17`
-8. `VC-MAT-06`
-9. `VC-MAT-09`
+1. `VC-MAT-20`
+2. `VC-MAT-08`
+3. `VC-MAT-17`
+4. `VC-MAT-06`
+5. `VC-MAT-09`
 
 ## Architecture Audit: 2026-05-06
 
@@ -156,10 +155,12 @@ Current reading:
 
 Main caveat:
 
-- status proof-protocol ownership is still mixed:
-  - Compact proof-protocol types and validators live in `credentials`
-  - registry-specific runtime builders and witness helpers live in
+- status proof-protocol ownership is now normalized in code:
+  - shared VC-side status binding remains in `credentials`
+  - registry-facing proof-protocol Compact types and validators live in
     `credentials-status-registry`
+- the remaining caveat is the prototype trust model:
+  final in-circuit root binding and non-membership semantics are still pending
 
 ### Prototype-only surfaces
 
@@ -388,9 +389,13 @@ Current grouped execution:
   - architectural terminology/spec split
   - additive runtime binding/protocol types
   - verifier-facing builder/import normalization
-- remaining gap:
-  - Compact proof-protocol types still live in `credentials`
-  - package ownership is clearer in docs than in the canonical Compact surface
+- this slice now also landed:
+  - registry-facing Compact proof-protocol types and validators moved into
+    `credentials-status-registry`
+  - hidden-holder family and revocation-aware demo flows now import that
+    registry-facing proof surface directly
+- remaining work moved under `VC-MAT-20`:
+  - final in-circuit root binding and non-membership semantics
 
 ### VC-MAT-04: Resolve `OffchainDIDHolderBinding` vs `OffchainMidnightHolderBinding`
 
@@ -666,12 +671,12 @@ Current grouped execution:
   - `credentials` owns VC-side status binding shape
   - `credentials-status-registry` owns registry-specific proof-protocol helpers
     and off-chain builders
-- remaining architectural gap:
-  - Compact proof-protocol types and validators still live in `credentials`
-  - runtime builders and witness helpers still live in
+- this slice now landed:
+  - registry-facing Compact proof-protocol types and validators moved into
     `credentials-status-registry`
-  - the repository must either accept that split as intentional core ownership
-    or finish moving the proof-protocol boundary outward
+  - the canonical Compact surface now matches the documented ownership split
+- remaining architectural work moved under `VC-MAT-20`:
+  - final trust-model hardening for the status contract itself
 
 ### VC-MAT-12: Add a dedicated status capability conformance category
 

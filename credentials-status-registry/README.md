@@ -33,14 +33,17 @@ Surface classification:
 
 - mixed surface package
 - `src/revocation-registry.compact` is `On-chain only`
+- `src/status-proof-protocol.compact` is `Reusable Compact proof-protocol surface`
 - TypeScript builders and managed exports are `Off-chain only`
 
 Start here:
 
 1. use `src/revocation-registry.compact` when authoring a registry contract
-2. use `src/witness-builder.ts` and `src/attestation-builder.ts` only in
+2. use `src/status-proof-protocol.compact` when a family or Layer 3 contract
+   needs registry-facing status proof-protocol types and validators
+3. use `src/witness-builder.ts` and `src/attestation-builder.ts` only in
    off-chain verifier/holder/application code
-3. read:
+4. read:
    - [`../docs/spec/revocation-registry.md`](../docs/spec/revocation-registry.md)
    - [`../docs/spec/status-verification-protocol.md`](../docs/spec/status-verification-protocol.md)
    - [`../docs/architecture/protocol-classification.md`](../docs/architecture/protocol-classification.md)
@@ -75,6 +78,9 @@ Import rule:
 
 - credential families should import shared status binding types from
   `credentials`
+- credential families and Layer 3 contracts should import registry-facing
+  proof-protocol Compact types and validators from
+  `src/status-proof-protocol.compact`
 - verifiers, holders, and Layer 3 status-aware application code should import
   registry-facing proof-protocol helpers from this package
 
