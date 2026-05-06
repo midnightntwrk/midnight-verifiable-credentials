@@ -77,7 +77,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `SecretBirthCredentialWithStatusBinding`,
   `SecretBirthCredentialWithStatusCapability`, or
   `SecretBirthCredentialWithAuthorityAttestedStatusCapability` must no longer
-  reuse the plain base-credential proof for those wrapper surfaces.
+  reuse the plain base-credential proof for those wrapper surfaces. This
+  rollout currently applies to the secret-birth family only; non-secret birth
+  family proofs have not changed yet.
 - normalized status ownership in code:
   - shared VC-side status binding remains in `credentials`
   - registry-facing proof-protocol Compact types and validators now live in

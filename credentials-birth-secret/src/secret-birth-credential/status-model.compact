@@ -1,17 +1,23 @@
 export struct SecretBirthCredentialWithStatusCapability {
   credential: SecretBirthCredential,
+  // This proof commits to the status-aware family body root, not the plain
+  // base credential body root.
   credentialProof: Proof,
   statusCapability: RevokedSetNonMembershipStatusCapability,
 }
 
 export struct SecretBirthCredentialWithStatusBinding {
   credential: SecretBirthCredential,
+  // This proof commits to the status-aware family body root, not the plain
+  // base credential body root.
   credentialProof: Proof,
   statusBinding: RegistryBoundStatusBinding,
 }
 
 export struct SecretBirthCredentialWithAuthorityAttestedStatusCapability {
   credential: SecretBirthCredential,
+  // This proof commits to the status-aware family body root, not the plain
+  // base credential body root.
   credentialProof: Proof,
   statusCapability: AuthorityAttestedStatusCapability,
 }
