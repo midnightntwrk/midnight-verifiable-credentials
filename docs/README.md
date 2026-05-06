@@ -54,6 +54,9 @@
 - package boundaries:
   - [`architecture/package-boundaries.md`](./architecture/package-boundaries.md)
   - for package authors deciding where new VC, DID-aware, protocol, or demo logic belongs
+- repository restructure RFC:
+  - [`architecture/repository-restructure-rfc.md`](./architecture/repository-restructure-rfc.md)
+  - for the proposed target top-level repository model and migration phases
 - package tier inventory:
   - [`architecture/package-tier-inventory.md`](./architecture/package-tier-inventory.md)
   - for integrators and architects classifying reusable core, prototype, and wiring packages
