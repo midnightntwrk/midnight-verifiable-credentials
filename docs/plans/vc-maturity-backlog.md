@@ -111,11 +111,112 @@ Current highest-risk remaining area:
 
 Next active queue:
 
-1. `VC-MAT-20`
-2. `VC-MAT-08`
-3. `VC-MAT-17`
-4. `VC-MAT-06`
-5. `VC-MAT-09`
+This older `VC-MAT-XX` queue is superseded by the category split and
+twenty-slice execution plan below. Keep it only as a compact pointer to the
+same top-level priorities:
+
+1. `STATUS-CONTRACT` / `VC-MAT-20`
+2. `INTEGRATOR-EXECUTION` / `VC-MAT-08`
+3. `BDD-LIVE-DOCS` / `VC-MAT-17`
+4. `ORCHESTRATION-PROD-SAFETY` / `VC-MAT-06`
+5. `TEST-DOC-ALIGNMENT` / `VC-MAT-09`
+
+## Category Split
+
+The remaining backlog now falls into five execution categories:
+
+### `STATUS-CONTRACT`
+
+- final status / revocation trust-model hardening
+- in-circuit and helper/API work around status binding, freshness, and
+  adversarial verification behavior
+- primary item:
+  - `VC-MAT-20`
+
+### `INTEGRATOR-EXECUTION`
+
+- runnable starter and scaffold paths that convert the current documentation
+  into execution-shaped onboarding
+- primary item:
+  - `VC-MAT-08`
+
+### `BDD-LIVE-DOCS`
+
+- curated use-case scenarios that explain trust boundaries without becoming a
+  second regression matrix
+- primary item:
+  - `VC-MAT-17`
+
+### `ORCHESTRATION-PROD-SAFETY`
+
+- durable-state, randomness, and deployment-hardening work for the reference
+  Layer 4 orchestration package
+- primary item:
+  - `VC-MAT-06`
+
+### `TEST-DOC-ALIGNMENT`
+
+- keep the package/test/lane docs synchronized with the real repository shape
+  and cross-repo smoke-path expectations
+- primary item:
+  - `VC-MAT-09`
+- execution rule:
+  - treat this as a cross-cutting discipline that applies to every numbered
+    slice below rather than as its own dedicated PR slot
+
+## Twenty-Slice Execution Plan
+
+The next backlog wave is intentionally decomposed into twenty reviewable PR
+slots rather than a few broad epics. `TEST-DOC-ALIGNMENT` remains active, but
+it is applied as a per-slice discipline instead of a separate numbered queue.
+
+### `STATUS-CONTRACT`
+
+1. deterministic signing-nonce defaults for authority attestation, plus
+   helper/API narrowing
+2. adversarial status protocol coverage:
+   - root substitution
+   - registry swap
+   - missing-binding rejection
+3. authority-attested freshness policy:
+   verifier-enforced max-age semantics
+4. status-proof protocol docs and README updates for the narrowed helper trust
+   surface
+5. full status-binding commitment design for issuer-signed body roots
+6. first birth-family rollout of full status-binding commitment into body-root
+   logic
+7. shared family rollout of full status-binding commitment
+8. canonical non-membership proof-protocol docs and witness shape
+9. canonical non-membership proof implementation slice
+10. live-root binding feasibility / integration slice for the registry surface
+
+### `INTEGRATOR-EXECUTION`
+
+11. generated family scaffold or copy script
+12. tiny runnable hello-verifier starter
+13. tiny runnable hello-family starter
+14. issuer-oriented starter path
+15. wallet-oriented starter path
+16. DID + VC handoff checklist, smoke path, and compatibility matrix seed
+
+### `BDD-LIVE-DOCS`
+
+17. stale-root negative scenario
+18. wrong-registry negative scenario
+19. revoked / unsatisfied status scenario
+
+### `ORCHESTRATION-PROD-SAFETY`
+
+20. protocol production-safety package:
+    durable-state checklist, RNG expectations, and deployment guidance
+
+The first ten slices are status-contract work because that remains the highest
+core-spec risk. The latter categories remain active, but they should stack on a
+clearer status boundary rather than race ahead of it.
+
+`TEST-DOC-ALIGNMENT` intentionally has no numbered slot in this plan. Treat it
+as a per-slice acceptance requirement rather than as a standalone execution
+queue.
 
 ## Architecture Audit: 2026-05-06
 
@@ -923,15 +1024,13 @@ Required outcome:
 
 ## Recommended Execution Order
 
-1. `VC-MAT-11`
-2. `VC-MAT-16`
-3. `VC-MAT-20`
-4. `VC-MAT-19`
-5. `VC-MAT-18`
-6. `VC-MAT-06`
-7. `VC-MAT-09`
-8. `VC-MAT-08`
-9. `VC-MAT-17`
+The current authoritative execution order is the twenty-slice plan above.
+
+1. `STATUS-CONTRACT` slices `1` through `10`
+2. `INTEGRATOR-EXECUTION` slices `11` through `16`
+3. `BDD-LIVE-DOCS` slices `17` through `19`
+4. `ORCHESTRATION-PROD-SAFETY` slice `20`
+5. `TEST-DOC-ALIGNMENT` as a cross-cutting requirement on every slice
 
 ## Notes
 
