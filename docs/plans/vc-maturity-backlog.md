@@ -82,11 +82,11 @@ Substantially addressed on `develop`:
 - `VC-MAT-05`
 - `VC-MAT-07`
 - `VC-MAT-10`
+- `VC-MAT-11`
 - `VC-MAT-12`
 - `VC-MAT-13`
 - `VC-MAT-14`
 - `VC-MAT-15`
-- `VC-MAT-11`
 - `VC-MAT-16`
 - `VC-MAT-18`
 - `VC-MAT-19`
@@ -210,7 +210,7 @@ Main findings:
 - but the repo still lacks one obvious production-safe checklist / reference
   path that closes the loop for real integrations
 
-## Next Active Queue
+## Legacy VC-MAT Pointer Queue
 
 This older `VC-MAT-XX` queue is superseded by the category split and
 twenty-slice execution plan below. Keep it only as a compact pointer to the
@@ -327,7 +327,7 @@ The first ten slices are status-contract work because that remains the highest
 core-spec risk. The latter categories remain active, but they should stack on a
 clearer status boundary rather than race ahead of it.
 
-Immediate next queue after the current open stack:
+## Immediate Next Queue After The Current Open Stack
 
 1. `STATUS-CONTRACT` slice `8`
 2. `STATUS-CONTRACT` slice `9`
@@ -355,9 +355,8 @@ This audit combined:
   - public-surface ambiguity
   - prototype-vs-core classification
 
-This heading preserves the original audit date. The gap bullets below were
-refreshed by the `2026-05-07` self-audit above; treat that newer self-audit as
-the authoritative current priority reading when the two sections overlap.
+Headings below are preserved from the original audit. The `2026-05-07`
+self-audit above supersedes any overlapping priority claims.
 
 ### Reusable core VC components
 
