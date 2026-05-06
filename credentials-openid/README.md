@@ -33,6 +33,8 @@ Start here:
 Related docs:
 
 - spec: [`../docs/spec/midnight-credentials.md`](../docs/spec/midnight-credentials.md)
+- protocol classification:
+  [`../docs/architecture/protocol-classification.md`](../docs/architecture/protocol-classification.md)
 - conformance: [`../docs/spec/conformance.md`](../docs/spec/conformance.md)
 - companion guide: [`../docs/guides/midnight-credentials-for-dummies.md`](../docs/guides/midnight-credentials-for-dummies.md)
 - test matrix: [`../docs/testing/test-matrix.md`](../docs/testing/test-matrix.md)
@@ -45,6 +47,12 @@ The goal is to keep Midnight-specific credential issuance and presentation flows
 compatible with familiar OpenID message shapes while preserving the Compact
 credential payloads, holder-binding commitments, and verifier-domain predicates
 used by Midnight Credentials.
+
+Protocol reading rule:
+
+- the JSON/OpenID envelopes in this package are Layer 4 transport/domain
+  wrappers around core Compact semantics
+- they do not redefine canonical VC proof or verification semantics
 
 ## Scope
 

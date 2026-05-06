@@ -42,6 +42,7 @@ Start here:
 Related docs:
 
 - spec: [`../docs/spec/midnight-credentials.md`](../docs/spec/midnight-credentials.md)
+- protocol classification: [`../docs/architecture/protocol-classification.md`](../docs/architecture/protocol-classification.md)
 - profiles: [`../docs/spec/profiles.md`](../docs/spec/profiles.md)
 - conformance: [`../docs/spec/conformance.md`](../docs/spec/conformance.md)
 - credential status: [`../docs/spec/credential-status.md`](../docs/spec/credential-status.md)
@@ -78,6 +79,11 @@ Status package-boundary rule:
 This means a credential family should import status binding from this package,
 while verifier applications and Layer 3 status workflows should import the
 proof-protocol helpers from `credentials-status-registry`.
+
+Protocol reading rule:
+
+- the protocol modules in this package are reusable core protocol semantics
+- transport/orchestration packages may wrap them, but they do not redefine them
 
 ## Compact Entry Points
 

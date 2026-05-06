@@ -27,6 +27,8 @@ Related documents:
   - [`./overview.md`](./overview.md)
 - package tier inventory:
   - [`./package-tier-inventory.md`](./package-tier-inventory.md)
+- protocol classification:
+  - [`./protocol-classification.md`](./protocol-classification.md)
 - dependency composition model:
   - [`./dependency-composition.md`](./dependency-composition.md)
 - package-selection guide:

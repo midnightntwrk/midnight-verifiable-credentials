@@ -43,6 +43,7 @@ Start here:
 3. read:
    - [`../docs/spec/revocation-registry.md`](../docs/spec/revocation-registry.md)
    - [`../docs/spec/status-verification-protocol.md`](../docs/spec/status-verification-protocol.md)
+   - [`../docs/architecture/protocol-classification.md`](../docs/architecture/protocol-classification.md)
    - [`../docs/guides/integration-surface-map.md`](../docs/guides/integration-surface-map.md)
 
 Current scope:
@@ -76,6 +77,12 @@ Import rule:
   `credentials`
 - verifiers, holders, and Layer 3 status-aware application code should import
   registry-facing proof-protocol helpers from this package
+
+Protocol reading rule:
+
+- this package owns registry-facing status proof-protocol helpers
+- it does not turn status transport/orchestration concerns into reusable core
+  protocol semantics
 
 Current prototype limitation:
 - `assertStateUsesThisRegistry(...)` binds the supplied snapshot to this

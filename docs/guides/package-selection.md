@@ -17,6 +17,8 @@ Related documents:
   - [`../spec/profiles.md`](../spec/profiles.md)
 - architecture overview:
   - [`../architecture/overview.md`](../architecture/overview.md)
+- protocol classification:
+  - [`../architecture/protocol-classification.md`](../architecture/protocol-classification.md)
 - integration surface map:
   - [`./integration-surface-map.md`](./integration-surface-map.md)
 
@@ -112,6 +114,11 @@ Start with:
 
 Use this when you need off-chain flow orchestration, simulation, or reference
 protocol behavior rather than the canonical VC data model alone.
+
+Important rule:
+
+- `credentials-protocol` is a Layer 4 wiring/orchestration package
+- it is not the canonical reusable VC protocol specification
 
 ### I need a verifier/business contract example
 Start with:

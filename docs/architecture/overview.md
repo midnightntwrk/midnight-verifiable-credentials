@@ -22,6 +22,8 @@ Related documents:
   - [`./package-boundaries.md`](./package-boundaries.md)
 - package tier inventory:
   - [`./package-tier-inventory.md`](./package-tier-inventory.md)
+- protocol classification:
+  - [`./protocol-classification.md`](./protocol-classification.md)
 - package-selection guide:
   - [`../guides/package-selection.md`](../guides/package-selection.md)
 
@@ -48,6 +50,10 @@ the canonical classification of which packages are:
 - Layer 3 / Layer 4 wiring helpers
 - demos / prototypes
 - shared integration infrastructure
+
+Use [`./protocol-classification.md`](./protocol-classification.md) when the
+question is not “which package owns this?” but “is this canonical VC protocol
+semantics or just Layer 3 / Layer 4 wiring?”
 
 ## Package Responsibilities
 ### `credentials`

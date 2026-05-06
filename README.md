@@ -63,6 +63,7 @@ Start here:
   - [`docs/architecture/overview.md`](./docs/architecture/overview.md)
   - [`docs/architecture/package-boundaries.md`](./docs/architecture/package-boundaries.md)
   - [`docs/architecture/package-tier-inventory.md`](./docs/architecture/package-tier-inventory.md)
+  - [`docs/architecture/protocol-classification.md`](./docs/architecture/protocol-classification.md)
   - [`docs/architecture/dependency-composition.md`](./docs/architecture/dependency-composition.md)
 - testing:
   - [`docs/testing/test-strategy.md`](./docs/testing/test-strategy.md)
