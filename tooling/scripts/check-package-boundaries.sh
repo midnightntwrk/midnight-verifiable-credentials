@@ -36,6 +36,7 @@ readonly -a root_contract_surface_files=(
   credentials-birth/src/index.ts
   credentials-birth-secret/src/index.ts
   use-cases/age-gate/contract/src/index.ts
+  use-cases/hello-verifier/contract/src/index.ts
   credentials-same-holder/src/index.ts
 )
 
