@@ -141,10 +141,14 @@ Important distinction:
 - the status-aware verification additions in this package are prototype
   capability surfaces, not final production revocation support
 - in particular:
-  - `AuthorityAttestedStatusCapability` is a transitional Layer 3 bridge that
-    still depends on verifier/application-supplied `(registryId, revokedRoot)`
-  - `RevokedSetNonMembershipStatusCapability` is currently a capability and
-    witness surface, not yet final in-circuit non-membership enforcement
+  - the status-aware wrapper proofs in this family now commit the shared
+    `RegistryBoundStatusBinding` into an issuer-signed status-bound body root
+  - `AuthorityAttestedStatusCapability` is still a transitional Layer 3 bridge
+    that depends on verifier/application-supplied `(registryId, revokedRoot)`
+    even though the wrapper proof now commits the VC-side binding
+  - `RevokedSetNonMembershipStatusCapability` now commits the VC-side binding
+    in the wrapper proof, but it is still not the final in-circuit
+    non-membership enforcement path
 
 ## Why this package exists
 
