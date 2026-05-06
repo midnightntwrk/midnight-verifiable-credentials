@@ -54,6 +54,9 @@
 - package boundaries:
   - [`architecture/package-boundaries.md`](./architecture/package-boundaries.md)
   - for package authors deciding where new VC, DID-aware, protocol, or demo logic belongs
+- package tier inventory:
+  - [`architecture/package-tier-inventory.md`](./architecture/package-tier-inventory.md)
+  - for integrators and architects classifying reusable core, prototype, and wiring packages
 - dependency composition:
   - [`architecture/dependency-composition.md`](./architecture/dependency-composition.md)
   - for package and contract authors composing capability layers

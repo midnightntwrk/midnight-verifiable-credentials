@@ -7,6 +7,20 @@ Status:
 
 - reference implementation adapter package
 
+Tier:
+
+- DID-aware adapter package
+
+Dependency direction:
+
+- may depend on Midnight DID/runtime packages plus the VC core
+- must not be imported by Compact contracts
+- core VC packages must not depend on this adapter
+
+Reusable outside this repo:
+
+- yes, in DID-aware runtime integrations
+
 Surface classification:
 
 - `Off-chain only`

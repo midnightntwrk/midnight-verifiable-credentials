@@ -6,6 +6,27 @@ Status:
 
 - reference implementation
 
+Tier:
+
+- reusable core capability package
+
+Surface classification:
+
+- `On-chain + off-chain`
+- Compact entrypoints are the authoritative contract-authoring surface
+- generated/runtime TypeScript exports are off-chain mirrors only
+
+Dependency direction:
+
+- may depend on shared core primitives
+- higher-layer families and Layer 3 contracts may compose it
+- must not depend on protocol/orchestration, demos, or standalone integration
+  harnesses
+
+Reusable outside this repo:
+
+- yes
+
 Related docs:
 
 - spec: [`../docs/spec/midnight-credentials.md`](../docs/spec/midnight-credentials.md)
