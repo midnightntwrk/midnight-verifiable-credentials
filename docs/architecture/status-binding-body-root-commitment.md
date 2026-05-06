@@ -111,10 +111,11 @@ credentialBodyRoot = persistentHash(
 )
 ```
 
-Equivalent inlining is acceptable, but the commitment boundary must be
-unambiguous. If a family inlines the binding fields directly instead of hashing
-a standalone `statusBindingRoot`, the field order and encoding must stay
-canonical across every implementation of that family:
+Equivalent inlining is acceptable, but the repository should prefer the
+standalone `statusBindingRoot` form by default. If a family inlines the
+binding fields directly instead of hashing a standalone `statusBindingRoot`,
+the family spec must document one canonical field order and encoding, and every
+implementation of that family must follow it exactly:
 
 - changing the VC-side status binding must change the issuer-signed body root
 - the issuer proof must no longer validate against a tampered status binding
