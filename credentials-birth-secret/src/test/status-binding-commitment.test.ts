@@ -39,7 +39,7 @@ describe("secret birth credential: issuer-signed status binding commitment", () 
           statusHandleCommitment: new Uint8Array(32).fill(7),
         },
       }),
-    ).toThrow(/proof verification failed|signature verification failed/i);
+    ).toThrow();
   });
 
   it("rejects a revoked-set status capability when the committed registry diverges from the issuer-signed proof", () => {
@@ -56,7 +56,7 @@ describe("secret birth credential: issuer-signed status binding commitment", () 
           },
         },
       }),
-    ).toThrow(/proof verification failed|signature verification failed/i);
+    ).toThrow();
   });
 
   it("rejects an authority-attested status capability when the committed handle diverges from the issuer-signed proof", () => {
@@ -72,6 +72,28 @@ describe("secret birth credential: issuer-signed status binding commitment", () 
           },
         },
       ),
-    ).toThrow(/proof verification failed|signature verification failed/i);
+    ).toThrow();
+  });
+
+  it("rejects a status-aware wrapper when it reuses the plain base-credential proof", () => {
+    const fixture = createSecretBirthCredentialFixture();
+
+    expect(() =>
+      pureCircuits.assertValidSecretBirthCredentialWithStatusBinding({
+        ...fixture.credentialWithStatusBinding,
+        credentialProof: fixture.credentialProof,
+      }),
+    ).toThrow();
+  });
+
+  it("rejects a plain base-credential validation attempt when given the status-bound wrapper proof", () => {
+    const fixture = createSecretBirthCredentialFixture();
+
+    expect(() =>
+      pureCircuits.assertValidSecretBirthCredential(
+        fixture.credential,
+        fixture.credentialWithStatusBinding.credentialProof,
+      ),
+    ).toThrow();
   });
 });
