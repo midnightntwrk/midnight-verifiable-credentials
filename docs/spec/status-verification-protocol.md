@@ -221,6 +221,18 @@ What still remains outside the contract:
 - whether the verifier's chosen root source is trustworthy enough
 - how a verifier rotates accepted roots over time
 
+The current repository already exposes one canonical off-chain helper path for
+that verifier-side responsibility:
+
+- `buildObservedRevocationRegistryState(...)`
+- `assertObservedRevocationRegistryStateFreshEnough(...)`
+- `buildRevokedSetStatusRequestFromObservedState(...)`
+- `buildFreshRevokedSetNonMembershipInputs(...)`
+
+Those helpers do not make the root live inside Compact. They normalize the
+current implementation boundary so verifiers stop rebuilding root-freshness
+checks and request/witness/protocol assembly ad hoc.
+
 ## Holder responsibility
 
 The holder must be able to show that the requested registry really belongs to
