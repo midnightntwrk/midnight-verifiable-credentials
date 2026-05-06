@@ -187,6 +187,11 @@ authority-attested status proof is defined in:
 
 - [`./status-verification-protocol.md`](./status-verification-protocol.md)
 
+The target design for committing VC-side status binding into the issuer-signed
+credential body root is defined in:
+
+- [`../architecture/status-binding-body-root-commitment.md`](../architecture/status-binding-body-root-commitment.md)
+
 ## Required status disclosures
 
 Any implementation claiming status support `MUST` document:
