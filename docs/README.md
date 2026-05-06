@@ -69,6 +69,9 @@
 - dependency composition:
   - [`architecture/dependency-composition.md`](./architecture/dependency-composition.md)
   - for package and contract authors composing capability layers
+- CI build cones:
+  - [`architecture/ci-build-cones.md`](./architecture/ci-build-cones.md)
+  - for the shared-build cache and artifact topology used by CI
 
 ## Testing
 

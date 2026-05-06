@@ -5,6 +5,66 @@ ci_build_output_groups() {
   printf '%s\n' foundation birth-family age-gate protocol
 }
 
+ci_build_input_packages() {
+  local group="${1:?usage: ci_build_input_packages <group>}"
+
+  case "$group" in
+    foundation)
+      cat <<'EOF'
+credentials
+credentials-status-registry
+credentials-same-holder
+credentials-iso-registry
+components/adapters/offchain-did
+protocols/openid
+EOF
+      ;;
+    birth-family)
+      cat <<'EOF'
+credentials
+credentials-status-registry
+credentials-same-holder
+credentials-iso-registry
+components/adapters/offchain-did
+protocols/openid
+credentials-birth
+credentials-birth-secret
+EOF
+      ;;
+    age-gate)
+      cat <<'EOF'
+credentials
+credentials-status-registry
+credentials-same-holder
+credentials-iso-registry
+components/adapters/offchain-did
+protocols/openid
+credentials-birth
+credentials-birth-secret
+use-cases/age-gate/contract
+EOF
+      ;;
+    protocol)
+      cat <<'EOF'
+credentials
+credentials-status-registry
+credentials-same-holder
+credentials-iso-registry
+components/adapters/offchain-did
+protocols/openid
+credentials-birth
+credentials-birth-secret
+use-cases/age-gate/contract
+components/orchestration/protocol
+EOF
+      ;;
+    *)
+      echo "[ci-build-output-groups] Unknown group: $group" >&2
+      return 1
+      ;;
+  esac
+}
+
 ci_build_output_paths() {
   local group="${1:?usage: ci_build_output_paths <group>}"
 
