@@ -101,6 +101,10 @@ Current highest-risk remaining area:
   discovery:
   the repo has templates and guides, but it still lacks a generated family
   scaffold and a concise DID + VC handoff kit
+- the strongest remaining orchestration-layer adoption gap is now production
+  safety:
+  `credentials-protocol` still needs a more explicit durable-state, RNG, and
+  deployment-checklist story for real integrations
 
 Next active queue:
 
@@ -221,6 +225,20 @@ The narrower Claude audit agreed on three high-value remaining gaps:
   - freeze as a synchronous capability-typed contract
   - or move intentionally to an async facade once a real async backend is
     committed
+
+The later three-perspective Claude audit added three useful refinements that
+were not explicit enough here before:
+
+- the current starter set is still more documentation-shaped than
+  execution-shaped:
+  the next onboarding slice should include tiny runnable hello paths, not only
+  markdown templates
+- the cross-repo DID to VC handoff contract is still implicit:
+  downstream consumers need a tested DID-tarball to VC-workspace compatibility
+  matrix, not just a narrative checklist
+- `credentials-protocol` still needs a clearer production-safe story:
+  durable state, explicit RNG expectations, and a short deployment checklist
+  should be first-class outcomes rather than side knowledge
 
 The same Claude pass also repeated some findings that are now stale on
 `develop`:
@@ -458,12 +476,20 @@ Problem:
 - current `ProtocolStateStore` is useful, but backend semantics remain biased
   toward in-memory/reference behavior
 - async backends, eviction policy, and mutation safety need a cleaner contract
+- production-facing orchestration defaults are still too implicit:
+  the repo does not yet ship one obvious durable-state adapter, one explicit
+  RNG requirement, and one short production checklist
 
 Required outcome:
 
 - decide whether the interface remains sync-only
 - document or redesign durable backend expectations
 - add explicit guidance for storage-native pruning/eviction
+- provide or clearly document a reference durable adapter path for real
+  deployments
+- require explicit cryptographic RNG selection or otherwise fail closed on
+  unsafe defaults
+- publish a short production checklist for `credentials-protocol`
 
 Current grouped execution:
 
@@ -539,12 +565,16 @@ Current grouped execution:
   - docs-only hidden-holder hello-world walkthrough
 - still missing if deeper onboarding is needed later:
   - a generated family scaffold or copy script
+  - a tiny runnable hello-family / hello-verifier starter, not only markdown
+    templates
   - issuer-oriented starter path
   - wallet-oriented starter path
   - a DID + VC handoff checklist for downstream repos consuming DID tarballs
     plus VC packages
   - one authoritative cross-repo smoke path that starts from the DID packaging
     boundary and ends in one VC issuance/presentation/verification flow
+  - a tested DID-tarball to VC-workspace compatibility/version matrix for that
+    cross-repo path
 
 ### VC-MAT-09: Keep test docs aligned with real package/test coverage
 
