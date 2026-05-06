@@ -87,9 +87,7 @@ export const deriveAuthorityAttestedStatusProofNonceScalar = ({
       .update(statement.registryState.registryId)
       .update(statement.registryState.revokedRoot)
       .update(statement.statusHandleCommitment)
-      .update(
-        signer.verificationMethodRef.didContractAddress.bytes,
-      )
+      .update(signer.verificationMethodRef.didContractAddress.bytes)
       .update(signer.verificationMethodRef.methodId)
       .update(bigintToBytes(createdAt, 32))
       .update(bigintToBytes(signer.secretKey, 32))
