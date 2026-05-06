@@ -57,6 +57,9 @@
 - package tier inventory:
   - [`architecture/package-tier-inventory.md`](./architecture/package-tier-inventory.md)
   - for integrators and architects classifying reusable core, prototype, and wiring packages
+- protocol classification:
+  - [`architecture/protocol-classification.md`](./architecture/protocol-classification.md)
+  - for separating reusable core protocols from Layer 3 / Layer 4 wiring
 - dependency composition:
   - [`architecture/dependency-composition.md`](./architecture/dependency-composition.md)
   - for package and contract authors composing capability layers

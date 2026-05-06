@@ -39,6 +39,8 @@ Start here:
 Related docs:
 
 - spec: [`../docs/spec/midnight-credentials.md`](../docs/spec/midnight-credentials.md)
+- protocol classification:
+  [`../docs/architecture/protocol-classification.md`](../docs/architecture/protocol-classification.md)
 - profiles: [`../docs/spec/profiles.md`](../docs/spec/profiles.md)
 - conformance: [`../docs/spec/conformance.md`](../docs/spec/conformance.md)
 - credential status: [`../docs/spec/credential-status.md`](../docs/spec/credential-status.md)
@@ -67,12 +69,14 @@ transport adapters such as OID4VCI, OID4VP, SIOP, or DIDComm.
 - a protocol simulation and conformance harness
 - a place to test message shapes against Compact-generated circuits
 - a bridge between Layer 2 credential families and Layer 3 business logic
+- a wiring/orchestration layer that consumes reusable core protocol semantics
 
 ## What This Package Is Not
 
 - not a production-ready network transport library
 - not yet a stable publishable API surface
 - not a replacement for OIDC or DIDComm transports
+- not the canonical reusable VC protocol package
 
 The current public exports are intentionally narrow:
 
