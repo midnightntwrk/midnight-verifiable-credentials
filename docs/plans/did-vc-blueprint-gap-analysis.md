@@ -191,6 +191,10 @@ artifact automatically.
 
 - creating a new family is still a manual scaffold exercise, not a generated
   workflow
+- the current starter set is still stronger as documentation than as a
+  runnable “hello path”:
+  there is still no tiny DID bootstrap example and no compiling hello-family
+  starter package that an integrator can run with near-zero interpretation
 - status ownership is still conceptually split across `credentials` and
   `credentials-status-registry`
 - integrators still need to understand too much status prototype context before
@@ -199,6 +203,11 @@ artifact automatically.
   lacks a single “build X capability with Y trust model” cookbook
 - cross-repo DID + VC integration still requires manual tarball and environment
   discipline rather than one guided integration kit
+- the DID-to-VC dependency contract is still implicit:
+  there is no tested version matrix that tells downstream consumers which DID
+  tarballs are known-good against which VC workspace state
+- the DID repo still contains dormant VC-shaped prototype directories that can
+  mislead a fresh integrator about which repository owns the active VC SDK
 
 ### Self-attestation score
 
@@ -436,12 +445,18 @@ clean adoption map for integrators.
 
 - clarify whether the synchronous protocol-state seam is the final contract or
   only a staging point
+- turn `credentials-protocol` production safety from convention into an
+  explicit contract:
+  durable state adapter, cryptographic RNG expectations, and a small production
+  checklist
 - add a dedicated SSI capability/trade-off matrix
 - expose a cleaner cookbook for common trust models:
   - no status
   - verifier-supplied-root
   - authority-attested status
   - future canonical non-membership
+- make the cross-repo DID-to-VC handoff contract explicit:
+  minimal runnable bootstrap path plus a tested compatibility/version matrix
 
 ## Recommended Backlog Deltas
 
@@ -483,9 +498,20 @@ Add explicit acceptance criteria:
 Add integrator-kit follow-up:
 
 - generated family scaffold or copy script
+- minimal runnable hello-family / hello-verifier starter, not just markdown
+  templates
 - issuer-oriented starter
 - wallet-oriented starter
 - DID + VC handoff checklist for downstream repos consuming tarballs
+- tested DID-tarball to VC-workspace compatibility/version matrix
+
+### Extend VC-MAT-06
+
+Add production-safety follow-up:
+
+- reference durable `ProtocolStateStore` adapter for real deployments
+- explicit cryptographic RNG requirement instead of relying on unsafe defaults
+- small production checklist for `credentials-protocol` users
 
 ### Extend VC-MAT-17
 
@@ -502,13 +528,31 @@ concrete claim that is directly supported by checked-in evidence.
 
 ### Claude
 
-- direct non-interactive run was blocked by CLI authentication in this shell
 - recorded artifact:
-  - `/Users/ysh/iohk/midnight-did/review/did-vc-audit/claude-auth-failure.txt`
+  - `/Users/ysh/iohk/midnight-identity-workspace/review/claude-3p-audit-1.txt`
+- triaged Claude findings that materially sharpen the current reading:
+  1. the current starter material still needs tiny runnable entrypoints:
+     a DID bootstrap sample and a compiling hello-family / hello-verifier path
+  2. `credentials-protocol` still lacks a production-safe default story:
+     durable state, explicit RNG expectations, and a checklist are still too
+     implicit
+  3. the DID-to-VC package contract is still implicit:
+     downstream consumers need a tested version matrix for tarball-based DID
+     dependencies versus VC workspace releases
+  4. dormant VC-shaped prototype directories in `midnight-did` remain a
+     cross-repo maturity-signaling problem even though the active VC work has
+     moved into `midnight-verifiable-credentials`
+  5. prototype status/revocation caveats still need to stay louder than
+     generic “reference implementation” language
+- Claude findings intentionally not promoted into the VC backlog at this stage:
+  - the “multi-family composition is undocumented” claim is mostly stale
+    because the repo now ships explicit dependency-composition guidance
+  - Universal Resolver, JSON-LD/JWT bridge, and on-chain schema-registry ideas
+    are larger product-direction questions rather than immediate VC maturity
+    backlog items
 - consequence:
-  - Claude did not contribute usable audit findings in this turn
-  - local self-attestation plus Codex non-interactive output became the
-    consolidated source of truth
+  - the Claude audit now corroborates and slightly sharpens the local plus
+    non-interactive Codex assessment rather than contradicting it
 
 ### Codex
 
