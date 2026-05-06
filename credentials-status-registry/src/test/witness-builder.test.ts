@@ -53,6 +53,8 @@ describe("revoked-set witness builder", () => {
         acceptedStatusCapability: StatusCapabilityKind.revokedSetNonMembership,
         enforceRegistryId: true,
         acceptedRegistryId: bytes32("registry:hidden-holder"),
+        enforceAttestationMaxAge: false,
+        maxAttestationAge: 0n,
       },
       revokedStatusHandles: [bytes32("revoked-handle:someone-else")],
     });

@@ -20,6 +20,8 @@ describe("credentials core: verifier status policy", () => {
       acceptedStatusCapability: StatusCapabilityKind.noStatus,
       enforceRegistryId: false,
       acceptedRegistryId: new Uint8Array(32),
+      enforceAttestationMaxAge: false,
+      maxAttestationAge: 0n,
     };
 
     expect(() =>
@@ -27,12 +29,14 @@ describe("credentials core: verifier status policy", () => {
     ).not.toThrow();
   });
 
-  it("accepts a required non-revocation policy", () => {
+  it("accepts a required authority-attested policy with freshness enforcement", () => {
     const policy = {
       requireStatus: true,
-      acceptedStatusCapability: StatusCapabilityKind.revokedSetNonMembership,
+      acceptedStatusCapability: StatusCapabilityKind.authorityAttestedStatus,
       enforceRegistryId: true,
       acceptedRegistryId: bytes32("registry:hidden-holder"),
+      enforceAttestationMaxAge: true,
+      maxAttestationAge: 50n,
     };
 
     expect(() =>
@@ -46,6 +50,8 @@ describe("credentials core: verifier status policy", () => {
       acceptedStatusCapability: StatusCapabilityKind.noStatus,
       enforceRegistryId: true,
       acceptedRegistryId: bytes32("registry:hidden-holder"),
+      enforceAttestationMaxAge: false,
+      maxAttestationAge: 0n,
     };
 
     expect(() => pureCircuits.assertValidVerifierStatusPolicy(policy)).toThrow(
@@ -59,10 +65,57 @@ describe("credentials core: verifier status policy", () => {
       acceptedStatusCapability: StatusCapabilityKind.noStatus,
       enforceRegistryId: false,
       acceptedRegistryId: new Uint8Array(32),
+      enforceAttestationMaxAge: false,
+      maxAttestationAge: 0n,
     };
 
     expect(() => pureCircuits.assertValidVerifierStatusPolicy(policy)).toThrow(
       /must request a real status capability/i,
+    );
+  });
+
+  it("rejects an optional policy that still enforces attestation max-age", () => {
+    const policy = {
+      requireStatus: false,
+      acceptedStatusCapability: StatusCapabilityKind.noStatus,
+      enforceRegistryId: false,
+      acceptedRegistryId: new Uint8Array(32),
+      enforceAttestationMaxAge: true,
+      maxAttestationAge: 50n,
+    };
+
+    expect(() => pureCircuits.assertValidVerifierStatusPolicy(policy)).toThrow(
+      /must not enforce attestation max-age/i,
+    );
+  });
+
+  it("rejects attestation max-age on non-authority-attested status", () => {
+    const policy = {
+      requireStatus: true,
+      acceptedStatusCapability: StatusCapabilityKind.revokedSetNonMembership,
+      enforceRegistryId: true,
+      acceptedRegistryId: bytes32("registry:hidden-holder"),
+      enforceAttestationMaxAge: true,
+      maxAttestationAge: 50n,
+    };
+
+    expect(() => pureCircuits.assertValidVerifierStatusPolicy(policy)).toThrow(
+      /only applies to authority-attested status/i,
+    );
+  });
+
+  it("rejects a zero freshness window when attestation max-age is enabled", () => {
+    const policy = {
+      requireStatus: true,
+      acceptedStatusCapability: StatusCapabilityKind.authorityAttestedStatus,
+      enforceRegistryId: true,
+      acceptedRegistryId: bytes32("registry:hidden-holder"),
+      enforceAttestationMaxAge: true,
+      maxAttestationAge: 0n,
+    };
+
+    expect(() => pureCircuits.assertValidVerifierStatusPolicy(policy)).toThrow(
+      /must request a real freshness window/i,
     );
   });
 });
