@@ -157,11 +157,13 @@ Evidence reviewed:
 Main findings:
 
 1. repository shape and CI are no longer the dominant maturity risks
+
 - the restructure wave and the Turbo/per-cone CI wave have materially reduced
   architectural ambiguity and PR latency
 - they should stay maintained, but they are no longer the first backlog driver
 
-2. the status-binding gap is no longer "no family commits the binding"
+2. at least one family now commits the status binding, so the gap is narrower
+
 - the current open stack makes `credentials-birth-secret` the first family
   that commits shared VC-side status binding into an issuer-signed body root
 - the remaining status-contract risk is now concentrated in:
@@ -170,6 +172,7 @@ Main findings:
   - rollout reuse beyond the first family
 
 3. the backlog must not imply a hidden second status-aware family
+
 - today the repository has one active status-aware family rollout:
   `credentials-birth-secret`
 - so the next status-contract slice should emphasize:
@@ -179,6 +182,7 @@ Main findings:
   rather than implying another in-tree family is already waiting for migration
 
 4. starter material is still documentation-shaped
+
 - the repo now has:
   - a hidden-holder hello-world guide
   - a verifier contract template
@@ -190,6 +194,7 @@ Main findings:
   - a concrete DID + VC handoff kit
 
 5. BDD remains underpowered as a trust-boundary layer
+
 - the current age-gate use-case BDD tree has only:
   - `age_gate_happy_path.feature`
   - `hidden_holder_age_gate_happy_path.feature`
@@ -199,6 +204,7 @@ Main findings:
   - revoked or unsatisfied status
 
 6. orchestration hardening is improved but still mostly documentary
+
 - `credentials-protocol` now has better state-store, randomness, and retention
   surfaces plus a filesystem byte-store adapter
 - but the repo still lacks one obvious production-safe checklist / reference
