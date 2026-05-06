@@ -20,7 +20,7 @@ package_inputs=(
   protocols/openid
   credentials-birth
   credentials-birth-secret
-  credentials-demo-contract
+  use-cases/age-gate/contract
   components/orchestration/protocol
 )
 

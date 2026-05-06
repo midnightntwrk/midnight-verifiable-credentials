@@ -202,7 +202,7 @@ A verifier contract implementation conforms when it:
 
 Reference implementation:
 
-- [`../../credentials-demo-contract/README.md`](../../credentials-demo-contract/README.md)
+- [`../../use-cases/age-gate/contract/README.md`](../../use-cases/age-gate/contract/README.md)
 
 ## Required implementation disclosures
 

@@ -139,8 +139,8 @@ Integrator split:
 
 Dormant artifact:
 
-- `src/passport-compliance-demo.compact` is a dormant adjacent-prototype
-  artifact
+- `../../../prototypes/passport-compliance/reference/passport-compliance-demo.compact`
+  is a dormant adjacent-prototype artifact
 - it is not part of the supported package surface, default build, or exports
   map
 

@@ -6,7 +6,7 @@ const packageDir = path.dirname(fileURLToPath(import.meta.url));
 const projectDir = path.resolve(packageDir, "..");
 const runtimePackageJsonPath = path.resolve(
   projectDir,
-  "../node_modules/@midnight-ntwrk/compact-runtime/package.json",
+  "../../../node_modules/@midnight-ntwrk/compact-runtime/package.json",
 );
 
 const runtimePackageJson = JSON.parse(

@@ -47,7 +47,7 @@ Repository-scope note:
 Adjacent prototype note:
 
 - the repository does contain one composition spike contract,
-  `credentials-demo-contract/src/passport-compliance-demo.compact`
+  `prototypes/passport-compliance/reference/passport-compliance-demo.compact`
 - that spike composes current-repo shared modules with credential-family
   sources from a sibling `midnight-passport-prototype` checkout
 - treat it as an architecture/prototyping reference, not as proof that
@@ -551,7 +551,7 @@ Rule of thumb:
 ## Historical Prototype Spike
 
 The first dependency-composition spike was prototyped in the now-dormant
-`credentials-demo-contract/src/passport-compliance-demo.compact`. It composes:
+`prototypes/passport-compliance/reference/passport-compliance-demo.compact`. It composes:
 
 - `credentials-same-holder`
 - `credentials-iso-registry`
@@ -599,8 +599,8 @@ If this pattern is revived later, harden it from a dormant spike into a reusable
    - current state: demonstrated in `credentials-demo-contract`
 4. Add a TypeScript test that imports the Layer 3 generated contract and proves
    the expected public types are usable.
-   - current state: demonstrated in
-     `credentials-demo-contract/src/test/passport-compliance-composition.test.ts`
+   - current state: not carried as a validated workspace test in this repo; the
+     dormant Compact spike is preserved only as a prototype reference artifact
 5. Add fixture-backed tests that execute the composed eligibility circuit with
    successful and failing Passport + Compliance presentations.
 6. Document the exact import paths that worked in each package README. Started.

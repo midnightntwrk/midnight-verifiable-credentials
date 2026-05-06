@@ -59,7 +59,7 @@ It exists so package-level integration tests do not each reinvent:
 
 ## Current Consumers
 
-- `credentials-demo-contract/src/test/integration/`
+- `use-cases/age-gate/contract/src/test/integration/`
 - `components/orchestration/protocol/src/test/integration/`
 
 ## Validation
@@ -71,6 +71,6 @@ npm run typecheck -w components/integration/standalone-environment
 Integration execution happens through the consuming packages:
 
 ```sh
-npm run test:integration -w credentials-demo-contract
+npm run test:integration -w use-cases/age-gate/contract
 npm run test:integration -w components/orchestration/protocol
 ```

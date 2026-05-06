@@ -185,10 +185,10 @@ Current gap:
 ## Serenity/JS BDD scenarios
 
 - package:
-  - `vc-bdd-scenarios`
+  - `vc-bdd-scenarios` at `use-cases/age-gate/scenarios/`
 - current smoke scenarios:
-  - `vc-bdd-scenarios/features/age_gate_happy_path.feature`
-  - `vc-bdd-scenarios/features/hidden_holder_age_gate_happy_path.feature`
+  - `use-cases/age-gate/scenarios/features/age_gate_happy_path.feature`
+  - `use-cases/age-gate/scenarios/features/hidden_holder_age_gate_happy_path.feature`
 - root command:
   - `npm run test:bdd:smoke`
 - purpose:

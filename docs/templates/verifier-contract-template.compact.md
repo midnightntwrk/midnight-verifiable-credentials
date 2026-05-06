@@ -84,7 +84,7 @@ If your contract needs the current prototype revocation/status flow:
 For that path, start from:
 
 - `credentials-birth-secret/src/secret-birth-credential.compact`
-- `credentials-demo-contract/src/demo-revocation.compact`
+- `use-cases/age-gate/contract/src/demo-revocation.compact`
 - `docs/spec/status-verification-protocol.md`
 
 ## On-chain / off-chain split

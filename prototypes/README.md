@@ -8,5 +8,8 @@ Target contents:
 - complexity / latency / quality tracking
 - low-level example matrices that prove core solidity
 
+Current subtrees:
+- `passport-compliance/reference`
+
 BDD living documentation does not belong here. Concrete flow scenarios belong in
 `use-cases/`.

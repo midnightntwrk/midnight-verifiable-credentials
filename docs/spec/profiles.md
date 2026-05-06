@@ -42,7 +42,7 @@ Binding mechanism:
 Current implementation packages:
 - [`../../credentials/README.md`](../../credentials/README.md)
 - [`../../credentials-birth/README.md`](../../credentials-birth/README.md)
-- [`../../credentials-demo-contract/README.md`](../../credentials-demo-contract/README.md)
+- [`../../use-cases/age-gate/contract/README.md`](../../use-cases/age-gate/contract/README.md)
 
 Current test coverage:
 - birth credential holder-binding tests

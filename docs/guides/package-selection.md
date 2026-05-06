@@ -123,7 +123,7 @@ Important rule:
 ### I need a verifier/business contract example
 Start with:
 
-- [`../../credentials-demo-contract/README.md`](../../credentials-demo-contract/README.md)
+- [`../../use-cases/age-gate/contract/README.md`](../../use-cases/age-gate/contract/README.md)
 
 Use this as a composition example, not as a generic VC library.
 
