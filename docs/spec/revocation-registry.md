@@ -183,6 +183,28 @@ Semantics:
 - the holder proves non-membership of the status handle in the revoked set
 - the VP proof includes status consistency and non-revocation logic
 
+Current canonical prototype shape:
+
+- public request:
+  - `RevokedSetStatusRequest`
+  - carries `registryState` plus `verifierChallengeHash`
+- holder witness:
+  - `RevokedSetNonMembershipWitnessInput`
+  - carries `registryState`, `statusHandle`, and `statusHandleOpening`
+- combined proof-protocol container:
+  - `RevokedSetNonMembershipStatusProofProtocol`
+
+Current invariants:
+
+- the request and witness must agree on `registryId`
+- the request and witness must agree on `revokedRoot`
+- the witness must open to the status-handle commitment already carried by the
+  VC-side status binding or status capability
+
+Future final Merkle non-membership witness material should extend this shape.
+It should not replace the canonical request object or the committed
+status-handle-opening model.
+
 ### 4. `AuthorityAttestedStatusProofProtocol`
 
 This is the current transitional proof protocol.
@@ -238,6 +260,17 @@ Current prototype implementation note:
 Until the final in-circuit non-membership path lands, the current repository
 implementation must treat `revokedRoot` as an off-chain coordinated snapshot
 value, not as a fully contract-proven root.
+
+That means the current prototype witness shape is already canonical for:
+
+- request binding
+- registry-domain binding
+- status-handle-opening consistency
+
+but not yet for:
+
+- final live-root equality inside the registry contract
+- final Merkle non-membership inside the business-contract verification path
 
 ## Status handle model
 
