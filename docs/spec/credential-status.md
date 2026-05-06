@@ -268,10 +268,16 @@ Current repository packages now contain:
 
 - explicit zero-status modeling through `NoStatusCapability`
 - prototype registry-bound status surfaces and validators
+- a first-family issuer-signed status-bound body-root rollout in
+  `credentials-birth-secret`
 - a prototype authority-attested status proof flow for hidden-holder
   verification
 - a prototype revoked-set witness/proof-protocol flow without final in-circuit
   Merkle non-membership verification
+- canonical off-chain helper surfaces for:
+  - request + witness + protocol bundle construction
+  - observed-root freshness normalization
+  - verifier-supplied snapshot acceptance
 
 Current repository packages still do not claim:
 
@@ -296,10 +302,11 @@ its chosen status level.
 
 The next likely status/revocation engineering phases are:
 
-1. normalize runtime types around shared status binding plus separate proof
-   protocols
-2. complete in-circuit revoked-set non-membership verification
-3. strengthen root-binding semantics for the revocation registry contract
-4. promote the current `demo-revocation` path into a broader integration
-   template once its contract/API story stabilizes
+1. complete in-circuit revoked-set non-membership verification on top of the
+   canonical request/witness/protocol shape
+2. strengthen live-root binding semantics for the revocation registry contract
+3. broaden the issuer-signed status-bound body-root rollout beyond
+   `credentials-birth-secret`
+4. promote the current verifier-side helper path and starter/use-case surfaces
+   into clearer integration guidance once their API story stabilizes
 5. then upgrade conformance claims from prototype to production-shaped support
