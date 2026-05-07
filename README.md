@@ -119,6 +119,18 @@ Light mode:
 ./run.sh --light
 ```
 
+Discover explicit repository targets:
+
+```bash
+./run.sh targets
+```
+
+Run the BDD smoke lane directly:
+
+```bash
+./run.sh bdd
+```
+
 Direct package-wide validation entrypoints:
 
 - `npm run lint`

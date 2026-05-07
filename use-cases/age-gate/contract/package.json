@@ -55,6 +55,9 @@
       "contract-revocation": [
         "dist/contract-revocation.d.ts"
       ],
+      "testing": [
+        "dist/testing.d.ts"
+      ],
       "managed/demo/contract/index.js": [
         "dist/managed/demo/contract/index.d.ts"
       ],

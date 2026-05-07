@@ -20,6 +20,16 @@ const aliases = [
 for (const [alias, targetDir] of aliases) {
   const aliasPath = path.join(repoRoot, alias);
   const packagePath = path.join(repoRoot, targetDir);
+  const workspaceLinkPath = path.join(
+    repoRoot,
+    'node_modules',
+    '@midnight-ntwrk',
+    alias,
+  );
+  const workspaceLinkTarget = path.relative(
+    path.dirname(workspaceLinkPath),
+    packagePath,
+  );
   let aliasReady = false;
   try {
     const stat = await lstat(aliasPath);
@@ -40,6 +50,28 @@ for (const [alias, targetDir] of aliases) {
   if (!aliasReady) {
     await mkdir(path.dirname(aliasPath), { recursive: true });
     await symlink(targetDir, aliasPath, 'dir');
+  }
+
+  let workspaceLinkReady = false;
+  try {
+    const stat = await lstat(workspaceLinkPath);
+    if (stat.isSymbolicLink()) {
+      const existingTarget = await readlink(workspaceLinkPath);
+      if (existingTarget === workspaceLinkTarget) {
+        workspaceLinkReady = true;
+      } else {
+        await rm(workspaceLinkPath, { force: true, recursive: true });
+      }
+    } else {
+      await rm(workspaceLinkPath, { force: true, recursive: true });
+    }
+  } catch (error) {
+    if (!(error && typeof error === 'object' && 'code' in error && error.code === 'ENOENT')) throw error;
+  }
+
+  if (!workspaceLinkReady) {
+    await mkdir(path.dirname(workspaceLinkPath), { recursive: true });
+    await symlink(workspaceLinkTarget, workspaceLinkPath, 'dir');
   }
 
   const distPath = path.join(packagePath, 'dist');
