@@ -82,6 +82,7 @@ export type BirthCredentialFixture = {
     readonly statusHandleOpening: Uint8Array;
     readonly statusRegistryId: Uint8Array;
     readonly statusRevokedRoot: Uint8Array;
+    readonly statusRegistryVersion: bigint;
   };
 };
 
@@ -106,6 +107,7 @@ export type SecretBirthCredentialFixtureOptions = {
   readonly statusHandleOpening?: Uint8Array;
   readonly statusRegistryId?: Uint8Array;
   readonly statusRevokedRoot?: Uint8Array;
+  readonly statusRegistryVersion?: bigint;
 };
 
 const sha256 = (value: string): Uint8Array =>
@@ -233,6 +235,7 @@ export const createSecretBirthCredentialFixture = (
       options.statusRegistryId ?? sha256("registry:birth-secret-status"),
     statusRevokedRoot:
       options.statusRevokedRoot ?? sha256("revoked-root:current"),
+    statusRegistryVersion: options.statusRegistryVersion ?? 1n,
   };
 
   const claims = {
@@ -392,6 +395,7 @@ export const createSecretBirthCredentialFixture = (
     registryState: {
       registryId: witness.statusRegistryId,
       revokedRoot: witness.statusRevokedRoot,
+      registryVersion: witness.statusRegistryVersion,
     },
     verifierChallengeHash: verificationRequest.verifierChallengeHash,
   };
@@ -402,6 +406,7 @@ export const createSecretBirthCredentialFixture = (
         registryState: {
           registryId: witness.statusRegistryId,
           revokedRoot: witness.statusRevokedRoot,
+          registryVersion: witness.statusRegistryVersion,
         },
         statusHandle: witness.statusHandle,
         statusHandleOpening: witness.statusHandleOpening,

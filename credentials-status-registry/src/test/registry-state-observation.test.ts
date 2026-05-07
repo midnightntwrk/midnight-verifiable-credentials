@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   assertObservedRevocationRegistryStateFreshEnough,
+  assertObservedRevocationRegistryVersionAtLeast,
   buildFreshRevokedSetNonMembershipInputs,
   buildObservedRevocationRegistryState,
   buildRevokedSetStatusRequestFromObservedState,
@@ -27,6 +28,7 @@ describe("revocation registry observed-root helpers", () => {
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 0n,
       },
       observedAt: 150n,
     });
@@ -48,6 +50,7 @@ describe("revocation registry observed-root helpers", () => {
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 0n,
       },
       observedAt: 100n,
     });
@@ -72,6 +75,7 @@ describe("revocation registry observed-root helpers", () => {
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 0n,
       },
       observedAt: 100n,
     });
@@ -94,6 +98,7 @@ describe("revocation registry observed-root helpers", () => {
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 0n,
       },
       observedAt: 100n,
     });
@@ -115,6 +120,7 @@ describe("revocation registry observed-root helpers", () => {
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 0n,
       },
       observedAt: 200n,
     });
@@ -132,12 +138,31 @@ describe("revocation registry observed-root helpers", () => {
     ).toThrow(/snapshot time cannot be in the future/i);
   });
 
+  it("rejects an observed snapshot version older than the required minimum", () => {
+    const observedState = buildObservedRevocationRegistryState({
+      registryState: {
+        registryId: bytes32("registry:hidden-holder"),
+        revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 2n,
+      },
+      observedAt: 100n,
+    });
+
+    expect(() =>
+      assertObservedRevocationRegistryVersionAtLeast({
+        observedState,
+        minimumRegistryVersion: 3n,
+      }),
+    ).toThrow(/snapshot version is older than the required minimum/i);
+  });
+
   it("rejects negative timing inputs and malformed observed states", () => {
     expect(() =>
       buildObservedRevocationRegistryState({
         registryState: {
           registryId: bytes32("registry:hidden-holder"),
           revokedRoot: bytes32("revoked-root:current"),
+          registryVersion: 0n,
         },
         observedAt: -1n,
       }),
@@ -147,6 +172,7 @@ describe("revocation registry observed-root helpers", () => {
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 0n,
       },
       observedAt: 100n,
     });
@@ -178,6 +204,7 @@ describe("revocation registry observed-root helpers", () => {
         registryState: {
           registryId: new Uint8Array(),
           revokedRoot: bytes32("revoked-root:current"),
+          registryVersion: 0n,
         },
         observedAt: 100n,
       }),
@@ -189,6 +216,7 @@ describe("revocation registry observed-root helpers", () => {
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 0n,
       },
       observedAt: 100n,
     });

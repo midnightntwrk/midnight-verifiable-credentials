@@ -40,6 +40,7 @@ describe("status registry: proof protocols", () => {
         registryState: {
           registryId: bytes32("registry:hidden-holder"),
           revokedRoot: bytes32("revoked-root:current"),
+          registryVersion: 0n,
         },
         verifierChallengeHash: bytes32("challenge:status"),
       },
@@ -47,6 +48,7 @@ describe("status registry: proof protocols", () => {
         registryState: {
           registryId: bytes32("registry:hidden-holder"),
           revokedRoot: bytes32("revoked-root:current"),
+          registryVersion: 0n,
         },
         statusHandle: bytes32("status-handle"),
         statusHandleOpening: bytes32("status-handle-opening"),
@@ -77,6 +79,7 @@ describe("status registry: proof protocols", () => {
         registryState: {
           registryId: bytes32("registry:hidden-holder"),
           revokedRoot: bytes32("revoked-root:request"),
+          registryVersion: 0n,
         },
         verifierChallengeHash: bytes32("challenge:status"),
       },
@@ -84,6 +87,7 @@ describe("status registry: proof protocols", () => {
         registryState: {
           registryId: bytes32("registry:hidden-holder"),
           revokedRoot: bytes32("revoked-root:witness"),
+          registryVersion: 0n,
         },
         statusHandle: bytes32("status-handle"),
         statusHandleOpening: bytes32("status-handle-opening"),
@@ -104,6 +108,7 @@ describe("status registry: proof protocols", () => {
         registryState: {
           registryId: bytes32("registry:hidden-holder"),
           revokedRoot: bytes32("revoked-root:current"),
+          registryVersion: 0n,
         },
         verifierChallengeHash: bytes32("challenge:status"),
       },
@@ -111,6 +116,7 @@ describe("status registry: proof protocols", () => {
         registryState: {
           registryId: bytes32("registry:hidden-holder"),
           revokedRoot: bytes32("revoked-root:current"),
+          registryVersion: 0n,
         },
         statusHandle: bytes32("status-handle"),
         statusHandleOpening: bytes32("status-handle-opening"),
@@ -139,6 +145,7 @@ describe("status registry: proof protocols", () => {
         registryState: {
           registryId: bytes32("registry:hidden-holder"),
           revokedRoot: bytes32("revoked-root:current"),
+          registryVersion: 0n,
         },
         verifierChallengeHash: bytes32("challenge:status"),
       },
@@ -146,6 +153,7 @@ describe("status registry: proof protocols", () => {
         registryState: {
           registryId: bytes32("registry:hidden-holder"),
           revokedRoot: bytes32("revoked-root:current"),
+          registryVersion: 0n,
         },
         statusHandle: bytes32("status-handle"),
         statusHandleOpening: bytes32("status-handle-opening"),
@@ -175,6 +183,7 @@ describe("status registry: proof protocols", () => {
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 0n,
       },
       verifierChallengeHash: bytes32("challenge:status"),
     };
@@ -228,6 +237,7 @@ describe("status registry: proof protocols", () => {
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 0n,
       },
       verifierChallengeHash: bytes32("challenge:status"),
     };
@@ -285,6 +295,7 @@ describe("status registry: proof protocols", () => {
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 0n,
       },
       verifierChallengeHash: bytes32("challenge:status"),
     };
@@ -328,6 +339,7 @@ describe("status registry: proof protocols", () => {
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 0n,
       },
       verifierChallengeHash: bytes32("challenge:status"),
     };
@@ -381,6 +393,7 @@ describe("status registry: proof protocols", () => {
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("revoked-root:request"),
+        registryVersion: 0n,
       },
       verifierChallengeHash: bytes32("challenge:status"),
     };
@@ -388,6 +401,7 @@ describe("status registry: proof protocols", () => {
       registryState: {
         registryId: request.registryState.registryId,
         revokedRoot: bytes32("revoked-root:attested"),
+        registryVersion: 0n,
       },
       statusHandleCommitment: bytes32("status-handle-commitment"),
       verifierChallengeHash: request.verifierChallengeHash,
@@ -420,6 +434,7 @@ describe("status registry: proof protocols", () => {
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 0n,
       },
       verifierChallengeHash: bytes32("challenge:request"),
     };
@@ -456,6 +471,7 @@ describe("status registry: proof protocols", () => {
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 0n,
       },
       verifierChallengeHash: bytes32("challenge:status"),
     };
@@ -509,6 +525,7 @@ describe("status registry: proof protocols", () => {
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 0n,
       },
       verifierChallengeHash: bytes32("challenge:status"),
     };
@@ -545,6 +562,7 @@ describe("status registry: proof protocols", () => {
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 0n,
       },
       verifierChallengeHash: bytes32("challenge:status"),
     };
@@ -603,6 +621,7 @@ describe("status registry: proof protocols", () => {
       registryState: {
         registryId,
         revokedRoot: bytes32("revoked-root"),
+        registryVersion: 0n,
       },
       statusHandle: bytes32("status-handle"),
       statusHandleOpening: bytes32("status-opening"),
@@ -641,6 +660,7 @@ describe("status registry: proof protocols", () => {
       registryState: {
         registryId: bytes32("registry:witness"),
         revokedRoot: bytes32("revoked-root"),
+        registryVersion: 0n,
       },
       statusHandle: bytes32("status-handle"),
       statusHandleOpening: bytes32("status-opening"),

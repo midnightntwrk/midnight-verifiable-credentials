@@ -71,6 +71,7 @@ export type DemoRevocationFixture = {
     readonly statusHandleOpening: Uint8Array;
     readonly statusRegistryId: Uint8Array;
     readonly statusRevokedRoot: Uint8Array;
+    readonly statusRegistryVersion: bigint;
   };
 };
 
@@ -184,6 +185,7 @@ export const createDemoRevocationFixture = (): DemoRevocationFixture => {
     statusHandleOpening: sha256("opening:status-handle"),
     statusRegistryId: sha256("registry:birth-secret-status"),
     statusRevokedRoot: sha256("revoked-root:current"),
+    statusRegistryVersion: 1n,
   };
 
   const claims = {
@@ -335,6 +337,7 @@ export const createDemoRevocationFixture = (): DemoRevocationFixture => {
     registryState: {
       registryId: witness.statusRegistryId,
       revokedRoot: witness.statusRevokedRoot,
+      registryVersion: witness.statusRegistryVersion,
     },
     verifierChallengeHash: verificationRequest.verifierChallengeHash,
   };
@@ -345,6 +348,7 @@ export const createDemoRevocationFixture = (): DemoRevocationFixture => {
         registryState: {
           registryId: witness.statusRegistryId,
           revokedRoot: witness.statusRevokedRoot,
+          registryVersion: witness.statusRegistryVersion,
         },
         statusHandle: witness.statusHandle,
         statusHandleOpening: witness.statusHandleOpening,
@@ -455,6 +459,7 @@ export const fixtureRegistryState = (
 ): RevocationRegistryState => ({
   registryId: fixture.witness.statusRegistryId,
   revokedRoot: fixture.witness.statusRevokedRoot,
+  registryVersion: fixture.witness.statusRegistryVersion,
 });
 
 const verificationMessageEnvelope = (
