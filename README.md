@@ -59,6 +59,7 @@ Start here:
   - [`docs/guides/midnight-credentials-for-dummies.md`](./docs/guides/midnight-credentials-for-dummies.md)
   - [`docs/guides/package-selection.md`](./docs/guides/package-selection.md)
   - [`docs/guides/integration-surface-map.md`](./docs/guides/integration-surface-map.md)
+  - [`docs/guides/prototype-execution-ladder.md`](./docs/guides/prototype-execution-ladder.md)
 - architecture:
   - [`docs/architecture/overview.md`](./docs/architecture/overview.md)
   - [`docs/architecture/package-boundaries.md`](./docs/architecture/package-boundaries.md)
