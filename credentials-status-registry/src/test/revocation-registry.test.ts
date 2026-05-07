@@ -187,6 +187,14 @@ describe("revocation registry contract", () => {
     expect(
       revokedLedger.revokedStatusHandles.findPathForLeaf(statusHandle),
     ).toBeDefined();
+
+    expect(() =>
+      contract.impureCircuits.assertStateUsesThisRegistry(revoked.context, {
+        registryId: bytes32("registry:hidden-holder"),
+        revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 1n,
+      }),
+    ).not.toThrow();
   });
 
   it("rejects an empty revoked status handle", () => {
