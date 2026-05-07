@@ -131,6 +131,18 @@ Run the BDD smoke lane directly:
 ./run.sh bdd
 ```
 
+Run only the negative BDD living-doc scenarios:
+
+```bash
+./run.sh bdd-negative
+```
+
+Run the full BDD scenario set:
+
+```bash
+./run.sh bdd-all
+```
+
 Direct package-wide validation entrypoints:
 
 - `npm run lint`
