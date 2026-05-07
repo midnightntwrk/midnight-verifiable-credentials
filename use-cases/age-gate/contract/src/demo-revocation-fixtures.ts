@@ -308,6 +308,8 @@ export const createDemoRevocationFixture = (): DemoRevocationFixture => {
         acceptedStatusCapability: StatusCapabilityKind.revokedSetNonMembership,
         enforceRegistryId: true,
         acceptedRegistryId: witness.statusRegistryId,
+        enforceAttestationMaxAge: false,
+        maxAttestationAge: 0n,
       },
     };
 
@@ -352,6 +354,8 @@ export const createDemoRevocationFixture = (): DemoRevocationFixture => {
         acceptedStatusCapability: StatusCapabilityKind.authorityAttestedStatus,
         enforceRegistryId: true,
         acceptedRegistryId: witness.statusRegistryId,
+        enforceAttestationMaxAge: true,
+        maxAttestationAge: 50n,
       },
       statusRequest,
     };

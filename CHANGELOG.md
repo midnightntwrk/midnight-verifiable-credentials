@@ -67,6 +67,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   nonce internally. Integrations that still need an explicit nonce override
   must call `unsafeSignAuthorityAttestedStatusProofWithNonceScalar(...)`
   intentionally instead of passing `nonceScalar` into the safe helper.
+- BREAKING: `VerifierStatusPolicy` now carries explicit
+  `enforceAttestationMaxAge` / `maxAttestationAge` fields so
+  authority-attested status freshness can be enforced by verifier policy
+  instead of only by absolute attestation expiration.
 - normalized status ownership in code:
   - shared VC-side status binding remains in `credentials`
   - registry-facing proof-protocol Compact types and validators now live in

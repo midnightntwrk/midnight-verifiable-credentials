@@ -338,6 +338,28 @@ export circuit assertAuthorityAttestedStatusProofMatchesRequest(
   }
 }
 
+export circuit assertAuthorityAttestedStatusProofFreshEnough(
+  policy: VerifierStatusPolicy,
+  attestation: AuthorityAttestedStatusProof,
+  currentTime: Uint<64>
+): [] {
+  assertValidVerifierStatusPolicy(policy);
+  assertValidAuthorityAttestedStatusProof(attestation);
+  // Keep the future-time check here so this freshness helper remains safe as a
+  // standalone entrypoint, even though higher-level acceptance circuits also
+  // reach the same guard through `assertAuthorityAttestedStatusProofMatchesRequest`.
+  assert(
+    currentTime >= attestation.proof.createdAt,
+    "Authority-attested status proof creation time cannot be in the future"
+  );
+  if (policy.enforceAttestationMaxAge) {
+    assert(
+      currentTime - attestation.proof.createdAt <= policy.maxAttestationAge,
+      "Authority-attested status proof exceeds the verifier max-age policy"
+    );
+  }
+}
+
 export circuit assertVerifierStatusPolicyAcceptsRevokedSetNonMembership(
   policy: VerifierStatusPolicy,
   capability: RevokedSetNonMembershipStatusCapability,
@@ -420,6 +442,11 @@ export circuit assertVerifierStatusPolicyAcceptsAuthorityAttestedStatus(
     attestation,
     currentTime
   );
+  assertAuthorityAttestedStatusProofFreshEnough(
+    policy,
+    attestation,
+    currentTime
+  );
   assert(
     policy.requireStatus,
     "Verifier status policy must require status for authority-attested status"
@@ -450,6 +477,11 @@ export circuit assertVerifierStatusPolicyAcceptsAuthorityAttestedStatusProofProt
   assertRegistryBoundStatusBindingMatchesAuthorityAttestedStatusProofProtocol(
     binding,
     protocol,
+    currentTime
+  );
+  assertAuthorityAttestedStatusProofFreshEnough(
+    policy,
+    protocol.attestation,
     currentTime
   );
   assert(
