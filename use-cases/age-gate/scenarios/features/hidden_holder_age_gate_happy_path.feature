@@ -1,3 +1,4 @@
+@smoke @status
 Feature: Hidden-holder revocation-aware age gate
   As an integrator
   I want a hidden-holder status-aware age-gate example

@@ -11,10 +11,14 @@
     "clean": "rm -rf target",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test:execute": "cucumber-js --config cucumber.cjs",
+    "test:execute:smoke": "cucumber-js --config cucumber.cjs --tags @smoke",
+    "test:execute:negative": "cucumber-js --config cucumber.cjs --tags @negative",
     "report:setup": "serenity-bdd update",
     "test:report": "npm run report:setup && serenity-bdd run --features features --output target/site/serenity",
-    "test:smoke": "npm run clean && npm run test:execute && npm run test:report",
-    "test:ci": "npm run test:smoke"
+    "test:smoke": "npm run clean && npm run test:execute:smoke && npm run test:report",
+    "test:negative": "npm run clean && npm run test:execute:negative && npm run test:report",
+    "test:all": "npm run clean && npm run test:execute && npm run test:report",
+    "test:ci": "npm run test:all"
   },
   "dependencies": {
     "@cucumber/cucumber": "^11.3.0",
