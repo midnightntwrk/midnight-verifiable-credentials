@@ -1,36 +1,44 @@
 export circuit assertValidSecretBirthCredentialWithStatusCapability(
   credentialWithStatus: SecretBirthCredentialWithStatusCapability
 ): [] {
-  assertValidSecretBirthCredential(
-    credentialWithStatus.credential,
-    credentialWithStatus.credentialProof
-  );
+  assertValidSecretBirthCredentialEnvelopeOnly(credentialWithStatus.credential);
   assertValidRevokedSetNonMembershipStatusCapability(
     credentialWithStatus.statusCapability
+  );
+  assertValidSecretBirthCredentialIssuanceProofForBodyRoot(
+    credentialWithStatus.credential,
+    credentialWithStatus.credentialProof,
+    secretBirthCredentialWithStatusCapabilityBodyRoot(credentialWithStatus)
   );
 }
 
 export circuit assertValidSecretBirthCredentialWithStatusBinding(
   credentialWithStatus: SecretBirthCredentialWithStatusBinding
 ): [] {
-  assertValidSecretBirthCredential(
-    credentialWithStatus.credential,
-    credentialWithStatus.credentialProof
-  );
+  assertValidSecretBirthCredentialEnvelopeOnly(credentialWithStatus.credential);
   assertValidRegistryBoundStatusBinding(
     credentialWithStatus.statusBinding
+  );
+  assertValidSecretBirthCredentialIssuanceProofForBodyRoot(
+    credentialWithStatus.credential,
+    credentialWithStatus.credentialProof,
+    secretBirthCredentialWithStatusBindingBodyRoot(credentialWithStatus)
   );
 }
 
 export circuit assertValidSecretBirthCredentialWithAuthorityAttestedStatusCapability(
   credentialWithStatus: SecretBirthCredentialWithAuthorityAttestedStatusCapability
 ): [] {
-  assertValidSecretBirthCredential(
-    credentialWithStatus.credential,
-    credentialWithStatus.credentialProof
-  );
+  assertValidSecretBirthCredentialEnvelopeOnly(credentialWithStatus.credential);
   assertValidAuthorityAttestedStatusCapability(
     credentialWithStatus.statusCapability
+  );
+  assertValidSecretBirthCredentialIssuanceProofForBodyRoot(
+    credentialWithStatus.credential,
+    credentialWithStatus.credentialProof,
+    secretBirthCredentialWithAuthorityAttestedStatusCapabilityBodyRoot(
+      credentialWithStatus
+    )
   );
 }
 
