@@ -186,16 +186,28 @@ Current gap:
 
 - package:
   - `vc-bdd-scenarios` at `use-cases/age-gate/scenarios/`
-- current smoke scenarios:
+- smoke scenarios:
   - `use-cases/age-gate/scenarios/features/age_gate_happy_path.feature`
   - `use-cases/age-gate/scenarios/features/hidden_holder_age_gate_happy_path.feature`
-- root command:
+- negative scenarios:
+  - `use-cases/age-gate/scenarios/features/hidden_holder_wrong_registry.feature`
+  - `use-cases/age-gate/scenarios/features/hidden_holder_wrong_root.feature`
+  - `use-cases/age-gate/scenarios/features/hidden_holder_stale_authority_attestation.feature`
+- root commands:
   - `npm run test:bdd:smoke`
+  - `npm run test:bdd:negative`
+  - `npm run test:bdd:all`
+  - `./run.sh bdd`
+  - `./run.sh bdd-negative`
+  - `./run.sh bdd-all`
 - purpose:
   - living-documentation scenario coverage for the current VC prototype
 - current scope:
   - non-Docker birth-credential age-gate happy path
   - non-Docker hidden-holder verifier-supplied-root age-gate happy path
+  - non-Docker hidden-holder negative-path trust-boundary coverage for wrong-registry, wrong-root, and stale-attestation failures
+- local report:
+  - `use-cases/age-gate/scenarios/target/site/serenity/index.html`
 
 ## Standalone integration tests
 
@@ -230,6 +242,10 @@ or directly through package-level `test:integration` commands when Docker is ava
   - non-Docker package tests
 - `./run.sh bdd`
   - Serenity/JS BDD smoke lane
+- `./run.sh bdd-negative`
+  - Serenity/JS BDD negative lane
+- `./run.sh bdd-all`
+  - full Serenity/JS BDD lane
 - `./run.sh revocation`
   - revocation-focused CI lane
 - `./run.sh integration-demo-contract`
