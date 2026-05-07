@@ -20,6 +20,7 @@ import {
   type RevocationRegistryState,
   type RevokedSetStatusRequest,
 } from "./managed/revocation-registry/contract/index.js";
+import { buildRevokedSetStatusRequest } from "./witness-builder.js";
 
 export type StatusAuthoritySigner = {
   readonly secretKey: bigint;
@@ -179,21 +180,6 @@ const signAuthorityAttestedStatusProofWithValidatedInputs = ({
   };
   pureCircuits.assertValidAuthorityAttestedStatusProof(attestation);
   return attestation;
-};
-
-export const buildRevokedSetStatusRequest = ({
-  registryState,
-  verifierChallengeHash,
-}: {
-  readonly registryState: RevocationRegistryState;
-  readonly verifierChallengeHash: Uint8Array;
-}): RevokedSetStatusRequest => {
-  const request = {
-    registryState,
-    verifierChallengeHash,
-  };
-  pureCircuits.assertValidRevokedSetStatusRequest(request);
-  return request;
 };
 
 // Transitional alias: the authority-attested path currently uses the same

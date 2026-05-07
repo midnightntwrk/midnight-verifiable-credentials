@@ -59,7 +59,9 @@ Current scope:
 - off-chain witness-builder helpers for:
   - deterministic status-handle derivation
   - registry-bound status binding construction
+  - canonical revoked-set status request construction
   - witness-input construction
+  - canonical request + witness + protocol bundle construction
   - snapshot-based revoked-handle rejection
 - authority-attested status helpers for:
   - request-bound attestation statements
@@ -112,6 +114,18 @@ Protocol reading rule:
 - this package owns registry-facing status proof-protocol helpers
 - it does not turn status transport/orchestration concerns into reusable core
   protocol semantics
+
+Canonical revoked-set helper path:
+
+- use `buildRevokedSetNonMembershipInputs(...)` when you want the whole
+  prototype bundle in one call:
+  - `RevokedSetStatusRequest`
+  - `RevokedSetNonMembershipWitnessInput`
+  - `RevokedSetNonMembershipStatusProofProtocol`
+  - matching shared `RegistryBoundStatusBinding`
+- this helper still does not prove final Merkle non-membership
+- it normalizes the request/witness/protocol shape so higher-layer families and
+  verifier code stop rebuilding those pieces ad hoc
 
 Current prototype limitation:
 
