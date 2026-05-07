@@ -369,6 +369,8 @@ export const createSecretBirthCredentialFixture = (
         acceptedStatusCapability: StatusCapabilityKind.revokedSetNonMembership,
         enforceRegistryId: true,
         acceptedRegistryId: witness.statusRegistryId,
+        enforceAttestationMaxAge: false,
+        maxAttestationAge: 0n,
       },
     };
 
@@ -406,6 +408,8 @@ export const createSecretBirthCredentialFixture = (
         acceptedStatusCapability: StatusCapabilityKind.revokedSetNonMembership,
         enforceRegistryId: true,
         acceptedRegistryId: witness.statusRegistryId,
+        enforceAttestationMaxAge: false,
+        maxAttestationAge: 0n,
       },
       statusRequest,
     };
@@ -439,6 +443,8 @@ export const createSecretBirthCredentialFixture = (
         acceptedStatusCapability: StatusCapabilityKind.authorityAttestedStatus,
         enforceRegistryId: true,
         acceptedRegistryId: witness.statusRegistryId,
+        enforceAttestationMaxAge: false,
+        maxAttestationAge: 0n,
       },
       statusRequest,
     };
