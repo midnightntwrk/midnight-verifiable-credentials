@@ -985,8 +985,10 @@ Problem:
 - the current status/revocation model still depends on prototype trust seams:
   - `revokedRoot` freshness and authenticity are verifier/application-side
   - the final in-circuit non-membership proof path is not shipped
-  - current wrapped families do not yet commit the full status binding into the
-    issuer-signed credential body root
+  - the first hidden-holder family rollout now lands in
+    `credentials-birth-secret`, but the broader repository still has not
+    completed the status-binding body-root rollout across other or future
+    status-aware family surfaces
 - the authority-attested helper path still exposes caller-managed signing nonce
   generation as a prototype API footgun
 
@@ -1002,6 +1004,8 @@ Required outcome:
   - list/index or handle location
   - status type
   - authority key material where applicable
+  - and extend that commitment model beyond the first
+    `credentials-birth-secret` rollout
 - anchor status root freshness to a trust-bound source instead of a
   verifier-chosen root alone
 - add freshness semantics to authority-attested proofs with verifier-enforced

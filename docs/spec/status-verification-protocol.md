@@ -244,6 +244,10 @@ Current compatibility note:
   `RevokedSetNonMembershipStatusCapability`
 - those names should be read as compatibility-era wrappers over one shared
   registry-bound status shape
+- `credentials-birth-secret` now commits that shared binding into an
+  issuer-signed status-bound body root for its status-aware wrapper proofs
+- other or future status-aware family surfaces may still need the same
+  migration before the repository can claim the rollout is complete
 
 ## Prototype limitations
 
@@ -254,9 +258,10 @@ Current limitations remain:
 - the revocation registry contract does not yet prove that a supplied
   `revokedRoot` equals the live Merkle root inside Compact
 - root freshness is still verifier/application enforced, not contract-discovered
-- the current wrapped credential families validate status binding objects and
-  status proofs consistently, but they do not yet cryptographically commit the
-  full status binding into the issuer-signed credential body root
+- `credentials-birth-secret` now cryptographically commits the shared
+  `RegistryBoundStatusBinding` into an issuer-signed status-bound body root,
+  but the broader repository rollout is not complete until the same pattern is
+  applied to other or future status-aware family surfaces
 - the current off-chain authority-attestation builder requires the caller to
   choose between:
   - the safe default helper, which now derives the signing nonce

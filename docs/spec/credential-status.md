@@ -152,6 +152,17 @@ two wrappers that already share the same VC-side data:
 Those two wrappers should be understood as different proof modes over one
 shared registry-bound binding shape, not as fundamentally different VC shapes.
 
+The first hidden-holder family rollout now lives in
+`credentials-birth-secret`:
+
+- its status-aware wrapper proofs commit the shared
+  `RegistryBoundStatusBinding` into an issuer-signed status-bound body root
+- the wrapper names remain compatibility-era status-capability labels, but the
+  committed VC-side binding is now the canonical shared shape
+
+Other or future status-aware family surfaces may still be in transition until
+they adopt the same status-bound body-root pattern.
+
 Ownership rule:
 
 - shared VC-side status binding belongs to `credentials`
@@ -191,6 +202,10 @@ The target design for committing VC-side status binding into the issuer-signed
 credential body root is defined in:
 
 - [`../architecture/status-binding-body-root-commitment.md`](../architecture/status-binding-body-root-commitment.md)
+
+`credentials-birth-secret` is the current first-family implementation of that
+target. The broader repository-wide rollout is still incomplete until the same
+pattern is lifted into other or future status-aware family surfaces.
 
 ## Required status disclosures
 
