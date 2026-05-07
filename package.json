@@ -72,6 +72,8 @@
     "ci:integration:protocol:from-artifacts": "npm run test:integration:protocol",
     "build:bdd:prereqs": "node ./use-cases/age-gate/scenarios/scripts/ensure-prereqs.mjs",
     "test:bdd:smoke": "npm run build:bdd:prereqs && npm run test:smoke -w use-cases/age-gate/scenarios",
+    "test:bdd:negative": "npm run build:bdd:prereqs && npm run test:negative -w use-cases/age-gate/scenarios",
+    "test:bdd:all": "npm run build:bdd:prereqs && npm run test:all -w use-cases/age-gate/scenarios",
     "test:integration:demo-contract": "npm run test:integration -w use-cases/age-gate/contract",
     "test:integration:protocol": "npm run test:integration -w components/orchestration/protocol",
     "build:integration-prereqs": "npm run build:integration-prereqs:shared",
