@@ -55,6 +55,9 @@ Current scope:
 - append-only revoked handle `MerkleTree`
 - monotonic internal `version` counter for registry-side bookkeeping
 - typed `RevocationRegistryState` snapshot helpers
+  - snapshot shape now includes `registryVersion`
+  - `assertStateUsesThisRegistry(...)` binds that version to the live contract
+    counter even though the Merkle root is still verifier-supplied
 - typed `RevokedSetStatusRequest` helpers for verifier-supplied roots
 - off-chain witness-builder helpers for:
   - deterministic status-handle derivation
@@ -130,7 +133,7 @@ Canonical revoked-set helper path:
 Current prototype limitation:
 
 - `assertStateUsesThisRegistry(...)` binds the supplied snapshot to this
-  registry's `registryId`
+  registry's `registryId` and `registryVersion`
 - it does not yet prove that the supplied `revokedRoot` equals the live
   contract Merkle root inside Compact
 - freshness of the supplied root is still an application/verifier
@@ -146,6 +149,8 @@ Observed-root integration helper path:
 
 - use `buildObservedRevocationRegistryState(...)` to normalize a verifier-side
   snapshot plus observation time
+- use `assertObservedRevocationRegistryVersionAtLeast(...)` when the caller
+  must reject snapshots older than a known contract-version floor
 - use `assertObservedRevocationRegistryStateFreshEnough(...)` when the caller
   already has a normalized snapshot and only needs the freshness decision
 - use `buildRevokedSetStatusRequestFromObservedState(...)` when request

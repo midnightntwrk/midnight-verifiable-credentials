@@ -91,6 +91,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     `AuthorityAttestedStatusProofProtocol`, and
     `RevokedSetNonMembershipStatusProofProtocol` from
     `credentials-status-registry` rather than `credentials`
+- BREAKING: `RevocationRegistryState` now carries a mandatory
+  `registryVersion` field. Verifier-side snapshots, revoked-set requests,
+  witness inputs, and authority-attested status statements must now carry the
+  contract version they were observed against. `assertStateUsesThisRegistry(...)`
+  now binds snapshots to both the live `registryId` and the live contract
+  version, even though the Merkle `revokedRoot` itself remains verifier-supplied
+  until the final in-circuit root-binding path lands.
 - Holder-binding naming is now explicitly split between:
   - Compact/core struct name:
     `OffchainMidnightHolderBinding`

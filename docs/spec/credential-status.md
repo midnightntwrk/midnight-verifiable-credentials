@@ -187,6 +187,10 @@ The current repository already contains the corresponding proof payloads:
 - `AuthorityAttestedStatusProof`
 - `RevokedSetNonMembershipWitnessInput`
 - shared verifier-supplied request inputs such as `RevokedSetStatusRequest`
+- `RevocationRegistryState`, which now carries:
+  - `registryId`
+  - `revokedRoot`
+  - `registryVersion`
 
 The detailed prototype revocation target for the revoked-set proof protocol is
 defined in:
