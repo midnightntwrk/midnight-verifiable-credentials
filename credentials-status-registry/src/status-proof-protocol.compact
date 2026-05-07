@@ -134,6 +134,11 @@ export circuit assertValidRevokedSetNonMembershipStatusProofProtocol(
       == protocol.witnessInput.registryState.revokedRoot,
     "Revoked-set status proof protocol revoked root does not match the verifier request"
   );
+  assert(
+    protocol.request.registryState.registryVersion
+      == protocol.witnessInput.registryState.registryVersion,
+    "Revoked-set status proof protocol registry version does not match the verifier request"
+  );
 }
 
 export circuit assertRegistryBoundStatusBindingMatchesRevokedSetNonMembershipStatusProofProtocol(
@@ -243,6 +248,11 @@ export circuit assertValidAuthorityAttestedStatusProofProtocol(
     "Authority-attested status proof protocol revoked root does not match the verifier request"
   );
   assert(
+    protocol.request.registryState.registryVersion
+      == protocol.attestation.statement.registryState.registryVersion,
+    "Authority-attested status proof protocol registry version does not match the verifier request"
+  );
+  assert(
     protocol.request.verifierChallengeHash
       == protocol.attestation.statement.verifierChallengeHash,
     "Authority-attested status proof protocol challenge hash does not match the verifier request"
@@ -322,6 +332,11 @@ export circuit assertAuthorityAttestedStatusProofMatchesRequest(
   assert(
     request.registryState.revokedRoot == attestation.statement.registryState.revokedRoot,
     "Authority-attested revoked root does not match the verifier request"
+  );
+  assert(
+    request.registryState.registryVersion
+      == attestation.statement.registryState.registryVersion,
+    "Authority-attested registry version does not match the verifier request"
   );
   assert(
     request.verifierChallengeHash == attestation.statement.verifierChallengeHash,
