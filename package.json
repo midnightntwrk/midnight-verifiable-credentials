@@ -45,6 +45,7 @@
     "docs:vc-spec": "echo 'Add VC docs build once docs layout is bootstrapped'",
     "pack:libs": "./tooling/scripts/pack-midnight-vc-libs.sh ./libs",
     "upgrade:libs": "./upgrade-libs.sh --destination ./libs",
+    "scaffold:family": "node ./tooling/scripts/scaffold-vc-family.mjs",
     "postinstall": "node ./tooling/scripts/ensure-midnight-did-package-aliases.mjs && node ./tooling/scripts/ensure-midnight-did-api-paths.mjs && node ./tooling/scripts/ensure-compact-package-aliases.mjs",
     "artifacts:pack": "./tooling/scripts/pack-artifacts.sh",
     "typecheck:light": "npm run typecheck -w credentials && npm run typecheck -w credentials-status-registry && npm run typecheck -w credentials-same-holder && npm run typecheck -w credentials-iso-registry && npm run typecheck -w components/adapters/offchain-did && npm run typecheck -w protocols/openid && npm run typecheck -w credentials-birth && npm run typecheck -w credentials-birth-secret",

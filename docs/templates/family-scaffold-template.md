@@ -5,6 +5,23 @@ Status: starter template for adding a new VC family package.
 Use this when the generic `credentials` package is not enough and you need a
 schema-specific family with its own claims, requests, and validation rules.
 
+Fastest repo-local path:
+
+```bash
+npm run scaffold:family -- --slug example-family
+```
+
+That generator creates a minimal repo-aligned package skeleton with:
+
+- package metadata
+- TypeScript config
+- Compact root and family subfiles
+- helper scripts
+- placeholder tests
+
+Use this document when you want to inspect or customize the generated shape
+before copying it forward.
+
 ## Package shape
 
 A minimal family package should have these parts:
