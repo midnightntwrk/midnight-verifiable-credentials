@@ -101,6 +101,34 @@ describe("status registry: proof protocols", () => {
     ).toThrow(/revoked root does not match/i);
   });
 
+  it("rejects a revoked-set status proof protocol when the witness version differs from the request", () => {
+    const protocol = {
+      request: {
+        registryState: {
+          registryId: bytes32("registry:hidden-holder"),
+          revokedRoot: bytes32("revoked-root:request"),
+          registryVersion: 1n,
+        },
+        verifierChallengeHash: bytes32("challenge:status"),
+      },
+      witnessInput: {
+        registryState: {
+          registryId: bytes32("registry:hidden-holder"),
+          revokedRoot: bytes32("revoked-root:request"),
+          registryVersion: 0n,
+        },
+        statusHandle: bytes32("status-handle"),
+        statusHandleOpening: bytes32("status-handle-opening"),
+      },
+    };
+
+    expect(() =>
+      pureCircuits.assertValidRevokedSetNonMembershipStatusProofProtocol(
+        protocol,
+      ),
+    ).toThrow(/registry version does not match/i);
+  });
+
   it("rejects a revoked-set status proof protocol when the binding commitment is unset", () => {
     const signer = createSigner("status-authority", 891n);
     const protocol = {
@@ -426,6 +454,47 @@ describe("status registry: proof protocols", () => {
         110n,
       ),
     ).toThrow(/revoked root does not match/i);
+  });
+
+  it("rejects an authority-attested status proof when the verifier version differs", () => {
+    const signer = createSigner("status-authority", 3243n);
+    const request = {
+      registryState: {
+        registryId: bytes32("registry:hidden-holder"),
+        revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 1n,
+      },
+      verifierChallengeHash: bytes32("challenge:status"),
+    };
+    const statement = {
+      registryState: {
+        registryId: request.registryState.registryId,
+        revokedRoot: request.registryState.revokedRoot,
+        registryVersion: 0n,
+      },
+      statusHandleCommitment: bytes32("status-handle-commitment"),
+      verifierChallengeHash: request.verifierChallengeHash,
+      hasExpiration: false,
+      expiresAt: 0n,
+    };
+    const attestation = {
+      statement,
+      proof: signStatusProof({
+        bodyRoot: pureCircuits.authorityAttestedStatusStatementRoot(statement),
+        signer,
+        createdAt: 100n,
+        challengeHash: request.verifierChallengeHash,
+        nonceScalar: 39n,
+      }),
+    };
+
+    expect(() =>
+      pureCircuits.assertAuthorityAttestedStatusProofMatchesRequest(
+        request,
+        attestation,
+        110n,
+      ),
+    ).toThrow(/registry version does not match/i);
   });
 
   it("rejects an authority-attested status proof when the verifier challenge differs", () => {
