@@ -4,6 +4,7 @@ import { actorCalled } from "@serenity-js/core";
 
 import {
   HiddenHolderScenarioOutcome,
+  RunTheHiddenHolderExpiredAuthorityAttestationRejectedPath,
   RunTheHiddenHolderWrongRevokedRootRejectedPath,
   RunTheHiddenHolderWrongRegistryRejectedPath,
   RunTheHiddenHolderRevocationAwareHappyPath,
@@ -30,6 +31,15 @@ When(
   async () => {
     await engineer().attemptsTo(
       RunTheHiddenHolderWrongRevokedRootRejectedPath(),
+    );
+  },
+);
+
+When(
+  "the engineer runs the hidden-holder expired-attestation rejection path",
+  async () => {
+    await engineer().attemptsTo(
+      RunTheHiddenHolderExpiredAuthorityAttestationRejectedPath(),
     );
   },
 );
