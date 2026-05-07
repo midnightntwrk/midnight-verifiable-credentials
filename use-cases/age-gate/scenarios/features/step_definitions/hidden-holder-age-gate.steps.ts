@@ -4,6 +4,7 @@ import { actorCalled } from "@serenity-js/core";
 
 import {
   HiddenHolderScenarioOutcome,
+  RunTheHiddenHolderWrongRevokedRootRejectedPath,
   RunTheHiddenHolderWrongRegistryRejectedPath,
   RunTheHiddenHolderRevocationAwareHappyPath,
 } from "../support/tasks.js";
@@ -21,6 +22,15 @@ When(
   "the engineer runs the hidden-holder wrong-registry rejection path",
   async () => {
     await engineer().attemptsTo(RunTheHiddenHolderWrongRegistryRejectedPath());
+  },
+);
+
+When(
+  "the engineer runs the hidden-holder wrong-root rejection path",
+  async () => {
+    await engineer().attemptsTo(
+      RunTheHiddenHolderWrongRevokedRootRejectedPath(),
+    );
   },
 );
 
