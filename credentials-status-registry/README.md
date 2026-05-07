@@ -50,6 +50,7 @@ Start here:
    - [`../docs/guides/integration-surface-map.md`](../docs/guides/integration-surface-map.md)
 
 Current scope:
+
 - dedicated registry id
 - append-only revoked handle `MerkleTree`
 - monotonic internal `version` counter for registry-side bookkeeping
@@ -68,7 +69,8 @@ Current scope:
 Nonce requirement for authority-attested proofs:
 
 - `signAuthorityAttestedStatusProof(...)` now derives a deterministic JubJub
-  subgroup nonce scalar from:
+  subgroup nonce scalar via domain-separated SHA-256 plus rejection sampling
+  from:
   - the attestation statement
   - signer verification-method identity
   - signer secret key
@@ -98,6 +100,7 @@ Protocol reading rule:
   protocol semantics
 
 Current prototype limitation:
+
 - `assertStateUsesThisRegistry(...)` binds the supplied snapshot to this
   registry's `registryId`
 - it does not yet prove that the supplied `revokedRoot` equals the live

@@ -236,7 +236,8 @@ Current limitations remain:
 - the current off-chain authority-attestation builder requires the caller to
   choose between:
   - the safe default helper, which now derives the signing nonce
-    deterministically from signer secret material plus attestation context
+    deterministically from signer secret material plus attestation context via
+    domain-separated SHA-256 plus rejection sampling
   - an explicit unsafe override for tests or tightly controlled integrations
 - freshness max-age policy is still pending as follow-up status-contract work;
   the current prototype only enforces:
