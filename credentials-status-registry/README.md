@@ -141,3 +141,18 @@ Current prototype limitation:
 - callers must therefore treat `revokedRoot` as an off-chain coordinated
   snapshot value until the final in-circuit root-binding/non-membership path
   lands
+
+Observed-root integration helper path:
+
+- use `buildObservedRevocationRegistryState(...)` to normalize a verifier-side
+  snapshot plus observation time
+- use `assertObservedRevocationRegistryStateFreshEnough(...)` when the caller
+  already has a normalized snapshot and only needs the freshness decision
+- use `buildRevokedSetStatusRequestFromObservedState(...)` when request
+  construction must reject stale or future-dated snapshots before entering the
+  Compact proof path
+- use `buildFreshRevokedSetNonMembershipInputs(...)` when you want that same
+  freshness gate applied to the canonical request/witness/protocol bundle
+- this still does not make the root live inside Compact:
+  it turns the current verifier-side freshness choice into one explicit typed
+  integration seam instead of leaving it as ad hoc application logic
