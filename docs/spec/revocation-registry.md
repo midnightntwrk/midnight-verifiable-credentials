@@ -277,6 +277,16 @@ Until the final in-circuit non-membership path lands, the current repository
 implementation must treat `revokedRoot` as an off-chain coordinated snapshot
 value, not as a fully contract-proven root.
 
+Operational consequence of the current version binding:
+
+- `assertStateUsesThisRegistry(...)` now requires the supplied
+  `registryVersion` to equal the live contract version exactly
+- so if a revocation lands after a verifier or holder observes a snapshot but
+  before proof submission, that snapshot becomes stale even if the holder's
+  status handle is still not revoked
+- the correct prototype behavior is to rebuild the request/proof flow against
+  a fresh observed snapshot instead of accepting a race-prone earlier version
+
 That means the current prototype witness shape is already canonical for:
 
 - request binding

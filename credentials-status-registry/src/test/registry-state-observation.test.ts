@@ -156,6 +156,31 @@ describe("revocation registry observed-root helpers", () => {
     ).toThrow(/snapshot version is older than the required minimum/i);
   });
 
+  it("accepts an observed snapshot version at or above the required minimum", () => {
+    const observedState = buildObservedRevocationRegistryState({
+      registryState: {
+        registryId: bytes32("registry:hidden-holder"),
+        revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 3n,
+      },
+      observedAt: 100n,
+    });
+
+    expect(() =>
+      assertObservedRevocationRegistryVersionAtLeast({
+        observedState,
+        minimumRegistryVersion: 3n,
+      }),
+    ).not.toThrow();
+
+    expect(() =>
+      assertObservedRevocationRegistryVersionAtLeast({
+        observedState,
+        minimumRegistryVersion: 2n,
+      }),
+    ).not.toThrow();
+  });
+
   it("rejects negative timing inputs and malformed observed states", () => {
     expect(() =>
       buildObservedRevocationRegistryState({
@@ -196,6 +221,13 @@ describe("revocation registry observed-root helpers", () => {
           enforceSnapshotMaxAge: true,
           maxSnapshotAge: -1n,
         },
+      }),
+    ).toThrow(/must be >= 0/i);
+
+    expect(() =>
+      assertObservedRevocationRegistryVersionAtLeast({
+        observedState,
+        minimumRegistryVersion: -1n,
       }),
     ).toThrow(/must be >= 0/i);
 
