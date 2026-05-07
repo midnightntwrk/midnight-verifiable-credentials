@@ -10,7 +10,7 @@ Purpose:
   findings
 - provide a stable backlog for follow-up engineering and documentation slices
 
-## Status Update: 2026-05-06
+## Status Update: 2026-05-07
 
 Merged in the last completed iteration:
 
@@ -62,6 +62,16 @@ Merged in the last completed iteration:
   - `#84`
   - `#85`
   - `#86`
+- status ownership, repository restructure, and the Turbo-native CI wave:
+  - `#87`
+  - `#88`
+  - `#89`
+  - `#90`
+  - `#91`
+  - `#92`
+  - `#93`
+  - `#94`
+  - `#95`
 
 Substantially addressed on `develop`:
 
@@ -72,13 +82,12 @@ Substantially addressed on `develop`:
 - `VC-MAT-05`
 - `VC-MAT-07`
 - `VC-MAT-10`
+- `VC-MAT-11`
 - `VC-MAT-12`
 - `VC-MAT-13`
 - `VC-MAT-14`
 - `VC-MAT-15`
-- `VC-MAT-11`
 - `VC-MAT-16`
-- `VC-MAT-18`
 - `VC-MAT-19`
 
 Partially advanced, but still active:
@@ -86,30 +95,141 @@ Partially advanced, but still active:
 - `VC-MAT-06`
 - `VC-MAT-08`
 - `VC-MAT-09`
+- `VC-MAT-18`
 - `VC-MAT-17`
 - `VC-MAT-20`
 
-New audit-derived items:
+Advanced in the current open maturity stack, but not yet on `develop`:
 
-- `VC-MAT-18`
-- `VC-MAT-19`
-- `VC-MAT-20`
+- category split and active twenty-slice execution plan:
+  - `#96`
+- authority-attestation helper hardening, adversarial coverage, and freshness:
+  - `#97`
+  - `#98`
+  - `#99`
+  - `#100`
+- status-binding commitment design, first-family rollout, rollout-state doc
+  sync, and reusable proof-helper hoist:
+  - `#101`
+  - `#102`
+  - `#103`
+  - `#104`
 
 Current highest-risk remaining area:
 
-- the biggest unfinished core-spec gap is still status/revocation:
-  the repository does not yet provide final in-circuit root binding and
-  non-membership proof semantics
+- the biggest unfinished core-spec gap is still status/revocation, but it is
+  now narrower than the previous audit cycle:
+  `credentials-birth-secret` can commit shared VC-side status binding into an
+  issuer-signed body root in the current maturity stack, but the repository
+  still does not provide final in-circuit root binding and non-membership
+  proof semantics
 - the strongest remaining integrator-adoption gap is now execution, not
   discovery:
   the repo has templates and guides, but it still lacks a generated family
   scaffold and a concise DID + VC handoff kit
+- the strongest remaining use-case documentation gap is now negative-path BDD:
+  the current `use-cases/age-gate/scenarios/features` tree still contains only
+  two happy-path scenarios and no stale-root / wrong-registry /
+  revoked-unsatisfied scenarios
 - the strongest remaining orchestration-layer adoption gap is now production
   safety:
   `credentials-protocol` still needs a more explicit durable-state, RNG, and
   deployment-checklist story for real integrations
+- the strongest remaining repository-convergence gap is now physical package
+  relocation:
+  the target top-level architecture areas exist, but legacy top-level package
+  roots like `credentials*` still remain alongside them
 
-Next active queue:
+## Self-Audit: 2026-05-07
+
+Evidence reviewed:
+
+- current `develop` history through `#95`
+- open maturity-stack work through `#104`
+- package and protocol inventory under the restructured top-level areas
+- current starter/template surfaces under `docs/templates` and
+  `docs/guides`
+- current BDD feature inventory under `use-cases/age-gate/scenarios/features`
+- constrained Claude second-pass decisions on a repo-grounded digest captured
+  under `review/`
+- status/revocation implementation and specs in:
+  - `credentials`
+  - `credentials-status-registry`
+  - `credentials-birth-secret`
+  - `docs/spec`
+- protocol-state / randomness / retention docs and adapters in
+  `components/orchestration/protocol`
+
+Main findings:
+
+1. repository shape and CI improved materially, but physical convergence is
+   still unfinished
+
+- the restructure wave and the Turbo/per-cone CI wave reduced architectural
+  ambiguity and PR latency
+- but the physical repo migration is still incomplete:
+  target top-level architecture areas coexist with legacy top-level package
+  roots, so package-taxonomy cleanup remains an active maintenance item
+
+2. at least one family now commits the status binding, so the gap is narrower
+
+- the current open stack makes `credentials-birth-secret` the first family
+  that commits shared VC-side status binding into an issuer-signed body root
+- the remaining status-contract risk is now concentrated in:
+  - final non-membership proof semantics
+  - live-root binding
+  - rollout reuse beyond the first family
+
+3. the backlog must not imply a hidden second status-aware family
+
+- today the repository has one active status-aware family rollout:
+  `credentials-birth-secret`
+- so the next status-contract slice should emphasize:
+  - reusable helper rollout
+  - canonical non-membership proof shape
+  - future-family adoption
+  rather than implying another in-tree family is already waiting for migration
+
+4. starter material is still documentation-shaped
+
+- the repo now has:
+  - a hidden-holder hello-world guide
+  - a verifier contract template
+  - a family scaffold template
+- it still does not have:
+  - a generated scaffold or copy script
+  - a compiling hello-family starter
+  - a compiling hello-verifier starter
+  - a concrete DID + VC handoff kit
+
+5. BDD remains underpowered as a trust-boundary layer
+
+- the current age-gate use-case BDD tree has only:
+  - `age_gate_happy_path.feature`
+  - `hidden_holder_age_gate_happy_path.feature`
+- there are still no curated negative scenarios for:
+  - stale root
+  - wrong registry
+  - revoked or unsatisfied status
+
+6. orchestration hardening is improved but still mostly documentary
+
+- `credentials-protocol` now has better state-store, randomness, and retention
+  surfaces plus a filesystem byte-store adapter
+- but the repo still lacks one obvious production-safe checklist / reference
+  path that closes the loop for real integrations
+
+7. package taxonomy is documented more cleanly than it is converged on disk
+
+- `VC-MAT-18` is substantially addressed at the inventory / documentation
+  level
+- it is not fully done at the physical layout level while the legacy
+  `credentials*` package roots still remain next to the target top-level
+  architecture areas
+- that follow-on cleanup should be tracked explicitly instead of being treated
+  as already finished
+
+## Legacy VC-MAT Pointer Queue
 
 This older `VC-MAT-XX` queue is superseded by the category split and
 twenty-slice execution plan below. Keep it only as a compact pointer to the
@@ -160,6 +280,10 @@ The remaining backlog now falls into five execution categories:
   and cross-repo smoke-path expectations
 - primary item:
   - `VC-MAT-09`
+- active maintenance follow-on:
+  - `VC-MAT-18` package-taxonomy convergence:
+    finish physical package relocation / legacy-root cleanup so the on-disk
+    layout matches the documented target architecture areas
 - execution rule:
   - treat this as a cross-cutting discipline that applies to every numbered
     slice below rather than as its own dedicated PR slot
@@ -174,18 +298,30 @@ it is applied as a per-slice discipline instead of a separate numbered queue.
 
 1. deterministic signing-nonce defaults for authority attestation, plus
    helper/API narrowing
+   - advanced in the current open stack (`#97`)
 2. adversarial status protocol coverage:
    - root substitution
    - registry swap
    - missing-binding rejection
+   - advanced in the current open stack (`#98`)
 3. authority-attested freshness policy:
    verifier-enforced max-age semantics
+   - advanced in the current open stack (`#99`)
 4. status-proof protocol docs and README updates for the narrowed helper trust
    surface
+   - advanced in the current open stack (`#100`)
 5. full status-binding commitment design for issuer-signed body roots
+   - advanced in the current open stack (`#101`)
 6. first birth-family rollout of full status-binding commitment into body-root
    logic
-7. shared family rollout of full status-binding commitment
+   - advanced in the current open stack (`#102`)
+   - rollout-state doc sync is advanced in the current open stack (`#103`)
+7. shared helper rollout plus next-family adoption of full status-binding
+   commitment
+   - helper-rollout half is partially advanced in the current open stack via
+     shared proof-helper hoist (`#104`)
+   - next-family adoption is still open because there is no second active
+     status-aware family in the tree today
 8. canonical non-membership proof-protocol docs and witness shape
 9. canonical non-membership proof implementation slice
 10. live-root binding feasibility / integration slice for the registry surface
@@ -214,6 +350,21 @@ The first ten slices are status-contract work because that remains the highest
 core-spec risk. The latter categories remain active, but they should stack on a
 clearer status boundary rather than race ahead of it.
 
+## Immediate Next Queue After The Current Open Stack
+
+1. `STATUS-CONTRACT` slice `8`
+2. `STATUS-CONTRACT` slice `9`
+3. `STATUS-CONTRACT` slice `10`
+4. `VC-MAT-18` follow-on maintenance slice:
+   finish physical package relocation / legacy-root cleanup
+5. `INTEGRATOR-EXECUTION` slice `11`
+6. `INTEGRATOR-EXECUTION` slices `12` and `13`
+   - slices `14` through `16` stay intentionally behind these runnable starter
+     slices so issuer/wallet/handoff work grows from executable examples
+     instead of another docs-only wave
+7. `BDD-LIVE-DOCS` slices `17` through `19`
+8. `ORCHESTRATION-PROD-SAFETY` slice `20`
+
 `TEST-DOC-ALIGNMENT` intentionally has no numbered slot in this plan. Treat it
 as a per-slice acceptance requirement rather than as a standalone execution
 queue.
@@ -228,6 +379,9 @@ This audit combined:
   - spec/doc drift
   - public-surface ambiguity
   - prototype-vs-core classification
+
+Headings below are preserved from the original audit. The `2026-05-07`
+self-audit above supersedes any overlapping priority claims.
 
 ### Reusable core VC components
 
@@ -293,21 +447,22 @@ Current reading:
 
 ### Main gaps from this audit
 
-- there is still no single canonical inventory that tells integrators which
-  public packages and protocol surfaces are:
-  - reusable core
-  - reusable core protocol
-  - prototype-only
-  - Layer 3 / Layer 4 wiring
-- docs now describe status binding and proof-protocol ownership better than the
-  code actually enforces
+- the repository now has a canonical package and protocol inventory, but the
+  integrator-facing maintenance task is still to keep:
+  - package READMEs
+  - exported surfaces
+  - cross-repo guidance
+  aligned with that inventory
+- docs and code are now closer on status binding and proof-protocol
+  ownership, but the final status contract is still incomplete because
+  in-circuit root binding and non-membership remain pending
 - `credentials-protocol` still exposes a broad root runtime surface without a
   curated `exports` map, unlike the narrower entrypoint posture adopted by the
   newer package slices
-- the spec and README set still describe some reusable core protocol semantics
-  and some reference orchestration behavior too close together, especially
-  where “reference protocol” language can be misread as “core reusable
-  protocol”
+- the remaining protocol-classification gap is no longer the inventory itself;
+  it is execution-oriented curation of `credentials-protocol` and the
+  integrator-facing export/documentation surfaces so "reference protocol"
+  language cannot be misread as "core reusable protocol"
 
 ### Claude Second-Pass Triage
 
@@ -911,37 +1066,28 @@ Priority: P1
 
 Problem:
 
-- the repository now has good pieces of this story spread across:
-  - the core VC spec
-  - architecture docs
-  - package READMEs
-  - integration guides
-- but there is still no single canonical inventory that tells integrators which
-  packages and public surfaces are:
-  - reusable core VC components
-  - reusable core protocols
-  - prototype-only surfaces
-  - Layer 3 / Layer 4 wiring and helpers
+- this item is now substantially addressed on `develop`
+- the repository now has:
+  - a canonical package-tier inventory
+  - protocol classification docs
+  - standardized package-header expectations
+  - boundary/CI guardrails that keep the classification from drifting silently
+- the remaining gap is maintenance, not missing architecture taxonomy:
+  keep the inventory, README headers, and package exports synchronized as new
+  packages land
 
 Required outcome:
 
-- publish one canonical inventory in the architecture/spec set
-- align package READMEs and conformance language to that inventory
-- make the maturity tiers explicit enough that integrators do not infer
-  stability from package presence alone
-- standardize a per-package header that states:
-  - tier
-  - stability
-  - allowed dependency direction
-  - whether the package is reusable outside this repo
-- add CI/load-bearing checks so the tier classification cannot silently drift
-- make the inventory explicit for both:
-  - package classes
-  - protocol classes
-- give integrators one obvious answer to:
-  - which packages are reusable core
-  - which are prototype-only
-  - which are wiring/helpers
+- keep the current inventory load-bearing
+- update package headers and package-selection guidance when repo structure
+  changes
+- route future cleanup through `VC-MAT-09` rather than reopening this as a
+  fresh taxonomy problem
+
+Current grouped execution:
+
+- treat this as a maintenance discipline under `TEST-DOC-ALIGNMENT`
+- do not reopen it unless the canonical inventory itself becomes ambiguous
 
 ### VC-MAT-19: Separate reusable core protocols from Layer 3 / Layer 4 wiring protocols
 
@@ -949,32 +1095,33 @@ Priority: P1
 
 Problem:
 
-- the repository correctly says transport is not canonical, but it still
-  describes some reusable core protocol semantics and some off-chain reference
-  orchestration too close together
-- this is most visible in:
-  - generic issuance/presentation semantics in `credentials`
-  - reference orchestration in `credentials-protocol`
-  - status/revocation request and proof vocabulary split across `credentials`
-    and `credentials-status-registry`
+- this item is now substantially addressed on `develop`
+- the repository now explicitly separates:
+  - reusable core VC/proof semantics
+  - VC-side status binding
+  - registry-facing proof protocols
+  - Layer 3 / Layer 4 orchestration and transport helpers
+- the remaining gap is no longer protocol-classification absence; it is
+  integrator-facing curation of `credentials-protocol` and adjacent exports so
+  reference orchestration does not drift back into a broad implicit root
+  surface
 
 Required outcome:
 
-- explicitly classify which protocols belong to the reusable core spec
-- explicitly classify which protocols are Layer 3 business-composition or
-  Layer 4 transport/orchestration helpers
-- tighten package-boundary, overview, and README language so “reference
-  protocol” does not get mistaken for “core reusable protocol”
-- evaluate whether shared proof-protocol Compact types should live in a
-  dedicated lower shared package rather than forcing the final ownership choice
-  to be only:
-  - `credentials`
-  - or `credentials-status-registry`
+- keep the protocol-classification docs and README language aligned with the
+  actual package/export surfaces
 - keep the rule explicit that:
   - `credentials-protocol` is orchestration/wiring, not a reusable core
     protocol package
-- make the preferred end-state legible enough that core proof-protocol
-  semantics can be reused without dragging in Layer 3 or Layer 4 helpers
+- route any remaining root-exports / curated-entrypoint cleanup through the
+  active orchestration and doc-alignment work instead of reopening this as a
+  fresh architecture split problem
+
+Current grouped execution:
+
+- treat this as a maintenance/curation track under:
+  - `VC-MAT-06`
+  - `VC-MAT-09`
 
 ### VC-MAT-20: Finish the cryptographic status contract
 
