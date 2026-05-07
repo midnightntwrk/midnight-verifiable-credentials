@@ -1,3 +1,5 @@
+import { createHash } from "node:crypto";
+
 import {
   ecMulGenerator,
   type JubjubPoint,
@@ -23,6 +25,160 @@ export type StatusAuthoritySigner = {
   readonly secretKey: bigint;
   readonly publicKey: JubjubPoint;
   readonly verificationMethodRef: VerificationMethodRef;
+};
+
+const AUTHORITY_ATTESTED_SIGNING_NONCE_DOMAIN_SEPARATOR =
+  "midnight:vc:status-attestation:signing-nonce:v1";
+const AUTHORITY_ATTESTED_PROOF_CREATED_AT_UPPER_BOUND = 1n << 64n;
+const AUTHORITY_ATTESTED_NONCE_SAMPLE_UPPER_BOUND =
+  (1n << 256n) - ((1n << 256n) % JUBJUB_SUBGROUP_ORDER);
+
+const bytesToBigInt = (bytes: Uint8Array): bigint =>
+  bytes.reduce((accumulator, byte) => (accumulator << 8n) + BigInt(byte), 0n);
+
+const bigintToBytes = (value: bigint, widthBytes: number): Uint8Array => {
+  if (value < 0n) {
+    throw new Error("Cannot encode a negative bigint into bytes");
+  }
+  const encoded = new Uint8Array(widthBytes);
+  let remaining = value;
+  for (let index = widthBytes - 1; index >= 0; index -= 1) {
+    encoded[index] = Number(remaining & 0xffn);
+    remaining >>= 8n;
+  }
+  if (remaining !== 0n) {
+    throw new Error(
+      `Cannot encode bigint into ${widthBytes} bytes without truncation`,
+    );
+  }
+  return encoded;
+};
+
+const assertValidAuthorityAttestedSigningInputs = ({
+  signer,
+  createdAt,
+}: {
+  readonly signer: StatusAuthoritySigner;
+  readonly createdAt: bigint;
+}): void => {
+  if (signer.secretKey <= 0n || signer.secretKey >= JUBJUB_SUBGROUP_ORDER) {
+    throw new Error(
+      "Authority-attested status proof signer secret key must be in (0, JUBJUB_SUBGROUP_ORDER)",
+    );
+  }
+  if (createdAt < 0n) {
+    throw new Error("Authority-attested status proof createdAt must be >= 0");
+  }
+  if (createdAt >= AUTHORITY_ATTESTED_PROOF_CREATED_AT_UPPER_BOUND) {
+    throw new Error(
+      "Authority-attested status proof createdAt must fit in Uint<64>",
+    );
+  }
+};
+
+const deriveAuthorityAttestedStatusProofNonceScalarFromValidatedInputs = ({
+  statement,
+  signer,
+  createdAt,
+}: {
+  readonly statement: AuthorityAttestedStatusStatement;
+  readonly signer: StatusAuthoritySigner;
+  readonly createdAt: bigint;
+}): bigint => {
+  const bodyRoot = pureCircuits.authorityAttestedStatusStatementRoot(statement);
+
+  // Reusing a Schnorr nonce across two distinct attestation contexts leaks the
+  // signer secret key, so every context input stays bound into this hash.
+  let attempt = 0n;
+  while (true) {
+    const rawNonceSample = bytesToBigInt(
+      new Uint8Array(
+        createHash("sha256")
+          .update(AUTHORITY_ATTESTED_SIGNING_NONCE_DOMAIN_SEPARATOR)
+          .update(bodyRoot)
+          .update(statement.verifierChallengeHash)
+          .update(statement.registryState.registryId)
+          .update(statement.registryState.revokedRoot)
+          .update(statement.statusHandleCommitment)
+          .update(signer.verificationMethodRef.didContractAddress.bytes)
+          .update(signer.verificationMethodRef.methodId)
+          .update(bigintToBytes(createdAt, 32))
+          .update(bigintToBytes(signer.secretKey, 32))
+          .update(bigintToBytes(attempt, 8))
+          .digest(),
+      ),
+    );
+
+    if (rawNonceSample >= AUTHORITY_ATTESTED_NONCE_SAMPLE_UPPER_BOUND) {
+      attempt += 1n;
+      continue;
+    }
+
+    const scalar = rawNonceSample % JUBJUB_SUBGROUP_ORDER;
+    if (scalar !== 0n) {
+      return scalar;
+    }
+
+    attempt += 1n;
+  }
+};
+
+export const deriveAuthorityAttestedStatusProofNonceScalar = ({
+  statement,
+  signer,
+  createdAt,
+}: {
+  readonly statement: AuthorityAttestedStatusStatement;
+  readonly signer: StatusAuthoritySigner;
+  readonly createdAt: bigint;
+}): bigint => {
+  assertValidAuthorityAttestedSigningInputs({ signer, createdAt });
+  return deriveAuthorityAttestedStatusProofNonceScalarFromValidatedInputs({
+    statement,
+    signer,
+    createdAt,
+  });
+};
+
+const signAuthorityAttestedStatusProofWithValidatedInputs = ({
+  statement,
+  signer,
+  createdAt,
+  nonceScalar,
+}: {
+  readonly statement: AuthorityAttestedStatusStatement;
+  readonly signer: StatusAuthoritySigner;
+  readonly createdAt: bigint;
+  readonly nonceScalar: bigint;
+}): AuthorityAttestedStatusProof => {
+  const bodyRoot = pureCircuits.authorityAttestedStatusStatementRoot(statement);
+  const provisionalProof: Proof = {
+    signerVerificationMethodRef: signer.verificationMethodRef,
+    createdAt,
+    challengeHash: statement.verifierChallengeHash,
+    publicKey: signer.publicKey,
+    signature: {
+      r: ecMulGenerator(nonceScalar),
+      s: 0n,
+    },
+  };
+  const challenge = pureCircuits.statusAttestationProofChallenge(
+    bodyRoot,
+    provisionalProof,
+  );
+  const proof: Proof = {
+    ...provisionalProof,
+    signature: {
+      r: provisionalProof.signature.r,
+      s: modJubjubSubgroupOrder(nonceScalar + challenge * signer.secretKey),
+    },
+  };
+  const attestation = {
+    statement,
+    proof,
+  };
+  pureCircuits.assertValidAuthorityAttestedStatusProof(attestation);
+  return attestation;
 };
 
 export const buildRevokedSetStatusRequest = ({
@@ -79,7 +235,12 @@ export const buildAuthorityAttestedStatusStatement = ({
   return statement;
 };
 
-export const signAuthorityAttestedStatusProof = ({
+/**
+ * Unsafe escape hatch for tests or tightly controlled deterministic replay.
+ * Production integrations should use `signAuthorityAttestedStatusProof(...)`
+ * so nonce derivation stays internal to the helper.
+ */
+export const unsafeSignAuthorityAttestedStatusProofWithNonceScalar = ({
   statement,
   signer,
   createdAt,
@@ -90,43 +251,41 @@ export const signAuthorityAttestedStatusProof = ({
   readonly createdAt: bigint;
   readonly nonceScalar: bigint;
 }): AuthorityAttestedStatusProof => {
-  // Callers must supply a fresh scalar in the JubJub subgroup interval
-  // `[1, JUBJUB_SUBGROUP_ORDER)`. Reusing or biasing this nonce breaks Schnorr
-  // signature security. The current prototype keeps nonce generation explicit
-  // so application code can integrate its own RNG / deterministic signer.
+  assertValidAuthorityAttestedSigningInputs({ signer, createdAt });
   if (nonceScalar <= 0n || nonceScalar >= JUBJUB_SUBGROUP_ORDER) {
     throw new Error(
       "Authority-attested status proof nonce scalar must be in [1, JUBJUB_SUBGROUP_ORDER)",
     );
   }
-  const bodyRoot = pureCircuits.authorityAttestedStatusStatementRoot(statement);
-  const provisionalProof: Proof = {
-    signerVerificationMethodRef: signer.verificationMethodRef,
-    createdAt,
-    challengeHash: statement.verifierChallengeHash,
-    publicKey: signer.publicKey,
-    signature: {
-      r: ecMulGenerator(nonceScalar),
-      s: 0n,
-    },
-  };
-  const challenge = pureCircuits.statusAttestationProofChallenge(
-    bodyRoot,
-    provisionalProof,
-  );
-  const proof: Proof = {
-    ...provisionalProof,
-    signature: {
-      r: provisionalProof.signature.r,
-      s: modJubjubSubgroupOrder(nonceScalar + challenge * signer.secretKey),
-    },
-  };
-  const attestation = {
+  return signAuthorityAttestedStatusProofWithValidatedInputs({
     statement,
-    proof,
-  };
-  pureCircuits.assertValidAuthorityAttestedStatusProof(attestation);
-  return attestation;
+    signer,
+    createdAt,
+    nonceScalar,
+  });
+};
+
+export const signAuthorityAttestedStatusProof = ({
+  statement,
+  signer,
+  createdAt,
+}: {
+  readonly statement: AuthorityAttestedStatusStatement;
+  readonly signer: StatusAuthoritySigner;
+  readonly createdAt: bigint;
+}): AuthorityAttestedStatusProof => {
+  assertValidAuthorityAttestedSigningInputs({ signer, createdAt });
+  return signAuthorityAttestedStatusProofWithValidatedInputs({
+    statement,
+    signer,
+    createdAt,
+    nonceScalar:
+      deriveAuthorityAttestedStatusProofNonceScalarFromValidatedInputs({
+        statement,
+        signer,
+        createdAt,
+      }),
+  });
 };
 
 export const buildAuthorityAttestedStatusProofProtocol = ({

@@ -234,8 +234,16 @@ Current limitations remain:
   status proofs consistently, but they do not yet cryptographically commit the
   full status binding into the issuer-signed credential body root
 - the current off-chain authority-attestation builder requires the caller to
-  provide a fresh JubJub subgroup nonce scalar; nonce generation policy is
-  still an application-side responsibility
+  choose between:
+  - the safe default helper, which now derives the signing nonce
+    deterministically from signer secret material plus attestation context via
+    domain-separated SHA-256 plus rejection sampling
+  - an explicit unsafe override for tests or tightly controlled integrations
+- freshness max-age policy is still pending as follow-up status-contract work;
+  the current prototype only enforces:
+  - request challenge binding
+  - optional absolute expiration
+  - authority identity and registry consistency
 
 So the implemented authority-attested path is a meaningful prototype, not the
 final non-revocation architecture.
