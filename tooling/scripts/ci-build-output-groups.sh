@@ -42,6 +42,7 @@ protocols/openid
 credentials-birth
 credentials-birth-secret
 use-cases/age-gate/contract
+use-cases/hello-verifier/contract
 EOF
       ;;
     protocol)
@@ -95,6 +96,8 @@ EOF
       cat <<'EOF'
 use-cases/age-gate/contract/src/managed
 use-cases/age-gate/contract/dist
+use-cases/hello-verifier/contract/src/managed
+use-cases/hello-verifier/contract/dist
 EOF
       ;;
     protocol)
