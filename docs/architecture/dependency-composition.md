@@ -220,7 +220,7 @@ import VP<PassportDisclosures, BlindedSecretHolderBinding>
   prefix PassportPresentation_;
 
 export type PassportCredential = Passport_Credential;
-export type PassportPresentation = Presentation;
+export type PassportPresentation = PassportPresentation_Presentation;
 ```
 
 The caveat is `include`. An `include` composes source into the current scope, so
