@@ -281,9 +281,18 @@ The remaining backlog now falls into five execution categories:
 - primary item:
   - `VC-MAT-09`
 - active maintenance follow-on:
-  - `VC-MAT-18` package-taxonomy convergence:
+- `VC-MAT-18` package-taxonomy convergence:
     finish physical package relocation / legacy-root cleanup so the on-disk
     layout matches the documented target architecture areas
+    - active relocation wave after `#125`:
+      1. freeze target names + deviation inventory
+      2. move `credentials/`
+      3. move `credentials-iso-registry/` + `credentials-same-holder/`
+      4. move `credentials-status-registry/`
+      5. move `credentials-birth/` + `credentials-birth-secret/`
+    - non-package outliers such as `libs/` and
+      `infrastructure/preprod-proof-server.yml` remain follow-on cleanup after
+      the package wave
 - execution rule:
   - treat this as a cross-cutting discipline that applies to every numbered
     slice below rather than as its own dedicated PR slot
