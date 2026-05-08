@@ -447,7 +447,7 @@ Important notes:
 | `credentials-status-registry` | `registry/status-registry` | reusable ecosystem-facing registry surface |
 | `credentials-birth` | `prototypes/credential-families/birth` | prototype family proving the core |
 | `credentials-birth-secret` | `prototypes/credential-families/birth-secret` | hidden-holder prototype family |
-| `credentials-openid` | `protocols/oidc` | OpenID-shaped binding layer |
+| `credentials-openid` | `protocols/openid` | OpenID-shaped binding layer |
 | future DIDComm binding | `protocols/didcomm` | explicit protocol area |
 | future custom API binding | `protocols/custom-api` | repo-local API binding area |
 | `credentials-offchain-did` | `components/adapters/offchain-did` | runtime DID adapter, not core |
@@ -460,6 +460,56 @@ Important notes:
 | `vc-bdd-scenarios` | `use-cases/.../scenarios` | living docs should sit under concrete flows |
 | complexity / latency collectors | `tooling/metrics` | executable collectors |
 | complexity / latency baselines | `prototypes/quality` | prototype evidence set |
+
+## Current deviation inventory
+
+Status: audited on `2026-05-08`.
+
+The target architecture areas now exist, but the repository is still in a
+partial-move state.
+
+### Legacy root package directories still carrying real code
+
+These packages still live at the top level even though the RFC target areas are
+already present:
+
+- `credentials/`
+- `credentials-iso-registry/`
+- `credentials-same-holder/`
+- `credentials-status-registry/`
+- `credentials-birth/`
+- `credentials-birth-secret/`
+
+Target destinations:
+
+- `credentials/` -> `core/primitives/credentials/`
+- `credentials-iso-registry/` -> `core/primitives/iso-registry/`
+- `credentials-same-holder/` -> `core/capabilities/same-holder/`
+- `credentials-status-registry/` -> `registry/status-registry/`
+- `credentials-birth/` -> `prototypes/credential-families/birth/`
+- `credentials-birth-secret/` ->
+  `prototypes/credential-families/birth-secret/`
+
+### Transitional top-level outliers
+
+These tracked top-level paths are still present, but they are not part of the
+package-relocation wave itself:
+
+- `libs/`
+  - transitional local tarball input/output surface
+  - should be treated as tooling/artifact support, not as an architecture area
+- `infrastructure/preprod-proof-server.yml`
+  - still lives under a legacy top-level `infrastructure/` directory
+  - should eventually move under `components/integration/infrastructure/` or a
+    tooling-owned integration support area once its ownership is finalized
+
+### Compatibility shims that are not architecture debt
+
+The generated `midnight-did-credentials*` top-level symlinks are compatibility
+bridges, not canonical repository areas.
+
+They should not be counted as target-structure violations while the physical
+move wave is in progress.
 
 ## CI policy after restructure
 
