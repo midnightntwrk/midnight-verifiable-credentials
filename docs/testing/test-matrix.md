@@ -73,22 +73,22 @@ Implemented prototype coverage:
   - wrong-authority rejection through the full policy path
   - revoked-root mismatch rejection
   - attestation expiry rejection
-- `credentials-status-registry/src/test/witness-builder.test.ts`
+- `registry/status-registry/src/test/witness-builder.test.ts`
   - deterministic status-handle derivation
   - revoked-set witness/capability construction
   - verifier policy compatibility checks
   - revoked snapshot rejection
-- `credentials-status-registry/src/test/attestation-builder.test.ts`
+- `registry/status-registry/src/test/attestation-builder.test.ts`
   - verifier-supplied status request construction
   - authority attestation statement and proof construction
   - request-bound status attestation payload construction
-- `credentials-status-registry/src/test/revocation-registry.test.ts`
+- `registry/status-registry/src/test/revocation-registry.test.ts`
   - registry initialization
   - double-init / zero-id / unset-sentinel rejection
   - registry/state binding semantics
   - append-only revocation bookkeeping
   - current prototype root-binding limitation disclosure
-- `credentials-status-registry/src/test/status-proof-protocol.test.ts`
+- `registry/status-registry/src/test/status-proof-protocol.test.ts`
   - registry-facing proof-protocol validation ownership
   - request/binding consistency checks
   - authority-attested proof acceptance and rejection paths

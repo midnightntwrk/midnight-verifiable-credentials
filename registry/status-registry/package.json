@@ -41,9 +41,9 @@
     }
   },
   "scripts": {
-    "prepare:credentials": "npm --prefix ../core/primitives/credentials run build",
+    "prepare:credentials": "npm --prefix ../../core/primitives/credentials run build",
     "contract": "npm run compact",
-    "compact": "node ../tooling/scripts/ensure-compact-package-aliases.mjs && compact compile src/revocation-registry.compact src/managed/revocation-registry && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
+    "compact": "node ../../tooling/scripts/ensure-compact-package-aliases.mjs && compact compile src/revocation-registry.compact src/managed/revocation-registry && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
     "pretest": "npm run prepare:credentials && npm run compact",
     "pretest:ci": "npm run prepare:credentials && npm run compact",
     "test": "vitest run",

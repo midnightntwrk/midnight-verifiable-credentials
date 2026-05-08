@@ -46,7 +46,7 @@
   - [`templates/family-scaffold-template.md`](./templates/family-scaffold-template.md)
   - for copyable contract and family starting points
 - current status-registry package surface:
-  - [`../credentials-status-registry/README.md`](../credentials-status-registry/README.md)
+  - [`../registry/status-registry/README.md`](../registry/status-registry/README.md)
   - for engineers implementing the current prototype revocation/status registry package
 
 ## Architecture

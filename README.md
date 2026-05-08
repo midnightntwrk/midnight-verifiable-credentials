@@ -25,7 +25,7 @@ Current maturity is mixed by package:
   - [`docs/spec/conformance.md`](./docs/spec/conformance.md)
 - reference implementation packages:
   - [`credentials`](./core/primitives/credentials/README.md)
-  - [`credentials-status-registry`](./credentials-status-registry/README.md)
+  - [`credentials-status-registry`](./registry/status-registry/README.md)
     - current prototype status / revocation registry support package
   - [`credentials-birth`](./credentials-birth/README.md)
   - [`credentials-birth-secret`](./credentials-birth-secret/README.md)
@@ -34,7 +34,7 @@ Current maturity is mixed by package:
   - [`credentials-openid`](./credentials-openid/README.md)
     - current reference transport-adapter surface
 - prototype / experimental packages:
-  - [`credentials-status-registry`](./credentials-status-registry/README.md)
+  - [`credentials-status-registry`](./registry/status-registry/README.md)
   - [`credentials-protocol`](./credentials-protocol/README.md)
   - [`credentials-demo-contract`](./credentials-demo-contract/README.md)
 - shared integration infrastructure:
@@ -79,13 +79,13 @@ Start here:
   - generic VC/VP envelopes, proof model, holder-binding profiles
 - [`credentials-same-holder`](./core/capabilities/same-holder/README.md)
   - same-holder composition capability
-- [`credentials-status-registry`](./credentials-status-registry/README.md)
+- [`credentials-status-registry`](./registry/status-registry/README.md)
   - prototype status / revocation registry contract and off-chain witness helpers
 - [`credentials-iso-registry`](./core/primitives/iso-registry/README.md)
   - shared Compact-native ISO code types
 - [`credentials-offchain-did`](./credentials-offchain-did/README.md)
   - DID-aware runtime adapter for offchain DID holder binding
-- [`credentials-status-registry`](./credentials-status-registry/README.md)
+- [`credentials-status-registry`](./registry/status-registry/README.md)
   - prototype status/revocation registry and off-chain builder helpers
 - [`credentials-birth`](./credentials-birth/README.md)
   - explicit-holder birth credential family
