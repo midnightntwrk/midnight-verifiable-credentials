@@ -314,7 +314,7 @@ Acceptance criteria:
 `refactor(core): introduce Issue/Present and extract relation helpers`
 
 Scope:
-- replace `protocols.compact` with:
+- split the generic protocol templates out of `protocols.compact` into:
   - `issue.compact`
   - `present.compact`
 - add `relations.compact`
@@ -323,6 +323,8 @@ Scope:
 Acceptance criteria:
 - generic issuance/presentation choreography is separated from credential and presentation data models
 - generic linkage helpers no longer force a fused VC/VP module
+- `protocols.compact` is reduced to shared protocol/status primitives rather
+  than owning the protocol template modules themselves
 
 ### PR 4
 `refactor(core): isolate status binding from status proof protocols`

@@ -73,7 +73,7 @@ include "../../prototypes/credential-families/birth/src/birth-credential";
 import VC<BirthCredentialClaims, ExplicitHolderBinding, NoStatusBinding>;
 import VP<BirthCredentialDisclosures, ExplicitHolderBinding>;
 
-import IssuanceProtocol<
+import Issue<
   BirthCredentialIssuanceOfferBody,
   BirthCredentialIssuanceRequestBody,
   BirthCredentialIssuanceResultBody
