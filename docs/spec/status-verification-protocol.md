@@ -300,7 +300,9 @@ Current compatibility note:
 
 - the repository still exposes `AuthorityAttestedStatusCapability` and
   `RevokedSetNonMembershipStatusCapability`
-- those names should be read as compatibility-era wrappers over one shared
+- those names should be read as Compact compatibility surface only, not as the
+  preferred off-chain builder vocabulary
+- the off-chain TypeScript helper path is now binding-first around one shared
   registry-bound status shape
 - `credentials-birth-secret` now commits that shared binding into an
   issuer-signed status-bound body root for its status-aware wrapper proofs

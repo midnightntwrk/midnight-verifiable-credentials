@@ -11,7 +11,7 @@ setNetworkId("undeployed");
 const bytes32 = (label: string): Uint8Array =>
   new Uint8Array(Buffer.from(label.padEnd(32, "_").slice(0, 32)));
 
-describe("status registry: status capabilities", () => {
+describe("status registry: capability compatibility", () => {
   it("accepts a valid revoked-set non-membership status capability", () => {
     const signer = createSigner("status-authority", 888n);
     const capability = {

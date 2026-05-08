@@ -12,7 +12,6 @@ import {
 } from "@midnight-ntwrk/midnight-did-credentials";
 
 import {
-  type AuthorityAttestedStatusCapability,
   type AuthorityAttestedStatusProof,
   type AuthorityAttestedStatusProofProtocol,
   type AuthorityAttestedStatusStatement,
@@ -108,21 +107,6 @@ export const deriveAuthorityAttestedStatusProofNonceScalar = ({
 // Transitional alias: the authority-attested path currently uses the same
 // verifier-supplied request shape as the basic revoked-set status path.
 export const buildAuthorityAttestedStatusRequest = buildRevokedSetStatusRequest;
-
-export const buildAuthorityAttestedStatusCapability = ({
-  registryRef,
-  statusHandleCommitment,
-}: {
-  readonly registryRef: AuthorityAttestedStatusCapability["registryRef"];
-  readonly statusHandleCommitment: Uint8Array;
-}): AuthorityAttestedStatusCapability => {
-  const capability = {
-    registryRef,
-    statusHandleCommitment,
-  };
-  pureCircuits.assertValidAuthorityAttestedStatusCapability(capability);
-  return capability;
-};
 
 export const buildAuthorityAttestedStatusStatement = ({
   request,

@@ -8,7 +8,6 @@ import {
 import {
   pureCircuits,
   type RevocationRegistryState,
-  type RevokedSetNonMembershipStatusCapability,
   type RevokedSetNonMembershipStatusProofProtocol,
   type RevokedSetNonMembershipWitnessInput,
   type RevokedSetStatusRequest,
@@ -34,7 +33,6 @@ export type BuildRevokedSetStatusWitnessOptions = {
 export type BuiltRevokedSetStatusWitness = {
   readonly statusHandle: Uint8Array;
   readonly statusBinding: RegistryBoundStatusBinding;
-  readonly statusCapability: RevokedSetNonMembershipStatusCapability;
   readonly witnessInput: RevokedSetNonMembershipWitnessInput;
 };
 
@@ -74,7 +72,7 @@ export const deriveRevokedSetStatusHandle = ({
     issuerStatusSalt,
   );
 
-export const buildRevokedSetStatusCapability = ({
+export const buildRevokedSetStatusBinding = ({
   registryRef,
   statusHandle,
   statusHandleOpening,
@@ -82,13 +80,14 @@ export const buildRevokedSetStatusCapability = ({
   readonly registryRef: StatusRegistryRef;
   readonly statusHandle: Uint8Array;
   readonly statusHandleOpening: Uint8Array;
-}): RevokedSetNonMembershipStatusCapability => ({
-  registryRef,
-  statusHandleCommitment: pureCircuits.revokedSetStatusHandleCommitment(
-    statusHandle,
-    statusHandleOpening,
-  ),
-});
+}): RegistryBoundStatusBinding =>
+  buildRegistryBoundStatusBinding({
+    registryRef,
+    statusHandleCommitment: pureCircuits.revokedSetStatusHandleCommitment(
+      statusHandle,
+      statusHandleOpening,
+    ),
+  });
 
 export const buildRevokedSetWitnessInput = ({
   registryState,
@@ -162,14 +161,10 @@ export const buildRevokedSetStatusWitness = ({
     registryId: registryRef.registryId,
     issuerStatusSalt,
   });
-  const statusCapability = buildRevokedSetStatusCapability({
+  const statusBinding = buildRevokedSetStatusBinding({
     registryRef,
     statusHandle,
     statusHandleOpening,
-  });
-  const statusBinding = buildRegistryBoundStatusBinding({
-    registryRef,
-    statusHandleCommitment: statusCapability.statusHandleCommitment,
   });
   const witnessInput = buildRevokedSetWitnessInput({
     registryState,
@@ -177,15 +172,15 @@ export const buildRevokedSetStatusWitness = ({
     statusHandleOpening,
   });
 
-  pureCircuits.assertRevokedSetNonMembershipWitnessMatchesCapability(
-    statusCapability,
+  pureCircuits.assertRevokedSetNonMembershipWitnessMatchesBinding(
+    statusBinding,
     witnessInput,
   );
 
   if (verifierStatusPolicy) {
-    pureCircuits.assertVerifierStatusPolicyAcceptsRevokedSetNonMembership(
+    pureCircuits.assertVerifierStatusPolicyAcceptsRevokedSetNonMembershipBinding(
       verifierStatusPolicy,
-      statusCapability,
+      statusBinding,
       witnessInput,
     );
   }
@@ -203,7 +198,6 @@ export const buildRevokedSetStatusWitness = ({
   return {
     statusHandle,
     statusBinding,
-    statusCapability,
     witnessInput,
   };
 };
