@@ -50,7 +50,7 @@
     "test:ci": "vitest run",
     "prepack": "npm run build",
     "clean": "rm -rf dist && rm -rf coverage && rm -rf reports && rm -rf src/managed",
-    "build": "npm run prepare:credentials && npm run compact && rm -rf dist && tsc -b tsconfig.build.json --force && mkdir -p dist && cp -Rf ./src/managed ./dist/ && cp ./src/revocation-registry.compact ./dist && cp ./src/status-proof-protocol.compact ./dist",
+    "build": "npm run prepare:credentials && npm run compact && rm -rf dist && mkdir -p dist && tsc -b tsconfig.build.json --force && cp -Rf ./src/managed ./dist/ && cp ./src/revocation-registry.compact ./dist && cp ./src/status-proof-protocol.compact ./dist",
     "lint": "eslint src --ignore-pattern 'src/managed/**'",
     "lint:fix": "eslint src --fix --ignore-pattern 'src/managed/**'",
     "typecheck": "npm run prepare:credentials && npm run compact && tsc -p tsconfig.json --noEmit",

@@ -8,8 +8,8 @@ const repoRoot = path.resolve(__dirname, '..', '..');
 const aliases = [
   ['midnight-did-credentials', 'core/primitives/credentials'],
   ['midnight-did-credentials-same-holder', 'core/capabilities/same-holder'],
-  ['midnight-did-credentials-birth', 'credentials-birth'],
-  ['midnight-did-credentials-birth-secret', 'credentials-birth-secret'],
+  ['midnight-did-credentials-birth', 'prototypes/credential-families/birth'],
+  ['midnight-did-credentials-birth-secret', 'prototypes/credential-families/birth-secret'],
   ['midnight-did-credentials-iso-registry', 'core/primitives/iso-registry'],
   ['midnight-did-credentials-status-registry', 'registry/status-registry'],
   ['midnight-did-credentials-openid', 'protocols/openid'],

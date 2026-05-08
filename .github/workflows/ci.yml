@@ -103,15 +103,15 @@ jobs:
             'core/primitives/credentials/*'
             'credentials-status-registry/*'
             'core/capabilities/same-holder/*'
-            'credentials-birth/*'
-            'credentials-birth-secret/*'
+            'prototypes/credential-families/birth/*'
+            'prototypes/credential-families/birth-secret/*'
             'use-cases/*/contract/*'
           )
 
           integration_demo_contract_patterns=(
             'core/primitives/credentials/*'
-            'credentials-birth/*'
-            'credentials-birth-secret/*'
+            'prototypes/credential-families/birth/*'
+            'prototypes/credential-families/birth-secret/*'
             'use-cases/*/contract/*'
             'components/integration/standalone-environment/*'
           )
@@ -119,8 +119,8 @@ jobs:
           integration_protocol_patterns=(
             'core/primitives/credentials/*'
             'core/capabilities/same-holder/*'
-            'credentials-birth/*'
-            'credentials-birth-secret/*'
+            'prototypes/credential-families/birth/*'
+            'prototypes/credential-families/birth-secret/*'
             'use-cases/*/contract/*'
             'components/orchestration/protocol/*'
             'components/integration/standalone-environment/*'

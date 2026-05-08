@@ -17,7 +17,7 @@ pragma language_version >= 0.20;
 
 import CompactStandardLibrary;
 
-include "../../../../midnight-did-credentials/dist/credentials";
+include "../../../primitives/credentials/src/credentials";
 
 // Capability package: prove that multiple holder bindings are satisfied by the
 // same hidden holder secret witness under one verifier session challenge.

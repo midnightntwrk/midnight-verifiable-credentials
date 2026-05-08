@@ -27,8 +27,8 @@ Current maturity is mixed by package:
   - [`credentials`](./core/primitives/credentials/README.md)
   - [`credentials-status-registry`](./registry/status-registry/README.md)
     - current prototype status / revocation registry support package
-  - [`credentials-birth`](./credentials-birth/README.md)
-  - [`credentials-birth-secret`](./credentials-birth-secret/README.md)
+  - [`credentials-birth`](./prototypes/credential-families/birth/README.md)
+  - [`credentials-birth-secret`](./prototypes/credential-families/birth-secret/README.md)
   - [`credentials-iso-registry`](./core/primitives/iso-registry/README.md)
   - [`credentials-offchain-did`](./credentials-offchain-did/README.md)
   - [`credentials-openid`](./credentials-openid/README.md)
@@ -87,9 +87,9 @@ Start here:
   - DID-aware runtime adapter for offchain DID holder binding
 - [`credentials-status-registry`](./registry/status-registry/README.md)
   - prototype status/revocation registry and off-chain builder helpers
-- [`credentials-birth`](./credentials-birth/README.md)
+- [`credentials-birth`](./prototypes/credential-families/birth/README.md)
   - explicit-holder birth credential family
-- [`credentials-birth-secret`](./credentials-birth-secret/README.md)
+- [`credentials-birth-secret`](./prototypes/credential-families/birth-secret/README.md)
   - secret-holder birth credential family
 - [`credentials-openid`](./credentials-openid/README.md)
   - OID4VCI / OID4VP-inspired transport/domain adapters

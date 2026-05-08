@@ -55,7 +55,7 @@ reference.
 
 It sits next to the explicit holder-binding package:
 
-- [`../credentials-birth`](../credentials-birth/README.md): explicit DID-bound holder profile
+- [`../prototypes/credential-families/birth`](../prototypes/credential-families/birth/README.md): explicit DID-bound holder profile
 - [`../credentials`](../credentials/README.md): generic VC/VP envelope and proof core
 - [`../core/capabilities/same-holder`](../core/capabilities/same-holder/README.md): optional same-holder composition capability for hidden-holder flows
 

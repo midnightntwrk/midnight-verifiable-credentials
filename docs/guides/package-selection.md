@@ -39,9 +39,9 @@ Use this when you need:
 Choose one of:
 
 - explicit/public-holder shape:
-  - [`../../credentials-birth/README.md`](../../credentials-birth/README.md)
+  - [`../../prototypes/credential-families/birth/README.md`](../../prototypes/credential-families/birth/README.md)
 - hidden-secret-holder shape:
-  - [`../../credentials-birth-secret/README.md`](../../credentials-birth-secret/README.md)
+  - [`../../prototypes/credential-families/birth-secret/README.md`](../../prototypes/credential-families/birth-secret/README.md)
 
 Use `credentials-birth` when a public holder reference is acceptable.
 Use `credentials-birth-secret` when holder privacy is the primary concern.

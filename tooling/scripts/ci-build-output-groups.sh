@@ -86,10 +86,10 @@ EOF
       ;;
     birth-family)
       cat <<'EOF'
-credentials-birth/src/managed
-credentials-birth/dist
-credentials-birth-secret/src/managed
-credentials-birth-secret/dist
+prototypes/credential-families/birth/src/managed
+prototypes/credential-families/birth/dist
+prototypes/credential-families/birth-secret/src/managed
+prototypes/credential-families/birth-secret/dist
 EOF
       ;;
     age-gate)

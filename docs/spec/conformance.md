@@ -44,8 +44,8 @@ A credential family implementation conforms when it:
 
 Reference implementations:
 
-- [`../../credentials-birth/README.md`](../../credentials-birth/README.md)
-- [`../../credentials-birth-secret/README.md`](../../credentials-birth-secret/README.md)
+- [`../../prototypes/credential-families/birth/README.md`](../../prototypes/credential-families/birth/README.md)
+- [`../../prototypes/credential-families/birth-secret/README.md`](../../prototypes/credential-families/birth-secret/README.md)
 
 ### 3. Status binding implementation
 
