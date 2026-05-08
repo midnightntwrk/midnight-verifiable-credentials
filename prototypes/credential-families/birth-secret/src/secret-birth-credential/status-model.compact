@@ -24,7 +24,6 @@ export struct SecretBirthCredentialWithAuthorityAttestedStatusCapability {
 
 struct SecretBirthCredentialStatusBoundBody {
   credential: SecretBirthCredential,
-  statusBindingMode: StatusBindingKind,
   statusBindingRoot: Bytes<32>,
 }
 

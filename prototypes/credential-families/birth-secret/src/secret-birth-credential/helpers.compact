@@ -11,7 +11,6 @@ export circuit secretBirthCredentialRegistryBoundStatusBodyRoot(
   return persistentHash<SecretBirthCredentialStatusBoundBody>(
     SecretBirthCredentialStatusBoundBody {
       credential,
-      statusBindingMode: StatusBindingKind.registryBoundStatus,
       statusBindingRoot: registryBoundStatusBindingRoot(statusBinding),
     }
   );

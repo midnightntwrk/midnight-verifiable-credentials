@@ -11,7 +11,6 @@ import {
   type ProtocolMessageEnvelope,
   pureCircuits as genericPureCircuits,
   type RegistryBoundStatusBinding,
-  StatusCapabilityKind,
   type VerificationMethodRef,
 } from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
 
@@ -34,6 +33,7 @@ import {
   type SecretBirthCredentialWithAuthorityAttestedStatusCapability,
   type SecretBirthCredentialWithStatusBinding,
   type SecretBirthCredentialWithStatusCapability,
+  StatusCapabilityKind,
 } from "../managed/secret-birth-credential/contract/index.js";
 
 const JUBJUB_SUBGROUP_ORDER =

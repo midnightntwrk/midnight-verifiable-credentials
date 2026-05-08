@@ -6,21 +6,46 @@ import CompactStandardLibrary;
 // - callers must include the shared `credentials` Compact surface before this
 //   file.
 // - this file depends on `credentials` for:
-//   - VC-side binding and capability types such as
-//     `RegistryBoundStatusBinding`,
-//     `RevokedSetNonMembershipStatusCapability`, and
-//     `AuthorityAttestedStatusCapability`
-//   - verifier policy vocabulary such as `VerifierStatusPolicy` and
-//     `StatusCapabilityKind`
+//   - VC-side binding types such as `RegistryBoundStatusBinding` and
+//     `StatusRegistryRef`
 //   - proof primitives such as `Proof` and
 //     `assertValidStatusAttestationContextProof`
-//   - shared validators such as `assertValidRegistryBoundStatusBinding` and
-//     `assertValidVerifierStatusPolicy`
+//   - shared validators such as `assertValidRegistryBoundStatusBinding`
 // - current callers satisfy that prerequisite either directly
 //   (`revocation-registry.compact`) or transitively through
 //   `same-holder.compact` (`secret-birth-credential.compact`)
 // - this file does not re-include `credentials` directly because Compact
 //   repeated includes can surface duplicate bindings in downstream families.
+
+export enum StatusCapabilityKind {
+  noStatus,
+  publicStatus,
+  revokedSetNonMembership,
+  authorityAttestedStatus
+}
+
+export struct NoStatusCapability {}
+
+export struct RevokedSetNonMembershipStatusCapability {
+  registryRef: StatusRegistryRef,
+  statusHandleCommitment: Bytes<32>,
+}
+
+export struct AuthorityAttestedStatusCapability {
+  registryRef: StatusRegistryRef,
+  statusHandleCommitment: Bytes<32>,
+}
+
+export struct VerifierStatusPolicy {
+  requireStatus: Boolean,
+  acceptedStatusCapability: StatusCapabilityKind,
+  enforceRegistryId: Boolean,
+  acceptedRegistryId: Bytes<32>,
+  // `maxAttestationAge` uses the same time unit as the verifier-supplied
+  // `currentTime` and the authority-attested proof `createdAt`.
+  enforceAttestationMaxAge: Boolean,
+  maxAttestationAge: Uint<64>,
+}
 
 export struct RevocationRegistryState {
   registryId: Bytes<32>,
@@ -60,6 +85,102 @@ export struct AuthorityAttestedStatusProof {
 export struct AuthorityAttestedStatusProofProtocol {
   request: RevokedSetStatusRequest,
   attestation: AuthorityAttestedStatusProof,
+}
+
+export circuit assertValidNoStatusCapability(
+  capability: NoStatusCapability
+): [] {
+}
+
+export circuit assertValidRevokedSetNonMembershipStatusCapability(
+  capability: RevokedSetNonMembershipStatusCapability
+): [] {
+  assertValidStatusRegistryRef(capability.registryRef);
+  assert(
+    capability.statusHandleCommitment != pad(32, ""),
+    "Status handle commitment must be set"
+  );
+}
+
+export circuit assertValidAuthorityAttestedStatusCapability(
+  capability: AuthorityAttestedStatusCapability
+): [] {
+  assertValidStatusRegistryRef(capability.registryRef);
+  assert(
+    capability.statusHandleCommitment != pad(32, ""),
+    "Authority-attested status handle commitment must be set"
+  );
+}
+
+export circuit assertValidVerifierStatusPolicy(
+  policy: VerifierStatusPolicy
+): [] {
+  if (policy.requireStatus) {
+    assert(
+      policy.acceptedStatusCapability != StatusCapabilityKind.noStatus,
+      "Required status policy must request a real status capability"
+    );
+  } else {
+    assert(
+      policy.acceptedStatusCapability == StatusCapabilityKind.noStatus,
+      "Optional status policy must collapse to NoStatusCapability"
+    );
+    assert(
+      !policy.enforceRegistryId,
+      "Optional status policy must not enforce a registry"
+    );
+    assert(
+      !policy.enforceAttestationMaxAge,
+      "Optional status policy must not enforce attestation max-age"
+    );
+    assert(
+      policy.maxAttestationAge == 0,
+      "Optional status policy must not set attestation max-age"
+    );
+  }
+
+  if (policy.enforceRegistryId) {
+    assert(
+      policy.acceptedRegistryId != pad(32, ""),
+      "Accepted status registry id must be set when enforced"
+    );
+  }
+
+  if (policy.enforceAttestationMaxAge) {
+    assert(
+      policy.acceptedStatusCapability == StatusCapabilityKind.authorityAttestedStatus,
+      "Attestation max-age policy only applies to authority-attested status"
+    );
+    assert(
+      policy.maxAttestationAge >= 1,
+      "Attestation max-age policy must request a real freshness window"
+    );
+  } else {
+    assert(
+      policy.maxAttestationAge == 0,
+      "Disabled attestation max-age policy must not carry a freshness window"
+    );
+  }
+}
+
+export circuit registryBoundStatusBindingFromRevokedSetNonMembershipStatusCapability(
+  capability: RevokedSetNonMembershipStatusCapability
+): RegistryBoundStatusBinding {
+  assertValidRevokedSetNonMembershipStatusCapability(capability);
+  return RegistryBoundStatusBinding {
+    registryRef: capability.registryRef,
+    statusHandleCommitment: capability.statusHandleCommitment,
+  };
+}
+
+export circuit registryBoundStatusBindingFromAuthorityAttestedStatusCapability(
+  capability: AuthorityAttestedStatusCapability
+): RegistryBoundStatusBinding {
+  assertValidAuthorityAttestedStatusCapability(capability);
+  return RegistryBoundStatusBinding {
+    registryRef: capability.registryRef,
+    statusHandleCommitment: capability.statusHandleCommitment,
+  };
 }
 
 export circuit assertValidRevocationRegistryState(

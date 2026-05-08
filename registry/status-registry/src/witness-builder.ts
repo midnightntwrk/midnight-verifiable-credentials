@@ -2,17 +2,17 @@ import { Buffer } from "node:buffer";
 
 import {
   type RegistryBoundStatusBinding,
-  type RevokedSetNonMembershipStatusCapability,
   type StatusRegistryRef,
-  type VerifierStatusPolicy,
 } from "@midnight-ntwrk/midnight-did-credentials";
 
 import {
   pureCircuits,
   type RevocationRegistryState,
+  type RevokedSetNonMembershipStatusCapability,
   type RevokedSetNonMembershipStatusProofProtocol,
   type RevokedSetNonMembershipWitnessInput,
   type RevokedSetStatusRequest,
+  type VerifierStatusPolicy,
 } from "./managed/revocation-registry/contract/index.js";
 import { buildRegistryBoundStatusBinding } from "./status-binding.js";
 
