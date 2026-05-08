@@ -76,10 +76,10 @@ core/primitives/credentials/src/managed
 core/primitives/credentials/dist
 credentials-status-registry/src/managed
 credentials-status-registry/dist
-credentials-same-holder/src/managed
-credentials-same-holder/dist
-credentials-iso-registry/src/managed
-credentials-iso-registry/dist
+core/capabilities/same-holder/src/managed
+core/capabilities/same-holder/dist
+core/primitives/iso-registry/src/managed
+core/primitives/iso-registry/dist
 components/adapters/offchain-did/dist
 protocols/openid/dist
 EOF

@@ -115,7 +115,7 @@ graph TD
   C --> V["credentials/vc-support.compact"]
   C --> B["credentials/bindings.compact"]
   C --> P["credentials/protocol-support.compact"]
-  B --> SH["credentials-same-holder/composable.compact"]
+  B --> SH["core/capabilities/same-holder/composable.compact"]
   CC --> F["credential-family composable entrypoints"]
   SH --> L3["Layer 3 business contracts"]
   F --> L3
@@ -132,7 +132,7 @@ Those belong in specialization packages such as:
 
 - [`../credentials-birth`](../credentials-birth): explicit DID-bound holder profile
 - [`../credentials-birth-secret`](../credentials-birth-secret): hidden holder-secret profile
-- [`../credentials-same-holder`](../credentials-same-holder): same-holder composition capability for hidden-holder profiles
+- [`../core/capabilities/same-holder`](../core/capabilities/same-holder): same-holder composition capability for hidden-holder profiles
 
 ## Generic model
 
@@ -201,7 +201,7 @@ The generic core intentionally does not own same-holder multi-credential composi
 
 That capability now lives in a dedicated package:
 
-- [`../credentials-same-holder`](../credentials-same-holder/README.md)
+- [`../core/capabilities/same-holder`](../core/capabilities/same-holder/README.md)
 
 This keeps the generic core focused on single-credential invariants while
 allowing business contracts to import same-holder composition only when needed.

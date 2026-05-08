@@ -168,8 +168,8 @@ The likely final shape is:
 ```compact
 // Layer 3 contract
 include "core/primitives/credentials/src/credentials/composable";
-include "credentials-same-holder/src/same-holder/composable";
-include "credentials-iso-registry/src/iso-registry";
+include "core/capabilities/same-holder/src/same-holder/composable";
+include "core/primitives/iso-registry/src/iso-registry";
 
 include "credentials-passport-secret/src/secret-passport-credential/composable";
 include "credentials-compliance/src/sanction-screening-credential/composable";
@@ -367,7 +367,7 @@ pragma language_version >= 0.20;
 import CompactStandardLibrary;
 
 include "../../credentials-birth/src/birth-credential";
-include "../../credentials-same-holder/src/same-holder";
+include "../../core/capabilities/same-holder/src/same-holder";
 
 export circuit verifyBusinessEligibility(
   credential: BirthCredential,
@@ -408,8 +408,8 @@ Adjacent-prototype example:
 
 ```compact
 include "../../core/primitives/credentials/src/credentials";
-include "../../credentials-same-holder/src/same-holder/composable";
-include "../../credentials-iso-registry/src/iso-registry";
+include "../../core/capabilities/same-holder/src/same-holder/composable";
+include "../../core/primitives/iso-registry/src/iso-registry";
 
 include "../../midnight-passport-prototype/packages/credentials-passport-secret/src/secret-passport-credential/composable";
 include "../../midnight-passport-prototype/packages/credentials-compliance/src/sanction-screening-credential/composable";

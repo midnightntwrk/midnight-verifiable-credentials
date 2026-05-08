@@ -171,7 +171,7 @@ Binding mechanism:
 - same-holder witness-equality circuits over secret/blinded-secret bindings
 
 Current implementation packages:
-- [`../../credentials-same-holder/README.md`](../../credentials-same-holder/README.md)
+- [`../../core/capabilities/same-holder/README.md`](../../core/capabilities/same-holder/README.md)
 - composed by [`../../credentials-birth-secret/README.md`](../../credentials-birth-secret/README.md)
 
 Current test coverage:

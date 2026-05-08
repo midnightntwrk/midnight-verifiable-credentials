@@ -27,7 +27,7 @@
   },
   "scripts": {
     "contract": "npm run compact",
-    "compact": "node ../tooling/scripts/ensure-compact-package-aliases.mjs && compact compile src/same-holder.compact src/managed/same-holder && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
+    "compact": "node ../../../tooling/scripts/ensure-compact-package-aliases.mjs && compact compile src/same-holder.compact src/managed/same-holder && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
     "test": "vitest run",
     "test:ci": "vitest run",
     "prepack": "npm run build",

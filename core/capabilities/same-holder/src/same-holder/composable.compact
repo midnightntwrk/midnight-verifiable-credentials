@@ -14,8 +14,8 @@
 // limitations under the License.
 
 // Composition-safe entry point for Layer 3 contracts. The importing contract
-// must include `credentials/src/credentials/bindings.compact` or
-// `credentials/src/credentials/composable.compact` before including this file.
+// must include `core/primitives/credentials/src/credentials/bindings.compact` or
+// `core/primitives/credentials/src/credentials/composable.compact` before including this file.
 
 
 // Capability package: prove that multiple holder bindings are satisfied by the
