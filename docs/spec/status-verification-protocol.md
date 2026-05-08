@@ -225,6 +225,7 @@ The current repository already exposes one canonical off-chain helper path for
 that verifier-side responsibility:
 
 - `buildObservedRevocationRegistryState(...)`
+- `assertObservedRevocationRegistryVersionAtLeast(...)`
 - `assertObservedRevocationRegistryStateFreshEnough(...)`
 - `buildRevokedSetStatusRequestFromObservedState(...)`
 - `buildFreshRevokedSetNonMembershipInputs(...)`
@@ -255,6 +256,7 @@ For the revoked-set non-membership target specifically, that means the holder
 must be able to supply one canonical witness shape:
 
 - the accepted `registryState`
+- the accepted `registryVersion` carried inside that same snapshot
 - the derived `statusHandle`
 - the `statusHandleOpening` that reproduces the committed
   `statusHandleCommitment`

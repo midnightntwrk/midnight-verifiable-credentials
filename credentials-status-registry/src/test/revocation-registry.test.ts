@@ -45,6 +45,7 @@ describe("revocation registry contract", () => {
     const state = {
       registryId: bytes32("registry:hidden-holder"),
       revokedRoot: bytes32("revoked-root:current"),
+      registryVersion: 0n,
     };
 
     expect(() =>
@@ -57,6 +58,7 @@ describe("revocation registry contract", () => {
       pureCircuits.assertValidRevocationRegistryState({
         registryId: new Uint8Array(32),
         revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 0n,
       }),
     ).toThrow(/Revocation registry id must be set/);
 
@@ -64,6 +66,7 @@ describe("revocation registry contract", () => {
       pureCircuits.assertValidRevocationRegistryState({
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: new Uint8Array(32),
+        registryVersion: 0n,
       }),
     ).toThrow(/Revocation registry root must be set/);
   });
@@ -106,6 +109,7 @@ describe("revocation registry contract", () => {
     const snapshot = {
       registryId: bytes32("registry:hidden-holder"),
       revokedRoot: bytes32("revoked-root:current"),
+      registryVersion: 0n,
     };
 
     expect(() =>
@@ -143,8 +147,25 @@ describe("revocation registry contract", () => {
       contract.impureCircuits.assertStateUsesThisRegistry(initialized.context, {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("fabricated-root"),
+        registryVersion: 0n,
       }),
     ).not.toThrow();
+  });
+
+  it("binds state snapshots to the current registry version", () => {
+    const { contract, context } = createRegistryFixture();
+    const initialized = contract.impureCircuits.initializeRegistry(
+      context,
+      bytes32("registry:hidden-holder"),
+    );
+
+    expect(() =>
+      contract.impureCircuits.assertStateUsesThisRegistry(initialized.context, {
+        registryId: bytes32("registry:hidden-holder"),
+        revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 1n,
+      }),
+    ).toThrow(/state version does not match this registry/i);
   });
 
   it("records revoked status handles and advances the internal version counter", () => {
@@ -166,6 +187,14 @@ describe("revocation registry contract", () => {
     expect(
       revokedLedger.revokedStatusHandles.findPathForLeaf(statusHandle),
     ).toBeDefined();
+
+    expect(() =>
+      contract.impureCircuits.assertStateUsesThisRegistry(revoked.context, {
+        registryId: bytes32("registry:hidden-holder"),
+        revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 1n,
+      }),
+    ).not.toThrow();
   });
 
   it("rejects an empty revoked status handle", () => {

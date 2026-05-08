@@ -18,11 +18,13 @@ constructor() {
 
 pure circuit revocationRegistryState(
   registryIdValue: Bytes<32>,
-  revokedRoot: Bytes<32>
+  revokedRoot: Bytes<32>,
+  registryVersionValue: Uint<64>
 ): RevocationRegistryState {
   return RevocationRegistryState {
     registryId: registryIdValue,
     revokedRoot: revokedRoot,
+    registryVersion: registryVersionValue,
   };
 }
 
@@ -42,7 +44,7 @@ export circuit initializeRegistry(nextRegistryId: Bytes<32>): [] {
 
 // Current prototype limitation: Compact does not yet expose an in-circuit
 // getter for the current MerkleTree root here, so this circuit only binds the
-// caller-provided snapshot to this registry's id only.
+// caller-provided snapshot to this registry's id and monotonic version only.
 // Callers must not treat `state.revokedRoot` as contract-verified until the
 // final in-circuit non-membership/root-binding path lands.
 export circuit assertStateUsesThisRegistry(
@@ -53,6 +55,10 @@ export circuit assertStateUsesThisRegistry(
   assert(
     state.registryId == registryId,
     "Revocation registry state does not belong to this registry"
+  );
+  assert(
+    state.registryVersion == version,
+    "Revocation registry state version does not match this registry"
   );
 }
 

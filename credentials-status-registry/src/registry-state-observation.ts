@@ -104,6 +104,22 @@ export const buildRevokedSetStatusRequestFromObservedState = ({
   });
 };
 
+export const assertObservedRevocationRegistryVersionAtLeast = ({
+  observedState,
+  minimumRegistryVersion,
+}: {
+  readonly observedState: ObservedRevocationRegistryState;
+  readonly minimumRegistryVersion: bigint;
+}): void => {
+  buildObservedRevocationRegistryState(observedState);
+  assertNonNegative(minimumRegistryVersion, "Minimum registry version");
+  if (observedState.registryState.registryVersion < minimumRegistryVersion) {
+    throw new Error(
+      "Observed revocation registry snapshot version is older than the required minimum",
+    );
+  }
+};
+
 export const buildFreshRevokedSetNonMembershipInputs = ({
   observedState,
   verifierChallengeHash,

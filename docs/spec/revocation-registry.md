@@ -254,12 +254,14 @@ The prototype registry model is:
 - ledger state publishes:
   - `registryId`
   - `revokedRoot`
-- an internal monotonic update counter may exist for registry-side bookkeeping
+  - `registryVersion`
 
 The canonical VC/VP/protocol surface does not need to expose a registry epoch.
-For the current prototype target, freshness is enforced by who supplies and
-accepts the revocation root, not by an in-band epoch field carried in the
-credential status witness.
+For the current prototype target, freshness is still enforced by who supplies
+and accepts the revocation root, not by an in-band epoch alone. The version
+counter is still useful because it lets Compact bind a supplied snapshot to the
+current registry mutation count even though it cannot yet prove the live Merkle
+root.
 
 Current prototype implementation note:
 
@@ -267,12 +269,23 @@ Current prototype implementation note:
   in-circuit Merkle-root equality check for the revoked-set tree
 - so `assertStateUsesThisRegistry(...)` currently binds a supplied snapshot to:
   - the contract's `registryId`
+  - the contract's `registryVersion`
 - but it does not yet prove that the supplied `revokedRoot` equals the live
   contract Merkle root
 
 Until the final in-circuit non-membership path lands, the current repository
 implementation must treat `revokedRoot` as an off-chain coordinated snapshot
 value, not as a fully contract-proven root.
+
+Operational consequence of the current version binding:
+
+- `assertStateUsesThisRegistry(...)` now requires the supplied
+  `registryVersion` to equal the live contract version exactly
+- so if a revocation lands after a verifier or holder observes a snapshot but
+  before proof submission, that snapshot becomes stale even if the holder's
+  status handle is still not revoked
+- the correct prototype behavior is to rebuild the request/proof flow against
+  a fresh observed snapshot instead of accepting a race-prone earlier version
 
 That means the current prototype witness shape is already canonical for:
 

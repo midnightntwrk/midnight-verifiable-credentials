@@ -48,6 +48,7 @@ describe("revoked-set witness builder", () => {
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 0n,
       },
       verifierStatusPolicy: {
         requireStatus: true,
@@ -84,6 +85,7 @@ describe("revoked-set witness builder", () => {
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 0n,
       },
       verifierChallengeHash: bytes32("challenge:status"),
       verifierStatusPolicy: {
@@ -124,6 +126,7 @@ describe("revoked-set witness builder", () => {
         registryState: {
           registryId: bytes32("registry:hidden-holder"),
           revokedRoot: bytes32("revoked-root:current"),
+          registryVersion: 0n,
         },
         verifierChallengeHash: bytes32("challenge:status"),
         verifierStatusPolicy: {
@@ -158,6 +161,7 @@ describe("revoked-set witness builder", () => {
         registryState: {
           registryId: bytes32("registry:hidden-holder"),
           revokedRoot: bytes32("revoked-root:current"),
+          registryVersion: 0n,
         },
         revokedStatusHandles: [revokedHandle],
       }),

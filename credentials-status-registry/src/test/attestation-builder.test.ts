@@ -36,6 +36,7 @@ describe("authority-attested status builder", () => {
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 0n,
       },
       verifierChallengeHash: bytes32("challenge:status"),
     });
@@ -50,6 +51,7 @@ describe("authority-attested status builder", () => {
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 0n,
       },
       verifierChallengeHash: bytes32("challenge:status"),
     });
@@ -84,6 +86,7 @@ describe("authority-attested status builder", () => {
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 0n,
       },
       verifierChallengeHash: bytes32("challenge:status"),
     });
@@ -122,6 +125,7 @@ describe("authority-attested status builder", () => {
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 0n,
       },
       verifierChallengeHash: bytes32("challenge:status"),
     });
@@ -152,6 +156,7 @@ describe("authority-attested status builder", () => {
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 0n,
       },
       verifierChallengeHash: bytes32("challenge:status"),
     });
@@ -180,6 +185,7 @@ describe("authority-attested status builder", () => {
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 0n,
       },
       verifierChallengeHash: bytes32("challenge:status"),
     });
@@ -212,6 +218,7 @@ describe("authority-attested status builder", () => {
         registryState: {
           registryId: request.registryState.registryId,
           revokedRoot: bytes32("revoked-root:next"),
+          registryVersion: request.registryState.registryVersion,
         },
         verifierChallengeHash: request.verifierChallengeHash,
       }),
@@ -247,6 +254,7 @@ describe("authority-attested status builder", () => {
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 0n,
       },
       verifierChallengeHash: bytes32("challenge:status"),
     });
@@ -278,6 +286,7 @@ describe("authority-attested status builder", () => {
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 0n,
       },
       verifierChallengeHash: bytes32("challenge:status"),
     });
@@ -327,6 +336,7 @@ describe("authority-attested status builder", () => {
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 0n,
       },
       verifierChallengeHash: bytes32("challenge:status"),
     });
@@ -355,6 +365,7 @@ describe("authority-attested status builder", () => {
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 0n,
       },
       verifierChallengeHash: bytes32("challenge:status"),
     });
@@ -381,6 +392,7 @@ describe("authority-attested status builder", () => {
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 0n,
       },
       verifierChallengeHash: bytes32("challenge:status"),
     });
@@ -412,6 +424,7 @@ describe("authority-attested status builder", () => {
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
         revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 0n,
       },
       verifierChallengeHash: bytes32("challenge:status"),
     });

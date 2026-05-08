@@ -25,6 +25,7 @@ import CompactStandardLibrary;
 export struct RevocationRegistryState {
   registryId: Bytes<32>,
   revokedRoot: Bytes<32>,
+  registryVersion: Uint<64>,
 }
 
 export struct RevokedSetStatusRequest {
