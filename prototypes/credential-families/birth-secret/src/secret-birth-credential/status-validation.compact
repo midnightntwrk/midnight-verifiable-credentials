@@ -1,17 +1,3 @@
-export circuit assertValidSecretBirthCredentialWithStatusCapability(
-  credentialWithStatus: SecretBirthCredentialWithStatusCapability
-): [] {
-  assertValidSecretBirthCredentialEnvelopeOnly(credentialWithStatus.credential);
-  assertValidRevokedSetNonMembershipStatusCapability(
-    credentialWithStatus.statusCapability
-  );
-  assertValidCredentialProofForBodyRoot(
-    credentialWithStatus.credential,
-    credentialWithStatus.credentialProof,
-    secretBirthCredentialWithStatusCapabilityBodyRoot(credentialWithStatus)
-  );
-}
-
 export circuit assertValidSecretBirthCredentialWithStatusBinding(
   credentialWithStatus: SecretBirthCredentialWithStatusBinding
 ): [] {
@@ -23,35 +9,6 @@ export circuit assertValidSecretBirthCredentialWithStatusBinding(
     credentialWithStatus.credential,
     credentialWithStatus.credentialProof,
     secretBirthCredentialWithStatusBindingBodyRoot(credentialWithStatus)
-  );
-}
-
-export circuit assertValidSecretBirthCredentialWithAuthorityAttestedStatusCapability(
-  credentialWithStatus: SecretBirthCredentialWithAuthorityAttestedStatusCapability
-): [] {
-  assertValidSecretBirthCredentialEnvelopeOnly(credentialWithStatus.credential);
-  assertValidAuthorityAttestedStatusCapability(
-    credentialWithStatus.statusCapability
-  );
-  assertValidCredentialProofForBodyRoot(
-    credentialWithStatus.credential,
-    credentialWithStatus.credentialProof,
-    secretBirthCredentialWithAuthorityAttestedStatusCapabilityBodyRoot(
-      credentialWithStatus
-    )
-  );
-}
-
-export circuit assertValidSecretBirthCredentialVerificationStatusRequest(
-  request: SecretBirthCredentialVerificationStatusRequest
-): [] {
-  assertValidSecretBirthCredentialVerificationRequestMessage(
-    request.verificationRequest
-  );
-  assertValidVerifierStatusPolicy(request.statusPolicy);
-  assert(
-    request.statusPolicy.requireStatus,
-    "Secret birth status-aware verification request must require credential status"
   );
 }
 
@@ -71,14 +28,6 @@ export circuit assertValidSecretBirthCredentialVerificationAuthorityAttestedStat
     request.statusRequest.verifierChallengeHash
       == request.verificationRequest.verifierChallengeHash,
     "Secret birth authority-attested status request challenge must match the verification request challenge"
-  );
-}
-
-export circuit assertValidSecretBirthCredentialVerificationStatusInputs(
-  statusInputs: SecretBirthCredentialVerificationStatusInputs
-): [] {
-  assertValidRevokedSetNonMembershipWitnessInput(
-    statusInputs.nonRevocationWitness
   );
 }
 
@@ -109,53 +58,11 @@ export circuit assertValidSecretBirthCredentialVerificationRevokedSetStatusInput
   );
 }
 
-export circuit assertValidSecretBirthCredentialVerificationAuthorityAttestedStatusInputs(
-  statusInputs: SecretBirthCredentialVerificationAuthorityAttestedStatusInputs
-): [] {
-  assertValidAuthorityAttestedStatusProof(statusInputs.statusAttestation);
-}
-
 export circuit assertValidSecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs(
   statusInputs: SecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs
 ): [] {
   assertValidAuthorityAttestedStatusProofProtocol(
     statusInputs.statusProofProtocol
-  );
-}
-
-export circuit assertSecretBirthCredentialVerificationSubmissionMatchesStatusRequest(
-  credentialWithStatus: SecretBirthCredentialWithStatusCapability,
-  request: SecretBirthCredentialVerificationStatusRequest,
-  submission: SecretBirthCredentialVerificationSubmission,
-  statusInputs: SecretBirthCredentialVerificationStatusInputs,
-  holderSecret: Bytes<32>,
-  holderSecretOpening: Bytes<32>,
-  holderBindingBlindingFactor: Bytes<32>
-): [] {
-  assertValidSecretBirthCredentialWithStatusCapability(credentialWithStatus);
-  assertValidSecretBirthCredentialVerificationStatusRequest(request);
-  assertValidSecretBirthCredentialVerificationStatusInputs(statusInputs);
-  assert(
-    secretBirthCredentialBodyRoot(submission.body.credential)
-      == secretBirthCredentialBodyRoot(credentialWithStatus.credential),
-    "Status-aware verification submission credential does not match the status-bound credential body"
-  );
-  assert(
-    submission.body.credentialProof.challengeHash
-      == credentialWithStatus.credentialProof.challengeHash,
-    "Status-aware verification submission credential proof does not match the status-bound credential proof"
-  );
-  assertSecretBirthCredentialVerificationSubmissionMatchesRequest(
-    request.verificationRequest,
-    submission,
-    holderSecret,
-    holderSecretOpening,
-    holderBindingBlindingFactor
-  );
-  assertVerifierStatusPolicyAcceptsRevokedSetNonMembership(
-    request.statusPolicy,
-    credentialWithStatus.statusCapability,
-    statusInputs.nonRevocationWitness
   );
 }
 
@@ -199,51 +106,6 @@ export circuit assertSecretBirthCredentialVerificationSubmissionMatchesRevokedSe
     request.statusPolicy,
     credentialWithStatus.statusBinding,
     statusInputs.statusProofProtocol
-  );
-}
-
-export circuit assertSecretBirthCredentialVerificationSubmissionMatchesAuthorityAttestedStatusRequest(
-  credentialWithStatus: SecretBirthCredentialWithAuthorityAttestedStatusCapability,
-  request: SecretBirthCredentialVerificationAuthorityAttestedStatusRequest,
-  submission: SecretBirthCredentialVerificationSubmission,
-  statusInputs: SecretBirthCredentialVerificationAuthorityAttestedStatusInputs,
-  holderSecret: Bytes<32>,
-  holderSecretOpening: Bytes<32>,
-  holderBindingBlindingFactor: Bytes<32>,
-  currentTime: Uint<64>
-): [] {
-  assertValidSecretBirthCredentialWithAuthorityAttestedStatusCapability(
-    credentialWithStatus
-  );
-  assertValidSecretBirthCredentialVerificationAuthorityAttestedStatusRequest(
-    request
-  );
-  assertValidSecretBirthCredentialVerificationAuthorityAttestedStatusInputs(
-    statusInputs
-  );
-  assert(
-    secretBirthCredentialBodyRoot(submission.body.credential)
-      == secretBirthCredentialBodyRoot(credentialWithStatus.credential),
-    "Authority-attested status verification submission credential does not match the status-bound credential body"
-  );
-  assert(
-    submission.body.credentialProof.challengeHash
-      == credentialWithStatus.credentialProof.challengeHash,
-    "Authority-attested status verification submission credential proof does not match the status-bound credential proof"
-  );
-  assertSecretBirthCredentialVerificationSubmissionMatchesRequest(
-    request.verificationRequest,
-    submission,
-    holderSecret,
-    holderSecretOpening,
-    holderBindingBlindingFactor
-  );
-  assertVerifierStatusPolicyAcceptsAuthorityAttestedStatus(
-    request.statusPolicy,
-    credentialWithStatus.statusCapability,
-    request.statusRequest,
-    statusInputs.statusAttestation,
-    currentTime
   );
 }
 

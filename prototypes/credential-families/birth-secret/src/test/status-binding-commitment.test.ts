@@ -42,16 +42,16 @@ describe("secret birth credential: issuer-signed status binding commitment", () 
     ).toThrow();
   });
 
-  it("rejects a revoked-set status capability when the committed registry diverges from the issuer-signed proof", () => {
+  it("rejects a status-bound credential when the committed registry diverges from the issuer-signed proof", () => {
     const fixture = createSecretBirthCredentialFixture();
 
     expect(() =>
-      pureCircuits.assertValidSecretBirthCredentialWithStatusCapability({
-        ...fixture.credentialWithStatus,
-        statusCapability: {
-          ...fixture.credentialWithStatus.statusCapability,
+      pureCircuits.assertValidSecretBirthCredentialWithStatusBinding({
+        ...fixture.credentialWithStatusBinding,
+        statusBinding: {
+          ...fixture.credentialWithStatusBinding.statusBinding,
           registryRef: {
-            ...fixture.credentialWithStatus.statusCapability.registryRef,
+            ...fixture.credentialWithStatusBinding.statusBinding.registryRef,
             registryId: new Uint8Array(32).fill(9),
           },
         },
@@ -59,19 +59,17 @@ describe("secret birth credential: issuer-signed status binding commitment", () 
     ).toThrow();
   });
 
-  it("rejects an authority-attested status capability when the committed handle diverges from the issuer-signed proof", () => {
+  it("rejects a status-bound credential when the committed handle diverges from the issuer-signed proof", () => {
     const fixture = createSecretBirthCredentialFixture();
 
     expect(() =>
-      pureCircuits.assertValidSecretBirthCredentialWithAuthorityAttestedStatusCapability(
-        {
-          ...fixture.credentialWithAuthorityAttestedStatus,
-          statusCapability: {
-            ...fixture.credentialWithAuthorityAttestedStatus.statusCapability,
-            statusHandleCommitment: new Uint8Array(32).fill(5),
-          },
+      pureCircuits.assertValidSecretBirthCredentialWithStatusBinding({
+        ...fixture.credentialWithStatusBinding,
+        statusBinding: {
+          ...fixture.credentialWithStatusBinding.statusBinding,
+          statusHandleCommitment: new Uint8Array(32).fill(5),
         },
-      ),
+      }),
     ).toThrow();
   });
 

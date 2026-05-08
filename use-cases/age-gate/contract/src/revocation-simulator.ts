@@ -14,13 +14,12 @@ import {
   type RevocationAccessDecision,
   type RevocationRegistryState,
   type SecretBirthCredential,
-  type SecretBirthCredentialVerificationAuthorityAttestedStatusInputs,
+  type SecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs,
   type SecretBirthCredentialVerificationAuthorityAttestedStatusRequest,
   type SecretBirthCredentialVerificationRevokedSetStatusRequest,
-  type SecretBirthCredentialVerificationStatusInputs,
+  type SecretBirthCredentialVerificationRevokedSetStatusInputs,
   type SecretBirthCredentialVerificationSubmission,
-  type SecretBirthCredentialWithAuthorityAttestedStatusCapability,
-  type SecretBirthCredentialWithStatusCapability,
+  type SecretBirthCredentialWithStatusBinding,
   type VerificationMethodRef,
 } from "./managed/demo-revocation/contract/index.js";
 import {
@@ -153,10 +152,10 @@ export class CredentialsDemoRevocationSimulator {
   }
 
   public issueRevocationAwareCapabilityWithVerifierSuppliedRoot(
-    credentialWithStatus: SecretBirthCredentialWithStatusCapability,
+    credentialWithStatus: SecretBirthCredentialWithStatusBinding,
     request: SecretBirthCredentialVerificationRevokedSetStatusRequest,
     submission: SecretBirthCredentialVerificationSubmission,
-    statusInputs: SecretBirthCredentialVerificationStatusInputs,
+    statusInputs: SecretBirthCredentialVerificationRevokedSetStatusInputs,
     currentDay: bigint,
   ): Uint8Array {
     return this.executeCircuit(() =>
@@ -172,10 +171,10 @@ export class CredentialsDemoRevocationSimulator {
   }
 
   public issueRevocationAwareCapabilityWithAuthorityAttestation(
-    credentialWithStatus: SecretBirthCredentialWithAuthorityAttestedStatusCapability,
+    credentialWithStatus: SecretBirthCredentialWithStatusBinding,
     request: SecretBirthCredentialVerificationAuthorityAttestedStatusRequest,
     submission: SecretBirthCredentialVerificationSubmission,
-    statusInputs: SecretBirthCredentialVerificationAuthorityAttestedStatusInputs,
+    statusInputs: SecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs,
     currentDay: bigint,
     currentTime: bigint,
   ): Uint8Array {

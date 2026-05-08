@@ -234,10 +234,10 @@ export circuit issueSecretBirthCredential(
 }
 
 circuit verifySecretBirthPresentationWithVerifierSuppliedRoot(
-  credentialWithStatus: SecretBirthCredentialWithStatusCapability,
+  credentialWithStatus: SecretBirthCredentialWithStatusBinding,
   request: SecretBirthCredentialVerificationRevokedSetStatusRequest,
   submission: SecretBirthCredentialVerificationSubmission,
-  statusInputs: SecretBirthCredentialVerificationStatusInputs,
+  statusInputs: SecretBirthCredentialVerificationRevokedSetStatusInputs,
   currentDay: Uint<32>
 ): [] {
   const credentialRoot = disclose(secretBirthCredentialBodyRoot(
@@ -267,26 +267,23 @@ circuit verifySecretBirthPresentationWithVerifierSuppliedRoot(
     "Revocation demo status request challenge must match the verification request challenge"
   );
   assert(
-    statusInputs.nonRevocationWitness.registryState.registryId
+    statusInputs.statusProofProtocol.request.registryState.registryId
       == request.statusRequest.registryState.registryId,
-    "Revocation demo status witness registry does not match the verifier request"
+    "Revocation demo status protocol registry does not match the verifier request"
   );
   assert(
-    statusInputs.nonRevocationWitness.registryState.revokedRoot
+    statusInputs.statusProofProtocol.request.registryState.revokedRoot
       == request.statusRequest.registryState.revokedRoot,
-    "Revocation demo status witness revoked root does not match the verifier request"
+    "Revocation demo status protocol revoked root does not match the verifier request"
   );
   assert(
-    statusInputs.nonRevocationWitness.registryState.registryVersion
+    statusInputs.statusProofProtocol.request.registryState.registryVersion
       == request.statusRequest.registryState.registryVersion,
     "Revocation demo status witness state version does not match the verifier request"
   );
-  assertSecretBirthCredentialVerificationSubmissionMatchesStatusRequest(
+  assertSecretBirthCredentialVerificationSubmissionMatchesRevokedSetStatusRequest(
     credentialWithStatus,
-    SecretBirthCredentialVerificationStatusRequest {
-      verificationRequest: request.verificationRequest,
-      statusPolicy: request.statusPolicy,
-    },
+    request,
     submission,
     statusInputs,
     holderSecret(),
@@ -327,10 +324,10 @@ circuit verifySecretBirthPresentationWithVerifierSuppliedRoot(
 }
 
 circuit verifySecretBirthPresentationWithAuthorityAttestedStatus(
-  credentialWithStatus: SecretBirthCredentialWithAuthorityAttestedStatusCapability,
+  credentialWithStatus: SecretBirthCredentialWithStatusBinding,
   request: SecretBirthCredentialVerificationAuthorityAttestedStatusRequest,
   submission: SecretBirthCredentialVerificationSubmission,
-  statusInputs: SecretBirthCredentialVerificationAuthorityAttestedStatusInputs,
+  statusInputs: SecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs,
   currentDay: Uint<32>,
   currentTime: Uint<64>
 ): [] {
@@ -341,7 +338,7 @@ circuit verifySecretBirthPresentationWithAuthorityAttestedStatus(
   assert(issuedCredentialClaimRoots.member(credentialRoot),
     "Secret birth credential was not issued by the revocation demo contract"
   );
-  assertSecretBirthCredentialVerificationSubmissionMatchesAuthorityAttestedStatusRequest(
+  assertSecretBirthCredentialVerificationSubmissionMatchesAuthorityAttestedStatusProtocolRequest(
     credentialWithStatus,
     request,
     submission,
@@ -385,10 +382,10 @@ circuit verifySecretBirthPresentationWithAuthorityAttestedStatus(
 }
 
 export circuit issueRevocationAwareCapabilityWithVerifierSuppliedRoot(
-  credentialWithStatus: SecretBirthCredentialWithStatusCapability,
+  credentialWithStatus: SecretBirthCredentialWithStatusBinding,
   request: SecretBirthCredentialVerificationRevokedSetStatusRequest,
   submission: SecretBirthCredentialVerificationSubmission,
-  statusInputs: SecretBirthCredentialVerificationStatusInputs,
+  statusInputs: SecretBirthCredentialVerificationRevokedSetStatusInputs,
   currentDay: Uint<32>
 ): Bytes<32> {
   const credentialRoot = secretBirthCredentialBodyRoot(
@@ -417,10 +414,10 @@ export circuit issueRevocationAwareCapabilityWithVerifierSuppliedRoot(
 }
 
 export circuit issueRevocationAwareCapabilityWithAuthorityAttestation(
-  credentialWithStatus: SecretBirthCredentialWithAuthorityAttestedStatusCapability,
+  credentialWithStatus: SecretBirthCredentialWithStatusBinding,
   request: SecretBirthCredentialVerificationAuthorityAttestedStatusRequest,
   submission: SecretBirthCredentialVerificationSubmission,
-  statusInputs: SecretBirthCredentialVerificationAuthorityAttestedStatusInputs,
+  statusInputs: SecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs,
   currentDay: Uint<32>,
   currentTime: Uint<64>
 ): Bytes<32> {

@@ -95,10 +95,10 @@ export class UseHiddenHolderScenario extends Ability {
 
     const capability =
       simulator.issueRevocationAwareCapabilityWithVerifierSuppliedRoot(
-        fixture.credentialWithStatus,
+        fixture.credentialWithStatusBinding,
         request,
         submission,
-        fixture.statusVerificationInputs,
+        fixture.revokedSetStatusVerificationInputs,
         fixture.witness.currentDay,
       );
     const claimDecision = simulator.claimRevocationAwareCapability(capability);
@@ -127,16 +127,20 @@ export class UseHiddenHolderScenario extends Ability {
 
     try {
       simulator.issueRevocationAwareCapabilityWithVerifierSuppliedRoot(
-        fixture.credentialWithStatus,
+        fixture.credentialWithStatusBinding,
         request,
         submission,
         {
-          nonRevocationWitness: {
-            ...fixture.statusVerificationInputs.nonRevocationWitness,
-            registryState: {
-              ...fixture.statusVerificationInputs.nonRevocationWitness
-                .registryState,
-              registryId: new Uint8Array(32).fill(9),
+          statusProofProtocol: {
+            ...fixture.revokedSetStatusVerificationInputs.statusProofProtocol,
+            witnessInput: {
+              ...fixture.revokedSetStatusVerificationInputs.statusProofProtocol
+                .witnessInput,
+              registryState: {
+                ...fixture.revokedSetStatusVerificationInputs
+                  .statusProofProtocol.witnessInput.registryState,
+                registryId: new Uint8Array(32).fill(9),
+              },
             },
           },
         },
@@ -169,16 +173,20 @@ export class UseHiddenHolderScenario extends Ability {
 
     try {
       simulator.issueRevocationAwareCapabilityWithVerifierSuppliedRoot(
-        fixture.credentialWithStatus,
+        fixture.credentialWithStatusBinding,
         request,
         submission,
         {
-          nonRevocationWitness: {
-            ...fixture.statusVerificationInputs.nonRevocationWitness,
-            registryState: {
-              ...fixture.statusVerificationInputs.nonRevocationWitness
-                .registryState,
-              revokedRoot: new Uint8Array(32).fill(7),
+          statusProofProtocol: {
+            ...fixture.revokedSetStatusVerificationInputs.statusProofProtocol,
+            witnessInput: {
+              ...fixture.revokedSetStatusVerificationInputs.statusProofProtocol
+                .witnessInput,
+              registryState: {
+                ...fixture.revokedSetStatusVerificationInputs
+                  .statusProofProtocol.witnessInput.registryState,
+                revokedRoot: new Uint8Array(32).fill(7),
+              },
             },
           },
         },
@@ -211,19 +219,23 @@ export class UseHiddenHolderScenario extends Ability {
 
     try {
       simulator.issueRevocationAwareCapabilityWithVerifierSuppliedRoot(
-        fixture.credentialWithStatus,
+        fixture.credentialWithStatusBinding,
+        request,
+        submission,
         {
-          ...request,
-          statusRequest: {
-            ...request.statusRequest,
-            registryState: {
-              ...request.statusRequest.registryState,
-              registryVersion: 0n,
+          statusProofProtocol: {
+            ...fixture.revokedSetStatusVerificationInputs.statusProofProtocol,
+            request: {
+              ...fixture.revokedSetStatusVerificationInputs.statusProofProtocol
+                .request,
+              registryState: {
+                ...fixture.revokedSetStatusVerificationInputs
+                  .statusProofProtocol.request.registryState,
+                registryVersion: 0n,
+              },
             },
           },
         },
-        submission,
-        fixture.statusVerificationInputs,
         fixture.witness.currentDay,
       );
       this.#recordResult(false, simulator, fixture, {
@@ -256,10 +268,10 @@ export class UseHiddenHolderScenario extends Ability {
 
     try {
       simulator.issueRevocationAwareCapabilityWithAuthorityAttestation(
-        fixture.credentialWithAuthorityAttestedStatus,
+        fixture.credentialWithStatusBinding,
         request,
         submission,
-        fixture.authorityAttestedStatusVerificationInputs,
+        fixture.authorityAttestedStatusProtocolInputs,
         fixture.witness.currentDay,
         request.verificationRequest.envelope.createdAt + 60n,
       );

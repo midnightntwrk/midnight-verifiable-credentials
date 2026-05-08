@@ -31,7 +31,7 @@
       "default": "./dist/contract-revocation.js"
     },
     "./testing": {
-      "types": "./dist/testing.d.ts",
+      "types": "./src/testing.d.ts",
       "require": "./dist/testing.js",
       "import": "./dist/testing.js",
       "default": "./dist/testing.js"
@@ -56,7 +56,7 @@
         "dist/contract-revocation.d.ts"
       ],
       "testing": [
-        "dist/testing.d.ts"
+        "src/testing.d.ts"
       ],
       "managed/demo/contract/index.js": [
         "dist/managed/demo/contract/index.d.ts"
