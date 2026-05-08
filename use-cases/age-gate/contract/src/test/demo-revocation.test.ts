@@ -246,22 +246,18 @@ describe("credentials demo revocation contract", () => {
     expect(() =>
       simulator.issueRevocationAwareCapabilityWithVerifierSuppliedRoot(
         fixture.credentialWithStatusBinding,
-        request,
-        submission,
         {
-          statusProofProtocol: {
-            ...fixture.revokedSetStatusVerificationInputs.statusProofProtocol,
-            request: {
-              ...fixture.revokedSetStatusVerificationInputs.statusProofProtocol
-                .request,
-              registryState: {
-                ...fixture.revokedSetStatusVerificationInputs.statusProofProtocol
-                  .request.registryState,
-                registryVersion: 0n,
-              },
+          ...request,
+          statusRequest: {
+            ...request.statusRequest,
+            registryState: {
+              ...request.statusRequest.registryState,
+              registryVersion: 0n,
             },
           },
         },
+        submission,
+        fixture.revokedSetStatusVerificationInputs,
         fixture.witness.currentDay,
       ),
     ).toThrow(
@@ -298,22 +294,18 @@ describe("credentials demo revocation contract", () => {
     expect(() =>
       simulator.issueRevocationAwareCapabilityWithAuthorityAttestation(
         fixture.credentialWithStatusBinding,
-        request,
-        submission,
         {
-          statusProofProtocol: {
-            ...fixture.authorityAttestedStatusProtocolInputs.statusProofProtocol,
-            request: {
-              ...fixture.authorityAttestedStatusProtocolInputs.statusProofProtocol
-                .request,
-              registryState: {
-                ...fixture.authorityAttestedStatusProtocolInputs
-                  .statusProofProtocol.request.registryState,
-                registryVersion: 0n,
-              },
+          ...request,
+          statusRequest: {
+            ...request.statusRequest,
+            registryState: {
+              ...request.statusRequest.registryState,
+              registryVersion: 0n,
             },
           },
         },
+        submission,
+        fixture.authorityAttestedStatusProtocolInputs,
         fixture.witness.currentDay,
         request.verificationRequest.envelope.createdAt + 10n,
       ),

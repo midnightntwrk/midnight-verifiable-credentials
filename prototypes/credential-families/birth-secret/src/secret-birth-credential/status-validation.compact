@@ -102,6 +102,21 @@ export circuit assertSecretBirthCredentialVerificationSubmissionMatchesRevokedSe
       == request.verificationRequest.verifierChallengeHash,
     "Revoked-set status proof protocol challenge must match the verification request challenge"
   );
+  assert(
+    statusInputs.statusProofProtocol.request.registryState.registryId
+      == request.statusRequest.registryState.registryId,
+    "Revoked-set status proof protocol registry id does not match the verifier request"
+  );
+  assert(
+    statusInputs.statusProofProtocol.request.registryState.revokedRoot
+      == request.statusRequest.registryState.revokedRoot,
+    "Revoked-set status proof protocol revoked root does not match the verifier request"
+  );
+  assert(
+    statusInputs.statusProofProtocol.request.registryState.registryVersion
+      == request.statusRequest.registryState.registryVersion,
+    "Revoked-set status proof protocol registry version does not match the verifier request"
+  );
   assertVerifierStatusPolicyAcceptsRevokedSetNonMembershipStatusProofProtocol(
     request.statusPolicy,
     credentialWithStatus.statusBinding,
@@ -142,6 +157,21 @@ export circuit assertSecretBirthCredentialVerificationSubmissionMatchesAuthority
     holderSecret,
     holderSecretOpening,
     holderBindingBlindingFactor
+  );
+  assert(
+    statusInputs.statusProofProtocol.request.registryState.registryId
+      == request.statusRequest.registryState.registryId,
+    "Authority-attested status proof protocol registry id does not match the verifier request"
+  );
+  assert(
+    statusInputs.statusProofProtocol.request.registryState.revokedRoot
+      == request.statusRequest.registryState.revokedRoot,
+    "Authority-attested status proof protocol revoked root does not match the verifier request"
+  );
+  assert(
+    statusInputs.statusProofProtocol.request.registryState.registryVersion
+      == request.statusRequest.registryState.registryVersion,
+    "Authority-attested status proof protocol registry version does not match the verifier request"
   );
   assertVerifierStatusPolicyAcceptsAuthorityAttestedStatusProofProtocol(
     request.statusPolicy,

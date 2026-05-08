@@ -87,33 +87,32 @@ Current files:
 - [`../../core/primitives/credentials/src/credentials/types.compact`](../../core/primitives/credentials/src/credentials/types.compact)
 - [`../../core/primitives/credentials/src/credentials/status-bindings.compact`](../../core/primitives/credentials/src/credentials/status-bindings.compact)
 
-Current state:
-- core defines:
+Previous state:
+- core defined:
   - `StatusCapabilityKind`
   - `NoStatusCapability`
   - `RevokedSetNonMembershipStatusCapability`
   - `AuthorityAttestedStatusCapability`
-- `status-bindings.compact` converts capability-style values into `RegistryBoundStatusBinding`
+- `status-bindings.compact` converted capability-style values into `RegistryBoundStatusBinding`
 
 Problem:
 - the credential core should own only VC-side status binding
 - proof-mode or verifier-facing status vocabulary should not be the source of truth for the core binding layer
 
-### 4. Status-aware hidden-holder families still rely on wrapper-first models
+### 4. Status-aware hidden-holder families still retain a transitional wrapper
 
 Current files:
 - [`../../prototypes/credential-families/birth-secret/src/secret-birth-credential/status-model.compact`](../../prototypes/credential-families/birth-secret/src/secret-birth-credential/status-model.compact)
 - [`../../prototypes/credential-families/birth-secret/src/secret-birth-credential/helpers.compact`](../../prototypes/credential-families/birth-secret/src/secret-birth-credential/helpers.compact)
 
 Current state:
-- status-aware shapes are primarily represented by wrappers such as:
-  - `SecretBirthCredentialWithStatusCapability`
-  - `SecretBirthCredentialWithAuthorityAttestedStatusCapability`
+- the capability-first wrappers have been removed
+- the hidden-holder family still exposes one transitional wrapper:
   - `SecretBirthCredentialWithStatusBinding`
 
 Problem:
-- these wrappers are useful as a migration bridge
-- they are not the target architecture when status binding is part of the credential generic itself
+- this wrapper is still a migration bridge
+- it is not the target architecture when status binding is part of the credential generic itself
 
 ## Target model
 
