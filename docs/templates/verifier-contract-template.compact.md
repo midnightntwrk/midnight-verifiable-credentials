@@ -16,7 +16,7 @@ This template is intentionally narrow:
 
 Contract-authoring surfaces:
 
-- `credentials/src/credentials/composable.compact`
+- `core/primitives/credentials/src/credentials/composable.compact`
 - one family root such as `credentials-birth/src/birth-credential.compact` or
   `credentials-birth-secret/src/secret-birth-credential.compact`
 - optional capability packages such as `credentials-same-holder`
@@ -34,7 +34,7 @@ Do not start from:
 pragma language_version >= 0.16.0;
 
 import CompactStandardLibrary;
-import "../../credentials/src/credentials/composable" prefix Core_;
+import "../../core/primitives/credentials/src/credentials/composable" prefix Core_;
 import "../../credentials-birth-secret/src/secret-birth-credential" prefix BirthSecret_;
 
 export ledger MIN_AGE: Uint<64>;

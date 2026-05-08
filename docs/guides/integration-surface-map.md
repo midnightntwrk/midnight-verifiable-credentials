@@ -196,7 +196,7 @@ These stay docs-only on purpose so they remain easy to copy without adding anoth
 
 Start with:
 
-- `credentials/src/credentials/composable.compact`
+- `core/primitives/credentials/src/credentials/composable.compact`
 - the relevant credential-family `.compact` entrypoint
 - optional capability `.compact` entrypoints such as same-holder or the
   revocation registry contract

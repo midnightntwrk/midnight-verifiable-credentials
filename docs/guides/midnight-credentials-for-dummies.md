@@ -284,7 +284,7 @@ In code, this chapter is mostly about these circuits:
   - `legalNameCommitment(...)`
   - `birthDateCommitment(...)`
   - `birthCountryCodeCommitment(...)`
-- `credentials/src/credentials.compact`
+- `core/primitives/credentials/src/credentials.compact`
   - `VC<...>.assertValidCredentialEnvelope(...)`
   - `VC<...>.assertValidCredentialProof(...)`
 - `credentials-birth/src/birth-credential.compact`
@@ -479,7 +479,7 @@ Mohawk rarely approves of anything before coffee.
 
 ### Tests For This Chapter
 
-- `credentials/src/test/proof-context.test.ts`
+- `core/primitives/credentials/src/test/proof-context.test.ts`
 - `credentials-birth/src/test/holder-binding.test.ts`
   - "enforces a verifier-defined presentation request"
 
@@ -794,7 +794,7 @@ flowchart TD
 
 ### What The Circuits Are Actually Doing
 
-In `credentials/src/credentials.compact`:
+In `core/primitives/credentials/src/credentials.compact`:
 
 - `secretHolderBindingCommitment(...)`
 - `secretHolderBindingChallengeResponse(...)`
@@ -930,7 +930,7 @@ The secret-holder variant defines its own disclosure and request types — `Secr
 
 ### Tests For This Chapter
 
-- `credentials/src/test/secret-holder-binding.test.ts`
+- `core/primitives/credentials/src/test/secret-holder-binding.test.ts`
 - `credentials-birth-secret/src/test/holder-binding.test.ts`
 
 ## Chapter 7: Blinded Holder Binding
@@ -972,7 +972,7 @@ This is not:
 
 ### What The Circuits Are Actually Doing
 
-In `credentials/src/credentials.compact`:
+In `core/primitives/credentials/src/credentials.compact`:
 
 - `blindedSecretHolderCommitment(...)`
 - `assertValidBlindedSecretHolderCredentialBinding(...)`
@@ -1292,7 +1292,7 @@ The mental shortcut is:
 
 ### Tests For This Chapter
 
-- `credentials/src/test/secret-holder-binding.test.ts`
+- `core/primitives/credentials/src/test/secret-holder-binding.test.ts`
   - blinded holder-binding witness
 - `credentials-birth-secret/src/test/capability-profiles.test.ts`
   - advanced privacy profile
@@ -1329,7 +1329,7 @@ That is a much better tradeoff.
 
 ### What The Circuits Are Actually Doing
 
-In `credentials/src/credentials.compact`:
+In `core/primitives/credentials/src/credentials.compact`:
 
 - `verifierScopedPseudonym(...)`
 - `assertVerifierScopedPseudonym(...)`
@@ -1424,7 +1424,7 @@ That is the whole trick.
 
 ### Tests For This Chapter
 
-- `credentials/src/test/secret-holder-binding.test.ts`
+- `core/primitives/credentials/src/test/secret-holder-binding.test.ts`
 - `credentials-birth-secret/src/test/holder-binding.test.ts`
   - "derives a verifier-scoped pseudonym from the hidden holder secret"
 
@@ -2614,9 +2614,9 @@ Mohawk approves of this because it is the rare architectural plan that is both:
 
 If you want the shortest path through the current repository, use this sequence.
 
-1. `credentials/src/credentials.compact`
+1. `core/primitives/credentials/src/credentials.compact`
    - generic VC/VP model, proof contexts, and holder-binding primitives
-2. `credentials/src/test/proof-context.test.ts`
+2. `core/primitives/credentials/src/test/proof-context.test.ts`
    - proof basics and domain separation
 3. `credentials-birth/src/birth-credential.compact`
    - explicit-holder birth family

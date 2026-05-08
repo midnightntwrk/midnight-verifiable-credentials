@@ -72,8 +72,8 @@ ci_build_output_paths() {
   case "$group" in
     foundation)
       cat <<'EOF'
-credentials/src/managed
-credentials/dist
+core/primitives/credentials/src/managed
+core/primitives/credentials/dist
 credentials-status-registry/src/managed
 credentials-status-registry/dist
 credentials-same-holder/src/managed

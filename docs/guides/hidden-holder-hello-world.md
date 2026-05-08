@@ -20,7 +20,7 @@ presentation proving `age >= threshold` without revealing the birth date.
 
 On-chain roots:
 
-- `credentials/src/credentials/composable.compact`
+- `core/primitives/credentials/src/credentials/composable.compact`
 - `credentials-birth-secret/src/secret-birth-credential.compact`
 - optional: `use-cases/age-gate/contract/src/demo-revocation.compact` as the
   status-aware reference
@@ -49,7 +49,7 @@ Use it when:
 Use a narrow verifier contract:
 
 ```compact
-import "../../credentials/src/credentials/composable" prefix Core_;
+import "../../core/primitives/credentials/src/credentials/composable" prefix Core_;
 import "../../credentials-birth-secret/src/secret-birth-credential" prefix BirthSecret_;
 ```
 

@@ -100,7 +100,7 @@ jobs:
           )
 
           revocation_patterns=(
-            'credentials/*'
+            'core/primitives/credentials/*'
             'credentials-status-registry/*'
             'credentials-same-holder/*'
             'credentials-birth/*'
@@ -109,7 +109,7 @@ jobs:
           )
 
           integration_demo_contract_patterns=(
-            'credentials/*'
+            'core/primitives/credentials/*'
             'credentials-birth/*'
             'credentials-birth-secret/*'
             'use-cases/*/contract/*'
@@ -117,7 +117,7 @@ jobs:
           )
 
           integration_protocol_patterns=(
-            'credentials/*'
+            'core/primitives/credentials/*'
             'credentials-same-holder/*'
             'credentials-birth/*'
             'credentials-birth-secret/*'

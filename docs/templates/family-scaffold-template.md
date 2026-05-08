@@ -49,7 +49,7 @@ credentials-example-family/
 pragma language_version >= 0.16.0;
 
 import CompactStandardLibrary;
-import "../../credentials/src/credentials" prefix Core_;
+import "../../core/primitives/credentials/src/credentials" prefix Core_;
 
 import "./example-family/claims" prefix Claims_;
 import "./example-family/model" prefix Model_;

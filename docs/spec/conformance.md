@@ -30,7 +30,7 @@ A core VC implementation conforms when it:
 
 In this repository, the primary reference is:
 
-- [`../../credentials/README.md`](../../credentials/README.md)
+- [`../../core/primitives/credentials/README.md`](../../core/primitives/credentials/README.md)
 
 ### 2. Credential family implementation
 

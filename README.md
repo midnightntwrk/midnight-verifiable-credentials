@@ -24,7 +24,7 @@ Current maturity is mixed by package:
 - conformance draft:
   - [`docs/spec/conformance.md`](./docs/spec/conformance.md)
 - reference implementation packages:
-  - [`credentials`](./credentials/README.md)
+  - [`credentials`](./core/primitives/credentials/README.md)
   - [`credentials-status-registry`](./credentials-status-registry/README.md)
     - current prototype status / revocation registry support package
   - [`credentials-birth`](./credentials-birth/README.md)
@@ -75,7 +75,7 @@ Start here:
 
 ## Workspace map
 
-- [`credentials`](./credentials/README.md)
+- [`credentials`](./core/primitives/credentials/README.md)
   - generic VC/VP envelopes, proof model, holder-binding profiles
 - [`credentials-same-holder`](./credentials-same-holder/README.md)
   - same-holder composition capability
