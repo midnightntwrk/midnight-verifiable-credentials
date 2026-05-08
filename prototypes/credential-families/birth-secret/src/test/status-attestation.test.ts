@@ -66,11 +66,11 @@ describe("secret birth credential: authority-attested status verification", () =
     };
 
     expect(() =>
-      pureCircuits.assertSecretBirthCredentialVerificationSubmissionMatchesAuthorityAttestedStatusRequest(
-        fixture.credentialWithAuthorityAttestedStatus,
+      pureCircuits.assertSecretBirthCredentialVerificationSubmissionMatchesAuthorityAttestedStatusProtocolRequest(
+        fixture.credentialWithStatusBinding,
         fixture.authorityAttestedStatusVerificationRequest,
         submission,
-        fixture.authorityAttestedStatusVerificationInputs,
+        fixture.authorityAttestedStatusProtocolInputs,
         fixture.witness.holderSecret,
         fixture.witness.holderSecretOpening,
         fixture.witness.holderBindingBlindingFactor,
@@ -102,21 +102,24 @@ describe("secret birth credential: authority-attested status verification", () =
     };
 
     expect(() =>
-      pureCircuits.assertSecretBirthCredentialVerificationSubmissionMatchesAuthorityAttestedStatusRequest(
-        fixture.credentialWithAuthorityAttestedStatus,
+      pureCircuits.assertSecretBirthCredentialVerificationSubmissionMatchesAuthorityAttestedStatusProtocolRequest(
+        fixture.credentialWithStatusBinding,
+        fixture.authorityAttestedStatusVerificationRequest,
+        submission,
         {
-          ...fixture.authorityAttestedStatusVerificationRequest,
-          statusRequest: {
-            ...fixture.authorityAttestedStatusVerificationRequest.statusRequest,
-            registryState: {
-              ...fixture.authorityAttestedStatusVerificationRequest
-                .statusRequest.registryState,
-              revokedRoot: new Uint8Array(32).fill(5),
+          statusProofProtocol: {
+            ...fixture.authorityAttestedStatusProtocolInputs.statusProofProtocol,
+            request: {
+              ...fixture.authorityAttestedStatusProtocolInputs.statusProofProtocol
+                .request,
+              registryState: {
+                ...fixture.authorityAttestedStatusProtocolInputs
+                  .statusProofProtocol.request.registryState,
+                revokedRoot: new Uint8Array(32).fill(5),
+              },
             },
           },
         },
-        submission,
-        fixture.authorityAttestedStatusVerificationInputs,
         fixture.witness.holderSecret,
         fixture.witness.holderSecretOpening,
         fixture.witness.holderBindingBlindingFactor,
@@ -148,8 +151,8 @@ describe("secret birth credential: authority-attested status verification", () =
     };
 
     expect(() =>
-      pureCircuits.assertSecretBirthCredentialVerificationSubmissionMatchesAuthorityAttestedStatusRequest(
-        fixture.credentialWithAuthorityAttestedStatus,
+      pureCircuits.assertSecretBirthCredentialVerificationSubmissionMatchesAuthorityAttestedStatusProtocolRequest(
+        fixture.credentialWithStatusBinding,
         {
           ...fixture.authorityAttestedStatusVerificationRequest,
           statusRequest: {
@@ -158,7 +161,7 @@ describe("secret birth credential: authority-attested status verification", () =
           },
         },
         submission,
-        fixture.authorityAttestedStatusVerificationInputs,
+        fixture.authorityAttestedStatusProtocolInputs,
         fixture.witness.holderSecret,
         fixture.witness.holderSecretOpening,
         fixture.witness.holderBindingBlindingFactor,
@@ -192,11 +195,11 @@ describe("secret birth credential: authority-attested status verification", () =
     };
 
     expect(() =>
-      pureCircuits.assertSecretBirthCredentialVerificationSubmissionMatchesAuthorityAttestedStatusRequest(
-        fixture.credentialWithAuthorityAttestedStatus,
+      pureCircuits.assertSecretBirthCredentialVerificationSubmissionMatchesAuthorityAttestedStatusProtocolRequest(
+        fixture.credentialWithStatusBinding,
         fixture.authorityAttestedStatusVerificationRequest,
         submission,
-        fixture.authorityAttestedStatusVerificationInputs,
+        fixture.authorityAttestedStatusProtocolInputs,
         fixture.witness.holderSecret,
         fixture.witness.holderSecretOpening,
         fixture.witness.holderBindingBlindingFactor,

@@ -26,28 +26,6 @@ export circuit secretBirthCredentialWithStatusBindingBodyRoot(
   );
 }
 
-export circuit secretBirthCredentialWithStatusCapabilityBodyRoot(
-  credentialWithStatus: SecretBirthCredentialWithStatusCapability
-): Bytes<32> {
-  return secretBirthCredentialRegistryBoundStatusBodyRoot(
-    credentialWithStatus.credential,
-    registryBoundStatusBindingFromRevokedSetNonMembershipStatusCapability(
-      credentialWithStatus.statusCapability
-    )
-  );
-}
-
-export circuit secretBirthCredentialWithAuthorityAttestedStatusCapabilityBodyRoot(
-  credentialWithStatus: SecretBirthCredentialWithAuthorityAttestedStatusCapability
-): Bytes<32> {
-  return secretBirthCredentialRegistryBoundStatusBodyRoot(
-    credentialWithStatus.credential,
-    registryBoundStatusBindingFromAuthorityAttestedStatusCapability(
-      credentialWithStatus.statusCapability
-    )
-  );
-}
-
 export circuit secretBirthCredentialPresentationBodyRoot(
   presentation: SecretBirthCredentialPresentation
 ): Bytes<32> {

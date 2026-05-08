@@ -1,11 +1,3 @@
-export struct SecretBirthCredentialWithStatusCapability {
-  credential: SecretBirthCredential,
-  // This proof commits to the status-aware family body root, not the plain
-  // base credential body root.
-  credentialProof: Proof,
-  statusCapability: RevokedSetNonMembershipStatusCapability,
-}
-
 export struct SecretBirthCredentialWithStatusBinding {
   credential: SecretBirthCredential,
   // This proof commits to the status-aware family body root, not the plain
@@ -14,32 +6,15 @@ export struct SecretBirthCredentialWithStatusBinding {
   statusBinding: RegistryBoundStatusBinding,
 }
 
-export struct SecretBirthCredentialWithAuthorityAttestedStatusCapability {
-  credential: SecretBirthCredential,
-  // This proof commits to the status-aware family body root, not the plain
-  // base credential body root.
-  credentialProof: Proof,
-  statusCapability: AuthorityAttestedStatusCapability,
-}
-
 struct SecretBirthCredentialStatusBoundBody {
   credential: SecretBirthCredential,
   statusBindingRoot: Bytes<32>,
-}
-
-export struct SecretBirthCredentialVerificationStatusRequest {
-  verificationRequest: SecretBirthCredentialVerificationRequest,
-  statusPolicy: VerifierStatusPolicy,
 }
 
 export struct SecretBirthCredentialVerificationAuthorityAttestedStatusRequest {
   verificationRequest: SecretBirthCredentialVerificationRequest,
   statusPolicy: VerifierStatusPolicy,
   statusRequest: RevokedSetStatusRequest,
-}
-
-export struct SecretBirthCredentialVerificationStatusInputs {
-  nonRevocationWitness: RevokedSetNonMembershipWitnessInput,
 }
 
 export struct SecretBirthCredentialVerificationRevokedSetStatusRequest {
@@ -50,10 +25,6 @@ export struct SecretBirthCredentialVerificationRevokedSetStatusRequest {
 
 export struct SecretBirthCredentialVerificationRevokedSetStatusInputs {
   statusProofProtocol: RevokedSetNonMembershipStatusProofProtocol,
-}
-
-export struct SecretBirthCredentialVerificationAuthorityAttestedStatusInputs {
-  statusAttestation: AuthorityAttestedStatusProof,
 }
 
 export struct SecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs {
