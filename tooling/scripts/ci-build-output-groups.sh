@@ -74,8 +74,8 @@ ci_build_output_paths() {
       cat <<'EOF'
 core/primitives/credentials/src/managed
 core/primitives/credentials/dist
-credentials-status-registry/src/managed
-credentials-status-registry/dist
+registry/status-registry/src/managed
+registry/status-registry/dist
 core/capabilities/same-holder/src/managed
 core/capabilities/same-holder/dist
 core/primitives/iso-registry/src/managed

@@ -75,7 +75,7 @@ Binding mechanism:
 Current implementation packages:
 - [`../../core/primitives/credentials/README.md`](../../core/primitives/credentials/README.md)
 - [`../../credentials-birth-secret/README.md`](../../credentials-birth-secret/README.md)
-- [`../../credentials-status-registry/README.md`](../../credentials-status-registry/README.md)
+- [`../../registry/status-registry/README.md`](../../registry/status-registry/README.md)
 - [`../../components/orchestration/protocol/README.md`](../../components/orchestration/protocol/README.md)
 
 Current test coverage:
@@ -111,7 +111,7 @@ Binding mechanism:
 Current implementation packages:
 - [`../../core/primitives/credentials/README.md`](../../core/primitives/credentials/README.md)
 - [`../../credentials-birth-secret/README.md`](../../credentials-birth-secret/README.md)
-- [`../../credentials-status-registry/README.md`](../../credentials-status-registry/README.md)
+- [`../../registry/status-registry/README.md`](../../registry/status-registry/README.md)
 - [`../../components/orchestration/protocol/README.md`](../../components/orchestration/protocol/README.md)
 
 Current test coverage:

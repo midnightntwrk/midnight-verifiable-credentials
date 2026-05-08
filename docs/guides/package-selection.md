@@ -57,7 +57,7 @@ This is a capability package, not a standalone credential family.
 Start with:
 
 - [`../../core/primitives/credentials/README.md`](../../core/primitives/credentials/README.md)
-- [`../../credentials-status-registry/README.md`](../../credentials-status-registry/README.md)
+- [`../../registry/status-registry/README.md`](../../registry/status-registry/README.md)
 - then read:
   - [`../spec/credential-status.md`](../spec/credential-status.md)
   - [`../spec/revocation-registry.md`](../spec/revocation-registry.md)
