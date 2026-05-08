@@ -121,6 +121,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   extra `StatusBindingKind` discriminator. The concrete VC-side binding root
   is now the only status-specific extension layered onto the base credential
   body for those wrapper surfaces.
+- BREAKING: `credentials-status-registry` TypeScript helpers are now
+  binding-first for intermediate status construction:
+  - `buildAuthorityAttestedStatusCapability(...)` is removed
+  - `buildRevokedSetStatusCapability(...)` is renamed to
+    `buildRevokedSetStatusBinding(...)`
+  - `BuiltRevokedSetStatusWitness.statusCapability` is removed
 - Holder-binding naming is now explicitly split between:
   - Compact/core struct name:
     `OffchainMidnightHolderBinding`

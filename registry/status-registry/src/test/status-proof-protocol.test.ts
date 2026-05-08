@@ -217,7 +217,7 @@ describe("status registry: proof protocols", () => {
       },
       verifierChallengeHash: bytes32("challenge:status"),
     };
-    const capability = {
+    const binding = {
       registryRef: {
         registryId: request.registryState.registryId,
         authorityVerificationMethodRef: signer.verificationMethodRef,
@@ -226,7 +226,7 @@ describe("status registry: proof protocols", () => {
     };
     const statement = {
       registryState: request.registryState,
-      statusHandleCommitment: capability.statusHandleCommitment,
+      statusHandleCommitment: binding.statusHandleCommitment,
       verifierChallengeHash: request.verifierChallengeHash,
       hasExpiration: true,
       expiresAt: 200n,
@@ -251,9 +251,9 @@ describe("status registry: proof protocols", () => {
     };
 
     expect(() =>
-      pureCircuits.assertVerifierStatusPolicyAcceptsAuthorityAttestedStatus(
+      pureCircuits.assertVerifierStatusPolicyAcceptsAuthorityAttestedStatusBinding(
         policy,
-        capability,
+        binding,
         request,
         attestation,
         150n,
@@ -329,7 +329,7 @@ describe("status registry: proof protocols", () => {
       },
       verifierChallengeHash: bytes32("challenge:status"),
     };
-    const capability = {
+    const binding = {
       registryRef: {
         registryId: request.registryState.registryId,
         authorityVerificationMethodRef: authority.verificationMethodRef,
@@ -338,7 +338,7 @@ describe("status registry: proof protocols", () => {
     };
     const statement = {
       registryState: request.registryState,
-      statusHandleCommitment: capability.statusHandleCommitment,
+      statusHandleCommitment: binding.statusHandleCommitment,
       verifierChallengeHash: request.verifierChallengeHash,
       hasExpiration: false,
       expiresAt: 0n,
@@ -355,8 +355,8 @@ describe("status registry: proof protocols", () => {
     };
 
     expect(() =>
-      pureCircuits.assertAuthorityAttestedStatusProofMatchesCapability(
-        capability,
+      pureCircuits.assertAuthorityAttestedStatusProofMatchesBinding(
+        binding,
         attestation,
       ),
     ).toThrow(/status authority/i);
@@ -373,7 +373,7 @@ describe("status registry: proof protocols", () => {
       },
       verifierChallengeHash: bytes32("challenge:status"),
     };
-    const capability = {
+    const binding = {
       registryRef: {
         registryId: request.registryState.registryId,
         authorityVerificationMethodRef: authority.verificationMethodRef,
@@ -382,7 +382,7 @@ describe("status registry: proof protocols", () => {
     };
     const statement = {
       registryState: request.registryState,
-      statusHandleCommitment: capability.statusHandleCommitment,
+      statusHandleCommitment: binding.statusHandleCommitment,
       verifierChallengeHash: request.verifierChallengeHash,
       hasExpiration: true,
       expiresAt: 200n,
@@ -407,9 +407,9 @@ describe("status registry: proof protocols", () => {
     };
 
     expect(() =>
-      pureCircuits.assertVerifierStatusPolicyAcceptsAuthorityAttestedStatus(
+      pureCircuits.assertVerifierStatusPolicyAcceptsAuthorityAttestedStatusBinding(
         policy,
-        capability,
+        binding,
         request,
         attestation,
         150n,
@@ -546,7 +546,7 @@ describe("status registry: proof protocols", () => {
       },
       verifierChallengeHash: bytes32("challenge:status"),
     };
-    const capability = {
+    const binding = {
       registryRef: {
         registryId: request.registryState.registryId,
         authorityVerificationMethodRef: signer.verificationMethodRef,
@@ -555,7 +555,7 @@ describe("status registry: proof protocols", () => {
     };
     const statement = {
       registryState: request.registryState,
-      statusHandleCommitment: capability.statusHandleCommitment,
+      statusHandleCommitment: binding.statusHandleCommitment,
       verifierChallengeHash: request.verifierChallengeHash,
       hasExpiration: true,
       expiresAt: 200n,
@@ -580,9 +580,9 @@ describe("status registry: proof protocols", () => {
     };
 
     expect(() =>
-      pureCircuits.assertVerifierStatusPolicyAcceptsAuthorityAttestedStatus(
+      pureCircuits.assertVerifierStatusPolicyAcceptsAuthorityAttestedStatusBinding(
         policy,
-        capability,
+        binding,
         request,
         attestation,
         130n,
@@ -678,7 +678,7 @@ describe("status registry: proof protocols", () => {
   it("rejects revoked-set acceptance when the policy does not require status", () => {
     const signer = createSigner("status-authority", 2234n);
     const registryId = bytes32("registry:hidden-holder");
-    const capability = {
+    const binding = {
       registryRef: {
         registryId,
         authorityVerificationMethodRef: signer.verificationMethodRef,
@@ -707,19 +707,19 @@ describe("status registry: proof protocols", () => {
     };
 
     expect(() =>
-      pureCircuits.assertVerifierStatusPolicyAcceptsRevokedSetNonMembership(
+      pureCircuits.assertVerifierStatusPolicyAcceptsRevokedSetNonMembershipBinding(
         policy,
-        capability,
+        binding,
         witnessInput,
       ),
     ).toThrow(/must require status/i);
   });
 
-  it("rejects a registry-enforced policy when the capability registry id diverges", () => {
+  it("rejects a registry-enforced policy when the binding registry id diverges", () => {
     const signer = createSigner("status-authority", 2235n);
-    const capability = {
+    const binding = {
       registryRef: {
-        registryId: bytes32("registry:capability"),
+        registryId: bytes32("registry:binding"),
         authorityVerificationMethodRef: signer.verificationMethodRef,
       },
       statusHandleCommitment: pureCircuits.revokedSetStatusHandleCommitment(
@@ -746,11 +746,11 @@ describe("status registry: proof protocols", () => {
     };
 
     expect(() =>
-      pureCircuits.assertVerifierStatusPolicyAcceptsRevokedSetNonMembership(
+      pureCircuits.assertVerifierStatusPolicyAcceptsRevokedSetNonMembershipBinding(
         policy,
-        capability,
+        binding,
         witnessInput,
       ),
-    ).toThrow(/status capability/i);
+    ).toThrow(/status binding/i);
   });
 });
