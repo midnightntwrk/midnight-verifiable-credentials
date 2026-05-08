@@ -211,3 +211,32 @@ Executed through:
 ```
 
 or directly through package-level `test:integration` commands when Docker is available.
+
+## Repository Runner Targets
+
+`./run.sh` now exposes the main repository lanes directly:
+
+- `./run.sh`
+  - full repository validation
+- `./run.sh --light`
+  - light repository validation
+- `./run.sh lint`
+  - package-boundary + lint lane
+- `./run.sh typecheck`
+  - typecheck lane
+- `./run.sh build`
+  - build lane
+- `./run.sh test`
+  - non-Docker package tests
+- `./run.sh bdd`
+  - Serenity/JS BDD smoke lane
+- `./run.sh revocation`
+  - revocation-focused CI lane
+- `./run.sh integration-demo-contract`
+  - standalone demo-contract integration only
+- `./run.sh integration-protocol`
+  - standalone protocol integration only
+- `./run.sh integration`
+  - both standalone integration lanes
+- `./run.sh targets`
+  - prints the supported target list
