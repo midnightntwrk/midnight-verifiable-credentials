@@ -208,6 +208,30 @@ Practical rule for the rest of this guide:
 - when a section names a package or use-case path from this list, treat it as current workspace material on `develop`
 - when a section talks about possible future families, treat it as design-space commentary rather than current repository scope
 
+## Runnable Prototype Ladder
+
+The table above tells you what to read.
+This one tells you what to run.
+
+If you are onboarding a new engineer, this is the lowest-friction current path through the repository.
+
+| Step | Run | What you should learn from it |
+| --- | --- | --- |
+| 1 | `npm run test:ci -w credentials-birth` | the explicit-holder birth family works on its own before any business contract is added |
+| 2 | `npm run test:ci -w use-cases/hello-verifier/contract` | the smallest verifier contract can build one typed request and verify one presentation |
+| 3 | `npm run test:ci -w use-cases/age-gate/contract` | the explicit-holder business flow can issue, verify, mint a capability, and later claim it |
+| 4 | `npm run test:ci -w credentials-birth-secret` | hidden-holder binding, blinded issuance anchors, pseudonyms, same-holder composition, and prototype status-aware family checks all work at the family layer |
+| 5 | `npm run test:bdd:smoke` | the age-gate use-cases are also captured as living-documentation scenarios rather than only as unit tests |
+| 6 | `npm run test:ci -w components/orchestration/protocol` | issuer, holder, and verifier can be isolated into agents without cheating on party boundaries |
+| 7 | `npm run test:integration -w components/orchestration/protocol` | the protocol flow still works against real Midnight-backed infrastructure; requires Docker |
+
+Rule of thumb:
+
+- if Step 2 is too small for your task, go to Step 3
+- if Step 3 is too public-holder oriented, go to Step 4
+- if Step 4 feels too circuit-local, go to Step 5 or Step 6
+- if Step 6 passes but you still distrust the environment assumptions, go to Step 7
+
 ## Chapter 1: Rita Issues A Very Boring, Very Important Credential
 
 Rita works in an imaginary office where every drawer has a policy and every policy has a form.
