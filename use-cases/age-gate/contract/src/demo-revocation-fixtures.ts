@@ -228,6 +228,7 @@ export const createDemoRevocationFixture = (): DemoRevocationFixture => {
       issuerNonce: witness.holderBindingIssuerNonce,
       requestChallengeResponse: pureCircuits.noSecretHolderChallengeResponse(),
     },
+    statusBinding: {},
     issuedAt: 10_000n,
     hasExpiration: true,
     expiresAt: 20_000n,

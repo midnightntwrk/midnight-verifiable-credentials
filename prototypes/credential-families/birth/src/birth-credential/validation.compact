@@ -192,6 +192,7 @@ export circuit assertValidBirthCredential(
 ): [] {
   assertValidBirthSchemaRef(credential.schema);
   assertValidCredentialEnvelope(credential, birthCredentialClaimRoot(credential.claims));
+  assertValidNoStatusBinding(credential.statusBinding);
   assertValidExplicitHolderBinding(credential.holderBinding);
   assertValidCredentialProof(credential, proof);
 }
@@ -204,7 +205,11 @@ export circuit assertValidBirthCredentialPresentation(
 ): [] {
   assertValidBirthCredential(credential, credentialProof);
   assertValidBirthSchemaRef(presentation.schema);
-  assertValidPresentationEnvelope(credential, presentation);
+  assertValidPresentationEnvelope(presentation);
+  BirthCredentialPresentation_assertMatchingCredentialPresentation(
+    credential,
+    presentation
+  );
   assertValidExplicitHolderBinding(presentation.holderBinding);
   assertMatchingExplicitHolderBindings(
     credential.holderBinding,
