@@ -49,7 +49,7 @@ Use `credentials-birth-secret` when holder privacy is the primary concern.
 ### I need same-holder correlation across credentials
 Start with:
 
-- [`../../credentials-same-holder/README.md`](../../credentials-same-holder/README.md)
+- [`../../core/capabilities/same-holder/README.md`](../../core/capabilities/same-holder/README.md)
 
 This is a capability package, not a standalone credential family.
 
@@ -95,7 +95,7 @@ This capability area is intentionally split across two packages:
 ### I need shared ISO code types
 Start with:
 
-- [`../../credentials-iso-registry/README.md`](../../credentials-iso-registry/README.md)
+- [`../../core/primitives/iso-registry/README.md`](../../core/primitives/iso-registry/README.md)
 
 Use this package instead of inventing local country/currency/gender code types.
 

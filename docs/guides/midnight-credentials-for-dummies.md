@@ -1484,7 +1484,7 @@ flowchart LR
 
 ### What The Circuits Are Actually Doing
 
-In `credentials-same-holder/src/same-holder.compact`:
+In `core/capabilities/same-holder/src/same-holder.compact`:
 
 - `assertSameSecretHolderBindingWitnesses(...)`
 - `assertSameBlindedSecretHolderBindingWitnesses(...)`
@@ -1608,7 +1608,7 @@ The verifier does not automatically learn:
 
 ### Tests For This Chapter
 
-- `credentials-same-holder/src/test/same-holder-capability.test.ts`
+- `core/capabilities/same-holder/src/test/same-holder-capability.test.ts`
 - `credentials-birth-secret/src/test/same-holder-composition.test.ts`
 
 Those tests now cover both:
@@ -1971,7 +1971,7 @@ Mohawk considers this "the minimum acceptable encoding discipline for a system t
 
 ### Where To Look
 
-- `credentials-iso-registry/src/iso-registry/codes.compact`
+- `core/primitives/iso-registry/src/iso-registry/codes.compact`
 
 ## Chapter 18: Vera Starts With The Smallest Verifier
 

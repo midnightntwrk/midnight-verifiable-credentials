@@ -57,7 +57,7 @@ It sits next to the explicit holder-binding package:
 
 - [`../credentials-birth`](../credentials-birth/README.md): explicit DID-bound holder profile
 - [`../credentials`](../credentials/README.md): generic VC/VP envelope and proof core
-- [`../credentials-same-holder`](../credentials-same-holder/README.md): optional same-holder composition capability for hidden-holder flows
+- [`../core/capabilities/same-holder`](../core/capabilities/same-holder/README.md): optional same-holder composition capability for hidden-holder flows
 
 This package defines the secret-bound variant on top of the generic
 [`credentials`](../credentials/README.md) package.

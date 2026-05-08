@@ -1,21 +1,14 @@
 import { readFile, writeFile } from 'node:fs/promises';
+import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const packageRoot = path.resolve(scriptDir, '..');
-const repoRoot = path.resolve(packageRoot, '..');
+const require = createRequire(import.meta.url);
+const runtimePackageJson = require.resolve('@midnight-ntwrk/compact-runtime/package.json');
 const runtimePackage = JSON.parse(
-  await readFile(
-    path.join(
-      repoRoot,
-      'node_modules',
-      '@midnight-ntwrk',
-      'compact-runtime',
-      'package.json',
-    ),
-    'utf8',
-  ),
+  await readFile(runtimePackageJson, 'utf8'),
 );
 const runtimeVersion = runtimePackage.version;
 const targetFile = path.join(

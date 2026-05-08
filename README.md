@@ -29,7 +29,7 @@ Current maturity is mixed by package:
     - current prototype status / revocation registry support package
   - [`credentials-birth`](./credentials-birth/README.md)
   - [`credentials-birth-secret`](./credentials-birth-secret/README.md)
-  - [`credentials-iso-registry`](./credentials-iso-registry/README.md)
+  - [`credentials-iso-registry`](./core/primitives/iso-registry/README.md)
   - [`credentials-offchain-did`](./credentials-offchain-did/README.md)
   - [`credentials-openid`](./credentials-openid/README.md)
     - current reference transport-adapter surface
@@ -77,11 +77,11 @@ Start here:
 
 - [`credentials`](./core/primitives/credentials/README.md)
   - generic VC/VP envelopes, proof model, holder-binding profiles
-- [`credentials-same-holder`](./credentials-same-holder/README.md)
+- [`credentials-same-holder`](./core/capabilities/same-holder/README.md)
   - same-holder composition capability
 - [`credentials-status-registry`](./credentials-status-registry/README.md)
   - prototype status / revocation registry contract and off-chain witness helpers
-- [`credentials-iso-registry`](./credentials-iso-registry/README.md)
+- [`credentials-iso-registry`](./core/primitives/iso-registry/README.md)
   - shared Compact-native ISO code types
 - [`credentials-offchain-did`](./credentials-offchain-did/README.md)
   - DID-aware runtime adapter for offchain DID holder binding
