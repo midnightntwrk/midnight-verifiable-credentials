@@ -23,8 +23,10 @@ It narrows the current status contract into a concrete direction:
 - a minimal canonical state shape without revocation reason or revocation date
   in the core proof model
 
-This document is still a prototype spec, not a claim that the implementation
-already exists in the repository.
+This document is still a prototype spec. The repository already contains
+partial implementation surfaces for the registry state, request/witness/proof-
+protocol vocabulary, and observed-root helper path, but it does not yet
+contain the final in-circuit non-membership implementation described here.
 
 ## Scope
 
@@ -204,6 +206,17 @@ Current invariants:
 Future final Merkle non-membership witness material should extend this shape.
 It should not replace the canonical request object or the committed
 status-handle-opening model.
+
+Current off-chain implementation helper path:
+
+- `buildRevokedSetNonMembershipInputs(...)`
+- `buildObservedRevocationRegistryState(...)`
+- `buildRevokedSetStatusRequestFromObservedState(...)`
+- `buildFreshRevokedSetNonMembershipInputs(...)`
+
+Those helpers normalize the request/witness/protocol bundle and the verifier's
+accepted snapshot freshness choice. They do not yet add final in-circuit Merkle
+non-membership or live-root discovery.
 
 ### 4. `AuthorityAttestedStatusProofProtocol`
 

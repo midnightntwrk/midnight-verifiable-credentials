@@ -212,6 +212,7 @@ A verifier contract implementation conforms when it:
 Reference implementation:
 
 - [`../../use-cases/age-gate/contract/README.md`](../../use-cases/age-gate/contract/README.md)
+- [`../../use-cases/hello-verifier/contract/README.md`](../../use-cases/hello-verifier/contract/README.md)
 
 ## Required implementation disclosures
 
@@ -286,11 +287,12 @@ Use it together with:
 | `credentials-birth` | `On-chain + off-chain` | reference implementation | current concrete explicit-holder family |
 | `credentials-birth-secret` | `On-chain + off-chain` | reference implementation with prototype status-aware additions | current concrete hidden-holder family; status-aware pieces remain prototype-scoped |
 | `credentials-status-registry` | mixed: on-chain registry + off-chain builders | prototype | use only with explicit awareness of current revocation/root-freshness limitations |
-| `credentials-demo-contract` | `On-chain only` for Compact roots, off-chain mirror for tests | prototype | consumer/demo contract, not canonical generic API |
-| `credentials-openid` | `Off-chain only` | reference implementation | transport/domain adapter only |
-| `credentials-offchain-did` | `Off-chain only` | reference implementation adapter | runtime DID helper only |
-| `credentials-protocol` | `Off-chain only` | prototype / evolving API | reference orchestration only, not a stable network library |
-| `standalone-environment` | `Off-chain only` | infrastructure / test support | integration infrastructure, not VC semantics |
+| `use-cases/age-gate/contract` | `On-chain + off-chain` | prototype use-case | concrete business composition, not canonical generic API |
+| `use-cases/hello-verifier/contract` | `On-chain + off-chain` | starter reference implementation | smallest verifier-contract entry point for integrators |
+| `protocols/openid` | `Off-chain only` | reference implementation | transport/domain adapter only |
+| `components/adapters/offchain-did` | `Off-chain only` | reference implementation adapter | runtime DID helper only |
+| `components/orchestration/protocol` | `Off-chain only` | prototype / evolving API | reference orchestration only, not a stable network library |
+| `components/integration/standalone-environment` | `Off-chain only` | infrastructure / test support | integration infrastructure, not VC semantics |
 
 Interpretation rules:
 

@@ -20,6 +20,7 @@ This draft defines:
 - proof and verification requirements
 - deterministic serialization expectations
 - the role of holder-binding profiles
+- the repository's current shared VC-side status binding model
 - the repository's current credential-status claim model
 - repository-level document authority boundaries
 
@@ -162,6 +163,7 @@ The generic VC layer defines repository-wide concepts including:
 - generic presentation envelopes
 - verifier request envelopes
 - holder-binding structures and validation helpers
+- shared VC-side status binding vocabulary
 
 Concrete credential-family packages specialize those concepts with:
 
@@ -288,8 +290,9 @@ rejection message family for every protocol.
 Today:
 
 - success results are explicit protocol messages
-- the reference `credentials-protocol` layer now defines explicit rejection
-  messages for blinded-secret issuance and blinded-secret presentation
+- the reference `components/orchestration/protocol` layer now defines explicit
+  rejection messages for blinded-secret issuance and blinded-secret
+  presentation
 - the same reference layer now treats duplicate blinded-secret issuance
   deliveries as idempotent re-delivery of the prior outcome
 - the same reference layer now treats duplicate blinded-secret presentation

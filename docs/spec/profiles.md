@@ -214,7 +214,7 @@ Current implementation packages:
 
 Current test coverage:
 - core lightweight holder-binding tests
-- `credentials-offchain-did` runtime helper tests
+- `components/adapters/offchain-did` runtime helper tests
 
 Current limitations:
 - intended for offchain-DID-only prototype flows
