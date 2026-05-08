@@ -284,6 +284,12 @@ Target files:
 8. `status-bindings.compact`
 - VC-side binding structs and binding-root helpers only
 
+9. `protocols.compact`
+- shared protocol envelopes and protocol-neutral helper checks only
+
+Registry-facing status protocol vocabulary should live in:
+- [`../../registry/status-registry/src/status-proof-protocol.compact`](../../registry/status-registry/src/status-proof-protocol.compact)
+
 ## 5-PR implementation cut
 
 ### PR 1
@@ -331,12 +337,16 @@ Acceptance criteria:
 
 Scope:
 - slim `status-bindings.compact` to VC-side binding only
-- remove capability-style status abstractions from the core where possible
-- move remaining protocol-style status semantics to registry or higher-layer packages
+- remove capability-style status abstractions from the core
+- move protocol-style status semantics to the registry package
+- keep status-bound family body roots keyed only by the concrete binding root,
+  not by an extra generic `StatusBindingKind` discriminator
 
 Acceptance criteria:
 - core no longer treats status proof capability types as the primary status model
 - the credential-side binding layer is explicit and minimal
+- `protocols.compact` no longer owns status policy or status capability
+  vocabulary
 
 ### PR 5
 `refactor(birth): migrate explicit birth family to final VC/VP model`

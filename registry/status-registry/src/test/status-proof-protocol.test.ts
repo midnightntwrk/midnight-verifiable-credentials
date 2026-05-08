@@ -1,10 +1,12 @@
 import { Buffer } from "node:buffer";
 
-import { StatusCapabilityKind } from "@midnight-ntwrk/midnight-did-credentials";
 import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { describe, expect, it } from "vitest";
 
-import { pureCircuits } from "../managed/revocation-registry/contract/index.js";
+import {
+  pureCircuits,
+  StatusCapabilityKind,
+} from "../managed/revocation-registry/contract/index.js";
 import { createSigner, signStatusProof } from "./proof-fixtures.js";
 
 setNetworkId("undeployed");

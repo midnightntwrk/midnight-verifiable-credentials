@@ -108,6 +108,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `CredentialPresentationRelations.assertMatchingCredentialPresentation(...)`
   Consumers must no longer treat `assertValidPresentationEnvelope` as the
   credential/presentation linkage helper.
+- BREAKING: VC-side status binding validators now live entirely in
+  `credentials/status-bindings.compact`, while protocol-facing status
+  capability and verifier-policy vocabulary now live in
+  `credentials-status-registry/status-proof-protocol.compact`. Managed/runtime
+  consumers must import `StatusCapabilityKind`, `VerifierStatusPolicy`,
+  `RevokedSetNonMembershipStatusCapability`, and
+  `AuthorityAttestedStatusCapability` from
+  `credentials-status-registry` rather than `credentials`.
+- BREAKING: the secret-birth status-bound family body root no longer hashes an
+  extra `StatusBindingKind` discriminator. The concrete VC-side binding root
+  is now the only status-specific extension layered onto the base credential
+  body for those wrapper surfaces.
 - Holder-binding naming is now explicitly split between:
   - Compact/core struct name:
     `OffchainMidnightHolderBinding`

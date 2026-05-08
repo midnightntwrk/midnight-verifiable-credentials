@@ -60,24 +60,24 @@ In other words:
 - `registryId`
 - authority verification-method reference
 - `statusHandleCommitment`
-- explicit binding mode
 
 must all participate in the issuer-signed body root for the status-aware
 credential family.
 
 ## Required commitment model
 
-### 1. Explicit binding mode
+### 1. VC-side binding only
 
-Every family must commit an explicit VC-side status binding mode in the
-issuer-signed body:
+Every family must commit the concrete VC-side binding that it instantiates in
+the issuer-signed body.
 
-- no status
-- registry-bound status
+For the current redesign, the important rule is:
 
-For this rollout, treat that as a closed set.
+- the binding type itself is the discriminator
+- the body root should not add an extra generic `StatusBindingKind` field on
+  top of that concrete binding
 
-Prototype compatibility names such as:
+Prototype proof-mode names such as:
 
 - `NoStatusCapability`
 - `AuthorityAttestedStatusCapability`
