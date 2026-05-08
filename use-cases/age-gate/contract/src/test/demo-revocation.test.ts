@@ -215,6 +215,98 @@ describe("credentials demo revocation contract", () => {
     ).toThrow(/revoked root does not match the verifier request/i);
   });
 
+  it("rejects verifier-supplied-root verification when the request snapshot version is stale", () => {
+    const fixture = createDemoRevocationFixture();
+    const simulator = new CredentialsDemoRevocationSimulator();
+    const request = simulator.revocationAwareVerifierSuppliedRootRequest(
+      fixture.credential.issuerVerificationMethodRef,
+      fixture.witness.verifierDomainHash,
+      fixture.verificationRequest.verifierChallengeHash,
+      fixtureRegistryState(fixture),
+    );
+    const submission = buildSubmissionForRevokedSetRequest(fixture, request);
+
+    simulator.issueSecretBirthCredential(
+      fixture.credential,
+      fixture.credentialProof,
+    );
+    simulator.setHolderWitnesses({
+      holderSecret: fixture.witness.holderSecret,
+      holderSecretOpening: fixture.witness.holderSecretOpening,
+      holderBindingBlindingFactor: fixture.witness.holderBindingBlindingFactor,
+      holderBirthDateDays: fixture.witness.birthDateDays,
+      holderBirthDateOpening: fixture.witness.birthDateOpening,
+    });
+
+    expect(() =>
+      simulator.issueRevocationAwareCapabilityWithVerifierSuppliedRoot(
+        fixture.credentialWithStatus,
+        {
+          ...request,
+          statusRequest: {
+            ...request.statusRequest,
+            registryState: {
+              ...request.statusRequest.registryState,
+              registryVersion: 0n,
+            },
+          },
+        },
+        submission,
+        fixture.statusVerificationInputs,
+        fixture.witness.currentDay,
+      ),
+    ).toThrow(
+      /status witness state version does not match the verifier request/i,
+    );
+  });
+
+  it("rejects authority-attested verification when the request snapshot version is stale", () => {
+    const fixture = createDemoRevocationFixture();
+    const simulator = new CredentialsDemoRevocationSimulator();
+    const request = simulator.revocationAwareAuthorityAttestedRequest(
+      fixture.credential.issuerVerificationMethodRef,
+      fixture.witness.verifierDomainHash,
+      fixture.verificationRequest.verifierChallengeHash,
+      fixtureRegistryState(fixture),
+    );
+    const submission = buildSubmissionForAuthorityAttestedRequest(
+      fixture,
+      request,
+    );
+
+    simulator.issueSecretBirthCredential(
+      fixture.credential,
+      fixture.credentialProof,
+    );
+    simulator.setHolderWitnesses({
+      holderSecret: fixture.witness.holderSecret,
+      holderSecretOpening: fixture.witness.holderSecretOpening,
+      holderBindingBlindingFactor: fixture.witness.holderBindingBlindingFactor,
+      holderBirthDateDays: fixture.witness.birthDateDays,
+      holderBirthDateOpening: fixture.witness.birthDateOpening,
+    });
+
+    expect(() =>
+      simulator.issueRevocationAwareCapabilityWithAuthorityAttestation(
+        fixture.credentialWithAuthorityAttestedStatus,
+        {
+          ...request,
+          statusRequest: {
+            ...request.statusRequest,
+            registryState: {
+              ...request.statusRequest.registryState,
+              registryVersion: 0n,
+            },
+          },
+        },
+        submission,
+        fixture.authorityAttestedStatusVerificationInputs,
+        fixture.witness.currentDay,
+        request.verificationRequest.envelope.createdAt + 10n,
+      ),
+    ).toThrow(/registry version does not match/i);
+  });
+
   it("rejects authority-attested verification after status proof expiration", () => {
     const fixture = createDemoRevocationFixture();
     const simulator = new CredentialsDemoRevocationSimulator();

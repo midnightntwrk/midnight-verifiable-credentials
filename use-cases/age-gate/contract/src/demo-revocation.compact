@@ -276,6 +276,11 @@ circuit verifySecretBirthPresentationWithVerifierSuppliedRoot(
       == request.statusRequest.registryState.revokedRoot,
     "Revocation demo status witness revoked root does not match the verifier request"
   );
+  assert(
+    statusInputs.nonRevocationWitness.registryState.registryVersion
+      == request.statusRequest.registryState.registryVersion,
+    "Revocation demo status witness state version does not match the verifier request"
+  );
   assertSecretBirthCredentialVerificationSubmissionMatchesStatusRequest(
     credentialWithStatus,
     SecretBirthCredentialVerificationStatusRequest {
