@@ -73,13 +73,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   instead of only by absolute attestation expiration.
 - BREAKING: `credentials-birth-secret` status-aware wrapper proofs now sign a
   status-bound family body root that commits the shared
-  `RegistryBoundStatusBinding`. Integrations that build
-  `SecretBirthCredentialWithStatusBinding`,
-  `SecretBirthCredentialWithStatusCapability`, or
-  `SecretBirthCredentialWithAuthorityAttestedStatusCapability` must no longer
-  reuse the plain base-credential proof for those wrapper surfaces. This
-  rollout currently applies to the secret-birth family only; non-secret birth
-  family proofs have not changed yet.
+  `RegistryBoundStatusBinding`. The secret-birth family now supports only the
+  `SecretBirthCredentialWithStatusBinding` wrapper surface; the legacy
+  `SecretBirthCredentialWithStatusCapability` and
+  `SecretBirthCredentialWithAuthorityAttestedStatusCapability` wrappers have
+  been removed. Integrations must no longer reuse the plain base-credential
+  proof for the status-bound wrapper surface. This rollout currently applies
+  to the secret-birth family only; non-secret birth family proofs have not
+  changed yet.
 - normalized status ownership in code:
   - shared VC-side status binding remains in `credentials`
   - registry-facing proof-protocol Compact types and validators now live in

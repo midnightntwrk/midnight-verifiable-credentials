@@ -27,18 +27,15 @@ reference architecture instead of a prototype wrapper.
 
 ## Current gap
 
-Today several status-aware families still use wrapper structs such as:
+Today the secret-birth family still uses one transitional wrapper surface:
 
-- `SecretBirthCredentialWithStatusCapability`
-- `SecretBirthCredentialWithAuthorityAttestedStatusCapability`
 - `SecretBirthCredentialWithStatusBinding`
 
-Those wrappers are useful compatibility and transition surfaces, but they leave
-one important weakness:
+That wrapper is still a compatibility and transition surface, and it leaves one
+important weakness:
 
 - the issuer proof signs the base credential body root
-- the wrapper adds status binding or status capability data outside that
-  issuer-signed root
+- the wrapper adds status binding data outside that issuer-signed root
 
 The verifier/contract can still check consistency between:
 

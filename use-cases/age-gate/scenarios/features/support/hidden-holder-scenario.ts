@@ -220,22 +220,18 @@ export class UseHiddenHolderScenario extends Ability {
     try {
       simulator.issueRevocationAwareCapabilityWithVerifierSuppliedRoot(
         fixture.credentialWithStatusBinding,
-        request,
-        submission,
         {
-          statusProofProtocol: {
-            ...fixture.revokedSetStatusVerificationInputs.statusProofProtocol,
-            request: {
-              ...fixture.revokedSetStatusVerificationInputs.statusProofProtocol
-                .request,
-              registryState: {
-                ...fixture.revokedSetStatusVerificationInputs
-                  .statusProofProtocol.request.registryState,
-                registryVersion: 0n,
-              },
+          ...request,
+          statusRequest: {
+            ...request.statusRequest,
+            registryState: {
+              ...request.statusRequest.registryState,
+              registryVersion: 0n,
             },
           },
         },
+        submission,
+        fixture.revokedSetStatusVerificationInputs,
         fixture.witness.currentDay,
       );
       this.#recordResult(false, simulator, fixture, {
