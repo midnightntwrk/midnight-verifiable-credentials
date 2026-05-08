@@ -130,8 +130,8 @@ It intentionally does not own schema-specific business logic such as:
 
 Those belong in specialization packages such as:
 
-- [`../credentials-birth`](../credentials-birth): explicit DID-bound holder profile
-- [`../credentials-birth-secret`](../credentials-birth-secret): hidden holder-secret profile
+- [`../prototypes/credential-families/birth`](../prototypes/credential-families/birth): explicit DID-bound holder profile
+- [`../prototypes/credential-families/birth-secret`](../prototypes/credential-families/birth-secret): hidden holder-secret profile
 - [`../core/capabilities/same-holder`](../core/capabilities/same-holder): same-holder composition capability for hidden-holder profiles
 
 ## Generic model

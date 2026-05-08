@@ -68,7 +68,7 @@ Current note on status support:
   witness/attestation builders used by status-aware Layer 3 flows
 
 ```compact
-include "../../credentials-birth/src/birth-credential";
+include "../../prototypes/credential-families/birth/src/birth-credential";
 
 import VC<BirthCredentialClaims, BirthCredentialDisclosures, ExplicitHolderBinding>;
 
@@ -366,7 +366,7 @@ pragma language_version >= 0.20;
 
 import CompactStandardLibrary;
 
-include "../../credentials-birth/src/birth-credential";
+include "../../prototypes/credential-families/birth/src/birth-credential";
 include "../../core/capabilities/same-holder/src/same-holder";
 
 export circuit verifyBusinessEligibility(
@@ -401,7 +401,7 @@ Current-workspace example:
 
 ```compact
 include "../../core/primitives/credentials/src/credentials/composable";
-include "../../credentials-birth/src/birth-credential";
+include "../../prototypes/credential-families/birth/src/birth-credential";
 ```
 
 Adjacent-prototype example:

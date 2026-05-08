@@ -41,7 +41,7 @@ Binding mechanism:
 
 Current implementation packages:
 - [`../../core/primitives/credentials/README.md`](../../core/primitives/credentials/README.md)
-- [`../../credentials-birth/README.md`](../../credentials-birth/README.md)
+- [`../../prototypes/credential-families/birth/README.md`](../../prototypes/credential-families/birth/README.md)
 - [`../../use-cases/age-gate/contract/README.md`](../../use-cases/age-gate/contract/README.md)
 
 Current test coverage:
@@ -74,7 +74,7 @@ Binding mechanism:
 
 Current implementation packages:
 - [`../../core/primitives/credentials/README.md`](../../core/primitives/credentials/README.md)
-- [`../../credentials-birth-secret/README.md`](../../credentials-birth-secret/README.md)
+- [`../../prototypes/credential-families/birth-secret/README.md`](../../prototypes/credential-families/birth-secret/README.md)
 - [`../../registry/status-registry/README.md`](../../registry/status-registry/README.md)
 - [`../../components/orchestration/protocol/README.md`](../../components/orchestration/protocol/README.md)
 
@@ -110,7 +110,7 @@ Binding mechanism:
 
 Current implementation packages:
 - [`../../core/primitives/credentials/README.md`](../../core/primitives/credentials/README.md)
-- [`../../credentials-birth-secret/README.md`](../../credentials-birth-secret/README.md)
+- [`../../prototypes/credential-families/birth-secret/README.md`](../../prototypes/credential-families/birth-secret/README.md)
 - [`../../registry/status-registry/README.md`](../../registry/status-registry/README.md)
 - [`../../components/orchestration/protocol/README.md`](../../components/orchestration/protocol/README.md)
 
@@ -172,7 +172,7 @@ Binding mechanism:
 
 Current implementation packages:
 - [`../../core/capabilities/same-holder/README.md`](../../core/capabilities/same-holder/README.md)
-- composed by [`../../credentials-birth-secret/README.md`](../../credentials-birth-secret/README.md)
+- composed by [`../../prototypes/credential-families/birth-secret/README.md`](../../prototypes/credential-families/birth-secret/README.md)
 
 Current test coverage:
 - same-holder capability tests

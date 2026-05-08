@@ -21,7 +21,7 @@ presentation proving `age >= threshold` without revealing the birth date.
 On-chain roots:
 
 - `core/primitives/credentials/src/credentials/composable.compact`
-- `credentials-birth-secret/src/secret-birth-credential.compact`
+- `prototypes/credential-families/birth-secret/src/secret-birth-credential.compact`
 - optional: `use-cases/age-gate/contract/src/demo-revocation.compact` as the
   status-aware reference
 
@@ -50,7 +50,7 @@ Use a narrow verifier contract:
 
 ```compact
 import "../../core/primitives/credentials/src/credentials/composable" prefix Core_;
-import "../../credentials-birth-secret/src/secret-birth-credential" prefix BirthSecret_;
+import "../../prototypes/credential-families/birth-secret/src/secret-birth-credential" prefix BirthSecret_;
 ```
 
 Then consume the family verification entrypoint for a typed request and
@@ -123,7 +123,7 @@ Off-chain:
 
 ## What to read next
 
-1. `credentials-birth-secret/README.md`
+1. `prototypes/credential-families/birth-secret/README.md`
 2. `docs/guides/integration-surface-map.md`
 3. `docs/spec/status-verification-protocol.md` if you need status-aware flows
 4. `use-cases/age-gate/contract/README.md` for business-contract examples

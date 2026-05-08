@@ -2,7 +2,7 @@ pragma language_version >= 0.20;
 
 import CompactStandardLibrary;
 
-include "../../../../credentials-birth-secret/src/secret-birth-credential";
+include "../../../../prototypes/credential-families/birth-secret/src/secret-birth-credential";
 
 export enum RevocationVerificationMode {
   noVerification,
@@ -275,6 +275,11 @@ circuit verifySecretBirthPresentationWithVerifierSuppliedRoot(
     statusInputs.nonRevocationWitness.registryState.revokedRoot
       == request.statusRequest.registryState.revokedRoot,
     "Revocation demo status witness revoked root does not match the verifier request"
+  );
+  assert(
+    statusInputs.nonRevocationWitness.registryState.registryVersion
+      == request.statusRequest.registryState.registryVersion,
+    "Revocation registry state version does not match this registry"
   );
   assertSecretBirthCredentialVerificationSubmissionMatchesStatusRequest(
     credentialWithStatus,

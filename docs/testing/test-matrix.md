@@ -93,9 +93,9 @@ Implemented prototype coverage:
   - request/binding consistency checks
   - authority-attested proof acceptance and rejection paths
   - verifier policy compatibility for revoked-set and authority-attested flows
-- `credentials-birth-secret/src/test/status.test.ts`
+- `prototypes/credential-families/birth-secret/src/test/status.test.ts`
   - hidden-holder revoked-set status request wiring
-- `credentials-birth-secret/src/test/status-attestation.test.ts`
+- `prototypes/credential-families/birth-secret/src/test/status-attestation.test.ts`
   - hidden-holder authority-attested status verification
   - verification-request challenge / status-request challenge consistency
   - verifier-root mismatch rejection
