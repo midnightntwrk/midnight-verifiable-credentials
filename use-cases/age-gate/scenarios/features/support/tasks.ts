@@ -25,6 +25,54 @@ export const RunTheHiddenHolderRevocationAwareHappyPath = () =>
     ),
   );
 
+export const RunTheHiddenHolderWrongRegistryRejectedPath = () =>
+  Task.where(
+    "#actor runs the hidden-holder wrong-registry rejection path",
+    Interaction.where(
+      "#actor executes the hidden-holder wrong-registry scenario against the revocation demo simulator",
+      async (actor) => {
+        await UseHiddenHolderScenario.from(actor)
+          .runVerifierSuppliedRootWrongRegistryRejectedPath();
+      },
+    ),
+  );
+
+export const RunTheHiddenHolderWrongRevokedRootRejectedPath = () =>
+  Task.where(
+    "#actor runs the hidden-holder wrong-root rejection path",
+    Interaction.where(
+      "#actor executes the hidden-holder wrong-root scenario against the revocation demo simulator",
+      async (actor) => {
+        await UseHiddenHolderScenario.from(actor)
+          .runVerifierSuppliedRootWrongRevokedRootRejectedPath();
+      },
+    ),
+  );
+
+export const RunTheHiddenHolderStaleVersionRejectedPath = () =>
+  Task.where(
+    "#actor runs the hidden-holder stale-version rejection path",
+    Interaction.where(
+      "#actor executes the hidden-holder stale-version scenario against the revocation demo simulator",
+      async (actor) => {
+        await UseHiddenHolderScenario.from(actor)
+          .runVerifierSuppliedRootStaleVersionRejectedPath();
+      },
+    ),
+  );
+
+export const RunTheHiddenHolderExpiredAuthorityAttestationRejectedPath = () =>
+  Task.where(
+    "#actor runs the hidden-holder expired-attestation rejection path",
+    Interaction.where(
+      "#actor executes the hidden-holder expired-attestation scenario against the revocation demo simulator",
+      async (actor) => {
+        await UseHiddenHolderScenario.from(actor)
+          .runAuthorityAttestedExpiredProofRejectedPath();
+      },
+    ),
+  );
+
 export const AgeGateScenarioOutcome = {
   approved: () =>
     Question.about<boolean>(
@@ -75,5 +123,15 @@ export const HiddenHolderScenarioOutcome = {
       (actor) =>
         UseHiddenHolderScenario.from(actor).lastResult()
           .consumedAccessCapabilityCount,
+    ),
+  rejected: () =>
+    Question.about<boolean>(
+      "whether the hidden-holder scenario was rejected",
+      (actor) => !UseHiddenHolderScenario.from(actor).lastResult().approved,
+    ),
+  failureMessage: () =>
+    Question.about<string | null>(
+      "why the hidden-holder scenario was rejected",
+      (actor) => UseHiddenHolderScenario.from(actor).lastResult().failureMessage,
     ),
 };
