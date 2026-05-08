@@ -98,6 +98,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   now binds snapshots to both the live `registryId` and the live contract
   version, even though the Merkle `revokedRoot` itself remains verifier-supplied
   until the final in-circuit root-binding path lands.
+- BREAKING: the generic Compact credential envelope is now split into a thin
+  `VC<TClaims, THolderBinding, TStatusBinding>` plus a separate
+  `VP<TDisclosures, THolderBinding>` module. Credential bodies now carry an
+  explicit `statusBinding` field, so credential body roots and issuer proofs
+  change for all families that instantiate the shared core.
+- BREAKING: generic presentation-envelope validation is now split between:
+  - `VP.assertValidPresentationEnvelope(presentation)`
+  - `CredentialPresentationRelations.assertMatchingCredentialPresentation(...)`
+  Consumers must no longer treat `assertValidPresentationEnvelope` as the
+  credential/presentation linkage helper.
 - Holder-binding naming is now explicitly split between:
   - Compact/core struct name:
     `OffchainMidnightHolderBinding`
