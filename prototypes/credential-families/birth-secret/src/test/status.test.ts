@@ -205,4 +205,52 @@ describe("secret birth credential: status-aware verification", () => {
       /revoked-set status request challenge must match the verification request challenge/i,
     );
   });
+
+  it("rejects a revoked-set status proof protocol when its request snapshot diverges from the verifier request", () => {
+    const fixture = createSecretBirthCredentialFixture();
+    const submission = {
+      envelope: {
+        ...fixture.verificationRequest.envelope,
+        initialMessage: false,
+        respondsToMessageId: fixture.verificationRequest.envelope.messageId,
+        messageId: new Uint8Array(32).fill(19),
+        createdAt: fixture.verificationRequest.envelope.createdAt + 1n,
+      },
+      schema: fixture.credential.schema,
+      issuerVerificationMethodRef:
+        fixture.credential.issuerVerificationMethodRef,
+      holderBindingProfile: fixture.verificationRequest.holderBindingProfile,
+      challengeHash: fixture.verificationRequest.verifierChallengeHash,
+      body: {
+        credential: fixture.credential,
+        credentialProof: fixture.credentialProof,
+        presentation: fixture.presentation,
+      },
+    };
+
+    expect(() =>
+      pureCircuits.assertSecretBirthCredentialVerificationSubmissionMatchesRevokedSetStatusRequest(
+        fixture.credentialWithStatusBinding,
+        fixture.revokedSetStatusVerificationRequest,
+        submission,
+        {
+          statusProofProtocol: {
+            ...fixture.revokedSetStatusVerificationInputs.statusProofProtocol,
+            request: {
+              ...fixture.revokedSetStatusVerificationInputs.statusProofProtocol
+                .request,
+              registryState: {
+                ...fixture.revokedSetStatusVerificationInputs
+                  .statusProofProtocol.request.registryState,
+                registryVersion: 0n,
+              },
+            },
+          },
+        },
+        fixture.witness.holderSecret,
+        fixture.witness.holderSecretOpening,
+        fixture.witness.holderBindingBlindingFactor,
+      ),
+    ).toThrow(/registry version does not match the verifier request/i);
+  });
 });
