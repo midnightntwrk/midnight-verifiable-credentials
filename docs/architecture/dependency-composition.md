@@ -167,7 +167,7 @@ The likely final shape is:
 
 ```compact
 // Layer 3 contract
-include "credentials/src/credentials/composable";
+include "core/primitives/credentials/src/credentials/composable";
 include "credentials-same-holder/src/same-holder/composable";
 include "credentials-iso-registry/src/iso-registry";
 
@@ -400,14 +400,14 @@ families through composition-safe entry points.
 Current-workspace example:
 
 ```compact
-include "../../credentials/src/credentials/composable";
+include "../../core/primitives/credentials/src/credentials/composable";
 include "../../credentials-birth/src/birth-credential";
 ```
 
 Adjacent-prototype example:
 
 ```compact
-include "../../credentials/src/credentials";
+include "../../core/primitives/credentials/src/credentials";
 include "../../credentials-same-holder/src/same-holder/composable";
 include "../../credentials-iso-registry/src/iso-registry";
 

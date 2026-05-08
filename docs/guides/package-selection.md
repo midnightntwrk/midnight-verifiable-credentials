@@ -26,7 +26,7 @@ Related documents:
 ### I need the generic VC/VP model
 Start with:
 
-- [`../../credentials/README.md`](../../credentials/README.md)
+- [`../../core/primitives/credentials/README.md`](../../core/primitives/credentials/README.md)
 
 Use this when you need:
 
@@ -56,7 +56,7 @@ This is a capability package, not a standalone credential family.
 ### I need status / revocation registry support
 Start with:
 
-- [`../../credentials/README.md`](../../credentials/README.md)
+- [`../../core/primitives/credentials/README.md`](../../core/primitives/credentials/README.md)
 - [`../../credentials-status-registry/README.md`](../../credentials-status-registry/README.md)
 - then read:
   - [`../spec/credential-status.md`](../spec/credential-status.md)

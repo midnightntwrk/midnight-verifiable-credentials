@@ -32,7 +32,7 @@ readonly sibling_testing_surface_pattern='\.\./(\.\./)*[^./][^/]*/src/testing\.j
 readonly sibling_source_pattern='\.\./(\.\./)*[^./][^/]*/src/'
 readonly root_contract_namespace_pattern='^export \* as .+Contract from "\./managed/.+/contract/index\.js";$'
 readonly -a root_contract_surface_files=(
-  credentials/src/index.ts
+  core/primitives/credentials/src/index.ts
   credentials-birth/src/index.ts
   credentials-birth-secret/src/index.ts
   use-cases/age-gate/contract/src/index.ts

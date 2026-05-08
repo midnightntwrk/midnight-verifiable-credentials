@@ -4,17 +4,17 @@ Status: current implemented test surface as of 2026-05-05.
 
 ## Core package tests
 
-- `credentials/src/test/proof-context.test.ts`
+- `core/primitives/credentials/src/test/proof-context.test.ts`
   - proof challenge/context separation
-- `credentials/src/test/protocol-envelope.test.ts`
+- `core/primitives/credentials/src/test/protocol-envelope.test.ts`
   - protocol envelope threading and validation
-- `credentials/src/test/secret-holder-binding.test.ts`
+- `core/primitives/credentials/src/test/secret-holder-binding.test.ts`
   - secret holder-binding primitives
-- `credentials/src/test/lightweight-holder-binding.test.ts`
+- `core/primitives/credentials/src/test/lightweight-holder-binding.test.ts`
   - legacy Jubjub and Compact-side offchain holder-binding checks
-- `credentials/src/test/package-surfaces.test.ts`
+- `core/primitives/credentials/src/test/package-surfaces.test.ts`
   - exported package surfaces
-- `credentials/src/test/offchain-did-holder-binding-alias.test.ts`
+- `core/primitives/credentials/src/test/offchain-did-holder-binding-alias.test.ts`
   - public TypeScript alias compatibility for `OffchainDIDHolderBinding`
 
 ## DID-aware adapter package tests
@@ -58,15 +58,15 @@ Current repository stance:
 
 Implemented prototype coverage:
 
-- `credentials/src/test/status-capability.test.ts`
+- `core/primitives/credentials/src/test/status-capability.test.ts`
   - status registry refs
   - revoked-set capability validation
   - authority-attested capability validation
   - deterministic revoked-set status-handle derivation
-- `credentials/src/test/status-policy.test.ts`
+- `core/primitives/credentials/src/test/status-policy.test.ts`
   - verifier status policy validation and registry binding checks
   - rejection of optional or internally inconsistent status policies
-- `credentials/src/test/status-attestation.test.ts`
+- `core/primitives/credentials/src/test/status-attestation.test.ts`
   - request-bound authority attestation validation
   - verifier challenge binding through the full policy path
   - authority signer binding

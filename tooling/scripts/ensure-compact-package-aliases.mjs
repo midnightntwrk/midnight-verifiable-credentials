@@ -6,7 +6,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, '..', '..');
 
 const aliases = [
-  ['midnight-did-credentials', 'credentials'],
+  ['midnight-did-credentials', 'core/primitives/credentials'],
   ['midnight-did-credentials-same-holder', 'credentials-same-holder'],
   ['midnight-did-credentials-birth', 'credentials-birth'],
   ['midnight-did-credentials-birth-secret', 'credentials-birth-secret'],
