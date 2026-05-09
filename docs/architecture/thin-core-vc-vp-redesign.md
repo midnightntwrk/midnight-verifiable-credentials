@@ -1,6 +1,6 @@
 # Thin Core VC/VP Redesign
 
-Status: proposed prototype-only execution plan
+Status: active prototype-only execution plan
 
 Purpose:
 
@@ -8,7 +8,7 @@ Purpose:
 - make VC-side status binding a first-class generic parameter
 - keep presentation and protocol semantics outside the credential core
 - keep optional proof logic stackable so circuit composition stays deliberate
-- provide the next 5 stacked PR slices for implementation
+- provide the current thin-core refactoring sequence and next remaining slices
 
 Related documents:
 
@@ -348,29 +348,64 @@ Acceptance criteria:
   vocabulary
 
 ### PR 5
-`refactor(birth): migrate explicit birth family to final VC/VP model`
+`refactor(status): make secret-birth status binding primary`
 
 Scope:
-- migrate the explicit birth family to:
-  - `VC<BirthCredentialClaims, ExplicitHolderBinding, NoStatusBinding>`
-  - `VP<BirthCredentialDisclosures, ExplicitHolderBinding>`
-- update its issuance and presentation protocol bindings to the new core shapes
+- remove the capability-first secret-birth status wrappers
+- keep one credential-side wrapper:
+  - `SecretBirthCredentialWithStatusBinding`
+- drive both revoked-set and authority-attested verification through proof
+  protocol inputs instead of capability-first family surfaces
 
 Acceptance criteria:
-- the simplest active family validates against the final generic model
-- the redesign is proven on a real family before hidden-holder or status-aware migrations begin
+- the hidden-holder status-aware family stops treating capability wrappers as
+  its primary status model
+- status-aware verification composes around the shared
+  `RegistryBoundStatusBinding`
+
+### PR 6
+`refactor(birth-secret): make core composition explicit`
+
+Scope:
+- stop relying on `same-holder.compact` to pull the shared `credentials`
+  surface into scope transitively
+- use `credentials/composable` plus `same-holder/composable` explicitly before
+  the registry proof-protocol layer
+
+Acceptance criteria:
+- the hidden-holder family entrypoint satisfies the status proof-protocol
+  include contract directly
+- downstream hidden-holder smoke flows stay stable
+
+### PR 7
+`refactor(status): make registry helpers binding-first`
+
+Scope:
+- remove dead capability-to-binding converter circuits
+- make the public TypeScript helper path and intermediate Compact validators
+  binding-first
+- keep `StatusCapabilityKind` and verifier-policy wire shapes stable in this
+  slice
+
+Acceptance criteria:
+- helper/build/test surfaces prefer `RegistryBoundStatusBinding`
+- Compact compatibility validators remain available where still required
+- verifier-policy taxonomy remains unchanged while helper churn is absorbed
 
 ## Deferred work after the first 5 PRs
 
-Not part of this first cut:
+Not part of the current landed cut:
 
-1. hidden-holder family migration
-2. registry-bound status-native migration for `birth-secret`
-3. same-holder composition refactoring
+1. native registry-bound status credential migration for `birth-secret`
+2. downstream revocation demo and BDD cleanup around that native status shape
+3. same-holder composition refactoring beyond include hygiene
 4. protocol naming or surface review beyond the initial `Issue` / `Present` split
 5. full spec and guide rewrite
 
-These should follow only after the explicit birth family has validated the new architecture.
+The next implementation slice should start with the first remaining bridge:
+- make the status-aware hidden-holder credential itself native to
+  `VC<BirthCredentialClaims, BlindedSecretHolderBinding, RegistryBoundStatusBinding>`
+  instead of carrying `RegistryBoundStatusBinding` in an outer wrapper field
 
 ## Circuit-complexity guardrail
 
