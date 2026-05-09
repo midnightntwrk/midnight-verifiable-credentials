@@ -28,6 +28,7 @@ import {
   type SecretBirthCredentialVerificationRevokedSetStatusInputs,
   type SecretBirthCredentialVerificationRevokedSetStatusRequest,
   type SecretBirthCredentialWithStatusBinding,
+  type SecretBirthStatusCredential,
   StatusCapabilityKind,
 } from "../managed/secret-birth-credential/contract/index.js";
 
@@ -339,24 +340,26 @@ export const createSecretBirthCredentialFixture = (
     ),
   };
 
-  const credentialWithStatusBinding: SecretBirthCredentialWithStatusBinding = {
-    credential,
-    credentialProof,
+  const statusCredential: SecretBirthStatusCredential = {
+    ...credential,
     statusBinding,
   };
 
   const statusBoundCredentialProof = signProof({
-    bodyRoot: pureCircuits.secretBirthCredentialRegistryBoundStatusBodyRoot(
-      credential,
-      statusBinding,
-    ),
+    bodyRoot:
+      pureCircuits.secretBirthCredentialRegistryBoundStatusBodyRoot(
+        statusCredential,
+      ),
     signer: issuer,
     createdAt: credentialProof.createdAt,
     challengeHash: credentialProof.challengeHash,
     nonceScalar: 12n,
   });
 
-  credentialWithStatusBinding.credentialProof = statusBoundCredentialProof;
+  const credentialWithStatusBinding: SecretBirthCredentialWithStatusBinding = {
+    credential: statusCredential,
+    credentialProof: statusBoundCredentialProof,
+  };
 
   const statusRequest: RevokedSetStatusRequest = {
     registryState: {

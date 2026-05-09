@@ -14,16 +14,17 @@ describe("secret birth credential: issuer-signed status binding commitment", () 
         fixture.credentialWithStatusBinding,
       );
     const tamperedBodyRoot =
-      pureCircuits.secretBirthCredentialRegistryBoundStatusBodyRoot(
-        fixture.credential,
-        {
-          ...fixture.credentialWithStatusBinding.statusBinding,
+      pureCircuits.secretBirthCredentialRegistryBoundStatusBodyRoot({
+        ...fixture.credentialWithStatusBinding.credential,
+        statusBinding: {
+          ...fixture.credentialWithStatusBinding.credential.statusBinding,
           registryRef: {
-            ...fixture.credentialWithStatusBinding.statusBinding.registryRef,
+            ...fixture.credentialWithStatusBinding.credential.statusBinding
+              .registryRef,
             registryId: new Uint8Array(32).fill(44),
           },
         },
-      );
+      });
 
     expect([...originalBodyRoot]).not.toEqual([...tamperedBodyRoot]);
   });
@@ -34,9 +35,12 @@ describe("secret birth credential: issuer-signed status binding commitment", () 
     expect(() =>
       pureCircuits.assertValidSecretBirthCredentialWithStatusBinding({
         ...fixture.credentialWithStatusBinding,
-        statusBinding: {
-          ...fixture.credentialWithStatusBinding.statusBinding,
-          statusHandleCommitment: new Uint8Array(32).fill(7),
+        credential: {
+          ...fixture.credentialWithStatusBinding.credential,
+          statusBinding: {
+            ...fixture.credentialWithStatusBinding.credential.statusBinding,
+            statusHandleCommitment: new Uint8Array(32).fill(7),
+          },
         },
       }),
     ).toThrow();
@@ -48,11 +52,15 @@ describe("secret birth credential: issuer-signed status binding commitment", () 
     expect(() =>
       pureCircuits.assertValidSecretBirthCredentialWithStatusBinding({
         ...fixture.credentialWithStatusBinding,
-        statusBinding: {
-          ...fixture.credentialWithStatusBinding.statusBinding,
-          registryRef: {
-            ...fixture.credentialWithStatusBinding.statusBinding.registryRef,
-            registryId: new Uint8Array(32).fill(9),
+        credential: {
+          ...fixture.credentialWithStatusBinding.credential,
+          statusBinding: {
+            ...fixture.credentialWithStatusBinding.credential.statusBinding,
+            registryRef: {
+              ...fixture.credentialWithStatusBinding.credential.statusBinding
+                .registryRef,
+              registryId: new Uint8Array(32).fill(9),
+            },
           },
         },
       }),
@@ -65,9 +73,12 @@ describe("secret birth credential: issuer-signed status binding commitment", () 
     expect(() =>
       pureCircuits.assertValidSecretBirthCredentialWithStatusBinding({
         ...fixture.credentialWithStatusBinding,
-        statusBinding: {
-          ...fixture.credentialWithStatusBinding.statusBinding,
-          statusHandleCommitment: new Uint8Array(32).fill(5),
+        credential: {
+          ...fixture.credentialWithStatusBinding.credential,
+          statusBinding: {
+            ...fixture.credentialWithStatusBinding.credential.statusBinding,
+            statusHandleCommitment: new Uint8Array(32).fill(5),
+          },
         },
       }),
     ).toThrow();

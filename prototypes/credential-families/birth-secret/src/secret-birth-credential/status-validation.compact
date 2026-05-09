@@ -1,11 +1,18 @@
 export circuit assertValidSecretBirthCredentialWithStatusBinding(
   credentialWithStatus: SecretBirthCredentialWithStatusBinding
 ): [] {
-  assertValidSecretBirthCredentialEnvelopeOnly(credentialWithStatus.credential);
-  assertValidRegistryBoundStatusBinding(
-    credentialWithStatus.statusBinding
+  assertValidSecretBirthSchemaRef(credentialWithStatus.credential.schema);
+  SecretBirthStatus_assertValidCredentialEnvelope(
+    credentialWithStatus.credential,
+    birthCredentialClaimRoot(credentialWithStatus.credential.claims)
   );
-  assertValidCredentialProofForBodyRoot(
+  assertValidRegistryBoundStatusBinding(
+    credentialWithStatus.credential.statusBinding
+  );
+  assertValidBlindedSecretHolderCredentialBinding(
+    credentialWithStatus.credential.holderBinding
+  );
+  SecretBirthStatus_assertValidCredentialProofForBodyRoot(
     credentialWithStatus.credential,
     credentialWithStatus.credentialProof,
     secretBirthCredentialWithStatusBindingBodyRoot(credentialWithStatus)
@@ -75,6 +82,9 @@ export circuit assertSecretBirthCredentialVerificationSubmissionMatchesRevokedSe
   holderSecretOpening: Bytes<32>,
   holderBindingBlindingFactor: Bytes<32>
 ): [] {
+  const plainCredential = secretBirthCredentialWithoutStatusBinding(
+    credentialWithStatus.credential
+  );
   assertValidSecretBirthCredentialWithStatusBinding(credentialWithStatus);
   assertValidSecretBirthCredentialVerificationRevokedSetStatusRequest(request);
   assertValidSecretBirthCredentialVerificationRevokedSetStatusInputs(
@@ -82,7 +92,7 @@ export circuit assertSecretBirthCredentialVerificationSubmissionMatchesRevokedSe
   );
   assert(
     secretBirthCredentialBodyRoot(submission.body.credential)
-      == secretBirthCredentialBodyRoot(credentialWithStatus.credential),
+      == secretBirthCredentialBodyRoot(plainCredential),
     "Revoked-set status verification submission credential does not match the status-bound credential body"
   );
   assert(
@@ -119,7 +129,7 @@ export circuit assertSecretBirthCredentialVerificationSubmissionMatchesRevokedSe
   );
   assertVerifierStatusPolicyAcceptsRevokedSetNonMembershipStatusProofProtocol(
     request.statusPolicy,
-    credentialWithStatus.statusBinding,
+    credentialWithStatus.credential.statusBinding,
     statusInputs.statusProofProtocol
   );
 }
@@ -134,6 +144,9 @@ export circuit assertSecretBirthCredentialVerificationSubmissionMatchesAuthority
   holderBindingBlindingFactor: Bytes<32>,
   currentTime: Uint<64>
 ): [] {
+  const plainCredential = secretBirthCredentialWithoutStatusBinding(
+    credentialWithStatus.credential
+  );
   assertValidSecretBirthCredentialWithStatusBinding(credentialWithStatus);
   assertValidSecretBirthCredentialVerificationAuthorityAttestedStatusRequest(
     request
@@ -143,7 +156,7 @@ export circuit assertSecretBirthCredentialVerificationSubmissionMatchesAuthority
   );
   assert(
     secretBirthCredentialBodyRoot(submission.body.credential)
-      == secretBirthCredentialBodyRoot(credentialWithStatus.credential),
+      == secretBirthCredentialBodyRoot(plainCredential),
     "Authority-attested status protocol submission credential does not match the status-bound credential body"
   );
   assert(
@@ -175,7 +188,7 @@ export circuit assertSecretBirthCredentialVerificationSubmissionMatchesAuthority
   );
   assertVerifierStatusPolicyAcceptsAuthorityAttestedStatusProofProtocol(
     request.statusPolicy,
-    credentialWithStatus.statusBinding,
+    credentialWithStatus.credential.statusBinding,
     statusInputs.statusProofProtocol,
     currentTime
   );
