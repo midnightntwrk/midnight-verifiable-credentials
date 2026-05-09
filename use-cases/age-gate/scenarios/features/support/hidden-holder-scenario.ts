@@ -1,5 +1,6 @@
 import { Ability, type UsesAbilities } from "@serenity-js/core";
 
+import { createSecretBirthCredentialFixture } from "@midnight-ntwrk/midnight-did-credentials-birth-secret/testing";
 import {
   RevocationAccessDecision,
   RevocationVerificationMode,
@@ -61,7 +62,7 @@ export class UseHiddenHolderScenario extends Ability {
   #recordResult(
     approved: boolean,
     simulator: CredentialsDemoRevocationSimulator,
-    fixture: ReturnType<typeof createDemoRevocationFixture>,
+    fixture: { witness: { statusRegistryId: Uint8Array } },
     extras: {
       claimDecision: string | null;
       verificationMode: string | null;
@@ -278,6 +279,29 @@ export class UseHiddenHolderScenario extends Ability {
       });
     } catch (error) {
       this.#recordResult(false, simulator, fixture, {
+        claimDecision: null,
+        verificationMode: null,
+        failureMessage:
+          error instanceof Error ? error.message : String(error),
+      });
+    }
+  }
+
+  async runRevokedCredentialRejectedPath(): Promise<void> {
+    const baseline = createSecretBirthCredentialFixture();
+    const simulator = new CredentialsDemoRevocationSimulator();
+
+    try {
+      createSecretBirthCredentialFixture({
+        revokedStatusHandles: [baseline.witness.statusHandle],
+      });
+      this.#recordResult(false, simulator, baseline, {
+        claimDecision: null,
+        verificationMode: null,
+        failureMessage: null,
+      });
+    } catch (error) {
+      this.#recordResult(false, simulator, baseline, {
         claimDecision: null,
         verificationMode: null,
         failureMessage:

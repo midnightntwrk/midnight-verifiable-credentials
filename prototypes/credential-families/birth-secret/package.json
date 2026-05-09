@@ -24,6 +24,12 @@
       "import": "./dist/contract.js",
       "default": "./dist/contract.js"
     },
+    "./testing": {
+      "types": "./dist/testing.d.ts",
+      "require": "./dist/testing.js",
+      "import": "./dist/testing.js",
+      "default": "./dist/testing.js"
+    },
     "./managed/secret-birth-credential/contract/index.js": {
       "types": "./dist/managed/secret-birth-credential/contract/index.d.ts",
       "import": "./dist/managed/secret-birth-credential/contract/index.js",
@@ -34,6 +40,9 @@
     "*": {
       "contract": [
         "dist/contract.d.ts"
+      ],
+      "testing": [
+        "dist/testing.d.ts"
       ],
       "managed/secret-birth-credential/contract/index.js": [
         "dist/managed/secret-birth-credential/contract/index.d.ts"
