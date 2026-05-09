@@ -1,6 +1,7 @@
 import {
   pureCircuits,
   type RegistryBoundStatusBinding,
+  StatusType,
   type StatusRegistryRef,
 } from "@midnight-ntwrk/midnight-did-credentials";
 
@@ -12,6 +13,7 @@ export const buildRegistryBoundStatusBinding = ({
   readonly statusHandleCommitment: Uint8Array;
 }): RegistryBoundStatusBinding => {
   const binding = {
+    statusType: StatusType.revocationRegistry,
     registryRef,
     statusHandleCommitment,
   };

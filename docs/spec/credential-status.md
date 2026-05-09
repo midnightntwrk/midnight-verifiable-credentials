@@ -7,6 +7,7 @@ Companion documents:
 - [`./midnight-credentials.md`](./midnight-credentials.md)
 - [`./profiles.md`](./profiles.md)
 - [`./conformance.md`](./conformance.md)
+- [`./status-error-taxonomy.md`](./status-error-taxonomy.md)
 - [`./revocation-registry.md`](./revocation-registry.md)
 - [`./status-verification-protocol.md`](./status-verification-protocol.md)
 
@@ -144,6 +145,7 @@ The repository should model status through two related but distinct layers.
 
 The binding contributes:
 
+- an explicit status type for future binding extension
 - credential-bound status fields
 - the registry domain that the credential belongs to
 - the committed status-handle domain that later proofs must match
@@ -178,6 +180,21 @@ The first hidden-holder family rollout now lives in
 
 Other or future status-aware family surfaces may still be in transition until
 they adopt the same status-bound body-root pattern.
+
+The minimum registry-bound binding payload is now:
+
+- `statusType`
+- `registryRef`
+- `statusHandleCommitment`
+
+For the current implementation wave, `statusType` is fixed to:
+
+- `StatusType.revocationRegistry`
+
+That field is part of the VC-side binding, not a verifier-facing proof-mode
+selector. It exists so the repository can extend registry-bound status binding
+shapes later without reintroducing a generic wrapper-wide kind discriminator
+inside `VC<>`.
 
 Ownership rule:
 
@@ -254,14 +271,22 @@ If a verifier claims status-aware verification, it `MUST` define:
 
 - whether status is mandatory or optional for that request
 - how it determines that the supplied status root is fresh enough
-- whether stale status evidence is:
-  - a hard rejection
-  - a soft failure
-  - or an application-policy override
 - whether the verifier accepts:
   - public status checks
   - privacy-preserving non-revocation proofs
   - or both
+
+For conformant status-aware verification, the verifier `MUST` treat the
+following as hard invalidity outcomes:
+
+- `revoked`
+- stale registry state
+- unknown registry
+- unsupported status proof mode
+
+See:
+
+- [`./status-error-taxonomy.md`](./status-error-taxonomy.md)
 
 Verifiers `MUST NOT` silently accept unverifiable status assumptions while
 advertising production-ready revocation handling.
@@ -286,6 +311,23 @@ In plain terms:
 
 - hidden-holder proof privacy and public revocation lookup can coexist
 - but the implementation must say clearly that the status path weakens privacy
+
+## Future privacy improvements note
+
+The repository's current minimum privacy target is:
+
+- the verifier learns only the accepted registry domain and whether the
+  credential is non-revoked under the accepted snapshot
+
+Future improvements remain available beyond that minimum:
+
+- final Merkle non-membership so the verifier learns only the non-revoked
+  statement under an accepted live-enough root
+- stronger unlinkability around status-handle derivation and observation
+- reduced verifier/authority correlation through narrower attestation surfaces
+- cleaner separation between freshness evidence and full presentation payloads
+- reusable or aggregated status evidence that reduces repeated disclosure
+  pressure across verifier sessions
 
 ## Repository stance today
 

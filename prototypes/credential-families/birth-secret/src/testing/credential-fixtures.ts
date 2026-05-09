@@ -11,6 +11,7 @@ import {
   type ProtocolMessageEnvelope,
   pureCircuits as genericPureCircuits,
   type RegistryBoundStatusBinding,
+  StatusType,
   type VerificationMethodRef,
 } from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
 import { assertStatusHandleNotRevoked } from "@midnight-ntwrk/midnight-did-credentials-status-registry";
@@ -332,6 +333,7 @@ export const createSecretBirthCredentialFixture = (
   };
 
   const statusBinding: RegistryBoundStatusBinding = {
+    statusType: StatusType.revocationRegistry,
     registryRef: {
       registryId: witness.statusRegistryId,
       authorityVerificationMethodRef: issuer.verificationMethodRef,

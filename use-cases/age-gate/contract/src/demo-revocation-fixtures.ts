@@ -5,6 +5,7 @@ import {
   ecMulGenerator,
   type JubjubPoint,
 } from "@midnight-ntwrk/compact-runtime";
+import { StatusType } from "@midnight-ntwrk/midnight-did-credentials";
 import { assertStatusHandleNotRevoked } from "@midnight-ntwrk/midnight-did-credentials-status-registry";
 
 import {
@@ -295,17 +296,19 @@ export const createDemoRevocationFixture = (
     witness.statusHandle,
     witness.statusHandleOpening,
   );
-
-  const statusCredential: SecretBirthStatusCredential = {
-    ...credential,
-    statusBinding: {
-      registryRef: {
-        registryId: witness.statusRegistryId,
-        authorityVerificationMethodRef: issuer.verificationMethodRef,
-      },
-      statusHandleCommitment,
+  const statusBinding = {
+    statusType: StatusType.revocationRegistry,
+    registryRef: {
+      registryId: witness.statusRegistryId,
+      authorityVerificationMethodRef: issuer.verificationMethodRef,
     },
+    statusHandleCommitment,
   };
+
+  const statusCredential = {
+    ...credential,
+    statusBinding,
+  } as SecretBirthStatusCredential;
 
   const statusBoundCredentialProof = signProof({
     bodyRoot: pureCircuits.secretBirthCredentialRegistryBoundStatusBodyRoot(

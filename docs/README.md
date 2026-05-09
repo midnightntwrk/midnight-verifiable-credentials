@@ -14,6 +14,9 @@
 - credential status:
   - [`spec/credential-status.md`](./spec/credential-status.md)
   - for readers defining revocation, freshness, and non-revocation claim boundaries
+- status error taxonomy:
+  - [`spec/status-error-taxonomy.md`](./spec/status-error-taxonomy.md)
+  - for readers defining fail-closed status invalidity outcomes across VC/VP and Layer 3 verification
 - revocation registry:
   - [`spec/revocation-registry.md`](./spec/revocation-registry.md)
   - for readers implementing the prototype Midnight-native revoked-set non-membership model

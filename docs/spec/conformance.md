@@ -9,6 +9,7 @@ Companion document:
 
 - [`midnight-credentials.md`](./midnight-credentials.md)
 - [`credential-status.md`](./credential-status.md)
+- [`status-error-taxonomy.md`](./status-error-taxonomy.md)
 - [`revocation-registry.md`](./revocation-registry.md)
 
 ## Scope
@@ -56,6 +57,10 @@ A status binding implementation conforms when it:
   - `NoStatusCapability` / `NoStatusBinding`
   - a registry-bound status binding
 - states which credential-bound fields participate in the binding
+- for a registry-bound binding, documents at minimum:
+  - `statusType`
+  - `registryRef`
+  - `statusHandleCommitment`
 - documents whether the binding is carried in the issuer-signed credential body,
   a wrapped family model, or another explicit compatibility layer
 - documents the verifier/application responsibilities that sit outside Compact
@@ -79,6 +84,9 @@ A status proof-protocol implementation conforms when it:
 - states whether the protocol surface is:
   - reference-shaped and fully enforced in Compact
   - or prototype-shaped and coordinated partly off-chain
+- documents that the status errors in
+  [`status-error-taxonomy.md`](./status-error-taxonomy.md)
+  are hard invalidity, not soft business-policy denials
 
 Additional expectations by proof protocol:
 

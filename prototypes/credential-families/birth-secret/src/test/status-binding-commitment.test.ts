@@ -1,7 +1,9 @@
 import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { describe, expect, it } from "vitest";
 
-import { pureCircuits } from "../managed/secret-birth-credential/contract/index.js";
+import {
+  pureCircuits,
+} from "../managed/secret-birth-credential/contract/index.js";
 import { createSecretBirthCredentialFixture } from "../testing/credential-fixtures.js";
 
 setNetworkId("undeployed");
@@ -104,5 +106,22 @@ describe("secret birth credential: issuer-signed status binding commitment", () 
         fixture.credentialWithStatusBinding.credentialProof,
       ),
     ).toThrow();
+  });
+
+  it("rejects a status-bound credential when the committed status type is not a valid enum value", () => {
+    const fixture = createSecretBirthCredentialFixture();
+
+    expect(() =>
+      pureCircuits.assertValidSecretBirthCredentialWithStatusBinding({
+        ...fixture.credentialWithStatusBinding,
+        credential: {
+          ...fixture.credentialWithStatusBinding.credential,
+          statusBinding: {
+            ...fixture.credentialWithStatusBinding.credential.statusBinding,
+            statusType: 99,
+          },
+        },
+      }),
+    ).toThrow(/type error/i);
   });
 });
