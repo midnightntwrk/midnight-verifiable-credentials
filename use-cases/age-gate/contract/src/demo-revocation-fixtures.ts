@@ -23,6 +23,7 @@ import {
   type SecretBirthCredentialVerificationRevokedSetStatusRequest,
   type SecretBirthCredentialVerificationSubmission,
   type SecretBirthCredentialWithStatusBinding,
+  type SecretBirthStatusCredential,
   StatusCapabilityKind,
   type VerificationMethodRef,
 } from "./managed/demo-revocation/contract/index.js";
@@ -288,9 +289,8 @@ export const createDemoRevocationFixture = (): DemoRevocationFixture => {
     witness.statusHandleOpening,
   );
 
-  const credentialWithStatusBinding: SecretBirthCredentialWithStatusBinding = {
-    credential,
-    credentialProof,
+  const statusCredential: SecretBirthStatusCredential = {
+    ...credential,
     statusBinding: {
       registryRef: {
         registryId: witness.statusRegistryId,
@@ -302,8 +302,7 @@ export const createDemoRevocationFixture = (): DemoRevocationFixture => {
 
   const statusBoundCredentialProof = signProof({
     bodyRoot: pureCircuits.secretBirthCredentialRegistryBoundStatusBodyRoot(
-      credential,
-      credentialWithStatusBinding.statusBinding,
+      statusCredential,
     ),
     signer: issuer,
     createdAt: credentialProof.createdAt,
@@ -311,7 +310,10 @@ export const createDemoRevocationFixture = (): DemoRevocationFixture => {
     nonceScalar: 12n,
   });
 
-  credentialWithStatusBinding.credentialProof = statusBoundCredentialProof;
+  const credentialWithStatusBinding: SecretBirthCredentialWithStatusBinding = {
+    credential: statusCredential,
+    credentialProof: statusBoundCredentialProof,
+  };
 
   const statusRequest: RevokedSetStatusRequest = {
     registryState: {
@@ -369,7 +371,7 @@ export const createDemoRevocationFixture = (): DemoRevocationFixture => {
   const statusAttestationStatement = {
     registryState: statusRequest.registryState,
     statusHandleCommitment:
-      credentialWithStatusBinding.statusBinding.statusHandleCommitment,
+      credentialWithStatusBinding.credential.statusBinding.statusHandleCommitment,
     verifierChallengeHash: statusRequest.verifierChallengeHash,
     hasExpiration: true,
     expiresAt: verificationRequest.envelope.createdAt + 100n,
