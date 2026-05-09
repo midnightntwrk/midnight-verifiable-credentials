@@ -127,6 +127,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `buildRevokedSetStatusCapability(...)` is renamed to
     `buildRevokedSetStatusBinding(...)`
   - `BuiltRevokedSetStatusWitness.statusCapability` is removed
+- BREAKING: `RegistryBoundStatusBinding` now carries an explicit `statusType`
+  field. Status-aware builders and proof-protocol compatibility helpers now
+  default that field to `StatusType.revocationRegistry`, and status-aware
+  families/tests must commit and validate it as part of the issuer-signed
+  binding payload.
 - Holder-binding naming is now explicitly split between:
   - Compact/core struct name:
     `OffchainMidnightHolderBinding`

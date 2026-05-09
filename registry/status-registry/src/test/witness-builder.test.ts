@@ -8,6 +8,7 @@ import {
   buildRevokedSetStatusWitness,
   deriveRevokedSetStatusHandle,
   StatusCapabilityKind,
+  StatusType,
 } from "../index.js";
 
 setNetworkId("undeployed");
@@ -65,6 +66,9 @@ describe("revoked-set witness builder", () => {
     expect(built.statusBinding.registryRef.registryId).toEqual(
       bytes32("registry:hidden-holder"),
     );
+    expect(built.statusBinding.statusType).toEqual(
+      StatusType.revocationRegistry,
+    );
     expect(built.witnessInput.registryState.revokedRoot).toEqual(
       bytes32("revoked-root:current"),
     );
@@ -104,6 +108,9 @@ describe("revoked-set witness builder", () => {
     );
     expect(built.protocol.witnessInput.statusHandle).toEqual(
       built.statusHandle,
+    );
+    expect(built.statusBinding.statusType).toEqual(
+      StatusType.revocationRegistry,
     );
     expect(built.statusBinding.statusHandleCommitment).toBeInstanceOf(
       Uint8Array,

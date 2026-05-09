@@ -27,11 +27,13 @@ export enum StatusCapabilityKind {
 export struct NoStatusCapability {}
 
 export struct RevokedSetNonMembershipStatusCapability {
+  statusType: StatusType,
   registryRef: StatusRegistryRef,
   statusHandleCommitment: Bytes<32>,
 }
 
 export struct AuthorityAttestedStatusCapability {
+  statusType: StatusType,
   registryRef: StatusRegistryRef,
   statusHandleCommitment: Bytes<32>,
 }
@@ -95,6 +97,10 @@ export circuit assertValidNoStatusCapability(
 export circuit assertValidRevokedSetNonMembershipStatusCapability(
   capability: RevokedSetNonMembershipStatusCapability
 ): [] {
+  assert(
+    capability.statusType == StatusType.revocationRegistry,
+    "Revoked-set status capability type must be revocationRegistry"
+  );
   assertValidStatusRegistryRef(capability.registryRef);
   assert(
     capability.statusHandleCommitment != pad(32, ""),
@@ -105,6 +111,10 @@ export circuit assertValidRevokedSetNonMembershipStatusCapability(
 export circuit assertValidAuthorityAttestedStatusCapability(
   capability: AuthorityAttestedStatusCapability
 ): [] {
+  assert(
+    capability.statusType == StatusType.revocationRegistry,
+    "Authority-attested status capability type must be revocationRegistry"
+  );
   assertValidStatusRegistryRef(capability.registryRef);
   assert(
     capability.statusHandleCommitment != pad(32, ""),

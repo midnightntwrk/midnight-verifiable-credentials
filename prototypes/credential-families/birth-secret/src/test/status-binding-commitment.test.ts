@@ -130,4 +130,21 @@ describe("secret birth credential: issuer-signed status binding commitment", () 
       ),
     ).toThrow();
   });
+
+  it("rejects a status-bound credential when the committed status type is not a valid enum value", () => {
+    const fixture = createSecretBirthCredentialFixture();
+
+    expect(() =>
+      pureCircuits.assertValidSecretBirthCredentialWithStatusBinding({
+        ...fixture.credentialWithStatusBinding,
+        credential: {
+          ...fixture.credentialWithStatusBinding.credential,
+          statusBinding: {
+            ...fixture.credentialWithStatusBinding.credential.statusBinding,
+            statusType: 99,
+          },
+        },
+      }),
+    ).toThrow(/type error/i);
+  });
 });

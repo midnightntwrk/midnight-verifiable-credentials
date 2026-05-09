@@ -72,6 +72,7 @@ It owns the generic pieces that should be shared across many credential families
 - generic issuer proof-binding rules
 - reusable holder-binding helper circuits for explicit and secret profiles
 - shared VC-side status binding vocabulary for status-aware families:
+  - `StatusType`
   - `StatusRegistryRef`
   - `NoStatusBinding`
   - `RegistryBoundStatusBinding`

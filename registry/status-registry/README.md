@@ -136,6 +136,10 @@ Canonical revoked-set helper path:
 - the exported TypeScript helper path is now binding-first:
   helper results carry `RegistryBoundStatusBinding` and no longer expose a
   separate capability-shaped intermediate value
+- the minimum VC-side binding payload is now:
+  - `statusType`
+  - `registryRef`
+  - `statusHandleCommitment`
 - this helper still does not prove final Merkle non-membership
 - it normalizes the request/witness/protocol shape so higher-layer families and
   verifier code stop rebuilding those pieces ad hoc
