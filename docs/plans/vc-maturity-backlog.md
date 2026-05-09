@@ -292,9 +292,11 @@ The remaining backlog now falls into five execution categories:
       3. move `credentials-iso-registry/` + `credentials-same-holder/`
       4. move `credentials-status-registry/`
       5. move `credentials-birth/` + `credentials-birth-secret/`
-    - non-package outliers such as `libs/` and
-      `infrastructure/preprod-proof-server.yml` remain follow-on cleanup after
-      the package wave
+    - remaining non-package outlier:
+      `libs/`
+    - the former top-level `infrastructure/preprod-proof-server.yml` outlier
+      now lives under
+      `components/integration/infrastructure/standalone/`
 - execution rule:
   - treat this as a cross-cutting discipline that applies to every numbered
     slice below rather than as its own dedicated PR slot
