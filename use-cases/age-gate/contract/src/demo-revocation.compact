@@ -269,7 +269,6 @@ circuit verifySecretBirthPresentationWithVerifierSuppliedRoot(
       == request.verificationRequest.verifierChallengeHash,
     "Revocation demo status request challenge must match the verification request challenge"
   );
-<<<<<<< HEAD
   assert(
     statusInputs.statusProofProtocol.request.registryState.registryId
       == request.statusRequest.registryState.registryId,
@@ -285,8 +284,6 @@ circuit verifySecretBirthPresentationWithVerifierSuppliedRoot(
       == request.statusRequest.registryState.registryVersion,
     "Revocation demo status witness state version does not match the verifier request"
   );
-=======
->>>>>>> bb0afb9 (test(status): cover protocol request mismatches)
   assertSecretBirthCredentialVerificationSubmissionMatchesRevokedSetStatusRequest(
     credentialWithStatus,
     request,
