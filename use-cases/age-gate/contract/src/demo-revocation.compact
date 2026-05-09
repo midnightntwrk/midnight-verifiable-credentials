@@ -240,8 +240,11 @@ circuit verifySecretBirthPresentationWithVerifierSuppliedRoot(
   statusInputs: SecretBirthCredentialVerificationRevokedSetStatusInputs,
   currentDay: Uint<32>
 ): [] {
-  const credentialRoot = disclose(secretBirthCredentialBodyRoot(
+  const plainCredential = secretBirthCredentialWithoutStatusBinding(
     credentialWithStatus.credential
+  );
+  const credentialRoot = disclose(secretBirthCredentialBodyRoot(
+    plainCredential
   ));
 
   assert(issuedCredentialClaimRoots.member(credentialRoot),
@@ -282,7 +285,7 @@ circuit verifySecretBirthPresentationWithVerifierSuppliedRoot(
     );
   }
   assertValidSecretBirthCredentialAgePredicate(
-    credentialWithStatus.credential,
+    plainCredential,
     submission.body.presentation,
     currentDay,
     holderBirthDateDays(),
@@ -316,8 +319,11 @@ circuit verifySecretBirthPresentationWithAuthorityAttestedStatus(
   currentDay: Uint<32>,
   currentTime: Uint<64>
 ): [] {
-  const credentialRoot = disclose(secretBirthCredentialBodyRoot(
+  const plainCredential = secretBirthCredentialWithoutStatusBinding(
     credentialWithStatus.credential
+  );
+  const credentialRoot = disclose(secretBirthCredentialBodyRoot(
+    plainCredential
   ));
 
   assert(issuedCredentialClaimRoots.member(credentialRoot),
@@ -340,7 +346,7 @@ circuit verifySecretBirthPresentationWithAuthorityAttestedStatus(
     );
   }
   assertValidSecretBirthCredentialAgePredicate(
-    credentialWithStatus.credential,
+    plainCredential,
     submission.body.presentation,
     currentDay,
     holderBirthDateDays(),
@@ -373,8 +379,11 @@ export circuit issueRevocationAwareCapabilityWithVerifierSuppliedRoot(
   statusInputs: SecretBirthCredentialVerificationRevokedSetStatusInputs,
   currentDay: Uint<32>
 ): Bytes<32> {
-  const credentialRoot = secretBirthCredentialBodyRoot(
+  const plainCredential = secretBirthCredentialWithoutStatusBinding(
     credentialWithStatus.credential
+  );
+  const credentialRoot = secretBirthCredentialBodyRoot(
+    plainCredential
   );
   const capability = disclose(revocationAwareCapability(
     credentialRoot,
@@ -406,8 +415,11 @@ export circuit issueRevocationAwareCapabilityWithAuthorityAttestation(
   currentDay: Uint<32>,
   currentTime: Uint<64>
 ): Bytes<32> {
-  const credentialRoot = secretBirthCredentialBodyRoot(
+  const plainCredential = secretBirthCredentialWithoutStatusBinding(
     credentialWithStatus.credential
+  );
+  const credentialRoot = secretBirthCredentialBodyRoot(
+    plainCredential
   );
   const capability = disclose(revocationAwareCapability(
     credentialRoot,
