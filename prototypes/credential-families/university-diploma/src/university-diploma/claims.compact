@@ -1,0 +1,109 @@
+export struct UniversityDiplomaCredentialClaims {
+  subjectIdCommitment: Bytes<32>,
+  legalNameCommitment: Bytes<32>,
+  documentTypeCommitment: Bytes<32>,
+  documentNumberCommitment: Bytes<32>,
+  degreeTitleCommitment: Bytes<32>,
+  programCommitment: Bytes<32>,
+  facultyCommitment: Bytes<32>,
+  awardDateCommitment: Bytes<32>,
+  graduationStatusCommitment: Bytes<32>,
+  registryRecordIdCommitment: Bytes<32>,
+  issuanceBatchIdCommitment: Bytes<32>,
+}
+
+export circuit universityDiplomaCredentialClaimRoot(
+  claims: UniversityDiplomaCredentialClaims
+): Bytes<32> {
+  return persistentHash<Vector<12, Bytes<32>>>([
+    pad(32, "midnight:vc:unidipl:v1"),
+    claims.subjectIdCommitment,
+    claims.legalNameCommitment,
+    claims.documentTypeCommitment,
+    claims.documentNumberCommitment,
+    claims.degreeTitleCommitment,
+    claims.programCommitment,
+    claims.facultyCommitment,
+    claims.awardDateCommitment,
+    claims.graduationStatusCommitment,
+    claims.registryRecordIdCommitment,
+    claims.issuanceBatchIdCommitment
+  ]);
+}
+
+export circuit graduateSubjectIdCommitment(
+  subjectId: Bytes<32>,
+  opening: Bytes<32>
+): Bytes<32> {
+  return persistentCommit<Bytes<32>>(subjectId, opening);
+}
+
+export circuit graduateLegalNameCommitment(
+  legalNamePadded: Bytes<32>,
+  opening: Bytes<32>
+): Bytes<32> {
+  return persistentCommit<Bytes<32>>(legalNamePadded, opening);
+}
+
+export circuit documentTypeCommitment(
+  documentTypePadded: Bytes<32>,
+  opening: Bytes<32>
+): Bytes<32> {
+  return persistentCommit<Bytes<32>>(documentTypePadded, opening);
+}
+
+export circuit documentNumberCommitment(
+  documentNumberPadded: Bytes<32>,
+  opening: Bytes<32>
+): Bytes<32> {
+  return persistentCommit<Bytes<32>>(documentNumberPadded, opening);
+}
+
+export circuit degreeTitleCommitment(
+  degreeTitlePadded: Bytes<32>,
+  opening: Bytes<32>
+): Bytes<32> {
+  return persistentCommit<Bytes<32>>(degreeTitlePadded, opening);
+}
+
+export circuit programCommitment(
+  programPadded: Bytes<32>,
+  opening: Bytes<32>
+): Bytes<32> {
+  return persistentCommit<Bytes<32>>(programPadded, opening);
+}
+
+export circuit facultyCommitment(
+  facultyPadded: Bytes<32>,
+  opening: Bytes<32>
+): Bytes<32> {
+  return persistentCommit<Bytes<32>>(facultyPadded, opening);
+}
+
+export circuit awardDateCommitment(
+  awardDateDays: Uint<32>,
+  opening: Bytes<32>
+): Bytes<32> {
+  return persistentCommit<Uint<32>>(awardDateDays, opening);
+}
+
+export circuit graduationStatusCommitment(
+  graduationStatusPadded: Bytes<32>,
+  opening: Bytes<32>
+): Bytes<32> {
+  return persistentCommit<Bytes<32>>(graduationStatusPadded, opening);
+}
+
+export circuit registryRecordIdCommitment(
+  registryRecordIdPadded: Bytes<32>,
+  opening: Bytes<32>
+): Bytes<32> {
+  return persistentCommit<Bytes<32>>(registryRecordIdPadded, opening);
+}
+
+export circuit issuanceBatchIdCommitment(
+  issuanceBatchIdPadded: Bytes<32>,
+  opening: Bytes<32>
+): Bytes<32> {
+  return persistentCommit<Bytes<32>>(issuanceBatchIdPadded, opening);
+}

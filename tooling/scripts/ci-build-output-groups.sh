@@ -29,6 +29,7 @@ components/adapters/offchain-did
 protocols/openid
 credentials-birth
 credentials-birth-secret
+credentials-university-diploma
 EOF
       ;;
     age-gate)
@@ -90,6 +91,8 @@ prototypes/credential-families/birth/src/managed
 prototypes/credential-families/birth/dist
 prototypes/credential-families/birth-secret/src/managed
 prototypes/credential-families/birth-secret/dist
+prototypes/credential-families/university-diploma/src/managed
+prototypes/credential-families/university-diploma/dist
 EOF
       ;;
     age-gate)

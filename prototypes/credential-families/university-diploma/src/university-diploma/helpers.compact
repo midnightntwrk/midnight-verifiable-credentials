@@ -1,0 +1,90 @@
+export circuit universityDiplomaCredentialBodyRoot(
+  credential: UniversityDiplomaCredential
+): Bytes<32> {
+  return credentialBodyRoot(credential);
+}
+
+export circuit universityDiplomaPresentationBodyRoot(
+  presentation: UniversityDiplomaPresentation
+): Bytes<32> {
+  return presentationBodyRoot(presentation);
+}
+
+export circuit universityDiplomaPresentationRequestBodyRoot(
+  request: UniversityDiplomaPresentationRequest
+): Bytes<32> {
+  return persistentHash<UniversityDiplomaPresentationRequest>(request);
+}
+
+export circuit assertValidUniversityDiplomaSchemaRef(schema: SchemaRef): [] {
+  assert(
+    schema.packageId == pad(32, "midnight-did:vc:unidiploma"),
+    "Unexpected university diploma schema package identifier"
+  );
+  assert(
+    schema.schemaId == pad(32, "university-diploma:v1"),
+    "Unexpected university diploma schema identifier"
+  );
+  assert(schema.majorVersion == 1, "University diploma major version mismatch");
+}
+
+export circuit assertValidUniversityDiplomaPresentationRequest(
+  request: UniversityDiplomaPresentationRequest
+): [] {
+  assert(request.version == 1, "Presentation request version mismatch");
+  assertValidUniversityDiplomaSchemaRef(request.schema);
+  assertValidVerificationMethodRef(request.issuerVerificationMethodRef);
+  assert(
+    request.verifierChallengeHash != pad(32, ""),
+    "University diploma presentation request challenge must be set"
+  );
+}
+
+export circuit assertValidUniversityDiplomaCredential(
+  credential: UniversityDiplomaCredential,
+  proof: Proof
+): [] {
+  assertValidUniversityDiplomaSchemaRef(credential.schema);
+  assertValidCredentialEnvelope(
+    credential,
+    universityDiplomaCredentialClaimRoot(credential.claims)
+  );
+  assertValidExplicitHolderBinding(credential.holderBinding);
+  assertValidRegistryBoundStatusBinding(credential.statusBinding);
+  assertValidCredentialProof(credential, proof);
+}
+
+export circuit assertUniversityDiplomaPresentationSatisfiesRequest(
+  request: UniversityDiplomaPresentationRequest,
+  presentation: UniversityDiplomaPresentation
+): [] {
+  assertValidUniversityDiplomaPresentationRequest(request);
+  assertValidUniversityDiplomaSchemaRef(presentation.schema);
+  if (request.requireLegalNameDisclosure) {
+    assert(presentation.disclosed.revealLegalName, "Presentation must disclose legal name");
+  }
+  if (request.requireDocumentTypeDisclosure) {
+    assert(presentation.disclosed.revealDocumentType, "Presentation must disclose document type");
+  }
+  if (request.requireDocumentNumberDisclosure) {
+    assert(presentation.disclosed.revealDocumentNumber, "Presentation must disclose document number");
+  }
+  if (request.requireDegreeTitleDisclosure) {
+    assert(presentation.disclosed.revealDegreeTitle, "Presentation must disclose degree title");
+  }
+  if (request.requireProgramDisclosure) {
+    assert(presentation.disclosed.revealProgram, "Presentation must disclose program");
+  }
+  if (request.requireFacultyDisclosure) {
+    assert(presentation.disclosed.revealFaculty, "Presentation must disclose faculty");
+  }
+  if (request.requireAwardDateDisclosure) {
+    assert(presentation.disclosed.revealAwardDate, "Presentation must disclose award date");
+  }
+  if (request.requireGraduationStatusDisclosure) {
+    assert(
+      presentation.disclosed.revealGraduationStatus,
+      "Presentation must disclose graduation status"
+    );
+  }
+}

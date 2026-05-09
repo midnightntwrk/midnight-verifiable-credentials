@@ -14,6 +14,7 @@ workspaces=(
   components/orchestration/protocol
   credentials-birth
   credentials-birth-secret
+  credentials-university-diploma
   components/integration/standalone-environment
 )
 

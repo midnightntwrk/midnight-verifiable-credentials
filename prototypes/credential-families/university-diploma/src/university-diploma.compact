@@ -1,0 +1,20 @@
+pragma language_version >= 0.20;
+
+import CompactStandardLibrary;
+
+include "../../../../core/primitives/credentials/src/credentials";
+include "./university-diploma/claims";
+include "./university-diploma/model";
+
+import VC<UniversityDiplomaCredentialClaims, ExplicitHolderBinding, RegistryBoundStatusBinding>;
+import VP<UniversityDiplomaDisclosures, ExplicitHolderBinding>;
+import CredentialPresentationRelations<
+  UniversityDiplomaCredentialClaims,
+  UniversityDiplomaDisclosures,
+  ExplicitHolderBinding,
+  RegistryBoundStatusBinding
+> prefix UniversityDiplomaPresentation_;
+
+export type UniversityDiplomaCredential = Credential;
+export type UniversityDiplomaPresentation = Presentation;
+include "./university-diploma/helpers";
