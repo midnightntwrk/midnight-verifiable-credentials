@@ -5,6 +5,7 @@ import {
   ecMulGenerator,
   type JubjubPoint,
 } from "@midnight-ntwrk/compact-runtime";
+import { assertStatusHandleNotRevoked } from "@midnight-ntwrk/midnight-did-credentials-status-registry";
 
 import {
   HolderBindingProfile,
@@ -75,6 +76,10 @@ export type DemoRevocationFixture = {
 
 type SecretBirthCredentialCompat = Omit<SecretBirthCredential, "statusBinding"> & {
   readonly statusBinding?: Record<string, never>;
+};
+
+export type DemoRevocationFixtureOptions = {
+  readonly revokedStatusHandles?: readonly Uint8Array[];
 };
 
 const sha256 = (value: string): Uint8Array =>
@@ -165,7 +170,9 @@ export const signProof = ({
   };
 };
 
-export const createDemoRevocationFixture = (): DemoRevocationFixture => {
+export const createDemoRevocationFixture = (
+  options: DemoRevocationFixtureOptions = {},
+): DemoRevocationFixture => {
   const issuer = createSigner("issuer", 123456789n);
 
   const witness = {
@@ -329,6 +336,16 @@ export const createDemoRevocationFixture = (): DemoRevocationFixture => {
     },
     verifierChallengeHash: verificationRequest.verifierChallengeHash,
   };
+
+  if (options.revokedStatusHandles) {
+    assertStatusHandleNotRevoked(
+      {
+        registryState: statusRequest.registryState,
+        revokedStatusHandles: options.revokedStatusHandles,
+      },
+      witness.statusHandle,
+    );
+  }
 
   const revokedSetStatusVerificationRequest: SecretBirthCredentialVerificationRevokedSetStatusRequest =
     {

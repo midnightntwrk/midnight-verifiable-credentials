@@ -253,4 +253,14 @@ describe("secret birth credential: status-aware verification", () => {
       ),
     ).toThrow(/registry version does not match the verifier request/i);
   });
+
+  it("rejects a revoked credential before building any status verification inputs", () => {
+    const baseline = createSecretBirthCredentialFixture();
+
+    expect(() =>
+      createSecretBirthCredentialFixture({
+        revokedStatusHandles: [baseline.witness.statusHandle],
+      }),
+    ).toThrow(/already present in the revoked set snapshot/i);
+  });
 });

@@ -349,4 +349,14 @@ describe("credentials demo revocation contract", () => {
       ),
     ).toThrow(/has expired/i);
   });
+
+  it("rejects a revoked credential before building any revocation demo verification inputs", () => {
+    const baseline = createDemoRevocationFixture();
+
+    expect(() =>
+      createDemoRevocationFixture({
+        revokedStatusHandles: [baseline.witness.statusHandle],
+      }),
+    ).toThrow(/already present in the revoked set snapshot/i);
+  });
 });

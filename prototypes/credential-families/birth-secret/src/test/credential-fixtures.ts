@@ -13,6 +13,7 @@ import {
   type RegistryBoundStatusBinding,
   type VerificationMethodRef,
 } from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
+import { assertStatusHandleNotRevoked } from "@midnight-ntwrk/midnight-did-credentials-status-registry";
 
 import {
   type AuthorityAttestedStatusProofProtocol,
@@ -114,6 +115,7 @@ export type SecretBirthCredentialFixtureOptions = {
   readonly statusRegistryId?: Uint8Array;
   readonly statusRevokedRoot?: Uint8Array;
   readonly statusRegistryVersion?: bigint;
+  readonly revokedStatusHandles?: readonly Uint8Array[];
 };
 
 const sha256 = (value: string): Uint8Array =>
@@ -404,6 +406,16 @@ export const createSecretBirthCredentialFixture = (
     },
     verifierChallengeHash: verificationRequest.verifierChallengeHash,
   };
+
+  if (options.revokedStatusHandles) {
+    assertStatusHandleNotRevoked(
+      {
+        registryState: statusRequest.registryState,
+        revokedStatusHandles: options.revokedStatusHandles,
+      },
+      witness.statusHandle,
+    );
+  }
 
   const revokedSetStatusProofProtocol: RevokedSetNonMembershipStatusProofProtocol =
     {
