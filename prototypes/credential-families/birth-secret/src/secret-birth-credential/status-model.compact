@@ -1,14 +1,6 @@
 export struct SecretBirthCredentialWithStatusBinding {
-  credential: SecretBirthCredential,
-  // This proof commits to the status-aware family body root, not the plain
-  // base credential body root.
+  credential: SecretBirthStatusCredential,
   credentialProof: Proof,
-  statusBinding: RegistryBoundStatusBinding,
-}
-
-struct SecretBirthCredentialStatusBoundBody {
-  credential: SecretBirthCredential,
-  statusBindingRoot: Bytes<32>,
 }
 
 export struct SecretBirthCredentialVerificationAuthorityAttestedStatusRequest {
