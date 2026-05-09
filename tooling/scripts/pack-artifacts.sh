@@ -5,15 +5,15 @@ ROOT_DIR="$(git rev-parse --show-toplevel)"
 DEST_DIR="${1:-$ROOT_DIR/tooling/artifacts/npm}"
 
 workspaces=(
-  credentials
-  credentials-status-registry
-  credentials-same-holder
-  credentials-iso-registry
+  core/primitives/credentials
+  registry/status-registry
+  core/capabilities/same-holder
+  core/primitives/iso-registry
   components/adapters/offchain-did
   protocols/openid
   components/orchestration/protocol
-  credentials-birth
-  credentials-birth-secret
+  prototypes/credential-families/birth
+  prototypes/credential-families/birth-secret
   components/integration/standalone-environment
 )
 

@@ -490,14 +490,14 @@ Target destinations:
 - `credentials-birth-secret/` ->
   `prototypes/credential-families/birth-secret/`
 
-### Transitional top-level outliers
+### Transitional tooling-owned vendor surfaces
 
-These tracked top-level paths are still present, but they are not part of the
-package-relocation wave itself:
+These tracked paths remain valid, but they should live under tooling-owned
+areas rather than as top-level architecture roots:
 
-- `libs/`
+- `tooling/vendor/`
   - transitional local tarball input/output surface
-  - should be treated as tooling/artifact support, not as an architecture area
+  - treated as tooling support, not as an architecture area
 
 The former top-level `infrastructure/preprod-proof-server.yml` outlier has now
 been rehomed under:

@@ -292,8 +292,8 @@ The remaining backlog now falls into five execution categories:
       3. move `credentials-iso-registry/` + `credentials-same-holder/`
       4. move `credentials-status-registry/`
       5. move `credentials-birth/` + `credentials-birth-secret/`
-    - remaining non-package outlier:
-      `libs/`
+    - checked-in vendor tarballs now belong under `tooling/vendor/`, not a
+      top-level architecture root
     - the former top-level `infrastructure/preprod-proof-server.yml` outlier
       now lives under
       `components/integration/infrastructure/standalone/`
