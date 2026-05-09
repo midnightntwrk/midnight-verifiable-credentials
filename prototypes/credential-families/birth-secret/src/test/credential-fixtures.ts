@@ -201,16 +201,18 @@ const secretBirthCredentialRegistryBoundStatusBodyRootCompat = (
   credential: SecretBirthStatusCredentialCompat,
 ): Uint8Array => {
   const bodyRoot =
-    pureCircuits.secretBirthCredentialRegistryBoundStatusBodyRoot as unknown as
-      | ((credentialArg: SecretBirthStatusCredentialCompat) => Uint8Array)
-      | ((
-          credentialArg: SecretBirthCredential,
-          statusBindingArg: RegistryBoundStatusBinding,
-        ) => Uint8Array);
+    pureCircuits.secretBirthCredentialRegistryBoundStatusBodyRoot as unknown as (
+      ...args: unknown[]
+    ) => Uint8Array;
 
-  return bodyRoot.length === 2
-    ? bodyRoot(credential as SecretBirthCredential, credential.statusBinding)
-    : bodyRoot(credential);
+  try {
+    return bodyRoot(
+      credential as SecretBirthCredential,
+      credential.statusBinding,
+    );
+  } catch {
+    return bodyRoot(credential);
+  }
 };
 
 export const createSecretBirthCredentialFixture = (

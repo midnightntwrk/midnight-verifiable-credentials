@@ -14,16 +14,15 @@ describe("secret birth credential: issuer-signed status binding commitment", () 
     credential: SecretBirthStatusCredentialCompat,
   ): Uint8Array => {
     const bodyRoot =
-      pureCircuits.secretBirthCredentialRegistryBoundStatusBodyRoot as unknown as
-        | ((credentialArg: SecretBirthStatusCredentialCompat) => Uint8Array)
-        | ((
-            credentialArg: typeof credential,
-            statusBindingArg: typeof credential.statusBinding,
-          ) => Uint8Array);
+      pureCircuits.secretBirthCredentialRegistryBoundStatusBodyRoot as unknown as (
+        ...args: unknown[]
+      ) => Uint8Array;
 
-    return bodyRoot.length === 2
-      ? bodyRoot(credential, credential.statusBinding)
-      : bodyRoot(credential);
+    try {
+      return bodyRoot(credential, credential.statusBinding);
+    } catch {
+      return bodyRoot(credential);
+    }
   };
 
   it("changes the status-aware body root when the committed registry binding changes", () => {
