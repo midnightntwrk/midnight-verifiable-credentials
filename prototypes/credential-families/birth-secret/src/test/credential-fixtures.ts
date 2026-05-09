@@ -346,9 +346,10 @@ export const createSecretBirthCredentialFixture = (
   };
 
   const statusBoundCredentialProof = signProof({
-    bodyRoot: pureCircuits.secretBirthCredentialRegistryBoundStatusBodyRoot(
-      statusCredential,
-    ),
+    bodyRoot:
+      pureCircuits.secretBirthCredentialRegistryBoundStatusBodyRoot(
+        statusCredential,
+      ),
     signer: issuer,
     createdAt: credentialProof.createdAt,
     challengeHash: credentialProof.challengeHash,
