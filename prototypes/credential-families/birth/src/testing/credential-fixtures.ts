@@ -230,7 +230,6 @@ const buildBirthCredentialFixture = (
     holderBinding: {
       holderVerificationMethodRef: holder.verificationMethodRef,
     },
-    statusBinding: {},
     issuedAt: 10_000n,
     hasExpiration: true,
     expiresAt: 20_000n,

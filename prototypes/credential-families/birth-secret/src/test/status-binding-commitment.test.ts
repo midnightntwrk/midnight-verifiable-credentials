@@ -13,18 +13,19 @@ describe("secret birth credential: issuer-signed status binding commitment", () 
       pureCircuits.secretBirthCredentialWithStatusBindingBodyRoot(
         fixture.credentialWithStatusBinding,
       );
+    const tamperedStatusBinding = {
+      ...fixture.credentialWithStatusBinding.credential.statusBinding,
+      registryRef: {
+        ...fixture.credentialWithStatusBinding.credential.statusBinding
+          .registryRef,
+        registryId: new Uint8Array(32).fill(44),
+      },
+    };
     const tamperedBodyRoot =
-      pureCircuits.secretBirthCredentialRegistryBoundStatusBodyRoot({
-        ...fixture.credentialWithStatusBinding.credential,
-        statusBinding: {
-          ...fixture.credentialWithStatusBinding.credential.statusBinding,
-          registryRef: {
-            ...fixture.credentialWithStatusBinding.credential.statusBinding
-              .registryRef,
-            registryId: new Uint8Array(32).fill(44),
-          },
-        },
-      });
+      pureCircuits.secretBirthCredentialRegistryBoundStatusBodyRoot(
+        fixture.credential,
+        tamperedStatusBinding,
+      );
 
     expect([...originalBodyRoot]).not.toEqual([...tamperedBodyRoot]);
   });

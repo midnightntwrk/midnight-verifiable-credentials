@@ -348,7 +348,8 @@ export const createSecretBirthCredentialFixture = (
   const statusBoundCredentialProof = signProof({
     bodyRoot:
       pureCircuits.secretBirthCredentialRegistryBoundStatusBodyRoot(
-        statusCredential,
+        credential,
+        statusBinding,
       ),
     signer: issuer,
     createdAt: credentialProof.createdAt,

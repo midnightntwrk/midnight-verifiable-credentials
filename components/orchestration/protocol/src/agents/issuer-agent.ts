@@ -124,7 +124,6 @@ export class IssuerAgent {
       schema: BIRTH_SCHEMA,
       issuerVerificationMethodRef: this.profile.signer.verificationMethodRef,
       holderBinding: issuanceRequest.body.holderBinding,
-      statusBinding: {},
       issuedAt: claimWitness.issuedAt,
       hasExpiration: true,
       expiresAt: claimWitness.expiresAt,
