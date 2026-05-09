@@ -38,6 +38,9 @@
 - hidden-holder hello world:
   - [`guides/hidden-holder-hello-world.md`](./guides/hidden-holder-hello-world.md)
   - for engineers who need the shortest current reference hidden-holder integration path
+- protocol production checklist:
+  - [`guides/credentials-protocol-production-checklist.md`](./guides/credentials-protocol-production-checklist.md)
+  - for integrators hardening the reference orchestration layer for real deployments
 - prototype execution ladder:
   - [`guides/prototype-execution-ladder.md`](./guides/prototype-execution-ladder.md)
   - for engineers who want the current runnable path from hello-verifier through BDD and revocation lanes
