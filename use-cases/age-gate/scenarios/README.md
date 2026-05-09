@@ -9,28 +9,45 @@ integrators.
 
 ## Current scenarios
 
-The current slice covers two non-Docker VC flows:
+The current slice now covers:
 
-- issue a birth credential from test fixtures
-- verify an age-gate presentation through the age-gate contract simulator
-- claim the resulting access capability
-- issue a hidden-holder birth credential with status capability wiring
-- verify a verifier-supplied-root age-gate presentation through the revocation-aware age-gate contract simulator
-- claim the resulting revocation-aware access capability
+- two happy-path scenarios:
+  - explicit-holder age-gate happy path
+  - hidden-holder revocation-aware happy path
+- three negative hidden-holder status-boundary scenarios:
+  - wrong registry id
+  - wrong revoked root
+  - stale authority-attested proof
 
 ## Run
 
 From the repository root:
 
 ```bash
-npm run test:bdd:smoke
+./run.sh bdd
+./run.sh bdd-negative
+./run.sh bdd-all
 ```
 
-That command reuses existing VC build artifacts when they are already present
-and only falls back to the shared VC build prerequisites when they are missing.
+Equivalent npm entrypoints:
+
+```bash
+npm run test:bdd:smoke
+npm run test:bdd:negative
+npm run test:bdd:all
+```
+
+Those commands reuse existing VC build artifacts when they are already present
+and only fall back to the shared VC build prerequisites when they are missing.
 
 The Serenity BDD report is generated under:
 
 ```text
 use-cases/age-gate/scenarios/target/site/serenity/
+```
+
+On macOS, open the report directly with:
+
+```bash
+open use-cases/age-gate/scenarios/target/site/serenity/index.html
 ```

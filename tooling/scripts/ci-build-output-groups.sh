@@ -72,24 +72,24 @@ ci_build_output_paths() {
   case "$group" in
     foundation)
       cat <<'EOF'
-credentials/src/managed
-credentials/dist
-credentials-status-registry/src/managed
-credentials-status-registry/dist
-credentials-same-holder/src/managed
-credentials-same-holder/dist
-credentials-iso-registry/src/managed
-credentials-iso-registry/dist
+core/primitives/credentials/src/managed
+core/primitives/credentials/dist
+registry/status-registry/src/managed
+registry/status-registry/dist
+core/capabilities/same-holder/src/managed
+core/capabilities/same-holder/dist
+core/primitives/iso-registry/src/managed
+core/primitives/iso-registry/dist
 components/adapters/offchain-did/dist
 protocols/openid/dist
 EOF
       ;;
     birth-family)
       cat <<'EOF'
-credentials-birth/src/managed
-credentials-birth/dist
-credentials-birth-secret/src/managed
-credentials-birth-secret/dist
+prototypes/credential-families/birth/src/managed
+prototypes/credential-families/birth/dist
+prototypes/credential-families/birth-secret/src/managed
+prototypes/credential-families/birth-secret/dist
 EOF
       ;;
     age-gate)

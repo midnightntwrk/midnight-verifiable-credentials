@@ -100,27 +100,27 @@ jobs:
           )
 
           revocation_patterns=(
-            'credentials/*'
+            'core/primitives/credentials/*'
             'credentials-status-registry/*'
-            'credentials-same-holder/*'
-            'credentials-birth/*'
-            'credentials-birth-secret/*'
+            'core/capabilities/same-holder/*'
+            'prototypes/credential-families/birth/*'
+            'prototypes/credential-families/birth-secret/*'
             'use-cases/*/contract/*'
           )
 
           integration_demo_contract_patterns=(
-            'credentials/*'
-            'credentials-birth/*'
-            'credentials-birth-secret/*'
+            'core/primitives/credentials/*'
+            'prototypes/credential-families/birth/*'
+            'prototypes/credential-families/birth-secret/*'
             'use-cases/*/contract/*'
             'components/integration/standalone-environment/*'
           )
 
           integration_protocol_patterns=(
-            'credentials/*'
-            'credentials-same-holder/*'
-            'credentials-birth/*'
-            'credentials-birth-secret/*'
+            'core/primitives/credentials/*'
+            'core/capabilities/same-holder/*'
+            'prototypes/credential-families/birth/*'
+            'prototypes/credential-families/birth-secret/*'
             'use-cases/*/contract/*'
             'components/orchestration/protocol/*'
             'components/integration/standalone-environment/*'

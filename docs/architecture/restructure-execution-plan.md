@@ -75,6 +75,30 @@ Goals:
 - move canonical reusable VC packages under `core/`
 - update boundary docs and CI rules so the high-level directory model becomes the canonical enforcement surface
 
+## Active relocation wave after `#125`
+
+This wave focuses on the remaining legacy package roots that still carry real
+code even though the top-level architecture areas now exist.
+
+The move order is intentionally dependency-ordered:
+
+1. freeze target names and the current deviation inventory
+2. move `credentials/` into `core/primitives/credentials/`
+3. move `credentials-iso-registry/` and `credentials-same-holder/` into
+   `core/`
+4. move `credentials-status-registry/` into `registry/status-registry/`
+5. move `credentials-birth/` and `credentials-birth-secret/` into
+   `prototypes/credential-families/`
+
+Wave rule:
+
+- do not broaden this wave into package renaming
+- keep npm package names stable
+- update workspaces, CI filters, artifact scripts, and documentation links in
+  the same PR as each physical move
+- defer the remaining non-package top-level outliers (`libs/`,
+  `infrastructure/preprod-proof-server.yml`) until the package move wave lands
+
 ## Commit and CI policy during migration
 
 Conventional Commit scopes should prefer the high-level area whenever a change is

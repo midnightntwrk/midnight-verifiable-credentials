@@ -16,12 +16,12 @@ const requiredBuildSurfaces = [
     sourcePaths: ["credentials/src/index.ts"],
   },
   {
-    artifactPath: "credentials-birth/dist/testing.js",
-    sourcePaths: ["credentials-birth/src/testing.ts"],
+    artifactPath: "prototypes/credential-families/birth/dist/testing.js",
+    sourcePaths: ["prototypes/credential-families/birth/src/testing.ts"],
   },
   {
-    artifactPath: "credentials-birth-secret/dist/index.js",
-    sourcePaths: ["credentials-birth-secret/src/index.ts"],
+    artifactPath: "prototypes/credential-families/birth-secret/dist/index.js",
+    sourcePaths: ["prototypes/credential-families/birth-secret/src/index.ts"],
   },
   {
     artifactPath: "use-cases/age-gate/contract/dist/testing.js",

@@ -1,9 +1,12 @@
 import { Then, When } from "@cucumber/cucumber";
-import { Ensure, equals } from "@serenity-js/assertions";
+import { Ensure, equals, includes } from "@serenity-js/assertions";
 import { actorCalled } from "@serenity-js/core";
 
 import {
   HiddenHolderScenarioOutcome,
+  RunTheHiddenHolderExpiredAuthorityAttestationRejectedPath,
+  RunTheHiddenHolderWrongRevokedRootRejectedPath,
+  RunTheHiddenHolderWrongRegistryRejectedPath,
   RunTheHiddenHolderRevocationAwareHappyPath,
 } from "../support/tasks.js";
 
@@ -16,11 +19,54 @@ When(
   },
 );
 
+When(
+  "the engineer runs the hidden-holder wrong-registry rejection path",
+  async () => {
+    await engineer().attemptsTo(RunTheHiddenHolderWrongRegistryRejectedPath());
+  },
+);
+
+When(
+  "the engineer runs the hidden-holder wrong-root rejection path",
+  async () => {
+    await engineer().attemptsTo(
+      RunTheHiddenHolderWrongRevokedRootRejectedPath(),
+    );
+  },
+);
+
+When(
+  "the engineer runs the hidden-holder expired-attestation rejection path",
+  async () => {
+    await engineer().attemptsTo(
+      RunTheHiddenHolderExpiredAuthorityAttestationRejectedPath(),
+    );
+  },
+);
+
 Then("the hidden-holder scenario should be approved", async () => {
   await engineer().attemptsTo(
     Ensure.that(HiddenHolderScenarioOutcome.approved(), equals(true)),
   );
 });
+
+Then("the hidden-holder scenario should be rejected", async () => {
+  await engineer().attemptsTo(
+    Ensure.that(HiddenHolderScenarioOutcome.rejected(), equals(true)),
+  );
+});
+
+Then(
+  "the hidden-holder scenario failure message should contain {string}",
+  async (expectedFragment: string) => {
+    await engineer().attemptsTo(
+      Ensure.that(
+        HiddenHolderScenarioOutcome.failureMessage(),
+        includes(expectedFragment),
+      ),
+    );
+  },
+);
 
 Then(
   "the hidden-holder scenario should issue {int} credential",

@@ -24,17 +24,17 @@ Current maturity is mixed by package:
 - conformance draft:
   - [`docs/spec/conformance.md`](./docs/spec/conformance.md)
 - reference implementation packages:
-  - [`credentials`](./credentials/README.md)
-  - [`credentials-status-registry`](./credentials-status-registry/README.md)
+  - [`credentials`](./core/primitives/credentials/README.md)
+  - [`credentials-status-registry`](./registry/status-registry/README.md)
     - current prototype status / revocation registry support package
-  - [`credentials-birth`](./credentials-birth/README.md)
-  - [`credentials-birth-secret`](./credentials-birth-secret/README.md)
-  - [`credentials-iso-registry`](./credentials-iso-registry/README.md)
+  - [`credentials-birth`](./prototypes/credential-families/birth/README.md)
+  - [`credentials-birth-secret`](./prototypes/credential-families/birth-secret/README.md)
+  - [`credentials-iso-registry`](./core/primitives/iso-registry/README.md)
   - [`credentials-offchain-did`](./credentials-offchain-did/README.md)
   - [`credentials-openid`](./credentials-openid/README.md)
     - current reference transport-adapter surface
 - prototype / experimental packages:
-  - [`credentials-status-registry`](./credentials-status-registry/README.md)
+  - [`credentials-status-registry`](./registry/status-registry/README.md)
   - [`credentials-protocol`](./credentials-protocol/README.md)
   - [`credentials-demo-contract`](./credentials-demo-contract/README.md)
 - shared integration infrastructure:
@@ -59,6 +59,7 @@ Start here:
   - [`docs/guides/midnight-credentials-for-dummies.md`](./docs/guides/midnight-credentials-for-dummies.md)
   - [`docs/guides/package-selection.md`](./docs/guides/package-selection.md)
   - [`docs/guides/integration-surface-map.md`](./docs/guides/integration-surface-map.md)
+  - [`docs/guides/prototype-execution-ladder.md`](./docs/guides/prototype-execution-ladder.md)
 - architecture:
   - [`docs/architecture/overview.md`](./docs/architecture/overview.md)
   - [`docs/architecture/package-boundaries.md`](./docs/architecture/package-boundaries.md)
@@ -74,21 +75,21 @@ Start here:
 
 ## Workspace map
 
-- [`credentials`](./credentials/README.md)
+- [`credentials`](./core/primitives/credentials/README.md)
   - generic VC/VP envelopes, proof model, holder-binding profiles
-- [`credentials-same-holder`](./credentials-same-holder/README.md)
+- [`credentials-same-holder`](./core/capabilities/same-holder/README.md)
   - same-holder composition capability
-- [`credentials-status-registry`](./credentials-status-registry/README.md)
+- [`credentials-status-registry`](./registry/status-registry/README.md)
   - prototype status / revocation registry contract and off-chain witness helpers
-- [`credentials-iso-registry`](./credentials-iso-registry/README.md)
+- [`credentials-iso-registry`](./core/primitives/iso-registry/README.md)
   - shared Compact-native ISO code types
 - [`credentials-offchain-did`](./credentials-offchain-did/README.md)
   - DID-aware runtime adapter for offchain DID holder binding
-- [`credentials-status-registry`](./credentials-status-registry/README.md)
+- [`credentials-status-registry`](./registry/status-registry/README.md)
   - prototype status/revocation registry and off-chain builder helpers
-- [`credentials-birth`](./credentials-birth/README.md)
+- [`credentials-birth`](./prototypes/credential-families/birth/README.md)
   - explicit-holder birth credential family
-- [`credentials-birth-secret`](./credentials-birth-secret/README.md)
+- [`credentials-birth-secret`](./prototypes/credential-families/birth-secret/README.md)
   - secret-holder birth credential family
 - [`credentials-openid`](./credentials-openid/README.md)
   - OID4VCI / OID4VP-inspired transport/domain adapters
@@ -129,6 +130,18 @@ Run the BDD smoke lane directly:
 
 ```bash
 ./run.sh bdd
+```
+
+Run only the negative BDD living-doc scenarios:
+
+```bash
+./run.sh bdd-negative
+```
+
+Run the full BDD scenario set:
+
+```bash
+./run.sh bdd-all
 ```
 
 Direct package-wide validation entrypoints:

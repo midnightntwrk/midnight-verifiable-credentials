@@ -4,17 +4,17 @@ Status: current implemented test surface as of 2026-05-05.
 
 ## Core package tests
 
-- `credentials/src/test/proof-context.test.ts`
+- `core/primitives/credentials/src/test/proof-context.test.ts`
   - proof challenge/context separation
-- `credentials/src/test/protocol-envelope.test.ts`
+- `core/primitives/credentials/src/test/protocol-envelope.test.ts`
   - protocol envelope threading and validation
-- `credentials/src/test/secret-holder-binding.test.ts`
+- `core/primitives/credentials/src/test/secret-holder-binding.test.ts`
   - secret holder-binding primitives
-- `credentials/src/test/lightweight-holder-binding.test.ts`
+- `core/primitives/credentials/src/test/lightweight-holder-binding.test.ts`
   - legacy Jubjub and Compact-side offchain holder-binding checks
-- `credentials/src/test/package-surfaces.test.ts`
+- `core/primitives/credentials/src/test/package-surfaces.test.ts`
   - exported package surfaces
-- `credentials/src/test/offchain-did-holder-binding-alias.test.ts`
+- `core/primitives/credentials/src/test/offchain-did-holder-binding-alias.test.ts`
   - public TypeScript alias compatibility for `OffchainDIDHolderBinding`
 
 ## DID-aware adapter package tests
@@ -58,44 +58,44 @@ Current repository stance:
 
 Implemented prototype coverage:
 
-- `credentials/src/test/status-capability.test.ts`
+- `core/primitives/credentials/src/test/status-capability.test.ts`
   - status registry refs
   - revoked-set capability validation
   - authority-attested capability validation
   - deterministic revoked-set status-handle derivation
-- `credentials/src/test/status-policy.test.ts`
+- `core/primitives/credentials/src/test/status-policy.test.ts`
   - verifier status policy validation and registry binding checks
   - rejection of optional or internally inconsistent status policies
-- `credentials/src/test/status-attestation.test.ts`
+- `core/primitives/credentials/src/test/status-attestation.test.ts`
   - request-bound authority attestation validation
   - verifier challenge binding through the full policy path
   - authority signer binding
   - wrong-authority rejection through the full policy path
   - revoked-root mismatch rejection
   - attestation expiry rejection
-- `credentials-status-registry/src/test/witness-builder.test.ts`
+- `registry/status-registry/src/test/witness-builder.test.ts`
   - deterministic status-handle derivation
   - revoked-set witness/capability construction
   - verifier policy compatibility checks
   - revoked snapshot rejection
-- `credentials-status-registry/src/test/attestation-builder.test.ts`
+- `registry/status-registry/src/test/attestation-builder.test.ts`
   - verifier-supplied status request construction
   - authority attestation statement and proof construction
   - request-bound status attestation payload construction
-- `credentials-status-registry/src/test/revocation-registry.test.ts`
+- `registry/status-registry/src/test/revocation-registry.test.ts`
   - registry initialization
   - double-init / zero-id / unset-sentinel rejection
   - registry/state binding semantics
   - append-only revocation bookkeeping
   - current prototype root-binding limitation disclosure
-- `credentials-status-registry/src/test/status-proof-protocol.test.ts`
+- `registry/status-registry/src/test/status-proof-protocol.test.ts`
   - registry-facing proof-protocol validation ownership
   - request/binding consistency checks
   - authority-attested proof acceptance and rejection paths
   - verifier policy compatibility for revoked-set and authority-attested flows
-- `credentials-birth-secret/src/test/status.test.ts`
+- `prototypes/credential-families/birth-secret/src/test/status.test.ts`
   - hidden-holder revoked-set status request wiring
-- `credentials-birth-secret/src/test/status-attestation.test.ts`
+- `prototypes/credential-families/birth-secret/src/test/status-attestation.test.ts`
   - hidden-holder authority-attested status verification
   - verification-request challenge / status-request challenge consistency
   - verifier-root mismatch rejection
@@ -186,16 +186,28 @@ Current gap:
 
 - package:
   - `vc-bdd-scenarios` at `use-cases/age-gate/scenarios/`
-- current smoke scenarios:
+- smoke scenarios:
   - `use-cases/age-gate/scenarios/features/age_gate_happy_path.feature`
   - `use-cases/age-gate/scenarios/features/hidden_holder_age_gate_happy_path.feature`
-- root command:
+- negative scenarios:
+  - `use-cases/age-gate/scenarios/features/hidden_holder_wrong_registry.feature`
+  - `use-cases/age-gate/scenarios/features/hidden_holder_wrong_root.feature`
+  - `use-cases/age-gate/scenarios/features/hidden_holder_stale_authority_attestation.feature`
+- root commands:
   - `npm run test:bdd:smoke`
+  - `npm run test:bdd:negative`
+  - `npm run test:bdd:all`
+  - `./run.sh bdd`
+  - `./run.sh bdd-negative`
+  - `./run.sh bdd-all`
 - purpose:
   - living-documentation scenario coverage for the current VC prototype
 - current scope:
   - non-Docker birth-credential age-gate happy path
   - non-Docker hidden-holder verifier-supplied-root age-gate happy path
+  - non-Docker hidden-holder negative-path trust-boundary coverage for wrong-registry, wrong-root, and stale-attestation failures
+- local report:
+  - `use-cases/age-gate/scenarios/target/site/serenity/index.html`
 
 ## Standalone integration tests
 
@@ -230,6 +242,10 @@ or directly through package-level `test:integration` commands when Docker is ava
   - non-Docker package tests
 - `./run.sh bdd`
   - Serenity/JS BDD smoke lane
+- `./run.sh bdd-negative`
+  - Serenity/JS BDD negative lane
+- `./run.sh bdd-all`
+  - full Serenity/JS BDD lane
 - `./run.sh revocation`
   - revocation-focused CI lane
 - `./run.sh integration-demo-contract`

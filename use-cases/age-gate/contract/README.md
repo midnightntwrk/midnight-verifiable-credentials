@@ -45,8 +45,8 @@ Related docs:
 This package sits above two layers:
 
 - [`../../../credentials`](../../../credentials): generic VC/VP envelope and proof core
-- [`../../../credentials-birth`](../../../credentials-birth): birth-credential specialization
-- [`../../../credentials-birth-secret`](../../../credentials-birth-secret): hidden-holder birth-credential specialization with prototype status-aware verification
+- [`../../../prototypes/credential-families/birth`](../../../prototypes/credential-families/birth): birth-credential specialization
+- [`../../../prototypes/credential-families/birth-secret`](../../../prototypes/credential-families/birth-secret): hidden-holder birth-credential specialization with prototype status-aware verification
 
 The package currently contains two demo contract roots:
 

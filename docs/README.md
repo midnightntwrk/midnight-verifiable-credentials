@@ -38,12 +38,15 @@
 - hidden-holder hello world:
   - [`guides/hidden-holder-hello-world.md`](./guides/hidden-holder-hello-world.md)
   - for engineers who need the shortest current reference hidden-holder integration path
+- prototype execution ladder:
+  - [`guides/prototype-execution-ladder.md`](./guides/prototype-execution-ladder.md)
+  - for engineers who want the current runnable path from hello-verifier through BDD and revocation lanes
 - starter templates:
   - [`templates/verifier-contract-template.compact.md`](./templates/verifier-contract-template.compact.md)
   - [`templates/family-scaffold-template.md`](./templates/family-scaffold-template.md)
   - for copyable contract and family starting points
 - current status-registry package surface:
-  - [`../credentials-status-registry/README.md`](../credentials-status-registry/README.md)
+  - [`../registry/status-registry/README.md`](../registry/status-registry/README.md)
   - for engineers implementing the current prototype revocation/status registry package
 
 ## Architecture

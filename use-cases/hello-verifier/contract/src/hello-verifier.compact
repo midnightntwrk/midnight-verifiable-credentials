@@ -2,7 +2,7 @@ pragma language_version >= 0.20;
 
 import CompactStandardLibrary;
 
-include "../../../../credentials-birth/src/birth-credential";
+include "../../../../prototypes/credential-families/birth/src/birth-credential";
 
 export ledger contractVersion: Uint<32>;
 export ledger successfulVerificationCount: Counter;

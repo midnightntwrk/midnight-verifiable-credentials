@@ -16,9 +16,9 @@ This template is intentionally narrow:
 
 Contract-authoring surfaces:
 
-- `credentials/src/credentials/composable.compact`
-- one family root such as `credentials-birth/src/birth-credential.compact` or
-  `credentials-birth-secret/src/secret-birth-credential.compact`
+- `core/primitives/credentials/src/credentials/composable.compact`
+- one family root such as `prototypes/credential-families/birth/src/birth-credential.compact` or
+  `prototypes/credential-families/birth-secret/src/secret-birth-credential.compact`
 - optional capability packages such as `credentials-same-holder`
 
 Do not start from:
@@ -34,8 +34,8 @@ Do not start from:
 pragma language_version >= 0.16.0;
 
 import CompactStandardLibrary;
-import "../../credentials/src/credentials/composable" prefix Core_;
-import "../../credentials-birth-secret/src/secret-birth-credential" prefix BirthSecret_;
+import "../../core/primitives/credentials/src/credentials/composable" prefix Core_;
+import "../../prototypes/credential-families/birth-secret/src/secret-birth-credential" prefix BirthSecret_;
 
 export ledger MIN_AGE: Uint<64>;
 
@@ -83,7 +83,7 @@ If your contract needs the current prototype revocation/status flow:
 
 For that path, start from:
 
-- `credentials-birth-secret/src/secret-birth-credential.compact`
+- `prototypes/credential-families/birth-secret/src/secret-birth-credential.compact`
 - `use-cases/age-gate/contract/src/demo-revocation.compact`
 - `docs/spec/status-verification-protocol.md`
 

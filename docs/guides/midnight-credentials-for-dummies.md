@@ -278,19 +278,19 @@ flowchart LR
 
 In code, this chapter is mostly about these circuits:
 
-- `credentials-birth/src/birth-credential.compact`
+- `prototypes/credential-families/birth/src/birth-credential.compact`
   - `birthCredentialClaimRoot(...)`
   - `subjectIdCommitment(...)`
   - `legalNameCommitment(...)`
   - `birthDateCommitment(...)`
   - `birthCountryCodeCommitment(...)`
-- `credentials/src/credentials.compact`
+- `core/primitives/credentials/src/credentials.compact`
   - `VC<...>.assertValidCredentialEnvelope(...)`
   - `VC<...>.assertValidCredentialProof(...)`
-- `credentials-birth/src/birth-credential.compact`
+- `prototypes/credential-families/birth/src/birth-credential.compact`
   - `assertValidBirthCredential(...)`
 
-The claim commitment circuits (`subjectIdCommitment`, `birthDateCommitment`, etc.) live in a shared module `credentials-birth/src/birth-credential/claims.compact` that is imported by both the explicit-holder and secret-holder credential families. That avoids duplicating the commitment logic across packages.
+The claim commitment circuits (`subjectIdCommitment`, `birthDateCommitment`, etc.) live in a shared module `prototypes/credential-families/birth/src/birth-credential/claims.compact` that is imported by both the explicit-holder and secret-holder credential families. That avoids duplicating the commitment logic across packages.
 
 ### In Plain Words
 
@@ -396,9 +396,9 @@ She does not yet have a presentation for a verifier.
 
 ### Tests For This Chapter
 
-- `credentials-birth/src/test/capability-profiles.test.ts`
+- `prototypes/credential-families/birth/src/test/capability-profiles.test.ts`
   - "supports the simplest issuer-attested source claim flow"
-- `credentials-birth/src/test/holder-binding.test.ts`
+- `prototypes/credential-families/birth/src/test/holder-binding.test.ts`
   - "binds the issuer proof to the credential body"
 
 ## Chapter 2: Why A Presentation Exists
@@ -479,8 +479,8 @@ Mohawk rarely approves of anything before coffee.
 
 ### Tests For This Chapter
 
-- `credentials/src/test/proof-context.test.ts`
-- `credentials-birth/src/test/holder-binding.test.ts`
+- `core/primitives/credentials/src/test/proof-context.test.ts`
+- `prototypes/credential-families/birth/src/test/holder-binding.test.ts`
   - "enforces a verifier-defined presentation request"
 
 ## Chapter 3: Explicit Holder Binding
@@ -541,9 +541,9 @@ It is just not the end of the privacy story.
 
 ### Tests For This Chapter
 
-- `credentials-birth/src/test/holder-binding.test.ts`
+- `prototypes/credential-families/birth/src/test/holder-binding.test.ts`
   - "binds the holder proof to the presentation body"
-- `credentials-birth/src/test/capability-profiles.test.ts`
+- `prototypes/credential-families/birth/src/test/capability-profiles.test.ts`
   - "supports an operational flow with explicit holder binding and selective disclosure"
 
 ## Chapter 4: Selective Disclosure And The Age Predicate
@@ -592,7 +592,7 @@ sequenceDiagram
 
 ### What The Circuits Are Actually Doing
 
-In `credentials-birth/src/birth-credential.compact`:
+In `prototypes/credential-families/birth/src/birth-credential.compact`:
 
 - `assertValidBirthCredentialPresentationRequest(...)`
 - `assertBirthPresentationSatisfiesRequest(...)`
@@ -721,8 +721,8 @@ The important idea is:
 
 ### Tests For This Chapter
 
-- `credentials-birth/src/test/age-predicate.test.ts`
-- `credentials-birth/src/test/capability-profiles.test.ts`
+- `prototypes/credential-families/birth/src/test/age-predicate.test.ts`
+- `prototypes/credential-families/birth/src/test/capability-profiles.test.ts`
   - "supports a stronger flow with explicit holder binding, selective disclosure, and age predicate"
 
 ## Chapter 5: Alice Notices Someone Is Following Her
@@ -794,7 +794,7 @@ flowchart TD
 
 ### What The Circuits Are Actually Doing
 
-In `credentials/src/credentials.compact`:
+In `core/primitives/credentials/src/credentials.compact`:
 
 - `secretHolderBindingCommitment(...)`
 - `secretHolderBindingChallengeResponse(...)`
@@ -920,7 +920,7 @@ Mohawk calls this "the difference between authentication and involuntary merchan
 
 ### Where This Shows Up In The Concrete Family
 
-In `credentials-birth-secret/src/secret-birth-credential.compact`:
+In `prototypes/credential-families/birth-secret/src/secret-birth-credential.compact`:
 
 - `assertValidSecretBirthCredential(...)`
 - `assertValidSecretBirthCredentialPresentation(...)`
@@ -930,8 +930,8 @@ The secret-holder variant defines its own disclosure and request types — `Secr
 
 ### Tests For This Chapter
 
-- `credentials/src/test/secret-holder-binding.test.ts`
-- `credentials-birth-secret/src/test/holder-binding.test.ts`
+- `core/primitives/credentials/src/test/secret-holder-binding.test.ts`
+- `prototypes/credential-families/birth-secret/src/test/holder-binding.test.ts`
 
 ## Chapter 7: Blinded Holder Binding
 
@@ -972,7 +972,7 @@ This is not:
 
 ### What The Circuits Are Actually Doing
 
-In `credentials/src/credentials.compact`:
+In `core/primitives/credentials/src/credentials.compact`:
 
 - `blindedSecretHolderCommitment(...)`
 - `assertValidBlindedSecretHolderCredentialBinding(...)`
@@ -1292,9 +1292,9 @@ The mental shortcut is:
 
 ### Tests For This Chapter
 
-- `credentials/src/test/secret-holder-binding.test.ts`
+- `core/primitives/credentials/src/test/secret-holder-binding.test.ts`
   - blinded holder-binding witness
-- `credentials-birth-secret/src/test/capability-profiles.test.ts`
+- `prototypes/credential-families/birth-secret/src/test/capability-profiles.test.ts`
   - advanced privacy profile
 
 ## Chapter 8: Verifier-Scoped Pseudonym
@@ -1329,12 +1329,12 @@ That is a much better tradeoff.
 
 ### What The Circuits Are Actually Doing
 
-In `credentials/src/credentials.compact`:
+In `core/primitives/credentials/src/credentials.compact`:
 
 - `verifierScopedPseudonym(...)`
 - `assertVerifierScopedPseudonym(...)`
 
-In `credentials-birth-secret/src/secret-birth-credential.compact`:
+In `prototypes/credential-families/birth-secret/src/secret-birth-credential.compact`:
 
 - request fields carrying verifier domain context
 - pseudonym disclosure checks inside `assertSecretBirthPresentationSatisfiesRequest(...)`
@@ -1424,8 +1424,8 @@ That is the whole trick.
 
 ### Tests For This Chapter
 
-- `credentials/src/test/secret-holder-binding.test.ts`
-- `credentials-birth-secret/src/test/holder-binding.test.ts`
+- `core/primitives/credentials/src/test/secret-holder-binding.test.ts`
+- `prototypes/credential-families/birth-secret/src/test/holder-binding.test.ts`
   - "derives a verifier-scoped pseudonym from the hidden holder secret"
 
 ## Chapter 9: Vera Wants Two Credentials, But One Holder
@@ -1484,14 +1484,14 @@ flowchart LR
 
 ### What The Circuits Are Actually Doing
 
-In `credentials-same-holder/src/same-holder.compact`:
+In `core/capabilities/same-holder/src/same-holder.compact`:
 
 - `assertSameSecretHolderBindingWitnesses(...)`
 - `assertSameBlindedSecretHolderBindingWitnesses(...)`
 - `assertSameSecretHolderBindingWitnesses3(...)`
 - `assertSameBlindedSecretHolderBindingWitnesses3(...)`
 
-In `credentials-birth-secret/src/secret-birth-credential.compact`:
+In `prototypes/credential-families/birth-secret/src/secret-birth-credential.compact`:
 
 - `assertSameHolderSecretBirthPresentations(...)`
 
@@ -1608,8 +1608,8 @@ The verifier does not automatically learn:
 
 ### Tests For This Chapter
 
-- `credentials-same-holder/src/test/same-holder-capability.test.ts`
-- `credentials-birth-secret/src/test/same-holder-composition.test.ts`
+- `core/capabilities/same-holder/src/test/same-holder-capability.test.ts`
+- `prototypes/credential-families/birth-secret/src/test/same-holder-composition.test.ts`
 
 Those tests now cover both:
 
@@ -1634,14 +1634,14 @@ That is a better engineering habit because it tells you exactly what combination
 
 | Profile | What it means in simple words | Test |
 | --- | --- | --- |
-| simplest issuer-attested source claim | Rita attests to the typed birth credential and nothing fancy happens yet | `credentials-birth/src/test/capability-profiles.test.ts` |
-| operational explicit-holder flow | Alice uses a DID-bound holder method and reveals only what Vera requests | `credentials-birth/src/test/capability-profiles.test.ts` |
-| age-predicate flow | Alice proves `age >= threshold` instead of revealing the raw birth date | `credentials-birth/src/test/age-predicate.test.ts` |
-| hidden-holder flow | Alice proves control using a hidden holder secret instead of a visible DID method | `credentials-birth-secret/src/test/capability-profiles.test.ts` |
-| advanced privacy flow | Alice uses hidden holder binding, a blinded anchor, selective disclosure, verifier pseudonym, and age predicate | `credentials-birth-secret/src/test/capability-profiles.test.ts` |
-| same-holder composition | Alice proves two or three credentials belong to the same hidden holder | `credentials-birth-secret/src/test/same-holder-composition.test.ts` |
-| status-aware hidden-holder flow | Alice satisfies a revocation-aware verifier request with registry-bound status inputs | `credentials-birth-secret/src/test/status.test.ts` |
-| authority-attested status flow | Alice satisfies a freshness-gated status request with an authority-attested status proof | `credentials-birth-secret/src/test/status-attestation.test.ts` |
+| simplest issuer-attested source claim | Rita attests to the typed birth credential and nothing fancy happens yet | `prototypes/credential-families/birth/src/test/capability-profiles.test.ts` |
+| operational explicit-holder flow | Alice uses a DID-bound holder method and reveals only what Vera requests | `prototypes/credential-families/birth/src/test/capability-profiles.test.ts` |
+| age-predicate flow | Alice proves `age >= threshold` instead of revealing the raw birth date | `prototypes/credential-families/birth/src/test/age-predicate.test.ts` |
+| hidden-holder flow | Alice proves control using a hidden holder secret instead of a visible DID method | `prototypes/credential-families/birth-secret/src/test/capability-profiles.test.ts` |
+| advanced privacy flow | Alice uses hidden holder binding, a blinded anchor, selective disclosure, verifier pseudonym, and age predicate | `prototypes/credential-families/birth-secret/src/test/capability-profiles.test.ts` |
+| same-holder composition | Alice proves two or three credentials belong to the same hidden holder | `prototypes/credential-families/birth-secret/src/test/same-holder-composition.test.ts` |
+| status-aware hidden-holder flow | Alice satisfies a revocation-aware verifier request with registry-bound status inputs | `prototypes/credential-families/birth-secret/src/test/status.test.ts` |
+| authority-attested status flow | Alice satisfies a freshness-gated status request with an authority-attested status proof | `prototypes/credential-families/birth-secret/src/test/status-attestation.test.ts` |
 
 ### Current prototype use-cases used later in this guide
 
@@ -1971,7 +1971,7 @@ Mohawk considers this "the minimum acceptable encoding discipline for a system t
 
 ### Where To Look
 
-- `credentials-iso-registry/src/iso-registry/codes.compact`
+- `core/primitives/iso-registry/src/iso-registry/codes.compact`
 
 ## Chapter 18: Vera Starts With The Smallest Verifier
 
@@ -2614,13 +2614,13 @@ Mohawk approves of this because it is the rare architectural plan that is both:
 
 If you want the shortest path through the current repository, use this sequence.
 
-1. `credentials/src/credentials.compact`
+1. `core/primitives/credentials/src/credentials.compact`
    - generic VC/VP model, proof contexts, and holder-binding primitives
-2. `credentials/src/test/proof-context.test.ts`
+2. `core/primitives/credentials/src/test/proof-context.test.ts`
    - proof basics and domain separation
-3. `credentials-birth/src/birth-credential.compact`
+3. `prototypes/credential-families/birth/src/birth-credential.compact`
    - explicit-holder birth family
-4. `credentials-birth/src/test/capability-profiles.test.ts`
+4. `prototypes/credential-families/birth/src/test/capability-profiles.test.ts`
    - explicit-holder family profiles
 5. `use-cases/hello-verifier/contract/src/hello-verifier.compact`
    - smallest current verifier contract
@@ -2630,17 +2630,17 @@ If you want the shortest path through the current repository, use this sequence.
    - explicit-holder age-gate business composition
 8. `use-cases/age-gate/contract/src/test/demo.test.ts`
    - explicit-holder capability issuance and claim flow
-9. `credentials-birth-secret/src/secret-birth-credential.compact`
+9. `prototypes/credential-families/birth-secret/src/secret-birth-credential.compact`
    - hidden-holder birth family
-10. `credentials-birth-secret/src/test/capability-profiles.test.ts`
+10. `prototypes/credential-families/birth-secret/src/test/capability-profiles.test.ts`
    - hidden-holder base profiles
-11. `credentials-birth-secret/src/test/same-holder-composition.test.ts`
+11. `prototypes/credential-families/birth-secret/src/test/same-holder-composition.test.ts`
    - same-holder composition in a real family
-12. `credentials-birth-secret/src/test/status-binding-commitment.test.ts`
+12. `prototypes/credential-families/birth-secret/src/test/status-binding-commitment.test.ts`
    - issuer-signed status-binding commitment in the family wrapper proof
-13. `credentials-birth-secret/src/test/status.test.ts`
+13. `prototypes/credential-families/birth-secret/src/test/status.test.ts`
    - verifier-supplied-root status-aware verification
-14. `credentials-birth-secret/src/test/status-attestation.test.ts`
+14. `prototypes/credential-families/birth-secret/src/test/status-attestation.test.ts`
    - authority-attested status-aware verification
 15. `use-cases/age-gate/contract/src/demo-revocation.compact`
    - hidden-holder revocation-aware business composition

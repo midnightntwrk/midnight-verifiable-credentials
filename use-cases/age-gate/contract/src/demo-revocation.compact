@@ -2,7 +2,7 @@ pragma language_version >= 0.20;
 
 import CompactStandardLibrary;
 
-include "../../../../credentials-birth-secret/src/secret-birth-credential";
+include "../../../../prototypes/credential-families/birth-secret/src/secret-birth-credential";
 
 export enum RevocationVerificationMode {
   noVerification,

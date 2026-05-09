@@ -26,7 +26,7 @@ Related documents:
 ### I need the generic VC/VP model
 Start with:
 
-- [`../../credentials/README.md`](../../credentials/README.md)
+- [`../../core/primitives/credentials/README.md`](../../core/primitives/credentials/README.md)
 
 Use this when you need:
 
@@ -39,9 +39,9 @@ Use this when you need:
 Choose one of:
 
 - explicit/public-holder shape:
-  - [`../../credentials-birth/README.md`](../../credentials-birth/README.md)
+  - [`../../prototypes/credential-families/birth/README.md`](../../prototypes/credential-families/birth/README.md)
 - hidden-secret-holder shape:
-  - [`../../credentials-birth-secret/README.md`](../../credentials-birth-secret/README.md)
+  - [`../../prototypes/credential-families/birth-secret/README.md`](../../prototypes/credential-families/birth-secret/README.md)
 
 Use `credentials-birth` when a public holder reference is acceptable.
 Use `credentials-birth-secret` when holder privacy is the primary concern.
@@ -49,15 +49,15 @@ Use `credentials-birth-secret` when holder privacy is the primary concern.
 ### I need same-holder correlation across credentials
 Start with:
 
-- [`../../credentials-same-holder/README.md`](../../credentials-same-holder/README.md)
+- [`../../core/capabilities/same-holder/README.md`](../../core/capabilities/same-holder/README.md)
 
 This is a capability package, not a standalone credential family.
 
 ### I need status / revocation registry support
 Start with:
 
-- [`../../credentials/README.md`](../../credentials/README.md)
-- [`../../credentials-status-registry/README.md`](../../credentials-status-registry/README.md)
+- [`../../core/primitives/credentials/README.md`](../../core/primitives/credentials/README.md)
+- [`../../registry/status-registry/README.md`](../../registry/status-registry/README.md)
 - then read:
   - [`../spec/credential-status.md`](../spec/credential-status.md)
   - [`../spec/revocation-registry.md`](../spec/revocation-registry.md)
@@ -95,7 +95,7 @@ This capability area is intentionally split across two packages:
 ### I need shared ISO code types
 Start with:
 
-- [`../../credentials-iso-registry/README.md`](../../credentials-iso-registry/README.md)
+- [`../../core/primitives/iso-registry/README.md`](../../core/primitives/iso-registry/README.md)
 
 Use this package instead of inventing local country/currency/gender code types.
 
