@@ -150,11 +150,11 @@ export class CredentialsDemoSimulator {
     verifierChallengeHash: Uint8Array,
   ): BirthCredentialPresentationRequest {
     return this.executeCircuit(() =>
-        this.contract.impureCircuits.ageGateRequest(
-          this.circuitContext,
-          issuerVerificationMethodRef,
-          verifierChallengeHash,
-        ),
+      this.contract.impureCircuits.ageGateRequest(
+        this.circuitContext,
+        issuerVerificationMethodRef,
+        verifierChallengeHash,
+      ),
     );
   }
 
@@ -179,9 +179,7 @@ export class CredentialsDemoSimulator {
     );
   }
 
-  public claimAgeGateCapability(
-    capability: Uint8Array,
-  ): AccessDecision {
+  public claimAgeGateCapability(capability: Uint8Array): AccessDecision {
     return this.executeCircuit(() =>
       this.contract.impureCircuits.claimAgeGateCapability(
         this.circuitContext,
