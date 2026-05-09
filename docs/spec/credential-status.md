@@ -98,9 +98,9 @@ An implementation at this level:
 Some current packages still remain at this level, especially families that do
 not bind a status registry at all.
 
-The corresponding explicit zero-status compatibility name is:
+The corresponding explicit zero-status binding shape is:
 
-- `NoStatusCapability`
+- `NoStatusBinding`
 
 ### Level 1: Public status check
 
@@ -150,12 +150,17 @@ The binding contributes:
 
 The normalized target binding model is:
 
-- `NoStatusCapability`
+- `NoStatusBinding`
 - `RegistryBoundStatusBinding`
 
-The current code still uses the compatibility name `NoStatusCapability` for the
-explicit zero-status case. For registry-bound status, the current code exposes
-two wrappers that already share the same VC-side data:
+The current code still exposes compatibility-era capability structs in the
+registry proof-protocol package, but the VC-side binding model is now:
+
+- `NoStatusBinding`
+- `RegistryBoundStatusBinding`
+
+For registry-bound status, the current code still exposes two
+proof-protocol-facing compatibility wrappers that share the same VC-side data:
 
 - `AuthorityAttestedStatusCapability`
 - `RevokedSetNonMembershipStatusCapability`
@@ -286,7 +291,7 @@ In plain terms:
 
 Current repository packages now contain:
 
-- explicit zero-status modeling through `NoStatusCapability`
+- explicit zero-status modeling through `NoStatusBinding`
 - prototype registry-bound status surfaces and validators
 - a first-family issuer-signed status-bound body-root rollout in
   `credentials-birth-secret`
