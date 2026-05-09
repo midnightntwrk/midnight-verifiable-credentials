@@ -87,7 +87,7 @@ jobs:
           global_heavy_lane_patterns=(
             '.github/workflows/*'
             'components/integration/infrastructure/*'
-            'libs/*'
+            'tooling/vendor/*'
             'package.json'
             'package-lock.json'
             'turbo.json'
