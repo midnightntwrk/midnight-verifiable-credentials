@@ -246,6 +246,8 @@ jobs:
 
       - name: Activate Compact compiler
         shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           if compact compile --version >/dev/null 2>&1; then
             exit 0
@@ -277,6 +279,7 @@ jobs:
         uses: midnightntwrk/setup-compact-action@v1
         with:
           compact-version: ${{ env.COMPACT_COMPILER_VERSION }}
+          github-token: ${{ github.token }}
 
       - name: Verify Compact installation
         run: compact compile --version
@@ -452,6 +455,8 @@ jobs:
       - name: Activate Compact compiler
         if: steps.cone-cache.outputs.any_missing == 'true'
         shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           if compact compile --version >/dev/null 2>&1; then
             exit 0
