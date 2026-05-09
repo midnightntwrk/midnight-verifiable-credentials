@@ -302,8 +302,7 @@ export const createDemoRevocationFixture = (): DemoRevocationFixture => {
 
   const statusBoundCredentialProof = signProof({
     bodyRoot: pureCircuits.secretBirthCredentialRegistryBoundStatusBodyRoot(
-      credential,
-      statusCredential.statusBinding,
+      statusCredential,
     ),
     signer: issuer,
     createdAt: credentialProof.createdAt,

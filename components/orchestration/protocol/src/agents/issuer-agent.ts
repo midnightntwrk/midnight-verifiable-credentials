@@ -119,11 +119,12 @@ export class IssuerAgent {
       ),
     };
 
-    const credential: BirthCredential = {
+    const credential = {
       version: 1n,
       schema: BIRTH_SCHEMA,
       issuerVerificationMethodRef: this.profile.signer.verificationMethodRef,
       holderBinding: issuanceRequest.body.holderBinding,
+      statusBinding: {},
       issuedAt: claimWitness.issuedAt,
       hasExpiration: true,
       expiresAt: claimWitness.expiresAt,
