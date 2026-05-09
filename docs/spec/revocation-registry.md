@@ -202,6 +202,9 @@ Current invariants:
 - the request and witness must agree on `revokedRoot`
 - the witness must open to the status-handle commitment already carried by the
   VC-side status binding or status capability
+- if the accepted revoked set already contains that status handle, the
+  verifier/helper/proof builder must fail closed rather than emitting a
+  "verified but denied" result
 
 Future final Merkle non-membership witness material should extend this shape.
 It should not replace the canonical request object or the committed
@@ -359,6 +362,9 @@ The VP proof should show:
 2. the status witness is consistent with the credential-bound status commitment
 3. the status handle is not revoked in the accepted registry state
 
+If step 3 fails, the result is hard VC/VP invalidity. A verifier or contract
+must reject the presentation before any business-flow success path continues.
+
 ## Verifier request extension point
 
 Status-aware verifier requests should define a typed status policy and proof
@@ -387,6 +393,10 @@ In particular:
 - protocol/orchestration may fetch or prepare the accepted root off-chain
 - but the final contract verification should not rely on a separate live
   revocation-contract call inside the business proof
+
+Revocation remains part of the VC/VP validity contract itself. Business or
+application policy may define outcomes such as `superseded`, `corrected`, or
+service-level denial, but `revoked` is not one of those softer outcomes.
 
 This is important because current smart-contract composability is not yet the
 right primitive to rely on for this repository's production target.
