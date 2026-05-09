@@ -121,8 +121,10 @@ Current highest-risk remaining area:
   now narrower than the previous audit cycle:
   `credentials-birth-secret` can commit shared VC-side status binding into an
   issuer-signed body root in the current maturity stack, but the repository
-  still does not provide final in-circuit root binding and non-membership
-  proof semantics
+  still does not provide:
+  - a native `VC<..., RegistryBoundStatusBinding>` hidden-holder credential
+  - final in-circuit root binding
+  - final non-membership proof semantics
 - the strongest remaining integrator-adoption gap is now execution, not
   discovery:
   the repo has templates and guides, but it still lacks a generated family
@@ -659,8 +661,13 @@ Current grouped execution:
     `credentials-status-registry`
   - hidden-holder family and revocation-aware demo flows now import that
     registry-facing proof surface directly
+  - the registry TypeScript helper path is now binding-first:
+    capability-shaped intermediate helper values have been removed in favor of
+    `RegistryBoundStatusBinding`
 - remaining work moved under `VC-MAT-20`:
-  - final in-circuit root binding and non-membership semantics
+  - native hidden-holder status credential rollout
+  - final in-circuit root binding
+  - final non-membership semantics
 
 ### VC-MAT-04: Resolve `OffchainDIDHolderBinding` vs `OffchainMidnightHolderBinding`
 
