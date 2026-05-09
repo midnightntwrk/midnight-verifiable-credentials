@@ -22,10 +22,10 @@ describe("secret birth credential: issuer-signed status binding commitment", () 
       },
     };
     const tamperedBodyRoot =
-      pureCircuits.secretBirthCredentialRegistryBoundStatusBodyRoot(
-        fixture.credential,
-        tamperedStatusBinding,
-      );
+      pureCircuits.secretBirthCredentialRegistryBoundStatusBodyRoot({
+        ...fixture.credentialWithStatusBinding.credential,
+        statusBinding: tamperedStatusBinding,
+      });
 
     expect([...originalBodyRoot]).not.toEqual([...tamperedBodyRoot]);
   });
