@@ -11,6 +11,7 @@ Target contents:
 Current subtrees:
 - `age-gate/contract`
 - `age-gate/scenarios`
+- `university`
 
 BDD scenarios belong here because they document concrete flows rather than low-
 level prototype matrices.
