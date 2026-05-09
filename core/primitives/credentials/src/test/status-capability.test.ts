@@ -40,9 +40,7 @@ describe("credentials core: status bindings", () => {
   });
 
   it("accepts an explicit no-status binding", () => {
-    expect(() =>
-      pureCircuits.assertValidNoStatusBinding({}),
-    ).not.toThrow();
+    expect(() => pureCircuits.assertValidNoStatusBinding({})).not.toThrow();
   });
 
   it("rejects a registry-bound status binding with an empty handle commitment", () => {

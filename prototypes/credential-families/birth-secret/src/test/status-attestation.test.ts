@@ -198,7 +198,8 @@ describe("secret birth credential: authority-attested status verification", () =
         submission,
         {
           statusProofProtocol: {
-            ...fixture.authorityAttestedStatusProtocolInputs.statusProofProtocol,
+            ...fixture.authorityAttestedStatusProtocolInputs
+              .statusProofProtocol,
             request: {
               ...fixture.authorityAttestedStatusProtocolInputs
                 .statusProofProtocol.request,
