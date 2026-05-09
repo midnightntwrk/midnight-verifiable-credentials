@@ -498,10 +498,11 @@ package-relocation wave itself:
 - `libs/`
   - transitional local tarball input/output surface
   - should be treated as tooling/artifact support, not as an architecture area
-- `infrastructure/preprod-proof-server.yml`
-  - still lives under a legacy top-level `infrastructure/` directory
-  - should eventually move under `components/integration/infrastructure/` or a
-    tooling-owned integration support area once its ownership is finalized
+
+The former top-level `infrastructure/preprod-proof-server.yml` outlier has now
+been rehomed under:
+
+- `components/integration/infrastructure/standalone/preprod-proof-server.yml`
 
 ### Compatibility shims that are not architecture debt
 
