@@ -100,6 +100,13 @@ Freshness requirement for authority-attested proofs:
 
 This package does not yet implement privacy-preserving non-membership verification inside Compact. It provides the authoritative state surface that status-aware VC/VP flows can anchor to.
 
+One validity rule is already fixed:
+
+- if the accepted status evidence shows the credential as revoked, the
+  VC/VP verification outcome is hard invalidity
+- helpers and contracts should fail closed rather than emitting a
+  "verified but denied" revocation result
+
 Import rule:
 
 - credential families should import shared status binding types from
@@ -144,6 +151,9 @@ Current prototype limitation:
 - callers must therefore treat `revokedRoot` as an off-chain coordinated
   snapshot value until the final in-circuit root-binding/non-membership path
   lands
+- that prototype trust seam does not weaken the rejection rule itself:
+  once the accepted snapshot says a credential is revoked, the verifier should
+  reject the presentation outright
 
 Observed-root integration helper path:
 

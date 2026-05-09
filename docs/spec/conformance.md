@@ -87,6 +87,8 @@ Additional expectations by proof protocol:
   - must disclose that the verifier/application supplies the accepted
     `(registryId, revokedRoot)`
   - must disclose whether expiration is required by local policy
+  - must disclose that accepted `revoked` evidence is hard VC/VP invalidity,
+    not a softer business-policy denial
 - `RevokedSetNonMembershipStatusProofProtocol`
   - must disclose whether the implementation is only a witness/capability
     surface or a final in-circuit non-membership verification path
@@ -101,6 +103,8 @@ Additional expectations by proof protocol:
     - registry-domain binding
     - status-handle-opening consistency
     - final Merkle non-membership, if present
+  - must disclose that an accepted revoked-set hit is hard VC/VP invalidity,
+    not a "verified but denied" result
 
 Reference companion material:
 
@@ -241,6 +245,7 @@ Any implementation claiming conformance should document:
   - or `RevokedSetNonMembershipStatusProofProtocol`
 - whether the verifier/application must supply off-chain status inputs such as
   an accepted `(registryId, revokedRoot)`
+- whether `revoked` is treated as hard VC/VP invalidity
 - any security/privacy limitations that are intentionally deferred
 
 ## Non-conformance examples

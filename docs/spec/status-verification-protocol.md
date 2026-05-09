@@ -188,6 +188,10 @@ That means the contract checks:
 - future-dated authority attestations are rejected
 - if enabled, the attestation age does not exceed the verifier freshness window
 
+If the accepted status evidence says the credential is revoked, the contract
+must reject the VC/VP proof outright. It must not surface revocation as a
+successful verification with a softer business-policy denial result.
+
 ## Freshness responsibility
 
 Freshness is now split between the contract and the verifier in the current
@@ -258,6 +262,10 @@ must be able to supply one canonical witness shape:
 - the accepted `registryState`
 - the accepted `registryVersion` carried inside that same snapshot
 - the derived `statusHandle`
+
+If that witness-building path or the accepted snapshot already shows the
+credential as revoked, the correct prototype behavior is to fail before proof
+assembly continues.
 - the `statusHandleOpening` that reproduces the committed
   `statusHandleCommitment`
 

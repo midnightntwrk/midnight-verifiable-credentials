@@ -143,6 +143,9 @@ Important distinction:
 - in particular:
   - the status-aware wrapper proofs in this family now commit the shared
     `RegistryBoundStatusBinding` into an issuer-signed status-bound body root
+  - if accepted status evidence says the credential is revoked, the family
+    treats that as hard VC/VP invalidity rather than a softer business-policy
+    denial result
   - `AuthorityAttestedStatusCapability` is still a transitional Layer 3 bridge
     that depends on verifier/application-supplied `(registryId, revokedRoot)`
     even though the wrapper proof now commits the VC-side binding

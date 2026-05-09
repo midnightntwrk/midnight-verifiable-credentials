@@ -74,6 +74,17 @@ and still be:
 Implementations `MUST NOT` treat issuer proof verification alone as a complete
 production validity model when they claim status-aware verification.
 
+Revocation rule:
+
+- once status evidence proves that a credential is revoked under the accepted
+  registry state, the VC/VP verification outcome `MUST` be hard invalidity
+- implementations `MUST NOT` downgrade `revoked` into:
+  - a soft business-policy denial
+  - a warning-only result
+  - or a still-valid presentation with reduced privilege
+- business-policy outcomes such as `superseded`, `corrected`, or
+  application-specific access denial remain separate concerns from revocation
+
 ## Status support levels
 
 ### Level 0: No status support
@@ -250,6 +261,11 @@ If a verifier claims status-aware verification, it `MUST` define:
 Verifiers `MUST NOT` silently accept unverifiable status assumptions while
 advertising production-ready revocation handling.
 
+If the verifier accepts status-aware verification and the supplied status
+evidence proves `revoked`, the verifier `MUST` reject the presentation before
+any business-flow success path such as capability issuance, admission, or
+session continuation.
+
 ## Hidden-holder privacy rule
 
 For hidden-holder and blinded-secret profiles:
@@ -282,6 +298,14 @@ Current repository packages now contain:
   - request + witness + protocol bundle construction
   - observed-root freshness normalization
   - verifier-supplied snapshot acceptance
+
+Current repository packages now treat one status outcome as fixed:
+
+- `revoked` is hard VC/VP invalidity
+- it is not a typed business-level denial result
+- prototype trust seams still exist around root freshness and final
+  non-membership semantics, but they do not change the rejection rule once the
+  accepted status evidence says the credential is revoked
 
 Current repository packages still do not claim:
 
