@@ -5,7 +5,7 @@ import { pureCircuits } from "../managed/secret-birth-credential/contract/index.
 import {
   createSecretBirthCredentialFixture,
   type SecretBirthStatusCredentialCompat,
-} from "./credential-fixtures.js";
+} from "../testing/credential-fixtures.js";
 
 setNetworkId("undeployed");
 

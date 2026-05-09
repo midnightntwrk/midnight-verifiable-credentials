@@ -18,6 +18,7 @@ The current slice now covers:
   - wrong registry id
   - wrong revoked root
   - stale authority-attested proof
+  - revoked credential rejected before proof assembly
 
 ## Run
 
