@@ -434,7 +434,7 @@ export const createDemoRevocationFixture = (): DemoRevocationFixture => {
 
   return {
     issuer,
-    credential,
+    credential: credential as SecretBirthCredential,
     credentialProof,
     presentationRequest,
     verificationRequest,
