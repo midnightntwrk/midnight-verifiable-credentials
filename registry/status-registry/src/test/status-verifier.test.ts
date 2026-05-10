@@ -310,7 +310,6 @@ describe("status verifier", () => {
       expect(result.error.code).toEqual(
         statusVerificationErrorCodes.unknownRegistry,
       );
-      expect(result.error.cause).toBeInstanceOf(Error);
     }
   });
 
@@ -612,6 +611,7 @@ describe("status verifier", () => {
       expect(result.error.code).toEqual(
         statusVerificationErrorCodes.unclassifiedFailure,
       );
+      expect(result.error.cause).toBeInstanceOf(TypeError);
     }
   });
 

@@ -15,6 +15,10 @@ import {
   type VerifierStatusPolicy,
 } from "./managed/revocation-registry/contract/index.js";
 import { buildRegistryBoundStatusBinding } from "./status-binding.js";
+import {
+  StatusHelperError,
+  statusVerificationErrorCodes,
+} from "./status-errors.js";
 
 export type RevokedSetRegistrySnapshot = {
   readonly registryState: RevocationRegistryState;
@@ -164,9 +168,10 @@ export const assertStatusHandleNotRevoked = (
     equalBytes(candidate, statusHandle),
   );
   if (match) {
-    throw new Error(
-      `Status handle ${toHex(statusHandle)} is already present in the revoked set snapshot`,
-    );
+    throw new StatusHelperError({
+      code: statusVerificationErrorCodes.revoked,
+      message: `Status handle ${toHex(statusHandle)} is already present in the revoked set snapshot`,
+    });
   }
 };
 

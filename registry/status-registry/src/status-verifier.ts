@@ -20,31 +20,18 @@ import {
   readCurrentRevocationRegistryStateFromContractState,
   type RevocationRegistryContractState,
 } from "./registry-state-observation.js";
-
-export const statusVerificationErrorCodes = {
-  revoked: "revoked",
-  staleRegistryState: "staleRegistryState",
-  unknownRegistry: "unknownRegistry",
-  unsupportedStatusProofMode: "unsupportedStatusProofMode",
-  statusBindingMismatch: "statusBindingMismatch",
-  statusRequestMismatch: "statusRequestMismatch",
-  authorityMismatch: "authorityMismatch",
-  attestationExpired: "attestationExpired",
-  attestationTooOld: "attestationTooOld",
-  futureDatedAttestation: "futureDatedAttestation",
-  unclassifiedFailure: "unclassifiedFailure",
-} as const;
-
-export type StatusVerificationErrorCode =
-  (typeof statusVerificationErrorCodes)[keyof typeof statusVerificationErrorCodes];
+import {
+  StatusHelperError,
+  type StatusVerificationErrorCode,
+  statusVerificationErrorCodes,
+} from "./status-errors.js";
 
 export type StatusVerificationMode =
   | "revokedSetObservedState"
   | "liveContractState"
   | "authorityAttested";
 
-export class StatusVerificationError extends Error {
-  readonly code: StatusVerificationErrorCode;
+export class StatusVerificationError extends StatusHelperError {
   readonly mode: StatusVerificationMode;
   constructor({
     code,
@@ -57,9 +44,8 @@ export class StatusVerificationError extends Error {
     readonly message: string;
     readonly cause: unknown;
   }) {
-    super(message, { cause });
+    super({ code, message, cause });
     this.name = "StatusVerificationError";
-    this.code = code;
     this.mode = mode;
   }
 }
@@ -141,17 +127,20 @@ const assertRegistryAccepted = ({
     return;
   }
   if (acceptancePolicy.acceptedRegistryIds.length === 0) {
-    throw new Error(
-      "Verifier registry acceptance policy does not accept any registries",
-    );
+    throw new StatusHelperError({
+      code: statusVerificationErrorCodes.unknownRegistry,
+      message:
+        "Verifier registry acceptance policy does not accept any registries",
+    });
   }
   const accepted = acceptancePolicy.acceptedRegistryIds.some((candidate) =>
     equalBytes(candidate, registryId),
   );
   if (!accepted) {
-    throw new Error(
-      `Registry ${toHex(registryId)} is not accepted by the verifier registry policy`,
-    );
+    throw new StatusHelperError({
+      code: statusVerificationErrorCodes.unknownRegistry,
+      message: `Registry ${toHex(registryId)} is not accepted by the verifier registry policy`,
+    });
   }
 };
 
@@ -179,9 +168,11 @@ const assertRegistryBoundRevocationStatusBinding = (
 ): void => {
   credentialCircuits.assertValidRegistryBoundStatusBinding(statusBinding);
   if (statusBinding.statusType !== StatusType.revocationRegistry) {
-    throw new Error(
-      "Registry-bound status binding does not use the revocation registry status type",
-    );
+    throw new StatusHelperError({
+      code: statusVerificationErrorCodes.statusBindingMismatch,
+      message:
+        "Registry-bound status binding does not use the revocation registry status type",
+    });
   }
 };
 
@@ -193,9 +184,11 @@ const assertLiveRegistryStateMatchesBinding = ({
   readonly registryRef: RegistryBoundStatusBinding["registryRef"];
 }): void => {
   if (!equalBytes(registryState.registryId, registryRef.registryId)) {
-    throw new Error(
-      "Live revocation registry state does not match the status binding registry",
-    );
+    throw new StatusHelperError({
+      code: statusVerificationErrorCodes.statusBindingMismatch,
+      message:
+        "Live revocation registry state does not match the status binding registry",
+    });
   }
 };
 
@@ -203,6 +196,18 @@ const classifyStatusVerificationError = (
   mode: StatusVerificationMode,
   error: unknown,
 ): StatusVerificationError => {
+  if (error instanceof StatusVerificationError) {
+    return error;
+  }
+  if (error instanceof StatusHelperError) {
+    return new StatusVerificationError({
+      code: error.code,
+      mode,
+      message: error.message,
+      cause: error.cause,
+    });
+  }
+
   const message = error instanceof Error ? error.message : String(error);
 
   const patterns: Array<[StatusVerificationErrorCode, RegExp]> = [
