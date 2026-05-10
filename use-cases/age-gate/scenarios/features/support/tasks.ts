@@ -25,6 +25,17 @@ export const RunTheHiddenHolderRevocationAwareHappyPath = () =>
     ),
   );
 
+export const RunTheHiddenHolderLiveStatusHappyPath = () =>
+  Task.where(
+    "#actor runs the hidden-holder same-contract live-status happy path",
+    Interaction.where(
+      "#actor executes the hidden-holder same-contract live-status scenario against the revocation demo simulator",
+      async (actor) => {
+        await UseHiddenHolderScenario.from(actor).runLiveStatusHappyPath();
+      },
+    ),
+  );
+
 export const RunTheHiddenHolderWrongRegistryRejectedPath = () =>
   Task.where(
     "#actor runs the hidden-holder wrong-registry rejection path",
@@ -81,6 +92,18 @@ export const RunTheHiddenHolderRevokedCredentialRejectedPath = () =>
       async (actor) => {
         await UseHiddenHolderScenario.from(actor)
           .runRevokedCredentialRejectedPath();
+      },
+    ),
+  );
+
+export const RunTheHiddenHolderLiveStatusRevokedRejectedPath = () =>
+  Task.where(
+    "#actor runs the hidden-holder same-contract live-status revoked rejection path",
+    Interaction.where(
+      "#actor executes the hidden-holder same-contract live-status revoked scenario against the revocation demo simulator",
+      async (actor) => {
+        await UseHiddenHolderScenario.from(actor)
+          .runLiveStatusRevokedCredentialRejectedPath();
       },
     ),
   );

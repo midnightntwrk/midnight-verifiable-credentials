@@ -4,10 +4,12 @@ import { describe, expect, it } from "vitest";
 import {
   RevocationAccessDecision,
   RevocationVerificationMode,
+  StatusCapabilityKind,
 } from "../managed/demo-revocation/contract/index.js";
 import { CredentialsDemoRevocationSimulator } from "../revocation-simulator.js";
 import {
   buildSubmissionForAuthorityAttestedRequest,
+  buildSubmissionForLiveStatusRequest,
   buildSubmissionForRevokedSetRequest,
   createDemoRevocationFixture,
   fixtureRegistryState,
@@ -38,6 +40,111 @@ describe("credentials demo revocation contract", () => {
     expect(request.verificationRequest.verifierChallengeHash).toEqual(
       fixture.verificationRequest.verifierChallengeHash,
     );
+  });
+
+  it("builds a typed same-contract live-status request with the accepted live registry", () => {
+    const fixture = createDemoRevocationFixture();
+    const simulator = new CredentialsDemoRevocationSimulator();
+
+    simulator.initializeLiveStatusRegistry(fixture.witness.statusRegistryId);
+
+    const request = simulator.revocationAwareLiveStatusRequest(
+      fixture.credential.issuerVerificationMethodRef,
+      fixture.witness.verifierDomainHash,
+      fixture.verificationRequest.verifierChallengeHash,
+    );
+
+    expect(request.statusPolicy.requireStatus).toEqual(true);
+    expect(request.statusPolicy.enforceRegistryId).toEqual(true);
+    expect(request.statusPolicy.acceptedRegistryId).toEqual(
+      fixture.witness.statusRegistryId,
+    );
+    expect(request.statusPolicy.acceptedStatusCapability).toEqual(
+      StatusCapabilityKind.revokedSetNonMembership,
+    );
+    expect(request.verificationRequest.verifierChallengeHash).toEqual(
+      fixture.verificationRequest.verifierChallengeHash,
+    );
+  });
+
+  it("verifies a same-contract live-status hidden-holder presentation and issues a reusable capability", () => {
+    const fixture = createDemoRevocationFixture();
+    const simulator = new CredentialsDemoRevocationSimulator();
+
+    simulator.initializeLiveStatusRegistry(fixture.witness.statusRegistryId);
+    const request = simulator.revocationAwareLiveStatusRequest(
+      fixture.credential.issuerVerificationMethodRef,
+      fixture.witness.verifierDomainHash,
+      fixture.verificationRequest.verifierChallengeHash,
+    );
+    const submission = buildSubmissionForLiveStatusRequest(fixture, request);
+
+    simulator.issueSecretBirthCredential(
+      fixture.credential,
+      fixture.credentialProof,
+    );
+    simulator.setHolderWitnesses({
+      holderSecret: fixture.witness.holderSecret,
+      holderSecretOpening: fixture.witness.holderSecretOpening,
+      holderBindingBlindingFactor: fixture.witness.holderBindingBlindingFactor,
+      holderBirthDateDays: fixture.witness.birthDateDays,
+      holderBirthDateOpening: fixture.witness.birthDateOpening,
+    });
+
+    const capability = simulator.issueRevocationAwareCapabilityWithLiveStatus(
+      fixture.credentialWithStatusBinding,
+      request,
+      submission,
+      fixture.liveStatusVerificationInputs,
+      fixture.witness.currentDay,
+    );
+    const state = simulator.getLedger();
+
+    expect(state.issuedCredentialCount).toEqual(1n);
+    expect(state.verifiedPresentationCount).toEqual(1n);
+    expect(state.lastVerificationMode).toEqual(
+      RevocationVerificationMode.sameContractLiveStatus,
+    );
+    expect(state.lastVerifiedStatusRegistryId).toEqual(
+      fixture.witness.statusRegistryId,
+    );
+    expect(state.activeAccessCapabilities.member(capability)).toEqual(true);
+  });
+
+  it("rejects same-contract live-status verification when the credential status handle is revoked locally", () => {
+    const fixture = createDemoRevocationFixture();
+    const simulator = new CredentialsDemoRevocationSimulator();
+
+    simulator.initializeLiveStatusRegistry(fixture.witness.statusRegistryId);
+    const request = simulator.revocationAwareLiveStatusRequest(
+      fixture.credential.issuerVerificationMethodRef,
+      fixture.witness.verifierDomainHash,
+      fixture.verificationRequest.verifierChallengeHash,
+    );
+    const submission = buildSubmissionForLiveStatusRequest(fixture, request);
+
+    simulator.issueSecretBirthCredential(
+      fixture.credential,
+      fixture.credentialProof,
+    );
+    simulator.setHolderWitnesses({
+      holderSecret: fixture.witness.holderSecret,
+      holderSecretOpening: fixture.witness.holderSecretOpening,
+      holderBindingBlindingFactor: fixture.witness.holderBindingBlindingFactor,
+      holderBirthDateDays: fixture.witness.birthDateDays,
+      holderBirthDateOpening: fixture.witness.birthDateOpening,
+    });
+    simulator.revokeLiveStatusHandle(fixture.witness.statusHandle);
+
+    expect(() =>
+      simulator.issueRevocationAwareCapabilityWithLiveStatus(
+        fixture.credentialWithStatusBinding,
+        request,
+        submission,
+        fixture.liveStatusVerificationInputs,
+        fixture.witness.currentDay,
+      ),
+    ).toThrow(/revoked in the live status registry/i);
   });
 
   it("verifies a verifier-supplied-root hidden-holder presentation and issues a reusable capability", () => {

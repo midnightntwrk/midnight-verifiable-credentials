@@ -72,6 +72,7 @@ Implemented prototype coverage:
 - `registry/status-registry/src/test/witness-builder.test.ts`
   - deterministic status-handle derivation
   - revoked-set witness/capability construction
+  - same-contract live-status witness construction
   - verifier policy compatibility checks
   - revoked snapshot rejection
 - `registry/status-registry/src/test/attestation-builder.test.ts`
@@ -94,6 +95,7 @@ Implemented prototype coverage:
   - authority-attested proof acceptance and rejection paths
   - verifier policy compatibility for revoked-set and authority-attested flows
 - `prototypes/credential-families/birth-secret/src/test/status.test.ts`
+  - hidden-holder same-contract live-status request wiring
   - hidden-holder revoked-set status request wiring
   - hard rejection when accepted revoked snapshots already contain the
     credential status handle
@@ -155,6 +157,7 @@ Implemented prototype coverage:
 
 - local/unit verifier contract tests
 - local/unit revocation demo contract tests:
+  - same-contract live-status hidden-holder status path
   - verifier-supplied-root hidden-holder status path
   - authority-attested hidden-holder status path
   - hard rejection when accepted status evidence already says the credential is
@@ -195,7 +198,9 @@ Current gap:
 - smoke scenarios:
   - `use-cases/age-gate/scenarios/features/age_gate_happy_path.feature`
   - `use-cases/age-gate/scenarios/features/hidden_holder_age_gate_happy_path.feature`
+  - `use-cases/age-gate/scenarios/features/hidden_holder_live_status_happy_path.feature`
 - negative scenarios:
+  - `use-cases/age-gate/scenarios/features/hidden_holder_live_status_revoked.feature`
   - `use-cases/age-gate/scenarios/features/hidden_holder_wrong_registry.feature`
   - `use-cases/age-gate/scenarios/features/hidden_holder_wrong_root.feature`
   - `use-cases/age-gate/scenarios/features/hidden_holder_stale_authority_attestation.feature`
@@ -212,9 +217,10 @@ Current gap:
 - current scope:
   - non-Docker birth-credential age-gate happy path
   - non-Docker hidden-holder verifier-supplied-root age-gate happy path
+  - non-Docker hidden-holder same-contract live-status age-gate happy path
   - non-Docker hidden-holder negative-path trust-boundary coverage for
-    wrong-registry, wrong-root, stale-attestation, and revoked-credential
-    failures
+    live-status local-revocation, wrong-registry, wrong-root,
+    stale-attestation, and revoked-credential failures
 - local report:
   - `use-cases/age-gate/scenarios/target/site/serenity/index.html`
 

@@ -11,10 +11,12 @@ integrators.
 
 The current slice now covers:
 
-- two happy-path scenarios:
+- three happy-path scenarios:
   - explicit-holder age-gate happy path
   - hidden-holder revocation-aware happy path
-- four negative hidden-holder status-boundary scenarios:
+  - hidden-holder same-contract live-status happy path
+- five negative hidden-holder status-boundary scenarios:
+  - same-contract live-status revoked handle
   - wrong registry id
   - wrong revoked root
   - stale authority-attested proof

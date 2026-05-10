@@ -16,6 +16,8 @@ import {
   type SecretBirthCredential,
   type SecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs,
   type SecretBirthCredentialVerificationAuthorityAttestedStatusRequest,
+  type SecretBirthCredentialVerificationLiveStatusInputs,
+  type SecretBirthCredentialVerificationLiveStatusRequest,
   type SecretBirthCredentialVerificationRevokedSetStatusInputs,
   type SecretBirthCredentialVerificationRevokedSetStatusRequest,
   type SecretBirthCredentialVerificationSubmission,
@@ -117,6 +119,24 @@ export class CredentialsDemoRevocationSimulator {
     );
   }
 
+  public initializeLiveStatusRegistry(registryId: Uint8Array): void {
+    this.executeCircuit(() =>
+      this.contract.impureCircuits.initializeLiveStatusRegistry(
+        this.circuitContext,
+        registryId,
+      ),
+    );
+  }
+
+  public revokeLiveStatusHandle(statusHandle: Uint8Array): void {
+    this.executeCircuit(() =>
+      this.contract.impureCircuits.revokeLiveStatusHandle(
+        this.circuitContext,
+        statusHandle,
+      ),
+    );
+  }
+
   public revocationAwareVerifierSuppliedRootRequest(
     issuerVerificationMethodRef: VerificationMethodRef,
     verifierDomainHash: Uint8Array,
@@ -147,6 +167,21 @@ export class CredentialsDemoRevocationSimulator {
         verifierDomainHash,
         verifierChallengeHash,
         registryState,
+      ),
+    );
+  }
+
+  public revocationAwareLiveStatusRequest(
+    issuerVerificationMethodRef: VerificationMethodRef,
+    verifierDomainHash: Uint8Array,
+    verifierChallengeHash: Uint8Array,
+  ): SecretBirthCredentialVerificationLiveStatusRequest {
+    return this.executeCircuit(() =>
+      this.contract.impureCircuits.revocationAwareLiveStatusRequest(
+        this.circuitContext,
+        issuerVerificationMethodRef,
+        verifierDomainHash,
+        verifierChallengeHash,
       ),
     );
   }
@@ -187,6 +222,25 @@ export class CredentialsDemoRevocationSimulator {
         statusInputs,
         currentDay,
         currentTime,
+      ),
+    );
+  }
+
+  public issueRevocationAwareCapabilityWithLiveStatus(
+    credentialWithStatus: SecretBirthCredentialWithStatusBinding,
+    request: SecretBirthCredentialVerificationLiveStatusRequest,
+    submission: SecretBirthCredentialVerificationSubmission,
+    statusInputs: SecretBirthCredentialVerificationLiveStatusInputs,
+    currentDay: bigint,
+  ): Uint8Array {
+    return this.executeCircuit(() =>
+      this.contract.impureCircuits.issueRevocationAwareCapabilityWithLiveStatus(
+        this.circuitContext,
+        credentialWithStatus,
+        request,
+        submission,
+        statusInputs,
+        currentDay,
       ),
     );
   }
