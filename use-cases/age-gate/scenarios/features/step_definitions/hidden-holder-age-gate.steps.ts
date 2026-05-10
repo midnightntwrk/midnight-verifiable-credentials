@@ -8,6 +8,8 @@ import {
   RunTheHiddenHolderLiveStatusRevokedRejectedPath,
   RunTheHiddenHolderExpiredAuthorityAttestationRejectedPath,
   RunTheHiddenHolderRevokedCredentialRejectedPath,
+  RunTheHiddenHolderUnsupportedAuthorityModeRejectedPath,
+  RunTheHiddenHolderWrongAuthorityRejectedPath,
   RunTheHiddenHolderStaleSnapshotRejectedPath,
   RunTheHiddenHolderWrongRevokedRootRejectedPath,
   RunTheHiddenHolderWrongRegistryRejectedPath,
@@ -58,6 +60,22 @@ When(
   async () => {
     await engineer().attemptsTo(
       RunTheHiddenHolderExpiredAuthorityAttestationRejectedPath(),
+    );
+  },
+);
+
+When(
+  "the engineer runs the hidden-holder wrong-authority rejection path",
+  async () => {
+    await engineer().attemptsTo(RunTheHiddenHolderWrongAuthorityRejectedPath());
+  },
+);
+
+When(
+  "the engineer runs the hidden-holder unsupported authority-mode rejection path",
+  async () => {
+    await engineer().attemptsTo(
+      RunTheHiddenHolderUnsupportedAuthorityModeRejectedPath(),
     );
   },
 );

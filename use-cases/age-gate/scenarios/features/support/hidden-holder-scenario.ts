@@ -4,11 +4,13 @@ import { createSecretBirthCredentialFixture } from "@midnight-ntwrk/midnight-did
 import {
   RevocationAccessDecision,
   RevocationVerificationMode,
+  StatusCapabilityKind,
 } from "@midnight-ntwrk/midnight-did-credentials-demo-contract/contract-revocation";
 import {
   buildSubmissionForAuthorityAttestedRequest,
   buildSubmissionForLiveStatusRequest,
   buildSubmissionForRevokedSetRequest,
+  buildWrongAuthorityAttestedStatusProtocolInputs,
   createDemoRevocationFixture,
   CredentialsDemoRevocationSimulator,
   fixtureRegistryState,
@@ -304,6 +306,89 @@ export class UseHiddenHolderScenario extends Ability {
         fixture.authorityAttestedStatusProtocolInputs,
         fixture.witness.currentDay,
         request.verificationRequest.envelope.createdAt + 60n,
+      );
+      this.#recordResult(false, simulator, fixture, {
+        claimDecision: null,
+        verificationMode: null,
+        failureMessage: null,
+      });
+    } catch (error) {
+      this.#recordResult(false, simulator, fixture, {
+        claimDecision: null,
+        verificationMode: null,
+        failureMessage:
+          error instanceof Error ? error.message : String(error),
+      });
+    }
+  }
+
+  async runAuthorityAttestedWrongAuthorityRejectedPath(): Promise<void> {
+    const { fixture, simulator } = this.#setupFixture();
+    const request = simulator.revocationAwareAuthorityAttestedRequest(
+      fixture.credential.issuerVerificationMethodRef,
+      fixture.witness.verifierDomainHash,
+      fixture.verificationRequest.verifierChallengeHash,
+      fixtureRegistryState(fixture),
+    );
+    const submission = buildSubmissionForAuthorityAttestedRequest(
+      fixture,
+      request,
+    );
+
+    try {
+      simulator.issueRevocationAwareCapabilityWithAuthorityAttestation(
+        fixture.credentialWithStatusBinding,
+        request,
+        submission,
+        buildWrongAuthorityAttestedStatusProtocolInputs(fixture),
+        fixture.witness.currentDay,
+        request.verificationRequest.envelope.createdAt + 10n,
+      );
+      this.#recordResult(false, simulator, fixture, {
+        claimDecision: null,
+        verificationMode: null,
+        failureMessage: null,
+      });
+    } catch (error) {
+      this.#recordResult(false, simulator, fixture, {
+        claimDecision: null,
+        verificationMode: null,
+        failureMessage:
+          error instanceof Error ? error.message : String(error),
+      });
+    }
+  }
+
+  async runAuthorityAttestedUnsupportedModeRejectedPath(): Promise<void> {
+    const { fixture, simulator } = this.#setupFixture();
+    const request = simulator.revocationAwareAuthorityAttestedRequest(
+      fixture.credential.issuerVerificationMethodRef,
+      fixture.witness.verifierDomainHash,
+      fixture.verificationRequest.verifierChallengeHash,
+      fixtureRegistryState(fixture),
+    );
+    const submission = buildSubmissionForAuthorityAttestedRequest(
+      fixture,
+      request,
+    );
+
+    try {
+      simulator.issueRevocationAwareCapabilityWithAuthorityAttestation(
+        fixture.credentialWithStatusBinding,
+        {
+          ...request,
+          statusPolicy: {
+            ...request.statusPolicy,
+            acceptedStatusCapability:
+              StatusCapabilityKind.revokedSetNonMembership,
+            enforceAttestationMaxAge: false,
+            maxAttestationAge: 0n,
+          },
+        },
+        submission,
+        fixture.authorityAttestedStatusProtocolInputs,
+        fixture.witness.currentDay,
+        request.verificationRequest.envelope.createdAt + 10n,
       );
       this.#recordResult(false, simulator, fixture, {
         claimDecision: null,
