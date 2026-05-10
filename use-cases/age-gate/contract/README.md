@@ -134,6 +134,12 @@ For the authority-attested path specifically, the current demo now enforces:
 Those checks apply to the attestation timestamp. They do not prove that the
 verifier-supplied `revokedRoot` is the live canonical registry root.
 
+The demo test suite now also normalizes negative status failures into the
+shared canonical status error codes from
+`@midnight-ntwrk/midnight-did-credentials-status-registry`, so the use-case
+layer asserts the same fail-closed taxonomy as the reusable verifier helpers
+and BDD scenarios.
+
 The revocation demo intentionally keeps the presentation verification circuits
 internal and exposes the business-facing capability issuance and claim paths.
 That keeps the demo honest about how an integrator would typically consume the

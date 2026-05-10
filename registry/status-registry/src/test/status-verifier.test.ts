@@ -18,6 +18,7 @@ import {
   deriveRevokedSetStatusHandle,
   signAuthorityAttestedStatusProof,
   StatusCapabilityKind,
+  StatusHelperError,
   statusVerificationErrorCodes,
   verifyAuthorityAttestedStatus,
   verifyLiveContractStateStatus,
@@ -273,6 +274,7 @@ describe("status verifier", () => {
       expect(result.error.code).toEqual(
         statusVerificationErrorCodes.unknownRegistry,
       );
+      expect(result.error.cause).toBeInstanceOf(StatusHelperError);
     }
   });
 
@@ -310,6 +312,7 @@ describe("status verifier", () => {
       expect(result.error.code).toEqual(
         statusVerificationErrorCodes.unknownRegistry,
       );
+      expect(result.error.cause).toBeInstanceOf(StatusHelperError);
     }
   });
 

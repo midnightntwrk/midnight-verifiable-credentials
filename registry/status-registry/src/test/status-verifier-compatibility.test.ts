@@ -64,7 +64,7 @@ describe("status verifier compatibility", () => {
           acceptedRegistryId: bytes32("registry:other"),
         },
       }),
-    ).toThrow(/supplied status binding/i);
+    ).toThrow(/registry id does not match the supplied status binding/i);
   });
 
   it("pins the compact policy message for a status policy that does not request a real status capability", () => {
@@ -134,6 +134,102 @@ describe("status verifier compatibility", () => {
         protocol,
         110n,
       ),
-    ).toThrow(/does not match the status authority/i);
+    ).toThrow(/contract address does not match the status authority/i);
+  });
+
+  it("pins the compact max-age message for an authority attestation that is too old", () => {
+    const request = buildAuthorityAttestedStatusRequest({
+      registryState: {
+        registryId: bytes32("registry:hidden-holder"),
+        revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 2n,
+      },
+      verifierChallengeHash: bytes32("challenge:status"),
+    });
+    const binding = buildRegistryBoundStatusBinding({
+      registryRef: {
+        registryId: request.registryState.registryId,
+        authorityVerificationMethodRef: authoritySigner.verificationMethodRef,
+      },
+      statusHandleCommitment: bytes32("status-handle-commitment"),
+    });
+    const statement = buildAuthorityAttestedStatusStatement({
+      request,
+      statusHandleCommitment: binding.statusHandleCommitment,
+      expiresAt: 300n,
+    });
+    const protocol = buildAuthorityAttestedStatusProofProtocol({
+      request,
+      attestation: signAuthorityAttestedStatusProof({
+        statement,
+        signer: authoritySigner,
+        createdAt: 100n,
+      }),
+    });
+
+    expect(() =>
+      pureCircuits.assertVerifierStatusPolicyAcceptsAuthorityAttestedStatusProofProtocol(
+        {
+          requireStatus: true,
+          acceptedStatusCapability:
+            StatusCapabilityKind.authorityAttestedStatus,
+          enforceRegistryId: true,
+          acceptedRegistryId: bytes32("registry:hidden-holder"),
+          enforceAttestationMaxAge: true,
+          maxAttestationAge: 10n,
+        },
+        binding,
+        protocol,
+        111n,
+      ),
+    ).toThrow(/status proof exceeds the verifier max-age policy/i);
+  });
+
+  it("pins the compact future-dated message for an authority attestation created after the verifier time", () => {
+    const request = buildAuthorityAttestedStatusRequest({
+      registryState: {
+        registryId: bytes32("registry:hidden-holder"),
+        revokedRoot: bytes32("revoked-root:current"),
+        registryVersion: 2n,
+      },
+      verifierChallengeHash: bytes32("challenge:status"),
+    });
+    const binding = buildRegistryBoundStatusBinding({
+      registryRef: {
+        registryId: request.registryState.registryId,
+        authorityVerificationMethodRef: authoritySigner.verificationMethodRef,
+      },
+      statusHandleCommitment: bytes32("status-handle-commitment"),
+    });
+    const statement = buildAuthorityAttestedStatusStatement({
+      request,
+      statusHandleCommitment: binding.statusHandleCommitment,
+      expiresAt: 300n,
+    });
+    const protocol = buildAuthorityAttestedStatusProofProtocol({
+      request,
+      attestation: signAuthorityAttestedStatusProof({
+        statement,
+        signer: authoritySigner,
+        createdAt: 101n,
+      }),
+    });
+
+    expect(() =>
+      pureCircuits.assertVerifierStatusPolicyAcceptsAuthorityAttestedStatusProofProtocol(
+        {
+          requireStatus: true,
+          acceptedStatusCapability:
+            StatusCapabilityKind.authorityAttestedStatus,
+          enforceRegistryId: true,
+          acceptedRegistryId: bytes32("registry:hidden-holder"),
+          enforceAttestationMaxAge: false,
+          maxAttestationAge: 0n,
+        },
+        binding,
+        protocol,
+        100n,
+      ),
+    ).toThrow(/proof creation time cannot be in the future/i);
   });
 });

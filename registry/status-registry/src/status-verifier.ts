@@ -42,7 +42,7 @@ export class StatusVerificationError extends StatusHelperError {
     readonly code: StatusVerificationErrorCode;
     readonly mode: StatusVerificationMode;
     readonly message: string;
-    readonly cause: unknown;
+    readonly cause?: unknown;
   }) {
     super({ code, message, cause });
     this.name = "StatusVerificationError";
@@ -204,13 +204,13 @@ const classifyStatusVerificationError = (
       code: error.code,
       mode,
       message: error.message,
-      cause: error.cause,
+      cause: error,
     });
   }
 
   const message = error instanceof Error ? error.message : String(error);
 
-  // Keep these patterns aligned with the raw upstream throws pinned in
+  // Keep these patterns aligned with the selected raw upstream throws pinned in
   // `src/test/status-verifier-compatibility.test.ts`. Repo-owned helper paths
   // should prefer typed `StatusHelperError`s; these regexes remain for
   // Compact/runtime surfaces that still throw plain message strings.
@@ -231,7 +231,7 @@ const classifyStatusVerificationError = (
     ],
     [
       statusVerificationErrorCodes.unsupportedStatusProofMode,
-      /does not accept revoked-set non-membership|does not accept authority-attested status|must require status for |request a real status capability/i,
+      /does not accept revoked-set non-membership|does not accept authority-attested status|does not accept live revoked-set verification|must require revoked-set status support|must require status for |request a real status capability/i,
     ],
     [
       statusVerificationErrorCodes.authorityMismatch,

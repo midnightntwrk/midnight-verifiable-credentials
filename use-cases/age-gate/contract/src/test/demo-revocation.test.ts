@@ -1,3 +1,9 @@
+import {
+  normalizeStatusVerificationFailure,
+  type StatusVerificationErrorCode,
+  statusVerificationErrorCodes,
+  type StatusVerificationMode,
+} from "@midnight-ntwrk/midnight-did-credentials-status-registry";
 import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { describe, expect, it } from "vitest";
 
@@ -17,6 +23,32 @@ import {
 } from "./demo-revocation-fixtures.js";
 
 setNetworkId("undeployed");
+
+const expectCanonicalStatusFailure = ({
+  mode,
+  action,
+  code,
+  pattern,
+}: {
+  readonly mode: StatusVerificationMode;
+  readonly action: () => unknown;
+  readonly code: StatusVerificationErrorCode;
+  readonly pattern?: RegExp;
+}): void => {
+  expect.assertions(pattern === undefined ? 1 : 2);
+  try {
+    action();
+  } catch (error) {
+    const normalized = normalizeStatusVerificationFailure({ mode, error });
+    expect(normalized.code).toEqual(code);
+    if (pattern !== undefined) {
+      expect(normalized.message).toMatch(pattern);
+    }
+    return;
+  }
+
+  throw new Error("expected canonical status failure");
+};
 
 describe("credentials demo revocation contract", () => {
   it("builds a typed verifier-supplied-root request with an accepted registry root", () => {
@@ -180,7 +212,9 @@ describe("credentials demo revocation contract", () => {
     });
     simulator.revokeLiveStatusHandle(fixture.witness.statusHandle);
 
-    expect(() =>
+    expectCanonicalStatusFailure({
+      mode: "liveContractState",
+      action: () =>
       simulator.issueRevocationAwareCapabilityWithLiveStatus(
         fixture.credentialWithStatusBinding,
         request,
@@ -188,7 +222,9 @@ describe("credentials demo revocation contract", () => {
         fixture.liveStatusVerificationInputs,
         fixture.witness.currentDay,
       ),
-    ).toThrow(/revoked in the live status registry/i);
+      code: statusVerificationErrorCodes.revoked,
+      pattern: /revoked in the live status registry/i,
+    });
   });
 
   it("allows idempotent repeat revocation of the same live status handle", () => {
@@ -231,7 +267,9 @@ describe("credentials demo revocation contract", () => {
       holderBirthDateOpening: fixture.witness.birthDateOpening,
     });
 
-    expect(() =>
+    expectCanonicalStatusFailure({
+      mode: "liveContractState",
+      action: () =>
       simulator.issueRevocationAwareCapabilityWithLiveStatus(
         fixture.credentialWithStatusBinding,
         request,
@@ -239,7 +277,9 @@ describe("credentials demo revocation contract", () => {
         fixture.liveStatusVerificationInputs,
         fixture.witness.currentDay,
       ),
-    ).toThrow(/does not match the live status registry/i);
+      code: statusVerificationErrorCodes.statusBindingMismatch,
+      pattern: /does not match the live status registry/i,
+    });
   });
 
   it("verifies a verifier-supplied-root hidden-holder presentation and issues a reusable capability", () => {
@@ -363,7 +403,9 @@ describe("credentials demo revocation contract", () => {
       holderBirthDateOpening: fixture.witness.birthDateOpening,
     });
 
-    expect(() =>
+    expectCanonicalStatusFailure({
+      mode: "authorityAttested",
+      action: () =>
       simulator.issueRevocationAwareCapabilityWithAuthorityAttestation(
         fixture.credentialWithStatusBinding,
         request,
@@ -372,7 +414,9 @@ describe("credentials demo revocation contract", () => {
         fixture.witness.currentDay,
         request.verificationRequest.envelope.createdAt + 60n,
       ),
-    ).toThrow(/exceeds the verifier max-age policy/i);
+      code: statusVerificationErrorCodes.attestationTooOld,
+      pattern: /exceeds the verifier max-age policy/i,
+    });
   });
 
   it("rejects verifier-supplied-root verification when the supplied revoked root diverges from the request", () => {
@@ -398,7 +442,9 @@ describe("credentials demo revocation contract", () => {
       holderBirthDateOpening: fixture.witness.birthDateOpening,
     });
 
-    expect(() =>
+    expectCanonicalStatusFailure({
+      mode: "revokedSetObservedState",
+      action: () =>
       simulator.issueRevocationAwareCapabilityWithVerifierSuppliedRoot(
         fixture.credentialWithStatusBinding,
         request,
@@ -419,7 +465,9 @@ describe("credentials demo revocation contract", () => {
         },
         fixture.witness.currentDay,
       ),
-    ).toThrow(/revoked root does not match the verifier request/i);
+      code: statusVerificationErrorCodes.statusRequestMismatch,
+      pattern: /revoked root does not match the verifier request/i,
+    });
   });
 
   it("rejects verifier-supplied-root verification when the request snapshot version is stale", () => {
@@ -445,7 +493,9 @@ describe("credentials demo revocation contract", () => {
       holderBirthDateOpening: fixture.witness.birthDateOpening,
     });
 
-    expect(() =>
+    expectCanonicalStatusFailure({
+      mode: "revokedSetObservedState",
+      action: () =>
       simulator.issueRevocationAwareCapabilityWithVerifierSuppliedRoot(
         fixture.credentialWithStatusBinding,
         {
@@ -462,7 +512,9 @@ describe("credentials demo revocation contract", () => {
         fixture.revokedSetStatusVerificationInputs,
         fixture.witness.currentDay,
       ),
-    ).toThrow(/registry version does not match the verifier request/i);
+      code: statusVerificationErrorCodes.statusRequestMismatch,
+      pattern: /registry version does not match the verifier request/i,
+    });
   });
 
   it("rejects authority-attested verification when the request snapshot version is stale", () => {
@@ -491,7 +543,9 @@ describe("credentials demo revocation contract", () => {
       holderBirthDateOpening: fixture.witness.birthDateOpening,
     });
 
-    expect(() =>
+    expectCanonicalStatusFailure({
+      mode: "authorityAttested",
+      action: () =>
       simulator.issueRevocationAwareCapabilityWithAuthorityAttestation(
         fixture.credentialWithStatusBinding,
         {
@@ -509,7 +563,9 @@ describe("credentials demo revocation contract", () => {
         fixture.witness.currentDay,
         request.verificationRequest.envelope.createdAt + 10n,
       ),
-    ).toThrow(/registry version does not match/i);
+      code: statusVerificationErrorCodes.statusRequestMismatch,
+      pattern: /registry version does not match/i,
+    });
   });
 
   it("rejects authority-attested verification after status proof expiration", () => {
@@ -538,7 +594,9 @@ describe("credentials demo revocation contract", () => {
       holderBirthDateOpening: fixture.witness.birthDateOpening,
     });
 
-    expect(() =>
+    expectCanonicalStatusFailure({
+      mode: "authorityAttested",
+      action: () =>
       simulator.issueRevocationAwareCapabilityWithAuthorityAttestation(
         fixture.credentialWithStatusBinding,
         request,
@@ -547,7 +605,9 @@ describe("credentials demo revocation contract", () => {
         fixture.witness.currentDay,
         request.verificationRequest.envelope.createdAt + 101n,
       ),
-    ).toThrow(/has expired/i);
+      code: statusVerificationErrorCodes.attestationExpired,
+      pattern: /has expired/i,
+    });
   });
 
   it("rejects authority-attested verification when the attestation is signed by the wrong authority", () => {
@@ -576,7 +636,9 @@ describe("credentials demo revocation contract", () => {
       holderBirthDateOpening: fixture.witness.birthDateOpening,
     });
 
-    expect(() =>
+    expectCanonicalStatusFailure({
+      mode: "authorityAttested",
+      action: () =>
       simulator.issueRevocationAwareCapabilityWithAuthorityAttestation(
         fixture.credentialWithStatusBinding,
         request,
@@ -585,7 +647,9 @@ describe("credentials demo revocation contract", () => {
         fixture.witness.currentDay,
         request.verificationRequest.envelope.createdAt + 10n,
       ),
-    ).toThrow(/does not match the status authority/i);
+      code: statusVerificationErrorCodes.authorityMismatch,
+      pattern: /does not match the status authority/i,
+    });
   });
 
   it("rejects authority-attested verification when the request expects another status proof mode", () => {
@@ -614,7 +678,9 @@ describe("credentials demo revocation contract", () => {
       holderBirthDateOpening: fixture.witness.birthDateOpening,
     });
 
-    expect(() =>
+    expectCanonicalStatusFailure({
+      mode: "authorityAttested",
+      action: () =>
       simulator.issueRevocationAwareCapabilityWithAuthorityAttestation(
         fixture.credentialWithStatusBinding,
         {
@@ -631,7 +697,9 @@ describe("credentials demo revocation contract", () => {
         fixture.witness.currentDay,
         request.verificationRequest.envelope.createdAt + 10n,
       ),
-    ).toThrow(/does not accept authority-attested status/i);
+      code: statusVerificationErrorCodes.unsupportedStatusProofMode,
+      pattern: /does not accept authority-attested status/i,
+    });
   });
 
   it("rejects verifier-supplied-root verification when the request expects another status proof mode", () => {
@@ -657,7 +725,9 @@ describe("credentials demo revocation contract", () => {
       holderBirthDateOpening: fixture.witness.birthDateOpening,
     });
 
-    expect(() =>
+    expectCanonicalStatusFailure({
+      mode: "revokedSetObservedState",
+      action: () =>
       simulator.issueRevocationAwareCapabilityWithVerifierSuppliedRoot(
         fixture.credentialWithStatusBinding,
         {
@@ -671,7 +741,9 @@ describe("credentials demo revocation contract", () => {
         fixture.revokedSetStatusVerificationInputs,
         fixture.witness.currentDay,
       ),
-    ).toThrow(/must require revoked-set status support/i);
+      code: statusVerificationErrorCodes.unsupportedStatusProofMode,
+      pattern: /must require revoked-set status support/i,
+    });
   });
 
   it("rejects same-contract live-status verification when the request expects another status proof mode", () => {
@@ -698,7 +770,9 @@ describe("credentials demo revocation contract", () => {
     );
     const submission = buildSubmissionForLiveStatusRequest(fixture, request);
 
-    expect(() =>
+    expectCanonicalStatusFailure({
+      mode: "liveContractState",
+      action: () =>
       simulator.issueRevocationAwareCapabilityWithLiveStatus(
         fixture.credentialWithStatusBinding,
         {
@@ -712,7 +786,9 @@ describe("credentials demo revocation contract", () => {
         fixture.liveStatusVerificationInputs,
         fixture.witness.currentDay,
       ),
-    ).toThrow(/does not accept live revoked-set verification/i);
+      code: statusVerificationErrorCodes.unsupportedStatusProofMode,
+      pattern: /does not accept live revoked-set verification/i,
+    });
   });
 
   it("rejects a revoked credential before building any revocation demo verification inputs", () => {
