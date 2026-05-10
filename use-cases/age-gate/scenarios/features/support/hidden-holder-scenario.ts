@@ -6,7 +6,9 @@ import {
 } from "@midnight-ntwrk/midnight-did-credentials-demo-contract/contract-revocation";
 import {
   buildSubmissionForAuthorityAttestedRequest,
+  buildSubmissionForLiveStatusRequest,
   buildSubmissionForRevokedSetRequest,
+  createSecretBirthCredentialFixture,
   createDemoRevocationFixture,
   CredentialsDemoRevocationSimulator,
   fixtureRegistryState,
@@ -101,6 +103,38 @@ export class UseHiddenHolderScenario extends Ability {
         fixture.revokedSetStatusVerificationInputs,
         fixture.witness.currentDay,
       );
+    const claimDecision = simulator.claimRevocationAwareCapability(capability);
+    this.#recordResult(
+      claimDecision === RevocationAccessDecision.approved,
+      simulator,
+      fixture,
+      {
+        claimDecision: RevocationAccessDecision[claimDecision],
+        verificationMode:
+          RevocationVerificationMode[simulator.getLedger().lastVerificationMode],
+        failureMessage: null,
+      },
+    );
+  }
+
+  async runLiveStatusHappyPath(): Promise<void> {
+    const { fixture, simulator } = this.#setupFixture();
+
+    simulator.initializeLiveStatusRegistry(fixture.witness.statusRegistryId);
+    const request = simulator.revocationAwareLiveStatusRequest(
+      fixture.credential.issuerVerificationMethodRef,
+      fixture.witness.verifierDomainHash,
+      fixture.verificationRequest.verifierChallengeHash,
+    );
+    const submission = buildSubmissionForLiveStatusRequest(fixture, request);
+
+    const capability = simulator.issueRevocationAwareCapabilityWithLiveStatus(
+      fixture.credentialWithStatusBinding,
+      request,
+      submission,
+      fixture.liveStatusVerificationInputs,
+      fixture.witness.currentDay,
+    );
     const claimDecision = simulator.claimRevocationAwareCapability(capability);
     this.#recordResult(
       claimDecision === RevocationAccessDecision.approved,
@@ -286,6 +320,63 @@ export class UseHiddenHolderScenario extends Ability {
     }
   }
 
+  async runRevokedCredentialRejectedPath(): Promise<void> {
+    const baseline = createSecretBirthCredentialFixture();
+    const simulator = new CredentialsDemoRevocationSimulator();
+
+    try {
+      createSecretBirthCredentialFixture({
+        revokedStatusHandles: [baseline.witness.statusHandle],
+      });
+      this.#recordResult(false, simulator, baseline, {
+        claimDecision: null,
+        verificationMode: null,
+        failureMessage: null,
+      });
+    } catch (error) {
+      this.#recordResult(false, simulator, baseline, {
+        claimDecision: null,
+        verificationMode: null,
+        failureMessage:
+          error instanceof Error ? error.message : String(error),
+      });
+    }
+  }
+
+  async runLiveStatusRevokedCredentialRejectedPath(): Promise<void> {
+    const { fixture, simulator } = this.#setupFixture();
+
+    simulator.initializeLiveStatusRegistry(fixture.witness.statusRegistryId);
+    const request = simulator.revocationAwareLiveStatusRequest(
+      fixture.credential.issuerVerificationMethodRef,
+      fixture.witness.verifierDomainHash,
+      fixture.verificationRequest.verifierChallengeHash,
+    );
+    const submission = buildSubmissionForLiveStatusRequest(fixture, request);
+    simulator.revokeLiveStatusHandle(fixture.witness.statusHandle);
+
+    try {
+      simulator.issueRevocationAwareCapabilityWithLiveStatus(
+        fixture.credentialWithStatusBinding,
+        request,
+        submission,
+        fixture.liveStatusVerificationInputs,
+        fixture.witness.currentDay,
+      );
+      this.#recordResult(false, simulator, fixture, {
+        claimDecision: null,
+        verificationMode: null,
+        failureMessage: null,
+      });
+    } catch (error) {
+      this.#recordResult(false, simulator, fixture, {
+        claimDecision: null,
+        verificationMode: null,
+        failureMessage:
+          error instanceof Error ? error.message : String(error),
+      });
+    }
+  }
   lastResult(): HiddenHolderScenarioResult {
     if (!this.#lastResult) {
       throw new Error("Hidden-holder scenario has not been executed yet");

@@ -18,6 +18,8 @@ import {
   type SecretBirthCredentialPresentationRequest,
   type SecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs,
   type SecretBirthCredentialVerificationAuthorityAttestedStatusRequest,
+  type SecretBirthCredentialVerificationLiveStatusInputs,
+  type SecretBirthCredentialVerificationLiveStatusRequest,
   type SecretBirthCredentialVerificationRequest,
   type SecretBirthCredentialVerificationRevokedSetStatusInputs,
   type SecretBirthCredentialVerificationRevokedSetStatusRequest,
@@ -45,8 +47,10 @@ export type DemoRevocationFixture = {
   readonly presentationRequest: SecretBirthCredentialPresentationRequest;
   readonly verificationRequest: SecretBirthCredentialVerificationRequest;
   readonly credentialWithStatusBinding: SecretBirthCredentialWithStatusBinding;
+  readonly liveStatusVerificationRequest: SecretBirthCredentialVerificationLiveStatusRequest;
   readonly revokedSetStatusVerificationRequest: SecretBirthCredentialVerificationRevokedSetStatusRequest;
   readonly authorityAttestedStatusVerificationRequest: SecretBirthCredentialVerificationAuthorityAttestedStatusRequest;
+  readonly liveStatusVerificationInputs: SecretBirthCredentialVerificationLiveStatusInputs;
   readonly revokedSetStatusVerificationInputs: SecretBirthCredentialVerificationRevokedSetStatusInputs;
   readonly authorityAttestedStatusProtocolInputs: SecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs;
   readonly presentation: SecretBirthCredentialPresentation;
@@ -344,6 +348,27 @@ export const createDemoRevocationFixture = (): DemoRevocationFixture => {
       statusRequest,
     };
 
+  const liveStatusVerificationRequest: SecretBirthCredentialVerificationLiveStatusRequest =
+    {
+      verificationRequest,
+      statusPolicy: {
+        requireStatus: true,
+        acceptedStatusCapability: StatusCapabilityKind.revokedSetNonMembership,
+        enforceRegistryId: true,
+        acceptedRegistryId: witness.statusRegistryId,
+        enforceAttestationMaxAge: false,
+        maxAttestationAge: 0n,
+      },
+    };
+
+  const liveStatusVerificationInputs: SecretBirthCredentialVerificationLiveStatusInputs =
+    {
+      witnessInput: {
+        statusHandle: witness.statusHandle,
+        statusHandleOpening: witness.statusHandleOpening,
+      },
+    };
+
   const revokedSetStatusVerificationInputs: SecretBirthCredentialVerificationRevokedSetStatusInputs =
     {
       statusProofProtocol: {
@@ -440,8 +465,10 @@ export const createDemoRevocationFixture = (): DemoRevocationFixture => {
     presentationRequest,
     verificationRequest,
     credentialWithStatusBinding,
+    liveStatusVerificationRequest,
     revokedSetStatusVerificationRequest,
     authorityAttestedStatusVerificationRequest,
+    liveStatusVerificationInputs,
     revokedSetStatusVerificationInputs,
     authorityAttestedStatusProtocolInputs,
     presentation,
@@ -497,6 +524,12 @@ export const buildSubmissionForVerificationRequest = (
 export const buildSubmissionForRevokedSetRequest = (
   fixture: DemoRevocationFixture,
   request: SecretBirthCredentialVerificationRevokedSetStatusRequest,
+): SecretBirthCredentialVerificationSubmission =>
+  buildSubmissionForVerificationRequest(fixture, request.verificationRequest);
+
+export const buildSubmissionForLiveStatusRequest = (
+  fixture: DemoRevocationFixture,
+  request: SecretBirthCredentialVerificationLiveStatusRequest,
 ): SecretBirthCredentialVerificationSubmission =>
   buildSubmissionForVerificationRequest(fixture, request.verificationRequest);
 
