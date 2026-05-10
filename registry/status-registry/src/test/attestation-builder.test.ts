@@ -13,8 +13,8 @@ import {
   deriveAuthorityAttestedStatusProofNonceScalar,
   signAuthorityAttestedStatusProof,
   StatusType,
-  unsafeSignAuthorityAttestedStatusProofWithNonceScalar,
 } from "../index.js";
+import { unsafeSignAuthorityAttestedStatusProofWithNonceScalar } from "../testing.js";
 
 setNetworkId("undeployed");
 

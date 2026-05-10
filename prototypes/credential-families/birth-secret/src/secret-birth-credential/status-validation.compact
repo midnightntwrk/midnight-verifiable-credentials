@@ -57,11 +57,32 @@ export circuit assertValidSecretBirthCredentialVerificationRevokedSetStatusReque
   );
 }
 
+export circuit assertValidSecretBirthCredentialVerificationLiveStatusRequest(
+  request: SecretBirthCredentialVerificationLiveStatusRequest
+): [] {
+  assertValidSecretBirthCredentialVerificationRequestMessage(
+    request.verificationRequest
+  );
+  assertValidVerifierStatusPolicy(request.statusPolicy);
+  assert(
+    request.statusPolicy.requireStatus,
+    "Secret birth live status verification request must require credential status"
+  );
+}
+
 export circuit assertValidSecretBirthCredentialVerificationRevokedSetStatusInputs(
   statusInputs: SecretBirthCredentialVerificationRevokedSetStatusInputs
 ): [] {
   assertValidRevokedSetNonMembershipStatusProofProtocol(
     statusInputs.statusProofProtocol
+  );
+}
+
+export circuit assertValidSecretBirthCredentialVerificationLiveStatusInputs(
+  statusInputs: SecretBirthCredentialVerificationLiveStatusInputs
+): [] {
+  assertValidLiveStatusWitnessInput(
+    statusInputs.witnessInput
   );
 }
 
@@ -131,6 +152,47 @@ export circuit assertSecretBirthCredentialVerificationSubmissionMatchesRevokedSe
     request.statusPolicy,
     credentialWithStatus.credential.statusBinding,
     statusInputs.statusProofProtocol
+  );
+}
+
+export circuit assertSecretBirthCredentialVerificationSubmissionMatchesLiveStatusRequest(
+  credentialWithStatus: SecretBirthCredentialWithStatusBinding,
+  request: SecretBirthCredentialVerificationLiveStatusRequest,
+  submission: SecretBirthCredentialVerificationSubmission,
+  statusInputs: SecretBirthCredentialVerificationLiveStatusInputs,
+  holderSecret: Bytes<32>,
+  holderSecretOpening: Bytes<32>,
+  holderBindingBlindingFactor: Bytes<32>
+): [] {
+  const plainCredential = secretBirthCredentialWithoutStatusBinding(
+    credentialWithStatus.credential
+  );
+  assertValidSecretBirthCredentialWithStatusBinding(credentialWithStatus);
+  assertValidSecretBirthCredentialVerificationLiveStatusRequest(request);
+  assertValidSecretBirthCredentialVerificationLiveStatusInputs(
+    statusInputs
+  );
+  assert(
+    secretBirthCredentialBodyRoot(submission.body.credential)
+      == secretBirthCredentialBodyRoot(plainCredential),
+    "Live status verification submission credential does not match the status-bound credential body"
+  );
+  assert(
+    submission.body.credentialProof.challengeHash
+      == credentialWithStatus.credentialProof.challengeHash,
+    "Live status verification submission credential proof does not match the status-bound credential proof"
+  );
+  assertSecretBirthCredentialVerificationSubmissionMatchesRequest(
+    request.verificationRequest,
+    submission,
+    holderSecret,
+    holderSecretOpening,
+    holderBindingBlindingFactor
+  );
+  assertVerifierStatusPolicyAcceptsLiveStatusBinding(
+    request.statusPolicy,
+    credentialWithStatus.credential.statusBinding,
+    statusInputs.witnessInput
   );
 }
 

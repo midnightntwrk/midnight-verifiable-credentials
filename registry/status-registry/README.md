@@ -61,6 +61,7 @@ Current scope:
 - off-chain witness-builder helpers for:
   - deterministic status-handle derivation
   - registry-bound status binding construction
+  - same-contract live-status witness construction
   - canonical revoked-set status request construction
   - witness-input construction
   - canonical request + witness + protocol bundle construction
@@ -79,10 +80,13 @@ Nonce requirement for authority-attested proofs:
   - signer secret key
   - `createdAt`
 - this is now the default safe helper path
-- the low-level escape hatch is
+- the low-level escape hatch now lives on the dedicated `./testing` package
+  subpath as
   `unsafeSignAuthorityAttestedStatusProofWithNonceScalar(...)`
-- callers should treat that unsafe override as test-only or tightly controlled
-  integration glue rather than a normal application path
+- the root package surface intentionally does not re-export that unsafe
+  override
+- callers should treat the `./testing` override as test-only or tightly
+  controlled integration glue rather than a normal application path
 
 Freshness requirement for authority-attested proofs:
 
@@ -141,6 +145,19 @@ Canonical revoked-set helper path:
 - this helper still does not prove final Merkle non-membership
 - it normalizes the request/witness/protocol shape so higher-layer families and
   verifier code stop rebuilding those pieces ad hoc
+
+Canonical same-contract live-status helper path:
+
+- use `buildLiveStatusWitness(...)` when the business contract owns the live
+  revocation set directly and does not need an external `(registryId,
+  revokedRoot)` snapshot
+- the helper returns:
+  - `LiveStatusWitnessInput`
+  - matching shared `RegistryBoundStatusBinding`
+  - the derived status handle
+- this is the right prototype seam for contracts that can reject revoked
+  status handles against their own live local state without an authority
+  attestation bridge
 
 Current prototype limitation:
 - `assertStateUsesThisRegistry(...)` binds the supplied snapshot to this

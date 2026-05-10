@@ -26,6 +26,8 @@ import {
   type SecretBirthCredentialPresentationRequest,
   type SecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs,
   type SecretBirthCredentialVerificationAuthorityAttestedStatusRequest,
+  type SecretBirthCredentialVerificationLiveStatusInputs,
+  type SecretBirthCredentialVerificationLiveStatusRequest,
   type SecretBirthCredentialVerificationRequest,
   type SecretBirthCredentialVerificationRevokedSetStatusInputs,
   type SecretBirthCredentialVerificationRevokedSetStatusRequest,
@@ -51,8 +53,10 @@ export type BirthCredentialFixture = {
   readonly presentationRequest: SecretBirthCredentialPresentationRequest;
   readonly verificationRequest: SecretBirthCredentialVerificationRequest;
   readonly credentialWithStatusBinding: SecretBirthCredentialWithStatusBinding;
+  readonly liveStatusVerificationRequest: SecretBirthCredentialVerificationLiveStatusRequest;
   readonly revokedSetStatusVerificationRequest: SecretBirthCredentialVerificationRevokedSetStatusRequest;
   readonly authorityAttestedStatusVerificationRequest: SecretBirthCredentialVerificationAuthorityAttestedStatusRequest;
+  readonly liveStatusVerificationInputs: SecretBirthCredentialVerificationLiveStatusInputs;
   readonly revokedSetStatusVerificationInputs: SecretBirthCredentialVerificationRevokedSetStatusInputs;
   readonly authorityAttestedStatusProtocolInputs: SecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs;
   readonly presentation: SecretBirthCredentialPresentation;
@@ -412,6 +416,27 @@ export const createSecretBirthCredentialFixture = (
       statusRequest,
     };
 
+  const liveStatusVerificationRequest: SecretBirthCredentialVerificationLiveStatusRequest =
+    {
+      verificationRequest,
+      statusPolicy: {
+        requireStatus: true,
+        acceptedStatusCapability: StatusCapabilityKind.revokedSetNonMembership,
+        enforceRegistryId: true,
+        acceptedRegistryId: witness.statusRegistryId,
+        enforceAttestationMaxAge: false,
+        maxAttestationAge: 0n,
+      },
+    };
+
+  const liveStatusVerificationInputs: SecretBirthCredentialVerificationLiveStatusInputs =
+    {
+      witnessInput: {
+        statusHandle: witness.statusHandle,
+        statusHandleOpening: witness.statusHandleOpening,
+      },
+    };
+
   const revokedSetStatusVerificationInputs: SecretBirthCredentialVerificationRevokedSetStatusInputs =
     {
       statusProofProtocol: revokedSetStatusProofProtocol,
@@ -500,8 +525,10 @@ export const createSecretBirthCredentialFixture = (
     presentationRequest,
     verificationRequest,
     credentialWithStatusBinding,
+    liveStatusVerificationRequest,
     revokedSetStatusVerificationRequest,
     authorityAttestedStatusVerificationRequest,
+    liveStatusVerificationInputs,
     revokedSetStatusVerificationInputs,
     authorityAttestedStatusProtocolInputs,
     presentation,
