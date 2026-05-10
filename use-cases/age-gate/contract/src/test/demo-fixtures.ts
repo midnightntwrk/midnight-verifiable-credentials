@@ -7,12 +7,13 @@ import {
   pureCircuits as genericPureCircuits,
   type VerificationMethodRef,
 } from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
+
 import {
   type BirthCredential,
   type BirthCredentialPresentation,
   type BirthCredentialPresentationRequest,
   pureCircuits,
-} from "@midnight-ntwrk/midnight-did-credentials-birth/managed/birth-credential/contract/index.js";
+} from "../managed/demo/contract/index.js";
 
 const JUBJUB_SUBGROUP_ORDER =
   6554484396890773809930967563523245729705921265872317281365359162392183254199n;
@@ -174,6 +175,7 @@ export const createBirthCredentialFixture = (): BirthCredentialFixture => {
     holderBinding: {
       holderVerificationMethodRef: holder.verificationMethodRef,
     },
+    statusBinding: {},
     issuedAt: 10_000n,
     hasExpiration: true,
     expiresAt: 20_000n,

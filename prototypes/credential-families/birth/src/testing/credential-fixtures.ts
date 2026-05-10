@@ -218,7 +218,7 @@ const buildBirthCredentialFixture = (
     ),
   };
 
-  const credential: BirthCredential = {
+  const credential = {
     version: 1n,
     schema: {
       packageId: padText("midnight-did:vc:birth"),
@@ -230,6 +230,7 @@ const buildBirthCredentialFixture = (
     holderBinding: {
       holderVerificationMethodRef: holder.verificationMethodRef,
     },
+    statusBinding: {},
     issuedAt: 10_000n,
     hasExpiration: true,
     expiresAt: 20_000n,

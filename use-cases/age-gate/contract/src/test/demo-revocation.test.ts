@@ -64,10 +64,10 @@ describe("credentials demo revocation contract", () => {
     });
 
     const capability = simulator.issueRevocationAwareCapabilityWithVerifierSuppliedRoot(
-      fixture.credentialWithStatus,
+      fixture.credentialWithStatusBinding,
       request,
       submission,
-      fixture.statusVerificationInputs,
+      fixture.revokedSetStatusVerificationInputs,
       fixture.witness.currentDay,
     );
     const firstClaim = simulator.claimRevocationAwareCapability(capability);
@@ -115,10 +115,10 @@ describe("credentials demo revocation contract", () => {
     });
 
     const capability = simulator.issueRevocationAwareCapabilityWithAuthorityAttestation(
-      fixture.credentialWithAuthorityAttestedStatus,
+      fixture.credentialWithStatusBinding,
       request,
       submission,
-      fixture.authorityAttestedStatusVerificationInputs,
+      fixture.authorityAttestedStatusProtocolInputs,
       fixture.witness.currentDay,
       request.verificationRequest.envelope.createdAt + 10n,
     );
@@ -163,10 +163,10 @@ describe("credentials demo revocation contract", () => {
 
     expect(() =>
       simulator.issueRevocationAwareCapabilityWithAuthorityAttestation(
-        fixture.credentialWithAuthorityAttestedStatus,
+        fixture.credentialWithStatusBinding,
         request,
         submission,
-        fixture.authorityAttestedStatusVerificationInputs,
+        fixture.authorityAttestedStatusProtocolInputs,
         fixture.witness.currentDay,
         request.verificationRequest.envelope.createdAt + 60n,
       ),
@@ -198,15 +198,20 @@ describe("credentials demo revocation contract", () => {
 
     expect(() =>
       simulator.issueRevocationAwareCapabilityWithVerifierSuppliedRoot(
-        fixture.credentialWithStatus,
+        fixture.credentialWithStatusBinding,
         request,
         submission,
         {
-          nonRevocationWitness: {
-            ...fixture.statusVerificationInputs.nonRevocationWitness,
-            registryState: {
-              ...fixture.statusVerificationInputs.nonRevocationWitness.registryState,
-              revokedRoot: new Uint8Array(32).fill(7),
+          statusProofProtocol: {
+            ...fixture.revokedSetStatusVerificationInputs.statusProofProtocol,
+            witnessInput: {
+              ...fixture.revokedSetStatusVerificationInputs.statusProofProtocol
+                .witnessInput,
+              registryState: {
+                ...fixture.revokedSetStatusVerificationInputs
+                  .statusProofProtocol.witnessInput.registryState,
+                revokedRoot: new Uint8Array(32).fill(7),
+              },
             },
           },
         },
@@ -240,7 +245,7 @@ describe("credentials demo revocation contract", () => {
 
     expect(() =>
       simulator.issueRevocationAwareCapabilityWithVerifierSuppliedRoot(
-        fixture.credentialWithStatus,
+        fixture.credentialWithStatusBinding,
         {
           ...request,
           statusRequest: {
@@ -252,7 +257,7 @@ describe("credentials demo revocation contract", () => {
           },
         },
         submission,
-        fixture.statusVerificationInputs,
+        fixture.revokedSetStatusVerificationInputs,
         fixture.witness.currentDay,
       ),
     ).toThrow(
@@ -288,7 +293,7 @@ describe("credentials demo revocation contract", () => {
 
     expect(() =>
       simulator.issueRevocationAwareCapabilityWithAuthorityAttestation(
-        fixture.credentialWithAuthorityAttestedStatus,
+        fixture.credentialWithStatusBinding,
         {
           ...request,
           statusRequest: {
@@ -300,7 +305,7 @@ describe("credentials demo revocation contract", () => {
           },
         },
         submission,
-        fixture.authorityAttestedStatusVerificationInputs,
+        fixture.authorityAttestedStatusProtocolInputs,
         fixture.witness.currentDay,
         request.verificationRequest.envelope.createdAt + 10n,
       ),
@@ -335,10 +340,10 @@ describe("credentials demo revocation contract", () => {
 
     expect(() =>
       simulator.issueRevocationAwareCapabilityWithAuthorityAttestation(
-        fixture.credentialWithAuthorityAttestedStatus,
+        fixture.credentialWithStatusBinding,
         request,
         submission,
-        fixture.authorityAttestedStatusVerificationInputs,
+        fixture.authorityAttestedStatusProtocolInputs,
         fixture.witness.currentDay,
         request.verificationRequest.envelope.createdAt + 101n,
       ),

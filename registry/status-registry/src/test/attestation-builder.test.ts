@@ -6,7 +6,6 @@ import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { describe, expect, it } from "vitest";
 
 import {
-  buildAuthorityAttestedStatusCapability,
   buildAuthorityAttestedStatusProofProtocol,
   buildAuthorityAttestedStatusRequest,
   buildAuthorityAttestedStatusStatement,
@@ -46,7 +45,7 @@ describe("authority-attested status builder", () => {
     );
   });
 
-  it("builds a capability, statement, and signed attestation", () => {
+  it("builds a binding, statement, and signed attestation", () => {
     const request = buildAuthorityAttestedStatusRequest({
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
@@ -55,7 +54,7 @@ describe("authority-attested status builder", () => {
       },
       verifierChallengeHash: bytes32("challenge:status"),
     });
-    const capability = buildAuthorityAttestedStatusCapability({
+    const binding = buildRegistryBoundStatusBinding({
       registryRef: {
         registryId: request.registryState.registryId,
         authorityVerificationMethodRef: authoritySigner.verificationMethodRef,
@@ -64,7 +63,7 @@ describe("authority-attested status builder", () => {
     });
     const statement = buildAuthorityAttestedStatusStatement({
       request,
-      statusHandleCommitment: capability.statusHandleCommitment,
+      statusHandleCommitment: binding.statusHandleCommitment,
       expiresAt: 200n,
     });
     const attestation = signAuthorityAttestedStatusProof({

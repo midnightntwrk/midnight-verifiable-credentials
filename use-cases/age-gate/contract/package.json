@@ -10,28 +10,28 @@
   },
   "main": "dist/index.js",
   "module": "dist/index.js",
-  "types": "./dist/index.d.ts",
+  "types": "./src/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
+      "types": "./src/index.d.ts",
       "require": "./dist/index.js",
       "import": "./dist/index.js",
       "default": "./dist/index.js"
     },
     "./contract": {
-      "types": "./dist/contract.d.ts",
+      "types": "./src/contract.d.ts",
       "require": "./dist/contract.js",
       "import": "./dist/contract.js",
       "default": "./dist/contract.js"
     },
     "./contract-revocation": {
-      "types": "./dist/contract-revocation.d.ts",
+      "types": "./src/contract-revocation.d.ts",
       "require": "./dist/contract-revocation.js",
       "import": "./dist/contract-revocation.js",
       "default": "./dist/contract-revocation.js"
     },
     "./testing": {
-      "types": "./dist/testing.d.ts",
+      "types": "./src/testing.d.ts",
       "require": "./dist/testing.js",
       "import": "./dist/testing.js",
       "default": "./dist/testing.js"
@@ -50,13 +50,13 @@
   "typesVersions": {
     "*": {
       "contract": [
-        "dist/contract.d.ts"
+        "src/contract.d.ts"
       ],
       "contract-revocation": [
-        "dist/contract-revocation.d.ts"
+        "src/contract-revocation.d.ts"
       ],
       "testing": [
-        "dist/testing.d.ts"
+        "src/testing.d.ts"
       ],
       "managed/demo/contract/index.js": [
         "dist/managed/demo/contract/index.d.ts"

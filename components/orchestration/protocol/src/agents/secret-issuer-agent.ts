@@ -364,6 +364,7 @@ export class SecretIssuerAgent {
         requestChallengeResponse:
           genericPureCircuits.noSecretHolderChallengeResponse(),
       },
+      statusBinding: {},
       issuedAt: claimWitness.issuedAt,
       hasExpiration: true,
       expiresAt: claimWitness.expiresAt,

@@ -16,15 +16,14 @@ import {
   type SecretBirthCredential,
   type SecretBirthCredentialPresentation,
   type SecretBirthCredentialPresentationRequest,
-  type SecretBirthCredentialVerificationAuthorityAttestedStatusInputs,
+  type SecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs,
   type SecretBirthCredentialVerificationAuthorityAttestedStatusRequest,
   type SecretBirthCredentialVerificationRequest,
+  type SecretBirthCredentialVerificationRevokedSetStatusInputs,
   type SecretBirthCredentialVerificationRevokedSetStatusRequest,
-  type SecretBirthCredentialVerificationStatusInputs,
-  type SecretBirthCredentialVerificationStatusRequest,
   type SecretBirthCredentialVerificationSubmission,
-  type SecretBirthCredentialWithAuthorityAttestedStatusCapability,
-  type SecretBirthCredentialWithStatusCapability,
+  type SecretBirthCredentialWithStatusBinding,
+  type SecretBirthStatusCredential,
   StatusCapabilityKind,
   type VerificationMethodRef,
 } from "./managed/demo-revocation/contract/index.js";
@@ -45,12 +44,11 @@ export type DemoRevocationFixture = {
   readonly credentialProof: Proof;
   readonly presentationRequest: SecretBirthCredentialPresentationRequest;
   readonly verificationRequest: SecretBirthCredentialVerificationRequest;
-  readonly credentialWithStatus: SecretBirthCredentialWithStatusCapability;
-  readonly credentialWithAuthorityAttestedStatus: SecretBirthCredentialWithAuthorityAttestedStatusCapability;
-  readonly statusVerificationRequest: SecretBirthCredentialVerificationStatusRequest;
+  readonly credentialWithStatusBinding: SecretBirthCredentialWithStatusBinding;
+  readonly revokedSetStatusVerificationRequest: SecretBirthCredentialVerificationRevokedSetStatusRequest;
   readonly authorityAttestedStatusVerificationRequest: SecretBirthCredentialVerificationAuthorityAttestedStatusRequest;
-  readonly statusVerificationInputs: SecretBirthCredentialVerificationStatusInputs;
-  readonly authorityAttestedStatusVerificationInputs: SecretBirthCredentialVerificationAuthorityAttestedStatusInputs;
+  readonly revokedSetStatusVerificationInputs: SecretBirthCredentialVerificationRevokedSetStatusInputs;
+  readonly authorityAttestedStatusProtocolInputs: SecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs;
   readonly presentation: SecretBirthCredentialPresentation;
   readonly witness: {
     readonly holderSecret: Uint8Array;
@@ -73,6 +71,10 @@ export type DemoRevocationFixture = {
     readonly statusRevokedRoot: Uint8Array;
     readonly statusRegistryVersion: bigint;
   };
+};
+
+type SecretBirthCredentialCompat = Omit<SecretBirthCredential, "statusBinding"> & {
+  readonly statusBinding?: Record<string, never>;
 };
 
 const sha256 = (value: string): Uint8Array =>
@@ -207,7 +209,7 @@ export const createDemoRevocationFixture = (): DemoRevocationFixture => {
     ),
   };
 
-  const credential: SecretBirthCredential = {
+  const credential: SecretBirthCredentialCompat = {
     version: 1n,
     schema: {
       packageId: padText("midnight-did:vc:birth-secret"),
@@ -228,6 +230,7 @@ export const createDemoRevocationFixture = (): DemoRevocationFixture => {
       issuerNonce: witness.holderBindingIssuerNonce,
       requestChallengeResponse: pureCircuits.noSecretHolderChallengeResponse(),
     },
+    statusBinding: {},
     issuedAt: 10_000n,
     hasExpiration: true,
     expiresAt: 20_000n,
@@ -236,7 +239,9 @@ export const createDemoRevocationFixture = (): DemoRevocationFixture => {
   };
 
   const credentialProof = signProof({
-    bodyRoot: pureCircuits.secretBirthCredentialBodyRoot(credential),
+    bodyRoot: pureCircuits.secretBirthCredentialBodyRoot(
+      credential as SecretBirthCredential,
+    ),
     signer: issuer,
     createdAt: 10_001n,
     challengeHash: sha256("challenge:issuance"),
@@ -290,10 +295,9 @@ export const createDemoRevocationFixture = (): DemoRevocationFixture => {
     witness.statusHandleOpening,
   );
 
-  const credentialWithStatus: SecretBirthCredentialWithStatusCapability = {
-    credential,
-    credentialProof,
-    statusCapability: {
+  const statusCredential: SecretBirthStatusCredential = {
+    ...credential,
+    statusBinding: {
       registryRef: {
         registryId: witness.statusRegistryId,
         authorityVerificationMethodRef: issuer.verificationMethodRef,
@@ -302,15 +306,9 @@ export const createDemoRevocationFixture = (): DemoRevocationFixture => {
     },
   };
 
-  const statusBinding = {
-    registryRef: credentialWithStatus.statusCapability.registryRef,
-    statusHandleCommitment,
-  };
-
   const statusBoundCredentialProof = signProof({
     bodyRoot: pureCircuits.secretBirthCredentialRegistryBoundStatusBodyRoot(
-      credential,
-      statusBinding,
+      statusCredential,
     ),
     signer: issuer,
     createdAt: credentialProof.createdAt,
@@ -318,20 +316,10 @@ export const createDemoRevocationFixture = (): DemoRevocationFixture => {
     nonceScalar: 12n,
   });
 
-  credentialWithStatus.credentialProof = statusBoundCredentialProof;
-
-  const statusVerificationRequest: SecretBirthCredentialVerificationStatusRequest =
-    {
-      verificationRequest,
-      statusPolicy: {
-        requireStatus: true,
-        acceptedStatusCapability: StatusCapabilityKind.revokedSetNonMembership,
-        enforceRegistryId: true,
-        acceptedRegistryId: witness.statusRegistryId,
-        enforceAttestationMaxAge: false,
-        maxAttestationAge: 0n,
-      },
-    };
+  const credentialWithStatusBinding: SecretBirthCredentialWithStatusBinding = {
+    credential: statusCredential,
+    credentialProof: statusBoundCredentialProof,
+  };
 
   const statusRequest: RevokedSetStatusRequest = {
     registryState: {
@@ -342,29 +330,33 @@ export const createDemoRevocationFixture = (): DemoRevocationFixture => {
     verifierChallengeHash: verificationRequest.verifierChallengeHash,
   };
 
-  const statusVerificationInputs: SecretBirthCredentialVerificationStatusInputs =
+  const revokedSetStatusVerificationRequest: SecretBirthCredentialVerificationRevokedSetStatusRequest =
     {
-      nonRevocationWitness: {
-        registryState: {
-          registryId: witness.statusRegistryId,
-          revokedRoot: witness.statusRevokedRoot,
-          registryVersion: witness.statusRegistryVersion,
-        },
-        statusHandle: witness.statusHandle,
-        statusHandleOpening: witness.statusHandleOpening,
+      verificationRequest,
+      statusPolicy: {
+        requireStatus: true,
+        acceptedStatusCapability: StatusCapabilityKind.revokedSetNonMembership,
+        enforceRegistryId: true,
+        acceptedRegistryId: witness.statusRegistryId,
+        enforceAttestationMaxAge: false,
+        maxAttestationAge: 0n,
       },
+      statusRequest,
     };
 
-  const credentialWithAuthorityAttestedStatus: SecretBirthCredentialWithAuthorityAttestedStatusCapability =
+  const revokedSetStatusVerificationInputs: SecretBirthCredentialVerificationRevokedSetStatusInputs =
     {
-      credential,
-      credentialProof: statusBoundCredentialProof,
-      statusCapability: {
-        registryRef: {
-          registryId: witness.statusRegistryId,
-          authorityVerificationMethodRef: issuer.verificationMethodRef,
+      statusProofProtocol: {
+        request: statusRequest,
+        witnessInput: {
+          registryState: {
+            registryId: witness.statusRegistryId,
+            revokedRoot: witness.statusRevokedRoot,
+            registryVersion: witness.statusRegistryVersion,
+          },
+          statusHandle: witness.statusHandle,
+          statusHandleOpening: witness.statusHandleOpening,
         },
-        statusHandleCommitment,
       },
     };
 
@@ -384,26 +376,30 @@ export const createDemoRevocationFixture = (): DemoRevocationFixture => {
 
   const statusAttestationStatement = {
     registryState: statusRequest.registryState,
-    statusHandleCommitment,
+    statusHandleCommitment:
+      credentialWithStatusBinding.credential.statusBinding.statusHandleCommitment,
     verifierChallengeHash: statusRequest.verifierChallengeHash,
     hasExpiration: true,
     expiresAt: verificationRequest.envelope.createdAt + 100n,
   };
 
-  const authorityAttestedStatusVerificationInputs: SecretBirthCredentialVerificationAuthorityAttestedStatusInputs =
+  const authorityAttestedStatusProtocolInputs: SecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs =
     {
-      statusAttestation: {
-        statement: statusAttestationStatement,
-        proof: signProof({
-          bodyRoot: pureCircuits.authorityAttestedStatusStatementRoot(
-            statusAttestationStatement,
-          ),
-          signer: issuer,
-          createdAt: verificationRequest.envelope.createdAt + 1n,
-          challengeHash: statusRequest.verifierChallengeHash,
-          nonceScalar: 21n,
-          context: "statusAttestation",
-        }),
+      statusProofProtocol: {
+        request: statusRequest,
+        attestation: {
+          statement: statusAttestationStatement,
+          proof: signProof({
+            bodyRoot: pureCircuits.authorityAttestedStatusStatementRoot(
+              statusAttestationStatement,
+            ),
+            signer: issuer,
+            createdAt: verificationRequest.envelope.createdAt + 1n,
+            challengeHash: statusRequest.verifierChallengeHash,
+            nonceScalar: 21n,
+            context: "statusAttestation",
+          }),
+        },
       },
     };
 
@@ -439,16 +435,15 @@ export const createDemoRevocationFixture = (): DemoRevocationFixture => {
 
   return {
     issuer,
-    credential,
+    credential: credential as SecretBirthCredential,
     credentialProof,
     presentationRequest,
     verificationRequest,
-    credentialWithStatus,
-    credentialWithAuthorityAttestedStatus,
-    statusVerificationRequest,
+    credentialWithStatusBinding,
+    revokedSetStatusVerificationRequest,
     authorityAttestedStatusVerificationRequest,
-    statusVerificationInputs,
-    authorityAttestedStatusVerificationInputs,
+    revokedSetStatusVerificationInputs,
+    authorityAttestedStatusProtocolInputs,
     presentation,
     witness,
   };

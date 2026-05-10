@@ -5,47 +5,16 @@ export circuit secretBirthCredentialBodyRoot(
 }
 
 export circuit secretBirthCredentialRegistryBoundStatusBodyRoot(
-  credential: SecretBirthCredential,
-  statusBinding: RegistryBoundStatusBinding
+  credential: SecretBirthStatusCredential
 ): Bytes<32> {
-  return persistentHash<SecretBirthCredentialStatusBoundBody>(
-    SecretBirthCredentialStatusBoundBody {
-      credential,
-      statusBindingMode: StatusBindingKind.registryBoundStatus,
-      statusBindingRoot: registryBoundStatusBindingRoot(statusBinding),
-    }
-  );
+  return SecretBirthStatus_credentialBodyRoot(credential);
 }
 
 export circuit secretBirthCredentialWithStatusBindingBodyRoot(
   credentialWithStatus: SecretBirthCredentialWithStatusBinding
 ): Bytes<32> {
-  assertValidRegistryBoundStatusBinding(credentialWithStatus.statusBinding);
   return secretBirthCredentialRegistryBoundStatusBodyRoot(
-    credentialWithStatus.credential,
-    credentialWithStatus.statusBinding
-  );
-}
-
-export circuit secretBirthCredentialWithStatusCapabilityBodyRoot(
-  credentialWithStatus: SecretBirthCredentialWithStatusCapability
-): Bytes<32> {
-  return secretBirthCredentialRegistryBoundStatusBodyRoot(
-    credentialWithStatus.credential,
-    registryBoundStatusBindingFromRevokedSetNonMembershipStatusCapability(
-      credentialWithStatus.statusCapability
-    )
-  );
-}
-
-export circuit secretBirthCredentialWithAuthorityAttestedStatusCapabilityBodyRoot(
-  credentialWithStatus: SecretBirthCredentialWithAuthorityAttestedStatusCapability
-): Bytes<32> {
-  return secretBirthCredentialRegistryBoundStatusBodyRoot(
-    credentialWithStatus.credential,
-    registryBoundStatusBindingFromAuthorityAttestedStatusCapability(
-      credentialWithStatus.statusCapability
-    )
+    credentialWithStatus.credential
   );
 }
 
@@ -97,5 +66,22 @@ export circuit secretBirthCredentialPresentationRequestFromProtocol(
     requireAgeOverThreshold: request.body.requireAgeOverThreshold,
     requestedAgeThresholdYears: request.body.requestedAgeThresholdYears,
     verifierChallengeHash: request.verifierChallengeHash,
+  };
+}
+
+export circuit secretBirthCredentialWithoutStatusBinding(
+  credential: SecretBirthStatusCredential
+): SecretBirthCredential {
+  return SecretBirthCredential {
+    version: credential.version,
+    schema: credential.schema,
+    issuerVerificationMethodRef: credential.issuerVerificationMethodRef,
+    holderBinding: credential.holderBinding,
+    statusBinding: NoStatusBinding {},
+    issuedAt: credential.issuedAt,
+    hasExpiration: credential.hasExpiration,
+    expiresAt: credential.expiresAt,
+    claims: credential.claims,
+    claimRoot: credential.claimRoot,
   };
 }

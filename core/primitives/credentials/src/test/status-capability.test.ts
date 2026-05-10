@@ -11,7 +11,7 @@ setNetworkId("undeployed");
 const sha256Bytes = (label: string): Uint8Array =>
   new Uint8Array(Buffer.from(label.padEnd(32, "_").slice(0, 32)));
 
-describe("credentials core: status capabilities", () => {
+describe("credentials core: status bindings", () => {
   it("accepts a valid registry-bound status binding", () => {
     const signer = createSigner("status-authority", 778n);
     const binding = {
@@ -39,41 +39,13 @@ describe("credentials core: status capabilities", () => {
     ).not.toThrow();
   });
 
-  it("accepts a valid revoked-set non-membership status capability", () => {
-    const signer = createSigner("status-authority", 888n);
-    const capability = {
-      registryRef: {
-        registryId: sha256Bytes("registry:hidden-holder"),
-        authorityVerificationMethodRef: signer.verificationMethodRef,
-      },
-      statusHandleCommitment: sha256Bytes("status-handle-commitment"),
-    };
-
-    expect(() =>
-      pureCircuits.assertValidRevokedSetNonMembershipStatusCapability(
-        capability,
-      ),
-    ).not.toThrow();
+  it("accepts an explicit no-status binding", () => {
+    expect(() => pureCircuits.assertValidNoStatusBinding({})).not.toThrow();
   });
 
-  it("accepts a valid authority-attested status capability", () => {
-    const signer = createSigner("status-authority", 889n);
-    const capability = {
-      registryRef: {
-        registryId: sha256Bytes("registry:hidden-holder"),
-        authorityVerificationMethodRef: signer.verificationMethodRef,
-      },
-      statusHandleCommitment: sha256Bytes("status-handle-commitment"),
-    };
-
-    expect(() =>
-      pureCircuits.assertValidAuthorityAttestedStatusCapability(capability),
-    ).not.toThrow();
-  });
-
-  it("rejects a revoked-set non-membership status capability with an empty handle commitment", () => {
+  it("rejects a registry-bound status binding with an empty handle commitment", () => {
     const signer = createSigner("status-authority", 999n);
-    const capability = {
+    const binding = {
       registryRef: {
         registryId: sha256Bytes("registry:hidden-holder"),
         authorityVerificationMethodRef: signer.verificationMethodRef,
@@ -82,9 +54,7 @@ describe("credentials core: status capabilities", () => {
     };
 
     expect(() =>
-      pureCircuits.assertValidRevokedSetNonMembershipStatusCapability(
-        capability,
-      ),
+      pureCircuits.assertValidRegistryBoundStatusBinding(binding),
     ).toThrow(/Status handle commitment must be set/);
   });
 });

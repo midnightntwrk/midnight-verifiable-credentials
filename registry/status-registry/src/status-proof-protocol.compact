@@ -6,21 +6,46 @@ import CompactStandardLibrary;
 // - callers must include the shared `credentials` Compact surface before this
 //   file.
 // - this file depends on `credentials` for:
-//   - VC-side binding and capability types such as
-//     `RegistryBoundStatusBinding`,
-//     `RevokedSetNonMembershipStatusCapability`, and
-//     `AuthorityAttestedStatusCapability`
-//   - verifier policy vocabulary such as `VerifierStatusPolicy` and
-//     `StatusCapabilityKind`
+//   - VC-side binding types such as `RegistryBoundStatusBinding` and
+//     `StatusRegistryRef`
 //   - proof primitives such as `Proof` and
 //     `assertValidStatusAttestationContextProof`
-//   - shared validators such as `assertValidRegistryBoundStatusBinding` and
-//     `assertValidVerifierStatusPolicy`
-// - current callers satisfy that prerequisite either directly
-//   (`revocation-registry.compact`) or transitively through
-//   `same-holder.compact` (`secret-birth-credential.compact`)
+//   - shared validators such as `assertValidRegistryBoundStatusBinding`
+// - current callers satisfy that prerequisite directly:
+//   - `revocation-registry.compact` via the bundled `credentials` surface
+//   - `secret-birth-credential.compact` via `credentials/composable`
 // - this file does not re-include `credentials` directly because Compact
 //   repeated includes can surface duplicate bindings in downstream families.
+
+export enum StatusCapabilityKind {
+  noStatus,
+  publicStatus,
+  revokedSetNonMembership,
+  authorityAttestedStatus
+}
+
+export struct NoStatusCapability {}
+
+export struct RevokedSetNonMembershipStatusCapability {
+  registryRef: StatusRegistryRef,
+  statusHandleCommitment: Bytes<32>,
+}
+
+export struct AuthorityAttestedStatusCapability {
+  registryRef: StatusRegistryRef,
+  statusHandleCommitment: Bytes<32>,
+}
+
+export struct VerifierStatusPolicy {
+  requireStatus: Boolean,
+  acceptedStatusCapability: StatusCapabilityKind,
+  enforceRegistryId: Boolean,
+  acceptedRegistryId: Bytes<32>,
+  // `maxAttestationAge` uses the same time unit as the verifier-supplied
+  // `currentTime` and the authority-attested proof `createdAt`.
+  enforceAttestationMaxAge: Boolean,
+  maxAttestationAge: Uint<64>,
+}
 
 export struct RevocationRegistryState {
   registryId: Bytes<32>,
@@ -60,6 +85,82 @@ export struct AuthorityAttestedStatusProof {
 export struct AuthorityAttestedStatusProofProtocol {
   request: RevokedSetStatusRequest,
   attestation: AuthorityAttestedStatusProof,
+}
+
+export circuit assertValidNoStatusCapability(
+  capability: NoStatusCapability
+): [] {
+}
+
+export circuit assertValidRevokedSetNonMembershipStatusCapability(
+  capability: RevokedSetNonMembershipStatusCapability
+): [] {
+  assertValidStatusRegistryRef(capability.registryRef);
+  assert(
+    capability.statusHandleCommitment != pad(32, ""),
+    "Status handle commitment must be set"
+  );
+}
+
+export circuit assertValidAuthorityAttestedStatusCapability(
+  capability: AuthorityAttestedStatusCapability
+): [] {
+  assertValidStatusRegistryRef(capability.registryRef);
+  assert(
+    capability.statusHandleCommitment != pad(32, ""),
+    "Authority-attested status handle commitment must be set"
+  );
+}
+
+export circuit assertValidVerifierStatusPolicy(
+  policy: VerifierStatusPolicy
+): [] {
+  if (policy.requireStatus) {
+    assert(
+      policy.acceptedStatusCapability != StatusCapabilityKind.noStatus,
+      "Required status policy must request a real status capability"
+    );
+  } else {
+    assert(
+      policy.acceptedStatusCapability == StatusCapabilityKind.noStatus,
+      "Optional status policy must collapse to NoStatusCapability"
+    );
+    assert(
+      !policy.enforceRegistryId,
+      "Optional status policy must not enforce a registry"
+    );
+    assert(
+      !policy.enforceAttestationMaxAge,
+      "Optional status policy must not enforce attestation max-age"
+    );
+    assert(
+      policy.maxAttestationAge == 0,
+      "Optional status policy must not set attestation max-age"
+    );
+  }
+
+  if (policy.enforceRegistryId) {
+    assert(
+      policy.acceptedRegistryId != pad(32, ""),
+      "Accepted status registry id must be set when enforced"
+    );
+  }
+
+  if (policy.enforceAttestationMaxAge) {
+    assert(
+      policy.acceptedStatusCapability == StatusCapabilityKind.authorityAttestedStatus,
+      "Attestation max-age policy only applies to authority-attested status"
+    );
+    assert(
+      policy.maxAttestationAge >= 1,
+      "Attestation max-age policy must request a real freshness window"
+    );
+  } else {
+    assert(
+      policy.maxAttestationAge == 0,
+      "Disabled attestation max-age policy must not carry a freshness window"
+    );
+  }
 }
 
 export circuit assertValidRevocationRegistryState(
@@ -164,25 +265,25 @@ export circuit assertRegistryBoundStatusBindingMatchesRevokedSetNonMembershipSta
   );
 }
 
-export circuit assertRevokedSetNonMembershipWitnessMatchesCapability(
-  capability: RevokedSetNonMembershipStatusCapability,
+export circuit assertRevokedSetNonMembershipWitnessMatchesBinding(
+  binding: RegistryBoundStatusBinding,
   witnessInput: RevokedSetNonMembershipWitnessInput
 ): [] {
-  assertValidRevokedSetNonMembershipStatusCapability(capability);
+  assertValidRegistryBoundStatusBinding(binding);
   assertValidRevokedSetNonMembershipWitnessInput(witnessInput);
   // PROTOTYPE: this binds witness inputs to the committed status-handle and
   // registry domain only. It does not yet prove Merkle non-membership of
   // `witnessInput.statusHandle` against `witnessInput.registryState.revokedRoot`.
   assert(
-    capability.registryRef.registryId == witnessInput.registryState.registryId,
-    "Revoked-set status witness registry does not match the status capability"
+    binding.registryRef.registryId == witnessInput.registryState.registryId,
+    "Revoked-set status witness registry does not match the status binding"
   );
   assert(
-    capability.statusHandleCommitment == revokedSetStatusHandleCommitment(
+    binding.statusHandleCommitment == revokedSetStatusHandleCommitment(
       witnessInput.statusHandle,
       witnessInput.statusHandleOpening
     ),
-    "Revoked-set status witness does not match the status handle commitment"
+    "Revoked-set status witness does not match the status binding handle commitment"
   );
 }
 
@@ -292,27 +393,27 @@ export circuit assertRegistryBoundStatusBindingMatchesAuthorityAttestedStatusPro
   );
 }
 
-export circuit assertAuthorityAttestedStatusProofMatchesCapability(
-  capability: AuthorityAttestedStatusCapability,
+export circuit assertAuthorityAttestedStatusProofMatchesBinding(
+  binding: RegistryBoundStatusBinding,
   attestation: AuthorityAttestedStatusProof
 ): [] {
-  assertValidAuthorityAttestedStatusCapability(capability);
+  assertValidRegistryBoundStatusBinding(binding);
   assertValidAuthorityAttestedStatusProof(attestation);
   assert(
-    capability.registryRef.registryId == attestation.statement.registryState.registryId,
-    "Authority-attested status registry does not match the status capability"
+    binding.registryRef.registryId == attestation.statement.registryState.registryId,
+    "Authority-attested status registry does not match the status binding"
   );
   assert(
-    capability.statusHandleCommitment == attestation.statement.statusHandleCommitment,
-    "Authority-attested status handle commitment does not match the capability"
+    binding.statusHandleCommitment == attestation.statement.statusHandleCommitment,
+    "Authority-attested status handle commitment does not match the status binding"
   );
   assert(
-    capability.registryRef.authorityVerificationMethodRef.didContractAddress
+    binding.registryRef.authorityVerificationMethodRef.didContractAddress
       == attestation.proof.signerVerificationMethodRef.didContractAddress,
     "Authority-attested proof contract address does not match the status authority"
   );
   assert(
-    capability.registryRef.authorityVerificationMethodRef.methodId
+    binding.registryRef.authorityVerificationMethodRef.methodId
       == attestation.proof.signerVerificationMethodRef.methodId,
     "Authority-attested proof method reference does not match the status authority"
   );
@@ -376,14 +477,14 @@ export circuit assertAuthorityAttestedStatusProofFreshEnough(
   }
 }
 
-export circuit assertVerifierStatusPolicyAcceptsRevokedSetNonMembership(
+export circuit assertVerifierStatusPolicyAcceptsRevokedSetNonMembershipBinding(
   policy: VerifierStatusPolicy,
-  capability: RevokedSetNonMembershipStatusCapability,
+  binding: RegistryBoundStatusBinding,
   witnessInput: RevokedSetNonMembershipWitnessInput
 ): [] {
   assertValidVerifierStatusPolicy(policy);
-  assertRevokedSetNonMembershipWitnessMatchesCapability(
-    capability,
+  assertRevokedSetNonMembershipWitnessMatchesBinding(
+    binding,
     witnessInput
   );
   assert(
@@ -394,14 +495,14 @@ export circuit assertVerifierStatusPolicyAcceptsRevokedSetNonMembership(
     policy.acceptedStatusCapability == StatusCapabilityKind.revokedSetNonMembership,
     "Verifier status policy does not accept revoked-set non-membership"
   );
-  // PROTOTYPE: policy acceptance currently composes capability-binding and
-  // registry-binding around a caller-supplied snapshot. Final Level-2 behavior
+  // PROTOTYPE: policy acceptance currently composes status-binding and a
+  // caller-supplied registry snapshot. Final Level-2 behavior
   // still needs the in-circuit Merkle non-membership proof against
   // `witnessInput.registryState.revokedRoot`.
   if (policy.enforceRegistryId) {
     assert(
-      policy.acceptedRegistryId == capability.registryRef.registryId,
-      "Verifier status policy registry id does not match the supplied status capability"
+      policy.acceptedRegistryId == binding.registryRef.registryId,
+      "Verifier status policy registry id does not match the supplied status binding"
     );
     assert(
       policy.acceptedRegistryId == witnessInput.registryState.registryId,
@@ -428,8 +529,8 @@ export circuit assertVerifierStatusPolicyAcceptsRevokedSetNonMembershipStatusPro
     policy.acceptedStatusCapability == StatusCapabilityKind.revokedSetNonMembership,
     "Verifier status policy does not accept revoked-set non-membership"
   );
-  // PROTOTYPE: policy acceptance currently composes capability-binding and
-  // registry-binding around a caller-supplied snapshot. Final Level-2 behavior
+  // PROTOTYPE: policy acceptance currently composes status-binding and a
+  // caller-supplied registry snapshot. Final Level-2 behavior
   // still needs the in-circuit Merkle non-membership proof against
   // `protocol.request.registryState.revokedRoot`.
   if (policy.enforceRegistryId) {
@@ -444,15 +545,15 @@ export circuit assertVerifierStatusPolicyAcceptsRevokedSetNonMembershipStatusPro
   }
 }
 
-export circuit assertVerifierStatusPolicyAcceptsAuthorityAttestedStatus(
+export circuit assertVerifierStatusPolicyAcceptsAuthorityAttestedStatusBinding(
   policy: VerifierStatusPolicy,
-  capability: AuthorityAttestedStatusCapability,
+  binding: RegistryBoundStatusBinding,
   request: RevokedSetStatusRequest,
   attestation: AuthorityAttestedStatusProof,
   currentTime: Uint<64>
 ): [] {
   assertValidVerifierStatusPolicy(policy);
-  assertAuthorityAttestedStatusProofMatchesCapability(capability, attestation);
+  assertAuthorityAttestedStatusProofMatchesBinding(binding, attestation);
   assertAuthorityAttestedStatusProofMatchesRequest(
     request,
     attestation,
@@ -473,8 +574,8 @@ export circuit assertVerifierStatusPolicyAcceptsAuthorityAttestedStatus(
   );
   if (policy.enforceRegistryId) {
     assert(
-      policy.acceptedRegistryId == capability.registryRef.registryId,
-      "Verifier status policy registry id does not match the supplied status capability"
+      policy.acceptedRegistryId == binding.registryRef.registryId,
+      "Verifier status policy registry id does not match the supplied status binding"
     );
     assert(
       policy.acceptedRegistryId == request.registryState.registryId,

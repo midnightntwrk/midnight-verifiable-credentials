@@ -36,7 +36,7 @@ describe("revoked-set witness builder", () => {
     expect(Buffer.from(first).equals(Buffer.from(second))).toBe(true);
   });
 
-  it("builds a witness/capability pair when the snapshot does not list the handle as revoked", () => {
+  it("builds a witness/binding pair when the snapshot does not list the handle as revoked", () => {
     const built = buildRevokedSetStatusWitness({
       credentialClaimRoot: bytes32("credential-root:alice"),
       registryRef: {
@@ -62,9 +62,6 @@ describe("revoked-set witness builder", () => {
     });
 
     expect(built.statusHandle).toBeInstanceOf(Uint8Array);
-    expect(built.statusCapability.registryRef.registryId).toEqual(
-      bytes32("registry:hidden-holder"),
-    );
     expect(built.statusBinding.registryRef.registryId).toEqual(
       bytes32("registry:hidden-holder"),
     );
@@ -108,8 +105,8 @@ describe("revoked-set witness builder", () => {
     expect(built.protocol.witnessInput.statusHandle).toEqual(
       built.statusHandle,
     );
-    expect(built.statusBinding.statusHandleCommitment).toEqual(
-      built.statusCapability.statusHandleCommitment,
+    expect(built.statusBinding.statusHandleCommitment).toBeInstanceOf(
+      Uint8Array,
     );
   });
 

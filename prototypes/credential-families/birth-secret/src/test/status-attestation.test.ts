@@ -66,11 +66,11 @@ describe("secret birth credential: authority-attested status verification", () =
     };
 
     expect(() =>
-      pureCircuits.assertSecretBirthCredentialVerificationSubmissionMatchesAuthorityAttestedStatusRequest(
-        fixture.credentialWithAuthorityAttestedStatus,
+      pureCircuits.assertSecretBirthCredentialVerificationSubmissionMatchesAuthorityAttestedStatusProtocolRequest(
+        fixture.credentialWithStatusBinding,
         fixture.authorityAttestedStatusVerificationRequest,
         submission,
-        fixture.authorityAttestedStatusVerificationInputs,
+        fixture.authorityAttestedStatusProtocolInputs,
         fixture.witness.holderSecret,
         fixture.witness.holderSecretOpening,
         fixture.witness.holderBindingBlindingFactor,
@@ -102,8 +102,8 @@ describe("secret birth credential: authority-attested status verification", () =
     };
 
     expect(() =>
-      pureCircuits.assertSecretBirthCredentialVerificationSubmissionMatchesAuthorityAttestedStatusRequest(
-        fixture.credentialWithAuthorityAttestedStatus,
+      pureCircuits.assertSecretBirthCredentialVerificationSubmissionMatchesAuthorityAttestedStatusProtocolRequest(
+        fixture.credentialWithStatusBinding,
         {
           ...fixture.authorityAttestedStatusVerificationRequest,
           statusRequest: {
@@ -116,7 +116,7 @@ describe("secret birth credential: authority-attested status verification", () =
           },
         },
         submission,
-        fixture.authorityAttestedStatusVerificationInputs,
+        fixture.authorityAttestedStatusProtocolInputs,
         fixture.witness.holderSecret,
         fixture.witness.holderSecretOpening,
         fixture.witness.holderBindingBlindingFactor,
@@ -148,8 +148,8 @@ describe("secret birth credential: authority-attested status verification", () =
     };
 
     expect(() =>
-      pureCircuits.assertSecretBirthCredentialVerificationSubmissionMatchesAuthorityAttestedStatusRequest(
-        fixture.credentialWithAuthorityAttestedStatus,
+      pureCircuits.assertSecretBirthCredentialVerificationSubmissionMatchesAuthorityAttestedStatusProtocolRequest(
+        fixture.credentialWithStatusBinding,
         {
           ...fixture.authorityAttestedStatusVerificationRequest,
           statusRequest: {
@@ -158,7 +158,7 @@ describe("secret birth credential: authority-attested status verification", () =
           },
         },
         submission,
-        fixture.authorityAttestedStatusVerificationInputs,
+        fixture.authorityAttestedStatusProtocolInputs,
         fixture.witness.holderSecret,
         fixture.witness.holderSecretOpening,
         fixture.witness.holderBindingBlindingFactor,
@@ -167,6 +167,56 @@ describe("secret birth credential: authority-attested status verification", () =
     ).toThrow(
       /request challenge must match the verification request challenge/i,
     );
+  });
+
+  it("rejects an authority-attested status proof when its protocol request snapshot diverges from the verifier request", () => {
+    const fixture = createSecretBirthCredentialFixture();
+    const submission = {
+      envelope: {
+        ...fixture.verificationRequest.envelope,
+        initialMessage: false,
+        respondsToMessageId: fixture.verificationRequest.envelope.messageId,
+        messageId: new Uint8Array(32).fill(20),
+        createdAt: fixture.verificationRequest.envelope.createdAt + 2n,
+      },
+      schema: fixture.credential.schema,
+      issuerVerificationMethodRef:
+        fixture.credential.issuerVerificationMethodRef,
+      holderBindingProfile: fixture.verificationRequest.holderBindingProfile,
+      challengeHash: fixture.verificationRequest.verifierChallengeHash,
+      body: {
+        credential: fixture.credential,
+        credentialProof: fixture.credentialProof,
+        presentation: fixture.presentation,
+      },
+    };
+
+    expect(() =>
+      pureCircuits.assertSecretBirthCredentialVerificationSubmissionMatchesAuthorityAttestedStatusProtocolRequest(
+        fixture.credentialWithStatusBinding,
+        fixture.authorityAttestedStatusVerificationRequest,
+        submission,
+        {
+          statusProofProtocol: {
+            ...fixture.authorityAttestedStatusProtocolInputs
+              .statusProofProtocol,
+            request: {
+              ...fixture.authorityAttestedStatusProtocolInputs
+                .statusProofProtocol.request,
+              registryState: {
+                ...fixture.authorityAttestedStatusProtocolInputs
+                  .statusProofProtocol.request.registryState,
+                registryVersion: 0n,
+              },
+            },
+          },
+        },
+        fixture.witness.holderSecret,
+        fixture.witness.holderSecretOpening,
+        fixture.witness.holderBindingBlindingFactor,
+        fixture.verificationRequest.envelope.createdAt + 10n,
+      ),
+    ).toThrow(/registry version does not match the verifier request/i);
   });
 
   it("rejects an authority-attested status proof after expiration", () => {
@@ -192,11 +242,11 @@ describe("secret birth credential: authority-attested status verification", () =
     };
 
     expect(() =>
-      pureCircuits.assertSecretBirthCredentialVerificationSubmissionMatchesAuthorityAttestedStatusRequest(
-        fixture.credentialWithAuthorityAttestedStatus,
+      pureCircuits.assertSecretBirthCredentialVerificationSubmissionMatchesAuthorityAttestedStatusProtocolRequest(
+        fixture.credentialWithStatusBinding,
         fixture.authorityAttestedStatusVerificationRequest,
         submission,
-        fixture.authorityAttestedStatusVerificationInputs,
+        fixture.authorityAttestedStatusProtocolInputs,
         fixture.witness.holderSecret,
         fixture.witness.holderSecretOpening,
         fixture.witness.holderBindingBlindingFactor,

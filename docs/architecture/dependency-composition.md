@@ -70,9 +70,10 @@ Current note on status support:
 ```compact
 include "../../prototypes/credential-families/birth/src/birth-credential";
 
-import VC<BirthCredentialClaims, BirthCredentialDisclosures, ExplicitHolderBinding>;
+import VC<BirthCredentialClaims, ExplicitHolderBinding, NoStatusBinding>;
+import VP<BirthCredentialDisclosures, ExplicitHolderBinding>;
 
-import IssuanceProtocol<
+import Issue<
   BirthCredentialIssuanceOfferBody,
   BirthCredentialIssuanceRequestBody,
   BirthCredentialIssuanceResultBody
@@ -96,8 +97,8 @@ business contract. That failed because both entry points transitively include
 
 A second spike tried to include shared dependencies once and instantiate each
 credential family with a prefix. That avoided the duplicate generic core, but
-failed because the current family validation files expect unprefixed generic VC
-helpers such as `assertValidPresentationEnvelope`.
+failed because the current family validation files expected unprefixed generic
+VC/VP helpers rather than family-prefixed relation wrappers.
 
 The failure is not a semantic problem in the credential model. It is a package
 surface problem:
@@ -208,16 +209,18 @@ import B prefix B$;
 
 That is the right model for generic credential modules and protocol modules.
 For example, a Layer 3 contract that composes two credential families should not
-rely on global helper names such as `Credential`, `Presentation`, or
-`assertValidPresentationEnvelope`. Each family should instantiate the generic
-module with its own prefix and then expose explicit family names:
+rely on global helper names such as `Credential`, `Presentation`, or the
+generic credential/presentation relation helper. Each family should instantiate
+the generic modules with its own prefix and then expose explicit family names:
 
 ```compact
-import VC<PassportClaims, PassportDisclosures, BlindedSecretHolderBinding>
+import VC<PassportClaims, BlindedSecretHolderBinding, NoStatusBinding>
   prefix Passport_;
+import VP<PassportDisclosures, BlindedSecretHolderBinding>
+  prefix PassportPresentation_;
 
 export type PassportCredential = Passport_Credential;
-export type PassportPresentation = Passport_Presentation;
+export type PassportPresentation = PassportPresentation_Presentation;
 ```
 
 The caveat is `include`. An `include` composes source into the current scope, so

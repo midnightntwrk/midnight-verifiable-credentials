@@ -14,39 +14,43 @@ Companion documents:
 This note defines the repository's target design for committing VC-side status
 binding into the issuer-signed credential body root.
 
-It exists to close the current prototype gap where status-aware families can:
+It exists to close the remaining prototype gap after the first hidden-holder
+status rollout, where status-aware families can:
 
 - validate a shared `RegistryBoundStatusBinding`
 - validate a presentation-time status proof protocol
+- commit that binding into an issuer-signed status-aware family body root
 
-while still leaving the full status binding outside the issuer-signed body root
-that anchors the credential proof.
+while still keeping the status-aware credential in a wrapper surface instead of
+making `RegistryBoundStatusBinding` native to the credential generic itself.
 
 That gap is no longer acceptable once status-aware families claim a durable
 reference architecture instead of a prototype wrapper.
 
 ## Current gap
 
-Today several status-aware families still use wrapper structs such as:
+Today the secret-birth family still uses one transitional wrapper surface:
 
-- `SecretBirthCredentialWithStatusCapability`
-- `SecretBirthCredentialWithAuthorityAttestedStatusCapability`
 - `SecretBirthCredentialWithStatusBinding`
 
-Those wrappers are useful compatibility and transition surfaces, but they leave
-one important weakness:
+That wrapper is still a compatibility and transition surface, but the gap is
+now narrower than the original design problem:
 
-- the issuer proof signs the base credential body root
-- the wrapper adds status binding or status capability data outside that
-  issuer-signed root
+- the issuer proof already signs a status-aware body root
+- the wrapper no longer leaves status binding wholly outside the signed root
+- the remaining weakness is architectural:
+  the status-aware credential is not yet a native
+  `VC<..., RegistryBoundStatusBinding>` shape
 
 The verifier/contract can still check consistency between:
 
 - the wrapper status binding
 - the presentation-time status proof protocol
 
-but the issuer is not yet cryptographically attesting to the full VC-side
-status binding as part of the signed credential body.
+and the issuer is already cryptographically attesting to the VC-side status
+binding through the wrapper's status-aware body root. What remains is to make
+that binding part of the credential type itself rather than a wrapper-level
+bundle.
 
 ## Design goal
 
@@ -60,24 +64,24 @@ In other words:
 - `registryId`
 - authority verification-method reference
 - `statusHandleCommitment`
-- explicit binding mode
 
 must all participate in the issuer-signed body root for the status-aware
 credential family.
 
 ## Required commitment model
 
-### 1. Explicit binding mode
+### 1. VC-side binding only
 
-Every family must commit an explicit VC-side status binding mode in the
-issuer-signed body:
+Every family must commit the concrete VC-side binding that it instantiates in
+the issuer-signed body.
 
-- no status
-- registry-bound status
+For the current redesign, the important rule is:
 
-For this rollout, treat that as a closed set.
+- the binding type itself is the discriminator
+- the body root should not add an extra generic `StatusBindingKind` field on
+  top of that concrete binding
 
-Prototype compatibility names such as:
+Prototype proof-mode names such as:
 
 - `NoStatusCapability`
 - `AuthorityAttestedStatusCapability`
@@ -147,8 +151,9 @@ but they must satisfy both conditions:
    - or validated aliases that family-level validation proves equal to the
      embedded binding at runtime
 
-Wrapper validation alone is not enough once the family claims this maturity
-level.
+Wrapper validation alone is not the desired end state once the family claims
+this maturity level. The final target is to eliminate the wrapper as the
+primary status-aware credential representation.
 
 ## Recommended rollout
 
@@ -169,9 +174,19 @@ Reason:
 - it feeds the age-gate use case that the repository currently uses as the main
   live documentation path
 
-### Slice C: shared-family rollout
+### Slice C: native hidden-holder status credential
 
-After the first family proves the pattern:
+After the first wrapper-based rollout proves the cryptographic body-root
+pattern:
+
+- migrate `credentials-birth-secret` so the status-aware credential itself is a
+  native `VC<..., RegistryBoundStatusBinding>`
+- keep any remaining outer bundle only for protocol-edge convenience, not as
+  the source of VC-side status binding
+
+### Slice D: shared-family rollout
+
+After the native hidden-holder shape proves the pattern:
 
 - lift shared helpers where they belong
 - migrate any remaining wrapped family models that still keep status binding
