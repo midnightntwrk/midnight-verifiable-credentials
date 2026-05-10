@@ -78,6 +78,14 @@ Typical detection points are:
 
 The detection point may vary by implementation mode. The disposition must not.
 
+The repository now also exposes a typed off-chain verifier helper surface under
+`credentials-status-registry` that returns these same codes directly through
+`StatusVerificationResult` values for:
+
+- observed revoked-set verification
+- same-contract live-state verification
+- authority-attested external-registry verification
+
 ## Mode-specific note
 
 The same error may surface at different layers depending on deployment mode:

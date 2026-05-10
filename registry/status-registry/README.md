@@ -41,9 +41,11 @@ Start here:
 1. use `src/revocation-registry.compact` when authoring a registry contract
 2. use `src/status-proof-protocol.compact` when a family or Layer 3 contract
    needs registry-facing status proof-protocol types and validators
-3. use `src/witness-builder.ts` and `src/attestation-builder.ts` only in
+3. use `src/status-verifier.ts` when an off-chain verifier wants one typed
+   fail-closed status verification surface
+4. use `src/witness-builder.ts` and `src/attestation-builder.ts` only in
    off-chain verifier/holder/application code
-4. read:
+5. read:
    - [`../docs/spec/revocation-registry.md`](../docs/spec/revocation-registry.md)
    - [`../docs/spec/status-verification-protocol.md`](../docs/spec/status-verification-protocol.md)
    - [`../docs/architecture/status-verification-modes.md`](../docs/architecture/status-verification-modes.md)
@@ -223,6 +225,21 @@ Observed-root integration helper path:
 - this still does not make the root live inside Compact:
   it turns the current verifier-side freshness choice into one explicit typed
   integration seam instead of leaving it as ad hoc application logic
+
+
+Canonical off-chain verifier helper path:
+
+- use `verifyObservedRevokedSetStatus(...)` when the verifier already has an
+  accepted observed registry snapshot and wants a typed
+  `StatusVerificationResult` back
+- use `verifyLiveContractStateStatus(...)` when the verifier can read live
+  same-contract registry state at runtime and wants the helper to return the
+  canonical live-state verdict plus witness material
+- use `verifyAuthorityAttestedStatus(...)` when the verifier or consuming app
+  must validate authority-attested external-registry evidence
+- all three helpers map failures onto the canonical codes in
+  [`../docs/spec/status-error-taxonomy.md`](../docs/spec/status-error-taxonomy.md)
+  instead of leaving each integration to reinterpret raw error strings
 
 Architecture note for the three supported verification modes:
 

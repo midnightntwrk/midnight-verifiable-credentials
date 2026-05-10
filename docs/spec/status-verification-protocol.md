@@ -145,6 +145,17 @@ Target shape:
 This mode still uses the same VC-side binding and fail-closed error taxonomy.
 It simply detects status invalidity outside Compact.
 
+Canonical repository helper path:
+
+- `verifyObservedRevokedSetStatus(...)` for verifier-observed snapshots
+- `verifyLiveContractStateStatus(...)` for same-contract live runtime state
+- `verifyAuthorityAttestedStatus(...)` when the verifier is consuming
+  delegated status evidence off-chain
+
+These helpers return a typed `StatusVerificationResult` and map raw validator
+failures onto the canonical status error codes instead of leaving each
+integration to classify stringly-typed failures itself.
+
 ### 3. External-registry authority-attested Layer 3 verification
 
 Use this when:

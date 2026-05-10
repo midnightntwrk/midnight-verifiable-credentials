@@ -10,4 +10,5 @@ export * from "./managed/revocation-registry/contract/index.js";
 export * as RevocationRegistryContract from "./managed/revocation-registry/contract/index.js";
 export * from "./registry-state-observation.js";
 export * from "./status-binding.js";
+export * from "./status-verifier.js";
 export * from "./witness-builder.js";
