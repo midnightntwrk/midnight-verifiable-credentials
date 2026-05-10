@@ -67,6 +67,38 @@ describe("credentials demo revocation contract", () => {
     );
   });
 
+  it("rejects a same-contract live-status request before the local registry is initialized", () => {
+    const fixture = createDemoRevocationFixture();
+    const simulator = new CredentialsDemoRevocationSimulator();
+
+    expect(() =>
+      simulator.revocationAwareLiveStatusRequest(
+        fixture.credential.issuerVerificationMethodRef,
+        fixture.witness.verifierDomainHash,
+        fixture.verificationRequest.verifierChallengeHash,
+      ),
+    ).toThrow(/live status registry is not initialized/i);
+  });
+
+  it("rejects re-initializing the same-contract live status registry", () => {
+    const fixture = createDemoRevocationFixture();
+    const simulator = new CredentialsDemoRevocationSimulator();
+
+    simulator.initializeLiveStatusRegistry(fixture.witness.statusRegistryId);
+
+    expect(() =>
+      simulator.initializeLiveStatusRegistry(fixture.witness.statusRegistryId),
+    ).toThrow(/already been initialized/i);
+  });
+
+  it("rejects an empty live status registry identifier", () => {
+    const simulator = new CredentialsDemoRevocationSimulator();
+
+    expect(() =>
+      simulator.initializeLiveStatusRegistry(new Uint8Array(32)),
+    ).toThrow(/registry id must be set/i);
+  });
+
   it("verifies a same-contract live-status hidden-holder presentation and issues a reusable capability", () => {
     const fixture = createDemoRevocationFixture();
     const simulator = new CredentialsDemoRevocationSimulator();
@@ -145,6 +177,45 @@ describe("credentials demo revocation contract", () => {
         fixture.witness.currentDay,
       ),
     ).toThrow(/revoked in the live status registry/i);
+  });
+
+  it("rejects same-contract live-status verification when the credential is bound to another registry", () => {
+    const fixture = createDemoRevocationFixture();
+    const simulator = new CredentialsDemoRevocationSimulator();
+
+    simulator.initializeLiveStatusRegistry(new Uint8Array(32).fill(9));
+    const request = simulator.revocationAwareLiveStatusRequest(
+      fixture.credential.issuerVerificationMethodRef,
+      fixture.witness.verifierDomainHash,
+      fixture.verificationRequest.verifierChallengeHash,
+    );
+    // Disable the shared registry-id policy check so this test exercises the
+    // demo contract's own local live-registry guard instead of failing earlier
+    // in the reusable birth-secret validation layer.
+    request.statusPolicy.enforceRegistryId = false;
+    const submission = buildSubmissionForLiveStatusRequest(fixture, request);
+
+    simulator.issueSecretBirthCredential(
+      fixture.credential,
+      fixture.credentialProof,
+    );
+    simulator.setHolderWitnesses({
+      holderSecret: fixture.witness.holderSecret,
+      holderSecretOpening: fixture.witness.holderSecretOpening,
+      holderBindingBlindingFactor: fixture.witness.holderBindingBlindingFactor,
+      holderBirthDateDays: fixture.witness.birthDateDays,
+      holderBirthDateOpening: fixture.witness.birthDateOpening,
+    });
+
+    expect(() =>
+      simulator.issueRevocationAwareCapabilityWithLiveStatus(
+        fixture.credentialWithStatusBinding,
+        request,
+        submission,
+        fixture.liveStatusVerificationInputs,
+        fixture.witness.currentDay,
+      ),
+    ).toThrow(/does not match the live status registry/i);
   });
 
   it("verifies a verifier-supplied-root hidden-holder presentation and issues a reusable capability", () => {
