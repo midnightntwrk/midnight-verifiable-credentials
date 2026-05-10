@@ -1,11 +1,31 @@
-import { createBirthCredentialFixture } from "@midnight-ntwrk/midnight-did-credentials-birth/testing";
 import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { describe, expect, it } from "vitest";
 
-import { pureCircuits } from "../contract.js";
+import { createBirthCredentialFixture as createDemoBirthCredentialFixture } from "../../../../age-gate/contract/src/test/demo-fixtures.js";
+import {
+  type BirthCredential,
+  type BirthCredentialPresentation,
+  type BirthCredentialPresentationRequest,
+  type Proof,
+  pureCircuits,
+} from "../managed/hello-verifier/contract/index.js";
 import { HelloVerifierSimulator } from "../testing.js";
 
 setNetworkId("undeployed");
+
+const createBirthCredentialFixture = () => {
+  const fixture = createDemoBirthCredentialFixture();
+
+  return {
+    ...fixture,
+    credential: fixture.credential as BirthCredential,
+    credentialProof: fixture.credentialProof as Proof,
+    presentationRequest:
+      fixture.presentationRequest as BirthCredentialPresentationRequest,
+    presentation: fixture.presentation as BirthCredentialPresentation,
+    presentationProof: fixture.presentationProof as Proof,
+  };
+};
 
 describe("hello-verifier contract", () => {
   it("verifies a birth presentation against a minimal verifier request", () => {
