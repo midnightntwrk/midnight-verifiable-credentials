@@ -185,10 +185,6 @@ export circuit assertValidRevocationRegistryState(
     state.registryId != pad(32, ""),
     "Revocation registry id must be set"
   );
-  assert(
-    state.revokedRoot != pad(32, ""),
-    "Revocation registry root must be set"
-  );
 }
 
 export circuit assertValidRevokedSetStatusRequest(

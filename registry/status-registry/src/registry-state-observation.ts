@@ -1,12 +1,20 @@
+import { Buffer } from "node:buffer";
+
+import { convertFieldToBytes } from "@midnight-ntwrk/compact-runtime";
+
 import {
+  ledger,
   pureCircuits,
   type RevocationRegistryState,
   type RevokedSetStatusRequest,
 } from "./managed/revocation-registry/contract/index.js";
 import {
+  buildLiveStatusWitness,
+  type BuildLiveStatusWitnessOptions,
   buildRevokedSetNonMembershipInputs,
   type BuildRevokedSetNonMembershipInputsOptions,
   buildRevokedSetStatusRequest,
+  type BuiltLiveStatusWitness,
   type BuiltRevokedSetNonMembershipInputs,
 } from "./witness-builder.js";
 
@@ -14,6 +22,8 @@ export type ObservedRevocationRegistryState = {
   readonly registryState: RevocationRegistryState;
   readonly observedAt: bigint;
 };
+
+export type RevocationRegistryContractState = Parameters<typeof ledger>[0];
 
 export type RevocationRegistrySnapshotFreshnessPolicy = {
   readonly enforceSnapshotMaxAge: boolean;
@@ -34,10 +44,47 @@ export type BuiltFreshRevokedSetNonMembershipInputs =
     readonly observedState: ObservedRevocationRegistryState;
   };
 
+export type BuildFreshRevokedSetNonMembershipInputsFromContractStateOptions =
+  Omit<BuildFreshRevokedSetNonMembershipInputsOptions, "observedState"> & {
+    readonly state: RevocationRegistryContractState;
+    readonly observedAt: bigint;
+  };
+
+export type BuildLiveStatusWitnessFromContractStateOptions = Omit<
+  BuildLiveStatusWitnessOptions,
+  "revokedStatusHandles"
+> & {
+  readonly state: RevocationRegistryContractState;
+};
+
 const assertNonNegative = (value: bigint, label: string): void => {
   if (value < 0n) {
     throw new Error(`${label} must be >= 0`);
   }
+};
+
+const toHex = (value: Uint8Array): string => Buffer.from(value).toString("hex");
+
+const revokedRootBytes = (state: RevocationRegistryContractState): Uint8Array =>
+  convertFieldToBytes(
+    32,
+    ledger(state).revokedStatusHandles.root().field,
+    "revocation registry root",
+  );
+
+export const readCurrentRevocationRegistryStateFromContractState = ({
+  state,
+}: {
+  readonly state: RevocationRegistryContractState;
+}): RevocationRegistryState => {
+  const currentLedger = ledger(state);
+  const registryState = {
+    registryId: currentLedger.registryId,
+    revokedRoot: revokedRootBytes(state),
+    registryVersion: currentLedger.version,
+  };
+  pureCircuits.assertValidRevocationRegistryState(registryState);
+  return registryState;
 };
 
 export const buildObservedRevocationRegistryState = ({
@@ -50,6 +97,37 @@ export const buildObservedRevocationRegistryState = ({
     registryState,
     observedAt,
   };
+};
+
+export const buildObservedRevocationRegistryStateFromContractState = ({
+  state,
+  observedAt,
+}: {
+  readonly state: RevocationRegistryContractState;
+  readonly observedAt: bigint;
+}): ObservedRevocationRegistryState =>
+  buildObservedRevocationRegistryState({
+    registryState: readCurrentRevocationRegistryStateFromContractState({
+      state,
+    }),
+    observedAt,
+  });
+
+export const assertStatusHandleNotRevokedInContractState = ({
+  state,
+  statusHandle,
+}: {
+  readonly state: RevocationRegistryContractState;
+  readonly statusHandle: Uint8Array;
+}): void => {
+  const currentLedger = ledger(state);
+  const match =
+    currentLedger.revokedStatusHandles.findPathForLeaf(statusHandle);
+  if (match) {
+    throw new Error(
+      `Status handle ${toHex(statusHandle)} is already present in the live revocation registry state`,
+    );
+  }
 };
 
 export const assertObservedRevocationRegistryStateFreshEnough = ({
@@ -142,4 +220,37 @@ export const buildFreshRevokedSetNonMembershipInputs = ({
     ...built,
     observedState,
   };
+};
+
+export const buildFreshRevokedSetNonMembershipInputsFromContractState = ({
+  state,
+  observedAt,
+  ...options
+}: BuildFreshRevokedSetNonMembershipInputsFromContractStateOptions): BuiltFreshRevokedSetNonMembershipInputs => {
+  const built = buildFreshRevokedSetNonMembershipInputs({
+    ...options,
+    observedState: buildObservedRevocationRegistryStateFromContractState({
+      state,
+      observedAt,
+    }),
+  });
+
+  assertStatusHandleNotRevokedInContractState({
+    state,
+    statusHandle: built.statusHandle,
+  });
+
+  return built;
+};
+
+export const buildLiveStatusWitnessFromContractState = ({
+  state,
+  ...options
+}: BuildLiveStatusWitnessFromContractStateOptions): BuiltLiveStatusWitness => {
+  const built = buildLiveStatusWitness(options);
+  assertStatusHandleNotRevokedInContractState({
+    state,
+    statusHandle: built.statusHandle,
+  });
+  return built;
 };

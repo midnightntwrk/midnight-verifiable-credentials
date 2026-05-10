@@ -53,7 +53,7 @@ describe("revocation registry contract", () => {
     ).not.toThrow();
   });
 
-  it("rejects an empty registry id or revoked root in a typed snapshot", () => {
+  it("rejects an empty registry id in a typed snapshot and allows the empty-set root", () => {
     expect(() =>
       pureCircuits.assertValidRevocationRegistryState({
         registryId: new Uint8Array(32),
@@ -68,7 +68,7 @@ describe("revocation registry contract", () => {
         revokedRoot: new Uint8Array(32),
         registryVersion: 0n,
       }),
-    ).toThrow(/Revocation registry root must be set/);
+    ).not.toThrow();
   });
 
   it("initializes the registry once and rejects invalid follow-up initialization", () => {

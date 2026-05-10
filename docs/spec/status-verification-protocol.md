@@ -106,6 +106,16 @@ Current shipped prototype seam:
 - a same-contract verifier can pair that witness with its own live local
   revocation state instead of consuming an authority attestation or
   verifier-supplied root snapshot
+- when runtime access to the shared revocation-registry contract state is
+  available, the repository now also exposes canonical helper paths to:
+  - read the live `(registryId, revokedRoot, registryVersion)` snapshot from
+    contract state
+  - reject already-revoked handles against that live state
+  - build the canonical revoked-set request/witness/protocol bundle directly
+    from that live state plus freshness policy
+- this still does not make the root contract-proven inside Compact itself; it
+  turns live-state observation into one shared typed seam instead of another
+  app-local convention
 
 ### 2. External-registry verifier-side verification
 
