@@ -103,6 +103,10 @@ The repository now also exposes a typed off-chain verifier helper surface under
 - same-contract live-state verification
 - authority-attested external-registry verification
 
+The repository's current BDD and revocation-demo negative-path tests now also
+normalize failures through this same taxonomy so living docs, helper surfaces,
+and use-case tests assert the same fail-closed categories.
+
 ## Mode-specific note
 
 The same error may surface at different layers depending on deployment mode:

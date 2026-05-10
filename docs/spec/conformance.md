@@ -84,6 +84,10 @@ A status proof-protocol implementation conforms when it:
 - states whether the protocol surface is:
   - reference-shaped and fully enforced in Compact
   - or prototype-shaped and coordinated partly off-chain
+- if it exposes an off-chain verifier/helper surface, maps failures into the
+  canonical error vocabulary in
+  [`status-error-taxonomy.md`](./status-error-taxonomy.md) instead of inventing
+  use-case-local status verdict names
 - documents that the status errors in
   [`status-error-taxonomy.md`](./status-error-taxonomy.md)
   are hard invalidity, not soft business-policy denials
@@ -254,6 +258,8 @@ Any implementation claiming conformance should document:
 - whether the verifier/application must supply off-chain status inputs such as
   an accepted `(registryId, revokedRoot)`
 - whether `revoked` is treated as hard VC/VP invalidity
+- if the implementation surfaces runtime/helper status results, which canonical
+  status codes it emits and where `unclassifiedFailure` can still appear
 - any security/privacy limitations that are intentionally deferred
 
 ## Non-conformance examples
@@ -272,6 +278,8 @@ An implementation is not conformant if it:
   durable-state, expiry, replay, or adapter limitations
 - claims revocation/non-revocation support without documenting its declared
   status binding, proof protocol, and freshness/privacy assumptions
+- exposes use-case-local revocation verdict names that bypass the shared
+  canonical status-error taxonomy
 
 ## Current repository stance
 
