@@ -214,6 +214,24 @@ export const assertObservedRevocationRegistryVersionAtLeast = ({
   }
 };
 
+export const assertRevocationRegistryVersionAtLeast = ({
+  registryState,
+  minimumRegistryVersion,
+}: {
+  readonly registryState: RevocationRegistryState;
+  readonly minimumRegistryVersion: bigint;
+}): void => {
+  pureCircuits.assertValidRevocationRegistryState(registryState);
+  assertNonNegative(minimumRegistryVersion, "Minimum registry version");
+  if (registryState.registryVersion < minimumRegistryVersion) {
+    throw new StatusHelperError({
+      code: statusVerificationErrorCodes.staleRegistryState,
+      message:
+        "Revocation registry state version is older than the required minimum",
+    });
+  }
+};
+
 export const buildFreshRevokedSetNonMembershipInputs = ({
   observedState,
   verifierChallengeHash,
@@ -221,6 +239,7 @@ export const buildFreshRevokedSetNonMembershipInputs = ({
   snapshotFreshnessPolicy,
   ...witnessOptions
 }: BuildFreshRevokedSetNonMembershipInputsOptions): BuiltFreshRevokedSetNonMembershipInputs => {
+  buildObservedRevocationRegistryState(observedState);
   assertObservedRevocationRegistryStateFreshEnough({
     observedState,
     currentTime,

@@ -235,6 +235,9 @@ Canonical off-chain verifier helper path:
 - use `verifyLiveContractStateStatus(...)` when the verifier can read live
   same-contract registry state at runtime and wants the helper to return the
   canonical live-state verdict plus witness material
+- the live-state helper now applies any minimum registry-version policy
+  directly against the live `RevocationRegistryState`; it does not fabricate an
+  `observedAt` timestamp the way observed-snapshot freshness helpers do
 - use `verifyAuthorityAttestedStatus(...)` when the verifier or consuming app
   must validate authority-attested external-registry evidence
 - all three helpers map failures onto the canonical codes in
