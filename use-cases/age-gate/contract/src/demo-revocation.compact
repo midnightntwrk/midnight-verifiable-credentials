@@ -261,6 +261,9 @@ export circuit revocationAwareLiveStatusRequest(
       verifierDomainHash,
       verifierChallengeHash
     ),
+    // Reuse the revoked-set non-membership capability label here: the live
+    // path still proves "status handle not present in the accepted revoked set",
+    // but it does so against the contract-owned local set instead of a snapshot.
     statusPolicy: revocationDemoStatusPolicy(
       StatusCapabilityKind.revokedSetNonMembership,
       liveStatusRegistryId
@@ -433,6 +436,9 @@ circuit verifySecretBirthPresentationWithLiveStatus(
   assert(
     request.statusPolicy.acceptedStatusCapability
       == StatusCapabilityKind.revokedSetNonMembership,
+    // The live same-contract mode shares the same capability kind because it
+    // still enforces revoked-set non-membership, only against local ledger
+    // state instead of an externally supplied or attested snapshot.
     "Revocation demo live status request must require revoked-set status support"
   );
   assert(

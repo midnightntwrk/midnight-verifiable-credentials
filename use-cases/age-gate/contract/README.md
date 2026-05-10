@@ -122,6 +122,9 @@ models:
 - an intentionally unauthenticated lifecycle surface for demo/simulator use;
   production deployments should gate local registry initialization and
   revocation writes behind issuer or authority authorization
+- the local demo registry can revoke any 32-byte status handle directly; it
+  does not currently restrict revocation writes to handles that were issued by
+  this contract
 
 For the authority-attested path specifically, the current demo now enforces:
 

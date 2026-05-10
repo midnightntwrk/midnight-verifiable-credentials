@@ -99,6 +99,17 @@ describe("credentials demo revocation contract", () => {
     ).toThrow(/registry id must be set/i);
   });
 
+  it("rejects revoking an empty live status handle", () => {
+    const fixture = createDemoRevocationFixture();
+    const simulator = new CredentialsDemoRevocationSimulator();
+
+    simulator.initializeLiveStatusRegistry(fixture.witness.statusRegistryId);
+
+    expect(() => simulator.revokeLiveStatusHandle(new Uint8Array(32))).toThrow(
+      /status handle must be set/i,
+    );
+  });
+
   it("verifies a same-contract live-status hidden-holder presentation and issues a reusable capability", () => {
     const fixture = createDemoRevocationFixture();
     const simulator = new CredentialsDemoRevocationSimulator();
@@ -177,6 +188,18 @@ describe("credentials demo revocation contract", () => {
         fixture.witness.currentDay,
       ),
     ).toThrow(/revoked in the live status registry/i);
+  });
+
+  it("allows idempotent repeat revocation of the same live status handle", () => {
+    const fixture = createDemoRevocationFixture();
+    const simulator = new CredentialsDemoRevocationSimulator();
+
+    simulator.initializeLiveStatusRegistry(fixture.witness.statusRegistryId);
+    simulator.revokeLiveStatusHandle(fixture.witness.statusHandle);
+
+    expect(() =>
+      simulator.revokeLiveStatusHandle(fixture.witness.statusHandle),
+    ).not.toThrow();
   });
 
   it("rejects same-contract live-status verification when the credential is bound to another registry", () => {
