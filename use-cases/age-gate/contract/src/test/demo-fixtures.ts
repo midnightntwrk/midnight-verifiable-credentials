@@ -7,6 +7,7 @@ import {
   pureCircuits as genericPureCircuits,
   type VerificationMethodRef,
 } from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
+
 import {
   type BirthCredential,
   type BirthCredentialPresentation,
