@@ -95,6 +95,18 @@ This is the strongest current target because the business contract does not
 need to trust an external status attestation once the live-root path exists in
 that same contract domain.
 
+Current shipped prototype seam:
+
+- the repository now exposes a `LiveStatusWitnessInput` plus matching
+  binding-first TypeScript helper path for this mode
+- that witness shape omits the external `(registryId, revokedRoot)` snapshot
+  and carries only:
+  - `statusHandle`
+  - `statusHandleOpening`
+- a same-contract verifier can pair that witness with its own live local
+  revocation state instead of consuming an authority attestation or
+  verifier-supplied root snapshot
+
 ### 2. External-registry verifier-side verification
 
 Use this when:

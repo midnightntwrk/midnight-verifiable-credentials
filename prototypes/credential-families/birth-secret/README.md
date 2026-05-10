@@ -115,6 +115,8 @@ What it does prove:
 - verifier-scoped pseudonym derivation from the hidden holder secret
 - same-holder composition across two or three secret birth credentials when the verifier coordinates a shared challenge
 - prototype status-aware verification using:
+  - same-contract live status witnesses for contracts that own the live
+    revocation set directly
   - verifier-supplied `(registryId, revokedRoot)`
   - revoked-set status capability binding
   - authority-attested status proofs for Layer 3 transitional verification
@@ -149,6 +151,9 @@ Important distinction:
   - `AuthorityAttestedStatusCapability` is still a transitional Layer 3 bridge
     that depends on verifier/application-supplied `(registryId, revokedRoot)`
     even though the wrapper proof now commits the VC-side binding
+  - the family now also exposes a live-status request + witness path for
+    same-contract verification prototypes that bind directly to a contract's
+    local live revoked-set state without reusing the external snapshot shape
   - `RevokedSetNonMembershipStatusCapability` now commits the VC-side binding
     in the wrapper proof, but it is still not the final in-circuit
     non-membership enforcement path

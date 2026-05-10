@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - verifier-supplied `RevokedSetStatusRequest`
   - authority-attested status proof helpers
   - witness-builder helpers
+  - live-status witness helpers for same-contract verification prototypes
 - added a focused Layer 3 status-aware revocation demo under
   `credentials-demo-contract`:
   - `src/demo-revocation.compact`
@@ -65,8 +66,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   capability-specific
 - BREAKING: `signAuthorityAttestedStatusProof(...)` now derives its signing
   nonce internally. Integrations that still need an explicit nonce override
-  must call `unsafeSignAuthorityAttestedStatusProofWithNonceScalar(...)`
-  intentionally instead of passing `nonceScalar` into the safe helper.
+  must now import
+  `unsafeSignAuthorityAttestedStatusProofWithNonceScalar(...)` from the
+  dedicated `credentials-status-registry/testing` subpath intentionally
+  instead of passing `nonceScalar` into the safe helper or relying on the root
+  package surface to expose the unsafe override.
 - BREAKING: `VerifierStatusPolicy` now carries explicit
   `enforceAttestationMaxAge` / `maxAttestationAge` fields so
   authority-attested status freshness can be enforced by verifier policy
