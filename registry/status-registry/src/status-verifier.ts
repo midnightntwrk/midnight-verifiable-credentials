@@ -1,5 +1,3 @@
-import { Buffer } from "node:buffer";
-
 import {
   pureCircuits as credentialCircuits,
   type RegistryBoundStatusBinding,
@@ -129,7 +127,8 @@ const equalBytes = (left: Uint8Array, right: Uint8Array): boolean =>
   left.length === right.length &&
   left.every((value, index) => value === right[index]);
 
-const toHex = (value: Uint8Array): string => Buffer.from(value).toString("hex");
+const toHex = (value: Uint8Array): string =>
+  Array.from(value, (byte) => byte.toString(16).padStart(2, "0")).join("");
 
 const assertRegistryAccepted = ({
   registryId,
@@ -227,7 +226,7 @@ const classifyStatusVerificationError = (
     [statusVerificationErrorCodes.attestationExpired, /has expired/i],
     [
       statusVerificationErrorCodes.attestationTooOld,
-      /exceeds the verifier max-age policy/i,
+      /status proof exceeds the verifier max-age policy/i,
     ],
     [
       statusVerificationErrorCodes.futureDatedAttestation,
@@ -239,7 +238,7 @@ const classifyStatusVerificationError = (
     ],
     [
       statusVerificationErrorCodes.statusBindingMismatch,
-      /status handle commitment|registry-bound status binding|does not use the revocation registry status type|does not match the binding|binding does not match|status binding registry/i,
+      /status handle commitment|binding handle commitment|registry-bound status binding|does not use the revocation registry status type|supplied status binding|does not match the binding|binding does not match|status binding registry/i,
     ],
   ];
 

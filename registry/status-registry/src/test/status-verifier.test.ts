@@ -421,6 +421,70 @@ describe("status verifier", () => {
     expect(result.ok).toEqual(true);
   });
 
+  it("returns a status-binding-mismatch error when verifier policy rejects the observed registry binding domain", () => {
+    const result = verifyObservedRevokedSetStatus({
+      observedState: buildObservedRevocationRegistryState({
+        registryState: {
+          registryId: bytes32("registry:hidden-holder"),
+          revokedRoot: bytes32("revoked-root:current"),
+          registryVersion: 2n,
+        },
+        observedAt: 100n,
+      }),
+      verifierChallengeHash: bytes32("challenge:status"),
+      currentTime: 120n,
+      snapshotFreshnessPolicy: {
+        enforceSnapshotMaxAge: true,
+        maxSnapshotAge: 20n,
+      },
+      credentialClaimRoot: bytes32("credential-root:alice"),
+      registryRef: {
+        registryId: bytes32("registry:hidden-holder"),
+        authorityVerificationMethodRef: authoritySigner.verificationMethodRef,
+      },
+      issuerStatusSalt: bytes32("issuer-salt:alpha"),
+      statusHandleOpening: bytes32("status-opening:alpha"),
+      verifierStatusPolicy: {
+        ...revokedSetPolicy,
+        acceptedRegistryId: bytes32("registry:other"),
+      },
+    });
+
+    expect(result.ok).toEqual(false);
+    if (!result.ok) {
+      expect(result.error.code).toEqual(
+        statusVerificationErrorCodes.statusBindingMismatch,
+      );
+    }
+  });
+
+  it("returns an unsupported-status-proof-mode error when live contract verification disables the live revoked-set mode", () => {
+    const { contract, context } = createRegistryFixture();
+    const initialized = contract.impureCircuits.initializeRegistry(
+      context,
+      bytes32("registry:hidden-holder"),
+    );
+
+    const result = verifyLiveContractStateStatus({
+      state: initialized.context.currentQueryContext.state,
+      credentialClaimRoot: bytes32("credential-root:alice"),
+      registryRef: {
+        registryId: bytes32("registry:hidden-holder"),
+        authorityVerificationMethodRef: authoritySigner.verificationMethodRef,
+      },
+      issuerStatusSalt: bytes32("issuer-salt:alpha"),
+      statusHandleOpening: bytes32("status-opening:alpha"),
+      verifierStatusPolicy: noStatusPolicy,
+    });
+
+    expect(result.ok).toEqual(false);
+    if (!result.ok) {
+      expect(result.error.code).toEqual(
+        statusVerificationErrorCodes.unsupportedStatusProofMode,
+      );
+    }
+  });
+
   it("returns a stale-registry-state error when live contract state is below the verifier version floor", () => {
     const { contract, context } = createRegistryFixture();
     const initialized = contract.impureCircuits.initializeRegistry(
