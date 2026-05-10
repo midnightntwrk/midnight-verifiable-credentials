@@ -8,3 +8,4 @@ Feature: Hidden-holder wrong-authority rejection
     When the engineer runs the hidden-holder wrong-authority rejection path
     Then the hidden-holder scenario should be rejected
     And the hidden-holder scenario failure message should contain "does not match the status authority"
+    And the hidden-holder scenario failure code should be "authorityMismatch"

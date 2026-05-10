@@ -221,7 +221,7 @@ const classifyStatusVerificationError = (
     ],
     [
       statusVerificationErrorCodes.revoked,
-      /already present in the (live )?revocation registry state|already present in the revoked set snapshot/i,
+      /already present in the (live )?revocation registry state|already present in the revoked set snapshot|revoked in the live status registry/i,
     ],
     [
       statusVerificationErrorCodes.staleRegistryState,
@@ -267,6 +267,14 @@ const classifyStatusVerificationError = (
     cause: error,
   });
 };
+
+export const normalizeStatusVerificationFailure = ({
+  mode,
+  error,
+}: {
+  readonly mode: StatusVerificationMode;
+  readonly error: unknown;
+}): StatusVerificationError => classifyStatusVerificationError(mode, error);
 
 export const assertObservedRevokedSetStatusVerifies = ({
   registryAcceptancePolicy,

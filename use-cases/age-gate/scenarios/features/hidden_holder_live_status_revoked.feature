@@ -8,3 +8,4 @@ Feature: Hidden-holder same-contract live-status revoked rejection
     When the engineer runs the hidden-holder same-contract live-status revoked rejection path
     Then the hidden-holder scenario should be rejected
     And the hidden-holder scenario failure message should contain "revoked in the live status registry"
+    And the hidden-holder scenario failure code should be "revoked"
