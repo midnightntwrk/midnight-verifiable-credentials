@@ -137,8 +137,13 @@ const assertRegistryAccepted = ({
   readonly registryId: Uint8Array;
   readonly acceptancePolicy?: VerifierRegistryAcceptancePolicy;
 }): void => {
-  if (!acceptancePolicy?.acceptedRegistryIds?.length) {
+  if (acceptancePolicy?.acceptedRegistryIds === undefined) {
     return;
+  }
+  if (acceptancePolicy.acceptedRegistryIds.length === 0) {
+    throw new Error(
+      "Verifier registry acceptance policy does not accept any registries",
+    );
   }
   const accepted = acceptancePolicy.acceptedRegistryIds.some((candidate) =>
     equalBytes(candidate, registryId),
@@ -203,7 +208,7 @@ const classifyStatusVerificationError = (
   const patterns: Array<[StatusVerificationErrorCode, RegExp]> = [
     [
       statusVerificationErrorCodes.unknownRegistry,
-      /is not accepted by the verifier registry policy/i,
+      /is not accepted by the verifier registry policy|does not accept any registries/i,
     ],
     [
       statusVerificationErrorCodes.revoked,

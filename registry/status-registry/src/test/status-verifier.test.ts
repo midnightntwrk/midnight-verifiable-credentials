@@ -276,6 +276,44 @@ describe("status verifier", () => {
     }
   });
 
+  it("returns an unknown-registry error when the verifier acceptance policy lists no accepted registries", () => {
+    const result = verifyObservedRevokedSetStatus({
+      observedState: buildObservedRevocationRegistryState({
+        registryState: {
+          registryId: bytes32("registry:hidden-holder"),
+          revokedRoot: bytes32("revoked-root:current"),
+          registryVersion: 2n,
+        },
+        observedAt: 100n,
+      }),
+      verifierChallengeHash: bytes32("challenge:status"),
+      currentTime: 120n,
+      snapshotFreshnessPolicy: {
+        enforceSnapshotMaxAge: true,
+        maxSnapshotAge: 20n,
+      },
+      credentialClaimRoot: bytes32("credential-root:alice"),
+      registryRef: {
+        registryId: bytes32("registry:hidden-holder"),
+        authorityVerificationMethodRef: authoritySigner.verificationMethodRef,
+      },
+      issuerStatusSalt: bytes32("issuer-salt:alpha"),
+      statusHandleOpening: bytes32("status-opening:alpha"),
+      verifierStatusPolicy: revokedSetPolicy,
+      registryAcceptancePolicy: {
+        acceptedRegistryIds: [],
+      },
+    });
+
+    expect(result.ok).toEqual(false);
+    if (!result.ok) {
+      expect(result.error.code).toEqual(
+        statusVerificationErrorCodes.unknownRegistry,
+      );
+      expect(result.error.cause).toBeInstanceOf(Error);
+    }
+  });
+
   it("returns an unsupported-status-proof-mode error for an observed snapshot when policy disables revoked-set proofs", () => {
     const result = verifyObservedRevokedSetStatus({
       observedState: buildObservedRevocationRegistryState({
