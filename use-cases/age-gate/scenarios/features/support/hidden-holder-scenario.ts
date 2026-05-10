@@ -241,7 +241,7 @@ export class UseHiddenHolderScenario extends Ability {
     }
   }
 
-  async runVerifierSuppliedRootStaleVersionRejectedPath(): Promise<void> {
+  async runVerifierSuppliedRootStaleSnapshotRejectedPath(): Promise<void> {
     const { fixture, simulator } = this.#setupFixture();
     const request = simulator.revocationAwareVerifierSuppliedRootRequest(
       fixture.credential.issuerVerificationMethodRef,
