@@ -7,6 +7,7 @@ run_common_usage() {
   cat <<'EOF'
 Usage:
   ./run.sh [target] [--light]
+  ./run.sh <root-npm-script> [--light] [-- <script args...>]
 
 Targets:
   full                       Full repository validation pipeline (default)
@@ -27,6 +28,21 @@ Targets:
 Options:
   --light                    Use light-mode variants when the target supports it
 EOF
+
+  if command -v node >/dev/null 2>&1; then
+    echo
+    echo "Root package.json scripts also run directly through ./run.sh:"
+    node <<'EOF'
+const scripts = require("./package.json").scripts ?? {};
+const excluded = new Set(["postinstall"]);
+for (const name of Object.keys(scripts).sort()) {
+  if (excluded.has(name)) {
+    continue;
+  }
+  console.log(`  ${name}`);
+}
+EOF
+  fi
 }
 
 run_common_repo_setup() {
@@ -49,7 +65,24 @@ run_common_integration_target() {
   run_common_cleanup_test_infra
 }
 
+run_common_root_script_exists() {
+  local script_name="$1"
+
+  node -e '
+    const scripts = require("./package.json").scripts ?? {};
+    const excluded = new Set(["postinstall"]);
+    const name = process.argv[1];
+    process.exit(
+      Object.prototype.hasOwnProperty.call(scripts, name) && !excluded.has(name)
+        ? 0
+        : 1
+    );
+  ' "$script_name"
+}
+
 target="full"
+target_kind="wrapper"
+forward_args=()
 
 if [[ $# -gt 0 ]]; then
   case "$1" in
@@ -57,12 +90,44 @@ if [[ $# -gt 0 ]]; then
       target="$1"
       shift
       ;;
+    *)
+      if [[ "$1" != -* ]] && run_common_root_script_exists "$1"; then
+        target="$1"
+        target_kind="npm-script"
+        shift
+      fi
+      ;;
   esac
 fi
 
+raw_args=("$@")
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --light)
+      shift
+      ;;
+    --)
+      shift
+      while [[ $# -gt 0 ]]; do
+        forward_args+=("$1")
+        shift
+      done
+      ;;
+    *)
+      forward_args+=("$1")
+      shift
+      ;;
+  esac
+done
+
 case "$target" in
   full)
-    exec ./run-credentials.sh "$@"
+    if [[ ${#raw_args[@]} -gt 0 ]]; then
+      exec ./run-credentials.sh "${raw_args[@]}"
+    else
+      exec ./run-credentials.sh
+    fi
     ;;
   targets|help|-h|--help)
     run_common_usage
@@ -70,7 +135,21 @@ case "$target" in
     ;;
 esac
 
-run_common_repo_setup "$@"
+if [[ ${#raw_args[@]} -gt 0 ]]; then
+  run_common_repo_setup "${raw_args[@]}"
+else
+  run_common_repo_setup
+fi
+
+if [[ "$target_kind" == "npm-script" ]]; then
+  echo "[run] Root npm script: $target"
+  if [[ ${#forward_args[@]} -gt 0 ]]; then
+    npm run "$target" -- "${forward_args[@]}"
+  else
+    npm run "$target"
+  fi
+  exit 0
+fi
 
 case "$target" in
   lint)
@@ -80,10 +159,12 @@ case "$target" in
   typecheck)
     if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
       echo "[run] Light typecheck lane"
-      npm run typecheck:light
+      run_common_ensure_artifacts "run" managed-light
+      npm run typecheck:light:from-artifacts
     else
       echo "[run] Full typecheck lane"
-      npm run ci:typecheck
+      run_common_ensure_artifacts "run" managed-all
+      npm run ci:typecheck:from-artifacts
     fi
     ;;
   build)
@@ -98,10 +179,12 @@ case "$target" in
   test)
     if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
       echo "[run] Light package test lane"
-      npm run test:light
+      run_common_ensure_artifacts "run" managed-light
+      npm run test:light:from-artifacts
     else
       echo "[run] Full package test lane"
-      npm run test:all
+      run_common_ensure_artifacts "run" managed-all
+      npm run test:all:from-artifacts
     fi
     ;;
   bdd)
@@ -118,16 +201,19 @@ case "$target" in
     ;;
   revocation)
     echo "[run] Revocation-focused lane"
-    npm run ci:revocation
+    npm run lint:revocation
+    run_common_ensure_artifacts "run" managed-revocation
+    npm run typecheck:revocation:from-artifacts
+    npm run test:revocation:from-artifacts
     ;;
   integration)
     if docker info >/dev/null 2>&1; then
       run_common_integration_target \
         "Standalone demo-contract integration" \
-        npm run ci:integration:demo-contract
+        bash -lc 'source ./tooling/scripts/run-common.sh && run_common_ensure_artifacts "run" integration-demo-contract && npm run ci:integration:demo-contract:from-artifacts'
       run_common_integration_target \
         "Standalone protocol integration" \
-        npm run ci:integration:protocol
+        bash -lc 'source ./tooling/scripts/run-common.sh && run_common_ensure_artifacts "run" integration-protocol && npm run ci:integration:protocol:from-artifacts'
     else
       echo "[run] Docker unavailable; cannot run standalone integrations"
       exit 1
@@ -137,7 +223,7 @@ case "$target" in
     if docker info >/dev/null 2>&1; then
       run_common_integration_target \
         "Standalone demo-contract integration" \
-        npm run ci:integration:demo-contract
+        bash -lc 'source ./tooling/scripts/run-common.sh && run_common_ensure_artifacts "run" integration-demo-contract && npm run ci:integration:demo-contract:from-artifacts'
     else
       echo "[run] Docker unavailable; cannot run demo-contract integration"
       exit 1
@@ -147,7 +233,7 @@ case "$target" in
     if docker info >/dev/null 2>&1; then
       run_common_integration_target \
         "Standalone protocol integration" \
-        npm run ci:integration:protocol
+        bash -lc 'source ./tooling/scripts/run-common.sh && run_common_ensure_artifacts "run" integration-protocol && npm run ci:integration:protocol:from-artifacts'
     else
       echo "[run] Docker unavailable; cannot run protocol integration"
       exit 1

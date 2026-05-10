@@ -70,7 +70,7 @@ describe("status registry: capability compatibility", () => {
   it("rejects an authority-attested capability with a non-enum status type value", () => {
     const signer = createSigner("status-authority", 1002n);
     const capability = {
-      statusType: 99,
+      statusType: 99 as unknown as StatusType,
       registryRef: {
         registryId: bytes32("registry:hidden-holder"),
         authorityVerificationMethodRef: signer.verificationMethodRef,

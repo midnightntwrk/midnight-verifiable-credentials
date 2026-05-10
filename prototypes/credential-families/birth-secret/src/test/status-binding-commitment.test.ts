@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   pureCircuits,
+  StatusType,
 } from "../managed/secret-birth-credential/contract/index.js";
 import { createSecretBirthCredentialFixture } from "../testing/credential-fixtures.js";
 
@@ -118,7 +119,7 @@ describe("secret birth credential: issuer-signed status binding commitment", () 
           ...fixture.credentialWithStatusBinding.credential,
           statusBinding: {
             ...fixture.credentialWithStatusBinding.credential.statusBinding,
-            statusType: 99,
+            statusType: 99 as unknown as StatusType,
           },
         },
       }),

@@ -44,6 +44,124 @@ run_common_auto_proof_server_image() {
   fi
 }
 
+run_common_artifacts_ready() {
+  local profile="${1:-all}"
+
+  case "$profile" in
+    managed-light)
+      [[ -f "core/primitives/credentials/src/managed/credentials/contract/index.js" ]] \
+        && [[ -f "registry/status-registry/src/managed/revocation-registry/contract/index.js" ]] \
+        && [[ -f "core/capabilities/same-holder/src/managed/same-holder/contract/index.js" ]] \
+        && [[ -f "core/primitives/iso-registry/src/managed/iso-registry/contract/index.js" ]] \
+        && [[ -f "prototypes/credential-families/birth/src/managed/birth-credential/contract/index.js" ]] \
+        && [[ -f "prototypes/credential-families/birth-secret/src/managed/secret-birth-credential/contract/index.js" ]]
+      ;;
+    managed-all)
+      run_common_artifacts_ready managed-light \
+        && [[ -f "use-cases/age-gate/contract/src/managed/demo/contract/index.js" ]] \
+        && [[ -f "use-cases/age-gate/contract/src/managed/demo-revocation/contract/index.js" ]] \
+        && [[ -f "use-cases/hello-verifier/contract/src/managed/hello-verifier/contract/index.js" ]]
+      ;;
+    managed-revocation)
+      [[ -f "core/primitives/credentials/src/managed/credentials/contract/index.js" ]] \
+        && [[ -f "registry/status-registry/src/managed/revocation-registry/contract/index.js" ]] \
+        && [[ -f "core/capabilities/same-holder/src/managed/same-holder/contract/index.js" ]] \
+        && [[ -f "prototypes/credential-families/birth/src/managed/birth-credential/contract/index.js" ]] \
+        && [[ -f "prototypes/credential-families/birth-secret/src/managed/secret-birth-credential/contract/index.js" ]] \
+        && [[ -f "use-cases/age-gate/contract/src/managed/demo/contract/index.js" ]] \
+        && [[ -f "use-cases/age-gate/contract/src/managed/demo-revocation/contract/index.js" ]]
+      ;;
+    light)
+      [[ -f "core/primitives/credentials/dist/index.js" ]] \
+        && [[ -f "registry/status-registry/dist/index.js" ]] \
+        && [[ -f "core/capabilities/same-holder/dist/index.js" ]] \
+        && [[ -f "core/primitives/iso-registry/dist/index.js" ]] \
+        && [[ -f "components/adapters/offchain-did/dist/index.js" ]] \
+        && [[ -f "protocols/openid/dist/index.js" ]] \
+        && [[ -f "prototypes/credential-families/birth/dist/index.js" ]] \
+        && [[ -f "prototypes/credential-families/birth-secret/dist/index.js" ]]
+      ;;
+    all)
+      run_common_artifacts_ready light \
+        && [[ -f "use-cases/age-gate/contract/dist/index.js" ]] \
+        && [[ -f "use-cases/hello-verifier/contract/dist/index.js" ]] \
+        && [[ -f "components/orchestration/protocol/dist/index.js" ]]
+      ;;
+    revocation)
+      [[ -f "core/primitives/credentials/dist/index.js" ]] \
+        && [[ -f "registry/status-registry/dist/index.js" ]] \
+        && [[ -f "core/capabilities/same-holder/dist/index.js" ]] \
+        && [[ -f "prototypes/credential-families/birth/dist/index.js" ]] \
+        && [[ -f "prototypes/credential-families/birth-secret/dist/index.js" ]] \
+        && [[ -f "use-cases/age-gate/contract/dist/index.js" ]]
+      ;;
+    integration-demo-contract)
+      [[ -f "core/primitives/credentials/dist/index.js" ]] \
+        && [[ -f "registry/status-registry/dist/index.js" ]] \
+        && [[ -f "core/capabilities/same-holder/dist/index.js" ]] \
+        && [[ -f "core/primitives/iso-registry/dist/index.js" ]] \
+        && [[ -f "components/adapters/offchain-did/dist/index.js" ]] \
+        && [[ -f "protocols/openid/dist/index.js" ]] \
+        && [[ -f "prototypes/credential-families/birth/dist/index.js" ]] \
+        && [[ -f "prototypes/credential-families/birth-secret/dist/index.js" ]] \
+        && [[ -f "use-cases/age-gate/contract/dist/index.js" ]]
+      ;;
+    integration-protocol)
+      run_common_artifacts_ready integration-demo-contract \
+        && [[ -f "components/orchestration/protocol/dist/index.js" ]]
+      ;;
+    *)
+      echo "[run] Unknown artifact profile: $profile" >&2
+      return 1
+      ;;
+  esac
+}
+
+run_common_ensure_artifacts() {
+  local caller="${1:-run}"
+  local profile="${2:-all}"
+  local build_cmd
+
+  if run_common_artifacts_ready "$profile"; then
+    echo "[${caller}] Reusing existing ${profile} build artifacts"
+    return 0
+  fi
+
+  case "$profile" in
+    managed-light)
+      build_cmd="npm run build:light"
+      ;;
+    managed-all)
+      build_cmd="npm run build:all"
+      ;;
+    managed-revocation)
+      build_cmd="npm run build:revocation"
+      ;;
+    light)
+      build_cmd="npm run build:light"
+      ;;
+    all)
+      build_cmd="npm run build:all"
+      ;;
+    revocation)
+      build_cmd="npm run build:revocation"
+      ;;
+    integration-demo-contract)
+      build_cmd="npm run build:integration-prereqs:demo-contract"
+      ;;
+    integration-protocol)
+      build_cmd="npm run build:integration-prereqs:protocol"
+      ;;
+    *)
+      echo "[${caller}] Unknown artifact profile: $profile" >&2
+      return 1
+      ;;
+  esac
+
+  echo "[${caller}] Build missing ${profile} artifacts"
+  eval "$build_cmd"
+}
+
 run_common_ensure_contract_artifacts() {
   local caller="${1:-run}"
   if [[ ! -f "contract/src/managed/did/contract/index.js" ]]; then

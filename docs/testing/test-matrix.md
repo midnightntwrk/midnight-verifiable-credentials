@@ -271,3 +271,11 @@ or directly through package-level `test:integration` commands when Docker is ava
   - both standalone integration lanes
 - `./run.sh targets`
   - prints the supported target list
+
+In addition to the wrapper targets above, `./run.sh` now accepts any root
+`package.json` script directly. Useful examples:
+
+- `./run.sh build:core`
+- `./run.sh build:cone:age-gate`
+- `./run.sh ci:package-tests`
+- `./run.sh artifacts:pack`
