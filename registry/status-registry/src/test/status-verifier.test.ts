@@ -421,6 +421,98 @@ describe("status verifier", () => {
     expect(result.ok).toEqual(true);
   });
 
+  it("returns a stale-registry-state error when live contract state is below the verifier version floor", () => {
+    const { contract, context } = createRegistryFixture();
+    const initialized = contract.impureCircuits.initializeRegistry(
+      context,
+      bytes32("registry:hidden-holder"),
+    );
+
+    const result = verifyLiveContractStateStatus({
+      state: initialized.context.currentQueryContext.state,
+      credentialClaimRoot: bytes32("credential-root:alice"),
+      registryRef: {
+        registryId: bytes32("registry:hidden-holder"),
+        authorityVerificationMethodRef: authoritySigner.verificationMethodRef,
+      },
+      issuerStatusSalt: bytes32("issuer-salt:alpha"),
+      statusHandleOpening: bytes32("status-opening:alpha"),
+      verifierStatusPolicy: revokedSetPolicy,
+      registryAcceptancePolicy: {
+        minimumRegistryVersion: 1n,
+      },
+    });
+
+    expect(result.ok).toEqual(false);
+    if (!result.ok) {
+      expect(result.error.code).toEqual(
+        statusVerificationErrorCodes.staleRegistryState,
+      );
+    }
+  });
+
+  it("returns a status-request-mismatch error when the external verifier request diverges from the authority-attested protocol request", () => {
+    const fixture = buildAuthorityFixture();
+
+    const result = verifyAuthorityAttestedStatus({
+      statusBinding: fixture.statusBinding,
+      verifierStatusPolicy: authorityAttestedPolicy,
+      request: {
+        ...fixture.request,
+        registryState: {
+          ...fixture.request.registryState,
+          revokedRoot: bytes32("revoked-root:other"),
+        },
+      },
+      protocol: fixture.protocol,
+      currentTime: 110n,
+    });
+
+    expect(result.ok).toEqual(false);
+    if (!result.ok) {
+      expect(result.error.code).toEqual(
+        statusVerificationErrorCodes.statusRequestMismatch,
+      );
+    }
+  });
+
+  it("returns an unclassified-failure error when verifier-side acceptance policy throws outside the canonical taxonomy", () => {
+    const result = verifyObservedRevokedSetStatus({
+      observedState: buildObservedRevocationRegistryState({
+        registryState: {
+          registryId: bytes32("registry:hidden-holder"),
+          revokedRoot: bytes32("revoked-root:current"),
+          registryVersion: 2n,
+        },
+        observedAt: 100n,
+      }),
+      verifierChallengeHash: bytes32("challenge:status"),
+      currentTime: 120n,
+      snapshotFreshnessPolicy: {
+        enforceSnapshotMaxAge: true,
+        maxSnapshotAge: 20n,
+      },
+      credentialClaimRoot: bytes32("credential-root:alice"),
+      registryRef: {
+        registryId: bytes32("registry:hidden-holder"),
+        authorityVerificationMethodRef: authoritySigner.verificationMethodRef,
+      },
+      issuerStatusSalt: bytes32("issuer-salt:alpha"),
+      statusHandleOpening: bytes32("status-opening:alpha"),
+      verifierStatusPolicy: revokedSetPolicy,
+      registryAcceptancePolicy: {
+        acceptedRegistryIds: [undefined as unknown as Uint8Array],
+      },
+    });
+
+    expect(result.ok).toEqual(false);
+    if (!result.ok) {
+      expect(result.error.code).toEqual(
+        statusVerificationErrorCodes.unclassifiedFailure,
+      );
+    }
+  });
+
   it("returns an authority-mismatch error for an attestation signed by another authority", () => {
     const fixture = buildAuthorityFixture({ signer: alternateAuthoritySigner });
 

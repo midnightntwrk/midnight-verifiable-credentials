@@ -34,6 +34,7 @@ export const statusVerificationErrorCodes = {
   attestationExpired: "attestationExpired",
   attestationTooOld: "attestationTooOld",
   futureDatedAttestation: "futureDatedAttestation",
+  unclassifiedFailure: "unclassifiedFailure",
 } as const;
 
 export type StatusVerificationErrorCode =
@@ -47,8 +48,6 @@ export type StatusVerificationMode =
 export class StatusVerificationError extends Error {
   readonly code: StatusVerificationErrorCode;
   readonly mode: StatusVerificationMode;
-  readonly cause: unknown;
-
   constructor({
     code,
     mode,
@@ -60,11 +59,10 @@ export class StatusVerificationError extends Error {
     readonly message: string;
     readonly cause: unknown;
   }) {
-    super(message);
+    super(message, { cause });
     this.name = "StatusVerificationError";
     this.code = code;
     this.mode = mode;
-    this.cause = cause;
   }
 }
 
@@ -214,6 +212,8 @@ const classifyStatusVerificationError = (
     ],
     [
       statusVerificationErrorCodes.staleRegistryState,
+      // The current taxonomy has no dedicated future-dated snapshot code yet,
+      // so verifier-side snapshot-time failures stay under staleRegistryState.
       /snapshot exceeds the verifier max-age policy|snapshot version is older than the required minimum|snapshot time cannot be in the future/i,
     ],
     [
@@ -245,7 +245,7 @@ const classifyStatusVerificationError = (
 
   const code =
     patterns.find(([, pattern]) => pattern.test(message))?.[0] ??
-    statusVerificationErrorCodes.statusBindingMismatch;
+    statusVerificationErrorCodes.unclassifiedFailure;
 
   return new StatusVerificationError({
     code,

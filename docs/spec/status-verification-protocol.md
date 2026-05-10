@@ -154,7 +154,10 @@ Canonical repository helper path:
 
 These helpers return a typed `StatusVerificationResult` and map raw validator
 failures onto the canonical status error codes instead of leaving each
-integration to classify stringly-typed failures itself.
+integration to classify stringly-typed failures itself. If a failure does not
+map cleanly, the helpers return `unclassifiedFailure` so the verifier can fail
+closed without misreporting an internal/runtime issue as a specific status
+verdict.
 
 ### 3. External-registry authority-attested Layer 3 verification
 
