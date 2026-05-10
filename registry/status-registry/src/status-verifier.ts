@@ -210,6 +210,10 @@ const classifyStatusVerificationError = (
 
   const message = error instanceof Error ? error.message : String(error);
 
+  // Keep these patterns aligned with the raw upstream throws pinned in
+  // `src/test/status-verifier-compatibility.test.ts`. Repo-owned helper paths
+  // should prefer typed `StatusHelperError`s; these regexes remain for
+  // Compact/runtime surfaces that still throw plain message strings.
   const patterns: Array<[StatusVerificationErrorCode, RegExp]> = [
     [
       statusVerificationErrorCodes.unknownRegistry,
