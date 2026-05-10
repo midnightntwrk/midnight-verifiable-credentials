@@ -45,7 +45,10 @@ export type BuiltFreshRevokedSetNonMembershipInputs =
   };
 
 export type BuildFreshRevokedSetNonMembershipInputsFromContractStateOptions =
-  Omit<BuildFreshRevokedSetNonMembershipInputsOptions, "observedState"> & {
+  Omit<
+    BuildFreshRevokedSetNonMembershipInputsOptions,
+    "observedState" | "revokedStatusHandles"
+  > & {
     readonly state: RevocationRegistryContractState;
     readonly observedAt: bigint;
   };
@@ -65,10 +68,12 @@ const assertNonNegative = (value: bigint, label: string): void => {
 
 const toHex = (value: Uint8Array): string => Buffer.from(value).toString("hex");
 
-const revokedRootBytes = (state: RevocationRegistryContractState): Uint8Array =>
+const revokedRootBytes = (
+  currentLedger: ReturnType<typeof ledger>,
+): Uint8Array =>
   convertFieldToBytes(
     32,
-    ledger(state).revokedStatusHandles.root().field,
+    currentLedger.revokedStatusHandles.root().field,
     "revocation registry root",
   );
 
@@ -80,7 +85,7 @@ export const readCurrentRevocationRegistryStateFromContractState = ({
   const currentLedger = ledger(state);
   const registryState = {
     registryId: currentLedger.registryId,
-    revokedRoot: revokedRootBytes(state),
+    revokedRoot: revokedRootBytes(currentLedger),
     registryVersion: currentLedger.version,
   };
   pureCircuits.assertValidRevocationRegistryState(registryState);
@@ -227,6 +232,8 @@ export const buildFreshRevokedSetNonMembershipInputsFromContractState = ({
   observedAt,
   ...options
 }: BuildFreshRevokedSetNonMembershipInputsFromContractStateOptions): BuiltFreshRevokedSetNonMembershipInputs => {
+  // Both the observed snapshot and the revoked-handle check are derived from the
+  // same live contract state value passed into this helper.
   const built = buildFreshRevokedSetNonMembershipInputs({
     ...options,
     observedState: buildObservedRevocationRegistryStateFromContractState({
@@ -247,6 +254,8 @@ export const buildLiveStatusWitnessFromContractState = ({
   state,
   ...options
 }: BuildLiveStatusWitnessFromContractStateOptions): BuiltLiveStatusWitness => {
+  // The live contract-state path supersedes caller-supplied revoked handle
+  // snapshots and rejects directly against the current registry state.
   const built = buildLiveStatusWitness(options);
   assertStatusHandleNotRevokedInContractState({
     state,
