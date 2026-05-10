@@ -13,7 +13,7 @@
     "build": "rm -rf dist && tsc -b tsconfig.build.json --force",
     "test": "vitest run",
     "test:ci": "npm run test",
-    "test:integration": "npm exec -- vitest run --config vitest.integration.config.ts src/test/integration/contract-verifier-lifecycle.integration.test.ts && npm exec -- vitest run --config vitest.integration.config.ts src/test/integration/secret-holder-lifecycle.integration.test.ts && npm exec -- vitest run --config vitest.integration.config.ts src/test/integration/explicit-holder-lifecycle.integration.test.ts",
+    "test:integration": "node ./scripts/run-integration-tests.mjs",
     "lint": "eslint src --ext .ts --ignore-pattern src/managed/**",
     "lint:fix": "eslint src --ext .ts --ignore-pattern src/managed/** --fix",
     "typecheck": "tsc --noEmit",
