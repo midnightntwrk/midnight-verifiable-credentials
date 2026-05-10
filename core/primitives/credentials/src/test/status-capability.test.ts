@@ -66,7 +66,7 @@ describe("credentials core: status bindings", () => {
   it("rejects a registry-bound status binding with a non-enum status type value", () => {
     const signer = createSigner("status-authority", 1001n);
     const binding = {
-      statusType: 99,
+      statusType: 99 as unknown as StatusType,
       registryRef: {
         registryId: sha256Bytes("registry:hidden-holder"),
         authorityVerificationMethodRef: signer.verificationMethodRef,

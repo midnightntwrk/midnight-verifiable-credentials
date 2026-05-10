@@ -141,7 +141,7 @@ describe("secret birth credential: issuer-signed status binding commitment", () 
           ...fixture.credentialWithStatusBinding.credential,
           statusBinding: {
             ...fixture.credentialWithStatusBinding.credential.statusBinding,
-            statusType: 99,
+            statusType: 99 as unknown as StatusType,
           },
         },
       }),
