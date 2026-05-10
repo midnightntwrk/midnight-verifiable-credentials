@@ -15,7 +15,7 @@ The current slice now covers:
   - explicit-holder age-gate happy path
   - hidden-holder revocation-aware happy path
   - hidden-holder same-contract live-status happy path
-- five negative hidden-holder status-boundary scenarios:
+- four negative hidden-holder status-boundary scenarios:
   - same-contract live-status revoked handle
   - wrong registry id
   - wrong revoked root

@@ -212,8 +212,8 @@ Current gap:
   - non-Docker hidden-holder verifier-supplied-root age-gate happy path
   - non-Docker hidden-holder same-contract live-status age-gate happy path
   - non-Docker hidden-holder negative-path trust-boundary coverage for
-    live-status local-revocation, wrong-registry, wrong-root,
-    stale-attestation, and revoked-credential failures
+    live-status local-revocation, wrong-registry, wrong-root, and
+    stale-attestation failures
 - local report:
   - `use-cases/age-gate/scenarios/target/site/serenity/index.html`
 

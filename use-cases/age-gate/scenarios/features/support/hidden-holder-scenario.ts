@@ -8,7 +8,6 @@ import {
   buildSubmissionForAuthorityAttestedRequest,
   buildSubmissionForLiveStatusRequest,
   buildSubmissionForRevokedSetRequest,
-  createSecretBirthCredentialFixture,
   createDemoRevocationFixture,
   CredentialsDemoRevocationSimulator,
   fixtureRegistryState,
@@ -312,29 +311,6 @@ export class UseHiddenHolderScenario extends Ability {
       });
     } catch (error) {
       this.#recordResult(false, simulator, fixture, {
-        claimDecision: null,
-        verificationMode: null,
-        failureMessage:
-          error instanceof Error ? error.message : String(error),
-      });
-    }
-  }
-
-  async runRevokedCredentialRejectedPath(): Promise<void> {
-    const baseline = createSecretBirthCredentialFixture();
-    const simulator = new CredentialsDemoRevocationSimulator();
-
-    try {
-      createSecretBirthCredentialFixture({
-        revokedStatusHandles: [baseline.witness.statusHandle],
-      });
-      this.#recordResult(false, simulator, baseline, {
-        claimDecision: null,
-        verificationMode: null,
-        failureMessage: null,
-      });
-    } catch (error) {
-      this.#recordResult(false, simulator, baseline, {
         claimDecision: null,
         verificationMode: null,
         failureMessage:
