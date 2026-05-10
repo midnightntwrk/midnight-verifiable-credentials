@@ -119,6 +119,9 @@ models:
 - hidden-holder verification that rejects revoked handles directly against the
   contract-owned live revoked set
 - no external `(registryId, revokedRoot)` snapshot for that path
+- an intentionally unauthenticated lifecycle surface for demo/simulator use;
+  production deployments should gate local registry initialization and
+  revocation writes behind issuer or authority authorization
 
 For the authority-attested path specifically, the current demo now enforces:
 

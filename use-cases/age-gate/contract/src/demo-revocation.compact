@@ -30,6 +30,9 @@ export ledger lastVerifiedCurrentTime: Uint<64>;
 export ledger lastVerifiedThresholdYears: Uint<8>;
 export ledger lastVerifiedRequestChallenge: Bytes<32>;
 export ledger lastVerifiedStatusRegistryId: Bytes<32>;
+// Demo-only sentinel field: same-contract live-status verification does not
+// consume an external Merkle root snapshot, so this ledger keeps a tagged
+// sentinel rather than a real root for that mode.
 export ledger lastVerifiedRevokedRoot: Bytes<32>;
 export ledger lastVerificationMode: RevocationVerificationMode;
 export ledger issuedAccessCapabilityCount: Counter;
@@ -118,6 +121,9 @@ pure circuit revocationDemoAuthorityAttestedStatusPolicy(
 export circuit initializeLiveStatusRegistry(
   registryId: Bytes<32>
 ): [] {
+  // Demo-only contract lifecycle surface: this path is intentionally
+  // unauthenticated so the simulator and living docs can exercise the local
+  // status mode without introducing another authority secret flow here.
   assert(
     !liveStatusRegistryInitialized,
     "Revocation demo live status registry has already been initialized"
@@ -133,6 +139,9 @@ export circuit initializeLiveStatusRegistry(
 export circuit revokeLiveStatusHandle(
   statusHandle: Bytes<32>
 ): [] {
+  // Demo-only contract lifecycle surface: real deployments should gate local
+  // revocation writes behind issuer/authority authorization rather than reuse
+  // this open simulator path directly.
   assert(
     liveStatusRegistryInitialized,
     "Revocation demo live status registry is not initialized"

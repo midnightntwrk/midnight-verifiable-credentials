@@ -356,6 +356,9 @@ export const createDemoRevocationFixture = (): DemoRevocationFixture => {
         acceptedStatusCapability: StatusCapabilityKind.revokedSetNonMembership,
         enforceRegistryId: true,
         acceptedRegistryId: witness.statusRegistryId,
+        // The live same-contract path does not consume an authority attestation.
+        // These fields remain present because the status-policy surface is shared
+        // across live, revoked-root, and authority-attested verification modes.
         enforceAttestationMaxAge: false,
         maxAttestationAge: 0n,
       },
