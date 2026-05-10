@@ -1,8 +1,8 @@
 import {
   pureCircuits,
   type RegistryBoundStatusBinding,
-  StatusType,
   type StatusRegistryRef,
+  StatusType,
 } from "@midnight-ntwrk/midnight-did-credentials";
 
 export const buildRegistryBoundStatusBinding = ({
