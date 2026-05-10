@@ -88,6 +88,10 @@ A status proof-protocol implementation conforms when it:
   canonical error vocabulary in
   [`status-error-taxonomy.md`](./status-error-taxonomy.md) instead of inventing
   use-case-local status verdict names
+- for equivalent invalidity classes such as `unknownRegistry`,
+  `staleRegistryState`, or `unsupportedStatusProofMode`, the implementation
+  should not emit mode-specific ad hoc verdict names across observed-snapshot,
+  live-state, and authority-attested verifier paths
 - documents that the status errors in
   [`status-error-taxonomy.md`](./status-error-taxonomy.md)
   are hard invalidity, not soft business-policy denials
