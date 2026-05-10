@@ -44,7 +44,10 @@ export type SecretBirthStatusCredentialCompat = SecretBirthCredential & {
   readonly statusBinding: RegistryBoundStatusBinding;
 };
 
-type SecretBirthCredentialCompat = Omit<SecretBirthCredential, "statusBinding"> & {
+type SecretBirthCredentialCompat = Omit<
+  SecretBirthCredential,
+  "statusBinding"
+> & {
   readonly statusBinding?: RegistryBoundStatusBinding | Record<string, never>;
 };
 
