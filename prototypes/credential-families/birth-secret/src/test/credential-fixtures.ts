@@ -44,6 +44,10 @@ export type SecretBirthStatusCredentialCompat = SecretBirthCredential & {
   readonly statusBinding: RegistryBoundStatusBinding;
 };
 
+type SecretBirthCredentialCompat = Omit<SecretBirthCredential, "statusBinding"> & {
+  readonly statusBinding?: RegistryBoundStatusBinding | Record<string, never>;
+};
+
 export type SecretBirthCredentialWithStatusBindingCompat = {
   readonly credential: SecretBirthStatusCredentialCompat;
   readonly statusBinding: RegistryBoundStatusBinding;
@@ -274,7 +278,7 @@ export const createSecretBirthCredentialFixture = (
     ),
   };
 
-  const credential = {
+  const credential: SecretBirthCredentialCompat = {
     version: 1n,
     schema: {
       packageId: padText("midnight-did:vc:birth-secret"),
@@ -297,7 +301,6 @@ export const createSecretBirthCredentialFixture = (
       requestChallengeResponse:
         genericPureCircuits.noSecretHolderChallengeResponse(),
     },
-    statusBinding: {},
     issuedAt: 10_000n,
     hasExpiration: true,
     expiresAt: 20_000n,
@@ -306,7 +309,9 @@ export const createSecretBirthCredentialFixture = (
   };
 
   const credentialProof = signProof({
-    bodyRoot: pureCircuits.secretBirthCredentialBodyRoot(credential),
+    bodyRoot: pureCircuits.secretBirthCredentialBodyRoot(
+      credential as SecretBirthCredential,
+    ),
     signer: issuer,
     createdAt: 10_001n,
     challengeHash: sha256("challenge:issuance"),
@@ -366,8 +371,8 @@ export const createSecretBirthCredentialFixture = (
     ),
   };
 
-  const statusCredential = {
-    ...credential,
+  const statusCredential: SecretBirthStatusCredentialCompat = {
+    ...(credential as SecretBirthCredential),
     statusBinding,
   };
 
@@ -507,7 +512,7 @@ export const createSecretBirthCredentialFixture = (
 
   return {
     issuer,
-    credential,
+    credential: credential as SecretBirthCredential,
     credentialProof,
     presentationRequest,
     verificationRequest,

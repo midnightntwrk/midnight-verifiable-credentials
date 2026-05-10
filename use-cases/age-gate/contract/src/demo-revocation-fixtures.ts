@@ -73,6 +73,10 @@ export type DemoRevocationFixture = {
   };
 };
 
+type SecretBirthCredentialCompat = Omit<SecretBirthCredential, "statusBinding"> & {
+  readonly statusBinding?: Record<string, never>;
+};
+
 const sha256 = (value: string): Uint8Array =>
   new Uint8Array(createHash("sha256").update(value).digest());
 
@@ -205,7 +209,7 @@ export const createDemoRevocationFixture = (): DemoRevocationFixture => {
     ),
   };
 
-  const credential: SecretBirthCredential = {
+  const credential: SecretBirthCredentialCompat = {
     version: 1n,
     schema: {
       packageId: padText("midnight-did:vc:birth-secret"),
@@ -226,7 +230,6 @@ export const createDemoRevocationFixture = (): DemoRevocationFixture => {
       issuerNonce: witness.holderBindingIssuerNonce,
       requestChallengeResponse: pureCircuits.noSecretHolderChallengeResponse(),
     },
-    statusBinding: {},
     issuedAt: 10_000n,
     hasExpiration: true,
     expiresAt: 20_000n,
@@ -235,7 +238,9 @@ export const createDemoRevocationFixture = (): DemoRevocationFixture => {
   };
 
   const credentialProof = signProof({
-    bodyRoot: pureCircuits.secretBirthCredentialBodyRoot(credential),
+    bodyRoot: pureCircuits.secretBirthCredentialBodyRoot(
+      credential as SecretBirthCredential,
+    ),
     signer: issuer,
     createdAt: 10_001n,
     challengeHash: sha256("challenge:issuance"),
