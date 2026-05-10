@@ -63,6 +63,12 @@ export type StatusVerificationFailure = {
   readonly error: StatusVerificationError;
 };
 
+export type StatusVerificationFailureRecord = {
+  readonly mode: StatusVerificationMode;
+  readonly code: StatusVerificationErrorCode;
+  readonly message: string;
+};
+
 export type StatusVerificationResult<TDetails> =
   | StatusVerificationSuccess<TDetails>
   | StatusVerificationFailure;
@@ -273,6 +279,21 @@ export const normalizeStatusVerificationFailure = ({
   readonly mode: StatusVerificationMode;
   readonly error: unknown;
 }): StatusVerificationError => classifyStatusVerificationError(mode, error);
+
+export const describeStatusVerificationFailure = ({
+  mode,
+  error,
+}: {
+  readonly mode: StatusVerificationMode;
+  readonly error: unknown;
+}): StatusVerificationFailureRecord => {
+  const normalized = classifyStatusVerificationError(mode, error);
+  return {
+    mode: normalized.mode,
+    code: normalized.code,
+    message: normalized.message,
+  };
+};
 
 export const assertObservedRevokedSetStatusVerifies = ({
   registryAcceptancePolicy,

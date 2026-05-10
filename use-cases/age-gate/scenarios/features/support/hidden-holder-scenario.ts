@@ -1,7 +1,7 @@
 import { Ability, type UsesAbilities } from "@serenity-js/core";
 
 import {
-  normalizeStatusVerificationFailure,
+  describeStatusVerificationFailure,
   type StatusVerificationErrorCode,
   type StatusVerificationMode,
 } from "@midnight-ntwrk/midnight-did-credentials-status-registry";
@@ -70,7 +70,7 @@ export class UseHiddenHolderScenario extends Ability {
 
 
   #statusFailure(mode: StatusVerificationMode, error: unknown) {
-    const normalized = normalizeStatusVerificationFailure({ mode, error });
+    const normalized = describeStatusVerificationFailure({ mode, error });
     return {
       failureMessage: normalized.message,
       failureCode: normalized.code,

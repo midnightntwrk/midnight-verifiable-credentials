@@ -98,6 +98,7 @@ Implemented prototype coverage:
   - canonical status-error classification over representative raw Compact/demo
     throw messages
   - preservation of typed helper causes through normalized verifier errors
+  - plain-data failure-record projection for adapters and use-case tests
   - fail-closed fallback to `unclassifiedFailure` for unknown throw shapes
 - `registry/status-registry/src/test/status-verifier-parity.test.ts`
   - cross-mode parity for canonical error codes across observed-snapshot,

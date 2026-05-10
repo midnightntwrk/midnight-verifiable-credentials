@@ -107,6 +107,10 @@ The repository's current BDD and revocation-demo negative-path tests now also
 normalize failures through this same taxonomy so living docs, helper surfaces,
 and use-case tests assert the same fail-closed categories.
 
+For adapters and use-case tests that do not want to carry full `Error` objects,
+the repository also exposes a plain-data failure-record projection on top of the
+same canonical taxonomy.
+
 ## Mode-specific note
 
 The same error may surface at different layers depending on deployment mode:

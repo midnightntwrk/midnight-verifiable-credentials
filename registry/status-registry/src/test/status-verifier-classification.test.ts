@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  describeStatusVerificationFailure,
   normalizeStatusVerificationFailure,
   StatusHelperError,
   StatusVerificationError,
@@ -130,5 +131,21 @@ describe("status verifier classification", () => {
       statusVerificationErrorCodes.unclassifiedFailure,
     );
     expect(error.message).toContain("42");
+  });
+
+  it("projects canonical failures onto a plain-data record surface", () => {
+    const record = describeStatusVerificationFailure({
+      mode: "authorityAttested",
+      error: new Error(
+        "failed assert: Authority-attested proof contract address does not match the status authority",
+      ),
+    });
+
+    expect(record).toEqual({
+      mode: "authorityAttested",
+      code: statusVerificationErrorCodes.authorityMismatch,
+      message:
+        "failed assert: Authority-attested proof contract address does not match the status authority",
+    });
   });
 });

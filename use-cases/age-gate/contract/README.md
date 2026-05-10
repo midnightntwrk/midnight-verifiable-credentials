@@ -136,9 +136,10 @@ verifier-supplied `revokedRoot` is the live canonical registry root.
 
 The demo test suite now also normalizes negative status failures into the
 shared canonical status error codes from
-`@midnight-ntwrk/midnight-did-credentials-status-registry`, so the use-case
-layer asserts the same fail-closed taxonomy as the reusable verifier helpers
-and BDD scenarios.
+`@midnight-ntwrk/midnight-did-credentials-status-registry`, using the plain
+failure-record projection rather than unpacking verifier error objects by hand,
+so the use-case layer asserts the same fail-closed taxonomy as the reusable
+verifier helpers and BDD scenarios.
 
 The revocation demo intentionally keeps the presentation verification circuits
 internal and exposes the business-facing capability issuance and claim paths.
