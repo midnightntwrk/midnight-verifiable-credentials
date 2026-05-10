@@ -229,6 +229,7 @@ The detailed prototype revocation target for the revoked-set proof protocol is
 defined in:
 
 - [`./revocation-registry.md`](./revocation-registry.md)
+- [`../architecture/status-verification-modes.md`](../architecture/status-verification-modes.md)
 
 The current transitional Layer 3 contract-facing prototype for trusted
 authority-attested status proof is defined in:

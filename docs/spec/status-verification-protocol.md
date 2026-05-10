@@ -8,6 +8,7 @@ Companion documents:
 - [`./status-error-taxonomy.md`](./status-error-taxonomy.md)
 - [`./revocation-registry.md`](./revocation-registry.md)
 - [`./midnight-credentials.md`](./midnight-credentials.md)
+- [`../architecture/status-verification-modes.md`](../architecture/status-verification-modes.md)
 
 ## Purpose
 
@@ -75,6 +76,16 @@ different VC shape.
 
 The repository now treats status verification mode as an implementation choice
 over one shared VC-side binding model.
+
+For the architecture-level distinction between:
+
+- same-contract live revoked-set verification
+- off-chain verifier-side live-state verification
+- and authority-attested external-registry Layer 3 verification
+
+see:
+
+- [`../architecture/status-verification-modes.md`](../architecture/status-verification-modes.md)
 
 Supported prototype modes are:
 

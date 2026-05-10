@@ -9,6 +9,7 @@ Companion documents:
 - [`./credential-status.md`](./credential-status.md)
 - [`./status-error-taxonomy.md`](./status-error-taxonomy.md)
 - [`./status-verification-protocol.md`](./status-verification-protocol.md)
+- [`../architecture/status-verification-modes.md`](../architecture/status-verification-modes.md)
 - [`./profiles.md`](./profiles.md)
 - [`./conformance.md`](./conformance.md)
 

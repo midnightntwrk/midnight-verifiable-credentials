@@ -46,6 +46,7 @@ Start here:
 4. read:
    - [`../docs/spec/revocation-registry.md`](../docs/spec/revocation-registry.md)
    - [`../docs/spec/status-verification-protocol.md`](../docs/spec/status-verification-protocol.md)
+   - [`../docs/architecture/status-verification-modes.md`](../docs/architecture/status-verification-modes.md)
    - [`../docs/architecture/protocol-classification.md`](../docs/architecture/protocol-classification.md)
    - [`../docs/guides/integration-surface-map.md`](../docs/guides/integration-surface-map.md)
 
@@ -173,6 +174,11 @@ Current prototype limitation:
   registry's `registryId` and `registryVersion`
 - it does not yet prove that the supplied `revokedRoot` equals the live
   contract Merkle root inside Compact
+- same-contract live revoked-set verification is still available because that
+  mode checks the local revoked-set ledger directly and does not require a
+  separate external root handoff
+- off-chain verifiers and trusted authorities can still read the live registry
+  state and current root at runtime
 - freshness of the supplied root is still an application/verifier
   responsibility, not an in-circuit property
 - authority-attested proof freshness is now partially contract-enforced when
@@ -217,3 +223,7 @@ Observed-root integration helper path:
 - this still does not make the root live inside Compact:
   it turns the current verifier-side freshness choice into one explicit typed
   integration seam instead of leaving it as ad hoc application logic
+
+Architecture note for the three supported verification modes:
+
+- [`../docs/architecture/status-verification-modes.md`](../docs/architecture/status-verification-modes.md)
