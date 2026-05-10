@@ -7,4 +7,4 @@ Feature: Hidden-holder wrong-authority rejection
   Scenario: Reject a hidden-holder presentation when the status attestation signer is not the bound authority
     When the engineer runs the hidden-holder wrong-authority rejection path
     Then the hidden-holder scenario should be rejected
-    And the hidden-holder scenario failure message should contain "status authority"
+    And the hidden-holder scenario failure message should contain "does not match the status authority"

@@ -185,7 +185,8 @@ export class UseHiddenHolderScenario extends Ability {
       this.#recordResult(false, simulator, fixture, {
         claimDecision: null,
         verificationMode: null,
-        failureMessage: null,
+        failureMessage:
+          "expected rejection but authority-attested verification completed",
       });
     } catch (error) {
       this.#recordResult(false, simulator, fixture, {
@@ -231,7 +232,8 @@ export class UseHiddenHolderScenario extends Ability {
       this.#recordResult(false, simulator, fixture, {
         claimDecision: null,
         verificationMode: null,
-        failureMessage: null,
+        failureMessage:
+          "expected rejection but unsupported authority-mode verification completed",
       });
     } catch (error) {
       this.#recordResult(false, simulator, fixture, {

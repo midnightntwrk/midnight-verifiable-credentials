@@ -585,7 +585,7 @@ describe("credentials demo revocation contract", () => {
         fixture.witness.currentDay,
         request.verificationRequest.envelope.createdAt + 10n,
       ),
-    ).toThrow(/status authority/i);
+    ).toThrow(/does not match the status authority/i);
   });
 
   it("rejects authority-attested verification when the request expects another status proof mode", () => {

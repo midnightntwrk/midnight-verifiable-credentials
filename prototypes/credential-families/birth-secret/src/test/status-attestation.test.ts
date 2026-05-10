@@ -319,7 +319,7 @@ describe("secret birth credential: authority-attested status verification", () =
         fixture.witness.holderBindingBlindingFactor,
         fixture.verificationRequest.envelope.createdAt + 10n,
       ),
-    ).toThrow(/status authority/i);
+    ).toThrow(/does not match the status authority/i);
   });
 
   it("rejects an authority-attested request when the verifier policy expects another status proof mode", () => {
