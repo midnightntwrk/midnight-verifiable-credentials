@@ -56,7 +56,7 @@ Current limitations:
 - this explicit-holder family currently remains at the zero-status end of the
   repository taxonomy
 - current status binding is:
-  - `NoStatusCapability`
+  - `NoStatusBinding`
 
 ### 2. Secret holder binding
 

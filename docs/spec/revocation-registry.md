@@ -7,6 +7,7 @@ Companion documents:
 
 - [`./midnight-credentials.md`](./midnight-credentials.md)
 - [`./credential-status.md`](./credential-status.md)
+- [`./status-error-taxonomy.md`](./status-error-taxonomy.md)
 - [`./status-verification-protocol.md`](./status-verification-protocol.md)
 - [`./profiles.md`](./profiles.md)
 - [`./conformance.md`](./conformance.md)
@@ -158,9 +159,14 @@ Purpose:
 Semantics:
 
 - the credential binds:
+  - `statusType`
   - `registryRef`
   - `statusHandleCommitment`
 - later verifier-facing proof modes must match that same binding
+
+For the current prototype line, `statusType` is fixed to:
+
+- `StatusType.revocationRegistry`
 
 Current compatibility names in code:
 
@@ -200,8 +206,14 @@ Current invariants:
 
 - the request and witness must agree on `registryId`
 - the request and witness must agree on `revokedRoot`
+- the request and witness must agree on `registryVersion`
 - the witness must open to the status-handle commitment already carried by the
   VC-side status binding or status capability
+- if the accepted revoked set already contains that status handle, the
+  verifier/helper/proof builder must fail closed rather than emitting a
+  "verified but denied" result
+- stale registry snapshots, unknown registries, and unsupported proof modes are
+  also hard invalidity rather than softer business-policy outcomes
 
 Future final Merkle non-membership witness material should extend this shape.
 It should not replace the canonical request object or the committed
@@ -359,6 +371,9 @@ The VP proof should show:
 2. the status witness is consistent with the credential-bound status commitment
 3. the status handle is not revoked in the accepted registry state
 
+If step 3 fails, the result is hard VC/VP invalidity. A verifier or contract
+must reject the presentation before any business-flow success path continues.
+
 ## Verifier request extension point
 
 Status-aware verifier requests should define a typed status policy and proof
@@ -387,6 +402,10 @@ In particular:
 - protocol/orchestration may fetch or prepare the accepted root off-chain
 - but the final contract verification should not rely on a separate live
   revocation-contract call inside the business proof
+
+Revocation remains part of the VC/VP validity contract itself. Business or
+application policy may define outcomes such as `superseded`, `corrected`, or
+service-level denial, but `revoked` is not one of those softer outcomes.
 
 This is important because current smart-contract composability is not yet the
 right primitive to rely on for this repository's production target.
@@ -424,6 +443,8 @@ Therefore:
 - the current prototype implementation must not over-claim root binding before
   the final in-circuit Merkle-root equality and non-membership proof path is
   implemented
+- stale registry state, unknown registries, and unsupported proof modes must
+  still fail closed even before that final path lands
 
 ## Why no revocation reason/date in the core model
 

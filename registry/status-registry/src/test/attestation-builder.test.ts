@@ -12,8 +12,9 @@ import {
   buildRegistryBoundStatusBinding,
   deriveAuthorityAttestedStatusProofNonceScalar,
   signAuthorityAttestedStatusProof,
-  unsafeSignAuthorityAttestedStatusProofWithNonceScalar,
+  StatusType,
 } from "../index.js";
+import { unsafeSignAuthorityAttestedStatusProofWithNonceScalar } from "../testing.js";
 
 setNetworkId("undeployed");
 
@@ -72,6 +73,7 @@ describe("authority-attested status builder", () => {
       createdAt: 100n,
     });
 
+    expect(binding.statusType).toEqual(StatusType.revocationRegistry);
     expect(attestation.statement.verifierChallengeHash).toEqual(
       request.verifierChallengeHash,
     );
@@ -111,6 +113,7 @@ describe("authority-attested status builder", () => {
       attestation,
     });
 
+    expect(binding.statusType).toEqual(StatusType.revocationRegistry);
     expect(protocol.request.verifierChallengeHash).toEqual(
       request.verifierChallengeHash,
     );

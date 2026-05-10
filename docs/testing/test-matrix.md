@@ -1,6 +1,6 @@
 # Midnight VC Test Matrix
 
-Status: current implemented test surface as of 2026-05-05.
+Status: current implemented test surface as of 2026-05-09.
 
 ## Core package tests
 
@@ -39,6 +39,9 @@ Status: current implemented test surface as of 2026-05-05.
 - holder-binding tests
 - age predicate tests
 - capability profile tests
+- status-binding commitment tests
+- authority-attested status verification tests
+- revoked-set status request wiring and hard-revocation rejection tests
 - same-holder composition tests
 - blinded-secret issuance offer/request/result validation through
   `credentials-protocol`
@@ -58,21 +61,14 @@ Current repository stance:
 
 Implemented prototype coverage:
 
-- `core/primitives/credentials/src/test/status-capability.test.ts`
+- `registry/status-registry/src/test/status-capability.test.ts`
   - status registry refs
   - revoked-set capability validation
   - authority-attested capability validation
   - deterministic revoked-set status-handle derivation
-- `core/primitives/credentials/src/test/status-policy.test.ts`
+- `registry/status-registry/src/test/status-policy.test.ts`
   - verifier status policy validation and registry binding checks
   - rejection of optional or internally inconsistent status policies
-- `core/primitives/credentials/src/test/status-attestation.test.ts`
-  - request-bound authority attestation validation
-  - verifier challenge binding through the full policy path
-  - authority signer binding
-  - wrong-authority rejection through the full policy path
-  - revoked-root mismatch rejection
-  - attestation expiry rejection
 - `registry/status-registry/src/test/witness-builder.test.ts`
   - deterministic status-handle derivation
   - revoked-set witness/capability construction
@@ -82,12 +78,16 @@ Implemented prototype coverage:
   - verifier-supplied status request construction
   - authority attestation statement and proof construction
   - request-bound status attestation payload construction
+- `registry/status-registry/src/test/registry-state-observation.test.ts`
+  - observed snapshot freshness normalization
+  - minimum-version enforcement over observed snapshots
 - `registry/status-registry/src/test/revocation-registry.test.ts`
   - registry initialization
   - double-init / zero-id / unset-sentinel rejection
   - registry/state binding semantics
   - append-only revocation bookkeeping
   - current prototype root-binding limitation disclosure
+  - live contract-version binding after revoke
 - `registry/status-registry/src/test/status-proof-protocol.test.ts`
   - registry-facing proof-protocol validation ownership
   - request/binding consistency checks
@@ -95,11 +95,15 @@ Implemented prototype coverage:
   - verifier policy compatibility for revoked-set and authority-attested flows
 - `prototypes/credential-families/birth-secret/src/test/status.test.ts`
   - hidden-holder revoked-set status request wiring
+  - hard rejection when accepted revoked snapshots already contain the
+    credential status handle
 - `prototypes/credential-families/birth-secret/src/test/status-attestation.test.ts`
   - hidden-holder authority-attested status verification
   - verification-request challenge / status-request challenge consistency
   - verifier-root mismatch rejection
   - attestation expiry rejection
+- `prototypes/credential-families/birth-secret/src/test/status-binding-commitment.test.ts`
+  - native status-aware credential binding/body-root regression coverage
 
 ## Transport/domain tests
 
@@ -153,6 +157,8 @@ Implemented prototype coverage:
 - local/unit revocation demo contract tests:
   - verifier-supplied-root hidden-holder status path
   - authority-attested hidden-holder status path
+  - hard rejection when accepted status evidence already says the credential is
+    revoked
   - reusable capability lifecycle under revocation-aware verification
 - standalone integration test:
   - issuance-verification lifecycle
@@ -185,7 +191,7 @@ Current gap:
 ## Serenity/JS BDD scenarios
 
 - package:
-  - `vc-bdd-scenarios` at `use-cases/age-gate/scenarios/`
+  - `use-cases/age-gate/scenarios`
 - smoke scenarios:
   - `use-cases/age-gate/scenarios/features/age_gate_happy_path.feature`
   - `use-cases/age-gate/scenarios/features/hidden_holder_age_gate_happy_path.feature`
@@ -193,6 +199,7 @@ Current gap:
   - `use-cases/age-gate/scenarios/features/hidden_holder_wrong_registry.feature`
   - `use-cases/age-gate/scenarios/features/hidden_holder_wrong_root.feature`
   - `use-cases/age-gate/scenarios/features/hidden_holder_stale_authority_attestation.feature`
+  - `use-cases/age-gate/scenarios/features/hidden_holder_revoked_credential.feature`
 - root commands:
   - `npm run test:bdd:smoke`
   - `npm run test:bdd:negative`
@@ -205,7 +212,9 @@ Current gap:
 - current scope:
   - non-Docker birth-credential age-gate happy path
   - non-Docker hidden-holder verifier-supplied-root age-gate happy path
-  - non-Docker hidden-holder negative-path trust-boundary coverage for wrong-registry, wrong-root, and stale-attestation failures
+  - non-Docker hidden-holder negative-path trust-boundary coverage for
+    wrong-registry, wrong-root, stale-attestation, and revoked-credential
+    failures
 - local report:
   - `use-cases/age-gate/scenarios/target/site/serenity/index.html`
 

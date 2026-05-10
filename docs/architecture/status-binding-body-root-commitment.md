@@ -61,6 +61,7 @@ The final reference model should make this true:
 
 In other words:
 
+- `statusType`
 - `registryId`
 - authority verification-method reference
 - `statusHandleCommitment`
@@ -77,9 +78,14 @@ the issuer-signed body.
 
 For the current redesign, the important rule is:
 
-- the binding type itself is the discriminator
+- the concrete binding type plus its own committed fields are the discriminator
 - the body root should not add an extra generic `StatusBindingKind` field on
   top of that concrete binding
+
+For the current registry-bound binding, that means:
+
+- commit `statusType` inside `RegistryBoundStatusBinding`
+- do not add another generic wrapper-level binding-kind field above it
 
 Prototype proof-mode names such as:
 
@@ -94,6 +100,7 @@ commit only the VC-side binding shape, not the verifier-facing proof protocol.
 
 When the binding mode is registry-bound, the issuer-signed body must commit:
 
+- `statusType`
 - `registryRef.registryId`
 - `registryRef.authorityVerificationMethodRef.didContractAddress`
 - `registryRef.authorityVerificationMethodRef.methodId`

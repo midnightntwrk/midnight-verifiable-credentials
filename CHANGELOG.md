@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - verifier-supplied `RevokedSetStatusRequest`
   - authority-attested status proof helpers
   - witness-builder helpers
+  - live-status witness helpers for same-contract verification prototypes
 - added a focused Layer 3 status-aware revocation demo under
   `credentials-demo-contract`:
   - `src/demo-revocation.compact`
@@ -65,8 +66,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   capability-specific
 - BREAKING: `signAuthorityAttestedStatusProof(...)` now derives its signing
   nonce internally. Integrations that still need an explicit nonce override
-  must call `unsafeSignAuthorityAttestedStatusProofWithNonceScalar(...)`
-  intentionally instead of passing `nonceScalar` into the safe helper.
+  must now import
+  `unsafeSignAuthorityAttestedStatusProofWithNonceScalar(...)` from the
+  dedicated `credentials-status-registry/testing` subpath intentionally
+  instead of passing `nonceScalar` into the safe helper or relying on the root
+  package surface to expose the unsafe override.
 - BREAKING: `VerifierStatusPolicy` now carries explicit
   `enforceAttestationMaxAge` / `maxAttestationAge` fields so
   authority-attested status freshness can be enforced by verifier policy
@@ -127,6 +131,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `buildRevokedSetStatusCapability(...)` is renamed to
     `buildRevokedSetStatusBinding(...)`
   - `BuiltRevokedSetStatusWitness.statusCapability` is removed
+- BREAKING: `RegistryBoundStatusBinding` now carries an explicit `statusType`
+  field. Status-aware builders and proof-protocol compatibility helpers now
+  default that field to `StatusType.revocationRegistry`, and status-aware
+  families/tests must commit and validate it as part of the issuer-signed
+  binding payload.
 - Holder-binding naming is now explicitly split between:
   - Compact/core struct name:
     `OffchainMidnightHolderBinding`
