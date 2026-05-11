@@ -47,7 +47,8 @@ const stableJsonReviver = (_key: string, value: unknown): unknown => {
 // expected to stay within plain objects/arrays plus scalar fields, `bigint`,
 // and `Uint8Array`. Class instances, `Date`, `Map`, `Set`, and `Buffer`
 // rehydrate as ordinary JSON/`Uint8Array` values rather than preserving their
-// original runtime prototypes. The `__midnightVcBigInt` and
+// original runtime prototypes, so callers that want byte preservation should
+// pass `Uint8Array` rather than `Buffer`. The `__midnightVcBigInt` and
 // `__midnightVcBytes` tag keys are therefore reserved for codec use.
 export const stableJsonProtocolStateCodec: ProtocolStateCodec<unknown> = {
   encode(value) {
@@ -64,7 +65,7 @@ export const stableJsonProtocolStateCodec: ProtocolStateCodec<unknown> = {
 export class StableJsonProtocolStateCodecResolver
   implements ProtocolStateCodecResolver
 {
-  getCodec<T>(): ProtocolStateCodec<T> {
+  getCodec<T>(_collectionName: string): ProtocolStateCodec<T> {
     return stableJsonProtocolStateCodec as ProtocolStateCodec<T>;
   }
 }

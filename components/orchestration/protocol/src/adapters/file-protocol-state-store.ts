@@ -110,9 +110,17 @@ class FileSystemProtocolStateByteCollection
   deleteMany(keys: readonly string[]): number {
     let deleted = 0;
     for (const key of keys) {
-      if (this.delete(key)) {
+      try {
+        rmSync(this.filePathFor(key));
         deleted += 1;
+      } catch (error) {
+        if (!isMissingFileError(error)) {
+          throw error;
+        }
       }
+    }
+    if (deleted > 0) {
+      syncDirectory(this.collectionDir);
     }
     return deleted;
   }
