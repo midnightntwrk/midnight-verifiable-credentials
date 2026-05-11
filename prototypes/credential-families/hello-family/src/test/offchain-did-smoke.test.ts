@@ -19,6 +19,9 @@ describe("hello-family offchain DID smoke path", () => {
       fixture.portableDidUrl.split("?", 1)[0],
     );
     expect(fixture.resolvedHolder.method.id).toEqual("#holder-key-1");
+    expect(fixture.resolvedHolder.binding.holderPublicKey).toEqual(
+      fixture.holder.publicKey,
+    );
 
     expect(() =>
       offchainPureCircuits.assertHelloFamilyOffchainPresentationSatisfiesRequest(

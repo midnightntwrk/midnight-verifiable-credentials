@@ -12,6 +12,7 @@ import {
 } from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
 import {
   createOffchainDIDHolderBindingFromDidUrl,
+  createPortableOffchainDIDUrlForJubjubHolder,
   type OffchainDIDHolderBinding,
   type ResolvedOffchainDIDHolderBinding,
 } from "@midnight-ntwrk/midnight-did-credentials-offchain-did";
@@ -34,8 +35,6 @@ import {
 // NOTE: Jubjub subgroup order used by the Compact proof challenge/signature math.
 const JUBJUB_SUBGROUP_ORDER =
   6554484396890773809930967563523245729705921265872317281365359162392183254199n;
-const HELLO_FAMILY_OFFCHAIN_DID_URL =
-  "did:midnight:offchain:0082a94d6c03f45f691e94794f89667e05f434a2ea5114ae6a87bdcff45179d2?state=TU9EMQAAAC0AAAABAQAAAAAAAAAAAAAAAAAAAAAAAAABAQAAAA0jaG9sZGVyLWtleS0xAAAAAQEAAAArTmJxRWFEYXl1WkN3ZkhzNmtTdmxpX2Uza2htdVREaFloeFI5Q1hlZ3lqSQAAACtZSnlueTZMZk1NY2ZUREYzeERmU0tHZVlqUlJDTV9ZaHJ1ZU9GWC1sbk9nAAAAAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
 type Signer = {
   readonly label: string;
@@ -129,9 +128,9 @@ const signProof = ({
   readonly createdAt: bigint;
   readonly challengeHash: Uint8Array;
 }): Proof => {
-  // NOTE: these context salts are deterministic test-only fixtures. They just
-  // separate issuance and presentation signing transcripts in the starter
-  // package and are not a reusable protocol constant.
+  // NOTE: these context salts are deterministic test-only fixtures. They
+  // separate issuance and presentation transcripts and also avoid reusing the
+  // same fixed nonce pattern across different test signers.
   const nonceScalar =
     context === "issuance" ? 11n + signer.secretKey : 17n + signer.secretKey;
   const proof: Proof = {
@@ -204,11 +203,20 @@ const createDisclosurePayload = ({
 const createVerificationMethodRefForOffchainBinding = (
   binding: OffchainDIDHolderBinding,
 ): VerificationMethodRef => ({
+  // NOTE: offchain DID bindings reuse VerificationMethodRef structurally. The
+  // `didContractAddress` bytes carry the resolved DID state hash here so the
+  // same binding can be reconstructed from the portable DID URL at verification
+  // time without a ledger-backed DID contract in this repo.
   didContractAddress: {
     bytes: binding.holderDidStateHash,
   },
   methodId: binding.holderMethodId,
 });
+
+const createPortableDidUrlForOffchainSigner = (holder: Signer): string =>
+  createPortableOffchainDIDUrlForJubjubHolder({
+    publicKey: holder.publicKey,
+  });
 
 export const createHelloFamilyFixture = ({
   revealBytesValue = false,
@@ -302,7 +310,7 @@ export const createHelloFamilyOffchainDidFixture = ({
   const issuer = createSigner("hello-family-issuer", 123456789n);
   const holder = createSigner("hello-offchain-holder", 222222221n);
   const claims = createHelloFamilyClaims();
-  const portableDidUrl = HELLO_FAMILY_OFFCHAIN_DID_URL;
+  const portableDidUrl = createPortableDidUrlForOffchainSigner(holder);
   const resolvedHolder = createOffchainDIDHolderBindingFromDidUrl({
     portableDidUrl,
   });
