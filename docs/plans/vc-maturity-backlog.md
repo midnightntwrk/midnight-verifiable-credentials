@@ -14,6 +14,14 @@ Purpose:
 
 Merged baseline on `develop` still runs through `#95`.
 
+The open-stack numbering gap between `#96` and `#130` is historical, not a
+missing backlog signal:
+
+- those PR numbers were consumed by earlier stacked iterations during the
+  redesign / relocation wave
+- this file now tracks the current live maturity queue rather than preserving
+  every transient PR-number run from that earlier wave
+
 Substantially addressed on `develop`:
 
 - `VC-MAT-01`
@@ -88,6 +96,8 @@ Advanced in the current open maturity stack, but not yet on `develop`:
 Practical remaining backlog after the current open stack:
 
 - about `10%` of the original repo-wide backlog by execution volume
+- this estimate is based on the expected remaining primary PR-sized slices
+  after `#168`, not on raw `VC-MAT-XX` item count
 - almost all of that remaining work is concentrated in:
   - `VC-MAT-20`
   - `VC-MAT-08`
@@ -132,7 +142,7 @@ Current highest-risk remaining area:
   keeping execution/docs/tooling aligned with the physical layout that now
   exists on disk
 
-## Current Self-Audit
+## Self-Audit: 2026-05-11
 
 Evidence reviewed:
 
@@ -236,7 +246,11 @@ The remaining backlog now falls into four execution categories:
 - keep package/test/lane docs synchronized with the converged repository shape
 - close any remaining negative-path or repo-shape follow-ons after the current
   stack lands
-- primary items:
+- this category is primarily a cross-cutting discipline on slices `1` through
+  `9`
+- slice `10` exists only for the residual cleanup that remains after those
+  heavier slices land
+- follow-on items:
   - `VC-MAT-09`
   - `VC-MAT-17`
   - `VC-MAT-18`
@@ -299,7 +313,7 @@ stack. The next backlog wave should use these ten larger reviewable slices.
 
 ### `MAINTENANCE-CLOSEOUT`
 
-10. closeout sweep after slices `1` through `9`
+10. residual closeout sweep after slices `1` through `9`
     - refresh the backlog file again
     - close or downgrade any residual `VC-MAT-09`, `VC-MAT-17`, and
       `VC-MAT-18` items
