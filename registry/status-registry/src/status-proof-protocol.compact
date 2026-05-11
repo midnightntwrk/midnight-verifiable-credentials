@@ -110,6 +110,8 @@ export struct AuthorityAttestedStatusProofProtocol {
 export pure circuit assertValidNoStatusCapability(
   capability: NoStatusCapability
 ): [] {
+  // NOTE: NoStatusCapability is intentionally empty; this validator stays as a
+  // symmetry point with the real capability variants.
 }
 
 export pure circuit assertValidRevokedSetNonMembershipStatusCapability(
