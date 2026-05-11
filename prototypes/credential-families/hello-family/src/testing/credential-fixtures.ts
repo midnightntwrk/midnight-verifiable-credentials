@@ -19,6 +19,7 @@ import {
   pureCircuits,
 } from "../managed/hello-family-credential/contract/index.js";
 
+// NOTE: Jubjub subgroup order used by the Compact proof challenge/signature math.
 const JUBJUB_SUBGROUP_ORDER =
   6554484396890773809930967563523245729705921265872317281365359162392183254199n;
 
@@ -145,6 +146,8 @@ export const createHelloFamilyFixture = ({
   readonly requireBytesValueDisclosure?: boolean;
   readonly verifierChallengeHash?: Uint8Array;
 } = {}): HelloFamilyFixture => {
+  // NOTE: callers that build their own verifier request must reuse this
+  // challenge, otherwise the presentation proof will fail challenge binding.
   const issuer = createSigner("hello-family-issuer", 123456789n);
   const holder = createSigner("hello-family-holder", 987654321n);
   const claims = createHelloFamilyClaims();

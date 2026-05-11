@@ -83,4 +83,24 @@ describe("hello-verifier contract", () => {
       ),
     ).toThrow(/Hello-family request requires bytes disclosure/);
   });
+
+  it("rejects a presentation proof bound to a different verifier challenge", () => {
+    const fixture = createHelloFamilyFixture();
+    const simulator = new HelloVerifierSimulator();
+    const mismatchedRequest = simulator.helloVerifierRequest(
+      fixture.credential.issuerVerificationMethodRef,
+      new Uint8Array(32).fill(9),
+      false,
+    );
+
+    expect(() =>
+      simulator.verifyHelloFamilyPresentationForHelloVerifier(
+        fixture.credential,
+        fixture.credentialProof,
+        mismatchedRequest,
+        fixture.presentation,
+        fixture.presentationProof,
+      ),
+    ).toThrow();
+  });
 });
