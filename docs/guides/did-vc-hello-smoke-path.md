@@ -60,6 +60,28 @@ Adapter-layer binding derivation:
 
 ## Run the smoke path locally
 
+Smallest root-level lane:
+
+```bash
+./run.sh hello-smoke
+```
+
+That lane runs:
+
+- lint for `components/adapters/offchain-did`
+- typecheck for `components/adapters/offchain-did`
+- typecheck and tests for `prototypes/credential-families/hello-family`
+- typecheck and tests for `use-cases/hello-verifier/contract`
+
+It is intentionally build-less at the root level:
+
+- the `hello-family` and `hello-verifier` package-local typecheck/pretest
+  commands already run the Compact compiles they require
+- the goal of `hello-smoke` is a smallest runnable handoff lane, not a second
+  artifact-build umbrella
+
+Equivalent package-local commands:
+
 ```bash
 npm run test:ci -w components/adapters/offchain-did
 npm run test:ci -w prototypes/credential-families/hello-family
@@ -83,6 +105,7 @@ current smoke path.
 | `@midnight-ntwrk/midnight-did-domain` `0.1.0` tarball | `@midnight-ntwrk/midnight-did-credentials-offchain-did` workspace package | can create and resolve a portable offchain DID URL |
 | `@midnight-ntwrk/midnight-did` `0.1.0` tarball | `@midnight-ntwrk/midnight-did-credentials-hello-family` workspace package | can derive `OffchainDIDHolderBinding` and verify the family-level presentation |
 | same as above | `@midnight-ntwrk/midnight-did-hello-verifier-contract` workspace package | can verify the offchain-DID-backed presentation in a Layer 3 starter contract |
+| same as above | root `./run.sh hello-smoke` lane | can rerun the full checked-in DID-aware starter handoff from one repo command |
 
 ## Limitations
 

@@ -23,6 +23,11 @@ Status: current implemented test surface as of 2026-05-11.
 
 - `components/adapters/offchain-did/src/test/offchain-did-holder-binding.test.ts`
   - offchain DID runtime helper behavior
+- root `./run.sh hello-smoke` lane
+  - keeps the DID-aware starter handoff runnable with `hello-family` and
+    `hello-verifier`
+  - see `docs/guides/did-vc-hello-smoke-path.md` for the authoritative lane
+    description
 
 ## Credential family tests
 
@@ -53,6 +58,11 @@ Status: current implemented test surface as of 2026-05-11.
 - package export-surface checks
 - real Compact compiler probes for currently supported versus unsupported
   primitive claim types
+- root `./run.sh hello-smoke` lane
+  - keeps the starter DID -> VC -> verifier handoff runnable from one repo
+    command
+  - see `docs/guides/did-vc-hello-smoke-path.md` for the authoritative lane
+    description
 
 ### Planned prototype restoration
 

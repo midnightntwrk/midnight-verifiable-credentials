@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
+- added a root `./run.sh hello-smoke` lane plus matching `lint`,
+  `typecheck`, and `test` scripts for the smallest DID-aware
+  `offchain-did -> hello-family -> hello-verifier` handoff
 - added `credentials-status-registry` as the prototype status / revocation
   registry package with:
   - verifier-supplied `RevokedSetStatusRequest`

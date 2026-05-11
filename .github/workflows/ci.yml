@@ -675,6 +675,34 @@ jobs:
       - name: Install dependencies
         run: npm ci --prefer-offline
 
+      - name: Download Compact toolchain artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: compact-toolchain
+          path: ${{ runner.temp }}/compact-toolchain
+
+      - name: Restore Compact toolchain
+        shell: bash
+        run: |
+          mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
+          tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
+          mkdir -p "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Activate Compact compiler
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          if compact compile --version >/dev/null 2>&1; then
+            exit 0
+          fi
+          if [ "$COMPACT_COMPILER_VERSION" = "latest" ]; then
+            compact update
+          else
+            compact update "$COMPACT_COMPILER_VERSION" || compact update
+          fi
+
       - name: Download foundation CI artifact
         uses: actions/download-artifact@v4
         with:

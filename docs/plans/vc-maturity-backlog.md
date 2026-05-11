@@ -92,17 +92,32 @@ Advanced in the current open maturity stack, but not yet on `develop`:
   - `#166`
   - `#167`
   - `#168`
+- backlog refresh, canonical runtime non-membership, and live-root feasibility:
+  - `#170`
+  - `#171`
+  - `#172`
+- Compact conventions/purity rollout and family/use-case starter execution:
+  - `#173`
+  - `#174`
+  - `#175`
+  - `#176`
+  - `#177`
+  - `#178`
+  - `#179`
+  - `#180`
+- protocol production-shaped reference path:
+  - `#181`
 
 Practical remaining backlog after the current open stack:
 
-- about `10%` of the original repo-wide backlog by execution volume
+- about `5%` of the original repo-wide backlog by execution volume
 - this estimate is based on the expected remaining primary PR-sized slices
-  after `#168`, not on raw `VC-MAT-XX` item count
+  after `#181`, not on raw `VC-MAT-XX` item count
 - most of that remaining work is concentrated in:
   - `VC-MAT-20`
-  - `VC-MAT-08`
-- with a smaller but still explicit residual slice under:
+- with smaller residual slices under:
   - `VC-MAT-06`
+  - `VC-MAT-08`
 - the other active items are now primarily merge-closeout or maintenance
   follow-ons rather than first-order architecture blockers
 
@@ -131,10 +146,15 @@ Current highest-risk remaining area:
   - a concrete DID + VC handoff smoke path
   - a concrete hello-family -> verifier -> DID handoff story that is smaller
     than the full revocation/use-case stack
-  The compiling hello-family starter, compiling hello-verifier starter, and
-  the DID + VC smoke-path guide plus checked-in tests are now in flight on the
-  current stack. The remaining adoption gap after that slice is a thin
-  downstream handoff kit and one production-safe protocol reference path.
+  The current stack now closes that gap with:
+  - a compiling `hello-family` starter
+  - a compiling `hello-verifier` starter
+  - a checked-in DID + VC smoke-path guide and test surface
+  - a root `./run.sh hello-smoke` lane for the smallest DID-aware handoff
+  The remaining adoption work after this is narrower:
+  - keep the handoff matrix current as DID tarballs move
+  - decide whether the smoke lane should become a CI-named check rather than a
+    documented/root-runner lane only
 - `VC-MAT-06` is narrowed but still open:
   docs and checklists now exist, and the current stack now adds one checked-in
   production-shaped Node reference path that closes the loop across durable
@@ -157,7 +177,7 @@ Current highest-risk remaining area:
 Evidence reviewed:
 
 - current `develop` history through `#95`
-- open maturity-stack work through `#168`
+- open maturity-stack work through `#181`
 - historical PR-number gap `#96` through `#130` reconciled as superseded
   redesign-wave iterations rather than as a live backlog omission
 - current top-level tree under:
@@ -316,8 +336,10 @@ stack. The next backlog wave should use these ten larger reviewable slices.
    - concrete checklist, smoke path, and compatibility matrix seed that proves
      how a DID holder path hands off into VC issuance/presentation in the
      current repo
-   - in flight on the current stack through the offchain-DID-backed
-     `hello-family -> hello-verifier` starter path
+   - delivered on the current stack through:
+     - the offchain-DID-backed `hello-family -> hello-verifier` starter path
+     - checked-in guide and tests
+     - root `./run.sh hello-smoke` lane
 
 ### `ORCHESTRATION-PROD-SAFETY`
 
