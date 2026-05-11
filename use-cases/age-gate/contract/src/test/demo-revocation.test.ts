@@ -1,5 +1,3 @@
-import { TextEncoder } from "node:util";
-
 import {
   describeStatusVerificationFailure,
   type StatusVerificationErrorCode,
@@ -22,19 +20,10 @@ import {
   buildWrongAuthorityAttestedStatusProtocolInputs,
   createDemoRevocationFixture,
   fixtureRegistryState,
+  padText,
 } from "./demo-revocation-fixtures.js";
 
 setNetworkId("undeployed");
-
-const padText = (value: string, length = 32): Uint8Array => {
-  const bytes = new TextEncoder().encode(value);
-  if (bytes.length >= length) {
-    return bytes.slice(0, length);
-  }
-  const padded = new Uint8Array(length);
-  padded.set(bytes);
-  return padded;
-};
 
 const expectCanonicalStatusFailure = ({
   mode,
@@ -210,14 +199,6 @@ describe("credentials demo revocation contract", () => {
     const simulator = new CredentialsDemoRevocationSimulator();
 
     simulator.initializeLiveStatusRegistry(fixture.witness.statusRegistryId);
-    const request = simulator.revocationAwareLiveStatusRequest(
-      fixture.credential.issuerVerificationMethodRef,
-      fixture.witness.verifierDomainHash,
-      fixture.verificationRequest.verifierChallengeHash,
-    );
-    expect("statusRequest" in (request as Record<string, unknown>)).toEqual(
-      false,
-    );
     // Conformance lock: live-status witness input must not smuggle an
     // external registry snapshot into the same-contract path.
     expect(

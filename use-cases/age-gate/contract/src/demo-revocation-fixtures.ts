@@ -86,7 +86,7 @@ export type DemoRevocationFixtureOptions = {
 const sha256 = (value: string): Uint8Array =>
   new Uint8Array(createHash("sha256").update(value).digest());
 
-const padText = (value: string, length = 32): Uint8Array => {
+export const padText = (value: string, length = 32): Uint8Array => {
   const bytes = new TextEncoder().encode(value);
   if (bytes.length >= length) {
     return bytes.subarray(0, length);
