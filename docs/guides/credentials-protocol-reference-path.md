@@ -18,7 +18,7 @@ Purpose:
 ## Exported helper surface
 
 The current reference path is built from these exports in
-[`components/orchestration/protocol/src/index.ts`](/private/tmp/vc-core-redesign-plan/components/orchestration/protocol/src/index.ts):
+[`../../components/orchestration/protocol/src/index.ts`](../../components/orchestration/protocol/src/index.ts):
 
 - `NodeCryptoRandomnessSource`
 - `createStableJsonProtocolStateStore(...)`
@@ -27,16 +27,16 @@ The current reference path is built from these exports in
 
 Supporting storage/runtime pieces:
 
-- [`FileSystemProtocolStateByteStore`](/private/tmp/vc-core-redesign-plan/components/orchestration/protocol/src/adapters/file-protocol-state-store.ts)
-- [`StableJsonProtocolStateCodecResolver`](/private/tmp/vc-core-redesign-plan/components/orchestration/protocol/src/adapters/json-protocol-state-codec.ts)
+- [`../../components/orchestration/protocol/src/adapters/file-protocol-state-store.ts`](../../components/orchestration/protocol/src/adapters/file-protocol-state-store.ts)
+- [`../../components/orchestration/protocol/src/adapters/json-protocol-state-codec.ts`](../../components/orchestration/protocol/src/adapters/json-protocol-state-codec.ts)
 
 ## What this path guarantees
 
 Today this reference path gives you:
 
 1. cryptographically strong runtime randomness from `node:crypto`
-2. stable JSON serialization for `bigint` and `Uint8Array`-heavy protocol
-   state
+2. restart-safe tagged JSON serialization for `bigint` and `Uint8Array`-heavy
+   protocol state
 3. file-backed per-party storage that survives ordinary process restarts
 4. explicit replay retention when the agent supports retained finalized
    outcomes
@@ -115,7 +115,7 @@ const restartedHolder = new HolderAgent(
 
 The checked-in proof for this path is:
 
-- [`node-reference-path.test.ts`](/private/tmp/vc-core-redesign-plan/components/orchestration/protocol/src/test/reference/node-reference-path.test.ts)
+- [`../../components/orchestration/protocol/src/test/reference/node-reference-path.test.ts`](../../components/orchestration/protocol/src/test/reference/node-reference-path.test.ts)
   - `recovers explicit-holder credentials across restart with file-backed JSON state and crypto randomness`
 
 ## Secret-holder reference shape
@@ -155,7 +155,7 @@ const verifier = new VerifierAgent(verifierProfile, bus, {
 
 The checked-in proof for this path is:
 
-- [`node-reference-path.test.ts`](/private/tmp/vc-core-redesign-plan/components/orchestration/protocol/src/test/reference/node-reference-path.test.ts)
+- [`../../components/orchestration/protocol/src/test/reference/node-reference-path.test.ts`](../../components/orchestration/protocol/src/test/reference/node-reference-path.test.ts)
   - `re-delivers secret-holder presentation outcomes across verifier restart with file-backed JSON state and crypto randomness`
 
 ## Deployment rules
@@ -169,11 +169,16 @@ Treat this path as the current minimum bar for a production-shaped claim:
 4. set explicit `stateRetention` when replayed outcomes matter
 5. pass explicit `currentDay` / `currentTimeMs` when expiry policy matters
 6. define your real transport boundary separately
+7. provision each party directory with restrictive filesystem permissions
+   (for example `umask 0077` and service-owned `0700` roots) because protocol
+   state may contain openings, blinding factors, and retained outcomes
 
 ## Current limitations
 
 - the file-backed store is synchronous and local-process oriented
 - this path assumes one runtime instance owns each party directory
+- the tagged JSON codec is restart-safe for this implementation, not a
+  canonical cross-writer byte format
 - the package still does not define a final external OIDC / DIDComm contract
 - status-aware transport behavior remains a separate integration concern
 

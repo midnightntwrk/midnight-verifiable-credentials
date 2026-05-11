@@ -93,7 +93,7 @@ The current public exports are intentionally narrow:
   implementation for protocol session state
 - a byte-backed codec adapter seam so persistent stores can expose
   `ProtocolStateStore` without reimplementing typed collection logic
-- a stable JSON codec/store helper path for restart-safe local persistence:
+- a restart-safe tagged JSON codec/store helper path for local persistence:
   - `createStableJsonProtocolStateStore(...)`
   - `createNodeFileBackedProtocolStateStore(...)`
   - `createNodeFileBackedProtocolPartyDependencies(...)`
@@ -235,7 +235,8 @@ Current production-shaped reference path:
 - use `NodeCryptoRandomnessSource` or
   `createNodeFileBackedProtocolPartyDependencies(...)`
 - use one file-backed state directory per party
-- use the stable JSON codec-backed store path instead of the test-only `v8`
+- use the restart-safe tagged JSON codec-backed store path instead of the
+  test-only `v8`
   codec wiring
 - set explicit replay retention where finalized outcomes matter
 - see
@@ -256,7 +257,7 @@ Persistent state adapter rule:
   `ProtocolStateCodecResolver`, and `createCodecBackedProtocolStateStore(...)`
   as the preferred integration path when the persistence layer naturally
   stores bytes or blobs
-- the package now also exports a stable JSON reference path for local durable
+- the package now also exports a restart-safe tagged JSON reference path for local durable
   Node deployments:
   - `createStableJsonProtocolStateStore(...)`
   - `createNodeFileBackedProtocolStateStore(...)`

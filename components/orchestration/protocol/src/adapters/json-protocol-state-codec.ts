@@ -42,6 +42,10 @@ const stableJsonReviver = (_key: string, value: unknown): unknown => {
   return value;
 };
 
+// NOTE: "stable" here means restart-safe for this tagged codec pair. It does
+// not claim canonical cross-writer JSON bytes. Protocol state values are
+// expected to stay within plain objects/arrays plus scalar fields, `bigint`,
+// and `Uint8Array`.
 export const stableJsonProtocolStateCodec: ProtocolStateCodec<unknown> = {
   encode(value) {
     return Buffer.from(JSON.stringify(value, stableJsonReplacer), "utf8");

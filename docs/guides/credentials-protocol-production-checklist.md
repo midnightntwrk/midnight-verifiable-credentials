@@ -52,6 +52,8 @@ Required semantics:
 - typed serialization across process boundaries
 - predictable delete behavior
 - collection scans or storage-native equivalents for TTL/count-based pruning
+- restrictive filesystem permissions for the backing state roots
+  - for example `umask 0077` and service-owned `0700` directories
 - current shipped Node reference:
   - `createNodeFileBackedProtocolStateStore(...)`
   - `createStableJsonProtocolStateStore(...)`
