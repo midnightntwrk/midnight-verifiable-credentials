@@ -181,6 +181,7 @@ Direct package-wide validation entrypoints:
 - `npm run lint`
 - `npm run build:all`
 - `npm run test:all`
+- `npm run docs:links`
 
 ## Artifact packaging
 
