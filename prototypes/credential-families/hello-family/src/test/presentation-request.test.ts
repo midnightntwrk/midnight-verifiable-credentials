@@ -3,24 +3,30 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-const modelSource = readFileSync(
-  path.resolve(
-    import.meta.dirname,
-    "..",
-    "hello-family-credential",
-    "model.compact",
+const normalizeWhitespace = (source: string) => source.replace(/\s+/g, " ");
+
+const modelSource = normalizeWhitespace(
+  readFileSync(
+    path.resolve(
+      import.meta.dirname,
+      "..",
+      "hello-family-credential",
+      "model.compact",
+    ),
+    "utf8",
   ),
-  "utf8",
 );
 
-const helpersSource = readFileSync(
-  path.resolve(
-    import.meta.dirname,
-    "..",
-    "hello-family-credential",
-    "helpers.compact",
+const helpersSource = normalizeWhitespace(
+  readFileSync(
+    path.resolve(
+      import.meta.dirname,
+      "..",
+      "hello-family-credential",
+      "helpers.compact",
+    ),
+    "utf8",
   ),
-  "utf8",
 );
 
 describe("hello-family presentation request", () => {

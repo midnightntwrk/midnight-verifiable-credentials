@@ -3,14 +3,18 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-const claimsSource = readFileSync(
-  path.resolve(
-    import.meta.dirname,
-    "..",
-    "hello-family-credential",
-    "claims.compact",
+const normalizeWhitespace = (source: string) => source.replace(/\s+/g, " ");
+
+const claimsSource = normalizeWhitespace(
+  readFileSync(
+    path.resolve(
+      import.meta.dirname,
+      "..",
+      "hello-family-credential",
+      "claims.compact",
+    ),
+    "utf8",
   ),
-  "utf8",
 );
 
 describe("hello-family claim surface", () => {

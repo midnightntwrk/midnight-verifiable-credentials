@@ -2,6 +2,7 @@ import { execFileSync } from "node:child_process";
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import process from "node:process";
 
 import { describe, expect, it } from "vitest";
 
@@ -13,6 +14,13 @@ const compactAvailable = (() => {
     return false;
   }
 })();
+const compactRequired = Boolean(process.env.COMPACT_COMPILER_VERSION);
+
+if (compactRequired && !compactAvailable) {
+  throw new Error(
+    "COMPACT_COMPILER_VERSION is set but the compact toolchain is not on PATH",
+  );
+}
 
 const compileProbe = (
   source: string,

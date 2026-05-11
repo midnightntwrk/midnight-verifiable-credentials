@@ -27,7 +27,7 @@ Why this package exists:
 
 ## Current Compact claim-type matrix
 
-As of the current repo toolchain (`COMPACT_COMPILER_VERSION=0.30.0`):
+As of the current repo toolchain (`COMPACT_COMPILER_VERSION` in CI):
 
 Supported in this package today:
 
