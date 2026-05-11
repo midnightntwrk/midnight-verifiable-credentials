@@ -9,6 +9,10 @@ import {
   type RevokedSetStatusRequest,
 } from "./managed/revocation-registry/contract/index.js";
 import {
+  StatusHelperError,
+  statusVerificationErrorCodes,
+} from "./status-errors.js";
+import {
   buildLiveStatusWitness,
   type BuildLiveStatusWitnessOptions,
   buildRevokedSetNonMembershipInputs,
@@ -129,9 +133,10 @@ export const assertStatusHandleNotRevokedInContractState = ({
   const match =
     currentLedger.revokedStatusHandles.findPathForLeaf(statusHandle);
   if (match) {
-    throw new Error(
-      `Status handle ${toHex(statusHandle)} is already present in the live revocation registry state`,
-    );
+    throw new StatusHelperError({
+      code: statusVerificationErrorCodes.revoked,
+      message: `Status handle ${toHex(statusHandle)} is already present in the live revocation registry state`,
+    });
   }
 };
 
@@ -149,17 +154,21 @@ export const assertObservedRevocationRegistryStateFreshEnough = ({
   assertNonNegative(policy.maxSnapshotAge, "Snapshot max age");
 
   if (currentTime < observedState.observedAt) {
-    throw new Error(
-      "Observed revocation registry snapshot time cannot be in the future",
-    );
+    throw new StatusHelperError({
+      code: statusVerificationErrorCodes.staleRegistryState,
+      message:
+        "Observed revocation registry snapshot time cannot be in the future",
+    });
   }
 
   if (policy.enforceSnapshotMaxAge) {
     const age = currentTime - observedState.observedAt;
     if (age > policy.maxSnapshotAge) {
-      throw new Error(
-        "Observed revocation registry snapshot exceeds the verifier max-age policy",
-      );
+      throw new StatusHelperError({
+        code: statusVerificationErrorCodes.staleRegistryState,
+        message:
+          "Observed revocation registry snapshot exceeds the verifier max-age policy",
+      });
     }
   }
 };
@@ -197,9 +206,11 @@ export const assertObservedRevocationRegistryVersionAtLeast = ({
   buildObservedRevocationRegistryState(observedState);
   assertNonNegative(minimumRegistryVersion, "Minimum registry version");
   if (observedState.registryState.registryVersion < minimumRegistryVersion) {
-    throw new Error(
-      "Observed revocation registry snapshot version is older than the required minimum",
-    );
+    throw new StatusHelperError({
+      code: statusVerificationErrorCodes.staleRegistryState,
+      message:
+        "Observed revocation registry snapshot version is older than the required minimum",
+    });
   }
 };
 
