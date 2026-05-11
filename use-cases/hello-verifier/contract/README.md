@@ -12,20 +12,33 @@ Purpose:
 
 Current scope:
 
-- uses the explicit-holder `credentials-birth` family
-- builds a request with an age-threshold predicate
+- uses the explicit-holder `credentials-hello-family` playground family
+- includes a companion offchain-DID starter contract for the DID-aware smoke path
+- builds a request that requires a tiny selective-disclosure surface
+- keeps boolean and big-unsigned disclosure mandatory, with bytes disclosure as the only starter toggle
 - verifies one presentation against that request
-- records the accepted credential root and request challenge in ledger state
+- records the accepted credential root, challenge, and disclosed values in ledger state
 
 Non-goals:
 
 - issuance storage
 - reusable business capabilities
 - revocation/status handling
+- credential expiration enforcement
+- holder-side witness predicates
 - standalone application wiring
+
+This package is intentionally a starter, not a privacy blueprint.
+The underlying `credentials-hello-family` package uses direct typed claims so
+the verifier flow stays easy to read.
 
 Run locally:
 
 ```bash
+npm run build -w use-cases/hello-verifier/contract
 npm run test:ci -w use-cases/hello-verifier/contract
 ```
+
+DID-aware starter path:
+
+- [`../../../docs/guides/did-vc-hello-smoke-path.md`](../../../docs/guides/did-vc-hello-smoke-path.md)

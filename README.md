@@ -29,6 +29,8 @@ Current maturity is mixed by package:
     - current prototype status / revocation registry support package
   - [`credentials-birth`](./prototypes/credential-families/birth/README.md)
   - [`credentials-birth-secret`](./prototypes/credential-families/birth-secret/README.md)
+  - [`credentials-hello-family`](./prototypes/credential-families/hello-family/README.md)
+    - claim-type playground and starter family package
   - [`credentials-iso-registry`](./core/primitives/iso-registry/README.md)
   - [`credentials-offchain-did`](./components/adapters/offchain-did/README.md)
   - [`credentials-openid`](./protocols/openid/README.md)
@@ -91,6 +93,8 @@ Start here:
   - explicit-holder birth credential family
 - [`credentials-birth-secret`](./prototypes/credential-families/birth-secret/README.md)
   - secret-holder birth credential family
+- [`credentials-hello-family`](./prototypes/credential-families/hello-family/README.md)
+  - claim-type playground for the current Compact primitive surface
 - [`credentials-openid`](./protocols/openid/README.md)
   - OID4VCI / OID4VP-inspired transport/domain adapters
 - [`credentials-protocol`](./components/orchestration/protocol/README.md)
@@ -140,6 +144,18 @@ Run the BDD smoke lane directly:
 ./run.sh bdd
 ```
 
+Run the smallest DID-aware handoff lane directly:
+
+```bash
+./run.sh hello-smoke
+```
+
+Reuse existing build artifacts for that same lane:
+
+```bash
+./run.sh hello-smoke --light
+```
+
 Run only the negative BDD living-doc scenarios:
 
 ```bash
@@ -160,7 +176,7 @@ Direct package-wide validation entrypoints:
 
 ## Artifact packaging
 
-Stable tarball output lives under [`artifacts/npm/`](./artifacts/README.md).
+Stable tarball output lives under [`tooling/artifacts/npm/`](./tooling/artifacts/README.md).
 
 Commands:
 
@@ -179,6 +195,7 @@ Published/exported local tarball set currently includes:
 - `@midnight-ntwrk/midnight-did-credentials-protocol`
 - `@midnight-ntwrk/midnight-did-credentials-birth`
 - `@midnight-ntwrk/midnight-did-credentials-birth-secret`
+- `@midnight-ntwrk/midnight-did-credentials-hello-family`
 - `@midnight-ntwrk/midnight-did-standalone-environment`
 
 Intentionally excluded:

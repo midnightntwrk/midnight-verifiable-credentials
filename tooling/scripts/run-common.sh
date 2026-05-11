@@ -54,7 +54,8 @@ run_common_artifacts_ready() {
         && [[ -f "core/capabilities/same-holder/src/managed/same-holder/contract/index.js" ]] \
         && [[ -f "core/primitives/iso-registry/src/managed/iso-registry/contract/index.js" ]] \
         && [[ -f "prototypes/credential-families/birth/src/managed/birth-credential/contract/index.js" ]] \
-        && [[ -f "prototypes/credential-families/birth-secret/src/managed/secret-birth-credential/contract/index.js" ]]
+        && [[ -f "prototypes/credential-families/birth-secret/src/managed/secret-birth-credential/contract/index.js" ]] \
+        && [[ -f "prototypes/credential-families/hello-family/src/managed/hello-family-credential/contract/index.js" ]]
       ;;
     managed-all)
       run_common_artifacts_ready managed-light \
@@ -71,6 +72,14 @@ run_common_artifacts_ready() {
         && [[ -f "use-cases/age-gate/contract/src/managed/demo/contract/index.js" ]] \
         && [[ -f "use-cases/age-gate/contract/src/managed/demo-revocation/contract/index.js" ]]
       ;;
+    managed-hello-smoke)
+      [[ -f "core/primitives/credentials/src/managed/credentials/contract/index.js" ]] \
+        && [[ -f "registry/status-registry/src/managed/revocation-registry/contract/index.js" ]] \
+        && [[ -f "core/capabilities/same-holder/src/managed/same-holder/contract/index.js" ]] \
+        && [[ -f "core/primitives/iso-registry/src/managed/iso-registry/contract/index.js" ]] \
+        && [[ -f "prototypes/credential-families/hello-family/src/managed/hello-family-credential/contract/index.js" ]] \
+        && [[ -f "use-cases/hello-verifier/contract/src/managed/hello-verifier/contract/index.js" ]]
+      ;;
     light)
       [[ -f "core/primitives/credentials/dist/index.js" ]] \
         && [[ -f "registry/status-registry/dist/index.js" ]] \
@@ -79,7 +88,8 @@ run_common_artifacts_ready() {
         && [[ -f "components/adapters/offchain-did/dist/index.js" ]] \
         && [[ -f "protocols/openid/dist/index.js" ]] \
         && [[ -f "prototypes/credential-families/birth/dist/index.js" ]] \
-        && [[ -f "prototypes/credential-families/birth-secret/dist/index.js" ]]
+        && [[ -f "prototypes/credential-families/birth-secret/dist/index.js" ]] \
+        && [[ -f "prototypes/credential-families/hello-family/dist/index.js" ]]
       ;;
     all)
       run_common_artifacts_ready light \
@@ -136,6 +146,9 @@ run_common_ensure_artifacts() {
       ;;
     managed-revocation)
       build_cmd="npm run build:revocation"
+      ;;
+    managed-hello-smoke)
+      build_cmd="npm run build:hello-smoke"
       ;;
     light)
       build_cmd="npm run build:light"

@@ -1,4 +1,5 @@
 export * from "./adapters/file-protocol-state-store.js";
+export * from "./adapters/json-protocol-state-codec.js";
 export * from "./agents/holder-agent.js";
 export * from "./agents/issuer-agent.js";
 export * from "./agents/protocol-state-store.js";
@@ -7,6 +8,7 @@ export * from "./agents/secret-holder-agent.js";
 export * from "./agents/secret-issuer-agent.js";
 export * from "./agents/types.js";
 export * from "./agents/verifier-agent.js";
+export * from "./reference/node-reference-path.js";
 export * from "./shared/crypto.js";
 export * from "./shared/envelope.js";
 export * from "./transport/message-bus.js";

@@ -44,9 +44,15 @@
 - protocol production checklist:
   - [`guides/credentials-protocol-production-checklist.md`](./guides/credentials-protocol-production-checklist.md)
   - for integrators hardening the reference orchestration layer for real deployments
+- protocol reference path:
+  - [`guides/credentials-protocol-reference-path.md`](./guides/credentials-protocol-reference-path.md)
+  - for engineers who need the current checked-in Node/file-backed orchestration path
 - prototype execution ladder:
   - [`guides/prototype-execution-ladder.md`](./guides/prototype-execution-ladder.md)
   - for engineers who want the current runnable path from hello-verifier through BDD and revocation lanes
+- DID + VC hello smoke path:
+  - [`guides/did-vc-hello-smoke-path.md`](./guides/did-vc-hello-smoke-path.md)
+  - for engineers who need the smallest checked-in DID bootstrap to VC verification handoff
 - starter templates:
   - [`templates/verifier-contract-template.compact.md`](./templates/verifier-contract-template.compact.md)
   - [`templates/family-scaffold-template.md`](./templates/family-scaffold-template.md)
@@ -54,6 +60,9 @@
 - current status-registry package surface:
   - [`../registry/status-registry/README.md`](../registry/status-registry/README.md)
   - for engineers implementing the current prototype revocation/status registry package
+- current claim-type playground package surface:
+  - [`../prototypes/credential-families/hello-family/README.md`](../prototypes/credential-families/hello-family/README.md)
+  - for engineers who need the current Compact claim-type support matrix in a compileable family package
 
 ## Architecture
 
@@ -81,6 +90,12 @@
 - CI build cones:
   - [`architecture/ci-build-cones.md`](./architecture/ci-build-cones.md)
   - for the shared-build cache and artifact topology used by CI
+- Compact source conventions, purity, and commitment research:
+  - [`architecture/compact-source-conventions-and-purity-research.md`](./architecture/compact-source-conventions-and-purity-research.md)
+  - for the current comment-style, pure-circuit, and commitment-standardization research cut
+- status-contract closeout boundary:
+  - [`architecture/status-contract-closeout-boundary.md`](./architecture/status-contract-closeout-boundary.md)
+  - for the final repository-owned `VC-MAT-20` delivery boundary versus the remaining upstream Compact blocker
 
 ## Testing
 

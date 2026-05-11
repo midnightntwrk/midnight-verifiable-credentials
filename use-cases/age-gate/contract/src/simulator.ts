@@ -16,6 +16,7 @@ import {
   type Ledger,
   ledger,
   type Proof,
+  pureCircuits,
 } from "./managed/demo/contract/index.js";
 import {
   type CredentialsDemoPrivateState,
@@ -138,12 +139,12 @@ export class CredentialsDemoSimulator {
     issuerVerificationMethodRef: BirthCredential["issuerVerificationMethodRef"],
     verifierChallengeHash: Uint8Array,
   ): BirthCredentialPresentationRequest {
-    return this.executeCircuit(() =>
-        this.contract.impureCircuits.ageGateRequest(
-          this.circuitContext,
-          issuerVerificationMethodRef,
-          verifierChallengeHash,
-        ),
+    const state = this.getLedger();
+    return pureCircuits.ageGateRequestForPolicy(
+      issuerVerificationMethodRef,
+      verifierChallengeHash,
+      state.ageGateRequiresBirthCountryDisclosure,
+      state.minimumAccessAgeYears,
     );
   }
 

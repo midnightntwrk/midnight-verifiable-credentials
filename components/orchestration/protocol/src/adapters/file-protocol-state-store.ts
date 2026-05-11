@@ -1,14 +1,17 @@
 import { Buffer } from "node:buffer";
 import {
+  closeSync,
   existsSync,
+  fsyncSync,
   mkdirSync,
+  openSync,
   readdirSync,
   readFileSync,
   renameSync,
   rmSync,
   writeFileSync,
 } from "node:fs";
-import { join, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import process from "node:process";
 
 import type {
@@ -26,6 +29,19 @@ let tempWriteCounter = 0;
 
 const isMissingFileError = (error: unknown): boolean =>
   error instanceof Error && "code" in error && error.code === "ENOENT";
+
+// NOTE: this fsync-on-directory pattern is aimed at the Linux/macOS class of
+// local filesystems used by the current reference path. It is not meant as a
+// cross-platform multi-process locking story, and Windows is currently out of
+// scope for this durability claim.
+const syncDirectory = (directoryPath: string): void => {
+  const directoryFd = openSync(directoryPath, "r");
+  try {
+    fsyncSync(directoryFd);
+  } finally {
+    closeSync(directoryFd);
+  }
+};
 
 class FileSystemProtocolStateByteCollection
   implements ProtocolStateByteCollection
@@ -59,20 +75,29 @@ class FileSystemProtocolStateByteCollection
   }
 
   /**
-   * This adapter is restart-safe for ordinary process restarts, but it remains
-   * reference-grade: it does not fsync file and directory metadata for crash
-   * consistency under abrupt power loss.
+   * This adapter is restart-safe for ordinary process restarts and explicitly
+   * flushes both file contents and parent-directory metadata so the reference
+   * path does not rely on rename-only semantics.
    */
   set(key: string, value: Uint8Array): void {
     const filePath = this.filePathFor(key);
     const tempPath = this.nextTempPath(filePath);
-    writeFileSync(tempPath, value);
+    const tempFd = openSync(tempPath, "w");
+    try {
+      writeFileSync(tempFd, value);
+      fsyncSync(tempFd);
+    } finally {
+      closeSync(tempFd);
+    }
     renameSync(tempPath, filePath);
+    syncDirectory(dirname(filePath));
   }
 
   delete(key: string): boolean {
     try {
-      rmSync(this.filePathFor(key));
+      const filePath = this.filePathFor(key);
+      rmSync(filePath);
+      syncDirectory(dirname(filePath));
       return true;
     } catch (error) {
       if (isMissingFileError(error)) {
@@ -85,9 +110,17 @@ class FileSystemProtocolStateByteCollection
   deleteMany(keys: readonly string[]): number {
     let deleted = 0;
     for (const key of keys) {
-      if (this.delete(key)) {
+      try {
+        rmSync(this.filePathFor(key));
         deleted += 1;
+      } catch (error) {
+        if (!isMissingFileError(error)) {
+          throw error;
+        }
       }
+    }
+    if (deleted > 0) {
+      syncDirectory(this.collectionDir);
     }
     return deleted;
   }

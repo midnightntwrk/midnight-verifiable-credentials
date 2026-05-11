@@ -92,48 +92,57 @@ Advanced in the current open maturity stack, but not yet on `develop`:
   - `#166`
   - `#167`
   - `#168`
+- backlog refresh, canonical runtime non-membership, and live-root feasibility:
+  - `#170`
+  - `#171`
+  - `#172`
+- Compact conventions/purity rollout and family/use-case starter execution:
+  - `#173`
+  - `#174`
+  - `#175`
+  - `#176`
+  - `#177`
+  - `#178`
+  - `#179`
+  - `#180`
+- protocol production-shaped reference path:
+  - `#181`
+- hello-smoke runner closeout and status-contract boundary note:
+  - `#182`
+  - `#183`
+- final repo-owned leftovers closeout:
+  - `#184`
 
 Practical remaining backlog after the current open stack:
 
-- about `10%` of the original repo-wide backlog by execution volume
-- this estimate is based on the expected remaining primary PR-sized slices
-  after `#168`, not on raw `VC-MAT-XX` item count
-- most of that remaining work is concentrated in:
-  - `VC-MAT-20`
-  - `VC-MAT-08`
-- with a smaller but still explicit residual slice under:
-  - `VC-MAT-06`
-- the other active items are now primarily merge-closeout or maintenance
-  follow-ons rather than first-order architecture blockers
+- about `1-2%` of the original repo-wide backlog by execution volume
+- repository-owned functional backlog is now effectively closed on the current
+  stack
+- the remaining tracked work is now mostly:
+  - merge-closeout / maintenance discipline
+  - compatibility-matrix upkeep as DID tarballs move
+  - the explicit upstream Compact/runtime dependency for a future generic
+    root-bound non-membership path
 
 Current highest-risk remaining area:
 
-- `VC-MAT-20` is still the hardest unresolved core-spec tail:
-  the repository now has:
-  - a native hidden-holder `VC<..., RegistryBoundStatusBinding>` rollout
-  - explicit status verification modes:
-    - same-contract live-state verification
-    - off-chain verifier-side live-state verification
-    - authority-attested external-registry verification
-  - canonical helper-side failure taxonomy
-  - stale-snapshot, wrong-registry, wrong-root, and revoked negative-path
-    living docs
-  - cross-mode verifier parity coverage
-  but it still does not provide:
+- no remaining repo-local architecture blocker dominates the backlog now
+- `VC-MAT-20` is closed to the repository-owned boundary on the current stack;
+  the only remaining gap is the upstream Compact/runtime dependency for:
   - final generic in-circuit live-root binding
-  - final canonical non-membership proof semantics
-  - a settled Compact-side replacement for the current runtime-only
-    `MerkleTree.root()` limitation
-- `VC-MAT-08` is now the strongest adoption gap:
-  the repo has a generated family scaffold, guides, and templates, but still
-  lacks:
-  - a compiling hello-verifier starter
-  - a compiling hello-family starter
-  - a concrete DID + VC handoff smoke path
-- `VC-MAT-06` is narrowed but still open:
-  docs and checklists now exist, but there is still no single production-safe
-  orchestration reference path that closes the loop across durable state, RNG,
-  and deployment posture
+  - final generic root-bound Merkle non-membership
+- `VC-MAT-08` is also closed on the current stack:
+  - compiling `hello-family` starter
+  - compiling `hello-verifier` starter
+  - DID-aware smoke-path guide and tests
+  - root `./run.sh hello-smoke` lane
+  - restored-artifact parity via `./run.sh hello-smoke --light`
+  - CI-native `Hello Smoke Lane`
+- `VC-MAT-06` is closed to the current reference-path boundary:
+  - durable file-backed state adapter
+  - crypto-randomness reference path
+  - replay/finalized-outcome retention coverage
+  - checked-in production checklist and guide
 - `VC-MAT-17` is largely advanced in the current stack:
   the repo now has curated negative scenarios for stale snapshot, wrong
   registry, wrong root, stale authority attestation, and revoked credentials;
@@ -149,7 +158,7 @@ Current highest-risk remaining area:
 Evidence reviewed:
 
 - current `develop` history through `#95`
-- open maturity-stack work through `#168`
+- open maturity-stack work through `#184`
 - historical PR-number gap `#96` through `#130` reconciled as superseded
   redesign-wave iterations rather than as a live backlog omission
 - current top-level tree under:
@@ -175,21 +184,24 @@ Evidence reviewed:
 
 Main findings:
 
-1. the status-contract gap is now narrow, but still real
+1. the status-contract gap is now closed to the repo-owned boundary
 
 - the repo has moved from “prototype revocation support” to a materially
   clearer trust-model split with explicit same-contract, off-chain, and
-  authority-attested modes
-- the remaining gap is concentrated in:
-  - canonical non-membership proof shape
-  - generic in-circuit live-root binding
-  - Compact/runtime boundary resolution for registry-root access
+  authority-attested modes plus canonical runtime bundle and verifier
+  semantics
+- the remaining gap is now the upstream Compact/runtime boundary for
+  registry-root access rather than a missing internal status-contract slice
 
-2. execution is now the next real adoption blocker
+2. execution is no longer the next real adoption blocker
 
-- family scaffolding, use-case research, and docs improved materially
-- but there is still no shortest-path compiling starter that proves the repo is
-  easy to adopt from scratch
+- the current stack now has:
+  - compiling `hello-family`
+  - compiling `hello-verifier`
+  - a DID-aware smoke path
+  - a root runner lane plus a CI-native parity check for that smoke path
+- future adoption work is now breadth/packaging maintenance rather than
+  "prove a smallest runnable handoff exists"
 
 3. BDD and conformance are no longer the weakest surfaces
 
@@ -210,118 +222,60 @@ Main findings:
 ## Legacy VC-MAT Pointer Queue
 
 This older `VC-MAT-XX` queue is superseded by the category split and
-next-ten-slice queue below. Keep it only as a compact pointer to the same
+closeout queue below. Keep it only as a compact pointer to the same
 top-level priorities in their current names:
 
-1. `STATUS-CONTRACT` / `VC-MAT-20`
-2. `INTEGRATOR-EXECUTION` / `VC-MAT-08`
-3. `ORCHESTRATION-PROD-SAFETY` / `VC-MAT-06`
-4. `MAINTENANCE-CLOSEOUT` / `VC-MAT-09`, `VC-MAT-17`, `VC-MAT-18`
+1. `UPSTREAM-STATUS-DEPENDENCY` / post-`VC-MAT-20`
+2. `MAINTENANCE-CLOSEOUT` / `VC-MAT-09`, `VC-MAT-17`, `VC-MAT-18`
+3. `ADOPTION-MAINTENANCE` / post-`VC-MAT-08`
+4. `ORCHESTRATION-FOLLOW-ON` / post-`VC-MAT-06`
 
 ## Category Split
 
-The remaining backlog now falls into four execution categories:
+The remaining backlog now falls into four closeout categories:
 
-### `STATUS-CONTRACT`
+### `UPSTREAM-STATUS-DEPENDENCY`
 
-- final status / revocation trust-model hardening
-- canonical non-membership proof shape and helper/runtime semantics
-- Compact/runtime boundary resolution for generic live-root binding
-- primary item:
-  - `VC-MAT-20`
+- repo-owned status / revocation work is complete to the documented boundary
+- remaining work is explicitly external:
+  - Compact/runtime support for a future generic live-root / root-bound
+    non-membership path
 
-### `INTEGRATOR-EXECUTION`
+### `ADOPTION-MAINTENANCE`
 
-- runnable starter and handoff paths that convert the current guides into
-  execution-shaped onboarding
-- primary item:
-  - `VC-MAT-08`
+- smallest runnable starter and DID-aware handoff paths are now delivered
+- remaining work is maintenance:
+  - keep the smoke-path compatibility matrix current
+  - add breadth only when a new starter proves a materially different trust
+    model
 
-### `ORCHESTRATION-PROD-SAFETY`
+### `ORCHESTRATION-FOLLOW-ON`
 
-- durable-state, randomness, and deployment-hardening work for the reference
-  Layer 4 orchestration package
-- primary item:
-  - `VC-MAT-06`
+- one production-shaped reference path is now delivered
+- future work is no longer a backlog blocker:
+  - transport-specific guidance
+  - deployment-topology variants beyond the current reference path
 
 ### `MAINTENANCE-CLOSEOUT`
 
 - keep package/test/lane docs synchronized with the converged repository shape
 - close any remaining negative-path or repo-shape follow-ons after the current
   stack lands
-- this category is primarily a cross-cutting discipline on slices `1` through
-  `9`
-- slice `10` exists only for the residual cleanup that remains after those
-  heavier slices land
-- follow-on items:
+- remaining repo-owned items:
   - `VC-MAT-09`
   - `VC-MAT-17`
   - `VC-MAT-18`
 
-## Next Ten Slice Queue
+## Closeout Queue
 
-The previous twenty-slice queue is now stale relative to the current open
-stack. The next backlog wave should use these ten larger reviewable slices.
+The original next-ten-slice queue is now executed on the current stack. The
+remaining queue is smaller:
 
-### `STATUS-CONTRACT`
-
-- `Slice 1`: canonical non-membership proof note and witness contract
-   - freeze the generic witness shape, verifier inputs, and failure semantics
-     for the non-authority-attested path
-   - make the relationship explicit between:
-     - same-contract live-state mode
-     - off-chain verifier-side live-state mode
-     - authority-attested external-registry mode
-- `Slice 2`: canonical non-membership helper/runtime implementation slice
-   - add the typed helper/API surface that builds and validates the canonical
-     non-membership witness bundle
-   - keep failure codes aligned with the existing canonical verifier taxonomy
-- `Slice 3`: Compact-side live-root binding feasibility slice
-   - probe the real alternatives to runtime-only `MerkleTree.root()`
-   - document whether the final path is:
-     - a new Compact surface requirement
-     - a same-contract-only reference path
-     - or a different state-binding pattern
-- `Slice 4`: same-contract live-status conformance package
-   - harden the Layer 3 same-contract path with a fuller adversarial matrix
-   - make the “no explicit root handoff required” rule executable rather than
-     only documentary
-- `Slice 5`: authority-attested replay/freshness/nonce follow-on
-   - close any remaining API sharp edges around replay resistance, nonce
-     binding, and verifier freshness enforcement
-   - keep this mode explicit as a supported implementation option, not a hidden
-     fallback
-
-### `INTEGRATOR-EXECUTION`
-
-- `Slice 6`: compiling hello-verifier starter
-   - shortest-path runnable verifier example using the converged thin-core
-     surfaces and current run-target conventions
-- `Slice 7`: compiling hello-family starter
-   - smallest runnable family package produced from the current scaffold/tooling
-     conventions
-- `Slice 8`: DID + VC handoff smoke path
-   - concrete checklist, smoke path, and compatibility matrix seed that proves
-     how a DID holder path hands off into VC issuance/presentation in the
-     current repo
-
-### `ORCHESTRATION-PROD-SAFETY`
-
-- `Slice 9`: production-safe protocol reference path
-   - one reference path that ties together:
-     - durable-state expectations
-     - RNG requirements
-     - deployment/runtime checklist
-   - this should be more executable than the current checklist-only guidance
-
-### `MAINTENANCE-CLOSEOUT`
-
-- `Slice 10`: residual closeout sweep after slices `1` through `9`
-    - refresh the backlog file again
-    - close or downgrade any residual `VC-MAT-09`, `VC-MAT-17`, and
-      `VC-MAT-18` items
-    - remove stale wording that still describes the repo as pre-convergence or
-      pre-negative-coverage
+1. merge the current stack and refresh the backlog against `develop`
+2. keep the DID-tarball to VC-workspace hello-smoke compatibility seed current
+3. keep package/test/lane docs aligned when CI or runner surfaces change
+4. track the upstream Compact/runtime dependency separately from ordinary repo
+   execution slices
 
 ## Architecture Audit: 2026-05-06
 
@@ -721,12 +675,13 @@ Current grouped execution:
   - startup credential-count recovery after metadata drift
   - shared ordinal recovery helpers
   - optional `maxOrdinalKey()` hints for append-only collections
-- remaining seam decision:
-  - decide whether the current synchronous interface is final
-  - or redesign around an explicit async durability contract
-  - if no real async adapter is on the near-term roadmap, prefer freezing the
-    current synchronous seam as a capability-typed contract instead of adding
-    more ad hoc optional methods
+- current-stack closeout:
+  - checked-in durable file-backed reference adapter
+  - checked-in crypto-randomness reference path
+  - restart / replay / finalized-outcome retention coverage
+  - production checklist and reference guide
+- remaining work is now follow-on guidance, not a backlog-critical missing
+  reference path
 
 ### VC-MAT-07: Reduce accidental public surface inflation
 
@@ -783,18 +738,19 @@ Current grouped execution:
   - docs-only verifier contract template
   - docs-only family scaffold template
   - docs-only hidden-holder hello-world walkthrough
-- still missing if deeper onboarding is needed later:
-  - a generated family scaffold or copy script
-  - a tiny runnable hello-family / hello-verifier starter, not only markdown
-    templates
-  - issuer-oriented starter path
-  - wallet-oriented starter path
-  - a DID + VC handoff checklist for downstream repos consuming DID tarballs
-    plus VC packages
-  - one authoritative cross-repo smoke path that starts from the DID packaging
-    boundary and ends in one VC issuance/presentation/verification flow
-  - a tested DID-tarball to VC-workspace compatibility/version matrix for that
-    cross-repo path
+- current-stack closeout now adds:
+  - generated family scaffold
+  - compiling `hello-family` starter
+  - compiling `hello-verifier` starter
+  - authoritative DID-aware cross-repo smoke path
+  - DID + VC handoff guide plus compatibility-matrix seed
+  - root `./run.sh hello-smoke` lane
+  - restored-artifact parity via `./run.sh hello-smoke --light`
+  - CI-native `Hello Smoke Lane`
+- remaining work is breadth/maintenance only:
+  - keep the compatibility seed current as DID tarballs move
+  - add issuer/wallet-oriented starter breadth only if it proves a materially
+    different onboarding path
 
 ### VC-MAT-09: Keep test docs aligned with real package/test coverage
 
@@ -1088,60 +1044,40 @@ Priority: P1
 
 Problem:
 
-- the current status/revocation model still depends on prototype trust seams:
-  - `revokedRoot` freshness and authenticity are verifier/application-side
+- the repository-owned status/revocation work is now complete to the current
+  Compact boundary
+- the remaining open issue is the generic in-circuit root-bound proof tail:
+  - `revokedRoot` freshness and authenticity are still verifier/application-side
+    or authority-mediated for external snapshots
   - the final in-circuit non-membership proof path is not shipped
-  - the first hidden-holder family rollout now lands in
-    `credentials-birth-secret`, but the broader repository still has not
-    completed the status-binding body-root rollout across other or future
-    status-aware family surfaces
-- the authority-attested helper path still exposes caller-managed signing nonce
-  generation as a prototype API footgun
+  - the live-root blocker is the runtime-only `MerkleTree.root()` surface
 
 Required outcome:
 
-- bind the live registry root inside Compact rather than treating
-  `revokedRoot` as an externally coordinated snapshot
-- ship the end-to-end non-membership proof protocol as the canonical
-  non-authority-attested path
-- commit the full status binding into the issuer-signed credential body root,
-  including:
-  - registry id
-  - list/index or handle location
-  - status type
-  - authority key material where applicable
-  - and extend that commitment model beyond the first
-    `credentials-birth-secret` rollout
-- anchor status root freshness to a trust-bound source instead of a
-  verifier-chosen root alone
-- add freshness semantics to authority-attested proofs with verifier-enforced
-  max-age policy
-- remove or narrow unsafe caller-supplied nonce handling in
-  authority-attested helper APIs
-- add adversarial conformance coverage for:
-  - registry swap
-  - root substitution
-  - stale attestation replay
-  - index mismatch
-  - missing-binding cases
-- document the resulting status maturity claim clearly in the core spec,
-  conformance, and package READMEs
-- make the resulting trust-model choice obvious to integrators:
-  - when verifier-supplied-root is acceptable as a prototype
-  - when authority-attested status is acceptable as a prototype bridge
-  - when the canonical non-membership path becomes the preferred reference
-    architecture
+- close the repo-owned part of the status contract with:
+  - three explicit delivered verification modes
+  - canonical runtime non-membership bundles
+  - issuer-signed registry-bound status binding
+  - verifier freshness/error taxonomy
+  - authority-attested nonce/freshness hardening
+  - adversarial conformance coverage
+  - an explicit maturity boundary in spec, conformance, and package READMEs
+- carry the remaining generic root-bound proof gap as an upstream Compact or
+  future architecture decision rather than as an unresolved ordinary repo
+  execution slice
 
 ## Recommended Execution Order
 
-The current authoritative execution order is the next-ten-slice queue above.
+The current authoritative execution order is the closeout queue above.
 
-1. `STATUS-CONTRACT` slices `1` through `5`
-2. `INTEGRATOR-EXECUTION` slices `6` through `8`
-3. `ORCHESTRATION-PROD-SAFETY` slice `9`
-4. `MAINTENANCE-CLOSEOUT` slice `10`
+1. merge the current stack and refresh the backlog against `develop`
+2. keep the DID-aware hello-smoke compatibility seed current as DID tarballs
+   move
+3. keep package/test/lane docs aligned when CI or root runner surfaces change
+4. track the upstream Compact/runtime dependency separately from ordinary repo
+   execution slices
 5. treat `VC-MAT-09`, `VC-MAT-17`, and `VC-MAT-18` as cross-cutting
-   acceptance requirements throughout the queue rather than as a competing
+   acceptance requirements rather than as a competing execution queue
    primary stream
 
 ## Notes

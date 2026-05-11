@@ -222,6 +222,9 @@ status-handle-opening model.
 
 Current off-chain implementation helper path:
 
+- `buildCanonicalObservedNonMembershipBundle(...)`
+- `buildCanonicalLiveNonMembershipBundleFromContractState(...)`
+- `assertCanonicalNonMembershipBundle(...)`
 - `buildRevokedSetNonMembershipInputs(...)`
 - `buildObservedRevocationRegistryState(...)`
 - `readCurrentRevocationRegistryStateFromContractState(...)`
@@ -235,6 +238,14 @@ Those helpers normalize the request/witness/protocol bundle and the verifier's
 accepted snapshot freshness choice. They can now derive the canonical runtime
 snapshot directly from live contract state, but they do not yet add final
 in-circuit Merkle non-membership or in-circuit live-root equality.
+
+The canonical runtime-bundle contract is documented in:
+
+- [status-canonical-non-membership-bundle.md](../architecture/status-canonical-non-membership-bundle.md)
+
+The current live-root feasibility decision space is documented in:
+
+- [live-root-binding-feasibility.md](../architecture/live-root-binding-feasibility.md)
 
 ### 4. `AuthorityAttestedStatusProofProtocol`
 
@@ -458,6 +469,16 @@ Therefore:
   implemented
 - stale registry state, unknown registries, and unsupported proof modes must
   still fail closed even before that final path lands
+
+Repository closeout note:
+
+- the current repository now treats the runtime bundle shape, status-mode
+  split, freshness/error taxonomy, and same-contract live path as complete
+  repo-owned work
+- the remaining gap is the generic root-bound in-circuit proof path, not the
+  absence of a registry/status architecture in this codebase
+- see:
+  - [status-contract-closeout-boundary.md](../architecture/status-contract-closeout-boundary.md)
 
 ## Why no revocation reason/date in the core model
 

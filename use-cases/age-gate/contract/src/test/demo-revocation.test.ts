@@ -20,6 +20,7 @@ import {
   buildWrongAuthorityAttestedStatusProtocolInputs,
   createDemoRevocationFixture,
   fixtureRegistryState,
+  padText,
 } from "./demo-revocation-fixtures.js";
 
 setNetworkId("undeployed");
@@ -94,6 +95,9 @@ describe("credentials demo revocation contract", () => {
     );
     expect(request.statusPolicy.acceptedStatusCapability).toEqual(
       StatusCapabilityKind.revokedSetNonMembership,
+    );
+    expect("statusRequest" in (request as Record<string, unknown>)).toEqual(
+      false,
     );
     expect(request.verificationRequest.verifierChallengeHash).toEqual(
       fixture.verificationRequest.verifierChallengeHash,
@@ -184,7 +188,22 @@ describe("credentials demo revocation contract", () => {
     expect(state.lastVerifiedStatusRegistryId).toEqual(
       fixture.witness.statusRegistryId,
     );
+    // Conformance lock: same-contract live mode records the sentinel from
+    // demo-revocation.compact instead of consuming an external revoked root.
+    expect(state.lastVerifiedRevokedRoot).toEqual(padText("vc-demo:rev:live"));
     expect(state.activeAccessCapabilities.member(capability)).toEqual(true);
+  });
+
+  it("same-contract live-status inputs do not carry an external registry snapshot", () => {
+    const fixture = createDemoRevocationFixture();
+    const simulator = new CredentialsDemoRevocationSimulator();
+
+    simulator.initializeLiveStatusRegistry(fixture.witness.statusRegistryId);
+    // Conformance lock: live-status witness input must not smuggle an
+    // external registry snapshot into the same-contract path.
+    expect(
+      Object.keys(fixture.liveStatusVerificationInputs.witnessInput).sort(),
+    ).toEqual(["statusHandle", "statusHandleOpening"]);
   });
 
   it("rejects same-contract live-status verification when the credential status handle is revoked locally", () => {

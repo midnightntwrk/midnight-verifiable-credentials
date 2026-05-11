@@ -408,6 +408,14 @@ status metadata. If a future implementation adds Merkle non-membership witness
 material, that additional witness must stay subordinate to the same canonical
 request plus status-handle-opening model.
 
+Current exported runtime bundle surfaces for that contract are:
+
+- `CanonicalObservedNonMembershipBundle`
+- `CanonicalLiveNonMembershipBundle`
+- `buildCanonicalObservedNonMembershipBundle(...)`
+- `buildCanonicalLiveNonMembershipBundleFromContractState(...)`
+- `assertCanonicalNonMembershipBundle(...)`
+
 ## Normalized target architecture
 
 The repository should distinguish:
@@ -485,3 +493,9 @@ Current limitations remain:
 
 So the implemented authority-attested path is a meaningful prototype, not the
 final non-revocation architecture.
+
+Architecture companion note:
+
+- [status-canonical-non-membership-bundle.md](../architecture/status-canonical-non-membership-bundle.md)
+- [live-root-binding-feasibility.md](../architecture/live-root-binding-feasibility.md)
+- [status-contract-closeout-boundary.md](../architecture/status-contract-closeout-boundary.md)

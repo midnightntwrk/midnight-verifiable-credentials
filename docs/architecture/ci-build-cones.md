@@ -12,6 +12,7 @@ This repository uses four shared build cones for reusable CI outputs:
 2. `birth-family`
    - `credentials-birth`
    - `credentials-birth-secret`
+   - `credentials-hello-family`
 3. `age-gate`
    - `use-cases/age-gate/contract`
 4. `protocol`
@@ -28,6 +29,10 @@ The cone model keeps the current workflow shape simple:
 - four cache keys
 - four uploaded artifacts
 - downstream jobs restore only the cones they consume
+
+The `birth-family` name is now historical shorthand.
+It currently groups the repo's credential-family workspaces, including the
+`hello-family` claim-type playground.
 
 ## Hashing Rule
 

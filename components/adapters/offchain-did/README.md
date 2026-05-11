@@ -40,6 +40,7 @@ Related docs:
 - conformance: [`../../../docs/spec/conformance.md`](../../../docs/spec/conformance.md)
 - package boundaries: [`../../../docs/architecture/package-boundaries.md`](../../../docs/architecture/package-boundaries.md)
 - package selection: [`../../../docs/guides/package-selection.md`](../../../docs/guides/package-selection.md)
+- DID/VC smoke path: [`../../../docs/guides/did-vc-hello-smoke-path.md`](../../../docs/guides/did-vc-hello-smoke-path.md)
 
 ## Purpose
 

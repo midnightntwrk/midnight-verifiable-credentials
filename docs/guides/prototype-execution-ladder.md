@@ -16,9 +16,31 @@ From the repository root:
 That shows the repo-level lanes for lint, typecheck, build, package tests,
 BDD, revocation, and Docker-backed integration.
 
-## 2. Start with the smallest verifier contract
+## 2. Run the smallest DID-aware handoff
 
-Run the smallest verifier-side use case first:
+Run the narrowest root-level DID -> VC -> verifier lane first:
+
+```bash
+./run.sh hello-smoke
+```
+
+Artifact-restored parity for that same lane:
+
+```bash
+./run.sh hello-smoke --light
+```
+
+Use this lane when you want to verify:
+
+- portable offchain DID bootstrap
+- DID-aware holder-binding derivation
+- starter-family presentation verification
+- starter verifier-contract wiring
+- CI parity against restored build artifacts
+
+## 3. Start with the smallest verifier contract
+
+If you want the verifier contract without the DID-aware handoff, run:
 
 ```bash
 npm run test:ci -w use-cases/hello-verifier/contract
@@ -29,10 +51,12 @@ Use this package when you want to understand:
 - one verifier request
 - one credential family
 - one presentation verification path
+- typed selective disclosure without predicate witnesses
 
-without business-capability or status-aware complexity.
+without business-capability, predicate-witness, status-aware, or DID-bootstrap
+complexity.
 
-## 3. Move to the explicit-holder age-gate contract
+## 4. Move to the explicit-holder age-gate contract
 
 Next, run the concrete explicit-holder age-gate package:
 
@@ -46,7 +70,7 @@ This adds:
 - reusable access-capability issuance
 - explicit-holder age-gate flow
 
-## 4. Review the happy-path living documentation
+## 5. Review the happy-path living documentation
 
 Run the BDD smoke lane:
 
@@ -65,7 +89,7 @@ Open the generated Serenity report:
 open use-cases/age-gate/scenarios/target/site/serenity/index.html
 ```
 
-## 5. Review the hidden-holder trust boundary failures
+## 6. Review the hidden-holder trust boundary failures
 
 Run the negative BDD lane:
 
@@ -82,7 +106,7 @@ That currently covers:
 Use this lane when you want the fastest executable view of the current status
 trust boundary rather than the full revocation package test suite.
 
-## 6. Run the full BDD layer
+## 7. Run the full BDD layer
 
 Run the full living-documentation set:
 
@@ -95,7 +119,7 @@ This is the simplest single command when you want both:
 - the narrated happy paths
 - the narrated negative status-boundary scenarios
 
-## 7. Drop to the focused revocation lane
+## 8. Drop to the focused revocation lane
 
 When you need package-level status work rather than narrated scenarios, use:
 
@@ -112,7 +136,7 @@ This is the current focused engineering lane for:
 - `credentials-birth-secret`
 - `use-cases/age-gate/contract`
 
-## 8. Only then move to Docker-backed integration
+## 9. Only then move to Docker-backed integration
 
 Use Docker-backed integration only after the smaller local paths are already
 green:
@@ -124,9 +148,10 @@ green:
 
 This keeps the execution path ordered from:
 
-1. smallest verifier
-2. concrete business contract
-3. narrated happy path
-4. narrated negative trust boundary
-5. focused revocation package lane
-6. full integration
+1. smallest DID-aware handoff
+2. smallest verifier
+3. concrete business contract
+4. narrated happy path
+5. narrated negative trust boundary
+6. focused revocation package lane
+7. full integration

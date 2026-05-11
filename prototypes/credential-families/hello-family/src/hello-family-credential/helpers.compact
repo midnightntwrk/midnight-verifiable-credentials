@@ -1,0 +1,161 @@
+// Hello-family schema helpers and direct-claim validation.
+// This file is intentionally pure: the package is a claim-type laboratory, so
+// all validation happens over caller-supplied values rather than ledger state.
+export pure circuit helloFamilyCredentialBodyRoot(
+  credential: HelloFamilyCredential
+): Bytes<32> {
+  return credentialBodyRoot(credential);
+}
+
+export pure circuit helloFamilyPresentationBodyRoot(
+  presentation: HelloFamilyPresentation
+): Bytes<32> {
+  return presentationBodyRoot(presentation);
+}
+
+export pure circuit helloFamilyPresentationRequestBodyRoot(
+  request: HelloFamilyPresentationRequest
+): Bytes<32> {
+  return persistentHash<HelloFamilyPresentationRequest>(request);
+}
+
+// =====================
+// Schema and request validation
+// =====================
+export pure circuit assertValidHelloFamilySchemaRef(schema: SchemaRef): [] {
+  assert(
+    schema.packageId == pad(32, "midnight:vc:hello-family"),
+    "Hello-family package id mismatch"
+  );
+  assert(
+    schema.schemaId == pad(32, "hello-family:v1"),
+    "Hello-family schema id mismatch"
+  );
+  assert(schema.majorVersion == 1, "Hello-family major version mismatch");
+}
+
+export pure circuit assertValidHelloFamilyPresentationRequest(
+  request: HelloFamilyPresentationRequest
+): [] {
+  assert(request.version == 1, "Hello-family request version mismatch");
+  assertValidHelloFamilySchemaRef(request.schema);
+  assertValidVerificationMethodRef(request.issuerVerificationMethodRef);
+  assert(
+    request.verifierChallengeHash != pad(32, ""),
+    "Hello-family verifier challenge must be set"
+  );
+}
+
+// =====================
+// Credential and presentation validation
+// =====================
+export pure circuit assertValidHelloFamilyCredential(
+  credential: HelloFamilyCredential,
+  proof: Proof
+): [] {
+  assertValidHelloFamilySchemaRef(credential.schema);
+  assertValidCredentialEnvelope(credential, helloFamilyClaimRoot(credential.claims));
+  assertValidExplicitHolderBinding(credential.holderBinding);
+  assertValidNoStatusBinding(credential.statusBinding);
+  assertValidCredentialProof(credential, proof);
+}
+
+export pure circuit assertValidHelloFamilyPresentation(
+  credential: HelloFamilyCredential,
+  credentialProof: Proof,
+  presentation: HelloFamilyPresentation,
+  presentationProof: Proof
+): [] {
+  assertValidHelloFamilyCredential(credential, credentialProof);
+  assertValidHelloFamilySchemaRef(presentation.schema);
+  assertValidPresentationEnvelope(presentation);
+  HelloFamilyPresentation_assertMatchingCredentialPresentation(
+    credential,
+    presentation
+  );
+  assertValidExplicitHolderBinding(presentation.holderBinding);
+  assertMatchingExplicitHolderBindings(
+    credential.holderBinding,
+    presentation.holderBinding
+  );
+  assertProofMatchesExplicitHolderBinding(
+    presentation.holderBinding,
+    presentationProof
+  );
+  assertValidPresentationContextProof(
+    helloFamilyPresentationBodyRoot(presentation),
+    presentationProof
+  );
+
+  if (presentation.disclosed.revealBooleanValue) {
+    assert(
+      presentation.disclosed.booleanValue == credential.claims.booleanValue,
+      "Hello-family boolean disclosure does not match the credential"
+    );
+  }
+  if (presentation.disclosed.revealBytesValue) {
+    assert(
+      presentation.disclosed.bytesValue == credential.claims.bytesValue,
+      "Hello-family bytes disclosure does not match the credential"
+    );
+  }
+  if (presentation.disclosed.revealBigUnsignedValue) {
+    assert(
+      presentation.disclosed.bigUnsignedValue == credential.claims.bigUnsignedValue,
+      "Hello-family bigint-like disclosure does not match the credential"
+    );
+  }
+}
+
+// TRUST BOUNDARY: this family is a type-surface laboratory. It proves that a
+// typed presentation satisfies the declared request, but it does not claim that
+// these direct claims are the right privacy model for production credentials.
+export pure circuit assertHelloFamilyPresentationSatisfiesRequest(
+  credential: HelloFamilyCredential,
+  credentialProof: Proof,
+  request: HelloFamilyPresentationRequest,
+  presentation: HelloFamilyPresentation,
+  presentationProof: Proof
+): [] {
+  assertValidHelloFamilyPresentationRequest(request);
+  assertValidHelloFamilyPresentation(
+    credential,
+    credentialProof,
+    presentation,
+    presentationProof
+  );
+  assertMatchingSchemaRefs(request.schema, credential.schema);
+  assertMatchingSchemaRefs(request.schema, presentation.schema);
+  assert(
+    request.issuerVerificationMethodRef.didContractAddress
+      == credential.issuerVerificationMethodRef.didContractAddress,
+    "Hello-family request issuer contract does not match the credential issuer"
+  );
+  assert(
+    request.issuerVerificationMethodRef.methodId
+      == credential.issuerVerificationMethodRef.methodId,
+    "Hello-family request issuer method does not match the credential issuer"
+  );
+  assert(
+    presentationProof.challengeHash == request.verifierChallengeHash,
+    "Hello-family presentation proof challenge does not match the request"
+  );
+  if (request.requireBooleanValueDisclosure) {
+    assert(
+      presentation.disclosed.revealBooleanValue,
+      "Hello-family request requires boolean disclosure"
+    );
+  }
+  if (request.requireBytesValueDisclosure) {
+    assert(
+      presentation.disclosed.revealBytesValue,
+      "Hello-family request requires bytes disclosure"
+    );
+  }
+  if (request.requireBigUnsignedValueDisclosure) {
+    assert(
+      presentation.disclosed.revealBigUnsignedValue,
+      "Hello-family request requires bigint-like disclosure"
+    );
+  }
+}

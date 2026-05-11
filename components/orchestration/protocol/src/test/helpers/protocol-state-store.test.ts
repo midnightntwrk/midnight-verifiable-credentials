@@ -7,6 +7,7 @@ import { deserialize, serialize } from "node:v8";
 import { describe, expect, it } from "vitest";
 
 import { FileSystemProtocolStateByteStore } from "../../adapters/file-protocol-state-store.js";
+import { createStableJsonProtocolStateStore } from "../../adapters/json-protocol-state-codec.js";
 import {
   createCodecBackedProtocolStateStore,
   InMemoryProtocolStateByteStore,
@@ -299,6 +300,61 @@ describe("ProtocolStateStore retention helpers", () => {
         id: "message-1",
         payload: new Uint8Array([9, 8, 7]),
         expiresAt: 999n,
+      };
+
+      createCollection().set("message-1", value);
+
+      const recreatedCollection = createCollection();
+      expect(recreatedCollection.get("message-1")).toEqual(value);
+      expect(Array.from(recreatedCollection.entries())).toEqual([
+        ["message-1", value],
+      ]);
+    } finally {
+      rmSync(rootDir, { recursive: true, force: true });
+    }
+  });
+
+  it("round-trips typed values through the stable JSON codec store", () => {
+    const store = createStableJsonProtocolStateStore(
+      new InMemoryProtocolStateByteStore(),
+    );
+    const collection = store.collection<{
+      id: string;
+      payload: Uint8Array;
+      expiresAt: bigint;
+      nested: { readonly thresholds: readonly bigint[] };
+    }>("test:stable-json");
+
+    const value = {
+      id: "message-1",
+      payload: new Uint8Array([4, 5, 6, 7]),
+      expiresAt: 456n,
+      nested: { thresholds: [18n, 21n] as const },
+    };
+
+    collection.set("message-1", value);
+
+    expect(collection.get("message-1")).toEqual(value);
+    expect(Array.from(collection.entries())).toEqual([["message-1", value]]);
+  });
+
+  it("persists stable JSON codec values across file-backed store recreation", () => {
+    const rootDir = mkdtempSync(join(tmpdir(), "vc-protocol-json-state-"));
+
+    try {
+      const createCollection = (): ProtocolStateCollection<{
+        id: string;
+        payload: Uint8Array;
+        expiresAt: bigint;
+      }> =>
+        createStableJsonProtocolStateStore(
+          new FileSystemProtocolStateByteStore(rootDir),
+        ).collection("test:stable-json:file-backed");
+
+      const value = {
+        id: "message-1",
+        payload: new Uint8Array([7, 8, 9]),
+        expiresAt: 777n,
       };
 
       createCollection().set("message-1", value);

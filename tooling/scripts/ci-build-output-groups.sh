@@ -29,6 +29,7 @@ components/adapters/offchain-did
 protocols/openid
 prototypes/credential-families/birth
 prototypes/credential-families/birth-secret
+prototypes/credential-families/hello-family
 EOF
       ;;
     age-gate)
@@ -41,6 +42,7 @@ components/adapters/offchain-did
 protocols/openid
 prototypes/credential-families/birth
 prototypes/credential-families/birth-secret
+prototypes/credential-families/hello-family
 use-cases/age-gate/contract
 use-cases/hello-verifier/contract
 EOF
@@ -90,6 +92,8 @@ prototypes/credential-families/birth/src/managed
 prototypes/credential-families/birth/dist
 prototypes/credential-families/birth-secret/src/managed
 prototypes/credential-families/birth-secret/dist
+prototypes/credential-families/hello-family/src/managed
+prototypes/credential-families/hello-family/dist
 EOF
       ;;
     age-gate)

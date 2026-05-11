@@ -21,7 +21,7 @@
 // Capability package: prove that multiple holder bindings are satisfied by the
 // same hidden holder secret witness under one verifier session challenge.
 
-export circuit assertSameSecretHolderBindingWitnesses(
+export pure circuit assertSameSecretHolderBindingWitnesses(
   firstBinding: SecretHolderBinding,
   secondBinding: SecretHolderBinding,
   verifierChallengeHash: Bytes<32>,
@@ -50,7 +50,7 @@ export circuit assertSameSecretHolderBindingWitnesses(
 // Three-credential same-holder composition for plain secret bindings.
 // This keeps the reusable capability explicit and bounded instead of
 // prematurely introducing a generic "bundle" abstraction.
-export circuit assertSameSecretHolderBindingWitnesses3(
+export pure circuit assertSameSecretHolderBindingWitnesses3(
   firstBinding: SecretHolderBinding,
   secondBinding: SecretHolderBinding,
   thirdBinding: SecretHolderBinding,
@@ -96,7 +96,7 @@ export circuit assertSameSecretHolderBindingWitnesses3(
 // Same-holder composition for blinded bindings. The caller supplies the same
 // hidden holder witness together with the binding-specific opening and blinding
 // factor for each independently issued credential.
-export circuit assertSameBlindedSecretHolderBindingWitnesses(
+export pure circuit assertSameBlindedSecretHolderBindingWitnesses(
   firstBinding: BlindedSecretHolderBinding,
   secondBinding: BlindedSecretHolderBinding,
   verifierChallengeHash: Bytes<32>,
@@ -129,7 +129,7 @@ export circuit assertSameBlindedSecretHolderBindingWitnesses(
 // Three-credential same-holder composition for blinded bindings. This is the
 // next bounded step after the two-credential primitive and is sufficient for
 // staged business flows such as travel or onboarding checks.
-export circuit assertSameBlindedSecretHolderBindingWitnesses3(
+export pure circuit assertSameBlindedSecretHolderBindingWitnesses3(
   firstBinding: BlindedSecretHolderBinding,
   secondBinding: BlindedSecretHolderBinding,
   thirdBinding: BlindedSecretHolderBinding,

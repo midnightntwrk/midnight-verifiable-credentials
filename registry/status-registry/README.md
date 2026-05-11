@@ -46,11 +46,11 @@ Start here:
 4. use `src/witness-builder.ts` and `src/attestation-builder.ts` only in
    off-chain verifier/holder/application code
 5. read:
-   - [`../docs/spec/revocation-registry.md`](../docs/spec/revocation-registry.md)
-   - [`../docs/spec/status-verification-protocol.md`](../docs/spec/status-verification-protocol.md)
-   - [`../docs/architecture/status-verification-modes.md`](../docs/architecture/status-verification-modes.md)
-   - [`../docs/architecture/protocol-classification.md`](../docs/architecture/protocol-classification.md)
-   - [`../docs/guides/integration-surface-map.md`](../docs/guides/integration-surface-map.md)
+   - [`../../docs/spec/revocation-registry.md`](../../docs/spec/revocation-registry.md)
+   - [`../../docs/spec/status-verification-protocol.md`](../../docs/spec/status-verification-protocol.md)
+   - [`../../docs/architecture/status-verification-modes.md`](../../docs/architecture/status-verification-modes.md)
+   - [`../../docs/architecture/protocol-classification.md`](../../docs/architecture/protocol-classification.md)
+   - [`../../docs/guides/integration-surface-map.md`](../../docs/guides/integration-surface-map.md)
 
 Current scope:
 - dedicated registry id
@@ -134,12 +134,17 @@ Protocol reading rule:
 
 Canonical revoked-set helper path:
 
-- use `buildRevokedSetNonMembershipInputs(...)` when you want the whole
-  prototype bundle in one call:
+- use `buildCanonicalObservedNonMembershipBundle(...)` when you want the
+  canonical observed-snapshot runtime bundle in one call:
   - `RevokedSetStatusRequest`
   - `RevokedSetNonMembershipWitnessInput`
   - `RevokedSetNonMembershipStatusProofProtocol`
   - matching shared `RegistryBoundStatusBinding`
+  - canonical bundle wrapper:
+    - `CanonicalObservedNonMembershipBundle`
+- use `buildRevokedSetNonMembershipInputs(...)` only when you explicitly want
+  the lower-level request/witness/protocol builder without the canonical
+  bundle wrapper
 - the exported TypeScript helper path is now binding-first:
   helper results carry `RegistryBoundStatusBinding` and no longer expose a
   separate capability-shaped intermediate value
@@ -153,9 +158,18 @@ Canonical revoked-set helper path:
 
 Canonical same-contract live-status helper path:
 
+- use `buildCanonicalLiveNonMembershipBundleFromContractState(...)` when the
+  business contract or verifier can read the live registry contract state and
+  wants the canonical same-contract runtime bundle:
+  - `LiveStatusWitnessInput`
+  - matching shared `RegistryBoundStatusBinding`
+  - the derived status handle
+  - live `RevocationRegistryState`
+  - canonical bundle wrapper:
+    - `CanonicalLiveNonMembershipBundle`
 - use `buildLiveStatusWitness(...)` when the business contract owns the live
-  revocation set directly and does not need an external `(registryId,
-  revokedRoot)` snapshot
+  revocation set directly and only needs the lower-level witness/binding pair,
+  not the canonical bundle wrapper
 - the helper returns:
   - `LiveStatusWitnessInput`
   - matching shared `RegistryBoundStatusBinding`
@@ -226,6 +240,10 @@ Observed-root integration helper path:
   it turns the current verifier-side freshness choice into one explicit typed
   integration seam instead of leaving it as ad hoc application logic
 
+Architecture note for the canonical runtime bundle contract:
+
+- [`../../docs/architecture/status-canonical-non-membership-bundle.md`](../../docs/architecture/status-canonical-non-membership-bundle.md)
+
 
 Canonical off-chain verifier helper path:
 
@@ -241,7 +259,7 @@ Canonical off-chain verifier helper path:
 - use `verifyAuthorityAttestedStatus(...)` when the verifier or consuming app
   must validate authority-attested external-registry evidence
 - all three helpers map failures onto the canonical codes in
-  [`../docs/spec/status-error-taxonomy.md`](../docs/spec/status-error-taxonomy.md)
+  [`../../docs/spec/status-error-taxonomy.md`](../../docs/spec/status-error-taxonomy.md)
   instead of leaving each integration to reinterpret raw error strings
 - integrations that only need plain data can use the failure-record projection
   helper rather than unpacking `StatusVerificationError` objects directly
@@ -251,4 +269,4 @@ Canonical off-chain verifier helper path:
 
 Architecture note for the three supported verification modes:
 
-- [`../docs/architecture/status-verification-modes.md`](../docs/architecture/status-verification-modes.md)
+- [`../../docs/architecture/status-verification-modes.md`](../../docs/architecture/status-verification-modes.md)

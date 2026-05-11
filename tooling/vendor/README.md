@@ -17,7 +17,7 @@ Do not hand-copy `dist/` output here.
 
 For a stable local export surface before copying into `tooling/vendor/`, build
 tarballs into
-`artifacts/npm/` first:
+`tooling/artifacts/npm/` first:
 
 ```bash
 npm run artifacts:pack

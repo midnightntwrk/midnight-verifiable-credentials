@@ -8,6 +8,11 @@ integrator must make before claiming production-shaped hidden-holder or
 blinded-secret protocol behavior around
 [`components/orchestration/protocol`](../../components/orchestration/protocol/README.md).
 
+Current reference implementation:
+
+- [`credentials-protocol-reference-path.md`](./credentials-protocol-reference-path.md)
+- if you need one concrete shipped pattern rather than a checklist, start there
+
 ## 1. Randomness
 
 Do not ship the default randomness source.
@@ -18,6 +23,8 @@ Required:
 - generate challenge hashes, issuer nonces, blinding factors, and signing
   nonces from a cryptographically strong source
 - document which runtime or HSM boundary owns that generation
+- current shipped Node reference:
+  - `NodeCryptoRandomnessSource`
 
 Fail closed rule:
 
@@ -45,6 +52,11 @@ Required semantics:
 - typed serialization across process boundaries
 - predictable delete behavior
 - collection scans or storage-native equivalents for TTL/count-based pruning
+- restrictive filesystem permissions for the backing state roots
+  - for example `umask 0077` and service-owned `0700` directories
+- current shipped Node reference:
+  - `createNodeFileBackedProtocolStateStore(...)`
+  - `createStableJsonProtocolStateStore(...)`
 
 ## 3. Retention and replay
 
@@ -59,6 +71,9 @@ Required:
   - or reject as unknown/expired
 - document whether duplicate submissions and duplicate outcomes are expected to
   replay the prior result
+- current shipped reference example:
+  - explicit holder restart-safe credential recovery
+  - secret-holder presentation outcome replay across verifier restart
 
 ## 4. Time and expiry
 

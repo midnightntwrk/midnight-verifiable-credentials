@@ -13,6 +13,23 @@ import {
 setNetworkId("undeployed");
 
 describe("credentials demo contract", () => {
+  it("builds an age-gate request from explicit policy inputs", () => {
+    const fixture = createBirthCredentialFixture();
+    const request = pureCircuits.ageGateRequestForPolicy(
+      fixture.credential.issuerVerificationMethodRef,
+      fixture.presentationRequest.verifierChallengeHash,
+      false,
+      21n,
+    );
+
+    expect(request.requireBirthCountryDisclosure).toEqual(false);
+    expect(request.requireAgeOverThreshold).toEqual(true);
+    expect(request.requestedAgeThresholdYears).toEqual(21n);
+    expect(request.verifierChallengeHash).toEqual(
+      fixture.presentationRequest.verifierChallengeHash,
+    );
+  });
+
   it("records issued credentials and verifies an age presentation against private witness data", () => {
     const fixture = createBirthCredentialFixture();
     const simulator = new CredentialsDemoSimulator();

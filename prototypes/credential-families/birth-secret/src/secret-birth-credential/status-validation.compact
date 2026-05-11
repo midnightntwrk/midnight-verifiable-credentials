@@ -1,4 +1,8 @@
-export circuit assertValidSecretBirthCredentialWithStatusBinding(
+// Secret birth-family status-aware verification overlays.
+// These helpers remain pure because the live/off-chain/authority-attested
+// status evidence is passed in as parameters rather than being fetched from
+// contract state here.
+export pure circuit assertValidSecretBirthCredentialWithStatusBinding(
   credentialWithStatus: SecretBirthCredentialWithStatusBinding
 ): [] {
   assertValidSecretBirthSchemaRef(credentialWithStatus.credential.schema);
@@ -19,7 +23,10 @@ export circuit assertValidSecretBirthCredentialWithStatusBinding(
   );
 }
 
-export circuit assertValidSecretBirthCredentialVerificationAuthorityAttestedStatusRequest(
+// =====================
+// Status request and input validation
+// =====================
+export pure circuit assertValidSecretBirthCredentialVerificationAuthorityAttestedStatusRequest(
   request: SecretBirthCredentialVerificationAuthorityAttestedStatusRequest
 ): [] {
   assertValidSecretBirthCredentialVerificationRequestMessage(
@@ -38,7 +45,7 @@ export circuit assertValidSecretBirthCredentialVerificationAuthorityAttestedStat
   );
 }
 
-export circuit assertValidSecretBirthCredentialVerificationRevokedSetStatusRequest(
+export pure circuit assertValidSecretBirthCredentialVerificationRevokedSetStatusRequest(
   request: SecretBirthCredentialVerificationRevokedSetStatusRequest
 ): [] {
   assertValidSecretBirthCredentialVerificationRequestMessage(
@@ -57,7 +64,7 @@ export circuit assertValidSecretBirthCredentialVerificationRevokedSetStatusReque
   );
 }
 
-export circuit assertValidSecretBirthCredentialVerificationLiveStatusRequest(
+export pure circuit assertValidSecretBirthCredentialVerificationLiveStatusRequest(
   request: SecretBirthCredentialVerificationLiveStatusRequest
 ): [] {
   assertValidSecretBirthCredentialVerificationRequestMessage(
@@ -70,7 +77,7 @@ export circuit assertValidSecretBirthCredentialVerificationLiveStatusRequest(
   );
 }
 
-export circuit assertValidSecretBirthCredentialVerificationRevokedSetStatusInputs(
+export pure circuit assertValidSecretBirthCredentialVerificationRevokedSetStatusInputs(
   statusInputs: SecretBirthCredentialVerificationRevokedSetStatusInputs
 ): [] {
   assertValidRevokedSetNonMembershipStatusProofProtocol(
@@ -78,7 +85,7 @@ export circuit assertValidSecretBirthCredentialVerificationRevokedSetStatusInput
   );
 }
 
-export circuit assertValidSecretBirthCredentialVerificationLiveStatusInputs(
+export pure circuit assertValidSecretBirthCredentialVerificationLiveStatusInputs(
   statusInputs: SecretBirthCredentialVerificationLiveStatusInputs
 ): [] {
   assertValidLiveStatusWitnessInput(
@@ -86,7 +93,7 @@ export circuit assertValidSecretBirthCredentialVerificationLiveStatusInputs(
   );
 }
 
-export circuit assertValidSecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs(
+export pure circuit assertValidSecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs(
   statusInputs: SecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs
 ): [] {
   assertValidAuthorityAttestedStatusProofProtocol(
@@ -94,7 +101,10 @@ export circuit assertValidSecretBirthCredentialVerificationAuthorityAttestedStat
   );
 }
 
-export circuit assertSecretBirthCredentialVerificationSubmissionMatchesRevokedSetStatusRequest(
+// =====================
+// Status-aware submission matching
+// =====================
+export pure circuit assertSecretBirthCredentialVerificationSubmissionMatchesRevokedSetStatusRequest(
   credentialWithStatus: SecretBirthCredentialWithStatusBinding,
   request: SecretBirthCredentialVerificationRevokedSetStatusRequest,
   submission: SecretBirthCredentialVerificationSubmission,
@@ -155,7 +165,7 @@ export circuit assertSecretBirthCredentialVerificationSubmissionMatchesRevokedSe
   );
 }
 
-export circuit assertSecretBirthCredentialVerificationSubmissionMatchesLiveStatusRequest(
+export pure circuit assertSecretBirthCredentialVerificationSubmissionMatchesLiveStatusRequest(
   credentialWithStatus: SecretBirthCredentialWithStatusBinding,
   request: SecretBirthCredentialVerificationLiveStatusRequest,
   submission: SecretBirthCredentialVerificationSubmission,
@@ -196,7 +206,10 @@ export circuit assertSecretBirthCredentialVerificationSubmissionMatchesLiveStatu
   );
 }
 
-export circuit assertSecretBirthCredentialVerificationSubmissionMatchesAuthorityAttestedStatusProtocolRequest(
+// CONFORMANCE LOCK: authority-attested and verifier-supplied snapshot flows
+// must keep the same request/protocol alignment checks so cross-mode verifier
+// classification stays stable.
+export pure circuit assertSecretBirthCredentialVerificationSubmissionMatchesAuthorityAttestedStatusProtocolRequest(
   credentialWithStatus: SecretBirthCredentialWithStatusBinding,
   request: SecretBirthCredentialVerificationAuthorityAttestedStatusRequest,
   submission: SecretBirthCredentialVerificationSubmission,
