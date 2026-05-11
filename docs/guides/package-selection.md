@@ -72,6 +72,8 @@ Use this when you need:
 - deterministic selective-disclosure fixtures over primitives, vectors, nested
   structs, and nested vectors
 - a checked-in reference for what the current compiler accepts versus rejects
+- a package that can evolve as the Compact compiler accepts more native field
+  kinds
 
 Do not use `credentials-dummy-claims` as a production privacy template.
 It is intentionally a direct-claim laboratory package.

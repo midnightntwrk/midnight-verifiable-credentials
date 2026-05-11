@@ -32,7 +32,7 @@ The cone model keeps the current workflow shape simple:
 
 The `birth-family` name is now historical shorthand.
 It currently groups the repo's credential-family workspaces, including the
-`hello-family` claim-type playground.
+`hello-family` starter family package.
 
 Intentional exclusion:
 

@@ -60,7 +60,7 @@
 - current status-registry package surface:
   - [`../registry/status-registry/README.md`](../registry/status-registry/README.md)
   - for engineers implementing the current prototype revocation/status registry package
-- current claim-type playground package surface:
+- current smallest starter family package surface:
   - [`../prototypes/credential-families/hello-family/README.md`](../prototypes/credential-families/hello-family/README.md)
   - for engineers who need the smallest compileable starter family package
 - broad direct claim-surface laboratory:
