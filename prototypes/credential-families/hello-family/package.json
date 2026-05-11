@@ -24,6 +24,12 @@
       "import": "./dist/contract.js",
       "default": "./dist/contract.js"
     },
+    "./testing": {
+      "types": "./dist/testing.d.ts",
+      "require": "./dist/testing.js",
+      "import": "./dist/testing.js",
+      "default": "./dist/testing.js"
+    },
     "./managed/hello-family-credential/contract/index.js": {
       "types": "./dist/managed/hello-family-credential/contract/index.d.ts",
       "import": "./dist/managed/hello-family-credential/contract/index.js",
@@ -34,6 +40,9 @@
     "*": {
       "contract": [
         "dist/contract.d.ts"
+      ],
+      "testing": [
+        "dist/testing.d.ts"
       ],
       "managed/hello-family-credential/contract/index.js": [
         "dist/managed/hello-family-credential/contract/index.d.ts"

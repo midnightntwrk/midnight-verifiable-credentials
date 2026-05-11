@@ -42,6 +42,7 @@ components/adapters/offchain-did
 protocols/openid
 prototypes/credential-families/birth
 prototypes/credential-families/birth-secret
+prototypes/credential-families/hello-family
 use-cases/age-gate/contract
 use-cases/hello-verifier/contract
 EOF

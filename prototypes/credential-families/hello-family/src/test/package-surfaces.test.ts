@@ -6,6 +6,7 @@ describe("hello-family package surfaces", () => {
   it("exports the root and contract subpaths", () => {
     expect(packageJson.exports["."]).toBeDefined();
     expect(packageJson.exports["./contract"]).toBeDefined();
+    expect(packageJson.exports["./testing"]).toBeDefined();
   });
 
   it("keeps the generated managed contract subpath available", () => {

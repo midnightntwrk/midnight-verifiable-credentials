@@ -29,8 +29,9 @@ Use this package when you want to understand:
 - one verifier request
 - one credential family
 - one presentation verification path
+- typed selective disclosure without predicate witnesses
 
-without business-capability or status-aware complexity.
+without business-capability, predicate-witness, or status-aware complexity.
 
 ## 3. Move to the explicit-holder age-gate contract
 

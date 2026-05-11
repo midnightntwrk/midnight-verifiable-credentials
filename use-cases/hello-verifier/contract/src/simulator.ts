@@ -7,10 +7,10 @@ import {
 } from "@midnight-ntwrk/compact-runtime";
 
 import {
-  type BirthCredential,
-  type BirthCredentialPresentation,
-  type BirthCredentialPresentationRequest,
   Contract,
+  type HelloFamilyCredential,
+  type HelloFamilyPresentation,
+  type HelloFamilyPresentationRequest,
   type Ledger,
   ledger,
   type Proof,
@@ -34,13 +34,7 @@ export class HelloVerifierSimulator {
       currentContractState,
       currentZswapLocalState,
     } = this.contract.initialState(
-      createConstructorContext(
-        {
-          holderBirthDateDays: 0n,
-          holderBirthDateOpening: new Uint8Array(32),
-        },
-        "0".repeat(64),
-      ),
+      createConstructorContext({}, "0".repeat(64)),
     );
     this.circuitContext = createCircuitContext(
       sampleContractAddress(),
@@ -52,19 +46,6 @@ export class HelloVerifierSimulator {
 
   public getLedger(): Ledger {
     return ledger(this.circuitContext.currentQueryContext.state);
-  }
-
-  public setAgeWitness(days: bigint, opening: Uint8Array): void {
-    this.circuitContext = createCircuitContext(
-      sampleContractAddress(),
-      this.circuitContext.currentZswapLocalState,
-      this.circuitContext.currentQueryContext.state,
-      {
-        ...this.circuitContext.currentPrivateState,
-        holderBirthDateDays: days,
-        holderBirthDateOpening: opening,
-      },
-    );
   }
 
   private executeCircuit<T>(
@@ -81,34 +62,32 @@ export class HelloVerifierSimulator {
   }
 
   public helloVerifierRequest(
-    issuerVerificationMethodRef: BirthCredential["issuerVerificationMethodRef"],
+    issuerVerificationMethodRef: HelloFamilyCredential["issuerVerificationMethodRef"],
     verifierChallengeHash: Uint8Array,
-    requestedAgeThresholdYears: bigint,
-  ): BirthCredentialPresentationRequest {
+    requireBytesValueDisclosure: boolean,
+  ): HelloFamilyPresentationRequest {
     return pureCircuits.helloVerifierRequest(
       issuerVerificationMethodRef,
       verifierChallengeHash,
-      requestedAgeThresholdYears,
+      requireBytesValueDisclosure,
     );
   }
 
-  public verifyBirthPresentationForHelloVerifier(
-    credential: BirthCredential,
+  public verifyHelloFamilyPresentationForHelloVerifier(
+    credential: HelloFamilyCredential,
     credentialProof: Proof,
-    request: BirthCredentialPresentationRequest,
-    presentation: BirthCredentialPresentation,
+    request: HelloFamilyPresentationRequest,
+    presentation: HelloFamilyPresentation,
     presentationProof: Proof,
-    currentDay: bigint,
   ): void {
     this.executeCircuit(() =>
-      this.contract.impureCircuits.verifyBirthPresentationForHelloVerifier(
+      this.contract.impureCircuits.verifyHelloFamilyPresentationForHelloVerifier(
         this.circuitContext,
         credential,
         credentialProof,
         request,
         presentation,
         presentationProof,
-        currentDay,
       ),
     );
   }
