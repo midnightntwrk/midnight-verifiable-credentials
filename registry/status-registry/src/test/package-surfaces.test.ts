@@ -18,6 +18,9 @@ const packageJson = JSON.parse(
 ) as { exports?: Record<string, unknown> };
 
 describe("credentials-status-registry package surfaces", () => {
+  it("exports the typed off-chain status verifier helpers from the root package surface", () => {
+    expect(indexSource).toContain('export * from "./status-verifier.js";');
+  });
   it("keeps the unsafe authority-attestation helper off the root package surface", () => {
     expect(indexSource).not.toContain(
       "unsafeSignAuthorityAttestedStatusProofWithNonceScalar",
