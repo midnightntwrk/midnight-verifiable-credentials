@@ -1,21 +1,14 @@
 import { readFile, writeFile } from "node:fs/promises";
+import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { findRepoRoot } from "./find-repo-root.mjs";
-
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const packageRoot = path.resolve(scriptDir, "..");
-const repoRoot = await findRepoRoot(packageRoot);
+const require = createRequire(import.meta.url);
 const runtimePackage = JSON.parse(
   await readFile(
-    path.join(
-      repoRoot,
-      "node_modules",
-      "@midnight-ntwrk",
-      "compact-runtime",
-      "package.json",
-    ),
+    require.resolve("@midnight-ntwrk/compact-runtime/package.json"),
     "utf8",
   ),
 );
@@ -29,6 +22,8 @@ const targetFile = path.join(
   "index.js",
 );
 const source = await readFile(targetFile, "utf8");
+// NOTE: unlike `birth-secret`, this family exports only pure circuits, so the
+// generated managed surface does not need the extra `provableCircuits` patch.
 const next = source.replace(
   /checkRuntimeVersion\('\d+\.\d+\.\d+'\);/,
   "checkRuntimeVersion('" + runtimeVersion + "');",

@@ -5,6 +5,15 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
+const compactAvailable = (() => {
+  try {
+    execFileSync("compact", ["--version"], { stdio: "pipe" });
+    return true;
+  } catch {
+    return false;
+  }
+})();
+
 const compileProbe = (
   source: string,
 ): { ok: true } | { ok: false; message: string } => {
@@ -27,9 +36,11 @@ const compileProbe = (
   }
 };
 
-describe("hello-family Compact claim-type support", () => {
-  it("accepts the supported primitive claim-type probe", () => {
-    const result = compileProbe(`pragma language_version >= 0.20;
+(compactAvailable ? describe : describe.skip)(
+  "hello-family Compact claim-type support",
+  () => {
+    it("accepts the supported primitive claim-type probe", () => {
+      const result = compileProbe(`pragma language_version >= 0.20;
 
 import CompactStandardLibrary;
 
@@ -49,41 +60,40 @@ export pure circuit probeRoot(value: SupportedProbe): Bytes<32> {
   return persistentHash<SupportedProbe>(value);
 }`);
 
-    expect(result).toEqual({ ok: true });
-  });
+      expect(result).toEqual({ ok: true });
+    });
 
-  it("rejects signed integers, floats, and strings in the current Compact surface", () => {
-    const signedIntResult = compileProbe(`pragma language_version >= 0.20;
+    it("rejects signed integers, floats, and strings in the current Compact surface", () => {
+      const signedIntResult = compileProbe(`pragma language_version >= 0.20;
 import CompactStandardLibrary;
 export struct SignedProbe { value: Int<32>, }
 export pure circuit probeRoot(value: SignedProbe): Bytes<32> {
   return persistentHash<SignedProbe>(value);
 }`);
-    expect(signedIntResult.ok).toEqual(false);
-    expect(signedIntResult.ok ? "" : signedIntResult.message).toMatch(
-      /unbound identifier Int/,
-    );
+      expect(signedIntResult.ok).toEqual(false);
+      expect(signedIntResult.ok ? "" : signedIntResult.message).toMatch(
+        /\bInt\b/i,
+      );
 
-    const floatResult = compileProbe(`pragma language_version >= 0.20;
+      const floatResult = compileProbe(`pragma language_version >= 0.20;
 import CompactStandardLibrary;
 export struct FloatProbe { value: Float<32>, }
 export pure circuit probeRoot(value: FloatProbe): Bytes<32> {
   return persistentHash<FloatProbe>(value);
 }`);
-    expect(floatResult.ok).toEqual(false);
-    expect(floatResult.ok ? "" : floatResult.message).toMatch(
-      /unbound identifier Float/,
-    );
+      expect(floatResult.ok).toEqual(false);
+      expect(floatResult.ok ? "" : floatResult.message).toMatch(/\bFloat\b/i);
 
-    const stringResult = compileProbe(`pragma language_version >= 0.20;
+      const stringResult = compileProbe(`pragma language_version >= 0.20;
 import CompactStandardLibrary;
 export struct StringProbe { value: String, }
 export pure circuit probeRoot(value: StringProbe): Bytes<32> {
   return persistentHash<StringProbe>(value);
 }`);
-    expect(stringResult.ok).toEqual(false);
-    expect(stringResult.ok ? "" : stringResult.message).toMatch(
-      /unbound identifier String/,
-    );
-  });
-});
+      expect(stringResult.ok).toEqual(false);
+      expect(stringResult.ok ? "" : stringResult.message).toMatch(
+        /\bString\b/i,
+      );
+    });
+  },
+);

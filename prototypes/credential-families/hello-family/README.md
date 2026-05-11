@@ -27,6 +27,8 @@ Why this package exists:
 
 ## Current Compact claim-type matrix
 
+As of the current repo toolchain (`COMPACT_COMPILER_VERSION=0.30.0`):
+
 Supported in this package today:
 
 - `Boolean`
@@ -45,7 +47,7 @@ Not supported by the current Compact compiler surface:
 - `Float<...>`
 - `String`
 
-Those unsupported cases are not just prose claims here; the test suite compiles tiny probe contracts and asserts the current compiler errors.
+Those unsupported cases are not just prose claims here; the test suite compiles tiny probe contracts and asserts the current compiler rejects them.
 
 ## Practical mapping guidance
 
@@ -62,13 +64,13 @@ If you need a conceptual value that Compact does not support directly:
 
 ## Package structure
 
-- [`src/hello-family-credential.compact`](/private/tmp/vc-core-redesign-plan/prototypes/credential-families/hello-family/src/hello-family-credential.compact)
+- [`src/hello-family-credential.compact`](./src/hello-family-credential.compact)
   thin-core family root
-- [`src/hello-family-credential/claims.compact`](/private/tmp/vc-core-redesign-plan/prototypes/credential-families/hello-family/src/hello-family-credential/claims.compact)
+- [`src/hello-family-credential/claims.compact`](./src/hello-family-credential/claims.compact)
   supported-claims laboratory surface
-- [`src/hello-family-credential/model.compact`](/private/tmp/vc-core-redesign-plan/prototypes/credential-families/hello-family/src/hello-family-credential/model.compact)
+- [`src/hello-family-credential/model.compact`](./src/hello-family-credential/model.compact)
   simple disclosure and request structs
-- [`src/hello-family-credential/helpers.compact`](/private/tmp/vc-core-redesign-plan/prototypes/credential-families/hello-family/src/hello-family-credential/helpers.compact)
+- [`src/hello-family-credential/helpers.compact`](./src/hello-family-credential/helpers.compact)
   schema, request, credential, and presentation validation helpers
 
 ## Build and test
@@ -81,6 +83,7 @@ If you need a conceptual value that Compact does not support directly:
 
 - this package is a types-and-structure lab, not a privacy-preserving claim design
 - direct claim fields here will usually be too revealing for real credentials
+- the disclosure model is intentionally narrower than the claims struct; it demonstrates a few representative direct disclosures instead of trying to expose every supported primitive field
 - if you move a field from this family into production, you still need to decide whether it belongs as:
   - direct typed claim
   - committed claim

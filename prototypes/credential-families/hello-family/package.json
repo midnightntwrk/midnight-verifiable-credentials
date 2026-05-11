@@ -42,7 +42,7 @@
   },
   "scripts": {
     "contract": "npm run compact",
-    "compact": "node ./scripts/ensure-compact-package-aliases.mjs && compact compile src/hello-family-credential.compact src/managed/hello-family-credential && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
+    "compact": "node ../../../tooling/scripts/ensure-compact-package-aliases.mjs && compact compile src/hello-family-credential.compact src/managed/hello-family-credential && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
     "test": "vitest run",
     "test:ci": "vitest run",
     "prepack": "npm run build",
