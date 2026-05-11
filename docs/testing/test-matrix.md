@@ -99,6 +99,11 @@ Implemented prototype coverage:
     throw messages
   - preservation of typed helper causes through normalized verifier errors
   - fail-closed fallback to `unclassifiedFailure` for unknown throw shapes
+- `registry/status-registry/src/test/status-verifier-parity.test.ts`
+  - cross-mode parity for canonical error codes across observed-snapshot,
+    same-contract live-state, and authority-attested verifier paths
+  - current parity coverage for `unknownRegistry`, `staleRegistryState`, and
+    `unsupportedStatusProofMode`
 - `prototypes/credential-families/birth-secret/src/test/status.test.ts`
   - hidden-holder same-contract live-status request wiring
   - hidden-holder revoked-set status request wiring
