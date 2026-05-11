@@ -18,7 +18,10 @@ import {
   type SecretClaimWitness,
   SecretIssuerAgent,
 } from "../../agents/secret-issuer-agent.js";
-import { type SecretSimulatorWitness,VerifierAgent } from "../../agents/verifier-agent.js";
+import {
+  type SecretSimulatorWitness,
+  VerifierAgent,
+} from "../../agents/verifier-agent.js";
 import {
   createNodeFileBackedProtocolPartyDependencies,
 } from "../../reference/node-reference-path.js";

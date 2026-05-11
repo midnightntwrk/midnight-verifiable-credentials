@@ -30,6 +30,9 @@ let tempWriteCounter = 0;
 const isMissingFileError = (error: unknown): boolean =>
   error instanceof Error && "code" in error && error.code === "ENOENT";
 
+// NOTE: this fsync-on-directory pattern is aimed at the Linux/macOS class of
+// local filesystems used by the current reference path. It is not meant as a
+// cross-platform multi-process locking story.
 const syncDirectory = (directoryPath: string): void => {
   const directoryFd = openSync(directoryPath, "r");
   try {
