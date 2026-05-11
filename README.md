@@ -164,7 +164,7 @@ Direct package-wide validation entrypoints:
 
 ## Artifact packaging
 
-Stable tarball output lives under [`artifacts/npm/`](./artifacts/README.md).
+Stable tarball output lives under [`tooling/artifacts/npm/`](./tooling/artifacts/README.md).
 
 Commands:
 
@@ -183,6 +183,7 @@ Published/exported local tarball set currently includes:
 - `@midnight-ntwrk/midnight-did-credentials-protocol`
 - `@midnight-ntwrk/midnight-did-credentials-birth`
 - `@midnight-ntwrk/midnight-did-credentials-birth-secret`
+- `@midnight-ntwrk/midnight-did-credentials-hello-family`
 - `@midnight-ntwrk/midnight-did-standalone-environment`
 
 Intentionally excluded:

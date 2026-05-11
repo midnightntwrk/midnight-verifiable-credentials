@@ -46,6 +46,14 @@ Status: current implemented test surface as of 2026-05-09.
 - blinded-secret issuance offer/request/result validation through
   `credentials-protocol`
 
+### `credentials-hello-family`
+
+- claim-root/domain-separation source checks
+- presentation-request source-shape checks
+- package export-surface checks
+- real Compact compiler probes for currently supported versus unsupported
+  primitive claim types
+
 ### Planned prototype restoration
 
 - `credentials-birth-binding-prototypes`

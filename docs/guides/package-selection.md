@@ -46,6 +46,21 @@ Choose one of:
 Use `credentials-birth` when a public holder reference is acceptable.
 Use `credentials-birth-secret` when holder privacy is the primary concern.
 
+### I need a compileable family playground or claim-type lab
+Start with:
+
+- [`../../prototypes/credential-families/hello-family/README.md`](../../prototypes/credential-families/hello-family/README.md)
+
+Use this when you need:
+
+- the smallest compileable family package in the repo
+- a checked-in matrix of which primitive claim types Compact accepts today
+- a safe place to prototype claim-shape tradeoffs before committing to a real
+  privacy model
+
+Do not use `credentials-hello-family` as a production privacy template.
+It is intentionally a direct-claim playground.
+
 ### I need same-holder correlation across credentials
 Start with:
 
