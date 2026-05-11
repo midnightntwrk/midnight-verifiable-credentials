@@ -4,12 +4,10 @@ import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { describe, expect, it } from "vitest";
 
 import {
-  buildLiveStatusWitness,
   buildRevokedSetNonMembershipInputs,
   buildRevokedSetStatusWitness,
   deriveRevokedSetStatusHandle,
   StatusCapabilityKind,
-  StatusType,
 } from "../index.js";
 
 setNetworkId("undeployed");
@@ -67,42 +65,9 @@ describe("revoked-set witness builder", () => {
     expect(built.statusBinding.registryRef.registryId).toEqual(
       bytes32("registry:hidden-holder"),
     );
-    expect(built.statusBinding.statusType).toEqual(
-      StatusType.revocationRegistry,
-    );
     expect(built.witnessInput.registryState.revokedRoot).toEqual(
       bytes32("revoked-root:current"),
     );
-  });
-
-  it("builds a live status witness/binding pair without an external registry snapshot", () => {
-    const built = buildLiveStatusWitness({
-      credentialClaimRoot: bytes32("credential-root:alice"),
-      registryRef: {
-        registryId: bytes32("registry:hidden-holder"),
-        authorityVerificationMethodRef,
-      },
-      issuerStatusSalt: bytes32("issuer-salt:alpha"),
-      statusHandleOpening: bytes32("status-opening:alpha"),
-      verifierStatusPolicy: {
-        requireStatus: true,
-        acceptedStatusCapability: StatusCapabilityKind.revokedSetNonMembership,
-        enforceRegistryId: true,
-        acceptedRegistryId: bytes32("registry:hidden-holder"),
-        enforceAttestationMaxAge: false,
-        maxAttestationAge: 0n,
-      },
-      revokedStatusHandles: [bytes32("revoked-handle:someone-else")],
-    });
-
-    expect(built.statusHandle).toBeInstanceOf(Uint8Array);
-    expect(built.statusBinding.registryRef.registryId).toEqual(
-      bytes32("registry:hidden-holder"),
-    );
-    expect(built.statusBinding.statusType).toEqual(
-      StatusType.revocationRegistry,
-    );
-    expect(built.witnessInput.statusHandle).toEqual(built.statusHandle);
   });
 
   it("builds the canonical revoked-set request, binding, witness, and protocol bundle", () => {
@@ -139,9 +104,6 @@ describe("revoked-set witness builder", () => {
     );
     expect(built.protocol.witnessInput.statusHandle).toEqual(
       built.statusHandle,
-    );
-    expect(built.statusBinding.statusType).toEqual(
-      StatusType.revocationRegistry,
     );
     expect(built.statusBinding.statusHandleCommitment).toBeInstanceOf(
       Uint8Array,
@@ -201,28 +163,5 @@ describe("revoked-set witness builder", () => {
         revokedStatusHandles: [revokedHandle],
       }),
     ).toThrow(/already present in the revoked set snapshot/i);
-  });
-
-  it("rejects a live status witness when the verifier policy expects another registry", () => {
-    expect(() =>
-      buildLiveStatusWitness({
-        credentialClaimRoot: bytes32("credential-root:alice"),
-        registryRef: {
-          registryId: bytes32("registry:hidden-holder"),
-          authorityVerificationMethodRef,
-        },
-        issuerStatusSalt: bytes32("issuer-salt:alpha"),
-        statusHandleOpening: bytes32("status-opening:alpha"),
-        verifierStatusPolicy: {
-          requireStatus: true,
-          acceptedStatusCapability:
-            StatusCapabilityKind.revokedSetNonMembership,
-          enforceRegistryId: true,
-          acceptedRegistryId: bytes32("registry:other"),
-          enforceAttestationMaxAge: false,
-          maxAttestationAge: 0n,
-        },
-      }),
-    ).toThrow(/registry id does not match/i);
   });
 });

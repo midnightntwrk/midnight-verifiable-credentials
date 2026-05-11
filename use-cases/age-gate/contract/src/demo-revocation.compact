@@ -6,6 +6,7 @@ include "../../../../prototypes/credential-families/birth-secret/src/secret-birt
 
 export enum RevocationVerificationMode {
   noVerification,
+  sameContractLiveStatus,
   verifierSuppliedRoot,
   authorityAttested
 }
@@ -29,6 +30,9 @@ export ledger lastVerifiedCurrentTime: Uint<64>;
 export ledger lastVerifiedThresholdYears: Uint<8>;
 export ledger lastVerifiedRequestChallenge: Bytes<32>;
 export ledger lastVerifiedStatusRegistryId: Bytes<32>;
+// Demo-only sentinel field: same-contract live-status verification does not
+// consume an external Merkle root snapshot, so this ledger keeps a tagged
+// sentinel rather than a real root for that mode.
 export ledger lastVerifiedRevokedRoot: Bytes<32>;
 export ledger lastVerificationMode: RevocationVerificationMode;
 export ledger issuedAccessCapabilityCount: Counter;
@@ -37,6 +41,9 @@ export ledger activeAccessCapabilities: Set<Bytes<32>>;
 export ledger consumedAccessCapabilities: Set<Bytes<32>>;
 export ledger lastIssuedAccessCapability: Bytes<32>;
 export ledger lastBusinessDecision: RevocationAccessDecision;
+export ledger liveStatusRegistryInitialized: Boolean;
+export ledger liveStatusRegistryId: Bytes<32>;
+export ledger liveRevokedStatusHandles: Set<Bytes<32>>;
 
 witness holderSecret(): Bytes<32>;
 witness holderSecretOpening(): Bytes<32>;
@@ -58,6 +65,8 @@ constructor() {
   lastVerificationMode = RevocationVerificationMode.noVerification;
   lastIssuedAccessCapability = pad(32, "vc-demo:rev:no-capability");
   lastBusinessDecision = RevocationAccessDecision.noDecision;
+  liveStatusRegistryInitialized = false;
+  liveStatusRegistryId = pad(32, "vc-demo:rev:no-live-registry");
 }
 
 pure circuit revocationDemoVerificationMessageId(
@@ -107,6 +116,41 @@ pure circuit revocationDemoAuthorityAttestedStatusPolicy(
     enforceAttestationMaxAge: true,
     maxAttestationAge: 50,
   };
+}
+
+export circuit initializeLiveStatusRegistry(
+  registryId: Bytes<32>
+): [] {
+  // Demo-only contract lifecycle surface: this path is intentionally
+  // unauthenticated so the simulator and living docs can exercise the local
+  // status mode without introducing another authority secret flow here.
+  assert(
+    !liveStatusRegistryInitialized,
+    "Revocation demo live status registry has already been initialized"
+  );
+  assert(
+    registryId != pad(32, ""),
+    "Revocation demo live status registry id must be set"
+  );
+  liveStatusRegistryId = disclose(registryId);
+  liveStatusRegistryInitialized = true;
+}
+
+export circuit revokeLiveStatusHandle(
+  statusHandle: Bytes<32>
+): [] {
+  // Demo-only contract lifecycle surface: real deployments should gate local
+  // revocation writes behind issuer/authority authorization rather than reuse
+  // this open simulator path directly.
+  assert(
+    liveStatusRegistryInitialized,
+    "Revocation demo live status registry is not initialized"
+  );
+  assert(
+    statusHandle != pad(32, ""),
+    "Revocation demo live status handle must be set"
+  );
+  liveRevokedStatusHandles.insert(disclose(statusHandle));
 }
 
 export circuit revocationAwareAgeGateVerificationRequest(
@@ -202,6 +246,31 @@ export circuit revocationAwareAuthorityAttestedRequest(
   };
 }
 
+export circuit revocationAwareLiveStatusRequest(
+  issuerVerificationMethodRef: VerificationMethodRef,
+  verifierDomainHash: Bytes<32>,
+  verifierChallengeHash: Bytes<32>
+): SecretBirthCredentialVerificationLiveStatusRequest {
+  assert(
+    liveStatusRegistryInitialized,
+    "Revocation demo live status registry is not initialized"
+  );
+  return SecretBirthCredentialVerificationLiveStatusRequest {
+    verificationRequest: revocationAwareAgeGateVerificationRequest(
+      issuerVerificationMethodRef,
+      verifierDomainHash,
+      verifierChallengeHash
+    ),
+    // Reuse the revoked-set non-membership capability label here: the live
+    // path still proves "status handle not present in the accepted revoked set",
+    // but it does so against the contract-owned local set instead of a snapshot.
+    statusPolicy: revocationDemoStatusPolicy(
+      StatusCapabilityKind.revokedSetNonMembership,
+      liveStatusRegistryId
+    ),
+  };
+}
+
 pure circuit revocationAwareCapability(
   credentialRoot: Bytes<32>,
   verifierChallengeHash: Bytes<32>,
@@ -213,6 +282,21 @@ pure circuit revocationAwareCapability(
     credentialRoot,
     verifierChallengeHash,
     revokedRoot,
+    ((issuanceIndex as Field) as Bytes<32>)
+  ]);
+}
+
+pure circuit revocationAwareLiveStatusCapability(
+  credentialRoot: Bytes<32>,
+  verifierChallengeHash: Bytes<32>,
+  registryId: Bytes<32>,
+  issuanceIndex: Uint<64>
+): Bytes<32> {
+  return persistentHash<Vector<5, Bytes<32>>>([
+    pad(32, "vc-demo:revocation-gate:live"),
+    credentialRoot,
+    verifierChallengeHash,
+    registryId,
     ((issuanceIndex as Field) as Bytes<32>)
   ]);
 }
@@ -326,6 +410,90 @@ circuit verifySecretBirthPresentationWithVerifierSuppliedRoot(
   verifiedPresentationCount.increment(1);
 }
 
+circuit verifySecretBirthPresentationWithLiveStatus(
+  credentialWithStatus: SecretBirthCredentialWithStatusBinding,
+  request: SecretBirthCredentialVerificationLiveStatusRequest,
+  submission: SecretBirthCredentialVerificationSubmission,
+  statusInputs: SecretBirthCredentialVerificationLiveStatusInputs,
+  currentDay: Uint<32>
+): [] {
+  const plainCredential = secretBirthCredentialWithoutStatusBinding(
+    credentialWithStatus.credential
+  );
+  const credentialRoot = disclose(secretBirthCredentialBodyRoot(
+    plainCredential
+  ));
+  const disclosedStatusHandle = disclose(
+    statusInputs.witnessInput.statusHandle
+  );
+
+  assert(
+    liveStatusRegistryInitialized,
+    "Revocation demo live status registry is not initialized"
+  );
+  assert(
+    issuedCredentialClaimRoots.member(credentialRoot),
+    "Secret birth credential was not issued by the revocation demo contract"
+  );
+  assertSecretBirthCredentialVerificationSubmissionMatchesLiveStatusRequest(
+    credentialWithStatus,
+    request,
+    submission,
+    statusInputs,
+    holderSecret(),
+    holderSecretOpening(),
+    holderBindingBlindingFactor()
+  );
+  assert(
+    request.statusPolicy.requireStatus,
+    "Revocation demo live status request must require credential status"
+  );
+  assert(
+    request.statusPolicy.acceptedStatusCapability
+      == StatusCapabilityKind.revokedSetNonMembership,
+    // The live same-contract mode shares the same capability kind because it
+    // still enforces revoked-set non-membership, only against local ledger
+    // state instead of an externally supplied or attested snapshot.
+    "Revocation demo live status request must require revoked-set status support"
+  );
+  assert(
+    credentialWithStatus.credential.statusBinding.registryRef.registryId
+      == liveStatusRegistryId,
+    "Secret birth credential status binding does not match the live status registry"
+  );
+  assert(
+    !liveRevokedStatusHandles.member(disclosedStatusHandle),
+    "Secret birth credential is revoked in the live status registry"
+  );
+  if (credentialWithStatus.credential.hasExpiration) {
+    assert(
+      currentDay <= credentialWithStatus.credential.expiresAt,
+      "Secret birth credential has expired for the supplied verification day"
+    );
+  }
+  assertValidSecretBirthCredentialAgePredicate(
+    plainCredential,
+    submission.body.presentation,
+    currentDay,
+    holderBirthDateDays(),
+    holderBirthDateOpening()
+  );
+
+  lastVerifiedCredentialRoot = credentialRoot;
+  lastVerifiedCurrentDay = disclose(currentDay);
+  lastVerifiedCurrentTime = 0;
+  lastVerifiedThresholdYears = disclose(
+    submission.body.presentation.disclosed.ageThresholdYears
+  );
+  lastVerifiedRequestChallenge = disclose(
+    request.verificationRequest.verifierChallengeHash
+  );
+  lastVerifiedStatusRegistryId = disclose(liveStatusRegistryId);
+  lastVerifiedRevokedRoot = pad(32, "vc-demo:rev:live");
+  lastVerificationMode = RevocationVerificationMode.sameContractLiveStatus;
+  verifiedPresentationCount.increment(1);
+}
+
 circuit verifySecretBirthPresentationWithAuthorityAttestedStatus(
   credentialWithStatus: SecretBirthCredentialWithStatusBinding,
   request: SecretBirthCredentialVerificationAuthorityAttestedStatusRequest,
@@ -408,6 +576,41 @@ export circuit issueRevocationAwareCapabilityWithVerifierSuppliedRoot(
   ));
 
   verifySecretBirthPresentationWithVerifierSuppliedRoot(
+    credentialWithStatus,
+    request,
+    submission,
+    statusInputs,
+    currentDay
+  );
+
+  activeAccessCapabilities.insert(capability);
+  issuedAccessCapabilityCount.increment(1);
+  lastIssuedAccessCapability = capability;
+  lastBusinessDecision = RevocationAccessDecision.approved;
+  return capability;
+}
+
+export circuit issueRevocationAwareCapabilityWithLiveStatus(
+  credentialWithStatus: SecretBirthCredentialWithStatusBinding,
+  request: SecretBirthCredentialVerificationLiveStatusRequest,
+  submission: SecretBirthCredentialVerificationSubmission,
+  statusInputs: SecretBirthCredentialVerificationLiveStatusInputs,
+  currentDay: Uint<32>
+): Bytes<32> {
+  const plainCredential = secretBirthCredentialWithoutStatusBinding(
+    credentialWithStatus.credential
+  );
+  const credentialRoot = secretBirthCredentialBodyRoot(
+    plainCredential
+  );
+  const capability = disclose(revocationAwareLiveStatusCapability(
+    credentialRoot,
+    request.verificationRequest.verifierChallengeHash,
+    liveStatusRegistryId,
+    issuedAccessCapabilityCount.read()
+  ));
+
+  verifySecretBirthPresentationWithLiveStatus(
     credentialWithStatus,
     request,
     submission,

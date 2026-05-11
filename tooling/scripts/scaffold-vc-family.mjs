@@ -6,12 +6,11 @@ const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "..", "..");
 
 const usage = `Usage:
-  node ./tooling/scripts/scaffold-vc-family.mjs --slug my-family [--out prototypes/credential-families/my-family] [--holder explicit|hidden]
+  node ./tooling/scripts/scaffold-vc-family.mjs --slug my-family [--out credentials-my-family] [--holder explicit|hidden]
 
 Behavior:
-  - generates a thin-core VC family package scaffold aligned with the current repository layout
+  - generates a minimal repo-aligned family package scaffold
   - requires the output directory to stay inside the current VC repository
-  - defaults to prototypes/credential-families/<slug>
   - does not add the package to root workspaces automatically
   - does not overwrite an existing directory
 `;
@@ -52,9 +51,6 @@ const parseArgs = (argv) => {
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(args.slug)) {
     throw new Error("--slug must be kebab-case");
   }
-  if (args.slug.length > 17) {
-    throw new Error("--slug must be 17 characters or fewer so generated Compact tags fit in Bytes<32>");
-  }
   if (!["explicit", "hidden"].includes(args.holder)) {
     throw new Error("--holder must be either 'explicit' or 'hidden'");
   }
@@ -68,63 +64,37 @@ const toPascalCase = (value) =>
     .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
     .join("");
 
-const toImportPath = (fromDir, toDir) => {
-  const relative = path.relative(fromDir, toDir).split(path.sep).join("/");
-  return relative.startsWith(".") ? relative : `./${relative}`;
-};
-
 const buildFiles = ({
-  slug,
+  packageDirName,
   packageName,
-  packageRoot,
-  packageRelativeToRepo,
   familyStem,
+  familyDirName,
   familyPascal,
   holder,
 }) => {
-  const srcDir = path.join(packageRoot, "src");
-  const coreDir = path.join(repoRoot, "core", "primitives", "credentials", "src", "credentials");
-  const coreImport = toImportPath(srcDir, coreDir);
-  const holderType = holder === "hidden" ? "BlindedSecretHolderBinding" : "ExplicitHolderBinding";
-  const holderValidation =
+  const holderLine =
     holder === "hidden"
-      ? "assertValidBlindedSecretHolderCredentialBinding(credential.holderBinding);"
-      : "assertValidExplicitHolderBinding(credential.holderBinding);";
-  const holderMatch =
-    holder === "hidden"
-      ? "assertMatchingBlindedSecretHolderBindings(credential.holderBinding, presentation.holderBinding);"
-      : "assertMatchingExplicitHolderBindings(credential.holderBinding, presentation.holderBinding);";
-  const packageId = `midnight:vc:${slug}`;
-  const schemaId = `${slug}:v1`;
-  const familyCamel = familyPascal.charAt(0).toLowerCase() + familyPascal.slice(1);
-  const holderStatusLine =
-    holder === "hidden"
-      ? "Status: starter scaffold for a hidden-holder family package built on `BlindedSecretHolderBinding` and `NoStatusBinding`."
-      : "Status: starter scaffold for an explicit-holder family package built on `ExplicitHolderBinding` and `NoStatusBinding`.";
+      ? "Status: starter scaffold for a hidden-holder family package."
+      : "Status: starter scaffold for an explicit-holder family package.";
 
   return new Map([
     [
       "README.md",
-      `# ${packageName}
+      `# ${packageDirName}
 
-${holderStatusLine}
+${holderLine}
 
 Purpose:
 
-- give engineers a real thin-core family package skeleton instead of another blank folder
-- keep naming, scripts, and directory layout aligned with the current VC repository
+- give engineers a real package skeleton instead of another blank folder
+- keep naming, scripts, and directory layout aligned with the VC repository
 - make the next customization steps explicit
-
-Generated location:
-
-- \`${packageRelativeToRepo}\`
 
 Generated shape:
 
 \`\`\`text
-${packageRelativeToRepo}/
+${packageDirName}/
 ├── README.md
-├── eslint.config.mjs
 ├── package.json
 ├── tsconfig.json
 ├── tsconfig.build.json
@@ -135,77 +105,23 @@ ${packageRelativeToRepo}/
 │   └── strip-managed-sourcemaps.mjs
 └── src/
     ├── ${familyStem}.compact
-    ├── contract.ts
     ├── index.ts
-    ├── ${familyStem}/
+    ├── ${familyDirName}/
     │   ├── claims.compact
-    │   ├── helpers.compact
-    │   └── model.compact
+    │   ├── model.compact
+    │   ├── requests.compact
+    │   └── validation.compact
     └── test/
-        ├── claim-root.test.ts
-        ├── package-surfaces.test.ts
-        └── presentation-request.test.ts
+        ├── capability-profiles.test.ts
+        └── protocol.test.ts
 \`\`\`
 
 Next steps:
 
-1. rename the placeholder claim/disclosure/request structs to the real schema vocabulary
-2. replace the placeholder schema id and package id with the real family identifiers
-3. replace the example disclosure gate with real family proof and request semantics
-4. add a dedicated \`./testing\` surface only when another package truly needs fixtures from this family
-5. wire the package into root workspaces only after it has a real owner and validation path
-`,
-    ],
-    [
-      "eslint.config.mjs",
-      `import js from '@eslint/js';
-import plugin from '@typescript-eslint/eslint-plugin';
-import parser from '@typescript-eslint/parser';
-import pluginImport from 'eslint-plugin-import';
-import pluginPrettier from 'eslint-plugin-prettier';
-import pluginSimpleImportSort from 'eslint-plugin-simple-import-sort';
-
-export default [
-  {
-    ignores: ['./node_modules/**', './dist/**', './build/**', './src/managed/**']
-  },
-  js.configs.recommended,
-  {
-    files: ['**/*.ts', '**/*.tsx'],
-    languageOptions: {
-      parser,
-      parserOptions: {
-        ecmaVersion: 'latest',
-        sourceType: 'module',
-        project: ['./tsconfig.json'],
-      },
-    },
-    plugins: {
-      '@typescript-eslint': plugin,
-      prettier: pluginPrettier,
-      import: pluginImport,
-      'simple-import-sort': pluginSimpleImportSort,
-    },
-    rules: {
-      'prettier/prettier': 'error',
-      'no-unused-vars': 'off',
-      'import/no-unused-modules': [1, { unusedExports: true }],
-      'no-duplicate-imports': 'error',
-      'simple-import-sort/imports': 'error',
-      'simple-import-sort/exports': 'error',
-      'no-restricted-imports': [
-        'error',
-        {
-          paths: [
-            '@midnight-ntwrk/midnight-did-domain',
-            '@midnight-ntwrk/midnight-did',
-            '@midnight-ntwrk/midnight-did-api',
-          ],
-        },
-      ],
-    }
-  }
-];
+1. rename placeholder claims, requests, and result structs to match the real schema
+2. replace the placeholder validation circuit with family-specific verification logic
+3. decide whether this family is explicit-holder or hidden-holder in actual proof semantics
+4. wire the package into the root workspace only after the scaffold has a real owner and validation path
 `,
     ],
     [
@@ -231,12 +147,6 @@ export default [
               import: "./dist/index.js",
               default: "./dist/index.js",
             },
-            "./contract": {
-              types: "./dist/contract.d.ts",
-              require: "./dist/contract.js",
-              import: "./dist/contract.js",
-              default: "./dist/contract.js",
-            },
             [`./managed/${familyStem}/contract/index.js`]: {
               types: `./dist/managed/${familyStem}/contract/index.d.ts`,
               import: `./dist/managed/${familyStem}/contract/index.js`,
@@ -245,8 +155,9 @@ export default [
           },
           typesVersions: {
             "*": {
-              contract: ["dist/contract.d.ts"],
-              [`managed/${familyStem}/contract/index.js`]: [`dist/managed/${familyStem}/contract/index.d.ts`],
+              [`managed/${familyStem}/contract/index.js`]: [
+                `dist/managed/${familyStem}/contract/index.d.ts`,
+              ],
             },
           },
           scripts: {
@@ -256,7 +167,7 @@ export default [
             "test:ci": "vitest run",
             prepack: "npm run build",
             clean: "rm -rf dist && rm -rf coverage && rm -rf reports && rm -rf src/managed",
-            build: `npm run compact && rm -rf dist && mkdir -p dist && tsc -b tsconfig.build.json --force && cp -Rf ./src/managed ./dist/ && cp ./src/${familyStem}.compact ./dist && cp -Rf ./src/${familyStem} ./dist/`,
+            build: `npm run compact && rm -rf dist && tsc -b tsconfig.build.json --force && mkdir -p dist && cp -Rf ./src/managed ./dist/ && cp ./src/${familyStem}.compact ./dist && cp -Rf ./src/${familyDirName} ./dist/`,
             lint: "eslint src --ignore-pattern 'src/managed/**'",
             "lint:fix": "eslint src --fix --ignore-pattern 'src/managed/**'",
             typecheck: "npm run compact && tsc -p tsconfig.json --noEmit",
@@ -404,7 +315,7 @@ const targetFile = path.join(
 const source = await readFile(targetFile, "utf8");
 const next = source.replace(
   /checkRuntimeVersion\\('\\d+\\.\\d+\\.\\d+'\\);/,
-  "checkRuntimeVersion('" + runtimeVersion + "');",
+  \`checkRuntimeVersion('\${runtimeVersion}');\`,
 );
 if (next !== source) {
   await writeFile(targetFile, next, "utf8");
@@ -420,7 +331,7 @@ import { fileURLToPath } from "node:url";
 const rootDir = path.dirname(fileURLToPath(import.meta.url));
 const managedDir = path.resolve(rootDir, "..", "src", "managed");
 
-const walk = (dir) => {
+function walk(dir) {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
   for (const entry of entries) {
     const fullPath = path.join(dir, entry.name);
@@ -438,7 +349,7 @@ const walk = (dir) => {
       fs.writeFileSync(fullPath, next, "utf8");
     }
   }
-};
+}
 
 if (fs.existsSync(managedDir)) {
   walk(managedDir);
@@ -451,209 +362,100 @@ if (fs.existsSync(managedDir)) {
 
 import CompactStandardLibrary;
 
-include "${coreImport}";
-include "./${familyStem}/claims";
-include "./${familyStem}/model";
+import "./${familyDirName}/requests" prefix Requests_;
+import "./${familyDirName}/validation" prefix Validation_;
 
-import VC<${familyPascal}CredentialClaims, ${holderType}, NoStatusBinding>;
-import VP<${familyPascal}Disclosures, ${holderType}>;
-import CredentialPresentationRelations<
-  ${familyPascal}CredentialClaims,
-  ${familyPascal}Disclosures,
-  ${holderType},
-  NoStatusBinding
-> prefix ${familyPascal}Presentation_;
-
-export type ${familyPascal}Credential = Credential;
-export type ${familyPascal}Presentation = Presentation;
-include "./${familyStem}/helpers";
+export circuit verify${familyPascal}PresentationForRequest(
+  request: Requests_${familyPascal}VerificationRequest,
+  submission: Requests_${familyPascal}VerificationSubmission,
+): Validation_${familyPascal}VerificationResult {
+  return Validation_verify${familyPascal}PresentationForRequest(
+    request,
+    submission,
+  );
+}
 `,
     ],
     [
-      `src/${familyStem}/claims.compact`,
-      `export struct ${familyPascal}CredentialClaims {
-  subjectIdCommitment: Bytes<32>,
-  primaryClaimCommitment: Bytes<32>,
-  contextCommitment: Bytes<32>,
+      `src/${familyDirName}/claims.compact`,
+      `export struct ${familyPascal}Claims {
+  placeholderCommitment: Bytes<32>,
 }
 
-export circuit ${familyCamel}ClaimRoot(
-  claims: ${familyPascal}CredentialClaims
+export circuit ${familyPascal.charAt(0).toLowerCase() + familyPascal.slice(1)}ClaimRoot(
+  claims: ${familyPascal}Claims
 ): Bytes<32> {
-  return persistentHash<Vector<4, Bytes<32>>>([
-    pad(32, "midnight:vc:${slug}:v1"),
-    claims.subjectIdCommitment,
-    claims.primaryClaimCommitment,
-    claims.contextCommitment
-  ]);
+  return persistentHash<${familyPascal}Claims>(claims);
 }
 `,
     ],
     [
-      `src/${familyStem}/model.compact`,
-      `export struct ${familyPascal}Disclosures {
-  revealPrimaryClaim: Boolean,
-  primaryClaimValuePadded: Bytes<32>,
-  primaryClaimOpening: Bytes<32>,
+      `src/${familyDirName}/model.compact`,
+      `export struct ${familyPascal}Credential {
+  claims: ${familyPascal}Claims,
 }
 
-export struct ${familyPascal}PresentationRequest {
-  version: Uint<16>,
-  schema: SchemaRef,
-  issuerVerificationMethodRef: VerificationMethodRef,
-  requirePrimaryClaimDisclosure: Boolean,
+export struct ${familyPascal}Presentation {
+  credentialRoot: Bytes<32>,
+}
+`,
+    ],
+    [
+      `src/${familyDirName}/requests.compact`,
+      `export struct ${familyPascal}VerificationRequest {
   verifierChallengeHash: Bytes<32>,
 }
+
+export struct ${familyPascal}VerificationSubmission {
+  credential: ${familyPascal}Credential,
+  presentation: ${familyPascal}Presentation,
+}
 `,
     ],
     [
-      `src/${familyStem}/helpers.compact`,
-      `export circuit ${familyCamel}CredentialBodyRoot(
-  credential: ${familyPascal}Credential
-): Bytes<32> {
-  return credentialBodyRoot(credential);
+      `src/${familyDirName}/validation.compact`,
+      `export struct ${familyPascal}VerificationResult {
+  approved: Boolean,
 }
 
-export circuit ${familyCamel}PresentationBodyRoot(
-  presentation: ${familyPascal}Presentation
-): Bytes<32> {
-  return presentationBodyRoot(presentation);
-}
-
-export circuit ${familyCamel}PresentationRequestBodyRoot(
-  request: ${familyPascal}PresentationRequest
-): Bytes<32> {
-  return persistentHash<${familyPascal}PresentationRequest>(request);
-}
-
-export circuit assertValid${familyPascal}SchemaRef(
-  schema: SchemaRef
-): [] {
-  assert(
-    schema.packageId == pad(32, "${packageId}"),
-    "${familyPascal} package id mismatch"
-  );
-  assert(
-    schema.schemaId == pad(32, "${schemaId}"),
-    "${familyPascal} schema id mismatch"
-  );
-  assert(schema.majorVersion == 1, "${familyPascal} major version mismatch");
-}
-
-export circuit assertValid${familyPascal}PresentationRequest(
-  request: ${familyPascal}PresentationRequest
-): [] {
-  assert(request.version == 1, "${familyPascal} request version mismatch");
-  assertValid${familyPascal}SchemaRef(request.schema);
+export circuit verify${familyPascal}PresentationForRequest(
+  request: ${familyPascal}VerificationRequest,
+  submission: ${familyPascal}VerificationSubmission,
+): ${familyPascal}VerificationResult {
   assert(
     request.verifierChallengeHash != pad(32, ""),
-    "${familyPascal} verifier challenge must be set"
+    "${familyPascal} verification request challenge must be set"
   );
-}
-
-export circuit assertValid${familyPascal}Credential(
-  credential: ${familyPascal}Credential,
-  proof: Proof
-): [] {
-  assertValid${familyPascal}SchemaRef(credential.schema);
-  assertValidCredentialEnvelope(
-    credential,
-    ${familyCamel}ClaimRoot(credential.claims)
+  assert(
+    submission.presentation.credentialRoot
+      == ${familyPascal.charAt(0).toLowerCase() + familyPascal.slice(1)}ClaimRoot(submission.credential.claims),
+    "${familyPascal} presentation root does not match the credential claims"
   );
-  ${holderValidation}
-  assertValidNoStatusBinding(credential.statusBinding);
-  assertValidCredentialProof(credential, proof);
-}
-
-export circuit assertValid${familyPascal}Presentation(
-  credential: ${familyPascal}Credential,
-  presentation: ${familyPascal}Presentation
-): [] {
-  assertValid${familyPascal}SchemaRef(presentation.schema);
-  assertValidPresentationEnvelope(presentation);
-  ${familyPascal}Presentation_assertMatchingCredentialPresentation(
-    credential,
-    presentation
-  );
-  ${holderMatch}
-}
-
-export circuit assert${familyPascal}PresentationSatisfiesRequest(
-  request: ${familyPascal}PresentationRequest,
-  presentation: ${familyPascal}Presentation
-): [] {
-  assertValid${familyPascal}PresentationRequest(request);
-  assertValid${familyPascal}SchemaRef(presentation.schema);
-  if (request.requirePrimaryClaimDisclosure) {
-    assert(
-      presentation.disclosed.revealPrimaryClaim,
-      "${familyPascal} request requires primary claim disclosure"
-    );
-  }
+  return ${familyPascal}VerificationResult {
+    approved: true,
+  };
 }
 `,
     ],
-    ["src/index.ts", `export * from "./managed/${familyStem}/contract/index.js";\n`],
-    ["src/contract.ts", `export * from "./managed/${familyStem}/contract/index.js";\n`],
     [
-      "src/test/package-surfaces.test.ts",
-      `import { describe, expect, it } from "vitest";
+      "src/index.ts",
+      `export * from "./managed/${familyStem}/contract/index.js";\n`,
+    ],
+    [
+      "src/test/capability-profiles.test.ts",
+      `import { describe, it } from "vitest";
 
-import packageJson from "../../package.json" with { type: "json" };
-
-describe("${slug} scaffold package surfaces", () => {
-  it("exports the default root and contract subpath", () => {
-    expect(packageJson.exports["."]).toBeDefined();
-    expect(packageJson.exports["./contract"]).toBeDefined();
-  });
+describe("${packageDirName}: capability profiles", () => {
+  it.todo("document and test the intended holder-binding and capability composition profile");
 });
 `,
     ],
     [
-      "src/test/claim-root.test.ts",
-      `import { readFileSync } from "node:fs";
-import path from "node:path";
+      "src/test/protocol.test.ts",
+      `import { describe, it } from "vitest";
 
-import { describe, expect, it } from "vitest";
-
-const claimsSource = readFileSync(
-  path.resolve(
-    import.meta.dirname,
-    "..",
-    "${familyStem}",
-    "claims.compact",
-  ),
-  "utf8",
-);
-
-describe("${slug} scaffold claim root", () => {
-  it("uses a family-scoped domain separation tag", () => {
-    expect(claimsSource).toContain("midnight:vc:${slug}:v1");
-  });
-});
-`,
-    ],
-    [
-      "src/test/presentation-request.test.ts",
-      `import { readFileSync } from "node:fs";
-import path from "node:path";
-
-import { describe, expect, it } from "vitest";
-
-const modelSource = readFileSync(
-  path.resolve(
-    import.meta.dirname,
-    "..",
-    "${familyStem}",
-    "model.compact",
-  ),
-  "utf8",
-);
-
-describe("${slug} scaffold presentation request", () => {
-  it("keeps an explicit verifier challenge in the request shape", () => {
-    expect(modelSource).toContain("verifierChallengeHash");
-  });
+describe("${packageDirName}: protocol semantics", () => {
+  it.todo("replace the placeholder verification semantics with family-specific issuance and presentation tests");
 });
 `,
     ],
@@ -663,23 +465,27 @@ describe("${slug} scaffold presentation request", () => {
 const main = async () => {
   try {
     const { slug, out, holder } = parseArgs(process.argv.slice(2));
-    const requestedOutputPath = out ?? path.join("prototypes", "credential-families", slug);
+    const requestedOutputPath = out ?? `credentials-${slug}`;
     const packageRoot = path.resolve(process.cwd(), requestedOutputPath);
     const packageRelativeToRepo = path.relative(repoRoot, packageRoot);
-    if (packageRelativeToRepo.startsWith("..") || path.isAbsolute(packageRelativeToRepo)) {
-      throw new Error("--out must resolve to a path inside the Midnight VC repository");
+    if (
+      packageRelativeToRepo.startsWith("..") ||
+      path.isAbsolute(packageRelativeToRepo)
+    ) {
+      throw new Error(
+        "--out must resolve to a path inside the Midnight VC repository",
+      );
     }
-
+    const packageDirName = path.basename(packageRoot);
     const familyStem = `${slug}-credential`;
     const familyPascal = `${toPascalCase(slug)}Credential`;
-    const packageName = `@midnight-ntwrk/midnight-did-credentials-${slug}`;
-
+    const familyDirName = familyStem;
+    const packageName = `@midnight-ntwrk/midnight-did-${packageDirName}`;
     const files = buildFiles({
-      slug,
+      packageDirName,
       packageName,
-      packageRoot,
-      packageRelativeToRepo,
       familyStem,
+      familyDirName,
       familyPascal,
       holder,
     });

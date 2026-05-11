@@ -3,10 +3,7 @@ import { Buffer } from "node:buffer";
 import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { describe, expect, it } from "vitest";
 
-import {
-  pureCircuits,
-  StatusType,
-} from "../managed/credentials/contract/index.js";
+import { pureCircuits } from "../managed/credentials/contract/index.js";
 import { createSigner } from "./proof-fixtures.js";
 
 setNetworkId("undeployed");
@@ -18,7 +15,6 @@ describe("credentials core: status bindings", () => {
   it("accepts a valid registry-bound status binding", () => {
     const signer = createSigner("status-authority", 778n);
     const binding = {
-      statusType: StatusType.revocationRegistry,
       registryRef: {
         registryId: sha256Bytes("registry:primary"),
         authorityVerificationMethodRef: signer.verificationMethodRef,
@@ -50,7 +46,6 @@ describe("credentials core: status bindings", () => {
   it("rejects a registry-bound status binding with an empty handle commitment", () => {
     const signer = createSigner("status-authority", 999n);
     const binding = {
-      statusType: StatusType.revocationRegistry,
       registryRef: {
         registryId: sha256Bytes("registry:hidden-holder"),
         authorityVerificationMethodRef: signer.verificationMethodRef,
@@ -61,21 +56,5 @@ describe("credentials core: status bindings", () => {
     expect(() =>
       pureCircuits.assertValidRegistryBoundStatusBinding(binding),
     ).toThrow(/Status handle commitment must be set/);
-  });
-
-  it("rejects a registry-bound status binding with a non-enum status type value", () => {
-    const signer = createSigner("status-authority", 1001n);
-    const binding = {
-      statusType: 99 as unknown as StatusType,
-      registryRef: {
-        registryId: sha256Bytes("registry:hidden-holder"),
-        authorityVerificationMethodRef: signer.verificationMethodRef,
-      },
-      statusHandleCommitment: sha256Bytes("status-handle-commitment"),
-    };
-
-    expect(() =>
-      pureCircuits.assertValidRegistryBoundStatusBinding(binding),
-    ).toThrow(/type error/i);
   });
 });

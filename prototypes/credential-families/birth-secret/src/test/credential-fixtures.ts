@@ -11,10 +11,8 @@ import {
   type ProtocolMessageEnvelope,
   pureCircuits as genericPureCircuits,
   type RegistryBoundStatusBinding,
-  StatusType,
   type VerificationMethodRef,
 } from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
-import { assertStatusHandleNotRevoked } from "@midnight-ntwrk/midnight-did-credentials-status-registry";
 
 import {
   type AuthorityAttestedStatusProofProtocol,
@@ -26,8 +24,6 @@ import {
   type SecretBirthCredentialPresentationRequest,
   type SecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs,
   type SecretBirthCredentialVerificationAuthorityAttestedStatusRequest,
-  type SecretBirthCredentialVerificationLiveStatusInputs,
-  type SecretBirthCredentialVerificationLiveStatusRequest,
   type SecretBirthCredentialVerificationRequest,
   type SecretBirthCredentialVerificationRevokedSetStatusInputs,
   type SecretBirthCredentialVerificationRevokedSetStatusRequest,
@@ -68,10 +64,8 @@ export type BirthCredentialFixture = {
   readonly presentationRequest: SecretBirthCredentialPresentationRequest;
   readonly verificationRequest: SecretBirthCredentialVerificationRequest;
   readonly credentialWithStatusBinding: SecretBirthCredentialWithStatusBindingCompat;
-  readonly liveStatusVerificationRequest: SecretBirthCredentialVerificationLiveStatusRequest;
   readonly revokedSetStatusVerificationRequest: SecretBirthCredentialVerificationRevokedSetStatusRequest;
   readonly authorityAttestedStatusVerificationRequest: SecretBirthCredentialVerificationAuthorityAttestedStatusRequest;
-  readonly liveStatusVerificationInputs: SecretBirthCredentialVerificationLiveStatusInputs;
   readonly revokedSetStatusVerificationInputs: SecretBirthCredentialVerificationRevokedSetStatusInputs;
   readonly authorityAttestedStatusProtocolInputs: SecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs;
   readonly presentation: SecretBirthCredentialPresentation;
@@ -120,7 +114,6 @@ export type SecretBirthCredentialFixtureOptions = {
   readonly statusRegistryId?: Uint8Array;
   readonly statusRevokedRoot?: Uint8Array;
   readonly statusRegistryVersion?: bigint;
-  readonly revokedStatusHandles?: readonly Uint8Array[];
 };
 
 const sha256 = (value: string): Uint8Array =>
@@ -372,7 +365,6 @@ export const createSecretBirthCredentialFixture = (
   };
 
   const statusBinding: RegistryBoundStatusBinding = {
-    statusType: StatusType.revocationRegistry,
     registryRef: {
       registryId: witness.statusRegistryId,
       authorityVerificationMethodRef: issuer.verificationMethodRef,
@@ -413,16 +405,6 @@ export const createSecretBirthCredentialFixture = (
     verifierChallengeHash: verificationRequest.verifierChallengeHash,
   };
 
-  if (options.revokedStatusHandles) {
-    assertStatusHandleNotRevoked(
-      {
-        registryState: statusRequest.registryState,
-        revokedStatusHandles: options.revokedStatusHandles,
-      },
-      witness.statusHandle,
-    );
-  }
-
   const revokedSetStatusProofProtocol: RevokedSetNonMembershipStatusProofProtocol =
     {
       request: statusRequest,
@@ -449,27 +431,6 @@ export const createSecretBirthCredentialFixture = (
         maxAttestationAge: 0n,
       },
       statusRequest,
-    };
-
-  const liveStatusVerificationRequest: SecretBirthCredentialVerificationLiveStatusRequest =
-    {
-      verificationRequest,
-      statusPolicy: {
-        requireStatus: true,
-        acceptedStatusCapability: StatusCapabilityKind.revokedSetNonMembership,
-        enforceRegistryId: true,
-        acceptedRegistryId: witness.statusRegistryId,
-        enforceAttestationMaxAge: false,
-        maxAttestationAge: 0n,
-      },
-    };
-
-  const liveStatusVerificationInputs: SecretBirthCredentialVerificationLiveStatusInputs =
-    {
-      witnessInput: {
-        statusHandle: witness.statusHandle,
-        statusHandleOpening: witness.statusHandleOpening,
-      },
     };
 
   const revokedSetStatusVerificationInputs: SecretBirthCredentialVerificationRevokedSetStatusInputs =
@@ -560,10 +521,8 @@ export const createSecretBirthCredentialFixture = (
     presentationRequest,
     verificationRequest,
     credentialWithStatusBinding,
-    liveStatusVerificationRequest,
     revokedSetStatusVerificationRequest,
     authorityAttestedStatusVerificationRequest,
-    liveStatusVerificationInputs,
     revokedSetStatusVerificationInputs,
     authorityAttestedStatusProtocolInputs,
     presentation,

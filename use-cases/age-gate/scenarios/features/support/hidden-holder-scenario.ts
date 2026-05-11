@@ -1,12 +1,12 @@
 import { Ability, type UsesAbilities } from "@serenity-js/core";
 
-import { createSecretBirthCredentialFixture } from "@midnight-ntwrk/midnight-did-credentials-birth-secret/testing";
 import {
   RevocationAccessDecision,
   RevocationVerificationMode,
 } from "@midnight-ntwrk/midnight-did-credentials-demo-contract/contract-revocation";
 import {
   buildSubmissionForAuthorityAttestedRequest,
+  buildSubmissionForLiveStatusRequest,
   buildSubmissionForRevokedSetRequest,
   createDemoRevocationFixture,
   CredentialsDemoRevocationSimulator,
@@ -62,7 +62,7 @@ export class UseHiddenHolderScenario extends Ability {
   #recordResult(
     approved: boolean,
     simulator: CredentialsDemoRevocationSimulator,
-    fixture: { witness: { statusRegistryId: Uint8Array } },
+    fixture: ReturnType<typeof createDemoRevocationFixture>,
     extras: {
       claimDecision: string | null;
       verificationMode: string | null;
@@ -102,6 +102,38 @@ export class UseHiddenHolderScenario extends Ability {
         fixture.revokedSetStatusVerificationInputs,
         fixture.witness.currentDay,
       );
+    const claimDecision = simulator.claimRevocationAwareCapability(capability);
+    this.#recordResult(
+      claimDecision === RevocationAccessDecision.approved,
+      simulator,
+      fixture,
+      {
+        claimDecision: RevocationAccessDecision[claimDecision],
+        verificationMode:
+          RevocationVerificationMode[simulator.getLedger().lastVerificationMode],
+        failureMessage: null,
+      },
+    );
+  }
+
+  async runLiveStatusHappyPath(): Promise<void> {
+    const { fixture, simulator } = this.#setupFixture();
+
+    simulator.initializeLiveStatusRegistry(fixture.witness.statusRegistryId);
+    const request = simulator.revocationAwareLiveStatusRequest(
+      fixture.credential.issuerVerificationMethodRef,
+      fixture.witness.verifierDomainHash,
+      fixture.verificationRequest.verifierChallengeHash,
+    );
+    const submission = buildSubmissionForLiveStatusRequest(fixture, request);
+
+    const capability = simulator.issueRevocationAwareCapabilityWithLiveStatus(
+      fixture.credentialWithStatusBinding,
+      request,
+      submission,
+      fixture.liveStatusVerificationInputs,
+      fixture.witness.currentDay,
+    );
     const claimDecision = simulator.claimRevocationAwareCapability(capability);
     this.#recordResult(
       claimDecision === RevocationAccessDecision.approved,
@@ -287,21 +319,33 @@ export class UseHiddenHolderScenario extends Ability {
     }
   }
 
-  async runRevokedCredentialRejectedPath(): Promise<void> {
-    const baseline = createSecretBirthCredentialFixture();
-    const simulator = new CredentialsDemoRevocationSimulator();
+  async runLiveStatusRevokedCredentialRejectedPath(): Promise<void> {
+    const { fixture, simulator } = this.#setupFixture();
+
+    simulator.initializeLiveStatusRegistry(fixture.witness.statusRegistryId);
+    const request = simulator.revocationAwareLiveStatusRequest(
+      fixture.credential.issuerVerificationMethodRef,
+      fixture.witness.verifierDomainHash,
+      fixture.verificationRequest.verifierChallengeHash,
+    );
+    const submission = buildSubmissionForLiveStatusRequest(fixture, request);
+    simulator.revokeLiveStatusHandle(fixture.witness.statusHandle);
 
     try {
-      createSecretBirthCredentialFixture({
-        revokedStatusHandles: [baseline.witness.statusHandle],
-      });
-      this.#recordResult(false, simulator, baseline, {
+      simulator.issueRevocationAwareCapabilityWithLiveStatus(
+        fixture.credentialWithStatusBinding,
+        request,
+        submission,
+        fixture.liveStatusVerificationInputs,
+        fixture.witness.currentDay,
+      );
+      this.#recordResult(false, simulator, fixture, {
         claimDecision: null,
         verificationMode: null,
         failureMessage: null,
       });
     } catch (error) {
-      this.#recordResult(false, simulator, baseline, {
+      this.#recordResult(false, simulator, fixture, {
         claimDecision: null,
         verificationMode: null,
         failureMessage:
@@ -309,7 +353,6 @@ export class UseHiddenHolderScenario extends Ability {
       });
     }
   }
-
   lastResult(): HiddenHolderScenarioResult {
     if (!this.#lastResult) {
       throw new Error("Hidden-holder scenario has not been executed yet");

@@ -69,7 +69,7 @@ remove_ryuk_containers() {
 
 main() {
   run_compose_down "$ROOT_DIR/api" "standalone.yml"
-  run_compose_down "$ROOT_DIR" "components/integration/infrastructure/standalone/preprod-proof-server.yml"
+  run_compose_down "$ROOT_DIR" "infrastructure/preprod-proof-server.yml"
 
   remove_named_containers \
     "did-node" \

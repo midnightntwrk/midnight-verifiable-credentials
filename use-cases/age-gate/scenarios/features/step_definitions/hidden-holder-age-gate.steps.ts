@@ -4,8 +4,9 @@ import { actorCalled } from "@serenity-js/core";
 
 import {
   HiddenHolderScenarioOutcome,
+  RunTheHiddenHolderLiveStatusHappyPath,
+  RunTheHiddenHolderLiveStatusRevokedRejectedPath,
   RunTheHiddenHolderExpiredAuthorityAttestationRejectedPath,
-  RunTheHiddenHolderRevokedCredentialRejectedPath,
   RunTheHiddenHolderWrongRevokedRootRejectedPath,
   RunTheHiddenHolderWrongRegistryRejectedPath,
   RunTheHiddenHolderRevocationAwareHappyPath,
@@ -17,6 +18,13 @@ When(
   "the engineer runs the hidden-holder revocation-aware happy path",
   async () => {
     await engineer().attemptsTo(RunTheHiddenHolderRevocationAwareHappyPath());
+  },
+);
+
+When(
+  "the engineer runs the hidden-holder same-contract live-status happy path",
+  async () => {
+    await engineer().attemptsTo(RunTheHiddenHolderLiveStatusHappyPath());
   },
 );
 
@@ -46,14 +54,13 @@ When(
 );
 
 When(
-  "the engineer runs the hidden-holder revoked-credential rejection path",
+  "the engineer runs the hidden-holder same-contract live-status revoked rejection path",
   async () => {
     await engineer().attemptsTo(
-      RunTheHiddenHolderRevokedCredentialRejectedPath(),
+      RunTheHiddenHolderLiveStatusRevokedRejectedPath(),
     );
   },
 );
-
 Then("the hidden-holder scenario should be approved", async () => {
   await engineer().attemptsTo(
     Ensure.that(HiddenHolderScenarioOutcome.approved(), equals(true)),

@@ -54,6 +54,7 @@ The package currently contains two demo contract roots:
    - explicit-holder age-gate demo
 2. `src/demo-revocation.compact`
    - hidden-holder status-aware age-gate demo using:
+     - same-contract live status verification against a local revoked-handle set
      - verifier-supplied `(registryId, revokedRoot)` coordination
      - prototype revoked-set status capability wiring
      - prototype authority-attested status proofs for the current Layer 3 path
@@ -103,11 +104,27 @@ The revocation demo contract models:
 1. issuer submits an issued hidden-holder birth credential plus issuer proof
 2. verifier/application supplies the accepted `registryId` and `revokedRoot`
 3. holder submits a hidden-holder presentation plus either:
+   - same-contract live-status witness inputs
    - verifier-supplied-root status inputs
    - or an authority-attested status proof
 4. contract checks request alignment, status-capability binding, freshness
    policy, and age predicate satisfaction
 5. contract issues a reusable business capability on success
+
+For the same-contract live-status path specifically, the current demo now
+models:
+
+- an explicit local live status registry initialization step
+- local revocation by live status handle
+- hidden-holder verification that rejects revoked handles directly against the
+  contract-owned live revoked set
+- no external `(registryId, revokedRoot)` snapshot for that path
+- an intentionally unauthenticated lifecycle surface for demo/simulator use;
+  production deployments should gate local registry initialization and
+  revocation writes behind issuer or authority authorization
+- the local demo registry can revoke any 32-byte status handle directly; it
+  does not currently restrict revocation writes to handles that were issued by
+  this contract
 
 For the authority-attested path specifically, the current demo now enforces:
 
@@ -133,7 +150,7 @@ Layer 3 surface while avoiding unnecessary proof-key generation cost.
 | Selective disclosure | the presentation can disclose birth-country data with its opening |
 | ZK predicate | the contract checks the age predicate from a private birth-date witness |
 | Anti-replay | both issuer and holder proofs carry a `challengeHash` |
-| Status-aware verification | `src/demo-revocation.compact` demonstrates verifier-supplied-root and authority-attested status-gated verification |
+| Status-aware verification | `src/demo-revocation.compact` demonstrates same-contract live-status, verifier-supplied-root, and authority-attested status-gated verification |
 | Status freshness policy | the authority-attested path adds verifier max-age freshness checks on top of attestation expiration |
 
 ## Build and test

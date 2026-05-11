@@ -6,7 +6,6 @@ import { describe, expect, it } from "vitest";
 import {
   pureCircuits,
   StatusCapabilityKind,
-  StatusType,
 } from "../managed/revocation-registry/contract/index.js";
 import { createSigner, signStatusProof } from "./proof-fixtures.js";
 
@@ -58,7 +57,6 @@ describe("status registry: proof protocols", () => {
       },
     };
     const binding = {
-      statusType: StatusType.revocationRegistry,
       registryRef: {
         registryId: protocol.request.registryState.registryId,
         authorityVerificationMethodRef: signer.verificationMethodRef,
@@ -155,7 +153,6 @@ describe("status registry: proof protocols", () => {
       },
     };
     const binding = {
-      statusType: StatusType.revocationRegistry,
       registryRef: {
         registryId: protocol.request.registryState.registryId,
         authorityVerificationMethodRef: signer.verificationMethodRef,
@@ -193,7 +190,6 @@ describe("status registry: proof protocols", () => {
       },
     };
     const binding = {
-      statusType: StatusType.revocationRegistry,
       registryRef: {
         registryId: protocol.request.registryState.registryId,
         authorityVerificationMethodRef: signer.verificationMethodRef,
@@ -222,7 +218,6 @@ describe("status registry: proof protocols", () => {
       verifierChallengeHash: bytes32("challenge:status"),
     };
     const binding = {
-      statusType: StatusType.revocationRegistry,
       registryRef: {
         registryId: request.registryState.registryId,
         authorityVerificationMethodRef: signer.verificationMethodRef,
@@ -277,7 +272,6 @@ describe("status registry: proof protocols", () => {
       verifierChallengeHash: bytes32("challenge:status"),
     };
     const binding = {
-      statusType: StatusType.revocationRegistry,
       registryRef: {
         registryId: request.registryState.registryId,
         authorityVerificationMethodRef: signer.verificationMethodRef,
@@ -336,7 +330,6 @@ describe("status registry: proof protocols", () => {
       verifierChallengeHash: bytes32("challenge:status"),
     };
     const binding = {
-      statusType: StatusType.revocationRegistry,
       registryRef: {
         registryId: request.registryState.registryId,
         authorityVerificationMethodRef: authority.verificationMethodRef,
@@ -381,7 +374,6 @@ describe("status registry: proof protocols", () => {
       verifierChallengeHash: bytes32("challenge:status"),
     };
     const binding = {
-      statusType: StatusType.revocationRegistry,
       registryRef: {
         registryId: request.registryState.registryId,
         authorityVerificationMethodRef: authority.verificationMethodRef,
@@ -555,7 +547,6 @@ describe("status registry: proof protocols", () => {
       verifierChallengeHash: bytes32("challenge:status"),
     };
     const binding = {
-      statusType: StatusType.revocationRegistry,
       registryRef: {
         registryId: request.registryState.registryId,
         authorityVerificationMethodRef: signer.verificationMethodRef,
@@ -647,7 +638,6 @@ describe("status registry: proof protocols", () => {
       verifierChallengeHash: bytes32("challenge:status"),
     };
     const binding = {
-      statusType: StatusType.revocationRegistry,
       registryRef: {
         registryId: request.registryState.registryId,
         authorityVerificationMethodRef: signer.verificationMethodRef,
@@ -689,7 +679,6 @@ describe("status registry: proof protocols", () => {
     const signer = createSigner("status-authority", 2234n);
     const registryId = bytes32("registry:hidden-holder");
     const binding = {
-      statusType: StatusType.revocationRegistry,
       registryRef: {
         registryId,
         authorityVerificationMethodRef: signer.verificationMethodRef,
@@ -729,7 +718,6 @@ describe("status registry: proof protocols", () => {
   it("rejects a registry-enforced policy when the binding registry id diverges", () => {
     const signer = createSigner("status-authority", 2235n);
     const binding = {
-      statusType: StatusType.revocationRegistry,
       registryRef: {
         registryId: bytes32("registry:binding"),
         authorityVerificationMethodRef: signer.verificationMethodRef,

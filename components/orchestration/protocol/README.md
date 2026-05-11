@@ -46,8 +46,6 @@ Related docs:
 - credential status: [`../../../docs/spec/credential-status.md`](../../../docs/spec/credential-status.md)
 - hidden-holder interoperability:
   [`../../../docs/spec/hidden-holder-interoperability.md`](../../../docs/spec/hidden-holder-interoperability.md)
-- production checklist:
-  [`../../../docs/guides/credentials-protocol-production-checklist.md`](../../../docs/guides/credentials-protocol-production-checklist.md)
 - companion guide: [`../../../docs/guides/midnight-credentials-for-dummies.md`](../../../docs/guides/midnight-credentials-for-dummies.md)
 - test matrix: [`../../../docs/testing/test-matrix.md`](../../../docs/testing/test-matrix.md)
 
@@ -260,20 +258,6 @@ Persistent adapter checklist:
   and oldest-first eviction
 - expose `maxOrdinalKey()` for append-only ordinal-keyed collections when the
   backend can answer that query more directly than replaying every entry
-
-Minimum production posture:
-
-1. replace the default deterministic randomness source
-2. replace the in-memory store when restart-safe or delayed-delivery behavior
-   matters
-3. define replay/idempotency retention semantics explicitly
-4. define explicit time sources for expiry and freshness checks
-5. document status-root acquisition/freshness if revocation-aware flows are in
-   scope
-
-Use the dedicated guide for the full checklist:
-
-- [`../../../docs/guides/credentials-protocol-production-checklist.md`](../../../docs/guides/credentials-protocol-production-checklist.md)
 - preserve deterministic replay/idempotency behavior after restart
 - document whether retention is bounded by TTL, count, or both
 - document whether the adapter is sync-only facade over async storage or a

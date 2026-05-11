@@ -15,17 +15,8 @@ export struct SecretBirthCredentialVerificationRevokedSetStatusRequest {
   statusRequest: RevokedSetStatusRequest,
 }
 
-export struct SecretBirthCredentialVerificationLiveStatusRequest {
-  verificationRequest: SecretBirthCredentialVerificationRequest,
-  statusPolicy: VerifierStatusPolicy,
-}
-
 export struct SecretBirthCredentialVerificationRevokedSetStatusInputs {
   statusProofProtocol: RevokedSetNonMembershipStatusProofProtocol,
-}
-
-export struct SecretBirthCredentialVerificationLiveStatusInputs {
-  witnessInput: LiveStatusWitnessInput,
 }
 
 export struct SecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs {

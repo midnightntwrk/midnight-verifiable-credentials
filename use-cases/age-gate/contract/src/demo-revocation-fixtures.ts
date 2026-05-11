@@ -5,8 +5,6 @@ import {
   ecMulGenerator,
   type JubjubPoint,
 } from "@midnight-ntwrk/compact-runtime";
-import { StatusType } from "@midnight-ntwrk/midnight-did-credentials";
-import { assertStatusHandleNotRevoked } from "@midnight-ntwrk/midnight-did-credentials-status-registry";
 
 import {
   HolderBindingProfile,
@@ -20,6 +18,8 @@ import {
   type SecretBirthCredentialPresentationRequest,
   type SecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs,
   type SecretBirthCredentialVerificationAuthorityAttestedStatusRequest,
+  type SecretBirthCredentialVerificationLiveStatusInputs,
+  type SecretBirthCredentialVerificationLiveStatusRequest,
   type SecretBirthCredentialVerificationRequest,
   type SecretBirthCredentialVerificationRevokedSetStatusInputs,
   type SecretBirthCredentialVerificationRevokedSetStatusRequest,
@@ -47,8 +47,10 @@ export type DemoRevocationFixture = {
   readonly presentationRequest: SecretBirthCredentialPresentationRequest;
   readonly verificationRequest: SecretBirthCredentialVerificationRequest;
   readonly credentialWithStatusBinding: SecretBirthCredentialWithStatusBinding;
+  readonly liveStatusVerificationRequest: SecretBirthCredentialVerificationLiveStatusRequest;
   readonly revokedSetStatusVerificationRequest: SecretBirthCredentialVerificationRevokedSetStatusRequest;
   readonly authorityAttestedStatusVerificationRequest: SecretBirthCredentialVerificationAuthorityAttestedStatusRequest;
+  readonly liveStatusVerificationInputs: SecretBirthCredentialVerificationLiveStatusInputs;
   readonly revokedSetStatusVerificationInputs: SecretBirthCredentialVerificationRevokedSetStatusInputs;
   readonly authorityAttestedStatusProtocolInputs: SecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs;
   readonly presentation: SecretBirthCredentialPresentation;
@@ -77,10 +79,6 @@ export type DemoRevocationFixture = {
 
 type SecretBirthCredentialCompat = Omit<SecretBirthCredential, "statusBinding"> & {
   readonly statusBinding?: Record<string, never>;
-};
-
-export type DemoRevocationFixtureOptions = {
-  readonly revokedStatusHandles?: readonly Uint8Array[];
 };
 
 const sha256 = (value: string): Uint8Array =>
@@ -171,9 +169,7 @@ export const signProof = ({
   };
 };
 
-export const createDemoRevocationFixture = (
-  options: DemoRevocationFixtureOptions = {},
-): DemoRevocationFixture => {
+export const createDemoRevocationFixture = (): DemoRevocationFixture => {
   const issuer = createSigner("issuer", 123456789n);
 
   const witness = {
@@ -302,19 +298,17 @@ export const createDemoRevocationFixture = (
     witness.statusHandle,
     witness.statusHandleOpening,
   );
-  const statusBinding = {
-    statusType: StatusType.revocationRegistry,
-    registryRef: {
-      registryId: witness.statusRegistryId,
-      authorityVerificationMethodRef: issuer.verificationMethodRef,
-    },
-    statusHandleCommitment,
-  };
 
-  const statusCredential = {
+  const statusCredential: SecretBirthStatusCredential = {
     ...credential,
-    statusBinding,
-  } as SecretBirthStatusCredential;
+    statusBinding: {
+      registryRef: {
+        registryId: witness.statusRegistryId,
+        authorityVerificationMethodRef: issuer.verificationMethodRef,
+      },
+      statusHandleCommitment,
+    },
+  };
 
   const statusBoundCredentialProof = signProof({
     bodyRoot: pureCircuits.secretBirthCredentialRegistryBoundStatusBodyRoot(
@@ -340,16 +334,6 @@ export const createDemoRevocationFixture = (
     verifierChallengeHash: verificationRequest.verifierChallengeHash,
   };
 
-  if (options.revokedStatusHandles) {
-    assertStatusHandleNotRevoked(
-      {
-        registryState: statusRequest.registryState,
-        revokedStatusHandles: options.revokedStatusHandles,
-      },
-      witness.statusHandle,
-    );
-  }
-
   const revokedSetStatusVerificationRequest: SecretBirthCredentialVerificationRevokedSetStatusRequest =
     {
       verificationRequest,
@@ -362,6 +346,30 @@ export const createDemoRevocationFixture = (
         maxAttestationAge: 0n,
       },
       statusRequest,
+    };
+
+  const liveStatusVerificationRequest: SecretBirthCredentialVerificationLiveStatusRequest =
+    {
+      verificationRequest,
+      statusPolicy: {
+        requireStatus: true,
+        acceptedStatusCapability: StatusCapabilityKind.revokedSetNonMembership,
+        enforceRegistryId: true,
+        acceptedRegistryId: witness.statusRegistryId,
+        // The live same-contract path does not consume an authority attestation.
+        // These fields remain present because the status-policy surface is shared
+        // across live, revoked-root, and authority-attested verification modes.
+        enforceAttestationMaxAge: false,
+        maxAttestationAge: 0n,
+      },
+    };
+
+  const liveStatusVerificationInputs: SecretBirthCredentialVerificationLiveStatusInputs =
+    {
+      witnessInput: {
+        statusHandle: witness.statusHandle,
+        statusHandleOpening: witness.statusHandleOpening,
+      },
     };
 
   const revokedSetStatusVerificationInputs: SecretBirthCredentialVerificationRevokedSetStatusInputs =
@@ -460,8 +468,10 @@ export const createDemoRevocationFixture = (
     presentationRequest,
     verificationRequest,
     credentialWithStatusBinding,
+    liveStatusVerificationRequest,
     revokedSetStatusVerificationRequest,
     authorityAttestedStatusVerificationRequest,
+    liveStatusVerificationInputs,
     revokedSetStatusVerificationInputs,
     authorityAttestedStatusProtocolInputs,
     presentation,
@@ -517,6 +527,12 @@ export const buildSubmissionForVerificationRequest = (
 export const buildSubmissionForRevokedSetRequest = (
   fixture: DemoRevocationFixture,
   request: SecretBirthCredentialVerificationRevokedSetStatusRequest,
+): SecretBirthCredentialVerificationSubmission =>
+  buildSubmissionForVerificationRequest(fixture, request.verificationRequest);
+
+export const buildSubmissionForLiveStatusRequest = (
+  fixture: DemoRevocationFixture,
+  request: SecretBirthCredentialVerificationLiveStatusRequest,
 ): SecretBirthCredentialVerificationSubmission =>
   buildSubmissionForVerificationRequest(fixture, request.verificationRequest);
 

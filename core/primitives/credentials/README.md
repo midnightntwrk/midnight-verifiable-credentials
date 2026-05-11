@@ -60,19 +60,12 @@ It owns the generic pieces that should be shared across many credential families
 - `ExplicitHolderBinding`
 - `SecretHolderBinding`
 - `Proof`
-- generic credential envelope types through
-  `VC<TClaims, THolderBinding, TStatusBinding>`
-- generic presentation envelope types through `VP<TDisclosures, THolderBinding>`
-- generic issuance protocol envelopes through
-  `Issue<TOfferBody, TRequestBody, TResultBody>`
-- generic presentation protocol envelopes through
-  `Present<TRequestBody, TSubmissionBody, TResultBody>`
+- generic VC/VP envelope types through `VC<TClaims, TDisclosures, THolderBinding>`
 - generic body-root helpers
 - generic credential/presentation linking rules
 - generic issuer proof-binding rules
 - reusable holder-binding helper circuits for explicit and secret profiles
 - shared VC-side status binding vocabulary for status-aware families:
-  - `StatusType`
   - `StatusRegistryRef`
   - `NoStatusBinding`
   - `RegistryBoundStatusBinding`
@@ -143,37 +136,18 @@ Those belong in specialization packages such as:
 
 ## Generic model
 
-The reusable Compact modules are:
+The reusable Compact module is `VC<TClaims, TDisclosures, THolderBinding>`.
 
-- `VC<TClaims, THolderBinding, TStatusBinding>`
-- `VP<TDisclosures, THolderBinding>`
-- `Issue<TOfferBody, TRequestBody, TResultBody>`
-- `Present<TRequestBody, TSubmissionBody, TResultBody>`
+It defines two generic envelope types:
 
-The VC and VP layers are intentionally separate.
-
-`VC<>` owns:
-
-- credential envelope state
-- claim-root consistency
-- status-binding carriage
-- issuer proof binding
-
-`VP<>` owns:
-
-- presentation envelope state
-- disclosure carriage
-- linkage back to the credential claim root
-
-The generic relation helpers sit beside those two modules so that VC/VP
-linkage does not force one fused generic type.
+- `Credential`
+- `Presentation`
 
 A specialization package provides:
 
 - a concrete `TClaims` struct
 - a concrete `TDisclosures` struct
 - a concrete `THolderBinding` struct
-- a concrete `TStatusBinding` struct
 - a claim-root helper for that claim set
 - schema-specific validators
 - disclosure validators
@@ -188,8 +162,6 @@ The generic core can validate:
 - presentation version and linkage to the credential claim root
 - presentation issuer consistency
 - proof verification over a derived in-circuit challenge
-- generic issuance and presentation protocol envelope typing through
-  `Issue<>` and `Present<>`
 
 The generic core intentionally does not force one holder-binding model.
 That is delegated to specialization packages.

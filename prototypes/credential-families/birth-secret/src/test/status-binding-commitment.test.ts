@@ -5,7 +5,7 @@ import { pureCircuits } from "../managed/secret-birth-credential/contract/index.
 import {
   createSecretBirthCredentialFixture,
   type SecretBirthStatusCredentialCompat,
-} from "../testing/credential-fixtures.js";
+} from "./credential-fixtures.js";
 
 setNetworkId("undeployed");
 
@@ -129,23 +129,5 @@ describe("secret birth credential: issuer-signed status binding commitment", () 
         fixture.credentialWithStatusBinding.credentialProof,
       ),
     ).toThrow();
-  });
-
-  it("rejects a status-bound credential when the committed status type is not a valid enum value", () => {
-    const fixture = createSecretBirthCredentialFixture();
-
-    expect(() =>
-      pureCircuits.assertValidSecretBirthCredentialWithStatusBinding({
-        ...fixture.credentialWithStatusBinding,
-        credential: {
-          ...fixture.credentialWithStatusBinding.credential,
-          statusBinding: {
-            ...fixture.credentialWithStatusBinding.credential.statusBinding,
-            statusType:
-              99 as unknown as typeof fixture.credentialWithStatusBinding.credential.statusBinding.statusType,
-          },
-        },
-      }),
-    ).toThrow(/type error/i);
   });
 });

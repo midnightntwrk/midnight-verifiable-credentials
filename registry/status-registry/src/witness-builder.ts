@@ -6,7 +6,6 @@ import {
 } from "@midnight-ntwrk/midnight-did-credentials";
 
 import {
-  type LiveStatusWitnessInput,
   pureCircuits,
   type RevocationRegistryState,
   type RevokedSetNonMembershipStatusProofProtocol,
@@ -35,17 +34,6 @@ export type BuiltRevokedSetStatusWitness = {
   readonly statusHandle: Uint8Array;
   readonly statusBinding: RegistryBoundStatusBinding;
   readonly witnessInput: RevokedSetNonMembershipWitnessInput;
-};
-
-export type BuildLiveStatusWitnessOptions = Omit<
-  BuildRevokedSetStatusWitnessOptions,
-  "registryState"
->;
-
-export type BuiltLiveStatusWitness = {
-  readonly statusHandle: Uint8Array;
-  readonly statusBinding: RegistryBoundStatusBinding;
-  readonly witnessInput: LiveStatusWitnessInput;
 };
 
 export type BuildRevokedSetNonMembershipInputsOptions =
@@ -111,17 +99,6 @@ export const buildRevokedSetWitnessInput = ({
   readonly statusHandleOpening: Uint8Array;
 }): RevokedSetNonMembershipWitnessInput => ({
   registryState,
-  statusHandle,
-  statusHandleOpening,
-});
-
-export const buildLiveStatusWitnessInput = ({
-  statusHandle,
-  statusHandleOpening,
-}: {
-  readonly statusHandle: Uint8Array;
-  readonly statusHandleOpening: Uint8Array;
-}): LiveStatusWitnessInput => ({
   statusHandle,
   statusHandleOpening,
 });
@@ -212,63 +189,6 @@ export const buildRevokedSetStatusWitness = ({
     assertStatusHandleNotRevoked(
       {
         registryState,
-        revokedStatusHandles,
-      },
-      statusHandle,
-    );
-  }
-
-  return {
-    statusHandle,
-    statusBinding,
-    witnessInput,
-  };
-};
-
-export const buildLiveStatusWitness = ({
-  credentialClaimRoot,
-  registryRef,
-  issuerStatusSalt,
-  statusHandleOpening,
-  verifierStatusPolicy,
-  revokedStatusHandles,
-}: BuildLiveStatusWitnessOptions): BuiltLiveStatusWitness => {
-  const statusHandle = deriveRevokedSetStatusHandle({
-    credentialClaimRoot,
-    registryId: registryRef.registryId,
-    issuerStatusSalt,
-  });
-  const statusBinding = buildRevokedSetStatusBinding({
-    registryRef,
-    statusHandle,
-    statusHandleOpening,
-  });
-  const witnessInput = buildLiveStatusWitnessInput({
-    statusHandle,
-    statusHandleOpening,
-  });
-
-  pureCircuits.assertLiveStatusWitnessMatchesBinding(
-    statusBinding,
-    witnessInput,
-  );
-
-  if (verifierStatusPolicy) {
-    pureCircuits.assertVerifierStatusPolicyAcceptsLiveStatusBinding(
-      verifierStatusPolicy,
-      statusBinding,
-      witnessInput,
-    );
-  }
-
-  if (revokedStatusHandles) {
-    assertStatusHandleNotRevoked(
-      {
-        registryState: {
-          registryId: registryRef.registryId,
-          revokedRoot: new Uint8Array(32).fill(1),
-          registryVersion: 0n,
-        },
         revokedStatusHandles,
       },
       statusHandle,

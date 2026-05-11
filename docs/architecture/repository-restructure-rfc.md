@@ -490,19 +490,18 @@ Target destinations:
 - `credentials-birth-secret/` ->
   `prototypes/credential-families/birth-secret/`
 
-### Transitional tooling-owned vendor surfaces
+### Transitional top-level outliers
 
-These tracked paths remain valid, but they should live under tooling-owned
-areas rather than as top-level architecture roots:
+These tracked top-level paths are still present, but they are not part of the
+package-relocation wave itself:
 
-- `tooling/vendor/`
+- `libs/`
   - transitional local tarball input/output surface
-  - treated as tooling support, not as an architecture area
-
-The former top-level `infrastructure/preprod-proof-server.yml` outlier has now
-been rehomed under:
-
-- `components/integration/infrastructure/standalone/preprod-proof-server.yml`
+  - should be treated as tooling/artifact support, not as an architecture area
+- `infrastructure/preprod-proof-server.yml`
+  - still lives under a legacy top-level `infrastructure/` directory
+  - should eventually move under `components/integration/infrastructure/` or a
+    tooling-owned integration support area once its ownership is finalized
 
 ### Compatibility shims that are not architecture debt
 
