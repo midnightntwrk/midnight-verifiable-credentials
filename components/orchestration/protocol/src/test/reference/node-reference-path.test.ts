@@ -24,6 +24,7 @@ import {
 } from "../../agents/verifier-agent.js";
 import {
   createNodeFileBackedProtocolPartyDependencies,
+  NodeCryptoRandomnessSource,
 } from "../../reference/node-reference-path.js";
 import { MessageBus } from "../../transport/message-bus.js";
 import { createDIDProfile, padText, sha256 } from "../helpers/did-provider.js";
@@ -84,6 +85,37 @@ describe("node production reference path", () => {
     issuedAt: 10_000n,
     expiresAt: 20_000n,
   };
+
+  it("draws distinct non-zero runtime randomness for the reference path surface", () => {
+    const source = new NodeCryptoRandomnessSource();
+    const firstChallenge = source.nextChallengeHash({
+      partyLabel: "issuer",
+      flow: "explicit-issuance",
+      purpose: "holder-challenge",
+      sequence: 0,
+    });
+    const secondChallenge = source.nextChallengeHash({
+      partyLabel: "issuer",
+      flow: "explicit-issuance",
+      purpose: "holder-challenge",
+      sequence: 1,
+    });
+    const nonceScalar = source.nextSigningNonceScalar({
+      partyLabel: "issuer",
+      flow: "explicit-issuance",
+      purpose: "signing-nonce",
+      sequence: 0,
+    });
+
+    expect(firstChallenge).toHaveLength(32);
+    expect(secondChallenge).toHaveLength(32);
+    expect(
+      firstChallenge.some((byte) => byte !== 0) ||
+        secondChallenge.some((byte) => byte !== 0),
+    ).toEqual(true);
+    expect(Array.from(firstChallenge)).not.toEqual(Array.from(secondChallenge));
+    expect(nonceScalar).not.toEqual(0n);
+  });
 
   it("recovers explicit-holder credentials across restart with file-backed JSON state and crypto randomness", () => {
     const rootDir = mkdtempSync(join(tmpdir(), "vc-protocol-reference-"));
