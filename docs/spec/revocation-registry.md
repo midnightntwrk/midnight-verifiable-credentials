@@ -241,7 +241,7 @@ in-circuit Merkle non-membership or in-circuit live-root equality.
 
 The canonical runtime-bundle contract is documented in:
 
-- [status-canonical-non-membership-bundle.md](/private/tmp/vc-core-redesign-plan/docs/architecture/status-canonical-non-membership-bundle.md)
+- [status-canonical-non-membership-bundle.md](../architecture/status-canonical-non-membership-bundle.md)
 
 ### 4. `AuthorityAttestedStatusProofProtocol`
 

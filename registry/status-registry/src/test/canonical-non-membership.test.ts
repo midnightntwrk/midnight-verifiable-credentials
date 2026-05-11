@@ -90,7 +90,7 @@ describe("canonical non-membership bundles", () => {
     expect(() => assertCanonicalNonMembershipBundle(bundle)).not.toThrow();
   });
 
-  it("fails closed when the canonical observed-state bundle request drifts from the protocol request", () => {
+  it("fails closed when the canonical observed-state bundle drifts internally", () => {
     const bundle = buildCanonicalObservedNonMembershipBundle({
       observedState: buildObservedRevocationRegistryState({
         registryState: {
@@ -116,24 +116,57 @@ describe("canonical non-membership bundles", () => {
       verifierStatusPolicy,
     });
 
-    const drifted = {
-      ...bundle,
-      request: {
-        ...bundle.request,
-        verifierChallengeHash: bytes32("challenge:drifted"),
+    const cases = [
+      {
+        title: "request challenge drifts from the protocol request challenge",
+        bundle: {
+          ...bundle,
+          request: {
+            ...bundle.request,
+            verifierChallengeHash: bytes32("challenge:drifted"),
+          },
+        },
+        message:
+          /request challenge does not match the protocol request challenge/i,
+        code: statusVerificationErrorCodes.statusRequestMismatch,
       },
-    };
+      {
+        title: "top-level status handle drifts from the witness input handle",
+        bundle: {
+          ...bundle,
+          statusHandle: bytes32("status-handle:drifted"),
+        },
+        message:
+          /status handle does not match the witness input status handle/i,
+        code: statusVerificationErrorCodes.statusBindingMismatch,
+      },
+      {
+        title: "observed registry state drifts from the request registry state",
+        bundle: {
+          ...bundle,
+          observedState: {
+            ...bundle.observedState,
+            registryState: {
+              ...bundle.observedState.registryState,
+              registryVersion: 9n,
+            },
+          },
+        },
+        message: /observed state does not match the request registry state/i,
+        code: statusVerificationErrorCodes.statusRequestMismatch,
+      },
+    ] as const;
 
-    expect(() => assertCanonicalNonMembershipBundle(drifted)).toThrow(
-      /request challenge does not match the protocol request challenge/i,
-    );
-    try {
-      assertCanonicalNonMembershipBundle(drifted);
-    } catch (error) {
-      expect(error).toBeInstanceOf(StatusHelperError);
-      expect((error as StatusHelperError).code).toEqual(
-        statusVerificationErrorCodes.statusRequestMismatch,
+    for (const testCase of cases) {
+      expect(() => assertCanonicalNonMembershipBundle(testCase.bundle)).toThrow(
+        testCase.message,
       );
+      try {
+        assertCanonicalNonMembershipBundle(testCase.bundle);
+      } catch (error) {
+        expect(error).toBeInstanceOf(StatusHelperError);
+        expect((error as StatusHelperError).code).toEqual(testCase.code);
+      }
     }
   });
 

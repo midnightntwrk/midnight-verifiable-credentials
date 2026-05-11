@@ -203,9 +203,9 @@ export const assertCanonicalNonMembershipBundle = (
   assertLiveBundleConsistency(bundle);
 };
 
-export const buildCanonicalObservedNonMembershipBundle = ({
-  ...options
-}: BuildCanonicalObservedNonMembershipBundleOptions): CanonicalObservedNonMembershipBundle => {
+export const buildCanonicalObservedNonMembershipBundle = (
+  options: BuildCanonicalObservedNonMembershipBundleOptions,
+): CanonicalObservedNonMembershipBundle => {
   const bundle: CanonicalObservedNonMembershipBundle = {
     mode: "revokedSetObservedState",
     ...buildFreshRevokedSetNonMembershipInputs(options),

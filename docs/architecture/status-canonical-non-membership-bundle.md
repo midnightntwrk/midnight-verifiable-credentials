@@ -130,6 +130,6 @@ revoked-set bundle directly.
 
 See also:
 
-- [status-verification-modes.md](/private/tmp/vc-core-redesign-plan/docs/architecture/status-verification-modes.md)
-- [status-verification-protocol.md](/private/tmp/vc-core-redesign-plan/docs/spec/status-verification-protocol.md)
-- [revocation-registry.md](/private/tmp/vc-core-redesign-plan/docs/spec/revocation-registry.md)
+- [status-verification-modes.md](./status-verification-modes.md)
+- [status-verification-protocol.md](../spec/status-verification-protocol.md)
+- [revocation-registry.md](../spec/revocation-registry.md)
