@@ -112,7 +112,8 @@ Examples currently in scope as strong repository surfaces are:
 - `credentials-birth`
 - `credentials-birth-secret`
 - `credentials-hello-family`
-  - current claim-type playground and smallest compileable starter family
+  - current claim-type playground and smallest compileable starter family,
+    not a production privacy template
 
 ### `credentials-offchain-did`
 This package is the dedicated DID-aware adapter layer for offchain DID holder
