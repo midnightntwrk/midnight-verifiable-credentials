@@ -3,33 +3,6 @@ set -euo pipefail
 
 source ./tooling/scripts/run-common.sh
 
-light_supported_targets=(full build typecheck test hello-smoke)
-
-run_common_print_light_targets() {
-  local first=1
-  local target
-  for target in "${light_supported_targets[@]}"; do
-    if [[ $first -eq 1 ]]; then
-      printf '%s' "$target"
-      first=0
-    else
-      printf ', %s' "$target"
-    fi
-  done
-  printf '\n'
-}
-
-run_common_target_supports_light() {
-  local candidate="$1"
-  local target
-  for target in "${light_supported_targets[@]}"; do
-    if [[ "$target" == "$candidate" ]]; then
-      return 0
-    fi
-  done
-  return 1
-}
-
 run_common_usage() {
   cat <<'EOF'
 Usage:
@@ -172,20 +145,6 @@ esac
 if [[ "$light_requested" == "1" && "$target_kind" == "wrapper" ]] && ! run_common_target_supports_light "$target"; then
   echo "[run] Warning: --light is ignored by target '$target'" >&2
 fi
-
-case "$target" in
-  full)
-    if [[ ${#raw_args[@]} -gt 0 ]]; then
-      exec ./run-credentials.sh "${raw_args[@]}"
-    else
-      exec ./run-credentials.sh
-    fi
-    ;;
-  targets|help|-h|--help)
-    run_common_usage
-    exit 0
-    ;;
-esac
 
 if [[ ${#raw_args[@]} -gt 0 ]]; then
   run_common_repo_setup "${raw_args[@]}"
