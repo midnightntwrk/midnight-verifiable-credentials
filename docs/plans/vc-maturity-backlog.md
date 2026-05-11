@@ -127,10 +127,12 @@ Current highest-risk remaining area:
 - `VC-MAT-08` is now the strongest adoption gap:
   the repo has a generated family scaffold, guides, and templates, but still
   lacks:
-  - a compiling hello-verifier starter
+  - a tiny DID bootstrap sample
   - a concrete DID + VC handoff smoke path
   - a concrete hello-family -> verifier -> DID handoff story that is smaller
     than the full revocation/use-case stack
+  The compiling hello-verifier starter is in flight on the current stack on
+  top of the already compiling hello-family starter.
 - `VC-MAT-06` is narrowed but still open:
   docs and checklists now exist, but there is still no single production-safe
   orchestration reference path that closes the loop across durable state, RNG,
@@ -296,6 +298,8 @@ stack. The next backlog wave should use these ten larger reviewable slices.
 ### `INTEGRATOR-EXECUTION`
 
 - `Slice 6`: compiling hello-verifier starter
+   - in flight on the current stack on top of
+     [`midnightntwrk/midnight-verifiable-credentials#177`](https://github.com/midnightntwrk/midnight-verifiable-credentials/pull/177)
    - shortest-path runnable verifier example using the converged thin-core
      surfaces and current run-target conventions
 - `Slice 7`: compiling hello-family starter

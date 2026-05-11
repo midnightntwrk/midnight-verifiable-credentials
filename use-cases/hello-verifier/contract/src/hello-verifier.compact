@@ -2,24 +2,23 @@ pragma language_version >= 0.20;
 
 import CompactStandardLibrary;
 
-include "../../../../prototypes/credential-families/birth/src/birth-credential";
+include "../../../../prototypes/credential-families/hello-family/src/hello-family-credential";
 
 export ledger contractVersion: Uint<32>;
 export ledger successfulVerificationCount: Counter;
 export ledger lastVerifiedCredentialRoot: Bytes<32>;
-export ledger lastVerifiedCurrentDay: Uint<32>;
-export ledger lastVerifiedThresholdYears: Uint<8>;
 export ledger lastVerifiedRequestChallenge: Bytes<32>;
-
-witness holderBirthDateDays(): Uint<32>;
-witness holderBirthDateOpening(): Bytes<32>;
+export ledger lastVerifiedBooleanValue: Boolean;
+export ledger lastVerifiedBigUnsignedValue: Uint<248>;
+export ledger lastVerifiedBytesValue: Bytes<32>;
 
 constructor() {
   contractVersion = 1;
   lastVerifiedCredentialRoot = pad(32, "hello-verifier:none");
-  lastVerifiedCurrentDay = 0;
-  lastVerifiedThresholdYears = 0;
   lastVerifiedRequestChallenge = pad(32, "hello-verifier:no-request");
+  lastVerifiedBooleanValue = false;
+  lastVerifiedBigUnsignedValue = 0;
+  lastVerifiedBytesValue = pad(32, "");
 }
 
 // Request-builder helper for the smallest verifier starter.
@@ -27,69 +26,68 @@ constructor() {
 export pure circuit helloVerifierRequest(
   issuerVerificationMethodRef: VerificationMethodRef,
   verifierChallengeHash: Bytes<32>,
-  requestedAgeThresholdYears: Uint<8>
-): BirthCredentialPresentationRequest {
-  return BirthCredentialPresentationRequest {
+  requireBytesValueDisclosure: Boolean
+): HelloFamilyPresentationRequest {
+  return HelloFamilyPresentationRequest {
     version: 1,
     schema: SchemaRef {
-      packageId: pad(32, "midnight-did:vc:birth"),
-      schemaId: pad(32, "birth-credential:v1"),
+      packageId: pad(32, "midnight:vc:hello-family"),
+      schemaId: pad(32, "hello-family:v1"),
       majorVersion: 1,
       minorVersion: 0,
     },
     issuerVerificationMethodRef: issuerVerificationMethodRef,
-    requireSubjectIdCommitmentDisclosure: false,
-    requireBirthCountryDisclosure: false,
-    requireAgeOverThreshold: true,
-    requestedAgeThresholdYears: requestedAgeThresholdYears,
+    requireBooleanValueDisclosure: true,
+    requireBytesValueDisclosure: requireBytesValueDisclosure,
+    requireBigUnsignedValueDisclosure: true,
     verifierChallengeHash: verifierChallengeHash,
   };
 }
 
-// TRUST BOUNDARY: currentDay is still caller-supplied. This starter demonstrates
-// request/presentation verification shape, not production-safe time binding.
-export circuit verifyBirthPresentationForHelloVerifier(
-  credential: BirthCredential,
+// TRUST BOUNDARY: this starter only demonstrates typed request construction,
+// family verification, and disclosure consumption. It does not add status,
+// external time binding, or durable business-capability semantics.
+export circuit verifyHelloFamilyPresentationForHelloVerifier(
+  credential: HelloFamilyCredential,
   credentialProof: Proof,
-  request: BirthCredentialPresentationRequest,
-  presentation: BirthCredentialPresentation,
-  presentationProof: Proof,
-  currentDay: Uint<32>
+  request: HelloFamilyPresentationRequest,
+  presentation: HelloFamilyPresentation,
+  presentationProof: Proof
 ): [] {
-  const credentialRoot = disclose(birthCredentialBodyRoot(credential));
+  const credentialRoot = disclose(helloFamilyCredentialBodyRoot(credential));
 
-  assertValidBirthCredentialPresentation(
-    credential,
-    credentialProof,
-    presentation,
-    presentationProof
+  assert(
+    request.requireBooleanValueDisclosure,
+    "Hello-verifier starter requires boolean disclosure"
+  );
+  assert(
+    request.requireBigUnsignedValueDisclosure,
+    "Hello-verifier starter requires big-unsigned disclosure"
   );
 
-  assertBirthPresentationSatisfiesRequest(
+  assertHelloFamilyPresentationSatisfiesRequest(
     credential,
+    credentialProof,
     request,
     presentation,
     presentationProof
   );
 
-  if (credential.hasExpiration) {
-    assert(
-      currentDay <= credential.expiresAt,
-      "Credential has expired for the supplied verification day"
-    );
+  lastVerifiedCredentialRoot = credentialRoot;
+  lastVerifiedRequestChallenge = disclose(request.verifierChallengeHash);
+  // CONFORMANCE LOCK: this circuit now enforces boolean and bigUnsigned
+  // disclosure as an invariant, so they do not need a conditional reset path.
+  lastVerifiedBooleanValue = disclose(presentation.disclosed.booleanValue);
+  lastVerifiedBigUnsignedValue = disclose(
+    presentation.disclosed.bigUnsignedValue
+  );
+  const revealedBytesValue = disclose(presentation.disclosed.revealBytesValue);
+
+  if (revealedBytesValue) {
+    lastVerifiedBytesValue = disclose(presentation.disclosed.bytesValue);
+  } else {
+    lastVerifiedBytesValue = pad(32, "");
   }
 
-  assertValidBirthCredentialAgePredicate(
-    credential,
-    presentation,
-    currentDay,
-    holderBirthDateDays(),
-    holderBirthDateOpening()
-  );
-
-  lastVerifiedCredentialRoot = credentialRoot;
-  lastVerifiedCurrentDay = disclose(currentDay);
-  lastVerifiedThresholdYears = disclose(presentation.disclosed.ageThresholdYears);
-  lastVerifiedRequestChallenge = disclose(request.verifierChallengeHash);
   successfulVerificationCount.increment(1);
 }

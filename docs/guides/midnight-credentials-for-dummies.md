@@ -180,7 +180,7 @@ So in the current work:
 | `credentials-birth-secret` | the same birth family, but with hidden holder binding and better privacy |
 | `credentials-iso-registry` | shared numeric ISO code types — countries, currencies, languages, regions, and genders as circuit-friendly integers |
 | `credentials-status-registry` | prototype status/revocation package with a registry contract surface and off-chain builders |
-| `use-cases/hello-verifier/contract` | the smallest current verifier contract that checks one typed request against one birth-credential presentation |
+| `use-cases/hello-verifier/contract` | the smallest current verifier contract that checks one typed request against one hello-family presentation |
 | `use-cases/age-gate/contract` | a richer business use-case package that issues reusable access capabilities from explicit-holder and hidden-holder flows |
 | `use-cases/age-gate/scenarios` | BDD living-documentation scenarios for the concrete age-gate use case |
 | `components/adapters/offchain-did` | off-chain DID-aware adapter helpers for deriving holder-binding values |
@@ -195,7 +195,7 @@ If you want a low-confusion reading order, use this one.
 | Step | Start here | What you learn before moving on |
 | --- | --- | --- |
 | 1 | `credentials-birth` | the smallest current concrete credential family with explicit holder binding |
-| 2 | `use-cases/hello-verifier/contract` | the smallest verifier contract that consumes that family |
+| 2 | `use-cases/hello-verifier/contract` | the smallest verifier contract that consumes that starter family |
 | 3 | `use-cases/age-gate/contract/src/demo.compact` | how a business contract turns successful verification into a reusable capability |
 | 4 | `credentials-birth-secret` | hidden holder binding, blinded issuance anchors, pseudonyms, and same-holder composition |
 | 5 | `use-cases/age-gate/contract/src/demo-revocation.compact` | how the current prototype status and revocation path changes verifier requirements |
@@ -1647,7 +1647,7 @@ That is a better engineering habit because it tells you exactly what combination
 
 | Surface | What it demonstrates | Test or scenario |
 | --- | --- | --- |
-| `use-cases/hello-verifier/contract` | smallest verifier contract that consumes the explicit-holder birth family | `use-cases/hello-verifier/contract/src/test/hello-verifier.test.ts` |
+| `use-cases/hello-verifier/contract` | smallest verifier contract that consumes the hello-family starter package | `use-cases/hello-verifier/contract/src/test/hello-verifier.test.ts` |
 | `use-cases/age-gate/contract` | explicit-holder business contract that mints and consumes an access capability | `use-cases/age-gate/contract/src/test/demo.test.ts` |
 | `use-cases/age-gate/contract/src/demo-revocation.compact` | hidden-holder, status-aware business contract with verifier-supplied-root and authority-attested modes | `use-cases/age-gate/contract/src/test/demo-revocation.test.ts` |
 | `use-cases/age-gate/scenarios` | BDD living documentation for the explicit-holder and hidden-holder age-gate flows | `use-cases/age-gate/scenarios/features/*.feature` |
@@ -1985,12 +1985,12 @@ It is the smallest current verifier-side prototype in the repository.
 
 ### What It Proves
 
-The hello-verifier contract uses the explicit-holder `credentials-birth` family and does four things:
+The hello-verifier contract uses the starter `credentials-hello-family` package and does four things:
 
-1. builds a typed verifier request with an age threshold
-2. accepts one birth presentation
+1. builds one typed verifier request for a small selective-disclosure shape
+2. accepts one hello-family presentation
 3. checks that the presentation satisfies the request
-4. records the accepted credential root and request challenge in ledger state
+4. records the accepted credential root, request challenge, and selected disclosed values in ledger state
 
 What it deliberately does not do:
 
@@ -2012,9 +2012,9 @@ sequenceDiagram
     Vera->>Contract: derive helloVerifierRequest(...)
     Contract-->>Vera: typed age-threshold request
     Vera->>Alice: request + verifier challenge
-    Alice->>Alice: build birth presentation locally
-    Alice->>Contract: verifyBirthPresentationForHelloVerifier(...)
-    Contract->>Contract: verify issuer proof, holder proof, request match, and age predicate
+    Alice->>Alice: build hello-family presentation locally
+    Alice->>Contract: verifyHelloFamilyPresentationForHelloVerifier(...)
+    Contract->>Contract: verify issuer proof, holder proof, and request match
     Contract-->>Vera: record successful verification state
 ```
 
@@ -2022,9 +2022,9 @@ sequenceDiagram
 
 The contract is saying:
 
-- give me a birth credential from the expected issuer
+- give me a hello-family credential from the expected issuer
 - give me a presentation that matches this challenge
-- prove the holder satisfies the requested age threshold
+- disclose the typed fields I asked for
 - if all of that checks out, I will record the successful verification
 
 This is not yet the business story.
