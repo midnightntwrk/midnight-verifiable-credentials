@@ -193,4 +193,9 @@ export const HiddenHolderScenarioOutcome = {
       "why the hidden-holder scenario was rejected",
       (actor) => UseHiddenHolderScenario.from(actor).lastResult().failureMessage,
     ),
+  failureCode: () =>
+    Question.about<string | null>(
+      "which canonical status code rejected the hidden-holder scenario",
+      (actor) => UseHiddenHolderScenario.from(actor).lastResult().failureCode,
+    ),
 };

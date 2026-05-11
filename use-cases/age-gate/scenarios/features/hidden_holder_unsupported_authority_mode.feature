@@ -8,3 +8,4 @@ Feature: Hidden-holder unsupported authority-mode rejection
     When the engineer runs the hidden-holder unsupported authority-mode rejection path
     Then the hidden-holder scenario should be rejected
     And the hidden-holder scenario failure message should contain "does not accept authority-attested status"
+    And the hidden-holder scenario failure code should be "unsupportedStatusProofMode"

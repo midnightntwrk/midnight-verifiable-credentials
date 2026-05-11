@@ -8,3 +8,4 @@ Feature: Hidden-holder revoked credential rejection
     When the engineer runs the hidden-holder revoked-credential rejection path
     Then the hidden-holder scenario should be rejected
     And the hidden-holder scenario failure message should contain "already present in the revoked set snapshot"
+    And the hidden-holder scenario failure code should be "revoked"

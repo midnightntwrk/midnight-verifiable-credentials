@@ -8,3 +8,4 @@ Feature: Hidden-holder wrong-root rejection
     When the engineer runs the hidden-holder wrong-root rejection path
     Then the hidden-holder scenario should be rejected
     And the hidden-holder scenario failure message should contain "Revoked-set status proof protocol revoked root does not match the verifier request"
+    And the hidden-holder scenario failure code should be "statusRequestMismatch"

@@ -123,6 +123,15 @@ Then(
 );
 
 Then(
+  "the hidden-holder scenario failure code should be {string}",
+  async (expectedCode: string) => {
+    await engineer().attemptsTo(
+      Ensure.that(HiddenHolderScenarioOutcome.failureCode(), equals(expectedCode)),
+    );
+  },
+);
+
+Then(
   "the hidden-holder scenario should issue {int} credential",
   async (expectedCount: number) => {
     await engineer().attemptsTo(

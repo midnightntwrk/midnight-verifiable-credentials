@@ -8,3 +8,4 @@ Feature: Hidden-holder stale authority attestation rejection
     When the engineer runs the hidden-holder expired-attestation rejection path
     Then the hidden-holder scenario should be rejected
     And the hidden-holder scenario failure message should contain "exceeds the verifier max-age policy"
+    And the hidden-holder scenario failure code should be "attestationTooOld"
