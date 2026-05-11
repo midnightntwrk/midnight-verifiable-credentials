@@ -2,6 +2,12 @@ pragma language_version >= 0.20;
 
 import CompactStandardLibrary;
 
+// Status proof protocol surface.
+// Owns the verifier-supplied-root, same-contract live-state, and
+// authority-attested status protocol model above the VC-side binding layer.
+// It intentionally does not own the ledger mutation path or the final generic
+// Merkle non-membership proof.
+
 // Include rule:
 // - callers must include the shared `credentials` Compact surface before this
 //   file.
@@ -16,6 +22,10 @@ import CompactStandardLibrary;
 //   - `secret-birth-credential.compact` via `credentials/composable`
 // - this file does not re-include `credentials` directly because Compact
 //   repeated includes can surface duplicate bindings in downstream families.
+
+// =====================
+// Capability and policy model
+// =====================
 
 export enum StatusCapabilityKind {
   noStatus,
@@ -94,12 +104,15 @@ export struct AuthorityAttestedStatusProofProtocol {
   attestation: AuthorityAttestedStatusProof,
 }
 
-export circuit assertValidNoStatusCapability(
+// =====================
+// Capability and request validation
+// =====================
+export pure circuit assertValidNoStatusCapability(
   capability: NoStatusCapability
 ): [] {
 }
 
-export circuit assertValidRevokedSetNonMembershipStatusCapability(
+export pure circuit assertValidRevokedSetNonMembershipStatusCapability(
   capability: RevokedSetNonMembershipStatusCapability
 ): [] {
   assert(
@@ -113,7 +126,7 @@ export circuit assertValidRevokedSetNonMembershipStatusCapability(
   );
 }
 
-export circuit assertValidAuthorityAttestedStatusCapability(
+export pure circuit assertValidAuthorityAttestedStatusCapability(
   capability: AuthorityAttestedStatusCapability
 ): [] {
   assert(
@@ -127,7 +140,7 @@ export circuit assertValidAuthorityAttestedStatusCapability(
   );
 }
 
-export circuit assertValidVerifierStatusPolicy(
+export pure circuit assertValidVerifierStatusPolicy(
   policy: VerifierStatusPolicy
 ): [] {
   if (policy.requireStatus) {
@@ -178,7 +191,7 @@ export circuit assertValidVerifierStatusPolicy(
   }
 }
 
-export circuit assertValidRevocationRegistryState(
+export pure circuit assertValidRevocationRegistryState(
   state: RevocationRegistryState
 ): [] {
   assert(
@@ -191,7 +204,7 @@ export circuit assertValidRevocationRegistryState(
   );
 }
 
-export circuit assertValidRevokedSetStatusRequest(
+export pure circuit assertValidRevokedSetStatusRequest(
   request: RevokedSetStatusRequest
 ): [] {
   assertValidRevocationRegistryState(request.registryState);
@@ -201,14 +214,14 @@ export circuit assertValidRevokedSetStatusRequest(
   );
 }
 
-export circuit revokedSetStatusHandleCommitment(
+export pure circuit revokedSetStatusHandleCommitment(
   statusHandle: Bytes<32>,
   opening: Bytes<32>
 ): Bytes<32> {
   return persistentCommit<Bytes<32>>(statusHandle, opening);
 }
 
-export circuit revokedSetStatusHandle(
+export pure circuit revokedSetStatusHandle(
   credentialClaimRoot: Bytes<32>,
   registryId: Bytes<32>,
   issuerStatusSalt: Bytes<32>
@@ -221,7 +234,7 @@ export circuit revokedSetStatusHandle(
   ]);
 }
 
-export circuit assertValidRevokedSetNonMembershipWitnessInput(
+export pure circuit assertValidRevokedSetNonMembershipWitnessInput(
   witnessInput: RevokedSetNonMembershipWitnessInput
 ): [] {
   assertValidRevocationRegistryState(witnessInput.registryState);
@@ -235,7 +248,7 @@ export circuit assertValidRevokedSetNonMembershipWitnessInput(
   );
 }
 
-export circuit assertValidLiveStatusWitnessInput(
+export pure circuit assertValidLiveStatusWitnessInput(
   witnessInput: LiveStatusWitnessInput
 ): [] {
   assert(
@@ -248,7 +261,10 @@ export circuit assertValidLiveStatusWitnessInput(
   );
 }
 
-export circuit assertValidRevokedSetNonMembershipStatusProofProtocol(
+// =====================
+// Revoked-set observed-snapshot and live-state protocol matching
+// =====================
+export pure circuit assertValidRevokedSetNonMembershipStatusProofProtocol(
   protocol: RevokedSetNonMembershipStatusProofProtocol
 ): [] {
   assertValidRevokedSetStatusRequest(protocol.request);
@@ -270,7 +286,7 @@ export circuit assertValidRevokedSetNonMembershipStatusProofProtocol(
   );
 }
 
-export circuit assertRegistryBoundStatusBindingMatchesRevokedSetNonMembershipStatusProofProtocol(
+export pure circuit assertRegistryBoundStatusBindingMatchesRevokedSetNonMembershipStatusProofProtocol(
   binding: RegistryBoundStatusBinding,
   protocol: RevokedSetNonMembershipStatusProofProtocol
 ): [] {
@@ -293,7 +309,7 @@ export circuit assertRegistryBoundStatusBindingMatchesRevokedSetNonMembershipSta
   );
 }
 
-export circuit assertRevokedSetNonMembershipWitnessMatchesBinding(
+export pure circuit assertRevokedSetNonMembershipWitnessMatchesBinding(
   binding: RegistryBoundStatusBinding,
   witnessInput: RevokedSetNonMembershipWitnessInput
 ): [] {
@@ -315,7 +331,7 @@ export circuit assertRevokedSetNonMembershipWitnessMatchesBinding(
   );
 }
 
-export circuit assertLiveStatusWitnessMatchesBinding(
+export pure circuit assertLiveStatusWitnessMatchesBinding(
   binding: RegistryBoundStatusBinding,
   witnessInput: LiveStatusWitnessInput
 ): [] {
@@ -330,13 +346,16 @@ export circuit assertLiveStatusWitnessMatchesBinding(
   );
 }
 
-export circuit authorityAttestedStatusStatementRoot(
+// =====================
+// Authority-attested status statements and proof matching
+// =====================
+export pure circuit authorityAttestedStatusStatementRoot(
   statement: AuthorityAttestedStatusStatement
 ): Bytes<32> {
   return persistentHash<AuthorityAttestedStatusStatement>(statement);
 }
 
-export circuit assertValidAuthorityAttestedStatusStatement(
+export pure circuit assertValidAuthorityAttestedStatusStatement(
   statement: AuthorityAttestedStatusStatement
 ): [] {
   assertValidRevocationRegistryState(statement.registryState);
@@ -356,7 +375,7 @@ export circuit assertValidAuthorityAttestedStatusStatement(
   }
 }
 
-export circuit assertValidAuthorityAttestedStatusProof(
+export pure circuit assertValidAuthorityAttestedStatusProof(
   attestation: AuthorityAttestedStatusProof
 ): [] {
   assertValidAuthorityAttestedStatusStatement(attestation.statement);
@@ -376,7 +395,7 @@ export circuit assertValidAuthorityAttestedStatusProof(
   );
 }
 
-export circuit assertValidAuthorityAttestedStatusProofProtocol(
+export pure circuit assertValidAuthorityAttestedStatusProofProtocol(
   protocol: AuthorityAttestedStatusProofProtocol
 ): [] {
   assertValidRevokedSetStatusRequest(protocol.request);
@@ -403,7 +422,7 @@ export circuit assertValidAuthorityAttestedStatusProofProtocol(
   );
 }
 
-export circuit assertRegistryBoundStatusBindingMatchesAuthorityAttestedStatusProofProtocol(
+export pure circuit assertRegistryBoundStatusBindingMatchesAuthorityAttestedStatusProofProtocol(
   binding: RegistryBoundStatusBinding,
   protocol: AuthorityAttestedStatusProofProtocol,
   currentTime: Uint<64>
@@ -436,7 +455,7 @@ export circuit assertRegistryBoundStatusBindingMatchesAuthorityAttestedStatusPro
   );
 }
 
-export circuit assertAuthorityAttestedStatusProofMatchesBinding(
+export pure circuit assertAuthorityAttestedStatusProofMatchesBinding(
   binding: RegistryBoundStatusBinding,
   attestation: AuthorityAttestedStatusProof
 ): [] {
@@ -462,7 +481,7 @@ export circuit assertAuthorityAttestedStatusProofMatchesBinding(
   );
 }
 
-export circuit assertAuthorityAttestedStatusProofMatchesRequest(
+export pure circuit assertAuthorityAttestedStatusProofMatchesRequest(
   request: RevokedSetStatusRequest,
   attestation: AuthorityAttestedStatusProof,
   currentTime: Uint<64>
@@ -498,7 +517,7 @@ export circuit assertAuthorityAttestedStatusProofMatchesRequest(
   }
 }
 
-export circuit assertAuthorityAttestedStatusProofFreshEnough(
+export pure circuit assertAuthorityAttestedStatusProofFreshEnough(
   policy: VerifierStatusPolicy,
   attestation: AuthorityAttestedStatusProof,
   currentTime: Uint<64>
@@ -520,7 +539,10 @@ export circuit assertAuthorityAttestedStatusProofFreshEnough(
   }
 }
 
-export circuit assertVerifierStatusPolicyAcceptsRevokedSetNonMembershipBinding(
+// =====================
+// Policy acceptance entrypoints
+// =====================
+export pure circuit assertVerifierStatusPolicyAcceptsRevokedSetNonMembershipBinding(
   policy: VerifierStatusPolicy,
   binding: RegistryBoundStatusBinding,
   witnessInput: RevokedSetNonMembershipWitnessInput
@@ -554,7 +576,7 @@ export circuit assertVerifierStatusPolicyAcceptsRevokedSetNonMembershipBinding(
   }
 }
 
-export circuit assertVerifierStatusPolicyAcceptsLiveStatusBinding(
+export pure circuit assertVerifierStatusPolicyAcceptsLiveStatusBinding(
   policy: VerifierStatusPolicy,
   binding: RegistryBoundStatusBinding,
   witnessInput: LiveStatusWitnessInput
@@ -580,7 +602,7 @@ export circuit assertVerifierStatusPolicyAcceptsLiveStatusBinding(
   }
 }
 
-export circuit assertVerifierStatusPolicyAcceptsRevokedSetNonMembershipStatusProofProtocol(
+export pure circuit assertVerifierStatusPolicyAcceptsRevokedSetNonMembershipStatusProofProtocol(
   policy: VerifierStatusPolicy,
   binding: RegistryBoundStatusBinding,
   protocol: RevokedSetNonMembershipStatusProofProtocol
@@ -614,7 +636,7 @@ export circuit assertVerifierStatusPolicyAcceptsRevokedSetNonMembershipStatusPro
   }
 }
 
-export circuit assertVerifierStatusPolicyAcceptsAuthorityAttestedStatusBinding(
+export pure circuit assertVerifierStatusPolicyAcceptsAuthorityAttestedStatusBinding(
   policy: VerifierStatusPolicy,
   binding: RegistryBoundStatusBinding,
   request: RevokedSetStatusRequest,
@@ -653,7 +675,7 @@ export circuit assertVerifierStatusPolicyAcceptsAuthorityAttestedStatusBinding(
   }
 }
 
-export circuit assertVerifierStatusPolicyAcceptsAuthorityAttestedStatusProofProtocol(
+export pure circuit assertVerifierStatusPolicyAcceptsAuthorityAttestedStatusProofProtocol(
   policy: VerifierStatusPolicy,
   binding: RegistryBoundStatusBinding,
   protocol: AuthorityAttestedStatusProofProtocol,
