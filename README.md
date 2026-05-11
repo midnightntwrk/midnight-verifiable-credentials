@@ -124,6 +124,13 @@ Light mode:
 ./run.sh --light
 ```
 
+Targets that currently honor `--light`:
+
+- `./run.sh`
+- `./run.sh typecheck`
+- `./run.sh test`
+- `./run.sh hello-smoke`
+
 Discover explicit repository targets:
 
 ```bash

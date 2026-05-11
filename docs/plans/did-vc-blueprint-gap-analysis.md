@@ -613,20 +613,33 @@ Recorded artifact:
 
 Primary DID evidence:
 
-- `/Users/ysh/iohk/midnight-did/README.md`
-- `/Users/ysh/iohk/midnight-did/docs/vc-repository-maturity-consolidation.md`
+- sibling DID repo checkout:
+  - `../midnight-did/README.md`
+  - `../midnight-did/docs/vc-repository-maturity-consolidation.md`
 
 Primary VC evidence:
 
-- `/Users/ysh/iohk/midnight-identity-workspace/midnight-verifiable-credentials/README.md`
-- `/Users/ysh/iohk/midnight-identity-workspace/midnight-verifiable-credentials/docs/README.md`
-- `/Users/ysh/iohk/midnight-identity-workspace/midnight-verifiable-credentials/docs/guides/package-selection.md`
-- `/Users/ysh/iohk/midnight-identity-workspace/midnight-verifiable-credentials/docs/guides/integration-surface-map.md`
-- `/Users/ysh/iohk/midnight-identity-workspace/midnight-verifiable-credentials/docs/guides/hidden-holder-hello-world.md`
-- `/Users/ysh/iohk/midnight-identity-workspace/midnight-verifiable-credentials/docs/architecture/overview.md`
-- `/Users/ysh/iohk/midnight-identity-workspace/midnight-verifiable-credentials/docs/architecture/package-boundaries.md`
-- `/Users/ysh/iohk/midnight-identity-workspace/midnight-verifiable-credentials/docs/spec/credential-status.md`
-- `/Users/ysh/iohk/midnight-identity-workspace/midnight-verifiable-credentials/docs/spec/status-verification-protocol.md`
-- `/Users/ysh/iohk/midnight-identity-workspace/midnight-verifiable-credentials/docs/testing/test-matrix.md`
-- `/Users/ysh/iohk/midnight-identity-workspace/midnight-verifiable-credentials/docs/plans/serenity-js-bdd-layer.md`
-- `/Users/ysh/iohk/midnight-identity-workspace/midnight-verifiable-credentials/docs/plans/vc-maturity-backlog.md`
+- repo root:
+  - `../../README.md`
+- docs entrypoint:
+  - `../README.md`
+- package-selection guide:
+  - `../guides/package-selection.md`
+- integration-surface map:
+  - `../guides/integration-surface-map.md`
+- hidden-holder hello world:
+  - `../guides/hidden-holder-hello-world.md`
+- architecture overview:
+  - `../architecture/overview.md`
+- package boundaries:
+  - `../architecture/package-boundaries.md`
+- credential status:
+  - `../spec/credential-status.md`
+- status verification protocol:
+  - `../spec/status-verification-protocol.md`
+- test matrix:
+  - `../testing/test-matrix.md`
+- serenity-js BDD plan:
+  - `./serenity-js-bdd-layer.md`
+- VC maturity backlog:
+  - `./vc-maturity-backlog.md`
