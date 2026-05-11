@@ -18,6 +18,7 @@ const NON_JUBJUB_DID_URL =
   "did:midnight:offchain:7504b09f89e228b168119f0db74229a41aaa586a456531622849f14f6f9e297e?state=TU9EMQAAAC0AAAABAQAAAAAAAAAAAAAAAAAAAAAAAAABAQAAAA0jaG9sZGVyLWtleS0xAAAAAQIAAAACQVEAAAAAAAAAAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 const NON_AUTH_DID_URL =
   "did:midnight:offchain:36a4e7ace1d95d4519cba44ae8cbaa08fd41c89052cffb91ecfef2658289b3be?state=TU9EMQAAAC0AAAABAQAAAAAAAAAAAAAAAAAAAAAAAAABAQAAAA0jaG9sZGVyLWtleS0xAAAAAQEAAAACQVEAAAACQWcAAAABAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+
 describe("credentials-offchain-did", () => {
   it("derives a holder binding from a portable offchain DID URL", () => {
     const resolved = createOffchainDIDHolderBindingFromDidUrl({
@@ -58,6 +59,17 @@ describe("credentials-offchain-did", () => {
 
     expect(resolved.did).toEqual(portableDidUrl.split("?", 1)[0]);
     expect(resolved.binding.holderPublicKey).toEqual(holder);
+  });
+
+  it("rejects Jubjub coordinates that do not fit in 32 bytes", () => {
+    expect(() =>
+      createPortableOffchainDIDUrlForJubjubHolder({
+        publicKey: {
+          x: 1n << 256n,
+          y: 2n,
+        },
+      }),
+    ).toThrow(/must fit in 32 bytes/);
   });
 
   it("normalizes canonical DID method references", () => {

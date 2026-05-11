@@ -223,4 +223,42 @@ describe("hello-verifier offchain DID smoke path", () => {
       /Offchain Midnight holder state hash does not match the credential holder binding/,
     );
   });
+
+  it("rejects direct offchain requests that disable mandatory boolean disclosure", () => {
+    const fixture = createHelloFamilyOffchainDidFixture();
+    const simulator = new HelloVerifierOffchainSimulator();
+    const invalidRequest = {
+      ...fixture.presentationRequest,
+      requireBooleanValueDisclosure: false,
+    };
+
+    expect(() =>
+      simulator.verifyHelloFamilyOffchainPresentationForHelloVerifier(
+        fixture.credential,
+        fixture.credentialProof,
+        invalidRequest,
+        fixture.presentation,
+        fixture.presentationProof,
+      ),
+    ).toThrow(/Hello-verifier starter requires boolean disclosure/);
+  });
+
+  it("rejects direct offchain requests that disable mandatory big-unsigned disclosure", () => {
+    const fixture = createHelloFamilyOffchainDidFixture();
+    const simulator = new HelloVerifierOffchainSimulator();
+    const invalidRequest = {
+      ...fixture.presentationRequest,
+      requireBigUnsignedValueDisclosure: false,
+    };
+
+    expect(() =>
+      simulator.verifyHelloFamilyOffchainPresentationForHelloVerifier(
+        fixture.credential,
+        fixture.credentialProof,
+        invalidRequest,
+        fixture.presentation,
+        fixture.presentationProof,
+      ),
+    ).toThrow(/Hello-verifier starter requires big-unsigned disclosure/);
+  });
 });

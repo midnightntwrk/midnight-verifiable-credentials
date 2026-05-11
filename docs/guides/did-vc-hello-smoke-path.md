@@ -90,6 +90,10 @@ current smoke path.
   privacy profile
 - the offchain DID lifecycle is still runtime-only; no Compact contract in this
   repo owns DID state
+- the starter reuses `VerificationMethodRef.didContractAddress` bytes to carry
+  the resolved offchain DID state hash when binding the holder proof; treat
+  that as a starter-only compatibility convention, not as an on-chain DID
+  contract address
 - this path proves the holder-binding handoff and presentation verification,
   not issuance transport or wallet UX
 - if you need revocation or multi-party orchestration, move to `age-gate` or

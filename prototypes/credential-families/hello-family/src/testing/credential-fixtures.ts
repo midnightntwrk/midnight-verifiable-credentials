@@ -30,8 +30,9 @@ import {
   pureCircuits as offchainPureCircuits,
 } from "../managed/hello-family-offchain-credential/contract/index.js";
 
-// WARNING: deterministic test fixtures. Fixed nonces and hardcoded secret keys
-// are unsafe outside of tests and local starter simulations.
+// WARNING: deterministic test fixtures. Fixed nonces, hardcoded secret keys,
+// and per-context nonce salts are unsafe outside of tests and local starter
+// simulations.
 // NOTE: Jubjub subgroup order used by the Compact proof challenge/signature math.
 const JUBJUB_SUBGROUP_ORDER =
   6554484396890773809930967563523245729705921265872317281365359162392183254199n;
