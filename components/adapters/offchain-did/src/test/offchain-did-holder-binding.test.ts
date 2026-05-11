@@ -1,9 +1,11 @@
+import { ecMulGenerator } from "@midnight-ntwrk/compact-runtime";
 import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { describe, expect, it } from "vitest";
 
 import {
   createOffchainDIDHolderBindingFromDidUrl,
   createOffchainMidnightHolderBindingFromDidUrl,
+  createPortableOffchainDIDUrlForJubjubHolder,
   hashOffchainDIDMethodId,
   normalizeOffchainDIDMethodReference,
 } from "../offchain-did-holder-binding.js";
@@ -43,6 +45,42 @@ describe("credentials-offchain-did", () => {
     });
 
     expect(resolved.method.id).toEqual("#holder-key-1");
+  });
+
+  it("bootstraps a portable offchain DID URL from a Jubjub key and derives the VC holder binding", () => {
+    const holder = ecMulGenerator(222222221n);
+    const portableDidUrl = createPortableOffchainDIDUrlForJubjubHolder({
+      publicKey: holder,
+    });
+
+    const resolved = createOffchainDIDHolderBindingFromDidUrl({
+      portableDidUrl,
+    });
+
+    expect(resolved.did).toEqual(portableDidUrl.split("?", 1)[0]);
+    expect(resolved.binding.holderPublicKey).toEqual(holder);
+  });
+
+  it("rejects Jubjub coordinates that do not fit in 32 bytes", () => {
+    expect(() =>
+      createPortableOffchainDIDUrlForJubjubHolder({
+        publicKey: {
+          x: 1n << 256n,
+          y: 2n,
+        },
+      }),
+    ).toThrow(/must fit in 32 bytes/);
+  });
+
+  it("rejects negative Jubjub coordinates", () => {
+    expect(() =>
+      createPortableOffchainDIDUrlForJubjubHolder({
+        publicKey: {
+          x: -1n,
+          y: 2n,
+        },
+      }),
+    ).toThrow(/must be non-negative/);
   });
 
   it("normalizes canonical DID method references", () => {

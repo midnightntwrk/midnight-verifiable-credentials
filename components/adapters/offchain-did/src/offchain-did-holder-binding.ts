@@ -7,6 +7,11 @@ import {
   resolvePortableOffchainMidnightDID,
 } from "@midnight-ntwrk/midnight-did";
 import type { OffchainMidnightHolderBinding as CoreOffchainMidnightHolderBinding } from "@midnight-ntwrk/midnight-did-credentials";
+import {
+  createPortableOffchainMidnightDIDUrl,
+  CurveType,
+  KeyType,
+} from "@midnight-ntwrk/midnight-did-domain";
 
 const textEncoder = new TextEncoder();
 const BYTES32_LENGTH = 32;
@@ -36,6 +41,18 @@ const decodeBase64Url = (value: string): Uint8Array => {
   const normalized = value.replaceAll("-", "+").replaceAll("_", "/");
   const padding = "=".repeat((4 - (normalized.length % 4)) % 4);
   return new Uint8Array(Buffer.from(`${normalized}${padding}`, "base64"));
+};
+
+const encodeBase64Url = (value: bigint): string => {
+  if (value < 0n) {
+    throw new Error("Offchain DID Jubjub coordinate must be non-negative");
+  }
+  let hex = value.toString(16);
+  if (hex.length > HEX_BYTES32_LENGTH) {
+    throw new Error("Offchain DID Jubjub coordinate must fit in 32 bytes");
+  }
+  hex = hex.padStart(HEX_BYTES32_LENGTH, "0");
+  return Buffer.from(hex, "hex").toString("base64url");
 };
 
 const decodeBigEndianUnsigned = (value: Uint8Array): bigint => {
@@ -118,6 +135,37 @@ export const normalizeOffchainDIDMethodReference = (
 /** @deprecated Use normalizeOffchainDIDMethodReference instead. */
 export const normalizeOffchainMidnightMethodReference =
   normalizeOffchainDIDMethodReference;
+
+export const createPortableOffchainDIDUrlForJubjubHolder = ({
+  publicKey,
+  methodId = "#holder-key-1",
+}: {
+  readonly publicKey: { readonly x: bigint; readonly y: bigint };
+  readonly methodId?: string;
+}): string =>
+  createPortableOffchainMidnightDIDUrl({
+    version: 1,
+    alsoKnownAs: [],
+    verificationMethod: [
+      {
+        id: methodId,
+        publicKeyJwk: {
+          kty: KeyType.EC,
+          crv: CurveType.Jubjub,
+          x: encodeBase64Url(publicKey.x),
+          y: encodeBase64Url(publicKey.y),
+        },
+        relationships: {
+          authentication: true,
+          assertionMethod: false,
+          keyAgreement: false,
+          capabilityInvocation: false,
+          capabilityDelegation: false,
+        },
+      },
+    ],
+    service: [],
+  });
 
 const isJubjubAuthenticationMethod = (
   method: OffchainVerificationMethod,

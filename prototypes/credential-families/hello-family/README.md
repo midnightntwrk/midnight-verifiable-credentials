@@ -16,6 +16,7 @@ Scope:
 - explicit-holder `VC<HelloFamilyClaims, ExplicitHolderBinding, NoStatusBinding>`
 - direct typed claims, not privacy-preserving claim commitments
 - typed presentation request and simple disclosure gates
+- explicit-holder and offchain-DID starter holder-binding profiles
 - no issuance/presentation protocol wrappers yet
 - no status/revocation semantics
 
@@ -78,6 +79,19 @@ If you need a conceptual value that Compact does not support directly:
 - `npm run build -w ./prototypes/credential-families/hello-family`
 - `npm run lint -w ./prototypes/credential-families/hello-family`
 - `npm run test:ci -w ./prototypes/credential-families/hello-family`
+
+## DID-aware starter path
+
+This package now also carries a lightweight offchain Midnight DID holder-binding
+profile for the repo's smallest DID-aware smoke path.
+
+Use that profile when you need to prove:
+
+- a portable offchain DID URL can derive a VC holder binding
+- the derived holder binding can issue and verify a starter presentation
+- the result can flow into the `hello-verifier` Layer 3 starter
+
+Start with [`../../docs/guides/did-vc-hello-smoke-path.md`](../../docs/guides/did-vc-hello-smoke-path.md).
 
 ## Limitations
 

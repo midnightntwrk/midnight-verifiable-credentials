@@ -1,4 +1,4 @@
-import { readFile, writeFile } from "node:fs/promises";
+import { readdir, readFile, writeFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -13,21 +13,36 @@ const runtimePackage = JSON.parse(
   ),
 );
 const runtimeVersion = runtimePackage.version;
-const targetFile = path.join(
-  packageRoot,
-  "src",
-  "managed",
-  "hello-family-credential",
-  "contract",
-  "index.js",
-);
-const source = await readFile(targetFile, "utf8");
-// NOTE: unlike `birth-secret`, this family exports only pure circuits, so the
-// generated managed surface does not need the extra `provableCircuits` patch.
-const next = source.replace(
-  /checkRuntimeVersion\('\d+\.\d+\.\d+'\);/,
-  "checkRuntimeVersion('" + runtimeVersion + "');",
-);
-if (next !== source) {
-  await writeFile(targetFile, next, "utf8");
+const managedRoot = path.join(packageRoot, "src", "managed");
+const managedEntries = await readdir(managedRoot, { withFileTypes: true });
+
+for (const entry of managedEntries) {
+  if (!entry.isDirectory()) {
+    continue;
+  }
+  const targetFile = path.join(managedRoot, entry.name, "contract", "index.js");
+  let source;
+  try {
+    source = await readFile(targetFile, "utf8");
+  } catch (error) {
+    if (
+      error &&
+      typeof error === "object" &&
+      "code" in error &&
+      error.code === "ENOENT"
+    ) {
+      continue;
+    }
+    throw error;
+  }
+  // NOTE: unlike `birth-secret`, this family exports only pure circuits, so
+  // the generated managed surfaces do not need the extra `provableCircuits`
+  // patch.
+  const next = source.replace(
+    /checkRuntimeVersion\('\d+\.\d+\.\d+'\);/,
+    "checkRuntimeVersion('" + runtimeVersion + "');",
+  );
+  if (next !== source) {
+    await writeFile(targetFile, next, "utf8");
+  }
 }
