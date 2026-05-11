@@ -109,20 +109,6 @@ Freshness requirement for authority-attested proofs:
 
 This package does not yet implement privacy-preserving non-membership verification inside Compact. It provides the authoritative state surface that status-aware VC/VP flows can anchor to.
 
-Current maturity boundary:
-
-- the repository-owned status-contract work is now complete to the current
-  Compact boundary:
-  - canonical runtime non-membership bundles are shipped
-  - same-contract live-state verification is shipped
-  - off-chain verifier-side live-state verification is shipped
-  - authority-attested external-registry verification is shipped
-  - freshness, replay, and nonce-footgun hardening are shipped
-- the remaining gap is the future generic in-circuit live-root /
-  non-membership path, which still depends on a lower-level Compact surface
-- see:
-  - [`../../docs/architecture/status-contract-closeout-boundary.md`](../../docs/architecture/status-contract-closeout-boundary.md)
-
 One validity rule is already fixed:
 
 - if the accepted status evidence shows the credential as revoked, the
