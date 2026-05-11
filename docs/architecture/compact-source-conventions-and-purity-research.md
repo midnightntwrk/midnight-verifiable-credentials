@@ -1,6 +1,6 @@
-# Compact Source Conventions, Pure-Circuit, and Commitment Research
+# Compact Source Conventions, Purity, and Commitment Research
 
-Status: research note for the post-`VC-MAT-20` cleanup and simplification track.
+Status: research note for the post-`VC-MAT-20` cleanup and simplification track as of `2026-05-11`.
 
 Reference repos and snapshots used for this note:
 
@@ -72,6 +72,9 @@ Use a small fixed vocabulary for source comments:
 - `LIMITATION:` current prototype gap that callers or downstream contracts must compensate for
 - `NOTE:` non-obvious design intent that should survive refactors
 - `CONFORMANCE LOCK:` a test assertion that intentionally fails on structural drift
+
+Recent examples of the conformance-lock pattern already exist in the status
+bundle and same-contract live-status test surfaces.
 
 ### 5. Public struct field comments where semantics are not obvious from the type
 
@@ -176,8 +179,6 @@ That means the `pure` keyword is not only about code generation. In this reposit
 - forcing compile-time rejection if someone later sneaks in ledger access or witness access
 - making the pure substrate visible to contributors without having to inspect generated bindings
 
-### Prioritization
-
 ### P1. Mark the existing `core/` substrate as explicitly pure
 
 These files are the dependency root and are already structurally pure:
@@ -264,7 +265,7 @@ Targets:
 
 These are valuable but should follow the core/registry/family normalization work.
 
-## Non-candidates
+### Non-candidates
 
 These should remain impure because they are inherently ledger-mutating:
 
@@ -314,7 +315,9 @@ Changing `blindedSecretHolderCommitment` changes:
 - secret-holder fixture outputs
 - protocol-layer issuance and verification flows
 
-So this is not a silent cleanup. It needs a versioned rollout with explicit compatibility checkpoints.
+So this is not a silent cleanup. It needs a versioned rollout with explicit
+compatibility checkpoints, fixture and golden-vector updates, and downstream
+consumer coordination.
 
 ### Lower-confidence or do-not-change sites
 
