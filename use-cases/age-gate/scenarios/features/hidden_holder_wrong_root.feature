@@ -7,4 +7,5 @@ Feature: Hidden-holder wrong-root rejection
   Scenario: Reject a hidden-holder presentation when the witness revoked root is wrong
     When the engineer runs the hidden-holder wrong-root rejection path
     Then the hidden-holder scenario should be rejected
-    And the hidden-holder scenario failure message should contain "status witness revoked root does not match the verifier request"
+    And the hidden-holder scenario failure message should contain "Revoked-set status proof protocol revoked root does not match the verifier request"
+    And the hidden-holder scenario failure code should be "statusRequestMismatch"

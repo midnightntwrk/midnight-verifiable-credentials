@@ -50,6 +50,13 @@ const FEATURES = {
   supportsSameHolderProof: false,
 };
 
+const createNoStatusBinding = (): BirthCredential["statusBinding"] => {
+  // The thin-core birth credential models `NoStatusBinding` as an empty struct.
+  const binding: BirthCredential["statusBinding"] = {};
+  genericPureCircuits.assertValidNoStatusBinding(binding);
+  return binding;
+};
+
 export class IssuerAgent {
   private readonly profile: DIDProfile;
   private readonly bus: MessageBus;
@@ -119,12 +126,12 @@ export class IssuerAgent {
       ),
     };
 
-    const credential = {
+    const credential: BirthCredential = {
       version: 1n,
       schema: BIRTH_SCHEMA,
       issuerVerificationMethodRef: this.profile.signer.verificationMethodRef,
       holderBinding: issuanceRequest.body.holderBinding,
-      statusBinding: {},
+      statusBinding: createNoStatusBinding(),
       issuedAt: claimWitness.issuedAt,
       hasExpiration: true,
       expiresAt: claimWitness.expiresAt,

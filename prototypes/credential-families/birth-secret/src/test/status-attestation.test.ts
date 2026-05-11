@@ -1,8 +1,15 @@
 import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { describe, expect, it } from "vitest";
 
-import { pureCircuits } from "../managed/secret-birth-credential/contract/index.js";
-import { createSecretBirthCredentialFixture } from "../testing/credential-fixtures.js";
+import {
+  pureCircuits,
+  StatusCapabilityKind,
+} from "../managed/secret-birth-credential/contract/index.js";
+import {
+  createSecretBirthCredentialFixture,
+  createSigner,
+  signProof,
+} from "../testing/credential-fixtures.js";
 
 setNetworkId("undeployed");
 
@@ -253,5 +260,110 @@ describe("secret birth credential: authority-attested status verification", () =
         fixture.verificationRequest.envelope.createdAt + 101n,
       ),
     ).toThrow(/has expired/i);
+  });
+
+  it("rejects an authority-attested status proof signed by the wrong authority", () => {
+    const fixture = createSecretBirthCredentialFixture();
+    const wrongAuthority = createSigner("other-authority", 444n);
+    const submission = {
+      envelope: {
+        ...fixture.verificationRequest.envelope,
+        initialMessage: false,
+        respondsToMessageId: fixture.verificationRequest.envelope.messageId,
+        messageId: new Uint8Array(32).fill(21),
+        createdAt: fixture.verificationRequest.envelope.createdAt + 2n,
+      },
+      schema: fixture.credential.schema,
+      issuerVerificationMethodRef:
+        fixture.credential.issuerVerificationMethodRef,
+      holderBindingProfile: fixture.verificationRequest.holderBindingProfile,
+      challengeHash: fixture.verificationRequest.verifierChallengeHash,
+      body: {
+        credential: fixture.credential,
+        credentialProof: fixture.credentialProof,
+        presentation: fixture.presentation,
+      },
+    };
+    const statement =
+      fixture.authorityAttestedStatusProtocolInputs.statusProofProtocol
+        .attestation.statement;
+
+    expect(() =>
+      pureCircuits.assertSecretBirthCredentialVerificationSubmissionMatchesAuthorityAttestedStatusProtocolRequest(
+        fixture.credentialWithStatusBinding,
+        fixture.authorityAttestedStatusVerificationRequest,
+        submission,
+        {
+          statusProofProtocol: {
+            ...fixture.authorityAttestedStatusProtocolInputs
+              .statusProofProtocol,
+            attestation: {
+              ...fixture.authorityAttestedStatusProtocolInputs
+                .statusProofProtocol.attestation,
+              proof: signProof({
+                bodyRoot:
+                  pureCircuits.authorityAttestedStatusStatementRoot(statement),
+                signer: wrongAuthority,
+                createdAt: fixture.verificationRequest.envelope.createdAt + 1n,
+                challengeHash:
+                  fixture.authorityAttestedStatusVerificationRequest
+                    .statusRequest.verifierChallengeHash,
+                nonceScalar: 37n,
+                context: "statusAttestation",
+              }),
+            },
+          },
+        },
+        fixture.witness.holderSecret,
+        fixture.witness.holderSecretOpening,
+        fixture.witness.holderBindingBlindingFactor,
+        fixture.verificationRequest.envelope.createdAt + 10n,
+      ),
+    ).toThrow(/does not match the status authority/i);
+  });
+
+  it("rejects an authority-attested request when the verifier policy expects another status proof mode", () => {
+    const fixture = createSecretBirthCredentialFixture();
+    const submission = {
+      envelope: {
+        ...fixture.verificationRequest.envelope,
+        initialMessage: false,
+        respondsToMessageId: fixture.verificationRequest.envelope.messageId,
+        messageId: new Uint8Array(32).fill(22),
+        createdAt: fixture.verificationRequest.envelope.createdAt + 2n,
+      },
+      schema: fixture.credential.schema,
+      issuerVerificationMethodRef:
+        fixture.credential.issuerVerificationMethodRef,
+      holderBindingProfile: fixture.verificationRequest.holderBindingProfile,
+      challengeHash: fixture.verificationRequest.verifierChallengeHash,
+      body: {
+        credential: fixture.credential,
+        credentialProof: fixture.credentialProof,
+        presentation: fixture.presentation,
+      },
+    };
+
+    expect(() =>
+      pureCircuits.assertSecretBirthCredentialVerificationSubmissionMatchesAuthorityAttestedStatusProtocolRequest(
+        fixture.credentialWithStatusBinding,
+        {
+          ...fixture.authorityAttestedStatusVerificationRequest,
+          statusPolicy: {
+            ...fixture.authorityAttestedStatusVerificationRequest.statusPolicy,
+            acceptedStatusCapability:
+              StatusCapabilityKind.revokedSetNonMembership,
+            enforceAttestationMaxAge: false,
+            maxAttestationAge: 0n,
+          },
+        },
+        submission,
+        fixture.authorityAttestedStatusProtocolInputs,
+        fixture.witness.holderSecret,
+        fixture.witness.holderSecretOpening,
+        fixture.witness.holderBindingBlindingFactor,
+        fixture.verificationRequest.envelope.createdAt + 10n,
+      ),
+    ).toThrow(/does not accept authority-attested status/i);
   });
 });

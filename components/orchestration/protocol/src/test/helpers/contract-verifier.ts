@@ -15,17 +15,6 @@ const ACCESS_DECISION_LABELS: Record<number, string> = {
   3: "alreadyConsumed",
 };
 
-type BirthCredentialInput = Omit<BirthCredential, "statusBinding"> & {
-  readonly statusBinding?: BirthCredential["statusBinding"];
-};
-
-const withNoStatusBinding = (
-  credential: BirthCredentialInput,
-): BirthCredential => ({
-  ...credential,
-  statusBinding: credential.statusBinding ?? {},
-});
-
 export type ContractPresentationPackage = {
   readonly presentation: BirthCredentialPresentation;
   readonly presentationProof: Proof;
@@ -45,12 +34,12 @@ export class ContractVerifier {
    * Register a credential with the contract so it knows about it.
    */
   issueBirthCredential(
-    credential: BirthCredentialInput,
+    credential: BirthCredential,
     credentialProof: Proof,
     holderPublicKey: JubjubPoint,
   ): void {
     this.simulator.issueBirthCredential(
-      withNoStatusBinding(credential),
+      credential,
       credentialProof,
       holderPublicKey,
     );
@@ -77,7 +66,7 @@ export class ContractVerifier {
    * then mints a capability hash that can be claimed later.
    */
   issueAgeGateCapability(
-    credential: BirthCredentialInput,
+    credential: BirthCredential,
     credentialProof: Proof,
     verifierChallengeHash: Uint8Array,
     pkg: ContractPresentationPackage,
@@ -86,7 +75,7 @@ export class ContractVerifier {
     this.simulator.setAgeWitness(pkg.birthDateDays, pkg.birthDateOpening);
 
     const capabilityHash = this.simulator.issueAgeGateCapability(
-      withNoStatusBinding(credential),
+      credential,
       credentialProof,
       pkg.presentation,
       pkg.presentationProof,

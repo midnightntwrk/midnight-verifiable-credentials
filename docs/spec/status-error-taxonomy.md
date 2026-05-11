@@ -57,6 +57,23 @@ verified successfully.
 | `attestationTooOld` | The attested status statement exceeds the verifier-enforced max-age window | hard invalidity |
 | `futureDatedAttestation` | The attested status statement is created in the future relative to accepted verifier time | hard invalidity |
 
+## Helper-surface reserved failure code
+
+The typed off-chain verifier helpers in `credentials-status-registry` may also
+return one extra non-taxonomy code:
+
+| Error | Meaning | Required disposition |
+| --- | --- | --- |
+| `unclassifiedFailure` | The helper caught a failure that did not map cleanly onto the canonical status-invalidity vocabulary | fail closed, treat as an integration/runtime error rather than as a successful status verdict |
+
+This code exists so a verifier can distinguish:
+
+- a real status-invalidity verdict such as `revoked` or `authorityMismatch`
+- from a helper/runtime failure that needs investigation
+
+It must still fail closed, but it should not be mislabeled as one of the
+cryptographic status-invalidity outcomes above.
+
 ## Detection guidance
 
 Typical detection points are:
@@ -77,6 +94,22 @@ Typical detection points are:
   - `futureDatedAttestation`
 
 The detection point may vary by implementation mode. The disposition must not.
+
+The repository now also exposes a typed off-chain verifier helper surface under
+`credentials-status-registry` that returns these same codes directly through
+`StatusVerificationResult` values for:
+
+- observed revoked-set verification
+- same-contract live-state verification
+- authority-attested external-registry verification
+
+The repository's current BDD and revocation-demo negative-path tests now also
+normalize failures through this same taxonomy so living docs, helper surfaces,
+and use-case tests assert the same fail-closed categories.
+
+For adapters and use-case tests that do not want to carry full `Error` objects,
+the repository also exposes a plain-data failure-record projection on top of the
+same canonical taxonomy.
 
 ## Mode-specific note
 

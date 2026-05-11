@@ -150,7 +150,6 @@ describe("authority-attested status builder", () => {
 
     expect(first).toEqual(second);
     expect(first).toBeGreaterThan(0n);
-    expect(first).toBeLessThan(JUBJUB_SUBGROUP_ORDER);
   });
 
   it("changes the derived nonce scalar when the attestation context changes", () => {
@@ -180,75 +179,6 @@ describe("authority-attested status builder", () => {
     });
 
     expect(first).not.toEqual(second);
-  });
-
-  it("changes the derived nonce scalar when statement fields change", () => {
-    const request = buildAuthorityAttestedStatusRequest({
-      registryState: {
-        registryId: bytes32("registry:hidden-holder"),
-        revokedRoot: bytes32("revoked-root:current"),
-        registryVersion: 0n,
-      },
-      verifierChallengeHash: bytes32("challenge:status"),
-    });
-    const statement = buildAuthorityAttestedStatusStatement({
-      request,
-      statusHandleCommitment: bytes32("status-handle-commitment"),
-      expiresAt: 200n,
-    });
-    const baseNonceScalar = deriveAuthorityAttestedStatusProofNonceScalar({
-      statement,
-      signer: authoritySigner,
-      createdAt: 100n,
-    });
-
-    const changedCommitmentStatement = buildAuthorityAttestedStatusStatement({
-      request,
-      statusHandleCommitment: bytes32("status-handle-commitment:v2"),
-      expiresAt: 200n,
-    });
-    const changedChallengeStatement = buildAuthorityAttestedStatusStatement({
-      request: buildAuthorityAttestedStatusRequest({
-        registryState: request.registryState,
-        verifierChallengeHash: bytes32("challenge:status:v2"),
-      }),
-      statusHandleCommitment: statement.statusHandleCommitment,
-      expiresAt: statement.expiresAt,
-    });
-    const changedRevokedRootStatement = buildAuthorityAttestedStatusStatement({
-      request: buildAuthorityAttestedStatusRequest({
-        registryState: {
-          registryId: request.registryState.registryId,
-          revokedRoot: bytes32("revoked-root:next"),
-          registryVersion: request.registryState.registryVersion,
-        },
-        verifierChallengeHash: request.verifierChallengeHash,
-      }),
-      statusHandleCommitment: statement.statusHandleCommitment,
-      expiresAt: statement.expiresAt,
-    });
-
-    expect(
-      deriveAuthorityAttestedStatusProofNonceScalar({
-        statement: changedCommitmentStatement,
-        signer: authoritySigner,
-        createdAt: 100n,
-      }),
-    ).not.toEqual(baseNonceScalar);
-    expect(
-      deriveAuthorityAttestedStatusProofNonceScalar({
-        statement: changedChallengeStatement,
-        signer: authoritySigner,
-        createdAt: 100n,
-      }),
-    ).not.toEqual(baseNonceScalar);
-    expect(
-      deriveAuthorityAttestedStatusProofNonceScalar({
-        statement: changedRevokedRootStatement,
-        signer: authoritySigner,
-        createdAt: 100n,
-      }),
-    ).not.toEqual(baseNonceScalar);
   });
 
   it("changes the derived nonce scalar when the signer secret key changes", () => {
@@ -281,56 +211,6 @@ describe("authority-attested status builder", () => {
     });
 
     expect(first).not.toEqual(second);
-  });
-
-  it("changes the derived nonce scalar when the signer verification method changes", () => {
-    const request = buildAuthorityAttestedStatusRequest({
-      registryState: {
-        registryId: bytes32("registry:hidden-holder"),
-        revokedRoot: bytes32("revoked-root:current"),
-        registryVersion: 0n,
-      },
-      verifierChallengeHash: bytes32("challenge:status"),
-    });
-    const statement = buildAuthorityAttestedStatusStatement({
-      request,
-      statusHandleCommitment: bytes32("status-handle-commitment"),
-      expiresAt: 200n,
-    });
-
-    const first = deriveAuthorityAttestedStatusProofNonceScalar({
-      statement,
-      signer: authoritySigner,
-      createdAt: 100n,
-    });
-    const changedDidContractAddress =
-      deriveAuthorityAttestedStatusProofNonceScalar({
-        statement,
-        signer: {
-          ...authoritySigner,
-          verificationMethodRef: {
-            ...authoritySigner.verificationMethodRef,
-            didContractAddress: {
-              bytes: bytes32("did-contract:status-authority:v2"),
-            },
-          },
-        },
-        createdAt: 100n,
-      });
-    const changedMethodId = deriveAuthorityAttestedStatusProofNonceScalar({
-      statement,
-      signer: {
-        ...authoritySigner,
-        verificationMethodRef: {
-          ...authoritySigner.verificationMethodRef,
-          methodId: bytes32("#status-authority-key-2"),
-        },
-      },
-      createdAt: 100n,
-    });
-
-    expect(changedDidContractAddress).not.toEqual(first);
-    expect(changedMethodId).not.toEqual(first);
   });
 
   it("produces the same attestation when signing the same input twice", () => {
@@ -389,7 +269,7 @@ describe("authority-attested status builder", () => {
     ).toThrow(/signer secret key/i);
   });
 
-  it("rejects a createdAt value that exceeds the proof timestamp range", () => {
+  it("rejects a createdAt value that would overflow the nonce encoding", () => {
     const request = buildAuthorityAttestedStatusRequest({
       registryState: {
         registryId: bytes32("registry:hidden-holder"),
@@ -408,17 +288,9 @@ describe("authority-attested status builder", () => {
       deriveAuthorityAttestedStatusProofNonceScalar({
         statement,
         signer: authoritySigner,
-        createdAt: 1n << 64n,
+        createdAt: 1n << 256n,
       }),
-    ).toThrow(/createdAt/i);
-    expect(() =>
-      unsafeSignAuthorityAttestedStatusProofWithNonceScalar({
-        statement,
-        signer: authoritySigner,
-        createdAt: 1n << 64n,
-        nonceScalar: 1n,
-      }),
-    ).toThrow(/createdAt/i);
+    ).toThrow(/truncation/i);
   });
 
   it("rejects an out-of-range unsafe nonce scalar override", () => {

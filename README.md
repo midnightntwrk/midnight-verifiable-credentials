@@ -126,6 +126,14 @@ Discover explicit repository targets:
 ./run.sh targets
 ```
 
+Run any root `package.json` script through the same entrypoint:
+
+```bash
+./run.sh build:core
+./run.sh ci:package-tests
+./run.sh artifacts:pack
+```
+
 Run the BDD smoke lane directly:
 
 ```bash

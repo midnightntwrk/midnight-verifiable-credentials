@@ -218,7 +218,7 @@ const buildBirthCredentialFixture = (
     ),
   };
 
-  const credential = {
+  const credential: BirthCredential = {
     version: 1n,
     schema: {
       packageId: padText("midnight-did:vc:birth"),

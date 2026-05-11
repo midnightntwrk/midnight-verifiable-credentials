@@ -8,6 +8,7 @@ Companion documents:
 - [`./status-error-taxonomy.md`](./status-error-taxonomy.md)
 - [`./revocation-registry.md`](./revocation-registry.md)
 - [`./midnight-credentials.md`](./midnight-credentials.md)
+- [`../architecture/status-verification-modes.md`](../architecture/status-verification-modes.md)
 
 ## Purpose
 
@@ -76,6 +77,16 @@ different VC shape.
 The repository now treats status verification mode as an implementation choice
 over one shared VC-side binding model.
 
+For the architecture-level distinction between:
+
+- same-contract live revoked-set verification
+- off-chain verifier-side live-state verification
+- and authority-attested external-registry Layer 3 verification
+
+see:
+
+- [`../architecture/status-verification-modes.md`](../architecture/status-verification-modes.md)
+
 Supported prototype modes are:
 
 ### 1. Same-contract live-root verification
@@ -106,6 +117,16 @@ Current shipped prototype seam:
 - a same-contract verifier can pair that witness with its own live local
   revocation state instead of consuming an authority attestation or
   verifier-supplied root snapshot
+- when runtime access to the shared revocation-registry contract state is
+  available, the repository now also exposes canonical helper paths to:
+  - read the live `(registryId, revokedRoot, registryVersion)` snapshot from
+    contract state
+  - reject already-revoked handles against that live state
+  - build the canonical revoked-set request/witness/protocol bundle directly
+    from that live state plus freshness policy
+- this still does not make the root contract-proven inside Compact itself; it
+  turns live-state observation into one shared typed seam instead of another
+  app-local convention
 
 ### 2. External-registry verifier-side verification
 
@@ -123,6 +144,25 @@ Target shape:
 
 This mode still uses the same VC-side binding and fail-closed error taxonomy.
 It simply detects status invalidity outside Compact.
+
+Canonical repository helper path:
+
+- `verifyObservedRevokedSetStatus(...)` for verifier-observed snapshots
+- `verifyLiveContractStateStatus(...)` for same-contract live runtime state
+- `verifyAuthorityAttestedStatus(...)` when the verifier is consuming
+  delegated status evidence off-chain
+
+These helpers return a typed `StatusVerificationResult` and map raw validator
+failures onto the canonical status error codes instead of leaving each
+integration to classify stringly-typed failures itself. If a failure does not
+map cleanly, the helpers return `unclassifiedFailure` so the verifier can fail
+closed without misreporting an internal/runtime issue as a specific status
+verdict.
+
+For live same-contract verifier checks, the helper applies any minimum
+registry-version policy directly to the live `RevocationRegistryState`. It does
+not pretend that live runtime state is an observed snapshot with an invented
+observation time.
 
 ### 3. External-registry authority-attested Layer 3 verification
 
@@ -432,8 +472,7 @@ Current limitations remain:
 - the current off-chain authority-attestation builder requires the caller to
   choose between:
   - the safe default helper, which now derives the signing nonce
-    deterministically from signer secret material plus attestation context via
-    domain-separated SHA-256 plus rejection sampling
+    deterministically from signer secret material plus attestation context
   - an explicit unsafe override for tests or tightly controlled integrations
 - authority-attested proof freshness is now partially enforceable through
   verifier max-age policy, but root freshness is still off-chain and

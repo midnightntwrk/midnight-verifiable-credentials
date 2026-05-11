@@ -9,6 +9,7 @@ Companion documents:
 - [`./credential-status.md`](./credential-status.md)
 - [`./status-error-taxonomy.md`](./status-error-taxonomy.md)
 - [`./status-verification-protocol.md`](./status-verification-protocol.md)
+- [`../architecture/status-verification-modes.md`](../architecture/status-verification-modes.md)
 - [`./profiles.md`](./profiles.md)
 - [`./conformance.md`](./conformance.md)
 
@@ -223,12 +224,17 @@ Current off-chain implementation helper path:
 
 - `buildRevokedSetNonMembershipInputs(...)`
 - `buildObservedRevocationRegistryState(...)`
+- `readCurrentRevocationRegistryStateFromContractState(...)`
+- `buildObservedRevocationRegistryStateFromContractState(...)`
+- `assertStatusHandleNotRevokedInContractState(...)`
 - `buildRevokedSetStatusRequestFromObservedState(...)`
 - `buildFreshRevokedSetNonMembershipInputs(...)`
+- `buildFreshRevokedSetNonMembershipInputsFromContractState(...)`
 
 Those helpers normalize the request/witness/protocol bundle and the verifier's
-accepted snapshot freshness choice. They do not yet add final in-circuit Merkle
-non-membership or live-root discovery.
+accepted snapshot freshness choice. They can now derive the canonical runtime
+snapshot directly from live contract state, but they do not yet add final
+in-circuit Merkle non-membership or in-circuit live-root equality.
 
 ### 4. `AuthorityAttestedStatusProofProtocol`
 
@@ -268,6 +274,10 @@ The prototype registry model is:
   - `revokedRoot`
   - `registryVersion`
 
+The empty revoked-set root is valid for an initialized registry with zero
+revocations. Callers must not treat an all-zero `revokedRoot` as malformed by
+itself.
+
 The canonical VC/VP/protocol surface does not need to expose a registry epoch.
 For the current prototype target, freshness is still enforced by who supplies
 and accepts the revocation root, not by an in-band epoch alone. The version
@@ -284,6 +294,9 @@ Current prototype implementation note:
   - the contract's `registryVersion`
 - but it does not yet prove that the supplied `revokedRoot` equals the live
   contract Merkle root
+- runtime/off-chain helpers can now derive that live `(registryId, revokedRoot,
+  registryVersion)` snapshot canonically from contract state, but that remains
+  an application/verifier observation seam rather than a Compact proof
 
 Until the final in-circuit non-membership path lands, the current repository
 implementation must treat `revokedRoot` as an off-chain coordinated snapshot

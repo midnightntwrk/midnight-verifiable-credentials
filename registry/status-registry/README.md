@@ -41,16 +41,18 @@ Start here:
 1. use `src/revocation-registry.compact` when authoring a registry contract
 2. use `src/status-proof-protocol.compact` when a family or Layer 3 contract
    needs registry-facing status proof-protocol types and validators
-3. use `src/witness-builder.ts` and `src/attestation-builder.ts` only in
+3. use `src/status-verifier.ts` when an off-chain verifier wants one typed
+   fail-closed status verification surface
+4. use `src/witness-builder.ts` and `src/attestation-builder.ts` only in
    off-chain verifier/holder/application code
-4. read:
+5. read:
    - [`../docs/spec/revocation-registry.md`](../docs/spec/revocation-registry.md)
    - [`../docs/spec/status-verification-protocol.md`](../docs/spec/status-verification-protocol.md)
+   - [`../docs/architecture/status-verification-modes.md`](../docs/architecture/status-verification-modes.md)
    - [`../docs/architecture/protocol-classification.md`](../docs/architecture/protocol-classification.md)
    - [`../docs/guides/integration-surface-map.md`](../docs/guides/integration-surface-map.md)
 
 Current scope:
-
 - dedicated registry id
 - append-only revoked handle `MerkleTree`
 - monotonic internal `version` counter for registry-side bookkeeping
@@ -58,6 +60,8 @@ Current scope:
   - snapshot shape now includes `registryVersion`
   - `assertStateUsesThisRegistry(...)` binds that version to the live contract
     counter even though the Merkle root is still verifier-supplied
+  - an initialized empty registry may legitimately publish the zero Merkle
+    root before any revocations land
 - typed `RevokedSetStatusRequest` helpers for verifier-supplied roots
 - off-chain witness-builder helpers for:
   - deterministic status-handle derivation
@@ -75,8 +79,7 @@ Current scope:
 Nonce requirement for authority-attested proofs:
 
 - `signAuthorityAttestedStatusProof(...)` now derives a deterministic JubJub
-  subgroup nonce scalar via domain-separated SHA-256 plus rejection sampling
-  from:
+  subgroup nonce scalar from:
   - the attestation statement
   - signer verification-method identity
   - signer secret key
@@ -160,13 +163,24 @@ Canonical same-contract live-status helper path:
 - this is the right prototype seam for contracts that can reject revoked
   status handles against their own live local state without an authority
   attestation bridge
+- use `buildLiveStatusWitnessFromContractState(...)` when you want that same
+  live-status witness shape but do not want app-local revocation checks to
+  reconstruct the contract state manually
+- the shared helper now:
+  - derives the live status handle witness
+  - rejects handles already present in the live registry contract state
+  - keeps the same binding-first output shape as `buildLiveStatusWitness(...)`
 
 Current prototype limitation:
-
 - `assertStateUsesThisRegistry(...)` binds the supplied snapshot to this
   registry's `registryId` and `registryVersion`
 - it does not yet prove that the supplied `revokedRoot` equals the live
   contract Merkle root inside Compact
+- same-contract live revoked-set verification is still available because that
+  mode checks the local revoked-set ledger directly and does not require a
+  separate external root handoff
+- off-chain verifiers and trusted authorities can still read the live registry
+  state and current root at runtime
 - freshness of the supplied root is still an application/verifier
   responsibility, not an in-circuit property
 - authority-attested proof freshness is now partially contract-enforced when
@@ -183,6 +197,15 @@ Observed-root integration helper path:
 
 - use `buildObservedRevocationRegistryState(...)` to normalize a verifier-side
   snapshot plus observation time
+- use `readCurrentRevocationRegistryStateFromContractState(...)` when the
+  caller already has runtime access to the live revocation-registry contract
+  state and wants the canonical `(registryId, revokedRoot, registryVersion)`
+  snapshot shape
+- use `buildObservedRevocationRegistryStateFromContractState(...)` to attach an
+  observation time to that live contract-state snapshot
+- use `assertStatusHandleNotRevokedInContractState(...)` when an off-chain
+  verifier or helper wants the canonical fail-closed "already revoked" check
+  against a live contract-state snapshot
 - use `assertObservedRevocationRegistryVersionAtLeast(...)` when the caller
   must reject snapshots older than a known contract-version floor
 - use `assertObservedRevocationRegistryStateFreshEnough(...)` when the caller
@@ -192,6 +215,40 @@ Observed-root integration helper path:
   Compact proof path
 - use `buildFreshRevokedSetNonMembershipInputs(...)` when you want that same
   freshness gate applied to the canonical request/witness/protocol bundle
+- use `buildFreshRevokedSetNonMembershipInputsFromContractState(...)` when the
+  verifier or orchestrating application can observe the live registry contract
+  state directly and wants one canonical helper that:
+  - derives the live `(registryId, revokedRoot, registryVersion)` snapshot
+  - applies freshness policy
+  - constructs the canonical request/witness/protocol bundle
+  - rejects already-revoked handles against the live contract state
 - this still does not make the root live inside Compact:
   it turns the current verifier-side freshness choice into one explicit typed
   integration seam instead of leaving it as ad hoc application logic
+
+
+Canonical off-chain verifier helper path:
+
+- use `verifyObservedRevokedSetStatus(...)` when the verifier already has an
+  accepted observed registry snapshot and wants a typed
+  `StatusVerificationResult` back
+- use `verifyLiveContractStateStatus(...)` when the verifier can read live
+  same-contract registry state at runtime and wants the helper to return the
+  canonical live-state verdict plus witness material
+- the live-state helper now applies any minimum registry-version policy
+  directly against the live `RevocationRegistryState`; it does not fabricate an
+  `observedAt` timestamp the way observed-snapshot freshness helpers do
+- use `verifyAuthorityAttestedStatus(...)` when the verifier or consuming app
+  must validate authority-attested external-registry evidence
+- all three helpers map failures onto the canonical codes in
+  [`../docs/spec/status-error-taxonomy.md`](../docs/spec/status-error-taxonomy.md)
+  instead of leaving each integration to reinterpret raw error strings
+- integrations that only need plain data can use the failure-record projection
+  helper rather than unpacking `StatusVerificationError` objects directly
+- if a caught failure does not match the canonical taxonomy, the helpers return
+  `unclassifiedFailure` so callers can fail closed without pretending the
+  runtime fault was a clean cryptographic status verdict
+
+Architecture note for the three supported verification modes:
+
+- [`../docs/architecture/status-verification-modes.md`](../docs/architecture/status-verification-modes.md)

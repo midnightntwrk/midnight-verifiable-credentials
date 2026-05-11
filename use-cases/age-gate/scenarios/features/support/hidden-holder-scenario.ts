@@ -1,13 +1,21 @@
 import { Ability, type UsesAbilities } from "@serenity-js/core";
 
+import {
+  describeStatusVerificationFailure,
+  type StatusVerificationErrorCode,
+  type StatusVerificationMode,
+} from "@midnight-ntwrk/midnight-did-credentials-status-registry";
 import { createSecretBirthCredentialFixture } from "@midnight-ntwrk/midnight-did-credentials-birth-secret/testing";
 import {
   RevocationAccessDecision,
   RevocationVerificationMode,
+  StatusCapabilityKind,
 } from "@midnight-ntwrk/midnight-did-credentials-demo-contract/contract-revocation";
 import {
   buildSubmissionForAuthorityAttestedRequest,
+  buildSubmissionForLiveStatusRequest,
   buildSubmissionForRevokedSetRequest,
+  buildWrongAuthorityAttestedStatusProtocolInputs,
   createDemoRevocationFixture,
   CredentialsDemoRevocationSimulator,
   fixtureRegistryState,
@@ -23,6 +31,7 @@ export type HiddenHolderScenarioResult = {
   readonly lastVerifiedStatusRegistryId: Uint8Array;
   readonly expectedStatusRegistryId: Uint8Array;
   readonly failureMessage: string | null;
+  readonly failureCode: StatusVerificationErrorCode | null;
 };
 
 export class UseHiddenHolderScenario extends Ability {
@@ -59,6 +68,15 @@ export class UseHiddenHolderScenario extends Ability {
     return { fixture, simulator };
   }
 
+
+  #statusFailure(mode: StatusVerificationMode, error: unknown) {
+    const normalized = describeStatusVerificationFailure({ mode, error });
+    return {
+      failureMessage: normalized.message,
+      failureCode: normalized.code,
+    } as const;
+  }
+
   #recordResult(
     approved: boolean,
     simulator: CredentialsDemoRevocationSimulator,
@@ -67,6 +85,7 @@ export class UseHiddenHolderScenario extends Ability {
       claimDecision: string | null;
       verificationMode: string | null;
       failureMessage: string | null;
+      failureCode: StatusVerificationErrorCode | null;
     },
   ): void {
     const ledger = simulator.getLedger();
@@ -81,6 +100,7 @@ export class UseHiddenHolderScenario extends Ability {
       lastVerifiedStatusRegistryId: ledger.lastVerifiedStatusRegistryId,
       expectedStatusRegistryId: fixture.witness.statusRegistryId,
       failureMessage: extras.failureMessage,
+      failureCode: extras.failureCode,
     };
   }
 
@@ -112,6 +132,40 @@ export class UseHiddenHolderScenario extends Ability {
         verificationMode:
           RevocationVerificationMode[simulator.getLedger().lastVerificationMode],
         failureMessage: null,
+        failureCode: null,
+      },
+    );
+  }
+
+  async runLiveStatusHappyPath(): Promise<void> {
+    const { fixture, simulator } = this.#setupFixture();
+
+    simulator.initializeLiveStatusRegistry(fixture.witness.statusRegistryId);
+    const request = simulator.revocationAwareLiveStatusRequest(
+      fixture.credential.issuerVerificationMethodRef,
+      fixture.witness.verifierDomainHash,
+      fixture.verificationRequest.verifierChallengeHash,
+    );
+    const submission = buildSubmissionForLiveStatusRequest(fixture, request);
+
+    const capability = simulator.issueRevocationAwareCapabilityWithLiveStatus(
+      fixture.credentialWithStatusBinding,
+      request,
+      submission,
+      fixture.liveStatusVerificationInputs,
+      fixture.witness.currentDay,
+    );
+    const claimDecision = simulator.claimRevocationAwareCapability(capability);
+    this.#recordResult(
+      claimDecision === RevocationAccessDecision.approved,
+      simulator,
+      fixture,
+      {
+        claimDecision: RevocationAccessDecision[claimDecision],
+        verificationMode:
+          RevocationVerificationMode[simulator.getLedger().lastVerificationMode],
+        failureMessage: null,
+        failureCode: null,
       },
     );
   }
@@ -150,14 +204,17 @@ export class UseHiddenHolderScenario extends Ability {
       this.#recordResult(false, simulator, fixture, {
         claimDecision: null,
         verificationMode: null,
-        failureMessage: null,
+        failureMessage:
+          "expected rejection but wrong-registry verification completed",
+        failureCode: null,
       });
     } catch (error) {
+      const failure = this.#statusFailure("revokedSetObservedState", error);
       this.#recordResult(false, simulator, fixture, {
         claimDecision: null,
         verificationMode: null,
-        failureMessage:
-          error instanceof Error ? error.message : String(error),
+        failureMessage: failure.failureMessage,
+        failureCode: failure.failureCode,
       });
     }
   }
@@ -196,19 +253,22 @@ export class UseHiddenHolderScenario extends Ability {
       this.#recordResult(false, simulator, fixture, {
         claimDecision: null,
         verificationMode: null,
-        failureMessage: null,
+        failureMessage:
+          "expected rejection but wrong-revoked-root verification completed",
+        failureCode: null,
       });
     } catch (error) {
+      const failure = this.#statusFailure("revokedSetObservedState", error);
       this.#recordResult(false, simulator, fixture, {
         claimDecision: null,
         verificationMode: null,
-        failureMessage:
-          error instanceof Error ? error.message : String(error),
+        failureMessage: failure.failureMessage,
+        failureCode: failure.failureCode,
       });
     }
   }
 
-  async runVerifierSuppliedRootStaleVersionRejectedPath(): Promise<void> {
+  async runVerifierSuppliedRootStaleSnapshotRejectedPath(): Promise<void> {
     const { fixture, simulator } = this.#setupFixture();
     const request = simulator.revocationAwareVerifierSuppliedRootRequest(
       fixture.credential.issuerVerificationMethodRef,
@@ -238,14 +298,17 @@ export class UseHiddenHolderScenario extends Ability {
       this.#recordResult(false, simulator, fixture, {
         claimDecision: null,
         verificationMode: null,
-        failureMessage: null,
+        failureMessage:
+          "expected rejection but stale-snapshot verification completed",
+        failureCode: null,
       });
     } catch (error) {
+      const failure = this.#statusFailure("revokedSetObservedState", error);
       this.#recordResult(false, simulator, fixture, {
         claimDecision: null,
         verificationMode: null,
-        failureMessage:
-          error instanceof Error ? error.message : String(error),
+        failureMessage: failure.failureMessage,
+        failureCode: failure.failureCode,
       });
     }
   }
@@ -275,14 +338,106 @@ export class UseHiddenHolderScenario extends Ability {
       this.#recordResult(false, simulator, fixture, {
         claimDecision: null,
         verificationMode: null,
-        failureMessage: null,
+        failureMessage:
+          "expected rejection but expired-authority-attestation verification completed",
+        failureCode: null,
       });
     } catch (error) {
+      const failure = this.#statusFailure("authorityAttested", error);
+      this.#recordResult(false, simulator, fixture, {
+        claimDecision: null,
+        verificationMode: null,
+        failureMessage: failure.failureMessage,
+        failureCode: failure.failureCode,
+      });
+    }
+  }
+
+  async runAuthorityAttestedWrongAuthorityRejectedPath(): Promise<void> {
+    const { fixture, simulator } = this.#setupFixture();
+    const request = simulator.revocationAwareAuthorityAttestedRequest(
+      fixture.credential.issuerVerificationMethodRef,
+      fixture.witness.verifierDomainHash,
+      fixture.verificationRequest.verifierChallengeHash,
+      fixtureRegistryState(fixture),
+    );
+    const submission = buildSubmissionForAuthorityAttestedRequest(
+      fixture,
+      request,
+    );
+
+    try {
+      simulator.issueRevocationAwareCapabilityWithAuthorityAttestation(
+        fixture.credentialWithStatusBinding,
+        request,
+        submission,
+        buildWrongAuthorityAttestedStatusProtocolInputs(fixture),
+        fixture.witness.currentDay,
+        request.verificationRequest.envelope.createdAt + 10n,
+      );
       this.#recordResult(false, simulator, fixture, {
         claimDecision: null,
         verificationMode: null,
         failureMessage:
-          error instanceof Error ? error.message : String(error),
+          "expected rejection but wrong-authority verification completed",
+        failureCode: null,
+      });
+    } catch (error) {
+      const failure = this.#statusFailure("authorityAttested", error);
+      this.#recordResult(false, simulator, fixture, {
+        claimDecision: null,
+        verificationMode: null,
+        failureMessage: failure.failureMessage,
+        failureCode: failure.failureCode,
+      });
+    }
+  }
+
+  async runAuthorityAttestedUnsupportedModeRejectedPath(): Promise<void> {
+    const { fixture, simulator } = this.#setupFixture();
+    const request = simulator.revocationAwareAuthorityAttestedRequest(
+      fixture.credential.issuerVerificationMethodRef,
+      fixture.witness.verifierDomainHash,
+      fixture.verificationRequest.verifierChallengeHash,
+      fixtureRegistryState(fixture),
+    );
+    const submission = buildSubmissionForAuthorityAttestedRequest(
+      fixture,
+      request,
+    );
+
+    try {
+      simulator.issueRevocationAwareCapabilityWithAuthorityAttestation(
+        fixture.credentialWithStatusBinding,
+        {
+          ...request,
+          statusPolicy: {
+            ...request.statusPolicy,
+            acceptedStatusCapability:
+              StatusCapabilityKind.revokedSetNonMembership,
+            enforceAttestationMaxAge: false,
+            maxAttestationAge: 0n,
+          },
+        },
+        submission,
+        fixture.authorityAttestedStatusProtocolInputs,
+        fixture.witness.currentDay,
+        request.verificationRequest.envelope.createdAt + 10n,
+      );
+      this.#recordResult(false, simulator, fixture, {
+        claimDecision: null,
+        verificationMode: null,
+        failureMessage:
+          "expected rejection but unsupported authority-mode verification completed",
+        failureCode: null,
+      });
+    } catch (error) {
+      const failure = this.#statusFailure("authorityAttested", error);
+      this.#recordResult(false, simulator, fixture, {
+        claimDecision: null,
+        verificationMode: null,
+        failureMessage: failure.failureMessage,
+        failureCode: failure.failureCode,
       });
     }
   }
@@ -299,13 +454,52 @@ export class UseHiddenHolderScenario extends Ability {
         claimDecision: null,
         verificationMode: null,
         failureMessage: null,
+        failureCode: null,
       });
     } catch (error) {
+      const failure = this.#statusFailure("revokedSetObservedState", error);
       this.#recordResult(false, simulator, baseline, {
         claimDecision: null,
         verificationMode: null,
-        failureMessage:
-          error instanceof Error ? error.message : String(error),
+        failureMessage: failure.failureMessage,
+        failureCode: failure.failureCode,
+      });
+    }
+  }
+
+  async runLiveStatusRevokedCredentialRejectedPath(): Promise<void> {
+    const { fixture, simulator } = this.#setupFixture();
+
+    simulator.initializeLiveStatusRegistry(fixture.witness.statusRegistryId);
+    const request = simulator.revocationAwareLiveStatusRequest(
+      fixture.credential.issuerVerificationMethodRef,
+      fixture.witness.verifierDomainHash,
+      fixture.verificationRequest.verifierChallengeHash,
+    );
+    const submission = buildSubmissionForLiveStatusRequest(fixture, request);
+    simulator.revokeLiveStatusHandle(fixture.witness.statusHandle);
+
+    try {
+      simulator.issueRevocationAwareCapabilityWithLiveStatus(
+        fixture.credentialWithStatusBinding,
+        request,
+        submission,
+        fixture.liveStatusVerificationInputs,
+        fixture.witness.currentDay,
+      );
+      this.#recordResult(false, simulator, fixture, {
+        claimDecision: null,
+        verificationMode: null,
+        failureMessage: null,
+        failureCode: null,
+      });
+    } catch (error) {
+      const failure = this.#statusFailure("liveContractState", error);
+      this.#recordResult(false, simulator, fixture, {
+        claimDecision: null,
+        verificationMode: null,
+        failureMessage: failure.failureMessage,
+        failureCode: failure.failureCode,
       });
     }
   }

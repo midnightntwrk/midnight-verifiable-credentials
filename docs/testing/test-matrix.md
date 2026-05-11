@@ -72,6 +72,7 @@ Implemented prototype coverage:
 - `registry/status-registry/src/test/witness-builder.test.ts`
   - deterministic status-handle derivation
   - revoked-set witness/capability construction
+  - same-contract live-status witness construction
   - verifier policy compatibility checks
   - revoked snapshot rejection
 - `registry/status-registry/src/test/attestation-builder.test.ts`
@@ -93,7 +94,19 @@ Implemented prototype coverage:
   - request/binding consistency checks
   - authority-attested proof acceptance and rejection paths
   - verifier policy compatibility for revoked-set and authority-attested flows
+- `registry/status-registry/src/test/status-verifier-classification.test.ts`
+  - canonical status-error classification over representative raw Compact/demo
+    throw messages
+  - preservation of typed helper causes through normalized verifier errors
+  - plain-data failure-record projection for adapters and use-case tests
+  - fail-closed fallback to `unclassifiedFailure` for unknown throw shapes
+- `registry/status-registry/src/test/status-verifier-parity.test.ts`
+  - cross-mode parity for canonical error codes across observed-snapshot,
+    same-contract live-state, and authority-attested verifier paths
+  - current parity coverage for `unknownRegistry`, `staleRegistryState`, and
+    `unsupportedStatusProofMode`
 - `prototypes/credential-families/birth-secret/src/test/status.test.ts`
+  - hidden-holder same-contract live-status request wiring
   - hidden-holder revoked-set status request wiring
   - hard rejection when accepted revoked snapshots already contain the
     credential status handle
@@ -155,10 +168,13 @@ Implemented prototype coverage:
 
 - local/unit verifier contract tests
 - local/unit revocation demo contract tests:
+  - same-contract live-status hidden-holder status path
   - verifier-supplied-root hidden-holder status path
   - authority-attested hidden-holder status path
   - hard rejection when accepted status evidence already says the credential is
     revoked
+  - canonical status-error-code normalization for representative negative-path
+    failures across live, observed, and authority-attested modes
   - reusable capability lifecycle under revocation-aware verification
 - standalone integration test:
   - issuance-verification lifecycle
@@ -195,10 +211,15 @@ Current gap:
 - smoke scenarios:
   - `use-cases/age-gate/scenarios/features/age_gate_happy_path.feature`
   - `use-cases/age-gate/scenarios/features/hidden_holder_age_gate_happy_path.feature`
+  - `use-cases/age-gate/scenarios/features/hidden_holder_live_status_happy_path.feature`
 - negative scenarios:
+  - `use-cases/age-gate/scenarios/features/hidden_holder_live_status_revoked.feature`
   - `use-cases/age-gate/scenarios/features/hidden_holder_wrong_registry.feature`
   - `use-cases/age-gate/scenarios/features/hidden_holder_wrong_root.feature`
+  - `use-cases/age-gate/scenarios/features/hidden_holder_stale_snapshot.feature`
   - `use-cases/age-gate/scenarios/features/hidden_holder_stale_authority_attestation.feature`
+  - `use-cases/age-gate/scenarios/features/hidden_holder_wrong_authority.feature`
+  - `use-cases/age-gate/scenarios/features/hidden_holder_unsupported_authority_mode.feature`
   - `use-cases/age-gate/scenarios/features/hidden_holder_revoked_credential.feature`
 - root commands:
   - `npm run test:bdd:smoke`
@@ -212,9 +233,11 @@ Current gap:
 - current scope:
   - non-Docker birth-credential age-gate happy path
   - non-Docker hidden-holder verifier-supplied-root age-gate happy path
+  - non-Docker hidden-holder same-contract live-status age-gate happy path
   - non-Docker hidden-holder negative-path trust-boundary coverage for
-    wrong-registry, wrong-root, stale-attestation, and revoked-credential
-    failures
+    live-status local-revocation, wrong-registry, wrong-root,
+    stale-snapshot, stale-attestation, wrong-authority,
+    unsupported-authority-mode, and revoked-credential failures
 - local report:
   - `use-cases/age-gate/scenarios/target/site/serenity/index.html`
 
@@ -265,3 +288,11 @@ or directly through package-level `test:integration` commands when Docker is ava
   - both standalone integration lanes
 - `./run.sh targets`
   - prints the supported target list
+
+In addition to the wrapper targets above, `./run.sh` now accepts any root
+`package.json` script directly. Useful examples:
+
+- `./run.sh build:core`
+- `./run.sh build:cone:age-gate`
+- `./run.sh ci:package-tests`
+- `./run.sh artifacts:pack`

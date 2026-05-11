@@ -103,6 +103,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   now binds snapshots to both the live `registryId` and the live contract
   version, even though the Merkle `revokedRoot` itself remains verifier-supplied
   until the final in-circuit root-binding path lands.
+- clarified the empty-root invariant and canonical live-state observation path
+  for `credentials-status-registry`:
+  - an initialized empty revoked-set registry may legitimately publish the
+    zero Merkle root
+  - shared TypeScript helpers can now derive the canonical
+    `(registryId, revokedRoot, registryVersion)` snapshot directly from live
+    registry contract state
+  - the same helper layer can now reject already-revoked handles against live
+    contract state before building revoked-set or same-contract status inputs
 - BREAKING: the generic Compact credential envelope is now split into a thin
   `VC<TClaims, THolderBinding, TStatusBinding>` plus a separate
   `VP<TDisclosures, THolderBinding>` module. Credential bodies now carry an

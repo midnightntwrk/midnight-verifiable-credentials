@@ -4,8 +4,13 @@ import { actorCalled } from "@serenity-js/core";
 
 import {
   HiddenHolderScenarioOutcome,
+  RunTheHiddenHolderLiveStatusHappyPath,
+  RunTheHiddenHolderLiveStatusRevokedRejectedPath,
   RunTheHiddenHolderExpiredAuthorityAttestationRejectedPath,
   RunTheHiddenHolderRevokedCredentialRejectedPath,
+  RunTheHiddenHolderUnsupportedAuthorityModeRejectedPath,
+  RunTheHiddenHolderWrongAuthorityRejectedPath,
+  RunTheHiddenHolderStaleSnapshotRejectedPath,
   RunTheHiddenHolderWrongRevokedRootRejectedPath,
   RunTheHiddenHolderWrongRegistryRejectedPath,
   RunTheHiddenHolderRevocationAwareHappyPath,
@@ -17,6 +22,13 @@ When(
   "the engineer runs the hidden-holder revocation-aware happy path",
   async () => {
     await engineer().attemptsTo(RunTheHiddenHolderRevocationAwareHappyPath());
+  },
+);
+
+When(
+  "the engineer runs the hidden-holder same-contract live-status happy path",
+  async () => {
+    await engineer().attemptsTo(RunTheHiddenHolderLiveStatusHappyPath());
   },
 );
 
@@ -37,6 +49,13 @@ When(
 );
 
 When(
+  "the engineer runs the hidden-holder stale-snapshot rejection path",
+  async () => {
+    await engineer().attemptsTo(RunTheHiddenHolderStaleSnapshotRejectedPath());
+  },
+);
+
+When(
   "the engineer runs the hidden-holder expired-attestation rejection path",
   async () => {
     await engineer().attemptsTo(
@@ -46,10 +65,35 @@ When(
 );
 
 When(
+  "the engineer runs the hidden-holder wrong-authority rejection path",
+  async () => {
+    await engineer().attemptsTo(RunTheHiddenHolderWrongAuthorityRejectedPath());
+  },
+);
+
+When(
+  "the engineer runs the hidden-holder unsupported authority-mode rejection path",
+  async () => {
+    await engineer().attemptsTo(
+      RunTheHiddenHolderUnsupportedAuthorityModeRejectedPath(),
+    );
+  },
+);
+
+When(
   "the engineer runs the hidden-holder revoked-credential rejection path",
   async () => {
     await engineer().attemptsTo(
       RunTheHiddenHolderRevokedCredentialRejectedPath(),
+    );
+  },
+);
+
+When(
+  "the engineer runs the hidden-holder same-contract live-status revoked rejection path",
+  async () => {
+    await engineer().attemptsTo(
+      RunTheHiddenHolderLiveStatusRevokedRejectedPath(),
     );
   },
 );
@@ -74,6 +118,15 @@ Then(
         HiddenHolderScenarioOutcome.failureMessage(),
         includes(expectedFragment),
       ),
+    );
+  },
+);
+
+Then(
+  "the hidden-holder scenario failure code should be {string}",
+  async (expectedCode: string) => {
+    await engineer().attemptsTo(
+      Ensure.that(HiddenHolderScenarioOutcome.failureCode(), equals(expectedCode)),
     );
   },
 );

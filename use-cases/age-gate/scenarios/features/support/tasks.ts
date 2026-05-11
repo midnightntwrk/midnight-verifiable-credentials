@@ -25,6 +25,17 @@ export const RunTheHiddenHolderRevocationAwareHappyPath = () =>
     ),
   );
 
+export const RunTheHiddenHolderLiveStatusHappyPath = () =>
+  Task.where(
+    "#actor runs the hidden-holder same-contract live-status happy path",
+    Interaction.where(
+      "#actor executes the hidden-holder same-contract live-status scenario against the revocation demo simulator",
+      async (actor) => {
+        await UseHiddenHolderScenario.from(actor).runLiveStatusHappyPath();
+      },
+    ),
+  );
+
 export const RunTheHiddenHolderWrongRegistryRejectedPath = () =>
   Task.where(
     "#actor runs the hidden-holder wrong-registry rejection path",
@@ -49,14 +60,14 @@ export const RunTheHiddenHolderWrongRevokedRootRejectedPath = () =>
     ),
   );
 
-export const RunTheHiddenHolderStaleVersionRejectedPath = () =>
+export const RunTheHiddenHolderStaleSnapshotRejectedPath = () =>
   Task.where(
-    "#actor runs the hidden-holder stale-version rejection path",
+    "#actor runs the hidden-holder stale-snapshot rejection path",
     Interaction.where(
-      "#actor executes the hidden-holder stale-version scenario against the revocation demo simulator",
+      "#actor executes the hidden-holder stale-snapshot scenario against the revocation demo simulator",
       async (actor) => {
         await UseHiddenHolderScenario.from(actor)
-          .runVerifierSuppliedRootStaleVersionRejectedPath();
+          .runVerifierSuppliedRootStaleSnapshotRejectedPath();
       },
     ),
   );
@@ -73,6 +84,30 @@ export const RunTheHiddenHolderExpiredAuthorityAttestationRejectedPath = () =>
     ),
   );
 
+export const RunTheHiddenHolderWrongAuthorityRejectedPath = () =>
+  Task.where(
+    "#actor runs the hidden-holder wrong-authority rejection path",
+    Interaction.where(
+      "#actor executes the hidden-holder wrong-authority scenario against the revocation demo simulator",
+      async (actor) => {
+        await UseHiddenHolderScenario.from(actor)
+          .runAuthorityAttestedWrongAuthorityRejectedPath();
+      },
+    ),
+  );
+
+export const RunTheHiddenHolderUnsupportedAuthorityModeRejectedPath = () =>
+  Task.where(
+    "#actor runs the hidden-holder unsupported authority-mode rejection path",
+    Interaction.where(
+      "#actor executes the hidden-holder unsupported authority-mode scenario against the revocation demo simulator",
+      async (actor) => {
+        await UseHiddenHolderScenario.from(actor)
+          .runAuthorityAttestedUnsupportedModeRejectedPath();
+      },
+    ),
+  );
+
 export const RunTheHiddenHolderRevokedCredentialRejectedPath = () =>
   Task.where(
     "#actor runs the hidden-holder revoked-credential rejection path",
@@ -81,6 +116,18 @@ export const RunTheHiddenHolderRevokedCredentialRejectedPath = () =>
       async (actor) => {
         await UseHiddenHolderScenario.from(actor)
           .runRevokedCredentialRejectedPath();
+      },
+    ),
+  );
+
+export const RunTheHiddenHolderLiveStatusRevokedRejectedPath = () =>
+  Task.where(
+    "#actor runs the hidden-holder same-contract live-status revoked rejection path",
+    Interaction.where(
+      "#actor executes the hidden-holder same-contract live-status revoked scenario against the revocation demo simulator",
+      async (actor) => {
+        await UseHiddenHolderScenario.from(actor)
+          .runLiveStatusRevokedCredentialRejectedPath();
       },
     ),
   );
@@ -145,5 +192,10 @@ export const HiddenHolderScenarioOutcome = {
     Question.about<string | null>(
       "why the hidden-holder scenario was rejected",
       (actor) => UseHiddenHolderScenario.from(actor).lastResult().failureMessage,
+    ),
+  failureCode: () =>
+    Question.about<string | null>(
+      "which canonical status code rejected the hidden-holder scenario",
+      (actor) => UseHiddenHolderScenario.from(actor).lastResult().failureCode,
     ),
 };

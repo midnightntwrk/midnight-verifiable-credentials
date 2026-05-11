@@ -31,6 +31,8 @@ import {
   type SecretBirthCredentialVerificationRequest,
   type SecretBirthCredentialVerificationRevokedSetStatusInputs,
   type SecretBirthCredentialVerificationRevokedSetStatusRequest,
+  type SecretBirthCredentialWithStatusBinding,
+  type SecretBirthStatusCredential,
   StatusCapabilityKind,
 } from "../managed/secret-birth-credential/contract/index.js";
 
@@ -44,30 +46,13 @@ export type Signer = {
   readonly verificationMethodRef: VerificationMethodRef;
 };
 
-export type SecretBirthStatusCredentialCompat = SecretBirthCredential & {
-  readonly statusBinding: RegistryBoundStatusBinding;
-};
-
-type SecretBirthCredentialCompat = Omit<
-  SecretBirthCredential,
-  "statusBinding"
-> & {
-  readonly statusBinding?: RegistryBoundStatusBinding | Record<string, never>;
-};
-
-export type SecretBirthCredentialWithStatusBindingCompat = {
-  readonly credential: SecretBirthStatusCredentialCompat;
-  readonly statusBinding: RegistryBoundStatusBinding;
-  readonly credentialProof: Proof;
-};
-
 export type BirthCredentialFixture = {
   readonly issuer: Signer;
   readonly credential: SecretBirthCredential;
   readonly credentialProof: Proof;
   readonly presentationRequest: SecretBirthCredentialPresentationRequest;
   readonly verificationRequest: SecretBirthCredentialVerificationRequest;
-  readonly credentialWithStatusBinding: SecretBirthCredentialWithStatusBindingCompat;
+  readonly credentialWithStatusBinding: SecretBirthCredentialWithStatusBinding;
   readonly liveStatusVerificationRequest: SecretBirthCredentialVerificationLiveStatusRequest;
   readonly revokedSetStatusVerificationRequest: SecretBirthCredentialVerificationRevokedSetStatusRequest;
   readonly authorityAttestedStatusVerificationRequest: SecretBirthCredentialVerificationAuthorityAttestedStatusRequest;
@@ -211,24 +196,6 @@ export const signProof = ({
   };
 };
 
-const secretBirthCredentialRegistryBoundStatusBodyRootCompat = (
-  credential: SecretBirthStatusCredentialCompat,
-): Uint8Array => {
-  const bodyRoot =
-    pureCircuits.secretBirthCredentialRegistryBoundStatusBodyRoot as unknown as (
-      ...args: unknown[]
-    ) => Uint8Array;
-
-  try {
-    return bodyRoot(
-      credential as SecretBirthCredential,
-      credential.statusBinding,
-    );
-  } catch {
-    return bodyRoot(credential);
-  }
-};
-
 export const createSecretBirthCredentialFixture = (
   options: SecretBirthCredentialFixtureOptions = {},
 ): BirthCredentialFixture => {
@@ -288,7 +255,7 @@ export const createSecretBirthCredentialFixture = (
     ),
   };
 
-  const credential: SecretBirthCredentialCompat = {
+  const credential: SecretBirthCredential = {
     version: 1n,
     schema: {
       packageId: padText("midnight-did:vc:birth-secret"),
@@ -320,9 +287,7 @@ export const createSecretBirthCredentialFixture = (
   };
 
   const credentialProof = signProof({
-    bodyRoot: pureCircuits.secretBirthCredentialBodyRoot(
-      credential as SecretBirthCredential,
-    ),
+    bodyRoot: pureCircuits.secretBirthCredentialBodyRoot(credential),
     signer: issuer,
     createdAt: 10_001n,
     challengeHash: sha256("challenge:issuance"),
@@ -383,26 +348,26 @@ export const createSecretBirthCredentialFixture = (
     ),
   };
 
-  const statusCredential: SecretBirthStatusCredentialCompat = {
-    ...(credential as SecretBirthCredential),
+  const statusCredential: SecretBirthStatusCredential = {
+    ...credential,
     statusBinding,
   };
 
   const statusBoundCredentialProof = signProof({
     bodyRoot:
-      secretBirthCredentialRegistryBoundStatusBodyRootCompat(statusCredential),
+      pureCircuits.secretBirthCredentialRegistryBoundStatusBodyRoot(
+        statusCredential,
+      ),
     signer: issuer,
     createdAt: credentialProof.createdAt,
     challengeHash: credentialProof.challengeHash,
     nonceScalar: 12n,
   });
 
-  const credentialWithStatusBinding: SecretBirthCredentialWithStatusBindingCompat =
-    {
-      credential: statusCredential,
-      statusBinding,
-      credentialProof: statusBoundCredentialProof,
-    };
+  const credentialWithStatusBinding: SecretBirthCredentialWithStatusBinding = {
+    credential: statusCredential,
+    credentialProof: statusBoundCredentialProof,
+  };
 
   const statusRequest: RevokedSetStatusRequest = {
     registryState: {
@@ -485,8 +450,8 @@ export const createSecretBirthCredentialFixture = (
         acceptedStatusCapability: StatusCapabilityKind.authorityAttestedStatus,
         enforceRegistryId: true,
         acceptedRegistryId: witness.statusRegistryId,
-        enforceAttestationMaxAge: false,
-        maxAttestationAge: 0n,
+        enforceAttestationMaxAge: true,
+        maxAttestationAge: 50n,
       },
       statusRequest,
     };
@@ -555,7 +520,7 @@ export const createSecretBirthCredentialFixture = (
 
   return {
     issuer,
-    credential: credential as SecretBirthCredential,
+    credential,
     credentialProof,
     presentationRequest,
     verificationRequest,

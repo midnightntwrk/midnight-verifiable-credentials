@@ -53,7 +53,7 @@ describe("revocation registry contract", () => {
     ).not.toThrow();
   });
 
-  it("rejects an empty registry id or revoked root in a typed snapshot", () => {
+  it("rejects an empty registry id, allows the empty-set root at version 0, and rejects it later", () => {
     expect(() =>
       pureCircuits.assertValidRevocationRegistryState({
         registryId: new Uint8Array(32),
@@ -68,7 +68,15 @@ describe("revocation registry contract", () => {
         revokedRoot: new Uint8Array(32),
         registryVersion: 0n,
       }),
-    ).toThrow(/Revocation registry root must be set/);
+    ).not.toThrow();
+
+    expect(() =>
+      pureCircuits.assertValidRevocationRegistryState({
+        registryId: bytes32("registry:hidden-holder"),
+        revokedRoot: new Uint8Array(32),
+        registryVersion: 1n,
+      }),
+    ).toThrow(/root must be set after the registry version advances/i);
   });
 
   it("initializes the registry once and rejects invalid follow-up initialization", () => {

@@ -11,13 +11,18 @@ integrators.
 
 The current slice now covers:
 
-- two happy-path scenarios:
+- three happy-path scenarios:
   - explicit-holder age-gate happy path
   - hidden-holder revocation-aware happy path
-- four negative hidden-holder status-boundary scenarios:
+  - hidden-holder same-contract live-status happy path
+- eight negative hidden-holder status-boundary scenarios:
+  - same-contract live-status revoked handle
   - wrong registry id
   - wrong revoked root
+  - stale verifier-supplied status snapshot
   - stale authority-attested proof
+  - wrong authority attestation signer
+  - unsupported authority-attested proof mode
   - revoked credential rejected before proof assembly
 
 ## Run
@@ -58,3 +63,5 @@ On macOS, open the report directly with:
 ```bash
 open use-cases/age-gate/scenarios/target/site/serenity/index.html
 ```
+
+Negative hidden-holder status scenarios now record both the raw failure message and one canonical status failure code through the shared plain-data failure-record helper, so the living docs can assert the fail-closed category directly.

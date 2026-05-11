@@ -12,8 +12,8 @@ const repoRoot = path.resolve(
 );
 const requiredBuildSurfaces = [
   {
-    artifactPath: "credentials/dist/index.js",
-    sourcePaths: ["credentials/src/index.ts"],
+    artifactPath: "core/primitives/credentials/dist/index.js",
+    sourcePaths: ["core/primitives/credentials/src/index.ts"],
   },
   {
     artifactPath: "prototypes/credential-families/birth/dist/testing.js",
