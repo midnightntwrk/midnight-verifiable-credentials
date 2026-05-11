@@ -44,9 +44,15 @@ constructor() {
   lastBusinessDecision = AccessDecision.noDecision;
 }
 
-export circuit ageGateRequest(
+// Request-builder helpers for the explicit-holder age-gate demo.
+// The pure helper takes policy inputs explicitly so off-chain simulators and
+// starter contracts can build the same typed request without executing an
+// impure ledger-reading wrapper.
+export pure circuit ageGateRequestForPolicy(
   issuerVerificationMethodRef: VerificationMethodRef,
-  verifierChallengeHash: Bytes<32>
+  verifierChallengeHash: Bytes<32>,
+  requireBirthCountryDisclosure: Boolean,
+  requestedAgeThresholdYears: Uint<8>
 ): BirthCredentialPresentationRequest {
   return BirthCredentialPresentationRequest {
     version: 1,
@@ -58,11 +64,23 @@ export circuit ageGateRequest(
     },
     issuerVerificationMethodRef: issuerVerificationMethodRef,
     requireSubjectIdCommitmentDisclosure: false,
-    requireBirthCountryDisclosure: ageGateRequiresBirthCountryDisclosure,
+    requireBirthCountryDisclosure: requireBirthCountryDisclosure,
     requireAgeOverThreshold: true,
-    requestedAgeThresholdYears: minimumAccessAgeYears,
+    requestedAgeThresholdYears: requestedAgeThresholdYears,
     verifierChallengeHash: verifierChallengeHash,
   };
+}
+
+export circuit ageGateRequest(
+  issuerVerificationMethodRef: VerificationMethodRef,
+  verifierChallengeHash: Bytes<32>
+): BirthCredentialPresentationRequest {
+  return ageGateRequestForPolicy(
+    issuerVerificationMethodRef,
+    verifierChallengeHash,
+    ageGateRequiresBirthCountryDisclosure,
+    minimumAccessAgeYears
+  );
 }
 
 pure circuit ageGateCapability(

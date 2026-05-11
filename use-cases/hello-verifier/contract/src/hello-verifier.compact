@@ -22,7 +22,9 @@ constructor() {
   lastVerifiedRequestChallenge = pad(32, "hello-verifier:no-request");
 }
 
-export circuit helloVerifierRequest(
+// Request-builder helper for the smallest verifier starter.
+// This surface is pure because the starter policy is fully caller-supplied.
+export pure circuit helloVerifierRequest(
   issuerVerificationMethodRef: VerificationMethodRef,
   verifierChallengeHash: Bytes<32>,
   requestedAgeThresholdYears: Uint<8>
