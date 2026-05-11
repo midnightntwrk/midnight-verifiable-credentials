@@ -14,6 +14,7 @@ workspaces=(
   components/orchestration/protocol
   prototypes/credential-families/birth
   prototypes/credential-families/birth-secret
+  prototypes/credential-families/hello-family
   components/integration/standalone-environment
 )
 

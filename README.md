@@ -29,6 +29,8 @@ Current maturity is mixed by package:
     - current prototype status / revocation registry support package
   - [`credentials-birth`](./prototypes/credential-families/birth/README.md)
   - [`credentials-birth-secret`](./prototypes/credential-families/birth-secret/README.md)
+  - [`credentials-hello-family`](./prototypes/credential-families/hello-family/README.md)
+    - claim-type playground and starter family package
   - [`credentials-iso-registry`](./core/primitives/iso-registry/README.md)
   - [`credentials-offchain-did`](./components/adapters/offchain-did/README.md)
   - [`credentials-openid`](./protocols/openid/README.md)
@@ -91,6 +93,8 @@ Start here:
   - explicit-holder birth credential family
 - [`credentials-birth-secret`](./prototypes/credential-families/birth-secret/README.md)
   - secret-holder birth credential family
+- [`credentials-hello-family`](./prototypes/credential-families/hello-family/README.md)
+  - claim-type playground for the current Compact primitive surface
 - [`credentials-openid`](./protocols/openid/README.md)
   - OID4VCI / OID4VP-inspired transport/domain adapters
 - [`credentials-protocol`](./components/orchestration/protocol/README.md)

@@ -54,7 +54,8 @@ run_common_artifacts_ready() {
         && [[ -f "core/capabilities/same-holder/src/managed/same-holder/contract/index.js" ]] \
         && [[ -f "core/primitives/iso-registry/src/managed/iso-registry/contract/index.js" ]] \
         && [[ -f "prototypes/credential-families/birth/src/managed/birth-credential/contract/index.js" ]] \
-        && [[ -f "prototypes/credential-families/birth-secret/src/managed/secret-birth-credential/contract/index.js" ]]
+        && [[ -f "prototypes/credential-families/birth-secret/src/managed/secret-birth-credential/contract/index.js" ]] \
+        && [[ -f "prototypes/credential-families/hello-family/src/managed/hello-family-credential/contract/index.js" ]]
       ;;
     managed-all)
       run_common_artifacts_ready managed-light \
@@ -79,7 +80,8 @@ run_common_artifacts_ready() {
         && [[ -f "components/adapters/offchain-did/dist/index.js" ]] \
         && [[ -f "protocols/openid/dist/index.js" ]] \
         && [[ -f "prototypes/credential-families/birth/dist/index.js" ]] \
-        && [[ -f "prototypes/credential-families/birth-secret/dist/index.js" ]]
+        && [[ -f "prototypes/credential-families/birth-secret/dist/index.js" ]] \
+        && [[ -f "prototypes/credential-families/hello-family/dist/index.js" ]]
       ;;
     all)
       run_common_artifacts_ready light \
