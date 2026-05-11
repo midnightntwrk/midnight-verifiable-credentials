@@ -26,7 +26,7 @@ Current maturity is mixed by package:
 - reference implementation packages:
   - [`credentials`](./core/primitives/credentials/README.md)
   - [`credentials-status-registry`](./registry/status-registry/README.md)
-    - current prototype status / revocation registry support package
+    - reusable registry package with the current prototype status / revocation trust model
   - [`credentials-birth`](./prototypes/credential-families/birth/README.md)
   - [`credentials-birth-secret`](./prototypes/credential-families/birth-secret/README.md)
   - [`credentials-hello-family`](./prototypes/credential-families/hello-family/README.md)
@@ -78,7 +78,7 @@ Start here:
 - [`credentials-same-holder`](./core/capabilities/same-holder/README.md)
   - same-holder composition capability
 - [`credentials-status-registry`](./registry/status-registry/README.md)
-  - prototype status / revocation registry contract and off-chain witness helpers
+  - status / revocation registry contract and off-chain witness helpers, still operating under the current prototype trust model
 - [`credentials-iso-registry`](./core/primitives/iso-registry/README.md)
   - shared Compact-native ISO code types
 - [`credentials-offchain-did`](./components/adapters/offchain-did/README.md)
