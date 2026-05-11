@@ -208,14 +208,13 @@ Main findings:
 ## Legacy VC-MAT Pointer Queue
 
 This older `VC-MAT-XX` queue is superseded by the category split and
-next-ten-slice queue below. Keep it only as a compact pointer to the
-same top-level priorities:
+next-ten-slice queue below. Keep it only as a compact pointer to the same
+top-level priorities in their current names:
 
 1. `STATUS-CONTRACT` / `VC-MAT-20`
 2. `INTEGRATOR-EXECUTION` / `VC-MAT-08`
-3. `BDD-LIVE-DOCS` / `VC-MAT-17`
-4. `ORCHESTRATION-PROD-SAFETY` / `VC-MAT-06`
-5. `TEST-DOC-ALIGNMENT` / `VC-MAT-09`
+3. `ORCHESTRATION-PROD-SAFETY` / `VC-MAT-06`
+4. `MAINTENANCE-CLOSEOUT` / `VC-MAT-09`, `VC-MAT-17`, `VC-MAT-18`
 
 ## Category Split
 
@@ -264,28 +263,28 @@ stack. The next backlog wave should use these ten larger reviewable slices.
 
 ### `STATUS-CONTRACT`
 
-1. canonical non-membership proof note and witness contract
+- `Slice 1`: canonical non-membership proof note and witness contract
    - freeze the generic witness shape, verifier inputs, and failure semantics
      for the non-authority-attested path
    - make the relationship explicit between:
      - same-contract live-state mode
      - off-chain verifier-side live-state mode
      - authority-attested external-registry mode
-2. canonical non-membership helper/runtime implementation slice
+- `Slice 2`: canonical non-membership helper/runtime implementation slice
    - add the typed helper/API surface that builds and validates the canonical
      non-membership witness bundle
    - keep failure codes aligned with the existing canonical verifier taxonomy
-3. Compact-side live-root binding feasibility slice
+- `Slice 3`: Compact-side live-root binding feasibility slice
    - probe the real alternatives to runtime-only `MerkleTree.root()`
    - document whether the final path is:
      - a new Compact surface requirement
      - a same-contract-only reference path
      - or a different state-binding pattern
-4. same-contract live-status conformance package
+- `Slice 4`: same-contract live-status conformance package
    - harden the Layer 3 same-contract path with a fuller adversarial matrix
    - make the “no explicit root handoff required” rule executable rather than
      only documentary
-5. authority-attested replay/freshness/nonce follow-on
+- `Slice 5`: authority-attested replay/freshness/nonce follow-on
    - close any remaining API sharp edges around replay resistance, nonce
      binding, and verifier freshness enforcement
    - keep this mode explicit as a supported implementation option, not a hidden
@@ -293,20 +292,20 @@ stack. The next backlog wave should use these ten larger reviewable slices.
 
 ### `INTEGRATOR-EXECUTION`
 
-6. compiling hello-verifier starter
+- `Slice 6`: compiling hello-verifier starter
    - shortest-path runnable verifier example using the converged thin-core
      surfaces and current run-target conventions
-7. compiling hello-family starter
+- `Slice 7`: compiling hello-family starter
    - smallest runnable family package produced from the current scaffold/tooling
      conventions
-8. DID + VC handoff smoke path
+- `Slice 8`: DID + VC handoff smoke path
    - concrete checklist, smoke path, and compatibility matrix seed that proves
      how a DID holder path hands off into VC issuance/presentation in the
      current repo
 
 ### `ORCHESTRATION-PROD-SAFETY`
 
-9. production-safe protocol reference path
+- `Slice 9`: production-safe protocol reference path
    - one reference path that ties together:
      - durable-state expectations
      - RNG requirements
@@ -315,7 +314,7 @@ stack. The next backlog wave should use these ten larger reviewable slices.
 
 ### `MAINTENANCE-CLOSEOUT`
 
-10. residual closeout sweep after slices `1` through `9`
+- `Slice 10`: residual closeout sweep after slices `1` through `9`
     - refresh the backlog file again
     - close or downgrade any residual `VC-MAT-09`, `VC-MAT-17`, and
       `VC-MAT-18` items
