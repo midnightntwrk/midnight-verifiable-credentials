@@ -24,6 +24,12 @@ What it still does not have is one generic in-circuit path that proves:
 
 The current blocker is the Compact/runtime boundary around `MerkleTree.root()`.
 
+Upstream tracking note:
+
+- there is no dedicated upstream Compact issue linked from this repository yet
+- until one exists, this note is the canonical place that records the blocker
+  and the fallback options
+
 ## Current limitation
 
 Today Compact can read ordinary ledger fields in-circuit:

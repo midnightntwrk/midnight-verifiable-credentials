@@ -29,7 +29,7 @@ setNetworkId("undeployed");
 const padText = (value: string, length = 32): Uint8Array => {
   const bytes = new TextEncoder().encode(value);
   if (bytes.length >= length) {
-    return bytes.subarray(0, length);
+    return bytes.slice(0, length);
   }
   const padded = new Uint8Array(length);
   padded.set(bytes);
@@ -216,13 +216,6 @@ describe("credentials demo revocation contract", () => {
     expect("statusRequest" in (request as Record<string, unknown>)).toEqual(
       false,
     );
-    expect(
-      "registryState" in
-        (fixture.liveStatusVerificationInputs.witnessInput as Record<
-          string,
-          unknown
-        >),
-    ).toEqual(false);
     expect(
       Object.keys(fixture.liveStatusVerificationInputs.witnessInput).sort(),
     ).toEqual(["statusHandle", "statusHandleOpening"]);
