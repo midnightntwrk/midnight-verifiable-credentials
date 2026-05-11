@@ -35,6 +35,9 @@ export struct DummyClaimsDisclosures {
   revealNestedValue: Boolean,
   nestedValue: DummyNestedDisclosures,
   revealNestedVector: Boolean,
+  // NOTE: nested vectors stay all-or-nothing in this family on purpose. The
+  // goal is to prove the claim surface, not to explode the request model into
+  // per-element nested disclosure flags.
   nestedVector: Vector<2, DummyNestedClaims>,
 }
 
@@ -54,6 +57,10 @@ export struct DummyClaimsPresentationRequest {
   requireBytesVectorDisclosure: Boolean,
   requireFieldVectorDisclosure: Boolean,
   requireNestedValueDisclosure: Boolean,
+  requireNestedBooleanValueDisclosure: Boolean,
+  requireNestedBigUnsignedValueDisclosure: Boolean,
+  requireNestedBytesValueDisclosure: Boolean,
+  requireNestedFieldValueDisclosure: Boolean,
   requireNestedVectorDisclosure: Boolean,
   verifierChallengeHash: Bytes<32>,
 }

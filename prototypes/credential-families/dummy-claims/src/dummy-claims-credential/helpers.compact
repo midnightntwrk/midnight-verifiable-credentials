@@ -62,8 +62,7 @@ export pure circuit assertValidDummyClaimsCredential(
 
 export pure circuit assertMatchingDummyNestedDisclosures(
   disclosed: DummyNestedDisclosures,
-  claims: DummyNestedClaims,
-  messagePrefix: Bytes<32>
+  claims: DummyNestedClaims
 ): [] {
   if (disclosed.revealBooleanValue) {
     assert(disclosed.booleanValue == claims.booleanValue, "Dummy-claims nested boolean disclosure does not match the credential");
@@ -142,8 +141,7 @@ export pure circuit assertValidDummyClaimsPresentation(
   if (presentation.disclosed.revealNestedValue) {
     assertMatchingDummyNestedDisclosures(
       presentation.disclosed.nestedValue,
-      credential.claims.nestedValue,
-      pad(32, "")
+      credential.claims.nestedValue
     );
   }
   if (presentation.disclosed.revealNestedVector) {
@@ -219,9 +217,21 @@ export pure circuit assertDummyClaimsPresentationSatisfiesRequest(
   }
   if (request.requireNestedValueDisclosure) {
     assert(presentation.disclosed.revealNestedValue, "Dummy-claims request requires nested disclosure");
+  }
+  if (request.requireNestedBooleanValueDisclosure) {
+    assert(presentation.disclosed.revealNestedValue, "Dummy-claims request requires nested disclosure");
     assert(presentation.disclosed.nestedValue.revealBooleanValue, "Dummy-claims nested request requires nested boolean disclosure");
+  }
+  if (request.requireNestedBigUnsignedValueDisclosure) {
+    assert(presentation.disclosed.revealNestedValue, "Dummy-claims request requires nested disclosure");
     assert(presentation.disclosed.nestedValue.revealBigUnsignedValue, "Dummy-claims nested request requires nested bigint-like disclosure");
+  }
+  if (request.requireNestedBytesValueDisclosure) {
+    assert(presentation.disclosed.revealNestedValue, "Dummy-claims request requires nested disclosure");
     assert(presentation.disclosed.nestedValue.revealBytesValue, "Dummy-claims nested request requires nested bytes disclosure");
+  }
+  if (request.requireNestedFieldValueDisclosure) {
+    assert(presentation.disclosed.revealNestedValue, "Dummy-claims request requires nested disclosure");
     assert(presentation.disclosed.nestedValue.revealFieldValue, "Dummy-claims nested request requires nested field disclosure");
   }
   if (request.requireNestedVectorDisclosure) {

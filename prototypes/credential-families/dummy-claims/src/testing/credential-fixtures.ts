@@ -51,6 +51,10 @@ type DummyClaimsRequestOptions = {
   readonly requireBytes32ValueDisclosure?: boolean;
   readonly requireFieldVectorDisclosure?: boolean;
   readonly requireNestedValueDisclosure?: boolean;
+  readonly requireNestedBooleanValueDisclosure?: boolean;
+  readonly requireNestedBigUnsignedValueDisclosure?: boolean;
+  readonly requireNestedBytesValueDisclosure?: boolean;
+  readonly requireNestedFieldValueDisclosure?: boolean;
   readonly requireNestedVectorDisclosure?: boolean;
 };
 
@@ -126,6 +130,8 @@ const signProof = ({
   readonly createdAt: bigint;
   readonly challengeHash: Uint8Array;
 }): Proof => {
+  // NOTE: distinct deterministic nonce salts keep issuance and presentation
+  // transcripts separated in the test fixtures.
   const nonceScalar =
     context === "issuance" ? 19n + signer.secretKey : 23n + signer.secretKey;
   const proof: Proof = {
@@ -254,7 +260,21 @@ export const createDummyClaimsFixture = ({
     requireFieldVectorDisclosure:
       request.requireFieldVectorDisclosure ?? revealFieldVector,
     requireNestedValueDisclosure:
-      request.requireNestedValueDisclosure ?? revealNestedValue,
+      request.requireNestedValueDisclosure ??
+      (revealNestedValue ||
+        revealNestedBooleanValue ||
+        revealNestedBigUnsignedValue ||
+        revealNestedBytesValue ||
+        revealNestedFieldValue),
+    requireNestedBooleanValueDisclosure:
+      request.requireNestedBooleanValueDisclosure ?? revealNestedBooleanValue,
+    requireNestedBigUnsignedValueDisclosure:
+      request.requireNestedBigUnsignedValueDisclosure ??
+      revealNestedBigUnsignedValue,
+    requireNestedBytesValueDisclosure:
+      request.requireNestedBytesValueDisclosure ?? revealNestedBytesValue,
+    requireNestedFieldValueDisclosure:
+      request.requireNestedFieldValueDisclosure ?? revealNestedFieldValue,
     requireNestedVectorDisclosure:
       request.requireNestedVectorDisclosure ?? revealNestedVector,
     verifierChallengeHash,
@@ -311,9 +331,7 @@ export const createDummyClaimsFixture = ({
         fieldValue: revealNestedFieldValue ? claims.nestedValue.fieldValue : 0n,
       },
       revealNestedVector,
-      nestedVector: revealNestedVector
-        ? claims.nestedVector
-        : [createDummyNestedClaims(), createDummyNestedClaims()],
+      nestedVector: claims.nestedVector,
     },
   };
 

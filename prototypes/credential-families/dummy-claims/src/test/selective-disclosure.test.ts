@@ -78,7 +78,7 @@ describe("dummy-claims selective disclosure", () => {
         revealNestedFieldValue: false,
       },
       request: {
-        requireNestedValueDisclosure: true,
+        requireNestedFieldValueDisclosure: true,
       },
     });
 
@@ -112,5 +112,22 @@ describe("dummy-claims selective disclosure", () => {
         fixture.presentationProof,
       ),
     ).toThrow(/Dummy-claims request requires nested vector disclosure/);
+  });
+
+  it("rejects a presentation whose disclosed nested field value no longer matches the credential", () => {
+    const fixture = createDummyClaimsFixture();
+
+    expect(() =>
+      pureCircuits.assertMatchingDummyNestedDisclosures(
+        {
+          ...fixture.presentation.disclosed.nestedValue,
+          fieldValue:
+            fixture.presentation.disclosed.nestedValue.fieldValue + 1n,
+        },
+        fixture.credential.claims.nestedValue,
+      ),
+    ).toThrow(
+      /Dummy-claims nested field disclosure does not match the credential/,
+    );
   });
 });

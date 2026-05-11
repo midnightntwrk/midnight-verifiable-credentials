@@ -47,6 +47,10 @@ describe("dummy-claims presentation request", () => {
     expect(modelSource).toContain("requireBytesVectorDisclosure");
     expect(modelSource).toContain("requireFieldVectorDisclosure");
     expect(modelSource).toContain("requireNestedValueDisclosure");
+    expect(modelSource).toContain("requireNestedBooleanValueDisclosure");
+    expect(modelSource).toContain("requireNestedBigUnsignedValueDisclosure");
+    expect(modelSource).toContain("requireNestedBytesValueDisclosure");
+    expect(modelSource).toContain("requireNestedFieldValueDisclosure");
     expect(modelSource).toContain("requireNestedVectorDisclosure");
     expect(helpersSource).toContain(
       "Dummy-claims request requires Boolean vector disclosure",
@@ -57,6 +61,9 @@ describe("dummy-claims presentation request", () => {
   });
 
   it("keeps nested selective-disclosure gates explicit in the validation helper", () => {
+    expect(helpersSource).toContain(
+      "Dummy-claims request requires nested disclosure",
+    );
     expect(helpersSource).toContain(
       "Dummy-claims nested request requires nested boolean disclosure",
     );

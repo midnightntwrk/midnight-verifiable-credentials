@@ -46,6 +46,7 @@ Selective disclosure model:
 
 - every supported top-level primitive/vector field has a direct request gate
 - the nested struct can be disclosed as a nested selective-disclosure object
+  with per-field request gates
 - the nested vector is disclosed as an all-or-nothing direct field to avoid exploding the request surface
 
 Design note:
