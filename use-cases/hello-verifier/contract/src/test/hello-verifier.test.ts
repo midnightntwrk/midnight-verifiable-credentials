@@ -64,7 +64,7 @@ describe("hello-verifier contract", () => {
     );
   });
 
-  it("rejects a presentation that does not satisfy the verifier request", () => {
+  it("rejects a presentation that omits a required bytes disclosure", () => {
     const fixture = createHelloFamilyFixture();
     const simulator = new HelloVerifierSimulator();
     const stricterRequest = simulator.helloVerifierRequest(
@@ -101,6 +101,8 @@ describe("hello-verifier contract", () => {
         fixture.presentation,
         fixture.presentationProof,
       ),
-    ).toThrow();
+    ).toThrow(
+      /Hello-family presentation proof challenge does not match the request/,
+    );
   });
 });

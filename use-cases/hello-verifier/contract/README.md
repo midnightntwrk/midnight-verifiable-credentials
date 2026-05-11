@@ -14,6 +14,7 @@ Current scope:
 
 - uses the explicit-holder `credentials-hello-family` playground family
 - builds a request that requires a tiny selective-disclosure surface
+- keeps boolean and big-unsigned disclosure mandatory, with bytes disclosure as the only starter toggle
 - verifies one presentation against that request
 - records the accepted credential root, challenge, and disclosed values in ledger state
 
