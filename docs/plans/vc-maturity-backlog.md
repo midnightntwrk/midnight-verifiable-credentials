@@ -123,7 +123,8 @@ Practical remaining backlog after the current open stack:
 
 Current highest-risk remaining area:
 
-- `VC-MAT-20` is still the hardest unresolved core-spec tail:
+- `VC-MAT-20` is now closed to the repository-owned boundary on the current
+  stack:
   the repository now has:
   - a native hidden-holder `VC<..., RegistryBoundStatusBinding>` rollout
   - explicit status verification modes:
@@ -134,10 +135,12 @@ Current highest-risk remaining area:
   - stale-snapshot, wrong-registry, wrong-root, and revoked negative-path
     living docs
   - cross-mode verifier parity coverage
-  but it still does not provide:
+  - canonical runtime non-membership bundles
+  - authority-attested freshness and nonce hardening
+  The remaining gap is now external to ordinary repo execution:
   - final generic in-circuit live-root binding
-  - final canonical non-membership proof semantics
-  - a settled Compact-side replacement for the current runtime-only
+  - final generic root-bound Merkle non-membership
+  - an upstream or future explicit answer to the runtime-only
     `MerkleTree.root()` limitation
 - `VC-MAT-08` is now the strongest adoption gap:
   the repo has a generated family scaffold, guides, and templates, but still
@@ -203,15 +206,14 @@ Evidence reviewed:
 
 Main findings:
 
-1. the status-contract gap is now narrow, but still real
+1. the status-contract gap is now closed to the repo-owned boundary
 
 - the repo has moved from “prototype revocation support” to a materially
   clearer trust-model split with explicit same-contract, off-chain, and
-  authority-attested modes
-- the remaining gap is concentrated in:
-  - canonical non-membership proof shape
-  - generic in-circuit live-root binding
-  - Compact/runtime boundary resolution for registry-root access
+  authority-attested modes plus canonical runtime bundle and verifier
+  semantics
+- the remaining gap is now the upstream Compact/runtime boundary for
+  registry-root access rather than a missing internal status-contract slice
 
 2. execution is now the next real adoption blocker
 
@@ -252,9 +254,10 @@ The remaining backlog now falls into four execution categories:
 
 ### `STATUS-CONTRACT`
 
-- final status / revocation trust-model hardening
-- canonical non-membership proof shape and helper/runtime semantics
-- Compact/runtime boundary resolution for generic live-root binding
+- final status / revocation trust-model hardening is complete to the
+  repository-owned boundary on the current stack
+- remaining work is now an explicit external dependency:
+  - Compact/runtime boundary resolution for generic live-root binding
 - primary item:
   - `VC-MAT-20`
 
@@ -319,6 +322,7 @@ stack. The next backlog wave should use these ten larger reviewable slices.
      binding, and verifier freshness enforcement
    - keep this mode explicit as a supported implementation option, not a hidden
      fallback
+   - delivered on the current stack
 
 ### `INTEGRATOR-EXECUTION`
 
@@ -1125,49 +1129,27 @@ Priority: P1
 
 Problem:
 
-- the current status/revocation model still depends on prototype trust seams:
-  - `revokedRoot` freshness and authenticity are verifier/application-side
+- the repository-owned status/revocation work is now complete to the current
+  Compact boundary
+- the remaining open issue is the generic in-circuit root-bound proof tail:
+  - `revokedRoot` freshness and authenticity are still verifier/application-side
+    or authority-mediated for external snapshots
   - the final in-circuit non-membership proof path is not shipped
-  - the first hidden-holder family rollout now lands in
-    `credentials-birth-secret`, but the broader repository still has not
-    completed the status-binding body-root rollout across other or future
-    status-aware family surfaces
-- the authority-attested helper path still exposes caller-managed signing nonce
-  generation as a prototype API footgun
+  - the live-root blocker is the runtime-only `MerkleTree.root()` surface
 
 Required outcome:
 
-- bind the live registry root inside Compact rather than treating
-  `revokedRoot` as an externally coordinated snapshot
-- ship the end-to-end non-membership proof protocol as the canonical
-  non-authority-attested path
-- commit the full status binding into the issuer-signed credential body root,
-  including:
-  - registry id
-  - list/index or handle location
-  - status type
-  - authority key material where applicable
-  - and extend that commitment model beyond the first
-    `credentials-birth-secret` rollout
-- anchor status root freshness to a trust-bound source instead of a
-  verifier-chosen root alone
-- add freshness semantics to authority-attested proofs with verifier-enforced
-  max-age policy
-- remove or narrow unsafe caller-supplied nonce handling in
-  authority-attested helper APIs
-- add adversarial conformance coverage for:
-  - registry swap
-  - root substitution
-  - stale attestation replay
-  - index mismatch
-  - missing-binding cases
-- document the resulting status maturity claim clearly in the core spec,
-  conformance, and package READMEs
-- make the resulting trust-model choice obvious to integrators:
-  - when verifier-supplied-root is acceptable as a prototype
-  - when authority-attested status is acceptable as a prototype bridge
-  - when the canonical non-membership path becomes the preferred reference
-    architecture
+- close the repo-owned part of the status contract with:
+  - three explicit delivered verification modes
+  - canonical runtime non-membership bundles
+  - issuer-signed registry-bound status binding
+  - verifier freshness/error taxonomy
+  - authority-attested nonce/freshness hardening
+  - adversarial conformance coverage
+  - an explicit maturity boundary in spec, conformance, and package READMEs
+- carry the remaining generic root-bound proof gap as an upstream Compact or
+  future architecture decision rather than as an unresolved ordinary repo
+  execution slice
 
 ## Recommended Execution Order
 

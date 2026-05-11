@@ -135,15 +135,20 @@ For the current stack:
   when verification can terminate off-chain
 - authority-attested verification remains the supported Layer 3 bridge for
   external registries
+- the mirrored-root fallback is not adopted in the current backlog wave
 - final generic live-root binding still depends on either:
   - a new Compact root-access surface, or
-  - a consciously accepted mirrored-root design
+  - a future consciously accepted mirrored-root design
 
 So the remaining feasibility answer is:
 
 - **same-contract local status is already executable**
 - **generic external root-bound status is still blocked on a lower-level
   surface decision**
+
+Closeout note:
+
+- [`./status-contract-closeout-boundary.md`](./status-contract-closeout-boundary.md)
 
 ## Engineering consequence
 

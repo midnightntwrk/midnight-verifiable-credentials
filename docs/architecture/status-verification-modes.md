@@ -9,6 +9,7 @@ Companion documents:
 - [`../spec/revocation-registry.md`](../spec/revocation-registry.md)
 - [`./live-root-binding-feasibility.md`](./live-root-binding-feasibility.md)
 - [`./status-canonical-non-membership-bundle.md`](./status-canonical-non-membership-bundle.md)
+- [`./status-contract-closeout-boundary.md`](./status-contract-closeout-boundary.md)
 - [`./status-binding-body-root-commitment.md`](./status-binding-body-root-commitment.md)
 
 ## Purpose
@@ -182,3 +183,7 @@ Until that lands, the repository should claim:
 - off-chain verifier-side live-state verification: available
 - authority-attested external-registry verification: available
 - final generic in-circuit live-root binding: not yet available
+
+Repository closeout note:
+
+- [`./status-contract-closeout-boundary.md`](./status-contract-closeout-boundary.md)

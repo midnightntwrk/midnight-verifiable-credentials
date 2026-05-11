@@ -361,6 +361,15 @@ Current repository packages still do not claim:
 - final privacy-preserving non-revocation proofs
 - production-ready revocation semantics
 
+Repository closeout boundary:
+
+- the repository-owned `VC-MAT-20` work is now complete to the current
+  Compact boundary
+- the remaining gap is the future generic in-circuit live-root /
+  non-membership path, not missing repo-local status modes or helper surfaces
+- see:
+  - [`../architecture/status-contract-closeout-boundary.md`](../architecture/status-contract-closeout-boundary.md)
+
 ## Conformance linkage
 
 This document is normative for:
@@ -374,15 +383,15 @@ This document is normative for:
 `conformance.md` defines what a conformant implementation must disclose about
 its chosen status level.
 
-## Implementation direction
+## Remaining implementation direction
 
-The next likely status/revocation engineering phases are:
+The next likely status/revocation engineering phases are now narrower:
 
-1. complete in-circuit revoked-set non-membership verification on top of the
-   canonical request/witness/protocol shape
-2. strengthen live-root binding semantics for the revocation registry contract
-3. broaden the issuer-signed status-bound body-root rollout beyond
-   `credentials-birth-secret`
-4. promote the current verifier-side helper path and starter/use-case surfaces
-   into clearer integration guidance once their API story stabilizes
-5. then upgrade conformance claims from prototype to production-shaped support
+1. wait for or help drive an upstream Compact surface for generic live root
+   access
+2. only if that stalls long-term, make an explicit mirrored-root decision
+   rather than leaving it implicit
+3. continue promoting the delivered runtime/status-mode surfaces into clearer
+   integration guidance
+4. upgrade conformance claims when the generic root-bound proof path actually
+   becomes available

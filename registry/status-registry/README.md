@@ -46,11 +46,11 @@ Start here:
 4. use `src/witness-builder.ts` and `src/attestation-builder.ts` only in
    off-chain verifier/holder/application code
 5. read:
-   - [`../docs/spec/revocation-registry.md`](../docs/spec/revocation-registry.md)
-   - [`../docs/spec/status-verification-protocol.md`](../docs/spec/status-verification-protocol.md)
-   - [`../docs/architecture/status-verification-modes.md`](../docs/architecture/status-verification-modes.md)
-   - [`../docs/architecture/protocol-classification.md`](../docs/architecture/protocol-classification.md)
-   - [`../docs/guides/integration-surface-map.md`](../docs/guides/integration-surface-map.md)
+   - [`../../docs/spec/revocation-registry.md`](../../docs/spec/revocation-registry.md)
+   - [`../../docs/spec/status-verification-protocol.md`](../../docs/spec/status-verification-protocol.md)
+   - [`../../docs/architecture/status-verification-modes.md`](../../docs/architecture/status-verification-modes.md)
+   - [`../../docs/architecture/protocol-classification.md`](../../docs/architecture/protocol-classification.md)
+   - [`../../docs/guides/integration-surface-map.md`](../../docs/guides/integration-surface-map.md)
 
 Current scope:
 - dedicated registry id
@@ -108,6 +108,20 @@ Freshness requirement for authority-attested proofs:
     authority attestations
 
 This package does not yet implement privacy-preserving non-membership verification inside Compact. It provides the authoritative state surface that status-aware VC/VP flows can anchor to.
+
+Current maturity boundary:
+
+- the repository-owned status-contract work is now complete to the current
+  Compact boundary:
+  - canonical runtime non-membership bundles are shipped
+  - same-contract live-state verification is shipped
+  - off-chain verifier-side live-state verification is shipped
+  - authority-attested external-registry verification is shipped
+  - freshness, replay, and nonce-footgun hardening are shipped
+- the remaining gap is the future generic in-circuit live-root /
+  non-membership path, which still depends on a lower-level Compact surface
+- see:
+  - [`../../docs/architecture/status-contract-closeout-boundary.md`](../../docs/architecture/status-contract-closeout-boundary.md)
 
 One validity rule is already fixed:
 
@@ -242,7 +256,7 @@ Observed-root integration helper path:
 
 Architecture note for the canonical runtime bundle contract:
 
-- [`../docs/architecture/status-canonical-non-membership-bundle.md`](../docs/architecture/status-canonical-non-membership-bundle.md)
+- [`../../docs/architecture/status-canonical-non-membership-bundle.md`](../../docs/architecture/status-canonical-non-membership-bundle.md)
 
 
 Canonical off-chain verifier helper path:
@@ -259,7 +273,7 @@ Canonical off-chain verifier helper path:
 - use `verifyAuthorityAttestedStatus(...)` when the verifier or consuming app
   must validate authority-attested external-registry evidence
 - all three helpers map failures onto the canonical codes in
-  [`../docs/spec/status-error-taxonomy.md`](../docs/spec/status-error-taxonomy.md)
+  [`../../docs/spec/status-error-taxonomy.md`](../../docs/spec/status-error-taxonomy.md)
   instead of leaving each integration to reinterpret raw error strings
 - integrations that only need plain data can use the failure-record projection
   helper rather than unpacking `StatusVerificationError` objects directly
@@ -269,4 +283,4 @@ Canonical off-chain verifier helper path:
 
 Architecture note for the three supported verification modes:
 
-- [`../docs/architecture/status-verification-modes.md`](../docs/architecture/status-verification-modes.md)
+- [`../../docs/architecture/status-verification-modes.md`](../../docs/architecture/status-verification-modes.md)
