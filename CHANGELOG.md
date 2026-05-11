@@ -112,6 +112,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     registry contract state
   - the same helper layer can now reject already-revoked handles against live
     contract state before building revoked-set or same-contract status inputs
+- added one explicit canonical runtime bundle surface for the non-authority
+  status path in `credentials-status-registry`:
+  - `CanonicalObservedNonMembershipBundle`
+  - `CanonicalLiveNonMembershipBundle`
+  - `buildCanonicalObservedNonMembershipBundle(...)`
+  - `buildCanonicalLiveNonMembershipBundleFromContractState(...)`
+  - `assertCanonicalNonMembershipBundle(...)`
 - BREAKING: the generic Compact credential envelope is now split into a thin
   `VC<TClaims, THolderBinding, TStatusBinding>` plus a separate
   `VP<TDisclosures, THolderBinding>` module. Credential bodies now carry an

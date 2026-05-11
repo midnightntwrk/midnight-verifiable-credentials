@@ -7,6 +7,7 @@ Companion documents:
 - [`../spec/credential-status.md`](../spec/credential-status.md)
 - [`../spec/status-verification-protocol.md`](../spec/status-verification-protocol.md)
 - [`../spec/revocation-registry.md`](../spec/revocation-registry.md)
+- [`./status-canonical-non-membership-bundle.md`](./status-canonical-non-membership-bundle.md)
 - [`./status-binding-body-root-commitment.md`](./status-binding-body-root-commitment.md)
 
 ## Purpose
@@ -180,4 +181,3 @@ Until that lands, the repository should claim:
 - off-chain verifier-side live-state verification: available
 - authority-attested external-registry verification: available
 - final generic in-circuit live-root binding: not yet available
-
