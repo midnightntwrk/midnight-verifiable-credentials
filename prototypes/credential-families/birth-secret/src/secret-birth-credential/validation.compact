@@ -1,4 +1,8 @@
-export circuit assertValidSecretBirthCredentialIssuanceOffer(
+// Secret birth-family issuance, presentation, and same-holder validation.
+// =====================
+// Issuance-message validation
+// =====================
+export pure circuit assertValidSecretBirthCredentialIssuanceOffer(
   offer: SecretBirthCredentialIssuanceOffer
 ): [] {
   SecretBirthCredentialIssuance_assertValidOfferMessage(offer);
@@ -24,7 +28,7 @@ export circuit assertValidSecretBirthCredentialIssuanceOffer(
   );
 }
 
-export circuit assertValidSecretBirthCredentialIssuanceRequest(
+export pure circuit assertValidSecretBirthCredentialIssuanceRequest(
   request: SecretBirthCredentialIssuanceRequest
 ): [] {
   SecretBirthCredentialIssuance_assertValidRequestMessage(request);
@@ -62,7 +66,7 @@ export circuit assertValidSecretBirthCredentialIssuanceRequest(
   );
 }
 
-export circuit assertSecretBirthCredentialIssuanceRequestMatchesOffer(
+export pure circuit assertSecretBirthCredentialIssuanceRequestMatchesOffer(
   offer: SecretBirthCredentialIssuanceOffer,
   request: SecretBirthCredentialIssuanceRequest
 ): [] {
@@ -77,7 +81,7 @@ export circuit assertSecretBirthCredentialIssuanceRequestMatchesOffer(
   }
 }
 
-export circuit assertValidSecretBirthCredentialIssuanceResult(
+export pure circuit assertValidSecretBirthCredentialIssuanceResult(
   result: SecretBirthCredentialIssuanceResult
 ): [] {
   SecretBirthCredentialIssuance_assertValidResultMessage(result);
@@ -96,7 +100,7 @@ export circuit assertValidSecretBirthCredentialIssuanceResult(
   );
 }
 
-export circuit assertSecretBirthCredentialIssuanceResultMatchesRequest(
+export pure circuit assertSecretBirthCredentialIssuanceResultMatchesRequest(
   request: SecretBirthCredentialIssuanceRequest,
   result: SecretBirthCredentialIssuanceResult
 ): [] {
@@ -109,7 +113,10 @@ export circuit assertSecretBirthCredentialIssuanceResultMatchesRequest(
   );
 }
 
-export circuit assertValidSecretBirthCredentialVerificationRequestMessage(
+// =====================
+// Presentation-message validation
+// =====================
+export pure circuit assertValidSecretBirthCredentialVerificationRequestMessage(
   request: SecretBirthCredentialVerificationRequest
 ): [] {
   SecretBirthCredentialVerification_assertValidRequestMessage(request);
@@ -123,7 +130,7 @@ export circuit assertValidSecretBirthCredentialVerificationRequestMessage(
   );
 }
 
-export circuit assertValidSecretBirthCredentialVerificationSubmissionMessage(
+export pure circuit assertValidSecretBirthCredentialVerificationSubmissionMessage(
   submission: SecretBirthCredentialVerificationSubmission
 ): [] {
   SecretBirthCredentialVerification_assertValidSubmissionMessage(submission);
@@ -143,7 +150,7 @@ export circuit assertValidSecretBirthCredentialVerificationSubmissionMessage(
   );
 }
 
-export circuit assertSecretBirthCredentialVerificationSubmissionMatchesRequest(
+export pure circuit assertSecretBirthCredentialVerificationSubmissionMatchesRequest(
   request: SecretBirthCredentialVerificationRequest,
   submission: SecretBirthCredentialVerificationSubmission,
   holderSecret: Bytes<32>,
@@ -167,7 +174,7 @@ export circuit assertSecretBirthCredentialVerificationSubmissionMatchesRequest(
   );
 }
 
-export circuit assertValidSecretBirthCredentialVerificationResultMessage(
+export pure circuit assertValidSecretBirthCredentialVerificationResultMessage(
   result: SecretBirthCredentialVerificationResult
 ): [] {
   SecretBirthCredentialVerification_assertValidResultMessage(result);
@@ -185,7 +192,7 @@ export circuit assertValidSecretBirthCredentialVerificationResultMessage(
   }
 }
 
-export circuit assertSecretBirthCredentialVerificationResultMatchesSubmission(
+export pure circuit assertSecretBirthCredentialVerificationResultMatchesSubmission(
   submission: SecretBirthCredentialVerificationSubmission,
   result: SecretBirthCredentialVerificationResult
 ): [] {
@@ -209,7 +216,10 @@ export circuit assertSecretBirthCredentialVerificationResultMatchesSubmission(
   }
 }
 
-export circuit assertValidSecretBirthCredential(
+// =====================
+// Credential and presentation validation
+// =====================
+export pure circuit assertValidSecretBirthCredential(
   credential: SecretBirthCredential,
   proof: Proof
 ): [] {
@@ -221,7 +231,7 @@ export circuit assertValidSecretBirthCredential(
   );
 }
 
-circuit assertValidSecretBirthCredentialEnvelopeOnly(
+pure circuit assertValidSecretBirthCredentialEnvelopeOnly(
   credential: SecretBirthCredential
 ): [] {
   assertValidSecretBirthSchemaRef(credential.schema);
@@ -230,7 +240,7 @@ circuit assertValidSecretBirthCredentialEnvelopeOnly(
   assertValidBlindedSecretHolderCredentialBinding(credential.holderBinding);
 }
 
-export circuit assertValidSecretBirthCredentialPresentation(
+export pure circuit assertValidSecretBirthCredentialPresentation(
   credential: SecretBirthCredential,
   credentialProof: Proof,
   presentation: SecretBirthCredentialPresentation
@@ -274,7 +284,11 @@ export circuit assertValidSecretBirthCredentialPresentation(
   }
 }
 
-export circuit assertSecretBirthPresentationSatisfiesRequest(
+// TRUST BOUNDARY: the blinded holder witness parameters are supplied by the
+// caller as private witness material. This helper validates those values
+// against the presentation binding and verifier challenge; it does not source
+// them from ledger state.
+export pure circuit assertSecretBirthPresentationSatisfiesRequest(
   credential: SecretBirthCredential,
   credentialProof: Proof,
   request: SecretBirthCredentialPresentationRequest,
@@ -343,7 +357,13 @@ export circuit assertSecretBirthPresentationSatisfiesRequest(
   }
 }
 
-export circuit assertValidSecretBirthCredentialAgePredicate(
+// =====================
+// Predicate and same-holder validation
+// =====================
+// TRUST BOUNDARY: `currentDay` is a caller-supplied policy input. Real
+// deployments still need a trusted source for whatever "current day" means in
+// their acceptance policy.
+export pure circuit assertValidSecretBirthCredentialAgePredicate(
   credential: SecretBirthCredential,
   presentation: SecretBirthCredentialPresentation,
   currentDay: Uint<32>,
@@ -365,7 +385,7 @@ export circuit assertValidSecretBirthCredentialAgePredicate(
   );
 }
 
-export circuit assertSameHolderSecretBirthPresentations(
+export pure circuit assertSameHolderSecretBirthPresentations(
   firstCredential: SecretBirthCredential,
   firstCredentialProof: Proof,
   firstRequest: SecretBirthCredentialVerificationRequest,
@@ -418,7 +438,7 @@ export circuit assertSameHolderSecretBirthPresentations(
   );
 }
 
-export circuit assertSameHolderSecretBirthPresentations3(
+export pure circuit assertSameHolderSecretBirthPresentations3(
   firstCredential: SecretBirthCredential,
   firstCredentialProof: Proof,
   firstRequest: SecretBirthCredentialVerificationRequest,

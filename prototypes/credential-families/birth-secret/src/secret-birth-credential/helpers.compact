@@ -1,16 +1,19 @@
-export circuit secretBirthCredentialBodyRoot(
+// Secret birth-family schema helpers and request normalization.
+// This file is pure because it only derives family-local roots and projections
+// over already-supplied credential or request values.
+export pure circuit secretBirthCredentialBodyRoot(
   credential: SecretBirthCredential
 ): Bytes<32> {
   return credentialBodyRoot(credential);
 }
 
-export circuit secretBirthCredentialRegistryBoundStatusBodyRoot(
+export pure circuit secretBirthCredentialRegistryBoundStatusBodyRoot(
   credential: SecretBirthStatusCredential
 ): Bytes<32> {
   return SecretBirthStatus_credentialBodyRoot(credential);
 }
 
-export circuit secretBirthCredentialWithStatusBindingBodyRoot(
+export pure circuit secretBirthCredentialWithStatusBindingBodyRoot(
   credentialWithStatus: SecretBirthCredentialWithStatusBinding
 ): Bytes<32> {
   return secretBirthCredentialRegistryBoundStatusBodyRoot(
@@ -18,19 +21,22 @@ export circuit secretBirthCredentialWithStatusBindingBodyRoot(
   );
 }
 
-export circuit secretBirthCredentialPresentationBodyRoot(
+export pure circuit secretBirthCredentialPresentationBodyRoot(
   presentation: SecretBirthCredentialPresentation
 ): Bytes<32> {
   return presentationBodyRoot(presentation);
 }
 
-export circuit secretBirthCredentialPresentationRequestBodyRoot(
+export pure circuit secretBirthCredentialPresentationRequestBodyRoot(
   request: SecretBirthCredentialPresentationRequest
 ): Bytes<32> {
   return persistentHash<SecretBirthCredentialPresentationRequest>(request);
 }
 
-export circuit assertValidSecretBirthSchemaRef(schema: SchemaRef): [] {
+// =====================
+// Schema and verifier-request validation
+// =====================
+export pure circuit assertValidSecretBirthSchemaRef(schema: SchemaRef): [] {
   assert(
     schema.packageId == pad(32, "midnight-did:vc:birth-secret"),
     "Unexpected secret birth schema package identifier"
@@ -39,7 +45,7 @@ export circuit assertValidSecretBirthSchemaRef(schema: SchemaRef): [] {
   assert(schema.majorVersion == 1, "Secret birth credential major version mismatch");
 }
 
-export circuit assertValidSecretBirthCredentialPresentationRequest(
+export pure circuit assertValidSecretBirthCredentialPresentationRequest(
   request: SecretBirthCredentialPresentationRequest
 ): [] {
   assert(request.version == 1, "Presentation request version mismatch");
@@ -52,7 +58,10 @@ export circuit assertValidSecretBirthCredentialPresentationRequest(
   }
 }
 
-export circuit secretBirthCredentialPresentationRequestFromProtocol(
+// NOTE: this collapses the transport wrapper into the family-local request so
+// the same credential semantics can be reused by same-holder composition and
+// by the status-aware overlays in `status-validation.compact`.
+export pure circuit secretBirthCredentialPresentationRequestFromProtocol(
   request: SecretBirthCredentialVerificationRequest
 ): SecretBirthCredentialPresentationRequest {
   return SecretBirthCredentialPresentationRequest {
@@ -69,7 +78,10 @@ export circuit secretBirthCredentialPresentationRequestFromProtocol(
   };
 }
 
-export circuit secretBirthCredentialWithoutStatusBinding(
+// NOTE: status-aware verification paths still need a plain `NoStatusBinding`
+// view because the generic presentation relations are defined over the
+// non-status credential body root.
+export pure circuit secretBirthCredentialWithoutStatusBinding(
   credential: SecretBirthStatusCredential
 ): SecretBirthCredential {
   return SecretBirthCredential {
