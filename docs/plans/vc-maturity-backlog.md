@@ -125,8 +125,8 @@ Current highest-risk remaining area:
   - a settled Compact-side replacement for the current runtime-only
     `MerkleTree.root()` limitation
 - `VC-MAT-08` is now the strongest adoption gap:
-  the repo has a generated family scaffold, guides, and templates, but had
-  still lacked:
+  the repo has a generated family scaffold, guides, and templates, but still
+  lacked:
   - a tiny DID bootstrap sample
   - a concrete DID + VC handoff smoke path
   - a concrete hello-family -> verifier -> DID handoff story that is smaller

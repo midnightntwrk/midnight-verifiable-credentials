@@ -1,4 +1,4 @@
-# DID to VC Hello Smoke Path
+# DID + VC Hello Smoke Path
 
 Status:
 

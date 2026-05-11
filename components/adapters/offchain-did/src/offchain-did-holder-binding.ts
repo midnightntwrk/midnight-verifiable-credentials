@@ -45,9 +45,10 @@ const decodeBase64Url = (value: string): Uint8Array => {
 
 const encodeBase64Url = (value: bigint): string => {
   let hex = value.toString(16);
-  if (hex.length % 2 !== 0) {
-    hex = `0${hex}`;
+  if (hex.length > HEX_BYTES32_LENGTH) {
+    throw new Error("Offchain DID Jubjub coordinate must fit in 32 bytes");
   }
+  hex = hex.padStart(HEX_BYTES32_LENGTH, "0");
   return Buffer.from(hex, "hex").toString("base64url");
 };
 
