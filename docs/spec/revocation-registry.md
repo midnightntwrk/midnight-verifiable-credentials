@@ -222,6 +222,9 @@ status-handle-opening model.
 
 Current off-chain implementation helper path:
 
+- `buildCanonicalObservedNonMembershipBundle(...)`
+- `buildCanonicalLiveNonMembershipBundleFromContractState(...)`
+- `assertCanonicalNonMembershipBundle(...)`
 - `buildRevokedSetNonMembershipInputs(...)`
 - `buildObservedRevocationRegistryState(...)`
 - `readCurrentRevocationRegistryStateFromContractState(...)`
@@ -235,6 +238,10 @@ Those helpers normalize the request/witness/protocol bundle and the verifier's
 accepted snapshot freshness choice. They can now derive the canonical runtime
 snapshot directly from live contract state, but they do not yet add final
 in-circuit Merkle non-membership or in-circuit live-root equality.
+
+The canonical runtime-bundle contract is documented in:
+
+- [status-canonical-non-membership-bundle.md](../architecture/status-canonical-non-membership-bundle.md)
 
 ### 4. `AuthorityAttestedStatusProofProtocol`
 
