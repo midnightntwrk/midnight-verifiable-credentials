@@ -84,6 +84,44 @@ describe("hello-verifier contract", () => {
     ).toThrow(/Hello-family request requires bytes disclosure/);
   });
 
+  it("rejects direct requests that disable mandatory boolean disclosure", () => {
+    const fixture = createHelloFamilyFixture();
+    const simulator = new HelloVerifierSimulator();
+    const invalidRequest = {
+      ...fixture.presentationRequest,
+      requireBooleanValueDisclosure: false,
+    };
+
+    expect(() =>
+      simulator.verifyHelloFamilyPresentationForHelloVerifier(
+        fixture.credential,
+        fixture.credentialProof,
+        invalidRequest,
+        fixture.presentation,
+        fixture.presentationProof,
+      ),
+    ).toThrow(/Hello-verifier starter requires boolean disclosure/);
+  });
+
+  it("rejects direct requests that disable mandatory big-unsigned disclosure", () => {
+    const fixture = createHelloFamilyFixture();
+    const simulator = new HelloVerifierSimulator();
+    const invalidRequest = {
+      ...fixture.presentationRequest,
+      requireBigUnsignedValueDisclosure: false,
+    };
+
+    expect(() =>
+      simulator.verifyHelloFamilyPresentationForHelloVerifier(
+        fixture.credential,
+        fixture.credentialProof,
+        invalidRequest,
+        fixture.presentation,
+        fixture.presentationProof,
+      ),
+    ).toThrow(/Hello-verifier starter requires big-unsigned disclosure/);
+  });
+
   it("rejects a presentation proof bound to a different verifier challenge", () => {
     const fixture = createHelloFamilyFixture();
     const simulator = new HelloVerifierSimulator();
