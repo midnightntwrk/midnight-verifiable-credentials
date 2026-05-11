@@ -1,0 +1,35 @@
+// Dummy claims family: full direct claim-type laboratory for the currently
+// supported Compact primitive surface, plus nested-struct support.
+export struct DummyNestedClaims {
+  booleanValue: Boolean,
+  bigUnsignedValue: Uint<248>,
+  bytesValue: Bytes<16>,
+  fieldValue: Field,
+}
+
+export struct DummyClaims {
+  booleanValue: Boolean,
+  byteSizedUnsignedValue: Uint<8>,
+  mediumUnsignedValue: Uint<64>,
+  bigUnsignedValue: Uint<248>,
+  bytes16Value: Bytes<16>,
+  bytes32Value: Bytes<32>,
+  fieldValue: Field,
+  booleanVector: Vector<2, Boolean>,
+  uintVector: Vector<2, Uint<64>>,
+  bytesVector: Vector<2, Bytes<16>>,
+  fieldVector: Vector<2, Field>,
+  nestedValue: DummyNestedClaims,
+  nestedVector: Vector<2, DummyNestedClaims>,
+}
+
+export pure circuit dummyClaimsPayloadRoot(claims: DummyClaims): Bytes<32> {
+  return persistentHash<DummyClaims>(claims);
+}
+
+export pure circuit dummyClaimsRoot(claims: DummyClaims): Bytes<32> {
+  return persistentHash<Vector<2, Bytes<32>>>([
+    pad(32, "midnight:vc:dummy-claims:v1"),
+    dummyClaimsPayloadRoot(claims)
+  ]);
+}

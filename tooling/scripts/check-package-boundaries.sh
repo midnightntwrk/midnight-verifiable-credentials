@@ -36,6 +36,7 @@ readonly -a root_contract_surface_files=(
   prototypes/credential-families/birth/src/index.ts
   prototypes/credential-families/birth-secret/src/index.ts
   prototypes/credential-families/hello-family/src/index.ts
+  prototypes/credential-families/dummy-claims/src/index.ts
   use-cases/age-gate/contract/src/index.ts
   use-cases/hello-verifier/contract/src/index.ts
   core/capabilities/same-holder/src/index.ts

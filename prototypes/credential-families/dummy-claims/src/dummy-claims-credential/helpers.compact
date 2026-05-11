@@ -1,0 +1,230 @@
+// Dummy claims schema helpers and direct-claim selective-disclosure validation.
+// This family is intentionally pure and ledger-free: it exists to make the
+// current Compact claim surface explicit for VC authors.
+export pure circuit dummyClaimsCredentialBodyRoot(
+  credential: DummyClaimsCredential
+): Bytes<32> {
+  return credentialBodyRoot(credential);
+}
+
+export pure circuit dummyClaimsPresentationBodyRoot(
+  presentation: DummyClaimsPresentation
+): Bytes<32> {
+  return presentationBodyRoot(presentation);
+}
+
+export pure circuit dummyClaimsPresentationRequestBodyRoot(
+  request: DummyClaimsPresentationRequest
+): Bytes<32> {
+  return persistentHash<DummyClaimsPresentationRequest>(request);
+}
+
+// =====================
+// Schema and request validation
+// =====================
+export pure circuit assertValidDummyClaimsSchemaRef(schema: SchemaRef): [] {
+  assert(
+    schema.packageId == pad(32, "midnight:vc:dummy-claims"),
+    "Dummy-claims package id mismatch"
+  );
+  assert(
+    schema.schemaId == pad(32, "dummy-claims:v1"),
+    "Dummy-claims schema id mismatch"
+  );
+  assert(schema.majorVersion == 1, "Dummy-claims major version mismatch");
+}
+
+export pure circuit assertValidDummyClaimsPresentationRequest(
+  request: DummyClaimsPresentationRequest
+): [] {
+  assert(request.version == 1, "Dummy-claims request version mismatch");
+  assertValidDummyClaimsSchemaRef(request.schema);
+  assertValidVerificationMethodRef(request.issuerVerificationMethodRef);
+  assert(
+    request.verifierChallengeHash != pad(32, ""),
+    "Dummy-claims verifier challenge must be set"
+  );
+}
+
+// =====================
+// Credential and presentation validation
+// =====================
+export pure circuit assertValidDummyClaimsCredential(
+  credential: DummyClaimsCredential,
+  proof: Proof
+): [] {
+  assertValidDummyClaimsSchemaRef(credential.schema);
+  assertValidCredentialEnvelope(credential, dummyClaimsRoot(credential.claims));
+  assertValidExplicitHolderBinding(credential.holderBinding);
+  assertValidNoStatusBinding(credential.statusBinding);
+  assertValidCredentialProof(credential, proof);
+}
+
+export pure circuit assertMatchingDummyNestedDisclosures(
+  disclosed: DummyNestedDisclosures,
+  claims: DummyNestedClaims,
+  messagePrefix: Bytes<32>
+): [] {
+  if (disclosed.revealBooleanValue) {
+    assert(disclosed.booleanValue == claims.booleanValue, "Dummy-claims nested boolean disclosure does not match the credential");
+  }
+  if (disclosed.revealBigUnsignedValue) {
+    assert(disclosed.bigUnsignedValue == claims.bigUnsignedValue, "Dummy-claims nested bigint-like disclosure does not match the credential");
+  }
+  if (disclosed.revealBytesValue) {
+    assert(disclosed.bytesValue == claims.bytesValue, "Dummy-claims nested bytes disclosure does not match the credential");
+  }
+  if (disclosed.revealFieldValue) {
+    assert(disclosed.fieldValue == claims.fieldValue, "Dummy-claims nested field disclosure does not match the credential");
+  }
+}
+
+export pure circuit assertValidDummyClaimsPresentation(
+  credential: DummyClaimsCredential,
+  credentialProof: Proof,
+  presentation: DummyClaimsPresentation,
+  presentationProof: Proof
+): [] {
+  assertValidDummyClaimsCredential(credential, credentialProof);
+  assertValidDummyClaimsSchemaRef(presentation.schema);
+  assertValidPresentationEnvelope(presentation);
+  DummyClaimsPresentation_assertMatchingCredentialPresentation(
+    credential,
+    presentation
+  );
+  assertValidExplicitHolderBinding(presentation.holderBinding);
+  assertMatchingExplicitHolderBindings(
+    credential.holderBinding,
+    presentation.holderBinding
+  );
+  assertProofMatchesExplicitHolderBinding(
+    presentation.holderBinding,
+    presentationProof
+  );
+  assertValidPresentationContextProof(
+    dummyClaimsPresentationBodyRoot(presentation),
+    presentationProof
+  );
+
+  if (presentation.disclosed.revealBooleanValue) {
+    assert(presentation.disclosed.booleanValue == credential.claims.booleanValue, "Dummy-claims boolean disclosure does not match the credential");
+  }
+  if (presentation.disclosed.revealByteSizedUnsignedValue) {
+    assert(presentation.disclosed.byteSizedUnsignedValue == credential.claims.byteSizedUnsignedValue, "Dummy-claims Uint<8> disclosure does not match the credential");
+  }
+  if (presentation.disclosed.revealMediumUnsignedValue) {
+    assert(presentation.disclosed.mediumUnsignedValue == credential.claims.mediumUnsignedValue, "Dummy-claims Uint<64> disclosure does not match the credential");
+  }
+  if (presentation.disclosed.revealBigUnsignedValue) {
+    assert(presentation.disclosed.bigUnsignedValue == credential.claims.bigUnsignedValue, "Dummy-claims Uint<248> disclosure does not match the credential");
+  }
+  if (presentation.disclosed.revealBytes16Value) {
+    assert(presentation.disclosed.bytes16Value == credential.claims.bytes16Value, "Dummy-claims Bytes<16> disclosure does not match the credential");
+  }
+  if (presentation.disclosed.revealBytes32Value) {
+    assert(presentation.disclosed.bytes32Value == credential.claims.bytes32Value, "Dummy-claims Bytes<32> disclosure does not match the credential");
+  }
+  if (presentation.disclosed.revealFieldValue) {
+    assert(presentation.disclosed.fieldValue == credential.claims.fieldValue, "Dummy-claims field disclosure does not match the credential");
+  }
+  if (presentation.disclosed.revealBooleanVector) {
+    assert(presentation.disclosed.booleanVector == credential.claims.booleanVector, "Dummy-claims Boolean vector disclosure does not match the credential");
+  }
+  if (presentation.disclosed.revealUintVector) {
+    assert(presentation.disclosed.uintVector == credential.claims.uintVector, "Dummy-claims Uint vector disclosure does not match the credential");
+  }
+  if (presentation.disclosed.revealBytesVector) {
+    assert(presentation.disclosed.bytesVector == credential.claims.bytesVector, "Dummy-claims Bytes vector disclosure does not match the credential");
+  }
+  if (presentation.disclosed.revealFieldVector) {
+    assert(presentation.disclosed.fieldVector == credential.claims.fieldVector, "Dummy-claims field vector disclosure does not match the credential");
+  }
+  if (presentation.disclosed.revealNestedValue) {
+    assertMatchingDummyNestedDisclosures(
+      presentation.disclosed.nestedValue,
+      credential.claims.nestedValue,
+      pad(32, "")
+    );
+  }
+  if (presentation.disclosed.revealNestedVector) {
+    assert(presentation.disclosed.nestedVector == credential.claims.nestedVector, "Dummy-claims nested vector disclosure does not match the credential");
+  }
+}
+
+// TRUST BOUNDARY: this package exists to expose the broadest currently supported
+// direct claim surface in one family. That makes it a better compiler/interoperability
+// lab than a production privacy template.
+export pure circuit assertDummyClaimsPresentationSatisfiesRequest(
+  credential: DummyClaimsCredential,
+  credentialProof: Proof,
+  request: DummyClaimsPresentationRequest,
+  presentation: DummyClaimsPresentation,
+  presentationProof: Proof
+): [] {
+  assertValidDummyClaimsPresentationRequest(request);
+  assertValidDummyClaimsPresentation(
+    credential,
+    credentialProof,
+    presentation,
+    presentationProof
+  );
+  assertMatchingSchemaRefs(request.schema, credential.schema);
+  assertMatchingSchemaRefs(request.schema, presentation.schema);
+  assert(
+    request.issuerVerificationMethodRef.didContractAddress
+      == credential.issuerVerificationMethodRef.didContractAddress,
+    "Dummy-claims request issuer contract does not match the credential issuer"
+  );
+  assert(
+    request.issuerVerificationMethodRef.methodId
+      == credential.issuerVerificationMethodRef.methodId,
+    "Dummy-claims request issuer method does not match the credential issuer"
+  );
+  assert(
+    presentationProof.challengeHash == request.verifierChallengeHash,
+    "Dummy-claims presentation proof challenge does not match the request"
+  );
+  if (request.requireBooleanValueDisclosure) {
+    assert(presentation.disclosed.revealBooleanValue, "Dummy-claims request requires boolean disclosure");
+  }
+  if (request.requireByteSizedUnsignedValueDisclosure) {
+    assert(presentation.disclosed.revealByteSizedUnsignedValue, "Dummy-claims request requires Uint<8> disclosure");
+  }
+  if (request.requireMediumUnsignedValueDisclosure) {
+    assert(presentation.disclosed.revealMediumUnsignedValue, "Dummy-claims request requires Uint<64> disclosure");
+  }
+  if (request.requireBigUnsignedValueDisclosure) {
+    assert(presentation.disclosed.revealBigUnsignedValue, "Dummy-claims request requires Uint<248> disclosure");
+  }
+  if (request.requireBytes16ValueDisclosure) {
+    assert(presentation.disclosed.revealBytes16Value, "Dummy-claims request requires Bytes<16> disclosure");
+  }
+  if (request.requireBytes32ValueDisclosure) {
+    assert(presentation.disclosed.revealBytes32Value, "Dummy-claims request requires Bytes<32> disclosure");
+  }
+  if (request.requireFieldValueDisclosure) {
+    assert(presentation.disclosed.revealFieldValue, "Dummy-claims request requires field disclosure");
+  }
+  if (request.requireBooleanVectorDisclosure) {
+    assert(presentation.disclosed.revealBooleanVector, "Dummy-claims request requires Boolean vector disclosure");
+  }
+  if (request.requireUintVectorDisclosure) {
+    assert(presentation.disclosed.revealUintVector, "Dummy-claims request requires Uint vector disclosure");
+  }
+  if (request.requireBytesVectorDisclosure) {
+    assert(presentation.disclosed.revealBytesVector, "Dummy-claims request requires Bytes vector disclosure");
+  }
+  if (request.requireFieldVectorDisclosure) {
+    assert(presentation.disclosed.revealFieldVector, "Dummy-claims request requires field vector disclosure");
+  }
+  if (request.requireNestedValueDisclosure) {
+    assert(presentation.disclosed.revealNestedValue, "Dummy-claims request requires nested disclosure");
+    assert(presentation.disclosed.nestedValue.revealBooleanValue, "Dummy-claims nested request requires nested boolean disclosure");
+    assert(presentation.disclosed.nestedValue.revealBigUnsignedValue, "Dummy-claims nested request requires nested bigint-like disclosure");
+    assert(presentation.disclosed.nestedValue.revealBytesValue, "Dummy-claims nested request requires nested bytes disclosure");
+    assert(presentation.disclosed.nestedValue.revealFieldValue, "Dummy-claims nested request requires nested field disclosure");
+  }
+  if (request.requireNestedVectorDisclosure) {
+    assert(presentation.disclosed.revealNestedVector, "Dummy-claims request requires nested vector disclosure");
+  }
+}

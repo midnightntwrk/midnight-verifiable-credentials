@@ -11,6 +11,7 @@ const aliases = [
   ['midnight-did-credentials-birth', 'prototypes/credential-families/birth'],
   ['midnight-did-credentials-birth-secret', 'prototypes/credential-families/birth-secret'],
   ['midnight-did-credentials-hello-family', 'prototypes/credential-families/hello-family'],
+  ['midnight-did-credentials-dummy-claims', 'prototypes/credential-families/dummy-claims'],
   ['midnight-did-credentials-iso-registry', 'core/primitives/iso-registry'],
   ['midnight-did-credentials-status-registry', 'registry/status-registry'],
   ['midnight-did-credentials-openid', 'protocols/openid'],
