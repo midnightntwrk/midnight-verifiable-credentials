@@ -194,8 +194,8 @@ artifact automatically.
 - the current starter set is now stronger as execution guidance than before:
   the current stack adds a tiny DID bootstrap example, a near-zero-
   interpretation DID + VC smoke path on top of the current hello-family and
-  hello-verifier starters, and a root `./run.sh hello-smoke` lane for the
-  smallest checked-in handoff
+  hello-verifier starters, a root `./run.sh hello-smoke` lane, and a CI-native
+  `Hello Smoke Lane` parity check for the smallest checked-in handoff
 - status ownership is still conceptually split across `credentials` and
   `credentials-status-registry`
 - integrators still need to understand too much status prototype context before
@@ -503,7 +503,7 @@ Add integrator-kit follow-up:
 - generated family scaffold or copy script
 - minimal runnable DID/VC smoke path on top of the now compiling hello-family
   and hello-verifier starters, not just markdown templates
-  - now in flight on the current stack via the offchain-DID-backed hello path
+  - now delivered on the current stack via the offchain-DID-backed hello path
 - issuer-oriented starter
 - wallet-oriented starter
 - DID + VC handoff checklist for downstream repos consuming tarballs
@@ -537,10 +537,10 @@ concrete claim that is directly supported by checked-in evidence.
 - triaged Claude findings that materially sharpen the current reading:
   1. the current starter material needed tiny runnable entrypoints:
      that gap is now materially reduced by the hello-family, hello-verifier,
-     and DID-aware hello smoke path stack
-  2. `credentials-protocol` still lacks a production-safe default story:
-     durable state, explicit RNG expectations, and a checklist are still too
-     implicit
+     DID-aware hello smoke path stack, and CI-native hello-smoke parity lane
+  2. `credentials-protocol` needed a production-safe default story:
+     that gap is now materially reduced by the checked-in durable reference
+     path, explicit randomness requirements, and production checklist
   3. the DID-to-VC package contract is still implicit:
      downstream consumers need a tested version matrix for tarball-based DID
      dependencies versus VC workspace releases

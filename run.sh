@@ -201,8 +201,14 @@ case "$target" in
     npm run test:bdd:all
     ;;
   hello-smoke)
-    echo "[run] DID + VC hello smoke lane"
-    npm run ci:hello-smoke
+    if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
+      echo "[run] Light DID + VC hello smoke lane"
+      run_common_ensure_artifacts "run" managed-hello-smoke
+      npm run ci:hello-smoke:from-artifacts
+    else
+      echo "[run] DID + VC hello smoke lane"
+      npm run ci:hello-smoke
+    fi
     ;;
   revocation)
     echo "[run] Revocation-focused lane"

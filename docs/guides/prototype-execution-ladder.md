@@ -24,12 +24,19 @@ Run the narrowest root-level DID -> VC -> verifier lane first:
 ./run.sh hello-smoke
 ```
 
+Artifact-restored parity for that same lane:
+
+```bash
+./run.sh hello-smoke --light
+```
+
 Use this lane when you want to verify:
 
 - portable offchain DID bootstrap
 - DID-aware holder-binding derivation
 - starter-family presentation verification
 - starter verifier-contract wiring
+- CI parity against restored build artifacts
 
 ## 3. Start with the smallest verifier contract
 
