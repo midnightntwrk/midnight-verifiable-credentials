@@ -196,6 +196,12 @@ describe("canonical non-membership bundles", () => {
     expect(bundle.witness.witnessInput.statusHandle).toEqual(
       bundle.witness.statusHandle,
     );
+    // Conformance lock: the same-contract live path must carry only the
+    // direct status-handle witness, not an external registry snapshot.
+    expect(Object.keys(bundle.witness.witnessInput).sort()).toEqual([
+      "statusHandle",
+      "statusHandleOpening",
+    ]);
 
     expect(() => assertCanonicalNonMembershipBundle(bundle)).not.toThrow();
   });
