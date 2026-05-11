@@ -22,6 +22,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - dedicated test coverage
 - added `ci:revocation` and a dedicated GitHub Actions lane for the revocation
   demo path
+- added a production-shaped Node/runtime reference path for
+  `credentials-protocol`:
+  - `NodeCryptoRandomnessSource`
+  - `createStableJsonProtocolStateStore(...)`
+  - `createNodeFileBackedProtocolStateStore(...)`
+  - `createNodeFileBackedProtocolPartyDependencies(...)`
+  - restart/replay reference tests for explicit-holder recovery and
+    secret-holder outcome re-delivery across verifier restart
 - added an integration surface map and package maturity backlog for VC
   integrators and maintainers
 - the core TypeScript package now exports `OffchainDIDHolderBinding` as the
@@ -170,3 +178,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   namespace aliases for the curated VC/family/demo package entrypoints.
 - The revocation demo no longer duplicates the revoked-set status request
   struct that now lives in the shared hidden-holder family surface.
+- `SecretIssuerAgent` now compares blinded-secret offer/request issuer
+  `methodId` values by bytes rather than object identity, so issuance survives
+  persistence boundaries when pending offers are reloaded from a persistent
+  protocol state store.
