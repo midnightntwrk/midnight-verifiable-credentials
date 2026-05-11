@@ -300,6 +300,7 @@ or directly through package-level `test:integration` commands when Docker is ava
   - light repository validation
   - currently honored by:
     - `./run.sh`
+    - `./run.sh build`
     - `./run.sh typecheck`
     - `./run.sh test`
     - `./run.sh hello-smoke`

@@ -30,7 +30,7 @@ Options:
   --light                    Use reduced-scope or restored-artifact variants when supported
 
 Targets that currently honor `--light`:
-  full, typecheck, test, hello-smoke
+  full, build, typecheck, test, hello-smoke
 EOF
 
   if command -v node >/dev/null 2>&1; then

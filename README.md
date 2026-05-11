@@ -127,6 +127,7 @@ Light mode:
 Targets that currently honor `--light`:
 
 - `./run.sh`
+- `./run.sh build`
 - `./run.sh typecheck`
 - `./run.sh test`
 - `./run.sh hello-smoke`
