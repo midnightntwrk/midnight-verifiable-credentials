@@ -150,6 +150,12 @@ Run the smallest DID-aware handoff lane directly:
 ./run.sh hello-smoke
 ```
 
+Reuse existing build artifacts for that same lane:
+
+```bash
+./run.sh hello-smoke --light
+```
+
 Run only the negative BDD living-doc scenarios:
 
 ```bash

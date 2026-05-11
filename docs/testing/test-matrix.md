@@ -26,6 +26,8 @@ Status: current implemented test surface as of 2026-05-11.
 - root `./run.sh hello-smoke` lane
   - keeps the DID-aware starter handoff runnable with `hello-family` and
     `hello-verifier`
+  - root `./run.sh hello-smoke --light` and `ci:hello-smoke:from-artifacts`
+    now keep the same path honest against restored build artifacts
   - see `docs/guides/did-vc-hello-smoke-path.md` for the authoritative lane
     description
 
@@ -222,6 +224,13 @@ Current gap:
     - `credentials-demo-contract`
 - GitHub Actions job:
   - `Revocation Demo Lane`
+- root `ci:hello-smoke:from-artifacts`
+  - lint, restored-artifact typecheck, and restored-artifact tests across:
+    - `credentials-offchain-did`
+    - `credentials-hello-family`
+    - `hello-verifier`
+- GitHub Actions job:
+  - `Hello Smoke Lane`
 - docs-only PR fast path:
   - `Classify Changes` + `Docs-only Validation`
   - skips Compact setup, build, unit, and integration lanes when every changed
@@ -251,6 +260,8 @@ Current gap:
   - `./run.sh bdd`
   - `./run.sh bdd-negative`
   - `./run.sh bdd-all`
+  - `./run.sh hello-smoke`
+  - `./run.sh hello-smoke --light`
 - purpose:
   - living-documentation scenario coverage for the current VC prototype
 - current scope:

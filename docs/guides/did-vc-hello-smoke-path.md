@@ -66,6 +66,12 @@ Smallest root-level lane:
 ./run.sh hello-smoke
 ```
 
+Artifact-restored parity lane:
+
+```bash
+./run.sh hello-smoke --light
+```
+
 That lane runs:
 
 - lint for `components/adapters/offchain-did`
@@ -79,6 +85,16 @@ It is intentionally build-less at the root level:
   commands already run the Compact compiles they require
 - the goal of `hello-smoke` is a smallest runnable handoff lane, not a second
   artifact-build umbrella
+
+The repository now also exposes a CI-native parity path:
+
+- root script:
+  - `npm run ci:hello-smoke:from-artifacts`
+- GitHub Actions check:
+  - `Hello Smoke Lane`
+- purpose:
+  - prove that the smallest DID-aware handoff still works when it consumes the
+    shared build-artifact cones rather than package-local fresh compiles
 
 Equivalent package-local commands:
 
@@ -106,6 +122,7 @@ current smoke path.
 | `@midnight-ntwrk/midnight-did` `0.1.0` tarball | `@midnight-ntwrk/midnight-did-credentials-hello-family` workspace package | can derive `OffchainDIDHolderBinding` and verify the family-level presentation |
 | same as above | `@midnight-ntwrk/midnight-did-hello-verifier-contract` workspace package | can verify the offchain-DID-backed presentation in a Layer 3 starter contract |
 | same as above | root `./run.sh hello-smoke` lane | can rerun the full checked-in DID-aware starter handoff from one repo command |
+| same as above | root `./run.sh hello-smoke --light` lane | can rerun the same handoff against restored build artifacts rather than package-local fresh compiles |
 
 ## Limitations
 
