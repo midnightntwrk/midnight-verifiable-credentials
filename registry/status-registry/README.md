@@ -46,6 +46,7 @@ Start here:
 4. read:
    - [`../docs/spec/revocation-registry.md`](../docs/spec/revocation-registry.md)
    - [`../docs/spec/status-verification-protocol.md`](../docs/spec/status-verification-protocol.md)
+   - [`../docs/architecture/status-verification-modes.md`](../docs/architecture/status-verification-modes.md)
    - [`../docs/architecture/protocol-classification.md`](../docs/architecture/protocol-classification.md)
    - [`../docs/guides/integration-surface-map.md`](../docs/guides/integration-surface-map.md)
 
@@ -57,6 +58,8 @@ Current scope:
   - snapshot shape now includes `registryVersion`
   - `assertStateUsesThisRegistry(...)` binds that version to the live contract
     counter even though the Merkle root is still verifier-supplied
+  - an initialized empty registry may legitimately publish the zero Merkle
+    root before any revocations land
 - typed `RevokedSetStatusRequest` helpers for verifier-supplied roots
 - off-chain witness-builder helpers for:
   - deterministic status-handle derivation
@@ -158,12 +161,24 @@ Canonical same-contract live-status helper path:
 - this is the right prototype seam for contracts that can reject revoked
   status handles against their own live local state without an authority
   attestation bridge
+- use `buildLiveStatusWitnessFromContractState(...)` when you want that same
+  live-status witness shape but do not want app-local revocation checks to
+  reconstruct the contract state manually
+- the shared helper now:
+  - derives the live status handle witness
+  - rejects handles already present in the live registry contract state
+  - keeps the same binding-first output shape as `buildLiveStatusWitness(...)`
 
 Current prototype limitation:
 - `assertStateUsesThisRegistry(...)` binds the supplied snapshot to this
   registry's `registryId` and `registryVersion`
 - it does not yet prove that the supplied `revokedRoot` equals the live
   contract Merkle root inside Compact
+- same-contract live revoked-set verification is still available because that
+  mode checks the local revoked-set ledger directly and does not require a
+  separate external root handoff
+- off-chain verifiers and trusted authorities can still read the live registry
+  state and current root at runtime
 - freshness of the supplied root is still an application/verifier
   responsibility, not an in-circuit property
 - authority-attested proof freshness is now partially contract-enforced when
@@ -180,6 +195,15 @@ Observed-root integration helper path:
 
 - use `buildObservedRevocationRegistryState(...)` to normalize a verifier-side
   snapshot plus observation time
+- use `readCurrentRevocationRegistryStateFromContractState(...)` when the
+  caller already has runtime access to the live revocation-registry contract
+  state and wants the canonical `(registryId, revokedRoot, registryVersion)`
+  snapshot shape
+- use `buildObservedRevocationRegistryStateFromContractState(...)` to attach an
+  observation time to that live contract-state snapshot
+- use `assertStatusHandleNotRevokedInContractState(...)` when an off-chain
+  verifier or helper wants the canonical fail-closed "already revoked" check
+  against a live contract-state snapshot
 - use `assertObservedRevocationRegistryVersionAtLeast(...)` when the caller
   must reject snapshots older than a known contract-version floor
 - use `assertObservedRevocationRegistryStateFreshEnough(...)` when the caller
@@ -189,6 +213,17 @@ Observed-root integration helper path:
   Compact proof path
 - use `buildFreshRevokedSetNonMembershipInputs(...)` when you want that same
   freshness gate applied to the canonical request/witness/protocol bundle
+- use `buildFreshRevokedSetNonMembershipInputsFromContractState(...)` when the
+  verifier or orchestrating application can observe the live registry contract
+  state directly and wants one canonical helper that:
+  - derives the live `(registryId, revokedRoot, registryVersion)` snapshot
+  - applies freshness policy
+  - constructs the canonical request/witness/protocol bundle
+  - rejects already-revoked handles against the live contract state
 - this still does not make the root live inside Compact:
   it turns the current verifier-side freshness choice into one explicit typed
   integration seam instead of leaving it as ad hoc application logic
+
+Architecture note for the three supported verification modes:
+
+- [`../docs/architecture/status-verification-modes.md`](../docs/architecture/status-verification-modes.md)

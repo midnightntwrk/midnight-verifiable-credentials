@@ -8,6 +8,7 @@ Companion documents:
 - [`./status-error-taxonomy.md`](./status-error-taxonomy.md)
 - [`./revocation-registry.md`](./revocation-registry.md)
 - [`./midnight-credentials.md`](./midnight-credentials.md)
+- [`../architecture/status-verification-modes.md`](../architecture/status-verification-modes.md)
 
 ## Purpose
 
@@ -76,6 +77,16 @@ different VC shape.
 The repository now treats status verification mode as an implementation choice
 over one shared VC-side binding model.
 
+For the architecture-level distinction between:
+
+- same-contract live revoked-set verification
+- off-chain verifier-side live-state verification
+- and authority-attested external-registry Layer 3 verification
+
+see:
+
+- [`../architecture/status-verification-modes.md`](../architecture/status-verification-modes.md)
+
 Supported prototype modes are:
 
 ### 1. Same-contract live-root verification
@@ -106,6 +117,16 @@ Current shipped prototype seam:
 - a same-contract verifier can pair that witness with its own live local
   revocation state instead of consuming an authority attestation or
   verifier-supplied root snapshot
+- when runtime access to the shared revocation-registry contract state is
+  available, the repository now also exposes canonical helper paths to:
+  - read the live `(registryId, revokedRoot, registryVersion)` snapshot from
+    contract state
+  - reject already-revoked handles against that live state
+  - build the canonical revoked-set request/witness/protocol bundle directly
+    from that live state plus freshness policy
+- this still does not make the root contract-proven inside Compact itself; it
+  turns live-state observation into one shared typed seam instead of another
+  app-local convention
 
 ### 2. External-registry verifier-side verification
 

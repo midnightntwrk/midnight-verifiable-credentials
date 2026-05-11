@@ -8,6 +8,7 @@ import {
   RunTheHiddenHolderLiveStatusRevokedRejectedPath,
   RunTheHiddenHolderExpiredAuthorityAttestationRejectedPath,
   RunTheHiddenHolderRevokedCredentialRejectedPath,
+  RunTheHiddenHolderStaleSnapshotRejectedPath,
   RunTheHiddenHolderWrongRevokedRootRejectedPath,
   RunTheHiddenHolderWrongRegistryRejectedPath,
   RunTheHiddenHolderRevocationAwareHappyPath,
@@ -42,6 +43,13 @@ When(
     await engineer().attemptsTo(
       RunTheHiddenHolderWrongRevokedRootRejectedPath(),
     );
+  },
+);
+
+When(
+  "the engineer runs the hidden-holder stale-snapshot rejection path",
+  async () => {
+    await engineer().attemptsTo(RunTheHiddenHolderStaleSnapshotRejectedPath());
   },
 );
 

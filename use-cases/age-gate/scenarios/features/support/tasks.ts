@@ -60,14 +60,14 @@ export const RunTheHiddenHolderWrongRevokedRootRejectedPath = () =>
     ),
   );
 
-export const RunTheHiddenHolderStaleVersionRejectedPath = () =>
+export const RunTheHiddenHolderStaleSnapshotRejectedPath = () =>
   Task.where(
-    "#actor runs the hidden-holder stale-version rejection path",
+    "#actor runs the hidden-holder stale-snapshot rejection path",
     Interaction.where(
-      "#actor executes the hidden-holder stale-version scenario against the revocation demo simulator",
+      "#actor executes the hidden-holder stale-snapshot scenario against the revocation demo simulator",
       async (actor) => {
         await UseHiddenHolderScenario.from(actor)
-          .runVerifierSuppliedRootStaleVersionRejectedPath();
+          .runVerifierSuppliedRootStaleSnapshotRejectedPath();
       },
     ),
   );
