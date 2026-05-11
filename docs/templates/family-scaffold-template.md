@@ -43,6 +43,7 @@ Do not model these as if they were native direct Compact claim fields:
 - `String`
 - `Int<n>`
 - `Float<n>`
+- `Vector<k, T>` where `T` is itself an unsupported field kind
 
 Design guidance:
 

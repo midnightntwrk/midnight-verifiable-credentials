@@ -165,6 +165,7 @@ Current Compact claim-shape guardrails:
   - vectors and nested structs built only from those supported kinds
 - do not model \`String\`, \`Int<n>\`, or \`Float<n>\` as if they were native
   Compact claim fields
+- do not model \`Vector<k, T>\` when \`T\` is itself an unsupported field kind
 - prefer flat claims by default; use nested structs only when they reflect a
   real domain grouping
 
