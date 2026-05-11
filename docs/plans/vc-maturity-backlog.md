@@ -128,8 +128,9 @@ Current highest-risk remaining area:
   the repo has a generated family scaffold, guides, and templates, but still
   lacks:
   - a compiling hello-verifier starter
-  - a compiling hello-family starter
   - a concrete DID + VC handoff smoke path
+  - a concrete hello-family -> verifier -> DID handoff story that is smaller
+    than the full revocation/use-case stack
 - `VC-MAT-06` is narrowed but still open:
   docs and checklists now exist, but there is still no single production-safe
   orchestration reference path that closes the loop across durable state, RNG,
@@ -298,6 +299,8 @@ stack. The next backlog wave should use these ten larger reviewable slices.
    - shortest-path runnable verifier example using the converged thin-core
      surfaces and current run-target conventions
 - `Slice 7`: compiling hello-family starter
+   - in flight on the current stack through
+     [`midnightntwrk/midnight-verifiable-credentials#177`](https://github.com/midnightntwrk/midnight-verifiable-credentials/pull/177)
    - smallest runnable family package produced from the current scaffold/tooling
      conventions
 - `Slice 8`: DID + VC handoff smoke path
@@ -785,8 +788,8 @@ Current grouped execution:
   - docs-only hidden-holder hello-world walkthrough
 - still missing if deeper onboarding is needed later:
   - a generated family scaffold or copy script
-  - a tiny runnable hello-family / hello-verifier starter, not only markdown
-    templates
+  - a tiny runnable hello-verifier starter and end-to-end hello path, not only
+    markdown templates plus a compileable hello-family package
   - issuer-oriented starter path
   - wallet-oriented starter path
   - a DID + VC handoff checklist for downstream repos consuming DID tarballs

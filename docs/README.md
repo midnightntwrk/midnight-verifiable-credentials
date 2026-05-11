@@ -54,6 +54,9 @@
 - current status-registry package surface:
   - [`../registry/status-registry/README.md`](../registry/status-registry/README.md)
   - for engineers implementing the current prototype revocation/status registry package
+- current claim-type playground package surface:
+  - [`../prototypes/credential-families/hello-family/README.md`](../prototypes/credential-families/hello-family/README.md)
+  - for engineers who need the current Compact claim-type support matrix in a compileable family package
 
 ## Architecture
 

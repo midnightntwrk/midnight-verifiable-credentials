@@ -1,6 +1,6 @@
 # Midnight VC Test Matrix
 
-Status: current implemented test surface as of 2026-05-09.
+Status: current implemented test surface as of 2026-05-11.
 
 ## Core package tests
 
@@ -45,6 +45,14 @@ Status: current implemented test surface as of 2026-05-09.
 - same-holder composition tests
 - blinded-secret issuance offer/request/result validation through
   `credentials-protocol`
+
+### `credentials-hello-family`
+
+- claim-root/domain-separation source checks
+- presentation-request source-shape checks
+- package export-surface checks
+- real Compact compiler probes for currently supported versus unsupported
+  primitive claim types
 
 ### Planned prototype restoration
 

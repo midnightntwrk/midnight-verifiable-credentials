@@ -193,8 +193,8 @@ artifact automatically.
   workflow
 - the current starter set is still stronger as documentation than as a
   runnable “hello path”:
-  there is still no tiny DID bootstrap example and no compiling hello-family
-  starter package that an integrator can run with near-zero interpretation
+  there is still no tiny DID bootstrap example and no compiling hello-verifier
+  starter path that an integrator can run with near-zero interpretation
 - status ownership is still conceptually split across `credentials` and
   `credentials-status-registry`
 - integrators still need to understand too much status prototype context before
@@ -498,8 +498,8 @@ Add explicit acceptance criteria:
 Add integrator-kit follow-up:
 
 - generated family scaffold or copy script
-- minimal runnable hello-family / hello-verifier starter, not just markdown
-  templates
+- minimal runnable hello-verifier starter plus DID/VC smoke path, not just
+  markdown templates
 - issuer-oriented starter
 - wallet-oriented starter
 - DID + VC handoff checklist for downstream repos consuming tarballs
@@ -532,7 +532,8 @@ concrete claim that is directly supported by checked-in evidence.
   - `/Users/ysh/iohk/midnight-identity-workspace/review/claude-3p-audit-1.txt`
 - triaged Claude findings that materially sharpen the current reading:
   1. the current starter material still needs tiny runnable entrypoints:
-     a DID bootstrap sample and a compiling hello-family / hello-verifier path
+     a DID bootstrap sample and a compiling hello-verifier path that builds on
+     the current hello-family starter package
   2. `credentials-protocol` still lacks a production-safe default story:
      durable state, explicit RNG expectations, and a checklist are still too
      implicit

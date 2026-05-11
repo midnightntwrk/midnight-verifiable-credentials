@@ -31,6 +31,7 @@ Current-repository note:
 
 - the fully validated workspace spine in this repository is currently centered
   on `credentials`, `credentials-birth`, `credentials-birth-secret`,
+  `credentials-hello-family`,
   `credentials-same-holder`, `credentials-iso-registry`,
   `credentials-offchain-did`, `credentials-openid`,
   `credentials-status-registry`, `credentials-protocol`,
@@ -72,6 +73,8 @@ Current workspace note for this dimension:
 
 - `credentials-birth` is the current explicit-holder family on `develop`
 - `credentials-birth-secret` is the current hidden-holder family on `develop`
+- `credentials-hello-family` is the current compileable claim-type playground
+  family on the active stack
 - the remaining families in this table are design-space or adjacent-prototype
   examples, not validated local workspace packages
 
@@ -181,7 +184,8 @@ Current validated repository surfaces for this strategy:
 
 - Layer 1: `credentials`, `credentials-same-holder`, `credentials-iso-registry`,
   `credentials-status-registry`
-- Layer 2: `credentials-birth`, `credentials-birth-secret`
+- Layer 2: `credentials-birth`, `credentials-birth-secret`,
+  `credentials-hello-family`
 - Layer 2.5: `credentials-offchain-did`
 - Layer 3: `credentials-demo-contract`
 - Layer 4: `credentials-openid`, `credentials-protocol`, `standalone-environment`
