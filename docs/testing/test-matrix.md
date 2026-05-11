@@ -94,6 +94,11 @@ Implemented prototype coverage:
   - request/binding consistency checks
   - authority-attested proof acceptance and rejection paths
   - verifier policy compatibility for revoked-set and authority-attested flows
+- `registry/status-registry/src/test/status-verifier-classification.test.ts`
+  - canonical status-error classification over representative raw Compact/demo
+    throw messages
+  - preservation of typed helper causes through normalized verifier errors
+  - fail-closed fallback to `unclassifiedFailure` for unknown throw shapes
 - `prototypes/credential-families/birth-secret/src/test/status.test.ts`
   - hidden-holder same-contract live-status request wiring
   - hidden-holder revoked-set status request wiring
@@ -162,6 +167,8 @@ Implemented prototype coverage:
   - authority-attested hidden-holder status path
   - hard rejection when accepted status evidence already says the credential is
     revoked
+  - canonical status-error-code normalization for representative negative-path
+    failures across live, observed, and authority-attested modes
   - reusable capability lifecycle under revocation-aware verification
 - standalone integration test:
   - issuance-verification lifecycle
