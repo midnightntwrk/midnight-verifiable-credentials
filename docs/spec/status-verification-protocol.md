@@ -498,3 +498,4 @@ Architecture companion note:
 
 - [status-canonical-non-membership-bundle.md](../architecture/status-canonical-non-membership-bundle.md)
 - [live-root-binding-feasibility.md](../architecture/live-root-binding-feasibility.md)
+- [status-contract-closeout-boundary.md](../architecture/status-contract-closeout-boundary.md)

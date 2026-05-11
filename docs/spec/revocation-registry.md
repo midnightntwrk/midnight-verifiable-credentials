@@ -470,6 +470,16 @@ Therefore:
 - stale registry state, unknown registries, and unsupported proof modes must
   still fail closed even before that final path lands
 
+Repository closeout note:
+
+- the current repository now treats the runtime bundle shape, status-mode
+  split, freshness/error taxonomy, and same-contract live path as complete
+  repo-owned work
+- the remaining gap is the generic root-bound in-circuit proof path, not the
+  absence of a registry/status architecture in this codebase
+- see:
+  - [status-contract-closeout-boundary.md](../architecture/status-contract-closeout-boundary.md)
+
 ## Why no revocation reason/date in the core model
 
 Revocation reason and revocation date are useful operational features, but they

@@ -124,6 +124,11 @@ Additional expectations by proof protocol:
     - final Merkle non-membership, if present
   - must disclose that an accepted revoked-set hit is hard VC/VP invalidity,
     not a "verified but denied" result
+  - should disclose whether the deployment relies on:
+    - same-contract live-state verification
+    - off-chain verifier-side live-state verification
+    - authority-attested external-registry verification
+    - or a future generic root-bound in-circuit proof path
 
 Reference companion material:
 

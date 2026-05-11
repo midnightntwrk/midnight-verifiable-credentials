@@ -423,24 +423,21 @@ clean adoption map for integrators.
 
 ### Highest-priority gaps
 
-1. Finish the status boundary normalization.
-- package ownership is clearer in docs than in the canonical Compact surface
-- shared VC-side binding and verifier-facing proof protocol still need a cleaner
-  final separation
+1. Keep the status boundary explicit in public guidance.
+- package ownership is now materially cleaner than in the earlier split-state
+  repo
+- the remaining generic root-bound non-membership tail should stay documented
+  as an upstream Compact/runtime dependency, not as ordinary repo work
 
-2. Finish the cryptographic status contract.
-- final non-membership, root freshness, and full status-binding commitment are
-  still unfinished
-
-3. Publish one canonical maturity and tier inventory.
+2. Publish one canonical maturity and tier inventory.
 - per-package classification should be obvious without cross-reading several
   docs
-
-4. Turn the current starter material into an actual integration kit.
-- especially for “new family”, “new verifier flow”, and DID + VC integration
-  handoff
-
-5. Keep BDD focused on high-value living examples.
+3. Turn the current starter material into a broader integration kit.
+- the repo now has a compiling `hello-family`, a compiling `hello-verifier`,
+  and a DID-aware hello smoke path
+- the remaining gap is broader starter coverage for “new family”, “new
+  verifier flow”, and downstream integrator handoff
+4. Keep BDD focused on high-value living examples.
 - expand narrative coverage without duplicating the full test matrix
 
 ### Secondary gaps
@@ -454,11 +451,13 @@ clean adoption map for integrators.
 - add a dedicated SSI capability/trade-off matrix
 - expose a cleaner cookbook for common trust models:
   - no status
-  - verifier-supplied-root
+  - off-chain verifier-side live-state verification
   - authority-attested status
-  - future canonical non-membership
+  - same-contract live-state verification
+  - future generic root-bound non-membership once Compact supports it
 - make the cross-repo DID-to-VC handoff contract explicit:
-  minimal runnable bootstrap path plus a tested compatibility/version matrix
+  minimal runnable bootstrap path is now present; the remaining gap is a wider
+  tested compatibility/version matrix
 
 ## Recommended Backlog Deltas
 
@@ -485,15 +484,17 @@ Add explicit architecture question:
   - `credentials-status-registry`
   - or a new lower shared package
 
-### Strengthen VC-MAT-20
+### Clarify VC-MAT-20
 
-Add explicit acceptance criteria:
+Record the current acceptance boundary explicitly:
 
-- full status-binding commitment in issuer-signed body root
-- trusted freshness source for accepted roots
-- adversarial tests for root swap, stale replay, index mismatch, and
-  missing-binding cases
-- remove or narrow unsafe nonce handling in authority-attested helpers
+- shared status-binding payload in the issuer-signed body is delivered
+- freshness and replay semantics are delivered for the supported status modes
+- adversarial tests for root swap, stale replay, wrong registry, revoked
+  credentials, and missing-binding cases are delivered on the current stack
+- unsafe authority-attestation nonce handling is no longer the default path
+- the remaining generic root-bound in-circuit proof tail is an upstream
+  Compact/runtime dependency, not ordinary repo backlog execution
 
 ### Extend VC-MAT-08
 
@@ -534,9 +535,9 @@ concrete claim that is directly supported by checked-in evidence.
 - recorded artifact:
   - `/Users/ysh/iohk/midnight-identity-workspace/review/claude-3p-audit-1.txt`
 - triaged Claude findings that materially sharpen the current reading:
-  1. the current starter material still needs tiny runnable entrypoints:
-     a DID bootstrap sample and a tiny DID/VC smoke path that builds on the
-     current hello-family and hello-verifier starter packages
+  1. the current starter material needed tiny runnable entrypoints:
+     that gap is now materially reduced by the hello-family, hello-verifier,
+     and DID-aware hello smoke path stack
   2. `credentials-protocol` still lacks a production-safe default story:
      durable state, explicit RNG expectations, and a checklist are still too
      implicit
@@ -567,13 +568,16 @@ Codex highlights that matched the local reading:
 
 - the strongest overall signal is architectural intent plus operational
   discipline, not completed maturity
-- the main systemic weakness is the unresolved status/revocation seam
+- the main systemic weakness is no longer repo-local status ownership drift;
+  it is the remaining external dependency for a future generic root-bound
+  non-membership path
 - the next phase should prioritize normalization over expansion
 
 Concrete Codex recommendations that should affect execution planning:
 
-1. add one authoritative cross-repo smoke path for DID resolution plus one VC
-   issuance/presentation/verification flow
+1. keep one authoritative cross-repo smoke path for DID resolution plus one VC
+   issuance/presentation/verification flow, then expand only if a second path
+   proves a materially different trust model
 2. publish a package maturity/support matrix and use it to guide external
    adoption
 3. replace docs-only starter guidance with generated issuer, wallet, and
@@ -598,11 +602,12 @@ Recorded artifact:
 2. `VC-MAT-19`
 3. `VC-MAT-11`
 4. `VC-MAT-16`
-5. `VC-MAT-20`
-6. `VC-MAT-08`
-7. `VC-MAT-17`
-8. `VC-MAT-06`
-9. `VC-MAT-09`
+5. `VC-MAT-08`
+6. `VC-MAT-17`
+7. `VC-MAT-06`
+8. `VC-MAT-09`
+9. upstream Compact/runtime dependency for future generic root-bound
+   non-membership
 
 ## Evidence Paths
 

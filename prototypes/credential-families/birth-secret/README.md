@@ -33,19 +33,19 @@ Start here:
 2. write contracts and family composition against the Compact entrypoints
 3. use generated/runtime exports only in off-chain verifiers, wallets,
    protocol adapters, and tests
-4. read [`../docs/guides/integration-surface-map.md`](../docs/guides/integration-surface-map.md)
-   and [`../docs/spec/status-verification-protocol.md`](../docs/spec/status-verification-protocol.md)
+4. read [`../../../docs/guides/integration-surface-map.md`](../../../docs/guides/integration-surface-map.md)
+   and [`../../../docs/spec/status-verification-protocol.md`](../../../docs/spec/status-verification-protocol.md)
    before adopting prototype status-aware flows
 
 Related docs:
 
-- spec: [`../docs/spec/midnight-credentials.md`](../docs/spec/midnight-credentials.md)
-- profiles: [`../docs/spec/profiles.md`](../docs/spec/profiles.md)
-- conformance: [`../docs/spec/conformance.md`](../docs/spec/conformance.md)
-- credential status: [`../docs/spec/credential-status.md`](../docs/spec/credential-status.md)
-- status verification protocol: [`../docs/spec/status-verification-protocol.md`](../docs/spec/status-verification-protocol.md)
-- companion guide: [`../docs/guides/midnight-credentials-for-dummies.md`](../docs/guides/midnight-credentials-for-dummies.md)
-- test matrix: [`../docs/testing/test-matrix.md`](../docs/testing/test-matrix.md)
+- spec: [`../../../docs/spec/midnight-credentials.md`](../../../docs/spec/midnight-credentials.md)
+- profiles: [`../../../docs/spec/profiles.md`](../../../docs/spec/profiles.md)
+- conformance: [`../../../docs/spec/conformance.md`](../../../docs/spec/conformance.md)
+- credential status: [`../../../docs/spec/credential-status.md`](../../../docs/spec/credential-status.md)
+- status verification protocol: [`../../../docs/spec/status-verification-protocol.md`](../../../docs/spec/status-verification-protocol.md)
+- companion guide: [`../../../docs/guides/midnight-credentials-for-dummies.md`](../../../docs/guides/midnight-credentials-for-dummies.md)
+- test matrix: [`../../../docs/testing/test-matrix.md`](../../../docs/testing/test-matrix.md)
 
 ## Purpose
 
@@ -55,12 +55,12 @@ reference.
 
 It sits next to the explicit holder-binding package:
 
-- [`../prototypes/credential-families/birth`](../prototypes/credential-families/birth/README.md): explicit DID-bound holder profile
-- [`../credentials`](../credentials/README.md): generic VC/VP envelope and proof core
-- [`../core/capabilities/same-holder`](../core/capabilities/same-holder/README.md): optional same-holder composition capability for hidden-holder flows
+- [`../birth`](../birth/README.md): explicit DID-bound holder profile
+- [`../../../core/primitives/credentials`](../../../core/primitives/credentials/README.md): generic VC/VP envelope and proof core
+- [`../../../core/capabilities/same-holder`](../../../core/capabilities/same-holder/README.md): optional same-holder composition capability for hidden-holder flows
 
 This package defines the secret-bound variant on top of the generic
-[`credentials`](../credentials/README.md) package.
+[`credentials`](../../../core/primitives/credentials/README.md) package.
 
 It owns the schema-specific parts that should not live in the generic core:
 
@@ -133,6 +133,17 @@ What it does not yet prove:
 - final in-circuit revoked-set non-membership verification
 - final contract-proven live Merkle-root binding for revocation state
 - production-ready revocation semantics
+
+Current status-contract boundary for this family:
+
+- the family now participates in the repository's completed repo-owned
+  `VC-MAT-20` delivery:
+  - issuer-signed `RegistryBoundStatusBinding`
+  - same-contract live-state verification path
+  - observed-snapshot and authority-attested status helper paths
+  - hard-invalidity `revoked` semantics
+- the remaining gap is the future generic root-bound in-circuit proof path,
+  not missing family-local status wiring
 
 Important distinction:
 

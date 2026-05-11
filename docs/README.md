@@ -93,6 +93,9 @@
 - Compact source conventions, purity, and commitment research:
   - [`architecture/compact-source-conventions-and-purity-research.md`](./architecture/compact-source-conventions-and-purity-research.md)
   - for the current comment-style, pure-circuit, and commitment-standardization research cut
+- status-contract closeout boundary:
+  - [`architecture/status-contract-closeout-boundary.md`](./architecture/status-contract-closeout-boundary.md)
+  - for the final repository-owned `VC-MAT-20` delivery boundary versus the remaining upstream Compact blocker
 
 ## Testing
 
