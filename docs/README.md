@@ -44,6 +44,9 @@
 - protocol production checklist:
   - [`guides/credentials-protocol-production-checklist.md`](./guides/credentials-protocol-production-checklist.md)
   - for integrators hardening the reference orchestration layer for real deployments
+- protocol reference path:
+  - [`guides/credentials-protocol-reference-path.md`](./guides/credentials-protocol-reference-path.md)
+  - for engineers who need the current checked-in Node/file-backed orchestration path
 - prototype execution ladder:
   - [`guides/prototype-execution-ladder.md`](./guides/prototype-execution-ladder.md)
   - for engineers who want the current runnable path from hello-verifier through BDD and revocation lanes

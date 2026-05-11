@@ -136,9 +136,12 @@ Current highest-risk remaining area:
   current stack. The remaining adoption gap after that slice is a thin
   downstream handoff kit and one production-safe protocol reference path.
 - `VC-MAT-06` is narrowed but still open:
-  docs and checklists now exist, but there is still no single production-safe
-  orchestration reference path that closes the loop across durable state, RNG,
-  and deployment posture
+  docs and checklists now exist, and the current stack now adds one checked-in
+  production-shaped Node reference path that closes the loop across durable
+  state, RNG, and replay retention for the reference protocol layer
+  The remaining work after that slice is narrower:
+  - deployment posture hardening beyond one process per party directory
+  - transport-specific guidance layered on top of the reference runtime path
 - `VC-MAT-17` is largely advanced in the current stack:
   the repo now has curated negative scenarios for stale snapshot, wrong
   registry, wrong root, stale authority attestation, and revoked credentials;
@@ -323,7 +326,8 @@ stack. The next backlog wave should use these ten larger reviewable slices.
      - durable-state expectations
      - RNG requirements
      - deployment/runtime checklist
-   - this should be more executable than the current checklist-only guidance
+   - now in flight on the current stack through the Node/file-backed helper
+     path plus restart/replay tests in `credentials-protocol`
 
 ### `MAINTENANCE-CLOSEOUT`
 

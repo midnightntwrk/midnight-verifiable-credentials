@@ -139,6 +139,11 @@ Implemented prototype coverage:
 ### `credentials-protocol`
 
 - explicit-holder issuance/presentation/full lifecycle
+- Node/file-backed production-reference path:
+  - stable JSON codec round-trip and file-backed persistence coverage
+  - explicit-holder restart-safe credential recovery with crypto randomness
+  - secret-holder presentation replay across verifier restart with crypto
+    randomness and retained finalized outcomes
 - secret-holder issuance/presentation
   - Compact offer/request/result validation in unit tests
   - negative-path coverage for malformed offer/request/result issuance messages

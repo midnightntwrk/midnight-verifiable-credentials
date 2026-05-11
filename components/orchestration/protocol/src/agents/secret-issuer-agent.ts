@@ -238,7 +238,11 @@ export class SecretIssuerAgent {
         Buffer.from(offerMethod.didContractAddress.bytes),
         Buffer.from(requestMethod.didContractAddress.bytes),
       ) === 0;
-    const sameMethodId = offerMethod.methodId === requestMethod.methodId;
+    const sameMethodId =
+      Buffer.compare(
+        Buffer.from(offerMethod.methodId),
+        Buffer.from(requestMethod.methodId),
+      ) === 0;
     if (!sameDidAddress || !sameMethodId) {
       throw new IssuanceProtocolError(
         "offer_request_mismatch",

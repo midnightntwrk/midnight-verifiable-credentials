@@ -15,6 +15,7 @@ import {
 import { describe, expect, it } from "vitest";
 
 import { FileSystemProtocolStateByteStore } from "../../adapters/file-protocol-state-store.js";
+import { createStableJsonProtocolStateStore } from "../../adapters/json-protocol-state-codec.js";
 import {
   createCodecBackedProtocolStateStore,
   InMemoryProtocolStateStore,
@@ -353,6 +354,42 @@ describe("secret-holder issuance", () => {
     expect(stored.holderBindingBlindingFactor).toEqual(
       requestBody.body.holderBindingBlindingFactor,
     );
+  });
+
+  it("accepts a matching blinded-secret request after reloading a persisted offer", () => {
+    const rootDir = mkdtempSync(join(tmpdir(), "vc-secret-issuer-state-"));
+
+    try {
+      const bus = new MessageBus();
+      const issuerStateStore = createStableJsonProtocolStateStore(
+        new FileSystemProtocolStateByteStore(rootDir),
+      );
+      const issuer = new SecretIssuerAgent(issuerProfile, bus, {
+        stateStore: issuerStateStore,
+      });
+      const holder = new SecretHolderAgent(holderConfig, bus, {
+        stateStore: new InMemoryProtocolStateStore(),
+      });
+
+      issuer.createAndSendOffer("holder");
+      const offer = bus.receive("holder")!;
+      holder.receiveOfferAndSendRequest(offer);
+      const request = bus.receive("issuer")!;
+
+      const restartedIssuer = new SecretIssuerAgent(issuerProfile, bus, {
+        stateStore: createStableJsonProtocolStateStore(
+          new FileSystemProtocolStateByteStore(rootDir),
+        ),
+      });
+
+      expect(() =>
+        restartedIssuer.receiveRequestAndIssueCredential(request, claimWitness),
+      ).not.toThrow();
+      const result = bus.receive("holder")!;
+      expect(result.type).toEqual("issuance:result");
+    } finally {
+      rmSync(rootDir, { recursive: true, force: true });
+    }
   });
 
   it("persists stored hidden-holder credentials across file-backed holder restarts", () => {

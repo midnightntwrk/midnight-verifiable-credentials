@@ -48,6 +48,8 @@ Related docs:
   [`../../../docs/spec/hidden-holder-interoperability.md`](../../../docs/spec/hidden-holder-interoperability.md)
 - production checklist:
   [`../../../docs/guides/credentials-protocol-production-checklist.md`](../../../docs/guides/credentials-protocol-production-checklist.md)
+- production-shaped reference path:
+  [`../../../docs/guides/credentials-protocol-reference-path.md`](../../../docs/guides/credentials-protocol-reference-path.md)
 - companion guide: [`../../../docs/guides/midnight-credentials-for-dummies.md`](../../../docs/guides/midnight-credentials-for-dummies.md)
 - test matrix: [`../../../docs/testing/test-matrix.md`](../../../docs/testing/test-matrix.md)
 
@@ -85,10 +87,16 @@ The current public exports are intentionally narrow:
 - explicit-holder and secret-holder agent classes
 - injectable randomness interfaces for protocol challenges, issuer nonces,
   blinding factors, and signing nonces
+- a Node/runtime randomness implementation for production-shaped deployments:
+  `NodeCryptoRandomnessSource`
 - a generic `ProtocolStateStore` interface plus an in-memory reference
   implementation for protocol session state
 - a byte-backed codec adapter seam so persistent stores can expose
   `ProtocolStateStore` without reimplementing typed collection logic
+- a restart-safe tagged JSON codec/store helper path for local persistence:
+  - `createStableJsonProtocolStateStore(...)`
+  - `createNodeFileBackedProtocolStateStore(...)`
+  - `createNodeFileBackedProtocolPartyDependencies(...)`
 - shared crypto and envelope helpers
 - the typed in-memory message bus transport seam
 
@@ -222,6 +230,19 @@ Reference timing rule:
 - the Compact credential family still does not define body-level presentation
   expiry fields or a final interoperable timeout contract
 
+Current production-shaped reference path:
+
+- use `NodeCryptoRandomnessSource` or
+  `createNodeFileBackedProtocolPartyDependencies(...)`
+- use one file-backed state directory per party
+- use the restart-safe tagged JSON codec-backed store path instead of the
+  test-only `v8`
+  codec wiring
+- set explicit replay retention where finalized outcomes matter
+- see
+  [`../../../docs/guides/credentials-protocol-reference-path.md`](../../../docs/guides/credentials-protocol-reference-path.md)
+  for the checked-in explicit-holder restart and secret-holder replay examples
+
 Persistent state adapter rule:
 
 - integrators can either implement `ProtocolStateStore` directly or expose a
@@ -236,6 +257,11 @@ Persistent state adapter rule:
   `ProtocolStateCodecResolver`, and `createCodecBackedProtocolStateStore(...)`
   as the preferred integration path when the persistence layer naturally
   stores bytes or blobs
+- the package now also exports a restart-safe tagged JSON reference path for local durable
+  Node deployments:
+  - `createStableJsonProtocolStateStore(...)`
+  - `createNodeFileBackedProtocolStateStore(...)`
+  - `createNodeFileBackedProtocolPartyDependencies(...)`
 - finalized outcome retention currently relies on `entries()` enumeration, so a
   persistent adapter must support full collection scans for TTL pruning and
   oldest-first eviction semantics
