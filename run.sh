@@ -27,7 +27,7 @@ Targets:
   help                       Print this target list
 
 Options:
-  --light                    Use reduced-scope or restored-artifact variants when supported
+  --light                    Use reduced-scope or restored-artifact variants when supported; ignored otherwise
 
 Targets that currently honor `--light`:
   full, build, typecheck, test, hello-smoke
@@ -86,6 +86,7 @@ run_common_root_script_exists() {
 
 target="full"
 target_kind="wrapper"
+light_requested=0
 forward_args=()
 
 if [[ $# -gt 0 ]]; then
@@ -109,6 +110,7 @@ raw_args=("$@")
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --light)
+      light_requested=1
       shift
       ;;
     --)
@@ -124,6 +126,16 @@ while [[ $# -gt 0 ]]; do
       ;;
   esac
 done
+
+if [[ "$light_requested" == "1" && "$target_kind" == "wrapper" ]]; then
+  case "$target" in
+    full|build|typecheck|test|hello-smoke)
+      ;;
+    *)
+      echo "[run] Warning: --light is ignored by target '$target'" >&2
+      ;;
+  esac
+fi
 
 case "$target" in
   full)
