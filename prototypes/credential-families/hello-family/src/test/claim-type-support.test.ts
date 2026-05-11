@@ -37,7 +37,21 @@ const compileProbe = (
     });
     return { ok: true };
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
+    if (error instanceof Error) {
+      const stderr =
+        "stderr" in error && typeof error.stderr?.toString === "function"
+          ? error.stderr.toString()
+          : "";
+      const stdout =
+        "stdout" in error && typeof error.stdout?.toString === "function"
+          ? error.stdout.toString()
+          : "";
+      const message = [error.message, stderr, stdout]
+        .filter((chunk) => chunk.length > 0)
+        .join("\n");
+      return { ok: false, message };
+    }
+    const message = String(error);
     return { ok: false, message };
   } finally {
     rmSync(tempDir, { force: true, recursive: true });
