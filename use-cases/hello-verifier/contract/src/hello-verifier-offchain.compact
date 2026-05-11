@@ -54,6 +54,9 @@ export circuit verifyHelloFamilyOffchainPresentationForHelloVerifier(
   presentation: HelloFamilyOffchainPresentation,
   presentationProof: Proof
 ): [] {
+  // CONFORMANCE LOCK: keep this verifier-side acceptance shape aligned with
+  // the explicit hello-verifier starter so the DID-aware path stays a holder-
+  // binding swap rather than a separate business-policy contract.
   const credentialRoot = disclose(
     helloFamilyOffchainCredentialBodyRoot(credential)
   );

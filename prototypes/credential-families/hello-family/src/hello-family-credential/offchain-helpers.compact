@@ -1,6 +1,9 @@
 // Hello-family offchain-DID schema helpers and direct-claim validation.
 // This profile keeps the same typed claims as the explicit starter, but swaps
 // in the lightweight offchain Midnight DID holder-binding surface.
+// NOTE: this starter intentionally keeps a parallel helper surface beside the
+// explicit-holder profile so the DID-aware path stays compileable without
+// introducing a second layer of generic helper indirection here.
 export pure circuit helloFamilyOffchainCredentialBodyRoot(
   credential: HelloFamilyOffchainCredential
 ): Bytes<32> {
@@ -119,6 +122,9 @@ export pure circuit assertHelloFamilyOffchainPresentationSatisfiesRequest(
   presentation: HelloFamilyOffchainPresentation,
   presentationProof: Proof
 ): [] {
+  // CONFORMANCE LOCK: keep this request contract aligned with the explicit
+  // starter profile so both hello-family tracks enforce the same disclosure
+  // and issuer/challenge invariants.
   assertValidHelloFamilyOffchainPresentationRequest(request);
   assertValidHelloFamilyOffchainPresentation(
     credential,

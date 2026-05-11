@@ -35,6 +35,9 @@
     "@midnight-ntwrk/midnight-did-credentials": "*",
     "@midnight-ntwrk/midnight-did-domain": "file:../../../tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.1.0.tgz"
   },
+  "devDependencies": {
+    "@midnight-ntwrk/compact-runtime": "*"
+  },
   "files": [
     "dist/**",
     "README.md",

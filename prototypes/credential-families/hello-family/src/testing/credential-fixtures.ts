@@ -129,6 +129,9 @@ const signProof = ({
   readonly createdAt: bigint;
   readonly challengeHash: Uint8Array;
 }): Proof => {
+  // NOTE: these context salts are deterministic test-only fixtures. They just
+  // separate issuance and presentation signing transcripts in the starter
+  // package and are not a reusable protocol constant.
   const nonceScalar =
     context === "issuance" ? 11n + signer.secretKey : 17n + signer.secretKey;
   const proof: Proof = {

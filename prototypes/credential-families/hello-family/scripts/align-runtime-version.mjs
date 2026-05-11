@@ -21,7 +21,20 @@ for (const entry of managedEntries) {
     continue;
   }
   const targetFile = path.join(managedRoot, entry.name, "contract", "index.js");
-  const source = await readFile(targetFile, "utf8");
+  let source;
+  try {
+    source = await readFile(targetFile, "utf8");
+  } catch (error) {
+    if (
+      error &&
+      typeof error === "object" &&
+      "code" in error &&
+      error.code === "ENOENT"
+    ) {
+      continue;
+    }
+    throw error;
+  }
   // NOTE: unlike `birth-secret`, this family exports only pure circuits, so
   // the generated managed surfaces do not need the extra `provableCircuits`
   // patch.

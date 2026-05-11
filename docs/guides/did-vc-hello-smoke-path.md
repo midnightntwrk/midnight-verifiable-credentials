@@ -80,9 +80,9 @@ current smoke path.
 
 | DID side | VC side | Expected proof |
 | --- | --- | --- |
-| `@midnight-ntwrk/midnight-did-domain` `0.1.0` tarball | `credentials-offchain-did` workspace package | can create and resolve a portable offchain DID URL |
-| `@midnight-ntwrk/midnight-did` `0.1.0` tarball | `credentials-hello-family` workspace package | can derive `OffchainDIDHolderBinding` and verify the family-level presentation |
-| same as above | `hello-verifier` workspace package | can verify the offchain-DID-backed presentation in a Layer 3 starter contract |
+| `@midnight-ntwrk/midnight-did-domain` `0.1.0` tarball | `@midnight-ntwrk/midnight-did-credentials-offchain-did` workspace package | can create and resolve a portable offchain DID URL |
+| `@midnight-ntwrk/midnight-did` `0.1.0` tarball | `@midnight-ntwrk/midnight-did-credentials-hello-family` workspace package | can derive `OffchainDIDHolderBinding` and verify the family-level presentation |
+| same as above | `@midnight-ntwrk/midnight-did-hello-verifier-contract` workspace package | can verify the offchain-DID-backed presentation in a Layer 3 starter contract |
 
 ## Limitations
 
