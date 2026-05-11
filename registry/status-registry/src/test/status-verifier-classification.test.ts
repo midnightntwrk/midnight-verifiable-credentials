@@ -11,7 +11,7 @@ import {
 type ClassificationCase = {
   readonly title: string;
   readonly mode: StatusVerificationMode;
-  readonly error: unknown;
+  readonly error: string;
   readonly code: string;
 };
 
