@@ -98,9 +98,11 @@ Practical remaining backlog after the current open stack:
 - about `10%` of the original repo-wide backlog by execution volume
 - this estimate is based on the expected remaining primary PR-sized slices
   after `#168`, not on raw `VC-MAT-XX` item count
-- almost all of that remaining work is concentrated in:
+- most of that remaining work is concentrated in:
   - `VC-MAT-20`
   - `VC-MAT-08`
+- with a smaller but still explicit residual slice under:
+  - `VC-MAT-06`
 - the other active items are now primarily merge-closeout or maintenance
   follow-ons rather than first-order architecture blockers
 
@@ -320,12 +322,6 @@ stack. The next backlog wave should use these ten larger reviewable slices.
       `VC-MAT-18` items
     - remove stale wording that still describes the repo as pre-convergence or
       pre-negative-coverage
-
-Execution rule:
-
-- treat `MAINTENANCE-CLOSEOUT` work as a cross-cutting acceptance requirement
-  on slices `1` through `9`, then use slice `10` only for the final cleanup
-  pass that remains after those heavier items land
 
 ## Architecture Audit: 2026-05-06
 
