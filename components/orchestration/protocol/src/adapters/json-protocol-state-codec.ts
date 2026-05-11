@@ -47,7 +47,8 @@ const stableJsonReviver = (_key: string, value: unknown): unknown => {
 // expected to stay within plain objects/arrays plus scalar fields, `bigint`,
 // and `Uint8Array`. Class instances, `Date`, `Map`, `Set`, and `Buffer`
 // rehydrate as ordinary JSON/`Uint8Array` values rather than preserving their
-// original runtime prototypes.
+// original runtime prototypes. The `__midnightVcBigInt` and
+// `__midnightVcBytes` tag keys are therefore reserved for codec use.
 export const stableJsonProtocolStateCodec: ProtocolStateCodec<unknown> = {
   encode(value) {
     return Buffer.from(JSON.stringify(value, stableJsonReplacer), "utf8");

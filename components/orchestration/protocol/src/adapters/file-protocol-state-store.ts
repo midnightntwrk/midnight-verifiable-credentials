@@ -32,7 +32,8 @@ const isMissingFileError = (error: unknown): boolean =>
 
 // NOTE: this fsync-on-directory pattern is aimed at the Linux/macOS class of
 // local filesystems used by the current reference path. It is not meant as a
-// cross-platform multi-process locking story.
+// cross-platform multi-process locking story, and Windows is currently out of
+// scope for this durability claim.
 const syncDirectory = (directoryPath: string): void => {
   const directoryFd = openSync(directoryPath, "r");
   try {

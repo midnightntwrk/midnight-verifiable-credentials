@@ -172,11 +172,15 @@ Treat this path as the current minimum bar for a production-shaped claim:
 7. provision each party directory with restrictive filesystem permissions
    (for example `umask 0077` and service-owned `0700` roots) because protocol
    state may contain openings, blinding factors, and retained outcomes
+8. treat the current file-backed durability claim as POSIX-oriented
+   (`fsync` on file + parent directory); Windows is not part of this
+   reference-path guarantee today
 
 ## Current limitations
 
 - the file-backed store is synchronous and local-process oriented
 - this path assumes one runtime instance owns each party directory
+- the current durability recipe is aimed at Linux/macOS local filesystems
 - the tagged JSON codec is restart-safe for this implementation, not a
   canonical cross-writer byte format
 - the package still does not define a final external OIDC / DIDComm contract
