@@ -1,4 +1,8 @@
-export circuit assertValidBirthCredentialIssuanceOffer(
+// Birth-family issuance, presentation, and predicate validation.
+// =====================
+// Issuance-message validation
+// =====================
+export pure circuit assertValidBirthCredentialIssuanceOffer(
   offer: BirthCredentialIssuanceOffer
 ): [] {
   BirthCredentialIssuance_assertValidOfferMessage(offer);
@@ -20,7 +24,7 @@ export circuit assertValidBirthCredentialIssuanceOffer(
   }
 }
 
-export circuit assertValidBirthCredentialIssuanceRequest(
+export pure circuit assertValidBirthCredentialIssuanceRequest(
   request: BirthCredentialIssuanceRequest
 ): [] {
   BirthCredentialIssuance_assertValidRequestMessage(request);
@@ -47,7 +51,7 @@ export circuit assertValidBirthCredentialIssuanceRequest(
   }
 }
 
-export circuit assertBirthCredentialIssuanceRequestMatchesOffer(
+export pure circuit assertBirthCredentialIssuanceRequestMatchesOffer(
   offer: BirthCredentialIssuanceOffer,
   request: BirthCredentialIssuanceRequest
 ): [] {
@@ -62,7 +66,7 @@ export circuit assertBirthCredentialIssuanceRequestMatchesOffer(
   }
 }
 
-export circuit assertValidBirthCredentialIssuanceResult(
+export pure circuit assertValidBirthCredentialIssuanceResult(
   result: BirthCredentialIssuanceResult
 ): [] {
   BirthCredentialIssuance_assertValidResultMessage(result);
@@ -81,7 +85,7 @@ export circuit assertValidBirthCredentialIssuanceResult(
   );
 }
 
-export circuit assertBirthCredentialIssuanceResultMatchesRequest(
+export pure circuit assertBirthCredentialIssuanceResultMatchesRequest(
   request: BirthCredentialIssuanceRequest,
   result: BirthCredentialIssuanceResult
 ): [] {
@@ -103,7 +107,10 @@ export circuit assertBirthCredentialIssuanceResultMatchesRequest(
   );
 }
 
-export circuit assertValidBirthCredentialVerificationRequestMessage(
+// =====================
+// Presentation-message validation
+// =====================
+export pure circuit assertValidBirthCredentialVerificationRequestMessage(
   request: BirthCredentialVerificationRequest
 ): [] {
   BirthCredentialVerification_assertValidRequestMessage(request);
@@ -117,7 +124,7 @@ export circuit assertValidBirthCredentialVerificationRequestMessage(
   );
 }
 
-export circuit assertValidBirthCredentialVerificationSubmissionMessage(
+export pure circuit assertValidBirthCredentialVerificationSubmissionMessage(
   submission: BirthCredentialVerificationSubmission
 ): [] {
   BirthCredentialVerification_assertValidSubmissionMessage(submission);
@@ -138,7 +145,7 @@ export circuit assertValidBirthCredentialVerificationSubmissionMessage(
   );
 }
 
-export circuit assertBirthCredentialVerificationSubmissionMatchesRequest(
+export pure circuit assertBirthCredentialVerificationSubmissionMatchesRequest(
   request: BirthCredentialVerificationRequest,
   submission: BirthCredentialVerificationSubmission
 ): [] {
@@ -156,7 +163,7 @@ export circuit assertBirthCredentialVerificationSubmissionMatchesRequest(
   );
 }
 
-export circuit assertValidBirthCredentialVerificationResultMessage(
+export pure circuit assertValidBirthCredentialVerificationResultMessage(
   result: BirthCredentialVerificationResult
 ): [] {
   BirthCredentialVerification_assertValidResultMessage(result);
@@ -168,7 +175,7 @@ export circuit assertValidBirthCredentialVerificationResultMessage(
   }
 }
 
-export circuit assertBirthCredentialVerificationResultMatchesSubmission(
+export pure circuit assertBirthCredentialVerificationResultMatchesSubmission(
   submission: BirthCredentialVerificationSubmission,
   result: BirthCredentialVerificationResult
 ): [] {
@@ -186,7 +193,10 @@ export circuit assertBirthCredentialVerificationResultMatchesSubmission(
   }
 }
 
-export circuit assertValidBirthCredential(
+// =====================
+// Credential and presentation validation
+// =====================
+export pure circuit assertValidBirthCredential(
   credential: BirthCredential,
   proof: Proof
 ): [] {
@@ -197,7 +207,7 @@ export circuit assertValidBirthCredential(
   assertValidCredentialProof(credential, proof);
 }
 
-export circuit assertValidBirthCredentialPresentation(
+export pure circuit assertValidBirthCredentialPresentation(
   credential: BirthCredential,
   credentialProof: Proof,
   presentation: BirthCredentialPresentation,
@@ -245,7 +255,11 @@ export circuit assertValidBirthCredentialPresentation(
   );
 }
 
-export circuit assertBirthPresentationSatisfiesRequest(
+// TRUST BOUNDARY: `request` is verifier-supplied and may be stricter than the
+// holder expects. This helper only proves that the presentation satisfies the
+// declared request semantics; it does not authenticate who authored the
+// request outside the challenge and issuer-binding checks below.
+export pure circuit assertBirthPresentationSatisfiesRequest(
   credential: BirthCredential,
   request: BirthCredentialPresentationRequest,
   presentation: BirthCredentialPresentation,
@@ -291,7 +305,13 @@ export circuit assertBirthPresentationSatisfiesRequest(
   }
 }
 
-export circuit assertValidBirthCredentialAgePredicate(
+// =====================
+// Predicate validation
+// =====================
+// TRUST BOUNDARY: `currentDay` is caller-supplied policy input. Callers must
+// source it from a trustworthy time/calendar oracle when the age predicate is
+// used for real acceptance decisions.
+export pure circuit assertValidBirthCredentialAgePredicate(
   credential: BirthCredential,
   presentation: BirthCredentialPresentation,
   currentDay: Uint<32>,
