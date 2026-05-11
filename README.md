@@ -144,6 +144,12 @@ Run the BDD smoke lane directly:
 ./run.sh bdd
 ```
 
+Run the smallest DID-aware handoff lane directly:
+
+```bash
+./run.sh hello-smoke
+```
+
 Run only the negative BDD living-doc scenarios:
 
 ```bash

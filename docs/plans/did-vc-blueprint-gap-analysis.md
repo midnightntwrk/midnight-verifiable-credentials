@@ -191,12 +191,11 @@ artifact automatically.
 
 - creating a new family is still a manual scaffold exercise, not a generated
   workflow
-- the current starter set was stronger as documentation than as a
-  runnable “hello path”:
-  the current stack now adds a tiny DID bootstrap example and a
-  near-zero-interpretation DID + VC smoke path on top of the current
-  hello-family and hello-verifier starters, but the downstream handoff kit is
-  still thinner than the full revocation/use-case path
+- the current starter set is now stronger as execution guidance than before:
+  the current stack adds a tiny DID bootstrap example, a near-zero-
+  interpretation DID + VC smoke path on top of the current hello-family and
+  hello-verifier starters, and a root `./run.sh hello-smoke` lane for the
+  smallest checked-in handoff
 - status ownership is still conceptually split across `credentials` and
   `credentials-status-registry`
 - integrators still need to understand too much status prototype context before
@@ -205,9 +204,10 @@ artifact automatically.
   lacks a single “build X capability with Y trust model” cookbook
 - cross-repo DID + VC integration still requires manual tarball and environment
   discipline rather than one guided integration kit
-- the DID-to-VC dependency contract is still implicit:
-  there is no tested version matrix that tells downstream consumers which DID
-  tarballs are known-good against which VC workspace state
+- the DID-to-VC dependency contract is now partially explicit:
+  the repo has a checked-in smoke-path guide and compatibility-matrix seed for
+  the current offchain-DID starter path, but it still does not maintain a
+  broader version matrix beyond that authoritative hello lane
 - the DID repo still contains dormant VC-shaped prototype directories that can
   mislead a fresh integrator about which repository owns the active VC SDK
 

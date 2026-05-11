@@ -18,6 +18,7 @@ Targets:
   bdd                        Serenity/JS BDD smoke scenarios
   bdd-negative               Serenity/JS BDD negative-path scenarios
   bdd-all                    Full Serenity/JS BDD scenario set
+  hello-smoke                Smallest DID -> VC -> verifier handoff lane
   revocation                 Revocation-focused CI lane
   integration                Both standalone Docker integration lanes
   integration-demo-contract  Standalone demo-contract integration only
@@ -86,7 +87,7 @@ forward_args=()
 
 if [[ $# -gt 0 ]]; then
   case "$1" in
-    full|lint|typecheck|build|test|bdd|bdd-negative|bdd-all|revocation|integration|integration-demo-contract|integration-protocol|targets|help|-h|--help)
+    full|lint|typecheck|build|test|bdd|bdd-negative|bdd-all|hello-smoke|revocation|integration|integration-demo-contract|integration-protocol|targets|help|-h|--help)
       target="$1"
       shift
       ;;
@@ -198,6 +199,10 @@ case "$target" in
   bdd-all)
     echo "[run] BDD full lane"
     npm run test:bdd:all
+    ;;
+  hello-smoke)
+    echo "[run] DID + VC hello smoke lane"
+    npm run ci:hello-smoke
     ;;
   revocation)
     echo "[run] Revocation-focused lane"
