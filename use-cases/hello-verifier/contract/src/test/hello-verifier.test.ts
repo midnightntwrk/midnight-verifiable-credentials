@@ -222,6 +222,7 @@ describe("hello-verifier offchain DID smoke path", () => {
     ).toThrow(
       /Offchain Midnight holder state hash does not match the credential holder binding/,
     );
+    expect(simulator.getLedger().successfulVerificationCount).toEqual(0n);
   });
 
   it("rejects direct offchain requests that disable mandatory boolean disclosure", () => {
@@ -260,5 +261,28 @@ describe("hello-verifier offchain DID smoke path", () => {
         fixture.presentationProof,
       ),
     ).toThrow(/Hello-verifier starter requires big-unsigned disclosure/);
+  });
+
+  it("rejects an offchain presentation proof bound to a different verifier challenge", () => {
+    const fixture = createHelloFamilyOffchainDidFixture();
+    const simulator = new HelloVerifierOffchainSimulator();
+    const mismatchedRequest = simulator.helloVerifierRequest(
+      fixture.credential.issuerVerificationMethodRef,
+      new Uint8Array(32).fill(9),
+      false,
+    );
+
+    expect(() =>
+      simulator.verifyHelloFamilyOffchainPresentationForHelloVerifier(
+        fixture.credential,
+        fixture.credentialProof,
+        mismatchedRequest,
+        fixture.presentation,
+        fixture.presentationProof,
+      ),
+    ).toThrow(
+      /Hello-family presentation proof challenge does not match the request/,
+    );
+    expect(simulator.getLedger().successfulVerificationCount).toEqual(0n);
   });
 });

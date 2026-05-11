@@ -44,6 +44,9 @@ const decodeBase64Url = (value: string): Uint8Array => {
 };
 
 const encodeBase64Url = (value: bigint): string => {
+  if (value < 0n) {
+    throw new Error("Offchain DID Jubjub coordinate must be non-negative");
+  }
   let hex = value.toString(16);
   if (hex.length > HEX_BYTES32_LENGTH) {
     throw new Error("Offchain DID Jubjub coordinate must fit in 32 bytes");

@@ -72,6 +72,17 @@ describe("credentials-offchain-did", () => {
     ).toThrow(/must fit in 32 bytes/);
   });
 
+  it("rejects negative Jubjub coordinates", () => {
+    expect(() =>
+      createPortableOffchainDIDUrlForJubjubHolder({
+        publicKey: {
+          x: -1n,
+          y: 2n,
+        },
+      }),
+    ).toThrow(/must be non-negative/);
+  });
+
   it("normalizes canonical DID method references", () => {
     expect(
       normalizeOffchainDIDMethodReference(
