@@ -30,7 +30,9 @@ Current maturity is mixed by package:
   - [`credentials-birth`](./prototypes/credential-families/birth/README.md)
   - [`credentials-birth-secret`](./prototypes/credential-families/birth-secret/README.md)
   - [`credentials-hello-family`](./prototypes/credential-families/hello-family/README.md)
-    - claim-type playground and starter family package
+    - smallest starter family package
+  - [`credentials-dummy-claims`](./prototypes/credential-families/dummy-claims/README.md)
+    - broad direct claim-surface and selective-disclosure laboratory
   - [`credentials-iso-registry`](./core/primitives/iso-registry/README.md)
   - [`credentials-offchain-did`](./components/adapters/offchain-did/README.md)
   - [`credentials-openid`](./protocols/openid/README.md)
@@ -88,7 +90,9 @@ Start here:
 - [`credentials-birth-secret`](./prototypes/credential-families/birth-secret/README.md)
   - secret-holder birth credential family
 - [`credentials-hello-family`](./prototypes/credential-families/hello-family/README.md)
-  - claim-type playground for the current Compact primitive surface
+  - smallest compileable starter family package
+- [`credentials-dummy-claims`](./prototypes/credential-families/dummy-claims/README.md)
+  - broad direct claim-surface and selective-disclosure laboratory
 - [`credentials-openid`](./protocols/openid/README.md)
   - OID4VCI / OID4VP-inspired transport/domain adapters
 - [`credentials-protocol`](./components/orchestration/protocol/README.md)
