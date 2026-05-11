@@ -148,6 +148,8 @@ Evidence reviewed:
 
 - current `develop` history through `#95`
 - open maturity-stack work through `#168`
+- historical PR-number gap `#96` through `#130` reconciled as superseded
+  redesign-wave iterations rather than as a live backlog omission
 - current top-level tree under:
   - `core/`
   - `registry/`
