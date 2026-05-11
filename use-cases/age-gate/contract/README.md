@@ -29,7 +29,8 @@ Start here:
 
 1. use this package as a concrete age-gate/business-contract consumer of the VC/VP stack
 2. do not treat it as the canonical generic API surface; start from
-   [`../../../credentials`](../../../credentials) and the relevant family package first
+   [`../../../core/primitives/credentials/README.md`](../../../core/primitives/credentials/README.md)
+   and the relevant family package first
 3. read [`../../../docs/guides/integration-surface-map.md`](../../../docs/guides/integration-surface-map.md)
    before copying demo patterns into production contracts
 
@@ -44,7 +45,7 @@ Related docs:
 
 This package sits above two layers:
 
-- [`../../../credentials`](../../../credentials): generic VC/VP envelope and proof core
+- [`../../../core/primitives/credentials/README.md`](../../../core/primitives/credentials/README.md): generic VC/VP envelope and proof core
 - [`../../../prototypes/credential-families/birth`](../../../prototypes/credential-families/birth): birth-credential specialization
 - [`../../../prototypes/credential-families/birth-secret`](../../../prototypes/credential-families/birth-secret): hidden-holder birth-credential specialization with prototype status-aware verification
 

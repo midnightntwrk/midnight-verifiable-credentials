@@ -38,21 +38,21 @@ Start here:
 2. write contracts against the Compact family entrypoint
 3. use generated/runtime exports only in tests, wallets, verifiers, and
    adapter code
-4. read [`../docs/guides/integration-surface-map.md`](../docs/guides/integration-surface-map.md)
+4. read [`../../../docs/guides/integration-surface-map.md`](../../../docs/guides/integration-surface-map.md)
    for the Compact/runtime split
 
 Related docs:
 
-- spec: [`../docs/spec/midnight-credentials.md`](../docs/spec/midnight-credentials.md)
-- profiles: [`../docs/spec/profiles.md`](../docs/spec/profiles.md)
-- conformance: [`../docs/spec/conformance.md`](../docs/spec/conformance.md)
-- companion guide: [`../docs/guides/midnight-credentials-for-dummies.md`](../docs/guides/midnight-credentials-for-dummies.md)
-- test matrix: [`../docs/testing/test-matrix.md`](../docs/testing/test-matrix.md)
+- spec: [`../../../docs/spec/midnight-credentials.md`](../../../docs/spec/midnight-credentials.md)
+- profiles: [`../../../docs/spec/profiles.md`](../../../docs/spec/profiles.md)
+- conformance: [`../../../docs/spec/conformance.md`](../../../docs/spec/conformance.md)
+- companion guide: [`../../../docs/guides/midnight-credentials-for-dummies.md`](../../../docs/guides/midnight-credentials-for-dummies.md)
+- test matrix: [`../../../docs/testing/test-matrix.md`](../../../docs/testing/test-matrix.md)
 
 ## Purpose
 
 This package defines the birth-credential family on top of the generic
-[`credentials`](../credentials/README.md) package.
+[`credentials`](../../../core/primitives/credentials/README.md) package.
 
 It owns the schema-specific parts that should not live in the generic core:
 
