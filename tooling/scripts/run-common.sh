@@ -148,7 +148,7 @@ run_common_ensure_artifacts() {
       build_cmd="npm run build:revocation"
       ;;
     managed-hello-smoke)
-      build_cmd="npm run build:hello-smoke"
+      build_cmd="npm run build:starter-smoke-prereqs"
       ;;
     light)
       build_cmd="npm run build:light"

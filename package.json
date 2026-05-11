@@ -36,7 +36,6 @@
     "build:cone:age-gate": "turbo run build --filter=./use-cases/age-gate/contract --filter=./use-cases/hello-verifier/contract --continue",
     "build:cone:protocol": "turbo run build --filter=./components/orchestration/protocol --continue",
     "build:starter-smoke-prereqs": "npm run build:core && npm run build:cone:birth-family && npm run build:cone:age-gate",
-    "build:hello-smoke": "npm run build:starter-smoke-prereqs",
     "build:light": "npm run build:core && npm run build:cone:birth-family",
     "build:all": "npm run build:core && npm run build:cone:birth-family && npm run build:cone:age-gate && npm run build:cone:protocol",
     "build:ci-artifacts": "npm run build:all",
