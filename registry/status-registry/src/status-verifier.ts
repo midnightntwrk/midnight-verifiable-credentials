@@ -5,7 +5,6 @@ import {
 } from "@midnight-ntwrk/midnight-did-credentials";
 
 import {
-  assertCanonicalNonMembershipBundle,
   buildCanonicalLiveNonMembershipBundleFromContractState,
   buildCanonicalObservedNonMembershipBundle,
   type CanonicalLiveNonMembershipBundle,
@@ -22,6 +21,7 @@ import {
   assertObservedRevocationRegistryVersionAtLeast,
   assertRevocationRegistryVersionAtLeast,
   type BuildFreshRevokedSetNonMembershipInputsOptions,
+  readCurrentRevocationRegistryStateFromContractState,
   type RevocationRegistryContractState,
 } from "./registry-state-observation.js";
 import {
@@ -179,6 +179,22 @@ const assertRegistryBoundRevocationStatusBinding = (
   }
 };
 
+const assertLiveRegistryStateMatchesBinding = ({
+  registryState,
+  registryRef,
+}: {
+  readonly registryState: RevocationRegistryState;
+  readonly registryRef: RegistryBoundStatusBinding["registryRef"];
+}): void => {
+  if (!equalBytes(registryState.registryId, registryRef.registryId)) {
+    throw new StatusHelperError({
+      code: statusVerificationErrorCodes.statusBindingMismatch,
+      message:
+        "Live revocation registry state does not match the status binding registry",
+    });
+  }
+};
+
 const classifyStatusVerificationError = (
   mode: StatusVerificationMode,
   error: unknown,
@@ -297,7 +313,6 @@ export const assertObservedRevokedSetStatusVerifies = ({
     observedState,
     verifierStatusPolicy,
   });
-  assertCanonicalNonMembershipBundle(built);
   pureCircuits.assertVerifierStatusPolicyAcceptsRevokedSetNonMembershipStatusProofProtocol(
     verifierStatusPolicy,
     built.statusBinding,
@@ -330,19 +345,25 @@ export const assertLiveContractStateStatusVerifies = ({
   verifierStatusPolicy,
   ...options
 }: AssertLiveContractStateStatusOptions): CanonicalLiveNonMembershipBundle => {
+  const registryState = readCurrentRevocationRegistryStateFromContractState({
+    state,
+  });
+  assertRegistryAccepted({
+    registryId: registryState.registryId,
+    acceptancePolicy: registryAcceptancePolicy,
+  });
+  assertRegistryVersionAccepted({
+    registryState,
+    acceptancePolicy: registryAcceptancePolicy,
+  });
+  assertLiveRegistryStateMatchesBinding({
+    registryState,
+    registryRef: options.registryRef,
+  });
   const built = buildCanonicalLiveNonMembershipBundleFromContractState({
     state,
     ...options,
     verifierStatusPolicy,
-  });
-  assertCanonicalNonMembershipBundle(built);
-  assertRegistryAccepted({
-    registryId: built.registryState.registryId,
-    acceptancePolicy: registryAcceptancePolicy,
-  });
-  assertRegistryVersionAccepted({
-    registryState: built.registryState,
-    acceptancePolicy: registryAcceptancePolicy,
   });
   pureCircuits.assertVerifierStatusPolicyAcceptsLiveStatusBinding(
     verifierStatusPolicy,

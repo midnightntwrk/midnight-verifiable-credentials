@@ -496,4 +496,4 @@ final non-revocation architecture.
 
 Architecture companion note:
 
-- [status-canonical-non-membership-bundle.md](/private/tmp/vc-core-redesign-plan/docs/architecture/status-canonical-non-membership-bundle.md)
+- [status-canonical-non-membership-bundle.md](../architecture/status-canonical-non-membership-bundle.md)
