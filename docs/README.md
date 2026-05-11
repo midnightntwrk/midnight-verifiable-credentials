@@ -81,6 +81,9 @@
 - CI build cones:
   - [`architecture/ci-build-cones.md`](./architecture/ci-build-cones.md)
   - for the shared-build cache and artifact topology used by CI
+- Compact source conventions, purity, and commitment research:
+  - [`architecture/compact-source-conventions-and-purity-research.md`](./architecture/compact-source-conventions-and-purity-research.md)
+  - for the current comment-style, pure-circuit, and commitment-standardization research cut
 
 ## Testing
 
