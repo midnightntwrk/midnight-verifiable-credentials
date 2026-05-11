@@ -34,20 +34,20 @@ Start here:
    - narrower support entrypoints when composition requires less surface
 2. use `src/index.ts` and generated/runtime exports only in wallets,
    verifiers, tests, and adapter code
-3. read [`../docs/guides/integration-surface-map.md`](../docs/guides/integration-surface-map.md)
+3. read [`../../../docs/guides/integration-surface-map.md`](../../../docs/guides/integration-surface-map.md)
    when choosing between Compact and TypeScript surfaces
 4. do not deploy this package root as a business contract; use it as a library surface
    for credential families and Layer 3 verifier/business contracts
 
 Related docs:
 
-- spec: [`../docs/spec/midnight-credentials.md`](../docs/spec/midnight-credentials.md)
-- protocol classification: [`../docs/architecture/protocol-classification.md`](../docs/architecture/protocol-classification.md)
-- profiles: [`../docs/spec/profiles.md`](../docs/spec/profiles.md)
-- conformance: [`../docs/spec/conformance.md`](../docs/spec/conformance.md)
-- credential status: [`../docs/spec/credential-status.md`](../docs/spec/credential-status.md)
-- companion guide: [`../docs/guides/midnight-credentials-for-dummies.md`](../docs/guides/midnight-credentials-for-dummies.md)
-- test matrix: [`../docs/testing/test-matrix.md`](../docs/testing/test-matrix.md)
+- spec: [`../../../docs/spec/midnight-credentials.md`](../../../docs/spec/midnight-credentials.md)
+- protocol classification: [`../../../docs/architecture/protocol-classification.md`](../../../docs/architecture/protocol-classification.md)
+- profiles: [`../../../docs/spec/profiles.md`](../../../docs/spec/profiles.md)
+- conformance: [`../../../docs/spec/conformance.md`](../../../docs/spec/conformance.md)
+- credential status: [`../../../docs/spec/credential-status.md`](../../../docs/spec/credential-status.md)
+- companion guide: [`../../../docs/guides/midnight-credentials-for-dummies.md`](../../../docs/guides/midnight-credentials-for-dummies.md)
+- test matrix: [`../../../docs/testing/test-matrix.md`](../../../docs/testing/test-matrix.md)
 
 ## Purpose
 
@@ -137,9 +137,9 @@ It intentionally does not own schema-specific business logic such as:
 
 Those belong in specialization packages such as:
 
-- [`../prototypes/credential-families/birth`](../prototypes/credential-families/birth): explicit DID-bound holder profile
-- [`../prototypes/credential-families/birth-secret`](../prototypes/credential-families/birth-secret): hidden holder-secret profile
-- [`../core/capabilities/same-holder`](../core/capabilities/same-holder): same-holder composition capability for hidden-holder profiles
+- [`../../../prototypes/credential-families/birth/README.md`](../../../prototypes/credential-families/birth/README.md): explicit DID-bound holder profile
+- [`../../../prototypes/credential-families/birth-secret/README.md`](../../../prototypes/credential-families/birth-secret/README.md): hidden holder-secret profile
+- [`../../capabilities/same-holder/README.md`](../../capabilities/same-holder/README.md): same-holder composition capability for hidden-holder profiles
 
 ## Generic model
 
@@ -229,7 +229,7 @@ The generic core intentionally does not own same-holder multi-credential composi
 
 That capability now lives in a dedicated package:
 
-- [`../core/capabilities/same-holder`](../core/capabilities/same-holder/README.md)
+- [`../../capabilities/same-holder/README.md`](../../capabilities/same-holder/README.md)
 
 This keeps the generic core focused on single-credential invariants while
 allowing business contracts to import same-holder composition only when needed.
@@ -238,8 +238,8 @@ allowing business contracts to import same-holder composition only when needed.
 
 If you are new to the model, read in this order:
 
-1. [`../docs/guides/midnight-credentials-for-dummies.md`](../docs/guides/midnight-credentials-for-dummies.md)
-2. [`../docs/spec/midnight-credentials.md`](../docs/spec/midnight-credentials.md)
+1. [`../../../docs/guides/midnight-credentials-for-dummies.md`](../../../docs/guides/midnight-credentials-for-dummies.md)
+2. [`../../../docs/spec/midnight-credentials.md`](../../../docs/spec/midnight-credentials.md)
 3. this package README
 
 ## Naming choices

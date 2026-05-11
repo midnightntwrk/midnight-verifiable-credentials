@@ -533,7 +533,7 @@ concrete claim that is directly supported by checked-in evidence.
 ### Claude
 
 - recorded artifact:
-  - `/Users/ysh/iohk/midnight-identity-workspace/review/claude-3p-audit-1.txt`
+  - local VC review artifact: `../../review/claude-3p-audit-1.txt`
 - triaged Claude findings that materially sharpen the current reading:
   1. the current starter material needed tiny runnable entrypoints:
      that gap is now materially reduced by the hello-family, hello-verifier,
@@ -594,7 +594,8 @@ Concrete Codex recommendations that should affect execution planning:
 
 Recorded artifact:
 
-- `/Users/ysh/iohk/midnight-did/review/did-vc-audit/codex-digest-audit.txt`
+- sibling DID repo audit artifact:
+  `../midnight-did/review/did-vc-audit/codex-digest-audit.txt`
 
 ## Current Recommended Execution Order
 
