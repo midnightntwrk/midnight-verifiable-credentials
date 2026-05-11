@@ -6,6 +6,7 @@ export {
   signAuthorityAttestedStatusProof,
   type StatusAuthoritySigner,
 } from "./attestation-builder.js";
+export * from "./canonical-non-membership.js";
 export * from "./managed/revocation-registry/contract/index.js";
 export * as RevocationRegistryContract from "./managed/revocation-registry/contract/index.js";
 export * from "./registry-state-observation.js";

@@ -5,6 +5,13 @@ import {
 } from "@midnight-ntwrk/midnight-did-credentials";
 
 import {
+  assertCanonicalNonMembershipBundle,
+  buildCanonicalLiveNonMembershipBundleFromContractState,
+  buildCanonicalObservedNonMembershipBundle,
+  type CanonicalLiveNonMembershipBundle,
+  type CanonicalObservedNonMembershipBundle,
+} from "./canonical-non-membership.js";
+import {
   type AuthorityAttestedStatusProofProtocol,
   pureCircuits,
   type RevocationRegistryState,
@@ -14,11 +21,7 @@ import {
 import {
   assertObservedRevocationRegistryVersionAtLeast,
   assertRevocationRegistryVersionAtLeast,
-  buildFreshRevokedSetNonMembershipInputs,
   type BuildFreshRevokedSetNonMembershipInputsOptions,
-  buildLiveStatusWitnessFromContractState,
-  type BuiltFreshRevokedSetNonMembershipInputs,
-  readCurrentRevocationRegistryStateFromContractState,
   type RevocationRegistryContractState,
 } from "./registry-state-observation.js";
 import {
@@ -85,7 +88,7 @@ export type AssertObservedRevokedSetStatusOptions =
   };
 
 export type VerifyObservedRevokedSetStatusResult =
-  StatusVerificationResult<BuiltFreshRevokedSetNonMembershipInputs>;
+  StatusVerificationResult<CanonicalObservedNonMembershipBundle>;
 
 export type AssertLiveContractStateStatusOptions = {
   readonly credentialClaimRoot: Uint8Array;
@@ -97,12 +100,8 @@ export type AssertLiveContractStateStatusOptions = {
   readonly registryAcceptancePolicy?: VerifierRegistryAcceptancePolicy;
 };
 
-export type VerifyLiveContractStateStatusResult = StatusVerificationResult<{
-  readonly witness: ReturnType<typeof buildLiveStatusWitnessFromContractState>;
-  readonly registryState: ReturnType<
-    typeof readCurrentRevocationRegistryStateFromContractState
-  >;
-}>;
+export type VerifyLiveContractStateStatusResult =
+  StatusVerificationResult<CanonicalLiveNonMembershipBundle>;
 
 export type AssertAuthorityAttestedStatusOptions = {
   readonly statusBinding: RegistryBoundStatusBinding;
@@ -176,22 +175,6 @@ const assertRegistryBoundRevocationStatusBinding = (
       code: statusVerificationErrorCodes.statusBindingMismatch,
       message:
         "Registry-bound status binding does not use the revocation registry status type",
-    });
-  }
-};
-
-const assertLiveRegistryStateMatchesBinding = ({
-  registryState,
-  registryRef,
-}: {
-  readonly registryState: RevocationRegistryState;
-  readonly registryRef: RegistryBoundStatusBinding["registryRef"];
-}): void => {
-  if (!equalBytes(registryState.registryId, registryRef.registryId)) {
-    throw new StatusHelperError({
-      code: statusVerificationErrorCodes.statusBindingMismatch,
-      message:
-        "Live revocation registry state does not match the status binding registry",
     });
   }
 };
@@ -300,7 +283,7 @@ export const assertObservedRevokedSetStatusVerifies = ({
   verifierStatusPolicy,
   observedState,
   ...options
-}: AssertObservedRevokedSetStatusOptions): BuiltFreshRevokedSetNonMembershipInputs => {
+}: AssertObservedRevokedSetStatusOptions): CanonicalObservedNonMembershipBundle => {
   assertRegistryAccepted({
     registryId: observedState.registryState.registryId,
     acceptancePolicy: registryAcceptancePolicy,
@@ -309,11 +292,12 @@ export const assertObservedRevokedSetStatusVerifies = ({
     registryState: observedState.registryState,
     acceptancePolicy: registryAcceptancePolicy,
   });
-  const built = buildFreshRevokedSetNonMembershipInputs({
+  const built = buildCanonicalObservedNonMembershipBundle({
     ...options,
     observedState,
     verifierStatusPolicy,
   });
+  assertCanonicalNonMembershipBundle(built);
   pureCircuits.assertVerifierStatusPolicyAcceptsRevokedSetNonMembershipStatusProofProtocol(
     verifierStatusPolicy,
     built.statusBinding,
@@ -345,38 +329,27 @@ export const assertLiveContractStateStatusVerifies = ({
   registryAcceptancePolicy,
   verifierStatusPolicy,
   ...options
-}: AssertLiveContractStateStatusOptions): {
-  readonly witness: ReturnType<typeof buildLiveStatusWitnessFromContractState>;
-  readonly registryState: ReturnType<
-    typeof readCurrentRevocationRegistryStateFromContractState
-  >;
-} => {
-  const registryState = readCurrentRevocationRegistryStateFromContractState({
-    state,
-  });
-  assertRegistryAccepted({
-    registryId: registryState.registryId,
-    acceptancePolicy: registryAcceptancePolicy,
-  });
-  assertRegistryVersionAccepted({
-    registryState,
-    acceptancePolicy: registryAcceptancePolicy,
-  });
-  assertLiveRegistryStateMatchesBinding({
-    registryState,
-    registryRef: options.registryRef,
-  });
-  const witness = buildLiveStatusWitnessFromContractState({
+}: AssertLiveContractStateStatusOptions): CanonicalLiveNonMembershipBundle => {
+  const built = buildCanonicalLiveNonMembershipBundleFromContractState({
     state,
     ...options,
     verifierStatusPolicy,
   });
+  assertCanonicalNonMembershipBundle(built);
+  assertRegistryAccepted({
+    registryId: built.registryState.registryId,
+    acceptancePolicy: registryAcceptancePolicy,
+  });
+  assertRegistryVersionAccepted({
+    registryState: built.registryState,
+    acceptancePolicy: registryAcceptancePolicy,
+  });
   pureCircuits.assertVerifierStatusPolicyAcceptsLiveStatusBinding(
     verifierStatusPolicy,
-    witness.statusBinding,
-    witness.witnessInput,
+    built.witness.statusBinding,
+    built.witness.witnessInput,
   );
-  return { witness, registryState };
+  return built;
 };
 
 export const verifyLiveContractStateStatus = (

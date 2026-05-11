@@ -134,12 +134,17 @@ Protocol reading rule:
 
 Canonical revoked-set helper path:
 
-- use `buildRevokedSetNonMembershipInputs(...)` when you want the whole
-  prototype bundle in one call:
+- use `buildCanonicalObservedNonMembershipBundle(...)` when you want the
+  canonical observed-snapshot runtime bundle in one call:
   - `RevokedSetStatusRequest`
   - `RevokedSetNonMembershipWitnessInput`
   - `RevokedSetNonMembershipStatusProofProtocol`
   - matching shared `RegistryBoundStatusBinding`
+  - canonical bundle wrapper:
+    - `CanonicalObservedNonMembershipBundle`
+- use `buildRevokedSetNonMembershipInputs(...)` only when you explicitly want
+  the lower-level request/witness/protocol builder without the canonical
+  bundle wrapper
 - the exported TypeScript helper path is now binding-first:
   helper results carry `RegistryBoundStatusBinding` and no longer expose a
   separate capability-shaped intermediate value
@@ -153,9 +158,18 @@ Canonical revoked-set helper path:
 
 Canonical same-contract live-status helper path:
 
+- use `buildCanonicalLiveNonMembershipBundleFromContractState(...)` when the
+  business contract or verifier can read the live registry contract state and
+  wants the canonical same-contract runtime bundle:
+  - `LiveStatusWitnessInput`
+  - matching shared `RegistryBoundStatusBinding`
+  - the derived status handle
+  - live `RevocationRegistryState`
+  - canonical bundle wrapper:
+    - `CanonicalLiveNonMembershipBundle`
 - use `buildLiveStatusWitness(...)` when the business contract owns the live
-  revocation set directly and does not need an external `(registryId,
-  revokedRoot)` snapshot
+  revocation set directly and only needs the lower-level witness/binding pair,
+  not the canonical bundle wrapper
 - the helper returns:
   - `LiveStatusWitnessInput`
   - matching shared `RegistryBoundStatusBinding`
@@ -225,6 +239,10 @@ Observed-root integration helper path:
 - this still does not make the root live inside Compact:
   it turns the current verifier-side freshness choice into one explicit typed
   integration seam instead of leaving it as ad hoc application logic
+
+Architecture note for the canonical runtime bundle contract:
+
+- [`../docs/architecture/status-canonical-non-membership-bundle.md`](../docs/architecture/status-canonical-non-membership-bundle.md)
 
 
 Canonical off-chain verifier helper path:
