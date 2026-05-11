@@ -64,4 +64,4 @@ On macOS, open the report directly with:
 open use-cases/age-gate/scenarios/target/site/serenity/index.html
 ```
 
-Negative hidden-holder status scenarios now record both the raw failure message and one canonical status failure code so the living docs can assert the fail-closed category directly.
+Negative hidden-holder status scenarios now record both the raw failure message and one canonical status failure code through the shared plain-data failure-record helper, so the living docs can assert the fail-closed category directly.

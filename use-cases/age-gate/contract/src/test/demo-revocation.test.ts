@@ -1,5 +1,5 @@
 import {
-  normalizeStatusVerificationFailure,
+  describeStatusVerificationFailure,
   type StatusVerificationErrorCode,
   statusVerificationErrorCodes,
   type StatusVerificationMode,
@@ -39,7 +39,7 @@ const expectCanonicalStatusFailure = ({
   try {
     action();
   } catch (error) {
-    const normalized = normalizeStatusVerificationFailure({ mode, error });
+    const normalized = describeStatusVerificationFailure({ mode, error });
     expect(normalized.code).toEqual(code);
     if (pattern !== undefined) {
       expect(normalized.message).toMatch(pattern);

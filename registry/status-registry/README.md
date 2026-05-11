@@ -243,6 +243,8 @@ Canonical off-chain verifier helper path:
 - all three helpers map failures onto the canonical codes in
   [`../docs/spec/status-error-taxonomy.md`](../docs/spec/status-error-taxonomy.md)
   instead of leaving each integration to reinterpret raw error strings
+- integrations that only need plain data can use the failure-record projection
+  helper rather than unpacking `StatusVerificationError` objects directly
 - if a caught failure does not match the canonical taxonomy, the helpers return
   `unclassifiedFailure` so callers can fail closed without pretending the
   runtime fault was a clean cryptographic status verdict
