@@ -15,12 +15,14 @@ The current slice now covers:
   - explicit-holder age-gate happy path
   - hidden-holder revocation-aware happy path
   - hidden-holder same-contract live-status happy path
-- six negative hidden-holder status-boundary scenarios:
+- eight negative hidden-holder status-boundary scenarios:
   - same-contract live-status revoked handle
   - wrong registry id
   - wrong revoked root
   - stale verifier-supplied status snapshot
   - stale authority-attested proof
+  - wrong authority attestation signer
+  - unsupported authority-attested proof mode
   - revoked credential rejected before proof assembly
 
 ## Run

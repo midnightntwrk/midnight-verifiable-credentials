@@ -205,6 +205,8 @@ Current gap:
   - `use-cases/age-gate/scenarios/features/hidden_holder_wrong_root.feature`
   - `use-cases/age-gate/scenarios/features/hidden_holder_stale_snapshot.feature`
   - `use-cases/age-gate/scenarios/features/hidden_holder_stale_authority_attestation.feature`
+  - `use-cases/age-gate/scenarios/features/hidden_holder_wrong_authority.feature`
+  - `use-cases/age-gate/scenarios/features/hidden_holder_unsupported_authority_mode.feature`
   - `use-cases/age-gate/scenarios/features/hidden_holder_revoked_credential.feature`
 - root commands:
   - `npm run test:bdd:smoke`
@@ -221,7 +223,8 @@ Current gap:
   - non-Docker hidden-holder same-contract live-status age-gate happy path
   - non-Docker hidden-holder negative-path trust-boundary coverage for
     live-status local-revocation, wrong-registry, wrong-root,
-    stale-snapshot, stale-attestation, and revoked-credential failures
+    stale-snapshot, stale-attestation, wrong-authority,
+    unsupported-authority-mode, and revoked-credential failures
 - local report:
   - `use-cases/age-gate/scenarios/target/site/serenity/index.html`
 

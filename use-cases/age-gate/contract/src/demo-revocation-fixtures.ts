@@ -501,6 +501,37 @@ export const fixtureRegistryState = (
   registryVersion: fixture.witness.statusRegistryVersion,
 });
 
+export const buildWrongAuthorityAttestedStatusProtocolInputs = (
+  fixture: DemoRevocationFixture,
+): SecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs => {
+  const wrongAuthority = createSigner("other-authority", 444n);
+  const statement =
+    fixture.authorityAttestedStatusProtocolInputs.statusProofProtocol
+      .attestation.statement;
+
+  return {
+    statusProofProtocol: {
+      ...fixture.authorityAttestedStatusProtocolInputs.statusProofProtocol,
+      attestation: {
+        ...fixture.authorityAttestedStatusProtocolInputs.statusProofProtocol
+          .attestation,
+        proof: signProof({
+          bodyRoot: pureCircuits.authorityAttestedStatusStatementRoot(
+            statement,
+          ),
+          signer: wrongAuthority,
+          createdAt: fixture.verificationRequest.envelope.createdAt + 1n,
+          challengeHash:
+            fixture.authorityAttestedStatusVerificationRequest.statusRequest
+              .verifierChallengeHash,
+          nonceScalar: 37n,
+          context: "statusAttestation",
+        }),
+      },
+    },
+  };
+};
+
 const verificationMessageEnvelope = (
   request: SecretBirthCredentialVerificationRequest,
 ): ProtocolMessageEnvelope => ({

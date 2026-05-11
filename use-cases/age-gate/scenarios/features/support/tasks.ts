@@ -84,6 +84,30 @@ export const RunTheHiddenHolderExpiredAuthorityAttestationRejectedPath = () =>
     ),
   );
 
+export const RunTheHiddenHolderWrongAuthorityRejectedPath = () =>
+  Task.where(
+    "#actor runs the hidden-holder wrong-authority rejection path",
+    Interaction.where(
+      "#actor executes the hidden-holder wrong-authority scenario against the revocation demo simulator",
+      async (actor) => {
+        await UseHiddenHolderScenario.from(actor)
+          .runAuthorityAttestedWrongAuthorityRejectedPath();
+      },
+    ),
+  );
+
+export const RunTheHiddenHolderUnsupportedAuthorityModeRejectedPath = () =>
+  Task.where(
+    "#actor runs the hidden-holder unsupported authority-mode rejection path",
+    Interaction.where(
+      "#actor executes the hidden-holder unsupported authority-mode scenario against the revocation demo simulator",
+      async (actor) => {
+        await UseHiddenHolderScenario.from(actor)
+          .runAuthorityAttestedUnsupportedModeRejectedPath();
+      },
+    ),
+  );
+
 export const RunTheHiddenHolderRevokedCredentialRejectedPath = () =>
   Task.where(
     "#actor runs the hidden-holder revoked-credential rejection path",

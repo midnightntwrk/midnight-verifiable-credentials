@@ -1,7 +1,10 @@
 import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { describe, expect, it } from "vitest";
 
-import { pureCircuits } from "../managed/secret-birth-credential/contract/index.js";
+import {
+  pureCircuits,
+  StatusCapabilityKind,
+} from "../managed/secret-birth-credential/contract/index.js";
 import { createSecretBirthCredentialFixture } from "../testing/credential-fixtures.js";
 
 setNetworkId("undeployed");
@@ -368,6 +371,90 @@ describe("secret birth credential: status-aware verification", () => {
         fixture.witness.holderBindingBlindingFactor,
       ),
     ).toThrow(/registry version does not match the verifier request/i);
+  });
+
+  it("rejects a revoked-set status request when the verifier policy expects another status proof mode", () => {
+    const fixture = createSecretBirthCredentialFixture();
+    const submission = {
+      envelope: {
+        ...fixture.verificationRequest.envelope,
+        initialMessage: false,
+        respondsToMessageId: fixture.verificationRequest.envelope.messageId,
+        messageId: new Uint8Array(32).fill(20),
+        createdAt: fixture.verificationRequest.envelope.createdAt + 1n,
+      },
+      schema: fixture.credential.schema,
+      issuerVerificationMethodRef:
+        fixture.credential.issuerVerificationMethodRef,
+      holderBindingProfile: fixture.verificationRequest.holderBindingProfile,
+      challengeHash: fixture.verificationRequest.verifierChallengeHash,
+      body: {
+        credential: fixture.credential,
+        credentialProof: fixture.credentialProof,
+        presentation: fixture.presentation,
+      },
+    };
+
+    expect(() =>
+      pureCircuits.assertSecretBirthCredentialVerificationSubmissionMatchesRevokedSetStatusRequest(
+        fixture.credentialWithStatusBinding,
+        {
+          ...fixture.revokedSetStatusVerificationRequest,
+          statusPolicy: {
+            ...fixture.revokedSetStatusVerificationRequest.statusPolicy,
+            acceptedStatusCapability:
+              StatusCapabilityKind.authorityAttestedStatus,
+          },
+        },
+        submission,
+        fixture.revokedSetStatusVerificationInputs,
+        fixture.witness.holderSecret,
+        fixture.witness.holderSecretOpening,
+        fixture.witness.holderBindingBlindingFactor,
+      ),
+    ).toThrow(/does not accept revoked-set non-membership/i);
+  });
+
+  it("rejects a live-status request when the verifier policy expects another status proof mode", () => {
+    const fixture = createSecretBirthCredentialFixture();
+    const submission = {
+      envelope: {
+        ...fixture.verificationRequest.envelope,
+        initialMessage: false,
+        respondsToMessageId: fixture.verificationRequest.envelope.messageId,
+        messageId: new Uint8Array(32).fill(21),
+        createdAt: fixture.verificationRequest.envelope.createdAt + 1n,
+      },
+      schema: fixture.credential.schema,
+      issuerVerificationMethodRef:
+        fixture.credential.issuerVerificationMethodRef,
+      holderBindingProfile: fixture.verificationRequest.holderBindingProfile,
+      challengeHash: fixture.verificationRequest.verifierChallengeHash,
+      body: {
+        credential: fixture.credential,
+        credentialProof: fixture.credentialProof,
+        presentation: fixture.presentation,
+      },
+    };
+
+    expect(() =>
+      pureCircuits.assertSecretBirthCredentialVerificationSubmissionMatchesLiveStatusRequest(
+        fixture.credentialWithStatusBinding,
+        {
+          ...fixture.liveStatusVerificationRequest,
+          statusPolicy: {
+            ...fixture.liveStatusVerificationRequest.statusPolicy,
+            acceptedStatusCapability:
+              StatusCapabilityKind.authorityAttestedStatus,
+          },
+        },
+        submission,
+        fixture.liveStatusVerificationInputs,
+        fixture.witness.holderSecret,
+        fixture.witness.holderSecretOpening,
+        fixture.witness.holderBindingBlindingFactor,
+      ),
+    ).toThrow(/does not accept live revoked-set verification/i);
   });
 
   it("rejects a revoked credential before building any status verification inputs", () => {
