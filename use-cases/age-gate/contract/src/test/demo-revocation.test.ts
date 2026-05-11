@@ -199,6 +199,8 @@ describe("credentials demo revocation contract", () => {
     expect(state.lastVerifiedStatusRegistryId).toEqual(
       fixture.witness.statusRegistryId,
     );
+    // Conformance lock: same-contract live mode records the sentinel from
+    // demo-revocation.compact instead of consuming an external revoked root.
     expect(state.lastVerifiedRevokedRoot).toEqual(padText("vc-demo:rev:live"));
     expect(state.activeAccessCapabilities.member(capability)).toEqual(true);
   });
@@ -216,6 +218,8 @@ describe("credentials demo revocation contract", () => {
     expect("statusRequest" in (request as Record<string, unknown>)).toEqual(
       false,
     );
+    // Conformance lock: live-status witness input must not smuggle an
+    // external registry snapshot into the same-contract path.
     expect(
       Object.keys(fixture.liveStatusVerificationInputs.witnessInput).sort(),
     ).toEqual(["statusHandle", "statusHandleOpening"]);
