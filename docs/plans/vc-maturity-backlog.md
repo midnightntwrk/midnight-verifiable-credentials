@@ -125,14 +125,16 @@ Current highest-risk remaining area:
   - a settled Compact-side replacement for the current runtime-only
     `MerkleTree.root()` limitation
 - `VC-MAT-08` is now the strongest adoption gap:
-  the repo has a generated family scaffold, guides, and templates, but still
-  lacks:
+  the repo has a generated family scaffold, guides, and templates, but had
+  still lacked:
   - a tiny DID bootstrap sample
   - a concrete DID + VC handoff smoke path
   - a concrete hello-family -> verifier -> DID handoff story that is smaller
     than the full revocation/use-case stack
-  The compiling hello-verifier starter is in flight on the current stack on
-  top of the already compiling hello-family starter.
+  The compiling hello-family starter, compiling hello-verifier starter, and
+  the DID + VC smoke-path guide plus checked-in tests are now in flight on the
+  current stack. The remaining adoption gap after that slice is a thin
+  downstream handoff kit and one production-safe protocol reference path.
 - `VC-MAT-06` is narrowed but still open:
   docs and checklists now exist, but there is still no single production-safe
   orchestration reference path that closes the loop across durable state, RNG,
@@ -311,6 +313,8 @@ stack. The next backlog wave should use these ten larger reviewable slices.
    - concrete checklist, smoke path, and compatibility matrix seed that proves
      how a DID holder path hands off into VC issuance/presentation in the
      current repo
+   - in flight on the current stack through the offchain-DID-backed
+     `hello-family -> hello-verifier` starter path
 
 ### `ORCHESTRATION-PROD-SAFETY`
 

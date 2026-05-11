@@ -191,11 +191,12 @@ artifact automatically.
 
 - creating a new family is still a manual scaffold exercise, not a generated
   workflow
-- the current starter set is still stronger as documentation than as a
+- the current starter set was stronger as documentation than as a
   runnable “hello path”:
-  there is still no tiny DID bootstrap example, and the remaining gap is a
+  the current stack now adds a tiny DID bootstrap example and a
   near-zero-interpretation DID + VC smoke path on top of the current
-  hello-family and hello-verifier starters
+  hello-family and hello-verifier starters, but the downstream handoff kit is
+  still thinner than the full revocation/use-case path
 - status ownership is still conceptually split across `credentials` and
   `credentials-status-registry`
 - integrators still need to understand too much status prototype context before
@@ -501,6 +502,7 @@ Add integrator-kit follow-up:
 - generated family scaffold or copy script
 - minimal runnable DID/VC smoke path on top of the now compiling hello-family
   and hello-verifier starters, not just markdown templates
+  - now in flight on the current stack via the offchain-DID-backed hello path
 - issuer-oriented starter
 - wallet-oriented starter
 - DID + VC handoff checklist for downstream repos consuming tarballs

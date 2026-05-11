@@ -13,6 +13,7 @@ Purpose:
 Current scope:
 
 - uses the explicit-holder `credentials-hello-family` playground family
+- includes a companion offchain-DID starter contract for the DID-aware smoke path
 - builds a request that requires a tiny selective-disclosure surface
 - keeps boolean and big-unsigned disclosure mandatory, with bytes disclosure as the only starter toggle
 - verifies one presentation against that request
@@ -37,3 +38,7 @@ Run locally:
 npm run build -w use-cases/hello-verifier/contract
 npm run test:ci -w use-cases/hello-verifier/contract
 ```
+
+DID-aware starter path:
+
+- [`../../../docs/guides/did-vc-hello-smoke-path.md`](../../../docs/guides/did-vc-hello-smoke-path.md)

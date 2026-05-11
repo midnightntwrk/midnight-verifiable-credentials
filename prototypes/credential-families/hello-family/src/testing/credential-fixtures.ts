@@ -10,6 +10,11 @@ import {
   pureCircuits as genericPureCircuits,
   type VerificationMethodRef,
 } from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
+import {
+  createOffchainDIDHolderBindingFromDidUrl,
+  type OffchainDIDHolderBinding,
+  type ResolvedOffchainDIDHolderBinding,
+} from "@midnight-ntwrk/midnight-did-credentials-offchain-did";
 
 import {
   type HelloFamilyClaims,
@@ -18,12 +23,19 @@ import {
   type HelloFamilyPresentationRequest,
   pureCircuits,
 } from "../managed/hello-family-credential/contract/index.js";
+import {
+  type HelloFamilyOffchainCredential,
+  type HelloFamilyOffchainPresentation,
+  pureCircuits as offchainPureCircuits,
+} from "../managed/hello-family-offchain-credential/contract/index.js";
 
 // WARNING: deterministic test fixtures. Fixed nonces and hardcoded secret keys
 // are unsafe outside of tests and local starter simulations.
 // NOTE: Jubjub subgroup order used by the Compact proof challenge/signature math.
 const JUBJUB_SUBGROUP_ORDER =
   6554484396890773809930967563523245729705921265872317281365359162392183254199n;
+const HELLO_FAMILY_OFFCHAIN_DID_URL =
+  "did:midnight:offchain:0082a94d6c03f45f691e94794f89667e05f434a2ea5114ae6a87bdcff45179d2?state=TU9EMQAAAC0AAAABAQAAAAAAAAAAAAAAAAAAAAAAAAABAQAAAA0jaG9sZGVyLWtleS0xAAAAAQEAAAArTmJxRWFEYXl1WkN3ZkhzNmtTdmxpX2Uza2htdVREaFloeFI5Q1hlZ3lqSQAAACtZSnlueTZMZk1NY2ZUREYzeERmU0tHZVlqUlJDTV9ZaHJ1ZU9GWC1sbk9nAAAAAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
 type Signer = {
   readonly label: string;
@@ -41,6 +53,18 @@ export type HelloFamilyFixture = {
   readonly credentialProof: Proof;
   readonly presentationRequest: HelloFamilyPresentationRequest;
   readonly presentation: HelloFamilyPresentation;
+  readonly presentationProof: Proof;
+};
+
+export type HelloFamilyOffchainDidFixture = {
+  readonly issuer: Signer;
+  readonly holder: Signer;
+  readonly portableDidUrl: string;
+  readonly resolvedHolder: ResolvedOffchainDIDHolderBinding;
+  readonly credential: HelloFamilyOffchainCredential;
+  readonly credentialProof: Proof;
+  readonly presentationRequest: HelloFamilyPresentationRequest;
+  readonly presentation: HelloFamilyOffchainPresentation;
   readonly presentationProof: Proof;
 };
 
@@ -98,15 +122,15 @@ const signProof = ({
   signer,
   createdAt,
   challengeHash,
-  nonceScalar,
 }: {
   readonly bodyRoot: Uint8Array;
   readonly context: ProofContext;
   readonly signer: Signer;
   readonly createdAt: bigint;
   readonly challengeHash: Uint8Array;
-  readonly nonceScalar: bigint;
 }): Proof => {
+  const nonceScalar =
+    context === "issuance" ? 11n + signer.secretKey : 17n + signer.secretKey;
   const proof: Proof = {
     signerVerificationMethodRef: signer.verificationMethodRef,
     createdAt,
@@ -137,6 +161,50 @@ const createHelloFamilyClaims = (): HelloFamilyClaims => ({
   uintVector: [10n, 20n],
   bytesVector: [padText("alpha", 16), padText("beta", 16)],
   fieldVector: [5n, 8n],
+});
+
+const createHelloFamilyRequest = ({
+  schema,
+  issuerVerificationMethodRef,
+  requireBytesValueDisclosure,
+  verifierChallengeHash,
+}: {
+  readonly schema: HelloFamilyCredential["schema"];
+  readonly issuerVerificationMethodRef: HelloFamilyCredential["issuerVerificationMethodRef"];
+  readonly requireBytesValueDisclosure: boolean;
+  readonly verifierChallengeHash: Uint8Array;
+}): HelloFamilyPresentationRequest => ({
+  version: 1n,
+  schema,
+  issuerVerificationMethodRef,
+  requireBooleanValueDisclosure: true,
+  requireBytesValueDisclosure,
+  requireBigUnsignedValueDisclosure: true,
+  verifierChallengeHash,
+});
+
+const createDisclosurePayload = ({
+  claims,
+  revealBytesValue,
+}: {
+  readonly claims: HelloFamilyClaims;
+  readonly revealBytesValue: boolean;
+}) => ({
+  revealBooleanValue: true,
+  booleanValue: claims.booleanValue,
+  revealBytesValue,
+  bytesValue: revealBytesValue ? claims.bytesValue : new Uint8Array(32),
+  revealBigUnsignedValue: true,
+  bigUnsignedValue: claims.bigUnsignedValue,
+});
+
+const createVerificationMethodRefForOffchainBinding = (
+  binding: OffchainDIDHolderBinding,
+): VerificationMethodRef => ({
+  didContractAddress: {
+    bytes: binding.holderDidStateHash,
+  },
+  methodId: binding.holderMethodId,
 });
 
 export const createHelloFamilyFixture = ({
@@ -180,18 +248,14 @@ export const createHelloFamilyFixture = ({
     signer: issuer,
     createdAt: 10_001n,
     challengeHash: sha256("challenge:hello-family:issuance"),
-    nonceScalar: 11n,
   });
 
-  const presentationRequest: HelloFamilyPresentationRequest = {
-    version: 1n,
+  const presentationRequest = createHelloFamilyRequest({
     schema: credential.schema,
     issuerVerificationMethodRef: credential.issuerVerificationMethodRef,
-    requireBooleanValueDisclosure: true,
     requireBytesValueDisclosure,
-    requireBigUnsignedValueDisclosure: true,
     verifierChallengeHash,
-  };
+  });
 
   const presentation: HelloFamilyPresentation = {
     version: 1n,
@@ -199,14 +263,7 @@ export const createHelloFamilyFixture = ({
     credentialClaimRoot: credential.claimRoot,
     issuerVerificationMethodRef: credential.issuerVerificationMethodRef,
     holderBinding: credential.holderBinding,
-    disclosed: {
-      revealBooleanValue: true,
-      booleanValue: claims.booleanValue,
-      revealBytesValue,
-      bytesValue: revealBytesValue ? claims.bytesValue : new Uint8Array(32),
-      revealBigUnsignedValue: true,
-      bigUnsignedValue: claims.bigUnsignedValue,
-    },
+    disclosed: createDisclosurePayload({ claims, revealBytesValue }),
   };
 
   const presentationProof = signProof({
@@ -215,12 +272,102 @@ export const createHelloFamilyFixture = ({
     signer: holder,
     createdAt: 10_100n,
     challengeHash: presentationRequest.verifierChallengeHash,
-    nonceScalar: 17n,
   });
 
   return {
     issuer,
     holder,
+    credential,
+    credentialProof,
+    presentationRequest,
+    presentation,
+    presentationProof,
+  };
+};
+
+export const createHelloFamilyOffchainDidFixture = ({
+  revealBytesValue = false,
+  requireBytesValueDisclosure = revealBytesValue,
+  verifierChallengeHash = sha256("challenge:hello-family:offchain"),
+}: {
+  readonly revealBytesValue?: boolean;
+  readonly requireBytesValueDisclosure?: boolean;
+  readonly verifierChallengeHash?: Uint8Array;
+} = {}): HelloFamilyOffchainDidFixture => {
+  // NOTE: callers that build their own verifier request must reuse this
+  // challenge, otherwise the presentation proof will fail challenge binding.
+  const issuer = createSigner("hello-family-issuer", 123456789n);
+  const holder = createSigner("hello-offchain-holder", 222222221n);
+  const claims = createHelloFamilyClaims();
+  const portableDidUrl = HELLO_FAMILY_OFFCHAIN_DID_URL;
+  const resolvedHolder = createOffchainDIDHolderBindingFromDidUrl({
+    portableDidUrl,
+  });
+
+  const credential: HelloFamilyOffchainCredential = {
+    version: 1n,
+    schema: {
+      packageId: padText("midnight:vc:hello-family"),
+      schemaId: padText("hello-family:v1"),
+      majorVersion: 1n,
+      minorVersion: 0n,
+    },
+    issuerVerificationMethodRef: issuer.verificationMethodRef,
+    holderBinding: resolvedHolder.binding,
+    statusBinding: {},
+    issuedAt: 20_000n,
+    hasExpiration: false,
+    expiresAt: 0n,
+    claims,
+    claimRoot: offchainPureCircuits.helloFamilyClaimRoot(claims),
+  };
+
+  const credentialProof = signProof({
+    bodyRoot:
+      offchainPureCircuits.helloFamilyOffchainCredentialBodyRoot(credential),
+    context: "issuance",
+    signer: issuer,
+    createdAt: 20_001n,
+    challengeHash: sha256("challenge:hello-family:offchain:issuance"),
+  });
+
+  const presentationRequest = createHelloFamilyRequest({
+    schema: credential.schema,
+    issuerVerificationMethodRef: credential.issuerVerificationMethodRef,
+    requireBytesValueDisclosure,
+    verifierChallengeHash,
+  });
+
+  const presentation: HelloFamilyOffchainPresentation = {
+    version: 1n,
+    schema: credential.schema,
+    credentialClaimRoot: credential.claimRoot,
+    issuerVerificationMethodRef: credential.issuerVerificationMethodRef,
+    holderBinding: resolvedHolder.binding,
+    disclosed: createDisclosurePayload({ claims, revealBytesValue }),
+  };
+
+  const presentationProof = signProof({
+    bodyRoot:
+      offchainPureCircuits.helloFamilyOffchainPresentationBodyRoot(
+        presentation,
+      ),
+    context: "presentation",
+    signer: {
+      ...holder,
+      verificationMethodRef: createVerificationMethodRefForOffchainBinding(
+        resolvedHolder.binding,
+      ),
+    },
+    createdAt: 20_100n,
+    challengeHash: presentationRequest.verifierChallengeHash,
+  });
+
+  return {
+    issuer,
+    holder,
+    portableDidUrl,
+    resolvedHolder,
     credential,
     credentialProof,
     presentationRequest,

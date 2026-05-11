@@ -47,6 +47,9 @@
 - prototype execution ladder:
   - [`guides/prototype-execution-ladder.md`](./guides/prototype-execution-ladder.md)
   - for engineers who want the current runnable path from hello-verifier through BDD and revocation lanes
+- DID + VC hello smoke path:
+  - [`guides/did-vc-hello-smoke-path.md`](./guides/did-vc-hello-smoke-path.md)
+  - for engineers who need the smallest checked-in DID bootstrap to VC verification handoff
 - starter templates:
   - [`templates/verifier-contract-template.compact.md`](./templates/verifier-contract-template.compact.md)
   - [`templates/family-scaffold-template.md`](./templates/family-scaffold-template.md)

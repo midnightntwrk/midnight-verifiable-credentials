@@ -1,3 +1,11 @@
+import { Buffer } from "node:buffer";
+
+import { ecMulGenerator } from "@midnight-ntwrk/compact-runtime";
+import {
+  createPortableOffchainMidnightDIDUrl,
+  CurveType,
+  KeyType,
+} from "@midnight-ntwrk/midnight-did-domain";
 import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { describe, expect, it } from "vitest";
 
@@ -16,6 +24,13 @@ const NON_JUBJUB_DID_URL =
   "did:midnight:offchain:7504b09f89e228b168119f0db74229a41aaa586a456531622849f14f6f9e297e?state=TU9EMQAAAC0AAAABAQAAAAAAAAAAAAAAAAAAAAAAAAABAQAAAA0jaG9sZGVyLWtleS0xAAAAAQIAAAACQVEAAAAAAAAAAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 const NON_AUTH_DID_URL =
   "did:midnight:offchain:36a4e7ace1d95d4519cba44ae8cbaa08fd41c89052cffb91ecfef2658289b3be?state=TU9EMQAAAC0AAAABAQAAAAAAAAAAAAAAAAAAAAAAAAABAQAAAA0jaG9sZGVyLWtleS0xAAAAAQEAAAACQVEAAAACQWcAAAABAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+const encodeBase64Url = (value: bigint): string => {
+  let hex = value.toString(16);
+  if (hex.length % 2 !== 0) {
+    hex = `0${hex}`;
+  }
+  return Buffer.from(hex, "hex").toString("base64url");
+};
 
 describe("credentials-offchain-did", () => {
   it("derives a holder binding from a portable offchain DID URL", () => {
@@ -43,6 +58,40 @@ describe("credentials-offchain-did", () => {
     });
 
     expect(resolved.method.id).toEqual("#holder-key-1");
+  });
+
+  it("bootstraps a portable offchain DID URL from a Jubjub key and derives the VC holder binding", () => {
+    const holder = ecMulGenerator(222222221n);
+    const portableDidUrl = createPortableOffchainMidnightDIDUrl({
+      version: 1,
+      alsoKnownAs: [],
+      verificationMethod: [
+        {
+          id: "#holder-key-1",
+          publicKeyJwk: {
+            kty: KeyType.EC,
+            crv: CurveType.Jubjub,
+            x: encodeBase64Url(holder.x),
+            y: encodeBase64Url(holder.y),
+          },
+          relationships: {
+            authentication: true,
+            assertionMethod: false,
+            keyAgreement: false,
+            capabilityInvocation: false,
+            capabilityDelegation: false,
+          },
+        },
+      ],
+      service: [],
+    });
+
+    const resolved = createOffchainDIDHolderBindingFromDidUrl({
+      portableDidUrl,
+    });
+
+    expect(resolved.did).toEqual(portableDidUrl.split("?", 1)[0]);
+    expect(resolved.binding.holderPublicKey).toEqual(holder);
   });
 
   it("normalizes canonical DID method references", () => {
