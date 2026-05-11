@@ -26,6 +26,8 @@ Status: current implemented test surface as of 2026-05-11.
 - root `./run.sh hello-smoke` lane
   - keeps the DID-aware starter handoff runnable with `hello-family` and
     `hello-verifier`
+  - see `docs/guides/did-vc-hello-smoke-path.md` for the authoritative lane
+    description
 
 ## Credential family tests
 
@@ -59,6 +61,8 @@ Status: current implemented test surface as of 2026-05-11.
 - root `./run.sh hello-smoke` lane
   - keeps the starter DID -> VC -> verifier handoff runnable from one repo
     command
+  - see `docs/guides/did-vc-hello-smoke-path.md` for the authoritative lane
+    description
 
 ### Planned prototype restoration
 

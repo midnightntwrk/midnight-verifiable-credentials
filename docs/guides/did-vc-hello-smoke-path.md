@@ -66,6 +66,13 @@ Smallest root-level lane:
 ./run.sh hello-smoke
 ```
 
+That lane runs:
+
+- lint for `components/adapters/offchain-did`
+- typecheck for `components/adapters/offchain-did`
+- typecheck and tests for `prototypes/credential-families/hello-family`
+- typecheck and tests for `use-cases/hello-verifier/contract`
+
 Equivalent package-local commands:
 
 ```bash
