@@ -33,7 +33,7 @@ The repository is organized as a layered Compact-first stack.
 | Layer | Role | Package examples |
 | --- | --- | --- |
 | Layer 1 | Generic VC/VP capabilities | `credentials`, `credentials-same-holder`, `credentials-iso-registry`, `credentials-status-registry` |
-| Layer 2 | Concrete credential families | `credentials-birth`, `credentials-birth-secret`, `credentials-hello-family` |
+| Layer 2 | Concrete credential families | `credentials-birth`, `credentials-birth-secret`, `credentials-hello-family` (playground) |
 | Layer 2.5 | DID-aware runtime adapters | `credentials-offchain-did` |
 | Layer 3 status prototype | Status-aware contract surface plus off-chain builders | `credentials-status-registry` |
 | Layer 3 | Verifier/business contract composition | `credentials-demo-contract` |

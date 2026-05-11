@@ -299,7 +299,7 @@ stack. The next backlog wave should use these ten larger reviewable slices.
    - shortest-path runnable verifier example using the converged thin-core
      surfaces and current run-target conventions
 - `Slice 7`: compiling hello-family starter
-   - delivered on the current stack through
+   - in flight on the current stack through
      [`midnightntwrk/midnight-verifiable-credentials#177`](https://github.com/midnightntwrk/midnight-verifiable-credentials/pull/177)
    - smallest runnable family package produced from the current scaffold/tooling
      conventions

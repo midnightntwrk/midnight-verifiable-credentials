@@ -1,6 +1,6 @@
 # Midnight VC Test Matrix
 
-Status: current implemented test surface as of 2026-05-09.
+Status: current implemented test surface as of 2026-05-11.
 
 ## Core package tests
 
