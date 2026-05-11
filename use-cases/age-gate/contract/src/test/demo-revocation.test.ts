@@ -461,9 +461,7 @@ describe("credentials demo revocation contract", () => {
         fixture.revokedSetStatusVerificationInputs,
         fixture.witness.currentDay,
       ),
-    ).toThrow(
-      /status witness state version does not match the verifier request/i,
-    );
+    ).toThrow(/registry version does not match the verifier request/i);
   });
 
   it("rejects authority-attested verification when the request snapshot version is stale", () => {
@@ -549,5 +547,15 @@ describe("credentials demo revocation contract", () => {
         request.verificationRequest.envelope.createdAt + 101n,
       ),
     ).toThrow(/has expired/i);
+  });
+
+  it("rejects a revoked credential before building any revocation demo verification inputs", () => {
+    const baseline = createDemoRevocationFixture();
+
+    expect(() =>
+      createDemoRevocationFixture({
+        revokedStatusHandles: [baseline.witness.statusHandle],
+      }),
+    ).toThrow(/already present in the revoked set snapshot/i);
   });
 });

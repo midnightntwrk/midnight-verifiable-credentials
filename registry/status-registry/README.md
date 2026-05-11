@@ -50,7 +50,6 @@ Start here:
    - [`../docs/guides/integration-surface-map.md`](../docs/guides/integration-surface-map.md)
 
 Current scope:
-
 - dedicated registry id
 - append-only revoked handle `MerkleTree`
 - monotonic internal `version` counter for registry-side bookkeeping
@@ -62,6 +61,7 @@ Current scope:
 - off-chain witness-builder helpers for:
   - deterministic status-handle derivation
   - registry-bound status binding construction
+  - same-contract live-status witness construction
   - canonical revoked-set status request construction
   - witness-input construction
   - canonical request + witness + protocol bundle construction
@@ -74,17 +74,19 @@ Current scope:
 Nonce requirement for authority-attested proofs:
 
 - `signAuthorityAttestedStatusProof(...)` now derives a deterministic JubJub
-  subgroup nonce scalar via domain-separated SHA-256 plus rejection sampling
-  from:
+  subgroup nonce scalar from:
   - the attestation statement
   - signer verification-method identity
   - signer secret key
   - `createdAt`
 - this is now the default safe helper path
-- the low-level escape hatch is
+- the low-level escape hatch now lives on the dedicated `./testing` package
+  subpath as
   `unsafeSignAuthorityAttestedStatusProofWithNonceScalar(...)`
-- callers should treat that unsafe override as test-only or tightly controlled
-  integration glue rather than a normal application path
+- the root package surface intentionally does not re-export that unsafe
+  override
+- callers should treat the `./testing` override as test-only or tightly
+  controlled integration glue rather than a normal application path
 
 Freshness requirement for authority-attested proofs:
 
@@ -101,6 +103,13 @@ Freshness requirement for authority-attested proofs:
     authority attestations
 
 This package does not yet implement privacy-preserving non-membership verification inside Compact. It provides the authoritative state surface that status-aware VC/VP flows can anchor to.
+
+One validity rule is already fixed:
+
+- if the accepted status evidence shows the credential as revoked, the
+  VC/VP verification outcome is hard invalidity
+- helpers and contracts should fail closed rather than emitting a
+  "verified but denied" revocation result
 
 Import rule:
 
@@ -129,12 +138,28 @@ Canonical revoked-set helper path:
 - the exported TypeScript helper path is now binding-first:
   helper results carry `RegistryBoundStatusBinding` and no longer expose a
   separate capability-shaped intermediate value
+- the minimum VC-side binding payload is now:
+  - `statusType`
+  - `registryRef`
+  - `statusHandleCommitment`
 - this helper still does not prove final Merkle non-membership
 - it normalizes the request/witness/protocol shape so higher-layer families and
   verifier code stop rebuilding those pieces ad hoc
 
-Current prototype limitation:
+Canonical same-contract live-status helper path:
 
+- use `buildLiveStatusWitness(...)` when the business contract owns the live
+  revocation set directly and does not need an external `(registryId,
+  revokedRoot)` snapshot
+- the helper returns:
+  - `LiveStatusWitnessInput`
+  - matching shared `RegistryBoundStatusBinding`
+  - the derived status handle
+- this is the right prototype seam for contracts that can reject revoked
+  status handles against their own live local state without an authority
+  attestation bridge
+
+Current prototype limitation:
 - `assertStateUsesThisRegistry(...)` binds the supplied snapshot to this
   registry's `registryId` and `registryVersion`
 - it does not yet prove that the supplied `revokedRoot` equals the live
@@ -147,6 +172,9 @@ Current prototype limitation:
 - callers must therefore treat `revokedRoot` as an off-chain coordinated
   snapshot value until the final in-circuit root-binding/non-membership path
   lands
+- that prototype trust seam does not weaken the rejection rule itself:
+  once the accepted snapshot says a credential is revoked, the verifier should
+  reject the presentation outright
 
 Observed-root integration helper path:
 

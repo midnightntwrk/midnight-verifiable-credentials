@@ -5,6 +5,7 @@ Status: prototype contract-facing companion draft for status-aware verification.
 Companion documents:
 
 - [`./credential-status.md`](./credential-status.md)
+- [`./status-error-taxonomy.md`](./status-error-taxonomy.md)
 - [`./revocation-registry.md`](./revocation-registry.md)
 - [`./midnight-credentials.md`](./midnight-credentials.md)
 
@@ -58,6 +59,7 @@ Conceptually it carries:
 
 - `registryState.registryId`
 - `registryState.revokedRoot`
+- `registryState.registryVersion`
 - `verifierChallengeHash`
 
 Purpose:
@@ -68,6 +70,80 @@ Purpose:
 
 This request object is shared by different status proof protocols. It is not a
 different VC shape.
+
+## Implementation mode matrix
+
+The repository now treats status verification mode as an implementation choice
+over one shared VC-side binding model.
+
+Supported prototype modes are:
+
+### 1. Same-contract live-root verification
+
+Use this when:
+
+- the revocation registry resides in the same contract domain as the business
+  verification logic
+
+Target shape:
+
+- Layer 3 fetches or otherwise binds the accepted live-enough registry state in
+  the same circuit path
+- the VC/VP proof checks revocation status directly against that accepted state
+
+This is the strongest current target because the business contract does not
+need to trust an external status attestation once the live-root path exists in
+that same contract domain.
+
+Current shipped prototype seam:
+
+- the repository now exposes a `LiveStatusWitnessInput` plus matching
+  binding-first TypeScript helper path for this mode
+- that witness shape omits the external `(registryId, revokedRoot)` snapshot
+  and carries only:
+  - `statusHandle`
+  - `statusHandleOpening`
+- a same-contract verifier can pair that witness with its own live local
+  revocation state instead of consuming an authority attestation or
+  verifier-supplied root snapshot
+
+### 2. External-registry verifier-side verification
+
+Use this when:
+
+- the revocation registry resides in another contract or service domain, and
+- the deployment does not require full VC/VP verification inside a Layer 3
+  contract
+
+Target shape:
+
+- the verifier performs status validation off-chain
+- the verifier decides whether the credential is acceptable before any optional
+  business-contract call
+
+This mode still uses the same VC-side binding and fail-closed error taxonomy.
+It simply detects status invalidity outside Compact.
+
+### 3. External-registry authority-attested Layer 3 verification
+
+Use this when:
+
+- the revocation registry resides in another contract or service domain, and
+- the deployment still requires a Layer 3 contract to verify status-aware VC/VP
+  flows
+
+Target shape:
+
+- the holder obtains an authority-attested status proof bound to the verifier
+  challenge
+- the authority may be:
+  - the verifier itself at Layer 4
+  - or another authority trusted by the verifier
+- the Layer 3 contract verifies that attestation against the shared VC-side
+  binding
+
+This is a supported implementation option, not throwaway glue. It must be
+hardened with explicit freshness, authority-identity, and replay semantics.
 
 ## Contract-facing verification modes
 
@@ -138,6 +214,7 @@ The authority attestation is bound to:
 
 - `registryId`
 - `revokedRoot`
+- `registryVersion`
 - `statusHandleCommitment`
 - `verifierChallengeHash`
 - optional expiration
@@ -187,6 +264,27 @@ That means the contract checks:
 - the attestation status-handle commitment matches the credential capability
 - future-dated authority attestations are rejected
 - if enabled, the attestation age does not exceed the verifier freshness window
+
+If the accepted status evidence says the credential is revoked, the contract
+must reject the VC/VP proof outright. It must not surface revocation as a
+successful verification with a softer business-policy denial result.
+
+## Hard-invalidity outcomes
+
+Regardless of implementation mode, the verifier/helper/contract must reject the
+VC/VP attempt when it determines:
+
+- `revoked`
+- stale registry state
+- unknown registry
+- unsupported status proof mode
+- authority mismatch
+- status binding mismatch
+- request or attestation mismatch
+
+See the canonical fail-closed vocabulary in:
+
+- [`./status-error-taxonomy.md`](./status-error-taxonomy.md)
 
 ## Freshness responsibility
 
@@ -261,6 +359,10 @@ must be able to supply one canonical witness shape:
 - the `statusHandleOpening` that reproduces the committed
   `statusHandleCommitment`
 
+If that witness-building path or the accepted snapshot already shows the
+credential as revoked, the correct prototype behavior is to fail before proof
+assembly continues.
+
 The holder does not get to replace that witness shape with ad hoc app-local
 status metadata. If a future implementation adds Merkle non-membership witness
 material, that additional witness must stay subordinate to the same canonical
@@ -330,8 +432,7 @@ Current limitations remain:
 - the current off-chain authority-attestation builder requires the caller to
   choose between:
   - the safe default helper, which now derives the signing nonce
-    deterministically from signer secret material plus attestation context via
-    domain-separated SHA-256 plus rejection sampling
+    deterministically from signer secret material plus attestation context
   - an explicit unsafe override for tests or tightly controlled integrations
 - authority-attested proof freshness is now partially enforceable through
   verifier max-age policy, but root freshness is still off-chain and

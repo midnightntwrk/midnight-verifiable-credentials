@@ -11,8 +11,10 @@ import {
   type ProtocolMessageEnvelope,
   pureCircuits as genericPureCircuits,
   type RegistryBoundStatusBinding,
+  StatusType,
   type VerificationMethodRef,
 } from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
+import { assertStatusHandleNotRevoked } from "@midnight-ntwrk/midnight-did-credentials-status-registry";
 
 import {
   type AuthorityAttestedStatusProofProtocol,
@@ -24,9 +26,13 @@ import {
   type SecretBirthCredentialPresentationRequest,
   type SecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs,
   type SecretBirthCredentialVerificationAuthorityAttestedStatusRequest,
+  type SecretBirthCredentialVerificationLiveStatusInputs,
+  type SecretBirthCredentialVerificationLiveStatusRequest,
   type SecretBirthCredentialVerificationRequest,
   type SecretBirthCredentialVerificationRevokedSetStatusInputs,
   type SecretBirthCredentialVerificationRevokedSetStatusRequest,
+  type SecretBirthCredentialWithStatusBinding,
+  type SecretBirthStatusCredential,
   StatusCapabilityKind,
 } from "../managed/secret-birth-credential/contract/index.js";
 
@@ -40,32 +46,17 @@ export type Signer = {
   readonly verificationMethodRef: VerificationMethodRef;
 };
 
-export type SecretBirthStatusCredentialCompat = SecretBirthCredential & {
-  readonly statusBinding: RegistryBoundStatusBinding;
-};
-
-type SecretBirthCredentialCompat = Omit<
-  SecretBirthCredential,
-  "statusBinding"
-> & {
-  readonly statusBinding?: RegistryBoundStatusBinding | Record<string, never>;
-};
-
-export type SecretBirthCredentialWithStatusBindingCompat = {
-  readonly credential: SecretBirthStatusCredentialCompat;
-  readonly statusBinding: RegistryBoundStatusBinding;
-  readonly credentialProof: Proof;
-};
-
 export type BirthCredentialFixture = {
   readonly issuer: Signer;
   readonly credential: SecretBirthCredential;
   readonly credentialProof: Proof;
   readonly presentationRequest: SecretBirthCredentialPresentationRequest;
   readonly verificationRequest: SecretBirthCredentialVerificationRequest;
-  readonly credentialWithStatusBinding: SecretBirthCredentialWithStatusBindingCompat;
+  readonly credentialWithStatusBinding: SecretBirthCredentialWithStatusBinding;
+  readonly liveStatusVerificationRequest: SecretBirthCredentialVerificationLiveStatusRequest;
   readonly revokedSetStatusVerificationRequest: SecretBirthCredentialVerificationRevokedSetStatusRequest;
   readonly authorityAttestedStatusVerificationRequest: SecretBirthCredentialVerificationAuthorityAttestedStatusRequest;
+  readonly liveStatusVerificationInputs: SecretBirthCredentialVerificationLiveStatusInputs;
   readonly revokedSetStatusVerificationInputs: SecretBirthCredentialVerificationRevokedSetStatusInputs;
   readonly authorityAttestedStatusProtocolInputs: SecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs;
   readonly presentation: SecretBirthCredentialPresentation;
@@ -114,6 +105,7 @@ export type SecretBirthCredentialFixtureOptions = {
   readonly statusRegistryId?: Uint8Array;
   readonly statusRevokedRoot?: Uint8Array;
   readonly statusRegistryVersion?: bigint;
+  readonly revokedStatusHandles?: readonly Uint8Array[];
 };
 
 const sha256 = (value: string): Uint8Array =>
@@ -204,24 +196,6 @@ export const signProof = ({
   };
 };
 
-const secretBirthCredentialRegistryBoundStatusBodyRootCompat = (
-  credential: SecretBirthStatusCredentialCompat,
-): Uint8Array => {
-  const bodyRoot =
-    pureCircuits.secretBirthCredentialRegistryBoundStatusBodyRoot as unknown as (
-      ...args: unknown[]
-    ) => Uint8Array;
-
-  try {
-    return bodyRoot(
-      credential as SecretBirthCredential,
-      credential.statusBinding,
-    );
-  } catch {
-    return bodyRoot(credential);
-  }
-};
-
 export const createSecretBirthCredentialFixture = (
   options: SecretBirthCredentialFixtureOptions = {},
 ): BirthCredentialFixture => {
@@ -281,7 +255,7 @@ export const createSecretBirthCredentialFixture = (
     ),
   };
 
-  const credential: SecretBirthCredentialCompat = {
+  const credential: SecretBirthCredential = {
     version: 1n,
     schema: {
       packageId: padText("midnight-did:vc:birth-secret"),
@@ -313,9 +287,7 @@ export const createSecretBirthCredentialFixture = (
   };
 
   const credentialProof = signProof({
-    bodyRoot: pureCircuits.secretBirthCredentialBodyRoot(
-      credential as SecretBirthCredential,
-    ),
+    bodyRoot: pureCircuits.secretBirthCredentialBodyRoot(credential),
     signer: issuer,
     createdAt: 10_001n,
     challengeHash: sha256("challenge:issuance"),
@@ -365,6 +337,7 @@ export const createSecretBirthCredentialFixture = (
   };
 
   const statusBinding: RegistryBoundStatusBinding = {
+    statusType: StatusType.revocationRegistry,
     registryRef: {
       registryId: witness.statusRegistryId,
       authorityVerificationMethodRef: issuer.verificationMethodRef,
@@ -375,26 +348,26 @@ export const createSecretBirthCredentialFixture = (
     ),
   };
 
-  const statusCredential: SecretBirthStatusCredentialCompat = {
-    ...(credential as SecretBirthCredential),
+  const statusCredential: SecretBirthStatusCredential = {
+    ...credential,
     statusBinding,
   };
 
   const statusBoundCredentialProof = signProof({
     bodyRoot:
-      secretBirthCredentialRegistryBoundStatusBodyRootCompat(statusCredential),
+      pureCircuits.secretBirthCredentialRegistryBoundStatusBodyRoot(
+        statusCredential,
+      ),
     signer: issuer,
     createdAt: credentialProof.createdAt,
     challengeHash: credentialProof.challengeHash,
     nonceScalar: 12n,
   });
 
-  const credentialWithStatusBinding: SecretBirthCredentialWithStatusBindingCompat =
-    {
-      credential: statusCredential,
-      statusBinding,
-      credentialProof: statusBoundCredentialProof,
-    };
+  const credentialWithStatusBinding: SecretBirthCredentialWithStatusBinding = {
+    credential: statusCredential,
+    credentialProof: statusBoundCredentialProof,
+  };
 
   const statusRequest: RevokedSetStatusRequest = {
     registryState: {
@@ -404,6 +377,16 @@ export const createSecretBirthCredentialFixture = (
     },
     verifierChallengeHash: verificationRequest.verifierChallengeHash,
   };
+
+  if (options.revokedStatusHandles) {
+    assertStatusHandleNotRevoked(
+      {
+        registryState: statusRequest.registryState,
+        revokedStatusHandles: options.revokedStatusHandles,
+      },
+      witness.statusHandle,
+    );
+  }
 
   const revokedSetStatusProofProtocol: RevokedSetNonMembershipStatusProofProtocol =
     {
@@ -433,6 +416,27 @@ export const createSecretBirthCredentialFixture = (
       statusRequest,
     };
 
+  const liveStatusVerificationRequest: SecretBirthCredentialVerificationLiveStatusRequest =
+    {
+      verificationRequest,
+      statusPolicy: {
+        requireStatus: true,
+        acceptedStatusCapability: StatusCapabilityKind.revokedSetNonMembership,
+        enforceRegistryId: true,
+        acceptedRegistryId: witness.statusRegistryId,
+        enforceAttestationMaxAge: false,
+        maxAttestationAge: 0n,
+      },
+    };
+
+  const liveStatusVerificationInputs: SecretBirthCredentialVerificationLiveStatusInputs =
+    {
+      witnessInput: {
+        statusHandle: witness.statusHandle,
+        statusHandleOpening: witness.statusHandleOpening,
+      },
+    };
+
   const revokedSetStatusVerificationInputs: SecretBirthCredentialVerificationRevokedSetStatusInputs =
     {
       statusProofProtocol: revokedSetStatusProofProtocol,
@@ -446,8 +450,8 @@ export const createSecretBirthCredentialFixture = (
         acceptedStatusCapability: StatusCapabilityKind.authorityAttestedStatus,
         enforceRegistryId: true,
         acceptedRegistryId: witness.statusRegistryId,
-        enforceAttestationMaxAge: false,
-        maxAttestationAge: 0n,
+        enforceAttestationMaxAge: true,
+        maxAttestationAge: 50n,
       },
       statusRequest,
     };
@@ -516,13 +520,15 @@ export const createSecretBirthCredentialFixture = (
 
   return {
     issuer,
-    credential: credential as SecretBirthCredential,
+    credential,
     credentialProof,
     presentationRequest,
     verificationRequest,
     credentialWithStatusBinding,
+    liveStatusVerificationRequest,
     revokedSetStatusVerificationRequest,
     authorityAttestedStatusVerificationRequest,
+    liveStatusVerificationInputs,
     revokedSetStatusVerificationInputs,
     authorityAttestedStatusProtocolInputs,
     presentation,

@@ -27,11 +27,13 @@ export enum StatusCapabilityKind {
 export struct NoStatusCapability {}
 
 export struct RevokedSetNonMembershipStatusCapability {
+  statusType: StatusType,
   registryRef: StatusRegistryRef,
   statusHandleCommitment: Bytes<32>,
 }
 
 export struct AuthorityAttestedStatusCapability {
+  statusType: StatusType,
   registryRef: StatusRegistryRef,
   statusHandleCommitment: Bytes<32>,
 }
@@ -60,6 +62,11 @@ export struct RevokedSetStatusRequest {
 
 export struct RevokedSetNonMembershipWitnessInput {
   registryState: RevocationRegistryState,
+  statusHandle: Bytes<32>,
+  statusHandleOpening: Bytes<32>,
+}
+
+export struct LiveStatusWitnessInput {
   statusHandle: Bytes<32>,
   statusHandleOpening: Bytes<32>,
 }
@@ -95,6 +102,10 @@ export circuit assertValidNoStatusCapability(
 export circuit assertValidRevokedSetNonMembershipStatusCapability(
   capability: RevokedSetNonMembershipStatusCapability
 ): [] {
+  assert(
+    capability.statusType == StatusType.revocationRegistry,
+    "Revoked-set status capability type must be revocationRegistry"
+  );
   assertValidStatusRegistryRef(capability.registryRef);
   assert(
     capability.statusHandleCommitment != pad(32, ""),
@@ -105,6 +116,10 @@ export circuit assertValidRevokedSetNonMembershipStatusCapability(
 export circuit assertValidAuthorityAttestedStatusCapability(
   capability: AuthorityAttestedStatusCapability
 ): [] {
+  assert(
+    capability.statusType == StatusType.revocationRegistry,
+    "Authority-attested status capability type must be revocationRegistry"
+  );
   assertValidStatusRegistryRef(capability.registryRef);
   assert(
     capability.statusHandleCommitment != pad(32, ""),
@@ -220,6 +235,19 @@ export circuit assertValidRevokedSetNonMembershipWitnessInput(
   );
 }
 
+export circuit assertValidLiveStatusWitnessInput(
+  witnessInput: LiveStatusWitnessInput
+): [] {
+  assert(
+    witnessInput.statusHandle != pad(32, ""),
+    "Live status handle witness must be set"
+  );
+  assert(
+    witnessInput.statusHandleOpening != pad(32, ""),
+    "Live status handle opening witness must be set"
+  );
+}
+
 export circuit assertValidRevokedSetNonMembershipStatusProofProtocol(
   protocol: RevokedSetNonMembershipStatusProofProtocol
 ): [] {
@@ -284,6 +312,21 @@ export circuit assertRevokedSetNonMembershipWitnessMatchesBinding(
       witnessInput.statusHandleOpening
     ),
     "Revoked-set status witness does not match the status binding handle commitment"
+  );
+}
+
+export circuit assertLiveStatusWitnessMatchesBinding(
+  binding: RegistryBoundStatusBinding,
+  witnessInput: LiveStatusWitnessInput
+): [] {
+  assertValidRegistryBoundStatusBinding(binding);
+  assertValidLiveStatusWitnessInput(witnessInput);
+  assert(
+    binding.statusHandleCommitment == revokedSetStatusHandleCommitment(
+      witnessInput.statusHandle,
+      witnessInput.statusHandleOpening
+    ),
+    "Live status witness does not match the status binding handle commitment"
   );
 }
 
@@ -507,6 +550,32 @@ export circuit assertVerifierStatusPolicyAcceptsRevokedSetNonMembershipBinding(
     assert(
       policy.acceptedRegistryId == witnessInput.registryState.registryId,
       "Verifier status policy registry id does not match the supplied status registry"
+    );
+  }
+}
+
+export circuit assertVerifierStatusPolicyAcceptsLiveStatusBinding(
+  policy: VerifierStatusPolicy,
+  binding: RegistryBoundStatusBinding,
+  witnessInput: LiveStatusWitnessInput
+): [] {
+  assertValidVerifierStatusPolicy(policy);
+  assertLiveStatusWitnessMatchesBinding(
+    binding,
+    witnessInput
+  );
+  assert(
+    policy.requireStatus,
+    "Verifier status policy must require status for live revoked-set verification"
+  );
+  assert(
+    policy.acceptedStatusCapability == StatusCapabilityKind.revokedSetNonMembership,
+    "Verifier status policy does not accept live revoked-set verification"
+  );
+  if (policy.enforceRegistryId) {
+    assert(
+      policy.acceptedRegistryId == binding.registryRef.registryId,
+      "Verifier status policy registry id does not match the supplied status binding"
     );
   }
 }

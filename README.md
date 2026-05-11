@@ -30,15 +30,15 @@ Current maturity is mixed by package:
   - [`credentials-birth`](./prototypes/credential-families/birth/README.md)
   - [`credentials-birth-secret`](./prototypes/credential-families/birth-secret/README.md)
   - [`credentials-iso-registry`](./core/primitives/iso-registry/README.md)
-  - [`credentials-offchain-did`](./credentials-offchain-did/README.md)
-  - [`credentials-openid`](./credentials-openid/README.md)
+  - [`credentials-offchain-did`](./components/adapters/offchain-did/README.md)
+  - [`credentials-openid`](./protocols/openid/README.md)
     - current reference transport-adapter surface
 - prototype / experimental packages:
   - [`credentials-status-registry`](./registry/status-registry/README.md)
-  - [`credentials-protocol`](./credentials-protocol/README.md)
-  - [`credentials-demo-contract`](./credentials-demo-contract/README.md)
+  - [`credentials-protocol`](./components/orchestration/protocol/README.md)
+  - [`credentials-demo-contract`](./use-cases/age-gate/contract/README.md)
 - shared integration infrastructure:
-  - [`standalone-environment`](./standalone-environment/README.md)
+  - [`standalone-environment`](./components/integration/standalone-environment/README.md)
 - planned prototype restoration work:
   - future `credentials-birth-binding-prototypes` restoration
     - not currently present as a real workspace package on `develop`
@@ -83,7 +83,7 @@ Start here:
   - prototype status / revocation registry contract and off-chain witness helpers
 - [`credentials-iso-registry`](./core/primitives/iso-registry/README.md)
   - shared Compact-native ISO code types
-- [`credentials-offchain-did`](./credentials-offchain-did/README.md)
+- [`credentials-offchain-did`](./components/adapters/offchain-did/README.md)
   - DID-aware runtime adapter for offchain DID holder binding
 - [`credentials-status-registry`](./registry/status-registry/README.md)
   - prototype status/revocation registry and off-chain builder helpers
@@ -91,13 +91,13 @@ Start here:
   - explicit-holder birth credential family
 - [`credentials-birth-secret`](./prototypes/credential-families/birth-secret/README.md)
   - secret-holder birth credential family
-- [`credentials-openid`](./credentials-openid/README.md)
+- [`credentials-openid`](./protocols/openid/README.md)
   - OID4VCI / OID4VP-inspired transport/domain adapters
-- [`credentials-protocol`](./credentials-protocol/README.md)
+- [`credentials-protocol`](./components/orchestration/protocol/README.md)
   - reference off-chain orchestration and protocol simulation
-- [`credentials-demo-contract`](./credentials-demo-contract/README.md)
+- [`credentials-demo-contract`](./use-cases/age-gate/contract/README.md)
   - verifier/business contract demo
-- [`standalone-environment`](./standalone-environment/README.md)
+- [`standalone-environment`](./components/integration/standalone-environment/README.md)
   - shared Docker-backed integration harness
 
 No checked-in prototype matrix package currently exists for cross-profile birth
@@ -124,6 +124,14 @@ Discover explicit repository targets:
 
 ```bash
 ./run.sh targets
+```
+
+Run any root `package.json` script through the same entrypoint:
+
+```bash
+./run.sh build:core
+./run.sh ci:package-tests
+./run.sh artifacts:pack
 ```
 
 Run the BDD smoke lane directly:
@@ -157,6 +165,7 @@ Stable tarball output lives under [`artifacts/npm/`](./artifacts/README.md).
 Commands:
 
 - `npm run artifacts:pack`
+- `npm run upgrade:vendor`
 - `./upgrade-libs.sh --destination /path/to/downstream-repo`
 
 Published/exported local tarball set currently includes:

@@ -22,17 +22,6 @@ import {
   witnesses,
 } from "./witnesses.js";
 
-type BirthCredentialInput = Omit<BirthCredential, "statusBinding"> & {
-  readonly statusBinding?: BirthCredential["statusBinding"];
-};
-
-const withNoStatusBinding = (
-  credential: BirthCredentialInput,
-): BirthCredential => ({
-  ...credential,
-  statusBinding: credential.statusBinding ?? {},
-});
-
 export class CredentialsDemoSimulator {
   readonly contract: Contract<CredentialsDemoPrivateState>;
   circuitContext: CircuitContext<CredentialsDemoPrivateState>;
@@ -91,14 +80,14 @@ export class CredentialsDemoSimulator {
   }
 
   public issueBirthCredential(
-    credential: BirthCredentialInput,
+    credential: BirthCredential,
     credentialProof: Proof,
     holderPublicKey: JubjubPoint,
   ): void {
     this.executeCircuit(() =>
       this.contract.impureCircuits.issueBirthCredential(
         this.circuitContext,
-        withNoStatusBinding(credential),
+        credential,
         credentialProof,
         holderPublicKey,
       ),
@@ -106,7 +95,7 @@ export class CredentialsDemoSimulator {
   }
 
   public verifyBirthPresentation(
-    credential: BirthCredentialInput,
+    credential: BirthCredential,
     credentialProof: Proof,
     presentation: BirthCredentialPresentation,
     presentationProof: Proof,
@@ -115,7 +104,7 @@ export class CredentialsDemoSimulator {
     this.executeCircuit(() =>
       this.contract.impureCircuits.verifyBirthPresentation(
         this.circuitContext,
-        withNoStatusBinding(credential),
+        credential,
         credentialProof,
         presentation,
         presentationProof,
@@ -125,7 +114,7 @@ export class CredentialsDemoSimulator {
   }
 
   public verifyBirthPresentationForRequest(
-    credential: BirthCredentialInput,
+    credential: BirthCredential,
     credentialProof: Proof,
     request: BirthCredentialPresentationRequest,
     presentation: BirthCredentialPresentation,
@@ -135,7 +124,7 @@ export class CredentialsDemoSimulator {
     this.executeCircuit(() =>
       this.contract.impureCircuits.verifyBirthPresentationForRequest(
         this.circuitContext,
-        withNoStatusBinding(credential),
+        credential,
         credentialProof,
         request,
         presentation,
@@ -150,16 +139,16 @@ export class CredentialsDemoSimulator {
     verifierChallengeHash: Uint8Array,
   ): BirthCredentialPresentationRequest {
     return this.executeCircuit(() =>
-      this.contract.impureCircuits.ageGateRequest(
-        this.circuitContext,
-        issuerVerificationMethodRef,
-        verifierChallengeHash,
-      ),
+        this.contract.impureCircuits.ageGateRequest(
+          this.circuitContext,
+          issuerVerificationMethodRef,
+          verifierChallengeHash,
+        ),
     );
   }
 
   public issueAgeGateCapability(
-    credential: BirthCredentialInput,
+    credential: BirthCredential,
     credentialProof: Proof,
     presentation: BirthCredentialPresentation,
     presentationProof: Proof,
@@ -169,7 +158,7 @@ export class CredentialsDemoSimulator {
     return this.executeCircuit(() =>
       this.contract.impureCircuits.issueAgeGateCapability(
         this.circuitContext,
-        withNoStatusBinding(credential),
+        credential,
         credentialProof,
         presentation,
         presentationProof,
@@ -179,7 +168,9 @@ export class CredentialsDemoSimulator {
     );
   }
 
-  public claimAgeGateCapability(capability: Uint8Array): AccessDecision {
+  public claimAgeGateCapability(
+    capability: Uint8Array,
+  ): AccessDecision {
     return this.executeCircuit(() =>
       this.contract.impureCircuits.claimAgeGateCapability(
         this.circuitContext,

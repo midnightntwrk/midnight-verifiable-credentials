@@ -70,6 +70,13 @@ const FEATURES = {
 const DEFAULT_PROTOCOL_CURRENT_DAY = 0n;
 const DEFAULT_ISSUANCE_OFFER_EXPIRY_DAY = 1_000_000n;
 
+const createNoStatusBinding = (): SecretBirthCredential["statusBinding"] => {
+  // The thin-core secret-birth credential models `NoStatusBinding` as an empty struct.
+  const binding: SecretBirthCredential["statusBinding"] = {};
+  genericPureCircuits.assertValidNoStatusBinding(binding);
+  return binding;
+};
+
 type SecretIssuanceOfferOptions = {
   readonly offerExpiresAtDay?: bigint;
 };
@@ -364,7 +371,7 @@ export class SecretIssuerAgent {
         requestChallengeResponse:
           genericPureCircuits.noSecretHolderChallengeResponse(),
       },
-      statusBinding: {},
+      statusBinding: createNoStatusBinding(),
       issuedAt: claimWitness.issuedAt,
       hasExpiration: true,
       expiresAt: claimWitness.expiresAt,

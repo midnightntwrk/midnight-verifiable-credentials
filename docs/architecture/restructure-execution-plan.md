@@ -96,8 +96,8 @@ Wave rule:
 - keep npm package names stable
 - update workspaces, CI filters, artifact scripts, and documentation links in
   the same PR as each physical move
-- defer the remaining non-package top-level outliers (`libs/`,
-  `infrastructure/preprod-proof-server.yml`) until the package move wave lands
+- the remaining checked-in vendor tarballs should live under `tooling/vendor/`,
+  not under a top-level architecture root
 
 ## Commit and CI policy during migration
 

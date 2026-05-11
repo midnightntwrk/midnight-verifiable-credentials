@@ -23,25 +23,31 @@ run_credentials_integration_target() {
 
 echo "[credentials] Lint"
 if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
-  echo "[credentials] Turbo-aware light build lane"
-  npm run ci:build:light
+  echo "[credentials] Light wrapper lanes"
+  ./run.sh lint --light
+  ./run.sh typecheck --light
+  ./run.sh build --light
+  ./run.sh test --light
 else
-  echo "[credentials] Turbo-aware full build lane"
-  npm run ci:build
+  echo "[credentials] Full wrapper lanes"
+  ./run.sh lint
+  ./run.sh typecheck
+  ./run.sh build
+  ./run.sh test
 fi
 
 echo "[credentials] BDD smoke lane"
-npm run test:bdd:smoke
+./run.sh bdd
 
 if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
   echo "[credentials] Skip standalone integrations (SKIP_LONG_RUNNING=1)"
 elif docker info >/dev/null 2>&1; then
   run_credentials_integration_target \
     "Standalone demo-contract integration" \
-    npm run test:integration -w use-cases/age-gate/contract
+    ./run.sh integration-demo-contract
   run_credentials_integration_target \
     "Standalone protocol integration" \
-    npm run test:integration -w components/orchestration/protocol
+    ./run.sh integration-protocol
 else
   echo "[credentials] Skipping standalone integrations (docker unavailable)"
 fi

@@ -15,11 +15,12 @@ The current slice now covers:
   - explicit-holder age-gate happy path
   - hidden-holder revocation-aware happy path
   - hidden-holder same-contract live-status happy path
-- four negative hidden-holder status-boundary scenarios:
+- five negative hidden-holder status-boundary scenarios:
   - same-contract live-status revoked handle
   - wrong registry id
   - wrong revoked root
   - stale authority-attested proof
+  - revoked credential rejected before proof assembly
 
 ## Run
 
@@ -41,6 +42,12 @@ npm run test:bdd:all
 
 Those commands reuse existing VC build artifacts when they are already present
 and only fall back to the shared VC build prerequisites when they are missing.
+
+Scope rule:
+
+- this workspace is living documentation, not a second full regression matrix
+- new scenarios should only land when they clarify trust boundaries,
+  integration posture, or verifier/holder responsibilities materially
 
 The Serenity BDD report is generated under:
 
