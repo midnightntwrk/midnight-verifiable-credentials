@@ -38,7 +38,6 @@ The repository is organized as a layered Compact-first stack.
 | Layer 3 status prototype | Status-aware contract surface plus off-chain builders | `credentials-status-registry` |
 | Layer 3 | Verifier/business contract composition | `credentials-demo-contract` |
 | Layer 4 | Transport and protocol orchestration | `credentials-openid`, `credentials-protocol` |
-| Planned prototype restoration | Future cross-profile prototype package, if restored explicitly | `credentials-birth-binding-prototypes` |
 | Shared infra | Standalone integration/runtime support | `standalone-environment` |
 
 Use [`./package-tier-inventory.md`](./package-tier-inventory.md) when you need
@@ -153,16 +152,10 @@ Repository convention for demo packages:
 This keeps demo artifacts easier to review, easier to explain to integrators,
 and materially cheaper to compile in CI.
 
-### `credentials-birth-binding-prototypes`
-This is a planned future package name, not a current workspace package on
-`develop`.
-
-If restored, its intended role is a cross-profile birth-credential prototype
-matrix for exercising multiple holder-binding profiles over the same claim
-family.
-
-Until that restoration happens, it should be treated as roadmap-only rather
-than as part of the validated package spine.
+### Historical placeholder package names
+`credentials-birth-binding-prototypes` still appears in some planning notes as a
+future restoration target. It is not a current workspace package and should not
+be treated as part of the validated package spine.
 
 ### `standalone-environment`
 This package provides shared integration infrastructure for docker-backed or
