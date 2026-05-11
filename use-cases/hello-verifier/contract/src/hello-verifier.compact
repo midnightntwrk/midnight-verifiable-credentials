@@ -66,6 +66,8 @@ export circuit verifyHelloFamilyPresentationForHelloVerifier(
 
   lastVerifiedCredentialRoot = credentialRoot;
   lastVerifiedRequestChallenge = disclose(request.verifierChallengeHash);
+  // CONFORMANCE LOCK: boolean and bigUnsigned disclosure are always required
+  // by helloVerifierRequest(...), so they do not need a conditional reset path.
   lastVerifiedBooleanValue = disclose(presentation.disclosed.booleanValue);
   lastVerifiedBigUnsignedValue = disclose(
     presentation.disclosed.bigUnsignedValue

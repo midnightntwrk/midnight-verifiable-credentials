@@ -22,6 +22,7 @@ Non-goals:
 - issuance storage
 - reusable business capabilities
 - revocation/status handling
+- credential expiration enforcement
 - holder-side witness predicates
 - standalone application wiring
 

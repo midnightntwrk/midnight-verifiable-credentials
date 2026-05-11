@@ -46,8 +46,11 @@ const sha256 = (value: string): Uint8Array =>
 
 const padText = (value: string, length = 32): Uint8Array => {
   const bytes = new TextEncoder().encode(value);
-  if (bytes.length >= length) {
-    return bytes.subarray(0, length);
+  if (bytes.length > length) {
+    throw new Error(`Text value exceeds ${length}-byte fixture padding limit`);
+  }
+  if (bytes.length === length) {
+    return bytes;
   }
   const padded = new Uint8Array(length);
   padded.set(bytes);
