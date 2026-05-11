@@ -196,6 +196,14 @@ describe("canonical non-membership bundles", () => {
     expect(bundle.witness.witnessInput.statusHandle).toEqual(
       bundle.witness.statusHandle,
     );
+    expect(Object.keys(bundle.witness.witnessInput).sort()).toEqual([
+      "statusHandle",
+      "statusHandleOpening",
+    ]);
+    expect(
+      "registryState" in
+        (bundle.witness.witnessInput as Record<string, unknown>),
+    ).toEqual(false);
 
     expect(() => assertCanonicalNonMembershipBundle(bundle)).not.toThrow();
   });

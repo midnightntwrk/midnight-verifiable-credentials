@@ -497,3 +497,4 @@ final non-revocation architecture.
 Architecture companion note:
 
 - [status-canonical-non-membership-bundle.md](../architecture/status-canonical-non-membership-bundle.md)
+- [live-root-binding-feasibility.md](../architecture/live-root-binding-feasibility.md)

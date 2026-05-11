@@ -7,6 +7,7 @@ Companion documents:
 - [`../spec/credential-status.md`](../spec/credential-status.md)
 - [`../spec/status-verification-protocol.md`](../spec/status-verification-protocol.md)
 - [`../spec/revocation-registry.md`](../spec/revocation-registry.md)
+- [`./live-root-binding-feasibility.md`](./live-root-binding-feasibility.md)
 - [`./status-canonical-non-membership-bundle.md`](./status-canonical-non-membership-bundle.md)
 - [`./status-binding-body-root-commitment.md`](./status-binding-body-root-commitment.md)
 

@@ -243,6 +243,10 @@ The canonical runtime-bundle contract is documented in:
 
 - [status-canonical-non-membership-bundle.md](../architecture/status-canonical-non-membership-bundle.md)
 
+The current live-root feasibility decision space is documented in:
+
+- [live-root-binding-feasibility.md](../architecture/live-root-binding-feasibility.md)
+
 ### 4. `AuthorityAttestedStatusProofProtocol`
 
 This is the current transitional proof protocol.

@@ -1,3 +1,5 @@
+import { TextEncoder } from "node:util";
+
 import {
   describeStatusVerificationFailure,
   type StatusVerificationErrorCode,
@@ -23,6 +25,16 @@ import {
 } from "./demo-revocation-fixtures.js";
 
 setNetworkId("undeployed");
+
+const padText = (value: string, length = 32): Uint8Array => {
+  const bytes = new TextEncoder().encode(value);
+  if (bytes.length >= length) {
+    return bytes.subarray(0, length);
+  }
+  const padded = new Uint8Array(length);
+  padded.set(bytes);
+  return padded;
+};
 
 const expectCanonicalStatusFailure = ({
   mode,
@@ -94,6 +106,9 @@ describe("credentials demo revocation contract", () => {
     );
     expect(request.statusPolicy.acceptedStatusCapability).toEqual(
       StatusCapabilityKind.revokedSetNonMembership,
+    );
+    expect("statusRequest" in (request as Record<string, unknown>)).toEqual(
+      false,
     );
     expect(request.verificationRequest.verifierChallengeHash).toEqual(
       fixture.verificationRequest.verifierChallengeHash,
@@ -184,7 +199,33 @@ describe("credentials demo revocation contract", () => {
     expect(state.lastVerifiedStatusRegistryId).toEqual(
       fixture.witness.statusRegistryId,
     );
+    expect(state.lastVerifiedRevokedRoot).toEqual(padText("vc-demo:rev:live"));
     expect(state.activeAccessCapabilities.member(capability)).toEqual(true);
+  });
+
+  it("same-contract live-status inputs do not carry an external registry snapshot", () => {
+    const fixture = createDemoRevocationFixture();
+    const simulator = new CredentialsDemoRevocationSimulator();
+
+    simulator.initializeLiveStatusRegistry(fixture.witness.statusRegistryId);
+    const request = simulator.revocationAwareLiveStatusRequest(
+      fixture.credential.issuerVerificationMethodRef,
+      fixture.witness.verifierDomainHash,
+      fixture.verificationRequest.verifierChallengeHash,
+    );
+    expect("statusRequest" in (request as Record<string, unknown>)).toEqual(
+      false,
+    );
+    expect(
+      "registryState" in
+        (fixture.liveStatusVerificationInputs.witnessInput as Record<
+          string,
+          unknown
+        >),
+    ).toEqual(false);
+    expect(
+      Object.keys(fixture.liveStatusVerificationInputs.witnessInput).sort(),
+    ).toEqual(["statusHandle", "statusHandleOpening"]);
   });
 
   it("rejects same-contract live-status verification when the credential status handle is revoked locally", () => {
