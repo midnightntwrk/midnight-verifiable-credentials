@@ -7,13 +7,6 @@ Reference repos and snapshots used for this note:
 - `midnightntwrk/example-kitties` at `6478745`
 - `OpenZeppelin/compact-contracts` at `6d22e7c`
 
-Companion local artifacts used to cross-check the conclusions:
-
-- `review/compact-research-example-kitties.txt`
-- `review/compact-research-openzeppelin.txt`
-- `review/compact-research-pure-circuits.txt`
-- `review/compact-research-persistent-commit.txt`
-
 ## Executive Summary
 
 The repository does not need a new architecture. It already has a stronger package and module decomposition than the reference repos.
@@ -173,7 +166,7 @@ The following files are the best first targets for the new source-comment conven
 
 ## Pure-Circuit Findings
 
-## Key observation
+### Key observation
 
 The generated TypeScript bindings already classify many current `export circuit` definitions into `pureCircuits` based on what the body actually does.
 
@@ -183,7 +176,7 @@ That means the `pure` keyword is not only about code generation. In this reposit
 - forcing compile-time rejection if someone later sneaks in ledger access or witness access
 - making the pure substrate visible to contributors without having to inspect generated bindings
 
-## Prioritization
+### Prioritization
 
 ### P1. Mark the existing `core/` substrate as explicitly pure
 
