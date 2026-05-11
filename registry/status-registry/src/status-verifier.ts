@@ -13,6 +13,7 @@ import {
 } from "./managed/revocation-registry/contract/index.js";
 import {
   assertObservedRevocationRegistryVersionAtLeast,
+  assertRevocationRegistryVersionAtLeast,
   buildFreshRevokedSetNonMembershipInputs,
   type BuildFreshRevokedSetNonMembershipInputsOptions,
   buildLiveStatusWitnessFromContractState,
@@ -154,11 +155,8 @@ const assertRegistryVersionAccepted = ({
   if (acceptancePolicy?.minimumRegistryVersion === undefined) {
     return;
   }
-  assertObservedRevocationRegistryVersionAtLeast({
-    observedState: {
-      registryState,
-      observedAt: 0n,
-    },
+  assertRevocationRegistryVersionAtLeast({
+    registryState,
     minimumRegistryVersion: acceptancePolicy.minimumRegistryVersion,
   });
 };

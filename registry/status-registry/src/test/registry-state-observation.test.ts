@@ -11,6 +11,7 @@ import { describe, expect, it } from "vitest";
 import {
   assertObservedRevocationRegistryStateFreshEnough,
   assertObservedRevocationRegistryVersionAtLeast,
+  assertRevocationRegistryVersionAtLeast,
   assertStatusHandleNotRevokedInContractState,
   buildFreshRevokedSetNonMembershipInputs,
   buildFreshRevokedSetNonMembershipInputsFromContractState,
@@ -208,6 +209,43 @@ describe("revocation registry observed-root helpers", () => {
     ).not.toThrow();
   });
 
+  it("accepts a live registry-state version at or above the required minimum", () => {
+    const registryState = {
+      registryId: bytes32("registry:hidden-holder"),
+      revokedRoot: bytes32("revoked-root:current"),
+      registryVersion: 3n,
+    };
+
+    expect(() =>
+      assertRevocationRegistryVersionAtLeast({
+        registryState,
+        minimumRegistryVersion: 3n,
+      }),
+    ).not.toThrow();
+
+    expect(() =>
+      assertRevocationRegistryVersionAtLeast({
+        registryState,
+        minimumRegistryVersion: 2n,
+      }),
+    ).not.toThrow();
+  });
+
+  it("rejects a live registry-state version older than the required minimum", () => {
+    const registryState = {
+      registryId: bytes32("registry:hidden-holder"),
+      revokedRoot: bytes32("revoked-root:current"),
+      registryVersion: 2n,
+    };
+
+    expect(() =>
+      assertRevocationRegistryVersionAtLeast({
+        registryState,
+        minimumRegistryVersion: 3n,
+      }),
+    ).toThrow(/state version is older than the required minimum/i);
+  });
+
   it("rejects negative timing inputs and malformed observed states", () => {
     expect(() =>
       buildObservedRevocationRegistryState({
@@ -254,6 +292,13 @@ describe("revocation registry observed-root helpers", () => {
     expect(() =>
       assertObservedRevocationRegistryVersionAtLeast({
         observedState,
+        minimumRegistryVersion: -1n,
+      }),
+    ).toThrow(/must be >= 0/i);
+
+    expect(() =>
+      assertRevocationRegistryVersionAtLeast({
+        registryState: observedState.registryState,
         minimumRegistryVersion: -1n,
       }),
     ).toThrow(/must be >= 0/i);

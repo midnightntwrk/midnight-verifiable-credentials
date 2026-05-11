@@ -159,6 +159,11 @@ map cleanly, the helpers return `unclassifiedFailure` so the verifier can fail
 closed without misreporting an internal/runtime issue as a specific status
 verdict.
 
+For live same-contract verifier checks, the helper applies any minimum
+registry-version policy directly to the live `RevocationRegistryState`. It does
+not pretend that live runtime state is an observed snapshot with an invented
+observation time.
+
 ### 3. External-registry authority-attested Layer 3 verification
 
 Use this when:
