@@ -73,6 +73,13 @@ That lane runs:
 - typecheck and tests for `prototypes/credential-families/hello-family`
 - typecheck and tests for `use-cases/hello-verifier/contract`
 
+It is intentionally build-less at the root level:
+
+- the `hello-family` and `hello-verifier` package-local typecheck/pretest
+  commands already run the Compact compiles they require
+- the goal of `hello-smoke` is a smallest runnable handoff lane, not a second
+  artifact-build umbrella
+
 Equivalent package-local commands:
 
 ```bash
