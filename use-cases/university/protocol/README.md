@@ -19,8 +19,8 @@ Boundary:
 
 Scope:
 
-- 100 student-initiated issuance requests and 100 issuance results
-- 100 company presentation-request / submission / result threads
+- 10 student-initiated issuance requests and 10 issuance results
+- 10 company presentation-request / submission / result threads
 - 5 mall discount presentation-request / submission / result threads
 - deterministic transcript assertions over thread and policy semantics
 - explicit negative-path coverage for a company verifier that bypasses the safe

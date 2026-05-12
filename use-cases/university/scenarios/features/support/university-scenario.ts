@@ -322,6 +322,23 @@ const normalizeRequestPolicy = (
   minimumFinalGrade: BigInt(policy.minimumFinalGrade ?? 0),
 });
 
+const disclosureNamesForPolicy = (
+  policy: CompanyRequestPolicy,
+): string[] =>
+  [
+    policy.requireDiplomaIdDisclosure ? "diplomaId" : undefined,
+    policy.requireStudentIdDisclosure ? "studentId" : undefined,
+    policy.requireGraduateNameDisclosure ? "graduateName" : undefined,
+    policy.requireUniversityNameDisclosure ? "universityName" : undefined,
+    policy.requireFacultyNameDisclosure ? "facultyName" : undefined,
+    policy.requireAwardNameDisclosure ? "awardName" : undefined,
+    policy.requireHonorsCodeDisclosure ? "honorsCode" : undefined,
+    policy.requireGraduationYearDisclosure ? "graduationYear" : undefined,
+    policy.requireGraduationMonthDisclosure ? "graduationMonth" : undefined,
+    policy.requireFinalGradeDisclosure ? "finalGrade" : undefined,
+    policy.requireCreditsEarnedDisclosure ? "creditsEarned" : undefined,
+  ].filter((value): value is string => typeof value === "string");
+
 const average = (values: readonly number[]): number => {
   if (values.length === 0) {
     return 0;
@@ -399,6 +416,140 @@ export class UseUniversityScenario extends Ability {
     for (const company of companies) {
       void normalizeRequestPolicy(company.requestPolicy);
     }
+  }
+
+  universityIssuerSummary(): {
+    readonly universityName: string;
+    readonly issuerDidUrl: string;
+    readonly issuerMethodId: string;
+    readonly credentialFamilyPackage: string;
+    readonly holderBindingProfile: string;
+    readonly statusModel: string;
+    readonly batchSize: number;
+  } {
+    const university = readJson<UniversityProfile>(this.#paths.university);
+    return {
+      universityName: university.universityName,
+      issuerDidUrl: university.issuerDidUrl,
+      issuerMethodId: university.issuerMethodId,
+      credentialFamilyPackage: university.credentialFamilyPackage,
+      holderBindingProfile: university.holderBindingProfile,
+      statusModel: university.statusModel,
+      batchSize: university.batchSize,
+    };
+  }
+
+  graduatingClassSummary(): {
+    readonly universityName: string;
+    readonly studentCount: number;
+    readonly sampleStudents: ReadonlyArray<{
+      readonly studentId: string;
+      readonly fullName: string;
+      readonly assignedCompanyId: string;
+      readonly finalGrade: number;
+    }>;
+  } {
+    const university = readJson<UniversityProfile>(this.#paths.university);
+    const students = readJson<StudentRecord[]>(this.#paths.students);
+    return {
+      universityName: university.universityName,
+      studentCount: students.length,
+      sampleStudents: students.slice(0, 3).map((student) => ({
+        studentId: student.studentId,
+        fullName: student.fullName,
+        assignedCompanyId: student.assignedCompanyId,
+        finalGrade: student.diplomaClaimValues.finalGrade,
+      })),
+    };
+  }
+
+  issuanceBatchPlanSummary(): {
+    readonly batchCount: number;
+    readonly batchSizeLimit: number;
+    readonly batches: ReadonlyArray<{
+      readonly batchId: string;
+      readonly size: number;
+      readonly studentIds: readonly string[];
+    }>;
+  } {
+    const university = readJson<UniversityProfile>(this.#paths.university);
+    const issuanceBatches = readJson<IssuanceBatchRecord[]>(
+      this.#paths.issuanceBatches,
+    );
+    return {
+      batchCount: issuanceBatches.length,
+      batchSizeLimit: university.batchSize,
+      batches: issuanceBatches.map((batch) => ({
+        batchId: batch.batchId,
+        size: batch.size,
+        studentIds: batch.studentIds,
+      })),
+    };
+  }
+
+  companyRosterSummary(): {
+    readonly companyNames: readonly string[];
+    readonly policies: ReadonlyArray<{
+      readonly companyId: string;
+      readonly companyName: string;
+      readonly disclosures: readonly string[];
+      readonly enforceMinimumFinalGrade: boolean;
+      readonly minimumFinalGrade: number | null;
+    }>;
+  } {
+    const companies = readJson<CompanyRecord[]>(this.#paths.companies);
+    return {
+      companyNames: companies.map((company) => company.companyName),
+      policies: companies.map((company) => ({
+        companyId: company.companyId,
+        companyName: company.companyName,
+        disclosures: disclosureNamesForPolicy(company.requestPolicy),
+        enforceMinimumFinalGrade:
+          company.requestPolicy.enforceMinimumFinalGrade ?? false,
+        minimumFinalGrade: company.requestPolicy.minimumFinalGrade ?? null,
+      })),
+    };
+  }
+
+  mallPolicySummary(): {
+    readonly mallName: string;
+    readonly disclosures: readonly string[];
+    readonly minimumFinalGrade: number;
+  } {
+    const mall = readJson<MallRecord>(this.#paths.mall);
+    return {
+      mallName: mall.mallName,
+      disclosures: disclosureNamesForPolicy(mall.requestPolicy),
+      minimumFinalGrade: mall.requestPolicy.minimumFinalGrade ?? 0,
+    };
+  }
+
+  selectedDiscountApplicantSummary(): {
+    readonly studentId: string;
+    readonly fullName: string;
+    readonly finalGrade: number;
+    readonly expectedDiscountEligibility: boolean;
+  } {
+    if (!this.#selectedDiscountStudentId) {
+      throw new Error("No discount applicant selected");
+    }
+
+    const discountApplicants = readJson<DiscountApplicantRecord[]>(
+      this.#paths.discountApplicants,
+    );
+    const applicant = discountApplicants.find(
+      (record) => record.studentId === this.#selectedDiscountStudentId,
+    );
+    if (!applicant) {
+      throw new Error(`Unknown discount applicant ${this.#selectedDiscountStudentId}`);
+    }
+
+    return {
+      studentId: applicant.studentId,
+      fullName: applicant.fullName,
+      finalGrade: applicant.finalGrade,
+      expectedDiscountEligibility: applicant.expectedDiscountEligibility,
+    };
   }
 
   #invalidateProtocolResult(): void {

@@ -4,6 +4,8 @@ Purpose:
 
 - document the full university diploma prototype flow in BDD style
 - make each request, response, and verification check visible in the scenario text
+- emit step-level DTO and intent summaries into the Serenity report via
+  Serenity/JS log entries
 - define a metric vocabulary for later executable orchestration work
 - execute the current virtual-agent university flow against the checked-in
   `university-diploma` family package

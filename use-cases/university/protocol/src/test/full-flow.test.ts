@@ -22,32 +22,35 @@ type PresentationResultShape = {
 
 describe("university protocol-style multi-party flow", () => {
   let result: ReturnType<UniversityProtocolFlowRunner["runAll"]>;
+  const expectedStudentCount = 10;
+  const expectedBatchCount = 2;
+  const expectedDiscountCount = 5;
 
   beforeAll(() => {
     setNetworkId("undeployed");
     result = new UniversityProtocolFlowRunner().runAll();
   });
 
-  it("issues 100 diploma credentials, completes 100 job applications, and evaluates 5 discount requests", () => {
-    expect(result.issuance.requestCount).toEqual(100);
-    expect(result.issuance.resultCount).toEqual(100);
-    expect(result.issuance.batchCount).toEqual(5);
-    expect(result.issuance.issuedStudentIds).toHaveLength(100);
+  it("issues 10 diploma credentials, completes 10 job applications, and evaluates 5 discount requests", () => {
+    expect(result.issuance.requestCount).toEqual(expectedStudentCount);
+    expect(result.issuance.resultCount).toEqual(expectedStudentCount);
+    expect(result.issuance.batchCount).toEqual(expectedBatchCount);
+    expect(result.issuance.issuedStudentIds).toHaveLength(expectedStudentCount);
 
-    expect(result.jobApplications.requestCount).toEqual(100);
-    expect(result.jobApplications.submissionCount).toEqual(100);
-    expect(result.jobApplications.resultCount).toEqual(100);
-    expect(result.jobApplications.acceptedCount).toEqual(100);
+    expect(result.jobApplications.requestCount).toEqual(expectedStudentCount);
+    expect(result.jobApplications.submissionCount).toEqual(expectedStudentCount);
+    expect(result.jobApplications.resultCount).toEqual(expectedStudentCount);
+    expect(result.jobApplications.acceptedCount).toEqual(expectedStudentCount);
     expect(
       Object.values(result.jobApplications.companyAcceptedCounts).reduce(
         (sum, count) => sum + count,
         0,
       ),
-    ).toEqual(100);
+    ).toEqual(expectedStudentCount);
 
-    expect(result.discounts.requestCount).toEqual(5);
-    expect(result.discounts.submissionCount).toEqual(5);
-    expect(result.discounts.resultCount).toEqual(5);
+    expect(result.discounts.requestCount).toEqual(expectedDiscountCount);
+    expect(result.discounts.submissionCount).toEqual(expectedDiscountCount);
+    expect(result.discounts.resultCount).toEqual(expectedDiscountCount);
     expect(result.discounts.acceptedCount).toEqual(3);
     expect(result.discounts.rejectedCount).toEqual(2);
     expect(result.discounts.outcomes).toEqual({

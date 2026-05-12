@@ -5,10 +5,6 @@ Feature: Selected students present diploma credentials to request a mall discoun
   # - The verifier request therefore enforces `minimumFinalGrade = 91`.
   # - Five students with different grades exercise both acceptance and rejection paths.
   #
-  # DATA SOURCES:
-  # - use-cases/university/data/mall.json
-  # - use-cases/university/data/discount-applicants.json
-  #
   # METRICS TO CAPTURE:
   # - discount_request_publish_ms
   # - discount_presentation_build_ms
@@ -24,7 +20,7 @@ Feature: Selected students present diploma credentials to request a mall discoun
     #   and a minimum final grade of 91.
     # CHECKS:
     # - The request encodes the business rule `grade > 90` as `minimumFinalGrade = 91`.
-    Given the mall verifier policy from "use-cases/university/data/mall.json"
+    Given the "Student Square Mall" verifier policy is loaded
 
     # REQUEST:
     # - Load one selected student from the discount applicant set.
@@ -33,7 +29,7 @@ Feature: Selected students present diploma credentials to request a mall discoun
     # CHECKS:
     # - The student's final grade matches the dataset.
     # - The student owns the holder DID instance used for presentation.
-    And the selected student "<studentId>" from "use-cases/university/data/discount-applicants.json"
+    And the selected student "<fullName>" with id "<studentId>" is loaded from the committed discount applicant list
 
     # REQUEST:
     # - The student builds a diploma presentation that discloses the university name and final grade.
@@ -62,9 +58,9 @@ Feature: Selected students present diploma credentials to request a mall discoun
     And the discount report should record the explanation "<explanation>"
 
     Examples:
-      | studentId | finalGrade | expectedOutcome | explanation                               |
-      | STU-0001  | 98         | accepted        | grade is strictly greater than 90         |
-      | STU-0002  | 94         | accepted        | grade is strictly greater than 90         |
-      | STU-0003  | 91         | accepted        | grade is strictly greater than 90         |
-      | STU-0004  | 90         | rejected        | failed assert: University-diploma disclosed final grade is below the verifier minimum |
-      | STU-0005  | 72         | rejected        | failed assert: University-diploma disclosed final grade is below the verifier minimum |
+      | fullName        | studentId | finalGrade | expectedOutcome | explanation                               |
+      | Ada Avery 0001  | STU-0001  | 98         | accepted        | grade is strictly greater than 90         |
+      | Ben Avery 0002  | STU-0002  | 94         | accepted        | grade is strictly greater than 90         |
+      | Cara Avery 0003 | STU-0003  | 91         | accepted        | grade is strictly greater than 90         |
+      | Dion Avery 0004 | STU-0004  | 90         | rejected        | failed assert: University-diploma disclosed final grade is below the verifier minimum |
+      | Ella Avery 0005 | STU-0005  | 72         | rejected        | failed assert: University-diploma disclosed final grade is below the verifier minimum |

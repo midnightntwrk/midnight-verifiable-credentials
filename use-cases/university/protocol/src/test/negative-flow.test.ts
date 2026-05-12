@@ -15,10 +15,12 @@ type PresentationResultShape = {
 describe("university protocol negative policy flow", () => {
   let result: ReturnType<UniversityProtocolFlowRunner["runAll"]>;
   let northwindAssignedStudents: number;
+  let totalStudents: number;
 
   beforeAll(() => {
     setNetworkId("undeployed");
     const runner = new UniversityProtocolFlowRunner();
+    totalStudents = runner.students.length;
     northwindAssignedStudents = runner.students.filter(
       (student) => student.assignedCompanyId === "company-northwind-robotics",
     ).length;
@@ -57,7 +59,7 @@ describe("university protocol negative policy flow", () => {
     expect(northwindAssignedStudents).toBeGreaterThan(0);
     expect(rejectedResults).toHaveLength(northwindAssignedStudents);
     expect(result.jobApplications.acceptedCount).toEqual(
-      100 - northwindAssignedStudents,
+      totalStudents - northwindAssignedStudents,
     );
     expect(new Set(rejectedResults.map((message) => message.from))).toEqual(
       new Set(["company-northwind-robotics"]),

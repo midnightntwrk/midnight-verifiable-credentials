@@ -1,10 +1,24 @@
 import { Given, Then, When } from "@cucumber/cucumber";
-import { actorCalled } from "@serenity-js/core";
+import { actorCalled, Log } from "@serenity-js/core";
 
 import { UseUniversityScenario } from "../support/university-scenario.js";
 
 const engineer = () => actorCalled("Engineer");
 const universityScenario = () => UseUniversityScenario.from(engineer());
+
+type StepInsight = {
+  readonly request: string;
+  readonly response: string;
+  readonly checks: readonly string[];
+  readonly dto: unknown;
+};
+
+const logInsight = async (
+  title: string,
+  payload: StepInsight,
+) => engineer().attemptsTo(
+  Log.the(`${title}\n${JSON.stringify(payload, null, 2)}`),
+);
 
 const expectMetricNames = (actual: readonly string[], expected: readonly string[]) => {
   for (const metricName of expected) {
@@ -14,33 +28,86 @@ const expectMetricNames = (actual: readonly string[], expected: readonly string[
   }
 };
 
-Given("the university issuer DID instance from {string}", async (relativePath: string) => {
-  universityScenario().setUniversityPath(relativePath);
+Given("the {string} issuer DID instance is available", async (expectedUniversityName: string) => {
+  const summary = universityScenario().universityIssuerSummary();
+  if (summary.universityName !== expectedUniversityName) {
+    throw new Error(`Expected university ${expectedUniversityName}, got ${summary.universityName}`);
+  }
+  await logInsight("University issuer step insight", {
+    request: "Load the university issuer DID instance and family issuance profile.",
+    response: "The harness exposes the issuer DID URL, verification method, family package, holder-binding profile, and batch policy.",
+    checks: [
+      "The issuer name matches the scenario actor name.",
+      "The issuer DID URL and verification method are present.",
+      "The family is configured for explicit holder binding and no status binding.",
+    ],
+    dto: summary,
+  });
 });
 
-Given("{int} graduating student agents from {string}", async (expectedCount: number, relativePath: string) => {
-  universityScenario().setStudentsPath(relativePath);
+Given("the {string} graduating class contains {int} eligible students", async (expectedUniversityName: string, expectedCount: number) => {
+  const summary = universityScenario().graduatingClassSummary();
+  if (summary.universityName !== expectedUniversityName) {
+    throw new Error(`Expected graduating class for ${expectedUniversityName}, got ${summary.universityName}`);
+  }
   universityScenario().assertStudentCount(expectedCount);
+  await logInsight("Graduating class step insight", {
+    request: "Load the committed graduating-class roster and materialize the student holder agents.",
+    response: "The harness exposes the total eligible class size and a readable sample of student-to-company assignments.",
+    checks: [
+      "The roster belongs to the named university.",
+      `The roster contains exactly ${expectedCount} eligible students.`,
+      "Each sampled student includes a DID-backed holder identity and final-grade fixture data.",
+    ],
+    dto: summary,
+  });
 });
 
-When("every student submits a student-initiated university diploma issuance request", async () => {
+When("every graduating student submits a university diploma issuance request", async () => {
   await universityScenario().runBatchIssuance();
+  await logInsight("Issuance execution step insight", {
+    request: "Each graduating student submits a student-initiated issuance request carrying DID holder information and diploma claim payload.",
+    response: "The university accepts, validates, batches, signs, and delivers one non-revocable diploma VC per accepted student.",
+    checks: [
+      "The student exists in the university graduation roster.",
+      "The holder method referenced by the request belongs to the student DID.",
+      "The issuance result reports accepted request count, issued credential count, and batch-level timing metrics.",
+    ],
+    dto: universityScenario().issuanceResult(),
+  });
 });
 
-Then("the university should partition the accepted requests using {string}", async (_relativePath: string) => {
+Then("{string} should partition the accepted requests into the committed {int}-batch graduation plan", async (expectedUniversityName: string, expectedBatchCount: number) => {
+  const issuerSummary = universityScenario().universityIssuerSummary();
+  if (issuerSummary.universityName !== expectedUniversityName) {
+    throw new Error(`Expected university ${expectedUniversityName}, got ${issuerSummary.universityName}`);
+  }
   const result = universityScenario().issuanceResult();
   if (!result.partitionMatchesPlan) {
     throw new Error("University issuance partition does not match the committed batch plan");
   }
+  if (result.batchCount !== expectedBatchCount) {
+    throw new Error(`Expected ${expectedBatchCount} issuance batches, got ${result.batchCount}`);
+  }
+  await logInsight("Issuance batch-plan step insight", {
+    request: "Apply the committed batch policy to all accepted issuance requests.",
+    response: "The queue is partitioned into deterministic issuance batches that align with the checked-in batch plan fixture.",
+    checks: [
+      `The batch count is exactly ${expectedBatchCount}.`,
+      "No student appears in more than one batch.",
+      "No batch exceeds the configured batch size limit.",
+    ],
+    dto: universityScenario().issuanceBatchPlanSummary(),
+  });
 });
 
 Then("every issuance batch should deliver one non-revocable diploma VC per student", async () => {
   const result = universityScenario().issuanceResult();
-  if (result.issuedCredentialCount !== 100) {
-    throw new Error(`Expected 100 issued credentials, got ${result.issuedCredentialCount}`);
+  if (result.issuedCredentialCount !== result.totalStudents) {
+    throw new Error(`Expected ${result.totalStudents} issued credentials, got ${result.issuedCredentialCount}`);
   }
-  if (result.acceptedRequestCount !== 100) {
-    throw new Error(`Expected 100 accepted issuance requests, got ${result.acceptedRequestCount}`);
+  if (result.acceptedRequestCount !== result.totalStudents) {
+    throw new Error(`Expected ${result.totalStudents} accepted issuance requests, got ${result.acceptedRequestCount}`);
   }
 });
 
@@ -65,20 +132,68 @@ Then("the issuance report should include the configured bottleneck metrics for a
   ]);
 });
 
-Given("the graduating student dataset from {string}", async (relativePath: string) => {
-  universityScenario().setStudentsPath(relativePath);
+Given("the {string} graduating class roster is loaded", async (expectedUniversityName: string) => {
+  const summary = universityScenario().graduatingClassSummary();
+  if (summary.universityName !== expectedUniversityName) {
+    throw new Error(`Expected graduating class for ${expectedUniversityName}, got ${summary.universityName}`);
+  }
+  await logInsight("Job-application roster step insight", {
+    request: "Load the graduating-class holders that already possess university diploma credentials.",
+    response: "The harness exposes the readable student roster that will participate in company presentation flows.",
+    checks: [
+      "The roster belongs to the named university.",
+      "The roster is small enough to read directly in the Serenity report.",
+      "Sample students show assigned company ids and final grades.",
+    ],
+    dto: summary,
+  });
 });
 
-Given("the company verifier dataset from {string}", async (relativePath: string) => {
-  universityScenario().setCompaniesPath(relativePath);
+Given("the company verifier roster includes {string}, {string}, and {string}", async (firstCompany: string, secondCompany: string, thirdCompany: string) => {
+  const summary = universityScenario().companyRosterSummary();
+  const actual = summary.companyNames;
+  const expected = [firstCompany, secondCompany, thirdCompany];
+  if (actual.join("|") !== expected.join("|")) {
+    throw new Error(`Expected company roster ${expected.join(", ")}, got ${actual.join(", ")}`);
+  }
+  await logInsight("Company verifier roster step insight", {
+    request: "Load the company verifier DID instances and their presentation-request policies.",
+    response: "The harness exposes each company name plus the disclosure policy it will apply to student job applications.",
+    checks: [
+      "The three expected companies are present in the configured order.",
+      "Each company policy lists the disclosed fields required for verification.",
+      "No company in this scenario enforces a minimum-grade predicate.",
+    ],
+    dto: summary,
+  });
 });
 
 When("each company publishes its university diploma presentation request policy", async () => {
   universityScenario().publishCompanyPolicies();
+  await logInsight("Published company request-policy step insight", {
+    request: "Each company publishes a verifier request describing the diploma fields required for a job application.",
+    response: "Students can fetch a company-specific challenge and disclosure policy before building the presentation.",
+    checks: [
+      "Each request names the expected university issuer.",
+      "Only justified diploma fields are required.",
+      "The request policies now participate in the threaded protocol flow.",
+    ],
+    dto: universityScenario().companyRosterSummary(),
+  });
 });
 
 When("every student builds and submits a job application to the assigned company", async () => {
   await universityScenario().runJobApplications();
+  await logInsight("Job-application execution step insight", {
+    request: "Each student builds a diploma presentation against the assigned company request and submits a job-application message.",
+    response: "The threaded protocol runner verifies the presentation and records accepted application outcomes grouped by company.",
+    checks: [
+      "The verifier challenge used in the presentation matches the company request.",
+      "All required disclosed fields are present in the submission.",
+      "The result includes per-company acceptance counts and bottleneck metrics.",
+    ],
+    dto: universityScenario().jobApplicationResult(),
+  });
 });
 
 Then("all {int} job applications should be accepted by their target companies", async (expectedCount: number) => {
@@ -106,13 +221,39 @@ Then("the job-application report should expose company-level bottleneck metrics"
   }
 });
 
-Given("the mall verifier policy from {string}", async (relativePath: string) => {
-  universityScenario().setMallPath(relativePath);
+Given("the {string} verifier policy is loaded", async (expectedMallName: string) => {
+  const summary = universityScenario().mallPolicySummary();
+  if (summary.mallName !== expectedMallName) {
+    throw new Error(`Expected mall ${expectedMallName}, got ${summary.mallName}`);
+  }
+  await logInsight("Mall verifier policy step insight", {
+    request: "Load the mall verifier DID instance and its discount policy.",
+    response: "The harness exposes the required disclosures and the encoded minimum final-grade predicate.",
+    checks: [
+      "The mall name matches the scenario actor.",
+      "The policy requires university name and final grade disclosure.",
+      "The business rule grade > 90 is encoded as minimumFinalGrade = 91.",
+    ],
+    dto: summary,
+  });
 });
 
-Given("the selected student {string} from {string}", async (studentId: string, relativePath: string) => {
-  universityScenario().setDiscountApplicantsPath(relativePath);
+Given("the selected student {string} with id {string} is loaded from the committed discount applicant list", async (expectedFullName: string, studentId: string) => {
   universityScenario().selectDiscountStudent(studentId);
+  const summary = universityScenario().selectedDiscountApplicantSummary();
+  if (summary.fullName !== expectedFullName) {
+    throw new Error(`Expected selected student ${expectedFullName}, got ${summary.fullName}`);
+  }
+  await logInsight("Selected discount applicant step insight", {
+    request: "Load one named student from the committed discount-applicant fixture set.",
+    response: "The harness reconstructs the selected student diploma state and expected discount eligibility.",
+    checks: [
+      "The named student id matches the scenario example row.",
+      "The final grade matches the committed applicant fixture.",
+      "The expected eligibility flag is visible before the presentation is built.",
+    ],
+    dto: summary,
+  });
 });
 
 When("the student submits a discount request presentation with final grade {int}", async (expectedFinalGrade: number) => {
@@ -121,6 +262,16 @@ When("the student submits a discount request presentation with final grade {int}
   if (result.finalGrade !== expectedFinalGrade) {
     throw new Error(`Expected selected student's final grade to be ${expectedFinalGrade}, got ${result.finalGrade}`);
   }
+  await logInsight("Discount execution step insight", {
+    request: "The selected student builds a diploma presentation for the mall and discloses the final grade required by the discount policy.",
+    response: "The verifier evaluates the presentation and returns an accepted or rejected outcome with an explanation string.",
+    checks: [
+      `The disclosed final grade is ${expectedFinalGrade}.`,
+      "The explanation is stable for both acceptance and rejection paths.",
+      "The result carries the expected discount metrics.",
+    ],
+    dto: result,
+  });
 });
 
 Then("the mall should return the outcome {string}", async (expectedOutcome: string) => {

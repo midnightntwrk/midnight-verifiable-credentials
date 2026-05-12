@@ -128,7 +128,7 @@ Status: current implemented test surface as of 2026-05-11.
 ### `university-protocol`
 
 - `use-cases/university/protocol/src/test/full-flow.test.ts`
-  - threaded message-level student-initiated issuance over 100 students
+  - threaded message-level student-initiated issuance over 10 students
   - threaded job-application request / submission / result flow over 3 companies
   - threaded mall discount request / submission / result flow over 5 applicants
   - transcript-level policy semantics for company-specific disclosure requests
@@ -137,7 +137,7 @@ Status: current implemented test surface as of 2026-05-11.
 ### University executable BDD specs
 
 - `use-cases/university/scenarios/features/university_diploma_batch_issuance.feature`
-  - executable student-initiated batch issuance flow for 100 students
+  - executable student-initiated batch issuance flow for 10 students
 - `use-cases/university/scenarios/features/university_diploma_job_application.feature`
   - executable employer verification flow across 3 companies
 - `use-cases/university/scenarios/features/university_diploma_discount.feature`

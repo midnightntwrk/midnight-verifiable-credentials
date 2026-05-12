@@ -5,6 +5,8 @@ Status:
 - large narrative prototype use case built on `credentials-university-diploma`
 - data-rich SSI flow covering issuance, job-application verification, and student-discount verification
 - BDD-style scenario set with bottleneck-oriented metrics
+- human-readable BDD wording keyed to real actor names instead of raw data-file
+  paths
 - compileable verifier-side contract surface for employer and mall policies
 - threaded protocol-style multi-party flow over the same deterministic actors and data
 - executable BDD job-application and discount paths now sourced from the same
@@ -12,7 +14,7 @@ Status:
 
 ## Purpose
 
-This use case models a university that issues a non-revocable diploma VC to 100
+This use case models a university that issues a non-revocable diploma VC to 10
 students, then reuses that VC in two verifier flows:
 
 - employer job applications across 3 companies
@@ -77,8 +79,8 @@ Important encoding rule:
 - acts as the issuer
 - owns the issuer DID instance and issuer verification method
 - validates graduation requests against the graduation roster
-- batches accepted issuance requests in groups of 20
-- signs and delivers 100 diploma VCs
+- batches accepted issuance requests in groups of 5
+- signs and delivers 10 diploma VCs
 
 Authoritative data file:
 
@@ -86,7 +88,7 @@ Authoritative data file:
 
 ### Students
 
-- 100 student agents
+- 10 student agents
 - each student owns a DID instance and holder verification method
 - each student initiates diploma issuance after graduation is confirmed
 - each student later initiates at least one job application
@@ -101,7 +103,7 @@ Authoritative data file:
 - 3 verifier organizations
 - each company owns a DID instance and verifier verification method
 - each company publishes a verifier request policy over the diploma VC
-- all 100 students are assigned to one of the 3 companies in the data set
+- all 10 students are assigned to one of the 3 companies in the data set
 
 Authoritative data file:
 
@@ -124,9 +126,9 @@ Committed data artifacts:
 
 - university issuer profile:
   - [`./data/university.json`](./data/university.json)
-- 100 students with DID identifiers, company assignment, and diploma claim data:
+- 10 students with DID identifiers, company assignment, and diploma claim data:
   - [`./data/students.json`](./data/students.json)
-- deterministic issuance batches of 20 students each:
+- deterministic issuance batches of 5 students each:
   - [`./data/issuance-batches.json`](./data/issuance-batches.json)
 - company verifier profiles and request policies:
   - [`./data/companies.json`](./data/companies.json)
@@ -158,7 +160,7 @@ Fixture-time note:
    - holder verification method
    - graduation eligibility
    - diploma claim payload for that student
-4. the university groups accepted requests into issuance batches of 20
+4. the university groups accepted requests into issuance batches of 5
 5. the university signs and returns one diploma VC per student
 6. each student stores the diploma VC for later use
 
@@ -174,7 +176,7 @@ Fixture-time note:
 4. the company verifies the diploma presentation
 5. the company accepts the job application if the VC and VP checks pass
 
-All 100 students are expected to produce valid job applications in this
+All 10 students are expected to produce valid job applications in this
 prototype data set.
 
 ### 3. Mall discount
@@ -234,7 +236,7 @@ locate the first serious scaling bottlenecks.
 ### Suggested first bottleneck probes
 
 - university batch signing time vs batch size 10 / 20 / 25 / 50
-- per-student presentation build time across 100 parallel job applications
+- per-student presentation build time across 10 parallel job applications
 - verifier throughput by company policy complexity
 - grade-threshold verification overhead vs plain disclosure-only verification
 
@@ -243,13 +245,13 @@ locate the first serious scaling bottlenecks.
 ### Phase 1. Family and data stabilization
 
 - keep the `university-diploma` family compileable and tested
-- keep the 100-student and verifier data files deterministic
+- keep the 10-student and verifier data files deterministic
 - keep the grade-threshold policy explicit as `minimumFinalGrade = 91`
 
 ### Phase 2. Virtual-agent harness
 
 - implement a virtual university issuer agent
-- implement 100 virtual student agents in one process with isolated key material
+- implement 10 virtual student agents in one process with isolated key material
 - implement 3 virtual company verifier agents and 1 mall verifier agent
 - expose a metric collector around every external message boundary
 
@@ -265,7 +267,7 @@ Current status:
 ### Phase 3. Batch issuance orchestration
 
 - let students initiate issuance individually
-- let the university batch accepted requests into groups of 20
+- let the university batch accepted requests into groups of 5
 - emit per-batch metrics and a total issuance throughput report
 
 ### Phase 4. Job application orchestration

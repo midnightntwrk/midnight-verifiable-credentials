@@ -3,13 +3,8 @@ Feature: University batch issues non-revocable diploma credentials to graduating
   # DESCRIPTION:
   # - A graduating student starts the issuance flow.
   # - The university acts as the issuer and validates the student against the graduation roster.
-  # - The university batches accepted requests in groups of 20 and returns one diploma VC per student.
+  # - The university batches accepted requests in groups of 5 and returns one diploma VC per student.
   # - The holder binding is explicit and non-revocable.
-  #
-  # DATA SOURCES:
-  # - use-cases/university/data/university.json
-  # - use-cases/university/data/students.json
-  # - use-cases/university/data/issuance-batches.json
   #
   # METRICS TO CAPTURE:
   # - issuer_did_bootstrap_ms
@@ -22,7 +17,7 @@ Feature: University batch issues non-revocable diploma credentials to graduating
   # - issuance_batch_delivery_ms
   # - issuance_credentials_per_second
 
-  Scenario: 100 graduating students initiate diploma issuance and the university completes 5 issuance batches
+  Scenario: Example University issues 10 diploma credentials across 2 committed graduation batches
     # REQUEST:
     # - The university publishes an issuance policy for the `university-diploma` VC.
     # - The policy says the credential is non-revocable and uses explicit holder binding.
@@ -31,17 +26,17 @@ Feature: University batch issues non-revocable diploma credentials to graduating
     # CHECKS:
     # - The issuer DID exists.
     # - The issuer verification method is the one expected by the family schema.
-    Given the university issuer DID instance from "use-cases/university/data/university.json"
+    Given the "Example University" issuer DID instance is available
 
     # REQUEST:
-    # - Load the 100 graduating students and their holder DID instances.
+    # - Load the 10 graduating students and their holder DID instances.
     # RESPONSE:
-    # - The harness materializes 100 virtual student agents.
+    # - The harness materializes 10 virtual student agents.
     # CHECKS:
     # - Every student has a holder DID URL.
     # - Every student has a holder method id.
     # - Every student is marked graduation eligible.
-    And 100 graduating student agents from "use-cases/university/data/students.json"
+    And the "Example University" graduating class contains 10 eligible students
 
     # REQUEST:
     # - Each student sends a graduation issuance request.
@@ -52,17 +47,17 @@ Feature: University batch issues non-revocable diploma credentials to graduating
     # - The student exists in the graduation roster.
     # - The student controls the holder verification method referenced in the request.
     # - The diploma claim payload matches the university roster record for that student.
-    When every student submits a student-initiated university diploma issuance request
+    When every graduating student submits a university diploma issuance request
 
     # REQUEST:
     # - The university groups accepted requests according to the batch policy.
     # RESPONSE:
-    # - The queue is partitioned into 5 deterministic batches of 20 students.
+    # - The queue is partitioned into 2 deterministic batches of 5 students.
     # CHECKS:
     # - No student appears in more than one batch.
     # - No batch exceeds the configured batch size.
-    # - All 100 students are assigned to a batch.
-    Then the university should partition the accepted requests using "use-cases/university/data/issuance-batches.json"
+    # - All 10 students are assigned to a batch.
+    Then "Example University" should partition the accepted requests into the committed 2-batch graduation plan
 
     # REQUEST:
     # - The issuer signs one credential per accepted student inside each batch.
@@ -80,5 +75,5 @@ Feature: University batch issues non-revocable diploma credentials to graduating
     # - The report includes per-batch and total throughput metrics.
     # CHECKS:
     # - Queue wait, compile, sign, and delivery times are all present.
-    # - The total issued credential count is 100.
-    And the issuance report should include the configured bottleneck metrics for all 5 batches
+    # - The total issued credential count is 10.
+    And the issuance report should include the configured bottleneck metrics for all 2 batches

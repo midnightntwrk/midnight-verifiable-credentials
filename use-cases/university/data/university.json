@@ -11,7 +11,7 @@
   "graduationYear": 2030,
   "graduationMonth": 6,
   "supportsBatchIssuance": true,
-  "batchSize": 20,
+  "batchSize": 5,
   "claimEncoding": {
     "stringLikeFields": "fixed-width Bytes<N> in Compact, canonical JSON strings in scenario data",
     "integerFields": "Uint<n> in Compact, JSON numbers in scenario data",

@@ -5,10 +5,6 @@ Feature: Students apply to companies by presenting university diploma credential
   # - Three companies publish verifier request policies.
   # - Every student creates a job application that embeds a diploma presentation.
   #
-  # DATA SOURCES:
-  # - use-cases/university/data/students.json
-  # - use-cases/university/data/companies.json
-  #
   # METRICS TO CAPTURE:
   # - company_did_bootstrap_ms
   # - job_request_publish_ms
@@ -18,15 +14,15 @@ Feature: Students apply to companies by presenting university diploma credential
   # - job_application_acceptance_rate
   # - job_applications_per_second
 
-  Scenario: 100 students successfully create job applications across 3 verifier companies
+  Scenario: 10 students successfully create job applications across 3 verifier companies
     # REQUEST:
     # - Load the student holders and the 3 companies.
     # RESPONSE:
-    # - The harness materializes 100 student agents and 3 company verifier agents.
+    # - The harness materializes 10 student agents and 3 company verifier agents.
     # CHECKS:
     # - Every company has a DID, verification method, and verifier request policy.
-    Given the graduating student dataset from "use-cases/university/data/students.json"
-    And the company verifier dataset from "use-cases/university/data/companies.json"
+    Given the "Example University" graduating class roster is loaded
+    And the company verifier roster includes "Northwind Robotics", "Blue Ocean Analytics", and "Pioneer Systems"
 
     # REQUEST:
     # - Each company publishes a verifier request.
@@ -45,7 +41,7 @@ Feature: Students apply to companies by presenting university diploma credential
     #   - target role
     #   - diploma presentation
     # RESPONSE:
-    # - 100 application messages are submitted.
+    # - 10 application messages are submitted.
     # CHECKS:
     # - The presentation challenge matches the company request.
     # - The issuer is the university named by the verifier policy.
@@ -60,7 +56,7 @@ Feature: Students apply to companies by presenting university diploma credential
     # - The holder controls the holder verification method.
     # - The disclosed diploma fields match the credential body.
     # - The company-specific disclosure policy is satisfied.
-    Then all 100 job applications should be accepted by their target companies
+    Then all 10 job applications should be accepted by their target companies
 
     # REQUEST:
     # - Emit a verifier throughput report grouped by company.

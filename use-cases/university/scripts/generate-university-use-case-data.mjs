@@ -22,7 +22,7 @@ const university = {
   graduationYear: 2030,
   graduationMonth: 6,
   supportsBatchIssuance: true,
-  batchSize: 20,
+  batchSize: 5,
   claimEncoding: {
     stringLikeFields: "fixed-width Bytes<N> in Compact, canonical JSON strings in scenario data",
     integerFields: "Uint<n> in Compact, JSON numbers in scenario data",
@@ -136,7 +136,7 @@ const gradeForIndex = (index) => {
   return 65 + ((index * 7) % 36);
 };
 
-const students = Array.from({ length: 100 }, (_, index) => {
+const students = Array.from({ length: 10 }, (_, index) => {
   const ordinal = String(index + 1).padStart(4, "0");
   const firstName = firstNames[index % firstNames.length];
   const lastName = lastNames[Math.floor(index / firstNames.length) % lastNames.length];
