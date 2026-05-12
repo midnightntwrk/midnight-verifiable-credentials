@@ -66,11 +66,11 @@ Status: current implemented test surface as of 2026-05-11.
   - see `docs/guides/did-vc-hello-smoke-path.md` for the authoritative lane
     description
 
-### Planned prototype restoration
+### Historical placeholder package names
 
 - `credentials-birth-binding-prototypes`
-  - no checked-in source package or validated test surface on `develop`
-  - future restoration should reintroduce explicit binding-matrix coverage
+  - not a checked-in workspace package on `develop`
+  - if restored later, it should bring back explicit binding-matrix coverage
 
 ## Credential status / revocation tests
 

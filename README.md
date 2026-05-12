@@ -26,7 +26,7 @@ Current maturity is mixed by package:
 - reference implementation packages:
   - [`credentials`](./core/primitives/credentials/README.md)
   - [`credentials-status-registry`](./registry/status-registry/README.md)
-    - current prototype status / revocation registry support package
+    - reusable registry package with the current prototype status / revocation trust model
   - [`credentials-birth`](./prototypes/credential-families/birth/README.md)
   - [`credentials-birth-secret`](./prototypes/credential-families/birth-secret/README.md)
   - [`credentials-hello-family`](./prototypes/credential-families/hello-family/README.md)
@@ -36,14 +36,10 @@ Current maturity is mixed by package:
   - [`credentials-openid`](./protocols/openid/README.md)
     - current reference transport-adapter surface
 - prototype / experimental packages:
-  - [`credentials-status-registry`](./registry/status-registry/README.md)
   - [`credentials-protocol`](./components/orchestration/protocol/README.md)
   - [`credentials-demo-contract`](./use-cases/age-gate/contract/README.md)
 - shared integration infrastructure:
   - [`standalone-environment`](./components/integration/standalone-environment/README.md)
-- planned prototype restoration work:
-  - future `credentials-birth-binding-prototypes` restoration
-    - not currently present as a real workspace package on `develop`
 
 ## Documentation
 
@@ -82,13 +78,11 @@ Start here:
 - [`credentials-same-holder`](./core/capabilities/same-holder/README.md)
   - same-holder composition capability
 - [`credentials-status-registry`](./registry/status-registry/README.md)
-  - prototype status / revocation registry contract and off-chain witness helpers
+  - status / revocation registry contract and off-chain witness helpers, still operating under the current prototype trust model
 - [`credentials-iso-registry`](./core/primitives/iso-registry/README.md)
   - shared Compact-native ISO code types
 - [`credentials-offchain-did`](./components/adapters/offchain-did/README.md)
   - DID-aware runtime adapter for offchain DID holder binding
-- [`credentials-status-registry`](./registry/status-registry/README.md)
-  - prototype status/revocation registry and off-chain builder helpers
 - [`credentials-birth`](./prototypes/credential-families/birth/README.md)
   - explicit-holder birth credential family
 - [`credentials-birth-secret`](./prototypes/credential-families/birth-secret/README.md)
@@ -103,12 +97,6 @@ Start here:
   - verifier/business contract demo
 - [`standalone-environment`](./components/integration/standalone-environment/README.md)
   - shared Docker-backed integration harness
-
-No checked-in prototype matrix package currently exists for cross-profile birth
-binding restoration work.
-
-If that work returns, it should come back as an explicit workspace package
-rather than as artifact-only residue.
 
 ## Validation
 

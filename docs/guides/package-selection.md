@@ -218,10 +218,10 @@ These are valuable, but should be treated as evolving:
 - `credentials-demo-contract`
 - `credentials-status-registry`
 
-Planned but not currently active on `develop`:
+Historical placeholder name still referenced in some planning docs:
 
 - `credentials-birth-binding-prototypes`
-  - roadmap-only until restored as a real package
+  - not a current workspace package; treat it as roadmap-only unless it is restored explicitly
 
 ### Capability package
 This package is stable in purpose, but not a standalone family:
@@ -248,5 +248,5 @@ Avoid:
 - inventing custom transport formats before checking `credentials-openid`
 - copying shared ISO code types locally
 - treating prototype packages as a substitute for the canonical spec
-- treating `credentials-birth-binding-prototypes` as a supported package until
-  it is restored as a real workspace package
+- treating `credentials-birth-binding-prototypes` as a current supported package
+  when it is only a historical placeholder name in the docs
