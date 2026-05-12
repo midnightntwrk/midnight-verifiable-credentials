@@ -41,10 +41,12 @@ if (next !== source) {
 }
 
 const typesSource = await readFile(targetTypesFile, 'utf8');
-const nextTypes = typesSource.replace(
-  /(\s+impureCircuits: ImpureCircuits<PS>;\n)/,
-  `$1  provableCircuits: ImpureCircuits<PS>;\n`,
-);
+const nextTypes = typesSource.includes('provableCircuits:')
+  ? typesSource
+  : typesSource.replace(
+      /(\s+impureCircuits: ImpureCircuits<PS>;\n)/,
+      `$1  provableCircuits: ImpureCircuits<PS>;\n`,
+    );
 if (nextTypes !== typesSource) {
   await writeFile(targetTypesFile, nextTypes, 'utf8');
 }
