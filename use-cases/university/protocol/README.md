@@ -37,6 +37,10 @@ Scope:
   `target/readable-10`
 - export summaries group entries per thread and include rejection-kind
   breakdowns for downstream tooling
+- the 100-student stress lane now emits both JSON and Markdown artifacts under
+  `target/stress-100`
+- stress artifacts now carry an explicit schema version and retention hint so a
+  CI lane can publish the whole directory without inventing a second format
 
 Stress-lane note:
 
@@ -55,6 +59,7 @@ Build and test:
   - `./run.sh university-protocol-export`
   - `./run.sh university-protocol-export --light`
   - `./run.sh university-protocol-stress`
+  - `./run.sh university-protocol-stress --light`
 - `npm run lint -w ./use-cases/university/protocol`
 - `npm run typecheck -w ./use-cases/university/protocol`
 - `npm run test:ci -w ./use-cases/university/protocol`
@@ -68,3 +73,7 @@ Build and test:
   - `npm run stress:run -w ./use-cases/university/protocol`
   - output:
     - `./use-cases/university/protocol/target/stress-100/summary.json`
+    - `./use-cases/university/protocol/target/stress-100/summary.md`
+  - retention guidance:
+    - upload the entire `./use-cases/university/protocol/target/stress-100`
+      directory as one workflow artifact so the JSON and Markdown stay paired

@@ -143,6 +143,10 @@ Status: current implemented test surface as of 2026-05-11.
   - stable JSON transcript export
   - stable Markdown transcript export
   - golden-file normalization over thread ids and verifier challenge hashes
+- `use-cases/university/protocol/src/test/stress-export.test.ts`
+  - stable 100-student stress-summary schema
+  - normalized JSON and Markdown stress artifacts
+  - explicit retention-hint contract for CI publication
 
 ### University executable BDD specs
 

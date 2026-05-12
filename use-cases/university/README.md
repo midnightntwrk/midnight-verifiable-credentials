@@ -13,6 +13,8 @@ Status:
   threaded protocol transcript, rather than a second parallel orchestration
 - separate 100-student protocol stress dataset and runner so throughput
   experiments do not make the human-readable BDD report unreadable
+- committed stress-summary artifacts now have a stable JSON/Markdown contract
+  for downstream CI publication
 
 ## Purpose
 
@@ -37,6 +39,8 @@ The slice is intentionally explicit and operational:
   realistic scale modeling
 - the repository also carries a separate 100-student stress dataset for the
   protocol lane when you want throughput-oriented measurements instead
+- that stress lane now publishes paired `summary.json` and `summary.md`
+  artifacts under `use-cases/university/protocol/target/stress-100`
 
 ## Family and Schema
 
@@ -151,6 +155,9 @@ Dataset regeneration script:
   - `node ./use-cases/university/scripts/generate-university-use-case-data.mjs --check`
 - 100-student stress dataset regeneration:
   - `node ./use-cases/university/scripts/generate-university-use-case-data.mjs --student-count 100 --batch-size 20 --output-dir data/stress-100`
+- stress artifact generation:
+  - `./run.sh university-protocol-stress`
+  - `./run.sh university-protocol-stress --light`
 
 Fixture-time note:
 
@@ -204,6 +211,14 @@ prototype data set.
 
 The scenario set is intentionally metric-heavy so an implementation harness can
 locate the first serious scaling bottlenecks.
+
+Stress artifact note:
+
+- the readable BDD report remains the living narrative surface
+- the 100-student stress lane is the machine-oriented artifact surface
+- if CI publishes stress output, publish the whole
+  `use-cases/university/protocol/target/stress-100` directory so `summary.json`
+  and `summary.md` stay together
 
 Naming rule:
 

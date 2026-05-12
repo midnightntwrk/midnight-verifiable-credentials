@@ -5,7 +5,7 @@ if [[ -n "${MIDNIGHT_RUN_COMMON_SH_LOADED:-}" ]]; then
 fi
 MIDNIGHT_RUN_COMMON_SH_LOADED=1
 
-run_common_light_supported_targets=(full build typecheck test hello-smoke dummy-claims-lab university-protocol university-protocol-export)
+run_common_light_supported_targets=(full build typecheck test hello-smoke dummy-claims-lab university-protocol university-protocol-export university-protocol-stress)
 
 run_common_print_light_targets() {
   local joined="${run_common_light_supported_targets[*]}"
@@ -112,6 +112,11 @@ run_common_artifacts_ready() {
       run_common_artifacts_ready managed-university-protocol \
         && [[ -f "use-cases/university/protocol/dist/index.js" ]]
       ;;
+    managed-university-protocol-stress)
+      run_common_artifacts_ready managed-university-protocol-export \
+        && [[ -f "use-cases/university/data/stress-100/students.json" ]] \
+        && [[ -f "use-cases/university/data/stress-100/issuance-batches.json" ]]
+      ;;
     light)
       [[ -f "core/primitives/credentials/dist/index.js" ]] \
         && [[ -f "registry/status-registry/dist/index.js" ]] \
@@ -190,6 +195,9 @@ run_common_ensure_artifacts() {
       ;;
     managed-university-protocol-export)
       build_cmd="npm run build:university-protocol:export:prereqs"
+      ;;
+    managed-university-protocol-stress)
+      build_cmd="npm run build:university-protocol-stress:prereqs"
       ;;
     light)
       build_cmd="npm run build:light"

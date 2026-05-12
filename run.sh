@@ -240,8 +240,14 @@ case "$target" in
     fi
     ;;
   university-protocol-stress)
-    echo "[run] University protocol stress lane"
-    npm run ci:university-protocol:stress
+    if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
+      echo "[run] Light university protocol stress lane"
+      run_common_ensure_artifacts "run" managed-university-protocol-stress
+      npm run ci:university-protocol:stress:from-artifacts
+    else
+      echo "[run] University protocol stress lane"
+      npm run ci:university-protocol:stress
+    fi
     ;;
   hello-smoke)
     if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then

@@ -3,7 +3,11 @@ import { performance } from "node:perf_hooks";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { UniversityProtocolFlowRunner } from "../dist/testing.js";
+import {
+  buildUniversityProtocolStressSummary,
+  renderUniversityProtocolStressSummaryMarkdown,
+  UniversityProtocolFlowRunner,
+} from "../dist/testing.js";
 
 const repoRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -50,56 +54,15 @@ const runner = new UniversityProtocolFlowRunner({ dataPaths });
 const result = runner.runAll();
 const wallClockMs = performance.now() - startedAt;
 
-const summary = {
-  dataset: {
-    studentCount: runner.students.length,
-    companyCount: runner.companies.length,
-    discountApplicantCount: runner.discountApplicants.length,
-    batchCount: runner.issuanceBatches.length,
-    batchSize: runner.university.batchSize,
-  },
-  counts: {
-    issuanceRequests: result.issuance.requestCount,
-    issuanceResults: result.issuance.resultCount,
-    jobApplicationRequests: result.jobApplications.requestCount,
-    jobApplicationSubmissions: result.jobApplications.submissionCount,
-    jobApplicationResults: result.jobApplications.resultCount,
-    discountRequests: result.discounts.requestCount,
-    discountSubmissions: result.discounts.submissionCount,
-    discountResults: result.discounts.resultCount,
-    transcriptEntries: result.transcript.length,
-  },
-  outcomes: {
-    acceptedJobApplications: result.jobApplications.acceptedCount,
-    companyAcceptedCounts: result.jobApplications.companyAcceptedCounts,
-    acceptedDiscounts: result.discounts.acceptedCount,
-    rejectedDiscounts: result.discounts.rejectedCount,
-  },
-  timingsMs: {
-    issuance: result.metrics.issuanceMs,
-    jobApplications: result.metrics.jobApplicationsMs,
-    discounts: result.metrics.discountsMs,
-    runnerTotal: result.metrics.totalMs,
-    wallClock: wallClockMs,
-  },
-  throughput: {
-    issuanceCredentialsPerSecond:
-      result.metrics.issuanceMs > 0
-        ? result.issuance.resultCount / (result.metrics.issuanceMs / 1000)
-        : result.issuance.resultCount,
-    jobApplicationsPerSecond:
-      result.metrics.jobApplicationsMs > 0
-        ? result.jobApplications.resultCount /
-          (result.metrics.jobApplicationsMs / 1000)
-        : result.jobApplications.resultCount,
-    transcriptEntriesPerSecond:
-      wallClockMs > 0 ? result.transcript.length / (wallClockMs / 1000) : 0,
-  },
-};
+const summary = buildUniversityProtocolStressSummary(runner, result, wallClockMs);
+const markdown = renderUniversityProtocolStressSummaryMarkdown(summary);
 
 mkdirSync(targetDir, { recursive: true });
 const summaryPath = path.join(targetDir, "summary.json");
+const markdownPath = path.join(targetDir, "summary.md");
 writeFileSync(summaryPath, `${JSON.stringify(summary, null, 2)}\n`, "utf8");
+writeFileSync(markdownPath, markdown, "utf8");
 
 console.log(JSON.stringify(summary, null, 2));
 console.log(`Wrote stress summary to ${summaryPath}`);
+console.log(`Wrote stress markdown to ${markdownPath}`);

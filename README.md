@@ -48,6 +48,7 @@ Current maturity is mixed by package:
   - [`university-protocol`](./use-cases/university/protocol/README.md)
     - protocol-style multi-party university issuer/student/company/mall flow
     - includes a separate 100-student stress lane for throughput-oriented protocol measurements
+    - emits paired JSON and Markdown stress artifacts for CI retention
   - [`credentials-demo-contract`](./use-cases/age-gate/contract/README.md)
 - shared integration infrastructure:
   - [`standalone-environment`](./components/integration/standalone-environment/README.md)
@@ -154,6 +155,9 @@ Targets that currently honor `--light`:
 - `./run.sh test`
 - `./run.sh hello-smoke`
 - `./run.sh dummy-claims-lab`
+- `./run.sh university-protocol`
+- `./run.sh university-protocol-export`
+- `./run.sh university-protocol-stress`
 
 Discover explicit repository targets:
 
@@ -185,6 +189,13 @@ Export the readable 10-student university protocol transcript:
 
 ```bash
 ./run.sh university-protocol-export
+```
+
+Run the 100-student university protocol stress lane:
+
+```bash
+./run.sh university-protocol-stress
+./run.sh university-protocol-stress --light
 ```
 
 Run the smallest DID-aware handoff lane directly:

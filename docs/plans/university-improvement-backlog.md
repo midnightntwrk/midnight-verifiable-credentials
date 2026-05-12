@@ -5,7 +5,8 @@ Status:
 - ordered execution queue for the next university-focused stacked PR wave
 - each item is intended to be large enough to stand as its own reviewable PR
 - item `1` is opened on the stack as `#218`
-- item `2` is the current in-flight slice on top of `#218`
+- item `2` is opened on the stack as `#219`
+- item `3` is the current in-flight slice on top of `#219`
 - last reviewed: `2026-05-13`
 
 Scope boundary:
@@ -34,7 +35,7 @@ Scope boundary:
 
 2. `protocol-transcript-exporter`
 - status:
-  - current in-flight slice
+  - opened on the stack as `#219`
 - problem:
   - the report is human-readable, but downstream tooling still lacks a stable machine-readable university transcript export
 - scope:
@@ -48,6 +49,8 @@ Scope boundary:
   - `1`
 
 3. `stress-artifact-publication`
+- status:
+  - current in-flight slice
 - problem:
   - the 100-student stress lane produces local output only
 - scope:
