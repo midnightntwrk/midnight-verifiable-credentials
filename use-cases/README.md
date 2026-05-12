@@ -11,6 +11,9 @@ Target contents:
 Current subtrees:
 - `age-gate/contract`
 - `age-gate/scenarios`
+- `university`
+  - large diploma issuance, job-application, and student-discount blueprint
+  - narrative BDD scenarios plus deterministic scenario datasets
 
 BDD scenarios belong here because they document concrete flows rather than low-
 level prototype matrices.

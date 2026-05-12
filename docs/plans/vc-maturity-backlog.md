@@ -64,7 +64,7 @@ Advanced in the current open maturity stack, but not yet on `develop`:
   - `#141`
   - `#143`
   - `#144`
-- university research seed only (no current workspace package in the active spine):
+- university research seed:
   - `#145`
   - `#146`
 - docs/spec/testing/scaffold realignment:
@@ -122,6 +122,9 @@ Advanced in the current open maturity stack, but not yet on `develop`:
   - verifier-lab and root-runner stack:
     - `#202`
     - `#203`
+- university diploma prototype and narrative use-case execution:
+  - `#205`
+  - `#206`
 
 Practical remaining backlog after the current open stack:
 

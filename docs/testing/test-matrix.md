@@ -97,6 +97,37 @@ Status: current implemented test surface as of 2026-05-11.
   - see `docs/guides/dummy-claims-verifier-lab.md` for the authoritative lane
     description
 
+### `credentials-university-diploma`
+
+- claim-root/domain-separation source checks
+- presentation-request source-shape checks
+- package export-surface checks
+- deterministic fixture-backed selective-disclosure verification across:
+  - company-style disclosure requirements
+  - hidden academic fields when the verifier does not ask for them
+  - mall-style minimum-grade verification
+- negative validation guards for:
+  - missing verifier challenge
+  - request version drift
+  - schema-ref drift
+  - request/proof challenge mismatch
+  - minimum-grade misconfiguration
+  - disclosed-field tampering
+  - credential claim-root tampering
+  - holder-binding mismatch
+
+### University narrative BDD specs
+
+- `use-cases/university/scenarios/features/university_diploma_batch_issuance.feature`
+  - narrative student-initiated batch issuance flow for 100 students
+- `use-cases/university/scenarios/features/university_diploma_job_application.feature`
+  - narrative employer verification flow across 3 companies
+- `use-cases/university/scenarios/features/university_diploma_discount.feature`
+  - narrative mall discount flow with mixed grade outcomes
+- current boundary:
+  - these are intentionally verbose design/BDD artifacts, not yet executable
+    Serenity/Cucumber scenarios
+
 ### Historical placeholder package names
 
 - `credentials-birth-binding-prototypes`

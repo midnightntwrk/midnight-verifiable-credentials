@@ -32,6 +32,7 @@ Current-repository note:
 - the fully validated workspace spine in this repository is currently centered
   on `credentials`, `credentials-birth`, `credentials-birth-secret`,
   `credentials-hello-family`, `credentials-dummy-claims`,
+  `credentials-university-diploma`,
   `credentials-same-holder`, `credentials-iso-registry`,
   `credentials-offchain-did`, `credentials-openid`,
   `credentials-status-registry`, `credentials-protocol`,
@@ -68,6 +69,7 @@ Every credential interaction is a point in a multi-dimensional configuration spa
 | National ID | `credentials-national-id` | documentNumber, issuingCountry, givenName, familyName, birthDate, birthPlace, residenceRegion, taxIdentifier | country (3166-1), region (3166-2) |
 | AML/KYC Compliance | `credentials-compliance` | subjectId, amlStatus, sanctionsScreening, pepStatus, riskScore, jurisdiction, checkedAt, validUntilDay | country (3166-1) |
 | Employee | `credentials-employee` | employeeId, organizationName, organizationId, department, role, clearanceLevel, employedSince | — |
+| University Diploma | `credentials-university-diploma` | diplomaId, studentId, graduateName, universityName, facultyName, awardName, honorsCode, graduationYear, graduationMonth, finalGrade, creditsEarned | — |
 
 Current workspace note for this dimension:
 
@@ -77,6 +79,8 @@ Current workspace note for this dimension:
   on the active stack
 - `credentials-dummy-claims` is the current broad direct claim-surface
   laboratory on the active stack
+- `credentials-university-diploma` is the current larger explicit-holder
+  academic diploma prototype on the active stack
 - `use-cases/hello-verifier/contract` now validates both the smallest starter
   verifier path over `credentials-hello-family` and the broad direct claim-surface
   verifier path over `credentials-dummy-claims`
@@ -190,7 +194,8 @@ Current validated repository surfaces for this strategy:
 - Layer 1: `credentials`, `credentials-same-holder`, `credentials-iso-registry`,
   `credentials-status-registry`
 - Layer 2: `credentials-birth`, `credentials-birth-secret`,
-  `credentials-hello-family`, `credentials-dummy-claims`
+  `credentials-hello-family`, `credentials-dummy-claims`,
+  `credentials-university-diploma`
 - Layer 2.5: `credentials-offchain-did`
 - Layer 3: `credentials-demo-contract`
 - Layer 4: `credentials-openid`, `credentials-protocol`, `standalone-environment`

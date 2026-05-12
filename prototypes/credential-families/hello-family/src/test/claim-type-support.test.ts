@@ -105,6 +105,33 @@ export pure circuit probeRoot(value: OuterProbe): Bytes<32> {
       expect(nestedStructResult).toEqual({ ok: true });
     });
 
+    it("accepts Opaque<string> as an opaque carrier but rejects hashing it as a canonical claim root", () => {
+      const opaqueCarrierResult = compileProbe(`pragma language_version >= 0.20;
+import CompactStandardLibrary;
+export struct OpaqueCarrierProbe {
+  value: Opaque<"string">,
+}
+export pure circuit accepts(value: OpaqueCarrierProbe): Boolean {
+  return true;
+}`);
+
+      expect(opaqueCarrierResult).toEqual({ ok: true });
+
+      const opaqueHashResult = compileProbe(`pragma language_version >= 0.20;
+import CompactStandardLibrary;
+export struct OpaqueCarrierProbe {
+  value: Opaque<"string">,
+}
+export pure circuit probeRoot(value: OpaqueCarrierProbe): Bytes<32> {
+  return persistentHash<OpaqueCarrierProbe>(value);
+}`);
+
+      expect(opaqueHashResult.ok).toEqual(false);
+      expect(opaqueHashResult.ok ? "" : opaqueHashResult.message).toMatch(
+        /opaque JavaScript values|persistentHash/i,
+      );
+    });
+
     it("rejects unsupported primitive claims and vectors over them", () => {
       const signedIntResult = compileProbe(`pragma language_version >= 0.20;
 import CompactStandardLibrary;

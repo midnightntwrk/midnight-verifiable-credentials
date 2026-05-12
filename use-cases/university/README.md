@@ -1,0 +1,278 @@
+# University Diploma Use Case
+
+Status:
+
+- large narrative prototype use case built on `credentials-university-diploma`
+- data-rich SSI flow covering issuance, job-application verification, and student-discount verification
+- BDD-style scenario set with bottleneck-oriented metrics
+
+## Purpose
+
+This use case models a university that issues a non-revocable diploma VC to 100
+students, then reuses that VC in two verifier flows:
+
+- employer job applications across 3 companies
+- a mall discount flow for students whose final grade is strictly greater than
+  90
+
+The slice is intentionally explicit and operational:
+
+- the university is a DID-backed issuer
+- every student is a DID-backed agent
+- every company is a DID-backed verifier
+- the mall is a DID-backed verifier
+- the holder binding is the simplest one in the repository:
+  `ExplicitHolderBinding`
+- the credential is not revocable and therefore uses `NoStatusBinding`
+
+## Family and Schema
+
+Prototype family:
+
+- [`../../prototypes/credential-families/university-diploma/README.md`](../../prototypes/credential-families/university-diploma/README.md)
+
+Credential family package:
+
+- `@midnight-ntwrk/midnight-did-credentials-university-diploma`
+
+Credential shape:
+
+- `VC<UniversityDiplomaClaims, ExplicitHolderBinding, NoStatusBinding>`
+
+Key schema fields:
+
+- `diplomaId`
+- `studentId`
+- `graduateName`
+- `universityName`
+- `facultyName`
+- `awardName`
+- `honorsCode`
+- `graduationYear`
+- `graduationMonth`
+- `finalGrade`
+- `creditsEarned`
+
+Important encoding rule:
+
+- the scenario JSON keeps human-readable strings
+- the Compact family encodes those string-like values into fixed-width
+  `Bytes<N>` fields
+- this is required because direct `String` claims are not supported and
+  `Opaque<'string'>` cannot participate in the `persistentHash<Claims>(claims)`
+  claim-root model used by the family
+
+## Actors
+
+### University
+
+- acts as the issuer
+- owns the issuer DID instance and issuer verification method
+- validates graduation requests against the graduation roster
+- batches accepted issuance requests in groups of 20
+- signs and delivers 100 diploma VCs
+
+Authoritative data file:
+
+- [`./data/university.json`](./data/university.json)
+
+### Students
+
+- 100 student agents
+- each student owns a DID instance and holder verification method
+- each student initiates diploma issuance after graduation is confirmed
+- each student later initiates at least one job application
+- 5 selected students also initiate the mall discount flow
+
+Authoritative data file:
+
+- [`./data/students.json`](./data/students.json)
+
+### Companies
+
+- 3 verifier organizations
+- each company owns a DID instance and verifier verification method
+- each company publishes a verifier request policy over the diploma VC
+- all 100 students are assigned to one of the 3 companies in the data set
+
+Authoritative data file:
+
+- [`./data/companies.json`](./data/companies.json)
+
+### Mall
+
+- one verifier organization
+- offers a discount for students whose final grade is strictly greater than 90
+- uses a minimum-grade request of `91` to represent the `> 90` policy exactly
+
+Authoritative data file:
+
+- [`./data/mall.json`](./data/mall.json)
+- [`./data/discount-applicants.json`](./data/discount-applicants.json)
+
+## Scenario Data
+
+Committed data artifacts:
+
+- university issuer profile:
+  - [`./data/university.json`](./data/university.json)
+- 100 students with DID identifiers, company assignment, and diploma claim data:
+  - [`./data/students.json`](./data/students.json)
+- deterministic issuance batches of 20 students each:
+  - [`./data/issuance-batches.json`](./data/issuance-batches.json)
+- company verifier profiles and request policies:
+  - [`./data/companies.json`](./data/companies.json)
+- mall verifier profile and minimum-grade policy:
+  - [`./data/mall.json`](./data/mall.json)
+- 5 discount applicants with mixed success/failure expectations:
+  - [`./data/discount-applicants.json`](./data/discount-applicants.json)
+
+Dataset regeneration script:
+
+- [`./scripts/generate-university-use-case-data.mjs`](./scripts/generate-university-use-case-data.mjs)
+
+## Flow Description
+
+### 1. Student-initiated diploma issuance
+
+1. a student agent confirms graduation eligibility in the university roster
+2. the student sends an issuance request that binds the diploma request to the
+   student's DID-controlled holder verification method
+3. the university validates:
+   - student DID identity
+   - holder verification method
+   - graduation eligibility
+   - diploma claim payload for that student
+4. the university groups accepted requests into issuance batches of 20
+5. the university signs and returns one diploma VC per student
+6. each student stores the diploma VC for later use
+
+### 2. Job application
+
+1. a company publishes a verifier request policy
+2. a student chooses the assigned company from the data set
+3. the student creates a job application message containing:
+   - student DID identifier
+   - company DID identifier
+   - requested role
+   - diploma presentation request/response transcript
+4. the company verifies the diploma presentation
+5. the company accepts the job application if the VC and VP checks pass
+
+All 100 students are expected to produce valid job applications in this
+prototype data set.
+
+### 3. Mall discount
+
+1. the mall publishes a verifier request requiring:
+   - university name disclosure
+   - final grade disclosure
+   - minimum final grade `91`
+2. a selected student requests the discount
+3. the student presents the diploma VC with the required fields disclosed
+4. the mall verifies the presentation and checks the minimum-grade predicate
+5. applicants with grades `91` or above succeed; applicants at `90` or below
+   fail
+
+## Metrics and Bottleneck Plan
+
+The scenario set is intentionally metric-heavy so an implementation harness can
+locate the first serious scaling bottlenecks.
+
+### Actor bootstrap metrics
+
+- `issuer_did_bootstrap_ms`
+- `student_did_bootstrap_ms`
+- `company_did_bootstrap_ms`
+- `mall_did_bootstrap_ms`
+- `virtual_agent_key_load_ms`
+
+### Issuance metrics
+
+- `issuance_request_build_ms`
+- `issuance_request_validation_ms`
+- `issuance_batch_queue_wait_ms`
+- `issuance_batch_size`
+- `issuance_batch_compile_ms`
+- `issuance_batch_sign_ms`
+- `issuance_batch_delivery_ms`
+- `issuance_total_students`
+- `issuance_credentials_per_second`
+
+### Job application metrics
+
+- `job_request_publish_ms`
+- `presentation_build_ms`
+- `job_application_submit_ms`
+- `company_verification_ms`
+- `job_application_acceptance_rate`
+- `job_applications_per_second`
+
+### Mall discount metrics
+
+- `discount_request_publish_ms`
+- `discount_presentation_build_ms`
+- `discount_verification_ms`
+- `discount_acceptance_rate`
+- `discount_rejection_reason_count`
+
+### Suggested first bottleneck probes
+
+- university batch signing time vs batch size 10 / 20 / 25 / 50
+- per-student presentation build time across 100 parallel job applications
+- verifier throughput by company policy complexity
+- grade-threshold verification overhead vs plain disclosure-only verification
+
+## Implementation Plan
+
+### Phase 1. Family and data stabilization
+
+- keep the `university-diploma` family compileable and tested
+- keep the 100-student and verifier data files deterministic
+- keep the grade-threshold policy explicit as `minimumFinalGrade = 91`
+
+### Phase 2. Virtual-agent harness
+
+- implement a virtual university issuer agent
+- implement 100 virtual student agents in one process with isolated key material
+- implement 3 virtual company verifier agents and 1 mall verifier agent
+- expose a metric collector around every external message boundary
+
+### Phase 3. Batch issuance orchestration
+
+- let students initiate issuance individually
+- let the university batch accepted requests into groups of 20
+- emit per-batch metrics and a total issuance throughput report
+
+### Phase 4. Job application orchestration
+
+- publish company verifier policies
+- let each student create one job application to the assigned company
+- record VP build time, verifier time, and acceptance rate
+
+### Phase 5. Mall discount orchestration
+
+- publish the mall request policy with minimum grade 91
+- run the 5 selected applicants with mixed grade outcomes
+- record acceptance vs rejection reason counts
+
+### Phase 6. Bottleneck reporting
+
+- emit a report grouped by:
+  - actor bootstrap
+  - issuance
+  - job applications
+  - mall discount verification
+- include per-step latency distribution and batch throughput
+
+## BDD Scenarios
+
+Scenario directory:
+
+- [`./scenarios/README.md`](./scenarios/README.md)
+
+Feature files:
+
+- [`./scenarios/features/university_diploma_batch_issuance.feature`](./scenarios/features/university_diploma_batch_issuance.feature)
+- [`./scenarios/features/university_diploma_job_application.feature`](./scenarios/features/university_diploma_job_application.feature)
+- [`./scenarios/features/university_diploma_discount.feature`](./scenarios/features/university_diploma_discount.feature)

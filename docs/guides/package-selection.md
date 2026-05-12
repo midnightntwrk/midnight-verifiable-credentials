@@ -78,6 +78,25 @@ Use this when you need:
 Do not use `credentials-dummy-claims` as a production privacy template.
 It is intentionally a direct-claim laboratory package.
 
+### I need an academic diploma family and a larger verifier-flow blueprint
+Start with:
+
+- [`../../prototypes/credential-families/university-diploma/README.md`](../../prototypes/credential-families/university-diploma/README.md)
+- [`../../use-cases/university/README.md`](../../use-cases/university/README.md)
+
+Use this when you need:
+
+- a non-revocable explicit-holder academic diploma family
+- a larger data-backed issuer/holder/verifier blueprint than `hello-family`
+- batch issuance planning across many holders
+- narrative BDD scenarios for employer and student-discount verifier flows
+
+Current constraint:
+
+- string-like claim fields still use bounded `Bytes<N>` encodings because
+  `Opaque<"string">` cannot be used in the canonical
+  `persistentHash<Claims>(claims)` claim-root pattern used by this repository
+
 ### I need same-holder correlation across credentials
 Start with:
 

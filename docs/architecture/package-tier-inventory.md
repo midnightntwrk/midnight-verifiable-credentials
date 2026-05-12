@@ -46,6 +46,7 @@ Related documents:
 | `credentials-birth-secret` | Credential-family package | Reference implementation with prototype status-aware extensions | Yes, with status-path caveats | Hidden-holder reference family |
 | `credentials-hello-family` | Credential-family package | Starter / playground | Yes, as a starter reference | Smallest compileable starter family and DID/VC smoke-path base |
 | `credentials-dummy-claims` | Credential-family package | Prototype laboratory | Yes, as a claim-surface reference | Broad direct Compact claim-surface and selective-disclosure laboratory |
+| `credentials-university-diploma` | Credential-family package | Prototype use-case family | Yes, as a use-case reference | Non-revocable academic diploma family for batch issuance and verifier-policy flows |
 | `credentials-offchain-did` | DID-aware adapter package | Reference implementation | Yes | Runtime-only DID conversion helpers |
 | `credentials-openid` | Transport or orchestration package | Reference transport-adapter implementation | Yes, with transport-layer scope | OpenID-shaped JSON/domain envelopes around Compact payloads |
 | `credentials-protocol` | Transport or orchestration package | Reference orchestration implementation, evolving API | Limited | Off-chain reference agent flows and protocol state management |

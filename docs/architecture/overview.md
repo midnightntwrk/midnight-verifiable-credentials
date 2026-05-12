@@ -33,7 +33,7 @@ The repository is organized as a layered Compact-first stack.
 | Layer | Role | Package examples |
 | --- | --- | --- |
 | Layer 1 | Generic VC/VP capabilities | `credentials`, `credentials-same-holder`, `credentials-iso-registry`, `credentials-status-registry` |
-| Layer 2 | Concrete credential families | `credentials-birth`, `credentials-birth-secret`, `credentials-hello-family` (starter), `credentials-dummy-claims` (claim-surface lab) |
+| Layer 2 | Concrete credential families | `credentials-birth`, `credentials-birth-secret`, `credentials-hello-family` (starter), `credentials-dummy-claims` (claim-surface lab), `credentials-university-diploma` (academic prototype) |
 | Layer 2.5 | DID-aware runtime adapters | `credentials-offchain-did` |
 | Layer 3 status prototype | Status-aware contract surface plus off-chain builders | `credentials-status-registry` |
 | Layer 3 | Verifier/business contract composition | `hello-verifier-contract`, `credentials-demo-contract` |
@@ -116,6 +116,9 @@ Examples currently in scope as strong repository surfaces are:
 - `credentials-dummy-claims`
   - current broad direct claim-surface and selective-disclosure laboratory,
     not a production privacy template
+- `credentials-university-diploma`
+  - current larger explicit-holder academic diploma prototype for batch issuance
+    and verifier-policy flows
 
 ### `credentials-offchain-did`
 This package is the dedicated DID-aware adapter layer for offchain DID holder

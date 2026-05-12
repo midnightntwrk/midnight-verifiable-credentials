@@ -33,6 +33,8 @@ Current maturity is mixed by package:
     - smallest starter family package
   - [`credentials-dummy-claims`](./prototypes/credential-families/dummy-claims/README.md)
     - broad direct claim-surface and selective-disclosure laboratory
+  - [`credentials-university-diploma`](./prototypes/credential-families/university-diploma/README.md)
+    - academic diploma prototype aligned to the university issuance and verifier-flow use case
   - [`credentials-iso-registry`](./core/primitives/iso-registry/README.md)
   - [`credentials-offchain-did`](./components/adapters/offchain-did/README.md)
   - [`credentials-openid`](./protocols/openid/README.md)
@@ -62,6 +64,9 @@ Start here:
   - [`docs/guides/package-selection.md`](./docs/guides/package-selection.md)
   - [`docs/guides/integration-surface-map.md`](./docs/guides/integration-surface-map.md)
   - [`docs/guides/prototype-execution-ladder.md`](./docs/guides/prototype-execution-ladder.md)
+- university diploma use case:
+  - [`use-cases/university/README.md`](./use-cases/university/README.md)
+  - [`use-cases/university/scenarios/README.md`](./use-cases/university/scenarios/README.md)
 - architecture:
   - [`docs/architecture/overview.md`](./docs/architecture/overview.md)
   - [`docs/architecture/package-boundaries.md`](./docs/architecture/package-boundaries.md)
@@ -95,6 +100,8 @@ Start here:
   - smallest compileable starter family package
 - [`credentials-dummy-claims`](./prototypes/credential-families/dummy-claims/README.md)
   - broad direct claim-surface and selective-disclosure laboratory
+- [`credentials-university-diploma`](./prototypes/credential-families/university-diploma/README.md)
+  - academic diploma prototype with batch-issuance and verifier-policy flows
 - [`credentials-openid`](./protocols/openid/README.md)
   - OID4VCI / OID4VP-inspired transport/domain adapters
 - [`credentials-protocol`](./components/orchestration/protocol/README.md)
@@ -211,6 +218,7 @@ Published/exported local tarball set currently includes:
 - `@midnight-ntwrk/midnight-did-credentials-birth-secret`
 - `@midnight-ntwrk/midnight-did-credentials-hello-family`
 - `@midnight-ntwrk/midnight-did-credentials-dummy-claims`
+- `@midnight-ntwrk/midnight-did-credentials-university-diploma`
 - `@midnight-ntwrk/midnight-did-standalone-environment`
 
 Intentionally excluded:

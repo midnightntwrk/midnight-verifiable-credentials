@@ -1,0 +1,14 @@
+{
+  "mallId": "mall-student-square",
+  "mallName": "Student Square Mall",
+  "verifierDidUrl": "did:midnight:mall:student-square",
+  "verifierMethodId": "#verifier-key-1",
+  "offerId": "discount-grade-over-90",
+  "minimumFinalGrade": 91,
+  "requestPolicy": {
+    "requireUniversityNameDisclosure": true,
+    "requireFinalGradeDisclosure": true,
+    "enforceMinimumFinalGrade": true,
+    "minimumFinalGrade": 91
+  }
+}

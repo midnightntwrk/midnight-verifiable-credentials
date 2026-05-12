@@ -121,6 +121,7 @@ These are the main reusable building blocks that should survive prototype churn.
   - `credentials-iso-registry`
   - `credentials-birth`
   - `credentials-birth-secret`
+  - `credentials-university-diploma` as the current larger academic prototype family
   - the stable parts of `credentials-status-registry`
 
 ### Reusable core protocols
@@ -154,6 +155,7 @@ These are necessary and valuable, but they are not the core VC spec.
 - `credentials-offchain-did`
 - `standalone-environment`
 - BDD scenario harnesses
+- narrative university use-case BDD specifications
 - witness builders, attestation builders, simulators, and CI/build scripts
 
 ## Perspective 1: Engineering / Integration
