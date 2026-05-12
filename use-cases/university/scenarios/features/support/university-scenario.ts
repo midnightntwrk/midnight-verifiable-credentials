@@ -234,6 +234,8 @@ class MetricRecorder {
     name: string,
     tags?: Record<string, string | number | boolean>,
   ): void {
+    // NOTE: `mark` records tagged events, not timed measurements. Callers
+    // should keep the name distinct from `record`/`measure` samples.
     this.samples.push({
       name,
       durationMs: 0,
@@ -398,6 +400,8 @@ export class UseUniversityScenario extends Ability {
 
   publishCompanyPolicies(): void {
     const companies = readJson<CompanyRecord[]>(this.#paths.companies);
+    // NOTE: publication remains narrative-only in this local harness. This pass
+    // validates that every checked-in company policy can be normalized.
     for (const company of companies) {
       void normalizeRequestPolicy(company.requestPolicy);
     }
@@ -567,24 +571,22 @@ export class UseUniversityScenario extends Ability {
     }
 
     const totalDurationMs = performance.now() - issuanceStartedAt;
+    metrics.mark("issuance_total_students", {
+      totalStudents: students.length,
+    });
+    metrics.mark("issuance_credentials_per_second", {
+      credentialsPerSecond:
+        totalDurationMs > 0
+          ? acceptedRequests.length / (totalDurationMs / 1000)
+          : acceptedRequests.length,
+    });
     this.#issuanceResult = {
       totalStudents: students.length,
       batchCount: issuanceBatches.length,
       acceptedRequestCount: acceptedRequests.length,
       issuedCredentialCount: studentAgents.filter((student) => student.issuedFixture).length,
       partitionMatchesPlan,
-      metricNames: (() => {
-        metrics.mark("issuance_total_students", {
-          totalStudents: students.length,
-        });
-        metrics.mark("issuance_credentials_per_second", {
-          credentialsPerSecond:
-            totalDurationMs > 0
-              ? acceptedRequests.length / (totalDurationMs / 1000)
-              : acceptedRequests.length,
-        });
-        return metrics.names();
-      })(),
+      metricNames: metrics.names(),
       batchMetrics,
       credentialsPerSecond:
         totalDurationMs > 0
@@ -682,24 +684,22 @@ export class UseUniversityScenario extends Ability {
       companyAcceptedCounts[company.companyId] += 1;
     }
 
+    const totalDurationMs = performance.now() - jobApplicationsStartedAt;
+    metrics.mark("job_application_acceptance_rate", {
+      acceptedApplications,
+      totalStudents: students.length,
+      rate: students.length > 0 ? acceptedApplications / students.length : 0,
+    });
+    metrics.mark("job_applications_per_second", {
+      applicationsPerSecond:
+        totalDurationMs > 0
+          ? acceptedApplications / (totalDurationMs / 1000)
+          : acceptedApplications,
+    });
     this.#jobApplicationResult = {
       totalStudents: students.length,
       acceptedApplications,
-      metricNames: (() => {
-        const totalDurationMs = performance.now() - jobApplicationsStartedAt;
-        metrics.mark("job_application_acceptance_rate", {
-          acceptedApplications,
-          totalStudents: students.length,
-          rate: students.length > 0 ? acceptedApplications / students.length : 0,
-        });
-        metrics.mark("job_applications_per_second", {
-          applicationsPerSecond:
-            totalDurationMs > 0
-              ? acceptedApplications / (totalDurationMs / 1000)
-              : acceptedApplications,
-        });
-        return metrics.names();
-      })(),
+      metricNames: metrics.names(),
       companyAcceptedCounts,
     };
   }

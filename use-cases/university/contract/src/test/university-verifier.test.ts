@@ -217,6 +217,11 @@ describe("university verifier contract", () => {
         fixture.presentationProof,
       ),
     ).toThrow(/disclosed final grade is below the verifier minimum/);
+
+    const state = simulator.getLedger();
+    expect(state.successfulDiscountVerificationCount).toEqual(0n);
+    expect(state.lastVerifiedFinalGrade).toEqual(0n);
+    expect(state.lastVerifiedDiscountThreshold).toEqual(0n);
   });
 
   it("verifies a discount request and records the accepted threshold", () => {
@@ -260,6 +265,11 @@ describe("university verifier contract", () => {
         fixture.presentationProof,
       ),
     ).toThrow(/requires final-grade disclosure/);
+
+    const state = simulator.getLedger();
+    expect(state.successfulDiscountVerificationCount).toEqual(0n);
+    expect(state.lastVerifiedFinalGrade).toEqual(0n);
+    expect(state.lastVerifiedDiscountThreshold).toEqual(0n);
   });
 
   it("rejects a mall request that does not enforce a minimum grade", () => {
@@ -278,5 +288,10 @@ describe("university verifier contract", () => {
         fixture.presentationProof,
       ),
     ).toThrow(/must enforce a minimum grade/);
+
+    const state = simulator.getLedger();
+    expect(state.successfulDiscountVerificationCount).toEqual(0n);
+    expect(state.lastVerifiedFinalGrade).toEqual(0n);
+    expect(state.lastVerifiedDiscountThreshold).toEqual(0n);
   });
 });
