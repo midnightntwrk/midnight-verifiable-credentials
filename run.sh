@@ -206,6 +206,11 @@ case "$target" in
       run_common_ensure_artifacts "run" managed-hello-smoke
       npm run ci:hello-smoke:from-artifacts
     else
+      # NOTE: the default lane stays package-local and build-light on purpose.
+      # `hello-family` and `hello-verifier` already compile the Compact surfaces
+      # they need inside their own typecheck/pretest commands, so the root lane
+      # does not prebuild shared artifacts unless `--light` explicitly asks for
+      # restored-artifact parity with CI.
       echo "[run] DID + VC hello smoke lane"
       npm run ci:hello-smoke
     fi

@@ -96,6 +96,20 @@ The repository now also exposes a CI-native parity path:
   - prove that the smallest DID-aware handoff still works when it consumes the
     shared build-artifact cones rather than package-local fresh compiles
 
+If you want to reproduce that restored-artifact parity path locally without the
+root runner wrapper:
+
+```bash
+npm run build:starter-smoke-prereqs
+npm run ci:hello-smoke:from-artifacts
+```
+
+That is the narrowest local recipe matching the CI lane shape:
+
+- build the shared starter cones once
+- then rerun hello-smoke lint, typecheck, and tests against restored artifacts
+  instead of package-local fresh compiles
+
 Equivalent package-local commands:
 
 ```bash
