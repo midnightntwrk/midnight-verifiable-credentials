@@ -111,6 +111,19 @@ const buildDiscountFixture = (minimumFinalGrade: bigint, finalGrade = 94n) => {
 };
 
 describe("university verifier contract", () => {
+  it("rejects a discount request threshold above 100", () => {
+    const baseFixture = createUniversityDiplomaFixture();
+    const simulator = new UniversityVerifierSimulator();
+
+    expect(() =>
+      simulator.universityMallDiscountRequest(
+        baseFixture.credential.issuerVerificationMethodRef,
+        baseFixture.presentationRequest.verifierChallengeHash,
+        101n,
+      ),
+    ).toThrow(/threshold must be <= 100/);
+  });
+
   it("verifies a university diploma for a job application", () => {
     const { simulator, request, fixture } = buildJobApplicationFixture({
       requireFacultyNameDisclosure: true,
@@ -220,12 +233,13 @@ describe("university verifier contract", () => {
     const state = simulator.getLedger();
     expect(state.successfulJobApplicationVerificationCount).toEqual(0n);
     expect(state.successfulDiscountVerificationCount).toEqual(1n);
+    expect(state.lastVerifiedRequestChallenge).toEqual(
+      request.verifierChallengeHash,
+    );
     expect(state.lastVerifiedUniversityName).toEqual(
       fixture.credential.claims.universityName,
     );
-    expect(state.lastVerifiedFinalGrade).toEqual(
-      fixture.credential.claims.finalGrade,
-    );
+    expect(state.lastVerifiedFinalGrade).toEqual(0n);
     expect(state.lastVerifiedDiscountThreshold).toEqual(91n);
     expect(state.lastVerifiedVerifierKind).toEqual(2n);
   });
@@ -246,5 +260,23 @@ describe("university verifier contract", () => {
         fixture.presentationProof,
       ),
     ).toThrow(/requires final-grade disclosure/);
+  });
+
+  it("rejects a mall request that does not enforce a minimum grade", () => {
+    const { simulator, fixture } = buildDiscountFixture(91n, 98n);
+    const invalidRequest = {
+      ...fixture.presentationRequest,
+      enforceMinimumFinalGrade: false,
+    };
+
+    expect(() =>
+      simulator.verifyUniversityDiplomaForMallDiscount(
+        fixture.credential,
+        fixture.credentialProof,
+        invalidRequest,
+        fixture.presentation,
+        fixture.presentationProof,
+      ),
+    ).toThrow(/must enforce a minimum grade/);
   });
 });

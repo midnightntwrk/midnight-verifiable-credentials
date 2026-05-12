@@ -20,6 +20,13 @@ Scope:
   the last verified disclosed values
 - no revocation, protocol delivery, or durable business-claim lifecycle
 
+Privacy note:
+
+- the employer path records the disclosed employer-facing claim values to ledger
+  state for demo visibility
+- the mall-discount path verifies the grade threshold but intentionally does not
+  persist the student's exact final grade afterward
+
 Build and test:
 
 - `npm run build -w ./use-cases/university/contract`

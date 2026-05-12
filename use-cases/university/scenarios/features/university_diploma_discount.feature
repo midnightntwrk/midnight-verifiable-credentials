@@ -66,5 +66,5 @@ Feature: Selected students present diploma credentials to request a mall discoun
       | STU-0001  | 98         | accepted        | grade is strictly greater than 90         |
       | STU-0002  | 94         | accepted        | grade is strictly greater than 90         |
       | STU-0003  | 91         | accepted        | grade is strictly greater than 90         |
-      | STU-0004  | 90         | rejected        | grade does not satisfy the mall threshold |
-      | STU-0005  | 72         | rejected        | grade does not satisfy the mall threshold |
+      | STU-0004  | 90         | rejected        | failed assert: University-diploma disclosed final grade is below the verifier minimum |
+      | STU-0005  | 72         | rejected        | failed assert: University-diploma disclosed final grade is below the verifier minimum |

@@ -106,7 +106,10 @@ export pure circuit universityMallDiscountRequest(
 
 // TRUST BOUNDARY: this contract models verifier-side request construction and
 // diploma presentation checks only. It does not add revocation, protocol
-// delivery, or external time/state binding.
+// delivery, or external time/state binding. Employer-facing verifier paths
+// persist disclosed claim material to ledger state for demo visibility, while
+// the mall-discount path intentionally avoids persisting the student's exact
+// final grade after the threshold check succeeds.
 export circuit verifyUniversityDiplomaForJobApplication(
   credential: UniversityDiplomaCredential,
   credentialProof: Proof,
@@ -202,7 +205,9 @@ export circuit verifyUniversityDiplomaForMallDiscount(
   lastVerifiedUniversityName = disclose(presentation.disclosed.universityName);
   lastVerifiedAwardName = pad(32, "");
   lastVerifiedGraduationYear = 0;
-  lastVerifiedFinalGrade = disclose(presentation.disclosed.finalGrade);
+  // NOTE: the mall verifier proves the threshold check but does not keep the
+  // student's exact disclosed grade in public ledger state.
+  lastVerifiedFinalGrade = 0;
   lastVerifiedDiscountThreshold = disclose(request.minimumFinalGrade);
   lastVerifiedVerifierKind = 2;
 

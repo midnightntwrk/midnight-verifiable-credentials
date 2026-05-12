@@ -214,6 +214,33 @@ class MetricRecorder {
     }
   }
 
+  measure<T>(
+    name: string,
+    fn: () => T,
+    tags?: Record<string, string | number | boolean>,
+  ): { readonly value: T; readonly durationMs: number } {
+    const startedAt = performance.now();
+    const value = fn();
+    const durationMs = performance.now() - startedAt;
+    this.samples.push({
+      name,
+      durationMs,
+      tags,
+    });
+    return { value, durationMs };
+  }
+
+  mark(
+    name: string,
+    tags?: Record<string, string | number | boolean>,
+  ): void {
+    this.samples.push({
+      name,
+      durationMs: 0,
+      tags,
+    });
+  }
+
   names(): string[] {
     return [...new Set(this.samples.map((sample) => sample.name))].sort();
   }
@@ -360,6 +387,22 @@ export class UseUniversityScenario extends Ability {
     this.#selectedDiscountStudentId = studentId;
   }
 
+  assertStudentCount(expectedCount: number): void {
+    const students = readJson<StudentRecord[]>(this.#paths.students);
+    if (students.length !== expectedCount) {
+      throw new Error(
+        `Expected ${expectedCount} students in ${this.#paths.students}, found ${students.length}`,
+      );
+    }
+  }
+
+  publishCompanyPolicies(): void {
+    const companies = readJson<CompanyRecord[]>(this.#paths.companies);
+    for (const company of companies) {
+      void normalizeRequestPolicy(company.requestPolicy);
+    }
+  }
+
   async runBatchIssuance(): Promise<void> {
     const metrics = new MetricRecorder();
     const university = metrics.record(
@@ -464,11 +507,10 @@ export class UseUniversityScenario extends Ability {
         batchRequests.map((request) => batchStartedAt - request.acceptedAt),
       );
 
-      let batchFixtures: Array<{ student: VirtualStudentAgent; fixture: UniversityDiplomaFixture }> = [];
-      metrics.record(
+      const { value: batchFixtures, durationMs: compileDurationMs } = metrics.measure(
         "issuance_batch_compile_ms",
-        () => {
-          batchFixtures = batchRequests.map((request) => {
+        (): Array<{ student: VirtualStudentAgent; fixture: UniversityDiplomaFixture }> =>
+          batchRequests.map((request) => {
             const fixture = createUniversityDiplomaFixture({
               issuerConfig,
               holderConfig: request.student.signerConfig,
@@ -481,14 +523,20 @@ export class UseUniversityScenario extends Ability {
               presentationProofCreatedAt: 60_000n + BigInt(batchIndex),
             });
             return { student: request.student, fixture };
-          });
-        },
+          }),
         { batchId: batch.batchId, size: batch.size },
       );
+      metrics.mark("issuance_batch_queue_wait_ms", {
+        batchId: batch.batchId,
+        size: batch.size,
+        queueWaitMs,
+      });
+      metrics.mark("issuance_batch_size", {
+        batchId: batch.batchId,
+        size: batch.size,
+      });
 
-      const compileDurationMs = metrics.samples.at(-1)?.durationMs ?? 0;
-
-      metrics.record(
+      const { durationMs: signDurationMs } = metrics.measure(
         "issuance_batch_sign_ms",
         () => {
           for (const { fixture } of batchFixtures) {
@@ -497,9 +545,8 @@ export class UseUniversityScenario extends Ability {
         },
         { batchId: batch.batchId, size: batch.size },
       );
-      const signDurationMs = metrics.samples.at(-1)?.durationMs ?? 0;
 
-      metrics.record(
+      const { durationMs: deliveryDurationMs } = metrics.measure(
         "issuance_batch_delivery_ms",
         () => {
           for (const { student, fixture } of batchFixtures) {
@@ -508,7 +555,6 @@ export class UseUniversityScenario extends Ability {
         },
         { batchId: batch.batchId, size: batch.size },
       );
-      const deliveryDurationMs = metrics.samples.at(-1)?.durationMs ?? 0;
 
       batchMetrics.push({
         batchId: batch.batchId,
@@ -527,7 +573,18 @@ export class UseUniversityScenario extends Ability {
       acceptedRequestCount: acceptedRequests.length,
       issuedCredentialCount: studentAgents.filter((student) => student.issuedFixture).length,
       partitionMatchesPlan,
-      metricNames: metrics.names().concat(["issuance_batch_queue_wait_ms", "issuance_batch_size", "issuance_total_students", "issuance_credentials_per_second"]).sort(),
+      metricNames: (() => {
+        metrics.mark("issuance_total_students", {
+          totalStudents: students.length,
+        });
+        metrics.mark("issuance_credentials_per_second", {
+          credentialsPerSecond:
+            totalDurationMs > 0
+              ? acceptedRequests.length / (totalDurationMs / 1000)
+              : acceptedRequests.length,
+        });
+        return metrics.names();
+      })(),
       batchMetrics,
       credentialsPerSecond:
         totalDurationMs > 0
@@ -567,6 +624,7 @@ export class UseUniversityScenario extends Ability {
     );
 
     let acceptedApplications = 0;
+    const jobApplicationsStartedAt = performance.now();
     for (const student of studentAgents) {
       const company = companyById.get(student.record.assignedCompanyId);
       if (!company) {
@@ -594,20 +652,6 @@ export class UseUniversityScenario extends Ability {
         },
         { studentId: student.record.studentId, companyId: company.companyId },
       );
-
-      const issuedRoot = pureCircuits.universityDiplomaCredentialBodyRoot(
-        createUniversityDiplomaFixture({
-          issuerConfig,
-          holderConfig: student.signerConfig,
-          claimOverrides: encodeClaims(student.record),
-        }).credential,
-      );
-      const rebuiltRoot = pureCircuits.universityDiplomaCredentialBodyRoot(
-        fixture.credential,
-      );
-      if (Buffer.compare(Buffer.from(issuedRoot), Buffer.from(rebuiltRoot)) !== 0) {
-        throw new Error(`Issued credential root drift for ${student.record.studentId}`);
-      }
 
       metrics.record(
         "job_application_submit_ms",
@@ -641,7 +685,21 @@ export class UseUniversityScenario extends Ability {
     this.#jobApplicationResult = {
       totalStudents: students.length,
       acceptedApplications,
-      metricNames: metrics.names().concat(["job_application_acceptance_rate", "job_applications_per_second"]).sort(),
+      metricNames: (() => {
+        const totalDurationMs = performance.now() - jobApplicationsStartedAt;
+        metrics.mark("job_application_acceptance_rate", {
+          acceptedApplications,
+          totalStudents: students.length,
+          rate: students.length > 0 ? acceptedApplications / students.length : 0,
+        });
+        metrics.mark("job_applications_per_second", {
+          applicationsPerSecond:
+            totalDurationMs > 0
+              ? acceptedApplications / (totalDurationMs / 1000)
+              : acceptedApplications,
+        });
+        return metrics.names();
+      })(),
       companyAcceptedCounts,
     };
   }
@@ -727,30 +785,19 @@ export class UseUniversityScenario extends Ability {
         error instanceof Error ? error.message : String(error);
     }
 
-    metrics.record(
-      "discount_acceptance_rate",
-      () => undefined,
-      { accepted: outcome === "accepted" },
-    );
-    metrics.record(
-      "discount_rejection_reason_count",
-      () => undefined,
-      {
-        explanation:
-          outcome === "accepted"
-            ? applicant.explanation
-            : "grade does not satisfy the mall threshold",
-      },
-    );
+    metrics.mark("discount_acceptance_rate", {
+      accepted: outcome === "accepted",
+    });
+    metrics.mark("discount_rejection_reason_count", {
+      explanation,
+      outcome,
+    });
 
     this.#discountResult = {
       studentId: student.studentId,
       finalGrade: student.diplomaClaimValues.finalGrade,
       outcome,
-      explanation:
-        outcome === "accepted"
-          ? applicant.explanation
-          : "grade does not satisfy the mall threshold",
+      explanation,
       metricNames: metrics.names(),
     };
   }

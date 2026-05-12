@@ -20,9 +20,7 @@ Given("the university issuer DID instance from {string}", async (relativePath: s
 
 Given("{int} graduating student agents from {string}", async (expectedCount: number, relativePath: string) => {
   universityScenario().setStudentsPath(relativePath);
-  if (expectedCount !== 100) {
-    throw new Error(`This scenario package currently expects 100 students, received ${expectedCount}`);
-  }
+  universityScenario().assertStudentCount(expectedCount);
 });
 
 When("every student submits a student-initiated university diploma issuance request", async () => {
@@ -76,8 +74,7 @@ Given("the company verifier dataset from {string}", async (relativePath: string)
 });
 
 When("each company publishes its university diploma presentation request policy", async () => {
-  // Publication is part of the executable flow in the next step; this Given/When
-  // boundary keeps the feature language aligned with the scenario narrative.
+  universityScenario().publishCompanyPolicies();
 });
 
 When("every student builds and submits a job application to the assigned company", async () => {
