@@ -11,6 +11,12 @@ Purpose:
 - reuse the shared protocol message bus and envelope primitives
 - reuse the university verifier contract for employer and mall presentation checks
 
+Boundary:
+
+- this package is a deterministic trace harness, not a security-realistic SSI deployment
+- the student-side harness rebuilds presentation artifacts from stable local test keys and stored issuer outputs so the full flow can execute in one process
+- treat it as protocol-shape validation and bottleneck instrumentation, not as a reference for issuer-key isolation
+
 Scope:
 
 - 100 student-initiated issuance requests and 100 issuance results

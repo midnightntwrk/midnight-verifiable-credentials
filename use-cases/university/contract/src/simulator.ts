@@ -21,6 +21,16 @@ import {
   universityVerifierWitnesses,
 } from "./witnesses.js";
 
+export type UniversityJobApplicationRequestOptions = {
+  readonly requireDiplomaIdDisclosure?: boolean;
+  readonly requireStudentIdDisclosure?: boolean;
+  readonly requireFacultyNameDisclosure?: boolean;
+  readonly requireHonorsCodeDisclosure?: boolean;
+  readonly requireGraduationMonthDisclosure?: boolean;
+  readonly requireFinalGradeDisclosure?: boolean;
+  readonly requireCreditsEarnedDisclosure?: boolean;
+};
+
 export class UniversityVerifierSimulator {
   readonly contract: Contract<UniversityVerifierPrivateState>;
   circuitContext: CircuitContext<UniversityVerifierPrivateState>;
@@ -62,14 +72,18 @@ export class UniversityVerifierSimulator {
   universityJobApplicationRequest(
     issuerVerificationMethodRef: UniversityDiplomaCredential["issuerVerificationMethodRef"],
     verifierChallengeHash: Uint8Array,
-    requireDiplomaIdDisclosure: boolean,
-    requireStudentIdDisclosure: boolean,
-    requireFacultyNameDisclosure: boolean,
-    requireHonorsCodeDisclosure: boolean,
-    requireGraduationMonthDisclosure: boolean,
-    requireFinalGradeDisclosure: boolean,
-    requireCreditsEarnedDisclosure: boolean,
+    options: UniversityJobApplicationRequestOptions = {},
   ): UniversityDiplomaPresentationRequest {
+    const {
+      requireDiplomaIdDisclosure = false,
+      requireStudentIdDisclosure = false,
+      requireFacultyNameDisclosure = false,
+      requireHonorsCodeDisclosure = false,
+      requireGraduationMonthDisclosure = false,
+      requireFinalGradeDisclosure = false,
+      requireCreditsEarnedDisclosure = false,
+    } = options;
+
     return pureCircuits.universityJobApplicationRequest(
       issuerVerificationMethodRef,
       verifierChallengeHash,

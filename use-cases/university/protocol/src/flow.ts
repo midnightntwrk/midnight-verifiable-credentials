@@ -22,11 +22,13 @@ import {
   createUniversityDiplomaFixture,
   padText,
   type UniversityDiplomaDisclosureOptions,
-  type UniversityDiplomaFixture,
   type UniversityDiplomaRequestOptions,
   type UniversityDiplomaSignerOptions,
 } from "@midnight-ntwrk/midnight-did-credentials-university-diploma/testing";
-import { UniversityVerifierSimulator } from "@midnight-ntwrk/midnight-did-university-verifier-contract/testing";
+import {
+  type UniversityJobApplicationRequestOptions,
+  UniversityVerifierSimulator,
+} from "@midnight-ntwrk/midnight-did-university-verifier-contract/testing";
 
 type UniversityProfile = {
   readonly universityId: string;
@@ -117,7 +119,8 @@ type AgentProfile = {
 };
 
 type StoredIssuedCredential = {
-  readonly fixture: UniversityDiplomaFixture;
+  readonly credential: UniversityDiplomaCredential;
+  readonly credentialProof: Proof;
   readonly issuedAt: bigint;
   readonly credentialProofCreatedAt: bigint;
   readonly presentationProofCreatedAt: bigint;
@@ -381,20 +384,8 @@ class UniversityStudentAgent {
 
   receiveIssuanceResult(message: ProtocolMessage<UniversityIssuanceResultBody>): void {
     this.storedIssuedCredential = {
-      fixture: {
-        issuer: createUniversityDiplomaFixture({
-          issuerConfig: signerOptionsFor(issuerProfileForUniversity(readJson<UniversityProfile>(dataPaths.university))),
-        }).issuer,
-        holder: createUniversityDiplomaFixture({
-          holderConfig: signerOptionsFor(this.profile),
-        }).holder,
-        claims: message.body.credential.claims,
-        credential: message.body.credential,
-        credentialProof: message.body.credentialProof,
-        presentationRequest: createUniversityDiplomaFixture().presentationRequest,
-        presentation: createUniversityDiplomaFixture().presentation,
-        presentationProof: createUniversityDiplomaFixture().presentationProof,
-      },
+      credential: message.body.credential,
+      credentialProof: message.body.credentialProof,
       issuedAt: message.body.issuedAt,
       credentialProofCreatedAt: message.body.credentialProofCreatedAt,
       presentationProofCreatedAt: message.body.presentationProofCreatedAt,
@@ -413,7 +404,10 @@ class UniversityStudentAgent {
       throw new Error(`Student ${this.record.studentId} has no issued diploma credential`);
     }
 
-    const fixture = createUniversityDiplomaFixture({
+    // NOTE: this is a deterministic trace harness, not a key-isolating SSI
+    // protocol implementation. The student replays fixture construction so the
+    // same checked-in actors can produce presentation artifacts in one process.
+    const presentationFixture = createUniversityDiplomaFixture({
       issuerConfig: signerOptionsFor(issuerProfile),
       holderConfig: signerOptionsFor(this.profile),
       claimOverrides: encodeClaims(this.record),
@@ -427,10 +421,10 @@ class UniversityStudentAgent {
     });
 
     const storedRoot = universityDiplomaPureCircuits.universityDiplomaCredentialBodyRoot(
-      this.storedIssuedCredential.fixture.credential,
+      this.storedIssuedCredential.credential,
     );
     const rebuiltRoot = universityDiplomaPureCircuits.universityDiplomaCredentialBodyRoot(
-      fixture.credential,
+      presentationFixture.credential,
     );
     if (hex(storedRoot) !== hex(rebuiltRoot)) {
       throw new Error(`Rebuilt university diploma root drift for ${this.record.studentId}`);
@@ -450,11 +444,11 @@ class UniversityStudentAgent {
       body: {
         kind: message.body.kind,
         studentId: this.record.studentId,
-        credential: fixture.credential,
-        credentialProof: fixture.credentialProof,
+        credential: this.storedIssuedCredential.credential,
+        credentialProof: this.storedIssuedCredential.credentialProof,
         request: message.body.request,
-        presentation: fixture.presentation,
-        presentationProof: fixture.presentationProof,
+        presentation: presentationFixture.presentation,
+        presentationProof: presentationFixture.presentationProof,
       },
     };
 
@@ -574,16 +568,19 @@ class UniversityCompanyVerifierAgent {
     messages: UniversityProtocolMessage[],
   ): void {
     const policy = this.company.requestPolicy;
+    const requestOptions: UniversityJobApplicationRequestOptions = {
+      requireDiplomaIdDisclosure: policy.requireDiplomaIdDisclosure ?? false,
+      requireStudentIdDisclosure: policy.requireStudentIdDisclosure ?? false,
+      requireFacultyNameDisclosure: policy.requireFacultyNameDisclosure ?? false,
+      requireHonorsCodeDisclosure: policy.requireHonorsCodeDisclosure ?? false,
+      requireGraduationMonthDisclosure: policy.requireGraduationMonthDisclosure ?? false,
+      requireFinalGradeDisclosure: policy.requireFinalGradeDisclosure ?? false,
+      requireCreditsEarnedDisclosure: policy.requireCreditsEarnedDisclosure ?? false,
+    };
     const request = this.simulator.universityJobApplicationRequest(
       issuerVerificationMethodRef,
       sha256(`job-application:${this.company.companyId}:${student.record.studentId}`),
-      policy.requireDiplomaIdDisclosure ?? false,
-      policy.requireStudentIdDisclosure ?? false,
-      policy.requireFacultyNameDisclosure ?? false,
-      policy.requireHonorsCodeDisclosure ?? false,
-      policy.requireGraduationMonthDisclosure ?? false,
-      policy.requireFinalGradeDisclosure ?? false,
-      policy.requireCreditsEarnedDisclosure ?? false,
+      requestOptions,
     );
 
     const message: ProtocolMessage<UniversityPresentationRequestBody> = {
@@ -733,9 +730,9 @@ class UniversityMallVerifierAgent {
         message.body.presentationProof,
       );
       this.acceptedCount += 1;
-    } catch {
+    } catch (error) {
       accepted = false;
-      reason = "grade does not satisfy the mall threshold";
+      reason = error instanceof Error ? error.message : String(error);
       this.rejectedCount += 1;
     }
 
@@ -879,7 +876,7 @@ export class UniversityProtocolFlowRunner {
       companyAgent.sendRequest(
         this.bus,
         student,
-        issued.fixture.credential.issuerVerificationMethodRef,
+        issued.credential.issuerVerificationMethodRef,
         this.transcript,
         this.jobMessages,
       );
@@ -929,7 +926,7 @@ export class UniversityProtocolFlowRunner {
       this.mallAgent.sendRequest(
         this.bus,
         student,
-        student.storedIssuedCredential.fixture.credential.issuerVerificationMethodRef,
+        student.storedIssuedCredential.credential.issuerVerificationMethodRef,
         this.transcript,
         this.discountMessages,
       );

@@ -19,16 +19,22 @@ const buildJobApplicationFixture = (options?: {
 }) => {
   const baseFixture = createUniversityDiplomaFixture();
   const simulator = new UniversityVerifierSimulator();
+  // Default to final-grade disclosure on the positive path so the original
+  // employer verification semantics stay locked unless a test opts out.
   const request = simulator.universityJobApplicationRequest(
     baseFixture.credential.issuerVerificationMethodRef,
     baseFixture.presentationRequest.verifierChallengeHash,
-    options?.requireDiplomaIdDisclosure ?? false,
-    options?.requireStudentIdDisclosure ?? false,
-    options?.requireFacultyNameDisclosure ?? false,
-    options?.requireHonorsCodeDisclosure ?? false,
-    options?.requireGraduationMonthDisclosure ?? false,
-    options?.requireFinalGradeDisclosure ?? true,
-    options?.requireCreditsEarnedDisclosure ?? false,
+    {
+      requireDiplomaIdDisclosure: options?.requireDiplomaIdDisclosure ?? false,
+      requireStudentIdDisclosure: options?.requireStudentIdDisclosure ?? false,
+      requireFacultyNameDisclosure: options?.requireFacultyNameDisclosure ?? false,
+      requireHonorsCodeDisclosure: options?.requireHonorsCodeDisclosure ?? false,
+      requireGraduationMonthDisclosure:
+        options?.requireGraduationMonthDisclosure ?? false,
+      requireFinalGradeDisclosure: options?.requireFinalGradeDisclosure ?? true,
+      requireCreditsEarnedDisclosure:
+        options?.requireCreditsEarnedDisclosure ?? false,
+    },
   );
 
   const fixture = createUniversityDiplomaFixture({

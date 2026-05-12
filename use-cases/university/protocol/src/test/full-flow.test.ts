@@ -13,16 +13,22 @@ type CompanyRequestShape = {
     };
   };
 };
+type PresentationResultShape = {
+  readonly body: {
+    readonly accepted: boolean;
+    readonly reason: string;
+  };
+};
 
 describe("university protocol-style multi-party flow", () => {
+  let result: ReturnType<UniversityProtocolFlowRunner["runAll"]>;
+
   beforeAll(() => {
     setNetworkId("undeployed");
+    result = new UniversityProtocolFlowRunner().runAll();
   });
 
   it("issues 100 diploma credentials, completes 100 job applications, and evaluates 5 discount requests", () => {
-    const runner = new UniversityProtocolFlowRunner();
-    const result = runner.runAll();
-
     expect(result.issuance.requestCount).toEqual(100);
     expect(result.issuance.resultCount).toEqual(100);
     expect(result.issuance.batchCount).toEqual(5);
@@ -51,12 +57,19 @@ describe("university protocol-style multi-party flow", () => {
       "STU-0004": "rejected",
       "STU-0005": "rejected",
     });
+
+    const rejectedDiscountReasons = result.discounts.messages
+      .filter(
+        (message): message is typeof message & PresentationResultShape =>
+          message.type === "presentation:result",
+      )
+      .filter((message) => message.body.accepted === false)
+      .map((message) => message.body.reason);
+    expect(rejectedDiscountReasons).toHaveLength(2);
+    expect(rejectedDiscountReasons.every((reason) => reason.includes("disclosed final grade is below the verifier minimum"))).toBe(true);
   });
 
   it("preserves company-specific disclosure policy semantics in the protocol transcript", () => {
-    const runner = new UniversityProtocolFlowRunner();
-    const result = runner.runAll();
-
     const blueOceanRequest = result.jobApplications.messages.find(
       (message) =>
         message.type === "presentation:request" &&
@@ -100,9 +113,6 @@ describe("university protocol-style multi-party flow", () => {
   });
 
   it("threads result messages back to the originating issuance and presentation requests", () => {
-    const runner = new UniversityProtocolFlowRunner();
-    const result = runner.runAll();
-
     const issuanceRequestByThread = new Map(
       result.issuance.messages
         .filter((message) => message.type === "issuance:request")
@@ -122,15 +132,33 @@ describe("university protocol-style multi-party flow", () => {
     const requestMessages = [...result.jobApplications.messages, ...result.discounts.messages].filter(
       (message) => message.type === "presentation:request",
     );
+    const submissionMessages = [
+      ...result.jobApplications.messages,
+      ...result.discounts.messages,
+    ].filter((message) => message.type === "presentation:submission");
     const requestByThread = new Map(
       requestMessages.map((message) => [threadKey(message.envelope.threadId), message]),
     );
+    const submissionByThread = new Map(
+      submissionMessages.map((message) => [threadKey(message.envelope.threadId), message]),
+    );
+
+    for (const message of submissionMessages) {
+      const request = requestByThread.get(threadKey(message.envelope.threadId));
+      expect(request).toBeDefined();
+      expect(Buffer.from(message.envelope.respondsToMessageId)).toEqual(
+        Buffer.from(request!.envelope.messageId),
+      );
+    }
 
     for (const message of [...result.jobApplications.messages, ...result.discounts.messages].filter(
       (entry) => entry.type === "presentation:result",
     )) {
-      const request = requestByThread.get(threadKey(message.envelope.threadId));
-      expect(request).toBeDefined();
+      const submission = submissionByThread.get(threadKey(message.envelope.threadId));
+      expect(submission).toBeDefined();
+      expect(Buffer.from(message.envelope.respondsToMessageId)).toEqual(
+        Buffer.from(submission!.envelope.messageId),
+      );
     }
   });
 });
