@@ -37,9 +37,9 @@ export type UniversityBatchSweepSummary = {
     readonly batchSizes: readonly number[];
   };
   readonly runs: readonly UniversityBatchSweepRun[];
-  readonly fastestBatchSizeByCredentialsPerSecond: number;
+  readonly fastestBatchSizeByWallClockCredentialsPerSecond: number;
   readonly artifactRetention: {
-    readonly targetDir: "use-cases/university/scenarios/target/batch-sweep";
+    readonly targetDir: string;
     readonly files: readonly ["summary.json", "summary.md"];
   };
   readonly notes: readonly [
@@ -53,6 +53,8 @@ const fixedNotes = [
   "This sweep exercises the issuance harness only so compile/sign/delivery phase timings stay visible.",
   "All timings are machine-local measurements and should be compared by relative trend, not exact value.",
 ] as const;
+const defaultBatchSweepArtifactTargetDir =
+  "use-cases/university/scenarios/target/batch-sweep";
 
 const sum = (values: readonly number[]): number =>
   values.reduce((total, value) => total + value, 0);
@@ -153,19 +155,25 @@ const runSweepProfile = async (
 export const buildUniversityBatchSweepSummary = async (options: {
   readonly studentCount?: number;
   readonly batchSizes?: readonly number[];
+  readonly artifactTargetDir?: string;
 } = {}): Promise<UniversityBatchSweepSummary> => {
   const studentCount = options.studentCount ?? 100;
   const batchSizes = normalizeBatchSizes(options.batchSizes ?? [2, 5, 10, 20]);
   const runs: UniversityBatchSweepRun[] = [];
+  const artifactTargetDir =
+    options.artifactTargetDir ?? defaultBatchSweepArtifactTargetDir;
 
   for (const batchSize of batchSizes) {
     runs.push(await runSweepProfile(studentCount, batchSize));
   }
 
-  const fastestRun = runs.reduce((best, current) =>
-    current.wallClockCredentialsPerSecond > best.wallClockCredentialsPerSecond
-      ? current
-      : best,
+  const [firstRun, ...remainingRuns] = runs;
+  const fastestRun = remainingRuns.reduce(
+    (best, current) =>
+      current.wallClockCredentialsPerSecond > best.wallClockCredentialsPerSecond
+        ? current
+        : best,
+    firstRun,
   );
 
   return {
@@ -175,9 +183,9 @@ export const buildUniversityBatchSweepSummary = async (options: {
       batchSizes,
     },
     runs,
-    fastestBatchSizeByCredentialsPerSecond: fastestRun.batchSize,
+    fastestBatchSizeByWallClockCredentialsPerSecond: fastestRun.batchSize,
     artifactRetention: {
-      targetDir: "use-cases/university/scenarios/target/batch-sweep",
+      targetDir: artifactTargetDir,
       files: fixedArtifactFiles,
     },
     notes: fixedNotes,
@@ -193,7 +201,7 @@ export const renderUniversityBatchSweepMarkdown = (
     `- schema version: ${summary.schemaVersion}`,
     `- student count: ${summary.sweepConfig.studentCount}`,
     `- batch sizes: ${summary.sweepConfig.batchSizes.join(", ")}`,
-    `- fastest batch size by wall-clock credentials/sec: ${summary.fastestBatchSizeByCredentialsPerSecond}`,
+    `- fastest batch size by wall-clock credentials/sec: ${summary.fastestBatchSizeByWallClockCredentialsPerSecond}`,
     "",
     "## Runs",
     "| batch size | batches | issued | wall clock ms | queue wait avg ms | compile avg ms | sign avg ms | delivery avg ms | wall-clock credentials/sec | reported credentials/sec |",
@@ -209,6 +217,14 @@ export const renderUniversityBatchSweepMarkdown = (
     ...summary.runs.map(
       (run) =>
         `| ${run.batchSize} | ${formatMeasured(run.phaseTotalsMs.queueWait)} | ${formatMeasured(run.phaseTotalsMs.compile)} | ${formatMeasured(run.phaseTotalsMs.sign)} | ${formatMeasured(run.phaseTotalsMs.delivery)} |`,
+    ),
+    "",
+    "## Phase Maximums (ms)",
+    "| batch size | queue wait max | compile max | sign max | delivery max |",
+    "| --- | ---: | ---: | ---: | ---: |",
+    ...summary.runs.map(
+      (run) =>
+        `| ${run.batchSize} | ${formatMeasured(run.phaseMaxMs.queueWait)} | ${formatMeasured(run.phaseMaxMs.compile)} | ${formatMeasured(run.phaseMaxMs.sign)} | ${formatMeasured(run.phaseMaxMs.delivery)} |`,
     ),
     "",
     "## Notes",

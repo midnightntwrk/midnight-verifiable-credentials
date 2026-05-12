@@ -23,6 +23,8 @@ const targetDir = path.join(
   "batch-sweep",
 );
 
-const summary = await buildUniversityBatchSweepSummary();
+const summary = await buildUniversityBatchSweepSummary({
+  artifactTargetDir: path.relative(repoRoot, targetDir),
+});
 writeUniversityBatchSweepArtifacts(targetDir, summary);
 console.log(JSON.stringify(summary, null, 2));

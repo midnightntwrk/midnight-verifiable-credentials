@@ -42,6 +42,8 @@ Batch-sweep artifacts:
 
 - `./target/batch-sweep/summary.json`
 - `./target/batch-sweep/summary.md`
+- artifacts are regenerated on each run and are intended for local inspection or
+  CI retention, not source control
 
 Current boundary:
 
@@ -49,6 +51,8 @@ Current boundary:
   issuer, student, company, and mall agents in one process
 - the issuance scenario still uses the local batch harness so it can expose the
   more detailed issuance-stage metrics
+- the batch-sweep lane is issuance-only by design, so its timing summaries do
+  not include company or mall verification phases
 - the job-application and mall-discount scenarios now consume the threaded
   [`../protocol/README.md`](../protocol/README.md) transcript directly instead
   of replaying separate local request choreography
