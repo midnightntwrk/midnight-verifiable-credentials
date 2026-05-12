@@ -10,7 +10,10 @@ import {
 } from "@midnight-ntwrk/midnight-did-credentials-university-diploma/testing";
 import { describe, expect, it } from "vitest";
 
-import { UniversityVerifierSimulator } from "../testing.js";
+import {
+  type UniversityJobApplicationRequestOptions,
+  UniversityVerifierSimulator,
+} from "../testing.js";
 
 type VerifierRequestPolicy = {
   readonly requireDiplomaIdDisclosure?: boolean;
@@ -74,7 +77,52 @@ const mallDiscountPolicy = resolveUniversityRequestPolicyPreset(
   "mall-discount-grade-over-90",
 ).requestPolicy as VerifierRequestPolicy;
 
+const assertSupportedJobApplicationPolicy = (
+  presetId: string,
+  policy: VerifierRequestPolicy,
+): void => {
+  if (policy.requireGraduateNameDisclosure !== true) {
+    throw new Error(
+      `Preset ${presetId} must keep requireGraduateNameDisclosure=true for the university job application circuit`,
+    );
+  }
+  if (policy.requireUniversityNameDisclosure !== true) {
+    throw new Error(
+      `Preset ${presetId} must keep requireUniversityNameDisclosure=true for the university job application circuit`,
+    );
+  }
+  if (policy.requireAwardNameDisclosure !== true) {
+    throw new Error(
+      `Preset ${presetId} must keep requireAwardNameDisclosure=true for the university job application circuit`,
+    );
+  }
+  if (policy.requireGraduationYearDisclosure !== true) {
+    throw new Error(
+      `Preset ${presetId} must keep requireGraduationYearDisclosure=true for the university job application circuit`,
+    );
+  }
+  if ((policy.enforceMinimumFinalGrade ?? false) !== false) {
+    throw new Error(
+      `Preset ${presetId} must not enforce a minimum final grade for the university job application circuit`,
+    );
+  }
+};
+
+const toJobApplicationRequestOptions = (
+  policy: VerifierRequestPolicy,
+): UniversityJobApplicationRequestOptions => ({
+  requireDiplomaIdDisclosure: policy.requireDiplomaIdDisclosure ?? false,
+  requireStudentIdDisclosure: policy.requireStudentIdDisclosure ?? false,
+  requireFacultyNameDisclosure: policy.requireFacultyNameDisclosure ?? false,
+  requireHonorsCodeDisclosure: policy.requireHonorsCodeDisclosure ?? false,
+  requireGraduationMonthDisclosure:
+    policy.requireGraduationMonthDisclosure ?? false,
+  requireFinalGradeDisclosure: policy.requireFinalGradeDisclosure ?? false,
+  requireCreditsEarnedDisclosure: policy.requireCreditsEarnedDisclosure ?? false,
+});
+
 const buildJobApplicationFixture = (
+  presetId: string,
   policy: VerifierRequestPolicy,
   disclosureOverrides: {
     readonly revealDiplomaId?: boolean;
@@ -88,12 +136,11 @@ const buildJobApplicationFixture = (
 ) => {
   const baseFixture = createUniversityDiplomaFixture();
   const simulator = new UniversityVerifierSimulator();
+  assertSupportedJobApplicationPolicy(presetId, policy);
   const request = simulator.universityJobApplicationRequest(
     baseFixture.credential.issuerVerificationMethodRef,
     baseFixture.presentationRequest.verifierChallengeHash,
-    {
-      ...policy,
-    },
+    toJobApplicationRequestOptions(policy),
   );
 
   const fixture = createUniversityDiplomaFixture({
@@ -192,8 +239,11 @@ describe("university verifier contract", () => {
     ["job-application-grade-and-award", northwindJobPolicy],
     ["job-application-honors-without-grade", blueOceanJobPolicy],
     ["job-application-credits-and-grade", pioneerJobPolicy],
-  ])("verifies the named company request preset %s", (_presetId, policy) => {
-    const { simulator, request, fixture } = buildJobApplicationFixture(policy);
+  ])("verifies the named company request preset %s", (presetId, policy) => {
+    const { simulator, request, fixture } = buildJobApplicationFixture(
+      presetId,
+      policy,
+    );
 
     simulator.verifyUniversityDiplomaForJobApplication(
       fixture.credential,
@@ -221,6 +271,7 @@ describe("university verifier contract", () => {
 
   it("verifies a university diploma for a job application", () => {
     const { simulator, request, fixture } = buildJobApplicationFixture(
+      "job-application-credits-and-grade",
       pioneerJobPolicy,
     );
 
@@ -262,7 +313,10 @@ describe("university verifier contract", () => {
   });
 
   it("rejects a job application request that enforces a minimum grade", () => {
-    const { simulator, fixture } = buildJobApplicationFixture(northwindJobPolicy);
+    const { simulator, fixture } = buildJobApplicationFixture(
+      "job-application-grade-and-award",
+      northwindJobPolicy,
+    );
     const invalidRequest = {
       ...fixture.presentationRequest,
       enforceMinimumFinalGrade: true,
@@ -282,6 +336,7 @@ describe("university verifier contract", () => {
 
   it("verifies a company policy that does not require final-grade disclosure", () => {
     const { simulator, request, fixture } = buildJobApplicationFixture(
+      "job-application-honors-without-grade",
       blueOceanJobPolicy,
     );
 

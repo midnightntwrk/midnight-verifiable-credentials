@@ -259,6 +259,10 @@ const defaultDataPaths = {
   discountApplicants: "use-cases/university/data/discount-applicants.json",
 } satisfies ScenarioDataPaths;
 
+let cachedRequestPolicyPresetCatalog:
+  | Readonly<Record<string, UniversityRequestPolicyPreset>>
+  | undefined;
+
 const JUBJUB_SUBGROUP_ORDER =
   6554484396890773809930967563523245729705921265872317281365359162392183254199n;
 
@@ -448,10 +452,14 @@ const disclosureNamesForPolicy = (
 
 const requestPolicyPresetCatalog = (): Readonly<
   Record<string, UniversityRequestPolicyPreset>
-> =>
-  readJson<Record<string, UniversityRequestPolicyPreset>>(
-    "use-cases/university/data/request-policy-presets.json",
-  );
+> => {
+  if (!cachedRequestPolicyPresetCatalog) {
+    cachedRequestPolicyPresetCatalog = readJson<
+      Record<string, UniversityRequestPolicyPreset>
+    >("use-cases/university/data/request-policy-presets.json");
+  }
+  return cachedRequestPolicyPresetCatalog;
+};
 
 const requestPolicyPreset = (
   presetId: string,
@@ -463,16 +471,47 @@ const requestPolicyPreset = (
   return preset;
 };
 
+const canonicalizeJsonValue = (value: unknown): unknown => {
+  if (Array.isArray(value)) {
+    return value.map((entry) => canonicalizeJsonValue(entry));
+  }
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value as Record<string, unknown>)
+        .sort(([left], [right]) => left.localeCompare(right))
+        .map(([key, entryValue]) => [key, canonicalizeJsonValue(entryValue)]),
+    );
+  }
+  return value;
+};
+
+const canonicalJson = (value: unknown): string =>
+  JSON.stringify(canonicalizeJsonValue(value));
+
 const assertPolicyMatchesPreset = (
   presetId: string,
   requestPolicy: VerifierRequestPolicy,
+  metadata: {
+    readonly title: string;
+    readonly purpose: string;
+  },
 ): void => {
   const preset = requestPolicyPreset(presetId);
-  const expected = JSON.stringify(preset.requestPolicy);
-  const actual = JSON.stringify(requestPolicy);
+  const expected = canonicalJson(preset.requestPolicy);
+  const actual = canonicalJson(requestPolicy);
   if (actual !== expected) {
     throw new Error(
       `Request policy ${presetId} drifted from the shared preset catalog`,
+    );
+  }
+  if (preset.title !== metadata.title) {
+    throw new Error(
+      `Request preset title ${presetId} drifted from the shared preset catalog`,
+    );
+  }
+  if (preset.purpose !== metadata.purpose) {
+    throw new Error(
+      `Request preset purpose ${presetId} drifted from the shared preset catalog`,
     );
   }
 };
@@ -650,7 +689,10 @@ export class UseUniversityScenario extends Ability {
     // the checked-in JSON still matches the shared preset catalog.
     for (const company of companies) {
       void normalizeRequestPolicy(company.requestPolicy);
-      assertPolicyMatchesPreset(company.requestPresetId, company.requestPolicy);
+      assertPolicyMatchesPreset(company.requestPresetId, company.requestPolicy, {
+        title: company.requestPresetTitle,
+        purpose: company.requestPolicyPurpose,
+      });
     }
   }
 
@@ -740,7 +782,10 @@ export class UseUniversityScenario extends Ability {
   } {
     const companies = readJson<CompanyRecord[]>(this.#paths.companies);
     for (const company of companies) {
-      assertPolicyMatchesPreset(company.requestPresetId, company.requestPolicy);
+      assertPolicyMatchesPreset(company.requestPresetId, company.requestPolicy, {
+        title: company.requestPresetTitle,
+        purpose: company.requestPolicyPurpose,
+      });
     }
     return {
       companyNames: companies.map((company) => company.companyName),
@@ -768,7 +813,10 @@ export class UseUniversityScenario extends Ability {
     readonly minimumFinalGrade: number | null;
   } {
     const mall = readJson<MallRecord>(this.#paths.mall);
-    assertPolicyMatchesPreset(mall.requestPresetId, mall.requestPolicy);
+    assertPolicyMatchesPreset(mall.requestPresetId, mall.requestPolicy, {
+      title: mall.requestPresetTitle,
+      purpose: mall.requestPolicyPurpose,
+    });
     return {
       mallName: mall.mallName,
       requestPresetId: mall.requestPresetId,
