@@ -25,6 +25,8 @@ describe("university protocol-style multi-party flow", () => {
   const expectedStudentCount = 10;
   const expectedBatchCount = 2;
   const expectedDiscountCount = 5;
+  const expectedAcceptedDiscountCount = 3;
+  const expectedRejectedDiscountCount = 2;
 
   beforeAll(() => {
     setNetworkId("undeployed");
@@ -51,8 +53,8 @@ describe("university protocol-style multi-party flow", () => {
     expect(result.discounts.requestCount).toEqual(expectedDiscountCount);
     expect(result.discounts.submissionCount).toEqual(expectedDiscountCount);
     expect(result.discounts.resultCount).toEqual(expectedDiscountCount);
-    expect(result.discounts.acceptedCount).toEqual(3);
-    expect(result.discounts.rejectedCount).toEqual(2);
+    expect(result.discounts.acceptedCount).toEqual(expectedAcceptedDiscountCount);
+    expect(result.discounts.rejectedCount).toEqual(expectedRejectedDiscountCount);
     expect(result.discounts.outcomes).toEqual({
       "STU-0001": "accepted",
       "STU-0002": "accepted",
@@ -68,7 +70,7 @@ describe("university protocol-style multi-party flow", () => {
       )
       .filter((message) => message.body.accepted === false)
       .map((message) => message.body.reason);
-    expect(rejectedDiscountReasons).toHaveLength(2);
+    expect(rejectedDiscountReasons).toHaveLength(expectedRejectedDiscountCount);
     expect(rejectedDiscountReasons.every((reason) => reason.includes("disclosed final grade is below the verifier minimum"))).toBe(true);
   });
 

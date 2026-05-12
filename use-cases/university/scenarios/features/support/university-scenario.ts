@@ -412,7 +412,7 @@ export class UseUniversityScenario extends Ability {
 
   graduatingClassSummary(): {
     readonly universityName: string;
-    readonly studentCount: number;
+    readonly eligibleStudentCount: number;
     readonly students: ReadonlyArray<{
       readonly studentId: string;
       readonly fullName: string;
@@ -421,10 +421,12 @@ export class UseUniversityScenario extends Ability {
     }>;
   } {
     const university = readJson<UniversityProfile>(this.#paths.university);
-    const students = readJson<StudentRecord[]>(this.#paths.students);
+    const students = readJson<StudentRecord[]>(this.#paths.students).filter(
+      (student) => student.graduationEligible,
+    );
     return {
       universityName: university.universityName,
-      studentCount: students.length,
+      eligibleStudentCount: students.length,
       students: students.map((student) => ({
         studentId: student.studentId,
         fullName: student.fullName,
@@ -499,7 +501,7 @@ export class UseUniversityScenario extends Ability {
     readonly studentId: string;
     readonly fullName: string;
     readonly finalGrade: number;
-    readonly expectedDiscountEligibility: boolean;
+    readonly fixtureExpectedDiscountEligibility: boolean;
   } {
     if (!this.#selectedDiscountStudentId) {
       throw new Error("No discount applicant selected");
@@ -519,7 +521,7 @@ export class UseUniversityScenario extends Ability {
       studentId: applicant.studentId,
       fullName: applicant.fullName,
       finalGrade: applicant.finalGrade,
-      expectedDiscountEligibility: applicant.expectedDiscountEligibility,
+      fixtureExpectedDiscountEligibility: applicant.expectedDiscountEligibility,
     };
   }
 
