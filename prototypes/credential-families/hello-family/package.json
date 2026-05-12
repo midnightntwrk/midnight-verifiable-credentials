@@ -69,6 +69,7 @@
   "scripts": {
     "contract": "npm run compact",
     "compact": "node ../../../tooling/scripts/ensure-compact-package-aliases.mjs && compact compile src/hello-family-credential.compact src/managed/hello-family-credential && compact compile src/hello-family-offchain-credential.compact src/managed/hello-family-offchain-credential && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
+    "prebuild": "npm --prefix ../../../core/primitives/credentials run build && npm --prefix ../../../components/adapters/offchain-did run build",
     "pretypecheck": "npm --prefix ../../../core/primitives/credentials run build && npm --prefix ../../../components/adapters/offchain-did run build",
     "pretest": "npm --prefix ../../../core/primitives/credentials run build && npm --prefix ../../../components/adapters/offchain-did run build && npm run compact",
     "pretest:ci": "npm --prefix ../../../core/primitives/credentials run build && npm --prefix ../../../components/adapters/offchain-did run build && npm run compact",
@@ -76,7 +77,7 @@
     "test:ci": "vitest run",
     "prepack": "npm run build",
     "clean": "rm -rf dist && rm -rf coverage && rm -rf reports && rm -rf src/managed",
-    "build": "npm run compact && rm -rf dist && mkdir -p dist && tsc -b tsconfig.build.json --force && cp -Rf ./src/managed ./dist/ && cp ./src/hello-family-credential.compact ./src/hello-family-offchain-credential.compact ./dist && cp -Rf ./src/hello-family-credential ./dist/",
+    "build": "npm run compact && rm -rf dist && mkdir -p dist/managed && tsc -b tsconfig.build.json --force && cp -Rf ./src/managed/. ./dist/managed/ && cp ./src/hello-family-credential.compact ./src/hello-family-offchain-credential.compact ./dist && cp -Rf ./src/hello-family-credential ./dist/",
     "lint": "eslint src --ignore-pattern 'src/managed/**'",
     "lint:fix": "eslint src --fix --ignore-pattern 'src/managed/**'",
     "typecheck": "npm run compact && tsc -p tsconfig.json --noEmit",
