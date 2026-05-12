@@ -5,10 +5,11 @@
     "moduleResolution": "NodeNext",
     "strict": true,
     "noEmit": true,
+    "allowImportingTsExtensions": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "types": ["node"]
   },
-  "include": ["features/**/*.ts"]
+  "include": ["features/**/*.ts", "scripts/**/*.ts"]
 }
