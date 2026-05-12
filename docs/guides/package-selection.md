@@ -46,7 +46,7 @@ Choose one of:
 Use `credentials-birth` when a public holder reference is acceptable.
 Use `credentials-birth-secret` when holder privacy is the primary concern.
 
-### I need a compileable family playground or claim-type lab
+### I need the smallest compileable family starter
 Start with:
 
 - [`../../prototypes/credential-families/hello-family/README.md`](../../prototypes/credential-families/hello-family/README.md)
@@ -54,12 +54,29 @@ Start with:
 Use this when you need:
 
 - the smallest compileable family package in the repo
-- a checked-in matrix of which primitive claim types Compact accepts today
-- a safe place to prototype claim-shape tradeoffs before committing to a real
-  privacy model
+- a starter DID -> VC -> verifier flow that stays intentionally narrow
+- a safe place to prototype minimal claim-shape tradeoffs before committing to
+  a real privacy model
 
 Do not use `credentials-hello-family` as a production privacy template.
 It is intentionally a direct-claim playground.
+
+### I need the broadest direct claim-type lab
+Start with:
+
+- [`../../prototypes/credential-families/dummy-claims/README.md`](../../prototypes/credential-families/dummy-claims/README.md)
+
+Use this when you need:
+
+- the widest currently supported direct Compact claim surface in one package
+- deterministic selective-disclosure fixtures over primitives, vectors, nested
+  structs, and nested vectors
+- a checked-in reference for what the current compiler accepts versus rejects
+- a package that can evolve as the Compact compiler accepts more native field
+  kinds
+
+Do not use `credentials-dummy-claims` as a production privacy template.
+It is intentionally a direct-claim laboratory package.
 
 ### I need same-holder correlation across credentials
 Start with:
@@ -217,6 +234,7 @@ These are valuable, but should be treated as evolving:
 - `credentials-protocol`
 - `credentials-demo-contract`
 - `credentials-status-registry`
+- `credentials-dummy-claims`
 
 Historical placeholder name still referenced in some planning docs:
 

@@ -32,7 +32,14 @@ The cone model keeps the current workflow shape simple:
 
 The `birth-family` name is now historical shorthand.
 It currently groups the repo's credential-family workspaces, including the
-`hello-family` claim-type playground.
+`hello-family` starter family package.
+
+Intentional exclusion:
+
+- `credentials-dummy-claims` is a workspace package, but it is not part of the
+  shared `birth-family` cone
+- that package is a direct claim-surface laboratory and does not sit on the
+  starter-smoke or revocation execution spine
 
 ## Hashing Rule
 
