@@ -29,6 +29,15 @@ Scope:
 - explicit duplicate-submission rejection coverage for both company and mall
   verifier threads
 
+Stress-lane note:
+
+- the 100-student stress dataset scales issuance and company job-application
+  threads to 100 students
+- the mall discount slice intentionally remains fixed at 5 selected applicants
+  so the stress summary isolates issuer and employer verifier throughput first
+- treat `discountsMs` in the stress summary as a fixed-size control sample, not
+  as a 100-student discount benchmark
+
 Build and test:
 
 - root lane:
