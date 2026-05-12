@@ -2,8 +2,11 @@ import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { resolveUniversityRequestPolicyPreset } from "./request-policy-presets.mjs";
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const universityRootDir = path.resolve(__dirname, "..");
+const staticCompanionJsonFiles = new Set(["request-policy-presets.json"]);
 
 const universityDataProfiles = {
   "readable-10": {
@@ -75,6 +78,18 @@ const gradeForIndex = (index) => {
 };
 
 export const buildUniversityDataArtifacts = ({ studentCount, batchSize }) => {
+  const northwindPolicyPreset = resolveUniversityRequestPolicyPreset(
+    "job-application-grade-and-award",
+  );
+  const blueOceanPolicyPreset = resolveUniversityRequestPolicyPreset(
+    "job-application-honors-without-grade",
+  );
+  const pioneerPolicyPreset = resolveUniversityRequestPolicyPreset(
+    "job-application-credits-and-grade",
+  );
+  const mallPolicyPreset = resolveUniversityRequestPolicyPreset(
+    "mall-discount-grade-over-90",
+  );
   const university = {
     universityId: "uni-example-001",
     universityName: "Example University",
@@ -111,13 +126,10 @@ export const buildUniversityDataArtifacts = ({ studentCount, batchSize }) => {
       verifierDidUrl: "did:midnight:company:northwind-robotics",
       verifierMethodId: "#verifier-key-1",
       hiringStream: "robotics-software",
-      requestPolicy: {
-        requireGraduateNameDisclosure: true,
-        requireUniversityNameDisclosure: true,
-        requireAwardNameDisclosure: true,
-        requireGraduationYearDisclosure: true,
-        requireFinalGradeDisclosure: true,
-      },
+      requestPresetId: northwindPolicyPreset.presetId,
+      requestPresetTitle: northwindPolicyPreset.title,
+      requestPolicyPurpose: northwindPolicyPreset.purpose,
+      requestPolicy: northwindPolicyPreset.requestPolicy,
     },
     {
       companyId: "company-blue-ocean-analytics",
@@ -125,14 +137,10 @@ export const buildUniversityDataArtifacts = ({ studentCount, batchSize }) => {
       verifierDidUrl: "did:midnight:company:blue-ocean-analytics",
       verifierMethodId: "#verifier-key-1",
       hiringStream: "data-analytics",
-      requestPolicy: {
-        requireGraduateNameDisclosure: true,
-        requireUniversityNameDisclosure: true,
-        requireAwardNameDisclosure: true,
-        requireGraduationYearDisclosure: true,
-        requireHonorsCodeDisclosure: true,
-        requireFinalGradeDisclosure: false,
-      },
+      requestPresetId: blueOceanPolicyPreset.presetId,
+      requestPresetTitle: blueOceanPolicyPreset.title,
+      requestPolicyPurpose: blueOceanPolicyPreset.purpose,
+      requestPolicy: blueOceanPolicyPreset.requestPolicy,
     },
     {
       companyId: "company-pioneer-systems",
@@ -140,14 +148,10 @@ export const buildUniversityDataArtifacts = ({ studentCount, batchSize }) => {
       verifierDidUrl: "did:midnight:company:pioneer-systems",
       verifierMethodId: "#verifier-key-1",
       hiringStream: "platform-engineering",
-      requestPolicy: {
-        requireGraduateNameDisclosure: true,
-        requireUniversityNameDisclosure: true,
-        requireAwardNameDisclosure: true,
-        requireGraduationYearDisclosure: true,
-        requireCreditsEarnedDisclosure: true,
-        requireFinalGradeDisclosure: true,
-      },
+      requestPresetId: pioneerPolicyPreset.presetId,
+      requestPresetTitle: pioneerPolicyPreset.title,
+      requestPolicyPurpose: pioneerPolicyPreset.purpose,
+      requestPolicy: pioneerPolicyPreset.requestPolicy,
     },
   ];
 
@@ -157,12 +161,10 @@ export const buildUniversityDataArtifacts = ({ studentCount, batchSize }) => {
     verifierDidUrl: "did:midnight:mall:student-square",
     verifierMethodId: "#verifier-key-1",
     offerId: "discount-grade-over-90",
-    requestPolicy: {
-      requireUniversityNameDisclosure: true,
-      requireFinalGradeDisclosure: true,
-      enforceMinimumFinalGrade: true,
-      minimumFinalGrade: 91,
-    },
+    requestPresetId: mallPolicyPreset.presetId,
+    requestPresetTitle: mallPolicyPreset.title,
+    requestPolicyPurpose: mallPolicyPreset.purpose,
+    requestPolicy: mallPolicyPreset.requestPolicy,
   };
 
   const students = Array.from({ length: studentCount }, (_, index) => {
@@ -243,7 +245,10 @@ export const checkUniversityDataArtifacts = (targetDir, artifacts) => {
   let mismatches = 0;
   const expectedFiles = Object.keys(artifacts).sort();
   const committedFiles = readdirSync(targetDir)
-    .filter((filename) => filename.endsWith(".json"))
+    .filter(
+      (filename) =>
+        filename.endsWith(".json") && !staticCompanionJsonFiles.has(filename),
+    )
     .sort();
 
   if (expectedFiles.join("\n") !== committedFiles.join("\n")) {

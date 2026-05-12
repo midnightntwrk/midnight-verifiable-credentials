@@ -4,6 +4,9 @@
   "verifierDidUrl": "did:midnight:mall:student-square",
   "verifierMethodId": "#verifier-key-1",
   "offerId": "discount-grade-over-90",
+  "requestPresetId": "mall-discount-grade-over-90",
+  "requestPresetTitle": "Grade-above-90 discount",
+  "requestPolicyPurpose": "Use when a verifier needs institution identity plus a strict grade threshold check for a student discount offer.",
   "requestPolicy": {
     "requireUniversityNameDisclosure": true,
     "requireFinalGradeDisclosure": true,

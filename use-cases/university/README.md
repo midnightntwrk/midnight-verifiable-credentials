@@ -28,6 +28,9 @@ Status:
   throughput-oriented protocol lanes
 - a dedicated batch-sweep lane now compares issuance behavior across multiple
   batch sizes without mixing that experiment into the readable BDD report
+- company and mall verifier policies are now keyed to named request presets so
+  fixture JSON, contract tests, and readable BDD DTOs can all refer to the
+  same policy catalog
 
 ## Purpose
 
@@ -164,6 +167,8 @@ Committed data artifacts:
   - [`./data/companies.json`](./data/companies.json)
 - mall verifier profile and minimum-grade policy:
   - [`./data/mall.json`](./data/mall.json)
+- shared verifier request-preset catalog:
+  - [`./data/request-policy-presets.json`](./data/request-policy-presets.json)
 - 5 discount applicants with mixed success/failure expectations:
   - [`./data/discount-applicants.json`](./data/discount-applicants.json)
 
@@ -172,6 +177,8 @@ Dataset regeneration script:
 - [`./scripts/generate-university-use-case-data.mjs`](./scripts/generate-university-use-case-data.mjs)
 - named profile registry:
   - [`./scripts/data-profile-registry.mjs`](./scripts/data-profile-registry.mjs)
+- shared verifier request presets:
+  - [`./scripts/request-policy-presets.mjs`](./scripts/request-policy-presets.mjs)
 - profile listing:
   - `node ./use-cases/university/scripts/list-data-profiles.mjs --json`
 - fixture drift check:

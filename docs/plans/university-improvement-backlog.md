@@ -11,7 +11,8 @@ Status:
 - item `5` is opened on the stack as `#222`
 - item `6` is opened on the stack as `#223`
 - item `8` is opened on the stack as `#224`
-- item `7` is the current in-flight slice on top of `#224`
+- item `7` is opened on the stack as `#225`
+- item `10` is the current in-flight slice on top of `#225`
 - last reviewed: `2026-05-13`
 
 Scope boundary:
@@ -112,7 +113,7 @@ Scope boundary:
 
 7. `batch-sweep-benchmark-automation`
 - status:
-  - current in-flight slice
+  - opened on the stack as `#225`
 - problem:
   - current bottleneck data is point-in-time and tied to one batch size
 - scope:
@@ -153,6 +154,8 @@ Scope boundary:
   - `2`
 
 10. `verifier-request-preset-library`
+- status:
+  - current in-flight slice
 - problem:
   - company and mall request policies are duplicated as raw fixture payloads
 - scope:

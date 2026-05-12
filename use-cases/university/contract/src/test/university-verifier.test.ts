@@ -1,3 +1,7 @@
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
 import {
   pureCircuits as universityDiplomaPureCircuits,
 } from "@midnight-ntwrk/midnight-did-credentials-university-diploma/contract";
@@ -8,32 +12,87 @@ import { describe, expect, it } from "vitest";
 
 import { UniversityVerifierSimulator } from "../testing.js";
 
-const buildJobApplicationFixture = (options?: {
-  requireDiplomaIdDisclosure?: boolean;
-  requireStudentIdDisclosure?: boolean;
-  requireFacultyNameDisclosure?: boolean;
-  requireHonorsCodeDisclosure?: boolean;
-  requireGraduationMonthDisclosure?: boolean;
-  requireFinalGradeDisclosure?: boolean;
-  requireCreditsEarnedDisclosure?: boolean;
-}) => {
+type VerifierRequestPolicy = {
+  readonly requireDiplomaIdDisclosure?: boolean;
+  readonly requireStudentIdDisclosure?: boolean;
+  readonly requireGraduateNameDisclosure?: boolean;
+  readonly requireUniversityNameDisclosure?: boolean;
+  readonly requireFacultyNameDisclosure?: boolean;
+  readonly requireAwardNameDisclosure?: boolean;
+  readonly requireHonorsCodeDisclosure?: boolean;
+  readonly requireGraduationYearDisclosure?: boolean;
+  readonly requireGraduationMonthDisclosure?: boolean;
+  readonly requireFinalGradeDisclosure?: boolean;
+  readonly requireCreditsEarnedDisclosure?: boolean;
+  readonly enforceMinimumFinalGrade?: boolean;
+  readonly minimumFinalGrade?: number;
+};
+
+type UniversityRequestPolicyPreset = {
+  readonly presetId: string;
+  readonly kind: "jobApplication" | "mallDiscount";
+  readonly title: string;
+  readonly purpose: string;
+  readonly requestPolicy: VerifierRequestPolicy;
+};
+
+const presetCatalogPath = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "..",
+  "..",
+  "..",
+  "data",
+  "request-policy-presets.json",
+);
+
+const resolveUniversityRequestPolicyPreset = (
+  presetId: string,
+): UniversityRequestPolicyPreset => {
+  const presetCatalog = JSON.parse(
+    readFileSync(presetCatalogPath, "utf8"),
+  ) as Record<string, UniversityRequestPolicyPreset>;
+  const preset = presetCatalog[presetId];
+  if (!preset) {
+    throw new Error(`Unknown university request-policy preset ${presetId}`);
+  }
+  return {
+    ...preset,
+    requestPolicy: { ...preset.requestPolicy },
+  };
+};
+
+const northwindJobPolicy = resolveUniversityRequestPolicyPreset(
+  "job-application-grade-and-award",
+).requestPolicy as VerifierRequestPolicy;
+const blueOceanJobPolicy = resolveUniversityRequestPolicyPreset(
+  "job-application-honors-without-grade",
+).requestPolicy as VerifierRequestPolicy;
+const pioneerJobPolicy = resolveUniversityRequestPolicyPreset(
+  "job-application-credits-and-grade",
+).requestPolicy as VerifierRequestPolicy;
+const mallDiscountPolicy = resolveUniversityRequestPolicyPreset(
+  "mall-discount-grade-over-90",
+).requestPolicy as VerifierRequestPolicy;
+
+const buildJobApplicationFixture = (
+  policy: VerifierRequestPolicy,
+  disclosureOverrides: {
+    readonly revealDiplomaId?: boolean;
+    readonly revealStudentId?: boolean;
+    readonly revealFacultyName?: boolean;
+    readonly revealHonorsCode?: boolean;
+    readonly revealGraduationMonth?: boolean;
+    readonly revealFinalGrade?: boolean;
+    readonly revealCreditsEarned?: boolean;
+  } = {},
+) => {
   const baseFixture = createUniversityDiplomaFixture();
   const simulator = new UniversityVerifierSimulator();
-  // Default to final-grade disclosure on the positive path so the original
-  // employer verification semantics stay locked unless a test opts out.
   const request = simulator.universityJobApplicationRequest(
     baseFixture.credential.issuerVerificationMethodRef,
     baseFixture.presentationRequest.verifierChallengeHash,
     {
-      requireDiplomaIdDisclosure: options?.requireDiplomaIdDisclosure ?? false,
-      requireStudentIdDisclosure: options?.requireStudentIdDisclosure ?? false,
-      requireFacultyNameDisclosure: options?.requireFacultyNameDisclosure ?? false,
-      requireHonorsCodeDisclosure: options?.requireHonorsCodeDisclosure ?? false,
-      requireGraduationMonthDisclosure:
-        options?.requireGraduationMonthDisclosure ?? false,
-      requireFinalGradeDisclosure: options?.requireFinalGradeDisclosure ?? true,
-      requireCreditsEarnedDisclosure:
-        options?.requireCreditsEarnedDisclosure ?? false,
+      ...policy,
     },
   );
 
@@ -57,22 +116,40 @@ const buildJobApplicationFixture = (options?: {
     disclosure: {
       revealGraduateName: true,
       revealUniversityName: true,
-      revealDiplomaId: options?.requireDiplomaIdDisclosure ?? false,
-      revealStudentId: options?.requireStudentIdDisclosure ?? false,
-      revealFacultyName: options?.requireFacultyNameDisclosure ?? false,
+      revealDiplomaId:
+        disclosureOverrides.revealDiplomaId ??
+        (policy.requireDiplomaIdDisclosure ?? false),
+      revealStudentId:
+        disclosureOverrides.revealStudentId ??
+        (policy.requireStudentIdDisclosure ?? false),
+      revealFacultyName:
+        disclosureOverrides.revealFacultyName ??
+        (policy.requireFacultyNameDisclosure ?? false),
       revealAwardName: true,
-      revealHonorsCode: options?.requireHonorsCodeDisclosure ?? false,
+      revealHonorsCode:
+        disclosureOverrides.revealHonorsCode ??
+        (policy.requireHonorsCodeDisclosure ?? false),
       revealGraduationYear: true,
-      revealGraduationMonth: options?.requireGraduationMonthDisclosure ?? false,
-      revealFinalGrade: options?.requireFinalGradeDisclosure ?? true,
-      revealCreditsEarned: options?.requireCreditsEarnedDisclosure ?? false,
+      revealGraduationMonth:
+        disclosureOverrides.revealGraduationMonth ??
+        (policy.requireGraduationMonthDisclosure ?? false),
+      revealFinalGrade:
+        disclosureOverrides.revealFinalGrade ??
+        (policy.requireFinalGradeDisclosure ?? false),
+      revealCreditsEarned:
+        disclosureOverrides.revealCreditsEarned ??
+        (policy.requireCreditsEarnedDisclosure ?? false),
     },
   });
 
   return { simulator, request, fixture };
 };
 
-const buildDiscountFixture = (minimumFinalGrade: bigint, finalGrade = 94n) => {
+const buildDiscountFixture = (
+  minimumFinalGrade: bigint,
+  finalGrade = 94n,
+  policy: VerifierRequestPolicy = mallDiscountPolicy,
+) => {
   const baseFixture = createUniversityDiplomaFixture({
     claimOverrides: { finalGrade },
   });
@@ -102,8 +179,8 @@ const buildDiscountFixture = (minimumFinalGrade: bigint, finalGrade = 94n) => {
       minimumFinalGrade: request.minimumFinalGrade,
     },
     disclosure: {
-      revealUniversityName: true,
-      revealFinalGrade: true,
+      revealUniversityName: policy.requireUniversityNameDisclosure ?? false,
+      revealFinalGrade: policy.requireFinalGradeDisclosure ?? false,
     },
   });
 
@@ -111,6 +188,24 @@ const buildDiscountFixture = (minimumFinalGrade: bigint, finalGrade = 94n) => {
 };
 
 describe("university verifier contract", () => {
+  it.each([
+    ["job-application-grade-and-award", northwindJobPolicy],
+    ["job-application-honors-without-grade", blueOceanJobPolicy],
+    ["job-application-credits-and-grade", pioneerJobPolicy],
+  ])("verifies the named company request preset %s", (_presetId, policy) => {
+    const { simulator, request, fixture } = buildJobApplicationFixture(policy);
+
+    simulator.verifyUniversityDiplomaForJobApplication(
+      fixture.credential,
+      fixture.credentialProof,
+      request,
+      fixture.presentation,
+      fixture.presentationProof,
+    );
+
+    expect(simulator.getLedger().successfulJobApplicationVerificationCount).toEqual(1n);
+  });
+
   it("rejects a discount request threshold above 100", () => {
     const baseFixture = createUniversityDiplomaFixture();
     const simulator = new UniversityVerifierSimulator();
@@ -125,10 +220,9 @@ describe("university verifier contract", () => {
   });
 
   it("verifies a university diploma for a job application", () => {
-    const { simulator, request, fixture } = buildJobApplicationFixture({
-      requireFacultyNameDisclosure: true,
-      requireCreditsEarnedDisclosure: true,
-    });
+    const { simulator, request, fixture } = buildJobApplicationFixture(
+      pioneerJobPolicy,
+    );
 
     simulator.verifyUniversityDiplomaForJobApplication(
       fixture.credential,
@@ -168,7 +262,7 @@ describe("university verifier contract", () => {
   });
 
   it("rejects a job application request that enforces a minimum grade", () => {
-    const { simulator, fixture } = buildJobApplicationFixture();
+    const { simulator, fixture } = buildJobApplicationFixture(northwindJobPolicy);
     const invalidRequest = {
       ...fixture.presentationRequest,
       enforceMinimumFinalGrade: true,
@@ -187,10 +281,9 @@ describe("university verifier contract", () => {
   });
 
   it("verifies a company policy that does not require final-grade disclosure", () => {
-    const { simulator, request, fixture } = buildJobApplicationFixture({
-      requireHonorsCodeDisclosure: true,
-      requireFinalGradeDisclosure: false,
-    });
+    const { simulator, request, fixture } = buildJobApplicationFixture(
+      blueOceanJobPolicy,
+    );
 
     simulator.verifyUniversityDiplomaForJobApplication(
       fixture.credential,

@@ -61,6 +61,9 @@ type CompanyRecord = {
   readonly verifierDidUrl: string;
   readonly verifierMethodId: string;
   readonly hiringStream: string;
+  readonly requestPresetId: string;
+  readonly requestPresetTitle: string;
+  readonly requestPolicyPurpose: string;
   readonly requestPolicy: VerifierRequestPolicy;
 };
 
@@ -70,6 +73,9 @@ type MallRecord = {
   readonly verifierDidUrl: string;
   readonly verifierMethodId: string;
   readonly offerId: string;
+  readonly requestPresetId: string;
+  readonly requestPresetTitle: string;
+  readonly requestPolicyPurpose: string;
   readonly requestPolicy: VerifierRequestPolicy;
 };
 

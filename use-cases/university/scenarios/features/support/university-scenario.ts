@@ -60,12 +60,23 @@ type VerifierRequestPolicy = {
   readonly minimumFinalGrade?: number;
 };
 
+type UniversityRequestPolicyPreset = {
+  readonly presetId: string;
+  readonly kind: "jobApplication" | "mallDiscount";
+  readonly title: string;
+  readonly purpose: string;
+  readonly requestPolicy: VerifierRequestPolicy;
+};
+
 type CompanyRecord = {
   readonly companyId: string;
   readonly companyName: string;
   readonly verifierDidUrl: string;
   readonly verifierMethodId: string;
   readonly hiringStream: string;
+  readonly requestPresetId: string;
+  readonly requestPresetTitle: string;
+  readonly requestPolicyPurpose: string;
   readonly requestPolicy: VerifierRequestPolicy;
 };
 
@@ -75,6 +86,9 @@ type MallRecord = {
   readonly verifierDidUrl: string;
   readonly verifierMethodId: string;
   readonly offerId: string;
+  readonly requestPresetId: string;
+  readonly requestPresetTitle: string;
+  readonly requestPolicyPurpose: string;
   readonly requestPolicy: VerifierRequestPolicy;
 };
 
@@ -432,6 +446,37 @@ const disclosureNamesForPolicy = (
   policy: VerifierRequestPolicy,
 ): string[] => disclosureNamesForFlags(policy);
 
+const requestPolicyPresetCatalog = (): Readonly<
+  Record<string, UniversityRequestPolicyPreset>
+> =>
+  readJson<Record<string, UniversityRequestPolicyPreset>>(
+    "use-cases/university/data/request-policy-presets.json",
+  );
+
+const requestPolicyPreset = (
+  presetId: string,
+): UniversityRequestPolicyPreset => {
+  const preset = requestPolicyPresetCatalog()[presetId];
+  if (!preset) {
+    throw new Error(`Unknown university request-policy preset ${presetId}`);
+  }
+  return preset;
+};
+
+const assertPolicyMatchesPreset = (
+  presetId: string,
+  requestPolicy: VerifierRequestPolicy,
+): void => {
+  const preset = requestPolicyPreset(presetId);
+  const expected = JSON.stringify(preset.requestPolicy);
+  const actual = JSON.stringify(requestPolicy);
+  if (actual !== expected) {
+    throw new Error(
+      `Request policy ${presetId} drifted from the shared preset catalog`,
+    );
+  }
+};
+
 const disclosureNamesForRequest = (
   request: {
     readonly requireDiplomaIdDisclosure?: boolean;
@@ -601,9 +646,11 @@ export class UseUniversityScenario extends Ability {
   publishCompanyPolicies(): void {
     const companies = readJson<CompanyRecord[]>(this.#paths.companies);
     // NOTE: publication remains narrative-only in this local harness. This pass
-    // validates that every checked-in company policy can be normalized.
+    // validates that every checked-in company policy can be normalized and that
+    // the checked-in JSON still matches the shared preset catalog.
     for (const company of companies) {
       void normalizeRequestPolicy(company.requestPolicy);
+      assertPolicyMatchesPreset(company.requestPresetId, company.requestPolicy);
     }
   }
 
@@ -683,17 +730,26 @@ export class UseUniversityScenario extends Ability {
     readonly policies: ReadonlyArray<{
       readonly companyId: string;
       readonly companyName: string;
+      readonly requestPresetId: string;
+      readonly requestPresetTitle: string;
+      readonly requestPolicyPurpose: string;
       readonly disclosures: readonly string[];
       readonly enforceMinimumFinalGrade: boolean;
       readonly minimumFinalGrade: number | null;
     }>;
   } {
     const companies = readJson<CompanyRecord[]>(this.#paths.companies);
+    for (const company of companies) {
+      assertPolicyMatchesPreset(company.requestPresetId, company.requestPolicy);
+    }
     return {
       companyNames: companies.map((company) => company.companyName),
       policies: companies.map((company) => ({
         companyId: company.companyId,
         companyName: company.companyName,
+        requestPresetId: company.requestPresetId,
+        requestPresetTitle: company.requestPresetTitle,
+        requestPolicyPurpose: company.requestPolicyPurpose,
         disclosures: disclosureNamesForPolicy(company.requestPolicy),
         enforceMinimumFinalGrade:
           company.requestPolicy.enforceMinimumFinalGrade ?? false,
@@ -704,13 +760,20 @@ export class UseUniversityScenario extends Ability {
 
   mallPolicySummary(): {
     readonly mallName: string;
+    readonly requestPresetId: string;
+    readonly requestPresetTitle: string;
+    readonly requestPolicyPurpose: string;
     readonly disclosures: readonly string[];
     readonly enforceMinimumFinalGrade: boolean;
     readonly minimumFinalGrade: number | null;
   } {
     const mall = readJson<MallRecord>(this.#paths.mall);
+    assertPolicyMatchesPreset(mall.requestPresetId, mall.requestPolicy);
     return {
       mallName: mall.mallName,
+      requestPresetId: mall.requestPresetId,
+      requestPresetTitle: mall.requestPresetTitle,
+      requestPolicyPurpose: mall.requestPolicyPurpose,
       disclosures: disclosureNamesForPolicy(mall.requestPolicy),
       enforceMinimumFinalGrade:
         mall.requestPolicy.enforceMinimumFinalGrade ?? false,
