@@ -366,45 +366,21 @@ export class UseUniversityScenario extends Ability {
     return actor.abilityTo(UseUniversityScenario);
   }
 
-  setUniversityPath(relativePath: string): void {
-    this.#paths.university = relativePath;
-    this.#invalidateProtocolResult();
-  }
-
-  setStudentsPath(relativePath: string): void {
-    this.#paths.students = relativePath;
-    this.#invalidateProtocolResult();
-  }
-
-  setCompaniesPath(relativePath: string): void {
-    this.#paths.companies = relativePath;
-    this.#invalidateProtocolResult();
-  }
-
-  setMallPath(relativePath: string): void {
-    this.#paths.mall = relativePath;
-    this.#invalidateProtocolResult();
-  }
-
-  setIssuanceBatchesPath(relativePath: string): void {
-    this.#paths.issuanceBatches = relativePath;
-    this.#invalidateProtocolResult();
-  }
-
-  setDiscountApplicantsPath(relativePath: string): void {
-    this.#paths.discountApplicants = relativePath;
-    this.#invalidateProtocolResult();
-  }
-
   selectDiscountStudent(studentId: string): void {
     this.#selectedDiscountStudentId = studentId;
   }
 
-  assertStudentCount(expectedCount: number): void {
+  assertEligibleStudentCount(expectedCount: number): void {
     const students = readJson<StudentRecord[]>(this.#paths.students);
-    if (students.length !== expectedCount) {
+    const eligibleStudents = students.filter((student) => student.graduationEligible);
+    if (eligibleStudents.length !== expectedCount) {
       throw new Error(
-        `Expected ${expectedCount} students in ${this.#paths.students}, found ${students.length}`,
+        `Expected ${expectedCount} eligible students in ${this.#paths.students}, found ${eligibleStudents.length}`,
+      );
+    }
+    if (eligibleStudents.length !== students.length) {
+      throw new Error(
+        `Expected every student in ${this.#paths.students} to be graduation eligible, but found ${students.length - eligibleStudents.length} ineligible records`,
       );
     }
   }
@@ -442,7 +418,7 @@ export class UseUniversityScenario extends Ability {
   graduatingClassSummary(): {
     readonly universityName: string;
     readonly studentCount: number;
-    readonly sampleStudents: ReadonlyArray<{
+    readonly students: ReadonlyArray<{
       readonly studentId: string;
       readonly fullName: string;
       readonly assignedCompanyId: string;
@@ -454,7 +430,7 @@ export class UseUniversityScenario extends Ability {
     return {
       universityName: university.universityName,
       studentCount: students.length,
-      sampleStudents: students.slice(0, 3).map((student) => ({
+      students: students.map((student) => ({
         studentId: student.studentId,
         fullName: student.fullName,
         assignedCompanyId: student.assignedCompanyId,
@@ -550,12 +526,6 @@ export class UseUniversityScenario extends Ability {
       finalGrade: applicant.finalGrade,
       expectedDiscountEligibility: applicant.expectedDiscountEligibility,
     };
-  }
-
-  #invalidateProtocolResult(): void {
-    this.#protocolResult = undefined;
-    this.#jobApplicationResult = undefined;
-    this.#discountResult = undefined;
   }
 
   #protocolFlowResult(): UniversityProtocolFlowResult {

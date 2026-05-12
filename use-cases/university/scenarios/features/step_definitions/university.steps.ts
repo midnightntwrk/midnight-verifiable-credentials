@@ -50,14 +50,14 @@ Given("the {string} graduating class contains {int} eligible students", async (e
   if (summary.universityName !== expectedUniversityName) {
     throw new Error(`Expected graduating class for ${expectedUniversityName}, got ${summary.universityName}`);
   }
-  universityScenario().assertStudentCount(expectedCount);
+  universityScenario().assertEligibleStudentCount(expectedCount);
   await logInsight("Graduating class step insight", {
     request: "Load the committed graduating-class roster and materialize the student holder agents.",
-    response: "The harness exposes the total eligible class size and a readable sample of student-to-company assignments.",
+    response: "The harness exposes the total eligible class size and the full readable student-to-company roster for this 10-student fixture.",
     checks: [
       "The roster belongs to the named university.",
       `The roster contains exactly ${expectedCount} eligible students.`,
-      "Each sampled student includes a DID-backed holder identity and final-grade fixture data.",
+      "Every listed student includes a DID-backed holder identity and final-grade fixture data.",
     ],
     dto: summary,
   });
@@ -143,7 +143,7 @@ Given("the {string} graduating class roster is loaded", async (expectedUniversit
     checks: [
       "The roster belongs to the named university.",
       "The roster is small enough to read directly in the Serenity report.",
-      "Sample students show assigned company ids and final grades.",
+      "All listed students show assigned company ids and final grades.",
     ],
     dto: summary,
   });
@@ -151,8 +151,8 @@ Given("the {string} graduating class roster is loaded", async (expectedUniversit
 
 Given("the company verifier roster includes {string}, {string}, and {string}", async (firstCompany: string, secondCompany: string, thirdCompany: string) => {
   const summary = universityScenario().companyRosterSummary();
-  const actual = summary.companyNames;
-  const expected = [firstCompany, secondCompany, thirdCompany];
+  const actual = [...summary.companyNames].sort();
+  const expected = [firstCompany, secondCompany, thirdCompany].sort();
   if (actual.join("|") !== expected.join("|")) {
     throw new Error(`Expected company roster ${expected.join(", ")}, got ${actual.join(", ")}`);
   }

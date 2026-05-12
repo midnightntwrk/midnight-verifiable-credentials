@@ -30,6 +30,9 @@ The slice is intentionally explicit and operational:
 - the holder binding is the simplest one in the repository:
   `ExplicitHolderBinding`
 - the credential is not revocable and therefore uses `NoStatusBinding`
+- the 10-student fixture size is tuned for report readability first, so its
+  throughput metrics are better for relative bottleneck spotting than for
+  realistic scale modeling
 
 ## Family and Schema
 
