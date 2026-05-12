@@ -21,6 +21,7 @@ import {
 
 // WARNING: deterministic fixture material only. Fixed signer keys and nonce
 // salts here are for tests and local compiler probes, not production flows.
+// Reusing this nonce pattern in real Schnorr signing would leak the secret key.
 const JUBJUB_SUBGROUP_ORDER =
   6554484396890773809930967563523245729705921265872317281365359162392183254199n;
 

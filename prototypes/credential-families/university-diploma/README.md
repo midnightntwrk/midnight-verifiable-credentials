@@ -38,6 +38,7 @@ Design notes:
 - human-readable text is encoded as fixed-width `Bytes<N>` because Compact still does not support `String`
 - issuer identity comes from the credential envelope proof and issuer verification method reference, not from an in-claim DID string
 - the family keeps the holder binding explicit and non-private on purpose because this slice is about large-scale issuance and verification flow clarity, not hidden-holder privacy
+- the prototype assumes credit-bearing degree awards only; honorary or zero-credit diploma variants are intentionally out of scope for this first family cut
 
 Selective disclosure model:
 
