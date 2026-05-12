@@ -6,8 +6,31 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, "..");
-const dataDir = path.join(rootDir, "data");
 const checkMode = process.argv.includes("--check");
+
+const readStringArg = (name, fallback) => {
+  const index = process.argv.indexOf(name);
+  if (index === -1 || index === process.argv.length - 1) {
+    return fallback;
+  }
+  return process.argv[index + 1];
+};
+
+const readIntegerArg = (name, fallback) => {
+  const raw = readStringArg(name, String(fallback));
+  const parsed = Number.parseInt(raw, 10);
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    throw new Error(`Invalid value for ${name}: ${raw}`);
+  }
+  return parsed;
+};
+
+const outputDirArg = readStringArg("--output-dir", "data");
+const dataDir = path.isAbsolute(outputDirArg)
+  ? outputDirArg
+  : path.resolve(rootDir, outputDirArg);
+const studentCount = readIntegerArg("--student-count", 10);
+const batchSize = readIntegerArg("--batch-size", 5);
 
 const university = {
   universityId: "uni-example-001",
@@ -22,7 +45,7 @@ const university = {
   graduationYear: 2030,
   graduationMonth: 6,
   supportsBatchIssuance: true,
-  batchSize: 5,
+  batchSize,
   claimEncoding: {
     stringLikeFields: "fixed-width Bytes<N> in Compact, canonical JSON strings in scenario data",
     integerFields: "Uint<n> in Compact, JSON numbers in scenario data",
@@ -136,7 +159,7 @@ const gradeForIndex = (index) => {
   return 65 + ((index * 7) % 36);
 };
 
-const students = Array.from({ length: 10 }, (_, index) => {
+const students = Array.from({ length: studentCount }, (_, index) => {
   const ordinal = String(index + 1).padStart(4, "0");
   const firstName = firstNames[index % firstNames.length];
   const lastName = lastNames[Math.floor(index / firstNames.length) % lastNames.length];
@@ -181,7 +204,7 @@ for (let index = 0; index < students.length; index += university.batchSize) {
   });
 }
 
-const discountApplicants = students.slice(0, 5).map((student) => ({
+const discountApplicants = students.slice(0, Math.min(5, students.length)).map((student) => ({
   studentId: student.studentId,
   fullName: student.fullName,
   finalGrade: student.diplomaClaimValues.finalGrade,

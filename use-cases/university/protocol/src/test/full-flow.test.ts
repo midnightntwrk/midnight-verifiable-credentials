@@ -177,4 +177,14 @@ describe("university protocol-style multi-party flow", () => {
       );
     }
   });
+
+  it("reports positive per-phase and total protocol timings", () => {
+    expect(result.metrics.issuanceMs).toBeGreaterThan(0);
+    expect(result.metrics.jobApplicationsMs).toBeGreaterThan(0);
+    expect(result.metrics.discountsMs).toBeGreaterThan(0);
+    expect(result.metrics.totalMs).toBeGreaterThan(0);
+    expect(result.metrics.totalMs).toBeGreaterThanOrEqual(result.metrics.issuanceMs);
+    expect(result.metrics.totalMs).toBeGreaterThanOrEqual(result.metrics.jobApplicationsMs);
+    expect(result.metrics.totalMs).toBeGreaterThanOrEqual(result.metrics.discountsMs);
+  });
 });

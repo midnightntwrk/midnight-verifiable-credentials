@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { performance } from "node:perf_hooks";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -188,6 +189,12 @@ export type UniversityProtocolTranscriptEntry = {
 };
 
 export type UniversityProtocolFlowResult = {
+  readonly metrics: {
+    readonly issuanceMs: number;
+    readonly jobApplicationsMs: number;
+    readonly discountsMs: number;
+    readonly totalMs: number;
+  };
   readonly issuance: {
     readonly requestCount: number;
     readonly resultCount: number;
@@ -821,9 +828,17 @@ export class UniversityProtocolFlowRunner {
   }
 
   runAll(): UniversityProtocolFlowResult {
+    const totalStartedAt = performance.now();
+    const issuanceStartedAt = performance.now();
     const issuedStudentIds = this.runIssuance();
+    const issuanceMs = performance.now() - issuanceStartedAt;
+    const jobApplicationsStartedAt = performance.now();
     this.runJobApplications();
+    const jobApplicationsMs = performance.now() - jobApplicationsStartedAt;
+    const discountsStartedAt = performance.now();
     this.runDiscounts();
+    const discountsMs = performance.now() - discountsStartedAt;
+    const totalMs = performance.now() - totalStartedAt;
 
     const companyAcceptedCounts = Object.fromEntries(
       [...this.companyAgents.entries()].map(([companyId, agent]) => [companyId, agent.acceptedCount]),
@@ -839,6 +854,12 @@ export class UniversityProtocolFlowRunner {
     );
 
     return {
+      metrics: {
+        issuanceMs,
+        jobApplicationsMs,
+        discountsMs,
+        totalMs,
+      },
       issuance: {
         requestCount: this.issuanceMessages.filter((message) => message.type === "issuance:request").length,
         resultCount: this.issuanceMessages.filter((message) => message.type === "issuance:result").length,

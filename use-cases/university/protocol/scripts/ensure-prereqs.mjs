@@ -85,7 +85,7 @@ const child = spawn(
   "bash",
   [
     "-lc",
-    "npm run build -w ./components/orchestration/protocol && npm run build -w ./prototypes/credential-families/university-diploma && npm run build -w ./use-cases/university/contract",
+    "npm run build:core && npm run build -w ./prototypes/credential-families/birth && npm run build -w ./prototypes/credential-families/birth-secret && npm run build -w ./components/orchestration/protocol && npm run build -w ./prototypes/credential-families/university-diploma && npm run build -w ./use-cases/university/contract",
   ],
   {
     cwd: repoRoot,

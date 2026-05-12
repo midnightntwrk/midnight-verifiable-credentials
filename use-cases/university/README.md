@@ -11,6 +11,8 @@ Status:
 - threaded protocol-style multi-party flow over the same deterministic actors and data
 - executable BDD job-application and discount paths now sourced from the same
   threaded protocol transcript, rather than a second parallel orchestration
+- separate 100-student protocol stress dataset and runner so throughput
+  experiments do not make the human-readable BDD report unreadable
 
 ## Purpose
 
@@ -33,6 +35,8 @@ The slice is intentionally explicit and operational:
 - the 10-student fixture size is tuned for report readability first, so its
   throughput metrics are better for relative bottleneck spotting than for
   realistic scale modeling
+- the repository also carries a separate 100-student stress dataset for the
+  protocol lane when you want throughput-oriented measurements instead
 
 ## Family and Schema
 
@@ -145,6 +149,8 @@ Dataset regeneration script:
 - [`./scripts/generate-university-use-case-data.mjs`](./scripts/generate-university-use-case-data.mjs)
 - fixture drift check:
   - `node ./use-cases/university/scripts/generate-university-use-case-data.mjs --check`
+- 100-student stress dataset regeneration:
+  - `node ./use-cases/university/scripts/generate-university-use-case-data.mjs --student-count 100 --batch-size 20 --output-dir data/stress-100`
 
 Fixture-time note:
 

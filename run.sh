@@ -20,6 +20,7 @@ Targets:
   bdd-all                    Full Serenity/JS BDD scenario set
   university-bdd             Executable university diploma BDD scenarios
   university-protocol        Protocol-style multi-party university flow lane
+  university-protocol-stress 100-student protocol stress lane with summary output
   hello-smoke                Smallest DID -> VC -> verifier handoff lane
   dummy-claims-lab           Broad direct claim-surface verifier lane
   revocation                 Revocation-focused CI lane
@@ -95,7 +96,7 @@ forward_args=()
 
 if [[ $# -gt 0 ]]; then
   case "$1" in
-    full|lint|typecheck|build|test|bdd|bdd-negative|bdd-all|university-bdd|university-protocol|hello-smoke|dummy-claims-lab|revocation|integration|integration-demo-contract|integration-protocol|targets|help|-h|--help)
+    full|lint|typecheck|build|test|bdd|bdd-negative|bdd-all|university-bdd|university-protocol|university-protocol-stress|hello-smoke|dummy-claims-lab|revocation|integration|integration-demo-contract|integration-protocol|targets|help|-h|--help)
       target="$1"
       shift
       ;;
@@ -226,6 +227,10 @@ case "$target" in
       echo "[run] University protocol lane"
       npm run ci:university-protocol
     fi
+    ;;
+  university-protocol-stress)
+    echo "[run] University protocol stress lane"
+    npm run ci:university-protocol:stress
     ;;
   hello-smoke)
     if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then

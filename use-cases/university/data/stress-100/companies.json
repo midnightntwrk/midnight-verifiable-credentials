@@ -1,0 +1,46 @@
+[
+  {
+    "companyId": "company-northwind-robotics",
+    "companyName": "Northwind Robotics",
+    "verifierDidUrl": "did:midnight:company:northwind-robotics",
+    "verifierMethodId": "#verifier-key-1",
+    "hiringStream": "robotics-software",
+    "requestPolicy": {
+      "requireGraduateNameDisclosure": true,
+      "requireUniversityNameDisclosure": true,
+      "requireAwardNameDisclosure": true,
+      "requireGraduationYearDisclosure": true,
+      "requireFinalGradeDisclosure": true
+    }
+  },
+  {
+    "companyId": "company-blue-ocean-analytics",
+    "companyName": "Blue Ocean Analytics",
+    "verifierDidUrl": "did:midnight:company:blue-ocean-analytics",
+    "verifierMethodId": "#verifier-key-1",
+    "hiringStream": "data-analytics",
+    "requestPolicy": {
+      "requireGraduateNameDisclosure": true,
+      "requireUniversityNameDisclosure": true,
+      "requireAwardNameDisclosure": true,
+      "requireGraduationYearDisclosure": true,
+      "requireHonorsCodeDisclosure": true,
+      "requireFinalGradeDisclosure": false
+    }
+  },
+  {
+    "companyId": "company-pioneer-systems",
+    "companyName": "Pioneer Systems",
+    "verifierDidUrl": "did:midnight:company:pioneer-systems",
+    "verifierMethodId": "#verifier-key-1",
+    "hiringStream": "platform-engineering",
+    "requestPolicy": {
+      "requireGraduateNameDisclosure": true,
+      "requireUniversityNameDisclosure": true,
+      "requireAwardNameDisclosure": true,
+      "requireGraduationYearDisclosure": true,
+      "requireCreditsEarnedDisclosure": true,
+      "requireFinalGradeDisclosure": true
+    }
+  }
+]

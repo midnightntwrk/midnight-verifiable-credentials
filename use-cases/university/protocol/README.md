@@ -22,6 +22,7 @@ Scope:
 - 10 student-initiated issuance requests and 10 issuance results
 - 10 company presentation-request / submission / result threads
 - 5 mall discount presentation-request / submission / result threads
+- separate 100-student stress lane with JSON summary output under `target/stress-100`
 - deterministic transcript assertions over thread and policy semantics
 - explicit negative-path coverage for a company verifier that bypasses the safe
   request-builder helper and publishes a malformed job-application request
@@ -31,7 +32,12 @@ Build and test:
 - root lane:
   - `./run.sh university-protocol`
   - `./run.sh university-protocol --light`
+  - `./run.sh university-protocol-stress`
 - `npm run lint -w ./use-cases/university/protocol`
 - `npm run typecheck -w ./use-cases/university/protocol`
 - `npm run test:ci -w ./use-cases/university/protocol`
 - `npm run build -w ./use-cases/university/protocol`
+- stress summary:
+  - `npm run stress:run -w ./use-cases/university/protocol`
+  - output:
+    - `./use-cases/university/protocol/target/stress-100/summary.json`

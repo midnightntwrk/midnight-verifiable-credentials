@@ -35,6 +35,7 @@
     "build": "npm run prepare:deps && rm -rf dist && tsc -b tsconfig.build.json --force",
     "test": "npm run prepare:deps && vitest run",
     "test:ci": "npm run test",
+    "stress:run": "npm run build && node ./scripts/run-stress-flow.mjs",
     "lint": "eslint src --ignore-pattern 'src/managed/**'",
     "lint:fix": "eslint src --fix --ignore-pattern 'src/managed/**'",
     "typecheck": "npm run prepare:deps && tsc -p tsconfig.json --noEmit",
