@@ -570,6 +570,7 @@ class UniversityIssuerProtocolAgent {
 class UniversityCompanyVerifierAgent {
   readonly profile: AgentProfile;
   readonly simulator = new UniversityVerifierSimulator();
+  readonly processedThreadIds = new Set<string>();
   acceptedCount = 0;
 
   constructor(readonly company: CompanyRecord) {
@@ -631,19 +632,26 @@ class UniversityCompanyVerifierAgent {
   ): void {
     let accepted = true;
     let reason = "job application accepted";
+    const threadIdHex = hex(message.envelope.threadId);
 
-    try {
-      this.simulator.verifyUniversityDiplomaForJobApplication(
-        message.body.credential,
-        message.body.credentialProof,
-        message.body.request,
-        message.body.presentation,
-        message.body.presentationProof,
-      );
-      this.acceptedCount += 1;
-    } catch (error) {
+    if (this.processedThreadIds.has(threadIdHex)) {
       accepted = false;
-      reason = error instanceof Error ? error.message : String(error);
+      reason = `duplicate job application submission for thread ${threadIdHex}`;
+    } else {
+      this.processedThreadIds.add(threadIdHex);
+      try {
+        this.simulator.verifyUniversityDiplomaForJobApplication(
+          message.body.credential,
+          message.body.credentialProof,
+          message.body.request,
+          message.body.presentation,
+          message.body.presentationProof,
+        );
+        this.acceptedCount += 1;
+      } catch (error) {
+        accepted = false;
+        reason = error instanceof Error ? error.message : String(error);
+      }
     }
 
     const result: ProtocolMessage<UniversityPresentationResultBody> = {
@@ -678,6 +686,7 @@ class UniversityCompanyVerifierAgent {
 class UniversityMallVerifierAgent {
   readonly profile: AgentProfile;
   readonly simulator = new UniversityVerifierSimulator();
+  readonly processedThreadIds = new Set<string>();
   acceptedCount = 0;
   rejectedCount = 0;
 
@@ -733,20 +742,28 @@ class UniversityMallVerifierAgent {
   ): void {
     let accepted = true;
     let reason = "mall discount accepted";
+    const threadIdHex = hex(message.envelope.threadId);
 
-    try {
-      this.simulator.verifyUniversityDiplomaForMallDiscount(
-        message.body.credential,
-        message.body.credentialProof,
-        message.body.request,
-        message.body.presentation,
-        message.body.presentationProof,
-      );
-      this.acceptedCount += 1;
-    } catch (error) {
+    if (this.processedThreadIds.has(threadIdHex)) {
       accepted = false;
-      reason = error instanceof Error ? error.message : String(error);
       this.rejectedCount += 1;
+      reason = `duplicate mall discount submission for thread ${threadIdHex}`;
+    } else {
+      this.processedThreadIds.add(threadIdHex);
+      try {
+        this.simulator.verifyUniversityDiplomaForMallDiscount(
+          message.body.credential,
+          message.body.credentialProof,
+          message.body.request,
+          message.body.presentation,
+          message.body.presentationProof,
+        );
+        this.acceptedCount += 1;
+      } catch (error) {
+        accepted = false;
+        reason = error instanceof Error ? error.message : String(error);
+        this.rejectedCount += 1;
+      }
     }
 
     const result: ProtocolMessage<UniversityPresentationResultBody> = {
@@ -846,10 +863,10 @@ export class UniversityProtocolFlowRunner {
     const discountOutcomes = Object.fromEntries(
       this.discountApplicants.map((applicant) => {
         const student = this.studentAgents.get(applicant.studentId)!;
-        const lastResult = student.receivedResults.filter(
+        const firstResult = student.receivedResults.filter(
           (result) => result.kind === "mallDiscount",
-        ).at(-1);
-        return [applicant.studentId, lastResult?.accepted ? "accepted" : "rejected"] as const;
+        ).at(0);
+        return [applicant.studentId, firstResult?.accepted ? "accepted" : "rejected"] as const;
       }),
     );
 
@@ -964,11 +981,15 @@ export class UniversityProtocolFlowRunner {
     }
 
     for (const student of this.studentAgents.values()) {
-      const result = this.bus.receive(student.profile.partyId) as ProtocolMessage<UniversityPresentationResultBody> | undefined;
-      if (!result) {
+      const results = this.bus.drain(student.profile.partyId) as Array<
+        ProtocolMessage<UniversityPresentationResultBody>
+      >;
+      if (results.length === 0) {
         throw new Error(`Missing job application result for ${student.record.studentId}`);
       }
-      student.receivePresentationResult(result);
+      for (const result of results) {
+        student.receivePresentationResult(result);
+      }
     }
   }
 
@@ -1014,11 +1035,15 @@ export class UniversityProtocolFlowRunner {
 
     for (const applicant of this.discountApplicants) {
       const student = this.studentAgents.get(applicant.studentId)!;
-      const result = this.bus.receive(student.profile.partyId) as ProtocolMessage<UniversityPresentationResultBody> | undefined;
-      if (!result) {
+      const results = this.bus.drain(student.profile.partyId) as Array<
+        ProtocolMessage<UniversityPresentationResultBody>
+      >;
+      if (results.length === 0) {
         throw new Error(`Missing discount result for ${student.record.studentId}`);
       }
-      student.receivePresentationResult(result);
+      for (const result of results) {
+        student.receivePresentationResult(result);
+      }
     }
   }
 }

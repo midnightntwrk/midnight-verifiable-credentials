@@ -26,6 +26,8 @@ Scope:
 - deterministic transcript assertions over thread and policy semantics
 - explicit negative-path coverage for a company verifier that bypasses the safe
   request-builder helper and publishes a malformed job-application request
+- explicit duplicate-submission rejection coverage for both company and mall
+  verifier threads
 
 Build and test:
 
