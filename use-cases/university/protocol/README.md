@@ -49,6 +49,9 @@ Scope:
   `target/readable-10`
 - export summaries group entries per thread and include rejection-kind
   breakdowns for downstream tooling
+- the reporting package now consumes those transcript exports together with the
+  readable BDD, stress, and batch-sweep artifacts to emit one compact
+  university summary
 - transcript exports now carry an explicit schema id, schema version, and
   exact-match reader compatibility window so downstream consumers can fail fast
   on unsupported shapes instead of guessing from ad hoc field presence

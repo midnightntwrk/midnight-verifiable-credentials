@@ -158,6 +158,7 @@ Targets that currently honor `--light`:
 - `./run.sh university-protocol`
 - `./run.sh university-protocol-export`
 - `./run.sh university-protocol-stress`
+- `./run.sh university-summary`
 
 Discover explicit repository targets:
 
@@ -196,6 +197,13 @@ Run the 100-student university protocol stress lane:
 ```bash
 ./run.sh university-protocol-stress
 ./run.sh university-protocol-stress --light
+```
+
+Emit the one-page university artifact summary:
+
+```bash
+./run.sh university-summary
+./run.sh university-summary --light
 ```
 
 Run the smallest DID-aware handoff lane directly:

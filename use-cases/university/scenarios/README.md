@@ -34,6 +34,8 @@ Execution:
   - `./run.sh university-bdd`
 - issuance benchmark lane:
   - `./run.sh university-batch-sweep`
+- one-page reporting lane:
+  - `./run.sh university-summary`
 - direct workspace lane:
   - `npm run test:bdd:university`
   - `npm run test:batch-sweep -w use-cases/university/scenarios`
@@ -44,6 +46,9 @@ Batch-sweep artifacts:
 - `./target/batch-sweep/summary.md`
 - artifacts are regenerated on each run and are intended for local inspection or
   CI retention, not source control
+- one-page reporting outputs:
+  - `../reporting/target/summary.json`
+  - `../reporting/target/summary.md`
 
 Current boundary:
 

@@ -27,6 +27,7 @@
     "use-cases/age-gate/scenarios",
     "use-cases/university/scenarios",
     "use-cases/university/protocol",
+    "use-cases/university/reporting",
     "components/integration/standalone-environment"
   ],
   "scripts": {
@@ -121,6 +122,9 @@
     "test:university-protocol:lane": "npm run build:university-protocol:prereqs && npm run test:ci -w use-cases/university/protocol",
     "ci:university-protocol:stress": "npm run lint -w ./use-cases/university/protocol && npm run typecheck:university-protocol && npm run test:university-protocol:stress",
     "ci:university-protocol:stress:from-artifacts": "npm run lint -w ./use-cases/university/protocol && npm run typecheck:university-protocol:from-artifacts && npm run test:university-protocol:stress:from-artifacts",
+    "build:university-summary:prereqs": "npm run test:bdd:university && npm run test:university-protocol:export && npm run test:university-protocol:stress && npm run test:university-batch-sweep",
+    "ci:university-summary": "npm run build:university-summary:prereqs && npm run lint -w ./use-cases/university/reporting && npm run typecheck -w ./use-cases/university/reporting && npm run test:ci -w ./use-cases/university/reporting && npm run build -w ./use-cases/university/reporting && npm run render:summary:from-artifacts -w ./use-cases/university/reporting",
+    "ci:university-summary:from-artifacts": "npm run lint -w ./use-cases/university/reporting && npm run typecheck -w ./use-cases/university/reporting && npm run test:ci -w ./use-cases/university/reporting && npm run build -w ./use-cases/university/reporting && npm run render:summary:from-artifacts -w ./use-cases/university/reporting",
     "test:integration:demo-contract": "npm run test:integration -w use-cases/age-gate/contract",
     "test:integration:protocol": "npm run test:integration -w components/orchestration/protocol",
     "build:integration-prereqs": "npm run build:integration-prereqs:shared",

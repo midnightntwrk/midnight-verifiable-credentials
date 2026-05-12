@@ -31,6 +31,8 @@ Status:
 - company and mall verifier policies are now keyed to named request presets so
   fixture JSON, contract tests, and readable BDD DTOs can all refer to the
   same policy catalog
+- one-page JSON/Markdown reporting now exists as a separate workspace package
+  over the committed university artifact set
 
 ## Purpose
 
@@ -70,6 +72,8 @@ Prototype family:
   - [`./contract/README.md`](./contract/README.md)
 - threaded protocol package:
   - [`./protocol/README.md`](./protocol/README.md)
+- reporting package:
+  - [`./reporting/README.md`](./reporting/README.md)
 
 Credential family package:
 
@@ -381,6 +385,12 @@ Current status:
   - each export now includes `schemaId`, `schemaVersion`, and a pinned reader
     compatibility window so external tooling can reject unsupported transcript
     shapes deterministically
+- emit a one-page summary over the committed university artifact set:
+  - `./reporting/target/summary.json`
+  - `./reporting/target/summary.md`
+  - the summary keeps a stable schema id/version and compresses the readable
+    BDD lane, transcript export, 100-student stress lane, and issuance
+    batch-sweep into one handoff surface
 
 ## BDD Scenarios
 

@@ -11,7 +11,6 @@ import {
   isUniversityProtocolTranscriptExport,
   UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_COMPATIBILITY,
   UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_ID,
-  UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION,
   UniversityProtocolFlowRunner,
 } from "../index.js";
 

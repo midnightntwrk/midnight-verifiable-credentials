@@ -167,6 +167,12 @@ Status: current implemented test surface as of 2026-05-11.
   - stable 100-student stress-summary schema
   - normalized JSON and Markdown stress artifacts
   - explicit retention-hint contract for CI publication
+- `use-cases/university/reporting/src/test/report-summary.test.ts`
+  - stable one-page JSON summary over Serenity, transcript-export, stress, and
+    batch-sweep artifacts
+  - stable one-page Markdown digest over the same artifact set
+  - runtime conformance validation for the reporting schema
+  - latest-run deduplication by Serenity scenario title
 
 ### University executable BDD specs
 
@@ -188,6 +194,11 @@ Status: current implemented test surface as of 2026-05-11.
   - emits stable JSON and Markdown benchmark summaries
   - remains issuance-only so its timing summaries exclude company and mall
     verification phases
+- root `./run.sh university-summary` lane
+  - regenerates the readable BDD, transcript export, stress, and batch-sweep
+    artifacts, then emits a one-page JSON/Markdown summary
+  - `./run.sh university-summary --light` reuses the existing university
+    artifact set when available and only rebuilds the reporting package itself
 - root `./run.sh university-data-profiles` lane
   - validates the committed `readable-10` and `stress-100` university data
     profiles against the shared generator registry

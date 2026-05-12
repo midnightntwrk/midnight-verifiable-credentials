@@ -67,6 +67,9 @@
 - university diploma threaded protocol flow:
   - [`../use-cases/university/protocol/README.md`](../use-cases/university/protocol/README.md)
   - for engineers who need the same use case expressed as explicit request/result message threads
+- university diploma compact reporting surface:
+  - [`../use-cases/university/reporting/README.md`](../use-cases/university/reporting/README.md)
+  - for engineers who need a one-page JSON/Markdown summary over the university artifact set
 - starter templates:
   - [`templates/verifier-contract-template.compact.md`](./templates/verifier-contract-template.compact.md)
   - [`templates/family-scaffold-template.md`](./templates/family-scaffold-template.md)

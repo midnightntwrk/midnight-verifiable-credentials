@@ -13,7 +13,8 @@ Status:
 - item `8` is opened on the stack as `#224`
 - item `7` is opened on the stack as `#225`
 - item `10` is opened on the stack as `#226`
-- item `9` is the current in-flight slice on top of `#226`
+- item `9` is opened on the stack as `#227`
+- item `12` is the current in-flight slice on top of `#227`
 - last reviewed: `2026-05-13`
 
 Scope boundary:
@@ -143,7 +144,7 @@ Scope boundary:
 
 9. `protocol-trace-schema-versioning`
 - status:
-  - current in-flight slice on top of `#226`
+  - opened on the stack as `#227`
 - problem:
   - transcript consumers have no explicit schema/version contract
 - scope:
@@ -158,7 +159,7 @@ Scope boundary:
 
 10. `verifier-request-preset-library`
 - status:
-  - current in-flight slice
+  - opened on the stack as `#226`
 - problem:
   - company and mall request policies are duplicated as raw fixture payloads
 - scope:
@@ -183,6 +184,8 @@ Scope boundary:
   - `9`
 
 12. `serenity-report-summarizer`
+- status:
+  - current in-flight slice on top of `#227`
 - problem:
   - the raw Serenity report is still verbose when you want a one-page status summary
 - scope:

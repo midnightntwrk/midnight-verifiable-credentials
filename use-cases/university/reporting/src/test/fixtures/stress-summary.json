@@ -1,0 +1,74 @@
+{
+  "schemaVersion": "midnight-university-protocol-stress-summary.v1",
+  "datasetProfile": "stress-100",
+  "dataset": {
+    "studentCount": 100,
+    "companyCount": 3,
+    "discountApplicantCount": 5,
+    "batchCount": 5,
+    "batchSize": 20
+  },
+  "counts": {
+    "issuanceRequests": 100,
+    "issuanceResults": 100,
+    "jobApplicationRequests": 100,
+    "jobApplicationSubmissions": 100,
+    "jobApplicationResults": 100,
+    "discountRequests": 5,
+    "discountSubmissions": 5,
+    "discountResults": 5,
+    "transcriptEntries": 515,
+    "totalThreads": 205
+  },
+  "outcomes": {
+    "acceptedJobApplications": 100,
+    "companyAcceptedCounts": {
+      "company-blue-ocean-analytics": 33,
+      "company-northwind-robotics": 34,
+      "company-pioneer-systems": 33
+    },
+    "acceptedDiscounts": 3,
+    "rejectedDiscounts": 2
+  },
+  "rejections": {
+    "jobApplications": {
+      "verificationFailed": 0,
+      "duplicate": 0
+    },
+    "discounts": {
+      "verificationFailed": 2,
+      "duplicate": 0,
+      "byReason": [
+        {
+          "reason": "failed assert: University-diploma disclosed final grade is below the verifier minimum",
+          "count": 2
+        }
+      ]
+    }
+  },
+  "timingsMs": {
+    "issuance": 366.07187500000003,
+    "jobApplications": 1721.5355410000002,
+    "discounts": 72.58666600000015,
+    "runnerTotal": 2160.1978329999997,
+    "wallClock": 2259.0509589999997
+  },
+  "throughput": {
+    "issuanceCredentialsPerSecond": 273.17039857268463,
+    "jobApplicationResultsPerSecond": 58.087676738821386,
+    "discountEvaluationsPerSecond": 68.88317476931631,
+    "transcriptEntriesPerSecond": 227.9718383280614
+  },
+  "artifactRetention": {
+    "targetDir": "use-cases/university/protocol/target/stress-100",
+    "files": [
+      "summary.json",
+      "summary.md"
+    ],
+    "ciRecommendation": "Upload target/stress-100 as a workflow artifact directory."
+  },
+  "notes": [
+    "Mall discount evaluation remains a fixed-size five-applicant control sample.",
+    "Timing and throughput figures are machine-local measurements and should be compared in bands, not as exact constants."
+  ]
+}

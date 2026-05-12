@@ -24,6 +24,7 @@ Targets:
   university-protocol        Protocol-style multi-party university flow lane
   university-protocol-export Machine-readable university protocol transcript export
   university-protocol-stress 100-student protocol stress lane with summary output
+  university-summary         One-page summary over university BDD, transcript, stress, and batch-sweep artifacts
   hello-smoke                Smallest DID -> VC -> verifier handoff lane
   dummy-claims-lab           Broad direct claim-surface verifier lane
   revocation                 Revocation-focused CI lane
@@ -99,7 +100,7 @@ forward_args=()
 
 if [[ $# -gt 0 ]]; then
   case "$1" in
-    full|lint|typecheck|build|test|bdd|bdd-negative|bdd-all|university-bdd|university-batch-sweep|university-data-profiles|university-protocol|university-protocol-export|university-protocol-stress|hello-smoke|dummy-claims-lab|revocation|integration|integration-demo-contract|integration-protocol|targets|help|-h|--help)
+    full|lint|typecheck|build|test|bdd|bdd-negative|bdd-all|university-bdd|university-batch-sweep|university-data-profiles|university-protocol|university-protocol-export|university-protocol-stress|university-summary|hello-smoke|dummy-claims-lab|revocation|integration|integration-demo-contract|integration-protocol|targets|help|-h|--help)
       target="$1"
       shift
       ;;
@@ -257,6 +258,16 @@ case "$target" in
     else
       echo "[run] University protocol stress lane"
       npm run ci:university-protocol:stress
+    fi
+    ;;
+  university-summary)
+    if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
+      echo "[run] Light university summary lane"
+      run_common_ensure_artifacts "run" managed-university-summary
+      npm run ci:university-summary:from-artifacts
+    else
+      echo "[run] University summary lane"
+      npm run ci:university-summary
     fi
     ;;
   hello-smoke)
