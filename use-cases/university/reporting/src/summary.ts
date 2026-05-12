@@ -236,8 +236,15 @@ export type UniversityArtifactPaths = {
   readonly batchSweepSummaryPath: string;
 };
 
-const readJson = <T>(filePath: string): T =>
-  JSON.parse(readFileSync(filePath, "utf8")) as T;
+const readJson = <T>(filePath: string): T => {
+  try {
+    return JSON.parse(readFileSync(filePath, "utf8")) as T;
+  } catch (error) {
+    throw new Error(`Failed to parse JSON artifact at ${filePath}`, {
+      cause: error,
+    });
+  }
+};
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null;
@@ -283,6 +290,8 @@ const latestScenarioRecords = (
 };
 
 const scenarioCategory = (title: string): string => {
+  // Order matters here: narrower negative-path matches should win before the
+  // generic "tampered" bucket catches them.
   const lower = title.toLowerCase();
   if (lower.includes("duplicate job-application")) {
     return "duplicateJobApplication";
@@ -334,11 +343,15 @@ const topSlowestScenarios = (
 const slowestStressPhase = (
   timingsMs: UniversityProtocolStressSummary["timingsMs"],
 ): {
-  readonly phase: keyof UniversityProtocolStressSummary["timingsMs"];
+  readonly phase: "issuance" | "jobApplications" | "discounts";
   readonly durationMs: number;
 } => {
-  const entries = Object.entries(timingsMs) as [
-    keyof UniversityProtocolStressSummary["timingsMs"],
+  const entries = [
+    ["issuance", timingsMs.issuance],
+    ["jobApplications", timingsMs.jobApplications],
+    ["discounts", timingsMs.discounts],
+  ] as [
+    "issuance" | "jobApplications" | "discounts",
     number,
   ][];
 
@@ -348,7 +361,7 @@ const slowestStressPhase = (
         ? { phase: current[0], durationMs: current[1] }
         : best,
     {
-      phase: entries[0]?.[0] ?? "runnerTotal",
+      phase: entries[0]?.[0] ?? "jobApplications",
       durationMs: entries[0]?.[1] ?? 0,
     },
   );
@@ -457,6 +470,8 @@ export const buildUniversityArtifactSummary = (
   };
 };
 
+// This is a lightweight runtime sanity check for the package's own emitted
+// artifact shape, not a recursive schema validator.
 export const isUniversityArtifactSummary = (
   value: unknown,
 ): value is UniversityArtifactSummary => {
@@ -499,7 +514,7 @@ export const assertUniversityArtifactSummaryConforms = (
   }
 };
 
-const formatMs = (value: number): string => value.toFixed(2);
+const format2dp = (value: number): string => value.toFixed(2);
 
 export const renderUniversityArtifactSummaryMarkdown = (
   summary: UniversityArtifactSummary,
@@ -519,7 +534,7 @@ export const renderUniversityArtifactSummaryMarkdown = (
     `- scenarios: ${summary.readableBdd.scenarioCount}`,
     `- passed: ${summary.readableBdd.passedCount}`,
     `- failed: ${summary.readableBdd.failedCount}`,
-    `- total duration ms: ${formatMs(summary.readableBdd.totalDurationMs)}`,
+    `- total duration ms: ${format2dp(summary.readableBdd.totalDurationMs)}`,
     "- categories:",
     ...Object.entries(summary.readableBdd.categories)
       .sort(([left], [right]) => left.localeCompare(right))
@@ -528,7 +543,7 @@ export const renderUniversityArtifactSummaryMarkdown = (
     "## Slowest Scenarios",
     ...summary.readableBdd.slowestScenarios.map(
       (scenario) =>
-        `- ${scenario.title}: ${formatMs(scenario.durationMs)} ms (${scenario.result})`,
+        `- ${scenario.title}: ${format2dp(scenario.durationMs)} ms (${scenario.result})`,
     ),
     "",
     "## Transcript Export",
@@ -552,35 +567,36 @@ export const renderUniversityArtifactSummaryMarkdown = (
     `- accepted job applications: ${summary.stressSummary.outcomes.acceptedJobApplications}`,
     `- accepted discounts: ${summary.stressSummary.outcomes.acceptedDiscounts}`,
     `- rejected discounts: ${summary.stressSummary.outcomes.rejectedDiscounts}`,
-    `- issuance ms: ${formatMs(summary.stressSummary.timingsMs.issuance)}`,
-    `- job applications ms: ${formatMs(summary.stressSummary.timingsMs.jobApplications)}`,
-    `- discounts ms: ${formatMs(summary.stressSummary.timingsMs.discounts)}`,
-    `- wall clock ms: ${formatMs(summary.stressSummary.timingsMs.wallClock)}`,
-    `- issuance credentials/sec: ${formatMs(summary.stressSummary.throughput.issuanceCredentialsPerSecond)}`,
-    `- job application results/sec: ${formatMs(summary.stressSummary.throughput.jobApplicationResultsPerSecond)}`,
-    `- discount evaluations/sec: ${formatMs(summary.stressSummary.throughput.discountEvaluationsPerSecond)}`,
+    `- issuance ms: ${format2dp(summary.stressSummary.timingsMs.issuance)}`,
+    `- job applications ms: ${format2dp(summary.stressSummary.timingsMs.jobApplications)}`,
+    `- discounts ms: ${format2dp(summary.stressSummary.timingsMs.discounts)}`,
+    `- wall clock ms: ${format2dp(summary.stressSummary.timingsMs.wallClock)}`,
+    `- issuance credentials/sec: ${format2dp(summary.stressSummary.throughput.issuanceCredentialsPerSecond)}`,
+    `- job application results/sec: ${format2dp(summary.stressSummary.throughput.jobApplicationResultsPerSecond)}`,
+    `- discount evaluations/sec: ${format2dp(summary.stressSummary.throughput.discountEvaluationsPerSecond)}`,
     "",
     "## Batch Sweep",
     `- fastest batch size by wall-clock credentials/sec: ${summary.batchSweep.fastestBatchSizeByWallClockCredentialsPerSecond}`,
+    "",
     "| batch size | batches | issued | wall clock ms | compile avg ms | queue wait avg ms | wall-clock credentials/sec |",
     "| --- | ---: | ---: | ---: | ---: | ---: | ---: |",
     ...summary.batchSweep.runs.map(
       (run) =>
-        `| ${run.batchSize} | ${run.batchCount} | ${run.issuedCredentialCount} | ${formatMs(run.issuanceWallClockMs)} | ${formatMs(run.compileAverageMs)} | ${formatMs(run.queueWaitAverageMs)} | ${formatMs(run.wallClockCredentialsPerSecond)} |`,
+        `| ${run.batchSize} | ${run.batchCount} | ${run.issuedCredentialCount} | ${format2dp(run.issuanceWallClockMs)} | ${format2dp(run.compileAverageMs)} | ${format2dp(run.queueWaitAverageMs)} | ${format2dp(run.wallClockCredentialsPerSecond)} |`,
     ),
     "",
     "## Bottlenecks",
     ...(summary.bottlenecks.slowestReadableScenario
       ? [
-          `- slowest readable scenario: ${summary.bottlenecks.slowestReadableScenario.title} (${formatMs(summary.bottlenecks.slowestReadableScenario.durationMs)} ms)`,
+          `- slowest readable scenario: ${summary.bottlenecks.slowestReadableScenario.title} (${format2dp(summary.bottlenecks.slowestReadableScenario.durationMs)} ms)`,
         ]
       : []),
     ...(summary.bottlenecks.slowestBatchSweepCompileAverage
       ? [
-          `- slowest batch compile average: batch size ${summary.bottlenecks.slowestBatchSweepCompileAverage.batchSize} (${formatMs(summary.bottlenecks.slowestBatchSweepCompileAverage.compileAverageMs)} ms)`,
+          `- slowest batch compile average: batch size ${summary.bottlenecks.slowestBatchSweepCompileAverage.batchSize} (${format2dp(summary.bottlenecks.slowestBatchSweepCompileAverage.compileAverageMs)} ms)`,
         ]
       : []),
-    `- slowest stress phase: ${summary.bottlenecks.slowestStressPhase.phase} (${formatMs(summary.bottlenecks.slowestStressPhase.durationMs)} ms)`,
+    `- slowest stress phase: ${summary.bottlenecks.slowestStressPhase.phase} (${format2dp(summary.bottlenecks.slowestStressPhase.durationMs)} ms)`,
     "",
     "## Notes",
     ...summary.notes.map((note) => `- ${note}`),

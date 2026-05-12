@@ -254,8 +254,8 @@
       "compileAverageMs": 72.46977499999998
     },
     "slowestStressPhase": {
-      "phase": "wallClock",
-      "durationMs": 2259.0509589999997
+      "phase": "jobApplications",
+      "durationMs": 1721.5355410000002
     }
   },
   "notes": [

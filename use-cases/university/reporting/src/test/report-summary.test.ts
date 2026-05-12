@@ -70,7 +70,7 @@ describe("university artifact report summarizer", () => {
     expect(summary.transcriptExport.counts.totalThreads).toBe(25);
     expect(summary.stressSummary.datasetProfile).toBe("stress-100");
     expect(summary.batchSweep.fastestBatchSizeByWallClockCredentialsPerSecond).toBe(10);
-    expect(summary.bottlenecks.slowestStressPhase.phase).toBe("wallClock");
+    expect(summary.bottlenecks.slowestStressPhase.phase).toBe("jobApplications");
     expect(() => assertUniversityArtifactSummaryConforms(summary)).not.toThrow();
   });
 

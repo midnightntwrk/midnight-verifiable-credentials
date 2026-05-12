@@ -59,6 +59,7 @@
 
 ## Batch Sweep
 - fastest batch size by wall-clock credentials/sec: 10
+
 | batch size | batches | issued | wall clock ms | compile avg ms | queue wait avg ms | wall-clock credentials/sec |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | 2 | 50 | 100 | 373.49 | 7.42 | 190.17 | 267.74 |
@@ -69,7 +70,7 @@
 ## Bottlenecks
 - slowest readable scenario: A duplicate job-application submission is rejected without replacing the original acceptance (490.00 ms)
 - slowest batch compile average: batch size 20 (72.47 ms)
-- slowest stress phase: wallClock (2259.05 ms)
+- slowest stress phase: jobApplications (1721.54 ms)
 
 ## Notes
 - Readable BDD counts are deduplicated by scenario title and keep only the latest recorded run per title.
