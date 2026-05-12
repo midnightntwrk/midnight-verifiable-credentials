@@ -91,7 +91,7 @@ Use that profile when you need to prove:
 - the derived holder binding can issue and verify a starter presentation
 - the result can flow into the `hello-verifier` Layer 3 starter
 
-Start with [`../../docs/guides/did-vc-hello-smoke-path.md`](../../docs/guides/did-vc-hello-smoke-path.md).
+Start with [`../../../docs/guides/did-vc-hello-smoke-path.md`](../../../docs/guides/did-vc-hello-smoke-path.md).
 
 ## Limitations
 
