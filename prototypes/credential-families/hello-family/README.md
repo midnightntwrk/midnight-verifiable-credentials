@@ -41,12 +41,17 @@ Supported in this package today:
 - `Vector<2, Uint<64>>`
 - `Vector<2, Bytes<16>>`
 - `Vector<2, Field>`
+- nested structs composed from those same supported primitives
+- `Vector<k, NestedStruct>` when the nested struct itself is composed only from supported primitives
 
 Not supported by the current Compact compiler surface:
 
 - `Int<...>`
 - `Float<...>`
 - `String`
+- `Vector<k, Int<...>>`
+- `Vector<k, Float<...>>`
+- `Vector<k, String>`
 
 Those unsupported cases are not just prose claims here; the test suite compiles tiny probe contracts and asserts the current compiler rejects them.
 
@@ -62,6 +67,26 @@ If you need a conceptual value that Compact does not support directly:
   use padded `Bytes<N>` or a `Vector<k, Bytes<n>>` chunk layout
 - bigint:
   use `Uint<248>` today; runtime mirrors surface as JavaScript `bigint`
+
+## Nested claim structures
+
+The current compiler accepts nested structs inside claims and even vectors over
+nested structs, as long as every nested field is still built from the supported
+primitive surface above.
+
+That does **not** automatically mean nested claims are the best default for
+shared VC families. They come with two costs:
+
+- request/disclosure models become materially more complex
+- interop documentation becomes harder to keep obvious for downstream users
+
+Current recommendation:
+
+- use flat top-level claims for canonical shared families when possible
+- use nested claims only when they encode a real domain grouping that would be
+  worse if flattened
+- treat nested vector-of-struct claims as prototype-only until a concrete use
+  case proves they help more than they obscure
 
 ## Package structure
 
