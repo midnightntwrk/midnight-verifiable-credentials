@@ -40,7 +40,7 @@ Current maturity is mixed by package:
 - prototype / experimental packages:
   - [`credentials-protocol`](./components/orchestration/protocol/README.md)
   - [`hello-verifier-contract`](./use-cases/hello-verifier/contract/README.md)
-    - smallest current verifier-side starter and claim-surface lab consumer
+    - smallest verifier-side starter and broad direct claim-surface lab consumer
   - [`credentials-demo-contract`](./use-cases/age-gate/contract/README.md)
 - shared integration infrastructure:
   - [`standalone-environment`](./components/integration/standalone-environment/README.md)

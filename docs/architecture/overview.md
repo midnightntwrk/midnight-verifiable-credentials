@@ -139,9 +139,7 @@ It models reference issuance/presentation flows and simulation logic above the
 canonical Compact VC core.
 
 ### `hello-verifier-contract`
-This package is the smallest current verifier-side starter and claim-surface lab consumer.
-
-It owns:
+This starter and lab package owns:
 
 - the smallest checked-in verifier contract over `credentials-hello-family`
 - the offchain-DID-backed starter verifier path

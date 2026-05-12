@@ -113,18 +113,21 @@ Advanced in the current open maturity stack, but not yet on `develop`:
 - final repo-owned leftovers closeout:
   - `#184`
 - post-backlog dummy-claims prototyping and starter-lab execution:
-  - `#196`
-  - `#197`
-  - `#198`
-  - `#199`
-  - `#200`
-  - `#202`
-  - `#203`
+  - family/spec/documentation stack:
+    - `#196`
+    - `#197`
+    - `#198`
+    - `#199`
+    - `#200`
+  - verifier-lab and root-runner stack:
+    - `#202`
+    - `#203`
 
 Practical remaining backlog after the current open stack:
 
 - the original VC maturity backlog is now effectively executed on the current
   stack
+- execution volume for the original backlog is effectively `99-100%` complete
 - the remaining tracked work is now post-backlog maintenance rather than
   capability burn-down:
   - merge-closeout / maintenance discipline
