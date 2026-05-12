@@ -30,8 +30,9 @@ Options:
   --light                    Use reduced-scope or restored-artifact variants when supported; ignored otherwise
 
 Targets that currently honor `--light`:
-  full, build, typecheck, test, hello-smoke
 EOF
+  printf '  '
+  run_common_print_light_targets
 
   if command -v node >/dev/null 2>&1; then
     echo
@@ -127,16 +128,6 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-if [[ "$light_requested" == "1" && "$target_kind" == "wrapper" ]]; then
-  case "$target" in
-    full|build|typecheck|test|hello-smoke)
-      ;;
-    *)
-      echo "[run] Warning: --light is ignored by target '$target'" >&2
-      ;;
-  esac
-fi
-
 case "$target" in
   full)
     if [[ ${#raw_args[@]} -gt 0 ]]; then
@@ -150,6 +141,10 @@ case "$target" in
     exit 0
     ;;
 esac
+
+if [[ "$light_requested" == "1" && "$target_kind" == "wrapper" ]] && ! run_common_target_supports_light "$target"; then
+  echo "[run] Warning: --light is ignored by target '$target'" >&2
+fi
 
 if [[ ${#raw_args[@]} -gt 0 ]]; then
   run_common_repo_setup "${raw_args[@]}"
