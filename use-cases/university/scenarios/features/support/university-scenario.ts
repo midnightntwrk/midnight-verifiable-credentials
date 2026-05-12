@@ -139,6 +139,21 @@ type IssuanceScenarioResult = {
   readonly metricNames: readonly string[];
   readonly batchMetrics: readonly IssuanceBatchMetric[];
   readonly credentialsPerSecond: number;
+  readonly sampleRequests: ReadonlyArray<{
+    readonly studentId: string;
+    readonly holderDidUrl: string;
+    readonly holderMethodId: string;
+    readonly diplomaId: string;
+    readonly awardName: string;
+    readonly finalGrade: number;
+  }>;
+  readonly sampleIssuedCredentials: ReadonlyArray<{
+    readonly studentId: string;
+    readonly issuerVerificationMethodRef: string;
+    readonly universityName: string;
+    readonly awardName: string;
+    readonly finalGrade: string;
+  }>;
 };
 
 type JobApplicationScenarioResult = {
@@ -154,6 +169,23 @@ type DiscountScenarioResult = {
   readonly outcome: "accepted" | "rejected";
   readonly explanation: string;
   readonly metricNames: readonly string[];
+};
+
+type TranscriptEntryView = {
+  readonly type: string;
+  readonly from: string;
+  readonly to: string;
+  readonly summary: string;
+  readonly messageIdHex: string;
+  readonly respondsToHex: string;
+  readonly dto: unknown;
+};
+
+type TranscriptThreadView = {
+  readonly threadIdHex: string;
+  readonly studentId: string | null;
+  readonly verifierId: string | null;
+  readonly entries: readonly TranscriptEntryView[];
 };
 
 type VirtualStudentAgent = {
@@ -257,6 +289,18 @@ const sha256 = (value: string): Uint8Array =>
 const bytesToBigInt = (bytes: Uint8Array): bigint =>
   BigInt(`0x${Buffer.from(bytes).toString("hex")}`);
 
+const bytesToHex = (bytes: Uint8Array): string =>
+  Buffer.from(bytes).toString("hex");
+
+const paddedTextToString = (value: Uint8Array): string =>
+  new TextDecoder().decode(value).replace(/\u0000+$/u, "");
+
+const verificationMethodRefToString = (value: {
+  readonly didContractAddress: { readonly bytes: Uint8Array };
+  readonly methodId: Uint8Array;
+}): string =>
+  `${bytesToHex(value.didContractAddress.bytes)}:${paddedTextToString(value.methodId)}`;
+
 const scalarForLabel = (label: string): bigint => {
   const raw = bytesToBigInt(sha256(label));
   return (raw % (JUBJUB_SUBGROUP_ORDER - 1n)) + 1n;
@@ -337,6 +381,35 @@ const disclosureNamesForPolicy = (
     policy.requireGraduationMonthDisclosure ? "graduationMonth" : undefined,
     policy.requireFinalGradeDisclosure ? "finalGrade" : undefined,
     policy.requireCreditsEarnedDisclosure ? "creditsEarned" : undefined,
+  ].filter((value): value is string => typeof value === "string");
+
+const disclosureNamesForRequest = (
+  request: {
+    readonly requireDiplomaIdDisclosure?: boolean;
+    readonly requireStudentIdDisclosure?: boolean;
+    readonly requireGraduateNameDisclosure?: boolean;
+    readonly requireUniversityNameDisclosure?: boolean;
+    readonly requireFacultyNameDisclosure?: boolean;
+    readonly requireAwardNameDisclosure?: boolean;
+    readonly requireHonorsCodeDisclosure?: boolean;
+    readonly requireGraduationYearDisclosure?: boolean;
+    readonly requireGraduationMonthDisclosure?: boolean;
+    readonly requireFinalGradeDisclosure?: boolean;
+    readonly requireCreditsEarnedDisclosure?: boolean;
+  },
+): string[] =>
+  [
+    request.requireDiplomaIdDisclosure ? "diplomaId" : undefined,
+    request.requireStudentIdDisclosure ? "studentId" : undefined,
+    request.requireGraduateNameDisclosure ? "graduateName" : undefined,
+    request.requireUniversityNameDisclosure ? "universityName" : undefined,
+    request.requireFacultyNameDisclosure ? "facultyName" : undefined,
+    request.requireAwardNameDisclosure ? "awardName" : undefined,
+    request.requireHonorsCodeDisclosure ? "honorsCode" : undefined,
+    request.requireGraduationYearDisclosure ? "graduationYear" : undefined,
+    request.requireGraduationMonthDisclosure ? "graduationMonth" : undefined,
+    request.requireFinalGradeDisclosure ? "finalGrade" : undefined,
+    request.requireCreditsEarnedDisclosure ? "creditsEarned" : undefined,
   ].filter((value): value is string => typeof value === "string");
 
 const average = (values: readonly number[]): number => {
@@ -534,6 +607,85 @@ export class UseUniversityScenario extends Ability {
     };
   }
 
+  issuanceExecutionSummary(): {
+    readonly totalStudents: number;
+    readonly sampleRequests: IssuanceScenarioResult["sampleRequests"];
+    readonly sampleIssuedCredentials: IssuanceScenarioResult["sampleIssuedCredentials"];
+    readonly batchMetrics: readonly IssuanceBatchMetric[];
+  } {
+    const result = this.issuanceResult();
+    return {
+      totalStudents: result.totalStudents,
+      sampleRequests: result.sampleRequests,
+      sampleIssuedCredentials: result.sampleIssuedCredentials,
+      batchMetrics: result.batchMetrics,
+    };
+  }
+
+  jobApplicationTranscriptSummary(): {
+    readonly totalThreads: number;
+    readonly omittedThreadCount: number;
+    readonly representativeThreads: readonly TranscriptThreadView[];
+  } {
+    const students = readJson<StudentRecord[]>(this.#paths.students);
+    const companies = readJson<CompanyRecord[]>(this.#paths.companies);
+    const threadViews = this.#transcriptThreadsForPhase("jobApplications");
+    const representativeThreads = companies.flatMap((company) => {
+      const representativeStudent = students.find(
+        (student) => student.assignedCompanyId === company.companyId,
+      );
+      if (!representativeStudent) {
+        return [];
+      }
+      const thread = threadViews.find(
+        (candidate) =>
+          candidate.studentId === representativeStudent.studentId &&
+          candidate.verifierId === company.companyId,
+      );
+      if (!thread) {
+        return [];
+      }
+      return [
+        {
+          ...thread,
+          entries: thread.entries,
+        },
+      ];
+    });
+    return {
+      totalThreads: threadViews.length,
+      omittedThreadCount: Math.max(
+        0,
+        threadViews.length - representativeThreads.length,
+      ),
+      representativeThreads,
+    };
+  }
+
+  discountTranscriptSummary(): {
+    readonly totalThreads: number;
+    readonly selectedStudentId: string;
+    readonly representativeThread: TranscriptThreadView;
+  } {
+    if (!this.#selectedDiscountStudentId) {
+      throw new Error("No discount applicant selected");
+    }
+    const threadViews = this.#transcriptThreadsForPhase("discounts");
+    const representativeThread = threadViews.find(
+      (candidate) => candidate.studentId === this.#selectedDiscountStudentId,
+    );
+    if (!representativeThread) {
+      throw new Error(
+        `Missing discount transcript thread for ${this.#selectedDiscountStudentId}`,
+      );
+    }
+    return {
+      totalThreads: threadViews.length,
+      selectedStudentId: this.#selectedDiscountStudentId,
+      representativeThread,
+    };
+  }
+
   #protocolFlowResult(): UniversityProtocolFlowResult {
     if (!this.#protocolResult) {
       this.#protocolResult = new UniversityProtocolFlowRunner({
@@ -541,6 +693,213 @@ export class UseUniversityScenario extends Ability {
       }).runAll();
     }
     return this.#protocolResult;
+  }
+
+  #transcriptThreadsForPhase(
+    phase: "issuance" | "jobApplications" | "discounts",
+  ): TranscriptThreadView[] {
+    const result = this.#protocolFlowResult();
+    const messagesForPhase =
+      phase === "issuance"
+        ? result.issuance.messages
+        : phase === "jobApplications"
+          ? result.jobApplications.messages
+          : result.discounts.messages;
+    const messageById = new Map(
+      messagesForPhase.map((message) => [
+        bytesToHex(message.envelope.messageId),
+        message,
+      ]),
+    );
+    const grouped = new Map<string, TranscriptThreadView>();
+
+    for (const entry of result.transcript.filter(
+      (candidate) => candidate.phase === phase,
+    )) {
+      const message = messageById.get(entry.messageIdHex);
+      const dto = message ? this.#transcriptDtoForMessage(message) : null;
+      const existing = grouped.get(entry.threadIdHex);
+      const studentId =
+        dto && typeof dto === "object" && dto !== null && "studentId" in dto
+          ? String(dto.studentId)
+          : existing?.studentId ?? null;
+      const verifierId =
+        dto && typeof dto === "object" && dto !== null && "verifierId" in dto
+          ? String(dto.verifierId)
+          : existing?.verifierId ?? null;
+      const nextEntry: TranscriptEntryView = {
+        type: entry.type,
+        from: entry.from,
+        to: entry.to,
+        summary: entry.summary,
+        messageIdHex: entry.messageIdHex,
+        respondsToHex: entry.respondsToHex,
+        dto,
+      };
+
+      if (existing) {
+        grouped.set(entry.threadIdHex, {
+          ...existing,
+          studentId,
+          verifierId,
+          entries: [...existing.entries, nextEntry],
+        });
+      } else {
+        grouped.set(entry.threadIdHex, {
+          threadIdHex: entry.threadIdHex,
+          studentId,
+          verifierId,
+          entries: [nextEntry],
+        });
+      }
+    }
+
+    return [...grouped.values()];
+  }
+
+  #transcriptDtoForMessage(
+    message: UniversityProtocolFlowResult["issuance"]["messages"][number],
+  ): unknown {
+    switch (message.type) {
+      case "issuance:request": {
+        const body = message.body as {
+          readonly studentId: string;
+          readonly holderDidUrl: string;
+          readonly holderMethodId: string;
+          readonly claimValues: {
+            readonly diplomaId: string;
+            readonly awardName: string;
+            readonly finalGrade: number;
+          };
+        };
+        return {
+          studentId: body.studentId,
+          holderDidUrl: body.holderDidUrl,
+          holderMethodId: body.holderMethodId,
+          claimValues: {
+            diplomaId: body.claimValues.diplomaId,
+            awardName: body.claimValues.awardName,
+            finalGrade: body.claimValues.finalGrade,
+          },
+        };
+      }
+      case "issuance:result": {
+        const body = message.body as {
+          readonly studentId: string;
+          readonly issuedAt: bigint;
+          readonly credential: {
+            readonly issuerVerificationMethodRef: {
+              readonly didContractAddress: { readonly bytes: Uint8Array };
+              readonly methodId: Uint8Array;
+            };
+            readonly claims: {
+              readonly universityName: Uint8Array;
+              readonly awardName: Uint8Array;
+              readonly finalGrade: bigint;
+            };
+          };
+        };
+        return {
+          studentId: body.studentId,
+          issuedAt: body.issuedAt.toString(),
+          issuerVerificationMethodRef: verificationMethodRefToString(
+            body.credential.issuerVerificationMethodRef,
+          ),
+          universityName: paddedTextToString(
+            body.credential.claims.universityName,
+          ),
+          awardName: paddedTextToString(body.credential.claims.awardName),
+          finalGrade: body.credential.claims.finalGrade.toString(),
+        };
+      }
+      case "presentation:request": {
+        const body = message.body as {
+          readonly kind: "jobApplication" | "mallDiscount";
+          readonly studentId: string;
+          readonly verifierId: string;
+          readonly requestedRole?: string;
+          readonly request: {
+            readonly requireDiplomaIdDisclosure?: boolean;
+            readonly requireStudentIdDisclosure?: boolean;
+            readonly requireGraduateNameDisclosure?: boolean;
+            readonly requireUniversityNameDisclosure?: boolean;
+            readonly requireFacultyNameDisclosure?: boolean;
+            readonly requireAwardNameDisclosure?: boolean;
+            readonly requireHonorsCodeDisclosure?: boolean;
+            readonly requireGraduationYearDisclosure?: boolean;
+            readonly requireGraduationMonthDisclosure?: boolean;
+            readonly requireFinalGradeDisclosure?: boolean;
+            readonly requireCreditsEarnedDisclosure?: boolean;
+            readonly enforceMinimumFinalGrade: boolean;
+            readonly minimumFinalGrade: bigint;
+            readonly verifierChallengeHash: Uint8Array;
+          };
+        };
+        return {
+          kind: body.kind,
+          studentId: body.studentId,
+          verifierId: body.verifierId,
+          requestedRole: body.requestedRole ?? null,
+          disclosures: disclosureNamesForRequest(body.request),
+          enforceMinimumFinalGrade: body.request.enforceMinimumFinalGrade,
+          minimumFinalGrade: Number(body.request.minimumFinalGrade),
+          verifierChallengeHashHex: bytesToHex(
+            body.request.verifierChallengeHash,
+          ),
+        };
+      }
+      case "presentation:submission": {
+        const body = message.body as {
+          readonly kind: "jobApplication" | "mallDiscount";
+          readonly studentId: string;
+          readonly request: {
+            readonly requireDiplomaIdDisclosure?: boolean;
+            readonly requireStudentIdDisclosure?: boolean;
+            readonly requireGraduateNameDisclosure?: boolean;
+            readonly requireUniversityNameDisclosure?: boolean;
+            readonly requireFacultyNameDisclosure?: boolean;
+            readonly requireAwardNameDisclosure?: boolean;
+            readonly requireHonorsCodeDisclosure?: boolean;
+            readonly requireGraduationYearDisclosure?: boolean;
+            readonly requireGraduationMonthDisclosure?: boolean;
+            readonly requireFinalGradeDisclosure?: boolean;
+            readonly requireCreditsEarnedDisclosure?: boolean;
+            readonly verifierChallengeHash: Uint8Array;
+          };
+          readonly credential: {
+            readonly issuerVerificationMethodRef: {
+              readonly didContractAddress: { readonly bytes: Uint8Array };
+              readonly methodId: Uint8Array;
+            };
+          };
+        };
+        return {
+          kind: body.kind,
+          studentId: body.studentId,
+          disclosures: disclosureNamesForRequest(body.request),
+          issuerVerificationMethodRef: verificationMethodRefToString(
+            body.credential.issuerVerificationMethodRef,
+          ),
+          verifierChallengeHashHex: bytesToHex(
+            body.request.verifierChallengeHash,
+          ),
+        };
+      }
+      case "presentation:result": {
+        const body = message.body as {
+          readonly kind: "jobApplication" | "mallDiscount";
+          readonly studentId: string;
+          readonly accepted: boolean;
+          readonly reason: string;
+        };
+        return {
+          kind: body.kind,
+          studentId: body.studentId,
+          accepted: body.accepted,
+          reason: body.reason,
+        };
+      }
+    }
   }
 
   async runBatchIssuance(): Promise<void> {
@@ -728,6 +1087,31 @@ export class UseUniversityScenario extends Ability {
         totalDurationMs > 0
           ? acceptedRequests.length / (totalDurationMs / 1000)
           : acceptedRequests.length,
+      sampleRequests: acceptedRequests.slice(0, 3).map((request) => ({
+        studentId: request.student.record.studentId,
+        holderDidUrl: request.student.record.holderDidUrl,
+        holderMethodId: request.student.record.holderMethodId,
+        diplomaId: request.student.record.diplomaClaimValues.diplomaId,
+        awardName: request.student.record.diplomaClaimValues.awardName,
+        finalGrade: request.student.record.diplomaClaimValues.finalGrade,
+      })),
+      sampleIssuedCredentials: studentAgents
+        .filter((student) => student.issuedFixture)
+        .slice(0, 3)
+        .map((student) => ({
+          studentId: student.record.studentId,
+          issuerVerificationMethodRef: verificationMethodRefToString(
+            student.issuedFixture!.credential.issuerVerificationMethodRef,
+          ),
+          universityName: paddedTextToString(
+            student.issuedFixture!.credential.claims.universityName,
+          ),
+          awardName: paddedTextToString(
+            student.issuedFixture!.credential.claims.awardName,
+          ),
+          finalGrade:
+            student.issuedFixture!.credential.claims.finalGrade.toString(),
+        })),
     };
   }
 

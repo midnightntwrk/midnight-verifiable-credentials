@@ -79,7 +79,10 @@ When("every graduating student submits a university diploma issuance request", a
       "The holder method referenced by the request belongs to the student DID.",
       "The issuance result reports accepted request count, issued credential count, and batch-level timing metrics.",
     ],
-    dto: universityScenario().issuanceResult(),
+    dto: {
+      result: universityScenario().issuanceResult(),
+      transcriptExcerpt: universityScenario().issuanceExecutionSummary(),
+    },
   });
 });
 
@@ -198,7 +201,10 @@ When("every student builds and submits a job application to the assigned company
       "All required disclosed fields are present in the submission.",
       "The result includes per-company acceptance counts and bottleneck metrics.",
     ],
-    dto: universityScenario().jobApplicationResult(),
+    dto: {
+      result: universityScenario().jobApplicationResult(),
+      transcriptExcerpt: universityScenario().jobApplicationTranscriptSummary(),
+    },
   });
 });
 
@@ -276,7 +282,10 @@ When("the student submits a discount request presentation with final grade {int}
       "The explanation is stable for both acceptance and rejection paths.",
       "The result carries the expected discount metrics.",
     ],
-    dto: result,
+    dto: {
+      result,
+      transcriptExcerpt: universityScenario().discountTranscriptSummary(),
+    },
   });
 });
 

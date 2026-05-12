@@ -6,6 +6,10 @@ Purpose:
 - make each request, response, and verification check visible in the scenario text
 - emit step-level DTO and intent summaries into the Serenity report via
   Serenity/JS log entries
+- surface representative protocol request/submission/result threads directly in
+  the Serenity report for job applications and mall discounts
+- surface representative issuance request/result DTOs and batch metrics for the
+  local batch-issuance harness
 - define a metric vocabulary for later executable orchestration work
 - execute the current virtual-agent university flow against the checked-in
   `university-diploma` family package
@@ -35,6 +39,9 @@ Current boundary:
 - the job-application and mall-discount scenarios now consume the threaded
   [`../protocol/README.md`](../protocol/README.md) transcript directly instead
   of replaying separate local request choreography
+- the Serenity report now includes representative protocol thread excerpts so a
+  human can inspect the request DTO, submission DTO, and verifier result for a
+  small readable subset of students without leaving the report
 - it is still a local reference harness, not a Docker-backed or networked SSI
   deployment
 - the comments remain intentionally verbose so the step text still acts as
