@@ -23,6 +23,8 @@ Scope:
 - 100 company presentation-request / submission / result threads
 - 5 mall discount presentation-request / submission / result threads
 - deterministic transcript assertions over thread and policy semantics
+- explicit negative-path coverage for a company verifier that bypasses the safe
+  request-builder helper and publishes a malformed job-application request
 
 Build and test:
 
