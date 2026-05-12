@@ -31,6 +31,8 @@ Scope:
 - protocol results distinguish verifier-side rejections from duplicate-thread
   rejections so metrics do not collapse business-policy failures into replay
   guard events
+- the runner now exposes explicit exercise options for negative-path scenarios
+  instead of relying on test-time monkey patching
 
 Stress-lane note:
 

@@ -3,12 +3,6 @@ import { describe, expect, it } from "vitest";
 
 import { UniversityProtocolFlowRunner } from "../testing.js";
 
-type PresentationRequestShape = {
-  readonly body: {
-    readonly kind: "jobApplication" | "mallDiscount";
-  };
-};
-
 type PresentationResultShape = {
   readonly type: "presentation:result";
   readonly body: {
@@ -26,30 +20,15 @@ const isPresentationResult = (
 describe("university protocol duplicate submission guard", () => {
   it("rejects duplicate job-application submissions without reducing the accepted application count", () => {
     setNetworkId("undeployed");
-    const runner = new UniversityProtocolFlowRunner();
-    const duplicateStudent = runner.students[0];
-    const studentAgent = runner.studentAgents.get(duplicateStudent.studentId);
-    if (!studentAgent) {
-      throw new Error(`Missing student agent ${duplicateStudent.studentId}`);
-    }
-
-    const original =
-      studentAgent.receivePresentationRequestAndSendSubmission.bind(
-        studentAgent,
-      );
-    studentAgent.receivePresentationRequestAndSendSubmission = (
-      bus,
-      message,
-      issuerProfile,
-      transcript,
-      messages,
-    ) => {
-      original(bus, message, issuerProfile, transcript, messages);
-      const request = message as typeof message & PresentationRequestShape;
-      if (request.body.kind === "jobApplication") {
-        original(bus, message, issuerProfile, transcript, messages);
-      }
-    };
+    const baselineRunner = new UniversityProtocolFlowRunner();
+    const duplicateStudent = baselineRunner.students[0];
+    const runner = new UniversityProtocolFlowRunner({
+      exerciseOptions: {
+        duplicateJobApplicationSubmissionStudentIds: [
+          duplicateStudent.studentId,
+        ],
+      },
+    });
 
     const result = runner.runAll();
     const duplicateResults = result.jobApplications.messages
@@ -72,36 +51,19 @@ describe("university protocol duplicate submission guard", () => {
 
   it("rejects duplicate mall discount submissions while preserving the original discount outcome", () => {
     setNetworkId("undeployed");
-    const runner = new UniversityProtocolFlowRunner();
-    const duplicateApplicant = runner.discountApplicants.find(
+    const baselineRunner = new UniversityProtocolFlowRunner();
+    const duplicateApplicant = baselineRunner.discountApplicants.find(
       (applicant) => applicant.expectedDiscountEligibility,
     );
     if (!duplicateApplicant) {
       throw new Error("Missing eligible discount applicant");
     }
     const duplicateStudentId = duplicateApplicant.studentId;
-    const studentAgent = runner.studentAgents.get(duplicateStudentId);
-    if (!studentAgent) {
-      throw new Error(`Missing student agent ${duplicateStudentId}`);
-    }
-
-    const original =
-      studentAgent.receivePresentationRequestAndSendSubmission.bind(
-        studentAgent,
-      );
-    studentAgent.receivePresentationRequestAndSendSubmission = (
-      bus,
-      message,
-      issuerProfile,
-      transcript,
-      messages,
-    ) => {
-      original(bus, message, issuerProfile, transcript, messages);
-      const request = message as typeof message & PresentationRequestShape;
-      if (request.body.kind === "mallDiscount") {
-        original(bus, message, issuerProfile, transcript, messages);
-      }
-    };
+    const runner = new UniversityProtocolFlowRunner({
+      exerciseOptions: {
+        duplicateMallDiscountSubmissionStudentIds: [duplicateStudentId],
+      },
+    });
 
     const result = runner.runAll();
     const duplicateResults = result.discounts.messages

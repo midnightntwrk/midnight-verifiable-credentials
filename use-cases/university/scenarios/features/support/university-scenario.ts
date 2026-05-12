@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 import { Ability, type UsesAbilities } from "@serenity-js/core";
 import {
   UniversityProtocolFlowRunner,
+  type UniversityProtocolExerciseOptions,
   type UniversityProtocolFlowResult,
 } from "@midnight-ntwrk/midnight-did-university-protocol/testing";
 
@@ -175,6 +176,14 @@ type DiscountScenarioResult = {
   readonly verificationRejectedCount: number;
   readonly protocolPhaseMs: number;
   readonly metricNames: readonly string[];
+};
+
+type PresentationResultView = {
+  readonly kind: "jobApplication" | "mallDiscount";
+  readonly studentId: string;
+  readonly accepted: boolean;
+  readonly reason: string;
+  readonly rejectionKind: "none" | "verificationFailed" | "duplicate";
 };
 
 type TranscriptEntryView = {
@@ -444,6 +453,15 @@ const average = (values: readonly number[]): number => {
 
 export class UseUniversityScenario extends Ability {
   readonly #paths: ScenarioDataPaths = { ...defaultDataPaths };
+  readonly #exerciseOptions: {
+    companyRequestPolicyOverrides: Record<string, Partial<VerifierRequestPolicy>>;
+    duplicateJobApplicationSubmissionStudentIds: Set<string>;
+    duplicateMallDiscountSubmissionStudentIds: Set<string>;
+  } = {
+    companyRequestPolicyOverrides: {},
+    duplicateJobApplicationSubmissionStudentIds: new Set<string>(),
+    duplicateMallDiscountSubmissionStudentIds: new Set<string>(),
+  };
   #issuanceResult: IssuanceScenarioResult | undefined;
   #jobApplicationResult: JobApplicationScenarioResult | undefined;
   #discountResult: DiscountScenarioResult | undefined;
@@ -462,14 +480,81 @@ export class UseUniversityScenario extends Ability {
     return actor.abilityTo(UseUniversityScenario);
   }
 
+  configureCompanyRequestPolicyOverride(
+    companyId: string,
+    override: Partial<VerifierRequestPolicy>,
+  ): void {
+    this.#exerciseOptions.companyRequestPolicyOverrides[companyId] = {
+      ...(this.#exerciseOptions.companyRequestPolicyOverrides[companyId] ?? {}),
+      ...override,
+    };
+    this.#resetProtocolScenarioOutputs();
+  }
+
+  enableDuplicateJobApplicationSubmission(studentId: string): void {
+    this.#exerciseOptions.duplicateJobApplicationSubmissionStudentIds.add(
+      studentId,
+    );
+    this.#resetProtocolScenarioOutputs();
+  }
+
+  enableDuplicateMallDiscountSubmission(studentId: string): void {
+    this.#exerciseOptions.duplicateMallDiscountSubmissionStudentIds.add(
+      studentId,
+    );
+    this.#resetProtocolScenarioOutputs();
+  }
+
   selectDiscountStudent(studentId: string): void {
     if (this.#selectedDiscountStudentId === studentId) {
       return;
     }
-    // NOTE: the protocol transcript is independent of the selected discount
-    // applicant, so only the per-student discount projection needs resetting.
     this.#selectedDiscountStudentId = studentId;
     this.#discountResult = undefined;
+  }
+
+  jobApplicationResultsForStudent(
+    studentId: string,
+  ): readonly PresentationResultView[] {
+    const results = this.#protocolFlowResult().jobApplications.resultsByStudent[
+      studentId
+    ] ?? [];
+    return results.map((result) => ({ ...result }));
+  }
+
+  discountResultsForStudent(
+    studentId: string,
+  ): readonly PresentationResultView[] {
+    const results = this.#protocolFlowResult().discounts.resultsByStudent[
+      studentId
+    ] ?? [];
+    return results.map((result) => ({ ...result }));
+  }
+
+  companyJobApplicationOutcomeSummary(companyId: string): {
+    readonly companyId: string;
+    readonly routedStudentIds: readonly string[];
+    readonly acceptedCount: number;
+    readonly verificationRejectedCount: number;
+    readonly duplicateRejectedCount: number;
+  } {
+    const students = readJson<StudentRecord[]>(this.#paths.students).filter(
+      (student) => student.assignedCompanyId === companyId,
+    );
+    const resultLists = students.flatMap((student) =>
+      this.jobApplicationResultsForStudent(student.studentId),
+    );
+    return {
+      companyId,
+      routedStudentIds: students.map((student) => student.studentId),
+      acceptedCount: resultLists.filter((result) => result.accepted).length,
+      verificationRejectedCount: resultLists.filter(
+        (result) => result.rejectionKind === "verificationFailed",
+      ).length,
+      duplicateRejectedCount: resultLists.filter(
+        (result) => result.rejectionKind === "duplicate",
+      ).length,
+    };
   }
 
   assertEligibleStudentCount(expectedCount: number): void {
@@ -701,10 +786,31 @@ export class UseUniversityScenario extends Ability {
     };
   }
 
+  #exerciseOptionsSnapshot(): UniversityProtocolExerciseOptions {
+    return {
+      companyRequestPolicyOverrides: Object.fromEntries(
+        Object.entries(this.#exerciseOptions.companyRequestPolicyOverrides),
+      ),
+      duplicateJobApplicationSubmissionStudentIds: [
+        ...this.#exerciseOptions.duplicateJobApplicationSubmissionStudentIds,
+      ],
+      duplicateMallDiscountSubmissionStudentIds: [
+        ...this.#exerciseOptions.duplicateMallDiscountSubmissionStudentIds,
+      ],
+    };
+  }
+
+  #resetProtocolScenarioOutputs(): void {
+    this.#protocolResult = undefined;
+    this.#jobApplicationResult = undefined;
+    this.#discountResult = undefined;
+  }
+
   #protocolFlowResult(): UniversityProtocolFlowResult {
     if (!this.#protocolResult) {
       this.#protocolResult = new UniversityProtocolFlowRunner({
         dataPaths: this.#paths,
+        exerciseOptions: this.#exerciseOptionsSnapshot(),
       }).runAll();
     }
     return this.#protocolResult;

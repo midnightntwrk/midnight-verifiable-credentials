@@ -315,3 +315,250 @@ Then("the discount report should record the explanation {string}", async (expect
     "discount_rejection_reason_count",
   ]);
 });
+
+Given(
+  "the company verifier {string} overrides the diploma request policy with minimum final grade {int}",
+  async (companyId: string, minimumFinalGrade: number) => {
+    universityScenario().configureCompanyRequestPolicyOverride(companyId, {
+      enforceMinimumFinalGrade: true,
+      minimumFinalGrade,
+    });
+    await logInsight("Negative company-policy override step insight", {
+      request:
+        "Override one company verifier policy so the job-application request becomes intentionally invalid for this family.",
+      response:
+        "The protocol harness will publish a malformed company request for the named verifier while leaving all other company policies untouched.",
+      checks: [
+        `The override targets only ${companyId}.`,
+        `The injected minimum final grade is ${minimumFinalGrade}.`,
+        "The resulting rejection path should come from verifier policy validation, not duplicate-thread protection.",
+      ],
+      dto: {
+        companyId,
+        override: {
+          enforceMinimumFinalGrade: true,
+          minimumFinalGrade,
+        },
+      },
+    });
+  },
+);
+
+Given(
+  "the student {string} with id {string} will resubmit the same job application thread",
+  async (expectedFullName: string, studentId: string) => {
+    const student = universityScenario()
+      .graduatingClassSummary()
+      .students.find((candidate) => candidate.studentId === studentId);
+    if (!student) {
+      throw new Error(`Unknown graduating student ${studentId}`);
+    }
+    if (student.fullName !== expectedFullName) {
+      throw new Error(
+        `Expected student ${expectedFullName}, got ${student.fullName}`,
+      );
+    }
+    universityScenario().enableDuplicateJobApplicationSubmission(studentId);
+    await logInsight("Duplicate job-thread step insight", {
+      request:
+        "Configure the protocol harness so the named student submits the same job-application presentation thread twice.",
+      response:
+        "The first submission remains canonical and the second should be rejected by the duplicate-thread guard.",
+      checks: [
+        `The named student id ${studentId} exists in the readable graduation roster.`,
+        "Only the named student's job-application thread is duplicated.",
+        "The duplicate rejection should preserve the original accepted outcome.",
+      ],
+      dto: {
+        studentId,
+        fullName: student.fullName,
+        assignedCompanyId: student.assignedCompanyId,
+      },
+    });
+  },
+);
+
+Then(
+  "the company {string} should reject all routed applications with rejection kind {string}",
+  async (companyId: string, expectedRejectionKind: string) => {
+    const summary =
+      universityScenario().companyJobApplicationOutcomeSummary(companyId);
+    if (summary.routedStudentIds.length === 0) {
+      throw new Error(`Expected routed students for company ${companyId}`);
+    }
+    if (summary.acceptedCount !== 0) {
+      throw new Error(
+        `Expected ${companyId} to accept 0 routed applications, got ${summary.acceptedCount}`,
+      );
+    }
+    const matchingRejectedCount =
+      expectedRejectionKind === "verificationFailed"
+        ? summary.verificationRejectedCount
+        : expectedRejectionKind === "duplicate"
+          ? summary.duplicateRejectedCount
+          : 0;
+    if (matchingRejectedCount !== summary.routedStudentIds.length) {
+      throw new Error(
+        `Expected ${summary.routedStudentIds.length} ${expectedRejectionKind} rejections for ${companyId}, got ${matchingRejectedCount}`,
+      );
+    }
+    await logInsight("Company rejection summary step insight", {
+      request:
+        "Summarize the routed job-application outcomes for the selected company after the negative policy run.",
+      response:
+        "All routed students are rejected for the expected rejection kind while unrelated companies remain unaffected.",
+      checks: [
+        `Every routed application for ${companyId} is rejected.`,
+        `The rejection kind is exactly ${expectedRejectionKind}.`,
+        "No accepted result remains for the targeted company.",
+      ],
+      dto: summary,
+    });
+  },
+);
+
+Then(
+  "the remaining companies should keep their routed applications accepted",
+  async () => {
+    const roster = universityScenario().companyRosterSummary();
+    const summaries = roster.policies.map((policy) =>
+      universityScenario().companyJobApplicationOutcomeSummary(policy.companyId),
+    );
+    const unaffected = summaries.filter(
+      (summary) =>
+        summary.verificationRejectedCount === 0 &&
+        summary.duplicateRejectedCount === 0,
+    );
+    const totalAccepted = unaffected.reduce(
+      (sum, summary) => sum + summary.acceptedCount,
+      0,
+    );
+    const totalRouted = unaffected.reduce(
+      (sum, summary) => sum + summary.routedStudentIds.length,
+      0,
+    );
+    if (totalAccepted !== totalRouted) {
+      throw new Error(
+        `Expected unaffected companies to keep all routed applications accepted, got ${totalAccepted}/${totalRouted}`,
+      );
+    }
+    await logInsight("Unaffected company outcomes step insight", {
+      request:
+        "Check the companies that were not targeted by the negative override.",
+      response:
+        "Their routed job applications remain accepted and show no duplicate or verification-policy rejections.",
+      checks: [
+        "Every unaffected company keeps acceptedCount equal to routedStudentIds.length.",
+        "No unaffected company records verification rejections.",
+        "No unaffected company records duplicate rejections.",
+      ],
+      dto: unaffected,
+    });
+  },
+);
+
+Then(
+  "the job application results for student {string} should contain {int} accepted result and {int} {string} rejection",
+  async (
+    studentId: string,
+    expectedAcceptedCount: number,
+    expectedRejectedCount: number,
+    expectedRejectionKind: string,
+  ) => {
+    const results = universityScenario().jobApplicationResultsForStudent(
+      studentId,
+    );
+    const acceptedCount = results.filter((result) => result.accepted).length;
+    const matchingRejectedCount = results.filter(
+      (result) => result.rejectionKind === expectedRejectionKind,
+    ).length;
+    if (acceptedCount !== expectedAcceptedCount) {
+      throw new Error(
+        `Expected ${expectedAcceptedCount} accepted job results for ${studentId}, got ${acceptedCount}`,
+      );
+    }
+    if (matchingRejectedCount !== expectedRejectedCount) {
+      throw new Error(
+        `Expected ${expectedRejectedCount} ${expectedRejectionKind} job rejections for ${studentId}, got ${matchingRejectedCount}`,
+      );
+    }
+    await logInsight("Duplicate job-result step insight", {
+      request:
+        "Inspect the complete set of job-application results for the named student after the duplicate-thread run.",
+      response:
+        "The canonical accepted result is preserved and exactly one duplicate rejection is appended for the repeated submission.",
+      checks: [
+        `Accepted result count is ${expectedAcceptedCount}.`,
+        `${expectedRejectionKind} rejection count is ${expectedRejectedCount}.`,
+        "The result list remains scoped to the named student thread.",
+      ],
+      dto: {
+        studentId,
+        results,
+      },
+    });
+  },
+);
+
+Given(
+  "the selected student will resubmit the same mall discount thread",
+  async () => {
+    const summary = universityScenario().selectedDiscountApplicantSummary();
+    universityScenario().enableDuplicateMallDiscountSubmission(
+      summary.studentId,
+    );
+    await logInsight("Duplicate mall-thread step insight", {
+      request:
+        "Configure the protocol harness so the selected discount applicant submits the same mall presentation thread twice.",
+      response:
+        "The first discount submission remains canonical and the repeated submission should be rejected as a duplicate thread.",
+      checks: [
+        `The selected student is ${summary.studentId}.`,
+        "Only the selected mall-discount thread is duplicated.",
+        "The duplicate rejection should not replace the original mall outcome.",
+      ],
+      dto: summary,
+    });
+  },
+);
+
+Then(
+  "the discount results for student {string} should contain {int} accepted result and {int} {string} rejection",
+  async (
+    studentId: string,
+    expectedAcceptedCount: number,
+    expectedRejectedCount: number,
+    expectedRejectionKind: string,
+  ) => {
+    const results = universityScenario().discountResultsForStudent(studentId);
+    const acceptedCount = results.filter((result) => result.accepted).length;
+    const matchingRejectedCount = results.filter(
+      (result) => result.rejectionKind === expectedRejectionKind,
+    ).length;
+    if (acceptedCount !== expectedAcceptedCount) {
+      throw new Error(
+        `Expected ${expectedAcceptedCount} accepted discount results for ${studentId}, got ${acceptedCount}`,
+      );
+    }
+    if (matchingRejectedCount !== expectedRejectedCount) {
+      throw new Error(
+        `Expected ${expectedRejectedCount} ${expectedRejectionKind} discount rejections for ${studentId}, got ${matchingRejectedCount}`,
+      );
+    }
+    await logInsight("Duplicate discount-result step insight", {
+      request:
+        "Inspect the complete set of mall-discount results for the named student after the duplicate-thread run.",
+      response:
+        "The canonical discount outcome is preserved and the repeated submission becomes a duplicate rejection entry.",
+      checks: [
+        `Accepted result count is ${expectedAcceptedCount}.`,
+        `${expectedRejectionKind} rejection count is ${expectedRejectedCount}.`,
+        "The result list remains scoped to the named mall-discount thread.",
+      ],
+      dto: {
+        studentId,
+        results,
+      },
+    });
+  },
+);

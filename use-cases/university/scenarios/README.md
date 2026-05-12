@@ -22,6 +22,8 @@ Files:
   - [`./features/university_diploma_job_application.feature`](./features/university_diploma_job_application.feature)
 - mall discount:
   - [`./features/university_diploma_discount.feature`](./features/university_diploma_discount.feature)
+- negative flows:
+  - [`./features/university_diploma_negative_flows.feature`](./features/university_diploma_negative_flows.feature)
 
 Execution:
 

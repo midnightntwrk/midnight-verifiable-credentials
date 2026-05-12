@@ -283,6 +283,8 @@ Current status:
   - [`./contract/README.md`](./contract/README.md)
 - threaded protocol-style university flow now exists as a separate workspace package:
   - [`./protocol/README.md`](./protocol/README.md)
+- ordered follow-on improvement queue:
+  - [`../../docs/plans/university-improvement-backlog.md`](../../docs/plans/university-improvement-backlog.md)
 
 ### Phase 3. Batch issuance orchestration
 
@@ -322,3 +324,4 @@ Feature files:
 - [`./scenarios/features/university_diploma_batch_issuance.feature`](./scenarios/features/university_diploma_batch_issuance.feature)
 - [`./scenarios/features/university_diploma_job_application.feature`](./scenarios/features/university_diploma_job_application.feature)
 - [`./scenarios/features/university_diploma_discount.feature`](./scenarios/features/university_diploma_discount.feature)
+- [`./scenarios/features/university_diploma_negative_flows.feature`](./scenarios/features/university_diploma_negative_flows.feature)

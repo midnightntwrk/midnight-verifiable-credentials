@@ -239,8 +239,17 @@ export type UniversityProtocolDataPaths = {
   readonly discountApplicants: string;
 };
 
+export type UniversityProtocolExerciseOptions = {
+  readonly companyRequestPolicyOverrides?: Readonly<
+    Record<string, Partial<VerifierRequestPolicy>>
+  >;
+  readonly duplicateJobApplicationSubmissionStudentIds?: readonly string[];
+  readonly duplicateMallDiscountSubmissionStudentIds?: readonly string[];
+};
+
 export type UniversityProtocolFlowRunnerOptions = {
   readonly dataPaths?: Partial<UniversityProtocolDataPaths>;
+  readonly exerciseOptions?: UniversityProtocolExerciseOptions;
 };
 
 const repoRoot = path.resolve(
@@ -284,6 +293,23 @@ const resultBodiesByStudent = (
     }
   }
   return Object.fromEntries(grouped.entries());
+};
+
+const applyRequestPolicyOverrides = (
+  request: UniversityDiplomaPresentationRequest,
+  overrides?: Partial<VerifierRequestPolicy>,
+): UniversityDiplomaPresentationRequest => {
+  if (!overrides) {
+    return request;
+  }
+  return {
+    ...request,
+    ...overrides,
+    minimumFinalGrade:
+      overrides.minimumFinalGrade === undefined
+        ? request.minimumFinalGrade
+        : BigInt(overrides.minimumFinalGrade),
+  };
 };
 
 const resolveRepoPath = (relativePath: string): string =>
@@ -607,7 +633,10 @@ class UniversityCompanyVerifierAgent {
   duplicateRejectedCount = 0;
   verificationRejectedCount = 0;
 
-  constructor(readonly company: CompanyRecord) {
+  constructor(
+    readonly company: CompanyRecord,
+    readonly requestPolicyOverrides?: Partial<VerifierRequestPolicy>,
+  ) {
     this.profile = verifierProfile(
       company.companyId,
       company.verifierDidUrl,
@@ -625,10 +654,15 @@ class UniversityCompanyVerifierAgent {
     const requestOptions: UniversityJobApplicationRequestOptions = {
       ...this.company.requestPolicy,
     };
-    const request = this.simulator.universityJobApplicationRequest(
-      issuerVerificationMethodRef,
-      sha256(`job-application:${this.company.companyId}:${student.record.studentId}`),
-      requestOptions,
+    const request = applyRequestPolicyOverrides(
+      this.simulator.universityJobApplicationRequest(
+        issuerVerificationMethodRef,
+        sha256(
+          `job-application:${this.company.companyId}:${student.record.studentId}`,
+        ),
+        requestOptions,
+      ),
+      this.requestPolicyOverrides,
     );
 
     const message: ProtocolMessage<UniversityPresentationRequestBody> = {
@@ -842,6 +876,7 @@ class UniversityMallVerifierAgent {
 
 export class UniversityProtocolFlowRunner {
   readonly dataPaths: UniversityProtocolDataPaths;
+  readonly exerciseOptions: UniversityProtocolExerciseOptions;
   readonly university: UniversityProfile;
   readonly students: StudentRecord[];
   readonly companies: CompanyRecord[];
@@ -863,6 +898,14 @@ export class UniversityProtocolFlowRunner {
       ...defaultDataPaths,
       ...options?.dataPaths,
     };
+    this.exerciseOptions = {
+      companyRequestPolicyOverrides:
+        options?.exerciseOptions?.companyRequestPolicyOverrides ?? {},
+      duplicateJobApplicationSubmissionStudentIds:
+        options?.exerciseOptions?.duplicateJobApplicationSubmissionStudentIds ?? [],
+      duplicateMallDiscountSubmissionStudentIds:
+        options?.exerciseOptions?.duplicateMallDiscountSubmissionStudentIds ?? [],
+    };
     this.university = readJson<UniversityProfile>(this.dataPaths.university);
     this.students = readJson<StudentRecord[]>(this.dataPaths.students);
     this.companies = readJson<CompanyRecord[]>(this.dataPaths.companies);
@@ -883,7 +926,10 @@ export class UniversityProtocolFlowRunner {
     this.companyAgents = new Map(
       this.companies.map((company) => [
         company.companyId,
-        new UniversityCompanyVerifierAgent(company),
+        new UniversityCompanyVerifierAgent(
+          company,
+          this.exerciseOptions.companyRequestPolicyOverrides?.[company.companyId],
+        ),
       ]),
     );
     this.mallAgent = new UniversityMallVerifierAgent(this.mall);
@@ -1037,6 +1083,19 @@ export class UniversityProtocolFlowRunner {
         this.transcript,
         this.jobMessages,
       );
+      if (
+        this.exerciseOptions.duplicateJobApplicationSubmissionStudentIds?.includes(
+          student.record.studentId,
+        )
+      ) {
+        student.receivePresentationRequestAndSendSubmission(
+          this.bus,
+          request,
+          this.issuer.profile,
+          this.transcript,
+          this.jobMessages,
+        );
+      }
     }
 
     for (const companyAgent of this.companyAgents.values()) {
@@ -1092,6 +1151,19 @@ export class UniversityProtocolFlowRunner {
         this.transcript,
         this.discountMessages,
       );
+      if (
+        this.exerciseOptions.duplicateMallDiscountSubmissionStudentIds?.includes(
+          student.record.studentId,
+        )
+      ) {
+        student.receivePresentationRequestAndSendSubmission(
+          this.bus,
+          request,
+          this.issuer.profile,
+          this.transcript,
+          this.discountMessages,
+        );
+      }
     }
 
     const submissions = this.bus.drain(this.mallAgent.profile.partyId) as Array<ProtocolMessage<UniversityPresentationSubmissionBody>>;

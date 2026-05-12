@@ -20,32 +20,20 @@ describe("university protocol negative policy flow", () => {
 
   beforeAll(() => {
     setNetworkId("undeployed");
-    const runner = new UniversityProtocolFlowRunner();
+    const runner = new UniversityProtocolFlowRunner({
+      exerciseOptions: {
+        companyRequestPolicyOverrides: {
+          "company-northwind-robotics": {
+            enforceMinimumFinalGrade: true,
+            minimumFinalGrade: 91,
+          },
+        },
+      },
+    });
     totalStudents = runner.students.length;
     northwindAssignedStudents = runner.students.filter(
       (student) => student.assignedCompanyId === "company-northwind-robotics",
     ).length;
-    const northwind = runner.companyAgents.get("company-northwind-robotics");
-    if (!northwind) {
-      throw new Error("Missing Northwind verifier agent");
-    }
-    const originalRequest =
-      northwind.simulator.universityJobApplicationRequest.bind(
-        northwind.simulator,
-      );
-    northwind.simulator.universityJobApplicationRequest = (
-      issuerVerificationMethodRef,
-      verifierChallengeHash,
-      options,
-    ) => ({
-      ...originalRequest(
-        issuerVerificationMethodRef,
-        verifierChallengeHash,
-        options,
-      ),
-      enforceMinimumFinalGrade: true,
-      minimumFinalGrade: 91n,
-    });
     result = runner.runAll();
   });
 
