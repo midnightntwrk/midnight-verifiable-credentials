@@ -298,6 +298,12 @@ or directly through package-level `test:integration` commands when Docker is ava
   - full repository validation
 - `./run.sh --light`
   - light repository validation
+  - currently honored by:
+    - `./run.sh`
+    - `./run.sh build`
+    - `./run.sh typecheck`
+    - `./run.sh test`
+    - `./run.sh hello-smoke`
 - `./run.sh lint`
   - package-boundary + lint lane
 - `./run.sh typecheck`
