@@ -150,6 +150,10 @@ Status: current implemented test surface as of 2026-05-11.
   - proof-signer DID contract tampering rejection
   - proof-signer method-reference tampering rejection
   - no collateral acceptance loss outside the targeted student
+- `use-cases/university/protocol/src/test/issuance-idempotency.test.ts`
+  - replayed issuance-request counting
+  - idempotent duplicate-request handling
+  - one-credential-per-student guarantee under request replay
 - `use-cases/university/protocol/src/test/export.test.ts`
   - stable JSON transcript export
   - stable Markdown transcript export
@@ -163,6 +167,8 @@ Status: current implemented test surface as of 2026-05-11.
 
 - `use-cases/university/scenarios/features/university_diploma_batch_issuance.feature`
   - executable student-initiated batch issuance flow for 10 students
+  - explicit duplicate issuance-request replay scenario with readable report
+    counters for idempotent handling
 - `use-cases/university/scenarios/features/university_diploma_job_application.feature`
   - executable employer verification flow across 3 companies
 - `use-cases/university/scenarios/features/university_diploma_discount.feature`

@@ -127,6 +127,39 @@ When("every graduating student submits a university diploma issuance request", a
   });
 });
 
+Given(
+  "the student {string} with id {string} will resubmit the same issuance request",
+  async (expectedFullName: string, studentId: string) => {
+    const student = universityScenario()
+      .graduatingClassSummary()
+      .students.find((candidate) => candidate.studentId === studentId);
+    if (!student) {
+      throw new Error(`Unknown graduating student ${studentId}`);
+    }
+    if (student.fullName !== expectedFullName) {
+      throw new Error(
+        `Expected student ${expectedFullName}, got ${student.fullName}`,
+      );
+    }
+    universityScenario().enableDuplicateIssuanceSubmission(studentId);
+    await logInsight("Duplicate issuance-request step insight", {
+      request:
+        "Replay the same student-initiated diploma issuance request for one student before the university batches accepted requests.",
+      response:
+        "The issuance harness will count the replay and ignore it idempotently instead of issuing a second diploma credential.",
+      checks: [
+        `The replay targets only ${studentId}.`,
+        "The original issuance request still remains valid.",
+        "Exactly one diploma credential should still be delivered for the student.",
+      ],
+      dto: {
+        studentId,
+        fullName: student.fullName,
+      },
+    });
+  },
+);
+
 Then("{string} should partition the accepted requests into the committed {int}-batch graduation plan", async (expectedUniversityName: string, expectedBatchCount: number) => {
   const issuerSummary = universityScenario().universityIssuerSummary();
   if (issuerSummary.universityName !== expectedUniversityName) {
@@ -177,10 +210,47 @@ Then("the issuance report should include the configured bottleneck metrics for a
     "issuance_batch_delivery_ms",
     "issuance_batch_queue_wait_ms",
     "issuance_batch_size",
+    "issuance_duplicate_request_count",
+    "issuance_idempotent_replay_count",
     "issuance_total_students",
     "issuance_credentials_per_second",
   ]);
 });
+
+Then(
+  "the issuance report should record {int} duplicate request and still issue {int} diploma credentials",
+  async (expectedDuplicateRequestCount: number, expectedIssuedCredentialCount: number) => {
+    const result = universityScenario().issuanceResult();
+    if (result.duplicateRequestCount !== expectedDuplicateRequestCount) {
+      throw new Error(
+        `Expected ${expectedDuplicateRequestCount} duplicate issuance request, got ${result.duplicateRequestCount}`,
+      );
+    }
+    if (result.issuedCredentialCount !== expectedIssuedCredentialCount) {
+      throw new Error(
+        `Expected ${expectedIssuedCredentialCount} issued credentials, got ${result.issuedCredentialCount}`,
+      );
+    }
+    await logInsight("Issuance idempotency step insight", {
+      request:
+        "Inspect the batch issuance report after replaying one student issuance request.",
+      response:
+        "The report records the duplicate request count explicitly while still proving that only one diploma credential was issued per student.",
+      checks: [
+        `Duplicate issuance request count is ${expectedDuplicateRequestCount}.`,
+        `Issued credential count remains ${expectedIssuedCredentialCount}.`,
+        "The replay is treated as an idempotent no-op rather than a second issuance.",
+      ],
+      dto: {
+        duplicateRequestCount: result.duplicateRequestCount,
+        idempotentReplayCount: result.idempotentReplayCount,
+        idempotentReplayStudentIds: result.idempotentReplayStudentIds,
+        issuedCredentialCount: result.issuedCredentialCount,
+        acceptedRequestCount: result.acceptedRequestCount,
+      },
+    });
+  },
+);
 
 Given("the {string} graduating class roster is loaded", async (expectedUniversityName: string) => {
   const summary = universityScenario().graduatingClassSummary();

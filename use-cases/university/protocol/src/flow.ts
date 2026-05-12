@@ -216,6 +216,9 @@ export type UniversityProtocolFlowResult = {
     readonly requestCount: number;
     readonly resultCount: number;
     readonly batchCount: number;
+    readonly duplicateRequestCount: number;
+    readonly idempotentReplayCount: number;
+    readonly idempotentReplayStudentIds: readonly string[];
     readonly issuedStudentIds: readonly string[];
     readonly messages: readonly UniversityProtocolMessage[];
   };
@@ -259,6 +262,7 @@ export type UniversityProtocolExerciseOptions = {
   readonly companyRequestPolicyOverrides?: Readonly<
     Record<string, VerifierRequestPolicyOverride>
   >;
+  readonly duplicateIssuanceRequestStudentIds?: readonly string[];
   readonly duplicateJobApplicationSubmissionStudentIds?: readonly string[];
   readonly duplicateMallDiscountSubmissionStudentIds?: readonly string[];
   readonly jobApplicationTamperingByStudentId?: Readonly<
@@ -383,6 +387,7 @@ const applyPresentationTampering = (
         presentation: {
           ...submission.presentation,
           holderBinding: {
+            ...submission.presentation.holderBinding,
             holderVerificationMethodRef: {
               ...submission.presentation.holderBinding.holderVerificationMethodRef,
               didContractAddress: {
@@ -404,6 +409,7 @@ const applyPresentationTampering = (
         presentation: {
           ...submission.presentation,
           holderBinding: {
+            ...submission.presentation.holderBinding,
             holderVerificationMethodRef: {
               ...submission.presentation.holderBinding.holderVerificationMethodRef,
               methodId: tamperedBytesLike(
@@ -701,9 +707,25 @@ class UniversityIssuerProtocolAgent {
     batches: readonly IssuanceBatchRecord[],
     transcript: TranscriptRecorder,
     messages: UniversityProtocolMessage[],
-  ): readonly string[] {
+  ): {
+    readonly issuedStudentIds: readonly string[];
+    readonly duplicateRequestCount: number;
+    readonly idempotentReplayCount: number;
+    readonly idempotentReplayStudentIds: readonly string[];
+  } {
     const drained = bus.drain(this.profile.partyId) as Array<ProtocolMessage<UniversityIssuanceRequestBody>>;
-    const requestsByStudentId = new Map(drained.map((message) => [message.body.studentId, message]));
+    const requestsByStudentId = new Map<string, ProtocolMessage<UniversityIssuanceRequestBody>>();
+    let duplicateRequestCount = 0;
+    const idempotentReplayStudentIds = new Set<string>();
+    for (const message of drained) {
+      const existing = requestsByStudentId.get(message.body.studentId);
+      if (existing) {
+        duplicateRequestCount += 1;
+        idempotentReplayStudentIds.add(message.body.studentId);
+        continue;
+      }
+      requestsByStudentId.set(message.body.studentId, message);
+    }
     const issuedStudentIds: string[] = [];
 
     for (const [batchIndex, batch] of batches.entries()) {
@@ -765,7 +787,12 @@ class UniversityIssuerProtocolAgent {
       }
     }
 
-    return issuedStudentIds;
+    return {
+      issuedStudentIds,
+      duplicateRequestCount,
+      idempotentReplayCount: idempotentReplayStudentIds.size,
+      idempotentReplayStudentIds: [...idempotentReplayStudentIds].sort(),
+    };
   }
 }
 
@@ -1021,6 +1048,7 @@ class UniversityMallVerifierAgent {
 export class UniversityProtocolFlowRunner {
   readonly dataPaths: UniversityProtocolDataPaths;
   readonly exerciseOptions: UniversityProtocolExerciseOptions;
+  readonly duplicateIssuanceRequestStudentIds: ReadonlySet<string>;
   readonly duplicateJobApplicationSubmissionStudentIds: ReadonlySet<string>;
   readonly duplicateMallDiscountSubmissionStudentIds: ReadonlySet<string>;
   readonly jobApplicationTamperingByStudentId: Readonly<
@@ -1050,6 +1078,8 @@ export class UniversityProtocolFlowRunner {
     this.exerciseOptions = {
       companyRequestPolicyOverrides:
         options?.exerciseOptions?.companyRequestPolicyOverrides ?? {},
+      duplicateIssuanceRequestStudentIds:
+        options?.exerciseOptions?.duplicateIssuanceRequestStudentIds ?? [],
       duplicateJobApplicationSubmissionStudentIds:
         options?.exerciseOptions?.duplicateJobApplicationSubmissionStudentIds ?? [],
       duplicateMallDiscountSubmissionStudentIds:
@@ -1057,6 +1087,9 @@ export class UniversityProtocolFlowRunner {
       jobApplicationTamperingByStudentId:
         options?.exerciseOptions?.jobApplicationTamperingByStudentId ?? {},
     };
+    this.duplicateIssuanceRequestStudentIds = new Set(
+      this.exerciseOptions.duplicateIssuanceRequestStudentIds ?? [],
+    );
     this.duplicateJobApplicationSubmissionStudentIds = new Set(
       this.exerciseOptions.duplicateJobApplicationSubmissionStudentIds ?? [],
     );
@@ -1098,7 +1131,7 @@ export class UniversityProtocolFlowRunner {
   runAll(): UniversityProtocolFlowResult {
     const totalStartedAt = performance.now();
     const issuanceStartedAt = performance.now();
-    const issuedStudentIds = this.runIssuance();
+    const issuanceResult = this.runIssuance();
     const issuanceMs = performance.now() - issuanceStartedAt;
     const jobApplicationsStartedAt = performance.now();
     this.runJobApplications();
@@ -1149,7 +1182,10 @@ export class UniversityProtocolFlowRunner {
         requestCount: this.issuanceMessages.filter((message) => message.type === "issuance:request").length,
         resultCount: this.issuanceMessages.filter((message) => message.type === "issuance:result").length,
         batchCount: this.issuanceBatches.length,
-        issuedStudentIds,
+        duplicateRequestCount: issuanceResult.duplicateRequestCount,
+        idempotentReplayCount: issuanceResult.idempotentReplayCount,
+        idempotentReplayStudentIds: issuanceResult.idempotentReplayStudentIds,
+        issuedStudentIds: issuanceResult.issuedStudentIds,
         messages: this.issuanceMessages,
       },
       jobApplications: {
@@ -1182,7 +1218,12 @@ export class UniversityProtocolFlowRunner {
     };
   }
 
-  private runIssuance(): readonly string[] {
+  private runIssuance(): {
+    readonly issuedStudentIds: readonly string[];
+    readonly duplicateRequestCount: number;
+    readonly idempotentReplayCount: number;
+    readonly idempotentReplayStudentIds: readonly string[];
+  } {
     for (const student of this.studentAgents.values()) {
       student.sendIssuanceRequest(
         this.bus,
@@ -1190,9 +1231,17 @@ export class UniversityProtocolFlowRunner {
         this.transcript,
         this.issuanceMessages,
       );
+      if (this.duplicateIssuanceRequestStudentIds.has(student.record.studentId)) {
+        student.sendIssuanceRequest(
+          this.bus,
+          this.issuer.profile.partyId,
+          this.transcript,
+          this.issuanceMessages,
+        );
+      }
     }
 
-    const issuedStudentIds = this.issuer.processIssuanceBatches(
+    const issuanceResult = this.issuer.processIssuanceBatches(
       this.bus,
       this.studentAgents,
       this.issuanceBatches,
@@ -1200,7 +1249,7 @@ export class UniversityProtocolFlowRunner {
       this.issuanceMessages,
     );
 
-    for (const studentId of issuedStudentIds) {
+    for (const studentId of issuanceResult.issuedStudentIds) {
       const result = this.bus.receive(studentId) as ProtocolMessage<UniversityIssuanceResultBody> | undefined;
       if (!result) {
         throw new Error(`Missing issuance result delivery for ${studentId}`);
@@ -1208,7 +1257,7 @@ export class UniversityProtocolFlowRunner {
       this.studentAgents.get(studentId)!.receiveIssuanceResult(result);
     }
 
-    return issuedStudentIds;
+    return issuanceResult;
   }
 
   private runJobApplications(): void {

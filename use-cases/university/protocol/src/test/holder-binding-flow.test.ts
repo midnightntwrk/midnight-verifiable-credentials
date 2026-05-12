@@ -77,6 +77,11 @@ describe("university protocol holder-binding misuse flow", () => {
       );
       const targetedResults =
         result.jobApplications.resultsByStudent[studentId] ?? [];
+      const targetedTranscriptEntry = result.jobApplications.messages.find(
+        (message) =>
+          message.type === "presentation:submission" &&
+          message.body.studentId === studentId,
+      );
       const rejectedResult = result.jobApplications.messages
         .filter(isPresentationResultMessage)
         .find(
@@ -95,6 +100,7 @@ describe("university protocol holder-binding misuse flow", () => {
       });
       expect(targetedResults[0].reason).toContain(expectedReasonFragment);
       expect(rejectedResult?.body.reason).toContain(expectedReasonFragment);
+      expect(targetedTranscriptEntry?.body.studentId).toBe(studentId);
       expect(
         result.jobApplications.messages.some(
           (message) =>

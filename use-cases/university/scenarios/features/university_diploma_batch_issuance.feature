@@ -15,6 +15,8 @@ Feature: University batch issues non-revocable diploma credentials to graduating
   # - issuance_batch_compile_ms
   # - issuance_batch_sign_ms
   # - issuance_batch_delivery_ms
+  # - issuance_duplicate_request_count
+  # - issuance_idempotent_replay_count
   # - issuance_credentials_per_second
   #
   # DATA SOURCES:
@@ -82,3 +84,12 @@ Feature: University batch issues non-revocable diploma credentials to graduating
     # - Queue wait, compile, sign, and delivery times are all present.
     # - The total issued credential count is 10.
     And the issuance report should include the configured bottleneck metrics for all 2 batches
+
+  Scenario: Example University ignores a replayed issuance request after one diploma is already queued
+    Given the "Example University" issuer DID instance is available
+    And the "Example University" graduating class contains 10 eligible students
+    And the student "Ada Avery 0001" with id "STU-0001" will resubmit the same issuance request
+    When every graduating student submits a university diploma issuance request
+    Then "Example University" should partition the accepted requests into the committed 2-batch graduation plan
+    And every issuance batch should deliver one non-revocable diploma VC per student
+    And the issuance report should record 1 duplicate request and still issue 10 diploma credentials

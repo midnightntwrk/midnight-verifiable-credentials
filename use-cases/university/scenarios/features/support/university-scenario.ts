@@ -136,6 +136,9 @@ type IssuanceScenarioResult = {
   readonly totalStudents: number;
   readonly batchCount: number;
   readonly acceptedRequestCount: number;
+  readonly duplicateRequestCount: number;
+  readonly idempotentReplayCount: number;
+  readonly idempotentReplayStudentIds: readonly string[];
   readonly issuedCredentialCount: number;
   readonly partitionMatchesPlan: boolean;
   readonly metricNames: readonly string[];
@@ -456,6 +459,7 @@ export class UseUniversityScenario extends Ability {
   readonly #paths: ScenarioDataPaths = { ...defaultDataPaths };
   readonly #exerciseOptions: {
     companyRequestPolicyOverrides: Record<string, Partial<VerifierRequestPolicy>>;
+    duplicateIssuanceRequestStudentIds: Set<string>;
     duplicateJobApplicationSubmissionStudentIds: Set<string>;
     duplicateMallDiscountSubmissionStudentIds: Set<string>;
     jobApplicationTamperingByStudentId: Record<
@@ -464,6 +468,7 @@ export class UseUniversityScenario extends Ability {
     >;
   } = {
     companyRequestPolicyOverrides: {},
+    duplicateIssuanceRequestStudentIds: new Set<string>(),
     duplicateJobApplicationSubmissionStudentIds: new Set<string>(),
     duplicateMallDiscountSubmissionStudentIds: new Set<string>(),
     jobApplicationTamperingByStudentId: {},
@@ -502,6 +507,11 @@ export class UseUniversityScenario extends Ability {
       studentId,
     );
     this.#resetProtocolScenarioOutputs();
+  }
+
+  enableDuplicateIssuanceSubmission(studentId: string): void {
+    this.#exerciseOptions.duplicateIssuanceRequestStudentIds.add(studentId);
+    this.#issuanceResult = undefined;
   }
 
   enableDuplicateMallDiscountSubmission(studentId: string): void {
@@ -732,6 +742,9 @@ export class UseUniversityScenario extends Ability {
 
   issuanceExecutionSummary(): {
     readonly totalStudents: number;
+    readonly duplicateRequestCount: number;
+    readonly idempotentReplayCount: number;
+    readonly idempotentReplayStudentIds: readonly string[];
     readonly sampleRequests: IssuanceScenarioResult["sampleRequests"];
     readonly sampleIssuedCredentials: IssuanceScenarioResult["sampleIssuedCredentials"];
     readonly batchMetrics: readonly IssuanceBatchMetric[];
@@ -739,6 +752,9 @@ export class UseUniversityScenario extends Ability {
     const result = this.issuanceResult();
     return {
       totalStudents: result.totalStudents,
+      duplicateRequestCount: result.duplicateRequestCount,
+      idempotentReplayCount: result.idempotentReplayCount,
+      idempotentReplayStudentIds: result.idempotentReplayStudentIds,
       sampleRequests: result.sampleRequests,
       sampleIssuedCredentials: result.sampleIssuedCredentials,
       batchMetrics: result.batchMetrics,
@@ -806,6 +822,9 @@ export class UseUniversityScenario extends Ability {
       companyRequestPolicyOverrides: Object.fromEntries(
         Object.entries(this.#exerciseOptions.companyRequestPolicyOverrides),
       ),
+      duplicateIssuanceRequestStudentIds: [
+        ...this.#exerciseOptions.duplicateIssuanceRequestStudentIds,
+      ],
       duplicateJobApplicationSubmissionStudentIds: [
         ...this.#exerciseOptions.duplicateJobApplicationSubmissionStudentIds,
       ],
@@ -1081,10 +1100,10 @@ export class UseUniversityScenario extends Ability {
       { actorCount: studentAgents.length + 1 },
     );
 
-    const acceptedRequests: IssuanceRequest[] = [];
+    const submittedRequests: IssuanceRequest[] = [];
     const rosterByStudentId = new Map(students.map((student) => [student.studentId, student]));
 
-    for (const studentAgent of studentAgents) {
+    const submitIssuanceRequest = (studentAgent: VirtualStudentAgent): void => {
       const issuanceRequest = metrics.record(
         "issuance_request_build_ms",
         () => ({
@@ -1116,15 +1135,36 @@ export class UseUniversityScenario extends Ability {
         { studentId: studentAgent.record.studentId },
       );
 
-      acceptedRequests.push({
+      submittedRequests.push({
         student: studentAgent,
         acceptedAt: performance.now(),
       });
+    };
+
+    for (const studentAgent of studentAgents) {
+      submitIssuanceRequest(studentAgent);
+      if (
+        this.#exerciseOptions.duplicateIssuanceRequestStudentIds.has(
+          studentAgent.record.studentId,
+        )
+      ) {
+        submitIssuanceRequest(studentAgent);
+      }
     }
 
-    const acceptedByStudentId = new Map(
-      acceptedRequests.map((request) => [request.student.record.studentId, request]),
-    );
+    const acceptedByStudentId = new Map<string, IssuanceRequest>();
+    const idempotentReplayStudentIds = new Set<string>();
+    let duplicateRequestCount = 0;
+    for (const request of submittedRequests) {
+      const studentId = request.student.record.studentId;
+      if (acceptedByStudentId.has(studentId)) {
+        duplicateRequestCount += 1;
+        idempotentReplayStudentIds.add(studentId);
+        continue;
+      }
+      acceptedByStudentId.set(studentId, request);
+    }
+    const acceptedRequests = [...acceptedByStudentId.values()];
     const plannedIds = issuanceBatches.flatMap((batch) => [...batch.studentIds]);
     const uniqueIds = new Set(plannedIds);
     const partitionMatchesPlan =
@@ -1214,6 +1254,12 @@ export class UseUniversityScenario extends Ability {
     metrics.mark("issuance_total_students", {
       totalStudents: students.length,
     });
+    metrics.mark("issuance_duplicate_request_count", {
+      duplicateRequestCount,
+    });
+    metrics.mark("issuance_idempotent_replay_count", {
+      idempotentReplayCount: idempotentReplayStudentIds.size,
+    });
     metrics.mark("issuance_credentials_per_second", {
       credentialsPerSecond:
         totalDurationMs > 0
@@ -1224,6 +1270,9 @@ export class UseUniversityScenario extends Ability {
       totalStudents: students.length,
       batchCount: issuanceBatches.length,
       acceptedRequestCount: acceptedRequests.length,
+      duplicateRequestCount,
+      idempotentReplayCount: idempotentReplayStudentIds.size,
+      idempotentReplayStudentIds: [...idempotentReplayStudentIds].sort(),
       issuedCredentialCount: studentAgents.filter((student) => student.issuedFixture).length,
       partitionMatchesPlan,
       metricNames: metrics.names(),

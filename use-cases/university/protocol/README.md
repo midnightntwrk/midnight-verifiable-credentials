@@ -37,6 +37,9 @@ Scope:
   - holder method-reference tampering
   - proof-signer DID contract tampering
   - proof-signer method-reference tampering
+- explicit issuance replay coverage for student-initiated diploma requests:
+  duplicate student submissions are counted and ignored idempotently, while the
+  runner still emits exactly one issuance result per student
 - protocol results distinguish verifier-side rejections from duplicate-thread
   rejections so metrics do not collapse business-policy failures into replay
   guard events

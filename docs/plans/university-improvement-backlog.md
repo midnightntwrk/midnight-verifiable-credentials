@@ -8,7 +8,8 @@ Status:
 - item `2` is opened on the stack as `#219`
 - item `3` is opened on the stack as `#220`
 - item `4` is opened on the stack as `#221`
-- item `5` is the current in-flight slice on top of `#221`
+- item `5` is opened on the stack as `#222`
+- item `6` is the current in-flight slice on top of `#222`
 - last reviewed: `2026-05-13`
 
 Scope boundary:
@@ -52,7 +53,7 @@ Scope boundary:
 
 3. `stress-artifact-publication`
 - status:
-  - current in-flight slice
+  - opened on the stack as `#220`
 - problem:
   - the 100-student stress lane produces local output only
 - scope:
@@ -81,7 +82,7 @@ Scope boundary:
 
 5. `holder-binding-negative-pack`
 - status:
-  - current in-flight slice
+  - opened on the stack as `#222`
 - problem:
   - holder-binding misuse is only indirectly covered today
 - scope:
@@ -94,6 +95,8 @@ Scope boundary:
   - `4`
 
 6. `issuance-idempotency-guard`
+- status:
+  - current in-flight slice
 - problem:
   - batch issuance is deterministic, but duplicate issuance-request semantics are not explicitly guarded
 - scope:

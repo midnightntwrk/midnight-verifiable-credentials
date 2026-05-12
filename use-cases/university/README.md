@@ -16,6 +16,9 @@ Status:
   readable failure reasons
 - holder-binding misuse is now exercised as a first-class negative path rather
   than being left only to family-level guards
+- issuance-request replay is now an explicit scenario boundary: duplicate
+  student submissions are counted and ignored idempotently, while the issuance
+  report still proves one diploma credential per student
 - separate 100-student protocol stress dataset and runner so throughput
   experiments do not make the human-readable BDD report unreadable
 - committed stress-summary artifacts now have a stable JSON/Markdown contract
@@ -185,6 +188,9 @@ Fixture-time note:
    - graduation eligibility
    - diploma claim payload for that student
 4. the university groups accepted requests into issuance batches of 5
+   - if the same student replays the same issuance request, the replay is
+     counted and ignored idempotently rather than creating a second batch
+     entry or a second credential
 5. the university signs and returns one diploma VC per student
 6. each student stores the diploma VC for later use
 
@@ -252,6 +258,8 @@ Naming rule:
 - `issuance_batch_delivery_ms`
 - `issuance_total_students`
 - `issuance_credentials_per_second`
+- `issuance_duplicate_request_count`
+- `issuance_idempotent_replay_count`
 
 ### Job application metrics
 
