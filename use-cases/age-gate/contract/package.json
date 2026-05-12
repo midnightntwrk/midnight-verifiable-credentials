@@ -67,13 +67,16 @@
     }
   },
   "scripts": {
+    "prepare:status-registry": "npm --prefix ../../../registry/status-registry run build",
     "contract": "npm run compact",
     "compact": "npm run compact:demo && npm run compact:demo-revocation && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
     "compact:demo": "compact compile src/demo.compact src/managed/demo",
     "compact:demo-revocation": "compact compile src/demo-revocation.compact src/managed/demo-revocation",
-    "pretest": "npm run compact",
+    "prebuild": "npm run prepare:status-registry",
+    "pretypecheck": "npm run prepare:status-registry",
+    "pretest": "npm run prepare:status-registry && npm run compact",
     "test": "vitest run --exclude src/test/integration/**/*.test.ts",
-    "pretest:ci": "npm run compact",
+    "pretest:ci": "npm run prepare:status-registry && npm run compact",
     "test:integration": "vitest run --dir src/test/integration",
     "test:ci": "vitest run --exclude src/test/integration/**/*.test.ts",
     "prepack": "npm run build",
