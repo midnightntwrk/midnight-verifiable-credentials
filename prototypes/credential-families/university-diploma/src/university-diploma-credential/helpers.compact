@@ -1,0 +1,295 @@
+// University-diploma schema helpers and selective-disclosure validation.
+// This family is intentionally pure and ledger-free: it models a non-revocable,
+// explicit-holder academic diploma with direct typed disclosures.
+export pure circuit universityDiplomaCredentialBodyRoot(
+  credential: UniversityDiplomaCredential
+): Bytes<32> {
+  return credentialBodyRoot(credential);
+}
+
+export pure circuit universityDiplomaPresentationBodyRoot(
+  presentation: UniversityDiplomaPresentation
+): Bytes<32> {
+  return presentationBodyRoot(presentation);
+}
+
+export pure circuit universityDiplomaPresentationRequestBodyRoot(
+  request: UniversityDiplomaPresentationRequest
+): Bytes<32> {
+  return persistentHash<UniversityDiplomaPresentationRequest>(request);
+}
+
+// =====================
+// Schema and request validation
+// =====================
+export pure circuit assertValidUniversityDiplomaSchemaRef(schema: SchemaRef): [] {
+  assert(
+    schema.packageId == pad(32, "midnight:vc:uni-diploma"),
+    "University-diploma package id mismatch"
+  );
+  assert(
+    schema.schemaId == pad(32, "uni-diploma:v1"),
+    "University-diploma schema id mismatch"
+  );
+  assert(schema.majorVersion == 1, "University-diploma major version mismatch");
+}
+
+export pure circuit assertValidUniversityDiplomaPresentationRequest(
+  request: UniversityDiplomaPresentationRequest
+): [] {
+  assert(request.version == 1, "University-diploma request version mismatch");
+  assertValidUniversityDiplomaSchemaRef(request.schema);
+  assertValidVerificationMethodRef(request.issuerVerificationMethodRef);
+  assert(
+    request.verifierChallengeHash != pad(32, ""),
+    "University-diploma verifier challenge must be set"
+  );
+  assert(
+    request.minimumFinalGrade <= 100,
+    "University-diploma minimum final grade must be at most 100"
+  );
+  if (request.enforceMinimumFinalGrade) {
+    assert(
+      request.requireFinalGradeDisclosure,
+      "University-diploma minimum-grade request must require final grade disclosure"
+    );
+  }
+}
+
+// =====================
+// Claim semantics
+// =====================
+export pure circuit assertValidUniversityDiplomaClaims(
+  claims: UniversityDiplomaClaims
+): [] {
+  assert(claims.graduationMonth >= 1, "University-diploma graduation month must be at least 1");
+  assert(claims.graduationMonth <= 12, "University-diploma graduation month must be at most 12");
+  assert(claims.finalGrade <= 100, "University-diploma final grade must be at most 100");
+  assert(claims.creditsEarned > 0, "University-diploma credits earned must be positive");
+}
+
+// =====================
+// Credential and presentation validation
+// =====================
+export pure circuit assertValidUniversityDiplomaCredential(
+  credential: UniversityDiplomaCredential,
+  proof: Proof
+): [] {
+  assertValidUniversityDiplomaSchemaRef(credential.schema);
+  assertValidUniversityDiplomaClaims(credential.claims);
+  assertValidCredentialEnvelope(
+    credential,
+    universityDiplomaClaimRoot(credential.claims)
+  );
+  assertValidExplicitHolderBinding(credential.holderBinding);
+  assertValidNoStatusBinding(credential.statusBinding);
+  assertValidCredentialProof(credential, proof);
+}
+
+export pure circuit assertValidUniversityDiplomaPresentation(
+  credential: UniversityDiplomaCredential,
+  credentialProof: Proof,
+  presentation: UniversityDiplomaPresentation,
+  presentationProof: Proof
+): [] {
+  assertValidUniversityDiplomaCredential(credential, credentialProof);
+  assertValidUniversityDiplomaSchemaRef(presentation.schema);
+  assertValidPresentationEnvelope(presentation);
+  UniversityDiplomaPresentation_assertMatchingCredentialPresentation(
+    credential,
+    presentation
+  );
+  assertValidExplicitHolderBinding(presentation.holderBinding);
+  assertMatchingExplicitHolderBindings(
+    credential.holderBinding,
+    presentation.holderBinding
+  );
+  assertProofMatchesExplicitHolderBinding(
+    presentation.holderBinding,
+    presentationProof
+  );
+  assertValidPresentationContextProof(
+    universityDiplomaPresentationBodyRoot(presentation),
+    presentationProof
+  );
+
+  if (presentation.disclosed.revealDiplomaId) {
+    assert(
+      presentation.disclosed.diplomaId == credential.claims.diplomaId,
+      "University-diploma diploma id disclosure does not match the credential"
+    );
+  }
+  if (presentation.disclosed.revealStudentId) {
+    assert(
+      presentation.disclosed.studentId == credential.claims.studentId,
+      "University-diploma student id disclosure does not match the credential"
+    );
+  }
+  if (presentation.disclosed.revealGraduateName) {
+    assert(
+      presentation.disclosed.graduateName == credential.claims.graduateName,
+      "University-diploma graduate name disclosure does not match the credential"
+    );
+  }
+  if (presentation.disclosed.revealUniversityName) {
+    assert(
+      presentation.disclosed.universityName == credential.claims.universityName,
+      "University-diploma university name disclosure does not match the credential"
+    );
+  }
+  if (presentation.disclosed.revealFacultyName) {
+    assert(
+      presentation.disclosed.facultyName == credential.claims.facultyName,
+      "University-diploma faculty name disclosure does not match the credential"
+    );
+  }
+  if (presentation.disclosed.revealAwardName) {
+    assert(
+      presentation.disclosed.awardName == credential.claims.awardName,
+      "University-diploma award name disclosure does not match the credential"
+    );
+  }
+  if (presentation.disclosed.revealHonorsCode) {
+    assert(
+      presentation.disclosed.honorsCode == credential.claims.honorsCode,
+      "University-diploma honors code disclosure does not match the credential"
+    );
+  }
+  if (presentation.disclosed.revealGraduationYear) {
+    assert(
+      presentation.disclosed.graduationYear == credential.claims.graduationYear,
+      "University-diploma graduation year disclosure does not match the credential"
+    );
+  }
+  if (presentation.disclosed.revealGraduationMonth) {
+    assert(
+      presentation.disclosed.graduationMonth == credential.claims.graduationMonth,
+      "University-diploma graduation month disclosure does not match the credential"
+    );
+  }
+  if (presentation.disclosed.revealFinalGrade) {
+    assert(
+      presentation.disclosed.finalGrade == credential.claims.finalGrade,
+      "University-diploma final grade disclosure does not match the credential"
+    );
+  }
+  if (presentation.disclosed.revealCreditsEarned) {
+    assert(
+      presentation.disclosed.creditsEarned == credential.claims.creditsEarned,
+      "University-diploma credits disclosure does not match the credential"
+    );
+  }
+}
+
+// TRUST BOUNDARY: this family keeps academic facts as direct typed fields so it
+// can act as a clear prototype for issuance, employment, and student-discount
+// verification flows. It does not claim that fixed-width direct text fields are
+// the final production privacy model for academic credentials.
+export pure circuit assertUniversityDiplomaPresentationSatisfiesRequest(
+  credential: UniversityDiplomaCredential,
+  credentialProof: Proof,
+  request: UniversityDiplomaPresentationRequest,
+  presentation: UniversityDiplomaPresentation,
+  presentationProof: Proof
+): [] {
+  assertValidUniversityDiplomaPresentationRequest(request);
+  assertValidUniversityDiplomaPresentation(
+    credential,
+    credentialProof,
+    presentation,
+    presentationProof
+  );
+  assertMatchingSchemaRefs(request.schema, credential.schema);
+  assertMatchingSchemaRefs(request.schema, presentation.schema);
+  assert(
+    request.issuerVerificationMethodRef.didContractAddress
+      == credential.issuerVerificationMethodRef.didContractAddress,
+    "University-diploma request issuer contract does not match the credential issuer"
+  );
+  assert(
+    request.issuerVerificationMethodRef.methodId
+      == credential.issuerVerificationMethodRef.methodId,
+    "University-diploma request issuer method does not match the credential issuer"
+  );
+  assert(
+    presentationProof.challengeHash == request.verifierChallengeHash,
+    "University-diploma presentation proof challenge does not match the request"
+  );
+
+  if (request.requireDiplomaIdDisclosure) {
+    assert(
+      presentation.disclosed.revealDiplomaId,
+      "University-diploma request requires diploma id disclosure"
+    );
+  }
+  if (request.requireStudentIdDisclosure) {
+    assert(
+      presentation.disclosed.revealStudentId,
+      "University-diploma request requires student id disclosure"
+    );
+  }
+  if (request.requireGraduateNameDisclosure) {
+    assert(
+      presentation.disclosed.revealGraduateName,
+      "University-diploma request requires graduate name disclosure"
+    );
+  }
+  if (request.requireUniversityNameDisclosure) {
+    assert(
+      presentation.disclosed.revealUniversityName,
+      "University-diploma request requires university name disclosure"
+    );
+  }
+  if (request.requireFacultyNameDisclosure) {
+    assert(
+      presentation.disclosed.revealFacultyName,
+      "University-diploma request requires faculty name disclosure"
+    );
+  }
+  if (request.requireAwardNameDisclosure) {
+    assert(
+      presentation.disclosed.revealAwardName,
+      "University-diploma request requires award name disclosure"
+    );
+  }
+  if (request.requireHonorsCodeDisclosure) {
+    assert(
+      presentation.disclosed.revealHonorsCode,
+      "University-diploma request requires honors code disclosure"
+    );
+  }
+  if (request.requireGraduationYearDisclosure) {
+    assert(
+      presentation.disclosed.revealGraduationYear,
+      "University-diploma request requires graduation year disclosure"
+    );
+  }
+  if (request.requireGraduationMonthDisclosure) {
+    assert(
+      presentation.disclosed.revealGraduationMonth,
+      "University-diploma request requires graduation month disclosure"
+    );
+  }
+  if (request.requireFinalGradeDisclosure) {
+    assert(
+      presentation.disclosed.revealFinalGrade,
+      "University-diploma request requires final grade disclosure"
+    );
+  }
+  if (request.requireCreditsEarnedDisclosure) {
+    assert(
+      presentation.disclosed.revealCreditsEarned,
+      "University-diploma request requires credits disclosure"
+    );
+  }
+  if (request.enforceMinimumFinalGrade) {
+    assert(
+      presentation.disclosed.revealFinalGrade,
+      "University-diploma minimum-grade request requires final grade disclosure"
+    );
+    assert(
+      presentation.disclosed.finalGrade >= request.minimumFinalGrade,
+      "University-diploma disclosed final grade is below the verifier minimum"
+    );
+  }
+}

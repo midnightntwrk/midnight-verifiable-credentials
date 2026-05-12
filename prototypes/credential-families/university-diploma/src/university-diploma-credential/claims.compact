@@ -1,0 +1,31 @@
+// University-diploma direct claims.
+// NOTE: human-readable text still has to be modeled as fixed-width Bytes<N>
+// because Compact does not yet support a first-class String claim type.
+export struct UniversityDiplomaClaims {
+  diplomaId: Bytes<32>,
+  studentId: Bytes<16>,
+  graduateName: Bytes<32>,
+  universityName: Bytes<32>,
+  facultyName: Bytes<32>,
+  awardName: Bytes<32>,
+  honorsCode: Bytes<16>,
+  graduationYear: Uint<16>,
+  graduationMonth: Uint<8>,
+  finalGrade: Uint<8>,
+  creditsEarned: Uint<16>,
+}
+
+export pure circuit universityDiplomaClaimPayloadRoot(
+  claims: UniversityDiplomaClaims
+): Bytes<32> {
+  return persistentHash<UniversityDiplomaClaims>(claims);
+}
+
+export pure circuit universityDiplomaClaimRoot(
+  claims: UniversityDiplomaClaims
+): Bytes<32> {
+  return persistentHash<Vector<2, Bytes<32>>>([
+    pad(32, "midnight:vc:uni-diploma:v1"),
+    universityDiplomaClaimPayloadRoot(claims)
+  ]);
+}
