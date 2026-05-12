@@ -21,16 +21,20 @@ type PresentationResultShape = {
 };
 
 describe("university protocol-style multi-party flow", () => {
+  const runner = new UniversityProtocolFlowRunner();
   let result: ReturnType<UniversityProtocolFlowRunner["runAll"]>;
-  const expectedStudentCount = 10;
-  const expectedBatchCount = 2;
-  const expectedDiscountCount = 5;
-  const expectedAcceptedDiscountCount = 3;
-  const expectedRejectedDiscountCount = 2;
+  const expectedStudentCount = runner.students.length;
+  const expectedBatchCount = runner.issuanceBatches.length;
+  const expectedDiscountCount = runner.discountApplicants.length;
+  const expectedAcceptedDiscountCount = runner.discountApplicants.filter(
+    (applicant) => applicant.expectedDiscountEligibility,
+  ).length;
+  const expectedRejectedDiscountCount =
+    expectedDiscountCount - expectedAcceptedDiscountCount;
 
   beforeAll(() => {
     setNetworkId("undeployed");
-    result = new UniversityProtocolFlowRunner().runAll();
+    result = runner.runAll();
   });
 
   it("issues 10 diploma credentials, completes 10 job applications, and evaluates 5 discount requests", () => {

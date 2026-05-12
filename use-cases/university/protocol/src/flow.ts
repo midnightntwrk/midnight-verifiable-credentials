@@ -38,7 +38,7 @@ type UniversityProfile = {
   readonly batchSize: number;
 };
 
-type CompanyRequestPolicy = {
+type VerifierRequestPolicy = {
   readonly requireDiplomaIdDisclosure?: boolean;
   readonly requireStudentIdDisclosure?: boolean;
   readonly requireGraduateNameDisclosure?: boolean;
@@ -60,7 +60,7 @@ type CompanyRecord = {
   readonly verifierDidUrl: string;
   readonly verifierMethodId: string;
   readonly hiringStream: string;
-  readonly requestPolicy: CompanyRequestPolicy;
+  readonly requestPolicy: VerifierRequestPolicy;
 };
 
 type MallRecord = {
@@ -69,7 +69,7 @@ type MallRecord = {
   readonly verifierDidUrl: string;
   readonly verifierMethodId: string;
   readonly offerId: string;
-  readonly requestPolicy: CompanyRequestPolicy;
+  readonly requestPolicy: VerifierRequestPolicy;
 };
 
 type StudentClaimValues = {

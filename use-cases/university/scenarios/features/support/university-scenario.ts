@@ -42,7 +42,7 @@ type UniversityProfile = {
   };
 };
 
-type CompanyRequestPolicy = {
+type VerifierRequestPolicy = {
   readonly requireDiplomaIdDisclosure?: boolean;
   readonly requireStudentIdDisclosure?: boolean;
   readonly requireGraduateNameDisclosure?: boolean;
@@ -64,7 +64,7 @@ type CompanyRecord = {
   readonly verifierDidUrl: string;
   readonly verifierMethodId: string;
   readonly hiringStream: string;
-  readonly requestPolicy: CompanyRequestPolicy;
+  readonly requestPolicy: VerifierRequestPolicy;
 };
 
 type MallRecord = {
@@ -73,7 +73,7 @@ type MallRecord = {
   readonly verifierDidUrl: string;
   readonly verifierMethodId: string;
   readonly offerId: string;
-  readonly requestPolicy: CompanyRequestPolicy;
+  readonly requestPolicy: VerifierRequestPolicy;
 };
 
 type StudentClaimValues = {
@@ -301,7 +301,7 @@ const encodeClaims = (
 });
 
 const normalizeRequestPolicy = (
-  policy: CompanyRequestPolicy,
+  policy: VerifierRequestPolicy,
 ): UniversityDiplomaRequestOptions => ({
   requireDiplomaIdDisclosure: policy.requireDiplomaIdDisclosure ?? false,
   requireStudentIdDisclosure: policy.requireStudentIdDisclosure ?? false,
@@ -323,7 +323,7 @@ const normalizeRequestPolicy = (
 });
 
 const disclosureNamesForPolicy = (
-  policy: CompanyRequestPolicy,
+  policy: VerifierRequestPolicy,
 ): string[] =>
   [
     policy.requireDiplomaIdDisclosure ? "diplomaId" : undefined,
@@ -367,7 +367,11 @@ export class UseUniversityScenario extends Ability {
   }
 
   selectDiscountStudent(studentId: string): void {
+    if (this.#selectedDiscountStudentId === studentId) {
+      return;
+    }
     this.#selectedDiscountStudentId = studentId;
+    this.#discountResult = undefined;
   }
 
   assertEligibleStudentCount(expectedCount: number): void {
