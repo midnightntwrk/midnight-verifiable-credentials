@@ -14,6 +14,15 @@
   "batchSize": 20,
   "claimEncoding": {
     "stringLikeFields": "fixed-width Bytes<N> in Compact, canonical JSON strings in scenario data",
-    "integerFields": "Uint<n> in Compact, JSON numbers in scenario data"
+    "integerFields": "Uint<n> in Compact, JSON numbers in scenario data",
+    "fieldLengths": {
+      "diplomaId": 32,
+      "studentId": 16,
+      "graduateName": 32,
+      "universityName": 32,
+      "facultyName": 32,
+      "awardName": 32,
+      "honorsCode": 16
+    }
   }
 }

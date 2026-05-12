@@ -4,7 +4,6 @@
   "verifierDidUrl": "did:midnight:mall:student-square",
   "verifierMethodId": "#verifier-key-1",
   "offerId": "discount-grade-over-90",
-  "minimumFinalGrade": 91,
   "requestPolicy": {
     "requireUniversityNameDisclosure": true,
     "requireFinalGradeDisclosure": true,

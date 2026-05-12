@@ -130,6 +130,13 @@ Committed data artifacts:
 Dataset regeneration script:
 
 - [`./scripts/generate-university-use-case-data.mjs`](./scripts/generate-university-use-case-data.mjs)
+- fixture drift check:
+  - `node ./use-cases/university/scripts/generate-university-use-case-data.mjs --check`
+
+Fixture-time note:
+
+- the dataset fixes graduation month/year to `2030-06` for determinism
+- treat that as stable fixture time, not as a real-world academic calendar requirement
 
 ## Flow Description
 

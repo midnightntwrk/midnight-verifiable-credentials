@@ -128,7 +128,7 @@ export pure circuit probeRoot(value: OpaqueCarrierProbe): Bytes<32> {
 
       expect(opaqueHashResult.ok).toEqual(false);
       expect(opaqueHashResult.ok ? "" : opaqueHashResult.message).toMatch(
-        /opaque JavaScript values|persistentHash/i,
+        /opaque JavaScript values/i,
       );
     });
 

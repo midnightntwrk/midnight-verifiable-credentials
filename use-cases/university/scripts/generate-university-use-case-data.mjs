@@ -1,11 +1,13 @@
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import os from "node:os";
 import path from "node:path";
+import process from "node:process";
 import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, "..");
 const dataDir = path.join(rootDir, "data");
-mkdirSync(dataDir, { recursive: true });
+const checkMode = process.argv.includes("--check");
 
 const university = {
   universityId: "uni-example-001",
@@ -23,7 +25,16 @@ const university = {
   batchSize: 20,
   claimEncoding: {
     stringLikeFields: "fixed-width Bytes<N> in Compact, canonical JSON strings in scenario data",
-    integerFields: "Uint<n> in Compact, JSON numbers in scenario data"
+    integerFields: "Uint<n> in Compact, JSON numbers in scenario data",
+    fieldLengths: {
+      diplomaId: 32,
+      studentId: 16,
+      graduateName: 32,
+      universityName: 32,
+      facultyName: 32,
+      awardName: 32,
+      honorsCode: 16
+    }
   }
 };
 
@@ -80,7 +91,6 @@ const mall = {
   verifierDidUrl: "did:midnight:mall:student-square",
   verifierMethodId: "#verifier-key-1",
   offerId: "discount-grade-over-90",
-  minimumFinalGrade: 91,
   requestPolicy: {
     requireUniversityNameDisclosure: true,
     requireFinalGradeDisclosure: true,
@@ -175,20 +185,66 @@ const discountApplicants = students.slice(0, 5).map((student) => ({
   studentId: student.studentId,
   fullName: student.fullName,
   finalGrade: student.diplomaClaimValues.finalGrade,
-  expectedDiscountEligibility: student.diplomaClaimValues.finalGrade >= mall.minimumFinalGrade,
+  expectedDiscountEligibility:
+    student.diplomaClaimValues.finalGrade >=
+    mall.requestPolicy.minimumFinalGrade,
   explanation:
-    student.diplomaClaimValues.finalGrade >= mall.minimumFinalGrade
+    student.diplomaClaimValues.finalGrade >=
+    mall.requestPolicy.minimumFinalGrade
       ? "grade is strictly greater than 90"
       : "grade does not satisfy the mall threshold"
 }));
 
-const writeJson = (filename, value) => {
-  writeFileSync(path.join(dataDir, filename), `${JSON.stringify(value, null, 2)}\n`, "utf8");
+const dataArtifacts = {
+  "university.json": university,
+  "companies.json": companies,
+  "mall.json": mall,
+  "students.json": students,
+  "issuance-batches.json": issuanceBatches,
+  "discount-applicants.json": discountApplicants
 };
 
-writeJson("university.json", university);
-writeJson("companies.json", companies);
-writeJson("mall.json", mall);
-writeJson("students.json", students);
-writeJson("issuance-batches.json", issuanceBatches);
-writeJson("discount-applicants.json", discountApplicants);
+const writeJson = (targetDir, filename, value) => {
+  mkdirSync(targetDir, { recursive: true });
+  writeFileSync(path.join(targetDir, filename), `${JSON.stringify(value, null, 2)}\n`, "utf8");
+};
+
+const writeAllDataArtifacts = (targetDir) => {
+  for (const [filename, value] of Object.entries(dataArtifacts)) {
+    writeJson(targetDir, filename, value);
+  }
+};
+
+if (checkMode) {
+  const tempDir = mkdtempSync(path.join(os.tmpdir(), "university-use-case-data-"));
+  let mismatches = 0;
+
+  try {
+    writeAllDataArtifacts(tempDir);
+
+    const expectedFiles = Object.keys(dataArtifacts).sort();
+    const committedFiles = readdirSync(dataDir).sort();
+
+    if (expectedFiles.join("\n") !== committedFiles.join("\n")) {
+      console.error("University use-case data file set does not match the generator output");
+      mismatches += 1;
+    }
+
+    for (const filename of expectedFiles) {
+      const committed = readFileSync(path.join(dataDir, filename), "utf8");
+      const regenerated = readFileSync(path.join(tempDir, filename), "utf8");
+      if (committed !== regenerated) {
+        console.error(`University use-case data drift detected in ${filename}`);
+        mismatches += 1;
+      }
+    }
+  } finally {
+    rmSync(tempDir, { recursive: true, force: true });
+  }
+
+  if (mismatches > 0) {
+    process.exit(1);
+  }
+} else {
+  writeAllDataArtifacts(dataDir);
+}
