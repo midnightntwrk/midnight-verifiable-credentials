@@ -260,9 +260,6 @@ export type UniversityProtocolExerciseOptions = {
   readonly jobApplicationTamperingByStudentId?: Readonly<
     Record<string, UniversityPresentationTamperingMode>
   >;
-  readonly mallDiscountTamperingByStudentId?: Readonly<
-    Record<string, UniversityPresentationTamperingMode>
-  >;
 };
 
 export type UniversityProtocolFlowRunnerOptions = {
@@ -954,9 +951,6 @@ export class UniversityProtocolFlowRunner {
   readonly jobApplicationTamperingByStudentId: Readonly<
     Record<string, UniversityPresentationTamperingMode>
   >;
-  readonly mallDiscountTamperingByStudentId: Readonly<
-    Record<string, UniversityPresentationTamperingMode>
-  >;
   readonly university: UniversityProfile;
   readonly students: StudentRecord[];
   readonly companies: CompanyRecord[];
@@ -987,8 +981,6 @@ export class UniversityProtocolFlowRunner {
         options?.exerciseOptions?.duplicateMallDiscountSubmissionStudentIds ?? [],
       jobApplicationTamperingByStudentId:
         options?.exerciseOptions?.jobApplicationTamperingByStudentId ?? {},
-      mallDiscountTamperingByStudentId:
-        options?.exerciseOptions?.mallDiscountTamperingByStudentId ?? {},
     };
     this.duplicateJobApplicationSubmissionStudentIds = new Set(
       this.exerciseOptions.duplicateJobApplicationSubmissionStudentIds ?? [],
@@ -998,9 +990,6 @@ export class UniversityProtocolFlowRunner {
     );
     this.jobApplicationTamperingByStudentId = Object.freeze({
       ...(this.exerciseOptions.jobApplicationTamperingByStudentId ?? {}),
-    });
-    this.mallDiscountTamperingByStudentId = Object.freeze({
-      ...(this.exerciseOptions.mallDiscountTamperingByStudentId ?? {}),
     });
     this.university = readJson<UniversityProfile>(this.dataPaths.university);
     this.students = readJson<StudentRecord[]>(this.dataPaths.students);
@@ -1244,7 +1233,6 @@ export class UniversityProtocolFlowRunner {
         this.issuer.profile,
         this.transcript,
         this.discountMessages,
-        this.mallDiscountTamperingByStudentId[student.record.studentId],
       );
       if (this.duplicateMallDiscountSubmissionStudentIds.has(student.record.studentId)) {
         student.receivePresentationRequestAndSendSubmission(
@@ -1253,7 +1241,6 @@ export class UniversityProtocolFlowRunner {
           this.issuer.profile,
           this.transcript,
           this.discountMessages,
-          this.mallDiscountTamperingByStudentId[student.record.studentId],
         );
       }
     }
