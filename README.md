@@ -45,7 +45,7 @@ Current maturity is mixed by package:
     - smallest verifier-side starter and broad direct claim-surface lab consumer
   - [`university-verifier-contract`](./use-cases/university/contract/README.md)
     - verifier-side university diploma request and presentation consumer
-- [`university-protocol`](./use-cases/university/protocol/README.md)
+  - [`university-protocol`](./use-cases/university/protocol/README.md)
     - protocol-style multi-party university issuer/student/company/mall flow
     - includes a separate 100-student stress lane for throughput-oriented protocol measurements
   - [`credentials-demo-contract`](./use-cases/age-gate/contract/README.md)
