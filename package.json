@@ -23,6 +23,7 @@
     "prototypes/credential-families/university-diploma",
     "use-cases/age-gate/contract",
     "use-cases/hello-verifier/contract",
+    "use-cases/university/contract",
     "use-cases/age-gate/scenarios",
     "use-cases/university/scenarios",
     "components/integration/standalone-environment"

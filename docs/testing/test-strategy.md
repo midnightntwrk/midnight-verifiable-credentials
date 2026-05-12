@@ -36,6 +36,7 @@ Current-repository note:
   `credentials-same-holder`, `credentials-iso-registry`,
   `credentials-offchain-did`, `credentials-openid`,
   `credentials-status-registry`, `credentials-protocol`,
+  `hello-verifier-contract`, `university-verifier-contract`,
   `credentials-demo-contract`, and `standalone-environment`
 - additional families listed later in this strategy document describe the wider
   design space or adjacent prototype work, not current workspace packages on
@@ -86,6 +87,8 @@ Current workspace note for this dimension:
 - `use-cases/hello-verifier/contract` now validates both the smallest starter
   verifier path over `credentials-hello-family` and the broad direct claim-surface
   verifier path over `credentials-dummy-claims`
+- `use-cases/university/contract` now validates employer and mall verifier-side
+  request / presentation checks over `credentials-university-diploma`
 - the remaining families in this table are design-space or adjacent-prototype
   examples, not validated local workspace packages
 

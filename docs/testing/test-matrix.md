@@ -116,6 +116,15 @@ Status: current implemented test surface as of 2026-05-11.
   - credential claim-root tampering
   - holder-binding mismatch
 
+### `university-verifier-contract`
+
+- `use-cases/university/contract/src/test/university-verifier.test.ts`
+  - employer-style request construction and presentation verification
+  - mall discount request construction and threshold verification
+  - direct-request invariant rejection for the employer path
+  - below-threshold rejection for the mall path
+  - required-disclosure rejection for the mall path
+
 ### University executable BDD specs
 
 - `use-cases/university/scenarios/features/university_diploma_batch_issuance.feature`

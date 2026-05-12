@@ -5,6 +5,7 @@ Status:
 - large narrative prototype use case built on `credentials-university-diploma`
 - data-rich SSI flow covering issuance, job-application verification, and student-discount verification
 - BDD-style scenario set with bottleneck-oriented metrics
+- compileable verifier-side contract surface for employer and mall policies
 
 ## Purpose
 
@@ -30,6 +31,8 @@ The slice is intentionally explicit and operational:
 Prototype family:
 
 - [`../../prototypes/credential-families/university-diploma/README.md`](../../prototypes/credential-families/university-diploma/README.md)
+- verifier contract package:
+  - [`./contract/README.md`](./contract/README.md)
 
 Credential family package:
 
@@ -249,6 +252,8 @@ Current status:
 
 - implemented in the checked-in executable scenario package:
   - [`./scenarios/README.md`](./scenarios/README.md)
+- verifier-side contract package now exists for company and mall request/verification flows:
+  - [`./contract/README.md`](./contract/README.md)
 
 ### Phase 3. Batch issuance orchestration
 

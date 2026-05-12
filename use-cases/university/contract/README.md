@@ -1,0 +1,28 @@
+# @midnight-ntwrk/midnight-did-university-verifier-contract
+
+Status:
+
+- compileable verifier-side contract package for the university diploma use case
+- request-builder and presentation-verification surface for employer and mall flows
+
+Purpose:
+
+- turn the university diploma use case into a checked-in verifier contract path
+- keep employer job-application verification and mall discount verification explicit
+- reuse the non-revocable explicit-holder university diploma family directly
+
+Scope:
+
+- pure request builders for:
+  - job applications
+  - mall discount verification
+- verifier-side circuits that accept university diploma presentations and record
+  the last verified disclosed values
+- no revocation, protocol delivery, or durable business-claim lifecycle
+
+Build and test:
+
+- `npm run build -w ./use-cases/university/contract`
+- `npm run lint -w ./use-cases/university/contract`
+- `npm run typecheck -w ./use-cases/university/contract`
+- `npm run test:ci -w ./use-cases/university/contract`

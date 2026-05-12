@@ -13,6 +13,7 @@ Current subtrees:
 - `age-gate/scenarios`
 - `university`
   - large diploma issuance, job-application, and student-discount blueprint
+  - `university/contract` provides the verifier-side contract surface
   - executable Serenity/Cucumber scenarios plus deterministic scenario datasets
 
 BDD scenarios belong here because they document concrete flows rather than low-

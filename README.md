@@ -43,6 +43,8 @@ Current maturity is mixed by package:
   - [`credentials-protocol`](./components/orchestration/protocol/README.md)
   - [`hello-verifier-contract`](./use-cases/hello-verifier/contract/README.md)
     - smallest verifier-side starter and broad direct claim-surface lab consumer
+  - [`university-verifier-contract`](./use-cases/university/contract/README.md)
+    - verifier-side university diploma request and presentation consumer
   - [`credentials-demo-contract`](./use-cases/age-gate/contract/README.md)
 - shared integration infrastructure:
   - [`standalone-environment`](./components/integration/standalone-environment/README.md)
@@ -66,6 +68,7 @@ Start here:
   - [`docs/guides/prototype-execution-ladder.md`](./docs/guides/prototype-execution-ladder.md)
 - university diploma use case:
   - [`use-cases/university/README.md`](./use-cases/university/README.md)
+  - [`use-cases/university/contract/README.md`](./use-cases/university/contract/README.md)
   - [`use-cases/university/scenarios/README.md`](./use-cases/university/scenarios/README.md)
 - architecture:
   - [`docs/architecture/overview.md`](./docs/architecture/overview.md)
@@ -108,6 +111,8 @@ Start here:
   - reference off-chain orchestration and protocol simulation
 - [`hello-verifier-contract`](./use-cases/hello-verifier/contract/README.md)
   - smallest verifier-side starter and broad direct claim-surface lab consumer
+- [`university-verifier-contract`](./use-cases/university/contract/README.md)
+  - verifier-side university diploma job-application and discount contract package
 - [`credentials-demo-contract`](./use-cases/age-gate/contract/README.md)
   - verifier/business contract demo
 - [`standalone-environment`](./components/integration/standalone-environment/README.md)
