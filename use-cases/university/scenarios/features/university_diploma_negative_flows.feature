@@ -48,3 +48,30 @@ Feature: University diploma negative flows stay readable and isolated
     When the student submits a discount request presentation with final grade 98
     Then the mall should return the outcome "accepted"
     And the discount results for student "STU-0001" should contain 1 accepted result and 1 "duplicate" rejection
+
+  Scenario: A tampered credential claim root is rejected without affecting untampered job applications
+    Given the "Example University" graduating class roster is loaded
+    And the company verifier roster includes "Northwind Robotics", "Blue Ocean Analytics", and "Pioneer Systems"
+    And the student "Ada Avery 0001" with id "STU-0001" will tamper the university diploma submission using "credentialClaimRoot"
+    When every student builds and submits a job application to the assigned company
+    Then the job application results for student "STU-0001" should contain 0 accepted result and 1 "verificationFailed" rejection
+    And the job application verification failure for student "STU-0001" should mention "Credential claim root mismatch"
+    And the untampered job applications should still produce 9 accepted result and 1 verification rejection overall
+
+  Scenario: A tampered verifier challenge is rejected without affecting untampered job applications
+    Given the "Example University" graduating class roster is loaded
+    And the company verifier roster includes "Northwind Robotics", "Blue Ocean Analytics", and "Pioneer Systems"
+    And the student "Ben Avery 0002" with id "STU-0002" will tamper the university diploma submission using "requestChallenge"
+    When every student builds and submits a job application to the assigned company
+    Then the job application results for student "STU-0002" should contain 0 accepted result and 1 "verificationFailed" rejection
+    And the job application verification failure for student "STU-0002" should mention "presentation proof challenge does not match the request"
+    And the untampered job applications should still produce 9 accepted result and 1 verification rejection overall
+
+  Scenario: A tampered issuer verification method is rejected without affecting untampered job applications
+    Given the "Example University" graduating class roster is loaded
+    And the company verifier roster includes "Northwind Robotics", "Blue Ocean Analytics", and "Pioneer Systems"
+    And the student "Cara Avery 0003" with id "STU-0003" will tamper the university diploma submission using "issuerVerificationMethodRef"
+    When every student builds and submits a job application to the assigned company
+    Then the job application results for student "STU-0003" should contain 0 accepted result and 1 "verificationFailed" rejection
+    And the job application verification failure for student "STU-0003" should mention "Issuer proof method reference does not match issuer verification method"
+    And the untampered job applications should still produce 9 accepted result and 1 verification rejection overall

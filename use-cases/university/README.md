@@ -11,6 +11,9 @@ Status:
 - threaded protocol-style multi-party flow over the same deterministic actors and data
 - executable BDD job-application and discount paths now sourced from the same
   threaded protocol transcript, rather than a second parallel orchestration
+- explicit negative-path coverage now includes malformed verifier policy,
+  duplicate-thread replay, and tampered diploma submission scenarios with
+  readable failure reasons
 - separate 100-student protocol stress dataset and runner so throughput
   experiments do not make the human-readable BDD report unreadable
 - committed stress-summary artifacts now have a stable JSON/Markdown contract
@@ -343,3 +346,7 @@ Feature files:
 - [`./scenarios/features/university_diploma_job_application.feature`](./scenarios/features/university_diploma_job_application.feature)
 - [`./scenarios/features/university_diploma_discount.feature`](./scenarios/features/university_diploma_discount.feature)
 - [`./scenarios/features/university_diploma_negative_flows.feature`](./scenarios/features/university_diploma_negative_flows.feature)
+  - malformed verifier policy
+  - duplicate job-application replay
+  - duplicate mall-discount replay
+  - tampered claim-root / challenge / issuer-method diploma submissions

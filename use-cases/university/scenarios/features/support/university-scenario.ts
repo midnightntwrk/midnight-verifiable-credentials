@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 
 import { Ability, type UsesAbilities } from "@serenity-js/core";
 import {
+  type UniversityPresentationTamperingMode,
   UniversityProtocolFlowRunner,
   type UniversityProtocolExerciseOptions,
   type UniversityProtocolFlowResult,
@@ -457,10 +458,20 @@ export class UseUniversityScenario extends Ability {
     companyRequestPolicyOverrides: Record<string, Partial<VerifierRequestPolicy>>;
     duplicateJobApplicationSubmissionStudentIds: Set<string>;
     duplicateMallDiscountSubmissionStudentIds: Set<string>;
+    jobApplicationTamperingByStudentId: Record<
+      string,
+      UniversityPresentationTamperingMode
+    >;
+    mallDiscountTamperingByStudentId: Record<
+      string,
+      UniversityPresentationTamperingMode
+    >;
   } = {
     companyRequestPolicyOverrides: {},
     duplicateJobApplicationSubmissionStudentIds: new Set<string>(),
     duplicateMallDiscountSubmissionStudentIds: new Set<string>(),
+    jobApplicationTamperingByStudentId: {},
+    mallDiscountTamperingByStudentId: {},
   };
   #issuanceResult: IssuanceScenarioResult | undefined;
   #jobApplicationResult: JobApplicationScenarioResult | undefined;
@@ -502,6 +513,24 @@ export class UseUniversityScenario extends Ability {
     this.#exerciseOptions.duplicateMallDiscountSubmissionStudentIds.add(
       studentId,
     );
+    this.#resetProtocolScenarioOutputs();
+  }
+
+  configureJobApplicationTampering(
+    studentId: string,
+    tampering: UniversityPresentationTamperingMode,
+  ): void {
+    this.#exerciseOptions.jobApplicationTamperingByStudentId[studentId] =
+      tampering;
+    this.#resetProtocolScenarioOutputs();
+  }
+
+  configureMallDiscountTampering(
+    studentId: string,
+    tampering: UniversityPresentationTamperingMode,
+  ): void {
+    this.#exerciseOptions.mallDiscountTamperingByStudentId[studentId] =
+      tampering;
     this.#resetProtocolScenarioOutputs();
   }
 
@@ -797,6 +826,12 @@ export class UseUniversityScenario extends Ability {
       duplicateMallDiscountSubmissionStudentIds: [
         ...this.#exerciseOptions.duplicateMallDiscountSubmissionStudentIds,
       ],
+      jobApplicationTamperingByStudentId: Object.fromEntries(
+        Object.entries(this.#exerciseOptions.jobApplicationTamperingByStudentId),
+      ),
+      mallDiscountTamperingByStudentId: Object.fromEntries(
+        Object.entries(this.#exerciseOptions.mallDiscountTamperingByStudentId),
+      ),
     };
   }
 

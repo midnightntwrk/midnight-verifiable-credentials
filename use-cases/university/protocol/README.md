@@ -28,6 +28,10 @@ Scope:
   request-builder helper and publishes a malformed job-application request
 - explicit duplicate-submission rejection coverage for both company and mall
   verifier threads
+- explicit tampered-diploma rejection coverage for company verification over:
+  - credential claim-root tampering
+  - verifier-challenge tampering
+  - issuer verification-method tampering
 - protocol results distinguish verifier-side rejections from duplicate-thread
   rejections so metrics do not collapse business-policy failures into replay
   guard events

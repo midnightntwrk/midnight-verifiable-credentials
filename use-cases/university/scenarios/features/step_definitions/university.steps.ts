@@ -51,6 +51,22 @@ const rejectedCountForKind = (
   }
 };
 
+const parseTamperingMode = (
+  value: string,
+):
+  | "credentialClaimRoot"
+  | "requestChallenge"
+  | "issuerVerificationMethodRef" => {
+  switch (value) {
+    case "credentialClaimRoot":
+    case "requestChallenge":
+    case "issuerVerificationMethodRef":
+      return value;
+    default:
+      throw new Error(`Unknown tampering mode ${value}`);
+  }
+};
+
 Given("the {string} issuer DID instance is available", async (expectedUniversityName: string) => {
   const summary = universityScenario().universityIssuerSummary();
   if (summary.universityName !== expectedUniversityName) {
@@ -395,6 +411,48 @@ Given(
   },
 );
 
+Given(
+  "the student {string} with id {string} will tamper the university diploma submission using {string}",
+  async (
+    expectedFullName: string,
+    studentId: string,
+    tamperingMode: string,
+  ) => {
+    const student = universityScenario()
+      .graduatingClassSummary()
+      .students.find((candidate) => candidate.studentId === studentId);
+    if (!student) {
+      throw new Error(`Unknown graduating student ${studentId}`);
+    }
+    if (student.fullName !== expectedFullName) {
+      throw new Error(
+        `Expected student ${expectedFullName}, got ${student.fullName}`,
+      );
+    }
+    universityScenario().configureJobApplicationTampering(
+      studentId,
+      parseTamperingMode(tamperingMode),
+    );
+    await logInsight("Tampered job-submission step insight", {
+      request:
+        "Configure the protocol harness so the named student submits one intentionally tampered diploma presentation to the assigned company.",
+      response:
+        "The verifier should reject only the targeted student's submission with a verification failure while untampered classmates remain accepted.",
+      checks: [
+        `The named student id ${studentId} exists in the readable graduation roster.`,
+        `The tampering mode is ${tamperingMode}.`,
+        "The rejection path should come from verifier-side credential or proof validation, not from duplicate-thread protection.",
+      ],
+      dto: {
+        studentId,
+        fullName: student.fullName,
+        assignedCompanyId: student.assignedCompanyId,
+        tamperingMode,
+      },
+    });
+  },
+);
+
 Then(
   "the company {string} should reject all routed applications with rejection kind {string}",
   async (companyId: string, expectedRejectionKind: string) => {
@@ -428,6 +486,45 @@ Then(
         "No accepted result remains for the targeted company.",
       ],
       dto: summary,
+    });
+  },
+);
+
+Then(
+  "the untampered job applications should still produce {int} accepted result and {int} verification rejection overall",
+  async (
+    expectedAcceptedCount: number,
+    expectedVerificationRejectedCount: number,
+  ) => {
+    const result = universityScenario().jobApplicationResult();
+    if (result.acceptedApplications !== expectedAcceptedCount) {
+      throw new Error(
+        `Expected ${expectedAcceptedCount} accepted job applications, got ${result.acceptedApplications}`,
+      );
+    }
+    if (
+      result.verificationRejectedCount !== expectedVerificationRejectedCount
+    ) {
+      throw new Error(
+        `Expected ${expectedVerificationRejectedCount} verification rejections, got ${result.verificationRejectedCount}`,
+      );
+    }
+    if (result.duplicateRejectedCount !== 0) {
+      throw new Error(
+        `Expected 0 duplicate rejections in the tampered flow, got ${result.duplicateRejectedCount}`,
+      );
+    }
+    await logInsight("Tampered flow aggregate step insight", {
+      request:
+        "Summarize the aggregate job-application outcomes after the targeted tampering run.",
+      response:
+        "Only the targeted student is rejected with a verification failure and the remaining untampered applications stay accepted.",
+      checks: [
+        `Accepted application count is ${expectedAcceptedCount}.`,
+        `Verification rejection count is ${expectedVerificationRejectedCount}.`,
+        "Duplicate rejection count remains zero.",
+      ],
+      dto: result,
     });
   },
 );
@@ -468,6 +565,44 @@ Then(
         "No unaffected company records duplicate rejections.",
       ],
       dto: unaffected,
+    });
+  },
+);
+
+Then(
+  "the job application verification failure for student {string} should mention {string}",
+  async (studentId: string, expectedReasonFragment: string) => {
+    const results = universityScenario().jobApplicationResultsForStudent(
+      studentId,
+    );
+    const verificationFailure = results.find(
+      (result) => result.rejectionKind === "verificationFailed",
+    );
+    if (!verificationFailure) {
+      throw new Error(
+        `Expected a verification failure result for ${studentId}, but none was found`,
+      );
+    }
+    if (!verificationFailure.reason.includes(expectedReasonFragment)) {
+      throw new Error(
+        `Expected verification failure for ${studentId} to mention ${expectedReasonFragment}, got ${verificationFailure.reason}`,
+      );
+    }
+    await logInsight("Tampered job-failure detail step insight", {
+      request:
+        "Inspect the targeted student's verification-failure message after the tampered submission run.",
+      response:
+        "The verifier returns a family-level validation error that explains exactly which diploma or proof invariant was violated.",
+      checks: [
+        "A verificationFailed result exists for the named student.",
+        `The reason contains the fragment ${expectedReasonFragment}.`,
+        "The failure remains scoped to the targeted student's thread.",
+      ],
+      dto: {
+        studentId,
+        verificationFailure,
+        allResults: results,
+      },
     });
   },
 );

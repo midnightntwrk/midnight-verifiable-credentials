@@ -171,6 +171,11 @@ type UniversityPresentationResultBody = {
   readonly rejectionKind: "none" | "verificationFailed" | "duplicate";
 };
 
+export type UniversityPresentationTamperingMode =
+  | "credentialClaimRoot"
+  | "requestChallenge"
+  | "issuerVerificationMethodRef";
+
 type VerifierRequestPolicyOverride = Omit<
   Partial<VerifierRequestPolicy>,
   "minimumFinalGrade"
@@ -252,6 +257,12 @@ export type UniversityProtocolExerciseOptions = {
   >;
   readonly duplicateJobApplicationSubmissionStudentIds?: readonly string[];
   readonly duplicateMallDiscountSubmissionStudentIds?: readonly string[];
+  readonly jobApplicationTamperingByStudentId?: Readonly<
+    Record<string, UniversityPresentationTamperingMode>
+  >;
+  readonly mallDiscountTamperingByStudentId?: Readonly<
+    Record<string, UniversityPresentationTamperingMode>
+  >;
 };
 
 export type UniversityProtocolFlowRunnerOptions = {
@@ -320,6 +331,52 @@ const applyRequestPolicyOverrides = (
         ? request.minimumFinalGrade
         : BigInt(minimumFinalGrade),
   };
+};
+
+const tamperedBytesLike = (value: Uint8Array, fill: number): Uint8Array =>
+  new Uint8Array(value.length).fill(fill);
+
+const applyPresentationTampering = (
+  submission: UniversityPresentationSubmissionBody,
+  tampering?: UniversityPresentationTamperingMode,
+): UniversityPresentationSubmissionBody => {
+  switch (tampering) {
+    case undefined:
+      return submission;
+    case "credentialClaimRoot":
+      return {
+        ...submission,
+        credential: {
+          ...submission.credential,
+          claimRoot: tamperedBytesLike(submission.credential.claimRoot, 7),
+        },
+      };
+    case "requestChallenge":
+      return {
+        ...submission,
+        request: {
+          ...submission.request,
+          verifierChallengeHash: tamperedBytesLike(
+            submission.request.verifierChallengeHash,
+            9,
+          ),
+        },
+      };
+    case "issuerVerificationMethodRef":
+      return {
+        ...submission,
+        credential: {
+          ...submission.credential,
+          issuerVerificationMethodRef: {
+            ...submission.credential.issuerVerificationMethodRef,
+            methodId: tamperedBytesLike(
+              submission.credential.issuerVerificationMethodRef.methodId,
+              5,
+            ),
+          },
+        },
+      };
+  }
 };
 
 const resolveRepoPath = (relativePath: string): string =>
@@ -487,6 +544,7 @@ class UniversityStudentAgent {
     issuerProfile: AgentProfile,
     transcript: TranscriptRecorder,
     messages: UniversityProtocolMessage[],
+    tampering?: UniversityPresentationTamperingMode,
   ): void {
     if (!this.storedIssuedCredential) {
       throw new Error(`Student ${this.record.studentId} has no issued diploma credential`);
@@ -518,6 +576,16 @@ class UniversityStudentAgent {
       throw new Error(`Rebuilt university diploma root drift for ${this.record.studentId}`);
     }
 
+    const untamperedBody: UniversityPresentationSubmissionBody = {
+      kind: message.body.kind,
+      studentId: this.record.studentId,
+      credential: this.storedIssuedCredential.credential,
+      credentialProof: this.storedIssuedCredential.credentialProof,
+      request: message.body.request,
+      presentation: presentationFixture.presentation,
+      presentationProof: presentationFixture.presentationProof,
+    };
+
     const submission: ProtocolMessage<UniversityPresentationSubmissionBody> = {
       type: "presentation:submission",
       from: this.profile.partyId,
@@ -529,15 +597,7 @@ class UniversityStudentAgent {
         message.envelope.messageId,
         message.envelope.threadId,
       ),
-      body: {
-        kind: message.body.kind,
-        studentId: this.record.studentId,
-        credential: this.storedIssuedCredential.credential,
-        credentialProof: this.storedIssuedCredential.credentialProof,
-        request: message.body.request,
-        presentation: presentationFixture.presentation,
-        presentationProof: presentationFixture.presentationProof,
-      },
+      body: applyPresentationTampering(untamperedBody, tampering),
     };
 
     bus.send(submission);
@@ -545,7 +605,9 @@ class UniversityStudentAgent {
     transcript.record(
       message.body.kind === "jobApplication" ? "jobApplications" : "discounts",
       submission,
-      `Student ${this.record.studentId} submitted a ${message.body.kind} presentation`,
+      tampering
+        ? `Student ${this.record.studentId} submitted a tampered ${message.body.kind} presentation (${tampering})`
+        : `Student ${this.record.studentId} submitted a ${message.body.kind} presentation`,
     );
   }
 
@@ -889,6 +951,12 @@ export class UniversityProtocolFlowRunner {
   readonly exerciseOptions: UniversityProtocolExerciseOptions;
   readonly duplicateJobApplicationSubmissionStudentIds: ReadonlySet<string>;
   readonly duplicateMallDiscountSubmissionStudentIds: ReadonlySet<string>;
+  readonly jobApplicationTamperingByStudentId: Readonly<
+    Record<string, UniversityPresentationTamperingMode>
+  >;
+  readonly mallDiscountTamperingByStudentId: Readonly<
+    Record<string, UniversityPresentationTamperingMode>
+  >;
   readonly university: UniversityProfile;
   readonly students: StudentRecord[];
   readonly companies: CompanyRecord[];
@@ -917,6 +985,10 @@ export class UniversityProtocolFlowRunner {
         options?.exerciseOptions?.duplicateJobApplicationSubmissionStudentIds ?? [],
       duplicateMallDiscountSubmissionStudentIds:
         options?.exerciseOptions?.duplicateMallDiscountSubmissionStudentIds ?? [],
+      jobApplicationTamperingByStudentId:
+        options?.exerciseOptions?.jobApplicationTamperingByStudentId ?? {},
+      mallDiscountTamperingByStudentId:
+        options?.exerciseOptions?.mallDiscountTamperingByStudentId ?? {},
     };
     this.duplicateJobApplicationSubmissionStudentIds = new Set(
       this.exerciseOptions.duplicateJobApplicationSubmissionStudentIds ?? [],
@@ -924,6 +996,12 @@ export class UniversityProtocolFlowRunner {
     this.duplicateMallDiscountSubmissionStudentIds = new Set(
       this.exerciseOptions.duplicateMallDiscountSubmissionStudentIds ?? [],
     );
+    this.jobApplicationTamperingByStudentId = Object.freeze({
+      ...(this.exerciseOptions.jobApplicationTamperingByStudentId ?? {}),
+    });
+    this.mallDiscountTamperingByStudentId = Object.freeze({
+      ...(this.exerciseOptions.mallDiscountTamperingByStudentId ?? {}),
+    });
     this.university = readJson<UniversityProfile>(this.dataPaths.university);
     this.students = readJson<StudentRecord[]>(this.dataPaths.students);
     this.companies = readJson<CompanyRecord[]>(this.dataPaths.companies);
@@ -1100,6 +1178,7 @@ export class UniversityProtocolFlowRunner {
         this.issuer.profile,
         this.transcript,
         this.jobMessages,
+        this.jobApplicationTamperingByStudentId[student.record.studentId],
       );
       if (this.duplicateJobApplicationSubmissionStudentIds.has(student.record.studentId)) {
         student.receivePresentationRequestAndSendSubmission(
@@ -1108,6 +1187,7 @@ export class UniversityProtocolFlowRunner {
           this.issuer.profile,
           this.transcript,
           this.jobMessages,
+          this.jobApplicationTamperingByStudentId[student.record.studentId],
         );
       }
     }
@@ -1164,6 +1244,7 @@ export class UniversityProtocolFlowRunner {
         this.issuer.profile,
         this.transcript,
         this.discountMessages,
+        this.mallDiscountTamperingByStudentId[student.record.studentId],
       );
       if (this.duplicateMallDiscountSubmissionStudentIds.has(student.record.studentId)) {
         student.receivePresentationRequestAndSendSubmission(
@@ -1172,6 +1253,7 @@ export class UniversityProtocolFlowRunner {
           this.issuer.profile,
           this.transcript,
           this.discountMessages,
+          this.mallDiscountTamperingByStudentId[student.record.studentId],
         );
       }
     }

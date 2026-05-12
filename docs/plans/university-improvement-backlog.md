@@ -6,7 +6,8 @@ Status:
 - each item is intended to be large enough to stand as its own reviewable PR
 - item `1` is opened on the stack as `#218`
 - item `2` is opened on the stack as `#219`
-- item `3` is the current in-flight slice on top of `#219`
+- item `3` is opened on the stack as `#220`
+- item `4` is the current in-flight slice on top of `#220`
 - last reviewed: `2026-05-13`
 
 Scope boundary:
@@ -64,6 +65,8 @@ Scope boundary:
   - `2`
 
 4. `tampered-diploma-negative-pack`
+- status:
+  - current in-flight slice
 - problem:
   - the university stories do not yet expose credential tampering failures as user-facing scenarios
 - scope:

@@ -139,6 +139,11 @@ Status: current implemented test surface as of 2026-05-11.
 - `use-cases/university/protocol/src/test/negative-flow.test.ts`
   - malformed verifier request policy rejection
   - no collateral acceptance loss outside the targeted cohort
+- `use-cases/university/protocol/src/test/tampered-flow.test.ts`
+  - credential claim-root tampering rejection
+  - verifier-challenge tampering rejection
+  - issuer verification-method tampering rejection
+  - no collateral acceptance loss outside the targeted student
 - `use-cases/university/protocol/src/test/export.test.ts`
   - stable JSON transcript export
   - stable Markdown transcript export
@@ -156,6 +161,9 @@ Status: current implemented test surface as of 2026-05-11.
   - executable employer verification flow across 3 companies
 - `use-cases/university/scenarios/features/university_diploma_discount.feature`
   - executable mall discount flow with mixed grade outcomes
+- `use-cases/university/scenarios/features/university_diploma_negative_flows.feature`
+  - executable malformed-policy, duplicate-thread, and tampered-diploma
+    scenarios with readable per-step failure explanations
 - coverage boundary:
   - these scenarios run as one-process virtual-agent orchestration with metrics
   - issuance still uses the local batch harness for richer issuance-stage
