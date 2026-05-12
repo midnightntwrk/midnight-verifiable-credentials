@@ -6,6 +6,9 @@ import { UseUniversityScenario } from "../support/university-scenario.js";
 const engineer = () => actorCalled("Engineer");
 const universityScenario = () => UseUniversityScenario.from(engineer());
 
+// NOTE: Serenity step insights occasionally surface BigInt-backed DTO fields
+// from verifier policy normalization and metric payloads; stringify them
+// defensively so the HTML report never crashes on JSON serialization.
 const jsonReportReplacer = (_key: string, value: unknown): unknown =>
   typeof value === "bigint" ? value.toString() : value;
 

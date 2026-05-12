@@ -31,6 +31,12 @@ describe("university protocol-style multi-party flow", () => {
   ).length;
   const expectedRejectedDiscountCount =
     expectedDiscountCount - expectedAcceptedDiscountCount;
+  const expectedDiscountOutcomes = Object.fromEntries(
+    runner.discountApplicants.map((applicant) => [
+      applicant.studentId,
+      applicant.expectedDiscountEligibility ? "accepted" : "rejected",
+    ]),
+  );
 
   beforeAll(() => {
     setNetworkId("undeployed");
@@ -59,13 +65,7 @@ describe("university protocol-style multi-party flow", () => {
     expect(result.discounts.resultCount).toEqual(expectedDiscountCount);
     expect(result.discounts.acceptedCount).toEqual(expectedAcceptedDiscountCount);
     expect(result.discounts.rejectedCount).toEqual(expectedRejectedDiscountCount);
-    expect(result.discounts.outcomes).toEqual({
-      "STU-0001": "accepted",
-      "STU-0002": "accepted",
-      "STU-0003": "accepted",
-      "STU-0004": "rejected",
-      "STU-0005": "rejected",
-    });
+    expect(result.discounts.outcomes).toEqual(expectedDiscountOutcomes);
 
     const rejectedDiscountReasons = result.discounts.messages
       .filter(
