@@ -42,11 +42,25 @@ A credential family implementation conforms when it:
 - computes claim roots deterministically
 - validates schema-specific credential and presentation bodies
 - states which holder-binding profiles it supports
+- documents whether the claim layout is flat or nested
+- if nested claims are used, documents the intended disclosure granularity and
+  whether nested vectors are exposed directly or only through aggregate fields
 
 Reference implementations:
 
 - [`../../prototypes/credential-families/birth/README.md`](../../prototypes/credential-families/birth/README.md)
 - [`../../prototypes/credential-families/birth-secret/README.md`](../../prototypes/credential-families/birth-secret/README.md)
+- [`../../prototypes/credential-families/hello-family/README.md`](../../prototypes/credential-families/hello-family/README.md)
+- [`../../prototypes/credential-families/dummy-claims/README.md`](../../prototypes/credential-families/dummy-claims/README.md)
+
+Current direct Compact claim-surface rule:
+
+- a family `MUST NOT` claim direct canonical Compact support for `Int<n>`,
+  `Float<n>`, or `String` fields unless the active Compact compiler surface
+  actually accepts them
+- if a family needs string-like or signed-value semantics today, it `MUST`
+  document the explicit bounded encoding or adapter transformation it uses
+  instead of describing that field as a native Compact string or signed scalar
 
 ### 3. Status binding implementation
 

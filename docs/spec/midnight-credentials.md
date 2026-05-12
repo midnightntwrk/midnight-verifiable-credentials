@@ -180,6 +180,58 @@ A credential family implementation:
 - `MUST` define any supported disclosure layout explicitly
 - `MUST` define its verification predicates explicitly
 - `MUST NOT` rely on unbounded runtime-defined claim maps as canonical input
+- `MUST` document whether its claims stay flat or use nested structs
+- `MUST` document the disclosure granularity of any nested claim surface it
+  exposes
+
+### Compact Claim-Type Surface
+Repository-aligned direct claim layouts are constrained by the current Compact
+compiler surface.
+
+Supported direct field kinds today are:
+
+- `Boolean`
+- `Uint<n>` bounded unsigned integers
+- `Bytes<n>`
+- `Field`
+- `Vector<k, T>` where `T` is itself a supported direct field kind
+- nested structs composed only from supported direct field kinds
+- `Vector<k, NestedStruct>` where the nested struct itself only uses supported
+  direct field kinds
+
+Current unsupported direct field kinds are:
+
+- `Int<n>`
+- `Float<n>`
+- `String`
+- vectors over unsupported element kinds
+
+Runtime note:
+
+- JavaScript/TypeScript `bigint` values are the runtime representation for
+  Compact `Uint<n>` fields
+- `bigint` is not a distinct Compact schema type
+
+Implementation rules:
+
+- implementations `MUST NOT` claim native direct Compact support for
+  `Int<n>`, `Float<n>`, or `String` fields unless the Compact compiler surface
+  actually gains those types
+- if a package needs string-like semantics today, it `MUST` model that through
+  an explicitly documented bounded byte layout or adapter-level encoding rather
+  than pretending `String` exists in the canonical Compact schema
+- shared canonical credential families `SHOULD` stay flat when that is
+  sufficient for the domain
+- nested claim structs `MAY` be used when they encode a real domain grouping,
+  but implementations `SHOULD` avoid them as a default style choice
+- nested vector-of-struct claim surfaces `SHOULD` be treated as deliberate
+  prototype or domain-specific choices rather than the default shared-family
+  pattern
+
+Current repository evidence for that claim surface lives in:
+
+- [`../../prototypes/credential-families/hello-family/README.md`](../../prototypes/credential-families/hello-family/README.md)
+- [`../../prototypes/credential-families/dummy-claims/README.md`](../../prototypes/credential-families/dummy-claims/README.md)
 
 The repository currently treats source-fact credentials such as birth or
 passport as the preferred model, rather than threshold-specific derived
