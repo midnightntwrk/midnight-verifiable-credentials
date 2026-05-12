@@ -306,7 +306,9 @@ Risks:
 
 #### Composability
 
-Strong in the core and materially improved at the status boundary.
+Strong in the core and materially improved at the status boundary, with the
+remaining generic root-bound non-membership tail explicitly documented as an
+upstream Compact/runtime dependency rather than as ordinary local repo work.
 
 Strengths:
 

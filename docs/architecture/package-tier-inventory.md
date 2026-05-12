@@ -49,7 +49,7 @@ Related documents:
 | `credentials-offchain-did` | DID-aware adapter package | Reference implementation | Yes | Runtime-only DID conversion helpers |
 | `credentials-openid` | Transport or orchestration package | Reference transport-adapter implementation | Yes, with transport-layer scope | OpenID-shaped JSON/domain envelopes around Compact payloads |
 | `credentials-protocol` | Transport or orchestration package | Reference orchestration implementation, evolving API | Limited | Off-chain reference agent flows and protocol state management |
-| `hello-verifier-contract` | Demo / prototype package | Starter / prototype | Limited | Smallest verifier-side starter and broad direct claim-surface lab consumer |
+| `hello-verifier-contract` | Demo / prototype package | Starter / prototype | No | Smallest verifier-side starter and broad direct claim-surface lab consumer |
 | `credentials-demo-contract` | Demo / prototype package | Prototype | No | Layer 3 example business contracts; not a canonical library surface |
 | `standalone-environment` | Shared integration infrastructure | Reference integration harness | Limited | Docker-backed standalone test/runtime bootstrap |
 
