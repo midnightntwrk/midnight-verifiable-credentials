@@ -39,7 +39,7 @@
     "lint:dummy-claims-lab": "turbo run lint --filter=./prototypes/credential-families/dummy-claims --filter=./use-cases/hello-verifier/contract --continue",
     "build:core": "npm run build:cone:foundation",
     "build:cone:foundation": "turbo run build --filter=./core/primitives/credentials --filter=./registry/status-registry --filter=./core/capabilities/same-holder --filter=./core/primitives/iso-registry --filter=./components/adapters/offchain-did --filter=./protocols/openid --continue",
-    "build:cone:birth-family": "turbo run build --filter=./prototypes/credential-families/birth --filter=./prototypes/credential-families/birth-secret --filter=./prototypes/credential-families/hello-family --filter=./prototypes/credential-families/university-diploma --continue",
+    "build:cone:birth-family": "turbo run build --filter=./prototypes/credential-families/birth --filter=./prototypes/credential-families/birth-secret --filter=./prototypes/credential-families/hello-family --filter=./prototypes/credential-families/dummy-claims --filter=./prototypes/credential-families/university-diploma --continue",
     "build:cone:age-gate": "turbo run build --filter=./use-cases/age-gate/contract --filter=./use-cases/hello-verifier/contract --continue",
     "build:cone:protocol": "turbo run build --filter=./components/orchestration/protocol --continue",
     "build:starter-smoke-prereqs": "npm run build:core && npm run build:cone:birth-family && npm run build:cone:age-gate",

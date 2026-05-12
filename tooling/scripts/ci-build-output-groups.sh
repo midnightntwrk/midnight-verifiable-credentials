@@ -30,6 +30,7 @@ protocols/openid
 prototypes/credential-families/birth
 prototypes/credential-families/birth-secret
 prototypes/credential-families/hello-family
+prototypes/credential-families/dummy-claims
 prototypes/credential-families/university-diploma
 EOF
       ;;
@@ -44,6 +45,7 @@ protocols/openid
 prototypes/credential-families/birth
 prototypes/credential-families/birth-secret
 prototypes/credential-families/hello-family
+prototypes/credential-families/dummy-claims
 prototypes/credential-families/university-diploma
 use-cases/age-gate/contract
 use-cases/hello-verifier/contract
@@ -96,6 +98,8 @@ prototypes/credential-families/birth-secret/src/managed
 prototypes/credential-families/birth-secret/dist
 prototypes/credential-families/hello-family/src/managed
 prototypes/credential-families/hello-family/dist
+prototypes/credential-families/dummy-claims/src/managed
+prototypes/credential-families/dummy-claims/dist
 prototypes/credential-families/university-diploma/src/managed
 prototypes/credential-families/university-diploma/dist
 EOF
