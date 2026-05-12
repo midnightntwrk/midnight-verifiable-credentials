@@ -21,6 +21,13 @@ type PresentationResultShape = {
 };
 
 describe("university protocol-style multi-party flow", () => {
+  const expectedDiscountOutcomes = {
+    "STU-0001": "accepted",
+    "STU-0002": "accepted",
+    "STU-0003": "accepted",
+    "STU-0004": "rejected",
+    "STU-0005": "rejected",
+  } satisfies Record<string, "accepted" | "rejected">;
   let runner: UniversityProtocolFlowRunner;
   let result: ReturnType<UniversityProtocolFlowRunner["runAll"]>;
   let expectedStudentCount: number;
@@ -28,7 +35,6 @@ describe("university protocol-style multi-party flow", () => {
   let expectedDiscountCount: number;
   let expectedAcceptedDiscountCount: number;
   let expectedRejectedDiscountCount: number;
-  let expectedDiscountOutcomes: Record<string, "accepted" | "rejected">;
 
   beforeAll(() => {
     setNetworkId("undeployed");
@@ -36,21 +42,15 @@ describe("university protocol-style multi-party flow", () => {
     expectedStudentCount = runner.students.length;
     expectedBatchCount = runner.issuanceBatches.length;
     expectedDiscountCount = runner.discountApplicants.length;
-    expectedAcceptedDiscountCount = runner.discountApplicants.filter(
-      (applicant) => applicant.expectedDiscountEligibility,
+    expectedAcceptedDiscountCount = Object.values(expectedDiscountOutcomes).filter(
+      (outcome) => outcome === "accepted",
     ).length;
     expectedRejectedDiscountCount =
       expectedDiscountCount - expectedAcceptedDiscountCount;
-    expectedDiscountOutcomes = Object.fromEntries(
-      runner.discountApplicants.map((applicant) => [
-        applicant.studentId,
-        applicant.expectedDiscountEligibility ? "accepted" : "rejected",
-      ]),
-    );
     result = runner.runAll();
   });
 
-  it("issues 10 diploma credentials, completes 10 job applications, and evaluates 5 discount requests", () => {
+  it("issues the committed diploma set, completes every job application, and evaluates every selected discount request", () => {
     expect(result.issuance.requestCount).toEqual(expectedStudentCount);
     expect(result.issuance.resultCount).toEqual(expectedStudentCount);
     expect(result.issuance.batchCount).toEqual(expectedBatchCount);
