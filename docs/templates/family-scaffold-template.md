@@ -26,6 +26,39 @@ The generated package includes:
 
 It does not add the package to root workspaces automatically.
 
+## Current Compact claim-surface guardrails
+
+When filling in `claims.compact`, keep the current compiler surface in mind.
+
+Use native direct claim fields from:
+
+- `Boolean`
+- `Uint<n>`
+- `Bytes<n>`
+- `Field`
+- vectors and nested structs built only from those supported kinds
+
+Do not model these as if they were native direct Compact claim fields:
+
+- `String`
+- `Int<n>`
+- `Float<n>`
+- `Vector<k, T>` where `T` is itself an unsupported field kind
+
+Design guidance:
+
+- prefer flat claims by default
+- use nested structs only when they encode a real domain grouping
+- treat nested vector-of-struct claims as deliberate prototype or
+  domain-specific choices, not the default shared-family style
+
+Best current references for claim-shape work:
+
+- smallest starter family:
+  - `prototypes/credential-families/hello-family`
+- broad direct claim-surface laboratory:
+  - `prototypes/credential-families/dummy-claims`
+
 ## Package shape
 
 A minimal family package should have these parts:
