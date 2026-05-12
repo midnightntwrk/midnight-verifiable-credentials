@@ -24,7 +24,7 @@ run_credentials_integration_target() {
 echo "[credentials] Lint"
 if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
   echo "[credentials] Light wrapper lanes"
-  ./run.sh lint --light
+  ./run.sh lint
   ./run.sh typecheck --light
   ./run.sh build --light
   ./run.sh test --light
