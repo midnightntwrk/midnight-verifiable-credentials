@@ -73,6 +73,27 @@ describe("university-diploma selective disclosure", () => {
     ).toThrow(/University-diploma request requires graduate name disclosure/);
   });
 
+  it("rejects a tampered disclosed graduate name", () => {
+    const fixture = createUniversityDiplomaFixture({
+      disclosedOverrides: {
+        revealGraduateName: true,
+        graduateName: new Uint8Array(32).fill(4),
+      },
+    });
+
+    expect(() =>
+      pureCircuits.assertUniversityDiplomaPresentationSatisfiesRequest(
+        fixture.credential,
+        fixture.credentialProof,
+        fixture.presentationRequest,
+        fixture.presentation,
+        fixture.presentationProof,
+      ),
+    ).toThrow(
+      /University-diploma graduate name disclosure does not match the credential/,
+    );
+  });
+
   it("accepts a mall-style presentation when the disclosed grade meets the minimum threshold", () => {
     const fixture = createUniversityDiplomaFixture({
       request: {

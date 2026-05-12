@@ -44,6 +44,9 @@ Selective disclosure model:
 - companies can ask for graduate identity, award, year, and final grade
 - the mall flow can ask for final grade and enforce a minimum grade threshold
 - fields like faculty, honors, credits, diploma id, and student id can stay hidden unless the verifier asks for them
+- when a field is not revealed, the verifier must treat the matching `reveal*`
+  flag as authoritative and ignore the corresponding value slot; well-behaved
+  holders should still zero or clear unrevealed slots
 
 Build and test:
 

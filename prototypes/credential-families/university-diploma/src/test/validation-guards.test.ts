@@ -55,6 +55,38 @@ describe("university-diploma validation guards", () => {
     ).toThrow(/University-diploma verifier challenge must be set/);
   });
 
+  it("rejects a presentation request whose version no longer matches the family contract", () => {
+    const fixture = createUniversityDiplomaFixture();
+
+    expect(() =>
+      pureCircuits.assertValidUniversityDiplomaPresentationRequest({
+        ...fixture.presentationRequest,
+        version: 2n,
+      }),
+    ).toThrow(/University-diploma request version mismatch/);
+  });
+
+  it("rejects a minimum-grade request that does not require final-grade disclosure", () => {
+    const fixture = createUniversityDiplomaFixture({
+      request: {
+        requireFinalGradeDisclosure: false,
+        enforceMinimumFinalGrade: true,
+        minimumFinalGrade: 91n,
+      },
+      disclosure: {
+        revealFinalGrade: false,
+      },
+    });
+
+    expect(() =>
+      pureCircuits.assertValidUniversityDiplomaPresentationRequest(
+        fixture.presentationRequest,
+      ),
+    ).toThrow(
+      /University-diploma minimum-grade request must require final grade disclosure/,
+    );
+  });
+
   it("rejects a request whose challenge no longer matches the presentation proof", () => {
     const fixture = createUniversityDiplomaFixture();
 
@@ -72,6 +104,26 @@ describe("university-diploma validation guards", () => {
     ).toThrow(
       /University-diploma presentation proof challenge does not match the request/,
     );
+  });
+
+  it("rejects a request schema that no longer matches the credential schema", () => {
+    const fixture = createUniversityDiplomaFixture();
+
+    expect(() =>
+      pureCircuits.assertUniversityDiplomaPresentationSatisfiesRequest(
+        fixture.credential,
+        fixture.credentialProof,
+        {
+          ...fixture.presentationRequest,
+          schema: {
+            ...fixture.presentationRequest.schema,
+            minorVersion: 1n,
+          },
+        },
+        fixture.presentation,
+        fixture.presentationProof,
+      ),
+    ).toThrow(/Schema reference mismatch/);
   });
 
   it("rejects a credential whose final grade exceeds the allowed scale", () => {

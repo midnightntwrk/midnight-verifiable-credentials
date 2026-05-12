@@ -80,7 +80,9 @@ const sha256 = (value: string): Uint8Array =>
 export const padText = (value: string, length = 32): Uint8Array => {
   const bytes = new TextEncoder().encode(value);
   if (bytes.length > length) {
-    throw new Error(`Text value exceeds ${length}-byte fixture padding limit`);
+    throw new Error(
+      `Text value exceeds ${length}-byte fixture padding limit: got ${bytes.length} bytes`,
+    );
   }
   if (bytes.length === length) {
     return bytes;
@@ -258,11 +260,15 @@ const createDisclosurePayload = ({
 export const createUniversityDiplomaFixture = ({
   verifierChallengeHash = sha256("challenge:university-diploma"),
   disclosure = {},
+  disclosedOverrides = {},
   request = {},
   claimOverrides = {},
 }: {
   readonly verifierChallengeHash?: Uint8Array;
   readonly disclosure?: UniversityDiplomaDisclosureOptions;
+  readonly disclosedOverrides?: Partial<
+    UniversityDiplomaPresentation["disclosed"]
+  >;
   readonly request?: UniversityDiplomaRequestOptions;
   readonly claimOverrides?: Partial<UniversityDiplomaClaims>;
 } = {}): UniversityDiplomaFixture => {
@@ -305,13 +311,18 @@ export const createUniversityDiplomaFixture = ({
     request,
   });
 
+  const disclosed = {
+    ...createDisclosurePayload({ claims, disclosure }),
+    ...disclosedOverrides,
+  };
+
   const presentation: UniversityDiplomaPresentation = {
     version: 1n,
     schema: credential.schema,
     credentialClaimRoot: credential.claimRoot,
     issuerVerificationMethodRef: credential.issuerVerificationMethodRef,
     holderBinding: credential.holderBinding,
-    disclosed: createDisclosurePayload({ claims, disclosure }),
+    disclosed,
   };
 
   const presentationProof = signProof({

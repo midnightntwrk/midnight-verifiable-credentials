@@ -113,6 +113,9 @@ export pure circuit assertValidUniversityDiplomaPresentation(
     presentationProof
   );
 
+  // NOTE: when a `reveal*` flag is false, the corresponding disclosed slot is
+  // not normalized or zero-checked by this circuit. Verifiers must treat the
+  // `reveal*` booleans as the authority on whether a field is disclosed.
   if (presentation.disclosed.revealDiplomaId) {
     assert(
       presentation.disclosed.diplomaId == credential.claims.diplomaId,
