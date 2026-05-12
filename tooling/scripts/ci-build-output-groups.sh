@@ -30,6 +30,7 @@ protocols/openid
 prototypes/credential-families/birth
 prototypes/credential-families/birth-secret
 prototypes/credential-families/hello-family
+prototypes/credential-families/dummy-claims
 EOF
       ;;
     age-gate)
@@ -94,6 +95,8 @@ prototypes/credential-families/birth-secret/src/managed
 prototypes/credential-families/birth-secret/dist
 prototypes/credential-families/hello-family/src/managed
 prototypes/credential-families/hello-family/dist
+prototypes/credential-families/dummy-claims/src/managed
+prototypes/credential-families/dummy-claims/dist
 EOF
       ;;
     age-gate)
