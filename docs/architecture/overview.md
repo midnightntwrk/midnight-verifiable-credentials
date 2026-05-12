@@ -170,6 +170,9 @@ It intentionally sits above `credentials-protocol` rather than inside it,
 because the flow is tied to one concrete family, one deterministic dataset, and
 one verifier-contract package.
 
+Treat it as a deterministic trace harness, not as a key-isolating SSI
+deployment reference.
+
 ### `credentials-demo-contract`
 This package demonstrates verifier/business contract composition.
 

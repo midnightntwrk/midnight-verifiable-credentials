@@ -567,15 +567,8 @@ class UniversityCompanyVerifierAgent {
     transcript: TranscriptRecorder,
     messages: UniversityProtocolMessage[],
   ): void {
-    const policy = this.company.requestPolicy;
     const requestOptions: UniversityJobApplicationRequestOptions = {
-      requireDiplomaIdDisclosure: policy.requireDiplomaIdDisclosure ?? false,
-      requireStudentIdDisclosure: policy.requireStudentIdDisclosure ?? false,
-      requireFacultyNameDisclosure: policy.requireFacultyNameDisclosure ?? false,
-      requireHonorsCodeDisclosure: policy.requireHonorsCodeDisclosure ?? false,
-      requireGraduationMonthDisclosure: policy.requireGraduationMonthDisclosure ?? false,
-      requireFinalGradeDisclosure: policy.requireFinalGradeDisclosure ?? false,
-      requireCreditsEarnedDisclosure: policy.requireCreditsEarnedDisclosure ?? false,
+      ...this.company.requestPolicy,
     };
     const request = this.simulator.universityJobApplicationRequest(
       issuerVerificationMethodRef,
@@ -719,7 +712,7 @@ class UniversityMallVerifierAgent {
     messages: UniversityProtocolMessage[],
   ): void {
     let accepted = true;
-    let reason = "grade is strictly greater than 90";
+    let reason = "mall discount accepted";
 
     try {
       this.simulator.verifyUniversityDiplomaForMallDiscount(

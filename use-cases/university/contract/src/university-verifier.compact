@@ -151,6 +151,9 @@ export circuit verifyUniversityDiplomaForJobApplication(
   lastVerifiedUniversityName = disclose(presentation.disclosed.universityName);
   lastVerifiedAwardName = disclose(presentation.disclosed.awardName);
   lastVerifiedGraduationYear = disclose(presentation.disclosed.graduationYear);
+  // NOTE: `0` is the current prototype sentinel for "not disclosed on this
+  // verifier request". The ledger does not yet carry a separate
+  // `lastVerifiedFinalGradeDisclosed` flag.
   const requireFinalGradeDisclosure = disclose(request.requireFinalGradeDisclosure);
   if (requireFinalGradeDisclosure) {
     lastVerifiedFinalGrade = disclose(presentation.disclosed.finalGrade);
