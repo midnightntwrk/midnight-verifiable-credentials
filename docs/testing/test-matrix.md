@@ -91,6 +91,11 @@ Status: current implemented test surface as of 2026-05-11.
   - credential claim-root integrity
   - holder-binding mismatch
   - request/proof challenge mismatch
+- root `./run.sh dummy-claims-lab` lane
+  - keeps the family-level selective-disclosure lab and verifier-level lab contract
+    path runnable from one repo command
+  - see `docs/guides/dummy-claims-verifier-lab.md` for the authoritative lane
+    description
 
 ### Historical placeholder package names
 

@@ -53,6 +53,9 @@
 - DID + VC hello smoke path:
   - [`guides/did-vc-hello-smoke-path.md`](./guides/did-vc-hello-smoke-path.md)
   - for engineers who need the smallest checked-in DID bootstrap to VC verification handoff
+- dummy-claims verifier lab:
+  - [`guides/dummy-claims-verifier-lab.md`](./guides/dummy-claims-verifier-lab.md)
+  - for engineers exercising the broad direct Compact claim surface against a verifier contract
 - starter templates:
   - [`templates/verifier-contract-template.compact.md`](./templates/verifier-contract-template.compact.md)
   - [`templates/family-scaffold-template.md`](./templates/family-scaffold-template.md)

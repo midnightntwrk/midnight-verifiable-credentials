@@ -123,6 +123,7 @@ Targets that currently honor `--light`:
 - `./run.sh typecheck`
 - `./run.sh test`
 - `./run.sh hello-smoke`
+- `./run.sh dummy-claims-lab`
 
 Discover explicit repository targets:
 

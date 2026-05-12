@@ -35,7 +35,7 @@ help_code, help_stdout, help_stderr, help_timed_out = run_with_timeout(['./run.s
 ensure(not help_timed_out, 'help --light should not time out')
 ensure(help_code == 0, f'help --light exited with {help_code}')
 ensure('[run] Warning:' not in help_stderr, 'help --light should not warn')
-ensure('full, build, typecheck, test, hello-smoke' in help_stdout, 'help output should list the current light-supported targets')
+ensure('full, build, typecheck, test, hello-smoke, dummy-claims-lab' in help_stdout, 'help output should list the current light-supported targets')
 
 _, _, lint_stderr, _ = run_with_timeout(['./run.sh', 'lint', '--light'], 3)
 ensure("[run] Warning: --light is ignored by target 'lint'" in lint_stderr, 'lint --light should warn that --light is ignored')

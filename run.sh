@@ -19,6 +19,7 @@ Targets:
   bdd-negative               Serenity/JS BDD negative-path scenarios
   bdd-all                    Full Serenity/JS BDD scenario set
   hello-smoke                Smallest DID -> VC -> verifier handoff lane
+  dummy-claims-lab           Broad direct claim-surface verifier lane
   revocation                 Revocation-focused CI lane
   integration                Both standalone Docker integration lanes
   integration-demo-contract  Standalone demo-contract integration only
@@ -92,7 +93,7 @@ forward_args=()
 
 if [[ $# -gt 0 ]]; then
   case "$1" in
-    full|lint|typecheck|build|test|bdd|bdd-negative|bdd-all|hello-smoke|revocation|integration|integration-demo-contract|integration-protocol|targets|help|-h|--help)
+    full|lint|typecheck|build|test|bdd|bdd-negative|bdd-all|hello-smoke|dummy-claims-lab|revocation|integration|integration-demo-contract|integration-protocol|targets|help|-h|--help)
       target="$1"
       shift
       ;;
@@ -223,6 +224,19 @@ case "$target" in
       # restored-artifact parity with CI.
       echo "[run] DID + VC hello smoke lane"
       npm run ci:hello-smoke
+    fi
+    ;;
+  dummy-claims-lab)
+    if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
+      echo "[run] Light dummy-claims verifier lab lane"
+      run_common_ensure_artifacts "run" managed-dummy-claims-lab
+      npm run ci:dummy-claims-lab:from-artifacts
+    else
+      # NOTE: this lab lane intentionally stays narrower than `hello-smoke`.
+      # It validates the broad claim-surface family and the dedicated verifier
+      # lab test file without re-running the whole starter path.
+      echo "[run] Dummy-claims verifier lab lane"
+      npm run ci:dummy-claims-lab
     fi
     ;;
   revocation)
