@@ -33,6 +33,10 @@ Scope:
   guard events
 - the runner now exposes explicit exercise options for negative-path scenarios
   instead of relying on test-time monkey patching
+- stable transcript export now exists in both JSON and Markdown forms under
+  `target/readable-10`
+- export summaries group entries per thread and include rejection-kind
+  breakdowns for downstream tooling
 
 Stress-lane note:
 
@@ -48,11 +52,18 @@ Build and test:
 - root lane:
   - `./run.sh university-protocol`
   - `./run.sh university-protocol --light`
+  - `./run.sh university-protocol-export`
+  - `./run.sh university-protocol-export --light`
   - `./run.sh university-protocol-stress`
 - `npm run lint -w ./use-cases/university/protocol`
 - `npm run typecheck -w ./use-cases/university/protocol`
 - `npm run test:ci -w ./use-cases/university/protocol`
 - `npm run build -w ./use-cases/university/protocol`
+- transcript export:
+  - `npm run export:transcript -w ./use-cases/university/protocol`
+  - outputs:
+    - `./use-cases/university/protocol/target/readable-10/transcript-export.json`
+    - `./use-cases/university/protocol/target/readable-10/transcript-export.md`
 - stress summary:
   - `npm run stress:run -w ./use-cases/university/protocol`
   - output:

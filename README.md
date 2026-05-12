@@ -181,6 +181,12 @@ Run the threaded university protocol lane directly:
 ./run.sh university-protocol
 ```
 
+Export the readable 10-student university protocol transcript:
+
+```bash
+./run.sh university-protocol-export
+```
+
 Run the smallest DID-aware handoff lane directly:
 
 ```bash

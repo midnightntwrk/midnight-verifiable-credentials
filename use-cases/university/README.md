@@ -312,6 +312,9 @@ Current status:
   - job applications
   - mall discount verification
 - include per-step latency distribution and batch throughput
+- emit stable transcript exports for the readable lane:
+  - `./protocol/target/readable-10/transcript-export.json`
+  - `./protocol/target/readable-10/transcript-export.md`
 
 ## BDD Scenarios
 

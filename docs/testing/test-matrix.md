@@ -133,6 +133,16 @@ Status: current implemented test surface as of 2026-05-11.
   - threaded mall discount request / submission / result flow over 5 applicants
   - transcript-level policy semantics for company-specific disclosure requests
   - thread integrity between requests and their corresponding results
+- `use-cases/university/protocol/src/test/duplicate-flow.test.ts`
+  - duplicate job-application submission rejection
+  - duplicate mall discount submission rejection
+- `use-cases/university/protocol/src/test/negative-flow.test.ts`
+  - malformed verifier request policy rejection
+  - no collateral acceptance loss outside the targeted cohort
+- `use-cases/university/protocol/src/test/export.test.ts`
+  - stable JSON transcript export
+  - stable Markdown transcript export
+  - golden-file normalization over thread ids and verifier challenge hashes
 
 ### University executable BDD specs
 
