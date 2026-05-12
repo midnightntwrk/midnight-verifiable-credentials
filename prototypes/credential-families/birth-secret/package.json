@@ -52,6 +52,7 @@
   "scripts": {
     "contract": "npm run compact",
     "compact": "node ../../../tooling/scripts/ensure-compact-package-aliases.mjs && compact compile src/secret-birth-credential.compact src/managed/secret-birth-credential && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
+    "prebuild": "npm --prefix ../../../core/primitives/credentials run build && npm --prefix ../../../core/capabilities/same-holder run build && npm --prefix ../birth run build",
     "pretypecheck": "npm --prefix ../../../core/primitives/credentials run build && npm --prefix ../../../core/capabilities/same-holder run build && npm --prefix ../birth run build",
     "pretest": "npm --prefix ../../../core/primitives/credentials run build && npm --prefix ../../../core/capabilities/same-holder run build && npm --prefix ../birth run build && npm run compact",
     "pretest:ci": "npm --prefix ../../../core/primitives/credentials run build && npm --prefix ../../../core/capabilities/same-holder run build && npm --prefix ../birth run build && npm run compact",
