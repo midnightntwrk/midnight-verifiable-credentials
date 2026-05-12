@@ -21,25 +21,32 @@ type PresentationResultShape = {
 };
 
 describe("university protocol-style multi-party flow", () => {
-  const runner = new UniversityProtocolFlowRunner();
+  let runner: UniversityProtocolFlowRunner;
   let result: ReturnType<UniversityProtocolFlowRunner["runAll"]>;
-  const expectedStudentCount = runner.students.length;
-  const expectedBatchCount = runner.issuanceBatches.length;
-  const expectedDiscountCount = runner.discountApplicants.length;
-  const expectedAcceptedDiscountCount = runner.discountApplicants.filter(
-    (applicant) => applicant.expectedDiscountEligibility,
-  ).length;
-  const expectedRejectedDiscountCount =
-    expectedDiscountCount - expectedAcceptedDiscountCount;
-  const expectedDiscountOutcomes = Object.fromEntries(
-    runner.discountApplicants.map((applicant) => [
-      applicant.studentId,
-      applicant.expectedDiscountEligibility ? "accepted" : "rejected",
-    ]),
-  );
+  let expectedStudentCount: number;
+  let expectedBatchCount: number;
+  let expectedDiscountCount: number;
+  let expectedAcceptedDiscountCount: number;
+  let expectedRejectedDiscountCount: number;
+  let expectedDiscountOutcomes: Record<string, "accepted" | "rejected">;
 
   beforeAll(() => {
     setNetworkId("undeployed");
+    runner = new UniversityProtocolFlowRunner();
+    expectedStudentCount = runner.students.length;
+    expectedBatchCount = runner.issuanceBatches.length;
+    expectedDiscountCount = runner.discountApplicants.length;
+    expectedAcceptedDiscountCount = runner.discountApplicants.filter(
+      (applicant) => applicant.expectedDiscountEligibility,
+    ).length;
+    expectedRejectedDiscountCount =
+      expectedDiscountCount - expectedAcceptedDiscountCount;
+    expectedDiscountOutcomes = Object.fromEntries(
+      runner.discountApplicants.map((applicant) => [
+        applicant.studentId,
+        applicant.expectedDiscountEligibility ? "accepted" : "rejected",
+      ]),
+    );
     result = runner.runAll();
   });
 

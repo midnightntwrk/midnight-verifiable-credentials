@@ -370,6 +370,8 @@ export class UseUniversityScenario extends Ability {
     if (this.#selectedDiscountStudentId === studentId) {
       return;
     }
+    // NOTE: the protocol transcript is independent of the selected discount
+    // applicant, so only the per-student discount projection needs resetting.
     this.#selectedDiscountStudentId = studentId;
     this.#discountResult = undefined;
   }
