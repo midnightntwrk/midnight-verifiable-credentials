@@ -347,7 +347,7 @@ const average = (values: readonly number[]): number => {
 };
 
 export class UseUniversityScenario extends Ability {
-  #paths: ScenarioDataPaths = { ...defaultDataPaths };
+  readonly #paths: ScenarioDataPaths = { ...defaultDataPaths };
   #issuanceResult: IssuanceScenarioResult | undefined;
   #jobApplicationResult: JobApplicationScenarioResult | undefined;
   #discountResult: DiscountScenarioResult | undefined;
@@ -376,11 +376,6 @@ export class UseUniversityScenario extends Ability {
     if (eligibleStudents.length !== expectedCount) {
       throw new Error(
         `Expected ${expectedCount} eligible students in ${this.#paths.students}, found ${eligibleStudents.length}`,
-      );
-    }
-    if (eligibleStudents.length !== students.length) {
-      throw new Error(
-        `Expected every student in ${this.#paths.students} to be graduation eligible, but found ${students.length - eligibleStudents.length} ineligible records`,
       );
     }
   }

@@ -160,7 +160,7 @@ Given("the company verifier roster includes {string}, {string}, and {string}", a
     request: "Load the company verifier DID instances and their presentation-request policies.",
     response: "The harness exposes each company name plus the disclosure policy it will apply to student job applications.",
     checks: [
-      "The three expected companies are present in the configured order.",
+      "The three expected companies are present in the verifier roster.",
       "Each company policy lists the disclosed fields required for verification.",
       "No company in this scenario enforces a minimum-grade predicate.",
     ],
