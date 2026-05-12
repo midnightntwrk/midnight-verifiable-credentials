@@ -6,8 +6,12 @@ import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { describe, expect, it } from "vitest";
 
 import {
+  assertUniversityProtocolTranscriptExportConforms,
   buildUniversityProtocolTranscriptExport,
   renderUniversityProtocolTranscriptMarkdown,
+  UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_COMPATIBILITY,
+  UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_ID,
+  UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION,
   UniversityProtocolFlowRunner,
 } from "../index.js";
 
@@ -47,8 +51,14 @@ describe("university protocol transcript exporter", () => {
     const result = runner.runAll();
     const exported = buildUniversityProtocolTranscriptExport(runner, result);
 
+    expect(exported.schemaId).toBe(
+      UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_ID,
+    );
     expect(exported.schemaVersion).toBe(
-      "midnight-university-protocol-export.v1",
+      UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION,
+    );
+    expect(exported.compatibility).toEqual(
+      UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_COMPATIBILITY,
     );
     expect(exported.dataset.studentCount).toBe(10);
     expect(exported.dataset.companyCount).toBe(3);
@@ -64,6 +74,7 @@ describe("university protocol transcript exporter", () => {
         count: 2,
       },
     ]);
+    expect(() => assertUniversityProtocolTranscriptExportConforms(exported)).not.toThrow();
   });
 
   it("matches the checked-in JSON golden export", () => {

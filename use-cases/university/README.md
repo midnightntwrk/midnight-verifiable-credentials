@@ -378,6 +378,9 @@ Current status:
 - emit stable transcript exports for the readable lane:
   - `./protocol/target/readable-10/transcript-export.json`
   - `./protocol/target/readable-10/transcript-export.md`
+  - each export now includes `schemaId`, `schemaVersion`, and a pinned reader
+    compatibility window so external tooling can reject unsupported transcript
+    shapes deterministically
 
 ## BDD Scenarios
 

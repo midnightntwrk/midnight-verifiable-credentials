@@ -1,4 +1,10 @@
 import type { UniversityProtocolFlowResult, UniversityProtocolFlowRunner } from "./flow.js";
+import {
+  assertUniversityProtocolTranscriptExportConforms,
+  UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_COMPATIBILITY,
+  UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_ID,
+  UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION,
+} from "./transcript-schema.js";
 
 type FlowMessage = UniversityProtocolFlowResult["issuance"]["messages"][number];
 type FlowResultBody = Extract<FlowMessage, { type: "presentation:result" }>["body"];
@@ -36,7 +42,9 @@ export type UniversityProtocolThreadExport = {
 };
 
 export type UniversityProtocolTranscriptExport = {
-  readonly schemaVersion: "midnight-university-protocol-export.v1";
+  readonly schemaId: typeof UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_ID;
+  readonly schemaVersion: typeof UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION;
+  readonly compatibility: typeof UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_COMPATIBILITY;
   readonly dataset: {
     readonly studentCount: number;
     readonly companyCount: number;
@@ -473,8 +481,12 @@ export const buildUniversityProtocolTranscriptExport = (
     verifierNames,
   );
 
-  return {
-    schemaVersion: "midnight-university-protocol-export.v1",
+  const exported: UniversityProtocolTranscriptExport = {
+    schemaId: UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_ID,
+    schemaVersion: UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION,
+    compatibility: {
+      ...UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_COMPATIBILITY,
+    },
     dataset: {
       studentCount: runner.students.length,
       companyCount: runner.companies.length,
@@ -554,6 +566,9 @@ export const buildUniversityProtocolTranscriptExport = (
       discounts: discountThreads,
     },
   };
+
+  assertUniversityProtocolTranscriptExportConforms(exported);
+  return exported;
 };
 
 const renderThreadSection = (
@@ -596,7 +611,10 @@ export const renderUniversityProtocolTranscriptMarkdown = (
   const lines = [
     "# University Protocol Transcript Export",
     "",
+    `- schema id: ${exported.schemaId}`,
     `- schema version: ${exported.schemaVersion}`,
+    `- compatible reader floor: ${exported.compatibility.minimumReaderVersion}`,
+    `- compatible reader ceiling: ${exported.compatibility.maximumReaderVersion}`,
     `- students: ${exported.dataset.studentCount}`,
     `- companies: ${exported.dataset.companyCount}`,
     `- discount applicants: ${exported.dataset.discountApplicantCount}`,

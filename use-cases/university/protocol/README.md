@@ -49,6 +49,9 @@ Scope:
   `target/readable-10`
 - export summaries group entries per thread and include rejection-kind
   breakdowns for downstream tooling
+- transcript exports now carry an explicit schema id, schema version, and
+  exact-match reader compatibility window so downstream consumers can fail fast
+  on unsupported shapes instead of guessing from ad hoc field presence
 - the 100-student stress lane now emits both JSON and Markdown artifacts under
   `target/stress-100`
 - readable and stress lanes now resolve their fixture directories from the
@@ -83,6 +86,14 @@ Build and test:
   - outputs:
     - `./use-cases/university/protocol/target/readable-10/transcript-export.json`
     - `./use-cases/university/protocol/target/readable-10/transcript-export.md`
+  - contract:
+    - `schemaId` is `midnight-university-protocol-export`
+    - `schemaVersion` is `midnight-university-protocol-export.v1`
+    - `compatibility.minimumReaderVersion` and
+      `compatibility.maximumReaderVersion` are both pinned to the same value in
+      this first schema generation, so consumers should exact-match `v1`
+    - any export-shape change that requires a different reader should bump the
+      schema version and widen or replace the compatibility window deliberately
 - stress summary:
   - `npm run stress:run -w ./use-cases/university/protocol`
   - output:

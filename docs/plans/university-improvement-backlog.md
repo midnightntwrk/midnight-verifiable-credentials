@@ -12,7 +12,8 @@ Status:
 - item `6` is opened on the stack as `#223`
 - item `8` is opened on the stack as `#224`
 - item `7` is opened on the stack as `#225`
-- item `10` is the current in-flight slice on top of `#225`
+- item `10` is opened on the stack as `#226`
+- item `9` is the current in-flight slice on top of `#226`
 - last reviewed: `2026-05-13`
 
 Scope boundary:
@@ -141,6 +142,8 @@ Scope boundary:
   - `3`
 
 9. `protocol-trace-schema-versioning`
+- status:
+  - current in-flight slice on top of `#226`
 - problem:
   - transcript consumers have no explicit schema/version contract
 - scope:

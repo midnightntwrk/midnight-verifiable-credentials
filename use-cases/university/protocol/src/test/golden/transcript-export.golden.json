@@ -1,5 +1,10 @@
 {
+  "schemaId": "midnight-university-protocol-export",
   "schemaVersion": "midnight-university-protocol-export.v1",
+  "compatibility": {
+    "minimumReaderVersion": "midnight-university-protocol-export.v1",
+    "maximumReaderVersion": "midnight-university-protocol-export.v1"
+  },
   "dataset": {
     "studentCount": 10,
     "companyCount": 3,

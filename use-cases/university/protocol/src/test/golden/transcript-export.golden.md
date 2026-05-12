@@ -1,6 +1,9 @@
 # University Protocol Transcript Export
 
+- schema id: midnight-university-protocol-export
 - schema version: midnight-university-protocol-export.v1
+- compatible reader floor: midnight-university-protocol-export.v1
+- compatible reader ceiling: midnight-university-protocol-export.v1
 - students: 10
 - companies: 3
 - discount applicants: 5
