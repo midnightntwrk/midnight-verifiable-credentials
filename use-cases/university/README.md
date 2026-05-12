@@ -238,7 +238,7 @@ locate the first serious scaling bottlenecks.
 
 ### Suggested first bottleneck probes
 
-- university batch signing time vs batch size 10 / 20 / 25 / 50
+- university batch signing time vs batch size 2 / 5 / 10
 - per-student presentation build time across 10 parallel job applications
 - verifier throughput by company policy complexity
 - grade-threshold verification overhead vs plain disclosure-only verification
