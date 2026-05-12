@@ -219,10 +219,12 @@ Then("the job-application report should expose company-level bottleneck metrics"
   const result = universityScenario().jobApplicationResult();
   expectMetricNames(result.metricNames, [
     "company_did_bootstrap_ms",
-    "job_request_publish_ms",
-    "presentation_build_ms",
-    "job_application_submit_ms",
-    "company_verification_ms",
+    "job_protocol_phase_ms",
+    "job_request_count",
+    "job_presentation_submission_count",
+    "job_verification_result_count",
+    "job_duplicate_rejection_count",
+    "job_verification_rejection_count",
     "job_application_acceptance_rate",
     "job_applications_per_second",
   ]);
@@ -302,9 +304,13 @@ Then("the discount report should record the explanation {string}", async (expect
     throw new Error(`Expected explanation '${expectedExplanation}', got '${result.explanation}'`);
   }
   expectMetricNames(result.metricNames, [
-    "discount_request_publish_ms",
-    "discount_presentation_build_ms",
-    "discount_verification_ms",
+    "mall_did_bootstrap_ms",
+    "discount_protocol_phase_ms",
+    "discount_request_count",
+    "discount_presentation_submission_count",
+    "discount_verification_result_count",
+    "discount_duplicate_rejection_count",
+    "discount_verification_rejection_count",
     "discount_acceptance_rate",
     "discount_rejection_reason_count",
   ]);

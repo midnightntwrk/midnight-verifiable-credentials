@@ -7,10 +7,12 @@ Feature: Students apply to companies by presenting university diploma credential
   #
   # METRICS TO CAPTURE:
   # - company_did_bootstrap_ms
-  # - job_request_publish_ms
-  # - presentation_build_ms
-  # - job_application_submit_ms
-  # - company_verification_ms
+  # - job_protocol_phase_ms
+  # - job_request_count
+  # - job_presentation_submission_count
+  # - job_verification_result_count
+  # - job_duplicate_rejection_count
+  # - job_verification_rejection_count
   # - job_application_acceptance_rate
   # - job_applications_per_second
   #

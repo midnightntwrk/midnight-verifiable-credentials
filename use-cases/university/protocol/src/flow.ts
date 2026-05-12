@@ -212,6 +212,7 @@ export type UniversityProtocolFlowResult = {
     readonly duplicateRejectedCount: number;
     readonly verificationRejectedCount: number;
     readonly companyAcceptedCounts: Readonly<Record<string, number>>;
+    readonly resultsByStudent: Readonly<Record<string, readonly UniversityPresentationResultBody[]>>;
     readonly messages: readonly UniversityProtocolMessage[];
   };
   readonly discounts: {
@@ -223,6 +224,7 @@ export type UniversityProtocolFlowResult = {
     readonly duplicateRejectedCount: number;
     readonly verificationRejectedCount: number;
     readonly outcomes: Readonly<Record<string, "accepted" | "rejected">>;
+    readonly resultsByStudent: Readonly<Record<string, readonly UniversityPresentationResultBody[]>>;
     readonly messages: readonly UniversityProtocolMessage[];
   };
   readonly transcript: readonly UniversityProtocolTranscriptEntry[];
@@ -259,6 +261,30 @@ const defaultDataPaths = {
 } satisfies UniversityProtocolDataPaths;
 
 const hex = (value: Uint8Array): string => Buffer.from(value).toString("hex");
+
+const isPresentationResultMessage = (
+  message: UniversityProtocolMessage,
+): message is ProtocolMessage<UniversityPresentationResultBody> =>
+  message.type === "presentation:result";
+
+const resultBodiesByStudent = (
+  messages: readonly UniversityProtocolMessage[],
+  kind: UniversityPresentationResultBody["kind"],
+): Readonly<Record<string, readonly UniversityPresentationResultBody[]>> => {
+  const grouped = new Map<string, UniversityPresentationResultBody[]>();
+  for (const message of messages) {
+    if (!isPresentationResultMessage(message) || message.body.kind !== kind) {
+      continue;
+    }
+    const existing = grouped.get(message.body.studentId);
+    if (existing) {
+      existing.push(message.body);
+    } else {
+      grouped.set(message.body.studentId, [message.body]);
+    }
+  }
+  return Object.fromEntries(grouped.entries());
+};
 
 const resolveRepoPath = (relativePath: string): string =>
   path.resolve(repoRoot, relativePath);
@@ -887,15 +913,21 @@ export class UniversityProtocolFlowRunner {
       (sum, agent) => sum + agent.verificationRejectedCount,
       0,
     );
+    const jobResultsByStudent = resultBodiesByStudent(
+      this.jobMessages,
+      "jobApplication",
+    );
+    const discountResultsByStudent = resultBodiesByStudent(
+      this.discountMessages,
+      "mallDiscount",
+    );
     const discountOutcomes = Object.fromEntries(
       this.discountApplicants.map((applicant) => {
-        const student = this.studentAgents.get(applicant.studentId)!;
+        const discountResults = discountResultsByStudent[applicant.studentId];
+        const firstResult = discountResults?.at(0);
         // The first result is the canonical business decision; any later result
         // for the same thread is necessarily a duplicate rejection emitted by
         // the protocol guard and must not overwrite the original outcome.
-        const firstResult = student.receivedResults.filter(
-          (result) => result.kind === "mallDiscount",
-        ).at(0);
         return [applicant.studentId, firstResult?.accepted ? "accepted" : "rejected"] as const;
       }),
     );
@@ -923,6 +955,7 @@ export class UniversityProtocolFlowRunner {
         duplicateRejectedCount: companyDuplicateRejectedCount,
         verificationRejectedCount: companyVerificationRejectedCount,
         companyAcceptedCounts,
+        resultsByStudent: jobResultsByStudent,
         messages: this.jobMessages,
       },
       discounts: {
@@ -936,6 +969,7 @@ export class UniversityProtocolFlowRunner {
         duplicateRejectedCount: this.mallAgent.duplicateRejectedCount,
         verificationRejectedCount: this.mallAgent.verificationRejectedCount,
         outcomes: discountOutcomes,
+        resultsByStudent: discountResultsByStudent,
         messages: this.discountMessages,
       },
       transcript: this.transcript.entries,

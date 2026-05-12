@@ -6,9 +6,13 @@ Feature: Selected students present diploma credentials to request a mall discoun
   # - Five students with different grades exercise both acceptance and rejection paths.
   #
   # METRICS TO CAPTURE:
-  # - discount_request_publish_ms
-  # - discount_presentation_build_ms
-  # - discount_verification_ms
+  # - mall_did_bootstrap_ms
+  # - discount_protocol_phase_ms
+  # - discount_request_count
+  # - discount_presentation_submission_count
+  # - discount_verification_result_count
+  # - discount_duplicate_rejection_count
+  # - discount_verification_rejection_count
   # - discount_acceptance_rate
   # - discount_rejection_reason_count
   #

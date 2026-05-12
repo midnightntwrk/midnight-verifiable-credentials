@@ -205,6 +205,11 @@ prototype data set.
 The scenario set is intentionally metric-heavy so an implementation harness can
 locate the first serious scaling bottlenecks.
 
+Naming rule:
+
+- `*_ms` entries are real timed samples captured by the harness
+- `*_count` entries are tagged event counters, not latency measurements
+
 ### Actor bootstrap metrics
 
 - `issuer_did_bootstrap_ms`
@@ -227,18 +232,24 @@ locate the first serious scaling bottlenecks.
 
 ### Job application metrics
 
-- `job_request_publish_ms`
-- `presentation_build_ms`
-- `job_application_submit_ms`
-- `company_verification_ms`
+- `job_protocol_phase_ms`
+- `job_request_count`
+- `job_presentation_submission_count`
+- `job_verification_result_count`
+- `job_duplicate_rejection_count`
+- `job_verification_rejection_count`
 - `job_application_acceptance_rate`
 - `job_applications_per_second`
 
 ### Mall discount metrics
 
-- `discount_request_publish_ms`
-- `discount_presentation_build_ms`
-- `discount_verification_ms`
+- `mall_did_bootstrap_ms`
+- `discount_protocol_phase_ms`
+- `discount_request_count`
+- `discount_presentation_submission_count`
+- `discount_verification_result_count`
+- `discount_duplicate_rejection_count`
+- `discount_verification_rejection_count`
 - `discount_acceptance_rate`
 - `discount_rejection_reason_count`
 

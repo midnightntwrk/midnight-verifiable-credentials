@@ -159,6 +159,9 @@ type IssuanceScenarioResult = {
 type JobApplicationScenarioResult = {
   readonly totalStudents: number;
   readonly acceptedApplications: number;
+  readonly duplicateRejectedCount: number;
+  readonly verificationRejectedCount: number;
+  readonly protocolPhaseMs: number;
   readonly metricNames: readonly string[];
   readonly companyAcceptedCounts: Readonly<Record<string, number>>;
 };
@@ -168,6 +171,9 @@ type DiscountScenarioResult = {
   readonly finalGrade: number;
   readonly outcome: "accepted" | "rejected";
   readonly explanation: string;
+  readonly duplicateRejectedCount: number;
+  readonly verificationRejectedCount: number;
+  readonly protocolPhaseMs: number;
   readonly metricNames: readonly string[];
 };
 
@@ -274,6 +280,18 @@ class MetricRecorder {
     this.samples.push({
       name,
       durationMs: 0,
+      tags,
+    });
+  }
+
+  observe(
+    name: string,
+    durationMs: number,
+    tags?: Record<string, string | number | boolean>,
+  ): void {
+    this.samples.push({
+      name,
+      durationMs,
       tags,
     });
   }
@@ -888,12 +906,17 @@ export class UseUniversityScenario extends Ability {
           readonly studentId: string;
           readonly accepted: boolean;
           readonly reason: string;
+          readonly rejectionKind:
+            | "none"
+            | "verificationFailed"
+            | "duplicate";
         };
         return {
           kind: body.kind,
           studentId: body.studentId,
           accepted: body.accepted,
           reason: body.reason,
+          rejectionKind: body.rejectionKind,
         };
       }
       default:
@@ -1024,10 +1047,9 @@ export class UseUniversityScenario extends Ability {
           }),
         { batchId: batch.batchId, size: batch.size },
       );
-      metrics.mark("issuance_batch_queue_wait_ms", {
+      metrics.observe("issuance_batch_queue_wait_ms", queueWaitMs, {
         batchId: batch.batchId,
         size: batch.size,
-        queueWaitMs,
       });
       metrics.mark("issuance_batch_size", {
         batchId: batch.batchId,
@@ -1122,24 +1144,29 @@ export class UseUniversityScenario extends Ability {
       () => readJson<CompanyRecord[]>(this.#paths.companies),
       { actorCount: 3 },
     );
-    const { value: protocolResult, durationMs: totalDurationMs } = metrics.measure(
-      "job_protocol_flow_ms",
-      () => this.#protocolFlowResult(),
-      { studentCount: students.length, companyCount: companies.length },
-    );
-    metrics.mark("job_request_publish_ms", {
+    const protocolResult = this.#protocolFlowResult();
+    metrics.observe("job_protocol_phase_ms", protocolResult.metrics.jobApplicationsMs, {
+      studentCount: students.length,
+      companyCount: companies.length,
+    });
+    metrics.mark("job_request_count", {
       companyCount: companies.length,
       requestCount: protocolResult.jobApplications.requestCount,
     });
-    metrics.mark("presentation_build_ms", {
+    metrics.mark("job_presentation_submission_count", {
       submissionCount: protocolResult.jobApplications.submissionCount,
     });
-    metrics.mark("job_application_submit_ms", {
-      submissionCount: protocolResult.jobApplications.submissionCount,
-    });
-    metrics.mark("company_verification_ms", {
+    metrics.mark("job_verification_result_count", {
       resultCount: protocolResult.jobApplications.resultCount,
       acceptedCount: protocolResult.jobApplications.acceptedCount,
+    });
+    metrics.mark("job_duplicate_rejection_count", {
+      duplicateRejectedCount:
+        protocolResult.jobApplications.duplicateRejectedCount,
+    });
+    metrics.mark("job_verification_rejection_count", {
+      verificationRejectedCount:
+        protocolResult.jobApplications.verificationRejectedCount,
     });
     metrics.mark("job_application_acceptance_rate", {
       acceptedApplications: protocolResult.jobApplications.acceptedCount,
@@ -1151,14 +1178,19 @@ export class UseUniversityScenario extends Ability {
     });
     metrics.mark("job_applications_per_second", {
       applicationsPerSecond:
-        totalDurationMs > 0
+        protocolResult.metrics.jobApplicationsMs > 0
           ? protocolResult.jobApplications.acceptedCount /
-            (totalDurationMs / 1000)
+            (protocolResult.metrics.jobApplicationsMs / 1000)
           : protocolResult.jobApplications.acceptedCount,
     });
     this.#jobApplicationResult = {
       totalStudents: students.length,
       acceptedApplications: protocolResult.jobApplications.acceptedCount,
+      duplicateRejectedCount:
+        protocolResult.jobApplications.duplicateRejectedCount,
+      verificationRejectedCount:
+        protocolResult.jobApplications.verificationRejectedCount,
+      protocolPhaseMs: protocolResult.metrics.jobApplicationsMs,
       metricNames: metrics.names(),
       companyAcceptedCounts:
         protocolResult.jobApplications.companyAcceptedCounts,
@@ -1167,7 +1199,11 @@ export class UseUniversityScenario extends Ability {
 
   async runDiscountFlow(): Promise<void> {
     const metrics = new MetricRecorder();
-    const mall = readJson<MallRecord>(this.#paths.mall);
+    const mall = metrics.record(
+      "mall_did_bootstrap_ms",
+      () => readJson<MallRecord>(this.#paths.mall),
+      { actor: "mall" },
+    );
     const discountApplicants = readJson<DiscountApplicantRecord[]>(
       this.#paths.discountApplicants,
     );
@@ -1191,40 +1227,14 @@ export class UseUniversityScenario extends Ability {
       throw new Error(`Unknown student ${this.#selectedDiscountStudentId}`);
     }
 
-    const { value: protocolResult, durationMs: totalDurationMs } = metrics.measure(
-      "discount_protocol_flow_ms",
-      () => this.#protocolFlowResult(),
-      { mallId: mall.mallId },
-    );
-    const studentResult = protocolResult.discounts.messages
-      .flatMap((message) => {
-        if (message.type !== "presentation:result") {
-          return [];
-        }
-        const body = message.body as Partial<{
-          readonly kind: "mallDiscount";
-          readonly studentId: string;
-          readonly accepted: boolean;
-          readonly reason: string;
-        }>;
-        if (
-          body.kind !== "mallDiscount" ||
-          body.studentId !== student.studentId ||
-          typeof body.accepted !== "boolean" ||
-          typeof body.reason !== "string"
-        ) {
-          return [];
-        }
-        return [
-          {
-            kind: "mallDiscount" as const,
-            studentId: body.studentId,
-            accepted: body.accepted,
-            reason: body.reason,
-          },
-        ];
-      })
-      .at(-1);
+    const protocolResult = this.#protocolFlowResult();
+    metrics.observe("discount_protocol_phase_ms", protocolResult.metrics.discountsMs, {
+      mallId: mall.mallId,
+      selectedStudentId: student.studentId,
+    });
+    const studentResult = protocolResult.discounts.resultsByStudent[
+      student.studentId
+    ]?.at(0);
     if (!studentResult) {
       throw new Error(
         `Missing mall discount result for ${student.studentId} in protocol flow`,
@@ -1238,19 +1248,22 @@ export class UseUniversityScenario extends Ability {
     metrics.mark("discount_acceptance_rate", {
       accepted: outcome === "accepted",
     });
-    metrics.mark("discount_request_publish_ms", {
+    metrics.mark("discount_request_count", {
       mallId: mall.mallId,
       requestCount: protocolResult.discounts.requestCount,
     });
-    metrics.mark("discount_presentation_build_ms", {
+    metrics.mark("discount_presentation_submission_count", {
       submissionCount: protocolResult.discounts.submissionCount,
     });
-    metrics.mark("discount_verification_ms", {
+    metrics.mark("discount_verification_result_count", {
       resultCount: protocolResult.discounts.resultCount,
-      applicationsPerSecond:
-        totalDurationMs > 0
-          ? protocolResult.discounts.resultCount / (totalDurationMs / 1000)
-          : protocolResult.discounts.resultCount,
+    });
+    metrics.mark("discount_duplicate_rejection_count", {
+      duplicateRejectedCount: protocolResult.discounts.duplicateRejectedCount,
+    });
+    metrics.mark("discount_verification_rejection_count", {
+      verificationRejectedCount:
+        protocolResult.discounts.verificationRejectedCount,
     });
     metrics.mark("discount_rejection_reason_count", {
       explanation,
@@ -1262,6 +1275,11 @@ export class UseUniversityScenario extends Ability {
       finalGrade: student.diplomaClaimValues.finalGrade,
       outcome,
       explanation,
+      duplicateRejectedCount:
+        protocolResult.discounts.duplicateRejectedCount,
+      verificationRejectedCount:
+        protocolResult.discounts.verificationRejectedCount,
+      protocolPhaseMs: protocolResult.metrics.discountsMs,
       metricNames: metrics.names(),
     };
   }

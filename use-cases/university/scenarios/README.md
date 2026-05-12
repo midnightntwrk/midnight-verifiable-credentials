@@ -42,6 +42,9 @@ Current boundary:
 - the Serenity report now includes representative protocol thread excerpts so a
   human can inspect the request DTO, submission DTO, and verifier result for a
   small readable subset of students without leaving the report
+- metric names now distinguish true timed samples (`*_ms`) from tagged counts
+  (`*_count`) so the report does not present cached or categorical events as
+  measured latency
 - it is still a local reference harness, not a Docker-backed or networked SSI
   deployment
 - the comments remain intentionally verbose so the step text still acts as
