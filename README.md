@@ -39,6 +39,8 @@ Current maturity is mixed by package:
     - current reference transport-adapter surface
 - prototype / experimental packages:
   - [`credentials-protocol`](./components/orchestration/protocol/README.md)
+  - [`hello-verifier-contract`](./use-cases/hello-verifier/contract/README.md)
+    - smallest current verifier-side starter and claim-surface lab consumer
   - [`credentials-demo-contract`](./use-cases/age-gate/contract/README.md)
 - shared integration infrastructure:
   - [`standalone-environment`](./components/integration/standalone-environment/README.md)
@@ -97,10 +99,20 @@ Start here:
   - OID4VCI / OID4VP-inspired transport/domain adapters
 - [`credentials-protocol`](./components/orchestration/protocol/README.md)
   - reference off-chain orchestration and protocol simulation
+- [`hello-verifier-contract`](./use-cases/hello-verifier/contract/README.md)
+  - smallest verifier-side starter and broad direct claim-surface lab consumer
 - [`credentials-demo-contract`](./use-cases/age-gate/contract/README.md)
   - verifier/business contract demo
 - [`standalone-environment`](./components/integration/standalone-environment/README.md)
   - shared Docker-backed integration harness
+
+Generated compatibility roots:
+
+- the top-level `midnight-did-credentials*` entries are generated compatibility
+  symlinks for local tooling and legacy includes
+- they are not canonical architecture areas; read the repository through
+  `core/`, `registry/`, `protocols/`, `components/`, `prototypes/`,
+  `use-cases/`, and `tooling/`
 
 ## Validation
 
@@ -198,8 +210,10 @@ Published/exported local tarball set currently includes:
 - `@midnight-ntwrk/midnight-did-credentials-birth`
 - `@midnight-ntwrk/midnight-did-credentials-birth-secret`
 - `@midnight-ntwrk/midnight-did-credentials-hello-family`
+- `@midnight-ntwrk/midnight-did-credentials-dummy-claims`
 - `@midnight-ntwrk/midnight-did-standalone-environment`
 
 Intentionally excluded:
 
 - `@midnight-ntwrk/midnight-did-credentials-demo-contract`
+- `@midnight-ntwrk/midnight-did-hello-verifier-contract`

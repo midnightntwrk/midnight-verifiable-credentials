@@ -49,6 +49,7 @@ Related documents:
 | `credentials-offchain-did` | DID-aware adapter package | Reference implementation | Yes | Runtime-only DID conversion helpers |
 | `credentials-openid` | Transport or orchestration package | Reference transport-adapter implementation | Yes, with transport-layer scope | OpenID-shaped JSON/domain envelopes around Compact payloads |
 | `credentials-protocol` | Transport or orchestration package | Reference orchestration implementation, evolving API | Limited | Off-chain reference agent flows and protocol state management |
+| `hello-verifier-contract` | Demo / prototype package | Starter / prototype | Limited | Smallest verifier-side starter and broad direct claim-surface lab consumer |
 | `credentials-demo-contract` | Demo / prototype package | Prototype | No | Layer 3 example business contracts; not a canonical library surface |
 | `standalone-environment` | Shared integration infrastructure | Reference integration harness | Limited | Docker-backed standalone test/runtime bootstrap |
 
@@ -90,6 +91,13 @@ These protocol surfaces are useful, but they are not the canonical VC core.
    API.
 5. Treat `credentials-status-registry` as reusable but still prototype-shaped
    for trust semantics until the final cryptographic status contract lands.
+
+## Generated compatibility roots
+
+- the top-level `midnight-did-credentials*` symlinks are generated compatibility
+  bridges for local tooling and legacy include paths
+- they are not package-inventory entries and should not be counted as canonical
+  top-level repository areas
 
 ## Standard package header
 

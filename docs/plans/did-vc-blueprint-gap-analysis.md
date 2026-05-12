@@ -3,7 +3,7 @@
 Status: cross-repository audit and working blueprint for the current Midnight DID
 and Verifiable Credentials split.
 
-Date: 2026-05-06
+Date: 2026-05-12
 
 ## Scope
 
@@ -48,12 +48,14 @@ is documentation-guided composability:
 - BDD scenarios now act as living docs
 - CI is fast enough to keep the repo usable as an active design space
 
-The biggest remaining gap is not generic docs drift. It is the remaining
-mismatch between:
+The biggest remaining gaps are now operational and documentary, not architectural:
 
-- reusable core VC and status semantics
-- prototype status and revocation trust seams
-- Layer 3 and Layer 4 wiring/orchestration packages
+- keeping the current package inventory and runner surface in sync with the
+  converged top-level tree
+- keeping generated compatibility shims legible as shims rather than as
+  canonical architecture areas
+- keeping starter and laboratory packages clearly separated from reference-grade
+  reusable surfaces
 
 In plain terms:
 
@@ -61,9 +63,8 @@ In plain terms:
 - architects can now understand the layer model faster
 - SSI reviewers can now see the repository's honesty about prototype vs
   reference claims faster
-- but the status boundary is still the part that most needs to be normalized,
-  isolated, and finished before the repo can present a cleaner reference-grade
-  story
+- the remaining work is mostly maintenance discipline, starter breadth, and
+  CI/compatibility hygiene rather than another large core-architecture rewrite
 
 ## Repository Split Blueprint
 
@@ -305,7 +306,7 @@ Risks:
 
 #### Composability
 
-Strong in the core; weaker at the status boundary.
+Strong in the core and materially improved at the status boundary.
 
 Strengths:
 
@@ -423,20 +424,24 @@ clean adoption map for integrators.
 
 ### Highest-priority gaps
 
-1. Keep the status boundary explicit in public guidance.
-- package ownership is now materially cleaner than in the earlier split-state
-  repo
+1. Keep the current-state inventory explicit in public guidance.
+- per-package classification should be obvious without cross-reading several
+  docs
+- generated `midnight-did-credentials*` compatibility symlinks should stay
+  documented as shims, not as canonical architecture roots
+
+2. Keep the status boundary explicit, but no longer treat it as the main local blocker.
+- package ownership is materially cleaner than in the earlier split-state repo
 - the remaining generic root-bound non-membership tail should stay documented
   as an upstream Compact/runtime dependency, not as ordinary repo work
 
-2. Publish one canonical maturity and tier inventory.
-- per-package classification should be obvious without cross-reading several
-  docs
-3. Turn the current starter material into a broader integration kit.
-- the repo now has a compiling `hello-family`, a compiling `hello-verifier`,
-  and a DID-aware hello smoke path
+3. Turn the starter material into a broader integration kit.
+- the repo now has a compiling `hello-family`, a compiling `hello-verifier`, a
+  DID-aware hello smoke path, a broad `dummy-claims` family, and a dedicated
+  verifier-lab lane for that claim surface
 - the remaining gap is broader starter coverage for “new family”, “new
   verifier flow”, and downstream integrator handoff
+
 4. Keep BDD focused on high-value living examples.
 - expand narrative coverage without duplicating the full test matrix
 

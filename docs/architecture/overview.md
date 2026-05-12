@@ -36,7 +36,7 @@ The repository is organized as a layered Compact-first stack.
 | Layer 2 | Concrete credential families | `credentials-birth`, `credentials-birth-secret`, `credentials-hello-family` (starter), `credentials-dummy-claims` (claim-surface lab) |
 | Layer 2.5 | DID-aware runtime adapters | `credentials-offchain-did` |
 | Layer 3 status prototype | Status-aware contract surface plus off-chain builders | `credentials-status-registry` |
-| Layer 3 | Verifier/business contract composition | `credentials-demo-contract` |
+| Layer 3 | Verifier/business contract composition | `hello-verifier-contract`, `credentials-demo-contract` |
 | Layer 4 | Transport and protocol orchestration | `credentials-openid`, `credentials-protocol` |
 | Shared infra | Standalone integration/runtime support | `standalone-environment` |
 
@@ -138,6 +138,18 @@ This package is a protocol/reference orchestration layer.
 It models reference issuance/presentation flows and simulation logic above the
 canonical Compact VC core.
 
+### `hello-verifier-contract`
+This package is the smallest current verifier-side starter and claim-surface lab consumer.
+
+It owns:
+
+- the smallest checked-in verifier contract over `credentials-hello-family`
+- the offchain-DID-backed starter verifier path
+- the full-disclosure verifier lab for `credentials-dummy-claims`
+
+It should be treated as a starter and laboratory package, not as a canonical
+reusable protocol or privacy template.
+
 ### `credentials-demo-contract`
 This package demonstrates verifier/business contract composition.
 
@@ -165,6 +177,21 @@ This package provides shared integration infrastructure for docker-backed or
 standalone validation lanes.
 
 It is infrastructure, not a canonical VC/VP model package.
+
+## Generated compatibility roots
+The top-level `midnight-did-credentials*` symlinks that appear at the repository
+root are generated compatibility bridges. They are useful for local tooling and
+legacy include paths, but they are not part of the canonical architecture tree.
+
+Read the repository shape through these durable areas instead:
+
+- `core/`
+- `registry/`
+- `protocols/`
+- `components/`
+- `prototypes/`
+- `use-cases/`
+- `tooling/`
 
 ## Dependency Direction
 The intended dependency direction is:
