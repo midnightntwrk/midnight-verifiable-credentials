@@ -14,6 +14,8 @@ Status:
 - explicit negative-path coverage now includes malformed verifier policy,
   duplicate-thread replay, and tampered diploma submission scenarios with
   readable failure reasons
+- holder-binding misuse is now exercised as a first-class negative path rather
+  than being left only to family-level guards
 - separate 100-student protocol stress dataset and runner so throughput
   experiments do not make the human-readable BDD report unreadable
 - committed stress-summary artifacts now have a stable JSON/Markdown contract
@@ -36,6 +38,9 @@ The slice is intentionally explicit and operational:
 - the mall is a DID-backed verifier
 - the holder binding is the simplest one in the repository:
   `ExplicitHolderBinding`
+- that simplicity is intentional for this prototype, but it also means holder
+  DID/method mismatches are direct contract-visible invariants rather than a
+  privacy-preserving abstraction layer
 - the credential is not revocable and therefore uses `NoStatusBinding`
 - the 10-student fixture size is tuned for report readability first, so its
   throughput metrics are better for relative bottleneck spotting than for
@@ -350,3 +355,4 @@ Feature files:
   - duplicate job-application replay
   - duplicate mall-discount replay
   - tampered claim-root / challenge / issuer-method diploma submissions
+  - holder-binding and proof-signer mismatch submissions

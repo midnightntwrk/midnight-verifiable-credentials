@@ -32,6 +32,11 @@ Scope:
   - credential claim-root tampering
   - verifier-challenge tampering
   - issuer verification-method tampering
+- explicit holder-binding misuse coverage for company verification over:
+  - holder DID contract tampering
+  - holder method-reference tampering
+  - proof-signer DID contract tampering
+  - proof-signer method-reference tampering
 - protocol results distinguish verifier-side rejections from duplicate-thread
   rejections so metrics do not collapse business-policy failures into replay
   guard events

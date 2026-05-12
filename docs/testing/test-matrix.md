@@ -144,6 +144,12 @@ Status: current implemented test surface as of 2026-05-11.
   - verifier-challenge tampering rejection
   - issuer verification-method tampering rejection
   - no collateral acceptance loss outside the targeted student
+- `use-cases/university/protocol/src/test/holder-binding-flow.test.ts`
+  - holder DID contract tampering rejection
+  - holder method-reference tampering rejection
+  - proof-signer DID contract tampering rejection
+  - proof-signer method-reference tampering rejection
+  - no collateral acceptance loss outside the targeted student
 - `use-cases/university/protocol/src/test/export.test.ts`
   - stable JSON transcript export
   - stable Markdown transcript export
@@ -164,6 +170,8 @@ Status: current implemented test surface as of 2026-05-11.
 - `use-cases/university/scenarios/features/university_diploma_negative_flows.feature`
   - executable malformed-policy, duplicate-thread, and tampered-diploma
     scenarios with readable per-step failure explanations
+  - executable holder-binding and proof-signer mismatch scenarios with readable
+    per-step failure explanations
 - coverage boundary:
   - these scenarios run as one-process virtual-agent orchestration with metrics
   - issuance still uses the local batch harness for richer issuance-stage

@@ -44,6 +44,48 @@ describe("university-diploma validation guards", () => {
     );
   });
 
+  it("rejects a presentation whose proof signer contract no longer matches the holder binding", () => {
+    const fixture = createUniversityDiplomaFixture();
+
+    expect(() =>
+      pureCircuits.assertValidUniversityDiplomaPresentation(
+        fixture.credential,
+        fixture.credentialProof,
+        fixture.presentation,
+        {
+          ...fixture.presentationProof,
+          signerVerificationMethodRef: {
+            ...fixture.presentationProof.signerVerificationMethodRef,
+            didContractAddress: {
+              ...fixture.presentationProof.signerVerificationMethodRef
+                .didContractAddress,
+              bytes: new Uint8Array(32).fill(4),
+            },
+          },
+        },
+      ),
+    ).toThrow(/Presentation proof signer must match holder binding/);
+  });
+
+  it("rejects a presentation whose proof signer method reference no longer matches the holder binding", () => {
+    const fixture = createUniversityDiplomaFixture();
+
+    expect(() =>
+      pureCircuits.assertValidUniversityDiplomaPresentation(
+        fixture.credential,
+        fixture.credentialProof,
+        fixture.presentation,
+        {
+          ...fixture.presentationProof,
+          signerVerificationMethodRef: {
+            ...fixture.presentationProof.signerVerificationMethodRef,
+            methodId: new Uint8Array(32).fill(6),
+          },
+        },
+      ),
+    ).toThrow(/Presentation proof signer method reference must match holder binding/);
+  });
+
   it("rejects a presentation request without a verifier challenge", () => {
     const fixture = createUniversityDiplomaFixture();
 

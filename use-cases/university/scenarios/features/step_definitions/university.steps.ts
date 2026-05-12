@@ -56,11 +56,19 @@ const parseTamperingMode = (
 ):
   | "credentialClaimRoot"
   | "requestChallenge"
-  | "issuerVerificationMethodRef" => {
+  | "issuerVerificationMethodRef"
+  | "holderBindingDidContractAddress"
+  | "holderBindingMethodRef"
+  | "proofSignerDidContractAddress"
+  | "proofSignerMethodRef" => {
   switch (value) {
     case "credentialClaimRoot":
     case "requestChallenge":
     case "issuerVerificationMethodRef":
+    case "holderBindingDidContractAddress":
+    case "holderBindingMethodRef":
+    case "proofSignerDidContractAddress":
+    case "proofSignerMethodRef":
       return value;
     default:
       throw new Error(`Unknown tampering mode ${value}`);

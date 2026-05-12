@@ -174,7 +174,11 @@ type UniversityPresentationResultBody = {
 export type UniversityPresentationTamperingMode =
   | "credentialClaimRoot"
   | "requestChallenge"
-  | "issuerVerificationMethodRef";
+  | "issuerVerificationMethodRef"
+  | "holderBindingDidContractAddress"
+  | "holderBindingMethodRef"
+  | "proofSignerDidContractAddress"
+  | "proofSignerMethodRef";
 
 type VerifierRequestPolicyOverride = Omit<
   Partial<VerifierRequestPolicy>,
@@ -369,6 +373,77 @@ const applyPresentationTampering = (
             methodId: tamperedBytesLike(
               submission.credential.issuerVerificationMethodRef.methodId,
               5,
+            ),
+          },
+        },
+      };
+    case "holderBindingDidContractAddress":
+      return {
+        ...submission,
+        presentation: {
+          ...submission.presentation,
+          holderBinding: {
+            holderVerificationMethodRef: {
+              ...submission.presentation.holderBinding.holderVerificationMethodRef,
+              didContractAddress: {
+                ...submission.presentation.holderBinding
+                  .holderVerificationMethodRef.didContractAddress,
+                bytes: tamperedBytesLike(
+                  submission.presentation.holderBinding
+                    .holderVerificationMethodRef.didContractAddress.bytes,
+                  4,
+                ),
+              },
+            },
+          },
+        },
+      };
+    case "holderBindingMethodRef":
+      return {
+        ...submission,
+        presentation: {
+          ...submission.presentation,
+          holderBinding: {
+            holderVerificationMethodRef: {
+              ...submission.presentation.holderBinding.holderVerificationMethodRef,
+              methodId: tamperedBytesLike(
+                submission.presentation.holderBinding
+                  .holderVerificationMethodRef.methodId,
+                6,
+              ),
+            },
+          },
+        },
+      };
+    case "proofSignerDidContractAddress":
+      return {
+        ...submission,
+        presentationProof: {
+          ...submission.presentationProof,
+          signerVerificationMethodRef: {
+            ...submission.presentationProof.signerVerificationMethodRef,
+            didContractAddress: {
+              ...submission.presentationProof.signerVerificationMethodRef
+                .didContractAddress,
+              bytes: tamperedBytesLike(
+                submission.presentationProof.signerVerificationMethodRef
+                  .didContractAddress.bytes,
+                8,
+              ),
+            },
+          },
+        },
+      };
+    case "proofSignerMethodRef":
+      return {
+        ...submission,
+        presentationProof: {
+          ...submission.presentationProof,
+          signerVerificationMethodRef: {
+            ...submission.presentationProof.signerVerificationMethodRef,
+            methodId: tamperedBytesLike(
+              submission.presentationProof.signerVerificationMethodRef.methodId,
+              10,
             ),
           },
         },

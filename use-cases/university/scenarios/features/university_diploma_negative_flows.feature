@@ -75,3 +75,39 @@ Feature: University diploma negative flows stay readable and isolated
     Then the job application results for student "STU-0003" should contain 0 accepted result and 1 "verificationFailed" rejection
     And the job application verification failure for student "STU-0003" should mention "Issuer proof method reference does not match issuer verification method"
     And the untampered job applications should still produce 9 accepted result and 1 verification rejection overall
+
+  Scenario: A tampered holder DID contract is rejected without affecting untampered job applications
+    Given the "Example University" graduating class roster is loaded
+    And the company verifier roster includes "Northwind Robotics", "Blue Ocean Analytics", and "Pioneer Systems"
+    And the student "Dion Avery 0004" with id "STU-0004" will tamper the university diploma submission using "holderBindingDidContractAddress"
+    When every student builds and submits a job application to the assigned company
+    Then the job application results for student "STU-0004" should contain 0 accepted result and 1 "verificationFailed" rejection
+    And the job application verification failure for student "STU-0004" should mention "Presentation holder contract does not match credential holder binding"
+    And the untampered job applications should still produce 9 accepted result and 1 verification rejection overall
+
+  Scenario: A tampered holder method reference is rejected without affecting untampered job applications
+    Given the "Example University" graduating class roster is loaded
+    And the company verifier roster includes "Northwind Robotics", "Blue Ocean Analytics", and "Pioneer Systems"
+    And the student "Ella Avery 0005" with id "STU-0005" will tamper the university diploma submission using "holderBindingMethodRef"
+    When every student builds and submits a job application to the assigned company
+    Then the job application results for student "STU-0005" should contain 0 accepted result and 1 "verificationFailed" rejection
+    And the job application verification failure for student "STU-0005" should mention "Presentation holder method reference does not match credential holder binding"
+    And the untampered job applications should still produce 9 accepted result and 1 verification rejection overall
+
+  Scenario: A tampered proof signer DID contract is rejected without affecting untampered job applications
+    Given the "Example University" graduating class roster is loaded
+    And the company verifier roster includes "Northwind Robotics", "Blue Ocean Analytics", and "Pioneer Systems"
+    And the student "Finn Avery 0006" with id "STU-0006" will tamper the university diploma submission using "proofSignerDidContractAddress"
+    When every student builds and submits a job application to the assigned company
+    Then the job application results for student "STU-0006" should contain 0 accepted result and 1 "verificationFailed" rejection
+    And the job application verification failure for student "STU-0006" should mention "Presentation proof signer must match holder binding"
+    And the untampered job applications should still produce 9 accepted result and 1 verification rejection overall
+
+  Scenario: A tampered proof signer method reference is rejected without affecting untampered job applications
+    Given the "Example University" graduating class roster is loaded
+    And the company verifier roster includes "Northwind Robotics", "Blue Ocean Analytics", and "Pioneer Systems"
+    And the student "Gia Avery 0007" with id "STU-0007" will tamper the university diploma submission using "proofSignerMethodRef"
+    When every student builds and submits a job application to the assigned company
+    Then the job application results for student "STU-0007" should contain 0 accepted result and 1 "verificationFailed" rejection
+    And the job application verification failure for student "STU-0007" should mention "Presentation proof signer method reference must match holder binding"
+    And the untampered job applications should still produce 9 accepted result and 1 verification rejection overall

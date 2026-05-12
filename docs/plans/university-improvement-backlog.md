@@ -7,7 +7,8 @@ Status:
 - item `1` is opened on the stack as `#218`
 - item `2` is opened on the stack as `#219`
 - item `3` is opened on the stack as `#220`
-- item `4` is the current in-flight slice on top of `#220`
+- item `4` is opened on the stack as `#221`
+- item `5` is the current in-flight slice on top of `#221`
 - last reviewed: `2026-05-13`
 
 Scope boundary:
@@ -66,7 +67,7 @@ Scope boundary:
 
 4. `tampered-diploma-negative-pack`
 - status:
-  - current in-flight slice
+  - opened on the stack as `#221`
 - problem:
   - the university stories do not yet expose credential tampering failures as user-facing scenarios
 - scope:
@@ -79,6 +80,8 @@ Scope boundary:
   - `1`
 
 5. `holder-binding-negative-pack`
+- status:
+  - current in-flight slice
 - problem:
   - holder-binding misuse is only indirectly covered today
 - scope:
