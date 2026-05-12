@@ -301,6 +301,8 @@ const verificationMethodRefToString = (value: {
 }): string =>
   `${bytesToHex(value.didContractAddress.bytes)}:${paddedTextToString(value.methodId)}`;
 
+const REPORT_SAMPLE_SIZE = 3;
+
 const scalarForLabel = (label: string): bigint => {
   const raw = bytesToBigInt(sha256(label));
   return (raw % (JUBJUB_SUBGROUP_ORDER - 1n)) + 1n;
@@ -366,22 +368,38 @@ const normalizeRequestPolicy = (
   minimumFinalGrade: BigInt(policy.minimumFinalGrade ?? 0),
 });
 
-const disclosureNamesForPolicy = (
-  policy: VerifierRequestPolicy,
+const disclosureNamesForFlags = (
+  flags: {
+    readonly requireDiplomaIdDisclosure?: boolean;
+    readonly requireStudentIdDisclosure?: boolean;
+    readonly requireGraduateNameDisclosure?: boolean;
+    readonly requireUniversityNameDisclosure?: boolean;
+    readonly requireFacultyNameDisclosure?: boolean;
+    readonly requireAwardNameDisclosure?: boolean;
+    readonly requireHonorsCodeDisclosure?: boolean;
+    readonly requireGraduationYearDisclosure?: boolean;
+    readonly requireGraduationMonthDisclosure?: boolean;
+    readonly requireFinalGradeDisclosure?: boolean;
+    readonly requireCreditsEarnedDisclosure?: boolean;
+  },
 ): string[] =>
   [
-    policy.requireDiplomaIdDisclosure ? "diplomaId" : undefined,
-    policy.requireStudentIdDisclosure ? "studentId" : undefined,
-    policy.requireGraduateNameDisclosure ? "graduateName" : undefined,
-    policy.requireUniversityNameDisclosure ? "universityName" : undefined,
-    policy.requireFacultyNameDisclosure ? "facultyName" : undefined,
-    policy.requireAwardNameDisclosure ? "awardName" : undefined,
-    policy.requireHonorsCodeDisclosure ? "honorsCode" : undefined,
-    policy.requireGraduationYearDisclosure ? "graduationYear" : undefined,
-    policy.requireGraduationMonthDisclosure ? "graduationMonth" : undefined,
-    policy.requireFinalGradeDisclosure ? "finalGrade" : undefined,
-    policy.requireCreditsEarnedDisclosure ? "creditsEarned" : undefined,
+    flags.requireDiplomaIdDisclosure ? "diplomaId" : undefined,
+    flags.requireStudentIdDisclosure ? "studentId" : undefined,
+    flags.requireGraduateNameDisclosure ? "graduateName" : undefined,
+    flags.requireUniversityNameDisclosure ? "universityName" : undefined,
+    flags.requireFacultyNameDisclosure ? "facultyName" : undefined,
+    flags.requireAwardNameDisclosure ? "awardName" : undefined,
+    flags.requireHonorsCodeDisclosure ? "honorsCode" : undefined,
+    flags.requireGraduationYearDisclosure ? "graduationYear" : undefined,
+    flags.requireGraduationMonthDisclosure ? "graduationMonth" : undefined,
+    flags.requireFinalGradeDisclosure ? "finalGrade" : undefined,
+    flags.requireCreditsEarnedDisclosure ? "creditsEarned" : undefined,
   ].filter((value): value is string => typeof value === "string");
+
+const disclosureNamesForPolicy = (
+  policy: VerifierRequestPolicy,
+): string[] => disclosureNamesForFlags(policy);
 
 const disclosureNamesForRequest = (
   request: {
@@ -397,20 +415,7 @@ const disclosureNamesForRequest = (
     readonly requireFinalGradeDisclosure?: boolean;
     readonly requireCreditsEarnedDisclosure?: boolean;
   },
-): string[] =>
-  [
-    request.requireDiplomaIdDisclosure ? "diplomaId" : undefined,
-    request.requireStudentIdDisclosure ? "studentId" : undefined,
-    request.requireGraduateNameDisclosure ? "graduateName" : undefined,
-    request.requireUniversityNameDisclosure ? "universityName" : undefined,
-    request.requireFacultyNameDisclosure ? "facultyName" : undefined,
-    request.requireAwardNameDisclosure ? "awardName" : undefined,
-    request.requireHonorsCodeDisclosure ? "honorsCode" : undefined,
-    request.requireGraduationYearDisclosure ? "graduationYear" : undefined,
-    request.requireGraduationMonthDisclosure ? "graduationMonth" : undefined,
-    request.requireFinalGradeDisclosure ? "finalGrade" : undefined,
-    request.requireCreditsEarnedDisclosure ? "creditsEarned" : undefined,
-  ].filter((value): value is string => typeof value === "string");
+): string[] => disclosureNamesForFlags(request);
 
 const average = (values: readonly number[]): number => {
   if (values.length === 0) {
@@ -645,19 +650,11 @@ export class UseUniversityScenario extends Ability {
       if (!thread) {
         return [];
       }
-      return [
-        {
-          ...thread,
-          entries: thread.entries,
-        },
-      ];
+      return [thread];
     });
     return {
       totalThreads: threadViews.length,
-      omittedThreadCount: Math.max(
-        0,
-        threadViews.length - representativeThreads.length,
-      ),
+      omittedThreadCount: threadViews.length - representativeThreads.length,
       representativeThreads,
     };
   }
@@ -899,6 +896,8 @@ export class UseUniversityScenario extends Ability {
           reason: body.reason,
         };
       }
+      default:
+        throw new Error(`Unsupported protocol transcript message type ${message.type}`);
     }
   }
 
@@ -1087,7 +1086,7 @@ export class UseUniversityScenario extends Ability {
         totalDurationMs > 0
           ? acceptedRequests.length / (totalDurationMs / 1000)
           : acceptedRequests.length,
-      sampleRequests: acceptedRequests.slice(0, 3).map((request) => ({
+      sampleRequests: acceptedRequests.slice(0, REPORT_SAMPLE_SIZE).map((request) => ({
         studentId: request.student.record.studentId,
         holderDidUrl: request.student.record.holderDidUrl,
         holderMethodId: request.student.record.holderMethodId,
@@ -1097,7 +1096,7 @@ export class UseUniversityScenario extends Ability {
       })),
       sampleIssuedCredentials: studentAgents
         .filter((student) => student.issuedFixture)
-        .slice(0, 3)
+        .slice(0, REPORT_SAMPLE_SIZE)
         .map((student) => ({
           studentId: student.record.studentId,
           issuerVerificationMethodRef: verificationMethodRefToString(
