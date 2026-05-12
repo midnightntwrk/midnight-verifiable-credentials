@@ -11,12 +11,31 @@ const aliases = [
   ['midnight-did-credentials-birth', 'prototypes/credential-families/birth'],
   ['midnight-did-credentials-birth-secret', 'prototypes/credential-families/birth-secret'],
   ['midnight-did-credentials-hello-family', 'prototypes/credential-families/hello-family'],
+  ['midnight-did-credentials-dummy-claims', 'prototypes/credential-families/dummy-claims'],
   ['midnight-did-credentials-iso-registry', 'core/primitives/iso-registry'],
   ['midnight-did-credentials-status-registry', 'registry/status-registry'],
   ['midnight-did-credentials-openid', 'protocols/openid'],
   ['midnight-did-credentials-protocol', 'components/orchestration/protocol'],
   ['midnight-did-credentials-demo-contract', 'use-cases/age-gate/contract']
 ];
+
+const ensureSymlink = async (target, linkPath) => {
+  try {
+    await symlink(target, linkPath, 'dir');
+  } catch (error) {
+    if (!(error && typeof error === 'object' && 'code' in error && error.code === 'EEXIST')) {
+      throw error;
+    }
+    const stat = await lstat(linkPath);
+    if (!stat.isSymbolicLink()) {
+      throw error;
+    }
+    const existingTarget = await readlink(linkPath);
+    if (existingTarget !== target) {
+      throw error;
+    }
+  }
+};
 
 for (const [alias, targetDir] of aliases) {
   const aliasPath = path.join(repoRoot, alias);
@@ -50,7 +69,7 @@ for (const [alias, targetDir] of aliases) {
 
   if (!aliasReady) {
     await mkdir(path.dirname(aliasPath), { recursive: true });
-    await symlink(targetDir, aliasPath, 'dir');
+    await ensureSymlink(targetDir, aliasPath);
   }
 
   let workspaceLinkReady = false;
@@ -72,7 +91,7 @@ for (const [alias, targetDir] of aliases) {
 
   if (!workspaceLinkReady) {
     await mkdir(path.dirname(workspaceLinkPath), { recursive: true });
-    await symlink(workspaceLinkTarget, workspaceLinkPath, 'dir');
+    await ensureSymlink(workspaceLinkTarget, workspaceLinkPath);
   }
 
   const distPath = path.join(packagePath, 'dist');
@@ -89,5 +108,5 @@ for (const [alias, targetDir] of aliases) {
     if (!(error && typeof error === 'object' && 'code' in error && error.code === 'ENOENT')) throw error;
   }
 
-  await symlink('src', distPath, 'dir');
+  await ensureSymlink('src', distPath);
 }

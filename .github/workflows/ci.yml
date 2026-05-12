@@ -224,8 +224,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
       - name: Verify docs-only diff has no whitespace issues
         run: git diff --check
+
+      - name: Check markdown links
+        run: npm run docs:links
 
       - name: Record docs-only fast path
         run: |

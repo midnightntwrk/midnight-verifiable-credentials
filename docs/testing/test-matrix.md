@@ -66,11 +66,27 @@ Status: current implemented test surface as of 2026-05-11.
   - see `docs/guides/did-vc-hello-smoke-path.md` for the authoritative lane
     description
 
-### Planned prototype restoration
+### `credentials-dummy-claims`
+
+- claim-root/domain-separation source checks
+- presentation-request source-shape checks
+- package export-surface checks
+- deterministic fixture-backed selective-disclosure verification across:
+  - supported direct primitive fields
+  - supported direct vector fields
+  - nested selective disclosures
+  - nested vector all-or-nothing disclosures
+- negative validation guards for:
+  - request challenge presence
+  - credential claim-root integrity
+  - holder-binding mismatch
+  - request/proof challenge mismatch
+
+### Historical placeholder package names
 
 - `credentials-birth-binding-prototypes`
-  - no checked-in source package or validated test surface on `develop`
-  - future restoration should reintroduce explicit binding-matrix coverage
+  - not a checked-in workspace package on `develop`
+  - if restored later, it should bring back explicit binding-matrix coverage
 
 ## Credential status / revocation tests
 
@@ -298,6 +314,12 @@ or directly through package-level `test:integration` commands when Docker is ava
   - full repository validation
 - `./run.sh --light`
   - light repository validation
+  - currently honored by:
+    - `./run.sh`
+    - `./run.sh build`
+    - `./run.sh typecheck`
+    - `./run.sh test`
+    - `./run.sh hello-smoke`
 - `./run.sh lint`
   - package-boundary + lint lane
 - `./run.sh typecheck`

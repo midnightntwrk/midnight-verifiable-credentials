@@ -5,6 +5,24 @@ if [[ -n "${MIDNIGHT_RUN_COMMON_SH_LOADED:-}" ]]; then
 fi
 MIDNIGHT_RUN_COMMON_SH_LOADED=1
 
+run_common_light_supported_targets=(full build typecheck test hello-smoke)
+
+run_common_print_light_targets() {
+  local joined="${run_common_light_supported_targets[*]}"
+  printf '%s\n' "${joined// /, }"
+}
+
+run_common_target_supports_light() {
+  local candidate="$1"
+  local target
+  for target in "${run_common_light_supported_targets[@]}"; do
+    if [[ "$target" == "$candidate" ]]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
 run_common_cleanup_test_infra() {
   "$(git rev-parse --show-toplevel)/tooling/scripts/cleanup-test-infra.sh" || true
 }
@@ -148,7 +166,7 @@ run_common_ensure_artifacts() {
       build_cmd="npm run build:revocation"
       ;;
     managed-hello-smoke)
-      build_cmd="npm run build:hello-smoke"
+      build_cmd="npm run build:starter-smoke-prereqs"
       ;;
     light)
       build_cmd="npm run build:light"

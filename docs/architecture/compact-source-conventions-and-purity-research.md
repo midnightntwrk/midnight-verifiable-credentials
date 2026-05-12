@@ -25,6 +25,30 @@ The recommended direction is:
 - make `core/` and `registry/` the explicit pure substrate first
 - then simplify the credential families and Layer 3 contracts to become thin ledger wrappers over that pure substrate
 
+## Compact Claim-Surface Findings
+
+Current compiler-backed findings from the checked-in claim-type probes:
+
+- supported primitive claim fields:
+  - `Boolean`
+  - `Uint<n>`
+  - `Bytes<n>`
+  - `Field`
+- supported composite claim fields:
+  - `Vector<k, SupportedPrimitive>`
+  - nested structs composed from supported primitives
+  - `Vector<k, NestedStruct>` when the nested struct itself only uses supported primitives
+- unsupported direct claim fields:
+  - `Int<n>`
+  - `Float<n>`
+  - `String`
+  - vectors over those unsupported primitives
+
+Design implication:
+
+- `bigint` remains a runtime interpretation of `Uint<n>`, not a separate Compact type
+- nested structs are technically available, but they should stay a deliberate modeling choice rather than the default shared-family shape
+
 ## Source Conventions To Adopt
 
 These conventions are high-value because they improve reader orientation without pushing architectural prose out of the existing `docs/` tree.

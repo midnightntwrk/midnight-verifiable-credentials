@@ -85,7 +85,27 @@ export pure circuit probeRoot(value: SupportedProbe): Bytes<32> {
       expect(result).toEqual({ ok: true });
     });
 
-    it("rejects signed integers, floats, and strings in the current Compact surface", () => {
+    it("accepts nested structs and vectors of nested structs", () => {
+      const nestedStructResult = compileProbe(`pragma language_version >= 0.20;
+import CompactStandardLibrary;
+export struct InnerProbe {
+  boolValue: Boolean,
+  uintValue: Uint<64>,
+  bytesValue: Bytes<16>,
+  fieldValue: Field,
+}
+export struct OuterProbe {
+  inner: InnerProbe,
+  inners: Vector<2, InnerProbe>,
+}
+export pure circuit probeRoot(value: OuterProbe): Bytes<32> {
+  return persistentHash<OuterProbe>(value);
+}`);
+
+      expect(nestedStructResult).toEqual({ ok: true });
+    });
+
+    it("rejects unsupported primitive claims and vectors over them", () => {
       const signedIntResult = compileProbe(`pragma language_version >= 0.20;
 import CompactStandardLibrary;
 export struct SignedProbe { value: Int<32>, }
@@ -114,6 +134,41 @@ export pure circuit probeRoot(value: StringProbe): Bytes<32> {
 }`);
       expect(stringResult.ok).toEqual(false);
       expect(stringResult.ok ? "" : stringResult.message).toMatch(
+        /\bString\b/i,
+      );
+
+      const signedIntVectorResult = compileProbe(
+        `pragma language_version >= 0.20;
+import CompactStandardLibrary;
+export struct SignedVectorProbe { value: Vector<2, Int<32>>, }
+export pure circuit probeRoot(value: SignedVectorProbe): Bytes<32> {
+  return persistentHash<SignedVectorProbe>(value);
+}`,
+      );
+      expect(signedIntVectorResult.ok).toEqual(false);
+      expect(
+        signedIntVectorResult.ok ? "" : signedIntVectorResult.message,
+      ).toMatch(/\bInt\b/i);
+
+      const floatVectorResult = compileProbe(`pragma language_version >= 0.20;
+import CompactStandardLibrary;
+export struct FloatVectorProbe { value: Vector<2, Float<32>>, }
+export pure circuit probeRoot(value: FloatVectorProbe): Bytes<32> {
+  return persistentHash<FloatVectorProbe>(value);
+}`);
+      expect(floatVectorResult.ok).toEqual(false);
+      expect(floatVectorResult.ok ? "" : floatVectorResult.message).toMatch(
+        /\bFloat\b/i,
+      );
+
+      const stringVectorResult = compileProbe(`pragma language_version >= 0.20;
+import CompactStandardLibrary;
+export struct StringVectorProbe { value: Vector<2, String>, }
+export pure circuit probeRoot(value: StringVectorProbe): Bytes<32> {
+  return persistentHash<StringVectorProbe>(value);
+}`);
+      expect(stringVectorResult.ok).toEqual(false);
+      expect(stringVectorResult.ok ? "" : stringVectorResult.message).toMatch(
         /\bString\b/i,
       );
     });

@@ -187,8 +187,8 @@ Example target package:
 
 Current state:
 
-- no real workspace package currently exists under
-  `credentials-birth-binding-prototypes` on `develop`
+- no real workspace package currently exists under the historical placeholder
+  name `credentials-birth-binding-prototypes` on `develop`
 - docs and engineering work should treat that name as planned until restored
 
 ## What belongs in each package class

@@ -27,8 +27,12 @@ Targets:
   help                       Print this target list
 
 Options:
-  --light                    Use light-mode variants when the target supports it
+  --light                    Use reduced-scope or restored-artifact variants when supported; ignored otherwise
+
+Targets that currently honor `--light`:
 EOF
+  printf '  '
+  run_common_print_light_targets
 
   if command -v node >/dev/null 2>&1; then
     echo
@@ -83,6 +87,7 @@ run_common_root_script_exists() {
 
 target="full"
 target_kind="wrapper"
+light_requested=0
 forward_args=()
 
 if [[ $# -gt 0 ]]; then
@@ -106,6 +111,7 @@ raw_args=("$@")
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --light)
+      light_requested=1
       shift
       ;;
     --)
@@ -135,6 +141,10 @@ case "$target" in
     exit 0
     ;;
 esac
+
+if [[ "$light_requested" == "1" && "$target_kind" == "wrapper" ]] && ! run_common_target_supports_light "$target"; then
+  echo "[run] Warning: --light is ignored by target '$target'" >&2
+fi
 
 if [[ ${#raw_args[@]} -gt 0 ]]; then
   run_common_repo_setup "${raw_args[@]}"
@@ -206,6 +216,11 @@ case "$target" in
       run_common_ensure_artifacts "run" managed-hello-smoke
       npm run ci:hello-smoke:from-artifacts
     else
+      # NOTE: the default lane stays package-local and build-light on purpose.
+      # `hello-family` and `hello-verifier` already compile the Compact surfaces
+      # they need inside their own typecheck/pretest commands, so the root lane
+      # does not prebuild shared artifacts unless `--light` explicitly asks for
+      # restored-artifact parity with CI.
       echo "[run] DID + VC hello smoke lane"
       npm run ci:hello-smoke
     fi

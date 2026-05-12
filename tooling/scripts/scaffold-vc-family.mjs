@@ -154,6 +154,27 @@ Next steps:
 3. replace the example disclosure gate with real family proof and request semantics
 4. add a dedicated \`./testing\` surface only when another package truly needs fixtures from this family
 5. wire the package into root workspaces only after it has a real owner and validation path
+
+Current Compact claim-shape guardrails:
+
+- native direct Compact claim fields today should stay within:
+  - \`Boolean\`
+  - \`Uint<n>\`
+  - \`Bytes<n>\`
+  - \`Field\`
+  - vectors and nested structs built only from those supported kinds
+- do not model \`String\`, \`Int<n>\`, or \`Float<n>\` as if they were native
+  Compact claim fields
+- do not model \`Vector<k, T>\` when \`T\` is itself an unsupported field kind
+- prefer flat claims by default; use nested structs only when they reflect a
+  real domain grouping
+
+Reference packages:
+
+- smallest starter family:
+  - \`prototypes/credential-families/hello-family\`
+- broad direct claim-surface laboratory:
+  - \`prototypes/credential-families/dummy-claims\`
 `,
     ],
     [
