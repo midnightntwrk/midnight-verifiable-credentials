@@ -7,6 +7,7 @@ import {
   buildUniversityProtocolTranscriptExport,
   renderUniversityProtocolTranscriptMarkdown,
 } from "../dist/index.js";
+import { resolveUniversityDataProfile } from "../../scripts/data-profile-registry.mjs";
 
 const repoRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -16,16 +17,32 @@ const repoRoot = path.resolve(
   "..",
 );
 
+const readableProfile = resolveUniversityDataProfile("readable-10");
 const targetDir = path.join(
   repoRoot,
   "use-cases",
   "university",
   "protocol",
   "target",
-  "readable-10",
+  readableProfile.profileId,
 );
 
-const runner = new UniversityProtocolFlowRunner();
+const runner = new UniversityProtocolFlowRunner({
+  dataPaths: {
+    university: path.relative(repoRoot, path.join(readableProfile.absoluteOutputDir, "university.json")),
+    students: path.relative(repoRoot, path.join(readableProfile.absoluteOutputDir, "students.json")),
+    companies: path.relative(repoRoot, path.join(readableProfile.absoluteOutputDir, "companies.json")),
+    mall: path.relative(repoRoot, path.join(readableProfile.absoluteOutputDir, "mall.json")),
+    issuanceBatches: path.relative(
+      repoRoot,
+      path.join(readableProfile.absoluteOutputDir, "issuance-batches.json"),
+    ),
+    discountApplicants: path.relative(
+      repoRoot,
+      path.join(readableProfile.absoluteOutputDir, "discount-applicants.json"),
+    ),
+  },
+});
 const result = runner.runAll();
 const exported = buildUniversityProtocolTranscriptExport(runner, result);
 const markdown = renderUniversityProtocolTranscriptMarkdown(exported);

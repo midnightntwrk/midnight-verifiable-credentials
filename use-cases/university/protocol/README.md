@@ -51,6 +51,8 @@ Scope:
   breakdowns for downstream tooling
 - the 100-student stress lane now emits both JSON and Markdown artifacts under
   `target/stress-100`
+- readable and stress lanes now resolve their fixture directories from the
+  shared university data-profile registry instead of hardcoded path strings
 - stress artifacts now carry an explicit schema version and retention hint so a
   CI lane can publish the whole directory without inventing a second format
 

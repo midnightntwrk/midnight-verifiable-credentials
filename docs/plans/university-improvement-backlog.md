@@ -9,7 +9,8 @@ Status:
 - item `3` is opened on the stack as `#220`
 - item `4` is opened on the stack as `#221`
 - item `5` is opened on the stack as `#222`
-- item `6` is the current in-flight slice on top of `#222`
+- item `6` is opened on the stack as `#223`
+- item `8` is the current in-flight slice on top of `#223`
 - last reviewed: `2026-05-13`
 
 Scope boundary:
@@ -96,7 +97,7 @@ Scope boundary:
 
 6. `issuance-idempotency-guard`
 - status:
-  - current in-flight slice
+  - opened on the stack as `#223`
 - problem:
   - batch issuance is deterministic, but duplicate issuance-request semantics are not explicitly guarded
 - scope:
@@ -122,6 +123,8 @@ Scope boundary:
   - `3`
 
 8. `scenario-data-profile-registry`
+- status:
+  - current in-flight slice
 - problem:
   - readable and stress datasets exist, but profile selection is still implicit
 - scope:

@@ -23,6 +23,9 @@ Status:
   experiments do not make the human-readable BDD report unreadable
 - committed stress-summary artifacts now have a stable JSON/Markdown contract
   for downstream CI publication
+- named data profiles now define the canonical university fixtures:
+  `readable-10` for human-readable narrative lanes and `stress-100` for
+  throughput-oriented protocol lanes
 
 ## Purpose
 
@@ -146,6 +149,9 @@ Authoritative data file:
 
 Committed data artifacts:
 
+- named profile registry:
+  - `readable-10` -> [`./data`](./data)
+  - `stress-100` -> [`./data/stress-100`](./data/stress-100)
 - university issuer profile:
   - [`./data/university.json`](./data/university.json)
 - 10 students with DID identifiers, company assignment, and diploma claim data:
@@ -162,10 +168,16 @@ Committed data artifacts:
 Dataset regeneration script:
 
 - [`./scripts/generate-university-use-case-data.mjs`](./scripts/generate-university-use-case-data.mjs)
+- named profile registry:
+  - [`./scripts/data-profile-registry.mjs`](./scripts/data-profile-registry.mjs)
+- profile listing:
+  - `node ./use-cases/university/scripts/list-data-profiles.mjs --json`
 - fixture drift check:
-  - `node ./use-cases/university/scripts/generate-university-use-case-data.mjs --check`
+  - `./run.sh university-data-profiles`
+  - `node ./use-cases/university/scripts/generate-university-use-case-data.mjs --profile readable-10 --check`
+  - `node ./use-cases/university/scripts/generate-university-use-case-data.mjs --profile stress-100 --check`
 - 100-student stress dataset regeneration:
-  - `node ./use-cases/university/scripts/generate-university-use-case-data.mjs --student-count 100 --batch-size 20 --output-dir data/stress-100`
+  - `node ./use-cases/university/scripts/generate-university-use-case-data.mjs --profile stress-100`
 - stress artifact generation:
   - `./run.sh university-protocol-stress`
   - `./run.sh university-protocol-stress --light`

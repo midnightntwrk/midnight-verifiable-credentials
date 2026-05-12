@@ -2,6 +2,7 @@
 
 Purpose:
 
+- named profile id: `stress-100`
 - scale the university issuance and company job-application protocol flow to
   100 students
 - keep a committed, deterministic dataset for repeatable stress runs

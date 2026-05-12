@@ -8,6 +8,7 @@ import {
   renderUniversityProtocolStressSummaryMarkdown,
   UniversityProtocolFlowRunner,
 } from "../dist/testing.js";
+import { resolveUniversityDataProfile } from "../../scripts/data-profile-registry.mjs";
 
 const repoRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -17,13 +18,8 @@ const repoRoot = path.resolve(
   "..",
 );
 
-const stressDataDir = path.join(
-  repoRoot,
-  "use-cases",
-  "university",
-  "data",
-  "stress-100",
-);
+const stressProfile = resolveUniversityDataProfile("stress-100");
+const stressDataDir = stressProfile.absoluteOutputDir;
 
 const targetDir = path.join(
   repoRoot,
@@ -31,7 +27,7 @@ const targetDir = path.join(
   "university",
   "protocol",
   "target",
-  "stress-100",
+  stressProfile.profileId,
 );
 
 const dataPaths = {

@@ -178,6 +178,9 @@ Status: current implemented test surface as of 2026-05-11.
     scenarios with readable per-step failure explanations
   - executable holder-binding and proof-signer mismatch scenarios with readable
     per-step failure explanations
+- root `./run.sh university-data-profiles` lane
+  - validates the committed `readable-10` and `stress-100` university data
+    profiles against the shared generator registry
 - coverage boundary:
   - these scenarios run as one-process virtual-agent orchestration with metrics
   - issuance still uses the local batch harness for richer issuance-stage

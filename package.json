@@ -114,7 +114,7 @@
     "build:bdd:university:prereqs": "node ./use-cases/university/scenarios/scripts/ensure-prereqs.mjs",
     "build:university-protocol:prereqs": "node ./use-cases/university/protocol/scripts/ensure-prereqs.mjs",
     "build:university-protocol:export:prereqs": "npm run build:university-protocol:prereqs && npm run build -w ./use-cases/university/protocol",
-    "build:university-protocol-stress:data": "node ./use-cases/university/scripts/generate-university-use-case-data.mjs --student-count 100 --batch-size 20 --output-dir data/stress-100",
+    "build:university-protocol-stress:data": "node ./use-cases/university/scripts/generate-university-use-case-data.mjs --profile stress-100",
     "build:university-protocol-stress:prereqs": "npm run build:university-protocol-stress:data && npm run build:university-protocol:prereqs && npm run build -w ./use-cases/university/protocol",
     "test:bdd:university": "npm run build:bdd:university:prereqs && npm run test:all -w use-cases/university/scenarios",
     "ci:university-bdd": "npm run typecheck -w use-cases/university/scenarios && npm run test:bdd:university",
@@ -126,7 +126,10 @@
     "build:integration-prereqs": "npm run build:integration-prereqs:shared",
     "build:integration-prereqs:shared": "npm run build:core && npm run build:cone:birth-family && npm run build:cone:age-gate",
     "build:integration-prereqs:demo-contract": "npm run build:integration-prereqs:shared",
-    "build:integration-prereqs:protocol": "npm run build:integration-prereqs:shared && npm run build:cone:protocol"
+    "build:integration-prereqs:protocol": "npm run build:integration-prereqs:shared && npm run build:cone:protocol",
+    "build:university-data-profiles:list": "node ./use-cases/university/scripts/list-data-profiles.mjs --json",
+    "build:university-data-profiles:check": "node ./use-cases/university/scripts/check-data-profiles.mjs",
+    "ci:university-data-profiles": "npm run build:university-data-profiles:list && npm run build:university-data-profiles:check"
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
