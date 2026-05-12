@@ -69,7 +69,7 @@
   "scripts": {
     "contract": "npm run compact",
     "compact": "node ../../../tooling/scripts/ensure-compact-package-aliases.mjs && compact compile src/hello-family-credential.compact src/managed/hello-family-credential && compact compile src/hello-family-offchain-credential.compact src/managed/hello-family-offchain-credential && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
-    "prebuild": "npm --prefix ../../../core/primitives/credentials run build && npm --prefix ../../../components/adapters/offchain-did run build",
+    "prebuild": "(test -f ../../../core/primitives/credentials/dist/managed/credentials/contract/index.js || npm --prefix ../../../core/primitives/credentials run build) && (test -f ../../../components/adapters/offchain-did/dist/index.js || npm --prefix ../../../components/adapters/offchain-did run build)",
     "pretypecheck": "npm --prefix ../../../core/primitives/credentials run build && npm --prefix ../../../components/adapters/offchain-did run build",
     "pretest": "npm --prefix ../../../core/primitives/credentials run build && npm --prefix ../../../components/adapters/offchain-did run build && npm run compact",
     "pretest:ci": "npm --prefix ../../../core/primitives/credentials run build && npm --prefix ../../../components/adapters/offchain-did run build && npm run compact",

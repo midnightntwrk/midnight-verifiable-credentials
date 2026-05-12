@@ -52,7 +52,7 @@
   "scripts": {
     "contract": "npm run compact",
     "compact": "node ../../../tooling/scripts/ensure-compact-package-aliases.mjs && compact compile src/birth-credential.compact src/managed/birth-credential && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
-    "prebuild": "npm --prefix ../../../core/primitives/credentials run build",
+    "prebuild": "test -f ../../../core/primitives/credentials/dist/managed/credentials/contract/index.js || npm --prefix ../../../core/primitives/credentials run build",
     "test": "vitest run",
     "test:ci": "vitest run",
     "prepack": "npm run build",

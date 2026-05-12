@@ -69,7 +69,7 @@
   "scripts": {
     "contract": "npm run compact",
     "compact": "compact compile src/hello-verifier.compact src/managed/hello-verifier && compact compile src/hello-verifier-offchain.compact src/managed/hello-verifier-offchain && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
-    "prebuild": "npm --prefix ../../../prototypes/credential-families/hello-family run build",
+    "prebuild": "test -f ../../../prototypes/credential-families/hello-family/dist/managed/hello-family-credential/contract/index.js || npm --prefix ../../../prototypes/credential-families/hello-family run build",
     "pretypecheck": "npm --prefix ../../../prototypes/credential-families/hello-family run build",
     "pretest": "npm --prefix ../../../prototypes/credential-families/hello-family run build && npm run compact",
     "test": "vitest run",
