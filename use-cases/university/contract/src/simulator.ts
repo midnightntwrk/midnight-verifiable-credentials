@@ -62,15 +62,23 @@ export class UniversityVerifierSimulator {
   universityJobApplicationRequest(
     issuerVerificationMethodRef: UniversityDiplomaCredential["issuerVerificationMethodRef"],
     verifierChallengeHash: Uint8Array,
+    requireDiplomaIdDisclosure: boolean,
+    requireStudentIdDisclosure: boolean,
     requireFacultyNameDisclosure: boolean,
     requireHonorsCodeDisclosure: boolean,
+    requireGraduationMonthDisclosure: boolean,
+    requireFinalGradeDisclosure: boolean,
     requireCreditsEarnedDisclosure: boolean,
   ): UniversityDiplomaPresentationRequest {
     return pureCircuits.universityJobApplicationRequest(
       issuerVerificationMethodRef,
       verifierChallengeHash,
+      requireDiplomaIdDisclosure,
+      requireStudentIdDisclosure,
       requireFacultyNameDisclosure,
       requireHonorsCodeDisclosure,
+      requireGraduationMonthDisclosure,
+      requireFinalGradeDisclosure,
       requireCreditsEarnedDisclosure,
     );
   }

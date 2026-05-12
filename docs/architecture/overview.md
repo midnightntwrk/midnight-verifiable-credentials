@@ -36,8 +36,8 @@ The repository is organized as a layered Compact-first stack.
 | Layer 2 | Concrete credential families | `credentials-birth`, `credentials-birth-secret`, `credentials-hello-family` (starter), `credentials-dummy-claims` (claim-surface lab), `credentials-university-diploma` (academic prototype) |
 | Layer 2.5 | DID-aware runtime adapters | `credentials-offchain-did` |
 | Layer 3 status prototype | Status-aware contract surface plus off-chain builders | `credentials-status-registry` |
-| Layer 3 | Verifier/business contract composition | `hello-verifier-contract`, `credentials-demo-contract` |
-| Layer 4 | Transport and protocol orchestration | `credentials-openid`, `credentials-protocol` |
+| Layer 3 | Verifier/business contract composition | `hello-verifier-contract`, `university-verifier-contract`, `credentials-demo-contract` |
+| Layer 4 | Transport and protocol orchestration | `credentials-openid`, `credentials-protocol`, `university-protocol` |
 | Shared infra | Standalone integration/runtime support | `standalone-environment` |
 
 Use [`./package-tier-inventory.md`](./package-tier-inventory.md) when you need
@@ -150,6 +150,25 @@ This starter and lab package owns:
 
 It should be treated as a starter and laboratory package, not as a canonical
 reusable protocol or privacy template.
+
+### `university-verifier-contract`
+This package owns verifier-side employer and mall request/presentation checks
+over `credentials-university-diploma`.
+
+It should be treated as a use-case contract package, not as a reusable core or
+generic verifier framework.
+
+### `university-protocol`
+This package owns the threaded multi-party university flow:
+
+- student-initiated issuance requests
+- university issuance results
+- employer presentation requests/submissions/results
+- mall discount presentation requests/submissions/results
+
+It intentionally sits above `credentials-protocol` rather than inside it,
+because the flow is tied to one concrete family, one deterministic dataset, and
+one verifier-contract package.
 
 ### `credentials-demo-contract`
 This package demonstrates verifier/business contract composition.

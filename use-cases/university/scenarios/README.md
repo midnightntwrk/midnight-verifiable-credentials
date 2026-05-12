@@ -30,5 +30,7 @@ Current boundary:
   issuer, student, company, and mall agents in one process
 - it is still a local reference harness, not a Docker-backed or networked SSI
   deployment
+- the separate [`../protocol/README.md`](../protocol/README.md) package now
+  exercises the same actors as explicit threaded request/result messages
 - the comments remain intentionally verbose so the step text still acts as
   living documentation even though the scenarios are now executable

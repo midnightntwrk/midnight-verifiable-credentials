@@ -125,6 +125,15 @@ Status: current implemented test surface as of 2026-05-11.
   - below-threshold rejection for the mall path
   - required-disclosure rejection for the mall path
 
+### `university-protocol`
+
+- `use-cases/university/protocol/src/test/full-flow.test.ts`
+  - threaded message-level student-initiated issuance over 100 students
+  - threaded job-application request / submission / result flow over 3 companies
+  - threaded mall discount request / submission / result flow over 5 applicants
+  - transcript-level policy semantics for company-specific disclosure requests
+  - thread integrity between requests and their corresponding results
+
 ### University executable BDD specs
 
 - `use-cases/university/scenarios/features/university_diploma_batch_issuance.feature`
@@ -136,6 +145,8 @@ Status: current implemented test surface as of 2026-05-11.
 - coverage boundary:
   - these scenarios run as one-process virtual-agent orchestration with metrics
   - they do not yet model real multi-process or networked party isolation
+  - the separate `university-protocol` package now exercises the same actors as
+    explicit protocol messages and threads
 
 ### Historical placeholder package names
 

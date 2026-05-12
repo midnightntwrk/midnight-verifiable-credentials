@@ -43,24 +43,28 @@ export pure circuit universityDiplomaSchemaRef(): SchemaRef {
 export pure circuit universityJobApplicationRequest(
   issuerVerificationMethodRef: VerificationMethodRef,
   verifierChallengeHash: Bytes<32>,
+  requireDiplomaIdDisclosure: Boolean,
+  requireStudentIdDisclosure: Boolean,
   requireFacultyNameDisclosure: Boolean,
   requireHonorsCodeDisclosure: Boolean,
+  requireGraduationMonthDisclosure: Boolean,
+  requireFinalGradeDisclosure: Boolean,
   requireCreditsEarnedDisclosure: Boolean
 ): UniversityDiplomaPresentationRequest {
   return UniversityDiplomaPresentationRequest {
     version: 1,
     schema: universityDiplomaSchemaRef(),
     issuerVerificationMethodRef: issuerVerificationMethodRef,
-    requireDiplomaIdDisclosure: false,
-    requireStudentIdDisclosure: false,
+    requireDiplomaIdDisclosure: requireDiplomaIdDisclosure,
+    requireStudentIdDisclosure: requireStudentIdDisclosure,
     requireGraduateNameDisclosure: true,
     requireUniversityNameDisclosure: true,
     requireFacultyNameDisclosure: requireFacultyNameDisclosure,
     requireAwardNameDisclosure: true,
     requireHonorsCodeDisclosure: requireHonorsCodeDisclosure,
     requireGraduationYearDisclosure: true,
-    requireGraduationMonthDisclosure: false,
-    requireFinalGradeDisclosure: true,
+    requireGraduationMonthDisclosure: requireGraduationMonthDisclosure,
+    requireFinalGradeDisclosure: requireFinalGradeDisclosure,
     requireCreditsEarnedDisclosure: requireCreditsEarnedDisclosure,
     enforceMinimumFinalGrade: false,
     minimumFinalGrade: 0,
@@ -129,10 +133,6 @@ export circuit verifyUniversityDiplomaForJobApplication(
     "University job application requires graduation-year disclosure"
   );
   assert(
-    request.requireFinalGradeDisclosure,
-    "University job application requires final-grade disclosure"
-  );
-  assert(
     !request.enforceMinimumFinalGrade,
     "University job application request must not enforce a minimum grade"
   );
@@ -151,7 +151,12 @@ export circuit verifyUniversityDiplomaForJobApplication(
   lastVerifiedUniversityName = disclose(presentation.disclosed.universityName);
   lastVerifiedAwardName = disclose(presentation.disclosed.awardName);
   lastVerifiedGraduationYear = disclose(presentation.disclosed.graduationYear);
-  lastVerifiedFinalGrade = disclose(presentation.disclosed.finalGrade);
+  const requireFinalGradeDisclosure = disclose(request.requireFinalGradeDisclosure);
+  if (requireFinalGradeDisclosure) {
+    lastVerifiedFinalGrade = disclose(presentation.disclosed.finalGrade);
+  } else {
+    lastVerifiedFinalGrade = 0;
+  }
   lastVerifiedDiscountThreshold = 0;
   lastVerifiedVerifierKind = 1;
 

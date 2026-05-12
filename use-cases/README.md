@@ -14,6 +14,7 @@ Current subtrees:
 - `university`
   - large diploma issuance, job-application, and student-discount blueprint
   - `university/contract` provides the verifier-side contract surface
+  - `university/protocol` provides the threaded multi-party reference flow
   - executable Serenity/Cucumber scenarios plus deterministic scenario datasets
 
 BDD scenarios belong here because they document concrete flows rather than low-

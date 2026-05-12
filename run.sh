@@ -19,6 +19,7 @@ Targets:
   bdd-negative               Serenity/JS BDD negative-path scenarios
   bdd-all                    Full Serenity/JS BDD scenario set
   university-bdd             Executable university diploma BDD scenarios
+  university-protocol        Protocol-style multi-party university flow lane
   hello-smoke                Smallest DID -> VC -> verifier handoff lane
   dummy-claims-lab           Broad direct claim-surface verifier lane
   revocation                 Revocation-focused CI lane
@@ -94,7 +95,7 @@ forward_args=()
 
 if [[ $# -gt 0 ]]; then
   case "$1" in
-    full|lint|typecheck|build|test|bdd|bdd-negative|bdd-all|university-bdd|hello-smoke|dummy-claims-lab|revocation|integration|integration-demo-contract|integration-protocol|targets|help|-h|--help)
+    full|lint|typecheck|build|test|bdd|bdd-negative|bdd-all|university-bdd|university-protocol|hello-smoke|dummy-claims-lab|revocation|integration|integration-demo-contract|integration-protocol|targets|help|-h|--help)
       target="$1"
       shift
       ;;
@@ -215,6 +216,16 @@ case "$target" in
   university-bdd)
     echo "[run] University diploma BDD lane"
     npm run ci:university-bdd
+    ;;
+  university-protocol)
+    if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
+      echo "[run] Light university protocol lane"
+      run_common_ensure_artifacts "run" managed-university-protocol
+      npm run ci:university-protocol:from-artifacts
+    else
+      echo "[run] University protocol lane"
+      npm run ci:university-protocol
+    fi
     ;;
   hello-smoke)
     if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then

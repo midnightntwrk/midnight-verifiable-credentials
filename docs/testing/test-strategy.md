@@ -53,6 +53,8 @@ Current validated CI shape:
   treated as code
 - the university diploma slice now has the same executable TypeScript BDD lane
   shape under `use-cases/university/scenarios/`
+- the same use case now also has a threaded protocol lane under
+  `use-cases/university/protocol/`
 - CI change classes are mutually exclusive:
   - `docs_only` for markdown/docs-only diffs
   - `bdd_only` for the focused Serenity/JS scenario surface
@@ -89,6 +91,8 @@ Current workspace note for this dimension:
   verifier path over `credentials-dummy-claims`
 - `use-cases/university/contract` now validates employer and mall verifier-side
   request / presentation checks over `credentials-university-diploma`
+- `use-cases/university/protocol` now validates the same actors as explicit
+  protocol threads over a shared in-memory bus
 - the remaining families in this table are design-space or adjacent-prototype
   examples, not validated local workspace packages
 

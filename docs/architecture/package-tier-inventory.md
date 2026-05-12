@@ -52,6 +52,7 @@ Related documents:
 | `credentials-protocol` | Transport or orchestration package | Reference orchestration implementation, evolving API | Limited | Off-chain reference agent flows and protocol state management |
 | `hello-verifier-contract` | Demo / prototype package | Starter / prototype | No | Smallest verifier-side starter and broad direct claim-surface lab consumer |
 | `university-verifier-contract` | Demo / prototype package | Use-case verifier contract | No | Employer and mall verifier-side request builders plus presentation checks over `credentials-university-diploma` |
+| `university-protocol` | Transport or orchestration package | Use-case reference orchestration | Limited | Threaded multi-party issuer/student/company/mall flow over `credentials-university-diploma` and `university-verifier-contract` |
 | `credentials-demo-contract` | Demo / prototype package | Prototype | No | Layer 3 example business contracts; not a canonical library surface |
 | `standalone-environment` | Shared integration infrastructure | Reference integration harness | Limited | Docker-backed standalone test/runtime bootstrap |
 
@@ -78,6 +79,7 @@ These protocol surfaces are useful, but they are not the canonical VC core.
 | Agent lifecycle orchestration | `credentials-protocol` | Models issuer/holder/verifier workflows above the core |
 | Protocol state store and replay helpers | `credentials-protocol` | Runtime session management, not canonical VC semantics |
 | Message bus transport seam | `credentials-protocol` | In-process transport simulation |
+| University diploma multi-party threaded flow | `university-protocol` | Use-case-specific orchestration above the reusable protocol primitives |
 | OID4VCI / OID4VP-shaped envelopes | `credentials-openid` | Transport and domain framing, not Compact authority |
 | Standalone environment bootstrap | `standalone-environment` | Integration harness, not reusable protocol semantics |
 | Demo verifier/business flows | `credentials-demo-contract` | Business composition examples, not core reusable protocol |

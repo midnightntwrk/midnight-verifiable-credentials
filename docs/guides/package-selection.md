@@ -84,6 +84,7 @@ Start with:
 - [`../../prototypes/credential-families/university-diploma/README.md`](../../prototypes/credential-families/university-diploma/README.md)
 - [`../../use-cases/university/README.md`](../../use-cases/university/README.md)
 - [`../../use-cases/university/contract/README.md`](../../use-cases/university/contract/README.md)
+- [`../../use-cases/university/protocol/README.md`](../../use-cases/university/protocol/README.md)
 
 Use this when you need:
 
@@ -92,6 +93,7 @@ Use this when you need:
 - batch issuance planning across many holders
 - executable BDD scenarios for employer and student-discount verifier flows
 - a checked-in verifier-side contract path for employer and mall policies
+- a threaded multi-party protocol-style flow over the same dataset and verifier rules
 
 Current constraint:
 

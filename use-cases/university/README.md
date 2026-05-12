@@ -6,6 +6,7 @@ Status:
 - data-rich SSI flow covering issuance, job-application verification, and student-discount verification
 - BDD-style scenario set with bottleneck-oriented metrics
 - compileable verifier-side contract surface for employer and mall policies
+- threaded protocol-style multi-party flow over the same deterministic actors and data
 
 ## Purpose
 
@@ -33,6 +34,8 @@ Prototype family:
 - [`../../prototypes/credential-families/university-diploma/README.md`](../../prototypes/credential-families/university-diploma/README.md)
 - verifier contract package:
   - [`./contract/README.md`](./contract/README.md)
+- threaded protocol package:
+  - [`./protocol/README.md`](./protocol/README.md)
 
 Credential family package:
 
@@ -254,6 +257,8 @@ Current status:
   - [`./scenarios/README.md`](./scenarios/README.md)
 - verifier-side contract package now exists for company and mall request/verification flows:
   - [`./contract/README.md`](./contract/README.md)
+- threaded protocol-style university flow now exists as a separate workspace package:
+  - [`./protocol/README.md`](./protocol/README.md)
 
 ### Phase 3. Batch issuance orchestration
 

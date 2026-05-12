@@ -5,7 +5,7 @@ if [[ -n "${MIDNIGHT_RUN_COMMON_SH_LOADED:-}" ]]; then
 fi
 MIDNIGHT_RUN_COMMON_SH_LOADED=1
 
-run_common_light_supported_targets=(full build typecheck test hello-smoke dummy-claims-lab)
+run_common_light_supported_targets=(full build typecheck test hello-smoke dummy-claims-lab university-protocol)
 
 run_common_print_light_targets() {
   local joined="${run_common_light_supported_targets[*]}"
@@ -103,6 +103,11 @@ run_common_artifacts_ready() {
         && [[ -f "prototypes/credential-families/dummy-claims/src/managed/dummy-claims-credential/contract/index.js" ]] \
         && [[ -f "use-cases/hello-verifier/contract/src/managed/dummy-claims-verifier/contract/index.js" ]]
       ;;
+    managed-university-protocol)
+      [[ -f "components/orchestration/protocol/dist/index.js" ]] \
+        && [[ -f "prototypes/credential-families/university-diploma/dist/testing.js" ]] \
+        && [[ -f "use-cases/university/contract/dist/testing.js" ]]
+      ;;
     light)
       [[ -f "core/primitives/credentials/dist/index.js" ]] \
         && [[ -f "registry/status-registry/dist/index.js" ]] \
@@ -175,6 +180,9 @@ run_common_ensure_artifacts() {
       ;;
     managed-dummy-claims-lab)
       build_cmd="npm run build:dummy-claims-lab-prereqs"
+      ;;
+    managed-university-protocol)
+      build_cmd="npm run build:university-protocol:prereqs"
       ;;
     light)
       build_cmd="npm run build:light"

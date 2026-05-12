@@ -9,8 +9,12 @@ import { describe, expect, it } from "vitest";
 import { UniversityVerifierSimulator } from "../testing.js";
 
 const buildJobApplicationFixture = (options?: {
+  requireDiplomaIdDisclosure?: boolean;
+  requireStudentIdDisclosure?: boolean;
   requireFacultyNameDisclosure?: boolean;
   requireHonorsCodeDisclosure?: boolean;
+  requireGraduationMonthDisclosure?: boolean;
+  requireFinalGradeDisclosure?: boolean;
   requireCreditsEarnedDisclosure?: boolean;
 }) => {
   const baseFixture = createUniversityDiplomaFixture();
@@ -18,8 +22,12 @@ const buildJobApplicationFixture = (options?: {
   const request = simulator.universityJobApplicationRequest(
     baseFixture.credential.issuerVerificationMethodRef,
     baseFixture.presentationRequest.verifierChallengeHash,
+    options?.requireDiplomaIdDisclosure ?? false,
+    options?.requireStudentIdDisclosure ?? false,
     options?.requireFacultyNameDisclosure ?? false,
     options?.requireHonorsCodeDisclosure ?? false,
+    options?.requireGraduationMonthDisclosure ?? false,
+    options?.requireFinalGradeDisclosure ?? true,
     options?.requireCreditsEarnedDisclosure ?? false,
   );
 
@@ -43,11 +51,14 @@ const buildJobApplicationFixture = (options?: {
     disclosure: {
       revealGraduateName: true,
       revealUniversityName: true,
+      revealDiplomaId: options?.requireDiplomaIdDisclosure ?? false,
+      revealStudentId: options?.requireStudentIdDisclosure ?? false,
       revealFacultyName: options?.requireFacultyNameDisclosure ?? false,
       revealAwardName: true,
       revealHonorsCode: options?.requireHonorsCodeDisclosure ?? false,
       revealGraduationYear: true,
-      revealFinalGrade: true,
+      revealGraduationMonth: options?.requireGraduationMonthDisclosure ?? false,
+      revealFinalGrade: options?.requireFinalGradeDisclosure ?? true,
       revealCreditsEarned: options?.requireCreditsEarnedDisclosure ?? false,
     },
   });
@@ -154,6 +165,25 @@ describe("university verifier contract", () => {
         fixture.presentationProof,
       ),
     ).toThrow(/must not enforce a minimum grade/);
+  });
+
+  it("verifies a company policy that does not require final-grade disclosure", () => {
+    const { simulator, request, fixture } = buildJobApplicationFixture({
+      requireHonorsCodeDisclosure: true,
+      requireFinalGradeDisclosure: false,
+    });
+
+    simulator.verifyUniversityDiplomaForJobApplication(
+      fixture.credential,
+      fixture.credentialProof,
+      request,
+      fixture.presentation,
+      fixture.presentationProof,
+    );
+
+    const state = simulator.getLedger();
+    expect(state.successfulJobApplicationVerificationCount).toEqual(1n);
+    expect(state.lastVerifiedFinalGrade).toEqual(0n);
   });
 
   it("rejects a discount request when the student's grade is below the threshold", () => {
