@@ -9,6 +9,13 @@ import {
 } from "../../scripts/data-profile-registry.mjs";
 import { UseUniversityScenario } from "../features/support/university-scenario.ts";
 
+type PhaseStats = {
+  readonly queueWait: number;
+  readonly compile: number;
+  readonly sign: number;
+  readonly delivery: number;
+};
+
 export type UniversityBatchSweepRun = {
   readonly studentCount: number;
   readonly batchSize: number;
@@ -16,25 +23,11 @@ export type UniversityBatchSweepRun = {
   readonly issuedCredentialCount: number;
   readonly acceptedRequestCount: number;
   readonly issuanceWallClockMs: number;
+  readonly wallClockCredentialsPerSecond: number;
   readonly credentialsPerSecond: number;
-  readonly phaseTotalsMs: {
-    readonly queueWait: number;
-    readonly compile: number;
-    readonly sign: number;
-    readonly delivery: number;
-  };
-  readonly phaseAverageMs: {
-    readonly queueWait: number;
-    readonly compile: number;
-    readonly sign: number;
-    readonly delivery: number;
-  };
-  readonly phaseMaxMs: {
-    readonly queueWait: number;
-    readonly compile: number;
-    readonly sign: number;
-    readonly delivery: number;
-  };
+  readonly phaseTotalsMs: PhaseStats;
+  readonly phaseAverageMs: PhaseStats;
+  readonly phaseMaxMs: PhaseStats;
 };
 
 export type UniversityBatchSweepSummary = {
@@ -83,6 +76,9 @@ const dataPathsForDirectory = (directory: string) => ({
 
 const normalizeBatchSizes = (batchSizes: readonly number[]): readonly number[] => {
   const unique = [...new Set(batchSizes.map((value) => Number(value)))];
+  if (unique.length === 0) {
+    throw new Error("At least one batch size is required");
+  }
   for (const batchSize of unique) {
     if (!Number.isFinite(batchSize) || batchSize <= 0) {
       throw new Error(`Invalid batch size ${String(batchSize)}`);
@@ -111,6 +107,10 @@ const runSweepProfile = async (
     await scenario.runBatchIssuance();
     const issuanceWallClockMs = performance.now() - startedAt;
     const result = scenario.issuanceResult();
+    const wallClockCredentialsPerSecond =
+      issuanceWallClockMs === 0
+        ? 0
+        : (result.issuedCredentialCount * 1000) / issuanceWallClockMs;
 
     const queueWaitValues = result.batchMetrics.map((metric) => metric.queueWaitMs);
     const compileValues = result.batchMetrics.map((metric) => metric.compileMs);
@@ -124,6 +124,7 @@ const runSweepProfile = async (
       issuedCredentialCount: result.issuedCredentialCount,
       acceptedRequestCount: result.acceptedRequestCount,
       issuanceWallClockMs,
+      wallClockCredentialsPerSecond,
       credentialsPerSecond: result.credentialsPerSecond,
       phaseTotalsMs: {
         queueWait: sum(queueWaitValues),
@@ -162,7 +163,9 @@ export const buildUniversityBatchSweepSummary = async (options: {
   }
 
   const fastestRun = runs.reduce((best, current) =>
-    current.credentialsPerSecond > best.credentialsPerSecond ? current : best,
+    current.wallClockCredentialsPerSecond > best.wallClockCredentialsPerSecond
+      ? current
+      : best,
   );
 
   return {
@@ -190,14 +193,14 @@ export const renderUniversityBatchSweepMarkdown = (
     `- schema version: ${summary.schemaVersion}`,
     `- student count: ${summary.sweepConfig.studentCount}`,
     `- batch sizes: ${summary.sweepConfig.batchSizes.join(", ")}`,
-    `- fastest batch size by credentials/sec: ${summary.fastestBatchSizeByCredentialsPerSecond}`,
+    `- fastest batch size by wall-clock credentials/sec: ${summary.fastestBatchSizeByCredentialsPerSecond}`,
     "",
     "## Runs",
-    "| batch size | batches | issued | wall clock ms | compile avg ms | sign avg ms | delivery avg ms | credentials/sec |",
-    "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+    "| batch size | batches | issued | wall clock ms | queue wait avg ms | compile avg ms | sign avg ms | delivery avg ms | wall-clock credentials/sec | reported credentials/sec |",
+    "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ...summary.runs.map(
       (run) =>
-        `| ${run.batchSize} | ${run.batchCount} | ${run.issuedCredentialCount} | ${formatMeasured(run.issuanceWallClockMs)} | ${formatMeasured(run.phaseAverageMs.compile)} | ${formatMeasured(run.phaseAverageMs.sign)} | ${formatMeasured(run.phaseAverageMs.delivery)} | ${formatMeasured(run.credentialsPerSecond)} |`,
+        `| ${run.batchSize} | ${run.batchCount} | ${run.issuedCredentialCount} | ${formatMeasured(run.issuanceWallClockMs)} | ${formatMeasured(run.phaseAverageMs.queueWait)} | ${formatMeasured(run.phaseAverageMs.compile)} | ${formatMeasured(run.phaseAverageMs.sign)} | ${formatMeasured(run.phaseAverageMs.delivery)} | ${formatMeasured(run.wallClockCredentialsPerSecond)} | ${formatMeasured(run.credentialsPerSecond)} |`,
     ),
     "",
     "## Phase Totals (ms)",
