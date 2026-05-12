@@ -28,9 +28,12 @@ Current boundary:
 
 - this package now executes the committed university scenarios with virtual
   issuer, student, company, and mall agents in one process
+- the issuance scenario still uses the local batch harness so it can expose the
+  more detailed issuance-stage metrics
+- the job-application and mall-discount scenarios now consume the threaded
+  [`../protocol/README.md`](../protocol/README.md) transcript directly instead
+  of replaying separate local request choreography
 - it is still a local reference harness, not a Docker-backed or networked SSI
   deployment
-- the separate [`../protocol/README.md`](../protocol/README.md) package now
-  exercises the same actors as explicit threaded request/result messages
 - the comments remain intentionally verbose so the step text still acts as
   living documentation even though the scenarios are now executable

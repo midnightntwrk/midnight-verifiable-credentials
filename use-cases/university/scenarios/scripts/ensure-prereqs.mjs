@@ -24,6 +24,13 @@ const requiredBuildSurfaces = [
       "prototypes/credential-families/university-diploma/src/testing/credential-fixtures.ts",
     ],
   },
+  {
+    artifactPath: "use-cases/university/protocol/dist/testing.js",
+    sourcePaths: [
+      "use-cases/university/protocol/src/flow.ts",
+      "use-cases/university/protocol/src/testing.ts",
+    ],
+  },
 ];
 
 async function exists(relativePath) {
@@ -77,7 +84,7 @@ const child = spawn(
   "bash",
   [
     "-lc",
-    "npm run build:core && npm run build -w ./prototypes/credential-families/university-diploma",
+    "npm run build:core && npm run build -w ./prototypes/credential-families/university-diploma && npm run build -w ./use-cases/university/protocol",
   ],
   {
     cwd: repoRoot,

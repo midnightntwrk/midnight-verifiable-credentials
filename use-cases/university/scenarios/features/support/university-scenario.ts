@@ -5,10 +5,13 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { Ability, type UsesAbilities } from "@serenity-js/core";
+import {
+  UniversityProtocolFlowRunner,
+  type UniversityProtocolFlowResult,
+} from "@midnight-ntwrk/midnight-did-university-protocol/testing";
 
 import {
   type UniversityDiplomaClaims,
-  pureCircuits,
 } from "@midnight-ntwrk/midnight-did-credentials-university-diploma/contract";
 import {
   createUniversityDiplomaFixture,
@@ -319,22 +322,6 @@ const normalizeRequestPolicy = (
   minimumFinalGrade: BigInt(policy.minimumFinalGrade ?? 0),
 });
 
-const disclosureOptionsForRequest = (
-  request: UniversityDiplomaRequestOptions,
-) => ({
-  revealDiplomaId: request.requireDiplomaIdDisclosure,
-  revealStudentId: request.requireStudentIdDisclosure,
-  revealGraduateName: request.requireGraduateNameDisclosure,
-  revealUniversityName: request.requireUniversityNameDisclosure,
-  revealFacultyName: request.requireFacultyNameDisclosure,
-  revealAwardName: request.requireAwardNameDisclosure,
-  revealHonorsCode: request.requireHonorsCodeDisclosure,
-  revealGraduationYear: request.requireGraduationYearDisclosure,
-  revealGraduationMonth: request.requireGraduationMonthDisclosure,
-  revealFinalGrade: request.requireFinalGradeDisclosure,
-  revealCreditsEarned: request.requireCreditsEarnedDisclosure,
-});
-
 const average = (values: readonly number[]): number => {
   if (values.length === 0) {
     return 0;
@@ -347,6 +334,7 @@ export class UseUniversityScenario extends Ability {
   #issuanceResult: IssuanceScenarioResult | undefined;
   #jobApplicationResult: JobApplicationScenarioResult | undefined;
   #discountResult: DiscountScenarioResult | undefined;
+  #protocolResult: UniversityProtocolFlowResult | undefined;
   #selectedDiscountStudentId: string | undefined;
 
   constructor() {
@@ -363,26 +351,32 @@ export class UseUniversityScenario extends Ability {
 
   setUniversityPath(relativePath: string): void {
     this.#paths.university = relativePath;
+    this.#invalidateProtocolResult();
   }
 
   setStudentsPath(relativePath: string): void {
     this.#paths.students = relativePath;
+    this.#invalidateProtocolResult();
   }
 
   setCompaniesPath(relativePath: string): void {
     this.#paths.companies = relativePath;
+    this.#invalidateProtocolResult();
   }
 
   setMallPath(relativePath: string): void {
     this.#paths.mall = relativePath;
+    this.#invalidateProtocolResult();
   }
 
   setIssuanceBatchesPath(relativePath: string): void {
     this.#paths.issuanceBatches = relativePath;
+    this.#invalidateProtocolResult();
   }
 
   setDiscountApplicantsPath(relativePath: string): void {
     this.#paths.discountApplicants = relativePath;
+    this.#invalidateProtocolResult();
   }
 
   selectDiscountStudent(studentId: string): void {
@@ -405,6 +399,21 @@ export class UseUniversityScenario extends Ability {
     for (const company of companies) {
       void normalizeRequestPolicy(company.requestPolicy);
     }
+  }
+
+  #invalidateProtocolResult(): void {
+    this.#protocolResult = undefined;
+    this.#jobApplicationResult = undefined;
+    this.#discountResult = undefined;
+  }
+
+  #protocolFlowResult(): UniversityProtocolFlowResult {
+    if (!this.#protocolResult) {
+      this.#protocolResult = new UniversityProtocolFlowRunner({
+        dataPaths: this.#paths,
+      }).runAll();
+    }
+    return this.#protocolResult;
   }
 
   async runBatchIssuance(): Promise<void> {
@@ -597,116 +606,57 @@ export class UseUniversityScenario extends Ability {
 
   async runJobApplications(): Promise<void> {
     const metrics = new MetricRecorder();
-    const university = readJson<UniversityProfile>(this.#paths.university);
     const students = readJson<StudentRecord[]>(this.#paths.students);
     const companies = metrics.record(
       "company_did_bootstrap_ms",
       () => readJson<CompanyRecord[]>(this.#paths.companies),
       { actorCount: 3 },
     );
-
-    const issuerConfig = issuerConfigForUniversity(university);
-    const studentAgents: VirtualStudentAgent[] = students.map((record) => ({
-      record,
-      signerConfig: holderConfigForStudent(record),
-    }));
-    const companyById = new Map(companies.map((company) => [company.companyId, company]));
-    const companyAcceptedCounts: Record<string, number> = Object.fromEntries(
-      companies.map((company) => [company.companyId, 0]),
+    const { value: protocolResult, durationMs: totalDurationMs } = metrics.measure(
+      "job_protocol_flow_ms",
+      () => this.#protocolFlowResult(),
+      { studentCount: students.length, companyCount: companies.length },
     );
-
-    metrics.record(
-      "job_request_publish_ms",
-      () => {
-        for (const company of companies) {
-          normalizeRequestPolicy(company.requestPolicy);
-        }
-      },
-      { companyCount: companies.length },
-    );
-
-    let acceptedApplications = 0;
-    const jobApplicationsStartedAt = performance.now();
-    for (const student of studentAgents) {
-      const company = companyById.get(student.record.assignedCompanyId);
-      if (!company) {
-        throw new Error(`Missing company ${student.record.assignedCompanyId}`);
-      }
-
-      const requestOptions = normalizeRequestPolicy(company.requestPolicy);
-      const disclosureOptions = disclosureOptionsForRequest(requestOptions);
-      const verifierChallengeHash = sha256(
-        `job-application:${company.companyId}:${student.record.studentId}`,
-      );
-
-      let fixture!: UniversityDiplomaFixture;
-      metrics.record(
-        "presentation_build_ms",
-        () => {
-          fixture = createUniversityDiplomaFixture({
-            issuerConfig,
-            holderConfig: student.signerConfig,
-            claimOverrides: encodeClaims(student.record),
-            request: requestOptions,
-            disclosure: disclosureOptions,
-            verifierChallengeHash,
-          });
-        },
-        { studentId: student.record.studentId, companyId: company.companyId },
-      );
-
-      metrics.record(
-        "job_application_submit_ms",
-        () => ({
-          studentDidUrl: student.record.holderDidUrl,
-          companyDidUrl: company.verifierDidUrl,
-          requestedRole: student.record.requestedJobRole,
-          presentationChallengeHash: verifierChallengeHash,
-        }),
-        { studentId: student.record.studentId, companyId: company.companyId },
-      );
-
-      metrics.record(
-        "company_verification_ms",
-        () => {
-          pureCircuits.assertUniversityDiplomaPresentationSatisfiesRequest(
-            fixture.credential,
-            fixture.credentialProof,
-            fixture.presentationRequest,
-            fixture.presentation,
-            fixture.presentationProof,
-          );
-        },
-        { studentId: student.record.studentId, companyId: company.companyId },
-      );
-
-      acceptedApplications += 1;
-      companyAcceptedCounts[company.companyId] += 1;
-    }
-
-    const totalDurationMs = performance.now() - jobApplicationsStartedAt;
+    metrics.mark("job_request_publish_ms", {
+      companyCount: companies.length,
+      requestCount: protocolResult.jobApplications.requestCount,
+    });
+    metrics.mark("presentation_build_ms", {
+      submissionCount: protocolResult.jobApplications.submissionCount,
+    });
+    metrics.mark("job_application_submit_ms", {
+      submissionCount: protocolResult.jobApplications.submissionCount,
+    });
+    metrics.mark("company_verification_ms", {
+      resultCount: protocolResult.jobApplications.resultCount,
+      acceptedCount: protocolResult.jobApplications.acceptedCount,
+    });
     metrics.mark("job_application_acceptance_rate", {
-      acceptedApplications,
+      acceptedApplications: protocolResult.jobApplications.acceptedCount,
       totalStudents: students.length,
-      rate: students.length > 0 ? acceptedApplications / students.length : 0,
+      rate:
+        students.length > 0
+          ? protocolResult.jobApplications.acceptedCount / students.length
+          : 0,
     });
     metrics.mark("job_applications_per_second", {
       applicationsPerSecond:
         totalDurationMs > 0
-          ? acceptedApplications / (totalDurationMs / 1000)
-          : acceptedApplications,
+          ? protocolResult.jobApplications.acceptedCount /
+            (totalDurationMs / 1000)
+          : protocolResult.jobApplications.acceptedCount,
     });
     this.#jobApplicationResult = {
       totalStudents: students.length,
-      acceptedApplications,
+      acceptedApplications: protocolResult.jobApplications.acceptedCount,
       metricNames: metrics.names(),
-      companyAcceptedCounts,
+      companyAcceptedCounts:
+        protocolResult.jobApplications.companyAcceptedCounts,
     };
   }
 
   async runDiscountFlow(): Promise<void> {
     const metrics = new MetricRecorder();
-    const university = readJson<UniversityProfile>(this.#paths.university);
     const mall = readJson<MallRecord>(this.#paths.mall);
     const discountApplicants = readJson<DiscountApplicantRecord[]>(
       this.#paths.discountApplicants,
@@ -731,62 +681,66 @@ export class UseUniversityScenario extends Ability {
       throw new Error(`Unknown student ${this.#selectedDiscountStudentId}`);
     }
 
-    const requestOptions = normalizeRequestPolicy(mall.requestPolicy);
-    const disclosureOptions = disclosureOptionsForRequest(requestOptions);
-    const issuerConfig = issuerConfigForUniversity(university);
-    const holderConfig = holderConfigForStudent(student);
-
-    metrics.record(
-      "discount_request_publish_ms",
-      () => normalizeRequestPolicy(mall.requestPolicy),
+    const { value: protocolResult, durationMs: totalDurationMs } = metrics.measure(
+      "discount_protocol_flow_ms",
+      () => this.#protocolFlowResult(),
       { mallId: mall.mallId },
     );
-
-    let fixture!: UniversityDiplomaFixture;
-    const verifierChallengeHash = sha256(
-      `discount:${mall.mallId}:${student.studentId}`,
-    );
-    metrics.record(
-      "discount_presentation_build_ms",
-      () => {
-        fixture = createUniversityDiplomaFixture({
-          issuerConfig,
-          holderConfig,
-          claimOverrides: encodeClaims(student),
-          request: requestOptions,
-          disclosure: disclosureOptions,
-          verifierChallengeHash,
-        });
-      },
-      { studentId: student.studentId },
-    );
-
-    let outcome: "accepted" | "rejected" = "accepted";
-    let explanation = applicant.explanation;
-
-    try {
-      metrics.record(
-        "discount_verification_ms",
-        () => {
-          pureCircuits.assertUniversityDiplomaPresentationSatisfiesRequest(
-            fixture.credential,
-            fixture.credentialProof,
-            fixture.presentationRequest,
-            fixture.presentation,
-            fixture.presentationProof,
-          );
-        },
-        { studentId: student.studentId },
+    const studentResult = protocolResult.discounts.messages
+      .flatMap((message) => {
+        if (message.type !== "presentation:result") {
+          return [];
+        }
+        const body = message.body as Partial<{
+          readonly kind: "mallDiscount";
+          readonly studentId: string;
+          readonly accepted: boolean;
+          readonly reason: string;
+        }>;
+        if (
+          body.kind !== "mallDiscount" ||
+          body.studentId !== student.studentId ||
+          typeof body.accepted !== "boolean" ||
+          typeof body.reason !== "string"
+        ) {
+          return [];
+        }
+        return [
+          {
+            kind: "mallDiscount" as const,
+            studentId: body.studentId,
+            accepted: body.accepted,
+            reason: body.reason,
+          },
+        ];
+      })
+      .at(-1);
+    if (!studentResult) {
+      throw new Error(
+        `Missing mall discount result for ${student.studentId} in protocol flow`,
       );
-      outcome = "accepted";
-    } catch (error) {
-      outcome = "rejected";
-      explanation =
-        error instanceof Error ? error.message : String(error);
     }
+
+    const outcome = studentResult.accepted ? "accepted" : "rejected";
+    const explanation =
+      outcome === "accepted" ? applicant.explanation : studentResult.reason;
 
     metrics.mark("discount_acceptance_rate", {
       accepted: outcome === "accepted",
+    });
+    metrics.mark("discount_request_publish_ms", {
+      mallId: mall.mallId,
+      requestCount: protocolResult.discounts.requestCount,
+    });
+    metrics.mark("discount_presentation_build_ms", {
+      submissionCount: protocolResult.discounts.submissionCount,
+    });
+    metrics.mark("discount_verification_ms", {
+      resultCount: protocolResult.discounts.resultCount,
+      applicationsPerSecond:
+        totalDurationMs > 0
+          ? protocolResult.discounts.resultCount / (totalDurationMs / 1000)
+          : protocolResult.discounts.resultCount,
     });
     metrics.mark("discount_rejection_reason_count", {
       explanation,

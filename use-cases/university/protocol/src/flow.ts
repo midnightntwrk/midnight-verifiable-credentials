@@ -215,6 +215,19 @@ export type UniversityProtocolFlowResult = {
   readonly transcript: readonly UniversityProtocolTranscriptEntry[];
 };
 
+export type UniversityProtocolDataPaths = {
+  readonly university: string;
+  readonly students: string;
+  readonly companies: string;
+  readonly mall: string;
+  readonly issuanceBatches: string;
+  readonly discountApplicants: string;
+};
+
+export type UniversityProtocolFlowRunnerOptions = {
+  readonly dataPaths?: Partial<UniversityProtocolDataPaths>;
+};
+
 const repoRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "..",
@@ -223,14 +236,14 @@ const repoRoot = path.resolve(
   "..",
 );
 
-const dataPaths = {
+const defaultDataPaths = {
   university: "use-cases/university/data/university.json",
   students: "use-cases/university/data/students.json",
   companies: "use-cases/university/data/companies.json",
   mall: "use-cases/university/data/mall.json",
   issuanceBatches: "use-cases/university/data/issuance-batches.json",
   discountApplicants: "use-cases/university/data/discount-applicants.json",
-} as const;
+} satisfies UniversityProtocolDataPaths;
 
 const hex = (value: Uint8Array): string => Buffer.from(value).toString("hex");
 
@@ -759,25 +772,53 @@ class UniversityMallVerifierAgent {
 }
 
 export class UniversityProtocolFlowRunner {
-  readonly university = readJson<UniversityProfile>(dataPaths.university);
-  readonly students = readJson<StudentRecord[]>(dataPaths.students);
-  readonly companies = readJson<CompanyRecord[]>(dataPaths.companies);
-  readonly mall = readJson<MallRecord>(dataPaths.mall);
-  readonly issuanceBatches = readJson<IssuanceBatchRecord[]>(dataPaths.issuanceBatches);
-  readonly discountApplicants = readJson<DiscountApplicantRecord[]>(dataPaths.discountApplicants);
+  readonly dataPaths: UniversityProtocolDataPaths;
+  readonly university: UniversityProfile;
+  readonly students: StudentRecord[];
+  readonly companies: CompanyRecord[];
+  readonly mall: MallRecord;
+  readonly issuanceBatches: IssuanceBatchRecord[];
+  readonly discountApplicants: DiscountApplicantRecord[];
   readonly bus = new MessageBus();
   readonly transcript = new TranscriptRecorder();
   readonly issuanceMessages: UniversityProtocolMessage[] = [];
   readonly jobMessages: UniversityProtocolMessage[] = [];
   readonly discountMessages: UniversityProtocolMessage[] = [];
-  readonly issuer = new UniversityIssuerProtocolAgent(this.university);
-  readonly studentAgents = new Map(
-    this.students.map((student) => [student.studentId, new UniversityStudentAgent(student)]),
-  );
-  readonly companyAgents = new Map(
-    this.companies.map((company) => [company.companyId, new UniversityCompanyVerifierAgent(company)]),
-  );
-  readonly mallAgent = new UniversityMallVerifierAgent(this.mall);
+  readonly issuer: UniversityIssuerProtocolAgent;
+  readonly studentAgents: Map<string, UniversityStudentAgent>;
+  readonly companyAgents: Map<string, UniversityCompanyVerifierAgent>;
+  readonly mallAgent: UniversityMallVerifierAgent;
+
+  constructor(options?: UniversityProtocolFlowRunnerOptions) {
+    this.dataPaths = {
+      ...defaultDataPaths,
+      ...options?.dataPaths,
+    };
+    this.university = readJson<UniversityProfile>(this.dataPaths.university);
+    this.students = readJson<StudentRecord[]>(this.dataPaths.students);
+    this.companies = readJson<CompanyRecord[]>(this.dataPaths.companies);
+    this.mall = readJson<MallRecord>(this.dataPaths.mall);
+    this.issuanceBatches = readJson<IssuanceBatchRecord[]>(
+      this.dataPaths.issuanceBatches,
+    );
+    this.discountApplicants = readJson<DiscountApplicantRecord[]>(
+      this.dataPaths.discountApplicants,
+    );
+    this.issuer = new UniversityIssuerProtocolAgent(this.university);
+    this.studentAgents = new Map(
+      this.students.map((student) => [
+        student.studentId,
+        new UniversityStudentAgent(student),
+      ]),
+    );
+    this.companyAgents = new Map(
+      this.companies.map((company) => [
+        company.companyId,
+        new UniversityCompanyVerifierAgent(company),
+      ]),
+    );
+    this.mallAgent = new UniversityMallVerifierAgent(this.mall);
+  }
 
   runAll(): UniversityProtocolFlowResult {
     const issuedStudentIds = this.runIssuance();

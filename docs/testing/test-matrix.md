@@ -144,9 +144,13 @@ Status: current implemented test surface as of 2026-05-11.
   - executable mall discount flow with mixed grade outcomes
 - coverage boundary:
   - these scenarios run as one-process virtual-agent orchestration with metrics
+  - issuance still uses the local batch harness for richer issuance-stage
+    metrics
+  - job-application and mall-discount flows now consume the threaded
+    `university-protocol` transcript directly
   - they do not yet model real multi-process or networked party isolation
-  - the separate `university-protocol` package now exercises the same actors as
-    explicit protocol messages and threads
+  - the separate `university-protocol` package remains the authoritative
+    request/result message harness for the same actors and data
 
 ### Historical placeholder package names
 

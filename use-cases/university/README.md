@@ -7,6 +7,8 @@ Status:
 - BDD-style scenario set with bottleneck-oriented metrics
 - compileable verifier-side contract surface for employer and mall policies
 - threaded protocol-style multi-party flow over the same deterministic actors and data
+- executable BDD job-application and discount paths now sourced from the same
+  threaded protocol transcript, rather than a second parallel orchestration
 
 ## Purpose
 

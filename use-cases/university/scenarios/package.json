@@ -8,9 +8,10 @@
     "npm": ">=10"
   },
   "scripts": {
+    "prepare:deps": "node ./scripts/ensure-prereqs.mjs",
     "clean": "rm -rf target",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test:execute": "cucumber-js --config cucumber.cjs",
+    "typecheck": "npm run prepare:deps && tsc -p tsconfig.json --noEmit",
+    "test:execute": "npm run prepare:deps && cucumber-js --config cucumber.cjs",
     "report:setup": "serenity-bdd update",
     "test:report": "npm run report:setup && serenity-bdd run --features features --output target/site/serenity",
     "test:all": "npm run clean && npm run test:execute && npm run test:report",
@@ -18,6 +19,7 @@
   },
   "dependencies": {
     "@cucumber/cucumber": "^11.3.0",
+    "@midnight-ntwrk/midnight-did-university-protocol": "*",
     "@midnight-ntwrk/midnight-did-credentials-university-diploma": "*",
     "@serenity-js/assertions": "^3.34.0",
     "@serenity-js/console-reporter": "^3.34.0",
