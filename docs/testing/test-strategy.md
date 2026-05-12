@@ -77,6 +77,9 @@ Current workspace note for this dimension:
   on the active stack
 - `credentials-dummy-claims` is the current broad direct claim-surface
   laboratory on the active stack
+- `use-cases/hello-verifier/contract` now validates both the smallest starter
+  verifier path over `credentials-hello-family` and the broad direct claim-surface
+  verifier path over `credentials-dummy-claims`
 - the remaining families in this table are design-space or adjacent-prototype
   examples, not validated local workspace packages
 

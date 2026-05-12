@@ -66,6 +66,16 @@ Status: current implemented test surface as of 2026-05-11.
   - see `docs/guides/did-vc-hello-smoke-path.md` for the authoritative lane
     description
 
+### `hello-verifier` starter package
+
+- `use-cases/hello-verifier/contract/src/test/hello-verifier.test.ts`
+  - explicit-holder starter verifier over `credentials-hello-family`
+  - offchain-DID starter verifier over `credentials-hello-family`
+- `use-cases/hello-verifier/contract/src/test/dummy-claims-verifier.test.ts`
+  - full-disclosure verifier over `credentials-dummy-claims`
+  - negative coverage for omitted direct, nested-field, nested-vector, and
+    challenge-mismatch cases
+
 ### `credentials-dummy-claims`
 
 - claim-root/domain-separation source checks
