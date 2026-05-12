@@ -17,6 +17,7 @@ type PresentationResultShape = {
   readonly body: {
     readonly accepted: boolean;
     readonly reason: string;
+    readonly rejectionKind: "none" | "verificationFailed" | "duplicate";
   };
 };
 
@@ -60,6 +61,9 @@ describe("university protocol-style multi-party flow", () => {
     expect(result.jobApplications.submissionCount).toEqual(expectedStudentCount);
     expect(result.jobApplications.resultCount).toEqual(expectedStudentCount);
     expect(result.jobApplications.acceptedCount).toEqual(expectedStudentCount);
+    expect(result.jobApplications.rejectedCount).toEqual(0);
+    expect(result.jobApplications.duplicateRejectedCount).toEqual(0);
+    expect(result.jobApplications.verificationRejectedCount).toEqual(0);
     expect(
       Object.values(result.jobApplications.companyAcceptedCounts).reduce(
         (sum, count) => sum + count,
@@ -72,6 +76,8 @@ describe("university protocol-style multi-party flow", () => {
     expect(result.discounts.resultCount).toEqual(expectedDiscountCount);
     expect(result.discounts.acceptedCount).toEqual(expectedAcceptedDiscountCount);
     expect(result.discounts.rejectedCount).toEqual(expectedRejectedDiscountCount);
+    expect(result.discounts.duplicateRejectedCount).toEqual(0);
+    expect(result.discounts.verificationRejectedCount).toEqual(expectedRejectedDiscountCount);
     expect(result.discounts.outcomes).toEqual(expectedDiscountOutcomes);
 
     const rejectedDiscountReasons = result.discounts.messages
@@ -80,9 +86,18 @@ describe("university protocol-style multi-party flow", () => {
           message.type === "presentation:result",
       )
       .filter((message) => message.body.accepted === false)
-      .map((message) => message.body.reason);
+      .map((message) => ({
+        reason: message.body.reason,
+        rejectionKind: message.body.rejectionKind,
+      }));
     expect(rejectedDiscountReasons).toHaveLength(expectedRejectedDiscountCount);
-    expect(rejectedDiscountReasons.every((reason) => reason.includes("disclosed final grade is below the verifier minimum"))).toBe(true);
+    expect(
+      rejectedDiscountReasons.every(
+        ({ reason, rejectionKind }) =>
+          rejectionKind === "verificationFailed" &&
+          reason.includes("disclosed final grade is below the verifier minimum"),
+      ),
+    ).toBe(true);
   });
 
   it("preserves company-specific disclosure policy semantics in the protocol transcript", () => {

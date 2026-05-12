@@ -28,6 +28,9 @@ Scope:
   request-builder helper and publishes a malformed job-application request
 - explicit duplicate-submission rejection coverage for both company and mall
   verifier threads
+- protocol results distinguish verifier-side rejections from duplicate-thread
+  rejections so metrics do not collapse business-policy failures into replay
+  guard events
 
 Stress-lane note:
 

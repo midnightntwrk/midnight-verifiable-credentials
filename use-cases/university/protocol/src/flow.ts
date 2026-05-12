@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
-import { performance } from "node:perf_hooks";
 import path from "node:path";
+import { performance } from "node:perf_hooks";
 import { fileURLToPath } from "node:url";
 
 import {
@@ -168,6 +168,7 @@ type UniversityPresentationResultBody = {
   readonly studentId: string;
   readonly accepted: boolean;
   readonly reason: string;
+  readonly rejectionKind: "none" | "verificationFailed" | "duplicate";
 };
 
 type UniversityProtocolMessage =
@@ -207,6 +208,9 @@ export type UniversityProtocolFlowResult = {
     readonly submissionCount: number;
     readonly resultCount: number;
     readonly acceptedCount: number;
+    readonly rejectedCount: number;
+    readonly duplicateRejectedCount: number;
+    readonly verificationRejectedCount: number;
     readonly companyAcceptedCounts: Readonly<Record<string, number>>;
     readonly messages: readonly UniversityProtocolMessage[];
   };
@@ -216,6 +220,8 @@ export type UniversityProtocolFlowResult = {
     readonly resultCount: number;
     readonly acceptedCount: number;
     readonly rejectedCount: number;
+    readonly duplicateRejectedCount: number;
+    readonly verificationRejectedCount: number;
     readonly outcomes: Readonly<Record<string, "accepted" | "rejected">>;
     readonly messages: readonly UniversityProtocolMessage[];
   };
@@ -572,6 +578,8 @@ class UniversityCompanyVerifierAgent {
   readonly simulator = new UniversityVerifierSimulator();
   readonly processedThreadIds = new Set<string>();
   acceptedCount = 0;
+  duplicateRejectedCount = 0;
+  verificationRejectedCount = 0;
 
   constructor(readonly company: CompanyRecord) {
     this.profile = verifierProfile(
@@ -632,11 +640,14 @@ class UniversityCompanyVerifierAgent {
   ): void {
     let accepted = true;
     let reason = "job application accepted";
+    let rejectionKind: UniversityPresentationResultBody["rejectionKind"] = "none";
     const threadIdHex = hex(message.envelope.threadId);
 
     if (this.processedThreadIds.has(threadIdHex)) {
       accepted = false;
       reason = `duplicate job application submission for thread ${threadIdHex}`;
+      rejectionKind = "duplicate";
+      this.duplicateRejectedCount += 1;
     } else {
       this.processedThreadIds.add(threadIdHex);
       try {
@@ -651,6 +662,8 @@ class UniversityCompanyVerifierAgent {
       } catch (error) {
         accepted = false;
         reason = error instanceof Error ? error.message : String(error);
+        rejectionKind = "verificationFailed";
+        this.verificationRejectedCount += 1;
       }
     }
 
@@ -670,6 +683,7 @@ class UniversityCompanyVerifierAgent {
         studentId: message.body.studentId,
         accepted,
         reason,
+        rejectionKind,
       },
     };
 
@@ -688,7 +702,8 @@ class UniversityMallVerifierAgent {
   readonly simulator = new UniversityVerifierSimulator();
   readonly processedThreadIds = new Set<string>();
   acceptedCount = 0;
-  rejectedCount = 0;
+  duplicateRejectedCount = 0;
+  verificationRejectedCount = 0;
 
   constructor(readonly mall: MallRecord) {
     this.profile = verifierProfile(mall.mallId, mall.verifierDidUrl, mall.verifierMethodId);
@@ -742,12 +757,14 @@ class UniversityMallVerifierAgent {
   ): void {
     let accepted = true;
     let reason = "mall discount accepted";
+    let rejectionKind: UniversityPresentationResultBody["rejectionKind"] = "none";
     const threadIdHex = hex(message.envelope.threadId);
 
     if (this.processedThreadIds.has(threadIdHex)) {
       accepted = false;
-      this.rejectedCount += 1;
       reason = `duplicate mall discount submission for thread ${threadIdHex}`;
+      rejectionKind = "duplicate";
+      this.duplicateRejectedCount += 1;
     } else {
       this.processedThreadIds.add(threadIdHex);
       try {
@@ -762,7 +779,8 @@ class UniversityMallVerifierAgent {
       } catch (error) {
         accepted = false;
         reason = error instanceof Error ? error.message : String(error);
-        this.rejectedCount += 1;
+        rejectionKind = "verificationFailed";
+        this.verificationRejectedCount += 1;
       }
     }
 
@@ -782,6 +800,7 @@ class UniversityMallVerifierAgent {
         studentId: message.body.studentId,
         accepted,
         reason,
+        rejectionKind,
       },
     };
 
@@ -860,9 +879,20 @@ export class UniversityProtocolFlowRunner {
     const companyAcceptedCounts = Object.fromEntries(
       [...this.companyAgents.entries()].map(([companyId, agent]) => [companyId, agent.acceptedCount]),
     );
+    const companyDuplicateRejectedCount = [...this.companyAgents.values()].reduce(
+      (sum, agent) => sum + agent.duplicateRejectedCount,
+      0,
+    );
+    const companyVerificationRejectedCount = [...this.companyAgents.values()].reduce(
+      (sum, agent) => sum + agent.verificationRejectedCount,
+      0,
+    );
     const discountOutcomes = Object.fromEntries(
       this.discountApplicants.map((applicant) => {
         const student = this.studentAgents.get(applicant.studentId)!;
+        // The first result is the canonical business decision; any later result
+        // for the same thread is necessarily a duplicate rejection emitted by
+        // the protocol guard and must not overwrite the original outcome.
         const firstResult = student.receivedResults.filter(
           (result) => result.kind === "mallDiscount",
         ).at(0);
@@ -889,6 +919,9 @@ export class UniversityProtocolFlowRunner {
         submissionCount: this.jobMessages.filter((message) => message.type === "presentation:submission").length,
         resultCount: this.jobMessages.filter((message) => message.type === "presentation:result").length,
         acceptedCount: Object.values(companyAcceptedCounts).reduce((sum, count) => sum + count, 0),
+        rejectedCount: companyDuplicateRejectedCount + companyVerificationRejectedCount,
+        duplicateRejectedCount: companyDuplicateRejectedCount,
+        verificationRejectedCount: companyVerificationRejectedCount,
         companyAcceptedCounts,
         messages: this.jobMessages,
       },
@@ -897,7 +930,11 @@ export class UniversityProtocolFlowRunner {
         submissionCount: this.discountMessages.filter((message) => message.type === "presentation:submission").length,
         resultCount: this.discountMessages.filter((message) => message.type === "presentation:result").length,
         acceptedCount: this.mallAgent.acceptedCount,
-        rejectedCount: this.mallAgent.rejectedCount,
+        rejectedCount:
+          this.mallAgent.duplicateRejectedCount +
+          this.mallAgent.verificationRejectedCount,
+        duplicateRejectedCount: this.mallAgent.duplicateRejectedCount,
+        verificationRejectedCount: this.mallAgent.verificationRejectedCount,
         outcomes: discountOutcomes,
         messages: this.discountMessages,
       },

@@ -9,6 +9,7 @@ type PresentationResultShape = {
   readonly body: {
     readonly accepted: boolean;
     readonly reason: string;
+    readonly rejectionKind: "none" | "verificationFailed" | "duplicate";
   };
 };
 
@@ -66,6 +67,7 @@ describe("university protocol negative policy flow", () => {
     );
     expect(
       rejectedResults.every((message) =>
+        message.body.rejectionKind === "verificationFailed" &&
         message.body.reason.includes("must not enforce a minimum grade"),
       ),
     ).toBe(true);
