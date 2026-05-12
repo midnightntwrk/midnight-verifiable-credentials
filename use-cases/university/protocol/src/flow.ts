@@ -171,6 +171,13 @@ type UniversityPresentationResultBody = {
   readonly rejectionKind: "none" | "verificationFailed" | "duplicate";
 };
 
+type VerifierRequestPolicyOverride = Omit<
+  Partial<VerifierRequestPolicy>,
+  "minimumFinalGrade"
+> & {
+  readonly minimumFinalGrade?: number | bigint;
+};
+
 type UniversityProtocolMessage =
   | ProtocolMessage<UniversityIssuanceRequestBody>
   | ProtocolMessage<UniversityIssuanceResultBody>
@@ -241,7 +248,7 @@ export type UniversityProtocolDataPaths = {
 
 export type UniversityProtocolExerciseOptions = {
   readonly companyRequestPolicyOverrides?: Readonly<
-    Record<string, Partial<VerifierRequestPolicy>>
+    Record<string, VerifierRequestPolicyOverride>
   >;
   readonly duplicateJobApplicationSubmissionStudentIds?: readonly string[];
   readonly duplicateMallDiscountSubmissionStudentIds?: readonly string[];
@@ -297,18 +304,21 @@ const resultBodiesByStudent = (
 
 const applyRequestPolicyOverrides = (
   request: UniversityDiplomaPresentationRequest,
-  overrides?: Partial<VerifierRequestPolicy>,
+  overrides?: VerifierRequestPolicyOverride,
 ): UniversityDiplomaPresentationRequest => {
   if (!overrides) {
     return request;
   }
+  const { minimumFinalGrade, ...restOverrides } = overrides;
   return {
     ...request,
-    ...overrides,
+    ...restOverrides,
+    // Exercise options accept numeric grade thresholds for readability, but
+    // the request surface stores the predicate threshold as a bigint.
     minimumFinalGrade:
-      overrides.minimumFinalGrade === undefined
+      minimumFinalGrade === undefined
         ? request.minimumFinalGrade
-        : BigInt(overrides.minimumFinalGrade),
+        : BigInt(minimumFinalGrade),
   };
 };
 
@@ -635,7 +645,7 @@ class UniversityCompanyVerifierAgent {
 
   constructor(
     readonly company: CompanyRecord,
-    readonly requestPolicyOverrides?: Partial<VerifierRequestPolicy>,
+    readonly requestPolicyOverrides?: VerifierRequestPolicyOverride,
   ) {
     this.profile = verifierProfile(
       company.companyId,
@@ -877,6 +887,8 @@ class UniversityMallVerifierAgent {
 export class UniversityProtocolFlowRunner {
   readonly dataPaths: UniversityProtocolDataPaths;
   readonly exerciseOptions: UniversityProtocolExerciseOptions;
+  readonly duplicateJobApplicationSubmissionStudentIds: ReadonlySet<string>;
+  readonly duplicateMallDiscountSubmissionStudentIds: ReadonlySet<string>;
   readonly university: UniversityProfile;
   readonly students: StudentRecord[];
   readonly companies: CompanyRecord[];
@@ -906,6 +918,12 @@ export class UniversityProtocolFlowRunner {
       duplicateMallDiscountSubmissionStudentIds:
         options?.exerciseOptions?.duplicateMallDiscountSubmissionStudentIds ?? [],
     };
+    this.duplicateJobApplicationSubmissionStudentIds = new Set(
+      this.exerciseOptions.duplicateJobApplicationSubmissionStudentIds ?? [],
+    );
+    this.duplicateMallDiscountSubmissionStudentIds = new Set(
+      this.exerciseOptions.duplicateMallDiscountSubmissionStudentIds ?? [],
+    );
     this.university = readJson<UniversityProfile>(this.dataPaths.university);
     this.students = readJson<StudentRecord[]>(this.dataPaths.students);
     this.companies = readJson<CompanyRecord[]>(this.dataPaths.companies);
@@ -1083,11 +1101,7 @@ export class UniversityProtocolFlowRunner {
         this.transcript,
         this.jobMessages,
       );
-      if (
-        this.exerciseOptions.duplicateJobApplicationSubmissionStudentIds?.includes(
-          student.record.studentId,
-        )
-      ) {
+      if (this.duplicateJobApplicationSubmissionStudentIds.has(student.record.studentId)) {
         student.receivePresentationRequestAndSendSubmission(
           this.bus,
           request,
@@ -1151,11 +1165,7 @@ export class UniversityProtocolFlowRunner {
         this.transcript,
         this.discountMessages,
       );
-      if (
-        this.exerciseOptions.duplicateMallDiscountSubmissionStudentIds?.includes(
-          student.record.studentId,
-        )
-      ) {
+      if (this.duplicateMallDiscountSubmissionStudentIds.has(student.record.studentId)) {
         student.receivePresentationRequestAndSendSubmission(
           this.bus,
           request,

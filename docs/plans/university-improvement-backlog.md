@@ -4,7 +4,9 @@ Status:
 
 - ordered execution queue for the next university-focused stacked PR wave
 - each item is intended to be large enough to stand as its own reviewable PR
-- item `1` is the current in-flight slice on top of `#217`
+- item `1` is opened on the stack as `#218`
+- item `2` is the current in-flight slice on top of `#218`
+- last reviewed: `2026-05-13`
 
 Scope boundary:
 
@@ -16,6 +18,8 @@ Scope boundary:
 ## Queue
 
 1. `negative-bdd-and-exercise-options`
+- status:
+  - opened on the stack as `#218`
 - problem:
   - negative university flows still rely on ad hoc test mutation and are not visible in executable BDD
 - scope:
@@ -29,6 +33,8 @@ Scope boundary:
   - stacked on `#217`
 
 2. `protocol-transcript-exporter`
+- status:
+  - current in-flight slice
 - problem:
   - the report is human-readable, but downstream tooling still lacks a stable machine-readable university transcript export
 - scope:
