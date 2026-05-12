@@ -13,6 +13,9 @@ Purpose:
 - define a metric vocabulary for later executable orchestration work
 - execute the current virtual-agent university flow against the checked-in
   `university-diploma` family package
+- expose a separate programmatic batch-sweep benchmark lane so issuance
+  bottlenecks can be compared across batch sizes without going through the
+  Serenity report
 
 Files:
 
@@ -29,8 +32,16 @@ Execution:
 
 - root lane:
   - `./run.sh university-bdd`
+- issuance benchmark lane:
+  - `./run.sh university-batch-sweep`
 - direct workspace lane:
   - `npm run test:bdd:university`
+  - `npm run test:batch-sweep -w use-cases/university/scenarios`
+
+Batch-sweep artifacts:
+
+- `./target/batch-sweep/summary.json`
+- `./target/batch-sweep/summary.md`
 
 Current boundary:
 

@@ -26,6 +26,8 @@ Status:
 - named data profiles now define the canonical university fixtures:
   `readable-10` for human-readable narrative lanes and `stress-100` for
   throughput-oriented protocol lanes
+- a dedicated batch-sweep lane now compares issuance behavior across multiple
+  batch sizes without mixing that experiment into the readable BDD report
 
 ## Purpose
 
@@ -250,6 +252,17 @@ Naming rule:
 
 - `*_ms` entries are real timed samples captured by the harness
 - `*_count` entries are tagged event counters, not latency measurements
+
+Batch-sweep lane:
+
+- `./run.sh university-batch-sweep`
+- output:
+  - `./scenarios/target/batch-sweep/summary.json`
+  - `./scenarios/target/batch-sweep/summary.md`
+- scope:
+  - issuance harness only
+  - fixed student count with multiple batch sizes
+  - queue-wait, compile, sign, delivery, and credentials-per-second comparison
 
 ### Actor bootstrap metrics
 

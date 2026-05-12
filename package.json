@@ -129,7 +129,9 @@
     "build:integration-prereqs:protocol": "npm run build:integration-prereqs:shared && npm run build:cone:protocol",
     "build:university-data-profiles:list": "node ./use-cases/university/scripts/list-data-profiles.mjs --json",
     "build:university-data-profiles:check": "node ./use-cases/university/scripts/check-data-profiles.mjs",
-    "ci:university-data-profiles": "npm run build:university-data-profiles:list && npm run build:university-data-profiles:check"
+    "ci:university-data-profiles": "npm run build:university-data-profiles:list && npm run build:university-data-profiles:check",
+    "test:university-batch-sweep": "npm run test:batch-sweep -w use-cases/university/scenarios",
+    "ci:university-batch-sweep": "npm run typecheck -w use-cases/university/scenarios && npm run test:university-batch-sweep"
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",

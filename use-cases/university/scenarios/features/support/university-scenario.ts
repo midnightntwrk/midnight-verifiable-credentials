@@ -456,7 +456,7 @@ const average = (values: readonly number[]): number => {
 };
 
 export class UseUniversityScenario extends Ability {
-  readonly #paths: ScenarioDataPaths = { ...defaultDataPaths };
+  readonly #paths: ScenarioDataPaths;
   readonly #exerciseOptions: {
     companyRequestPolicyOverrides: Record<string, Partial<VerifierRequestPolicy>>;
     duplicateIssuanceRequestStudentIds: Set<string>;
@@ -479,12 +479,18 @@ export class UseUniversityScenario extends Ability {
   #protocolResult: UniversityProtocolFlowResult | undefined;
   #selectedDiscountStudentId: string | undefined;
 
-  constructor() {
+  constructor(dataPaths: Partial<ScenarioDataPaths> = {}) {
     super();
+    this.#paths = {
+      ...defaultDataPaths,
+      ...dataPaths,
+    };
   }
 
-  static locally(): UseUniversityScenario {
-    return new UseUniversityScenario();
+  static locally(options: {
+    readonly dataPaths?: Partial<ScenarioDataPaths>;
+  } = {}): UseUniversityScenario {
+    return new UseUniversityScenario(options.dataPaths);
   }
 
   static from(actor: UsesAbilities): UseUniversityScenario {

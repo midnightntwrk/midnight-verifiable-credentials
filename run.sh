@@ -19,6 +19,7 @@ Targets:
   bdd-negative               Serenity/JS BDD negative-path scenarios
   bdd-all                    Full Serenity/JS BDD scenario set
   university-bdd             Executable university diploma BDD scenarios
+  university-batch-sweep     Issuance batch-size sweep with summary artifacts
   university-data-profiles   Validate committed readable/stress university data profiles
   university-protocol        Protocol-style multi-party university flow lane
   university-protocol-export Machine-readable university protocol transcript export
@@ -98,7 +99,7 @@ forward_args=()
 
 if [[ $# -gt 0 ]]; then
   case "$1" in
-    full|lint|typecheck|build|test|bdd|bdd-negative|bdd-all|university-bdd|university-data-profiles|university-protocol|university-protocol-export|university-protocol-stress|hello-smoke|dummy-claims-lab|revocation|integration|integration-demo-contract|integration-protocol|targets|help|-h|--help)
+    full|lint|typecheck|build|test|bdd|bdd-negative|bdd-all|university-bdd|university-batch-sweep|university-data-profiles|university-protocol|university-protocol-export|university-protocol-stress|hello-smoke|dummy-claims-lab|revocation|integration|integration-demo-contract|integration-protocol|targets|help|-h|--help)
       target="$1"
       shift
       ;;
@@ -219,6 +220,10 @@ case "$target" in
   university-bdd)
     echo "[run] University diploma BDD lane"
     npm run ci:university-bdd
+    ;;
+  university-batch-sweep)
+    echo "[run] University issuance batch-sweep lane"
+    npm run ci:university-batch-sweep
     ;;
   university-data-profiles)
     echo "[run] University data-profile validation lane"

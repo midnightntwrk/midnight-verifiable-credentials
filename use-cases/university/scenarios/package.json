@@ -15,7 +15,10 @@
     "report:setup": "serenity-bdd update",
     "test:report": "npm run report:setup && serenity-bdd run --features features --output target/site/serenity",
     "test:all": "npm run clean && npm run test:execute && npm run test:report",
-    "test:ci": "npm run test:all"
+    "test:ci": "npm run test:all",
+    "test:batch-sweep:contract": "npm run prepare:deps && npx ts-node-esm ./scripts/check-batch-sweep-contract.ts",
+    "batch-sweep:run": "npm run prepare:deps && npx ts-node-esm ./scripts/run-batch-sweep.ts",
+    "test:batch-sweep": "npm run test:batch-sweep:contract && npm run batch-sweep:run"
   },
   "dependencies": {
     "@cucumber/cucumber": "^11.3.0",
