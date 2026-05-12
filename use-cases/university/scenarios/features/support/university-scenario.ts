@@ -493,13 +493,16 @@ export class UseUniversityScenario extends Ability {
   mallPolicySummary(): {
     readonly mallName: string;
     readonly disclosures: readonly string[];
-    readonly minimumFinalGrade: number;
+    readonly enforceMinimumFinalGrade: boolean;
+    readonly minimumFinalGrade: number | null;
   } {
     const mall = readJson<MallRecord>(this.#paths.mall);
     return {
       mallName: mall.mallName,
       disclosures: disclosureNamesForPolicy(mall.requestPolicy),
-      minimumFinalGrade: mall.requestPolicy.minimumFinalGrade ?? 0,
+      enforceMinimumFinalGrade:
+        mall.requestPolicy.enforceMinimumFinalGrade ?? false,
+      minimumFinalGrade: mall.requestPolicy.minimumFinalGrade ?? null,
     };
   }
 
