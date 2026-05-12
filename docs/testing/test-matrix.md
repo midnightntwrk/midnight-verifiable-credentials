@@ -116,17 +116,17 @@ Status: current implemented test surface as of 2026-05-11.
   - credential claim-root tampering
   - holder-binding mismatch
 
-### University narrative BDD specs
+### University executable BDD specs
 
 - `use-cases/university/scenarios/features/university_diploma_batch_issuance.feature`
-  - narrative student-initiated batch issuance flow for 100 students
+  - executable student-initiated batch issuance flow for 100 students
 - `use-cases/university/scenarios/features/university_diploma_job_application.feature`
-  - narrative employer verification flow across 3 companies
+  - executable employer verification flow across 3 companies
 - `use-cases/university/scenarios/features/university_diploma_discount.feature`
-  - narrative mall discount flow with mixed grade outcomes
-- current boundary:
-  - these are intentionally verbose design/BDD artifacts, not yet executable
-    Serenity/Cucumber scenarios
+  - executable mall discount flow with mixed grade outcomes
+- coverage boundary:
+  - these scenarios run as one-process virtual-agent orchestration with metrics
+  - they do not yet model real multi-process or networked party isolation
 
 ### Historical placeholder package names
 

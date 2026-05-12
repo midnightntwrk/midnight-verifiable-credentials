@@ -89,7 +89,7 @@ Use this when you need:
 - a non-revocable explicit-holder academic diploma family
 - a larger data-backed issuer/holder/verifier blueprint than `hello-family`
 - batch issuance planning across many holders
-- narrative BDD scenarios for employer and student-discount verifier flows
+- executable BDD scenarios for employer and student-discount verifier flows
 
 Current constraint:
 

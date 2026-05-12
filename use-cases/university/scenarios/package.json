@@ -1,0 +1,30 @@
+{
+  "name": "vc-university-bdd-scenarios",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24",
+    "npm": ">=10"
+  },
+  "scripts": {
+    "clean": "rm -rf target",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test:execute": "cucumber-js --config cucumber.cjs",
+    "report:setup": "serenity-bdd update",
+    "test:report": "npm run report:setup && serenity-bdd run --features features --output target/site/serenity",
+    "test:all": "npm run clean && npm run test:execute && npm run test:report",
+    "test:ci": "npm run test:all"
+  },
+  "dependencies": {
+    "@cucumber/cucumber": "^11.3.0",
+    "@midnight-ntwrk/midnight-did-credentials-university-diploma": "*",
+    "@serenity-js/assertions": "^3.34.0",
+    "@serenity-js/console-reporter": "^3.34.0",
+    "@serenity-js/core": "^3.34.0",
+    "@serenity-js/cucumber": "^3.34.0",
+    "@serenity-js/serenity-bdd": "^3.34.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}

@@ -34,7 +34,13 @@ type Signer = {
 
 type ProofContext = "issuance" | "presentation";
 
-type UniversityDiplomaDisclosureOptions = {
+export type UniversityDiplomaSignerOptions = {
+  readonly label: string;
+  readonly secretKey: bigint;
+  readonly methodId?: string;
+};
+
+export type UniversityDiplomaDisclosureOptions = {
   readonly revealDiplomaId?: boolean;
   readonly revealStudentId?: boolean;
   readonly revealGraduateName?: boolean;
@@ -48,7 +54,7 @@ type UniversityDiplomaDisclosureOptions = {
   readonly revealCreditsEarned?: boolean;
 };
 
-type UniversityDiplomaRequestOptions = {
+export type UniversityDiplomaRequestOptions = {
   readonly requireDiplomaIdDisclosure?: boolean;
   readonly requireStudentIdDisclosure?: boolean;
   readonly requireGraduateNameDisclosure?: boolean;
@@ -260,21 +266,45 @@ const createDisclosurePayload = ({
 
 export const createUniversityDiplomaFixture = ({
   verifierChallengeHash = sha256("challenge:university-diploma"),
+  issuanceChallengeHash = sha256("challenge:university-diploma:issuance"),
   disclosure = {},
   disclosedOverrides = {},
   request = {},
   claimOverrides = {},
+  issuerConfig,
+  holderConfig,
+  issuedAt = 40_000n,
+  credentialProofCreatedAt = 40_001n,
+  presentationProofCreatedAt = 40_002n,
 }: {
   readonly verifierChallengeHash?: Uint8Array;
+  readonly issuanceChallengeHash?: Uint8Array;
   readonly disclosure?: UniversityDiplomaDisclosureOptions;
   readonly disclosedOverrides?: Partial<
     UniversityDiplomaPresentation["disclosed"]
   >;
   readonly request?: UniversityDiplomaRequestOptions;
   readonly claimOverrides?: Partial<UniversityDiplomaClaims>;
+  readonly issuerConfig?: UniversityDiplomaSignerOptions;
+  readonly holderConfig?: UniversityDiplomaSignerOptions;
+  readonly issuedAt?: bigint;
+  readonly credentialProofCreatedAt?: bigint;
+  readonly presentationProofCreatedAt?: bigint;
 } = {}): UniversityDiplomaFixture => {
-  const issuer = createSigner("university-issuer", 141414141n);
-  const holder = createSigner("university-student-holder", 282828282n);
+  const issuer = issuerConfig
+    ? createSigner(
+        issuerConfig.label,
+        issuerConfig.secretKey,
+        issuerConfig.methodId,
+      )
+    : createSigner("university-issuer", 141414141n);
+  const holder = holderConfig
+    ? createSigner(
+        holderConfig.label,
+        holderConfig.secretKey,
+        holderConfig.methodId,
+      )
+    : createSigner("university-student-holder", 282828282n);
   const claims = createUniversityDiplomaClaims(claimOverrides);
 
   const credential: UniversityDiplomaCredential = {
@@ -290,7 +320,7 @@ export const createUniversityDiplomaFixture = ({
       holderVerificationMethodRef: holder.verificationMethodRef,
     },
     statusBinding: {},
-    issuedAt: 40_000n,
+    issuedAt,
     hasExpiration: false,
     expiresAt: 0n,
     claims,
@@ -301,8 +331,8 @@ export const createUniversityDiplomaFixture = ({
     bodyRoot: pureCircuits.universityDiplomaCredentialBodyRoot(credential),
     context: "issuance",
     signer: issuer,
-    createdAt: 40_001n,
-    challengeHash: sha256("challenge:university-diploma:issuance"),
+    createdAt: credentialProofCreatedAt,
+    challengeHash: issuanceChallengeHash,
   });
 
   const presentationRequest = createRequest({
@@ -330,7 +360,7 @@ export const createUniversityDiplomaFixture = ({
     bodyRoot: pureCircuits.universityDiplomaPresentationBodyRoot(presentation),
     context: "presentation",
     signer: holder,
-    createdAt: 40_002n,
+    createdAt: presentationProofCreatedAt,
     challengeHash: verifierChallengeHash,
   });
 

@@ -155,7 +155,7 @@ These are necessary and valuable, but they are not the core VC spec.
 - `credentials-offchain-did`
 - `standalone-environment`
 - BDD scenario harnesses
-- narrative university use-case BDD specifications
+- executable university use-case BDD specifications
 - witness builders, attestation builders, simulators, and CI/build scripts
 
 ## Perspective 1: Engineering / Integration

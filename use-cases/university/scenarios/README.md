@@ -5,6 +5,8 @@ Purpose:
 - document the full university diploma prototype flow in BDD style
 - make each request, response, and verification check visible in the scenario text
 - define a metric vocabulary for later executable orchestration work
+- execute the current virtual-agent university flow against the checked-in
+  `university-diploma` family package
 
 Files:
 
@@ -15,9 +17,18 @@ Files:
 - mall discount:
   - [`./features/university_diploma_discount.feature`](./features/university_diploma_discount.feature)
 
-Important boundary:
+Execution:
 
-- these feature files are currently narrative BDD specifications, not yet a
-  runnable Serenity/Cucumber package like `use-cases/age-gate/scenarios`
-- the comments are intentionally verbose so a later automation layer can map
-  them into concrete request/response tasks and metric collectors
+- root lane:
+  - `./run.sh university-bdd`
+- direct workspace lane:
+  - `npm run test:bdd:university`
+
+Current boundary:
+
+- this package now executes the committed university scenarios with virtual
+  issuer, student, company, and mall agents in one process
+- it is still a local reference harness, not a Docker-backed or networked SSI
+  deployment
+- the comments remain intentionally verbose so the step text still acts as
+  living documentation even though the scenarios are now executable

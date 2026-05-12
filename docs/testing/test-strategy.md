@@ -50,6 +50,8 @@ Current validated CI shape:
 - living-documentation scenarios now have a separate TypeScript BDD lane shape
   under `use-cases/age-gate/scenarios/`; this is not a docs-only change class and should be
   treated as code
+- the university diploma slice now has the same executable TypeScript BDD lane
+  shape under `use-cases/university/scenarios/`
 - CI change classes are mutually exclusive:
   - `docs_only` for markdown/docs-only diffs
   - `bdd_only` for the focused Serenity/JS scenario surface

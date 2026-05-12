@@ -245,6 +245,11 @@ locate the first serious scaling bottlenecks.
 - implement 3 virtual company verifier agents and 1 mall verifier agent
 - expose a metric collector around every external message boundary
 
+Current status:
+
+- implemented in the checked-in executable scenario package:
+  - [`./scenarios/README.md`](./scenarios/README.md)
+
 ### Phase 3. Batch issuance orchestration
 
 - let students initiate issuance individually

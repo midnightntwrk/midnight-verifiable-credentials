@@ -122,9 +122,10 @@ Advanced in the current open maturity stack, but not yet on `develop`:
   - verifier-lab and root-runner stack:
     - `#202`
     - `#203`
-- university diploma prototype and narrative use-case execution:
+- university diploma prototype and executable use-case execution:
   - `#205`
   - `#206`
+  - `#207`
 
 Practical remaining backlog after the current open stack:
 

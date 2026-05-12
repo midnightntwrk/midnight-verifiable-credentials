@@ -59,9 +59,9 @@
 - university diploma use case:
   - [`../use-cases/university/README.md`](../use-cases/university/README.md)
   - for engineers who need the large DID-backed issuance, job-application, and student-discount blueprint
-- university diploma narrative BDD scenarios:
+- university diploma executable BDD scenarios:
   - [`../use-cases/university/scenarios/README.md`](../use-cases/university/scenarios/README.md)
-  - for engineers translating the university use case into executable orchestration later
+  - for engineers who need a checked-in virtual-agent orchestration pack with metrics
 - starter templates:
   - [`templates/verifier-contract-template.compact.md`](./templates/verifier-contract-template.compact.md)
   - [`templates/family-scaffold-template.md`](./templates/family-scaffold-template.md)
