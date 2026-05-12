@@ -11,6 +11,11 @@ Feature: Selected students present diploma credentials to request a mall discoun
   # - discount_verification_ms
   # - discount_acceptance_rate
   # - discount_rejection_reason_count
+  #
+  # DATA SOURCES:
+  # - use-cases/university/data/mall.json
+  # - use-cases/university/data/discount-applicants.json
+  # - use-cases/university/data/students.json
 
   Scenario Outline: A selected student applies for the mall discount with a diploma presentation
     # REQUEST:

@@ -6,6 +6,9 @@ import { UseUniversityScenario } from "../support/university-scenario.js";
 const engineer = () => actorCalled("Engineer");
 const universityScenario = () => UseUniversityScenario.from(engineer());
 
+const jsonReportReplacer = (_key: string, value: unknown): unknown =>
+  typeof value === "bigint" ? value.toString() : value;
+
 type StepInsight = {
   readonly request: string;
   readonly response: string;
@@ -13,11 +16,11 @@ type StepInsight = {
   readonly dto: unknown;
 };
 
-const logInsight = async (
+const logInsight = (
   title: string,
   payload: StepInsight,
 ) => engineer().attemptsTo(
-  Log.the(`${title}\n${JSON.stringify(payload, null, 2)}`),
+  Log.the(`${title}\n${JSON.stringify(payload, jsonReportReplacer, 2)}`),
 );
 
 const expectMetricNames = (actual: readonly string[], expected: readonly string[]) => {

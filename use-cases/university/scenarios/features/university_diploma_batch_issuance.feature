@@ -16,6 +16,11 @@ Feature: University batch issues non-revocable diploma credentials to graduating
   # - issuance_batch_sign_ms
   # - issuance_batch_delivery_ms
   # - issuance_credentials_per_second
+  #
+  # DATA SOURCES:
+  # - use-cases/university/data/university.json
+  # - use-cases/university/data/students.json
+  # - use-cases/university/data/issuance-batches.json
 
   Scenario: Example University issues 10 diploma credentials across 2 committed graduation batches
     # REQUEST:

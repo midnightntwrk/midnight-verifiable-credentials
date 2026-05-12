@@ -13,6 +13,11 @@ Feature: Students apply to companies by presenting university diploma credential
   # - company_verification_ms
   # - job_application_acceptance_rate
   # - job_applications_per_second
+  #
+  # DATA SOURCES:
+  # - use-cases/university/data/students.json
+  # - use-cases/university/data/companies.json
+  # - use-cases/university/data/university.json
 
   Scenario: 10 students successfully create job applications across 3 verifier companies
     # REQUEST:
