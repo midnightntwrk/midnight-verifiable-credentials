@@ -34,6 +34,23 @@ const expectMetricNames = (actual: readonly string[], expected: readonly string[
   }
 };
 
+const rejectedCountForKind = (
+  summary: {
+    readonly verificationRejectedCount: number;
+    readonly duplicateRejectedCount: number;
+  },
+  expectedRejectionKind: string,
+): number => {
+  switch (expectedRejectionKind) {
+    case "verificationFailed":
+      return summary.verificationRejectedCount;
+    case "duplicate":
+      return summary.duplicateRejectedCount;
+    default:
+      throw new Error(`Unknown rejection kind ${expectedRejectionKind}`);
+  }
+};
+
 Given("the {string} issuer DID instance is available", async (expectedUniversityName: string) => {
   const summary = universityScenario().universityIssuerSummary();
   if (summary.universityName !== expectedUniversityName) {
@@ -391,12 +408,10 @@ Then(
         `Expected ${companyId} to accept 0 routed applications, got ${summary.acceptedCount}`,
       );
     }
-    const matchingRejectedCount =
-      expectedRejectionKind === "verificationFailed"
-        ? summary.verificationRejectedCount
-        : expectedRejectionKind === "duplicate"
-          ? summary.duplicateRejectedCount
-          : 0;
+    const matchingRejectedCount = rejectedCountForKind(
+      summary,
+      expectedRejectionKind,
+    );
     if (matchingRejectedCount !== summary.routedStudentIds.length) {
       throw new Error(
         `Expected ${summary.routedStudentIds.length} ${expectedRejectionKind} rejections for ${companyId}, got ${matchingRejectedCount}`,
