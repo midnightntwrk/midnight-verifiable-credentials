@@ -105,6 +105,9 @@
 - matrix:
   - [`testing/test-matrix.md`](./testing/test-matrix.md)
   - for the currently implemented test surface
+- markdown link validation:
+  - root `npm run docs:links`
+  - for the checked-in relative-link fast path used by docs-only CI
 
 ## Decisions and plans
 

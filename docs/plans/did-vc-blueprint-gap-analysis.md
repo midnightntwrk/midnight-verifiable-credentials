@@ -533,7 +533,7 @@ concrete claim that is directly supported by checked-in evidence.
 ### Claude
 
 - recorded artifact:
-  - local VC review artifact: `../../review/claude-3p-audit-1.txt`
+  - local-only VC review artifact path: `../../review/claude-3p-audit-1.txt`
 - triaged Claude findings that materially sharpen the current reading:
   1. the current starter material needed tiny runnable entrypoints:
      that gap is now materially reduced by the hello-family, hello-verifier,
@@ -594,7 +594,7 @@ Concrete Codex recommendations that should affect execution planning:
 
 Recorded artifact:
 
-- sibling DID repo audit artifact:
+- sibling DID repo local-only audit artifact path:
   `../midnight-did/review/did-vc-audit/codex-digest-audit.txt`
 
 ## Current Recommended Execution Order
