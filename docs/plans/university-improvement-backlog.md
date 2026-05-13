@@ -14,6 +14,7 @@ Status:
 - item `7` is opened on the stack as `#225`
 - item `10` is opened on the stack as `#226`
 - item `9` is opened on the stack as `#227`
+- item `11` now has implementation foundation on `codex/vc-university-bdd-standalone-hybrid`
 - item `12` is the current in-flight slice on top of `#227`
 - last reviewed: `2026-05-13`
 
@@ -172,6 +173,8 @@ Scope boundary:
   - `8`
 
 11. `flow-module-split`
+- status:
+  - runtime/proof backend seam extracted on `codex/vc-university-bdd-standalone-hybrid`
 - problem:
   - `use-cases/university/protocol/src/flow.ts` is still too large for comfortable maintenance
 - scope:
