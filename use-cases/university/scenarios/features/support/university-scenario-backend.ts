@@ -6,6 +6,15 @@ import { fileURLToPath } from "node:url";
 
 import { ecMulGenerator } from "@midnight-ntwrk/compact-runtime";
 import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
+import {
+  DeterministicUniversityPartyRuntime,
+  ProvisionedUniversityPartyRuntime,
+  SimulatorUniversityProofExecutionBackend,
+  StandaloneHybridUniversityProofExecutionBackend,
+  type UniversityPartyRecord,
+  type UniversityPartyRuntime,
+  type UniversityProofExecutionBackend,
+} from "@midnight-ntwrk/midnight-did-university-protocol/testing";
 
 import {
   containerRuntimeAvailable,
@@ -127,6 +136,10 @@ export type UniversityScenarioBackendMetadata = {
 export type UniversityScenarioBackendContext = {
   readonly dataPaths: ScenarioDataPaths;
   readonly metadata: UniversityScenarioBackendMetadata;
+  readonly protocol: {
+    readonly partyRuntime: UniversityPartyRuntime;
+    readonly proofExecutionBackend: UniversityProofExecutionBackend;
+  };
 };
 
 export interface UniversityScenarioBackend {
@@ -198,15 +211,42 @@ const signerForDidString = (
   role: "issuer" | "holder" | "verifier",
   didString: string,
   methodId: string,
-): { readonly publicKey: ReturnType<typeof ecMulGenerator>; readonly methodId: string } => {
+): {
+  readonly secretKey: bigint;
+  readonly publicKey: ReturnType<typeof ecMulGenerator>;
+  readonly methodId: string;
+} => {
   const prefix =
     role === "issuer" ? "issuer" : role === "holder" ? "holder" : "verifier";
   const secretKey = scalarForLabel(`${prefix}:${didString}`);
   return {
+    secretKey,
     publicKey: ecMulGenerator(secretKey),
     methodId,
   };
 };
+
+const partyRecordForDid = (options: {
+  readonly partyId: string;
+  readonly role: "issuer" | "holder" | "verifier";
+  readonly didString: string;
+  readonly methodId: string;
+  readonly contractAddress: string;
+  readonly verificationMethodRef: string;
+}): UniversityPartyRecord => ({
+  partyId: options.partyId,
+  didUrl: options.didString,
+  methodId: options.methodId,
+  secretKey: signerForDidString(
+    options.role,
+    options.didString,
+    options.methodId,
+  ).secretKey,
+  role: options.role,
+  source: "standalone-provisioned",
+  contractAddress: options.contractAddress,
+  verificationMethodRef: options.verificationMethodRef,
+});
 
 const measureAsync = async <T>(
   metrics: BackendMetric[],
@@ -237,6 +277,10 @@ const backendContextForSimulator = (
     usesRealDidInstances: false,
     generatedOverlayDirectory: null,
     metrics: [],
+  },
+  protocol: {
+    partyRuntime: new DeterministicUniversityPartyRuntime(),
+    proofExecutionBackend: new SimulatorUniversityProofExecutionBackend(),
   },
 });
 
@@ -354,6 +398,62 @@ class StandaloneHybridUniversityScenarioBackend
       { actorCount: 1 },
     );
 
+    const overlayUniversityMethodId = universityProfile.verificationMethodRef.slice(
+      universityProfile.didString.length,
+    );
+    const overlayMallMethodId = mallProfile.verificationMethodRef.slice(
+      mallProfile.didString.length,
+    );
+
+    const provisionedPartyRuntime = new ProvisionedUniversityPartyRuntime([
+      partyRecordForDid({
+        partyId: university.universityId,
+        role: "issuer",
+        didString: universityProfile.didString,
+        methodId: overlayUniversityMethodId,
+        contractAddress: universityProfile.contractAddress,
+        verificationMethodRef: universityProfile.verificationMethodRef,
+      }),
+      ...students.map((student) => {
+        const profile = studentProfiles.get(student.studentId);
+        if (!profile) {
+          throw new Error(`Missing standalone DID profile for ${student.studentId}`);
+        }
+        return partyRecordForDid({
+          partyId: student.studentId,
+          role: "holder",
+          didString: profile.didString,
+          methodId: profile.verificationMethodRef.slice(profile.didString.length),
+          contractAddress: profile.contractAddress,
+          verificationMethodRef: profile.verificationMethodRef,
+        });
+      }),
+      ...companies.map((company) => {
+        const profile = companyProfiles.get(company.companyId);
+        if (!profile) {
+          throw new Error(`Missing standalone DID profile for ${company.companyId}`);
+        }
+        return partyRecordForDid({
+          partyId: company.companyId,
+          role: "verifier",
+          didString: profile.didString,
+          methodId: profile.verificationMethodRef.slice(profile.didString.length),
+          contractAddress: profile.contractAddress,
+          verificationMethodRef: profile.verificationMethodRef,
+        });
+      }),
+      partyRecordForDid({
+        partyId: mall.mallId,
+        role: "verifier",
+        didString: mallProfile.didString,
+        methodId: overlayMallMethodId,
+        contractAddress: mallProfile.contractAddress,
+        verificationMethodRef: mallProfile.verificationMethodRef,
+      }),
+    ]);
+    const proofExecutionBackend =
+      new StandaloneHybridUniversityProofExecutionBackend();
+
     const overlayDataPaths = {
       university: path.join(this.#overlayRoot, "university.json"),
       students: path.join(this.#overlayRoot, "students.json"),
@@ -366,9 +466,7 @@ class StandaloneHybridUniversityScenarioBackend
     const overlayUniversity: UniversityProfile = {
       ...university,
       issuerDidUrl: universityProfile.didString,
-      issuerMethodId: universityProfile.verificationMethodRef.slice(
-        universityProfile.didString.length,
-      ),
+      issuerMethodId: overlayUniversityMethodId,
     };
     const overlayStudents: StudentRecord[] = students.map((student) => {
       const profile = studentProfiles.get(student.studentId);
@@ -395,7 +493,7 @@ class StandaloneHybridUniversityScenarioBackend
     const overlayMall: MallRecord = {
       ...mall,
       verifierDidUrl: mallProfile.didString,
-      verifierMethodId: mallProfile.verificationMethodRef.slice(mallProfile.didString.length),
+      verifierMethodId: overlayMallMethodId,
     };
 
     await writeJson(overlayDataPaths.university, overlayUniversity);
@@ -421,6 +519,10 @@ class StandaloneHybridUniversityScenarioBackend
         usesRealDidInstances: true,
         generatedOverlayDirectory: this.#overlayRoot,
         metrics: [...this.#metrics],
+      },
+      protocol: {
+        partyRuntime: provisionedPartyRuntime,
+        proofExecutionBackend,
       },
     };
   }

@@ -4,6 +4,8 @@ import { performance } from "node:perf_hooks";
 
 import { Ability, type UsesAbilities } from "@serenity-js/core";
 import {
+  DeterministicUniversityPartyRuntime,
+  SimulatorUniversityProofExecutionBackend,
   type UniversityPresentationTamperingMode,
   UniversityProtocolFlowRunner,
   type UniversityProtocolExerciseOptions,
@@ -550,6 +552,10 @@ export class UseUniversityScenario extends Ability {
         generatedOverlayDirectory: null,
         metrics: [],
       },
+      protocol: {
+        partyRuntime: new DeterministicUniversityPartyRuntime(),
+        proofExecutionBackend: new SimulatorUniversityProofExecutionBackend(),
+      },
     },
   ) {
     super();
@@ -575,6 +581,10 @@ export class UseUniversityScenario extends Ability {
         usesRealDidInstances: false,
         generatedOverlayDirectory: null,
         metrics: [],
+      },
+      protocol: {
+        partyRuntime: new DeterministicUniversityPartyRuntime(),
+        proofExecutionBackend: new SimulatorUniversityProofExecutionBackend(),
       },
     });
   }
@@ -718,6 +728,12 @@ export class UseUniversityScenario extends Ability {
       readonly description: string;
       readonly generatedOverlayDirectory: string | null;
       readonly metrics: UniversityScenarioBackendContext["metadata"]["metrics"];
+      readonly partyRuntime: ReturnType<
+        UniversityScenarioBackendContext["protocol"]["partyRuntime"]["descriptor"]
+      >;
+      readonly proofExecution: ReturnType<
+        UniversityScenarioBackendContext["protocol"]["proofExecutionBackend"]["descriptor"]
+      >;
     };
   } {
     const university = readJson<UniversityProfile>(this.#paths.university);
@@ -736,6 +752,9 @@ export class UseUniversityScenario extends Ability {
         generatedOverlayDirectory:
           this.#backendContext.metadata.generatedOverlayDirectory,
         metrics: this.#backendContext.metadata.metrics,
+        partyRuntime: this.#backendContext.protocol.partyRuntime.descriptor(),
+        proofExecution:
+          this.#backendContext.protocol.proofExecutionBackend.descriptor(),
       },
     };
   }
@@ -985,9 +1004,12 @@ export class UseUniversityScenario extends Ability {
 
   #protocolFlowResult(): UniversityProtocolFlowResult {
     if (!this.#protocolResult) {
+      this.#backendContext.protocol.proofExecutionBackend.resetMetrics();
       this.#protocolResult = new UniversityProtocolFlowRunner({
         dataPaths: this.#paths,
         exerciseOptions: this.#exerciseOptionsSnapshot(),
+        partyRuntime: this.#backendContext.protocol.partyRuntime,
+        proofExecutionBackend: this.#backendContext.protocol.proofExecutionBackend,
       }).runAll();
     }
     return this.#protocolResult;
@@ -1464,6 +1486,9 @@ export class UseUniversityScenario extends Ability {
       { actorCount: 3 },
     );
     const protocolResult = this.#protocolFlowResult();
+    for (const sample of this.#backendContext.protocol.proofExecutionBackend.snapshotMetrics()) {
+      metrics.observe(sample.name, sample.durationMs, sample.tags);
+    }
     metrics.observe("job_protocol_phase_ms", protocolResult.metrics.jobApplicationsMs, {
       studentCount: students.length,
       companyCount: companies.length,
@@ -1550,6 +1575,9 @@ export class UseUniversityScenario extends Ability {
     }
 
     const protocolResult = this.#protocolFlowResult();
+    for (const sample of this.#backendContext.protocol.proofExecutionBackend.snapshotMetrics()) {
+      metrics.observe(sample.name, sample.durationMs, sample.tags);
+    }
     metrics.observe("discount_protocol_phase_ms", protocolResult.metrics.discountsMs, {
       mallId: mall.mallId,
       selectedStudentId: student.studentId,

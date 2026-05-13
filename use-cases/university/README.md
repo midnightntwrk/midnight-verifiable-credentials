@@ -64,8 +64,10 @@ The slice is intentionally explicit and operational:
   realistic scale modeling
 - the standalone-hybrid backend keeps that readable 10-student flow intact but
   replaces the committed DID identifiers with generated standalone DID overlay
-  fixtures at runtime, so the report can capture real environment startup,
-  wallet sync, and DID provisioning latency
+  fixtures at runtime and injects a provisioned party runtime plus hybrid proof
+  backend into the protocol runner, so the report can capture real environment
+  startup, wallet sync, DID provisioning latency, and simulator proof timings
+  under an explicit backend contract
 - the repository also carries a separate 100-student stress dataset for the
   protocol lane when you want throughput-oriented measurements instead
 - that stress lane now publishes paired `summary.json` and `summary.md`
