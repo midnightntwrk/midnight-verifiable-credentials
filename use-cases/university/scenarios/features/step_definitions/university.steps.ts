@@ -1,16 +1,17 @@
 import { Given, Then, When } from "@cucumber/cucumber";
-import { actorCalled, Log } from "@serenity-js/core";
+import {
+  actorCalled,
+  Interaction,
+} from "@serenity-js/core";
+import {
+  LogEntry,
+  Name,
+} from "@serenity-js/core/model";
 
 import { UseUniversityScenario } from "../support/university-scenario.js";
 
 const engineer = () => actorCalled("Engineer");
 const universityScenario = () => UseUniversityScenario.from(engineer());
-
-// NOTE: Serenity step insights occasionally surface BigInt-backed DTO fields
-// from verifier policy normalization and metric payloads; stringify them
-// defensively so the HTML report never crashes on JSON serialization.
-const jsonReportReplacer = (_key: string, value: unknown): unknown =>
-  typeof value === "bigint" ? value.toString() : value;
 
 type StepInsight = {
   readonly request: string;
@@ -19,11 +20,66 @@ type StepInsight = {
   readonly dto: unknown;
 };
 
+const sanitizeForReport = (value: unknown): unknown => {
+  if (typeof value === "bigint") {
+    return value.toString();
+  }
+
+  if (Array.isArray(value)) {
+    return value.map((entry) => sanitizeForReport(entry));
+  }
+
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, entry]) => [
+        key,
+        sanitizeForReport(entry),
+      ]),
+    );
+  }
+
+  return value;
+};
+
+const indentBlock = (value: string, prefix = "  "): string =>
+  value
+    .split("\n")
+    .map((line) => `${prefix}${line}`)
+    .join("\n");
+
+const formatInsight = (title: string, payload: StepInsight): string => {
+  const checks = payload.checks.map((check) => `- ${check}`).join("\n");
+  const dto = JSON.stringify(sanitizeForReport(payload.dto), null, 2);
+
+  return [
+    title,
+    "",
+    "Request",
+    indentBlock(payload.request),
+    "",
+    "Response",
+    indentBlock(payload.response),
+    "",
+    "Checks",
+    checks,
+    "",
+    "DTO",
+    dto,
+  ].join("\n");
+};
+
 const logInsight = (
   title: string,
   payload: StepInsight,
 ) => engineer().attemptsTo(
-  Log.the(`${title}\n${JSON.stringify(payload, jsonReportReplacer, 2)}`),
+  Interaction.where(`#actor records ${title}`, (actor) => {
+    actor.collect(
+      LogEntry.fromJSON({
+        data: formatInsight(title, payload),
+      }),
+      new Name(title),
+    );
+  }),
 );
 
 const expectMetricNames = (actual: readonly string[], expected: readonly string[]) => {
