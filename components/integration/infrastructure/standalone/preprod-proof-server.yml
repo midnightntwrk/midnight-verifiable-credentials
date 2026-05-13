@@ -4,7 +4,7 @@ services:
     image: "${PROOF_SERVER_IMAGE:-midnightntwrk/proof-server:8.0.3}"
     command: ["midnight-proof-server", "-v"]
     ports:
-      - "6300:6300"
+      - "127.0.0.1:6300:6300"
     environment:
       RUST_BACKTRACE: "full"
     healthcheck:
@@ -13,3 +13,7 @@ services:
       timeout: 5s
       retries: 20
       start_period: 10s
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
