@@ -1,8 +1,6 @@
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { performance } from "node:perf_hooks";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 
 import { Ability, type UsesAbilities } from "@serenity-js/core";
 import {
@@ -22,6 +20,13 @@ import {
   type UniversityDiplomaRequestOptions,
   type UniversityDiplomaSignerOptions,
 } from "@midnight-ntwrk/midnight-did-credentials-university-diploma/testing";
+
+import {
+  type ScenarioDataPaths,
+  type UniversityScenarioBackendContext,
+  defaultDataPaths,
+  resolveScenarioRepoPath,
+} from "./university-scenario-backend.js";
 
 type UniversityProfile = {
   readonly universityId: string;
@@ -232,33 +237,6 @@ type IssuanceRequest = {
   readonly acceptedAt: number;
 };
 
-type ScenarioDataPaths = {
-  university: string;
-  students: string;
-  companies: string;
-  mall: string;
-  issuanceBatches: string;
-  discountApplicants: string;
-};
-
-const repoRoot = path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  "..",
-  "..",
-  "..",
-  "..",
-  "..",
-);
-
-const defaultDataPaths = {
-  university: "use-cases/university/data/university.json",
-  students: "use-cases/university/data/students.json",
-  companies: "use-cases/university/data/companies.json",
-  mall: "use-cases/university/data/mall.json",
-  issuanceBatches: "use-cases/university/data/issuance-batches.json",
-  discountApplicants: "use-cases/university/data/discount-applicants.json",
-} satisfies ScenarioDataPaths;
-
 let cachedRequestPolicyPresetCatalog:
   | Readonly<Record<string, UniversityRequestPolicyPreset>>
   | undefined;
@@ -357,11 +335,8 @@ const scalarForLabel = (label: string): bigint => {
   return (raw % (JUBJUB_SUBGROUP_ORDER - 1n)) + 1n;
 };
 
-const resolveRepoPath = (relativePath: string): string =>
-  path.resolve(repoRoot, relativePath);
-
 const readJson = <T>(relativePath: string): T =>
-  JSON.parse(readFileSync(resolveRepoPath(relativePath), "utf8")) as T;
+  JSON.parse(readFileSync(resolveScenarioRepoPath(relativePath), "utf8")) as T;
 
 const issuerConfigForUniversity = (
   university: UniversityProfile,
@@ -540,6 +515,7 @@ const average = (values: readonly number[]): number => {
 };
 
 export class UseUniversityScenario extends Ability {
+  readonly #backendContext: UniversityScenarioBackendContext;
   readonly #paths: ScenarioDataPaths;
   readonly #exerciseOptions: {
     companyRequestPolicyOverrides: Record<string, Partial<VerifierRequestPolicy>>;
@@ -563,18 +539,50 @@ export class UseUniversityScenario extends Ability {
   #protocolResult: UniversityProtocolFlowResult | undefined;
   #selectedDiscountStudentId: string | undefined;
 
-  constructor(dataPaths: Partial<ScenarioDataPaths> = {}) {
+  constructor(
+    backendContext: UniversityScenarioBackendContext = {
+      dataPaths: defaultDataPaths,
+      metadata: {
+        mode: "simulator",
+        description:
+          "Local deterministic simulator backend using checked-in university fixture data and in-process credential/verifier semantics.",
+        usesRealDidInstances: false,
+        generatedOverlayDirectory: null,
+        metrics: [],
+      },
+    },
+  ) {
     super();
+    this.#backendContext = backendContext;
     this.#paths = {
       ...defaultDataPaths,
-      ...dataPaths,
+      ...backendContext.dataPaths,
     };
   }
 
   static locally(options: {
     readonly dataPaths?: Partial<ScenarioDataPaths>;
   } = {}): UseUniversityScenario {
-    return new UseUniversityScenario(options.dataPaths);
+    return new UseUniversityScenario({
+      dataPaths: {
+        ...defaultDataPaths,
+        ...options.dataPaths,
+      },
+      metadata: {
+        mode: "simulator",
+        description:
+          "Local deterministic simulator backend using checked-in university fixture data and in-process credential/verifier semantics.",
+        usesRealDidInstances: false,
+        generatedOverlayDirectory: null,
+        metrics: [],
+      },
+    });
+  }
+
+  static usingBackendContext(
+    context: UniversityScenarioBackendContext,
+  ): UseUniversityScenario {
+    return new UseUniversityScenario(context);
   }
 
   static from(actor: UsesAbilities): UseUniversityScenario {
@@ -704,6 +712,13 @@ export class UseUniversityScenario extends Ability {
     readonly holderBindingProfile: string;
     readonly statusModel: string;
     readonly batchSize: number;
+    readonly backend: {
+      readonly mode: UniversityScenarioBackendContext["metadata"]["mode"];
+      readonly usesRealDidInstances: boolean;
+      readonly description: string;
+      readonly generatedOverlayDirectory: string | null;
+      readonly metrics: UniversityScenarioBackendContext["metadata"]["metrics"];
+    };
   } {
     const university = readJson<UniversityProfile>(this.#paths.university);
     return {
@@ -714,6 +729,14 @@ export class UseUniversityScenario extends Ability {
       holderBindingProfile: university.holderBindingProfile,
       statusModel: university.statusModel,
       batchSize: university.batchSize,
+      backend: {
+        mode: this.#backendContext.metadata.mode,
+        usesRealDidInstances: this.#backendContext.metadata.usesRealDidInstances,
+        description: this.#backendContext.metadata.description,
+        generatedOverlayDirectory:
+          this.#backendContext.metadata.generatedOverlayDirectory,
+        metrics: this.#backendContext.metadata.metrics,
+      },
     };
   }
 
@@ -1186,6 +1209,9 @@ export class UseUniversityScenario extends Ability {
 
   async runBatchIssuance(): Promise<void> {
     const metrics = new MetricRecorder();
+    for (const sample of this.#backendContext.metadata.metrics) {
+      metrics.observe(sample.name, sample.durationMs, sample.tags);
+    }
     const university = metrics.record(
       "issuer_did_bootstrap_ms",
       () => readJson<UniversityProfile>(this.#paths.university),
@@ -1428,6 +1454,9 @@ export class UseUniversityScenario extends Ability {
 
   async runJobApplications(): Promise<void> {
     const metrics = new MetricRecorder();
+    for (const sample of this.#backendContext.metadata.metrics) {
+      metrics.observe(sample.name, sample.durationMs, sample.tags);
+    }
     const students = readJson<StudentRecord[]>(this.#paths.students);
     const companies = metrics.record(
       "company_did_bootstrap_ms",
@@ -1489,6 +1518,9 @@ export class UseUniversityScenario extends Ability {
 
   async runDiscountFlow(): Promise<void> {
     const metrics = new MetricRecorder();
+    for (const sample of this.#backendContext.metadata.metrics) {
+      metrics.observe(sample.name, sample.durationMs, sample.tags);
+    }
     const mall = metrics.record(
       "mall_did_bootstrap_ms",
       () => readJson<MallRecord>(this.#paths.mall),

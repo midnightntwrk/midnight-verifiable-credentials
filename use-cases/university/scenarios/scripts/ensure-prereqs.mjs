@@ -31,6 +31,14 @@ const requiredBuildSurfaces = [
       "use-cases/university/protocol/src/testing.ts",
     ],
   },
+  {
+    artifactPath: "components/integration/standalone-environment/dist/index.js",
+    sourcePaths: [
+      "components/integration/standalone-environment/src/index.ts",
+      "components/integration/standalone-environment/src/did-profile.ts",
+      "components/integration/standalone-environment/src/standalone-environment.ts",
+    ],
+  },
 ];
 
 async function exists(relativePath) {
@@ -84,7 +92,7 @@ const child = spawn(
   "bash",
   [
     "-lc",
-    "npm run build:core && npm run build -w ./prototypes/credential-families/university-diploma && npm run build -w ./use-cases/university/protocol",
+    "npm run build:core && npm run build -w ./prototypes/credential-families/university-diploma && npm run build -w ./use-cases/university/protocol && npm run build -w ./components/integration/standalone-environment",
   ],
   {
     cwd: repoRoot,
