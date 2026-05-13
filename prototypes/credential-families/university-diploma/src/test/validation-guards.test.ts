@@ -83,7 +83,9 @@ describe("university-diploma validation guards", () => {
           },
         },
       ),
-    ).toThrow(/Presentation proof signer method reference must match holder binding/);
+    ).toThrow(
+      /Presentation proof signer method reference must match holder binding/,
+    );
   });
 
   it("rejects a presentation request without a verifier challenge", () => {
