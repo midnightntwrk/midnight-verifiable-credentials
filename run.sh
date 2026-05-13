@@ -19,6 +19,7 @@ Targets:
   bdd-negative               Serenity/JS BDD negative-path scenarios
   bdd-all                    Full Serenity/JS BDD scenario set
   university-bdd             Executable university diploma BDD scenarios
+  university-bdd-standalone  University diploma BDD with real standalone DID bootstrap
   university-batch-sweep     Issuance batch-size sweep with summary artifacts
   university-data-profiles   Validate committed readable/stress university data profiles
   university-protocol        Protocol-style multi-party university flow lane
@@ -100,7 +101,7 @@ forward_args=()
 
 if [[ $# -gt 0 ]]; then
   case "$1" in
-    full|lint|typecheck|build|test|bdd|bdd-negative|bdd-all|university-bdd|university-batch-sweep|university-data-profiles|university-protocol|university-protocol-export|university-protocol-stress|university-summary|hello-smoke|dummy-claims-lab|revocation|integration|integration-demo-contract|integration-protocol|targets|help|-h|--help)
+    full|lint|typecheck|build|test|bdd|bdd-negative|bdd-all|university-bdd|university-bdd-standalone|university-batch-sweep|university-data-profiles|university-protocol|university-protocol-export|university-protocol-stress|university-summary|hello-smoke|dummy-claims-lab|revocation|integration|integration-demo-contract|integration-protocol|targets|help|-h|--help)
       target="$1"
       shift
       ;;
@@ -221,6 +222,15 @@ case "$target" in
   university-bdd)
     echo "[run] University diploma BDD lane"
     npm run ci:university-bdd
+    ;;
+  university-bdd-standalone)
+    if docker info >/dev/null 2>&1; then
+      echo "[run] University diploma standalone-hybrid BDD lane"
+      npm run ci:university-bdd:standalone
+    else
+      echo "[run] Docker unavailable; cannot run university standalone-hybrid BDD lane"
+      exit 1
+    fi
     ;;
   university-batch-sweep)
     echo "[run] University issuance batch-sweep lane"

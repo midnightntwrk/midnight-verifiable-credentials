@@ -53,6 +53,7 @@ It exists so package-level integration tests do not each reinvent:
 
 - `StandaloneEnvironment`
 - `provisionDidProfile(...)`
+- `provisionDerivedDidProfile(...)`
 - `containerRuntimeAvailable()`
 - `verifierChallengeForProfile(...)`
 - `TIMEOUTS`

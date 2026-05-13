@@ -39,6 +39,11 @@ export interface ProtocolDidProfile {
   };
 }
 
+export interface DerivedProtocolDidSigner {
+  readonly publicKey: JubjubPoint;
+  readonly methodId?: string;
+}
+
 export const verifierChallengeForProfile = (
   didString: string,
   purpose: string,
@@ -93,16 +98,16 @@ const createDidWithDustRetry = async (
   throw lastError instanceof Error ? lastError : new Error(String(lastError));
 };
 
-/**
- * Deploy a DID contract, register a verification method, and return
- * the complete profile with on-chain verification method reference.
- */
-export const provisionDidProfile = async (
+const defaultMethodIdForRole = (role: Role): string => `#${role}-key-1`;
+
+const deployResolvedDidContract = async (
   providers: MidnightDIDProviders,
   role: Role,
-  signer: { publicKey: JubjubPoint },
   logPrefix: string,
-): Promise<ProtocolDidProfile> => {
+): Promise<{
+  readonly contract: DeployedMidnightDIDContract;
+  readonly didString: string;
+}> => {
   console.info(`[${logPrefix}] deploying ${role} DID`);
   const contract = await createDidWithDustRetry(providers);
 
@@ -113,7 +118,23 @@ export const provisionDidProfile = async (
     throw new Error(`Failed to resolve ${role} DID after deployment`);
   }
 
-  const verificationMethodRef = `${didString}#${role}-key-1`;
+  return {
+    contract,
+    didString,
+  };
+};
+
+const publishDidProfile = async (
+  contract: DeployedMidnightDIDContract,
+  providers: MidnightDIDProviders,
+  role: Role,
+  didString: string,
+  signer: DerivedProtocolDidSigner,
+  logPrefix: string,
+): Promise<ProtocolDidProfile> => {
+  const methodId = signer.methodId ?? defaultMethodIdForRole(role);
+  const verificationMethodRef = `${didString}${methodId}`;
+
   console.info(`[${logPrefix}] publishing verification method for ${role}`);
   await addVerificationMethod(
     contract,
@@ -159,7 +180,64 @@ export const provisionDidProfile = async (
       didContractAddress: {
         bytes: hexToBytes(contract.deployTxData.public.contractAddress),
       },
-      methodId: padText(verificationMethodRef.slice(didString.length)),
+      methodId: padText(methodId),
     },
   };
+};
+
+/**
+ * Deploy a DID contract, register a verification method, and return
+ * the complete profile with on-chain verification method reference.
+ */
+export const provisionDidProfile = async (
+  providers: MidnightDIDProviders,
+  role: Role,
+  signer: { publicKey: JubjubPoint },
+  logPrefix: string,
+): Promise<ProtocolDidProfile> => {
+  const { contract, didString } = await deployResolvedDidContract(
+    providers,
+    role,
+    logPrefix,
+  );
+  return publishDidProfile(
+    contract,
+    providers,
+    role,
+    didString,
+    {
+      publicKey: signer.publicKey,
+      methodId: defaultMethodIdForRole(role),
+    },
+    logPrefix,
+  );
+};
+
+/**
+ * Deploy a DID contract first, derive the signer from the resolved DID string,
+ * then publish the matching verification method.
+ *
+ * This is useful when higher-level harnesses derive deterministic keys from the
+ * final DID identifier and need the on-chain DID document to publish the same
+ * verification material.
+ */
+export const provisionDerivedDidProfile = async (
+  providers: MidnightDIDProviders,
+  role: Role,
+  signerFactory: (didString: string) => DerivedProtocolDidSigner,
+  logPrefix: string,
+): Promise<ProtocolDidProfile> => {
+  const { contract, didString } = await deployResolvedDidContract(
+    providers,
+    role,
+    logPrefix,
+  );
+  return publishDidProfile(
+    contract,
+    providers,
+    role,
+    didString,
+    signerFactory(didString),
+    logPrefix,
+  );
 };
