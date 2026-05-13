@@ -1,0 +1,266 @@
+{
+  "schemaId": "midnight-university-report-summary",
+  "schemaVersion": "midnight-university-report-summary.v1",
+  "actors": {
+    "universityPartyId": "uni-example-001",
+    "studentCount": 10,
+    "companyCount": 3,
+    "companyNames": [
+      "Blue Ocean Analytics",
+      "Northwind Robotics",
+      "Pioneer Systems"
+    ],
+    "mallId": "mall-student-square",
+    "mallName": "Student Square Mall",
+    "discountApplicantCount": 5
+  },
+  "sources": {
+    "serenityDirectory": "<fixtures>/serenity",
+    "transcriptExportPath": "<fixtures>/transcript-export.json",
+    "stressSummaryPath": "<fixtures>/stress-summary.json",
+    "batchSweepSummaryPath": "<fixtures>/batch-sweep-summary.json"
+  },
+  "readableBdd": {
+    "scenarioCount": 13,
+    "passedCount": 13,
+    "failedCount": 0,
+    "totalDurationMs": 5030,
+    "categories": {
+      "jobApplications": 1,
+      "duplicateJobApplication": 1,
+      "duplicateMallDiscount": 1,
+      "tamperedPresentation": 3,
+      "holderBindingTampering": 4,
+      "invalidPolicy": 1,
+      "issuanceReplay": 1,
+      "batchIssuance": 1
+    },
+    "slowestScenarios": [
+      {
+        "title": "A duplicate job-application submission is rejected without replacing the original acceptance",
+        "result": "SUCCESS",
+        "durationMs": 490,
+        "startTime": "2026-05-12T20:49:16.950Z"
+      },
+      {
+        "title": "A duplicate mall discount submission is rejected without replacing the original mall outcome",
+        "result": "SUCCESS",
+        "durationMs": 470,
+        "startTime": "2026-05-12T20:49:17.442Z"
+      },
+      {
+        "title": "A tampered issuer verification method is rejected without affecting untampered job applications",
+        "result": "SUCCESS",
+        "durationMs": 457,
+        "startTime": "2026-05-12T20:49:18.777Z"
+      },
+      {
+        "title": "A tampered verifier challenge is rejected without affecting untampered job applications",
+        "result": "SUCCESS",
+        "durationMs": 438,
+        "startTime": "2026-05-12T20:49:18.338Z"
+      },
+      {
+        "title": "A tampered holder method reference is rejected without affecting untampered job applications",
+        "result": "SUCCESS",
+        "durationMs": 434,
+        "startTime": "2026-05-12T20:49:19.661Z"
+      }
+    ]
+  },
+  "transcriptExport": {
+    "schemaVersion": "midnight-university-protocol-export.v1",
+    "dataset": {
+      "studentCount": 10,
+      "companyCount": 3,
+      "discountApplicantCount": 5,
+      "batchCount": 2,
+      "batchSize": 5
+    },
+    "counts": {
+      "issuanceRequests": 10,
+      "issuanceResults": 10,
+      "jobApplicationRequests": 10,
+      "jobApplicationSubmissions": 10,
+      "jobApplicationResults": 10,
+      "discountRequests": 5,
+      "discountSubmissions": 5,
+      "discountResults": 5,
+      "transcriptEntries": 65,
+      "totalThreads": 25
+    },
+    "rejections": {
+      "jobApplications": {
+        "accepted": 10,
+        "verificationFailed": 0,
+        "duplicate": 0,
+        "byCompany": [
+          {
+            "companyId": "company-blue-ocean-analytics",
+            "companyName": "Blue Ocean Analytics",
+            "accepted": 3,
+            "verificationFailed": 0,
+            "duplicate": 0
+          },
+          {
+            "companyId": "company-northwind-robotics",
+            "companyName": "Northwind Robotics",
+            "accepted": 4,
+            "verificationFailed": 0,
+            "duplicate": 0
+          },
+          {
+            "companyId": "company-pioneer-systems",
+            "companyName": "Pioneer Systems",
+            "accepted": 3,
+            "verificationFailed": 0,
+            "duplicate": 0
+          }
+        ]
+      },
+      "discounts": {
+        "accepted": 3,
+        "verificationFailed": 2,
+        "duplicate": 0,
+        "byReason": [
+          {
+            "reason": "failed assert: University-diploma disclosed final grade is below the verifier minimum",
+            "count": 2
+          }
+        ]
+      }
+    }
+  },
+  "stressSummary": {
+    "schemaVersion": "midnight-university-protocol-stress-summary.v1",
+    "datasetProfile": "stress-100",
+    "dataset": {
+      "studentCount": 100,
+      "companyCount": 3,
+      "discountApplicantCount": 5,
+      "batchCount": 5,
+      "batchSize": 20
+    },
+    "counts": {
+      "issuanceRequests": 100,
+      "issuanceResults": 100,
+      "jobApplicationRequests": 100,
+      "jobApplicationSubmissions": 100,
+      "jobApplicationResults": 100,
+      "discountRequests": 5,
+      "discountSubmissions": 5,
+      "discountResults": 5,
+      "transcriptEntries": 515,
+      "totalThreads": 205
+    },
+    "outcomes": {
+      "acceptedJobApplications": 100,
+      "companyAcceptedCounts": {
+        "company-blue-ocean-analytics": 33,
+        "company-northwind-robotics": 34,
+        "company-pioneer-systems": 33
+      },
+      "acceptedDiscounts": 3,
+      "rejectedDiscounts": 2
+    },
+    "rejections": {
+      "jobApplications": {
+        "verificationFailed": 0,
+        "duplicate": 0
+      },
+      "discounts": {
+        "verificationFailed": 2,
+        "duplicate": 0,
+        "byReason": [
+          {
+            "reason": "failed assert: University-diploma disclosed final grade is below the verifier minimum",
+            "count": 2
+          }
+        ]
+      }
+    },
+    "timingsMs": {
+      "issuance": 366.07187500000003,
+      "jobApplications": 1721.5355410000002,
+      "discounts": 72.58666600000015,
+      "runnerTotal": 2160.1978329999997,
+      "wallClock": 2259.0509589999997
+    },
+    "throughput": {
+      "issuanceCredentialsPerSecond": 273.17039857268463,
+      "jobApplicationResultsPerSecond": 58.087676738821386,
+      "discountEvaluationsPerSecond": 68.88317476931631,
+      "transcriptEntriesPerSecond": 227.9718383280614
+    }
+  },
+  "batchSweep": {
+    "schemaVersion": "midnight-university-batch-sweep-summary.v1",
+    "studentCount": 100,
+    "batchSizes": [
+      2,
+      5,
+      10,
+      20
+    ],
+    "fastestBatchSizeByWallClockCredentialsPerSecond": 10,
+    "runs": [
+      {
+        "batchSize": 2,
+        "batchCount": 50,
+        "issuedCredentialCount": 100,
+        "issuanceWallClockMs": 373.49037500000003,
+        "wallClockCredentialsPerSecond": 267.7445168433055,
+        "compileAverageMs": 7.424408380000001,
+        "queueWaitAverageMs": 190.16599457000007
+      },
+      {
+        "batchSize": 5,
+        "batchCount": 20,
+        "issuedCredentialCount": 100,
+        "issuanceWallClockMs": 354.2952919999999,
+        "wallClockCredentialsPerSecond": 282.2504341943105,
+        "compileAverageMs": 17.653485450000005,
+        "queueWaitAverageMs": 168.43171769999998
+      },
+      {
+        "batchSize": 10,
+        "batchCount": 10,
+        "issuedCredentialCount": 100,
+        "issuanceWallClockMs": 345.810375,
+        "wallClockCredentialsPerSecond": 289.17582359985585,
+        "compileAverageMs": 34.49371670000005,
+        "queueWaitAverageMs": 155.11104577
+      },
+      {
+        "batchSize": 20,
+        "batchCount": 5,
+        "issuedCredentialCount": 100,
+        "issuanceWallClockMs": 363.59558300000003,
+        "wallClockCredentialsPerSecond": 275.0308438152836,
+        "compileAverageMs": 72.46977499999998,
+        "queueWaitAverageMs": 137.27698934999998
+      }
+    ]
+  },
+  "bottlenecks": {
+    "slowestReadableScenario": {
+      "title": "A duplicate job-application submission is rejected without replacing the original acceptance",
+      "result": "SUCCESS",
+      "durationMs": 490,
+      "startTime": "2026-05-12T20:49:16.950Z"
+    },
+    "slowestBatchSweepCompileAverage": {
+      "batchSize": 20,
+      "compileAverageMs": 72.46977499999998
+    },
+    "slowestStressPhase": {
+      "phase": "jobApplications",
+      "durationMs": 1721.5355410000002
+    }
+  },
+  "notes": [
+    "Readable BDD counts are deduplicated by scenario title and keep only the latest recorded run per title.",
+    "This report summarizes existing artifacts; it does not rerun issuance, protocol, or verifier logic internally.",
+    "Batch-sweep and stress timings remain machine-local measurements and should be compared by trend, not by exact absolute value."
+  ]
+}

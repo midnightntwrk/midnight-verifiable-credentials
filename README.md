@@ -33,12 +33,22 @@ Current maturity is mixed by package:
     - smallest starter family package
   - [`credentials-dummy-claims`](./prototypes/credential-families/dummy-claims/README.md)
     - broad direct claim-surface and selective-disclosure laboratory
+  - [`credentials-university-diploma`](./prototypes/credential-families/university-diploma/README.md)
+    - academic diploma prototype aligned to the university issuance and verifier-flow use case
   - [`credentials-iso-registry`](./core/primitives/iso-registry/README.md)
   - [`credentials-offchain-did`](./components/adapters/offchain-did/README.md)
   - [`credentials-openid`](./protocols/openid/README.md)
     - current reference transport-adapter surface
 - prototype / experimental packages:
   - [`credentials-protocol`](./components/orchestration/protocol/README.md)
+  - [`hello-verifier-contract`](./use-cases/hello-verifier/contract/README.md)
+    - smallest verifier-side starter and broad direct claim-surface lab consumer
+  - [`university-verifier-contract`](./use-cases/university/contract/README.md)
+    - verifier-side university diploma request and presentation consumer
+  - [`university-protocol`](./use-cases/university/protocol/README.md)
+    - protocol-style multi-party university issuer/student/company/mall flow
+    - includes a separate 100-student stress lane for throughput-oriented protocol measurements
+    - emits paired JSON and Markdown stress artifacts for CI retention
   - [`credentials-demo-contract`](./use-cases/age-gate/contract/README.md)
 - shared integration infrastructure:
   - [`standalone-environment`](./components/integration/standalone-environment/README.md)
@@ -60,6 +70,11 @@ Start here:
   - [`docs/guides/package-selection.md`](./docs/guides/package-selection.md)
   - [`docs/guides/integration-surface-map.md`](./docs/guides/integration-surface-map.md)
   - [`docs/guides/prototype-execution-ladder.md`](./docs/guides/prototype-execution-ladder.md)
+- university diploma use case:
+  - [`use-cases/university/README.md`](./use-cases/university/README.md)
+  - [`use-cases/university/contract/README.md`](./use-cases/university/contract/README.md)
+  - [`use-cases/university/scenarios/README.md`](./use-cases/university/scenarios/README.md)
+  - [`use-cases/university/protocol/README.md`](./use-cases/university/protocol/README.md)
 - architecture:
   - [`docs/architecture/overview.md`](./docs/architecture/overview.md)
   - [`docs/architecture/package-boundaries.md`](./docs/architecture/package-boundaries.md)
@@ -93,14 +108,30 @@ Start here:
   - smallest compileable starter family package
 - [`credentials-dummy-claims`](./prototypes/credential-families/dummy-claims/README.md)
   - broad direct claim-surface and selective-disclosure laboratory
+- [`credentials-university-diploma`](./prototypes/credential-families/university-diploma/README.md)
+  - academic diploma prototype with batch-issuance and verifier-policy flows
 - [`credentials-openid`](./protocols/openid/README.md)
   - OID4VCI / OID4VP-inspired transport/domain adapters
 - [`credentials-protocol`](./components/orchestration/protocol/README.md)
   - reference off-chain orchestration and protocol simulation
+- [`hello-verifier-contract`](./use-cases/hello-verifier/contract/README.md)
+  - smallest verifier-side starter and broad direct claim-surface lab consumer
+- [`university-verifier-contract`](./use-cases/university/contract/README.md)
+  - verifier-side university diploma job-application and discount contract package
+- [`university-protocol`](./use-cases/university/protocol/README.md)
+  - threaded multi-party reference orchestration over the university diploma family
 - [`credentials-demo-contract`](./use-cases/age-gate/contract/README.md)
   - verifier/business contract demo
 - [`standalone-environment`](./components/integration/standalone-environment/README.md)
   - shared Docker-backed integration harness
+
+Generated compatibility roots:
+
+- the top-level `midnight-did-credentials*` entries are generated compatibility
+  symlinks for local tooling and legacy includes
+- they are not canonical architecture areas; read the repository through
+  `core/`, `registry/`, `protocols/`, `components/`, `prototypes/`,
+  `use-cases/`, and `tooling/`
 
 ## Validation
 
@@ -123,6 +154,11 @@ Targets that currently honor `--light`:
 - `./run.sh typecheck`
 - `./run.sh test`
 - `./run.sh hello-smoke`
+- `./run.sh dummy-claims-lab`
+- `./run.sh university-protocol`
+- `./run.sh university-protocol-export`
+- `./run.sh university-protocol-stress`
+- `./run.sh university-summary`
 
 Discover explicit repository targets:
 
@@ -142,6 +178,32 @@ Run the BDD smoke lane directly:
 
 ```bash
 ./run.sh bdd
+```
+
+Run the threaded university protocol lane directly:
+
+```bash
+./run.sh university-protocol
+```
+
+Export the readable 10-student university protocol transcript:
+
+```bash
+./run.sh university-protocol-export
+```
+
+Run the 100-student university protocol stress lane:
+
+```bash
+./run.sh university-protocol-stress
+./run.sh university-protocol-stress --light
+```
+
+Emit the one-page university artifact summary:
+
+```bash
+./run.sh university-summary
+./run.sh university-summary --light
 ```
 
 Run the smallest DID-aware handoff lane directly:
@@ -197,8 +259,11 @@ Published/exported local tarball set currently includes:
 - `@midnight-ntwrk/midnight-did-credentials-birth`
 - `@midnight-ntwrk/midnight-did-credentials-birth-secret`
 - `@midnight-ntwrk/midnight-did-credentials-hello-family`
+- `@midnight-ntwrk/midnight-did-credentials-dummy-claims`
+- `@midnight-ntwrk/midnight-did-credentials-university-diploma`
 - `@midnight-ntwrk/midnight-did-standalone-environment`
 
 Intentionally excluded:
 
 - `@midnight-ntwrk/midnight-did-credentials-demo-contract`
+- `@midnight-ntwrk/midnight-did-hello-verifier-contract`

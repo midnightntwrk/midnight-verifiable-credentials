@@ -1,0 +1,28 @@
+{
+  "universityId": "uni-example-001",
+  "universityName": "Example University",
+  "issuerDidUrl": "did:midnight:university:example-university",
+  "issuerMethodId": "#issuer-key-1",
+  "credentialFamilyPackage": "@midnight-ntwrk/midnight-did-credentials-university-diploma",
+  "schemaId": "uni-diploma:v1",
+  "holderBindingProfile": "ExplicitHolderBinding",
+  "statusModel": "NoStatusBinding",
+  "isRevocable": false,
+  "graduationYear": 2030,
+  "graduationMonth": 6,
+  "supportsBatchIssuance": true,
+  "batchSize": 5,
+  "claimEncoding": {
+    "stringLikeFields": "fixed-width Bytes<N> in Compact, canonical JSON strings in scenario data",
+    "integerFields": "Uint<n> in Compact, JSON numbers in scenario data",
+    "fieldLengths": {
+      "diplomaId": 32,
+      "studentId": 16,
+      "graduateName": 32,
+      "universityName": 32,
+      "facultyName": 32,
+      "awardName": 32,
+      "honorsCode": 16
+    }
+  }
+}

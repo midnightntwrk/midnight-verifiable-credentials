@@ -211,6 +211,8 @@ Runtime note:
 - JavaScript/TypeScript `bigint` values are the runtime representation for
   Compact `Uint<n>` fields
 - `bigint` is not a distinct Compact schema type
+- Compact `Opaque<"string">` values are an opaque JS-carrier surface, not a
+  native canonical string claim type for hash-rooted VC families
 
 Implementation rules:
 
@@ -220,6 +222,10 @@ Implementation rules:
 - if a package needs string-like semantics today, it `MUST` model that through
   an explicitly documented bounded byte layout or adapter-level encoding rather
   than pretending `String` exists in the canonical Compact schema
+- implementations `MUST NOT` present `Opaque<"string">` as a canonical direct
+  claim field in any family whose claim root is computed through
+  `persistentHash<Claims>(claims)` unless the active Compact compiler surface
+  actually accepts hashing that claim shape
 - shared canonical credential families `SHOULD` stay flat when that is
   sufficient for the domain
 - nested claim structs `MAY` be used when they encode a real domain grouping,
@@ -232,6 +238,7 @@ Current repository evidence for that claim surface lives in:
 
 - [`../../prototypes/credential-families/hello-family/README.md`](../../prototypes/credential-families/hello-family/README.md)
 - [`../../prototypes/credential-families/dummy-claims/README.md`](../../prototypes/credential-families/dummy-claims/README.md)
+- [`../../prototypes/credential-families/university-diploma/README.md`](../../prototypes/credential-families/university-diploma/README.md)
 
 The repository currently treats source-fact credentials such as birth or
 passport as the preferred model, rather than threshold-specific derived

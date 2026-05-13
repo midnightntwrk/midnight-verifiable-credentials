@@ -33,11 +33,11 @@ The repository is organized as a layered Compact-first stack.
 | Layer | Role | Package examples |
 | --- | --- | --- |
 | Layer 1 | Generic VC/VP capabilities | `credentials`, `credentials-same-holder`, `credentials-iso-registry`, `credentials-status-registry` |
-| Layer 2 | Concrete credential families | `credentials-birth`, `credentials-birth-secret`, `credentials-hello-family` (starter), `credentials-dummy-claims` (claim-surface lab) |
+| Layer 2 | Concrete credential families | `credentials-birth`, `credentials-birth-secret`, `credentials-hello-family` (starter), `credentials-dummy-claims` (claim-surface lab), `credentials-university-diploma` (academic prototype) |
 | Layer 2.5 | DID-aware runtime adapters | `credentials-offchain-did` |
 | Layer 3 status prototype | Status-aware contract surface plus off-chain builders | `credentials-status-registry` |
-| Layer 3 | Verifier/business contract composition | `credentials-demo-contract` |
-| Layer 4 | Transport and protocol orchestration | `credentials-openid`, `credentials-protocol` |
+| Layer 3 | Verifier/business contract composition | `hello-verifier-contract`, `university-verifier-contract`, `credentials-demo-contract` |
+| Layer 4 | Transport and protocol orchestration | `credentials-openid`, `credentials-protocol`, `university-protocol` |
 | Shared infra | Standalone integration/runtime support | `standalone-environment` |
 
 Use [`./package-tier-inventory.md`](./package-tier-inventory.md) when you need
@@ -116,6 +116,9 @@ Examples currently in scope as strong repository surfaces are:
 - `credentials-dummy-claims`
   - current broad direct claim-surface and selective-disclosure laboratory,
     not a production privacy template
+- `credentials-university-diploma`
+  - current larger explicit-holder academic diploma prototype for batch issuance
+    and verifier-policy flows
 
 ### `credentials-offchain-did`
 This package is the dedicated DID-aware adapter layer for offchain DID holder
@@ -137,6 +140,38 @@ This package is a protocol/reference orchestration layer.
 
 It models reference issuance/presentation flows and simulation logic above the
 canonical Compact VC core.
+
+### `hello-verifier-contract`
+This starter and lab package owns:
+
+- the smallest checked-in verifier contract over `credentials-hello-family`
+- the offchain-DID-backed starter verifier path
+- the full-disclosure verifier lab for `credentials-dummy-claims`
+
+It should be treated as a starter and laboratory package, not as a canonical
+reusable protocol or privacy template.
+
+### `university-verifier-contract`
+This package owns verifier-side employer and mall request/presentation checks
+over `credentials-university-diploma`.
+
+It should be treated as a use-case contract package, not as a reusable core or
+generic verifier framework.
+
+### `university-protocol`
+This package owns the threaded multi-party university flow:
+
+- student-initiated issuance requests
+- university issuance results
+- employer presentation requests/submissions/results
+- mall discount presentation requests/submissions/results
+
+It intentionally sits above `credentials-protocol` rather than inside it,
+because the flow is tied to one concrete family, one deterministic dataset, and
+one verifier-contract package.
+
+Treat it as a deterministic trace harness, not as a key-isolating SSI
+deployment reference.
 
 ### `credentials-demo-contract`
 This package demonstrates verifier/business contract composition.
@@ -165,6 +200,21 @@ This package provides shared integration infrastructure for docker-backed or
 standalone validation lanes.
 
 It is infrastructure, not a canonical VC/VP model package.
+
+## Generated compatibility roots
+The top-level `midnight-did-credentials*` symlinks that appear at the repository
+root are generated compatibility bridges. They are useful for local tooling and
+legacy include paths, but they are not part of the canonical architecture tree.
+
+Read the repository shape through these durable areas instead:
+
+- `core/`
+- `registry/`
+- `protocols/`
+- `components/`
+- `prototypes/`
+- `use-cases/`
+- `tooling/`
 
 ## Dependency Direction
 The intended dependency direction is:

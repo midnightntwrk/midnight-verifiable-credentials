@@ -1,0 +1,55 @@
+{
+  "job-application-grade-and-award": {
+    "presetId": "job-application-grade-and-award",
+    "kind": "jobApplication",
+    "title": "Grade and award verification",
+    "purpose": "Use when an employer needs the graduate identity, institution, degree, year, and final grade for an academic screening pass.",
+    "requestPolicy": {
+      "requireGraduateNameDisclosure": true,
+      "requireUniversityNameDisclosure": true,
+      "requireAwardNameDisclosure": true,
+      "requireGraduationYearDisclosure": true,
+      "requireFinalGradeDisclosure": true
+    }
+  },
+  "job-application-honors-without-grade": {
+    "presetId": "job-application-honors-without-grade",
+    "kind": "jobApplication",
+    "title": "Honors without raw grade",
+    "purpose": "Use when an employer needs degree context and honors classification but intentionally avoids collecting the raw final grade.",
+    "requestPolicy": {
+      "requireGraduateNameDisclosure": true,
+      "requireUniversityNameDisclosure": true,
+      "requireAwardNameDisclosure": true,
+      "requireGraduationYearDisclosure": true,
+      "requireHonorsCodeDisclosure": true,
+      "requireFinalGradeDisclosure": false
+    }
+  },
+  "job-application-credits-and-grade": {
+    "presetId": "job-application-credits-and-grade",
+    "kind": "jobApplication",
+    "title": "Credits and grade verification",
+    "purpose": "Use when an employer needs the degree outcome plus the earned-credit total to compare curriculum depth across graduates.",
+    "requestPolicy": {
+      "requireGraduateNameDisclosure": true,
+      "requireUniversityNameDisclosure": true,
+      "requireAwardNameDisclosure": true,
+      "requireGraduationYearDisclosure": true,
+      "requireCreditsEarnedDisclosure": true,
+      "requireFinalGradeDisclosure": true
+    }
+  },
+  "mall-discount-grade-over-90": {
+    "presetId": "mall-discount-grade-over-90",
+    "kind": "mallDiscount",
+    "title": "Grade-above-90 discount",
+    "purpose": "Use when a verifier needs institution identity plus a strict grade threshold check for a student discount offer.",
+    "requestPolicy": {
+      "requireUniversityNameDisclosure": true,
+      "requireFinalGradeDisclosure": true,
+      "enforceMinimumFinalGrade": true,
+      "minimumFinalGrade": 91
+    }
+  }
+}

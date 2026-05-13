@@ -1,0 +1,24 @@
+[
+  {
+    "batchId": "batch-01",
+    "studentIds": [
+      "STU-0001",
+      "STU-0002",
+      "STU-0003",
+      "STU-0004",
+      "STU-0005"
+    ],
+    "size": 5
+  },
+  {
+    "batchId": "batch-02",
+    "studentIds": [
+      "STU-0006",
+      "STU-0007",
+      "STU-0008",
+      "STU-0009",
+      "STU-0010"
+    ],
+    "size": 5
+  }
+]

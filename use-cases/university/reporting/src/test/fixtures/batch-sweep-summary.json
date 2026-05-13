@@ -1,0 +1,138 @@
+{
+  "schemaVersion": "midnight-university-batch-sweep-summary.v1",
+  "sweepConfig": {
+    "studentCount": 100,
+    "batchSizes": [
+      2,
+      5,
+      10,
+      20
+    ]
+  },
+  "runs": [
+    {
+      "studentCount": 100,
+      "batchSize": 2,
+      "batchCount": 50,
+      "issuedCredentialCount": 100,
+      "acceptedRequestCount": 100,
+      "issuanceWallClockMs": 373.49037500000003,
+      "wallClockCredentialsPerSecond": 267.7445168433055,
+      "credentialsPerSecond": 268.98203388839005,
+      "phaseTotalsMs": {
+        "queueWait": 9508.299728500004,
+        "compile": 371.22041900000005,
+        "sign": 0.06624900000088019,
+        "delivery": 0.04499800000070309
+      },
+      "phaseAverageMs": {
+        "queueWait": 190.16599457000007,
+        "compile": 7.424408380000001,
+        "sign": 0.0013249800000176037,
+        "delivery": 0.0008999600000140618
+      },
+      "phaseMaxMs": {
+        "queueWait": 364.938167,
+        "compile": 15.24716699999999,
+        "sign": 0.024165999999979704,
+        "delivery": 0.016499999999950887
+      }
+    },
+    {
+      "studentCount": 100,
+      "batchSize": 5,
+      "batchCount": 20,
+      "issuedCredentialCount": 100,
+      "acceptedRequestCount": 100,
+      "issuanceWallClockMs": 354.2952919999999,
+      "wallClockCredentialsPerSecond": 282.2504341943105,
+      "credentialsPerSecond": 283.0932138109255,
+      "phaseTotalsMs": {
+        "queueWait": 3368.634354,
+        "compile": 353.0697090000001,
+        "sign": 0.02591699999982211,
+        "delivery": 0.015917999999714993
+      },
+      "phaseAverageMs": {
+        "queueWait": 168.43171769999998,
+        "compile": 17.653485450000005,
+        "sign": 0.0012958499999911055,
+        "delivery": 0.0007958999999857497
+      },
+      "phaseMaxMs": {
+        "queueWait": 336.42060019999997,
+        "compile": 24.281708000000094,
+        "sign": 0.0025409999999510546,
+        "delivery": 0.0016669999999976426
+      }
+    },
+    {
+      "studentCount": 100,
+      "batchSize": 10,
+      "batchCount": 10,
+      "issuedCredentialCount": 100,
+      "acceptedRequestCount": 100,
+      "issuanceWallClockMs": 345.810375,
+      "wallClockCredentialsPerSecond": 289.17582359985585,
+      "credentialsPerSecond": 289.7859858048334,
+      "phaseTotalsMs": {
+        "queueWait": 1551.1104577,
+        "compile": 344.9371670000005,
+        "sign": 0.02816700000016681,
+        "delivery": 0.017832999999882304
+      },
+      "phaseAverageMs": {
+        "queueWait": 155.11104577,
+        "compile": 34.49371670000005,
+        "sign": 0.0028167000000166808,
+        "delivery": 0.0017832999999882304
+      },
+      "phaseMaxMs": {
+        "queueWait": 310.2375667,
+        "compile": 35.06008300000008,
+        "sign": 0.004666999999926702,
+        "delivery": 0.007416000000148415
+      }
+    },
+    {
+      "studentCount": 100,
+      "batchSize": 20,
+      "batchCount": 5,
+      "issuedCredentialCount": 100,
+      "acceptedRequestCount": 100,
+      "issuanceWallClockMs": 363.59558300000003,
+      "wallClockCredentialsPerSecond": 275.0308438152836,
+      "credentialsPerSecond": 275.9195683200829,
+      "phaseTotalsMs": {
+        "queueWait": 686.3849467499999,
+        "compile": 362.3488749999999,
+        "sign": 0.017708000000311586,
+        "delivery": 0.0075409999997191335
+      },
+      "phaseAverageMs": {
+        "queueWait": 137.27698934999998,
+        "compile": 72.46977499999998,
+        "sign": 0.003541600000062317,
+        "delivery": 0.0015081999999438267
+      },
+      "phaseMaxMs": {
+        "queueWait": 274.17051499999997,
+        "compile": 88.31283400000007,
+        "sign": 0.005165999999917403,
+        "delivery": 0.002457999999933236
+      }
+    }
+  ],
+  "fastestBatchSizeByWallClockCredentialsPerSecond": 10,
+  "artifactRetention": {
+    "targetDir": "use-cases/university/scenarios/target/batch-sweep",
+    "files": [
+      "summary.json",
+      "summary.md"
+    ]
+  },
+  "notes": [
+    "This sweep exercises the issuance harness only so compile/sign/delivery phase timings stay visible.",
+    "All timings are machine-local measurements and should be compared by relative trend, not exact value."
+  ]
+}

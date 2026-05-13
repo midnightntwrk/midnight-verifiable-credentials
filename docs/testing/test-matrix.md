@@ -66,6 +66,16 @@ Status: current implemented test surface as of 2026-05-11.
   - see `docs/guides/did-vc-hello-smoke-path.md` for the authoritative lane
     description
 
+### `hello-verifier` starter package
+
+- `use-cases/hello-verifier/contract/src/test/hello-verifier.test.ts`
+  - explicit-holder starter verifier over `credentials-hello-family`
+  - offchain-DID starter verifier over `credentials-hello-family`
+- `use-cases/hello-verifier/contract/src/test/dummy-claims-verifier.test.ts`
+  - full-disclosure verifier over `credentials-dummy-claims`
+  - negative coverage for omitted direct, nested-field, nested-vector, and
+    challenge-mismatch cases
+
 ### `credentials-dummy-claims`
 
 - claim-root/domain-separation source checks
@@ -81,6 +91,126 @@ Status: current implemented test surface as of 2026-05-11.
   - credential claim-root integrity
   - holder-binding mismatch
   - request/proof challenge mismatch
+- root `./run.sh dummy-claims-lab` lane
+  - keeps the family-level selective-disclosure lab and verifier-level lab contract
+    path runnable from one repo command
+  - see `docs/guides/dummy-claims-verifier-lab.md` for the authoritative lane
+    description
+
+### `credentials-university-diploma`
+
+- claim-root/domain-separation source checks
+- presentation-request source-shape checks
+- package export-surface checks
+- deterministic fixture-backed selective-disclosure verification across:
+  - company-style disclosure requirements
+  - hidden academic fields when the verifier does not ask for them
+  - mall-style minimum-grade verification
+- negative validation guards for:
+  - missing verifier challenge
+  - request version drift
+  - schema-ref drift
+  - request/proof challenge mismatch
+  - minimum-grade misconfiguration
+  - disclosed-field tampering
+  - credential claim-root tampering
+  - holder-binding mismatch
+
+### `university-verifier-contract`
+
+- `use-cases/university/contract/src/test/university-verifier.test.ts`
+  - employer-style request construction and presentation verification
+  - mall discount request construction and threshold verification
+  - direct-request invariant rejection for the employer path
+  - below-threshold rejection for the mall path
+  - required-disclosure rejection for the mall path
+
+### `university-protocol`
+
+- `use-cases/university/protocol/src/test/full-flow.test.ts`
+  - threaded message-level student-initiated issuance over 10 students
+  - threaded job-application request / submission / result flow over 3 companies
+  - threaded mall discount request / submission / result flow over 5 applicants
+  - transcript-level policy semantics for company-specific disclosure requests
+  - thread integrity between requests and their corresponding results
+- `use-cases/university/protocol/src/test/duplicate-flow.test.ts`
+  - duplicate job-application submission rejection
+  - duplicate mall discount submission rejection
+- `use-cases/university/protocol/src/test/negative-flow.test.ts`
+  - malformed verifier request policy rejection
+  - no collateral acceptance loss outside the targeted cohort
+- `use-cases/university/protocol/src/test/tampered-flow.test.ts`
+  - credential claim-root tampering rejection
+  - verifier-challenge tampering rejection
+  - issuer verification-method tampering rejection
+  - no collateral acceptance loss outside the targeted student
+- `use-cases/university/protocol/src/test/holder-binding-flow.test.ts`
+  - holder DID contract tampering rejection
+  - holder method-reference tampering rejection
+  - proof-signer DID contract tampering rejection
+  - proof-signer method-reference tampering rejection
+  - no collateral acceptance loss outside the targeted student
+- `use-cases/university/protocol/src/test/issuance-idempotency.test.ts`
+  - replayed issuance-request counting
+  - idempotent duplicate-request handling
+  - one-credential-per-student guarantee under request replay
+- `use-cases/university/protocol/src/test/export.test.ts`
+  - stable JSON transcript export
+  - stable Markdown transcript export
+  - golden-file normalization over thread ids and verifier challenge hashes
+- `use-cases/university/protocol/src/test/export-schema.test.ts`
+  - explicit transcript schema id/version contract
+  - runtime conformance validation over the live export and golden export
+  - negative coverage for unsupported schema ids, versions, and reader
+    compatibility windows
+- `use-cases/university/protocol/src/test/stress-export.test.ts`
+  - stable 100-student stress-summary schema
+  - normalized JSON and Markdown stress artifacts
+  - explicit retention-hint contract for CI publication
+- `use-cases/university/reporting/src/test/report-summary.test.ts`
+  - stable one-page JSON summary over Serenity, transcript-export, stress, and
+    batch-sweep artifacts
+  - stable one-page Markdown digest over the same artifact set
+  - runtime conformance validation for the reporting schema
+  - latest-run deduplication by Serenity scenario title
+
+### University executable BDD specs
+
+- `use-cases/university/scenarios/features/university_diploma_batch_issuance.feature`
+  - executable student-initiated batch issuance flow for 10 students
+  - explicit duplicate issuance-request replay scenario with readable report
+    counters for idempotent handling
+- `use-cases/university/scenarios/features/university_diploma_job_application.feature`
+  - executable employer verification flow across 3 companies
+- `use-cases/university/scenarios/features/university_diploma_discount.feature`
+  - executable mall discount flow with mixed grade outcomes
+- `use-cases/university/scenarios/features/university_diploma_negative_flows.feature`
+  - executable malformed-policy, duplicate-thread, and tampered-diploma
+    scenarios with readable per-step failure explanations
+  - executable holder-binding and proof-signer mismatch scenarios with readable
+    per-step failure explanations
+- root `./run.sh university-batch-sweep` lane
+  - sweeps issuance batch sizes over deterministic university fixtures
+  - emits stable JSON and Markdown benchmark summaries
+  - remains issuance-only so its timing summaries exclude company and mall
+    verification phases
+- root `./run.sh university-summary` lane
+  - regenerates the readable BDD, transcript export, stress, and batch-sweep
+    artifacts, then emits a one-page JSON/Markdown summary
+  - `./run.sh university-summary --light` reuses the existing university
+    artifact set when available and only rebuilds the reporting package itself
+- root `./run.sh university-data-profiles` lane
+  - validates the committed `readable-10` and `stress-100` university data
+    profiles against the shared generator registry
+- coverage boundary:
+  - these scenarios run as one-process virtual-agent orchestration with metrics
+  - issuance still uses the local batch harness for richer issuance-stage
+    metrics
+  - job-application and mall-discount flows now consume the threaded
+    `university-protocol` transcript directly
+  - they do not yet model real multi-process or networked party isolation
+  - the separate `university-protocol` package remains the authoritative
+    request/result message harness for the same actors and data
 
 ### Historical placeholder package names
 

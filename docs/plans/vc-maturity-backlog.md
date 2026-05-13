@@ -10,7 +10,7 @@ Purpose:
   findings
 - provide a stable backlog for follow-up engineering and documentation slices
 
-## Status Update: 2026-05-11
+## Status Update: 2026-05-12
 
 Merged baseline on `develop` still runs through `#95`.
 
@@ -64,7 +64,7 @@ Advanced in the current open maturity stack, but not yet on `develop`:
   - `#141`
   - `#143`
   - `#144`
-- university research and prototype-family seed:
+- university research seed:
   - `#145`
   - `#146`
 - docs/spec/testing/scaffold realignment:
@@ -112,15 +112,31 @@ Advanced in the current open maturity stack, but not yet on `develop`:
   - `#183`
 - final repo-owned leftovers closeout:
   - `#184`
+- post-backlog dummy-claims prototyping and starter-lab execution:
+  - family/spec/documentation stack:
+    - `#196`
+    - `#197`
+    - `#198`
+    - `#199`
+    - `#200`
+  - verifier-lab and root-runner stack:
+    - `#202`
+    - `#203`
+- university diploma prototype and executable use-case execution:
+  - `#205`
+  - `#206`
+  - `#207`
 
 Practical remaining backlog after the current open stack:
 
-- about `1-2%` of the original repo-wide backlog by execution volume
-- repository-owned functional backlog is now effectively closed on the current
+- the original VC maturity backlog is now effectively executed on the current
   stack
-- the remaining tracked work is now mostly:
+- execution volume for the original backlog is effectively `99-100%` complete
+- the remaining tracked work is now post-backlog maintenance rather than
+  capability burn-down:
   - merge-closeout / maintenance discipline
   - compatibility-matrix upkeep as DID tarballs move
+  - CI closeout on the current dummy-claims prototyping stack
   - the explicit upstream Compact/runtime dependency for a future generic
     root-bound non-membership path
 
@@ -153,12 +169,12 @@ Current highest-risk remaining area:
   keeping execution/docs/tooling aligned with the physical layout that now
   exists on disk
 
-## Self-Audit: 2026-05-11
+## Self-Audit: 2026-05-12
 
 Evidence reviewed:
 
 - current `develop` history through `#95`
-- open maturity-stack work through `#184`
+- open maturity-stack work through `#203`
 - historical PR-number gap `#96` through `#130` reconciled as superseded
   redesign-wave iterations rather than as a live backlog omission
 - current top-level tree under:
@@ -214,6 +230,11 @@ Main findings:
 
 - the old top-level `credentials*`, `libs/`, and `infrastructure/` relocation
   concerns are no longer the main story
+- the current audit confirms two remaining hygiene rules:
+  - keep generated `midnight-did-credentials*` compatibility symlinks documented
+    as non-canonical architecture roots
+  - keep dormant non-workspace prototype leftovers out of the current package
+    spine and package inventory
 - the remaining work is:
   - compatibility-shim hygiene
   - stale doc/path cleanup
