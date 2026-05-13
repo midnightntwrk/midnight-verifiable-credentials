@@ -41,33 +41,6 @@ const sanitizeForReport = (value: unknown): unknown => {
   return value;
 };
 
-const indentBlock = (value: string, prefix = "  "): string =>
-  value
-    .split("\n")
-    .map((line) => `${prefix}${line}`)
-    .join("\n");
-
-const formatInsight = (title: string, payload: StepInsight): string => {
-  const checks = payload.checks.map((check) => `- ${check}`).join("\n");
-  const dto = JSON.stringify(sanitizeForReport(payload.dto), null, 2);
-
-  return [
-    title,
-    "",
-    "Request",
-    indentBlock(payload.request),
-    "",
-    "Response",
-    indentBlock(payload.response),
-    "",
-    "Checks",
-    checks,
-    "",
-    "DTO",
-    dto,
-  ].join("\n");
-};
-
 const logInsight = (
   title: string,
   payload: StepInsight,
@@ -75,7 +48,13 @@ const logInsight = (
   Interaction.where(`#actor records ${title}`, (actor) => {
     actor.collect(
       LogEntry.fromJSON({
-        data: formatInsight(title, payload),
+        data: {
+          title,
+          request: payload.request,
+          response: payload.response,
+          checks: payload.checks,
+          dto: sanitizeForReport(payload.dto),
+        },
       }),
       new Name(title),
     );
@@ -178,7 +157,7 @@ When("every graduating student submits a university diploma issuance request", a
     ],
     dto: {
       result: universityScenario().issuanceResult(),
-      transcriptExcerpt: universityScenario().issuanceExecutionSummary(),
+      transcriptExcerpt: universityScenario().issuanceTranscriptSummary(),
     },
   });
 });

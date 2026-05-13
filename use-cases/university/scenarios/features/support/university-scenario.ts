@@ -215,6 +215,10 @@ type TranscriptEntryView = {
   readonly type: string;
   readonly from: string;
   readonly to: string;
+  readonly fromDidUrl: string;
+  readonly fromMethodId: string;
+  readonly toDidUrl: string;
+  readonly toMethodId: string;
   readonly summary: string;
   readonly messageIdHex: string;
   readonly respondsToHex: string;
@@ -324,11 +328,80 @@ const bytesToHex = (bytes: Uint8Array): string =>
 const paddedTextToString = (value: Uint8Array): string =>
   new TextDecoder().decode(value).replace(/\u0000+$/u, "");
 
+type PartyEndpoint = {
+  readonly didUrl: string;
+  readonly methodId: string;
+};
+
+const readTextField = (value: unknown): string | undefined => {
+  if (typeof value === "string") {
+    return value;
+  }
+  if (
+    value instanceof Uint8Array &&
+    value.every((entry) => typeof entry === "number")
+  ) {
+    return paddedTextToString(value);
+  }
+  return undefined;
+};
+
+const readBigIntField = (value: unknown): string | undefined =>
+  typeof value === "bigint" ? value.toString() : undefined;
+
+const readBooleanField = (value: unknown): boolean | undefined =>
+  typeof value === "boolean" ? value : undefined;
+
 const verificationMethodRefToString = (value: {
   readonly didContractAddress: { readonly bytes: Uint8Array };
   readonly methodId: Uint8Array;
 }): string =>
   `${bytesToHex(value.didContractAddress.bytes)}:${paddedTextToString(value.methodId)}`;
+
+const verificationMethodRefFromUnknown = (
+  value: unknown,
+): string | null => {
+  if (!value || typeof value !== "object") {
+    return null;
+  }
+  const record = value as {
+    readonly didContractAddress?: { readonly bytes?: unknown };
+    readonly methodId?: unknown;
+  };
+  const didBytes = record.didContractAddress?.bytes;
+  if (!(didBytes instanceof Uint8Array)) {
+    return null;
+  }
+  if (!(record.methodId instanceof Uint8Array)) {
+    return null;
+  }
+  return `${bytesToHex(didBytes)}:${paddedTextToString(record.methodId)}`;
+};
+
+const decodeUniversityClaims = (rawClaims: unknown): Record<string, string> => {
+  if (!rawClaims || typeof rawClaims !== "object") {
+    return {};
+  }
+  const claimRecord = rawClaims as Record<string, unknown>;
+  const decoded: Record<string, string> = {};
+  for (const [key, value] of Object.entries(claimRecord)) {
+    const textValue = readTextField(value);
+    if (textValue !== undefined) {
+      decoded[key] = textValue;
+      continue;
+    }
+    const numericValue = readBigIntField(value) ?? readTextField(`${value}`);
+    if (numericValue !== undefined) {
+      decoded[key] = numericValue;
+      continue;
+    }
+    const boolValue = readBooleanField(value);
+    if (boolValue !== undefined) {
+      decoded[key] = String(boolValue);
+    }
+  }
+  return decoded;
+};
 
 const REPORT_SAMPLE_SIZE = 3;
 
@@ -540,6 +613,7 @@ export class UseUniversityScenario extends Ability {
   #discountResult: DiscountScenarioResult | undefined;
   #protocolResult: UniversityProtocolFlowResult | undefined;
   #selectedDiscountStudentId: string | undefined;
+  #partyEndpoints: ReadonlyMap<string, PartyEndpoint> | undefined;
 
   constructor(
     backendContext: UniversityScenarioBackendContext = {
@@ -920,6 +994,19 @@ export class UseUniversityScenario extends Ability {
     };
   }
 
+  issuanceTranscriptSummary(): {
+    readonly totalThreads: number;
+    readonly omittedThreadCount: number;
+    readonly representativeThreads: readonly TranscriptThreadView[];
+  } {
+    const threadViews = this.#transcriptThreadsForPhase("issuance");
+    return {
+      totalThreads: threadViews.length,
+      omittedThreadCount: Math.max(0, threadViews.length - 1),
+      representativeThreads: threadViews.slice(0, 1),
+    };
+  }
+
   jobApplicationTranscriptSummary(): {
     readonly totalThreads: number;
     readonly omittedThreadCount: number;
@@ -1000,6 +1087,7 @@ export class UseUniversityScenario extends Ability {
     this.#protocolResult = undefined;
     this.#jobApplicationResult = undefined;
     this.#discountResult = undefined;
+    this.#partyEndpoints = undefined;
   }
 
   #protocolFlowResult(): UniversityProtocolFlowResult {
@@ -1013,6 +1101,27 @@ export class UseUniversityScenario extends Ability {
       }).runAll();
     }
     return this.#protocolResult;
+  }
+
+  #partyEndpointFor(partyId: string): PartyEndpoint {
+    if (!this.#partyEndpoints) {
+      const parties = this.#backendContext.protocol.partyRuntime.listParties();
+      this.#partyEndpoints = new Map(
+        parties.map((party) => [
+          party.partyId,
+          {
+            didUrl: party.didUrl,
+            methodId: party.methodId,
+          },
+        ]),
+      );
+    }
+    return (
+      this.#partyEndpoints.get(partyId) ?? {
+        didUrl: "unresolved",
+        methodId: "unresolved",
+      }
+    );
   }
 
   #transcriptThreadsForPhase(
@@ -1038,6 +1147,8 @@ export class UseUniversityScenario extends Ability {
     )) {
       const message = messageById.get(entry.messageIdHex);
       const dto = message ? this.#transcriptDtoForMessage(message) : null;
+      const fromEndpoint = this.#partyEndpointFor(entry.from);
+      const toEndpoint = this.#partyEndpointFor(entry.to);
       const existing = grouped.get(entry.threadIdHex);
       const studentId =
         dto && typeof dto === "object" && dto !== null && "studentId" in dto
@@ -1051,6 +1162,10 @@ export class UseUniversityScenario extends Ability {
         type: entry.type,
         from: entry.from,
         to: entry.to,
+        fromDidUrl: fromEndpoint.didUrl,
+        fromMethodId: fromEndpoint.methodId,
+        toDidUrl: toEndpoint.didUrl,
+        toMethodId: toEndpoint.methodId,
         summary: entry.summary,
         messageIdHex: entry.messageIdHex,
         respondsToHex: entry.respondsToHex,
@@ -1090,6 +1205,8 @@ export class UseUniversityScenario extends Ability {
             readonly diplomaId: string;
             readonly awardName: string;
             readonly finalGrade: number;
+            readonly studentId?: string;
+            readonly creditsEarned?: number;
           };
         };
         return {
@@ -1100,6 +1217,8 @@ export class UseUniversityScenario extends Ability {
             diplomaId: body.claimValues.diplomaId,
             awardName: body.claimValues.awardName,
             finalGrade: body.claimValues.finalGrade,
+            creditsEarned: body.claimValues.creditsEarned,
+            studentIdClaim: body.claimValues.studentId,
           },
         };
       }
@@ -1116,20 +1235,26 @@ export class UseUniversityScenario extends Ability {
               readonly universityName: Uint8Array;
               readonly awardName: Uint8Array;
               readonly finalGrade: bigint;
+              readonly diplomaId?: Uint8Array;
+              readonly studentId?: Uint8Array;
+              readonly graduateName?: Uint8Array;
+              readonly facultyName?: Uint8Array;
+              readonly honorsCode?: Uint8Array;
+              readonly graduationYear?: bigint;
+              readonly graduationMonth?: bigint;
+              readonly creditsEarned?: bigint;
             };
           };
         };
         return {
           studentId: body.studentId,
           issuedAt: body.issuedAt.toString(),
-          issuerVerificationMethodRef: verificationMethodRefToString(
-            body.credential.issuerVerificationMethodRef,
-          ),
-          universityName: paddedTextToString(
-            body.credential.claims.universityName,
-          ),
-          awardName: paddedTextToString(body.credential.claims.awardName),
-          finalGrade: body.credential.claims.finalGrade.toString(),
+          issuanceCredential: {
+            issuerVerificationMethodRef: verificationMethodRefToString(
+              body.credential.issuerVerificationMethodRef,
+            ),
+            claims: decodeUniversityClaims(body.credential.claims),
+          },
         };
       }
       case "presentation:request": {
@@ -1191,8 +1316,41 @@ export class UseUniversityScenario extends Ability {
               readonly didContractAddress: { readonly bytes: Uint8Array };
               readonly methodId: Uint8Array;
             };
+            readonly claims: {
+              readonly diplomaId: Uint8Array;
+              readonly studentId: Uint8Array;
+              readonly graduateName: Uint8Array;
+              readonly universityName: Uint8Array;
+              readonly facultyName: Uint8Array;
+              readonly awardName: Uint8Array;
+              readonly honorsCode: Uint8Array;
+              readonly graduationYear: bigint;
+              readonly graduationMonth: bigint;
+              readonly finalGrade: bigint;
+              readonly creditsEarned: bigint;
+            };
+          };
+          readonly presentation: {
+            readonly holderBinding: {
+              readonly holderVerificationMethodRef: {
+                readonly didContractAddress: { readonly bytes: Uint8Array };
+                readonly methodId: Uint8Array;
+              };
+            };
+          };
+          readonly presentationProof: {
+            readonly signerVerificationMethodRef: {
+              readonly didContractAddress: { readonly bytes: Uint8Array };
+              readonly methodId: Uint8Array;
+            };
           };
         };
+        const presentationMethod = verificationMethodRefFromUnknown(
+          body.presentation.holderBinding.holderVerificationMethodRef,
+        );
+        const proofSignerMethod = verificationMethodRefFromUnknown(
+          body.presentationProof.signerVerificationMethodRef,
+        );
         return {
           kind: body.kind,
           studentId: body.studentId,
@@ -1200,6 +1358,9 @@ export class UseUniversityScenario extends Ability {
           issuerVerificationMethodRef: verificationMethodRefToString(
             body.credential.issuerVerificationMethodRef,
           ),
+          presentedClaims: decodeUniversityClaims(body.credential.claims),
+          holderBindingVerificationMethodRef: presentationMethod,
+          presentationProofSignerVerificationMethodRef: proofSignerMethod,
           verifierChallengeHashHex: bytesToHex(
             body.request.verifierChallengeHash,
           ),
