@@ -51,6 +51,13 @@ Scope:
   through a `UniversityProofExecutionBackend` abstraction so future slices can
   swap simulator behavior for real DID CRUD and real proof execution without
   rewriting the transcript harness
+- the runtime seam now exposes explicit CRUD-style party registration,
+  inspection, update, and deletion so standalone-backed university actors can
+  be provisioned once and injected into the runner instead of being implicitly
+  reconstructed from fixture JSON
+- the proof seam now distinguishes `simulator` from `standalone-hybrid`
+  backends and emits proof-step timing samples, even though the hybrid mode
+  still uses simulator proof semantics today
 - stable transcript export now exists in both JSON and Markdown forms under
   `target/readable-10`
 - export summaries group entries per thread and include rejection-kind

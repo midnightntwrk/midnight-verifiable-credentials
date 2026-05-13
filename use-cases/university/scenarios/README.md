@@ -75,8 +75,10 @@ Current boundary:
 - the new `standalone-hybrid` backend is the bridge between those two worlds:
   it provisions real Midnight DIDs for the university, students, companies, and
   mall through `standalone-environment`, then rewrites the checked-in fixture
-  set into generated overlay JSON before the existing university issuance and
-  verifier simulator lanes run
+  set into generated overlay JSON and injects a concrete
+  `ProvisionedUniversityPartyRuntime` plus a
+  `StandaloneHybridUniversityProofExecutionBackend` before the existing
+  university issuance and verifier simulator lanes run
 - that means the BDD can now measure environment startup, wallet sync, and DID
   provisioning timings with real standalone infrastructure while still keeping
   the university credential semantics on the local simulator path

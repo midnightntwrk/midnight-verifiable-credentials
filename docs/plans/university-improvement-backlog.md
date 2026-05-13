@@ -175,6 +175,7 @@ Scope boundary:
 11. `flow-module-split`
 - status:
   - runtime/proof backend seam extracted on `codex/vc-university-bdd-standalone-hybrid`
+  - scenario backend now injects a concrete `UniversityPartyRuntime` and `UniversityProofExecutionBackend`
 - problem:
   - `use-cases/university/protocol/src/flow.ts` is still too large for comfortable maintenance
 - scope:

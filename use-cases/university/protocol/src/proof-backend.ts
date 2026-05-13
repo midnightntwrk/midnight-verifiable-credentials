@@ -1,3 +1,5 @@
+import { performance } from "node:perf_hooks";
+
 import {
   pureCircuits as universityDiplomaPureCircuits,
 } from "@midnight-ntwrk/midnight-did-credentials-university-diploma/contract";
@@ -20,7 +22,6 @@ import type {
   UniversityPresentationRequestBody,
   UniversityPresentationSubmissionBody,
   UniversityPresentationTamperingMode,
-  UniversityProfile,
   VerifierRequestPolicy,
   VerifierRequestPolicyOverride,
 } from "./model.js";
@@ -211,7 +212,23 @@ export const applyPresentationTampering = (
   }
 };
 
+export type UniversityProofExecutionBackendMetric = {
+  readonly name: string;
+  readonly durationMs: number;
+  readonly tags?: Record<string, string | number | boolean>;
+};
+
+export type UniversityProofExecutionBackendDescriptor = {
+  readonly mode: "simulator" | "standalone-hybrid";
+  readonly description: string;
+  readonly usesRealDidBindings: boolean;
+  readonly usesRealProofInfrastructure: boolean;
+};
+
 export interface UniversityProofExecutionBackend {
+  descriptor(): UniversityProofExecutionBackendDescriptor;
+  snapshotMetrics(): readonly UniversityProofExecutionBackendMetric[];
+  resetMetrics(): void;
   issueDiplomaCredential(options: {
     readonly issuerProfile: AgentProfile;
     readonly issuerRuntime: UniversityPartyRuntime;
@@ -253,10 +270,44 @@ export interface UniversityProofExecutionBackend {
   }): void;
 }
 
-export class SimulatorUniversityProofExecutionBackend
+abstract class MeasuredUniversityProofExecutionBackend
   implements UniversityProofExecutionBackend
 {
   readonly verifier = new UniversityVerifierSimulator();
+  readonly #metrics: UniversityProofExecutionBackendMetric[] = [];
+
+  abstract descriptor(): UniversityProofExecutionBackendDescriptor;
+
+  snapshotMetrics(): readonly UniversityProofExecutionBackendMetric[] {
+    return this.#metrics.map((metric) => ({
+      ...metric,
+      tags: metric.tags ? { ...metric.tags } : undefined,
+    }));
+  }
+
+  resetMetrics(): void {
+    this.#metrics.length = 0;
+  }
+
+  protected measure<T>(
+    name: string,
+    fn: () => T,
+    tags?: Record<string, string | number | boolean>,
+  ): T {
+    const startedAt = performance.now();
+    try {
+      return fn();
+    } finally {
+      this.#metrics.push({
+        name,
+        durationMs: performance.now() - startedAt,
+        tags: {
+          backendMode: this.descriptor().mode,
+          ...tags,
+        },
+      });
+    }
+  }
 
   issueDiplomaCredential(options: {
     readonly issuerProfile: AgentProfile;
@@ -269,24 +320,30 @@ export class SimulatorUniversityProofExecutionBackend
     readonly credentialProofCreatedAt: bigint;
     readonly presentationProofCreatedAt: bigint;
   }): StoredIssuedCredential {
-    const fixture = createUniversityDiplomaFixture({
-      issuerConfig: options.issuerRuntime.signerOptionsFor(options.issuerProfile),
-      holderConfig: options.holderRuntime.signerOptionsFor(options.holderProfile),
-      claimOverrides: encodeClaims(options.student),
-      issuanceChallengeHash: options.issuanceChallengeHash,
-      issuedAt: options.issuedAt,
-      credentialProofCreatedAt: options.credentialProofCreatedAt,
-      presentationProofCreatedAt: options.presentationProofCreatedAt,
-    });
+    return this.measure(
+      "proof_issue_diploma_ms",
+      () => {
+        const fixture = createUniversityDiplomaFixture({
+          issuerConfig: options.issuerRuntime.signerOptionsFor(options.issuerProfile),
+          holderConfig: options.holderRuntime.signerOptionsFor(options.holderProfile),
+          claimOverrides: encodeClaims(options.student),
+          issuanceChallengeHash: options.issuanceChallengeHash,
+          issuedAt: options.issuedAt,
+          credentialProofCreatedAt: options.credentialProofCreatedAt,
+          presentationProofCreatedAt: options.presentationProofCreatedAt,
+        });
 
-    return {
-      credential: fixture.credential,
-      credentialProof: fixture.credentialProof,
-      issuedAt: options.issuedAt,
-      credentialProofCreatedAt: options.credentialProofCreatedAt,
-      presentationProofCreatedAt: options.presentationProofCreatedAt,
-      issuanceChallengeHash: options.issuanceChallengeHash,
-    };
+        return {
+          credential: fixture.credential,
+          credentialProof: fixture.credentialProof,
+          issuedAt: options.issuedAt,
+          credentialProofCreatedAt: options.credentialProofCreatedAt,
+          presentationProofCreatedAt: options.presentationProofCreatedAt,
+          issuanceChallengeHash: options.issuanceChallengeHash,
+        };
+      },
+      { studentId: options.student.studentId },
+    );
   }
 
   buildPresentationSubmission(options: {
@@ -300,42 +357,57 @@ export class SimulatorUniversityProofExecutionBackend
     readonly request: UniversityPresentationRequestBody["request"];
     readonly tampering?: UniversityPresentationTamperingMode;
   }): UniversityPresentationSubmissionBody {
-    const presentationFixture = createUniversityDiplomaFixture({
-      issuerConfig: options.issuerRuntime.signerOptionsFor(options.issuerProfile),
-      holderConfig: options.holderRuntime.signerOptionsFor(options.holderProfile),
-      claimOverrides: encodeClaims(options.student),
-      request: requestOptionsFromRequest(options.request),
-      disclosure: disclosureOptionsFromRequest(options.request),
-      verifierChallengeHash: options.request.verifierChallengeHash,
-      issuanceChallengeHash: options.storedCredential.issuanceChallengeHash,
-      issuedAt: options.storedCredential.issuedAt,
-      credentialProofCreatedAt: options.storedCredential.credentialProofCreatedAt,
-      presentationProofCreatedAt: options.storedCredential.presentationProofCreatedAt,
-    });
+    return this.measure(
+      "proof_build_presentation_submission_ms",
+      () => {
+        const presentationFixture = createUniversityDiplomaFixture({
+          issuerConfig: options.issuerRuntime.signerOptionsFor(options.issuerProfile),
+          holderConfig: options.holderRuntime.signerOptionsFor(options.holderProfile),
+          claimOverrides: encodeClaims(options.student),
+          request: requestOptionsFromRequest(options.request),
+          disclosure: disclosureOptionsFromRequest(options.request),
+          verifierChallengeHash: options.request.verifierChallengeHash,
+          issuanceChallengeHash: options.storedCredential.issuanceChallengeHash,
+          issuedAt: options.storedCredential.issuedAt,
+          credentialProofCreatedAt: options.storedCredential.credentialProofCreatedAt,
+          presentationProofCreatedAt: options.storedCredential.presentationProofCreatedAt,
+        });
 
-    const storedRoot = universityDiplomaPureCircuits.universityDiplomaCredentialBodyRoot(
-      options.storedCredential.credential,
+        const storedRoot =
+          universityDiplomaPureCircuits.universityDiplomaCredentialBodyRoot(
+            options.storedCredential.credential,
+          );
+        const rebuiltRoot =
+          universityDiplomaPureCircuits.universityDiplomaCredentialBodyRoot(
+            presentationFixture.credential,
+          );
+        if (
+          Buffer.from(storedRoot).toString("hex") !==
+          Buffer.from(rebuiltRoot).toString("hex")
+        ) {
+          throw new Error(
+            `Rebuilt university diploma root drift for ${options.student.studentId}`,
+          );
+        }
+
+        const untampered: UniversityPresentationSubmissionBody = {
+          kind: options.kind,
+          studentId: options.student.studentId,
+          credential: options.storedCredential.credential,
+          credentialProof: options.storedCredential.credentialProof,
+          request: options.request,
+          presentation: presentationFixture.presentation,
+          presentationProof: presentationFixture.presentationProof,
+        };
+
+        return applyPresentationTampering(untampered, options.tampering);
+      },
+      {
+        studentId: options.student.studentId,
+        kind: options.kind,
+        tampered: options.tampering !== undefined,
+      },
     );
-    const rebuiltRoot = universityDiplomaPureCircuits.universityDiplomaCredentialBodyRoot(
-      presentationFixture.credential,
-    );
-    if (Buffer.from(storedRoot).toString("hex") !== Buffer.from(rebuiltRoot).toString("hex")) {
-      throw new Error(
-        `Rebuilt university diploma root drift for ${options.student.studentId}`,
-      );
-    }
-
-    const untampered: UniversityPresentationSubmissionBody = {
-      kind: options.kind,
-      studentId: options.student.studentId,
-      credential: options.storedCredential.credential,
-      credentialProof: options.storedCredential.credentialProof,
-      request: options.request,
-      presentation: presentationFixture.presentation,
-      presentationProof: presentationFixture.presentationProof,
-    };
-
-    return applyPresentationTampering(untampered, options.tampering);
   }
 
   buildJobApplicationRequest(options: {
@@ -344,15 +416,17 @@ export class SimulatorUniversityProofExecutionBackend
     readonly requestPolicy: VerifierRequestPolicy;
     readonly requestPolicyOverrides?: VerifierRequestPolicyOverride;
   }): UniversityPresentationRequestBody["request"] {
-    return applyRequestPolicyOverrides(
-      this.verifier.universityJobApplicationRequest(
-        options.issuerVerificationMethodRef,
-        options.verifierChallengeHash,
-        {
-          ...options.requestPolicy,
-        } satisfies UniversityJobApplicationRequestOptions,
+    return this.measure("proof_build_job_request_ms", () =>
+      applyRequestPolicyOverrides(
+        this.verifier.universityJobApplicationRequest(
+          options.issuerVerificationMethodRef,
+          options.verifierChallengeHash,
+          {
+            ...options.requestPolicy,
+          } satisfies UniversityJobApplicationRequestOptions,
+        ),
+        options.requestPolicyOverrides,
       ),
-      options.requestPolicyOverrides,
     );
   }
 
@@ -361,34 +435,78 @@ export class SimulatorUniversityProofExecutionBackend
     readonly verifierChallengeHash: Uint8Array;
     readonly minimumFinalGrade: bigint;
   }): UniversityPresentationRequestBody["request"] {
-    return this.verifier.universityMallDiscountRequest(
-      options.issuerVerificationMethodRef,
-      options.verifierChallengeHash,
-      options.minimumFinalGrade,
+    return this.measure("proof_build_mall_request_ms", () =>
+      this.verifier.universityMallDiscountRequest(
+        options.issuerVerificationMethodRef,
+        options.verifierChallengeHash,
+        options.minimumFinalGrade,
+      ),
     );
   }
 
   verifyJobApplication(options: {
     readonly submission: UniversityPresentationSubmissionBody;
   }): void {
-    this.verifier.verifyUniversityDiplomaForJobApplication(
-      options.submission.credential,
-      options.submission.credentialProof,
-      options.submission.request,
-      options.submission.presentation,
-      options.submission.presentationProof,
+    this.measure(
+      "proof_verify_job_application_ms",
+      () => {
+        this.verifier.verifyUniversityDiplomaForJobApplication(
+          options.submission.credential,
+          options.submission.credentialProof,
+          options.submission.request,
+          options.submission.presentation,
+          options.submission.presentationProof,
+        );
+      },
+      { studentId: options.submission.studentId },
     );
   }
 
   verifyMallDiscount(options: {
     readonly submission: UniversityPresentationSubmissionBody;
   }): void {
-    this.verifier.verifyUniversityDiplomaForMallDiscount(
-      options.submission.credential,
-      options.submission.credentialProof,
-      options.submission.request,
-      options.submission.presentation,
-      options.submission.presentationProof,
+    this.measure(
+      "proof_verify_mall_discount_ms",
+      () => {
+        this.verifier.verifyUniversityDiplomaForMallDiscount(
+          options.submission.credential,
+          options.submission.credentialProof,
+          options.submission.request,
+          options.submission.presentation,
+          options.submission.presentationProof,
+        );
+      },
+      { studentId: options.submission.studentId },
     );
+  }
+}
+
+export class SimulatorUniversityProofExecutionBackend
+  extends MeasuredUniversityProofExecutionBackend
+  implements UniversityProofExecutionBackend
+{
+  descriptor(): UniversityProofExecutionBackendDescriptor {
+    return {
+      mode: "simulator",
+      description:
+        "Local deterministic proof backend using in-process university-diploma fixtures and verifier simulator semantics.",
+      usesRealDidBindings: false,
+      usesRealProofInfrastructure: false,
+    };
+  }
+}
+
+export class StandaloneHybridUniversityProofExecutionBackend
+  extends MeasuredUniversityProofExecutionBackend
+  implements UniversityProofExecutionBackend
+{
+  descriptor(): UniversityProofExecutionBackendDescriptor {
+    return {
+      mode: "standalone-hybrid",
+      description:
+        "Hybrid proof backend: real standalone DID bindings paired with local university-diploma fixture generation and verifier simulator semantics.",
+      usesRealDidBindings: true,
+      usesRealProofInfrastructure: false,
+    };
   }
 }
