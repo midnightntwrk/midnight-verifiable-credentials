@@ -1,16 +1,11 @@
 import { Given, Then, When } from "@cucumber/cucumber";
-import { actorCalled, Log } from "@serenity-js/core";
+import { actorCalled, Interaction } from "@serenity-js/core";
+import { LogEntry, Name } from "@serenity-js/core/model";
 
 import { UseUniversityScenario } from "../support/university-scenario.js";
 
 const engineer = () => actorCalled("Engineer");
 const universityScenario = () => UseUniversityScenario.from(engineer());
-
-// NOTE: Serenity step insights occasionally surface BigInt-backed DTO fields
-// from verifier policy normalization and metric payloads; stringify them
-// defensively so the HTML report never crashes on JSON serialization.
-const jsonReportReplacer = (_key: string, value: unknown): unknown =>
-  typeof value === "bigint" ? value.toString() : value;
 
 type StepInsight = {
   readonly request: string;
@@ -19,11 +14,45 @@ type StepInsight = {
   readonly dto: unknown;
 };
 
+const sanitizeForReport = (value: unknown): unknown => {
+  if (typeof value === "bigint") {
+    return value.toString();
+  }
+
+  if (Array.isArray(value)) {
+    return value.map((entry) => sanitizeForReport(entry));
+  }
+
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, entry]) => [
+        key,
+        sanitizeForReport(entry),
+      ]),
+    );
+  }
+
+  return value;
+};
+
 const logInsight = (
   title: string,
   payload: StepInsight,
 ) => engineer().attemptsTo(
-  Log.the(`${title}\n${JSON.stringify(payload, jsonReportReplacer, 2)}`),
+  Interaction.where(`#actor records ${title}`, (actor) => {
+    actor.collect(
+      LogEntry.fromJSON({
+        data: {
+          title,
+          request: payload.request,
+          response: payload.response,
+          checks: payload.checks,
+          dto: sanitizeForReport(payload.dto),
+        },
+      }),
+      new Name(title),
+    );
+  }),
 );
 
 const expectMetricNames = (actual: readonly string[], expected: readonly string[]) => {
@@ -122,7 +151,7 @@ When("every graduating student submits a university diploma issuance request", a
     ],
     dto: {
       result: universityScenario().issuanceResult(),
-      transcriptExcerpt: universityScenario().issuanceExecutionSummary(),
+      transcriptExcerpt: universityScenario().issuanceTranscriptSummary(),
     },
   });
 });
