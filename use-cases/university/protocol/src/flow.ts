@@ -7,6 +7,7 @@ import {
   sha256,
 } from "@midnight-ntwrk/midnight-did-credentials-protocol";
 import type { UniversityDiplomaCredential } from "@midnight-ntwrk/midnight-did-credentials-university-diploma/contract";
+
 import type {
   AgentProfile,
   CompanyRecord,
@@ -31,8 +32,8 @@ import type {
 } from "./model.js";
 import { defaultDataPaths } from "./model.js";
 import {
-  type UniversityProofExecutionBackend,
   SimulatorUniversityProofExecutionBackend,
+  type UniversityProofExecutionBackend,
 } from "./proof-backend.js";
 import {
   DeterministicUniversityPartyRuntime,

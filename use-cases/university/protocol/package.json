@@ -37,6 +37,8 @@
     "test:ci": "npm run test",
     "export:transcript": "npm run build && node ./scripts/export-transcript.mjs",
     "export:transcript:from-artifacts": "node ./scripts/export-transcript.mjs",
+    "export:application-decisions": "npm run build && node ./scripts/export-application-decisions.mjs",
+    "export:application-decisions:from-artifacts": "node ./scripts/export-application-decisions.mjs",
     "stress:run:from-artifacts": "node ./scripts/run-stress-flow.mjs",
     "stress:run": "npm run build && node ./scripts/run-stress-flow.mjs",
     "lint": "eslint src --ignore-pattern 'src/managed/**'",

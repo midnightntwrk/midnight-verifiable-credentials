@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import {
   DeterministicUniversityPartyRuntime,
-  ProvisionedUniversityPartyRuntime,
   loadUniversityFixtureData,
+  ProvisionedUniversityPartyRuntime,
 } from "../runtime.js";
 
 describe("university party runtime", () => {
