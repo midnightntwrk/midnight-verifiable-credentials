@@ -1,0 +1,49 @@
+import { sha256 } from "@midnight-ntwrk/midnight-did-credentials-protocol";
+import { describe, expect, it } from "vitest";
+
+import { SimulatorUniversityProofExecutionBackend } from "../proof-backend.js";
+import { DeterministicUniversityPartyRuntime, loadUniversityFixtureData } from "../runtime.js";
+
+describe("university simulator proof backend", () => {
+  it("issues a diploma and verifies a company presentation through the backend seam", () => {
+    const fixture = loadUniversityFixtureData();
+    const runtime = new DeterministicUniversityPartyRuntime();
+    const backend = new SimulatorUniversityProofExecutionBackend();
+    const student = fixture.students[0]!;
+    const company = fixture.companies.find(
+      (candidate) => candidate.companyId === student.assignedCompanyId,
+    )!;
+
+    const issuerProfile = runtime.issuerProfileForUniversity(fixture.university);
+    const holderProfile = runtime.studentProfileForStudent(student);
+    const stored = backend.issueDiplomaCredential({
+      issuerProfile,
+      issuerRuntime: runtime,
+      holderProfile,
+      holderRuntime: runtime,
+      student,
+      issuanceChallengeHash: sha256(`test-issuance:${student.studentId}`),
+      issuedAt: 40_000n,
+      credentialProofCreatedAt: 50_000n,
+      presentationProofCreatedAt: 60_000n,
+    });
+
+    const request = backend.buildJobApplicationRequest({
+      issuerVerificationMethodRef: stored.credential.issuerVerificationMethodRef,
+      verifierChallengeHash: sha256(`test-job:${company.companyId}:${student.studentId}`),
+      requestPolicy: company.requestPolicy,
+    });
+    const submission = backend.buildPresentationSubmission({
+      kind: "jobApplication",
+      issuerProfile,
+      issuerRuntime: runtime,
+      holderProfile,
+      holderRuntime: runtime,
+      student,
+      storedCredential: stored,
+      request,
+    });
+
+    expect(() => backend.verifyJobApplication({ submission })).not.toThrow();
+  });
+});
