@@ -77,19 +77,4 @@ for (const [alias, targetDir] of aliases) {
     await symlink(workspaceLinkTarget, workspaceLinkPath, 'dir');
   }
 
-  const distPath = path.join(packagePath, 'dist');
-  try {
-    const distStat = await lstat(distPath);
-    if (distStat.isSymbolicLink()) {
-      const existingTarget = await readlink(distPath);
-      if (existingTarget === 'src') continue;
-      await rm(distPath, { force: true, recursive: true });
-    } else {
-      continue;
-    }
-  } catch (error) {
-    if (!(error && typeof error === 'object' && 'code' in error && error.code === 'ENOENT')) throw error;
-  }
-
-  await symlink('src', distPath, 'dir');
 }
