@@ -52,12 +52,16 @@ Reference implementations:
 - [`../../prototypes/credential-families/birth-secret/README.md`](../../prototypes/credential-families/birth-secret/README.md)
 - [`../../prototypes/credential-families/hello-family/README.md`](../../prototypes/credential-families/hello-family/README.md)
 - [`../../prototypes/credential-families/dummy-claims/README.md`](../../prototypes/credential-families/dummy-claims/README.md)
+- [`../../prototypes/credential-families/university-diploma/README.md`](../../prototypes/credential-families/university-diploma/README.md)
 
 Current direct Compact claim-surface rule:
 
 - a family `MUST NOT` claim direct canonical Compact support for `Int<n>`,
   `Float<n>`, or `String` fields unless the active Compact compiler surface
   actually accepts them
+- a family `MUST NOT` present `Opaque<"string">` as a canonical hash-rooted
+  claim field unless the active Compact compiler surface accepts
+  `persistentHash<Claims>(claims)` for that claim shape
 - if a family needs string-like or signed-value semantics today, it `MUST`
   document the explicit bounded encoding or adapter transformation it uses
   instead of describing that field as a native Compact string or signed scalar

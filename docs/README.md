@@ -53,6 +53,23 @@
 - DID + VC hello smoke path:
   - [`guides/did-vc-hello-smoke-path.md`](./guides/did-vc-hello-smoke-path.md)
   - for engineers who need the smallest checked-in DID bootstrap to VC verification handoff
+- dummy-claims verifier lab:
+  - [`guides/dummy-claims-verifier-lab.md`](./guides/dummy-claims-verifier-lab.md)
+  - for engineers exercising the broad direct Compact claim surface against a verifier contract
+- university diploma use case:
+  - [`../use-cases/university/README.md`](../use-cases/university/README.md)
+  - [`../use-cases/university/contract/README.md`](../use-cases/university/contract/README.md)
+  - [`../use-cases/university/protocol/README.md`](../use-cases/university/protocol/README.md)
+  - for engineers who need the large DID-backed issuance, job-application, and student-discount blueprint
+- university diploma executable BDD scenarios:
+  - [`../use-cases/university/scenarios/README.md`](../use-cases/university/scenarios/README.md)
+  - for engineers who need a checked-in virtual-agent orchestration pack with metrics
+- university diploma threaded protocol flow:
+  - [`../use-cases/university/protocol/README.md`](../use-cases/university/protocol/README.md)
+  - for engineers who need the same use case expressed as explicit request/result message threads
+- university diploma compact reporting surface:
+  - [`../use-cases/university/reporting/README.md`](../use-cases/university/reporting/README.md)
+  - for engineers who need a one-page JSON/Markdown summary over the university artifact set
 - starter templates:
   - [`templates/verifier-contract-template.compact.md`](./templates/verifier-contract-template.compact.md)
   - [`templates/family-scaffold-template.md`](./templates/family-scaffold-template.md)
@@ -66,6 +83,9 @@
 - broad direct claim-surface laboratory:
   - [`../prototypes/credential-families/dummy-claims/README.md`](../prototypes/credential-families/dummy-claims/README.md)
   - for engineers who need the widest currently supported direct Compact claim surface in one family package
+- academic diploma family prototype:
+  - [`../prototypes/credential-families/university-diploma/README.md`](../prototypes/credential-families/university-diploma/README.md)
+  - for engineers who need a larger explicit-holder family with non-revocable issuance and verifier-side grade policies
 
 ## Architecture
 

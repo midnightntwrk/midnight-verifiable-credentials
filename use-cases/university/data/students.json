@@ -1,0 +1,222 @@
+[
+  {
+    "studentId": "STU-0001",
+    "fullName": "Ada Avery 0001",
+    "holderDidUrl": "did:midnight:student:0001",
+    "holderMethodId": "#holder-key-1",
+    "graduationEligible": true,
+    "assignedCompanyId": "company-northwind-robotics",
+    "requestedJobRole": "junior-platform-engineer",
+    "diplomaClaimValues": {
+      "diplomaId": "DIP-2030-0001",
+      "studentId": "STU-0001",
+      "graduateName": "Ada Avery 0001",
+      "universityName": "Example University",
+      "facultyName": "Engineering",
+      "awardName": "BSc Computer Science",
+      "honorsCode": "high-distinction",
+      "graduationYear": 2030,
+      "graduationMonth": 6,
+      "finalGrade": 98,
+      "creditsEarned": 180
+    }
+  },
+  {
+    "studentId": "STU-0002",
+    "fullName": "Ben Avery 0002",
+    "holderDidUrl": "did:midnight:student:0002",
+    "holderMethodId": "#holder-key-1",
+    "graduationEligible": true,
+    "assignedCompanyId": "company-blue-ocean-analytics",
+    "requestedJobRole": "data-analyst-trainee",
+    "diplomaClaimValues": {
+      "diplomaId": "DIP-2030-0002",
+      "studentId": "STU-0002",
+      "graduateName": "Ben Avery 0002",
+      "universityName": "Example University",
+      "facultyName": "Science",
+      "awardName": "BSc Data Science",
+      "honorsCode": "distinction",
+      "graduationYear": 2030,
+      "graduationMonth": 6,
+      "finalGrade": 94,
+      "creditsEarned": 180
+    }
+  },
+  {
+    "studentId": "STU-0003",
+    "fullName": "Cara Avery 0003",
+    "holderDidUrl": "did:midnight:student:0003",
+    "holderMethodId": "#holder-key-1",
+    "graduationEligible": true,
+    "assignedCompanyId": "company-pioneer-systems",
+    "requestedJobRole": "robotics-software-intern",
+    "diplomaClaimValues": {
+      "diplomaId": "DIP-2030-0003",
+      "studentId": "STU-0003",
+      "graduateName": "Cara Avery 0003",
+      "universityName": "Example University",
+      "facultyName": "Engineering",
+      "awardName": "BEng Electrical Eng",
+      "honorsCode": "distinction",
+      "graduationYear": 2030,
+      "graduationMonth": 6,
+      "finalGrade": 91,
+      "creditsEarned": 180
+    }
+  },
+  {
+    "studentId": "STU-0004",
+    "fullName": "Dion Avery 0004",
+    "holderDidUrl": "did:midnight:student:0004",
+    "holderMethodId": "#holder-key-1",
+    "graduationEligible": true,
+    "assignedCompanyId": "company-northwind-robotics",
+    "requestedJobRole": "business-operations-analyst",
+    "diplomaClaimValues": {
+      "diplomaId": "DIP-2030-0004",
+      "studentId": "STU-0004",
+      "graduateName": "Dion Avery 0004",
+      "universityName": "Example University",
+      "facultyName": "Business",
+      "awardName": "BA Business Analytics",
+      "honorsCode": "distinction",
+      "graduationYear": 2030,
+      "graduationMonth": 6,
+      "finalGrade": 90,
+      "creditsEarned": 180
+    }
+  },
+  {
+    "studentId": "STU-0005",
+    "fullName": "Ella Avery 0005",
+    "holderDidUrl": "did:midnight:student:0005",
+    "holderMethodId": "#holder-key-1",
+    "graduationEligible": true,
+    "assignedCompanyId": "company-blue-ocean-analytics",
+    "requestedJobRole": "junior-platform-engineer",
+    "diplomaClaimValues": {
+      "diplomaId": "DIP-2030-0005",
+      "studentId": "STU-0005",
+      "graduateName": "Ella Avery 0005",
+      "universityName": "Example University",
+      "facultyName": "Engineering",
+      "awardName": "BSc Computer Science",
+      "honorsCode": "pass",
+      "graduationYear": 2030,
+      "graduationMonth": 6,
+      "finalGrade": 72,
+      "creditsEarned": 180
+    }
+  },
+  {
+    "studentId": "STU-0006",
+    "fullName": "Finn Avery 0006",
+    "holderDidUrl": "did:midnight:student:0006",
+    "holderMethodId": "#holder-key-1",
+    "graduationEligible": true,
+    "assignedCompanyId": "company-pioneer-systems",
+    "requestedJobRole": "data-analyst-trainee",
+    "diplomaClaimValues": {
+      "diplomaId": "DIP-2030-0006",
+      "studentId": "STU-0006",
+      "graduateName": "Finn Avery 0006",
+      "universityName": "Example University",
+      "facultyName": "Science",
+      "awardName": "BSc Data Science",
+      "honorsCode": "high-distinction",
+      "graduationYear": 2030,
+      "graduationMonth": 6,
+      "finalGrade": 100,
+      "creditsEarned": 180
+    }
+  },
+  {
+    "studentId": "STU-0007",
+    "fullName": "Gia Avery 0007",
+    "holderDidUrl": "did:midnight:student:0007",
+    "holderMethodId": "#holder-key-1",
+    "graduationEligible": true,
+    "assignedCompanyId": "company-northwind-robotics",
+    "requestedJobRole": "robotics-software-intern",
+    "diplomaClaimValues": {
+      "diplomaId": "DIP-2030-0007",
+      "studentId": "STU-0007",
+      "graduateName": "Gia Avery 0007",
+      "universityName": "Example University",
+      "facultyName": "Engineering",
+      "awardName": "BEng Electrical Eng",
+      "honorsCode": "pass",
+      "graduationYear": 2030,
+      "graduationMonth": 6,
+      "finalGrade": 71,
+      "creditsEarned": 180
+    }
+  },
+  {
+    "studentId": "STU-0008",
+    "fullName": "Hugo Avery 0008",
+    "holderDidUrl": "did:midnight:student:0008",
+    "holderMethodId": "#holder-key-1",
+    "graduationEligible": true,
+    "assignedCompanyId": "company-blue-ocean-analytics",
+    "requestedJobRole": "business-operations-analyst",
+    "diplomaClaimValues": {
+      "diplomaId": "DIP-2030-0008",
+      "studentId": "STU-0008",
+      "graduateName": "Hugo Avery 0008",
+      "universityName": "Example University",
+      "facultyName": "Business",
+      "awardName": "BA Business Analytics",
+      "honorsCode": "pass",
+      "graduationYear": 2030,
+      "graduationMonth": 6,
+      "finalGrade": 78,
+      "creditsEarned": 180
+    }
+  },
+  {
+    "studentId": "STU-0009",
+    "fullName": "Iris Avery 0009",
+    "holderDidUrl": "did:midnight:student:0009",
+    "holderMethodId": "#holder-key-1",
+    "graduationEligible": true,
+    "assignedCompanyId": "company-pioneer-systems",
+    "requestedJobRole": "junior-platform-engineer",
+    "diplomaClaimValues": {
+      "diplomaId": "DIP-2030-0009",
+      "studentId": "STU-0009",
+      "graduateName": "Iris Avery 0009",
+      "universityName": "Example University",
+      "facultyName": "Engineering",
+      "awardName": "BSc Computer Science",
+      "honorsCode": "merit",
+      "graduationYear": 2030,
+      "graduationMonth": 6,
+      "finalGrade": 85,
+      "creditsEarned": 180
+    }
+  },
+  {
+    "studentId": "STU-0010",
+    "fullName": "Jude Avery 0010",
+    "holderDidUrl": "did:midnight:student:0010",
+    "holderMethodId": "#holder-key-1",
+    "graduationEligible": true,
+    "assignedCompanyId": "company-northwind-robotics",
+    "requestedJobRole": "data-analyst-trainee",
+    "diplomaClaimValues": {
+      "diplomaId": "DIP-2030-0010",
+      "studentId": "STU-0010",
+      "graduateName": "Jude Avery 0010",
+      "universityName": "Example University",
+      "facultyName": "Science",
+      "awardName": "BSc Data Science",
+      "honorsCode": "distinction",
+      "graduationYear": 2030,
+      "graduationMonth": 6,
+      "finalGrade": 92,
+      "creditsEarned": 180
+    }
+  }
+]

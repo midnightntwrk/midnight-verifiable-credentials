@@ -14,8 +14,10 @@ Current scope:
 
 - uses the explicit-holder `credentials-hello-family` playground family
 - includes a companion offchain-DID starter contract for the DID-aware smoke path
+- includes a dummy-claims lab contract that consumes the widest currently supported direct Compact claim surface
 - builds a request that requires a tiny selective-disclosure surface
-- keeps boolean and big-unsigned disclosure mandatory, with bytes disclosure as the only starter toggle
+- keeps boolean and big-unsigned disclosure mandatory, with bytes disclosure as the only starter toggle in the hello-family path
+- exposes a full-disclosure lab request for the dummy-claims path so every supported claim family is exercised end-to-end
 - verifies one presentation against that request
 - records the accepted credential root, challenge, and disclosed values in ledger state
 
@@ -38,6 +40,11 @@ Run locally:
 npm run build -w use-cases/hello-verifier/contract
 npm run test:ci -w use-cases/hello-verifier/contract
 ```
+
+Dummy-claims lab path:
+
+- broad direct claim-surface family: `credentials-dummy-claims`
+- full-disclosure verifier contract: `src/dummy-claims-verifier.compact`
 
 DID-aware starter path:
 

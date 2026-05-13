@@ -18,7 +18,15 @@ Targets:
   bdd                        Serenity/JS BDD smoke scenarios
   bdd-negative               Serenity/JS BDD negative-path scenarios
   bdd-all                    Full Serenity/JS BDD scenario set
+  university-bdd             Executable university diploma BDD scenarios
+  university-batch-sweep     Issuance batch-size sweep with summary artifacts
+  university-data-profiles   Validate committed readable/stress university data profiles
+  university-protocol        Protocol-style multi-party university flow lane
+  university-protocol-export Machine-readable university protocol transcript export
+  university-protocol-stress 100-student protocol stress lane with summary output
+  university-summary         One-page summary over university BDD, transcript, stress, and batch-sweep artifacts
   hello-smoke                Smallest DID -> VC -> verifier handoff lane
+  dummy-claims-lab           Broad direct claim-surface verifier lane
   revocation                 Revocation-focused CI lane
   integration                Both standalone Docker integration lanes
   integration-demo-contract  Standalone demo-contract integration only
@@ -92,7 +100,7 @@ forward_args=()
 
 if [[ $# -gt 0 ]]; then
   case "$1" in
-    full|lint|typecheck|build|test|bdd|bdd-negative|bdd-all|hello-smoke|revocation|integration|integration-demo-contract|integration-protocol|targets|help|-h|--help)
+    full|lint|typecheck|build|test|bdd|bdd-negative|bdd-all|university-bdd|university-batch-sweep|university-data-profiles|university-protocol|university-protocol-export|university-protocol-stress|university-summary|hello-smoke|dummy-claims-lab|revocation|integration|integration-demo-contract|integration-protocol|targets|help|-h|--help)
       target="$1"
       shift
       ;;
@@ -210,6 +218,58 @@ case "$target" in
     echo "[run] BDD full lane"
     npm run test:bdd:all
     ;;
+  university-bdd)
+    echo "[run] University diploma BDD lane"
+    npm run ci:university-bdd
+    ;;
+  university-batch-sweep)
+    echo "[run] University issuance batch-sweep lane"
+    npm run ci:university-batch-sweep
+    ;;
+  university-data-profiles)
+    echo "[run] University data-profile validation lane"
+    npm run ci:university-data-profiles
+    ;;
+  university-protocol)
+    if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
+      echo "[run] Light university protocol lane"
+      run_common_ensure_artifacts "run" managed-university-protocol
+      npm run ci:university-protocol:from-artifacts
+    else
+      echo "[run] University protocol lane"
+      npm run ci:university-protocol
+    fi
+    ;;
+  university-protocol-export)
+    if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
+      echo "[run] Light university protocol export lane"
+      run_common_ensure_artifacts "run" managed-university-protocol-export
+      npm run ci:university-protocol:export:from-artifacts
+    else
+      echo "[run] University protocol export lane"
+      npm run ci:university-protocol:export
+    fi
+    ;;
+  university-protocol-stress)
+    if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
+      echo "[run] Light university protocol stress lane"
+      run_common_ensure_artifacts "run" managed-university-protocol-stress
+      npm run ci:university-protocol:stress:from-artifacts
+    else
+      echo "[run] University protocol stress lane"
+      npm run ci:university-protocol:stress
+    fi
+    ;;
+  university-summary)
+    if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
+      echo "[run] Light university summary lane"
+      run_common_ensure_artifacts "run" managed-university-summary
+      npm run ci:university-summary:from-artifacts
+    else
+      echo "[run] University summary lane"
+      npm run ci:university-summary
+    fi
+    ;;
   hello-smoke)
     if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
       echo "[run] Light DID + VC hello smoke lane"
@@ -223,6 +283,19 @@ case "$target" in
       # restored-artifact parity with CI.
       echo "[run] DID + VC hello smoke lane"
       npm run ci:hello-smoke
+    fi
+    ;;
+  dummy-claims-lab)
+    if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
+      echo "[run] Light dummy-claims verifier lab lane"
+      run_common_ensure_artifacts "run" managed-dummy-claims-lab
+      npm run ci:dummy-claims-lab:from-artifacts
+    else
+      # NOTE: this lab lane intentionally stays narrower than `hello-smoke`.
+      # It validates the broad claim-surface family and the dedicated verifier
+      # lab test file without re-running the whole starter path.
+      echo "[run] Dummy-claims verifier lab lane"
+      npm run ci:dummy-claims-lab
     fi
     ;;
   revocation)

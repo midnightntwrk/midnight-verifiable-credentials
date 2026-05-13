@@ -16,6 +16,7 @@ workspaces=(
   prototypes/credential-families/birth-secret
   prototypes/credential-families/hello-family
   prototypes/credential-families/dummy-claims
+  prototypes/credential-families/university-diploma
   components/integration/standalone-environment
 )
 

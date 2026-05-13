@@ -1,0 +1,42 @@
+{
+  "name": "@midnight-ntwrk/midnight-did-university-reporting",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24",
+    "npm": ">=10"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "rm -rf dist && tsc -b tsconfig.build.json --force",
+    "test": "vitest run",
+    "test:ci": "npm run test",
+    "render:summary": "npm run build && node ./scripts/render-summary.mjs",
+    "render:summary:from-artifacts": "node ./scripts/render-summary.mjs",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "clean": "rm -rf dist && rm -rf coverage && rm -rf target",
+    "all": "npm run build && npm run test:ci",
+    "prepack": "npm run build"
+  },
+  "files": [
+    "dist/**",
+    "README.md",
+    "package.json",
+    "tsconfig.json",
+    "tsconfig.build.json"
+  ]
+}
