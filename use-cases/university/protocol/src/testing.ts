@@ -4,6 +4,7 @@ export * from "./exporter.js";
 export * from "./flow.js";
 export * from "./model.js";
 export * from "./policy-catalog.js";
+export * from "./process-transport.js";
 export * from "./proof-backend.js";
 export * from "./proof-server-contract.js";
 export * from "./runtime.js";
