@@ -17,6 +17,8 @@ const runGit = (args) =>
     encoding: "utf8",
   });
 
+const errors = [];
+
 const readShellList = (functionName, argument) => {
   const command = [
     `source ${quoteForBash(coneScript)}`,
@@ -25,13 +27,20 @@ const readShellList = (functionName, argument) => {
       : `${functionName} ${quoteForBash(argument)}`,
   ].join("; ");
 
-  return execFileSync("bash", ["-c", command], {
-    cwd: repoRoot,
-    encoding: "utf8",
-  })
-    .split(/\r?\n/u)
-    .map((line) => line.trim())
-    .filter(Boolean);
+  try {
+    return execFileSync("bash", ["-c", command], {
+      cwd: repoRoot,
+      encoding: "utf8",
+    })
+      .split(/\r?\n/u)
+      .map((line) => line.trim())
+      .filter(Boolean);
+  } catch (error) {
+    const stderr = error.stderr?.toString().trim();
+    const context = argument === undefined ? functionName : `${functionName} '${argument}'`;
+    errors.push(`Failed to read shell cone list from ${context}${stderr ? `: ${stderr}` : ""}`);
+    return [];
+  }
 };
 
 const isIgnored = (relativePath) => {
@@ -45,7 +54,7 @@ const isIgnored = (relativePath) => {
       });
       return true;
     } catch {
-      // Try the directory-placeholder form next.
+      // Try the next candidate form.
     }
   }
 
@@ -56,12 +65,19 @@ const isGeneratedOutputPath = (relativePath) =>
   relativePath.endsWith("/dist") || relativePath.endsWith("/src/managed");
 
 const packageJson = JSON.parse(readFileSync(path.join(repoRoot, "package.json"), "utf8"));
-const workspaceSet = new Set(packageJson.workspaces ?? []);
+const workspaceEntries = packageJson.workspaces ?? [];
+const workspaceSet = new Set(workspaceEntries);
 const trackedFiles = runGit(["ls-files"])
   .split(/\r?\n/u)
   .filter(Boolean);
+const workspaceGlobEntries = workspaceEntries.filter((entry) => /[*?[\]]/u.test(entry));
 
-const errors = [];
+if (workspaceGlobEntries.length > 0) {
+  errors.push(
+    `Root workspace globs are not supported by the CI build cone audit: ${workspaceGlobEntries.join(", ")}`,
+  );
+}
+
 const groups = readShellList("ci_build_output_groups");
 const seenGroups = new Set();
 const seenOutputs = new Map();

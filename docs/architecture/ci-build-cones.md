@@ -37,6 +37,9 @@ The `birth-family` name is now historical shorthand.
 It currently groups the repo's credential-family workspaces, including the
 `hello-family` starter family package, the broad `dummy-claims` laboratory, and
 the university diploma family used by the larger university use case.
+`dummy-claims` used to sit outside the shared cones; it now belongs to
+`birth-family` so verifier-lab changes invalidate and restore with the other
+credential-family artifacts.
 
 Intentional exclusions:
 
