@@ -1,6 +1,8 @@
 export { StandaloneEnvironment } from "./standalone-environment.js";
 export {
+  type DerivedProtocolDidSigner,
   type ProtocolDidProfile,
+  provisionDerivedDidProfile,
   provisionDidProfile,
   verifierChallengeForProfile,
 } from "./did-profile.js";

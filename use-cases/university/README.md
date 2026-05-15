@@ -33,6 +33,10 @@ Status:
   same policy catalog
 - one-page JSON/Markdown reporting now exists as a separate workspace package
   over the committed university artifact set
+- the university BDD runner now has two execution backends:
+  - `simulator` for the fast local reference lane
+  - `standalone-hybrid` for real standalone DID bootstrap timings over the same
+    readable university scenarios
 
 ## Purpose
 
@@ -58,6 +62,12 @@ The slice is intentionally explicit and operational:
 - the 10-student fixture size is tuned for report readability first, so its
   throughput metrics are better for relative bottleneck spotting than for
   realistic scale modeling
+- the standalone-hybrid backend keeps that readable 10-student flow intact but
+  replaces the committed DID identifiers with generated standalone DID overlay
+  fixtures at runtime and injects a provisioned party runtime plus hybrid proof
+  backend into the protocol runner, so the report can capture real environment
+  startup, wallet sync, DID provisioning latency, and simulator proof timings
+  under an explicit backend contract
 - the repository also carries a separate 100-student stress dataset for the
   protocol lane when you want throughput-oriented measurements instead
 - that stress lane now publishes paired `summary.json` and `summary.md`

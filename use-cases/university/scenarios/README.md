@@ -32,13 +32,25 @@ Execution:
 
 - root lane:
   - `./run.sh university-bdd`
+- standalone-hybrid lane:
+  - `./run.sh university-bdd-standalone`
 - issuance benchmark lane:
   - `./run.sh university-batch-sweep`
 - one-page reporting lane:
   - `./run.sh university-summary`
 - direct workspace lane:
   - `npm run test:bdd:university`
+  - `npm run test:bdd:university:standalone`
   - `npm run test:batch-sweep -w use-cases/university/scenarios`
+
+Standalone-hybrid notes:
+
+- `university-bdd-standalone` is an opt-in local/dispatch lane today; the
+  default PR CI does not run it end-to-end because it boots Docker-backed
+  standalone services and can be much slower than the simulator lane.
+- the standalone infrastructure binds the default Midnight service ports on
+  `127.0.0.1`, so run only one standalone stack at a time unless the
+  infrastructure is extended with explicit per-stack port overrides.
 
 Batch-sweep artifacts:
 
@@ -69,5 +81,15 @@ Current boundary:
   measured latency
 - it is still a local reference harness, not a Docker-backed or networked SSI
   deployment
+- the new `standalone-hybrid` backend is the bridge between those two worlds:
+  it provisions real Midnight DIDs for the university, students, companies, and
+  mall through `standalone-environment`, then rewrites the checked-in fixture
+  set into generated overlay JSON and injects a concrete
+  `PreloadedUniversityPartyRuntime` plus a
+  `StandaloneHybridUniversityProofExecutionBackend` before the existing
+  university issuance and verifier simulator lanes run
+- that means the BDD can now measure environment startup, wallet sync, and DID
+  provisioning timings with real standalone infrastructure while still keeping
+  the university credential semantics on the local simulator path
 - the comments remain intentionally verbose so the step text still acts as
   living documentation even though the scenarios are now executable

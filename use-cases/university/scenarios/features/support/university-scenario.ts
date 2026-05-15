@@ -1,15 +1,23 @@
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { performance } from "node:perf_hooks";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 
 import { Ability, type UsesAbilities } from "@serenity-js/core";
+import { JUBJUB_SUBGROUP_ORDER } from "@midnight-ntwrk/midnight-did-credentials-protocol";
 import {
+  DeterministicUniversityPartyRuntime,
+  SimulatorUniversityProofExecutionBackend,
+  type CompanyRecord,
+  type DiscountApplicantRecord,
+  type IssuanceBatchRecord,
+  type MallRecord,
+  type StudentRecord,
+  type UniversityProfile as ProtocolUniversityProfile,
   type UniversityPresentationTamperingMode,
   UniversityProtocolFlowRunner,
   type UniversityProtocolExerciseOptions,
   type UniversityProtocolFlowResult,
+  type VerifierRequestPolicy,
 } from "@midnight-ntwrk/midnight-did-university-protocol/testing";
 
 import {
@@ -23,11 +31,14 @@ import {
   type UniversityDiplomaSignerOptions,
 } from "@midnight-ntwrk/midnight-did-credentials-university-diploma/testing";
 
-type UniversityProfile = {
-  readonly universityId: string;
-  readonly universityName: string;
-  readonly issuerDidUrl: string;
-  readonly issuerMethodId: string;
+import {
+  type ScenarioDataPaths,
+  type UniversityScenarioBackendContext,
+  defaultDataPaths,
+  resolveScenarioRepoPath,
+} from "./university-scenario-backend.js";
+
+type UniversityProfile = ProtocolUniversityProfile & {
   readonly credentialFamilyPackage: string;
   readonly schemaId: string;
   readonly holderBindingProfile: string;
@@ -36,28 +47,11 @@ type UniversityProfile = {
   readonly graduationYear: number;
   readonly graduationMonth: number;
   readonly supportsBatchIssuance: boolean;
-  readonly batchSize: number;
   readonly claimEncoding: {
     readonly stringLikeFields: string;
     readonly integerFields: string;
     readonly fieldLengths?: Record<string, number>;
   };
-};
-
-type VerifierRequestPolicy = {
-  readonly requireDiplomaIdDisclosure?: boolean;
-  readonly requireStudentIdDisclosure?: boolean;
-  readonly requireGraduateNameDisclosure?: boolean;
-  readonly requireUniversityNameDisclosure?: boolean;
-  readonly requireFacultyNameDisclosure?: boolean;
-  readonly requireAwardNameDisclosure?: boolean;
-  readonly requireHonorsCodeDisclosure?: boolean;
-  readonly requireGraduationYearDisclosure?: boolean;
-  readonly requireGraduationMonthDisclosure?: boolean;
-  readonly requireFinalGradeDisclosure?: boolean;
-  readonly requireCreditsEarnedDisclosure?: boolean;
-  readonly enforceMinimumFinalGrade?: boolean;
-  readonly minimumFinalGrade?: number;
 };
 
 type UniversityRequestPolicyPreset = {
@@ -68,68 +62,6 @@ type UniversityRequestPolicyPreset = {
   readonly requestPolicy: VerifierRequestPolicy;
 };
 
-type CompanyRecord = {
-  readonly companyId: string;
-  readonly companyName: string;
-  readonly verifierDidUrl: string;
-  readonly verifierMethodId: string;
-  readonly hiringStream: string;
-  readonly requestPresetId: string;
-  readonly requestPresetTitle: string;
-  readonly requestPolicyPurpose: string;
-  readonly requestPolicy: VerifierRequestPolicy;
-};
-
-type MallRecord = {
-  readonly mallId: string;
-  readonly mallName: string;
-  readonly verifierDidUrl: string;
-  readonly verifierMethodId: string;
-  readonly offerId: string;
-  readonly requestPresetId: string;
-  readonly requestPresetTitle: string;
-  readonly requestPolicyPurpose: string;
-  readonly requestPolicy: VerifierRequestPolicy;
-};
-
-type StudentClaimValues = {
-  readonly diplomaId: string;
-  readonly studentId: string;
-  readonly graduateName: string;
-  readonly universityName: string;
-  readonly facultyName: string;
-  readonly awardName: string;
-  readonly honorsCode: string;
-  readonly graduationYear: number;
-  readonly graduationMonth: number;
-  readonly finalGrade: number;
-  readonly creditsEarned: number;
-};
-
-type StudentRecord = {
-  readonly studentId: string;
-  readonly fullName: string;
-  readonly holderDidUrl: string;
-  readonly holderMethodId: string;
-  readonly graduationEligible: boolean;
-  readonly assignedCompanyId: string;
-  readonly requestedJobRole: string;
-  readonly diplomaClaimValues: StudentClaimValues;
-};
-
-type IssuanceBatchRecord = {
-  readonly batchId: string;
-  readonly studentIds: readonly string[];
-  readonly size: number;
-};
-
-type DiscountApplicantRecord = {
-  readonly studentId: string;
-  readonly fullName: string;
-  readonly finalGrade: number;
-  readonly expectedDiscountEligibility: boolean;
-  readonly explanation: string;
-};
 
 type MetricSample = {
   readonly name: string;
@@ -208,6 +140,10 @@ type TranscriptEntryView = {
   readonly type: string;
   readonly from: string;
   readonly to: string;
+  readonly fromDidUrl: string;
+  readonly fromMethodId: string;
+  readonly toDidUrl: string;
+  readonly toMethodId: string;
   readonly summary: string;
   readonly messageIdHex: string;
   readonly respondsToHex: string;
@@ -232,39 +168,9 @@ type IssuanceRequest = {
   readonly acceptedAt: number;
 };
 
-type ScenarioDataPaths = {
-  university: string;
-  students: string;
-  companies: string;
-  mall: string;
-  issuanceBatches: string;
-  discountApplicants: string;
-};
-
-const repoRoot = path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  "..",
-  "..",
-  "..",
-  "..",
-  "..",
-);
-
-const defaultDataPaths = {
-  university: "use-cases/university/data/university.json",
-  students: "use-cases/university/data/students.json",
-  companies: "use-cases/university/data/companies.json",
-  mall: "use-cases/university/data/mall.json",
-  issuanceBatches: "use-cases/university/data/issuance-batches.json",
-  discountApplicants: "use-cases/university/data/discount-applicants.json",
-} satisfies ScenarioDataPaths;
-
 let cachedRequestPolicyPresetCatalog:
   | Readonly<Record<string, UniversityRequestPolicyPreset>>
   | undefined;
-
-const JUBJUB_SUBGROUP_ORDER =
-  6554484396890773809930967563523245729705921265872317281365359162392183254199n;
 
 class MetricRecorder {
   readonly samples: MetricSample[] = [];
@@ -344,11 +250,80 @@ const bytesToHex = (bytes: Uint8Array): string =>
 const paddedTextToString = (value: Uint8Array): string =>
   new TextDecoder().decode(value).replace(/\u0000+$/u, "");
 
+type PartyEndpoint = {
+  readonly didUrl: string;
+  readonly methodId: string;
+};
+
+const readTextField = (value: unknown): string | undefined => {
+  if (typeof value === "string") {
+    return value;
+  }
+  if (
+    value instanceof Uint8Array &&
+    value.every((entry) => typeof entry === "number")
+  ) {
+    return paddedTextToString(value);
+  }
+  return undefined;
+};
+
+const readBigIntField = (value: unknown): string | undefined =>
+  typeof value === "bigint" ? value.toString() : undefined;
+
+const readBooleanField = (value: unknown): boolean | undefined =>
+  typeof value === "boolean" ? value : undefined;
+
 const verificationMethodRefToString = (value: {
   readonly didContractAddress: { readonly bytes: Uint8Array };
   readonly methodId: Uint8Array;
 }): string =>
   `${bytesToHex(value.didContractAddress.bytes)}:${paddedTextToString(value.methodId)}`;
+
+const verificationMethodRefFromUnknown = (
+  value: unknown,
+): string | null => {
+  if (!value || typeof value !== "object") {
+    return null;
+  }
+  const record = value as {
+    readonly didContractAddress?: { readonly bytes?: unknown };
+    readonly methodId?: unknown;
+  };
+  const didBytes = record.didContractAddress?.bytes;
+  if (!(didBytes instanceof Uint8Array)) {
+    return null;
+  }
+  if (!(record.methodId instanceof Uint8Array)) {
+    return null;
+  }
+  return `${bytesToHex(didBytes)}:${paddedTextToString(record.methodId)}`;
+};
+
+const decodeUniversityClaims = (rawClaims: unknown): Record<string, string> => {
+  if (!rawClaims || typeof rawClaims !== "object") {
+    return {};
+  }
+  const claimRecord = rawClaims as Record<string, unknown>;
+  const decoded: Record<string, string> = {};
+  for (const [key, value] of Object.entries(claimRecord)) {
+    const textValue = readTextField(value);
+    if (textValue !== undefined) {
+      decoded[key] = textValue;
+      continue;
+    }
+    const numericValue = readBigIntField(value) ?? readTextField(`${value}`);
+    if (numericValue !== undefined) {
+      decoded[key] = numericValue;
+      continue;
+    }
+    const boolValue = readBooleanField(value);
+    if (boolValue !== undefined) {
+      decoded[key] = String(boolValue);
+    }
+  }
+  return decoded;
+};
 
 const REPORT_SAMPLE_SIZE = 3;
 
@@ -357,11 +332,8 @@ const scalarForLabel = (label: string): bigint => {
   return (raw % (JUBJUB_SUBGROUP_ORDER - 1n)) + 1n;
 };
 
-const resolveRepoPath = (relativePath: string): string =>
-  path.resolve(repoRoot, relativePath);
-
 const readJson = <T>(relativePath: string): T =>
-  JSON.parse(readFileSync(resolveRepoPath(relativePath), "utf8")) as T;
+  JSON.parse(readFileSync(resolveScenarioRepoPath(relativePath), "utf8")) as T;
 
 const issuerConfigForUniversity = (
   university: UniversityProfile,
@@ -540,6 +512,7 @@ const average = (values: readonly number[]): number => {
 };
 
 export class UseUniversityScenario extends Ability {
+  readonly #backendContext: UniversityScenarioBackendContext;
   readonly #paths: ScenarioDataPaths;
   readonly #exerciseOptions: {
     companyRequestPolicyOverrides: Record<string, Partial<VerifierRequestPolicy>>;
@@ -562,19 +535,60 @@ export class UseUniversityScenario extends Ability {
   #discountResult: DiscountScenarioResult | undefined;
   #protocolResult: UniversityProtocolFlowResult | undefined;
   #selectedDiscountStudentId: string | undefined;
+  #partyEndpoints: ReadonlyMap<string, PartyEndpoint> | undefined;
 
-  constructor(dataPaths: Partial<ScenarioDataPaths> = {}) {
+  constructor(
+    backendContext: UniversityScenarioBackendContext = {
+      dataPaths: defaultDataPaths,
+      metadata: {
+        mode: "simulator",
+        description:
+          "Local deterministic simulator backend using checked-in university fixture data and in-process credential/verifier semantics.",
+        usesRealDidInstances: false,
+        generatedOverlayDirectory: null,
+        metrics: [],
+      },
+      protocol: {
+        partyRuntime: new DeterministicUniversityPartyRuntime(),
+        proofExecutionBackend: new SimulatorUniversityProofExecutionBackend(),
+      },
+    },
+  ) {
     super();
+    this.#backendContext = backendContext;
     this.#paths = {
       ...defaultDataPaths,
-      ...dataPaths,
+      ...backendContext.dataPaths,
     };
   }
 
   static locally(options: {
     readonly dataPaths?: Partial<ScenarioDataPaths>;
   } = {}): UseUniversityScenario {
-    return new UseUniversityScenario(options.dataPaths);
+    return new UseUniversityScenario({
+      dataPaths: {
+        ...defaultDataPaths,
+        ...options.dataPaths,
+      },
+      metadata: {
+        mode: "simulator",
+        description:
+          "Local deterministic simulator backend using checked-in university fixture data and in-process credential/verifier semantics.",
+        usesRealDidInstances: false,
+        generatedOverlayDirectory: null,
+        metrics: [],
+      },
+      protocol: {
+        partyRuntime: new DeterministicUniversityPartyRuntime(),
+        proofExecutionBackend: new SimulatorUniversityProofExecutionBackend(),
+      },
+    });
+  }
+
+  static usingBackendContext(
+    context: UniversityScenarioBackendContext,
+  ): UseUniversityScenario {
+    return new UseUniversityScenario(context);
   }
 
   static from(actor: UsesAbilities): UseUniversityScenario {
@@ -704,6 +718,19 @@ export class UseUniversityScenario extends Ability {
     readonly holderBindingProfile: string;
     readonly statusModel: string;
     readonly batchSize: number;
+    readonly backend: {
+      readonly mode: UniversityScenarioBackendContext["metadata"]["mode"];
+      readonly usesRealDidInstances: boolean;
+      readonly description: string;
+      readonly generatedOverlayDirectory: string | null;
+      readonly metrics: UniversityScenarioBackendContext["metadata"]["metrics"];
+      readonly partyRuntime: ReturnType<
+        UniversityScenarioBackendContext["protocol"]["partyRuntime"]["descriptor"]
+      >;
+      readonly proofExecution: ReturnType<
+        UniversityScenarioBackendContext["protocol"]["proofExecutionBackend"]["descriptor"]
+      >;
+    };
   } {
     const university = readJson<UniversityProfile>(this.#paths.university);
     return {
@@ -714,6 +741,17 @@ export class UseUniversityScenario extends Ability {
       holderBindingProfile: university.holderBindingProfile,
       statusModel: university.statusModel,
       batchSize: university.batchSize,
+      backend: {
+        mode: this.#backendContext.metadata.mode,
+        usesRealDidInstances: this.#backendContext.metadata.usesRealDidInstances,
+        description: this.#backendContext.metadata.description,
+        generatedOverlayDirectory:
+          this.#backendContext.metadata.generatedOverlayDirectory,
+        metrics: this.#backendContext.metadata.metrics,
+        partyRuntime: this.#backendContext.protocol.partyRuntime.descriptor(),
+        proofExecution:
+          this.#backendContext.protocol.proofExecutionBackend.descriptor(),
+      },
     };
   }
 
@@ -878,6 +916,19 @@ export class UseUniversityScenario extends Ability {
     };
   }
 
+  issuanceTranscriptSummary(): {
+    readonly totalThreads: number;
+    readonly omittedThreadCount: number;
+    readonly representativeThreads: readonly TranscriptThreadView[];
+  } {
+    const threadViews = this.#transcriptThreadsForPhase("issuance");
+    return {
+      totalThreads: threadViews.length,
+      omittedThreadCount: Math.max(0, threadViews.length - 1),
+      representativeThreads: threadViews.slice(0, 1),
+    };
+  }
+
   jobApplicationTranscriptSummary(): {
     readonly totalThreads: number;
     readonly omittedThreadCount: number;
@@ -958,16 +1009,41 @@ export class UseUniversityScenario extends Ability {
     this.#protocolResult = undefined;
     this.#jobApplicationResult = undefined;
     this.#discountResult = undefined;
+    this.#partyEndpoints = undefined;
   }
 
   #protocolFlowResult(): UniversityProtocolFlowResult {
     if (!this.#protocolResult) {
+      this.#backendContext.protocol.proofExecutionBackend.resetMetrics();
       this.#protocolResult = new UniversityProtocolFlowRunner({
         dataPaths: this.#paths,
         exerciseOptions: this.#exerciseOptionsSnapshot(),
+        partyRuntime: this.#backendContext.protocol.partyRuntime,
+        proofExecutionBackend: this.#backendContext.protocol.proofExecutionBackend,
       }).runAll();
     }
     return this.#protocolResult;
+  }
+
+  #partyEndpointFor(partyId: string): PartyEndpoint {
+    if (!this.#partyEndpoints) {
+      const parties = this.#backendContext.protocol.partyRuntime.listParties();
+      this.#partyEndpoints = new Map(
+        parties.map((party) => [
+          party.partyId,
+          {
+            didUrl: party.didUrl,
+            methodId: party.methodId,
+          },
+        ]),
+      );
+    }
+    return (
+      this.#partyEndpoints.get(partyId) ?? {
+        didUrl: "unresolved",
+        methodId: "unresolved",
+      }
+    );
   }
 
   #transcriptThreadsForPhase(
@@ -993,6 +1069,8 @@ export class UseUniversityScenario extends Ability {
     )) {
       const message = messageById.get(entry.messageIdHex);
       const dto = message ? this.#transcriptDtoForMessage(message) : null;
+      const fromEndpoint = this.#partyEndpointFor(entry.from);
+      const toEndpoint = this.#partyEndpointFor(entry.to);
       const existing = grouped.get(entry.threadIdHex);
       const studentId =
         dto && typeof dto === "object" && dto !== null && "studentId" in dto
@@ -1006,6 +1084,10 @@ export class UseUniversityScenario extends Ability {
         type: entry.type,
         from: entry.from,
         to: entry.to,
+        fromDidUrl: fromEndpoint.didUrl,
+        fromMethodId: fromEndpoint.methodId,
+        toDidUrl: toEndpoint.didUrl,
+        toMethodId: toEndpoint.methodId,
         summary: entry.summary,
         messageIdHex: entry.messageIdHex,
         respondsToHex: entry.respondsToHex,
@@ -1045,6 +1127,8 @@ export class UseUniversityScenario extends Ability {
             readonly diplomaId: string;
             readonly awardName: string;
             readonly finalGrade: number;
+            readonly studentId?: string;
+            readonly creditsEarned?: number;
           };
         };
         return {
@@ -1055,6 +1139,8 @@ export class UseUniversityScenario extends Ability {
             diplomaId: body.claimValues.diplomaId,
             awardName: body.claimValues.awardName,
             finalGrade: body.claimValues.finalGrade,
+            creditsEarned: body.claimValues.creditsEarned,
+            studentIdClaim: body.claimValues.studentId,
           },
         };
       }
@@ -1071,20 +1157,26 @@ export class UseUniversityScenario extends Ability {
               readonly universityName: Uint8Array;
               readonly awardName: Uint8Array;
               readonly finalGrade: bigint;
+              readonly diplomaId?: Uint8Array;
+              readonly studentId?: Uint8Array;
+              readonly graduateName?: Uint8Array;
+              readonly facultyName?: Uint8Array;
+              readonly honorsCode?: Uint8Array;
+              readonly graduationYear?: bigint;
+              readonly graduationMonth?: bigint;
+              readonly creditsEarned?: bigint;
             };
           };
         };
         return {
           studentId: body.studentId,
           issuedAt: body.issuedAt.toString(),
-          issuerVerificationMethodRef: verificationMethodRefToString(
-            body.credential.issuerVerificationMethodRef,
-          ),
-          universityName: paddedTextToString(
-            body.credential.claims.universityName,
-          ),
-          awardName: paddedTextToString(body.credential.claims.awardName),
-          finalGrade: body.credential.claims.finalGrade.toString(),
+          issuanceCredential: {
+            issuerVerificationMethodRef: verificationMethodRefToString(
+              body.credential.issuerVerificationMethodRef,
+            ),
+            claims: decodeUniversityClaims(body.credential.claims),
+          },
         };
       }
       case "presentation:request": {
@@ -1146,8 +1238,41 @@ export class UseUniversityScenario extends Ability {
               readonly didContractAddress: { readonly bytes: Uint8Array };
               readonly methodId: Uint8Array;
             };
+            readonly claims: {
+              readonly diplomaId: Uint8Array;
+              readonly studentId: Uint8Array;
+              readonly graduateName: Uint8Array;
+              readonly universityName: Uint8Array;
+              readonly facultyName: Uint8Array;
+              readonly awardName: Uint8Array;
+              readonly honorsCode: Uint8Array;
+              readonly graduationYear: bigint;
+              readonly graduationMonth: bigint;
+              readonly finalGrade: bigint;
+              readonly creditsEarned: bigint;
+            };
+          };
+          readonly presentation: {
+            readonly holderBinding: {
+              readonly holderVerificationMethodRef: {
+                readonly didContractAddress: { readonly bytes: Uint8Array };
+                readonly methodId: Uint8Array;
+              };
+            };
+          };
+          readonly presentationProof: {
+            readonly signerVerificationMethodRef: {
+              readonly didContractAddress: { readonly bytes: Uint8Array };
+              readonly methodId: Uint8Array;
+            };
           };
         };
+        const presentationMethod = verificationMethodRefFromUnknown(
+          body.presentation.holderBinding.holderVerificationMethodRef,
+        );
+        const proofSignerMethod = verificationMethodRefFromUnknown(
+          body.presentationProof.signerVerificationMethodRef,
+        );
         return {
           kind: body.kind,
           studentId: body.studentId,
@@ -1155,6 +1280,9 @@ export class UseUniversityScenario extends Ability {
           issuerVerificationMethodRef: verificationMethodRefToString(
             body.credential.issuerVerificationMethodRef,
           ),
+          presentedClaims: decodeUniversityClaims(body.credential.claims),
+          holderBindingVerificationMethodRef: presentationMethod,
+          presentationProofSignerVerificationMethodRef: proofSignerMethod,
           verifierChallengeHashHex: bytesToHex(
             body.request.verifierChallengeHash,
           ),
@@ -1180,12 +1308,17 @@ export class UseUniversityScenario extends Ability {
         };
       }
       default:
-        throw new Error(`Unsupported protocol transcript message type ${message.type}`);
+        throw new Error(
+          `Unsupported protocol transcript message type ${String(message)}`,
+        );
     }
   }
 
   async runBatchIssuance(): Promise<void> {
     const metrics = new MetricRecorder();
+    for (const sample of this.#backendContext.metadata.metrics) {
+      metrics.observe(sample.name, sample.durationMs, sample.tags);
+    }
     const university = metrics.record(
       "issuer_did_bootstrap_ms",
       () => readJson<UniversityProfile>(this.#paths.university),
@@ -1428,6 +1561,9 @@ export class UseUniversityScenario extends Ability {
 
   async runJobApplications(): Promise<void> {
     const metrics = new MetricRecorder();
+    for (const sample of this.#backendContext.metadata.metrics) {
+      metrics.observe(sample.name, sample.durationMs, sample.tags);
+    }
     const students = readJson<StudentRecord[]>(this.#paths.students);
     const companies = metrics.record(
       "company_did_bootstrap_ms",
@@ -1435,6 +1571,9 @@ export class UseUniversityScenario extends Ability {
       { actorCount: 3 },
     );
     const protocolResult = this.#protocolFlowResult();
+    for (const sample of this.#backendContext.protocol.proofExecutionBackend.snapshotMetrics()) {
+      metrics.observe(sample.name, sample.durationMs, sample.tags);
+    }
     metrics.observe("job_protocol_phase_ms", protocolResult.metrics.jobApplicationsMs, {
       studentCount: students.length,
       companyCount: companies.length,
@@ -1489,6 +1628,9 @@ export class UseUniversityScenario extends Ability {
 
   async runDiscountFlow(): Promise<void> {
     const metrics = new MetricRecorder();
+    for (const sample of this.#backendContext.metadata.metrics) {
+      metrics.observe(sample.name, sample.durationMs, sample.tags);
+    }
     const mall = metrics.record(
       "mall_did_bootstrap_ms",
       () => readJson<MallRecord>(this.#paths.mall),
@@ -1518,6 +1660,9 @@ export class UseUniversityScenario extends Ability {
     }
 
     const protocolResult = this.#protocolFlowResult();
+    for (const sample of this.#backendContext.protocol.proofExecutionBackend.snapshotMetrics()) {
+      metrics.observe(sample.name, sample.durationMs, sample.tags);
+    }
     metrics.observe("discount_protocol_phase_ms", protocolResult.metrics.discountsMs, {
       mallId: mall.mallId,
       selectedStudentId: student.studentId,

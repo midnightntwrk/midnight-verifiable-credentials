@@ -1,0 +1,1866 @@
+{
+  "schemaId": "midnight-university-protocol-application-decisions",
+  "schemaVersion": "midnight-university-protocol-application-decisions.v1",
+  "compatibility": {
+    "minimumReaderVersion": "midnight-university-protocol-application-decisions.v1",
+    "maximumReaderVersion": "midnight-university-protocol-application-decisions.v1"
+  },
+  "dataset": {
+    "studentCount": 10,
+    "companyCount": 3,
+    "discountApplicantCount": 5,
+    "batchCount": 2,
+    "batchSize": 5
+  },
+  "participants": {
+    "university": {
+      "partyId": "uni-example-001",
+      "didUrl": "did:midnight:university:example-university",
+      "methodId": "#issuer-key-1"
+    },
+    "companies": [
+      {
+        "companyId": "company-blue-ocean-analytics",
+        "companyName": "Blue Ocean Analytics",
+        "verifierDidUrl": "did:midnight:company:blue-ocean-analytics",
+        "verifierMethodId": "#verifier-key-1"
+      },
+      {
+        "companyId": "company-northwind-robotics",
+        "companyName": "Northwind Robotics",
+        "verifierDidUrl": "did:midnight:company:northwind-robotics",
+        "verifierMethodId": "#verifier-key-1"
+      },
+      {
+        "companyId": "company-pioneer-systems",
+        "companyName": "Pioneer Systems",
+        "verifierDidUrl": "did:midnight:company:pioneer-systems",
+        "verifierMethodId": "#verifier-key-1"
+      }
+    ],
+    "mall": {
+      "mallId": "mall-student-square",
+      "mallName": "Student Square Mall",
+      "verifierDidUrl": "did:midnight:mall:student-square",
+      "verifierMethodId": "#verifier-key-1"
+    }
+  },
+  "issuance": {
+    "byStudent": [
+      {
+        "studentId": "STU-0001",
+        "studentName": "Ada Avery 0001",
+        "holderDidUrl": "did:midnight:student:0001",
+        "holderMethodId": "#holder-key-1",
+        "request": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "STU-0001",
+          "to": "uni-example-001",
+          "summary": "Student STU-0001 requested diploma issuance",
+          "dto": {
+            "studentId": "STU-0001",
+            "holderDidUrl": "did:midnight:student:0001",
+            "holderMethodId": "#holder-key-1",
+            "claimValues": {
+              "diplomaId": "DIP-2030-0001",
+              "graduateName": "Ada Avery 0001",
+              "universityName": "Example University",
+              "awardName": "BSc Computer Science",
+              "finalGrade": 98
+            }
+          }
+        },
+        "result": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "uni-example-001",
+          "to": "STU-0001",
+          "summary": "University issued diploma credential to STU-0001",
+          "dto": {
+            "studentId": "STU-0001",
+            "issuedAt": "40000",
+            "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+            "universityName": "Example University",
+            "awardName": "BSc Computer Science",
+            "finalGrade": "98"
+          }
+        },
+        "credential": {
+          "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+          "issuedAt": "40000",
+          "credentialProofCreatedAt": "50000",
+          "presentationProofCreatedAt": "60000",
+          "universityName": "Example University",
+          "awardName": "BSc Computer Science",
+          "finalGrade": "98"
+        }
+      },
+      {
+        "studentId": "STU-0002",
+        "studentName": "Ben Avery 0002",
+        "holderDidUrl": "did:midnight:student:0002",
+        "holderMethodId": "#holder-key-1",
+        "request": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "STU-0002",
+          "to": "uni-example-001",
+          "summary": "Student STU-0002 requested diploma issuance",
+          "dto": {
+            "studentId": "STU-0002",
+            "holderDidUrl": "did:midnight:student:0002",
+            "holderMethodId": "#holder-key-1",
+            "claimValues": {
+              "diplomaId": "DIP-2030-0002",
+              "graduateName": "Ben Avery 0002",
+              "universityName": "Example University",
+              "awardName": "BSc Data Science",
+              "finalGrade": 94
+            }
+          }
+        },
+        "result": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "uni-example-001",
+          "to": "STU-0002",
+          "summary": "University issued diploma credential to STU-0002",
+          "dto": {
+            "studentId": "STU-0002",
+            "issuedAt": "40001",
+            "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+            "universityName": "Example University",
+            "awardName": "BSc Data Science",
+            "finalGrade": "94"
+          }
+        },
+        "credential": {
+          "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+          "issuedAt": "40001",
+          "credentialProofCreatedAt": "50001",
+          "presentationProofCreatedAt": "60001",
+          "universityName": "Example University",
+          "awardName": "BSc Data Science",
+          "finalGrade": "94"
+        }
+      },
+      {
+        "studentId": "STU-0003",
+        "studentName": "Cara Avery 0003",
+        "holderDidUrl": "did:midnight:student:0003",
+        "holderMethodId": "#holder-key-1",
+        "request": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "STU-0003",
+          "to": "uni-example-001",
+          "summary": "Student STU-0003 requested diploma issuance",
+          "dto": {
+            "studentId": "STU-0003",
+            "holderDidUrl": "did:midnight:student:0003",
+            "holderMethodId": "#holder-key-1",
+            "claimValues": {
+              "diplomaId": "DIP-2030-0003",
+              "graduateName": "Cara Avery 0003",
+              "universityName": "Example University",
+              "awardName": "BEng Electrical Eng",
+              "finalGrade": 91
+            }
+          }
+        },
+        "result": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "uni-example-001",
+          "to": "STU-0003",
+          "summary": "University issued diploma credential to STU-0003",
+          "dto": {
+            "studentId": "STU-0003",
+            "issuedAt": "40002",
+            "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+            "universityName": "Example University",
+            "awardName": "BEng Electrical Eng",
+            "finalGrade": "91"
+          }
+        },
+        "credential": {
+          "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+          "issuedAt": "40002",
+          "credentialProofCreatedAt": "50002",
+          "presentationProofCreatedAt": "60002",
+          "universityName": "Example University",
+          "awardName": "BEng Electrical Eng",
+          "finalGrade": "91"
+        }
+      },
+      {
+        "studentId": "STU-0004",
+        "studentName": "Dion Avery 0004",
+        "holderDidUrl": "did:midnight:student:0004",
+        "holderMethodId": "#holder-key-1",
+        "request": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "STU-0004",
+          "to": "uni-example-001",
+          "summary": "Student STU-0004 requested diploma issuance",
+          "dto": {
+            "studentId": "STU-0004",
+            "holderDidUrl": "did:midnight:student:0004",
+            "holderMethodId": "#holder-key-1",
+            "claimValues": {
+              "diplomaId": "DIP-2030-0004",
+              "graduateName": "Dion Avery 0004",
+              "universityName": "Example University",
+              "awardName": "BA Business Analytics",
+              "finalGrade": 90
+            }
+          }
+        },
+        "result": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "uni-example-001",
+          "to": "STU-0004",
+          "summary": "University issued diploma credential to STU-0004",
+          "dto": {
+            "studentId": "STU-0004",
+            "issuedAt": "40003",
+            "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+            "universityName": "Example University",
+            "awardName": "BA Business Analytics",
+            "finalGrade": "90"
+          }
+        },
+        "credential": {
+          "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+          "issuedAt": "40003",
+          "credentialProofCreatedAt": "50003",
+          "presentationProofCreatedAt": "60003",
+          "universityName": "Example University",
+          "awardName": "BA Business Analytics",
+          "finalGrade": "90"
+        }
+      },
+      {
+        "studentId": "STU-0005",
+        "studentName": "Ella Avery 0005",
+        "holderDidUrl": "did:midnight:student:0005",
+        "holderMethodId": "#holder-key-1",
+        "request": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "STU-0005",
+          "to": "uni-example-001",
+          "summary": "Student STU-0005 requested diploma issuance",
+          "dto": {
+            "studentId": "STU-0005",
+            "holderDidUrl": "did:midnight:student:0005",
+            "holderMethodId": "#holder-key-1",
+            "claimValues": {
+              "diplomaId": "DIP-2030-0005",
+              "graduateName": "Ella Avery 0005",
+              "universityName": "Example University",
+              "awardName": "BSc Computer Science",
+              "finalGrade": 72
+            }
+          }
+        },
+        "result": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "uni-example-001",
+          "to": "STU-0005",
+          "summary": "University issued diploma credential to STU-0005",
+          "dto": {
+            "studentId": "STU-0005",
+            "issuedAt": "40004",
+            "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+            "universityName": "Example University",
+            "awardName": "BSc Computer Science",
+            "finalGrade": "72"
+          }
+        },
+        "credential": {
+          "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+          "issuedAt": "40004",
+          "credentialProofCreatedAt": "50004",
+          "presentationProofCreatedAt": "60004",
+          "universityName": "Example University",
+          "awardName": "BSc Computer Science",
+          "finalGrade": "72"
+        }
+      },
+      {
+        "studentId": "STU-0006",
+        "studentName": "Finn Avery 0006",
+        "holderDidUrl": "did:midnight:student:0006",
+        "holderMethodId": "#holder-key-1",
+        "request": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "STU-0006",
+          "to": "uni-example-001",
+          "summary": "Student STU-0006 requested diploma issuance",
+          "dto": {
+            "studentId": "STU-0006",
+            "holderDidUrl": "did:midnight:student:0006",
+            "holderMethodId": "#holder-key-1",
+            "claimValues": {
+              "diplomaId": "DIP-2030-0006",
+              "graduateName": "Finn Avery 0006",
+              "universityName": "Example University",
+              "awardName": "BSc Data Science",
+              "finalGrade": 100
+            }
+          }
+        },
+        "result": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "uni-example-001",
+          "to": "STU-0006",
+          "summary": "University issued diploma credential to STU-0006",
+          "dto": {
+            "studentId": "STU-0006",
+            "issuedAt": "40005",
+            "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+            "universityName": "Example University",
+            "awardName": "BSc Data Science",
+            "finalGrade": "100"
+          }
+        },
+        "credential": {
+          "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+          "issuedAt": "40005",
+          "credentialProofCreatedAt": "50005",
+          "presentationProofCreatedAt": "60005",
+          "universityName": "Example University",
+          "awardName": "BSc Data Science",
+          "finalGrade": "100"
+        }
+      },
+      {
+        "studentId": "STU-0007",
+        "studentName": "Gia Avery 0007",
+        "holderDidUrl": "did:midnight:student:0007",
+        "holderMethodId": "#holder-key-1",
+        "request": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "STU-0007",
+          "to": "uni-example-001",
+          "summary": "Student STU-0007 requested diploma issuance",
+          "dto": {
+            "studentId": "STU-0007",
+            "holderDidUrl": "did:midnight:student:0007",
+            "holderMethodId": "#holder-key-1",
+            "claimValues": {
+              "diplomaId": "DIP-2030-0007",
+              "graduateName": "Gia Avery 0007",
+              "universityName": "Example University",
+              "awardName": "BEng Electrical Eng",
+              "finalGrade": 71
+            }
+          }
+        },
+        "result": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "uni-example-001",
+          "to": "STU-0007",
+          "summary": "University issued diploma credential to STU-0007",
+          "dto": {
+            "studentId": "STU-0007",
+            "issuedAt": "40006",
+            "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+            "universityName": "Example University",
+            "awardName": "BEng Electrical Eng",
+            "finalGrade": "71"
+          }
+        },
+        "credential": {
+          "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+          "issuedAt": "40006",
+          "credentialProofCreatedAt": "50006",
+          "presentationProofCreatedAt": "60006",
+          "universityName": "Example University",
+          "awardName": "BEng Electrical Eng",
+          "finalGrade": "71"
+        }
+      },
+      {
+        "studentId": "STU-0008",
+        "studentName": "Hugo Avery 0008",
+        "holderDidUrl": "did:midnight:student:0008",
+        "holderMethodId": "#holder-key-1",
+        "request": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "STU-0008",
+          "to": "uni-example-001",
+          "summary": "Student STU-0008 requested diploma issuance",
+          "dto": {
+            "studentId": "STU-0008",
+            "holderDidUrl": "did:midnight:student:0008",
+            "holderMethodId": "#holder-key-1",
+            "claimValues": {
+              "diplomaId": "DIP-2030-0008",
+              "graduateName": "Hugo Avery 0008",
+              "universityName": "Example University",
+              "awardName": "BA Business Analytics",
+              "finalGrade": 78
+            }
+          }
+        },
+        "result": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "uni-example-001",
+          "to": "STU-0008",
+          "summary": "University issued diploma credential to STU-0008",
+          "dto": {
+            "studentId": "STU-0008",
+            "issuedAt": "40007",
+            "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+            "universityName": "Example University",
+            "awardName": "BA Business Analytics",
+            "finalGrade": "78"
+          }
+        },
+        "credential": {
+          "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+          "issuedAt": "40007",
+          "credentialProofCreatedAt": "50007",
+          "presentationProofCreatedAt": "60007",
+          "universityName": "Example University",
+          "awardName": "BA Business Analytics",
+          "finalGrade": "78"
+        }
+      },
+      {
+        "studentId": "STU-0009",
+        "studentName": "Iris Avery 0009",
+        "holderDidUrl": "did:midnight:student:0009",
+        "holderMethodId": "#holder-key-1",
+        "request": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "STU-0009",
+          "to": "uni-example-001",
+          "summary": "Student STU-0009 requested diploma issuance",
+          "dto": {
+            "studentId": "STU-0009",
+            "holderDidUrl": "did:midnight:student:0009",
+            "holderMethodId": "#holder-key-1",
+            "claimValues": {
+              "diplomaId": "DIP-2030-0009",
+              "graduateName": "Iris Avery 0009",
+              "universityName": "Example University",
+              "awardName": "BSc Computer Science",
+              "finalGrade": 85
+            }
+          }
+        },
+        "result": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "uni-example-001",
+          "to": "STU-0009",
+          "summary": "University issued diploma credential to STU-0009",
+          "dto": {
+            "studentId": "STU-0009",
+            "issuedAt": "40008",
+            "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+            "universityName": "Example University",
+            "awardName": "BSc Computer Science",
+            "finalGrade": "85"
+          }
+        },
+        "credential": {
+          "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+          "issuedAt": "40008",
+          "credentialProofCreatedAt": "50008",
+          "presentationProofCreatedAt": "60008",
+          "universityName": "Example University",
+          "awardName": "BSc Computer Science",
+          "finalGrade": "85"
+        }
+      },
+      {
+        "studentId": "STU-0010",
+        "studentName": "Jude Avery 0010",
+        "holderDidUrl": "did:midnight:student:0010",
+        "holderMethodId": "#holder-key-1",
+        "request": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "STU-0010",
+          "to": "uni-example-001",
+          "summary": "Student STU-0010 requested diploma issuance",
+          "dto": {
+            "studentId": "STU-0010",
+            "holderDidUrl": "did:midnight:student:0010",
+            "holderMethodId": "#holder-key-1",
+            "claimValues": {
+              "diplomaId": "DIP-2030-0010",
+              "graduateName": "Jude Avery 0010",
+              "universityName": "Example University",
+              "awardName": "BSc Data Science",
+              "finalGrade": 92
+            }
+          }
+        },
+        "result": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "uni-example-001",
+          "to": "STU-0010",
+          "summary": "University issued diploma credential to STU-0010",
+          "dto": {
+            "studentId": "STU-0010",
+            "issuedAt": "40009",
+            "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+            "universityName": "Example University",
+            "awardName": "BSc Data Science",
+            "finalGrade": "92"
+          }
+        },
+        "credential": {
+          "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+          "issuedAt": "40009",
+          "credentialProofCreatedAt": "50009",
+          "presentationProofCreatedAt": "60009",
+          "universityName": "Example University",
+          "awardName": "BSc Data Science",
+          "finalGrade": "92"
+        }
+      }
+    ]
+  },
+  "jobApplications": {
+    "byStudentCompany": [
+      {
+        "kind": "jobApplication",
+        "studentId": "STU-0001",
+        "studentName": "Ada Avery 0001",
+        "studentDidUrl": "did:midnight:student:0001",
+        "studentMethodId": "#holder-key-1",
+        "verifierId": "company-northwind-robotics",
+        "verifierName": "Northwind Robotics",
+        "verifierDidUrl": "did:midnight:company:northwind-robotics",
+        "verifierMethodId": "#verifier-key-1",
+        "requestedRole": "junior-platform-engineer",
+        "request": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "company-northwind-robotics",
+          "to": "STU-0001",
+          "summary": "jobApplication request from company-northwind-robotics for STU-0001",
+          "dto": {
+            "kind": "jobApplication",
+            "studentId": "STU-0001",
+            "verifierId": "company-northwind-robotics",
+            "requestedRole": "junior-platform-engineer",
+            "disclosures": [
+              "graduateName",
+              "universityName",
+              "awardName",
+              "graduationYear",
+              "finalGrade"
+            ],
+            "enforceMinimumFinalGrade": false,
+            "minimumFinalGrade": "0",
+            "verifierChallengeHashHex": "<hex>"
+          }
+        },
+        "submissions": [
+          {
+            "threadIdHex": "<hex>",
+            "messageIdHex": "<hex>",
+            "respondsToHex": "<hex>",
+            "from": "STU-0001",
+            "to": "company-northwind-robotics",
+            "summary": "jobApplication submission from STU-0001 for STU-0001",
+            "dto": {
+              "kind": "jobApplication",
+              "studentId": "STU-0001",
+              "disclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade"
+              ],
+              "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+              "verifierChallengeHashHex": "<hex>"
+            }
+          }
+        ],
+        "results": [
+          {
+            "sequence": 1,
+            "message": {
+              "threadIdHex": "<hex>",
+              "messageIdHex": "<hex>",
+              "respondsToHex": "<hex>",
+              "from": "company-northwind-robotics",
+              "to": "STU-0001",
+              "summary": "jobApplication result for STU-0001",
+              "dto": {
+                "kind": "jobApplication",
+                "studentId": "STU-0001",
+                "accepted": true,
+                "reason": "job application accepted",
+                "rejectionKind": "none"
+              }
+            },
+            "accepted": true,
+            "reason": "job application accepted",
+            "rejectionKind": "none"
+          }
+        ],
+        "finalAccepted": true,
+        "finalReason": "job application accepted",
+        "finalRejectionKind": "none"
+      },
+      {
+        "kind": "jobApplication",
+        "studentId": "STU-0002",
+        "studentName": "Ben Avery 0002",
+        "studentDidUrl": "did:midnight:student:0002",
+        "studentMethodId": "#holder-key-1",
+        "verifierId": "company-blue-ocean-analytics",
+        "verifierName": "Blue Ocean Analytics",
+        "verifierDidUrl": "did:midnight:company:blue-ocean-analytics",
+        "verifierMethodId": "#verifier-key-1",
+        "requestedRole": "data-analyst-trainee",
+        "request": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "company-blue-ocean-analytics",
+          "to": "STU-0002",
+          "summary": "jobApplication request from company-blue-ocean-analytics for STU-0002",
+          "dto": {
+            "kind": "jobApplication",
+            "studentId": "STU-0002",
+            "verifierId": "company-blue-ocean-analytics",
+            "requestedRole": "data-analyst-trainee",
+            "disclosures": [
+              "graduateName",
+              "universityName",
+              "awardName",
+              "honorsCode",
+              "graduationYear"
+            ],
+            "enforceMinimumFinalGrade": false,
+            "minimumFinalGrade": "0",
+            "verifierChallengeHashHex": "<hex>"
+          }
+        },
+        "submissions": [
+          {
+            "threadIdHex": "<hex>",
+            "messageIdHex": "<hex>",
+            "respondsToHex": "<hex>",
+            "from": "STU-0002",
+            "to": "company-blue-ocean-analytics",
+            "summary": "jobApplication submission from STU-0002 for STU-0002",
+            "dto": {
+              "kind": "jobApplication",
+              "studentId": "STU-0002",
+              "disclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "honorsCode",
+                "graduationYear"
+              ],
+              "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+              "verifierChallengeHashHex": "<hex>"
+            }
+          }
+        ],
+        "results": [
+          {
+            "sequence": 1,
+            "message": {
+              "threadIdHex": "<hex>",
+              "messageIdHex": "<hex>",
+              "respondsToHex": "<hex>",
+              "from": "company-blue-ocean-analytics",
+              "to": "STU-0002",
+              "summary": "jobApplication result for STU-0002",
+              "dto": {
+                "kind": "jobApplication",
+                "studentId": "STU-0002",
+                "accepted": true,
+                "reason": "job application accepted",
+                "rejectionKind": "none"
+              }
+            },
+            "accepted": true,
+            "reason": "job application accepted",
+            "rejectionKind": "none"
+          }
+        ],
+        "finalAccepted": true,
+        "finalReason": "job application accepted",
+        "finalRejectionKind": "none"
+      },
+      {
+        "kind": "jobApplication",
+        "studentId": "STU-0003",
+        "studentName": "Cara Avery 0003",
+        "studentDidUrl": "did:midnight:student:0003",
+        "studentMethodId": "#holder-key-1",
+        "verifierId": "company-pioneer-systems",
+        "verifierName": "Pioneer Systems",
+        "verifierDidUrl": "did:midnight:company:pioneer-systems",
+        "verifierMethodId": "#verifier-key-1",
+        "requestedRole": "robotics-software-intern",
+        "request": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "company-pioneer-systems",
+          "to": "STU-0003",
+          "summary": "jobApplication request from company-pioneer-systems for STU-0003",
+          "dto": {
+            "kind": "jobApplication",
+            "studentId": "STU-0003",
+            "verifierId": "company-pioneer-systems",
+            "requestedRole": "robotics-software-intern",
+            "disclosures": [
+              "graduateName",
+              "universityName",
+              "awardName",
+              "graduationYear",
+              "finalGrade",
+              "creditsEarned"
+            ],
+            "enforceMinimumFinalGrade": false,
+            "minimumFinalGrade": "0",
+            "verifierChallengeHashHex": "<hex>"
+          }
+        },
+        "submissions": [
+          {
+            "threadIdHex": "<hex>",
+            "messageIdHex": "<hex>",
+            "respondsToHex": "<hex>",
+            "from": "STU-0003",
+            "to": "company-pioneer-systems",
+            "summary": "jobApplication submission from STU-0003 for STU-0003",
+            "dto": {
+              "kind": "jobApplication",
+              "studentId": "STU-0003",
+              "disclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade",
+                "creditsEarned"
+              ],
+              "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+              "verifierChallengeHashHex": "<hex>"
+            }
+          }
+        ],
+        "results": [
+          {
+            "sequence": 1,
+            "message": {
+              "threadIdHex": "<hex>",
+              "messageIdHex": "<hex>",
+              "respondsToHex": "<hex>",
+              "from": "company-pioneer-systems",
+              "to": "STU-0003",
+              "summary": "jobApplication result for STU-0003",
+              "dto": {
+                "kind": "jobApplication",
+                "studentId": "STU-0003",
+                "accepted": true,
+                "reason": "job application accepted",
+                "rejectionKind": "none"
+              }
+            },
+            "accepted": true,
+            "reason": "job application accepted",
+            "rejectionKind": "none"
+          }
+        ],
+        "finalAccepted": true,
+        "finalReason": "job application accepted",
+        "finalRejectionKind": "none"
+      },
+      {
+        "kind": "jobApplication",
+        "studentId": "STU-0004",
+        "studentName": "Dion Avery 0004",
+        "studentDidUrl": "did:midnight:student:0004",
+        "studentMethodId": "#holder-key-1",
+        "verifierId": "company-northwind-robotics",
+        "verifierName": "Northwind Robotics",
+        "verifierDidUrl": "did:midnight:company:northwind-robotics",
+        "verifierMethodId": "#verifier-key-1",
+        "requestedRole": "business-operations-analyst",
+        "request": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "company-northwind-robotics",
+          "to": "STU-0004",
+          "summary": "jobApplication request from company-northwind-robotics for STU-0004",
+          "dto": {
+            "kind": "jobApplication",
+            "studentId": "STU-0004",
+            "verifierId": "company-northwind-robotics",
+            "requestedRole": "business-operations-analyst",
+            "disclosures": [
+              "graduateName",
+              "universityName",
+              "awardName",
+              "graduationYear",
+              "finalGrade"
+            ],
+            "enforceMinimumFinalGrade": false,
+            "minimumFinalGrade": "0",
+            "verifierChallengeHashHex": "<hex>"
+          }
+        },
+        "submissions": [
+          {
+            "threadIdHex": "<hex>",
+            "messageIdHex": "<hex>",
+            "respondsToHex": "<hex>",
+            "from": "STU-0004",
+            "to": "company-northwind-robotics",
+            "summary": "jobApplication submission from STU-0004 for STU-0004",
+            "dto": {
+              "kind": "jobApplication",
+              "studentId": "STU-0004",
+              "disclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade"
+              ],
+              "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+              "verifierChallengeHashHex": "<hex>"
+            }
+          }
+        ],
+        "results": [
+          {
+            "sequence": 1,
+            "message": {
+              "threadIdHex": "<hex>",
+              "messageIdHex": "<hex>",
+              "respondsToHex": "<hex>",
+              "from": "company-northwind-robotics",
+              "to": "STU-0004",
+              "summary": "jobApplication result for STU-0004",
+              "dto": {
+                "kind": "jobApplication",
+                "studentId": "STU-0004",
+                "accepted": true,
+                "reason": "job application accepted",
+                "rejectionKind": "none"
+              }
+            },
+            "accepted": true,
+            "reason": "job application accepted",
+            "rejectionKind": "none"
+          }
+        ],
+        "finalAccepted": true,
+        "finalReason": "job application accepted",
+        "finalRejectionKind": "none"
+      },
+      {
+        "kind": "jobApplication",
+        "studentId": "STU-0005",
+        "studentName": "Ella Avery 0005",
+        "studentDidUrl": "did:midnight:student:0005",
+        "studentMethodId": "#holder-key-1",
+        "verifierId": "company-blue-ocean-analytics",
+        "verifierName": "Blue Ocean Analytics",
+        "verifierDidUrl": "did:midnight:company:blue-ocean-analytics",
+        "verifierMethodId": "#verifier-key-1",
+        "requestedRole": "junior-platform-engineer",
+        "request": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "company-blue-ocean-analytics",
+          "to": "STU-0005",
+          "summary": "jobApplication request from company-blue-ocean-analytics for STU-0005",
+          "dto": {
+            "kind": "jobApplication",
+            "studentId": "STU-0005",
+            "verifierId": "company-blue-ocean-analytics",
+            "requestedRole": "junior-platform-engineer",
+            "disclosures": [
+              "graduateName",
+              "universityName",
+              "awardName",
+              "honorsCode",
+              "graduationYear"
+            ],
+            "enforceMinimumFinalGrade": false,
+            "minimumFinalGrade": "0",
+            "verifierChallengeHashHex": "<hex>"
+          }
+        },
+        "submissions": [
+          {
+            "threadIdHex": "<hex>",
+            "messageIdHex": "<hex>",
+            "respondsToHex": "<hex>",
+            "from": "STU-0005",
+            "to": "company-blue-ocean-analytics",
+            "summary": "jobApplication submission from STU-0005 for STU-0005",
+            "dto": {
+              "kind": "jobApplication",
+              "studentId": "STU-0005",
+              "disclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "honorsCode",
+                "graduationYear"
+              ],
+              "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+              "verifierChallengeHashHex": "<hex>"
+            }
+          }
+        ],
+        "results": [
+          {
+            "sequence": 1,
+            "message": {
+              "threadIdHex": "<hex>",
+              "messageIdHex": "<hex>",
+              "respondsToHex": "<hex>",
+              "from": "company-blue-ocean-analytics",
+              "to": "STU-0005",
+              "summary": "jobApplication result for STU-0005",
+              "dto": {
+                "kind": "jobApplication",
+                "studentId": "STU-0005",
+                "accepted": true,
+                "reason": "job application accepted",
+                "rejectionKind": "none"
+              }
+            },
+            "accepted": true,
+            "reason": "job application accepted",
+            "rejectionKind": "none"
+          }
+        ],
+        "finalAccepted": true,
+        "finalReason": "job application accepted",
+        "finalRejectionKind": "none"
+      },
+      {
+        "kind": "jobApplication",
+        "studentId": "STU-0006",
+        "studentName": "Finn Avery 0006",
+        "studentDidUrl": "did:midnight:student:0006",
+        "studentMethodId": "#holder-key-1",
+        "verifierId": "company-pioneer-systems",
+        "verifierName": "Pioneer Systems",
+        "verifierDidUrl": "did:midnight:company:pioneer-systems",
+        "verifierMethodId": "#verifier-key-1",
+        "requestedRole": "data-analyst-trainee",
+        "request": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "company-pioneer-systems",
+          "to": "STU-0006",
+          "summary": "jobApplication request from company-pioneer-systems for STU-0006",
+          "dto": {
+            "kind": "jobApplication",
+            "studentId": "STU-0006",
+            "verifierId": "company-pioneer-systems",
+            "requestedRole": "data-analyst-trainee",
+            "disclosures": [
+              "graduateName",
+              "universityName",
+              "awardName",
+              "graduationYear",
+              "finalGrade",
+              "creditsEarned"
+            ],
+            "enforceMinimumFinalGrade": false,
+            "minimumFinalGrade": "0",
+            "verifierChallengeHashHex": "<hex>"
+          }
+        },
+        "submissions": [
+          {
+            "threadIdHex": "<hex>",
+            "messageIdHex": "<hex>",
+            "respondsToHex": "<hex>",
+            "from": "STU-0006",
+            "to": "company-pioneer-systems",
+            "summary": "jobApplication submission from STU-0006 for STU-0006",
+            "dto": {
+              "kind": "jobApplication",
+              "studentId": "STU-0006",
+              "disclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade",
+                "creditsEarned"
+              ],
+              "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+              "verifierChallengeHashHex": "<hex>"
+            }
+          }
+        ],
+        "results": [
+          {
+            "sequence": 1,
+            "message": {
+              "threadIdHex": "<hex>",
+              "messageIdHex": "<hex>",
+              "respondsToHex": "<hex>",
+              "from": "company-pioneer-systems",
+              "to": "STU-0006",
+              "summary": "jobApplication result for STU-0006",
+              "dto": {
+                "kind": "jobApplication",
+                "studentId": "STU-0006",
+                "accepted": true,
+                "reason": "job application accepted",
+                "rejectionKind": "none"
+              }
+            },
+            "accepted": true,
+            "reason": "job application accepted",
+            "rejectionKind": "none"
+          }
+        ],
+        "finalAccepted": true,
+        "finalReason": "job application accepted",
+        "finalRejectionKind": "none"
+      },
+      {
+        "kind": "jobApplication",
+        "studentId": "STU-0007",
+        "studentName": "Gia Avery 0007",
+        "studentDidUrl": "did:midnight:student:0007",
+        "studentMethodId": "#holder-key-1",
+        "verifierId": "company-northwind-robotics",
+        "verifierName": "Northwind Robotics",
+        "verifierDidUrl": "did:midnight:company:northwind-robotics",
+        "verifierMethodId": "#verifier-key-1",
+        "requestedRole": "robotics-software-intern",
+        "request": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "company-northwind-robotics",
+          "to": "STU-0007",
+          "summary": "jobApplication request from company-northwind-robotics for STU-0007",
+          "dto": {
+            "kind": "jobApplication",
+            "studentId": "STU-0007",
+            "verifierId": "company-northwind-robotics",
+            "requestedRole": "robotics-software-intern",
+            "disclosures": [
+              "graduateName",
+              "universityName",
+              "awardName",
+              "graduationYear",
+              "finalGrade"
+            ],
+            "enforceMinimumFinalGrade": false,
+            "minimumFinalGrade": "0",
+            "verifierChallengeHashHex": "<hex>"
+          }
+        },
+        "submissions": [
+          {
+            "threadIdHex": "<hex>",
+            "messageIdHex": "<hex>",
+            "respondsToHex": "<hex>",
+            "from": "STU-0007",
+            "to": "company-northwind-robotics",
+            "summary": "jobApplication submission from STU-0007 for STU-0007",
+            "dto": {
+              "kind": "jobApplication",
+              "studentId": "STU-0007",
+              "disclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade"
+              ],
+              "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+              "verifierChallengeHashHex": "<hex>"
+            }
+          }
+        ],
+        "results": [
+          {
+            "sequence": 1,
+            "message": {
+              "threadIdHex": "<hex>",
+              "messageIdHex": "<hex>",
+              "respondsToHex": "<hex>",
+              "from": "company-northwind-robotics",
+              "to": "STU-0007",
+              "summary": "jobApplication result for STU-0007",
+              "dto": {
+                "kind": "jobApplication",
+                "studentId": "STU-0007",
+                "accepted": true,
+                "reason": "job application accepted",
+                "rejectionKind": "none"
+              }
+            },
+            "accepted": true,
+            "reason": "job application accepted",
+            "rejectionKind": "none"
+          }
+        ],
+        "finalAccepted": true,
+        "finalReason": "job application accepted",
+        "finalRejectionKind": "none"
+      },
+      {
+        "kind": "jobApplication",
+        "studentId": "STU-0008",
+        "studentName": "Hugo Avery 0008",
+        "studentDidUrl": "did:midnight:student:0008",
+        "studentMethodId": "#holder-key-1",
+        "verifierId": "company-blue-ocean-analytics",
+        "verifierName": "Blue Ocean Analytics",
+        "verifierDidUrl": "did:midnight:company:blue-ocean-analytics",
+        "verifierMethodId": "#verifier-key-1",
+        "requestedRole": "business-operations-analyst",
+        "request": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "company-blue-ocean-analytics",
+          "to": "STU-0008",
+          "summary": "jobApplication request from company-blue-ocean-analytics for STU-0008",
+          "dto": {
+            "kind": "jobApplication",
+            "studentId": "STU-0008",
+            "verifierId": "company-blue-ocean-analytics",
+            "requestedRole": "business-operations-analyst",
+            "disclosures": [
+              "graduateName",
+              "universityName",
+              "awardName",
+              "honorsCode",
+              "graduationYear"
+            ],
+            "enforceMinimumFinalGrade": false,
+            "minimumFinalGrade": "0",
+            "verifierChallengeHashHex": "<hex>"
+          }
+        },
+        "submissions": [
+          {
+            "threadIdHex": "<hex>",
+            "messageIdHex": "<hex>",
+            "respondsToHex": "<hex>",
+            "from": "STU-0008",
+            "to": "company-blue-ocean-analytics",
+            "summary": "jobApplication submission from STU-0008 for STU-0008",
+            "dto": {
+              "kind": "jobApplication",
+              "studentId": "STU-0008",
+              "disclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "honorsCode",
+                "graduationYear"
+              ],
+              "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+              "verifierChallengeHashHex": "<hex>"
+            }
+          }
+        ],
+        "results": [
+          {
+            "sequence": 1,
+            "message": {
+              "threadIdHex": "<hex>",
+              "messageIdHex": "<hex>",
+              "respondsToHex": "<hex>",
+              "from": "company-blue-ocean-analytics",
+              "to": "STU-0008",
+              "summary": "jobApplication result for STU-0008",
+              "dto": {
+                "kind": "jobApplication",
+                "studentId": "STU-0008",
+                "accepted": true,
+                "reason": "job application accepted",
+                "rejectionKind": "none"
+              }
+            },
+            "accepted": true,
+            "reason": "job application accepted",
+            "rejectionKind": "none"
+          }
+        ],
+        "finalAccepted": true,
+        "finalReason": "job application accepted",
+        "finalRejectionKind": "none"
+      },
+      {
+        "kind": "jobApplication",
+        "studentId": "STU-0009",
+        "studentName": "Iris Avery 0009",
+        "studentDidUrl": "did:midnight:student:0009",
+        "studentMethodId": "#holder-key-1",
+        "verifierId": "company-pioneer-systems",
+        "verifierName": "Pioneer Systems",
+        "verifierDidUrl": "did:midnight:company:pioneer-systems",
+        "verifierMethodId": "#verifier-key-1",
+        "requestedRole": "junior-platform-engineer",
+        "request": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "company-pioneer-systems",
+          "to": "STU-0009",
+          "summary": "jobApplication request from company-pioneer-systems for STU-0009",
+          "dto": {
+            "kind": "jobApplication",
+            "studentId": "STU-0009",
+            "verifierId": "company-pioneer-systems",
+            "requestedRole": "junior-platform-engineer",
+            "disclosures": [
+              "graduateName",
+              "universityName",
+              "awardName",
+              "graduationYear",
+              "finalGrade",
+              "creditsEarned"
+            ],
+            "enforceMinimumFinalGrade": false,
+            "minimumFinalGrade": "0",
+            "verifierChallengeHashHex": "<hex>"
+          }
+        },
+        "submissions": [
+          {
+            "threadIdHex": "<hex>",
+            "messageIdHex": "<hex>",
+            "respondsToHex": "<hex>",
+            "from": "STU-0009",
+            "to": "company-pioneer-systems",
+            "summary": "jobApplication submission from STU-0009 for STU-0009",
+            "dto": {
+              "kind": "jobApplication",
+              "studentId": "STU-0009",
+              "disclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade",
+                "creditsEarned"
+              ],
+              "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+              "verifierChallengeHashHex": "<hex>"
+            }
+          }
+        ],
+        "results": [
+          {
+            "sequence": 1,
+            "message": {
+              "threadIdHex": "<hex>",
+              "messageIdHex": "<hex>",
+              "respondsToHex": "<hex>",
+              "from": "company-pioneer-systems",
+              "to": "STU-0009",
+              "summary": "jobApplication result for STU-0009",
+              "dto": {
+                "kind": "jobApplication",
+                "studentId": "STU-0009",
+                "accepted": true,
+                "reason": "job application accepted",
+                "rejectionKind": "none"
+              }
+            },
+            "accepted": true,
+            "reason": "job application accepted",
+            "rejectionKind": "none"
+          }
+        ],
+        "finalAccepted": true,
+        "finalReason": "job application accepted",
+        "finalRejectionKind": "none"
+      },
+      {
+        "kind": "jobApplication",
+        "studentId": "STU-0010",
+        "studentName": "Jude Avery 0010",
+        "studentDidUrl": "did:midnight:student:0010",
+        "studentMethodId": "#holder-key-1",
+        "verifierId": "company-northwind-robotics",
+        "verifierName": "Northwind Robotics",
+        "verifierDidUrl": "did:midnight:company:northwind-robotics",
+        "verifierMethodId": "#verifier-key-1",
+        "requestedRole": "data-analyst-trainee",
+        "request": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "company-northwind-robotics",
+          "to": "STU-0010",
+          "summary": "jobApplication request from company-northwind-robotics for STU-0010",
+          "dto": {
+            "kind": "jobApplication",
+            "studentId": "STU-0010",
+            "verifierId": "company-northwind-robotics",
+            "requestedRole": "data-analyst-trainee",
+            "disclosures": [
+              "graduateName",
+              "universityName",
+              "awardName",
+              "graduationYear",
+              "finalGrade"
+            ],
+            "enforceMinimumFinalGrade": false,
+            "minimumFinalGrade": "0",
+            "verifierChallengeHashHex": "<hex>"
+          }
+        },
+        "submissions": [
+          {
+            "threadIdHex": "<hex>",
+            "messageIdHex": "<hex>",
+            "respondsToHex": "<hex>",
+            "from": "STU-0010",
+            "to": "company-northwind-robotics",
+            "summary": "jobApplication submission from STU-0010 for STU-0010",
+            "dto": {
+              "kind": "jobApplication",
+              "studentId": "STU-0010",
+              "disclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade"
+              ],
+              "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+              "verifierChallengeHashHex": "<hex>"
+            }
+          }
+        ],
+        "results": [
+          {
+            "sequence": 1,
+            "message": {
+              "threadIdHex": "<hex>",
+              "messageIdHex": "<hex>",
+              "respondsToHex": "<hex>",
+              "from": "company-northwind-robotics",
+              "to": "STU-0010",
+              "summary": "jobApplication result for STU-0010",
+              "dto": {
+                "kind": "jobApplication",
+                "studentId": "STU-0010",
+                "accepted": true,
+                "reason": "job application accepted",
+                "rejectionKind": "none"
+              }
+            },
+            "accepted": true,
+            "reason": "job application accepted",
+            "rejectionKind": "none"
+          }
+        ],
+        "finalAccepted": true,
+        "finalReason": "job application accepted",
+        "finalRejectionKind": "none"
+      }
+    ]
+  },
+  "discounts": {
+    "byApplicant": [
+      {
+        "kind": "mallDiscount",
+        "studentId": "STU-0001",
+        "studentName": "Ada Avery 0001",
+        "studentDidUrl": "did:midnight:student:0001",
+        "studentMethodId": "#holder-key-1",
+        "verifierId": "mall-student-square",
+        "verifierName": "Student Square Mall",
+        "verifierDidUrl": "did:midnight:mall:student-square",
+        "verifierMethodId": "#verifier-key-1",
+        "requestedRole": null,
+        "request": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "mall-student-square",
+          "to": "STU-0001",
+          "summary": "mallDiscount request from mall-student-square for STU-0001",
+          "dto": {
+            "kind": "mallDiscount",
+            "studentId": "STU-0001",
+            "verifierId": "mall-student-square",
+            "requestedRole": null,
+            "disclosures": [
+              "universityName",
+              "finalGrade"
+            ],
+            "enforceMinimumFinalGrade": true,
+            "minimumFinalGrade": "91",
+            "verifierChallengeHashHex": "<hex>"
+          }
+        },
+        "submissions": [
+          {
+            "threadIdHex": "<hex>",
+            "messageIdHex": "<hex>",
+            "respondsToHex": "<hex>",
+            "from": "STU-0001",
+            "to": "mall-student-square",
+            "summary": "mallDiscount submission from STU-0001 for STU-0001",
+            "dto": {
+              "kind": "mallDiscount",
+              "studentId": "STU-0001",
+              "disclosures": [
+                "universityName",
+                "finalGrade"
+              ],
+              "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+              "verifierChallengeHashHex": "<hex>"
+            }
+          }
+        ],
+        "results": [
+          {
+            "sequence": 1,
+            "message": {
+              "threadIdHex": "<hex>",
+              "messageIdHex": "<hex>",
+              "respondsToHex": "<hex>",
+              "from": "mall-student-square",
+              "to": "STU-0001",
+              "summary": "mallDiscount result for STU-0001",
+              "dto": {
+                "kind": "mallDiscount",
+                "studentId": "STU-0001",
+                "accepted": true,
+                "reason": "mall discount accepted",
+                "rejectionKind": "none"
+              }
+            },
+            "accepted": true,
+            "reason": "mall discount accepted",
+            "rejectionKind": "none"
+          }
+        ],
+        "finalAccepted": true,
+        "finalReason": "mall discount accepted",
+        "finalRejectionKind": "none"
+      },
+      {
+        "kind": "mallDiscount",
+        "studentId": "STU-0002",
+        "studentName": "Ben Avery 0002",
+        "studentDidUrl": "did:midnight:student:0002",
+        "studentMethodId": "#holder-key-1",
+        "verifierId": "mall-student-square",
+        "verifierName": "Student Square Mall",
+        "verifierDidUrl": "did:midnight:mall:student-square",
+        "verifierMethodId": "#verifier-key-1",
+        "requestedRole": null,
+        "request": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "mall-student-square",
+          "to": "STU-0002",
+          "summary": "mallDiscount request from mall-student-square for STU-0002",
+          "dto": {
+            "kind": "mallDiscount",
+            "studentId": "STU-0002",
+            "verifierId": "mall-student-square",
+            "requestedRole": null,
+            "disclosures": [
+              "universityName",
+              "finalGrade"
+            ],
+            "enforceMinimumFinalGrade": true,
+            "minimumFinalGrade": "91",
+            "verifierChallengeHashHex": "<hex>"
+          }
+        },
+        "submissions": [
+          {
+            "threadIdHex": "<hex>",
+            "messageIdHex": "<hex>",
+            "respondsToHex": "<hex>",
+            "from": "STU-0002",
+            "to": "mall-student-square",
+            "summary": "mallDiscount submission from STU-0002 for STU-0002",
+            "dto": {
+              "kind": "mallDiscount",
+              "studentId": "STU-0002",
+              "disclosures": [
+                "universityName",
+                "finalGrade"
+              ],
+              "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+              "verifierChallengeHashHex": "<hex>"
+            }
+          }
+        ],
+        "results": [
+          {
+            "sequence": 1,
+            "message": {
+              "threadIdHex": "<hex>",
+              "messageIdHex": "<hex>",
+              "respondsToHex": "<hex>",
+              "from": "mall-student-square",
+              "to": "STU-0002",
+              "summary": "mallDiscount result for STU-0002",
+              "dto": {
+                "kind": "mallDiscount",
+                "studentId": "STU-0002",
+                "accepted": true,
+                "reason": "mall discount accepted",
+                "rejectionKind": "none"
+              }
+            },
+            "accepted": true,
+            "reason": "mall discount accepted",
+            "rejectionKind": "none"
+          }
+        ],
+        "finalAccepted": true,
+        "finalReason": "mall discount accepted",
+        "finalRejectionKind": "none"
+      },
+      {
+        "kind": "mallDiscount",
+        "studentId": "STU-0003",
+        "studentName": "Cara Avery 0003",
+        "studentDidUrl": "did:midnight:student:0003",
+        "studentMethodId": "#holder-key-1",
+        "verifierId": "mall-student-square",
+        "verifierName": "Student Square Mall",
+        "verifierDidUrl": "did:midnight:mall:student-square",
+        "verifierMethodId": "#verifier-key-1",
+        "requestedRole": null,
+        "request": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "mall-student-square",
+          "to": "STU-0003",
+          "summary": "mallDiscount request from mall-student-square for STU-0003",
+          "dto": {
+            "kind": "mallDiscount",
+            "studentId": "STU-0003",
+            "verifierId": "mall-student-square",
+            "requestedRole": null,
+            "disclosures": [
+              "universityName",
+              "finalGrade"
+            ],
+            "enforceMinimumFinalGrade": true,
+            "minimumFinalGrade": "91",
+            "verifierChallengeHashHex": "<hex>"
+          }
+        },
+        "submissions": [
+          {
+            "threadIdHex": "<hex>",
+            "messageIdHex": "<hex>",
+            "respondsToHex": "<hex>",
+            "from": "STU-0003",
+            "to": "mall-student-square",
+            "summary": "mallDiscount submission from STU-0003 for STU-0003",
+            "dto": {
+              "kind": "mallDiscount",
+              "studentId": "STU-0003",
+              "disclosures": [
+                "universityName",
+                "finalGrade"
+              ],
+              "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+              "verifierChallengeHashHex": "<hex>"
+            }
+          }
+        ],
+        "results": [
+          {
+            "sequence": 1,
+            "message": {
+              "threadIdHex": "<hex>",
+              "messageIdHex": "<hex>",
+              "respondsToHex": "<hex>",
+              "from": "mall-student-square",
+              "to": "STU-0003",
+              "summary": "mallDiscount result for STU-0003",
+              "dto": {
+                "kind": "mallDiscount",
+                "studentId": "STU-0003",
+                "accepted": true,
+                "reason": "mall discount accepted",
+                "rejectionKind": "none"
+              }
+            },
+            "accepted": true,
+            "reason": "mall discount accepted",
+            "rejectionKind": "none"
+          }
+        ],
+        "finalAccepted": true,
+        "finalReason": "mall discount accepted",
+        "finalRejectionKind": "none"
+      },
+      {
+        "kind": "mallDiscount",
+        "studentId": "STU-0004",
+        "studentName": "Dion Avery 0004",
+        "studentDidUrl": "did:midnight:student:0004",
+        "studentMethodId": "#holder-key-1",
+        "verifierId": "mall-student-square",
+        "verifierName": "Student Square Mall",
+        "verifierDidUrl": "did:midnight:mall:student-square",
+        "verifierMethodId": "#verifier-key-1",
+        "requestedRole": null,
+        "request": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "mall-student-square",
+          "to": "STU-0004",
+          "summary": "mallDiscount request from mall-student-square for STU-0004",
+          "dto": {
+            "kind": "mallDiscount",
+            "studentId": "STU-0004",
+            "verifierId": "mall-student-square",
+            "requestedRole": null,
+            "disclosures": [
+              "universityName",
+              "finalGrade"
+            ],
+            "enforceMinimumFinalGrade": true,
+            "minimumFinalGrade": "91",
+            "verifierChallengeHashHex": "<hex>"
+          }
+        },
+        "submissions": [
+          {
+            "threadIdHex": "<hex>",
+            "messageIdHex": "<hex>",
+            "respondsToHex": "<hex>",
+            "from": "STU-0004",
+            "to": "mall-student-square",
+            "summary": "mallDiscount submission from STU-0004 for STU-0004",
+            "dto": {
+              "kind": "mallDiscount",
+              "studentId": "STU-0004",
+              "disclosures": [
+                "universityName",
+                "finalGrade"
+              ],
+              "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+              "verifierChallengeHashHex": "<hex>"
+            }
+          }
+        ],
+        "results": [
+          {
+            "sequence": 1,
+            "message": {
+              "threadIdHex": "<hex>",
+              "messageIdHex": "<hex>",
+              "respondsToHex": "<hex>",
+              "from": "mall-student-square",
+              "to": "STU-0004",
+              "summary": "mallDiscount result for STU-0004",
+              "dto": {
+                "kind": "mallDiscount",
+                "studentId": "STU-0004",
+                "accepted": false,
+                "reason": "failed assert: University-diploma disclosed final grade is below the verifier minimum",
+                "rejectionKind": "verificationFailed"
+              }
+            },
+            "accepted": false,
+            "reason": "failed assert: University-diploma disclosed final grade is below the verifier minimum",
+            "rejectionKind": "verificationFailed"
+          }
+        ],
+        "finalAccepted": false,
+        "finalReason": "failed assert: University-diploma disclosed final grade is below the verifier minimum",
+        "finalRejectionKind": "verificationFailed"
+      },
+      {
+        "kind": "mallDiscount",
+        "studentId": "STU-0005",
+        "studentName": "Ella Avery 0005",
+        "studentDidUrl": "did:midnight:student:0005",
+        "studentMethodId": "#holder-key-1",
+        "verifierId": "mall-student-square",
+        "verifierName": "Student Square Mall",
+        "verifierDidUrl": "did:midnight:mall:student-square",
+        "verifierMethodId": "#verifier-key-1",
+        "requestedRole": null,
+        "request": {
+          "threadIdHex": "<hex>",
+          "messageIdHex": "<hex>",
+          "respondsToHex": "<hex>",
+          "from": "mall-student-square",
+          "to": "STU-0005",
+          "summary": "mallDiscount request from mall-student-square for STU-0005",
+          "dto": {
+            "kind": "mallDiscount",
+            "studentId": "STU-0005",
+            "verifierId": "mall-student-square",
+            "requestedRole": null,
+            "disclosures": [
+              "universityName",
+              "finalGrade"
+            ],
+            "enforceMinimumFinalGrade": true,
+            "minimumFinalGrade": "91",
+            "verifierChallengeHashHex": "<hex>"
+          }
+        },
+        "submissions": [
+          {
+            "threadIdHex": "<hex>",
+            "messageIdHex": "<hex>",
+            "respondsToHex": "<hex>",
+            "from": "STU-0005",
+            "to": "mall-student-square",
+            "summary": "mallDiscount submission from STU-0005 for STU-0005",
+            "dto": {
+              "kind": "mallDiscount",
+              "studentId": "STU-0005",
+              "disclosures": [
+                "universityName",
+                "finalGrade"
+              ],
+              "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
+              "verifierChallengeHashHex": "<hex>"
+            }
+          }
+        ],
+        "results": [
+          {
+            "sequence": 1,
+            "message": {
+              "threadIdHex": "<hex>",
+              "messageIdHex": "<hex>",
+              "respondsToHex": "<hex>",
+              "from": "mall-student-square",
+              "to": "STU-0005",
+              "summary": "mallDiscount result for STU-0005",
+              "dto": {
+                "kind": "mallDiscount",
+                "studentId": "STU-0005",
+                "accepted": false,
+                "reason": "failed assert: University-diploma disclosed final grade is below the verifier minimum",
+                "rejectionKind": "verificationFailed"
+              }
+            },
+            "accepted": false,
+            "reason": "failed assert: University-diploma disclosed final grade is below the verifier minimum",
+            "rejectionKind": "verificationFailed"
+          }
+        ],
+        "finalAccepted": false,
+        "finalReason": "failed assert: University-diploma disclosed final grade is below the verifier minimum",
+        "finalRejectionKind": "verificationFailed"
+      }
+    ]
+  },
+  "summary": {
+    "jobApplications": {
+      "requested": 10,
+      "accepted": 10,
+      "rejected": 0,
+      "duplicate": 0,
+      "verificationFailed": 0,
+      "byCompany": [
+        {
+          "companyId": "company-blue-ocean-analytics",
+          "companyName": "Blue Ocean Analytics",
+          "accepted": 3,
+          "verificationFailed": 0,
+          "duplicate": 0
+        },
+        {
+          "companyId": "company-northwind-robotics",
+          "companyName": "Northwind Robotics",
+          "accepted": 4,
+          "verificationFailed": 0,
+          "duplicate": 0
+        },
+        {
+          "companyId": "company-pioneer-systems",
+          "companyName": "Pioneer Systems",
+          "accepted": 3,
+          "verificationFailed": 0,
+          "duplicate": 0
+        }
+      ]
+    },
+    "discounts": {
+      "requested": 5,
+      "accepted": 3,
+      "rejected": 2,
+      "duplicate": 0,
+      "verificationFailed": 2,
+      "byReason": [
+        {
+          "reason": "failed assert: University-diploma disclosed final grade is below the verifier minimum",
+          "count": 2
+        }
+      ]
+    }
+  }
+}

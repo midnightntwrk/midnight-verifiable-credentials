@@ -10,14 +10,23 @@ import {
 import { Cast, configure, engage, serenity } from "@serenity-js/core";
 import { ConsoleReporter } from "@serenity-js/console-reporter";
 
+import {
+  createUniversityScenarioBackend,
+  loadUniversityScenarioBackendMode,
+  type UniversityScenarioBackend,
+  type UniversityScenarioBackendContext,
+} from "./university-scenario-backend.js";
 import { UseUniversityScenario } from "./university-scenario.js";
 
 const thisFile = fileURLToPath(import.meta.url);
 const packageRoot = path.resolve(path.dirname(thisFile), "..", "..");
+const backendMode = loadUniversityScenarioBackendMode();
+let universityBackend: UniversityScenarioBackend | undefined;
+let backendContext: UniversityScenarioBackendContext | undefined;
 
-setDefaultTimeout(60_000);
+setDefaultTimeout(backendMode === "standalone-hybrid" ? 1_800_000 : 60_000);
 
-BeforeAll(() => {
+BeforeAll(async () => {
   configure({
     crew: [
       ConsoleReporter.forDarkTerminals(),
@@ -31,14 +40,25 @@ BeforeAll(() => {
       ],
     ],
   });
+
+  universityBackend = createUniversityScenarioBackend(backendMode);
+  backendContext = await universityBackend.initialize();
 });
 
 Before(() => {
+  if (!backendContext) {
+    throw new Error("University scenario backend context is unavailable");
+  }
   engage(
-    Cast.where((actor) => actor.whoCan(UseUniversityScenario.locally())),
+    Cast.where((actor) =>
+      actor.whoCan(UseUniversityScenario.usingBackendContext(backendContext!)),
+    ),
   );
 });
 
 AfterAll(async () => {
+  if (universityBackend) {
+    await universityBackend.shutdown();
+  }
   await serenity.waitForNextCue();
 });
