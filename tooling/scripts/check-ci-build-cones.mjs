@@ -18,6 +18,18 @@ const runGit = (args) =>
   });
 
 const errors = [];
+const ALLOWED_OUTPUT_SUFFIXES = ["/dist", "/src/managed"];
+const PROTOCOL_REQUIRED_INPUTS = [
+  "prototypes/credential-families/birth",
+  "prototypes/credential-families/birth-secret",
+  "use-cases/age-gate/contract",
+];
+const gitignorePatternSet = new Set(
+  readFileSync(path.join(repoRoot, ".gitignore"), "utf8")
+    .split(/\r?\n/u)
+    .map((line) => line.trim())
+    .filter((line) => line && !line.startsWith("#") && !line.startsWith("!")),
+);
 
 const readShellList = (functionName, argument) => {
   const command = [
@@ -45,35 +57,30 @@ const readShellList = (functionName, argument) => {
 
 const isIgnored = (relativePath) => {
   // Check policy lines directly instead of probing nonexistent directories with
-  // git check-ignore; Git versions differ on those clean-checkout probes.
+  // git check-ignore; Git versions differ on clean-checkout probes for
+  // nonexistent generated directories. Accept basename and full-path forms,
+  // with or without directory-only trailing slashes.
   const directoryName = path.posix.basename(relativePath);
   const candidates = new Set([
+    directoryName,
     `${directoryName}/`,
+    `**/${directoryName}`,
     `**/${directoryName}/`,
+    relativePath,
     `${relativePath}/`,
+    `/${relativePath}`,
     `/${relativePath}/`,
   ]);
 
-  return gitignorePatterns.some((pattern) => candidates.has(pattern));
+  return [...candidates].some((candidate) => gitignorePatternSet.has(candidate));
 };
 
 const isGeneratedOutputPath = (relativePath) =>
   ALLOWED_OUTPUT_SUFFIXES.some((suffix) => relativePath.endsWith(suffix));
 
-const ALLOWED_OUTPUT_SUFFIXES = ["/dist", "/src/managed"];
-const PROTOCOL_REQUIRED_INPUTS = [
-  "prototypes/credential-families/birth",
-  "prototypes/credential-families/birth-secret",
-  "use-cases/age-gate/contract",
-];
-
 const packageJson = JSON.parse(readFileSync(path.join(repoRoot, "package.json"), "utf8"));
 const workspaceEntries = packageJson.workspaces ?? [];
 const workspaceSet = new Set(workspaceEntries);
-const gitignorePatterns = readFileSync(path.join(repoRoot, ".gitignore"), "utf8")
-  .split(/\r?\n/u)
-  .map((line) => line.trim())
-  .filter((line) => line && !line.startsWith("#") && !line.startsWith("!"));
 const trackedFiles = runGit(["ls-files"])
   .split(/\r?\n/u)
   .filter(Boolean);
