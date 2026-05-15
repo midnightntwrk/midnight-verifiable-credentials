@@ -14,7 +14,7 @@ const errors = [];
 
 const quoteForBash = (value) => `'${value.replaceAll("'", "'\\''")}'`;
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
-const yamlWordScalarPattern = (value) => `["']?${escapeRegExp(value)}\\b["']?`;
+const yamlWordScalarPattern = (value) => `(["']?)${escapeRegExp(value)}\\b\\1`;
 
 const readShellList = (functionName, argument) => {
   const command = [
@@ -55,7 +55,9 @@ const ownerForOutputPath = (outputPath) =>
   outputPath.replace(/\/(?:dist|src\/managed)$/u, "");
 
 const parseTurboFilters = (script) =>
-  [...script.matchAll(/--filter=(?:"|')?\.\/([^ "'&]+)(?:"|')?/gu)].map((match) => match[1]);
+  [...script.matchAll(/--filter=(?:"|')?\.\/([^\s"'&;|()<>,]+)(?:"|')?/gu)].map(
+    (match) => match[1],
+  );
 
 const parseDirectBuildWorkspaces = (script) =>
   [...script.matchAll(/npm\s+run\s+build\s+-w\s+\.\/([^ "'&]+)/gu)].map((match) => match[1]);
