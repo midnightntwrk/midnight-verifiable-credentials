@@ -54,6 +54,19 @@ Standalone-hybrid notes:
 - the standalone infrastructure binds the default Midnight service ports on
   `127.0.0.1`, so run only one standalone stack at a time unless the
   infrastructure is extended with explicit per-stack port overrides.
+- each standalone-hybrid run writes timing artifacts after teardown:
+  - `./target/standalone-timing/summary.json`
+  - `./target/standalone-timing/summary.md`
+- the timing artifact includes environment startup, wallet sync, DID
+  provisioning, overlay generation, environment shutdown, and accumulated proof
+  backend phase totals across scenario resets.
+- the JSON artifact also lists `unclassifiedMetricNames` so new backend/proof
+  metrics remain visible when they do not yet belong to an operator-facing
+  phase bucket.
+- `standalone-hybrid-data/backend-metadata.json` is an initialization and
+  overlay-generation snapshot; use `standalone-timing/summary.json` as the
+  authoritative end-of-run timing source because it also includes teardown and
+  accumulated proof backend samples.
 
 Batch-sweep artifacts:
 
@@ -97,5 +110,12 @@ Current boundary:
 - that means the BDD can now measure environment startup, wallet sync, and DID
   provisioning timings with real standalone infrastructure while still keeping
   the university credential semantics on the local simulator path
+- the standalone-hybrid lane also emits a machine-readable timing summary under
+  `target/standalone-timing` so local runs can compare bootstrap, overlay,
+  teardown, and proof backend phase totals without scraping Serenity output
+- the generated `target/standalone-hybrid-data/backend-metadata.json` file is
+  intentionally limited to initialization and overlay-generation metadata and
+  points readers at the end-of-run timing artifact instead of duplicating
+  shutdown metrics
 - the comments remain intentionally verbose so the step text still acts as
   living documentation even though the scenarios are now executable

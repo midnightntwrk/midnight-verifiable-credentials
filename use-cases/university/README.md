@@ -72,6 +72,14 @@ The slice is intentionally explicit and operational:
   backend into the protocol runner, so the report can capture real environment
   startup, wallet sync, DID provisioning latency, and simulator proof timings
   under an explicit backend contract
+- standalone-hybrid runs also write `scenarios/target/standalone-timing`
+  JSON/Markdown artifacts with startup, wallet sync, DID provisioning, overlay
+  generation, shutdown, and accumulated proof backend phase totals for local
+  timing comparisons, plus `unclassifiedMetricNames` drift signals for metrics
+  that do not yet map to a phase bucket
+- the generated standalone `backend-metadata.json` is initialization and
+  overlay-generation metadata; the `standalone-timing/summary.json` artifact is
+  the authoritative end-of-run timing record
 - the proof-server contract backend now records the DTO boundary between the
   protocol runner and future remote proof execution for issuance, request
   construction, presentation construction, and verifier checks; the BDD
