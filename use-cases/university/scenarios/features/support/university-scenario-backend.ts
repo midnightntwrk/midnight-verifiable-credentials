@@ -8,7 +8,7 @@ import { ecMulGenerator } from "@midnight-ntwrk/compact-runtime";
 import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import {
   DeterministicUniversityPartyRuntime,
-  ProvisionedUniversityPartyRuntime,
+  PreloadedUniversityPartyRuntime,
   SimulatorUniversityProofExecutionBackend,
   StandaloneHybridUniversityProofExecutionBackend,
   type UniversityPartyRecord,
@@ -168,6 +168,22 @@ export const defaultDataPaths = {
 export const resolveScenarioRepoPath = (relativePath: string): string =>
   path.resolve(repoRoot, relativePath);
 
+const safeOverlayRootPath = (relativePath: string): string => {
+  const overlayRoot = resolveScenarioRepoPath(relativePath);
+  const allowedRoot = resolveScenarioRepoPath("use-cases/university/scenarios/target");
+  const relativeToAllowedRoot = path.relative(allowedRoot, overlayRoot);
+  if (
+    relativeToAllowedRoot === "" ||
+    relativeToAllowedRoot.startsWith("..") ||
+    path.isAbsolute(relativeToAllowedRoot)
+  ) {
+    throw new Error(
+      `Refusing to delete unsafe standalone overlay path: ${overlayRoot}`,
+    );
+  }
+  return overlayRoot;
+};
+
 export const loadUniversityScenarioBackendMode = (): UniversityScenarioBackendMode => {
   const rawMode = (process.env.UNIVERSITY_BDD_BACKEND ?? "simulator").trim();
   switch (rawMode) {
@@ -315,7 +331,7 @@ class StandaloneHybridUniversityScenarioBackend
 
     setNetworkId("undeployed");
 
-    await fs.rm(resolveScenarioRepoPath(this.#overlayRoot), {
+    await fs.rm(safeOverlayRootPath(this.#overlayRoot), {
       recursive: true,
       force: true,
     });
@@ -405,7 +421,7 @@ class StandaloneHybridUniversityScenarioBackend
       mallProfile.didString.length,
     );
 
-    const provisionedPartyRuntime = new ProvisionedUniversityPartyRuntime([
+    const provisionedPartyRuntime = new PreloadedUniversityPartyRuntime([
       partyRecordForDid({
         partyId: university.universityId,
         role: "issuer",

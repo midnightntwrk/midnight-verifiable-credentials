@@ -96,6 +96,20 @@ const applyRequestPolicyOverrides = (
 const tamperedBytesLike = (value: Uint8Array, fill: number): Uint8Array =>
   new Uint8Array(value.length).fill(fill);
 
+const bytesEqual = (left: Uint8Array, right: Uint8Array): boolean =>
+  Buffer.compare(Buffer.from(left), Buffer.from(right)) === 0;
+
+const assertSubmissionStudentIdMatchesCredential = (
+  submission: UniversityPresentationSubmissionBody,
+): void => {
+  const expectedStudentId = padText(submission.studentId, 16);
+  if (!bytesEqual(submission.credential.claims.studentId, expectedStudentId)) {
+    throw new Error(
+      `Presentation submission studentId ${submission.studentId} does not match the diploma credential studentId claim`,
+    );
+  }
+};
+
 export const applyPresentationTampering = (
   submission: UniversityPresentationSubmissionBody,
   tampering?: UniversityPresentationTamperingMode,
@@ -450,6 +464,7 @@ abstract class MeasuredUniversityProofExecutionBackend
     this.measure(
       "proof_verify_job_application_ms",
       () => {
+        assertSubmissionStudentIdMatchesCredential(options.submission);
         this.verifier.verifyUniversityDiplomaForJobApplication(
           options.submission.credential,
           options.submission.credentialProof,
@@ -468,6 +483,7 @@ abstract class MeasuredUniversityProofExecutionBackend
     this.measure(
       "proof_verify_mall_discount_ms",
       () => {
+        assertSubmissionStudentIdMatchesCredential(options.submission);
         this.verifier.verifyUniversityDiplomaForMallDiscount(
           options.submission.credential,
           options.submission.credentialProof,

@@ -76,7 +76,7 @@ Current boundary:
   it provisions real Midnight DIDs for the university, students, companies, and
   mall through `standalone-environment`, then rewrites the checked-in fixture
   set into generated overlay JSON and injects a concrete
-  `ProvisionedUniversityPartyRuntime` plus a
+  `PreloadedUniversityPartyRuntime` plus a
   `StandaloneHybridUniversityProofExecutionBackend` before the existing
   university issuance and verifier simulator lanes run
 - that means the BDD can now measure environment startup, wallet sync, and DID

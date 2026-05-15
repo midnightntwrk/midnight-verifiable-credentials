@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   DeterministicUniversityPartyRuntime,
   loadUniversityFixtureData,
-  ProvisionedUniversityPartyRuntime,
+  PreloadedUniversityPartyRuntime,
 } from "../runtime.js";
 
 describe("university party runtime", () => {
@@ -55,12 +55,12 @@ describe("university party runtime", () => {
     expect(runtime.readParty("verifier-1")).toBeUndefined();
   });
 
-  it("uses provisioned party records without re-deriving them", () => {
+  it("uses preloaded provisioned party records without re-deriving them", () => {
     const fixture = loadUniversityFixtureData();
     const university = fixture.university;
     const student = fixture.students[0]!;
     const company = fixture.companies[0]!;
-    const runtime = new ProvisionedUniversityPartyRuntime([
+    const runtime = new PreloadedUniversityPartyRuntime([
       {
         partyId: university.universityId,
         didUrl: university.issuerDidUrl,

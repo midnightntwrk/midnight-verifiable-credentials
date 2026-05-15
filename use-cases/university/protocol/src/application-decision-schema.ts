@@ -291,7 +291,7 @@ const assertIssuanceRecord = (value: unknown, label: string): void => {
 
 const assertDecisionRecord = (value: unknown, label: string): void => {
   const record = asRecord(value, label);
-  const kind = expectOneOf(
+  expectOneOf(
     record.kind,
     ["jobApplication", "mallDiscount"],
     `${label}.kind`,
@@ -321,11 +321,7 @@ const assertDecisionRecord = (value: unknown, label: string): void => {
     ["none", "verificationFailed", "duplicate", "noResultReceived"],
     `${label}.finalRejectionKind`,
   );
-  if (
-    kind === "jobApplication" &&
-    finalRejectionKind === "none" &&
-    !record.finalAccepted
-  ) {
+  if (finalRejectionKind === "none" && !record.finalAccepted) {
     throw new Error(
       `${label}.finalAccepted must be true when finalRejectionKind is none`,
     );

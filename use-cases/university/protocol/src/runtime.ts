@@ -279,7 +279,7 @@ export class DeterministicUniversityPartyRuntime
   }
 }
 
-export class ProvisionedUniversityPartyRuntime
+export class PreloadedUniversityPartyRuntime
   extends ManagedUniversityPartyRuntime
   implements UniversityPartyRuntime
 {
@@ -288,7 +288,7 @@ export class ProvisionedUniversityPartyRuntime
       {
         mode: "standalone-provisioned",
         description:
-          "Provisioned runtime backed by explicit DID registrations from standalone Midnight infrastructure.",
+          "Preloaded runtime backed by DID records provisioned by standalone Midnight infrastructure.",
         usesRealDidInstances: true,
         supportsDidCrud: true,
       },

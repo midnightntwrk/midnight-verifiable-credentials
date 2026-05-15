@@ -75,6 +75,36 @@ describe("university protocol application decision schema contract", () => {
     ).not.toThrow();
   });
 
+  it("rejects a mall discount final decision that accepts with a rejection kind", () => {
+    setNetworkId("undeployed");
+    const runner = new UniversityProtocolFlowRunner();
+    const exported = buildUniversityProtocolApplicationDecisionsExport(
+      runner,
+      runner.runAll(),
+    );
+    const [firstDiscount, ...remainingDiscounts] = exported.discounts.byApplicant;
+    if (!firstDiscount) {
+      throw new Error("Expected at least one mall discount decision");
+    }
+
+    expect(() =>
+      assertUniversityProtocolApplicationDecisionsConforms({
+        ...exported,
+        discounts: {
+          ...exported.discounts,
+          byApplicant: [
+            {
+              ...firstDiscount,
+              finalAccepted: true,
+              finalRejectionKind: "verificationFailed",
+            },
+            ...remainingDiscounts,
+          ],
+        },
+      }),
+    ).toThrow(/finalRejectionKind must be none/);
+  });
+
   it("rejects an unsupported schema id", () => {
     setNetworkId("undeployed");
     const runner = new UniversityProtocolFlowRunner();
