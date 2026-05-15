@@ -43,6 +43,38 @@ describe("university protocol application decision schema contract", () => {
     ).not.toThrow();
   });
 
+  it("represents a missing final result without misclassifying it as verification failure", () => {
+    setNetworkId("undeployed");
+    const runner = new UniversityProtocolFlowRunner();
+    const exported = buildUniversityProtocolApplicationDecisionsExport(
+      runner,
+      runner.runAll(),
+    );
+    const [firstDecision, ...remainingDecisions] =
+      exported.jobApplications.byStudentCompany;
+    if (!firstDecision) {
+      throw new Error("Expected at least one job application decision");
+    }
+
+    const missingResultDecision = {
+      ...firstDecision,
+      results: [],
+      finalAccepted: false,
+      finalReason: "No result received",
+      finalRejectionKind: "noResultReceived",
+    };
+
+    expect(() =>
+      assertUniversityProtocolApplicationDecisionsConforms({
+        ...exported,
+        jobApplications: {
+          ...exported.jobApplications,
+          byStudentCompany: [missingResultDecision, ...remainingDecisions],
+        },
+      }),
+    ).not.toThrow();
+  });
+
   it("rejects an unsupported schema id", () => {
     setNetworkId("undeployed");
     const runner = new UniversityProtocolFlowRunner();

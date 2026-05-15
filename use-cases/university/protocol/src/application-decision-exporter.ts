@@ -325,7 +325,7 @@ const buildDecisionRecord = (
     results,
     finalAccepted: firstResult?.accepted ?? false,
     finalReason: firstResult?.reason ?? "No result received",
-    finalRejectionKind: firstResult?.rejectionKind ?? "verificationFailed",
+    finalRejectionKind: firstResult?.rejectionKind ?? "noResultReceived",
   };
 };
 

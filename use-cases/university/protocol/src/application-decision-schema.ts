@@ -24,6 +24,10 @@ export type UniversityProtocolDecisionResultEntry = {
   readonly rejectionKind: UniversityPresentationResultBody["rejectionKind"];
 };
 
+export type UniversityProtocolApplicationDecisionFinalRejectionKind =
+  | UniversityPresentationResultBody["rejectionKind"]
+  | "noResultReceived";
+
 export type UniversityProtocolApplicationDecisionRecord = {
   readonly kind: "jobApplication" | "mallDiscount";
   readonly studentId: string;
@@ -40,7 +44,7 @@ export type UniversityProtocolApplicationDecisionRecord = {
   readonly results: readonly UniversityProtocolDecisionResultEntry[];
   readonly finalAccepted: boolean;
   readonly finalReason: string;
-  readonly finalRejectionKind: UniversityPresentationResultBody["rejectionKind"];
+  readonly finalRejectionKind: UniversityProtocolApplicationDecisionFinalRejectionKind;
 };
 
 export type UniversityProtocolIssuanceDecisionRecord = {
@@ -314,7 +318,7 @@ const assertDecisionRecord = (value: unknown, label: string): void => {
   expectString(record.finalReason, `${label}.finalReason`);
   const finalRejectionKind = expectOneOf(
     record.finalRejectionKind,
-    ["none", "verificationFailed", "duplicate"],
+    ["none", "verificationFailed", "duplicate", "noResultReceived"],
     `${label}.finalRejectionKind`,
   );
   if (
