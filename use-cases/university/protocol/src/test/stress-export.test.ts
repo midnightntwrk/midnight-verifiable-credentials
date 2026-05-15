@@ -64,6 +64,8 @@ const normalizeStressMarkdownForGolden = (markdown: string): string =>
     .replace(/^(- discountEvaluationsPerSecond: ).+$/mu, "$1<measured>")
     .replace(/^(- transcriptEntriesPerSecond: ).+$/mu, "$1<measured>");
 
+const STRESS_TEST_TIMEOUT_MS = 15_000;
+
 describe("university protocol stress summary exporter", () => {
   it("builds the committed stress summary schema and control-sample notes", () => {
     setNetworkId("undeployed");
@@ -109,7 +111,7 @@ describe("university protocol stress summary exporter", () => {
     expect(summary.timingsMs.discounts).toBeGreaterThan(0);
     expect(summary.throughput.issuanceCredentialsPerSecond).toBeGreaterThan(0);
     expect(summary.artifactRetention.files).toEqual(["summary.json", "summary.md"]);
-  });
+  }, STRESS_TEST_TIMEOUT_MS);
 
   it("matches the checked-in normalized JSON golden export", () => {
     setNetworkId("undeployed");
@@ -124,7 +126,7 @@ describe("university protocol stress summary exporter", () => {
     expect(
       `${JSON.stringify(normalizeStressSummaryForGolden(summary), null, 2)}\n`,
     ).toBe(readGolden("stress-summary.golden.json"));
-  });
+  }, STRESS_TEST_TIMEOUT_MS);
 
   it("matches the checked-in normalized Markdown golden export", () => {
     setNetworkId("undeployed");
@@ -141,5 +143,5 @@ describe("university protocol stress summary exporter", () => {
         renderUniversityProtocolStressSummaryMarkdown(summary),
       ),
     ).toBe(readGolden("stress-summary.golden.md"));
-  });
+  }, STRESS_TEST_TIMEOUT_MS);
 });

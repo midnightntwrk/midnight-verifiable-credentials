@@ -42,13 +42,13 @@ const logInsight = (
   Interaction.where(`#actor records ${title}`, (actor) => {
     actor.collect(
       LogEntry.fromJSON({
-        data: {
+        data: JSON.stringify({
           title,
           request: payload.request,
           response: payload.response,
           checks: payload.checks,
           dto: sanitizeForReport(payload.dto),
-        },
+        }),
       }),
       new Name(title),
     );
