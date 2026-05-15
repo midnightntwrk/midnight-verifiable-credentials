@@ -5,12 +5,16 @@ Status:
 - protocol-style multi-party university flow package
 - shared-bus virtual issuer / student / company / mall orchestration over the university diploma family
 - explicit party-runtime and proof-execution seams for future standalone and proof-server backends
+- serialized in-process transport for catching DTOs that would not survive a
+  real issuer/student/verifier process boundary
 
 Purpose:
 
 - demonstrate the university use case as real threaded message exchange rather than direct fixture calls only
 - reuse the shared protocol message bus and envelope primitives
 - reuse the university verifier contract for employer and mall presentation checks
+- prove the same protocol transcript can execute through a JSON transport
+  boundary before the harness moves to real separate OS processes
 
 Boundary:
 
@@ -64,6 +68,10 @@ Scope:
 - the proof-server contract backend records deterministic remote-call DTOs for
   the same issuance, presentation-build, request-build, and verifier-check
   operations before a real proof-server transport is wired in
+- the serialized process-boundary transport preserves the existing in-process
+  behavior but stores every message as a JSON payload with explicit bigint and
+  byte-array tags before delivery, so transport traces can expose message size,
+  thread id, message id, and response correlation for every hop
 - stable transcript export now exists in both JSON and Markdown forms under
   `target/readable-10`
 - export summaries group entries per thread and include rejection-kind
@@ -106,6 +114,8 @@ Build and test:
 - `npm run build -w ./use-cases/university/protocol`
 - focused proof-server contract test:
   - `npm exec -w ./use-cases/university/protocol -- vitest run src/test/proof-server-contract.test.ts`
+- focused process-boundary transport test:
+  - `npm exec -w ./use-cases/university/protocol -- vitest run src/test/process-transport.test.ts`
 - transcript export:
   - `npm run export:transcript -w ./use-cases/university/protocol`
   - outputs:
@@ -130,14 +140,14 @@ Build and test:
 
 Proof-server contract seam:
 
-| Current simulator operation | Proof-server contract operation |
-| --- | --- |
-| `issueDiplomaCredential` | issuer + holder DID refs, student claim identity, issuance challenge, credential proof timestamps |
-| `buildJobApplicationRequest` | issuer method ref, verifier challenge, company request policy and overrides |
-| `buildMallDiscountRequest` | issuer method ref, verifier challenge, mall minimum-grade threshold |
-| `buildPresentationSubmission` | holder DID ref, stored credential ref, request summary, optional tampering mode |
-| `verifyJobApplication` | credential ref, request summary, credential proof ref, presentation proof ref |
-| `verifyMallDiscount` | credential ref, request summary, credential proof ref, presentation proof ref |
+| Current simulator operation   | Proof-server contract operation                                                                   |
+| ----------------------------- | ------------------------------------------------------------------------------------------------- |
+| `issueDiplomaCredential`      | issuer + holder DID refs, student claim identity, issuance challenge, credential proof timestamps |
+| `buildJobApplicationRequest`  | issuer method ref, verifier challenge, company request policy and overrides                       |
+| `buildMallDiscountRequest`    | issuer method ref, verifier challenge, mall minimum-grade threshold                               |
+| `buildPresentationSubmission` | holder DID ref, stored credential ref, request summary, optional tampering mode                   |
+| `verifyJobApplication`        | credential ref, request summary, credential proof ref, presentation proof ref                     |
+| `verifyMallDiscount`          | credential ref, request summary, credential proof ref, presentation proof ref                     |
 
 The `ProofServerContractUniversityProofExecutionBackend` intentionally delegates
 today's semantics to the simulator while recording these DTOs through a

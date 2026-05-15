@@ -88,7 +88,9 @@ Ground rules:
 
 6. `university-issuer-batch-concurrency-prototype`
 
-- status: implemented locally on `codex/vc-university-issuer-batch-concurrency`
+- status:
+  [PR #238](https://github.com/midnightntwrk/midnight-verifiable-credentials/pull/238)
+  merged to `develop` from `codex/vc-university-issuer-batch-concurrency`
 - scope:
   - add deterministic fixture-construction compile-concurrency projections to
     the issuance batch-sweep lane
@@ -104,11 +106,17 @@ Ground rules:
 
 7. `university-separate-process-simulator`
 
-- status: planned
+- status: implemented locally on `codex/vc-university-process-transport-simulator`
 - scope:
-  - run issuer, student, company, and mall roles across process boundaries
+  - add a serialized process-boundary transport for issuer, student, company,
+    and mall protocol messages
   - keep the same transcript envelope shape as the in-process simulator
   - add transcript equivalence checks
+- validation:
+  - `npm exec -w ./use-cases/university/protocol -- vitest run src/test/process-transport.test.ts`
+  - `npm run typecheck -w ./use-cases/university/protocol`
+  - `npm run test:university-protocol`
+  - `./run.sh university-protocol --light`
 
 8. `university-protocol-persistence-restart`
 

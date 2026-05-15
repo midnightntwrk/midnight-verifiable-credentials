@@ -53,6 +53,7 @@ export type UniversityProtocolFlowRunnerOptions = {
   readonly exerciseOptions?: UniversityProtocolExerciseOptions;
   readonly partyRuntime?: UniversityPartyRuntime;
   readonly proofExecutionBackend?: UniversityProofExecutionBackend;
+  readonly transport?: MessageBus;
 };
 
 type IssuanceFlowExecutionResult = {
@@ -95,7 +96,7 @@ export class UniversityProtocolFlowRunner {
   readonly mall: MallRecord;
   readonly issuanceBatches: IssuanceBatchRecord[];
   readonly discountApplicants: DiscountApplicantRecord[];
-  readonly bus = new MessageBus();
+  readonly bus: MessageBus;
   readonly transcript = new UniversityTranscriptRecorder();
   readonly issuanceMessages: UniversityProtocolMessage[] = [];
   readonly jobMessages: UniversityProtocolMessage[] = [];
@@ -141,6 +142,7 @@ export class UniversityProtocolFlowRunner {
     this.proofExecutionBackend =
       options?.proofExecutionBackend ??
       new SimulatorUniversityProofExecutionBackend();
+    this.bus = options?.transport ?? new MessageBus();
 
     const fixtureData = loadUniversityFixtureData(this.dataPaths);
     this.university = fixtureData.university;
@@ -219,7 +221,9 @@ export class UniversityProtocolFlowRunner {
             company.verifierMethodId,
           ),
           this.proofExecutionBackend,
-          this.exerciseOptions.companyRequestPolicyOverrides?.[company.companyId],
+          this.exerciseOptions.companyRequestPolicyOverrides?.[
+            company.companyId
+          ],
         ),
       ]),
     );
@@ -320,7 +324,10 @@ export class UniversityProtocolFlowRunner {
     );
 
     return {
-      requestCount: countMessages(this.discountMessages, "presentation:request"),
+      requestCount: countMessages(
+        this.discountMessages,
+        "presentation:request",
+      ),
       submissionCount: countMessages(
         this.discountMessages,
         "presentation:submission",
@@ -346,7 +353,9 @@ export class UniversityProtocolFlowRunner {
         this.transcript,
         this.issuanceMessages,
       );
-      if (this.duplicateIssuanceRequestStudentIds.has(student.record.studentId)) {
+      if (
+        this.duplicateIssuanceRequestStudentIds.has(student.record.studentId)
+      ) {
         student.sendIssuanceRequest(
           this.bus,
           this.issuer.profile.partyId,
@@ -392,7 +401,9 @@ export class UniversityProtocolFlowRunner {
           `Student ${student.record.studentId} has no issued credential`,
         );
       }
-      const companyAgent = this.companyAgents.get(student.record.assignedCompanyId);
+      const companyAgent = this.companyAgents.get(
+        student.record.assignedCompanyId,
+      );
       if (!companyAgent) {
         throw new Error(`Missing company ${student.record.assignedCompanyId}`);
       }
@@ -458,9 +469,9 @@ export class UniversityProtocolFlowRunner {
 
   private deliverJobApplicationResults(): void {
     for (const student of this.studentAgents.values()) {
-      const results = this.bus.drain(student.profile.partyId) as Array<
-        UniversityPresentationResultMessage
-      >;
+      const results = this.bus.drain(
+        student.profile.partyId,
+      ) as Array<UniversityPresentationResultMessage>;
       if (results.length === 0) {
         throw new Error(
           `Missing job application result for ${student.record.studentId}`,
@@ -504,7 +515,9 @@ export class UniversityProtocolFlowRunner {
         | UniversityPresentationRequestMessage
         | undefined;
       if (!request) {
-        throw new Error(`Missing discount request for ${student.record.studentId}`);
+        throw new Error(
+          `Missing discount request for ${student.record.studentId}`,
+        );
       }
       student.receivePresentationRequestAndSendSubmission(
         this.bus,
@@ -546,11 +559,13 @@ export class UniversityProtocolFlowRunner {
   private deliverDiscountResults(): void {
     for (const applicant of this.discountApplicants) {
       const student = this.requireStudentAgent(applicant.studentId);
-      const results = this.bus.drain(student.profile.partyId) as Array<
-        UniversityPresentationResultMessage
-      >;
+      const results = this.bus.drain(
+        student.profile.partyId,
+      ) as Array<UniversityPresentationResultMessage>;
       if (results.length === 0) {
-        throw new Error(`Missing discount result for ${student.record.studentId}`);
+        throw new Error(
+          `Missing discount result for ${student.record.studentId}`,
+        );
       }
       for (const result of results) {
         student.receivePresentationResult(result);

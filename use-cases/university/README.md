@@ -9,6 +9,9 @@ Status:
   paths
 - compileable verifier-side contract surface for employer and mall policies
 - threaded protocol-style multi-party flow over the same deterministic actors and data
+- protocol transport can now force every issuer, student, company, and mall
+  message through a JSON process-boundary codec while preserving the in-process
+  simulator result
 - executable BDD job-application and discount paths now sourced from the same
   threaded protocol transcript, rather than a second parallel orchestration
 - explicit negative-path coverage now includes malformed verifier policy,
