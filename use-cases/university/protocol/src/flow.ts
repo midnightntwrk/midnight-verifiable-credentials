@@ -32,6 +32,7 @@ import type {
 } from "./model.js";
 import { defaultDataPaths } from "./model.js";
 import {
+  assertUniversityProtocolCheckpointCompatible,
   defaultUniversityProtocolRestartPoints,
   InMemoryUniversityProtocolCheckpointStore,
   queuedMessageCount,
@@ -477,6 +478,8 @@ export class UniversityProtocolFlowRunner {
   private optionsForRestart(
     transport: SerializedUniversityProtocolTransport,
   ): UniversityProtocolFlowRunnerOptions {
+    // Restarts reuse deterministic runtime/proof backend instances so the
+    // resumed transcript remains byte-for-byte comparable with the baseline.
     return {
       dataPaths: this.dataPaths,
       exerciseOptions: this.exerciseOptions,
@@ -569,6 +572,7 @@ export class UniversityProtocolFlowRunner {
   private restoreFromCheckpoint(
     checkpoint: UniversityProtocolCheckpoint,
   ): UniversityProtocolFlowRunner {
+    assertUniversityProtocolCheckpointCompatible(checkpoint);
     const state = decodeUniversityProtocolTransportValue(
       checkpoint.encodedState,
     ) as UniversityProtocolRunnerCheckpointState;

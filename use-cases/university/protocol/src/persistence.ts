@@ -69,6 +69,23 @@ export const queuedMessageCount = (
     0,
   );
 
+export const assertUniversityProtocolCheckpointCompatible = (
+  checkpoint: UniversityProtocolCheckpoint,
+): void => {
+  if (checkpoint.schemaId !== universityProtocolCheckpointSchemaId) {
+    throw new Error("Unsupported university protocol checkpoint schema id");
+  }
+  if (
+    checkpoint.schemaVersion !== universityProtocolCheckpointSchemaVersion ||
+    checkpoint.compatibility.minimumReaderVersion >
+      universityProtocolCheckpointSchemaVersion ||
+    checkpoint.compatibility.maximumReaderVersion <
+      universityProtocolCheckpointSchemaVersion
+  ) {
+    throw new Error("Unsupported university protocol checkpoint schema version");
+  }
+};
+
 export class InMemoryUniversityProtocolCheckpointStore
   implements UniversityProtocolCheckpointStore
 {
@@ -80,15 +97,21 @@ export class InMemoryUniversityProtocolCheckpointStore
 
   load(checkpointId: string): UniversityProtocolCheckpoint | undefined {
     const record = this.#records.get(checkpointId);
-    return record
+    const checkpoint = record
       ? (JSON.parse(record) as UniversityProtocolCheckpoint)
       : undefined;
+    if (checkpoint) {
+      assertUniversityProtocolCheckpointCompatible(checkpoint);
+    }
+    return checkpoint;
   }
 
   list(): readonly UniversityProtocolCheckpoint[] {
-    return [...this.#records.values()].map(
-      (record) => JSON.parse(record) as UniversityProtocolCheckpoint,
-    );
+    return [...this.#records.values()].map((record) => {
+      const checkpoint = JSON.parse(record) as UniversityProtocolCheckpoint;
+      assertUniversityProtocolCheckpointCompatible(checkpoint);
+      return checkpoint;
+    });
   }
 
   serializedRecords(): readonly string[] {
