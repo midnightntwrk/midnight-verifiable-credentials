@@ -11,6 +11,9 @@ const presetCatalogPath = path.resolve(
 );
 
 const cloneRequestPolicy = (requestPolicy) => ({ ...requestPolicy });
+const clonePolicyRationale = (policyRationale) => ({
+  ...policyRationale,
+});
 
 const readPresetCatalog = () =>
   /** @type {Readonly<Record<string, {
@@ -19,6 +22,7 @@ const readPresetCatalog = () =>
    *   title: string,
    *   purpose: string,
    *   requestPolicy: Record<string, unknown>,
+   *   policyRationale: Record<string, string>,
    * }>>} */ (
     JSON.parse(readFileSync(presetCatalogPath, "utf8"))
   );
@@ -29,6 +33,7 @@ export const listUniversityRequestPolicyPresets = (kind) =>
     .map((preset) => ({
       ...preset,
       requestPolicy: cloneRequestPolicy(preset.requestPolicy),
+      policyRationale: clonePolicyRationale(preset.policyRationale),
     }));
 
 export const resolveUniversityRequestPolicyPreset = (presetId) => {
@@ -43,5 +48,6 @@ export const resolveUniversityRequestPolicyPreset = (presetId) => {
   return {
     ...preset,
     requestPolicy: cloneRequestPolicy(preset.requestPolicy),
+    policyRationale: clonePolicyRationale(preset.policyRationale),
   };
 };

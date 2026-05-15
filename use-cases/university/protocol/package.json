@@ -34,6 +34,7 @@
     "prepare:deps": "node ./scripts/ensure-prereqs.mjs",
     "build": "npm run prepare:deps && rm -rf dist && tsc -b tsconfig.build.json --force",
     "test": "npm run prepare:deps && vitest run",
+    "test:policy-catalog": "npm run prepare:deps && vitest run src/test/policy-catalog.test.ts",
     "test:ci": "npm run test",
     "export:transcript": "npm run build && node ./scripts/export-transcript.mjs",
     "export:transcript:from-artifacts": "node ./scripts/export-transcript.mjs",
