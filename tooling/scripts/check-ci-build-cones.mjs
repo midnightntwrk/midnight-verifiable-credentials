@@ -45,7 +45,7 @@ const isIgnored = (relativePath) => {
       });
       return true;
     } catch {
-      // Keep checking the directory placeholder form.
+      // Try the directory-placeholder form next.
     }
   }
 
@@ -75,6 +75,7 @@ for (const group of groups) {
 
   const inputPackages = readShellList("ci_build_input_packages", group);
   const outputPaths = readShellList("ci_build_output_paths", group);
+  const seenInputPackages = new Set();
 
   if (inputPackages.length === 0) {
     errors.push(`CI build cone '${group}' has no input packages`);
@@ -85,6 +86,11 @@ for (const group of groups) {
   }
 
   for (const packagePath of inputPackages) {
+    if (seenInputPackages.has(packagePath)) {
+      errors.push(`CI build cone '${group}' lists input package more than once: ${packagePath}`);
+    }
+    seenInputPackages.add(packagePath);
+
     if (path.isAbsolute(packagePath) || packagePath.includes("..")) {
       errors.push(`CI build cone '${group}' has unsafe input path: ${packagePath}`);
       continue;
