@@ -2,6 +2,8 @@ import { Given, Then, When } from "@cucumber/cucumber";
 import { actorCalled, Interaction } from "@serenity-js/core";
 import { LogEntry, Name } from "@serenity-js/core/model";
 
+// This package executes source files directly through ts-node/esm and does not
+// emit JavaScript, so local support imports intentionally use `.ts` specifiers.
 import { UseUniversityScenario } from "../support/university-scenario.ts";
 
 const engineer = () => actorCalled("Engineer");

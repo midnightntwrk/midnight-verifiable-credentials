@@ -10,6 +10,8 @@ import {
 import { Cast, configure, engage, serenity } from "@serenity-js/core";
 import { ConsoleReporter } from "@serenity-js/console-reporter";
 
+// This package executes source files directly through ts-node/esm and does not
+// emit JavaScript, so local support imports intentionally use `.ts` specifiers.
 import {
   createUniversityScenarioBackend,
   loadUniversityScenarioBackendMode,

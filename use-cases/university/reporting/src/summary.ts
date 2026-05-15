@@ -446,14 +446,29 @@ export const buildUniversityArtifactSummary = (
   const batchSweepProjectionRows = batchSweepRuns.flatMap(
     (run) => run.compileConcurrencyProjections,
   );
+  const isBetterBatchSweepProjection = (
+    current: BatchSweepReportProjection,
+    best: BatchSweepReportProjection,
+  ): boolean => {
+    if (
+      current.projectedCredentialsPerSecond !==
+      best.projectedCredentialsPerSecond
+    ) {
+      return (
+        current.projectedCredentialsPerSecond >
+        best.projectedCredentialsPerSecond
+      );
+    }
+    if (current.compileConcurrency !== best.compileConcurrency) {
+      return current.compileConcurrency < best.compileConcurrency;
+    }
+    return current.batchSize < best.batchSize;
+  };
   const bestCompileConcurrencyProjection =
     batchSweepProjectionRows.length === 0
       ? null
       : batchSweepProjectionRows.reduce((best, current) =>
-          current.projectedCredentialsPerSecond >
-          best.projectedCredentialsPerSecond
-            ? current
-            : best,
+          isBetterBatchSweepProjection(current, best) ? current : best,
         );
 
   const slowestBatchSweepCompileAverage =

@@ -87,6 +87,14 @@ const max = (values: readonly number[]): number =>
 
 const formatMeasured = (value: number): string => value.toFixed(2);
 
+const formatWorkerLoads = (workerLoadsMs: readonly number[]): string => {
+  const visibleLoads = workerLoadsMs.slice(0, 4).map(formatMeasured);
+  if (workerLoadsMs.length <= visibleLoads.length) {
+    return visibleLoads.join(", ");
+  }
+  return `${visibleLoads.join(", ")}, ... (+${workerLoadsMs.length - visibleLoads.length} more)`;
+};
+
 const dataPathsForDirectory = (directory: string) => ({
   university: path.join(directory, "university.json"),
   students: path.join(directory, "students.json"),
@@ -163,9 +171,9 @@ export const projectCompileConcurrency = (options: {
   );
 
   for (const durationMs of options.compileDurationsMs) {
-    // Use measured batch order rather than sorting by duration. That makes the
-    // projection model the observed queue order instead of an idealized LPT
-    // scheduler that the current issuer harness does not implement.
+    // Assign each measured batch to the least-loaded worker in measured arrival
+    // order. This models a simple online work-stealing queue rather than an
+    // offline LPT scheduler the current issuer harness does not implement.
     let selectedWorker = 0;
     for (const [workerIndex, loadMs] of workerLoads.entries()) {
       if (loadMs < workerLoads[selectedWorker]!) {
@@ -378,7 +386,7 @@ export const renderUniversityBatchSweepMarkdown = (
     ...summary.runs.flatMap((run) =>
       run.compileConcurrencyProjections.map(
         (projection) =>
-          `| ${run.batchSize} | ${projection.compileConcurrency} | ${formatMeasured(projection.estimatedCompileWallClockMs)} | ${formatMeasured(projection.estimatedIssuerWallClockMs)} | ${formatMeasured(projection.projectedCredentialsPerSecond)} | ${formatMeasured(projection.projectedSpeedupVsSequential)} | ${formatMeasured(projection.compileEfficiency)} | ${projection.workerLoadsMs.map(formatMeasured).join(", ")} |`,
+          `| ${run.batchSize} | ${projection.compileConcurrency} | ${formatMeasured(projection.estimatedCompileWallClockMs)} | ${formatMeasured(projection.estimatedIssuerWallClockMs)} | ${formatMeasured(projection.projectedCredentialsPerSecond)} | ${formatMeasured(projection.projectedSpeedupVsSequential)} | ${formatMeasured(projection.compileEfficiency)} | ${formatWorkerLoads(projection.workerLoadsMs)} |`,
       ),
     ),
     "",
@@ -393,6 +401,17 @@ export const renderUniversityBatchSweepMarkdown = (
   return `${lines.join("\n")}\n`;
 };
 
+const writeFileAtomically = (filePath: string, contents: string): void => {
+  const tmpPath = `${filePath}.${process.pid}.tmp`;
+  try {
+    writeFileSync(tmpPath, contents, "utf8");
+    renameSync(tmpPath, filePath);
+  } catch (error) {
+    rmSync(tmpPath, { force: true });
+    throw error;
+  }
+};
+
 export const writeUniversityBatchSweepArtifacts = (
   targetDir: string,
   summary: UniversityBatchSweepSummary,
@@ -400,16 +419,9 @@ export const writeUniversityBatchSweepArtifacts = (
   mkdirSync(targetDir, { recursive: true });
   const summaryJsonPath = path.join(targetDir, "summary.json");
   const summaryMarkdownPath = path.join(targetDir, "summary.md");
-  writeFileSync(
-    `${summaryJsonPath}.${process.pid}.tmp`,
-    `${JSON.stringify(summary, null, 2)}\n`,
-    "utf8",
-  );
-  renameSync(`${summaryJsonPath}.${process.pid}.tmp`, summaryJsonPath);
-  writeFileSync(
-    `${summaryMarkdownPath}.${process.pid}.tmp`,
+  writeFileAtomically(summaryJsonPath, `${JSON.stringify(summary, null, 2)}\n`);
+  writeFileAtomically(
+    summaryMarkdownPath,
     renderUniversityBatchSweepMarkdown(summary),
-    "utf8",
   );
-  renameSync(`${summaryMarkdownPath}.${process.pid}.tmp`, summaryMarkdownPath);
 };
