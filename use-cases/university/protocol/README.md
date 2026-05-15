@@ -44,6 +44,9 @@ Scope:
 - protocol results distinguish verifier-side rejections from duplicate-thread
   rejections so metrics do not collapse business-policy failures into replay
   guard events
+- policy-catalog audit coverage proves company and mall fixture policies are
+  still copied from the shared request-preset catalog and that each explicit
+  disclosure/threshold field has a human-readable rationale
 - the runner now exposes explicit exercise options for negative-path scenarios
   instead of relying on test-time monkey patching
 - the runner now routes party identity and signer derivation through a
@@ -89,6 +92,7 @@ Build and test:
 - root lane:
   - `./run.sh university-protocol`
   - `./run.sh university-protocol --light`
+  - `./run.sh university-policy-catalog`
   - `./run.sh university-protocol-export`
   - `./run.sh university-protocol-export --light`
   - `./run.sh university-protocol-stress`

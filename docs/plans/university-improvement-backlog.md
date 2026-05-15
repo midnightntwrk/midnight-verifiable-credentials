@@ -278,7 +278,7 @@ PR stack.
 - problem:
   - the policy space is still small and partially implicit
 - scope:
-  - add a catalog of verifier policies with disclosure rationale
+  - add a catalog of verifier policies with policy rationale
   - audit current fixture coverage against that catalog
 - validation:
   - docs link checks

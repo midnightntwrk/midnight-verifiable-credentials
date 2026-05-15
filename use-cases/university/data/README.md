@@ -15,6 +15,10 @@ Shared verifier request presets:
 
 - catalog file:
   - `./request-policy-presets.json`
+- each preset includes:
+  - canonical verifier `requestPolicy`
+  - `purpose` text copied into company/mall fixtures
+  - `policyRationale` text for every explicit disclosure or threshold field
 
 - `job-application-grade-and-award`
   - employer requests graduate identity, institution, award, year, and final grade
@@ -28,4 +32,9 @@ Shared verifier request presets:
 Validation:
 
 - `./run.sh university-data-profiles`
+- `./run.sh university-policy-catalog`
 - `node ./use-cases/university/scripts/list-data-profiles.mjs --json`
+- the policy-catalog audit proves both `readable-10` and `stress-100`
+  verifier fixtures reference known presets, embed matching policies, exercise
+  every catalog preset, and document why each explicit disclosure or threshold
+  policy field is requested

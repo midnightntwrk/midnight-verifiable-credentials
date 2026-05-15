@@ -31,6 +31,8 @@ Status:
 - company and mall verifier policies are now keyed to named request presets so
   fixture JSON, contract tests, and readable BDD DTOs can all refer to the
   same policy catalog
+- every request preset now carries policy-rationale text and is covered by
+  a policy-catalog audit across both readable and stress fixtures
 - one-page JSON/Markdown reporting now exists as a separate workspace package
   over the committed university artifact set
 - the university BDD runner now has two execution backends:
@@ -197,6 +199,7 @@ Dataset regeneration script:
   - `node ./use-cases/university/scripts/list-data-profiles.mjs --json`
 - fixture drift check:
   - `./run.sh university-data-profiles`
+  - `./run.sh university-policy-catalog`
   - `node ./use-cases/university/scripts/generate-university-use-case-data.mjs --profile readable-10 --check`
   - `node ./use-cases/university/scripts/generate-university-use-case-data.mjs --profile stress-100 --check`
 - 100-student stress dataset regeneration:
@@ -232,6 +235,10 @@ Fixture-time note:
 ### 2. Job application
 
 1. a company publishes a verifier request policy
+   - the policy is selected from
+     [`./data/request-policy-presets.json`](./data/request-policy-presets.json)
+   - the preset documents why every explicit disclosure is requested or
+     intentionally suppressed
 2. a student chooses the assigned company from the data set
 3. the student creates a job application message containing:
    - student DID identifier
@@ -250,6 +257,8 @@ prototype data set.
    - university name disclosure
    - final grade disclosure
    - minimum final grade `91`
+   - the preset documents why the verifier needs each disclosure and why `91`
+     represents a strict `> 90` integer threshold
 2. a selected student requests the discount
 3. the student presents the diploma VC with the required fields disclosed
 4. the mall verifies the presentation and checks the minimum-grade predicate

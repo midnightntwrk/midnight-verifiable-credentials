@@ -32,11 +32,14 @@ Ground rules:
   - `npm run docs:links`
 
 2. `university-policy-catalog-audit`
-- status: planned
+- status: implemented locally on `codex/vc-university-policy-catalog-audit`
 - scope:
   - make verifier policy coverage explicit across companies and mall
   - add fixture drift checks that prove policy presets cover the BDD fixtures
-  - document disclosure rationale per request preset
+  - document policy rationale per request preset
+- validation:
+  - `./run.sh university-policy-catalog`
+  - `npm run test:university-policy-catalog`
 
 3. `university-proof-server-backend-contract`
 - status: planned
