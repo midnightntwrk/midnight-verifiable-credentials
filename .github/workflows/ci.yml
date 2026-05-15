@@ -143,14 +143,9 @@ jobs:
           )
 
           university_patterns=(
-            '.github/workflows/*'
-            'package.json'
-            'package-lock.json'
-            'run.sh'
-            'tooling/scripts/run-common.sh'
-            'docs/plans/vc-maturity-university-wave-2026-05-15.md'
-            'docs/plans/university-improvement-backlog.md'
-            'docs/testing/test-matrix.md'
+            # Global workflow/package/runner changes are handled by
+            # global_heavy_lane_patterns above; docs-only changes intentionally
+            # stay on the docs fast path instead of forcing profile validation.
             'use-cases/university/*'
             'prototypes/credential-families/university-diploma/*'
             'components/orchestration/protocol/*'
