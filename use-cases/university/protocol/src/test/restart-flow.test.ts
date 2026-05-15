@@ -99,11 +99,9 @@ describe("university protocol restart persistence", () => {
     expect(checkpointStore.serializedRecords()[0]).toContain(
       "__midnightUniversityProtocolTransportType",
     );
-    expect(restarted.checkpoints.map((checkpoint) => checkpoint.transportFrameCount)).toEqual(
-      [...restarted.checkpoints]
-        .map((checkpoint) => checkpoint.transportFrameCount)
-        .sort((left, right) => left - right),
-    );
+    expect(
+      restarted.checkpoints.map((checkpoint) => checkpoint.transportFrameCount),
+    ).toEqual([10, 30, 55]);
   });
 
   it("supports a partial restart plan", () => {
@@ -138,7 +136,7 @@ describe("university protocol restart persistence", () => {
     expect(transport.totalPayloadBytes()).toBeGreaterThan(0);
   });
 
-  it("rejects incompatible checkpoint versions before restore", () => {
+  it("rejects incompatible checkpoint envelopes before restore", () => {
     const checkpointStore = new InMemoryUniversityProtocolCheckpointStore();
     resetEnvelopeCounter();
     vi.setSystemTime(fixedProtocolTime);
@@ -155,7 +153,23 @@ describe("university protocol restart persistence", () => {
     expect(() =>
       assertUniversityProtocolCheckpointCompatible({
         ...checkpoint,
+        schemaId: "wrong" as typeof checkpoint.schemaId,
+      }),
+    ).toThrow(/Unsupported university protocol checkpoint schema id/u);
+    expect(() =>
+      assertUniversityProtocolCheckpointCompatible({
+        ...checkpoint,
+        // Deliberately violate the literal v1 type to exercise the negative path.
         schemaVersion: 2 as typeof checkpoint.schemaVersion,
+      }),
+    ).toThrow(/Unsupported university protocol checkpoint schema version/u);
+    expect(() =>
+      assertUniversityProtocolCheckpointCompatible({
+        ...checkpoint,
+        compatibility: {
+          minimumReaderVersion: 2 as typeof checkpoint.compatibility.minimumReaderVersion,
+          maximumReaderVersion: 2 as typeof checkpoint.compatibility.maximumReaderVersion,
+        },
       }),
     ).toThrow(/Unsupported university protocol checkpoint schema version/u);
   });

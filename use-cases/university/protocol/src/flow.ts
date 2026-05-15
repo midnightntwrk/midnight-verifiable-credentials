@@ -588,26 +588,10 @@ export class UniversityProtocolFlowRunner {
   private restoreCheckpointState(
     state: UniversityProtocolRunnerCheckpointState,
   ): void {
-    this.transcript.entries.splice(
-      0,
-      this.transcript.entries.length,
-      ...state.transcript,
-    );
-    this.issuanceMessages.splice(
-      0,
-      this.issuanceMessages.length,
-      ...state.messages.issuance,
-    );
-    this.jobMessages.splice(
-      0,
-      this.jobMessages.length,
-      ...state.messages.jobApplications,
-    );
-    this.discountMessages.splice(
-      0,
-      this.discountMessages.length,
-      ...state.messages.discounts,
-    );
+    this.transcript.entries.push(...state.transcript);
+    this.issuanceMessages.push(...state.messages.issuance);
+    this.jobMessages.push(...state.messages.jobApplications);
+    this.discountMessages.push(...state.messages.discounts);
 
     for (const studentState of state.students) {
       const student = this.requireStudentAgent(studentState.studentId);

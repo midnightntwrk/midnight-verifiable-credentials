@@ -355,6 +355,8 @@ export class SerializedUniversityProtocolTransport extends MessageBus {
     const restoredQueues = new Map<PartyId, string[]>();
     for (const { partyId, payloads } of checkpoint.queues) {
       for (const payload of payloads) {
+        // Validate restored payloads eagerly while keeping the queue durable as
+        // serialized strings until the receiving party consumes them.
         decodeMessage(payload);
       }
       restoredQueues.set(partyId, [...payloads]);

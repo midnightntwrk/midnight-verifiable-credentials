@@ -61,6 +61,13 @@ export type UniversityProtocolRestartSimulationResult<TResult> = {
   readonly checkpoints: readonly UniversityProtocolCheckpointSummary[];
 };
 
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" && value !== null && !Array.isArray(value);
+
+const restartPoints = new Set<UniversityProtocolRestartPoint>(
+  defaultUniversityProtocolRestartPoints,
+);
+
 export const queuedMessageCount = (
   checkpoint: SerializedUniversityProtocolTransportCheckpoint,
 ): number =>
@@ -72,6 +79,15 @@ export const queuedMessageCount = (
 export const assertUniversityProtocolCheckpointCompatible = (
   checkpoint: UniversityProtocolCheckpoint,
 ): void => {
+  if (
+    !isRecord(checkpoint) ||
+    typeof checkpoint.checkpointId !== "string" ||
+    !restartPoints.has(checkpoint.restartPoint) ||
+    checkpoint.encodedState === undefined ||
+    !isRecord(checkpoint.compatibility)
+  ) {
+    throw new Error("Malformed university protocol checkpoint");
+  }
   if (checkpoint.schemaId !== universityProtocolCheckpointSchemaId) {
     throw new Error("Unsupported university protocol checkpoint schema id");
   }
@@ -114,6 +130,7 @@ export class InMemoryUniversityProtocolCheckpointStore
     });
   }
 
+  /** @internal Test helper for proving checkpoints really round-trip as JSON. */
   serializedRecords(): readonly string[] {
     return [...this.#records.values()];
   }

@@ -79,7 +79,10 @@ Scope:
   with durable runner-owned state: transcript entries, sent message DTOs,
   issued student credentials, received presentation results, verifier replay
   guards, and verifier counters. Fixture data, party runtime configuration, and
-  proof backend adapters are reconstructed from runner options on restore.
+  proof backend adapters are reconstructed from runner options on restore. The
+  simulator intentionally reuses deterministic runtime and proof-backend
+  instances across restarts today; a real standalone process restart must
+  reconstruct those adapters from durable seed/configuration data.
 - stable transcript export now exists in both JSON and Markdown forms under
   `target/readable-10`
 - export summaries group entries per thread and include rejection-kind
