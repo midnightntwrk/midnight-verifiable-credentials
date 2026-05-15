@@ -32,6 +32,8 @@ Execution:
 
 - root lane:
   - `./run.sh university-bdd`
+- proof-server contract lane:
+  - `./run.sh university-bdd-proof-server`
 - standalone-hybrid lane:
   - `./run.sh university-bdd-standalone`
 - issuance benchmark lane:
@@ -40,6 +42,7 @@ Execution:
   - `./run.sh university-summary`
 - direct workspace lane:
   - `npm run test:bdd:university`
+  - `npm run test:bdd:university:proof-server`
   - `npm run test:bdd:university:standalone`
   - `npm run test:batch-sweep -w use-cases/university/scenarios`
 
@@ -76,6 +79,9 @@ Current boundary:
 - the Serenity report now includes representative protocol thread excerpts so a
   human can inspect the request DTO, submission DTO, and verifier result for a
   small readable subset of students without leaving the report
+- the `proof-server-contract` backend keeps the simulator semantics but records
+  proof-server request/response DTO exchanges, operation IDs, and success/failure
+  status into the job-application and discount step insights
 - metric names now distinguish true timed samples (`*_ms`) from tagged counts
   (`*_count`) so the report does not present cached or categorical events as
   measured latency

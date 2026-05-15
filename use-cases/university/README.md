@@ -35,8 +35,10 @@ Status:
   a policy-catalog audit across both readable and stress fixtures
 - one-page JSON/Markdown reporting now exists as a separate workspace package
   over the committed university artifact set
-- the university BDD runner now has two execution backends:
+- the university BDD runner now has three execution backends:
   - `simulator` for the fast local reference lane
+  - `proof-server-contract` for the simulator semantics plus recorded
+    proof-server request/response DTO exchanges in the Serenity report
   - `standalone-hybrid` for real standalone DID bootstrap timings over the same
     readable university scenarios
 
@@ -72,7 +74,9 @@ The slice is intentionally explicit and operational:
   under an explicit backend contract
 - the proof-server contract backend now records the DTO boundary between the
   protocol runner and future remote proof execution for issuance, request
-  construction, presentation construction, and verifier checks
+  construction, presentation construction, and verifier checks; the BDD
+  `proof-server-contract` lane surfaces those exchanges alongside the
+  representative job-application and mall-discount protocol threads
 - the repository also carries a separate 100-student stress dataset for the
   protocol lane when you want throughput-oriented measurements instead
 - that stress lane now publishes paired `summary.json` and `summary.md`
