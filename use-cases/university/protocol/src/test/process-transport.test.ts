@@ -141,6 +141,26 @@ describe("serialized university protocol transport", () => {
     );
   });
 
+  it("rejects reserved transport tags inside message bodies", () => {
+    const baseline = runComparableFlow();
+    const [first] = baseline.issuance.messages;
+    const transport = new SerializedUniversityProtocolTransport();
+    if (!first) {
+      throw new Error("Expected at least one issuance request in baseline flow");
+    }
+
+    expect(() =>
+      transport.send({
+        ...first,
+        body: {
+          ...first.body,
+          __midnightUniversityProtocolTransportType: "bigint",
+          value: "123",
+        },
+      }),
+    ).toThrow(/reserved transport key/u);
+  });
+
   it("decodes queued messages with FIFO ordering through the receive path", () => {
     const baseline = runComparableFlow();
     const [first, second] = baseline.issuance.messages.filter(
@@ -151,6 +171,8 @@ describe("serialized university protocol transport", () => {
       throw new Error("Expected at least two issuance requests in baseline flow");
     }
 
+    // In-process runner messages are plain DTOs, so they are valid fixtures for
+    // the serialized transport validator.
     transport.send(first);
     transport.send(second);
 
@@ -193,6 +215,10 @@ describe("serialized university protocol transport", () => {
     expect(resultFrame!.respondsToHex).toMatch(/^[0-9a-f]{64}$/u);
     expect(resultFrame!.payloadBytes).toBeGreaterThan(0);
     expect(transport.pending(resultFrame!.to)).toBe(0);
-    expect(result.transcript).toHaveLength(transport.trace().length);
+    expect(transport.trace()).toHaveLength(
+      result.issuance.messages.length +
+        result.jobApplications.messages.length +
+        result.discounts.messages.length,
+    );
   });
 });

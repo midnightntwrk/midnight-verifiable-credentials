@@ -76,6 +76,7 @@ const assertExactTaggedFields = (
 };
 
 const assertCanonicalBase64 = (value: string): void => {
+  // The encoder emits standard Node base64, not base64url.
   if (
     !/^[A-Za-z0-9+/]*={0,2}$/u.test(value) ||
     value.length % 4 !== 0 ||
@@ -112,6 +113,8 @@ const hasUniversityProtocolMessageType = (
   );
 
 const hasProtocolEnvelopeShape = (value: unknown): boolean =>
+  // `createEnvelope` always materializes `expiresAt` as a bigint; when
+  // `hasExpiresAt` is false the semantic value is the zero bigint.
   isPlainRecord(value) &&
   typeof value.version === "bigint" &&
   value.messageId instanceof Uint8Array &&
@@ -131,6 +134,9 @@ const requireUniversityProtocolMessage = (
     );
   }
   const candidate = message as ProtocolMessage;
+  // This guard validates the transport envelope and university message
+  // discriminator. Message bodies stay protocol-owned and are validated by the
+  // receiving issuer/verifier handlers.
   if (
     typeof candidate.type !== "string" ||
     !hasUniversityProtocolMessageType(candidate.type) ||
