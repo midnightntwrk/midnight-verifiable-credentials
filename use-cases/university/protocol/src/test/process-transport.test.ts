@@ -99,6 +99,19 @@ describe("serialized university protocol transport", () => {
         __midnightUniversityProtocolTransportType: "future-tag",
       }),
     ).toThrow(/Malformed university protocol transport tag future-tag/u);
+    expect(() =>
+      decodeUniversityProtocolTransportValue({
+        __midnightUniversityProtocolTransportType: "bigint",
+        extra: "not allowed",
+        value: "123",
+      }),
+    ).toThrow(/unexpected tagged fields/u);
+    expect(() =>
+      decodeUniversityProtocolTransportValue({
+        __midnightUniversityProtocolTransportType: "bytes",
+        value: "not-base64!",
+      }),
+    ).toThrow(/expected canonical base64/u);
   });
 
   it("rejects non-university messages before trace metadata is derived", () => {

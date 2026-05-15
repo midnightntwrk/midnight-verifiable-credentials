@@ -60,6 +60,35 @@ const assertStringField = (
   return fieldValue;
 };
 
+const assertExactTaggedFields = (
+  value: Record<string, EncodedTransportValue>,
+  tag: string,
+  fields: readonly string[],
+): void => {
+  const actualFields = Object.keys(value).sort();
+  const expectedFields = [...fields].sort();
+  if (
+    actualFields.length !== expectedFields.length ||
+    actualFields.some((field, index) => field !== expectedFields[index])
+  ) {
+    throw new TypeError(
+      `Malformed university protocol transport ${tag} value: unexpected tagged fields`,
+    );
+  }
+};
+
+const assertCanonicalBase64 = (value: string): void => {
+  if (
+    !/^[A-Za-z0-9+/]*={0,2}$/u.test(value) ||
+    value.length % 4 !== 0 ||
+    Buffer.from(value, "base64").toString("base64") !== value
+  ) {
+    throw new TypeError(
+      "Malformed university protocol transport bytes value: expected canonical base64",
+    );
+  }
+};
+
 const hasUniversityEnvelopeShape = (value: unknown): boolean =>
   isPlainRecord(value) &&
   typeof value.version === "bigint" &&
@@ -153,6 +182,7 @@ export const decodeUniversityProtocolTransportValue = (
   if (hasOwn(value, transportTypeKey)) {
     const tag = value[transportTypeKey];
     if (tag === "bigint") {
+      assertExactTaggedFields(value, "bigint", [transportTypeKey, "value"]);
       const bigintValue = assertStringField(value, "value", "bigint");
       if (!/^-?\d+$/u.test(bigintValue)) {
         throw new TypeError(
@@ -162,16 +192,13 @@ export const decodeUniversityProtocolTransportValue = (
       return BigInt(bigintValue);
     }
     if (tag === "bytes") {
-      return new Uint8Array(
-        Buffer.from(assertStringField(value, "value", "bytes"), "base64"),
-      );
+      assertExactTaggedFields(value, "bytes", [transportTypeKey, "value"]);
+      const bytesValue = assertStringField(value, "value", "bytes");
+      assertCanonicalBase64(bytesValue);
+      return new Uint8Array(Buffer.from(bytesValue, "base64"));
     }
     if (tag === "undefined") {
-      if (hasOwn(value, "value")) {
-        throw new TypeError(
-          "Malformed university protocol transport undefined value",
-        );
-      }
+      assertExactTaggedFields(value, "undefined", [transportTypeKey]);
       return undefined;
     }
     throw new TypeError(
