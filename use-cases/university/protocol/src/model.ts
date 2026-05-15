@@ -1,4 +1,7 @@
-import type { ProtocolMessage } from "@midnight-ntwrk/midnight-did-credentials-protocol";
+import type {
+  ProtocolMessage,
+  ProtocolMessageType,
+} from "@midnight-ntwrk/midnight-did-credentials-protocol";
 import type {
   Proof,
   UniversityDiplomaClaims,
@@ -169,12 +172,29 @@ export type VerifierRequestPolicyOverride = Omit<
   readonly minimumFinalGrade?: number | bigint;
 };
 
+type UniversityTypedProtocolMessage<
+  TType extends ProtocolMessageType,
+  TBody,
+> = Omit<ProtocolMessage<TBody>, "type" | "body"> & {
+  readonly type: TType;
+  readonly body: TBody;
+};
+
 export type UniversityProtocolMessage =
-  | ProtocolMessage<UniversityIssuanceRequestBody>
-  | ProtocolMessage<UniversityIssuanceResultBody>
-  | ProtocolMessage<UniversityPresentationRequestBody>
-  | ProtocolMessage<UniversityPresentationSubmissionBody>
-  | ProtocolMessage<UniversityPresentationResultBody>;
+  | UniversityTypedProtocolMessage<"issuance:request", UniversityIssuanceRequestBody>
+  | UniversityTypedProtocolMessage<"issuance:result", UniversityIssuanceResultBody>
+  | UniversityTypedProtocolMessage<
+      "presentation:request",
+      UniversityPresentationRequestBody
+    >
+  | UniversityTypedProtocolMessage<
+      "presentation:submission",
+      UniversityPresentationSubmissionBody
+    >
+  | UniversityTypedProtocolMessage<
+      "presentation:result",
+      UniversityPresentationResultBody
+    >;
 
 export type UniversityProtocolTranscriptEntry = {
   readonly phase: "issuance" | "jobApplications" | "discounts";

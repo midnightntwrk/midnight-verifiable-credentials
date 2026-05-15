@@ -99,6 +99,10 @@ const tamperedBytesLike = (value: Uint8Array, fill: number): Uint8Array =>
 const bytesEqual = (left: Uint8Array, right: Uint8Array): boolean =>
   Buffer.compare(Buffer.from(left), Buffer.from(right)) === 0;
 
+const assertNeverTamperingMode = (value: never): never => {
+  throw new Error(`Unsupported presentation tampering mode: ${String(value)}`);
+};
+
 const assertSubmissionStudentIdMatchesCredential = (
   submission: UniversityPresentationSubmissionBody,
 ): void => {
@@ -223,6 +227,8 @@ export const applyPresentationTampering = (
           },
         },
       };
+    default:
+      return assertNeverTamperingMode(tampering);
   }
 };
 

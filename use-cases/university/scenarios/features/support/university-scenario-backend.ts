@@ -232,9 +232,7 @@ const signerForDidString = (
   readonly publicKey: ReturnType<typeof ecMulGenerator>;
   readonly methodId: string;
 } => {
-  const prefix =
-    role === "issuer" ? "issuer" : role === "holder" ? "holder" : "verifier";
-  const secretKey = scalarForLabel(`${prefix}:${didString}`);
+  const secretKey = scalarForLabel(`${role}:${didString}:${methodId}`);
   return {
     secretKey,
     publicKey: ecMulGenerator(secretKey),

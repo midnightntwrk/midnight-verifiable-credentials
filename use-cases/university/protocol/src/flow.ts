@@ -3,7 +3,6 @@ import { performance } from "node:perf_hooks";
 import {
   createEnvelope,
   MessageBus,
-  type ProtocolMessage,
   sha256,
 } from "@midnight-ntwrk/midnight-did-credentials-protocol";
 import type { UniversityDiplomaCredential } from "@midnight-ntwrk/midnight-did-credentials-university-diploma/contract";
@@ -16,11 +15,7 @@ import type {
   MallRecord,
   StoredIssuedCredential,
   StudentRecord,
-  UniversityIssuanceRequestBody,
-  UniversityIssuanceResultBody,
-  UniversityPresentationRequestBody,
   UniversityPresentationResultBody,
-  UniversityPresentationSubmissionBody,
   UniversityPresentationTamperingMode,
   UniversityProfile,
   UniversityProtocolDataPaths,
@@ -58,9 +53,30 @@ export type UniversityProtocolFlowRunnerOptions = {
 
 const hex = (value: Uint8Array): string => Buffer.from(value).toString("hex");
 
+type UniversityIssuanceRequestMessage = Extract<
+  UniversityProtocolMessage,
+  { readonly type: "issuance:request" }
+>;
+type UniversityIssuanceResultMessage = Extract<
+  UniversityProtocolMessage,
+  { readonly type: "issuance:result" }
+>;
+type UniversityPresentationRequestMessage = Extract<
+  UniversityProtocolMessage,
+  { readonly type: "presentation:request" }
+>;
+type UniversityPresentationSubmissionMessage = Extract<
+  UniversityProtocolMessage,
+  { readonly type: "presentation:submission" }
+>;
+type UniversityPresentationResultMessage = Extract<
+  UniversityProtocolMessage,
+  { readonly type: "presentation:result" }
+>;
+
 const isPresentationResultMessage = (
   message: UniversityProtocolMessage,
-): message is ProtocolMessage<UniversityPresentationResultBody> =>
+): message is UniversityPresentationResultMessage =>
   message.type === "presentation:result";
 
 const resultBodiesByStudent = (
@@ -120,7 +136,7 @@ class UniversityStudentAgent {
     transcript: TranscriptRecorder,
     messages: UniversityProtocolMessage[],
   ): void {
-    const message: ProtocolMessage<UniversityIssuanceRequestBody> = {
+    const message: UniversityIssuanceRequestMessage = {
       type: "issuance:request",
       from: this.profile.partyId,
       to: issuerPartyId,
@@ -146,7 +162,7 @@ class UniversityStudentAgent {
     );
   }
 
-  receiveIssuanceResult(message: ProtocolMessage<UniversityIssuanceResultBody>): void {
+  receiveIssuanceResult(message: UniversityIssuanceResultMessage): void {
     this.storedIssuedCredential = {
       credential: message.body.credential,
       credentialProof: message.body.credentialProof,
@@ -159,7 +175,7 @@ class UniversityStudentAgent {
 
   receivePresentationRequestAndSendSubmission(
     bus: MessageBus,
-    message: ProtocolMessage<UniversityPresentationRequestBody>,
+    message: UniversityPresentationRequestMessage,
     issuerProfile: AgentProfile,
     transcript: TranscriptRecorder,
     messages: UniversityProtocolMessage[],
@@ -181,7 +197,7 @@ class UniversityStudentAgent {
       tampering,
     });
 
-    const submission: ProtocolMessage<UniversityPresentationSubmissionBody> = {
+    const submission: UniversityPresentationSubmissionMessage = {
       type: "presentation:submission",
       from: this.profile.partyId,
       to: message.from,
@@ -206,7 +222,7 @@ class UniversityStudentAgent {
     );
   }
 
-  receivePresentationResult(message: ProtocolMessage<UniversityPresentationResultBody>): void {
+  receivePresentationResult(message: UniversityPresentationResultMessage): void {
     this.receivedResults.push(message.body);
   }
 }
@@ -231,8 +247,8 @@ class UniversityIssuerProtocolAgent {
     readonly idempotentReplayCount: number;
     readonly idempotentReplayStudentIds: readonly string[];
   } {
-    const drained = bus.drain(this.profile.partyId) as Array<ProtocolMessage<UniversityIssuanceRequestBody>>;
-    const requestsByStudentId = new Map<string, ProtocolMessage<UniversityIssuanceRequestBody>>();
+    const drained = bus.drain(this.profile.partyId) as Array<UniversityIssuanceRequestMessage>;
+    const requestsByStudentId = new Map<string, UniversityIssuanceRequestMessage>();
     let duplicateRequestCount = 0;
     const idempotentReplayStudentIds = new Set<string>();
     for (const message of drained) {
@@ -262,7 +278,7 @@ class UniversityIssuerProtocolAgent {
         const credentialProofCreatedAt = 50_000n + BigInt(batchOrdinal);
         const presentationProofCreatedAt = 60_000n + BigInt(batchOrdinal);
         const issuanceChallengeHash = sha256(`university-issuance:${studentId}`);
-        const result: ProtocolMessage<UniversityIssuanceResultBody> = {
+        const result: UniversityIssuanceResultMessage = {
           type: "issuance:result",
           from: this.profile.partyId,
           to: student.profile.partyId,
@@ -338,7 +354,7 @@ class UniversityCompanyVerifierAgent {
       requestPolicyOverrides: this.requestPolicyOverrides,
     });
 
-    const message: ProtocolMessage<UniversityPresentationRequestBody> = {
+    const message: UniversityPresentationRequestMessage = {
       type: "presentation:request",
       from: this.profile.partyId,
       to: student.profile.partyId,
@@ -367,7 +383,7 @@ class UniversityCompanyVerifierAgent {
 
   receiveSubmissionAndSendResult(
     bus: MessageBus,
-    message: ProtocolMessage<UniversityPresentationSubmissionBody>,
+    message: UniversityPresentationSubmissionMessage,
     transcript: TranscriptRecorder,
     messages: UniversityProtocolMessage[],
   ): void {
@@ -396,7 +412,7 @@ class UniversityCompanyVerifierAgent {
       }
     }
 
-    const result: ProtocolMessage<UniversityPresentationResultBody> = {
+    const result: UniversityPresentationResultMessage = {
       type: "presentation:result",
       from: this.profile.partyId,
       to: message.from,
@@ -453,7 +469,7 @@ class UniversityMallVerifierAgent {
       minimumFinalGrade: BigInt(this.mall.requestPolicy.minimumFinalGrade ?? 0),
     });
 
-    const message: ProtocolMessage<UniversityPresentationRequestBody> = {
+    const message: UniversityPresentationRequestMessage = {
       type: "presentation:request",
       from: this.profile.partyId,
       to: student.profile.partyId,
@@ -481,7 +497,7 @@ class UniversityMallVerifierAgent {
 
   receiveSubmissionAndSendResult(
     bus: MessageBus,
-    message: ProtocolMessage<UniversityPresentationSubmissionBody>,
+    message: UniversityPresentationSubmissionMessage,
     transcript: TranscriptRecorder,
     messages: UniversityProtocolMessage[],
   ): void {
@@ -510,7 +526,7 @@ class UniversityMallVerifierAgent {
       }
     }
 
-    const result: ProtocolMessage<UniversityPresentationResultBody> = {
+    const result: UniversityPresentationResultMessage = {
       type: "presentation:result",
       from: this.profile.partyId,
       to: message.from,
@@ -773,7 +789,7 @@ export class UniversityProtocolFlowRunner {
     );
 
     for (const studentId of issuanceResult.issuedStudentIds) {
-      const result = this.bus.receive(studentId) as ProtocolMessage<UniversityIssuanceResultBody> | undefined;
+      const result = this.bus.receive(studentId) as UniversityIssuanceResultMessage | undefined;
       if (!result) {
         throw new Error(`Missing issuance result delivery for ${studentId}`);
       }
@@ -804,7 +820,7 @@ export class UniversityProtocolFlowRunner {
     }
 
     for (const student of this.studentAgents.values()) {
-      const request = this.bus.receive(student.profile.partyId) as ProtocolMessage<UniversityPresentationRequestBody> | undefined;
+      const request = this.bus.receive(student.profile.partyId) as UniversityPresentationRequestMessage | undefined;
       if (!request) {
         throw new Error(`Missing job request for ${student.record.studentId}`);
       }
@@ -829,7 +845,7 @@ export class UniversityProtocolFlowRunner {
     }
 
     for (const companyAgent of this.companyAgents.values()) {
-      const submissions = this.bus.drain(companyAgent.profile.partyId) as Array<ProtocolMessage<UniversityPresentationSubmissionBody>>;
+      const submissions = this.bus.drain(companyAgent.profile.partyId) as Array<UniversityPresentationSubmissionMessage>;
       for (const submission of submissions) {
         companyAgent.receiveSubmissionAndSendResult(
           this.bus,
@@ -842,7 +858,7 @@ export class UniversityProtocolFlowRunner {
 
     for (const student of this.studentAgents.values()) {
       const results = this.bus.drain(student.profile.partyId) as Array<
-        ProtocolMessage<UniversityPresentationResultBody>
+        UniversityPresentationResultMessage
       >;
       if (results.length === 0) {
         throw new Error(`Missing job application result for ${student.record.studentId}`);
@@ -870,7 +886,7 @@ export class UniversityProtocolFlowRunner {
 
     for (const applicant of this.discountApplicants) {
       const student = this.studentAgents.get(applicant.studentId)!;
-      const request = this.bus.receive(student.profile.partyId) as ProtocolMessage<UniversityPresentationRequestBody> | undefined;
+      const request = this.bus.receive(student.profile.partyId) as UniversityPresentationRequestMessage | undefined;
       if (!request) {
         throw new Error(`Missing discount request for ${student.record.studentId}`);
       }
@@ -892,7 +908,7 @@ export class UniversityProtocolFlowRunner {
       }
     }
 
-    const submissions = this.bus.drain(this.mallAgent.profile.partyId) as Array<ProtocolMessage<UniversityPresentationSubmissionBody>>;
+    const submissions = this.bus.drain(this.mallAgent.profile.partyId) as Array<UniversityPresentationSubmissionMessage>;
     for (const submission of submissions) {
       this.mallAgent.receiveSubmissionAndSendResult(
         this.bus,
@@ -905,7 +921,7 @@ export class UniversityProtocolFlowRunner {
     for (const applicant of this.discountApplicants) {
       const student = this.studentAgents.get(applicant.studentId)!;
       const results = this.bus.drain(student.profile.partyId) as Array<
-        ProtocolMessage<UniversityPresentationResultBody>
+        UniversityPresentationResultMessage
       >;
       if (results.length === 0) {
         throw new Error(`Missing discount result for ${student.record.studentId}`);

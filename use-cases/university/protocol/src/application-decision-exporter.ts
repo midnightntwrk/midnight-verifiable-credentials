@@ -57,6 +57,9 @@ const bytesToHex = (value: Uint8Array): string =>
   Buffer.from(value).toString("hex");
 const paddedTextToString = (value: Uint8Array): string =>
   Buffer.from(value).toString("utf8").replace(/\0+$/gu, "");
+const assertNever = (value: never): never => {
+  throw new Error(`Unhandled university protocol message: ${String(value)}`);
+};
 
 const normalizeJson = (value: unknown): JsonValue => {
   if (typeof value === "bigint") {
@@ -125,7 +128,7 @@ const disclosureNamesForRequest = (request: {
 const normalizedBody = (message: UniversityProtocolMessage): unknown => {
   switch (message.type) {
     case "issuance:request": {
-      const body = message.body as UniversityIssuanceRequestBody;
+      const body = message.body;
       return {
         studentId: body.studentId,
         holderDidUrl: body.holderDidUrl,
@@ -140,7 +143,7 @@ const normalizedBody = (message: UniversityProtocolMessage): unknown => {
       };
     }
     case "issuance:result": {
-      const body = message.body as UniversityIssuanceResultBody;
+      const body = message.body;
       return {
         studentId: body.studentId,
         issuedAt: body.issuedAt,
@@ -155,7 +158,7 @@ const normalizedBody = (message: UniversityProtocolMessage): unknown => {
       };
     }
     case "presentation:request": {
-      const body = message.body as UniversityPresentationRequestBody;
+      const body = message.body;
       return {
         kind: body.kind,
         studentId: body.studentId,
@@ -170,7 +173,7 @@ const normalizedBody = (message: UniversityProtocolMessage): unknown => {
       };
     }
     case "presentation:submission": {
-      const body = message.body as UniversityPresentationSubmissionBody;
+      const body = message.body;
       return {
         kind: body.kind,
         studentId: body.studentId,
@@ -184,7 +187,7 @@ const normalizedBody = (message: UniversityProtocolMessage): unknown => {
       };
     }
     case "presentation:result": {
-      const body = message.body as UniversityPresentationResultBody;
+      const body = message.body;
       return {
         kind: body.kind,
         studentId: body.studentId,
@@ -193,6 +196,8 @@ const normalizedBody = (message: UniversityProtocolMessage): unknown => {
         rejectionKind: body.rejectionKind,
       };
     }
+    default:
+      return assertNever(message);
   }
 };
 
@@ -207,27 +212,27 @@ const messageSummary = (
   summary: (() => {
     switch (message.type) {
       case "issuance:request": {
-        const body = message.body as UniversityIssuanceRequestBody;
+        const body = message.body;
         return `Student ${body.studentId} requested diploma issuance`;
       }
       case "issuance:result": {
-        const body = message.body as UniversityIssuanceResultBody;
+        const body = message.body;
         return `University issued diploma credential to ${body.studentId}`;
       }
       case "presentation:request": {
-        const body = message.body as UniversityPresentationRequestBody;
+        const body = message.body;
         return `${body.kind} request from ${message.from} for ${body.studentId}`;
       }
       case "presentation:submission": {
-        const body = message.body as UniversityPresentationSubmissionBody;
+        const body = message.body;
         return `${body.kind} submission from ${message.from} for ${body.studentId}`;
       }
       case "presentation:result": {
-        const body = message.body as UniversityPresentationResultBody;
+        const body = message.body;
         return `${body.kind} result for ${body.studentId}`;
       }
       default:
-        return "Unknown message";
+        return assertNever(message);
     }
   })(),
   dto: normalizeJson(normalizedBody(message)),
@@ -280,8 +285,8 @@ const buildDecisionRecord = (
     >(messages, student.studentId, "presentation:submission"),
   ].sort((left, right) =>
     compareText(
-      left.envelope.messageId.toString(),
-      right.envelope.messageId.toString(),
+      bytesToHex(left.envelope.messageId),
+      bytesToHex(right.envelope.messageId),
     ),
   );
 
@@ -291,8 +296,8 @@ const buildDecisionRecord = (
     >(messages, student.studentId, "presentation:result"),
   ].sort((left, right) =>
     compareText(
-      left.envelope.messageId.toString(),
-      right.envelope.messageId.toString(),
+      bytesToHex(left.envelope.messageId),
+      bytesToHex(right.envelope.messageId),
     ),
   );
 

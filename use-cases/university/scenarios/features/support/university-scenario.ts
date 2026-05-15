@@ -1386,7 +1386,9 @@ export class UseUniversityScenario extends Ability {
         };
       }
       default:
-        throw new Error(`Unsupported protocol transcript message type ${message.type}`);
+        throw new Error(
+          `Unsupported protocol transcript message type ${String(message)}`,
+        );
     }
   }
 
