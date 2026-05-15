@@ -133,7 +133,8 @@ use-cases/university/scenarios/target/standalone-timing/summary.json
 | `scenarios/target/batch-sweep/summary.md` | `university-batch-sweep` | batch-sweep table for humans |
 | `protocol/target/readable-10/transcript-export.json` | `university-protocol-export` | readable protocol transcript export |
 | `protocol/target/readable-10/transcript-export.md` | `university-protocol-export` | readable transcript digest |
-| `protocol/target/readable-10/application-decisions.json` | `university-protocol-export` | job and mall verifier decision DTOs |
+| `protocol/target/readable-10/application-decisions-export.json` | `university-protocol-export` | job and mall verifier decision DTOs |
+| `protocol/target/readable-10/application-decisions-export.md` | `university-protocol-export` | job and mall verifier decision digest |
 | `protocol/target/cohort-30/summary.json` | `university-protocol-cohort` | 30-student sampled profile summary |
 | `protocol/target/cohort-30/summary.md` | `university-protocol-cohort` | 30-student sampled profile digest |
 | `protocol/target/stress-100/summary.json` | `university-protocol-stress` | 100-student throughput profile summary |
@@ -223,7 +224,8 @@ Use the JSON forms when building downstream tooling:
 
 ```text
 use-cases/university/protocol/target/readable-10/transcript-export.json
-use-cases/university/protocol/target/readable-10/application-decisions.json
+use-cases/university/protocol/target/readable-10/application-decisions-export.json
+use-cases/university/protocol/target/readable-10/application-decisions-export.md
 ```
 
 ### Measure real standalone timing
@@ -281,4 +283,3 @@ Use it as:
 - a protocol DTO and transcript-export harness
 - a standalone DID bootstrap timing experiment
 - a CI-friendly maturity surface for the university diploma family
-
