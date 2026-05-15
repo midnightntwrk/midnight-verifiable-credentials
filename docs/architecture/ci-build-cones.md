@@ -13,8 +13,11 @@ This repository uses four shared build cones for reusable CI outputs:
    - `credentials-birth`
    - `credentials-birth-secret`
    - `credentials-hello-family`
+   - `credentials-dummy-claims`
+   - `credentials-university-diploma`
 3. `age-gate`
    - `use-cases/age-gate/contract`
+   - `use-cases/hello-verifier/contract`
 4. `protocol`
    - `components/orchestration/protocol`
 
@@ -32,14 +35,19 @@ The cone model keeps the current workflow shape simple:
 
 The `birth-family` name is now historical shorthand.
 It currently groups the repo's credential-family workspaces, including the
-`hello-family` starter family package.
+`hello-family` starter family package, the broad `dummy-claims` laboratory, and
+the university diploma family used by the larger university use case.
 
-Intentional exclusion:
+Intentional exclusions:
 
-- `credentials-dummy-claims` is a workspace package, but it is not part of the
-  shared `birth-family` cone
-- that package is a direct claim-surface laboratory and does not sit on the
-  starter-smoke or revocation execution spine
+- `use-cases/university/contract` is built by university-specific prerequisites,
+  not by the shared build cones
+- `use-cases/university/protocol`, `use-cases/university/scenarios`, and
+  `use-cases/university/reporting` are profile/reporting packages with their
+  own artifact contracts
+- `components/integration/standalone-environment` is kept outside the reusable
+  cone cache because Docker-backed integration has separate setup and teardown
+  concerns
 
 ## Hashing Rule
 
@@ -61,6 +69,29 @@ Higher cones include the tracked inputs of lower cones in their hash scope:
 - `protocol` includes `age-gate`
 
 This keeps cache invalidation aligned with the actual dependency chain without forcing a single monolithic cache key.
+
+## Contract Audit
+
+Run the build-cone contract check locally with:
+
+```bash
+npm run check:ci-build-cones
+```
+
+The check reads the same shell definitions used by CI and verifies that:
+
+- every cone input is a real root workspace with a `package.json`
+- every cone output is a generated artifact directory under one of that cone's
+  input packages
+- outputs are restricted to the generated shapes CI knows how to restore:
+  `dist` and `src/managed`
+- no cone output path is owned by more than one cone
+- no cone output path is tracked by git
+- every cone output path is ignored by `.gitignore`
+
+The audit is wired into `ci:lint` so changes to `package.json`,
+`tooling/scripts/ci-build-output-groups.sh`, `.gitignore`, or cone docs cannot
+quietly drift from the repository's generated-artifact policy.
 
 ## Build Order
 
