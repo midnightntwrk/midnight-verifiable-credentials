@@ -30,8 +30,35 @@ export type UniversityProtocolTransportFrame = {
   readonly payloadBytes: number;
 };
 
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === "object" && value !== null && !Array.isArray(value);
+const isPlainRecord = (value: unknown): value is Record<string, unknown> => {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    return false;
+  }
+  const prototype = Object.getPrototypeOf(value) as unknown;
+  return prototype === Object.prototype || prototype === null;
+};
+
+const hasOwn = (
+  value: Record<string, EncodedTransportValue>,
+  key: string,
+): boolean => Object.prototype.hasOwnProperty.call(value, key);
+
+const describeUnsupportedValue = (value: unknown): string =>
+  Object.prototype.toString.call(value);
+
+const assertStringField = (
+  value: Record<string, EncodedTransportValue>,
+  field: string,
+  tag: string,
+): string => {
+  const fieldValue = value[field];
+  if (typeof fieldValue !== "string") {
+    throw new TypeError(
+      `Malformed university protocol transport ${tag} value: expected string field "${field}"`,
+    );
+  }
+  return fieldValue;
+};
 
 export const encodeUniversityProtocolTransportValue = (
   value: unknown,
@@ -41,9 +68,16 @@ export const encodeUniversityProtocolTransportValue = (
   }
   if (
     typeof value === "boolean" ||
-    typeof value === "number" ||
     typeof value === "string"
   ) {
+    return value;
+  }
+  if (typeof value === "number") {
+    if (!Number.isFinite(value)) {
+      throw new TypeError(
+        `Unsupported university protocol transport number ${String(value)}`,
+      );
+    }
     return value;
   }
   if (typeof value === "bigint") {
@@ -66,7 +100,7 @@ export const encodeUniversityProtocolTransportValue = (
   if (Array.isArray(value)) {
     return value.map((entry) => encodeUniversityProtocolTransportValue(entry));
   }
-  if (isRecord(value)) {
+  if (isPlainRecord(value)) {
     return Object.fromEntries(
       Object.entries(value).map(([key, entry]) => [
         key,
@@ -75,29 +109,48 @@ export const encodeUniversityProtocolTransportValue = (
     );
   }
   throw new TypeError(
-    `Unsupported university protocol transport value ${String(value)}`,
+    `Unsupported university protocol transport value ${describeUnsupportedValue(value)}`,
   );
 };
 
 export const decodeUniversityProtocolTransportValue = (
   value: EncodedTransportValue,
 ): unknown => {
-  if (!isRecord(value)) {
-    return Array.isArray(value)
-      ? value.map((entry) => decodeUniversityProtocolTransportValue(entry))
-      : value;
+  if (Array.isArray(value)) {
+    return value.map((entry) => decodeUniversityProtocolTransportValue(entry));
+  }
+  if (!isPlainRecord(value)) {
+    return value;
   }
 
-  if (value[transportTypeKey] === "bigint") {
-    return BigInt(value.value as string);
+  if (hasOwn(value, transportTypeKey)) {
+    const tag = value[transportTypeKey];
+    if (tag === "bigint") {
+      const bigintValue = assertStringField(value, "value", "bigint");
+      if (!/^-?\d+$/u.test(bigintValue)) {
+        throw new TypeError(
+          "Malformed university protocol transport bigint value",
+        );
+      }
+      return BigInt(bigintValue);
+    }
+    if (tag === "bytes") {
+      return new Uint8Array(
+        Buffer.from(assertStringField(value, "value", "bytes"), "base64"),
+      );
+    }
+    if (tag === "undefined") {
+      if (hasOwn(value, "value")) {
+        throw new TypeError(
+          "Malformed university protocol transport undefined value",
+        );
+      }
+      return undefined;
+    }
+    throw new TypeError(
+      `Malformed university protocol transport tag ${String(tag)}`,
+    );
   }
-  if (value[transportTypeKey] === "bytes") {
-    return new Uint8Array(Buffer.from(value.value as string, "base64"));
-  }
-  if (value[transportTypeKey] === "undefined") {
-    return undefined;
-  }
-
   return Object.fromEntries(
     Object.entries(value).map(([key, entry]) => [
       key,

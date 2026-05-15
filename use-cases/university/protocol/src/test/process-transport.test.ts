@@ -58,6 +58,49 @@ describe("serialized university protocol transport", () => {
     });
   });
 
+  it("rejects DTO values that JSON would silently corrupt across a process boundary", () => {
+    expect(() => encodeUniversityProtocolTransportValue(Number.NaN)).toThrow(
+      /Unsupported university protocol transport number NaN/u,
+    );
+    expect(() => encodeUniversityProtocolTransportValue(Infinity)).toThrow(
+      /Unsupported university protocol transport number Infinity/u,
+    );
+    expect(() =>
+      encodeUniversityProtocolTransportValue(new Date("2030-01-01T00:00:00Z")),
+    ).toThrow(/Unsupported university protocol transport value/u);
+    expect(() =>
+      encodeUniversityProtocolTransportValue(new Map([["student", "STU-0001"]])),
+    ).toThrow(/Unsupported university protocol transport value/u);
+    expect(() =>
+      encodeUniversityProtocolTransportValue(new Set(["STU-0001"])),
+    ).toThrow(/Unsupported university protocol transport value/u);
+    expect(() =>
+      encodeUniversityProtocolTransportValue(new Uint16Array([1, 2])),
+    ).toThrow(/Unsupported university protocol transport value/u);
+  });
+
+  it("rejects malformed transport tags before they reach protocol handlers", () => {
+    expect(() =>
+      decodeUniversityProtocolTransportValue({
+        __midnightUniversityProtocolTransportType: "bigint",
+        value: "12.34",
+      }),
+    ).toThrow(/Malformed university protocol transport bigint value/u);
+    expect(() =>
+      decodeUniversityProtocolTransportValue({
+        __midnightUniversityProtocolTransportType: "bytes",
+        value: 42,
+      }),
+    ).toThrow(
+      /Malformed university protocol transport bytes value: expected string field "value"/u,
+    );
+    expect(() =>
+      decodeUniversityProtocolTransportValue({
+        __midnightUniversityProtocolTransportType: "future-tag",
+      }),
+    ).toThrow(/Malformed university protocol transport tag future-tag/u);
+  });
+
   it("preserves the protocol result across a serialized process-boundary transport", () => {
     const baseline = runComparableFlow();
     const transport = new SerializedUniversityProtocolTransport();
