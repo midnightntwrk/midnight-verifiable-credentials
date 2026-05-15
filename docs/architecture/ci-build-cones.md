@@ -114,6 +114,10 @@ quietly drift from the repository's generated-artifact policy.
   declared cone group
 - the workflow does not reference unknown `ci-build-*` cache or artifact groups
 
+The shell-side cone contract defines what belongs in each build cone; the
+workflow-side contract defines where those cone outputs flow through CI cache
+keys, artifact names, and restored output paths.
+
 ## Build Order
 
 When a cone cache is missing, the workflow rebuilds only that cone:

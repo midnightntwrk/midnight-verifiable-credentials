@@ -60,7 +60,9 @@ const parseTurboFilters = (script) =>
   );
 
 const parseDirectBuildWorkspaces = (script) =>
-  [...script.matchAll(/npm\s+run\s+build\s+-w\s+\.\/([^ "'&]+)/gu)].map((match) => match[1]);
+  [...script.matchAll(/npm\s+run\s+build\s+-w\s+\.\/([^\s"'&;|()<>,]+)/gu)].map(
+    (match) => match[1],
+  );
 
 const assertSameSet = ({ actual, expected, label }) => {
   const actualSet = new Set(actual);
