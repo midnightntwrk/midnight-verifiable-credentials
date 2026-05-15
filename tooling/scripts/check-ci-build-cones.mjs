@@ -35,11 +35,11 @@ const readShellList = (functionName, argument) => {
 };
 
 const isIgnored = (relativePath) => {
-  // Directory-only ignore patterns can match the placeholder form even when the
-  // bare generated directory does not exist in a clean checkout.
-  for (const candidate of [relativePath, `${relativePath}/.generated-contract`]) {
+  // Directory-only ignore patterns must be checked without relying on generated
+  // directories existing in a clean CI checkout.
+  for (const candidate of [`${relativePath}/`, `${relativePath}/.generated-contract`, relativePath]) {
     try {
-      execFileSync("git", ["check-ignore", "-q", candidate], {
+      execFileSync("git", ["check-ignore", "--no-index", "-q", candidate], {
         cwd: repoRoot,
         stdio: "ignore",
       });
