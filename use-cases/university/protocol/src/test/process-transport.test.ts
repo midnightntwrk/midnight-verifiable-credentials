@@ -23,6 +23,9 @@ const runComparableFlow = (
   vi.setSystemTime(fixedProtocolTime);
   const runner = new UniversityProtocolFlowRunner({ transport });
   const result = runner.runAll();
+  // Wall-clock metrics are intentionally excluded from equivalence checks; the
+  // serialized transport adds encode/decode overhead but must preserve all
+  // business messages and transcript entries.
   return {
     issuance: result.issuance,
     jobApplications: result.jobApplications,
@@ -130,6 +133,25 @@ describe("serialized university protocol transport", () => {
     ).toThrow(
       /Serialized university protocol transport only accepts university protocol messages/u,
     );
+  });
+
+  it("decodes queued messages with FIFO ordering through the receive path", () => {
+    const baseline = runComparableFlow();
+    const [first, second] = baseline.issuance.messages.filter(
+      (message) => message.type === "issuance:request",
+    );
+    const transport = new SerializedUniversityProtocolTransport();
+    if (!first || !second) {
+      throw new Error("Expected at least two issuance requests in baseline flow");
+    }
+
+    transport.send(first);
+    transport.send(second);
+
+    expect(transport.pending(first.to)).toBe(2);
+    expect(transport.receive(first.to)).toEqual(first);
+    expect(transport.receive(first.to)).toEqual(second);
+    expect(transport.receive(first.to)).toBeUndefined();
   });
 
   it("preserves the protocol result across a serialized process-boundary transport", () => {

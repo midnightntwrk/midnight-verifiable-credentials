@@ -89,7 +89,24 @@ const assertCanonicalBase64 = (value: string): void => {
   }
 };
 
-const hasUniversityEnvelopeShape = (value: unknown): boolean =>
+const universityProtocolMessageTypes = new Set<UniversityProtocolMessage["type"]>(
+  [
+    "issuance:request",
+    "issuance:result",
+    "presentation:request",
+    "presentation:submission",
+    "presentation:result",
+  ],
+);
+
+const hasUniversityProtocolMessageType = (
+  value: string,
+): value is UniversityProtocolMessage["type"] =>
+  universityProtocolMessageTypes.has(
+    value as UniversityProtocolMessage["type"],
+  );
+
+const hasProtocolEnvelopeShape = (value: unknown): boolean =>
   isPlainRecord(value) &&
   typeof value.version === "bigint" &&
   value.messageId instanceof Uint8Array &&
@@ -105,9 +122,10 @@ const requireUniversityProtocolMessage = (
 ): UniversityProtocolMessage => {
   if (
     typeof message.type !== "string" ||
+    !hasUniversityProtocolMessageType(message.type) ||
     typeof message.from !== "string" ||
     typeof message.to !== "string" ||
-    !hasUniversityEnvelopeShape(message.envelope)
+    !hasProtocolEnvelopeShape(message.envelope)
   ) {
     throw new TypeError(
       "Serialized university protocol transport only accepts university protocol messages with protocol envelopes",
@@ -230,6 +248,10 @@ const decodeMessage = (payload: string): UniversityProtocolMessage =>
  * The transport is exported as a development/runtime seam for future standalone
  * harnesses. `trace()` is send-side only: receiving parties decode queued
  * payloads without appending additional receive frames.
+ *
+ * This class subclasses `MessageBus` only to remain injectable into existing
+ * runner APIs; it overrides all stateful bus methods because the queue payloads
+ * are serialized strings instead of in-memory message objects.
  */
 export class SerializedUniversityProtocolTransport extends MessageBus {
   readonly #queues = new Map<PartyId, string[]>();
