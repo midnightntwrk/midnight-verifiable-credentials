@@ -152,6 +152,9 @@
 - VC maturity backlog:
   - [`plans/vc-maturity-backlog.md`](./plans/vc-maturity-backlog.md)
   - for the current repository-audit backlog and gap-tracking work
+- VC maturity and university closeout wave:
+  - [`plans/vc-maturity-university-wave-2026-05-15.md`](./plans/vc-maturity-university-wave-2026-05-15.md)
+  - for the active 20-iteration execution plan targeting `develop`
 - Serenity/JS BDD layer plan:
   - [`plans/serenity-js-bdd-layer.md`](./plans/serenity-js-bdd-layer.md)
   - for the TypeScript screenplay-style living-documentation test layer
