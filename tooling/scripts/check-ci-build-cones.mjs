@@ -44,21 +44,17 @@ const readShellList = (functionName, argument) => {
 };
 
 const isIgnored = (relativePath) => {
-  // Directory-only ignore patterns must be checked without relying on generated
-  // directories existing in a clean CI checkout.
-  for (const candidate of [`${relativePath}/`, `${relativePath}/.generated-contract`, relativePath]) {
-    try {
-      execFileSync("git", ["check-ignore", "--no-index", "-q", candidate], {
-        cwd: repoRoot,
-        stdio: "ignore",
-      });
-      return true;
-    } catch {
-      // Try the next candidate form.
-    }
-  }
+  // Check policy lines directly instead of probing nonexistent directories with
+  // git check-ignore; Git versions differ on those clean-checkout probes.
+  const directoryName = path.posix.basename(relativePath);
+  const candidates = new Set([
+    `${directoryName}/`,
+    `**/${directoryName}/`,
+    `${relativePath}/`,
+    `/${relativePath}/`,
+  ]);
 
-  return false;
+  return gitignorePatterns.some((pattern) => candidates.has(pattern));
 };
 
 const isGeneratedOutputPath = (relativePath) =>
@@ -67,6 +63,10 @@ const isGeneratedOutputPath = (relativePath) =>
 const packageJson = JSON.parse(readFileSync(path.join(repoRoot, "package.json"), "utf8"));
 const workspaceEntries = packageJson.workspaces ?? [];
 const workspaceSet = new Set(workspaceEntries);
+const gitignorePatterns = readFileSync(path.join(repoRoot, ".gitignore"), "utf8")
+  .split(/\r?\n/u)
+  .map((line) => line.trim())
+  .filter((line) => line && !line.startsWith("#") && !line.startsWith("!"));
 const trackedFiles = runGit(["ls-files"])
   .split(/\r?\n/u)
   .filter(Boolean);
