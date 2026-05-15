@@ -55,11 +55,24 @@ const readShellList = (functionName, argument) => {
   }
 };
 
+function failOnErrors() {
+  if (errors.length === 0) {
+    return;
+  }
+
+  for (const error of errors) {
+    console.error(`[check-ci-build-cones] ${error}`);
+  }
+  process.exit(1);
+}
+
 const isIgnored = (relativePath) => {
   // Check policy lines directly instead of probing nonexistent directories with
   // git check-ignore; Git versions differ on clean-checkout probes for
   // nonexistent generated directories. Accept basename and full-path forms,
-  // with or without directory-only trailing slashes.
+  // with or without directory-only trailing slashes. This intentionally models
+  // the repo's generated-output policy and does not evaluate negations or
+  // scoped overrides; tracked-output checks still catch committed artifacts.
   const directoryName = path.posix.basename(relativePath);
   const candidates = new Set([
     directoryName,
@@ -91,6 +104,7 @@ if (workspaceGlobEntries.length > 0) {
     `Root workspace globs are not supported by the CI build cone audit: ${workspaceGlobEntries.join(", ")}`,
   );
 }
+failOnErrors();
 
 const groups = readShellList("ci_build_output_groups");
 const seenGroups = new Set();
@@ -219,12 +233,7 @@ requireInputSubset("birth-family", "age-gate");
 requireInputSubset("foundation", "protocol");
 requireGroupInputs("protocol", PROTOCOL_REQUIRED_INPUTS);
 
-if (errors.length > 0) {
-  for (const error of errors) {
-    console.error(`[check-ci-build-cones] ${error}`);
-  }
-  process.exit(1);
-}
+failOnErrors();
 
 for (const entry of summary) {
   console.log(
