@@ -38,10 +38,8 @@ const isPlainRecord = (value: unknown): value is Record<string, unknown> => {
   return prototype === Object.prototype || prototype === null;
 };
 
-const hasOwn = (
-  value: Record<string, EncodedTransportValue>,
-  key: string,
-): boolean => Object.prototype.hasOwnProperty.call(value, key);
+const hasOwn = (value: object, key: string): boolean =>
+  Object.prototype.hasOwnProperty.call(value, key);
 
 const describeUnsupportedValue = (value: unknown): string =>
   Object.prototype.toString.call(value);
@@ -89,14 +87,21 @@ const assertCanonicalBase64 = (value: string): void => {
   }
 };
 
-const universityProtocolMessageTypes = new Set<UniversityProtocolMessage["type"]>(
-  [
-    "issuance:request",
-    "issuance:result",
-    "presentation:request",
-    "presentation:submission",
-    "presentation:result",
-  ],
+const universityProtocolMessageTypeRecord: Record<
+  UniversityProtocolMessage["type"],
+  true
+> = {
+  "issuance:request": true,
+  "issuance:result": true,
+  "presentation:request": true,
+  "presentation:result": true,
+  "presentation:submission": true,
+};
+
+const universityProtocolMessageTypes = new Set(
+  Object.keys(
+    universityProtocolMessageTypeRecord,
+  ) as Array<UniversityProtocolMessage["type"]>,
 );
 
 const hasUniversityProtocolMessageType = (
@@ -118,20 +123,26 @@ const hasProtocolEnvelopeShape = (value: unknown): boolean =>
   typeof value.expiresAt === "bigint";
 
 const requireUniversityProtocolMessage = (
-  message: ProtocolMessage,
+  message: unknown,
 ): UniversityProtocolMessage => {
+  if (!isPlainRecord(message)) {
+    throw new TypeError(
+      "Serialized university protocol transport only accepts university protocol messages with protocol envelopes",
+    );
+  }
+  const candidate = message as ProtocolMessage;
   if (
-    typeof message.type !== "string" ||
-    !hasUniversityProtocolMessageType(message.type) ||
-    typeof message.from !== "string" ||
-    typeof message.to !== "string" ||
-    !hasProtocolEnvelopeShape(message.envelope)
+    typeof candidate.type !== "string" ||
+    !hasUniversityProtocolMessageType(candidate.type) ||
+    typeof candidate.from !== "string" ||
+    typeof candidate.to !== "string" ||
+    !hasProtocolEnvelopeShape(candidate.envelope)
   ) {
     throw new TypeError(
       "Serialized university protocol transport only accepts university protocol messages with protocol envelopes",
     );
   }
-  return message as UniversityProtocolMessage;
+  return candidate as UniversityProtocolMessage;
 };
 
 export const encodeUniversityProtocolTransportValue = (
@@ -175,6 +186,11 @@ export const encodeUniversityProtocolTransportValue = (
     return value.map((entry) => encodeUniversityProtocolTransportValue(entry));
   }
   if (isPlainRecord(value)) {
+    if (hasOwn(value, transportTypeKey)) {
+      throw new TypeError(
+        `Unsupported university protocol transport value: reserved transport key "${transportTypeKey}"`,
+      );
+    }
     return Object.fromEntries(
       Object.entries(value).map(([key, entry]) => [
         key,
@@ -235,9 +251,11 @@ const encodeMessage = (message: ProtocolMessage): string =>
   JSON.stringify(encodeUniversityProtocolTransportValue(message));
 
 const decodeMessage = (payload: string): UniversityProtocolMessage =>
-  decodeUniversityProtocolTransportValue(
-    JSON.parse(payload) as EncodedTransportValue,
-  ) as UniversityProtocolMessage;
+  requireUniversityProtocolMessage(
+    decodeUniversityProtocolTransportValue(
+      JSON.parse(payload) as EncodedTransportValue,
+    ),
+  );
 
 /**
  * MessageBus-compatible transport that forces every university protocol message

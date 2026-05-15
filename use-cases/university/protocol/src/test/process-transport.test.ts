@@ -80,6 +80,12 @@ describe("serialized university protocol transport", () => {
     expect(() =>
       encodeUniversityProtocolTransportValue(new Uint16Array([1, 2])),
     ).toThrow(/Unsupported university protocol transport value/u);
+    expect(() =>
+      encodeUniversityProtocolTransportValue({
+        __midnightUniversityProtocolTransportType: "bigint",
+        value: "123",
+      }),
+    ).toThrow(/reserved transport key/u);
   });
 
   it("rejects malformed transport tags before they reach protocol handlers", () => {
