@@ -30,6 +30,8 @@ Files:
 
 Execution:
 
+- operator guide:
+  - [`../operator-guide.md`](../operator-guide.md)
 - root lane:
   - `./run.sh university-bdd`
 - proof-server contract lane:

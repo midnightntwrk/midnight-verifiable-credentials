@@ -95,8 +95,10 @@ export const universityCiMatrix = [
     artifactProfile: "managed-university-protocol-export",
     light: true,
     artifacts: [
-      "use-cases/university/protocol/target/transcript.json",
-      "use-cases/university/protocol/target/application-decisions.json",
+      "use-cases/university/protocol/target/readable-10/transcript-export.json",
+      "use-cases/university/protocol/target/readable-10/transcript-export.md",
+      "use-cases/university/protocol/target/readable-10/application-decisions-export.json",
+      "use-cases/university/protocol/target/readable-10/application-decisions-export.md",
     ],
   },
   {

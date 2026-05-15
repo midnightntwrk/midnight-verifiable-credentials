@@ -117,6 +117,9 @@ Stress-lane note:
 
 Build and test:
 
+- operator guide for choosing the readable, cohort, stress, export, summary,
+  proof-server-contract, and standalone-hybrid lanes:
+  - [`../operator-guide.md`](../operator-guide.md)
 - root lane:
   - `./run.sh university-protocol`
   - `./run.sh university-protocol --light`

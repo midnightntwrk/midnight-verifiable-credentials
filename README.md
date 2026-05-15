@@ -72,6 +72,7 @@ Start here:
   - [`docs/guides/prototype-execution-ladder.md`](./docs/guides/prototype-execution-ladder.md)
 - university diploma use case:
   - [`use-cases/university/README.md`](./use-cases/university/README.md)
+  - [`use-cases/university/operator-guide.md`](./use-cases/university/operator-guide.md)
   - [`use-cases/university/contract/README.md`](./use-cases/university/contract/README.md)
   - [`use-cases/university/scenarios/README.md`](./use-cases/university/scenarios/README.md)
   - [`use-cases/university/protocol/README.md`](./use-cases/university/protocol/README.md)
@@ -157,6 +158,7 @@ Targets that currently honor `--light`:
 - `./run.sh dummy-claims-lab`
 - `./run.sh university-protocol`
 - `./run.sh university-protocol-export`
+- `./run.sh university-protocol-cohort`
 - `./run.sh university-protocol-stress`
 - `./run.sh university-summary`
 
@@ -186,10 +188,22 @@ Run the threaded university protocol lane directly:
 ./run.sh university-protocol
 ```
 
+Use the university operator guide when choosing between readable BDD,
+proof-server-contract, standalone-hybrid, cohort, stress, and summary lanes:
+
+- [`use-cases/university/operator-guide.md`](./use-cases/university/operator-guide.md)
+
 Export the readable 10-student university protocol transcript:
 
 ```bash
 ./run.sh university-protocol-export
+```
+
+Run the 30-student university cohort protocol lane:
+
+```bash
+./run.sh university-protocol-cohort
+./run.sh university-protocol-cohort --light
 ```
 
 Run the 100-student university protocol stress lane:

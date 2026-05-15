@@ -119,7 +119,30 @@ This is the simplest single command when you want both:
 - the narrated happy paths
 - the narrated negative status-boundary scenarios
 
-## 8. Drop to the focused revocation lane
+## 8. Run the university diploma operator path
+
+When you want the larger DID-backed university issuance and verifier blueprint,
+start with the operator guide:
+
+- [`../../use-cases/university/operator-guide.md`](../../use-cases/university/operator-guide.md)
+
+The shortest readable path is:
+
+```bash
+./run.sh university-ci-matrix
+./run.sh university-bdd
+open use-cases/university/scenarios/target/site/serenity/index.html
+```
+
+Use this path when you want to inspect:
+
+- student-initiated diploma issuance
+- student-to-employer presentation requests and responses
+- student-to-mall presentation requests and responses
+- party DID identifiers, issued credentials, and verifier decisions
+- proof-server-contract DTOs and standalone-hybrid timing boundaries
+
+## 9. Drop to the focused revocation lane
 
 When you need package-level status work rather than narrated scenarios, use:
 
@@ -136,7 +159,7 @@ This is the current focused engineering lane for:
 - `credentials-birth-secret`
 - `use-cases/age-gate/contract`
 
-## 9. Only then move to Docker-backed integration
+## 10. Only then move to Docker-backed integration
 
 Use Docker-backed integration only after the smaller local paths are already
 green:
@@ -153,5 +176,6 @@ This keeps the execution path ordered from:
 3. concrete business contract
 4. narrated happy path
 5. narrated negative trust boundary
-6. focused revocation package lane
-7. full integration
+6. university diploma operator path
+7. focused revocation package lane
+8. full integration
