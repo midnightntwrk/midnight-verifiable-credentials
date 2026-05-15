@@ -70,6 +70,9 @@ The slice is intentionally explicit and operational:
   backend into the protocol runner, so the report can capture real environment
   startup, wallet sync, DID provisioning latency, and simulator proof timings
   under an explicit backend contract
+- the proof-server contract backend now records the DTO boundary between the
+  protocol runner and future remote proof execution for issuance, request
+  construction, presentation construction, and verifier checks
 - the repository also carries a separate 100-student stress dataset for the
   protocol lane when you want throughput-oriented measurements instead
 - that stress lane now publishes paired `summary.json` and `summary.md`

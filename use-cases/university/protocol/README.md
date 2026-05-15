@@ -61,6 +61,9 @@ Scope:
 - the proof seam now distinguishes `simulator` from `standalone-hybrid`
   backends and emits proof-step timing samples, even though the hybrid mode
   still uses simulator proof semantics today
+- the proof-server contract backend records deterministic remote-call DTOs for
+  the same issuance, presentation-build, request-build, and verifier-check
+  operations before a real proof-server transport is wired in
 - stable transcript export now exists in both JSON and Markdown forms under
   `target/readable-10`
 - export summaries group entries per thread and include rejection-kind
@@ -101,6 +104,8 @@ Build and test:
 - `npm run typecheck -w ./use-cases/university/protocol`
 - `npm run test:ci -w ./use-cases/university/protocol`
 - `npm run build -w ./use-cases/university/protocol`
+- focused proof-server contract test:
+  - `npm exec -w ./use-cases/university/protocol -- vitest run src/test/proof-server-contract.test.ts`
 - transcript export:
   - `npm run export:transcript -w ./use-cases/university/protocol`
   - outputs:
@@ -122,3 +127,20 @@ Build and test:
   - retention guidance:
     - upload the entire `./use-cases/university/protocol/target/stress-100`
       directory as one workflow artifact so the JSON and Markdown stay paired
+
+Proof-server contract seam:
+
+| Current simulator operation | Proof-server contract operation |
+| --- | --- |
+| `issueDiplomaCredential` | issuer + holder DID refs, student claim identity, issuance challenge, credential proof timestamps |
+| `buildJobApplicationRequest` | issuer method ref, verifier challenge, company request policy and overrides |
+| `buildMallDiscountRequest` | issuer method ref, verifier challenge, mall minimum-grade threshold |
+| `buildPresentationSubmission` | holder DID ref, stored credential ref, request summary, optional tampering mode |
+| `verifyJobApplication` | credential ref, request summary, credential proof ref, presentation proof ref |
+| `verifyMallDiscount` | credential ref, request summary, credential proof ref, presentation proof ref |
+
+The `ProofServerContractUniversityProofExecutionBackend` intentionally delegates
+today's semantics to the simulator while recording these DTOs through a
+`UniversityProofServerAdapter`. A real transport can replace the recording
+adapter without changing the protocol runner's `UniversityProofExecutionBackend`
+surface.
