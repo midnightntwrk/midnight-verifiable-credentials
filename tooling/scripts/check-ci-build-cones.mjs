@@ -58,7 +58,14 @@ const isIgnored = (relativePath) => {
 };
 
 const isGeneratedOutputPath = (relativePath) =>
-  relativePath.endsWith("/dist") || relativePath.endsWith("/src/managed");
+  ALLOWED_OUTPUT_SUFFIXES.some((suffix) => relativePath.endsWith(suffix));
+
+const ALLOWED_OUTPUT_SUFFIXES = ["/dist", "/src/managed"];
+const PROTOCOL_REQUIRED_INPUTS = [
+  "prototypes/credential-families/birth",
+  "prototypes/credential-families/birth-secret",
+  "use-cases/age-gate/contract",
+];
 
 const packageJson = JSON.parse(readFileSync(path.join(repoRoot, "package.json"), "utf8"));
 const workspaceEntries = packageJson.workspaces ?? [];
@@ -80,8 +87,42 @@ if (workspaceGlobEntries.length > 0) {
 
 const groups = readShellList("ci_build_output_groups");
 const seenGroups = new Set();
+const inputPackagesByGroup = new Map();
 const seenOutputs = new Map();
 const summary = [];
+
+const requireInputSubset = (sourceGroup, targetGroup) => {
+  const sourceInputs = inputPackagesByGroup.get(sourceGroup);
+  const targetInputs = inputPackagesByGroup.get(targetGroup);
+
+  if (!sourceInputs || !targetInputs) {
+    return;
+  }
+
+  const targetInputSet = new Set(targetInputs);
+  for (const inputPackage of sourceInputs) {
+    if (!targetInputSet.has(inputPackage)) {
+      errors.push(
+        `CI build cone '${targetGroup}' must include input '${inputPackage}' from '${sourceGroup}'`,
+      );
+    }
+  }
+};
+
+const requireGroupInputs = (group, requiredInputs) => {
+  const inputPackages = inputPackagesByGroup.get(group);
+
+  if (!inputPackages) {
+    return;
+  }
+
+  const inputPackageSet = new Set(inputPackages);
+  for (const requiredInput of requiredInputs) {
+    if (!inputPackageSet.has(requiredInput)) {
+      errors.push(`CI build cone '${group}' is missing required input: ${requiredInput}`);
+    }
+  }
+};
 
 for (const group of groups) {
   if (seenGroups.has(group)) {
@@ -91,6 +132,7 @@ for (const group of groups) {
 
   const inputPackages = readShellList("ci_build_input_packages", group);
   const outputPaths = readShellList("ci_build_output_paths", group);
+  inputPackagesByGroup.set(group, inputPackages);
   const seenInputPackages = new Set();
 
   if (inputPackages.length === 0) {
@@ -164,6 +206,11 @@ for (const group of groups) {
     outputPathCount: outputPaths.length,
   });
 }
+
+requireInputSubset("foundation", "birth-family");
+requireInputSubset("birth-family", "age-gate");
+requireInputSubset("foundation", "protocol");
+requireGroupInputs("protocol", PROTOCOL_REQUIRED_INPUTS);
 
 if (errors.length > 0) {
   for (const error of errors) {

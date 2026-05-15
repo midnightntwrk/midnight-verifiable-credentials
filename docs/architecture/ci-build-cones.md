@@ -65,13 +65,17 @@ Each cone hash includes:
 - all tracked files under the cone's package set
 - tracked files under `tooling/scripts`
 
-Higher cones include the tracked inputs of lower cones in their hash scope:
+The reusable cones intentionally encode only the tracked inputs needed by their
+downstream consumers:
 
-- `birth-family` includes `foundation`
-- `age-gate` includes `birth-family`
-- `protocol` includes `age-gate`
+- `birth-family` includes the full `foundation` input set
+- `age-gate` includes the full `birth-family` input set
+- `protocol` includes the full `foundation` input set plus the birth,
+  birth-secret, and age-gate contract packages it consumes
 
-This keeps cache invalidation aligned with the actual dependency chain without forcing a single monolithic cache key.
+This keeps cache invalidation aligned with the actual dependency chain without
+forcing a single monolithic cache key or making the protocol cone restore
+unrelated verifier-lab outputs.
 
 ## Contract Audit
 
@@ -88,6 +92,9 @@ The check reads the same shell definitions used by CI and verifies that:
   input packages
 - outputs are restricted to the generated shapes CI knows how to restore:
   `dist` and `src/managed`
+- cone topology is explicit: `foundation` is included by `birth-family` and
+  `protocol`, `birth-family` is included by `age-gate`, and `protocol` carries
+  its required birth, birth-secret, and age-gate inputs
 - no cone output path is owned by more than one cone
 - no cone output path is tracked by git
 - every cone output path is ignored by `.gitignore`
