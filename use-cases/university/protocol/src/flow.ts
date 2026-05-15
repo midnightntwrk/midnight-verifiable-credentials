@@ -137,6 +137,29 @@ const sumCompanyAgentCounts = (
   return sum;
 };
 
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" && value !== null && !Array.isArray(value);
+
+const asCheckpointState = (
+  value: unknown,
+): UniversityProtocolRunnerCheckpointState => {
+  if (
+    !isRecord(value) ||
+    !isRecord(value.transport) ||
+    !Array.isArray(value.transcript) ||
+    !isRecord(value.messages) ||
+    !Array.isArray(value.messages.issuance) ||
+    !Array.isArray(value.messages.jobApplications) ||
+    !Array.isArray(value.messages.discounts) ||
+    !Array.isArray(value.students) ||
+    !Array.isArray(value.companies) ||
+    !isRecord(value.mall)
+  ) {
+    throw new Error("Malformed university protocol checkpoint state");
+  }
+  return value as UniversityProtocolRunnerCheckpointState;
+};
+
 export class UniversityProtocolFlowRunner {
   readonly dataPaths: UniversityProtocolDataPaths;
   readonly exerciseOptions: UniversityProtocolExerciseOptions;
@@ -573,9 +596,10 @@ export class UniversityProtocolFlowRunner {
     checkpoint: UniversityProtocolCheckpoint,
   ): UniversityProtocolFlowRunner {
     assertUniversityProtocolCheckpointCompatible(checkpoint);
-    const state = decodeUniversityProtocolTransportValue(
+    const decodedState = decodeUniversityProtocolTransportValue(
       checkpoint.encodedState,
-    ) as UniversityProtocolRunnerCheckpointState;
+    );
+    const state = asCheckpointState(decodedState);
     const restored = new UniversityProtocolFlowRunner(
       this.optionsForRestart(
         SerializedUniversityProtocolTransport.fromCheckpoint(state.transport),
@@ -630,9 +654,10 @@ export class UniversityProtocolFlowRunner {
   private summarizeCheckpoint(
     checkpoint: UniversityProtocolCheckpoint,
   ): UniversityProtocolCheckpointSummary {
-    const state = decodeUniversityProtocolTransportValue(
+    const decodedState = decodeUniversityProtocolTransportValue(
       checkpoint.encodedState,
-    ) as UniversityProtocolRunnerCheckpointState;
+    );
+    const state = asCheckpointState(decodedState);
     return {
       checkpointId: checkpoint.checkpointId,
       restartPoint: checkpoint.restartPoint,

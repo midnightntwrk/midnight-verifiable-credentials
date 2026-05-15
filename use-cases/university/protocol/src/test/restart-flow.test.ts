@@ -8,6 +8,7 @@ import {
   InMemoryUniversityProtocolCheckpointStore,
   SerializedUniversityProtocolTransport,
   universityProtocolCheckpointSchemaId,
+  type UniversityProtocolCheckpointStore,
   UniversityProtocolFlowRunner,
 } from "../testing.js";
 
@@ -172,5 +173,41 @@ describe("university protocol restart persistence", () => {
         },
       }),
     ).toThrow(/Unsupported university protocol checkpoint schema version/u);
+  });
+
+  it("fails fast when the checkpoint store cannot reload a saved checkpoint", () => {
+    const missingStore: UniversityProtocolCheckpointStore = {
+      save: () => undefined,
+      load: () => undefined,
+      list: () => [],
+    };
+
+    expect(() =>
+      new UniversityProtocolFlowRunner().runAllWithRestartSimulation({
+        checkpointStore: missingStore,
+        restartPoints: ["afterIssuanceRequests"],
+      }),
+    ).toThrow(/Missing persisted checkpoint/u);
+  });
+
+  it("rejects malformed decoded checkpoint state", () => {
+    const backingStore = new InMemoryUniversityProtocolCheckpointStore();
+    const tamperedStore: UniversityProtocolCheckpointStore = {
+      save: (checkpoint) => {
+        backingStore.save({
+          ...checkpoint,
+          encodedState: null,
+        });
+      },
+      load: (checkpointId) => backingStore.load(checkpointId),
+      list: () => backingStore.list(),
+    };
+
+    expect(() =>
+      new UniversityProtocolFlowRunner().runAllWithRestartSimulation({
+        checkpointStore: tamperedStore,
+        restartPoints: ["afterIssuanceRequests"],
+      }),
+    ).toThrow(/Malformed university protocol checkpoint state/u);
   });
 });
