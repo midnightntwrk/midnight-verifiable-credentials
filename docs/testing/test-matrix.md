@@ -2,6 +2,10 @@
 
 Status: current implemented test surface as of 2026-05-11.
 
+University-specific run targets, light-artifact profiles, and retained summary
+artifacts are tracked in
+[`../../use-cases/university/ci-matrix.md`](../../use-cases/university/ci-matrix.md).
+
 ## Core package tests
 
 - `core/primitives/credentials/src/test/proof-context.test.ts`
