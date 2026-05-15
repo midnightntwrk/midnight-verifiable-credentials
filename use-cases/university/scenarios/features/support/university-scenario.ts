@@ -6,10 +6,17 @@ import { Ability, type UsesAbilities } from "@serenity-js/core";
 import {
   DeterministicUniversityPartyRuntime,
   SimulatorUniversityProofExecutionBackend,
+  type CompanyRecord,
+  type DiscountApplicantRecord,
+  type IssuanceBatchRecord,
+  type MallRecord,
+  type StudentRecord,
+  type UniversityProfile as ProtocolUniversityProfile,
   type UniversityPresentationTamperingMode,
   UniversityProtocolFlowRunner,
   type UniversityProtocolExerciseOptions,
   type UniversityProtocolFlowResult,
+  type VerifierRequestPolicy,
 } from "@midnight-ntwrk/midnight-did-university-protocol/testing";
 
 import {
@@ -30,11 +37,7 @@ import {
   resolveScenarioRepoPath,
 } from "./university-scenario-backend.js";
 
-type UniversityProfile = {
-  readonly universityId: string;
-  readonly universityName: string;
-  readonly issuerDidUrl: string;
-  readonly issuerMethodId: string;
+type UniversityProfile = ProtocolUniversityProfile & {
   readonly credentialFamilyPackage: string;
   readonly schemaId: string;
   readonly holderBindingProfile: string;
@@ -43,28 +46,11 @@ type UniversityProfile = {
   readonly graduationYear: number;
   readonly graduationMonth: number;
   readonly supportsBatchIssuance: boolean;
-  readonly batchSize: number;
   readonly claimEncoding: {
     readonly stringLikeFields: string;
     readonly integerFields: string;
     readonly fieldLengths?: Record<string, number>;
   };
-};
-
-type VerifierRequestPolicy = {
-  readonly requireDiplomaIdDisclosure?: boolean;
-  readonly requireStudentIdDisclosure?: boolean;
-  readonly requireGraduateNameDisclosure?: boolean;
-  readonly requireUniversityNameDisclosure?: boolean;
-  readonly requireFacultyNameDisclosure?: boolean;
-  readonly requireAwardNameDisclosure?: boolean;
-  readonly requireHonorsCodeDisclosure?: boolean;
-  readonly requireGraduationYearDisclosure?: boolean;
-  readonly requireGraduationMonthDisclosure?: boolean;
-  readonly requireFinalGradeDisclosure?: boolean;
-  readonly requireCreditsEarnedDisclosure?: boolean;
-  readonly enforceMinimumFinalGrade?: boolean;
-  readonly minimumFinalGrade?: number;
 };
 
 type UniversityRequestPolicyPreset = {
@@ -75,68 +61,6 @@ type UniversityRequestPolicyPreset = {
   readonly requestPolicy: VerifierRequestPolicy;
 };
 
-type CompanyRecord = {
-  readonly companyId: string;
-  readonly companyName: string;
-  readonly verifierDidUrl: string;
-  readonly verifierMethodId: string;
-  readonly hiringStream: string;
-  readonly requestPresetId: string;
-  readonly requestPresetTitle: string;
-  readonly requestPolicyPurpose: string;
-  readonly requestPolicy: VerifierRequestPolicy;
-};
-
-type MallRecord = {
-  readonly mallId: string;
-  readonly mallName: string;
-  readonly verifierDidUrl: string;
-  readonly verifierMethodId: string;
-  readonly offerId: string;
-  readonly requestPresetId: string;
-  readonly requestPresetTitle: string;
-  readonly requestPolicyPurpose: string;
-  readonly requestPolicy: VerifierRequestPolicy;
-};
-
-type StudentClaimValues = {
-  readonly diplomaId: string;
-  readonly studentId: string;
-  readonly graduateName: string;
-  readonly universityName: string;
-  readonly facultyName: string;
-  readonly awardName: string;
-  readonly honorsCode: string;
-  readonly graduationYear: number;
-  readonly graduationMonth: number;
-  readonly finalGrade: number;
-  readonly creditsEarned: number;
-};
-
-type StudentRecord = {
-  readonly studentId: string;
-  readonly fullName: string;
-  readonly holderDidUrl: string;
-  readonly holderMethodId: string;
-  readonly graduationEligible: boolean;
-  readonly assignedCompanyId: string;
-  readonly requestedJobRole: string;
-  readonly diplomaClaimValues: StudentClaimValues;
-};
-
-type IssuanceBatchRecord = {
-  readonly batchId: string;
-  readonly studentIds: readonly string[];
-  readonly size: number;
-};
-
-type DiscountApplicantRecord = {
-  readonly studentId: string;
-  readonly fullName: string;
-  readonly finalGrade: number;
-  readonly expectedDiscountEligibility: boolean;
-  readonly explanation: string;
-};
 
 type MetricSample = {
   readonly name: string;

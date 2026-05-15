@@ -43,6 +43,15 @@ Execution:
   - `npm run test:bdd:university:standalone`
   - `npm run test:batch-sweep -w use-cases/university/scenarios`
 
+Standalone-hybrid notes:
+
+- `university-bdd-standalone` is an opt-in local/dispatch lane today; the
+  default PR CI does not run it end-to-end because it boots Docker-backed
+  standalone services and can be much slower than the simulator lane.
+- the standalone infrastructure binds the default Midnight service ports on
+  `127.0.0.1`, so run only one standalone stack at a time unless the
+  infrastructure is extended with explicit per-stack port overrides.
+
 Batch-sweep artifacts:
 
 - `./target/batch-sweep/summary.json`

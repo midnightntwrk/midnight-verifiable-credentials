@@ -11,9 +11,13 @@ import {
   PreloadedUniversityPartyRuntime,
   SimulatorUniversityProofExecutionBackend,
   StandaloneHybridUniversityProofExecutionBackend,
+  type CompanyRecord,
+  type MallRecord,
+  type StudentRecord,
   type UniversityPartyRecord,
   type UniversityPartyRuntime,
   type UniversityProofExecutionBackend,
+  type UniversityProfile as ProtocolUniversityProfile,
 } from "@midnight-ntwrk/midnight-did-university-protocol/testing";
 
 import {
@@ -22,11 +26,7 @@ import {
   StandaloneEnvironment,
 } from "../../../../../components/integration/standalone-environment/dist/index.js";
 
-type UniversityProfile = {
-  readonly universityId: string;
-  readonly universityName: string;
-  readonly issuerDidUrl: string;
-  readonly issuerMethodId: string;
+type UniversityProfile = ProtocolUniversityProfile & {
   readonly credentialFamilyPackage: string;
   readonly schemaId: string;
   readonly holderBindingProfile: string;
@@ -35,77 +35,11 @@ type UniversityProfile = {
   readonly graduationYear: number;
   readonly graduationMonth: number;
   readonly supportsBatchIssuance: boolean;
-  readonly batchSize: number;
   readonly claimEncoding: {
     readonly stringLikeFields: string;
     readonly integerFields: string;
     readonly fieldLengths?: Record<string, number>;
   };
-};
-
-type VerifierRequestPolicy = {
-  readonly requireDiplomaIdDisclosure?: boolean;
-  readonly requireStudentIdDisclosure?: boolean;
-  readonly requireGraduateNameDisclosure?: boolean;
-  readonly requireUniversityNameDisclosure?: boolean;
-  readonly requireFacultyNameDisclosure?: boolean;
-  readonly requireAwardNameDisclosure?: boolean;
-  readonly requireHonorsCodeDisclosure?: boolean;
-  readonly requireGraduationYearDisclosure?: boolean;
-  readonly requireGraduationMonthDisclosure?: boolean;
-  readonly requireFinalGradeDisclosure?: boolean;
-  readonly requireCreditsEarnedDisclosure?: boolean;
-  readonly enforceMinimumFinalGrade?: boolean;
-  readonly minimumFinalGrade?: number;
-};
-
-type CompanyRecord = {
-  readonly companyId: string;
-  readonly companyName: string;
-  readonly verifierDidUrl: string;
-  readonly verifierMethodId: string;
-  readonly hiringStream: string;
-  readonly requestPresetId: string;
-  readonly requestPresetTitle: string;
-  readonly requestPolicyPurpose: string;
-  readonly requestPolicy: VerifierRequestPolicy;
-};
-
-type MallRecord = {
-  readonly mallId: string;
-  readonly mallName: string;
-  readonly verifierDidUrl: string;
-  readonly verifierMethodId: string;
-  readonly offerId: string;
-  readonly requestPresetId: string;
-  readonly requestPresetTitle: string;
-  readonly requestPolicyPurpose: string;
-  readonly requestPolicy: VerifierRequestPolicy;
-};
-
-type StudentClaimValues = {
-  readonly diplomaId: string;
-  readonly studentId: string;
-  readonly graduateName: string;
-  readonly universityName: string;
-  readonly facultyName: string;
-  readonly awardName: string;
-  readonly honorsCode: string;
-  readonly graduationYear: number;
-  readonly graduationMonth: number;
-  readonly finalGrade: number;
-  readonly creditsEarned: number;
-};
-
-type StudentRecord = {
-  readonly studentId: string;
-  readonly fullName: string;
-  readonly holderDidUrl: string;
-  readonly holderMethodId: string;
-  readonly graduationEligible: boolean;
-  readonly assignedCompanyId: string;
-  readonly requestedJobRole: string;
-  readonly diplomaClaimValues: StudentClaimValues;
 };
 
 type BackendMetric = {
@@ -337,6 +271,9 @@ class StandaloneHybridUniversityScenarioBackend
     await measureAsync(this.#metrics, "standalone_environment_start_ms", async () => {
       await this.#environment.start();
     });
+    // Mark the environment as started before provisioning so teardown can run if
+    // a later DID, overlay, or wallet step throws during initialization.
+    this.#initialized = true;
     await measureAsync(this.#metrics, "standalone_wallet_sync_ms", async () => {
       await this.#environment.waitForWalletSync();
     });
@@ -521,8 +458,6 @@ class StandaloneHybridUniversityScenarioBackend
       metrics: this.#metrics,
       overlayDataPaths,
     });
-
-    this.#initialized = true;
 
     return {
       dataPaths: overlayDataPaths,
