@@ -86,7 +86,7 @@
     "typecheck:dummy-claims-lab:from-artifacts": "npm exec -w ./prototypes/credential-families/dummy-claims -- tsc -p tsconfig.json --noEmit && npm exec -w ./use-cases/hello-verifier/contract -- tsc -p tsconfig.json --noEmit",
     "typecheck:university-protocol:from-artifacts": "npm exec -w ./use-cases/university/protocol -- tsc -p tsconfig.json --noEmit",
     "typecheck:revocation:from-artifacts": "npm exec -w ./core/primitives/credentials -- tsc -p tsconfig.json --noEmit && npm exec -w ./registry/status-registry -- tsc -p tsconfig.json --noEmit && npm exec -w ./core/capabilities/same-holder -- tsc -p tsconfig.json --noEmit && npm exec -w ./prototypes/credential-families/birth -- tsc -p tsconfig.json --noEmit && npm exec -w ./prototypes/credential-families/birth-secret -- tsc -p tsconfig.json --noEmit && npm exec -w ./use-cases/age-gate/contract -- tsc -p tsconfig.json --noEmit",
-    "ci:lint": "npm run check:package-boundaries && npm run check:run-target-contract && npm run lint",
+    "ci:lint": "npm run check:package-boundaries && npm run check:run-target-contract && npm run lint -- --concurrency=4 --ui=stream",
     "ci:typecheck": "npm run typecheck:all",
     "ci:typecheck:from-artifacts": "npm run typecheck:all:from-artifacts",
     "ci:package-tests": "npm run build:all && npm run test:all",
