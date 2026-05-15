@@ -133,6 +133,8 @@ const effectiveConcurrencyLevels = (
   batchCount: number,
 ): readonly number[] => {
   const cappedBatchCount = Math.max(1, batchCount);
+  // Requested concurrency above the observed batch count cannot create more
+  // useful workers, so the artifact reports the effective clamped/deduped set.
   return [
     ...new Set(
       requestedLevels.map((level) => Math.min(level, cappedBatchCount)),
@@ -140,18 +142,30 @@ const effectiveConcurrencyLevels = (
   ];
 };
 
-const projectCompileConcurrency = (options: {
+export const projectCompileConcurrency = (options: {
   readonly compileDurationsMs: readonly number[];
   readonly compileConcurrency: number;
   readonly sequentialIssuerWallClockMs: number;
   readonly issuedCredentialCount: number;
 }): UniversityBatchSweepConcurrencyProjection => {
+  if (
+    !Number.isInteger(options.compileConcurrency) ||
+    options.compileConcurrency <= 0
+  ) {
+    throw new Error(
+      `Invalid compile concurrency level ${String(options.compileConcurrency)}`,
+    );
+  }
+
   const workerLoads = Array.from(
     { length: options.compileConcurrency },
     () => 0,
   );
 
   for (const durationMs of options.compileDurationsMs) {
+    // Use measured batch order rather than sorting by duration. That makes the
+    // projection model the observed queue order instead of an idealized LPT
+    // scheduler that the current issuer harness does not implement.
     let selectedWorker = 0;
     for (const [workerIndex, loadMs] of workerLoads.entries()) {
       if (loadMs < workerLoads[selectedWorker]!) {

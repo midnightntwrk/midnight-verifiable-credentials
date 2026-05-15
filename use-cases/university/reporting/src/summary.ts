@@ -161,6 +161,9 @@ type UniversityBatchSweepSummary = {
   readonly fastestBatchSizeByWallClockCredentialsPerSecond: number;
 };
 
+// Reporting keeps a compact projection subset so the one-page summary stays
+// readable while the batch-sweep artifact remains the source of detailed worker
+// load vectors.
 type BatchSweepReportProjection = {
   readonly batchSize: number;
   readonly compileConcurrency: number;

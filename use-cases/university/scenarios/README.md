@@ -78,6 +78,9 @@ Batch-sweep artifacts:
   deterministic projection for the fixture-construction/compile phase at the
   configured concurrency levels so timing deltas are visible without changing
   readable BDD semantics
+- requested compile-concurrency levels above the observed batch count are
+  clamped and deduplicated in each run, so small sweeps can legitimately report
+  fewer projection rows than the global configuration lists
 - one-page reporting outputs:
   - `../reporting/target/summary.json`
   - `../reporting/target/summary.md`
