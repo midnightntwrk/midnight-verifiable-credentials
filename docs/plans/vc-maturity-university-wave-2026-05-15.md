@@ -179,11 +179,17 @@ Ground rules:
 
 12. `turbo-package-graph-generated-artifacts`
 
-- status: planned
+- status:
+  [PR #245](https://github.com/midnightntwrk/midnight-verifiable-credentials/pull/245)
+  opened from `codex/vc-generated-artifact-audit`
 - scope:
   - identify package-local generated-artifact coupling that prevents safe
     parallel Turbo execution
   - move or document generated outputs so build cones become deterministic
+- validation:
+  - `npm run check:ci-build-cones`
+  - `npm run docs:links`
+  - `git diff --check`
 
 13. `turbo-build-cone-contracts`
 
