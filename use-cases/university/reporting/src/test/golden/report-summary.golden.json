@@ -1,6 +1,6 @@
 {
   "schemaId": "midnight-university-report-summary",
-  "schemaVersion": "midnight-university-report-summary.v1",
+  "schemaVersion": "midnight-university-report-summary.v2",
   "actors": {
     "universityPartyId": "uni-example-001",
     "studentCount": 10,
@@ -194,7 +194,7 @@
     }
   },
   "batchSweep": {
-    "schemaVersion": "midnight-university-batch-sweep-summary.v1",
+    "schemaVersion": "midnight-university-batch-sweep-summary.v2",
     "studentCount": 100,
     "batchSizes": [
       2,
@@ -202,7 +202,21 @@
       10,
       20
     ],
+    "compileConcurrencyLevels": [
+      1,
+      2,
+      4
+    ],
     "fastestBatchSizeByWallClockCredentialsPerSecond": 10,
+    "bestCompileConcurrencyProjection": {
+      "batchSize": 5,
+      "compileConcurrency": 4,
+      "estimatedCompileWallClockMs": 88.26742725000003,
+      "estimatedIssuerWallClockMs": 89.49301024999983,
+      "projectedCredentialsPerSecond": 1117.4057026425726,
+      "projectedSpeedupVsSequential": 3.958915797002153,
+      "compileEfficiency": 1
+    },
     "runs": [
       {
         "batchSize": 2,
@@ -211,7 +225,36 @@
         "issuanceWallClockMs": 373.49037500000003,
         "wallClockCredentialsPerSecond": 267.7445168433055,
         "compileAverageMs": 7.424408380000001,
-        "queueWaitAverageMs": 190.16599457000007
+        "queueWaitAverageMs": 190.16599457000007,
+        "compileConcurrencyProjections": [
+          {
+            "batchSize": 2,
+            "compileConcurrency": 1,
+            "estimatedCompileWallClockMs": 371.22041899999965,
+            "estimatedIssuerWallClockMs": 373.49037500000003,
+            "projectedCredentialsPerSecond": 267.7445168433055,
+            "projectedSpeedupVsSequential": 1,
+            "compileEfficiency": 1
+          },
+          {
+            "batchSize": 2,
+            "compileConcurrency": 2,
+            "estimatedCompileWallClockMs": 185.61020949999994,
+            "estimatedIssuerWallClockMs": 187.88016550000032,
+            "projectedCredentialsPerSecond": 532.254161762487,
+            "projectedSpeedupVsSequential": 1.9879180647198196,
+            "compileEfficiency": 0.9999999999999993
+          },
+          {
+            "batchSize": 2,
+            "compileConcurrency": 4,
+            "estimatedCompileWallClockMs": 96.51730894000002,
+            "estimatedIssuerWallClockMs": 98.7872649400004,
+            "projectedCredentialsPerSecond": 1012.2762287298486,
+            "projectedSpeedupVsSequential": 3.7807542827189695,
+            "compileEfficiency": 0.9615384615384605
+          }
+        ]
       },
       {
         "batchSize": 5,
@@ -220,7 +263,36 @@
         "issuanceWallClockMs": 354.2952919999999,
         "wallClockCredentialsPerSecond": 282.2504341943105,
         "compileAverageMs": 17.653485450000005,
-        "queueWaitAverageMs": 168.43171769999998
+        "queueWaitAverageMs": 168.43171769999998,
+        "compileConcurrencyProjections": [
+          {
+            "batchSize": 5,
+            "compileConcurrency": 1,
+            "estimatedCompileWallClockMs": 353.0697090000001,
+            "estimatedIssuerWallClockMs": 354.2952919999999,
+            "projectedCredentialsPerSecond": 282.2504341943105,
+            "projectedSpeedupVsSequential": 1,
+            "compileEfficiency": 1
+          },
+          {
+            "batchSize": 5,
+            "compileConcurrency": 2,
+            "estimatedCompileWallClockMs": 176.53485450000005,
+            "estimatedIssuerWallClockMs": 177.76043749999985,
+            "projectedCredentialsPerSecond": 562.5548710747299,
+            "projectedSpeedupVsSequential": 1.9931054231344374,
+            "compileEfficiency": 1
+          },
+          {
+            "batchSize": 5,
+            "compileConcurrency": 4,
+            "estimatedCompileWallClockMs": 88.26742725000003,
+            "estimatedIssuerWallClockMs": 89.49301024999983,
+            "projectedCredentialsPerSecond": 1117.4057026425726,
+            "projectedSpeedupVsSequential": 3.958915797002153,
+            "compileEfficiency": 1
+          }
+        ]
       },
       {
         "batchSize": 10,
@@ -229,7 +301,36 @@
         "issuanceWallClockMs": 345.810375,
         "wallClockCredentialsPerSecond": 289.17582359985585,
         "compileAverageMs": 34.49371670000005,
-        "queueWaitAverageMs": 155.11104577
+        "queueWaitAverageMs": 155.11104577,
+        "compileConcurrencyProjections": [
+          {
+            "batchSize": 10,
+            "compileConcurrency": 1,
+            "estimatedCompileWallClockMs": 344.9371670000005,
+            "estimatedIssuerWallClockMs": 345.810375,
+            "projectedCredentialsPerSecond": 289.17582359985585,
+            "projectedSpeedupVsSequential": 1,
+            "compileEfficiency": 1
+          },
+          {
+            "batchSize": 10,
+            "compileConcurrency": 2,
+            "estimatedCompileWallClockMs": 172.46858350000025,
+            "estimatedIssuerWallClockMs": 173.34179149999977,
+            "projectedCredentialsPerSecond": 576.8949261148033,
+            "projectedSpeedupVsSequential": 1.9949625073535742,
+            "compileEfficiency": 1
+          },
+          {
+            "batchSize": 10,
+            "compileConcurrency": 4,
+            "estimatedCompileWallClockMs": 103.48115010000015,
+            "estimatedIssuerWallClockMs": 104.35435809999967,
+            "projectedCredentialsPerSecond": 958.2733468991586,
+            "projectedSpeedupVsSequential": 3.313808654437031,
+            "compileEfficiency": 0.8333333333333334
+          }
+        ]
       },
       {
         "batchSize": 20,
@@ -238,7 +339,36 @@
         "issuanceWallClockMs": 363.59558300000003,
         "wallClockCredentialsPerSecond": 275.0308438152836,
         "compileAverageMs": 72.46977499999998,
-        "queueWaitAverageMs": 137.27698934999998
+        "queueWaitAverageMs": 137.27698934999998,
+        "compileConcurrencyProjections": [
+          {
+            "batchSize": 20,
+            "compileConcurrency": 1,
+            "estimatedCompileWallClockMs": 362.3488749999999,
+            "estimatedIssuerWallClockMs": 363.59558300000003,
+            "projectedCredentialsPerSecond": 275.0308438152836,
+            "projectedSpeedupVsSequential": 1,
+            "compileEfficiency": 1
+          },
+          {
+            "batchSize": 20,
+            "compileConcurrency": 2,
+            "estimatedCompileWallClockMs": 217.40932499999997,
+            "estimatedIssuerWallClockMs": 218.6560330000001,
+            "projectedCredentialsPerSecond": 457.3393133863357,
+            "projectedSpeedupVsSequential": 1.6628655427952443,
+            "compileEfficiency": 0.8333333333333333
+          },
+          {
+            "batchSize": 20,
+            "compileConcurrency": 4,
+            "estimatedCompileWallClockMs": 144.93954999999997,
+            "estimatedIssuerWallClockMs": 146.1862580000001,
+            "projectedCredentialsPerSecond": 684.0588258302633,
+            "projectedSpeedupVsSequential": 2.4872076758405006,
+            "compileEfficiency": 0.625
+          }
+        ]
       }
     ]
   },
@@ -261,6 +391,7 @@
   "notes": [
     "Readable BDD counts are deduplicated by scenario title and keep only the latest recorded run per title.",
     "This report summarizes existing artifacts; it does not rerun issuance, protocol, or verifier logic internally.",
-    "Batch-sweep and stress timings remain machine-local measurements and should be compared by trend, not by exact absolute value."
+    "Batch-sweep and stress timings remain machine-local measurements and should be compared by trend, not by exact absolute value.",
+    "Batch compile-concurrency projections parallelize only the fixture-construction phase in the model; the underlying readable issuance lane remains sequential."
   ]
 }

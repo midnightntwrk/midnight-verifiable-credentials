@@ -2,7 +2,7 @@ import { Given, Then, When } from "@cucumber/cucumber";
 import { actorCalled, Interaction } from "@serenity-js/core";
 import { LogEntry, Name } from "@serenity-js/core/model";
 
-import { UseUniversityScenario } from "../support/university-scenario.js";
+import { UseUniversityScenario } from "../support/university-scenario.ts";
 
 const engineer = () => actorCalled("Engineer");
 const universityScenario = () => UseUniversityScenario.from(engineer());

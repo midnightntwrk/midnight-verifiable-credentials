@@ -35,7 +35,7 @@ import {
   type UniversityScenarioBackendContext,
   defaultDataPaths,
   resolveScenarioRepoPath,
-} from "./university-scenario-backend.js";
+} from "./university-scenario-backend.ts";
 
 type UniversityProfile = ProtocolUniversityProfile & {
   readonly credentialFamilyPackage: string;

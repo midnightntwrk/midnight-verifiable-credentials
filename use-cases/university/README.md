@@ -27,7 +27,8 @@ Status:
   `readable-10` for human-readable narrative lanes and `stress-100` for
   throughput-oriented protocol lanes
 - a dedicated batch-sweep lane now compares issuance behavior across multiple
-  batch sizes without mixing that experiment into the readable BDD report
+  batch sizes and projected compile-concurrency levels without mixing that
+  experiment into the readable BDD report
 - company and mall verifier policies are now keyed to named request presets so
   fixture JSON, contract tests, and readable BDD DTOs can all refer to the
   same policy catalog
@@ -308,6 +309,8 @@ Batch-sweep lane:
   - issuance harness only
   - fixed student count with multiple batch sizes
   - queue-wait, compile, sign, delivery, and credentials-per-second comparison
+  - deterministic compile-concurrency projection for the measured
+    fixture-construction phase while keeping actual issuance sequential
 
 ### Actor bootstrap metrics
 
@@ -424,7 +427,8 @@ Current status:
   - `./reporting/target/summary.md`
   - the summary keeps a stable schema id/version and compresses the readable
     BDD lane, transcript export, 100-student stress lane, and issuance
-    batch-sweep into one handoff surface
+    batch-sweep, including compile-concurrency projections, into one handoff
+    surface
 
 ## BDD Scenarios
 

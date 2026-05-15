@@ -15,8 +15,8 @@ import {
   loadUniversityScenarioBackendMode,
   type UniversityScenarioBackend,
   type UniversityScenarioBackendContext,
-} from "./university-scenario-backend.js";
-import { UseUniversityScenario } from "./university-scenario.js";
+} from "./university-scenario-backend.ts";
+import { UseUniversityScenario } from "./university-scenario.ts";
 
 const thisFile = fileURLToPath(import.meta.url);
 const packageRoot = path.resolve(path.dirname(thisFile), "..", "..");
@@ -32,7 +32,9 @@ BeforeAll(async () => {
       ConsoleReporter.forDarkTerminals(),
       [
         "@serenity-js/core:ArtifactArchiver",
-        { outputDirectory: path.join(packageRoot, "target", "site", "serenity") },
+        {
+          outputDirectory: path.join(packageRoot, "target", "site", "serenity"),
+        },
       ],
       [
         "@serenity-js/serenity-bdd",
