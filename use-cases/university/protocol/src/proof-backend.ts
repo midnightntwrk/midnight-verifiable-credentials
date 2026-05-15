@@ -239,10 +239,11 @@ export type UniversityProofExecutionBackendMetric = {
 };
 
 export type UniversityProofExecutionBackendDescriptor = {
-  readonly mode: "simulator" | "standalone-hybrid";
+  readonly mode: "simulator" | "standalone-hybrid" | "proof-server-contract";
   readonly description: string;
   readonly usesRealDidBindings: boolean;
   readonly usesRealProofInfrastructure: boolean;
+  readonly usesRemoteProofServerContract?: boolean;
 };
 
 export interface UniversityProofExecutionBackend {

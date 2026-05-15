@@ -42,12 +42,15 @@ Ground rules:
   - `npm run test:university-policy-catalog`
 
 3. `university-proof-server-backend-contract`
-- status: planned
+- status: implemented locally on `codex/vc-university-proof-server-backend-contract`
 - scope:
   - define a concrete proof-server backend interface for the university proof
     execution seam
   - add deterministic contract tests with a fake proof-server adapter
   - document which simulator proofs map to remote proof calls
+- validation:
+  - `npm exec -w ./use-cases/university/protocol -- vitest run src/test/proof-server-contract.test.ts`
+  - `npm run test:university-protocol`
 
 4. `university-standalone-timing-telemetry`
 - status: planned
