@@ -136,7 +136,9 @@ Ground rules:
 
 9. `university-large-cohort-pack`
 
-- status: implemented locally on `codex/vc-university-large-cohort-pack`
+- status:
+  [PR #241](https://github.com/midnightntwrk/midnight-verifiable-credentials/pull/241)
+  opened against `develop` from `codex/vc-university-large-cohort-pack`
 - scope:
   - add a committed `cohort-30` data profile between `readable-10` and
     `stress-100`
@@ -151,11 +153,18 @@ Ground rules:
 
 10. `university-ci-matrix-refinement`
 
-- status: planned
+- status: implemented locally on `codex/vc-university-ci-matrix-refinement`
 - scope:
   - make university-specific build/test cones explicit
   - retain report artifacts predictably
   - document local, PR, and dispatch lane selection
+- validation:
+  - `./run.sh university-ci-matrix`
+  - `npm run check:university-ci-matrix`
+  - `npm run build:university-ci-matrix:json`
+  - `npm run docs:links`
+  - `npm run check:run-target-contract`
+  - `bash -n run.sh && git diff --check`
 
 11. `university-reference-guide-closeout`
 

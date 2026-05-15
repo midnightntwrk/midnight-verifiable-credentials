@@ -34,6 +34,10 @@
     "clean": "turbo run clean --filter=./core/primitives/credentials --filter=./registry/status-registry --filter=./core/capabilities/same-holder --filter=./core/primitives/iso-registry --filter=./components/adapters/offchain-did --filter=./prototypes/credential-families/birth --filter=./prototypes/credential-families/birth-secret --filter=./prototypes/credential-families/hello-family --filter=./prototypes/credential-families/dummy-claims --filter=./prototypes/credential-families/university-diploma --filter=./protocols/openid --filter=./use-cases/age-gate/contract --filter=./use-cases/hello-verifier/contract --filter=./components/orchestration/protocol --continue",
     "check:package-boundaries": "bash ./tooling/scripts/check-package-boundaries.sh",
     "check:run-target-contract": "bash ./tooling/scripts/check-run-target-contract.sh",
+    "check:university-ci-matrix": "node ./use-cases/university/scripts/ci-matrix.mjs --check",
+    "build:university-ci-matrix:json": "node ./use-cases/university/scripts/ci-matrix.mjs --json",
+    "build:university-ci-matrix:markdown": "node ./use-cases/university/scripts/ci-matrix.mjs --markdown",
+    "ci:university-ci-matrix": "npm run check:university-ci-matrix && npm run --silent build:university-ci-matrix:json",
     "lint": "turbo run lint --filter=./core/primitives/credentials --filter=./registry/status-registry --filter=./core/capabilities/same-holder --filter=./core/primitives/iso-registry --filter=./components/adapters/offchain-did --filter=./prototypes/credential-families/birth --filter=./prototypes/credential-families/birth-secret --filter=./prototypes/credential-families/hello-family --filter=./prototypes/credential-families/dummy-claims --filter=./prototypes/credential-families/university-diploma --filter=./protocols/openid --filter=./use-cases/age-gate/contract --filter=./use-cases/hello-verifier/contract --filter=./components/orchestration/protocol --continue",
     "lint:fix": "turbo run lint:fix --filter=./core/primitives/credentials --filter=./registry/status-registry --filter=./core/capabilities/same-holder --filter=./core/primitives/iso-registry --filter=./components/adapters/offchain-did --filter=./prototypes/credential-families/birth --filter=./prototypes/credential-families/birth-secret --filter=./prototypes/credential-families/hello-family --filter=./prototypes/credential-families/dummy-claims --filter=./prototypes/credential-families/university-diploma --filter=./protocols/openid --filter=./use-cases/age-gate/contract --filter=./use-cases/hello-verifier/contract --filter=./components/orchestration/protocol --continue",
     "lint:hello-smoke": "turbo run lint --filter=./components/adapters/offchain-did --filter=./prototypes/credential-families/hello-family --filter=./use-cases/hello-verifier/contract --continue",
@@ -89,7 +93,7 @@
     "typecheck:dummy-claims-lab:from-artifacts": "npm exec -w ./prototypes/credential-families/dummy-claims -- tsc -p tsconfig.json --noEmit && npm exec -w ./use-cases/hello-verifier/contract -- tsc -p tsconfig.json --noEmit",
     "typecheck:university-protocol:from-artifacts": "npm exec -w ./use-cases/university/protocol -- tsc -p tsconfig.json --noEmit",
     "typecheck:revocation:from-artifacts": "npm exec -w ./core/primitives/credentials -- tsc -p tsconfig.json --noEmit && npm exec -w ./registry/status-registry -- tsc -p tsconfig.json --noEmit && npm exec -w ./core/capabilities/same-holder -- tsc -p tsconfig.json --noEmit && npm exec -w ./prototypes/credential-families/birth -- tsc -p tsconfig.json --noEmit && npm exec -w ./prototypes/credential-families/birth-secret -- tsc -p tsconfig.json --noEmit && npm exec -w ./use-cases/age-gate/contract -- tsc -p tsconfig.json --noEmit",
-    "ci:lint": "npm run check:package-boundaries && npm run check:run-target-contract && npm run lint -- --concurrency=4 --ui=stream",
+    "ci:lint": "npm run check:package-boundaries && npm run check:run-target-contract && npm run check:university-ci-matrix && npm run lint -- --concurrency=4 --ui=stream",
     "ci:typecheck": "npm run typecheck:all",
     "ci:typecheck:from-artifacts": "npm run typecheck:all:from-artifacts",
     "ci:package-tests": "npm run build:all && npm run test:all",
@@ -147,7 +151,9 @@
     "build:university-data-profiles:check": "node ./use-cases/university/scripts/check-data-profiles.mjs",
     "ci:university-data-profiles": "npm run build:university-data-profiles:list && npm run build:university-data-profiles:check",
     "test:university-batch-sweep": "npm run test:batch-sweep -w use-cases/university/scenarios",
-    "ci:university-batch-sweep": "npm run typecheck -w use-cases/university/scenarios && npm run test:university-batch-sweep"
+    "ci:university-batch-sweep": "npm run typecheck -w use-cases/university/scenarios && npm run test:university-batch-sweep",
+    "ci:university-protocol-profiles:from-artifacts": "npm run ci:university-data-profiles && npm run ci:university-policy-catalog && npm run ci:university-protocol:cohort:from-artifacts && npm run ci:university-protocol:stress:from-artifacts",
+    "ci:university-protocol-profiles": "npm run build:university-protocol-cohort:prereqs && npm run build:university-protocol-stress:data && npm run ci:university-protocol-profiles:from-artifacts"
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
