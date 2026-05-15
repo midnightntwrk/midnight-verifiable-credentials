@@ -3,6 +3,8 @@ import { performance } from "node:perf_hooks";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
+
 import {
   buildUniversityProtocolStressSummary,
   renderUniversityProtocolStressSummaryMarkdown,
@@ -18,8 +20,12 @@ const repoRoot = path.resolve(
   "..",
 );
 
-const stressProfile = resolveUniversityDataProfile("stress-100");
+const profileId = process.env.UNIVERSITY_PROTOCOL_PROFILE ?? "stress-100";
+const stressProfile = resolveUniversityDataProfile(profileId);
 const stressDataDir = stressProfile.absoluteOutputDir;
+// Pin CLI artifacts to the same deterministic network-id context as Vitest
+// golden generation.
+setNetworkId("undeployed");
 
 const targetDir = path.join(
   repoRoot,
@@ -50,7 +56,16 @@ const runner = new UniversityProtocolFlowRunner({ dataPaths });
 const result = runner.runAll();
 const wallClockMs = performance.now() - startedAt;
 
-const summary = buildUniversityProtocolStressSummary(runner, result, wallClockMs);
+const artifactTargetDir = path.relative(repoRoot, targetDir);
+const summary = buildUniversityProtocolStressSummary(
+  runner,
+  result,
+  wallClockMs,
+  {
+    datasetProfile: stressProfile.profileId,
+    artifactTargetDir,
+  },
+);
 const markdown = renderUniversityProtocolStressSummaryMarkdown(summary);
 
 mkdirSync(targetDir, { recursive: true });

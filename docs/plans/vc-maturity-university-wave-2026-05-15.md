@@ -122,7 +122,9 @@ Ground rules:
 
 8. `university-protocol-persistence-restart`
 
-- status: implemented locally on `codex/vc-university-protocol-persistence-restart`
+- status:
+  [PR #240](https://github.com/midnightntwrk/midnight-verifiable-credentials/pull/240)
+  merged to `develop` from `codex/vc-university-protocol-persistence-restart`
 - scope:
   - persist in-flight university protocol threads
   - simulate restart during issuance and presentation phases
@@ -134,11 +136,18 @@ Ground rules:
 
 9. `university-large-cohort-pack`
 
-- status: planned
+- status: implemented locally on `codex/vc-university-large-cohort-pack`
 - scope:
-  - add an intermediate richer cohort beyond `readable-10` and `stress-100`
-  - increase role and company diversity
-  - keep reports readable through sampled transcript views
+  - add a committed `cohort-30` data profile between `readable-10` and
+    `stress-100`
+  - increase role, award, company, credit, and mall-discount diversity
+  - add a cohort protocol run target and light lane
+  - keep cohort/stress reports readable through sampled transcript views
+- validation:
+  - `./run.sh university-data-profiles`
+  - `./run.sh university-policy-catalog`
+  - `npm exec -w ./use-cases/university/protocol -- vitest run src/test/stress-export.test.ts src/test/policy-catalog.test.ts`
+  - `./run.sh university-protocol-cohort --light`
 
 10. `university-ci-matrix-refinement`
 

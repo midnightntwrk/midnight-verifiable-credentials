@@ -4,21 +4,21 @@
     "fullName": "Ada Avery 0001",
     "finalGrade": 98,
     "expectedDiscountEligibility": true,
-    "explanation": "grade is strictly greater than 90"
+    "explanation": "grade is at least 91"
   },
   {
     "studentId": "STU-0002",
     "fullName": "Ben Avery 0002",
     "finalGrade": 94,
     "expectedDiscountEligibility": true,
-    "explanation": "grade is strictly greater than 90"
+    "explanation": "grade is at least 91"
   },
   {
     "studentId": "STU-0003",
     "fullName": "Cara Avery 0003",
     "finalGrade": 91,
     "expectedDiscountEligibility": true,
-    "explanation": "grade is strictly greater than 90"
+    "explanation": "grade is at least 91"
   },
   {
     "studentId": "STU-0004",

@@ -26,6 +26,7 @@ Targets:
   university-policy-catalog  Validate university verifier policy preset coverage
   university-protocol        Protocol-style multi-party university flow lane
   university-protocol-export Machine-readable university protocol transcript export
+  university-protocol-cohort 30-student rich-cohort protocol summary output
   university-protocol-stress 100-student protocol stress lane with summary output
   university-summary         One-page summary over university BDD, transcript, stress, and batch-sweep artifacts
   hello-smoke                Smallest DID -> VC -> verifier handoff lane
@@ -103,7 +104,7 @@ forward_args=()
 
 if [[ $# -gt 0 ]]; then
   case "$1" in
-    full|lint|typecheck|build|test|bdd|bdd-negative|bdd-all|university-bdd|university-bdd-proof-server|university-bdd-standalone|university-batch-sweep|university-data-profiles|university-policy-catalog|university-protocol|university-protocol-export|university-protocol-stress|university-summary|hello-smoke|dummy-claims-lab|revocation|integration|integration-demo-contract|integration-protocol|targets|help|-h|--help)
+    full|lint|typecheck|build|test|bdd|bdd-negative|bdd-all|university-bdd|university-bdd-proof-server|university-bdd-standalone|university-batch-sweep|university-data-profiles|university-policy-catalog|university-protocol|university-protocol-export|university-protocol-cohort|university-protocol-stress|university-summary|hello-smoke|dummy-claims-lab|revocation|integration|integration-demo-contract|integration-protocol|targets|help|-h|--help)
       target="$1"
       shift
       ;;
@@ -268,6 +269,16 @@ case "$target" in
     else
       echo "[run] University protocol export lane"
       npm run ci:university-protocol:export
+    fi
+    ;;
+  university-protocol-cohort)
+    if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
+      echo "[run] Light university protocol cohort lane"
+      run_common_ensure_artifacts "run" managed-university-protocol-cohort
+      npm run ci:university-protocol:cohort:from-artifacts
+    else
+      echo "[run] University protocol cohort lane"
+      npm run ci:university-protocol:cohort
     fi
     ;;
   university-protocol-stress)

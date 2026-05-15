@@ -3,7 +3,7 @@ import process from "node:process";
 import { fileURLToPath } from "node:url";
 
 import {
-  buildUniversityDataArtifacts,
+  buildUniversityDataArtifactsForProfile,
   checkUniversityDataArtifacts,
   resolveUniversityDataProfile,
   writeUniversityDataArtifacts,
@@ -48,7 +48,11 @@ const dataDir = path.isAbsolute(outputDirArg)
   ? outputDirArg
   : path.resolve(universityRootDir, outputDirArg);
 
-const artifacts = buildUniversityDataArtifacts({ studentCount, batchSize });
+const artifacts = buildUniversityDataArtifactsForProfile({
+  ...resolvedProfile,
+  studentCount,
+  batchSize,
+});
 
 if (checkMode) {
   const mismatches = checkUniversityDataArtifacts(dataDir, artifacts);
