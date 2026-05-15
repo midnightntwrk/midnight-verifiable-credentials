@@ -86,9 +86,12 @@ const max = (values: readonly number[]): number =>
   values.length === 0 ? 0 : Math.max(...values);
 
 const formatMeasured = (value: number): string => value.toFixed(2);
+const visibleWorkerLoadCount = 4;
 
 const formatWorkerLoads = (workerLoadsMs: readonly number[]): string => {
-  const visibleLoads = workerLoadsMs.slice(0, 4).map(formatMeasured);
+  const visibleLoads = workerLoadsMs
+    .slice(0, visibleWorkerLoadCount)
+    .map(formatMeasured);
   if (workerLoadsMs.length <= visibleLoads.length) {
     return visibleLoads.join(", ");
   }
@@ -147,7 +150,7 @@ const effectiveConcurrencyLevels = (
     ...new Set(
       requestedLevels.map((level) => Math.min(level, cappedBatchCount)),
     ),
-  ];
+  ].sort((left, right) => left - right);
 };
 
 export const projectCompileConcurrency = (options: {
@@ -175,8 +178,12 @@ export const projectCompileConcurrency = (options: {
     // order. This models a simple online work-stealing queue rather than an
     // offline LPT scheduler the current issuer harness does not implement.
     let selectedWorker = 0;
-    for (const [workerIndex, loadMs] of workerLoads.entries()) {
-      if (loadMs < workerLoads[selectedWorker]!) {
+    for (
+      let workerIndex = 0;
+      workerIndex < workerLoads.length;
+      workerIndex += 1
+    ) {
+      if (workerLoads[workerIndex]! < workerLoads[selectedWorker]!) {
         selectedWorker = workerIndex;
       }
     }
