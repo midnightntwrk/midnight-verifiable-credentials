@@ -321,9 +321,10 @@ jobs:
     steps:
       - name: Set up Compact toolchain
         uses: midnightntwrk/setup-compact-action@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         with:
           compact-version: ${{ env.COMPACT_COMPILER_VERSION }}
-          github-token: ${{ github.token }}
 
       - name: Verify Compact installation
         run: compact compile --version
