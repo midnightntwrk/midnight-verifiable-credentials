@@ -14,15 +14,14 @@ import {
   type StudentRecord,
   type UniversityProfile as ProtocolUniversityProfile,
   type UniversityPresentationTamperingMode,
+  type UniversityProofServerExchange,
   UniversityProtocolFlowRunner,
   type UniversityProtocolExerciseOptions,
   type UniversityProtocolFlowResult,
   type VerifierRequestPolicy,
 } from "@midnight-ntwrk/midnight-did-university-protocol/testing";
 
-import {
-  type UniversityDiplomaClaims,
-} from "@midnight-ntwrk/midnight-did-credentials-university-diploma/contract";
+import { type UniversityDiplomaClaims } from "@midnight-ntwrk/midnight-did-credentials-university-diploma/contract";
 import {
   createUniversityDiplomaFixture,
   padText,
@@ -61,7 +60,6 @@ type UniversityRequestPolicyPreset = {
   readonly purpose: string;
   readonly requestPolicy: VerifierRequestPolicy;
 };
-
 
 type MetricSample = {
   readonly name: string;
@@ -126,6 +124,13 @@ type DiscountScenarioResult = {
   readonly verificationRejectedCount: number;
   readonly protocolPhaseMs: number;
   readonly metricNames: readonly string[];
+};
+
+type ProofServerExchangeSummary = {
+  readonly enabled: boolean;
+  readonly exchangeCount: number;
+  readonly operationCounts: Readonly<Record<string, number>>;
+  readonly sampleExchanges: readonly UniversityProofServerExchange[];
 };
 
 type PresentationResultView = {
@@ -208,10 +213,7 @@ class MetricRecorder {
     return { value, durationMs };
   }
 
-  mark(
-    name: string,
-    tags?: Record<string, string | number | boolean>,
-  ): void {
+  mark(name: string, tags?: Record<string, string | number | boolean>): void {
     // NOTE: `mark` records tagged events, not timed measurements. Callers
     // should keep the name distinct from `record`/`measure` samples.
     this.samples.push({
@@ -280,9 +282,7 @@ const verificationMethodRefToString = (value: {
 }): string =>
   `${bytesToHex(value.didContractAddress.bytes)}:${paddedTextToString(value.methodId)}`;
 
-const verificationMethodRefFromUnknown = (
-  value: unknown,
-): string | null => {
+const verificationMethodRefFromUnknown = (value: unknown): string | null => {
   if (!value || typeof value !== "object") {
     return null;
   }
@@ -389,21 +389,19 @@ const normalizeRequestPolicy = (
   minimumFinalGrade: BigInt(policy.minimumFinalGrade ?? 0),
 });
 
-const disclosureNamesForFlags = (
-  flags: {
-    readonly requireDiplomaIdDisclosure?: boolean;
-    readonly requireStudentIdDisclosure?: boolean;
-    readonly requireGraduateNameDisclosure?: boolean;
-    readonly requireUniversityNameDisclosure?: boolean;
-    readonly requireFacultyNameDisclosure?: boolean;
-    readonly requireAwardNameDisclosure?: boolean;
-    readonly requireHonorsCodeDisclosure?: boolean;
-    readonly requireGraduationYearDisclosure?: boolean;
-    readonly requireGraduationMonthDisclosure?: boolean;
-    readonly requireFinalGradeDisclosure?: boolean;
-    readonly requireCreditsEarnedDisclosure?: boolean;
-  },
-): string[] =>
+const disclosureNamesForFlags = (flags: {
+  readonly requireDiplomaIdDisclosure?: boolean;
+  readonly requireStudentIdDisclosure?: boolean;
+  readonly requireGraduateNameDisclosure?: boolean;
+  readonly requireUniversityNameDisclosure?: boolean;
+  readonly requireFacultyNameDisclosure?: boolean;
+  readonly requireAwardNameDisclosure?: boolean;
+  readonly requireHonorsCodeDisclosure?: boolean;
+  readonly requireGraduationYearDisclosure?: boolean;
+  readonly requireGraduationMonthDisclosure?: boolean;
+  readonly requireFinalGradeDisclosure?: boolean;
+  readonly requireCreditsEarnedDisclosure?: boolean;
+}): string[] =>
   [
     flags.requireDiplomaIdDisclosure ? "diplomaId" : undefined,
     flags.requireStudentIdDisclosure ? "studentId" : undefined,
@@ -418,9 +416,8 @@ const disclosureNamesForFlags = (
     flags.requireCreditsEarnedDisclosure ? "creditsEarned" : undefined,
   ].filter((value): value is string => typeof value === "string");
 
-const disclosureNamesForPolicy = (
-  policy: VerifierRequestPolicy,
-): string[] => disclosureNamesForFlags(policy);
+const disclosureNamesForPolicy = (policy: VerifierRequestPolicy): string[] =>
+  disclosureNamesForFlags(policy);
 
 const requestPolicyPresetCatalog = (): Readonly<
   Record<string, UniversityRequestPolicyPreset>
@@ -488,21 +485,19 @@ const assertPolicyMatchesPreset = (
   }
 };
 
-const disclosureNamesForRequest = (
-  request: {
-    readonly requireDiplomaIdDisclosure?: boolean;
-    readonly requireStudentIdDisclosure?: boolean;
-    readonly requireGraduateNameDisclosure?: boolean;
-    readonly requireUniversityNameDisclosure?: boolean;
-    readonly requireFacultyNameDisclosure?: boolean;
-    readonly requireAwardNameDisclosure?: boolean;
-    readonly requireHonorsCodeDisclosure?: boolean;
-    readonly requireGraduationYearDisclosure?: boolean;
-    readonly requireGraduationMonthDisclosure?: boolean;
-    readonly requireFinalGradeDisclosure?: boolean;
-    readonly requireCreditsEarnedDisclosure?: boolean;
-  },
-): string[] => disclosureNamesForFlags(request);
+const disclosureNamesForRequest = (request: {
+  readonly requireDiplomaIdDisclosure?: boolean;
+  readonly requireStudentIdDisclosure?: boolean;
+  readonly requireGraduateNameDisclosure?: boolean;
+  readonly requireUniversityNameDisclosure?: boolean;
+  readonly requireFacultyNameDisclosure?: boolean;
+  readonly requireAwardNameDisclosure?: boolean;
+  readonly requireHonorsCodeDisclosure?: boolean;
+  readonly requireGraduationYearDisclosure?: boolean;
+  readonly requireGraduationMonthDisclosure?: boolean;
+  readonly requireFinalGradeDisclosure?: boolean;
+  readonly requireCreditsEarnedDisclosure?: boolean;
+}): string[] => disclosureNamesForFlags(request);
 
 const average = (values: readonly number[]): number => {
   if (values.length === 0) {
@@ -515,7 +510,10 @@ export class UseUniversityScenario extends Ability {
   readonly #backendContext: UniversityScenarioBackendContext;
   readonly #paths: ScenarioDataPaths;
   readonly #exerciseOptions: {
-    companyRequestPolicyOverrides: Record<string, Partial<VerifierRequestPolicy>>;
+    companyRequestPolicyOverrides: Record<
+      string,
+      Partial<VerifierRequestPolicy>
+    >;
     duplicateIssuanceRequestStudentIds: Set<string>;
     duplicateJobApplicationSubmissionStudentIds: Set<string>;
     duplicateMallDiscountSubmissionStudentIds: Set<string>;
@@ -562,9 +560,11 @@ export class UseUniversityScenario extends Ability {
     };
   }
 
-  static locally(options: {
-    readonly dataPaths?: Partial<ScenarioDataPaths>;
-  } = {}): UseUniversityScenario {
+  static locally(
+    options: {
+      readonly dataPaths?: Partial<ScenarioDataPaths>;
+    } = {},
+  ): UseUniversityScenario {
     return new UseUniversityScenario({
       dataPaths: {
         ...defaultDataPaths,
@@ -645,18 +645,17 @@ export class UseUniversityScenario extends Ability {
   jobApplicationResultsForStudent(
     studentId: string,
   ): readonly PresentationResultView[] {
-    const results = this.#protocolFlowResult().jobApplications.resultsByStudent[
-      studentId
-    ] ?? [];
+    const results =
+      this.#protocolFlowResult().jobApplications.resultsByStudent[studentId] ??
+      [];
     return results.map((result) => ({ ...result }));
   }
 
   discountResultsForStudent(
     studentId: string,
   ): readonly PresentationResultView[] {
-    const results = this.#protocolFlowResult().discounts.resultsByStudent[
-      studentId
-    ] ?? [];
+    const results =
+      this.#protocolFlowResult().discounts.resultsByStudent[studentId] ?? [];
     return results.map((result) => ({ ...result }));
   }
 
@@ -688,7 +687,9 @@ export class UseUniversityScenario extends Ability {
 
   assertEligibleStudentCount(expectedCount: number): void {
     const students = readJson<StudentRecord[]>(this.#paths.students);
-    const eligibleStudents = students.filter((student) => student.graduationEligible);
+    const eligibleStudents = students.filter(
+      (student) => student.graduationEligible,
+    );
     if (eligibleStudents.length !== expectedCount) {
       throw new Error(
         `Expected ${expectedCount} eligible students in ${this.#paths.students}, found ${eligibleStudents.length}`,
@@ -703,10 +704,14 @@ export class UseUniversityScenario extends Ability {
     // the checked-in JSON still matches the shared preset catalog.
     for (const company of companies) {
       void normalizeRequestPolicy(company.requestPolicy);
-      assertPolicyMatchesPreset(company.requestPresetId, company.requestPolicy, {
-        title: company.requestPresetTitle,
-        purpose: company.requestPolicyPurpose,
-      });
+      assertPolicyMatchesPreset(
+        company.requestPresetId,
+        company.requestPolicy,
+        {
+          title: company.requestPresetTitle,
+          purpose: company.requestPolicyPurpose,
+        },
+      );
     }
   }
 
@@ -743,7 +748,8 @@ export class UseUniversityScenario extends Ability {
       batchSize: university.batchSize,
       backend: {
         mode: this.#backendContext.metadata.mode,
-        usesRealDidInstances: this.#backendContext.metadata.usesRealDidInstances,
+        usesRealDidInstances:
+          this.#backendContext.metadata.usesRealDidInstances,
         description: this.#backendContext.metadata.description,
         generatedOverlayDirectory:
           this.#backendContext.metadata.generatedOverlayDirectory,
@@ -820,10 +826,14 @@ export class UseUniversityScenario extends Ability {
   } {
     const companies = readJson<CompanyRecord[]>(this.#paths.companies);
     for (const company of companies) {
-      assertPolicyMatchesPreset(company.requestPresetId, company.requestPolicy, {
-        title: company.requestPresetTitle,
-        purpose: company.requestPolicyPurpose,
-      });
+      assertPolicyMatchesPreset(
+        company.requestPresetId,
+        company.requestPolicy,
+        {
+          title: company.requestPresetTitle,
+          purpose: company.requestPolicyPurpose,
+        },
+      );
     }
     return {
       companyNames: companies.map((company) => company.companyName),
@@ -884,7 +894,9 @@ export class UseUniversityScenario extends Ability {
       (record) => record.studentId === this.#selectedDiscountStudentId,
     );
     if (!applicant) {
-      throw new Error(`Unknown discount applicant ${this.#selectedDiscountStudentId}`);
+      throw new Error(
+        `Unknown discount applicant ${this.#selectedDiscountStudentId}`,
+      );
     }
 
     return {
@@ -985,6 +997,32 @@ export class UseUniversityScenario extends Ability {
     };
   }
 
+  proofServerExchangeSummary(): ProofServerExchangeSummary {
+    const recorder = this.#backendContext.protocol.proofServerRecorder;
+    if (!recorder) {
+      return {
+        enabled: false,
+        exchangeCount: 0,
+        operationCounts: {},
+        sampleExchanges: [],
+      };
+    }
+
+    const exchanges = recorder.snapshotExchanges();
+    const operationCounts: Record<string, number> = {};
+    for (const exchange of exchanges) {
+      operationCounts[exchange.request.operationKind] =
+        (operationCounts[exchange.request.operationKind] ?? 0) + 1;
+    }
+
+    return {
+      enabled: true,
+      exchangeCount: exchanges.length,
+      operationCounts,
+      sampleExchanges: exchanges.slice(0, REPORT_SAMPLE_SIZE),
+    };
+  }
+
   #exerciseOptionsSnapshot(): UniversityProtocolExerciseOptions {
     return {
       companyRequestPolicyOverrides: Object.fromEntries(
@@ -1000,7 +1038,9 @@ export class UseUniversityScenario extends Ability {
         ...this.#exerciseOptions.duplicateMallDiscountSubmissionStudentIds,
       ],
       jobApplicationTamperingByStudentId: Object.fromEntries(
-        Object.entries(this.#exerciseOptions.jobApplicationTamperingByStudentId),
+        Object.entries(
+          this.#exerciseOptions.jobApplicationTamperingByStudentId,
+        ),
       ),
     };
   }
@@ -1019,7 +1059,8 @@ export class UseUniversityScenario extends Ability {
         dataPaths: this.#paths,
         exerciseOptions: this.#exerciseOptionsSnapshot(),
         partyRuntime: this.#backendContext.protocol.partyRuntime,
-        proofExecutionBackend: this.#backendContext.protocol.proofExecutionBackend,
+        proofExecutionBackend:
+          this.#backendContext.protocol.proofExecutionBackend,
       }).runAll();
     }
     return this.#protocolResult;
@@ -1075,11 +1116,11 @@ export class UseUniversityScenario extends Ability {
       const studentId =
         dto && typeof dto === "object" && dto !== null && "studentId" in dto
           ? String(dto.studentId)
-          : existing?.studentId ?? null;
+          : (existing?.studentId ?? null);
       const verifierId =
         dto && typeof dto === "object" && dto !== null && "verifierId" in dto
           ? String(dto.verifierId)
-          : existing?.verifierId ?? null;
+          : (existing?.verifierId ?? null);
       const nextEntry: TranscriptEntryView = {
         type: entry.type,
         from: entry.from,
@@ -1294,10 +1335,7 @@ export class UseUniversityScenario extends Ability {
           readonly studentId: string;
           readonly accepted: boolean;
           readonly reason: string;
-          readonly rejectionKind:
-            | "none"
-            | "verificationFailed"
-            | "duplicate";
+          readonly rejectionKind: "none" | "verificationFailed" | "duplicate";
         };
         return {
           kind: body.kind,
@@ -1351,7 +1389,9 @@ export class UseUniversityScenario extends Ability {
     );
 
     const submittedRequests: IssuanceRequest[] = [];
-    const rosterByStudentId = new Map(students.map((student) => [student.studentId, student]));
+    const rosterByStudentId = new Map(
+      students.map((student) => [student.studentId, student]),
+    );
 
     const submitIssuanceRequest = (studentAgent: VirtualStudentAgent): void => {
       const issuanceRequest = metrics.record(
@@ -1373,13 +1413,22 @@ export class UseUniversityScenario extends Ability {
             throw new Error(`Unknown student ${issuanceRequest.studentId}`);
           }
           if (!rosterEntry.graduationEligible) {
-            throw new Error(`Student ${issuanceRequest.studentId} is not graduation eligible`);
+            throw new Error(
+              `Student ${issuanceRequest.studentId} is not graduation eligible`,
+            );
           }
           if (rosterEntry.holderMethodId !== issuanceRequest.holderMethodId) {
-            throw new Error(`Holder method mismatch for ${issuanceRequest.studentId}`);
+            throw new Error(
+              `Holder method mismatch for ${issuanceRequest.studentId}`,
+            );
           }
-          if (rosterEntry.diplomaClaimValues.diplomaId !== issuanceRequest.claimValues.diplomaId) {
-            throw new Error(`Diploma payload mismatch for ${issuanceRequest.studentId}`);
+          if (
+            rosterEntry.diplomaClaimValues.diplomaId !==
+            issuanceRequest.claimValues.diplomaId
+          ) {
+            throw new Error(
+              `Diploma payload mismatch for ${issuanceRequest.studentId}`,
+            );
           }
         },
         { studentId: studentAgent.record.studentId },
@@ -1415,12 +1464,16 @@ export class UseUniversityScenario extends Ability {
       acceptedByStudentId.set(studentId, request);
     }
     const acceptedRequests = [...acceptedByStudentId.values()];
-    const plannedIds = issuanceBatches.flatMap((batch) => [...batch.studentIds]);
+    const plannedIds = issuanceBatches.flatMap((batch) => [
+      ...batch.studentIds,
+    ]);
     const uniqueIds = new Set(plannedIds);
     const partitionMatchesPlan =
       uniqueIds.size === students.length &&
       plannedIds.length === students.length &&
-      issuanceBatches.every((batch) => batch.size === batch.studentIds.length) &&
+      issuanceBatches.every(
+        (batch) => batch.size === batch.studentIds.length,
+      ) &&
       issuanceBatches.every((batch) => batch.size <= university.batchSize) &&
       [...uniqueIds].every((studentId) => acceptedByStudentId.has(studentId));
 
@@ -1442,25 +1495,29 @@ export class UseUniversityScenario extends Ability {
         batchRequests.map((request) => batchStartedAt - request.acceptedAt),
       );
 
-      const { value: batchFixtures, durationMs: compileDurationMs } = metrics.measure(
-        "issuance_batch_compile_ms",
-        (): Array<{ student: VirtualStudentAgent; fixture: UniversityDiplomaFixture }> =>
-          batchRequests.map((request) => {
-            const fixture = createUniversityDiplomaFixture({
-              issuerConfig,
-              holderConfig: request.student.signerConfig,
-              claimOverrides: encodeClaims(request.student.record),
-              verifierChallengeHash: sha256(
-                `issuance-batch:${batch.batchId}:${request.student.record.studentId}`,
-              ),
-              issuedAt: 40_000n + BigInt(batchIndex),
-              credentialProofCreatedAt: 50_000n + BigInt(batchIndex),
-              presentationProofCreatedAt: 60_000n + BigInt(batchIndex),
-            });
-            return { student: request.student, fixture };
-          }),
-        { batchId: batch.batchId, size: batch.size },
-      );
+      const { value: batchFixtures, durationMs: compileDurationMs } =
+        metrics.measure(
+          "issuance_batch_compile_ms",
+          (): Array<{
+            student: VirtualStudentAgent;
+            fixture: UniversityDiplomaFixture;
+          }> =>
+            batchRequests.map((request) => {
+              const fixture = createUniversityDiplomaFixture({
+                issuerConfig,
+                holderConfig: request.student.signerConfig,
+                claimOverrides: encodeClaims(request.student.record),
+                verifierChallengeHash: sha256(
+                  `issuance-batch:${batch.batchId}:${request.student.record.studentId}`,
+                ),
+                issuedAt: 40_000n + BigInt(batchIndex),
+                credentialProofCreatedAt: 50_000n + BigInt(batchIndex),
+                presentationProofCreatedAt: 60_000n + BigInt(batchIndex),
+              });
+              return { student: request.student, fixture };
+            }),
+          { batchId: batch.batchId, size: batch.size },
+        );
       metrics.observe("issuance_batch_queue_wait_ms", queueWaitMs, {
         batchId: batch.batchId,
         size: batch.size,
@@ -1523,7 +1580,9 @@ export class UseUniversityScenario extends Ability {
       duplicateRequestCount,
       idempotentReplayCount: idempotentReplayStudentIds.size,
       idempotentReplayStudentIds: [...idempotentReplayStudentIds].sort(),
-      issuedCredentialCount: studentAgents.filter((student) => student.issuedFixture).length,
+      issuedCredentialCount: studentAgents.filter(
+        (student) => student.issuedFixture,
+      ).length,
       partitionMatchesPlan,
       metricNames: metrics.names(),
       batchMetrics,
@@ -1531,14 +1590,16 @@ export class UseUniversityScenario extends Ability {
         totalDurationMs > 0
           ? acceptedRequests.length / (totalDurationMs / 1000)
           : acceptedRequests.length,
-      sampleRequests: acceptedRequests.slice(0, REPORT_SAMPLE_SIZE).map((request) => ({
-        studentId: request.student.record.studentId,
-        holderDidUrl: request.student.record.holderDidUrl,
-        holderMethodId: request.student.record.holderMethodId,
-        diplomaId: request.student.record.diplomaClaimValues.diplomaId,
-        awardName: request.student.record.diplomaClaimValues.awardName,
-        finalGrade: request.student.record.diplomaClaimValues.finalGrade,
-      })),
+      sampleRequests: acceptedRequests
+        .slice(0, REPORT_SAMPLE_SIZE)
+        .map((request) => ({
+          studentId: request.student.record.studentId,
+          holderDidUrl: request.student.record.holderDidUrl,
+          holderMethodId: request.student.record.holderMethodId,
+          diplomaId: request.student.record.diplomaClaimValues.diplomaId,
+          awardName: request.student.record.diplomaClaimValues.awardName,
+          finalGrade: request.student.record.diplomaClaimValues.finalGrade,
+        })),
       sampleIssuedCredentials: studentAgents
         .filter((student) => student.issuedFixture)
         .slice(0, REPORT_SAMPLE_SIZE)
@@ -1574,10 +1635,14 @@ export class UseUniversityScenario extends Ability {
     for (const sample of this.#backendContext.protocol.proofExecutionBackend.snapshotMetrics()) {
       metrics.observe(sample.name, sample.durationMs, sample.tags);
     }
-    metrics.observe("job_protocol_phase_ms", protocolResult.metrics.jobApplicationsMs, {
-      studentCount: students.length,
-      companyCount: companies.length,
-    });
+    metrics.observe(
+      "job_protocol_phase_ms",
+      protocolResult.metrics.jobApplicationsMs,
+      {
+        studentCount: students.length,
+        companyCount: companies.length,
+      },
+    );
     metrics.mark("job_request_count", {
       companyCount: companies.length,
       requestCount: protocolResult.jobApplications.requestCount,
@@ -1649,7 +1714,9 @@ export class UseUniversityScenario extends Ability {
       (record) => record.studentId === this.#selectedDiscountStudentId,
     );
     if (!applicant) {
-      throw new Error(`Unknown discount applicant ${this.#selectedDiscountStudentId}`);
+      throw new Error(
+        `Unknown discount applicant ${this.#selectedDiscountStudentId}`,
+      );
     }
 
     const student = students.find(
@@ -1663,13 +1730,16 @@ export class UseUniversityScenario extends Ability {
     for (const sample of this.#backendContext.protocol.proofExecutionBackend.snapshotMetrics()) {
       metrics.observe(sample.name, sample.durationMs, sample.tags);
     }
-    metrics.observe("discount_protocol_phase_ms", protocolResult.metrics.discountsMs, {
-      mallId: mall.mallId,
-      selectedStudentId: student.studentId,
-    });
-    const studentResult = protocolResult.discounts.resultsByStudent[
-      student.studentId
-    ]?.at(0);
+    metrics.observe(
+      "discount_protocol_phase_ms",
+      protocolResult.metrics.discountsMs,
+      {
+        mallId: mall.mallId,
+        selectedStudentId: student.studentId,
+      },
+    );
+    const studentResult =
+      protocolResult.discounts.resultsByStudent[student.studentId]?.at(0);
     if (!studentResult) {
       throw new Error(
         `Missing mall discount result for ${student.studentId} in protocol flow`,
@@ -1710,8 +1780,7 @@ export class UseUniversityScenario extends Ability {
       finalGrade: student.diplomaClaimValues.finalGrade,
       outcome,
       explanation,
-      duplicateRejectedCount:
-        protocolResult.discounts.duplicateRejectedCount,
+      duplicateRejectedCount: protocolResult.discounts.duplicateRejectedCount,
       verificationRejectedCount:
         protocolResult.discounts.verificationRejectedCount,
       protocolPhaseMs: protocolResult.metrics.discountsMs,
@@ -1728,7 +1797,9 @@ export class UseUniversityScenario extends Ability {
 
   jobApplicationResult(): JobApplicationScenarioResult {
     if (!this.#jobApplicationResult) {
-      throw new Error("University job-application scenario has not been executed yet");
+      throw new Error(
+        "University job-application scenario has not been executed yet",
+      );
     }
     return this.#jobApplicationResult;
   }

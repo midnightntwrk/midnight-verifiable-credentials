@@ -10,6 +10,8 @@ import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import {
   DeterministicUniversityPartyRuntime,
   PreloadedUniversityPartyRuntime,
+  ProofServerContractUniversityProofExecutionBackend,
+  RecordingUniversityProofServerAdapter,
   SimulatorUniversityProofExecutionBackend,
   StandaloneHybridUniversityProofExecutionBackend,
   type CompanyRecord,
@@ -58,7 +60,10 @@ export type ScenarioDataPaths = {
   discountApplicants: string;
 };
 
-export type UniversityScenarioBackendMode = "simulator" | "standalone-hybrid";
+export type UniversityScenarioBackendMode =
+  | "simulator"
+  | "standalone-hybrid"
+  | "proof-server-contract";
 
 export type UniversityScenarioBackendMetadata = {
   readonly mode: UniversityScenarioBackendMode;
@@ -74,6 +79,7 @@ export type UniversityScenarioBackendContext = {
   readonly protocol: {
     readonly partyRuntime: UniversityPartyRuntime;
     readonly proofExecutionBackend: UniversityProofExecutionBackend;
+    readonly proofServerRecorder?: RecordingUniversityProofServerAdapter;
   };
 };
 
@@ -105,7 +111,9 @@ export const resolveScenarioRepoPath = (relativePath: string): string =>
 
 const safeOverlayRootPath = (relativePath: string): string => {
   const overlayRoot = resolveScenarioRepoPath(relativePath);
-  const allowedRoot = resolveScenarioRepoPath("use-cases/university/scenarios/target");
+  const allowedRoot = resolveScenarioRepoPath(
+    "use-cases/university/scenarios/target",
+  );
   const relativeToAllowedRoot = path.relative(allowedRoot, overlayRoot);
   if (
     relativeToAllowedRoot === "" ||
@@ -119,28 +127,40 @@ const safeOverlayRootPath = (relativePath: string): string => {
   return overlayRoot;
 };
 
-export const loadUniversityScenarioBackendMode = (): UniversityScenarioBackendMode => {
-  const rawMode = (process.env.UNIVERSITY_BDD_BACKEND ?? "simulator").trim();
-  switch (rawMode) {
-    case "":
-    case "simulator":
-      return "simulator";
-    case "standalone-hybrid":
-      return "standalone-hybrid";
-    default:
-      throw new Error(
-        `Unsupported UNIVERSITY_BDD_BACKEND=${rawMode}. Expected simulator or standalone-hybrid.`,
-      );
-  }
-};
+export const loadUniversityScenarioBackendMode =
+  (): UniversityScenarioBackendMode => {
+    const rawMode = (process.env.UNIVERSITY_BDD_BACKEND ?? "simulator").trim();
+    switch (rawMode) {
+      case "":
+      case "simulator":
+        return "simulator";
+      case "standalone-hybrid":
+        return "standalone-hybrid";
+      case "proof-server-contract":
+        return "proof-server-contract";
+      default:
+        throw new Error(
+          `Unsupported UNIVERSITY_BDD_BACKEND=${rawMode}. Expected simulator, standalone-hybrid, or proof-server-contract.`,
+        );
+    }
+  };
 
 const readJson = async <T>(relativePath: string): Promise<T> =>
-  JSON.parse(await fs.readFile(resolveScenarioRepoPath(relativePath), "utf8")) as T;
+  JSON.parse(
+    await fs.readFile(resolveScenarioRepoPath(relativePath), "utf8"),
+  ) as T;
 
-const writeJson = async (relativePath: string, value: unknown): Promise<void> => {
+const writeJson = async (
+  relativePath: string,
+  value: unknown,
+): Promise<void> => {
   const absolutePath = resolveScenarioRepoPath(relativePath);
   await fs.mkdir(path.dirname(absolutePath), { recursive: true });
-  await fs.writeFile(`${absolutePath}.tmp`, `${JSON.stringify(value, null, 2)}\n`, "utf8");
+  await fs.writeFile(
+    `${absolutePath}.tmp`,
+    `${JSON.stringify(value, null, 2)}\n`,
+    "utf8",
+  );
   await fs.rename(`${absolutePath}.tmp`, absolutePath);
 };
 
@@ -240,17 +260,54 @@ class LocalUniversityScenarioBackend implements UniversityScenarioBackend {
   }
 }
 
-class StandaloneHybridUniversityScenarioBackend
-  implements UniversityScenarioBackend
-{
-  readonly #metrics: BackendMetric[] = [];
-  readonly #environment = new StandaloneEnvironment("university-bdd");
-  readonly #overlayRoot = "use-cases/university/scenarios/target/standalone-hybrid-data";
+class ProofServerContractUniversityScenarioBackend implements UniversityScenarioBackend {
   #initialized = false;
 
   async initialize(): Promise<UniversityScenarioBackendContext> {
     if (this.#initialized) {
-      throw new Error("Standalone hybrid university backend already initialized");
+      throw new Error(
+        "Proof-server contract university backend already initialized",
+      );
+    }
+
+    this.#initialized = true;
+    const proofServerRecorder = new RecordingUniversityProofServerAdapter();
+    return {
+      dataPaths: defaultDataPaths,
+      metadata: {
+        mode: "proof-server-contract",
+        description:
+          "Local deterministic backend that records proof-server request/response DTOs around the simulator semantics.",
+        usesRealDidInstances: false,
+        generatedOverlayDirectory: null,
+        metrics: [],
+      },
+      protocol: {
+        partyRuntime: new DeterministicUniversityPartyRuntime(),
+        proofExecutionBackend:
+          new ProofServerContractUniversityProofExecutionBackend({
+            adapter: proofServerRecorder,
+          }),
+        proofServerRecorder,
+      },
+    };
+  }
+
+  async shutdown(): Promise<void> {}
+}
+
+class StandaloneHybridUniversityScenarioBackend implements UniversityScenarioBackend {
+  readonly #metrics: BackendMetric[] = [];
+  readonly #environment = new StandaloneEnvironment("university-bdd");
+  readonly #overlayRoot =
+    "use-cases/university/scenarios/target/standalone-hybrid-data";
+  #initialized = false;
+
+  async initialize(): Promise<UniversityScenarioBackendContext> {
+    if (this.#initialized) {
+      throw new Error(
+        "Standalone hybrid university backend already initialized",
+      );
     }
 
     if (!(await containerRuntimeAvailable())) {
@@ -266,9 +323,13 @@ class StandaloneHybridUniversityScenarioBackend
       force: true,
     });
 
-    await measureAsync(this.#metrics, "standalone_environment_start_ms", async () => {
-      await this.#environment.start();
-    });
+    await measureAsync(
+      this.#metrics,
+      "standalone_environment_start_ms",
+      async () => {
+        await this.#environment.start();
+      },
+    );
     // Mark the environment as started before provisioning so teardown can run if
     // a later DID, overlay, or wallet step throws during initialization.
     this.#initialized = true;
@@ -276,9 +337,13 @@ class StandaloneHybridUniversityScenarioBackend
       await this.#environment.waitForWalletSync();
     });
 
-    const university = await readJson<UniversityProfile>(defaultDataPaths.university);
+    const university = await readJson<UniversityProfile>(
+      defaultDataPaths.university,
+    );
     const students = await readJson<StudentRecord[]>(defaultDataPaths.students);
-    const companies = await readJson<CompanyRecord[]>(defaultDataPaths.companies);
+    const companies = await readJson<CompanyRecord[]>(
+      defaultDataPaths.companies,
+    );
     const mall = await readJson<MallRecord>(defaultDataPaths.mall);
 
     const universityProfile = await measureAsync(
@@ -295,7 +360,10 @@ class StandaloneHybridUniversityScenarioBackend
       { actorCount: 1 },
     );
 
-    const studentProfiles = new Map<string, Awaited<ReturnType<typeof provisionDerivedDidProfile>>>();
+    const studentProfiles = new Map<
+      string,
+      Awaited<ReturnType<typeof provisionDerivedDidProfile>>
+    >();
     await measureAsync(
       this.#metrics,
       "standalone_student_did_provision_ms",
@@ -314,7 +382,10 @@ class StandaloneHybridUniversityScenarioBackend
       { actorCount: students.length },
     );
 
-    const companyProfiles = new Map<string, Awaited<ReturnType<typeof provisionDerivedDidProfile>>>();
+    const companyProfiles = new Map<
+      string,
+      Awaited<ReturnType<typeof provisionDerivedDidProfile>>
+    >();
     await measureAsync(
       this.#metrics,
       "standalone_company_did_provision_ms",
@@ -324,7 +395,11 @@ class StandaloneHybridUniversityScenarioBackend
             this.#environment.providers,
             "verifier",
             (didString) =>
-              signerForDidString("verifier", didString, company.verifierMethodId),
+              signerForDidString(
+                "verifier",
+                didString,
+                company.verifierMethodId,
+              ),
             `university-bdd:${company.companyId}`,
           );
           companyProfiles.set(company.companyId, profile);
@@ -347,9 +422,10 @@ class StandaloneHybridUniversityScenarioBackend
       { actorCount: 1 },
     );
 
-    const overlayUniversityMethodId = universityProfile.verificationMethodRef.slice(
-      universityProfile.didString.length,
-    );
+    const overlayUniversityMethodId =
+      universityProfile.verificationMethodRef.slice(
+        universityProfile.didString.length,
+      );
     const overlayMallMethodId = mallProfile.verificationMethodRef.slice(
       mallProfile.didString.length,
     );
@@ -366,13 +442,17 @@ class StandaloneHybridUniversityScenarioBackend
       ...students.map((student) => {
         const profile = studentProfiles.get(student.studentId);
         if (!profile) {
-          throw new Error(`Missing standalone DID profile for ${student.studentId}`);
+          throw new Error(
+            `Missing standalone DID profile for ${student.studentId}`,
+          );
         }
         return partyRecordForDid({
           partyId: student.studentId,
           role: "holder",
           didString: profile.didString,
-          methodId: profile.verificationMethodRef.slice(profile.didString.length),
+          methodId: profile.verificationMethodRef.slice(
+            profile.didString.length,
+          ),
           contractAddress: profile.contractAddress,
           verificationMethodRef: profile.verificationMethodRef,
         });
@@ -380,13 +460,17 @@ class StandaloneHybridUniversityScenarioBackend
       ...companies.map((company) => {
         const profile = companyProfiles.get(company.companyId);
         if (!profile) {
-          throw new Error(`Missing standalone DID profile for ${company.companyId}`);
+          throw new Error(
+            `Missing standalone DID profile for ${company.companyId}`,
+          );
         }
         return partyRecordForDid({
           partyId: company.companyId,
           role: "verifier",
           didString: profile.didString,
-          methodId: profile.verificationMethodRef.slice(profile.didString.length),
+          methodId: profile.verificationMethodRef.slice(
+            profile.didString.length,
+          ),
           contractAddress: profile.contractAddress,
           verificationMethodRef: profile.verificationMethodRef,
         });
@@ -420,23 +504,31 @@ class StandaloneHybridUniversityScenarioBackend
     const overlayStudents: StudentRecord[] = students.map((student) => {
       const profile = studentProfiles.get(student.studentId);
       if (!profile) {
-        throw new Error(`Missing standalone DID profile for ${student.studentId}`);
+        throw new Error(
+          `Missing standalone DID profile for ${student.studentId}`,
+        );
       }
       return {
         ...student,
         holderDidUrl: profile.didString,
-        holderMethodId: profile.verificationMethodRef.slice(profile.didString.length),
+        holderMethodId: profile.verificationMethodRef.slice(
+          profile.didString.length,
+        ),
       };
     });
     const overlayCompanies: CompanyRecord[] = companies.map((company) => {
       const profile = companyProfiles.get(company.companyId);
       if (!profile) {
-        throw new Error(`Missing standalone DID profile for ${company.companyId}`);
+        throw new Error(
+          `Missing standalone DID profile for ${company.companyId}`,
+        );
       }
       return {
         ...company,
         verifierDidUrl: profile.didString,
-        verifierMethodId: profile.verificationMethodRef.slice(profile.didString.length),
+        verifierMethodId: profile.verificationMethodRef.slice(
+          profile.didString.length,
+        ),
       };
     });
     const overlayMall: MallRecord = {
@@ -489,9 +581,13 @@ export const createUniversityScenarioBackend = (
   switch (mode) {
     case "simulator":
       return new LocalUniversityScenarioBackend();
+    case "proof-server-contract":
+      return new ProofServerContractUniversityScenarioBackend();
     case "standalone-hybrid":
       return new StandaloneHybridUniversityScenarioBackend();
     default:
-      throw new Error(`Unsupported university backend mode ${mode satisfies never}`);
+      throw new Error(
+        `Unsupported university backend mode ${mode satisfies never}`,
+      );
   }
 };
