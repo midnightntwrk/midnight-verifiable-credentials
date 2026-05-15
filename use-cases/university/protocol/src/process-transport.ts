@@ -60,6 +60,33 @@ const assertStringField = (
   return fieldValue;
 };
 
+const hasUniversityEnvelopeShape = (value: unknown): boolean =>
+  isPlainRecord(value) &&
+  typeof value.version === "bigint" &&
+  value.messageId instanceof Uint8Array &&
+  value.threadId instanceof Uint8Array &&
+  typeof value.initialMessage === "boolean" &&
+  value.respondsToMessageId instanceof Uint8Array &&
+  typeof value.createdAt === "bigint" &&
+  typeof value.hasExpiresAt === "boolean" &&
+  typeof value.expiresAt === "bigint";
+
+const requireUniversityProtocolMessage = (
+  message: ProtocolMessage,
+): UniversityProtocolMessage => {
+  if (
+    typeof message.type !== "string" ||
+    typeof message.from !== "string" ||
+    typeof message.to !== "string" ||
+    !hasUniversityEnvelopeShape(message.envelope)
+  ) {
+    throw new TypeError(
+      "Serialized university protocol transport only accepts university protocol messages with protocol envelopes",
+    );
+  }
+  return message as UniversityProtocolMessage;
+};
+
 export const encodeUniversityProtocolTransportValue = (
   value: unknown,
 ): EncodedTransportValue => {
@@ -172,13 +199,17 @@ const decodeMessage = (payload: string): UniversityProtocolMessage =>
  * through a JSON serialization boundary before delivery. It is intentionally
  * still in-process; the value is catching DTO shapes that would not survive a
  * real issuer/student/verifier process boundary.
+ *
+ * The transport is exported as a development/runtime seam for future standalone
+ * harnesses. `trace()` is send-side only: receiving parties decode queued
+ * payloads without appending additional receive frames.
  */
 export class SerializedUniversityProtocolTransport extends MessageBus {
   readonly #queues = new Map<PartyId, string[]>();
   readonly #frames: UniversityProtocolTransportFrame[] = [];
 
   override send(message: ProtocolMessage): void {
-    const typedMessage = message as UniversityProtocolMessage;
+    const typedMessage = requireUniversityProtocolMessage(message);
     const payload = encodeMessage(typedMessage);
     const queue = this.#queues.get(typedMessage.to) ?? [];
     queue.push(payload);

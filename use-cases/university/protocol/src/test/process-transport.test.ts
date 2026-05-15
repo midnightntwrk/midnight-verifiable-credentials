@@ -101,6 +101,24 @@ describe("serialized university protocol transport", () => {
     ).toThrow(/Malformed university protocol transport tag future-tag/u);
   });
 
+  it("rejects non-university messages before trace metadata is derived", () => {
+    const transport = new SerializedUniversityProtocolTransport();
+
+    expect(() =>
+      transport.send({
+        type: "issuance:offer",
+        from: "external",
+        to: "STU-0001",
+        envelope: {} as Parameters<
+          SerializedUniversityProtocolTransport["send"]
+        >[0]["envelope"],
+        body: {},
+      }),
+    ).toThrow(
+      /Serialized university protocol transport only accepts university protocol messages/u,
+    );
+  });
+
   it("preserves the protocol result across a serialized process-boundary transport", () => {
     const baseline = runComparableFlow();
     const transport = new SerializedUniversityProtocolTransport();
