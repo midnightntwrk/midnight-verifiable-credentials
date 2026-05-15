@@ -16,7 +16,11 @@ Status:
 - item `9` is opened on the stack as `#227`
 - item `11` now has implementation foundation on `codex/vc-university-bdd-standalone-hybrid`
 - item `12` is the current in-flight slice on top of `#227`
-- last reviewed: `2026-05-13`
+- develop-port replacement PR: `#231`
+  (`codex/vc-university-runtime-backends-develop`)
+- superseded branch/PR: `#230` was closed because it targeted the wrong base
+  branch context
+- last reviewed: `2026-05-15`
 
 Scope boundary:
 
@@ -24,6 +28,54 @@ Scope boundary:
   harness, verifier contracts, reporting, and CI ergonomics
 - do not reopen the broader VC maturity backlog that is already effectively
   closed on the current stack
+
+## Develop-Port Status
+
+Target branch: `origin/develop`.
+
+Current replacement PR: `#231`
+(`codex/vc-university-runtime-backends-develop`).
+
+Purpose:
+
+- port the meaningful university BDD/runtime work onto `develop`
+- keep the university scenarios in the
+  `midnight-verifiable-credentials` repository, not `midnight-did`
+- preserve the readable 10-student simulator BDD lane
+- add a standalone-hybrid execution seam for real standalone DID bootstrap
+  timings without claiming full real-proof semantics yet
+
+Included in `#231`:
+
+- `UniversityPartyRuntime` and `UniversityProofExecutionBackend` seams
+- simulator and standalone-hybrid backend selection for university BDD
+- DID CRUD-style provisioning model for university, student, company, and mall
+  actors
+- DID-aware transcript DTOs for issuance, job applications, mall discount
+  presentations, issued credentials, verifier requests/responses, and
+  presentation artifacts
+- application decision export artifacts with schema coverage, including the
+  explicit `noResultReceived` rejection kind
+- BDD/reporting docs for running simulator and standalone-hybrid lanes
+
+Validation used before opening the replacement PR:
+
+- `npm run typecheck -w use-cases/university/scenarios`
+- `npm run test:bdd:university`
+- `npm run lint -w ./use-cases/university/protocol`
+- `npm run typecheck:university-protocol`
+- `npm run test:university-protocol`
+- focused application-decision schema/export tests
+- `git diff --check`
+
+Merge gates:
+
+- DCO and GPG signing on every pushed commit
+- Claude PR review with critical findings fixed
+- GitHub Actions CI green before merge to `develop`
+
+After `#231` lands, continue from the remaining queue items below rather than
+reviving the stale PR stack.
 
 ## Queue
 
