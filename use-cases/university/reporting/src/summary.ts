@@ -4,7 +4,7 @@ import path from "node:path";
 export const UNIVERSITY_REPORT_SUMMARY_SCHEMA_ID =
   "midnight-university-report-summary" as const;
 export const UNIVERSITY_REPORT_SUMMARY_SCHEMA_VERSION =
-  "midnight-university-report-summary.v1" as const;
+  "midnight-university-report-summary.v2" as const;
 
 type SerenityScenarioRecord = {
   readonly title: string;
@@ -133,6 +133,7 @@ type UniversityBatchSweepSummary = {
   readonly sweepConfig: {
     readonly studentCount: number;
     readonly batchSizes: readonly number[];
+    readonly compileConcurrencyLevels?: readonly number[];
   };
   readonly runs: readonly {
     readonly batchSize: number;
@@ -141,6 +142,15 @@ type UniversityBatchSweepSummary = {
     readonly issuanceWallClockMs: number;
     readonly wallClockCredentialsPerSecond: number;
     readonly credentialsPerSecond: number;
+    readonly compileConcurrencyProjections?: readonly {
+      readonly compileConcurrency: number;
+      readonly workerLoadsMs: readonly number[];
+      readonly estimatedCompileWallClockMs: number;
+      readonly estimatedIssuerWallClockMs: number;
+      readonly projectedCredentialsPerSecond: number;
+      readonly projectedSpeedupVsSequential: number;
+      readonly compileEfficiency: number;
+    }[];
     readonly phaseAverageMs: {
       readonly queueWait: number;
       readonly compile: number;
@@ -149,6 +159,19 @@ type UniversityBatchSweepSummary = {
     };
   }[];
   readonly fastestBatchSizeByWallClockCredentialsPerSecond: number;
+};
+
+// Reporting keeps a compact projection subset so the one-page summary stays
+// readable while the batch-sweep artifact remains the source of detailed worker
+// load vectors.
+type BatchSweepReportProjection = {
+  readonly batchSize: number;
+  readonly compileConcurrency: number;
+  readonly estimatedCompileWallClockMs: number;
+  readonly estimatedIssuerWallClockMs: number;
+  readonly projectedCredentialsPerSecond: number;
+  readonly projectedSpeedupVsSequential: number;
+  readonly compileEfficiency: number;
 };
 
 type LatestScenarioSummary = {
@@ -204,7 +227,9 @@ export type UniversityArtifactSummary = {
     readonly schemaVersion: string;
     readonly studentCount: number;
     readonly batchSizes: readonly number[];
+    readonly compileConcurrencyLevels: readonly number[];
     readonly fastestBatchSizeByWallClockCredentialsPerSecond: number;
+    readonly bestCompileConcurrencyProjection: BatchSweepReportProjection | null;
     readonly runs: readonly {
       readonly batchSize: number;
       readonly batchCount: number;
@@ -213,6 +238,7 @@ export type UniversityArtifactSummary = {
       readonly wallClockCredentialsPerSecond: number;
       readonly compileAverageMs: number;
       readonly queueWaitAverageMs: number;
+      readonly compileConcurrencyProjections: readonly BatchSweepReportProjection[];
     }[];
   };
   readonly bottlenecks: {
@@ -305,7 +331,10 @@ const scenarioCategory = (title: string): string => {
   if (lower.includes("replayed issuance request")) {
     return "issuanceReplay";
   }
-  if (lower.includes("tampered holder") || lower.includes("tampered proof signer")) {
+  if (
+    lower.includes("tampered holder") ||
+    lower.includes("tampered proof signer")
+  ) {
     return "holderBindingTampering";
   }
   if (lower.includes("tampered")) {
@@ -350,10 +379,7 @@ const slowestStressPhase = (
     ["issuance", timingsMs.issuance],
     ["jobApplications", timingsMs.jobApplications],
     ["discounts", timingsMs.discounts],
-  ] as [
-    "issuance" | "jobApplications" | "discounts",
-    number,
-  ][];
+  ] as ["issuance" | "jobApplications" | "discounts", number][];
 
   return entries.reduce(
     (best, current) =>
@@ -370,7 +396,9 @@ const slowestStressPhase = (
 export const buildUniversityArtifactSummary = (
   artifactPaths: UniversityArtifactPaths,
 ): UniversityArtifactSummary => {
-  const serenityRecords = latestScenarioRecords(artifactPaths.serenityDirectory);
+  const serenityRecords = latestScenarioRecords(
+    artifactPaths.serenityDirectory,
+  );
   const transcriptExport = readJson<UniversityProtocolTranscriptExport>(
     artifactPaths.transcriptExportPath,
   );
@@ -381,21 +409,67 @@ export const buildUniversityArtifactSummary = (
     artifactPaths.batchSweepSummaryPath,
   );
 
-  const categories = serenityRecords.reduce<Record<string, number>>((acc, record) => {
-    const category = scenarioCategory(record.title);
-    acc[category] = (acc[category] ?? 0) + 1;
-    return acc;
-  }, {});
+  const categories = serenityRecords.reduce<Record<string, number>>(
+    (acc, record) => {
+      const category = scenarioCategory(record.title);
+      acc[category] = (acc[category] ?? 0) + 1;
+      return acc;
+    },
+    {},
+  );
 
-  const batchSweepRuns = batchSweep.runs.map((run) => ({
-    batchSize: run.batchSize,
-    batchCount: run.batchCount,
-    issuedCredentialCount: run.issuedCredentialCount,
-    issuanceWallClockMs: run.issuanceWallClockMs,
-    wallClockCredentialsPerSecond: run.wallClockCredentialsPerSecond,
-    compileAverageMs: run.phaseAverageMs.compile,
-    queueWaitAverageMs: run.phaseAverageMs.queueWait,
-  }));
+  const batchSweepRuns = batchSweep.runs.map((run) => {
+    const compileConcurrencyProjections = (
+      run.compileConcurrencyProjections ?? []
+    ).map((projection) => ({
+      batchSize: run.batchSize,
+      compileConcurrency: projection.compileConcurrency,
+      estimatedCompileWallClockMs: projection.estimatedCompileWallClockMs,
+      estimatedIssuerWallClockMs: projection.estimatedIssuerWallClockMs,
+      projectedCredentialsPerSecond: projection.projectedCredentialsPerSecond,
+      projectedSpeedupVsSequential: projection.projectedSpeedupVsSequential,
+      compileEfficiency: projection.compileEfficiency,
+    }));
+
+    return {
+      batchSize: run.batchSize,
+      batchCount: run.batchCount,
+      issuedCredentialCount: run.issuedCredentialCount,
+      issuanceWallClockMs: run.issuanceWallClockMs,
+      wallClockCredentialsPerSecond: run.wallClockCredentialsPerSecond,
+      compileAverageMs: run.phaseAverageMs.compile,
+      queueWaitAverageMs: run.phaseAverageMs.queueWait,
+      compileConcurrencyProjections,
+    };
+  });
+
+  const batchSweepProjectionRows = batchSweepRuns.flatMap(
+    (run) => run.compileConcurrencyProjections,
+  );
+  const isBetterBatchSweepProjection = (
+    current: BatchSweepReportProjection,
+    best: BatchSweepReportProjection,
+  ): boolean => {
+    if (
+      current.projectedCredentialsPerSecond !==
+      best.projectedCredentialsPerSecond
+    ) {
+      return (
+        current.projectedCredentialsPerSecond >
+        best.projectedCredentialsPerSecond
+      );
+    }
+    if (current.compileConcurrency !== best.compileConcurrency) {
+      return current.compileConcurrency < best.compileConcurrency;
+    }
+    return current.batchSize < best.batchSize;
+  };
+  const bestCompileConcurrencyProjection =
+    batchSweepProjectionRows.length === 0
+      ? null
+      : batchSweepProjectionRows.reduce((best, current) =>
+          isBetterBatchSweepProjection(current, best) ? current : best,
+        );
 
   const slowestBatchSweepCompileAverage =
     batchSweepRuns.length === 0
@@ -421,9 +495,16 @@ export const buildUniversityArtifactSummary = (
     sources: { ...artifactPaths },
     readableBdd: {
       scenarioCount: serenityRecords.length,
-      passedCount: serenityRecords.filter((record) => record.result === "SUCCESS").length,
-      failedCount: serenityRecords.filter((record) => record.result !== "SUCCESS").length,
-      totalDurationMs: serenityRecords.reduce((sum, record) => sum + record.duration, 0),
+      passedCount: serenityRecords.filter(
+        (record) => record.result === "SUCCESS",
+      ).length,
+      failedCount: serenityRecords.filter(
+        (record) => record.result !== "SUCCESS",
+      ).length,
+      totalDurationMs: serenityRecords.reduce(
+        (sum, record) => sum + record.duration,
+        0,
+      ),
       categories,
       slowestScenarios: topSlowestScenarios(serenityRecords),
     },
@@ -447,18 +528,24 @@ export const buildUniversityArtifactSummary = (
       schemaVersion: batchSweep.schemaVersion,
       studentCount: batchSweep.sweepConfig.studentCount,
       batchSizes: [...batchSweep.sweepConfig.batchSizes],
+      compileConcurrencyLevels: [
+        ...(batchSweep.sweepConfig.compileConcurrencyLevels ?? [1]),
+      ],
       fastestBatchSizeByWallClockCredentialsPerSecond:
         batchSweep.fastestBatchSizeByWallClockCredentialsPerSecond,
+      bestCompileConcurrencyProjection,
       runs: batchSweepRuns,
     },
     bottlenecks: {
-      slowestReadableScenario: topSlowestScenarios(serenityRecords, 1)[0] ?? null,
+      slowestReadableScenario:
+        topSlowestScenarios(serenityRecords, 1)[0] ?? null,
       slowestBatchSweepCompileAverage:
         slowestBatchSweepCompileAverage === null
           ? null
           : {
               batchSize: slowestBatchSweepCompileAverage.batchSize,
-              compileAverageMs: slowestBatchSweepCompileAverage.compileAverageMs,
+              compileAverageMs:
+                slowestBatchSweepCompileAverage.compileAverageMs,
             },
       slowestStressPhase: slowestStressPhase(stressSummary.timingsMs),
     },
@@ -466,6 +553,7 @@ export const buildUniversityArtifactSummary = (
       "Readable BDD counts are deduplicated by scenario title and keep only the latest recorded run per title.",
       "This report summarizes existing artifacts; it does not rerun issuance, protocol, or verifier logic internally.",
       "Batch-sweep and stress timings remain machine-local measurements and should be compared by trend, not by exact absolute value.",
+      "Batch compile-concurrency projections parallelize only the fixture-construction phase in the model; the underlying readable issuance lane remains sequential.",
     ],
   };
 };
@@ -510,7 +598,9 @@ export const assertUniversityArtifactSummaryConforms = (
   value: unknown,
 ): asserts value is UniversityArtifactSummary => {
   if (!isUniversityArtifactSummary(value)) {
-    throw new TypeError("University artifact summary does not match the expected schema");
+    throw new TypeError(
+      "University artifact summary does not match the expected schema",
+    );
   }
 };
 
@@ -556,7 +646,8 @@ export const renderUniversityArtifactSummaryMarkdown = (
     `- discount accepted: ${summary.transcriptExport.rejections.discounts.accepted}`,
     `- discount verification failed: ${summary.transcriptExport.rejections.discounts.verificationFailed}`,
     ...summary.transcriptExport.rejections.discounts.byReason.map(
-      (entry) => `- discount rejection reason: ${entry.reason} (${entry.count})`,
+      (entry) =>
+        `- discount rejection reason: ${entry.reason} (${entry.count})`,
     ),
     "",
     "## Stress Summary",
@@ -577,12 +668,28 @@ export const renderUniversityArtifactSummaryMarkdown = (
     "",
     "## Batch Sweep",
     `- fastest batch size by wall-clock credentials/sec: ${summary.batchSweep.fastestBatchSizeByWallClockCredentialsPerSecond}`,
+    `- compile concurrency levels: ${summary.batchSweep.compileConcurrencyLevels.join(", ")}`,
+    ...(summary.batchSweep.bestCompileConcurrencyProjection
+      ? [
+          `- best projected compile concurrency: batch size ${summary.batchSweep.bestCompileConcurrencyProjection.batchSize}, ${summary.batchSweep.bestCompileConcurrencyProjection.compileConcurrency} workers (${format2dp(summary.batchSweep.bestCompileConcurrencyProjection.projectedCredentialsPerSecond)} projected credentials/sec, ${format2dp(summary.batchSweep.bestCompileConcurrencyProjection.projectedSpeedupVsSequential)}x speedup)`,
+        ]
+      : ["- best projected compile concurrency: unavailable"]),
     "",
     "| batch size | batches | issued | wall clock ms | compile avg ms | queue wait avg ms | wall-clock credentials/sec |",
     "| --- | ---: | ---: | ---: | ---: | ---: | ---: |",
     ...summary.batchSweep.runs.map(
       (run) =>
         `| ${run.batchSize} | ${run.batchCount} | ${run.issuedCredentialCount} | ${format2dp(run.issuanceWallClockMs)} | ${format2dp(run.compileAverageMs)} | ${format2dp(run.queueWaitAverageMs)} | ${format2dp(run.wallClockCredentialsPerSecond)} |`,
+    ),
+    "",
+    "## Batch Sweep Compile Projection",
+    "| batch size | compile concurrency | estimated issuer wall clock ms | projected credentials/sec | projected speedup | compile efficiency |",
+    "| --- | ---: | ---: | ---: | ---: | ---: |",
+    ...summary.batchSweep.runs.flatMap((run) =>
+      run.compileConcurrencyProjections.map(
+        (projection) =>
+          `| ${projection.batchSize} | ${projection.compileConcurrency} | ${format2dp(projection.estimatedIssuerWallClockMs)} | ${format2dp(projection.projectedCredentialsPerSecond)} | ${format2dp(projection.projectedSpeedupVsSequential)} | ${format2dp(projection.compileEfficiency)} |`,
+      ),
     ),
     "",
     "## Bottlenecks",

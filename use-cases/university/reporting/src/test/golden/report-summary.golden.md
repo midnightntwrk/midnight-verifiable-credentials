@@ -1,7 +1,7 @@
 # University Report Summary
 
 - schema id: midnight-university-report-summary
-- schema version: midnight-university-report-summary.v1
+- schema version: midnight-university-report-summary.v2
 - university issuer: uni-example-001
 - students: 10
 - companies: 3 (Blue Ocean Analytics, Northwind Robotics, Pioneer Systems)
@@ -59,6 +59,8 @@
 
 ## Batch Sweep
 - fastest batch size by wall-clock credentials/sec: 10
+- compile concurrency levels: 1, 2, 4
+- best projected compile concurrency: batch size 5, 4 workers (1117.41 projected credentials/sec, 3.96x speedup)
 
 | batch size | batches | issued | wall clock ms | compile avg ms | queue wait avg ms | wall-clock credentials/sec |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -66,6 +68,22 @@
 | 5 | 20 | 100 | 354.30 | 17.65 | 168.43 | 282.25 |
 | 10 | 10 | 100 | 345.81 | 34.49 | 155.11 | 289.18 |
 | 20 | 5 | 100 | 363.60 | 72.47 | 137.28 | 275.03 |
+
+## Batch Sweep Compile Projection
+| batch size | compile concurrency | estimated issuer wall clock ms | projected credentials/sec | projected speedup | compile efficiency |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 2 | 1 | 373.49 | 267.74 | 1.00 | 1.00 |
+| 2 | 2 | 187.88 | 532.25 | 1.99 | 1.00 |
+| 2 | 4 | 98.79 | 1012.28 | 3.78 | 0.96 |
+| 5 | 1 | 354.30 | 282.25 | 1.00 | 1.00 |
+| 5 | 2 | 177.76 | 562.55 | 1.99 | 1.00 |
+| 5 | 4 | 89.49 | 1117.41 | 3.96 | 1.00 |
+| 10 | 1 | 345.81 | 289.18 | 1.00 | 1.00 |
+| 10 | 2 | 173.34 | 576.89 | 1.99 | 1.00 |
+| 10 | 4 | 104.35 | 958.27 | 3.31 | 0.83 |
+| 20 | 1 | 363.60 | 275.03 | 1.00 | 1.00 |
+| 20 | 2 | 218.66 | 457.34 | 1.66 | 0.83 |
+| 20 | 4 | 146.19 | 684.06 | 2.49 | 0.63 |
 
 ## Bottlenecks
 - slowest readable scenario: A duplicate job-application submission is rejected without replacing the original acceptance (490.00 ms)
@@ -76,4 +94,5 @@
 - Readable BDD counts are deduplicated by scenario title and keep only the latest recorded run per title.
 - This report summarizes existing artifacts; it does not rerun issuance, protocol, or verifier logic internally.
 - Batch-sweep and stress timings remain machine-local measurements and should be compared by trend, not by exact absolute value.
+- Batch compile-concurrency projections parallelize only the fixture-construction phase in the model; the underlying readable issuance lane remains sequential.
 

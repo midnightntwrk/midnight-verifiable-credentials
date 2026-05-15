@@ -1,4 +1,10 @@
-import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import {
+  cpSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -57,7 +63,9 @@ describe("university artifact report summarizer", () => {
     const summary = renderFixtureSummary();
 
     expect(summary.schemaId).toBe(UNIVERSITY_REPORT_SUMMARY_SCHEMA_ID);
-    expect(summary.schemaVersion).toBe(UNIVERSITY_REPORT_SUMMARY_SCHEMA_VERSION);
+    expect(summary.schemaVersion).toBe(
+      UNIVERSITY_REPORT_SUMMARY_SCHEMA_VERSION,
+    );
     expect(summary.actors.universityPartyId).toBe("uni-example-001");
     expect(summary.actors.companyNames).toEqual([
       "Blue Ocean Analytics",
@@ -69,13 +77,26 @@ describe("university artifact report summarizer", () => {
     expect(summary.readableBdd.failedCount).toBe(0);
     expect(summary.transcriptExport.counts.totalThreads).toBe(25);
     expect(summary.stressSummary.datasetProfile).toBe("stress-100");
-    expect(summary.batchSweep.fastestBatchSizeByWallClockCredentialsPerSecond).toBe(10);
-    expect(summary.bottlenecks.slowestStressPhase.phase).toBe("jobApplications");
-    expect(() => assertUniversityArtifactSummaryConforms(summary)).not.toThrow();
+    expect(
+      summary.batchSweep.fastestBatchSizeByWallClockCredentialsPerSecond,
+    ).toBe(10);
+    expect(summary.batchSweep.compileConcurrencyLevels).toEqual([1, 2, 4]);
+    expect(summary.batchSweep.bestCompileConcurrencyProjection).toMatchObject({
+      batchSize: 5,
+      compileConcurrency: 4,
+    });
+    expect(summary.bottlenecks.slowestStressPhase.phase).toBe(
+      "jobApplications",
+    );
+    expect(() =>
+      assertUniversityArtifactSummaryConforms(summary),
+    ).not.toThrow();
   });
 
   it("deduplicates Serenity scenarios by title and keeps the latest run", () => {
-    const tempRoot = mkdtempSync(path.join(os.tmpdir(), "university-reporting-"));
+    const tempRoot = mkdtempSync(
+      path.join(os.tmpdir(), "university-reporting-"),
+    );
     const tempSerenityDirectory = path.join(tempRoot, "serenity");
     cpSync(serenityDirectory, tempSerenityDirectory, { recursive: true });
 
@@ -102,7 +123,10 @@ describe("university artifact report summarizer", () => {
         serenityDirectory: tempSerenityDirectory,
         transcriptExportPath: path.join(fixtureDir, "transcript-export.json"),
         stressSummaryPath: path.join(fixtureDir, "stress-summary.json"),
-        batchSweepSummaryPath: path.join(fixtureDir, "batch-sweep-summary.json"),
+        batchSweepSummaryPath: path.join(
+          fixtureDir,
+          "batch-sweep-summary.json",
+        ),
       });
 
       expect(summary.readableBdd.scenarioCount).toBe(13);
@@ -121,10 +145,9 @@ describe("university artifact report summarizer", () => {
   it("matches the checked-in JSON and Markdown golden summaries", () => {
     const summary = renderFixtureSummary();
     const normalizedSummary = normalizeFixturePaths(summary);
-    const normalizedMarkdown = renderUniversityArtifactSummaryMarkdown(summary).replaceAll(
-      fixtureDir,
-      "<fixtures>",
-    );
+    const normalizedMarkdown = renderUniversityArtifactSummaryMarkdown(
+      summary,
+    ).replaceAll(fixtureDir, "<fixtures>");
 
     expect(`${JSON.stringify(normalizedSummary, null, 2)}\n`).toBe(
       readGolden("report-summary.golden.json"),

@@ -69,7 +69,9 @@ Ground rules:
 
 5. `university-standalone-timing-telemetry`
 
-- status: implemented locally on `codex/vc-university-standalone-timing-telemetry`
+- status:
+  [PR #237](https://github.com/midnightntwrk/midnight-verifiable-credentials/pull/237)
+  merged to `develop` from `codex/vc-university-standalone-timing-telemetry`
 - scope:
   - expand standalone-hybrid metrics for DID bootstrap, overlay generation,
     proof backend phases, and teardown
@@ -86,11 +88,19 @@ Ground rules:
 
 6. `university-issuer-batch-concurrency-prototype`
 
-- status: planned
+- status: implemented locally on `codex/vc-university-issuer-batch-concurrency`
 - scope:
-  - add controlled batch-signing or fixture-construction concurrency
+  - add deterministic fixture-construction compile-concurrency projections to
+    the issuance batch-sweep lane
   - preserve the readable lane as sequential
   - report correctness and timing deltas side by side
+- validation:
+  - `npm run test:batch-sweep:contract -w use-cases/university/scenarios`
+  - `npm run test:batch-sweep -w use-cases/university/scenarios`
+  - `npm run test -w use-cases/university/reporting`
+  - `npm run typecheck -w use-cases/university/scenarios`
+  - `npm run typecheck -w use-cases/university/reporting`
+  - `./run.sh university-batch-sweep`
 
 7. `university-separate-process-simulator`
 

@@ -14,8 +14,8 @@ Purpose:
 - execute the current virtual-agent university flow against the checked-in
   `university-diploma` family package
 - expose a separate programmatic batch-sweep benchmark lane so issuance
-  bottlenecks can be compared across batch sizes without going through the
-  Serenity report
+  bottlenecks and compile-concurrency projections can be compared across batch
+  sizes without going through the Serenity report
 
 Files:
 
@@ -74,6 +74,13 @@ Batch-sweep artifacts:
 - `./target/batch-sweep/summary.md`
 - artifacts are regenerated on each run and are intended for local inspection or
   CI retention, not source control
+- the sweep keeps the actual issuance harness sequential, then adds a
+  deterministic projection for the fixture-construction/compile phase at the
+  configured concurrency levels so timing deltas are visible without changing
+  readable BDD semantics
+- requested compile-concurrency levels above the observed batch count are
+  clamped and deduplicated in each run, so small sweeps can legitimately report
+  fewer projection rows than the global configuration lists
 - one-page reporting outputs:
   - `../reporting/target/summary.json`
   - `../reporting/target/summary.md`
@@ -85,7 +92,9 @@ Current boundary:
 - the issuance scenario still uses the local batch harness so it can expose the
   more detailed issuance-stage metrics
 - the batch-sweep lane is issuance-only by design, so its timing summaries do
-  not include company or mall verification phases
+  not include company or mall verification phases; compile-concurrency rows are
+  modeled projections over the measured batch compile timings rather than real
+  parallel issuance
 - the job-application and mall-discount scenarios now consume the threaded
   [`../protocol/README.md`](../protocol/README.md) transcript directly instead
   of replaying separate local request choreography

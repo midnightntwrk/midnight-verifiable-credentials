@@ -10,13 +10,15 @@ import {
 import { Cast, configure, engage, serenity } from "@serenity-js/core";
 import { ConsoleReporter } from "@serenity-js/console-reporter";
 
+// This package executes source files directly through ts-node/esm and does not
+// emit JavaScript, so local support imports intentionally use `.ts` specifiers.
 import {
   createUniversityScenarioBackend,
   loadUniversityScenarioBackendMode,
   type UniversityScenarioBackend,
   type UniversityScenarioBackendContext,
-} from "./university-scenario-backend.js";
-import { UseUniversityScenario } from "./university-scenario.js";
+} from "./university-scenario-backend.ts";
+import { UseUniversityScenario } from "./university-scenario.ts";
 
 const thisFile = fileURLToPath(import.meta.url);
 const packageRoot = path.resolve(path.dirname(thisFile), "..", "..");
@@ -32,7 +34,9 @@ BeforeAll(async () => {
       ConsoleReporter.forDarkTerminals(),
       [
         "@serenity-js/core:ArtifactArchiver",
-        { outputDirectory: path.join(packageRoot, "target", "site", "serenity") },
+        {
+          outputDirectory: path.join(packageRoot, "target", "site", "serenity"),
+        },
       ],
       [
         "@serenity-js/serenity-bdd",

@@ -30,12 +30,14 @@ import {
   type UniversityDiplomaSignerOptions,
 } from "@midnight-ntwrk/midnight-did-credentials-university-diploma/testing";
 
+// This package executes source files directly through ts-node/esm and does not
+// emit JavaScript, so local support imports intentionally use `.ts` specifiers.
 import {
   type ScenarioDataPaths,
   type UniversityScenarioBackendContext,
   defaultDataPaths,
   resolveScenarioRepoPath,
-} from "./university-scenario-backend.js";
+} from "./university-scenario-backend.ts";
 
 type UniversityProfile = ProtocolUniversityProfile & {
   readonly credentialFamilyPackage: string;
