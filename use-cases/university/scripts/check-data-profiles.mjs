@@ -1,12 +1,9 @@
-import { buildUniversityDataArtifacts, checkUniversityDataArtifacts, listUniversityDataProfiles, resolveUniversityDataProfile } from "./data-profile-registry.mjs";
+import { buildUniversityDataArtifactsForProfile, checkUniversityDataArtifacts, listUniversityDataProfiles, resolveUniversityDataProfile } from "./data-profile-registry.mjs";
 
 let mismatches = 0;
 for (const profile of listUniversityDataProfiles()) {
   const resolved = resolveUniversityDataProfile(profile.profileId);
-  const artifacts = buildUniversityDataArtifacts({
-    studentCount: resolved.studentCount,
-    batchSize: resolved.batchSize,
-  });
+  const artifacts = buildUniversityDataArtifactsForProfile(resolved);
   mismatches += checkUniversityDataArtifacts(resolved.absoluteOutputDir, artifacts);
 }
 

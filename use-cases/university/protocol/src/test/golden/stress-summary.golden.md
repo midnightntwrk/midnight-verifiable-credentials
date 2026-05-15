@@ -1,6 +1,6 @@
 # University Protocol Stress Summary
 
-- schema version: midnight-university-protocol-stress-summary.v1
+- schema version: midnight-university-protocol-stress-summary.v2
 - dataset profile: stress-100
 
 ## Dataset
@@ -54,6 +54,30 @@
 - discountEvaluationsPerSecond: <measured>
 - transcriptEntriesPerSecond: <measured>
 
+## Sampled Transcript
+- issuance samples: 3 shown, 97 omitted
+- job application samples: 5 shown, 95 omitted
+- discount samples: 5 shown, 0 omitted
+
+### Issuance Samples
+- Ada Avery 0001: Student STU-0001 requested diploma issuance -> University issued diploma credential to STU-0001 in batch-01
+- Ben Avery 0002: Student STU-0002 requested diploma issuance -> University issued diploma credential to STU-0002 in batch-01
+- Cara Avery 0003: Student STU-0003 requested diploma issuance -> University issued diploma credential to STU-0003 in batch-01
+
+### Job Application Samples
+- Ada Avery 0001 to Northwind Robotics: Company company-northwind-robotics requested a diploma presentation from STU-0001 -> Student STU-0001 submitted a jobApplication presentation -> Company company-northwind-robotics returned accepted for STU-0001
+- Ben Avery 0002 to Blue Ocean Analytics: Company company-blue-ocean-analytics requested a diploma presentation from STU-0002 -> Student STU-0002 submitted a jobApplication presentation -> Company company-blue-ocean-analytics returned accepted for STU-0002
+- Cara Avery 0003 to Pioneer Systems: Company company-pioneer-systems requested a diploma presentation from STU-0003 -> Student STU-0003 submitted a jobApplication presentation -> Company company-pioneer-systems returned accepted for STU-0003
+- Dion Avery 0004 to Northwind Robotics: Company company-northwind-robotics requested a diploma presentation from STU-0004 -> Student STU-0004 submitted a jobApplication presentation -> Company company-northwind-robotics returned accepted for STU-0004
+- Ella Avery 0005 to Blue Ocean Analytics: Company company-blue-ocean-analytics requested a diploma presentation from STU-0005 -> Student STU-0005 submitted a jobApplication presentation -> Company company-blue-ocean-analytics returned accepted for STU-0005
+
+### Discount Samples
+- Ada Avery 0001 to Student Square Mall: Mall mall-student-square requested a diploma presentation from STU-0001 -> Student STU-0001 submitted a mallDiscount presentation -> Mall mall-student-square returned accepted for STU-0001
+- Ben Avery 0002 to Student Square Mall: Mall mall-student-square requested a diploma presentation from STU-0002 -> Student STU-0002 submitted a mallDiscount presentation -> Mall mall-student-square returned accepted for STU-0002
+- Cara Avery 0003 to Student Square Mall: Mall mall-student-square requested a diploma presentation from STU-0003 -> Student STU-0003 submitted a mallDiscount presentation -> Mall mall-student-square returned accepted for STU-0003
+- Dion Avery 0004 to Student Square Mall: Mall mall-student-square requested a diploma presentation from STU-0004 -> Student STU-0004 submitted a mallDiscount presentation -> Mall mall-student-square returned rejected for STU-0004
+- Ella Avery 0005 to Student Square Mall: Mall mall-student-square requested a diploma presentation from STU-0005 -> Student STU-0005 submitted a mallDiscount presentation -> Mall mall-student-square returned rejected for STU-0005
+
 ## Artifact Retention
 - target directory: use-cases/university/protocol/target/stress-100
 - files: summary.json, summary.md
@@ -62,3 +86,4 @@
 ## Notes
 - Mall discount evaluation remains a fixed-size five-applicant control sample.
 - Timing and throughput figures are machine-local measurements and should be compared in bands, not as exact constants.
+- Sampled transcript views keep profile summaries readable; use transcript exports when full DTO payloads are required.

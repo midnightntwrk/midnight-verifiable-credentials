@@ -200,8 +200,13 @@ Status: current implemented test surface as of 2026-05-11.
   - `./run.sh university-summary --light` reuses the existing university
     artifact set when available and only rebuilds the reporting package itself
 - root `./run.sh university-data-profiles` lane
-  - validates the committed `readable-10` and `stress-100` university data
-    profiles against the shared generator registry
+  - validates the committed `readable-10`, `cohort-30`, and `stress-100`
+    university data profiles against the shared generator registry
+- root `./run.sh university-protocol-cohort` lane
+  - executes the 30-student, 6-company university protocol profile
+  - emits JSON/Markdown summary artifacts with sampled transcript views so
+    reviewer-facing output stays readable while the profile exercises richer
+    actor and policy diversity
 - coverage boundary:
   - these scenarios run as one-process virtual-agent orchestration with metrics
   - issuance still uses the local batch harness for richer issuance-stage

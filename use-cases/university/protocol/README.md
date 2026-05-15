@@ -87,14 +87,17 @@ Scope:
   `target/readable-10`
 - export summaries group entries per thread and include rejection-kind
   breakdowns for downstream tooling
+- the `cohort-30` profile adds a richer 30-student, 6-company protocol lane with
+  sampled transcript views in the profile summary so representative DTO intent
+  stays readable without expanding every thread
 - the reporting package now consumes those transcript exports together with the
   readable BDD, stress, and batch-sweep artifacts to emit one compact
   university summary
 - transcript exports now carry an explicit schema id, schema version, and
   exact-match reader compatibility window so downstream consumers can fail fast
   on unsupported shapes instead of guessing from ad hoc field presence
-- the 100-student stress lane now emits both JSON and Markdown artifacts under
-  `target/stress-100`
+- the cohort and 100-student stress lanes now emit both JSON and Markdown
+  artifacts under `target/cohort-30` and `target/stress-100`
 - readable and stress lanes now resolve their fixture directories from the
   shared university data-profile registry instead of hardcoded path strings
 - stress artifacts now carry an explicit schema version and retention hint so a
@@ -102,6 +105,9 @@ Scope:
 
 Stress-lane note:
 
+- the 30-student cohort profile scales issuance, company job applications, and
+  mall-discount samples enough to exercise verifier diversity without replacing
+  the smaller human-readable BDD fixture
 - the 100-student stress dataset scales issuance and company job-application
   threads to 100 students
 - the mall discount slice intentionally remains fixed at 5 selected applicants
@@ -117,6 +123,8 @@ Build and test:
   - `./run.sh university-policy-catalog`
   - `./run.sh university-protocol-export`
   - `./run.sh university-protocol-export --light`
+  - `./run.sh university-protocol-cohort`
+  - `./run.sh university-protocol-cohort --light`
   - `./run.sh university-protocol-stress`
   - `./run.sh university-protocol-stress --light`
 - `npm run lint -w ./use-cases/university/protocol`
@@ -144,12 +152,16 @@ Build and test:
       schema version and widen or replace the compatibility window deliberately
 - stress summary:
   - `npm run stress:run -w ./use-cases/university/protocol`
+  - `UNIVERSITY_PROTOCOL_PROFILE=cohort-30 npm run stress:run -w ./use-cases/university/protocol`
   - output:
+    - `./use-cases/university/protocol/target/cohort-30/summary.json`
+    - `./use-cases/university/protocol/target/cohort-30/summary.md`
     - `./use-cases/university/protocol/target/stress-100/summary.json`
     - `./use-cases/university/protocol/target/stress-100/summary.md`
   - retention guidance:
-    - upload the entire `./use-cases/university/protocol/target/stress-100`
-      directory as one workflow artifact so the JSON and Markdown stay paired
+    - upload the entire profile directory under
+      `./use-cases/university/protocol/target/<profile-id>` as one workflow
+      artifact so the JSON and Markdown stay paired
 
 Proof-server contract seam:
 

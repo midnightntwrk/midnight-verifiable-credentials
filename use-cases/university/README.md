@@ -30,8 +30,9 @@ Status:
 - committed stress-summary artifacts now have a stable JSON/Markdown contract
   for downstream CI publication
 - named data profiles now define the canonical university fixtures:
-  `readable-10` for human-readable narrative lanes and `stress-100` for
-  throughput-oriented protocol lanes
+  `readable-10` for human-readable narrative lanes, `cohort-30` for richer
+  protocol/export maturity checks, and `stress-100` for throughput-oriented
+  protocol lanes
 - a dedicated batch-sweep lane now compares issuance behavior across multiple
   batch sizes and projected compile-concurrency levels without mixing that
   experiment into the readable BDD report
@@ -92,8 +93,12 @@ The slice is intentionally explicit and operational:
   construction, presentation construction, and verifier checks; the BDD
   `proof-server-contract` lane surfaces those exchanges alongside the
   representative job-application and mall-discount protocol threads
-- the repository also carries a separate 100-student stress dataset for the
-  protocol lane when you want throughput-oriented measurements instead
+- the repository also carries a separate 30-student cohort dataset for richer
+  protocol/export checks and a 100-student stress dataset when you want
+  throughput-oriented measurements instead
+- cohort/stress profile summaries include sampled transcript views so a human
+  can inspect representative student/issuer/verifier exchanges without opening
+  the full transcript DTO export
 - that stress lane now publishes paired `summary.json` and `summary.md`
   artifacts under `use-cases/university/protocol/target/stress-100`
 
@@ -194,6 +199,7 @@ Committed data artifacts:
 
 - named profile registry:
   - `readable-10` -> [`./data`](./data)
+  - `cohort-30` -> [`./data/cohort-30`](./data/cohort-30)
   - `stress-100` -> [`./data/stress-100`](./data/stress-100)
 - university issuer profile:
   - [`./data/university.json`](./data/university.json)
@@ -223,7 +229,13 @@ Dataset regeneration script:
   - `./run.sh university-data-profiles`
   - `./run.sh university-policy-catalog`
   - `node ./use-cases/university/scripts/generate-university-use-case-data.mjs --profile readable-10 --check`
+  - `node ./use-cases/university/scripts/generate-university-use-case-data.mjs --profile cohort-30 --check`
   - `node ./use-cases/university/scripts/generate-university-use-case-data.mjs --profile stress-100 --check`
+- 30-student cohort dataset regeneration:
+  - `node ./use-cases/university/scripts/generate-university-use-case-data.mjs --profile cohort-30`
+- cohort artifact generation:
+  - `./run.sh university-protocol-cohort`
+  - `./run.sh university-protocol-cohort --light`
 - 100-student stress dataset regeneration:
   - `node ./use-cases/university/scripts/generate-university-use-case-data.mjs --profile stress-100`
 - stress artifact generation:

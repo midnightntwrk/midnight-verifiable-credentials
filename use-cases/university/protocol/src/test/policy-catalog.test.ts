@@ -22,6 +22,16 @@ const stressDataPaths = {
     "use-cases/university/data/stress-100/discount-applicants.json",
 };
 
+const cohortDataPaths = {
+  university: "use-cases/university/data/cohort-30/university.json",
+  students: "use-cases/university/data/cohort-30/students.json",
+  companies: "use-cases/university/data/cohort-30/companies.json",
+  mall: "use-cases/university/data/cohort-30/mall.json",
+  issuanceBatches: "use-cases/university/data/cohort-30/issuance-batches.json",
+  discountApplicants:
+    "use-cases/university/data/cohort-30/discount-applicants.json",
+};
+
 const replaceFirstCompany = (
   fixtureData: UniversityFixtureData,
   update: (company: CompanyRecord) => CompanyRecord,
@@ -33,10 +43,15 @@ const replaceFirstCompany = (
 describe("university request-policy catalog audit", () => {
   const presetCatalog = loadUniversityRequestPolicyPresetCatalog();
 
-  it("proves readable and stress fixture policies are covered by the shared preset catalog", () => {
+  it("proves all committed fixture profiles are covered by the shared preset catalog", () => {
     const readableAudit = buildUniversityPolicyCatalogAudit({
       profileId: "readable-10",
       fixtureData: loadUniversityFixtureData(),
+      presetCatalog,
+    });
+    const cohortAudit = buildUniversityPolicyCatalogAudit({
+      profileId: "cohort-30",
+      fixtureData: loadUniversityFixtureData(cohortDataPaths),
       presetCatalog,
     });
     const stressAudit = buildUniversityPolicyCatalogAudit({
@@ -49,11 +64,16 @@ describe("university request-policy catalog audit", () => {
       assertUniversityPolicyCatalogAuditPasses(readableAudit),
     ).not.toThrow();
     expect(() =>
+      assertUniversityPolicyCatalogAuditPasses(cohortAudit),
+    ).not.toThrow();
+    expect(() =>
       assertUniversityPolicyCatalogAuditPasses(stressAudit),
     ).not.toThrow();
     expect(readableAudit.findings).toEqual([]);
+    expect(cohortAudit.findings).toEqual([]);
     expect(stressAudit.findings).toEqual([]);
     expect(readableAudit.usedPresetIds).toEqual(Object.keys(presetCatalog).sort());
+    expect(cohortAudit.usedPresetIds).toEqual(Object.keys(presetCatalog).sort());
     expect(stressAudit.usedPresetIds).toEqual(Object.keys(presetCatalog).sort());
     expect(readableAudit.checks).toEqual({
       allFixturePresetsKnown: true,
@@ -68,6 +88,7 @@ describe("university request-policy catalog audit", () => {
         (record) => record.explicitPolicyFields.length > 0,
       ),
     ).toBe(true);
+    expect(cohortAudit.coverage).toHaveLength(7);
   });
 
   it("reports missing fixture presets instead of silently accepting drift", () => {

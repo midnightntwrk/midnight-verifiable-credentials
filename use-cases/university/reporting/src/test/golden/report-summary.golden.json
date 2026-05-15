@@ -132,7 +132,7 @@
     }
   },
   "stressSummary": {
-    "schemaVersion": "midnight-university-protocol-stress-summary.v1",
+    "schemaVersion": "midnight-university-protocol-stress-summary.v2",
     "datasetProfile": "stress-100",
     "dataset": {
       "studentCount": 100,
@@ -180,17 +180,17 @@
       }
     },
     "timingsMs": {
-      "issuance": 366.07187500000003,
-      "jobApplications": 1721.5355410000002,
-      "discounts": 72.58666600000015,
-      "runnerTotal": 2160.1978329999997,
-      "wallClock": 2259.0509589999997
+      "issuance": 370.52575,
+      "jobApplications": 1725.90425,
+      "discounts": 71.75370800000019,
+      "runnerTotal": 2168.184791,
+      "wallClock": 2211.456167
     },
     "throughput": {
-      "issuanceCredentialsPerSecond": 273.17039857268463,
-      "jobApplicationResultsPerSecond": 58.087676738821386,
-      "discountEvaluationsPerSecond": 68.88317476931631,
-      "transcriptEntriesPerSecond": 227.9718383280614
+      "issuanceCredentialsPerSecond": 269.8867757504033,
+      "jobApplicationResultsPerSecond": 57.94064184035702,
+      "discountEvaluationsPerSecond": 69.68280998105334,
+      "transcriptEntriesPerSecond": 232.87823095251974
     }
   },
   "batchSweep": {
@@ -385,7 +385,7 @@
     },
     "slowestStressPhase": {
       "phase": "jobApplications",
-      "durationMs": 1721.5355410000002
+      "durationMs": 1725.90425
     }
   },
   "notes": [

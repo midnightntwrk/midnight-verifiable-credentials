@@ -49,13 +49,13 @@
 - accepted job applications: 100
 - accepted discounts: 3
 - rejected discounts: 2
-- issuance ms: 366.07
-- job applications ms: 1721.54
-- discounts ms: 72.59
-- wall clock ms: 2259.05
-- issuance credentials/sec: 273.17
-- job application results/sec: 58.09
-- discount evaluations/sec: 68.88
+- issuance ms: 370.53
+- job applications ms: 1725.90
+- discounts ms: 71.75
+- wall clock ms: 2211.46
+- issuance credentials/sec: 269.89
+- job application results/sec: 57.94
+- discount evaluations/sec: 69.68
 
 ## Batch Sweep
 - fastest batch size by wall-clock credentials/sec: 10
@@ -88,7 +88,7 @@
 ## Bottlenecks
 - slowest readable scenario: A duplicate job-application submission is rejected without replacing the original acceptance (490.00 ms)
 - slowest batch compile average: batch size 20 (72.47 ms)
-- slowest stress phase: jobApplications (1721.54 ms)
+- slowest stress phase: jobApplications (1725.90 ms)
 
 ## Notes
 - Readable BDD counts are deduplicated by scenario title and keep only the latest recorded run per title.

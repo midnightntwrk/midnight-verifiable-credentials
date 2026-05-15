@@ -1,0 +1,50 @@
+[
+  {
+    "batchId": "batch-01",
+    "studentIds": [
+      "STU-0001",
+      "STU-0002",
+      "STU-0003",
+      "STU-0004",
+      "STU-0005",
+      "STU-0006",
+      "STU-0007",
+      "STU-0008",
+      "STU-0009",
+      "STU-0010"
+    ],
+    "size": 10
+  },
+  {
+    "batchId": "batch-02",
+    "studentIds": [
+      "STU-0011",
+      "STU-0012",
+      "STU-0013",
+      "STU-0014",
+      "STU-0015",
+      "STU-0016",
+      "STU-0017",
+      "STU-0018",
+      "STU-0019",
+      "STU-0020"
+    ],
+    "size": 10
+  },
+  {
+    "batchId": "batch-03",
+    "studentIds": [
+      "STU-0021",
+      "STU-0022",
+      "STU-0023",
+      "STU-0024",
+      "STU-0025",
+      "STU-0026",
+      "STU-0027",
+      "STU-0028",
+      "STU-0029",
+      "STU-0030"
+    ],
+    "size": 10
+  }
+]

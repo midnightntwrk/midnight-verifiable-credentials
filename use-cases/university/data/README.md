@@ -6,6 +6,12 @@ Canonical university fixture profiles:
   - directory: `./`
   - purpose: human-readable BDD scenarios and transcript exports
   - shape: 10 students, 2 issuance batches of 5
+- `cohort-30`
+  - directory: `./cohort-30`
+  - purpose: intermediate protocol/export profile with richer participant and
+    outcome diversity while keeping summaries readable
+  - shape: 30 students, 6 companies, 10 discount applicants, 3 issuance batches
+    of 10
 - `stress-100`
   - directory: `./stress-100`
   - purpose: throughput-oriented protocol stress lanes
@@ -34,7 +40,7 @@ Validation:
 - `./run.sh university-data-profiles`
 - `./run.sh university-policy-catalog`
 - `node ./use-cases/university/scripts/list-data-profiles.mjs --json`
-- the policy-catalog audit proves both `readable-10` and `stress-100`
+- the policy-catalog audit proves `readable-10`, `cohort-30`, and `stress-100`
   verifier fixtures reference known presets, embed matching policies, exercise
   every catalog preset, and document why each explicit disclosure or threshold
   policy field is requested

@@ -1,11 +1,21 @@
+import {
+  buildUniversityProtocolTranscriptExport,
+  type UniversityProtocolThreadExport,
+} from "./exporter.js";
 import type { UniversityProtocolFlowResult, UniversityProtocolFlowRunner } from "./flow.js";
 
 type FlowResultBody =
   UniversityProtocolFlowResult["discounts"]["resultsByStudent"][string][number];
 
+export type UniversityProtocolSummaryProfileId =
+  // readable-10 uses the BDD/reporting path; this stress summary exporter only
+  // writes the larger protocol summary artifacts.
+  | "cohort-30"
+  | "stress-100";
+
 export type UniversityProtocolStressSummary = {
-  readonly schemaVersion: "midnight-university-protocol-stress-summary.v1";
-  readonly datasetProfile: "stress-100";
+  readonly schemaVersion: "midnight-university-protocol-stress-summary.v2";
+  readonly datasetProfile: UniversityProtocolSummaryProfileId;
   readonly dataset: {
     readonly studentCount: number;
     readonly companyCount: number;
@@ -58,15 +68,45 @@ export type UniversityProtocolStressSummary = {
     readonly discountEvaluationsPerSecond: number;
     readonly transcriptEntriesPerSecond: number;
   };
+  readonly sampledTranscript: UniversityProtocolSampledTranscriptSummary;
   readonly artifactRetention: {
-    readonly targetDir: "use-cases/university/protocol/target/stress-100";
+    readonly targetDir: string;
     readonly files: readonly ["summary.json", "summary.md"];
-    readonly ciRecommendation: "Upload target/stress-100 as a workflow artifact directory.";
+    readonly ciRecommendation: string;
   };
-  readonly notes: readonly [
-    "Mall discount evaluation remains a fixed-size five-applicant control sample.",
-    "Timing and throughput figures are machine-local measurements and should be compared in bands, not as exact constants.",
-  ];
+  readonly notes: readonly string[];
+};
+
+type UniversityProtocolTranscriptPhase = "issuance" | "jobApplications" | "discounts";
+
+export type UniversityProtocolThreadSample = {
+  readonly phase: UniversityProtocolTranscriptPhase;
+  readonly threadIdHex: string;
+  readonly studentId: string | null;
+  readonly studentName: string | null;
+  readonly verifierId: string | null;
+  readonly verifierName: string | null;
+  readonly requestedRole: string | null;
+  readonly messageTypes: readonly string[];
+  readonly acceptedCount: number;
+  readonly rejectedCount: number;
+  readonly entrySummaries: readonly string[];
+};
+
+export type UniversityProtocolSampledTranscriptSummary = {
+  readonly sampleSizeByPhase: Readonly<Record<UniversityProtocolTranscriptPhase, number>>;
+  readonly omittedThreadCounts: Readonly<Record<UniversityProtocolTranscriptPhase, number>>;
+  readonly threads: Readonly<
+    Record<UniversityProtocolTranscriptPhase, readonly UniversityProtocolThreadSample[]>
+  >;
+};
+
+export type UniversityProtocolStressSummaryOptions = {
+  readonly datasetProfile?: UniversityProtocolSummaryProfileId;
+  readonly artifactTargetDir?: string;
+  readonly sampledThreadCounts?: Partial<
+    Readonly<Record<UniversityProtocolTranscriptPhase, number>>
+  >;
 };
 
 const compareText = (left: string, right: string): number => left.localeCompare(right);
@@ -109,18 +149,104 @@ const ratePerSecond = (count: number, elapsedMs: number): number =>
   elapsedMs > 0 ? count / (elapsedMs / 1000) : count;
 
 const fixedArtifactFiles = ["summary.json", "summary.md"] as const;
-const fixedNotes = [
+const stressProfileNotes = [
   "Mall discount evaluation remains a fixed-size five-applicant control sample.",
   "Timing and throughput figures are machine-local measurements and should be compared in bands, not as exact constants.",
 ] as const;
+const cohortProfileNotes = [
+  "The cohort-30 profile increases company, award, role, and mall-discount diversity without making human review as heavy as stress-100.",
+  "Timing and throughput figures are machine-local measurements and should be compared in bands, not as exact constants.",
+] as const;
+const notesForProfile = (
+  datasetProfile: UniversityProtocolSummaryProfileId,
+): readonly string[] =>
+  datasetProfile === "cohort-30" ? cohortProfileNotes : stressProfileNotes;
+// Keep summaries scan-friendly: enough examples to show each phase shape
+// without turning cohort/stress artifacts into a full transcript dump.
+const defaultSampledThreadCounts = {
+  issuance: 3,
+  jobApplications: 5,
+  discounts: 5,
+} as const;
+
+const threadSample = (
+  thread: UniversityProtocolThreadExport,
+): UniversityProtocolThreadSample => ({
+  phase: thread.phase,
+  threadIdHex: thread.threadIdHex,
+  studentId: thread.studentId,
+  studentName: thread.studentName,
+  verifierId: thread.verifierId,
+  verifierName: thread.verifierName,
+  requestedRole: thread.requestedRole,
+  messageTypes: thread.messageTypes,
+  acceptedCount: thread.acceptedCount,
+  rejectedCount: thread.rejectedCount,
+  entrySummaries: thread.entries.map((entry) => entry.summary),
+});
+
+const sampleThreads = (
+  threads: readonly UniversityProtocolThreadExport[],
+  requestedCount: number,
+): readonly UniversityProtocolThreadSample[] =>
+  threads.slice(0, requestedCount).map(threadSample);
+
+const buildSampledTranscriptSummary = (
+  runner: UniversityProtocolFlowRunner,
+  result: UniversityProtocolFlowResult,
+  sampledThreadCounts:
+    | UniversityProtocolStressSummaryOptions["sampledThreadCounts"]
+    | undefined,
+): UniversityProtocolSampledTranscriptSummary => {
+  const resolvedCounts = {
+    ...defaultSampledThreadCounts,
+    ...(sampledThreadCounts ?? {}),
+  };
+  // Build the complete transcript export first so sampled summaries reuse the
+  // same grouping/sorting contract as the full transcript artifacts.
+  const transcriptExport = buildUniversityProtocolTranscriptExport(runner, result);
+  return {
+    sampleSizeByPhase: resolvedCounts,
+    omittedThreadCounts: {
+      issuance: Math.max(
+        0,
+        transcriptExport.threads.issuance.length - resolvedCounts.issuance,
+      ),
+      jobApplications: Math.max(
+        0,
+        transcriptExport.threads.jobApplications.length -
+          resolvedCounts.jobApplications,
+      ),
+      discounts: Math.max(
+        0,
+        transcriptExport.threads.discounts.length - resolvedCounts.discounts,
+      ),
+    },
+    threads: {
+      issuance: sampleThreads(
+        transcriptExport.threads.issuance,
+        resolvedCounts.issuance,
+      ),
+      jobApplications: sampleThreads(
+        transcriptExport.threads.jobApplications,
+        resolvedCounts.jobApplications,
+      ),
+      discounts: sampleThreads(
+        transcriptExport.threads.discounts,
+        resolvedCounts.discounts,
+      ),
+    },
+  };
+};
 
 export const buildUniversityProtocolStressSummary = (
   runner: UniversityProtocolFlowRunner,
   result: UniversityProtocolFlowResult,
   wallClockMs: number,
+  options: UniversityProtocolStressSummaryOptions = {},
 ): UniversityProtocolStressSummary => ({
-  schemaVersion: "midnight-university-protocol-stress-summary.v1",
-  datasetProfile: "stress-100",
+  schemaVersion: "midnight-university-protocol-stress-summary.v2",
+  datasetProfile: options.datasetProfile ?? "stress-100",
   dataset: {
     studentCount: runner.students.length,
     companyCount: runner.companies.length,
@@ -181,12 +307,22 @@ export const buildUniversityProtocolStressSummary = (
     ),
     transcriptEntriesPerSecond: ratePerSecond(result.transcript.length, wallClockMs),
   },
+  sampledTranscript: buildSampledTranscriptSummary(
+    runner,
+    result,
+    options.sampledThreadCounts,
+  ),
   artifactRetention: {
-    targetDir: "use-cases/university/protocol/target/stress-100",
+    targetDir:
+      options.artifactTargetDir ??
+      `use-cases/university/protocol/target/${options.datasetProfile ?? "stress-100"}`,
     files: fixedArtifactFiles,
-    ciRecommendation: "Upload target/stress-100 as a workflow artifact directory.",
+    ciRecommendation: `Upload target/${options.datasetProfile ?? "stress-100"} as a workflow artifact directory.`,
   },
-  notes: fixedNotes,
+  notes: [
+    ...notesForProfile(options.datasetProfile ?? "stress-100"),
+    "Sampled transcript views keep profile summaries readable; use transcript exports when full DTO payloads are required.",
+  ],
 });
 
 const formatMeasured = (value: number): string => value.toFixed(2);
@@ -270,6 +406,26 @@ export const renderUniversityProtocolStressSummaryMarkdown = (
     `- transcriptEntriesPerSecond: ${formatMeasured(
       summary.throughput.transcriptEntriesPerSecond,
     )}`,
+    "",
+    "## Sampled Transcript",
+    `- issuance samples: ${summary.sampledTranscript.threads.issuance.length} shown, ${summary.sampledTranscript.omittedThreadCounts.issuance} omitted`,
+    `- job application samples: ${summary.sampledTranscript.threads.jobApplications.length} shown, ${summary.sampledTranscript.omittedThreadCounts.jobApplications} omitted`,
+    `- discount samples: ${summary.sampledTranscript.threads.discounts.length} shown, ${summary.sampledTranscript.omittedThreadCounts.discounts} omitted`,
+    "",
+    "### Issuance Samples",
+    ...summary.sampledTranscript.threads.issuance.flatMap((thread) => [
+      `- ${thread.studentName ?? thread.studentId ?? thread.threadIdHex}: ${thread.entrySummaries.join(" -> ")}`,
+    ]),
+    "",
+    "### Job Application Samples",
+    ...summary.sampledTranscript.threads.jobApplications.flatMap((thread) => [
+      `- ${thread.studentName ?? thread.studentId ?? thread.threadIdHex} to ${thread.verifierName ?? thread.verifierId ?? "unknown verifier"}: ${thread.entrySummaries.join(" -> ")}`,
+    ]),
+    "",
+    "### Discount Samples",
+    ...summary.sampledTranscript.threads.discounts.flatMap((thread) => [
+      `- ${thread.studentName ?? thread.studentId ?? thread.threadIdHex} to ${thread.verifierName ?? thread.verifierId ?? "unknown verifier"}: ${thread.entrySummaries.join(" -> ")}`,
+    ]),
     "",
     "## Artifact Retention",
     `- target directory: ${summary.artifactRetention.targetDir}`,
