@@ -25,7 +25,7 @@ const readShellList = (functionName, argument) => {
       : `${functionName} ${quoteForBash(argument)}`,
   ].join("; ");
 
-  return execFileSync("bash", ["-lc", command], {
+  return execFileSync("bash", ["-c", command], {
     cwd: repoRoot,
     encoding: "utf8",
   })
@@ -35,6 +35,8 @@ const readShellList = (functionName, argument) => {
 };
 
 const isIgnored = (relativePath) => {
+  // Directory-only ignore patterns can match the placeholder form even when the
+  // bare generated directory does not exist in a clean checkout.
   for (const candidate of [relativePath, `${relativePath}/.generated-contract`]) {
     try {
       execFileSync("git", ["check-ignore", "-q", candidate], {
@@ -60,7 +62,6 @@ const trackedFiles = runGit(["ls-files"])
   .filter(Boolean);
 
 const errors = [];
-const warnings = [];
 const groups = readShellList("ci_build_output_groups");
 const seenGroups = new Set();
 const seenOutputs = new Map();
@@ -131,7 +132,7 @@ for (const group of groups) {
     }
 
     if (!isIgnored(outputPath)) {
-      warnings.push(`CI build cone '${group}' output is not matched by .gitignore: ${outputPath}`);
+      errors.push(`CI build cone '${group}' output is not matched by .gitignore: ${outputPath}`);
     }
   }
 
@@ -147,10 +148,6 @@ if (errors.length > 0) {
     console.error(`[check-ci-build-cones] ${error}`);
   }
   process.exit(1);
-}
-
-for (const warning of warnings) {
-  console.warn(`[check-ci-build-cones] Warning: ${warning}`);
 }
 
 for (const entry of summary) {

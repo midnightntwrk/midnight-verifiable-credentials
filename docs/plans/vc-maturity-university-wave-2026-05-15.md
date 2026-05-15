@@ -179,7 +179,9 @@ Ground rules:
 
 12. `turbo-package-graph-generated-artifacts`
 
-- status: implemented locally on `codex/vc-generated-artifact-audit`
+- status:
+  [PR #245](https://github.com/midnightntwrk/midnight-verifiable-credentials/pull/245)
+  opened from `codex/vc-generated-artifact-audit`
 - scope:
   - identify package-local generated-artifact coupling that prevents safe
     parallel Turbo execution
