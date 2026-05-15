@@ -57,7 +57,9 @@ Ground rules:
 
 4. `university-proof-server-bdd-wiring`
 
-- status: in progress on `codex/vc-university-proof-server-runner-wiring`
+- status:
+  [PR #236](https://github.com/midnightntwrk/midnight-verifiable-credentials/pull/236)
+  merged to `develop` from `codex/vc-university-proof-server-runner-wiring`
 - scope:
   - make the proof-server contract backend selectable from the university BDD
     runner
@@ -67,11 +69,20 @@ Ground rules:
 
 5. `university-standalone-timing-telemetry`
 
-- status: planned
+- status: implemented locally on `codex/vc-university-standalone-timing-telemetry`
 - scope:
   - expand standalone-hybrid metrics for DID bootstrap, overlay generation,
     proof backend phases, and teardown
   - emit machine-readable timing artifacts for local comparison
+- validation:
+  - `./run.sh university-bdd`
+  - `./run.sh university-bdd-proof-server`
+  - `npm run test:standalone-timing:contract -w use-cases/university/scenarios`
+  - `npm run test:backend-mode:contract -w use-cases/university/scenarios`
+  - `npm run typecheck -w use-cases/university/scenarios`
+  - `npm run docs:links`
+  - `bash -n run.sh`
+  - `git diff --check`
 
 6. `university-issuer-batch-concurrency-prototype`
 

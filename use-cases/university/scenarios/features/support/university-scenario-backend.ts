@@ -28,6 +28,11 @@ import {
   provisionDerivedDidProfile,
   StandaloneEnvironment,
 } from "../../../../../components/integration/standalone-environment/dist/index.js";
+import {
+  buildStandaloneTimingSummary,
+  type UniversityScenarioTimingMetric,
+  writeStandaloneTimingArtifacts,
+} from "./university-scenario-telemetry.ts";
 
 type UniversityProfile = ProtocolUniversityProfile & {
   readonly credentialFamilyPackage: string;
@@ -45,11 +50,7 @@ type UniversityProfile = ProtocolUniversityProfile & {
   };
 };
 
-type BackendMetric = {
-  readonly name: string;
-  readonly durationMs: number;
-  readonly tags?: Record<string, string | number | boolean>;
-};
+type BackendMetric = UniversityScenarioTimingMetric;
 
 export type ScenarioDataPaths = {
   university: string;
@@ -70,6 +71,7 @@ export type UniversityScenarioBackendMetadata = {
   readonly description: string;
   readonly usesRealDidInstances: boolean;
   readonly generatedOverlayDirectory: string | null;
+  readonly timingArtifactDirectory?: string;
   readonly metrics: readonly BackendMetric[];
 };
 
@@ -109,23 +111,30 @@ export const defaultDataPaths = {
 export const resolveScenarioRepoPath = (relativePath: string): string =>
   path.resolve(repoRoot, relativePath);
 
-const safeOverlayRootPath = (relativePath: string): string => {
-  const overlayRoot = resolveScenarioRepoPath(relativePath);
+const safeScenarioTargetPath = (
+  relativePath: string,
+  purpose: string,
+): string => {
+  const targetPath = resolveScenarioRepoPath(relativePath);
   const allowedRoot = resolveScenarioRepoPath(
     "use-cases/university/scenarios/target",
   );
-  const relativeToAllowedRoot = path.relative(allowedRoot, overlayRoot);
+  const relativeToAllowedRoot = path.relative(allowedRoot, targetPath);
   if (
     relativeToAllowedRoot === "" ||
     relativeToAllowedRoot.startsWith("..") ||
     path.isAbsolute(relativeToAllowedRoot)
   ) {
-    throw new Error(
-      `Refusing to delete unsafe standalone overlay path: ${overlayRoot}`,
-    );
+    throw new Error(`Refusing to ${purpose}: ${targetPath}`);
   }
-  return overlayRoot;
+  return targetPath;
 };
+
+const safeOverlayRootPath = (relativePath: string): string =>
+  safeScenarioTargetPath(relativePath, "delete unsafe standalone overlay path");
+
+const safeTimingArtifactRootPath = (relativePath: string): string =>
+  safeScenarioTargetPath(relativePath, "write unsafe standalone timing path");
 
 export const loadUniversityScenarioBackendMode =
   (): UniversityScenarioBackendMode => {
@@ -232,6 +241,21 @@ const measureAsync = async <T>(
   }
 };
 
+export class TelemetryStandaloneHybridUniversityProofExecutionBackend extends StandaloneHybridUniversityProofExecutionBackend {
+  // This backend instance lives for one Cucumber backend lifecycle; shutdown
+  // releases it after the end-of-run artifact captures the cumulative samples.
+  readonly #metricHistory: BackendMetric[] = [];
+
+  override resetMetrics(): void {
+    this.#metricHistory.push(...this.snapshotMetrics());
+    super.resetMetrics();
+  }
+
+  snapshotCumulativeMetrics(): readonly BackendMetric[] {
+    return [...this.#metricHistory, ...this.snapshotMetrics()];
+  }
+}
+
 const backendContextForSimulator = (
   dataPaths: ScenarioDataPaths = defaultDataPaths,
 ): UniversityScenarioBackendContext => ({
@@ -301,6 +325,11 @@ class StandaloneHybridUniversityScenarioBackend implements UniversityScenarioBac
   readonly #environment = new StandaloneEnvironment("university-bdd");
   readonly #overlayRoot =
     "use-cases/university/scenarios/target/standalone-hybrid-data";
+  readonly #timingArtifactRoot =
+    "use-cases/university/scenarios/target/standalone-timing";
+  #proofExecutionBackend:
+    | TelemetryStandaloneHybridUniversityProofExecutionBackend
+    | undefined;
   #initialized = false;
 
   async initialize(): Promise<UniversityScenarioBackendContext> {
@@ -485,7 +514,8 @@ class StandaloneHybridUniversityScenarioBackend implements UniversityScenarioBac
       }),
     ]);
     const proofExecutionBackend =
-      new StandaloneHybridUniversityProofExecutionBackend();
+      new TelemetryStandaloneHybridUniversityProofExecutionBackend();
+    this.#proofExecutionBackend = proofExecutionBackend;
 
     const overlayDataPaths = {
       university: path.join(this.#overlayRoot, "university.json"),
@@ -537,16 +567,26 @@ class StandaloneHybridUniversityScenarioBackend implements UniversityScenarioBac
       verifierMethodId: overlayMallMethodId,
     };
 
-    await writeJson(overlayDataPaths.university, overlayUniversity);
-    await writeJson(overlayDataPaths.students, overlayStudents);
-    await writeJson(overlayDataPaths.companies, overlayCompanies);
-    await writeJson(overlayDataPaths.mall, overlayMall);
+    await measureAsync(
+      this.#metrics,
+      "standalone_overlay_generation_ms",
+      async () => {
+        await writeJson(overlayDataPaths.university, overlayUniversity);
+        await writeJson(overlayDataPaths.students, overlayStudents);
+        await writeJson(overlayDataPaths.companies, overlayCompanies);
+        await writeJson(overlayDataPaths.mall, overlayMall);
+      },
+      {
+        actorCount: students.length + companies.length + 2,
+      },
+    );
     await writeJson(path.join(this.#overlayRoot, "backend-metadata.json"), {
       mode: "standalone-hybrid",
       description:
         "Real standalone DID bootstrap with generated fixture overlays, while issuance and verifier semantics remain on the local simulator path.",
       metrics: this.#metrics,
       overlayDataPaths,
+      timingArtifactDirectory: this.#timingArtifactRoot,
     });
 
     return {
@@ -557,6 +597,7 @@ class StandaloneHybridUniversityScenarioBackend implements UniversityScenarioBac
           "Hybrid backend: real standalone Midnight DIDs for university, students, companies, and mall; local simulator issuance and verification semantics for the university credential flow.",
         usesRealDidInstances: true,
         generatedOverlayDirectory: this.#overlayRoot,
+        timingArtifactDirectory: this.#timingArtifactRoot,
         metrics: [...this.#metrics],
       },
       protocol: {
@@ -570,8 +611,46 @@ class StandaloneHybridUniversityScenarioBackend implements UniversityScenarioBac
     if (!this.#initialized) {
       return;
     }
-    await this.#environment.shutdown();
-    this.#initialized = false;
+    try {
+      // measureAsync records shutdown timing before the outer finally writes the
+      // end-of-run artifact, so teardown latency is included in summary.json.
+      await measureAsync(
+        this.#metrics,
+        "standalone_environment_shutdown_ms",
+        async () => {
+          await this.#environment.shutdown();
+        },
+      );
+    } finally {
+      this.#initialized = false;
+      try {
+        this.#writeTimingArtifacts();
+      } catch (error) {
+        const detail =
+          error instanceof Error
+            ? `${error.name}: ${error.message}`
+            : String(error);
+        process.stderr.write(
+          `[university-standalone-timing] Failed to write timing artifacts: ${detail}\n`,
+        );
+      } finally {
+        this.#proofExecutionBackend = undefined;
+      }
+    }
+  }
+
+  #writeTimingArtifacts(): void {
+    const summary = buildStandaloneTimingSummary({
+      overlayDataDirectory: this.#overlayRoot,
+      artifactTargetDir: this.#timingArtifactRoot,
+      backendMetrics: this.#metrics,
+      proofBackendMetrics:
+        this.#proofExecutionBackend?.snapshotCumulativeMetrics() ?? [],
+    });
+    writeStandaloneTimingArtifacts(
+      safeTimingArtifactRootPath(this.#timingArtifactRoot),
+      summary,
+    );
   }
 }
 

@@ -728,6 +728,7 @@ export class UseUniversityScenario extends Ability {
       readonly usesRealDidInstances: boolean;
       readonly description: string;
       readonly generatedOverlayDirectory: string | null;
+      readonly timingArtifactDirectory?: string;
       readonly metrics: UniversityScenarioBackendContext["metadata"]["metrics"];
       readonly partyRuntime: ReturnType<
         UniversityScenarioBackendContext["protocol"]["partyRuntime"]["descriptor"]
@@ -753,6 +754,8 @@ export class UseUniversityScenario extends Ability {
         description: this.#backendContext.metadata.description,
         generatedOverlayDirectory:
           this.#backendContext.metadata.generatedOverlayDirectory,
+        timingArtifactDirectory:
+          this.#backendContext.metadata.timingArtifactDirectory,
         metrics: this.#backendContext.metadata.metrics,
         partyRuntime: this.#backendContext.protocol.partyRuntime.descriptor(),
         proofExecution:
