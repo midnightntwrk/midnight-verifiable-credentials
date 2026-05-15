@@ -16,7 +16,7 @@ Status:
 - item `9` is opened on the stack as `#227`
 - item `11` now has implementation foundation on `codex/vc-university-bdd-standalone-hybrid`
 - item `12` is the current in-flight slice on top of `#227`
-- develop-port replacement PR: `#231`
+- develop-port replacement PR: `#231` merged to `develop`
   (`codex/vc-university-runtime-backends-develop`)
 - superseded branch/PR: `#230` was closed because it targeted the wrong base
   branch context
@@ -33,8 +33,16 @@ Scope boundary:
 
 Target branch: `origin/develop`.
 
-Current replacement PR: `#231`
+Merged replacement PR: `#231`
 (`codex/vc-university-runtime-backends-develop`).
+
+Merge status:
+
+- merged to `develop` at `2026-05-15T12:50:56Z`
+- merge commit: `fdbc54daee3c337e6835361d045a8bf4ff1d3765`
+- final CI run: `25917308468`
+- Claude review completed with critical findings fixed and no merge-blocking
+  findings left
 
 Purpose:
 
@@ -68,14 +76,14 @@ Validation used before opening the replacement PR:
 - focused application-decision schema/export tests
 - `git diff --check`
 
-Merge gates:
+Merge gates completed:
 
 - DCO and GPG signing on every pushed commit
 - Claude PR review with critical findings fixed
 - GitHub Actions CI green before merge to `develop`
 
-After `#231` lands, continue from the remaining queue items below rather than
-reviving the stale PR stack.
+Continue from the remaining queue items below rather than reviving the stale
+PR stack.
 
 ## Queue
 
