@@ -22,6 +22,7 @@ Targets:
   university-bdd-proof-server University diploma BDD with proof-server DTO recording
   university-bdd-standalone  University diploma BDD with real standalone DID bootstrap
   university-batch-sweep     Issuance batch-size sweep with summary artifacts
+  university-ci-matrix       Validate university lane/script/workflow matrix wiring
   university-data-profiles   Validate committed readable/stress university data profiles
   university-policy-catalog  Validate university verifier policy preset coverage
   university-protocol        Protocol-style multi-party university flow lane
@@ -104,7 +105,7 @@ forward_args=()
 
 if [[ $# -gt 0 ]]; then
   case "$1" in
-    full|lint|typecheck|build|test|bdd|bdd-negative|bdd-all|university-bdd|university-bdd-proof-server|university-bdd-standalone|university-batch-sweep|university-data-profiles|university-policy-catalog|university-protocol|university-protocol-export|university-protocol-cohort|university-protocol-stress|university-summary|hello-smoke|dummy-claims-lab|revocation|integration|integration-demo-contract|integration-protocol|targets|help|-h|--help)
+    full|lint|typecheck|build|test|bdd|bdd-negative|bdd-all|university-bdd|university-bdd-proof-server|university-bdd-standalone|university-batch-sweep|university-ci-matrix|university-data-profiles|university-policy-catalog|university-protocol|university-protocol-export|university-protocol-cohort|university-protocol-stress|university-summary|hello-smoke|dummy-claims-lab|revocation|integration|integration-demo-contract|integration-protocol|targets|help|-h|--help)
       target="$1"
       shift
       ;;
@@ -242,6 +243,10 @@ case "$target" in
   university-batch-sweep)
     echo "[run] University issuance batch-sweep lane"
     npm run ci:university-batch-sweep
+    ;;
+  university-ci-matrix)
+    echo "[run] University CI matrix contract lane"
+    npm run ci:university-ci-matrix
     ;;
   university-data-profiles)
     echo "[run] University data-profile validation lane"

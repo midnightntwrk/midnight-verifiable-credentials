@@ -33,6 +33,9 @@ Status:
   `readable-10` for human-readable narrative lanes, `cohort-30` for richer
   protocol/export maturity checks, and `stress-100` for throughput-oriented
   protocol lanes
+- a machine-readable CI matrix now maps every university lane to its run target,
+  package script, light-artifact profile, retained artifacts, and GitHub
+  Actions selection rule
 - a dedicated batch-sweep lane now compares issuance behavior across multiple
   batch sizes and projected compile-concurrency levels without mixing that
   experiment into the readable BDD report
@@ -113,6 +116,8 @@ Prototype family:
   - [`./protocol/README.md`](./protocol/README.md)
 - reporting package:
   - [`./reporting/README.md`](./reporting/README.md)
+- lane and artifact matrix:
+  - [`./ci-matrix.md`](./ci-matrix.md)
 
 Credential family package:
 
@@ -407,6 +412,8 @@ Current status:
   - [`./protocol/README.md`](./protocol/README.md)
 - ordered follow-on improvement queue:
   - [`../../docs/plans/university-improvement-backlog.md`](../../docs/plans/university-improvement-backlog.md)
+- current university CI lane contract:
+  - [`./ci-matrix.md`](./ci-matrix.md)
 
 ### Phase 3. Batch issuance orchestration
 
