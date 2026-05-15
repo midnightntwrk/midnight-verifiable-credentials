@@ -42,6 +42,14 @@ integration tests:
 - provisions real Midnight DID profiles for issuer, holder, and verifier roles
 - tears the environment down cleanly after tests
 
+Port binding:
+
+- the shared standalone compose files bind service ports to `127.0.0.1` so
+  proof server, indexer, and node APIs are not exposed on the LAN
+- those ports are fixed by default (`6300`, `8088`, and `9944`), so run one
+  standalone stack at a time unless the infrastructure is extended with
+  explicit per-stack port overrides
+
 It exists so package-level integration tests do not each reinvent:
 
 - Docker lifecycle handling

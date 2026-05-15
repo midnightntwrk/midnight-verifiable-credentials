@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { performance } from "node:perf_hooks";
 
 import { Ability, type UsesAbilities } from "@serenity-js/core";
+import { JUBJUB_SUBGROUP_ORDER } from "@midnight-ntwrk/midnight-did-credentials-protocol";
 import {
   DeterministicUniversityPartyRuntime,
   SimulatorUniversityProofExecutionBackend,
@@ -170,9 +171,6 @@ type IssuanceRequest = {
 let cachedRequestPolicyPresetCatalog:
   | Readonly<Record<string, UniversityRequestPolicyPreset>>
   | undefined;
-
-const JUBJUB_SUBGROUP_ORDER =
-  6554484396890773809930967563523245729705921265872317281365359162392183254199n;
 
 class MetricRecorder {
   readonly samples: MetricSample[] = [];

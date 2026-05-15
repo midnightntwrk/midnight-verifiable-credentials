@@ -5,6 +5,7 @@ import { performance } from "node:perf_hooks";
 import { fileURLToPath } from "node:url";
 
 import { ecMulGenerator } from "@midnight-ntwrk/compact-runtime";
+import { JUBJUB_SUBGROUP_ORDER } from "@midnight-ntwrk/midnight-did-credentials-protocol";
 import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import {
   DeterministicUniversityPartyRuntime,
@@ -142,9 +143,6 @@ const writeJson = async (relativePath: string, value: unknown): Promise<void> =>
   await fs.writeFile(`${absolutePath}.tmp`, `${JSON.stringify(value, null, 2)}\n`, "utf8");
   await fs.rename(`${absolutePath}.tmp`, absolutePath);
 };
-
-const JUBJUB_SUBGROUP_ORDER =
-  6554484396890773809930967563523245729705921265872317281365359162392183254199n;
 
 const sha256 = (value: string): Uint8Array =>
   new Uint8Array(createHash("sha256").update(value).digest());
