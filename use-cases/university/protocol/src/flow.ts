@@ -95,6 +95,7 @@ type IssuanceFlowExecutionResult = {
 
 type UniversityProtocolRunnerCheckpointState = {
   readonly transport: SerializedUniversityProtocolTransportCheckpoint;
+  readonly checkpointSequence: number;
   readonly transcript: UniversityProtocolFlowResult["transcript"];
   readonly messages: {
     readonly issuance: readonly UniversityProtocolMessage[];
@@ -146,6 +147,7 @@ const asCheckpointState = (
   if (
     !isRecord(value) ||
     !isRecord(value.transport) ||
+    typeof value.checkpointSequence !== "number" ||
     !Array.isArray(value.transcript) ||
     !isRecord(value.messages) ||
     !Array.isArray(value.messages.issuance) ||
@@ -186,6 +188,7 @@ export class UniversityProtocolFlowRunner {
   readonly studentAgents: Map<string, UniversityStudentAgent>;
   readonly companyAgents: Map<string, UniversityCompanyVerifierAgent>;
   readonly mallAgent: UniversityMallVerifierAgent;
+  private checkpointSequence = 0;
 
   constructor(options?: UniversityProtocolFlowRunnerOptions) {
     this.dataPaths = {
@@ -285,6 +288,8 @@ export class UniversityProtocolFlowRunner {
     const checkpointStore =
       options.checkpointStore ?? new InMemoryUniversityProtocolCheckpointStore();
     const checkpoints: UniversityProtocolCheckpointSummary[] = [];
+    // The restart lane always uses the serialized transport so even an empty
+    // restart plan still exercises process-boundary DTO encoding semantics.
     let runner = this.withSerializedTransportForRestart();
 
     const totalStartedAt = performance.now();
@@ -534,6 +539,8 @@ export class UniversityProtocolFlowRunner {
   private buildCheckpoint(
     restartPoint: UniversityProtocolRestartPoint,
   ): UniversityProtocolCheckpoint {
+    const checkpointSequence = this.checkpointSequence;
+    this.checkpointSequence += 1;
     return {
       schemaId: universityProtocolCheckpointSchemaId,
       schemaVersion: universityProtocolCheckpointSchemaVersion,
@@ -542,6 +549,7 @@ export class UniversityProtocolFlowRunner {
         maximumReaderVersion: universityProtocolCheckpointSchemaVersion,
       },
       checkpointId: [
+        checkpointSequence,
         restartPoint,
         this.transcript.entries.length,
         this.issuanceMessages.length,
@@ -563,6 +571,7 @@ export class UniversityProtocolFlowRunner {
     }
     return {
       transport: this.bus.checkpoint(),
+      checkpointSequence: this.checkpointSequence,
       transcript: [...this.transcript.entries],
       messages: {
         issuance: [...this.issuanceMessages],
@@ -612,6 +621,17 @@ export class UniversityProtocolFlowRunner {
   private restoreCheckpointState(
     state: UniversityProtocolRunnerCheckpointState,
   ): void {
+    if (
+      this.transcript.entries.length > 0 ||
+      this.issuanceMessages.length > 0 ||
+      this.jobMessages.length > 0 ||
+      this.discountMessages.length > 0
+    ) {
+      throw new Error(
+        "Cannot restore university protocol checkpoint into a non-empty runner",
+      );
+    }
+    this.checkpointSequence = state.checkpointSequence;
     this.transcript.entries.push(...state.transcript);
     this.issuanceMessages.push(...state.messages.issuance);
     this.jobMessages.push(...state.messages.jobApplications);

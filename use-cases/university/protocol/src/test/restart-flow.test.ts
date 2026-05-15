@@ -103,6 +103,11 @@ describe("university protocol restart persistence", () => {
     expect(
       restarted.checkpoints.map((checkpoint) => checkpoint.transportFrameCount),
     ).toEqual([10, 30, 55]);
+    expect(restarted.checkpoints.map((checkpoint) => checkpoint.checkpointId)).toEqual([
+      "0:afterIssuanceRequests:10:10:0:0",
+      "1:afterJobApplicationRequests:30:20:10:0",
+      "2:afterMallDiscountRequests:55:20:30:5",
+    ]);
   });
 
   it("supports a partial restart plan", () => {
