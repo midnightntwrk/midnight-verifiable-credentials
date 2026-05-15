@@ -4,6 +4,8 @@ Status:
 
 - large narrative prototype use case built on `credentials-university-diploma`
 - data-rich SSI flow covering issuance, job-application verification, and student-discount verification
+- operator guide covering local lane selection, backend boundaries, report paths,
+  and CI artifact expectations
 - BDD-style scenario set with bottleneck-oriented metrics
 - human-readable BDD wording keyed to real actor names instead of raw data-file
   paths
@@ -118,6 +120,8 @@ Prototype family:
   - [`./reporting/README.md`](./reporting/README.md)
 - lane and artifact matrix:
   - [`./ci-matrix.md`](./ci-matrix.md)
+- local operator guide:
+  - [`./operator-guide.md`](./operator-guide.md)
 
 Credential family package:
 

@@ -58,9 +58,10 @@
   - for engineers exercising the broad direct Compact claim surface against a verifier contract
 - university diploma use case:
   - [`../use-cases/university/README.md`](../use-cases/university/README.md)
+  - [`../use-cases/university/operator-guide.md`](../use-cases/university/operator-guide.md)
   - [`../use-cases/university/contract/README.md`](../use-cases/university/contract/README.md)
   - [`../use-cases/university/protocol/README.md`](../use-cases/university/protocol/README.md)
-  - for engineers who need the large DID-backed issuance, job-application, and student-discount blueprint
+  - for engineers who need the large DID-backed issuance, job-application, and student-discount blueprint plus the local run/report playbook
 - university diploma executable BDD scenarios:
   - [`../use-cases/university/scenarios/README.md`](../use-cases/university/scenarios/README.md)
   - for engineers who need a checked-in virtual-agent orchestration pack with metrics

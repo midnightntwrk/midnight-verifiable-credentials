@@ -168,11 +168,14 @@ Ground rules:
 
 11. `university-reference-guide-closeout`
 
-- status: planned
+- status: implemented locally on `codex/vc-university-reference-guide-closeout`
 - scope:
   - publish one authoritative end-to-end operator guide
   - cover readable, stress, standalone-hybrid, transcript export, and known
     proof-server boundaries
+- validation:
+  - `npm run docs:links`
+  - `git diff --check`
 
 12. `turbo-package-graph-generated-artifacts`
 

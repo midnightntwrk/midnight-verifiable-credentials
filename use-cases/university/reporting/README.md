@@ -22,6 +22,8 @@ Scope:
 
 Build and test:
 
+- operator guide for the full artifact handoff:
+  - [`../operator-guide.md`](../operator-guide.md)
 - root lane:
   - `./run.sh university-summary`
   - `./run.sh university-summary --light`
