@@ -20,7 +20,9 @@ import type {
   DiscountApplicantRecord,
   IssuanceBatchRecord,
   MallRecord,
+  StoredIssuedCredential,
   StudentRecord,
+  UniversityPresentationResultBody,
   UniversityPresentationTamperingMode,
   UniversityProfile,
   UniversityProtocolDataPaths,
@@ -29,6 +31,26 @@ import type {
   UniversityProtocolMessage,
 } from "./model.js";
 import { defaultDataPaths } from "./model.js";
+import {
+  assertUniversityProtocolCheckpointCompatible,
+  defaultUniversityProtocolRestartPoints,
+  InMemoryUniversityProtocolCheckpointStore,
+  queuedMessageCount,
+  type UniversityProtocolCheckpoint,
+  universityProtocolCheckpointSchemaId,
+  universityProtocolCheckpointSchemaVersion,
+  type UniversityProtocolCheckpointStore,
+  type UniversityProtocolCheckpointSummary,
+  type UniversityProtocolRestartPoint,
+  type UniversityProtocolRestartSimulationOptions,
+  type UniversityProtocolRestartSimulationResult,
+} from "./persistence.js";
+import {
+  decodeUniversityProtocolTransportValue,
+  encodeUniversityProtocolTransportValue,
+  SerializedUniversityProtocolTransport,
+  type SerializedUniversityProtocolTransportCheckpoint,
+} from "./process-transport.js";
 import {
   SimulatorUniversityProofExecutionBackend,
   type UniversityProofExecutionBackend,
@@ -47,6 +69,14 @@ export type {
   UniversityProtocolFlowResult,
   UniversityProtocolTranscriptEntry,
 } from "./model.js";
+export type {
+  UniversityProtocolCheckpoint,
+  UniversityProtocolCheckpointStore,
+  UniversityProtocolCheckpointSummary,
+  UniversityProtocolRestartPoint,
+  UniversityProtocolRestartSimulationOptions,
+  UniversityProtocolRestartSimulationResult,
+} from "./persistence.js";
 
 export type UniversityProtocolFlowRunnerOptions = {
   readonly dataPaths?: Partial<UniversityProtocolDataPaths>;
@@ -63,6 +93,35 @@ type IssuanceFlowExecutionResult = {
   readonly idempotentReplayStudentIds: readonly string[];
 };
 
+type UniversityProtocolRunnerCheckpointState = {
+  readonly transport: SerializedUniversityProtocolTransportCheckpoint;
+  readonly checkpointSequence: number;
+  readonly transcript: UniversityProtocolFlowResult["transcript"];
+  readonly messages: {
+    readonly issuance: readonly UniversityProtocolMessage[];
+    readonly jobApplications: readonly UniversityProtocolMessage[];
+    readonly discounts: readonly UniversityProtocolMessage[];
+  };
+  readonly students: readonly {
+    readonly studentId: string;
+    readonly storedIssuedCredential?: StoredIssuedCredential;
+    readonly receivedResults: readonly UniversityPresentationResultBody[];
+  }[];
+  readonly companies: readonly {
+    readonly companyId: string;
+    readonly processedThreadIds: readonly string[];
+    readonly acceptedCount: number;
+    readonly duplicateRejectedCount: number;
+    readonly verificationRejectedCount: number;
+  }[];
+  readonly mall: {
+    readonly processedThreadIds: readonly string[];
+    readonly acceptedCount: number;
+    readonly duplicateRejectedCount: number;
+    readonly verificationRejectedCount: number;
+  };
+};
+
 const countMessages = (
   messages: readonly UniversityProtocolMessage[],
   type: UniversityProtocolMessage["type"],
@@ -77,6 +136,30 @@ const sumCompanyAgentCounts = (
     sum += selector(agent);
   }
   return sum;
+};
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" && value !== null && !Array.isArray(value);
+
+const asCheckpointState = (
+  value: unknown,
+): UniversityProtocolRunnerCheckpointState => {
+  if (
+    !isRecord(value) ||
+    !isRecord(value.transport) ||
+    typeof value.checkpointSequence !== "number" ||
+    !Array.isArray(value.transcript) ||
+    !isRecord(value.messages) ||
+    !Array.isArray(value.messages.issuance) ||
+    !Array.isArray(value.messages.jobApplications) ||
+    !Array.isArray(value.messages.discounts) ||
+    !Array.isArray(value.students) ||
+    !Array.isArray(value.companies) ||
+    !isRecord(value.mall)
+  ) {
+    throw new Error("Malformed university protocol checkpoint state");
+  }
+  return value as UniversityProtocolRunnerCheckpointState;
 };
 
 export class UniversityProtocolFlowRunner {
@@ -105,6 +188,7 @@ export class UniversityProtocolFlowRunner {
   readonly studentAgents: Map<string, UniversityStudentAgent>;
   readonly companyAgents: Map<string, UniversityCompanyVerifierAgent>;
   readonly mallAgent: UniversityMallVerifierAgent;
+  private checkpointSequence = 0;
 
   constructor(options?: UniversityProtocolFlowRunnerOptions) {
     this.dataPaths = {
@@ -193,6 +277,71 @@ export class UniversityProtocolFlowRunner {
       discountsMs,
       totalMs,
     });
+  }
+
+  runAllWithRestartSimulation(
+    options: UniversityProtocolRestartSimulationOptions = {},
+  ): UniversityProtocolRestartSimulationResult<UniversityProtocolFlowResult> {
+    const restartPoints = new Set(
+      options.restartPoints ?? defaultUniversityProtocolRestartPoints,
+    );
+    const checkpointStore =
+      options.checkpointStore ?? new InMemoryUniversityProtocolCheckpointStore();
+    const checkpoints: UniversityProtocolCheckpointSummary[] = [];
+    // The restart lane always uses the serialized transport so even an empty
+    // restart plan still exercises process-boundary DTO encoding semantics.
+    let runner = this.withSerializedTransportForRestart();
+
+    const totalStartedAt = performance.now();
+    const issuanceStartedAt = performance.now();
+    runner.sendIssuanceRequests();
+    runner = runner.restartIfRequested(
+      "afterIssuanceRequests",
+      restartPoints,
+      checkpointStore,
+      checkpoints,
+    );
+    const issuanceResult = runner.processIssuanceBatches();
+    runner.deliverIssuanceResults(issuanceResult.issuedStudentIds);
+    const issuanceMs = performance.now() - issuanceStartedAt;
+
+    const jobApplicationsStartedAt = performance.now();
+    runner.sendJobApplicationRequests();
+    runner = runner.restartIfRequested(
+      "afterJobApplicationRequests",
+      restartPoints,
+      checkpointStore,
+      checkpoints,
+    );
+    runner.sendJobApplicationSubmissions();
+    runner.processJobApplicationSubmissions();
+    runner.deliverJobApplicationResults();
+    const jobApplicationsMs = performance.now() - jobApplicationsStartedAt;
+
+    const discountsStartedAt = performance.now();
+    runner.sendDiscountRequests();
+    runner = runner.restartIfRequested(
+      "afterMallDiscountRequests",
+      restartPoints,
+      checkpointStore,
+      checkpoints,
+    );
+    runner.sendDiscountSubmissions();
+    runner.processDiscountSubmissions();
+    runner.deliverDiscountResults();
+    const discountsMs = performance.now() - discountsStartedAt;
+    const totalMs = performance.now() - totalStartedAt;
+
+    return {
+      result: runner.buildResult({
+        issuanceResult,
+        issuanceMs,
+        jobApplicationsMs,
+        discountsMs,
+        totalMs,
+      }),
+      checkpoints,
+    };
   }
 
   private buildStudentAgents(): Map<string, UniversityStudentAgent> {
@@ -345,7 +494,212 @@ export class UniversityProtocolFlowRunner {
     };
   }
 
+  private withSerializedTransportForRestart(): UniversityProtocolFlowRunner {
+    if (this.bus instanceof SerializedUniversityProtocolTransport) {
+      return this;
+    }
+    return new UniversityProtocolFlowRunner(
+      this.optionsForRestart(new SerializedUniversityProtocolTransport()),
+    );
+  }
+
+  private optionsForRestart(
+    transport: SerializedUniversityProtocolTransport,
+  ): UniversityProtocolFlowRunnerOptions {
+    // Restarts reuse deterministic runtime/proof backend instances so the
+    // resumed transcript remains byte-for-byte comparable with the baseline.
+    return {
+      dataPaths: this.dataPaths,
+      exerciseOptions: this.exerciseOptions,
+      partyRuntime: this.partyRuntime,
+      proofExecutionBackend: this.proofExecutionBackend,
+      transport,
+    };
+  }
+
+  private restartIfRequested(
+    restartPoint: UniversityProtocolRestartPoint,
+    restartPoints: ReadonlySet<UniversityProtocolRestartPoint>,
+    checkpointStore: UniversityProtocolCheckpointStore,
+    checkpoints: UniversityProtocolCheckpointSummary[],
+  ): UniversityProtocolFlowRunner {
+    if (!restartPoints.has(restartPoint)) {
+      return this;
+    }
+    const checkpoint = this.buildCheckpoint(restartPoint);
+    checkpointStore.save(checkpoint);
+    checkpoints.push(this.summarizeCheckpoint(checkpoint));
+    const restoredCheckpoint = checkpointStore.load(checkpoint.checkpointId);
+    if (!restoredCheckpoint) {
+      throw new Error(`Missing persisted checkpoint ${checkpoint.checkpointId}`);
+    }
+    return this.restoreFromCheckpoint(restoredCheckpoint);
+  }
+
+  private buildCheckpoint(
+    restartPoint: UniversityProtocolRestartPoint,
+  ): UniversityProtocolCheckpoint {
+    const checkpointSequence = this.checkpointSequence;
+    this.checkpointSequence += 1;
+    return {
+      schemaId: universityProtocolCheckpointSchemaId,
+      schemaVersion: universityProtocolCheckpointSchemaVersion,
+      compatibility: {
+        minimumReaderVersion: universityProtocolCheckpointSchemaVersion,
+        maximumReaderVersion: universityProtocolCheckpointSchemaVersion,
+      },
+      checkpointId: [
+        checkpointSequence,
+        restartPoint,
+        this.transcript.entries.length,
+        this.issuanceMessages.length,
+        this.jobMessages.length,
+        this.discountMessages.length,
+      ].join(":"),
+      restartPoint,
+      encodedState: encodeUniversityProtocolTransportValue(
+        this.snapshotCheckpointState(),
+      ),
+    };
+  }
+
+  private snapshotCheckpointState(): UniversityProtocolRunnerCheckpointState {
+    if (!(this.bus instanceof SerializedUniversityProtocolTransport)) {
+      throw new Error(
+        "University protocol restart simulation requires a serialized transport",
+      );
+    }
+    return {
+      transport: this.bus.checkpoint(),
+      checkpointSequence: this.checkpointSequence,
+      transcript: [...this.transcript.entries],
+      messages: {
+        issuance: [...this.issuanceMessages],
+        jobApplications: [...this.jobMessages],
+        discounts: [...this.discountMessages],
+      },
+      students: [...this.studentAgents.values()].map((student) => ({
+        studentId: student.record.studentId,
+        ...(student.storedIssuedCredential
+          ? { storedIssuedCredential: student.storedIssuedCredential }
+          : {}),
+        receivedResults: [...student.receivedResults],
+      })),
+      companies: [...this.companyAgents.values()].map((company) => ({
+        companyId: company.company.companyId,
+        processedThreadIds: [...company.processedThreadIds].sort(),
+        acceptedCount: company.acceptedCount,
+        duplicateRejectedCount: company.duplicateRejectedCount,
+        verificationRejectedCount: company.verificationRejectedCount,
+      })),
+      mall: {
+        processedThreadIds: [...this.mallAgent.processedThreadIds].sort(),
+        acceptedCount: this.mallAgent.acceptedCount,
+        duplicateRejectedCount: this.mallAgent.duplicateRejectedCount,
+        verificationRejectedCount: this.mallAgent.verificationRejectedCount,
+      },
+    };
+  }
+
+  private restoreFromCheckpoint(
+    checkpoint: UniversityProtocolCheckpoint,
+  ): UniversityProtocolFlowRunner {
+    assertUniversityProtocolCheckpointCompatible(checkpoint);
+    const decodedState = decodeUniversityProtocolTransportValue(
+      checkpoint.encodedState,
+    );
+    const state = asCheckpointState(decodedState);
+    const restored = new UniversityProtocolFlowRunner(
+      this.optionsForRestart(
+        SerializedUniversityProtocolTransport.fromCheckpoint(state.transport),
+      ),
+    );
+    restored.restoreCheckpointState(state);
+    return restored;
+  }
+
+  private restoreCheckpointState(
+    state: UniversityProtocolRunnerCheckpointState,
+  ): void {
+    if (
+      this.transcript.entries.length > 0 ||
+      this.issuanceMessages.length > 0 ||
+      this.jobMessages.length > 0 ||
+      this.discountMessages.length > 0
+    ) {
+      throw new Error(
+        "Cannot restore university protocol checkpoint into a non-empty runner",
+      );
+    }
+    this.checkpointSequence = state.checkpointSequence;
+    this.transcript.entries.push(...state.transcript);
+    this.issuanceMessages.push(...state.messages.issuance);
+    this.jobMessages.push(...state.messages.jobApplications);
+    this.discountMessages.push(...state.messages.discounts);
+
+    for (const studentState of state.students) {
+      const student = this.requireStudentAgent(studentState.studentId);
+      student.storedIssuedCredential = studentState.storedIssuedCredential;
+      student.receivedResults.splice(
+        0,
+        student.receivedResults.length,
+        ...studentState.receivedResults,
+      );
+    }
+
+    for (const companyState of state.companies) {
+      const company = this.companyAgents.get(companyState.companyId);
+      if (!company) {
+        throw new Error(`Missing company agent ${companyState.companyId}`);
+      }
+      company.processedThreadIds.clear();
+      for (const threadId of companyState.processedThreadIds) {
+        company.processedThreadIds.add(threadId);
+      }
+      company.acceptedCount = companyState.acceptedCount;
+      company.duplicateRejectedCount = companyState.duplicateRejectedCount;
+      company.verificationRejectedCount = companyState.verificationRejectedCount;
+    }
+
+    this.mallAgent.processedThreadIds.clear();
+    for (const threadId of state.mall.processedThreadIds) {
+      this.mallAgent.processedThreadIds.add(threadId);
+    }
+    this.mallAgent.acceptedCount = state.mall.acceptedCount;
+    this.mallAgent.duplicateRejectedCount = state.mall.duplicateRejectedCount;
+    this.mallAgent.verificationRejectedCount =
+      state.mall.verificationRejectedCount;
+  }
+
+  private summarizeCheckpoint(
+    checkpoint: UniversityProtocolCheckpoint,
+  ): UniversityProtocolCheckpointSummary {
+    const decodedState = decodeUniversityProtocolTransportValue(
+      checkpoint.encodedState,
+    );
+    const state = asCheckpointState(decodedState);
+    return {
+      checkpointId: checkpoint.checkpointId,
+      restartPoint: checkpoint.restartPoint,
+      queuedMessageCount: queuedMessageCount(state.transport),
+      transportFrameCount: state.transport.frames.length,
+      transcriptEntries: state.transcript.length,
+      messageCounts: {
+        issuance: state.messages.issuance.length,
+        jobApplications: state.messages.jobApplications.length,
+        discounts: state.messages.discounts.length,
+      },
+    };
+  }
+
   private runIssuance(): IssuanceFlowExecutionResult {
+    this.sendIssuanceRequests();
+    const issuanceResult = this.processIssuanceBatches();
+    this.deliverIssuanceResults(issuanceResult.issuedStudentIds);
+    return issuanceResult;
+  }
+
+  private sendIssuanceRequests(): void {
     for (const student of this.studentAgents.values()) {
       student.sendIssuanceRequest(
         this.bus,
@@ -364,16 +718,22 @@ export class UniversityProtocolFlowRunner {
         );
       }
     }
+  }
 
-    const issuanceResult = this.issuer.processIssuanceBatches(
+  private processIssuanceBatches(): IssuanceFlowExecutionResult {
+    return this.issuer.processIssuanceBatches(
       this.bus,
       this.studentAgents,
       this.issuanceBatches,
       this.transcript,
       this.issuanceMessages,
     );
+  }
 
-    for (const studentId of issuanceResult.issuedStudentIds) {
+  private deliverIssuanceResults(
+    issuedStudentIds: readonly string[],
+  ): void {
+    for (const studentId of issuedStudentIds) {
       const result = this.bus.receive(studentId) as
         | UniversityIssuanceResultMessage
         | undefined;
@@ -382,8 +742,6 @@ export class UniversityProtocolFlowRunner {
       }
       this.requireStudentAgent(studentId).receiveIssuanceResult(result);
     }
-
-    return issuanceResult;
   }
 
   private runJobApplications(): void {

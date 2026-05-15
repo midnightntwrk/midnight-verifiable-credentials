@@ -3,6 +3,7 @@ export * from "./application-decision-schema.js";
 export * from "./exporter.js";
 export * from "./flow.js";
 export * from "./model.js";
+export * from "./persistence.js";
 export * from "./policy-catalog.js";
 export * from "./process-transport.js";
 export * from "./proof-backend.js";

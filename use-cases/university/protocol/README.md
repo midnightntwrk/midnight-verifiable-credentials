@@ -7,6 +7,9 @@ Status:
 - explicit party-runtime and proof-execution seams for future standalone and proof-server backends
 - serialized in-process transport for catching DTOs that would not survive a
   real issuer/student/verifier process boundary
+- persisted restart simulation that checkpoints in-flight issuance,
+  job-application, and mall-discount threads and resumes them through a fresh
+  runner
 
 Purpose:
 
@@ -72,6 +75,14 @@ Scope:
   behavior but stores every message as a JSON payload with explicit bigint and
   byte-array tags before delivery, so transport traces can expose message size,
   thread id, message id, and response correlation for every hop
+- restart simulation checkpoints serialize queued transport payloads together
+  with durable runner-owned state: transcript entries, sent message DTOs,
+  issued student credentials, received presentation results, verifier replay
+  guards, and verifier counters. Fixture data, party runtime configuration, and
+  proof backend adapters are reconstructed from runner options on restore. The
+  simulator intentionally reuses deterministic runtime and proof-backend
+  instances across restarts today; a real standalone process restart must
+  reconstruct those adapters from durable seed/configuration data.
 - stable transcript export now exists in both JSON and Markdown forms under
   `target/readable-10`
 - export summaries group entries per thread and include rejection-kind
@@ -116,6 +127,8 @@ Build and test:
   - `npm exec -w ./use-cases/university/protocol -- vitest run src/test/proof-server-contract.test.ts`
 - focused process-boundary transport test:
   - `npm exec -w ./use-cases/university/protocol -- vitest run src/test/process-transport.test.ts`
+- focused restart-persistence test:
+  - `npm exec -w ./use-cases/university/protocol -- vitest run src/test/restart-flow.test.ts`
 - transcript export:
   - `npm run export:transcript -w ./use-cases/university/protocol`
   - outputs:

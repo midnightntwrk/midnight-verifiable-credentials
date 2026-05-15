@@ -9,14 +9,14 @@ import type { UniversityProtocolMessage } from "./model.js";
 
 const transportTypeKey = "__midnightUniversityProtocolTransportType";
 
-type EncodedTransportValue =
+export type EncodedUniversityProtocolTransportValue =
   | null
   | boolean
   | number
   | string
-  | readonly EncodedTransportValue[]
+  | readonly EncodedUniversityProtocolTransportValue[]
   | {
-      readonly [key: string]: EncodedTransportValue;
+      readonly [key: string]: EncodedUniversityProtocolTransportValue;
     };
 
 export type UniversityProtocolTransportFrame = {
@@ -28,6 +28,14 @@ export type UniversityProtocolTransportFrame = {
   readonly threadIdHex: string;
   readonly respondsToHex: string;
   readonly payloadBytes: number;
+};
+
+export type SerializedUniversityProtocolTransportCheckpoint = {
+  readonly queues: readonly {
+    readonly partyId: PartyId;
+    readonly payloads: readonly string[];
+  }[];
+  readonly frames: readonly UniversityProtocolTransportFrame[];
 };
 
 const isPlainRecord = (value: unknown): value is Record<string, unknown> => {
@@ -45,7 +53,7 @@ const describeUnsupportedValue = (value: unknown): string =>
   Object.prototype.toString.call(value);
 
 const assertStringField = (
-  value: Record<string, EncodedTransportValue>,
+  value: Record<string, EncodedUniversityProtocolTransportValue>,
   field: string,
   tag: string,
 ): string => {
@@ -59,7 +67,7 @@ const assertStringField = (
 };
 
 const assertExactTaggedFields = (
-  value: Record<string, EncodedTransportValue>,
+  value: Record<string, EncodedUniversityProtocolTransportValue>,
   tag: string,
   fields: readonly string[],
 ): void => {
@@ -153,7 +161,7 @@ const requireUniversityProtocolMessage = (
 
 export const encodeUniversityProtocolTransportValue = (
   value: unknown,
-): EncodedTransportValue => {
+): EncodedUniversityProtocolTransportValue => {
   if (value === null) {
     return null;
   }
@@ -210,7 +218,7 @@ export const encodeUniversityProtocolTransportValue = (
 };
 
 export const decodeUniversityProtocolTransportValue = (
-  value: EncodedTransportValue,
+  value: EncodedUniversityProtocolTransportValue,
 ): unknown => {
   if (Array.isArray(value)) {
     return value.map((entry) => decodeUniversityProtocolTransportValue(entry));
@@ -259,7 +267,7 @@ const encodeMessage = (message: ProtocolMessage): string =>
 const decodeMessage = (payload: string): UniversityProtocolMessage =>
   requireUniversityProtocolMessage(
     decodeUniversityProtocolTransportValue(
-      JSON.parse(payload) as EncodedTransportValue,
+      JSON.parse(payload) as EncodedUniversityProtocolTransportValue,
     ),
   );
 
@@ -329,5 +337,46 @@ export class SerializedUniversityProtocolTransport extends MessageBus {
 
   totalPayloadBytes(): number {
     return this.#frames.reduce((sum, frame) => sum + frame.payloadBytes, 0);
+  }
+
+  checkpoint(): SerializedUniversityProtocolTransportCheckpoint {
+    return {
+      queues: [...this.#queues.entries()].map(([partyId, payloads]) => ({
+        partyId,
+        payloads: [...payloads],
+      })),
+      frames: this.trace(),
+    };
+  }
+
+  restore(
+    checkpoint: SerializedUniversityProtocolTransportCheckpoint,
+  ): void {
+    const restoredQueues = new Map<PartyId, string[]>();
+    for (const { partyId, payloads } of checkpoint.queues) {
+      for (const payload of payloads) {
+        // Validate restored payloads eagerly while keeping the queue durable as
+        // serialized strings until the receiving party consumes them.
+        decodeMessage(payload);
+      }
+      restoredQueues.set(partyId, [...payloads]);
+    }
+    this.#queues.clear();
+    for (const [partyId, payloads] of restoredQueues.entries()) {
+      this.#queues.set(partyId, payloads);
+    }
+    this.#frames.splice(
+      0,
+      this.#frames.length,
+      ...checkpoint.frames.map((frame) => ({ ...frame })),
+    );
+  }
+
+  static fromCheckpoint(
+    checkpoint: SerializedUniversityProtocolTransportCheckpoint,
+  ): SerializedUniversityProtocolTransport {
+    const transport = new SerializedUniversityProtocolTransport();
+    transport.restore(checkpoint);
+    return transport;
   }
 }

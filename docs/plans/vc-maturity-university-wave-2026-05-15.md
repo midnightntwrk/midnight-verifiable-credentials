@@ -106,7 +106,9 @@ Ground rules:
 
 7. `university-separate-process-simulator`
 
-- status: implemented locally on `codex/vc-university-process-transport-simulator`
+- status:
+  [PR #239](https://github.com/midnightntwrk/midnight-verifiable-credentials/pull/239)
+  merged to `develop` from `codex/vc-university-process-transport-simulator`
 - scope:
   - add a serialized process-boundary transport for issuer, student, company,
     and mall protocol messages
@@ -120,11 +122,15 @@ Ground rules:
 
 8. `university-protocol-persistence-restart`
 
-- status: planned
+- status: implemented locally on `codex/vc-university-protocol-persistence-restart`
 - scope:
   - persist in-flight university protocol threads
   - simulate restart during issuance and presentation phases
   - document durable versus reconstructed state
+- validation:
+  - `npm exec -w ./use-cases/university/protocol -- vitest run src/test/restart-flow.test.ts`
+  - `npm run typecheck -w ./use-cases/university/protocol`
+  - `./run.sh university-protocol --light`
 
 9. `university-large-cohort-pack`
 

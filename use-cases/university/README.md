@@ -12,6 +12,9 @@ Status:
 - protocol transport can now force every issuer, student, company, and mall
   message through a JSON process-boundary codec while preserving the in-process
   simulator result
+- protocol restart simulation can now checkpoint in-flight issuance,
+  job-application, and mall-discount threads, reload them through a fresh
+  runner, and prove the restarted transcript still matches the baseline flow
 - executable BDD job-application and discount paths now sourced from the same
   threaded protocol transcript, rather than a second parallel orchestration
 - explicit negative-path coverage now includes malformed verifier policy,
