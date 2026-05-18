@@ -96,23 +96,24 @@ const buildClaimSurface = ({ slug, familyPascal, familyCamel, claimMode }) => {
     claimMode === "commitment" ? "NoPublicClaims" : `${familyPascal}PublicClaims`;
   const claimCommitmentsType =
     claimMode === "public" ? "NoClaimCommitments" : `${familyPascal}ClaimCommitments`;
-  const privateDisclosureFields = `  revealPrimaryClaim: Boolean,
-  primaryClaimValuePadded: Bytes<32>,
-  primaryClaimOpening: Bytes<32>,`;
-  const publicDisclosureFields =
-    claimMode === "commitment" ? "" : `  publicClaims: ${familyPascal}PublicClaims,\n`;
+  const privateDisclosureFields = [
+    "  revealPrimaryClaim: Boolean,",
+    "  primaryClaimValuePadded: Bytes<32>,",
+    "  primaryClaimOpening: Bytes<32>,",
+  ].join("\n");
+  const publicDisclosureField =
+    claimMode === "commitment" ? "" : `  publicClaims: ${familyPascal}PublicClaims,`;
   const disclosureFields =
     claimMode === "public"
-      ? `${publicDisclosureFields}  revealPrimaryClaim: Boolean,\n`
-      : `${publicDisclosureFields}${privateDisclosureFields}\n`;
+      ? [publicDisclosureField, "  revealPrimaryClaim: Boolean,"].join("\n")
+      : [publicDisclosureField, privateDisclosureFields].filter(Boolean).join("\n");
   const publicDisclosureValidation =
     claimMode === "commitment"
       ? ""
       : `  assert(
     presentation.disclosed.publicClaims == credential.claims,
     "${familyPascal} public claims disclosure does not match credential claims"
-  );
-`;
+  );`;
 
   if (claimMode === "public") {
     return {
@@ -731,8 +732,7 @@ export circuit assertValid${familyPascal}Presentation(
     credential,
     presentation
   );
-  ${holderMatch}
-${claimSurface.publicDisclosureValidation}
+  ${holderMatch}${claimSurface.publicDisclosureValidation ? `\n${claimSurface.publicDisclosureValidation}` : ""}
 }
 
 export circuit assert${familyPascal}PresentationSatisfiesRequest(

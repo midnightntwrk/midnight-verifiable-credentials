@@ -21,12 +21,18 @@ const requireIncludes = (relativePath, requiredFragments) => {
   }
 };
 
+// These fragments are intentionally exact. This guard is a release-discipline
+// tripwire: when contributors reword the guide/template/changelog, they should
+// consciously update the guard with the new canonical wording.
 const requireGeneratedIncludes = ({ mode, slug, relativePath, requiredFragments }) => {
-  const outputRoot = path.join(
+  const checkRoot = path.join(
     repoRoot,
     "tooling",
     "artifacts",
     `scaffold-surface-check-${process.pid}`,
+  );
+  const outputRoot = path.join(
+    checkRoot,
     mode,
   );
   rmSync(outputRoot, { force: true, recursive: true });
@@ -63,6 +69,7 @@ const requireGeneratedIncludes = ({ mode, slug, relativePath, requiredFragments 
     }
   } finally {
     rmSync(outputRoot, { force: true, recursive: true });
+    rmSync(checkRoot, { force: true, recursive: true });
   }
 };
 
