@@ -57,6 +57,11 @@ the repository:
 
 Next 10 simplification backlog items:
 
+The detailed queue lives in
+[`repository-audit-backlog.md`](./repository-audit-backlog.md). The list below
+is the punch-list view for PR titles and execution order until
+`backlog-index-split` collapses duplicated priority text.
+
 1. `runner-target-catalog`
 - replace repeated root script/filter lists with a checked target catalog that
   drives runner help, CI cone validation, and script drift checks
