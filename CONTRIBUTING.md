@@ -141,6 +141,23 @@ Rules:
 * add follow-ups only when there is material deferred work
 * if the PR is docs-only, say so plainly in `Summary` or `Why`
 
+## Generated Surface Changes
+
+Changes to Compact `export struct`, generated managed-runtime output, package
+exports, credential literals, request/response DTOs, or claim representation are
+surface changes. Surface-changing PRs must include migration notes and update
+the relevant spec, README, template, or scaffold guidance.
+
+Use the release-discipline guide for the checklist:
+
+* [`docs/guides/vc-surface-change-discipline.md`](./docs/guides/vc-surface-change-discipline.md)
+
+Run the guard before review when those surfaces change:
+
+```bash
+npm run check:vc-surface-discipline
+```
+
 ## Requirements for Acceptable Contributions:
 
 * **Coding Standards:** Code must adhere to the coding style guides defined in our documentation

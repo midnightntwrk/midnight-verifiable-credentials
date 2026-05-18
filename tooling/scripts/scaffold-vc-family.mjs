@@ -6,18 +6,20 @@ const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "..", "..");
 
 const usage = `Usage:
-  node ./tooling/scripts/scaffold-vc-family.mjs --slug my-family [--out prototypes/credential-families/my-family] [--holder explicit|hidden]
+  node ./tooling/scripts/scaffold-vc-family.mjs --slug my-family [--out prototypes/credential-families/my-family] [--holder explicit|hidden] [--claim-mode public|commitment|mixed]
 
 Behavior:
   - generates a thin-core VC family package scaffold aligned with the current repository layout
   - requires the output directory to stay inside the current VC repository
   - defaults to prototypes/credential-families/<slug>
+  - defaults to commitment-only claim storage so private placeholders do not leak into public claims
   - does not add the package to root workspaces automatically
   - does not overwrite an existing directory
 `;
 
 const parseArgs = (argv) => {
   const args = {
+    claimMode: "commitment",
     holder: "explicit",
   };
 
@@ -35,6 +37,10 @@ const parseArgs = (argv) => {
         break;
       case "--holder":
         args.holder = next;
+        index += 1;
+        break;
+      case "--claim-mode":
+        args.claimMode = next;
         index += 1;
         break;
       case "--help":
@@ -58,6 +64,9 @@ const parseArgs = (argv) => {
   if (!["explicit", "hidden"].includes(args.holder)) {
     throw new Error("--holder must be either 'explicit' or 'hidden'");
   }
+  if (!["public", "commitment", "mixed"].includes(args.claimMode)) {
+    throw new Error("--claim-mode must be one of 'public', 'commitment', or 'mixed'");
+  }
 
   return args;
 };
@@ -73,6 +82,139 @@ const toImportPath = (fromDir, toDir) => {
   return relative.startsWith(".") ? relative : `./${relative}`;
 };
 
+const claimModeDescriptions = {
+  public:
+    "public/direct claims only (`claims` carries raw values and `claimCommitments` is `NoClaimCommitments`)",
+  commitment:
+    "commitment-only claims (`claims` is `NoPublicClaims` and `claimCommitments` carries private digests)",
+  mixed:
+    "mixed public/direct plus committed/private claims (`claims` and `claimCommitments` are both populated)",
+};
+
+const buildClaimSurface = ({ slug, familyPascal, familyCamel, claimMode }) => {
+  const publicClaimsType =
+    claimMode === "commitment" ? "NoPublicClaims" : `${familyPascal}PublicClaims`;
+  const claimCommitmentsType =
+    claimMode === "public" ? "NoClaimCommitments" : `${familyPascal}ClaimCommitments`;
+  const privateDisclosureFields = [
+    "  revealPrimaryClaim: Boolean,",
+    "  primaryClaimValuePadded: Bytes<32>,",
+    "  primaryClaimOpening: Bytes<32>,",
+  ].join("\n");
+  const publicDisclosureField =
+    claimMode === "commitment" ? "" : `  publicClaims: ${familyPascal}PublicClaims,`;
+  const disclosureFields =
+    claimMode === "public"
+      ? [publicDisclosureField, "  revealPrimaryClaim: Boolean,"].join("\n")
+      : [publicDisclosureField, privateDisclosureFields].filter(Boolean).join("\n");
+  const publicDisclosureValidation =
+    claimMode === "commitment"
+      ? ""
+      : `  assert(
+    presentation.disclosed.publicClaims == credential.claims,
+    "${familyPascal} public claims disclosure does not match credential claims"
+  );`;
+
+  if (claimMode === "public") {
+    return {
+      publicClaimsType,
+      claimCommitmentsType,
+      claimRootInvocation: `${familyCamel}ClaimRoot(credential.claims)`,
+      disclosureFields,
+      publicDisclosureValidation,
+      readmeRepresentation:
+        "The generated family is public/direct-only: raw values live in `credential.claims`, and `credential.claimCommitments` uses `NoClaimCommitments`.",
+      claimsFile: `export struct ${familyPascal}PublicClaims {
+  subjectTypeCode: Uint<16>,
+  primaryClaimCode: Bytes<32>,
+  contextCode: Bytes<32>,
+}
+
+export circuit ${familyCamel}ClaimRoot(
+  claims: ${familyPascal}PublicClaims
+): Bytes<32> {
+  return persistentHash<Vector<2, Bytes<32>>>([
+    pad(32, "midnight:vc:${slug}:v1"),
+    persistentHash<${familyPascal}PublicClaims>(claims)
+  ]);
+}
+`,
+    };
+  }
+
+  if (claimMode === "mixed") {
+    return {
+      publicClaimsType,
+      claimCommitmentsType,
+      claimRootInvocation: `${familyCamel}ClaimRoot(credential.claims, credential.claimCommitments)`,
+      disclosureFields,
+      publicDisclosureValidation,
+      readmeRepresentation:
+        "The generated family is mixed: public metadata lives in `credential.claims`, and private placeholder values live in `credential.claimCommitments`.",
+      claimsFile: `export struct ${familyPascal}PublicClaims {
+  credentialTypeCode: Uint<16>,
+  issuerJurisdictionCode: Bytes<2>,
+  assuranceLevel: Uint<8>,
+}
+
+export struct ${familyPascal}ClaimCommitments {
+  subjectIdCommitment: Bytes<32>,
+  primaryClaimCommitment: Bytes<32>,
+  contextCommitment: Bytes<32>,
+}
+
+export circuit ${familyCamel}PublicClaimsRoot(
+  claims: ${familyPascal}PublicClaims
+): Bytes<32> {
+  return persistentHash<${familyPascal}PublicClaims>(claims);
+}
+
+export circuit ${familyCamel}ClaimCommitmentsRoot(
+  claimCommitments: ${familyPascal}ClaimCommitments
+): Bytes<32> {
+  return persistentHash<${familyPascal}ClaimCommitments>(claimCommitments);
+}
+
+export circuit ${familyCamel}ClaimRoot(
+  claims: ${familyPascal}PublicClaims,
+  claimCommitments: ${familyPascal}ClaimCommitments
+): Bytes<32> {
+  return persistentHash<Vector<3, Bytes<32>>>([
+    pad(32, "midnight:vc:${slug}:v1"),
+    ${familyCamel}PublicClaimsRoot(claims),
+    ${familyCamel}ClaimCommitmentsRoot(claimCommitments)
+  ]);
+}
+`,
+    };
+  }
+
+  return {
+    publicClaimsType,
+    claimCommitmentsType,
+    claimRootInvocation: `${familyCamel}ClaimRoot(credential.claimCommitments)`,
+    disclosureFields,
+    publicDisclosureValidation,
+    readmeRepresentation:
+      "The generated family is commitment-only: raw placeholder values stay outside the credential body, `credential.claims` uses `NoPublicClaims`, and `credential.claimCommitments` carries private digests.",
+    claimsFile: `export struct ${familyPascal}ClaimCommitments {
+  subjectIdCommitment: Bytes<32>,
+  primaryClaimCommitment: Bytes<32>,
+  contextCommitment: Bytes<32>,
+}
+
+export circuit ${familyCamel}ClaimRoot(
+  claimCommitments: ${familyPascal}ClaimCommitments
+): Bytes<32> {
+  return persistentHash<Vector<2, Bytes<32>>>([
+    pad(32, "midnight:vc:${slug}:v1"),
+    persistentHash<${familyPascal}ClaimCommitments>(claimCommitments)
+  ]);
+}
+`,
+  };
+};
+
 const buildFiles = ({
   slug,
   packageName,
@@ -81,6 +223,7 @@ const buildFiles = ({
   familyStem,
   familyPascal,
   holder,
+  claimMode,
 }) => {
   const srcDir = path.join(packageRoot, "src");
   const coreDir = path.join(repoRoot, "core", "primitives", "credentials", "src", "credentials");
@@ -97,6 +240,7 @@ const buildFiles = ({
   const packageId = `midnight:vc:${slug}`;
   const schemaId = `${slug}:v1`;
   const familyCamel = familyPascal.charAt(0).toLowerCase() + familyPascal.slice(1);
+  const claimSurface = buildClaimSurface({ slug, familyPascal, familyCamel, claimMode });
   const holderStatusLine =
     holder === "hidden"
       ? "Status: starter scaffold for a hidden-holder family package built on `BlindedSecretHolderBinding` and `NoStatusBinding`."
@@ -118,6 +262,10 @@ Purpose:
 Generated location:
 
 - \`${packageRelativeToRepo}\`
+
+Generated claim mode:
+
+- \`${claimMode}\`: ${claimModeDescriptions[claimMode]}
 
 Generated shape:
 
@@ -157,6 +305,7 @@ Next steps:
 
 Current Compact claim-shape guardrails:
 
+- ${claimSurface.readmeRepresentation}
 - native direct Compact claim fields today should stay within:
   - \`Boolean\`
   - \`Uint<n>\`
@@ -168,6 +317,8 @@ Current Compact claim-shape guardrails:
 - do not model \`Vector<k, T>\` when \`T\` is itself an unsupported field kind
 - prefer flat claims by default; use nested structs only when they reflect a
   real domain grouping
+- keep \`claims\` for intentionally public/direct values only
+- keep \`claimCommitments\` for private disclosure or predicate-only digests only
 
 Reference packages:
 
@@ -175,6 +326,8 @@ Reference packages:
   - \`prototypes/credential-families/hello-family\`
 - broad direct claim-surface laboratory:
   - \`prototypes/credential-families/dummy-claims\`
+- mixed public/private claim-representation laboratory:
+  - \`prototypes/credential-families/mixed-claims\`
 `,
     ],
     [
@@ -476,10 +629,11 @@ include "${coreImport}";
 include "./${familyStem}/claims";
 include "./${familyStem}/model";
 
-import VC<${familyPascal}CredentialClaims, ${holderType}, NoStatusBinding>;
+import VC<${claimSurface.publicClaimsType}, ${claimSurface.claimCommitmentsType}, ${holderType}, NoStatusBinding>;
 import VP<${familyPascal}Disclosures, ${holderType}>;
 import CredentialPresentationRelations<
-  ${familyPascal}CredentialClaims,
+  ${claimSurface.publicClaimsType},
+  ${claimSurface.claimCommitmentsType},
   ${familyPascal}Disclosures,
   ${holderType},
   NoStatusBinding
@@ -492,30 +646,12 @@ include "./${familyStem}/helpers";
     ],
     [
       `src/${familyStem}/claims.compact`,
-      `export struct ${familyPascal}CredentialClaims {
-  subjectIdCommitment: Bytes<32>,
-  primaryClaimCommitment: Bytes<32>,
-  contextCommitment: Bytes<32>,
-}
-
-export circuit ${familyCamel}ClaimRoot(
-  claims: ${familyPascal}CredentialClaims
-): Bytes<32> {
-  return persistentHash<Vector<4, Bytes<32>>>([
-    pad(32, "midnight:vc:${slug}:v1"),
-    claims.subjectIdCommitment,
-    claims.primaryClaimCommitment,
-    claims.contextCommitment
-  ]);
-}
-`,
+      claimSurface.claimsFile,
     ],
     [
       `src/${familyStem}/model.compact`,
       `export struct ${familyPascal}Disclosures {
-  revealPrimaryClaim: Boolean,
-  primaryClaimValuePadded: Bytes<32>,
-  primaryClaimOpening: Bytes<32>,
+${claimSurface.disclosureFields}
 }
 
 export struct ${familyPascal}PresentationRequest {
@@ -579,7 +715,7 @@ export circuit assertValid${familyPascal}Credential(
   assertValid${familyPascal}SchemaRef(credential.schema);
   assertValidCredentialEnvelope(
     credential,
-    ${familyCamel}ClaimRoot(credential.claims)
+    ${claimSurface.claimRootInvocation}
   );
   ${holderValidation}
   assertValidNoStatusBinding(credential.statusBinding);
@@ -596,7 +732,7 @@ export circuit assertValid${familyPascal}Presentation(
     credential,
     presentation
   );
-  ${holderMatch}
+  ${holderMatch}${claimSurface.publicDisclosureValidation ? `\n${claimSurface.publicDisclosureValidation}` : ""}
 }
 
 export circuit assert${familyPascal}PresentationSatisfiesRequest(
@@ -683,7 +819,7 @@ describe("${slug} scaffold presentation request", () => {
 
 const main = async () => {
   try {
-    const { slug, out, holder } = parseArgs(process.argv.slice(2));
+    const { slug, out, holder, claimMode } = parseArgs(process.argv.slice(2));
     const requestedOutputPath = out ?? path.join("prototypes", "credential-families", slug);
     const packageRoot = path.resolve(process.cwd(), requestedOutputPath);
     const packageRelativeToRepo = path.relative(repoRoot, packageRoot);
@@ -692,7 +828,7 @@ const main = async () => {
     }
 
     const familyStem = `${slug}-credential`;
-    const familyPascal = `${toPascalCase(slug)}Credential`;
+    const familyPascal = toPascalCase(slug);
     const packageName = `@midnight-ntwrk/midnight-did-credentials-${slug}`;
 
     const files = buildFiles({
@@ -703,6 +839,7 @@ const main = async () => {
       familyStem,
       familyPascal,
       holder,
+      claimMode,
     });
 
     await mkdir(path.dirname(packageRoot), { recursive: true });

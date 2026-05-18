@@ -42,6 +42,10 @@
 - integration surface map:
   - [`guides/integration-surface-map.md`](./guides/integration-surface-map.md)
   - for integrators deciding which surfaces belong on-chain, off-chain, or both
+- VC surface change discipline:
+  - [`guides/vc-surface-change-discipline.md`](./guides/vc-surface-change-discipline.md)
+  - for contributors changing Compact-generated types, credential literals,
+    package exports, or claim-representation surfaces
 - hidden-holder hello world:
   - [`guides/hidden-holder-hello-world.md`](./guides/hidden-holder-hello-world.md)
   - for engineers who need the shortest current reference hidden-holder integration path
