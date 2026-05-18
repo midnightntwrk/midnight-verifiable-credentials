@@ -380,7 +380,6 @@ export class SecretIssuerAgent {
       hasExpiration: true,
       expiresAt: claimWitness.expiresAt,
       claims: {},
-
       claimCommitments: claims,
       claimRoot: pureCircuits.birthCredentialClaimRoot(claims),
     };

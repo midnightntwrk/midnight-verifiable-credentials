@@ -357,6 +357,24 @@ describe("mixed-claims behavior", () => {
     expect(root).not.toEqual(changedRoot);
   });
 
+  it("rejects public claims without an issuer jurisdiction code", () => {
+    const fixture = createFixture();
+    const credential: MixedClaimsCredential = {
+      ...fixture.credential,
+      claims: {
+        ...fixture.credential.claims,
+        issuerJurisdictionCode: new Uint8Array(2),
+      },
+    };
+
+    expect(() =>
+      pureCircuits.assertValidMixedClaimsCredential(
+        credential,
+        fixture.credentialProof,
+      ),
+    ).toThrow(/Mixed-claims issuer jurisdiction code must be set/);
+  });
+
   it("rejects an account-tier predicate witness with the wrong opening", () => {
     const fixture = createFixture();
 

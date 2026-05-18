@@ -68,6 +68,10 @@ export pure circuit assertValidMixedClaimsPublicClaims(
     "Mixed-claims credential type code must be positive"
   );
   assert(
+    publicClaims.issuerJurisdictionCode != pad(2, ""),
+    "Mixed-claims issuer jurisdiction code must be set"
+  );
+  assert(
     publicClaims.assuranceLevel > 0,
     "Mixed-claims assurance level must be positive"
   );

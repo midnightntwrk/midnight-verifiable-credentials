@@ -235,7 +235,6 @@ const buildBirthCredentialFixture = (
     hasExpiration: true,
     expiresAt: 20_000n,
     claims: {},
-
     claimCommitments: claims,
     claimRoot: pureCircuits.birthCredentialClaimRoot(claims),
   };

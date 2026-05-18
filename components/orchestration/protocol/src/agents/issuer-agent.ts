@@ -136,7 +136,6 @@ export class IssuerAgent {
       hasExpiration: true,
       expiresAt: claimWitness.expiresAt,
       claims: {},
-
       claimCommitments: claims,
       claimRoot: pureCircuits.birthCredentialClaimRoot(claims),
     };
