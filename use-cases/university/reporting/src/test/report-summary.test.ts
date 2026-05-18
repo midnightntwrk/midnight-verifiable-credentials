@@ -14,6 +14,7 @@ import { describe, expect, it } from "vitest";
 import {
   assertUniversityArtifactSummaryConforms,
   buildUniversityArtifactSummary,
+  renderUniversityArtifactManifestMarkdown,
   renderUniversityArtifactSummaryMarkdown,
   UNIVERSITY_REPORT_SUMMARY_SCHEMA_ID,
   UNIVERSITY_REPORT_SUMMARY_SCHEMA_VERSION,
@@ -73,6 +74,15 @@ describe("university artifact report summarizer", () => {
       "Pioneer Systems",
     ]);
     expect(summary.readableBdd.scenarioCount).toBe(13);
+    expect(summary.artifactManifest.complete).toBe(true);
+    expect(summary.artifactManifest.entries).toHaveLength(4);
+    expect(summary.artifactManifest.entries.map((entry) => entry.artifactId))
+      .toEqual([
+        "readable-bdd-serenity",
+        "readable-protocol-transcript",
+        "stress-protocol-summary",
+        "issuer-batch-sweep-summary",
+      ]);
     expect(summary.readableBdd.passedCount).toBe(13);
     expect(summary.readableBdd.failedCount).toBe(0);
     expect(summary.transcriptExport.counts.totalThreads).toBe(25);
@@ -148,10 +158,16 @@ describe("university artifact report summarizer", () => {
     const normalizedMarkdown = renderUniversityArtifactSummaryMarkdown(
       summary,
     ).replaceAll(fixtureDir, "<fixtures>");
+    const normalizedManifestMarkdown = renderUniversityArtifactManifestMarkdown(
+      summary.artifactManifest,
+    ).replaceAll(fixtureDir, "<fixtures>");
 
     expect(`${JSON.stringify(normalizedSummary, null, 2)}\n`).toBe(
       readGolden("report-summary.golden.json"),
     );
     expect(normalizedMarkdown).toBe(readGolden("report-summary.golden.md"));
+    expect(normalizedManifestMarkdown).toBe(
+      readGolden("artifact-manifest.golden.md"),
+    );
   });
 });

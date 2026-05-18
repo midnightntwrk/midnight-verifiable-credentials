@@ -1,6 +1,6 @@
 {
   "schemaId": "midnight-university-report-summary",
-  "schemaVersion": "midnight-university-report-summary.v2",
+  "schemaVersion": "midnight-university-report-summary.v3",
   "actors": {
     "universityPartyId": "uni-example-001",
     "studentCount": 10,
@@ -19,6 +19,67 @@
     "transcriptExportPath": "<fixtures>/transcript-export.json",
     "stressSummaryPath": "<fixtures>/stress-summary.json",
     "batchSweepSummaryPath": "<fixtures>/batch-sweep-summary.json"
+  },
+  "artifactManifest": {
+    "artifactSet": "midnight-university-reporting-inputs",
+    "complete": true,
+    "totalBytes": 100202,
+    "entries": [
+      {
+        "artifactId": "readable-bdd-serenity",
+        "label": "Readable BDD Serenity JSON",
+        "path": "<fixtures>/serenity",
+        "format": "serenity-json-directory",
+        "schemaVersion": null,
+        "producedBy": "./run.sh university-bdd",
+        "purpose": "13 latest readable university BDD scenario records",
+        "bytes": 2778,
+        "sha256": "3885403dcd926e8fff77fb5de5b33b6cf3d19e540628f9bc240b670339c3ce72",
+        "fileCount": 13
+      },
+      {
+        "artifactId": "readable-protocol-transcript",
+        "label": "Readable protocol transcript export",
+        "path": "<fixtures>/transcript-export.json",
+        "format": "university-json-artifact",
+        "schemaVersion": "midnight-university-protocol-export.v1",
+        "producedBy": "./run.sh university-protocol-export",
+        "purpose": "student, issuer, employer, and mall protocol DTO transcript",
+        "bytes": 74769,
+        "sha256": "d7c552e47e5d25b903863ff043b53718ac63dd16b6258d9879fa329421a84d19",
+        "fileCount": 1
+      },
+      {
+        "artifactId": "stress-protocol-summary",
+        "label": "Stress protocol summary",
+        "path": "<fixtures>/stress-summary.json",
+        "format": "university-json-artifact",
+        "schemaVersion": "midnight-university-protocol-stress-summary.v2",
+        "producedBy": "./run.sh university-protocol-stress",
+        "purpose": "100-student throughput and rejection summary",
+        "bytes": 13157,
+        "sha256": "5608739ffce092e607263e782cafb1a2bb4148a2362b797a4723228b57215424",
+        "fileCount": 1
+      },
+      {
+        "artifactId": "issuer-batch-sweep-summary",
+        "label": "Issuer batch-sweep summary",
+        "path": "<fixtures>/batch-sweep-summary.json",
+        "format": "university-json-artifact",
+        "schemaVersion": "midnight-university-batch-sweep-summary.v2",
+        "producedBy": "./run.sh university-batch-sweep",
+        "purpose": "batch size and compile-concurrency projection summary",
+        "bytes": 9498,
+        "sha256": "702093b9bedc9cc8631356b55e0635178382a3f06a387b9c28d5ea263657fab7",
+        "fileCount": 1
+      }
+    ],
+    "missingArtifactIds": [],
+    "notes": [
+      "Hashes are deterministic SHA-256 digests over source artifact bytes.",
+      "The Serenity directory hash includes each JSON filename before its file bytes so renamed files change the digest.",
+      "The manifest is an index over already-rendered artifacts; it does not replace the individual schema validators."
+    ]
   },
   "readableBdd": {
     "scenarioCount": 13,

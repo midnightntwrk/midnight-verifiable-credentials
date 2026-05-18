@@ -18,6 +18,8 @@ Scope:
 - summarize the readable university protocol transcript export
 - summarize the 100-student protocol stress summary
 - summarize the issuance batch-sweep benchmark output
+- emit a deterministic source-artifact manifest with file counts, byte sizes,
+  schema versions, producers, and SHA-256 digests
 - highlight the slowest scenario and the dominant timing bottlenecks
 
 Build and test:
@@ -36,3 +38,5 @@ Build and test:
   - outputs:
     - `./use-cases/university/reporting/target/summary.json`
     - `./use-cases/university/reporting/target/summary.md`
+    - `./use-cases/university/reporting/target/artifact-manifest.json`
+    - `./use-cases/university/reporting/target/artifact-manifest.md`
