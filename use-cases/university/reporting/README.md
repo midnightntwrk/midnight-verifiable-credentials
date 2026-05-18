@@ -23,6 +23,8 @@ Scope:
 - highlight the slowest scenario and the dominant timing bottlenecks
 - fail fast when a required source artifact is missing; rerun the documented
   producer lane instead of publishing a partial report
+- require callers to pass `artifactBaseDirectory` so manifest paths stay
+  portable and do not depend on the process working directory
 
 Build and test:
 

@@ -285,7 +285,7 @@ export type UniversityArtifactPaths = {
   readonly transcriptExportPath: string;
   readonly stressSummaryPath: string;
   readonly batchSweepSummaryPath: string;
-  readonly artifactBaseDirectory?: string;
+  readonly artifactBaseDirectory: string;
 };
 
 const readJson = <T>(filePath: string): T => {
@@ -391,7 +391,7 @@ const buildUniversityArtifactManifest = ({
   readonly batchSweepSchemaVersion: string;
 }): UniversityArtifactManifest => {
   const artifactBaseDirectory = path.resolve(
-    artifactPaths.artifactBaseDirectory ?? process.cwd(),
+    artifactPaths.artifactBaseDirectory,
   );
   const entries = [
     buildSerenityArtifactManifestEntry(

@@ -134,6 +134,7 @@ describe("university artifact report summarizer", () => {
 
     try {
       const summary = buildUniversityArtifactSummary({
+        artifactBaseDirectory: process.cwd(),
         serenityDirectory: tempSerenityDirectory,
         transcriptExportPath: path.join(fixtureDir, "transcript-export.json"),
         stressSummaryPath: path.join(fixtureDir, "stress-summary.json"),
@@ -162,18 +163,57 @@ describe("university artifact report summarizer", () => {
     );
 
     try {
-      expect(() =>
-        buildUniversityArtifactSummary({
-          artifactBaseDirectory: fixtureDir,
-          serenityDirectory,
-          transcriptExportPath: path.join(tempRoot, "missing-transcript.json"),
-          stressSummaryPath: path.join(fixtureDir, "stress-summary.json"),
-          batchSweepSummaryPath: path.join(
-            fixtureDir,
-            "batch-sweep-summary.json",
-          ),
-        }),
-      ).toThrow(/Failed to parse JSON artifact/);
+      const validPaths = {
+        artifactBaseDirectory: fixtureDir,
+        serenityDirectory,
+        transcriptExportPath: path.join(fixtureDir, "transcript-export.json"),
+        stressSummaryPath: path.join(fixtureDir, "stress-summary.json"),
+        batchSweepSummaryPath: path.join(
+          fixtureDir,
+          "batch-sweep-summary.json",
+        ),
+      };
+      const missingPathCases = [
+        {
+          label: "Serenity directory",
+          override: { serenityDirectory: path.join(tempRoot, "serenity") },
+        },
+        {
+          label: "protocol transcript export",
+          override: {
+            transcriptExportPath: path.join(
+              tempRoot,
+              "missing-transcript.json",
+            ),
+          },
+        },
+        {
+          label: "stress summary",
+          override: {
+            stressSummaryPath: path.join(tempRoot, "missing-stress.json"),
+          },
+        },
+        {
+          label: "batch-sweep summary",
+          override: {
+            batchSweepSummaryPath: path.join(
+              tempRoot,
+              "missing-batch-sweep.json",
+            ),
+          },
+        },
+      ];
+
+      for (const { label, override } of missingPathCases) {
+        expect(
+          () =>
+            buildUniversityArtifactSummary({
+              ...validPaths,
+              ...override,
+            }),
+          label,
+        ).toThrow();
+      }
     } finally {
       rmSync(tempRoot, { recursive: true, force: true });
     }
