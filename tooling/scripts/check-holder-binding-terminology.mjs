@@ -4,7 +4,6 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 
 const repoRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
-  cwd: process.cwd(),
   encoding: "utf8",
 }).trim();
 
@@ -49,6 +48,8 @@ const markdownParagraphs = (source) => source.split(/\n{2,}/u);
 
 // These are deliberately wording tripwires, not semantic prose parsers. They
 // catch obvious drift while keeping the guard cheap enough for every lint lane.
+// The rejected-pattern set covers the canonical examples, not every possible
+// paraphrase of discouraged wording.
 const rejectedPatterns = [
   {
     label: "OffchainMidnightHolderBinding is the preferred",
@@ -91,6 +92,8 @@ for (const relativePath of markdownFiles) {
     offchainMidnightHolderBinding.test(source) &&
     !offchainDidHolderBinding.test(source)
   ) {
+    // File-level pairing is intentional here: detailed specs may describe the
+    // Compact/core name in one section and the public/runtime name in another.
     errors.push(
       `${relativePath} mentions OffchainMidnightHolderBinding without the preferred OffchainDIDHolderBinding name`,
     );
