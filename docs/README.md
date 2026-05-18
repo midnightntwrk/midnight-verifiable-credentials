@@ -168,6 +168,10 @@
 - VC maturity backlog:
   - [`plans/vc-maturity-backlog.md`](./plans/vc-maturity-backlog.md)
   - for the current repository-audit backlog and gap-tracking work
+- repository audit backlog:
+  - [`plans/repository-audit-backlog.md`](./plans/repository-audit-backlog.md)
+  - for repo-wide simplification findings, package/docs drift, and
+    developer-experience follow-up queues
 - VC maturity and university closeout wave:
   - [`plans/vc-maturity-university-wave-2026-05-15.md`](./plans/vc-maturity-university-wave-2026-05-15.md)
   - for the active 20-iteration execution plan targeting `develop`

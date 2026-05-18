@@ -47,6 +47,130 @@ Repository gaps:
   surface changes, because downstream consumers construct generated credential
   literals and will feel `claims` / `claimCommitments` shape changes directly
 
+## Simplification Audit: 2026-05-19
+
+Scope:
+
+- root `package.json` workspace and script map
+- root `./run.sh` and `tooling/scripts/run-common.sh`
+- current ignored/generated artifact footprint after light and BDD runs
+- current docs/plans backlog and university use-case lane inventory
+- sibling `midnight-did` repository shape where DID/VC integration boundaries
+  affect contributor experience
+
+Current simplification findings:
+
+1. runner target definitions are still too repetitive
+
+- the root script map repeats the same workspace-filter cones across lint,
+  typecheck, build, test, CI, and `from-artifacts` variants
+- `./run.sh` and `tooling/scripts/run-common.sh` also carry hand-maintained
+  target/profile lists
+- simplification path:
+  - define a small machine-readable target catalog for cone membership,
+    light-mode support, prerequisite build profile, and test command
+  - generate or validate `package.json` script fragments from that catalog
+  - make `check:run-target-contract` prove `./run.sh`, CI, and root scripts
+    all use the same catalog
+
+2. restored-artifact reuse needs freshness validation
+
+- local `./run.sh --light` exposed that Turbo/restored managed artifacts can
+  reuse stale generated Compact output until `TURBO_FORCE=1` bypasses the
+  cache
+- simplification path:
+  - add a managed-artifact freshness manifest keyed by Compact source hashes,
+    compiler/runtime versions, and generator package versions
+  - make light-mode artifact reuse fail closed and rebuild when the manifest is
+    absent or stale
+  - keep this check in `run_common_artifacts_ready` rather than scattering
+    package-specific probes
+
+3. generated artifact footprint is large and duplicated
+
+- local ignored state contains both `src/managed/**` and `dist/managed/**` for
+  most Compact packages plus Serenity report trees under both BDD use cases
+- simplification path:
+  - standardize a generated-artifact inventory by package
+  - add a `clean:artifacts` or `./run.sh clean-artifacts` target that removes
+    managed/dist/report outputs without touching fixture data
+  - document which generated directories are safe to delete before opening PRs
+
+4. university lanes are powerful but dense
+
+- university now has simulator, standalone, proof-server, protocol, export,
+  stress, cohort, batch-sweep, data-profile, policy-catalog, and summary lanes
+- simplification path:
+  - add a single university lane catalog that groups these into:
+    `read`, `validate`, `measure`, `standalone`, and `publish`
+  - use that catalog to render the README table, CI matrix, and runner help
+  - keep the detailed scripts, but make the human entrypoint smaller
+
+5. docs backlog is still split across overlapping plan files
+
+- `vc-maturity-backlog.md`, `repository-audit-backlog.md`, and
+  `university-improvement-backlog.md` each contain active prioritization
+  language
+- simplification path:
+  - keep this file as the repo-wide audit backlog
+  - keep `university-improvement-backlog.md` for university-only executable
+    scenarios
+  - convert `vc-maturity-backlog.md` into a short status index that points to
+    the active specialized backlog files instead of duplicating priorities
+
+6. package maturity vocabulary is present but not yet uniform
+
+- package READMEs vary in how they say `reference`, `prototype`,
+  `off-chain-only`, `contract-facing`, or `source-only`
+- simplification path:
+  - extend the workspace manifest audit with optional README maturity tags
+  - keep tags short and mechanical:
+    `surface`, `maturity`, `artifact policy`, `start here`
+
+7. DID/VC boundary is clearer but still expensive to validate locally
+
+- DID and VC are separate repos, but VC still needs DID package aliases and
+  API-path shims in `postinstall`
+- simplification path:
+  - document one supported local integration mode:
+    published tarballs, sibling checkout, or vendor snapshot
+  - add one root check that reports which mode is active and which DID package
+    versions/paths are being used
+
+8. BDD reports are useful but heavy
+
+- Serenity reports add large ignored trees and repeated static assets
+- simplification path:
+  - keep HTML generation opt-in for local/CI artifact publication
+  - make the default BDD smoke output emit compact JSON/Markdown summaries
+  - retain full Serenity reports for `./run.sh bdd-all` and university publish
+    lanes
+
+9. proof-server versus simulator semantics need an even smaller contract
+
+- university and standalone seams now exist, but callers still need to know
+  backend-specific terminology
+- simplification path:
+  - define a tiny `ProofBackendProfile` contract in docs and scenario config:
+    `simulator`, `proof-server-recording`, `standalone-bootstrap`
+  - have report artifacts echo this profile so timing claims are never
+    ambiguous
+
+10. next PRs should prefer guardrail consolidation over new ad hoc scripts
+
+- the repo already has several useful guards:
+  - package boundaries
+  - CI build cones
+  - CI workflow cones
+  - run-target contract
+  - VC surface discipline
+  - workspace manifests
+  - university CI matrix
+- simplification path:
+  - when adding a new guard, first decide whether it belongs inside an existing
+    catalog/check
+  - add new standalone checks only when the domain needs its own vocabulary
+
 ## Recent Closure: Claim Representation Profile
 
 - mixed claim representation landed in `#247`

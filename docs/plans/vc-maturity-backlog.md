@@ -39,6 +39,64 @@ Next backlog slice should start from the merged `develop` branch and focus on
 remaining developer-experience / release-discipline work rather than reopening
 the already-merged claim-representation architecture.
 
+## Status Update: 2026-05-19
+
+The active maturity scope has shifted from missing capability slices to
+simplification and maintenance discipline.
+
+Repository-owned capability gaps are now smaller than the cost of navigating
+the repository:
+
+- root runner/script definitions are duplicated across `package.json`,
+  `./run.sh`, CI workflow cones, and artifact profiles
+- light-mode runs need a freshness contract for generated Compact artifacts
+- university scenario lanes need a smaller human-facing catalog
+- generated artifacts and Serenity reports need a predictable cleanup story
+- DID/VC local integration mode should be reported explicitly rather than
+  inferred from `postinstall` shims
+
+Next 10 simplification backlog items:
+
+1. `runner-target-catalog`
+- replace repeated root script/filter lists with a checked target catalog that
+  drives runner help, CI cone validation, and script drift checks
+
+2. `managed-artifact-freshness`
+- add a source/compiler/version manifest for Compact managed artifacts so
+  `./run.sh --light` rebuilds stale outputs instead of trusting cache presence
+
+3. `clean-artifacts-target`
+- add one safe cleanup lane for `src/managed`, `dist`, TypeScript build info,
+  BDD `target`, and local report artifacts
+
+4. `university-lane-catalog`
+- group university commands into readable operator modes and generate README /
+  CI matrix summaries from the same source
+
+5. `bdd-summary-first-output`
+- make compact JSON/Markdown summaries the default local BDD inspection target
+  and keep full Serenity HTML for publish/report lanes
+
+6. `proof-backend-profile-contract`
+- document and emit the active proof backend profile in university reports:
+  simulator, proof-server recording, or standalone bootstrap
+
+7. `package-readme-maturity-tags`
+- extend workspace-manifest discipline with short README tags for surface,
+  maturity, artifact policy, and start-here guidance
+
+8. `did-vc-integration-mode-check`
+- add one command that reports whether VC is using DID tarballs, a sibling
+  checkout, or vendor snapshots, including resolved package versions/paths
+
+9. `backlog-index-split`
+- keep this file as a maturity status index and move detailed active queues to
+  specialized backlog files to avoid duplicate prioritization text
+
+10. `guardrail-consolidation-pass`
+- fold new checks into existing catalogs where possible before adding more
+  standalone scripts
+
 ## Status Update: 2026-05-12
 
 Merged baseline on `develop` still runs through `#95`.
