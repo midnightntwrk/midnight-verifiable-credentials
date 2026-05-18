@@ -9,6 +9,8 @@ Purpose:
 - separate public/runtime adapter names from Compact/core struct names
 - prevent compatibility names from being presented as the preferred path for
   new DID-shaped integrations
+- guard prose terminology; source-code surface changes are still covered by
+  the package-boundary and VC surface-discipline lanes
 
 Related documents:
 
@@ -37,17 +39,17 @@ Use these terms when writing new docs or describing new package surfaces.
 
 ## Naming Rules
 
-1. Use `OffchainDIDHolderBinding` for runtime and public TypeScript-facing
+1. <!-- guard:offchain-did-runtime-public --> Use `OffchainDIDHolderBinding` for runtime and public TypeScript-facing
    offchain DID adapter surfaces.
-2. Keep `OffchainMidnightHolderBinding` only where the text is explicitly about
+2. <!-- guard:offchain-midnight-compatibility --> Keep `OffchainMidnightHolderBinding` only where the text is explicitly about
    the Compact/core struct or compatibility with existing generated Compact
    imports.
-3. Use `JubjubHolderBinding` only with legacy, compatibility, minimal demo, or
+3. <!-- guard:jubjub-legacy-context --> Use `JubjubHolderBinding` only with legacy, compatibility, minimal demo, or
    non-DID wording.
-4. Use `hidden-holder` as the umbrella adjective for privacy-oriented flows,
+4. <!-- guard:hidden-holder-term --> Use `hidden-holder` as the umbrella adjective for privacy-oriented flows,
    but name concrete implementation profiles as `secret holder binding` or
    `blinded secret holder binding`.
-5. Use `holder proof` only for the proof/signature over the presentation body.
+5. <!-- guard:holder-proof-term --> Use `holder proof` only for the proof/signature over the presentation body.
    Do not use it as a synonym for a holder-binding profile.
 6. Use `holder method id` only for the DID verification-method fragment carried
    by explicit/offchain DID profiles.

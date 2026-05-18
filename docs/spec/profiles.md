@@ -254,7 +254,7 @@ Purpose:
   demo flows
 
 Binding mechanism:
-- `JubjubHolderBinding`
+- legacy compatibility `JubjubHolderBinding`
 - proof public key must match the bound Jubjub key
 
 Current implementation packages:
@@ -283,4 +283,4 @@ Use:
 
 Avoid for new DID-shaped work:
 
-- raw `JubjubHolderBinding`
+- raw legacy compatibility `JubjubHolderBinding`

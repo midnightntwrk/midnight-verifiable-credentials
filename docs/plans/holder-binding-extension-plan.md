@@ -15,7 +15,7 @@
 Add lightweight Midnight VC holder-binding profiles for prototypes and demos
 that do not want to require full DID deployment and DID resolution.
 
-## Why `JubjubHolderBinding` is still needed
+## Why legacy compatibility `JubjubHolderBinding` is still needed
 
 Yes, we really need it.
 
@@ -36,7 +36,7 @@ Terminology authority:
 
 ## New binding profiles
 
-### 1. `JubjubHolderBinding`
+### 1. Legacy compatibility `JubjubHolderBinding`
 
 Bind the credential holder directly to a JubJub public key.
 
