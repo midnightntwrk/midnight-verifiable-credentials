@@ -1,7 +1,7 @@
 @university @discount @metrics
 Feature: Selected students present diploma credentials to request a mall discount
   # DESCRIPTION:
-  # - The mall offers a discount only when the final grade is strictly greater than 90.
+  # - The mall offers a discount only when the final grade is at least 91.
   # - The verifier request therefore enforces `minimumFinalGrade = 91`.
   # - Five students with different grades exercise both acceptance and rejection paths.
   #
@@ -28,7 +28,7 @@ Feature: Selected students present diploma credentials to request a mall discoun
     # - The student learns that the request requires university name, final grade,
     #   and a minimum final grade of 91.
     # CHECKS:
-    # - The request encodes the business rule `grade > 90` as `minimumFinalGrade = 91`.
+    # - The request encodes the business rule `grade >= 91` as `minimumFinalGrade = 91`.
     Given the "Student Square Mall" verifier policy is loaded
 
     # REQUEST:
@@ -68,8 +68,8 @@ Feature: Selected students present diploma credentials to request a mall discoun
 
     Examples:
       | fullName        | studentId | finalGrade | expectedOutcome | explanation                               |
-      | Ada Avery 0001  | STU-0001  | 98         | accepted        | grade is strictly greater than 90         |
-      | Ben Avery 0002  | STU-0002  | 94         | accepted        | grade is strictly greater than 90         |
-      | Cara Avery 0003 | STU-0003  | 91         | accepted        | grade is strictly greater than 90         |
+      | Ada Avery 0001  | STU-0001  | 98         | accepted        | grade is at least 91                      |
+      | Ben Avery 0002  | STU-0002  | 94         | accepted        | grade is at least 91                      |
+      | Cara Avery 0003 | STU-0003  | 91         | accepted        | grade is at least 91                      |
       | Dion Avery 0004 | STU-0004  | 90         | rejected        | failed assert: University-diploma disclosed final grade is below the verifier minimum |
       | Ella Avery 0005 | STU-0005  | 72         | rejected        | failed assert: University-diploma disclosed final grade is below the verifier minimum |

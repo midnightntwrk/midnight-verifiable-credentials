@@ -14,7 +14,9 @@ import { describe, expect, it } from "vitest";
 import {
   assertUniversityArtifactSummaryConforms,
   buildUniversityArtifactSummary,
+  renderUniversityArtifactManifestMarkdown,
   renderUniversityArtifactSummaryMarkdown,
+  UNIVERSITY_ARTIFACT_MANIFEST_SCHEMA_VERSION,
   UNIVERSITY_REPORT_SUMMARY_SCHEMA_ID,
   UNIVERSITY_REPORT_SUMMARY_SCHEMA_VERSION,
 } from "../index.js";
@@ -52,6 +54,7 @@ const normalizeFixturePaths = (value: unknown): unknown => {
 
 const renderFixtureSummary = () =>
   buildUniversityArtifactSummary({
+    artifactBaseDirectory: fixtureDir,
     serenityDirectory,
     transcriptExportPath: path.join(fixtureDir, "transcript-export.json"),
     stressSummaryPath: path.join(fixtureDir, "stress-summary.json"),
@@ -73,6 +76,17 @@ describe("university artifact report summarizer", () => {
       "Pioneer Systems",
     ]);
     expect(summary.readableBdd.scenarioCount).toBe(13);
+    expect(summary.artifactManifest.manifestSchemaVersion).toBe(
+      UNIVERSITY_ARTIFACT_MANIFEST_SCHEMA_VERSION,
+    );
+    expect(summary.artifactManifest.entries).toHaveLength(4);
+    expect(summary.artifactManifest.entries.map((entry) => entry.artifactId))
+      .toEqual([
+        "readable-bdd-serenity",
+        "readable-protocol-transcript",
+        "stress-protocol-summary",
+        "issuer-batch-sweep-summary",
+      ]);
     expect(summary.readableBdd.passedCount).toBe(13);
     expect(summary.readableBdd.failedCount).toBe(0);
     expect(summary.transcriptExport.counts.totalThreads).toBe(25);
@@ -120,6 +134,7 @@ describe("university artifact report summarizer", () => {
 
     try {
       const summary = buildUniversityArtifactSummary({
+        artifactBaseDirectory: process.cwd(),
         serenityDirectory: tempSerenityDirectory,
         transcriptExportPath: path.join(fixtureDir, "transcript-export.json"),
         stressSummaryPath: path.join(fixtureDir, "stress-summary.json"),
@@ -142,16 +157,88 @@ describe("university artifact report summarizer", () => {
     }
   });
 
+  it("fails fast when a required source artifact is missing", () => {
+    const tempRoot = mkdtempSync(
+      path.join(os.tmpdir(), "university-reporting-"),
+    );
+
+    try {
+      const validPaths = {
+        artifactBaseDirectory: fixtureDir,
+        serenityDirectory,
+        transcriptExportPath: path.join(fixtureDir, "transcript-export.json"),
+        stressSummaryPath: path.join(fixtureDir, "stress-summary.json"),
+        batchSweepSummaryPath: path.join(
+          fixtureDir,
+          "batch-sweep-summary.json",
+        ),
+      };
+      const missingPathCases = [
+        {
+          label: "Serenity directory",
+          override: { serenityDirectory: path.join(tempRoot, "serenity") },
+          expectedError: /serenity/u,
+        },
+        {
+          label: "protocol transcript export",
+          override: {
+            transcriptExportPath: path.join(
+              tempRoot,
+              "missing-transcript.json",
+            ),
+          },
+          expectedError: /missing-transcript\.json/u,
+        },
+        {
+          label: "stress summary",
+          override: {
+            stressSummaryPath: path.join(tempRoot, "missing-stress.json"),
+          },
+          expectedError: /missing-stress\.json/u,
+        },
+        {
+          label: "batch-sweep summary",
+          override: {
+            batchSweepSummaryPath: path.join(
+              tempRoot,
+              "missing-batch-sweep.json",
+            ),
+          },
+          expectedError: /missing-batch-sweep\.json/u,
+        },
+      ];
+
+      for (const { label, override, expectedError } of missingPathCases) {
+        expect(
+          () =>
+            buildUniversityArtifactSummary({
+              ...validPaths,
+              ...override,
+            }),
+          label,
+        ).toThrow(expectedError);
+      }
+    } finally {
+      rmSync(tempRoot, { recursive: true, force: true });
+    }
+  });
+
   it("matches the checked-in JSON and Markdown golden summaries", () => {
     const summary = renderFixtureSummary();
     const normalizedSummary = normalizeFixturePaths(summary);
     const normalizedMarkdown = renderUniversityArtifactSummaryMarkdown(
       summary,
     ).replaceAll(fixtureDir, "<fixtures>");
+    const normalizedManifestMarkdown = renderUniversityArtifactManifestMarkdown(
+      summary.artifactManifest,
+    ).replaceAll(fixtureDir, "<fixtures>");
 
     expect(`${JSON.stringify(normalizedSummary, null, 2)}\n`).toBe(
       readGolden("report-summary.golden.json"),
     );
     expect(normalizedMarkdown).toBe(readGolden("report-summary.golden.md"));
+    expect(normalizedManifestMarkdown).toBe(
+      readGolden("artifact-manifest.golden.md"),
+    );
   });
 });

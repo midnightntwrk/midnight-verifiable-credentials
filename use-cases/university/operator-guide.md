@@ -141,6 +141,8 @@ use-cases/university/scenarios/target/standalone-timing/summary.json
 | `protocol/target/stress-100/summary.md` | `university-protocol-stress` | 100-student profile digest |
 | `reporting/target/summary.json` | `university-summary` | one-page aggregate machine-readable summary |
 | `reporting/target/summary.md` | `university-summary` | one-page human handoff summary |
+| `reporting/target/artifact-manifest.json` | `university-summary` | source artifact index with schema versions, producers, byte sizes, and SHA-256 digests |
+| `reporting/target/artifact-manifest.md` | `university-summary` | human-readable source artifact index |
 
 The reporting paths above are generated outputs. They are intended for local
 inspection and CI retention, not for ordinary source-control edits.
@@ -226,6 +228,7 @@ Use the JSON forms when building downstream tooling:
 use-cases/university/protocol/target/readable-10/transcript-export.json
 use-cases/university/protocol/target/readable-10/application-decisions-export.json
 use-cases/university/protocol/target/readable-10/application-decisions-export.md
+use-cases/university/reporting/target/artifact-manifest.json
 ```
 
 ### Measure real standalone timing

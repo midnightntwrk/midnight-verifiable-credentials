@@ -1,12 +1,22 @@
 # University Report Summary
 
 - schema id: midnight-university-report-summary
-- schema version: midnight-university-report-summary.v2
+- schema version: midnight-university-report-summary.v3
 - university issuer: uni-example-001
 - students: 10
 - companies: 3 (Blue Ocean Analytics, Northwind Robotics, Pioneer Systems)
 - mall: Student Square Mall (mall-student-square)
 - discount applicants: 5
+
+## Source Artifact Manifest
+- total bytes: 100202
+
+| artifact | schema version | files | bytes | sha256 |
+| --- | --- | ---: | ---: | --- |
+| Readable BDD Serenity JSON | n/a | 13 | 2778 | 3885403dcd926e8fff77fb5de5b33b6cf3d19e540628f9bc240b670339c3ce72 |
+| Readable protocol transcript export | midnight-university-protocol-export.v1 | 1 | 74769 | d7c552e47e5d25b903863ff043b53718ac63dd16b6258d9879fa329421a84d19 |
+| Stress protocol summary | midnight-university-protocol-stress-summary.v2 | 1 | 13157 | 5608739ffce092e607263e782cafb1a2bb4148a2362b797a4723228b57215424 |
+| Issuer batch-sweep summary | midnight-university-batch-sweep-summary.v2 | 1 | 9498 | 702093b9bedc9cc8631356b55e0635178382a3f06a387b9c28d5ea263657fab7 |
 
 ## Readable BDD Lane
 - scenarios: 13

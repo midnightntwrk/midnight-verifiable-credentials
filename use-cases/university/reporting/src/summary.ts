@@ -1,10 +1,13 @@
+import { createHash } from "node:crypto";
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 export const UNIVERSITY_REPORT_SUMMARY_SCHEMA_ID =
   "midnight-university-report-summary" as const;
 export const UNIVERSITY_REPORT_SUMMARY_SCHEMA_VERSION =
-  "midnight-university-report-summary.v2" as const;
+  "midnight-university-report-summary.v3" as const;
+export const UNIVERSITY_ARTIFACT_MANIFEST_SCHEMA_VERSION =
+  "midnight-university-artifact-manifest.v1" as const;
 
 type SerenityScenarioRecord = {
   readonly title: string;
@@ -181,6 +184,27 @@ type LatestScenarioSummary = {
   readonly startTime: string;
 };
 
+type UniversityArtifactManifestEntry = {
+  readonly artifactId: string;
+  readonly label: string;
+  readonly path: string;
+  readonly format: "serenity-json-directory" | "university-json-artifact";
+  readonly schemaVersion: string | null;
+  readonly producedBy: string;
+  readonly purpose: string;
+  readonly bytes: number;
+  readonly sha256: string;
+  readonly fileCount: number;
+};
+
+export type UniversityArtifactManifest = {
+  readonly manifestSchemaVersion: typeof UNIVERSITY_ARTIFACT_MANIFEST_SCHEMA_VERSION;
+  readonly artifactSet: "midnight-university-reporting-inputs";
+  readonly totalBytes: number;
+  readonly entries: readonly UniversityArtifactManifestEntry[];
+  readonly notes: readonly string[];
+};
+
 export type UniversityArtifactSummary = {
   readonly schemaId: typeof UNIVERSITY_REPORT_SUMMARY_SCHEMA_ID;
   readonly schemaVersion: typeof UNIVERSITY_REPORT_SUMMARY_SCHEMA_VERSION;
@@ -199,6 +223,7 @@ export type UniversityArtifactSummary = {
     readonly stressSummaryPath: string;
     readonly batchSweepSummaryPath: string;
   };
+  readonly artifactManifest: UniversityArtifactManifest;
   readonly readableBdd: {
     readonly scenarioCount: number;
     readonly passedCount: number;
@@ -260,6 +285,7 @@ export type UniversityArtifactPaths = {
   readonly transcriptExportPath: string;
   readonly stressSummaryPath: string;
   readonly batchSweepSummaryPath: string;
+  readonly artifactBaseDirectory: string;
 };
 
 const readJson = <T>(filePath: string): T => {
@@ -273,7 +299,150 @@ const readJson = <T>(filePath: string): T => {
 };
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === "object" && value !== null;
+  typeof value === "object" && value !== null && !Array.isArray(value);
+
+const hashBuffer = (buffer: Uint8Array): string =>
+  createHash("sha256").update(buffer).digest("hex");
+
+const portableArtifactPath = (
+  artifactPath: string,
+  artifactBaseDirectory: string,
+): string =>
+  (path.relative(artifactBaseDirectory, artifactPath) || ".")
+    .split(path.sep)
+    .join("/");
+
+const buildFileArtifactManifestEntry = ({
+  artifactId,
+  label,
+  filePath,
+  artifactBaseDirectory,
+  schemaVersion,
+  producedBy,
+  purpose,
+}: {
+  readonly artifactId: string;
+  readonly label: string;
+  readonly filePath: string;
+  readonly artifactBaseDirectory: string;
+  readonly schemaVersion: string;
+  readonly producedBy: string;
+  readonly purpose: string;
+}): UniversityArtifactManifestEntry => {
+  const bytes = readFileSync(filePath);
+
+  return {
+    artifactId,
+    label,
+    path: portableArtifactPath(filePath, artifactBaseDirectory),
+    format: "university-json-artifact",
+    schemaVersion,
+    producedBy,
+    purpose,
+    bytes: bytes.byteLength,
+    sha256: hashBuffer(bytes),
+    fileCount: 1,
+  };
+};
+
+const buildSerenityArtifactManifestEntry = (
+  serenityDirectory: string,
+  artifactBaseDirectory: string,
+  scenarioCount: number,
+): UniversityArtifactManifestEntry => {
+  const jsonFiles = readdirSync(serenityDirectory, { withFileTypes: true })
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".json"))
+    .map((entry) => entry.name)
+    .sort();
+  const hash = createHash("sha256");
+  let totalBytes = 0;
+
+  for (const jsonFile of jsonFiles) {
+    const filePath = path.join(serenityDirectory, jsonFile);
+    const bytes = readFileSync(filePath);
+    totalBytes += bytes.byteLength;
+    hash.update(jsonFile);
+    hash.update("\0");
+    hash.update(bytes);
+  }
+
+  return {
+    artifactId: "readable-bdd-serenity",
+    label: "Readable BDD Serenity JSON",
+    path: portableArtifactPath(serenityDirectory, artifactBaseDirectory),
+    format: "serenity-json-directory",
+    schemaVersion: null,
+    producedBy: "./run.sh university-bdd",
+    purpose: `Readable university BDD scenario JSON; ${scenarioCount} latest scenario titles are summarized by the report`,
+    bytes: totalBytes,
+    sha256: hash.digest("hex"),
+    fileCount: jsonFiles.length,
+  };
+};
+
+const buildUniversityArtifactManifest = ({
+  artifactPaths,
+  serenityScenarioCount,
+  transcriptSchemaVersion,
+  stressSchemaVersion,
+  batchSweepSchemaVersion,
+}: {
+  readonly artifactPaths: UniversityArtifactPaths;
+  readonly serenityScenarioCount: number;
+  readonly transcriptSchemaVersion: string;
+  readonly stressSchemaVersion: string;
+  readonly batchSweepSchemaVersion: string;
+}): UniversityArtifactManifest => {
+  const artifactBaseDirectory = path.resolve(
+    artifactPaths.artifactBaseDirectory,
+  );
+  const entries = [
+    buildSerenityArtifactManifestEntry(
+      artifactPaths.serenityDirectory,
+      artifactBaseDirectory,
+      serenityScenarioCount,
+    ),
+    buildFileArtifactManifestEntry({
+      artifactId: "readable-protocol-transcript",
+      label: "Readable protocol transcript export",
+      filePath: artifactPaths.transcriptExportPath,
+      artifactBaseDirectory,
+      schemaVersion: transcriptSchemaVersion,
+      producedBy: "./run.sh university-protocol-export",
+      purpose: "student, issuer, employer, and mall protocol DTO transcript",
+    }),
+    buildFileArtifactManifestEntry({
+      artifactId: "stress-protocol-summary",
+      label: "Stress protocol summary",
+      filePath: artifactPaths.stressSummaryPath,
+      artifactBaseDirectory,
+      schemaVersion: stressSchemaVersion,
+      producedBy: "./run.sh university-protocol-stress",
+      purpose: "100-student throughput and rejection summary",
+    }),
+    buildFileArtifactManifestEntry({
+      artifactId: "issuer-batch-sweep-summary",
+      label: "Issuer batch-sweep summary",
+      filePath: artifactPaths.batchSweepSummaryPath,
+      artifactBaseDirectory,
+      schemaVersion: batchSweepSchemaVersion,
+      producedBy: "./run.sh university-batch-sweep",
+      purpose: "batch size and compile-concurrency projection summary",
+    }),
+  ];
+
+  return {
+    manifestSchemaVersion: UNIVERSITY_ARTIFACT_MANIFEST_SCHEMA_VERSION,
+    artifactSet: "midnight-university-reporting-inputs",
+    totalBytes: entries.reduce((sum, entry) => sum + entry.bytes, 0),
+    entries,
+    notes: [
+      "Hashes are deterministic SHA-256 digests over source artifact bytes.",
+      "The Serenity directory hash includes each JSON filename before its file bytes so renamed files change the digest.",
+      "The manifest is an index over already-rendered artifacts; missing source artifacts fail summary rendering instead of producing partial reports.",
+    ],
+  };
+};
 
 const latestScenarioRecords = (
   serenityDirectory: string,
@@ -492,7 +661,19 @@ export const buildUniversityArtifactSummary = (
       mallName: transcriptExport.participants.mall.mallName,
       discountApplicantCount: transcriptExport.dataset.discountApplicantCount,
     },
-    sources: { ...artifactPaths },
+    sources: {
+      serenityDirectory: artifactPaths.serenityDirectory,
+      transcriptExportPath: artifactPaths.transcriptExportPath,
+      stressSummaryPath: artifactPaths.stressSummaryPath,
+      batchSweepSummaryPath: artifactPaths.batchSweepSummaryPath,
+    },
+    artifactManifest: buildUniversityArtifactManifest({
+      artifactPaths,
+      serenityScenarioCount: serenityRecords.length,
+      transcriptSchemaVersion: transcriptExport.schemaVersion,
+      stressSchemaVersion: stressSummary.schemaVersion,
+      batchSweepSchemaVersion: batchSweep.schemaVersion,
+    }),
     readableBdd: {
       scenarioCount: serenityRecords.length,
       passedCount: serenityRecords.filter(
@@ -558,6 +739,41 @@ export const buildUniversityArtifactSummary = (
   };
 };
 
+const isUniversityArtifactManifestEntry = (
+  value: unknown,
+): value is UniversityArtifactManifestEntry =>
+  isRecord(value) &&
+  typeof value.artifactId === "string" &&
+  typeof value.label === "string" &&
+  typeof value.path === "string" &&
+  (value.format === "serenity-json-directory" ||
+    value.format === "university-json-artifact") &&
+  (typeof value.schemaVersion === "string" || value.schemaVersion === null) &&
+  typeof value.producedBy === "string" &&
+  typeof value.purpose === "string" &&
+  typeof value.bytes === "number" &&
+  Number.isInteger(value.bytes) &&
+  value.bytes >= 0 &&
+  typeof value.sha256 === "string" &&
+  /^[a-f0-9]{64}$/u.test(value.sha256) &&
+  typeof value.fileCount === "number" &&
+  Number.isInteger(value.fileCount) &&
+  value.fileCount >= 0;
+
+const isUniversityArtifactManifest = (
+  value: unknown,
+): value is UniversityArtifactManifest =>
+  isRecord(value) &&
+  value.manifestSchemaVersion === UNIVERSITY_ARTIFACT_MANIFEST_SCHEMA_VERSION &&
+  value.artifactSet === "midnight-university-reporting-inputs" &&
+  typeof value.totalBytes === "number" &&
+  Number.isInteger(value.totalBytes) &&
+  value.totalBytes >= 0 &&
+  Array.isArray(value.entries) &&
+  value.entries.every(isUniversityArtifactManifestEntry) &&
+  Array.isArray(value.notes) &&
+  value.notes.every((entry) => typeof entry === "string");
+
 // This is a lightweight runtime sanity check for the package's own emitted
 // artifact shape, not a recursive schema validator.
 export const isUniversityArtifactSummary = (
@@ -578,6 +794,7 @@ export const isUniversityArtifactSummary = (
     typeof value.actors.mallId === "string" &&
     typeof value.actors.mallName === "string" &&
     typeof value.actors.discountApplicantCount === "number" &&
+    isUniversityArtifactManifest(value.artifactManifest) &&
     isRecord(value.readableBdd) &&
     typeof value.readableBdd.scenarioCount === "number" &&
     typeof value.readableBdd.passedCount === "number" &&
@@ -606,6 +823,36 @@ export const assertUniversityArtifactSummaryConforms = (
 
 const format2dp = (value: number): string => value.toFixed(2);
 
+export const renderUniversityArtifactManifestMarkdown = (
+  manifest: UniversityArtifactManifest,
+): string => {
+  const lines = [
+    "# University Artifact Manifest",
+    "",
+    `- schema version: ${manifest.manifestSchemaVersion}`,
+    `- artifact set: ${manifest.artifactSet}`,
+    `- total bytes: ${manifest.totalBytes}`,
+    "",
+    "| artifact | format | schema version | files | bytes | sha256 | produced by |",
+    "| --- | --- | --- | ---: | ---: | --- | --- |",
+    ...manifest.entries.map(
+      (entry) =>
+        `| ${entry.label} | ${entry.format} | ${entry.schemaVersion ?? "n/a"} | ${entry.fileCount} | ${entry.bytes} | ${entry.sha256} | \`${entry.producedBy}\` |`,
+    ),
+    "",
+    "## Purposes",
+    ...manifest.entries.map(
+      (entry) => `- ${entry.artifactId}: ${entry.purpose}`,
+    ),
+    "",
+    "## Notes",
+    ...manifest.notes.map((note) => `- ${note}`),
+    "",
+  ];
+
+  return `${lines.join("\n")}\n`;
+};
+
 export const renderUniversityArtifactSummaryMarkdown = (
   summary: UniversityArtifactSummary,
 ): string => {
@@ -619,6 +866,16 @@ export const renderUniversityArtifactSummaryMarkdown = (
     `- companies: ${summary.actors.companyCount} (${summary.actors.companyNames.join(", ")})`,
     `- mall: ${summary.actors.mallName} (${summary.actors.mallId})`,
     `- discount applicants: ${summary.actors.discountApplicantCount}`,
+    "",
+    "## Source Artifact Manifest",
+    `- total bytes: ${summary.artifactManifest.totalBytes}`,
+    "",
+    "| artifact | schema version | files | bytes | sha256 |",
+    "| --- | --- | ---: | ---: | --- |",
+    ...summary.artifactManifest.entries.map(
+      (entry) =>
+        `| ${entry.label} | ${entry.schemaVersion ?? "n/a"} | ${entry.fileCount} | ${entry.bytes} | ${entry.sha256} |`,
+    ),
     "",
     "## Readable BDD Lane",
     `- scenarios: ${summary.readableBdd.scenarioCount}`,

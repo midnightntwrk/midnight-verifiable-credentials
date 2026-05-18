@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- added a deterministic university artifact manifest to the reporting summary
+  with source artifact schema versions, producer lanes, byte sizes, file counts,
+  SHA-256 digests, and the standalone manifest schema version
+  `midnight-university-artifact-manifest.v1`. Missing source artifacts now fail
+  summary rendering instead of producing partial reports, and callers must pass
+  an explicit artifact base directory for portable manifest paths.
 - added a root `./run.sh hello-smoke` lane plus matching `lint`,
   `typecheck`, and `test` scripts for the smallest DID-aware
   `offchain-did -> hello-family -> hello-verifier` handoff
@@ -51,6 +57,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- BREAKING: the university report summary schema moved to
+  `midnight-university-report-summary.v3` because summaries now embed an
+  artifact manifest. The renderer also emits `artifact-manifest.json` and
+  `artifact-manifest.md` next to the existing summary artifacts, and the mall
+  discount BDD expectations now match the current `minimumFinalGrade = 91`
+  verifier explanation.
+- tightened the university report-summary runtime guard so object checks reject
+  arrays and artifact manifest byte/file counts must be non-negative integers.
 - BREAKING: credential-family Compact roots now instantiate
   `VC<TPublicClaims, TClaimCommitments, THolderBinding, TStatusBinding>`.
   `claims` is the signed public/direct claim surface, `claimCommitments` is the

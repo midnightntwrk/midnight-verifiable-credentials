@@ -86,6 +86,8 @@ Batch-sweep artifacts:
 - one-page reporting outputs:
   - `../reporting/target/summary.json`
   - `../reporting/target/summary.md`
+  - `../reporting/target/artifact-manifest.json`
+  - `../reporting/target/artifact-manifest.md`
 
 Current boundary:
 
