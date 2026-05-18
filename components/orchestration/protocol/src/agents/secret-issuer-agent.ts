@@ -341,7 +341,7 @@ export class SecretIssuerAgent {
       respondsToMessageId: issuanceRequest.envelope.respondsToMessageId,
     });
 
-    const claims = {
+    const claimCommitments = {
       subjectIdCommitment: pureCircuits.subjectIdCommitment(
         claimWitness.subjectId,
         claimWitness.subjectOpening,
@@ -380,8 +380,8 @@ export class SecretIssuerAgent {
       hasExpiration: true,
       expiresAt: claimWitness.expiresAt,
       claims: {},
-      claimCommitments: claims,
-      claimRoot: pureCircuits.birthCredentialClaimRoot(claims),
+      claimCommitments,
+      claimRoot: pureCircuits.birthCredentialClaimRoot(claimCommitments),
     };
 
     const bodyRoot = pureCircuits.secretBirthCredentialBodyRoot(credential);

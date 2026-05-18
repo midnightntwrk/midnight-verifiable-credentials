@@ -107,7 +107,7 @@ export class IssuerAgent {
     assertBodyHasFields(request, ["envelope", "schema", "body"]);
     const issuanceRequest = request.body as BirthCredentialIssuanceRequest;
 
-    const claims = {
+    const claimCommitments = {
       subjectIdCommitment: pureCircuits.subjectIdCommitment(
         claimWitness.subjectId,
         claimWitness.subjectOpening,
@@ -136,8 +136,8 @@ export class IssuerAgent {
       hasExpiration: true,
       expiresAt: claimWitness.expiresAt,
       claims: {},
-      claimCommitments: claims,
-      claimRoot: pureCircuits.birthCredentialClaimRoot(claims),
+      claimCommitments,
+      claimRoot: pureCircuits.birthCredentialClaimRoot(claimCommitments),
     };
 
     const bodyRoot = pureCircuits.birthCredentialBodyRoot(credential);
