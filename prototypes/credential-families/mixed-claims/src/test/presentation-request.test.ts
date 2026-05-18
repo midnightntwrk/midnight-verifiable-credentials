@@ -54,8 +54,12 @@ describe("mixed-claims presentation request", () => {
   it("supports a predicate-only account-tier witness", () => {
     expect(modelSource).toContain("enforceMinimumAccountTier");
     expect(modelSource).toContain("minimumAccountTier: Uint<8>");
+    expect(modelSource).toContain("proveAccountTierAtLeast: Boolean");
+    expect(modelSource).not.toContain("accountTier: Uint<8>");
+    expect(modelSource).not.toContain("accountTierOpening: Bytes<32>");
+    expect(helpersSource).toContain("accountTierWitness >= minimumAccountTier");
     expect(helpersSource).toContain(
-      "presentation.disclosed.accountTier >= request.minimumAccountTier",
+      "assertValidMixedClaimsAccountTierPredicate",
     );
     expect(helpersSource).toContain(
       "Mixed-claims account tier is below the verifier minimum",

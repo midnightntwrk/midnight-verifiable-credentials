@@ -49,6 +49,11 @@ export pure circuit assertValidMixedClaimsPresentationRequest(
       request.minimumAccountTier > 0,
       "Mixed-claims minimum account tier must be positive"
     );
+  } else {
+    assert(
+      request.minimumAccountTier == 0,
+      "Mixed-claims minimum account tier must be zero when the predicate is disabled"
+    );
   }
 }
 
@@ -88,6 +93,15 @@ export pure circuit assertMatchingMixedClaimsPrivateDisclosures(
         == claims.privateClaims.subjectIdCommitment,
       "Mixed-claims subject-id disclosure does not open the credential commitment"
     );
+  } else {
+    assert(
+      disclosed.subjectId == pad(32, ""),
+      "Mixed-claims hidden subject-id disclosure slot must be empty"
+    );
+    assert(
+      disclosed.subjectIdOpening == pad(32, ""),
+      "Mixed-claims hidden subject-id opening slot must be empty"
+    );
   }
   if (disclosed.revealBirthDate) {
     assert(
@@ -95,12 +109,62 @@ export pure circuit assertMatchingMixedClaimsPrivateDisclosures(
         == claims.privateClaims.birthDateCommitment,
       "Mixed-claims birth-date disclosure does not open the credential commitment"
     );
-  }
-  if (disclosed.proveAccountTierAtLeast) {
+  } else {
     assert(
-      mixedClaimsAccountTierCommitment(disclosed.accountTier, disclosed.accountTierOpening)
-        == claims.privateClaims.accountTierCommitment,
-      "Mixed-claims account-tier witness does not open the credential commitment"
+      disclosed.birthDateDays == 0,
+      "Mixed-claims hidden birth-date disclosure slot must be zero"
+    );
+    assert(
+      disclosed.birthDateOpening == pad(32, ""),
+      "Mixed-claims hidden birth-date opening slot must be empty"
+    );
+  }
+}
+
+export pure circuit assertValidMixedClaimsAccountTierPredicate(
+  claims: MixedClaimsCredentialClaims,
+  accountTierWitness: Uint<8>,
+  accountTierOpening: Bytes<32>,
+  minimumAccountTier: Uint<8>
+): [] {
+  assert(
+    mixedClaimsAccountTierCommitment(accountTierWitness, accountTierOpening)
+      == claims.privateClaims.accountTierCommitment,
+    "Mixed-claims account-tier witness does not open the credential commitment"
+  );
+  assert(
+    accountTierWitness >= minimumAccountTier,
+    "Mixed-claims account tier is below the verifier minimum"
+  );
+}
+
+export pure circuit assertInactiveMixedClaimsAccountTierWitness(
+  accountTierWitness: Uint<8>,
+  accountTierOpening: Bytes<32>
+): [] {
+  assert(
+    accountTierWitness == 0,
+    "Mixed-claims inactive account-tier witness must be zero"
+  );
+  assert(
+    accountTierOpening == pad(32, ""),
+    "Mixed-claims inactive account-tier opening must be empty"
+  );
+}
+
+export pure circuit assertValidMixedClaimsPredicateFlags(
+  disclosed: MixedClaimsDisclosures,
+  request: MixedClaimsPresentationRequest
+): [] {
+  if (request.enforceMinimumAccountTier) {
+    assert(
+      disclosed.proveAccountTierAtLeast,
+      "Mixed-claims request requires account-tier witness"
+    );
+  } else {
+    assert(
+      !disclosed.proveAccountTierAtLeast,
+      "Mixed-claims account-tier predicate flag must be false unless requested"
     );
   }
 }
@@ -158,7 +222,9 @@ export pure circuit assertMixedClaimsPresentationSatisfiesRequest(
   credentialProof: Proof,
   request: MixedClaimsPresentationRequest,
   presentation: MixedClaimsPresentation,
-  presentationProof: Proof
+  presentationProof: Proof,
+  accountTierWitness: Uint<8>,
+  accountTierOpening: Bytes<32>
 ): [] {
   assertValidMixedClaimsPresentationRequest(request);
   assertValidMixedClaimsPresentation(
@@ -195,14 +261,18 @@ export pure circuit assertMixedClaimsPresentationSatisfiesRequest(
       "Mixed-claims request requires birth-date disclosure"
     );
   }
+  assertValidMixedClaimsPredicateFlags(presentation.disclosed, request);
   if (request.enforceMinimumAccountTier) {
-    assert(
-      presentation.disclosed.proveAccountTierAtLeast,
-      "Mixed-claims request requires account-tier witness"
+    assertValidMixedClaimsAccountTierPredicate(
+      credential.claims,
+      accountTierWitness,
+      accountTierOpening,
+      request.minimumAccountTier
     );
-    assert(
-      presentation.disclosed.accountTier >= request.minimumAccountTier,
-      "Mixed-claims account tier is below the verifier minimum"
+  } else {
+    assertInactiveMixedClaimsAccountTierWitness(
+      accountTierWitness,
+      accountTierOpening
     );
   }
 }

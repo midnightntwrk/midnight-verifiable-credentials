@@ -38,10 +38,22 @@ describe("mixed-claims private commitment guards", () => {
 
   it("rejects account-tier predicates unless the witness opens the signed commitment", () => {
     expect(helpersSource).toContain(
-      "mixedClaimsAccountTierCommitment(disclosed.accountTier, disclosed.accountTierOpening) == claims.privateClaims.accountTierCommitment",
+      "mixedClaimsAccountTierCommitment(accountTierWitness, accountTierOpening) == claims.privateClaims.accountTierCommitment",
     );
     expect(helpersSource).toContain(
       "Mixed-claims account-tier witness does not open the credential commitment",
+    );
+  });
+
+  it("requires inactive disclosure and predicate slots to be canonical empty values", () => {
+    expect(helpersSource).toContain(
+      "Mixed-claims hidden subject-id disclosure slot must be empty",
+    );
+    expect(helpersSource).toContain(
+      "Mixed-claims hidden birth-date disclosure slot must be zero",
+    );
+    expect(helpersSource).toContain(
+      "Mixed-claims inactive account-tier witness must be zero",
     );
   });
 });

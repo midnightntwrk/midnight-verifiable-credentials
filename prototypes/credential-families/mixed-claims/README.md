@@ -50,7 +50,7 @@ Presentation model:
   against the signed credential claims
 - subject id and birth date disclosures carry the value plus opening
 - account tier carries a witness plus opening when the verifier enforces a
-  minimum tier
+  minimum tier; the raw tier is not part of `MixedClaimsDisclosures`
 - private values are not accepted until the circuit recomputes the commitment
   and matches the signed credential body
 

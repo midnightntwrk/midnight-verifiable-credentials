@@ -38,6 +38,8 @@ describe("mixed-claims claim representation", () => {
   });
 
   it("hashes public and private roots independently before composing the claim root", () => {
+    expect(claimsSource).toContain("midnight:vc:mixed-claims:public");
+    expect(claimsSource).toContain("midnight:vc:mixed-claims:private");
     expect(claimsSource).toContain(
       "persistentHash<MixedClaimsPublicClaims>(publicClaims)",
     );
