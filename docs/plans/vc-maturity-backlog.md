@@ -10,6 +10,35 @@ Purpose:
   findings
 - provide a stable backlog for follow-up engineering and documentation slices
 
+## Status Update: 2026-05-18
+
+Merged baseline on `origin/develop` now includes:
+
+- `#236` through `#247` for the university closeout, CI cone audit, and mixed
+  claim-representation profile wave
+- `#247` introduced the durable VC claim-boundary rule:
+  - `claims: TPublicClaims` is the signed public/direct claim surface
+  - `claimCommitments: TClaimCommitments` is the signed commitment surface for
+    private disclosure and predicate-only values
+  - commitment-only families use `NoPublicClaims`
+  - direct-only families use `NoClaimCommitments`
+  - `BirthCredentialClaims` was renamed to `BirthCredentialClaimCommitments`
+    because the birth family carries commitments, not raw public claims
+
+Current engineering consequence:
+
+- future credential-family work should not hide commitment digests inside nested
+  public-claim structs
+- family READMEs and specs must document the field-level representation
+  category and the claim-root layout
+- breaking surface changes must be called out in PR descriptions and release
+  notes because external consumers construct Compact-generated credential
+  literals directly
+
+Next backlog slice should start from the merged `develop` branch and focus on
+remaining developer-experience / release-discipline work rather than reopening
+the already-merged claim-representation architecture.
+
 ## Status Update: 2026-05-12
 
 Merged baseline on `develop` still runs through `#95`.

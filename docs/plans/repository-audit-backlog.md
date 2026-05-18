@@ -22,6 +22,8 @@ have drifted apart.
 Repository strengths:
 
 - the Compact-first VC/VP core is coherent
+- the VC envelope now has an explicit public-versus-commitment boundary:
+  `VC<TPublicClaims, TClaimCommitments, THolderBinding, TStatusBinding>`
 - holder-binding profile documentation is much stronger than earlier iterations
 - the hidden-holder reference layer is now materially more production-shaped:
   randomness seam, protocol-state seam, replay retention, expiry semantics,
@@ -41,6 +43,20 @@ Repository gaps:
   they were part of the validated repository spine
 - on-chain/off-chain surface ownership has not been stated clearly enough for
   external integrators
+- release/change guidance should now explicitly flag claim-representation
+  surface changes, because downstream consumers construct generated credential
+  literals and will feel `claims` / `claimCommitments` shape changes directly
+
+Recent closure:
+
+- mixed claim representation landed in `#247`
+- the current repository baseline now documents:
+  - public/direct claims
+  - selectively disclosed claims
+  - committed-private claims
+  - predicate-only claims
+  - `NoPublicClaims` and `NoClaimCommitments` marker structs
+  - `BirthCredentialClaimCommitments` as the commitment-only birth surface
 
 ## Priority findings
 
