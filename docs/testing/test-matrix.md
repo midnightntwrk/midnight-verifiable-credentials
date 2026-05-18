@@ -101,6 +101,20 @@ artifacts are tracked in
   - see `docs/guides/dummy-claims-verifier-lab.md` for the authoritative lane
     description
 
+### `credentials-mixed-claims`
+
+- claim-root/domain-separation source checks
+- public/direct and private/committed claim-shape checks
+- presentation-request source-shape checks
+- package export-surface checks
+- source guards for:
+  - public claims mirrored in the presentation and matched against the signed
+    credential claims
+  - private subject-id and birth-date disclosures opening credential
+    commitments
+  - account-tier predicate witness opening the credential commitment before the
+    threshold check
+
 ### `credentials-university-diploma`
 
 - claim-root/domain-separation source checks

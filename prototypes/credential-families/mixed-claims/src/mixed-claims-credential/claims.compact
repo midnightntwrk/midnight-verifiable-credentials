@@ -1,0 +1,62 @@
+// Mixed claim representation laboratory.
+// Public claims are explicit values in the signed credential body. Private
+// claims stay as commitments and can be opened or proven only when requested.
+export struct MixedClaimsPublicClaims {
+  credentialTypeCode: Uint<16>,
+  issuerJurisdictionCode: Bytes<2>,
+  assuranceLevel: Uint<8>,
+}
+
+export struct MixedClaimsPrivateClaimCommitments {
+  subjectIdCommitment: Bytes<32>,
+  birthDateCommitment: Bytes<32>,
+  accountTierCommitment: Bytes<32>,
+}
+
+export struct MixedClaimsCredentialClaims {
+  publicClaims: MixedClaimsPublicClaims,
+  privateClaims: MixedClaimsPrivateClaimCommitments,
+}
+
+export pure circuit mixedClaimsPublicClaimsRoot(
+  publicClaims: MixedClaimsPublicClaims
+): Bytes<32> {
+  return persistentHash<MixedClaimsPublicClaims>(publicClaims);
+}
+
+export pure circuit mixedClaimsPrivateClaimCommitmentsRoot(
+  privateClaims: MixedClaimsPrivateClaimCommitments
+): Bytes<32> {
+  return persistentHash<MixedClaimsPrivateClaimCommitments>(privateClaims);
+}
+
+export pure circuit mixedClaimsClaimRoot(
+  claims: MixedClaimsCredentialClaims
+): Bytes<32> {
+  return persistentHash<Vector<3, Bytes<32>>>([
+    pad(32, "midnight:vc:mixed-claims:v1"),
+    mixedClaimsPublicClaimsRoot(claims.publicClaims),
+    mixedClaimsPrivateClaimCommitmentsRoot(claims.privateClaims)
+  ]);
+}
+
+export pure circuit mixedClaimsSubjectIdCommitment(
+  subjectId: Bytes<32>,
+  opening: Bytes<32>
+): Bytes<32> {
+  return persistentCommit<Bytes<32>>(subjectId, opening);
+}
+
+export pure circuit mixedClaimsBirthDateCommitment(
+  birthDateDays: Uint<32>,
+  opening: Bytes<32>
+): Bytes<32> {
+  return persistentCommit<Uint<32>>(birthDateDays, opening);
+}
+
+export pure circuit mixedClaimsAccountTierCommitment(
+  accountTier: Uint<8>,
+  opening: Bytes<32>
+): Bytes<32> {
+  return persistentCommit<Uint<8>>(accountTier, opening);
+}

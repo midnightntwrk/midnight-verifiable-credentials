@@ -23,6 +23,8 @@ Current maturity is mixed by package:
   - [`docs/spec/profiles.md`](./docs/spec/profiles.md)
 - conformance draft:
   - [`docs/spec/conformance.md`](./docs/spec/conformance.md)
+- claim representation companion:
+  - [`docs/spec/claim-representation.md`](./docs/spec/claim-representation.md)
 - reference implementation packages:
   - [`credentials`](./core/primitives/credentials/README.md)
   - [`credentials-status-registry`](./registry/status-registry/README.md)
@@ -33,6 +35,8 @@ Current maturity is mixed by package:
     - smallest starter family package
   - [`credentials-dummy-claims`](./prototypes/credential-families/dummy-claims/README.md)
     - broad direct claim-surface and selective-disclosure laboratory
+  - [`credentials-mixed-claims`](./prototypes/credential-families/mixed-claims/README.md)
+    - mixed explicit/public plus committed/private claim-representation laboratory
   - [`credentials-university-diploma`](./prototypes/credential-families/university-diploma/README.md)
     - academic diploma prototype aligned to the university issuance and verifier-flow use case
   - [`credentials-iso-registry`](./core/primitives/iso-registry/README.md)
@@ -65,6 +69,8 @@ Start here:
   - [`docs/spec/profiles.md`](./docs/spec/profiles.md)
 - conformance draft:
   - [`docs/spec/conformance.md`](./docs/spec/conformance.md)
+- claim representation companion:
+  - [`docs/spec/claim-representation.md`](./docs/spec/claim-representation.md)
 - companion guides:
   - [`docs/guides/midnight-credentials-for-dummies.md`](./docs/guides/midnight-credentials-for-dummies.md)
   - [`docs/guides/package-selection.md`](./docs/guides/package-selection.md)
@@ -109,6 +115,8 @@ Start here:
   - smallest compileable starter family package
 - [`credentials-dummy-claims`](./prototypes/credential-families/dummy-claims/README.md)
   - broad direct claim-surface and selective-disclosure laboratory
+- [`credentials-mixed-claims`](./prototypes/credential-families/mixed-claims/README.md)
+  - mixed explicit/public plus committed/private claim-representation laboratory
 - [`credentials-university-diploma`](./prototypes/credential-families/university-diploma/README.md)
   - academic diploma prototype with batch-issuance and verifier-policy flows
 - [`credentials-openid`](./protocols/openid/README.md)
@@ -274,6 +282,7 @@ Published/exported local tarball set currently includes:
 - `@midnight-ntwrk/midnight-did-credentials-birth-secret`
 - `@midnight-ntwrk/midnight-did-credentials-hello-family`
 - `@midnight-ntwrk/midnight-did-credentials-dummy-claims`
+- `@midnight-ntwrk/midnight-did-credentials-mixed-claims`
 - `@midnight-ntwrk/midnight-did-credentials-university-diploma`
 - `@midnight-ntwrk/midnight-did-standalone-environment`
 

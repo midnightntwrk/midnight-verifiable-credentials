@@ -15,6 +15,8 @@ Related documents:
   - [`../spec/midnight-credentials.md`](../spec/midnight-credentials.md)
 - profile catalog:
   - [`../spec/profiles.md`](../spec/profiles.md)
+- claim representation:
+  - [`../spec/claim-representation.md`](../spec/claim-representation.md)
 - architecture overview:
   - [`../architecture/overview.md`](../architecture/overview.md)
 - protocol classification:
@@ -77,6 +79,22 @@ Use this when you need:
 
 Do not use `credentials-dummy-claims` as a production privacy template.
 It is intentionally a direct-claim laboratory package.
+
+### I need public claims and private commitments in one family
+Start with:
+
+- [`../../prototypes/credential-families/mixed-claims/README.md`](../../prototypes/credential-families/mixed-claims/README.md)
+
+Use this when you need:
+
+- a small reference for explicit/public claims in the signed credential body
+- private source facts represented as commitments
+- disclosure gates that open committed values only when requested
+- a predicate-only value that is checked against a commitment before threshold
+  verification
+
+Do not treat public claims as private. Any direct public claim can be observed
+by every party that receives the credential body.
 
 ### I need an academic diploma family and a larger verifier-flow blueprint
 Start with:
@@ -258,6 +276,7 @@ These are valuable, but should be treated as evolving:
 - `credentials-demo-contract`
 - `credentials-status-registry`
 - `credentials-dummy-claims`
+- `credentials-mixed-claims`
 
 Historical placeholder name still referenced in some planning docs:
 

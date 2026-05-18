@@ -1,0 +1,23 @@
+export struct MixedClaimsDisclosures {
+  publicClaims: MixedClaimsPublicClaims,
+  revealSubjectId: Boolean,
+  subjectId: Bytes<32>,
+  subjectIdOpening: Bytes<32>,
+  revealBirthDate: Boolean,
+  birthDateDays: Uint<32>,
+  birthDateOpening: Bytes<32>,
+  proveAccountTierAtLeast: Boolean,
+  accountTier: Uint<8>,
+  accountTierOpening: Bytes<32>,
+}
+
+export struct MixedClaimsPresentationRequest {
+  version: Uint<16>,
+  schema: SchemaRef,
+  issuerVerificationMethodRef: VerificationMethodRef,
+  requireSubjectIdDisclosure: Boolean,
+  requireBirthDateDisclosure: Boolean,
+  enforceMinimumAccountTier: Boolean,
+  minimumAccountTier: Uint<8>,
+  verifierChallengeHash: Bytes<32>,
+}

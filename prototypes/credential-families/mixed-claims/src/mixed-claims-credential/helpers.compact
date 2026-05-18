@@ -1,0 +1,208 @@
+// Mixed-claims schema helpers and presentation validation.
+// This family is intentionally small: it shows how direct public claims and
+// committed private claims coexist without changing the generic VC envelope.
+export pure circuit mixedClaimsCredentialBodyRoot(
+  credential: MixedClaimsCredential
+): Bytes<32> {
+  return credentialBodyRoot(credential);
+}
+
+export pure circuit mixedClaimsPresentationBodyRoot(
+  presentation: MixedClaimsPresentation
+): Bytes<32> {
+  return presentationBodyRoot(presentation);
+}
+
+export pure circuit mixedClaimsPresentationRequestBodyRoot(
+  request: MixedClaimsPresentationRequest
+): Bytes<32> {
+  return persistentHash<MixedClaimsPresentationRequest>(request);
+}
+
+// =====================
+// Schema and request validation
+// =====================
+export pure circuit assertValidMixedClaimsSchemaRef(schema: SchemaRef): [] {
+  assert(
+    schema.packageId == pad(32, "midnight:vc:mixed-claims"),
+    "Mixed-claims package id mismatch"
+  );
+  assert(
+    schema.schemaId == pad(32, "mixed-claims:v1"),
+    "Mixed-claims schema id mismatch"
+  );
+  assert(schema.majorVersion == 1, "Mixed-claims major version mismatch");
+}
+
+export pure circuit assertValidMixedClaimsPresentationRequest(
+  request: MixedClaimsPresentationRequest
+): [] {
+  assert(request.version == 1, "Mixed-claims request version mismatch");
+  assertValidMixedClaimsSchemaRef(request.schema);
+  assertValidVerificationMethodRef(request.issuerVerificationMethodRef);
+  assert(
+    request.verifierChallengeHash != pad(32, ""),
+    "Mixed-claims verifier challenge must be set"
+  );
+  if (request.enforceMinimumAccountTier) {
+    assert(
+      request.minimumAccountTier > 0,
+      "Mixed-claims minimum account tier must be positive"
+    );
+  }
+}
+
+// =====================
+// Claim semantics
+// =====================
+export pure circuit assertValidMixedClaimsPublicClaims(
+  publicClaims: MixedClaimsPublicClaims
+): [] {
+  assert(
+    publicClaims.credentialTypeCode > 0,
+    "Mixed-claims credential type code must be positive"
+  );
+  assert(
+    publicClaims.assuranceLevel > 0,
+    "Mixed-claims assurance level must be positive"
+  );
+}
+
+export pure circuit assertMatchingMixedClaimsPublicDisclosures(
+  disclosed: MixedClaimsDisclosures,
+  claims: MixedClaimsCredentialClaims
+): [] {
+  assert(
+    disclosed.publicClaims == claims.publicClaims,
+    "Mixed-claims public claims disclosure does not match the credential"
+  );
+}
+
+export pure circuit assertMatchingMixedClaimsPrivateDisclosures(
+  disclosed: MixedClaimsDisclosures,
+  claims: MixedClaimsCredentialClaims
+): [] {
+  if (disclosed.revealSubjectId) {
+    assert(
+      mixedClaimsSubjectIdCommitment(disclosed.subjectId, disclosed.subjectIdOpening)
+        == claims.privateClaims.subjectIdCommitment,
+      "Mixed-claims subject-id disclosure does not open the credential commitment"
+    );
+  }
+  if (disclosed.revealBirthDate) {
+    assert(
+      mixedClaimsBirthDateCommitment(disclosed.birthDateDays, disclosed.birthDateOpening)
+        == claims.privateClaims.birthDateCommitment,
+      "Mixed-claims birth-date disclosure does not open the credential commitment"
+    );
+  }
+  if (disclosed.proveAccountTierAtLeast) {
+    assert(
+      mixedClaimsAccountTierCommitment(disclosed.accountTier, disclosed.accountTierOpening)
+        == claims.privateClaims.accountTierCommitment,
+      "Mixed-claims account-tier witness does not open the credential commitment"
+    );
+  }
+}
+
+// =====================
+// Credential and presentation validation
+// =====================
+export pure circuit assertValidMixedClaimsCredential(
+  credential: MixedClaimsCredential,
+  proof: Proof
+): [] {
+  assertValidMixedClaimsSchemaRef(credential.schema);
+  assertValidMixedClaimsPublicClaims(credential.claims.publicClaims);
+  assertValidCredentialEnvelope(credential, mixedClaimsClaimRoot(credential.claims));
+  assertValidExplicitHolderBinding(credential.holderBinding);
+  assertValidNoStatusBinding(credential.statusBinding);
+  assertValidCredentialProof(credential, proof);
+}
+
+export pure circuit assertValidMixedClaimsPresentation(
+  credential: MixedClaimsCredential,
+  credentialProof: Proof,
+  presentation: MixedClaimsPresentation,
+  presentationProof: Proof
+): [] {
+  assertValidMixedClaimsCredential(credential, credentialProof);
+  assertValidMixedClaimsSchemaRef(presentation.schema);
+  assertValidPresentationEnvelope(presentation);
+  MixedClaimsPresentation_assertMatchingCredentialPresentation(
+    credential,
+    presentation
+  );
+  assertValidExplicitHolderBinding(presentation.holderBinding);
+  assertMatchingExplicitHolderBindings(
+    credential.holderBinding,
+    presentation.holderBinding
+  );
+  assertProofMatchesExplicitHolderBinding(
+    presentation.holderBinding,
+    presentationProof
+  );
+  assertValidPresentationContextProof(
+    mixedClaimsPresentationBodyRoot(presentation),
+    presentationProof
+  );
+  assertMatchingMixedClaimsPublicDisclosures(presentation.disclosed, credential.claims);
+  assertMatchingMixedClaimsPrivateDisclosures(presentation.disclosed, credential.claims);
+}
+
+// TRUST BOUNDARY: direct public claims are always visible to a verifier and any
+// adapter that carries the credential body. Private claims remain commitment
+// backed and require an opening or predicate witness before they can be used.
+export pure circuit assertMixedClaimsPresentationSatisfiesRequest(
+  credential: MixedClaimsCredential,
+  credentialProof: Proof,
+  request: MixedClaimsPresentationRequest,
+  presentation: MixedClaimsPresentation,
+  presentationProof: Proof
+): [] {
+  assertValidMixedClaimsPresentationRequest(request);
+  assertValidMixedClaimsPresentation(
+    credential,
+    credentialProof,
+    presentation,
+    presentationProof
+  );
+  assertMatchingSchemaRefs(request.schema, credential.schema);
+  assertMatchingSchemaRefs(request.schema, presentation.schema);
+  assert(
+    request.issuerVerificationMethodRef.didContractAddress
+      == credential.issuerVerificationMethodRef.didContractAddress,
+    "Mixed-claims request issuer contract does not match the credential issuer"
+  );
+  assert(
+    request.issuerVerificationMethodRef.methodId
+      == credential.issuerVerificationMethodRef.methodId,
+    "Mixed-claims request issuer method does not match the credential issuer"
+  );
+  assert(
+    presentationProof.challengeHash == request.verifierChallengeHash,
+    "Mixed-claims presentation proof challenge does not match the request"
+  );
+  if (request.requireSubjectIdDisclosure) {
+    assert(
+      presentation.disclosed.revealSubjectId,
+      "Mixed-claims request requires subject-id disclosure"
+    );
+  }
+  if (request.requireBirthDateDisclosure) {
+    assert(
+      presentation.disclosed.revealBirthDate,
+      "Mixed-claims request requires birth-date disclosure"
+    );
+  }
+  if (request.enforceMinimumAccountTier) {
+    assert(
+      presentation.disclosed.proveAccountTierAtLeast,
+      "Mixed-claims request requires account-tier witness"
+    );
+    assert(
+      presentation.disclosed.accountTier >= request.minimumAccountTier,
+      "Mixed-claims account tier is below the verifier minimum"
+    );
+  }
+}

@@ -42,6 +42,7 @@ Companion documents have narrower roles:
 
 - normative companion documents:
   - [`./profiles.md`](./profiles.md)
+  - [`./claim-representation.md`](./claim-representation.md)
   - [`./conformance.md`](./conformance.md)
   - [`./credential-status.md`](./credential-status.md)
   - [`./revocation-registry.md`](./revocation-registry.md)
@@ -50,6 +51,8 @@ Companion documents have narrower roles:
 Those normative companion documents are authoritative within their narrower scopes:
 
 - `profiles.md` owns the current holder-binding and verification profile catalog
+- `claim-representation.md` owns the current public/direct, selectively
+  disclosed, committed-private, and predicate-only claim representation rules
 - `conformance.md` owns the repository's conformance categories and non-conformance examples
 - `credential-status.md` owns the repository's current status/revocation claim contract
 - `revocation-registry.md` owns the repository's prototype revocation registry target
@@ -118,6 +121,8 @@ An implementation aligned to this draft should provide a credential model that:
 - is directly consumable by Midnight Compact contracts
 - preserves typed, bounded, schema-specific layouts
 - supports selective disclosure over committed claims
+- supports explicit/public direct claims when a concrete credential family
+  documents the privacy tradeoff
 - supports zero-knowledge predicates over hidden claims where the concrete
   credential family defines them
 - supports multiple holder-binding profiles without changing the generic VC/VP
@@ -136,6 +141,9 @@ An implementation aligned to this draft should provide a credential model that:
 | `Holder binding` | The mechanism that binds a credential or presentation to a specific holder or holder-controlled secret |
 | `Body root` | The Compact-computed canonical digest over the credential or presentation body |
 | `Credential family` | A concrete schema package that specializes the generic VC/VP model |
+| `Direct claim` | A raw typed claim value carried in the signed credential body |
+| `Claim commitment` | A commitment digest carried in the signed credential body instead of the raw claim value |
+| `Predicate-only claim` | A committed claim value used only through a private witness and family-defined predicate |
 | `Profile` | A named holder-binding or verification model with explicit trust boundaries |
 | `Transport adapter` | A package or protocol layer that carries Compact values over JSON/OpenID/network envelopes without changing canonical VC/VP semantics |
 | `Protocol success result` | A protocol message that confirms a request succeeded and carries the success artifact for that stage |
@@ -180,9 +188,15 @@ A credential family implementation:
 - `MUST` define any supported disclosure layout explicitly
 - `MUST` define its verification predicates explicitly
 - `MUST NOT` rely on unbounded runtime-defined claim maps as canonical input
+- `MUST` document whether each field is public/direct,
+  selectively-disclosed direct, committed-private, or predicate-only
 - `MUST` document whether its claims stay flat or use nested structs
 - `MUST` document the disclosure granularity of any nested claim surface it
   exposes
+
+The claim-representation rules are defined in:
+
+- [`./claim-representation.md`](./claim-representation.md)
 
 ### Compact Claim-Type Surface
 Repository-aligned direct claim layouts are constrained by the current Compact
