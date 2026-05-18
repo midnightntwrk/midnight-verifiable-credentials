@@ -71,6 +71,7 @@ export pure circuit assertValidMixedClaimsPublicClaims(
     publicClaims.issuerJurisdictionCode != pad(2, ""),
     "Mixed-claims issuer jurisdiction code must be set"
   );
+  // This reference family treats zero as "unset" for copied assurance policies.
   assert(
     publicClaims.assuranceLevel > 0,
     "Mixed-claims assurance level must be positive"

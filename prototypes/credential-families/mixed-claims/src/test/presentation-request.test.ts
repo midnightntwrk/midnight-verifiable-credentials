@@ -5,6 +5,8 @@ import { describe, expect, it } from "vitest";
 
 const normalizeWhitespace = (source: string) => source.replace(/\s+/g, " ");
 
+// These source-shape tests intentionally complement behavior tests: they guard
+// disclosure-surface drift that can still compile but weaken privacy semantics.
 const modelSource = normalizeWhitespace(
   readFileSync(
     path.resolve(

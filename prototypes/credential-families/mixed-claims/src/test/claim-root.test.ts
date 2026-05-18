@@ -5,6 +5,8 @@ import { describe, expect, it } from "vitest";
 
 const normalizeWhitespace = (source: string) => source.replace(/\s+/g, " ");
 
+// These source-shape tests intentionally complement behavior tests: they guard
+// representation-contract drift that can still compile but weaken the example.
 const claimsSource = normalizeWhitespace(
   readFileSync(
     path.resolve(

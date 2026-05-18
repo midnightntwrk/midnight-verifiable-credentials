@@ -90,6 +90,9 @@ A credential family implementation:
 - `MUST` compute `claimRoot` with a family-scoped domain tag
 - `MUST` domain-separate public/direct payload roots from private commitment
   roots when a family mixes both representations
+- `MUST` document whether the family uses a flat field-by-field claim root or
+  grouped public/commitment sub-roots, because that choice affects helper reuse
+  and future schema migrations
 - `MUST` verify any mirrored public claims in a presentation against the signed
   credential claims before accepting the presentation
 - `MUST` verify every disclosed private value against the credential commitment

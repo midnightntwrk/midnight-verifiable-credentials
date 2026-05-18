@@ -5,6 +5,8 @@ import { describe, expect, it } from "vitest";
 
 const normalizeWhitespace = (source: string) => source.replace(/\s+/g, " ");
 
+// These source-shape tests intentionally complement behavior tests: they guard
+// commitment-opening and inactive-slot checks that are easy to weaken in source.
 const helpersSource = normalizeWhitespace(
   readFileSync(
     path.resolve(

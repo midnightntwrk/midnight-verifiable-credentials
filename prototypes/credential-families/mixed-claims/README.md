@@ -32,7 +32,7 @@ Claim representation:
 | --- | --- | --- |
 | `claims.credentialTypeCode` | `public` | clear direct claim, suitable for schema/profile routing |
 | `claims.issuerJurisdictionCode` | `public` | clear direct claim, encoded as bounded bytes |
-| `claims.assuranceLevel` | `public` | clear direct claim for non-correlating coarse assurance signaling |
+| `claims.assuranceLevel` | `public` | clear direct claim for non-correlating coarse assurance signaling; zero is treated as unset and rejected |
 | `claimCommitments.subjectIdCommitment` | `committedPrivate` | opened only when `requireSubjectIdDisclosure` is true |
 | `claimCommitments.birthDateCommitment` | `committedPrivate` | opened only when `requireBirthDateDisclosure` is true |
 | `claimCommitments.accountTierCommitment` | `predicateOnly` | used for the minimum-tier predicate without requiring raw cleartext in the credential |
