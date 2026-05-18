@@ -17,9 +17,7 @@ Ground rules:
 - each PR must include focused local validation and a Claude PR review pass
 - update this file after every PR and refresh the wider backlog every five PRs
 
-## Iteration Plan
-
-### Merged Through 2026-05-18
+## Merged Through 2026-05-18
 
 The current `origin/develop` baseline has advanced through:
 
@@ -36,6 +34,8 @@ Important carry-forward rule from `#247`:
 - call commitment structs `*ClaimCommitments`, not generic `*Claims`
 - document every field as public/direct, selectively disclosed,
   committed-private, or predicate-only
+
+## Iteration Plan
 
 1. `university-flow-module-split`
 

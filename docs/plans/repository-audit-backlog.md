@@ -47,7 +47,7 @@ Repository gaps:
   surface changes, because downstream consumers construct generated credential
   literals and will feel `claims` / `claimCommitments` shape changes directly
 
-Recent closure:
+## Recent Closure: Claim Representation Profile
 
 - mixed claim representation landed in `#247`
 - the current repository baseline now documents:
