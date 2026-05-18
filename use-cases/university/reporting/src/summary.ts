@@ -750,11 +750,13 @@ const isUniversityArtifactManifestEntry = (
   typeof value.producedBy === "string" &&
   typeof value.purpose === "string" &&
   typeof value.bytes === "number" &&
-  Number.isFinite(value.bytes) &&
+  Number.isInteger(value.bytes) &&
+  value.bytes >= 0 &&
   typeof value.sha256 === "string" &&
   /^[a-f0-9]{64}$/u.test(value.sha256) &&
   typeof value.fileCount === "number" &&
-  Number.isInteger(value.fileCount);
+  Number.isInteger(value.fileCount) &&
+  value.fileCount >= 0;
 
 const isUniversityArtifactManifest = (
   value: unknown,
@@ -763,7 +765,8 @@ const isUniversityArtifactManifest = (
   value.artifactSet === "midnight-university-reporting-inputs" &&
   typeof value.complete === "boolean" &&
   typeof value.totalBytes === "number" &&
-  Number.isFinite(value.totalBytes) &&
+  Number.isInteger(value.totalBytes) &&
+  value.totalBytes >= 0 &&
   Array.isArray(value.entries) &&
   value.entries.every(isUniversityArtifactManifestEntry) &&
   Array.isArray(value.missingArtifactIds) &&

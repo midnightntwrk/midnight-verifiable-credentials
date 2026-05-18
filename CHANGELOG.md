@@ -60,6 +60,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `artifact-manifest.md` next to the existing summary artifacts, and the mall
   discount BDD expectations now match the current `minimumFinalGrade = 91`
   verifier explanation.
+- tightened the university report-summary runtime guard so object checks reject
+  arrays and artifact manifest byte/file counts must be non-negative integers.
 - BREAKING: credential-family Compact roots now instantiate
   `VC<TPublicClaims, TClaimCommitments, THolderBinding, TStatusBinding>`.
   `claims` is the signed public/direct claim surface, `claimCommitments` is the

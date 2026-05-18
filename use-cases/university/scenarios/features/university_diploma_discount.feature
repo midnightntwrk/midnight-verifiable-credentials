@@ -1,7 +1,7 @@
 @university @discount @metrics
 Feature: Selected students present diploma credentials to request a mall discount
   # DESCRIPTION:
-  # - The mall offers a discount only when the final grade is strictly greater than 90.
+  # - The mall offers a discount only when the final grade is at least 91.
   # - The verifier request therefore enforces `minimumFinalGrade = 91`.
   # - Five students with different grades exercise both acceptance and rejection paths.
   #
@@ -28,7 +28,7 @@ Feature: Selected students present diploma credentials to request a mall discoun
     # - The student learns that the request requires university name, final grade,
     #   and a minimum final grade of 91.
     # CHECKS:
-    # - The request encodes the business rule `grade > 90` as `minimumFinalGrade = 91`.
+    # - The request encodes the business rule `grade >= 91` as `minimumFinalGrade = 91`.
     Given the "Student Square Mall" verifier policy is loaded
 
     # REQUEST:
