@@ -32,6 +32,20 @@ const markdownFiles = execFileSync(
   .split("\n")
   .filter(Boolean);
 
+const offchainMidnightHolderBinding = /\bOffchainMidnightHolderBinding\b/u;
+const offchainDidHolderBinding = /\bOffchainDIDHolderBinding\b/u;
+const jubjubHolderBinding = /\bJubjubHolderBinding\b/u;
+
+// These are deliberately file-scope wording tripwires, not semantic prose
+// parsers. They catch obvious drift while keeping the guard cheap enough for
+// every lint lane.
+const hasLegacyJubjubContext = /(legacy|compatibility|minimal|non-DID)/iu;
+const rejectedFragments = [
+  "OffchainMidnightHolderBinding is the preferred",
+  "JubjubHolderBinding is the default",
+  "hidden-holder production support is final",
+];
+
 requireIncludes("docs/architecture/holder-binding-terminology.md", [
   "OffchainDIDHolderBinding` for runtime and public TypeScript-facing",
   "OffchainMidnightHolderBinding` only where the text is explicitly about",
@@ -56,8 +70,8 @@ for (const relativePath of markdownFiles) {
   const source = readRepoFile(relativePath);
 
   if (
-    source.includes("OffchainMidnightHolderBinding") &&
-    !source.includes("OffchainDIDHolderBinding")
+    offchainMidnightHolderBinding.test(source) &&
+    !offchainDidHolderBinding.test(source)
   ) {
     errors.push(
       `${relativePath} mentions OffchainMidnightHolderBinding without the preferred OffchainDIDHolderBinding name`,
@@ -65,23 +79,14 @@ for (const relativePath of markdownFiles) {
   }
 
   if (
-    source.includes("JubjubHolderBinding") &&
-    !/(legacy|compatibility|minimal|non-DID)/iu.test(source)
+    jubjubHolderBinding.test(source) &&
+    !hasLegacyJubjubContext.test(source)
   ) {
     errors.push(
       `${relativePath} mentions JubjubHolderBinding without legacy/compatibility/minimal context`,
     );
   }
-}
 
-const rejectedFragments = [
-  "OffchainMidnightHolderBinding is the preferred",
-  "JubjubHolderBinding is the default",
-  "hidden-holder production support is final",
-];
-
-for (const relativePath of markdownFiles) {
-  const source = readRepoFile(relativePath);
   for (const fragment of rejectedFragments) {
     if (source.includes(fragment)) {
       errors.push(`${relativePath} contains rejected holder-binding terminology: ${fragment}`);
