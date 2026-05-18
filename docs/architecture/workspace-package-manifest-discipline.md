@@ -11,7 +11,7 @@ surface that maintainers review.
 | Class | Workspaces | Manifest contract |
 |---|---|---|
 | Dist package | Core, registry, adapters, protocol, credential families, verifier contracts, university protocol/reporting | `license`, `private`, `type`, `main`, `module`, `types`, root `exports`, and `files` point at `dist/**` plus minimal metadata |
-| Source-only integration package | `components/integration/standalone-environment` | private source package with `src/**/*.ts` files only; no dist export map is promised |
+| Source-only integration package | `components/integration/standalone-environment` | private source package with `main` and `files` pointing at `src/**/*.ts`; no dist export map is promised |
 | Scenario package | `use-cases/*/scenarios` | private executable package with no publish entrypoint or tarball surface |
 
 ## Dist Package Rules
@@ -46,7 +46,7 @@ BDD scenario packages are executable harnesses, not library surfaces. They must:
 - carry `license: "Apache-2.0"`
 - use `type: "module"`
 - declare Node/npm engine requirements
-- avoid `main`, `types`, `exports`, and `files`
+- avoid `main`, `module`, `types`, `exports`, and `files`
 
 ## Source-Only Integration Rule
 
@@ -54,6 +54,19 @@ BDD scenario packages are executable harnesses, not library surfaces. They must:
 is a local integration harness over vendored DID tarballs and Testcontainers. It
 must stay private and declare its source files explicitly rather than pretending
 to be a dist package.
+
+It must expose:
+
+- `license: "Apache-2.0"`
+- `private: true`
+- `type: "module"`
+- `main: "src/index.ts"`
+- no `exports` map
+- `files` containing:
+  - `src/**/*.ts`
+  - `README.md`
+  - `package.json`
+  - `tsconfig.json`
 
 The `main: "src/index.ts"` entrypoint is valid only because this package is
 private and consumed through npm workspaces. Do not copy that pattern into a
