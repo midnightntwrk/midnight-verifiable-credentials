@@ -24,7 +24,7 @@ const requireIncludes = (relativePath, requiredFragments) => {
 // These fragments are intentionally exact. This guard is a release-discipline
 // tripwire: when contributors reword the guide/template/changelog, they should
 // consciously update the guard with the new canonical wording.
-const requireGeneratedIncludes = ({ mode, slug, relativePath, requiredFragments }) => {
+const requireGeneratedScaffoldIncludes = ({ mode, slug, files }) => {
   const checkRoot = path.join(
     repoRoot,
     "tooling",
@@ -56,16 +56,18 @@ const requireGeneratedIncludes = ({ mode, slug, relativePath, requiredFragments 
       },
     );
 
-    const generated = readFileSync(path.join(outputRoot, relativePath), "utf8");
-    for (const fragment of requiredFragments) {
-      if (!generated.includes(fragment)) {
-        errors.push(
-          `Generated ${mode} scaffold ${relativePath} is missing required text: ${fragment}`,
-        );
+    for (const [relativePath, requiredFragments] of Object.entries(files)) {
+      const generated = readFileSync(path.join(outputRoot, relativePath), "utf8");
+      for (const fragment of requiredFragments) {
+        if (!generated.includes(fragment)) {
+          errors.push(
+            `Generated ${mode} scaffold ${relativePath} is missing required text: ${fragment}`,
+          );
+        }
       }
-    }
-    if (generated.includes("CredentialCredential")) {
-      errors.push(`Generated ${mode} scaffold ${relativePath} contains duplicate Credential suffix`);
+      if (generated.includes("CredentialCredential")) {
+        errors.push(`Generated ${mode} scaffold ${relativePath} contains duplicate Credential suffix`);
+      }
     }
   } finally {
     rmSync(outputRoot, { force: true, recursive: true });
@@ -97,53 +99,47 @@ requireIncludes("tooling/scripts/scaffold-vc-family.mjs", [
   "NoPublicClaims",
   "NoClaimCommitments",
 ]);
+requireIncludes("tooling/artifacts/.gitignore", ["*"]);
 
-requireGeneratedIncludes({
+requireGeneratedScaffoldIncludes({
   mode: "commitment",
   slug: "commit-check",
-  relativePath: "src/commit-check-credential.compact",
-  requiredFragments: [
-    "import VC<NoPublicClaims, CommitCheckClaimCommitments, ExplicitHolderBinding, NoStatusBinding>",
-    "CredentialPresentationRelations<",
-    "export type CommitCheckCredential = Credential",
-  ],
+  files: {
+    "src/commit-check-credential.compact": [
+      "import VC<NoPublicClaims, CommitCheckClaimCommitments, ExplicitHolderBinding, NoStatusBinding>",
+      "CredentialPresentationRelations<",
+      "export type CommitCheckCredential = Credential",
+    ],
+    "src/commit-check-credential/helpers.compact": [
+      "commitCheckClaimRoot(credential.claimCommitments)",
+    ],
+  },
 });
 
-requireGeneratedIncludes({
-  mode: "commitment",
-  slug: "commit-check",
-  relativePath: "src/commit-check-credential/helpers.compact",
-  requiredFragments: ["commitCheckClaimRoot(credential.claimCommitments)"],
-});
-
-requireGeneratedIncludes({
+requireGeneratedScaffoldIncludes({
   mode: "public",
   slug: "public-check",
-  relativePath: "src/public-check-credential.compact",
-  requiredFragments: [
-    "import VC<PublicCheckPublicClaims, NoClaimCommitments, ExplicitHolderBinding, NoStatusBinding>",
-    "export type PublicCheckCredential = Credential",
-  ],
+  files: {
+    "src/public-check-credential.compact": [
+      "import VC<PublicCheckPublicClaims, NoClaimCommitments, ExplicitHolderBinding, NoStatusBinding>",
+      "export type PublicCheckCredential = Credential",
+    ],
+  },
 });
 
-requireGeneratedIncludes({
+requireGeneratedScaffoldIncludes({
   mode: "mixed",
   slug: "mixed-check",
-  relativePath: "src/mixed-check-credential.compact",
-  requiredFragments: [
-    "import VC<MixedCheckPublicClaims, MixedCheckClaimCommitments, ExplicitHolderBinding, NoStatusBinding>",
-    "CredentialPresentationRelations<",
-  ],
-});
-
-requireGeneratedIncludes({
-  mode: "mixed",
-  slug: "mixed-check",
-  relativePath: "src/mixed-check-credential/helpers.compact",
-  requiredFragments: [
-    "mixedCheckClaimRoot(credential.claims, credential.claimCommitments)",
-    "presentation.disclosed.publicClaims == credential.claims",
-  ],
+  files: {
+    "src/mixed-check-credential.compact": [
+      "import VC<MixedCheckPublicClaims, MixedCheckClaimCommitments, ExplicitHolderBinding, NoStatusBinding>",
+      "CredentialPresentationRelations<",
+    ],
+    "src/mixed-check-credential/helpers.compact": [
+      "mixedCheckClaimRoot(credential.claims, credential.claimCommitments)",
+      "presentation.disclosed.publicClaims == credential.claims",
+    ],
+  },
 });
 
 if (errors.length > 0) {
