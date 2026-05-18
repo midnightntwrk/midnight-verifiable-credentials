@@ -2,9 +2,20 @@
   "name": "@midnight-ntwrk/midnight-did-credentials-protocol",
   "version": "0.1.0",
   "description": "Protocol simulation layer for Midnight Verifiable Credentials",
+  "license": "Apache-2.0",
+  "private": true,
   "type": "module",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "module": "dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
   "engines": {
     "node": ">=24",
     "npm": ">=10"
