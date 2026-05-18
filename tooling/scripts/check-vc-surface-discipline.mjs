@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { execFileSync } from "node:child_process";
-import { mkdirSync, readdirSync, readFileSync, rmSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync } from "node:fs";
 import path from "node:path";
 
 const repoRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
@@ -14,6 +14,10 @@ const readRepoFile = (relativePath) =>
   readFileSync(path.join(repoRoot, relativePath), "utf8");
 
 const cleanupStaleScaffoldChecks = () => {
+  if (!existsSync(artifactRoot)) {
+    return;
+  }
+
   for (const entry of readdirSync(artifactRoot, { withFileTypes: true })) {
     if (entry.isDirectory() && entry.name.startsWith("scaffold-surface-check-")) {
       rmSync(path.join(artifactRoot, entry.name), { force: true, recursive: true });
@@ -34,16 +38,12 @@ const requireIncludes = (relativePath, requiredFragments) => {
 // tripwire: when contributors reword the guide/template/changelog, they should
 // consciously update the guard with the new canonical wording.
 const requireGeneratedScaffoldIncludes = ({ mode, slug, files, holder = "explicit" }) => {
-  const checkRoot = path.join(
-    artifactRoot,
-    `scaffold-surface-check-${process.pid}`,
-  );
   const outputRoot = path.join(
-    checkRoot,
-    mode,
+    artifactRoot,
+    `scaffold-surface-check-${process.pid}-${mode}-${holder}`,
   );
   rmSync(outputRoot, { force: true, recursive: true });
-  mkdirSync(path.dirname(outputRoot), { recursive: true });
+  mkdirSync(artifactRoot, { recursive: true });
 
   try {
     try {
@@ -88,7 +88,6 @@ const requireGeneratedScaffoldIncludes = ({ mode, slug, files, holder = "explici
     }
   } finally {
     rmSync(outputRoot, { force: true, recursive: true });
-    rmSync(checkRoot, { force: true, recursive: true });
   }
 };
 
