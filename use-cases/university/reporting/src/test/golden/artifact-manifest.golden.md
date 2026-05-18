@@ -1,5 +1,6 @@
 # University Artifact Manifest
 
+- schema version: midnight-university-artifact-manifest.v1
 - artifact set: midnight-university-reporting-inputs
 - complete: yes
 - total bytes: 100202
@@ -12,7 +13,7 @@
 | Issuer batch-sweep summary | university-json-artifact | midnight-university-batch-sweep-summary.v2 | 1 | 9498 | 702093b9bedc9cc8631356b55e0635178382a3f06a387b9c28d5ea263657fab7 | `./run.sh university-batch-sweep` |
 
 ## Purposes
-- readable-bdd-serenity: 13 latest readable university BDD scenario records
+- readable-bdd-serenity: Readable university BDD scenario JSON; 13 latest scenario titles are summarized by the report
 - readable-protocol-transcript: student, issuer, employer, and mall protocol DTO transcript
 - stress-protocol-summary: 100-student throughput and rejection summary
 - issuer-batch-sweep-summary: batch size and compile-concurrency projection summary

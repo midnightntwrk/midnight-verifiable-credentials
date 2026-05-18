@@ -21,6 +21,7 @@
     "batchSweepSummaryPath": "<fixtures>/batch-sweep-summary.json"
   },
   "artifactManifest": {
+    "manifestSchemaVersion": "midnight-university-artifact-manifest.v1",
     "artifactSet": "midnight-university-reporting-inputs",
     "complete": true,
     "totalBytes": 100202,
@@ -32,7 +33,7 @@
         "format": "serenity-json-directory",
         "schemaVersion": null,
         "producedBy": "./run.sh university-bdd",
-        "purpose": "13 latest readable university BDD scenario records",
+        "purpose": "Readable university BDD scenario JSON; 13 latest scenario titles are summarized by the report",
         "bytes": 2778,
         "sha256": "3885403dcd926e8fff77fb5de5b33b6cf3d19e540628f9bc240b670339c3ce72",
         "fileCount": 13

@@ -6,6 +6,8 @@ export const UNIVERSITY_REPORT_SUMMARY_SCHEMA_ID =
   "midnight-university-report-summary" as const;
 export const UNIVERSITY_REPORT_SUMMARY_SCHEMA_VERSION =
   "midnight-university-report-summary.v3" as const;
+export const UNIVERSITY_ARTIFACT_MANIFEST_SCHEMA_VERSION =
+  "midnight-university-artifact-manifest.v1" as const;
 
 type SerenityScenarioRecord = {
   readonly title: string;
@@ -196,6 +198,7 @@ type UniversityArtifactManifestEntry = {
 };
 
 export type UniversityArtifactManifest = {
+  readonly manifestSchemaVersion: typeof UNIVERSITY_ARTIFACT_MANIFEST_SCHEMA_VERSION;
   readonly artifactSet: "midnight-university-reporting-inputs";
   readonly complete: boolean;
   readonly totalBytes: number;
@@ -348,7 +351,7 @@ const buildSerenityArtifactManifestEntry = (
 ): UniversityArtifactManifestEntry => {
   const jsonFiles = readdirSync(serenityDirectory)
     .filter((entry) => entry.endsWith(".json"))
-    .sort((left, right) => left.localeCompare(right));
+    .sort((left, right) => (left < right ? -1 : left > right ? 1 : 0));
   const hash = createHash("sha256");
   let totalBytes = 0;
 
@@ -368,7 +371,7 @@ const buildSerenityArtifactManifestEntry = (
     format: "serenity-json-directory",
     schemaVersion: null,
     producedBy: "./run.sh university-bdd",
-    purpose: `${scenarioCount} latest readable university BDD scenario records`,
+    purpose: `Readable university BDD scenario JSON; ${scenarioCount} latest scenario titles are summarized by the report`,
     bytes: totalBytes,
     sha256: hash.digest("hex"),
     fileCount: jsonFiles.length,
@@ -427,6 +430,7 @@ const buildUniversityArtifactManifest = ({
   ];
 
   return {
+    manifestSchemaVersion: UNIVERSITY_ARTIFACT_MANIFEST_SCHEMA_VERSION,
     artifactSet: "midnight-university-reporting-inputs",
     complete: entries.every((entry) => entry.fileCount > 0),
     totalBytes: entries.reduce((sum, entry) => sum + entry.bytes, 0),
@@ -762,6 +766,7 @@ const isUniversityArtifactManifest = (
   value: unknown,
 ): value is UniversityArtifactManifest =>
   isRecord(value) &&
+  value.manifestSchemaVersion === UNIVERSITY_ARTIFACT_MANIFEST_SCHEMA_VERSION &&
   value.artifactSet === "midnight-university-reporting-inputs" &&
   typeof value.complete === "boolean" &&
   typeof value.totalBytes === "number" &&
@@ -829,6 +834,7 @@ export const renderUniversityArtifactManifestMarkdown = (
   const lines = [
     "# University Artifact Manifest",
     "",
+    `- schema version: ${manifest.manifestSchemaVersion}`,
     `- artifact set: ${manifest.artifactSet}`,
     `- complete: ${manifest.complete ? "yes" : "no"}`,
     `- total bytes: ${manifest.totalBytes}`,

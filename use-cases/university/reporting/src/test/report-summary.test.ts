@@ -16,6 +16,7 @@ import {
   buildUniversityArtifactSummary,
   renderUniversityArtifactManifestMarkdown,
   renderUniversityArtifactSummaryMarkdown,
+  UNIVERSITY_ARTIFACT_MANIFEST_SCHEMA_VERSION,
   UNIVERSITY_REPORT_SUMMARY_SCHEMA_ID,
   UNIVERSITY_REPORT_SUMMARY_SCHEMA_VERSION,
 } from "../index.js";
@@ -76,6 +77,9 @@ describe("university artifact report summarizer", () => {
     ]);
     expect(summary.readableBdd.scenarioCount).toBe(13);
     expect(summary.artifactManifest.complete).toBe(true);
+    expect(summary.artifactManifest.manifestSchemaVersion).toBe(
+      UNIVERSITY_ARTIFACT_MANIFEST_SCHEMA_VERSION,
+    );
     expect(summary.artifactManifest.entries).toHaveLength(4);
     expect(summary.artifactManifest.entries.map((entry) => entry.artifactId))
       .toEqual([

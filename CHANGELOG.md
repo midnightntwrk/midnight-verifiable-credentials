@@ -11,7 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - added a deterministic university artifact manifest to the reporting summary
   with source artifact schema versions, producer lanes, byte sizes, file counts,
-  and SHA-256 digests.
+  SHA-256 digests, and the standalone manifest schema version
+  `midnight-university-artifact-manifest.v1`.
 - added a root `./run.sh hello-smoke` lane plus matching `lint`,
   `typecheck`, and `test` scripts for the smallest DID-aware
   `offchain-did -> hello-family -> hello-verifier` handoff
