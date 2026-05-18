@@ -83,6 +83,7 @@ Run the build-cone contract check locally with:
 
 ```bash
 npm run check:ci-build-cones
+npm run check:ci-workflow-cones
 ```
 
 The check reads the same shell definitions used by CI and verifies that:
@@ -102,6 +103,20 @@ The check reads the same shell definitions used by CI and verifies that:
 The audit is wired into `ci:lint` so changes to `package.json`,
 `tooling/scripts/ci-build-output-groups.sh`, `.gitignore`, or cone docs cannot
 quietly drift from the repository's generated-artifact policy.
+
+`check:ci-workflow-cones` adds the runner-side contract:
+
+- every `build:cone:*` root script uses Turbo filters that match the cone's
+  generated output owners
+- aggregate root build scripts do not directly rebuild cone-managed workspaces
+  outside the cone runner
+- `.github/workflows/ci.yml` hashes, verifies, builds, packs, and uploads every
+  declared cone group
+- the workflow does not reference unknown `ci-build-*` cache or artifact groups
+
+The shell-side cone contract defines what belongs in each build cone; the
+workflow-side contract defines where those cone outputs flow through CI cache
+keys, artifact names, and restored output paths.
 
 ## Build Order
 

@@ -193,10 +193,16 @@ Ground rules:
 
 13. `turbo-build-cone-contracts`
 
-- status: planned
+- status: in progress on `codex/vc-turbo-build-cone-contracts`
 - scope:
   - add guardrails for root runner targets and Turbo filter contracts
   - prevent future CI drift between package graph and documented cones
+- validation:
+  - `npm run check:ci-workflow-cones`
+  - `npm run check:ci-build-cones`
+  - `npm run ci:lint`
+  - `npm run docs:links`
+  - `git diff --check`
 
 14. `holder-binding-name-deprecation-closeout`
 
