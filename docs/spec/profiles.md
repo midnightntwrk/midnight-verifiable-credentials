@@ -11,11 +11,30 @@ It is companion material to:
 - [`claim-representation.md`](./claim-representation.md)
 - [`credential-status.md`](./credential-status.md)
 - [`revocation-registry.md`](./revocation-registry.md)
+- [`../architecture/holder-binding-terminology.md`](../architecture/holder-binding-terminology.md)
 
 ## Purpose
 
 The core spec defines the data model and proof model. This document defines the
 currently recognized profile families and their intended scope.
+
+## Canonical terminology
+
+Use [`../architecture/holder-binding-terminology.md`](../architecture/holder-binding-terminology.md)
+as the naming authority when profile names, compatibility aliases, or
+public/runtime adapter names appear in specs or package README files.
+
+In short:
+
+- `OffchainDIDHolderBinding` is the preferred runtime/public TypeScript name
+  for the offchain DID adapter profile.
+- `OffchainMidnightHolderBinding` remains the Compact/core struct name and
+  should be described as such whenever it appears.
+- `JubjubHolderBinding` is a legacy compatibility/minimal non-DID profile, not
+  the default for new DID-shaped work.
+- `hidden-holder` is an umbrella adjective; concrete implementation profiles
+  should still be named `secret holder binding` or
+  `blinded secret holder binding`.
 
 Each profile section below states:
 

@@ -224,10 +224,14 @@ Important carry-forward rule from `#247`:
 
 14. `holder-binding-name-deprecation-closeout`
 
-- status: planned
+- status: implemented locally on `codex/vc-holder-binding-terminology`
 - scope:
   - finish deprecating stale holder-binding terminology in docs/comments
   - keep compatibility names explicit where they still exist
+- validation:
+  - `npm run check:holder-binding-terminology`
+  - `npm run docs:links`
+  - `npm run ci:lint`
 
 15. `compatibility-shim-and-path-hygiene`
 

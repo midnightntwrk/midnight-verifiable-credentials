@@ -203,7 +203,6 @@ Current reusable holder-binding helper sets are:
   - `assertValidExplicitHolderBinding(...)`
   - `assertMatchingExplicitHolderBindings(...)`
   - `assertProofMatchesExplicitHolderBinding(...)`
-- lightweight Jubjub key holder binding:
 - legacy compatibility Jubjub key holder binding:
   - `assertValidJubjubHolderBinding(...)`
   - `assertMatchingJubjubHolderBindings(...)`
@@ -246,6 +245,16 @@ If you are new to the model, read in this order:
 3. this package README
 
 ## Naming choices
+
+Holder-binding terminology:
+
+- canonical terminology guide:
+  - [`../../../docs/architecture/holder-binding-terminology.md`](../../../docs/architecture/holder-binding-terminology.md)
+- use `OffchainDIDHolderBinding` for runtime/public TypeScript-facing adapter
+  docs
+- keep `OffchainMidnightHolderBinding` for the Compact/core struct name
+- describe `JubjubHolderBinding` as legacy compatibility or a minimal non-DID
+  profile, not as the default for new DID-shaped work
 
 The generic core now uses:
 

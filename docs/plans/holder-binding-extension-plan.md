@@ -4,7 +4,7 @@
   SPDX-License-Identifier: Apache-2.0
 -->
 
-# Lightweight Holder Binding Extension Plan
+# Offchain DID and Legacy Holder Binding Extension Plan
 
 ## Issue
 
@@ -29,6 +29,10 @@ Reason:
 The canonical Compact/core shape remains `OffchainMidnightHolderBinding`.
 The preferred runtime/public-facing adapter name is `OffchainDIDHolderBinding`.
 That split should build on the same idea, not replace it.
+
+Terminology authority:
+
+- [`../architecture/holder-binding-terminology.md`](../architecture/holder-binding-terminology.md)
 
 ## New binding profiles
 
