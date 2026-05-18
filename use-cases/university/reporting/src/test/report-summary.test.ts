@@ -76,7 +76,6 @@ describe("university artifact report summarizer", () => {
       "Pioneer Systems",
     ]);
     expect(summary.readableBdd.scenarioCount).toBe(13);
-    expect(summary.artifactManifest.complete).toBe(true);
     expect(summary.artifactManifest.manifestSchemaVersion).toBe(
       UNIVERSITY_ARTIFACT_MANIFEST_SCHEMA_VERSION,
     );
@@ -152,6 +151,29 @@ describe("university artifact report summarizer", () => {
         durationMs: 999,
         startTime: "2026-05-13T00:00:00.000Z",
       });
+    } finally {
+      rmSync(tempRoot, { recursive: true, force: true });
+    }
+  });
+
+  it("fails fast when a required source artifact is missing", () => {
+    const tempRoot = mkdtempSync(
+      path.join(os.tmpdir(), "university-reporting-"),
+    );
+
+    try {
+      expect(() =>
+        buildUniversityArtifactSummary({
+          artifactBaseDirectory: fixtureDir,
+          serenityDirectory,
+          transcriptExportPath: path.join(tempRoot, "missing-transcript.json"),
+          stressSummaryPath: path.join(fixtureDir, "stress-summary.json"),
+          batchSweepSummaryPath: path.join(
+            fixtureDir,
+            "batch-sweep-summary.json",
+          ),
+        }),
+      ).toThrow(/Failed to parse JSON artifact/);
     } finally {
       rmSync(tempRoot, { recursive: true, force: true });
     }

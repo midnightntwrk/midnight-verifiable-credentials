@@ -200,10 +200,8 @@ type UniversityArtifactManifestEntry = {
 export type UniversityArtifactManifest = {
   readonly manifestSchemaVersion: typeof UNIVERSITY_ARTIFACT_MANIFEST_SCHEMA_VERSION;
   readonly artifactSet: "midnight-university-reporting-inputs";
-  readonly complete: boolean;
   readonly totalBytes: number;
   readonly entries: readonly UniversityArtifactManifestEntry[];
-  readonly missingArtifactIds: readonly string[];
   readonly notes: readonly string[];
 };
 
@@ -349,9 +347,10 @@ const buildSerenityArtifactManifestEntry = (
   artifactBaseDirectory: string,
   scenarioCount: number,
 ): UniversityArtifactManifestEntry => {
-  const jsonFiles = readdirSync(serenityDirectory)
-    .filter((entry) => entry.endsWith(".json"))
-    .sort((left, right) => (left < right ? -1 : left > right ? 1 : 0));
+  const jsonFiles = readdirSync(serenityDirectory, { withFileTypes: true })
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".json"))
+    .map((entry) => entry.name)
+    .sort();
   const hash = createHash("sha256");
   let totalBytes = 0;
 
@@ -432,16 +431,12 @@ const buildUniversityArtifactManifest = ({
   return {
     manifestSchemaVersion: UNIVERSITY_ARTIFACT_MANIFEST_SCHEMA_VERSION,
     artifactSet: "midnight-university-reporting-inputs",
-    complete: entries.every((entry) => entry.fileCount > 0),
     totalBytes: entries.reduce((sum, entry) => sum + entry.bytes, 0),
     entries,
-    missingArtifactIds: entries
-      .filter((entry) => entry.fileCount === 0)
-      .map((entry) => entry.artifactId),
     notes: [
       "Hashes are deterministic SHA-256 digests over source artifact bytes.",
       "The Serenity directory hash includes each JSON filename before its file bytes so renamed files change the digest.",
-      "The manifest is an index over already-rendered artifacts; it does not replace the individual schema validators.",
+      "The manifest is an index over already-rendered artifacts; missing source artifacts fail summary rendering instead of producing partial reports.",
     ],
   };
 };
@@ -768,14 +763,11 @@ const isUniversityArtifactManifest = (
   isRecord(value) &&
   value.manifestSchemaVersion === UNIVERSITY_ARTIFACT_MANIFEST_SCHEMA_VERSION &&
   value.artifactSet === "midnight-university-reporting-inputs" &&
-  typeof value.complete === "boolean" &&
   typeof value.totalBytes === "number" &&
   Number.isInteger(value.totalBytes) &&
   value.totalBytes >= 0 &&
   Array.isArray(value.entries) &&
   value.entries.every(isUniversityArtifactManifestEntry) &&
-  Array.isArray(value.missingArtifactIds) &&
-  value.missingArtifactIds.every((entry) => typeof entry === "string") &&
   Array.isArray(value.notes) &&
   value.notes.every((entry) => typeof entry === "string");
 
@@ -836,7 +828,6 @@ export const renderUniversityArtifactManifestMarkdown = (
     "",
     `- schema version: ${manifest.manifestSchemaVersion}`,
     `- artifact set: ${manifest.artifactSet}`,
-    `- complete: ${manifest.complete ? "yes" : "no"}`,
     `- total bytes: ${manifest.totalBytes}`,
     "",
     "| artifact | format | schema version | files | bytes | sha256 | produced by |",
@@ -874,7 +865,6 @@ export const renderUniversityArtifactSummaryMarkdown = (
     `- discount applicants: ${summary.actors.discountApplicantCount}`,
     "",
     "## Source Artifact Manifest",
-    `- complete: ${summary.artifactManifest.complete ? "yes" : "no"}`,
     `- total bytes: ${summary.artifactManifest.totalBytes}`,
     "",
     "| artifact | schema version | files | bytes | sha256 |",

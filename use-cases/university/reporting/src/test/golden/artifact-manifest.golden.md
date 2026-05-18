@@ -2,7 +2,6 @@
 
 - schema version: midnight-university-artifact-manifest.v1
 - artifact set: midnight-university-reporting-inputs
-- complete: yes
 - total bytes: 100202
 
 | artifact | format | schema version | files | bytes | sha256 | produced by |
@@ -21,5 +20,5 @@
 ## Notes
 - Hashes are deterministic SHA-256 digests over source artifact bytes.
 - The Serenity directory hash includes each JSON filename before its file bytes so renamed files change the digest.
-- The manifest is an index over already-rendered artifacts; it does not replace the individual schema validators.
+- The manifest is an index over already-rendered artifacts; missing source artifacts fail summary rendering instead of producing partial reports.
 

@@ -23,7 +23,6 @@
   "artifactManifest": {
     "manifestSchemaVersion": "midnight-university-artifact-manifest.v1",
     "artifactSet": "midnight-university-reporting-inputs",
-    "complete": true,
     "totalBytes": 100202,
     "entries": [
       {
@@ -75,11 +74,10 @@
         "fileCount": 1
       }
     ],
-    "missingArtifactIds": [],
     "notes": [
       "Hashes are deterministic SHA-256 digests over source artifact bytes.",
       "The Serenity directory hash includes each JSON filename before its file bytes so renamed files change the digest.",
-      "The manifest is an index over already-rendered artifacts; it does not replace the individual schema validators."
+      "The manifest is an index over already-rendered artifacts; missing source artifacts fail summary rendering instead of producing partial reports."
     ]
   },
   "readableBdd": {

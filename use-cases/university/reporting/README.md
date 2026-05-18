@@ -21,6 +21,8 @@ Scope:
 - emit a deterministic source-artifact manifest with file counts, byte sizes,
   schema versions, producers, and SHA-256 digests
 - highlight the slowest scenario and the dominant timing bottlenecks
+- fail fast when a required source artifact is missing; rerun the documented
+  producer lane instead of publishing a partial report
 
 Build and test:
 

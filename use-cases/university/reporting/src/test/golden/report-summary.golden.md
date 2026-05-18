@@ -9,7 +9,6 @@
 - discount applicants: 5
 
 ## Source Artifact Manifest
-- complete: yes
 - total bytes: 100202
 
 | artifact | schema version | files | bytes | sha256 |
