@@ -2,6 +2,8 @@
   "name": "@midnight-ntwrk/midnight-did-standalone-environment",
   "version": "0.1.0",
   "description": "Shared Midnight standalone environment for integration tests",
+  "license": "Apache-2.0",
+  "private": true,
   "type": "module",
   "main": "src/index.ts",
   "engines": {

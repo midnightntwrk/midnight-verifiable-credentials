@@ -125,6 +125,10 @@
 - CI build cones:
   - [`architecture/ci-build-cones.md`](./architecture/ci-build-cones.md)
   - for the shared-build cache and artifact topology used by CI
+- workspace package-manifest discipline:
+  - [`architecture/workspace-package-manifest-discipline.md`](./architecture/workspace-package-manifest-discipline.md)
+  - for contributors adding or changing package entrypoints, export maps,
+    tarball `files` manifests, or scenario/source-only workspace metadata
 - Compact source conventions, purity, and commitment research:
   - [`architecture/compact-source-conventions-and-purity-research.md`](./architecture/compact-source-conventions-and-purity-research.md)
   - for the current comment-style, pure-circuit, and commitment-standardization research cut

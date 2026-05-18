@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `midnight-university-artifact-manifest.v1`. Missing source artifacts now fail
   summary rendering instead of producing partial reports, and callers must pass
   an explicit artifact base directory for portable manifest paths.
+- added a workspace package-manifest audit that keeps package license/private
+  metadata, dist export maps, source-only package policy, BDD scenario package
+  policy, and tarball `files` surfaces aligned across root workspaces.
 - added a root `./run.sh hello-smoke` lane plus matching `lint`,
   `typecheck`, and `test` scripts for the smallest DID-aware
   `offchain-did -> hello-family -> hello-verifier` handoff
@@ -65,6 +68,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   verifier explanation.
 - tightened the university report-summary runtime guard so object checks reject
   arrays and artifact manifest byte/file counts must be non-negative integers.
+- normalized the `credentials-protocol`, standalone-environment, age-gate
+  contract, and BDD scenario package manifests so generated tarballs and
+  workspace metadata expose the intended surface consistently.
 - BREAKING: credential-family Compact roots now instantiate
   `VC<TPublicClaims, TClaimCommitments, THolderBinding, TStatusBinding>`.
   `claims` is the signed public/direct claim surface, `claimCommitments` is the

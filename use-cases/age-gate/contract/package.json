@@ -10,28 +10,28 @@
   },
   "main": "dist/index.js",
   "module": "dist/index.js",
-  "types": "./src/index.d.ts",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./src/index.d.ts",
+      "types": "./dist/index.d.ts",
       "require": "./dist/index.js",
       "import": "./dist/index.js",
       "default": "./dist/index.js"
     },
     "./contract": {
-      "types": "./src/contract.d.ts",
+      "types": "./dist/contract.d.ts",
       "require": "./dist/contract.js",
       "import": "./dist/contract.js",
       "default": "./dist/contract.js"
     },
     "./contract-revocation": {
-      "types": "./src/contract-revocation.d.ts",
+      "types": "./dist/contract-revocation.d.ts",
       "require": "./dist/contract-revocation.js",
       "import": "./dist/contract-revocation.js",
       "default": "./dist/contract-revocation.js"
     },
     "./testing": {
-      "types": "./src/testing.d.ts",
+      "types": "./dist/testing.d.ts",
       "require": "./dist/testing.js",
       "import": "./dist/testing.js",
       "default": "./dist/testing.js"
@@ -50,13 +50,13 @@
   "typesVersions": {
     "*": {
       "contract": [
-        "src/contract.d.ts"
+        "dist/contract.d.ts"
       ],
       "contract-revocation": [
-        "src/contract-revocation.d.ts"
+        "dist/contract-revocation.d.ts"
       ],
       "testing": [
-        "src/testing.d.ts"
+        "dist/testing.d.ts"
       ],
       "managed/demo/contract/index.js": [
         "dist/managed/demo/contract/index.d.ts"
@@ -94,5 +94,14 @@
     "@midnight-ntwrk/midnight-did-credentials-birth-secret": "*",
     "@midnight-ntwrk/midnight-did-credentials-status-registry": "*",
     "@midnight-ntwrk/midnight-did-standalone-environment": "*"
-  }
+  },
+  "files": [
+    "dist/**",
+    "src/**/*.compact",
+    "README.md",
+    "scripts/*.mjs",
+    "package.json",
+    "tsconfig.json",
+    "tsconfig.build.json"
+  ]
 }
