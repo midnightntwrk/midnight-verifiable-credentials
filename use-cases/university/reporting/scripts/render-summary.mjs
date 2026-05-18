@@ -26,6 +26,7 @@ const targetDir = path.join(
 );
 
 const summary = buildUniversityArtifactSummary({
+  artifactBaseDirectory: repoRoot,
   serenityDirectory: path.join(
     repoRoot,
     "use-cases",

@@ -54,7 +54,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- the university summary renderer now emits `artifact-manifest.json` and
+- BREAKING: the university report summary schema moved to
+  `midnight-university-report-summary.v3` because summaries now embed an
+  artifact manifest. The renderer also emits `artifact-manifest.json` and
   `artifact-manifest.md` next to the existing summary artifacts, and the mall
   discount BDD expectations now match the current `minimumFinalGrade = 91`
   verifier explanation.

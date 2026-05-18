@@ -11,6 +11,7 @@
 ## Source Artifact Manifest
 - complete: yes
 - total bytes: 100202
+
 | artifact | schema version | files | bytes | sha256 |
 | --- | --- | ---: | ---: | --- |
 | Readable BDD Serenity JSON | n/a | 13 | 2778 | 3885403dcd926e8fff77fb5de5b33b6cf3d19e540628f9bc240b670339c3ce72 |

@@ -53,6 +53,7 @@ const normalizeFixturePaths = (value: unknown): unknown => {
 
 const renderFixtureSummary = () =>
   buildUniversityArtifactSummary({
+    artifactBaseDirectory: fixtureDir,
     serenityDirectory,
     transcriptExportPath: path.join(fixtureDir, "transcript-export.json"),
     stressSummaryPath: path.join(fixtureDir, "stress-summary.json"),

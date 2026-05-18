@@ -28,7 +28,7 @@
       {
         "artifactId": "readable-bdd-serenity",
         "label": "Readable BDD Serenity JSON",
-        "path": "<fixtures>/serenity",
+        "path": "serenity",
         "format": "serenity-json-directory",
         "schemaVersion": null,
         "producedBy": "./run.sh university-bdd",
@@ -40,7 +40,7 @@
       {
         "artifactId": "readable-protocol-transcript",
         "label": "Readable protocol transcript export",
-        "path": "<fixtures>/transcript-export.json",
+        "path": "transcript-export.json",
         "format": "university-json-artifact",
         "schemaVersion": "midnight-university-protocol-export.v1",
         "producedBy": "./run.sh university-protocol-export",
@@ -52,7 +52,7 @@
       {
         "artifactId": "stress-protocol-summary",
         "label": "Stress protocol summary",
-        "path": "<fixtures>/stress-summary.json",
+        "path": "stress-summary.json",
         "format": "university-json-artifact",
         "schemaVersion": "midnight-university-protocol-stress-summary.v2",
         "producedBy": "./run.sh university-protocol-stress",
@@ -64,7 +64,7 @@
       {
         "artifactId": "issuer-batch-sweep-summary",
         "label": "Issuer batch-sweep summary",
-        "path": "<fixtures>/batch-sweep-summary.json",
+        "path": "batch-sweep-summary.json",
         "format": "university-json-artifact",
         "schemaVersion": "midnight-university-batch-sweep-summary.v2",
         "producedBy": "./run.sh university-batch-sweep",
