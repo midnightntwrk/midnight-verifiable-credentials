@@ -17,6 +17,24 @@ Ground rules:
 - each PR must include focused local validation and a Claude PR review pass
 - update this file after every PR and refresh the wider backlog every five PRs
 
+## Merged Through 2026-05-18
+
+The current `origin/develop` baseline has advanced through:
+
+- university runtime/backend/proof-server closeout: `#236` through `#244`
+- generated-artifact and CI cone audit: `#245`, `#246`
+- mixed public/direct plus committed/private claim-representation profile:
+  `#247`
+
+Important carry-forward rule from `#247`:
+
+- use `VC<TPublicClaims, TClaimCommitments, THolderBinding, TStatusBinding>`
+- use `NoPublicClaims` for commitment-only credentials
+- use `NoClaimCommitments` for direct-only credentials
+- call commitment structs `*ClaimCommitments`, not generic `*Claims`
+- document every field as public/direct, selectively disclosed,
+  committed-private, or predicate-only
+
 ## Iteration Plan
 
 1. `university-flow-module-split`
