@@ -27,30 +27,27 @@ describe("mixed-claims claim representation", () => {
     expect(claimsSource).toContain("credentialTypeCode: Uint<16>");
     expect(claimsSource).toContain("issuerJurisdictionCode: Bytes<2>");
     expect(claimsSource).toContain("assuranceLevel: Uint<8>");
-    expect(claimsSource).toContain("struct MixedClaimsPrivateClaimCommitments");
+    expect(claimsSource).toContain("struct MixedClaimsClaimCommitments");
     expect(claimsSource).toContain("subjectIdCommitment: Bytes<32>");
     expect(claimsSource).toContain("birthDateCommitment: Bytes<32>");
     expect(claimsSource).toContain("accountTierCommitment: Bytes<32>");
-    expect(claimsSource).toContain("publicClaims: MixedClaimsPublicClaims");
     expect(claimsSource).toContain(
-      "privateClaims: MixedClaimsPrivateClaimCommitments",
+      "claimCommitments: MixedClaimsClaimCommitments",
     );
   });
 
   it("hashes public and private roots independently before composing the claim root", () => {
-    expect(claimsSource).toContain("midnight:vc:mixed-claims:public");
-    expect(claimsSource).toContain("midnight:vc:mixed-claims:private");
+    expect(claimsSource).toContain("midnight:vc:mixed:public");
+    expect(claimsSource).toContain("midnight:vc:mixed:private");
     expect(claimsSource).toContain(
       "persistentHash<MixedClaimsPublicClaims>(publicClaims)",
     );
     expect(claimsSource).toContain(
-      "persistentHash<MixedClaimsPrivateClaimCommitments>(privateClaims)",
+      "persistentHash<MixedClaimsClaimCommitments>(claimCommitments)",
     );
+    expect(claimsSource).toContain("mixedClaimsPublicClaimsRoot(claims)");
     expect(claimsSource).toContain(
-      "mixedClaimsPublicClaimsRoot(claims.publicClaims)",
-    );
-    expect(claimsSource).toContain(
-      "mixedClaimsPrivateClaimCommitmentsRoot(claims.privateClaims)",
+      "mixedClaimsClaimCommitmentsRoot(claimCommitments)",
     );
   });
 

@@ -251,6 +251,7 @@ export const createHelloFamilyFixture = ({
     hasExpiration: false,
     expiresAt: 0n,
     claims,
+    claimCommitments: {},
     claimRoot: pureCircuits.helloFamilyClaimRoot(claims),
   };
 
@@ -331,6 +332,7 @@ export const createHelloFamilyOffchainDidFixture = ({
     hasExpiration: false,
     expiresAt: 0n,
     claims,
+    claimCommitments: {},
     claimRoot: offchainPureCircuits.helloFamilyClaimRoot(claims),
   };
 

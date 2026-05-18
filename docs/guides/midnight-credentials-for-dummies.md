@@ -264,8 +264,8 @@ That gives us these benefits:
 - later predicates can be proven from committed values
 
 This is the birth-credential choice, not a generic VC limitation. The generic
-`VC<TClaims, ...>` envelope accepts whatever typed `TClaims` a credential family
-defines. A family can use:
+`VC<TPublicClaims, TClaimCommitments, ...>` envelope separates raw/direct claims
+from commitment digests. A family can use:
 
 - direct public claims when simplicity and interoperability matter more than
   minimization
@@ -278,7 +278,7 @@ defines. A family can use:
 
 The mixed reference package is
 `prototypes/credential-families/mixed-claims`: it puts low-sensitivity metadata
-in direct public fields and keeps identity/date/tier values behind commitments.
+in `claims` and keeps identity/date/tier values in `claimCommitments`.
 
 ### Conceptual Diagram
 
@@ -378,8 +378,8 @@ const birthDateCommitment = pureCircuits.birthDateCommitment(
 
 const credential = {
   ...,
-  claims: {
-    ...,
+  claims: {},
+  claimCommitments: {
     birthDateCommitment,
   },
 };

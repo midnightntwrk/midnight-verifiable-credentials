@@ -115,10 +115,11 @@ include "../../../core/primitives/credentials/src/credentials";
 include "./example-family-credential/claims";
 include "./example-family-credential/model";
 
-import VC<ExampleFamilyCredentialClaims, ExplicitHolderBinding, NoStatusBinding>;
+import VC<ExampleFamilyPublicClaims, ExampleFamilyClaimCommitments, ExplicitHolderBinding, NoStatusBinding>;
 import VP<ExampleFamilyDisclosures, ExplicitHolderBinding>;
 import CredentialPresentationRelations<
-  ExampleFamilyCredentialClaims,
+  ExampleFamilyPublicClaims,
+  ExampleFamilyClaimCommitments,
   ExampleFamilyDisclosures,
   ExplicitHolderBinding,
   NoStatusBinding

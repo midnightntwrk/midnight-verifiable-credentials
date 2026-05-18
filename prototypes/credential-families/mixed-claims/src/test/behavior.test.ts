@@ -13,10 +13,11 @@ import {
 import { describe, expect, it } from "vitest";
 
 import {
+  type MixedClaimsClaimCommitments,
   type MixedClaimsCredential,
-  type MixedClaimsCredentialClaims,
   type MixedClaimsPresentation,
   type MixedClaimsPresentationRequest,
+  type MixedClaimsPublicClaims,
   pureCircuits,
 } from "../managed/mixed-claims-credential/contract/index.js";
 
@@ -169,27 +170,24 @@ const createFixture = ({
   const birthDateDays = 7_777n;
   const birthDateOpening = sha256("opening:mixed-claims:birth-date");
   const accountTierOpening = sha256("opening:mixed-claims:account-tier");
-  const publicClaims = {
+  const claims: MixedClaimsPublicClaims = {
     credentialTypeCode: 42n,
     issuerJurisdictionCode: padText("US", 2),
     assuranceLevel: 2n,
   };
-  const claims: MixedClaimsCredentialClaims = {
-    publicClaims,
-    privateClaims: {
-      subjectIdCommitment: pureCircuits.mixedClaimsSubjectIdCommitment(
-        subjectId,
-        subjectIdOpening,
-      ),
-      birthDateCommitment: pureCircuits.mixedClaimsBirthDateCommitment(
-        birthDateDays,
-        birthDateOpening,
-      ),
-      accountTierCommitment: pureCircuits.mixedClaimsAccountTierCommitment(
-        accountTier,
-        accountTierOpening,
-      ),
-    },
+  const claimCommitments: MixedClaimsClaimCommitments = {
+    subjectIdCommitment: pureCircuits.mixedClaimsSubjectIdCommitment(
+      subjectId,
+      subjectIdOpening,
+    ),
+    birthDateCommitment: pureCircuits.mixedClaimsBirthDateCommitment(
+      birthDateDays,
+      birthDateOpening,
+    ),
+    accountTierCommitment: pureCircuits.mixedClaimsAccountTierCommitment(
+      accountTier,
+      accountTierOpening,
+    ),
   };
   const credential: MixedClaimsCredential = {
     version: 1n,
@@ -208,7 +206,8 @@ const createFixture = ({
     hasExpiration: false,
     expiresAt: 0n,
     claims,
-    claimRoot: pureCircuits.mixedClaimsClaimRoot(claims),
+    claimCommitments,
+    claimRoot: pureCircuits.mixedClaimsClaimRoot(claims, claimCommitments),
   };
   const credentialProof = signProof({
     bodyRoot: pureCircuits.mixedClaimsCredentialBodyRoot(credential),
@@ -235,7 +234,7 @@ const createFixture = ({
     issuerVerificationMethodRef: credential.issuerVerificationMethodRef,
     holderBinding: credential.holderBinding,
     disclosed: {
-      publicClaims,
+      publicClaims: claims,
       revealSubjectId,
       subjectId:
         revealSubjectId || leakHiddenSubjectId ? subjectId : new Uint8Array(32),

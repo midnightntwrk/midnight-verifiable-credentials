@@ -20,7 +20,7 @@ const helpersSource = normalizeWhitespace(
 describe("mixed-claims private commitment guards", () => {
   it("rejects subject-id disclosure unless it opens the signed commitment", () => {
     expect(helpersSource).toContain(
-      "mixedClaimsSubjectIdCommitment(disclosed.subjectId, disclosed.subjectIdOpening) == claims.privateClaims.subjectIdCommitment",
+      "mixedClaimsSubjectIdCommitment(disclosed.subjectId, disclosed.subjectIdOpening) == claimCommitments.subjectIdCommitment",
     );
     expect(helpersSource).toContain(
       "Mixed-claims subject-id disclosure does not open the credential commitment",
@@ -29,7 +29,7 @@ describe("mixed-claims private commitment guards", () => {
 
   it("rejects birth-date disclosure unless it opens the signed commitment", () => {
     expect(helpersSource).toContain(
-      "mixedClaimsBirthDateCommitment(disclosed.birthDateDays, disclosed.birthDateOpening) == claims.privateClaims.birthDateCommitment",
+      "mixedClaimsBirthDateCommitment(disclosed.birthDateDays, disclosed.birthDateOpening) == claimCommitments.birthDateCommitment",
     );
     expect(helpersSource).toContain(
       "Mixed-claims birth-date disclosure does not open the credential commitment",
@@ -38,7 +38,7 @@ describe("mixed-claims private commitment guards", () => {
 
   it("rejects account-tier predicates unless the witness opens the signed commitment", () => {
     expect(helpersSource).toContain(
-      "mixedClaimsAccountTierCommitment(accountTierWitness, accountTierOpening) == claims.privateClaims.accountTierCommitment",
+      "mixedClaimsAccountTierCommitment(accountTierWitness, accountTierOpening) == claimCommitments.accountTierCommitment",
     );
     expect(helpersSource).toContain(
       "Mixed-claims account-tier witness does not open the credential commitment",

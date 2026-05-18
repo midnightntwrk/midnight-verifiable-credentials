@@ -84,7 +84,7 @@ The generic package owns:
 
 This package owns:
 
-- `BirthCredentialClaims`
+- `BirthCredentialClaimCommitments`
 - `SecretBirthCredentialDisclosures`
 - `SecretBirthCredentialPresentationRequest`
 - `SecretBirthCredentialIssuanceOffer`, `SecretBirthCredentialIssuanceRequest`, `SecretBirthCredentialIssuanceResult`

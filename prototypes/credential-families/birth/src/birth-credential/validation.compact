@@ -201,7 +201,7 @@ export pure circuit assertValidBirthCredential(
   proof: Proof
 ): [] {
   assertValidBirthSchemaRef(credential.schema);
-  assertValidCredentialEnvelope(credential, birthCredentialClaimRoot(credential.claims));
+  assertValidCredentialEnvelope(credential, birthCredentialClaimRoot(credential.claimCommitments));
   assertValidNoStatusBinding(credential.statusBinding);
   assertValidExplicitHolderBinding(credential.holderBinding);
   assertValidCredentialProof(credential, proof);
@@ -228,7 +228,7 @@ export pure circuit assertValidBirthCredentialPresentation(
 
   if (presentation.disclosed.revealSubjectIdCommitment) {
     assert(
-      presentation.disclosed.subjectIdCommitment == credential.claims.subjectIdCommitment,
+      presentation.disclosed.subjectIdCommitment == credential.claimCommitments.subjectIdCommitment,
       "Presentation subject commitment does not match the credential"
     );
   }
@@ -237,7 +237,7 @@ export pure circuit assertValidBirthCredentialPresentation(
       birthCountryCodeCommitment(
         presentation.disclosed.birthCountryCodePadded,
         presentation.disclosed.birthCountryCodeOpening
-      ) == credential.claims.birthCountryCodeCommitment,
+      ) == credential.claimCommitments.birthCountryCodeCommitment,
       "Presentation birth-country disclosure does not match the credential"
     );
   }
@@ -323,7 +323,7 @@ export pure circuit assertValidBirthCredentialAgePredicate(
     "Presentation must request the age-over-threshold predicate"
   );
   assert(
-    birthDateCommitment(birthDateDays, birthDateOpening) == credential.claims.birthDateCommitment,
+    birthDateCommitment(birthDateDays, birthDateOpening) == credential.claimCommitments.birthDateCommitment,
     "Birth-date witness does not match credential commitment"
   );
   assert(currentDay >= birthDateDays, "Current day must not precede the birth date witness");

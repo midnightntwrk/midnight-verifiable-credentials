@@ -2,8 +2,10 @@
 
 Status: normative companion profile for the current Midnight Credentials draft.
 
-This document defines how credential families represent claims inside the
-Compact-native `VC<TClaims, THolderBinding, TStatusBinding>` envelope.
+This document defines how credential families represent direct claims and claim
+commitments inside the Compact-native
+`VC<TPublicClaims, TClaimCommitments, THolderBinding, TStatusBinding>`
+envelope.
 
 It is companion material to:
 
@@ -49,6 +51,35 @@ A field `MUST NOT` be labeled private if its raw value is present as a direct
 claim in the signed credential body. Direct claim values are public to any party
 that receives or stores the credential body.
 
+## Generic Envelope Boundary
+
+The generic VC envelope separates direct values from commitment digests:
+
+```compact
+export struct Credential {
+  ...
+  claims: TPublicClaims,
+  claimCommitments: TClaimCommitments,
+  claimRoot: Bytes<32>,
+}
+```
+
+`claims` is reserved for raw/direct values that the family intentionally carries
+in the signed credential body. `claimCommitments` is reserved for commitment
+digests whose raw values are supplied later as disclosure openings or private
+predicate witnesses.
+
+Families that only need one side of the boundary use the marker structs from
+the credentials core:
+
+- `NoPublicClaims` for commitment-only credentials such as the birth family
+- `NoClaimCommitments` for direct-claim laboratories such as dummy-claims and
+  university-diploma
+
+The generic envelope does not decide which fields are safe to publish. That is
+still a family/schema responsibility, but the type shape prevents commitment
+fields from being hidden inside an arbitrary nested public-claims object.
+
 ## Normative Family Rules
 
 A credential family implementation:
@@ -84,23 +115,19 @@ export struct ExamplePrivateClaimCommitments {
   subjectIdCommitment: Bytes<32>,
   birthDateCommitment: Bytes<32>,
 }
-
-export struct ExampleCredentialClaims {
-  publicClaims: ExamplePublicClaims,
-  privateClaims: ExamplePrivateClaimCommitments,
-}
 ```
 
 The root should keep the two surfaces separate:
 
 ```compact
 export pure circuit exampleClaimRoot(
-  claims: ExampleCredentialClaims
+  claims: ExamplePublicClaims,
+  claimCommitments: ExamplePrivateClaimCommitments
 ): Bytes<32> {
   return persistentHash<Vector<3, Bytes<32>>>([
     pad(32, "midnight:vc:example:v1"),
-    persistentHash<ExamplePublicClaims>(claims.publicClaims),
-    persistentHash<ExamplePrivateClaimCommitments>(claims.privateClaims)
+    persistentHash<ExamplePublicClaims>(claims),
+    persistentHash<ExamplePrivateClaimCommitments>(claimCommitments)
   ]);
 }
 ```
@@ -119,7 +146,7 @@ export struct ExampleDisclosures {
 
 The family verifier must then assert:
 
-- `presentation.disclosed.publicClaims == credential.claims.publicClaims`
+- `presentation.disclosed.publicClaims == credential.claims`
 - disclosed private values open to the corresponding commitment
 - predicate witnesses open to the corresponding commitment and satisfy the
   requested predicate
@@ -163,6 +190,7 @@ whose request gates decide whether the presentation exposes the value. Families
 that need stronger privacy should use `committedPrivate` or `predicateOnly`
 instead of carrying the raw value in the signed credential body.
 
-The generic VC envelope already supports all of these because `claims` is the
-family-defined `TClaims` type. The representation choice belongs to the family
-schema, not to the generic envelope.
+The generic VC envelope already supports all of these because `claims` and
+`claimCommitments` are family-defined type parameters. The representation choice
+belongs to the family schema, while the generic envelope makes the public versus
+commitment boundary visible to every family.

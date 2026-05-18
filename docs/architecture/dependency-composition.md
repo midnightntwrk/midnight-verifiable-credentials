@@ -70,7 +70,7 @@ Current note on status support:
 ```compact
 include "../../prototypes/credential-families/birth/src/birth-credential";
 
-import VC<BirthCredentialClaims, ExplicitHolderBinding, NoStatusBinding>;
+import VC<NoPublicClaims, BirthCredentialClaimCommitments, ExplicitHolderBinding, NoStatusBinding>;
 import VP<BirthCredentialDisclosures, ExplicitHolderBinding>;
 
 import Issue<
@@ -214,7 +214,7 @@ generic credential/presentation relation helper. Each family should instantiate
 the generic modules with its own prefix and then expose explicit family names:
 
 ```compact
-import VC<PassportClaims, BlindedSecretHolderBinding, NoStatusBinding>
+import VC<PassportPublicClaims, PassportClaimCommitments, BlindedSecretHolderBinding, NoStatusBinding>
   prefix Passport_;
 import VP<PassportDisclosures, BlindedSecretHolderBinding>
   prefix PassportPresentation_;

@@ -13,7 +13,7 @@ Purpose:
 
 Scope:
 
-- explicit-holder `VC<DummyClaims, ExplicitHolderBinding, NoStatusBinding>`
+- explicit-holder `VC<DummyClaims, NoClaimCommitments, ExplicitHolderBinding, NoStatusBinding>`
 - direct `selectivelyDisclosed` claims only; no privacy-preserving commitments
   in the claim body
 - top-level and nested selective-disclosure request/disclosure structs

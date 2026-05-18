@@ -13,7 +13,7 @@ Purpose:
 
 Scope:
 
-- explicit-holder `VC<HelloFamilyClaims, ExplicitHolderBinding, NoStatusBinding>`
+- explicit-holder `VC<HelloFamilyClaims, NoClaimCommitments, ExplicitHolderBinding, NoStatusBinding>`
 - direct typed claims, not privacy-preserving claim commitments
 - typed presentation request and simple disclosure gates
 - explicit-holder and offchain-DID starter holder-binding profiles

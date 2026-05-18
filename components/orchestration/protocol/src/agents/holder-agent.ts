@@ -188,7 +188,7 @@ export class HolderAgent {
       disclosed: {
         revealSubjectIdCommitment: request.requireSubjectIdCommitmentDisclosure,
         subjectIdCommitment: request.requireSubjectIdCommitmentDisclosure
-          ? credential.claims.subjectIdCommitment
+          ? credential.claimCommitments.subjectIdCommitment
           : new Uint8Array(32),
         revealBirthCountryCode: request.requireBirthCountryDisclosure,
         birthCountryCodePadded: request.requireBirthCountryDisclosure

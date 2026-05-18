@@ -1,6 +1,6 @@
 // Mixed-claims schema helpers and presentation validation.
 // This family is intentionally small: it shows how direct public claims and
-// committed private claims coexist without changing the generic VC envelope.
+// committed private claims coexist in the generic VC envelope.
 export pure circuit mixedClaimsCredentialBodyRoot(
   credential: MixedClaimsCredential
 ): Bytes<32> {
@@ -75,24 +75,24 @@ export pure circuit assertValidMixedClaimsPublicClaims(
 
 export pure circuit assertMatchingMixedClaimsPublicDisclosures(
   disclosed: MixedClaimsDisclosures,
-  claims: MixedClaimsCredentialClaims
+  claims: MixedClaimsPublicClaims
 ): [] {
   assert(
-    disclosed.publicClaims == claims.publicClaims,
+    disclosed.publicClaims == claims,
     "Mixed-claims public claims disclosure does not match the credential"
   );
 }
 
 export pure circuit assertMatchingMixedClaimsPrivateDisclosures(
   disclosed: MixedClaimsDisclosures,
-  claims: MixedClaimsCredentialClaims
+  claimCommitments: MixedClaimsClaimCommitments
 ): [] {
   // Hidden direct disclosure slots are bound into the presentation body root,
   // so inactive slots must remain canonical instead of carrying side-channel data.
   if (disclosed.revealSubjectId) {
     assert(
       mixedClaimsSubjectIdCommitment(disclosed.subjectId, disclosed.subjectIdOpening)
-        == claims.privateClaims.subjectIdCommitment,
+        == claimCommitments.subjectIdCommitment,
       "Mixed-claims subject-id disclosure does not open the credential commitment"
     );
   } else {
@@ -108,7 +108,7 @@ export pure circuit assertMatchingMixedClaimsPrivateDisclosures(
   if (disclosed.revealBirthDate) {
     assert(
       mixedClaimsBirthDateCommitment(disclosed.birthDateDays, disclosed.birthDateOpening)
-        == claims.privateClaims.birthDateCommitment,
+        == claimCommitments.birthDateCommitment,
       "Mixed-claims birth-date disclosure does not open the credential commitment"
     );
   } else {
@@ -124,14 +124,14 @@ export pure circuit assertMatchingMixedClaimsPrivateDisclosures(
 }
 
 export pure circuit assertValidMixedClaimsAccountTierPredicate(
-  claims: MixedClaimsCredentialClaims,
+  claimCommitments: MixedClaimsClaimCommitments,
   accountTierWitness: Uint<8>,
   accountTierOpening: Bytes<32>,
   minimumAccountTier: Uint<8>
 ): [] {
   assert(
     mixedClaimsAccountTierCommitment(accountTierWitness, accountTierOpening)
-      == claims.privateClaims.accountTierCommitment,
+      == claimCommitments.accountTierCommitment,
     "Mixed-claims account-tier witness does not open the credential commitment"
   );
   assert(
@@ -183,8 +183,11 @@ export pure circuit assertValidMixedClaimsCredential(
   proof: Proof
 ): [] {
   assertValidMixedClaimsSchemaRef(credential.schema);
-  assertValidMixedClaimsPublicClaims(credential.claims.publicClaims);
-  assertValidCredentialEnvelope(credential, mixedClaimsClaimRoot(credential.claims));
+  assertValidMixedClaimsPublicClaims(credential.claims);
+  assertValidCredentialEnvelope(
+    credential,
+    mixedClaimsClaimRoot(credential.claims, credential.claimCommitments)
+  );
   assertValidExplicitHolderBinding(credential.holderBinding);
   assertValidNoStatusBinding(credential.statusBinding);
   assertValidCredentialProof(credential, proof);
@@ -217,7 +220,10 @@ export pure circuit assertValidMixedClaimsPresentation(
     presentationProof
   );
   assertMatchingMixedClaimsPublicDisclosures(presentation.disclosed, credential.claims);
-  assertMatchingMixedClaimsPrivateDisclosures(presentation.disclosed, credential.claims);
+  assertMatchingMixedClaimsPrivateDisclosures(
+    presentation.disclosed,
+    credential.claimCommitments
+  );
 }
 
 // TRUST BOUNDARY: direct public claims are always visible to a verifier and any
@@ -270,7 +276,7 @@ export pure circuit assertMixedClaimsPresentationSatisfiesRequest(
   assertValidMixedClaimsPredicateFlags(presentation.disclosed, request);
   if (request.enforceMinimumAccountTier) {
     assertValidMixedClaimsAccountTierPredicate(
-      credential.claims,
+      credential.claimCommitments,
       accountTierWitness,
       accountTierOpening,
       request.minimumAccountTier

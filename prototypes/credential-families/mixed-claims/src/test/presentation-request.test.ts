@@ -32,9 +32,7 @@ const helpersSource = normalizeWhitespace(
 describe("mixed-claims presentation request", () => {
   it("mirrors public claims in the presentation disclosure surface", () => {
     expect(modelSource).toContain("publicClaims: MixedClaimsPublicClaims");
-    expect(helpersSource).toContain(
-      "disclosed.publicClaims == claims.publicClaims",
-    );
+    expect(helpersSource).toContain("disclosed.publicClaims == claims");
     expect(helpersSource).toContain(
       "Mixed-claims public claims disclosure does not match the credential",
     );

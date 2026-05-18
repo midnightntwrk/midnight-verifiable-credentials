@@ -13,7 +13,7 @@ Purpose:
 
 Scope:
 
-- explicit-holder `VC<UniversityDiplomaClaims, ExplicitHolderBinding, NoStatusBinding>`
+- explicit-holder `VC<UniversityDiplomaClaims, NoClaimCommitments, ExplicitHolderBinding, NoStatusBinding>`
 - non-revocable diploma credential
 - direct typed `selectivelyDisclosed` claims only; no hidden-holder or
   status-aware extensions
