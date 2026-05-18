@@ -88,6 +88,22 @@ Current recommendation:
 - treat nested vector-of-struct claims as prototype-only until a concrete use
   case proves they help more than they obscure
 
+## Claim Representation
+
+This family uses the
+[`claim-representation`](../../../docs/spec/claim-representation.md) taxonomy as
+a direct-claim laboratory:
+
+- supported primitive and nested fields in `HelloFamilyClaims` are
+  `selectivelyDisclosed` only when a presentation request explicitly gates and
+  mirrors them
+- fields not present in the disclosure/request surface are direct prototype
+  claims and should be treated as visible to any verifier that receives the
+  credential body
+- the family intentionally does not implement `committedPrivate` or
+  `predicateOnly` claims; use the birth and mixed-claims families for those
+  patterns
+
 ## Package structure
 
 - [`src/hello-family-credential.compact`](./src/hello-family-credential.compact)

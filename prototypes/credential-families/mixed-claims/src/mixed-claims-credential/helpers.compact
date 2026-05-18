@@ -87,6 +87,8 @@ export pure circuit assertMatchingMixedClaimsPrivateDisclosures(
   disclosed: MixedClaimsDisclosures,
   claims: MixedClaimsCredentialClaims
 ): [] {
+  // Hidden direct disclosure slots are bound into the presentation body root,
+  // so inactive slots must remain canonical instead of carrying side-channel data.
   if (disclosed.revealSubjectId) {
     assert(
       mixedClaimsSubjectIdCommitment(disclosed.subjectId, disclosed.subjectIdOpening)

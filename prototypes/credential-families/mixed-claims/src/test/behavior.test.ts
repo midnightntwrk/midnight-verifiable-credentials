@@ -334,6 +334,30 @@ describe("mixed-claims behavior", () => {
     ).not.toThrow();
   });
 
+  it("accepts a combined request that requires subject, birth-date, and tier evidence", () => {
+    const fixture = createFixture({ requireBirthDateDisclosure: true });
+
+    expect(() => assertFixtureSatisfiesRequest(fixture)).not.toThrow();
+  });
+
+  it("derives deterministic request body roots that are sensitive to request fields", () => {
+    const fixture = createFixture();
+    const root = pureCircuits.mixedClaimsPresentationRequestBodyRoot(
+      fixture.presentationRequest,
+    );
+    const sameRoot = pureCircuits.mixedClaimsPresentationRequestBodyRoot(
+      fixture.presentationRequest,
+    );
+    const changedRoot = pureCircuits.mixedClaimsPresentationRequestBodyRoot({
+      ...fixture.presentationRequest,
+      requireBirthDateDisclosure:
+        !fixture.presentationRequest.requireBirthDateDisclosure,
+    });
+
+    expect(root).toEqual(sameRoot);
+    expect(root).not.toEqual(changedRoot);
+  });
+
   it("rejects an account-tier predicate witness with the wrong opening", () => {
     const fixture = createFixture();
 

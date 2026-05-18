@@ -177,6 +177,22 @@ This package demonstrates the privacy-oriented branch of the design:
 - the holder proves control through a hidden secret witness
 - optional same-holder composition can be added without forcing every credential family to adopt it
 
+## Claim Representation
+
+This family uses the
+[`claim-representation`](../../../docs/spec/claim-representation.md) taxonomy as
+follows:
+
+- birth date, birth country, credential status, and holder-linkable data are
+  `committedPrivate` values represented as commitments in the signed credential
+  body
+- age-over-threshold checks are `predicateOnly` witness paths over the committed
+  birth-date value
+- verifier-scoped pseudonym and same-holder witnesses are hidden-holder
+  capability data, not public direct credential claims
+- no field in this family is intentionally modeled as an always-public direct
+  claim
+
 ## Build and test
 
 - Compile Compact artifacts: `npm run contract -w credentials-birth-secret`
