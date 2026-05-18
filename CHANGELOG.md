@@ -51,6 +51,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- BREAKING: credential-family Compact roots now instantiate
+  `VC<TPublicClaims, TClaimCommitments, THolderBinding, TStatusBinding>`.
+  `claims` is the signed public/direct claim surface, `claimCommitments` is the
+  signed commitment surface for private disclosure and predicate-only values,
+  commitment-only families use `NoPublicClaims`, and direct-only families use
+  `NoClaimCommitments`. Family authors should name commitment-only structs
+  `*ClaimCommitments`, update scaffold output through `--claim-mode`, and call
+  out generated Compact/runtime surface changes in migration notes.
 - BREAKING: the VC status model no longer carries runtime `epoch` and
   `StatusSupportLevel` fields. Freshness remains a verifier/application
   responsibility via the accepted `(registryId, revokedRoot)` pair.

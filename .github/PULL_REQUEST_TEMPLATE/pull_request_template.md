@@ -16,6 +16,19 @@
 - [ ] Update documentation (if relevant)
 - [ ] No new todos introduced
 
+## Surface-Change Checklist
+
+<!--
+Check these when the PR changes generated Compact/runtime surface, package
+exports, credential literals, DTOs, claim representation, or verifier request /
+response shape. Leave unchecked only when the PR is not a surface change.
+-->
+
+- [ ] Generated Compact/runtime surface reviewed for downstream literal/import impact
+- [ ] Changelog or migration notes updated for breaking surface changes
+- [ ] Claim representation documented when `claims` / `claimCommitments` shape changes
+- [ ] Specs, README, templates, and scaffold guidance updated when a reusable pattern changes
+
 ## Links
 
 <!--

@@ -10,7 +10,12 @@ Fastest repo-local path:
 
 ```bash
 npm run scaffold:family -- --slug example-family
+npm run scaffold:family -- --slug example-family --claim-mode public
+npm run scaffold:family -- --slug example-family --claim-mode commitment
+npm run scaffold:family -- --slug example-family --claim-mode mixed
 ```
+
+Supported claim modes: `--claim-mode public|commitment|mixed`.
 
 That generator now creates a thin-core family package skeleton under:
 
@@ -26,6 +31,12 @@ The generated package includes:
 
 It does not add the package to root workspaces automatically.
 
+Default scaffold behavior is commitment-only. Use `--claim-mode public` for
+direct-only public claims, `--claim-mode commitment` for private commitment-only
+claims, and `--claim-mode mixed` when the family needs both public metadata and
+private commitments. The generator maps those modes to `NoClaimCommitments`,
+`NoPublicClaims`, or two concrete family structs respectively.
+
 ## Current Compact claim-surface guardrails
 
 When filling in `claims.compact`, keep the current compiler surface in mind.
@@ -39,6 +50,14 @@ First choose the claim representation per field:
   only when requested
 - `predicateOnly` for committed values used through private witnesses and
   schema-specific predicates
+
+Then choose the generic VC shape:
+
+| Family representation | `claims` type | `claimCommitments` type |
+| --- | --- | --- |
+| public/direct-only | `<Family>PublicClaims` | `NoClaimCommitments` |
+| commitment-only | `NoPublicClaims` | `<Family>ClaimCommitments` |
+| mixed | `<Family>PublicClaims` | `<Family>ClaimCommitments` |
 
 Use [`../spec/claim-representation.md`](../spec/claim-representation.md) as the
 authority for mixed public/private families.
@@ -64,6 +83,9 @@ Design guidance:
 - use nested structs only when they encode a real domain grouping
 - treat nested vector-of-struct claims as deliberate prototype or
   domain-specific choices, not the default shared-family style
+- name commitment-only structs `*ClaimCommitments`, not `*Claims`
+- update the changelog, family README, and migration notes when a generated
+  Compact/runtime surface changes
 
 Best current references for claim-shape work:
 
@@ -73,6 +95,8 @@ Best current references for claim-shape work:
   - `prototypes/credential-families/dummy-claims`
 - mixed public-plus-private claim representation laboratory:
   - `prototypes/credential-families/mixed-claims`
+- surface-change release discipline:
+  - `docs/guides/vc-surface-change-discipline.md`
 
 ## Package shape
 
