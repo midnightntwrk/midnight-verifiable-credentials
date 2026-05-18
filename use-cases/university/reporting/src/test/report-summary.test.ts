@@ -177,6 +177,7 @@ describe("university artifact report summarizer", () => {
         {
           label: "Serenity directory",
           override: { serenityDirectory: path.join(tempRoot, "serenity") },
+          expectedError: /serenity/u,
         },
         {
           label: "protocol transcript export",
@@ -186,12 +187,14 @@ describe("university artifact report summarizer", () => {
               "missing-transcript.json",
             ),
           },
+          expectedError: /missing-transcript\.json/u,
         },
         {
           label: "stress summary",
           override: {
             stressSummaryPath: path.join(tempRoot, "missing-stress.json"),
           },
+          expectedError: /missing-stress\.json/u,
         },
         {
           label: "batch-sweep summary",
@@ -201,10 +204,11 @@ describe("university artifact report summarizer", () => {
               "missing-batch-sweep.json",
             ),
           },
+          expectedError: /missing-batch-sweep\.json/u,
         },
       ];
 
-      for (const { label, override } of missingPathCases) {
+      for (const { label, override, expectedError } of missingPathCases) {
         expect(
           () =>
             buildUniversityArtifactSummary({
@@ -212,7 +216,7 @@ describe("university artifact report summarizer", () => {
               ...override,
             }),
           label,
-        ).toThrow();
+        ).toThrow(expectedError);
       }
     } finally {
       rmSync(tempRoot, { recursive: true, force: true });

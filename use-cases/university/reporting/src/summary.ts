@@ -307,7 +307,10 @@ const hashBuffer = (buffer: Uint8Array): string =>
 const portableArtifactPath = (
   artifactPath: string,
   artifactBaseDirectory: string,
-): string => path.relative(artifactBaseDirectory, artifactPath) || ".";
+): string =>
+  (path.relative(artifactBaseDirectory, artifactPath) || ".")
+    .split(path.sep)
+    .join("/");
 
 const buildFileArtifactManifestEntry = ({
   artifactId,
