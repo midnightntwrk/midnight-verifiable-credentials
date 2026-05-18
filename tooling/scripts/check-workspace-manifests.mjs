@@ -42,6 +42,8 @@ const assertArrayIncludes = (array, expected, label) => {
   }
 };
 
+const isRecord = (value) => value && typeof value === "object" && !Array.isArray(value);
+
 const hasCompactSources = (workspace) => {
   const srcRoot = path.join(repoRoot, workspace, "src");
   if (!existsSync(srcRoot)) {
@@ -65,6 +67,52 @@ const hasCompactSources = (workspace) => {
   return false;
 };
 
+const assertDistExportLeaf = (value, label) => {
+  assert(typeof value === "string", `${label} must be a string`);
+  if (typeof value !== "string") {
+    return;
+  }
+
+  assert(value.startsWith("./dist/"), `${label} must point at ./dist/`);
+};
+
+const assertDistExportMap = (value, label) => {
+  if (typeof value === "string") {
+    assertDistExportLeaf(value, label);
+    return;
+  }
+
+  assert(isRecord(value), `${label} must be a string or object export`);
+  if (!isRecord(value)) {
+    return;
+  }
+
+  for (const [key, nestedValue] of Object.entries(value)) {
+    assertDistExportMap(nestedValue, `${label}.${key}`);
+  }
+};
+
+const assertTypesVersionsDistPaths = (value, label) => {
+  if (Array.isArray(value)) {
+    for (const [index, entry] of value.entries()) {
+      assert(typeof entry === "string", `${label}[${index}] must be a string`);
+      if (typeof entry === "string") {
+        assert(entry.startsWith("dist/"), `${label}[${index}] must point at dist/`);
+      }
+    }
+    return;
+  }
+
+  assert(isRecord(value), `${label} must be an object or string array`);
+  if (!isRecord(value)) {
+    return;
+  }
+
+  for (const [key, nestedValue] of Object.entries(value)) {
+    assertTypesVersionsDistPaths(nestedValue, `${label}.${key}`);
+  }
+};
+
 const assertNoPublicEntrypoint = (packageJson, workspace) => {
   for (const field of ["main", "module", "types", "exports", "files"]) {
     assert(
@@ -77,11 +125,11 @@ const assertNoPublicEntrypoint = (packageJson, workspace) => {
 const assertRootExport = (packageJson, workspace) => {
   const rootExport = packageJson.exports?.["."];
   assert(
-    rootExport && typeof rootExport === "object" && !Array.isArray(rootExport),
+    isRecord(rootExport),
     `${workspace} must define exports["."]`,
   );
 
-  if (!rootExport || typeof rootExport !== "object" || Array.isArray(rootExport)) {
+  if (!isRecord(rootExport)) {
     return;
   }
 
@@ -93,6 +141,20 @@ const assertRootExport = (packageJson, workspace) => {
   }
 };
 
+const assertDistEntrypoints = (packageJson, workspace) => {
+  assertRootExport(packageJson, workspace);
+  assert(isRecord(packageJson.exports), `${workspace} exports must be an object`);
+  if (isRecord(packageJson.exports)) {
+    for (const [subpath, exportValue] of Object.entries(packageJson.exports)) {
+      assertDistExportMap(exportValue, `${workspace} exports[${JSON.stringify(subpath)}]`);
+    }
+  }
+
+  if (packageJson.typesVersions !== undefined) {
+    assertTypesVersionsDistPaths(packageJson.typesVersions, `${workspace} typesVersions`);
+  }
+};
+
 const assertDistPackage = (packageJson, workspace) => {
   assert(packageJson.license === "Apache-2.0", `${workspace} must declare Apache-2.0 license`);
   assert(packageJson.private === true, `${workspace} must remain private until publish policy changes`);
@@ -100,7 +162,7 @@ const assertDistPackage = (packageJson, workspace) => {
   assert(packageJson.main === "dist/index.js", `${workspace} main must be dist/index.js`);
   assert(packageJson.module === "dist/index.js", `${workspace} module must be dist/index.js`);
   assert(packageJson.types === "./dist/index.d.ts", `${workspace} types must be ./dist/index.d.ts`);
-  assertRootExport(packageJson, workspace);
+  assertDistEntrypoints(packageJson, workspace);
 
   for (const fileEntry of requiredDistFiles) {
     assertArrayIncludes(packageJson.files, fileEntry, `${workspace} files`);

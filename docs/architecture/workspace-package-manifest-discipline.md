@@ -25,6 +25,8 @@ Dist packages must expose:
 - `module: "dist/index.js"`
 - `types: "./dist/index.d.ts"`
 - `exports["."]` with `types`, `import`, and `default`
+- any `exports` subpath condition points at `./dist/**`
+- any `typesVersions` path points at `dist/**`
 - `files` containing:
   - `dist/**`
   - `README.md`
@@ -52,6 +54,10 @@ BDD scenario packages are executable harnesses, not library surfaces. They must:
 is a local integration harness over vendored DID tarballs and Testcontainers. It
 must stay private and declare its source files explicitly rather than pretending
 to be a dist package.
+
+The `main: "src/index.ts"` entrypoint is valid only because this package is
+private and consumed through npm workspaces. Do not copy that pattern into a
+dist package or published package surface.
 
 ## Guard
 
