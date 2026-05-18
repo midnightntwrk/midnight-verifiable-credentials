@@ -263,6 +263,23 @@ That gives us these benefits:
 - the verifier can check integrity without seeing every value
 - later predicates can be proven from committed values
 
+This is the birth-credential choice, not a generic VC limitation. The generic
+`VC<TPublicClaims, TClaimCommitments, ...>` envelope separates raw/direct claims
+from commitment digests. A family can use:
+
+- direct public claims when simplicity and interoperability matter more than
+  minimization
+- direct selectively disclosed claims when the prototype can tolerate raw values
+  in the credential body but still wants request gates
+- committed private claims when values should not be cleartext in the credential
+  body
+- predicate-only commitments when a verifier needs a yes/no or threshold result
+  rather than the raw value
+
+The mixed reference package is
+`prototypes/credential-families/mixed-claims`: it puts low-sensitivity metadata
+in `claims` and keeps identity/date/tier values in `claimCommitments`.
+
 ### Conceptual Diagram
 
 ```mermaid
@@ -361,8 +378,8 @@ const birthDateCommitment = pureCircuits.birthDateCommitment(
 
 const credential = {
   ...,
-  claims: {
-    ...,
+  claims: {},
+  claimCommitments: {
     birthDateCommitment,
   },
 };

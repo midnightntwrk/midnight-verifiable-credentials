@@ -129,7 +129,7 @@ Credential family package:
 
 Credential shape:
 
-- `VC<UniversityDiplomaClaims, ExplicitHolderBinding, NoStatusBinding>`
+- `VC<UniversityDiplomaClaims, NoClaimCommitments, ExplicitHolderBinding, NoStatusBinding>`
 
 Key schema fields:
 

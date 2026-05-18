@@ -31,6 +31,7 @@ prototypes/credential-families/birth
 prototypes/credential-families/birth-secret
 prototypes/credential-families/hello-family
 prototypes/credential-families/dummy-claims
+prototypes/credential-families/mixed-claims
 prototypes/credential-families/university-diploma
 EOF
       ;;
@@ -46,6 +47,7 @@ prototypes/credential-families/birth
 prototypes/credential-families/birth-secret
 prototypes/credential-families/hello-family
 prototypes/credential-families/dummy-claims
+prototypes/credential-families/mixed-claims
 prototypes/credential-families/university-diploma
 use-cases/age-gate/contract
 use-cases/hello-verifier/contract
@@ -100,6 +102,8 @@ prototypes/credential-families/hello-family/src/managed
 prototypes/credential-families/hello-family/dist
 prototypes/credential-families/dummy-claims/src/managed
 prototypes/credential-families/dummy-claims/dist
+prototypes/credential-families/mixed-claims/src/managed
+prototypes/credential-families/mixed-claims/dist
 prototypes/credential-families/university-diploma/src/managed
 prototypes/credential-families/university-diploma/dist
 EOF

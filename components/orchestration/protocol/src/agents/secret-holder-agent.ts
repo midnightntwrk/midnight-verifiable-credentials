@@ -504,7 +504,7 @@ export class SecretHolderAgent {
         revealSubjectIdCommitment:
           request.body.requireSubjectIdCommitmentDisclosure,
         subjectIdCommitment: request.body.requireSubjectIdCommitmentDisclosure
-          ? credential.claims.subjectIdCommitment
+          ? credential.claimCommitments.subjectIdCommitment
           : new Uint8Array(32),
         revealBirthCountryCode: request.body.requireBirthCountryDisclosure,
         birthCountryCodePadded: request.body.requireBirthCountryDisclosure

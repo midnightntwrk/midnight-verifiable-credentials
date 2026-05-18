@@ -30,6 +30,19 @@ It does not add the package to root workspaces automatically.
 
 When filling in `claims.compact`, keep the current compiler surface in mind.
 
+First choose the claim representation per field:
+
+- `public` for direct values that may be visible anywhere the credential body
+  travels
+- `selectivelyDisclosed` for direct values disclosed through request gates
+- `committedPrivate` for private values represented by commitments and opened
+  only when requested
+- `predicateOnly` for committed values used through private witnesses and
+  schema-specific predicates
+
+Use [`../spec/claim-representation.md`](../spec/claim-representation.md) as the
+authority for mixed public/private families.
+
 Use native direct claim fields from:
 
 - `Boolean`
@@ -58,6 +71,8 @@ Best current references for claim-shape work:
   - `prototypes/credential-families/hello-family`
 - broad direct claim-surface laboratory:
   - `prototypes/credential-families/dummy-claims`
+- mixed public-plus-private claim representation laboratory:
+  - `prototypes/credential-families/mixed-claims`
 
 ## Package shape
 
@@ -100,10 +115,11 @@ include "../../../core/primitives/credentials/src/credentials";
 include "./example-family-credential/claims";
 include "./example-family-credential/model";
 
-import VC<ExampleFamilyCredentialClaims, ExplicitHolderBinding, NoStatusBinding>;
+import VC<ExampleFamilyPublicClaims, ExampleFamilyClaimCommitments, ExplicitHolderBinding, NoStatusBinding>;
 import VP<ExampleFamilyDisclosures, ExplicitHolderBinding>;
 import CredentialPresentationRelations<
-  ExampleFamilyCredentialClaims,
+  ExampleFamilyPublicClaims,
+  ExampleFamilyClaimCommitments,
   ExampleFamilyDisclosures,
   ExplicitHolderBinding,
   NoStatusBinding

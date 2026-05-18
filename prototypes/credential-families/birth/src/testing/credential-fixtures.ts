@@ -199,7 +199,7 @@ const buildBirthCredentialFixture = (
     currentDay: 3650n + 365n * 25n,
   };
 
-  const claims = {
+  const claimCommitments = {
     subjectIdCommitment: pureCircuits.subjectIdCommitment(
       witness.subjectId,
       witness.subjectOpening,
@@ -234,8 +234,9 @@ const buildBirthCredentialFixture = (
     issuedAt: 10_000n,
     hasExpiration: true,
     expiresAt: 20_000n,
-    claims,
-    claimRoot: pureCircuits.birthCredentialClaimRoot(claims),
+    claims: {},
+    claimCommitments,
+    claimRoot: pureCircuits.birthCredentialClaimRoot(claimCommitments),
   };
 
   const credentialProof = signProof({

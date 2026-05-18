@@ -8,7 +8,7 @@ export pure circuit assertValidSecretBirthCredentialWithStatusBinding(
   assertValidSecretBirthSchemaRef(credentialWithStatus.credential.schema);
   SecretBirthStatus_assertValidCredentialEnvelope(
     credentialWithStatus.credential,
-    birthCredentialClaimRoot(credentialWithStatus.credential.claims)
+    birthCredentialClaimRoot(credentialWithStatus.credential.claimCommitments)
   );
   assertValidRegistryBoundStatusBinding(
     credentialWithStatus.credential.statusBinding

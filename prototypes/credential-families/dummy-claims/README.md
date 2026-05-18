@@ -13,8 +13,9 @@ Purpose:
 
 Scope:
 
-- explicit-holder `VC<DummyClaims, ExplicitHolderBinding, NoStatusBinding>`
-- direct claims only; no privacy-preserving commitments in the claim body
+- explicit-holder `VC<DummyClaims, NoClaimCommitments, ExplicitHolderBinding, NoStatusBinding>`
+- direct `selectivelyDisclosed` claims only; no privacy-preserving commitments
+  in the claim body
 - top-level and nested selective-disclosure request/disclosure structs
 - no status/revocation semantics
 - no offchain-DID or starter-verifier concerns
@@ -52,6 +53,9 @@ Selective disclosure model:
 Design note:
 
 - nested claims compile, but the package treats them as a deliberate prototype choice rather than the default shared-family recommendation
+- this package is a direct-claim laboratory, not a privacy template; use
+  [`../mixed-claims`](../mixed-claims) when the family needs public claims plus
+  private commitments in one claim body
 - use `hello-family` for the smallest starter flow
 - use this package when you need the widest direct typed claim surface in one place
 

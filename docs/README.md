@@ -8,6 +8,10 @@
 - profiles:
   - [`spec/profiles.md`](./spec/profiles.md)
   - for readers who need the current holder-binding/profile taxonomy
+- claim representation:
+  - [`spec/claim-representation.md`](./spec/claim-representation.md)
+  - for readers deciding when a claim should be public/direct,
+    selectively disclosed, committed-private, or predicate-only
 - conformance:
   - [`spec/conformance.md`](./spec/conformance.md)
   - for readers defining implementation or review criteria
@@ -84,6 +88,9 @@
 - broad direct claim-surface laboratory:
   - [`../prototypes/credential-families/dummy-claims/README.md`](../prototypes/credential-families/dummy-claims/README.md)
   - for engineers who need the widest currently supported direct Compact claim surface in one family package
+- mixed public/private claim-representation laboratory:
+  - [`../prototypes/credential-families/mixed-claims/README.md`](../prototypes/credential-families/mixed-claims/README.md)
+  - for engineers who need explicit public claims plus committed private claims in one family package
 - academic diploma family prototype:
   - [`../prototypes/credential-families/university-diploma/README.md`](../prototypes/credential-families/university-diploma/README.md)
   - for engineers who need a larger explicit-holder family with non-revocable issuance and verifier-side grade policies

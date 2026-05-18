@@ -8,6 +8,7 @@ draft specification at the package/profile level.
 Companion document:
 
 - [`midnight-credentials.md`](./midnight-credentials.md)
+- [`claim-representation.md`](./claim-representation.md)
 - [`credential-status.md`](./credential-status.md)
 - [`status-error-taxonomy.md`](./status-error-taxonomy.md)
 - [`revocation-registry.md`](./revocation-registry.md)
@@ -42,6 +43,8 @@ A credential family implementation conforms when it:
 - computes claim roots deterministically
 - validates schema-specific credential and presentation bodies
 - states which holder-binding profiles it supports
+- documents each claim field's representation category from
+  [`claim-representation.md`](./claim-representation.md)
 - documents whether the claim layout is flat or nested
 - if nested claims are used, documents the intended disclosure granularity and
   whether nested vectors are exposed directly or only through aggregate fields
@@ -52,6 +55,7 @@ Reference implementations:
 - [`../../prototypes/credential-families/birth-secret/README.md`](../../prototypes/credential-families/birth-secret/README.md)
 - [`../../prototypes/credential-families/hello-family/README.md`](../../prototypes/credential-families/hello-family/README.md)
 - [`../../prototypes/credential-families/dummy-claims/README.md`](../../prototypes/credential-families/dummy-claims/README.md)
+- [`../../prototypes/credential-families/mixed-claims/README.md`](../../prototypes/credential-families/mixed-claims/README.md)
 - [`../../prototypes/credential-families/university-diploma/README.md`](../../prototypes/credential-families/university-diploma/README.md)
 
 Current direct Compact claim-surface rule:

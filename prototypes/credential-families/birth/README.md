@@ -62,6 +62,18 @@ It owns the schema-specific parts that should not live in the generic core:
 - birth-country disclosure binding
 - age-over-threshold predicate validation
 
+Claim representation:
+
+- all source facts in `BirthCredentialClaimCommitments` are `committedPrivate` or
+  `predicateOnly`
+- raw birth values are not direct claims in the signed credential body
+- the generic VC uses `claims: NoPublicClaims {}` and stores only
+  `claimCommitments`
+- disclosures and predicates must open back to the signed commitments before a
+  verifier uses them
+- compare [`../../../docs/spec/claim-representation.md`](../../../docs/spec/claim-representation.md)
+  for the repository-wide taxonomy
+
 ## Relationship to the generic core
 
 The generic package owns:
@@ -75,7 +87,7 @@ The generic package owns:
 
 This package owns:
 
-- `BirthCredentialClaims`
+- `BirthCredentialClaimCommitments`
 - `BirthCredentialDisclosures`
 - `BirthCredentialPresentationRequest`
 - `BirthCredential`

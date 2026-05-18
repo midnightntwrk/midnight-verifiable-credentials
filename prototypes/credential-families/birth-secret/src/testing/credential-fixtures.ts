@@ -236,7 +236,7 @@ export const createSecretBirthCredentialFixture = (
     statusRegistryVersion: options.statusRegistryVersion ?? 1n,
   };
 
-  const claims = {
+  const claimCommitments = {
     subjectIdCommitment: pureCircuits.subjectIdCommitment(
       witness.subjectId,
       witness.subjectOpening,
@@ -282,8 +282,9 @@ export const createSecretBirthCredentialFixture = (
     issuedAt: 10_000n,
     hasExpiration: true,
     expiresAt: 20_000n,
-    claims,
-    claimRoot: pureCircuits.birthCredentialClaimRoot(claims),
+    claims: {},
+    claimCommitments,
+    claimRoot: pureCircuits.birthCredentialClaimRoot(claimCommitments),
   };
 
   const credentialProof = signProof({

@@ -61,7 +61,7 @@ It owns the generic pieces that should be shared across many credential families
 - `SecretHolderBinding`
 - `Proof`
 - generic credential envelope types through
-  `VC<TClaims, THolderBinding, TStatusBinding>`
+  `VC<TPublicClaims, TClaimCommitments, THolderBinding, TStatusBinding>`
 - generic presentation envelope types through `VP<TDisclosures, THolderBinding>`
 - generic issuance protocol envelopes through
   `Issue<TOfferBody, TRequestBody, TResultBody>`
@@ -145,7 +145,7 @@ Those belong in specialization packages such as:
 
 The reusable Compact modules are:
 
-- `VC<TClaims, THolderBinding, TStatusBinding>`
+- `VC<TPublicClaims, TClaimCommitments, THolderBinding, TStatusBinding>`
 - `VP<TDisclosures, THolderBinding>`
 - `Issue<TOfferBody, TRequestBody, TResultBody>`
 - `Present<TRequestBody, TSubmissionBody, TResultBody>`
@@ -155,6 +155,8 @@ The VC and VP layers are intentionally separate.
 `VC<>` owns:
 
 - credential envelope state
+- direct/public claim carriage through `claims: TPublicClaims`
+- private commitment carriage through `claimCommitments: TClaimCommitments`
 - claim-root consistency
 - status-binding carriage
 - issuer proof binding
@@ -170,11 +172,12 @@ linkage does not force one fused generic type.
 
 A specialization package provides:
 
-- a concrete `TClaims` struct
+- a concrete `TPublicClaims` struct, or `NoPublicClaims`
+- a concrete `TClaimCommitments` struct, or `NoClaimCommitments`
 - a concrete `TDisclosures` struct
 - a concrete `THolderBinding` struct
 - a concrete `TStatusBinding` struct
-- a claim-root helper for that claim set
+- a claim-root helper for the direct-claim and commitment sets
 - schema-specific validators
 - disclosure validators
 - any family-specific predicate circuits

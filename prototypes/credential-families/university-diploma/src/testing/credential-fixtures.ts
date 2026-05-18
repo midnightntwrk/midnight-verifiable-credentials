@@ -324,6 +324,7 @@ export const createUniversityDiplomaFixture = ({
     hasExpiration: false,
     expiresAt: 0n,
     claims,
+    claimCommitments: {},
     claimRoot: pureCircuits.universityDiplomaClaimRoot(claims),
   };
 

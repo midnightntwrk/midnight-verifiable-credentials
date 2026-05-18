@@ -313,7 +313,7 @@ Design principles:
 ### Birth Credential (existing)
 
 ```compact
-export struct BirthCredentialClaims {
+export struct BirthCredentialClaimCommitments {
   subjectIdCommitment: Bytes<32>
   legalNameCommitment: Bytes<32>
   birthDateCommitment: Bytes<32>           // Uint<32> days since epoch

@@ -55,14 +55,14 @@ Current file:
 - [`../../core/primitives/credentials/src/credentials/vc.compact`](../../core/primitives/credentials/src/credentials/vc.compact)
 
 Current state:
-- `module VC<TClaims, TDisclosures, THolderBinding>` defines both:
-  - `Credential`
-  - `Presentation`
-- the same module also owns generic presentation envelope validation
+- `module VC<TPublicClaims, TClaimCommitments, THolderBinding, TStatusBinding>`
+  defines `Credential`
+- `module VP<TDisclosures, THolderBinding>` defines `Presentation`
+- generic presentation envelope validation lives in the VP module
 
 Problem:
 - credentials and presentations are different semantic objects
-- `TClaims` and `TDisclosures` belong to different layers
+- `TPublicClaims`, `TClaimCommitments`, and `TDisclosures` belong to different layers
 - the current shape makes the core harder to reason about and discourages clean composition
 
 ### 2. Generic protocol templates still carry status-capability semantics
@@ -123,7 +123,7 @@ The final prototype core should expose four thin generic templates and one share
 Conceptual shape:
 
 ```compact
-module VC<TClaims, THolderBinding, TStatusBinding> {
+module VC<TPublicClaims, TClaimCommitments, THolderBinding, TStatusBinding> {
   export struct Credential {
     version: Uint<16>,
     schema: SchemaRef,
@@ -133,7 +133,8 @@ module VC<TClaims, THolderBinding, TStatusBinding> {
     issuedAt: Uint<64>,
     hasExpiration: Boolean,
     expiresAt: Uint<64>,
-    claims: TClaims,
+    claims: TPublicClaims,
+    claimCommitments: TClaimCommitments,
     claimRoot: Bytes<32>,
   }
 }
@@ -263,7 +264,7 @@ Target files:
 - shared refs and proof structs only
 
 2. `vc.compact`
-- thin `VC<TClaims, THolderBinding, TStatusBinding>`
+- thin `VC<TPublicClaims, TClaimCommitments, THolderBinding, TStatusBinding>`
 
 3. `vp.compact`
 - thin `VP<TDisclosures, THolderBinding>`
@@ -307,9 +308,10 @@ Acceptance criteria:
 `refactor(core): replace fused VC with thin VC and VP templates`
 
 Scope:
-- rewrite `vc.compact` around `VC<TClaims, THolderBinding, TStatusBinding>`
+- rewrite `vc.compact` around `VC<TPublicClaims, TClaimCommitments, THolderBinding, TStatusBinding>`
 - add `vp.compact`
 - remove the old fused `VC<TClaims, TDisclosures, THolderBinding>` model
+  in favor of separate VC/VP templates and explicit claim-commitment carriage
 
 Acceptance criteria:
 - generic credential and presentation data models are separated cleanly
@@ -404,7 +406,7 @@ Not part of the current landed cut:
 
 The next implementation slice should start with the first remaining bridge:
 - make the status-aware hidden-holder credential itself native to
-  `VC<BirthCredentialClaims, BlindedSecretHolderBinding, RegistryBoundStatusBinding>`
+  `VC<NoPublicClaims, BirthCredentialClaimCommitments, BlindedSecretHolderBinding, RegistryBoundStatusBinding>`
   instead of carrying `RegistryBoundStatusBinding` in an outer wrapper field
 
 ## Circuit-complexity guardrail

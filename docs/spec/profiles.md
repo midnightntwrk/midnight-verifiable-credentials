@@ -8,6 +8,7 @@ verification profiles.
 It is companion material to:
 
 - [`midnight-credentials.md`](./midnight-credentials.md)
+- [`claim-representation.md`](./claim-representation.md)
 - [`credential-status.md`](./credential-status.md)
 - [`revocation-registry.md`](./revocation-registry.md)
 

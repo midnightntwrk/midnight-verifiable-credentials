@@ -93,7 +93,8 @@ export pure circuit secretBirthCredentialWithoutStatusBinding(
     issuedAt: credential.issuedAt,
     hasExpiration: credential.hasExpiration,
     expiresAt: credential.expiresAt,
-    claims: credential.claims,
+    claims: NoPublicClaims {},
+    claimCommitments: credential.claimCommitments,
     claimRoot: credential.claimRoot,
   };
 }

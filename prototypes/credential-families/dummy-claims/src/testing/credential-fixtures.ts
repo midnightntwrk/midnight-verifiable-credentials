@@ -214,6 +214,7 @@ export const createDummyClaimsFixture = ({
     hasExpiration: false,
     expiresAt: 0n,
     claims,
+    claimCommitments: {},
     claimRoot: pureCircuits.dummyClaimsRoot(claims),
   };
 
