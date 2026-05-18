@@ -37,6 +37,8 @@ type FixtureOptions = {
   readonly leakHiddenSubjectId?: boolean;
   readonly requireSubjectIdDisclosure?: boolean;
   readonly requireBirthDateDisclosure?: boolean;
+  readonly revealBirthDate?: boolean;
+  readonly leakHiddenBirthDate?: boolean;
   readonly enforceMinimumAccountTier?: boolean;
   readonly proveAccountTierAtLeast?: boolean;
   readonly accountTier?: bigint;
@@ -53,6 +55,16 @@ type MixedClaimsFixture = {
     readonly accountTier: bigint;
     readonly accountTierOpening: Uint8Array;
   };
+};
+
+type SatisfiesRequestOverrides = {
+  readonly credential?: MixedClaimsCredential;
+  readonly credentialProof?: Proof;
+  readonly request?: MixedClaimsPresentationRequest;
+  readonly presentation?: MixedClaimsPresentation;
+  readonly presentationProof?: Proof;
+  readonly accountTier?: bigint;
+  readonly accountTierOpening?: Uint8Array;
 };
 
 const sha256 = (value: string): Uint8Array =>
@@ -143,6 +155,8 @@ const createFixture = ({
   leakHiddenSubjectId = false,
   requireSubjectIdDisclosure = true,
   requireBirthDateDisclosure = false,
+  revealBirthDate = requireBirthDateDisclosure,
+  leakHiddenBirthDate = false,
   enforceMinimumAccountTier = true,
   proveAccountTierAtLeast = enforceMinimumAccountTier,
   accountTier = 3n,
@@ -226,11 +240,10 @@ const createFixture = ({
       subjectId:
         revealSubjectId || leakHiddenSubjectId ? subjectId : new Uint8Array(32),
       subjectIdOpening: revealSubjectId ? subjectIdOpening : new Uint8Array(32),
-      revealBirthDate: requireBirthDateDisclosure,
-      birthDateDays: requireBirthDateDisclosure ? birthDateDays : 0n,
-      birthDateOpening: requireBirthDateDisclosure
-        ? birthDateOpening
-        : new Uint8Array(32),
+      revealBirthDate,
+      birthDateDays:
+        revealBirthDate || leakHiddenBirthDate ? birthDateDays : 0n,
+      birthDateOpening: revealBirthDate ? birthDateOpening : new Uint8Array(32),
       proveAccountTierAtLeast,
     },
   };
@@ -254,6 +267,55 @@ const createFixture = ({
     },
   };
 };
+
+const signPresentation = (
+  presentation: MixedClaimsPresentation,
+  verifierChallengeHash: Uint8Array,
+): Proof =>
+  signProof({
+    bodyRoot: pureCircuits.mixedClaimsPresentationBodyRoot(presentation),
+    context: "presentation",
+    signer: createSigner("mixed-claims-holder", 54545454n),
+    createdAt: 50_002n,
+    challengeHash: verifierChallengeHash,
+  });
+
+const updateDisclosures = (
+  fixture: MixedClaimsFixture,
+  disclosures: Partial<MixedClaimsPresentation["disclosed"]>,
+): {
+  readonly presentation: MixedClaimsPresentation;
+  readonly presentationProof: Proof;
+} => {
+  const presentation: MixedClaimsPresentation = {
+    ...fixture.presentation,
+    disclosed: {
+      ...fixture.presentation.disclosed,
+      ...disclosures,
+    },
+  };
+  return {
+    presentation,
+    presentationProof: signPresentation(
+      presentation,
+      fixture.presentationRequest.verifierChallengeHash,
+    ),
+  };
+};
+
+const assertFixtureSatisfiesRequest = (
+  fixture: MixedClaimsFixture,
+  overrides: SatisfiesRequestOverrides = {},
+): [] =>
+  pureCircuits.assertMixedClaimsPresentationSatisfiesRequest(
+    overrides.credential ?? fixture.credential,
+    overrides.credentialProof ?? fixture.credentialProof,
+    overrides.request ?? fixture.presentationRequest,
+    overrides.presentation ?? fixture.presentation,
+    overrides.presentationProof ?? fixture.presentationProof,
+    overrides.accountTier ?? fixture.witness.accountTier,
+    overrides.accountTierOpening ?? fixture.witness.accountTierOpening,
+  );
 
 describe("mixed-claims behavior", () => {
   it("accepts public claims, subject disclosure, and a hidden account-tier predicate witness", () => {
@@ -337,5 +399,192 @@ describe("mixed-claims behavior", () => {
         fixture.witness.accountTierOpening,
       ),
     ).toThrow(/Mixed-claims inactive account-tier witness must be zero/);
+  });
+
+  it("rejects public claim mirrors that do not match the signed credential", () => {
+    const fixture = createFixture();
+    const { presentation, presentationProof } = updateDisclosures(fixture, {
+      publicClaims: {
+        ...fixture.presentation.disclosed.publicClaims,
+        assuranceLevel: 3n,
+      },
+    });
+
+    expect(() =>
+      assertFixtureSatisfiesRequest(fixture, {
+        presentation,
+        presentationProof,
+      }),
+    ).toThrow(
+      /Mixed-claims public claims disclosure does not match the credential/,
+    );
+  });
+
+  it("rejects disclosed birth-date values with the wrong opening", () => {
+    const fixture = createFixture({ requireBirthDateDisclosure: true });
+    const { presentation, presentationProof } = updateDisclosures(fixture, {
+      birthDateOpening: new Uint8Array(32).fill(9),
+    });
+
+    expect(() =>
+      assertFixtureSatisfiesRequest(fixture, {
+        presentation,
+        presentationProof,
+      }),
+    ).toThrow(
+      /Mixed-claims birth-date disclosure does not open the credential commitment/,
+    );
+  });
+
+  it("rejects hidden birth-date slots that carry non-canonical data", () => {
+    const fixture = createFixture({ leakHiddenBirthDate: true });
+
+    expect(() =>
+      pureCircuits.assertValidMixedClaimsPresentation(
+        fixture.credential,
+        fixture.credentialProof,
+        fixture.presentation,
+        fixture.presentationProof,
+      ),
+    ).toThrow(/Mixed-claims hidden birth-date disclosure slot must be zero/);
+  });
+
+  it("rejects predicate flags when the verifier did not request a tier proof", () => {
+    const fixture = createFixture({
+      enforceMinimumAccountTier: false,
+      proveAccountTierAtLeast: true,
+    });
+
+    expect(() =>
+      assertFixtureSatisfiesRequest(fixture, {
+        accountTier: 0n,
+        accountTierOpening: new Uint8Array(32),
+      }),
+    ).toThrow(
+      /Mixed-claims account-tier predicate flag must be false unless requested/,
+    );
+  });
+
+  it("rejects missing predicate flags when the verifier requires a tier proof", () => {
+    const fixture = createFixture({
+      enforceMinimumAccountTier: true,
+      proveAccountTierAtLeast: false,
+    });
+
+    expect(() => assertFixtureSatisfiesRequest(fixture)).toThrow(
+      /Mixed-claims request requires account-tier witness/,
+    );
+  });
+
+  it("rejects malformed presentation requests", () => {
+    const fixture = createFixture();
+    const requests: Array<{
+      readonly request: MixedClaimsPresentationRequest;
+      readonly expectedError: RegExp;
+    }> = [
+      {
+        request: {
+          ...fixture.presentationRequest,
+          verifierChallengeHash: new Uint8Array(32),
+        },
+        expectedError: /Mixed-claims verifier challenge must be set/,
+      },
+      {
+        request: {
+          ...fixture.presentationRequest,
+          enforceMinimumAccountTier: true,
+          minimumAccountTier: 0n,
+        },
+        expectedError: /Mixed-claims minimum account tier must be positive/,
+      },
+      {
+        request: {
+          ...fixture.presentationRequest,
+          enforceMinimumAccountTier: false,
+          minimumAccountTier: 1n,
+        },
+        expectedError:
+          /Mixed-claims minimum account tier must be zero when the predicate is disabled/,
+      },
+    ];
+
+    for (const { request, expectedError } of requests) {
+      expect(() =>
+        pureCircuits.assertValidMixedClaimsPresentationRequest(request),
+      ).toThrow(expectedError);
+    }
+  });
+
+  it("rejects request and credential schema mismatches", () => {
+    const fixture = createFixture();
+    const request: MixedClaimsPresentationRequest = {
+      ...fixture.presentationRequest,
+      schema: {
+        ...fixture.presentationRequest.schema,
+        minorVersion: 1n,
+      },
+    };
+
+    expect(() => assertFixtureSatisfiesRequest(fixture, { request })).toThrow(
+      /Schema reference mismatch/,
+    );
+  });
+
+  it("rejects request issuer verification-method mismatches", () => {
+    const fixture = createFixture();
+    const wrongContractRequest: MixedClaimsPresentationRequest = {
+      ...fixture.presentationRequest,
+      issuerVerificationMethodRef: {
+        ...fixture.presentationRequest.issuerVerificationMethodRef,
+        didContractAddress: contractAddress("wrong-issuer"),
+      },
+    };
+    const wrongMethodRequest: MixedClaimsPresentationRequest = {
+      ...fixture.presentationRequest,
+      issuerVerificationMethodRef: {
+        ...fixture.presentationRequest.issuerVerificationMethodRef,
+        methodId: padText("#wrong-key-1"),
+      },
+    };
+
+    expect(() =>
+      assertFixtureSatisfiesRequest(fixture, {
+        request: wrongContractRequest,
+      }),
+    ).toThrow(
+      /Mixed-claims request issuer contract does not match the credential issuer/,
+    );
+    expect(() =>
+      assertFixtureSatisfiesRequest(fixture, { request: wrongMethodRequest }),
+    ).toThrow(
+      /Mixed-claims request issuer method does not match the credential issuer/,
+    );
+  });
+
+  it("rejects presentation proofs signed for a different verifier challenge", () => {
+    const fixture = createFixture();
+    const request: MixedClaimsPresentationRequest = {
+      ...fixture.presentationRequest,
+      verifierChallengeHash: sha256("challenge:mixed-claims:other-verifier"),
+    };
+
+    expect(() => assertFixtureSatisfiesRequest(fixture, { request })).toThrow(
+      /Mixed-claims presentation proof challenge does not match the request/,
+    );
+  });
+
+  it("rejects presentations that omit required subject and birth-date disclosures", () => {
+    const missingSubjectFixture = createFixture({ revealSubjectId: false });
+    const missingBirthDateFixture = createFixture({
+      requireBirthDateDisclosure: true,
+      revealBirthDate: false,
+    });
+
+    expect(() => assertFixtureSatisfiesRequest(missingSubjectFixture)).toThrow(
+      /Mixed-claims request requires subject-id disclosure/,
+    );
+    expect(() =>
+      assertFixtureSatisfiesRequest(missingBirthDateFixture),
+    ).toThrow(/Mixed-claims request requires birth-date disclosure/);
   });
 });

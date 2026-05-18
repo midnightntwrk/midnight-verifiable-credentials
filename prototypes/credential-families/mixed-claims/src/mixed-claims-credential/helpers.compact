@@ -142,6 +142,8 @@ export pure circuit assertInactiveMixedClaimsAccountTierWitness(
   accountTierWitness: Uint<8>,
   accountTierOpening: Bytes<32>
 ): [] {
+  // Layered defense: the request pins the threshold to zero when disabled, and
+  // the witness path also pins inactive values to their canonical empty form.
   assert(
     accountTierWitness == 0,
     "Mixed-claims inactive account-tier witness must be zero"

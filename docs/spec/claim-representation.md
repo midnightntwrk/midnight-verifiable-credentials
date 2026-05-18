@@ -146,9 +146,9 @@ Adapter guidance:
 
 ## Current Repository Evidence
 
-The repository now carries all three major patterns:
+The repository carries working examples across the representation taxonomy:
 
-- direct/public-only laboratory:
+- direct selectively disclosed laboratory:
   [`../../prototypes/credential-families/dummy-claims`](../../prototypes/credential-families/dummy-claims)
 - direct academic prototype:
   [`../../prototypes/credential-families/university-diploma`](../../prototypes/credential-families/university-diploma)
@@ -156,6 +156,11 @@ The repository now carries all three major patterns:
   [`../../prototypes/credential-families/birth`](../../prototypes/credential-families/birth)
 - mixed public-plus-private laboratory:
   [`../../prototypes/credential-families/mixed-claims`](../../prototypes/credential-families/mixed-claims)
+
+`selectivelyDisclosed` is intentionally represented by direct-value prototypes
+whose request gates decide whether the presentation exposes the value. Families
+that need stronger privacy should use `committedPrivate` or `predicateOnly`
+instead of carrying the raw value in the signed credential body.
 
 The generic VC envelope already supports all of these because `claims` is the
 family-defined `TClaims` type. The representation choice belongs to the family

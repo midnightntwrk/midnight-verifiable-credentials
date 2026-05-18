@@ -67,7 +67,9 @@ Related docs:
 
 Build and test:
 
+- `npm run compact -w ./prototypes/credential-families/mixed-claims`
 - `npm run build -w ./prototypes/credential-families/mixed-claims`
 - `npm run lint -w ./prototypes/credential-families/mixed-claims`
 - `npm run typecheck -w ./prototypes/credential-families/mixed-claims`
 - `npm run test:ci -w ./prototypes/credential-families/mixed-claims`
+- root light lanes: `./run.sh build --light` and `./run.sh test --light`
