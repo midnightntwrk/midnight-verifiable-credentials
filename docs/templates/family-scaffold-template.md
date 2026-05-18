@@ -37,6 +37,11 @@ claims, and `--claim-mode mixed` when the family needs both public metadata and
 private commitments. The generator maps those modes to `NoClaimCommitments`,
 `NoPublicClaims`, or two concrete family structs respectively.
 
+Generated type names use `<PascalSlug>Credential`,
+`<PascalSlug>Presentation`, `<PascalSlug>Disclosures`, and
+`<PascalSlug>PresentationRequest`. The scaffold intentionally does not append
+`Credential` twice when deriving the family namespace from the slug.
+
 ## Current Compact claim-surface guardrails
 
 When filling in `claims.compact`, keep the current compiler surface in mind.

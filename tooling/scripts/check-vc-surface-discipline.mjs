@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { execFileSync } from "node:child_process";
-import { mkdirSync, readFileSync, rmSync } from "node:fs";
+import { mkdirSync, readdirSync, readFileSync, rmSync } from "node:fs";
 import path from "node:path";
 
 const repoRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
@@ -8,9 +8,18 @@ const repoRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
 }).trim();
 
 const errors = [];
+const artifactRoot = path.join(repoRoot, "tooling", "artifacts");
 
 const readRepoFile = (relativePath) =>
   readFileSync(path.join(repoRoot, relativePath), "utf8");
+
+const cleanupStaleScaffoldChecks = () => {
+  for (const entry of readdirSync(artifactRoot, { withFileTypes: true })) {
+    if (entry.isDirectory() && entry.name.startsWith("scaffold-surface-check-")) {
+      rmSync(path.join(artifactRoot, entry.name), { force: true, recursive: true });
+    }
+  }
+};
 
 const requireIncludes = (relativePath, requiredFragments) => {
   const source = readRepoFile(relativePath);
@@ -24,11 +33,9 @@ const requireIncludes = (relativePath, requiredFragments) => {
 // These fragments are intentionally exact. This guard is a release-discipline
 // tripwire: when contributors reword the guide/template/changelog, they should
 // consciously update the guard with the new canonical wording.
-const requireGeneratedScaffoldIncludes = ({ mode, slug, files }) => {
+const requireGeneratedScaffoldIncludes = ({ mode, slug, files, holder = "explicit" }) => {
   const checkRoot = path.join(
-    repoRoot,
-    "tooling",
-    "artifacts",
+    artifactRoot,
     `scaffold-surface-check-${process.pid}`,
   );
   const outputRoot = path.join(
@@ -39,22 +46,32 @@ const requireGeneratedScaffoldIncludes = ({ mode, slug, files }) => {
   mkdirSync(path.dirname(outputRoot), { recursive: true });
 
   try {
-    execFileSync(
-      "node",
-      [
-        "./tooling/scripts/scaffold-vc-family.mjs",
-        "--slug",
-        slug,
-        "--out",
-        path.relative(repoRoot, outputRoot),
-        "--claim-mode",
-        mode,
-      ],
-      {
-        cwd: repoRoot,
-        stdio: "pipe",
-      },
-    );
+    try {
+      execFileSync(
+        "node",
+        [
+          "./tooling/scripts/scaffold-vc-family.mjs",
+          "--slug",
+          slug,
+          "--out",
+          path.relative(repoRoot, outputRoot),
+          "--claim-mode",
+          mode,
+          "--holder",
+          holder,
+        ],
+        {
+          cwd: repoRoot,
+          stdio: "pipe",
+        },
+      );
+    } catch (error) {
+      const stderr = error.stderr?.toString().trim();
+      errors.push(
+        `Generated ${mode}/${holder} scaffold failed${stderr ? `: ${stderr}` : ""}`,
+      );
+      return;
+    }
 
     for (const [relativePath, requiredFragments] of Object.entries(files)) {
       const generated = readFileSync(path.join(outputRoot, relativePath), "utf8");
@@ -101,6 +118,8 @@ requireIncludes("tooling/scripts/scaffold-vc-family.mjs", [
 ]);
 requireIncludes("tooling/artifacts/.gitignore", ["*"]);
 
+cleanupStaleScaffoldChecks();
+
 requireGeneratedScaffoldIncludes({
   mode: "commitment",
   slug: "commit-check",
@@ -112,6 +131,22 @@ requireGeneratedScaffoldIncludes({
     ],
     "src/commit-check-credential/helpers.compact": [
       "commitCheckClaimRoot(credential.claimCommitments)",
+    ],
+  },
+});
+
+requireGeneratedScaffoldIncludes({
+  holder: "hidden",
+  mode: "commitment",
+  slug: "hidden-check",
+  files: {
+    "src/hidden-check-credential.compact": [
+      "import VC<NoPublicClaims, HiddenCheckClaimCommitments, BlindedSecretHolderBinding, NoStatusBinding>",
+      "export type HiddenCheckCredential = Credential",
+    ],
+    "src/hidden-check-credential/helpers.compact": [
+      "assertValidBlindedSecretHolderCredentialBinding(credential.holderBinding)",
+      "assertMatchingBlindedSecretHolderBindings(credential.holderBinding, presentation.holderBinding)",
     ],
   },
 });

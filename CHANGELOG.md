@@ -58,7 +58,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   commitment-only families use `NoPublicClaims`, and direct-only families use
   `NoClaimCommitments`. Family authors should name commitment-only structs
   `*ClaimCommitments`, update scaffold output through `--claim-mode`, and call
-  out generated Compact/runtime surface changes in migration notes.
+  out generated Compact/runtime surface changes in migration notes. The family
+  scaffold now derives generated type names from the Pascal-cased slug without
+  appending an extra `Credential` namespace suffix, so new scaffold output uses
+  names such as `<Family>Credential` rather than
+  `<Family>CredentialCredential`.
 - BREAKING: the VC status model no longer carries runtime `epoch` and
   `StatusSupportLevel` fields. Freshness remains a verifier/application
   responsibility via the accepted `(registryId, revokedRoot)` pair.
