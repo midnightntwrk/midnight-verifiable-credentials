@@ -32,7 +32,7 @@ Claim representation:
 | --- | --- | --- |
 | `publicClaims.credentialTypeCode` | `public` | clear direct claim, suitable for schema/profile routing |
 | `publicClaims.issuerJurisdictionCode` | `public` | clear direct claim, encoded as bounded bytes |
-| `publicClaims.assuranceLevel` | `public` | clear direct claim for coarse assurance signaling |
+| `publicClaims.assuranceLevel` | `public` | clear direct claim for non-correlating coarse assurance signaling |
 | `privateClaims.subjectIdCommitment` | `committedPrivate` | opened only when `requireSubjectIdDisclosure` is true |
 | `privateClaims.birthDateCommitment` | `committedPrivate` | opened only when `requireBirthDateDisclosure` is true |
 | `privateClaims.accountTierCommitment` | `predicateOnly` | used for the minimum-tier predicate without requiring raw cleartext in the credential |
@@ -53,6 +53,13 @@ Presentation model:
   minimum tier; the raw tier is not part of `MixedClaimsDisclosures`
 - private values are not accepted until the circuit recomputes the commitment
   and matches the signed credential body
+- this prototype verifier receives the credential body so it can compare public
+  mirrors and private commitments directly; production verifier protocols that
+  should not receive the credential body can compare against
+  `credentialClaimRoot` plus family-specific inclusion/opening proofs instead
+- `mixedClaimsPresentationRequestBodyRoot(...)` is exposed for downstream
+  adapters that want to bind the verifier request into transcripts or external
+  protocol messages
 
 Related docs:
 

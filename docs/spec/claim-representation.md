@@ -21,8 +21,9 @@ selectively disclosed claims:
   <https://www.w3.org/TR/vc-data-model/>
 - W3C VC JOSE/COSE describes JWT-secured credentials and selective-disclosure
   options for JWT-based credentials: <https://www.w3.org/TR/vc-jose-cose/>
-- RFC 9901 SD-JWT explicitly supports a signed JSON object containing both
-  cleartext claims and digests for selectively disclosable claims:
+- RFC 9901, Selective Disclosure for JSON Web Tokens (SD-JWT), explicitly
+  supports a signed JSON object containing both cleartext claims and digests for
+  selectively disclosable claims:
   <https://www.rfc-editor.org/rfc/rfc9901.html>
 - the current IETF SD-JWT VC draft permits SD-JWT VC credentials with zero,
   some, or many selectively disclosable claims:

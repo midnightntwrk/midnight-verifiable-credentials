@@ -158,6 +158,8 @@ export pure circuit assertValidMixedClaimsPredicateFlags(
   disclosed: MixedClaimsDisclosures,
   request: MixedClaimsPresentationRequest
 ): [] {
+  // Disclosure flags are minimums for direct fields, but the predicate-only
+  // witness has no useful voluntary disclosure mode; it mirrors the request.
   if (request.enforceMinimumAccountTier) {
     assert(
       disclosed.proveAccountTierAtLeast,
