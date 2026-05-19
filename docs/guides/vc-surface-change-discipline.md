@@ -114,6 +114,21 @@ Rules:
   `credential.claims`
 - private disclosures and predicates must open against `credential.claimCommitments`
 
+## Holder-Binding Terminology Checklist
+
+When a PR changes holder-binding profiles, aliases, adapters, or proof wording:
+
+- use [`../architecture/holder-binding-terminology.md`](../architecture/holder-binding-terminology.md)
+  as the naming authority
+- prefer `OffchainDIDHolderBinding` for runtime/public TypeScript-facing
+  offchain DID adapter docs
+- keep `OffchainMidnightHolderBinding` only for the Compact/core struct or
+  compatibility notes
+- label `JubjubHolderBinding` as legacy compatibility or a minimal non-DID
+  profile
+- use `holder proof` only for the proof/signature over a presentation body, not
+  as a profile synonym
+
 ## Scaffold Guidance
 
 The family scaffold supports the current claim boundary explicitly:
@@ -137,6 +152,7 @@ or PR/release guidance:
 
 ```bash
 npm run check:vc-surface-discipline
+npm run check:holder-binding-terminology
 ```
 
 The guard verifies that:
@@ -145,10 +161,13 @@ The guard verifies that:
 - the changelog and docs mention the current `claims` / `claimCommitments` split
 - the family scaffold can generate public-only, commitment-only, and mixed
   claim-mode skeletons with the correct generic `VC<>` shape
+- the holder-binding terminology guard keeps profile naming and compatibility
+  aliases aligned across docs
 
 Related references:
 
 - [claim representation spec](../spec/claim-representation.md)
+- [holder-binding terminology](../architecture/holder-binding-terminology.md)
 - [family scaffold template](../templates/family-scaffold-template.md)
 - [pull request template](../../.github/PULL_REQUEST_TEMPLATE/pull_request_template.md)
 - [changelog](../../CHANGELOG.md)

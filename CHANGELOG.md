@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- added a canonical holder-binding terminology guide plus
+  `check:holder-binding-terminology` to keep offchain DID, Compact/core,
+  hidden-holder, and legacy Jubjub profile wording aligned across docs.
 - added a deterministic university artifact manifest to the reporting summary
   with source artifact schema versions, producer lanes, byte sizes, file counts,
   SHA-256 digests, and the standalone manifest schema version

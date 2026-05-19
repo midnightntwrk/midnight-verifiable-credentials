@@ -88,6 +88,7 @@ Start here:
   - [`docs/architecture/package-boundaries.md`](./docs/architecture/package-boundaries.md)
   - [`docs/architecture/workspace-package-manifest-discipline.md`](./docs/architecture/workspace-package-manifest-discipline.md)
   - [`docs/architecture/package-tier-inventory.md`](./docs/architecture/package-tier-inventory.md)
+  - [`docs/architecture/holder-binding-terminology.md`](./docs/architecture/holder-binding-terminology.md)
   - [`docs/architecture/protocol-classification.md`](./docs/architecture/protocol-classification.md)
   - [`docs/architecture/dependency-composition.md`](./docs/architecture/dependency-composition.md)
 - testing:

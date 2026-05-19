@@ -35,6 +35,8 @@ Related documents:
   - [`../guides/package-selection.md`](../guides/package-selection.md)
 - profile catalog:
   - [`../spec/profiles.md`](../spec/profiles.md)
+- holder-binding terminology:
+  - [`./holder-binding-terminology.md`](./holder-binding-terminology.md)
 
 ## Design goals
 
