@@ -75,6 +75,12 @@ args = ["-y", "midnight-mcp@latest"]
 
 Use it to inspect Compact entry points, TypeScript package exports, generated `src/managed` outputs, package dependency surfaces, and DID/VC wiring. Always confirm changes with local scripts and tests.
 
+## Repo-Local Codex Skill
+
+This repository distributes a lightweight Codex skill at `.codex/skills/midnight-identity/`.
+
+Use it when a task starts from an independent `midnight-verifiable-credentials` clone and needs VC-specific validation, BDD, university, status/revocation, CI-cone, packaging, or DID/VC boundary reminders. The skill intentionally points agents back to this `AGENT.md` as the detailed source of truth.
+
 ## Repository Layout
 
 | Path | Role |
