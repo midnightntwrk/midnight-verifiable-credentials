@@ -32,6 +32,12 @@ Use this skill from the `midnight-verifiable-credentials` repository, whether cl
 ./run.sh bdd
 ./run.sh university-protocol
 ./run.sh university-summary
+./run.sh clean-artifacts
+./run.sh integration-report
+./run.sh check-integration
+npm run check:run-target-catalog
+npm run check:managed-artifact-catalog
+npm run check:did-integration
 PROOF_SERVER_IMAGE=proof-server-bootstrap:8.0.3 ./run.sh
 ```
 

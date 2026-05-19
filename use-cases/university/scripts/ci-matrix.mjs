@@ -3,6 +3,8 @@ import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
+import { profileNames } from "../../../tooling/scripts/managed-artifact-catalog.mjs";
+import { lightTargetNames, targetNames } from "../../../tooling/scripts/run-target-catalog.mjs";
 
 const repoRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -209,24 +211,20 @@ const assertIncludes = (errors, text, needle, message) => {
   }
 };
 
-const bashArrayValues = (source, variableName) => {
-  const match = source.match(
-    new RegExp(`${variableName}=\\((?<values>[^)]*)\\)`, "m"),
-  );
-  return new Set((match?.groups?.values ?? "").split(/\s+/).filter(Boolean));
-};
-
 const checkMatrix = () => {
   const errors = [];
   const scripts = packageScripts();
   const runSh = readRepoFile("run.sh");
-  const runCommon = readRepoFile("tooling/scripts/run-common.sh");
   const workflow = readRepoFile(".github/workflows/ci.yml");
-  const lightTargets = bashArrayValues(runCommon, "run_common_light_supported_targets");
+  const lightTargets = new Set(lightTargetNames);
+  const artifactProfiles = new Set(profileNames);
 
   for (const lane of universityCiMatrix) {
     if (!hasScript(scripts, lane.ciScript)) {
       errors.push(`Missing package.json script: ${lane.ciScript}`);
+    }
+    if (!targetNames.has(lane.runTarget)) {
+      errors.push(`run target catalog is missing: ${lane.runTarget}`);
     }
     assertIncludes(
       errors,
@@ -249,12 +247,9 @@ const checkMatrix = () => {
       if (!lightTargets.has(lane.runTarget)) {
         errors.push(`run-common light target list is missing: ${lane.runTarget}`);
       }
-      assertIncludes(
-        errors,
-        runCommon,
-        `${lane.artifactProfile})`,
-        `run-common artifact profile is missing: ${lane.artifactProfile}`,
-      );
+      if (!artifactProfiles.has(lane.artifactProfile)) {
+        errors.push(`managed artifact catalog is missing: ${lane.artifactProfile}`);
+      }
     }
   }
 
