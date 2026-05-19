@@ -223,6 +223,9 @@ Focused lanes:
 ./run.sh integration-demo-contract
 ./run.sh integration-protocol
 ./run.sh integration
+./run.sh clean-artifacts
+./run.sh integration-report
+./run.sh check-integration
 ```
 
 BDD lanes:
@@ -261,10 +264,15 @@ npm run check:package-boundaries
 npm run check:ci-build-cones
 npm run check:ci-workflow-cones
 npm run check:run-target-contract
+npm run check:run-target-catalog
+npm run check:managed-artifact-catalog
+npm run check:did-integration
 npm run check:vc-surface-discipline
 npm run check:workspace-manifests
 npm run check:holder-binding-terminology
 npm run check:university-ci-matrix
+npm run clean:artifacts
+npm run report:did-integration
 ```
 
 Build cones:

@@ -9,38 +9,13 @@ Usage:
   ./run.sh [target] [--light]
   ./run.sh <root-npm-script> [--light] [-- <script args...>]
 
-Targets:
-  full                       Full repository validation pipeline (default)
-  lint                       Package-boundary checks and lint
-  typecheck                  TypeScript typecheck lanes
-  build                      Build lanes
-  test                       Package test lanes (non-Docker, excludes BDD)
-  bdd                        Serenity/JS BDD smoke scenarios
-  bdd-negative               Serenity/JS BDD negative-path scenarios
-  bdd-all                    Full Serenity/JS BDD scenario set
-  university-bdd             Executable university diploma BDD scenarios
-  university-bdd-proof-server University diploma BDD with proof-server DTO recording
-  university-bdd-standalone  University diploma BDD with real standalone DID bootstrap
-  university-batch-sweep     Issuance batch-size sweep with summary artifacts
-  university-ci-matrix       Validate university lane/script/workflow matrix wiring
-  university-data-profiles   Validate committed readable/stress university data profiles
-  university-policy-catalog  Validate university verifier policy preset coverage
-  university-protocol        Protocol-style multi-party university flow lane
-  university-protocol-export Machine-readable university protocol transcript export
-  university-protocol-cohort 30-student rich-cohort protocol summary output
-  university-protocol-stress 100-student protocol stress lane with summary output
-  university-summary         One-page summary over university BDD, transcript, stress, and batch-sweep artifacts
-  hello-smoke                Smallest DID -> VC -> verifier handoff lane
-  dummy-claims-lab           Broad direct claim-surface verifier lane
-  revocation                 Revocation-focused CI lane
-  integration                Both standalone Docker integration lanes
-  integration-demo-contract  Standalone demo-contract integration only
-  integration-protocol       Standalone protocol integration only
-  targets                    Print this target list
-  help                       Print this target list
-
 Options:
   --light                    Use reduced-scope or restored-artifact variants when supported; ignored otherwise
+
+EOF
+  run_common_catalog --targets
+
+  cat <<'EOF'
 
 Targets that currently honor `--light`:
 EOF
@@ -104,19 +79,17 @@ light_requested=0
 forward_args=()
 
 if [[ $# -gt 0 ]]; then
-  case "$1" in
-    full|lint|typecheck|build|test|bdd|bdd-negative|bdd-all|university-bdd|university-bdd-proof-server|university-bdd-standalone|university-batch-sweep|university-ci-matrix|university-data-profiles|university-policy-catalog|university-protocol|university-protocol-export|university-protocol-cohort|university-protocol-stress|university-summary|hello-smoke|dummy-claims-lab|revocation|integration|integration-demo-contract|integration-protocol|targets|help|-h|--help)
-      target="$1"
-      shift
-      ;;
-    *)
-      if [[ "$1" != -* ]] && run_common_root_script_exists "$1"; then
-        target="$1"
-        target_kind="npm-script"
-        shift
-      fi
-      ;;
-  esac
+  if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+    target="$1"
+    shift
+  elif [[ "$1" != -* ]] && run_common_target_exists "$1"; then
+    target="$1"
+    shift
+  elif [[ "$1" != -* ]] && run_common_root_script_exists "$1"; then
+    target="$1"
+    target_kind="npm-script"
+    shift
+  fi
 fi
 
 raw_args=("$@")
@@ -151,6 +124,21 @@ case "$target" in
     ;;
   targets|help|-h|--help)
     run_common_usage
+    exit 0
+    ;;
+  clean-artifacts)
+    run_common_ensure_node
+    node ./tooling/scripts/clean-artifacts.mjs
+    exit 0
+    ;;
+  integration-report)
+    run_common_ensure_node
+    node ./tooling/scripts/report-did-integration.mjs
+    exit 0
+    ;;
+  check-integration)
+    run_common_ensure_node
+    node ./tooling/scripts/report-did-integration.mjs --check
     exit 0
     ;;
 esac

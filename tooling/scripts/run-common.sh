@@ -5,7 +5,24 @@ if [[ -n "${MIDNIGHT_RUN_COMMON_SH_LOADED:-}" ]]; then
 fi
 MIDNIGHT_RUN_COMMON_SH_LOADED=1
 
-run_common_light_supported_targets=(full build typecheck test hello-smoke dummy-claims-lab university-protocol university-protocol-export university-protocol-cohort university-protocol-stress university-summary)
+run_common_repo_root() {
+  git rev-parse --show-toplevel
+}
+
+run_common_catalog() {
+  node "$(run_common_repo_root)/tooling/scripts/run-target-catalog.mjs" "$@"
+}
+
+run_common_artifact_catalog() {
+  node "$(run_common_repo_root)/tooling/scripts/managed-artifact-catalog.mjs" "$@"
+}
+
+run_common_light_supported_targets=()
+while IFS= read -r target; do
+  if [[ -n "${target}" ]]; then
+    run_common_light_supported_targets+=("${target}")
+  fi
+done < <(run_common_catalog --light-targets)
 
 run_common_print_light_targets() {
   local joined="${run_common_light_supported_targets[*]}"
@@ -21,6 +38,11 @@ run_common_target_supports_light() {
     fi
   done
   return 1
+}
+
+run_common_target_exists() {
+  local candidate="$1"
+  run_common_catalog --has-target "${candidate}" >/dev/null 2>&1
 }
 
 run_common_cleanup_test_infra() {
@@ -65,114 +87,7 @@ run_common_auto_proof_server_image() {
 run_common_artifacts_ready() {
   local profile="${1:-all}"
 
-  case "$profile" in
-    managed-light)
-      [[ -f "core/primitives/credentials/src/managed/credentials/contract/index.js" ]] \
-        && [[ -f "registry/status-registry/src/managed/revocation-registry/contract/index.js" ]] \
-        && [[ -f "core/capabilities/same-holder/src/managed/same-holder/contract/index.js" ]] \
-        && [[ -f "core/primitives/iso-registry/src/managed/iso-registry/contract/index.js" ]] \
-        && [[ -f "prototypes/credential-families/birth/src/managed/birth-credential/contract/index.js" ]] \
-        && [[ -f "prototypes/credential-families/birth-secret/src/managed/secret-birth-credential/contract/index.js" ]] \
-        && [[ -f "prototypes/credential-families/hello-family/src/managed/hello-family-credential/contract/index.js" ]]
-      ;;
-    managed-all)
-      run_common_artifacts_ready managed-light \
-        && [[ -f "use-cases/age-gate/contract/src/managed/demo/contract/index.js" ]] \
-        && [[ -f "use-cases/age-gate/contract/src/managed/demo-revocation/contract/index.js" ]] \
-        && [[ -f "use-cases/hello-verifier/contract/src/managed/hello-verifier/contract/index.js" ]]
-      ;;
-    managed-revocation)
-      [[ -f "core/primitives/credentials/src/managed/credentials/contract/index.js" ]] \
-        && [[ -f "registry/status-registry/src/managed/revocation-registry/contract/index.js" ]] \
-        && [[ -f "core/capabilities/same-holder/src/managed/same-holder/contract/index.js" ]] \
-        && [[ -f "prototypes/credential-families/birth/src/managed/birth-credential/contract/index.js" ]] \
-        && [[ -f "prototypes/credential-families/birth-secret/src/managed/secret-birth-credential/contract/index.js" ]] \
-        && [[ -f "use-cases/age-gate/contract/src/managed/demo/contract/index.js" ]] \
-        && [[ -f "use-cases/age-gate/contract/src/managed/demo-revocation/contract/index.js" ]]
-      ;;
-    managed-hello-smoke)
-      [[ -f "core/primitives/credentials/src/managed/credentials/contract/index.js" ]] \
-        && [[ -f "registry/status-registry/src/managed/revocation-registry/contract/index.js" ]] \
-        && [[ -f "core/capabilities/same-holder/src/managed/same-holder/contract/index.js" ]] \
-        && [[ -f "core/primitives/iso-registry/src/managed/iso-registry/contract/index.js" ]] \
-        && [[ -f "prototypes/credential-families/hello-family/src/managed/hello-family-credential/contract/index.js" ]] \
-        && [[ -f "use-cases/hello-verifier/contract/src/managed/hello-verifier/contract/index.js" ]]
-      ;;
-    managed-dummy-claims-lab)
-      run_common_artifacts_ready managed-hello-smoke \
-        && [[ -f "prototypes/credential-families/dummy-claims/src/managed/dummy-claims-credential/contract/index.js" ]] \
-        && [[ -f "use-cases/hello-verifier/contract/src/managed/dummy-claims-verifier/contract/index.js" ]]
-      ;;
-    managed-university-protocol)
-      [[ -f "components/orchestration/protocol/dist/index.js" ]] \
-        && [[ -f "prototypes/credential-families/university-diploma/dist/testing.js" ]] \
-        && [[ -f "use-cases/university/contract/dist/testing.js" ]]
-      ;;
-    managed-university-protocol-export)
-      run_common_artifacts_ready managed-university-protocol \
-        && [[ -f "use-cases/university/protocol/dist/index.js" ]]
-      ;;
-    managed-university-protocol-stress)
-      run_common_artifacts_ready managed-university-protocol-export \
-        && [[ -f "use-cases/university/data/stress-100/students.json" ]] \
-        && [[ -f "use-cases/university/data/stress-100/issuance-batches.json" ]]
-      ;;
-    managed-university-protocol-cohort)
-      run_common_artifacts_ready managed-university-protocol-export \
-        && [[ -f "use-cases/university/data/cohort-30/students.json" ]] \
-        && [[ -f "use-cases/university/data/cohort-30/issuance-batches.json" ]]
-      ;;
-    managed-university-summary)
-      run_common_artifacts_ready managed-university-protocol-stress \
-        && [[ -f "use-cases/university/scenarios/target/site/serenity/index.html" ]] \
-        && [[ -n "$(find use-cases/university/scenarios/target/site/serenity -maxdepth 1 -name '*.json' -print -quit)" ]] \
-        && [[ -f "use-cases/university/scenarios/target/batch-sweep/summary.json" ]]
-      ;;
-    light)
-      [[ -f "core/primitives/credentials/dist/index.js" ]] \
-        && [[ -f "registry/status-registry/dist/index.js" ]] \
-        && [[ -f "core/capabilities/same-holder/dist/index.js" ]] \
-        && [[ -f "core/primitives/iso-registry/dist/index.js" ]] \
-        && [[ -f "components/adapters/offchain-did/dist/index.js" ]] \
-        && [[ -f "protocols/openid/dist/index.js" ]] \
-        && [[ -f "prototypes/credential-families/birth/dist/index.js" ]] \
-        && [[ -f "prototypes/credential-families/birth-secret/dist/index.js" ]] \
-        && [[ -f "prototypes/credential-families/hello-family/dist/index.js" ]]
-      ;;
-    all)
-      run_common_artifacts_ready light \
-        && [[ -f "use-cases/age-gate/contract/dist/index.js" ]] \
-        && [[ -f "use-cases/hello-verifier/contract/dist/index.js" ]] \
-        && [[ -f "components/orchestration/protocol/dist/index.js" ]]
-      ;;
-    revocation)
-      [[ -f "core/primitives/credentials/dist/index.js" ]] \
-        && [[ -f "registry/status-registry/dist/index.js" ]] \
-        && [[ -f "core/capabilities/same-holder/dist/index.js" ]] \
-        && [[ -f "prototypes/credential-families/birth/dist/index.js" ]] \
-        && [[ -f "prototypes/credential-families/birth-secret/dist/index.js" ]] \
-        && [[ -f "use-cases/age-gate/contract/dist/index.js" ]]
-      ;;
-    integration-demo-contract)
-      [[ -f "core/primitives/credentials/dist/index.js" ]] \
-        && [[ -f "registry/status-registry/dist/index.js" ]] \
-        && [[ -f "core/capabilities/same-holder/dist/index.js" ]] \
-        && [[ -f "core/primitives/iso-registry/dist/index.js" ]] \
-        && [[ -f "components/adapters/offchain-did/dist/index.js" ]] \
-        && [[ -f "protocols/openid/dist/index.js" ]] \
-        && [[ -f "prototypes/credential-families/birth/dist/index.js" ]] \
-        && [[ -f "prototypes/credential-families/birth-secret/dist/index.js" ]] \
-        && [[ -f "use-cases/age-gate/contract/dist/index.js" ]]
-      ;;
-    integration-protocol)
-      run_common_artifacts_ready integration-demo-contract \
-        && [[ -f "components/orchestration/protocol/dist/index.js" ]]
-      ;;
-    *)
-      echo "[run] Unknown artifact profile: $profile" >&2
-      return 1
-      ;;
-  esac
+  run_common_artifact_catalog --ready "${profile}"
 }
 
 run_common_ensure_artifacts() {
@@ -185,57 +100,7 @@ run_common_ensure_artifacts() {
     return 0
   fi
 
-  case "$profile" in
-    managed-light)
-      build_cmd="npm run build:light"
-      ;;
-    managed-all)
-      build_cmd="npm run build:all"
-      ;;
-    managed-revocation)
-      build_cmd="npm run build:revocation"
-      ;;
-    managed-hello-smoke)
-      build_cmd="npm run build:starter-smoke-prereqs"
-      ;;
-    managed-dummy-claims-lab)
-      build_cmd="npm run build:dummy-claims-lab-prereqs"
-      ;;
-    managed-university-protocol)
-      build_cmd="npm run build:university-protocol:prereqs"
-      ;;
-    managed-university-protocol-export)
-      build_cmd="npm run build:university-protocol:export:prereqs"
-      ;;
-    managed-university-protocol-stress)
-      build_cmd="npm run build:university-protocol-stress:prereqs"
-      ;;
-    managed-university-protocol-cohort)
-      build_cmd="npm run build:university-protocol-cohort:prereqs"
-      ;;
-    managed-university-summary)
-      build_cmd="npm run build:university-summary:prereqs"
-      ;;
-    light)
-      build_cmd="npm run build:light"
-      ;;
-    all)
-      build_cmd="npm run build:all"
-      ;;
-    revocation)
-      build_cmd="npm run build:revocation"
-      ;;
-    integration-demo-contract)
-      build_cmd="npm run build:integration-prereqs:demo-contract"
-      ;;
-    integration-protocol)
-      build_cmd="npm run build:integration-prereqs:protocol"
-      ;;
-    *)
-      echo "[${caller}] Unknown artifact profile: $profile" >&2
-      return 1
-      ;;
-  esac
+  build_cmd="$(run_common_artifact_catalog --build-command "${profile}")"
 
   echo "[${caller}] Build missing ${profile} artifacts"
   eval "$build_cmd"
