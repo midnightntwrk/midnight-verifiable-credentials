@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 import { strict as assert } from "node:assert";
 import { spawnSync } from "node:child_process";
+import { existsSync, mkdirSync, rmSync } from "node:fs";
+import path from "node:path";
 import { lightTargetNames, targets } from "./run-target-catalog.mjs";
 
 const repoRoot = new URL("../..", import.meta.url).pathname;
@@ -67,5 +69,29 @@ assert.notEqual(
 const targetsResult = runWithTimeout(["./run.sh", "targets", "--light"]);
 assert.equal(targetsResult.status, 0, "targets --light should exit successfully");
 assert.ok(!targetsResult.stderr.includes("[run] Warning:"), "targets --light should not warn");
+
+const midnightTestDir = path.join(repoRoot, ".midnight-test");
+const cleanupProbeDir = path.join(midnightTestDir, "run-target-catalog-probe");
+const createdMidnightTestRoot = !existsSync(midnightTestDir);
+
+// Materialize .midnight-test so the clean-artifacts dry-run report lists it.
+mkdirSync(cleanupProbeDir, { recursive: true });
+
+try {
+  const cleanArtifactsDryRun = runWithTimeout(["./run.sh", "clean-artifacts", "--", "--dry-run", "--json"], 20000);
+  assert.equal(cleanArtifactsDryRun.status, 0, "clean-artifacts dry-run JSON should exit successfully");
+
+  const cleanArtifactsReport = JSON.parse(cleanArtifactsDryRun.stdout);
+  assert.equal(cleanArtifactsReport.dryRun, true, "clean-artifacts dry-run JSON should report dryRun=true");
+  assert.ok(
+    cleanArtifactsReport.removed.includes(".midnight-test"),
+    "clean-artifacts dry-run JSON should include .midnight-test cleanup coverage",
+  );
+} finally {
+  rmSync(cleanupProbeDir, { recursive: true, force: true });
+  if (createdMidnightTestRoot) {
+    rmSync(midnightTestDir, { recursive: true, force: true });
+  }
+}
 
 console.log("run target catalog checks passed.");

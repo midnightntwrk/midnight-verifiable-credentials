@@ -31,8 +31,9 @@ human-readable.
 
 `./run.sh clean-artifacts` is the developer-facing wrapper for
 `npm run clean:artifacts`; both surfaces resolve to the same cleanup script.
-Dry-run JSON exists today through `npm run clean:artifacts -- --dry-run --json`;
-runner argument passthrough is future work under `cleanup-artifact-coverage`.
+Dry-run JSON is available through both
+`./run.sh clean-artifacts -- --dry-run --json` and
+`npm run clean:artifacts -- --dry-run --json`.
 CHANGELOG/release-note discipline remains release-management work and is not part
 of this simplification stack.
 
@@ -143,9 +144,10 @@ Status and revocation work should start from these entry points:
    - align `exports`, `files`, `main`, and prehook scripts accordingly
 
 12. `cleanup-artifact-coverage`
-   - add missing generated/test directories such as `.midnight-test` to cleanup
+   - keep generated/test directories such as `.midnight-test` covered by cleanup
      scripts while preserving fixture data and vendor tarballs
-   - expose dry-run JSON through `./run.sh clean-artifacts -- --dry-run --json`
+   - keep dry-run JSON available through
+     `./run.sh clean-artifacts -- --dry-run --json`
 
 13. `turbo-cache-input-hardening`
    - strengthen `turbo.json` inputs and cache policy so source, Compact, and
