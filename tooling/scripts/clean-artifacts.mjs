@@ -12,6 +12,7 @@ const dryRun = args.has("--dry-run");
 const json = args.has("--json");
 const skippedDirectories = new Set([".git", "node_modules"]);
 const generatedDirectoryNames = new Set([
+  ".midnight-test",
   ".npm-cache",
   ".turbo",
   "build",

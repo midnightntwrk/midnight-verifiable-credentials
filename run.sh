@@ -128,7 +128,7 @@ case "$target" in
     ;;
   clean-artifacts)
     run_common_ensure_node
-    node ./tooling/scripts/clean-artifacts.mjs
+    node ./tooling/scripts/clean-artifacts.mjs "${forward_args[@]}"
     exit 0
     ;;
   integration-report)
