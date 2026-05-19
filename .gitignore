@@ -94,7 +94,9 @@ research/identity-examples/**/.env
 
 # Local assistant workspace
 .cloude
-.claude
+.claude/*
+!.claude/skills/
+!.claude/skills/**
 review/
 
 docs-site/.vitepress/.temp/
