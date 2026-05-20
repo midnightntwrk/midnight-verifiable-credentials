@@ -1,4 +1,5 @@
 import {
+  type CredentialProtocolFeatures,
   pureCircuits as genericPureCircuits,
   type SchemaCapabilities,
 } from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
@@ -9,7 +10,7 @@ import {
   BIRTH_PROTOCOL_FEATURES,
   BIRTH_SCHEMA_CAPABILITIES,
   BIRTH_SCHEMA_DESCRIPTOR,
-  CLOSED_ECOSYSTEM_RESOLUTION_HINT,
+  createClosedEcosystemResolutionHint,
   createClosedEcosystemSchemaDescriptor,
   protocolFeaturesFromSchemaCapabilities,
   SECRET_BIRTH_PROTOCOL_FEATURES,
@@ -18,7 +19,9 @@ import {
 } from "../../agents/schema-descriptors.js";
 import { padText } from "../../shared/crypto.js";
 
-const EXPECTED_PROTOCOL_FEATURE_KEYS = [
+const EXPECTED_PROTOCOL_FEATURE_KEYS: ReadonlyArray<
+  keyof CredentialProtocolFeatures
+> = [
   "supportsPredicateProofs",
   "supportsSameHolderProof",
   "supportsSelectiveDisclosure",
@@ -68,11 +71,25 @@ describe("protocol schema descriptors", () => {
   });
 
   it("rejects protocol feature hints that drift from schema descriptors", () => {
+    for (const featureKey of EXPECTED_PROTOCOL_FEATURE_KEYS) {
+      expect(() =>
+        assertProtocolFeaturesMatchSchemaDescriptor(
+          {
+            ...BIRTH_PROTOCOL_FEATURES,
+            [featureKey]: !BIRTH_PROTOCOL_FEATURES[featureKey],
+          },
+          BIRTH_SCHEMA_DESCRIPTOR,
+        ),
+      ).toThrow();
+    }
+  });
+
+  it("rejects both disabled and enabled feature drift", () => {
     expect(() =>
       assertProtocolFeaturesMatchSchemaDescriptor(
         {
           ...BIRTH_PROTOCOL_FEATURES,
-          supportsPredicateProofs: false,
+          supportsVerifierScopedPseudonym: true,
         },
         BIRTH_SCHEMA_DESCRIPTOR,
       ),
@@ -81,7 +98,7 @@ describe("protocol schema descriptors", () => {
 
   it("uses a no-hint resolver descriptor for closed ecosystem families", () => {
     expect(BIRTH_SCHEMA_DESCRIPTOR.familyResolutionHint).toEqual(
-      CLOSED_ECOSYSTEM_RESOLUTION_HINT,
+      createClosedEcosystemResolutionHint(),
     );
     expect(
       BIRTH_SCHEMA_DESCRIPTOR.familyResolutionHint.resolverHint,
@@ -110,7 +127,7 @@ describe("protocol schema descriptors", () => {
 
     expect(descriptor.capabilities).toEqual(capabilities);
     expect(descriptor.familyResolutionHint).toEqual(
-      CLOSED_ECOSYSTEM_RESOLUTION_HINT,
+      createClosedEcosystemResolutionHint(),
     );
     expect(() =>
       genericPureCircuits.assertValidSchemaDescriptor(descriptor),

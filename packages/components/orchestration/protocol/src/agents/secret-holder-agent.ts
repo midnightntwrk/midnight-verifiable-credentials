@@ -18,7 +18,7 @@ import {
 } from "@midnight-ntwrk/midnight-did-credentials-birth-secret/managed/secret-birth-credential/contract/index.js";
 
 import { createEnvelope } from "../shared/envelope.js";
-import { assertBodyHasFields,assertMessageType } from "../shared/validation.js";
+import { assertBodyHasFields, assertMessageType } from "../shared/validation.js";
 import type { MessageBus } from "../transport/message-bus.js";
 import type {
   ProtocolMessage,
@@ -40,9 +40,7 @@ import {
   type ProtocolRandomnessSource,
   unsafeReferenceDeterministicRandomnessSource,
 } from "./randomness.js";
-import {
-  SECRET_BIRTH_PROTOCOL_FEATURES,
-} from "./schema-descriptors.js";
+import { SECRET_BIRTH_PROTOCOL_FEATURES } from "./schema-descriptors.js";
 
 const DEFAULT_PROTOCOL_CURRENT_DAY = 0n;
 const DEFAULT_ISSUANCE_REQUEST_EXPIRY_DAY = 1_000_000n;

@@ -15,9 +15,6 @@ export const createClosedEcosystemResolutionHint =
     resolverHint: genericPureCircuits.noSchemaFamilyResolverHint(),
   });
 
-export const CLOSED_ECOSYSTEM_RESOLUTION_HINT =
-  createClosedEcosystemResolutionHint();
-
 export const createClosedEcosystemSchemaDescriptor = (
   schema: SchemaRef,
   capabilities: SchemaCapabilities,
