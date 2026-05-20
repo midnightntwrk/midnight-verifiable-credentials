@@ -123,6 +123,9 @@ const assertNpmScriptReferenceParser = () => {
     .map((reference) => reference.scriptName)
     .sort();
 
+  if (references.length !== 3) {
+    errors.push("workflow npm-script parser should ignore dynamic script tokens");
+  }
   if (rootScripts.length !== 1 || rootScripts[0] !== "lint") {
     errors.push("workflow npm-script parser should keep only root-scoped root scripts");
   }

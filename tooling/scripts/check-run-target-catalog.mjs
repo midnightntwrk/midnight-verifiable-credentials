@@ -127,6 +127,14 @@ const movedPackageAreaShellManagedDir = path.join(
 );
 const createdMovedPackageAreaShellRoot = !existsSync(movedPackageAreaShellDir);
 const createdMovedPackageAreaShellSrc = !existsSync(movedPackageAreaShellSrcDir);
+const skippedMovedPackageAreaShellDir = path.join(repoRoot, "libs");
+const skippedMovedPackageAreaShellProbe = path.join(
+  skippedMovedPackageAreaShellDir,
+  `run-target-catalog-nondisposable-${process.pid}.txt`,
+);
+const createdSkippedMovedPackageAreaShellRoot = !existsSync(
+  skippedMovedPackageAreaShellDir,
+);
 const skippedLegacyShellDir = path.join(repoRoot, "credentials-openid");
 const skippedLegacyShellProbe = path.join(
   skippedLegacyShellDir,
@@ -152,6 +160,8 @@ mkdirSync(midnightDbProbeDir, { recursive: true });
 mkdirSync(legacyShellManagedDir, { recursive: true });
 // Materialize one package-area shell from the packages/ move.
 mkdirSync(movedPackageAreaShellManagedDir, { recursive: true });
+mkdirSync(skippedMovedPackageAreaShellDir, { recursive: true });
+writeFileSync(skippedMovedPackageAreaShellProbe, "not generated\n");
 mkdirSync(skippedLegacyShellDir, { recursive: true });
 writeFileSync(skippedLegacyShellProbe, "not generated\n");
 mkdirSync(vendorGeneratedDistDir, { recursive: true });
@@ -205,6 +215,10 @@ try {
     cleanArtifactsReport.skippedDeadShells.includes("credentials-openid"),
     "clean-artifacts dry-run JSON should preserve non-disposable dead-shell candidates",
   );
+  assert.ok(
+    cleanArtifactsReport.skippedDeadShells.includes("libs"),
+    "clean-artifacts dry-run JSON should preserve non-disposable post-move package-area shells",
+  );
 } finally {
   rmSync(cleanupProbeDir, { recursive: true, force: true });
   if (createdMidnightTestRoot) {
@@ -223,6 +237,10 @@ try {
   }
   if (createdMovedPackageAreaShellRoot) {
     rmSync(movedPackageAreaShellDir, { recursive: true, force: true });
+  }
+  rmSync(skippedMovedPackageAreaShellProbe, { force: true });
+  if (createdSkippedMovedPackageAreaShellRoot) {
+    rmSync(skippedMovedPackageAreaShellDir, { recursive: true, force: true });
   }
   rmSync(skippedLegacyShellProbe, { force: true });
   if (createdSkippedLegacyShellRoot) {

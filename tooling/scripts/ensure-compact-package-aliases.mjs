@@ -49,7 +49,7 @@ for (const { alias, target: targetDir } of officialCompatibilityAliases) {
       }
     } else {
       throw new Error(
-        `[ensure-compact-package-aliases] ${alias} exists but is not a symlink; remove the stale top-level shell manually before re-running.`,
+        `[ensure-compact-package-aliases] ${alias} exists but is not a symlink; remove the stale top-level shell manually or run npm run clean:artifacts before re-running.`,
       );
     }
   } catch (error) {
