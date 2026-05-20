@@ -42,7 +42,6 @@ import {
 } from "./randomness.js";
 import {
   SECRET_BIRTH_PROTOCOL_FEATURES,
-  SECRET_BIRTH_SCHEMA,
 } from "./schema-descriptors.js";
 
 const DEFAULT_PROTOCOL_CURRENT_DAY = 0n;

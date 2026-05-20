@@ -18,6 +18,13 @@ import {
 } from "../../agents/schema-descriptors.js";
 import { padText } from "../../shared/crypto.js";
 
+const EXPECTED_PROTOCOL_FEATURE_KEYS = [
+  "supportsPredicateProofs",
+  "supportsSameHolderProof",
+  "supportsSelectiveDisclosure",
+  "supportsVerifierScopedPseudonym",
+];
+
 describe("protocol schema descriptors", () => {
   it("keeps reference family descriptors valid", () => {
     expect(() =>
@@ -36,6 +43,27 @@ describe("protocol schema descriptors", () => {
     );
     expect(SECRET_BIRTH_PROTOCOL_FEATURES).toEqual(
       protocolFeaturesFromSchemaCapabilities(SECRET_BIRTH_SCHEMA_CAPABILITIES),
+    );
+  });
+
+  it("accepts protocol feature hints that match trusted schema descriptors", () => {
+    expect(() =>
+      assertProtocolFeaturesMatchSchemaDescriptor(
+        BIRTH_PROTOCOL_FEATURES,
+        BIRTH_SCHEMA_DESCRIPTOR,
+      ),
+    ).not.toThrow();
+    expect(() =>
+      assertProtocolFeaturesMatchSchemaDescriptor(
+        SECRET_BIRTH_PROTOCOL_FEATURES,
+        SECRET_BIRTH_SCHEMA_DESCRIPTOR,
+      ),
+    ).not.toThrow();
+  });
+
+  it("keeps protocol feature derivation explicit when generated fields change", () => {
+    expect(Object.keys(BIRTH_PROTOCOL_FEATURES).sort()).toEqual(
+      EXPECTED_PROTOCOL_FEATURE_KEYS,
     );
   });
 

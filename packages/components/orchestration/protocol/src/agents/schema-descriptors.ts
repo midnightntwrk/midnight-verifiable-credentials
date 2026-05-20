@@ -9,10 +9,14 @@ import {
 
 import { padText } from "../shared/crypto.js";
 
-export const CLOSED_ECOSYSTEM_RESOLUTION_HINT: SchemaFamilyResolutionHint = {
-  hasResolverHint: false,
-  resolverHint: genericPureCircuits.noSchemaFamilyResolverHint(),
-};
+export const createClosedEcosystemResolutionHint =
+  (): SchemaFamilyResolutionHint => ({
+    hasResolverHint: false,
+    resolverHint: genericPureCircuits.noSchemaFamilyResolverHint(),
+  });
+
+export const CLOSED_ECOSYSTEM_RESOLUTION_HINT =
+  createClosedEcosystemResolutionHint();
 
 export const createClosedEcosystemSchemaDescriptor = (
   schema: SchemaRef,
@@ -21,7 +25,7 @@ export const createClosedEcosystemSchemaDescriptor = (
   const descriptor: SchemaDescriptor = {
     schema,
     capabilities,
-    familyResolutionHint: CLOSED_ECOSYSTEM_RESOLUTION_HINT,
+    familyResolutionHint: createClosedEcosystemResolutionHint(),
   };
   genericPureCircuits.assertValidSchemaDescriptor(descriptor);
   return descriptor;
