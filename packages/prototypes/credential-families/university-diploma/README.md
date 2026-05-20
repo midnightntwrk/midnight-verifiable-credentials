@@ -45,8 +45,9 @@ Design notes:
 - because this family uses `NoClaimCommitments`, raw academic facts are visible
   to any party that receives the credential body; `reveal*` flags only control
   which mirrored fields a presentation authorizes for a verifier
-- the testing surface exports `UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY` so docs,
-  tests, and downstream examples can assert this prototype boundary explicitly
+- the testing surface exports `UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY` for the
+  current v1 direct-claim boundary and `UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE`
+  for the additive v2 target split
 - the Compact source also exports additive production-profile building blocks:
   `UniversityDiplomaProductionPublicClaims`,
   `UniversityDiplomaClaimCommitments`, per-field commitment helpers, and

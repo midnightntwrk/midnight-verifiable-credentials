@@ -124,7 +124,8 @@ Current constraint:
 - the package now exposes additive production-profile helpers for
   `UniversityDiplomaProductionPublicClaims`,
   `UniversityDiplomaClaimCommitments`, and a domain-separated production claim
-  root; the v1 BDD/protocol surface still uses the readable direct-claim alias
+  root, exported from `claims.compact`; the v1 BDD/protocol surface still uses
+  the readable direct-claim alias
 - production privacy work should continue through
   [`../plans/university-commitment-backed-privacy.md`](../plans/university-commitment-backed-privacy.md)
 

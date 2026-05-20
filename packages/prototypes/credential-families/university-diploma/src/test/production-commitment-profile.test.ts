@@ -13,6 +13,7 @@ import {
   UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY,
   UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_CANDIDATES,
   UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_FIELDS,
+  UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE,
   UNIVERSITY_DIPLOMA_PRODUCTION_PUBLIC_CLAIM_FIELDS,
   type UniversityDiplomaDirectClaimField,
   type UniversityDiplomaProductionCommitmentCandidate,
@@ -226,11 +227,14 @@ describe("university diploma production commitment profile", () => {
   });
 
   it("publishes the profile split through the privacy-boundary metadata", () => {
-    expect(
-      UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY.productionPublicClaimFields,
-    ).toBe(UNIVERSITY_DIPLOMA_PRODUCTION_PUBLIC_CLAIM_FIELDS);
-    expect(UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY.productionCommitmentFields).toBe(
-      UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_FIELDS,
+    expect(UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY.productionTarget).toBe(
+      UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE,
     );
+    expect(
+      UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionPublicClaimFields,
+    ).toBe(UNIVERSITY_DIPLOMA_PRODUCTION_PUBLIC_CLAIM_FIELDS);
+    expect(
+      UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionCommitmentFields,
+    ).toBe(UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_FIELDS);
   });
 });

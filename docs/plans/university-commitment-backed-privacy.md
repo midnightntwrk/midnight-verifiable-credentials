@@ -23,7 +23,8 @@ Consequences:
   credential body
 
 The package pins this boundary through
-`UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY` and fixture tests in
+`UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY`, its `productionTarget` metadata, and
+fixture tests in
 `packages/prototypes/credential-families/university-diploma/src/test/privacy-boundary.test.ts`.
 
 The package also exposes additive production-profile building blocks in
@@ -90,6 +91,9 @@ Per-field commitment helpers currently rely on the caller supplying
 field-specific openings. Production issuance must generate high-entropy
 openings and domain-separate them by field; fixture helpers deliberately derive
 deterministic, field-named openings only for repeatable tests.
+This is especially important for low-entropy values such as `graduationMonth`,
+`finalGrade`, and `creditsEarned`, where commitment privacy relies entirely on
+opening secrecy until predicate witnesses replace raw-value openings.
 
 ## Execution Slices
 

@@ -110,8 +110,11 @@ describe("university-diploma privacy boundary", () => {
       profile: "direct-claim-prototype",
       claimCommitmentModel: "none",
       directClaimFields: UNIVERSITY_DIPLOMA_DIRECT_CLAIM_FIELDS,
-      productionCommitmentCandidates:
-        UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_CANDIDATES,
+      productionTarget: {
+        profile: "production-commitment-v2",
+        productionCommitmentCandidates:
+          UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_CANDIDATES,
+      },
     });
     expect(UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY.statement).toContain(
       "do not hide raw direct claims",
