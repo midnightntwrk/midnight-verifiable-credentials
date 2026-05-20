@@ -8,6 +8,7 @@ import {
   createUniversityDiplomaFixture,
   createUniversityDiplomaProductionClaimOpenings,
   createUniversityDiplomaProductionClaimProfile,
+  padText,
   UNIVERSITY_DIPLOMA_DIRECT_CLAIM_FIELDS,
   UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY,
   UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_CANDIDATES,
@@ -202,10 +203,7 @@ describe("university diploma production commitment profile", () => {
     const baseline = createUniversityDiplomaFixture();
     const changedUniversity = createUniversityDiplomaFixture({
       claimOverrides: {
-        universityName: new Uint8Array([
-          ...baseline.claims.universityName.slice(0, 31),
-          baseline.claims.universityName[31] === 0 ? 1 : 0,
-        ]),
+        universityName: padText("Other University"),
       },
     });
 

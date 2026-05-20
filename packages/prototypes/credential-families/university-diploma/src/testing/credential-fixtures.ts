@@ -213,7 +213,7 @@ export const createUniversityDiplomaProductionPublicClaims = (
 
 export const createUniversityDiplomaClaimCommitments = (
   claims: UniversityDiplomaClaims,
-  openings = createUniversityDiplomaProductionClaimOpenings(),
+  openings: UniversityDiplomaProductionClaimOpenings,
 ): UniversityDiplomaClaimCommitments => ({
   diplomaIdCommitment: pureCircuits.universityDiplomaIdCommitment(
     claims.diplomaId,
