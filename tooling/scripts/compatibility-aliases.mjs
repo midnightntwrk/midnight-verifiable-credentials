@@ -1,3 +1,6 @@
+// Compatibility alias catalog shared by cleanup, alias materialization, and DID
+// integration reporting. Official aliases are kept as symlinks; removable
+// shells are historical generated roots that clean-artifacts may classify.
 export const officialCompatibilityAliases = Object.freeze([
   {
     alias: "midnight-did-credentials",
@@ -68,6 +71,8 @@ export const historicalPackageRootShells = Object.freeze([
 ]);
 
 export const postMovePackageAreaShells = Object.freeze([
+  // These names are intentionally generic; clean-artifacts removes them only
+  // when the directory contains disposable generated output.
   "components",
   "core",
   "infrastructure",

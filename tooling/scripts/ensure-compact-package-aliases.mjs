@@ -47,9 +47,9 @@ for (const { alias, target: targetDir } of officialCompatibilityAliases) {
       } else {
         await rm(aliasPath, { force: true, recursive: true });
       }
-    } else if (stat) {
+    } else {
       throw new Error(
-        `[ensure-compact-package-aliases] ${alias} exists but is not a symlink; remove the stale top-level shell or run ./run.sh clean-artifacts if it only contains generated output.`,
+        `[ensure-compact-package-aliases] ${alias} exists but is not a symlink; remove the stale top-level shell manually before re-running.`,
       );
     }
   } catch (error) {

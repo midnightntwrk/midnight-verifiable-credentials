@@ -21,23 +21,66 @@ const workflowFiles = readdirSync(workflowDir)
   .filter((entry) => /\.(?:ya?ml)$/u.test(entry))
   .sort();
 
+const tokenizeCommandTail = (tail) =>
+  tail
+    .trim()
+    .split(/\s+/u)
+    .map((token) => token.replace(/^['"]|['"]$/gu, ""))
+    .filter(Boolean);
+
+const npmScriptNamesFromWorkflowText = (text) => {
+  const scriptNames = new Set();
+
+  for (const match of text.matchAll(/\bnpm\s+(?:run|run-script)\s+([^\n|&;\\]+)/gu)) {
+    const tokens = tokenizeCommandTail(match[1]);
+
+    while (tokens.length > 0) {
+      const token = tokens[0];
+
+      if (token === "--") {
+        tokens.shift();
+        break;
+      }
+
+      if (token === "-w" || token === "--workspace") {
+        tokens.shift();
+        tokens.shift();
+        continue;
+      }
+
+      if (
+        token === "--silent" ||
+        token === "--if-present" ||
+        token.startsWith("--workspace=")
+      ) {
+        tokens.shift();
+        continue;
+      }
+
+      if (token.startsWith("-")) {
+        tokens.shift();
+        continue;
+      }
+
+      break;
+    }
+
+    const scriptName = tokens[0];
+    if (scriptName) {
+      scriptNames.add(scriptName);
+    }
+  }
+
+  return [...scriptNames].sort();
+};
+
 const assertWorkflowNpmScriptsExist = () => {
   for (const workflowFile of workflowFiles) {
     const relativeWorkflowPath = `.github/workflows/${workflowFile}`;
     const text = readFileSync(path.join(workflowDir, workflowFile), "utf8");
-    const referencedScripts = [
-      ...new Set(
-        [...text.matchAll(/\bnpm\s+run\s+(?:--silent\s+)?([^\s'"|&;\\]+)/gu)].map(
-          (match) => match[1],
-        ),
-      ),
-    ].sort();
+    const referencedScripts = npmScriptNamesFromWorkflowText(text);
 
     for (const scriptName of referencedScripts) {
-      if (scriptName.startsWith("-")) {
-        continue;
-      }
-
       if (!packageJson.scripts?.[scriptName]) {
         errors.push(
           `${relativeWorkflowPath} references missing root package script: ${scriptName}`,
