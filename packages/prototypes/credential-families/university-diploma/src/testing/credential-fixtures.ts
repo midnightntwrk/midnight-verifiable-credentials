@@ -36,6 +36,8 @@ export const UNIVERSITY_DIPLOMA_DIRECT_CLAIM_FIELDS = [
 export type UniversityDiplomaDirectClaimField =
   (typeof UNIVERSITY_DIPLOMA_DIRECT_CLAIM_FIELDS)[number];
 
+// Treat changes to this list as a deliberate privacy-boundary change. Update
+// the package README, migration plan, and downstream report wording together.
 export const UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_CANDIDATES = [
   "diplomaId",
   "studentId",

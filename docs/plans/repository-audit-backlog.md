@@ -301,7 +301,9 @@ forces a stop.
      slice before changing the family surface
    - adds direct-claim privacy-boundary tests and a migration plan for a future
      commitment-backed diploma family
-   - validation: `./run.sh university-bdd`, `npm run docs:links`
+   - validation:
+     `npm run test:ci -w ./packages/prototypes/credential-families/university-diploma`,
+     `./run.sh university-bdd`, `npm run docs:links`
 
 4. `vc-university-commitment-backed-diploma`
    - migrates sensitive university values to `claimCommitments` with openings or

@@ -1,11 +1,50 @@
 import { describe, expect, it } from "vitest";
 
+import type {
+  UniversityDiplomaClaims,
+  UniversityDiplomaPresentation,
+} from "../managed/university-diploma-credential/contract/index.js";
 import {
   createUniversityDiplomaFixture,
   UNIVERSITY_DIPLOMA_DIRECT_CLAIM_FIELDS,
   UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY,
   UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_CANDIDATES,
+  type UniversityDiplomaDirectClaimField,
 } from "../testing/credential-fixtures.js";
+
+type MissingDirectClaimFields = Exclude<
+  keyof UniversityDiplomaClaims,
+  UniversityDiplomaDirectClaimField
+>;
+type ExtraDirectClaimFields = Exclude<
+  UniversityDiplomaDirectClaimField,
+  keyof UniversityDiplomaClaims
+>;
+type DirectClaimFieldCoverage = MissingDirectClaimFields extends never
+  ? ExtraDirectClaimFields extends never
+    ? true
+    : never
+  : never;
+
+const directClaimFieldCoverage: DirectClaimFieldCoverage = true;
+
+const hiddenDisclosureExpectations = [
+  ["diplomaId", "revealDiplomaId", new Uint8Array(32)],
+  ["studentId", "revealStudentId", new Uint8Array(16)],
+  ["graduateName", "revealGraduateName", new Uint8Array(32)],
+  ["universityName", "revealUniversityName", new Uint8Array(32)],
+  ["facultyName", "revealFacultyName", new Uint8Array(32)],
+  ["awardName", "revealAwardName", new Uint8Array(32)],
+  ["honorsCode", "revealHonorsCode", new Uint8Array(16)],
+  ["graduationYear", "revealGraduationYear", 0n],
+  ["graduationMonth", "revealGraduationMonth", 0n],
+  ["finalGrade", "revealFinalGrade", 0n],
+  ["creditsEarned", "revealCreditsEarned", 0n],
+] as const satisfies readonly (readonly [
+  UniversityDiplomaDirectClaimField,
+  keyof UniversityDiplomaPresentation["disclosed"],
+  unknown,
+])[];
 
 describe("university-diploma privacy boundary", () => {
   it("keeps all academic facts as direct credential claims in the current prototype", () => {
@@ -51,22 +90,19 @@ describe("university-diploma privacy boundary", () => {
       "finalGrade",
       "creditsEarned",
     ]);
+    expect(directClaimFieldCoverage).toBe(true);
     expect(fixture.credential.claimCommitments).toEqual({});
     for (const field of UNIVERSITY_DIPLOMA_DIRECT_CLAIM_FIELDS) {
       expect(fixture.credential.claims[field]).toEqual(fixture.claims[field]);
     }
-    expect(fixture.presentation.disclosed.revealStudentId).toBe(false);
-    expect(fixture.presentation.disclosed.studentId).toEqual(
-      new Uint8Array(16),
-    );
-    expect(fixture.credential.claims.studentId).toEqual(
-      fixture.claims.studentId,
-    );
-    expect(fixture.presentation.disclosed.revealFinalGrade).toBe(false);
-    expect(fixture.presentation.disclosed.finalGrade).toBe(0n);
-    expect(fixture.credential.claims.finalGrade).toBe(
-      fixture.claims.finalGrade,
-    );
+    for (const [
+      field,
+      revealField,
+      hiddenValue,
+    ] of hiddenDisclosureExpectations) {
+      expect(fixture.presentation.disclosed[revealField]).toBe(false);
+      expect(fixture.presentation.disclosed[field]).toEqual(hiddenValue);
+    }
   });
 
   it("documents that reveal flags are request policy gates, not credential-body secrecy", () => {
