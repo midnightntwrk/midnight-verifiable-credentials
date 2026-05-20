@@ -13,21 +13,48 @@ describe("university-diploma privacy boundary", () => {
       disclosure: {
         revealDiplomaId: false,
         revealStudentId: false,
+        revealGraduateName: false,
+        revealUniversityName: false,
         revealFacultyName: false,
+        revealAwardName: false,
         revealHonorsCode: false,
+        revealGraduationYear: false,
+        revealGraduationMonth: false,
         revealFinalGrade: false,
+        revealCreditsEarned: false,
       },
       request: {
         requireDiplomaIdDisclosure: false,
         requireStudentIdDisclosure: false,
+        requireGraduateNameDisclosure: false,
+        requireUniversityNameDisclosure: false,
         requireFacultyNameDisclosure: false,
+        requireAwardNameDisclosure: false,
         requireHonorsCodeDisclosure: false,
+        requireGraduationYearDisclosure: false,
+        requireGraduationMonthDisclosure: false,
         requireFinalGradeDisclosure: false,
+        requireCreditsEarnedDisclosure: false,
       },
     });
 
-    expect(UNIVERSITY_DIPLOMA_DIRECT_CLAIM_FIELDS).toHaveLength(11);
+    expect(UNIVERSITY_DIPLOMA_DIRECT_CLAIM_FIELDS).toEqual([
+      "diplomaId",
+      "studentId",
+      "graduateName",
+      "universityName",
+      "facultyName",
+      "awardName",
+      "honorsCode",
+      "graduationYear",
+      "graduationMonth",
+      "finalGrade",
+      "creditsEarned",
+    ]);
     expect(fixture.credential.claimCommitments).toEqual({});
+    for (const field of UNIVERSITY_DIPLOMA_DIRECT_CLAIM_FIELDS) {
+      expect(fixture.credential.claims[field]).toEqual(fixture.claims[field]);
+    }
     expect(fixture.presentation.disclosed.revealStudentId).toBe(false);
     expect(fixture.presentation.disclosed.studentId).toEqual(
       new Uint8Array(16),
@@ -59,7 +86,9 @@ describe("university-diploma privacy boundary", () => {
       "graduateName",
       "facultyName",
       "honorsCode",
+      "graduationMonth",
       "finalGrade",
+      "creditsEarned",
     ]);
   });
 });

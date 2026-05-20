@@ -60,6 +60,7 @@ export struct UniversityDiplomaClaimCommitments {
   graduateNameCommitment: Bytes<32>,
   facultyNameCommitment: Bytes<32>,
   honorsCodeCommitment: Bytes<32>,
+  graduationMonthCommitment: Bytes<32>,
   finalGradeCommitment: Bytes<32>,
   creditsEarnedCommitment: Bytes<32>,
 }
@@ -68,6 +69,8 @@ export struct UniversityDiplomaClaimCommitments {
 The claim root should domain-separate the public and commitment payloads:
 
 ```compact
+// Pseudocode: the production implementation should use the concrete Compact
+// helper shape that typechecks for the chosen v2 family.
 persistentHash<Vector<3, Bytes<32>>>([
   pad(32, "midnight:vc:uni-diploma:v2"),
   persistentHash<UniversityDiplomaPublicClaims>(claims),

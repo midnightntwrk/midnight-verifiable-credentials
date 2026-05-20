@@ -42,7 +42,9 @@ export const UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_CANDIDATES = [
   "graduateName",
   "facultyName",
   "honorsCode",
+  "graduationMonth",
   "finalGrade",
+  "creditsEarned",
 ] as const satisfies readonly UniversityDiplomaDirectClaimField[];
 
 export type UniversityDiplomaProductionCommitmentCandidate =
