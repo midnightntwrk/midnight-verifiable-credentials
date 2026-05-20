@@ -126,6 +126,10 @@ artifacts are tracked in
   - mall-style minimum-grade verification
 - privacy-boundary fixture checks that prove hidden presentation fields are
   still direct credential-body claims in the current prototype
+- production-profile commitment checks that prove the intended v2 field split,
+  per-field commitment openings, and domain-separated claim root
+- the current v1 minimum-grade check still uses direct final-grade disclosure;
+  the commitment-backed predicate witness remains a follow-up production slice
 - negative validation guards for:
   - missing verifier challenge
   - request version drift

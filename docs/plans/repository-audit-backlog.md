@@ -306,10 +306,16 @@ forces a stop.
      `./run.sh university-bdd`, `npm run docs:links`
 
 4. `vc-university-commitment-backed-diploma`
-   - migrates sensitive university values to `claimCommitments` with openings or
-     predicate witnesses
+   - starts the production privacy migration by adding an additive Compact and
+     fixture-backed field split:
+     `UniversityDiplomaProductionPublicClaims`,
+     `UniversityDiplomaClaimCommitments`, per-field commitment helpers, and a
+     domain-separated production claim root
+   - leaves the existing readable v1 BDD/protocol alias unchanged
+   - follow-up slices add verifier-facing openings, predicates, and protocol DTO
+     reporting over the committed profile
    - validation: university credential-family tests, university protocol tests,
-     `./run.sh university-bdd`
+     `./run.sh university-bdd`, `npm run docs:links`
 
 ## Validation Defaults
 

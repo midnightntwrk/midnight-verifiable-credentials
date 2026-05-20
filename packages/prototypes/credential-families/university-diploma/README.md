@@ -47,23 +47,31 @@ Design notes:
   which mirrored fields a presentation authorizes for a verifier
 - the testing surface exports `UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY` so docs,
   tests, and downstream examples can assert this prototype boundary explicitly
+- the Compact source also exports additive production-profile building blocks:
+  `UniversityDiplomaProductionPublicClaims`,
+  `UniversityDiplomaClaimCommitments`, per-field commitment helpers, and
+  `universityDiplomaProductionClaimRoot`
 - the prototype assumes credit-bearing degree awards only; honorary or zero-credit diploma variants are intentionally out of scope for this first family cut
 
-Current field categories:
+Current and production-profile field categories:
 
-| Field | Current representation | Production privacy direction |
+| Field | Current v1 representation | Production-profile building block |
 | --- | --- | --- |
-| `diplomaId` | direct claim | move to `claimCommitments` |
-| `studentId` | direct claim | move to `claimCommitments` |
-| `graduateName` | direct claim | move to `claimCommitments` or disclose by policy |
-| `universityName` | direct claim | likely remains public/direct |
-| `facultyName` | direct claim | move to `claimCommitments` or disclose by policy |
-| `awardName` | direct claim | likely public/direct or policy-dependent |
-| `honorsCode` | direct claim | move to `claimCommitments` |
-| `graduationYear` | direct claim | public/direct or policy-dependent |
-| `graduationMonth` | direct claim | move to `claimCommitments` by default |
-| `finalGrade` | direct claim | predicate-only or committed private |
-| `creditsEarned` | direct claim | predicate-only or committed private |
+| `diplomaId` | direct claim | `diplomaIdCommitment` |
+| `studentId` | direct claim | `studentIdCommitment` |
+| `graduateName` | direct claim | `graduateNameCommitment` |
+| `universityName` | direct claim | public/direct |
+| `facultyName` | direct claim | `facultyNameCommitment` |
+| `awardName` | direct claim | public/direct |
+| `honorsCode` | direct claim | `honorsCodeCommitment` |
+| `graduationYear` | direct claim | public/direct |
+| `graduationMonth` | direct claim | `graduationMonthCommitment` |
+| `finalGrade` | direct claim | `finalGradeCommitment` first; predicate witness later |
+| `creditsEarned` | direct claim | `creditsEarnedCommitment` first; predicate witness later |
+
+Production-profile helpers are intentionally additive. They make the field split
+and commitment root executable without silently changing the existing v1
+credential alias used by BDD, protocol transcripts, and reports.
 
 Migration plan:
 

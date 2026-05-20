@@ -13,10 +13,12 @@ import {
 
 import {
   pureCircuits,
+  type UniversityDiplomaClaimCommitments,
   type UniversityDiplomaClaims,
   type UniversityDiplomaCredential,
   type UniversityDiplomaPresentation,
   type UniversityDiplomaPresentationRequest,
+  type UniversityDiplomaProductionPublicClaims,
 } from "../managed/university-diploma-credential/contract/index.js";
 
 export const UNIVERSITY_DIPLOMA_DIRECT_CLAIM_FIELDS = [
@@ -36,6 +38,15 @@ export const UNIVERSITY_DIPLOMA_DIRECT_CLAIM_FIELDS = [
 export type UniversityDiplomaDirectClaimField =
   (typeof UNIVERSITY_DIPLOMA_DIRECT_CLAIM_FIELDS)[number];
 
+export const UNIVERSITY_DIPLOMA_PRODUCTION_PUBLIC_CLAIM_FIELDS = [
+  "universityName",
+  "awardName",
+  "graduationYear",
+] as const satisfies readonly UniversityDiplomaDirectClaimField[];
+
+export type UniversityDiplomaProductionPublicClaimField =
+  (typeof UNIVERSITY_DIPLOMA_PRODUCTION_PUBLIC_CLAIM_FIELDS)[number];
+
 // Treat changes to this list as a deliberate privacy-boundary change. Update
 // the package README, migration plan, and downstream report wording together.
 export const UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_CANDIDATES = [
@@ -52,11 +63,27 @@ export const UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_CANDIDATES = [
 export type UniversityDiplomaProductionCommitmentCandidate =
   (typeof UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_CANDIDATES)[number];
 
+export const UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_FIELDS = [
+  "diplomaIdCommitment",
+  "studentIdCommitment",
+  "graduateNameCommitment",
+  "facultyNameCommitment",
+  "honorsCodeCommitment",
+  "graduationMonthCommitment",
+  "finalGradeCommitment",
+  "creditsEarnedCommitment",
+] as const satisfies readonly (keyof UniversityDiplomaClaimCommitments)[];
+
+export type UniversityDiplomaProductionCommitmentField =
+  (typeof UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_FIELDS)[number];
+
 export type UniversityDiplomaPrivacyBoundary = {
   readonly profile: "direct-claim-prototype";
   readonly claimCommitmentModel: "none";
   readonly directClaimFields: readonly UniversityDiplomaDirectClaimField[];
+  readonly productionPublicClaimFields: readonly UniversityDiplomaProductionPublicClaimField[];
   readonly productionCommitmentCandidates: readonly UniversityDiplomaProductionCommitmentCandidate[];
+  readonly productionCommitmentFields: readonly UniversityDiplomaProductionCommitmentField[];
   readonly statement: string;
 };
 
@@ -65,8 +92,11 @@ export const UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY: UniversityDiplomaPrivacyBounda
     profile: "direct-claim-prototype",
     claimCommitmentModel: "none",
     directClaimFields: UNIVERSITY_DIPLOMA_DIRECT_CLAIM_FIELDS,
+    productionPublicClaimFields:
+      UNIVERSITY_DIPLOMA_PRODUCTION_PUBLIC_CLAIM_FIELDS,
     productionCommitmentCandidates:
       UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_CANDIDATES,
+    productionCommitmentFields: UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_FIELDS,
     statement:
       "University diploma reveal flags authorize presentation use only; they do not hide raw direct claims from a party that receives the credential body.",
   };
@@ -135,6 +165,106 @@ export type UniversityDiplomaFixture = {
 
 const sha256 = (value: string): Uint8Array =>
   new Uint8Array(createHash("sha256").update(value).digest());
+
+export type UniversityDiplomaProductionClaimOpenings = {
+  readonly diplomaIdOpening: Uint8Array;
+  readonly studentIdOpening: Uint8Array;
+  readonly graduateNameOpening: Uint8Array;
+  readonly facultyNameOpening: Uint8Array;
+  readonly honorsCodeOpening: Uint8Array;
+  readonly graduationMonthOpening: Uint8Array;
+  readonly finalGradeOpening: Uint8Array;
+  readonly creditsEarnedOpening: Uint8Array;
+};
+
+export type UniversityDiplomaProductionClaimProfile = {
+  readonly publicClaims: UniversityDiplomaProductionPublicClaims;
+  readonly claimCommitments: UniversityDiplomaClaimCommitments;
+  readonly openings: UniversityDiplomaProductionClaimOpenings;
+  readonly claimRoot: Uint8Array;
+};
+
+export const createUniversityDiplomaProductionClaimOpenings = (
+  seed = "fixture",
+): UniversityDiplomaProductionClaimOpenings => ({
+  diplomaIdOpening: sha256(`university-diploma:${seed}:diploma-id`),
+  studentIdOpening: sha256(`university-diploma:${seed}:student-id`),
+  graduateNameOpening: sha256(`university-diploma:${seed}:graduate-name`),
+  facultyNameOpening: sha256(`university-diploma:${seed}:faculty-name`),
+  honorsCodeOpening: sha256(`university-diploma:${seed}:honors-code`),
+  graduationMonthOpening: sha256(`university-diploma:${seed}:graduation-month`),
+  finalGradeOpening: sha256(`university-diploma:${seed}:final-grade`),
+  creditsEarnedOpening: sha256(`university-diploma:${seed}:credits-earned`),
+});
+
+export const createUniversityDiplomaProductionPublicClaims = (
+  claims: UniversityDiplomaClaims,
+): UniversityDiplomaProductionPublicClaims => ({
+  universityName: claims.universityName,
+  awardName: claims.awardName,
+  graduationYear: claims.graduationYear,
+});
+
+export const createUniversityDiplomaClaimCommitments = (
+  claims: UniversityDiplomaClaims,
+  openings = createUniversityDiplomaProductionClaimOpenings(),
+): UniversityDiplomaClaimCommitments => ({
+  diplomaIdCommitment: pureCircuits.universityDiplomaIdCommitment(
+    claims.diplomaId,
+    openings.diplomaIdOpening,
+  ),
+  studentIdCommitment: pureCircuits.universityDiplomaStudentIdCommitment(
+    claims.studentId,
+    openings.studentIdOpening,
+  ),
+  graduateNameCommitment: pureCircuits.universityDiplomaGraduateNameCommitment(
+    claims.graduateName,
+    openings.graduateNameOpening,
+  ),
+  facultyNameCommitment: pureCircuits.universityDiplomaFacultyNameCommitment(
+    claims.facultyName,
+    openings.facultyNameOpening,
+  ),
+  honorsCodeCommitment: pureCircuits.universityDiplomaHonorsCodeCommitment(
+    claims.honorsCode,
+    openings.honorsCodeOpening,
+  ),
+  graduationMonthCommitment:
+    pureCircuits.universityDiplomaGraduationMonthCommitment(
+      claims.graduationMonth,
+      openings.graduationMonthOpening,
+    ),
+  finalGradeCommitment: pureCircuits.universityDiplomaFinalGradeCommitment(
+    claims.finalGrade,
+    openings.finalGradeOpening,
+  ),
+  creditsEarnedCommitment:
+    pureCircuits.universityDiplomaCreditsEarnedCommitment(
+      claims.creditsEarned,
+      openings.creditsEarnedOpening,
+    ),
+});
+
+export const createUniversityDiplomaProductionClaimProfile = (
+  claims: UniversityDiplomaClaims,
+  openings = createUniversityDiplomaProductionClaimOpenings(),
+): UniversityDiplomaProductionClaimProfile => {
+  const publicClaims = createUniversityDiplomaProductionPublicClaims(claims);
+  const claimCommitments = createUniversityDiplomaClaimCommitments(
+    claims,
+    openings,
+  );
+
+  return {
+    publicClaims,
+    claimCommitments,
+    openings,
+    claimRoot: pureCircuits.universityDiplomaProductionClaimRoot(
+      publicClaims,
+      claimCommitments,
+    ),
+  };
+};
 
 export const padText = (value: string, length = 32): Uint8Array => {
   const bytes = new TextEncoder().encode(value);

@@ -183,6 +183,10 @@ The repository carries working examples across the representation taxonomy:
   [`../../packages/prototypes/credential-families/dummy-claims`](../../packages/prototypes/credential-families/dummy-claims)
 - direct academic prototype:
   [`../../packages/prototypes/credential-families/university-diploma`](../../packages/prototypes/credential-families/university-diploma)
+- additive academic production-profile building blocks:
+  `UniversityDiplomaProductionPublicClaims` plus
+  `UniversityDiplomaClaimCommitments` in
+  [`../../packages/prototypes/credential-families/university-diploma/src/university-diploma-credential/claims.compact`](../../packages/prototypes/credential-families/university-diploma/src/university-diploma-credential/claims.compact)
 - committed/private birth source credential:
   [`../../packages/prototypes/credential-families/birth`](../../packages/prototypes/credential-families/birth)
 - mixed public-plus-private laboratory:
