@@ -112,26 +112,49 @@ assert.ok(
 const midnightTestDir = path.join(repoRoot, ".midnight-test");
 const cleanupProbeDir = path.join(midnightTestDir, "run-target-catalog-probe");
 const createdMidnightTestRoot = !existsSync(midnightTestDir);
+const midnightDbDir = path.join(repoRoot, ".midnight-db");
+const midnightDbProbeDir = path.join(midnightDbDir, "run-target-catalog-probe");
+const createdMidnightDbRoot = !existsSync(midnightDbDir);
 const legacyShellDir = path.join(repoRoot, "credentials-birth");
 const legacyShellSrcDir = path.join(legacyShellDir, "src");
 const legacyShellManagedDir = path.join(legacyShellSrcDir, "managed");
 const createdLegacyShellRoot = !existsSync(legacyShellDir);
+const movedPackageAreaShellDir = path.join(repoRoot, "core");
+const movedPackageAreaShellSrcDir = path.join(movedPackageAreaShellDir, "src");
+const movedPackageAreaShellManagedDir = path.join(
+  movedPackageAreaShellSrcDir,
+  "managed",
+);
+const createdMovedPackageAreaShellRoot = !existsSync(movedPackageAreaShellDir);
+const createdMovedPackageAreaShellSrc = !existsSync(movedPackageAreaShellSrcDir);
 const skippedLegacyShellDir = path.join(repoRoot, "credentials-openid");
 const skippedLegacyShellProbe = path.join(
   skippedLegacyShellDir,
   `run-target-catalog-nondisposable-${process.pid}.txt`,
 );
 const createdSkippedLegacyShellRoot = !existsSync(skippedLegacyShellDir);
+const vendorGeneratedProbeDir = path.join(
+  repoRoot,
+  "tooling",
+  "vendor",
+  "midnight-did",
+  `run-target-catalog-generated-${process.pid}`,
+);
+const vendorGeneratedDistDir = path.join(vendorGeneratedProbeDir, "dist");
 
-// Materialize .midnight-test so the clean-artifacts dry-run report lists it.
+// Materialize local test-state directories so clean-artifacts coverage stays executable.
 mkdirSync(cleanupProbeDir, { recursive: true });
+mkdirSync(midnightDbProbeDir, { recursive: true });
 // Materialize one old top-level shell so cleanup coverage stays executable.
 // The probe must use a real legacy shell name because only known dead shells
 // are eligible for cleanup. If this assertion fails locally, inspect the shell
 // for non-disposable files left by older experiments.
 mkdirSync(legacyShellManagedDir, { recursive: true });
+// Materialize one package-area shell from the packages/ move.
+mkdirSync(movedPackageAreaShellManagedDir, { recursive: true });
 mkdirSync(skippedLegacyShellDir, { recursive: true });
 writeFileSync(skippedLegacyShellProbe, "not generated\n");
+mkdirSync(vendorGeneratedDistDir, { recursive: true });
 
 try {
   const cleanArtifactsDryRun = runWithTimeout(
@@ -155,14 +178,29 @@ try {
     "clean-artifacts dry-run JSON should include .midnight-test cleanup coverage",
   );
   assert.ok(
-    cleanArtifactsReport.removed.includes("credentials-birth"),
-    "clean-artifacts dry-run JSON should include dead top-level shell cleanup coverage",
+    cleanArtifactsReport.removed.includes(".midnight-db"),
+    "clean-artifacts dry-run JSON should include .midnight-db cleanup coverage",
   );
   assert.ok(
-    cleanArtifactsReport.skippedTracked.some((relativePath) =>
+    cleanArtifactsReport.removed.includes("credentials-birth"),
+    "clean-artifacts dry-run JSON should include legacy package-shell cleanup coverage",
+  );
+  assert.ok(
+    cleanArtifactsReport.removed.includes("core") ||
+      cleanArtifactsReport.skippedDeadShells.includes("core"),
+    "clean-artifacts dry-run JSON should include post-move package-area shell cleanup coverage",
+  );
+  assert.ok(
+    cleanArtifactsReport.skippedPreserved.some((relativePath) =>
       relativePath.startsWith("tooling/vendor/midnight-did/"),
     ),
-    "clean-artifacts dry-run JSON should report tracked artifact skips",
+    "clean-artifacts dry-run JSON should explicitly preserve vendor tarballs",
+  );
+  assert.ok(
+    cleanArtifactsReport.removed.includes(
+      path.relative(repoRoot, vendorGeneratedDistDir).split(path.sep).join("/"),
+    ),
+    "clean-artifacts dry-run JSON should not preserve generated vendor subdirectories",
   );
   assert.ok(
     cleanArtifactsReport.skippedDeadShells.includes("credentials-openid"),
@@ -173,13 +211,25 @@ try {
   if (createdMidnightTestRoot) {
     rmSync(midnightTestDir, { recursive: true, force: true });
   }
+  rmSync(midnightDbProbeDir, { recursive: true, force: true });
+  if (createdMidnightDbRoot) {
+    rmSync(midnightDbDir, { recursive: true, force: true });
+  }
   if (createdLegacyShellRoot) {
     rmSync(legacyShellDir, { recursive: true, force: true });
+  }
+  rmSync(movedPackageAreaShellManagedDir, { recursive: true, force: true });
+  if (createdMovedPackageAreaShellSrc) {
+    rmSync(movedPackageAreaShellSrcDir, { recursive: true, force: true });
+  }
+  if (createdMovedPackageAreaShellRoot) {
+    rmSync(movedPackageAreaShellDir, { recursive: true, force: true });
   }
   rmSync(skippedLegacyShellProbe, { force: true });
   if (createdSkippedLegacyShellRoot) {
     rmSync(skippedLegacyShellDir, { recursive: true, force: true });
   }
+  rmSync(vendorGeneratedProbeDir, { recursive: true, force: true });
 }
 
 console.log("run target catalog checks passed.");

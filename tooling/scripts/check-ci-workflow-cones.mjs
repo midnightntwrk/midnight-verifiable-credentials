@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 const repoRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
@@ -9,12 +9,39 @@ const repoRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
 
 const coneScript = path.join(repoRoot, "tooling/scripts/ci-build-output-groups.sh");
 const packageJson = JSON.parse(readFileSync(path.join(repoRoot, "package.json"), "utf8"));
-const workflowText = readFileSync(path.join(repoRoot, ".github/workflows/ci.yml"), "utf8");
+const workflowDir = path.join(repoRoot, ".github/workflows");
+const workflowText = readFileSync(path.join(workflowDir, "ci.yml"), "utf8");
 const errors = [];
 
 const quoteForBash = (value) => `'${value.replaceAll("'", "'\\''")}'`;
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
 const yamlWordScalarPattern = (value) => `(["']?)${escapeRegExp(value)}\\b\\1`;
+
+const workflowFiles = readdirSync(workflowDir)
+  .filter((entry) => /\.(?:ya?ml)$/u.test(entry))
+  .sort();
+
+const assertWorkflowNpmScriptsExist = () => {
+  for (const workflowFile of workflowFiles) {
+    const relativeWorkflowPath = `.github/workflows/${workflowFile}`;
+    const text = readFileSync(path.join(workflowDir, workflowFile), "utf8");
+    const referencedScripts = [
+      ...new Set(
+        [...text.matchAll(/\bnpm\s+run\s+(?:--silent\s+)?([^\s'"|&;\\]+)/gu)].map(
+          (match) => match[1],
+        ),
+      ),
+    ].sort();
+
+    for (const scriptName of referencedScripts) {
+      if (!packageJson.scripts?.[scriptName]) {
+        errors.push(
+          `${relativeWorkflowPath} references missing root package script: ${scriptName}`,
+        );
+      }
+    }
+  }
+};
 
 const readShellList = (functionName, argument) => {
   const command = [
@@ -87,6 +114,7 @@ const assertSameSet = ({ actual, expected, label }) => {
 };
 
 const groups = readShellList("ci_build_output_groups");
+assertWorkflowNpmScriptsExist();
 failOnErrors();
 
 const groupSet = new Set(groups);
