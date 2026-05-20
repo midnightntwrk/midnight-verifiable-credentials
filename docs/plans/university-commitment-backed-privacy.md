@@ -23,8 +23,14 @@ Consequences:
   credential body
 
 The package pins this boundary through
-`UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY` and fixture tests in
+`UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY`, its `productionTarget` metadata, and
+fixture tests in
 `packages/prototypes/credential-families/university-diploma/src/test/privacy-boundary.test.ts`.
+
+The package also exposes additive production-profile building blocks in
+`university-diploma-credential/claims.compact`. These do not change the current
+v1 credential alias; they give the next profile a typechecked public/commitment
+partition and a domain-separated `universityDiplomaProductionClaimRoot`.
 
 ## Field Migration Target
 
@@ -35,7 +41,7 @@ The package pins this boundary through
 | `graduateName` | direct claim | committed private or disclosed public value | personal data |
 | `universityName` | direct claim | public/direct | usually low sensitivity and useful for routing |
 | `facultyName` | direct claim | committed private or direct by policy | can leak academic profile |
-| `awardName` | direct claim | public/direct or committed private by policy | often needed by employers |
+| `awardName` | direct claim | public/direct in the first production profile; committed private by policy-specific profiles | often needed by employers |
 | `honorsCode` | direct claim | committed private | sensitive performance signal |
 | `graduationYear` | direct claim | public/direct or committed private by policy | coarse timeline signal |
 | `graduationMonth` | direct claim | committed private by default | finer timeline signal |
@@ -44,11 +50,11 @@ The package pins this boundary through
 
 ## Migration Shape
 
-The production-shaped family should keep public routing facts separate from
-private commitments:
+The production-shaped family keeps public routing facts separate from private
+commitments:
 
 ```compact
-export struct UniversityDiplomaPublicClaims {
+export struct UniversityDiplomaProductionPublicClaims {
   universityName: Bytes<32>,
   awardName: Bytes<32>,
   graduationYear: Uint<16>,
@@ -69,22 +75,34 @@ export struct UniversityDiplomaClaimCommitments {
 The claim root should domain-separate the public and commitment payloads:
 
 ```compact
-// Pseudocode: the production implementation should use the concrete Compact
-// helper shape that typechecks for the chosen v2 family.
-persistentHash<Vector<3, Bytes<32>>>([
-  pad(32, "midnight:vc:uni-diploma:v2"),
-  persistentHash<UniversityDiplomaPublicClaims>(claims),
-  persistentHash<UniversityDiplomaClaimCommitments>(claimCommitments)
-])
+export pure circuit universityDiplomaProductionClaimRoot(
+  publicClaims: UniversityDiplomaProductionPublicClaims,
+  claimCommitments: UniversityDiplomaClaimCommitments
+): Bytes<32> {
+  return persistentHash<Vector<3, Bytes<32>>>([
+    pad(32, "midnight:vc:uni-diploma:v2"),
+    universityDiplomaProductionPublicClaimsRoot(publicClaims),
+    universityDiplomaClaimCommitmentsRoot(claimCommitments)
+  ]);
+}
 ```
+
+Per-field commitment helpers currently rely on the caller supplying
+field-specific openings. Production issuance must generate high-entropy
+openings and domain-separate them by field; fixture helpers deliberately derive
+deterministic, field-named openings only for repeatable tests.
+This is especially important for low-entropy values such as `graduationMonth`,
+`finalGrade`, and `creditsEarned`, where commitment privacy relies entirely on
+opening secrecy until predicate witnesses replace raw-value openings.
 
 ## Execution Slices
 
 1. Keep the current direct-claim prototype readable and explicitly labeled.
 2. Add a separate commitment-backed diploma family or v2 surface instead of
-   silently changing the v1 claim root.
-3. Move stable identifiers and sensitive academic facts into
-   `claimCommitments`.
+   silently changing the v1 claim root. The additive Compact/fixture building
+   blocks now cover the field split and v2 claim-root shape.
+3. Move stable identifiers and sensitive academic facts into `claimCommitments`
+   in the actual v2 credential alias.
 4. Add opening witnesses for disclosed private fields.
 5. Add predicate witnesses for final-grade and credit-threshold policies.
 6. Update university protocol DTOs and BDD notes so reports show opened values
@@ -98,6 +116,8 @@ persistentHash<Vector<3, Bytes<32>>>([
 - tests prove the v1 `reveal*` flags are policy gates, not secrecy controls
 - v2 or the new production family uses `claimCommitments` for stable and
   sensitive fields
+- tests prove the production-profile claim root changes when committed private
+  values change, even when public routing claims stay the same
 - verifier contracts validate openings or predicates before using committed
   values
 - university BDD reports distinguish credential-body visibility from

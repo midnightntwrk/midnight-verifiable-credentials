@@ -121,7 +121,12 @@ Current constraint:
 - the current family is a direct-claim prototype: presentation `reveal*` flags
   authorize verifier use, but raw academic facts remain readable in
   `credential.claims` by any party that receives the credential body
-- production privacy work should follow
+- the package now exposes additive production-profile helpers for
+  `UniversityDiplomaProductionPublicClaims`,
+  `UniversityDiplomaClaimCommitments`, and a domain-separated production claim
+  root, exported from `claims.compact`; the v1 BDD/protocol surface still uses
+  the readable direct-claim alias
+- production privacy work should continue through
   [`../plans/university-commitment-backed-privacy.md`](../plans/university-commitment-backed-privacy.md)
 
 ### I need same-holder correlation across credentials

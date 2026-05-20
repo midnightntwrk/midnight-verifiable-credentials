@@ -139,8 +139,12 @@ Privacy boundary:
 - presentation `reveal*` flags authorize what a verifier request may use in a
   presentation, but they do not hide values already present in the credential
   body
-- a production privacy profile should move stable identifiers and sensitive
-  academic facts into `claimCommitments` with openings or predicate witnesses
+- the credential-family package now exposes additive production-profile
+  building blocks that move stable identifiers and sensitive academic facts into
+  `claimCommitments`; the current BDD/protocol use case still runs on the
+  readable v1 direct-claim alias
+- the next production slices should add verifier-facing openings and predicate
+  witnesses for committed academic facts
 - migration plan:
   [`../../../docs/plans/university-commitment-backed-privacy.md`](../../../docs/plans/university-commitment-backed-privacy.md)
 
