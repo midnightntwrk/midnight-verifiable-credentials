@@ -53,8 +53,7 @@ export const officialCompatibilityAliasNames = new Set(
   officialCompatibilityAliases.map(({ alias }) => alias),
 );
 
-export const removableTopLevelShells = Object.freeze([
-  // Historical package roots from before the packages/ move.
+export const historicalPackageRootShells = Object.freeze([
   "credentials",
   "credentials-birth",
   "credentials-birth-secret",
@@ -66,14 +65,21 @@ export const removableTopLevelShells = Object.freeze([
   "credentials-same-holder",
   "credentials-status-registry",
   "vc-bdd-scenarios",
+]);
 
-  // Top-level package-area shells left behind by the packages/ move.
+export const postMovePackageAreaShells = Object.freeze([
   "components",
   "core",
   "infrastructure",
+  // Keep `libs` here even after removal so a regression is cleaned up again.
   "libs",
   "protocols",
   "prototypes",
   "registry",
   "use-cases",
+]);
+
+export const removableTopLevelShells = Object.freeze([
+  ...historicalPackageRootShells,
+  ...postMovePackageAreaShells,
 ]);

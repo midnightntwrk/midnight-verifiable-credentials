@@ -34,6 +34,10 @@ const assertWorkflowNpmScriptsExist = () => {
     ].sort();
 
     for (const scriptName of referencedScripts) {
+      if (scriptName.startsWith("-")) {
+        continue;
+      }
+
       if (!packageJson.scripts?.[scriptName]) {
         errors.push(
           `${relativeWorkflowPath} references missing root package script: ${scriptName}`,

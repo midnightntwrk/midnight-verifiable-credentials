@@ -52,6 +52,7 @@ const removed = new Set();
 const skippedPreserved = new Set();
 const skippedTracked = new Set();
 const skippedDeadShells = new Set();
+const classifiedTopLevelShells = new Set();
 
 const toRelative = (absolutePath) =>
   path.relative(repoRoot, absolutePath).split(path.sep).join("/");
@@ -100,7 +101,7 @@ const isDisposableDeadShell = (absolutePath) => {
 const removePath = (absolutePath) => {
   const relativePath = toRelative(absolutePath);
 
-  if (isPreservedArtifact(relativePath)) {
+  if (isPreservedArtifact(relativePath) && containsTrackedFile(relativePath)) {
     skippedPreserved.add(relativePath);
     return;
   }
@@ -148,6 +149,13 @@ const walk = (directory) => {
         continue;
       }
 
+      if (
+        directory === repoRoot &&
+        classifiedTopLevelShells.has(toRelative(absolutePath))
+      ) {
+        continue;
+      }
+
       if (isGeneratedDirectory(absolutePath, entry.name)) {
         removePath(absolutePath);
         continue;
@@ -181,6 +189,7 @@ for (const relativePath of removableTopLevelShells) {
   const absolutePath = path.join(repoRoot, relativePath);
   try {
     if (statSync(absolutePath).isDirectory()) {
+      classifiedTopLevelShells.add(relativePath);
       if (containsTrackedFile(relativePath)) {
         skippedTracked.add(relativePath);
       } else if (!isDisposableDeadShell(absolutePath)) {
