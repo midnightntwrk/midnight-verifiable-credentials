@@ -186,8 +186,7 @@ try {
     "clean-artifacts dry-run JSON should include legacy package-shell cleanup coverage",
   );
   assert.ok(
-    cleanArtifactsReport.removed.includes("core") ||
-      cleanArtifactsReport.skippedDeadShells.includes("core"),
+    cleanArtifactsReport.removed.includes("core"),
     "clean-artifacts dry-run JSON should include post-move package-area shell cleanup coverage",
   );
   assert.ok(

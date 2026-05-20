@@ -28,11 +28,18 @@ const tokenizeCommandTail = (tail) =>
     .map((token) => token.replace(/^['"]|['"]$/gu, ""))
     .filter(Boolean);
 
-const npmScriptNamesFromWorkflowText = (text) => {
-  const scriptNames = new Set();
+const npmScriptReferencesFromWorkflowText = (text) => {
+  const references = [];
 
   for (const match of text.matchAll(/\bnpm\s+(?:run|run-script)\s+([^\n|&;\\]+)/gu)) {
     const tokens = tokenizeCommandTail(match[1]);
+    const workspaceScoped = tokens.some(
+      (token) =>
+        token === "-w" ||
+        token === "--workspace" ||
+        token.startsWith("-w=") ||
+        token.startsWith("--workspace="),
+    );
 
     while (tokens.length > 0) {
       const token = tokens[0];
@@ -48,11 +55,12 @@ const npmScriptNamesFromWorkflowText = (text) => {
         continue;
       }
 
-      if (
-        token === "--silent" ||
-        token === "--if-present" ||
-        token.startsWith("--workspace=")
-      ) {
+      if (token.startsWith("-w=") || token.startsWith("--workspace=")) {
+        tokens.shift();
+        continue;
+      }
+
+      if (token === "--silent" || token === "--if-present") {
         tokens.shift();
         continue;
       }
@@ -66,27 +74,64 @@ const npmScriptNamesFromWorkflowText = (text) => {
     }
 
     const scriptName = tokens[0];
-    if (scriptName) {
-      scriptNames.add(scriptName);
+    if (
+      scriptName &&
+      !scriptName.startsWith("$") &&
+      !scriptName.includes("${{")
+    ) {
+      references.push({ scriptName, workspaceScoped });
     }
   }
 
-  return [...scriptNames].sort();
+  return references.sort((left, right) =>
+    left.scriptName.localeCompare(right.scriptName),
+  );
 };
 
 const assertWorkflowNpmScriptsExist = () => {
   for (const workflowFile of workflowFiles) {
     const relativeWorkflowPath = `.github/workflows/${workflowFile}`;
     const text = readFileSync(path.join(workflowDir, workflowFile), "utf8");
-    const referencedScripts = npmScriptNamesFromWorkflowText(text);
+    const referencedScripts = npmScriptReferencesFromWorkflowText(text);
 
-    for (const scriptName of referencedScripts) {
+    for (const { scriptName, workspaceScoped } of referencedScripts) {
+      if (workspaceScoped) {
+        continue;
+      }
+
       if (!packageJson.scripts?.[scriptName]) {
         errors.push(
           `${relativeWorkflowPath} references missing root package script: ${scriptName}`,
         );
       }
     }
+  }
+};
+
+const assertNpmScriptReferenceParser = () => {
+  const references = npmScriptReferencesFromWorkflowText(`
+    run: npm run lint
+    run: npm run -w @midnight/example build
+    run: npm run test:ci -w packages/example
+    run: npm run \${{ matrix.script }}
+  `);
+  const rootScripts = references
+    .filter((reference) => !reference.workspaceScoped)
+    .map((reference) => reference.scriptName);
+  const workspaceScripts = references
+    .filter((reference) => reference.workspaceScoped)
+    .map((reference) => reference.scriptName)
+    .sort();
+
+  if (rootScripts.length !== 1 || rootScripts[0] !== "lint") {
+    errors.push("workflow npm-script parser should keep only root-scoped root scripts");
+  }
+  if (
+    workspaceScripts.length !== 2 ||
+    workspaceScripts[0] !== "build" ||
+    workspaceScripts[1] !== "test:ci"
+  ) {
+    errors.push("workflow npm-script parser should identify workspace-scoped scripts");
   }
 };
 
@@ -161,6 +206,7 @@ const assertSameSet = ({ actual, expected, label }) => {
 };
 
 const groups = readShellList("ci_build_output_groups");
+assertNpmScriptReferenceParser();
 assertWorkflowNpmScriptsExist();
 failOnErrors();
 

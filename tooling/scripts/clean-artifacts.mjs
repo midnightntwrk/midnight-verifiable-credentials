@@ -12,6 +12,8 @@ const args = new Set(process.argv.slice(2));
 const dryRun = args.has("--dry-run");
 const json = args.has("--json");
 const skippedDirectories = new Set([".git", "node_modules"]);
+// Local npm caches are disposable; tracked files remain protected by the
+// tracked-path guard below.
 const generatedDirectoryNames = new Set([
   ".midnight-db",
   ".midnight-test",
