@@ -289,6 +289,8 @@ forces a stop.
 2. `vc-protocol-feature-hint-deprecation`
    - moves authoritative capability reads away from issue/present protocol
      `features` fields
+   - centralizes reference agent schema descriptors so compatibility feature
+     hints are derived from schema capabilities
    - keeps compatibility fields only where existing generated surfaces require
      them during the migration
    - validation: focused credential primitive tests, orchestration protocol

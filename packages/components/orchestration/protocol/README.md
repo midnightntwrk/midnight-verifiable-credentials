@@ -67,6 +67,25 @@ The goal is to keep the protocol logic close to the Compact domain model and
 exercise the generated message shapes in TypeScript before introducing real
 transport adapters such as OID4VCI, OID4VP, SIOP, or DIDComm.
 
+## Schema Descriptor Rule
+
+The reference agents treat `SchemaDescriptor` / `SchemaCapabilities` as the
+authority for credential-family capabilities. Protocol message `features`
+fields are emitted only as compatibility hints for generated issue/present
+message shapes that still require them.
+
+The shared descriptor catalog lives in `src/agents/schema-descriptors.ts` and
+provides:
+
+- canonical reference `SchemaRef` values for the explicit birth and
+  blinded-secret birth families
+- schema capability descriptors for those families
+- descriptor-derived protocol feature hints for legacy message fields
+- a no-hint family-resolution descriptor for the current closed ecosystem
+
+New adapters should validate incoming feature hints against a trusted schema
+descriptor or family registry before using them for routing or policy.
+
 ## What This Package Is
 
 - a repo-local reference implementation

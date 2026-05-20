@@ -17,7 +17,6 @@ import {
   type SecretBirthCredentialVerificationSubmission,
 } from "@midnight-ntwrk/midnight-did-credentials-birth-secret/managed/secret-birth-credential/contract/index.js";
 
-import { padText } from "../shared/crypto.js";
 import { createEnvelope } from "../shared/envelope.js";
 import { assertBodyHasFields,assertMessageType } from "../shared/validation.js";
 import type { MessageBus } from "../transport/message-bus.js";
@@ -41,20 +40,10 @@ import {
   type ProtocolRandomnessSource,
   unsafeReferenceDeterministicRandomnessSource,
 } from "./randomness.js";
-
-const SECRET_BIRTH_SCHEMA = {
-  packageId: padText("midnight-did:vc:birth-secret"),
-  schemaId: padText("birth-credential:v1"),
-  majorVersion: 1n,
-  minorVersion: 0n,
-};
-
-const SECRET_HOLDER_FEATURES = {
-  supportsSelectiveDisclosure: true,
-  supportsPredicateProofs: true,
-  supportsVerifierScopedPseudonym: true,
-  supportsSameHolderProof: true,
-};
+import {
+  SECRET_BIRTH_PROTOCOL_FEATURES,
+  SECRET_BIRTH_SCHEMA,
+} from "./schema-descriptors.js";
 
 const DEFAULT_PROTOCOL_CURRENT_DAY = 0n;
 const DEFAULT_ISSUANCE_REQUEST_EXPIRY_DAY = 1_000_000n;
@@ -792,7 +781,7 @@ export class SecretHolderAgent {
       schema: credential.schema,
       issuerVerificationMethodRef: credential.issuerVerificationMethodRef,
       holderBindingProfile: HolderBindingProfile.blindedSecretHolder,
-      features: SECRET_HOLDER_FEATURES,
+      features: SECRET_BIRTH_PROTOCOL_FEATURES,
       verifierChallengeHash,
       body: {
         requireSubjectIdCommitmentDisclosure: false,

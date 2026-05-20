@@ -67,6 +67,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- protocol reference agents now derive generated issue/present message
+  `features` compatibility hints from schema descriptors instead of maintaining
+  independent per-agent feature literals.
 - documented protocol `features` as compatibility hints rather than
   authoritative schema facts; adapters should compare them with trusted schema
   descriptors or family registries during migration.
