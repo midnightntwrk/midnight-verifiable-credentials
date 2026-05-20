@@ -184,6 +184,12 @@ export type UniversityDiplomaProductionClaimProfile = {
   readonly claimRoot: Uint8Array;
 };
 
+/**
+ * Creates deterministic fixture-only openings for production-profile tests.
+ *
+ * Do not use this helper for real issuance. Real holders must generate
+ * high-entropy openings and domain-separate them per claim field.
+ */
 export const createUniversityDiplomaProductionClaimOpenings = (
   seed = "fixture",
 ): UniversityDiplomaProductionClaimOpenings => ({

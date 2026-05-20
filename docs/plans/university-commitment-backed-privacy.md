@@ -40,7 +40,7 @@ partition and a domain-separated `universityDiplomaProductionClaimRoot`.
 | `graduateName` | direct claim | committed private or disclosed public value | personal data |
 | `universityName` | direct claim | public/direct | usually low sensitivity and useful for routing |
 | `facultyName` | direct claim | committed private or direct by policy | can leak academic profile |
-| `awardName` | direct claim | public/direct or committed private by policy | often needed by employers |
+| `awardName` | direct claim | public/direct in the first production profile; committed private by policy-specific profiles | often needed by employers |
 | `honorsCode` | direct claim | committed private | sensitive performance signal |
 | `graduationYear` | direct claim | public/direct or committed private by policy | coarse timeline signal |
 | `graduationMonth` | direct claim | committed private by default | finer timeline signal |
@@ -85,6 +85,11 @@ export pure circuit universityDiplomaProductionClaimRoot(
   ]);
 }
 ```
+
+Per-field commitment helpers currently rely on the caller supplying
+field-specific openings. Production issuance must generate high-entropy
+openings and domain-separate them by field; fixture helpers deliberately derive
+deterministic, field-named openings only for repeatable tests.
 
 ## Execution Slices
 

@@ -62,7 +62,7 @@ Current and production-profile field categories:
 | `graduateName` | direct claim | `graduateNameCommitment` |
 | `universityName` | direct claim | public/direct |
 | `facultyName` | direct claim | `facultyNameCommitment` |
-| `awardName` | direct claim | public/direct |
+| `awardName` | direct claim | public/direct in the first production profile; committed private by policy-specific profiles |
 | `honorsCode` | direct claim | `honorsCodeCommitment` |
 | `graduationYear` | direct claim | public/direct |
 | `graduationMonth` | direct claim | `graduationMonthCommitment` |

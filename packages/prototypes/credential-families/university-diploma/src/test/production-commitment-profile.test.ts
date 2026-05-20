@@ -179,6 +179,54 @@ describe("university diploma production commitment profile", () => {
     expect(changedProfile.claimRoot).not.toEqual(baselineProfile.claimRoot);
   });
 
+  it("changes a commitment when the opening changes and the value stays the same", () => {
+    const fixture = createUniversityDiplomaFixture();
+    const firstProfile = createUniversityDiplomaProductionClaimProfile(
+      fixture.claims,
+      createUniversityDiplomaProductionClaimOpenings("first"),
+    );
+    const secondProfile = createUniversityDiplomaProductionClaimProfile(
+      fixture.claims,
+      createUniversityDiplomaProductionClaimOpenings("second"),
+    );
+
+    expect(secondProfile.publicClaims).toEqual(firstProfile.publicClaims);
+    expect(secondProfile.claimCommitments.finalGradeCommitment).not.toEqual(
+      firstProfile.claimCommitments.finalGradeCommitment,
+    );
+    expect(secondProfile.claimRoot).not.toEqual(firstProfile.claimRoot);
+  });
+
+  it("changes the production claim root when a public routing claim changes", () => {
+    const openings = createUniversityDiplomaProductionClaimOpenings("stable");
+    const baseline = createUniversityDiplomaFixture();
+    const changedUniversity = createUniversityDiplomaFixture({
+      claimOverrides: {
+        universityName: new Uint8Array([
+          ...baseline.claims.universityName.slice(0, 31),
+          baseline.claims.universityName[31] === 0 ? 1 : 0,
+        ]),
+      },
+    });
+
+    const baselineProfile = createUniversityDiplomaProductionClaimProfile(
+      baseline.claims,
+      openings,
+    );
+    const changedProfile = createUniversityDiplomaProductionClaimProfile(
+      changedUniversity.claims,
+      openings,
+    );
+
+    expect(changedProfile.claimCommitments).toEqual(
+      baselineProfile.claimCommitments,
+    );
+    expect(changedProfile.publicClaims.universityName).not.toEqual(
+      baselineProfile.publicClaims.universityName,
+    );
+    expect(changedProfile.claimRoot).not.toEqual(baselineProfile.claimRoot);
+  });
+
   it("publishes the profile split through the privacy-boundary metadata", () => {
     expect(
       UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY.productionPublicClaimFields,
