@@ -9,6 +9,9 @@ import {
   UNIVERSITY_DIPLOMA_DIRECT_CLAIM_FIELDS,
   UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY,
   UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_CANDIDATES,
+  UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_FIELDS,
+  UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE,
+  UNIVERSITY_DIPLOMA_PRODUCTION_PUBLIC_CLAIM_FIELDS,
   type UniversityDiplomaDirectClaimField,
 } from "../testing/credential-fixtures.js";
 
@@ -112,10 +115,17 @@ describe("university-diploma privacy boundary", () => {
       directClaimFields: UNIVERSITY_DIPLOMA_DIRECT_CLAIM_FIELDS,
       productionTarget: {
         profile: "production-commitment-v2",
+        productionPublicClaimFields:
+          UNIVERSITY_DIPLOMA_PRODUCTION_PUBLIC_CLAIM_FIELDS,
         productionCommitmentCandidates:
           UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_CANDIDATES,
+        productionCommitmentFields:
+          UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_FIELDS,
       },
     });
+    expect(UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY.productionTarget).toBe(
+      UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE,
+    );
     expect(UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY.statement).toContain(
       "do not hide raw direct claims",
     );

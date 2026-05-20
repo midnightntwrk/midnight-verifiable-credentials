@@ -73,6 +73,8 @@ export pure circuit universityDiplomaProductionClaimRoot(
   publicClaims: UniversityDiplomaProductionPublicClaims,
   claimCommitments: UniversityDiplomaClaimCommitments
 ): Bytes<32> {
+  // Root-version labels are part of the wire contract. Move to a new label
+  // before changing production-profile field order or semantics.
   return persistentHash<Vector<3, Bytes<32>>>([
     pad(32, "midnight:vc:uni-diploma:v2"),
     universityDiplomaProductionPublicClaimsRoot(publicClaims),
@@ -119,6 +121,9 @@ export pure circuit universityDiplomaGraduationMonthCommitment(
   graduationMonth: Uint<8>,
   opening: Bytes<32>
 ): Bytes<32> {
+  // SECURITY: small-domain raw values depend entirely on high-entropy openings.
+  // Predicate witnesses are the production path when verifiers do not need the
+  // raw month.
   return persistentCommit<Uint<8>>(graduationMonth, opening);
 }
 
@@ -126,6 +131,9 @@ export pure circuit universityDiplomaFinalGradeCommitment(
   finalGrade: Uint<8>,
   opening: Bytes<32>
 ): Bytes<32> {
+  // SECURITY: small-domain raw values depend entirely on high-entropy openings.
+  // Predicate witnesses are the production path when verifiers only need a
+  // threshold result.
   return persistentCommit<Uint<8>>(finalGrade, opening);
 }
 
@@ -133,5 +141,8 @@ export pure circuit universityDiplomaCreditsEarnedCommitment(
   creditsEarned: Uint<16>,
   opening: Bytes<32>
 ): Bytes<32> {
+  // SECURITY: small-domain raw values depend entirely on high-entropy openings.
+  // Predicate witnesses are the production path when verifiers only need a
+  // credit threshold.
   return persistentCommit<Uint<16>>(creditsEarned, opening);
 }
