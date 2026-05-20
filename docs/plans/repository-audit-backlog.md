@@ -299,7 +299,11 @@ forces a stop.
 3. `vc-university-privacy-hardening-plan`
    - covers `university-commitment-backed-privacy` as a plan/spec/test-warning
      slice before changing the family surface
-   - validation: `./run.sh university-bdd`, `npm run docs:links`
+   - adds direct-claim privacy-boundary tests and a migration plan for a future
+     commitment-backed diploma family
+   - validation:
+     `npm run test:ci -w ./packages/prototypes/credential-families/university-diploma`,
+     `./run.sh university-bdd`, `npm run docs:links`
 
 4. `vc-university-commitment-backed-diploma`
    - migrates sensitive university values to `claimCommitments` with openings or

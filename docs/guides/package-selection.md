@@ -118,6 +118,11 @@ Current constraint:
 - string-like claim fields still use bounded `Bytes<N>` encodings because
   `Opaque<"string">` cannot be used in the canonical
   `persistentHash<Claims>(claims)` claim-root pattern used by this repository
+- the current family is a direct-claim prototype: presentation `reveal*` flags
+  authorize verifier use, but raw academic facts remain readable in
+  `credential.claims` by any party that receives the credential body
+- production privacy work should follow
+  [`../plans/university-commitment-backed-privacy.md`](../plans/university-commitment-backed-privacy.md)
 
 ### I need same-holder correlation across credentials
 Start with:
