@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 const repoRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
@@ -9,12 +9,136 @@ const repoRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
 
 const coneScript = path.join(repoRoot, "tooling/scripts/ci-build-output-groups.sh");
 const packageJson = JSON.parse(readFileSync(path.join(repoRoot, "package.json"), "utf8"));
-const workflowText = readFileSync(path.join(repoRoot, ".github/workflows/ci.yml"), "utf8");
+const workflowDir = path.join(repoRoot, ".github/workflows");
+// Cone wiring checks are intentionally pinned to the primary CI workflow;
+// root-script existence is checked across every workflow below.
+const workflowText = readFileSync(path.join(workflowDir, "ci.yml"), "utf8");
 const errors = [];
 
 const quoteForBash = (value) => `'${value.replaceAll("'", "'\\''")}'`;
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
 const yamlWordScalarPattern = (value) => `(["']?)${escapeRegExp(value)}\\b\\1`;
+
+const workflowFiles = readdirSync(workflowDir)
+  .filter((entry) => /\.(?:ya?ml)$/u.test(entry))
+  .sort();
+
+const tokenizeCommandTail = (tail) =>
+  tail
+    .trim()
+    .split(/\s+/u)
+    .map((token) => token.replace(/^['"]|['"]$/gu, ""))
+    .filter(Boolean);
+
+const npmScriptReferencesFromWorkflowText = (text) => {
+  const references = [];
+
+  for (const match of text.matchAll(/\bnpm\s+(?:run|run-script)\s+([^\n|&;\\)<>]+)/gu)) {
+    const tokens = tokenizeCommandTail(match[1]);
+    const workspaceScoped = tokens.some(
+      (token) =>
+        token === "-w" ||
+        token === "--workspace" ||
+        token.startsWith("-w=") ||
+        token.startsWith("--workspace="),
+    );
+
+    while (tokens.length > 0) {
+      const token = tokens[0];
+
+      if (token === "--") {
+        tokens.shift();
+        break;
+      }
+
+      if (token === "-w" || token === "--workspace") {
+        tokens.shift();
+        tokens.shift();
+        continue;
+      }
+
+      if (token.startsWith("-w=") || token.startsWith("--workspace=")) {
+        tokens.shift();
+        continue;
+      }
+
+      if (token === "--silent" || token === "--if-present") {
+        tokens.shift();
+        continue;
+      }
+
+      if (token.startsWith("-")) {
+        tokens.shift();
+        continue;
+      }
+
+      break;
+    }
+
+    const scriptName = tokens[0];
+    if (
+      scriptName &&
+      !scriptName.startsWith("$") &&
+      !scriptName.includes("${{")
+    ) {
+      references.push({ scriptName, workspaceScoped });
+    }
+  }
+
+  return references.sort((left, right) =>
+    left.scriptName.localeCompare(right.scriptName),
+  );
+};
+
+const assertWorkflowNpmScriptsExist = () => {
+  for (const workflowFile of workflowFiles) {
+    const relativeWorkflowPath = `.github/workflows/${workflowFile}`;
+    const text = readFileSync(path.join(workflowDir, workflowFile), "utf8");
+    const referencedScripts = npmScriptReferencesFromWorkflowText(text);
+
+    for (const { scriptName, workspaceScoped } of referencedScripts) {
+      if (workspaceScoped) {
+        continue;
+      }
+
+      if (!packageJson.scripts?.[scriptName]) {
+        errors.push(
+          `${relativeWorkflowPath} references missing root package script: ${scriptName}`,
+        );
+      }
+    }
+  }
+};
+
+const assertNpmScriptReferenceParser = () => {
+  const references = npmScriptReferencesFromWorkflowText(`
+    run: npm run lint
+    run: npm run -w @midnight/example build
+    run: npm run test:ci -w packages/example
+    run: npm run \${{ matrix.script }}
+  `);
+  const rootScripts = references
+    .filter((reference) => !reference.workspaceScoped)
+    .map((reference) => reference.scriptName);
+  const workspaceScripts = references
+    .filter((reference) => reference.workspaceScoped)
+    .map((reference) => reference.scriptName)
+    .sort();
+
+  if (references.length !== 3) {
+    errors.push("workflow npm-script parser should ignore dynamic script tokens");
+  }
+  if (rootScripts.length !== 1 || rootScripts[0] !== "lint") {
+    errors.push("workflow npm-script parser should keep only root-scoped root scripts");
+  }
+  if (
+    workspaceScripts.length !== 2 ||
+    workspaceScripts[0] !== "build" ||
+    workspaceScripts[1] !== "test:ci"
+  ) {
+    errors.push("workflow npm-script parser should identify workspace-scoped scripts");
+  }
+};
 
 const readShellList = (functionName, argument) => {
   const command = [
@@ -87,6 +211,8 @@ const assertSameSet = ({ actual, expected, label }) => {
 };
 
 const groups = readShellList("ci_build_output_groups");
+assertNpmScriptReferenceParser();
+assertWorkflowNpmScriptsExist();
 failOnErrors();
 
 const groupSet = new Set(groups);

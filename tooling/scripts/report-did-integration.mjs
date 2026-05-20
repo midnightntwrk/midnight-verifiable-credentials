@@ -1,7 +1,17 @@
 #!/usr/bin/env node
 import { execFileSync } from "node:child_process";
-import { existsSync, readFileSync, readdirSync } from "node:fs";
+import {
+  existsSync,
+  lstatSync,
+  readFileSync,
+  readdirSync,
+  readlinkSync,
+} from "node:fs";
 import path from "node:path";
+import {
+  officialCompatibilityAliases,
+  officialCompatibilityAliasNames,
+} from "./compatibility-aliases.mjs";
 
 const repoRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
   encoding: "utf8",
@@ -30,6 +40,72 @@ const gitValue = (args) => {
   } catch {
     return null;
   }
+};
+
+const inspectCompatibilityAliases = () => {
+  const aliases = [];
+
+  for (const { alias, target } of officialCompatibilityAliases) {
+    const aliasPath = path.join(repoRoot, alias);
+    const targetPath = path.join(repoRoot, target);
+    const status = {
+      alias,
+      target,
+      present: false,
+      symlink: false,
+      actualTarget: null,
+      targetExists: existsSync(targetPath),
+      ok: false,
+    };
+
+    try {
+      const stats = lstatSync(aliasPath);
+      status.present = true;
+      status.symlink = stats.isSymbolicLink();
+
+      if (status.symlink) {
+        status.actualTarget = readlinkSync(aliasPath);
+        status.ok = status.actualTarget === target && status.targetExists;
+      }
+    } catch (error) {
+      if (!(error && typeof error === "object" && "code" in error && error.code === "ENOENT")) {
+        throw error;
+      }
+    }
+
+    aliases.push(status);
+
+    if (!status.present) {
+      errors.push(`Official compatibility alias is missing: ${alias} -> ${target}`);
+    } else if (!status.symlink) {
+      errors.push(`Official compatibility alias is not a symlink: ${alias}`);
+    } else if (status.actualTarget !== target) {
+      errors.push(
+        `Official compatibility alias ${alias} points at ${status.actualTarget}; expected ${target}`,
+      );
+    } else if (!status.targetExists) {
+      errors.push(`Official compatibility alias ${alias} target is missing: ${target}`);
+    }
+  }
+
+  const extraRootEntries = readdirSync(repoRoot)
+    .filter(
+      (entry) =>
+        entry.startsWith("midnight-did-credentials") &&
+        !officialCompatibilityAliasNames.has(entry),
+    )
+    .sort();
+
+  for (const entry of extraRootEntries) {
+    errors.push(
+      `Unexpected top-level midnight-did-credentials compatibility entry: ${entry}`,
+    );
+  }
+
+  return {
+    aliases: aliases.sort((a, b) => a.alias.localeCompare(b.alias)),
+    extraRootEntries,
+  };
 };
 
 const findPackageJsonFiles = (root) => {
@@ -96,6 +172,7 @@ const loadDidPackages = () => {
 };
 
 const didPackages = loadDidPackages();
+const compatibilityAliases = inspectCompatibilityAliases();
 const vendorTarballs = existsSync(didVendorRoot)
   ? readdirSync(didVendorRoot).filter((entry) => entry.endsWith(".tgz")).sort()
   : [];
@@ -185,6 +262,7 @@ const report = {
     path: didVendorRoot,
     tarballs: vendorTarballs,
   },
+  compatibilityAliases,
   references: references.sort((a, b) =>
     `${a.consumer}:${a.dependencyName}`.localeCompare(`${b.consumer}:${b.dependencyName}`),
   ),
@@ -208,6 +286,21 @@ if (json) {
       console.log(
         `- ${didPackage.name}@${didPackage.version} (${didPackage.path}) dist=${didPackage.distIndex ? "yes" : "no"} managed=${didPackage.managedIndex ? "yes" : "no"}`,
       );
+    }
+  }
+
+  console.log("");
+  console.log("## VC Compatibility Aliases");
+  for (const alias of report.compatibilityAliases.aliases) {
+    const actual = alias.actualTarget ?? "missing";
+    console.log(
+      `- ${alias.alias} -> ${actual} expected=${alias.target} status=${alias.ok ? "ok" : "error"}`,
+    );
+  }
+  if (report.compatibilityAliases.extraRootEntries.length > 0) {
+    console.log("- unexpected entries:");
+    for (const entry of report.compatibilityAliases.extraRootEntries) {
+      console.log(`  - ${entry}`);
     }
   }
 

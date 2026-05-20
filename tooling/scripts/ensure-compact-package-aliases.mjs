@@ -1,24 +1,10 @@
 import { lstat, mkdir, readlink, rm, symlink } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { officialCompatibilityAliases } from './compatibility-aliases.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, '..', '..');
-
-const aliases = [
-  ['midnight-did-credentials', 'packages/core/primitives/credentials'],
-  ['midnight-did-credentials-same-holder', 'packages/core/capabilities/same-holder'],
-  ['midnight-did-credentials-birth', 'packages/prototypes/credential-families/birth'],
-  ['midnight-did-credentials-birth-secret', 'packages/prototypes/credential-families/birth-secret'],
-  ['midnight-did-credentials-hello-family', 'packages/prototypes/credential-families/hello-family'],
-  ['midnight-did-credentials-dummy-claims', 'packages/prototypes/credential-families/dummy-claims'],
-  ['midnight-did-credentials-university-diploma', 'packages/prototypes/credential-families/university-diploma'],
-  ['midnight-did-credentials-iso-registry', 'packages/core/primitives/iso-registry'],
-  ['midnight-did-credentials-status-registry', 'packages/registry/status-registry'],
-  ['midnight-did-credentials-openid', 'packages/protocols/openid'],
-  ['midnight-did-credentials-protocol', 'packages/components/orchestration/protocol'],
-  ['midnight-did-credentials-demo-contract', 'packages/use-cases/age-gate/contract']
-];
 
 const ensureSymlink = async (target, linkPath) => {
   try {
@@ -38,7 +24,7 @@ const ensureSymlink = async (target, linkPath) => {
   }
 };
 
-for (const [alias, targetDir] of aliases) {
+for (const { alias, target: targetDir } of officialCompatibilityAliases) {
   const aliasPath = path.join(repoRoot, alias);
   const packagePath = path.join(repoRoot, targetDir);
   const workspaceLinkPath = path.join(
@@ -62,7 +48,9 @@ for (const [alias, targetDir] of aliases) {
         await rm(aliasPath, { force: true, recursive: true });
       }
     } else {
-      aliasReady = true;
+      throw new Error(
+        `[ensure-compact-package-aliases] ${alias} exists but is not a symlink; run npm run clean:artifacts before re-running, or remove the stale top-level shell manually if cleanup reports it as non-disposable.`,
+      );
     }
   } catch (error) {
     if (!(error && typeof error === 'object' && 'code' in error && error.code === 'ENOENT')) throw error;

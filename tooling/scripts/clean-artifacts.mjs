@@ -2,6 +2,7 @@
 import { execFileSync } from "node:child_process";
 import { readdirSync, rmSync, statSync } from "node:fs";
 import path from "node:path";
+import { removableTopLevelShells } from "./compatibility-aliases.mjs";
 
 const repoRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
   encoding: "utf8",
@@ -11,8 +12,12 @@ const args = new Set(process.argv.slice(2));
 const dryRun = args.has("--dry-run");
 const json = args.has("--json");
 const skippedDirectories = new Set([".git", "node_modules"]);
+// Local npm caches are disposable; tracked files remain protected by the
+// tracked-path guard below.
 const generatedDirectoryNames = new Set([
+  ".midnight-db",
   ".midnight-test",
+  ".npm",
   ".npm-cache",
   ".turbo",
   "build",
@@ -24,20 +29,7 @@ const generatedDirectoryNames = new Set([
   "test-results",
 ]);
 const generatedRelativeDirectories = new Set(["tooling/artifacts/npm"]);
-// Keep this explicit until the topology catalog owns legacy shell lifecycle.
-const deadTopLevelShellRelativeDirectories = new Set([
-  "credentials",
-  "credentials-birth",
-  "credentials-birth-secret",
-  "credentials-demo-contract",
-  "credentials-iso-registry",
-  "credentials-offchain-did",
-  "credentials-openid",
-  "credentials-protocol",
-  "credentials-same-holder",
-  "credentials-status-registry",
-  "vc-bdd-scenarios",
-]);
+const preservedDidVendorTarballPrefix = "tooling/vendor/midnight-did/";
 const disposableShellDirectoryNames = new Set([
   ...generatedDirectoryNames,
   "managed",
@@ -59,13 +51,19 @@ for (const file of trackedFiles) {
   }
 }
 const removed = new Set();
+const skippedPreserved = new Set();
 const skippedTracked = new Set();
 const skippedDeadShells = new Set();
+const classifiedTopLevelShells = new Set();
 
 const toRelative = (absolutePath) =>
   path.relative(repoRoot, absolutePath).split(path.sep).join("/");
 
 const containsTrackedFile = (relativePath) => trackedPaths.has(relativePath);
+
+const isVendorTarballCandidate = (relativePath) =>
+  relativePath.startsWith(preservedDidVendorTarballPrefix) &&
+  relativePath.endsWith(".tgz");
 
 const isDisposableDeadShell = (absolutePath) => {
   for (const entry of readdirSync(absolutePath, { withFileTypes: true })) {
@@ -104,6 +102,11 @@ const isDisposableDeadShell = (absolutePath) => {
 
 const removePath = (absolutePath) => {
   const relativePath = toRelative(absolutePath);
+
+  if (isVendorTarballCandidate(relativePath) && containsTrackedFile(relativePath)) {
+    skippedPreserved.add(relativePath);
+    return;
+  }
 
   if (containsTrackedFile(relativePath)) {
     skippedTracked.add(relativePath);
@@ -148,6 +151,13 @@ const walk = (directory) => {
         continue;
       }
 
+      if (
+        directory === repoRoot &&
+        classifiedTopLevelShells.has(toRelative(absolutePath))
+      ) {
+        continue;
+      }
+
       if (isGeneratedDirectory(absolutePath, entry.name)) {
         removePath(absolutePath);
         continue;
@@ -177,10 +187,11 @@ for (const relativePath of generatedRelativeDirectories) {
   }
 }
 
-for (const relativePath of deadTopLevelShellRelativeDirectories) {
+for (const relativePath of removableTopLevelShells) {
   const absolutePath = path.join(repoRoot, relativePath);
   try {
     if (statSync(absolutePath).isDirectory()) {
+      classifiedTopLevelShells.add(relativePath);
       if (containsTrackedFile(relativePath)) {
         skippedTracked.add(relativePath);
       } else if (!isDisposableDeadShell(absolutePath)) {
@@ -197,6 +208,7 @@ for (const relativePath of deadTopLevelShellRelativeDirectories) {
 walk(repoRoot);
 
 const removedPaths = [...removed].sort();
+const skippedPreservedPaths = [...skippedPreserved].sort();
 const skippedTrackedPaths = [...skippedTracked].sort();
 const skippedDeadShellPaths = [...skippedDeadShells].sort();
 
@@ -206,6 +218,7 @@ if (json) {
       {
         dryRun,
         removed: removedPaths,
+        skippedPreserved: skippedPreservedPaths,
         skippedTracked: skippedTrackedPaths,
         skippedDeadShells: skippedDeadShellPaths,
       },
@@ -215,6 +228,7 @@ if (json) {
   );
 } else if (
   removedPaths.length === 0 &&
+  skippedPreservedPaths.length === 0 &&
   skippedTrackedPaths.length === 0 &&
   skippedDeadShellPaths.length === 0
 ) {
@@ -226,6 +240,13 @@ if (json) {
       `[clean-artifacts] ${action} ${removedPaths.length} generated artifact paths:`,
     );
     for (const relativePath of removedPaths) {
+      console.log(`  ${relativePath}`);
+    }
+  }
+
+  if (skippedPreservedPaths.length > 0) {
+    console.log("[clean-artifacts] Preserved vendor artifact paths:");
+    for (const relativePath of skippedPreservedPaths) {
       console.log(`  ${relativePath}`);
     }
   }
