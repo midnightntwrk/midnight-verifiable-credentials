@@ -161,6 +161,10 @@ wallet or verifier that receives protocol feature booleans should compare them
 against a trusted schema descriptor or family registry before treating them as
 capabilities.
 
+`protocolFeaturesAsSchemaCapabilities(...)` exists as a migration drift guard:
+it is intentionally a name-only conversion today so protocol hint fields and
+schema capability fields cannot silently diverge during the deprecation period.
+
 Closed ecosystems can use the no-hint sentinel and resolve families from a
 known package set. Generic wallets should prefer a registry or resolver mapping
 from `SchemaRef` to the credential-family adapter package.

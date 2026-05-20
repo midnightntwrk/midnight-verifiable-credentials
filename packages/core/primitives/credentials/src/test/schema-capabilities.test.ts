@@ -24,6 +24,13 @@ const capabilities = {
   supportsSameHolderProof: false,
 };
 
+const protocolFeatures = {
+  supportsSelectiveDisclosure: true,
+  supportsPredicateProofs: true,
+  supportsVerifierScopedPseudonym: false,
+  supportsSameHolderProof: false,
+};
+
 describe("credentials core: schema capabilities", () => {
   it("accepts a schema descriptor with an explicit resolver hint", () => {
     expect(() =>
@@ -47,6 +54,19 @@ describe("credentials core: schema capabilities", () => {
     ).not.toThrow();
   });
 
+  it("accepts a schema descriptor without an open-ecosystem resolver hint", () => {
+    expect(() =>
+      pureCircuits.assertValidSchemaDescriptor({
+        schema,
+        capabilities,
+        familyResolutionHint: {
+          hasResolverHint: false,
+          resolverHint: pureCircuits.noSchemaFamilyResolverHint(),
+        },
+      }),
+    ).not.toThrow();
+  });
+
   it("rejects absent resolver hints with arbitrary bytes", () => {
     expect(() =>
       pureCircuits.assertValidSchemaFamilyResolutionHint({
@@ -56,10 +76,32 @@ describe("credentials core: schema capabilities", () => {
     ).toThrow(/Absent schema resolver hint must use the no-hint sentinel/);
   });
 
+  it("rejects set resolver hints with empty bytes", () => {
+    expect(() =>
+      pureCircuits.assertValidSchemaFamilyResolutionHint({
+        hasResolverHint: true,
+        resolverHint: new Uint8Array(32),
+      }),
+    ).toThrow(/Schema resolver hint must not be empty/);
+  });
+
+  it("rejects schema descriptors with invalid resolver hints", () => {
+    expect(() =>
+      pureCircuits.assertValidSchemaDescriptor({
+        schema,
+        capabilities,
+        familyResolutionHint: {
+          hasResolverHint: false,
+          resolverHint: bytes32("not-the-sentinel"),
+        },
+      }),
+    ).toThrow(/Absent schema resolver hint must use the no-hint sentinel/);
+  });
+
   it("compares protocol feature hints with schema capabilities during migration", () => {
     expect(() =>
       pureCircuits.assertProtocolFeaturesMatchSchemaCapabilities(
-        capabilities,
+        protocolFeatures,
         capabilities,
       ),
     ).not.toThrow();
@@ -67,7 +109,7 @@ describe("credentials core: schema capabilities", () => {
     expect(() =>
       pureCircuits.assertProtocolFeaturesMatchSchemaCapabilities(
         {
-          ...capabilities,
+          ...protocolFeatures,
           supportsPredicateProofs: false,
         },
         capabilities,
@@ -81,6 +123,18 @@ describe("credentials core: schema capabilities", () => {
         ...schema,
         packageId: new Uint8Array(32),
       }),
+    ).toThrow(/Schema package id must be set/);
+  });
+
+  it("rejects matching schema refs when both refs are empty", () => {
+    const emptySchema = {
+      ...schema,
+      packageId: new Uint8Array(32),
+      schemaId: new Uint8Array(32),
+    };
+
+    expect(() =>
+      pureCircuits.assertMatchingSchemaRefs(emptySchema, emptySchema),
     ).toThrow(/Schema package id must be set/);
   });
 });
