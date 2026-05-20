@@ -279,13 +279,12 @@ Why:
 - the file still mixes verification logic, status-mode branching, set membership, and audit bookkeeping
 - same-contract live status will always keep some impure logic, but the acceptance and request-shape logic can be factored out cleanly
 
-### P6. Clean up the simple verifier contracts and compliance bundle later
+### P6. Clean up the simple verifier contracts later
 
 Targets:
 
 - `use-cases/hello-verifier/contract/src/hello-verifier.compact`
 - `use-cases/age-gate/contract/src/demo.compact`
-- `prototypes/passport-compliance/reference/passport-compliance-demo.compact`
 
 These are valuable but should follow the core/registry/family normalization work.
 

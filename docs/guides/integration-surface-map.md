@@ -21,11 +21,11 @@ Integrators should not guess which side a package belongs to.
 
 ## Usage classes
 
-| Class | Meaning |
-| --- | --- |
-| `On-chain only` | Intended to be included or compiled into Compact contracts. Do not treat the TypeScript output as the contract-authoring surface. |
+| Class                  | Meaning                                                                                                                                                 |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `On-chain only`        | Intended to be included or compiled into Compact contracts. Do not treat the TypeScript output as the contract-authoring surface.                       |
 | `On-chain + off-chain` | Canonical capability shared across both layers: Compact source is authoritative on-chain, and generated/runtime types mirror that capability off-chain. |
-| `Off-chain only` | Runtime/orchestration/transport/integration helpers. These do not belong inside Compact contracts. |
+| `Off-chain only`       | Runtime/orchestration/transport/integration helpers. These do not belong inside Compact contracts.                                                      |
 
 ## Global rules
 
@@ -47,15 +47,15 @@ Integrators should not guess which side a package belongs to.
 
 ### `credentials`
 
-| Surface | Class | Use |
-| --- | --- | --- |
-| `src/credentials.compact` | `On-chain + off-chain` | Standalone canonical VC/VP package root. |
-| `src/credentials/composable.compact` | `On-chain + off-chain` | Composition-safe shared root for credential families and Layer 3 contracts. |
-| `src/credentials/vc-support.compact` | `On-chain + off-chain` | Narrower VC envelope/proof helper surface. |
-| `src/credentials/bindings.compact` | `On-chain + off-chain` | Holder-binding structs and validation helpers. |
-| `src/credentials/protocol-support.compact` | `On-chain + off-chain` | Generic issuance/presentation protocol module surface. |
-| `src/index.ts` and `managed/**` exports | `Off-chain only` | Generated/runtime mirror of the Compact core for tests and applications. |
-| `src/jubjub.ts` | `Off-chain only` | Runtime helper constants/functions shared by TS builders and tests. |
+| Surface                                    | Class                  | Use                                                                         |
+| ------------------------------------------ | ---------------------- | --------------------------------------------------------------------------- |
+| `src/credentials.compact`                  | `On-chain + off-chain` | Standalone canonical VC/VP package root.                                    |
+| `src/credentials/composable.compact`       | `On-chain + off-chain` | Composition-safe shared root for credential families and Layer 3 contracts. |
+| `src/credentials/vc-support.compact`       | `On-chain + off-chain` | Narrower VC envelope/proof helper surface.                                  |
+| `src/credentials/bindings.compact`         | `On-chain + off-chain` | Holder-binding structs and validation helpers.                              |
+| `src/credentials/protocol-support.compact` | `On-chain + off-chain` | Generic issuance/presentation protocol module surface.                      |
+| `src/index.ts` and `managed/**` exports    | `Off-chain only`       | Generated/runtime mirror of the Compact core for tests and applications.    |
+| `src/jubjub.ts`                            | `Off-chain only`       | Runtime helper constants/functions shared by TS builders and tests.         |
 
 Integrator rule:
 
@@ -66,17 +66,17 @@ Integrator rule:
 
 ### `credentials-birth`
 
-| Surface | Class | Use |
-| --- | --- | --- |
-| `src/birth-credential.compact` | `On-chain + off-chain` | Explicit-holder birth credential family root. |
-| `managed/**` exports via `src/index.ts` | `Off-chain only` | Generated/runtime family mirror. |
+| Surface                                 | Class                  | Use                                           |
+| --------------------------------------- | ---------------------- | --------------------------------------------- |
+| `src/birth-credential.compact`          | `On-chain + off-chain` | Explicit-holder birth credential family root. |
+| `managed/**` exports via `src/index.ts` | `Off-chain only`       | Generated/runtime family mirror.              |
 
 ### `credentials-birth-secret`
 
-| Surface | Class | Use |
-| --- | --- | --- |
-| `src/secret-birth-credential.compact` | `On-chain + off-chain` | Hidden-holder birth credential family root. |
-| `managed/**` exports via `src/index.ts` | `Off-chain only` | Generated/runtime family mirror. |
+| Surface                                 | Class                  | Use                                         |
+| --------------------------------------- | ---------------------- | ------------------------------------------- |
+| `src/secret-birth-credential.compact`   | `On-chain + off-chain` | Hidden-holder birth credential family root. |
+| `managed/**` exports via `src/index.ts` | `Off-chain only`       | Generated/runtime family mirror.            |
 
 Important note:
 
@@ -86,27 +86,27 @@ Important note:
 
 ### `credentials-same-holder`
 
-| Surface | Class | Use |
-| --- | --- | --- |
-| Compact package entrypoints | `On-chain + off-chain` | Same-holder proof capability for hidden-holder families and contracts. |
-| Generated/runtime TS exports | `Off-chain only` | Application/test mirror only. |
+| Surface                      | Class                  | Use                                                                    |
+| ---------------------------- | ---------------------- | ---------------------------------------------------------------------- |
+| Compact package entrypoints  | `On-chain + off-chain` | Same-holder proof capability for hidden-holder families and contracts. |
+| Generated/runtime TS exports | `Off-chain only`       | Application/test mirror only.                                          |
 
 ### `credentials-iso-registry`
 
-| Surface | Class | Use |
-| --- | --- | --- |
-| Compact ISO code types | `On-chain + off-chain` | Shared vocabulary for contracts and credential families. |
-| Generated/runtime TS exports | `Off-chain only` | Runtime mirror only. |
+| Surface                      | Class                  | Use                                                      |
+| ---------------------------- | ---------------------- | -------------------------------------------------------- |
+| Compact ISO code types       | `On-chain + off-chain` | Shared vocabulary for contracts and credential families. |
+| Generated/runtime TS exports | `Off-chain only`       | Runtime mirror only.                                     |
 
 ### `credentials-status-registry`
 
-| Surface | Class | Use |
-| --- | --- | --- |
-| `src/revocation-registry.compact` | `On-chain only` | Status registry contract surface. |
+| Surface                             | Class                  | Use                                                                                     |
+| ----------------------------------- | ---------------------- | --------------------------------------------------------------------------------------- |
+| `src/revocation-registry.compact`   | `On-chain only`        | Status registry contract surface.                                                       |
 | `src/status-proof-protocol.compact` | `On-chain + off-chain` | Registry-facing proof-protocol types and validators for families and Layer 3 contracts. |
-| managed registry contract exports | `Off-chain only` | Runtime contract interface mirror. |
-| `src/witness-builder.ts` | `Off-chain only` | Status-handle derivation and witness-input helpers. |
-| `src/attestation-builder.ts` | `Off-chain only` | Transitional authority-attested status builder/signing helpers. |
+| managed registry contract exports   | `Off-chain only`       | Runtime contract interface mirror.                                                      |
+| `src/witness-builder.ts`            | `Off-chain only`       | Status-handle derivation and witness-input helpers.                                     |
+| `src/attestation-builder.ts`        | `Off-chain only`       | Transitional authority-attested status builder/signing helpers.                         |
 
 Important note:
 
@@ -121,60 +121,53 @@ Integrator split:
   - `StatusRegistryRef`
   - `NoStatusBinding`
   - `RegistryBoundStatusBinding`
-  from `credentials`
+    from `credentials`
 - define verification semantics with:
   - `RevokedSetStatusRequest`
   - `AuthorityAttestedStatusProofProtocol`
   - `RevokedSetNonMembershipStatusProofProtocol`
-  from `credentials-status-registry` and the corresponding shared core types
+    from `credentials-status-registry` and the corresponding shared core types
 
 ### `credentials-demo-contract`
 
-| Surface | Class | Use |
-| --- | --- | --- |
-| `src/demo.compact` | `On-chain only` | Demo verifier/business contract. |
-| `src/demo-revocation.compact` | `On-chain only` | Status-aware hidden-holder demo verifier/business contract. |
-| managed contract exports via `src/index.ts` | `Off-chain only` | Runtime mirror for tests/integration code. |
-| `src/testing.ts`, `src/simulator.ts`, `src/witnesses.ts` | `Off-chain only` | Test/demo support code. |
-
-Dormant artifact:
-
-- `../../../prototypes/passport-compliance/reference/passport-compliance-demo.compact`
-  is a dormant adjacent-prototype artifact
-- it is not part of the supported package surface, default build, or exports
-  map
+| Surface                                                  | Class            | Use                                                         |
+| -------------------------------------------------------- | ---------------- | ----------------------------------------------------------- |
+| `src/demo.compact`                                       | `On-chain only`  | Demo verifier/business contract.                            |
+| `src/demo-revocation.compact`                            | `On-chain only`  | Status-aware hidden-holder demo verifier/business contract. |
+| managed contract exports via `src/index.ts`              | `Off-chain only` | Runtime mirror for tests/integration code.                  |
+| `src/testing.ts`, `src/simulator.ts`, `src/witnesses.ts` | `Off-chain only` | Test/demo support code.                                     |
 
 ### `credentials-offchain-did`
 
-| Surface | Class | Use |
-| --- | --- | --- |
+| Surface                                                               | Class            | Use                                |
+| --------------------------------------------------------------------- | ---------------- | ---------------------------------- |
 | package public API (`createOffchainDIDHolderBindingFromDidUrl`, etc.) | `Off-chain only` | DID-aware runtime adapter helpers. |
 
 Do not use this package inside Compact contracts.
 
 ### `credentials-openid`
 
-| Surface | Class | Use |
-| --- | --- | --- |
+| Surface                                                               | Class            | Use                                                |
+| --------------------------------------------------------------------- | ---------------- | -------------------------------------------------- |
 | package public API (`compact-value-codec`, `oid4vci`, `oid4vp`, etc.) | `Off-chain only` | OpenID-shaped transport/domain schemas and codecs. |
 
 Do not use this package as a source of contract semantics.
 
 ### `credentials-protocol`
 
-| Surface | Class | Use |
-| --- | --- | --- |
-| agent classes (`IssuerAgent`, `HolderAgent`, `VerifierAgent`, etc.) | `Off-chain only` | Reference orchestration and simulation. |
-| `ProtocolStateStore` and codec-backed store adapters | `Off-chain only` | Durable/off-chain session state abstraction. |
-| `ProtocolRandomnessSource` and envelope helpers | `Off-chain only` | Runtime orchestration helpers. |
-| `MessageBus` transport seam | `Off-chain only` | In-process reference transport. |
+| Surface                                                             | Class            | Use                                          |
+| ------------------------------------------------------------------- | ---------------- | -------------------------------------------- |
+| agent classes (`IssuerAgent`, `HolderAgent`, `VerifierAgent`, etc.) | `Off-chain only` | Reference orchestration and simulation.      |
+| `ProtocolStateStore` and codec-backed store adapters                | `Off-chain only` | Durable/off-chain session state abstraction. |
+| `ProtocolRandomnessSource` and envelope helpers                     | `Off-chain only` | Runtime orchestration helpers.               |
+| `MessageBus` transport seam                                         | `Off-chain only` | In-process reference transport.              |
 
 Do not use this package as an on-chain API surface.
 
 ### `standalone-environment`
 
-| Surface | Class | Use |
-| --- | --- | --- |
+| Surface                                                                | Class            | Use                                        |
+| ---------------------------------------------------------------------- | ---------------- | ------------------------------------------ |
 | `StandaloneEnvironment`, `provisionDidProfile`, Docker/runtime helpers | `Off-chain only` | Integration-test bootstrap infrastructure. |
 
 ## Starter paths

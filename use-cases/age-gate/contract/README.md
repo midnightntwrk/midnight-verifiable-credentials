@@ -60,15 +60,6 @@ The package currently contains two demo contract roots:
      - prototype revoked-set status capability wiring
      - prototype authority-attested status proofs for the current Layer 3 path
 
-Dormant adjacent prototype:
-
-- [`../../../prototypes/passport-compliance/reference/passport-compliance-demo.compact`](../../../prototypes/passport-compliance/reference/passport-compliance-demo.compact)
-  is preserved as an architecture/prototyping reference tied to a sibling
-  prototype checkout
-- it is intentionally separated from this concrete age-gate use-case package
-- it is not compiled by the default package scripts
-- it is not exported through the package `exports` map
-
 ## Demo design rule
 
 Demo contracts in this package are intentionally small and business-facing.
@@ -149,17 +140,17 @@ Layer 3 surface while avoiding unnecessary proof-key generation cost.
 
 ## SSI capabilities exercised
 
-| Capability | Where it appears |
-| --- | --- |
-| Issuer assertion | `issueBirthCredential(...)` validates the issuer proof against the credential body |
-| Holder authentication | `verifyBirthPresentation(...)` validates the holder proof against the presentation body |
-| Holder binding | the issued credential stores the expected holder DID method binding |
-| Request-driven verification | `verifyBirthPresentationForRequest(...)` enforces a typed verifier request before accepting the presentation |
-| Selective disclosure | the presentation can disclose birth-country data with its opening |
-| ZK predicate | the contract checks the age predicate from a private birth-date witness |
-| Anti-replay | both issuer and holder proofs carry a `challengeHash` |
-| Status-aware verification | `src/demo-revocation.compact` demonstrates same-contract live-status, verifier-supplied-root, and authority-attested status-gated verification |
-| Status freshness policy | the authority-attested path adds verifier max-age freshness checks on top of attestation expiration |
+| Capability                  | Where it appears                                                                                                                               |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Issuer assertion            | `issueBirthCredential(...)` validates the issuer proof against the credential body                                                             |
+| Holder authentication       | `verifyBirthPresentation(...)` validates the holder proof against the presentation body                                                        |
+| Holder binding              | the issued credential stores the expected holder DID method binding                                                                            |
+| Request-driven verification | `verifyBirthPresentationForRequest(...)` enforces a typed verifier request before accepting the presentation                                   |
+| Selective disclosure        | the presentation can disclose birth-country data with its opening                                                                              |
+| ZK predicate                | the contract checks the age predicate from a private birth-date witness                                                                        |
+| Anti-replay                 | both issuer and holder proofs carry a `challengeHash`                                                                                          |
+| Status-aware verification   | `src/demo-revocation.compact` demonstrates same-contract live-status, verifier-supplied-root, and authority-attested status-gated verification |
+| Status freshness policy     | the authority-attested path adds verifier max-age freshness checks on top of attestation expiration                                            |
 
 ## Build and test
 

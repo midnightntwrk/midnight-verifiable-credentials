@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { strict as assert } from "node:assert";
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, rmSync } from "node:fs";
+import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { lightTargetNames, targets } from "./run-target-catalog.mjs";
 
@@ -15,25 +15,49 @@ const runWithTimeout = (args, timeout = 5000) =>
   });
 
 const targetNames = targets.map((target) => target.name);
-const duplicateTargetNames = targetNames.filter((name, index) => targetNames.indexOf(name) !== index);
+const duplicateTargetNames = targetNames.filter(
+  (name, index) => targetNames.indexOf(name) !== index,
+);
 const lightTargets = lightTargetNames;
 
-assert.deepEqual(duplicateTargetNames, [], "runner target catalog must not contain duplicate targets");
-assert.ok(targetNames.includes("full"), "runner target catalog must include full");
-assert.ok(targetNames.includes("clean-artifacts"), "runner target catalog must include clean-artifacts");
-assert.ok(targetNames.includes("check-integration"), "runner target catalog must include check-integration");
+assert.deepEqual(
+  duplicateTargetNames,
+  [],
+  "runner target catalog must not contain duplicate targets",
+);
+assert.ok(
+  targetNames.includes("full"),
+  "runner target catalog must include full",
+);
+assert.ok(
+  targetNames.includes("clean-artifacts"),
+  "runner target catalog must include clean-artifacts",
+);
+assert.ok(
+  targetNames.includes("check-integration"),
+  "runner target catalog must include check-integration",
+);
 assert.deepEqual(
   [...lightTargetNames].sort(),
-  targets.filter((target) => target.supportsLight).map((target) => target.name).sort(),
+  targets
+    .filter((target) => target.supportsLight)
+    .map((target) => target.name)
+    .sort(),
   "light target names must match catalog supportsLight flags",
 );
 
 const help = runWithTimeout(["./run.sh", "help", "--light"]);
 assert.equal(help.status, 0, "help --light should exit successfully");
-assert.ok(!help.stderr.includes("[run] Warning:"), "help --light should not warn");
+assert.ok(
+  !help.stderr.includes("[run] Warning:"),
+  "help --light should not warn",
+);
 
 for (const targetName of targetNames) {
-  assert.ok(help.stdout.includes(targetName), `help output should include target '${targetName}'`);
+  assert.ok(
+    help.stdout.includes(targetName),
+    `help output should include target '${targetName}'`,
+  );
 }
 
 const lightList = runWithTimeout([
@@ -41,7 +65,11 @@ const lightList = runWithTimeout([
   "-lc",
   "source ./tooling/scripts/run-common.sh; run_common_print_light_targets",
 ]);
-assert.equal(lightList.status, 0, "run_common_print_light_targets should exit successfully");
+assert.equal(
+  lightList.status,
+  0,
+  "run_common_print_light_targets should exit successfully",
+);
 assert.equal(
   lightList.stdout.trim(),
   lightTargets.join(", "),
@@ -53,7 +81,11 @@ const supportedLightProbe = runWithTimeout([
   "-lc",
   "source ./tooling/scripts/run-common.sh; run_common_target_supports_light build",
 ]);
-assert.equal(supportedLightProbe.status, 0, "build should be a light-supported target");
+assert.equal(
+  supportedLightProbe.status,
+  0,
+  "build should be a light-supported target",
+);
 
 const unsupportedLightProbe = runWithTimeout([
   "bash",
@@ -67,30 +99,85 @@ assert.notEqual(
 );
 
 const targetsResult = runWithTimeout(["./run.sh", "targets", "--light"]);
-assert.equal(targetsResult.status, 0, "targets --light should exit successfully");
-assert.ok(!targetsResult.stderr.includes("[run] Warning:"), "targets --light should not warn");
+assert.equal(
+  targetsResult.status,
+  0,
+  "targets --light should exit successfully",
+);
+assert.ok(
+  !targetsResult.stderr.includes("[run] Warning:"),
+  "targets --light should not warn",
+);
 
 const midnightTestDir = path.join(repoRoot, ".midnight-test");
 const cleanupProbeDir = path.join(midnightTestDir, "run-target-catalog-probe");
 const createdMidnightTestRoot = !existsSync(midnightTestDir);
+const legacyShellDir = path.join(repoRoot, "credentials-birth");
+const legacyShellSrcDir = path.join(legacyShellDir, "src");
+const createdLegacyShellRoot = !existsSync(legacyShellDir);
+const skippedLegacyShellDir = path.join(repoRoot, "credentials-openid");
+const skippedLegacyShellProbe = path.join(
+  skippedLegacyShellDir,
+  `run-target-catalog-nondisposable-${process.pid}.txt`,
+);
+const createdSkippedLegacyShellRoot = !existsSync(skippedLegacyShellDir);
 
 // Materialize .midnight-test so the clean-artifacts dry-run report lists it.
 mkdirSync(cleanupProbeDir, { recursive: true });
+// Materialize one old top-level shell so cleanup coverage stays executable.
+// The probe must use a real legacy shell name because only known dead shells
+// are eligible for cleanup. If this assertion fails locally, inspect the shell
+// for non-disposable files left by older experiments.
+mkdirSync(legacyShellSrcDir, { recursive: true });
+mkdirSync(skippedLegacyShellDir, { recursive: true });
+writeFileSync(skippedLegacyShellProbe, "not generated\n");
 
 try {
-  const cleanArtifactsDryRun = runWithTimeout(["./run.sh", "clean-artifacts", "--", "--dry-run", "--json"], 20000);
-  assert.equal(cleanArtifactsDryRun.status, 0, "clean-artifacts dry-run JSON should exit successfully");
+  const cleanArtifactsDryRun = runWithTimeout(
+    ["./run.sh", "clean-artifacts", "--", "--dry-run", "--json"],
+    20000,
+  );
+  assert.equal(
+    cleanArtifactsDryRun.status,
+    0,
+    "clean-artifacts dry-run JSON should exit successfully",
+  );
 
   const cleanArtifactsReport = JSON.parse(cleanArtifactsDryRun.stdout);
-  assert.equal(cleanArtifactsReport.dryRun, true, "clean-artifacts dry-run JSON should report dryRun=true");
+  assert.equal(
+    cleanArtifactsReport.dryRun,
+    true,
+    "clean-artifacts dry-run JSON should report dryRun=true",
+  );
   assert.ok(
     cleanArtifactsReport.removed.includes(".midnight-test"),
     "clean-artifacts dry-run JSON should include .midnight-test cleanup coverage",
+  );
+  assert.ok(
+    cleanArtifactsReport.removed.includes("credentials-birth"),
+    "clean-artifacts dry-run JSON should include dead top-level shell cleanup coverage",
+  );
+  assert.ok(
+    cleanArtifactsReport.skippedTracked.some((relativePath) =>
+      relativePath.startsWith("tooling/vendor/midnight-did/"),
+    ),
+    "clean-artifacts dry-run JSON should report tracked artifact skips",
+  );
+  assert.ok(
+    cleanArtifactsReport.skippedDeadShells.includes("credentials-openid"),
+    "clean-artifacts dry-run JSON should preserve non-disposable dead-shell candidates",
   );
 } finally {
   rmSync(cleanupProbeDir, { recursive: true, force: true });
   if (createdMidnightTestRoot) {
     rmSync(midnightTestDir, { recursive: true, force: true });
+  }
+  if (createdLegacyShellRoot) {
+    rmSync(legacyShellDir, { recursive: true, force: true });
+  }
+  rmSync(skippedLegacyShellProbe, { force: true });
+  if (createdSkippedLegacyShellRoot) {
+    rmSync(skippedLegacyShellDir, { recursive: true, force: true });
   }
 }
 

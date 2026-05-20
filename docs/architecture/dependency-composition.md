@@ -23,12 +23,12 @@ The design goal is:
 
 The current repository already uses a layered package split:
 
-| Layer | Package examples | Role |
-|---|---|---|
-| Layer 1 generic capabilities | `credentials`, `credentials-same-holder`, `credentials-iso-registry`, `credentials-status-registry` | Generic VC/VP envelope, proof helpers, holder-binding profiles, same-holder circuits, shared code types, and current prototype status/revocation registry support |
-| Layer 2 credential families | `credentials-birth`, `credentials-birth-secret` | Concrete claims, disclosures, requests, predicates, schema checks in the current workspace |
-| Layer 3 business contracts | `credentials-demo-contract` | Contract state and business rules that compose one or more credential families |
-| Layer 4 application/protocol orchestration | `credentials-protocol`, `credentials-openid`, `credentials-offchain-did`, `standalone-environment` | Transport/session/app coordination around Compact artifacts |
+| Layer                                      | Package examples                                                                                    | Role                                                                                                                                                              |
+| ------------------------------------------ | --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Layer 1 generic capabilities               | `credentials`, `credentials-same-holder`, `credentials-iso-registry`, `credentials-status-registry` | Generic VC/VP envelope, proof helpers, holder-binding profiles, same-holder circuits, shared code types, and current prototype status/revocation registry support |
+| Layer 2 credential families                | `credentials-birth`, `credentials-birth-secret`                                                     | Concrete claims, disclosures, requests, predicates, schema checks in the current workspace                                                                        |
+| Layer 3 business contracts                 | `credentials-demo-contract`                                                                         | Contract state and business rules that compose one or more credential families                                                                                    |
+| Layer 4 application/protocol orchestration | `credentials-protocol`, `credentials-openid`, `credentials-offchain-did`, `standalone-environment`  | Transport/session/app coordination around Compact artifacts                                                                                                       |
 
 Important implementation detail:
 
@@ -43,19 +43,6 @@ Repository-scope note:
   from adjacent prototype work to illustrate multi-family composition pressure
 - those examples are useful design stress tests, but they are not evidence that
   those families are current first-class workspace packages in this repository
-
-Adjacent prototype note:
-
-- the repository does contain one composition spike contract,
-  `prototypes/passport-compliance/reference/passport-compliance-demo.compact`
-- that spike composes current-repo shared modules with credential-family
-  sources from a sibling `midnight-passport-prototype` checkout
-- treat it as an architecture/prototyping reference, not as proof that
-  passport/compliance families are part of the current npm workspace here
-- it is a dormant artifact, not part of the supported `credentials-demo-contract`
-  package surface:
-  - not compiled by default package scripts
-  - not exported through the package `exports` map
 
 The current contracts use `include` for local Compact source composition and
 module imports/prefixes for generic module instantiation, for example:
@@ -85,7 +72,6 @@ through imports, module generics, selective imports, and prefixes. The current
 repo also relies on `include` for file-level source composition. The practical
 recommendation is to keep the public package surface stable and compiler-tested
 rather than expose arbitrary internal file paths.
-
 
 ## Adjacent Prototype Spike Findings
 
@@ -275,16 +261,16 @@ include intentionally.
 
 Shared package surfaces:
 
-| Package | Surface | Purpose |
-|---|---|---|
-| `credentials` | `src/credentials.compact` | standalone package root used for generated TS/JS artifacts |
-| `credentials` | `src/credentials/composable.compact` | full shared Layer 3 root for credential-family composables and business contracts |
-| `credentials` | `src/credentials/vc-support.compact` | VC envelope and proof-validation support |
-| `credentials` | `src/credentials/protocol-support.compact` | issuance and presentation protocol modules |
-| `credentials` | `src/credentials/bindings.compact` | holder-binding structs and witness-validation helpers |
-| `credentials-same-holder` | `src/same-holder.compact` | standalone package root used for generated TS/JS artifacts |
-| `credentials-same-holder` | `src/same-holder/composable.compact` | same-holder capability without re-including the whole `credentials` bundle |
-| `credentials-iso-registry` | `src/iso-registry.compact` | flat shared vocabulary surface; no extra composable split needed today |
+| Package                    | Surface                                    | Purpose                                                                           |
+| -------------------------- | ------------------------------------------ | --------------------------------------------------------------------------------- |
+| `credentials`              | `src/credentials.compact`                  | standalone package root used for generated TS/JS artifacts                        |
+| `credentials`              | `src/credentials/composable.compact`       | full shared Layer 3 root for credential-family composables and business contracts |
+| `credentials`              | `src/credentials/vc-support.compact`       | VC envelope and proof-validation support                                          |
+| `credentials`              | `src/credentials/protocol-support.compact` | issuance and presentation protocol modules                                        |
+| `credentials`              | `src/credentials/bindings.compact`         | holder-binding structs and witness-validation helpers                             |
+| `credentials-same-holder`  | `src/same-holder.compact`                  | standalone package root used for generated TS/JS artifacts                        |
+| `credentials-same-holder`  | `src/same-holder/composable.compact`       | same-holder capability without re-including the whole `credentials` bundle        |
+| `credentials-iso-registry` | `src/iso-registry.compact`                 | flat shared vocabulary surface; no extra composable split needed today            |
 
 This is enough decomposition for the current Passport + Screening prototype
 spike:
@@ -474,20 +460,20 @@ credential super-package.
 
 Current examples:
 
-| Capability | Package | Why separate |
-|---|---|---|
-| Same-holder proof | `credentials-same-holder` | Needed only for multi-credential holder correlation |
-| ISO code structs | `credentials-iso-registry` | Reusable data vocabulary, not VC semantics |
-| OpenID-shaped transport DTOs | `credentials-openid` | TypeScript transport layer, not Compact contract logic |
+| Capability                   | Package                    | Why separate                                           |
+| ---------------------------- | -------------------------- | ------------------------------------------------------ |
+| Same-holder proof            | `credentials-same-holder`  | Needed only for multi-credential holder correlation    |
+| ISO code structs             | `credentials-iso-registry` | Reusable data vocabulary, not VC semantics             |
+| OpenID-shaped transport DTOs | `credentials-openid`       | TypeScript transport layer, not Compact contract logic |
 
 Future candidate capability packages:
 
-| Capability | Potential package | Notes |
-|---|---|---|
-| Revocation/status | `credentials-status` | Should remain optional until status model stabilizes |
-| Nullifier/reuse prevention | `credentials-nullifier` | Useful for voting/access contracts, not mandatory for all VC families |
-| Trust registry references | `credentials-trust-policy` | Likely Layer 5/governance-facing, not part of base credential validation |
-| Requirement descriptors | `credentials-requirements` | Could help wallets understand Layer 3 contract requests if repeated patterns emerge |
+| Capability                 | Potential package          | Notes                                                                               |
+| -------------------------- | -------------------------- | ----------------------------------------------------------------------------------- |
+| Revocation/status          | `credentials-status`       | Should remain optional until status model stabilizes                                |
+| Nullifier/reuse prevention | `credentials-nullifier`    | Useful for voting/access contracts, not mandatory for all VC families               |
+| Trust registry references  | `credentials-trust-policy` | Likely Layer 5/governance-facing, not part of base credential validation            |
+| Requirement descriptors    | `credentials-requirements` | Could help wallets understand Layer 3 contract requests if repeated patterns emerge |
 
 ## Versioning And Publishing Requirements
 
@@ -553,8 +539,7 @@ Rule of thumb:
 
 ## Historical Prototype Spike
 
-The first dependency-composition spike was prototyped in the now-dormant
-`prototypes/passport-compliance/reference/passport-compliance-demo.compact`. It composes:
+The first dependency-composition spike combined:
 
 - `credentials-same-holder`
 - `credentials-iso-registry`
@@ -567,8 +552,8 @@ Important scope note:
 - the Passport and Compliance family paths resolve into the sibling
   `midnight-passport-prototype` checkout, not into this repository's npm
   workspace
-- this makes the spike useful as an architecture proof, but not a current
-  package-availability claim or supported package surface for this repository
+- the dormant checked-in spike contract was removed because it could not compile
+  from this repository alone and was not part of any package surface
 
 The contract verifies a Passport presentation and a Sanction Screening
 presentation under one verifier challenge, checks the same hidden holder through
