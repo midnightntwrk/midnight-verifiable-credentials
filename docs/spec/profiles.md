@@ -60,9 +60,9 @@ Binding mechanism:
 - holder proof is checked against `Proof.signerVerificationMethodRef`
 
 Current implementation packages:
-- [`../../core/primitives/credentials/README.md`](../../core/primitives/credentials/README.md)
-- [`../../prototypes/credential-families/birth/README.md`](../../prototypes/credential-families/birth/README.md)
-- [`../../use-cases/age-gate/contract/README.md`](../../use-cases/age-gate/contract/README.md)
+- [`../../packages/core/primitives/credentials/README.md`](../../packages/core/primitives/credentials/README.md)
+- [`../../packages/prototypes/credential-families/birth/README.md`](../../packages/prototypes/credential-families/birth/README.md)
+- [`../../packages/use-cases/age-gate/contract/README.md`](../../packages/use-cases/age-gate/contract/README.md)
 
 Current test coverage:
 - birth credential holder-binding tests
@@ -93,10 +93,10 @@ Binding mechanism:
 - verifier challenge response derived from the holder secret
 
 Current implementation packages:
-- [`../../core/primitives/credentials/README.md`](../../core/primitives/credentials/README.md)
-- [`../../prototypes/credential-families/birth-secret/README.md`](../../prototypes/credential-families/birth-secret/README.md)
-- [`../../registry/status-registry/README.md`](../../registry/status-registry/README.md)
-- [`../../components/orchestration/protocol/README.md`](../../components/orchestration/protocol/README.md)
+- [`../../packages/core/primitives/credentials/README.md`](../../packages/core/primitives/credentials/README.md)
+- [`../../packages/prototypes/credential-families/birth-secret/README.md`](../../packages/prototypes/credential-families/birth-secret/README.md)
+- [`../../packages/registry/status-registry/README.md`](../../packages/registry/status-registry/README.md)
+- [`../../packages/components/orchestration/protocol/README.md`](../../packages/components/orchestration/protocol/README.md)
 
 Current test coverage:
 - core secret-holder-binding tests
@@ -129,10 +129,10 @@ Binding mechanism:
 - blinded holder-secret commitment plus issuer nonce
 
 Current implementation packages:
-- [`../../core/primitives/credentials/README.md`](../../core/primitives/credentials/README.md)
-- [`../../prototypes/credential-families/birth-secret/README.md`](../../prototypes/credential-families/birth-secret/README.md)
-- [`../../registry/status-registry/README.md`](../../registry/status-registry/README.md)
-- [`../../components/orchestration/protocol/README.md`](../../components/orchestration/protocol/README.md)
+- [`../../packages/core/primitives/credentials/README.md`](../../packages/core/primitives/credentials/README.md)
+- [`../../packages/prototypes/credential-families/birth-secret/README.md`](../../packages/prototypes/credential-families/birth-secret/README.md)
+- [`../../packages/registry/status-registry/README.md`](../../packages/registry/status-registry/README.md)
+- [`../../packages/components/orchestration/protocol/README.md`](../../packages/components/orchestration/protocol/README.md)
 
 Current test coverage:
 - core holder-binding tests
@@ -168,8 +168,8 @@ Binding mechanism:
 - hidden holder secret plus verifier domain hash
 
 Current implementation packages:
-- [`../../core/primitives/credentials/README.md`](../../core/primitives/credentials/README.md)
-- [`../../components/orchestration/protocol/README.md`](../../components/orchestration/protocol/README.md)
+- [`../../packages/core/primitives/credentials/README.md`](../../packages/core/primitives/credentials/README.md)
+- [`../../packages/components/orchestration/protocol/README.md`](../../packages/components/orchestration/protocol/README.md)
 
 Current test coverage:
 - secret-holder pseudonym protocol tests
@@ -191,8 +191,8 @@ Binding mechanism:
 - same-holder witness-equality circuits over secret/blinded-secret bindings
 
 Current implementation packages:
-- [`../../core/capabilities/same-holder/README.md`](../../core/capabilities/same-holder/README.md)
-- composed by [`../../prototypes/credential-families/birth-secret/README.md`](../../prototypes/credential-families/birth-secret/README.md)
+- [`../../packages/core/capabilities/same-holder/README.md`](../../packages/core/capabilities/same-holder/README.md)
+- composed by [`../../packages/prototypes/credential-families/birth-secret/README.md`](../../packages/prototypes/credential-families/birth-secret/README.md)
 
 Current test coverage:
 - same-holder capability tests
@@ -229,12 +229,12 @@ Binding mechanism:
   - hashed into `Bytes<32>`
 
 Current implementation packages:
-- [`../../core/primitives/credentials/README.md`](../../core/primitives/credentials/README.md)
-- [`../../components/adapters/offchain-did/README.md`](../../components/adapters/offchain-did/README.md)
+- [`../../packages/core/primitives/credentials/README.md`](../../packages/core/primitives/credentials/README.md)
+- [`../../packages/components/adapters/offchain-did/README.md`](../../packages/components/adapters/offchain-did/README.md)
 
 Current test coverage:
 - core lightweight holder-binding tests
-- `components/adapters/offchain-did` runtime helper tests
+- `packages/components/adapters/offchain-did` runtime helper tests
 
 Current limitations:
 - intended for offchain-DID-only prototype flows
@@ -258,7 +258,7 @@ Binding mechanism:
 - proof public key must match the bound Jubjub key
 
 Current implementation packages:
-- [`../../core/primitives/credentials/README.md`](../../core/primitives/credentials/README.md)
+- [`../../packages/core/primitives/credentials/README.md`](../../packages/core/primitives/credentials/README.md)
 
 Current test coverage:
 - lightweight holder-binding tests

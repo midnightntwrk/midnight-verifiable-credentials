@@ -270,25 +270,25 @@ Evidence reviewed:
 - historical PR-number gap `#96` through `#130` reconciled as superseded
   redesign-wave iterations rather than as a live backlog omission
 - current top-level tree under:
-  - `core/`
-  - `registry/`
-  - `protocols/`
-  - `components/`
-  - `prototypes/`
-  - `use-cases/`
+  - `packages/core/`
+  - `packages/registry/`
+  - `packages/protocols/`
+  - `packages/components/`
+  - `packages/prototypes/`
+  - `packages/use-cases/`
   - `tooling/`
-- current BDD feature inventory under `use-cases/age-gate/scenarios/features`
+- current BDD feature inventory under `packages/use-cases/age-gate/scenarios/features`
 - current status/revocation implementation and specs in:
-  - `core/primitives/credentials`
-  - `registry/status-registry`
-  - `prototypes/credential-families/birth-secret`
+  - `packages/core/primitives/credentials`
+  - `packages/registry/status-registry`
+  - `packages/prototypes/credential-families/birth-secret`
   - `docs/spec`
 - current starter/template surfaces under:
   - `docs/templates`
   - `docs/guides`
   - `tooling/scripts/scaffold-vc-family.mjs`
 - current protocol production-readiness docs and adapters in
-  `components/orchestration/protocol`
+  `packages/components/orchestration/protocol`
 
 Main findings:
 
@@ -602,7 +602,7 @@ Required outcome:
   - current workspace packages
   - sibling or adjacent prototype repos
   - future roadmap examples
-- `prototypes/passport-compliance/reference/passport-compliance-demo.compact` is labeled as
+- `packages/prototypes/passport-compliance/reference/passport-compliance-demo.compact` is labeled as
   adjacent-prototype/example material rather than current validated workspace
 
 Current grouped execution:
@@ -716,7 +716,7 @@ Required outcome:
 Current grouped execution:
 
 - replace the discarded JVM Serenity prototype with:
-  - `use-cases/age-gate/scenarios/`
+  - `packages/use-cases/age-gate/scenarios/`
   - Cucumber.js
   - Serenity/JS
   - TypeScript

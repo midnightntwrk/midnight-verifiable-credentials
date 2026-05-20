@@ -30,7 +30,7 @@ This RFC also makes one repository-policy change explicit:
 - current `*demo*` packages should be split into:
   - prototype matrices when they exist to prove VC core solidity or capability
     composition
-  - concrete `use-cases/` subprojects when they exist to model a real
+  - concrete `packages/use-cases/` subprojects when they exist to model a real
     application flow
 
 This RFC is about repository structure, dependency direction, CI policy, and
@@ -106,7 +106,7 @@ This RFC does not require:
 - immediate public import-path changes
 - one-shot movement of all files in a single branch
 - deciding every future credential family or use case now
-- extracting `registry/` into a separate repository immediately
+- extracting `packages/registry/` into a separate repository immediately
 
 Those are follow-up execution decisions.
 
@@ -145,12 +145,12 @@ not:
 
 ```text
 docs/
-core/
-registry/
-protocols/
-components/
-prototypes/
-use-cases/
+packages/core/
+packages/registry/
+packages/protocols/
+packages/components/
+packages/prototypes/
+packages/use-cases/
 tooling/
 assets/
 ```
@@ -183,34 +183,34 @@ Rules:
 - generated quality summaries may be linked from docs, but raw measurement data
   should not define the documentation structure
 
-### 2. `core/`
+### 2. `packages/core/`
 
 Owns reusable VC semantics and reusable capability layers.
 
 Target structure:
 
 ```text
-core/
+packages/core/
   primitives/
     credentials/
     iso-registry/
   capabilities/
     same-holder/
-  protocols/
+  packages/protocols/
     generic-issuance-presentation/
 ```
 
 Rules:
 
-- `core/` must not depend on `protocols/`, `components/`, `prototypes/`, or
-  `use-cases/`
-- `core/` is the canonical source of Compact-native VC semantics
-- `core/` owns reusable holder-binding, proof, and VC-side status-binding
+- `packages/core/` must not depend on `packages/protocols/`, `packages/components/`, `packages/prototypes/`, or
+  `packages/use-cases/`
+- `packages/core/` is the canonical source of Compact-native VC semantics
+- `packages/core/` owns reusable holder-binding, proof, and VC-side status-binding
   concepts
-- `core/` must not contain business-specific verifier logic or transport
+- `packages/core/` must not contain business-specific verifier logic or transport
   bindings
 
-### 3. `registry/`
+### 3. `packages/registry/`
 
 Owns reusable registry surfaces that may later graduate into their own
 repository.
@@ -218,27 +218,27 @@ repository.
 Target structure:
 
 ```text
-registry/
+packages/registry/
   status-registry/
 ```
 
 Rules:
 
-- `registry/` may depend on `core/`
-- `registry/` must not depend on `prototypes/`, `use-cases/`, or
-  `components/`
+- `packages/registry/` may depend on `packages/core/`
+- `packages/registry/` must not depend on `packages/prototypes/`, `packages/use-cases/`, or
+  `packages/components/`
 - this area is intended to be reusable across the Midnight ecosystem
 - status/revocation registry surfaces should live here rather than being buried
   in demos or use cases
 
-### 4. `protocols/`
+### 4. `packages/protocols/`
 
 Owns interoperability bindings and externally-facing protocol shapes.
 
 Target structure:
 
 ```text
-protocols/
+packages/protocols/
   oidc/
   didcomm/
   custom-api/
@@ -252,22 +252,22 @@ Meaning:
 
 Rules:
 
-- `protocols/` may depend on `core/` and `registry/`
-- `protocols/` must not depend on `components/`, `prototypes/`, or
-  `use-cases/`
-- `protocols/` owns binding shapes, message envelopes, interoperability
+- `packages/protocols/` may depend on `packages/core/` and `packages/registry/`
+- `packages/protocols/` must not depend on `packages/components/`, `packages/prototypes/`, or
+  `packages/use-cases/`
+- `packages/protocols/` owns binding shapes, message envelopes, interoperability
   semantics, and mapping rules
-- `protocols/` must not become the home of agent state, storage, or orchestration
+- `packages/protocols/` must not become the home of agent state, storage, or orchestration
   runtime logic
 
-### 5. `components/`
+### 5. `packages/components/`
 
 Owns reusable runtime machinery and wiring pieces.
 
 Target structure:
 
 ```text
-components/
+packages/components/
   adapters/
   agents/
   storage/
@@ -286,19 +286,19 @@ Examples:
 
 Rules:
 
-- `components/` may depend on `core/`, `registry/`, and `protocols/`
-- `components/` must not depend on `prototypes/` or `use-cases/`
+- `packages/components/` may depend on `packages/core/`, `packages/registry/`, and `packages/protocols/`
+- `packages/components/` must not depend on `packages/prototypes/` or `packages/use-cases/`
 - this area wires things together, but it does not redefine core semantics or
   public protocol bindings
 
-### 6. `prototypes/`
+### 6. `packages/prototypes/`
 
 Owns prototype credential families and the evidence that the core is solid.
 
 Target structure:
 
 ```text
-prototypes/
+packages/prototypes/
   credential-families/
     birth/
     birth-secret/
@@ -317,8 +317,8 @@ Meaning:
 
 Rules:
 
-- `prototypes/` may depend on `core/` and `registry/`
-- `prototypes/` may depend on `protocols/` or `components/` only when the
+- `packages/prototypes/` may depend on `packages/core/` and `packages/registry/`
+- `packages/prototypes/` may depend on `packages/protocols/` or `packages/components/` only when the
   prototype explicitly exists to validate that integration surface
 - the default expectation is that prototype families stay close to the core and
   prove capability composition, not transport complexity
@@ -333,14 +333,14 @@ Rules:
   - latency
   - compatibility and integration behavior
 
-### 7. `use-cases/`
+### 7. `packages/use-cases/`
 
 Owns concrete subprojects for real application flows.
 
 Target structure:
 
 ```text
-use-cases/
+packages/use-cases/
   age-gate/
     contract/
     scenarios/
@@ -359,8 +359,8 @@ Meaning:
 
 Rules:
 
-- `use-cases/` may depend on `core/`, `registry/`, `protocols/`,
-  `components/`, and `prototypes/`
+- `packages/use-cases/` may depend on `packages/core/`, `packages/registry/`, `packages/protocols/`,
+  `packages/components/`, and `packages/prototypes/`
 - BDD scenarios should live here, not in a generic repo-level bucket forever
 - BDD scenarios must not be mixed into prototype package trees or low-level
   package test suites as if they were another unit or integration layer
@@ -372,10 +372,10 @@ Rules:
 Use-case rule:
 
 - if an artifact exists to explain a concrete business flow to integrators,
-  product engineers, or application developers, it belongs under `use-cases/`
+  product engineers, or application developers, it belongs under `packages/use-cases/`
 - if an artifact exists to prove a reusable VC + capability + protocol
   combination is sound independent of any one business story, it belongs under
-  `prototypes/`
+  `packages/prototypes/`
 
 ### 8. `tooling/`
 
@@ -423,13 +423,13 @@ tooling     -> may observe/build all, imported by none
 
 Important notes:
 
-1. `protocols/` is not a replacement for `components/`
-   - `protocols/` defines binding and interoperability shapes
-   - `components/` defines runtime machinery that can use those bindings
-2. `use-cases/` depends on `protocols/`
+1. `packages/protocols/` is not a replacement for `packages/components/`
+   - `packages/protocols/` defines binding and interoperability shapes
+   - `packages/components/` defines runtime machinery that can use those bindings
+2. `packages/use-cases/` depends on `packages/protocols/`
    - this is the explicit place where business/application flows consume OIDC,
      DIDComm, or custom API bindings
-3. `prototypes/` and `use-cases/` are not the same thing
+3. `packages/prototypes/` and `packages/use-cases/` are not the same thing
    - prototypes prove core solidity and composition breadth
    - use cases prove that a real flow is understandable and usable
 4. BDD is a use-case concern, not a prototype concern
@@ -441,25 +441,25 @@ Important notes:
 
 | Current package / area | Target area | Notes |
 | --- | --- | --- |
-| `credentials` | `core/primitives/credentials` | canonical VC core |
-| `credentials-iso-registry` | `core/primitives/iso-registry` | shared code vocabulary |
-| `credentials-same-holder` | `core/capabilities/same-holder` | reusable proof capability |
-| `credentials-status-registry` | `registry/status-registry` | reusable ecosystem-facing registry surface |
-| `credentials-birth` | `prototypes/credential-families/birth` | prototype family proving the core |
-| `credentials-birth-secret` | `prototypes/credential-families/birth-secret` | hidden-holder prototype family |
-| `credentials-openid` | `protocols/openid` | OpenID-shaped binding layer |
-| future DIDComm binding | `protocols/didcomm` | explicit protocol area |
-| future custom API binding | `protocols/custom-api` | repo-local API binding area |
-| `credentials-offchain-did` | `components/adapters/offchain-did` | runtime DID adapter, not core |
-| `credentials-protocol` | `components/orchestration/protocol` | orchestration/wiring, not core |
-| agent logic | `components/agents` | if/when split further |
-| message bus | `components/message-bus` | if/when split further |
-| protocol state store | `components/storage` | if/when split further |
-| `standalone-environment` | `components/integration/standalone-environment` | integration harness |
-| `credentials-demo-contract` | `prototypes/...` and `use-cases/.../contract` | split the current generic demo bucket into prototype combination proofs and concrete use-case contracts |
-| `vc-bdd-scenarios` | `use-cases/.../scenarios` | living docs should sit under concrete flows |
+| `credentials` | `packages/core/primitives/credentials` | canonical VC core |
+| `credentials-iso-registry` | `packages/core/primitives/iso-registry` | shared code vocabulary |
+| `credentials-same-holder` | `packages/core/capabilities/same-holder` | reusable proof capability |
+| `credentials-status-registry` | `packages/registry/status-registry` | reusable ecosystem-facing registry surface |
+| `credentials-birth` | `packages/prototypes/credential-families/birth` | prototype family proving the core |
+| `credentials-birth-secret` | `packages/prototypes/credential-families/birth-secret` | hidden-holder prototype family |
+| `credentials-openid` | `packages/protocols/openid` | OpenID-shaped binding layer |
+| future DIDComm binding | `packages/protocols/didcomm` | explicit protocol area |
+| future custom API binding | `packages/protocols/custom-api` | repo-local API binding area |
+| `credentials-offchain-did` | `packages/components/adapters/offchain-did` | runtime DID adapter, not core |
+| `credentials-protocol` | `packages/components/orchestration/protocol` | orchestration/wiring, not core |
+| agent logic | `packages/components/agents` | if/when split further |
+| message bus | `packages/components/message-bus` | if/when split further |
+| protocol state store | `packages/components/storage` | if/when split further |
+| `standalone-environment` | `packages/components/integration/standalone-environment` | integration harness |
+| `credentials-demo-contract` | `packages/prototypes/...` and `packages/use-cases/.../contract` | split the current generic demo bucket into prototype combination proofs and concrete use-case contracts |
+| `vc-bdd-scenarios` | `packages/use-cases/.../scenarios` | living docs should sit under concrete flows |
 | complexity / latency collectors | `tooling/metrics` | executable collectors |
-| complexity / latency baselines | `prototypes/quality` | prototype evidence set |
+| complexity / latency baselines | `packages/prototypes/quality` | prototype evidence set |
 
 ## Current deviation inventory
 
@@ -482,13 +482,13 @@ already present:
 
 Target destinations:
 
-- `credentials/` -> `core/primitives/credentials/`
-- `credentials-iso-registry/` -> `core/primitives/iso-registry/`
-- `credentials-same-holder/` -> `core/capabilities/same-holder/`
-- `credentials-status-registry/` -> `registry/status-registry/`
-- `credentials-birth/` -> `prototypes/credential-families/birth/`
+- `credentials/` -> `packages/core/primitives/credentials/`
+- `credentials-iso-registry/` -> `packages/core/primitives/iso-registry/`
+- `credentials-same-holder/` -> `packages/core/capabilities/same-holder/`
+- `credentials-status-registry/` -> `packages/registry/status-registry/`
+- `credentials-birth/` -> `packages/prototypes/credential-families/birth/`
 - `credentials-birth-secret/` ->
-  `prototypes/credential-families/birth-secret/`
+  `packages/prototypes/credential-families/birth-secret/`
 
 ### Transitional tooling-owned vendor surfaces
 
@@ -502,7 +502,7 @@ areas rather than as top-level architecture roots:
 The former top-level `infrastructure/preprod-proof-server.yml` outlier has now
 been rehomed under:
 
-- `components/integration/infrastructure/standalone/preprod-proof-server.yml`
+- `packages/components/integration/infrastructure/standalone/preprod-proof-server.yml`
 
 ### Compatibility shims that are not architecture debt
 
@@ -533,18 +533,18 @@ The top-level lanes should classify changes by area:
 
 - `docs/`
   - docs validation only
-- `core/`
+- `packages/core/`
   - lint, typecheck, package-boundary checks, core tests, contract-surface
     validation
-- `registry/`
+- `packages/registry/`
   - registry tests, contract-surface validation, trust-boundary tests
-- `protocols/`
+- `packages/protocols/`
   - protocol/schema tests, compatibility tests, selected integration checks
-- `components/`
+- `packages/components/`
   - runtime tests, orchestration tests, selected integration checks
-- `prototypes/`
+- `packages/prototypes/`
   - prototype tests plus quality-baseline checks for complexity and latency
-- `use-cases/`
+- `packages/use-cases/`
   - BDD scenarios, use-case contract/app tests, targeted end-to-end checks
 - `tooling/`
   - script quality, CI validation, boundary checker validation
@@ -553,12 +553,12 @@ The top-level lanes should classify changes by area:
 
 The repository should add or extend a boundary checker so it can fail PRs when:
 
-- `core/` imports from `protocols/`, `components/`, `prototypes/`, or
-  `use-cases/`
-- `registry/` imports from `components/`, `prototypes/`, or `use-cases/`
-- `protocols/` imports from `components/`, `prototypes/`, or `use-cases/`
-- `components/` imports from `prototypes/` or `use-cases/`
-- `prototypes/` imports from `use-cases/`
+- `packages/core/` imports from `packages/protocols/`, `packages/components/`, `packages/prototypes/`, or
+  `packages/use-cases/`
+- `packages/registry/` imports from `packages/components/`, `packages/prototypes/`, or `packages/use-cases/`
+- `packages/protocols/` imports from `packages/components/`, `packages/prototypes/`, or `packages/use-cases/`
+- `packages/components/` imports from `packages/prototypes/` or `packages/use-cases/`
+- `packages/prototypes/` imports from `packages/use-cases/`
 
 ### Quality tracking
 
@@ -623,12 +623,12 @@ The important rule is:
 
 This structure makes several important facts obvious:
 
-1. `core/` is the canonical VC meaning layer
-2. `registry/` is reusable and separately extractable
-3. `protocols/` is about interoperability bindings, not runtime orchestration
-4. `components/` is wiring, not core
-5. `prototypes/` prove maturity
-6. `use-cases/` prove concrete value and provide live docs
+1. `packages/core/` is the canonical VC meaning layer
+2. `packages/registry/` is reusable and separately extractable
+3. `packages/protocols/` is about interoperability bindings, not runtime orchestration
+4. `packages/components/` is wiring, not core
+5. `packages/prototypes/` prove maturity
+6. `packages/use-cases/` prove concrete value and provide live docs
 7. `demo` stops being a catch-all architectural label
 8. `docs/architecture` remains the authoritative place for architecture
    reasoning
@@ -648,23 +648,23 @@ This structure makes several important facts obvious:
 
 ### Phase 3: protocols and components split
 
-- move transport bindings into `protocols/`
-- move runtime wiring into `components/`
+- move transport bindings into `packages/protocols/`
+- move runtime wiring into `packages/components/`
 - enforce the non-cycle rule between them
 
 ### Phase 4: prototype and use-case split
 
-- move credential-family prototypes under `prototypes/`
+- move credential-family prototypes under `packages/prototypes/`
 - split the current `*demo*` surfaces by intent:
-  - reusable combination proofs into `prototypes/`
-  - concrete business/application flows into `use-cases/`
-- move BDD scenarios under the corresponding `use-cases/` flow instead of
+  - reusable combination proofs into `packages/prototypes/`
+  - concrete business/application flows into `packages/use-cases/`
+- move BDD scenarios under the corresponding `packages/use-cases/` flow instead of
   keeping them in a generic shared bucket
 - attach complexity/latency evidence to prototypes
 
 ### Phase 5: registry isolation
 
-- move reusable registry surfaces under `registry/`
+- move reusable registry surfaces under `packages/registry/`
 - keep npm/public import compatibility during migration
 
 ### Phase 6: core consolidation
@@ -675,20 +675,20 @@ This structure makes several important facts obvious:
 
 ## Open questions
 
-1. should `core/protocols/` become a physical area now, or remain conceptual
+1. should `packages/core/protocols/` become a physical area now, or remain conceptual
    until generic issuance/presentation modules are large enough to deserve it?
 2. should prototype quality baselines remain checked into `docs/metrics` for
-   human readability while raw baselines live under `prototypes/quality`?
-3. when `registry/` is mature enough, should it move into a dedicated repo with
+   human readability while raw baselines live under `packages/prototypes/quality`?
+3. when `packages/registry/` is mature enough, should it move into a dedicated repo with
    this repository consuming it as a dependency?
 4. should use-case BDD scenarios stay colocated under each use case, or should
-   the repository keep a thin shared scenario runtime under `components/` or
+   the repository keep a thin shared scenario runtime under `packages/components/` or
    `tooling/`?
 
 Current recommendation:
 
 - keep any reusable scenario runtime thin and shareable if needed
-- keep the scenarios themselves under `use-cases/`
+- keep the scenarios themselves under `packages/use-cases/`
 
 ## Immediate recommendation
 

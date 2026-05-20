@@ -83,7 +83,7 @@ against an arbitrary accepted root snapshot.
 
 Repository reference:
 
-- [`../../use-cases/age-gate/contract/src/demo-revocation.compact`](../../use-cases/age-gate/contract/src/demo-revocation.compact)
+- [`../../packages/use-cases/age-gate/contract/src/demo-revocation.compact`](../../packages/use-cases/age-gate/contract/src/demo-revocation.compact)
 
 ## Mode 2: Off-chain verifier-side live-state verification
 
@@ -116,7 +116,7 @@ That last point matters:
 
 Repository reference:
 
-- [`../../registry/status-registry/src/registry-state-observation.ts`](../../registry/status-registry/src/registry-state-observation.ts)
+- [`../../packages/registry/status-registry/src/registry-state-observation.ts`](../../packages/registry/status-registry/src/registry-state-observation.ts)
 
 ## Mode 3: External-registry authority-attested Layer 3 verification
 
@@ -150,7 +150,7 @@ but it cannot create the authority-attested proof artifact.
 
 Repository reference:
 
-- [`../../registry/status-registry/src/attestation-builder.ts`](../../registry/status-registry/src/attestation-builder.ts)
+- [`../../packages/registry/status-registry/src/attestation-builder.ts`](../../packages/registry/status-registry/src/attestation-builder.ts)
 
 ## Decision rule
 

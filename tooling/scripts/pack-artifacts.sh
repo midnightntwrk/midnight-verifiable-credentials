@@ -5,19 +5,19 @@ ROOT_DIR="$(git rev-parse --show-toplevel)"
 DEST_DIR="${1:-$ROOT_DIR/tooling/artifacts/npm}"
 
 workspaces=(
-  core/primitives/credentials
-  registry/status-registry
-  core/capabilities/same-holder
-  core/primitives/iso-registry
-  components/adapters/offchain-did
-  protocols/openid
-  components/orchestration/protocol
-  prototypes/credential-families/birth
-  prototypes/credential-families/birth-secret
-  prototypes/credential-families/hello-family
-  prototypes/credential-families/dummy-claims
-  prototypes/credential-families/university-diploma
-  components/integration/standalone-environment
+  packages/core/primitives/credentials
+  packages/registry/status-registry
+  packages/core/capabilities/same-holder
+  packages/core/primitives/iso-registry
+  packages/components/adapters/offchain-did
+  packages/protocols/openid
+  packages/components/orchestration/protocol
+  packages/prototypes/credential-families/birth
+  packages/prototypes/credential-families/birth-secret
+  packages/prototypes/credential-families/hello-family
+  packages/prototypes/credential-families/dummy-claims
+  packages/prototypes/credential-families/university-diploma
+  packages/components/integration/standalone-environment
 )
 
 mkdir -p "$DEST_DIR"

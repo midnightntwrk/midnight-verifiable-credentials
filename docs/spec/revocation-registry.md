@@ -476,7 +476,7 @@ Repository closeout note:
   split, freshness/error taxonomy, and same-contract live path as complete
   repo-owned work
 - the remaining gap is the generic root-bound in-circuit proof path, not the
-  absence of a registry/status architecture in this codebase
+  absence of a packages/registry/status architecture in this codebase
 - see:
   - [status-contract-closeout-boundary.md](../architecture/status-contract-closeout-boundary.md)
 

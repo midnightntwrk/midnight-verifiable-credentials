@@ -26,36 +26,36 @@ Current maturity is mixed by package:
 - claim representation companion:
   - [`docs/spec/claim-representation.md`](./docs/spec/claim-representation.md)
 - reference implementation packages:
-  - [`credentials`](./core/primitives/credentials/README.md)
-  - [`credentials-status-registry`](./registry/status-registry/README.md)
+  - [`credentials`](./packages/core/primitives/credentials/README.md)
+  - [`credentials-status-registry`](./packages/registry/status-registry/README.md)
     - reusable registry package with the current prototype status / revocation trust model
-  - [`credentials-birth`](./prototypes/credential-families/birth/README.md)
-  - [`credentials-birth-secret`](./prototypes/credential-families/birth-secret/README.md)
-  - [`credentials-hello-family`](./prototypes/credential-families/hello-family/README.md)
+  - [`credentials-birth`](./packages/prototypes/credential-families/birth/README.md)
+  - [`credentials-birth-secret`](./packages/prototypes/credential-families/birth-secret/README.md)
+  - [`credentials-hello-family`](./packages/prototypes/credential-families/hello-family/README.md)
     - smallest starter family package
-  - [`credentials-dummy-claims`](./prototypes/credential-families/dummy-claims/README.md)
+  - [`credentials-dummy-claims`](./packages/prototypes/credential-families/dummy-claims/README.md)
     - broad direct claim-surface and selective-disclosure laboratory
-  - [`credentials-mixed-claims`](./prototypes/credential-families/mixed-claims/README.md)
+  - [`credentials-mixed-claims`](./packages/prototypes/credential-families/mixed-claims/README.md)
     - mixed explicit/public plus committed/private claim-representation laboratory
-  - [`credentials-university-diploma`](./prototypes/credential-families/university-diploma/README.md)
+  - [`credentials-university-diploma`](./packages/prototypes/credential-families/university-diploma/README.md)
     - academic diploma prototype aligned to the university issuance and verifier-flow use case
-  - [`credentials-iso-registry`](./core/primitives/iso-registry/README.md)
-  - [`credentials-offchain-did`](./components/adapters/offchain-did/README.md)
-  - [`credentials-openid`](./protocols/openid/README.md)
+  - [`credentials-iso-registry`](./packages/core/primitives/iso-registry/README.md)
+  - [`credentials-offchain-did`](./packages/components/adapters/offchain-did/README.md)
+  - [`credentials-openid`](./packages/protocols/openid/README.md)
     - current reference transport-adapter surface
 - prototype / experimental packages:
-  - [`credentials-protocol`](./components/orchestration/protocol/README.md)
-  - [`hello-verifier-contract`](./use-cases/hello-verifier/contract/README.md)
+  - [`credentials-protocol`](./packages/components/orchestration/protocol/README.md)
+  - [`hello-verifier-contract`](./packages/use-cases/hello-verifier/contract/README.md)
     - smallest verifier-side starter and broad direct claim-surface lab consumer
-  - [`university-verifier-contract`](./use-cases/university/contract/README.md)
+  - [`university-verifier-contract`](./packages/use-cases/university/contract/README.md)
     - verifier-side university diploma request and presentation consumer
-  - [`university-protocol`](./use-cases/university/protocol/README.md)
+  - [`university-protocol`](./packages/use-cases/university/protocol/README.md)
     - protocol-style multi-party university issuer/student/company/mall flow
     - includes a separate 100-student stress lane for throughput-oriented protocol measurements
     - emits paired JSON and Markdown stress artifacts for CI retention
-  - [`credentials-demo-contract`](./use-cases/age-gate/contract/README.md)
+  - [`credentials-demo-contract`](./packages/use-cases/age-gate/contract/README.md)
 - shared integration infrastructure:
-  - [`standalone-environment`](./components/integration/standalone-environment/README.md)
+  - [`standalone-environment`](./packages/components/integration/standalone-environment/README.md)
 
 ## Documentation
 
@@ -78,11 +78,11 @@ Start here:
   - [`docs/guides/vc-surface-change-discipline.md`](./docs/guides/vc-surface-change-discipline.md)
   - [`docs/guides/prototype-execution-ladder.md`](./docs/guides/prototype-execution-ladder.md)
 - university diploma use case:
-  - [`use-cases/university/README.md`](./use-cases/university/README.md)
-  - [`use-cases/university/operator-guide.md`](./use-cases/university/operator-guide.md)
-  - [`use-cases/university/contract/README.md`](./use-cases/university/contract/README.md)
-  - [`use-cases/university/scenarios/README.md`](./use-cases/university/scenarios/README.md)
-  - [`use-cases/university/protocol/README.md`](./use-cases/university/protocol/README.md)
+  - [`packages/use-cases/university/README.md`](./packages/use-cases/university/README.md)
+  - [`packages/use-cases/university/operator-guide.md`](./packages/use-cases/university/operator-guide.md)
+  - [`packages/use-cases/university/contract/README.md`](./packages/use-cases/university/contract/README.md)
+  - [`packages/use-cases/university/scenarios/README.md`](./packages/use-cases/university/scenarios/README.md)
+  - [`packages/use-cases/university/protocol/README.md`](./packages/use-cases/university/protocol/README.md)
 - architecture:
   - [`docs/architecture/overview.md`](./docs/architecture/overview.md)
   - [`docs/architecture/package-boundaries.md`](./docs/architecture/package-boundaries.md)
@@ -100,41 +100,41 @@ Start here:
 
 ## Workspace map
 
-- [`credentials`](./core/primitives/credentials/README.md)
+- [`credentials`](./packages/core/primitives/credentials/README.md)
   - generic VC/VP envelopes, proof model, holder-binding profiles
-- [`credentials-same-holder`](./core/capabilities/same-holder/README.md)
+- [`credentials-same-holder`](./packages/core/capabilities/same-holder/README.md)
   - same-holder composition capability
-- [`credentials-status-registry`](./registry/status-registry/README.md)
+- [`credentials-status-registry`](./packages/registry/status-registry/README.md)
   - status / revocation registry contract and off-chain witness helpers, still operating under the current prototype trust model
-- [`credentials-iso-registry`](./core/primitives/iso-registry/README.md)
+- [`credentials-iso-registry`](./packages/core/primitives/iso-registry/README.md)
   - shared Compact-native ISO code types
-- [`credentials-offchain-did`](./components/adapters/offchain-did/README.md)
+- [`credentials-offchain-did`](./packages/components/adapters/offchain-did/README.md)
   - DID-aware runtime adapter for offchain DID holder binding
-- [`credentials-birth`](./prototypes/credential-families/birth/README.md)
+- [`credentials-birth`](./packages/prototypes/credential-families/birth/README.md)
   - explicit-holder birth credential family
-- [`credentials-birth-secret`](./prototypes/credential-families/birth-secret/README.md)
+- [`credentials-birth-secret`](./packages/prototypes/credential-families/birth-secret/README.md)
   - secret-holder birth credential family
-- [`credentials-hello-family`](./prototypes/credential-families/hello-family/README.md)
+- [`credentials-hello-family`](./packages/prototypes/credential-families/hello-family/README.md)
   - smallest compileable starter family package
-- [`credentials-dummy-claims`](./prototypes/credential-families/dummy-claims/README.md)
+- [`credentials-dummy-claims`](./packages/prototypes/credential-families/dummy-claims/README.md)
   - broad direct claim-surface and selective-disclosure laboratory
-- [`credentials-mixed-claims`](./prototypes/credential-families/mixed-claims/README.md)
+- [`credentials-mixed-claims`](./packages/prototypes/credential-families/mixed-claims/README.md)
   - mixed explicit/public plus committed/private claim-representation laboratory
-- [`credentials-university-diploma`](./prototypes/credential-families/university-diploma/README.md)
+- [`credentials-university-diploma`](./packages/prototypes/credential-families/university-diploma/README.md)
   - academic diploma prototype with batch-issuance and verifier-policy flows
-- [`credentials-openid`](./protocols/openid/README.md)
+- [`credentials-openid`](./packages/protocols/openid/README.md)
   - OID4VCI / OID4VP-inspired transport/domain adapters
-- [`credentials-protocol`](./components/orchestration/protocol/README.md)
+- [`credentials-protocol`](./packages/components/orchestration/protocol/README.md)
   - reference off-chain orchestration and protocol simulation
-- [`hello-verifier-contract`](./use-cases/hello-verifier/contract/README.md)
+- [`hello-verifier-contract`](./packages/use-cases/hello-verifier/contract/README.md)
   - smallest verifier-side starter and broad direct claim-surface lab consumer
-- [`university-verifier-contract`](./use-cases/university/contract/README.md)
+- [`university-verifier-contract`](./packages/use-cases/university/contract/README.md)
   - verifier-side university diploma job-application and discount contract package
-- [`university-protocol`](./use-cases/university/protocol/README.md)
+- [`university-protocol`](./packages/use-cases/university/protocol/README.md)
   - threaded multi-party reference orchestration over the university diploma family
-- [`credentials-demo-contract`](./use-cases/age-gate/contract/README.md)
+- [`credentials-demo-contract`](./packages/use-cases/age-gate/contract/README.md)
   - verifier/business contract demo
-- [`standalone-environment`](./components/integration/standalone-environment/README.md)
+- [`standalone-environment`](./packages/components/integration/standalone-environment/README.md)
   - shared Docker-backed integration harness
 
 Generated compatibility roots:
@@ -142,8 +142,8 @@ Generated compatibility roots:
 - the top-level `midnight-did-credentials*` entries are generated compatibility
   symlinks for local tooling and legacy includes
 - they are not canonical architecture areas; read the repository through
-  `core/`, `registry/`, `protocols/`, `components/`, `prototypes/`,
-  `use-cases/`, and `tooling/`
+  `packages/core/`, `packages/registry/`, `packages/protocols/`, `packages/components/`, `packages/prototypes/`,
+  `packages/use-cases/`, and `tooling/`
 
 ## Validation
 
@@ -202,7 +202,7 @@ Run the threaded university protocol lane directly:
 Use the university operator guide when choosing between readable BDD,
 proof-server-contract, standalone-hybrid, cohort, stress, and summary lanes:
 
-- [`use-cases/university/operator-guide.md`](./use-cases/university/operator-guide.md)
+- [`packages/use-cases/university/operator-guide.md`](./packages/use-cases/university/operator-guide.md)
 
 Export the readable 10-student university protocol transcript:
 

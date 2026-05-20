@@ -308,7 +308,7 @@ These packages should contain:
 - orchestration of issuance and presentation flows
 - transport/domain adapters
 - session-level or challenge-level composition
-- application-facing glue across multiple core/family packages
+- application-facing glue across multiple packages/core/family packages
 
 They may depend on:
 

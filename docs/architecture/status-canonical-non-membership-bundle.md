@@ -39,7 +39,7 @@ plus the corresponding builders:
 
 Those helpers live in:
 
-- `registry/status-registry/src/canonical-non-membership.ts`
+- `packages/registry/status-registry/src/canonical-non-membership.ts`
 
 ## Observed-snapshot mode
 

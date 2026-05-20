@@ -136,8 +136,8 @@ Midnight Credentials in the current prototype are built in five layers.
 | --- | --- | --- |
 | Layer 1 | reusable generic credential capabilities | `credentials`, `credentials-same-holder` |
 | Layer 2 | concrete credential-family logic | `credentials-birth`, `credentials-birth-secret` in the current workspace; additional families are future or adjacent prototype examples |
-| Layer 3 | concrete verifier and business use-cases | `use-cases/hello-verifier/contract`, `use-cases/age-gate/contract` |
-| Layer 4 | application orchestration, adapters, transports, and integration harnesses | `components/orchestration/protocol`, `protocols/openid`, `components/adapters/offchain-did`, `components/integration/standalone-environment` |
+| Layer 3 | concrete verifier and business use-cases | `packages/use-cases/hello-verifier/contract`, `packages/use-cases/age-gate/contract` |
+| Layer 4 | application orchestration, adapters, transports, and integration harnesses | `packages/components/orchestration/protocol`, `packages/protocols/openid`, `packages/components/adapters/offchain-did`, `packages/components/integration/standalone-environment` |
 | Layer 5 | governance and trust policy | abstract future scope for now |
 
 Think of it this way:
@@ -180,13 +180,13 @@ So in the current work:
 | `credentials-birth-secret` | the same birth family, but with hidden holder binding and better privacy |
 | `credentials-iso-registry` | shared numeric ISO code types — countries, currencies, languages, regions, and genders as circuit-friendly integers |
 | `credentials-status-registry` | prototype status/revocation package with a registry contract surface and off-chain builders |
-| `use-cases/hello-verifier/contract` | the smallest current verifier contract that checks one typed request against one hello-family presentation |
-| `use-cases/age-gate/contract` | a richer business use-case package that issues reusable access capabilities from explicit-holder and hidden-holder flows |
-| `use-cases/age-gate/scenarios` | BDD living-documentation scenarios for the concrete age-gate use case |
-| `components/adapters/offchain-did` | off-chain DID-aware adapter helpers for deriving holder-binding values |
-| `protocols/openid` | OpenID-shaped transport/domain schemas for Compact VC/VP payloads |
-| `components/orchestration/protocol` | party-boundary simulation layer with IssuerAgent, HolderAgent, VerifierAgent, and a MessageBus transport seam |
-| `components/integration/standalone-environment` | shared Docker environment for integration tests — provisions real Midnight DIDs for issuer, holder, and verifier |
+| `packages/use-cases/hello-verifier/contract` | the smallest current verifier contract that checks one typed request against one hello-family presentation |
+| `packages/use-cases/age-gate/contract` | a richer business use-case package that issues reusable access capabilities from explicit-holder and hidden-holder flows |
+| `packages/use-cases/age-gate/scenarios` | BDD living-documentation scenarios for the concrete age-gate use case |
+| `packages/components/adapters/offchain-did` | off-chain DID-aware adapter helpers for deriving holder-binding values |
+| `packages/protocols/openid` | OpenID-shaped transport/domain schemas for Compact VC/VP payloads |
+| `packages/components/orchestration/protocol` | party-boundary simulation layer with IssuerAgent, HolderAgent, VerifierAgent, and a MessageBus transport seam |
+| `packages/components/integration/standalone-environment` | shared Docker environment for integration tests — provisions real Midnight DIDs for issuer, holder, and verifier |
 
 ## Sequential Learning Path Through The Current Prototypes
 
@@ -195,13 +195,13 @@ If you want a low-confusion reading order, use this one.
 | Step | Start here | What you learn before moving on |
 | --- | --- | --- |
 | 1 | `credentials-birth` | the smallest current concrete credential family with explicit holder binding |
-| 2 | `use-cases/hello-verifier/contract` | the smallest verifier contract that consumes that starter family |
-| 3 | `use-cases/age-gate/contract/src/demo.compact` | how a business contract turns successful verification into a reusable capability |
+| 2 | `packages/use-cases/hello-verifier/contract` | the smallest verifier contract that consumes that starter family |
+| 3 | `packages/use-cases/age-gate/contract/src/demo.compact` | how a business contract turns successful verification into a reusable capability |
 | 4 | `credentials-birth-secret` | hidden holder binding, blinded issuance anchors, pseudonyms, and same-holder composition |
-| 5 | `use-cases/age-gate/contract/src/demo-revocation.compact` | how the current prototype status and revocation path changes verifier requirements |
-| 6 | `use-cases/age-gate/scenarios` | the same flows written as living documentation for integrators |
-| 7 | `components/orchestration/protocol` | how the same families behave when issuer, holder, and verifier are isolated into agents |
-| 8 | `components/integration/standalone-environment` | how the same flows are exercised against a real Midnight stack |
+| 5 | `packages/use-cases/age-gate/contract/src/demo-revocation.compact` | how the current prototype status and revocation path changes verifier requirements |
+| 6 | `packages/use-cases/age-gate/scenarios` | the same flows written as living documentation for integrators |
+| 7 | `packages/components/orchestration/protocol` | how the same families behave when issuer, holder, and verifier are isolated into agents |
+| 8 | `packages/components/integration/standalone-environment` | how the same flows are exercised against a real Midnight stack |
 
 Practical rule for the rest of this guide:
 
@@ -218,12 +218,12 @@ If you are onboarding a new engineer, this is the lowest-friction current path t
 | Step | Run | What you should learn from it |
 | --- | --- | --- |
 | 1 | `npm run test:ci -w credentials-birth` | the explicit-holder birth family works on its own before any business contract is added |
-| 2 | `npm run test:ci -w use-cases/hello-verifier/contract` | the smallest verifier contract can build one typed request and verify one presentation |
-| 3 | `npm run test:ci -w use-cases/age-gate/contract` | the explicit-holder business flow can issue, verify, mint a capability, and later claim it |
+| 2 | `npm run test:ci -w packages/use-cases/hello-verifier/contract` | the smallest verifier contract can build one typed request and verify one presentation |
+| 3 | `npm run test:ci -w packages/use-cases/age-gate/contract` | the explicit-holder business flow can issue, verify, mint a capability, and later claim it |
 | 4 | `npm run test:ci -w credentials-birth-secret` | hidden-holder binding, blinded issuance anchors, pseudonyms, same-holder composition, and prototype status-aware family checks all work at the family layer |
 | 5 | `npm run test:bdd:smoke` | the age-gate use-cases are also captured as living-documentation scenarios rather than only as unit tests |
-| 6 | `npm run test:ci -w components/orchestration/protocol` | issuer, holder, and verifier can be isolated into agents without cheating on party boundaries |
-| 7 | `npm run test:integration -w components/orchestration/protocol` | the protocol flow still works against real Midnight-backed infrastructure; requires Docker |
+| 6 | `npm run test:ci -w packages/components/orchestration/protocol` | issuer, holder, and verifier can be isolated into agents without cheating on party boundaries |
+| 7 | `npm run test:integration -w packages/components/orchestration/protocol` | the protocol flow still works against real Midnight-backed infrastructure; requires Docker |
 
 Rule of thumb:
 
@@ -277,7 +277,7 @@ from commitment digests. A family can use:
   rather than the raw value
 
 The mixed reference package is
-`prototypes/credential-families/mixed-claims`: it puts low-sensitivity metadata
+`packages/prototypes/credential-families/mixed-claims`: it puts low-sensitivity metadata
 in `claims` and keeps identity/date/tier values in `claimCommitments`.
 
 ### Conceptual Diagram
@@ -295,19 +295,19 @@ flowchart LR
 
 In code, this chapter is mostly about these circuits:
 
-- `prototypes/credential-families/birth/src/birth-credential.compact`
+- `packages/prototypes/credential-families/birth/src/birth-credential.compact`
   - `birthCredentialClaimRoot(...)`
   - `subjectIdCommitment(...)`
   - `legalNameCommitment(...)`
   - `birthDateCommitment(...)`
   - `birthCountryCodeCommitment(...)`
-- `core/primitives/credentials/src/credentials.compact`
+- `packages/core/primitives/credentials/src/credentials.compact`
   - `VC<...>.assertValidCredentialEnvelope(...)`
   - `VC<...>.assertValidCredentialProof(...)`
-- `prototypes/credential-families/birth/src/birth-credential.compact`
+- `packages/prototypes/credential-families/birth/src/birth-credential.compact`
   - `assertValidBirthCredential(...)`
 
-The claim commitment circuits (`subjectIdCommitment`, `birthDateCommitment`, etc.) live in a shared module `prototypes/credential-families/birth/src/birth-credential/claims.compact` that is imported by both the explicit-holder and secret-holder credential families. That avoids duplicating the commitment logic across packages.
+The claim commitment circuits (`subjectIdCommitment`, `birthDateCommitment`, etc.) live in a shared module `packages/prototypes/credential-families/birth/src/birth-credential/claims.compact` that is imported by both the explicit-holder and secret-holder credential families. That avoids duplicating the commitment logic across packages.
 
 ### In Plain Words
 
@@ -413,9 +413,9 @@ She does not yet have a presentation for a verifier.
 
 ### Tests For This Chapter
 
-- `prototypes/credential-families/birth/src/test/capability-profiles.test.ts`
+- `packages/prototypes/credential-families/birth/src/test/capability-profiles.test.ts`
   - "supports the simplest issuer-attested source claim flow"
-- `prototypes/credential-families/birth/src/test/holder-binding.test.ts`
+- `packages/prototypes/credential-families/birth/src/test/holder-binding.test.ts`
   - "binds the issuer proof to the credential body"
 
 ## Chapter 2: Why A Presentation Exists
@@ -496,8 +496,8 @@ Mohawk rarely approves of anything before coffee.
 
 ### Tests For This Chapter
 
-- `core/primitives/credentials/src/test/proof-context.test.ts`
-- `prototypes/credential-families/birth/src/test/holder-binding.test.ts`
+- `packages/core/primitives/credentials/src/test/proof-context.test.ts`
+- `packages/prototypes/credential-families/birth/src/test/holder-binding.test.ts`
   - "enforces a verifier-defined presentation request"
 
 ## Chapter 3: Explicit Holder Binding
@@ -558,9 +558,9 @@ It is just not the end of the privacy story.
 
 ### Tests For This Chapter
 
-- `prototypes/credential-families/birth/src/test/holder-binding.test.ts`
+- `packages/prototypes/credential-families/birth/src/test/holder-binding.test.ts`
   - "binds the holder proof to the presentation body"
-- `prototypes/credential-families/birth/src/test/capability-profiles.test.ts`
+- `packages/prototypes/credential-families/birth/src/test/capability-profiles.test.ts`
   - "supports an operational flow with explicit holder binding and selective disclosure"
 
 ## Chapter 4: Selective Disclosure And The Age Predicate
@@ -609,7 +609,7 @@ sequenceDiagram
 
 ### What The Circuits Are Actually Doing
 
-In `prototypes/credential-families/birth/src/birth-credential.compact`:
+In `packages/prototypes/credential-families/birth/src/birth-credential.compact`:
 
 - `assertValidBirthCredentialPresentationRequest(...)`
 - `assertBirthPresentationSatisfiesRequest(...)`
@@ -738,8 +738,8 @@ The important idea is:
 
 ### Tests For This Chapter
 
-- `prototypes/credential-families/birth/src/test/age-predicate.test.ts`
-- `prototypes/credential-families/birth/src/test/capability-profiles.test.ts`
+- `packages/prototypes/credential-families/birth/src/test/age-predicate.test.ts`
+- `packages/prototypes/credential-families/birth/src/test/capability-profiles.test.ts`
   - "supports a stronger flow with explicit holder binding, selective disclosure, and age predicate"
 
 ## Chapter 5: Alice Notices Someone Is Following Her
@@ -811,7 +811,7 @@ flowchart TD
 
 ### What The Circuits Are Actually Doing
 
-In `core/primitives/credentials/src/credentials.compact`:
+In `packages/core/primitives/credentials/src/credentials.compact`:
 
 - `secretHolderBindingCommitment(...)`
 - `secretHolderBindingChallengeResponse(...)`
@@ -937,7 +937,7 @@ Mohawk calls this "the difference between authentication and involuntary merchan
 
 ### Where This Shows Up In The Concrete Family
 
-In `prototypes/credential-families/birth-secret/src/secret-birth-credential.compact`:
+In `packages/prototypes/credential-families/birth-secret/src/secret-birth-credential.compact`:
 
 - `assertValidSecretBirthCredential(...)`
 - `assertValidSecretBirthCredentialPresentation(...)`
@@ -947,8 +947,8 @@ The secret-holder variant defines its own disclosure and request types — `Secr
 
 ### Tests For This Chapter
 
-- `core/primitives/credentials/src/test/secret-holder-binding.test.ts`
-- `prototypes/credential-families/birth-secret/src/test/holder-binding.test.ts`
+- `packages/core/primitives/credentials/src/test/secret-holder-binding.test.ts`
+- `packages/prototypes/credential-families/birth-secret/src/test/holder-binding.test.ts`
 
 ## Chapter 7: Blinded Holder Binding
 
@@ -989,7 +989,7 @@ This is not:
 
 ### What The Circuits Are Actually Doing
 
-In `core/primitives/credentials/src/credentials.compact`:
+In `packages/core/primitives/credentials/src/credentials.compact`:
 
 - `blindedSecretHolderCommitment(...)`
 - `assertValidBlindedSecretHolderCredentialBinding(...)`
@@ -1112,8 +1112,8 @@ So the stored holder-binding data is safer to reuse across later privacy-oriente
 
 Today the repository has a supported reference happy path for this capability:
 
-- blinded-secret issuance through `components/orchestration/protocol`
-- blinded-secret presentation through `components/orchestration/protocol`
+- blinded-secret issuance through `packages/components/orchestration/protocol`
+- blinded-secret presentation through `packages/components/orchestration/protocol`
 - real DID-backed secret-holder integration coverage
 - verifier-scoped pseudonym and same-holder composition built on the same hidden-secret family
 - explicit blinded-secret rejection results in the reference protocol layer for
@@ -1309,9 +1309,9 @@ The mental shortcut is:
 
 ### Tests For This Chapter
 
-- `core/primitives/credentials/src/test/secret-holder-binding.test.ts`
+- `packages/core/primitives/credentials/src/test/secret-holder-binding.test.ts`
   - blinded holder-binding witness
-- `prototypes/credential-families/birth-secret/src/test/capability-profiles.test.ts`
+- `packages/prototypes/credential-families/birth-secret/src/test/capability-profiles.test.ts`
   - advanced privacy profile
 
 ## Chapter 8: Verifier-Scoped Pseudonym
@@ -1346,12 +1346,12 @@ That is a much better tradeoff.
 
 ### What The Circuits Are Actually Doing
 
-In `core/primitives/credentials/src/credentials.compact`:
+In `packages/core/primitives/credentials/src/credentials.compact`:
 
 - `verifierScopedPseudonym(...)`
 - `assertVerifierScopedPseudonym(...)`
 
-In `prototypes/credential-families/birth-secret/src/secret-birth-credential.compact`:
+In `packages/prototypes/credential-families/birth-secret/src/secret-birth-credential.compact`:
 
 - request fields carrying verifier domain context
 - pseudonym disclosure checks inside `assertSecretBirthPresentationSatisfiesRequest(...)`
@@ -1441,8 +1441,8 @@ That is the whole trick.
 
 ### Tests For This Chapter
 
-- `core/primitives/credentials/src/test/secret-holder-binding.test.ts`
-- `prototypes/credential-families/birth-secret/src/test/holder-binding.test.ts`
+- `packages/core/primitives/credentials/src/test/secret-holder-binding.test.ts`
+- `packages/prototypes/credential-families/birth-secret/src/test/holder-binding.test.ts`
   - "derives a verifier-scoped pseudonym from the hidden holder secret"
 
 ## Chapter 9: Vera Wants Two Credentials, But One Holder
@@ -1501,14 +1501,14 @@ flowchart LR
 
 ### What The Circuits Are Actually Doing
 
-In `core/capabilities/same-holder/src/same-holder.compact`:
+In `packages/core/capabilities/same-holder/src/same-holder.compact`:
 
 - `assertSameSecretHolderBindingWitnesses(...)`
 - `assertSameBlindedSecretHolderBindingWitnesses(...)`
 - `assertSameSecretHolderBindingWitnesses3(...)`
 - `assertSameBlindedSecretHolderBindingWitnesses3(...)`
 
-In `prototypes/credential-families/birth-secret/src/secret-birth-credential.compact`:
+In `packages/prototypes/credential-families/birth-secret/src/secret-birth-credential.compact`:
 
 - `assertSameHolderSecretBirthPresentations(...)`
 
@@ -1625,8 +1625,8 @@ The verifier does not automatically learn:
 
 ### Tests For This Chapter
 
-- `core/capabilities/same-holder/src/test/same-holder-capability.test.ts`
-- `prototypes/credential-families/birth-secret/src/test/same-holder-composition.test.ts`
+- `packages/core/capabilities/same-holder/src/test/same-holder-capability.test.ts`
+- `packages/prototypes/credential-families/birth-secret/src/test/same-holder-composition.test.ts`
 
 Those tests now cover both:
 
@@ -1651,23 +1651,23 @@ That is a better engineering habit because it tells you exactly what combination
 
 | Profile | What it means in simple words | Test |
 | --- | --- | --- |
-| simplest issuer-attested source claim | Rita attests to the typed birth credential and nothing fancy happens yet | `prototypes/credential-families/birth/src/test/capability-profiles.test.ts` |
-| operational explicit-holder flow | Alice uses a DID-bound holder method and reveals only what Vera requests | `prototypes/credential-families/birth/src/test/capability-profiles.test.ts` |
-| age-predicate flow | Alice proves `age >= threshold` instead of revealing the raw birth date | `prototypes/credential-families/birth/src/test/age-predicate.test.ts` |
-| hidden-holder flow | Alice proves control using a hidden holder secret instead of a visible DID method | `prototypes/credential-families/birth-secret/src/test/capability-profiles.test.ts` |
-| advanced privacy flow | Alice uses hidden holder binding, a blinded anchor, selective disclosure, verifier pseudonym, and age predicate | `prototypes/credential-families/birth-secret/src/test/capability-profiles.test.ts` |
-| same-holder composition | Alice proves two or three credentials belong to the same hidden holder | `prototypes/credential-families/birth-secret/src/test/same-holder-composition.test.ts` |
-| status-aware hidden-holder flow | Alice satisfies a revocation-aware verifier request with registry-bound status inputs | `prototypes/credential-families/birth-secret/src/test/status.test.ts` |
-| authority-attested status flow | Alice satisfies a freshness-gated status request with an authority-attested status proof | `prototypes/credential-families/birth-secret/src/test/status-attestation.test.ts` |
+| simplest issuer-attested source claim | Rita attests to the typed birth credential and nothing fancy happens yet | `packages/prototypes/credential-families/birth/src/test/capability-profiles.test.ts` |
+| operational explicit-holder flow | Alice uses a DID-bound holder method and reveals only what Vera requests | `packages/prototypes/credential-families/birth/src/test/capability-profiles.test.ts` |
+| age-predicate flow | Alice proves `age >= threshold` instead of revealing the raw birth date | `packages/prototypes/credential-families/birth/src/test/age-predicate.test.ts` |
+| hidden-holder flow | Alice proves control using a hidden holder secret instead of a visible DID method | `packages/prototypes/credential-families/birth-secret/src/test/capability-profiles.test.ts` |
+| advanced privacy flow | Alice uses hidden holder binding, a blinded anchor, selective disclosure, verifier pseudonym, and age predicate | `packages/prototypes/credential-families/birth-secret/src/test/capability-profiles.test.ts` |
+| same-holder composition | Alice proves two or three credentials belong to the same hidden holder | `packages/prototypes/credential-families/birth-secret/src/test/same-holder-composition.test.ts` |
+| status-aware hidden-holder flow | Alice satisfies a revocation-aware verifier request with registry-bound status inputs | `packages/prototypes/credential-families/birth-secret/src/test/status.test.ts` |
+| authority-attested status flow | Alice satisfies a freshness-gated status request with an authority-attested status proof | `packages/prototypes/credential-families/birth-secret/src/test/status-attestation.test.ts` |
 
 ### Current prototype use-cases used later in this guide
 
 | Surface | What it demonstrates | Test or scenario |
 | --- | --- | --- |
-| `use-cases/hello-verifier/contract` | smallest verifier contract that consumes the hello-family starter package | `use-cases/hello-verifier/contract/src/test/hello-verifier.test.ts` |
-| `use-cases/age-gate/contract` | explicit-holder business contract that mints and consumes an access capability | `use-cases/age-gate/contract/src/test/demo.test.ts` |
-| `use-cases/age-gate/contract/src/demo-revocation.compact` | hidden-holder, status-aware business contract with verifier-supplied-root and authority-attested modes | `use-cases/age-gate/contract/src/test/demo-revocation.test.ts` |
-| `use-cases/age-gate/scenarios` | BDD living documentation for the explicit-holder and hidden-holder age-gate flows | `use-cases/age-gate/scenarios/features/*.feature` |
+| `packages/use-cases/hello-verifier/contract` | smallest verifier contract that consumes the hello-family starter package | `packages/use-cases/hello-verifier/contract/src/test/hello-verifier.test.ts` |
+| `packages/use-cases/age-gate/contract` | explicit-holder business contract that mints and consumes an access capability | `packages/use-cases/age-gate/contract/src/test/demo.test.ts` |
+| `packages/use-cases/age-gate/contract/src/demo-revocation.compact` | hidden-holder, status-aware business contract with verifier-supplied-root and authority-attested modes | `packages/use-cases/age-gate/contract/src/test/demo-revocation.test.ts` |
+| `packages/use-cases/age-gate/scenarios` | BDD living documentation for the explicit-holder and hidden-holder age-gate flows | `packages/use-cases/age-gate/scenarios/features/*.feature` |
 
 ### Why This Matters
 
@@ -1812,7 +1812,7 @@ sequenceDiagram
 
 ### What The Demo Contract Circuits Are Actually Doing
 
-In `use-cases/age-gate/contract/src/demo.compact`:
+In `packages/use-cases/age-gate/contract/src/demo.compact`:
 
 - `ageGateRequest(...)`
 - `verifyBirthPresentation(...)`
@@ -1835,7 +1835,7 @@ This is the important architectural point:
 
 ### Tests For This Chapter
 
-- `use-cases/age-gate/contract/src/test/demo.test.ts`
+- `packages/use-cases/age-gate/contract/src/test/demo.test.ts`
 
 ## Chapter 14: How Capabilities Compose
 
@@ -1931,7 +1931,7 @@ The current reference path still does not give us everything:
   - a revoked-set `MerkleTree`
   - non-membership proof inside the VP
   - no canonical reason/date fields in the first proof model
-- application orchestration is prototyped in `components/orchestration/protocol` but not yet production-hardened
+- application orchestration is prototyped in `packages/components/orchestration/protocol` but not yet production-hardened
 - governance is acknowledged but intentionally abstract
 - more credential families still need to be modeled
 
@@ -1988,7 +1988,7 @@ Mohawk considers this "the minimum acceptable encoding discipline for a system t
 
 ### Where To Look
 
-- `core/primitives/iso-registry/src/iso-registry/codes.compact`
+- `packages/core/primitives/iso-registry/src/iso-registry/codes.compact`
 
 ## Chapter 18: Vera Starts With The Smallest Verifier
 
@@ -1996,7 +1996,7 @@ Before Vera adopts a full business contract, she often wants one smaller questio
 
 - can I verify one credential family against one typed request without dragging in every other concern?
 
-That is exactly what `use-cases/hello-verifier/contract` exists to do.
+That is exactly what `packages/use-cases/hello-verifier/contract` exists to do.
 
 It is the smallest current verifier-side prototype in the repository.
 
@@ -2049,7 +2049,7 @@ It is the smallest useful verifier story.
 
 ### Tests For This Chapter
 
-- `use-cases/hello-verifier/contract/src/test/hello-verifier.test.ts`
+- `packages/use-cases/hello-verifier/contract/src/test/hello-verifier.test.ts`
 
 ## Chapter 19: Two Current Use Cases From The Prototypes
 
@@ -2059,7 +2059,7 @@ Now we can move from the smallest verifier to the two concrete business flows th
 
 This is the simplest business composition currently implemented in-tree.
 
-The flow in `use-cases/age-gate/contract/src/demo.compact` is:
+The flow in `packages/use-cases/age-gate/contract/src/demo.compact` is:
 
 1. the issuer submits an explicit-holder birth credential plus issuer proof
 2. the contract records that credential as one it recognizes
@@ -2087,7 +2087,7 @@ What the contract does not need:
 
 The second current use-case raises the difficulty in a way that matters architecturally.
 
-In `use-cases/age-gate/contract/src/demo-revocation.compact`, the holder uses the hidden-holder birth family and the verifier must also reason about status.
+In `packages/use-cases/age-gate/contract/src/demo-revocation.compact`, the holder uses the hidden-holder birth family and the verifier must also reason about status.
 
 The flow is:
 
@@ -2117,12 +2117,12 @@ So the right mental model is:
 
 | Surface | Why it matters |
 | --- | --- |
-| `use-cases/age-gate/contract/src/demo.compact` | explicit-holder business verifier and capability issuance |
-| `use-cases/age-gate/contract/src/demo-revocation.compact` | hidden-holder, status-aware business verifier |
-| `use-cases/age-gate/contract/src/test/demo.test.ts` | executable explicit-holder age-gate story |
-| `use-cases/age-gate/contract/src/test/demo-revocation.test.ts` | executable hidden-holder status-aware story |
-| `use-cases/age-gate/scenarios/features/age_gate_happy_path.feature` | BDD live documentation for the explicit-holder flow |
-| `use-cases/age-gate/scenarios/features/hidden_holder_age_gate_happy_path.feature` | BDD live documentation for the hidden-holder status-aware flow |
+| `packages/use-cases/age-gate/contract/src/demo.compact` | explicit-holder business verifier and capability issuance |
+| `packages/use-cases/age-gate/contract/src/demo-revocation.compact` | hidden-holder, status-aware business verifier |
+| `packages/use-cases/age-gate/contract/src/test/demo.test.ts` | executable explicit-holder age-gate story |
+| `packages/use-cases/age-gate/contract/src/test/demo-revocation.test.ts` | executable hidden-holder status-aware story |
+| `packages/use-cases/age-gate/scenarios/features/age_gate_happy_path.feature` | BDD live documentation for the explicit-holder flow |
+| `packages/use-cases/age-gate/scenarios/features/hidden_holder_age_gate_happy_path.feature` | BDD live documentation for the hidden-holder status-aware flow |
 
 The important separation is now explicit:
 
@@ -2157,7 +2157,7 @@ They show up in the integration layer, which is exactly where most SSI systems g
 
 ### The Agent Model
 
-`components/orchestration/protocol` introduces three agent types:
+`packages/components/orchestration/protocol` introduces three agent types:
 
 | Agent | What it does |
 | --- | --- |
@@ -2288,16 +2288,16 @@ That is the same design principle repeated everywhere:
 
 | Test file | What it proves |
 | --- | --- |
-| `components/orchestration/protocol/src/test/explicit-holder/issuance.test.ts` | protocol-level issuance with party boundaries |
-| `components/orchestration/protocol/src/test/explicit-holder/presentation.test.ts` | presentation flow through the MessageBus |
-| `components/orchestration/protocol/src/test/explicit-holder/full-lifecycle.test.ts` | issuance through verification in one protocol run |
-| `components/orchestration/protocol/src/test/secret-holder/issuance.test.ts` | secret-holder issuance through agents |
-| `components/orchestration/protocol/src/test/secret-holder/presentation.test.ts` | hidden-holder presentation through agents |
-| `components/orchestration/protocol/src/test/secret-holder/pseudonym.test.ts` | verifier-scoped pseudonym through the protocol layer |
-| `components/orchestration/protocol/src/test/secret-holder/same-holder.test.ts` | same-holder composition through party-isolated agents, including a three-credential flow |
-| `components/orchestration/protocol/src/test/contract-verifier/age-gate.test.ts` | contract verifier age-gate with protocol-issued credentials |
-| `components/orchestration/protocol/src/test/contract-verifier/capability-lifecycle.test.ts` | full capability lifecycle through the contract verifier |
-| `components/orchestration/protocol/src/test/helpers/message-bus.test.ts` | MessageBus transport primitives |
+| `packages/components/orchestration/protocol/src/test/explicit-holder/issuance.test.ts` | protocol-level issuance with party boundaries |
+| `packages/components/orchestration/protocol/src/test/explicit-holder/presentation.test.ts` | presentation flow through the MessageBus |
+| `packages/components/orchestration/protocol/src/test/explicit-holder/full-lifecycle.test.ts` | issuance through verification in one protocol run |
+| `packages/components/orchestration/protocol/src/test/secret-holder/issuance.test.ts` | secret-holder issuance through agents |
+| `packages/components/orchestration/protocol/src/test/secret-holder/presentation.test.ts` | hidden-holder presentation through agents |
+| `packages/components/orchestration/protocol/src/test/secret-holder/pseudonym.test.ts` | verifier-scoped pseudonym through the protocol layer |
+| `packages/components/orchestration/protocol/src/test/secret-holder/same-holder.test.ts` | same-holder composition through party-isolated agents, including a three-credential flow |
+| `packages/components/orchestration/protocol/src/test/contract-verifier/age-gate.test.ts` | contract verifier age-gate with protocol-issued credentials |
+| `packages/components/orchestration/protocol/src/test/contract-verifier/capability-lifecycle.test.ts` | full capability lifecycle through the contract verifier |
+| `packages/components/orchestration/protocol/src/test/helpers/message-bus.test.ts` | MessageBus transport primitives |
 
 ### Why This Chapter Exists
 
@@ -2322,7 +2322,7 @@ Those are different claims.
 
 ### What The Standalone Environment Provides
 
-The `components/integration/standalone-environment` package spins up a Docker-based Midnight stack:
+The `packages/components/integration/standalone-environment` package spins up a Docker-based Midnight stack:
 
 - a Midnight node
 - an indexer
@@ -2336,7 +2336,7 @@ In the standalone environment, DIDs are provisioned on a real ledger, which mean
 
 ### How It Connects To The Protocol Agents
 
-The integration tests use the same `IssuerAgent`, `HolderAgent`, and `VerifierAgent` from `components/orchestration/protocol`.
+The integration tests use the same `IssuerAgent`, `HolderAgent`, and `VerifierAgent` from `packages/components/orchestration/protocol`.
 The only difference is the profile: real DID documents backed by on-ledger resolution instead of simulated identities.
 
 That is the whole trick.
@@ -2365,7 +2365,7 @@ Mohawk considers this "the minimum acceptable level of paranoia".
 
 ### Tests For This Chapter
 
-- `components/orchestration/protocol/src/test/integration/explicit-holder-lifecycle.integration.test.ts`
+- `packages/components/orchestration/protocol/src/test/integration/explicit-holder-lifecycle.integration.test.ts`
 - Integration tests require Docker and skip automatically when unavailable
 
 ## Chapter 23: Midnight Vs AnonCreds, In Human Language
@@ -2631,45 +2631,45 @@ Mohawk approves of this because it is the rare architectural plan that is both:
 
 If you want the shortest path through the current repository, use this sequence.
 
-1. `core/primitives/credentials/src/credentials.compact`
+1. `packages/core/primitives/credentials/src/credentials.compact`
    - generic VC/VP model, proof contexts, and holder-binding primitives
-2. `core/primitives/credentials/src/test/proof-context.test.ts`
+2. `packages/core/primitives/credentials/src/test/proof-context.test.ts`
    - proof basics and domain separation
-3. `prototypes/credential-families/birth/src/birth-credential.compact`
+3. `packages/prototypes/credential-families/birth/src/birth-credential.compact`
    - explicit-holder birth family
-4. `prototypes/credential-families/birth/src/test/capability-profiles.test.ts`
+4. `packages/prototypes/credential-families/birth/src/test/capability-profiles.test.ts`
    - explicit-holder family profiles
-5. `use-cases/hello-verifier/contract/src/hello-verifier.compact`
+5. `packages/use-cases/hello-verifier/contract/src/hello-verifier.compact`
    - smallest current verifier contract
-6. `use-cases/hello-verifier/contract/src/test/hello-verifier.test.ts`
+6. `packages/use-cases/hello-verifier/contract/src/test/hello-verifier.test.ts`
    - minimal verifier request and verification flow
-7. `use-cases/age-gate/contract/src/demo.compact`
+7. `packages/use-cases/age-gate/contract/src/demo.compact`
    - explicit-holder age-gate business composition
-8. `use-cases/age-gate/contract/src/test/demo.test.ts`
+8. `packages/use-cases/age-gate/contract/src/test/demo.test.ts`
    - explicit-holder capability issuance and claim flow
-9. `prototypes/credential-families/birth-secret/src/secret-birth-credential.compact`
+9. `packages/prototypes/credential-families/birth-secret/src/secret-birth-credential.compact`
    - hidden-holder birth family
-10. `prototypes/credential-families/birth-secret/src/test/capability-profiles.test.ts`
+10. `packages/prototypes/credential-families/birth-secret/src/test/capability-profiles.test.ts`
    - hidden-holder base profiles
-11. `prototypes/credential-families/birth-secret/src/test/same-holder-composition.test.ts`
+11. `packages/prototypes/credential-families/birth-secret/src/test/same-holder-composition.test.ts`
    - same-holder composition in a real family
-12. `prototypes/credential-families/birth-secret/src/test/status-binding-commitment.test.ts`
+12. `packages/prototypes/credential-families/birth-secret/src/test/status-binding-commitment.test.ts`
    - issuer-signed status-binding commitment in the family wrapper proof
-13. `prototypes/credential-families/birth-secret/src/test/status.test.ts`
+13. `packages/prototypes/credential-families/birth-secret/src/test/status.test.ts`
    - verifier-supplied-root status-aware verification
-14. `prototypes/credential-families/birth-secret/src/test/status-attestation.test.ts`
+14. `packages/prototypes/credential-families/birth-secret/src/test/status-attestation.test.ts`
    - authority-attested status-aware verification
-15. `use-cases/age-gate/contract/src/demo-revocation.compact`
+15. `packages/use-cases/age-gate/contract/src/demo-revocation.compact`
    - hidden-holder revocation-aware business composition
-16. `use-cases/age-gate/contract/src/test/demo-revocation.test.ts`
+16. `packages/use-cases/age-gate/contract/src/test/demo-revocation.test.ts`
    - status-aware capability issuance and freshness behavior
-17. `use-cases/age-gate/scenarios/features/age_gate_happy_path.feature`
+17. `packages/use-cases/age-gate/scenarios/features/age_gate_happy_path.feature`
    - BDD live documentation for the explicit-holder path
-18. `use-cases/age-gate/scenarios/features/hidden_holder_age_gate_happy_path.feature`
+18. `packages/use-cases/age-gate/scenarios/features/hidden_holder_age_gate_happy_path.feature`
    - BDD live documentation for the hidden-holder status-aware path
-19. `components/orchestration/protocol/src/test/contract-verifier/age-gate.test.ts`
+19. `packages/components/orchestration/protocol/src/test/contract-verifier/age-gate.test.ts`
    - contract-verifier age-gate through isolated agents
-20. `components/orchestration/protocol/src/test/integration/explicit-holder-lifecycle.integration.test.ts`
+20. `packages/components/orchestration/protocol/src/test/integration/explicit-holder-lifecycle.integration.test.ts`
    - protocol flow against real Midnight-backed infrastructure (requires Docker)
 21. `tooling/scripts/scaffold-vc-family.mjs`
    - starter scaffold when you want to create the next family without inventing the package layout from scratch

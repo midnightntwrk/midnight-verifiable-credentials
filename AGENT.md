@@ -86,42 +86,42 @@ Use it when a task starts from an independent `midnight-verifiable-credentials` 
 | Path | Role |
 | --- | --- |
 | `docs/` | Normative specs, guides, architecture notes, test strategy, plans, decisions, and templates. |
-| `core/` | Reusable VC primitives and capabilities. |
-| `registry/` | Registry packages, currently status/revocation registry work. |
-| `protocols/` | Transport/protocol bindings such as OpenID-shaped schemas and Compact framing. |
-| `components/` | Runtime adapters, protocol orchestration, and standalone integration helpers. |
-| `prototypes/` | Reference credential-family packages and experimental/lab surfaces. |
-| `use-cases/` | Concrete runnable flows, BDD living documentation, demo contracts, and university scenarios. |
+| `packages/core/` | Reusable VC primitives and capabilities. |
+| `packages/registry/` | Registry packages, currently status/revocation registry work. |
+| `packages/protocols/` | Transport/protocol bindings such as OpenID-shaped schemas and Compact framing. |
+| `packages/components/` | Runtime adapters, protocol orchestration, and standalone integration helpers. |
+| `packages/prototypes/` | Reference credential-family packages and experimental/lab surfaces. |
+| `packages/use-cases/` | Concrete runnable flows, BDD living documentation, demo contracts, and university scenarios. |
 | `tooling/` | Build, artifact, vendor, runner, scaffolding, and package-boundary scripts. |
 | `assets/` | Static explanatory assets used by docs/use cases. |
 
-BDD belongs under `use-cases/`, not under low-level package tests or prototype-only directories.
+BDD belongs under `packages/use-cases/`, not under low-level package tests or prototype-only directories.
 
 ## Package Map
 
 | Path | Package | Responsibility |
 | --- | --- | --- |
-| `core/primitives/credentials` | `@midnight-ntwrk/midnight-did-credentials` | Generic VC/VP Compact primitives, claim envelope, holder/status binding types, proof helpers. |
-| `core/capabilities/same-holder` | `@midnight-ntwrk/midnight-did-credentials-same-holder` | Same-holder composition capability. |
-| `core/primitives/iso-registry` | `@midnight-ntwrk/midnight-did-credentials-iso-registry` | ISO-style registry primitives. |
-| `registry/status-registry` | `@midnight-ntwrk/midnight-did-credentials-status-registry` | Status/revocation registry reference package and witness-builder helpers. |
-| `components/adapters/offchain-did` | `@midnight-ntwrk/midnight-did-credentials-offchain-did` | DID-aware offchain holder-binding runtime helpers. |
-| `components/integration/standalone-environment` | `@midnight-ntwrk/midnight-did-standalone-environment` | Standalone Midnight/DID runtime bootstrap for integration tests. |
-| `components/orchestration/protocol` | `@midnight-ntwrk/midnight-did-credentials-protocol` | Issuer/holder/verifier protocol-state orchestration and reference lifecycle tests. |
-| `protocols/openid` | `@midnight-ntwrk/midnight-did-credentials-openid` | OID4VCI/OID4VP-shaped Zod schemas and Compact value framing. |
-| `prototypes/credential-families/birth` | `@midnight-ntwrk/midnight-did-credentials-birth` | Explicit-holder birth credential family. |
-| `prototypes/credential-families/birth-secret` | `@midnight-ntwrk/midnight-did-credentials-birth-secret` | Hidden/secret-holder birth credential family. |
-| `prototypes/credential-families/hello-family` | `@midnight-ntwrk/midnight-did-credentials-hello-family` | Small DID-aware hello credential family. |
-| `prototypes/credential-families/dummy-claims` | `@midnight-ntwrk/midnight-did-credentials-dummy-claims` | Broad direct-claims verifier lab. |
-| `prototypes/credential-families/mixed-claims` | `@midnight-ntwrk/midnight-did-credentials-mixed-claims` | Reference lab for mixed public/direct and commitment-backed claims. |
-| `prototypes/credential-families/university-diploma` | `@midnight-ntwrk/midnight-did-credentials-university-diploma` | University diploma credential family. |
-| `use-cases/age-gate/contract` | `@midnight-ntwrk/midnight-did-credentials-demo-contract` | Generic age-gate and revocation-aware verifier demo contracts. |
-| `use-cases/age-gate/scenarios` | `vc-bdd-scenarios` | Age-gate Serenity/JS BDD scenarios. |
-| `use-cases/hello-verifier/contract` | `@midnight-ntwrk/midnight-did-hello-verifier-contract` | Hello verifier contract path. |
-| `use-cases/university/contract` | `@midnight-ntwrk/midnight-did-university-verifier-contract` | University verifier contract path. |
-| `use-cases/university/protocol` | `@midnight-ntwrk/midnight-did-university-protocol` | Multi-party university protocol flow and transcript exports. |
-| `use-cases/university/reporting` | `@midnight-ntwrk/midnight-did-university-reporting` | University reporting and summary artifacts. |
-| `use-cases/university/scenarios` | `vc-university-bdd-scenarios` | University diploma Serenity/JS BDD scenarios. |
+| `packages/core/primitives/credentials` | `@midnight-ntwrk/midnight-did-credentials` | Generic VC/VP Compact primitives, claim envelope, holder/status binding types, proof helpers. |
+| `packages/core/capabilities/same-holder` | `@midnight-ntwrk/midnight-did-credentials-same-holder` | Same-holder composition capability. |
+| `packages/core/primitives/iso-registry` | `@midnight-ntwrk/midnight-did-credentials-iso-registry` | ISO-style registry primitives. |
+| `packages/registry/status-registry` | `@midnight-ntwrk/midnight-did-credentials-status-registry` | Status/revocation registry reference package and witness-builder helpers. |
+| `packages/components/adapters/offchain-did` | `@midnight-ntwrk/midnight-did-credentials-offchain-did` | DID-aware offchain holder-binding runtime helpers. |
+| `packages/components/integration/standalone-environment` | `@midnight-ntwrk/midnight-did-standalone-environment` | Standalone Midnight/DID runtime bootstrap for integration tests. |
+| `packages/components/orchestration/protocol` | `@midnight-ntwrk/midnight-did-credentials-protocol` | Issuer/holder/verifier protocol-state orchestration and reference lifecycle tests. |
+| `packages/protocols/openid` | `@midnight-ntwrk/midnight-did-credentials-openid` | OID4VCI/OID4VP-shaped Zod schemas and Compact value framing. |
+| `packages/prototypes/credential-families/birth` | `@midnight-ntwrk/midnight-did-credentials-birth` | Explicit-holder birth credential family. |
+| `packages/prototypes/credential-families/birth-secret` | `@midnight-ntwrk/midnight-did-credentials-birth-secret` | Hidden/secret-holder birth credential family. |
+| `packages/prototypes/credential-families/hello-family` | `@midnight-ntwrk/midnight-did-credentials-hello-family` | Small DID-aware hello credential family. |
+| `packages/prototypes/credential-families/dummy-claims` | `@midnight-ntwrk/midnight-did-credentials-dummy-claims` | Broad direct-claims verifier lab. |
+| `packages/prototypes/credential-families/mixed-claims` | `@midnight-ntwrk/midnight-did-credentials-mixed-claims` | Reference lab for mixed public/direct and commitment-backed claims. |
+| `packages/prototypes/credential-families/university-diploma` | `@midnight-ntwrk/midnight-did-credentials-university-diploma` | University diploma credential family. |
+| `packages/use-cases/age-gate/contract` | `@midnight-ntwrk/midnight-did-credentials-demo-contract` | Generic age-gate and revocation-aware verifier demo contracts. |
+| `packages/use-cases/age-gate/scenarios` | `vc-bdd-scenarios` | Age-gate Serenity/JS BDD scenarios. |
+| `packages/use-cases/hello-verifier/contract` | `@midnight-ntwrk/midnight-did-hello-verifier-contract` | Hello verifier contract path. |
+| `packages/use-cases/university/contract` | `@midnight-ntwrk/midnight-did-university-verifier-contract` | University verifier contract path. |
+| `packages/use-cases/university/protocol` | `@midnight-ntwrk/midnight-did-university-protocol` | Multi-party university protocol flow and transcript exports. |
+| `packages/use-cases/university/reporting` | `@midnight-ntwrk/midnight-did-university-reporting` | University reporting and summary artifacts. |
+| `packages/use-cases/university/scenarios` | `vc-university-bdd-scenarios` | University diploma Serenity/JS BDD scenarios. |
 
 ## Core Claim Representation
 
@@ -145,7 +145,7 @@ Reference docs and labs:
 
 - `docs/spec/claim-representation.md`
 - `docs/spec/midnight-credentials.md`
-- `prototypes/credential-families/mixed-claims`
+- `packages/prototypes/credential-families/mixed-claims`
 
 ## Compact Composition Rules
 
@@ -160,12 +160,12 @@ Preferred composition model:
 
 Important shared surfaces:
 
-- `core/primitives/credentials/src/credentials.compact`: standalone package root.
-- `core/primitives/credentials/src/credentials/composable.compact`: Layer 3 shared root.
-- `core/primitives/credentials/src/credentials/vc-support.compact`: VC/VP envelope and proof helpers.
-- `core/primitives/credentials/src/credentials/protocol-support.compact`: issuance/presentation protocol modules.
-- `core/primitives/credentials/src/credentials/bindings.compact`: holder-binding types and witness helpers.
-- `core/capabilities/same-holder/src/same-holder/composable.compact`: same-holder composition surface.
+- `packages/core/primitives/credentials/src/credentials.compact`: standalone package root.
+- `packages/core/primitives/credentials/src/credentials/composable.compact`: Layer 3 shared root.
+- `packages/core/primitives/credentials/src/credentials/vc-support.compact`: VC/VP envelope and proof helpers.
+- `packages/core/primitives/credentials/src/credentials/protocol-support.compact`: issuance/presentation protocol modules.
+- `packages/core/primitives/credentials/src/credentials/bindings.compact`: holder-binding types and witness helpers.
+- `packages/core/capabilities/same-holder/src/same-holder/composable.compact`: same-holder composition surface.
 
 Generated outputs under `src/managed/**`, `dist/**`, and `*.tsbuildinfo` are build artifacts. Do not edit them manually.
 
@@ -302,18 +302,18 @@ npm run ci:university-protocol
 
 Age-gate BDD:
 
-- `use-cases/age-gate/scenarios`
+- `packages/use-cases/age-gate/scenarios`
 - Smoke: `./run.sh bdd`
 - Negative: `./run.sh bdd-negative`
 - Full: `./run.sh bdd-all`
 
 University BDD and protocol flows:
 
-- `use-cases/university/scenarios`: readable Serenity/JS BDD scenarios.
-- `use-cases/university/protocol`: multi-party protocol flow, transcript export, stress/cohort runners.
-- `use-cases/university/data`: committed fixture profiles for readable, cohort, and stress runs.
-- `use-cases/university/reporting`: summary/report generation.
-- `use-cases/university/operator-guide.md`: choose the right lane for local, CI, proof-server-contract, standalone-hybrid, cohort, stress, and summary workflows.
+- `packages/use-cases/university/scenarios`: readable Serenity/JS BDD scenarios.
+- `packages/use-cases/university/protocol`: multi-party protocol flow, transcript export, stress/cohort runners.
+- `packages/use-cases/university/data`: committed fixture profiles for readable, cohort, and stress runs.
+- `packages/use-cases/university/reporting`: summary/report generation.
+- `packages/use-cases/university/operator-guide.md`: choose the right lane for local, CI, proof-server-contract, standalone-hybrid, cohort, stress, and summary workflows.
 
 The university scenarios should make actor requests/responses, DIDs, issued credentials, and presentation material inspectable through report notes/artifacts while keeping the BDD text readable.
 
@@ -341,8 +341,8 @@ Key docs:
 
 Standalone integration helpers live in:
 
-- `components/integration/standalone-environment`
-- `components/integration/infrastructure/standalone`
+- `packages/components/integration/standalone-environment`
+- `packages/components/integration/infrastructure/standalone`
 
 Rules:
 
@@ -504,5 +504,5 @@ Common fixes:
 - Missing Compact aliases: run `npm ci` or the `ensure-compact-package-aliases.mjs` helper.
 - Missing managed outputs: run the owning build cone instead of copying generated files.
 - Standalone Docker failure: run cleanup, verify Docker is running, then retry the focused integration lane.
-- BDD report stale or unreadable: rerun the owning BDD lane and inspect `use-cases/*/scenarios/target/site/serenity/`.
+- BDD report stale or unreadable: rerun the owning BDD lane and inspect `packages/use-cases/*/scenarios/target/site/serenity/`.
 - University data drift: run `./run.sh university-data-profiles` and `./run.sh university-ci-matrix`.

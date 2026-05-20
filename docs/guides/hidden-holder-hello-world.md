@@ -20,9 +20,9 @@ presentation proving `age >= threshold` without revealing the birth date.
 
 On-chain roots:
 
-- `core/primitives/credentials/src/credentials/composable.compact`
-- `prototypes/credential-families/birth-secret/src/secret-birth-credential.compact`
-- optional: `use-cases/age-gate/contract/src/demo-revocation.compact` as the
+- `packages/core/primitives/credentials/src/credentials/composable.compact`
+- `packages/prototypes/credential-families/birth-secret/src/secret-birth-credential.compact`
+- optional: `packages/use-cases/age-gate/contract/src/demo-revocation.compact` as the
   status-aware reference
 
 Off-chain helpers:
@@ -49,8 +49,8 @@ Use it when:
 Use a narrow verifier contract:
 
 ```compact
-import "../../core/primitives/credentials/src/credentials/composable" prefix Core_;
-import "../../prototypes/credential-families/birth-secret/src/secret-birth-credential" prefix BirthSecret_;
+import "../../packages/core/primitives/credentials/src/credentials/composable" prefix Core_;
+import "../../packages/prototypes/credential-families/birth-secret/src/secret-birth-credential" prefix BirthSecret_;
 ```
 
 Then consume the family verification entrypoint for a typed request and
@@ -104,7 +104,7 @@ If you also need revocation/status today:
 
 The best current contract reference is:
 
-- `use-cases/age-gate/contract/src/demo-revocation.compact`
+- `packages/use-cases/age-gate/contract/src/demo-revocation.compact`
 
 ## On-chain / off-chain split
 
@@ -123,7 +123,7 @@ Off-chain:
 
 ## What to read next
 
-1. `prototypes/credential-families/birth-secret/README.md`
+1. `packages/prototypes/credential-families/birth-secret/README.md`
 2. `docs/guides/integration-surface-map.md`
 3. `docs/spec/status-verification-protocol.md` if you need status-aware flows
-4. `use-cases/age-gate/contract/README.md` for business-contract examples
+4. `packages/use-cases/age-gate/contract/README.md` for business-contract examples

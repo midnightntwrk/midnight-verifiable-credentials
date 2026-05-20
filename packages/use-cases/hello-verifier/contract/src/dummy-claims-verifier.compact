@@ -1,0 +1,223 @@
+pragma language_version >= 0.20;
+
+import CompactStandardLibrary;
+
+include "../../../../../packages/prototypes/credential-families/dummy-claims/src/dummy-claims-credential";
+
+export ledger contractVersion: Uint<32>;
+export ledger successfulVerificationCount: Counter;
+export ledger lastVerifiedCredentialRoot: Bytes<32>;
+export ledger lastVerifiedRequestChallenge: Bytes<32>;
+export ledger lastVerifiedBooleanValue: Boolean;
+export ledger lastVerifiedByteSizedUnsignedValue: Uint<8>;
+export ledger lastVerifiedMediumUnsignedValue: Uint<64>;
+export ledger lastVerifiedBigUnsignedValue: Uint<248>;
+export ledger lastVerifiedBytes16Value: Bytes<16>;
+export ledger lastVerifiedBytes32Value: Bytes<32>;
+export ledger lastVerifiedFieldValue: Field;
+export ledger lastVerifiedBooleanVector: Vector<2, Boolean>;
+export ledger lastVerifiedUintVector: Vector<2, Uint<64>>;
+export ledger lastVerifiedBytesVector: Vector<2, Bytes<16>>;
+export ledger lastVerifiedFieldVector: Vector<2, Field>;
+export ledger lastVerifiedNestedBooleanValue: Boolean;
+export ledger lastVerifiedNestedBigUnsignedValue: Uint<248>;
+export ledger lastVerifiedNestedBytesValue: Bytes<16>;
+export ledger lastVerifiedNestedFieldValue: Field;
+export ledger lastVerifiedNestedVector: Vector<2, DummyNestedClaims>;
+
+constructor() {
+  contractVersion = 1;
+  lastVerifiedCredentialRoot = pad(32, "dummy-claims:none");
+  lastVerifiedRequestChallenge = pad(32, "dummy-claims:no-request");
+  lastVerifiedBooleanValue = false;
+  lastVerifiedByteSizedUnsignedValue = 0;
+  lastVerifiedMediumUnsignedValue = 0;
+  lastVerifiedBigUnsignedValue = 0;
+  lastVerifiedBytes16Value = pad(16, "");
+  lastVerifiedBytes32Value = pad(32, "");
+  lastVerifiedFieldValue = 0;
+  lastVerifiedBooleanVector = [false, false];
+  lastVerifiedUintVector = [0, 0];
+  lastVerifiedBytesVector = [pad(16, ""), pad(16, "")];
+  lastVerifiedFieldVector = [0, 0];
+  lastVerifiedNestedBooleanValue = false;
+  lastVerifiedNestedBigUnsignedValue = 0;
+  lastVerifiedNestedBytesValue = pad(16, "");
+  lastVerifiedNestedFieldValue = 0;
+  lastVerifiedNestedVector = [
+    DummyNestedClaims {
+      booleanValue: false,
+      bigUnsignedValue: 0,
+      bytesValue: pad(16, ""),
+      fieldValue: 0,
+    },
+    DummyNestedClaims {
+      booleanValue: false,
+      bigUnsignedValue: 0,
+      bytesValue: pad(16, ""),
+      fieldValue: 0,
+    },
+  ];
+}
+
+// Pure request-builder for the widest current direct Compact claim-surface lab.
+// This verifier intentionally requires full disclosure of every supported field
+// in the dummy family, including the nested struct and nested vector.
+export pure circuit dummyClaimsVerifierRequest(
+  issuerVerificationMethodRef: VerificationMethodRef,
+  verifierChallengeHash: Bytes<32>
+): DummyClaimsPresentationRequest {
+  return DummyClaimsPresentationRequest {
+    version: 1,
+    schema: SchemaRef {
+      packageId: pad(32, "midnight:vc:dummy-claims"),
+      schemaId: pad(32, "dummy-claims:v1"),
+      majorVersion: 1,
+      minorVersion: 0,
+    },
+    issuerVerificationMethodRef: issuerVerificationMethodRef,
+    requireBooleanValueDisclosure: true,
+    requireByteSizedUnsignedValueDisclosure: true,
+    requireMediumUnsignedValueDisclosure: true,
+    requireBigUnsignedValueDisclosure: true,
+    requireBytes16ValueDisclosure: true,
+    requireBytes32ValueDisclosure: true,
+    requireFieldValueDisclosure: true,
+    requireBooleanVectorDisclosure: true,
+    requireUintVectorDisclosure: true,
+    requireBytesVectorDisclosure: true,
+    requireFieldVectorDisclosure: true,
+    requireNestedValueDisclosure: true,
+    requireNestedBooleanValueDisclosure: true,
+    requireNestedBigUnsignedValueDisclosure: true,
+    requireNestedBytesValueDisclosure: true,
+    requireNestedFieldValueDisclosure: true,
+    requireNestedVectorDisclosure: true,
+    verifierChallengeHash: verifierChallengeHash,
+  };
+}
+
+// TRUST BOUNDARY: this contract is a compiler/interoperability consumer for the
+// dummy claim-surface family. It is intentionally full-disclosure and not a
+// production privacy profile.
+export circuit verifyDummyClaimsPresentationForDummyClaimsVerifier(
+  credential: DummyClaimsCredential,
+  credentialProof: Proof,
+  request: DummyClaimsPresentationRequest,
+  presentation: DummyClaimsPresentation,
+  presentationProof: Proof
+): [] {
+  const credentialRoot = disclose(dummyClaimsCredentialBodyRoot(credential));
+
+  assert(
+    request.requireBooleanValueDisclosure,
+    "Dummy-claims verifier requires boolean disclosure"
+  );
+  assert(
+    request.requireByteSizedUnsignedValueDisclosure,
+    "Dummy-claims verifier requires Uint<8> disclosure"
+  );
+  assert(
+    request.requireMediumUnsignedValueDisclosure,
+    "Dummy-claims verifier requires Uint<64> disclosure"
+  );
+  assert(
+    request.requireBigUnsignedValueDisclosure,
+    "Dummy-claims verifier requires Uint<248> disclosure"
+  );
+  assert(
+    request.requireBytes16ValueDisclosure,
+    "Dummy-claims verifier requires Bytes<16> disclosure"
+  );
+  assert(
+    request.requireBytes32ValueDisclosure,
+    "Dummy-claims verifier requires Bytes<32> disclosure"
+  );
+  assert(
+    request.requireFieldValueDisclosure,
+    "Dummy-claims verifier requires field disclosure"
+  );
+  assert(
+    request.requireBooleanVectorDisclosure,
+    "Dummy-claims verifier requires Boolean vector disclosure"
+  );
+  assert(
+    request.requireUintVectorDisclosure,
+    "Dummy-claims verifier requires Uint vector disclosure"
+  );
+  assert(
+    request.requireBytesVectorDisclosure,
+    "Dummy-claims verifier requires Bytes vector disclosure"
+  );
+  assert(
+    request.requireFieldVectorDisclosure,
+    "Dummy-claims verifier requires field vector disclosure"
+  );
+  assert(
+    request.requireNestedValueDisclosure,
+    "Dummy-claims verifier requires nested disclosure"
+  );
+  assert(
+    request.requireNestedBooleanValueDisclosure,
+    "Dummy-claims verifier requires nested boolean disclosure"
+  );
+  assert(
+    request.requireNestedBigUnsignedValueDisclosure,
+    "Dummy-claims verifier requires nested bigint-like disclosure"
+  );
+  assert(
+    request.requireNestedBytesValueDisclosure,
+    "Dummy-claims verifier requires nested bytes disclosure"
+  );
+  assert(
+    request.requireNestedFieldValueDisclosure,
+    "Dummy-claims verifier requires nested field disclosure"
+  );
+  assert(
+    request.requireNestedVectorDisclosure,
+    "Dummy-claims verifier requires nested vector disclosure"
+  );
+
+  assertDummyClaimsPresentationSatisfiesRequest(
+    credential,
+    credentialProof,
+    request,
+    presentation,
+    presentationProof
+  );
+
+  lastVerifiedCredentialRoot = credentialRoot;
+  lastVerifiedRequestChallenge = disclose(request.verifierChallengeHash);
+  lastVerifiedBooleanValue = disclose(presentation.disclosed.booleanValue);
+  lastVerifiedByteSizedUnsignedValue = disclose(
+    presentation.disclosed.byteSizedUnsignedValue
+  );
+  lastVerifiedMediumUnsignedValue = disclose(
+    presentation.disclosed.mediumUnsignedValue
+  );
+  lastVerifiedBigUnsignedValue = disclose(
+    presentation.disclosed.bigUnsignedValue
+  );
+  lastVerifiedBytes16Value = disclose(presentation.disclosed.bytes16Value);
+  lastVerifiedBytes32Value = disclose(presentation.disclosed.bytes32Value);
+  lastVerifiedFieldValue = disclose(presentation.disclosed.fieldValue);
+  lastVerifiedBooleanVector = disclose(presentation.disclosed.booleanVector);
+  lastVerifiedUintVector = disclose(presentation.disclosed.uintVector);
+  lastVerifiedBytesVector = disclose(presentation.disclosed.bytesVector);
+  lastVerifiedFieldVector = disclose(presentation.disclosed.fieldVector);
+  lastVerifiedNestedBooleanValue = disclose(
+    presentation.disclosed.nestedValue.booleanValue
+  );
+  lastVerifiedNestedBigUnsignedValue = disclose(
+    presentation.disclosed.nestedValue.bigUnsignedValue
+  );
+  lastVerifiedNestedBytesValue = disclose(
+    presentation.disclosed.nestedValue.bytesValue
+  );
+  lastVerifiedNestedFieldValue = disclose(
+    presentation.disclosed.nestedValue.fieldValue
+  );
+  lastVerifiedNestedVector = disclose(presentation.disclosed.nestedVector);
+
+  successfulVerificationCount.increment(1);
+}

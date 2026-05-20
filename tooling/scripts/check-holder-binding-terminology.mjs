@@ -76,7 +76,7 @@ requireIncludes(canonicalTerminologyDoc, [
 requireIncludes("README.md", ["docs/architecture/holder-binding-terminology.md"]);
 requireIncludes("docs/README.md", ["architecture/holder-binding-terminology.md"]);
 requireIncludes("docs/spec/profiles.md", ["Canonical terminology"]);
-requireIncludes("core/primitives/credentials/README.md", ["Holder-binding terminology"]);
+requireIncludes("packages/core/primitives/credentials/README.md", ["Holder-binding terminology"]);
 requireIncludes("docs/plans/holder-binding-extension-plan.md", [
   "Offchain DID and Legacy Holder Binding Extension Plan",
   "preferred runtime/public-facing adapter name is `OffchainDIDHolderBinding`",

@@ -189,7 +189,7 @@ These stay docs-only on purpose so they remain easy to copy without adding anoth
 
 Start with:
 
-- `core/primitives/credentials/src/credentials/composable.compact`
+- `packages/core/primitives/credentials/src/credentials/composable.compact`
 - the relevant credential-family `.compact` entrypoint
 - optional capability `.compact` entrypoints such as same-holder or the
   revocation registry contract
@@ -219,9 +219,9 @@ Avoid:
 
 Use:
 
-- `registry/status-registry/src/revocation-registry.compact` for the
+- `packages/registry/status-registry/src/revocation-registry.compact` for the
   on-chain registry contract
-- `registry/status-registry/src/status-proof-protocol.compact` for
+- `packages/registry/status-registry/src/status-proof-protocol.compact` for
   verifier-facing status proof-protocol Compact types and validators in
   families or Layer 3 contracts
 - `credentials-status-registry` TS builders off-chain

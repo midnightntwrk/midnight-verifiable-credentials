@@ -10,12 +10,12 @@ const repoRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
 const errors = [];
 
 const sourceOnlyWorkspaces = new Set([
-  "components/integration/standalone-environment",
+  "packages/components/integration/standalone-environment",
 ]);
 
 const scenarioWorkspaces = new Set([
-  "use-cases/age-gate/scenarios",
-  "use-cases/university/scenarios",
+  "packages/use-cases/age-gate/scenarios",
+  "packages/use-cases/university/scenarios",
 ]);
 
 const requiredDistFiles = [

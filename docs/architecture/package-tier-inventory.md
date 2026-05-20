@@ -30,8 +30,8 @@ Related documents:
 | Reusable core package | Canonical VC semantics or Compact-first reusable capability | Usually yes | Must not depend on adapters, orchestration, demos, or integration harnesses |
 | Credential-family package | Concrete claim/disclosure/request/predicate family built on the core | Yes | Depends on core packages; higher layers may compose it |
 | DID-aware adapter package | Runtime-only DID conversion helpers that adapt DID material into VC shapes | Yes, in DID-aware runtimes | Depends on DID/runtime packages plus VC core; never imported by Compact contracts |
-| Transport or orchestration package | Layer 4 runtime, transport, or protocol composition helper | Sometimes, but not as canonical core | Depends downward on core and family packages; core/families must not depend on it |
-| Demo / prototype package | Business-facing example or evolving prototype flow | No, except as example source | Depends downward on core/families/capabilities |
+| Transport or orchestration package | Layer 4 runtime, transport, or protocol composition helper | Sometimes, but not as canonical core | Depends downward on core and family packages; packages/core/families must not depend on it |
+| Demo / prototype package | Business-facing example or evolving prototype flow | No, except as example source | Depends downward on packages/core/families/capabilities |
 | Shared integration infrastructure | Docker/runtime/test harness support | No, except for repo-local testing | Depends outward on runtime/test infrastructure |
 
 ## Package inventory

@@ -52,7 +52,7 @@ The repository still carries several transitional shapes that work, but do not r
 ### 1. The generic VC module is fused with presentation semantics
 
 Current file:
-- [`../../core/primitives/credentials/src/credentials/vc.compact`](../../core/primitives/credentials/src/credentials/vc.compact)
+- [`../../packages/core/primitives/credentials/src/credentials/vc.compact`](../../packages/core/primitives/credentials/src/credentials/vc.compact)
 
 Current state:
 - `module VC<TPublicClaims, TClaimCommitments, THolderBinding, TStatusBinding>`
@@ -68,7 +68,7 @@ Problem:
 ### 2. Generic protocol templates still carry status-capability semantics
 
 Current file:
-- [`../../core/primitives/credentials/src/credentials/protocols.compact`](../../core/primitives/credentials/src/credentials/protocols.compact)
+- [`../../packages/core/primitives/credentials/src/credentials/protocols.compact`](../../packages/core/primitives/credentials/src/credentials/protocols.compact)
 
 Current state:
 - generic issuance and presentation message templates live beside:
@@ -84,8 +84,8 @@ Problem:
 ### 3. Core status bindings still depend on capability-style transitional abstractions
 
 Current files:
-- [`../../core/primitives/credentials/src/credentials/types.compact`](../../core/primitives/credentials/src/credentials/types.compact)
-- [`../../core/primitives/credentials/src/credentials/status-bindings.compact`](../../core/primitives/credentials/src/credentials/status-bindings.compact)
+- [`../../packages/core/primitives/credentials/src/credentials/types.compact`](../../packages/core/primitives/credentials/src/credentials/types.compact)
+- [`../../packages/core/primitives/credentials/src/credentials/status-bindings.compact`](../../packages/core/primitives/credentials/src/credentials/status-bindings.compact)
 
 Previous state:
 - core defined:
@@ -102,8 +102,8 @@ Problem:
 ### 4. Status-aware hidden-holder families still retain a transitional wrapper
 
 Current files:
-- [`../../prototypes/credential-families/birth-secret/src/secret-birth-credential/status-model.compact`](../../prototypes/credential-families/birth-secret/src/secret-birth-credential/status-model.compact)
-- [`../../prototypes/credential-families/birth-secret/src/secret-birth-credential/helpers.compact`](../../prototypes/credential-families/birth-secret/src/secret-birth-credential/helpers.compact)
+- [`../../packages/prototypes/credential-families/birth-secret/src/secret-birth-credential/status-model.compact`](../../packages/prototypes/credential-families/birth-secret/src/secret-birth-credential/status-model.compact)
+- [`../../packages/prototypes/credential-families/birth-secret/src/secret-birth-credential/helpers.compact`](../../packages/prototypes/credential-families/birth-secret/src/secret-birth-credential/helpers.compact)
 
 Current state:
 - the capability-first wrappers have been removed
@@ -256,7 +256,7 @@ If a step is optional, it should not be part of the default generic path.
 ## Proposed core file layout
 
 Target directory:
-- [`../../core/primitives/credentials/src/credentials`](../../core/primitives/credentials/src/credentials)
+- [`../../packages/core/primitives/credentials/src/credentials`](../../packages/core/primitives/credentials/src/credentials)
 
 Target files:
 
@@ -288,7 +288,7 @@ Target files:
 - shared protocol envelopes and protocol-neutral helper checks only
 
 Registry-facing status protocol vocabulary should live in:
-- [`../../registry/status-registry/src/status-proof-protocol.compact`](../../registry/status-registry/src/status-proof-protocol.compact)
+- [`../../packages/registry/status-registry/src/status-proof-protocol.compact`](../../packages/registry/status-registry/src/status-proof-protocol.compact)
 
 ## 5-PR implementation cut
 

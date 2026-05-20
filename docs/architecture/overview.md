@@ -208,12 +208,12 @@ legacy include paths, but they are not part of the canonical architecture tree.
 
 Read the repository shape through these durable areas instead:
 
-- `core/`
-- `registry/`
-- `protocols/`
-- `components/`
-- `prototypes/`
-- `use-cases/`
+- `packages/core/`
+- `packages/registry/`
+- `packages/protocols/`
+- `packages/components/`
+- `packages/prototypes/`
+- `packages/use-cases/`
 - `tooling/`
 
 ## Dependency Direction

@@ -171,7 +171,7 @@ When deciding where a new protocol surface belongs, ask:
    composition?
 3. can a different transport or runtime layer replace it without changing the
    VC or VP semantics?
-4. would importing it into core/family Compact code create an upward dependency?
+4. would importing it into packages/core/family Compact code create an upward dependency?
 
 If the answer points to orchestration, transport, replay, or app policy, it is
 not a reusable core protocol.

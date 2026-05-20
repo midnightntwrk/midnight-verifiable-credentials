@@ -43,7 +43,7 @@ Use this lane when you want to verify:
 If you want the verifier contract without the DID-aware handoff, run:
 
 ```bash
-npm run test:ci -w use-cases/hello-verifier/contract
+npm run test:ci -w packages/use-cases/hello-verifier/contract
 ```
 
 Use this package when you want to understand:
@@ -61,7 +61,7 @@ complexity.
 Next, run the concrete explicit-holder age-gate package:
 
 ```bash
-npm run test:ci -w use-cases/age-gate/contract
+npm run test:ci -w packages/use-cases/age-gate/contract
 ```
 
 This adds:
@@ -86,7 +86,7 @@ That currently exercises:
 Open the generated Serenity report:
 
 ```bash
-open use-cases/age-gate/scenarios/target/site/serenity/index.html
+open packages/use-cases/age-gate/scenarios/target/site/serenity/index.html
 ```
 
 ## 6. Review the hidden-holder trust boundary failures
@@ -124,14 +124,14 @@ This is the simplest single command when you want both:
 When you want the larger DID-backed university issuance and verifier blueprint,
 start with the operator guide:
 
-- [`../../use-cases/university/operator-guide.md`](../../use-cases/university/operator-guide.md)
+- [`../../packages/use-cases/university/operator-guide.md`](../../packages/use-cases/university/operator-guide.md)
 
 The shortest readable path is:
 
 ```bash
 ./run.sh university-ci-matrix
 ./run.sh university-bdd
-open use-cases/university/scenarios/target/site/serenity/index.html
+open packages/use-cases/university/scenarios/target/site/serenity/index.html
 ```
 
 Use this path when you want to inspect:
@@ -157,7 +157,7 @@ This is the current focused engineering lane for:
 - `credentials-same-holder`
 - `credentials-birth`
 - `credentials-birth-secret`
-- `use-cases/age-gate/contract`
+- `packages/use-cases/age-gate/contract`
 
 ## 10. Only then move to Docker-backed integration
 

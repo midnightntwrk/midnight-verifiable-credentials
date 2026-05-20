@@ -50,7 +50,7 @@ Status and revocation work should start from these entry points:
 - [`docs/spec/credential-status.md`](../spec/credential-status.md)
 - [`docs/spec/revocation-registry.md`](../spec/revocation-registry.md)
 - [`docs/spec/status-verification-protocol.md`](../spec/status-verification-protocol.md)
-- [`registry/status-registry`](../../registry/status-registry)
+- [`packages/registry/status-registry`](../../packages/registry/status-registry)
 
 ## Audit Findings
 
@@ -139,7 +139,7 @@ Status and revocation work should start from these entry points:
    - include repair flow and examples from `./run.sh integration-report`
 
 11. `standalone-environment-package-policy`
-   - decide whether `components/integration/standalone-environment` is strictly
+   - decide whether `packages/components/integration/standalone-environment` is strictly
      private/test-only or a distributable helper package
    - align `exports`, `files`, `main`, and prehook scripts accordingly
 

@@ -6,18 +6,18 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, '..', '..');
 
 const aliases = [
-  ['midnight-did-credentials', 'core/primitives/credentials'],
-  ['midnight-did-credentials-same-holder', 'core/capabilities/same-holder'],
-  ['midnight-did-credentials-birth', 'prototypes/credential-families/birth'],
-  ['midnight-did-credentials-birth-secret', 'prototypes/credential-families/birth-secret'],
-  ['midnight-did-credentials-hello-family', 'prototypes/credential-families/hello-family'],
-  ['midnight-did-credentials-dummy-claims', 'prototypes/credential-families/dummy-claims'],
-  ['midnight-did-credentials-university-diploma', 'prototypes/credential-families/university-diploma'],
-  ['midnight-did-credentials-iso-registry', 'core/primitives/iso-registry'],
-  ['midnight-did-credentials-status-registry', 'registry/status-registry'],
-  ['midnight-did-credentials-openid', 'protocols/openid'],
-  ['midnight-did-credentials-protocol', 'components/orchestration/protocol'],
-  ['midnight-did-credentials-demo-contract', 'use-cases/age-gate/contract']
+  ['midnight-did-credentials', 'packages/core/primitives/credentials'],
+  ['midnight-did-credentials-same-holder', 'packages/core/capabilities/same-holder'],
+  ['midnight-did-credentials-birth', 'packages/prototypes/credential-families/birth'],
+  ['midnight-did-credentials-birth-secret', 'packages/prototypes/credential-families/birth-secret'],
+  ['midnight-did-credentials-hello-family', 'packages/prototypes/credential-families/hello-family'],
+  ['midnight-did-credentials-dummy-claims', 'packages/prototypes/credential-families/dummy-claims'],
+  ['midnight-did-credentials-university-diploma', 'packages/prototypes/credential-families/university-diploma'],
+  ['midnight-did-credentials-iso-registry', 'packages/core/primitives/iso-registry'],
+  ['midnight-did-credentials-status-registry', 'packages/registry/status-registry'],
+  ['midnight-did-credentials-openid', 'packages/protocols/openid'],
+  ['midnight-did-credentials-protocol', 'packages/components/orchestration/protocol'],
+  ['midnight-did-credentials-demo-contract', 'packages/use-cases/age-gate/contract']
 ];
 
 const ensureSymlink = async (target, linkPath) => {

@@ -15,14 +15,14 @@ What it is missing is:
 
 1. more in-source orientation for Compact readers
 2. clearer source-level trust-boundary and limitation markers
-3. a stricter pure-circuit substrate in `core/` and `registry/`
+3. a stricter pure-circuit substrate in `packages/core/` and `packages/registry/`
 4. one remaining ad-hoc commitment that should likely become a built-in `persistentCommit`
 
 The recommended direction is:
 
 - keep the current modular `include` graph
 - adopt a lighter, repeatable source-comment convention
-- make `core/` and `registry/` the explicit pure substrate first
+- make `packages/core/` and `packages/registry/` the explicit pure substrate first
 - then simplify the credential families and Layer 3 contracts to become thin ledger wrappers over that pure substrate
 
 ## Compact Claim-Surface Findings
@@ -151,41 +151,41 @@ The following files are the best first targets for the new source-comment conven
 
 ### Core and registry surfaces
 
-- `core/primitives/credentials/src/credentials/holder-bindings.compact`
+- `packages/core/primitives/credentials/src/credentials/holder-bindings.compact`
   - add a file-purpose header
   - split the file with section banners by binding family
   - add docblocks to the exported binding helpers and validators
 
-- `core/primitives/credentials/src/credentials/proofs.compact`
+- `packages/core/primitives/credentials/src/credentials/proofs.compact`
   - document context-tag semantics and challenge derivation
   - make the domain-separation rationale explicit at the exported surface
 
-- `core/primitives/credentials/src/credentials/status-bindings.compact`
+- `packages/core/primitives/credentials/src/credentials/status-bindings.compact`
   - document `StatusType`
   - document `registryBoundStatusBindingRoot` semantics
 
-- `core/primitives/credentials/src/credentials/vc.compact`
-- `core/primitives/credentials/src/credentials/vp.compact`
-- `core/primitives/credentials/src/credentials/protocols.compact`
-- `core/primitives/credentials/src/credentials/issue.compact`
-- `core/primitives/credentials/src/credentials/present.compact`
+- `packages/core/primitives/credentials/src/credentials/vc.compact`
+- `packages/core/primitives/credentials/src/credentials/vp.compact`
+- `packages/core/primitives/credentials/src/credentials/protocols.compact`
+- `packages/core/primitives/credentials/src/credentials/issue.compact`
+- `packages/core/primitives/credentials/src/credentials/present.compact`
   - add short public-surface headers and requirement notes
 
 ### Prototype family surfaces
 
-- `prototypes/credential-families/birth/src/birth-credential/validation.compact`
-- `prototypes/credential-families/birth-secret/src/secret-birth-credential/validation.compact`
-- `prototypes/credential-families/birth-secret/src/secret-birth-credential/status-validation.compact`
+- `packages/prototypes/credential-families/birth/src/birth-credential/validation.compact`
+- `packages/prototypes/credential-families/birth-secret/src/secret-birth-credential/validation.compact`
+- `packages/prototypes/credential-families/birth-secret/src/secret-birth-credential/status-validation.compact`
   - add section banners for issuance, presentation, status-mode, and predicate sections
   - add trust-boundary comments around verifier-domain and same-holder flows
 
 ### Use-case and template surfaces
 
-- `use-cases/hello-verifier/contract/src/hello-verifier.compact`
+- `packages/use-cases/hello-verifier/contract/src/hello-verifier.compact`
   - add ledger-purpose comments and witness explanations
 
-- `use-cases/age-gate/contract/src/demo.compact`
-- `use-cases/age-gate/contract/src/demo-revocation.compact`
+- `packages/use-cases/age-gate/contract/src/demo.compact`
+- `packages/use-cases/age-gate/contract/src/demo-revocation.compact`
   - add sectioning and trust-boundary notes only where the flows remain dense after the current cleanup
 
 - `docs/templates/verifier-contract-template.compact.md`
@@ -203,21 +203,21 @@ That means the `pure` keyword is not only about code generation. In this reposit
 - forcing compile-time rejection if someone later sneaks in ledger access or witness access
 - making the pure substrate visible to contributors without having to inspect generated bindings
 
-### P1. Mark the existing `core/` substrate as explicitly pure
+### P1. Mark the existing `packages/core/` substrate as explicitly pure
 
 These files are the dependency root and are already structurally pure:
 
-- `core/primitives/credentials/src/credentials/vc.compact`
-- `core/primitives/credentials/src/credentials/vp.compact`
-- `core/primitives/credentials/src/credentials/relations.compact`
-- `core/primitives/credentials/src/credentials/issue.compact`
-- `core/primitives/credentials/src/credentials/present.compact`
-- `core/primitives/credentials/src/credentials/protocols.compact`
-- `core/primitives/credentials/src/credentials/status-bindings.compact`
-- `core/primitives/credentials/src/credentials/proofs.compact`
-- `core/primitives/credentials/src/credentials/holder-bindings.compact`
-- `core/capabilities/same-holder/src/same-holder.compact`
-- `core/capabilities/same-holder/src/same-holder/composable.compact`
+- `packages/core/primitives/credentials/src/credentials/vc.compact`
+- `packages/core/primitives/credentials/src/credentials/vp.compact`
+- `packages/core/primitives/credentials/src/credentials/relations.compact`
+- `packages/core/primitives/credentials/src/credentials/issue.compact`
+- `packages/core/primitives/credentials/src/credentials/present.compact`
+- `packages/core/primitives/credentials/src/credentials/protocols.compact`
+- `packages/core/primitives/credentials/src/credentials/status-bindings.compact`
+- `packages/core/primitives/credentials/src/credentials/proofs.compact`
+- `packages/core/primitives/credentials/src/credentials/holder-bindings.compact`
+- `packages/core/capabilities/same-holder/src/same-holder.compact`
+- `packages/core/capabilities/same-holder/src/same-holder/composable.compact`
 
 Why first:
 
@@ -229,7 +229,7 @@ Why first:
 
 Target file:
 
-- `registry/status-registry/src/status-proof-protocol.compact`
+- `packages/registry/status-registry/src/status-proof-protocol.compact`
 
 Why:
 
@@ -241,12 +241,12 @@ Why:
 
 Targets:
 
-- `prototypes/credential-families/birth/src/birth-credential/claims.compact`
-- `prototypes/credential-families/birth/src/birth-credential/helpers.compact`
-- `prototypes/credential-families/birth/src/birth-credential/validation.compact`
-- `prototypes/credential-families/birth-secret/src/secret-birth-credential/helpers.compact`
-- `prototypes/credential-families/birth-secret/src/secret-birth-credential/validation.compact`
-- `prototypes/credential-families/birth-secret/src/secret-birth-credential/status-validation.compact`
+- `packages/prototypes/credential-families/birth/src/birth-credential/claims.compact`
+- `packages/prototypes/credential-families/birth/src/birth-credential/helpers.compact`
+- `packages/prototypes/credential-families/birth/src/birth-credential/validation.compact`
+- `packages/prototypes/credential-families/birth-secret/src/secret-birth-credential/helpers.compact`
+- `packages/prototypes/credential-families/birth-secret/src/secret-birth-credential/validation.compact`
+- `packages/prototypes/credential-families/birth-secret/src/secret-birth-credential/status-validation.compact`
 
 Why:
 
@@ -257,10 +257,10 @@ Why:
 
 Highest-value refactor targets:
 
-- `use-cases/age-gate/contract/src/demo.compact: ageGateRequest`
-- `use-cases/age-gate/contract/src/demo-revocation.compact: revocationAwareAgeGateVerificationRequest`
-- `use-cases/age-gate/contract/src/demo-revocation.compact: revocationAwareVerifierSuppliedRootRequest`
-- `use-cases/age-gate/contract/src/demo-revocation.compact: revocationAwareAuthorityAttestedRequest`
+- `packages/use-cases/age-gate/contract/src/demo.compact: ageGateRequest`
+- `packages/use-cases/age-gate/contract/src/demo-revocation.compact: revocationAwareAgeGateVerificationRequest`
+- `packages/use-cases/age-gate/contract/src/demo-revocation.compact: revocationAwareVerifierSuppliedRootRequest`
+- `packages/use-cases/age-gate/contract/src/demo-revocation.compact: revocationAwareAuthorityAttestedRequest`
 
 Reason:
 
@@ -272,7 +272,7 @@ Reason:
 
 Target file:
 
-- `use-cases/age-gate/contract/src/demo-revocation.compact`
+- `packages/use-cases/age-gate/contract/src/demo-revocation.compact`
 
 Why:
 
@@ -283,17 +283,17 @@ Why:
 
 Targets:
 
-- `use-cases/hello-verifier/contract/src/hello-verifier.compact`
-- `use-cases/age-gate/contract/src/demo.compact`
+- `packages/use-cases/hello-verifier/contract/src/hello-verifier.compact`
+- `packages/use-cases/age-gate/contract/src/demo.compact`
 
-These are valuable but should follow the core/registry/family normalization work.
+These are valuable but should follow the packages/core/registry/family normalization work.
 
 ### Non-candidates
 
 These should remain impure because they are inherently ledger-mutating:
 
-- `registry/status-registry/src/revocation-registry.compact: initializeRegistry`
-- `registry/status-registry/src/revocation-registry.compact: revokeStatusHandle`
+- `packages/registry/status-registry/src/revocation-registry.compact: initializeRegistry`
+- `packages/registry/status-registry/src/revocation-registry.compact: revokeStatusHandle`
 - capability-claim mutation entrypoints in `demo.compact` and `demo-revocation.compact`
 
 ## PersistentCommit Findings
@@ -308,7 +308,7 @@ Only one high-confidence ad-hoc commitment remains.
 
 ### High-confidence replacement
 
-- `core/primitives/credentials/src/credentials/holder-bindings.compact: blindedSecretHolderCommitment`
+- `packages/core/primitives/credentials/src/credentials/holder-bindings.compact: blindedSecretHolderCommitment`
 
 Current shape:
 
@@ -360,7 +360,7 @@ In particular, `revokedSetStatusHandle(...)` should remain a salted opaque deriv
 ## Recommended Execution Order
 
 1. adopt the source-comment convention in a small pilot on `holder-bindings.compact`, `proofs.compact`, and `status-bindings.compact`
-2. mark `core/` and `registry/status-proof-protocol.compact` as explicitly pure
+2. mark `packages/core/` and `packages/registry/status-proof-protocol.compact` as explicitly pure
 3. mark the birth and birth-secret family validation layers as explicitly pure
 4. refactor the age-gate and revocation request builders into parameterized pure helpers with thin impure wrappers
 5. split the revocation demo verification flows into pure acceptance helpers plus thin ledger wrappers

@@ -312,7 +312,7 @@ package boundary is chosen.
 ### Phase 3: hidden-holder non-revocation design
 
 - choose the witness construction
-- choose registry/root update semantics
+- choose packages/registry/root update semantics
 - define witness refresh lifecycle
 - define proof/public-input boundaries
 

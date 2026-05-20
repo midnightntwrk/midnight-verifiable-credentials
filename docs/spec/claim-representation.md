@@ -180,13 +180,13 @@ Adapter guidance:
 The repository carries working examples across the representation taxonomy:
 
 - direct selectively disclosed laboratory:
-  [`../../prototypes/credential-families/dummy-claims`](../../prototypes/credential-families/dummy-claims)
+  [`../../packages/prototypes/credential-families/dummy-claims`](../../packages/prototypes/credential-families/dummy-claims)
 - direct academic prototype:
-  [`../../prototypes/credential-families/university-diploma`](../../prototypes/credential-families/university-diploma)
+  [`../../packages/prototypes/credential-families/university-diploma`](../../packages/prototypes/credential-families/university-diploma)
 - committed/private birth source credential:
-  [`../../prototypes/credential-families/birth`](../../prototypes/credential-families/birth)
+  [`../../packages/prototypes/credential-families/birth`](../../packages/prototypes/credential-families/birth)
 - mixed public-plus-private laboratory:
-  [`../../prototypes/credential-families/mixed-claims`](../../prototypes/credential-families/mixed-claims)
+  [`../../packages/prototypes/credential-families/mixed-claims`](../../packages/prototypes/credential-families/mixed-claims)
 
 `selectivelyDisclosed` is intentionally represented by direct-value prototypes
 whose request gates decide whether the presentation exposes the value. Families

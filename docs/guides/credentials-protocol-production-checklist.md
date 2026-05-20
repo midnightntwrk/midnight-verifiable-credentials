@@ -6,7 +6,7 @@ layer.
 This checklist is intentionally short. It captures the minimum decisions an
 integrator must make before claiming production-shaped hidden-holder or
 blinded-secret protocol behavior around
-[`components/orchestration/protocol`](../../components/orchestration/protocol/README.md).
+[`packages/components/orchestration/protocol`](../../packages/components/orchestration/protocol/README.md).
 
 Current reference implementation:
 

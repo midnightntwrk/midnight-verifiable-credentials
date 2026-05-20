@@ -18,7 +18,7 @@ Purpose:
 ## Exported helper surface
 
 The current reference path is built from these exports in
-[`../../components/orchestration/protocol/src/index.ts`](../../components/orchestration/protocol/src/index.ts):
+[`../../packages/components/orchestration/protocol/src/index.ts`](../../packages/components/orchestration/protocol/src/index.ts):
 
 - `NodeCryptoRandomnessSource`
 - `createStableJsonProtocolStateStore(...)`
@@ -27,8 +27,8 @@ The current reference path is built from these exports in
 
 Supporting storage/runtime pieces:
 
-- [`../../components/orchestration/protocol/src/adapters/file-protocol-state-store.ts`](../../components/orchestration/protocol/src/adapters/file-protocol-state-store.ts)
-- [`../../components/orchestration/protocol/src/adapters/json-protocol-state-codec.ts`](../../components/orchestration/protocol/src/adapters/json-protocol-state-codec.ts)
+- [`../../packages/components/orchestration/protocol/src/adapters/file-protocol-state-store.ts`](../../packages/components/orchestration/protocol/src/adapters/file-protocol-state-store.ts)
+- [`../../packages/components/orchestration/protocol/src/adapters/json-protocol-state-codec.ts`](../../packages/components/orchestration/protocol/src/adapters/json-protocol-state-codec.ts)
 
 ## What this path guarantees
 
@@ -115,7 +115,7 @@ const restartedHolder = new HolderAgent(
 
 The checked-in proof for this path is:
 
-- [`../../components/orchestration/protocol/src/test/reference/node-reference-path.test.ts`](../../components/orchestration/protocol/src/test/reference/node-reference-path.test.ts)
+- [`../../packages/components/orchestration/protocol/src/test/reference/node-reference-path.test.ts`](../../packages/components/orchestration/protocol/src/test/reference/node-reference-path.test.ts)
   - `recovers explicit-holder credentials across restart with file-backed JSON state and crypto randomness`
 
 ## Secret-holder reference shape
@@ -155,7 +155,7 @@ const verifier = new VerifierAgent(verifierProfile, bus, {
 
 The checked-in proof for this path is:
 
-- [`../../components/orchestration/protocol/src/test/reference/node-reference-path.test.ts`](../../components/orchestration/protocol/src/test/reference/node-reference-path.test.ts)
+- [`../../packages/components/orchestration/protocol/src/test/reference/node-reference-path.test.ts`](../../packages/components/orchestration/protocol/src/test/reference/node-reference-path.test.ts)
   - `re-delivers secret-holder presentation outcomes across verifier restart with file-backed JSON state and crypto randomness`
 
 ## Deployment rules
@@ -189,6 +189,6 @@ Treat this path as the current minimum bar for a production-shaped claim:
 ## Local validation
 
 ```bash
-npm run test:ci -w components/orchestration/protocol
-npm exec -w components/orchestration/protocol -- vitest run src/test/reference/node-reference-path.test.ts
+npm run test:ci -w packages/components/orchestration/protocol
+npm exec -w packages/components/orchestration/protocol -- vitest run src/test/reference/node-reference-path.test.ts
 ```

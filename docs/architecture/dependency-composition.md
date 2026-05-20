@@ -55,7 +55,7 @@ Current note on status support:
   witness/attestation builders used by status-aware Layer 3 flows
 
 ```compact
-include "../../prototypes/credential-families/birth/src/birth-credential";
+include "../../packages/prototypes/credential-families/birth/src/birth-credential";
 
 import VC<NoPublicClaims, BirthCredentialClaimCommitments, ExplicitHolderBinding, NoStatusBinding>;
 import VP<BirthCredentialDisclosures, ExplicitHolderBinding>;
@@ -154,9 +154,9 @@ The likely final shape is:
 
 ```compact
 // Layer 3 contract
-include "core/primitives/credentials/src/credentials/composable";
-include "core/capabilities/same-holder/src/same-holder/composable";
-include "core/primitives/iso-registry/src/iso-registry";
+include "packages/core/primitives/credentials/src/credentials/composable";
+include "packages/core/capabilities/same-holder/src/same-holder/composable";
+include "packages/core/primitives/iso-registry/src/iso-registry";
 
 include "credentials-passport-secret/src/secret-passport-credential/composable";
 include "credentials-compliance/src/sanction-screening-credential/composable";
@@ -355,8 +355,8 @@ pragma language_version >= 0.20;
 
 import CompactStandardLibrary;
 
-include "../../prototypes/credential-families/birth/src/birth-credential";
-include "../../core/capabilities/same-holder/src/same-holder";
+include "../../packages/prototypes/credential-families/birth/src/birth-credential";
+include "../../packages/core/capabilities/same-holder/src/same-holder";
 
 export circuit verifyBusinessEligibility(
   credential: BirthCredential,
@@ -389,16 +389,16 @@ families through composition-safe entry points.
 Current-workspace example:
 
 ```compact
-include "../../core/primitives/credentials/src/credentials/composable";
-include "../../prototypes/credential-families/birth/src/birth-credential";
+include "../../packages/core/primitives/credentials/src/credentials/composable";
+include "../../packages/prototypes/credential-families/birth/src/birth-credential";
 ```
 
 Adjacent-prototype example:
 
 ```compact
-include "../../core/primitives/credentials/src/credentials";
-include "../../core/capabilities/same-holder/src/same-holder/composable";
-include "../../core/primitives/iso-registry/src/iso-registry";
+include "../../packages/core/primitives/credentials/src/credentials";
+include "../../packages/core/capabilities/same-holder/src/same-holder/composable";
+include "../../packages/core/primitives/iso-registry/src/iso-registry";
 
 include "../../midnight-passport-prototype/packages/credentials-passport-secret/src/secret-passport-credential/composable";
 include "../../midnight-passport-prototype/packages/credentials-compliance/src/sanction-screening-credential/composable";
