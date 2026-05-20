@@ -197,3 +197,20 @@ The generic VC envelope already supports all of these because `claims` and
 `claimCommitments` are family-defined type parameters. The representation choice
 belongs to the family schema, while the generic envelope makes the public versus
 commitment boundary visible to every family.
+
+## Disclosure Shape Guidance
+
+Existing families may use explicit `reveal*` booleans paired with value slots in
+their disclosure structs. This shape is valid when the family verifier treats the
+boolean as authoritative and ignores the corresponding value slot unless the
+boolean is true.
+
+New families may choose a `Maybe<T>`-style disclosure wrapper when the
+Compact/tooling surface supports it cleanly and the shape is easier for
+integrators to read. That choice is cosmetic unless it changes the commitment or
+predicate validation rules.
+
+Repository-aligned changes `SHOULD NOT` rewrite existing disclosure structs from
+`reveal*` fields to `Maybe<T>` only for style. Such a rewrite is a surface
+change and must be justified by stronger validation, clearer generated types, or
+a family migration requirement.

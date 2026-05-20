@@ -2,7 +2,7 @@
 
 Status: current simplification, maintainability, and university-readability
 backlog for `origin/develop`.
-Last audited: 2026-05-20.
+Last audited: 2026-05-21.
 
 This document is the primary VC repository backlog. Older capability plans stay
 in `docs/plans/` for traceability, but this file owns the active execution
@@ -84,6 +84,23 @@ Status and revocation work should start from these entry points:
 - Backlog/plans docs overlap and still describe completed work as active:
   resolved by this 2026-05-20 backlog collapse; future drift is tracked through
   `status-revocation-entrypoint-map` and the archive link checks.
+
+### External Review Addendum, 2026-05-21
+
+The supplied credential-review notes were triaged in
+[`external-review-triage-2026-05-21.md`](./external-review-triage-2026-05-21.md).
+They add four review-driven backlog decisions:
+
+- `schema-capabilities-layering`: schema/family capabilities must be schema
+  metadata, not trusted per-protocol-message booleans.
+- `schema-family-resolution-hints`: generic wallets need an adapter-level way to
+  resolve credential-family handlers from `SchemaRef` identities.
+- `university-commitment-backed-privacy`: the current university family is a
+  direct-claim prototype; `reveal*` flags enforce presentation policy but do not
+  hide raw credential-body values.
+- `disclosure-shape-guidance`: `Maybe<T>`-style disclosure structs are allowed
+  for new families when useful, but existing `reveal*` structs should not churn
+  for style only.
 
 ## Top 20 Simplification Backlog Items
 
@@ -256,6 +273,37 @@ file splits, BDD readability, and maturity tags.
 `ci-setup-action-consolidation` is intentionally deferred beyond the first 10
 slices because it is lower risk after runner, cone, and package-policy catalogs
 stop drifting.
+
+## Review-Driven Stack Additions
+
+These additions come from the 2026-05-21 external review triage and should be
+stacked after `vc-repo-hygiene-dead-surface` unless a lower-level CI failure
+forces a stop.
+
+1. `vc-review-schema-capabilities`
+   - covers `schema-capabilities-layering`,
+     `schema-family-resolution-hints`, and `disclosure-shape-guidance`
+   - validation: `git diff --check`, `npm run docs:links`,
+     `npm run check:vc-surface-discipline`
+
+2. `vc-protocol-feature-hint-deprecation`
+   - moves authoritative capability reads away from issue/present protocol
+     `features` fields
+   - keeps compatibility fields only where existing generated surfaces require
+     them during the migration
+   - validation: focused credential primitive tests, orchestration protocol
+     tests, `./run.sh --light`
+
+3. `vc-university-privacy-hardening-plan`
+   - covers `university-commitment-backed-privacy` as a plan/spec/test-warning
+     slice before changing the family surface
+   - validation: `./run.sh university-bdd`, `npm run docs:links`
+
+4. `vc-university-commitment-backed-diploma`
+   - migrates sensitive university values to `claimCommitments` with openings or
+     predicate witnesses
+   - validation: university credential-family tests, university protocol tests,
+     `./run.sh university-bdd`
 
 ## Validation Defaults
 

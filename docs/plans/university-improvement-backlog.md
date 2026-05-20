@@ -1,7 +1,7 @@
 # University Improvement Backlog
 
 Status: university-focused expansion for current `origin/develop`.
-Last audited: 2026-05-20.
+Last audited: 2026-05-21.
 
 The large university runtime/backend port is merged. Current university work is
 no longer about proving that the scenario can run; it is about making the flow
@@ -89,6 +89,16 @@ becomes part of a stackable PR.
    - either bring age-gate BDD notes/artifacts closer to university style or
      state that age-gate remains the smaller smoke scenario
    - validation: `./run.sh bdd`, `./run.sh bdd-negative`,
+     `./run.sh university-bdd`
+
+11. University-only follow-on: `university-commitment-backed-privacy`
+   - make it explicit that the current diploma family is a direct-claim
+     prototype: the raw academic facts are present in `credential.claims`
+   - clarify that current `reveal*` flags enforce verifier request policy and
+     signed presentation authorization, not credential-body secrecy
+   - migrate stable identifiers and sensitive academic facts into
+     `claimCommitments` before treating the family as production privacy work
+   - validation: university credential-family tests, university protocol tests,
      `./run.sh university-bdd`
 
 ## Human-Readability Rule

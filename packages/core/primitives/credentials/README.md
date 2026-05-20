@@ -56,6 +56,8 @@ This package is the reusable envelope and proof layer for credential families th
 It owns the generic pieces that should be shared across many credential families:
 
 - `SchemaRef`
+- `SchemaCapabilities`
+- `SchemaDescriptor`
 - `VerificationMethodRef`
 - `ExplicitHolderBinding`
 - `SecretHolderBinding`
@@ -140,6 +142,32 @@ Those belong in specialization packages such as:
 - [`../../../../packages/prototypes/credential-families/birth/README.md`](../../../../packages/prototypes/credential-families/birth/README.md): explicit DID-bound holder profile
 - [`../../../../packages/prototypes/credential-families/birth-secret/README.md`](../../../../packages/prototypes/credential-families/birth-secret/README.md): hidden holder-secret profile
 - [`../../capabilities/same-holder/README.md`](../../capabilities/same-holder/README.md): same-holder composition capability for hidden-holder profiles
+
+## Schema Capabilities And Wallet Resolution
+
+`SchemaRef` stays small and canonical: package id, schema id, major version, and
+minor version. It should not grow unbounded URI fields because families and
+contracts use it in Compact roots.
+
+The reusable sidecar metadata is:
+
+- `SchemaCapabilities`: feature metadata for the credential family
+- `SchemaFamilyResolutionHint`: either a bounded resolver hint or the no-hint
+  sentinel from `noSchemaFamilyResolverHint()`
+- `SchemaDescriptor`: `SchemaRef` plus capabilities plus resolver hint
+
+Protocol `features` fields are compatibility hints, not schema authority. A
+wallet or verifier that receives protocol feature booleans should compare them
+against a trusted schema descriptor or family registry before treating them as
+capabilities.
+
+`protocolFeaturesAsSchemaCapabilities(...)` exists as a migration drift guard:
+it is intentionally a name-only conversion today so protocol hint fields and
+schema capability fields cannot silently diverge during the deprecation period.
+
+Closed ecosystems can use the no-hint sentinel and resolve families from a
+known package set. Generic wallets should prefer a registry or resolver mapping
+from `SchemaRef` to the credential-family adapter package.
 
 ## Generic model
 

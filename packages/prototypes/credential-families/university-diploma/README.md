@@ -42,13 +42,18 @@ Design notes:
 - the family chooses direct claims for BDD readability and prototype simplicity;
   fields such as `studentId` and `diplomaId` should move to commitments before
   a privacy-preserving production profile claims minimization
+- because this family uses `NoClaimCommitments`, raw academic facts are visible
+  to any party that receives the credential body; `reveal*` flags only control
+  which mirrored fields a presentation authorizes for a verifier
 - the prototype assumes credit-bearing degree awards only; honorary or zero-credit diploma variants are intentionally out of scope for this first family cut
 
 Selective disclosure model:
 
 - companies can ask for graduate identity, award, year, and final grade
 - the mall flow can ask for final grade and enforce a minimum grade threshold
-- fields like faculty, honors, credits, diploma id, and student id can stay hidden unless the verifier asks for them
+- fields like faculty, honors, credits, diploma id, and student id can be absent
+  from a presentation unless the verifier asks for them; they are not hidden
+  from a party that already has the credential body
 - when a field is not revealed, the verifier must treat the matching `reveal*`
   flag as authoritative and ignore the corresponding value slot; well-behaved
   holders should still zero or clear unrevealed slots

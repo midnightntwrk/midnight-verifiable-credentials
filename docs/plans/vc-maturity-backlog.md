@@ -1,7 +1,7 @@
 # VC Maturity Backlog
 
 Status: active maturity index for `origin/develop`.
-Last audited: 2026-05-20.
+Last audited: 2026-05-21.
 
 This file is a status index only. The active execution queue lives in
 [`repository-audit-backlog.md`](./repository-audit-backlog.md).
@@ -32,6 +32,13 @@ High-level maturity themes:
    machine-readable handoff artifacts.
 6. Archive completed plans so new contributors do not mistake historical
    backlog text for current work.
+7. Move credential-family capabilities into schema metadata and treat protocol
+   feature fields as compatibility hints until they are deprecated.
+8. Add wallet-friendly family-resolution hints at the adapter/descriptor layer
+   without making canonical Compact `SchemaRef` unbounded.
+9. Keep prototype privacy boundaries explicit: direct claims are visible to any
+   party that receives the credential body, even when presentations gate which
+   mirrored fields are shown.
 
 ## Current Non-Goals
 
@@ -39,6 +46,9 @@ High-level maturity themes:
 - Do not reintroduce nested `publicClaims/privateClaims` wrappers.
 - Do not change status/revocation semantics in simplification PRs.
 - Do not move VC use cases into `midnight-did`.
+- Do not rewrite existing disclosure structs into `Maybe<T>` solely for style.
+- Do not treat university direct-claim `reveal*` flags as privacy guarantees;
+  production privacy requires commitment-backed fields.
 
 ## Recently Completed Baseline
 
