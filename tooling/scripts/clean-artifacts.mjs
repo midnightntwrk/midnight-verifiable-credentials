@@ -39,12 +39,9 @@ const deadTopLevelShellRelativeDirectories = new Set([
   "vc-bdd-scenarios",
 ]);
 const disposableShellDirectoryNames = new Set([
-  ".turbo",
-  "build",
-  "coverage",
-  "dist",
+  ...generatedDirectoryNames,
+  "managed",
   "node_modules",
-  "target",
 ]);
 const trackedFiles = new Set(
   execFileSync("git", ["ls-files"], { cwd: repoRoot, encoding: "utf8" })

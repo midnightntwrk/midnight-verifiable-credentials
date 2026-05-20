@@ -114,6 +114,7 @@ const cleanupProbeDir = path.join(midnightTestDir, "run-target-catalog-probe");
 const createdMidnightTestRoot = !existsSync(midnightTestDir);
 const legacyShellDir = path.join(repoRoot, "credentials-birth");
 const legacyShellSrcDir = path.join(legacyShellDir, "src");
+const legacyShellManagedDir = path.join(legacyShellSrcDir, "managed");
 const createdLegacyShellRoot = !existsSync(legacyShellDir);
 const skippedLegacyShellDir = path.join(repoRoot, "credentials-openid");
 const skippedLegacyShellProbe = path.join(
@@ -128,7 +129,7 @@ mkdirSync(cleanupProbeDir, { recursive: true });
 // The probe must use a real legacy shell name because only known dead shells
 // are eligible for cleanup. If this assertion fails locally, inspect the shell
 // for non-disposable files left by older experiments.
-mkdirSync(legacyShellSrcDir, { recursive: true });
+mkdirSync(legacyShellManagedDir, { recursive: true });
 mkdirSync(skippedLegacyShellDir, { recursive: true });
 writeFileSync(skippedLegacyShellProbe, "not generated\n");
 
