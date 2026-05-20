@@ -141,6 +141,8 @@ Privacy boundary:
   body
 - a production privacy profile should move stable identifiers and sensitive
   academic facts into `claimCommitments` with openings or predicate witnesses
+- migration plan:
+  [`../../../docs/plans/university-commitment-backed-privacy.md`](../../../docs/plans/university-commitment-backed-privacy.md)
 
 Key schema fields:
 

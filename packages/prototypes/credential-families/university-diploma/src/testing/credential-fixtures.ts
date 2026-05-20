@@ -19,6 +19,54 @@ import {
   type UniversityDiplomaPresentationRequest,
 } from "../managed/university-diploma-credential/contract/index.js";
 
+export const UNIVERSITY_DIPLOMA_DIRECT_CLAIM_FIELDS = [
+  "diplomaId",
+  "studentId",
+  "graduateName",
+  "universityName",
+  "facultyName",
+  "awardName",
+  "honorsCode",
+  "graduationYear",
+  "graduationMonth",
+  "finalGrade",
+  "creditsEarned",
+] as const;
+
+export type UniversityDiplomaDirectClaimField =
+  (typeof UNIVERSITY_DIPLOMA_DIRECT_CLAIM_FIELDS)[number];
+
+export const UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_CANDIDATES = [
+  "diplomaId",
+  "studentId",
+  "graduateName",
+  "facultyName",
+  "honorsCode",
+  "finalGrade",
+] as const satisfies readonly UniversityDiplomaDirectClaimField[];
+
+export type UniversityDiplomaProductionCommitmentCandidate =
+  (typeof UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_CANDIDATES)[number];
+
+export type UniversityDiplomaPrivacyBoundary = {
+  readonly profile: "direct-claim-prototype";
+  readonly claimCommitmentModel: "none";
+  readonly directClaimFields: readonly UniversityDiplomaDirectClaimField[];
+  readonly productionCommitmentCandidates: readonly UniversityDiplomaProductionCommitmentCandidate[];
+  readonly statement: string;
+};
+
+export const UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY: UniversityDiplomaPrivacyBoundary =
+  {
+    profile: "direct-claim-prototype",
+    claimCommitmentModel: "none",
+    directClaimFields: UNIVERSITY_DIPLOMA_DIRECT_CLAIM_FIELDS,
+    productionCommitmentCandidates:
+      UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_CANDIDATES,
+    statement:
+      "University diploma reveal flags authorize presentation use only; they do not hide raw direct claims from a party that receives the credential body.",
+  };
+
 // WARNING: deterministic fixture material only. Fixed signer keys and nonce
 // salts here are for tests and local compiler probes, not production flows.
 // Reusing this nonce pattern in real Schnorr signing would leak the secret key.

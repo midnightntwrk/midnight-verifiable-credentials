@@ -124,6 +124,8 @@ artifacts are tracked in
   - company-style disclosure requirements
   - hidden academic fields when the verifier does not ask for them
   - mall-style minimum-grade verification
+- privacy-boundary fixture checks that prove hidden presentation fields are
+  still direct credential-body claims in the current prototype
 - negative validation guards for:
   - missing verifier challenge
   - request version drift

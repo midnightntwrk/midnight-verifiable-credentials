@@ -45,7 +45,29 @@ Design notes:
 - because this family uses `NoClaimCommitments`, raw academic facts are visible
   to any party that receives the credential body; `reveal*` flags only control
   which mirrored fields a presentation authorizes for a verifier
+- the testing surface exports `UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY` so docs,
+  tests, and downstream examples can assert this prototype boundary explicitly
 - the prototype assumes credit-bearing degree awards only; honorary or zero-credit diploma variants are intentionally out of scope for this first family cut
+
+Current field categories:
+
+| Field | Current representation | Production privacy direction |
+| --- | --- | --- |
+| `diplomaId` | direct claim | move to `claimCommitments` |
+| `studentId` | direct claim | move to `claimCommitments` |
+| `graduateName` | direct claim | move to `claimCommitments` or disclose by policy |
+| `universityName` | direct claim | likely remains public/direct |
+| `facultyName` | direct claim | move to `claimCommitments` or disclose by policy |
+| `awardName` | direct claim | likely public/direct or policy-dependent |
+| `honorsCode` | direct claim | move to `claimCommitments` |
+| `graduationYear` | direct claim | public/direct or policy-dependent |
+| `graduationMonth` | direct claim | move to `claimCommitments` by default |
+| `finalGrade` | direct claim | predicate-only or committed private |
+| `creditsEarned` | direct claim | predicate-only or committed private |
+
+Migration plan:
+
+- [`../../../../docs/plans/university-commitment-backed-privacy.md`](../../../../docs/plans/university-commitment-backed-privacy.md)
 
 Selective disclosure model:
 
