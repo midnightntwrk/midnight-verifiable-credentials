@@ -1,0 +1,272 @@
+# credentials-status-registry
+
+Reference Compact surface for a revoked-set status registry.
+
+Status:
+
+- prototype / evolving capability package
+
+Tier:
+
+- reusable core capability package with prototype trust semantics
+
+Dependency direction:
+
+- higher-layer families, verifier workflows, and demos may depend on it
+- must not depend on protocol/orchestration packages, demos, or standalone
+  integration harnesses
+- shared VC-side binding shape remains in `credentials`
+
+Reusable outside this repo:
+
+- yes, with prototype status-path caveats
+
+Ownership:
+
+- `credentials`
+  - owns the shared VC-side status binding vocabulary
+- `credentials-status-registry`
+  - owns the registry contract surface
+  - owns verifier-facing status proof protocols and off-chain builders
+
+Surface classification:
+
+- mixed surface package
+- `src/revocation-registry.compact` is `On-chain only`
+- `src/status-proof-protocol.compact` is `Reusable Compact proof-protocol surface`
+- TypeScript builders and managed exports are `Off-chain only`
+
+Start here:
+
+1. use `src/revocation-registry.compact` when authoring a registry contract
+2. use `src/status-proof-protocol.compact` when a family or Layer 3 contract
+   needs registry-facing status proof-protocol types and validators
+3. use `src/status-verifier.ts` when an off-chain verifier wants one typed
+   fail-closed status verification surface
+4. use `src/witness-builder.ts` and `src/attestation-builder.ts` only in
+   off-chain verifier/holder/application code
+5. read:
+   - [`../../../docs/spec/revocation-registry.md`](../../../docs/spec/revocation-registry.md)
+   - [`../../../docs/spec/status-verification-protocol.md`](../../../docs/spec/status-verification-protocol.md)
+   - [`../../../docs/architecture/status-verification-modes.md`](../../../docs/architecture/status-verification-modes.md)
+   - [`../../../docs/architecture/protocol-classification.md`](../../../docs/architecture/protocol-classification.md)
+   - [`../../../docs/guides/integration-surface-map.md`](../../../docs/guides/integration-surface-map.md)
+
+Current scope:
+- dedicated registry id
+- append-only revoked handle `MerkleTree`
+- monotonic internal `version` counter for registry-side bookkeeping
+- typed `RevocationRegistryState` snapshot helpers
+  - snapshot shape now includes `registryVersion`
+  - `assertStateUsesThisRegistry(...)` binds that version to the live contract
+    counter even though the Merkle root is still verifier-supplied
+  - an initialized empty registry may legitimately publish the zero Merkle
+    root before any revocations land
+- typed `RevokedSetStatusRequest` helpers for verifier-supplied roots
+- off-chain witness-builder helpers for:
+  - deterministic status-handle derivation
+  - registry-bound status binding construction
+  - same-contract live-status witness construction
+  - canonical revoked-set status request construction
+  - witness-input construction
+  - canonical request + witness + protocol bundle construction
+  - snapshot-based revoked-handle rejection
+- authority-attested status helpers for:
+  - request-bound attestation statements
+  - status authority signatures
+  - Layer 3 transitional verification flows
+
+Nonce requirement for authority-attested proofs:
+
+- `signAuthorityAttestedStatusProof(...)` now derives a deterministic JubJub
+  subgroup nonce scalar from:
+  - the attestation statement
+  - signer verification-method identity
+  - signer secret key
+  - `createdAt`
+- this is now the default safe helper path
+- the low-level escape hatch now lives on the dedicated `./testing` package
+  subpath as
+  `unsafeSignAuthorityAttestedStatusProofWithNonceScalar(...)`
+- the root package surface intentionally does not re-export that unsafe
+  override
+- callers should treat the `./testing` override as test-only or tightly
+  controlled integration glue rather than a normal application path
+
+Freshness requirement for authority-attested proofs:
+
+- verifier policy can now require a bounded freshness window by:
+  - enabling `enforceAttestationMaxAge`
+  - supplying a non-zero `maxAttestationAge`
+- that freshness window uses the same unit as:
+  - the verifier-supplied `currentTime`
+  - the attestation `createdAt`
+- this is separate from the attestation's optional absolute `expiresAt`
+- recommended prototype posture:
+  - use absolute expiration to cap overall lifetime
+  - use verifier max-age to bound replay of otherwise still-unexpired
+    authority attestations
+
+This package does not yet implement privacy-preserving non-membership verification inside Compact. It provides the authoritative state surface that status-aware VC/VP flows can anchor to.
+
+One validity rule is already fixed:
+
+- if the accepted status evidence shows the credential as revoked, the
+  VC/VP verification outcome is hard invalidity
+- helpers and contracts should fail closed rather than emitting a
+  "verified but denied" revocation result
+
+Import rule:
+
+- credential families should import shared status binding types from
+  `credentials`
+- credential families and Layer 3 contracts should import registry-facing
+  proof-protocol Compact types and validators from
+  `src/status-proof-protocol.compact`
+- verifiers, holders, and Layer 3 status-aware application code should import
+  registry-facing proof-protocol helpers from this package
+
+Protocol reading rule:
+
+- this package owns registry-facing status proof-protocol helpers
+- it does not turn status transport/orchestration concerns into reusable core
+  protocol semantics
+
+Canonical revoked-set helper path:
+
+- use `buildCanonicalObservedNonMembershipBundle(...)` when you want the
+  canonical observed-snapshot runtime bundle in one call:
+  - `RevokedSetStatusRequest`
+  - `RevokedSetNonMembershipWitnessInput`
+  - `RevokedSetNonMembershipStatusProofProtocol`
+  - matching shared `RegistryBoundStatusBinding`
+  - canonical bundle wrapper:
+    - `CanonicalObservedNonMembershipBundle`
+- use `buildRevokedSetNonMembershipInputs(...)` only when you explicitly want
+  the lower-level request/witness/protocol builder without the canonical
+  bundle wrapper
+- the exported TypeScript helper path is now binding-first:
+  helper results carry `RegistryBoundStatusBinding` and no longer expose a
+  separate capability-shaped intermediate value
+- the minimum VC-side binding payload is now:
+  - `statusType`
+  - `registryRef`
+  - `statusHandleCommitment`
+- this helper still does not prove final Merkle non-membership
+- it normalizes the request/witness/protocol shape so higher-layer families and
+  verifier code stop rebuilding those pieces ad hoc
+
+Canonical same-contract live-status helper path:
+
+- use `buildCanonicalLiveNonMembershipBundleFromContractState(...)` when the
+  business contract or verifier can read the live registry contract state and
+  wants the canonical same-contract runtime bundle:
+  - `LiveStatusWitnessInput`
+  - matching shared `RegistryBoundStatusBinding`
+  - the derived status handle
+  - live `RevocationRegistryState`
+  - canonical bundle wrapper:
+    - `CanonicalLiveNonMembershipBundle`
+- use `buildLiveStatusWitness(...)` when the business contract owns the live
+  revocation set directly and only needs the lower-level witness/binding pair,
+  not the canonical bundle wrapper
+- the helper returns:
+  - `LiveStatusWitnessInput`
+  - matching shared `RegistryBoundStatusBinding`
+  - the derived status handle
+- this is the right prototype seam for contracts that can reject revoked
+  status handles against their own live local state without an authority
+  attestation bridge
+- use `buildLiveStatusWitnessFromContractState(...)` when you want that same
+  live-status witness shape but do not want app-local revocation checks to
+  reconstruct the contract state manually
+- the shared helper now:
+  - derives the live status handle witness
+  - rejects handles already present in the live registry contract state
+  - keeps the same binding-first output shape as `buildLiveStatusWitness(...)`
+
+Current prototype limitation:
+- `assertStateUsesThisRegistry(...)` binds the supplied snapshot to this
+  registry's `registryId` and `registryVersion`
+- it does not yet prove that the supplied `revokedRoot` equals the live
+  contract Merkle root inside Compact
+- same-contract live revoked-set verification is still available because that
+  mode checks the local revoked-set ledger directly and does not require a
+  separate external root handoff
+- off-chain verifiers and trusted authorities can still read the live registry
+  state and current root at runtime
+- freshness of the supplied root is still an application/verifier
+  responsibility, not an in-circuit property
+- authority-attested proof freshness is now partially contract-enforced when
+  the verifier enables `enforceAttestationMaxAge`, but that does not make the
+  supplied root itself live or canonical
+- callers must therefore treat `revokedRoot` as an off-chain coordinated
+  snapshot value until the final in-circuit root-binding/non-membership path
+  lands
+- that prototype trust seam does not weaken the rejection rule itself:
+  once the accepted snapshot says a credential is revoked, the verifier should
+  reject the presentation outright
+
+Observed-root integration helper path:
+
+- use `buildObservedRevocationRegistryState(...)` to normalize a verifier-side
+  snapshot plus observation time
+- use `readCurrentRevocationRegistryStateFromContractState(...)` when the
+  caller already has runtime access to the live revocation-registry contract
+  state and wants the canonical `(registryId, revokedRoot, registryVersion)`
+  snapshot shape
+- use `buildObservedRevocationRegistryStateFromContractState(...)` to attach an
+  observation time to that live contract-state snapshot
+- use `assertStatusHandleNotRevokedInContractState(...)` when an off-chain
+  verifier or helper wants the canonical fail-closed "already revoked" check
+  against a live contract-state snapshot
+- use `assertObservedRevocationRegistryVersionAtLeast(...)` when the caller
+  must reject snapshots older than a known contract-version floor
+- use `assertObservedRevocationRegistryStateFreshEnough(...)` when the caller
+  already has a normalized snapshot and only needs the freshness decision
+- use `buildRevokedSetStatusRequestFromObservedState(...)` when request
+  construction must reject stale or future-dated snapshots before entering the
+  Compact proof path
+- use `buildFreshRevokedSetNonMembershipInputs(...)` when you want that same
+  freshness gate applied to the canonical request/witness/protocol bundle
+- use `buildFreshRevokedSetNonMembershipInputsFromContractState(...)` when the
+  verifier or orchestrating application can observe the live registry contract
+  state directly and wants one canonical helper that:
+  - derives the live `(registryId, revokedRoot, registryVersion)` snapshot
+  - applies freshness policy
+  - constructs the canonical request/witness/protocol bundle
+  - rejects already-revoked handles against the live contract state
+- this still does not make the root live inside Compact:
+  it turns the current verifier-side freshness choice into one explicit typed
+  integration seam instead of leaving it as ad hoc application logic
+
+Architecture note for the canonical runtime bundle contract:
+
+- [`../../../docs/architecture/status-canonical-non-membership-bundle.md`](../../../docs/architecture/status-canonical-non-membership-bundle.md)
+
+
+Canonical off-chain verifier helper path:
+
+- use `verifyObservedRevokedSetStatus(...)` when the verifier already has an
+  accepted observed registry snapshot and wants a typed
+  `StatusVerificationResult` back
+- use `verifyLiveContractStateStatus(...)` when the verifier can read live
+  same-contract registry state at runtime and wants the helper to return the
+  canonical live-state verdict plus witness material
+- the live-state helper now applies any minimum registry-version policy
+  directly against the live `RevocationRegistryState`; it does not fabricate an
+  `observedAt` timestamp the way observed-snapshot freshness helpers do
+- use `verifyAuthorityAttestedStatus(...)` when the verifier or consuming app
+  must validate authority-attested external-registry evidence
+- all three helpers map failures onto the canonical codes in
+  [`../../../docs/spec/status-error-taxonomy.md`](../../../docs/spec/status-error-taxonomy.md)
+  instead of leaving each integration to reinterpret raw error strings
+- integrations that only need plain data can use the failure-record projection
+  helper rather than unpacking `StatusVerificationError` objects directly
+- if a caught failure does not match the canonical taxonomy, the helpers return
+  `unclassifiedFailure` so callers can fail closed without pretending the
+  runtime fault was a clean cryptographic status verdict
+
+Architecture note for the three supported verification modes:
+
+- [`../../../docs/architecture/status-verification-modes.md`](../../../docs/architecture/status-verification-modes.md)

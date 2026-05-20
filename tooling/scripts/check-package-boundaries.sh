@@ -32,15 +32,15 @@ readonly sibling_testing_surface_pattern='\.\./(\.\./)*[^./][^/]*/src/testing\.j
 readonly sibling_source_pattern='\.\./(\.\./)*[^./][^/]*/src/'
 readonly root_contract_namespace_pattern='^export \* as .+Contract from "\./managed/.+/contract/index\.js";$'
 readonly -a root_contract_surface_files=(
-  core/primitives/credentials/src/index.ts
-  prototypes/credential-families/birth/src/index.ts
-  prototypes/credential-families/birth-secret/src/index.ts
-  prototypes/credential-families/hello-family/src/index.ts
-  prototypes/credential-families/dummy-claims/src/index.ts
-  prototypes/credential-families/university-diploma/src/index.ts
-  use-cases/age-gate/contract/src/index.ts
-  use-cases/hello-verifier/contract/src/index.ts
-  core/capabilities/same-holder/src/index.ts
+  packages/core/primitives/credentials/src/index.ts
+  packages/prototypes/credential-families/birth/src/index.ts
+  packages/prototypes/credential-families/birth-secret/src/index.ts
+  packages/prototypes/credential-families/hello-family/src/index.ts
+  packages/prototypes/credential-families/dummy-claims/src/index.ts
+  packages/prototypes/credential-families/university-diploma/src/index.ts
+  packages/use-cases/age-gate/contract/src/index.ts
+  packages/use-cases/hello-verifier/contract/src/index.ts
+  packages/core/capabilities/same-holder/src/index.ts
 )
 
 echo "[boundary-check] Verifying workspace consumers do not import sibling package sources"

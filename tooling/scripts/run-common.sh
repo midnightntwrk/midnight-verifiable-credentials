@@ -105,11 +105,3 @@ run_common_ensure_artifacts() {
   echo "[${caller}] Build missing ${profile} artifacts"
   eval "$build_cmd"
 }
-
-run_common_ensure_contract_artifacts() {
-  local caller="${1:-run}"
-  if [[ ! -f "contract/src/managed/did/contract/index.js" ]]; then
-    echo "[${caller}] Generate contract managed artifacts"
-    npm run contract -w contract
-  fi
-}

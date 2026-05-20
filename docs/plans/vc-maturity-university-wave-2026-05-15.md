@@ -45,7 +45,7 @@ Important carry-forward rule from `#247`:
   - split transcript and message helper utilities into internal modules
   - keep `UniversityProtocolFlowRunner` public API stable
 - validation:
-  - `npm run lint -w ./use-cases/university/protocol`
+  - `npm run lint -w ./packages/use-cases/university/protocol`
   - `npm run typecheck:university-protocol`
   - `npm run test:university-protocol`
   - `npm run docs:links`
@@ -70,7 +70,7 @@ Important carry-forward rule from `#247`:
   - add deterministic contract tests with a fake proof-server adapter
   - document which simulator proofs map to remote proof calls
 - validation:
-  - `npm exec -w ./use-cases/university/protocol -- vitest run src/test/proof-server-contract.test.ts`
+  - `npm exec -w ./packages/use-cases/university/protocol -- vitest run src/test/proof-server-contract.test.ts`
   - `npm run test:university-protocol`
 
 4. `university-proof-server-bdd-wiring`
@@ -97,9 +97,9 @@ Important carry-forward rule from `#247`:
 - validation:
   - `./run.sh university-bdd`
   - `./run.sh university-bdd-proof-server`
-  - `npm run test:standalone-timing:contract -w use-cases/university/scenarios`
-  - `npm run test:backend-mode:contract -w use-cases/university/scenarios`
-  - `npm run typecheck -w use-cases/university/scenarios`
+  - `npm run test:standalone-timing:contract -w packages/use-cases/university/scenarios`
+  - `npm run test:backend-mode:contract -w packages/use-cases/university/scenarios`
+  - `npm run typecheck -w packages/use-cases/university/scenarios`
   - `npm run docs:links`
   - `bash -n run.sh`
   - `git diff --check`
@@ -115,11 +115,11 @@ Important carry-forward rule from `#247`:
   - preserve the readable lane as sequential
   - report correctness and timing deltas side by side
 - validation:
-  - `npm run test:batch-sweep:contract -w use-cases/university/scenarios`
-  - `npm run test:batch-sweep -w use-cases/university/scenarios`
-  - `npm run test -w use-cases/university/reporting`
-  - `npm run typecheck -w use-cases/university/scenarios`
-  - `npm run typecheck -w use-cases/university/reporting`
+  - `npm run test:batch-sweep:contract -w packages/use-cases/university/scenarios`
+  - `npm run test:batch-sweep -w packages/use-cases/university/scenarios`
+  - `npm run test -w packages/use-cases/university/reporting`
+  - `npm run typecheck -w packages/use-cases/university/scenarios`
+  - `npm run typecheck -w packages/use-cases/university/reporting`
   - `./run.sh university-batch-sweep`
 
 7. `university-separate-process-simulator`
@@ -133,8 +133,8 @@ Important carry-forward rule from `#247`:
   - keep the same transcript envelope shape as the in-process simulator
   - add transcript equivalence checks
 - validation:
-  - `npm exec -w ./use-cases/university/protocol -- vitest run src/test/process-transport.test.ts`
-  - `npm run typecheck -w ./use-cases/university/protocol`
+  - `npm exec -w ./packages/use-cases/university/protocol -- vitest run src/test/process-transport.test.ts`
+  - `npm run typecheck -w ./packages/use-cases/university/protocol`
   - `npm run test:university-protocol`
   - `./run.sh university-protocol --light`
 
@@ -148,8 +148,8 @@ Important carry-forward rule from `#247`:
   - simulate restart during issuance and presentation phases
   - document durable versus reconstructed state
 - validation:
-  - `npm exec -w ./use-cases/university/protocol -- vitest run src/test/restart-flow.test.ts`
-  - `npm run typecheck -w ./use-cases/university/protocol`
+  - `npm exec -w ./packages/use-cases/university/protocol -- vitest run src/test/restart-flow.test.ts`
+  - `npm run typecheck -w ./packages/use-cases/university/protocol`
   - `./run.sh university-protocol --light`
 
 9. `university-large-cohort-pack`
@@ -166,7 +166,7 @@ Important carry-forward rule from `#247`:
 - validation:
   - `./run.sh university-data-profiles`
   - `./run.sh university-policy-catalog`
-  - `npm exec -w ./use-cases/university/protocol -- vitest run src/test/stress-export.test.ts src/test/policy-catalog.test.ts`
+  - `npm exec -w ./packages/use-cases/university/protocol -- vitest run src/test/stress-export.test.ts src/test/policy-catalog.test.ts`
   - `./run.sh university-protocol-cohort --light`
 
 10. `university-ci-matrix-refinement`

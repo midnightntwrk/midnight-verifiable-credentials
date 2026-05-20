@@ -19,7 +19,7 @@ Supported claim modes: `--claim-mode public|commitment|mixed`.
 
 That generator now creates a thin-core family package skeleton under:
 
-- `prototypes/credential-families/<slug>`
+- `packages/prototypes/credential-families/<slug>`
 
 The generated package includes:
 
@@ -95,11 +95,11 @@ Design guidance:
 Best current references for claim-shape work:
 
 - smallest starter family:
-  - `prototypes/credential-families/hello-family`
+  - `packages/prototypes/credential-families/hello-family`
 - broad direct claim-surface laboratory:
-  - `prototypes/credential-families/dummy-claims`
+  - `packages/prototypes/credential-families/dummy-claims`
 - mixed public-plus-private claim representation laboratory:
-  - `prototypes/credential-families/mixed-claims`
+  - `packages/prototypes/credential-families/mixed-claims`
 - surface-change release discipline:
   - `docs/guides/vc-surface-change-discipline.md`
 
@@ -108,7 +108,7 @@ Best current references for claim-shape work:
 A minimal family package should have these parts:
 
 ```text
-prototypes/credential-families/example-family/
+packages/prototypes/credential-families/example-family/
 ├── README.md
 ├── eslint.config.mjs
 ├── package.json
@@ -140,7 +140,7 @@ pragma language_version >= 0.20;
 
 import CompactStandardLibrary;
 
-include "../../../core/primitives/credentials/src/credentials";
+include "../../../packages/core/primitives/credentials/src/credentials";
 include "./example-family-credential/claims";
 include "./example-family-credential/model";
 
@@ -204,15 +204,15 @@ Avoid:
 
 Explicit-holder family reference:
 
-- `prototypes/credential-families/birth`
+- `packages/prototypes/credential-families/birth`
 
 Hidden-holder family reference:
 
-- `prototypes/credential-families/birth-secret`
+- `packages/prototypes/credential-families/birth-secret`
 
 Capability composition reference:
 
-- `core/capabilities/same-holder`
+- `packages/core/capabilities/same-holder`
 
 ## Packaging rule
 

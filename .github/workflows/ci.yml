@@ -92,7 +92,7 @@ jobs:
           # Keep these pattern sets in sync with the heavy lane jobs below.
           global_heavy_lane_patterns=(
             '.github/workflows/*'
-            'components/integration/infrastructure/*'
+            'packages/components/integration/infrastructure/*'
             'tooling/vendor/*'
             'package.json'
             'package-lock.json'
@@ -106,49 +106,49 @@ jobs:
           )
 
           revocation_patterns=(
-            'core/primitives/credentials/*'
-            'registry/status-registry/*'
-            'core/capabilities/same-holder/*'
-            'prototypes/credential-families/birth/*'
-            'prototypes/credential-families/birth-secret/*'
-            'use-cases/*/contract/*'
+            'packages/core/primitives/credentials/*'
+            'packages/registry/status-registry/*'
+            'packages/core/capabilities/same-holder/*'
+            'packages/prototypes/credential-families/birth/*'
+            'packages/prototypes/credential-families/birth-secret/*'
+            'packages/use-cases/*/contract/*'
           )
 
           hello_smoke_patterns=(
-            'core/primitives/credentials/*'
-            'registry/status-registry/*'
-            'core/capabilities/same-holder/*'
-            'core/primitives/iso-registry/*'
-            'components/adapters/offchain-did/*'
-            'prototypes/credential-families/hello-family/*'
-            'use-cases/hello-verifier/contract/*'
+            'packages/core/primitives/credentials/*'
+            'packages/registry/status-registry/*'
+            'packages/core/capabilities/same-holder/*'
+            'packages/core/primitives/iso-registry/*'
+            'packages/components/adapters/offchain-did/*'
+            'packages/prototypes/credential-families/hello-family/*'
+            'packages/use-cases/hello-verifier/contract/*'
           )
 
           integration_demo_contract_patterns=(
-            'core/primitives/credentials/*'
-            'prototypes/credential-families/birth/*'
-            'prototypes/credential-families/birth-secret/*'
-            'use-cases/*/contract/*'
-            'components/integration/standalone-environment/*'
+            'packages/core/primitives/credentials/*'
+            'packages/prototypes/credential-families/birth/*'
+            'packages/prototypes/credential-families/birth-secret/*'
+            'packages/use-cases/*/contract/*'
+            'packages/components/integration/standalone-environment/*'
           )
 
           integration_protocol_patterns=(
-            'core/primitives/credentials/*'
-            'core/capabilities/same-holder/*'
-            'prototypes/credential-families/birth/*'
-            'prototypes/credential-families/birth-secret/*'
-            'use-cases/*/contract/*'
-            'components/orchestration/protocol/*'
-            'components/integration/standalone-environment/*'
+            'packages/core/primitives/credentials/*'
+            'packages/core/capabilities/same-holder/*'
+            'packages/prototypes/credential-families/birth/*'
+            'packages/prototypes/credential-families/birth-secret/*'
+            'packages/use-cases/*/contract/*'
+            'packages/components/orchestration/protocol/*'
+            'packages/components/integration/standalone-environment/*'
           )
 
           university_patterns=(
             # Global workflow/package/runner changes are handled by
             # global_heavy_lane_patterns above; docs-only changes intentionally
             # stay on the docs fast path instead of forcing profile validation.
-            'use-cases/university/*'
-            'prototypes/credential-families/university-diploma/*'
-            'components/orchestration/protocol/*'
+            'packages/use-cases/university/*'
+            'packages/prototypes/credential-families/university-diploma/*'
+            'packages/components/orchestration/protocol/*'
           )
 
           for file in "${changed_files[@]}"; do
@@ -162,7 +162,7 @@ jobs:
             esac
 
             case "$file" in
-              use-cases/*/scenarios/*|docs/plans/serenity-js-bdd-layer.md|docs/testing/test-strategy.md|docs/testing/test-matrix.md|docs/README.md|package.json|package-lock.json|run.sh|run-credentials.sh)
+              packages/use-cases/*/scenarios/*|docs/plans/serenity-js-bdd-layer.md|docs/testing/test-strategy.md|docs/testing/test-matrix.md|docs/README.md|package.json|package-lock.json|run.sh|run-credentials.sh)
                 ;;
               *)
                 bdd_only=false
@@ -170,7 +170,7 @@ jobs:
             esac
 
             case "$file" in
-              use-cases/*/scenarios/*|docs/plans/serenity-js-bdd-layer.md|run.sh|run-credentials.sh)
+              packages/use-cases/*/scenarios/*|docs/plans/serenity-js-bdd-layer.md|run.sh|run-credentials.sh)
                 bdd_related=true
                 ;;
             esac
@@ -837,8 +837,8 @@ jobs:
         with:
           name: university-protocol-targets
           path: |
-            use-cases/university/protocol/target/cohort-30
-            use-cases/university/protocol/target/stress-100
+            packages/use-cases/university/protocol/target/cohort-30
+            packages/use-cases/university/protocol/target/stress-100
           if-no-files-found: warn
 
   hello-smoke:

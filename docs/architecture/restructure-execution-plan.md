@@ -12,19 +12,19 @@ Purpose:
 The target repository shape is:
 
 - `docs/`
-- `core/`
-- `registry/`
-- `protocols/`
-- `components/`
-- `prototypes/`
-- `use-cases/`
+- `packages/core/`
+- `packages/registry/`
+- `packages/protocols/`
+- `packages/components/`
+- `packages/prototypes/`
+- `packages/use-cases/`
 - `tooling/`
 - `assets/`
 
 Architecture notes:
 - RFCs belong under `docs/architecture/`
 - ADRs belong under `docs/decisions/`
-- BDD belongs under `use-cases/`, not under repository-level prototype or low-level test trees
+- BDD belongs under `packages/use-cases/`, not under repository-level prototype or low-level test trees
 - `demo` is a temporary historical label to eliminate, not a durable architecture area
 
 ## Execution phases
@@ -45,22 +45,22 @@ Risk profile:
 ### Phase 2: Protocols and components
 
 Goals:
-- move transport/binding packages under `protocols/`
-- move orchestration, agents, storage, and harness packages under `components/`
+- move transport/binding packages under `packages/protocols/`
+- move orchestration, agents, storage, and harness packages under `packages/components/`
 - update workspaces, CI path filters, and boundary checks accordingly
 
 Expected package moves:
-- `credentials-openid` -> `protocols/openid`
-- `credentials-protocol` -> `components/orchestration/protocol`
-- `credentials-offchain-did` -> `components/adapters/offchain-did`
-- `standalone-environment` -> `components/integration/standalone-environment`
-- `infrastructure/standalone` -> `components/integration/infrastructure/standalone`
+- `credentials-openid` -> `packages/protocols/openid`
+- `credentials-protocol` -> `packages/components/orchestration/protocol`
+- `credentials-offchain-did` -> `packages/components/adapters/offchain-did`
+- `standalone-environment` -> `packages/components/integration/standalone-environment`
+- `infrastructure/standalone` -> `packages/components/integration/infrastructure/standalone`
 
 ### Phase 3: Prototypes and use-cases
 
 Goals:
 - split `credentials-demo-contract` into smaller prototype and use-case packages
-- move BDD scenarios under `use-cases/<name>/scenarios`
+- move BDD scenarios under `packages/use-cases/<name>/scenarios`
 - keep low-level prototype evidence separate from living documentation
 
 Rules:
@@ -71,8 +71,8 @@ Rules:
 ### Phase 4: Registry and core normalization
 
 Goals:
-- move reusable registry packages under `registry/`
-- move canonical reusable VC packages under `core/`
+- move reusable registry packages under `packages/registry/`
+- move canonical reusable VC packages under `packages/core/`
 - update boundary docs and CI rules so the high-level directory model becomes the canonical enforcement surface
 
 ## Active relocation wave after `#125`
@@ -83,12 +83,12 @@ code even though the top-level architecture areas now exist.
 The move order is intentionally dependency-ordered:
 
 1. freeze target names and the current deviation inventory
-2. move `credentials/` into `core/primitives/credentials/`
+2. move `credentials/` into `packages/core/primitives/credentials/`
 3. move `credentials-iso-registry/` and `credentials-same-holder/` into
-   `core/`
-4. move `credentials-status-registry/` into `registry/status-registry/`
+   `packages/core/`
+4. move `credentials-status-registry/` into `packages/registry/status-registry/`
 5. move `credentials-birth/` and `credentials-birth-secret/` into
-   `prototypes/credential-families/`
+   `packages/prototypes/credential-families/`
 
 Wave rule:
 

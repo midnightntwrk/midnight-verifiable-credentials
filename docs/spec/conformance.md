@@ -32,7 +32,7 @@ A core VC implementation conforms when it:
 
 In this repository, the primary reference is:
 
-- [`../../core/primitives/credentials/README.md`](../../core/primitives/credentials/README.md)
+- [`../../packages/core/primitives/credentials/README.md`](../../packages/core/primitives/credentials/README.md)
 
 ### 2. Credential family implementation
 
@@ -51,12 +51,12 @@ A credential family implementation conforms when it:
 
 Reference implementations:
 
-- [`../../prototypes/credential-families/birth/README.md`](../../prototypes/credential-families/birth/README.md)
-- [`../../prototypes/credential-families/birth-secret/README.md`](../../prototypes/credential-families/birth-secret/README.md)
-- [`../../prototypes/credential-families/hello-family/README.md`](../../prototypes/credential-families/hello-family/README.md)
-- [`../../prototypes/credential-families/dummy-claims/README.md`](../../prototypes/credential-families/dummy-claims/README.md)
-- [`../../prototypes/credential-families/mixed-claims/README.md`](../../prototypes/credential-families/mixed-claims/README.md)
-- [`../../prototypes/credential-families/university-diploma/README.md`](../../prototypes/credential-families/university-diploma/README.md)
+- [`../../packages/prototypes/credential-families/birth/README.md`](../../packages/prototypes/credential-families/birth/README.md)
+- [`../../packages/prototypes/credential-families/birth-secret/README.md`](../../packages/prototypes/credential-families/birth-secret/README.md)
+- [`../../packages/prototypes/credential-families/hello-family/README.md`](../../packages/prototypes/credential-families/hello-family/README.md)
+- [`../../packages/prototypes/credential-families/dummy-claims/README.md`](../../packages/prototypes/credential-families/dummy-claims/README.md)
+- [`../../packages/prototypes/credential-families/mixed-claims/README.md`](../../packages/prototypes/credential-families/mixed-claims/README.md)
+- [`../../packages/prototypes/credential-families/university-diploma/README.md`](../../packages/prototypes/credential-families/university-diploma/README.md)
 
 Current direct Compact claim-surface rule:
 
@@ -214,7 +214,7 @@ A transport/domain adapter conforms when it:
 
 Reference implementation:
 
-- [`../../protocols/openid/README.md`](../../protocols/openid/README.md)
+- [`../../packages/protocols/openid/README.md`](../../packages/protocols/openid/README.md)
 
 ### 7. Protocol/reference orchestration implementation
 
@@ -245,7 +245,7 @@ deferred.
 
 Reference implementation:
 
-- [`../../components/orchestration/protocol/README.md`](../../components/orchestration/protocol/README.md)
+- [`../../packages/components/orchestration/protocol/README.md`](../../packages/components/orchestration/protocol/README.md)
 
 ### 8. Verifier contract implementation
 
@@ -261,8 +261,8 @@ A verifier contract implementation conforms when it:
 
 Reference implementation:
 
-- [`../../use-cases/age-gate/contract/README.md`](../../use-cases/age-gate/contract/README.md)
-- [`../../use-cases/hello-verifier/contract/README.md`](../../use-cases/hello-verifier/contract/README.md)
+- [`../../packages/use-cases/age-gate/contract/README.md`](../../packages/use-cases/age-gate/contract/README.md)
+- [`../../packages/use-cases/hello-verifier/contract/README.md`](../../packages/use-cases/hello-verifier/contract/README.md)
 
 ## Required implementation disclosures
 
@@ -342,12 +342,12 @@ Use it together with:
 | `credentials-birth` | `On-chain + off-chain` | reference implementation | current concrete explicit-holder family |
 | `credentials-birth-secret` | `On-chain + off-chain` | reference implementation with prototype status-aware additions | current concrete hidden-holder family; status-aware pieces remain prototype-scoped |
 | `credentials-status-registry` | mixed: on-chain registry + off-chain builders | prototype | use only with explicit awareness of current revocation/root-freshness limitations |
-| `use-cases/age-gate/contract` | `On-chain + off-chain` | prototype use-case | concrete business composition, not canonical generic API |
-| `use-cases/hello-verifier/contract` | `On-chain + off-chain` | starter reference implementation | smallest verifier-contract entry point for integrators |
-| `protocols/openid` | `Off-chain only` | reference implementation | transport/domain adapter only |
-| `components/adapters/offchain-did` | `Off-chain only` | reference implementation adapter | runtime DID helper only |
-| `components/orchestration/protocol` | `Off-chain only` | prototype / evolving API | reference orchestration only, not a stable network library |
-| `components/integration/standalone-environment` | `Off-chain only` | infrastructure / test support | integration infrastructure, not VC semantics |
+| `packages/use-cases/age-gate/contract` | `On-chain + off-chain` | prototype use-case | concrete business composition, not canonical generic API |
+| `packages/use-cases/hello-verifier/contract` | `On-chain + off-chain` | starter reference implementation | smallest verifier-contract entry point for integrators |
+| `packages/protocols/openid` | `Off-chain only` | reference implementation | transport/domain adapter only |
+| `packages/components/adapters/offchain-did` | `Off-chain only` | reference implementation adapter | runtime DID helper only |
+| `packages/components/orchestration/protocol` | `Off-chain only` | prototype / evolving API | reference orchestration only, not a stable network library |
+| `packages/components/integration/standalone-environment` | `Off-chain only` | infrastructure / test support | integration infrastructure, not VC semantics |
 
 Interpretation rules:
 

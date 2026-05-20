@@ -58,33 +58,33 @@ The closeout claims above are backed by checked-in code and tests rather than
 by prose alone.
 
 1. VC-side status binding payload and status-type commitment:
-   - [`../../core/primitives/credentials/src/credentials/status-bindings.compact`](../../core/primitives/credentials/src/credentials/status-bindings.compact)
-   - [`../../registry/status-registry/src/status-binding.ts`](../../registry/status-registry/src/status-binding.ts)
+   - [`../../packages/core/primitives/credentials/src/credentials/status-bindings.compact`](../../packages/core/primitives/credentials/src/credentials/status-bindings.compact)
+   - [`../../packages/registry/status-registry/src/status-binding.ts`](../../packages/registry/status-registry/src/status-binding.ts)
 2. canonical runtime non-membership bundle builders and verifier integration:
-   - [`../../registry/status-registry/src/canonical-non-membership.ts`](../../registry/status-registry/src/canonical-non-membership.ts)
-   - [`../../registry/status-registry/src/status-verifier.ts`](../../registry/status-registry/src/status-verifier.ts)
-   - [`../../registry/status-registry/src/test/canonical-non-membership.test.ts`](../../registry/status-registry/src/test/canonical-non-membership.test.ts)
+   - [`../../packages/registry/status-registry/src/canonical-non-membership.ts`](../../packages/registry/status-registry/src/canonical-non-membership.ts)
+   - [`../../packages/registry/status-registry/src/status-verifier.ts`](../../packages/registry/status-registry/src/status-verifier.ts)
+   - [`../../packages/registry/status-registry/src/test/canonical-non-membership.test.ts`](../../packages/registry/status-registry/src/test/canonical-non-membership.test.ts)
 3. explicit verification modes and live-state observation seam:
    - [`./status-verification-modes.md`](./status-verification-modes.md)
-   - [`../../registry/status-registry/src/registry-state-observation.ts`](../../registry/status-registry/src/registry-state-observation.ts)
-   - [`../../registry/status-registry/src/test/registry-state-observation.test.ts`](../../registry/status-registry/src/test/registry-state-observation.test.ts)
+   - [`../../packages/registry/status-registry/src/registry-state-observation.ts`](../../packages/registry/status-registry/src/registry-state-observation.ts)
+   - [`../../packages/registry/status-registry/src/test/registry-state-observation.test.ts`](../../packages/registry/status-registry/src/test/registry-state-observation.test.ts)
 4. fail-closed verifier taxonomy and plain failure surface:
    - [`../spec/status-error-taxonomy.md`](../spec/status-error-taxonomy.md)
-   - [`../../registry/status-registry/src/status-verifier.ts`](../../registry/status-registry/src/status-verifier.ts)
-   - [`../../registry/status-registry/src/test/status-verifier-classification.test.ts`](../../registry/status-registry/src/test/status-verifier-classification.test.ts)
+   - [`../../packages/registry/status-registry/src/status-verifier.ts`](../../packages/registry/status-registry/src/status-verifier.ts)
+   - [`../../packages/registry/status-registry/src/test/status-verifier-classification.test.ts`](../../packages/registry/status-registry/src/test/status-verifier-classification.test.ts)
 5. hard-invalidity semantics for `revoked`:
    - [`../spec/credential-status.md`](../spec/credential-status.md)
-   - [`../../prototypes/credential-families/birth-secret/src/test/status.test.ts`](../../prototypes/credential-families/birth-secret/src/test/status.test.ts)
-   - [`../../use-cases/age-gate/contract/src/test/demo-revocation.test.ts`](../../use-cases/age-gate/contract/src/test/demo-revocation.test.ts)
-   - [`../../use-cases/age-gate/scenarios/features/hidden_holder_revoked_credential.feature`](../../use-cases/age-gate/scenarios/features/hidden_holder_revoked_credential.feature)
+   - [`../../packages/prototypes/credential-families/birth-secret/src/test/status.test.ts`](../../packages/prototypes/credential-families/birth-secret/src/test/status.test.ts)
+   - [`../../packages/use-cases/age-gate/contract/src/test/demo-revocation.test.ts`](../../packages/use-cases/age-gate/contract/src/test/demo-revocation.test.ts)
+   - [`../../packages/use-cases/age-gate/scenarios/features/hidden_holder_revoked_credential.feature`](../../packages/use-cases/age-gate/scenarios/features/hidden_holder_revoked_credential.feature)
 6. authority-attested freshness and nonce hardening:
-   - [`../../registry/status-registry/src/attestation-builder.ts`](../../registry/status-registry/src/attestation-builder.ts)
-   - [`../../registry/status-registry/src/test/attestation-builder.test.ts`](../../registry/status-registry/src/test/attestation-builder.test.ts)
-   - [`../../registry/status-registry/src/status-proof-protocol.compact`](../../registry/status-registry/src/status-proof-protocol.compact)
+   - [`../../packages/registry/status-registry/src/attestation-builder.ts`](../../packages/registry/status-registry/src/attestation-builder.ts)
+   - [`../../packages/registry/status-registry/src/test/attestation-builder.test.ts`](../../packages/registry/status-registry/src/test/attestation-builder.test.ts)
+   - [`../../packages/registry/status-registry/src/status-proof-protocol.compact`](../../packages/registry/status-registry/src/status-proof-protocol.compact)
 7. adversarial conformance coverage for the supported modes:
-   - [`../../registry/status-registry/src/test/witness-builder.test.ts`](../../registry/status-registry/src/test/witness-builder.test.ts)
-   - [`../../use-cases/age-gate/scenarios/features/hidden_holder_stale_snapshot.feature`](../../use-cases/age-gate/scenarios/features/hidden_holder_stale_snapshot.feature)
-   - [`../../use-cases/age-gate/scenarios/features/hidden_holder_wrong_registry.feature`](../../use-cases/age-gate/scenarios/features/hidden_holder_wrong_registry.feature)
+   - [`../../packages/registry/status-registry/src/test/witness-builder.test.ts`](../../packages/registry/status-registry/src/test/witness-builder.test.ts)
+   - [`../../packages/use-cases/age-gate/scenarios/features/hidden_holder_stale_snapshot.feature`](../../packages/use-cases/age-gate/scenarios/features/hidden_holder_stale_snapshot.feature)
+   - [`../../packages/use-cases/age-gate/scenarios/features/hidden_holder_wrong_registry.feature`](../../packages/use-cases/age-gate/scenarios/features/hidden_holder_wrong_registry.feature)
 
 ## What is intentionally not claimed
 

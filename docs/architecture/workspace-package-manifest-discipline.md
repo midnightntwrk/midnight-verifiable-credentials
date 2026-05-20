@@ -11,8 +11,8 @@ surface that maintainers review.
 | Class | Workspaces | Manifest contract |
 |---|---|---|
 | Dist package | Core, registry, adapters, protocol, credential families, verifier contracts, university protocol/reporting | `license`, `private`, `type`, `main`, `module`, `types`, root `exports`, and `files` point at `dist/**` plus minimal metadata |
-| Source-only integration package | `components/integration/standalone-environment` | private source package with `main` and `files` pointing at `src/**/*.ts`; no dist export map is promised |
-| Scenario package | `use-cases/*/scenarios` | private executable package with no publish entrypoint or tarball surface |
+| Source-only integration package | `packages/components/integration/standalone-environment` | private source package with `main` and `files` pointing at `src/**/*.ts`; no dist export map is promised |
+| Scenario package | `packages/use-cases/*/scenarios` | private executable package with no publish entrypoint or tarball surface |
 
 ## Dist Package Rules
 
@@ -50,7 +50,7 @@ BDD scenario packages are executable harnesses, not library surfaces. They must:
 
 ## Source-Only Integration Rule
 
-`components/integration/standalone-environment` remains source-only because it
+`packages/components/integration/standalone-environment` remains source-only because it
 is a local integration harness over vendored DID tarballs and Testcontainers. It
 must stay private and declare its source files explicitly rather than pretending
 to be a dist package.

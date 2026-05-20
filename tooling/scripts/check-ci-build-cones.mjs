@@ -20,9 +20,9 @@ const runGit = (args) =>
 const errors = [];
 const ALLOWED_OUTPUT_SUFFIXES = ["/dist", "/src/managed"];
 const PROTOCOL_REQUIRED_INPUTS = [
-  "prototypes/credential-families/birth",
-  "prototypes/credential-families/birth-secret",
-  "use-cases/age-gate/contract",
+  "packages/prototypes/credential-families/birth",
+  "packages/prototypes/credential-families/birth-secret",
+  "packages/use-cases/age-gate/contract",
 ];
 const gitignorePatternSet = new Set(
   readFileSync(path.join(repoRoot, ".gitignore"), "utf8")

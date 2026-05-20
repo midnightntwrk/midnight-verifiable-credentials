@@ -28,7 +28,7 @@ Related documents:
 ### I need the generic VC/VP model
 Start with:
 
-- [`../../core/primitives/credentials/README.md`](../../core/primitives/credentials/README.md)
+- [`../../packages/core/primitives/credentials/README.md`](../../packages/core/primitives/credentials/README.md)
 
 Use this when you need:
 
@@ -41,9 +41,9 @@ Use this when you need:
 Choose one of:
 
 - explicit/public-holder shape:
-  - [`../../prototypes/credential-families/birth/README.md`](../../prototypes/credential-families/birth/README.md)
+  - [`../../packages/prototypes/credential-families/birth/README.md`](../../packages/prototypes/credential-families/birth/README.md)
 - hidden-secret-holder shape:
-  - [`../../prototypes/credential-families/birth-secret/README.md`](../../prototypes/credential-families/birth-secret/README.md)
+  - [`../../packages/prototypes/credential-families/birth-secret/README.md`](../../packages/prototypes/credential-families/birth-secret/README.md)
 
 Use `credentials-birth` when a public holder reference is acceptable.
 Use `credentials-birth-secret` when holder privacy is the primary concern.
@@ -51,7 +51,7 @@ Use `credentials-birth-secret` when holder privacy is the primary concern.
 ### I need the smallest compileable family starter
 Start with:
 
-- [`../../prototypes/credential-families/hello-family/README.md`](../../prototypes/credential-families/hello-family/README.md)
+- [`../../packages/prototypes/credential-families/hello-family/README.md`](../../packages/prototypes/credential-families/hello-family/README.md)
 
 Use this when you need:
 
@@ -66,7 +66,7 @@ It is intentionally a direct-claim playground.
 ### I need the broadest direct claim-type lab
 Start with:
 
-- [`../../prototypes/credential-families/dummy-claims/README.md`](../../prototypes/credential-families/dummy-claims/README.md)
+- [`../../packages/prototypes/credential-families/dummy-claims/README.md`](../../packages/prototypes/credential-families/dummy-claims/README.md)
 
 Use this when you need:
 
@@ -83,7 +83,7 @@ It is intentionally a direct-claim laboratory package.
 ### I need public claims and private commitments in one family
 Start with:
 
-- [`../../prototypes/credential-families/mixed-claims/README.md`](../../prototypes/credential-families/mixed-claims/README.md)
+- [`../../packages/prototypes/credential-families/mixed-claims/README.md`](../../packages/prototypes/credential-families/mixed-claims/README.md)
 
 Use this when you need:
 
@@ -99,10 +99,10 @@ by every party that receives the credential body.
 ### I need an academic diploma family and a larger verifier-flow blueprint
 Start with:
 
-- [`../../prototypes/credential-families/university-diploma/README.md`](../../prototypes/credential-families/university-diploma/README.md)
-- [`../../use-cases/university/README.md`](../../use-cases/university/README.md)
-- [`../../use-cases/university/contract/README.md`](../../use-cases/university/contract/README.md)
-- [`../../use-cases/university/protocol/README.md`](../../use-cases/university/protocol/README.md)
+- [`../../packages/prototypes/credential-families/university-diploma/README.md`](../../packages/prototypes/credential-families/university-diploma/README.md)
+- [`../../packages/use-cases/university/README.md`](../../packages/use-cases/university/README.md)
+- [`../../packages/use-cases/university/contract/README.md`](../../packages/use-cases/university/contract/README.md)
+- [`../../packages/use-cases/university/protocol/README.md`](../../packages/use-cases/university/protocol/README.md)
 
 Use this when you need:
 
@@ -122,15 +122,15 @@ Current constraint:
 ### I need same-holder correlation across credentials
 Start with:
 
-- [`../../core/capabilities/same-holder/README.md`](../../core/capabilities/same-holder/README.md)
+- [`../../packages/core/capabilities/same-holder/README.md`](../../packages/core/capabilities/same-holder/README.md)
 
 This is a capability package, not a standalone credential family.
 
 ### I need status / revocation registry support
 Start with:
 
-- [`../../core/primitives/credentials/README.md`](../../core/primitives/credentials/README.md)
-- [`../../registry/status-registry/README.md`](../../registry/status-registry/README.md)
+- [`../../packages/core/primitives/credentials/README.md`](../../packages/core/primitives/credentials/README.md)
+- [`../../packages/registry/status-registry/README.md`](../../packages/registry/status-registry/README.md)
 - then read:
   - [`../spec/credential-status.md`](../spec/credential-status.md)
   - [`../spec/revocation-registry.md`](../spec/revocation-registry.md)
@@ -168,14 +168,14 @@ This capability area is intentionally split across two packages:
 ### I need shared ISO code types
 Start with:
 
-- [`../../core/primitives/iso-registry/README.md`](../../core/primitives/iso-registry/README.md)
+- [`../../packages/core/primitives/iso-registry/README.md`](../../packages/core/primitives/iso-registry/README.md)
 
 Use this package instead of inventing local country/currency/gender code types.
 
 ### I need OpenID-oriented or web transport adaptation
 Start with:
 
-- [`../../protocols/openid/README.md`](../../protocols/openid/README.md)
+- [`../../packages/protocols/openid/README.md`](../../packages/protocols/openid/README.md)
 
 Use this when the problem is transport, issuance/presentation envelope shape,
 or payload framing around Compact-native values.
@@ -183,7 +183,7 @@ or payload framing around Compact-native values.
 ### I need reference issuance/presentation orchestration
 Start with:
 
-- [`../../components/orchestration/protocol/README.md`](../../components/orchestration/protocol/README.md)
+- [`../../packages/components/orchestration/protocol/README.md`](../../packages/components/orchestration/protocol/README.md)
 
 Use this when you need off-chain flow orchestration, simulation, or reference
 protocol behavior rather than the canonical VC data model alone.
@@ -196,7 +196,7 @@ Important rule:
 ### I need a verifier/business contract example
 Start with:
 
-- [`../../use-cases/age-gate/contract/README.md`](../../use-cases/age-gate/contract/README.md)
+- [`../../packages/use-cases/age-gate/contract/README.md`](../../packages/use-cases/age-gate/contract/README.md)
 
 Use this as a composition example, not as a generic VC library.
 
@@ -208,7 +208,7 @@ If you need the smallest copyable starting point rather than a full demo package
 ### I need standalone integration infrastructure
 Start with:
 
-- [`../../components/integration/standalone-environment/README.md`](../../components/integration/standalone-environment/README.md)
+- [`../../packages/components/integration/standalone-environment/README.md`](../../packages/components/integration/standalone-environment/README.md)
 
 Use this when the task is environment setup, docker-backed testing, or shared
 integration harness behavior.

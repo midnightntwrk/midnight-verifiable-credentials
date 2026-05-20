@@ -9,35 +9,35 @@ const repoRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
 }).trim();
 
 const foundationPackages = [
-  "core/primitives/credentials",
-  "registry/status-registry",
-  "core/capabilities/same-holder",
-  "core/primitives/iso-registry",
-  "components/adapters/offchain-did",
-  "protocols/openid",
+  "packages/core/primitives/credentials",
+  "packages/registry/status-registry",
+  "packages/core/capabilities/same-holder",
+  "packages/core/primitives/iso-registry",
+  "packages/components/adapters/offchain-did",
+  "packages/protocols/openid",
 ];
 const familyPackages = [
-  "prototypes/credential-families/birth",
-  "prototypes/credential-families/birth-secret",
-  "prototypes/credential-families/hello-family",
-  "prototypes/credential-families/dummy-claims",
-  "prototypes/credential-families/mixed-claims",
-  "prototypes/credential-families/university-diploma",
+  "packages/prototypes/credential-families/birth",
+  "packages/prototypes/credential-families/birth-secret",
+  "packages/prototypes/credential-families/hello-family",
+  "packages/prototypes/credential-families/dummy-claims",
+  "packages/prototypes/credential-families/mixed-claims",
+  "packages/prototypes/credential-families/university-diploma",
 ];
-const ageGatePackages = ["use-cases/age-gate/contract", "use-cases/hello-verifier/contract"];
-const protocolPackages = ["components/orchestration/protocol"];
+const ageGatePackages = ["packages/use-cases/age-gate/contract", "packages/use-cases/hello-verifier/contract"];
+const protocolPackages = ["packages/components/orchestration/protocol"];
 
 export const profileDefinitions = {
   "managed-light": {
     buildCommand: "npm run build:light",
     managedPackages: [
-      "core/primitives/credentials",
-      "registry/status-registry",
-      "core/capabilities/same-holder",
-      "core/primitives/iso-registry",
-      "prototypes/credential-families/birth",
-      "prototypes/credential-families/birth-secret",
-      "prototypes/credential-families/hello-family",
+      "packages/core/primitives/credentials",
+      "packages/registry/status-registry",
+      "packages/core/capabilities/same-holder",
+      "packages/core/primitives/iso-registry",
+      "packages/prototypes/credential-families/birth",
+      "packages/prototypes/credential-families/birth-secret",
+      "packages/prototypes/credential-families/hello-family",
     ],
   },
   "managed-all": {
@@ -48,44 +48,44 @@ export const profileDefinitions = {
   "managed-revocation": {
     buildCommand: "npm run build:revocation",
     managedPackages: [
-      "core/primitives/credentials",
-      "registry/status-registry",
-      "core/capabilities/same-holder",
-      "prototypes/credential-families/birth",
-      "prototypes/credential-families/birth-secret",
-      "use-cases/age-gate/contract",
+      "packages/core/primitives/credentials",
+      "packages/registry/status-registry",
+      "packages/core/capabilities/same-holder",
+      "packages/prototypes/credential-families/birth",
+      "packages/prototypes/credential-families/birth-secret",
+      "packages/use-cases/age-gate/contract",
     ],
   },
   "managed-hello-smoke": {
     buildCommand: "npm run build:starter-smoke-prereqs",
     managedPackages: [
-      "core/primitives/credentials",
-      "registry/status-registry",
-      "core/capabilities/same-holder",
-      "core/primitives/iso-registry",
-      "prototypes/credential-families/hello-family",
-      "use-cases/hello-verifier/contract",
+      "packages/core/primitives/credentials",
+      "packages/registry/status-registry",
+      "packages/core/capabilities/same-holder",
+      "packages/core/primitives/iso-registry",
+      "packages/prototypes/credential-families/hello-family",
+      "packages/use-cases/hello-verifier/contract",
     ],
   },
   "managed-dummy-claims-lab": {
     buildCommand: "npm run build:dummy-claims-lab-prereqs",
     extends: ["managed-hello-smoke"],
-    managedPackages: ["prototypes/credential-families/dummy-claims"],
+    managedPackages: ["packages/prototypes/credential-families/dummy-claims"],
   },
   "managed-university-protocol": {
     buildCommand: "npm run build:university-protocol:prereqs",
     outputs: [
-      output("components/orchestration/protocol/dist/index.js", [
-        "components/orchestration/protocol/src",
-        "components/orchestration/protocol/package.json",
+      output("packages/components/orchestration/protocol/dist/index.js", [
+        "packages/components/orchestration/protocol/src",
+        "packages/components/orchestration/protocol/package.json",
       ]),
-      output("prototypes/credential-families/university-diploma/dist/testing.js", [
-        "prototypes/credential-families/university-diploma/src",
-        "prototypes/credential-families/university-diploma/package.json",
+      output("packages/prototypes/credential-families/university-diploma/dist/testing.js", [
+        "packages/prototypes/credential-families/university-diploma/src",
+        "packages/prototypes/credential-families/university-diploma/package.json",
       ]),
-      output("use-cases/university/contract/dist/testing.js", [
-        "use-cases/university/contract/src",
-        "use-cases/university/contract/package.json",
+      output("packages/use-cases/university/contract/dist/testing.js", [
+        "packages/use-cases/university/contract/src",
+        "packages/use-cases/university/contract/package.json",
       ]),
     ],
   },
@@ -93,9 +93,9 @@ export const profileDefinitions = {
     buildCommand: "npm run build:university-protocol:export:prereqs",
     extends: ["managed-university-protocol"],
     outputs: [
-      output("use-cases/university/protocol/dist/index.js", [
-        "use-cases/university/protocol/src",
-        "use-cases/university/protocol/package.json",
+      output("packages/use-cases/university/protocol/dist/index.js", [
+        "packages/use-cases/university/protocol/src",
+        "packages/use-cases/university/protocol/package.json",
       ]),
     ],
   },
@@ -103,13 +103,13 @@ export const profileDefinitions = {
     buildCommand: "npm run build:university-protocol-stress:prereqs",
     extends: ["managed-university-protocol-export"],
     outputs: [
-      output("use-cases/university/data/stress-100/students.json", [
-        "use-cases/university/scripts",
-        "use-cases/university/data",
+      output("packages/use-cases/university/data/stress-100/students.json", [
+        "packages/use-cases/university/scripts",
+        "packages/use-cases/university/data",
       ]),
-      output("use-cases/university/data/stress-100/issuance-batches.json", [
-        "use-cases/university/scripts",
-        "use-cases/university/data",
+      output("packages/use-cases/university/data/stress-100/issuance-batches.json", [
+        "packages/use-cases/university/scripts",
+        "packages/use-cases/university/data",
       ]),
     ],
   },
@@ -117,13 +117,13 @@ export const profileDefinitions = {
     buildCommand: "npm run build:university-protocol-cohort:prereqs",
     extends: ["managed-university-protocol-export"],
     outputs: [
-      output("use-cases/university/data/cohort-30/students.json", [
-        "use-cases/university/scripts",
-        "use-cases/university/data",
+      output("packages/use-cases/university/data/cohort-30/students.json", [
+        "packages/use-cases/university/scripts",
+        "packages/use-cases/university/data",
       ]),
-      output("use-cases/university/data/cohort-30/issuance-batches.json", [
-        "use-cases/university/scripts",
-        "use-cases/university/data",
+      output("packages/use-cases/university/data/cohort-30/issuance-batches.json", [
+        "packages/use-cases/university/scripts",
+        "packages/use-cases/university/data",
       ]),
     ],
   },
@@ -131,17 +131,17 @@ export const profileDefinitions = {
     buildCommand: "npm run build:university-summary:prereqs",
     extends: ["managed-university-protocol-stress"],
     outputs: [
-      output("use-cases/university/scenarios/target/site/serenity/index.html", [], {
+      output("packages/use-cases/university/scenarios/target/site/serenity/index.html", [], {
         freshness: false,
       }),
-      output("use-cases/university/scenarios/target/batch-sweep/summary.json", [], {
+      output("packages/use-cases/university/scenarios/target/batch-sweep/summary.json", [], {
         freshness: false,
       }),
     ],
     customReady: () => {
       const serenityRoot = path.join(
         repoRoot,
-        "use-cases/university/scenarios/target/site/serenity",
+        "packages/use-cases/university/scenarios/target/site/serenity",
       );
       return (
         existsSync(serenityRoot) &&
@@ -161,17 +161,17 @@ export const profileDefinitions = {
   revocation: {
     buildCommand: "npm run build:revocation",
     distPackages: [
-      "core/primitives/credentials",
-      "registry/status-registry",
-      "core/capabilities/same-holder",
-      "prototypes/credential-families/birth",
-      "prototypes/credential-families/birth-secret",
-      "use-cases/age-gate/contract",
+      "packages/core/primitives/credentials",
+      "packages/registry/status-registry",
+      "packages/core/capabilities/same-holder",
+      "packages/prototypes/credential-families/birth",
+      "packages/prototypes/credential-families/birth-secret",
+      "packages/use-cases/age-gate/contract",
     ],
   },
   "integration-demo-contract": {
     buildCommand: "npm run build:integration-prereqs:demo-contract",
-    distPackages: [...foundationPackages, ...familyPackages, "use-cases/age-gate/contract"],
+    distPackages: [...foundationPackages, ...familyPackages, "packages/use-cases/age-gate/contract"],
   },
   "integration-protocol": {
     buildCommand: "npm run build:integration-prereqs:protocol",
@@ -181,8 +181,8 @@ export const profileDefinitions = {
 };
 
 const managedOutputOverrides = {
-  "core/capabilities/same-holder": ["src/managed/same-holder/contract/index.js"],
-  "core/primitives/iso-registry": ["src/managed/iso-registry/contract/index.js"],
+  "packages/core/capabilities/same-holder": ["src/managed/same-holder/contract/index.js"],
+  "packages/core/primitives/iso-registry": ["src/managed/iso-registry/contract/index.js"],
 };
 
 function output(relativePath, inputs, options = {}) {

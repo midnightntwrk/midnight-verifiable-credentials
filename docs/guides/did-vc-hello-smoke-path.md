@@ -48,15 +48,15 @@ This is intentionally narrower than `age-gate`:
 
 Family-layer handoff:
 
-- [`../../prototypes/credential-families/hello-family/src/test/offchain-did-smoke.test.ts`](../../prototypes/credential-families/hello-family/src/test/offchain-did-smoke.test.ts)
+- [`../../packages/prototypes/credential-families/hello-family/src/test/offchain-did-smoke.test.ts`](../../packages/prototypes/credential-families/hello-family/src/test/offchain-did-smoke.test.ts)
 
 Layer-3 verifier handoff:
 
-- [`../../use-cases/hello-verifier/contract/src/test/hello-verifier.test.ts`](../../use-cases/hello-verifier/contract/src/test/hello-verifier.test.ts)
+- [`../../packages/use-cases/hello-verifier/contract/src/test/hello-verifier.test.ts`](../../packages/use-cases/hello-verifier/contract/src/test/hello-verifier.test.ts)
 
 Adapter-layer binding derivation:
 
-- [`../../components/adapters/offchain-did/src/test/offchain-did-holder-binding.test.ts`](../../components/adapters/offchain-did/src/test/offchain-did-holder-binding.test.ts)
+- [`../../packages/components/adapters/offchain-did/src/test/offchain-did-holder-binding.test.ts`](../../packages/components/adapters/offchain-did/src/test/offchain-did-holder-binding.test.ts)
 
 ## Run the smoke path locally
 
@@ -74,10 +74,10 @@ Artifact-restored parity lane:
 
 That lane runs:
 
-- lint for `components/adapters/offchain-did`
-- typecheck for `components/adapters/offchain-did`
-- typecheck and tests for `prototypes/credential-families/hello-family`
-- typecheck and tests for `use-cases/hello-verifier/contract`
+- lint for `packages/components/adapters/offchain-did`
+- typecheck for `packages/components/adapters/offchain-did`
+- typecheck and tests for `packages/prototypes/credential-families/hello-family`
+- typecheck and tests for `packages/use-cases/hello-verifier/contract`
 
 It is intentionally build-less at the root level:
 
@@ -113,16 +113,16 @@ That is the narrowest local recipe matching the CI lane shape:
 Equivalent package-local commands:
 
 ```bash
-npm run test:ci -w components/adapters/offchain-did
-npm run test:ci -w prototypes/credential-families/hello-family
-npm run test:ci -w use-cases/hello-verifier/contract
+npm run test:ci -w packages/components/adapters/offchain-did
+npm run test:ci -w packages/prototypes/credential-families/hello-family
+npm run test:ci -w packages/use-cases/hello-verifier/contract
 ```
 
 If you want the narrowest DID-aware proof only:
 
 ```bash
-npm exec -w prototypes/credential-families/hello-family -- vitest run src/test/offchain-did-smoke.test.ts
-npm exec -w use-cases/hello-verifier/contract -- vitest run src/test/hello-verifier.test.ts
+npm exec -w packages/prototypes/credential-families/hello-family -- vitest run src/test/offchain-did-smoke.test.ts
+npm exec -w packages/use-cases/hello-verifier/contract -- vitest run src/test/hello-verifier.test.ts
 ```
 
 ## Compatibility matrix seed

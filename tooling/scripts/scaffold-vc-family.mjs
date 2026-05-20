@@ -6,12 +6,12 @@ const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "..", "..");
 
 const usage = `Usage:
-  node ./tooling/scripts/scaffold-vc-family.mjs --slug my-family [--out prototypes/credential-families/my-family] [--holder explicit|hidden] [--claim-mode public|commitment|mixed]
+  node ./tooling/scripts/scaffold-vc-family.mjs --slug my-family [--out packages/prototypes/credential-families/my-family] [--holder explicit|hidden] [--claim-mode public|commitment|mixed]
 
 Behavior:
   - generates a thin-core VC family package scaffold aligned with the current repository layout
   - requires the output directory to stay inside the current VC repository
-  - defaults to prototypes/credential-families/<slug>
+  - defaults to packages/prototypes/credential-families/<slug>
   - defaults to commitment-only claim storage so private placeholders do not leak into public claims
   - does not add the package to root workspaces automatically
   - does not overwrite an existing directory
@@ -323,11 +323,11 @@ Current Compact claim-shape guardrails:
 Reference packages:
 
 - smallest starter family:
-  - \`prototypes/credential-families/hello-family\`
+  - \`packages/prototypes/credential-families/hello-family\`
 - broad direct claim-surface laboratory:
-  - \`prototypes/credential-families/dummy-claims\`
+  - \`packages/prototypes/credential-families/dummy-claims\`
 - mixed public/private claim-representation laboratory:
-  - \`prototypes/credential-families/mixed-claims\`
+  - \`packages/prototypes/credential-families/mixed-claims\`
 `,
     ],
     [

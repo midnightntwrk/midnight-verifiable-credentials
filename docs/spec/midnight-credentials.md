@@ -250,9 +250,9 @@ Implementation rules:
 
 Current repository evidence for that claim surface lives in:
 
-- [`../../prototypes/credential-families/hello-family/README.md`](../../prototypes/credential-families/hello-family/README.md)
-- [`../../prototypes/credential-families/dummy-claims/README.md`](../../prototypes/credential-families/dummy-claims/README.md)
-- [`../../prototypes/credential-families/university-diploma/README.md`](../../prototypes/credential-families/university-diploma/README.md)
+- [`../../packages/prototypes/credential-families/hello-family/README.md`](../../packages/prototypes/credential-families/hello-family/README.md)
+- [`../../packages/prototypes/credential-families/dummy-claims/README.md`](../../packages/prototypes/credential-families/dummy-claims/README.md)
+- [`../../packages/prototypes/credential-families/university-diploma/README.md`](../../packages/prototypes/credential-families/university-diploma/README.md)
 
 The repository currently treats source-fact credentials such as birth or
 passport as the preferred model, rather than threshold-specific derived
@@ -363,7 +363,7 @@ rejection message family for every protocol.
 Today:
 
 - success results are explicit protocol messages
-- the reference `components/orchestration/protocol` layer now defines explicit
+- the reference `packages/components/orchestration/protocol` layer now defines explicit
   rejection messages for blinded-secret issuance and blinded-secret
   presentation
 - the same reference layer now treats duplicate blinded-secret issuance

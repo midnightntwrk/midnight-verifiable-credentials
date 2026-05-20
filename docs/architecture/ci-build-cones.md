@@ -7,8 +7,8 @@ This repository uses four shared build cones for reusable CI outputs:
    - `credentials-status-registry`
    - `credentials-same-holder`
    - `credentials-iso-registry`
-   - `components/adapters/offchain-did`
-   - `protocols/openid`
+   - `packages/components/adapters/offchain-did`
+   - `packages/protocols/openid`
 2. `birth-family`
    - `credentials-birth`
    - `credentials-birth-secret`
@@ -16,10 +16,10 @@ This repository uses four shared build cones for reusable CI outputs:
    - `credentials-dummy-claims`
    - `credentials-university-diploma`
 3. `age-gate`
-   - `use-cases/age-gate/contract`
-   - `use-cases/hello-verifier/contract`
+   - `packages/use-cases/age-gate/contract`
+   - `packages/use-cases/hello-verifier/contract`
 4. `protocol`
-   - `components/orchestration/protocol`
+   - `packages/components/orchestration/protocol`
 
 ## Why Cones
 
@@ -43,12 +43,12 @@ credential-family artifacts.
 
 Intentional exclusions:
 
-- `use-cases/university/contract` is built by university-specific prerequisites,
+- `packages/use-cases/university/contract` is built by university-specific prerequisites,
   not by the shared build cones
-- `use-cases/university/protocol`, `use-cases/university/scenarios`, and
-  `use-cases/university/reporting` are profile/reporting packages with their
+- `packages/use-cases/university/protocol`, `packages/use-cases/university/scenarios`, and
+  `packages/use-cases/university/reporting` are profile/reporting packages with their
   own artifact contracts
-- `components/integration/standalone-environment` is kept outside the reusable
+- `packages/components/integration/standalone-environment` is kept outside the reusable
   cone cache because Docker-backed integration has separate setup and teardown
   concerns
 

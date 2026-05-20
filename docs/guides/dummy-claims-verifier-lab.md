@@ -38,8 +38,8 @@ Reuse existing build artifacts:
 Direct package commands:
 
 ```bash
-npm run test:ci -w ./prototypes/credential-families/dummy-claims
-npm exec -w ./use-cases/hello-verifier/contract -- vitest run src/test/dummy-claims-verifier.test.ts
+npm run test:ci -w ./packages/prototypes/credential-families/dummy-claims
+npm exec -w ./packages/use-cases/hello-verifier/contract -- vitest run src/test/dummy-claims-verifier.test.ts
 ```
 
 Notes:

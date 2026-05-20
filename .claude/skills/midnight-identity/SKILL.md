@@ -18,7 +18,7 @@ Use this skill from the `midnight-verifiable-credentials` repository, whether cl
 - Target branch is `develop` unless instructed otherwise.
 - Use DCO/GPG for repository-facing commits: `git commit -S --signoff -m "<type>: <subject>"`.
 - Preserve the generic envelope `VC<TPublicClaims, TClaimCommitments, THolderBinding, TStatusBinding>`.
-- Keep BDD under `use-cases/`.
+- Keep BDD under `packages/use-cases/`.
 
 ## Validation
 
@@ -35,7 +35,7 @@ Use this skill from the `midnight-verifiable-credentials` repository, whether cl
 PROOF_SERVER_IMAGE=proof-server-bootstrap:8.0.3 ./run.sh
 ```
 
-Use `use-cases/university/operator-guide.md` when choosing university BDD, proof-server, standalone, cohort, stress, and summary lanes.
+Use `packages/use-cases/university/operator-guide.md` when choosing university BDD, proof-server, standalone, cohort, stress, and summary lanes.
 
 ## Packaging
 
