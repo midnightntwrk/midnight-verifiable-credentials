@@ -249,7 +249,7 @@ If you are new to the model, read in this order:
 Holder-binding terminology:
 
 - canonical terminology guide:
-  - [`../../../docs/architecture/holder-binding-terminology.md`](../../../docs/architecture/holder-binding-terminology.md)
+  - [`../../../../docs/architecture/holder-binding-terminology.md`](../../../../docs/architecture/holder-binding-terminology.md)
 - use `OffchainDIDHolderBinding` for runtime/public TypeScript-facing adapter
   docs
 - keep `OffchainMidnightHolderBinding` for the Compact/core struct name

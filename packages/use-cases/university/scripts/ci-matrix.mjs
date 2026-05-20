@@ -3,8 +3,8 @@ import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
-import { profileNames } from "../../../tooling/scripts/managed-artifact-catalog.mjs";
-import { lightTargetNames, targetNames } from "../../../tooling/scripts/run-target-catalog.mjs";
+import { profileNames } from "../../../../tooling/scripts/managed-artifact-catalog.mjs";
+import { lightTargetNames, targetNames } from "../../../../tooling/scripts/run-target-catalog.mjs";
 
 const repoRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),

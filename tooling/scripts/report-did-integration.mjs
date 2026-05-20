@@ -14,6 +14,12 @@ const siblingDidRoot = path.resolve(repoRoot, "..", "midnight-did");
 const didVendorRoot = path.join(repoRoot, "tooling/vendor/midnight-did");
 const errors = [];
 const warnings = [];
+const vendorOnlyDidPackages = new Set([
+  // Secret custody moved out of midnight-did with the resolver extraction, but
+  // VC standalone fixtures still consume the last packed artifact until the
+  // resolver package becomes the distribution source.
+  "@midnight-ntwrk/midnight-did-secret-storage",
+]);
 
 const readJson = (absolutePath) => JSON.parse(readFileSync(absolutePath, "utf8"));
 const npmPackFileName = (packageName, version) =>
@@ -126,8 +132,9 @@ for (const packageJsonPath of findPackageJsonFiles(repoRoot)) {
       const didPackage = didPackages.get(dependencyName);
       const expectedTarball = didPackage?.tarball ?? spec.match(/([^/]+\.tgz)$/u)?.[1] ?? null;
       const expectedFileSpec = expectedTarball
-        ? `file:../../../tooling/vendor/midnight-did/${expectedTarball}`
+        ? `file:${path.relative(path.dirname(packageJsonPath), path.join(didVendorRoot, expectedTarball)).split(path.sep).join("/")}`
         : null;
+      const vendorOnly = vendorOnlyDidPackages.has(dependencyName);
       const reference = {
         dependencyName,
         spec,
@@ -135,6 +142,7 @@ for (const packageJsonPath of findPackageJsonFiles(repoRoot)) {
         expectedTarball,
         consumer: packageJson.name ?? consumerPackageJson,
         packageJson: consumerPackageJson,
+        vendorOnly,
         siblingPackagePresent: Boolean(didPackage),
         fileSpecMatchesCurrentVersion: expectedFileSpec ? spec === expectedFileSpec : false,
         vendorTarballPresent: expectedTarball ? vendorTarballs.includes(expectedTarball) : false,
@@ -142,7 +150,7 @@ for (const packageJsonPath of findPackageJsonFiles(repoRoot)) {
 
       references.push(reference);
 
-      if (!didPackage && didPackages.size > 0) {
+      if (!didPackage && didPackages.size > 0 && !vendorOnly) {
         errors.push(`${reference.consumer} references ${dependencyName}, but sibling DID does not provide it`);
       }
 
