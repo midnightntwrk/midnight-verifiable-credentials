@@ -92,7 +92,10 @@ Recommended stack after the current cleanup base PR:
 
 2. `vc-protocol-feature-hint-deprecation`
    - deprecate protocol `features` as authoritative schema facts
-   - update fixtures and adapters to read schema capabilities
+   - update reference agents to derive compatibility feature hints from schema
+     capabilities
+   - update remaining fixtures and adapters to read schema capabilities in
+     follow-up slices
    - keep compatibility fields only where existing generated surfaces require it
 
 3. `vc-university-privacy-hardening-plan`
@@ -104,4 +107,3 @@ Recommended stack after the current cleanup base PR:
    - migrate sensitive university fields from direct claims to commitments
    - update BDD notes to show openings/presentations rather than raw credential
      bodies where privacy matters
-

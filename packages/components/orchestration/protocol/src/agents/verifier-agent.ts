@@ -21,7 +21,6 @@ import {
   type SecretBirthCredentialVerificationSubmission,
 } from "@midnight-ntwrk/midnight-did-credentials-birth-secret/managed/secret-birth-credential/contract/index.js";
 
-import { padText } from "../shared/crypto.js";
 import { createEnvelope } from "../shared/envelope.js";
 import { assertBodyHasFields, assertMessageType } from "../shared/validation.js";
 import type { MessageBus } from "../transport/message-bus.js";
@@ -46,6 +45,12 @@ import {
   type ProtocolRandomnessSource,
   unsafeReferenceDeterministicRandomnessSource,
 } from "./randomness.js";
+import {
+  BIRTH_PROTOCOL_FEATURES,
+  BIRTH_SCHEMA,
+  SECRET_BIRTH_PROTOCOL_FEATURES,
+  SECRET_BIRTH_SCHEMA,
+} from "./schema-descriptors.js";
 import type {
   SameHolderPresentation,
   SameHolderTriplePresentation,
@@ -58,27 +63,6 @@ export type PresentationRequirements = {
   readonly requireBirthCountryDisclosure: boolean;
   readonly requireAgeOverThreshold: boolean;
   readonly requestedAgeThresholdYears: number;
-};
-
-const BIRTH_SCHEMA = {
-  packageId: padText("midnight-did:vc:birth"),
-  schemaId: padText("birth-credential:v1"),
-  majorVersion: 1n,
-  minorVersion: 0n,
-};
-
-const EXPLICIT_HOLDER_FEATURES = {
-  supportsSelectiveDisclosure: true,
-  supportsPredicateProofs: true,
-  supportsVerifierScopedPseudonym: false,
-  supportsSameHolderProof: false,
-};
-
-const SECRET_HOLDER_FEATURES = {
-  supportsSelectiveDisclosure: true,
-  supportsPredicateProofs: true,
-  supportsVerifierScopedPseudonym: true,
-  supportsSameHolderProof: true,
 };
 
 const earlierExpiryMs = (
@@ -254,7 +238,7 @@ export class VerifierAgent {
       schema: BIRTH_SCHEMA,
       issuerVerificationMethodRef: requirements.issuerVerificationMethodRef,
       holderBindingProfile: HolderBindingProfile.explicitDid,
-      features: EXPLICIT_HOLDER_FEATURES,
+      features: BIRTH_PROTOCOL_FEATURES,
       verifierChallengeHash: this.generateChallengeHashFor(
         "explicit-presentation",
       ),
@@ -359,13 +343,6 @@ export class VerifierAgent {
     requirements: SecretPresentationRequirements,
     options: SecretPresentationRequestOptions = {},
   ): void {
-    const SECRET_BIRTH_SCHEMA = {
-      packageId: padText("midnight-did:vc:birth-secret"),
-      schemaId: padText("birth-credential:v1"),
-      majorVersion: 1n,
-      minorVersion: 0n,
-    };
-
     const request: SecretBirthCredentialVerificationRequest = {
       envelope: createEnvelope(
         "secret-presentation-request",
@@ -381,7 +358,7 @@ export class VerifierAgent {
       schema: SECRET_BIRTH_SCHEMA,
       issuerVerificationMethodRef: requirements.issuerVerificationMethodRef,
       holderBindingProfile: HolderBindingProfile.blindedSecretHolder,
-      features: SECRET_HOLDER_FEATURES,
+      features: SECRET_BIRTH_PROTOCOL_FEATURES,
       verifierChallengeHash: this.generateChallengeHashFor(
         "blinded-secret-presentation",
       ),
@@ -590,12 +567,7 @@ export class VerifierAgent {
         submission.envelope.messageId,
         submission.envelope.threadId,
       ),
-      schema: {
-        packageId: padText("midnight-did:vc:birth-secret"),
-        schemaId: padText("birth-credential:v1"),
-        majorVersion: 1n,
-        minorVersion: 0n,
-      },
+      schema: SECRET_BIRTH_SCHEMA,
       issuerVerificationMethodRef: this.profile.signer.verificationMethodRef,
       holderBindingProfile: HolderBindingProfile.blindedSecretHolder,
       body: {

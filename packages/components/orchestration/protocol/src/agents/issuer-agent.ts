@@ -12,15 +12,19 @@ import {
   pureCircuits,
 } from "@midnight-ntwrk/midnight-did-credentials-birth/managed/birth-credential/contract/index.js";
 
-import { mod, padText } from "../shared/crypto.js";
+import { mod } from "../shared/crypto.js";
 import { createEnvelope } from "../shared/envelope.js";
-import { assertBodyHasFields,assertMessageType } from "../shared/validation.js";
+import { assertBodyHasFields, assertMessageType } from "../shared/validation.js";
 import type { MessageBus } from "../transport/message-bus.js";
 import type { PartyId,ProtocolMessage } from "../transport/types.js";
 import {
   type ProtocolRandomnessSource,
   unsafeReferenceDeterministicRandomnessSource,
 } from "./randomness.js";
+import {
+  BIRTH_PROTOCOL_FEATURES,
+  BIRTH_SCHEMA,
+} from "./schema-descriptors.js";
 import type { DIDProfile } from "./types.js";
 
 export type ClaimWitness = {
@@ -34,20 +38,6 @@ export type ClaimWitness = {
   readonly birthCountryCodeOpening: Uint8Array;
   readonly issuedAt: bigint;
   readonly expiresAt: bigint;
-};
-
-const BIRTH_SCHEMA = {
-  packageId: padText("midnight-did:vc:birth"),
-  schemaId: padText("birth-credential:v1"),
-  majorVersion: 1n,
-  minorVersion: 0n,
-};
-
-const FEATURES = {
-  supportsSelectiveDisclosure: true,
-  supportsPredicateProofs: true,
-  supportsVerifierScopedPseudonym: false,
-  supportsSameHolderProof: false,
 };
 
 const createNoStatusBinding = (): BirthCredential["statusBinding"] => {
@@ -82,7 +72,7 @@ export class IssuerAgent {
       schema: BIRTH_SCHEMA,
       issuerVerificationMethodRef: this.profile.signer.verificationMethodRef,
       holderBindingProfile: HolderBindingProfile.explicitDid,
-      features: FEATURES,
+      features: BIRTH_PROTOCOL_FEATURES,
       body: {
         supportsExpiration: true,
         defaultExpirationDays: 365n,
