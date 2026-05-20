@@ -130,6 +130,18 @@ Credential shape:
 
 - `VC<UniversityDiplomaClaims, NoClaimCommitments, ExplicitHolderBinding, NoStatusBinding>`
 
+Privacy boundary:
+
+- the current diploma family is a direct-claim prototype optimized for readable
+  BDD and protocol reporting
+- raw academic facts live in `credential.claims`; any party that receives the
+  credential body can read them
+- presentation `reveal*` flags authorize what a verifier request may use in a
+  presentation, but they do not hide values already present in the credential
+  body
+- a production privacy profile should move stable identifiers and sensitive
+  academic facts into `claimCommitments` with openings or predicate witnesses
+
 Key schema fields:
 
 - `diplomaId`

@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- added `SchemaCapabilities`, `SchemaFamilyResolutionHint`, and
+  `SchemaDescriptor` to the credentials core so wallets and adapters can bind
+  bounded credential-family capability metadata and resolver hints to a
+  canonical `SchemaRef` without adding unbounded fields to Compact roots.
 - added a canonical holder-binding terminology guide plus
   `check:holder-binding-terminology` to keep offchain DID, Compact/core,
   hidden-holder, and legacy Jubjub profile wording aligned across docs.
@@ -63,6 +67,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- documented protocol `features` as compatibility hints rather than
+  authoritative schema facts; adapters should compare them with trusted schema
+  descriptors or family registries during migration.
 - BREAKING: the university report summary schema moved to
   `midnight-university-report-summary.v3` because summaries now embed an
   artifact manifest. The renderer also emits `artifact-manifest.json` and

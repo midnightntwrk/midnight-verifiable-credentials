@@ -137,6 +137,8 @@ An implementation aligned to this draft should provide a credential model that:
 | `VC` | A typed Midnight credential envelope with schema-defined claims and an issuer proof |
 | `VP` | A typed Midnight presentation envelope with bounded disclosures and holder-side presentation semantics |
 | `SchemaRef` | A Compact-native schema identifier containing package, schema, and version information |
+| `SchemaCapabilities` | Bounded credential-family capability metadata such as selective disclosure and predicate support |
+| `SchemaDescriptor` | Adapter/family metadata that pairs a `SchemaRef` with capabilities and an optional bounded resolver hint |
 | `VerificationMethodRef` | A Compact-native DID verification method reference shaped for on-chain Midnight DID verification |
 | `Holder binding` | The mechanism that binds a credential or presentation to a specific holder or holder-controlled secret |
 | `Body root` | The Compact-computed canonical digest over the credential or presentation body |
@@ -197,6 +199,39 @@ A credential family implementation:
 The claim-representation rules are defined in:
 
 - [`./claim-representation.md`](./claim-representation.md)
+
+### Schema Capabilities And Family Resolution
+
+`SchemaRef` is intentionally bounded and Compact-native. It identifies the
+credential family by package, schema, and version, and it is safe to carry in
+canonical VC/VP roots.
+
+Credential-family capability metadata belongs beside the schema, not inside
+individual protocol messages. Repository-aligned families and adapters:
+
+- `MUST` treat `SchemaCapabilities` / `SchemaDescriptor` as the authoritative
+  place for family capabilities such as selective disclosure, predicate proofs,
+  verifier-scoped pseudonyms, and same-holder proof support
+- `MUST NOT` trust per-message protocol feature booleans as schema authority
+  unless they are validated against a schema descriptor or an equivalent trusted
+  family registry
+- `MAY` carry protocol feature fields as compatibility transport hints while
+  existing adapters migrate
+
+Generic wallets and holders need a way to find the credential-family adapter
+for a `SchemaRef`. Because Compact does not have an unbounded URI/string
+surface, resolver information is represented as bounded adapter metadata:
+
+- `SchemaFamilyResolutionHint` carries either a no-hint sentinel or a bounded
+  resolver hint value.
+- `SchemaDescriptor` pairs the canonical `SchemaRef` with capabilities and the
+  optional resolver hint.
+- Resolver hints are not a substitute for schema validation; family packages
+  still validate concrete schema ids and versions in their own circuits.
+
+Closed ecosystems may use the no-hint sentinel when wallets already know the
+family package set out of band. Open or semi-open ecosystems should provide a
+resolver hint or a registry mapping from `SchemaRef` to family adapter.
 
 ### Compact Claim-Type Surface
 Repository-aligned direct claim layouts are constrained by the current Compact
