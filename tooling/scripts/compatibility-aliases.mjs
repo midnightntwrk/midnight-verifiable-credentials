@@ -73,6 +73,8 @@ export const historicalPackageRootShells = Object.freeze([
 export const postMovePackageAreaShells = Object.freeze([
   // These names are intentionally generic; clean-artifacts removes them only
   // when the directory contains disposable generated output.
+  // Treat this list as historical post-move residue only. New package roots
+  // belong under packages/ instead of top-level directories with these names.
   "components",
   "core",
   "infrastructure",

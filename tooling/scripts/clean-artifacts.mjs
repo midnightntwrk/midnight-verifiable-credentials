@@ -61,7 +61,7 @@ const toRelative = (absolutePath) =>
 
 const containsTrackedFile = (relativePath) => trackedPaths.has(relativePath);
 
-const isPreservedArtifact = (relativePath) =>
+const isVendorTarballCandidate = (relativePath) =>
   relativePath.startsWith(preservedDidVendorTarballPrefix) &&
   relativePath.endsWith(".tgz");
 
@@ -103,7 +103,7 @@ const isDisposableDeadShell = (absolutePath) => {
 const removePath = (absolutePath) => {
   const relativePath = toRelative(absolutePath);
 
-  if (isPreservedArtifact(relativePath) && containsTrackedFile(relativePath)) {
+  if (isVendorTarballCandidate(relativePath) && containsTrackedFile(relativePath)) {
     skippedPreserved.add(relativePath);
     return;
   }

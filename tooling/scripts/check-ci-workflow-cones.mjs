@@ -10,6 +10,8 @@ const repoRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
 const coneScript = path.join(repoRoot, "tooling/scripts/ci-build-output-groups.sh");
 const packageJson = JSON.parse(readFileSync(path.join(repoRoot, "package.json"), "utf8"));
 const workflowDir = path.join(repoRoot, ".github/workflows");
+// Cone wiring checks are intentionally pinned to the primary CI workflow;
+// root-script existence is checked across every workflow below.
 const workflowText = readFileSync(path.join(workflowDir, "ci.yml"), "utf8");
 const errors = [];
 
@@ -31,7 +33,7 @@ const tokenizeCommandTail = (tail) =>
 const npmScriptReferencesFromWorkflowText = (text) => {
   const references = [];
 
-  for (const match of text.matchAll(/\bnpm\s+(?:run|run-script)\s+([^\n|&;\\]+)/gu)) {
+  for (const match of text.matchAll(/\bnpm\s+(?:run|run-script)\s+([^\n|&;\\)<>]+)/gu)) {
     const tokens = tokenizeCommandTail(match[1]);
     const workspaceScoped = tokens.some(
       (token) =>
