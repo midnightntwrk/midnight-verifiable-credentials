@@ -363,7 +363,7 @@ export class UniversityProtocolFlowRunner {
     }
     const checkpoint = this.buildCheckpoint(restartPoint);
     checkpointStore.save(checkpoint);
-    checkpoints.push(this.summarizeCheckpoint(checkpoint));
+    checkpoints.push(summarizeUniversityProtocolCheckpoint(checkpoint));
     const restoredCheckpoint = checkpointStore.load(checkpoint.checkpointId);
     if (!restoredCheckpoint) {
       throw new Error(`Missing persisted checkpoint ${checkpoint.checkpointId}`);
@@ -503,12 +503,6 @@ export class UniversityProtocolFlowRunner {
     this.mallAgent.duplicateRejectedCount = state.mall.duplicateRejectedCount;
     this.mallAgent.verificationRejectedCount =
       state.mall.verificationRejectedCount;
-  }
-
-  private summarizeCheckpoint(
-    checkpoint: UniversityProtocolCheckpoint,
-  ): UniversityProtocolCheckpointSummary {
-    return summarizeUniversityProtocolCheckpoint(checkpoint);
   }
 
   private runIssuance(): IssuanceFlowExecutionResult {
