@@ -31,12 +31,16 @@ const vendorOnlyDidPackages = new Set([
   "@midnight-ntwrk/midnight-did-secret-storage",
 ]);
 
-const readJson = (absolutePath) => JSON.parse(readFileSync(absolutePath, "utf8"));
+const readJson = (absolutePath) =>
+  JSON.parse(readFileSync(absolutePath, "utf8"));
 const npmPackFileName = (packageName, version) =>
   `${packageName.replace(/^@/u, "").replaceAll("/", "-")}-${version}.tgz`;
 const gitValue = (args) => {
   try {
-    return execFileSync("git", args, { cwd: repoRoot, encoding: "utf8" }).trim();
+    return execFileSync("git", args, {
+      cwd: repoRoot,
+      encoding: "utf8",
+    }).trim();
   } catch {
     return null;
   }
@@ -68,7 +72,14 @@ const inspectCompatibilityAliases = () => {
         status.ok = status.actualTarget === target && status.targetExists;
       }
     } catch (error) {
-      if (!(error && typeof error === "object" && "code" in error && error.code === "ENOENT")) {
+      if (
+        !(
+          error &&
+          typeof error === "object" &&
+          "code" in error &&
+          error.code === "ENOENT"
+        )
+      ) {
         throw error;
       }
     }
@@ -76,7 +87,9 @@ const inspectCompatibilityAliases = () => {
     aliases.push(status);
 
     if (!status.present) {
-      errors.push(`Official compatibility alias is missing: ${alias} -> ${target}`);
+      errors.push(
+        `Official compatibility alias is missing: ${alias} -> ${target}`,
+      );
     } else if (!status.symlink) {
       errors.push(`Official compatibility alias is not a symlink: ${alias}`);
     } else if (status.actualTarget !== target) {
@@ -84,7 +97,9 @@ const inspectCompatibilityAliases = () => {
         `Official compatibility alias ${alias} points at ${status.actualTarget}; expected ${target}`,
       );
     } else if (!status.targetExists) {
-      errors.push(`Official compatibility alias ${alias} target is missing: ${target}`);
+      errors.push(
+        `Official compatibility alias ${alias} target is missing: ${target}`,
+      );
     }
   }
 
@@ -110,7 +125,14 @@ const inspectCompatibilityAliases = () => {
 
 const findPackageJsonFiles = (root) => {
   const results = [];
-  const skip = new Set([".git", "node_modules", "dist", "coverage", "reports", "target"]);
+  const skip = new Set([
+    ".git",
+    "node_modules",
+    "dist",
+    "coverage",
+    "reports",
+    "target",
+  ]);
 
   const walk = (directory) => {
     for (const entry of readdirSync(directory, { withFileTypes: true })) {
@@ -141,15 +163,23 @@ const loadDidPackages = () => {
   const packages = new Map();
 
   if (!existsSync(path.join(siblingDidRoot, "package.json"))) {
-    warnings.push("Sibling midnight-did checkout was not found; using vendor specs only.");
+    warnings.push(
+      "Sibling midnight-did checkout was not found; using vendor specs only.",
+    );
     return packages;
   }
 
   const rootPackage = readJson(path.join(siblingDidRoot, "package.json"));
   for (const workspacePath of rootPackage.workspaces ?? []) {
-    const packageJsonPath = path.join(siblingDidRoot, workspacePath, "package.json");
+    const packageJsonPath = path.join(
+      siblingDidRoot,
+      workspacePath,
+      "package.json",
+    );
     if (!existsSync(packageJsonPath)) {
-      warnings.push(`DID workspace package is missing package.json: ${workspacePath}`);
+      warnings.push(
+        `DID workspace package is missing package.json: ${workspacePath}`,
+      );
       continue;
     }
 
@@ -163,8 +193,12 @@ const loadDidPackages = () => {
       version: packageJson.version,
       path: workspacePath,
       tarball: npmPackFileName(packageJson.name, packageJson.version),
-      distIndex: existsSync(path.join(siblingDidRoot, workspacePath, "dist/index.js")),
-      managedIndex: existsSync(path.join(siblingDidRoot, workspacePath, "src/managed")),
+      distIndex: existsSync(
+        path.join(siblingDidRoot, workspacePath, "dist/index.js"),
+      ),
+      managedIndex: existsSync(
+        path.join(siblingDidRoot, workspacePath, "src/managed"),
+      ),
     });
   }
 
@@ -174,9 +208,32 @@ const loadDidPackages = () => {
 const didPackages = loadDidPackages();
 const compatibilityAliases = inspectCompatibilityAliases();
 const vendorTarballs = existsSync(didVendorRoot)
-  ? readdirSync(didVendorRoot).filter((entry) => entry.endsWith(".tgz")).sort()
+  ? readdirSync(didVendorRoot)
+      .filter((entry) => entry.endsWith(".tgz"))
+      .sort()
   : [];
 const references = [];
+// Keep these labels aligned with docs/guides/did-integration-modes.md.
+const didIntegrationModes = Object.freeze([
+  {
+    name: "sibling checkout",
+    purpose: "inspect ../midnight-did for local cross-repo development",
+  },
+  {
+    name: "vendored tarballs",
+    purpose: "use tooling/vendor/midnight-did/*.tgz for standalone fixtures",
+  },
+  {
+    name: "published packages",
+    purpose: "consume @midnight-ntwrk/midnight-did* packages through npm",
+  },
+]);
+const didIntegrationRepairFlow = Object.freeze([
+  "build and pack the matching midnight-did branch when package versions change",
+  "refresh tooling/vendor/midnight-did/*.tgz for vendored integration fixtures",
+  "update stale file: specs in VC package manifests to the expected tarball paths",
+  "re-run ./run.sh integration-report, then ./run.sh check-integration",
+]);
 
 for (const packageJsonPath of findPackageJsonFiles(repoRoot)) {
   const packageJson = readJson(packageJsonPath);
@@ -193,21 +250,29 @@ for (const packageJsonPath of findPackageJsonFiles(repoRoot)) {
         continue;
       }
 
-      if (dependencyName.startsWith("@midnight-ntwrk/midnight-did-credentials")) {
-        continue;
-      }
-
       if (
-        dependencyName === "@midnight-ntwrk/midnight-did-standalone-environment" ||
-        dependencyName === "@midnight-ntwrk/midnight-did-university-protocol" ||
-        dependencyName === "@midnight-ntwrk/midnight-did-university-verifier-contract"
+        dependencyName.startsWith("@midnight-ntwrk/midnight-did-credentials")
       ) {
         continue;
       }
 
-      const consumerPackageJson = path.relative(repoRoot, packageJsonPath).split(path.sep).join("/");
+      if (
+        dependencyName ===
+          "@midnight-ntwrk/midnight-did-standalone-environment" ||
+        dependencyName === "@midnight-ntwrk/midnight-did-university-protocol" ||
+        dependencyName ===
+          "@midnight-ntwrk/midnight-did-university-verifier-contract"
+      ) {
+        continue;
+      }
+
+      const consumerPackageJson = path
+        .relative(repoRoot, packageJsonPath)
+        .split(path.sep)
+        .join("/");
       const didPackage = didPackages.get(dependencyName);
-      const expectedTarball = didPackage?.tarball ?? spec.match(/([^/]+\.tgz)$/u)?.[1] ?? null;
+      const expectedTarball =
+        didPackage?.tarball ?? spec.match(/([^/]+\.tgz)$/u)?.[1] ?? null;
       const expectedFileSpec = expectedTarball
         ? `file:${path.relative(path.dirname(packageJsonPath), path.join(didVendorRoot, expectedTarball)).split(path.sep).join("/")}`
         : null;
@@ -221,23 +286,37 @@ for (const packageJsonPath of findPackageJsonFiles(repoRoot)) {
         packageJson: consumerPackageJson,
         vendorOnly,
         siblingPackagePresent: Boolean(didPackage),
-        fileSpecMatchesCurrentVersion: expectedFileSpec ? spec === expectedFileSpec : false,
-        vendorTarballPresent: expectedTarball ? vendorTarballs.includes(expectedTarball) : false,
+        fileSpecMatchesCurrentVersion: expectedFileSpec
+          ? spec === expectedFileSpec
+          : false,
+        vendorTarballPresent: expectedTarball
+          ? vendorTarballs.includes(expectedTarball)
+          : false,
       };
 
       references.push(reference);
 
       if (!didPackage && didPackages.size > 0 && !vendorOnly) {
-        errors.push(`${reference.consumer} references ${dependencyName}, but sibling DID does not provide it`);
+        errors.push(
+          `${reference.consumer} references ${dependencyName}, but sibling DID does not provide it`,
+        );
       }
 
-      if (spec.startsWith("file:") && expectedFileSpec && !reference.fileSpecMatchesCurrentVersion) {
+      if (
+        spec.startsWith("file:") &&
+        expectedFileSpec &&
+        !reference.fileSpecMatchesCurrentVersion
+      ) {
         errors.push(
           `${reference.consumer} references ${dependencyName} as ${spec}; expected ${expectedFileSpec}`,
         );
       }
 
-      if (spec.startsWith("file:") && expectedTarball && !reference.vendorTarballPresent) {
+      if (
+        spec.startsWith("file:") &&
+        expectedTarball &&
+        !reference.vendorTarballPresent
+      ) {
         errors.push(
           `${reference.consumer} references ${dependencyName}, but vendor tarball is missing: ${expectedTarball}`,
         );
@@ -256,15 +335,21 @@ const report = {
   siblingDid: {
     path: siblingDidRoot,
     present: didPackages.size > 0,
-    packages: [...didPackages.values()].sort((a, b) => a.name.localeCompare(b.name)),
+    packages: [...didPackages.values()].sort((a, b) =>
+      a.name.localeCompare(b.name),
+    ),
   },
   vendor: {
     path: didVendorRoot,
     tarballs: vendorTarballs,
   },
+  didIntegrationModes,
+  didIntegrationRepairFlow,
   compatibilityAliases,
   references: references.sort((a, b) =>
-    `${a.consumer}:${a.dependencyName}`.localeCompare(`${b.consumer}:${b.dependencyName}`),
+    `${a.consumer}:${a.dependencyName}`.localeCompare(
+      `${b.consumer}:${b.dependencyName}`,
+    ),
   ),
   errors,
   warnings,
@@ -277,6 +362,16 @@ if (json) {
   console.log(`Repository: ${report.repository}`);
   console.log(`Branch: ${report.git.branch ?? "unknown"}`);
   console.log(`Commit: ${report.git.commit ?? "unknown"}`);
+  console.log("");
+  console.log("## Supported DID Integration Modes");
+  for (const mode of report.didIntegrationModes) {
+    console.log(`- ${mode.name}: ${mode.purpose}`);
+  }
+  console.log("");
+  console.log("## Repair Flow");
+  for (const step of report.didIntegrationRepairFlow) {
+    console.log(`- ${step}`);
+  }
   console.log("");
   console.log("## Sibling DID Packages");
   if (report.siblingDid.packages.length === 0) {

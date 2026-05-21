@@ -127,7 +127,8 @@ export const targets = [
   },
   {
     name: "university-summary",
-    description: "One-page summary over university BDD, transcript, stress, and batch-sweep artifacts.",
+    description:
+      "One-page summary over university BDD, transcript, stress, and batch-sweep artifacts.",
     category: "university",
     supportsLight: true,
     artifactProfile: "managed-university-summary",
@@ -178,19 +179,22 @@ export const targets = [
   },
   {
     name: "clean-artifacts",
-    description: "Remove generated build/test artifacts without deleting dependencies, vendor tarballs, or local secrets.",
+    description:
+      "Remove generated build/test artifacts without deleting dependencies, vendor tarballs, or local secrets.",
     category: "maintenance",
     supportsLight: false,
   },
   {
     name: "integration-report",
-    description: "Print DID vendor/sibling integration readiness report.",
+    description:
+      "Print DID integration modes, repair flow, and vendor/sibling readiness report.",
     category: "maintenance",
     supportsLight: false,
   },
   {
     name: "check-integration",
-    description: "Fail if DID vendor/sibling integration wiring is stale or incomplete.",
+    description:
+      "Fail if DID vendor/sibling integration wiring or compatibility aliases are stale.",
     category: "maintenance",
     supportsLight: false,
   },
@@ -223,7 +227,15 @@ export const lightTargetNames = [
   "university-summary",
 ];
 
-const categoryOrder = ["core", "bdd", "university", "focused", "integration", "maintenance", "help"];
+const categoryOrder = [
+  "core",
+  "bdd",
+  "university",
+  "focused",
+  "integration",
+  "maintenance",
+  "help",
+];
 
 const printRows = (rows) => {
   const width = Math.max(...rows.map(([name]) => name.length));
@@ -235,11 +247,15 @@ const printRows = (rows) => {
 export const printTargetList = () => {
   stdout.write("Targets:\n");
   for (const category of categoryOrder) {
-    const categoryTargets = targets.filter((target) => target.category === category);
+    const categoryTargets = targets.filter(
+      (target) => target.category === category,
+    );
     if (categoryTargets.length === 0) {
       continue;
     }
-    printRows(categoryTargets.map((target) => [target.name, target.description]));
+    printRows(
+      categoryTargets.map((target) => [target.name, target.description]),
+    );
   }
 };
 
@@ -248,7 +264,8 @@ export const printLightTargets = () => {
 };
 
 const isDirectExecution =
-  process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+  process.argv[1] &&
+  path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 const [command, value] = process.argv.slice(2);
 
 if (isDirectExecution) {
