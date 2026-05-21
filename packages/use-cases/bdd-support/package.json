@@ -1,0 +1,30 @@
+{
+  "name": "@midnight-ntwrk/midnight-did-credentials-bdd-support",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "engines": {
+    "node": ">=24",
+    "npm": ">=10"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test:unit": "vitest run",
+    "test:ci": "npm run typecheck && npm run test:unit"
+  },
+  "files": [
+    "src/**/*.ts",
+    "README.md",
+    "package.json",
+    "tsconfig.json"
+  ],
+  "dependencies": {
+    "@serenity-js/core": "^3.34.0"
+  },
+  "midnight": {
+    "maturity": "infrastructure",
+    "packageClass": "source-only"
+  }
+}

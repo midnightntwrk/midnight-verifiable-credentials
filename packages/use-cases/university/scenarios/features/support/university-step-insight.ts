@@ -7,7 +7,7 @@ import {
   serializeStepInsightReport as serializeVersionedStepInsightReport,
   type StepInsightPayload,
   type StepInsightReport,
-} from "../../../../bdd-support/step-insight.ts";
+} from "@midnight-ntwrk/midnight-did-credentials-bdd-support";
 
 export const UNIVERSITY_STEP_INSIGHT_SCHEMA_VERSION =
   "midnight-university-step-insight.v1" as const;

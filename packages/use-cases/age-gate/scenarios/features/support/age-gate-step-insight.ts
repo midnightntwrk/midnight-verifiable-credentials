@@ -6,7 +6,7 @@ import {
   type StepInsightArtifactCollector,
   type StepInsightPayload,
   type StepInsightReport,
-} from "../../../../bdd-support/step-insight.ts";
+} from "@midnight-ntwrk/midnight-did-credentials-bdd-support";
 
 export const AGE_GATE_STEP_INSIGHT_SCHEMA_VERSION =
   "midnight-age-gate-step-insight.v1" as const;
