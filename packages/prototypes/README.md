@@ -18,8 +18,9 @@ BDD living documentation does not belong here. Concrete flow scenarios belong in
 
 ## Credential-Family Maturity
 
-Use the same maturity and package-class tags enforced by
-`npm run check:workspace-manifests`:
+Use the maturity and package-class tags enforced in package manifests by
+`npm run check:workspace-manifests`; this table mirrors the current manifest
+values for readers:
 
 | Package | Maturity | Package class | Role |
 | --- | --- | --- | --- |

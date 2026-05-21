@@ -117,6 +117,9 @@ Current boundary:
 - step insight payload construction lives in
   `features/support/university-step-insight.ts`; the step definitions should
   only provide actor intent, expected response, checks, and the DTO to display
+- shared step insight serialization and normalization live in
+  `../../bdd-support/step-insight.ts`; the use-case wrapper only fixes the
+  university schema id and exported function names
 - metric names now distinguish true timed samples (`*_ms`) from tagged counts
   (`*_count`) so the report does not present cached or categorical events as
   measured latency

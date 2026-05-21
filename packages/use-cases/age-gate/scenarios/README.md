@@ -18,6 +18,12 @@ Step notes in the Serenity report use the versioned
 - `checks`: the assertions that make the trust boundary explicit
 - `dto`: compact JSON-safe counters, roots, registry ids, and failure codes
 
+The use-case-specific wrapper lives at
+`features/support/age-gate-step-insight.ts`; shared serialization and
+normalization live at `../../bdd-support/step-insight.ts`. The `checks` entries
+are human-readable narration of assertions performed by the scenario code, not a
+separate assertion engine.
+
 ## Current scenarios
 
 The current slice now covers:
@@ -70,7 +76,8 @@ Scope rule:
   integration posture, or verifier/holder responsibilities materially
 - scenario tasks should record request/response/check/DTO insight through
   `features/support/age-gate-step-insight.ts` instead of embedding raw logs in
-  step definitions
+  step definitions; keep reusable serialization behavior in
+  `../../bdd-support/step-insight.ts`
 
 The Serenity BDD report is generated under:
 
