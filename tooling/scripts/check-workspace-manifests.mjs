@@ -176,6 +176,13 @@ const assertDistPackage = (packageJson, workspace) => {
 const assertSourceOnlyPackage = (packageJson, workspace) => {
   // Private source-only harnesses expose TypeScript sources to workspace tests;
   // they must not look like publishable dist-backed packages.
+  const forbiddenPublishHooks = [
+    "prepack",
+    "prepare",
+    "prepublish",
+    "prepublishOnly",
+  ];
+
   assert(packageJson.license === "Apache-2.0", `${workspace} must declare Apache-2.0 license`);
   assert(packageJson.private === true, `${workspace} must remain private`);
   assert(packageJson.type === "module", `${workspace} must be an ESM package`);
@@ -183,16 +190,18 @@ const assertSourceOnlyPackage = (packageJson, workspace) => {
   assert(packageJson.module === undefined, `${workspace} must not define module`);
   assert(packageJson.types === undefined, `${workspace} must not define types`);
   assert(packageJson.exports === undefined, `${workspace} must not expose a dist export map`);
-  assert(
-    packageJson.scripts?.prepack === undefined,
-    `${workspace} must not define prepack; source-only integration harnesses are not packed for distribution`,
-  );
+  for (const hook of forbiddenPublishHooks) {
+    assert(
+      packageJson.scripts?.[hook] === undefined,
+      `${workspace} must not define ${hook}; source-only integration harnesses are not packed for distribution`,
+    );
+  }
   assertArrayIncludes(packageJson.files, "src/**/*.ts", `${workspace} files`);
   assertArrayIncludes(packageJson.files, "README.md", `${workspace} files`);
   assertArrayIncludes(packageJson.files, "package.json", `${workspace} files`);
   assertArrayIncludes(packageJson.files, "tsconfig.json", `${workspace} files`);
   assert(
-    !packageJson.files?.some((entry) => entry === "dist" || entry.startsWith("dist/")),
+    !packageJson.files?.some((entry) => /^\.?\/?dist(?:\/|$|\*)/u.test(entry)),
     `${workspace} files must not include dist outputs`,
   );
 };
