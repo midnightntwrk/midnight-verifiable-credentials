@@ -3,47 +3,41 @@ import { execFileSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  buildConeScriptCommand,
+  ciBuildConeNames,
+  outputOwnersForCone,
+  requireCone,
+} from "./ci-build-cone-catalog.mjs";
 
 const repoRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
   encoding: "utf8",
 }).trim();
 
-const foundationPackages = [
-  "packages/core/primitives/credentials",
-  "packages/registry/status-registry",
-  "packages/core/capabilities/same-holder",
-  "packages/core/primitives/iso-registry",
-  "packages/components/adapters/offchain-did",
-  "packages/protocols/openid",
-];
-const familyPackages = [
-  "packages/prototypes/credential-families/birth",
-  "packages/prototypes/credential-families/birth-secret",
-  "packages/prototypes/credential-families/hello-family",
-  "packages/prototypes/credential-families/dummy-claims",
-  "packages/prototypes/credential-families/mixed-claims",
-  "packages/prototypes/credential-families/university-diploma",
-];
-const ageGatePackages = ["packages/use-cases/age-gate/contract", "packages/use-cases/hello-verifier/contract"];
-const protocolPackages = ["packages/components/orchestration/protocol"];
+const dedupe = (values) => [...new Set(values)];
+const coneInputPackages = (name) => [...requireCone(name).inputPackages];
+const coneOutputOwners = (name) => outputOwnersForCone(requireCone(name));
+const unionOfConeInputs = (...names) =>
+  dedupe(names.flatMap((name) => coneInputPackages(name)));
+
+const foundationOutputOwners = coneOutputOwners("foundation");
+const familyOutputOwners = coneOutputOwners("birth-family");
+const ageGateOutputOwners = coneOutputOwners("age-gate");
+const protocolOutputOwners = coneOutputOwners("protocol");
+const lightConeInputs = unionOfConeInputs("foundation", "birth-family");
+const ageGateConeInputs = unionOfConeInputs("age-gate");
 
 export const profileDefinitions = {
   "managed-light": {
     buildCommand: "npm run build:light",
-    managedPackages: [
-      "packages/core/primitives/credentials",
-      "packages/registry/status-registry",
-      "packages/core/capabilities/same-holder",
-      "packages/core/primitives/iso-registry",
-      "packages/prototypes/credential-families/birth",
-      "packages/prototypes/credential-families/birth-secret",
-      "packages/prototypes/credential-families/hello-family",
-    ],
+    ciBuildCones: ["foundation", "birth-family"],
+    managedPackages: [...foundationOutputOwners, ...familyOutputOwners],
   },
   "managed-all": {
     buildCommand: "npm run build:all",
+    ciBuildCones: ["age-gate"],
     extends: ["managed-light"],
-    managedPackages: ageGatePackages,
+    managedPackages: ageGateOutputOwners,
   },
   "managed-revocation": {
     buildCommand: "npm run build:revocation",
@@ -58,6 +52,8 @@ export const profileDefinitions = {
   },
   "managed-hello-smoke": {
     buildCommand: "npm run build:starter-smoke-prereqs",
+    // This smoke readiness profile is narrower than the build cones: it checks
+    // only artifacts consumed by the hello lane after the cone build runs.
     managedPackages: [
       "packages/core/primitives/credentials",
       "packages/registry/status-registry",
@@ -151,12 +147,14 @@ export const profileDefinitions = {
   },
   light: {
     buildCommand: "npm run build:light",
-    distPackages: [...foundationPackages, ...familyPackages],
+    ciBuildCones: ["foundation", "birth-family"],
+    distPackages: lightConeInputs,
   },
   all: {
     buildCommand: "npm run build:all",
+    ciBuildCones: ["age-gate", "protocol"],
     extends: ["light"],
-    distPackages: [...ageGatePackages, ...protocolPackages],
+    distPackages: [...ageGateOutputOwners, ...protocolOutputOwners],
   },
   revocation: {
     buildCommand: "npm run build:revocation",
@@ -171,12 +169,16 @@ export const profileDefinitions = {
   },
   "integration-demo-contract": {
     buildCommand: "npm run build:integration-prereqs:demo-contract",
-    distPackages: [...foundationPackages, ...familyPackages, "packages/use-cases/age-gate/contract"],
+    ciBuildCones: ["foundation", "birth-family", "age-gate"],
+    // This follows the age-gate cone inputs, so the readiness profile also
+    // checks hello-verifier outputs produced by the integration prereq build.
+    distPackages: ageGateConeInputs,
   },
   "integration-protocol": {
     buildCommand: "npm run build:integration-prereqs:protocol",
+    ciBuildCones: ["protocol"],
     extends: ["integration-demo-contract"],
-    distPackages: protocolPackages,
+    distPackages: protocolOutputOwners,
   },
 };
 
@@ -355,6 +357,7 @@ const checkCatalog = () => {
   const errors = [];
   const rootPackage = readJson("package.json");
   const scripts = rootPackage.scripts ?? {};
+  const knownConeNames = new Set(ciBuildConeNames);
 
   for (const [profileName, profile] of Object.entries(profileDefinitions)) {
     if (!profile.buildCommand) {
@@ -364,6 +367,48 @@ const checkCatalog = () => {
     const scriptName = profile.buildCommand?.match(/^npm run ([^\s]+)/u)?.[1];
     if (scriptName && !scripts[scriptName]) {
       errors.push(`${profileName} references missing root script: ${scriptName}`);
+    }
+
+    const coneOutputOwnerSet = new Set();
+    const coneInputPackageSet = new Set();
+    for (const coneName of profile.ciBuildCones ?? []) {
+      if (!knownConeNames.has(coneName)) {
+        errors.push(`${profileName} references unknown CI build cone: ${coneName}`);
+        continue;
+      }
+
+      for (const outputOwner of coneOutputOwners(coneName)) {
+        coneOutputOwnerSet.add(outputOwner);
+      }
+      for (const inputPackage of coneInputPackages(coneName)) {
+        coneInputPackageSet.add(inputPackage);
+      }
+
+      const coneScriptName = `build:cone:${coneName}`;
+      const expectedConeScript = buildConeScriptCommand(coneName);
+      if (scripts[coneScriptName] !== expectedConeScript) {
+        errors.push(
+          `${profileName} references CI build cone '${coneName}' but root script '${coneScriptName}' is not catalog-backed`,
+        );
+      }
+    }
+
+    if ((profile.ciBuildCones ?? []).length > 0) {
+      for (const packagePath of profile.managedPackages ?? []) {
+        if (!coneOutputOwnerSet.has(packagePath)) {
+          errors.push(
+            `${profileName} managed package is not produced by its declared CI build cones: ${packagePath}`,
+          );
+        }
+      }
+
+      for (const packagePath of profile.distPackages ?? []) {
+        if (!coneInputPackageSet.has(packagePath)) {
+          errors.push(
+            `${profileName} dist package is not included in its declared CI build cone inputs: ${packagePath}`,
+          );
+        }
+      }
     }
 
     try {

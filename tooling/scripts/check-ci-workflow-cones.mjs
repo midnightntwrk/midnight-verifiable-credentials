@@ -26,6 +26,10 @@ const workflowDir = path.join(repoRoot, ".github/workflows");
 // Cone wiring checks are intentionally pinned to the primary CI workflow;
 // root-script existence is checked across every workflow below.
 const workflowText = readFileSync(path.join(workflowDir, "ci.yml"), "utf8");
+const managedArtifactCatalogText = readFileSync(
+  path.join(repoRoot, "tooling/scripts/managed-artifact-catalog.mjs"),
+  "utf8",
+);
 const errors = [];
 
 const quoteForBash = (value) => `'${value.replaceAll("'", "'\\''")}'`;
@@ -260,6 +264,18 @@ const groups = readShellList("ci_build_output_groups");
 assertNpmScriptReferenceParser();
 assertWorkflowNpmScriptsExist();
 assertWorkflowUsesChangeClassifierCatalog();
+const managedArtifactConeImport = managedArtifactCatalogText.match(
+  /import\s+\{(?<imports>[\s\S]*?)\}\s+from\s+["']\.\/ci-build-cone-catalog\.mjs["']/u,
+);
+if (
+  !managedArtifactConeImport ||
+  !/\boutputOwnersForCone\b/u.test(managedArtifactConeImport.groups.imports) ||
+  !/\brequireCone\b/u.test(managedArtifactConeImport.groups.imports)
+) {
+  errors.push(
+    "managed-artifact-catalog.mjs must import outputOwnersForCone and requireCone from ci-build-cone-catalog.mjs",
+  );
+}
 failOnErrors();
 assertSameSet({
   actual: groups,
