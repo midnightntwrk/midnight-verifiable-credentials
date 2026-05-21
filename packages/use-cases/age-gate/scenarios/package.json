@@ -16,10 +16,11 @@
     "test:execute:negative": "cucumber-js --config cucumber.cjs --tags @negative",
     "report:setup": "serenity-bdd update",
     "test:report": "npm run report:setup && serenity-bdd run --features features --output target/site/serenity",
+    "test:step-insight:contract": "npx ts-node-esm ./scripts/check-step-insight-contract.ts",
     "test:smoke": "npm run clean && npm run test:execute:smoke && npm run test:report",
     "test:negative": "npm run clean && npm run test:execute:negative && npm run test:report",
     "test:all": "npm run clean && npm run test:execute && npm run test:report",
-    "test:ci": "npm run test:all"
+    "test:ci": "npm run test:step-insight:contract && npm run test:all"
   },
   "dependencies": {
     "@cucumber/cucumber": "^11.3.0",

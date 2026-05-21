@@ -10,6 +10,14 @@ small number of curated use-case scenarios that generate Serenity/JS-compatible
 outcomes and Serenity BDD reports as living documentation for engineers and
 integrators.
 
+Step notes in the Serenity report use the versioned
+`midnight-age-gate-step-insight.v1` shape:
+
+- `request`: the human intent behind the scenario action
+- `response`: the simulator or verifier outcome the reader should expect
+- `checks`: the assertions that make the trust boundary explicit
+- `dto`: compact JSON-safe counters, roots, registry ids, and failure codes
+
 ## Current scenarios
 
 The current slice now covers:
@@ -49,11 +57,20 @@ npm run test:bdd:all
 Those commands reuse existing VC build artifacts when they are already present
 and only fall back to the shared VC build prerequisites when they are missing.
 
+Contract check:
+
+```bash
+npm run test:step-insight:contract -w ./packages/use-cases/age-gate/scenarios
+```
+
 Scope rule:
 
 - this workspace is living documentation, not a second full regression matrix
 - new scenarios should only land when they clarify trust boundaries,
   integration posture, or verifier/holder responsibilities materially
+- scenario tasks should record request/response/check/DTO insight through
+  `features/support/age-gate-step-insight.ts` instead of embedding raw logs in
+  step definitions
 
 The Serenity BDD report is generated under:
 
