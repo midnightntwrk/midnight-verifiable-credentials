@@ -136,6 +136,21 @@ jobs:
       - name: Run BDD smoke lane
         run: npm run test:bdd:smoke
 
+      - name: Upload BDD summary artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bdd-summary-artifacts
+          path: |
+            packages/use-cases/age-gate/scenarios/target/cucumber-report.json
+            packages/use-cases/age-gate/scenarios/target/summary.json
+            packages/use-cases/age-gate/scenarios/target/summary.md
+            packages/use-cases/university/scenarios/target/cucumber-report.json
+            packages/use-cases/university/scenarios/target/summary.json
+            packages/use-cases/university/scenarios/target/summary.md
+          if-no-files-found: warn
+          retention-days: 14
+
   prepare-compact:
     name: Prepare Compact Toolchain
     runs-on: ubuntu-latest
