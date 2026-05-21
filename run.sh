@@ -128,7 +128,11 @@ case "$target" in
     ;;
   clean-artifacts)
     run_common_ensure_node
-    node ./tooling/scripts/clean-artifacts.mjs "${forward_args[@]}"
+    if [[ ${#forward_args[@]} -gt 0 ]]; then
+      node ./tooling/scripts/clean-artifacts.mjs "${forward_args[@]}"
+    else
+      node ./tooling/scripts/clean-artifacts.mjs
+    fi
     exit 0
     ;;
   integration-report)
