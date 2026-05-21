@@ -127,6 +127,33 @@ assert.ok(
   "targets --light should not warn",
 );
 
+const integrationReportJsonResult = runWithTimeout([
+  "node",
+  "./tooling/scripts/report-did-integration.mjs",
+  "--json",
+]);
+assert.equal(
+  integrationReportJsonResult.status,
+  0,
+  "DID integration JSON report should exit successfully",
+);
+const integrationReportJson = JSON.parse(integrationReportJsonResult.stdout);
+assert.deepEqual(
+  integrationReportJson.didIntegrationModes.map((mode) => mode.name),
+  ["sibling checkout", "vendored tarballs", "published packages"],
+  "DID integration JSON report should include supported mode names",
+);
+assert.deepEqual(
+  integrationReportJson.didIntegrationRepairFlow,
+  [
+    "build and pack the matching midnight-did branch when package versions change",
+    "refresh tooling/vendor/midnight-did/*.tgz for vendored integration fixtures",
+    "update stale file: specs in VC package manifests to the expected tarball paths",
+    "re-run ./run.sh integration-report, then ./run.sh check-integration",
+  ],
+  "DID integration JSON report should include repair-flow guidance",
+);
+
 const cleanArtifactsFixtureRoot = mkdtempSync(
   path.join(tmpdir(), "vc-run-target-catalog-clean-artifacts-"),
 );
@@ -140,7 +167,10 @@ const midnightDbProbeDir = path.join(
   ".midnight-db",
   "run-target-catalog-probe",
 );
-const legacyShellDir = path.join(cleanArtifactsFixtureRoot, "credentials-birth");
+const legacyShellDir = path.join(
+  cleanArtifactsFixtureRoot,
+  "credentials-birth",
+);
 const legacyShellSrcDir = path.join(legacyShellDir, "src");
 const legacyShellManagedDir = path.join(legacyShellSrcDir, "managed");
 const movedPackageAreaShellDir = path.join(cleanArtifactsFixtureRoot, "core");

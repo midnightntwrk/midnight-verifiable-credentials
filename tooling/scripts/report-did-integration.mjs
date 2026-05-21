@@ -213,6 +213,7 @@ const vendorTarballs = existsSync(didVendorRoot)
       .sort()
   : [];
 const references = [];
+// Keep these labels aligned with docs/guides/did-integration-modes.md.
 const didIntegrationModes = Object.freeze([
   {
     name: "sibling checkout",
