@@ -248,6 +248,11 @@ file splits, BDD readability, and maturity tags.
      `ci-change-classification-catalog`, and
      `legacy-wrapper-runner-flattening` after runner/npm mapping becomes
      authoritative
+   - 2026-05-21 delivery branch:
+     `codex/vc-runner-catalog-authority`
+   - centralizes runner target script metadata, CI build-cone package/output
+     lists, root `build:cone:*` commands, and workflow change-classification
+     patterns in checked tooling catalogs
    - validation: `npm run check:run-target-catalog`,
      `npm run check:ci-build-cones`, `npm run check:ci-workflow-cones`,
      `./run.sh targets`

@@ -15,6 +15,7 @@ export const targets = [
     description: "Package-boundary checks and lint.",
     category: "core",
     supportsLight: false,
+    script: "ci:lint",
   },
   {
     name: "typecheck",
@@ -22,12 +23,16 @@ export const targets = [
     category: "core",
     supportsLight: true,
     artifactProfile: "managed-light",
+    script: "ci:typecheck:from-artifacts",
+    lightScript: "typecheck:light:from-artifacts",
   },
   {
     name: "build",
     description: "Build lanes.",
     category: "core",
     supportsLight: true,
+    script: "build:all",
+    lightScript: "build:light",
   },
   {
     name: "test",
@@ -35,36 +40,43 @@ export const targets = [
     category: "core",
     supportsLight: true,
     artifactProfile: "managed-light",
+    script: "test:all:from-artifacts",
+    lightScript: "test:light:from-artifacts",
   },
   {
     name: "bdd",
     description: "Serenity/JS BDD smoke scenarios.",
     category: "bdd",
     supportsLight: false,
+    script: "test:bdd:smoke",
   },
   {
     name: "bdd-negative",
     description: "Serenity/JS BDD negative-path scenarios.",
     category: "bdd",
     supportsLight: false,
+    script: "test:bdd:negative",
   },
   {
     name: "bdd-all",
     description: "Full Serenity/JS BDD scenario set.",
     category: "bdd",
     supportsLight: false,
+    script: "test:bdd:all",
   },
   {
     name: "university-bdd",
     description: "Executable university diploma BDD scenarios.",
     category: "university",
     supportsLight: false,
+    script: "ci:university-bdd",
   },
   {
     name: "university-bdd-proof-server",
     description: "University diploma BDD with proof-server DTO recording.",
     category: "university",
     supportsLight: false,
+    script: "ci:university-bdd:proof-server",
   },
   {
     name: "university-bdd-standalone",
@@ -72,30 +84,35 @@ export const targets = [
     category: "university",
     supportsLight: false,
     requiresDocker: true,
+    script: "ci:university-bdd:standalone",
   },
   {
     name: "university-batch-sweep",
     description: "Issuance batch-size sweep with summary artifacts.",
     category: "university",
     supportsLight: false,
+    script: "ci:university-batch-sweep",
   },
   {
     name: "university-ci-matrix",
     description: "Validate university lane/script/workflow matrix wiring.",
     category: "university",
     supportsLight: false,
+    script: "ci:university-ci-matrix",
   },
   {
     name: "university-data-profiles",
     description: "Validate committed readable/stress university data profiles.",
     category: "university",
     supportsLight: false,
+    script: "ci:university-data-profiles",
   },
   {
     name: "university-policy-catalog",
     description: "Validate university verifier policy preset coverage.",
     category: "university",
     supportsLight: false,
+    script: "ci:university-policy-catalog",
   },
   {
     name: "university-protocol",
@@ -103,6 +120,8 @@ export const targets = [
     category: "university",
     supportsLight: true,
     artifactProfile: "managed-university-protocol",
+    script: "ci:university-protocol",
+    lightScript: "ci:university-protocol:from-artifacts",
   },
   {
     name: "university-protocol-export",
@@ -110,6 +129,8 @@ export const targets = [
     category: "university",
     supportsLight: true,
     artifactProfile: "managed-university-protocol-export",
+    script: "ci:university-protocol:export",
+    lightScript: "ci:university-protocol:export:from-artifacts",
   },
   {
     name: "university-protocol-cohort",
@@ -117,6 +138,8 @@ export const targets = [
     category: "university",
     supportsLight: true,
     artifactProfile: "managed-university-protocol-cohort",
+    script: "ci:university-protocol:cohort",
+    lightScript: "ci:university-protocol:cohort:from-artifacts",
   },
   {
     name: "university-protocol-stress",
@@ -124,6 +147,8 @@ export const targets = [
     category: "university",
     supportsLight: true,
     artifactProfile: "managed-university-protocol-stress",
+    script: "ci:university-protocol:stress",
+    lightScript: "ci:university-protocol:stress:from-artifacts",
   },
   {
     name: "university-summary",
@@ -132,6 +157,8 @@ export const targets = [
     category: "university",
     supportsLight: true,
     artifactProfile: "managed-university-summary",
+    script: "ci:university-summary",
+    lightScript: "ci:university-summary:from-artifacts",
   },
   {
     name: "hello-smoke",
@@ -139,6 +166,8 @@ export const targets = [
     category: "focused",
     supportsLight: true,
     artifactProfile: "managed-hello-smoke",
+    script: "ci:hello-smoke",
+    lightScript: "ci:hello-smoke:from-artifacts",
   },
   {
     name: "dummy-claims-lab",
@@ -146,6 +175,8 @@ export const targets = [
     category: "focused",
     supportsLight: true,
     artifactProfile: "managed-dummy-claims-lab",
+    script: "ci:dummy-claims-lab",
+    lightScript: "ci:dummy-claims-lab:from-artifacts",
   },
   {
     name: "revocation",
@@ -153,6 +184,7 @@ export const targets = [
     category: "focused",
     supportsLight: false,
     artifactProfile: "managed-revocation",
+    script: "ci:revocation",
   },
   {
     name: "integration",
@@ -160,6 +192,7 @@ export const targets = [
     category: "integration",
     supportsLight: false,
     requiresDocker: true,
+    script: "ci:integration",
   },
   {
     name: "integration-demo-contract",
@@ -168,6 +201,8 @@ export const targets = [
     supportsLight: false,
     requiresDocker: true,
     artifactProfile: "integration-demo-contract",
+    script: "ci:integration:demo-contract",
+    fromArtifactsScript: "ci:integration:demo-contract:from-artifacts",
   },
   {
     name: "integration-protocol",
@@ -176,6 +211,8 @@ export const targets = [
     supportsLight: false,
     requiresDocker: true,
     artifactProfile: "integration-protocol",
+    script: "ci:integration:protocol",
+    fromArtifactsScript: "ci:integration:protocol:from-artifacts",
   },
   {
     name: "clean-artifacts",
@@ -183,6 +220,7 @@ export const targets = [
       "Remove generated build/test artifacts without deleting dependencies, vendor tarballs, or local secrets.",
     category: "maintenance",
     supportsLight: false,
+    script: "clean:artifacts",
   },
   {
     name: "integration-report",
@@ -190,6 +228,7 @@ export const targets = [
       "Print DID integration modes, repair flow, and vendor/sibling readiness report.",
     category: "maintenance",
     supportsLight: false,
+    script: "report:did-integration",
   },
   {
     name: "check-integration",
@@ -197,6 +236,7 @@ export const targets = [
       "Fail if DID vendor/sibling integration wiring or compatibility aliases are stale.",
     category: "maintenance",
     supportsLight: false,
+    script: "check:did-integration",
   },
   {
     name: "targets",
@@ -213,19 +253,21 @@ export const targets = [
 ];
 
 export const targetNames = new Set(targets.map((target) => target.name));
-export const lightTargetNames = [
-  "full",
-  "build",
-  "typecheck",
-  "test",
-  "hello-smoke",
-  "dummy-claims-lab",
-  "university-protocol",
-  "university-protocol-export",
-  "university-protocol-cohort",
-  "university-protocol-stress",
-  "university-summary",
-];
+export const lightTargetNames = targets
+  .filter((target) => target.supportsLight)
+  .map((target) => target.name);
+export const targetsByName = new Map(
+  targets.map((target) => [target.name, target]),
+);
+export const targetScriptNames = [
+  ...new Set(
+    targets.flatMap((target) =>
+      [target.script, target.lightScript, target.fromArtifactsScript].filter(
+        Boolean,
+      ),
+    ),
+  ),
+].sort();
 
 const categoryOrder = [
   "core",
@@ -272,6 +314,29 @@ if (isDirectExecution) {
   switch (command) {
     case "--json":
       stdout.write(`${JSON.stringify({ targets }, null, 2)}\n`);
+      break;
+    case "--scripts-json":
+      stdout.write(
+        `${JSON.stringify(
+          {
+            targetScripts: targets
+              .filter(
+                (target) =>
+                  target.script ||
+                  target.lightScript ||
+                  target.fromArtifactsScript,
+              )
+              .map(({ name, script, lightScript, fromArtifactsScript }) => ({
+                name,
+                script,
+                lightScript,
+                fromArtifactsScript,
+              })),
+          },
+          null,
+          2,
+        )}\n`,
+      );
       break;
     case "--names":
       stdout.write(`${targets.map((target) => target.name).join("\n")}\n`);
