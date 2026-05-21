@@ -328,6 +328,17 @@ file splits, BDD readability, and maturity tags.
       `npm run check:workspace-manifests`, `npm run check:vc-surface-discipline`,
       `npm run docs:links`
 
+11. `vc-bdd-summary-first-output`
+    - covers `bdd-summary-first-output`
+    - 2026-05-22 delivery branch:
+      `codex/vc-bdd-summary-first-output`
+    - emits Cucumber JSON during BDD execution, then writes compact
+      `target/summary.json` and `target/summary.md` artifacts from the shared
+      BDD support package before the heavier Serenity HTML aggregation step
+    - validation: `npm run test:ci -w ./packages/use-cases/bdd-support`,
+      `npm run test:bdd:smoke`, `npm run test:bdd:university`,
+      `npm run docs:links`
+
 `ci-setup-action-consolidation` is intentionally deferred beyond the first 10
 slices because it is lower risk after runner, cone, and package-policy catalogs
 stop drifting.
