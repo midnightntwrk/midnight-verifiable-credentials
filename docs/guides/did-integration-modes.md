@@ -9,11 +9,11 @@ tradeoffs without changing package source.
 
 ## Mode Matrix
 
-| Mode               | Purpose                                             | Source of DID Packages              | Validation                                 |
-| ------------------ | --------------------------------------------------- | ----------------------------------- | ------------------------------------------ |
-| Sibling checkout   | Local DID + VC development in adjacent repositories | `../midnight-did`                   | `./run.sh integration-report`              |
-| Vendored tarballs  | Reproducible standalone fixtures and CI paths       | `tooling/vendor/midnight-did/*.tgz` | `./run.sh check-integration`               |
-| Published packages | Normal downstream package consumption               | npm registry package specs          | package manager install plus package tests |
+| Mode               | Purpose                                             | Source of DID Packages              | Validation                                                                                    |
+| ------------------ | --------------------------------------------------- | ----------------------------------- | --------------------------------------------------------------------------------------------- |
+| Sibling checkout   | Local DID + VC development in adjacent repositories | `../midnight-did`                   | `./run.sh integration-report`                                                                 |
+| Vendored tarballs  | Reproducible standalone fixtures and CI paths       | `tooling/vendor/midnight-did/*.tgz` | `./run.sh check-integration`                                                                  |
+| Published packages | Normal downstream package consumption               | npm registry package specs          | package manager install plus package tests; no dedicated published-consumer smoke fixture yet |
 
 ## Sibling Checkout Mode
 
@@ -88,6 +88,11 @@ Do not import from a sibling repository path, generated `dist/` path, or UI
 service path. If a VC use case needs resolver service behavior, put that
 adapter in the owning integration package rather than reintroducing resolver
 service code into the VC package graph.
+
+There is no dedicated published-consumer smoke fixture in this repository yet.
+Until that exists, validate published-package mode with the consuming project's
+package-manager install and package tests, plus this repository's normal
+package surface checks before publishing artifacts.
 
 ## Compatibility Alias Lifecycle
 

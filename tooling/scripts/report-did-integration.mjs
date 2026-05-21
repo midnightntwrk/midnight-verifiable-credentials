@@ -213,6 +213,26 @@ const vendorTarballs = existsSync(didVendorRoot)
       .sort()
   : [];
 const references = [];
+const didIntegrationModes = Object.freeze([
+  {
+    name: "sibling checkout",
+    purpose: "inspect ../midnight-did for local cross-repo development",
+  },
+  {
+    name: "vendored tarballs",
+    purpose: "use tooling/vendor/midnight-did/*.tgz for standalone fixtures",
+  },
+  {
+    name: "published packages",
+    purpose: "consume @midnight-ntwrk/midnight-did* packages through npm",
+  },
+]);
+const didIntegrationRepairFlow = Object.freeze([
+  "build and pack the matching midnight-did branch when package versions change",
+  "refresh tooling/vendor/midnight-did/*.tgz for vendored integration fixtures",
+  "update stale file: specs in VC package manifests to the expected tarball paths",
+  "re-run ./run.sh integration-report, then ./run.sh check-integration",
+]);
 
 for (const packageJsonPath of findPackageJsonFiles(repoRoot)) {
   const packageJson = readJson(packageJsonPath);
@@ -322,6 +342,8 @@ const report = {
     path: didVendorRoot,
     tarballs: vendorTarballs,
   },
+  didIntegrationModes,
+  didIntegrationRepairFlow,
   compatibilityAliases,
   references: references.sort((a, b) =>
     `${a.consumer}:${a.dependencyName}`.localeCompare(
@@ -341,29 +363,14 @@ if (json) {
   console.log(`Commit: ${report.git.commit ?? "unknown"}`);
   console.log("");
   console.log("## Supported DID Integration Modes");
-  console.log(
-    "- sibling checkout: inspect ../midnight-did for local cross-repo development",
-  );
-  console.log(
-    "- vendored tarballs: use tooling/vendor/midnight-did/*.tgz for standalone fixtures",
-  );
-  console.log(
-    "- published packages: consume @midnight-ntwrk/midnight-did* packages through npm",
-  );
+  for (const mode of report.didIntegrationModes) {
+    console.log(`- ${mode.name}: ${mode.purpose}`);
+  }
   console.log("");
   console.log("## Repair Flow");
-  console.log(
-    "- build and pack the matching midnight-did branch when package versions change",
-  );
-  console.log(
-    "- refresh tooling/vendor/midnight-did/*.tgz for vendored integration fixtures",
-  );
-  console.log(
-    "- update stale file: specs in VC package manifests to the expected tarball paths",
-  );
-  console.log(
-    "- re-run ./run.sh integration-report, then ./run.sh check-integration",
-  );
+  for (const step of report.didIntegrationRepairFlow) {
+    console.log(`- ${step}`);
+  }
   console.log("");
   console.log("## Sibling DID Packages");
   if (report.siblingDid.packages.length === 0) {
