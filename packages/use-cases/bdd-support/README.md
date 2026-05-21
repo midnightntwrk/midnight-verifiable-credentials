@@ -37,6 +37,11 @@ export local function names for their step definitions.
 Scenario packages should emit Cucumber JSON to `target/cucumber-report.json` and
 write summaries to `target/summary.json` and `target/summary.md`.
 
+`src/bdd-pipeline.ts` owns the small execution wrapper that runs clean,
+Cucumber execution, summary generation, and Serenity aggregation. It still runs
+summary/report generation after a failing Cucumber run and then exits with the
+original scenario failure code.
+
 ## Consumers
 
 Scenario packages execute this source-only package directly through

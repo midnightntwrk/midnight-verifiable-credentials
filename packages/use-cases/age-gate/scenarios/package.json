@@ -18,9 +18,9 @@
     "test:report": "npm run report:setup && serenity-bdd run --features features --output target/site/serenity",
     "summary": "npx ts-node-esm ./scripts/build-bdd-summary.ts",
     "test:step-insight:contract": "npx ts-node-esm ./scripts/check-step-insight-contract.ts",
-    "test:smoke": "npm run clean && npm run test:execute:smoke && npm run summary && npm run test:report",
-    "test:negative": "npm run clean && npm run test:execute:negative && npm run summary && npm run test:report",
-    "test:all": "npm run clean && npm run test:execute && npm run summary && npm run test:report",
+    "test:smoke": "npx ts-node-esm ./scripts/run-bdd-pipeline.ts test:execute:smoke",
+    "test:negative": "npx ts-node-esm ./scripts/run-bdd-pipeline.ts test:execute:negative",
+    "test:all": "npx ts-node-esm ./scripts/run-bdd-pipeline.ts test:execute",
     "test:ci": "npm run test:step-insight:contract && npm run test:all"
   },
   "dependencies": {

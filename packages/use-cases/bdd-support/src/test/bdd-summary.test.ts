@@ -1,4 +1,4 @@
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 
@@ -6,6 +6,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   buildBddSummary,
+  buildBddSummaryFromCucumberJsonFile,
   renderBddSummaryMarkdown,
   writeBddSummaryArtifacts,
   type CucumberJsonFeature,
@@ -113,6 +114,34 @@ describe("BDD summary support", () => {
       await expect(
         readFile(path.join(targetDir, "summary.md"), "utf8"),
       ).resolves.toContain("Age Gate BDD Summary");
+    } finally {
+      await rm(targetDir, { recursive: true, force: true });
+    }
+  });
+
+  it("reads Cucumber JSON files and rejects non-array payloads", async () => {
+    const targetDir = await mkdtemp(path.join(os.tmpdir(), "bdd-summary-"));
+    try {
+      const reportPath = path.join(targetDir, "cucumber-report.json");
+      await writeFile(reportPath, JSON.stringify(cucumberJsonFixture), "utf8");
+
+      await expect(
+        buildBddSummaryFromCucumberJsonFile({
+          title: "Age Gate BDD Summary",
+          cucumberJsonPath: reportPath,
+        }),
+      ).resolves.toMatchObject({
+        totals: { features: 1, scenarios: 2 },
+      });
+
+      const invalidReportPath = path.join(targetDir, "invalid-report.json");
+      await writeFile(invalidReportPath, JSON.stringify({}), "utf8");
+      await expect(
+        buildBddSummaryFromCucumberJsonFile({
+          title: "Invalid BDD Summary",
+          cucumberJsonPath: invalidReportPath,
+        }),
+      ).rejects.toThrow(/Expected Cucumber JSON array/);
     } finally {
       await rm(targetDir, { recursive: true, force: true });
     }
