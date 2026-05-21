@@ -93,7 +93,7 @@ Use it when a task starts from an independent `midnight-verifiable-credentials` 
 | `packages/prototypes/` | Reference credential-family packages and experimental/lab surfaces. |
 | `packages/use-cases/` | Concrete runnable flows, BDD living documentation, demo contracts, and university scenarios. |
 | `tooling/` | Build, artifact, vendor, runner, scaffolding, and package-boundary scripts. |
-| `assets/` | Static explanatory assets used by docs/use cases. |
+| `docs/guides/assets/` | Static explanatory assets used by human-facing guides. |
 
 BDD belongs under `packages/use-cases/`, not under low-level package tests or prototype-only directories.
 
