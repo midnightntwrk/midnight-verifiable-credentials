@@ -125,7 +125,7 @@ export const buildConeCommandArgs = (cone) => [
 export const buildConeScriptCommand = (name) =>
   `node ./tooling/scripts/ci-build-cone-catalog.mjs --exec-build ${name}`;
 
-const requireCone = (name) => {
+export const requireCone = (name) => {
   const cone = ciBuildConeByName.get(name);
   if (!cone) {
     throw new Error(`Unknown CI build cone: ${name}`);

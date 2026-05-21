@@ -264,9 +264,14 @@ const groups = readShellList("ci_build_output_groups");
 assertNpmScriptReferenceParser();
 assertWorkflowNpmScriptsExist();
 assertWorkflowUsesChangeClassifierCatalog();
-if (!managedArtifactCatalogText.includes("ci-build-cone-catalog.mjs")) {
+if (
+  !/from\s+["']\.\/ci-build-cone-catalog\.mjs["']/u.test(
+    managedArtifactCatalogText,
+  ) ||
+  !managedArtifactCatalogText.includes("outputOwnersForCone")
+) {
   errors.push(
-    "managed-artifact-catalog.mjs must derive package groups from ci-build-cone-catalog.mjs",
+    "managed-artifact-catalog.mjs must import ci-build-cone-catalog.mjs and derive package groups from its output owner helpers",
   );
 }
 failOnErrors();

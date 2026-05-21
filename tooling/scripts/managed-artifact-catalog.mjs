@@ -5,35 +5,27 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   buildConeScriptCommand,
-  ciBuildConeByName,
   ciBuildConeNames,
   outputOwnersForCone,
+  requireCone,
 } from "./ci-build-cone-catalog.mjs";
 
 const repoRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
   encoding: "utf8",
 }).trim();
 
-const requireCone = (name) => {
-  const cone = ciBuildConeByName.get(name);
-  if (!cone) {
-    throw new Error(`Unknown CI build cone: ${name}`);
-  }
-  return cone;
-};
-
 const dedupe = (values) => [...new Set(values)];
 const coneInputPackages = (name) => [...requireCone(name).inputPackages];
 const coneOutputOwners = (name) => outputOwnersForCone(requireCone(name));
-const coneInputPackagesThrough = (...names) =>
+const unionOfConeInputs = (...names) =>
   dedupe(names.flatMap((name) => coneInputPackages(name)));
 
 const foundationPackages = coneOutputOwners("foundation");
 const familyPackages = coneOutputOwners("birth-family");
 const ageGatePackages = coneOutputOwners("age-gate");
 const protocolPackages = coneOutputOwners("protocol");
-const lightConePackages = coneInputPackagesThrough("birth-family");
-const ageGateConePackages = coneInputPackagesThrough("age-gate");
+const lightConePackages = unionOfConeInputs("birth-family");
+const ageGateConePackages = unionOfConeInputs("age-gate");
 
 export const profileDefinitions = {
   "managed-light": {
@@ -60,7 +52,8 @@ export const profileDefinitions = {
   },
   "managed-hello-smoke": {
     buildCommand: "npm run build:starter-smoke-prereqs",
-    ciBuildCones: ["foundation", "birth-family", "age-gate"],
+    // This smoke readiness profile is narrower than the build cones: it checks
+    // only artifacts consumed by the hello lane after the cone build runs.
     managedPackages: [
       "packages/core/primitives/credentials",
       "packages/registry/status-registry",
@@ -72,7 +65,6 @@ export const profileDefinitions = {
   },
   "managed-dummy-claims-lab": {
     buildCommand: "npm run build:dummy-claims-lab-prereqs",
-    ciBuildCones: ["foundation", "birth-family", "age-gate"],
     extends: ["managed-hello-smoke"],
     managedPackages: ["packages/prototypes/credential-families/dummy-claims"],
   },
