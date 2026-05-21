@@ -61,7 +61,9 @@ It must expose:
 - `private: true`
 - `type: "module"`
 - `main: "src/index.ts"`
-- no `exports` map
+- no `module`, `types`, or `exports` map
+- no publish lifecycle hooks (`prepack`, `prepare`, `prepublish`,
+  `prepublishOnly`), because this harness is not distributed as a tarball
 - `files` containing:
   - `src/**/*.ts`
   - `README.md`
@@ -71,6 +73,10 @@ It must expose:
 The `main: "src/index.ts"` entrypoint is valid only because this package is
 private and consumed through npm workspaces. Do not copy that pattern into a
 dist package or published package surface.
+
+The package may still keep a `build` script so local type generation catches
+compiler regressions, but generated `dist/**` output is a disposable local
+artifact and must not be part of its package surface.
 
 ## Guard
 
