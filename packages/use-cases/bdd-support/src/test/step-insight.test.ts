@@ -2,8 +2,10 @@ import { describe, expect, it } from "vitest";
 
 import {
   buildVersionedStepInsightReport,
+  collectVersionedStepInsight,
   sanitizeStepInsightValue,
   serializeStepInsightReport,
+  type StepInsightArtifactCollector,
 } from "../step-insight.ts";
 
 describe("BDD step insight support", () => {
@@ -44,5 +46,41 @@ describe("BDD step insight support", () => {
       dto: { amount: "3" },
     });
     expect(serializeStepInsightReport(report)).not.toContain("\\n");
+  });
+
+  it("collects a serialized LogEntry with the expected Serenity artifact name", () => {
+    const collected: Array<Parameters<StepInsightArtifactCollector["collect"]>> =
+      [];
+    const collector: StepInsightArtifactCollector = {
+      collect: (...args) => {
+        collected.push(args);
+      },
+    };
+
+    collectVersionedStepInsight(
+      collector,
+      "midnight-test-step-insight.v1",
+      "Collector step insight",
+      {
+        request: "request",
+        response: "response",
+        checks: ["check"],
+        dto: { ok: true },
+      },
+    );
+
+    expect(collected).toHaveLength(1);
+    const [[artifact, name]] = collected;
+    expect(name.value).toBe("Collector step insight");
+    expect(artifact.map((value) => value)).toEqual({
+      data: JSON.stringify({
+        schemaVersion: "midnight-test-step-insight.v1",
+        title: "Collector step insight",
+        request: "request",
+        response: "response",
+        checks: ["check"],
+        dto: { ok: true },
+      }),
+    });
   });
 });
