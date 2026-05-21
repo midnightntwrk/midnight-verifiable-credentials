@@ -140,6 +140,7 @@ const printLines = (lines) => {
 const checkCatalog = () => {
   const errors = [];
   const seenNames = new Set();
+  const seenOutputOwners = new Map();
 
   for (const cone of ciBuildCones) {
     if (seenNames.has(cone.name)) {
@@ -148,6 +149,10 @@ const checkCatalog = () => {
     seenNames.add(cone.name);
 
     const inputSet = new Set(cone.inputPackages);
+    if (inputSet.size !== cone.inputPackages.length) {
+      errors.push(`CI build cone '${cone.name}' lists duplicate inputs`);
+    }
+
     const outputOwnerSet = new Set(outputOwnersForCone(cone));
 
     for (const owner of outputOwnerSet) {
@@ -156,6 +161,14 @@ const checkCatalog = () => {
           `CI build cone '${cone.name}' output owner is missing from inputs: ${owner}`,
         );
       }
+
+      const previousGroup = seenOutputOwners.get(owner);
+      if (previousGroup) {
+        errors.push(
+          `CI build cone output owner '${owner}' is listed by both '${previousGroup}' and '${cone.name}'`,
+        );
+      }
+      seenOutputOwners.set(owner, cone.name);
     }
   }
 
@@ -204,7 +217,7 @@ if (isDirectExecution) {
             stdio: "inherit",
           },
         );
-        process.exitCode = result.status ?? 1;
+        process.exitCode = result.status ?? (result.signal ? 128 : 1);
         break;
       }
       case "--check":

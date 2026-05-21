@@ -133,13 +133,10 @@ export const classifyChangedFiles = (changedFiles) => {
     run_integration_protocol: false,
     run_university: false,
   };
-  let docsRelated = false;
   let bddRelated = false;
 
   for (const file of files) {
-    if (matchesAny(file, ciChangeClassificationCatalog.docsPatterns)) {
-      docsRelated = true;
-    } else {
+    if (!matchesAny(file, ciChangeClassificationCatalog.docsPatterns)) {
       classification.docs_only = false;
     }
 
@@ -173,10 +170,6 @@ export const classifyChangedFiles = (changedFiles) => {
         classification[key] = true;
       }
     }
-  }
-
-  if (!docsRelated) {
-    classification.docs_only = false;
   }
 
   if (!bddRelated) {
@@ -218,6 +211,25 @@ const runSelfTest = () => {
   ]);
   assert.equal(mixedDocsAndBdd.docs_only, false);
   assert.equal(mixedDocsAndBdd.bdd_only, false);
+  const packageOnly = classifyChangedFiles(["package.json"]);
+  assert.equal(packageOnly.bdd_only, false);
+  for (const key of outputKeys.filter((key) => key.startsWith("run_"))) {
+    assert.equal(packageOnly[key], true);
+  }
+  const globalTooling = classifyChangedFiles(["tooling/scripts/example.mjs"]);
+  for (const key of outputKeys.filter((key) => key.startsWith("run_"))) {
+    assert.equal(globalTooling[key], true);
+  }
+  const rootTsConfig = classifyChangedFiles(["tsconfig.base.json"]);
+  for (const key of outputKeys.filter((key) => key.startsWith("run_"))) {
+    assert.equal(rootTsConfig[key], true);
+  }
+  const nestedTsConfig = classifyChangedFiles([
+    "packages/protocols/openid/tsconfig.json",
+  ]);
+  for (const key of outputKeys.filter((key) => key.startsWith("run_"))) {
+    assert.equal(nestedTsConfig[key], false);
+  }
   assert.equal(
     classifyChangedFiles(["packages/use-cases/age-gate/scenarios/foo.ts"])
       .bdd_only,

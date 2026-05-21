@@ -7,6 +7,7 @@ import {
   buildConeScriptCommand,
   ciBuildConeByName,
   ciBuildConeNames,
+  ownerForOutputPath,
   outputOwnersForCone,
 } from "./ci-build-cone-catalog.mjs";
 
@@ -223,9 +224,6 @@ function failOnErrors() {
   }
   process.exit(1);
 }
-
-const ownerForOutputPath = (outputPath) =>
-  outputPath.replace(/\/(?:dist|src\/managed)$/u, "");
 
 const parseDirectBuildWorkspaces = (script) =>
   [...script.matchAll(/npm\s+run\s+build\s+-w\s+\.\/([^\s"'&;|()<>,]+)/gu)].map(
