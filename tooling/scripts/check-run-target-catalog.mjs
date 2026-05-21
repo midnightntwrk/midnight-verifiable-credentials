@@ -220,6 +220,8 @@ try {
   writeFileSync(vendorTarballPath, "tracked vendor tarball placeholder\n");
   mkdirSync(vendorGeneratedDistDir, { recursive: true });
 
+  // clean-artifacts reads `git ls-files`, so staged files are enough to model
+  // tracked vendor tarballs without committing inside the disposable fixture.
   const fixtureGitAdd = runWithTimeout(
     [
       "git",
