@@ -264,14 +264,16 @@ const groups = readShellList("ci_build_output_groups");
 assertNpmScriptReferenceParser();
 assertWorkflowNpmScriptsExist();
 assertWorkflowUsesChangeClassifierCatalog();
+const managedArtifactConeImport = managedArtifactCatalogText.match(
+  /import\s+\{(?<imports>[\s\S]*?)\}\s+from\s+["']\.\/ci-build-cone-catalog\.mjs["']/u,
+);
 if (
-  !/from\s+["']\.\/ci-build-cone-catalog\.mjs["']/u.test(
-    managedArtifactCatalogText,
-  ) ||
-  !managedArtifactCatalogText.includes("outputOwnersForCone")
+  !managedArtifactConeImport ||
+  !/\boutputOwnersForCone\b/u.test(managedArtifactConeImport.groups.imports) ||
+  !/\brequireCone\b/u.test(managedArtifactConeImport.groups.imports)
 ) {
   errors.push(
-    "managed-artifact-catalog.mjs must import ci-build-cone-catalog.mjs and derive package groups from its output owner helpers",
+    "managed-artifact-catalog.mjs must import ci-build-cone-catalog.mjs and derive package groups from its cone helpers",
   );
 }
 failOnErrors();

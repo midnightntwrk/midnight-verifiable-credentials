@@ -20,24 +20,24 @@ const coneOutputOwners = (name) => outputOwnersForCone(requireCone(name));
 const unionOfConeInputs = (...names) =>
   dedupe(names.flatMap((name) => coneInputPackages(name)));
 
-const foundationPackages = coneOutputOwners("foundation");
-const familyPackages = coneOutputOwners("birth-family");
-const ageGatePackages = coneOutputOwners("age-gate");
-const protocolPackages = coneOutputOwners("protocol");
-const lightConePackages = unionOfConeInputs("birth-family");
-const ageGateConePackages = unionOfConeInputs("age-gate");
+const foundationOutputOwners = coneOutputOwners("foundation");
+const familyOutputOwners = coneOutputOwners("birth-family");
+const ageGateOutputOwners = coneOutputOwners("age-gate");
+const protocolOutputOwners = coneOutputOwners("protocol");
+const lightConeInputs = unionOfConeInputs("birth-family");
+const ageGateConeInputs = unionOfConeInputs("age-gate");
 
 export const profileDefinitions = {
   "managed-light": {
     buildCommand: "npm run build:light",
     ciBuildCones: ["foundation", "birth-family"],
-    managedPackages: [...foundationPackages, ...familyPackages],
+    managedPackages: [...foundationOutputOwners, ...familyOutputOwners],
   },
   "managed-all": {
     buildCommand: "npm run build:all",
     ciBuildCones: ["age-gate"],
     extends: ["managed-light"],
-    managedPackages: ageGatePackages,
+    managedPackages: ageGateOutputOwners,
   },
   "managed-revocation": {
     buildCommand: "npm run build:revocation",
@@ -148,13 +148,13 @@ export const profileDefinitions = {
   light: {
     buildCommand: "npm run build:light",
     ciBuildCones: ["foundation", "birth-family"],
-    distPackages: lightConePackages,
+    distPackages: lightConeInputs,
   },
   all: {
     buildCommand: "npm run build:all",
     ciBuildCones: ["age-gate", "protocol"],
     extends: ["light"],
-    distPackages: [...ageGatePackages, ...protocolPackages],
+    distPackages: [...ageGateOutputOwners, ...protocolOutputOwners],
   },
   revocation: {
     buildCommand: "npm run build:revocation",
@@ -170,13 +170,15 @@ export const profileDefinitions = {
   "integration-demo-contract": {
     buildCommand: "npm run build:integration-prereqs:demo-contract",
     ciBuildCones: ["foundation", "birth-family", "age-gate"],
-    distPackages: ageGateConePackages,
+    // This follows the age-gate cone inputs, so the readiness profile also
+    // checks hello-verifier outputs produced by the integration prereq build.
+    distPackages: ageGateConeInputs,
   },
   "integration-protocol": {
     buildCommand: "npm run build:integration-prereqs:protocol",
     ciBuildCones: ["protocol"],
     extends: ["integration-demo-contract"],
-    distPackages: protocolPackages,
+    distPackages: protocolOutputOwners,
   },
 };
 
@@ -367,10 +369,19 @@ const checkCatalog = () => {
       errors.push(`${profileName} references missing root script: ${scriptName}`);
     }
 
+    const coneOutputOwnerSet = new Set();
+    const coneInputPackageSet = new Set();
     for (const coneName of profile.ciBuildCones ?? []) {
       if (!knownConeNames.has(coneName)) {
         errors.push(`${profileName} references unknown CI build cone: ${coneName}`);
         continue;
+      }
+
+      for (const outputOwner of coneOutputOwners(coneName)) {
+        coneOutputOwnerSet.add(outputOwner);
+      }
+      for (const inputPackage of coneInputPackages(coneName)) {
+        coneInputPackageSet.add(inputPackage);
       }
 
       const coneScriptName = `build:cone:${coneName}`;
@@ -379,6 +390,24 @@ const checkCatalog = () => {
         errors.push(
           `${profileName} references CI build cone '${coneName}' but root script '${coneScriptName}' is not catalog-backed`,
         );
+      }
+    }
+
+    if ((profile.ciBuildCones ?? []).length > 0) {
+      for (const packagePath of profile.managedPackages ?? []) {
+        if (!coneOutputOwnerSet.has(packagePath)) {
+          errors.push(
+            `${profileName} managed package is not produced by its declared CI build cones: ${packagePath}`,
+          );
+        }
+      }
+
+      for (const packagePath of profile.distPackages ?? []) {
+        if (!coneInputPackageSet.has(packagePath)) {
+          errors.push(
+            `${profileName} dist package is not included in its declared CI build cone inputs: ${packagePath}`,
+          );
+        }
       }
     }
 
