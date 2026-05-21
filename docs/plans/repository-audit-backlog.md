@@ -299,6 +299,9 @@ file splits, BDD readability, and maturity tags.
    - moves pure university flow result aggregation from the runner into
      `flow-result-builder.ts`, reducing the runner's responsibility to actor
      setup, phase execution, restart simulation, and message delivery
+   - `codex/vc-university-checkpoint-split` continues this by moving restart
+     checkpoint state decoding and summary projection into
+     `flow-checkpoint-state.ts`
    - validation: `./run.sh university-protocol --light`,
      `./run.sh university-protocol-export --light`, package tests
 
