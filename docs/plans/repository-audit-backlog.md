@@ -260,6 +260,11 @@ file splits, BDD readability, and maturity tags.
 5. `vc-managed-artifact-freshness`
    - covers `managed-artifact-freshness-manifest` and
      `ci-cone-artifact-profile-unification`
+   - 2026-05-22 delivery branch:
+     `codex/vc-managed-artifact-freshness`
+   - managed-artifact profiles now derive package groups from the checked CI
+     build-cone catalog, so local readiness checks and GitHub artifact lanes use
+     the same package ownership source
    - validation: `npm run check:managed-artifact-catalog`,
      `./run.sh typecheck --light`, `./run.sh build --light`
 

@@ -3,45 +3,47 @@ import { execFileSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  buildConeScriptCommand,
+  ciBuildConeByName,
+  ciBuildConeNames,
+  outputOwnersForCone,
+} from "./ci-build-cone-catalog.mjs";
 
 const repoRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
   encoding: "utf8",
 }).trim();
 
-const foundationPackages = [
-  "packages/core/primitives/credentials",
-  "packages/registry/status-registry",
-  "packages/core/capabilities/same-holder",
-  "packages/core/primitives/iso-registry",
-  "packages/components/adapters/offchain-did",
-  "packages/protocols/openid",
-];
-const familyPackages = [
-  "packages/prototypes/credential-families/birth",
-  "packages/prototypes/credential-families/birth-secret",
-  "packages/prototypes/credential-families/hello-family",
-  "packages/prototypes/credential-families/dummy-claims",
-  "packages/prototypes/credential-families/mixed-claims",
-  "packages/prototypes/credential-families/university-diploma",
-];
-const ageGatePackages = ["packages/use-cases/age-gate/contract", "packages/use-cases/hello-verifier/contract"];
-const protocolPackages = ["packages/components/orchestration/protocol"];
+const requireCone = (name) => {
+  const cone = ciBuildConeByName.get(name);
+  if (!cone) {
+    throw new Error(`Unknown CI build cone: ${name}`);
+  }
+  return cone;
+};
+
+const dedupe = (values) => [...new Set(values)];
+const coneInputPackages = (name) => [...requireCone(name).inputPackages];
+const coneOutputOwners = (name) => outputOwnersForCone(requireCone(name));
+const coneInputPackagesThrough = (...names) =>
+  dedupe(names.flatMap((name) => coneInputPackages(name)));
+
+const foundationPackages = coneOutputOwners("foundation");
+const familyPackages = coneOutputOwners("birth-family");
+const ageGatePackages = coneOutputOwners("age-gate");
+const protocolPackages = coneOutputOwners("protocol");
+const lightConePackages = coneInputPackagesThrough("birth-family");
+const ageGateConePackages = coneInputPackagesThrough("age-gate");
 
 export const profileDefinitions = {
   "managed-light": {
     buildCommand: "npm run build:light",
-    managedPackages: [
-      "packages/core/primitives/credentials",
-      "packages/registry/status-registry",
-      "packages/core/capabilities/same-holder",
-      "packages/core/primitives/iso-registry",
-      "packages/prototypes/credential-families/birth",
-      "packages/prototypes/credential-families/birth-secret",
-      "packages/prototypes/credential-families/hello-family",
-    ],
+    ciBuildCones: ["foundation", "birth-family"],
+    managedPackages: [...foundationPackages, ...familyPackages],
   },
   "managed-all": {
     buildCommand: "npm run build:all",
+    ciBuildCones: ["age-gate"],
     extends: ["managed-light"],
     managedPackages: ageGatePackages,
   },
@@ -58,6 +60,7 @@ export const profileDefinitions = {
   },
   "managed-hello-smoke": {
     buildCommand: "npm run build:starter-smoke-prereqs",
+    ciBuildCones: ["foundation", "birth-family", "age-gate"],
     managedPackages: [
       "packages/core/primitives/credentials",
       "packages/registry/status-registry",
@@ -69,6 +72,7 @@ export const profileDefinitions = {
   },
   "managed-dummy-claims-lab": {
     buildCommand: "npm run build:dummy-claims-lab-prereqs",
+    ciBuildCones: ["foundation", "birth-family", "age-gate"],
     extends: ["managed-hello-smoke"],
     managedPackages: ["packages/prototypes/credential-families/dummy-claims"],
   },
@@ -151,10 +155,12 @@ export const profileDefinitions = {
   },
   light: {
     buildCommand: "npm run build:light",
-    distPackages: [...foundationPackages, ...familyPackages],
+    ciBuildCones: ["foundation", "birth-family"],
+    distPackages: lightConePackages,
   },
   all: {
     buildCommand: "npm run build:all",
+    ciBuildCones: ["age-gate", "protocol"],
     extends: ["light"],
     distPackages: [...ageGatePackages, ...protocolPackages],
   },
@@ -171,10 +177,12 @@ export const profileDefinitions = {
   },
   "integration-demo-contract": {
     buildCommand: "npm run build:integration-prereqs:demo-contract",
-    distPackages: [...foundationPackages, ...familyPackages, "packages/use-cases/age-gate/contract"],
+    ciBuildCones: ["foundation", "birth-family", "age-gate"],
+    distPackages: ageGateConePackages,
   },
   "integration-protocol": {
     buildCommand: "npm run build:integration-prereqs:protocol",
+    ciBuildCones: ["protocol"],
     extends: ["integration-demo-contract"],
     distPackages: protocolPackages,
   },
@@ -355,6 +363,7 @@ const checkCatalog = () => {
   const errors = [];
   const rootPackage = readJson("package.json");
   const scripts = rootPackage.scripts ?? {};
+  const knownConeNames = new Set(ciBuildConeNames);
 
   for (const [profileName, profile] of Object.entries(profileDefinitions)) {
     if (!profile.buildCommand) {
@@ -364,6 +373,21 @@ const checkCatalog = () => {
     const scriptName = profile.buildCommand?.match(/^npm run ([^\s]+)/u)?.[1];
     if (scriptName && !scripts[scriptName]) {
       errors.push(`${profileName} references missing root script: ${scriptName}`);
+    }
+
+    for (const coneName of profile.ciBuildCones ?? []) {
+      if (!knownConeNames.has(coneName)) {
+        errors.push(`${profileName} references unknown CI build cone: ${coneName}`);
+        continue;
+      }
+
+      const coneScriptName = `build:cone:${coneName}`;
+      const expectedConeScript = buildConeScriptCommand(coneName);
+      if (scripts[coneScriptName] !== expectedConeScript) {
+        errors.push(
+          `${profileName} references CI build cone '${coneName}' but root script '${coneScriptName}' is not catalog-backed`,
+        );
+      }
     }
 
     try {
