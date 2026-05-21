@@ -77,6 +77,32 @@ This keeps cache invalidation aligned with the actual dependency chain without
 forcing a single monolithic cache key or making the protocol cone restore
 unrelated verifier-lab outputs.
 
+## Turbo Cache Policy
+
+Turbo's package-local cache is intentionally separate from the cone artifact
+cache. Cone keys decide whether reusable CI output archives are restored;
+Turbo keys decide whether a package task can be skipped inside a job.
+
+The root `turbo.json` therefore declares repository-wide invalidators for
+inputs that sit outside package directories but still affect package tasks:
+
+- root npm, TypeScript, Turbo, and Node version files
+- GitHub workflow definitions
+- all checked tooling scripts, including runner, cone, artifact, cleanup, and
+  policy lanes; this intentionally includes the cache-policy checker itself so
+  policy changes invalidate cached package tasks
+- `COMPACT_COMPILER_VERSION`, because generated Compact output can change
+  without a TypeScript source diff
+
+The cacheable tasks keep explicit `outputs` entries. Build tasks own `dist`,
+`src/managed`, and `*.tsbuildinfo`; lint, typecheck, and test tasks intentionally
+declare empty outputs so they can cache success without publishing generated
+files.
+
+`npm run check:turbo-cache-policy` guards these invariants and is wired into
+`ci:lint`, so future task additions cannot silently become cacheable without an
+explicit output policy.
+
 ## Contract Audit
 
 Run the build-cone contract check locally with:
