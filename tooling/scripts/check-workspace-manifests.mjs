@@ -9,6 +9,17 @@ const repoRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
 
 const errors = [];
 
+const allowedMaturityValues = new Set([
+  "core",
+  "reference",
+  "lab",
+  "demo",
+  "infrastructure",
+]);
+const allowedPackageClasses = new Set(["dist", "scenario", "source-only"]);
+
+// Keep this in root package.json workspace order so diff reviews can compare
+// package additions against their policy classification directly.
 const workspaceMaturity = new Map([
   ["packages/core/primitives/credentials", { maturity: "core", packageClass: "dist" }],
   ["packages/registry/status-registry", { maturity: "reference", packageClass: "dist" }],
@@ -153,6 +164,14 @@ const assertMaturityMetadata = (packageJson, workspace) => {
   if (expected === undefined) {
     return;
   }
+  assert(
+    allowedMaturityValues.has(expected.maturity),
+    `${workspace} maturity policy uses unsupported value: ${expected.maturity}`,
+  );
+  assert(
+    allowedPackageClasses.has(expected.packageClass),
+    `${workspace} package class policy uses unsupported value: ${expected.packageClass}`,
+  );
 
   assert(isRecord(packageJson.midnight), `${workspace} must define midnight metadata`);
   if (!isRecord(packageJson.midnight)) {
