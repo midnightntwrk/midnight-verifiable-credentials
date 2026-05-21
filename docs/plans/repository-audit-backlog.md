@@ -319,6 +319,11 @@ file splits, BDD readability, and maturity tags.
 10. `vc-bdd-style-alignment-and-prototype-tags`
     - covers `age-gate-bdd-style-alignment` and
       `prototype-graduation-policy`
+    - 2026-05-22 delivery branch:
+      `codex/vc-age-gate-bdd-insights`
+    - aligns age-gate Serenity logs with the university
+      request/response/check/DTO insight pattern and documents the current
+      prototype credential-family maturity table at the prototypes root
     - validation: `./run.sh bdd`, `./run.sh bdd-negative`,
       `npm run check:workspace-manifests`, `npm run check:vc-surface-discipline`,
       `npm run docs:links`

@@ -11,5 +11,5 @@
     "skipLibCheck": true,
     "types": ["node"]
   },
-  "include": ["features/**/*.ts", "scripts/**/*.ts"]
+  "include": ["features/**/*.ts", "scripts/**/*.ts", "../../bdd-support/**/*.ts"]
 }
