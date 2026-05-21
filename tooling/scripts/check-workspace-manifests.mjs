@@ -174,6 +174,8 @@ const assertDistPackage = (packageJson, workspace) => {
 };
 
 const assertSourceOnlyPackage = (packageJson, workspace) => {
+  // Private source-only harnesses expose TypeScript sources to workspace tests;
+  // they must not look like publishable dist-backed packages.
   assert(packageJson.license === "Apache-2.0", `${workspace} must declare Apache-2.0 license`);
   assert(packageJson.private === true, `${workspace} must remain private`);
   assert(packageJson.type === "module", `${workspace} must be an ESM package`);
@@ -190,7 +192,7 @@ const assertSourceOnlyPackage = (packageJson, workspace) => {
   assertArrayIncludes(packageJson.files, "package.json", `${workspace} files`);
   assertArrayIncludes(packageJson.files, "tsconfig.json", `${workspace} files`);
   assert(
-    !packageJson.files?.some((entry) => entry.startsWith("dist")),
+    !packageJson.files?.some((entry) => entry === "dist" || entry.startsWith("dist/")),
     `${workspace} files must not include dist outputs`,
   );
 };

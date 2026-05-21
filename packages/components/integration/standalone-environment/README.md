@@ -76,7 +76,7 @@ It exists so package-level integration tests do not each reinvent:
 ## Validation
 
 ```sh
-npm run check:workspace-manifests
+npm run check:workspace-manifests # from the repository root
 npm run typecheck -w packages/components/integration/standalone-environment
 npm run build -w packages/components/integration/standalone-environment
 ```
