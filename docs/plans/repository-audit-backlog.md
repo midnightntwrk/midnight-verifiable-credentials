@@ -278,12 +278,11 @@ file splits, BDD readability, and maturity tags.
    - validation: `./run.sh university-bdd`, `./run.sh university-summary`
 
 10. `vc-bdd-style-alignment-and-prototype-tags`
-
-- covers `age-gate-bdd-style-alignment` and
-  `prototype-graduation-policy`
-- validation: `./run.sh bdd`, `./run.sh bdd-negative`,
-  `npm run check:workspace-manifests`, `npm run check:vc-surface-discipline`,
-  `npm run docs:links`
+    - covers `age-gate-bdd-style-alignment` and
+      `prototype-graduation-policy`
+    - validation: `./run.sh bdd`, `./run.sh bdd-negative`,
+      `npm run check:workspace-manifests`, `npm run check:vc-surface-discipline`,
+      `npm run docs:links`
 
 `ci-setup-action-consolidation` is intentionally deferred beyond the first 10
 slices because it is lower risk after runner, cone, and package-policy catalogs
