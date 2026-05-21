@@ -24,6 +24,8 @@ Dependency direction:
 Reusable outside this repo:
 
 - limited; primarily repo-local integration support
+- not publishable as a package; it is private, source-only, and intentionally
+  has no `prepack`, `types`, or `exports` surface
 
 Related docs:
 
@@ -74,7 +76,9 @@ It exists so package-level integration tests do not each reinvent:
 ## Validation
 
 ```sh
+npm run check:workspace-manifests
 npm run typecheck -w packages/components/integration/standalone-environment
+npm run build -w packages/components/integration/standalone-environment
 ```
 
 Integration execution happens through the consuming packages:

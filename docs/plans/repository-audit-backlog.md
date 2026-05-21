@@ -270,6 +270,11 @@ file splits, BDD readability, and maturity tags.
 
 6. `vc-standalone-package-policy`
    - covers `standalone-environment-package-policy`
+   - 2026-05-22 delivery branch:
+     `codex/vc-standalone-package-policy`
+   - keeps `standalone-environment` explicitly private/source-only, removes the
+     misleading `prepack` distribution hook, and extends workspace-manifest
+     checks so the harness cannot grow a dist/publish surface by accident
    - validation: `./run.sh integration-demo-contract`,
      `./run.sh integration-protocol` when Docker is available
 

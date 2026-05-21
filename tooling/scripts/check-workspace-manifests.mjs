@@ -178,11 +178,21 @@ const assertSourceOnlyPackage = (packageJson, workspace) => {
   assert(packageJson.private === true, `${workspace} must remain private`);
   assert(packageJson.type === "module", `${workspace} must be an ESM package`);
   assert(packageJson.main === "src/index.ts", `${workspace} main must point to its source entrypoint`);
+  assert(packageJson.module === undefined, `${workspace} must not define module`);
+  assert(packageJson.types === undefined, `${workspace} must not define types`);
   assert(packageJson.exports === undefined, `${workspace} must not expose a dist export map`);
+  assert(
+    packageJson.scripts?.prepack === undefined,
+    `${workspace} must not define prepack; source-only integration harnesses are not packed for distribution`,
+  );
   assertArrayIncludes(packageJson.files, "src/**/*.ts", `${workspace} files`);
   assertArrayIncludes(packageJson.files, "README.md", `${workspace} files`);
   assertArrayIncludes(packageJson.files, "package.json", `${workspace} files`);
   assertArrayIncludes(packageJson.files, "tsconfig.json", `${workspace} files`);
+  assert(
+    !packageJson.files?.some((entry) => entry.startsWith("dist")),
+    `${workspace} files must not include dist outputs`,
+  );
 };
 
 const assertScenarioPackage = (packageJson, workspace) => {
