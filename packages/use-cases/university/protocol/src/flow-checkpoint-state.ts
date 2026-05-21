@@ -46,12 +46,55 @@ export type UniversityProtocolRunnerCheckpointState = {
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 
+const hasNumberField = (
+  value: Record<string, unknown>,
+  field: string,
+): boolean => typeof value[field] === "number";
+
+const hasStringField = (
+  value: Record<string, unknown>,
+  field: string,
+): boolean => typeof value[field] === "string";
+
+const hasArrayField = (
+  value: Record<string, unknown>,
+  field: string,
+): boolean => Array.isArray(value[field]);
+
+const isTransportCheckpoint = (
+  value: unknown,
+): value is Record<string, unknown> =>
+  isRecord(value) &&
+  hasArrayField(value, "queues") &&
+  hasArrayField(value, "frames");
+
+const isStudentCheckpointState = (
+  value: unknown,
+): value is Record<string, unknown> =>
+  isRecord(value) &&
+  hasStringField(value, "studentId") &&
+  hasArrayField(value, "receivedResults");
+
+const isVerifierCheckpointState = (
+  value: unknown,
+): value is Record<string, unknown> =>
+  isRecord(value) &&
+  hasArrayField(value, "processedThreadIds") &&
+  hasNumberField(value, "acceptedCount") &&
+  hasNumberField(value, "duplicateRejectedCount") &&
+  hasNumberField(value, "verificationRejectedCount");
+
+const isCompanyCheckpointState = (
+  value: unknown,
+): value is Record<string, unknown> =>
+  isVerifierCheckpointState(value) && hasStringField(value, "companyId");
+
 const asDecodedCheckpointState = (
   value: unknown,
 ): UniversityProtocolRunnerCheckpointState => {
   if (
     !isRecord(value) ||
-    !isRecord(value.transport) ||
+    !isTransportCheckpoint(value.transport) ||
     typeof value.checkpointSequence !== "number" ||
     !Array.isArray(value.transcript) ||
     !isRecord(value.messages) ||
@@ -59,8 +102,10 @@ const asDecodedCheckpointState = (
     !Array.isArray(value.messages.jobApplications) ||
     !Array.isArray(value.messages.discounts) ||
     !Array.isArray(value.students) ||
+    !value.students.every(isStudentCheckpointState) ||
     !Array.isArray(value.companies) ||
-    !isRecord(value.mall)
+    !value.companies.every(isCompanyCheckpointState) ||
+    !isVerifierCheckpointState(value.mall)
   ) {
     throw new Error("Malformed university protocol checkpoint state");
   }

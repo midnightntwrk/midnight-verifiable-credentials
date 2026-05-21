@@ -41,29 +41,44 @@ const baseTransport = {
   ],
 };
 
+const validState = () => ({
+  transport: baseTransport,
+  checkpointSequence: 1,
+  transcript: [{ summary: "issuance request" }],
+  messages: {
+    issuance: [{ type: "issuance:request" }],
+    jobApplications: [
+      { type: "presentation:request" },
+      { type: "presentation:submission" },
+    ],
+    discounts: [{ type: "presentation:result" }],
+  },
+  students: [
+    {
+      studentId: "student-1",
+      receivedResults: [],
+    },
+  ],
+  companies: [
+    {
+      companyId: "company-1",
+      processedThreadIds: [],
+      acceptedCount: 0,
+      duplicateRejectedCount: 0,
+      verificationRejectedCount: 0,
+    },
+  ],
+  mall: {
+    processedThreadIds: [],
+    acceptedCount: 0,
+    duplicateRejectedCount: 0,
+    verificationRejectedCount: 0,
+  },
+});
+
 describe("university protocol checkpoint state helpers", () => {
   it("summarizes queued transport, transcript, and message counts", () => {
-    const checkpoint = makeCheckpoint({
-      transport: baseTransport,
-      checkpointSequence: 1,
-      transcript: [{ summary: "issuance request" }],
-      messages: {
-        issuance: [{ type: "issuance:request" }],
-        jobApplications: [
-          { type: "presentation:request" },
-          { type: "presentation:submission" },
-        ],
-        discounts: [{ type: "presentation:result" }],
-      },
-      students: [],
-      companies: [],
-      mall: {
-        processedThreadIds: [],
-        acceptedCount: 0,
-        duplicateRejectedCount: 0,
-        verificationRejectedCount: 0,
-      },
-    });
+    const checkpoint = makeCheckpoint(validState());
 
     expect(summarizeUniversityProtocolCheckpoint(checkpoint)).toEqual({
       checkpointId: "checkpoint-1",
@@ -79,24 +94,55 @@ describe("university protocol checkpoint state helpers", () => {
     });
   });
 
-  it("rejects malformed checkpoint state before restore", () => {
-    const checkpoint = makeCheckpoint({
-      transport: baseTransport,
-      checkpointSequence: 1,
-      transcript: [],
-      messages: {
-        issuance: [],
-        jobApplications: [],
+  it.each([
+    [
+      "missing discount messages",
+      () => {
+        const state = validState();
+        return {
+          ...state,
+          messages: {
+            issuance: [],
+            jobApplications: [],
+          },
+        };
       },
-      students: [],
-      companies: [],
-      mall: {
-        processedThreadIds: [],
-        acceptedCount: 0,
-        duplicateRejectedCount: 0,
-        verificationRejectedCount: 0,
-      },
-    });
+    ],
+    [
+      "malformed transport checkpoint",
+      () => ({
+        ...validState(),
+        transport: {},
+      }),
+    ],
+    [
+      "malformed checkpoint sequence",
+      () => ({
+        ...validState(),
+        checkpointSequence: "1",
+      }),
+    ],
+    [
+      "malformed student state",
+      () => ({
+        ...validState(),
+        students: [{ studentId: "student-1" }],
+      }),
+    ],
+    [
+      "malformed verifier counters",
+      () => ({
+        ...validState(),
+        mall: {
+          processedThreadIds: [],
+          acceptedCount: 0,
+          duplicateRejectedCount: "0",
+          verificationRejectedCount: 0,
+        },
+      }),
+    ],
+  ])("rejects malformed checkpoint state: %s", (_label, stateFactory) => {
+    const checkpoint = makeCheckpoint(stateFactory());
 
     expect(() =>
       asUniversityProtocolRunnerCheckpointState(checkpoint.encodedState),
