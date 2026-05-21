@@ -46,6 +46,7 @@ Start here:
 4. use `src/witness-builder.ts` and `src/attestation-builder.ts` only in
    off-chain verifier/holder/application code
 5. read:
+   - [`../../../docs/guides/status-revocation-entrypoints.md`](../../../docs/guides/status-revocation-entrypoints.md)
    - [`../../../docs/spec/revocation-registry.md`](../../../docs/spec/revocation-registry.md)
    - [`../../../docs/spec/status-verification-protocol.md`](../../../docs/spec/status-verification-protocol.md)
    - [`../../../docs/architecture/status-verification-modes.md`](../../../docs/architecture/status-verification-modes.md)
@@ -53,6 +54,7 @@ Start here:
    - [`../../../docs/guides/integration-surface-map.md`](../../../docs/guides/integration-surface-map.md)
 
 Current scope:
+
 - dedicated registry id
 - append-only revoked handle `MerkleTree`
 - monotonic internal `version` counter for registry-side bookkeeping
@@ -186,6 +188,7 @@ Canonical same-contract live-status helper path:
   - keeps the same binding-first output shape as `buildLiveStatusWitness(...)`
 
 Current prototype limitation:
+
 - `assertStateUsesThisRegistry(...)` binds the supplied snapshot to this
   registry's `registryId` and `registryVersion`
 - it does not yet prove that the supplied `revokedRoot` equals the live
@@ -243,7 +246,6 @@ Observed-root integration helper path:
 Architecture note for the canonical runtime bundle contract:
 
 - [`../../../docs/architecture/status-canonical-non-membership-bundle.md`](../../../docs/architecture/status-canonical-non-membership-bundle.md)
-
 
 Canonical off-chain verifier helper path:
 

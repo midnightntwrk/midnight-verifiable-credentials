@@ -42,6 +42,14 @@
 - integration surface map:
   - [`guides/integration-surface-map.md`](./guides/integration-surface-map.md)
   - for integrators deciding which surfaces belong on-chain, off-chain, or both
+- status and revocation entrypoints:
+  - [`guides/status-revocation-entrypoints.md`](./guides/status-revocation-entrypoints.md)
+  - for engineers choosing between status specs, registry package helpers, and
+    runnable status/revocation lanes
+- DID integration modes:
+  - [`guides/did-integration-modes.md`](./guides/did-integration-modes.md)
+  - for engineers wiring VC packages to sibling, vendored, or published DID
+    package sources
 - VC surface change discipline:
   - [`guides/vc-surface-change-discipline.md`](./guides/vc-surface-change-discipline.md)
   - for contributors changing Compact-generated types, credential literals,

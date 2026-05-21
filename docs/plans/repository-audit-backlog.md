@@ -47,10 +47,18 @@ PR sequence. The maturity backlog file is a status index only.
 
 Status and revocation work should start from these entry points:
 
+- [`docs/guides/status-revocation-entrypoints.md`](../guides/status-revocation-entrypoints.md)
 - [`docs/spec/credential-status.md`](../spec/credential-status.md)
 - [`docs/spec/revocation-registry.md`](../spec/revocation-registry.md)
 - [`docs/spec/status-verification-protocol.md`](../spec/status-verification-protocol.md)
 - [`packages/registry/status-registry`](../../packages/registry/status-registry)
+
+DID package integration work should start from:
+
+- [`docs/guides/did-integration-modes.md`](../guides/did-integration-modes.md)
+- `./run.sh integration-report`
+- `./run.sh check-integration`
+- `npm run check:did-integration`
 
 ## Audit Findings
 
@@ -83,7 +91,8 @@ Status and revocation work should start from these entry points:
   `bdd-summary-first-output`, and `university-stakeholder-language-pass`.
 - Backlog/plans docs overlap and still describe completed work as active:
   resolved by this 2026-05-20 backlog collapse; future drift is tracked through
-  `status-revocation-entrypoint-map` and the archive link checks.
+  the status/revocation and DID-integration entrypoint guides plus archive link
+  checks.
 
 ### External Review Addendum, 2026-05-21
 
@@ -151,55 +160,66 @@ They add four review-driven backlog decisions:
      authoritative
 
 10. `did-integration-mode-docs`
-   - document supported DID integration modes: vendored tarballs, sibling
-     checkout inspection, and published package consumption
-   - include repair flow and examples from `./run.sh integration-report`
+
+- document supported DID integration modes: vendored tarballs, sibling
+  checkout inspection, and published package consumption
+- include repair flow and examples from `./run.sh integration-report`
 
 11. `standalone-environment-package-policy`
-   - decide whether `packages/components/integration/standalone-environment` is strictly
-     private/test-only or a distributable helper package
-   - align `exports`, `files`, `main`, and prehook scripts accordingly
+
+- decide whether `packages/components/integration/standalone-environment` is strictly
+  private/test-only or a distributable helper package
+- align `exports`, `files`, `main`, and prehook scripts accordingly
 
 12. `cleanup-artifact-coverage`
-   - keep generated/test directories such as `.midnight-test` covered by cleanup
-     scripts while preserving fixture data and vendor tarballs
-   - keep dry-run JSON available through
-     `./run.sh clean-artifacts -- --dry-run --json`
+
+- keep generated/test directories such as `.midnight-test` covered by cleanup
+  scripts while preserving fixture data and vendor tarballs
+- keep dry-run JSON available through
+  `./run.sh clean-artifacts -- --dry-run --json`
 
 13. `turbo-cache-input-hardening`
-   - strengthen `turbo.json` inputs and cache policy so source, Compact, and
-     manifest drift invalidates the right tasks without bloating CI runtime
+
+- strengthen `turbo.json` inputs and cache policy so source, Compact, and
+  manifest drift invalidates the right tasks without bloating CI runtime
 
 14. `ci-setup-action-consolidation`
-   - extract repeated Compact/Node/npm workflow setup into a composite action or
-     reusable workflow
+
+- extract repeated Compact/Node/npm workflow setup into a composite action or
+  reusable workflow
 
 15. `university-flow-file-split`
-   - split large university protocol/scenario/support files by actor, phase, DTO
-     logging, policy, and assertion concern
+
+- split large university protocol/scenario/support files by actor, phase, DTO
+  logging, policy, and assertion concern
 
 16. `bdd-summary-first-output`
-   - make compact JSON/Markdown handoff summaries the default local inspection
-     surface; keep full Serenity HTML for publish/report lanes
+
+- make compact JSON/Markdown handoff summaries the default local inspection
+  surface; keep full Serenity HTML for publish/report lanes
 
 17. `university-stakeholder-language-pass`
-   - keep feature files readable by humans and move schema names, roots, and DTO
-     field names into step notes/artifacts
+
+- keep feature files readable by humans and move schema names, roots, and DTO
+  field names into step notes/artifacts
 
 18. `age-gate-bdd-style-alignment`
-   - bring age-gate BDD up to the university instrumentation style or explicitly
-     document the lighter smoke-test role
+
+- bring age-gate BDD up to the university instrumentation style or explicitly
+  document the lighter smoke-test role
 
 19. `status-revocation-entrypoint-map`
-   - keep status/revocation spec and package entry points discoverable from the
-     active backlog
-   - prevent future backlog refreshes from hiding verification and registry docs
+
+- keep status/revocation spec and package entry points discoverable from the
+  active backlog
+- prevent future backlog refreshes from hiding verification and registry docs
 
 20. `prototype-graduation-policy`
-   - classify credential-family packages as reference, lab, demo, prototype, or
-     publishable
-   - add package README maturity tags and enforce them through workspace manifest
-     checks
+
+- classify credential-family packages as reference, lab, demo, prototype, or
+  publishable
+- add package README maturity tags and enforce them through workspace manifest
+  checks
 
 ## First 10 PR Slices
 
@@ -221,11 +241,15 @@ file splits, BDD readability, and maturity tags.
 2. `vc-status-revocation-entrypoints`
    - covers `status-revocation-entrypoint-map` and keeps the active backlog,
      maturity index, README, and status/revocation specs mutually discoverable
+   - 2026-05-21 delivery branch:
+     `codex/vc-status-did-integration-entrypoints`
    - validation: `git diff --check`, `npm run docs:links`
 
 3. `vc-did-integration-docs`
    - covers `did-integration-mode-docs` and the documented lifecycle for aliases
      from `compatibility-alias-lifecycle`
+   - 2026-05-21 delivery branch:
+     `codex/vc-status-did-integration-entrypoints`
    - validation: `./run.sh integration-report`, `./run.sh check-integration`,
      `npm run docs:links`
 
@@ -264,11 +288,12 @@ file splits, BDD readability, and maturity tags.
    - validation: `./run.sh university-bdd`, `./run.sh university-summary`
 
 10. `vc-bdd-style-alignment-and-prototype-tags`
-   - covers `age-gate-bdd-style-alignment` and
-     `prototype-graduation-policy`
-   - validation: `./run.sh bdd`, `./run.sh bdd-negative`,
-     `npm run check:workspace-manifests`, `npm run check:vc-surface-discipline`,
-     `npm run docs:links`
+
+- covers `age-gate-bdd-style-alignment` and
+  `prototype-graduation-policy`
+- validation: `./run.sh bdd`, `./run.sh bdd-negative`,
+  `npm run check:workspace-manifests`, `npm run check:vc-surface-discipline`,
+  `npm run docs:links`
 
 `ci-setup-action-consolidation` is intentionally deferred beyond the first 10
 slices because it is lower risk after runner, cone, and package-policy catalogs

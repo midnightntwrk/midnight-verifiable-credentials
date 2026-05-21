@@ -75,6 +75,8 @@ Start here:
   - [`docs/guides/midnight-credentials-for-dummies.md`](./docs/guides/midnight-credentials-for-dummies.md)
   - [`docs/guides/package-selection.md`](./docs/guides/package-selection.md)
   - [`docs/guides/integration-surface-map.md`](./docs/guides/integration-surface-map.md)
+  - [`docs/guides/status-revocation-entrypoints.md`](./docs/guides/status-revocation-entrypoints.md)
+  - [`docs/guides/did-integration-modes.md`](./docs/guides/did-integration-modes.md)
   - [`docs/guides/vc-surface-change-discipline.md`](./docs/guides/vc-surface-change-discipline.md)
   - [`docs/guides/prototype-execution-ladder.md`](./docs/guides/prototype-execution-ladder.md)
 - university diploma use case:
@@ -144,6 +146,24 @@ Generated compatibility roots:
 - they are not canonical architecture areas; read the repository through
   `packages/core/`, `packages/registry/`, `packages/protocols/`, `packages/components/`, `packages/prototypes/`,
   `packages/use-cases/`, and `tooling/`
+- they are official local compatibility aliases until a dedicated deprecation
+  PR removes a specific alias, updates Compact includes, and adjusts cleanup
+  guards
+- use [`docs/guides/did-integration-modes.md`](./docs/guides/did-integration-modes.md)
+  for DID package integration modes, alias lifecycle, and repair commands
+
+Status and revocation entrypoints:
+
+- start with [`docs/guides/status-revocation-entrypoints.md`](./docs/guides/status-revocation-entrypoints.md)
+  when choosing a status/revocation path
+- read [`docs/spec/credential-status.md`](./docs/spec/credential-status.md)
+  for status levels and fail-closed semantics
+- read [`docs/spec/revocation-registry.md`](./docs/spec/revocation-registry.md)
+  for the revoked-set registry model
+- read [`docs/spec/status-verification-protocol.md`](./docs/spec/status-verification-protocol.md)
+  for verifier-supplied root and status proof-protocol boundaries
+- use [`packages/registry/status-registry`](./packages/registry/status-registry)
+  for the shipped Compact and TypeScript helper package
 
 ## Validation
 
@@ -261,6 +281,14 @@ Direct package-wide validation entrypoints:
 - `npm run build:all`
 - `npm run test:all`
 - `npm run docs:links`
+
+Inspect DID package integration wiring:
+
+```bash
+./run.sh integration-report
+./run.sh check-integration
+npm run check:did-integration
+```
 
 ## Artifact packaging
 
