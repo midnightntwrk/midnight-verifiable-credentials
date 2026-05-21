@@ -36,6 +36,8 @@ export const runBddScenarioReportPipeline = async ({
   const summaryExitCode = await runner(summaryScript);
   const reportExitCode = await runner(reportScript);
 
+  // Preserve the original scenario failure code after still attempting summary
+  // and report generation, because the failing scenarios are the primary cause.
   if (executeExitCode !== 0) {
     return executeExitCode;
   }

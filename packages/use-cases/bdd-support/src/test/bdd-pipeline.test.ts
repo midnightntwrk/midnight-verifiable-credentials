@@ -49,4 +49,32 @@ describe("BDD report pipeline support", () => {
     expect(exitCode).toBe(1);
     expect(calls).toEqual(["clean"]);
   });
+
+  it("returns the summary failure code when scenarios pass and summary fails", async () => {
+    const exitCode = await runBddScenarioReportPipeline({
+      executeScript: "test:execute",
+      runner: async (scriptName) => (scriptName === "summary" ? 2 : 0),
+    });
+
+    expect(exitCode).toBe(2);
+  });
+
+  it("returns the report failure code when execute and summary pass", async () => {
+    const exitCode = await runBddScenarioReportPipeline({
+      executeScript: "test:execute",
+      runner: async (scriptName) => (scriptName === "test:report" ? 3 : 0),
+    });
+
+    expect(exitCode).toBe(3);
+  });
+
+  it("preserves the execute failure code when later reporting also fails", async () => {
+    const exitCode = await runBddScenarioReportPipeline({
+      executeScript: "test:execute",
+      runner: async (scriptName) =>
+        scriptName === "test:execute" ? 7 : scriptName === "summary" ? 2 : 0,
+    });
+
+    expect(exitCode).toBe(7);
+  });
 });

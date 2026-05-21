@@ -120,6 +120,8 @@ const normalizeStatus = (status: string | undefined): BddSummaryStatus => {
 const scenarioStatus = (
   stepCounts: Readonly<Record<BddSummaryStatus, number>>,
 ): BddSummaryStatus => {
+  // Cucumber reports skipped/pending/undefined steps as non-passing evidence;
+  // the first non-passing status wins so a mostly green scenario is not hidden.
   for (const status of statusOrder) {
     if (stepCounts[status] > 0) {
       return status;
