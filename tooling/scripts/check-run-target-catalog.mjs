@@ -181,45 +181,45 @@ const vendorGeneratedProbeDir = path.join(
 );
 const vendorGeneratedDistDir = path.join(vendorGeneratedProbeDir, "dist");
 
-for (const relativePath of [
-  "run.sh",
-  "tooling/scripts/run-common.sh",
-  "tooling/scripts/run-target-catalog.mjs",
-  "tooling/scripts/ensure-node-24.mjs",
-  "tooling/scripts/clean-artifacts.mjs",
-  "tooling/scripts/compatibility-aliases.mjs",
-]) {
-  copyFixtureFile(cleanArtifactsFixtureRoot, relativePath);
-}
-chmodSync(path.join(cleanArtifactsFixtureRoot, "run.sh"), 0o755);
-
-const fixtureGitInit = runWithTimeout(
-  ["git", "init", "--quiet"],
-  5000,
-  cleanArtifactsFixtureRoot,
-);
-assert.equal(fixtureGitInit.status, 0, "clean-artifacts fixture git init");
-
-// Materialize local test-state directories inside a disposable git fixture so
-// the checker never creates historical package shells in the real repo root.
-mkdirSync(cleanupProbeDir, { recursive: true });
-mkdirSync(midnightDbProbeDir, { recursive: true });
-// Materialize one old top-level shell so cleanup coverage stays executable.
-// The probe must use a real legacy shell name because only known dead shells
-// are eligible for cleanup. If this assertion fails locally, inspect the shell
-// for non-disposable files left by older experiments.
-mkdirSync(legacyShellManagedDir, { recursive: true });
-// Materialize one package-area shell from the packages/ move.
-mkdirSync(movedPackageAreaShellManagedDir, { recursive: true });
-mkdirSync(skippedMovedPackageAreaShellDir, { recursive: true });
-writeFileSync(skippedMovedPackageAreaShellProbe, "not generated\n");
-mkdirSync(skippedLegacyShellDir, { recursive: true });
-writeFileSync(skippedLegacyShellProbe, "not generated\n");
-mkdirSync(path.dirname(vendorTarballPath), { recursive: true });
-writeFileSync(vendorTarballPath, "tracked vendor tarball placeholder\n");
-mkdirSync(vendorGeneratedDistDir, { recursive: true });
-
 try {
+  for (const relativePath of [
+    "run.sh",
+    "tooling/scripts/run-common.sh",
+    "tooling/scripts/run-target-catalog.mjs",
+    "tooling/scripts/ensure-node-24.mjs",
+    "tooling/scripts/clean-artifacts.mjs",
+    "tooling/scripts/compatibility-aliases.mjs",
+  ]) {
+    copyFixtureFile(cleanArtifactsFixtureRoot, relativePath);
+  }
+  chmodSync(path.join(cleanArtifactsFixtureRoot, "run.sh"), 0o755);
+
+  const fixtureGitInit = runWithTimeout(
+    ["git", "init", "--quiet"],
+    5000,
+    cleanArtifactsFixtureRoot,
+  );
+  assert.equal(fixtureGitInit.status, 0, "clean-artifacts fixture git init");
+
+  // Materialize local test-state directories inside a disposable git fixture so
+  // the checker never creates historical package shells in the real repo root.
+  mkdirSync(cleanupProbeDir, { recursive: true });
+  mkdirSync(midnightDbProbeDir, { recursive: true });
+  // Materialize one old top-level shell so cleanup coverage stays executable.
+  // The probe must use a real legacy shell name because only known dead shells
+  // are eligible for cleanup. If this assertion fails locally, inspect the shell
+  // for non-disposable files left by older experiments.
+  mkdirSync(legacyShellManagedDir, { recursive: true });
+  // Materialize one package-area shell from the packages/ move.
+  mkdirSync(movedPackageAreaShellManagedDir, { recursive: true });
+  mkdirSync(skippedMovedPackageAreaShellDir, { recursive: true });
+  writeFileSync(skippedMovedPackageAreaShellProbe, "not generated\n");
+  mkdirSync(skippedLegacyShellDir, { recursive: true });
+  writeFileSync(skippedLegacyShellProbe, "not generated\n");
+  mkdirSync(path.dirname(vendorTarballPath), { recursive: true });
+  writeFileSync(vendorTarballPath, "tracked vendor tarball placeholder\n");
+  mkdirSync(vendorGeneratedDistDir, { recursive: true });
+
   const fixtureGitAdd = runWithTimeout(
     [
       "git",
