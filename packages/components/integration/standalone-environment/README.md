@@ -1,5 +1,8 @@
 # `standalone-environment`
 
+> Maturity: `infrastructure`
+> Package class: `source-only`
+
 Shared Midnight standalone integration harness for the credentials prototype.
 
 Status:

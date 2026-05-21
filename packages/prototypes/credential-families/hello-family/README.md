@@ -1,5 +1,8 @@
 # @midnight-ntwrk/midnight-did-credentials-hello-family
 
+> Maturity: `reference`
+> Package class: `dist`
+
 Status:
 
 - starter credential-family package

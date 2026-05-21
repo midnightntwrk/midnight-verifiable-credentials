@@ -1,5 +1,8 @@
 # @midnight-ntwrk/midnight-did-credentials-birth-secret
 
+> Maturity: `reference`
+> Package class: `dist`
+
 Secret-holder-binding birth-credential specialization for the generic Midnight VC/VP core.
 
 Status:

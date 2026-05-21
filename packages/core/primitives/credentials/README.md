@@ -1,5 +1,8 @@
 # @midnight-ntwrk/midnight-did-credentials
 
+> Maturity: `core`
+> Package class: `dist`
+
 Generic Midnight VC/VP core for Compact-first credential families.
 
 Status:

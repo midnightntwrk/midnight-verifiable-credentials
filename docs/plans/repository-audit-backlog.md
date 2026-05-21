@@ -210,6 +210,11 @@ They add four review-driven backlog decisions:
       or publishable
     - add package README maturity tags and enforce them through workspace
       manifest checks
+    - 2026-05-22 delivery branch:
+      `codex/vc-package-maturity-policy`
+    - workspace package manifests now carry checked `midnight.maturity` and
+      `midnight.packageClass` metadata, and each package README repeats those
+      tags for human review
 
 ## First 10 PR Slices
 

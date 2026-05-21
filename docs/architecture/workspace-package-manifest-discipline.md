@@ -6,6 +6,36 @@ This repository has three workspace package shapes. Keep the shape explicit so
 local tarballs, CI restored artifacts, and downstream examples consume the same
 surface that maintainers review.
 
+Each workspace package also declares checked Midnight metadata:
+
+```json
+"midnight": {
+  "maturity": "core | reference | lab | demo | infrastructure",
+  "packageClass": "dist | scenario | source-only"
+}
+```
+
+The metadata answers two different questions:
+
+- `maturity` tells humans how to treat the package when composing examples,
+  specs, and downstream demos.
+- `packageClass` tells tooling which manifest surface the package is allowed to
+  expose.
+
+Maturity values:
+
+| Value | Meaning |
+|---|---|
+| `core` | Foundational VC primitive/capability package. Treat breaking changes as protocol-surface changes. |
+| `reference` | Reference implementation intended to guide downstream credential-family or protocol work. |
+| `lab` | Experimentation package used to probe claim shapes, disclosure models, or Compact constraints. |
+| `demo` | Use-case package for runnable scenarios, verifier contracts, reports, or living documentation. |
+| `infrastructure` | Local adapter, orchestration, or integration support package. |
+
+Every package README must repeat the two values near the top of the file. This
+keeps the human-facing package status aligned with the manifest and prevents
+lab/demo packages from looking like publish-ready primitives by accident.
+
 ## Package Classes
 
 | Class | Workspaces | Manifest contract |
@@ -87,5 +117,5 @@ npm run check:workspace-manifests
 ```
 
 The guard is also part of `npm run ci:lint`. Update the guard and this document
-in the same PR when adding a new workspace package class or intentionally
-changing a package entrypoint.
+in the same PR when adding a new workspace, adding a new workspace package
+class, or intentionally changing a package entrypoint.

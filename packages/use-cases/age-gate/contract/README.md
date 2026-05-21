@@ -1,5 +1,8 @@
 # @midnight-ntwrk/midnight-did-credentials-demo-contract
 
+> Maturity: `demo`
+> Package class: `dist`
+
 Concrete age-gate business contract for the Compact-first VC/VP prototype.
 
 Status:

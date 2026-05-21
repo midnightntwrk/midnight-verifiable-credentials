@@ -1,5 +1,8 @@
 # `credentials-protocol`
 
+> Maturity: `infrastructure`
+> Package class: `dist`
+
 Reference protocol orchestration layer for Midnight Credentials.
 
 Status:

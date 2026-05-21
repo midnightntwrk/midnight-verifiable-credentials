@@ -9,14 +9,50 @@ const repoRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
 
 const errors = [];
 
-const sourceOnlyWorkspaces = new Set([
-  "packages/components/integration/standalone-environment",
+const allowedMaturityValues = new Set([
+  "core",
+  "reference",
+  "lab",
+  "demo",
+  "infrastructure",
+]);
+const allowedPackageClasses = new Set(["dist", "scenario", "source-only"]);
+
+// Keep this in root package.json workspace order so diff reviews can compare
+// package additions against their policy classification directly.
+const workspaceMaturity = new Map([
+  ["packages/core/primitives/credentials", { maturity: "core", packageClass: "dist" }],
+  ["packages/registry/status-registry", { maturity: "reference", packageClass: "dist" }],
+  ["packages/core/capabilities/same-holder", { maturity: "core", packageClass: "dist" }],
+  ["packages/core/primitives/iso-registry", { maturity: "reference", packageClass: "dist" }],
+  ["packages/components/adapters/offchain-did", { maturity: "infrastructure", packageClass: "dist" }],
+  ["packages/protocols/openid", { maturity: "reference", packageClass: "dist" }],
+  ["packages/components/orchestration/protocol", { maturity: "infrastructure", packageClass: "dist" }],
+  ["packages/prototypes/credential-families/birth", { maturity: "reference", packageClass: "dist" }],
+  ["packages/prototypes/credential-families/birth-secret", { maturity: "reference", packageClass: "dist" }],
+  ["packages/prototypes/credential-families/hello-family", { maturity: "reference", packageClass: "dist" }],
+  ["packages/prototypes/credential-families/dummy-claims", { maturity: "lab", packageClass: "dist" }],
+  ["packages/prototypes/credential-families/mixed-claims", { maturity: "lab", packageClass: "dist" }],
+  ["packages/prototypes/credential-families/university-diploma", { maturity: "reference", packageClass: "dist" }],
+  ["packages/use-cases/age-gate/contract", { maturity: "demo", packageClass: "dist" }],
+  ["packages/use-cases/hello-verifier/contract", { maturity: "demo", packageClass: "dist" }],
+  ["packages/use-cases/university/contract", { maturity: "demo", packageClass: "dist" }],
+  ["packages/use-cases/age-gate/scenarios", { maturity: "demo", packageClass: "scenario" }],
+  ["packages/use-cases/university/scenarios", { maturity: "demo", packageClass: "scenario" }],
+  ["packages/use-cases/university/protocol", { maturity: "demo", packageClass: "dist" }],
+  ["packages/use-cases/university/reporting", { maturity: "demo", packageClass: "dist" }],
+  ["packages/components/integration/standalone-environment", { maturity: "infrastructure", packageClass: "source-only" }],
 ]);
 
-const scenarioWorkspaces = new Set([
-  "packages/use-cases/age-gate/scenarios",
-  "packages/use-cases/university/scenarios",
-]);
+const workspacesByPackageClass = (packageClass) =>
+  new Set(
+    [...workspaceMaturity]
+      .filter(([, metadata]) => metadata.packageClass === packageClass)
+      .map(([workspace]) => workspace),
+  );
+
+const sourceOnlyWorkspaces = workspacesByPackageClass("source-only");
+const scenarioWorkspaces = workspacesByPackageClass("scenario");
 
 const requiredDistFiles = [
   "dist/**",
@@ -120,6 +156,63 @@ const assertNoPublicEntrypoint = (packageJson, workspace) => {
       `${workspace} must not define ${field}; scenario packages are executable harnesses`,
     );
   }
+};
+
+const assertMaturityMetadata = (packageJson, workspace) => {
+  const expected = workspaceMaturity.get(workspace);
+  assert(expected !== undefined, `${workspace} must have a checked maturity policy`);
+  if (expected === undefined) {
+    return;
+  }
+  assert(
+    allowedMaturityValues.has(expected.maturity),
+    `${workspace} maturity policy uses unsupported value: ${expected.maturity}`,
+  );
+  assert(
+    allowedPackageClasses.has(expected.packageClass),
+    `${workspace} package class policy uses unsupported value: ${expected.packageClass}`,
+  );
+
+  assert(isRecord(packageJson.midnight), `${workspace} must define midnight metadata`);
+  if (!isRecord(packageJson.midnight)) {
+    return;
+  }
+
+  assert(
+    allowedMaturityValues.has(packageJson.midnight.maturity),
+    `${workspace} midnight.maturity uses unsupported value: ${packageJson.midnight.maturity}`,
+  );
+  assert(
+    allowedPackageClasses.has(packageJson.midnight.packageClass),
+    `${workspace} midnight.packageClass uses unsupported value: ${packageJson.midnight.packageClass}`,
+  );
+  assert(
+    packageJson.midnight.maturity === expected.maturity,
+    `${workspace} midnight.maturity must be ${expected.maturity}`,
+  );
+  assert(
+    packageJson.midnight.packageClass === expected.packageClass,
+    `${workspace} midnight.packageClass must be ${expected.packageClass}`,
+  );
+
+  const readmePath = path.join(repoRoot, workspace, "README.md");
+  assert(existsSync(readmePath), `${workspace} must include README.md with maturity tags`);
+  if (!existsSync(readmePath)) {
+    return;
+  }
+
+  const readmePreamble = readFileSync(readmePath, "utf8")
+    .split(/\r?\n/u)
+    .slice(0, 8)
+    .join("\n");
+  assert(
+    readmePreamble.includes(`> Maturity: \`${expected.maturity}\``),
+    `${workspace} README.md must include maturity tag ${expected.maturity}`,
+  );
+  assert(
+    readmePreamble.includes(`> Package class: \`${expected.packageClass}\``),
+    `${workspace} README.md must include package class tag ${expected.packageClass}`,
+  );
 };
 
 const assertRootExport = (packageJson, workspace) => {
@@ -227,6 +320,16 @@ assert(
   rootPackage.scripts?.["ci:lint"]?.includes("npm run check:workspace-manifests"),
   "ci:lint must run check:workspace-manifests",
 );
+assert(
+  workspaceMaturity.size === workspaces.length,
+  "workspace maturity policy must classify every root workspace",
+);
+for (const workspace of workspaceMaturity.keys()) {
+  assert(
+    workspaces.includes(workspace),
+    `workspace maturity policy references unknown workspace: ${workspace}`,
+  );
+}
 
 for (const workspace of workspaces) {
   const packageJsonPath = path.join(workspace, "package.json");
@@ -237,6 +340,7 @@ for (const workspace of workspaces) {
   }
 
   const packageJson = readJson(packageJsonPath);
+  assertMaturityMetadata(packageJson, workspace);
 
   if (scenarioWorkspaces.has(workspace)) {
     assertScenarioPackage(packageJson, workspace);

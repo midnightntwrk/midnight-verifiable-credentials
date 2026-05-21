@@ -1,5 +1,8 @@
 # @midnight-ntwrk/midnight-did-university-verifier-contract
 
+> Maturity: `demo`
+> Package class: `dist`
+
 Status:
 
 - compileable verifier-side contract package for the university diploma use case

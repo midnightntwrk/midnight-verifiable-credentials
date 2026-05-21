@@ -1,5 +1,8 @@
 # Age Gate BDD Scenarios
 
+> Maturity: `demo`
+> Package class: `scenario`
+
 This workspace adds a TypeScript BDD layer for the concrete age-gate use case.
 
 It does not replace Vitest unit or integration suites. Instead, it runs a

@@ -1,5 +1,8 @@
 # `credentials-iso-registry`
 
+> Maturity: `reference`
+> Package class: `dist`
+
 Compact-native ISO code types shared by Midnight credential families.
 
 Status:

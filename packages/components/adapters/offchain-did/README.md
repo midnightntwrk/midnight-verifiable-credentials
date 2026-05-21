@@ -1,5 +1,8 @@
 # @midnight-ntwrk/midnight-did-credentials-offchain-did
 
+> Maturity: `infrastructure`
+> Package class: `dist`
+
 DID-aware runtime adapter package for deriving Midnight VC holder-binding values
 from portable offchain Midnight DID material.
 
