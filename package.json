@@ -26,6 +26,7 @@
     "packages/use-cases/hello-verifier/contract",
     "packages/use-cases/university/contract",
     "packages/use-cases/age-gate/scenarios",
+    "packages/use-cases/bdd-support",
     "packages/use-cases/university/scenarios",
     "packages/use-cases/university/protocol",
     "packages/use-cases/university/reporting",

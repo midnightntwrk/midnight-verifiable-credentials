@@ -38,6 +38,7 @@ const workspaceMaturity = new Map([
   ["packages/use-cases/hello-verifier/contract", { maturity: "demo", packageClass: "dist" }],
   ["packages/use-cases/university/contract", { maturity: "demo", packageClass: "dist" }],
   ["packages/use-cases/age-gate/scenarios", { maturity: "demo", packageClass: "scenario" }],
+  ["packages/use-cases/bdd-support", { maturity: "infrastructure", packageClass: "source-only" }],
   ["packages/use-cases/university/scenarios", { maturity: "demo", packageClass: "scenario" }],
   ["packages/use-cases/university/protocol", { maturity: "demo", packageClass: "dist" }],
   ["packages/use-cases/university/reporting", { maturity: "demo", packageClass: "dist" }],

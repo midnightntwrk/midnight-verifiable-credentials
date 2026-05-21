@@ -20,7 +20,7 @@ Step notes in the Serenity report use the versioned
 
 The use-case-specific wrapper lives at
 `features/support/age-gate-step-insight.ts`; shared serialization and
-normalization live at `../../bdd-support/step-insight.ts`. The `checks` entries
+normalization live at `@midnight-ntwrk/midnight-did-credentials-bdd-support`. The `checks` entries
 are human-readable narration of assertions performed by the scenario code, not a
 separate assertion engine.
 
@@ -77,7 +77,7 @@ Scope rule:
 - scenario tasks should record request/response/check/DTO insight through
   `features/support/age-gate-step-insight.ts` instead of embedding raw logs in
   step definitions; keep reusable serialization behavior in
-  `../../bdd-support/step-insight.ts`
+  `@midnight-ntwrk/midnight-did-credentials-bdd-support`
 
 The Serenity BDD report is generated under:
 

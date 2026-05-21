@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@cucumber/cucumber": "^11.3.0",
+    "@midnight-ntwrk/midnight-did-credentials-bdd-support": "*",
     "@midnight-ntwrk/midnight-did-credentials-birth": "*",
     "@midnight-ntwrk/midnight-did-credentials-demo-contract": "*",
     "@serenity-js/assertions": "^3.34.0",
