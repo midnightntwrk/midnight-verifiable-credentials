@@ -85,6 +85,16 @@ The Serenity BDD report is generated under:
 packages/use-cases/age-gate/scenarios/target/site/serenity/
 ```
 
+The summary-first artifacts are generated before the Serenity aggregation step:
+
+```text
+packages/use-cases/age-gate/scenarios/target/summary.json
+packages/use-cases/age-gate/scenarios/target/summary.md
+```
+
+Use `target/summary.md` for a compact pass/fail table when you only need to
+inspect scenario intent, tags, duration, and the first non-passing step.
+
 On macOS, open the report directly with:
 
 ```bash

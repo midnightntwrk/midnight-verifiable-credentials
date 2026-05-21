@@ -24,6 +24,19 @@ surface.
 Use-case packages should keep thin wrappers that pin their schema version and
 export local function names for their step definitions.
 
+## Summary-First Reports
+
+`src/bdd-summary.ts` turns Cucumber JSON output into a compact
+`midnight-bdd-summary.v1` report:
+
+- `summary.json`: machine-readable totals, scenario status, durations, tags, and
+  first non-passing step
+- `summary.md`: quick human-readable table for local inspection before opening
+  the heavier Serenity HTML report
+
+Scenario packages should emit Cucumber JSON to `target/cucumber-report.json` and
+write summaries to `target/summary.json` and `target/summary.md`.
+
 ## Consumers
 
 Scenario packages execute this source-only package directly through
