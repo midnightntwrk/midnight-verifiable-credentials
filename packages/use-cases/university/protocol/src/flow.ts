@@ -366,7 +366,11 @@ export class UniversityProtocolFlowRunner {
     readonly totalMs: number;
   }): UniversityProtocolFlowResult {
     return buildUniversityProtocolFlowResult({
-      ...input,
+      issuanceResult: input.issuanceResult,
+      issuanceMs: input.issuanceMs,
+      jobApplicationsMs: input.jobApplicationsMs,
+      discountsMs: input.discountsMs,
+      totalMs: input.totalMs,
       issuanceBatches: this.issuanceBatches,
       discountApplicants: this.discountApplicants,
       issuanceMessages: this.issuanceMessages,

@@ -1,7 +1,3 @@
-import type {
-  UniversityCompanyVerifierAgent,
-  UniversityMallVerifierAgent,
-} from "./flow-agents.js";
 import { resultBodiesByStudent } from "./flow-messages.js";
 import type {
   DiscountApplicantRecord,
@@ -18,6 +14,12 @@ export type IssuanceFlowExecutionResult = {
   readonly idempotentReplayStudentIds: readonly string[];
 };
 
+type VerifierCounters = {
+  readonly acceptedCount: number;
+  readonly duplicateRejectedCount: number;
+  readonly verificationRejectedCount: number;
+};
+
 export type UniversityProtocolResultBuildInput = {
   readonly issuanceResult: IssuanceFlowExecutionResult;
   readonly issuanceMs: number;
@@ -29,8 +31,8 @@ export type UniversityProtocolResultBuildInput = {
   readonly issuanceMessages: readonly UniversityProtocolMessage[];
   readonly jobMessages: readonly UniversityProtocolMessage[];
   readonly discountMessages: readonly UniversityProtocolMessage[];
-  readonly companyAgents: ReadonlyMap<string, UniversityCompanyVerifierAgent>;
-  readonly mallAgent: UniversityMallVerifierAgent;
+  readonly companyAgents: ReadonlyMap<string, VerifierCounters>;
+  readonly mallAgent: VerifierCounters;
   readonly transcriptEntries: readonly UniversityProtocolTranscriptEntry[];
 };
 
@@ -40,8 +42,8 @@ const countMessages = (
 ): number => messages.filter((message) => message.type === type).length;
 
 const sumCompanyAgentCounts = (
-  agents: Iterable<UniversityCompanyVerifierAgent>,
-  selector: (agent: UniversityCompanyVerifierAgent) => number,
+  agents: Iterable<VerifierCounters>,
+  selector: (agent: VerifierCounters) => number,
 ): number => {
   let sum = 0;
   for (const agent of agents) {
