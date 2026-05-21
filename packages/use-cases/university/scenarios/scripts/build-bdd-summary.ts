@@ -10,7 +10,11 @@ const scenarioRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "..",
 );
-const cucumberJsonPath = path.join(scenarioRoot, "target", "cucumber-report.json");
+const cucumberJsonPath = path.join(
+  scenarioRoot,
+  "target",
+  "cucumber-report.json",
+);
 
 const summary = await buildBddSummaryFromCucumberJsonFile({
   title: "University BDD Summary",
@@ -23,4 +27,8 @@ await writeBddSummaryArtifacts({
   summary,
 });
 
-console.log(JSON.stringify(summary, null, 2));
+console.log(
+  `${summary.title}: ${summary.totals.scenarios} scenarios, ` +
+    `failed=${summary.totals.statuses.failed}, ` +
+    `summary=target/summary.md`,
+);
