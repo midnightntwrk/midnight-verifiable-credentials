@@ -167,10 +167,7 @@ const assertWorkflowUsesChangeClassifierCatalog = () => {
     );
   }
 
-  if (
-    workflowText.includes("global_heavy_lane_patterns=(") ||
-    workflowText.includes("revocation_patterns=(")
-  ) {
+  if (/\b[a-z0-9_]+_patterns=\(/u.test(workflowText)) {
     errors.push(
       "CI workflow must not keep inline change-classification pattern arrays",
     );

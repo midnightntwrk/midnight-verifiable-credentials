@@ -207,6 +207,17 @@ const writeGitHubOutput = (classification) => {
 const runSelfTest = () => {
   assert.deepEqual(classifyChangedFiles([]), emptyClassification());
   assert.equal(classifyChangedFiles(["docs/spec/example.md"]).docs_only, true);
+  const bddOnly = classifyChangedFiles([
+    "packages/use-cases/age-gate/scenarios/foo.ts",
+  ]);
+  assert.equal(bddOnly.docs_only, false);
+  assert.equal(bddOnly.bdd_only, true);
+  const mixedDocsAndBdd = classifyChangedFiles([
+    "docs/spec/example.md",
+    "packages/use-cases/age-gate/scenarios/foo.ts",
+  ]);
+  assert.equal(mixedDocsAndBdd.docs_only, false);
+  assert.equal(mixedDocsAndBdd.bdd_only, false);
   assert.equal(
     classifyChangedFiles(["packages/use-cases/age-gate/scenarios/foo.ts"])
       .bdd_only,
