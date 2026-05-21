@@ -19,7 +19,7 @@ The target repository shape is:
 - `packages/prototypes/`
 - `packages/use-cases/`
 - `tooling/`
-- `assets/`
+- guide-local assets under `docs/guides/assets/`
 
 Architecture notes:
 - RFCs belong under `docs/architecture/`
@@ -37,6 +37,8 @@ Goals:
 - move artifact-packaging support under `tooling/artifacts/`
 - update CI, shell entrypoints, and package scripts to use the `tooling/` location
 - update contribution guidance so commit scopes can follow the high-level structure during migration
+- keep explanatory artwork beside the guide that renders it instead of creating
+  unreferenced top-level asset directories
 
 Risk profile:
 - low runtime risk

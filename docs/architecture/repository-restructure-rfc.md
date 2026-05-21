@@ -152,7 +152,7 @@ packages/components/
 packages/prototypes/
 packages/use-cases/
 tooling/
-assets/
+docs/guides/assets/
 ```
 
 ### 1. `docs/`
@@ -398,13 +398,15 @@ Rules:
 - CI helpers, reporting scripts, quality collectors, and repo automation belong
   here rather than leaking into architectural areas
 
-### 9. `assets/`
+### 9. Guide-local assets
 
 Owns static visual or support assets.
 
 Rules:
 
-- no runtime architecture meaning should be encoded only in `assets/`
+- no runtime architecture meaning should be encoded only in visual assets
+- documentation artwork should live beside the guide that renders it, for
+  example under `docs/guides/assets/`
 - assets support docs, prototypes, and use cases, but do not define them
 
 ## Dependency direction
