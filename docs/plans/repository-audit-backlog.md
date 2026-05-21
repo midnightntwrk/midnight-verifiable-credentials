@@ -285,6 +285,11 @@ file splits, BDD readability, and maturity tags.
 
 7. `vc-turbo-cache-hardening`
    - covers `turbo-cache-input-hardening`
+   - 2026-05-22 delivery branch:
+     `codex/vc-turbo-cache-hardening`
+   - adds checked Turbo global invalidators for workflow/tooling drift,
+     Compact compiler version cache keys, explicit task env keys, and a
+     `check:turbo-cache-policy` guard wired into `ci:lint`
    - validation: `./run.sh --light`, CI wall-clock observation
 
 8. `vc-university-flow-split`

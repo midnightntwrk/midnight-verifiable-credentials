@@ -1,16 +1,28 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": [
+    "package.json",
     "package-lock.json",
+    "turbo.json",
     "tsconfig*.json",
     ".eslintrc*",
-    ".nvmrc"
+    ".nvmrc",
+    ".github/workflows/*.yml",
+    ".github/workflows/*.yaml",
+    "tooling/scripts/**/*.mjs",
+    "tooling/scripts/**/*.sh"
+  ],
+  "globalEnv": [
+    "COMPACT_COMPILER_VERSION"
   ],
   "tasks": {
     "clean": {
       "cache": false
     },
     "lint": {
+      "env": [
+        "CI"
+      ],
       "outputs": []
     },
     "lint:fix": {
@@ -22,11 +34,17 @@
         "build",
         "^build"
       ],
+      "env": [
+        "CI"
+      ],
       "outputs": []
     },
     "build": {
       "dependsOn": [
         "^build"
+      ],
+      "env": [
+        "COMPACT_COMPILER_VERSION"
       ],
       "outputs": [
         "dist/**",
@@ -38,11 +56,31 @@
       "dependsOn": [
         "build"
       ],
+      "env": [
+        "CI",
+        "COMPACT_COMPILER_VERSION",
+        "PROOF_SERVER_IMAGE",
+        "RUN_ENV_TESTS",
+        "TEST_ENTRYPOINT",
+        "TEST_ENV",
+        "TEST_WALLET_SEED",
+        "UNIVERSITY_PROTOCOL_PROFILE"
+      ],
       "outputs": []
     },
     "test:ci": {
       "dependsOn": [
         "build"
+      ],
+      "env": [
+        "CI",
+        "COMPACT_COMPILER_VERSION",
+        "PROOF_SERVER_IMAGE",
+        "RUN_ENV_TESTS",
+        "TEST_ENTRYPOINT",
+        "TEST_ENV",
+        "TEST_WALLET_SEED",
+        "UNIVERSITY_PROTOCOL_PROFILE"
       ],
       "outputs": []
     }
