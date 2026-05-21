@@ -40,6 +40,10 @@ these as a separate stack.
 2. Expansion for `bdd-summary-first-output`
    - make compact JSON/Markdown summaries the default local inspection surface
    - keep full Serenity HTML for report/publish lanes
+   - 2026-05-22: `codex/vc-university-bdd-insight-helpers` adds a reusable
+     `midnight-university-step-insight.v1` support shape and contract check so
+     step notes stay summary-first without duplicating Serenity log wiring in
+     every step definition
    - validation: `./run.sh university-bdd`, `./run.sh university-summary`
 
 3. Expansion for `university-stakeholder-language-pass`

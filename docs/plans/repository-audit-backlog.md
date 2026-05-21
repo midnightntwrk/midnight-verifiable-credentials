@@ -308,6 +308,12 @@ file splits, BDD readability, and maturity tags.
 9. `vc-university-bdd-language-pass`
    - covers `bdd-summary-first-output` and
      `university-stakeholder-language-pass`
+   - 2026-05-22 delivery branch:
+     `codex/vc-university-bdd-insight-helpers`
+   - moves Serenity step-insight serialization into a reusable support module
+     with a checked `midnight-university-step-insight.v1` report shape, keeping
+     scenario steps focused on stakeholder intent while DTO details stay in
+     report artifacts
    - validation: `./run.sh university-bdd`, `./run.sh university-summary`
 
 10. `vc-bdd-style-alignment-and-prototype-tags`

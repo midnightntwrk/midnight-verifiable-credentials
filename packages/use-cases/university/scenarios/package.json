@@ -20,9 +20,10 @@
     "test:all": "npm run clean && npm run test:execute && npm run test:report",
     "test:all:standalone": "npm run clean && npm run test:execute:standalone && npm run test:report",
     "test:all:proof-server": "npm run clean && npm run test:execute:proof-server && npm run test:report",
+    "test:step-insight:contract": "npm run prepare:deps && npx ts-node-esm ./scripts/check-step-insight-contract.ts",
     "test:backend-mode:contract": "npm run prepare:deps && npx ts-node-esm ./scripts/check-backend-mode-contract.ts",
     "test:standalone-timing:contract": "npm run prepare:deps && npx ts-node-esm ./scripts/check-standalone-timing-contract.ts",
-    "test:ci": "npm run test:backend-mode:contract && npm run test:standalone-timing:contract && npm run test:all",
+    "test:ci": "npm run test:step-insight:contract && npm run test:backend-mode:contract && npm run test:standalone-timing:contract && npm run test:all",
     "test:batch-sweep:contract": "npm run prepare:deps && npx ts-node-esm ./scripts/check-batch-sweep-contract.ts",
     "batch-sweep:run": "npm run prepare:deps && npx ts-node-esm ./scripts/run-batch-sweep.ts",
     "test:batch-sweep": "npm run test:batch-sweep:contract && npm run batch-sweep:run"

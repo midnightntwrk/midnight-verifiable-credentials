@@ -1,59 +1,19 @@
 import { Given, Then, When } from "@cucumber/cucumber";
-import { actorCalled, Interaction } from "@serenity-js/core";
-import { LogEntry, Name } from "@serenity-js/core/model";
+import { actorCalled } from "@serenity-js/core";
 
 // This package executes source files directly through ts-node/esm and does not
 // emit JavaScript, so local support imports intentionally use `.ts` specifiers.
+import {
+  recordStepInsight,
+  type UniversityStepInsightPayload,
+} from "../support/university-step-insight.ts";
 import { UseUniversityScenario } from "../support/university-scenario.ts";
 
 const engineer = () => actorCalled("Engineer");
 const universityScenario = () => UseUniversityScenario.from(engineer());
 
-type StepInsight = {
-  readonly request: string;
-  readonly response: string;
-  readonly checks: readonly string[];
-  readonly dto: unknown;
-};
-
-const sanitizeForReport = (value: unknown): unknown => {
-  if (typeof value === "bigint") {
-    return value.toString();
-  }
-
-  if (Array.isArray(value)) {
-    return value.map((entry) => sanitizeForReport(entry));
-  }
-
-  if (value && typeof value === "object") {
-    return Object.fromEntries(
-      Object.entries(value).map(([key, entry]) => [
-        key,
-        sanitizeForReport(entry),
-      ]),
-    );
-  }
-
-  return value;
-};
-
-const logInsight = (title: string, payload: StepInsight) =>
-  engineer().attemptsTo(
-    Interaction.where(`#actor records ${title}`, (actor) => {
-      actor.collect(
-        LogEntry.fromJSON({
-          data: JSON.stringify({
-            title,
-            request: payload.request,
-            response: payload.response,
-            checks: payload.checks,
-            dto: sanitizeForReport(payload.dto),
-          }),
-        }),
-        new Name(title),
-      );
-    }),
-  );
+const logInsight = (title: string, payload: UniversityStepInsightPayload) =>
+  recordStepInsight(engineer(), title, payload);
 
 const expectMetricNames = (
   actual: readonly string[],
