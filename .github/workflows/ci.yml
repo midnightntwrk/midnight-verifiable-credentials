@@ -83,7 +83,9 @@ jobs:
           echo 'Skipping Compact setup, builds, and test lanes.'
 
   bdd-scenarios:
-    name: BDD Scenarios
+    # Keep this check name stable for branch-protection compatibility; the run
+    # step below now covers age-gate smoke plus university BDD summaries.
+    name: BDD Scenarios Smoke
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: [changes, prepare-compact]
