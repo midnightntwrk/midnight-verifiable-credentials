@@ -9,6 +9,9 @@ Purpose:
 - make each request, response, and verification check visible in the scenario text
 - emit step-level DTO and intent summaries into the Serenity report via
   Serenity/JS log entries
+- keep step insight log entries on the shared
+  `midnight-university-step-insight.v1` report shape so request, response,
+  checks, and DTO details are always shown in the same order
 - surface representative protocol request/submission/result threads directly in
   the Serenity report for job applications and mall discounts
 - surface representative issuance request/result DTOs and batch metrics for the
@@ -111,6 +114,9 @@ Current boundary:
 - the `proof-server-contract` backend keeps the simulator semantics but records
   proof-server request/response DTO exchanges, operation IDs, and success/failure
   status into the job-application and discount step insights
+- step insight payload construction lives in
+  `features/support/university-step-insight.ts`; the step definitions should
+  only provide actor intent, expected response, checks, and the DTO to display
 - metric names now distinguish true timed samples (`*_ms`) from tagged counts
   (`*_count`) so the report does not present cached or categorical events as
   measured latency

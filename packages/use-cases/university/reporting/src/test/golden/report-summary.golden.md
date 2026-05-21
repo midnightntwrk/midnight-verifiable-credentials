@@ -9,14 +9,14 @@
 - discount applicants: 5
 
 ## Source Artifact Manifest
-- total bytes: 100202
+- total bytes: 100220
 
 | artifact | schema version | files | bytes | sha256 |
 | --- | --- | ---: | ---: | --- |
 | Readable BDD Serenity JSON | n/a | 13 | 2778 | 3885403dcd926e8fff77fb5de5b33b6cf3d19e540628f9bc240b670339c3ce72 |
 | Readable protocol transcript export | midnight-university-protocol-export.v1 | 1 | 74769 | d7c552e47e5d25b903863ff043b53718ac63dd16b6258d9879fa329421a84d19 |
-| Stress protocol summary | midnight-university-protocol-stress-summary.v2 | 1 | 13157 | 5608739ffce092e607263e782cafb1a2bb4148a2362b797a4723228b57215424 |
-| Issuer batch-sweep summary | midnight-university-batch-sweep-summary.v2 | 1 | 9498 | 702093b9bedc9cc8631356b55e0635178382a3f06a387b9c28d5ea263657fab7 |
+| Stress protocol summary | midnight-university-protocol-stress-summary.v2 | 1 | 13166 | eca86ee79f5cab71ada40ec9059711c1de243f832d83d4dad8d73826302d970c |
+| Issuer batch-sweep summary | midnight-university-batch-sweep-summary.v2 | 1 | 9507 | 7c60f98cbb138ea3ba0c98692a1fd2743f04b64c798193ec0bc640800d1a48fe |
 
 ## Readable BDD Lane
 - scenarios: 13

@@ -2,14 +2,14 @@
 
 - schema version: midnight-university-artifact-manifest.v1
 - artifact set: midnight-university-reporting-inputs
-- total bytes: 100202
+- total bytes: 100220
 
 | artifact | format | schema version | files | bytes | sha256 | produced by |
 | --- | --- | --- | ---: | ---: | --- | --- |
 | Readable BDD Serenity JSON | serenity-json-directory | n/a | 13 | 2778 | 3885403dcd926e8fff77fb5de5b33b6cf3d19e540628f9bc240b670339c3ce72 | `./run.sh university-bdd` |
 | Readable protocol transcript export | university-json-artifact | midnight-university-protocol-export.v1 | 1 | 74769 | d7c552e47e5d25b903863ff043b53718ac63dd16b6258d9879fa329421a84d19 | `./run.sh university-protocol-export` |
-| Stress protocol summary | university-json-artifact | midnight-university-protocol-stress-summary.v2 | 1 | 13157 | 5608739ffce092e607263e782cafb1a2bb4148a2362b797a4723228b57215424 | `./run.sh university-protocol-stress` |
-| Issuer batch-sweep summary | university-json-artifact | midnight-university-batch-sweep-summary.v2 | 1 | 9498 | 702093b9bedc9cc8631356b55e0635178382a3f06a387b9c28d5ea263657fab7 | `./run.sh university-batch-sweep` |
+| Stress protocol summary | university-json-artifact | midnight-university-protocol-stress-summary.v2 | 1 | 13166 | eca86ee79f5cab71ada40ec9059711c1de243f832d83d4dad8d73826302d970c | `./run.sh university-protocol-stress` |
+| Issuer batch-sweep summary | university-json-artifact | midnight-university-batch-sweep-summary.v2 | 1 | 9507 | 7c60f98cbb138ea3ba0c98692a1fd2743f04b64c798193ec0bc640800d1a48fe | `./run.sh university-batch-sweep` |
 
 ## Purposes
 - readable-bdd-serenity: Readable university BDD scenario JSON; 13 latest scenario titles are summarized by the report
