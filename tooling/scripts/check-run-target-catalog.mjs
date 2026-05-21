@@ -6,12 +6,17 @@ import {
   cpSync,
   mkdirSync,
   mkdtempSync,
+  readFileSync,
   rmSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { lightTargetNames, targets } from "./run-target-catalog.mjs";
+import {
+  lightTargetNames,
+  targetScriptNames,
+  targets,
+} from "./run-target-catalog.mjs";
 
 const repoRoot = new URL("../..", import.meta.url).pathname;
 
@@ -37,6 +42,9 @@ const duplicateTargetNames = targetNames.filter(
   (name, index) => targetNames.indexOf(name) !== index,
 );
 const lightTargets = lightTargetNames;
+const packageJson = JSON.parse(
+  readFileSync(path.join(repoRoot, "package.json"), "utf8"),
+);
 
 assert.deepEqual(
   duplicateTargetNames,
@@ -63,6 +71,19 @@ assert.deepEqual(
     .sort(),
   "light target names must match catalog supportsLight flags",
 );
+assert.ok(
+  targets.every(
+    (target) =>
+      target.name === "full" || target.category !== "core" || target.script,
+  ),
+  "core runner targets other than full must declare their root package script",
+);
+for (const scriptName of targetScriptNames) {
+  assert.ok(
+    packageJson.scripts?.[scriptName],
+    `runner target catalog references missing root package script '${scriptName}'`,
+  );
+}
 
 const help = runWithTimeout(["./run.sh", "help", "--light"]);
 assert.equal(help.status, 0, "help --light should exit successfully");

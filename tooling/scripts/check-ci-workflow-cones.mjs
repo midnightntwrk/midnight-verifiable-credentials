@@ -3,12 +3,24 @@ import { execFileSync } from "node:child_process";
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 
+import {
+  buildConeScriptCommand,
+  ciBuildConeByName,
+  ciBuildConeNames,
+  outputOwnersForCone,
+} from "./ci-build-cone-catalog.mjs";
+
 const repoRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
   encoding: "utf8",
 }).trim();
 
-const coneScript = path.join(repoRoot, "tooling/scripts/ci-build-output-groups.sh");
-const packageJson = JSON.parse(readFileSync(path.join(repoRoot, "package.json"), "utf8"));
+const coneScript = path.join(
+  repoRoot,
+  "tooling/scripts/ci-build-output-groups.sh",
+);
+const packageJson = JSON.parse(
+  readFileSync(path.join(repoRoot, "package.json"), "utf8"),
+);
 const workflowDir = path.join(repoRoot, ".github/workflows");
 // Cone wiring checks are intentionally pinned to the primary CI workflow;
 // root-script existence is checked across every workflow below.
@@ -33,7 +45,9 @@ const tokenizeCommandTail = (tail) =>
 const npmScriptReferencesFromWorkflowText = (text) => {
   const references = [];
 
-  for (const match of text.matchAll(/\bnpm\s+(?:run|run-script)\s+([^\n|&;\\)<>]+)/gu)) {
+  for (const match of text.matchAll(
+    /\bnpm\s+(?:run|run-script)\s+([^\n|&;\\)<>]+)/gu,
+  )) {
     const tokens = tokenizeCommandTail(match[1]);
     const workspaceScoped = tokens.some(
       (token) =>
@@ -126,17 +140,52 @@ const assertNpmScriptReferenceParser = () => {
     .sort();
 
   if (references.length !== 3) {
-    errors.push("workflow npm-script parser should ignore dynamic script tokens");
+    errors.push(
+      "workflow npm-script parser should ignore dynamic script tokens",
+    );
   }
   if (rootScripts.length !== 1 || rootScripts[0] !== "lint") {
-    errors.push("workflow npm-script parser should keep only root-scoped root scripts");
+    errors.push(
+      "workflow npm-script parser should keep only root-scoped root scripts",
+    );
   }
   if (
     workspaceScripts.length !== 2 ||
     workspaceScripts[0] !== "build" ||
     workspaceScripts[1] !== "test:ci"
   ) {
-    errors.push("workflow npm-script parser should identify workspace-scoped scripts");
+    errors.push(
+      "workflow npm-script parser should identify workspace-scoped scripts",
+    );
+  }
+};
+
+const assertWorkflowUsesChangeClassifierCatalog = () => {
+  if (!workflowText.includes("ci-change-classification-catalog.mjs")) {
+    errors.push(
+      "CI workflow must delegate change classification to tooling/scripts/ci-change-classification-catalog.mjs",
+    );
+  }
+
+  if (
+    workflowText.includes("global_heavy_lane_patterns=(") ||
+    workflowText.includes("revocation_patterns=(")
+  ) {
+    errors.push(
+      "CI workflow must not keep inline change-classification pattern arrays",
+    );
+  }
+
+  if (!packageJson.scripts?.["check:ci-change-classification"]) {
+    errors.push("Missing root package script: check:ci-change-classification");
+  }
+
+  if (
+    !packageJson.scripts?.["ci:lint"]?.includes(
+      "npm run check:ci-change-classification",
+    )
+  ) {
+    errors.push("ci:lint must run check:ci-change-classification");
   }
 };
 
@@ -158,8 +207,11 @@ const readShellList = (functionName, argument) => {
       .filter(Boolean);
   } catch (error) {
     const stderr = error.stderr?.toString().trim();
-    const context = argument === undefined ? functionName : `${functionName} '${argument}'`;
-    errors.push(`Failed to read shell cone list from ${context}${stderr ? `: ${stderr}` : ""}`);
+    const context =
+      argument === undefined ? functionName : `${functionName} '${argument}'`;
+    errors.push(
+      `Failed to read shell cone list from ${context}${stderr ? `: ${stderr}` : ""}`,
+    );
     return [];
   }
 };
@@ -177,11 +229,6 @@ function failOnErrors() {
 
 const ownerForOutputPath = (outputPath) =>
   outputPath.replace(/\/(?:dist|src\/managed)$/u, "");
-
-const parseTurboFilters = (script) =>
-  [...script.matchAll(/--filter=(?:"|')?\.\/([^\s"'&;|()<>,]+)(?:"|')?/gu)].map(
-    (match) => match[1],
-  );
 
 const parseDirectBuildWorkspaces = (script) =>
   [...script.matchAll(/npm\s+run\s+build\s+-w\s+\.\/([^\s"'&;|()<>,]+)/gu)].map(
@@ -205,27 +252,44 @@ const assertSameSet = ({ actual, expected, label }) => {
   }
 
   if (actual.length !== actualSet.size) {
-    const duplicates = actual.filter((value, index) => actual.indexOf(value) !== index);
-    errors.push(`${label} lists duplicate values: ${[...new Set(duplicates)].join(", ")}`);
+    const duplicates = actual.filter(
+      (value, index) => actual.indexOf(value) !== index,
+    );
+    errors.push(
+      `${label} lists duplicate values: ${[...new Set(duplicates)].join(", ")}`,
+    );
   }
 };
 
 const groups = readShellList("ci_build_output_groups");
 assertNpmScriptReferenceParser();
 assertWorkflowNpmScriptsExist();
+assertWorkflowUsesChangeClassifierCatalog();
+failOnErrors();
+assertSameSet({
+  actual: groups,
+  expected: ciBuildConeNames,
+  label: "Shell CI build cone groups",
+});
 failOnErrors();
 
 const groupSet = new Set(groups);
 // Script names and workspace paths contain ci-build-* tokens that are not
 // artifact/cache group names; keep this allowlist explicit so new tokens are
 // reviewed instead of silently ignored.
-const allowedNonGroupWorkflowReferences = new Set(["inputs", "output-groups", "outputs"]);
+const allowedNonGroupWorkflowReferences = new Set([
+  "inputs",
+  "output-groups",
+  "outputs",
+]);
 const coneOutputOwnersByGroup = new Map();
 const coneOutputOwnerSet = new Set();
 
 for (const group of groups) {
   const outputOwners = [
-    ...new Set(readShellList("ci_build_output_paths", group).map(ownerForOutputPath)),
+    ...new Set(
+      readShellList("ci_build_output_paths", group).map(ownerForOutputPath),
+    ),
   ];
 
   coneOutputOwnersByGroup.set(group, outputOwners);
@@ -238,21 +302,29 @@ failOnErrors();
 for (const group of groups) {
   const scriptName = `build:cone:${group}`;
   const script = packageJson.scripts?.[scriptName];
-  const expectedOwners = coneOutputOwnersByGroup.get(group) ?? [];
+  const expectedScript = buildConeScriptCommand(group);
+  const cone = ciBuildConeByName.get(group);
+  const expectedOwners = cone ? outputOwnersForCone(cone) : [];
 
   if (!script) {
     errors.push(`Missing root package script: ${scriptName}`);
     continue;
   }
 
-  if (!/\bturbo\s+run\s+build\b/u.test(script)) {
-    errors.push(`Root package script '${scriptName}' must run 'turbo run build'`);
+  if (script !== expectedScript) {
+    errors.push(
+      `Root package script '${scriptName}' must be '${expectedScript}'`,
+    );
   }
 
   assertSameSet({
-    actual: parseTurboFilters(script),
+    actual: [
+      ...new Set(
+        readShellList("ci_build_output_paths", group).map(ownerForOutputPath),
+      ),
+    ],
     expected: expectedOwners,
-    label: `Root package script '${scriptName}' Turbo filters`,
+    label: `CI build cone '${group}' shell output owners`,
   });
 }
 
@@ -278,15 +350,24 @@ for (const group of groups) {
   const requiredPatterns = [
     {
       label: `hash command for '${group}'`,
-      pattern: new RegExp(`hash-ci-build-inputs\\.sh\\s+${escapedGroup}\\b`, "u"),
+      pattern: new RegExp(
+        `hash-ci-build-inputs\\.sh\\s+${escapedGroup}\\b`,
+        "u",
+      ),
     },
     {
       label: `output-path emission for '${group}'`,
-      pattern: new RegExp(`emit_group_output\\s+${escapeRegExp(workflowOutputKey)}\\s+${escapedGroup}\\b`, "u"),
+      pattern: new RegExp(
+        `emit_group_output\\s+${escapeRegExp(workflowOutputKey)}\\s+${escapedGroup}\\b`,
+        "u",
+      ),
     },
     {
       label: `cache verification for '${group}'`,
-      pattern: new RegExp(`verify-ci-build-outputs\\.sh\\s+${escapedGroup}\\b`, "u"),
+      pattern: new RegExp(
+        `verify-ci-build-outputs\\.sh\\s+${escapedGroup}\\b`,
+        "u",
+      ),
     },
     {
       label: `build command for '${group}'`,
@@ -294,7 +375,10 @@ for (const group of groups) {
     },
     {
       label: `artifact upload for '${group}'`,
-      pattern: new RegExp(`name:\\s+${yamlWordScalarPattern(`ci-build-${group}`)}`, "u"),
+      pattern: new RegExp(
+        `name:\\s+${yamlWordScalarPattern(`ci-build-${group}`)}`,
+        "u",
+      ),
     },
     {
       label: `packed artifact path for '${group}'`,
@@ -317,7 +401,9 @@ for (const match of workflowText.matchAll(/\bci-build-([a-z0-9-]+)\b/gu)) {
   }
 
   if (!groupSet.has(referencedGroup)) {
-    errors.push(`Workflow references unknown CI build cone artifact/cache group: ${referencedGroup}`);
+    errors.push(
+      `Workflow references unknown CI build cone artifact/cache group: ${referencedGroup}`,
+    );
   }
 }
 
@@ -331,4 +417,6 @@ for (const group of groups) {
   );
 }
 
-console.log(`[check-ci-workflow-cones] Verified ${groups.length} CI workflow cone contracts.`);
+console.log(
+  `[check-ci-workflow-cones] Verified ${groups.length} CI workflow cone contracts.`,
+);
