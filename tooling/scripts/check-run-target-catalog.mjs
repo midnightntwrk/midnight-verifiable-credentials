@@ -71,6 +71,8 @@ assert.deepEqual(
     .sort(),
   "light target names must match catalog supportsLight flags",
 );
+// `full` is a meta-target that delegates to run-credentials.sh instead of a
+// single root package script.
 assert.ok(
   targets.every(
     (target) =>

@@ -69,7 +69,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "24"
+          node-version: '24'
 
       - name: Verify docs-only diff has no whitespace issues
         run: git diff --check
@@ -95,7 +95,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "24"
+          node-version: '24'
           cache: npm
           cache-dependency-path: package-lock.json
 
@@ -301,7 +301,7 @@ jobs:
         if: steps.cone-cache.outputs.any_missing == 'true'
         uses: actions/setup-node@v4
         with:
-          node-version: "24"
+          node-version: '24'
           cache: npm
           cache-dependency-path: package-lock.json
 
@@ -449,7 +449,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "24"
+          node-version: '24'
           cache: npm
           cache-dependency-path: package-lock.json
 
@@ -481,7 +481,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "24"
+          node-version: '24'
           cache: npm
           cache-dependency-path: package-lock.json
 
@@ -536,7 +536,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "24"
+          node-version: '24'
           cache: npm
           cache-dependency-path: package-lock.json
 
@@ -618,7 +618,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "24"
+          node-version: '24'
           cache: npm
           cache-dependency-path: package-lock.json
 
@@ -678,7 +678,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "24"
+          node-version: '24'
           cache: npm
           cache-dependency-path: package-lock.json
 
@@ -753,7 +753,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "24"
+          node-version: '24'
           cache: npm
           cache-dependency-path: package-lock.json
 
@@ -801,7 +801,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "24"
+          node-version: '24'
           cache: npm
           cache-dependency-path: package-lock.json
 
@@ -849,7 +849,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "24"
+          node-version: '24'
           cache: npm
           cache-dependency-path: package-lock.json
 

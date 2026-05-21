@@ -104,7 +104,7 @@
     "typecheck:dummy-claims-lab:from-artifacts": "npm exec -w ./packages/prototypes/credential-families/dummy-claims -- tsc -p tsconfig.json --noEmit && npm exec -w ./packages/use-cases/hello-verifier/contract -- tsc -p tsconfig.json --noEmit",
     "typecheck:university-protocol:from-artifacts": "npm exec -w ./packages/use-cases/university/protocol -- tsc -p tsconfig.json --noEmit",
     "typecheck:revocation:from-artifacts": "npm exec -w ./packages/core/primitives/credentials -- tsc -p tsconfig.json --noEmit && npm exec -w ./packages/registry/status-registry -- tsc -p tsconfig.json --noEmit && npm exec -w ./packages/core/capabilities/same-holder -- tsc -p tsconfig.json --noEmit && npm exec -w ./packages/prototypes/credential-families/birth -- tsc -p tsconfig.json --noEmit && npm exec -w ./packages/prototypes/credential-families/birth-secret -- tsc -p tsconfig.json --noEmit && npm exec -w ./packages/use-cases/age-gate/contract -- tsc -p tsconfig.json --noEmit",
-    "ci:lint": "npm run check:package-boundaries && npm run check:ci-build-cones && npm run check:ci-workflow-cones && npm run check:ci-change-classification && npm run check:run-target-contract && npm run check:managed-artifact-catalog && npm run check:did-integration && npm run check:vc-surface-discipline && npm run check:workspace-manifests && npm run check:holder-binding-terminology && npm run check:university-ci-matrix && npm run lint -- --concurrency=4 --ui=stream",
+    "ci:lint": "npm run check:package-boundaries && npm run check:ci-build-cones && npm run check:ci-build-cone-catalog && npm run check:ci-workflow-cones && npm run check:ci-change-classification && npm run check:run-target-contract && npm run check:managed-artifact-catalog && npm run check:did-integration && npm run check:vc-surface-discipline && npm run check:workspace-manifests && npm run check:holder-binding-terminology && npm run check:university-ci-matrix && npm run lint -- --concurrency=4 --ui=stream",
     "ci:typecheck": "npm run typecheck:all",
     "ci:typecheck:from-artifacts": "npm run typecheck:all:from-artifacts",
     "ci:package-tests": "npm run build:all && npm run test:all",
@@ -165,7 +165,8 @@
     "ci:university-batch-sweep": "npm run typecheck -w packages/use-cases/university/scenarios && npm run test:university-batch-sweep",
     "ci:university-protocol-profiles:from-artifacts": "npm run ci:university-data-profiles && npm run ci:university-policy-catalog && npm run ci:university-protocol:cohort:from-artifacts && npm run ci:university-protocol:stress:from-artifacts",
     "ci:university-protocol-profiles": "npm run build:university-protocol-cohort:prereqs && npm run build:university-protocol-stress:data && npm run ci:university-protocol-profiles:from-artifacts",
-    "check:ci-change-classification": "node ./tooling/scripts/ci-change-classification-catalog.mjs --self-test"
+    "check:ci-change-classification": "node ./tooling/scripts/ci-change-classification-catalog.mjs --self-test",
+    "check:ci-build-cone-catalog": "node ./tooling/scripts/ci-build-cone-catalog.mjs --check"
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",

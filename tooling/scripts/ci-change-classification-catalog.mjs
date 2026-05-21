@@ -93,6 +93,8 @@ const emptyClassification = () =>
 
 const escapeRegExp = (value) => value.replace(/[.+^${}()|[\]\\]/gu, "\\$&");
 
+// Supported catalog globs intentionally mirror the previous bash case-pattern
+// subset: `*` spans path separators and `?` matches one character.
 const globToRegExp = (pattern) =>
   new RegExp(
     `^${pattern
@@ -216,6 +218,14 @@ const runSelfTest = () => {
   for (const key of outputKeys.filter((key) => key.startsWith("run_"))) {
     assert.equal(packageOnly[key], true);
   }
+  const sharedCredentialPrimitive = classifyChangedFiles([
+    "packages/core/primitives/credentials/src/index.ts",
+  ]);
+  assert.equal(sharedCredentialPrimitive.run_revocation, true);
+  assert.equal(sharedCredentialPrimitive.run_hello_smoke, true);
+  assert.equal(sharedCredentialPrimitive.run_integration_demo_contract, true);
+  assert.equal(sharedCredentialPrimitive.run_integration_protocol, true);
+  assert.equal(sharedCredentialPrimitive.run_university, false);
   const globalTooling = classifyChangedFiles(["tooling/scripts/example.mjs"]);
   for (const key of outputKeys.filter((key) => key.startsWith("run_"))) {
     assert.equal(globalTooling[key], true);
