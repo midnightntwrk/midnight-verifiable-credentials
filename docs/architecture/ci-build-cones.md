@@ -88,8 +88,9 @@ inputs that sit outside package directories but still affect package tasks:
 
 - root npm, TypeScript, Turbo, and Node version files
 - GitHub workflow definitions
-- checked tooling scripts used by runner, cone, artifact, cleanup, and policy
-  lanes
+- all checked tooling scripts, including runner, cone, artifact, cleanup, and
+  policy lanes; this intentionally includes the cache-policy checker itself so
+  policy changes invalidate cached package tasks
 - `COMPACT_COMPILER_VERSION`, because generated Compact output can change
   without a TypeScript source diff
 
