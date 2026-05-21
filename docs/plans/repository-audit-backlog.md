@@ -343,9 +343,10 @@ file splits, BDD readability, and maturity tags.
     - covers the CI-retention follow-up for `bdd-summary-first-output`
     - 2026-05-22 delivery branch:
       `codex/vc-bdd-summary-ci-artifacts`
-    - uploads Cucumber JSON plus `summary.json`/`summary.md` files from the
-      focused BDD-only CI lane under `bdd-summary-artifacts`, and adds a guard
-      so future workflow edits do not drop the compact report handoff
+    - runs both age-gate smoke and university BDD in the focused BDD-only CI
+      lane, uploads Cucumber JSON plus `summary.json`/`summary.md` files under
+      `bdd-summary-artifacts`, and adds a guard so future workflow edits do not
+      drop the compact report handoff
     - validation: `npm run check:bdd-summary-artifacts`,
       `npm run check:ci-workflow-cones`, `npm run docs:links`
 

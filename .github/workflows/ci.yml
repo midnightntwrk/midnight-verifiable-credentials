@@ -133,8 +133,22 @@ jobs:
       - name: Install dependencies
         run: npm ci --prefer-offline
 
-      - name: Run BDD smoke lane
-        run: npm run test:bdd:smoke
+      - name: Check BDD summary artifact contract
+        run: npm run check:bdd-summary-artifacts
+
+      - name: Run BDD summary lanes
+        shell: bash
+        run: |
+          set +e
+          npm run test:bdd:smoke
+          age_gate_status=$?
+          npm run test:bdd:university
+          university_status=$?
+
+          if [ "$age_gate_status" -ne 0 ]; then
+            exit "$age_gate_status"
+          fi
+          exit "$university_status"
 
       - name: Upload BDD summary artifacts
         if: always()

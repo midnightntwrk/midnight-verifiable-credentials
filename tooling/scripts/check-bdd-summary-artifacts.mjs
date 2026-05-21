@@ -37,30 +37,68 @@ const assertIncludes = (haystack, needle, label) => {
   }
 };
 
+const stepBlock = (stepName) => {
+  const marker = `      - name: ${stepName}`;
+  const start = workflowText.indexOf(marker);
+  if (start === -1) {
+    errors.push(`.github/workflows/ci.yml must include step "${stepName}"`);
+    return "";
+  }
+
+  const nextStep = workflowText.indexOf(
+    "\n      - name:",
+    start + marker.length,
+  );
+  return nextStep === -1
+    ? workflowText.slice(start)
+    : workflowText.slice(start, nextStep);
+};
+
+const contractCheckStep = stepBlock("Check BDD summary artifact contract");
+const runStep = stepBlock("Run BDD summary lanes");
+const uploadStep = stepBlock("Upload BDD summary artifacts");
+
+// This is a workflow wording tripwire, not a full YAML parser. Keep assertions
+// local to the owning steps so accidental moves are still caught in CI.
 assertIncludes(
-  workflowText,
-  "name: bdd-summary-artifacts",
-  ".github/workflows/ci.yml",
+  contractCheckStep,
+  "npm run check:bdd-summary-artifacts",
+  ".github/workflows/ci.yml BDD summary contract step",
 );
 assertIncludes(
-  workflowText,
+  runStep,
+  "npm run test:bdd:smoke",
+  ".github/workflows/ci.yml BDD summary run step",
+);
+assertIncludes(
+  runStep,
+  "npm run test:bdd:university",
+  ".github/workflows/ci.yml BDD summary run step",
+);
+assertIncludes(
+  uploadStep,
+  "name: bdd-summary-artifacts",
+  ".github/workflows/ci.yml BDD summary upload",
+);
+assertIncludes(
+  uploadStep,
   "if: always()",
   ".github/workflows/ci.yml BDD summary upload",
 );
 assertIncludes(
-  workflowText,
+  uploadStep,
   "uses: actions/upload-artifact@v4",
   ".github/workflows/ci.yml BDD summary upload",
 );
 assertIncludes(
-  workflowText,
+  uploadStep,
   "retention-days: 14",
   ".github/workflows/ci.yml BDD summary upload",
 );
 
 for (const artifactPath of summaryArtifactPaths) {
   assertIncludes(
-    workflowText,
+    uploadStep,
     artifactPath,
     ".github/workflows/ci.yml BDD summary upload",
   );

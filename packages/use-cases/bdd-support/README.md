@@ -38,9 +38,10 @@ Scenario packages should emit Cucumber JSON to `target/cucumber-report.json` and
 write summaries to `target/summary.json` and `target/summary.md`.
 
 CI retains the compact handoff files under the `bdd-summary-artifacts` artifact
-when the focused BDD-only lane runs. The upload uses `if: always()` so failed
-scenario executions still leave the Cucumber JSON and generated summaries
-available for inspection before opening the heavier Serenity report.
+when the focused BDD-only lane runs the age-gate smoke and university BDD
+scenarios. The upload uses `if: always()` so failed scenario executions still
+leave the Cucumber JSON and generated summaries available for inspection before
+opening the heavier Serenity report.
 
 `src/bdd-pipeline.ts` owns the small execution wrapper that runs clean,
 Cucumber execution, summary generation, and Serenity aggregation. It still runs
