@@ -86,6 +86,9 @@ Scope:
   simulator intentionally reuses deterministic runtime and proof-backend
   instances across restarts today; a real standalone process restart must
   reconstruct those adapters from durable seed/configuration data.
+- result aggregation is isolated in `src/flow-result-builder.ts`, leaving
+  `src/flow.ts` focused on actor setup, phase execution, restart simulation,
+  and message delivery.
 - stable transcript export now exists in both JSON and Markdown forms under
   `target/readable-10`
 - export summaries group entries per thread and include rejection-kind

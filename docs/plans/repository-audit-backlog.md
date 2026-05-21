@@ -294,6 +294,11 @@ file splits, BDD readability, and maturity tags.
 
 8. `vc-university-flow-split`
    - covers `university-flow-file-split`
+   - 2026-05-22 delivery branch:
+     `codex/vc-university-flow-split`
+   - moves pure university flow result aggregation from the runner into
+     `flow-result-builder.ts`, reducing the runner's responsibility to actor
+     setup, phase execution, restart simulation, and message delivery
    - validation: `./run.sh university-protocol --light`,
      `./run.sh university-protocol-export --light`, package tests
 

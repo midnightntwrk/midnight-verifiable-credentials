@@ -9,12 +9,15 @@ import {
   UniversityStudentAgent,
 } from "./flow-agents.js";
 import {
-  resultBodiesByStudent,
   type UniversityIssuanceResultMessage,
   type UniversityPresentationRequestMessage,
   type UniversityPresentationResultMessage,
   type UniversityPresentationSubmissionMessage,
 } from "./flow-messages.js";
+import {
+  buildUniversityProtocolFlowResult,
+  type IssuanceFlowExecutionResult,
+} from "./flow-result-builder.js";
 import type {
   CompanyRecord,
   DiscountApplicantRecord,
@@ -86,13 +89,6 @@ export type UniversityProtocolFlowRunnerOptions = {
   readonly transport?: MessageBus;
 };
 
-type IssuanceFlowExecutionResult = {
-  readonly issuedStudentIds: readonly string[];
-  readonly duplicateRequestCount: number;
-  readonly idempotentReplayCount: number;
-  readonly idempotentReplayStudentIds: readonly string[];
-};
-
 type UniversityProtocolRunnerCheckpointState = {
   readonly transport: SerializedUniversityProtocolTransportCheckpoint;
   readonly checkpointSequence: number;
@@ -120,22 +116,6 @@ type UniversityProtocolRunnerCheckpointState = {
     readonly duplicateRejectedCount: number;
     readonly verificationRejectedCount: number;
   };
-};
-
-const countMessages = (
-  messages: readonly UniversityProtocolMessage[],
-  type: UniversityProtocolMessage["type"],
-): number => messages.filter((message) => message.type === type).length;
-
-const sumCompanyAgentCounts = (
-  agents: Iterable<UniversityCompanyVerifierAgent>,
-  selector: (agent: UniversityCompanyVerifierAgent) => number,
-): number => {
-  let sum = 0;
-  for (const agent of agents) {
-    sum += selector(agent);
-  }
-  return sum;
 };
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
@@ -385,113 +365,17 @@ export class UniversityProtocolFlowRunner {
     readonly discountsMs: number;
     readonly totalMs: number;
   }): UniversityProtocolFlowResult {
-    const companyAcceptedCounts = Object.fromEntries(
-      [...this.companyAgents.entries()].map(([companyId, agent]) => [
-        companyId,
-        agent.acceptedCount,
-      ]),
-    );
-    const companyAcceptedCount = Object.values(companyAcceptedCounts).reduce(
-      (sum, count) => sum + count,
-      0,
-    );
-    const companyDuplicateRejectedCount = sumCompanyAgentCounts(
-      this.companyAgents.values(),
-      (agent) => agent.duplicateRejectedCount,
-    );
-    const companyVerificationRejectedCount = sumCompanyAgentCounts(
-      this.companyAgents.values(),
-      (agent) => agent.verificationRejectedCount,
-    );
-    const jobResultsByStudent = resultBodiesByStudent(
-      this.jobMessages,
-      "jobApplication",
-    );
-    const discountResultsByStudent = resultBodiesByStudent(
-      this.discountMessages,
-      "mallDiscount",
-    );
-
-    return {
-      metrics: {
-        issuanceMs: input.issuanceMs,
-        jobApplicationsMs: input.jobApplicationsMs,
-        discountsMs: input.discountsMs,
-        totalMs: input.totalMs,
-      },
-      issuance: this.buildIssuanceResult(input.issuanceResult),
-      jobApplications: {
-        requestCount: countMessages(this.jobMessages, "presentation:request"),
-        submissionCount: countMessages(
-          this.jobMessages,
-          "presentation:submission",
-        ),
-        resultCount: countMessages(this.jobMessages, "presentation:result"),
-        acceptedCount: companyAcceptedCount,
-        rejectedCount:
-          companyDuplicateRejectedCount + companyVerificationRejectedCount,
-        duplicateRejectedCount: companyDuplicateRejectedCount,
-        verificationRejectedCount: companyVerificationRejectedCount,
-        companyAcceptedCounts,
-        resultsByStudent: jobResultsByStudent,
-        messages: this.jobMessages,
-      },
-      discounts: this.buildDiscountResult(discountResultsByStudent),
-      transcript: this.transcript.entries,
-    };
-  }
-
-  private buildIssuanceResult(
-    issuanceResult: IssuanceFlowExecutionResult,
-  ): UniversityProtocolFlowResult["issuance"] {
-    return {
-      requestCount: countMessages(this.issuanceMessages, "issuance:request"),
-      resultCount: countMessages(this.issuanceMessages, "issuance:result"),
-      batchCount: this.issuanceBatches.length,
-      duplicateRequestCount: issuanceResult.duplicateRequestCount,
-      idempotentReplayCount: issuanceResult.idempotentReplayCount,
-      idempotentReplayStudentIds: issuanceResult.idempotentReplayStudentIds,
-      issuedStudentIds: issuanceResult.issuedStudentIds,
-      messages: this.issuanceMessages,
-    };
-  }
-
-  private buildDiscountResult(
-    discountResultsByStudent: UniversityProtocolFlowResult["discounts"]["resultsByStudent"],
-  ): UniversityProtocolFlowResult["discounts"] {
-    const discountOutcomes = Object.fromEntries(
-      this.discountApplicants.map((applicant) => {
-        const discountResults = discountResultsByStudent[applicant.studentId];
-        const firstResult = discountResults?.at(0);
-        // The first result is the canonical business decision; duplicate
-        // rejections emitted by the protocol guard must not overwrite it.
-        return [
-          applicant.studentId,
-          firstResult?.accepted ? "accepted" : "rejected",
-        ] as const;
-      }),
-    );
-
-    return {
-      requestCount: countMessages(
-        this.discountMessages,
-        "presentation:request",
-      ),
-      submissionCount: countMessages(
-        this.discountMessages,
-        "presentation:submission",
-      ),
-      resultCount: countMessages(this.discountMessages, "presentation:result"),
-      acceptedCount: this.mallAgent.acceptedCount,
-      rejectedCount:
-        this.mallAgent.duplicateRejectedCount +
-        this.mallAgent.verificationRejectedCount,
-      duplicateRejectedCount: this.mallAgent.duplicateRejectedCount,
-      verificationRejectedCount: this.mallAgent.verificationRejectedCount,
-      outcomes: discountOutcomes,
-      resultsByStudent: discountResultsByStudent,
-      messages: this.discountMessages,
-    };
+    return buildUniversityProtocolFlowResult({
+      ...input,
+      issuanceBatches: this.issuanceBatches,
+      discountApplicants: this.discountApplicants,
+      issuanceMessages: this.issuanceMessages,
+      jobMessages: this.jobMessages,
+      discountMessages: this.discountMessages,
+      companyAgents: this.companyAgents,
+      mallAgent: this.mallAgent,
+      transcriptEntries: this.transcript.entries,
+    });
   }
 
   private withSerializedTransportForRestart(): UniversityProtocolFlowRunner {
