@@ -5,6 +5,6 @@ module.exports = {
     // does not emit JavaScript from its noEmit TypeScript project.
     loader: ["ts-node/esm"],
     import: ["features/**/*.ts"],
-    format: ["@serenity-js/cucumber"],
+    format: ["@serenity-js/cucumber", "json:target/cucumber-report.json"],
   },
 };
