@@ -9,6 +9,11 @@ import {
   UniversityStudentAgent,
 } from "./flow-agents.js";
 import {
+  asUniversityProtocolRunnerCheckpointState,
+  summarizeUniversityProtocolCheckpoint,
+  type UniversityProtocolRunnerCheckpointState,
+} from "./flow-checkpoint-state.js";
+import {
   type UniversityIssuanceResultMessage,
   type UniversityPresentationRequestMessage,
   type UniversityPresentationResultMessage,
@@ -23,9 +28,7 @@ import type {
   DiscountApplicantRecord,
   IssuanceBatchRecord,
   MallRecord,
-  StoredIssuedCredential,
   StudentRecord,
-  UniversityPresentationResultBody,
   UniversityPresentationTamperingMode,
   UniversityProfile,
   UniversityProtocolDataPaths,
@@ -38,7 +41,6 @@ import {
   assertUniversityProtocolCheckpointCompatible,
   defaultUniversityProtocolRestartPoints,
   InMemoryUniversityProtocolCheckpointStore,
-  queuedMessageCount,
   type UniversityProtocolCheckpoint,
   universityProtocolCheckpointSchemaId,
   universityProtocolCheckpointSchemaVersion,
@@ -49,10 +51,8 @@ import {
   type UniversityProtocolRestartSimulationResult,
 } from "./persistence.js";
 import {
-  decodeUniversityProtocolTransportValue,
   encodeUniversityProtocolTransportValue,
   SerializedUniversityProtocolTransport,
-  type SerializedUniversityProtocolTransportCheckpoint,
 } from "./process-transport.js";
 import {
   SimulatorUniversityProofExecutionBackend,
@@ -87,59 +87,6 @@ export type UniversityProtocolFlowRunnerOptions = {
   readonly partyRuntime?: UniversityPartyRuntime;
   readonly proofExecutionBackend?: UniversityProofExecutionBackend;
   readonly transport?: MessageBus;
-};
-
-type UniversityProtocolRunnerCheckpointState = {
-  readonly transport: SerializedUniversityProtocolTransportCheckpoint;
-  readonly checkpointSequence: number;
-  readonly transcript: UniversityProtocolFlowResult["transcript"];
-  readonly messages: {
-    readonly issuance: readonly UniversityProtocolMessage[];
-    readonly jobApplications: readonly UniversityProtocolMessage[];
-    readonly discounts: readonly UniversityProtocolMessage[];
-  };
-  readonly students: readonly {
-    readonly studentId: string;
-    readonly storedIssuedCredential?: StoredIssuedCredential;
-    readonly receivedResults: readonly UniversityPresentationResultBody[];
-  }[];
-  readonly companies: readonly {
-    readonly companyId: string;
-    readonly processedThreadIds: readonly string[];
-    readonly acceptedCount: number;
-    readonly duplicateRejectedCount: number;
-    readonly verificationRejectedCount: number;
-  }[];
-  readonly mall: {
-    readonly processedThreadIds: readonly string[];
-    readonly acceptedCount: number;
-    readonly duplicateRejectedCount: number;
-    readonly verificationRejectedCount: number;
-  };
-};
-
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === "object" && value !== null && !Array.isArray(value);
-
-const asCheckpointState = (
-  value: unknown,
-): UniversityProtocolRunnerCheckpointState => {
-  if (
-    !isRecord(value) ||
-    !isRecord(value.transport) ||
-    typeof value.checkpointSequence !== "number" ||
-    !Array.isArray(value.transcript) ||
-    !isRecord(value.messages) ||
-    !Array.isArray(value.messages.issuance) ||
-    !Array.isArray(value.messages.jobApplications) ||
-    !Array.isArray(value.messages.discounts) ||
-    !Array.isArray(value.students) ||
-    !Array.isArray(value.companies) ||
-    !isRecord(value.mall)
-  ) {
-    throw new Error("Malformed university protocol checkpoint state");
-  }
-  return value as UniversityProtocolRunnerCheckpointState;
 };
 
 export class UniversityProtocolFlowRunner {
@@ -416,7 +363,7 @@ export class UniversityProtocolFlowRunner {
     }
     const checkpoint = this.buildCheckpoint(restartPoint);
     checkpointStore.save(checkpoint);
-    checkpoints.push(this.summarizeCheckpoint(checkpoint));
+    checkpoints.push(summarizeUniversityProtocolCheckpoint(checkpoint));
     const restoredCheckpoint = checkpointStore.load(checkpoint.checkpointId);
     if (!restoredCheckpoint) {
       throw new Error(`Missing persisted checkpoint ${checkpoint.checkpointId}`);
@@ -493,10 +440,9 @@ export class UniversityProtocolFlowRunner {
     checkpoint: UniversityProtocolCheckpoint,
   ): UniversityProtocolFlowRunner {
     assertUniversityProtocolCheckpointCompatible(checkpoint);
-    const decodedState = decodeUniversityProtocolTransportValue(
+    const state = asUniversityProtocolRunnerCheckpointState(
       checkpoint.encodedState,
     );
-    const state = asCheckpointState(decodedState);
     const restored = new UniversityProtocolFlowRunner(
       this.optionsForRestart(
         SerializedUniversityProtocolTransport.fromCheckpoint(state.transport),
@@ -557,27 +503,6 @@ export class UniversityProtocolFlowRunner {
     this.mallAgent.duplicateRejectedCount = state.mall.duplicateRejectedCount;
     this.mallAgent.verificationRejectedCount =
       state.mall.verificationRejectedCount;
-  }
-
-  private summarizeCheckpoint(
-    checkpoint: UniversityProtocolCheckpoint,
-  ): UniversityProtocolCheckpointSummary {
-    const decodedState = decodeUniversityProtocolTransportValue(
-      checkpoint.encodedState,
-    );
-    const state = asCheckpointState(decodedState);
-    return {
-      checkpointId: checkpoint.checkpointId,
-      restartPoint: checkpoint.restartPoint,
-      queuedMessageCount: queuedMessageCount(state.transport),
-      transportFrameCount: state.transport.frames.length,
-      transcriptEntries: state.transcript.length,
-      messageCounts: {
-        issuance: state.messages.issuance.length,
-        jobApplications: state.messages.jobApplications.length,
-        discounts: state.messages.discounts.length,
-      },
-    };
   }
 
   private runIssuance(): IssuanceFlowExecutionResult {

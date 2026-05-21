@@ -89,6 +89,9 @@ Scope:
 - result aggregation is isolated in `src/flow-result-builder.ts`, leaving
   `src/flow.ts` focused on actor setup, phase execution, restart simulation,
   and message delivery.
+- checkpoint state decoding and summary projection are isolated in
+  `src/flow-checkpoint-state.ts`, so restart DTO validation is testable without
+  constructing a full runner instance.
 - stable transcript export now exists in both JSON and Markdown forms under
   `target/readable-10`
 - export summaries group entries per thread and include rejection-kind
