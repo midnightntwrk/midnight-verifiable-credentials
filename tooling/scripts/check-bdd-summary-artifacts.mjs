@@ -7,6 +7,8 @@ const repoRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
   encoding: "utf8",
 }).trim();
 
+// This checks the CI workflow contract, not the runtime existence of artifacts.
+// The BDD pipeline and upload step still own producing and retaining the files.
 const workflowText = readFileSync(
   path.join(repoRoot, ".github/workflows/ci.yml"),
   "utf8",
