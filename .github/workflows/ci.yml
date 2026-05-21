@@ -84,10 +84,10 @@ jobs:
 
   bdd-scenarios:
     # Keep this check name stable for branch-protection compatibility; the run
-    # step below now covers age-gate smoke plus university BDD summaries.
+    # step below now covers age-gate smoke plus full university BDD summaries.
     name: BDD Scenarios Smoke
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     needs: [changes, prepare-compact]
     if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only == 'true'
     steps:
@@ -141,16 +141,9 @@ jobs:
       - name: Run BDD summary lanes
         shell: bash
         run: |
-          set +e
-          npm run test:bdd:smoke
-          age_gate_status=$?
-          npm run test:bdd:university
-          university_status=$?
-
-          if [ "$age_gate_status" -ne 0 ]; then
-            exit "$age_gate_status"
-          fi
-          exit "$university_status"
+          npm run test:bdd:smoke || age_gate_status=$?
+          npm run test:bdd:university || university_status=$?
+          exit "${age_gate_status:-${university_status:-0}}"
 
       - name: Upload BDD summary artifacts
         if: always()
@@ -164,7 +157,7 @@ jobs:
             packages/use-cases/university/scenarios/target/cucumber-report.json
             packages/use-cases/university/scenarios/target/summary.json
             packages/use-cases/university/scenarios/target/summary.md
-          if-no-files-found: warn
+          if-no-files-found: error
           retention-days: 14
 
   prepare-compact:

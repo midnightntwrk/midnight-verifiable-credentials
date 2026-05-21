@@ -39,17 +39,20 @@ const assertIncludes = (haystack, needle, label) => {
   }
 };
 
+const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
 const stepBlock = (stepName) => {
-  const marker = `      - name: ${stepName}`;
-  const start = workflowText.indexOf(marker);
-  if (start === -1) {
+  const marker = new RegExp(`^[ \\t]+- name: ${escapeRegExp(stepName)}$`, "mu");
+  const match = marker.exec(workflowText);
+  if (!match) {
     errors.push(`.github/workflows/ci.yml must include step "${stepName}"`);
     return "";
   }
 
+  const start = match.index;
   const nextStep = workflowText.indexOf(
     "\n      - name:",
-    start + marker.length,
+    start + match[0].length,
   );
   return nextStep === -1
     ? workflowText.slice(start)
@@ -95,6 +98,11 @@ assertIncludes(
 assertIncludes(
   uploadStep,
   "retention-days: 14",
+  ".github/workflows/ci.yml BDD summary upload",
+);
+assertIncludes(
+  uploadStep,
+  "if-no-files-found: error",
   ".github/workflows/ci.yml BDD summary upload",
 );
 
