@@ -11,7 +11,8 @@
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test:ci": "npm run typecheck"
+    "test:unit": "vitest run",
+    "test:ci": "npm run typecheck && npm run test:unit"
   },
   "files": [
     "src/**/*.ts",

@@ -23,3 +23,10 @@ surface.
 
 Use-case packages should keep thin wrappers that pin their schema version and
 export local function names for their step definitions.
+
+## Consumers
+
+Scenario packages execute this source-only package directly through
+`ts-node/esm`; consumers that import it in TypeScript projects must keep
+`allowImportingTsExtensions: true` because `src/index.ts` re-exports source
+files with `.ts` extensions.
