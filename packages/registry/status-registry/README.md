@@ -1,5 +1,8 @@
 # credentials-status-registry
 
+> Maturity: `reference`
+> Package class: `dist`
+
 Reference Compact surface for a revoked-set status registry.
 
 Status:

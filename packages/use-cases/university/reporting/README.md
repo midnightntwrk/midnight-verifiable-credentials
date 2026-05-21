@@ -1,5 +1,8 @@
 # @midnight-ntwrk/midnight-did-university-reporting
 
+> Maturity: `demo`
+> Package class: `dist`
+
 Status:
 
 - compact summary package for the university use-case artifact set

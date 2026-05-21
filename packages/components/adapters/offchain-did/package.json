@@ -44,5 +44,9 @@
     "package.json",
     "tsconfig.json",
     "tsconfig.build.json"
-  ]
+  ],
+  "midnight": {
+    "maturity": "infrastructure",
+    "packageClass": "dist"
+  }
 }

@@ -1,5 +1,8 @@
 # @midnight-ntwrk/midnight-did-credentials-birth
 
+> Maturity: `reference`
+> Package class: `dist`
+
 Birth-credential specialization for the generic Midnight VC/VP core.
 
 Status:

@@ -1,5 +1,8 @@
 # @midnight-ntwrk/midnight-did-credentials-university-diploma
 
+> Maturity: `reference`
+> Package class: `dist`
+
 Status:
 
 - compileable university diploma credential-family package

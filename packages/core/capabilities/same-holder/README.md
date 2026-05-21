@@ -1,5 +1,8 @@
 # @midnight-ntwrk/midnight-did-credentials-same-holder
 
+> Maturity: `core`
+> Package class: `dist`
+
 Same-holder capability package for Midnight credentials.
 
 Status:

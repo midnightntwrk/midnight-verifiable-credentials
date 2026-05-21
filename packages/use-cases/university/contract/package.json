@@ -38,8 +38,12 @@
   },
   "typesVersions": {
     "*": {
-      "contract": ["dist/contract.d.ts"],
-      "testing": ["dist/testing.d.ts"],
+      "contract": [
+        "dist/contract.d.ts"
+      ],
+      "testing": [
+        "dist/testing.d.ts"
+      ],
       "managed/university-verifier/contract/index.js": [
         "dist/managed/university-verifier/contract/index.d.ts"
       ]
@@ -73,5 +77,9 @@
     "package.json",
     "tsconfig.json",
     "tsconfig.build.json"
-  ]
+  ],
+  "midnight": {
+    "maturity": "demo",
+    "packageClass": "dist"
+  }
 }

@@ -6,6 +6,26 @@ This repository has three workspace package shapes. Keep the shape explicit so
 local tarballs, CI restored artifacts, and downstream examples consume the same
 surface that maintainers review.
 
+Each workspace package also declares checked Midnight metadata:
+
+```json
+"midnight": {
+  "maturity": "core | reference | lab | demo | infrastructure",
+  "packageClass": "dist | scenario | source-only"
+}
+```
+
+The metadata answers two different questions:
+
+- `maturity` tells humans how to treat the package when composing examples,
+  specs, and downstream demos.
+- `packageClass` tells tooling which manifest surface the package is allowed to
+  expose.
+
+Every package README must repeat the two values near the top of the file. This
+keeps the human-facing package status aligned with the manifest and prevents
+lab/demo packages from looking like publish-ready primitives by accident.
+
 ## Package Classes
 
 | Class | Workspaces | Manifest contract |

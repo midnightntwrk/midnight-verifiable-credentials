@@ -31,5 +31,9 @@
     "package.json",
     "tsconfig.json",
     "README.md"
-  ]
+  ],
+  "midnight": {
+    "maturity": "infrastructure",
+    "packageClass": "source-only"
+  }
 }

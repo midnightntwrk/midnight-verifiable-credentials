@@ -1,5 +1,8 @@
 # Midnight Credentials OpenID Domain Schemas
 
+> Maturity: `reference`
+> Package class: `dist`
+
 Status:
 
 - reference implementation

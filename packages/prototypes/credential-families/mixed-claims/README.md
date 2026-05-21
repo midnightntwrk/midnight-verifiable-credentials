@@ -1,5 +1,8 @@
 # @midnight-ntwrk/midnight-did-credentials-mixed-claims
 
+> Maturity: `lab`
+> Package class: `dist`
+
 Status:
 
 - compileable mixed claim-representation laboratory

@@ -1,5 +1,8 @@
 # University Diploma BDD Scenarios
 
+> Maturity: `demo`
+> Package class: `scenario`
+
 Purpose:
 
 - document the full university diploma prototype flow in BDD style

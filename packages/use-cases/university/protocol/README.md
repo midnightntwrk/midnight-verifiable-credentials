@@ -1,5 +1,8 @@
 # @midnight-ntwrk/midnight-did-university-protocol
 
+> Maturity: `demo`
+> Package class: `dist`
+
 Status:
 
 - protocol-style multi-party university flow package

@@ -65,5 +65,9 @@
     "package.json",
     "tsconfig.json",
     "tsconfig.build.json"
-  ]
+  ],
+  "midnight": {
+    "maturity": "lab",
+    "packageClass": "dist"
+  }
 }

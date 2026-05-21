@@ -27,7 +27,9 @@
   },
   "typesVersions": {
     "*": {
-      "testing": ["dist/testing.d.ts"]
+      "testing": [
+        "dist/testing.d.ts"
+      ]
     }
   },
   "scripts": {
@@ -60,5 +62,9 @@
     "package.json",
     "tsconfig.json",
     "tsconfig.build.json"
-  ]
+  ],
+  "midnight": {
+    "maturity": "demo",
+    "packageClass": "dist"
+  }
 }

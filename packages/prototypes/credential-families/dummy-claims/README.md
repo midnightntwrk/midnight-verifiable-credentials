@@ -1,5 +1,8 @@
 # @midnight-ntwrk/midnight-did-credentials-dummy-claims
 
+> Maturity: `lab`
+> Package class: `dist`
+
 Status:
 
 - compileable dummy credential-family package

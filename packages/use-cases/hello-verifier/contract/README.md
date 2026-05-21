@@ -1,5 +1,8 @@
 # hello-verifier contract
 
+> Maturity: `demo`
+> Package class: `dist`
+
 Status:
 
 - starter use-case package / live integration example
