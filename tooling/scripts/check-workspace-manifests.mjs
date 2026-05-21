@@ -179,6 +179,14 @@ const assertMaturityMetadata = (packageJson, workspace) => {
   }
 
   assert(
+    allowedMaturityValues.has(packageJson.midnight.maturity),
+    `${workspace} midnight.maturity uses unsupported value: ${packageJson.midnight.maturity}`,
+  );
+  assert(
+    allowedPackageClasses.has(packageJson.midnight.packageClass),
+    `${workspace} midnight.packageClass uses unsupported value: ${packageJson.midnight.packageClass}`,
+  );
+  assert(
     packageJson.midnight.maturity === expected.maturity,
     `${workspace} midnight.maturity must be ${expected.maturity}`,
   );
@@ -316,6 +324,12 @@ assert(
   workspaceMaturity.size === workspaces.length,
   "workspace maturity policy must classify every root workspace",
 );
+for (const workspace of workspaceMaturity.keys()) {
+  assert(
+    workspaces.includes(workspace),
+    `workspace maturity policy references unknown workspace: ${workspace}`,
+  );
+}
 
 for (const workspace of workspaces) {
   const packageJsonPath = path.join(workspace, "package.json");
