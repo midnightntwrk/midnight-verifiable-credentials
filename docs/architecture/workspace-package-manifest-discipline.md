@@ -62,7 +62,8 @@ It must expose:
 - `type: "module"`
 - `main: "src/index.ts"`
 - no `module`, `types`, or `exports` map
-- no `prepack` hook, because this harness is not distributed as a tarball
+- no publish lifecycle hooks (`prepack`, `prepare`, `prepublish`,
+  `prepublishOnly`), because this harness is not distributed as a tarball
 - `files` containing:
   - `src/**/*.ts`
   - `README.md`
