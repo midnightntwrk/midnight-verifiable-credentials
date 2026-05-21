@@ -24,7 +24,7 @@ const foundationOutputOwners = coneOutputOwners("foundation");
 const familyOutputOwners = coneOutputOwners("birth-family");
 const ageGateOutputOwners = coneOutputOwners("age-gate");
 const protocolOutputOwners = coneOutputOwners("protocol");
-const lightConeInputs = unionOfConeInputs("birth-family");
+const lightConeInputs = unionOfConeInputs("foundation", "birth-family");
 const ageGateConeInputs = unionOfConeInputs("age-gate");
 
 export const profileDefinitions = {

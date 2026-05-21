@@ -273,7 +273,7 @@ if (
   !/\brequireCone\b/u.test(managedArtifactConeImport.groups.imports)
 ) {
   errors.push(
-    "managed-artifact-catalog.mjs must import ci-build-cone-catalog.mjs and derive package groups from its cone helpers",
+    "managed-artifact-catalog.mjs must import outputOwnersForCone and requireCone from ci-build-cone-catalog.mjs",
   );
 }
 failOnErrors();
