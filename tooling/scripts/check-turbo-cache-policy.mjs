@@ -2,7 +2,7 @@
 // Run from the repository root. The script intentionally reads the checked
 // root turbo.json because it validates repo-wide task cache policy.
 import fs from "node:fs";
-import { stderr, stdout } from "node:process";
+import { exit, stderr, stdout } from "node:process";
 
 const turbo = JSON.parse(fs.readFileSync("turbo.json", "utf8"));
 
@@ -125,7 +125,7 @@ if (errors.length > 0) {
   for (const error of errors) {
     stderr.write(`[check-turbo-cache-policy] ${error}\n`);
   }
-  process.exit(1);
+  exit(1);
 }
 
 stdout.write("[check-turbo-cache-policy] Turbo cache policy checks passed.\n");
