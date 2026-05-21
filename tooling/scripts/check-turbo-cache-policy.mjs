@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// Run from the repository root. The script intentionally reads the checked
+// root turbo.json because it validates repo-wide task cache policy.
 import fs from "node:fs";
 import { stderr, stdout } from "node:process";
 
@@ -67,6 +69,7 @@ requireIncludes("globalDependencies", turbo.globalDependencies, [
   "package-lock.json",
   "turbo.json",
   "tsconfig*.json",
+  ".eslintrc*",
   ".nvmrc",
   ".github/workflows/*.yml",
   ".github/workflows/*.yaml",
