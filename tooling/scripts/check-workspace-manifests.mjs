@@ -9,15 +9,6 @@ const repoRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
 
 const errors = [];
 
-const sourceOnlyWorkspaces = new Set([
-  "packages/components/integration/standalone-environment",
-]);
-
-const scenarioWorkspaces = new Set([
-  "packages/use-cases/age-gate/scenarios",
-  "packages/use-cases/university/scenarios",
-]);
-
 const workspaceMaturity = new Map([
   ["packages/core/primitives/credentials", { maturity: "core", packageClass: "dist" }],
   ["packages/registry/status-registry", { maturity: "reference", packageClass: "dist" }],
@@ -41,6 +32,16 @@ const workspaceMaturity = new Map([
   ["packages/use-cases/university/reporting", { maturity: "demo", packageClass: "dist" }],
   ["packages/components/integration/standalone-environment", { maturity: "infrastructure", packageClass: "source-only" }],
 ]);
+
+const workspacesByPackageClass = (packageClass) =>
+  new Set(
+    [...workspaceMaturity]
+      .filter(([, metadata]) => metadata.packageClass === packageClass)
+      .map(([workspace]) => workspace),
+  );
+
+const sourceOnlyWorkspaces = workspacesByPackageClass("source-only");
+const scenarioWorkspaces = workspacesByPackageClass("scenario");
 
 const requiredDistFiles = [
   "dist/**",
@@ -173,13 +174,16 @@ const assertMaturityMetadata = (packageJson, workspace) => {
     return;
   }
 
-  const readme = readFileSync(readmePath, "utf8");
+  const readmePreamble = readFileSync(readmePath, "utf8")
+    .split(/\r?\n/u)
+    .slice(0, 8)
+    .join("\n");
   assert(
-    readme.includes(`> Maturity: \`${expected.maturity}\``),
+    readmePreamble.includes(`> Maturity: \`${expected.maturity}\``),
     `${workspace} README.md must include maturity tag ${expected.maturity}`,
   );
   assert(
-    readme.includes(`> Package class: \`${expected.packageClass}\``),
+    readmePreamble.includes(`> Package class: \`${expected.packageClass}\``),
     `${workspace} README.md must include package class tag ${expected.packageClass}`,
   );
 };

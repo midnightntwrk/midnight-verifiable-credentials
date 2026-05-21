@@ -22,6 +22,16 @@ The metadata answers two different questions:
 - `packageClass` tells tooling which manifest surface the package is allowed to
   expose.
 
+Maturity values:
+
+| Value | Meaning |
+|---|---|
+| `core` | Foundational VC primitive/capability package. Treat breaking changes as protocol-surface changes. |
+| `reference` | Reference implementation intended to guide downstream credential-family or protocol work. |
+| `lab` | Experimentation package used to probe claim shapes, disclosure models, or Compact constraints. |
+| `demo` | Use-case package for runnable scenarios, verifier contracts, reports, or living documentation. |
+| `infrastructure` | Local adapter, orchestration, or integration support package. |
+
 Every package README must repeat the two values near the top of the file. This
 keeps the human-facing package status aligned with the manifest and prevents
 lab/demo packages from looking like publish-ready primitives by accident.

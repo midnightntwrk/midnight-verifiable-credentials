@@ -27,9 +27,7 @@
   },
   "typesVersions": {
     "*": {
-      "testing": [
-        "dist/testing.d.ts"
-      ]
+      "testing": ["dist/testing.d.ts"]
     }
   },
   "scripts": {
