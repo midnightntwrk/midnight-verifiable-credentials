@@ -54,6 +54,14 @@ const expectArray = (value: unknown, label: string): readonly unknown[] => {
   return value;
 };
 
+const expectStringArray = (
+  value: unknown,
+  label: string,
+): readonly string[] =>
+  expectArray(value, label).map((entry, index) =>
+    expectString(entry, `${label}[${index}]`),
+  );
+
 const expectOneOf = <T extends string>(
   value: unknown,
   allowed: readonly T[],
@@ -178,6 +186,47 @@ export const assertUniversityProtocolTranscriptExportConforms: (
   ) {
     throw new Error("Unsupported transcript export maximum reader version");
   }
+
+  const privacyProfile = asRecord(
+    record.privacyProfile,
+    "transcript export.privacyProfile",
+  );
+  expectString(
+    privacyProfile.currentProfile,
+    "transcript export.privacyProfile.currentProfile",
+  );
+  expectString(
+    privacyProfile.claimCommitmentModel,
+    "transcript export.privacyProfile.claimCommitmentModel",
+  );
+  expectString(
+    privacyProfile.productionProfile,
+    "transcript export.privacyProfile.productionProfile",
+  );
+  expectStringArray(
+    privacyProfile.productionPublicClaimFields,
+    "transcript export.privacyProfile.productionPublicClaimFields",
+  );
+  expectStringArray(
+    privacyProfile.productionCommitmentCandidates,
+    "transcript export.privacyProfile.productionCommitmentCandidates",
+  );
+  expectStringArray(
+    privacyProfile.productionCommitmentFields,
+    "transcript export.privacyProfile.productionCommitmentFields",
+  );
+  expectStringArray(
+    privacyProfile.predicateOnlyFields,
+    "transcript export.privacyProfile.predicateOnlyFields",
+  );
+  expectString(
+    privacyProfile.openingPolicy,
+    "transcript export.privacyProfile.openingPolicy",
+  );
+  expectString(
+    privacyProfile.statement,
+    "transcript export.privacyProfile.statement",
+  );
 
   const dataset = asRecord(record.dataset, "transcript export.dataset");
   expectFiniteNumber(dataset.studentCount, "transcript export.dataset.studentCount");

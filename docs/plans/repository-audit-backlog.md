@@ -442,6 +442,11 @@ forces a stop.
      fixture-only testing helpers into the public `./privacy-profile` package
      surface so protocol/reporting code can describe the v2 profile without
      importing test builders
+   - 2026-05-22 follow-up branch:
+     `codex/vc-university-transcript-privacy-profile`
+   - consumes that public metadata surface from the university protocol
+     transcript exporter and adds compact JSON/Markdown profile handoff fields
+     for report readers
    - validation: university credential-family tests, university protocol tests,
      `./run.sh university-bdd`, `npm run docs:links`
 

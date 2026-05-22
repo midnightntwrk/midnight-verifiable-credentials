@@ -105,6 +105,10 @@ Scope:
 - transcript exports now carry an explicit schema id, schema version, and
   exact-match reader compatibility window so downstream consumers can fail fast
   on unsupported shapes instead of guessing from ad hoc field presence
+- transcript exports now include the university diploma privacy-profile
+  metadata from the public `./privacy-profile` package surface so report
+  readers can distinguish the current direct-claim prototype from the additive
+  production commitment profile without importing fixture helpers
 - the cohort and 100-student stress lanes now emit both JSON and Markdown
   artifacts under `target/cohort-30` and `target/stress-100`
 - readable and stress lanes now resolve their fixture directories from the

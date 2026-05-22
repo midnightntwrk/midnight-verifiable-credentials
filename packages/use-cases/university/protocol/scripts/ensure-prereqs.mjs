@@ -26,6 +26,13 @@ const requiredBuildSurfaces = [
     ],
   },
   {
+    artifactPath:
+      "packages/prototypes/credential-families/university-diploma/dist/privacy-profile.js",
+    sourcePaths: [
+      "packages/prototypes/credential-families/university-diploma/src/privacy-profile.ts",
+    ],
+  },
+  {
     artifactPath: "packages/use-cases/university/contract/dist/testing.js",
     sourcePaths: [
       "packages/use-cases/university/contract/src/testing.ts",

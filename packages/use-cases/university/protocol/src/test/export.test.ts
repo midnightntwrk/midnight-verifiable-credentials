@@ -60,6 +60,17 @@ describe("university protocol transcript exporter", () => {
     expect(exported.compatibility).toEqual(
       UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_COMPATIBILITY,
     );
+    expect(exported.privacyProfile).toMatchObject({
+      currentProfile: "direct-claim-prototype",
+      claimCommitmentModel: "none",
+      productionProfile: "production-commitment-v2",
+      predicateOnlyFields: ["finalGrade", "creditsEarned"],
+    });
+    expect(exported.privacyProfile.productionPublicClaimFields).toEqual([
+      "universityName",
+      "awardName",
+      "graduationYear",
+    ]);
     expect(exported.dataset.studentCount).toBe(10);
     expect(exported.dataset.companyCount).toBe(3);
     expect(exported.dataset.discountApplicantCount).toBe(5);
