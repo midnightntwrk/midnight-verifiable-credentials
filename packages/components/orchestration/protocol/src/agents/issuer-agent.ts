@@ -22,7 +22,7 @@ import {
   unsafeReferenceDeterministicRandomnessSource,
 } from "./randomness.js";
 import {
-  BIRTH_PROTOCOL_FEATURES,
+  BIRTH_COMPATIBILITY_FEATURE_HINTS,
   BIRTH_SCHEMA,
 } from "./schema-descriptors.js";
 import type { DIDProfile } from "./types.js";
@@ -72,7 +72,7 @@ export class IssuerAgent {
       schema: BIRTH_SCHEMA,
       issuerVerificationMethodRef: this.profile.signer.verificationMethodRef,
       holderBindingProfile: HolderBindingProfile.explicitDid,
-      features: BIRTH_PROTOCOL_FEATURES,
+      features: BIRTH_COMPATIBILITY_FEATURE_HINTS,
       body: {
         supportsExpiration: true,
         defaultExpirationDays: 365n,

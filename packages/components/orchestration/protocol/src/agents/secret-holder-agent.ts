@@ -40,7 +40,7 @@ import {
   type ProtocolRandomnessSource,
   unsafeReferenceDeterministicRandomnessSource,
 } from "./randomness.js";
-import { SECRET_BIRTH_PROTOCOL_FEATURES } from "./schema-descriptors.js";
+import { SECRET_BIRTH_COMPATIBILITY_FEATURE_HINTS } from "./schema-descriptors.js";
 
 const DEFAULT_PROTOCOL_CURRENT_DAY = 0n;
 const DEFAULT_ISSUANCE_REQUEST_EXPIRY_DAY = 1_000_000n;
@@ -778,7 +778,7 @@ export class SecretHolderAgent {
       schema: credential.schema,
       issuerVerificationMethodRef: credential.issuerVerificationMethodRef,
       holderBindingProfile: HolderBindingProfile.blindedSecretHolder,
-      features: SECRET_BIRTH_PROTOCOL_FEATURES,
+      features: SECRET_BIRTH_COMPATIBILITY_FEATURE_HINTS,
       verifierChallengeHash,
       body: {
         requireSubjectIdCommitmentDisclosure: false,

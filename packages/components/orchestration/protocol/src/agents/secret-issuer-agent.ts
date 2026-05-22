@@ -39,7 +39,7 @@ import {
   unsafeReferenceDeterministicRandomnessSource,
 } from "./randomness.js";
 import {
-  SECRET_BIRTH_PROTOCOL_FEATURES,
+  SECRET_BIRTH_COMPATIBILITY_FEATURE_HINTS,
   SECRET_BIRTH_SCHEMA,
 } from "./schema-descriptors.js";
 import type { DIDProfile } from "./types.js";
@@ -140,7 +140,7 @@ export class SecretIssuerAgent {
       schema: SECRET_BIRTH_SCHEMA,
       issuerVerificationMethodRef: this.profile.signer.verificationMethodRef,
       holderBindingProfile: HolderBindingProfile.blindedSecretHolder,
-      features: SECRET_BIRTH_PROTOCOL_FEATURES,
+      features: SECRET_BIRTH_COMPATIBILITY_FEATURE_HINTS,
       body: {
         supportsExpiration: true,
         defaultExpirationDays: 365n,

@@ -216,7 +216,8 @@ individual protocol messages. Repository-aligned families and adapters:
   unless they are validated against a schema descriptor or an equivalent trusted
   family registry
 - `MAY` carry protocol feature fields as compatibility transport hints while
-  existing adapters migrate
+  existing adapters migrate, but code should name those values as compatibility
+  hints rather than authoritative capabilities
 
 Generic wallets and holders need a way to find the credential-family adapter
 for a `SchemaRef`. Because Compact does not have an unbounded URI/string

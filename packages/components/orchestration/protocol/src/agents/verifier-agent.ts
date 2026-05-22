@@ -46,9 +46,9 @@ import {
   unsafeReferenceDeterministicRandomnessSource,
 } from "./randomness.js";
 import {
-  BIRTH_PROTOCOL_FEATURES,
+  BIRTH_COMPATIBILITY_FEATURE_HINTS,
   BIRTH_SCHEMA,
-  SECRET_BIRTH_PROTOCOL_FEATURES,
+  SECRET_BIRTH_COMPATIBILITY_FEATURE_HINTS,
   SECRET_BIRTH_SCHEMA,
 } from "./schema-descriptors.js";
 import type {
@@ -238,7 +238,7 @@ export class VerifierAgent {
       schema: BIRTH_SCHEMA,
       issuerVerificationMethodRef: requirements.issuerVerificationMethodRef,
       holderBindingProfile: HolderBindingProfile.explicitDid,
-      features: BIRTH_PROTOCOL_FEATURES,
+      features: BIRTH_COMPATIBILITY_FEATURE_HINTS,
       verifierChallengeHash: this.generateChallengeHashFor(
         "explicit-presentation",
       ),
@@ -358,7 +358,7 @@ export class VerifierAgent {
       schema: SECRET_BIRTH_SCHEMA,
       issuerVerificationMethodRef: requirements.issuerVerificationMethodRef,
       holderBindingProfile: HolderBindingProfile.blindedSecretHolder,
-      features: SECRET_BIRTH_PROTOCOL_FEATURES,
+      features: SECRET_BIRTH_COMPATIBILITY_FEATURE_HINTS,
       verifierChallengeHash: this.generateChallengeHashFor(
         "blinded-secret-presentation",
       ),

@@ -28,7 +28,7 @@ export const createClosedEcosystemSchemaDescriptor = (
   return descriptor;
 };
 
-export const protocolFeaturesFromSchemaCapabilities = (
+export const compatibilityFeatureHintsFromSchemaCapabilities = (
   capabilities: SchemaCapabilities,
 ): CredentialProtocolFeatures => ({
   supportsSelectiveDisclosure: capabilities.supportsSelectiveDisclosure,
@@ -38,7 +38,7 @@ export const protocolFeaturesFromSchemaCapabilities = (
   supportsSameHolderProof: capabilities.supportsSameHolderProof,
 });
 
-export const assertProtocolFeaturesMatchSchemaDescriptor = (
+export const assertCompatibilityFeatureHintsMatchSchemaDescriptor = (
   features: CredentialProtocolFeatures,
   descriptor: SchemaDescriptor,
 ): void => {
@@ -67,8 +67,8 @@ export const BIRTH_SCHEMA_DESCRIPTOR = createClosedEcosystemSchemaDescriptor(
   BIRTH_SCHEMA_CAPABILITIES,
 );
 
-export const BIRTH_PROTOCOL_FEATURES =
-  protocolFeaturesFromSchemaCapabilities(BIRTH_SCHEMA_DESCRIPTOR.capabilities);
+export const BIRTH_COMPATIBILITY_FEATURE_HINTS =
+  compatibilityFeatureHintsFromSchemaCapabilities(BIRTH_SCHEMA_DESCRIPTOR.capabilities);
 
 export const SECRET_BIRTH_SCHEMA: SchemaRef = {
   packageId: padText("midnight-did:vc:birth-secret"),
@@ -90,7 +90,7 @@ export const SECRET_BIRTH_SCHEMA_DESCRIPTOR =
     SECRET_BIRTH_SCHEMA_CAPABILITIES,
   );
 
-export const SECRET_BIRTH_PROTOCOL_FEATURES =
-  protocolFeaturesFromSchemaCapabilities(
+export const SECRET_BIRTH_COMPATIBILITY_FEATURE_HINTS =
+  compatibilityFeatureHintsFromSchemaCapabilities(
     SECRET_BIRTH_SCHEMA_DESCRIPTOR.capabilities,
   );

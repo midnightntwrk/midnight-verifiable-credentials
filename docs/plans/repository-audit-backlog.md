@@ -379,6 +379,11 @@ forces a stop.
      hints are derived from schema capabilities
    - keeps compatibility fields only where existing generated surfaces require
      them during the migration
+   - 2026-05-22 delivery branch:
+     `codex/vc-protocol-feature-hint-naming`
+   - renames reference-agent feature constants and helpers to compatibility
+     hint terminology and extends `check:vc-surface-discipline` so
+     authority-looking protocol-feature names do not return
    - validation: focused credential primitive tests, orchestration protocol
      tests, `./run.sh --light`
 

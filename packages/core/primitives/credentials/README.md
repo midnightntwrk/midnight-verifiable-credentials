@@ -159,10 +159,10 @@ The reusable sidecar metadata is:
   sentinel from `noSchemaFamilyResolverHint()`
 - `SchemaDescriptor`: `SchemaRef` plus capabilities plus resolver hint
 
-Protocol `features` fields are compatibility hints, not schema authority. A
-wallet or verifier that receives protocol feature booleans should compare them
-against a trusted schema descriptor or family registry before treating them as
-capabilities.
+Protocol `features` fields are compatibility feature hints, not schema
+authority. A wallet or verifier that receives protocol feature booleans should
+compare them against a trusted schema descriptor or family registry before
+treating them as capabilities.
 
 `protocolFeaturesAsSchemaCapabilities(...)` exists as a migration drift guard:
 it is intentionally a name-only conversion today so protocol hint fields and

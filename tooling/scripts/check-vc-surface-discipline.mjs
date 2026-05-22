@@ -34,6 +34,15 @@ const requireIncludes = (relativePath, requiredFragments) => {
   }
 };
 
+const requireNotIncludes = (relativePath, forbiddenFragments) => {
+  const source = readRepoFile(relativePath);
+  for (const fragment of forbiddenFragments) {
+    if (source.includes(fragment)) {
+      errors.push(`${relativePath} contains stale surface-discipline text: ${fragment}`);
+    }
+  }
+};
+
 // These fragments are intentionally exact. This guard is a release-discipline
 // tripwire: when contributors reword the guide/template/changelog, they should
 // consciously update the guard with the new canonical wording.
@@ -116,6 +125,28 @@ requireIncludes("tooling/scripts/scaffold-vc-family.mjs", [
   "NoClaimCommitments",
 ]);
 requireIncludes("tooling/artifacts/.gitignore", ["*"]);
+
+requireIncludes("packages/components/orchestration/protocol/src/agents/schema-descriptors.ts", [
+  "compatibilityFeatureHintsFromSchemaCapabilities",
+  "assertCompatibilityFeatureHintsMatchSchemaDescriptor",
+  "BIRTH_COMPATIBILITY_FEATURE_HINTS",
+  "SECRET_BIRTH_COMPATIBILITY_FEATURE_HINTS",
+]);
+for (const relativePath of [
+  "packages/components/orchestration/protocol/src/agents/schema-descriptors.ts",
+  "packages/components/orchestration/protocol/src/agents/issuer-agent.ts",
+  "packages/components/orchestration/protocol/src/agents/secret-issuer-agent.ts",
+  "packages/components/orchestration/protocol/src/agents/verifier-agent.ts",
+  "packages/components/orchestration/protocol/src/agents/secret-holder-agent.ts",
+  "packages/components/orchestration/protocol/src/test/agents/schema-descriptors.test.ts",
+]) {
+  requireNotIncludes(relativePath, [
+    "BIRTH_PROTOCOL_FEATURES",
+    "SECRET_BIRTH_PROTOCOL_FEATURES",
+    "protocolFeaturesFromSchemaCapabilities",
+    "assertProtocolFeaturesMatchSchemaDescriptor",
+  ]);
+}
 
 cleanupStaleScaffoldChecks();
 
