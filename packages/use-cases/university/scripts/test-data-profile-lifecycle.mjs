@@ -201,7 +201,9 @@ try {
 } catch (error) {
   const message = error instanceof Error ? error.message : String(error);
   if (
-    !message.includes("Cannot generate 2 discount applicants for 1 students")
+    !message.includes(
+      "University data generation options declares 2 discount applicants for 1 students",
+    )
   ) {
     failures.push(
       `over-declared discount applicant profile emitted unexpected error: ${message}`,
