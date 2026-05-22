@@ -328,7 +328,7 @@ describe("university artifact report summarizer", () => {
     );
   });
 
-  it("rejects a transcript export with stale reader compatibility", () => {
+  it("rejects a transcript export with mismatched reader compatibility", () => {
     withMutatedTranscript(
       (transcript) => {
         transcript.compatibility = {

@@ -412,6 +412,9 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 const isStringArray = (value: unknown): value is readonly string[] =>
   Array.isArray(value) && value.every((entry) => typeof entry === "string");
 
+const isNonEmptyStringArray = (value: unknown): value is readonly string[] =>
+  isStringArray(value) && value.length > 0;
+
 const isTranscriptPrivacyProfile = (
   value: unknown,
 ): value is UniversityTranscriptPrivacyProfile =>
@@ -419,9 +422,9 @@ const isTranscriptPrivacyProfile = (
   typeof value.currentProfile === "string" &&
   typeof value.claimCommitmentModel === "string" &&
   typeof value.productionProfile === "string" &&
-  isStringArray(value.productionPublicClaimFields) &&
-  isStringArray(value.productionCommitmentCandidates) &&
-  isStringArray(value.productionCommitmentFields) &&
+  isNonEmptyStringArray(value.productionPublicClaimFields) &&
+  isNonEmptyStringArray(value.productionCommitmentCandidates) &&
+  isNonEmptyStringArray(value.productionCommitmentFields) &&
   isStringArray(value.predicateOnlyFields) &&
   typeof value.openingPolicy === "string" &&
   typeof value.statement === "string";
