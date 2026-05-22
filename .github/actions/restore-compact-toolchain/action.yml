@@ -1,6 +1,12 @@
 name: Restore Compact toolchain
 description: Download, restore, activate, and verify the prepared Compact toolchain artifact.
 
+inputs:
+  compact-version:
+    description: Compact compiler version to activate if the restored artifact is not already on PATH.
+    required: false
+    default: ""
+
 runs:
   using: composite
   steps:
@@ -25,10 +31,14 @@ runs:
         if compact compile --version >/dev/null 2>&1; then
           exit 0
         fi
-        if [ "$COMPACT_COMPILER_VERSION" = "latest" ]; then
+        compact_version="${{ inputs.compact-version }}"
+        if [ -z "$compact_version" ]; then
+          compact_version="${COMPACT_COMPILER_VERSION:-latest}"
+        fi
+        if [ "$compact_version" = "latest" ]; then
           compact update
         else
-          compact update "$COMPACT_COMPILER_VERSION" || compact update
+          compact update "$compact_version" || compact update
         fi
 
     - name: Verify Compact installation

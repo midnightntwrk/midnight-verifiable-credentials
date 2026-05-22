@@ -212,7 +212,7 @@ const assertWorkflowUsesLocalSetupActions = () => {
     }
   }
 
-  if (/uses:\s+actions\/setup-node@v4/u.test(workflowText)) {
+  if (/uses:\s+actions\/setup-node@v\d+/u.test(workflowText)) {
     errors.push(
       "CI workflow must use ./.github/actions/setup-node-npm instead of direct actions/setup-node@v4 steps",
     );

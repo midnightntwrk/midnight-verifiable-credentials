@@ -99,6 +99,8 @@ jobs:
 
       - name: Restore Compact toolchain
         uses: ./.github/actions/restore-compact-toolchain
+        with:
+          compact-version: ${{ env.COMPACT_COMPILER_VERSION }}
 
       - name: Check BDD summary artifact contract
         run: npm run check:bdd-summary-artifacts
@@ -295,6 +297,8 @@ jobs:
       - name: Restore Compact toolchain
         if: steps.cone-cache.outputs.any_missing == 'true'
         uses: ./.github/actions/restore-compact-toolchain
+        with:
+          compact-version: ${{ env.COMPACT_COMPILER_VERSION }}
 
       - name: Build foundation outputs
         if: steps.verify-foundation-cache.outputs.cache_ready != 'true'
@@ -459,6 +463,8 @@ jobs:
 
       - name: Restore Compact toolchain
         uses: ./.github/actions/restore-compact-toolchain
+        with:
+          compact-version: ${{ env.COMPACT_COMPILER_VERSION }}
 
       - name: Download foundation CI artifact
         uses: actions/download-artifact@v4
@@ -510,6 +516,8 @@ jobs:
 
       - name: Restore Compact toolchain
         uses: ./.github/actions/restore-compact-toolchain
+        with:
+          compact-version: ${{ env.COMPACT_COMPILER_VERSION }}
 
       - name: Run university profile lanes
         run: npm run ci:university-protocol-profiles
@@ -539,6 +547,8 @@ jobs:
 
       - name: Restore Compact toolchain
         uses: ./.github/actions/restore-compact-toolchain
+        with:
+          compact-version: ${{ env.COMPACT_COMPILER_VERSION }}
 
       - name: Download foundation CI artifact
         uses: actions/download-artifact@v4
