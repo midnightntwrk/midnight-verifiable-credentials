@@ -33,7 +33,8 @@ export const compatibilityFeatureHintsFromSchemaCapabilities = (
 ): CredentialProtocolFeatures => ({
   supportsSelectiveDisclosure: capabilities.supportsSelectiveDisclosure,
   supportsPredicateProofs: capabilities.supportsPredicateProofs,
-  supportsVerifierScopedPseudonym: capabilities.supportsVerifierScopedPseudonym,
+  supportsVerifierScopedPseudonym:
+    capabilities.supportsVerifierScopedPseudonym,
   supportsSameHolderProof: capabilities.supportsSameHolderProof,
 });
 
@@ -67,9 +68,7 @@ export const BIRTH_SCHEMA_DESCRIPTOR = createClosedEcosystemSchemaDescriptor(
 );
 
 export const BIRTH_COMPATIBILITY_FEATURE_HINTS =
-  compatibilityFeatureHintsFromSchemaCapabilities(
-    BIRTH_SCHEMA_DESCRIPTOR.capabilities,
-  );
+  compatibilityFeatureHintsFromSchemaCapabilities(BIRTH_SCHEMA_DESCRIPTOR.capabilities);
 
 export const SECRET_BIRTH_SCHEMA: SchemaRef = {
   packageId: padText("midnight-did:vc:birth-secret"),

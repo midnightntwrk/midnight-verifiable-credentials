@@ -14,12 +14,9 @@ import {
 
 import { mod } from "../shared/crypto.js";
 import { createEnvelope } from "../shared/envelope.js";
-import {
-  assertBodyHasFields,
-  assertMessageType,
-} from "../shared/validation.js";
+import { assertBodyHasFields, assertMessageType } from "../shared/validation.js";
 import type { MessageBus } from "../transport/message-bus.js";
-import type { PartyId, ProtocolMessage } from "../transport/types.js";
+import type { PartyId,ProtocolMessage } from "../transport/types.js";
 import {
   type ProtocolRandomnessSource,
   unsafeReferenceDeterministicRandomnessSource,

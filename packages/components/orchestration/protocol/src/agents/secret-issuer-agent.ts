@@ -16,10 +16,7 @@ import {
 
 import { mod } from "../shared/crypto.js";
 import { createEnvelope } from "../shared/envelope.js";
-import {
-  assertBodyHasFields,
-  assertMessageType,
-} from "../shared/validation.js";
+import { assertBodyHasFields, assertMessageType } from "../shared/validation.js";
 import type { MessageBus } from "../transport/message-bus.js";
 import type {
   PartyId,
@@ -122,7 +119,9 @@ export class SecretIssuerAgent {
     this.retentionPolicy = options.stateRetention ?? {};
     const stateStore = options.stateStore ?? new InMemoryProtocolStateStore();
     const stateScope = `secret-issuer:${this.profile.label}`;
-    this.pendingOffers = stateStore.collection(`${stateScope}:pending-offers`);
+    this.pendingOffers = stateStore.collection(
+      `${stateScope}:pending-offers`,
+    );
     this.completedOutcomes = stateStore.collection(
       `${stateScope}:completed-outcomes`,
     );
@@ -158,9 +157,7 @@ export class SecretIssuerAgent {
       envelope: offer.envelope,
       body: offer,
     });
-    const offerMessageId = Buffer.from(offer.envelope.messageId).toString(
-      "hex",
-    );
+    const offerMessageId = Buffer.from(offer.envelope.messageId).toString("hex");
     this.pendingOffers.set(offerMessageId, offer);
   }
 
@@ -189,7 +186,9 @@ export class SecretIssuerAgent {
     };
   }
 
-  private classifyIssuanceError(error: unknown): {
+  private classifyIssuanceError(
+    error: unknown,
+  ): {
     category: SecretBirthCredentialIssuanceRejectionCategory;
     retryable: boolean;
   } {
@@ -278,9 +277,7 @@ export class SecretIssuerAgent {
   ): void {
     assertMessageType(request, "issuance:request");
     assertBodyHasFields(request, ["envelope", "schema", "body"]);
-    const requestMessageId = Buffer.from(request.envelope.messageId).toString(
-      "hex",
-    );
+    const requestMessageId = Buffer.from(request.envelope.messageId).toString("hex");
     if (
       readRetainedProtocolState(
         this.completedOutcomes,
@@ -293,8 +290,7 @@ export class SecretIssuerAgent {
         "This blinded-secret issuance request was already finalized and cannot be processed again.",
       );
     }
-    const issuanceRequest =
-      request.body as SecretBirthCredentialIssuanceRequest;
+    const issuanceRequest = request.body as SecretBirthCredentialIssuanceRequest;
     this.assertValidIssuanceRequest(issuanceRequest);
     const respondsToId = Buffer.from(
       request.envelope.respondsToMessageId,
@@ -304,7 +300,7 @@ export class SecretIssuerAgent {
       throw new IssuanceProtocolError(
         "unknown_offer_reference",
         "No pending issuance offer found for this credential request. " +
-          "Ensure createAndSendOffer was called first.",
+        "Ensure createAndSendOffer was called first.",
       );
     }
     this.assertRequestMatchesOffer(offer, issuanceRequest);
@@ -456,9 +452,9 @@ export class SecretIssuerAgent {
     claimWitness: SecretClaimWitness,
     options: SecretIssuanceProcessingOptions = {},
   ): void {
-    const requestMessageId = Buffer.from(request.envelope.messageId).toString(
-      "hex",
-    );
+    const requestMessageId = Buffer.from(
+      request.envelope.messageId,
+    ).toString("hex");
     const completedOutcome = readRetainedProtocolState(
       this.completedOutcomes,
       requestMessageId,
@@ -496,7 +492,9 @@ export class SecretIssuerAgent {
         rejectionMessage,
         resolveCurrentTimeMs(options.currentTimeMs),
         this.retentionPolicy,
-        request.envelope.hasExpiresAt ? request.envelope.expiresAt : undefined,
+        request.envelope.hasExpiresAt
+          ? request.envelope.expiresAt
+          : undefined,
       );
     }
   }

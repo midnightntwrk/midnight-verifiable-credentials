@@ -22,10 +22,7 @@ import {
 } from "@midnight-ntwrk/midnight-did-credentials-birth-secret/managed/secret-birth-credential/contract/index.js";
 
 import { createEnvelope } from "../shared/envelope.js";
-import {
-  assertBodyHasFields,
-  assertMessageType,
-} from "../shared/validation.js";
+import { assertBodyHasFields, assertMessageType } from "../shared/validation.js";
 import type { MessageBus } from "../transport/message-bus.js";
 import type {
   PartyId,
@@ -326,7 +323,8 @@ export class VerifierAgent {
       approved: true,
       body: {
         credentialRoot: pureCircuits.birthCredentialBodyRoot(body.credential),
-        verifiedThresholdYears: presentationRequest.requestedAgeThresholdYears,
+        verifiedThresholdYears:
+          presentationRequest.requestedAgeThresholdYears,
       },
     };
 
@@ -532,7 +530,9 @@ export class VerifierAgent {
           ? error.category
           : "malformed_submission",
         error instanceof Error ? error.message : String(error),
-        error instanceof PresentationProtocolError ? error.retryable : false,
+        error instanceof PresentationProtocolError
+          ? error.retryable
+          : false,
       );
       const rejectionMessage: ProtocolMessage = {
         type: "presentation:rejection",

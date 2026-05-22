@@ -19,7 +19,7 @@ import {
 } from "../../agents/schema-descriptors.js";
 import { padText } from "../../shared/crypto.js";
 
-const EXPECTED_PROTOCOL_FEATURE_KEYS: ReadonlyArray<
+const EXPECTED_COMPATIBILITY_FEATURE_HINT_KEYS: ReadonlyArray<
   keyof CredentialProtocolFeatures
 > = [
   "supportsPredicateProofs",
@@ -40,20 +40,16 @@ describe("protocol schema descriptors", () => {
     ).not.toThrow();
   });
 
-  it("derives protocol compatibility features from schema capabilities", () => {
+  it("derives compatibility feature hints from schema capabilities", () => {
     expect(BIRTH_COMPATIBILITY_FEATURE_HINTS).toEqual(
-      compatibilityFeatureHintsFromSchemaCapabilities(
-        BIRTH_SCHEMA_CAPABILITIES,
-      ),
+      compatibilityFeatureHintsFromSchemaCapabilities(BIRTH_SCHEMA_CAPABILITIES),
     );
     expect(SECRET_BIRTH_COMPATIBILITY_FEATURE_HINTS).toEqual(
-      compatibilityFeatureHintsFromSchemaCapabilities(
-        SECRET_BIRTH_SCHEMA_CAPABILITIES,
-      ),
+      compatibilityFeatureHintsFromSchemaCapabilities(SECRET_BIRTH_SCHEMA_CAPABILITIES),
     );
   });
 
-  it("accepts protocol feature hints that match trusted schema descriptors", () => {
+  it("accepts compatibility feature hints that match trusted schema descriptors", () => {
     expect(() =>
       assertCompatibilityFeatureHintsMatchSchemaDescriptor(
         BIRTH_COMPATIBILITY_FEATURE_HINTS,
@@ -68,14 +64,14 @@ describe("protocol schema descriptors", () => {
     ).not.toThrow();
   });
 
-  it("keeps protocol feature derivation explicit when generated fields change", () => {
+  it("keeps compatibility hint derivation explicit when generated fields change", () => {
     expect(Object.keys(BIRTH_COMPATIBILITY_FEATURE_HINTS).sort()).toEqual(
-      EXPECTED_PROTOCOL_FEATURE_KEYS,
+      EXPECTED_COMPATIBILITY_FEATURE_HINT_KEYS,
     );
   });
 
-  it("rejects protocol feature hints that drift from schema descriptors", () => {
-    for (const featureKey of EXPECTED_PROTOCOL_FEATURE_KEYS) {
+  it("rejects compatibility feature hints that drift from schema descriptors", () => {
+    for (const featureKey of EXPECTED_COMPATIBILITY_FEATURE_HINT_KEYS) {
       expect(() =>
         assertCompatibilityFeatureHintsMatchSchemaDescriptor(
           {
@@ -104,12 +100,12 @@ describe("protocol schema descriptors", () => {
     expect(BIRTH_SCHEMA_DESCRIPTOR.familyResolutionHint).toEqual(
       createClosedEcosystemResolutionHint(),
     );
-    expect(BIRTH_SCHEMA_DESCRIPTOR.familyResolutionHint.resolverHint).toEqual(
-      genericPureCircuits.noSchemaFamilyResolverHint(),
-    );
-    expect(BIRTH_SCHEMA_DESCRIPTOR.familyResolutionHint.hasResolverHint).toBe(
-      false,
-    );
+    expect(
+      BIRTH_SCHEMA_DESCRIPTOR.familyResolutionHint.resolverHint,
+    ).toEqual(genericPureCircuits.noSchemaFamilyResolverHint());
+    expect(
+      BIRTH_SCHEMA_DESCRIPTOR.familyResolutionHint.hasResolverHint,
+    ).toBe(false);
   });
 
   it("creates validated closed-ecosystem descriptors for local adapters", () => {

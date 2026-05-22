@@ -118,8 +118,8 @@ Deployability rule:
 - `credentials` provides Compact library/build roots
 - it is not the final business-contract surface an application should deploy
 - deploy Layer 3 contracts that compose these roots through a family or demo/business package
-  They are alternative public surfaces, not internal layers underneath
-  `composable.compact`, because Compact does not deduplicate repeated includes.
+They are alternative public surfaces, not internal layers underneath
+`composable.compact`, because Compact does not deduplicate repeated includes.
 
 ```mermaid
 graph TD
@@ -249,7 +249,7 @@ TypeScript compatibility note:
   - `OffchainMidnightHolderBinding`
 - the top-level TypeScript package also exports:
   - `OffchainDIDHolderBinding`
-    as the preferred public-facing alias for integrators
+  as the preferred public-facing alias for integrators
 - hidden holder-secret binding:
   - `secretHolderBindingCommitment(...)`
   - `secretHolderBindingChallengeResponse(...)`
