@@ -436,6 +436,12 @@ forces a stop.
    - adds additive final-grade and credits-earned predicate witness helpers so
      production verifier policies can prove thresholds against committed values
      without requiring those raw values in the production disclosure payload
+   - 2026-05-22 follow-up branch:
+     `codex/vc-university-production-profile-surface`
+   - promotes the university production privacy-profile metadata out of
+     fixture-only testing helpers into the public `./privacy-profile` package
+     surface so protocol/reporting code can describe the v2 profile without
+     importing test builders
    - validation: university credential-family tests, university protocol tests,
      `./run.sh university-bdd`, `npm run docs:links`
 
