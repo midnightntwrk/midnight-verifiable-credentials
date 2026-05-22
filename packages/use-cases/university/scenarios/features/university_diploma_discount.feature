@@ -1,7 +1,7 @@
 @university @discount @metrics
 Feature: Selected students present diploma credentials to request a mall discount
   # DESCRIPTION:
-  # - The mall offers a discount only when the final grade is at least 91.
+  # - The mall offers a discount only when the final grade meets the mall threshold (91).
   # - The verifier request therefore enforces `minimumFinalGrade = 91`.
   # - Five students with different grades exercise both acceptance and rejection paths.
   #

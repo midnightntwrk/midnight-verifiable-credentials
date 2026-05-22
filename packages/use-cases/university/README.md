@@ -61,7 +61,8 @@ This use case models a university that issues a non-revocable diploma VC to 10
 students, then reuses that VC in two verifier flows:
 
 - employer job applications across 3 companies
-- a mall discount flow for students whose final grade is at least 91
+- a mall discount flow for students whose final grade meets the mall threshold
+  (91)
 
 The slice is intentionally explicit and operational:
 
@@ -211,7 +212,7 @@ Authoritative data file:
 ### Mall
 
 - one verifier organization
-- offers a discount for students whose final grade is at least 91
+- offers a discount for students whose final grade meets the mall threshold (91)
 - uses a minimum-grade request of `91` to represent the policy exactly
 
 Authoritative data file:
