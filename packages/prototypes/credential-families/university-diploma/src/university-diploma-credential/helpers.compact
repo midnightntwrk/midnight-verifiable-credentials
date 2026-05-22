@@ -300,7 +300,7 @@ export pure circuit assertUniversityDiplomaProductionDisclosuresMatchCredential(
         disclosed.creditsEarned,
         disclosed.creditsEarnedOpening
       ) == credential.claimCommitments.creditsEarnedCommitment,
-      "University-diploma production credits disclosure commitment mismatch"
+      "University-diploma production credits earned disclosure commitment mismatch"
     );
   }
 }

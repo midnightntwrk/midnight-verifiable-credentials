@@ -427,6 +427,64 @@ describe("university diploma production commitment profile", () => {
     ).not.toThrow();
   });
 
+  it("validates a focused production minimum-grade request when the opened grade satisfies policy", () => {
+    const fixture = createUniversityDiplomaProductionPresentationFixture({
+      disclosure: {
+        revealFinalGrade: true,
+      },
+      request: {
+        requireGraduateNameDisclosure: false,
+        requireUniversityNameDisclosure: false,
+        requireAwardNameDisclosure: false,
+        requireGraduationYearDisclosure: false,
+        requireFinalGradeDisclosure: true,
+        enforceMinimumFinalGrade: true,
+        minimumFinalGrade: 80n,
+      },
+    });
+
+    expect(() =>
+      pureCircuits.assertUniversityDiplomaProductionPresentationSatisfiesRequest(
+        fixture.credential,
+        fixture.credentialProof,
+        fixture.presentationRequest,
+        fixture.presentation,
+        fixture.presentationProof,
+      ),
+    ).not.toThrow();
+  });
+
+  it("rejects production presentation requests whose version drifts", () => {
+    const fixture = createUniversityDiplomaProductionPresentationFixture();
+
+    expect(() =>
+      pureCircuits.assertValidUniversityDiplomaProductionPresentationRequest({
+        ...fixture.presentationRequest,
+        version: 2n,
+      }),
+    ).toThrow(/University-diploma production request version mismatch/);
+  });
+
+  it("ignores non-zero openings for unrevealed production disclosures", () => {
+    const fixture = createUniversityDiplomaProductionPresentationFixture({
+      disclosure: {
+        revealDiplomaId: false,
+      },
+      disclosedOverrides: {
+        diplomaIdOpening: new Uint8Array(32).fill(7),
+      },
+    });
+
+    expect(() =>
+      pureCircuits.assertValidUniversityDiplomaProductionPresentation(
+        fixture.credential,
+        fixture.credentialProof,
+        fixture.presentation,
+        fixture.presentationProof,
+      ),
+    ).not.toThrow();
+  });
+
   it("rejects production presentations when a committed disclosure opening is wrong", () => {
     const fixture = createUniversityDiplomaProductionPresentationFixture({
       disclosure: {
