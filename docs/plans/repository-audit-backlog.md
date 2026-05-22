@@ -455,17 +455,17 @@ forces a stop.
      opening the full transcript artifact
    - 2026-05-22 follow-up branch:
      `codex/vc-university-report-schema-contract`
-  - adds a versioned report-summary contract object, a package script to print
-    it, and contract validation for handoff artifacts, source artifacts,
-    transcript schema, and non-empty privacy-profile arrays
-  - 2026-05-22 follow-up branch:
-    `codex/vc-university-report-contract-runner`
-  - exposes the report-summary contract through the root
-    `./run.sh university-report-contract` target, the run-target catalog, and
-    the generated university operator/CI matrix so schema drift checks have a
-    single discoverable entry point
-  - validation: university credential-family tests, university protocol tests,
-    university reporting tests, `./run.sh university-bdd`, `npm run docs:links`
+   - adds a versioned report-summary contract object, a package script to print
+     it, and contract validation for handoff artifacts, source artifacts,
+     transcript schema, and non-empty privacy-profile arrays
+   - 2026-05-22 follow-up branch:
+     `codex/vc-university-report-contract-runner`
+   - exposes the report-summary contract through the root
+     `./run.sh university-report-contract` target, the run-target catalog, and
+     the generated university operator/CI matrix so schema drift checks have a
+     single discoverable entry point
+   - validation: university credential-family tests, university protocol tests,
+     university reporting tests, `./run.sh university-bdd`, `npm run docs:links`
 
 ## Validation Defaults
 
