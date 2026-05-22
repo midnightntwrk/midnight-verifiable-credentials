@@ -542,11 +542,13 @@ export const validateUniversityDataProfileArtifacts = (profile, artifacts) => {
 
   const companyIds = new Set(companies.map((company) => company.companyId));
   const studentIds = new Set();
+  const studentsById = new Map();
   for (const student of students) {
     if (studentIds.has(student.studentId)) {
       addFinding(`duplicate studentId ${student.studentId}`);
     }
     studentIds.add(student.studentId);
+    studentsById.set(student.studentId, student);
     if (!companyIds.has(student.assignedCompanyId)) {
       addFinding(
         `student ${student.studentId} references unknown company ${student.assignedCompanyId}`,
@@ -589,9 +591,7 @@ export const validateUniversityDataProfileArtifacts = (profile, artifacts) => {
 
   const discountThreshold = mall.requestPolicy.minimumFinalGrade;
   for (const applicant of discountApplicants) {
-    const student = students.find(
-      (candidate) => candidate.studentId === applicant.studentId,
-    );
+    const student = studentsById.get(applicant.studentId);
     if (!student) {
       addFinding(
         `discount applicant ${applicant.studentId} does not exist in students.json`,
