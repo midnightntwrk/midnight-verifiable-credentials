@@ -52,8 +52,9 @@ const universityDataProfiles = {
   },
 };
 
+// Expected company counts are part of each profile contract; the lifecycle
+// checker compares generated or committed artifacts against this source.
 const companyCountsBySet = {
-  // Deliberately independent from generated company arrays; mismatch is drift.
   standard: 3,
   expanded: 6,
 };
