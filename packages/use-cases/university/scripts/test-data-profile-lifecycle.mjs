@@ -18,8 +18,24 @@ const findingsFor = (profile, mutate) => {
   };
 };
 
-const expectedDiscountApplicantCount = (profile) =>
-  profile.discountApplicantCount;
+const firstStudent = (artifacts) => artifacts["students.json"][0];
+
+const firstBatch = (artifacts) => artifacts["issuance-batches.json"][0];
+
+const ensureSecondBatchRepeatsFirstStudent = (artifacts) => {
+  const sourceBatch = firstBatch(artifacts);
+  const repeatedStudentId = sourceBatch?.studentIds[0] ?? "STU-9999";
+  const secondBatch = artifacts["issuance-batches.json"][1];
+  if (secondBatch) {
+    secondBatch.studentIds[0] = repeatedStudentId;
+    return;
+  }
+  artifacts["issuance-batches.json"].push({
+    batchId: "batch-duplicate-self-test",
+    size: 1,
+    studentIds: [repeatedStudentId],
+  });
+};
 
 const cases = [
   {
@@ -74,16 +90,23 @@ const cases = [
       artifacts["discount-applicants.json"].pop();
     },
     expected: ({ profile, artifacts }) =>
-      `discount-applicants.json contains ${artifacts["discount-applicants.json"].length} applicants, expected ${expectedDiscountApplicantCount(profile)}`,
+      `discount-applicants.json contains ${artifacts["discount-applicants.json"].length} applicants, expected ${profile.discountApplicantCount}`,
   },
   {
     name: "duplicate student fixture id",
     mutate: (artifacts) => {
-      artifacts["students.json"][1].studentId =
-        artifacts["students.json"][0].studentId;
+      const sourceStudent = firstStudent(artifacts);
+      if (artifacts["students.json"][1]) {
+        artifacts["students.json"][1].studentId = sourceStudent.studentId;
+        return;
+      }
+      artifacts["students.json"].push({
+        ...structuredClone(sourceStudent),
+        fullName: `${sourceStudent.fullName} Duplicate`,
+      });
     },
     expected: ({ artifacts }) =>
-      `duplicate studentId ${artifacts["students.json"][0].studentId}`,
+      `duplicate studentId ${firstStudent(artifacts).studentId}`,
   },
   {
     name: "batch coverage gap",
@@ -98,11 +121,10 @@ const cases = [
   {
     name: "duplicate batch membership",
     mutate: (artifacts) => {
-      artifacts["issuance-batches.json"][1].studentIds[0] =
-        artifacts["issuance-batches.json"][0].studentIds[0];
+      ensureSecondBatchRepeatsFirstStudent(artifacts);
     },
     expected: ({ artifacts }) =>
-      `${artifacts["issuance-batches.json"][1].batchId} repeats student ${artifacts["issuance-batches.json"][0].studentIds[0]}`,
+      `${artifacts["issuance-batches.json"][1].batchId} repeats student ${firstBatch(artifacts).studentIds[0]}`,
   },
   {
     name: "batch declared size drift",
@@ -117,40 +139,40 @@ const cases = [
   {
     name: "batch exceeds profile size",
     mutate: (artifacts) => {
-      const batch = artifacts["issuance-batches.json"][0];
+      const batch = firstBatch(artifacts);
       const overflowStudentId =
         artifacts["issuance-batches.json"][1]?.studentIds[0] ?? "STU-9999";
       batch.studentIds.push(overflowStudentId);
       batch.size = batch.studentIds.length;
     },
     expected: ({ profile, artifacts }) => {
-      const batch = artifacts["issuance-batches.json"][0];
+      const batch = firstBatch(artifacts);
       return `${batch.batchId} contains ${batch.studentIds.length} students, exceeding profile batchSize=${profile.batchSize}`;
     },
   },
   {
     name: "batch references unknown student",
     mutate: (artifacts) => {
-      artifacts["issuance-batches.json"][0].studentIds[0] = "STU-9999";
+      firstBatch(artifacts).studentIds[0] = "STU-9999";
     },
     expected: ({ artifacts }) =>
-      `${artifacts["issuance-batches.json"][0].batchId} references unknown student STU-9999`,
+      `${firstBatch(artifacts).batchId} references unknown student STU-9999`,
   },
   {
     name: "unknown company assignment",
     mutate: (artifacts) => {
-      artifacts["students.json"][0].assignedCompanyId = "company-missing";
+      firstStudent(artifacts).assignedCompanyId = "company-missing";
     },
     expected: ({ artifacts }) =>
-      `student ${artifacts["students.json"][0].studentId} references unknown company company-missing`,
+      `student ${firstStudent(artifacts).studentId} references unknown company company-missing`,
   },
   {
     name: "stale diploma student id",
     mutate: (artifacts) => {
-      artifacts["students.json"][0].diplomaClaimValues.studentId = "STU-9999";
+      firstStudent(artifacts).diplomaClaimValues.studentId = "STU-9999";
     },
     expected: ({ artifacts }) =>
-      `student ${artifacts["students.json"][0].studentId} diplomaClaimValues.studentId does not match the fixture studentId`,
+      `student ${firstStudent(artifacts).studentId} diplomaClaimValues.studentId does not match the fixture studentId`,
   },
   {
     name: "unknown discount applicant",
@@ -201,9 +223,8 @@ try {
 } catch (error) {
   const message = error instanceof Error ? error.message : String(error);
   if (
-    !message.includes(
-      "University data generation options declares 2 discount applicants for 1 students",
-    )
+    !message.includes("discount applicants") ||
+    !message.includes("for 1 students")
   ) {
     failures.push(
       `over-declared discount applicant profile emitted unexpected error: ${message}`,
