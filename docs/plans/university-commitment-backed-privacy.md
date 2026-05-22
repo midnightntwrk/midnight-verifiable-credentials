@@ -42,6 +42,12 @@ validators. These validators recompute each disclosed committed/private field
 from the raw value plus opening and compare it with the signed
 `claimCommitments` entry before request policy checks use the value.
 
+The additive v2 surface also includes production predicate witnesses for
+minimum final-grade and credits-earned policies. Those witnesses keep the raw
+academic value and opening outside `UniversityDiplomaProductionDisclosures`
+while still proving that the value opens to the signed commitment and satisfies
+the verifier threshold.
+
 ## Field Migration Target
 
 | Field | Current representation | Production target | Reason |
@@ -118,7 +124,9 @@ opening secrecy until predicate witnesses replace raw-value openings.
    predicates.
 4. Add opening witnesses for disclosed private fields. This is covered by the
    additive v2 production presentation surface and fixture tests.
-5. Add predicate witnesses for final-grade and credit-threshold policies.
+5. Add predicate witnesses for final-grade and credit-threshold policies. This
+   is covered by the additive v2 production predicate helper circuits and
+   fixture tests.
 6. Update university protocol DTOs and BDD notes so reports show opened values
    only when the verifier policy requires them.
 7. Keep compatibility fixtures for the readable v1 prototype until downstream
@@ -133,8 +141,9 @@ opening secrecy until predicate witnesses replace raw-value openings.
 - tests prove the production-profile claim root changes when committed private
   values change, even when public routing claims stay the same
 - verifier contracts validate openings or predicates before using committed
-  values; the additive v2 presentation helper now validates openings for raw
-  private disclosures
+  values; the additive v2 presentation helper validates openings for raw
+  private disclosures, and the additive predicate helpers validate grade and
+  credits thresholds without requiring raw-value disclosures
 - university BDD reports distinguish credential-body visibility from
   presentation authorization
 

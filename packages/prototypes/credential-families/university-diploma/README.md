@@ -60,6 +60,10 @@ Design notes:
   values by recomputing their per-field commitments from the supplied raw value
   plus opening; public routing fields are checked directly against
   `credential.claims`
+- the additive production predicate helpers validate final-grade and
+  credits-earned thresholds against private witness values plus openings, so a
+  verifier can check threshold policy without requiring those raw values in
+  `UniversityDiplomaProductionDisclosures`
 - the prototype assumes credit-bearing degree awards only; honorary or zero-credit diploma variants are intentionally out of scope for this first family cut
 
 Current and production-profile field categories:
@@ -75,8 +79,8 @@ Current and production-profile field categories:
 | `honorsCode` | direct claim | `honorsCodeCommitment` |
 | `graduationYear` | direct claim | public/direct |
 | `graduationMonth` | direct claim | `graduationMonthCommitment` |
-| `finalGrade` | direct claim | `finalGradeCommitment` first; predicate witness later |
-| `creditsEarned` | direct claim | `creditsEarnedCommitment` first; predicate witness later |
+| `finalGrade` | direct claim | `finalGradeCommitment` plus `UniversityDiplomaProductionFinalGradePredicateWitness` |
+| `creditsEarned` | direct claim | `creditsEarnedCommitment` plus `UniversityDiplomaProductionCreditsEarnedPredicateWitness` |
 
 Production-profile helpers are intentionally additive. They make the field split
 and commitment root executable without silently changing the existing v1
@@ -94,6 +98,18 @@ Production-profile presentation helpers:
 - `assertUniversityDiplomaProductionPresentationSatisfiesRequest(...)` adds the
   verifier request policy checks, including required disclosures and the current
   minimum-grade policy over an opened `finalGrade`
+
+Production-profile predicate helpers:
+
+- `assertUniversityDiplomaProductionFinalGradeAtLeast(...)` checks that a
+  private final-grade witness opens to the signed `finalGradeCommitment`, stays
+  inside the 0-100 grade scale, and meets a verifier threshold
+- `assertUniversityDiplomaProductionCreditsEarnedAtLeast(...)` checks that a
+  private credits-earned witness opens to the signed `creditsEarnedCommitment`,
+  stays positive, and meets a verifier threshold
+- these helpers are separate from the current presentation request shape so the
+  v2 production profile can support predicate-only policies without making the
+  raw value appear in `UniversityDiplomaProductionDisclosures`
 
 Migration plan:
 

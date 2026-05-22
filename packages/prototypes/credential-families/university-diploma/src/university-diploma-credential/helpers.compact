@@ -308,6 +308,75 @@ export pure circuit assertUniversityDiplomaProductionDisclosuresMatchCredential(
   }
 }
 
+export pure circuit assertUniversityDiplomaProductionFinalGradeAtLeast(
+  credential: UniversityDiplomaProductionCredential,
+  predicateWitness: UniversityDiplomaProductionFinalGradePredicateWitness,
+  minimumFinalGrade: Uint<8>
+): [] {
+  // Predicate witnesses are holder-supplied and intentionally separate from
+  // `UniversityDiplomaProductionDisclosures`. Protocol request wiring remains
+  // a follow-up in the university commitment-backed privacy plan.
+  // Final grades use the same 0..100 scale as the v1 direct-claim prototype.
+  assert(
+    minimumFinalGrade <= 100,
+    "University-diploma production minimum final grade must be at most 100"
+  );
+  assert(
+    predicateWitness.finalGrade <= 100,
+    "University-diploma production final grade witness must be at most 100"
+  );
+  assert(
+    predicateWitness.finalGradeOpening != pad(32, ""),
+    "University-diploma production final grade predicate opening must be set"
+  );
+  assert(
+    universityDiplomaFinalGradeCommitment(
+      predicateWitness.finalGrade,
+      predicateWitness.finalGradeOpening
+    ) == credential.claimCommitments.finalGradeCommitment,
+    "University-diploma production final grade predicate commitment mismatch"
+  );
+  assert(
+    predicateWitness.finalGrade >= minimumFinalGrade,
+    "University-diploma production final grade predicate is below the verifier minimum"
+  );
+}
+
+export pure circuit assertUniversityDiplomaProductionCreditsEarnedAtLeast(
+  credential: UniversityDiplomaProductionCredential,
+  predicateWitness: UniversityDiplomaProductionCreditsEarnedPredicateWitness,
+  minimumCreditsEarned: Uint<16>
+): [] {
+  // Predicate witnesses are holder-supplied and intentionally separate from
+  // `UniversityDiplomaProductionDisclosures`. Protocol request wiring remains
+  // a follow-up in the university commitment-backed privacy plan.
+  // Credits are an open-scale degree-family value bounded by Uint<16>, unlike
+  // final-grade percentages that are family-bounded to 0..100.
+  assert(
+    minimumCreditsEarned > 0,
+    "University-diploma production minimum credits earned must be positive"
+  );
+  assert(
+    predicateWitness.creditsEarned > 0,
+    "University-diploma production credits earned witness must be positive"
+  );
+  assert(
+    predicateWitness.creditsEarnedOpening != pad(32, ""),
+    "University-diploma production credits earned predicate opening must be set"
+  );
+  assert(
+    universityDiplomaCreditsEarnedCommitment(
+      predicateWitness.creditsEarned,
+      predicateWitness.creditsEarnedOpening
+    ) == credential.claimCommitments.creditsEarnedCommitment,
+    "University-diploma production credits earned predicate commitment mismatch"
+  );
+  assert(
+    predicateWitness.creditsEarned >= minimumCreditsEarned,
+    "University-diploma production credits earned predicate is below the verifier minimum"
+  );
+}
+
 export pure circuit assertValidUniversityDiplomaProductionPresentation(
   credential: UniversityDiplomaProductionCredential,
   credentialProof: Proof,

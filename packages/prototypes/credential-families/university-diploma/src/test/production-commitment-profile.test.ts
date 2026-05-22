@@ -10,6 +10,8 @@ import {
   createUniversityDiplomaProductionClaimOpenings,
   createUniversityDiplomaProductionClaimProfile,
   createUniversityDiplomaProductionCredentialFixture,
+  createUniversityDiplomaProductionCreditsEarnedPredicateWitness,
+  createUniversityDiplomaProductionFinalGradePredicateWitness,
   createUniversityDiplomaProductionPresentationFixture,
   padText,
   UNIVERSITY_DIPLOMA_DIRECT_CLAIM_FIELDS,
@@ -742,6 +744,330 @@ describe("university diploma production commitment profile", () => {
       ),
     ).toThrow(
       /University-diploma production disclosed final grade is below the verifier minimum/,
+    );
+  });
+
+  it("validates a production minimum-grade predicate without revealing the grade disclosure", () => {
+    const fixture = createUniversityDiplomaProductionPresentationFixture({
+      disclosure: {
+        revealFinalGrade: false,
+      },
+      request: {
+        requireGraduateNameDisclosure: false,
+        requireUniversityNameDisclosure: false,
+        requireAwardNameDisclosure: false,
+        requireGraduationYearDisclosure: false,
+        requireFinalGradeDisclosure: false,
+        enforceMinimumFinalGrade: false,
+      },
+    });
+    const witness = createUniversityDiplomaProductionFinalGradePredicateWitness(
+      {
+        claims: fixture.sourceClaims,
+        openings: fixture.profile.openings,
+      },
+    );
+
+    expect(fixture.presentation.disclosed.revealFinalGrade).toBe(false);
+    expect(fixture.presentation.disclosed.finalGrade).toBe(0n);
+    expect(fixture.presentation.disclosed.finalGradeOpening).toEqual(
+      new Uint8Array(32),
+    );
+    expect(() =>
+      pureCircuits.assertUniversityDiplomaProductionFinalGradeAtLeast(
+        fixture.credential,
+        witness,
+        90n,
+      ),
+    ).not.toThrow();
+  });
+
+  it("rejects a production minimum-grade predicate when the opening is wrong", () => {
+    const fixture = createUniversityDiplomaProductionCredentialFixture();
+    const witness = createUniversityDiplomaProductionFinalGradePredicateWitness(
+      {
+        claims: fixture.sourceClaims,
+        openings: fixture.profile.openings,
+      },
+    );
+
+    expect(() =>
+      pureCircuits.assertUniversityDiplomaProductionFinalGradeAtLeast(
+        fixture.credential,
+        {
+          ...witness,
+          finalGradeOpening: new Uint8Array(32).fill(9),
+        },
+        90n,
+      ),
+    ).toThrow(
+      /University-diploma production final grade predicate commitment mismatch/,
+    );
+  });
+
+  it("rejects a production minimum-grade predicate when the value is wrong", () => {
+    const fixture = createUniversityDiplomaProductionCredentialFixture();
+    const witness = createUniversityDiplomaProductionFinalGradePredicateWitness(
+      {
+        claims: fixture.sourceClaims,
+        openings: fixture.profile.openings,
+      },
+    );
+
+    expect(() =>
+      pureCircuits.assertUniversityDiplomaProductionFinalGradeAtLeast(
+        fixture.credential,
+        {
+          ...witness,
+          finalGrade: fixture.sourceClaims.finalGrade - 1n,
+        },
+        90n,
+      ),
+    ).toThrow(
+      /University-diploma production final grade predicate commitment mismatch/,
+    );
+  });
+
+  it("rejects a production minimum-grade predicate when the opening is empty", () => {
+    const fixture = createUniversityDiplomaProductionCredentialFixture();
+    const witness = createUniversityDiplomaProductionFinalGradePredicateWitness(
+      {
+        claims: fixture.sourceClaims,
+        openings: fixture.profile.openings,
+      },
+    );
+
+    expect(() =>
+      pureCircuits.assertUniversityDiplomaProductionFinalGradeAtLeast(
+        fixture.credential,
+        {
+          ...witness,
+          finalGradeOpening: new Uint8Array(32),
+        },
+        90n,
+      ),
+    ).toThrow(
+      /University-diploma production final grade predicate opening must be set/,
+    );
+  });
+
+  it("rejects a production minimum-grade predicate below policy without requiring disclosure", () => {
+    const fixture = createUniversityDiplomaProductionCredentialFixture();
+    const witness = createUniversityDiplomaProductionFinalGradePredicateWitness(
+      {
+        claims: fixture.sourceClaims,
+        openings: fixture.profile.openings,
+      },
+    );
+
+    expect(() =>
+      pureCircuits.assertUniversityDiplomaProductionFinalGradeAtLeast(
+        fixture.credential,
+        witness,
+        95n,
+      ),
+    ).toThrow(
+      /University-diploma production final grade predicate is below the verifier minimum/,
+    );
+  });
+
+  it("rejects a predicate witness above the grade scale even when its commitment matches", () => {
+    const fixture = createUniversityDiplomaProductionCredentialFixture({
+      claimOverrides: { finalGrade: 101n },
+    });
+    const witness = createUniversityDiplomaProductionFinalGradePredicateWitness(
+      {
+        claims: fixture.sourceClaims,
+        openings: fixture.profile.openings,
+      },
+    );
+
+    expect(() =>
+      pureCircuits.assertUniversityDiplomaProductionFinalGradeAtLeast(
+        fixture.credential,
+        witness,
+        90n,
+      ),
+    ).toThrow(
+      /University-diploma production final grade witness must be at most 100/,
+    );
+  });
+
+  it("rejects production grade predicates with a minimum outside the grade scale", () => {
+    const fixture = createUniversityDiplomaProductionCredentialFixture();
+    const witness = createUniversityDiplomaProductionFinalGradePredicateWitness(
+      {
+        claims: fixture.sourceClaims,
+        openings: fixture.profile.openings,
+      },
+    );
+
+    expect(() =>
+      pureCircuits.assertUniversityDiplomaProductionFinalGradeAtLeast(
+        fixture.credential,
+        witness,
+        101n,
+      ),
+    ).toThrow(
+      /University-diploma production minimum final grade must be at most 100/,
+    );
+  });
+
+  it("validates a production credit-threshold predicate without revealing credits", () => {
+    const fixture = createUniversityDiplomaProductionPresentationFixture({
+      disclosure: {
+        revealCreditsEarned: false,
+      },
+      request: {
+        requireGraduateNameDisclosure: false,
+        requireUniversityNameDisclosure: false,
+        requireAwardNameDisclosure: false,
+        requireGraduationYearDisclosure: false,
+        requireCreditsEarnedDisclosure: false,
+      },
+    });
+    const witness =
+      createUniversityDiplomaProductionCreditsEarnedPredicateWitness({
+        claims: fixture.sourceClaims,
+        openings: fixture.profile.openings,
+      });
+
+    expect(fixture.presentation.disclosed.revealCreditsEarned).toBe(false);
+    expect(fixture.presentation.disclosed.creditsEarned).toBe(0n);
+    expect(fixture.presentation.disclosed.creditsEarnedOpening).toEqual(
+      new Uint8Array(32),
+    );
+    expect(() =>
+      pureCircuits.assertUniversityDiplomaProductionCreditsEarnedAtLeast(
+        fixture.credential,
+        witness,
+        120n,
+      ),
+    ).not.toThrow();
+  });
+
+  it("rejects production credit-threshold predicates when the opening is wrong", () => {
+    const fixture = createUniversityDiplomaProductionCredentialFixture();
+    const witness =
+      createUniversityDiplomaProductionCreditsEarnedPredicateWitness({
+        claims: fixture.sourceClaims,
+        openings: fixture.profile.openings,
+      });
+
+    expect(() =>
+      pureCircuits.assertUniversityDiplomaProductionCreditsEarnedAtLeast(
+        fixture.credential,
+        {
+          ...witness,
+          creditsEarnedOpening: new Uint8Array(32).fill(9),
+        },
+        120n,
+      ),
+    ).toThrow(
+      /University-diploma production credits earned predicate commitment mismatch/,
+    );
+  });
+
+  it("rejects production credit-threshold predicates when the value is wrong", () => {
+    const fixture = createUniversityDiplomaProductionCredentialFixture();
+    const witness =
+      createUniversityDiplomaProductionCreditsEarnedPredicateWitness({
+        claims: fixture.sourceClaims,
+        openings: fixture.profile.openings,
+      });
+
+    expect(() =>
+      pureCircuits.assertUniversityDiplomaProductionCreditsEarnedAtLeast(
+        fixture.credential,
+        {
+          ...witness,
+          creditsEarned: fixture.sourceClaims.creditsEarned - 1n,
+        },
+        120n,
+      ),
+    ).toThrow(
+      /University-diploma production credits earned predicate commitment mismatch/,
+    );
+  });
+
+  it("rejects production credit-threshold predicates when the opening is empty", () => {
+    const fixture = createUniversityDiplomaProductionCredentialFixture();
+    const witness =
+      createUniversityDiplomaProductionCreditsEarnedPredicateWitness({
+        claims: fixture.sourceClaims,
+        openings: fixture.profile.openings,
+      });
+
+    expect(() =>
+      pureCircuits.assertUniversityDiplomaProductionCreditsEarnedAtLeast(
+        fixture.credential,
+        {
+          ...witness,
+          creditsEarnedOpening: new Uint8Array(32),
+        },
+        120n,
+      ),
+    ).toThrow(
+      /University-diploma production credits earned predicate opening must be set/,
+    );
+  });
+
+  it("rejects production credit-threshold predicates with a zero minimum", () => {
+    const fixture = createUniversityDiplomaProductionCredentialFixture();
+    const witness =
+      createUniversityDiplomaProductionCreditsEarnedPredicateWitness({
+        claims: fixture.sourceClaims,
+        openings: fixture.profile.openings,
+      });
+
+    expect(() =>
+      pureCircuits.assertUniversityDiplomaProductionCreditsEarnedAtLeast(
+        fixture.credential,
+        witness,
+        0n,
+      ),
+    ).toThrow(
+      /University-diploma production minimum credits earned must be positive/,
+    );
+  });
+
+  it("rejects production credit-threshold predicates with a zero credit witness", () => {
+    const fixture = createUniversityDiplomaProductionCredentialFixture({
+      claimOverrides: { creditsEarned: 0n },
+    });
+    const witness =
+      createUniversityDiplomaProductionCreditsEarnedPredicateWitness({
+        claims: fixture.sourceClaims,
+        openings: fixture.profile.openings,
+      });
+
+    expect(() =>
+      pureCircuits.assertUniversityDiplomaProductionCreditsEarnedAtLeast(
+        fixture.credential,
+        witness,
+        120n,
+      ),
+    ).toThrow(
+      /University-diploma production credits earned witness must be positive/,
+    );
+  });
+
+  it("rejects production credit-threshold predicates below policy", () => {
+    const fixture = createUniversityDiplomaProductionCredentialFixture();
+    const witness =
+      createUniversityDiplomaProductionCreditsEarnedPredicateWitness({
+        claims: fixture.sourceClaims,
+        openings: fixture.profile.openings,
+      });
+
+    expect(() =>
+      pureCircuits.assertUniversityDiplomaProductionCreditsEarnedAtLeast(
+        fixture.credential,
+        witness,
+        181n,
+      ),
+    ).toThrow(
+      /University-diploma production credits earned predicate is below the verifier minimum/,
     );
   });
 });

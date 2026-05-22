@@ -4,6 +4,8 @@ export {
   createUniversityDiplomaProductionClaimOpenings,
   createUniversityDiplomaProductionClaimProfile,
   createUniversityDiplomaProductionCredentialFixture,
+  createUniversityDiplomaProductionCreditsEarnedPredicateWitness,
+  createUniversityDiplomaProductionFinalGradePredicateWitness,
   createUniversityDiplomaProductionPresentationFixture,
   createUniversityDiplomaProductionPublicClaims,
   padText,

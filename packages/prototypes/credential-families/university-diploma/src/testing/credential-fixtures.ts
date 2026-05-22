@@ -19,6 +19,8 @@ import {
   type UniversityDiplomaPresentation,
   type UniversityDiplomaPresentationRequest,
   type UniversityDiplomaProductionCredential,
+  type UniversityDiplomaProductionCreditsEarnedPredicateWitness,
+  type UniversityDiplomaProductionFinalGradePredicateWitness,
   type UniversityDiplomaProductionPresentation,
   type UniversityDiplomaProductionPresentationRequest,
   type UniversityDiplomaProductionPublicClaims,
@@ -219,6 +221,42 @@ export type UniversityDiplomaProductionPresentationFixture =
     readonly presentation: UniversityDiplomaProductionPresentation;
     readonly presentationProof: Proof;
   };
+
+/**
+ * Fixture-only witness builder for tests and local compiler probes.
+ *
+ * @internal Real production flows should construct the witness from a private
+ * holder value plus the matching high-entropy field opening, not from a full
+ * fixture claim record.
+ */
+export const createUniversityDiplomaProductionFinalGradePredicateWitness = ({
+  claims,
+  openings,
+}: {
+  readonly claims: UniversityDiplomaClaims;
+  readonly openings: UniversityDiplomaProductionClaimOpenings;
+}): UniversityDiplomaProductionFinalGradePredicateWitness => ({
+  finalGrade: claims.finalGrade,
+  finalGradeOpening: openings.finalGradeOpening,
+});
+
+/**
+ * Fixture-only witness builder for tests and local compiler probes.
+ *
+ * @internal Real production flows should construct the witness from a private
+ * holder value plus the matching high-entropy field opening, not from a full
+ * fixture claim record.
+ */
+export const createUniversityDiplomaProductionCreditsEarnedPredicateWitness = ({
+  claims,
+  openings,
+}: {
+  readonly claims: UniversityDiplomaClaims;
+  readonly openings: UniversityDiplomaProductionClaimOpenings;
+}): UniversityDiplomaProductionCreditsEarnedPredicateWitness => ({
+  creditsEarned: claims.creditsEarned,
+  creditsEarnedOpening: openings.creditsEarnedOpening,
+});
 
 /**
  * Creates deterministic fixture-only openings for production-profile tests.

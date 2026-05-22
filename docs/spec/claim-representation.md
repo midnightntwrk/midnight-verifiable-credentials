@@ -191,6 +191,11 @@ The repository carries working examples across the representation taxonomy:
   `UniversityDiplomaProductionDisclosures` and
   `UniversityDiplomaProductionPresentation` in
   [`../../packages/prototypes/credential-families/university-diploma/src/university-diploma-credential/model.compact`](../../packages/prototypes/credential-families/university-diploma/src/university-diploma-credential/model.compact)
+- additive academic production predicate witnesses:
+  `UniversityDiplomaProductionFinalGradePredicateWitness`,
+  `UniversityDiplomaProductionCreditsEarnedPredicateWitness`, and matching
+  threshold helper circuits in
+  [`../../packages/prototypes/credential-families/university-diploma/src/university-diploma-credential/helpers.compact`](../../packages/prototypes/credential-families/university-diploma/src/university-diploma-credential/helpers.compact)
 - committed/private birth source credential:
   [`../../packages/prototypes/credential-families/birth`](../../packages/prototypes/credential-families/birth)
 - mixed public-plus-private laboratory:

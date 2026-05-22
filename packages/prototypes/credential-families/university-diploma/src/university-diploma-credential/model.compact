@@ -95,3 +95,13 @@ export struct UniversityDiplomaProductionPresentationRequest {
   minimumFinalGrade: Uint<8>,
   verifierChallengeHash: Bytes<32>,
 }
+
+export struct UniversityDiplomaProductionFinalGradePredicateWitness {
+  finalGrade: Uint<8>,
+  finalGradeOpening: Bytes<32>,
+}
+
+export struct UniversityDiplomaProductionCreditsEarnedPredicateWitness {
+  creditsEarned: Uint<16>,
+  creditsEarnedOpening: Bytes<32>,
+}

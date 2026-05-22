@@ -431,6 +431,11 @@ forces a stop.
      production request/disclosure validators so verifier-facing raw values must
      open to the signed `claimCommitments` before request policy checks use
      them
+   - 2026-05-22 follow-up branch:
+     `codex/vc-university-production-predicate-witnesses`
+   - adds additive final-grade and credits-earned predicate witness helpers so
+     production verifier policies can prove thresholds against committed values
+     without requiring those raw values in the production disclosure payload
    - validation: university credential-family tests, university protocol tests,
      `./run.sh university-bdd`, `npm run docs:links`
 
