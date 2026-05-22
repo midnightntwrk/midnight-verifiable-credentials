@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -58,8 +58,15 @@ export const resolveUniversityRequestPolicyPreset = (presetId) => {
   };
 };
 
-const formatPolicyValue = (value) =>
-  typeof value === "string" ? JSON.stringify(value) : String(value);
+const formatPolicyValue = (value) => {
+  const rendered = JSON.stringify(value);
+  if (rendered === undefined) {
+    throw new Error(
+      `Unsupported university request-policy value: ${String(value)}`,
+    );
+  }
+  return rendered;
+};
 
 const renderPolicyFields = (requestPolicy) =>
   Object.entries(requestPolicy)
@@ -109,17 +116,28 @@ export const renderUniversityRequestPolicyPresetMarkdown = () => {
 };
 
 export const updateUniversityRequestPolicyPresetMarkdown = () => {
-  writeFileSync(presetMarkdownPath, renderUniversityRequestPolicyPresetMarkdown());
+  writeFileSync(
+    presetMarkdownPath,
+    renderUniversityRequestPolicyPresetMarkdown(),
+    "utf8",
+  );
 };
 
 export const checkUniversityRequestPolicyPresetMarkdown = () => {
   const expected = renderUniversityRequestPolicyPresetMarkdown();
-  if (!existsSync(presetMarkdownPath)) {
-    throw new Error(
-      "Missing packages/use-cases/university/data/request-policy-presets.md; run `npm run update:university-request-policy-presets`.",
-    );
+  let actual;
+  try {
+    actual = readFileSync(presetMarkdownPath, "utf8");
+  } catch (error) {
+    if (error && typeof error === "object" && "code" in error) {
+      if (error.code === "ENOENT") {
+        throw new Error(
+          "Missing packages/use-cases/university/data/request-policy-presets.md; run `npm run update:university-request-policy-presets`.",
+        );
+      }
+    }
+    throw error;
   }
-  const actual = readFileSync(presetMarkdownPath, "utf8");
   if (actual !== expected) {
     throw new Error(
       "packages/use-cases/university/data/request-policy-presets.md is out of sync; run `npm run update:university-request-policy-presets`.",
@@ -133,7 +151,17 @@ const isMain =
 
 if (isMain) {
   const args = new Set(process.argv.slice(2));
+  const requestedMarkdownModes = [
+    "--markdown",
+    "--update-markdown",
+    "--check-markdown",
+  ].filter((flag) => args.has(flag));
   try {
+    if (requestedMarkdownModes.length > 1) {
+      throw new Error(
+        `Use exactly one request-policy preset markdown mode, got: ${requestedMarkdownModes.join(", ")}`,
+      );
+    }
     if (args.has("--markdown")) {
       process.stdout.write(renderUniversityRequestPolicyPresetMarkdown());
     } else if (args.has("--update-markdown")) {
