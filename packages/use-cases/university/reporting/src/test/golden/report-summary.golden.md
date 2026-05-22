@@ -1,12 +1,25 @@
 # University Report Summary
 
 - schema id: midnight-university-report-summary
-- schema version: midnight-university-report-summary.v3
+- schema version: midnight-university-report-summary.v4
 - university issuer: uni-example-001
 - students: 10
 - companies: 3 (Blue Ocean Analytics, Northwind Robotics, Pioneer Systems)
 - mall: Student Square Mall (mall-student-square)
 - discount applicants: 5
+
+## Handoff Contract
+### Handoff Artifacts
+- human handoff: packages/use-cases/university/reporting/target/summary.md
+- machine handoff: packages/use-cases/university/reporting/target/summary.json
+- source manifest json: packages/use-cases/university/reporting/target/artifact-manifest.json
+- source manifest markdown: packages/use-cases/university/reporting/target/artifact-manifest.md
+- source artifact ids: readable-bdd-serenity, readable-protocol-transcript, stress-protocol-summary, issuer-batch-sweep-summary
+
+### Operating Notes
+- Use summary.md as the human handoff and summary.json as the machine handoff.
+- Use artifact-manifest.json when a consumer needs to verify which source artifacts were summarized.
+- The Serenity site and raw transcript/stress/batch artifacts remain source evidence, not the default handoff surface.
 
 ## Source Artifact Manifest
 - total bytes: 100220

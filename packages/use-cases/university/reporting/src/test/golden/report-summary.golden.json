@@ -1,6 +1,6 @@
 {
   "schemaId": "midnight-university-report-summary",
-  "schemaVersion": "midnight-university-report-summary.v3",
+  "schemaVersion": "midnight-university-report-summary.v4",
   "actors": {
     "universityPartyId": "uni-example-001",
     "studentCount": 10,
@@ -19,6 +19,51 @@
     "transcriptExportPath": "<fixtures>/transcript-export.json",
     "stressSummaryPath": "<fixtures>/stress-summary.json",
     "batchSweepSummaryPath": "<fixtures>/batch-sweep-summary.json"
+  },
+  "handoff": {
+    "primaryHuman": {
+      "artifactId": "university-report-summary-markdown",
+      "label": "Primary human handoff",
+      "path": "packages/use-cases/university/reporting/target/summary.md",
+      "format": "markdown",
+      "producedBy": "./run.sh university-summary",
+      "purpose": "One-page Markdown digest for engineers, operators, and reviewers."
+    },
+    "primaryMachine": {
+      "artifactId": "university-report-summary-json",
+      "label": "Primary machine handoff",
+      "path": "packages/use-cases/university/reporting/target/summary.json",
+      "format": "json",
+      "producedBy": "./run.sh university-summary",
+      "purpose": "Stable JSON summary for tooling, CI artifacts, and downstream dashboards."
+    },
+    "sourceManifestJson": {
+      "artifactId": "university-report-artifact-manifest-json",
+      "label": "Source artifact manifest",
+      "path": "packages/use-cases/university/reporting/target/artifact-manifest.json",
+      "format": "json",
+      "producedBy": "./run.sh university-summary",
+      "purpose": "Machine-readable source-artifact index with schema versions, sizes, and SHA-256 digests."
+    },
+    "sourceManifestMarkdown": {
+      "artifactId": "university-report-artifact-manifest-markdown",
+      "label": "Source artifact manifest digest",
+      "path": "packages/use-cases/university/reporting/target/artifact-manifest.md",
+      "format": "markdown",
+      "producedBy": "./run.sh university-summary",
+      "purpose": "Human-readable source-artifact index for quick provenance checks."
+    },
+    "sourceArtifactIds": [
+      "readable-bdd-serenity",
+      "readable-protocol-transcript",
+      "stress-protocol-summary",
+      "issuer-batch-sweep-summary"
+    ],
+    "notes": [
+      "Use summary.md as the human handoff and summary.json as the machine handoff.",
+      "Use artifact-manifest.json when a consumer needs to verify which source artifacts were summarized.",
+      "The Serenity site and raw transcript/stress/batch artifacts remain source evidence, not the default handoff surface."
+    ]
   },
   "artifactManifest": {
     "manifestSchemaVersion": "midnight-university-artifact-manifest.v1",

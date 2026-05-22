@@ -17,6 +17,10 @@ import {
   renderUniversityArtifactManifestMarkdown,
   renderUniversityArtifactSummaryMarkdown,
   UNIVERSITY_ARTIFACT_MANIFEST_SCHEMA_VERSION,
+  UNIVERSITY_REPORT_ARTIFACT_MANIFEST_JSON_PATH,
+  UNIVERSITY_REPORT_ARTIFACT_MANIFEST_MARKDOWN_PATH,
+  UNIVERSITY_REPORT_SUMMARY_JSON_PATH,
+  UNIVERSITY_REPORT_SUMMARY_MARKDOWN_PATH,
   UNIVERSITY_REPORT_SUMMARY_SCHEMA_ID,
   UNIVERSITY_REPORT_SUMMARY_SCHEMA_VERSION,
 } from "../index.js";
@@ -80,13 +84,37 @@ describe("university artifact report summarizer", () => {
       UNIVERSITY_ARTIFACT_MANIFEST_SCHEMA_VERSION,
     );
     expect(summary.artifactManifest.entries).toHaveLength(4);
-    expect(summary.artifactManifest.entries.map((entry) => entry.artifactId))
-      .toEqual([
-        "readable-bdd-serenity",
-        "readable-protocol-transcript",
-        "stress-protocol-summary",
-        "issuer-batch-sweep-summary",
-      ]);
+    expect(
+      summary.artifactManifest.entries.map((entry) => entry.artifactId),
+    ).toEqual([
+      "readable-bdd-serenity",
+      "readable-protocol-transcript",
+      "stress-protocol-summary",
+      "issuer-batch-sweep-summary",
+    ]);
+    expect(summary.handoff.primaryHuman).toMatchObject({
+      artifactId: "university-report-summary-markdown",
+      path: UNIVERSITY_REPORT_SUMMARY_MARKDOWN_PATH,
+      format: "markdown",
+    });
+    expect(summary.handoff.primaryMachine).toMatchObject({
+      artifactId: "university-report-summary-json",
+      path: UNIVERSITY_REPORT_SUMMARY_JSON_PATH,
+      format: "json",
+    });
+    expect(summary.handoff.sourceManifestJson).toMatchObject({
+      artifactId: "university-report-artifact-manifest-json",
+      path: UNIVERSITY_REPORT_ARTIFACT_MANIFEST_JSON_PATH,
+      format: "json",
+    });
+    expect(summary.handoff.sourceManifestMarkdown).toMatchObject({
+      artifactId: "university-report-artifact-manifest-markdown",
+      path: UNIVERSITY_REPORT_ARTIFACT_MANIFEST_MARKDOWN_PATH,
+      format: "markdown",
+    });
+    expect(summary.handoff.sourceArtifactIds).toEqual(
+      summary.artifactManifest.entries.map((entry) => entry.artifactId),
+    );
     expect(summary.readableBdd.passedCount).toBe(13);
     expect(summary.readableBdd.failedCount).toBe(0);
     expect(summary.transcriptExport.counts.totalThreads).toBe(25);
@@ -221,6 +249,39 @@ describe("university artifact report summarizer", () => {
     } finally {
       rmSync(tempRoot, { recursive: true, force: true });
     }
+  });
+
+  it("rejects a handoff contract whose source artifact ids are reordered", () => {
+    const summary = renderFixtureSummary();
+    const staleSummary = {
+      ...summary,
+      handoff: {
+        ...summary.handoff,
+        sourceArtifactIds: [...summary.handoff.sourceArtifactIds].reverse(),
+      },
+    };
+
+    expect(() => assertUniversityArtifactSummaryConforms(staleSummary)).toThrow(
+      /University artifact summary does not match the expected schema/u,
+    );
+  });
+
+  it("rejects a handoff artifact whose path drifts from the canonical target", () => {
+    const summary = renderFixtureSummary();
+    const staleSummary = {
+      ...summary,
+      handoff: {
+        ...summary.handoff,
+        primaryMachine: {
+          ...summary.handoff.primaryMachine,
+          path: "packages/use-cases/university/reporting/target/stale-summary.json",
+        },
+      },
+    };
+
+    expect(() => assertUniversityArtifactSummaryConforms(staleSummary)).toThrow(
+      /University artifact summary does not match the expected schema/u,
+    );
   });
 
   it("matches the checked-in JSON and Markdown golden summaries", () => {

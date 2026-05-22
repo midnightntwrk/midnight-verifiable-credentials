@@ -68,6 +68,10 @@ becomes part of a stackable PR.
 5. University-only follow-on: `university-report-surface-slimming`
    - reduce overlapping report artifacts to one human handoff and one tool
      handoff where possible
+   - 2026-05-22: `codex/vc-university-report-handoff-contract` adds a checked
+     reporting-package handoff contract naming `summary.md` as the primary
+     human surface, `summary.json` as the primary tool surface, and
+     `artifact-manifest.json` as the source-evidence index
    - validation: reporting package tests and `./run.sh university-summary`
 
 6. University-only follow-on: `university-negative-flow-triage`
