@@ -85,6 +85,10 @@ provides:
 - schema capability descriptors for those families
 - descriptor-derived compatibility feature hints for legacy message fields
 - a no-hint family-resolution descriptor for the current closed ecosystem
+- bounded resolver hints for generic wallet or adapter registries that need to
+  map a `SchemaRef` to a concrete family handler
+- `REFERENCE_SCHEMA_FAMILY_ADAPTERS` plus `resolveSchemaFamilyAdapter(...)` as a
+  small TypeScript-side registry pattern for adapter routing
 
 New adapters should validate incoming compatibility feature hints against a
 trusted schema descriptor or family registry before using them for routing or
