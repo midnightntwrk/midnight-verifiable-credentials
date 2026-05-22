@@ -23,6 +23,9 @@ Scope:
 - summarize the issuance batch-sweep benchmark output
 - emit a deterministic source-artifact manifest with file counts, byte sizes,
   schema versions, producers, and SHA-256 digests
+- expose a checked handoff contract so `summary.md` is the primary human
+  surface, `summary.json` is the primary machine surface, and
+  `artifact-manifest.json` is the source-evidence index
 - highlight the slowest scenario and the dominant timing bottlenecks
 - fail fast when a required source artifact is missing; rerun the documented
   producer lane instead of publishing a partial report

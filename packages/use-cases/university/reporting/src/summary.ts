@@ -5,7 +5,7 @@ import path from "node:path";
 export const UNIVERSITY_REPORT_SUMMARY_SCHEMA_ID =
   "midnight-university-report-summary" as const;
 export const UNIVERSITY_REPORT_SUMMARY_SCHEMA_VERSION =
-  "midnight-university-report-summary.v3" as const;
+  "midnight-university-report-summary.v4" as const;
 export const UNIVERSITY_ARTIFACT_MANIFEST_SCHEMA_VERSION =
   "midnight-university-artifact-manifest.v1" as const;
 
@@ -197,11 +197,29 @@ type UniversityArtifactManifestEntry = {
   readonly fileCount: number;
 };
 
+type UniversityReportHandoffArtifact = {
+  readonly artifactId: string;
+  readonly label: string;
+  readonly path: string;
+  readonly format: "json" | "markdown";
+  readonly producedBy: string;
+  readonly purpose: string;
+};
+
 export type UniversityArtifactManifest = {
   readonly manifestSchemaVersion: typeof UNIVERSITY_ARTIFACT_MANIFEST_SCHEMA_VERSION;
   readonly artifactSet: "midnight-university-reporting-inputs";
   readonly totalBytes: number;
   readonly entries: readonly UniversityArtifactManifestEntry[];
+  readonly notes: readonly string[];
+};
+
+export type UniversityReportHandoff = {
+  readonly primaryHuman: UniversityReportHandoffArtifact;
+  readonly primaryMachine: UniversityReportHandoffArtifact;
+  readonly sourceManifestJson: UniversityReportHandoffArtifact;
+  readonly sourceManifestMarkdown: UniversityReportHandoffArtifact;
+  readonly sourceArtifactIds: readonly string[];
   readonly notes: readonly string[];
 };
 
@@ -223,6 +241,7 @@ export type UniversityArtifactSummary = {
     readonly stressSummaryPath: string;
     readonly batchSweepSummaryPath: string;
   };
+  readonly handoff: UniversityReportHandoff;
   readonly artifactManifest: UniversityArtifactManifest;
   readonly readableBdd: {
     readonly scenarioCount: number;
@@ -279,6 +298,60 @@ export type UniversityArtifactSummary = {
   };
   readonly notes: readonly string[];
 };
+
+const universityReportHandoffArtifacts = {
+  primaryHuman: {
+    artifactId: "university-report-summary-markdown",
+    label: "Primary human handoff",
+    path: "packages/use-cases/university/reporting/target/summary.md",
+    format: "markdown",
+    producedBy: "./run.sh university-summary",
+    purpose:
+      "One-page Markdown digest for engineers, operators, and reviewers.",
+  },
+  primaryMachine: {
+    artifactId: "university-report-summary-json",
+    label: "Primary machine handoff",
+    path: "packages/use-cases/university/reporting/target/summary.json",
+    format: "json",
+    producedBy: "./run.sh university-summary",
+    purpose:
+      "Stable JSON summary for tooling, CI artifacts, and downstream dashboards.",
+  },
+  sourceManifestJson: {
+    artifactId: "university-report-artifact-manifest-json",
+    label: "Source artifact manifest",
+    path: "packages/use-cases/university/reporting/target/artifact-manifest.json",
+    format: "json",
+    producedBy: "./run.sh university-summary",
+    purpose:
+      "Machine-readable source-artifact index with schema versions, sizes, and SHA-256 digests.",
+  },
+  sourceManifestMarkdown: {
+    artifactId: "university-report-artifact-manifest-markdown",
+    label: "Source artifact manifest digest",
+    path: "packages/use-cases/university/reporting/target/artifact-manifest.md",
+    format: "markdown",
+    producedBy: "./run.sh university-summary",
+    purpose:
+      "Human-readable source-artifact index for quick provenance checks.",
+  },
+} as const satisfies Omit<
+  UniversityReportHandoff,
+  "sourceArtifactIds" | "notes"
+>;
+
+const buildUniversityReportHandoff = (
+  manifest: UniversityArtifactManifest,
+): UniversityReportHandoff => ({
+  ...universityReportHandoffArtifacts,
+  sourceArtifactIds: manifest.entries.map((entry) => entry.artifactId),
+  notes: [
+    "Use summary.md as the human handoff and summary.json as the tool handoff.",
+    "Use artifact-manifest.json when a consumer needs to verify which source artifacts were summarized.",
+    "The Serenity site and raw transcript/stress/batch artifacts remain source evidence, not the default handoff surface.",
+  ],
+});
 
 export type UniversityArtifactPaths = {
   readonly serenityDirectory: string;
@@ -646,6 +719,13 @@ export const buildUniversityArtifactSummary = (
       : batchSweepRuns.reduce((best, current) =>
           current.compileAverageMs > best.compileAverageMs ? current : best,
         );
+  const artifactManifest = buildUniversityArtifactManifest({
+    artifactPaths,
+    serenityScenarioCount: serenityRecords.length,
+    transcriptSchemaVersion: transcriptExport.schemaVersion,
+    stressSchemaVersion: stressSummary.schemaVersion,
+    batchSweepSchemaVersion: batchSweep.schemaVersion,
+  });
 
   return {
     schemaId: UNIVERSITY_REPORT_SUMMARY_SCHEMA_ID,
@@ -667,13 +747,8 @@ export const buildUniversityArtifactSummary = (
       stressSummaryPath: artifactPaths.stressSummaryPath,
       batchSweepSummaryPath: artifactPaths.batchSweepSummaryPath,
     },
-    artifactManifest: buildUniversityArtifactManifest({
-      artifactPaths,
-      serenityScenarioCount: serenityRecords.length,
-      transcriptSchemaVersion: transcriptExport.schemaVersion,
-      stressSchemaVersion: stressSummary.schemaVersion,
-      batchSweepSchemaVersion: batchSweep.schemaVersion,
-    }),
+    handoff: buildUniversityReportHandoff(artifactManifest),
+    artifactManifest,
     readableBdd: {
       scenarioCount: serenityRecords.length,
       passedCount: serenityRecords.filter(
@@ -774,6 +849,30 @@ const isUniversityArtifactManifest = (
   Array.isArray(value.notes) &&
   value.notes.every((entry) => typeof entry === "string");
 
+const isUniversityReportHandoffArtifact = (
+  value: unknown,
+): value is UniversityReportHandoffArtifact =>
+  isRecord(value) &&
+  typeof value.artifactId === "string" &&
+  typeof value.label === "string" &&
+  typeof value.path === "string" &&
+  (value.format === "json" || value.format === "markdown") &&
+  typeof value.producedBy === "string" &&
+  typeof value.purpose === "string";
+
+const isUniversityReportHandoff = (
+  value: unknown,
+): value is UniversityReportHandoff =>
+  isRecord(value) &&
+  isUniversityReportHandoffArtifact(value.primaryHuman) &&
+  isUniversityReportHandoffArtifact(value.primaryMachine) &&
+  isUniversityReportHandoffArtifact(value.sourceManifestJson) &&
+  isUniversityReportHandoffArtifact(value.sourceManifestMarkdown) &&
+  Array.isArray(value.sourceArtifactIds) &&
+  value.sourceArtifactIds.every((entry) => typeof entry === "string") &&
+  Array.isArray(value.notes) &&
+  value.notes.every((entry) => typeof entry === "string");
+
 // This is a lightweight runtime sanity check for the package's own emitted
 // artifact shape, not a recursive schema validator.
 export const isUniversityArtifactSummary = (
@@ -794,6 +893,7 @@ export const isUniversityArtifactSummary = (
     typeof value.actors.mallId === "string" &&
     typeof value.actors.mallName === "string" &&
     typeof value.actors.discountApplicantCount === "number" &&
+    isUniversityReportHandoff(value.handoff) &&
     isUniversityArtifactManifest(value.artifactManifest) &&
     isRecord(value.readableBdd) &&
     typeof value.readableBdd.scenarioCount === "number" &&
@@ -866,6 +966,13 @@ export const renderUniversityArtifactSummaryMarkdown = (
     `- companies: ${summary.actors.companyCount} (${summary.actors.companyNames.join(", ")})`,
     `- mall: ${summary.actors.mallName} (${summary.actors.mallId})`,
     `- discount applicants: ${summary.actors.discountApplicantCount}`,
+    "",
+    "## Handoff Contract",
+    `- human handoff: ${summary.handoff.primaryHuman.path}`,
+    `- machine handoff: ${summary.handoff.primaryMachine.path}`,
+    `- source manifest: ${summary.handoff.sourceManifestJson.path}`,
+    `- source artifact ids: ${summary.handoff.sourceArtifactIds.join(", ")}`,
+    ...summary.handoff.notes.map((note) => `- ${note}`),
     "",
     "## Source Artifact Manifest",
     `- total bytes: ${summary.artifactManifest.totalBytes}`,

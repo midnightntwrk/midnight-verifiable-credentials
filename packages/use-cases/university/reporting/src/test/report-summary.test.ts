@@ -80,13 +80,27 @@ describe("university artifact report summarizer", () => {
       UNIVERSITY_ARTIFACT_MANIFEST_SCHEMA_VERSION,
     );
     expect(summary.artifactManifest.entries).toHaveLength(4);
-    expect(summary.artifactManifest.entries.map((entry) => entry.artifactId))
-      .toEqual([
-        "readable-bdd-serenity",
-        "readable-protocol-transcript",
-        "stress-protocol-summary",
-        "issuer-batch-sweep-summary",
-      ]);
+    expect(
+      summary.artifactManifest.entries.map((entry) => entry.artifactId),
+    ).toEqual([
+      "readable-bdd-serenity",
+      "readable-protocol-transcript",
+      "stress-protocol-summary",
+      "issuer-batch-sweep-summary",
+    ]);
+    expect(summary.handoff.primaryHuman).toMatchObject({
+      artifactId: "university-report-summary-markdown",
+      path: "packages/use-cases/university/reporting/target/summary.md",
+      format: "markdown",
+    });
+    expect(summary.handoff.primaryMachine).toMatchObject({
+      artifactId: "university-report-summary-json",
+      path: "packages/use-cases/university/reporting/target/summary.json",
+      format: "json",
+    });
+    expect(summary.handoff.sourceArtifactIds).toEqual(
+      summary.artifactManifest.entries.map((entry) => entry.artifactId),
+    );
     expect(summary.readableBdd.passedCount).toBe(13);
     expect(summary.readableBdd.failedCount).toBe(0);
     expect(summary.transcriptExport.counts.totalThreads).toBe(25);
