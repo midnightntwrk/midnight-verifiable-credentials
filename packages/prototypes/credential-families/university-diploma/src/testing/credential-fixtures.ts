@@ -19,6 +19,8 @@ import {
   type UniversityDiplomaPresentation,
   type UniversityDiplomaPresentationRequest,
   type UniversityDiplomaProductionCredential,
+  type UniversityDiplomaProductionCreditsEarnedPredicateWitness,
+  type UniversityDiplomaProductionFinalGradePredicateWitness,
   type UniversityDiplomaProductionPresentation,
   type UniversityDiplomaProductionPresentationRequest,
   type UniversityDiplomaProductionPublicClaims,
@@ -219,6 +221,28 @@ export type UniversityDiplomaProductionPresentationFixture =
     readonly presentation: UniversityDiplomaProductionPresentation;
     readonly presentationProof: Proof;
   };
+
+export const createUniversityDiplomaProductionFinalGradePredicateWitness = ({
+  claims,
+  openings,
+}: {
+  readonly claims: UniversityDiplomaClaims;
+  readonly openings: UniversityDiplomaProductionClaimOpenings;
+}): UniversityDiplomaProductionFinalGradePredicateWitness => ({
+  finalGrade: claims.finalGrade,
+  finalGradeOpening: openings.finalGradeOpening,
+});
+
+export const createUniversityDiplomaProductionCreditsEarnedPredicateWitness = ({
+  claims,
+  openings,
+}: {
+  readonly claims: UniversityDiplomaClaims;
+  readonly openings: UniversityDiplomaProductionClaimOpenings;
+}): UniversityDiplomaProductionCreditsEarnedPredicateWitness => ({
+  creditsEarned: claims.creditsEarned,
+  creditsEarnedOpening: openings.creditsEarnedOpening,
+});
 
 /**
  * Creates deterministic fixture-only openings for production-profile tests.
