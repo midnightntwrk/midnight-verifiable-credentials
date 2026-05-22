@@ -56,6 +56,10 @@ Design notes:
   `UniversityDiplomaClaimCommitments`, per-field commitment helpers,
   `universityDiplomaProductionClaimRoot`, and the additive
   `UniversityDiplomaProductionCredential` v2 alias
+- the additive production presentation surface validates disclosed private
+  values by recomputing their per-field commitments from the supplied raw value
+  plus opening; public routing fields are checked directly against
+  `credential.claims`
 - the prototype assumes credit-bearing degree awards only; honorary or zero-credit diploma variants are intentionally out of scope for this first family cut
 
 Current and production-profile field categories:
@@ -77,6 +81,19 @@ Current and production-profile field categories:
 Production-profile helpers are intentionally additive. They make the field split
 and commitment root executable without silently changing the existing v1
 credential alias used by BDD, protocol transcripts, and reports.
+
+Production-profile presentation helpers:
+
+- `UniversityDiplomaProductionDisclosures` carries `reveal*` flags, raw values,
+  and openings only for committed/private fields
+- `UniversityDiplomaProductionPresentation` is an additive VP alias for the v2
+  credential profile
+- `assertValidUniversityDiplomaProductionPresentation(...)` verifies the v2
+  credential proof, holder-bound presentation proof, VC/VP linkage, and every
+  disclosed opening
+- `assertUniversityDiplomaProductionPresentationSatisfiesRequest(...)` adds the
+  verifier request policy checks, including required disclosures and the current
+  minimum-grade policy over an opened `finalGrade`
 
 Migration plan:
 

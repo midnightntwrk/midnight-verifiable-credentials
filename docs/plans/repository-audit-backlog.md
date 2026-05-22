@@ -425,6 +425,12 @@ forces a stop.
    - adds the additive `UniversityDiplomaProductionCredential` v2 alias,
      production fixture, proof validation helper, and drift tests proving
      committed academic values are outside `credential.claims`
+   - 2026-05-22 follow-up branch:
+     `codex/vc-university-production-openings`
+   - adds the additive `UniversityDiplomaProductionPresentation` and
+     production request/disclosure validators so verifier-facing raw values must
+     open to the signed `claimCommitments` before request policy checks use
+     them
    - validation: university credential-family tests, university protocol tests,
      `./run.sh university-bdd`, `npm run docs:links`
 

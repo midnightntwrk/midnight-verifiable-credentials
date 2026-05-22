@@ -187,6 +187,10 @@ The repository carries working examples across the representation taxonomy:
   `UniversityDiplomaProductionPublicClaims` plus
   `UniversityDiplomaClaimCommitments` in
   [`../../packages/prototypes/credential-families/university-diploma/src/university-diploma-credential/claims.compact`](../../packages/prototypes/credential-families/university-diploma/src/university-diploma-credential/claims.compact)
+- additive academic production disclosures:
+  `UniversityDiplomaProductionDisclosures` and
+  `UniversityDiplomaProductionPresentation` in
+  [`../../packages/prototypes/credential-families/university-diploma/src/university-diploma-credential/model.compact`](../../packages/prototypes/credential-families/university-diploma/src/university-diploma-credential/model.compact)
 - committed/private birth source credential:
   [`../../packages/prototypes/credential-families/birth`](../../packages/prototypes/credential-families/birth)
 - mixed public-plus-private laboratory:
