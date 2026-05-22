@@ -53,6 +53,7 @@ const universityDataProfiles = {
 };
 
 const companyCountsBySet = {
+  // Deliberately independent from generated company arrays; mismatch is drift.
   standard: 3,
   expanded: 6,
 };
@@ -380,8 +381,8 @@ export const buildUniversityDataArtifactsForProfile = ({
         student.diplomaClaimValues.finalGrade >= discountThreshold,
       explanation:
         student.diplomaClaimValues.finalGrade >= discountThreshold
-          ? `grade is at least ${discountThreshold}`
-          : `grade is below ${discountThreshold}`,
+          ? `grade is at least the mall threshold (${discountThreshold})`
+          : `grade is below the mall threshold (${discountThreshold})`,
     }));
 
   return {

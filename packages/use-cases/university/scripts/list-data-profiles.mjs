@@ -23,21 +23,21 @@ const run = () => {
     args.has(flag),
   );
 
-  if (unknownArgs.length > 0) {
-    throw new Error(
-      `Unknown university data profile option(s): ${unknownArgs.join(", ")}`,
-    );
-  }
-  if (args.has("--json") && requestedMarkdownModes.length > 0) {
-    throw new Error("Use either --json or one markdown mode, not both.");
-  }
-  if (requestedMarkdownModes.length > 1) {
-    throw new Error(
-      `Use exactly one university data profile markdown mode, got: ${requestedMarkdownModes.join(", ")}`,
-    );
-  }
-
   try {
+    if (unknownArgs.length > 0) {
+      throw new Error(
+        `Unknown university data profile option(s): ${unknownArgs.join(", ")}`,
+      );
+    }
+    if (args.has("--json") && requestedMarkdownModes.length > 0) {
+      throw new Error("Use either --json or one markdown mode, not both.");
+    }
+    if (requestedMarkdownModes.length > 1) {
+      throw new Error(
+        `Use exactly one university data profile markdown mode, got: ${requestedMarkdownModes.join(", ")}`,
+      );
+    }
+
     const profiles = listUniversityDataProfiles();
 
     if (args.has("--json")) {

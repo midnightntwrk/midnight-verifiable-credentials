@@ -67,9 +67,9 @@ Feature: Selected students present diploma credentials to request a mall discoun
     And the discount report should record the explanation "<explanation>"
 
     Examples:
-      | fullName        | studentId | finalGrade | expectedOutcome | explanation                               |
-      | Ada Avery 0001  | STU-0001  | 98         | accepted        | grade is at least 91                      |
-      | Ben Avery 0002  | STU-0002  | 94         | accepted        | grade is at least 91                      |
-      | Cara Avery 0003 | STU-0003  | 91         | accepted        | grade is at least 91                      |
+      | fullName        | studentId | finalGrade | expectedOutcome | explanation                                                                  |
+      | Ada Avery 0001  | STU-0001  | 98         | accepted        | grade is at least the mall threshold (91)                                    |
+      | Ben Avery 0002  | STU-0002  | 94         | accepted        | grade is at least the mall threshold (91)                                    |
+      | Cara Avery 0003 | STU-0003  | 91         | accepted        | grade is at least the mall threshold (91)                                    |
       | Dion Avery 0004 | STU-0004  | 90         | rejected        | failed assert: University-diploma disclosed final grade is below the verifier minimum |
       | Ella Avery 0005 | STU-0005  | 72         | rejected        | failed assert: University-diploma disclosed final grade is below the verifier minimum |
