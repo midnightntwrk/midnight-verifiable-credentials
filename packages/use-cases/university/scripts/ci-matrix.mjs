@@ -206,14 +206,19 @@ const operatorLaneOrder = [
   "summary",
 ];
 
-const orderedOperatorLanes = () =>
-  operatorLaneOrder.map((laneId) => {
-    const lane = universityCiMatrix.find((candidate) => candidate.id === laneId);
+const orderedOperatorLanes = () => {
+  const matrixById = new Map(
+    universityCiMatrix.map((candidate) => [candidate.id, candidate]),
+  );
+
+  return operatorLaneOrder.map((laneId) => {
+    const lane = matrixById.get(laneId);
     if (!lane) {
       throw new Error(`Unknown university operator lane id: ${laneId}`);
     }
     return lane;
   });
+};
 
 const renderOperatorLaneTable = () => {
   const lines = [
@@ -238,6 +243,13 @@ const generatedSection = (name) => ({
 });
 
 const replaceGeneratedSection = (source, section, content) => {
+  if (
+    source.split(section.start).length !== 2 ||
+    source.split(section.end).length !== 2
+  ) {
+    throw new Error(`Expected exactly one generated section: ${section.start} / ${section.end}`);
+  }
+
   const startIndex = source.indexOf(section.start);
   const endIndex = source.indexOf(section.end);
   if (startIndex === -1 || endIndex === -1 || endIndex < startIndex) {
@@ -308,6 +320,7 @@ const checkMatrix = () => {
   const scripts = packageScripts();
   const runSh = readRepoFile("run.sh");
   const workflow = readRepoFile(".github/workflows/ci.yml");
+  const matrixLaneIds = new Set(universityCiMatrix.map((lane) => lane.id));
   const lightTargets = new Set(lightTargetNames);
   const artifactProfiles = new Set(profileNames);
   const operatorLaneIds = new Set(operatorLaneOrder);
@@ -317,6 +330,11 @@ const checkMatrix = () => {
   }
   if (operatorLaneOrder.length !== universityCiMatrix.length) {
     errors.push("operatorLaneOrder length must match universityCiMatrix");
+  }
+  for (const laneId of operatorLaneOrder) {
+    if (!matrixLaneIds.has(laneId)) {
+      errors.push(`operatorLaneOrder references unknown lane: ${laneId}`);
+    }
   }
 
   for (const lane of universityCiMatrix) {
