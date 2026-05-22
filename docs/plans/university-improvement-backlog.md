@@ -91,6 +91,10 @@ becomes part of a stackable PR.
 9. University-only follow-on: `university-policy-preset-deduplication`
    - keep verifier request policies as named presets instead of repeated raw
      payloads
+   - 2026-05-22: `codex/vc-university-policy-preset-docs` adds generated
+     Markdown documentation for `request-policy-presets.json` and checks it
+     from the university protocol profile lane so named presets remain
+     inspectable without hand-maintained policy prose
    - validation: `./run.sh university-policy-catalog`, protocol tests
 
 10. Expansion for `age-gate-bdd-style-alignment`
