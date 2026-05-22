@@ -1,3 +1,9 @@
+import {
+  UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY,
+  UNIVERSITY_DIPLOMA_PRODUCTION_PREDICATE_ONLY_FIELDS,
+  UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE,
+} from "@midnight-ntwrk/midnight-did-credentials-university-diploma/privacy-profile";
+
 import type { UniversityProtocolFlowResult, UniversityProtocolFlowRunner } from "./flow.js";
 import {
   assertUniversityProtocolTranscriptExportConforms,
@@ -45,6 +51,17 @@ export type UniversityProtocolTranscriptExport = {
   readonly schemaId: typeof UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_ID;
   readonly schemaVersion: typeof UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION;
   readonly compatibility: typeof UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_COMPATIBILITY;
+  readonly privacyProfile: {
+    readonly currentProfile: typeof UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY.profile;
+    readonly claimCommitmentModel: typeof UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY.claimCommitmentModel;
+    readonly productionProfile: typeof UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.profile;
+    readonly productionPublicClaimFields: typeof UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionPublicClaimFields;
+    readonly productionCommitmentCandidates: typeof UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionCommitmentCandidates;
+    readonly productionCommitmentFields: typeof UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionCommitmentFields;
+    readonly predicateOnlyFields: typeof UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.predicateOnlyFields;
+    readonly openingPolicy: string;
+    readonly statement: string;
+  };
   readonly dataset: {
     readonly studentCount: number;
     readonly companyCount: number;
@@ -487,6 +504,22 @@ export const buildUniversityProtocolTranscriptExport = (
     compatibility: {
       ...UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_COMPATIBILITY,
     },
+    privacyProfile: {
+      currentProfile: UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY.profile,
+      claimCommitmentModel:
+        UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY.claimCommitmentModel,
+      productionProfile: UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.profile,
+      productionPublicClaimFields:
+        UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionPublicClaimFields,
+      productionCommitmentCandidates:
+        UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionCommitmentCandidates,
+      productionCommitmentFields:
+        UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionCommitmentFields,
+      predicateOnlyFields:
+        UNIVERSITY_DIPLOMA_PRODUCTION_PREDICATE_ONLY_FIELDS,
+      openingPolicy: UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.openingPolicy,
+      statement: UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.statement,
+    },
     dataset: {
       studentCount: runner.students.length,
       companyCount: runner.companies.length,
@@ -615,6 +648,8 @@ export const renderUniversityProtocolTranscriptMarkdown = (
     `- schema version: ${exported.schemaVersion}`,
     `- compatible reader floor: ${exported.compatibility.minimumReaderVersion}`,
     `- compatible reader ceiling: ${exported.compatibility.maximumReaderVersion}`,
+    `- current privacy profile: ${exported.privacyProfile.currentProfile}`,
+    `- production privacy profile: ${exported.privacyProfile.productionProfile}`,
     `- students: ${exported.dataset.studentCount}`,
     `- companies: ${exported.dataset.companyCount}`,
     `- discount applicants: ${exported.dataset.discountApplicantCount}`,
@@ -644,7 +679,19 @@ export const renderUniversityProtocolTranscriptMarkdown = (
   for (const entry of exported.rejectionBreakdown.discounts.byReason) {
     lines.push(`- ${entry.reason}: ${entry.count}`);
   }
-  lines.push("");
+  lines.push(
+    "",
+    "## Privacy Profile",
+    "",
+    `- current claim commitment model: ${exported.privacyProfile.claimCommitmentModel}`,
+    `- production public claims: ${exported.privacyProfile.productionPublicClaimFields.join(", ")}`,
+    `- production committed/private candidates: ${exported.privacyProfile.productionCommitmentCandidates.join(", ")}`,
+    `- production commitment fields: ${exported.privacyProfile.productionCommitmentFields.join(", ")}`,
+    `- predicate-only fields: ${exported.privacyProfile.predicateOnlyFields.join(", ")}`,
+    `- opening policy: ${exported.privacyProfile.openingPolicy}`,
+    `- statement: ${exported.privacyProfile.statement}`,
+    "",
+  );
   return [
     `${lines.join("\n")}\n`,
     renderThreadSection("Issuance Threads", exported.threads.issuance),

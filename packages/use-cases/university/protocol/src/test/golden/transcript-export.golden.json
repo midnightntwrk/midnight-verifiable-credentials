@@ -1,9 +1,45 @@
 {
   "schemaId": "midnight-university-protocol-export",
-  "schemaVersion": "midnight-university-protocol-export.v1",
+  "schemaVersion": "midnight-university-protocol-export.v2",
   "compatibility": {
-    "minimumReaderVersion": "midnight-university-protocol-export.v1",
-    "maximumReaderVersion": "midnight-university-protocol-export.v1"
+    "minimumReaderVersion": "midnight-university-protocol-export.v2",
+    "maximumReaderVersion": "midnight-university-protocol-export.v2"
+  },
+  "privacyProfile": {
+    "currentProfile": "direct-claim-prototype",
+    "claimCommitmentModel": "none",
+    "productionProfile": "production-commitment-v2",
+    "productionPublicClaimFields": [
+      "universityName",
+      "awardName",
+      "graduationYear"
+    ],
+    "productionCommitmentCandidates": [
+      "diplomaId",
+      "studentId",
+      "graduateName",
+      "facultyName",
+      "honorsCode",
+      "graduationMonth",
+      "finalGrade",
+      "creditsEarned"
+    ],
+    "productionCommitmentFields": [
+      "diplomaIdCommitment",
+      "studentIdCommitment",
+      "graduateNameCommitment",
+      "facultyNameCommitment",
+      "honorsCodeCommitment",
+      "graduationMonthCommitment",
+      "finalGradeCommitment",
+      "creditsEarnedCommitment"
+    ],
+    "predicateOnlyFields": [
+      "finalGrade",
+      "creditsEarned"
+    ],
+    "openingPolicy": "Production issuance must use high-entropy field-domain-separated openings; deterministic fixture openings are only for tests.",
+    "statement": "The production profile keeps routing facts public and moves stable identifiers plus sensitive academic facts into claim commitments."
   },
   "dataset": {
     "studentCount": 10,

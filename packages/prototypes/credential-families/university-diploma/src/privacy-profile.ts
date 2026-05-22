@@ -42,6 +42,16 @@ export const UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_CANDIDATES = [
 export type UniversityDiplomaProductionCommitmentCandidate =
   (typeof UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_CANDIDATES)[number];
 
+// These fields stay committed in the production profile and are opened only to
+// prove verifier predicates, not to disclose their raw values.
+export const UNIVERSITY_DIPLOMA_PRODUCTION_PREDICATE_ONLY_FIELDS = [
+  "finalGrade",
+  "creditsEarned",
+] as const satisfies readonly UniversityDiplomaProductionCommitmentCandidate[];
+
+export type UniversityDiplomaProductionPredicateOnlyField =
+  (typeof UNIVERSITY_DIPLOMA_PRODUCTION_PREDICATE_ONLY_FIELDS)[number];
+
 export const UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_FIELDS = [
   "diplomaIdCommitment",
   "studentIdCommitment",
@@ -61,6 +71,7 @@ export type UniversityDiplomaProductionProfile = {
   readonly productionPublicClaimFields: readonly UniversityDiplomaProductionPublicClaimField[];
   readonly productionCommitmentCandidates: readonly UniversityDiplomaProductionCommitmentCandidate[];
   readonly productionCommitmentFields: readonly UniversityDiplomaProductionCommitmentField[];
+  readonly predicateOnlyFields: readonly UniversityDiplomaProductionPredicateOnlyField[];
   readonly openingPolicy: string;
   readonly statement: string;
 };
@@ -73,6 +84,7 @@ export const UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE: UniversityDiplomaProductionP
     productionCommitmentCandidates:
       UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_CANDIDATES,
     productionCommitmentFields: UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_FIELDS,
+    predicateOnlyFields: UNIVERSITY_DIPLOMA_PRODUCTION_PREDICATE_ONLY_FIELDS,
     openingPolicy:
       "Production issuance must use high-entropy field-domain-separated openings; deterministic fixture openings are only for tests.",
     statement:

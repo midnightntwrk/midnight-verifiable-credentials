@@ -67,7 +67,7 @@ describe("university protocol transcript schema contract", () => {
     expect(() =>
       assertUniversityProtocolTranscriptExportConforms({
         ...exported,
-        schemaVersion: "midnight-university-protocol-export.v2",
+        schemaVersion: "midnight-university-protocol-export.v3",
       }),
     ).toThrow(/schema version/);
 
@@ -86,9 +86,83 @@ describe("university protocol transcript schema contract", () => {
         ...exported,
         compatibility: {
           ...UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_COMPATIBILITY,
-          maximumReaderVersion: "midnight-university-protocol-export.v2",
+          maximumReaderVersion: "midnight-university-protocol-export.v3",
         },
       }),
     ).toThrow(/maximum reader version/);
+  });
+
+  it("rejects malformed privacy profile metadata", () => {
+    setNetworkId("undeployed");
+    const runner = new UniversityProtocolFlowRunner();
+    const exported = buildUniversityProtocolTranscriptExport(
+      runner,
+      runner.runAll(),
+    );
+
+    expect(() =>
+      assertUniversityProtocolTranscriptExportConforms({
+        ...exported,
+        privacyProfile: {
+          ...exported.privacyProfile,
+          productionPublicClaimFields: "universityName",
+        },
+      }),
+    ).toThrow(/productionPublicClaimFields/);
+
+    expect(() =>
+      assertUniversityProtocolTranscriptExportConforms({
+        ...exported,
+        privacyProfile: {
+          ...exported.privacyProfile,
+          predicateOnlyFields: ["finalGrade", 120],
+        },
+      }),
+    ).toThrow(/predicateOnlyFields\[1\]/);
+
+    expect(() =>
+      assertUniversityProtocolTranscriptExportConforms({
+        ...exported,
+        privacyProfile: {
+          ...exported.privacyProfile,
+          currentProfile: "fixture-only-profile",
+        },
+      }),
+    ).toThrow(/currentProfile/);
+
+    expect(() =>
+      assertUniversityProtocolTranscriptExportConforms({
+        ...exported,
+        privacyProfile: {
+          ...exported.privacyProfile,
+          productionPublicClaimFields: [
+            "awardName",
+            "universityName",
+            "graduationYear",
+          ],
+        },
+      }),
+    ).toThrow(/productionPublicClaimFields/);
+
+    expect(() =>
+      assertUniversityProtocolTranscriptExportConforms({
+        ...exported,
+        privacyProfile: {
+          ...exported.privacyProfile,
+          productionCommitmentCandidates: ["diplomaId"],
+          predicateOnlyFields: ["finalGrade"],
+        },
+      }),
+    ).toThrow(/productionCommitmentCandidates/);
+
+    expect(() =>
+      assertUniversityProtocolTranscriptExportConforms({
+        ...exported,
+        privacyProfile: {
+          ...exported.privacyProfile,
+          statement: "locally edited privacy-profile copy",
+        },
+      }),
+    ).toThrow(/statement/);
   });
 });

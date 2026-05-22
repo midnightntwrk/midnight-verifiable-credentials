@@ -1,3 +1,8 @@
+import {
+  UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY,
+  UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE,
+} from "@midnight-ntwrk/midnight-did-credentials-university-diploma/privacy-profile";
+
 import type {
   UniversityProtocolThreadExport,
   UniversityProtocolTranscriptExport,
@@ -12,7 +17,7 @@ export const UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_ID =
   "midnight-university-protocol-export" as const;
 
 export const UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION =
-  "midnight-university-protocol-export.v1" as const;
+  "midnight-university-protocol-export.v2" as const;
 
 export const UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_COMPATIBILITY = Object.freeze({
   minimumReaderVersion: UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION,
@@ -52,6 +57,31 @@ const expectArray = (value: unknown, label: string): readonly unknown[] => {
     throw new Error(`${label} must be an array`);
   }
   return value;
+};
+
+const expectStringArray = (
+  value: unknown,
+  label: string,
+): readonly string[] =>
+  expectArray(value, label).map((entry, index) =>
+    expectString(entry, `${label}[${index}]`),
+  );
+
+const expectExactStringArray = <T extends string>(
+  value: unknown,
+  expected: readonly T[],
+  label: string,
+): readonly T[] => {
+  const entries = expectStringArray(value, label);
+  if (entries.length !== expected.length) {
+    throw new Error(`${label} must equal [${expected.join(", ")}]`);
+  }
+  return entries.map((entry, index) => {
+    if (entry !== expected[index]) {
+      throw new Error(`${label} must equal [${expected.join(", ")}]`);
+    }
+    return entry as T;
+  });
 };
 
 const expectOneOf = <T extends string>(
@@ -178,6 +208,56 @@ export const assertUniversityProtocolTranscriptExportConforms: (
   ) {
     throw new Error("Unsupported transcript export maximum reader version");
   }
+
+  const privacyProfile = asRecord(
+    record.privacyProfile,
+    "transcript export.privacyProfile",
+  );
+  expectOneOf(
+    privacyProfile.currentProfile,
+    [UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY.profile],
+    "transcript export.privacyProfile.currentProfile",
+  );
+  expectOneOf(
+    privacyProfile.claimCommitmentModel,
+    [UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY.claimCommitmentModel],
+    "transcript export.privacyProfile.claimCommitmentModel",
+  );
+  expectOneOf(
+    privacyProfile.productionProfile,
+    [UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.profile],
+    "transcript export.privacyProfile.productionProfile",
+  );
+  expectExactStringArray(
+    privacyProfile.productionPublicClaimFields,
+    UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionPublicClaimFields,
+    "transcript export.privacyProfile.productionPublicClaimFields",
+  );
+  expectExactStringArray(
+    privacyProfile.productionCommitmentCandidates,
+    UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionCommitmentCandidates,
+    "transcript export.privacyProfile.productionCommitmentCandidates",
+  );
+  expectExactStringArray(
+    privacyProfile.productionCommitmentFields,
+    UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionCommitmentFields,
+    "transcript export.privacyProfile.productionCommitmentFields",
+  );
+  expectExactStringArray(
+    privacyProfile.predicateOnlyFields,
+    UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.predicateOnlyFields,
+    "transcript export.privacyProfile.predicateOnlyFields",
+  );
+  expectOneOf(
+    privacyProfile.openingPolicy,
+    [UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.openingPolicy],
+    "transcript export.privacyProfile.openingPolicy",
+  );
+  expectOneOf(
+    privacyProfile.statement,
+    [UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.statement],
+    "transcript export.privacyProfile.statement",
+  );
 
   const dataset = asRecord(record.dataset, "transcript export.dataset");
   expectFiniteNumber(dataset.studentCount, "transcript export.dataset.studentCount");
