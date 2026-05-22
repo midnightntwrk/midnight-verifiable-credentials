@@ -169,9 +169,10 @@
     "update:university-request-policy-presets": "node ./packages/use-cases/university/scripts/request-policy-presets.mjs --update-markdown",
     "check:university-request-policy-presets": "node ./packages/use-cases/university/scripts/request-policy-presets.mjs --check-markdown",
     "ci:university-data-profiles": "npm run build:university-data-profiles:list && npm run build:university-data-profiles:check",
+    "ci:university-request-policy-presets": "npm run check:university-request-policy-presets",
     "test:university-batch-sweep": "npm run test:batch-sweep -w packages/use-cases/university/scenarios",
     "ci:university-batch-sweep": "npm run typecheck -w packages/use-cases/university/scenarios && npm run test:university-batch-sweep",
-    "ci:university-protocol-profiles:from-artifacts": "npm run ci:university-data-profiles && npm run check:university-request-policy-presets && npm run ci:university-policy-catalog && npm run ci:university-protocol:cohort:from-artifacts && npm run ci:university-protocol:stress:from-artifacts",
+    "ci:university-protocol-profiles:from-artifacts": "npm run ci:university-data-profiles && npm run ci:university-request-policy-presets && npm run ci:university-policy-catalog && npm run ci:university-protocol:cohort:from-artifacts && npm run ci:university-protocol:stress:from-artifacts",
     "ci:university-protocol-profiles": "npm run build:university-protocol-cohort:prereqs && npm run build:university-protocol-stress:data && npm run ci:university-protocol-profiles:from-artifacts",
     "check:ci-change-classification": "node ./tooling/scripts/ci-change-classification-catalog.mjs --self-test",
     "check:ci-build-cone-catalog": "node ./tooling/scripts/ci-build-cone-catalog.mjs --check"

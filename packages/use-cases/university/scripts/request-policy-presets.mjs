@@ -70,12 +70,12 @@ const formatPolicyValue = (value) => {
 
 const renderPolicyFields = (requestPolicy) =>
   Object.entries(requestPolicy)
-    .map(([field, value]) => `  - \`${field}\`: \`${formatPolicyValue(value)}\``)
+    .map(([field, value]) => `- \`${field}\`: \`${formatPolicyValue(value)}\``)
     .join("\n");
 
 const renderPolicyRationale = (policyRationale) =>
   Object.entries(policyRationale)
-    .map(([field, rationale]) => `  - \`${field}\`: ${rationale}`)
+    .map(([field, rationale]) => `- \`${field}\`: ${rationale}`)
     .join("\n");
 
 export const renderUniversityRequestPolicyPresetMarkdown = () => {
