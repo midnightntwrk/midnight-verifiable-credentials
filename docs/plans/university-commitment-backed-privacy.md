@@ -28,9 +28,12 @@ fixture tests in
 `packages/prototypes/credential-families/university-diploma/src/test/privacy-boundary.test.ts`.
 
 The package also exposes additive production-profile building blocks in
-`university-diploma-credential/claims.compact`. These do not change the current
-v1 credential alias; they give the next profile a typechecked public/commitment
-partition and a domain-separated `universityDiplomaProductionClaimRoot`.
+`university-diploma-credential/claims.compact` and an additive
+`UniversityDiplomaProductionCredential` v2 alias. These do not change the
+current v1 credential alias; they give the next profile a typechecked
+public/commitment partition, a domain-separated
+`universityDiplomaProductionClaimRoot`, and a credential envelope that stores
+sensitive academic facts in `claimCommitments`.
 
 ## Field Migration Target
 
@@ -100,9 +103,12 @@ opening secrecy until predicate witnesses replace raw-value openings.
 1. Keep the current direct-claim prototype readable and explicitly labeled.
 2. Add a separate commitment-backed diploma family or v2 surface instead of
    silently changing the v1 claim root. The additive Compact/fixture building
-   blocks now cover the field split and v2 claim-root shape.
+   blocks now cover the field split, v2 claim-root shape, and
+   `UniversityDiplomaProductionCredential` alias.
 3. Move stable identifiers and sensitive academic facts into `claimCommitments`
-   in the actual v2 credential alias.
+   in the actual v2 credential alias. This is now covered at the credential
+   envelope level; follow-up protocol slices still need verifier openings and
+   predicates.
 4. Add opening witnesses for disclosed private fields.
 5. Add predicate witnesses for final-grade and credit-threshold policies.
 6. Update university protocol DTOs and BDD notes so reports show opened values

@@ -3,11 +3,13 @@ import { describe, expect, it } from "vitest";
 import {
   pureCircuits,
   type UniversityDiplomaClaimCommitments,
+  type UniversityDiplomaProductionCredential,
 } from "../managed/university-diploma-credential/contract/index.js";
 import {
   createUniversityDiplomaFixture,
   createUniversityDiplomaProductionClaimOpenings,
   createUniversityDiplomaProductionClaimProfile,
+  createUniversityDiplomaProductionCredentialFixture,
   padText,
   UNIVERSITY_DIPLOMA_DIRECT_CLAIM_FIELDS,
   UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY,
@@ -40,6 +42,10 @@ type ExtraCommitmentFields = Exclude<
   UniversityDiplomaProductionCommitmentField,
   keyof UniversityDiplomaClaimCommitments
 >;
+type ProductionCredentialPublicClaimKeys =
+  keyof UniversityDiplomaProductionCredential["claims"];
+type ProductionCredentialCommitmentKeys =
+  keyof UniversityDiplomaProductionCredential["claimCommitments"];
 
 const directClaimPartitionCoverage: MissingPartitionedDirectClaims extends never
   ? ExtraPartitionedDirectClaims extends never
@@ -236,5 +242,160 @@ describe("university diploma production commitment profile", () => {
     expect(
       UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionCommitmentFields,
     ).toBe(UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_FIELDS);
+  });
+
+  it("creates an additive v2 credential alias with public claims and claim commitments split", () => {
+    const fixture = createUniversityDiplomaProductionCredentialFixture();
+
+    expect(keysOf(fixture.credential.claims)).toEqual([
+      "awardName",
+      "graduationYear",
+      "universityName",
+    ] satisfies ProductionCredentialPublicClaimKeys[]);
+    expect(keysOf(fixture.credential.claimCommitments)).toEqual(
+      [
+        ...UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_FIELDS,
+      ].sort() satisfies ProductionCredentialCommitmentKeys[],
+    );
+    expect(fixture.credential.claims).toEqual(fixture.profile.publicClaims);
+    expect(fixture.credential.claimCommitments).toEqual(
+      fixture.profile.claimCommitments,
+    );
+    expect(fixture.credential.claimRoot).toEqual(fixture.profile.claimRoot);
+    expect(fixture.credential.schema.schemaId).toEqual(
+      padText("uni-diploma:v2"),
+    );
+    expect(fixture.credential.schema.majorVersion).toBe(2n);
+  });
+
+  it("validates the v2 production credential proof against the committed profile root", () => {
+    const fixture = createUniversityDiplomaProductionCredentialFixture();
+
+    expect(() =>
+      pureCircuits.assertValidUniversityDiplomaProductionCredential(
+        fixture.credential,
+        fixture.credentialProof,
+      ),
+    ).not.toThrow();
+  });
+
+  it("rejects v1 schema references through the v2 production credential validator", () => {
+    const fixture = createUniversityDiplomaProductionCredentialFixture();
+
+    expect(() =>
+      pureCircuits.assertValidUniversityDiplomaProductionCredential(
+        {
+          ...fixture.credential,
+          schema: {
+            ...fixture.credential.schema,
+            schemaId: padText("uni-diploma:v1"),
+            majorVersion: 1n,
+          },
+        },
+        fixture.credentialProof,
+      ),
+    ).toThrow(/University-diploma production schema id mismatch/);
+  });
+
+  it("rejects production credentials when public claims drift from the signed claim root", () => {
+    const fixture = createUniversityDiplomaProductionCredentialFixture();
+
+    expect(() =>
+      pureCircuits.assertValidUniversityDiplomaProductionCredential(
+        {
+          ...fixture.credential,
+          claims: {
+            ...fixture.credential.claims,
+            universityName: padText("Other University"),
+          },
+        },
+        fixture.credentialProof,
+      ),
+    ).toThrow(/Credential claim root mismatch/);
+  });
+
+  it("rejects production credentials with an unset public graduation year", () => {
+    const fixture = createUniversityDiplomaProductionCredentialFixture();
+
+    expect(() =>
+      pureCircuits.assertValidUniversityDiplomaProductionCredential(
+        {
+          ...fixture.credential,
+          claims: {
+            ...fixture.credential.claims,
+            graduationYear: 0n,
+          },
+        },
+        fixture.credentialProof,
+      ),
+    ).toThrow(/University-diploma production graduation year must be set/);
+  });
+
+  it("rejects production credentials with unset routing text claims", () => {
+    const fixture = createUniversityDiplomaProductionCredentialFixture();
+
+    expect(() =>
+      pureCircuits.assertValidUniversityDiplomaProductionCredential(
+        {
+          ...fixture.credential,
+          claims: {
+            ...fixture.credential.claims,
+            universityName: new Uint8Array(32),
+          },
+        },
+        fixture.credentialProof,
+      ),
+    ).toThrow(/University-diploma production university name must be set/);
+
+    expect(() =>
+      pureCircuits.assertValidUniversityDiplomaProductionCredential(
+        {
+          ...fixture.credential,
+          claims: {
+            ...fixture.credential.claims,
+            awardName: new Uint8Array(32),
+          },
+        },
+        fixture.credentialProof,
+      ),
+    ).toThrow(/University-diploma production award name must be set/);
+  });
+
+  it("rejects production credentials when commitments drift from the signed claim root", () => {
+    const fixture = createUniversityDiplomaProductionCredentialFixture();
+    const changedCommitments = {
+      ...fixture.credential.claimCommitments,
+      finalGradeCommitment: pureCircuits.universityDiplomaFinalGradeCommitment(
+        fixture.sourceClaims.finalGrade + 1n,
+        fixture.profile.openings.finalGradeOpening,
+      ),
+    };
+
+    expect(() =>
+      pureCircuits.assertValidUniversityDiplomaProductionCredential(
+        {
+          ...fixture.credential,
+          claimCommitments: changedCommitments,
+        },
+        fixture.credentialProof,
+      ),
+    ).toThrow(/Credential claim root mismatch/);
+  });
+
+  it("rejects production credentials when the issuer proof signature is tampered", () => {
+    const fixture = createUniversityDiplomaProductionCredentialFixture();
+
+    expect(() =>
+      pureCircuits.assertValidUniversityDiplomaProductionCredential(
+        fixture.credential,
+        {
+          ...fixture.credentialProof,
+          signature: {
+            ...fixture.credentialProof.signature,
+            s: fixture.credentialProof.signature.s + 1n,
+          },
+        },
+      ),
+    ).toThrow();
   });
 });
