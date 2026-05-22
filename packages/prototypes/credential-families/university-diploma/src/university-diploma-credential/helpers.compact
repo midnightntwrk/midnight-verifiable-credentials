@@ -92,6 +92,9 @@ export pure circuit assertValidUniversityDiplomaClaims(
 export pure circuit assertValidUniversityDiplomaProductionPublicClaims(
   publicClaims: UniversityDiplomaProductionPublicClaims
 ): [] {
+  // The production public profile intentionally keeps only low-sensitivity
+  // routing fields. Fixed-width text routing claims have no family-local
+  // semantic invariant beyond their commitment to the signed credential body.
   assert(
     publicClaims.graduationYear > 0,
     "University-diploma production graduation year must be set"

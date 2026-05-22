@@ -279,6 +279,41 @@ describe("university diploma production commitment profile", () => {
     ).not.toThrow();
   });
 
+  it("rejects v1 schema references through the v2 production credential validator", () => {
+    const fixture = createUniversityDiplomaProductionCredentialFixture();
+
+    expect(() =>
+      pureCircuits.assertValidUniversityDiplomaProductionCredential(
+        {
+          ...fixture.credential,
+          schema: {
+            ...fixture.credential.schema,
+            schemaId: padText("uni-diploma:v1"),
+            majorVersion: 1n,
+          },
+        },
+        fixture.credentialProof,
+      ),
+    ).toThrow(/University-diploma production schema id mismatch/);
+  });
+
+  it("rejects production credentials when public claims drift from the signed claim root", () => {
+    const fixture = createUniversityDiplomaProductionCredentialFixture();
+
+    expect(() =>
+      pureCircuits.assertValidUniversityDiplomaProductionCredential(
+        {
+          ...fixture.credential,
+          claims: {
+            ...fixture.credential.claims,
+            universityName: padText("Other University"),
+          },
+        },
+        fixture.credentialProof,
+      ),
+    ).toThrow(/Credential claim root mismatch/);
+  });
+
   it("rejects production credentials when commitments drift from the signed claim root", () => {
     const fixture = createUniversityDiplomaProductionCredentialFixture();
     const changedCommitments = {
