@@ -248,12 +248,14 @@ export const assertUniversityProtocolTranscriptExportConforms: (
     UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.predicateOnlyFields,
     "transcript export.privacyProfile.predicateOnlyFields",
   );
-  expectString(
+  expectOneOf(
     privacyProfile.openingPolicy,
+    [UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.openingPolicy],
     "transcript export.privacyProfile.openingPolicy",
   );
-  expectString(
+  expectOneOf(
     privacyProfile.statement,
+    [UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.statement],
     "transcript export.privacyProfile.statement",
   );
 

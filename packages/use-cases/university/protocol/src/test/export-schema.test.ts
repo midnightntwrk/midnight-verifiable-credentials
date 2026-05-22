@@ -154,5 +154,15 @@ describe("university protocol transcript schema contract", () => {
         },
       }),
     ).toThrow(/productionCommitmentCandidates/);
+
+    expect(() =>
+      assertUniversityProtocolTranscriptExportConforms({
+        ...exported,
+        privacyProfile: {
+          ...exported.privacyProfile,
+          statement: "locally edited privacy-profile copy",
+        },
+      }),
+    ).toThrow(/statement/);
   });
 });

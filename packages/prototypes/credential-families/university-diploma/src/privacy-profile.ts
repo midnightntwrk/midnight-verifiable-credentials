@@ -42,6 +42,8 @@ export const UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_CANDIDATES = [
 export type UniversityDiplomaProductionCommitmentCandidate =
   (typeof UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_CANDIDATES)[number];
 
+// These fields stay committed in the production profile and are opened only to
+// prove verifier predicates, not to disclose their raw values.
 export const UNIVERSITY_DIPLOMA_PRODUCTION_PREDICATE_ONLY_FIELDS = [
   "finalGrade",
   "creditsEarned",
