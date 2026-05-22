@@ -81,6 +81,7 @@ describe("university request-policy catalog audit", () => {
       allEmbeddedPoliciesMatchCatalog: true,
       allCatalogPresetsUsed: true,
       allExplicitPolicyFieldsHaveRationale: true,
+      allPolicyRationaleFieldsMatchPolicy: true,
     });
     expect(readableAudit.coverage).toHaveLength(4);
     expect(
@@ -339,6 +340,41 @@ describe("university request-policy catalog audit", () => {
           severity: "error",
         }),
       ]),
+    );
+  });
+
+  it("rejects rationale fields that are not present in the preset policy", () => {
+    const preset = presetCatalog["job-application-honors-without-grade"]!;
+    expect(preset.requestPolicy.requireCreditsEarnedDisclosure).toBeUndefined();
+    const expandedCatalog: UniversityRequestPolicyPresetCatalog = {
+      ...presetCatalog,
+      [preset.presetId]: {
+        ...preset,
+        policyRationale: {
+          ...preset.policyRationale,
+          requireCreditsEarnedDisclosure:
+            "This rationale should not exist without a matching policy field.",
+        },
+      },
+    };
+    const audit = buildUniversityPolicyCatalogAudit({
+      fixtureData: loadUniversityFixtureData(),
+      presetCatalog: expandedCatalog,
+    });
+
+    expect(audit.checks.allPolicyRationaleFieldsMatchPolicy).toBe(false);
+    expect(audit.findings).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "rationale-without-policy-field",
+          field: "requireCreditsEarnedDisclosure",
+          presetId: preset.presetId,
+          severity: "error",
+        }),
+      ]),
+    );
+    expect(() => assertUniversityPolicyCatalogAuditPasses(audit)).toThrow(
+      /rationale for requireCreditsEarnedDisclosure/,
     );
   });
 
