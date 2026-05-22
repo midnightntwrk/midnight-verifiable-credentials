@@ -34,26 +34,29 @@ If you only need protocol-level checks and already have build artifacts:
 
 ## Execution Lanes
 
-| Goal | Command | Main output |
-| --- | --- | --- |
-| Validate lane wiring | `./run.sh university-ci-matrix` | generated matrix contract |
-| Check fixture drift | `./run.sh university-data-profiles` | generator/profile validation |
-| Check policy drift | `./run.sh university-policy-catalog` | verifier preset coverage |
-| Read the executable story | `./run.sh university-bdd` | Serenity report |
-| See proof-server DTO boundaries | `./run.sh university-bdd-proof-server` | Serenity report with proof exchanges |
-| Measure standalone DID bootstrap | `./run.sh university-bdd-standalone` | standalone timing summary |
-| Sweep issuance batches | `./run.sh university-batch-sweep` | batch-sweep JSON/Markdown |
-| Run protocol tests | `./run.sh university-protocol` | package tests |
-| Export readable transcript | `./run.sh university-protocol-export` | transcript and decisions artifacts |
-| Run 30-student cohort profile | `./run.sh university-protocol-cohort` | sampled cohort summary |
-| Run 100-student stress profile | `./run.sh university-protocol-stress` | stress summary |
-| Aggregate handoff summary | `./run.sh university-summary` | one-page JSON/Markdown report |
+<!-- university-operator-lanes:start -->
+| Goal | Command | Main output | When to run |
+| --- | --- | --- | --- |
+| Validate lane wiring | `./run.sh university-ci-matrix` | generated matrix contract | Any run.sh, package.json, workflow, or university lane contract change. |
+| Check fixture drift | `./run.sh university-data-profiles` | generator/profile validation | Any change to packages/use-cases/university/data or data-profile registry scripts. |
+| Check policy drift | `./run.sh university-policy-catalog` | verifier preset coverage | Any change to university verifier policies, request presets, or protocol disclosure logic. |
+| Read the executable story | `./run.sh university-bdd` | Serenity report | Narrative scenario, BDD step, or readable report behavior changes. |
+| See proof-server DTO boundaries | `./run.sh university-bdd-proof-server` | Serenity report with proof exchanges | Proof-backend, proof-server contract, or protocol DTO boundaries change. |
+| Measure standalone DID bootstrap | `./run.sh university-bdd-standalone` | standalone timing summary | Standalone environment, DID bootstrap, or proof-backend timing changes. |
+| Sweep issuance batches | `./run.sh university-batch-sweep` | batch-sweep JSON/Markdown | Issuer batching, batch metrics, or reporting summary inputs change. |
+| Run protocol tests | `./run.sh university-protocol` | package tests | Protocol agents, transports, persistence, proof backend, or transcript logic changes. |
+| Export readable transcript | `./run.sh university-protocol-export` | transcript and decisions artifacts | Transcript schema, application decision schema, or export formatting changes. |
+| Run 30-student cohort profile | `./run.sh university-protocol-cohort` | sampled cohort summary | Cohort data, profile summary schema, or sampled transcript behavior changes. |
+| Run 100-student stress profile | `./run.sh university-protocol-stress` | stress summary | Stress data, throughput summary, or protocol profile performance behavior changes. |
+| Aggregate handoff summary | `./run.sh university-summary` | one-page JSON/Markdown report | Reporting package, summary schema, or aggregate artifact wiring changes. |
+<!-- university-operator-lanes:end -->
 
 The machine-readable lane catalog is generated at
 [`./ci-matrix.md`](./ci-matrix.md). Regenerate or verify it with:
 
 ```bash
 npm run --silent build:university-ci-matrix:markdown > packages/use-cases/university/ci-matrix.md
+npm run --silent build:university-operator-lanes:markdown
 npm run check:university-ci-matrix
 ```
 

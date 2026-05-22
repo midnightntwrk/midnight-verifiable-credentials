@@ -59,6 +59,10 @@ becomes part of a stackable PR.
 4. University-only follow-on: `university-operator-doc-generation`
    - generate or validate operator guide command tables from the same lane matrix
      used by CI checks
+   - 2026-05-22: `codex/vc-university-operator-lane-docs` generates the
+     operator guide execution-lane table from the university CI matrix and
+     extends `npm run check:university-ci-matrix` so local runbook commands,
+     outputs, and "when to run" guidance cannot drift from CI lane metadata
    - validation: `npm run check:university-ci-matrix`, `npm run docs:links`
 
 5. University-only follow-on: `university-report-surface-slimming`
