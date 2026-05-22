@@ -10,6 +10,7 @@ import {
   createUniversityDiplomaProductionClaimOpenings,
   createUniversityDiplomaProductionClaimProfile,
   createUniversityDiplomaProductionCredentialFixture,
+  createUniversityDiplomaProductionPresentationFixture,
   padText,
   UNIVERSITY_DIPLOMA_DIRECT_CLAIM_FIELDS,
   UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY,
@@ -397,5 +398,124 @@ describe("university diploma production commitment profile", () => {
         },
       ),
     ).toThrow();
+  });
+
+  it("validates production presentations by opening disclosed committed fields", () => {
+    const fixture = createUniversityDiplomaProductionPresentationFixture({
+      disclosure: {
+        revealDiplomaId: true,
+        revealGraduateName: true,
+        revealFinalGrade: true,
+      },
+      request: {
+        requireDiplomaIdDisclosure: true,
+        requireGraduateNameDisclosure: true,
+        requireFinalGradeDisclosure: true,
+        enforceMinimumFinalGrade: true,
+        minimumFinalGrade: 90n,
+      },
+    });
+
+    expect(() =>
+      pureCircuits.assertUniversityDiplomaProductionPresentationSatisfiesRequest(
+        fixture.credential,
+        fixture.credentialProof,
+        fixture.presentationRequest,
+        fixture.presentation,
+        fixture.presentationProof,
+      ),
+    ).not.toThrow();
+  });
+
+  it("rejects production presentations when a committed disclosure opening is wrong", () => {
+    const fixture = createUniversityDiplomaProductionPresentationFixture({
+      disclosure: {
+        revealFinalGrade: true,
+      },
+      disclosedOverrides: {
+        finalGradeOpening: new Uint8Array(32).fill(9),
+      },
+    });
+
+    expect(() =>
+      pureCircuits.assertValidUniversityDiplomaProductionPresentation(
+        fixture.credential,
+        fixture.credentialProof,
+        fixture.presentation,
+        fixture.presentationProof,
+      ),
+    ).toThrow(
+      /University-diploma production final grade disclosure commitment mismatch/,
+    );
+  });
+
+  it("rejects production presentations when a public disclosure drifts from the credential", () => {
+    const fixture = createUniversityDiplomaProductionPresentationFixture({
+      disclosure: {
+        revealAwardName: true,
+      },
+      disclosedOverrides: {
+        awardName: padText("Other Award"),
+      },
+    });
+
+    expect(() =>
+      pureCircuits.assertValidUniversityDiplomaProductionPresentation(
+        fixture.credential,
+        fixture.credentialProof,
+        fixture.presentation,
+        fixture.presentationProof,
+      ),
+    ).toThrow(
+      /University-diploma production award name disclosure does not match the credential/,
+    );
+  });
+
+  it("rejects production requests when a required committed disclosure is missing", () => {
+    const fixture = createUniversityDiplomaProductionPresentationFixture({
+      disclosure: {
+        revealDiplomaId: false,
+      },
+      request: {
+        requireDiplomaIdDisclosure: true,
+      },
+    });
+
+    expect(() =>
+      pureCircuits.assertUniversityDiplomaProductionPresentationSatisfiesRequest(
+        fixture.credential,
+        fixture.credentialProof,
+        fixture.presentationRequest,
+        fixture.presentation,
+        fixture.presentationProof,
+      ),
+    ).toThrow(
+      /University-diploma production request requires diploma id disclosure/,
+    );
+  });
+
+  it("rejects production minimum-grade requests when the opened grade is below policy", () => {
+    const fixture = createUniversityDiplomaProductionPresentationFixture({
+      disclosure: {
+        revealFinalGrade: true,
+      },
+      request: {
+        requireFinalGradeDisclosure: true,
+        enforceMinimumFinalGrade: true,
+        minimumFinalGrade: 95n,
+      },
+    });
+
+    expect(() =>
+      pureCircuits.assertUniversityDiplomaProductionPresentationSatisfiesRequest(
+        fixture.credential,
+        fixture.credentialProof,
+        fixture.presentationRequest,
+        fixture.presentation,
+        fixture.presentationProof,
+      ),
+    ).toThrow(
+      /University-diploma production disclosed final grade is below the verifier minimum/,
+    );
   });
 });

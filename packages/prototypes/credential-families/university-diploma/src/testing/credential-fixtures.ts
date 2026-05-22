@@ -19,6 +19,8 @@ import {
   type UniversityDiplomaPresentation,
   type UniversityDiplomaPresentationRequest,
   type UniversityDiplomaProductionCredential,
+  type UniversityDiplomaProductionPresentation,
+  type UniversityDiplomaProductionPresentationRequest,
   type UniversityDiplomaProductionPublicClaims,
 } from "../managed/university-diploma-credential/contract/index.js";
 
@@ -210,6 +212,13 @@ export type UniversityDiplomaProductionCredentialFixture = {
   readonly credential: UniversityDiplomaProductionCredential;
   readonly credentialProof: Proof;
 };
+
+export type UniversityDiplomaProductionPresentationFixture =
+  UniversityDiplomaProductionCredentialFixture & {
+    readonly presentationRequest: UniversityDiplomaProductionPresentationRequest;
+    readonly presentation: UniversityDiplomaProductionPresentation;
+    readonly presentationProof: Proof;
+  };
 
 /**
  * Creates deterministic fixture-only openings for production-profile tests.
@@ -432,6 +441,40 @@ const createRequest = ({
   verifierChallengeHash,
 });
 
+const createProductionRequest = ({
+  schema,
+  issuerVerificationMethodRef,
+  verifierChallengeHash,
+  request,
+}: {
+  readonly schema: UniversityDiplomaProductionCredential["schema"];
+  readonly issuerVerificationMethodRef: UniversityDiplomaProductionCredential["issuerVerificationMethodRef"];
+  readonly verifierChallengeHash: Uint8Array;
+  readonly request: UniversityDiplomaRequestOptions;
+}): UniversityDiplomaProductionPresentationRequest => ({
+  version: 1n,
+  schema,
+  issuerVerificationMethodRef,
+  requireDiplomaIdDisclosure: request.requireDiplomaIdDisclosure ?? false,
+  requireStudentIdDisclosure: request.requireStudentIdDisclosure ?? false,
+  requireGraduateNameDisclosure: request.requireGraduateNameDisclosure ?? true,
+  requireUniversityNameDisclosure:
+    request.requireUniversityNameDisclosure ?? true,
+  requireFacultyNameDisclosure: request.requireFacultyNameDisclosure ?? false,
+  requireAwardNameDisclosure: request.requireAwardNameDisclosure ?? true,
+  requireHonorsCodeDisclosure: request.requireHonorsCodeDisclosure ?? false,
+  requireGraduationYearDisclosure:
+    request.requireGraduationYearDisclosure ?? true,
+  requireGraduationMonthDisclosure:
+    request.requireGraduationMonthDisclosure ?? false,
+  requireFinalGradeDisclosure: request.requireFinalGradeDisclosure ?? true,
+  requireCreditsEarnedDisclosure:
+    request.requireCreditsEarnedDisclosure ?? false,
+  enforceMinimumFinalGrade: request.enforceMinimumFinalGrade ?? false,
+  minimumFinalGrade: request.minimumFinalGrade ?? 0n,
+  verifierChallengeHash,
+});
+
 const createDisclosurePayload = ({
   claims,
   disclosure,
@@ -476,6 +519,79 @@ const createDisclosurePayload = ({
     finalGrade: revealFinalGrade ? claims.finalGrade : 0n,
     revealCreditsEarned,
     creditsEarned: revealCreditsEarned ? claims.creditsEarned : 0n,
+  };
+};
+
+const createProductionDisclosurePayload = ({
+  claims,
+  openings,
+  disclosure,
+}: {
+  readonly claims: UniversityDiplomaClaims;
+  readonly openings: UniversityDiplomaProductionClaimOpenings;
+  readonly disclosure: UniversityDiplomaDisclosureOptions;
+}) => {
+  const revealDiplomaId = disclosure.revealDiplomaId ?? false;
+  const revealStudentId = disclosure.revealStudentId ?? false;
+  const revealGraduateName = disclosure.revealGraduateName ?? true;
+  const revealUniversityName = disclosure.revealUniversityName ?? true;
+  const revealFacultyName = disclosure.revealFacultyName ?? false;
+  const revealAwardName = disclosure.revealAwardName ?? true;
+  const revealHonorsCode = disclosure.revealHonorsCode ?? false;
+  const revealGraduationYear = disclosure.revealGraduationYear ?? true;
+  const revealGraduationMonth = disclosure.revealGraduationMonth ?? false;
+  const revealFinalGrade = disclosure.revealFinalGrade ?? true;
+  const revealCreditsEarned = disclosure.revealCreditsEarned ?? false;
+
+  return {
+    revealDiplomaId,
+    diplomaId: revealDiplomaId ? claims.diplomaId : new Uint8Array(32),
+    diplomaIdOpening: revealDiplomaId
+      ? openings.diplomaIdOpening
+      : new Uint8Array(32),
+    revealStudentId,
+    studentId: revealStudentId ? claims.studentId : new Uint8Array(16),
+    studentIdOpening: revealStudentId
+      ? openings.studentIdOpening
+      : new Uint8Array(32),
+    revealGraduateName,
+    graduateName: revealGraduateName ? claims.graduateName : new Uint8Array(32),
+    graduateNameOpening: revealGraduateName
+      ? openings.graduateNameOpening
+      : new Uint8Array(32),
+    revealUniversityName,
+    universityName: revealUniversityName
+      ? claims.universityName
+      : new Uint8Array(32),
+    revealFacultyName,
+    facultyName: revealFacultyName ? claims.facultyName : new Uint8Array(32),
+    facultyNameOpening: revealFacultyName
+      ? openings.facultyNameOpening
+      : new Uint8Array(32),
+    revealAwardName,
+    awardName: revealAwardName ? claims.awardName : new Uint8Array(32),
+    revealHonorsCode,
+    honorsCode: revealHonorsCode ? claims.honorsCode : new Uint8Array(16),
+    honorsCodeOpening: revealHonorsCode
+      ? openings.honorsCodeOpening
+      : new Uint8Array(32),
+    revealGraduationYear,
+    graduationYear: revealGraduationYear ? claims.graduationYear : 0n,
+    revealGraduationMonth,
+    graduationMonth: revealGraduationMonth ? claims.graduationMonth : 0n,
+    graduationMonthOpening: revealGraduationMonth
+      ? openings.graduationMonthOpening
+      : new Uint8Array(32),
+    revealFinalGrade,
+    finalGrade: revealFinalGrade ? claims.finalGrade : 0n,
+    finalGradeOpening: revealFinalGrade
+      ? openings.finalGradeOpening
+      : new Uint8Array(32),
+    revealCreditsEarned,
+    creditsEarned: revealCreditsEarned ? claims.creditsEarned : 0n,
+    creditsEarnedOpening: revealCreditsEarned
+      ? openings.creditsEarnedOpening
+      : new Uint8Array(32),
   };
 };
 
@@ -670,5 +786,94 @@ export const createUniversityDiplomaProductionCredentialFixture = ({
     profile,
     credential,
     credentialProof,
+  };
+};
+
+export const createUniversityDiplomaProductionPresentationFixture = ({
+  verifierChallengeHash = sha256(
+    "challenge:university-diploma:production:presentation",
+  ),
+  issuanceChallengeHash = sha256(
+    "challenge:university-diploma:production:issuance",
+  ),
+  disclosure = {},
+  disclosedOverrides = {},
+  request = {},
+  claimOverrides = {},
+  openings = createUniversityDiplomaProductionClaimOpenings(),
+  issuerConfig,
+  holderConfig,
+  issuedAt = 50_000n,
+  credentialProofCreatedAt = 50_001n,
+  presentationProofCreatedAt = 50_002n,
+}: {
+  readonly verifierChallengeHash?: Uint8Array;
+  readonly issuanceChallengeHash?: Uint8Array;
+  readonly disclosure?: UniversityDiplomaDisclosureOptions;
+  readonly disclosedOverrides?: Partial<
+    UniversityDiplomaProductionPresentation["disclosed"]
+  >;
+  readonly request?: UniversityDiplomaRequestOptions;
+  readonly claimOverrides?: Partial<UniversityDiplomaClaims>;
+  readonly openings?: UniversityDiplomaProductionClaimOpenings;
+  readonly issuerConfig?: UniversityDiplomaSignerOptions;
+  readonly holderConfig?: UniversityDiplomaSignerOptions;
+  readonly issuedAt?: bigint;
+  readonly credentialProofCreatedAt?: bigint;
+  readonly presentationProofCreatedAt?: bigint;
+} = {}): UniversityDiplomaProductionPresentationFixture => {
+  const credentialFixture = createUniversityDiplomaProductionCredentialFixture({
+    issuanceChallengeHash,
+    claimOverrides,
+    openings,
+    issuerConfig,
+    holderConfig,
+    issuedAt,
+    credentialProofCreatedAt,
+  });
+
+  const presentationRequest = createProductionRequest({
+    schema: credentialFixture.credential.schema,
+    issuerVerificationMethodRef:
+      credentialFixture.credential.issuerVerificationMethodRef,
+    verifierChallengeHash,
+    request,
+  });
+
+  const disclosed = {
+    ...createProductionDisclosurePayload({
+      claims: credentialFixture.sourceClaims,
+      openings: credentialFixture.profile.openings,
+      disclosure,
+    }),
+    ...disclosedOverrides,
+  };
+
+  const presentation: UniversityDiplomaProductionPresentation = {
+    version: 1n,
+    schema: credentialFixture.credential.schema,
+    credentialClaimRoot: credentialFixture.credential.claimRoot,
+    issuerVerificationMethodRef:
+      credentialFixture.credential.issuerVerificationMethodRef,
+    holderBinding: credentialFixture.credential.holderBinding,
+    disclosed,
+  };
+
+  const presentationProof = signProof({
+    bodyRoot:
+      pureCircuits.universityDiplomaProductionPresentationBodyRoot(
+        presentation,
+      ),
+    context: "presentation",
+    signer: credentialFixture.holder,
+    createdAt: presentationProofCreatedAt,
+    challengeHash: verifierChallengeHash,
+  });
+
+  return {
+    ...credentialFixture,
+    presentationRequest,
+    presentation,
+    presentationProof,
   };
 };

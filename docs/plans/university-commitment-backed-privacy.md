@@ -35,6 +35,13 @@ public/commitment partition, a domain-separated
 `universityDiplomaProductionClaimRoot`, and a credential envelope that stores
 sensitive academic facts in `claimCommitments`.
 
+The additive v2 surface now also includes
+`UniversityDiplomaProductionDisclosures`,
+`UniversityDiplomaProductionPresentation`, and production presentation/request
+validators. These validators recompute each disclosed committed/private field
+from the raw value plus opening and compare it with the signed
+`claimCommitments` entry before request policy checks use the value.
+
 ## Field Migration Target
 
 | Field | Current representation | Production target | Reason |
@@ -109,7 +116,8 @@ opening secrecy until predicate witnesses replace raw-value openings.
    in the actual v2 credential alias. This is now covered at the credential
    envelope level; follow-up protocol slices still need verifier openings and
    predicates.
-4. Add opening witnesses for disclosed private fields.
+4. Add opening witnesses for disclosed private fields. This is covered by the
+   additive v2 production presentation surface and fixture tests.
 5. Add predicate witnesses for final-grade and credit-threshold policies.
 6. Update university protocol DTOs and BDD notes so reports show opened values
    only when the verifier policy requires them.
@@ -125,7 +133,8 @@ opening secrecy until predicate witnesses replace raw-value openings.
 - tests prove the production-profile claim root changes when committed private
   values change, even when public routing claims stay the same
 - verifier contracts validate openings or predicates before using committed
-  values
+  values; the additive v2 presentation helper now validates openings for raw
+  private disclosures
 - university BDD reports distinguish credential-body visibility from
   presentation authorization
 
