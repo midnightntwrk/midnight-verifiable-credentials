@@ -449,6 +449,11 @@ Current gap:
     unsupported-authority-mode, and revoked-credential failures
 - local report:
   - `packages/use-cases/age-gate/scenarios/target/site/serenity/index.html`
+- CI handoff artifact:
+  - BDD-only PRs run the age-gate smoke and university BDD lanes, then upload
+    `bdd-summary-artifacts` with Cucumber JSON plus `target/summary.json` and
+    `target/summary.md` so failures can be inspected without downloading the
+    full Serenity site first.
 
 ## Standalone integration tests
 

@@ -83,9 +83,11 @@ jobs:
           echo 'Skipping Compact setup, builds, and test lanes.'
 
   bdd-scenarios:
+    # Keep this check name stable for branch-protection compatibility; the run
+    # step below now covers age-gate smoke plus full university BDD summaries.
     name: BDD Scenarios Smoke
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     needs: [changes, prepare-compact]
     if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only == 'true'
     steps:
@@ -133,8 +135,30 @@ jobs:
       - name: Install dependencies
         run: npm ci --prefer-offline
 
-      - name: Run BDD smoke lane
-        run: npm run test:bdd:smoke
+      - name: Check BDD summary artifact contract
+        run: npm run check:bdd-summary-artifacts
+
+      - name: Run BDD summary lanes
+        shell: bash
+        run: |
+          npm run test:bdd:smoke || age_gate_status=$?
+          npm run test:bdd:university || university_status=$?
+          exit "${age_gate_status:-${university_status:-0}}"
+
+      - name: Upload BDD summary artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bdd-summary-artifacts
+          path: |
+            packages/use-cases/age-gate/scenarios/target/cucumber-report.json
+            packages/use-cases/age-gate/scenarios/target/summary.json
+            packages/use-cases/age-gate/scenarios/target/summary.md
+            packages/use-cases/university/scenarios/target/cucumber-report.json
+            packages/use-cases/university/scenarios/target/summary.json
+            packages/use-cases/university/scenarios/target/summary.md
+          if-no-files-found: error
+          retention-days: 14
 
   prepare-compact:
     name: Prepare Compact Toolchain

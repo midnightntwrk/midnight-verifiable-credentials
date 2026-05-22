@@ -339,6 +339,17 @@ file splits, BDD readability, and maturity tags.
       `npm run test:bdd:smoke`, `npm run test:bdd:university`,
       `npm run docs:links`
 
+12. `vc-bdd-summary-ci-artifacts`
+    - covers the CI-retention follow-up for `bdd-summary-first-output`
+    - 2026-05-22 delivery branch:
+      `codex/vc-bdd-summary-ci-artifacts`
+    - runs both age-gate smoke and university BDD in the focused BDD-only CI
+      lane, uploads Cucumber JSON plus `summary.json`/`summary.md` files under
+      `bdd-summary-artifacts`, and adds a guard so future workflow edits do not
+      drop the compact report handoff
+    - validation: `npm run check:bdd-summary-artifacts`,
+      `npm run check:ci-workflow-cones`, `npm run docs:links`
+
 `ci-setup-action-consolidation` is intentionally deferred beyond the first 10
 slices because it is lower risk after runner, cone, and package-policy catalogs
 stop drifting.
