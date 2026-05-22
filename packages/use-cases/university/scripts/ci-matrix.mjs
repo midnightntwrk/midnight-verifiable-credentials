@@ -160,6 +160,19 @@ export const universityCiMatrix = [
     operatorOutput: "one-page JSON/Markdown report",
   },
   {
+    id: "report-contract",
+    runTarget: "university-report-contract",
+    ciScript: "ci:university-report-contract",
+    purpose: "Print the versioned university report summary contract JSON.",
+    when:
+      "Reporting schema, handoff artifact ids, source artifact ids, or privacy-profile requirements change.",
+    artifactProfile: null,
+    light: false,
+    artifacts: [],
+    operatorGoal: "Inspect report contract",
+    operatorOutput: "contract JSON",
+  },
+  {
     id: "ci-matrix-contract",
     runTarget: "university-ci-matrix",
     ciScript: "ci:university-ci-matrix",
@@ -204,6 +217,7 @@ const operatorLaneOrder = [
   "protocol-cohort",
   "protocol-stress",
   "summary",
+  "report-contract",
 ];
 
 const orderedOperatorLanes = () => {

@@ -192,6 +192,7 @@ Targets that currently honor `--light`:
 - `./run.sh university-protocol-cohort`
 - `./run.sh university-protocol-stress`
 - `./run.sh university-summary`
+- `./run.sh university-report-contract`
 
 Discover explicit repository targets:
 
@@ -249,6 +250,12 @@ Emit the one-page university artifact summary:
 ```bash
 ./run.sh university-summary
 ./run.sh university-summary --light
+```
+
+Print the versioned university report summary contract:
+
+```bash
+./run.sh university-report-contract
 ```
 
 Run the smallest DID-aware handoff lane directly:

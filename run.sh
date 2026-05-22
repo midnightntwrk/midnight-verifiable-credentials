@@ -145,6 +145,11 @@ case "$target" in
     node ./tooling/scripts/report-did-integration.mjs --check
     exit 0
     ;;
+  university-report-contract)
+    run_common_ensure_node
+    npm run --silent report:university-contract
+    exit 0
+    ;;
 esac
 
 if [[ "$light_requested" == "1" && "$target_kind" == "wrapper" ]] && ! run_common_target_supports_light "$target"; then

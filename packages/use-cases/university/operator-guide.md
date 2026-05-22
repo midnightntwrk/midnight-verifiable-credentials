@@ -49,6 +49,7 @@ If you only need protocol-level checks and already have build artifacts:
 | Run 30-student cohort profile | `./run.sh university-protocol-cohort` | sampled cohort summary | Cohort data, profile summary schema, or sampled transcript behavior changes. |
 | Run 100-student stress profile | `./run.sh university-protocol-stress` | stress summary | Stress data, throughput summary, or protocol profile performance behavior changes. |
 | Aggregate handoff summary | `./run.sh university-summary` | one-page JSON/Markdown report | Reporting package, summary schema, or aggregate artifact wiring changes. |
+| Inspect report contract | `./run.sh university-report-contract` | contract JSON | Reporting schema, handoff artifact ids, source artifact ids, or privacy-profile requirements change. |
 <!-- university-operator-lanes:end -->
 
 The machine-readable lane catalog is generated at
