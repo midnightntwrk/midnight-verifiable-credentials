@@ -58,16 +58,10 @@ export const resolveUniversityRequestPolicyPreset = (presetId) => {
   };
 };
 
-const formatPolicyValue = (value) => {
-  const rendered = JSON.stringify(value);
-  if (rendered === undefined) {
-    throw new Error(
-      `Unsupported university request-policy value: ${String(value)}`,
-    );
-  }
-  return rendered;
-};
+const formatPolicyValue = (value) =>
+  typeof value === "string" ? value : JSON.stringify(value);
 
+// Preserve request-policy JSON field order as the operator-facing display order.
 const renderPolicyFields = (requestPolicy) =>
   Object.entries(requestPolicy)
     .map(([field, value]) => `- \`${field}\`: \`${formatPolicyValue(value)}\``)

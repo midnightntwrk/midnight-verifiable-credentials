@@ -95,7 +95,8 @@ becomes part of a stackable PR.
      Markdown documentation for `request-policy-presets.json` and checks it
      from the university protocol profile lane so named presets remain
      inspectable without hand-maintained policy prose
-   - validation: `./run.sh university-policy-catalog`, protocol tests
+   - validation: `npm run check:university-request-policy-presets`,
+     `./run.sh university-policy-catalog`, protocol tests
 
 10. Expansion for `age-gate-bdd-style-alignment`
    - either bring age-gate BDD notes/artifacts closer to university style or
