@@ -202,6 +202,12 @@ They add four review-driven backlog decisions:
 18. `age-gate-bdd-style-alignment`
     - bring age-gate BDD up to the university instrumentation style or
       explicitly document the lighter smoke-test role
+    - 2026-05-22 follow-up branch:
+      `codex/vc-age-gate-bdd-narrative-catalog`
+    - centralizes age-gate request/response/check narration and DTO projection
+      in a checked scenario-reporting catalog so feature text remains compact
+      while Serenity notes still expose explicit-holder and hidden-holder
+      result details
 
 19. `status-revocation-entrypoint-map`
     - keep status/revocation spec and package entry points discoverable from
@@ -328,6 +334,11 @@ file splits, BDD readability, and maturity tags.
     - aligns age-gate Serenity logs with the university
       request/response/check/DTO insight pattern and documents the current
       prototype credential-family maturity table at the prototypes root
+    - 2026-05-22 follow-up branch:
+      `codex/vc-age-gate-bdd-narrative-catalog`
+    - extracts the age-gate insight narratives and summary DTO builders from
+      task orchestration into `features/support/age-gate-reporting.ts`, then
+      extends the step-insight contract check to lock the full scenario catalog
     - validation: `./run.sh bdd`, `./run.sh bdd-negative`,
       `npm run check:workspace-manifests`, `npm run check:vc-surface-discipline`,
       `npm run docs:links`

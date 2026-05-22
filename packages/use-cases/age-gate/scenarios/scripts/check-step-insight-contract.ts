@@ -5,6 +5,14 @@ import {
   buildAgeGateStepInsightReport,
   serializeAgeGateStepInsightReport,
 } from "../features/support/age-gate-step-insight.ts";
+import {
+  AGE_GATE_SCENARIO_NARRATIVE_KEYS,
+  AGE_GATE_SCENARIO_NARRATIVES,
+  buildAgeGateScenarioInsight,
+  buildHiddenHolderScenarioInsight,
+} from "../features/support/age-gate-reporting.ts";
+
+const bytes = (length: number, fill: number) => new Uint8Array(length).fill(fill);
 
 const report = buildAgeGateStepInsightReport("Contract check step insight", {
   request:
@@ -45,3 +53,59 @@ assert.equal((report.dto as { nullable: null }).nullable, null);
 const serialized = serializeAgeGateStepInsightReport(report);
 assert.equal(serialized.includes("\\n"), false);
 assert.equal(JSON.parse(serialized).schemaVersion, report.schemaVersion);
+
+assert.deepEqual(Object.keys(AGE_GATE_SCENARIO_NARRATIVES).sort(), [
+  ...AGE_GATE_SCENARIO_NARRATIVE_KEYS,
+].sort());
+
+for (const key of AGE_GATE_SCENARIO_NARRATIVE_KEYS) {
+  const narrative = AGE_GATE_SCENARIO_NARRATIVES[key];
+  assert.ok(narrative.taskName.startsWith("#actor runs"));
+  assert.ok(narrative.interactionName.startsWith("#actor executes"));
+  assert.ok(narrative.insightTitle.endsWith("step insight"));
+  assert.ok(narrative.request.length > 0);
+  assert.ok(narrative.response.length > 0);
+  assert.ok(narrative.checks.length >= 3);
+}
+
+const ageGatePayload = buildAgeGateScenarioInsight(
+  AGE_GATE_SCENARIO_NARRATIVES.birthCredentialHappyPath,
+  {
+    approved: true,
+    claimDecision: "approved",
+    issuedCredentialCount: 1n,
+    verifiedPresentationCount: 1n,
+    consumedAccessCapabilityCount: 1n,
+    lastVerifiedCredentialRoot: bytes(32, 7),
+    expectedCredentialRoot: bytes(32, 7),
+    lastVerifiedRequestChallenge: bytes(32, 8),
+  },
+);
+const ageGateDto = ageGatePayload.dto as {
+  readonly credentialRootMatches: boolean;
+  readonly issuedCredentialCount: bigint;
+};
+assert.equal(ageGateDto.credentialRootMatches, true);
+assert.equal(ageGateDto.issuedCredentialCount, 1n);
+
+const hiddenHolderPayload = buildHiddenHolderScenarioInsight(
+  AGE_GATE_SCENARIO_NARRATIVES.hiddenHolderWrongAuthorityRejectedPath,
+  {
+    approved: false,
+    claimDecision: null,
+    verificationMode: null,
+    issuedCredentialCount: 1n,
+    verifiedPresentationCount: 0n,
+    consumedAccessCapabilityCount: 0n,
+    lastVerifiedStatusRegistryId: bytes(32, 1),
+    expectedStatusRegistryId: bytes(32, 2),
+    failureMessage: "authority mismatch",
+    failureCode: "authorityMismatch",
+  },
+);
+const hiddenHolderDto = hiddenHolderPayload.dto as {
+  readonly statusRegistryMatches: boolean;
+  readonly failureCode: string;
+};
+assert.equal(hiddenHolderDto.statusRegistryMatches, false);
+assert.equal(hiddenHolderDto.failureCode, "authorityMismatch");
