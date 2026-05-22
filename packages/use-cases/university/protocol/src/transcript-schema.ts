@@ -67,17 +67,22 @@ const expectStringArray = (
     expectString(entry, `${label}[${index}]`),
   );
 
-const expectStringArrayMembers = <T extends string>(
+const expectExactStringArray = <T extends string>(
   value: unknown,
-  allowed: readonly T[],
+  expected: readonly T[],
   label: string,
-): readonly T[] =>
-  expectStringArray(value, label).map((entry, index) => {
-    if (!allowed.includes(entry as T)) {
-      throw new Error(`${label}[${index}] must be one of ${allowed.join(", ")}`);
+): readonly T[] => {
+  const entries = expectStringArray(value, label);
+  if (entries.length !== expected.length) {
+    throw new Error(`${label} must equal [${expected.join(", ")}]`);
+  }
+  return entries.map((entry, index) => {
+    if (entry !== expected[index]) {
+      throw new Error(`${label} must equal [${expected.join(", ")}]`);
     }
     return entry as T;
   });
+};
 
 const expectOneOf = <T extends string>(
   value: unknown,
@@ -223,22 +228,22 @@ export const assertUniversityProtocolTranscriptExportConforms: (
     [UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.profile],
     "transcript export.privacyProfile.productionProfile",
   );
-  expectStringArrayMembers(
+  expectExactStringArray(
     privacyProfile.productionPublicClaimFields,
     UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionPublicClaimFields,
     "transcript export.privacyProfile.productionPublicClaimFields",
   );
-  const productionCommitmentCandidates = expectStringArrayMembers(
+  const productionCommitmentCandidates = expectExactStringArray(
     privacyProfile.productionCommitmentCandidates,
     UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionCommitmentCandidates,
     "transcript export.privacyProfile.productionCommitmentCandidates",
   );
-  expectStringArrayMembers(
+  expectExactStringArray(
     privacyProfile.productionCommitmentFields,
     UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionCommitmentFields,
     "transcript export.privacyProfile.productionCommitmentFields",
   );
-  const predicateOnlyFields = expectStringArrayMembers(
+  const predicateOnlyFields = expectExactStringArray(
     privacyProfile.predicateOnlyFields,
     UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.predicateOnlyFields,
     "transcript export.privacyProfile.predicateOnlyFields",

@@ -135,6 +135,20 @@ describe("university protocol transcript schema contract", () => {
         ...exported,
         privacyProfile: {
           ...exported.privacyProfile,
+          productionPublicClaimFields: [
+            "awardName",
+            "universityName",
+            "graduationYear",
+          ],
+        },
+      }),
+    ).toThrow(/productionPublicClaimFields/);
+
+    expect(() =>
+      assertUniversityProtocolTranscriptExportConforms({
+        ...exported,
+        privacyProfile: {
+          ...exported.privacyProfile,
           productionCommitmentCandidates: ["diplomaId"],
           predicateOnlyFields: ["finalGrade"],
         },

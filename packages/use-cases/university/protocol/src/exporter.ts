@@ -55,10 +55,10 @@ export type UniversityProtocolTranscriptExport = {
     readonly currentProfile: typeof UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY.profile;
     readonly claimCommitmentModel: typeof UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY.claimCommitmentModel;
     readonly productionProfile: typeof UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.profile;
-    readonly productionPublicClaimFields: readonly string[];
-    readonly productionCommitmentCandidates: readonly string[];
-    readonly productionCommitmentFields: readonly string[];
-    readonly predicateOnlyFields: readonly string[];
+    readonly productionPublicClaimFields: typeof UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionPublicClaimFields;
+    readonly productionCommitmentCandidates: typeof UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionCommitmentCandidates;
+    readonly productionCommitmentFields: typeof UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionCommitmentFields;
+    readonly predicateOnlyFields: typeof UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.predicateOnlyFields;
     readonly openingPolicy: string;
     readonly statement: string;
   };
@@ -509,18 +509,14 @@ export const buildUniversityProtocolTranscriptExport = (
       claimCommitmentModel:
         UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY.claimCommitmentModel,
       productionProfile: UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.profile,
-      productionPublicClaimFields: [
-        ...UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionPublicClaimFields,
-      ],
-      productionCommitmentCandidates: [
-        ...UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionCommitmentCandidates,
-      ],
-      productionCommitmentFields: [
-        ...UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionCommitmentFields,
-      ],
-      predicateOnlyFields: [
-        ...UNIVERSITY_DIPLOMA_PRODUCTION_PREDICATE_ONLY_FIELDS,
-      ],
+      productionPublicClaimFields:
+        UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionPublicClaimFields,
+      productionCommitmentCandidates:
+        UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionCommitmentCandidates,
+      productionCommitmentFields:
+        UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionCommitmentFields,
+      predicateOnlyFields:
+        UNIVERSITY_DIPLOMA_PRODUCTION_PREDICATE_ONLY_FIELDS,
       openingPolicy: UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.openingPolicy,
       statement: UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.statement,
     },
