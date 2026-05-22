@@ -68,7 +68,7 @@
   "artifactManifest": {
     "manifestSchemaVersion": "midnight-university-artifact-manifest.v1",
     "artifactSet": "midnight-university-reporting-inputs",
-    "totalBytes": 89208,
+    "totalBytes": 101598,
     "entries": [
       {
         "artifactId": "readable-bdd-serenity",
@@ -90,8 +90,8 @@
         "schemaVersion": "midnight-university-protocol-export.v2",
         "producedBy": "./run.sh university-protocol-export",
         "purpose": "student, issuer, employer, and mall protocol DTO transcript",
-        "bytes": 63757,
-        "sha256": "d0e5c135b5a903732daf448069171c5d8fad1e5390d3c4fcd7082efbf5ad53b1",
+        "bytes": 76147,
+        "sha256": "a8e56f9750fd935f60140fa347e7ed31feee29580ef491dcc990fef6e3b950e2",
         "fileCount": 1
       },
       {

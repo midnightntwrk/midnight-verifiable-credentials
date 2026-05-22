@@ -22,12 +22,12 @@
 - The Serenity site and raw transcript/stress/batch artifacts remain source evidence, not the default handoff surface.
 
 ## Source Artifact Manifest
-- total bytes: 89208
+- total bytes: 101598
 
 | artifact | schema version | files | bytes | sha256 |
 | --- | --- | ---: | ---: | --- |
 | Readable BDD Serenity JSON | n/a | 13 | 2778 | 3885403dcd926e8fff77fb5de5b33b6cf3d19e540628f9bc240b670339c3ce72 |
-| Readable protocol transcript export | midnight-university-protocol-export.v2 | 1 | 63757 | d0e5c135b5a903732daf448069171c5d8fad1e5390d3c4fcd7082efbf5ad53b1 |
+| Readable protocol transcript export | midnight-university-protocol-export.v2 | 1 | 76147 | a8e56f9750fd935f60140fa347e7ed31feee29580ef491dcc990fef6e3b950e2 |
 | Stress protocol summary | midnight-university-protocol-stress-summary.v2 | 1 | 13166 | eca86ee79f5cab71ada40ec9059711c1de243f832d83d4dad8d73826302d970c |
 | Issuer batch-sweep summary | midnight-university-batch-sweep-summary.v2 | 1 | 9507 | 7c60f98cbb138ea3ba0c98692a1fd2743f04b64c798193ec0bc640800d1a48fe |
 

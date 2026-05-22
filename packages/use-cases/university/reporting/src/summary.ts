@@ -8,6 +8,10 @@ export const UNIVERSITY_REPORT_SUMMARY_SCHEMA_VERSION =
   "midnight-university-report-summary.v5" as const;
 export const UNIVERSITY_ARTIFACT_MANIFEST_SCHEMA_VERSION =
   "midnight-university-artifact-manifest.v1" as const;
+const UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_ID =
+  "midnight-university-protocol-export" as const;
+const UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION =
+  "midnight-university-protocol-export.v2" as const;
 const UNIVERSITY_REPORT_TARGET_DIRECTORY =
   "packages/use-cases/university/reporting/target" as const;
 export const UNIVERSITY_REPORT_SUMMARY_JSON_PATH =
@@ -28,7 +32,12 @@ type SerenityScenarioRecord = {
 };
 
 type UniversityProtocolTranscriptExport = {
-  readonly schemaVersion: string;
+  readonly schemaId: typeof UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_ID;
+  readonly schemaVersion: typeof UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION;
+  readonly compatibility: {
+    readonly minimumReaderVersion: typeof UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION;
+    readonly maximumReaderVersion: typeof UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION;
+  };
   readonly privacyProfile: UniversityTranscriptPrivacyProfile;
   readonly dataset: {
     readonly studentCount: number;
@@ -415,6 +424,37 @@ const isTranscriptPrivacyProfile = (
   typeof value.openingPolicy === "string" &&
   typeof value.statement === "string";
 
+const assertTranscriptExportMatchesReportingContract = (
+  transcriptExport: UniversityProtocolTranscriptExport,
+  transcriptExportPath: string,
+): void => {
+  if (
+    transcriptExport.schemaId !== UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_ID ||
+    transcriptExport.schemaVersion !== UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION
+  ) {
+    throw new Error(
+      `Transcript export at ${transcriptExportPath} must use ${UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION}`,
+    );
+  }
+
+  if (
+    transcriptExport.compatibility?.minimumReaderVersion !==
+      UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION ||
+    transcriptExport.compatibility.maximumReaderVersion !==
+      UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION
+  ) {
+    throw new Error(
+      `Transcript export at ${transcriptExportPath} must declare ${UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION} reader compatibility`,
+    );
+  }
+
+  if (!isTranscriptPrivacyProfile(transcriptExport.privacyProfile)) {
+    throw new Error(
+      `Transcript export at ${transcriptExportPath} must include a valid privacyProfile block`,
+    );
+  }
+};
+
 const hashBuffer = (buffer: Uint8Array): string =>
   createHash("sha256").update(buffer).digest("hex");
 
@@ -685,11 +725,10 @@ export const buildUniversityArtifactSummary = (
   const transcriptExport = readJson<UniversityProtocolTranscriptExport>(
     artifactPaths.transcriptExportPath,
   );
-  if (!isTranscriptPrivacyProfile(transcriptExport.privacyProfile)) {
-    throw new Error(
-      `Transcript export at ${artifactPaths.transcriptExportPath} must include a v2 privacyProfile block`,
-    );
-  }
+  assertTranscriptExportMatchesReportingContract(
+    transcriptExport,
+    artifactPaths.transcriptExportPath,
+  );
   const stressSummary = readJson<UniversityProtocolStressSummary>(
     artifactPaths.stressSummaryPath,
   );

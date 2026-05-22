@@ -34,6 +34,7 @@ const goldenDir = path.resolve(
   "golden",
 );
 const serenityDirectory = path.join(fixtureDir, "serenity");
+const transcriptExportPath = path.join(fixtureDir, "transcript-export.json");
 
 const readGolden = (name: string): string =>
   readFileSync(path.join(goldenDir, name), "utf8");
@@ -60,7 +61,7 @@ const renderFixtureSummary = () =>
   buildUniversityArtifactSummary({
     artifactBaseDirectory: fixtureDir,
     serenityDirectory,
-    transcriptExportPath: path.join(fixtureDir, "transcript-export.json"),
+    transcriptExportPath,
     stressSummaryPath: path.join(fixtureDir, "stress-summary.json"),
     batchSweepSummaryPath: path.join(fixtureDir, "batch-sweep-summary.json"),
   });
@@ -269,6 +270,53 @@ describe("university artifact report summarizer", () => {
     } finally {
       rmSync(tempRoot, { recursive: true, force: true });
     }
+  });
+
+  it("rejects a transcript export missing the privacy profile contract", () => {
+    const tempRoot = mkdtempSync(
+      path.join(os.tmpdir(), "university-reporting-"),
+    );
+    const staleTranscriptPath = path.join(tempRoot, "transcript-export.json");
+    const transcript = JSON.parse(
+      readFileSync(transcriptExportPath, "utf8"),
+    ) as Record<string, unknown>;
+    delete transcript.privacyProfile;
+    writeFileSync(staleTranscriptPath, JSON.stringify(transcript, null, 2));
+
+    try {
+      expect(() =>
+        buildUniversityArtifactSummary({
+          artifactBaseDirectory: fixtureDir,
+          serenityDirectory,
+          transcriptExportPath: staleTranscriptPath,
+          stressSummaryPath: path.join(fixtureDir, "stress-summary.json"),
+          batchSweepSummaryPath: path.join(
+            fixtureDir,
+            "batch-sweep-summary.json",
+          ),
+        }),
+      ).toThrow(/valid privacyProfile block/u);
+    } finally {
+      rmSync(tempRoot, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects a summary whose privacy profile arrays are malformed", () => {
+    const summary = renderFixtureSummary();
+    const malformedSummary = {
+      ...summary,
+      transcriptExport: {
+        ...summary.transcriptExport,
+        privacyProfile: {
+          ...summary.transcriptExport.privacyProfile,
+          productionCommitmentCandidates: ["diplomaId", 42],
+        },
+      },
+    };
+
+    expect(() =>
+      assertUniversityArtifactSummaryConforms(malformedSummary),
+    ).toThrow(/University artifact summary does not match/u);
   });
 
   it("rejects a handoff contract whose source artifact ids are reordered", () => {
