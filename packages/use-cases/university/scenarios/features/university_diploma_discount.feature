@@ -67,6 +67,7 @@ Feature: Selected students present diploma credentials to request a mall discoun
     And the discount report should record the explanation "<explanation>"
 
     Examples:
+      # Accepted-row explanations come from data/discount-applicants.json.
       | fullName        | studentId | finalGrade | expectedOutcome | explanation                                                                  |
       | Ada Avery 0001  | STU-0001  | 98         | accepted        | grade is at least the mall threshold (91)                                    |
       | Ben Avery 0002  | STU-0002  | 94         | accepted        | grade is at least the mall threshold (91)                                    |
