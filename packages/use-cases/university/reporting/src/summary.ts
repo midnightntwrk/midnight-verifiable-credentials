@@ -870,14 +870,38 @@ const isUniversityReportHandoffArtifact = (
   typeof value.producedBy === "string" &&
   typeof value.purpose === "string";
 
+const isExpectedUniversityReportHandoffArtifact = (
+  value: unknown,
+  expected: UniversityReportHandoffArtifact,
+): value is UniversityReportHandoffArtifact =>
+  isUniversityReportHandoffArtifact(value) &&
+  value.artifactId === expected.artifactId &&
+  value.label === expected.label &&
+  value.path === expected.path &&
+  value.format === expected.format &&
+  value.producedBy === expected.producedBy &&
+  value.purpose === expected.purpose;
+
 const isUniversityReportHandoff = (
   value: unknown,
 ): value is UniversityReportHandoff =>
   isRecord(value) &&
-  isUniversityReportHandoffArtifact(value.primaryHuman) &&
-  isUniversityReportHandoffArtifact(value.primaryMachine) &&
-  isUniversityReportHandoffArtifact(value.sourceManifestJson) &&
-  isUniversityReportHandoffArtifact(value.sourceManifestMarkdown) &&
+  isExpectedUniversityReportHandoffArtifact(
+    value.primaryHuman,
+    UNIVERSITY_REPORT_HANDOFF_ARTIFACTS.primaryHuman,
+  ) &&
+  isExpectedUniversityReportHandoffArtifact(
+    value.primaryMachine,
+    UNIVERSITY_REPORT_HANDOFF_ARTIFACTS.primaryMachine,
+  ) &&
+  isExpectedUniversityReportHandoffArtifact(
+    value.sourceManifestJson,
+    UNIVERSITY_REPORT_HANDOFF_ARTIFACTS.sourceManifestJson,
+  ) &&
+  isExpectedUniversityReportHandoffArtifact(
+    value.sourceManifestMarkdown,
+    UNIVERSITY_REPORT_HANDOFF_ARTIFACTS.sourceManifestMarkdown,
+  ) &&
   Array.isArray(value.sourceArtifactIds) &&
   value.sourceArtifactIds.every((entry) => typeof entry === "string") &&
   Array.isArray(value.notes) &&

@@ -251,13 +251,31 @@ describe("university artifact report summarizer", () => {
     }
   });
 
-  it("rejects a handoff contract that drifts from the source artifact manifest", () => {
+  it("rejects a handoff contract whose source artifact ids are reordered", () => {
     const summary = renderFixtureSummary();
     const staleSummary = {
       ...summary,
       handoff: {
         ...summary.handoff,
         sourceArtifactIds: [...summary.handoff.sourceArtifactIds].reverse(),
+      },
+    };
+
+    expect(() => assertUniversityArtifactSummaryConforms(staleSummary)).toThrow(
+      /University artifact summary does not match the expected schema/u,
+    );
+  });
+
+  it("rejects a handoff artifact whose path drifts from the canonical target", () => {
+    const summary = renderFixtureSummary();
+    const staleSummary = {
+      ...summary,
+      handoff: {
+        ...summary.handoff,
+        primaryMachine: {
+          ...summary.handoff.primaryMachine,
+          path: "packages/use-cases/university/reporting/target/stale-summary.json",
+        },
       },
     };
 
