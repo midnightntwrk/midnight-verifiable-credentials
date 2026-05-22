@@ -12,6 +12,14 @@ const dataProfilesMarkdownPath = path.resolve(
   "data",
   "data-profiles.md",
 );
+const generatedArtifactFilenames = [
+  "university.json",
+  "companies.json",
+  "mall.json",
+  "students.json",
+  "issuance-batches.json",
+  "discount-applicants.json",
+];
 
 const universityDataProfiles = {
   "readable-10": {
@@ -44,8 +52,18 @@ const universityDataProfiles = {
   },
 };
 
-const companyCountForProfile = (profile) =>
-  buildUniversityDataArtifactsForProfile(profile)["companies.json"].length;
+const companyCountsBySet = {
+  standard: 3,
+  expanded: 6,
+};
+
+const companyCountForProfile = (profile) => {
+  const count = companyCountsBySet[profile.companySet];
+  if (count == null) {
+    throw new Error(`Unknown university company set ${profile.companySet}`);
+  }
+  return count;
+};
 
 export const listUniversityDataProfiles = () =>
   Object.values(universityDataProfiles).map((profile) => ({
@@ -387,9 +405,17 @@ export const writeUniversityDataArtifacts = (targetDir, artifacts) => {
   }
 };
 
+export const readUniversityDataArtifacts = (targetDir) =>
+  Object.fromEntries(
+    generatedArtifactFilenames.map((filename) => [
+      filename,
+      JSON.parse(readFileSync(path.join(targetDir, filename), "utf8")),
+    ]),
+  );
+
 export const checkUniversityDataArtifacts = (targetDir, artifacts) => {
   let mismatches = 0;
-  const expectedFiles = Object.keys(artifacts).sort();
+  const expectedFiles = [...generatedArtifactFilenames].sort();
   const committedFiles = readdirSync(targetDir)
     .filter(
       (filename) =>

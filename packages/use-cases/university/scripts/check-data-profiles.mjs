@@ -4,6 +4,7 @@ import {
   checkUniversityDataProfileLifecycle,
   checkUniversityDataProfilesMarkdown,
   listUniversityDataProfiles,
+  readUniversityDataArtifacts,
   resolveUniversityDataProfile,
 } from "./data-profile-registry.mjs";
 
@@ -15,7 +16,13 @@ for (const profile of listUniversityDataProfiles()) {
     resolved.absoluteOutputDir,
     artifacts,
   );
-  mismatches += checkUniversityDataProfileLifecycle(resolved, artifacts);
+  const committedArtifacts = readUniversityDataArtifacts(
+    resolved.absoluteOutputDir,
+  );
+  mismatches += checkUniversityDataProfileLifecycle(
+    resolved,
+    committedArtifacts,
+  );
 }
 try {
   checkUniversityDataProfilesMarkdown();
