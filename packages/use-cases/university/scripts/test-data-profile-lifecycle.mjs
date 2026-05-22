@@ -25,6 +25,41 @@ assert.deepEqual(
 
 const cases = [
   {
+    name: "university batch size drift",
+    mutate: (artifacts) => {
+      artifacts["university.json"].batchSize = 99;
+    },
+    expected: "university.batchSize=99 does not match profile batchSize=5",
+  },
+  {
+    name: "student count drift",
+    mutate: (artifacts) => {
+      artifacts["students.json"].pop();
+    },
+    expected: "students.json contains 9 students, expected 10",
+  },
+  {
+    name: "company count drift",
+    mutate: (artifacts) => {
+      artifacts["companies.json"].pop();
+    },
+    expected: "companies.json contains 2 companies, expected 3",
+  },
+  {
+    name: "discount applicant count drift",
+    mutate: (artifacts) => {
+      artifacts["discount-applicants.json"].pop();
+    },
+    expected: "discount-applicants.json contains 4 applicants, expected 5",
+  },
+  {
+    name: "duplicate student fixture id",
+    mutate: (artifacts) => {
+      artifacts["students.json"][1].studentId = "STU-0001";
+    },
+    expected: "duplicate studentId STU-0001",
+  },
+  {
     name: "batch coverage gap",
     mutate: (artifacts) => {
       artifacts["issuance-batches.json"][1].studentIds.pop();
@@ -38,6 +73,28 @@ const cases = [
       artifacts["issuance-batches.json"][1].studentIds[0] = "STU-0001";
     },
     expected: "batch-02 repeats student STU-0001",
+  },
+  {
+    name: "batch declared size drift",
+    mutate: (artifacts) => {
+      artifacts["issuance-batches.json"][0].size += 1;
+    },
+    expected: "batch-01 declares size 6, but contains 5 student ids",
+  },
+  {
+    name: "batch exceeds profile size",
+    mutate: (artifacts) => {
+      artifacts["issuance-batches.json"][0].studentIds.push("STU-0006");
+      artifacts["issuance-batches.json"][0].size += 1;
+    },
+    expected: "batch-01 contains 6 students, exceeding profile batchSize=5",
+  },
+  {
+    name: "batch references unknown student",
+    mutate: (artifacts) => {
+      artifacts["issuance-batches.json"][0].studentIds[0] = "STU-9999";
+    },
+    expected: "batch-01 references unknown student STU-9999",
   },
   {
     name: "unknown company assignment",
@@ -62,6 +119,13 @@ const cases = [
     expected: "discount applicant STU-9999 does not exist in students.json",
   },
   {
+    name: "stale discount full name",
+    mutate: (artifacts) => {
+      artifacts["discount-applicants.json"][0].fullName = "Stale Name";
+    },
+    expected: "discount applicant STU-0001 has stale fullName",
+  },
+  {
     name: "stale discount final grade",
     mutate: (artifacts) => {
       artifacts["discount-applicants.json"][0].finalGrade -= 1;
@@ -81,9 +145,10 @@ const cases = [
 
 for (const { name, mutate, expected } of cases) {
   const findings = findingsFor(mutate);
+  const expectedFinding = `[${profile.profileId}] ${expected}`;
   assert(
-    findings.some((finding) => finding.includes(expected)),
-    `${name} should emit finding containing "${expected}", got:\n${findings.join("\n")}`,
+    findings.includes(expectedFinding),
+    `${name} should emit finding "${expectedFinding}", got:\n${findings.join("\n")}`,
   );
 }
 
