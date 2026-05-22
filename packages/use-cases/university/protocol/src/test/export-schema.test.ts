@@ -91,4 +91,33 @@ describe("university protocol transcript schema contract", () => {
       }),
     ).toThrow(/maximum reader version/);
   });
+
+  it("rejects malformed privacy profile metadata", () => {
+    setNetworkId("undeployed");
+    const runner = new UniversityProtocolFlowRunner();
+    const exported = buildUniversityProtocolTranscriptExport(
+      runner,
+      runner.runAll(),
+    );
+
+    expect(() =>
+      assertUniversityProtocolTranscriptExportConforms({
+        ...exported,
+        privacyProfile: {
+          ...exported.privacyProfile,
+          productionPublicClaimFields: "universityName",
+        },
+      }),
+    ).toThrow(/productionPublicClaimFields/);
+
+    expect(() =>
+      assertUniversityProtocolTranscriptExportConforms({
+        ...exported,
+        privacyProfile: {
+          ...exported.privacyProfile,
+          predicateOnlyFields: ["finalGrade", 120],
+        },
+      }),
+    ).toThrow(/predicateOnlyFields\[1\]/);
+  });
 });

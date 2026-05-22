@@ -1,5 +1,6 @@
 import {
   UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY,
+  UNIVERSITY_DIPLOMA_PRODUCTION_PREDICATE_ONLY_FIELDS,
   UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE,
 } from "@midnight-ntwrk/midnight-did-credentials-university-diploma/privacy-profile";
 
@@ -517,7 +518,9 @@ export const buildUniversityProtocolTranscriptExport = (
       productionCommitmentFields: [
         ...UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionCommitmentFields,
       ],
-      predicateOnlyFields: ["finalGrade", "creditsEarned"],
+      predicateOnlyFields: [
+        ...UNIVERSITY_DIPLOMA_PRODUCTION_PREDICATE_ONLY_FIELDS,
+      ],
       openingPolicy: UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.openingPolicy,
       statement: UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.statement,
     },

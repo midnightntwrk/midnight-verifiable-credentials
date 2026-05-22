@@ -5,6 +5,7 @@ import {
   UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY,
   UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_CANDIDATES,
   UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_FIELDS,
+  UNIVERSITY_DIPLOMA_PRODUCTION_PREDICATE_ONLY_FIELDS,
   UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE,
   UNIVERSITY_DIPLOMA_PRODUCTION_PUBLIC_CLAIM_FIELDS,
   type UniversityDiplomaDirectClaimField,
@@ -52,6 +53,9 @@ describe("university diploma privacy profile metadata", () => {
     expect(
       UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionCommitmentFields,
     ).toEqual(UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_FIELDS);
+    expect(UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.predicateOnlyFields).toEqual(
+      UNIVERSITY_DIPLOMA_PRODUCTION_PREDICATE_ONLY_FIELDS,
+    );
     expect(UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.openingPolicy).toContain(
       "high-entropy",
     );
@@ -63,5 +67,17 @@ describe("university diploma privacy profile metadata", () => {
         (field) => `${field}Commitment`,
       ),
     ).toEqual(UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_FIELDS);
+  });
+
+  it("keeps predicate-only fields inside the committed production profile", () => {
+    expect(UNIVERSITY_DIPLOMA_PRODUCTION_PREDICATE_ONLY_FIELDS).toEqual([
+      "finalGrade",
+      "creditsEarned",
+    ]);
+    expect(
+      UNIVERSITY_DIPLOMA_PRODUCTION_PREDICATE_ONLY_FIELDS.every((field) =>
+        UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_CANDIDATES.includes(field),
+      ),
+    ).toBe(true);
   });
 });
