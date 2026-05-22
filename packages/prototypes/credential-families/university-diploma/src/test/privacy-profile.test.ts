@@ -31,6 +31,8 @@ const productionProfileCoversDirectClaims: MissingProductionProfileField extends
 
 describe("university diploma privacy profile metadata", () => {
   it("partitions every direct claim into the public or committed production profile", () => {
+    // This mirrors the credential-fixture partition check through the public
+    // metadata module so protocol/reporting consumers can rely on this surface.
     expect(productionProfileCoversDirectClaims).toBe(true);
     expect(
       [
