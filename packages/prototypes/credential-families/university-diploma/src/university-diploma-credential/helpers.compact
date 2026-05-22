@@ -343,6 +343,12 @@ export pure circuit assertUniversityDiplomaProductionCreditsEarnedAtLeast(
   predicateWitness: UniversityDiplomaProductionCreditsEarnedPredicateWitness,
   minimumCreditsEarned: Uint<16>
 ): [] {
+  // Credits are an open-scale degree-family value bounded by Uint<16>, unlike
+  // final-grade percentages that are family-bounded to 0..100.
+  assert(
+    minimumCreditsEarned > 0,
+    "University-diploma production minimum credits earned must be positive"
+  );
   assert(
     predicateWitness.creditsEarned > 0,
     "University-diploma production credits earned witness must be positive"
