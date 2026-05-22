@@ -541,12 +541,12 @@ export const validateUniversityDataProfileArtifacts = (profile, artifacts) => {
   }
 
   const companyIds = new Set(companies.map((company) => company.companyId));
-  const studentIds = new Set();
+  const studentsById = new Map();
   for (const student of students) {
-    if (studentIds.has(student.studentId)) {
+    if (studentsById.has(student.studentId)) {
       addFinding(`duplicate studentId ${student.studentId}`);
     }
-    studentIds.add(student.studentId);
+    studentsById.set(student.studentId, student);
     if (!companyIds.has(student.assignedCompanyId)) {
       addFinding(
         `student ${student.studentId} references unknown company ${student.assignedCompanyId}`,
@@ -572,7 +572,7 @@ export const validateUniversityDataProfileArtifacts = (profile, artifacts) => {
       );
     }
     for (const studentId of batch.studentIds) {
-      if (!studentIds.has(studentId)) {
+      if (!studentsById.has(studentId)) {
         addFinding(`${batch.batchId} references unknown student ${studentId}`);
       }
       if (coveredStudentIds.has(studentId)) {
@@ -581,17 +581,15 @@ export const validateUniversityDataProfileArtifacts = (profile, artifacts) => {
       coveredStudentIds.add(studentId);
     }
   }
-  if (coveredStudentIds.size !== studentIds.size) {
+  if (coveredStudentIds.size !== studentsById.size) {
     addFinding(
-      `issuance batches cover ${coveredStudentIds.size} unique students, expected ${studentIds.size}`,
+      `issuance batches cover ${coveredStudentIds.size} unique students, expected ${studentsById.size}`,
     );
   }
 
   const discountThreshold = mall.requestPolicy.minimumFinalGrade;
   for (const applicant of discountApplicants) {
-    const student = students.find(
-      (candidate) => candidate.studentId === applicant.studentId,
-    );
+    const student = studentsById.get(applicant.studentId);
     if (!student) {
       addFinding(
         `discount applicant ${applicant.studentId} does not exist in students.json`,

@@ -88,6 +88,10 @@ becomes part of a stackable PR.
      `data-profiles.md` documentation plus profile lifecycle checks for batch
      coverage, company assignments, discount applicant grades, and eligibility
      expectations across readable, cohort, and stress fixtures
+   - 2026-05-22: `codex/vc-university-data-profile-validator-tests` adds
+     focused bad-fixture validator tests for batch coverage, duplicate
+     membership, company assignment, diploma-claim IDs, discount applicants,
+     final grades, and eligibility drift
    - validation: `./run.sh university-data-profiles`,
      `./run.sh university-protocol-cohort --light`,
      `./run.sh university-protocol-stress --light`
