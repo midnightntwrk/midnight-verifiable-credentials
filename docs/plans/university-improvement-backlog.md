@@ -72,7 +72,16 @@ becomes part of a stackable PR.
      reporting-package handoff contract naming `summary.md` as the primary
      human surface, `summary.json` as the primary tool surface, and
      `artifact-manifest.json` as the source-evidence index
-   - validation: reporting package tests and `./run.sh university-summary`
+   - 2026-05-22: `codex/vc-university-report-schema-contract` adds the
+     versioned `midnight-university-report-summary.v5` contract object and
+     contract validator for handoff artifacts, source artifacts, transcript
+     schema, and required privacy-profile sections
+   - 2026-05-22: `codex/vc-university-report-contract-runner` exposes that
+     contract through `./run.sh university-report-contract`, the run-target
+     catalog, and the generated university CI/operator matrix
+   - validation: reporting package tests, `./run.sh university-summary`,
+     `./run.sh university-report-contract`, `npm run check:run-target-contract`,
+     and `npm run check:university-ci-matrix`
 
 6. University-only follow-on: `university-negative-flow-triage`
    - move low-level tampering checks into protocol tests when they read like

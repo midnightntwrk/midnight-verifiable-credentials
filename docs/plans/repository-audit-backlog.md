@@ -465,7 +465,10 @@ forces a stop.
      the generated university operator/CI matrix so schema drift checks have a
      single discoverable entry point
    - validation: university credential-family tests, university protocol tests,
-     university reporting tests, `./run.sh university-bdd`, `npm run docs:links`
+     university reporting tests, `./run.sh university-bdd`,
+     `./run.sh university-summary`, `./run.sh university-report-contract`,
+     `npm run check:run-target-contract`, `npm run check:university-ci-matrix`,
+     `npm run docs:links`
 
 ## Validation Defaults
 
@@ -496,10 +499,12 @@ University slice:
 
 ```bash
 npm run check:university-ci-matrix
+npm run check:run-target-contract
 ./run.sh university-data-profiles
 ./run.sh university-policy-catalog
 ./run.sh university-protocol --light
 ./run.sh university-protocol-export --light
+./run.sh university-report-contract
 ./run.sh university-bdd
 ```
 

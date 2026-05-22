@@ -223,6 +223,12 @@ artifacts are tracked in
     artifacts, then emits a one-page JSON/Markdown summary
   - `./run.sh university-summary --light` reuses the existing university
     artifact set when available and only rebuilds the reporting package itself
+- root `./run.sh university-report-contract` lane
+  - builds the reporting package quietly and prints the versioned
+    `midnight-university-report-summary.v5` contract JSON to stdout
+  - verifies report consumers can inspect schema id/version, handoff artifact
+    ids, source artifact ids, transcript schema, and required privacy-profile
+    sections without regenerating report artifacts
 - root `./run.sh university-data-profiles` lane
   - validates the committed `readable-10`, `cohort-30`, and `stress-100`
     university data profiles against the shared generator registry
