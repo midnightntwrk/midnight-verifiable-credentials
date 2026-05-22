@@ -3,17 +3,12 @@ import process from "node:process";
 import { fileURLToPath } from "node:url";
 
 import {
-  checkUniversityDataProfilesMarkdown,
   listUniversityDataProfiles,
   renderUniversityDataProfilesMarkdown,
   updateUniversityDataProfilesMarkdown,
 } from "./data-profile-registry.mjs";
 
-const markdownModeFlags = [
-  "--markdown",
-  "--update-markdown",
-  "--check-markdown",
-];
+const markdownModeFlags = ["--markdown", "--update-markdown"];
 const supportedFlags = new Set(["--json", ...markdownModeFlags]);
 
 const run = () => {
@@ -55,12 +50,6 @@ const run = () => {
       );
       process.exit(0);
     }
-    if (args.has("--check-markdown")) {
-      checkUniversityDataProfilesMarkdown();
-      console.log("[data-profiles] Verified generated data profile markdown.");
-      process.exit(0);
-    }
-
     for (const profile of profiles) {
       console.log(
         [
