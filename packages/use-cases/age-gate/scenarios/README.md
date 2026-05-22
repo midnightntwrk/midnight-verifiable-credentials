@@ -20,9 +20,12 @@ Step notes in the Serenity report use the versioned
 
 The use-case-specific wrapper lives at
 `features/support/age-gate-step-insight.ts`; shared serialization and
-normalization live at `@midnight-ntwrk/midnight-did-credentials-bdd-support`. The `checks` entries
-are human-readable narration of assertions performed by the scenario code, not a
-separate assertion engine.
+normalization live at `@midnight-ntwrk/midnight-did-credentials-bdd-support`.
+Scenario request/response/check narration lives in
+`features/support/age-gate-reporting.ts`, so the feature files stay readable
+while each scenario still emits a stable DTO-backed report note. The `checks`
+entries are human-readable narration of assertions performed by the scenario
+code, not a separate assertion engine.
 
 ## Current scenarios
 
@@ -69,12 +72,17 @@ Contract check:
 npm run test:step-insight:contract -w ./packages/use-cases/age-gate/scenarios
 ```
 
+That contract check verifies the `midnight-age-gate-step-insight.v1` schema,
+the complete age-gate narrative catalog, and the compact DTO summaries for both
+explicit-holder and hidden-holder result shapes.
+
 Scope rule:
 
 - this workspace is living documentation, not a second full regression matrix
 - new scenarios should only land when they clarify trust boundaries,
   integration posture, or verifier/holder responsibilities materially
 - scenario tasks should record request/response/check/DTO insight through
+  `features/support/age-gate-reporting.ts` plus
   `features/support/age-gate-step-insight.ts` instead of embedding raw logs in
   step definitions; keep reusable serialization behavior in
   `@midnight-ntwrk/midnight-did-credentials-bdd-support`

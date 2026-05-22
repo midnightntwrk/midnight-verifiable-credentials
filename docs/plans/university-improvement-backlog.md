@@ -92,6 +92,11 @@ becomes part of a stackable PR.
 10. Expansion for `age-gate-bdd-style-alignment`
    - either bring age-gate BDD notes/artifacts closer to university style or
      state that age-gate remains the smaller smoke scenario
+   - 2026-05-22 follow-up branch:
+     `codex/vc-age-gate-bdd-narrative-catalog`
+   - keeps age-gate as the smaller smoke scenario, but moves its scenario
+     narration and summary DTO projection into a checked support catalog so it
+     follows the same report-note discipline as the university scenarios
    - validation: `./run.sh bdd`, `./run.sh bdd-negative`,
      `./run.sh university-bdd`
 
