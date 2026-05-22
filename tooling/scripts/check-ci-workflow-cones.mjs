@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { execFileSync } from "node:child_process";
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 import {
@@ -191,6 +191,48 @@ const assertWorkflowUsesChangeClassifierCatalog = () => {
   }
 };
 
+const assertWorkflowUsesLocalSetupActions = () => {
+  // Intentionally inspect only the primary workflow text. The composite
+  // actions themselves own the direct setup-node/cache/download-artifact uses.
+  const requiredActionPaths = [
+    ".github/actions/setup-node-npm/action.yml",
+    ".github/actions/restore-compact-toolchain/action.yml",
+  ];
+
+  for (const actionPath of requiredActionPaths) {
+    if (!existsSync(path.join(repoRoot, actionPath))) {
+      errors.push(`Missing reusable CI setup action: ${actionPath}`);
+    }
+  }
+
+  for (const actionRef of [
+    "./.github/actions/setup-node-npm",
+    "./.github/actions/restore-compact-toolchain",
+  ]) {
+    if (!workflowText.includes(actionRef)) {
+      errors.push(`CI workflow must use reusable setup action: ${actionRef}`);
+    }
+  }
+
+  if (/uses:\s+actions\/setup-node@v\d+/u.test(workflowText)) {
+    errors.push(
+      "CI workflow must use ./.github/actions/setup-node-npm instead of direct actions/setup-node@v4 steps",
+    );
+  }
+
+  if (/uses:\s+actions\/cache@v4/u.test(workflowText)) {
+    errors.push(
+      "CI workflow must use ./.github/actions/setup-node-npm for Turbo cache restoration",
+    );
+  }
+
+  if (/compact update\s+"\$COMPACT_COMPILER_VERSION"/u.test(workflowText)) {
+    errors.push(
+      "CI workflow must restore/activate Compact through ./.github/actions/restore-compact-toolchain",
+    );
+  }
+};
+
 const readShellList = (functionName, argument) => {
   const command = [
     `source ${quoteForBash(coneScript)}`,
@@ -264,6 +306,7 @@ const groups = readShellList("ci_build_output_groups");
 assertNpmScriptReferenceParser();
 assertWorkflowNpmScriptsExist();
 assertWorkflowUsesChangeClassifierCatalog();
+assertWorkflowUsesLocalSetupActions();
 const managedArtifactConeImport = managedArtifactCatalogText.match(
   /import\s+\{(?<imports>[\s\S]*?)\}\s+from\s+["']\.\/ci-build-cone-catalog\.mjs["']/u,
 );

@@ -67,9 +67,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: ./.github/actions/setup-node-npm
         with:
-          node-version: '24'
+          install: "false"
 
       - name: Verify docs-only diff has no whitespace issues
         run: git diff --check
@@ -94,46 +94,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          cache: npm
-          cache-dependency-path: package-lock.json
-
-      - name: Download Compact toolchain artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: compact-toolchain
-          path: ${{ runner.temp }}/compact-toolchain
+      - name: Set up Node.js and install dependencies
+        uses: ./.github/actions/setup-node-npm
 
       - name: Restore Compact toolchain
-        shell: bash
-        run: |
-          mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
-          tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-
-      - name: Activate Compact compiler
-        shell: bash
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          if compact compile --version >/dev/null 2>&1; then
-            exit 0
-          fi
-          if [ "$COMPACT_COMPILER_VERSION" = "latest" ]; then
-            compact update
-          else
-            compact update "$COMPACT_COMPILER_VERSION" || compact update
-          fi
-
-      - name: Verify Compact installation
-        run: |
-          compact compile --version
-
-      - name: Install dependencies
-        run: npm ci --prefer-offline
+        uses: ./.github/actions/restore-compact-toolchain
+        with:
+          compact-version: ${{ env.COMPACT_COMPILER_VERSION }}
 
       - name: Check BDD summary artifact contract
         run: npm run check:bdd-summary-artifacts
@@ -321,62 +288,17 @@ jobs:
             echo "any_missing=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Set up Node.js
+      - name: Set up Node.js, dependencies, and turbo cache
         if: steps.cone-cache.outputs.any_missing == 'true'
-        uses: actions/setup-node@v4
+        uses: ./.github/actions/setup-node-npm
         with:
-          node-version: '24'
-          cache: npm
-          cache-dependency-path: package-lock.json
-
-      - name: Download Compact toolchain artifact
-        if: steps.cone-cache.outputs.any_missing == 'true'
-        uses: actions/download-artifact@v4
-        with:
-          name: compact-toolchain
-          path: ${{ runner.temp }}/compact-toolchain
+          turbo-cache: "true"
 
       - name: Restore Compact toolchain
         if: steps.cone-cache.outputs.any_missing == 'true'
-        shell: bash
-        run: |
-          mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
-          tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-
-      - name: Activate Compact compiler
-        if: steps.cone-cache.outputs.any_missing == 'true'
-        shell: bash
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          if compact compile --version >/dev/null 2>&1; then
-            exit 0
-          fi
-          if [ "$COMPACT_COMPILER_VERSION" = "latest" ]; then
-            compact update
-          else
-            compact update "$COMPACT_COMPILER_VERSION" || compact update
-          fi
-
-      - name: Verify Compact installation
-        if: steps.cone-cache.outputs.any_missing == 'true'
-        run: |
-          compact compile --version
-
-      - name: Install dependencies
-        if: steps.cone-cache.outputs.any_missing == 'true'
-        run: npm ci --prefer-offline
-
-      - name: Restore turbo cache
-        if: steps.cone-cache.outputs.any_missing == 'true'
-        uses: actions/cache@v4
+        uses: ./.github/actions/restore-compact-toolchain
         with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ github.job }}-${{ hashFiles('package-lock.json', 'turbo.json') }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-${{ github.job }}-
-            ${{ runner.os }}-turbo-
+          compact-version: ${{ env.COMPACT_COMPILER_VERSION }}
 
       - name: Build foundation outputs
         if: steps.verify-foundation-cache.outputs.cache_ready != 'true'
@@ -470,24 +392,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Set up Node.js, dependencies, and turbo cache
+        uses: ./.github/actions/setup-node-npm
         with:
-          node-version: '24'
-          cache: npm
-          cache-dependency-path: package-lock.json
-
-      - name: Install dependencies
-        run: npm ci --prefer-offline
-
-      - name: Restore turbo cache
-        uses: actions/cache@v4
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ github.job }}-${{ hashFiles('package-lock.json', 'turbo.json') }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-${{ github.job }}-
-            ${{ runner.os }}-turbo-
+          turbo-cache: "true"
 
       - name: Run lint lane
         run: npm run ci:lint
@@ -502,15 +410,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          cache: npm
-          cache-dependency-path: package-lock.json
-
-      - name: Install dependencies
-        run: npm ci --prefer-offline
+      - name: Set up Node.js and install dependencies
+        uses: ./.github/actions/setup-node-npm
 
       - name: Download foundation CI artifact
         uses: actions/download-artifact@v4
@@ -557,42 +458,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          cache: npm
-          cache-dependency-path: package-lock.json
-
-      - name: Install dependencies
-        run: npm ci --prefer-offline
-
-      - name: Download Compact toolchain artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: compact-toolchain
-          path: ${{ runner.temp }}/compact-toolchain
+      - name: Set up Node.js and install dependencies
+        uses: ./.github/actions/setup-node-npm
 
       - name: Restore Compact toolchain
-        shell: bash
-        run: |
-          mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
-          tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-
-      - name: Activate Compact compiler
-        shell: bash
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          if compact compile --version >/dev/null 2>&1; then
-            exit 0
-          fi
-          if [ "$COMPACT_COMPILER_VERSION" = "latest" ]; then
-            compact update
-          else
-            compact update "$COMPACT_COMPILER_VERSION" || compact update
-          fi
+        uses: ./.github/actions/restore-compact-toolchain
+        with:
+          compact-version: ${{ env.COMPACT_COMPILER_VERSION }}
 
       - name: Download foundation CI artifact
         uses: actions/download-artifact@v4
@@ -639,42 +511,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          cache: npm
-          cache-dependency-path: package-lock.json
-
-      - name: Download Compact toolchain artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: compact-toolchain
-          path: ${{ runner.temp }}/compact-toolchain
+      - name: Set up Node.js and install dependencies
+        uses: ./.github/actions/setup-node-npm
 
       - name: Restore Compact toolchain
-        shell: bash
-        run: |
-          mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
-          tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-
-      - name: Activate Compact compiler
-        shell: bash
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          if compact compile --version >/dev/null 2>&1; then
-            exit 0
-          fi
-          if [ "$COMPACT_COMPILER_VERSION" = "latest" ]; then
-            compact update
-          else
-            compact update "$COMPACT_COMPILER_VERSION" || compact update
-          fi
-
-      - name: Install dependencies
-        run: npm ci --prefer-offline
+        uses: ./.github/actions/restore-compact-toolchain
+        with:
+          compact-version: ${{ env.COMPACT_COMPILER_VERSION }}
 
       - name: Run university profile lanes
         run: npm run ci:university-protocol-profiles
@@ -699,42 +542,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          cache: npm
-          cache-dependency-path: package-lock.json
-
-      - name: Install dependencies
-        run: npm ci --prefer-offline
-
-      - name: Download Compact toolchain artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: compact-toolchain
-          path: ${{ runner.temp }}/compact-toolchain
+      - name: Set up Node.js and install dependencies
+        uses: ./.github/actions/setup-node-npm
 
       - name: Restore Compact toolchain
-        shell: bash
-        run: |
-          mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
-          tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-
-      - name: Activate Compact compiler
-        shell: bash
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          if compact compile --version >/dev/null 2>&1; then
-            exit 0
-          fi
-          if [ "$COMPACT_COMPILER_VERSION" = "latest" ]; then
-            compact update
-          else
-            compact update "$COMPACT_COMPILER_VERSION" || compact update
-          fi
+        uses: ./.github/actions/restore-compact-toolchain
+        with:
+          compact-version: ${{ env.COMPACT_COMPILER_VERSION }}
 
       - name: Download foundation CI artifact
         uses: actions/download-artifact@v4
@@ -774,15 +588,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          cache: npm
-          cache-dependency-path: package-lock.json
-
-      - name: Install dependencies
-        run: npm ci --prefer-offline
+      - name: Set up Node.js and install dependencies
+        uses: ./.github/actions/setup-node-npm
 
       - name: Download foundation CI artifact
         uses: actions/download-artifact@v4
@@ -822,15 +629,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          cache: npm
-          cache-dependency-path: package-lock.json
-
-      - name: Install dependencies
-        run: npm ci --prefer-offline
+      - name: Set up Node.js and install dependencies
+        uses: ./.github/actions/setup-node-npm
 
       - name: Download foundation CI artifact
         uses: actions/download-artifact@v4
@@ -870,15 +670,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          cache: npm
-          cache-dependency-path: package-lock.json
-
-      - name: Install dependencies
-        run: npm ci --prefer-offline
+      - name: Set up Node.js and install dependencies
+        uses: ./.github/actions/setup-node-npm
 
       - name: Download foundation CI artifact
         uses: actions/download-artifact@v4

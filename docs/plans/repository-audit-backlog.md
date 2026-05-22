@@ -350,9 +350,15 @@ file splits, BDD readability, and maturity tags.
     - validation: `npm run check:bdd-summary-artifacts`,
       `npm run check:ci-workflow-cones`, `npm run docs:links`
 
-`ci-setup-action-consolidation` is intentionally deferred beyond the first 10
-slices because it is lower risk after runner, cone, and package-policy catalogs
-stop drifting.
+13. `vc-ci-setup-action-consolidation`
+    - covers `ci-setup-action-consolidation`
+    - 2026-05-22 delivery branch:
+      `codex/vc-ci-setup-action-consolidation`
+    - extracts repeated Node/npm/Turbo and prepared Compact-toolchain restore
+      blocks into local composite actions, then extends the workflow-cone guard
+      so direct setup blocks do not drift back into the primary CI workflow
+    - validation: `npm run check:ci-workflow-cones`,
+      `npm run check:bdd-summary-artifacts`, `git diff --check`
 
 ## Review-Driven Stack Additions
 
