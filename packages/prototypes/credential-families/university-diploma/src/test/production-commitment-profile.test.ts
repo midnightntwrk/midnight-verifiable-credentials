@@ -805,6 +805,29 @@ describe("university diploma production commitment profile", () => {
     );
   });
 
+  it("rejects a production minimum-grade predicate when the value is wrong", () => {
+    const fixture = createUniversityDiplomaProductionCredentialFixture();
+    const witness = createUniversityDiplomaProductionFinalGradePredicateWitness(
+      {
+        claims: fixture.sourceClaims,
+        openings: fixture.profile.openings,
+      },
+    );
+
+    expect(() =>
+      pureCircuits.assertUniversityDiplomaProductionFinalGradeAtLeast(
+        fixture.credential,
+        {
+          ...witness,
+          finalGrade: fixture.sourceClaims.finalGrade - 1n,
+        },
+        90n,
+      ),
+    ).toThrow(
+      /University-diploma production final grade predicate commitment mismatch/,
+    );
+  });
+
   it("rejects a production minimum-grade predicate when the opening is empty", () => {
     const fixture = createUniversityDiplomaProductionCredentialFixture();
     const witness = createUniversityDiplomaProductionFinalGradePredicateWitness(
@@ -848,7 +871,7 @@ describe("university diploma production commitment profile", () => {
     );
   });
 
-  it("rejects production grade predicates outside the grade scale even when committed", () => {
+  it("rejects a predicate witness above the grade scale even when its commitment matches", () => {
     const fixture = createUniversityDiplomaProductionCredentialFixture({
       claimOverrides: { finalGrade: 101n },
     });
@@ -937,6 +960,28 @@ describe("university diploma production commitment profile", () => {
         {
           ...witness,
           creditsEarnedOpening: new Uint8Array(32).fill(9),
+        },
+        120n,
+      ),
+    ).toThrow(
+      /University-diploma production credits earned predicate commitment mismatch/,
+    );
+  });
+
+  it("rejects production credit-threshold predicates when the value is wrong", () => {
+    const fixture = createUniversityDiplomaProductionCredentialFixture();
+    const witness =
+      createUniversityDiplomaProductionCreditsEarnedPredicateWitness({
+        claims: fixture.sourceClaims,
+        openings: fixture.profile.openings,
+      });
+
+    expect(() =>
+      pureCircuits.assertUniversityDiplomaProductionCreditsEarnedAtLeast(
+        fixture.credential,
+        {
+          ...witness,
+          creditsEarned: fixture.sourceClaims.creditsEarned - 1n,
         },
         120n,
       ),

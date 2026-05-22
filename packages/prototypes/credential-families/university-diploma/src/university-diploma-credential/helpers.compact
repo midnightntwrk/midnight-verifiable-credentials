@@ -313,6 +313,10 @@ export pure circuit assertUniversityDiplomaProductionFinalGradeAtLeast(
   predicateWitness: UniversityDiplomaProductionFinalGradePredicateWitness,
   minimumFinalGrade: Uint<8>
 ): [] {
+  // Predicate witnesses are holder-supplied and intentionally separate from
+  // `UniversityDiplomaProductionDisclosures`. Protocol request wiring remains
+  // a follow-up in the university commitment-backed privacy plan.
+  // Final grades use the same 0..100 scale as the v1 direct-claim prototype.
   assert(
     minimumFinalGrade <= 100,
     "University-diploma production minimum final grade must be at most 100"
@@ -343,6 +347,9 @@ export pure circuit assertUniversityDiplomaProductionCreditsEarnedAtLeast(
   predicateWitness: UniversityDiplomaProductionCreditsEarnedPredicateWitness,
   minimumCreditsEarned: Uint<16>
 ): [] {
+  // Predicate witnesses are holder-supplied and intentionally separate from
+  // `UniversityDiplomaProductionDisclosures`. Protocol request wiring remains
+  // a follow-up in the university commitment-backed privacy plan.
   // Credits are an open-scale degree-family value bounded by Uint<16>, unlike
   // final-grade percentages that are family-bounded to 0..100.
   assert(

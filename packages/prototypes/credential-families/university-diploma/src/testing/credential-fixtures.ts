@@ -222,6 +222,13 @@ export type UniversityDiplomaProductionPresentationFixture =
     readonly presentationProof: Proof;
   };
 
+/**
+ * Fixture-only witness builder for tests and local compiler probes.
+ *
+ * @internal Real production flows should construct the witness from a private
+ * holder value plus the matching high-entropy field opening, not from a full
+ * fixture claim record.
+ */
 export const createUniversityDiplomaProductionFinalGradePredicateWitness = ({
   claims,
   openings,
@@ -233,6 +240,13 @@ export const createUniversityDiplomaProductionFinalGradePredicateWitness = ({
   finalGradeOpening: openings.finalGradeOpening,
 });
 
+/**
+ * Fixture-only witness builder for tests and local compiler probes.
+ *
+ * @internal Real production flows should construct the witness from a private
+ * holder value plus the matching high-entropy field opening, not from a full
+ * fixture claim record.
+ */
 export const createUniversityDiplomaProductionCreditsEarnedPredicateWitness = ({
   claims,
   openings,
