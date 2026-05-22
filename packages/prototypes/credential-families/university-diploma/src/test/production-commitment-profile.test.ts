@@ -314,12 +314,29 @@ describe("university diploma production commitment profile", () => {
     ).toThrow(/Credential claim root mismatch/);
   });
 
+  it("rejects production credentials with an unset public graduation year", () => {
+    const fixture = createUniversityDiplomaProductionCredentialFixture();
+
+    expect(() =>
+      pureCircuits.assertValidUniversityDiplomaProductionCredential(
+        {
+          ...fixture.credential,
+          claims: {
+            ...fixture.credential.claims,
+            graduationYear: 0n,
+          },
+        },
+        fixture.credentialProof,
+      ),
+    ).toThrow(/University-diploma production graduation year must be set/);
+  });
+
   it("rejects production credentials when commitments drift from the signed claim root", () => {
     const fixture = createUniversityDiplomaProductionCredentialFixture();
     const changedCommitments = {
       ...fixture.credential.claimCommitments,
       finalGradeCommitment: pureCircuits.universityDiplomaFinalGradeCommitment(
-        fixture.sourceClaims.finalGrade - 1n,
+        fixture.sourceClaims.finalGrade + 1n,
         fixture.profile.openings.finalGradeOpening,
       ),
     };

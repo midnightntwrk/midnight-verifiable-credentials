@@ -488,8 +488,8 @@ export const createUniversityDiplomaFixture = ({
   claimOverrides = {},
   issuerConfig,
   holderConfig,
-  issuedAt = 41_000n,
-  credentialProofCreatedAt = 41_001n,
+  issuedAt = 40_000n,
+  credentialProofCreatedAt = 40_001n,
   presentationProofCreatedAt = 40_002n,
 }: {
   readonly verifierChallengeHash?: Uint8Array;
@@ -600,8 +600,8 @@ export const createUniversityDiplomaProductionCredentialFixture = ({
   openings = createUniversityDiplomaProductionClaimOpenings(),
   issuerConfig,
   holderConfig,
-  issuedAt = 40_000n,
-  credentialProofCreatedAt = 40_001n,
+  issuedAt = 50_000n,
+  credentialProofCreatedAt = 50_001n,
 }: {
   readonly issuanceChallengeHash?: Uint8Array;
   readonly claimOverrides?: Partial<UniversityDiplomaClaims>;
