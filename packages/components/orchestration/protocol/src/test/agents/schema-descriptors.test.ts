@@ -217,6 +217,12 @@ describe("protocol schema descriptors", () => {
     expect(BIRTH_SCHEMA_FAMILY_ADAPTER.descriptor).not.toEqual(
       BIRTH_SCHEMA_DESCRIPTOR,
     );
+    expect(
+      BIRTH_SCHEMA_FAMILY_ADAPTER.descriptor.familyResolutionHint,
+    ).toMatchObject({
+      hasResolverHint: true,
+      resolverHint: padText("registry:birth-family"),
+    });
   });
 
   it("reports unknown and duplicate schema-family adapter registrations", () => {
