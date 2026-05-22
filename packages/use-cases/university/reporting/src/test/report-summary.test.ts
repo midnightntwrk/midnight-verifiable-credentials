@@ -218,6 +218,10 @@ describe("university artifact report summarizer", () => {
         ...summary.handoff,
         sourceArtifactIds: ["readable-bdd-serenity"],
       },
+      artifactManifest: {
+        ...summary.artifactManifest,
+        entries: summary.artifactManifest.entries.slice(0, 1),
+      },
     };
 
     expect(
@@ -225,6 +229,7 @@ describe("university artifact report summarizer", () => {
     ).toEqual([
       "transcriptExport.schemaVersion must be midnight-university-protocol-export.v2",
       "handoff.sourceArtifactIds must equal ordered list [readable-bdd-serenity, readable-protocol-transcript, stress-protocol-summary, issuer-batch-sweep-summary]",
+      "artifactManifest.entries must equal ordered list [readable-bdd-serenity, readable-protocol-transcript, stress-protocol-summary, issuer-batch-sweep-summary]",
       "transcriptExport.privacyProfile.productionCommitmentFields must be non-empty",
     ]);
     const contractOnlyMutated = {

@@ -1047,12 +1047,7 @@ const handoffSourceArtifactIdsMatchManifest = (
   // The handoff keeps manifest order so humans can compare both sections
   // without sorting or guessing which source artifact moved.
   const manifestArtifactIds = manifest.entries.map((entry) => entry.artifactId);
-  return (
-    handoff.sourceArtifactIds.length === manifestArtifactIds.length &&
-    handoff.sourceArtifactIds.every(
-      (artifactId, index) => artifactId === manifestArtifactIds[index],
-    )
-  );
+  return arraysEqual(handoff.sourceArtifactIds, manifestArtifactIds);
 };
 
 const arraysEqual = (
@@ -1139,6 +1134,9 @@ export const validateUniversityArtifactSummaryContract = (
   }
 
   const handoffArtifactIds = UNIVERSITY_REPORT_SUMMARY_CONTRACT.handoffArtifactIds;
+  // Repeat handoff IDs here for standalone/dashboard drift checks. The
+  // structural guard also validates them when assertUniversityArtifactSummaryConforms()
+  // is used as the entry point.
   if (value.handoff.primaryHuman.artifactId !== handoffArtifactIds.primaryHuman) {
     errors.push(
       `handoff.primaryHuman.artifactId must be ${handoffArtifactIds.primaryHuman}`,
