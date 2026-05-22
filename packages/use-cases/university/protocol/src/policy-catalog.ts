@@ -7,7 +7,7 @@ import type {
 import { resolveUniversityProtocolRepoPath } from "./runtime.js";
 
 export const UNIVERSITY_POLICY_CATALOG_AUDIT_SCHEMA_VERSION =
-  "midnight-university-policy-catalog-audit.v1" as const;
+  "midnight-university-policy-catalog-audit.v2" as const;
 
 export const defaultUniversityRequestPolicyPresetCatalogPath =
   "packages/use-cases/university/data/request-policy-presets.json" as const;
@@ -77,6 +77,7 @@ export type UniversityPolicyCatalogAuditFinding = {
     | "policy-mismatch"
     | "unknown-policy-field"
     | "missing-rationale"
+    | "rationale-without-policy-field"
     | "unused-preset";
   readonly message: string;
   readonly presetId?: string;
@@ -112,6 +113,7 @@ export type UniversityPolicyCatalogAudit = {
     readonly allEmbeddedPoliciesMatchCatalog: boolean;
     readonly allCatalogPresetsUsed: boolean;
     readonly allExplicitPolicyFieldsHaveRationale: boolean;
+    readonly allPolicyRationaleFieldsMatchPolicy: boolean;
   };
 };
 
@@ -226,6 +228,15 @@ const missingRationaleFields = (
     const rationale = (preset.policyRationale ?? {})[field];
     return typeof rationale !== "string" || rationale.trim().length === 0;
   });
+
+const rationaleFieldsWithoutPolicy = (
+  preset: UniversityRequestPolicyPreset,
+): readonly string[] => {
+  const explicitFields = new Set(explicitPolicyFields(preset.requestPolicy));
+  return Object.keys(preset.policyRationale ?? {})
+    .filter((field) => !explicitFields.has(field as UniversityRequestPolicyField))
+    .sort();
+};
 
 const coverageRecord = (
   participant: VerifierPolicyParticipant,
@@ -347,6 +358,16 @@ export const buildUniversityPolicyCatalogAudit = ({
       });
     }
 
+    for (const field of rationaleFieldsWithoutPolicy(preset)) {
+      findings.push({
+        severity: "error",
+        code: "rationale-without-policy-field",
+        message: `Preset ${presetId} has policy rationale for ${field}, but requestPolicy does not include that field.`,
+        presetId,
+        field,
+      });
+    }
+
     if (!usedPresetIds.has(presetId)) {
       findings.push({
         severity: "error",
@@ -386,6 +407,9 @@ export const buildUniversityPolicyCatalogAudit = ({
       allCatalogPresetsUsed: unusedPresetIds.length === 0,
       allExplicitPolicyFieldsHaveRationale:
         !knownFindingCodes.has("missing-rationale"),
+      allPolicyRationaleFieldsMatchPolicy: !knownFindingCodes.has(
+        "rationale-without-policy-field",
+      ),
     },
   };
 };

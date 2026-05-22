@@ -95,6 +95,10 @@ becomes part of a stackable PR.
      Markdown documentation for `request-policy-presets.json` and checks it
      from the university protocol profile lane so named presets remain
      inspectable without hand-maintained policy prose
+   - 2026-05-22: `codex/vc-university-policy-rationale-invariants` extends
+     the policy-catalog audit so preset rationale fields must correspond to
+     fields present in the preset `requestPolicy`, catching stale policy prose
+     when a disclosure or threshold field is removed
    - validation: `npm run check:university-request-policy-presets`,
      `./run.sh university-policy-catalog`, protocol tests
 
