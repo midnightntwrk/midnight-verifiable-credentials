@@ -42,6 +42,7 @@ Validation:
 - `./run.sh university-data-profiles`
 - `./run.sh university-policy-catalog`
 - `node ./packages/use-cases/university/scripts/list-data-profiles.mjs --json`
+- `npm run update:university-request-policy-presets`
 - `npm run check:university-request-policy-presets`
 - the policy-catalog audit proves `readable-10`, `cohort-30`, and `stress-100`
   verifier fixtures reference known presets, embed matching policies, exercise

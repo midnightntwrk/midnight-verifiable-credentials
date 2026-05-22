@@ -1,6 +1,6 @@
 # University Request Policy Presets
 
-Status: generated from `request-policy-presets.json`.
+Status: generated from [`request-policy-presets.json`](./request-policy-presets.json).
 
 Regenerate with:
 
