@@ -173,6 +173,15 @@ describe("protocol schema descriptors", () => {
     );
   });
 
+  it("copies caller-supplied resolver hint bytes", () => {
+    const resolverHintBytes = padText("registry:test-family");
+    const hint = createSchemaFamilyResolutionHint(resolverHintBytes);
+
+    resolverHintBytes[0] = 0;
+
+    expect(hint.resolverHint).toEqual(padText("registry:test-family"));
+  });
+
   it("creates resolvable descriptors without changing closed ecosystem defaults", () => {
     const descriptor = createResolvableSchemaDescriptor(
       BIRTH_SCHEMA_DESCRIPTOR.schema,

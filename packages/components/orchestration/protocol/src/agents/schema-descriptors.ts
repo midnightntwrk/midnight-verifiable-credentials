@@ -23,7 +23,9 @@ const createResolverHintBytes = (resolverHint: string | Uint8Array): Uint8Array 
         `Schema family resolver hint "${resolverHint}" is ${encoded.length} bytes; expected at most 32 bytes.`,
       );
     }
-    return padText(resolverHint);
+    const padded = new Uint8Array(32);
+    padded.set(encoded);
+    return padded;
   }
 
   if (resolverHint.length !== 32) {
@@ -31,7 +33,7 @@ const createResolverHintBytes = (resolverHint: string | Uint8Array): Uint8Array 
       `Schema family resolver hint is ${resolverHint.length} bytes; expected exactly 32 bytes.`,
     );
   }
-  return resolverHint;
+  return new Uint8Array(resolverHint);
 };
 
 export type SchemaFamilyAdapterDescriptor = {
