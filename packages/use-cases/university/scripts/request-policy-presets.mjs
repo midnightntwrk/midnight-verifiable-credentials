@@ -145,12 +145,23 @@ const isMain =
 
 if (isMain) {
   const args = new Set(process.argv.slice(2));
-  const requestedMarkdownModes = [
+  const markdownModeFlags = [
     "--markdown",
     "--update-markdown",
     "--check-markdown",
-  ].filter((flag) => args.has(flag));
+  ];
+  const unknownArgs = [...args].filter(
+    (arg) => !markdownModeFlags.includes(arg),
+  );
+  const requestedMarkdownModes = markdownModeFlags.filter((flag) =>
+    args.has(flag),
+  );
   try {
+    if (unknownArgs.length > 0) {
+      throw new Error(
+        `Unknown request-policy preset option(s): ${unknownArgs.join(", ")}`,
+      );
+    }
     if (requestedMarkdownModes.length > 1) {
       throw new Error(
         `Use exactly one request-policy preset markdown mode, got: ${requestedMarkdownModes.join(", ")}`,
