@@ -56,4 +56,12 @@ describe("university diploma privacy profile metadata", () => {
       "high-entropy",
     );
   });
+
+  it("keeps commitment candidate names aligned with commitment-field names", () => {
+    expect(
+      UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_CANDIDATES.map(
+        (field) => `${field}Commitment`,
+      ),
+    ).toEqual(UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_FIELDS);
+  });
 });

@@ -1,3 +1,6 @@
+// Backwards compatibility: existing fixture consumers import these metadata
+// constants from ./testing. New protocol/reporting code should import the
+// narrower public package surface at ./privacy-profile instead.
 export {
   UNIVERSITY_DIPLOMA_DIRECT_CLAIM_FIELDS,
   UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY,
