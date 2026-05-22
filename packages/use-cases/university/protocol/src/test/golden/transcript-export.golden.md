@@ -1,9 +1,9 @@
 # University Protocol Transcript Export
 
 - schema id: midnight-university-protocol-export
-- schema version: midnight-university-protocol-export.v1
-- compatible reader floor: midnight-university-protocol-export.v1
-- compatible reader ceiling: midnight-university-protocol-export.v1
+- schema version: midnight-university-protocol-export.v2
+- compatible reader floor: midnight-university-protocol-export.v2
+- compatible reader ceiling: midnight-university-protocol-export.v2
 - current privacy profile: direct-claim-prototype
 - production privacy profile: production-commitment-v2
 - students: 10

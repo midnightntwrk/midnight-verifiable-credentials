@@ -67,7 +67,7 @@ describe("university protocol transcript schema contract", () => {
     expect(() =>
       assertUniversityProtocolTranscriptExportConforms({
         ...exported,
-        schemaVersion: "midnight-university-protocol-export.v2",
+        schemaVersion: "midnight-university-protocol-export.v3",
       }),
     ).toThrow(/schema version/);
 
@@ -86,7 +86,7 @@ describe("university protocol transcript schema contract", () => {
         ...exported,
         compatibility: {
           ...UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_COMPATIBILITY,
-          maximumReaderVersion: "midnight-university-protocol-export.v2",
+          maximumReaderVersion: "midnight-university-protocol-export.v3",
         },
       }),
     ).toThrow(/maximum reader version/);
@@ -119,5 +119,26 @@ describe("university protocol transcript schema contract", () => {
         },
       }),
     ).toThrow(/predicateOnlyFields\[1\]/);
+
+    expect(() =>
+      assertUniversityProtocolTranscriptExportConforms({
+        ...exported,
+        privacyProfile: {
+          ...exported.privacyProfile,
+          currentProfile: "fixture-only-profile",
+        },
+      }),
+    ).toThrow(/currentProfile/);
+
+    expect(() =>
+      assertUniversityProtocolTranscriptExportConforms({
+        ...exported,
+        privacyProfile: {
+          ...exported.privacyProfile,
+          productionCommitmentCandidates: ["diplomaId"],
+          predicateOnlyFields: ["finalGrade"],
+        },
+      }),
+    ).toThrow(/productionCommitmentCandidates/);
   });
 });

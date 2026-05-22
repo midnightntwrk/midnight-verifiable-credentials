@@ -160,10 +160,11 @@ Build and test:
     - `./packages/use-cases/university/protocol/target/readable-10/transcript-export.md`
   - contract:
     - `schemaId` is `midnight-university-protocol-export`
-    - `schemaVersion` is `midnight-university-protocol-export.v1`
+    - `schemaVersion` is `midnight-university-protocol-export.v2`
     - `compatibility.minimumReaderVersion` and
       `compatibility.maximumReaderVersion` are both pinned to the same value in
-      this first schema generation, so consumers should exact-match `v1`
+      this schema generation, so consumers should exact-match the reported
+      schema version
     - any export-shape change that requires a different reader should bump the
       schema version and widen or replace the compatibility window deliberately
 - stress summary:

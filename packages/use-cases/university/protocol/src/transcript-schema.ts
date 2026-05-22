@@ -1,3 +1,8 @@
+import {
+  UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY,
+  UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE,
+} from "@midnight-ntwrk/midnight-did-credentials-university-diploma/privacy-profile";
+
 import type {
   UniversityProtocolThreadExport,
   UniversityProtocolTranscriptExport,
@@ -12,7 +17,7 @@ export const UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_ID =
   "midnight-university-protocol-export" as const;
 
 export const UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION =
-  "midnight-university-protocol-export.v1" as const;
+  "midnight-university-protocol-export.v2" as const;
 
 export const UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_COMPATIBILITY = Object.freeze({
   minimumReaderVersion: UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION,
@@ -61,6 +66,18 @@ const expectStringArray = (
   expectArray(value, label).map((entry, index) =>
     expectString(entry, `${label}[${index}]`),
   );
+
+const expectStringArrayMembers = <T extends string>(
+  value: unknown,
+  allowed: readonly T[],
+  label: string,
+): readonly T[] =>
+  expectStringArray(value, label).map((entry, index) => {
+    if (!allowed.includes(entry as T)) {
+      throw new Error(`${label}[${index}] must be one of ${allowed.join(", ")}`);
+    }
+    return entry as T;
+  });
 
 const expectOneOf = <T extends string>(
   value: unknown,
@@ -191,34 +208,48 @@ export const assertUniversityProtocolTranscriptExportConforms: (
     record.privacyProfile,
     "transcript export.privacyProfile",
   );
-  expectString(
+  expectOneOf(
     privacyProfile.currentProfile,
+    [UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY.profile],
     "transcript export.privacyProfile.currentProfile",
   );
-  expectString(
+  expectOneOf(
     privacyProfile.claimCommitmentModel,
+    [UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY.claimCommitmentModel],
     "transcript export.privacyProfile.claimCommitmentModel",
   );
-  expectString(
+  expectOneOf(
     privacyProfile.productionProfile,
+    [UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.profile],
     "transcript export.privacyProfile.productionProfile",
   );
-  expectStringArray(
+  expectStringArrayMembers(
     privacyProfile.productionPublicClaimFields,
+    UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionPublicClaimFields,
     "transcript export.privacyProfile.productionPublicClaimFields",
   );
-  expectStringArray(
+  const productionCommitmentCandidates = expectStringArrayMembers(
     privacyProfile.productionCommitmentCandidates,
+    UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionCommitmentCandidates,
     "transcript export.privacyProfile.productionCommitmentCandidates",
   );
-  expectStringArray(
+  expectStringArrayMembers(
     privacyProfile.productionCommitmentFields,
+    UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionCommitmentFields,
     "transcript export.privacyProfile.productionCommitmentFields",
   );
-  expectStringArray(
+  const predicateOnlyFields = expectStringArrayMembers(
     privacyProfile.predicateOnlyFields,
+    UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.predicateOnlyFields,
     "transcript export.privacyProfile.predicateOnlyFields",
   );
+  for (const [index, field] of predicateOnlyFields.entries()) {
+    if (!productionCommitmentCandidates.includes(field)) {
+      throw new Error(
+        `transcript export.privacyProfile.predicateOnlyFields[${index}] must be included in productionCommitmentCandidates`,
+      );
+    }
+  }
   expectString(
     privacyProfile.openingPolicy,
     "transcript export.privacyProfile.openingPolicy",

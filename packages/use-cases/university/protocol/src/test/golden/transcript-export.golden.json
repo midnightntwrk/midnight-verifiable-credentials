@@ -1,9 +1,9 @@
 {
   "schemaId": "midnight-university-protocol-export",
-  "schemaVersion": "midnight-university-protocol-export.v1",
+  "schemaVersion": "midnight-university-protocol-export.v2",
   "compatibility": {
-    "minimumReaderVersion": "midnight-university-protocol-export.v1",
-    "maximumReaderVersion": "midnight-university-protocol-export.v1"
+    "minimumReaderVersion": "midnight-university-protocol-export.v2",
+    "maximumReaderVersion": "midnight-university-protocol-export.v2"
   },
   "privacyProfile": {
     "currentProfile": "direct-claim-prototype",
