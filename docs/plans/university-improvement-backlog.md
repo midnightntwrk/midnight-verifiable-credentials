@@ -84,6 +84,10 @@ becomes part of a stackable PR.
 
 8. University-only follow-on: `university-data-fixture-lifecycle`
    - keep readable, cohort, and stress fixture generation/check scripts aligned
+   - 2026-05-22: `codex/vc-university-data-profile-runbook` adds generated
+     `data-profiles.md` documentation plus profile lifecycle checks for batch
+     coverage, company assignments, discount applicant grades, and eligibility
+     expectations across readable, cohort, and stress fixtures
    - validation: `./run.sh university-data-profiles`,
      `./run.sh university-protocol-cohort --light`,
      `./run.sh university-protocol-stress --light`

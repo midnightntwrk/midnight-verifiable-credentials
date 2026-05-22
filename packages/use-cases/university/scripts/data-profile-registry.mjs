@@ -7,6 +7,19 @@ import { resolveUniversityRequestPolicyPreset } from "./request-policy-presets.m
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const universityRootDir = path.resolve(__dirname, "..");
 const staticCompanionJsonFiles = new Set(["request-policy-presets.json"]);
+const dataProfilesMarkdownPath = path.resolve(
+  universityRootDir,
+  "data",
+  "data-profiles.md",
+);
+const generatedArtifactFilenames = [
+  "university.json",
+  "companies.json",
+  "mall.json",
+  "students.json",
+  "issuance-batches.json",
+  "discount-applicants.json",
+];
 
 const universityDataProfiles = {
   "readable-10": {
@@ -39,27 +52,93 @@ const universityDataProfiles = {
   },
 };
 
+// Expected company counts are part of each profile contract; the lifecycle
+// checker compares generated or committed artifacts against this source.
+const companyCountsBySet = {
+  standard: 3,
+  expanded: 6,
+};
+
+const companyCountForProfile = (profile) => {
+  const count = companyCountsBySet[profile.companySet];
+  if (count == null) {
+    throw new Error(`Unknown university company set ${profile.companySet}`);
+  }
+  return count;
+};
+
+const assertDiscountApplicantCapacity = (label, profile) => {
+  if (profile.discountApplicantCount > profile.studentCount) {
+    throw new Error(
+      `${label} declares ${profile.discountApplicantCount} discount applicants for ${profile.studentCount} students`,
+    );
+  }
+};
+
+const resolveProfileContract = (profile) => {
+  assertDiscountApplicantCapacity(
+    `University data profile ${profile.profileId}`,
+    profile,
+  );
+  return {
+    ...profile,
+    expectedCompanyCount: companyCountForProfile(profile),
+  };
+};
+
+const isRecord = (value) =>
+  typeof value === "object" && value !== null && !Array.isArray(value);
+
 export const listUniversityDataProfiles = () =>
-  Object.values(universityDataProfiles).map((profile) => ({ ...profile }));
+  Object.values(universityDataProfiles).map(resolveProfileContract);
 
 export const resolveUniversityDataProfile = (profileId) => {
   const profile = universityDataProfiles[profileId];
   if (!profile) {
     const supported = Object.keys(universityDataProfiles).sort().join(", ");
-    throw new Error(`Unknown university data profile ${profileId}. Supported profiles: ${supported}`);
+    throw new Error(
+      `Unknown university data profile ${profileId}. Supported profiles: ${supported}`,
+    );
   }
   return {
-    ...profile,
+    ...resolveProfileContract(profile),
     absoluteOutputDir: path.resolve(universityRootDir, profile.outputDir),
   };
 };
 
 const firstNames = [
-  "Ada", "Ben", "Cara", "Dion", "Ella", "Finn", "Gia", "Hugo", "Iris", "Jude",
-  "Kira", "Liam", "Maya", "Nico", "Oona", "Pia", "Quin", "Rhea", "Sami", "Tara",
+  "Ada",
+  "Ben",
+  "Cara",
+  "Dion",
+  "Ella",
+  "Finn",
+  "Gia",
+  "Hugo",
+  "Iris",
+  "Jude",
+  "Kira",
+  "Liam",
+  "Maya",
+  "Nico",
+  "Oona",
+  "Pia",
+  "Quin",
+  "Rhea",
+  "Sami",
+  "Tara",
 ];
 const lastNames = [
-  "Avery", "Bennett", "Carter", "Diaz", "Edwards", "Foster", "Gray", "Hayes", "Irwin", "Jordan",
+  "Avery",
+  "Bennett",
+  "Carter",
+  "Diaz",
+  "Edwards",
+  "Foster",
+  "Gray",
+  "Hayes",
+  "Irwin",
+  "Jordan",
 ];
 const awards = [
   "BSc Computer Science",
@@ -129,6 +208,11 @@ export const buildUniversityDataArtifactsForProfile = ({
   companySet = "standard",
   discountApplicantCount = 5,
 }) => {
+  assertDiscountApplicantCapacity("University data generation options", {
+    studentCount,
+    discountApplicantCount,
+  });
+
   const northwindPolicyPreset = resolveUniversityRequestPolicyPreset(
     "job-application-grade-and-award",
   );
@@ -146,7 +230,8 @@ export const buildUniversityDataArtifactsForProfile = ({
     universityName: "Example University",
     issuerDidUrl: "did:midnight:university:example-university",
     issuerMethodId: "#issuer-key-1",
-    credentialFamilyPackage: "@midnight-ntwrk/midnight-did-credentials-university-diploma",
+    credentialFamilyPackage:
+      "@midnight-ntwrk/midnight-did-credentials-university-diploma",
     schemaId: "uni-diploma:v1",
     holderBindingProfile: "ExplicitHolderBinding",
     statusModel: "NoStatusBinding",
@@ -156,7 +241,8 @@ export const buildUniversityDataArtifactsForProfile = ({
     supportsBatchIssuance: true,
     batchSize,
     claimEncoding: {
-      stringLikeFields: "fixed-width Bytes<N> in Compact, canonical JSON strings in scenario data",
+      stringLikeFields:
+        "fixed-width Bytes<N> in Compact, canonical JSON strings in scenario data",
       integerFields: "Uint<n> in Compact, JSON numbers in scenario data",
       fieldLengths: {
         diplomaId: 32,
@@ -264,7 +350,8 @@ export const buildUniversityDataArtifactsForProfile = ({
   const students = Array.from({ length: studentCount }, (_, index) => {
     const ordinal = String(index + 1).padStart(4, "0");
     const firstName = firstNames[index % firstNames.length];
-    const lastName = lastNames[Math.floor(index / firstNames.length) % lastNames.length];
+    const lastName =
+      lastNames[Math.floor(index / firstNames.length) % lastNames.length];
     const fullName = `${firstName} ${lastName} ${ordinal}`;
     const awardIndex = index % selectedAwards.length;
     const finalGrade = gradeForIndex(index);
@@ -307,6 +394,7 @@ export const buildUniversityDataArtifactsForProfile = ({
     });
   }
 
+  const discountThreshold = mall.requestPolicy.minimumFinalGrade;
   const discountApplicants = students
     .slice(0, Math.min(discountApplicantCount, students.length))
     .map((student) => ({
@@ -314,11 +402,11 @@ export const buildUniversityDataArtifactsForProfile = ({
       fullName: student.fullName,
       finalGrade: student.diplomaClaimValues.finalGrade,
       expectedDiscountEligibility:
-        student.diplomaClaimValues.finalGrade >= mall.requestPolicy.minimumFinalGrade,
+        student.diplomaClaimValues.finalGrade >= discountThreshold,
       explanation:
-        student.diplomaClaimValues.finalGrade >= mall.requestPolicy.minimumFinalGrade
-          ? "grade is at least 91"
-          : "grade does not satisfy the mall threshold",
+        student.diplomaClaimValues.finalGrade >= discountThreshold
+          ? `grade is at least the mall threshold (${discountThreshold})`
+          : `grade is below the mall threshold (${discountThreshold})`,
     }));
 
   return {
@@ -334,13 +422,28 @@ export const buildUniversityDataArtifactsForProfile = ({
 export const writeUniversityDataArtifacts = (targetDir, artifacts) => {
   mkdirSync(targetDir, { recursive: true });
   for (const [filename, value] of Object.entries(artifacts)) {
-    writeFileSync(path.join(targetDir, filename), `${JSON.stringify(value, null, 2)}\n`, "utf8");
+    writeFileSync(
+      path.join(targetDir, filename),
+      `${JSON.stringify(value, null, 2)}\n`,
+      "utf8",
+    );
   }
 };
 
+export const readUniversityDataArtifacts = (targetDir) =>
+  Object.fromEntries(
+    generatedArtifactFilenames.map((filename) => [
+      filename,
+      JSON.parse(readFileSync(path.join(targetDir, filename), "utf8")),
+    ]),
+  );
+
 export const checkUniversityDataArtifacts = (targetDir, artifacts) => {
   let mismatches = 0;
-  const expectedFiles = Object.keys(artifacts).sort();
+  const expectedFiles = [...generatedArtifactFilenames].sort();
+  const generatedFiles = Object.keys(artifacts)
+    .filter((filename) => filename.endsWith(".json"))
+    .sort();
   const committedFiles = readdirSync(targetDir)
     .filter(
       (filename) =>
@@ -348,8 +451,17 @@ export const checkUniversityDataArtifacts = (targetDir, artifacts) => {
     )
     .sort();
 
+  if (expectedFiles.join("\n") !== generatedFiles.join("\n")) {
+    console.error(
+      "University data generator output file set does not match the lifecycle artifact catalog",
+    );
+    mismatches += 1;
+  }
+
   if (expectedFiles.join("\n") !== committedFiles.join("\n")) {
-    console.error(`University use-case data file set does not match the generator output in ${targetDir}`);
+    console.error(
+      `University use-case data file set does not match the generator output in ${targetDir}`,
+    );
     mismatches += 1;
   }
 
@@ -357,12 +469,258 @@ export const checkUniversityDataArtifacts = (targetDir, artifacts) => {
     const committed = readFileSync(path.join(targetDir, filename), "utf8");
     const regenerated = `${JSON.stringify(artifacts[filename], null, 2)}\n`;
     if (committed !== regenerated) {
-      console.error(`University use-case data drift detected in ${path.join(targetDir, filename)}`);
+      console.error(
+        `University use-case data drift detected in ${path.join(targetDir, filename)}`,
+      );
       mismatches += 1;
     }
   }
 
   return mismatches;
+};
+
+export const validateUniversityDataProfileArtifacts = (profile, artifacts) => {
+  const findings = [];
+  const addFinding = (message) =>
+    findings.push(`[${profile.profileId}] ${message}`);
+  const university = artifacts["university.json"];
+  const companies = artifacts["companies.json"];
+  const mall = artifacts["mall.json"];
+  const students = artifacts["students.json"];
+  const issuanceBatches = artifacts["issuance-batches.json"];
+  const discountApplicants = artifacts["discount-applicants.json"];
+  const expectedCompanyCount = companyCountForProfile(profile);
+  const expectedDiscountApplicantCount = profile.discountApplicantCount;
+  const mallRequestPolicy = isRecord(mall) ? mall.requestPolicy : undefined;
+
+  if (!isRecord(university)) {
+    addFinding("university.json must be an object");
+  }
+  if (!isRecord(mall)) {
+    addFinding("mall.json must be an object");
+  }
+  if (
+    !isRecord(mallRequestPolicy) ||
+    typeof mallRequestPolicy.minimumFinalGrade !== "number"
+  ) {
+    addFinding("mall.json requestPolicy.minimumFinalGrade must be a number");
+  }
+  for (const [filename, value] of [
+    ["companies.json", companies],
+    ["students.json", students],
+    ["issuance-batches.json", issuanceBatches],
+    ["discount-applicants.json", discountApplicants],
+  ]) {
+    if (!Array.isArray(value)) {
+      addFinding(`${filename} must be an array`);
+    }
+  }
+  if (findings.length > 0) {
+    return findings;
+  }
+
+  if (university.batchSize !== profile.batchSize) {
+    addFinding(
+      `university.batchSize=${university.batchSize} does not match profile batchSize=${profile.batchSize}`,
+    );
+  }
+  if (students.length !== profile.studentCount) {
+    addFinding(
+      `students.json contains ${students.length} students, expected ${profile.studentCount}`,
+    );
+  }
+  if (companies.length !== expectedCompanyCount) {
+    addFinding(
+      `companies.json contains ${companies.length} companies, expected ${expectedCompanyCount}`,
+    );
+  }
+  if (discountApplicants.length !== expectedDiscountApplicantCount) {
+    addFinding(
+      `discount-applicants.json contains ${discountApplicants.length} applicants, expected ${expectedDiscountApplicantCount}`,
+    );
+  }
+
+  const companyIds = new Set(companies.map((company) => company.companyId));
+  const studentIds = new Set();
+  for (const student of students) {
+    if (studentIds.has(student.studentId)) {
+      addFinding(`duplicate studentId ${student.studentId}`);
+    }
+    studentIds.add(student.studentId);
+    if (!companyIds.has(student.assignedCompanyId)) {
+      addFinding(
+        `student ${student.studentId} references unknown company ${student.assignedCompanyId}`,
+      );
+    }
+    if (student.diplomaClaimValues?.studentId !== student.studentId) {
+      addFinding(
+        `student ${student.studentId} diplomaClaimValues.studentId does not match the fixture studentId`,
+      );
+    }
+  }
+
+  const coveredStudentIds = new Set();
+  for (const batch of issuanceBatches) {
+    if (batch.size !== batch.studentIds.length) {
+      addFinding(
+        `${batch.batchId} declares size ${batch.size}, but contains ${batch.studentIds.length} student ids`,
+      );
+    }
+    if (batch.studentIds.length > profile.batchSize) {
+      addFinding(
+        `${batch.batchId} contains ${batch.studentIds.length} students, exceeding profile batchSize=${profile.batchSize}`,
+      );
+    }
+    for (const studentId of batch.studentIds) {
+      if (!studentIds.has(studentId)) {
+        addFinding(`${batch.batchId} references unknown student ${studentId}`);
+      }
+      if (coveredStudentIds.has(studentId)) {
+        addFinding(`${batch.batchId} repeats student ${studentId}`);
+      }
+      coveredStudentIds.add(studentId);
+    }
+  }
+  if (coveredStudentIds.size !== studentIds.size) {
+    addFinding(
+      `issuance batches cover ${coveredStudentIds.size} unique students, expected ${studentIds.size}`,
+    );
+  }
+
+  const discountThreshold = mall.requestPolicy.minimumFinalGrade;
+  for (const applicant of discountApplicants) {
+    const student = students.find(
+      (candidate) => candidate.studentId === applicant.studentId,
+    );
+    if (!student) {
+      addFinding(
+        `discount applicant ${applicant.studentId} does not exist in students.json`,
+      );
+      continue;
+    }
+    if (applicant.fullName !== student.fullName) {
+      addFinding(
+        `discount applicant ${applicant.studentId} has stale fullName`,
+      );
+    }
+    if (applicant.finalGrade !== student.diplomaClaimValues.finalGrade) {
+      addFinding(
+        `discount applicant ${applicant.studentId} has stale finalGrade`,
+      );
+    }
+    const expectedEligibility =
+      student.diplomaClaimValues.finalGrade >= discountThreshold;
+    if (applicant.expectedDiscountEligibility !== expectedEligibility) {
+      addFinding(
+        `discount applicant ${applicant.studentId} expectedDiscountEligibility does not match threshold ${discountThreshold}`,
+      );
+    }
+  }
+
+  return findings;
+};
+
+export const checkUniversityDataProfileLifecycle = (profile, artifacts) => {
+  const findings = validateUniversityDataProfileArtifacts(profile, artifacts);
+  for (const finding of findings) {
+    console.error(finding);
+  }
+  return findings.length;
+};
+
+export const summarizeUniversityDataProfile = (profile, artifacts) => {
+  const students = artifacts["students.json"];
+  const companies = artifacts["companies.json"];
+  const issuanceBatches = artifacts["issuance-batches.json"];
+  const discountApplicants = artifacts["discount-applicants.json"];
+  const acceptedDiscountApplicants = discountApplicants.filter(
+    (applicant) => applicant.expectedDiscountEligibility,
+  ).length;
+
+  return {
+    profileId: profile.profileId,
+    purpose: profile.purpose,
+    outputDir: profile.outputDir,
+    studentCount: students.length,
+    batchSize: profile.batchSize,
+    issuanceBatchCount: issuanceBatches.length,
+    companySet: profile.companySet,
+    companyCount: companies.length,
+    expectedCompanyCount: companyCountForProfile(profile),
+    discountApplicantCount: discountApplicants.length,
+    acceptedDiscountApplicants,
+    rejectedDiscountApplicants:
+      discountApplicants.length - acceptedDiscountApplicants,
+  };
+};
+
+const renderProfileSummary = (summary) =>
+  [
+    `## \`${summary.profileId}\``,
+    "",
+    `- Purpose: ${summary.purpose}`,
+    `- Fixture directory: \`${summary.outputDir}\``,
+    `- Students: ${summary.studentCount}`,
+    `- Issuance batches: ${summary.issuanceBatchCount} of up to ${summary.batchSize} students`,
+    `- Companies: ${summary.companyCount} (\`${summary.companySet}\` set)`,
+    `- Discount applicants: ${summary.discountApplicantCount} (${summary.acceptedDiscountApplicants} accepted, ${summary.rejectedDiscountApplicants} rejected)`,
+    "",
+  ].join("\n");
+
+export const renderUniversityDataProfilesMarkdown = () => {
+  const lines = [
+    "# University Data Profiles",
+    "",
+    "Status: generated from `data-profile-registry.mjs` and the deterministic fixture generator.",
+    "",
+    "Regenerate with:",
+    "",
+    "```bash",
+    "npm run update:university-data-profiles",
+    "npm run check:university-data-profiles",
+    "```",
+    "",
+  ];
+
+  for (const profile of listUniversityDataProfiles()) {
+    const resolved = resolveUniversityDataProfile(profile.profileId);
+    const artifacts = buildUniversityDataArtifactsForProfile(resolved);
+    lines.push(
+      renderProfileSummary(summarizeUniversityDataProfile(resolved, artifacts)),
+    );
+  }
+
+  return lines.join("\n");
+};
+
+export const updateUniversityDataProfilesMarkdown = () => {
+  writeFileSync(
+    dataProfilesMarkdownPath,
+    renderUniversityDataProfilesMarkdown(),
+    "utf8",
+  );
+};
+
+export const checkUniversityDataProfilesMarkdown = () => {
+  const expected = renderUniversityDataProfilesMarkdown();
+  let actual;
+  try {
+    actual = readFileSync(dataProfilesMarkdownPath, "utf8");
+  } catch (error) {
+    if (error && typeof error === "object" && "code" in error) {
+      if (error.code === "ENOENT") {
+        throw new Error(
+          "Missing packages/use-cases/university/data/data-profiles.md; run `npm run update:university-data-profiles`.",
+        );
+      }
+    }
+    throw error;
+  }
+  if (actual !== expected) {
+    throw new Error(
+      "packages/use-cases/university/data/data-profiles.md is out of sync; run `npm run update:university-data-profiles`.",
+    );
+  }
 };
 
 export const universityProfileDataPaths = (profileId) => {
@@ -372,7 +730,13 @@ export const universityProfileDataPaths = (profileId) => {
     students: path.join(profile.absoluteOutputDir, "students.json"),
     companies: path.join(profile.absoluteOutputDir, "companies.json"),
     mall: path.join(profile.absoluteOutputDir, "mall.json"),
-    issuanceBatches: path.join(profile.absoluteOutputDir, "issuance-batches.json"),
-    discountApplicants: path.join(profile.absoluteOutputDir, "discount-applicants.json"),
+    issuanceBatches: path.join(
+      profile.absoluteOutputDir,
+      "issuance-batches.json",
+    ),
+    discountApplicants: path.join(
+      profile.absoluteOutputDir,
+      "discount-applicants.json",
+    ),
   };
 };

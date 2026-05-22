@@ -2,6 +2,8 @@
 
 Canonical university fixture profiles:
 
+- generated runbook:
+  - `./data-profiles.md`
 - `readable-10`
   - directory: `./`
   - purpose: human-readable BDD scenarios and transcript exports
@@ -42,8 +44,13 @@ Validation:
 - `./run.sh university-data-profiles`
 - `./run.sh university-policy-catalog`
 - `node ./packages/use-cases/university/scripts/list-data-profiles.mjs --json`
+- `npm run update:university-data-profiles`
+- `npm run check:university-data-profiles`
 - `npm run update:university-request-policy-presets`
 - `npm run check:university-request-policy-presets`
+- the data-profile lifecycle check proves generated profile JSON, batch
+  coverage, company assignments, mall-discount eligibility, and the generated
+  profile runbook stay synchronized
 - the policy-catalog audit proves `readable-10`, `cohort-30`, and `stress-100`
   verifier fixtures reference known presets, embed matching policies, exercise
   every catalog preset, and document why each explicit disclosure or threshold
