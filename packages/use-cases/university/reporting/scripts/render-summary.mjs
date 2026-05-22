@@ -7,6 +7,10 @@ import {
   buildUniversityArtifactSummary,
   renderUniversityArtifactManifestMarkdown,
   renderUniversityArtifactSummaryMarkdown,
+  UNIVERSITY_REPORT_ARTIFACT_MANIFEST_JSON_PATH,
+  UNIVERSITY_REPORT_ARTIFACT_MANIFEST_MARKDOWN_PATH,
+  UNIVERSITY_REPORT_SUMMARY_JSON_PATH,
+  UNIVERSITY_REPORT_SUMMARY_MARKDOWN_PATH,
 } from "../dist/index.js";
 
 const repoRoot = path.resolve(
@@ -18,14 +22,8 @@ const repoRoot = path.resolve(
   "..",
 );
 
-const targetDir = path.join(
-  repoRoot,
-  "packages",
-  "use-cases",
-  "university",
-  "reporting",
-  "target",
-);
+const absoluteRepoPath = (portablePath) =>
+  path.join(repoRoot, ...portablePath.split("/"));
 
 const summary = buildUniversityArtifactSummary({
   artifactBaseDirectory: repoRoot,
@@ -72,13 +70,21 @@ const summary = buildUniversityArtifactSummary({
 });
 assertUniversityArtifactSummaryConforms(summary);
 
-mkdirSync(targetDir, { recursive: true });
-const jsonPath = path.join(targetDir, "summary.json");
-const markdownPath = path.join(targetDir, "summary.md");
-const manifestJsonPath = path.join(targetDir, "artifact-manifest.json");
-const manifestMarkdownPath = path.join(targetDir, "artifact-manifest.md");
+const jsonPath = absoluteRepoPath(UNIVERSITY_REPORT_SUMMARY_JSON_PATH);
+const markdownPath = absoluteRepoPath(UNIVERSITY_REPORT_SUMMARY_MARKDOWN_PATH);
+const manifestJsonPath = absoluteRepoPath(
+  UNIVERSITY_REPORT_ARTIFACT_MANIFEST_JSON_PATH,
+);
+const manifestMarkdownPath = absoluteRepoPath(
+  UNIVERSITY_REPORT_ARTIFACT_MANIFEST_MARKDOWN_PATH,
+);
+mkdirSync(path.dirname(jsonPath), { recursive: true });
 writeFileSync(jsonPath, `${JSON.stringify(summary, null, 2)}\n`, "utf8");
-writeFileSync(markdownPath, renderUniversityArtifactSummaryMarkdown(summary), "utf8");
+writeFileSync(
+  markdownPath,
+  renderUniversityArtifactSummaryMarkdown(summary),
+  "utf8",
+);
 writeFileSync(
   manifestJsonPath,
   `${JSON.stringify(summary.artifactManifest, null, 2)}\n`,

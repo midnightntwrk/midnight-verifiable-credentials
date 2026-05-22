@@ -9,10 +9,13 @@
 - discount applicants: 5
 
 ## Handoff Contract
+### Handoff Artifacts
 - human handoff: packages/use-cases/university/reporting/target/summary.md
 - machine handoff: packages/use-cases/university/reporting/target/summary.json
 - source manifest: packages/use-cases/university/reporting/target/artifact-manifest.json
 - source artifact ids: readable-bdd-serenity, readable-protocol-transcript, stress-protocol-summary, issuer-batch-sweep-summary
+
+### Operating Notes
 - Use summary.md as the human handoff and summary.json as the tool handoff.
 - Use artifact-manifest.json when a consumer needs to verify which source artifacts were summarized.
 - The Serenity site and raw transcript/stress/batch artifacts remain source evidence, not the default handoff surface.
