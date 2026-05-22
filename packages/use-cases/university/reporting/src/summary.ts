@@ -10,6 +10,8 @@ export const UNIVERSITY_ARTIFACT_MANIFEST_SCHEMA_VERSION =
   "midnight-university-artifact-manifest.v1" as const;
 const UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_ID =
   "midnight-university-protocol-export" as const;
+// The one-page report intentionally pins the transcript export contract; a
+// transcript schema bump should be paired with a report schema bump.
 const UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION =
   "midnight-university-protocol-export.v2" as const;
 const UNIVERSITY_REPORT_TARGET_DIRECTORY =
@@ -284,7 +286,7 @@ export type UniversityArtifactSummary = {
     readonly slowestScenarios: readonly LatestScenarioSummary[];
   };
   readonly transcriptExport: {
-    readonly schemaVersion: string;
+    readonly schemaVersion: UniversityProtocolTranscriptExport["schemaVersion"];
     readonly privacyProfile: UniversityProtocolTranscriptExport["privacyProfile"];
     readonly dataset: UniversityProtocolTranscriptExport["dataset"];
     readonly counts: UniversityProtocolTranscriptExport["counts"];
@@ -437,8 +439,14 @@ const assertTranscriptExportMatchesReportingContract = (
     );
   }
 
+  if (!isRecord(transcriptExport.compatibility)) {
+    throw new Error(
+      `Transcript export at ${transcriptExportPath} must include a reader compatibility block`,
+    );
+  }
+
   if (
-    transcriptExport.compatibility?.minimumReaderVersion !==
+    transcriptExport.compatibility.minimumReaderVersion !==
       UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION ||
     transcriptExport.compatibility.maximumReaderVersion !==
       UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION
