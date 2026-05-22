@@ -1,27 +1,25 @@
-import assert from "node:assert/strict";
-
 import {
   buildUniversityDataArtifactsForProfile,
-  resolveUniversityDataProfile,
+  listUniversityDataProfiles,
   validateUniversityDataProfileArtifacts,
 } from "./data-profile-registry.mjs";
 
-const profile = resolveUniversityDataProfile("readable-10");
+const profiles = listUniversityDataProfiles();
 
-const buildArtifacts = () =>
+const buildArtifacts = (profile) =>
   structuredClone(buildUniversityDataArtifactsForProfile(profile));
 
-const findingsFor = (mutate) => {
-  const artifacts = buildArtifacts();
-  mutate(artifacts);
-  return validateUniversityDataProfileArtifacts(profile, artifacts);
+const findingsFor = (profile, mutate) => {
+  const artifacts = buildArtifacts(profile);
+  mutate(artifacts, profile);
+  return {
+    artifacts,
+    findings: validateUniversityDataProfileArtifacts(profile, artifacts),
+  };
 };
 
-assert.deepEqual(
-  validateUniversityDataProfileArtifacts(profile, buildArtifacts()),
-  [],
-  "the readable profile fixture should be lifecycle-valid before mutation",
-);
+const expectedDiscountApplicantCount = (profile) =>
+  Math.min(profile.discountApplicantCount, profile.studentCount);
 
 const cases = [
   {
@@ -29,129 +27,181 @@ const cases = [
     mutate: (artifacts) => {
       artifacts["university.json"].batchSize = 99;
     },
-    expected: "university.batchSize=99 does not match profile batchSize=5",
+    expected: ({ profile }) =>
+      `university.batchSize=99 does not match profile batchSize=${profile.batchSize}`,
   },
   {
     name: "student count drift",
     mutate: (artifacts) => {
       artifacts["students.json"].pop();
     },
-    expected: "students.json contains 9 students, expected 10",
+    expected: ({ profile, artifacts }) =>
+      `students.json contains ${artifacts["students.json"].length} students, expected ${profile.studentCount}`,
   },
   {
     name: "company count drift",
     mutate: (artifacts) => {
       artifacts["companies.json"].pop();
     },
-    expected: "companies.json contains 2 companies, expected 3",
+    expected: ({ profile, artifacts }) =>
+      `companies.json contains ${artifacts["companies.json"].length} companies, expected ${profile.expectedCompanyCount}`,
   },
   {
     name: "discount applicant count drift",
     mutate: (artifacts) => {
       artifacts["discount-applicants.json"].pop();
     },
-    expected: "discount-applicants.json contains 4 applicants, expected 5",
+    expected: ({ profile, artifacts }) =>
+      `discount-applicants.json contains ${artifacts["discount-applicants.json"].length} applicants, expected ${expectedDiscountApplicantCount(profile)}`,
   },
   {
     name: "duplicate student fixture id",
     mutate: (artifacts) => {
-      artifacts["students.json"][1].studentId = "STU-0001";
+      artifacts["students.json"][1].studentId =
+        artifacts["students.json"][0].studentId;
     },
-    expected: "duplicate studentId STU-0001",
+    expected: ({ artifacts }) =>
+      `duplicate studentId ${artifacts["students.json"][0].studentId}`,
   },
   {
     name: "batch coverage gap",
     mutate: (artifacts) => {
-      artifacts["issuance-batches.json"][1].studentIds.pop();
-      artifacts["issuance-batches.json"][1].size -= 1;
+      const lastBatch = artifacts["issuance-batches.json"].at(-1);
+      lastBatch.studentIds.pop();
+      lastBatch.size -= 1;
     },
-    expected: "issuance batches cover 9 unique students, expected 10",
+    expected: ({ profile, artifacts }) =>
+      `issuance batches cover ${profile.studentCount - 1} unique students, expected ${artifacts["students.json"].length}`,
   },
   {
     name: "duplicate batch membership",
     mutate: (artifacts) => {
-      artifacts["issuance-batches.json"][1].studentIds[0] = "STU-0001";
+      artifacts["issuance-batches.json"][1].studentIds[0] =
+        artifacts["issuance-batches.json"][0].studentIds[0];
     },
-    expected: "batch-02 repeats student STU-0001",
+    expected: ({ artifacts }) =>
+      `${artifacts["issuance-batches.json"][1].batchId} repeats student ${artifacts["issuance-batches.json"][0].studentIds[0]}`,
   },
   {
     name: "batch declared size drift",
     mutate: (artifacts) => {
       artifacts["issuance-batches.json"][0].size += 1;
     },
-    expected: "batch-01 declares size 6, but contains 5 student ids",
+    expected: ({ artifacts }) => {
+      const batch = artifacts["issuance-batches.json"][0];
+      return `${batch.batchId} declares size ${batch.size}, but contains ${batch.studentIds.length} student ids`;
+    },
   },
   {
     name: "batch exceeds profile size",
     mutate: (artifacts) => {
-      artifacts["issuance-batches.json"][0].studentIds.push("STU-0006");
-      artifacts["issuance-batches.json"][0].size += 1;
+      const batch = artifacts["issuance-batches.json"][0];
+      const overflowStudentId =
+        artifacts["issuance-batches.json"][1]?.studentIds[0] ?? "STU-9999";
+      batch.studentIds.push(overflowStudentId);
+      batch.size = batch.studentIds.length;
     },
-    expected: "batch-01 contains 6 students, exceeding profile batchSize=5",
+    expected: ({ profile, artifacts }) => {
+      const batch = artifacts["issuance-batches.json"][0];
+      return `${batch.batchId} contains ${batch.studentIds.length} students, exceeding profile batchSize=${profile.batchSize}`;
+    },
   },
   {
     name: "batch references unknown student",
     mutate: (artifacts) => {
       artifacts["issuance-batches.json"][0].studentIds[0] = "STU-9999";
     },
-    expected: "batch-01 references unknown student STU-9999",
+    expected: ({ artifacts }) =>
+      `${artifacts["issuance-batches.json"][0].batchId} references unknown student STU-9999`,
   },
   {
     name: "unknown company assignment",
     mutate: (artifacts) => {
       artifacts["students.json"][0].assignedCompanyId = "company-missing";
     },
-    expected: "student STU-0001 references unknown company company-missing",
+    expected: ({ artifacts }) =>
+      `student ${artifacts["students.json"][0].studentId} references unknown company company-missing`,
   },
   {
     name: "stale diploma student id",
     mutate: (artifacts) => {
       artifacts["students.json"][0].diplomaClaimValues.studentId = "STU-9999";
     },
-    expected:
-      "student STU-0001 diplomaClaimValues.studentId does not match the fixture studentId",
+    expected: ({ artifacts }) =>
+      `student ${artifacts["students.json"][0].studentId} diplomaClaimValues.studentId does not match the fixture studentId`,
   },
   {
     name: "unknown discount applicant",
     mutate: (artifacts) => {
       artifacts["discount-applicants.json"][0].studentId = "STU-9999";
     },
-    expected: "discount applicant STU-9999 does not exist in students.json",
+    expected: () =>
+      "discount applicant STU-9999 does not exist in students.json",
   },
   {
     name: "stale discount full name",
     mutate: (artifacts) => {
       artifacts["discount-applicants.json"][0].fullName = "Stale Name";
     },
-    expected: "discount applicant STU-0001 has stale fullName",
+    expected: ({ artifacts }) =>
+      `discount applicant ${artifacts["discount-applicants.json"][0].studentId} has stale fullName`,
   },
   {
     name: "stale discount final grade",
     mutate: (artifacts) => {
       artifacts["discount-applicants.json"][0].finalGrade -= 1;
     },
-    expected: "discount applicant STU-0001 has stale finalGrade",
+    expected: ({ artifacts }) =>
+      `discount applicant ${artifacts["discount-applicants.json"][0].studentId} has stale finalGrade`,
   },
   {
     name: "stale discount eligibility",
     mutate: (artifacts) => {
       artifacts["discount-applicants.json"][0].expectedDiscountEligibility =
-        false;
+        !artifacts["discount-applicants.json"][0].expectedDiscountEligibility;
     },
-    expected:
-      "discount applicant STU-0001 expectedDiscountEligibility does not match threshold 91",
+    expected: ({ artifacts }) =>
+      `discount applicant ${artifacts["discount-applicants.json"][0].studentId} expectedDiscountEligibility does not match threshold ${artifacts["mall.json"].requestPolicy.minimumFinalGrade}`,
   },
 ];
 
-for (const { name, mutate, expected } of cases) {
-  const findings = findingsFor(mutate);
-  const expectedFinding = `[${profile.profileId}] ${expected}`;
-  assert(
-    findings.includes(expectedFinding),
-    `${name} should emit finding "${expectedFinding}", got:\n${findings.join("\n")}`,
+const failures = [];
+
+for (const profile of profiles) {
+  const baselineFindings = validateUniversityDataProfileArtifacts(
+    profile,
+    buildArtifacts(profile),
   );
+  if (baselineFindings.length > 0) {
+    failures.push(
+      `[${profile.profileId}] baseline should be lifecycle-valid before mutation, got:\n${baselineFindings.join("\n")}`,
+    );
+  }
+
+  for (const { name, mutate, expected } of cases) {
+    const { artifacts, findings } = findingsFor(profile, mutate);
+    const expectedFinding = `[${profile.profileId}] ${expected({
+      profile,
+      artifacts,
+    })}`;
+    if (!findings.includes(expectedFinding)) {
+      failures.push(
+        `[${profile.profileId}] ${name} should emit finding "${expectedFinding}", got:\n${findings.join("\n")}`,
+      );
+    }
+  }
+}
+
+if (failures.length > 0) {
+  console.error(
+    `[data-profile-lifecycle] ${failures.length} validation self-test failure(s):`,
+  );
+  for (const failure of failures) {
+    console.error(`\n- ${failure}`);
+  }
+  process.exit(1);
 }
 
 console.log(
-  `[data-profile-lifecycle] ${cases.length} negative cases plus baseline passed.`,
+  `[data-profile-lifecycle] ${cases.length} negative cases across ${profiles.length} profiles plus baselines passed.`,
 );
