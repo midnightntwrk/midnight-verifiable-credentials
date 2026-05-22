@@ -465,6 +465,91 @@ describe("university diploma production commitment profile", () => {
     ).toThrow(/University-diploma production request version mismatch/);
   });
 
+  it("rejects production presentation requests without a verifier challenge", () => {
+    const fixture = createUniversityDiplomaProductionPresentationFixture();
+
+    expect(() =>
+      pureCircuits.assertValidUniversityDiplomaProductionPresentationRequest({
+        ...fixture.presentationRequest,
+        verifierChallengeHash: new Uint8Array(32),
+      }),
+    ).toThrow(/University-diploma production verifier challenge must be set/);
+  });
+
+  it("rejects production presentation requests whose minimum grade is outside the allowed scale", () => {
+    const fixture = createUniversityDiplomaProductionPresentationFixture();
+
+    expect(() =>
+      pureCircuits.assertValidUniversityDiplomaProductionPresentationRequest({
+        ...fixture.presentationRequest,
+        minimumFinalGrade: 101n,
+      }),
+    ).toThrow(
+      /University-diploma production minimum final grade must be at most 100/,
+    );
+  });
+
+  it("rejects production requests whose challenge no longer matches the presentation proof", () => {
+    const fixture = createUniversityDiplomaProductionPresentationFixture();
+
+    expect(() =>
+      pureCircuits.assertUniversityDiplomaProductionPresentationSatisfiesRequest(
+        fixture.credential,
+        fixture.credentialProof,
+        {
+          ...fixture.presentationRequest,
+          verifierChallengeHash: new Uint8Array(32).fill(9),
+        },
+        fixture.presentation,
+        fixture.presentationProof,
+      ),
+    ).toThrow(
+      /University-diploma production presentation proof challenge does not match the request/,
+    );
+  });
+
+  it("rejects production requests whose schema drifts from the credential", () => {
+    const fixture = createUniversityDiplomaProductionPresentationFixture();
+
+    expect(() =>
+      pureCircuits.assertUniversityDiplomaProductionPresentationSatisfiesRequest(
+        fixture.credential,
+        fixture.credentialProof,
+        {
+          ...fixture.presentationRequest,
+          schema: {
+            ...fixture.presentationRequest.schema,
+            minorVersion: 1n,
+          },
+        },
+        fixture.presentation,
+        fixture.presentationProof,
+      ),
+    ).toThrow(/Schema reference mismatch/);
+  });
+
+  it("rejects production requests whose issuer method drifts from the credential", () => {
+    const fixture = createUniversityDiplomaProductionPresentationFixture();
+
+    expect(() =>
+      pureCircuits.assertUniversityDiplomaProductionPresentationSatisfiesRequest(
+        fixture.credential,
+        fixture.credentialProof,
+        {
+          ...fixture.presentationRequest,
+          issuerVerificationMethodRef: {
+            ...fixture.presentationRequest.issuerVerificationMethodRef,
+            methodId: new Uint8Array(32).fill(5),
+          },
+        },
+        fixture.presentation,
+        fixture.presentationProof,
+      ),
+    ).toThrow(
+      /University-diploma production request issuer method does not match the credential issuer/,
+    );
+  });
+
   it("ignores non-zero openings for unrevealed production disclosures", () => {
     const fixture = createUniversityDiplomaProductionPresentationFixture({
       disclosure: {
