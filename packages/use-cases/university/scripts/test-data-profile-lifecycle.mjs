@@ -19,9 +19,31 @@ const findingsFor = (profile, mutate) => {
 };
 
 const expectedDiscountApplicantCount = (profile) =>
-  Math.min(profile.discountApplicantCount, profile.studentCount);
+  profile.discountApplicantCount;
 
 const cases = [
+  {
+    name: "missing university artifact",
+    mutate: (artifacts) => {
+      delete artifacts["university.json"];
+    },
+    expected: () => "university.json must be an object",
+  },
+  {
+    name: "missing students artifact",
+    mutate: (artifacts) => {
+      delete artifacts["students.json"];
+    },
+    expected: () => "students.json must be an array",
+  },
+  {
+    name: "missing mall threshold",
+    mutate: (artifacts) => {
+      delete artifacts["mall.json"].requestPolicy.minimumFinalGrade;
+    },
+    expected: () =>
+      "mall.json requestPolicy.minimumFinalGrade must be a number",
+  },
   {
     name: "university batch size drift",
     mutate: (artifacts) => {
@@ -166,6 +188,26 @@ const cases = [
 ];
 
 const failures = [];
+
+try {
+  buildUniversityDataArtifactsForProfile({
+    studentCount: 1,
+    batchSize: 1,
+    discountApplicantCount: 2,
+  });
+  failures.push(
+    "over-declared discount applicant profile should fail instead of clamping",
+  );
+} catch (error) {
+  const message = error instanceof Error ? error.message : String(error);
+  if (
+    !message.includes("Cannot generate 2 discount applicants for 1 students")
+  ) {
+    failures.push(
+      `over-declared discount applicant profile emitted unexpected error: ${message}`,
+    );
+  }
+}
 
 for (const profile of profiles) {
   const baselineFindings = validateUniversityDataProfileArtifacts(
