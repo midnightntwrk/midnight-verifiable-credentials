@@ -185,6 +185,9 @@ export pure circuit assertUniversityDiplomaProductionDisclosuresMatchCredential(
   credential: UniversityDiplomaProductionCredential,
   disclosed: UniversityDiplomaProductionDisclosures
 ): [] {
+  // NOTE: when a `reveal*` flag is false, the corresponding disclosed slot and
+  // opening are not normalized or zero-checked by this circuit. Verifiers must
+  // treat the `reveal*` booleans as the authority on whether a field is disclosed.
   if (disclosed.revealDiplomaId) {
     assert(
       disclosed.diplomaIdOpening != pad(32, ""),

@@ -489,6 +489,21 @@ describe("university diploma production commitment profile", () => {
     );
   });
 
+  it("rejects production minimum-grade requests that do not require final-grade disclosure", () => {
+    const fixture = createUniversityDiplomaProductionPresentationFixture();
+
+    expect(() =>
+      pureCircuits.assertValidUniversityDiplomaProductionPresentationRequest({
+        ...fixture.presentationRequest,
+        requireFinalGradeDisclosure: false,
+        enforceMinimumFinalGrade: true,
+        minimumFinalGrade: 90n,
+      }),
+    ).toThrow(
+      /University-diploma production minimum-grade request must require final grade disclosure/,
+    );
+  });
+
   it("rejects production requests whose challenge no longer matches the presentation proof", () => {
     const fixture = createUniversityDiplomaProductionPresentationFixture();
 
@@ -526,6 +541,32 @@ describe("university diploma production commitment profile", () => {
         fixture.presentationProof,
       ),
     ).toThrow(/Schema reference mismatch/);
+  });
+
+  it("rejects production requests whose issuer contract drifts from the credential", () => {
+    const fixture = createUniversityDiplomaProductionPresentationFixture();
+
+    expect(() =>
+      pureCircuits.assertUniversityDiplomaProductionPresentationSatisfiesRequest(
+        fixture.credential,
+        fixture.credentialProof,
+        {
+          ...fixture.presentationRequest,
+          issuerVerificationMethodRef: {
+            ...fixture.presentationRequest.issuerVerificationMethodRef,
+            didContractAddress: {
+              ...fixture.presentationRequest.issuerVerificationMethodRef
+                .didContractAddress,
+              bytes: new Uint8Array(32).fill(8),
+            },
+          },
+        },
+        fixture.presentation,
+        fixture.presentationProof,
+      ),
+    ).toThrow(
+      /University-diploma production request issuer contract does not match the credential issuer/,
+    );
   });
 
   it("rejects production requests whose issuer method drifts from the credential", () => {
@@ -570,6 +611,26 @@ describe("university diploma production commitment profile", () => {
     ).not.toThrow();
   });
 
+  it("rejects production presentations when a revealed committed field has an empty opening", () => {
+    const fixture = createUniversityDiplomaProductionPresentationFixture({
+      disclosure: {
+        revealDiplomaId: true,
+      },
+      disclosedOverrides: {
+        diplomaIdOpening: new Uint8Array(32),
+      },
+    });
+
+    expect(() =>
+      pureCircuits.assertValidUniversityDiplomaProductionPresentation(
+        fixture.credential,
+        fixture.credentialProof,
+        fixture.presentation,
+        fixture.presentationProof,
+      ),
+    ).toThrow(/University-diploma production diploma id opening must be set/);
+  });
+
   it("rejects production presentations when a committed disclosure opening is wrong", () => {
     const fixture = createUniversityDiplomaProductionPresentationFixture({
       disclosure: {
@@ -611,6 +672,28 @@ describe("university diploma production commitment profile", () => {
       ),
     ).toThrow(
       /University-diploma production award name disclosure does not match the credential/,
+    );
+  });
+
+  it("rejects production presentations when a public graduation-year disclosure drifts from the credential", () => {
+    const fixture = createUniversityDiplomaProductionPresentationFixture({
+      disclosure: {
+        revealGraduationYear: true,
+      },
+      disclosedOverrides: {
+        graduationYear: 2029n,
+      },
+    });
+
+    expect(() =>
+      pureCircuits.assertValidUniversityDiplomaProductionPresentation(
+        fixture.credential,
+        fixture.credentialProof,
+        fixture.presentation,
+        fixture.presentationProof,
+      ),
+    ).toThrow(
+      /University-diploma production graduation year disclosure does not match the credential/,
     );
   });
 
