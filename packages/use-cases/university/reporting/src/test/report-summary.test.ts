@@ -118,6 +118,20 @@ describe("university artifact report summarizer", () => {
     expect(summary.readableBdd.passedCount).toBe(13);
     expect(summary.readableBdd.failedCount).toBe(0);
     expect(summary.transcriptExport.counts.totalThreads).toBe(25);
+    expect(summary.transcriptExport.privacyProfile).toMatchObject({
+      currentProfile: "direct-claim-prototype",
+      claimCommitmentModel: "none",
+      productionProfile: "production-commitment-v2",
+    });
+    expect(
+      summary.transcriptExport.privacyProfile.productionPublicClaimFields,
+    ).toEqual(["universityName", "awardName", "graduationYear"]);
+    expect(
+      summary.transcriptExport.privacyProfile.productionCommitmentFields,
+    ).toContain("finalGradeCommitment");
+    expect(summary.transcriptExport.privacyProfile.predicateOnlyFields).toEqual(
+      ["finalGrade", "creditsEarned"],
+    );
     expect(summary.stressSummary.datasetProfile).toBe("stress-100");
     expect(
       summary.batchSweep.fastestBatchSizeByWallClockCredentialsPerSecond,

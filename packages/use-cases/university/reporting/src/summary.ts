@@ -5,7 +5,7 @@ import path from "node:path";
 export const UNIVERSITY_REPORT_SUMMARY_SCHEMA_ID =
   "midnight-university-report-summary" as const;
 export const UNIVERSITY_REPORT_SUMMARY_SCHEMA_VERSION =
-  "midnight-university-report-summary.v4" as const;
+  "midnight-university-report-summary.v5" as const;
 export const UNIVERSITY_ARTIFACT_MANIFEST_SCHEMA_VERSION =
   "midnight-university-artifact-manifest.v1" as const;
 const UNIVERSITY_REPORT_TARGET_DIRECTORY =
@@ -29,6 +29,17 @@ type SerenityScenarioRecord = {
 
 type UniversityProtocolTranscriptExport = {
   readonly schemaVersion: string;
+  readonly privacyProfile: {
+    readonly currentProfile: string;
+    readonly claimCommitmentModel: string;
+    readonly productionProfile: string;
+    readonly productionPublicClaimFields: readonly string[];
+    readonly productionCommitmentCandidates: readonly string[];
+    readonly productionCommitmentFields: readonly string[];
+    readonly predicateOnlyFields: readonly string[];
+    readonly openingPolicy: string;
+    readonly statement: string;
+  };
   readonly dataset: {
     readonly studentCount: number;
     readonly companyCount: number;
@@ -263,6 +274,7 @@ export type UniversityArtifactSummary = {
   };
   readonly transcriptExport: {
     readonly schemaVersion: string;
+    readonly privacyProfile: UniversityProtocolTranscriptExport["privacyProfile"];
     readonly dataset: UniversityProtocolTranscriptExport["dataset"];
     readonly counts: UniversityProtocolTranscriptExport["counts"];
     readonly rejections: UniversityProtocolTranscriptExport["rejectionBreakdown"];
@@ -776,6 +788,21 @@ export const buildUniversityArtifactSummary = (
     },
     transcriptExport: {
       schemaVersion: transcriptExport.schemaVersion,
+      privacyProfile: {
+        ...transcriptExport.privacyProfile,
+        productionPublicClaimFields: [
+          ...transcriptExport.privacyProfile.productionPublicClaimFields,
+        ],
+        productionCommitmentCandidates: [
+          ...transcriptExport.privacyProfile.productionCommitmentCandidates,
+        ],
+        productionCommitmentFields: [
+          ...transcriptExport.privacyProfile.productionCommitmentFields,
+        ],
+        predicateOnlyFields: [
+          ...transcriptExport.privacyProfile.predicateOnlyFields,
+        ],
+      },
       dataset: { ...transcriptExport.dataset },
       counts: { ...transcriptExport.counts },
       rejections: transcriptExport.rejectionBreakdown,
@@ -955,6 +982,17 @@ export const isUniversityArtifactSummary = (
     typeof value.readableBdd.totalDurationMs === "number" &&
     isRecord(value.transcriptExport) &&
     typeof value.transcriptExport.schemaVersion === "string" &&
+    isRecord(value.transcriptExport.privacyProfile) &&
+    typeof value.transcriptExport.privacyProfile.currentProfile === "string" &&
+    typeof value.transcriptExport.privacyProfile.productionProfile ===
+      "string" &&
+    Array.isArray(
+      value.transcriptExport.privacyProfile.productionPublicClaimFields,
+    ) &&
+    Array.isArray(
+      value.transcriptExport.privacyProfile.productionCommitmentFields,
+    ) &&
+    Array.isArray(value.transcriptExport.privacyProfile.predicateOnlyFields) &&
     isRecord(value.stressSummary) &&
     typeof value.stressSummary.schemaVersion === "string" &&
     isRecord(value.batchSweep) &&
@@ -1070,6 +1108,16 @@ export const renderUniversityArtifactSummaryMarkdown = (
       (entry) =>
         `- discount rejection reason: ${entry.reason} (${entry.count})`,
     ),
+    "",
+    "## Transcript Privacy Profile",
+    `- current credential profile: ${summary.transcriptExport.privacyProfile.currentProfile}`,
+    `- current claim commitment model: ${summary.transcriptExport.privacyProfile.claimCommitmentModel}`,
+    `- production credential profile: ${summary.transcriptExport.privacyProfile.productionProfile}`,
+    `- production public claims: ${summary.transcriptExport.privacyProfile.productionPublicClaimFields.join(", ")}`,
+    `- production commitment fields: ${summary.transcriptExport.privacyProfile.productionCommitmentFields.join(", ")}`,
+    `- predicate-only fields: ${summary.transcriptExport.privacyProfile.predicateOnlyFields.join(", ")}`,
+    `- opening policy: ${summary.transcriptExport.privacyProfile.openingPolicy}`,
+    `- statement: ${summary.transcriptExport.privacyProfile.statement}`,
     "",
     "## Stress Summary",
     `- dataset profile: ${summary.stressSummary.datasetProfile}`,
