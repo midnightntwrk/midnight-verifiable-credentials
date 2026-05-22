@@ -25,7 +25,8 @@ for (const profile of listUniversityDataProfiles()) {
       committedArtifacts,
     );
   } catch (error) {
-    console.error(error instanceof Error ? error.message : String(error));
+    const message = error instanceof Error ? error.message : String(error);
+    console.error(`[${resolved.profileId}] ${message}`);
     mismatches += 1;
   }
 }

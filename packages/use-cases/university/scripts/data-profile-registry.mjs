@@ -64,22 +64,33 @@ const companyCountForProfile = (profile) => {
   if (count == null) {
     throw new Error(`Unknown university company set ${profile.companySet}`);
   }
+  return count;
+};
+
+const assertDiscountApplicantCapacity = (label, profile) => {
   if (profile.discountApplicantCount > profile.studentCount) {
     throw new Error(
-      `University data profile ${profile.profileId} declares ${profile.discountApplicantCount} discount applicants for ${profile.studentCount} students`,
+      `${label} declares ${profile.discountApplicantCount} discount applicants for ${profile.studentCount} students`,
     );
   }
-  return count;
+};
+
+const resolveProfileContract = (profile) => {
+  assertDiscountApplicantCapacity(
+    `University data profile ${profile.profileId}`,
+    profile,
+  );
+  return {
+    ...profile,
+    expectedCompanyCount: companyCountForProfile(profile),
+  };
 };
 
 const isRecord = (value) =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 
 export const listUniversityDataProfiles = () =>
-  Object.values(universityDataProfiles).map((profile) => ({
-    ...profile,
-    expectedCompanyCount: companyCountForProfile(profile),
-  }));
+  Object.values(universityDataProfiles).map(resolveProfileContract);
 
 export const resolveUniversityDataProfile = (profileId) => {
   const profile = universityDataProfiles[profileId];
@@ -90,8 +101,7 @@ export const resolveUniversityDataProfile = (profileId) => {
     );
   }
   return {
-    ...profile,
-    expectedCompanyCount: companyCountForProfile(profile),
+    ...resolveProfileContract(profile),
     absoluteOutputDir: path.resolve(universityRootDir, profile.outputDir),
   };
 };
@@ -198,11 +208,10 @@ export const buildUniversityDataArtifactsForProfile = ({
   companySet = "standard",
   discountApplicantCount = 5,
 }) => {
-  if (discountApplicantCount > studentCount) {
-    throw new Error(
-      `Cannot generate ${discountApplicantCount} discount applicants for ${studentCount} students`,
-    );
-  }
+  assertDiscountApplicantCapacity("University data generation options", {
+    studentCount,
+    discountApplicantCount,
+  });
 
   const northwindPolicyPreset = resolveUniversityRequestPolicyPreset(
     "job-application-grade-and-award",
