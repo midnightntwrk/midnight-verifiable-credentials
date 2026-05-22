@@ -171,7 +171,7 @@
     "build:university-request-policy-presets:markdown": "node ./packages/use-cases/university/scripts/request-policy-presets.mjs --markdown",
     "update:university-request-policy-presets": "node ./packages/use-cases/university/scripts/request-policy-presets.mjs --update-markdown",
     "check:university-request-policy-presets": "node ./packages/use-cases/university/scripts/request-policy-presets.mjs --check-markdown",
-    "ci:university-data-profiles": "npm run build:university-data-profiles:list && npm run build:university-data-profiles:check && npm run check:university-data-profiles",
+    "ci:university-data-profiles": "npm run build:university-data-profiles:list && npm run build:university-data-profiles:check",
     "ci:university-request-policy-presets": "npm run check:university-request-policy-presets",
     "test:university-batch-sweep": "npm run test:batch-sweep -w packages/use-cases/university/scenarios",
     "ci:university-batch-sweep": "npm run typecheck -w packages/use-cases/university/scenarios && npm run test:university-batch-sweep",

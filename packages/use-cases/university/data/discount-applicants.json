@@ -25,13 +25,13 @@
     "fullName": "Dion Avery 0004",
     "finalGrade": 90,
     "expectedDiscountEligibility": false,
-    "explanation": "grade does not satisfy the mall threshold"
+    "explanation": "grade is below 91"
   },
   {
     "studentId": "STU-0005",
     "fullName": "Ella Avery 0005",
     "finalGrade": 72,
     "expectedDiscountEligibility": false,
-    "explanation": "grade does not satisfy the mall threshold"
+    "explanation": "grade is below 91"
   }
 ]

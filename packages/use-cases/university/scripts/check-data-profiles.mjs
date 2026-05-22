@@ -16,13 +16,18 @@ for (const profile of listUniversityDataProfiles()) {
     resolved.absoluteOutputDir,
     artifacts,
   );
-  const committedArtifacts = readUniversityDataArtifacts(
-    resolved.absoluteOutputDir,
-  );
-  mismatches += checkUniversityDataProfileLifecycle(
-    resolved,
-    committedArtifacts,
-  );
+  try {
+    const committedArtifacts = readUniversityDataArtifacts(
+      resolved.absoluteOutputDir,
+    );
+    mismatches += checkUniversityDataProfileLifecycle(
+      resolved,
+      committedArtifacts,
+    );
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : String(error));
+    mismatches += 1;
+  }
 }
 try {
   checkUniversityDataProfilesMarkdown();

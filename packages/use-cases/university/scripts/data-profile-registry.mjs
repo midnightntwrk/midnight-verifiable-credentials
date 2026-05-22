@@ -381,7 +381,7 @@ export const buildUniversityDataArtifactsForProfile = ({
       explanation:
         student.diplomaClaimValues.finalGrade >= discountThreshold
           ? `grade is at least ${discountThreshold}`
-          : "grade does not satisfy the mall threshold",
+          : `grade is below ${discountThreshold}`,
     }));
 
   return {
