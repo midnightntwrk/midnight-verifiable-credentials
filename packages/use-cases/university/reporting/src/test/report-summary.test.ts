@@ -132,6 +132,12 @@ describe("university artifact report summarizer", () => {
     expect(summary.transcriptExport.privacyProfile.predicateOnlyFields).toEqual(
       ["finalGrade", "creditsEarned"],
     );
+    expect(summary.transcriptExport.privacyProfile.openingPolicy).toBe(
+      "Production issuance must use high-entropy field-domain-separated openings; deterministic fixture openings are only for tests.",
+    );
+    expect(summary.transcriptExport.privacyProfile.statement).toBe(
+      "The production profile keeps routing facts public and moves stable identifiers plus sensitive academic facts into claim commitments.",
+    );
     expect(summary.stressSummary.datasetProfile).toBe("stress-100");
     expect(
       summary.batchSweep.fastestBatchSizeByWallClockCredentialsPerSecond,

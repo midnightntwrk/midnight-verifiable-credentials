@@ -29,17 +29,7 @@ type SerenityScenarioRecord = {
 
 type UniversityProtocolTranscriptExport = {
   readonly schemaVersion: string;
-  readonly privacyProfile: {
-    readonly currentProfile: string;
-    readonly claimCommitmentModel: string;
-    readonly productionProfile: string;
-    readonly productionPublicClaimFields: readonly string[];
-    readonly productionCommitmentCandidates: readonly string[];
-    readonly productionCommitmentFields: readonly string[];
-    readonly predicateOnlyFields: readonly string[];
-    readonly openingPolicy: string;
-    readonly statement: string;
-  };
+  readonly privacyProfile: UniversityTranscriptPrivacyProfile;
   readonly dataset: {
     readonly studentCount: number;
     readonly companyCount: number;
@@ -101,6 +91,18 @@ type UniversityProtocolTranscriptExport = {
       }[];
     };
   };
+};
+
+type UniversityTranscriptPrivacyProfile = {
+  readonly currentProfile: string;
+  readonly claimCommitmentModel: string;
+  readonly productionProfile: string;
+  readonly productionPublicClaimFields: readonly string[];
+  readonly productionCommitmentCandidates: readonly string[];
+  readonly productionCommitmentFields: readonly string[];
+  readonly predicateOnlyFields: readonly string[];
+  readonly openingPolicy: string;
+  readonly statement: string;
 };
 
 type UniversityProtocolStressSummary = {
@@ -396,6 +398,23 @@ const readJson = <T>(filePath: string): T => {
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 
+const isStringArray = (value: unknown): value is readonly string[] =>
+  Array.isArray(value) && value.every((entry) => typeof entry === "string");
+
+const isTranscriptPrivacyProfile = (
+  value: unknown,
+): value is UniversityTranscriptPrivacyProfile =>
+  isRecord(value) &&
+  typeof value.currentProfile === "string" &&
+  typeof value.claimCommitmentModel === "string" &&
+  typeof value.productionProfile === "string" &&
+  isStringArray(value.productionPublicClaimFields) &&
+  isStringArray(value.productionCommitmentCandidates) &&
+  isStringArray(value.productionCommitmentFields) &&
+  isStringArray(value.predicateOnlyFields) &&
+  typeof value.openingPolicy === "string" &&
+  typeof value.statement === "string";
+
 const hashBuffer = (buffer: Uint8Array): string =>
   createHash("sha256").update(buffer).digest("hex");
 
@@ -666,6 +685,11 @@ export const buildUniversityArtifactSummary = (
   const transcriptExport = readJson<UniversityProtocolTranscriptExport>(
     artifactPaths.transcriptExportPath,
   );
+  if (!isTranscriptPrivacyProfile(transcriptExport.privacyProfile)) {
+    throw new Error(
+      `Transcript export at ${artifactPaths.transcriptExportPath} must include a v2 privacyProfile block`,
+    );
+  }
   const stressSummary = readJson<UniversityProtocolStressSummary>(
     artifactPaths.stressSummaryPath,
   );
@@ -982,17 +1006,7 @@ export const isUniversityArtifactSummary = (
     typeof value.readableBdd.totalDurationMs === "number" &&
     isRecord(value.transcriptExport) &&
     typeof value.transcriptExport.schemaVersion === "string" &&
-    isRecord(value.transcriptExport.privacyProfile) &&
-    typeof value.transcriptExport.privacyProfile.currentProfile === "string" &&
-    typeof value.transcriptExport.privacyProfile.productionProfile ===
-      "string" &&
-    Array.isArray(
-      value.transcriptExport.privacyProfile.productionPublicClaimFields,
-    ) &&
-    Array.isArray(
-      value.transcriptExport.privacyProfile.productionCommitmentFields,
-    ) &&
-    Array.isArray(value.transcriptExport.privacyProfile.predicateOnlyFields) &&
+    isTranscriptPrivacyProfile(value.transcriptExport.privacyProfile) &&
     isRecord(value.stressSummary) &&
     typeof value.stressSummary.schemaVersion === "string" &&
     isRecord(value.batchSweep) &&
@@ -1114,6 +1128,7 @@ export const renderUniversityArtifactSummaryMarkdown = (
     `- current claim commitment model: ${summary.transcriptExport.privacyProfile.claimCommitmentModel}`,
     `- production credential profile: ${summary.transcriptExport.privacyProfile.productionProfile}`,
     `- production public claims: ${summary.transcriptExport.privacyProfile.productionPublicClaimFields.join(", ")}`,
+    `- production commitment candidates: ${summary.transcriptExport.privacyProfile.productionCommitmentCandidates.join(", ")}`,
     `- production commitment fields: ${summary.transcriptExport.privacyProfile.productionCommitmentFields.join(", ")}`,
     `- predicate-only fields: ${summary.transcriptExport.privacyProfile.predicateOnlyFields.join(", ")}`,
     `- opening policy: ${summary.transcriptExport.privacyProfile.openingPolicy}`,

@@ -69,6 +69,7 @@
 - current claim commitment model: none
 - production credential profile: production-commitment-v2
 - production public claims: universityName, awardName, graduationYear
+- production commitment candidates: diplomaId, studentId, graduateName, facultyName, honorsCode, graduationMonth, finalGrade, creditsEarned
 - production commitment fields: diplomaIdCommitment, studentIdCommitment, graduateNameCommitment, facultyNameCommitment, honorsCodeCommitment, graduationMonthCommitment, finalGradeCommitment, creditsEarnedCommitment
 - predicate-only fields: finalGrade, creditsEarned
 - opening policy: Production issuance must use high-entropy field-domain-separated openings; deterministic fixture openings are only for tests.
