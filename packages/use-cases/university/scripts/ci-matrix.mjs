@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
@@ -26,6 +26,8 @@ export const universityCiMatrix = [
     artifactProfile: null,
     light: false,
     artifacts: [],
+    operatorGoal: "Check fixture drift",
+    operatorOutput: "generator/profile validation",
   },
   {
     id: "policy-catalog",
@@ -36,6 +38,8 @@ export const universityCiMatrix = [
     artifactProfile: null,
     light: false,
     artifacts: [],
+    operatorGoal: "Check policy drift",
+    operatorOutput: "verifier preset coverage",
   },
   {
     id: "bdd-readable",
@@ -46,6 +50,8 @@ export const universityCiMatrix = [
     artifactProfile: null,
     light: false,
     artifacts: ["packages/use-cases/university/scenarios/target/site/serenity"],
+    operatorGoal: "Read the executable story",
+    operatorOutput: "Serenity report",
   },
   {
     id: "bdd-proof-server-contract",
@@ -56,6 +62,8 @@ export const universityCiMatrix = [
     artifactProfile: null,
     light: false,
     artifacts: ["packages/use-cases/university/scenarios/target/site/serenity"],
+    operatorGoal: "See proof-server DTO boundaries",
+    operatorOutput: "Serenity report with proof exchanges",
   },
   {
     id: "bdd-standalone-hybrid",
@@ -66,6 +74,8 @@ export const universityCiMatrix = [
     artifactProfile: null,
     light: false,
     artifacts: ["packages/use-cases/university/scenarios/target/standalone-timing"],
+    operatorGoal: "Measure standalone DID bootstrap",
+    operatorOutput: "standalone timing summary",
   },
   {
     id: "batch-sweep",
@@ -76,6 +86,8 @@ export const universityCiMatrix = [
     artifactProfile: null,
     light: false,
     artifacts: ["packages/use-cases/university/scenarios/target/batch-sweep/summary.json"],
+    operatorGoal: "Sweep issuance batches",
+    operatorOutput: "batch-sweep JSON/Markdown",
   },
   {
     id: "protocol",
@@ -87,6 +99,8 @@ export const universityCiMatrix = [
     artifactProfile: "managed-university-protocol",
     light: true,
     artifacts: [],
+    operatorGoal: "Run protocol tests",
+    operatorOutput: "package tests",
   },
   {
     id: "protocol-export",
@@ -103,6 +117,8 @@ export const universityCiMatrix = [
       "packages/use-cases/university/protocol/target/readable-10/application-decisions-export.json",
       "packages/use-cases/university/protocol/target/readable-10/application-decisions-export.md",
     ],
+    operatorGoal: "Export readable transcript",
+    operatorOutput: "transcript and decisions artifacts",
   },
   {
     id: "protocol-cohort",
@@ -114,6 +130,8 @@ export const universityCiMatrix = [
     artifactProfile: "managed-university-protocol-cohort",
     light: true,
     artifacts: ["packages/use-cases/university/protocol/target/cohort-30"],
+    operatorGoal: "Run 30-student cohort profile",
+    operatorOutput: "sampled cohort summary",
   },
   {
     id: "protocol-stress",
@@ -125,6 +143,8 @@ export const universityCiMatrix = [
     artifactProfile: "managed-university-protocol-stress",
     light: true,
     artifacts: ["packages/use-cases/university/protocol/target/stress-100"],
+    operatorGoal: "Run 100-student stress profile",
+    operatorOutput: "stress summary",
   },
   {
     id: "summary",
@@ -136,6 +156,8 @@ export const universityCiMatrix = [
     artifactProfile: "managed-university-summary",
     light: true,
     artifacts: ["packages/use-cases/university/reporting/target"],
+    operatorGoal: "Aggregate handoff summary",
+    operatorOutput: "one-page JSON/Markdown report",
   },
   {
     id: "ci-matrix-contract",
@@ -146,6 +168,8 @@ export const universityCiMatrix = [
     artifactProfile: null,
     light: false,
     artifacts: [],
+    operatorGoal: "Validate lane wiring",
+    operatorOutput: "generated matrix contract",
   },
 ];
 
@@ -164,6 +188,85 @@ const hasScript = (scripts, scriptName) =>
   Object.prototype.hasOwnProperty.call(scripts, scriptName);
 
 const markdownCell = (value) => String(value).replaceAll("|", "\\|");
+
+// Operators read the wiring check first, even though the JSON matrix keeps it
+// last so profile lanes stay grouped by execution flow.
+const operatorLaneOrder = [
+  "ci-matrix-contract",
+  "data-profiles",
+  "policy-catalog",
+  "bdd-readable",
+  "bdd-proof-server-contract",
+  "bdd-standalone-hybrid",
+  "batch-sweep",
+  "protocol",
+  "protocol-export",
+  "protocol-cohort",
+  "protocol-stress",
+  "summary",
+];
+
+const orderedOperatorLanes = () => {
+  const matrixById = new Map(
+    universityCiMatrix.map((candidate) => [candidate.id, candidate]),
+  );
+
+  return operatorLaneOrder.map((laneId) => {
+    const lane = matrixById.get(laneId);
+    if (!lane) {
+      throw new Error(`Unknown university operator lane id: ${laneId}`);
+    }
+    return lane;
+  });
+};
+
+const renderOperatorLaneTable = () => {
+  const lines = [
+    "| Goal | Command | Main output | When to run |",
+    "| --- | --- | --- | --- |",
+  ];
+
+  for (const lane of orderedOperatorLanes()) {
+    lines.push(
+      `| ${markdownCell(lane.operatorGoal)} | \`./run.sh ${markdownCell(
+        lane.runTarget,
+      )}\` | ${markdownCell(lane.operatorOutput)} | ${markdownCell(lane.when)} |`,
+    );
+  }
+
+  return lines.join("\n");
+};
+
+const generatedSection = (name) => ({
+  start: `<!-- ${name}:start -->`,
+  end: `<!-- ${name}:end -->`,
+});
+
+const replaceGeneratedSection = (source, section, content) => {
+  if (
+    source.split(section.start).length !== 2 ||
+    source.split(section.end).length !== 2
+  ) {
+    throw new Error(`Expected exactly one generated section: ${section.start} / ${section.end}`);
+  }
+
+  const startIndex = source.indexOf(section.start);
+  const endIndex = source.indexOf(section.end);
+  if (startIndex === -1 || endIndex === -1 || endIndex < startIndex) {
+    throw new Error(`Missing generated section markers: ${section.start} / ${section.end}`);
+  }
+
+  return `${source.slice(0, startIndex + section.start.length)}\n${content}\n${source.slice(
+    endIndex,
+  )}`;
+};
+
+const renderOperatorGuide = (source) =>
+  replaceGeneratedSection(
+    source,
+    generatedSection("university-operator-lanes"),
+    renderOperatorLaneTable(),
+  );
 
 const renderMarkdown = () => {
   const lines = [
@@ -217,10 +320,33 @@ const checkMatrix = () => {
   const scripts = packageScripts();
   const runSh = readRepoFile("run.sh");
   const workflow = readRepoFile(".github/workflows/ci.yml");
+  const matrixLaneIds = new Set(universityCiMatrix.map((lane) => lane.id));
   const lightTargets = new Set(lightTargetNames);
   const artifactProfiles = new Set(profileNames);
+  const operatorLaneIds = new Set(operatorLaneOrder);
+
+  if (operatorLaneIds.size !== operatorLaneOrder.length) {
+    errors.push("operatorLaneOrder contains duplicate lane ids");
+  }
+  if (operatorLaneOrder.length !== universityCiMatrix.length) {
+    errors.push("operatorLaneOrder length must match universityCiMatrix");
+  }
+  for (const laneId of operatorLaneOrder) {
+    if (!matrixLaneIds.has(laneId)) {
+      errors.push(`operatorLaneOrder references unknown lane: ${laneId}`);
+    }
+  }
 
   for (const lane of universityCiMatrix) {
+    if (!operatorLaneIds.has(lane.id)) {
+      errors.push(`operatorLaneOrder is missing lane: ${lane.id}`);
+    }
+    if (!lane.operatorGoal) {
+      errors.push(`Lane ${lane.id} is missing operatorGoal`);
+    }
+    if (!lane.operatorOutput) {
+      errors.push(`Lane ${lane.id} is missing operatorOutput`);
+    }
     if (!hasScript(scripts, lane.ciScript)) {
       errors.push(`Missing package.json script: ${lane.ciScript}`);
     }
@@ -280,6 +406,14 @@ const checkMatrix = () => {
     );
   }
 
+  const operatorGuide = readRepoFile("packages/use-cases/university/operator-guide.md");
+  const expectedOperatorGuide = renderOperatorGuide(operatorGuide);
+  if (operatorGuide !== expectedOperatorGuide) {
+    errors.push(
+      "packages/use-cases/university/operator-guide.md lane table is out of sync; run `npm run update:university-operator-guide`",
+    );
+  }
+
   for (const workflowNeedle of [
     "run_university",
     "university-validation:",
@@ -310,11 +444,25 @@ const checkMatrix = () => {
 const args = new Set(process.argv.slice(2));
 
 if (args.has("--help") || args.has("-h")) {
-  console.log("Usage: node packages/use-cases/university/scripts/ci-matrix.mjs [--json|--markdown|--check]");
+  console.log(
+    "Usage: node packages/use-cases/university/scripts/ci-matrix.mjs [--json|--markdown|--operator-lanes-markdown|--update-operator-guide|--check]",
+  );
 } else if (args.has("--json")) {
   console.log(JSON.stringify(matrixDocument, null, 2));
 } else if (args.has("--markdown")) {
   process.stdout.write(renderMarkdown());
+} else if (args.has("--operator-lanes-markdown")) {
+  process.stdout.write(renderOperatorLaneTable());
+} else if (args.has("--update-operator-guide")) {
+  const operatorGuidePath = path.join(
+    repoRoot,
+    "packages/use-cases/university/operator-guide.md",
+  );
+  writeFileSync(
+    operatorGuidePath,
+    renderOperatorGuide(readFileSync(operatorGuidePath, "utf8")),
+  );
+  console.log("[university-ci-matrix] Updated packages/use-cases/university/operator-guide.md.");
 } else if (args.has("--check")) {
   checkMatrix();
 } else {
