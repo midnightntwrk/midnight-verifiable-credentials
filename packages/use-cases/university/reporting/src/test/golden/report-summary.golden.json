@@ -60,7 +60,7 @@
       "issuer-batch-sweep-summary"
     ],
     "notes": [
-      "Use summary.md as the human handoff and summary.json as the tool handoff.",
+      "Use summary.md as the human handoff and summary.json as the machine handoff.",
       "Use artifact-manifest.json when a consumer needs to verify which source artifacts were summarized.",
       "The Serenity site and raw transcript/stress/batch artifacts remain source evidence, not the default handoff surface."
     ]

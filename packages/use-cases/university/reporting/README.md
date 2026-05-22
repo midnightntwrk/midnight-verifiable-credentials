@@ -26,6 +26,9 @@ Scope:
 - expose a checked handoff contract so `summary.md` is the primary human
   surface, `summary.json` is the primary machine surface, and
   `artifact-manifest.json` is the source-evidence index
+- emit `midnight-university-report-summary.v4`; v4 requires the `handoff`
+  contract, so regenerate cached v3 `summary.json` artifacts with
+  `./run.sh university-summary` before validating them with this package
 - highlight the slowest scenario and the dominant timing bottlenecks
 - fail fast when a required source artifact is missing; rerun the documented
   producer lane instead of publishing a partial report

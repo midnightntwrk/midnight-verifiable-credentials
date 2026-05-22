@@ -357,7 +357,7 @@ const buildUniversityReportHandoff = (
   ...UNIVERSITY_REPORT_HANDOFF_ARTIFACTS,
   sourceArtifactIds: manifest.entries.map((entry) => entry.artifactId),
   notes: [
-    "Use summary.md as the human handoff and summary.json as the tool handoff.",
+    "Use summary.md as the human handoff and summary.json as the machine handoff.",
     "Use artifact-manifest.json when a consumer needs to verify which source artifacts were summarized.",
     "The Serenity site and raw transcript/stress/batch artifacts remain source evidence, not the default handoff surface.",
   ],
@@ -887,6 +887,8 @@ const handoffSourceArtifactIdsMatchManifest = (
   handoff: UniversityReportHandoff,
   manifest: UniversityArtifactManifest,
 ): boolean => {
+  // The handoff keeps manifest order so humans can compare both sections
+  // without sorting or guessing which source artifact moved.
   const manifestArtifactIds = manifest.entries.map((entry) => entry.artifactId);
   return (
     handoff.sourceArtifactIds.length === manifestArtifactIds.length &&
@@ -998,7 +1000,8 @@ export const renderUniversityArtifactSummaryMarkdown = (
     "### Handoff Artifacts",
     `- human handoff: ${summary.handoff.primaryHuman.path}`,
     `- machine handoff: ${summary.handoff.primaryMachine.path}`,
-    `- source manifest: ${summary.handoff.sourceManifestJson.path}`,
+    `- source manifest json: ${summary.handoff.sourceManifestJson.path}`,
+    `- source manifest markdown: ${summary.handoff.sourceManifestMarkdown.path}`,
     `- source artifact ids: ${summary.handoff.sourceArtifactIds.join(", ")}`,
     "",
     "### Operating Notes",

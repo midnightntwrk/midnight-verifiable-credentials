@@ -18,6 +18,7 @@ import {
   renderUniversityArtifactSummaryMarkdown,
   UNIVERSITY_ARTIFACT_MANIFEST_SCHEMA_VERSION,
   UNIVERSITY_REPORT_ARTIFACT_MANIFEST_JSON_PATH,
+  UNIVERSITY_REPORT_ARTIFACT_MANIFEST_MARKDOWN_PATH,
   UNIVERSITY_REPORT_SUMMARY_JSON_PATH,
   UNIVERSITY_REPORT_SUMMARY_MARKDOWN_PATH,
   UNIVERSITY_REPORT_SUMMARY_SCHEMA_ID,
@@ -105,6 +106,11 @@ describe("university artifact report summarizer", () => {
       artifactId: "university-report-artifact-manifest-json",
       path: UNIVERSITY_REPORT_ARTIFACT_MANIFEST_JSON_PATH,
       format: "json",
+    });
+    expect(summary.handoff.sourceManifestMarkdown).toMatchObject({
+      artifactId: "university-report-artifact-manifest-markdown",
+      path: UNIVERSITY_REPORT_ARTIFACT_MANIFEST_MARKDOWN_PATH,
+      format: "markdown",
     });
     expect(summary.handoff.sourceArtifactIds).toEqual(
       summary.artifactManifest.entries.map((entry) => entry.artifactId),

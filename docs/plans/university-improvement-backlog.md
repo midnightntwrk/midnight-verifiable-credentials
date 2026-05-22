@@ -115,27 +115,25 @@ becomes part of a stackable PR.
      `./run.sh university-policy-catalog`, protocol tests
 
 10. Expansion for `age-gate-bdd-style-alignment`
-
-- either bring age-gate BDD notes/artifacts closer to university style or
-  state that age-gate remains the smaller smoke scenario
-- 2026-05-22 follow-up branch:
-  `codex/vc-age-gate-bdd-narrative-catalog`
-- keeps age-gate as the smaller smoke scenario, but moves its scenario
-  narration and summary DTO projection into a checked support catalog so it
-  follows the same report-note discipline as the university scenarios
-- validation: `./run.sh bdd`, `./run.sh bdd-negative`,
-  `./run.sh university-bdd`
+   - either bring age-gate BDD notes/artifacts closer to university style or
+     state that age-gate remains the smaller smoke scenario
+   - 2026-05-22 follow-up branch:
+     `codex/vc-age-gate-bdd-narrative-catalog`
+   - keeps age-gate as the smaller smoke scenario, but moves its scenario
+     narration and summary DTO projection into a checked support catalog so it
+     follows the same report-note discipline as the university scenarios
+   - validation: `./run.sh bdd`, `./run.sh bdd-negative`,
+     `./run.sh university-bdd`
 
 11. University-only follow-on: `university-commitment-backed-privacy`
-
-- make it explicit that the current diploma family is a direct-claim
-  prototype: the raw academic facts are present in `credential.claims`
-- clarify that current `reveal*` flags enforce verifier request policy and
-  signed presentation authorization, not credential-body secrecy
-- migrate stable identifiers and sensitive academic facts into
-  `claimCommitments` before treating the family as production privacy work
-- validation: university credential-family tests, university protocol tests,
-  `./run.sh university-bdd`
+   - make it explicit that the current diploma family is a direct-claim
+     prototype: the raw academic facts are present in `credential.claims`
+   - clarify that current `reveal*` flags enforce verifier request policy and
+     signed presentation authorization, not credential-body secrecy
+   - migrate stable identifiers and sensitive academic facts into
+     `claimCommitments` before treating the family as production privacy work
+   - validation: university credential-family tests, university protocol tests,
+     `./run.sh university-bdd`
 
 ## Human-Readability Rule
 
