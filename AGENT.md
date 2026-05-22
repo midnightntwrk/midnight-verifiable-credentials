@@ -251,6 +251,7 @@ University lanes:
 ./run.sh university-protocol-cohort
 ./run.sh university-protocol-stress
 ./run.sh university-summary
+./run.sh university-report-contract
 ```
 
 `--light` is honored by selected targets including the default full lane, `build`, `typecheck`, `test`, `hello-smoke`, `dummy-claims-lab`, and the protocol-oriented university summary/stress/cohort/export lanes. If unsupported, the runner warns that `--light` is ignored.
@@ -273,6 +274,7 @@ npm run check:holder-binding-terminology
 npm run check:university-ci-matrix
 npm run clean:artifacts
 npm run report:did-integration
+npm run report:university-contract
 ```
 
 Build cones:

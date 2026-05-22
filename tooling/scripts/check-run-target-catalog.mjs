@@ -177,6 +177,39 @@ assert.deepEqual(
   "DID integration JSON report should include repair-flow guidance",
 );
 
+const universityReportContractResult = runWithTimeout(
+  ["./run.sh", "university-report-contract"],
+  30000,
+);
+assert.equal(
+  universityReportContractResult.status,
+  0,
+  "university-report-contract target should exit successfully",
+);
+const universityReportContract = JSON.parse(
+  universityReportContractResult.stdout,
+);
+assert.equal(
+  universityReportContract.schemaId,
+  "midnight-university-report-summary",
+  "university-report-contract target should expose the report schema id",
+);
+assert.equal(
+  universityReportContract.schemaVersion,
+  "midnight-university-report-summary.v5",
+  "university-report-contract target should expose the current report schema version",
+);
+assert.deepEqual(
+  universityReportContract.requiredPrivacyProfileArrays,
+  [
+    "productionPublicClaimFields",
+    "productionCommitmentCandidates",
+    "productionCommitmentFields",
+    "predicateOnlyFields",
+  ],
+  "university-report-contract target should expose privacy-profile arrays",
+);
+
 const cleanArtifactsFixtureRoot = mkdtempSync(
   path.join(tmpdir(), "vc-run-target-catalog-clean-artifacts-"),
 );

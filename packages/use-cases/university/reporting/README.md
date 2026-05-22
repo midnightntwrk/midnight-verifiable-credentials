@@ -49,6 +49,9 @@ Build and test:
 - root lane:
   - `./run.sh university-summary`
   - `./run.sh university-summary --light`
+- root contract introspection:
+  - `./run.sh university-report-contract`
+  - `npm run report:university-contract`
 - `npm run lint -w ./packages/use-cases/university/reporting`
 - `npm run typecheck -w ./packages/use-cases/university/reporting`
 - `npm run test:ci -w ./packages/use-cases/university/reporting`

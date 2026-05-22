@@ -161,6 +161,13 @@ export const targets = [
     lightScript: "ci:university-summary:from-artifacts",
   },
   {
+    name: "university-report-contract",
+    description: "Print the versioned university report summary contract JSON.",
+    category: "university",
+    supportsLight: false,
+    script: "ci:university-report-contract",
+  },
+  {
     name: "hello-smoke",
     description: "Smallest DID -> VC -> verifier handoff lane.",
     category: "focused",
