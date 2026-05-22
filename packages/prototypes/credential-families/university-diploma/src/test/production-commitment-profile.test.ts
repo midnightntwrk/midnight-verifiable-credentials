@@ -331,6 +331,36 @@ describe("university diploma production commitment profile", () => {
     ).toThrow(/University-diploma production graduation year must be set/);
   });
 
+  it("rejects production credentials with unset routing text claims", () => {
+    const fixture = createUniversityDiplomaProductionCredentialFixture();
+
+    expect(() =>
+      pureCircuits.assertValidUniversityDiplomaProductionCredential(
+        {
+          ...fixture.credential,
+          claims: {
+            ...fixture.credential.claims,
+            universityName: new Uint8Array(32),
+          },
+        },
+        fixture.credentialProof,
+      ),
+    ).toThrow(/University-diploma production university name must be set/);
+
+    expect(() =>
+      pureCircuits.assertValidUniversityDiplomaProductionCredential(
+        {
+          ...fixture.credential,
+          claims: {
+            ...fixture.credential.claims,
+            awardName: new Uint8Array(32),
+          },
+        },
+        fixture.credentialProof,
+      ),
+    ).toThrow(/University-diploma production award name must be set/);
+  });
+
   it("rejects production credentials when commitments drift from the signed claim root", () => {
     const fixture = createUniversityDiplomaProductionCredentialFixture();
     const changedCommitments = {
@@ -350,5 +380,22 @@ describe("university diploma production commitment profile", () => {
         fixture.credentialProof,
       ),
     ).toThrow(/Credential claim root mismatch/);
+  });
+
+  it("rejects production credentials when the issuer proof signature is tampered", () => {
+    const fixture = createUniversityDiplomaProductionCredentialFixture();
+
+    expect(() =>
+      pureCircuits.assertValidUniversityDiplomaProductionCredential(
+        fixture.credential,
+        {
+          ...fixture.credentialProof,
+          signature: {
+            ...fixture.credentialProof.signature,
+            s: fixture.credentialProof.signature.s + 1n,
+          },
+        },
+      ),
+    ).toThrow();
   });
 });

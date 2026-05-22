@@ -96,6 +96,14 @@ export pure circuit assertValidUniversityDiplomaProductionPublicClaims(
   // routing fields. Fixed-width text routing claims have no family-local
   // semantic invariant beyond their commitment to the signed credential body.
   assert(
+    publicClaims.universityName != pad(32, ""),
+    "University-diploma production university name must be set"
+  );
+  assert(
+    publicClaims.awardName != pad(32, ""),
+    "University-diploma production award name must be set"
+  );
+  assert(
     publicClaims.graduationYear > 0,
     "University-diploma production graduation year must be set"
   );

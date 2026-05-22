@@ -632,6 +632,8 @@ export const createUniversityDiplomaProductionCredentialFixture = ({
   );
 
   const credential: UniversityDiplomaProductionCredential = {
+    // VC envelope version. The production schema version is carried below in
+    // schemaId/majorVersion so v2 can remain wire-compatible with VC v1.
     version: 1n,
     schema: {
       packageId: padText("midnight:vc:uni-diploma"),
