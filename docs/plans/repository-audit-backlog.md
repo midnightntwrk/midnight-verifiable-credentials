@@ -104,6 +104,10 @@ They add four review-driven backlog decisions:
   metadata, not trusted per-protocol-message booleans.
 - `schema-family-resolution-hints`: generic wallets need an adapter-level way to
   resolve credential-family handlers from `SchemaRef` identities.
+  - 2026-05-22: `codex/vc-schema-family-resolution-hints` adds bounded
+    resolver-hint helpers and a TypeScript-side reference family adapter
+    registry in the protocol orchestration package without expanding canonical
+    Compact `SchemaRef`.
 - `university-commitment-backed-privacy`: the current university family is a
   direct-claim prototype; `reveal*` flags enforce presentation policy but do not
   hide raw credential-body values.

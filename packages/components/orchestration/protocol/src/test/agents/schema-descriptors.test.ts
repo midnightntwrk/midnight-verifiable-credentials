@@ -10,12 +10,19 @@ import {
   BIRTH_COMPATIBILITY_FEATURE_HINTS,
   BIRTH_SCHEMA_CAPABILITIES,
   BIRTH_SCHEMA_DESCRIPTOR,
+  BIRTH_SCHEMA_FAMILY_ADAPTER,
   compatibilityFeatureHintsFromSchemaCapabilities,
   createClosedEcosystemResolutionHint,
   createClosedEcosystemSchemaDescriptor,
+  createResolvableSchemaDescriptor,
+  createSchemaFamilyResolutionHint,
+  formatSchemaRef,
+  REFERENCE_SCHEMA_FAMILY_ADAPTERS,
+  resolveSchemaFamilyAdapter,
   SECRET_BIRTH_COMPATIBILITY_FEATURE_HINTS,
   SECRET_BIRTH_SCHEMA_CAPABILITIES,
   SECRET_BIRTH_SCHEMA_DESCRIPTOR,
+  SECRET_BIRTH_SCHEMA_FAMILY_ADAPTER,
 } from "../../agents/schema-descriptors.js";
 import { padText } from "../../shared/crypto.js";
 
@@ -132,5 +139,109 @@ describe("protocol schema descriptors", () => {
     expect(() =>
       genericPureCircuits.assertValidSchemaDescriptor(descriptor),
     ).not.toThrow();
+  });
+
+  it("creates bounded resolver hints for open or semi-open adapters", () => {
+    const hint = createSchemaFamilyResolutionHint("registry:test-family");
+
+    expect(hint.hasResolverHint).toBe(true);
+    expect(hint.resolverHint).toEqual(padText("registry:test-family"));
+    expect(() =>
+      genericPureCircuits.assertValidSchemaFamilyResolutionHint(hint),
+    ).not.toThrow();
+  });
+
+  it("rejects no-hint sentinels when callers claim a resolver hint exists", () => {
+    expect(() =>
+      createSchemaFamilyResolutionHint(
+        genericPureCircuits.noSchemaFamilyResolverHint(),
+      ),
+    ).toThrow(/Schema resolver hint must be set/);
+  });
+
+  it("rejects resolver hints that do not fit the Compact byte bound", () => {
+    expect(() =>
+      createSchemaFamilyResolutionHint(
+        "registry:family-name-that-is-longer-than-thirty-two-bytes",
+      ),
+    ).toThrow(/expected at most 32 bytes/);
+    expect(() => createSchemaFamilyResolutionHint(new Uint8Array(31))).toThrow(
+      /expected exactly 32 bytes/,
+    );
+    expect(() => createSchemaFamilyResolutionHint(new Uint8Array(33))).toThrow(
+      /expected exactly 32 bytes/,
+    );
+  });
+
+  it("copies caller-supplied resolver hint bytes", () => {
+    const resolverHintBytes = padText("registry:test-family");
+    const hint = createSchemaFamilyResolutionHint(resolverHintBytes);
+
+    resolverHintBytes[0] = 0;
+
+    expect(hint.resolverHint).toEqual(padText("registry:test-family"));
+  });
+
+  it("creates resolvable descriptors without changing closed ecosystem defaults", () => {
+    const descriptor = createResolvableSchemaDescriptor(
+      BIRTH_SCHEMA_DESCRIPTOR.schema,
+      BIRTH_SCHEMA_CAPABILITIES,
+      "registry:birth-family",
+    );
+
+    expect(descriptor.familyResolutionHint.hasResolverHint).toBe(true);
+    expect(BIRTH_SCHEMA_DESCRIPTOR.familyResolutionHint).toEqual(
+      createClosedEcosystemResolutionHint(),
+    );
+    expect(() =>
+      genericPureCircuits.assertValidSchemaDescriptor(descriptor),
+    ).not.toThrow();
+  });
+
+  it("resolves reference schema family adapters by schema ref", () => {
+    expect(
+      resolveSchemaFamilyAdapter(
+        BIRTH_SCHEMA_DESCRIPTOR.schema,
+        REFERENCE_SCHEMA_FAMILY_ADAPTERS,
+      ),
+    ).toBe(BIRTH_SCHEMA_FAMILY_ADAPTER);
+    expect(
+      resolveSchemaFamilyAdapter(
+        SECRET_BIRTH_SCHEMA_DESCRIPTOR.schema,
+        REFERENCE_SCHEMA_FAMILY_ADAPTERS,
+      ),
+    ).toBe(SECRET_BIRTH_SCHEMA_FAMILY_ADAPTER);
+    expect(BIRTH_SCHEMA_FAMILY_ADAPTER.compatibilityFeatureHints).toEqual(
+      BIRTH_COMPATIBILITY_FEATURE_HINTS,
+    );
+    expect(BIRTH_SCHEMA_FAMILY_ADAPTER.descriptor).not.toEqual(
+      BIRTH_SCHEMA_DESCRIPTOR,
+    );
+    expect(
+      BIRTH_SCHEMA_FAMILY_ADAPTER.descriptor.familyResolutionHint,
+    ).toMatchObject({
+      hasResolverHint: true,
+      resolverHint: padText("registry:birth-family"),
+    });
+  });
+
+  it("reports unknown and duplicate schema-family adapter registrations", () => {
+    const unknownSchema = {
+      ...BIRTH_SCHEMA_DESCRIPTOR.schema,
+      schemaId: padText("unknown:v1"),
+    };
+
+    expect(formatSchemaRef(BIRTH_SCHEMA_DESCRIPTOR.schema)).toBe(
+      "midnight-did:vc:birth#birth-credential:v1@1.0",
+    );
+    expect(() =>
+      resolveSchemaFamilyAdapter(unknownSchema, REFERENCE_SCHEMA_FAMILY_ADAPTERS),
+    ).toThrow(/No schema family adapter registered/);
+    expect(() =>
+      resolveSchemaFamilyAdapter(BIRTH_SCHEMA_DESCRIPTOR.schema, [
+        BIRTH_SCHEMA_FAMILY_ADAPTER,
+        BIRTH_SCHEMA_FAMILY_ADAPTER,
+      ]),
+    ).toThrow(/Multiple schema family adapters registered/);
   });
 });

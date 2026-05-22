@@ -233,6 +233,10 @@ surface, resolver information is represented as bounded adapter metadata:
 Closed ecosystems may use the no-hint sentinel when wallets already know the
 family package set out of band. Open or semi-open ecosystems should provide a
 resolver hint or a registry mapping from `SchemaRef` to family adapter.
+The reference orchestration package demonstrates the adapter-side form with a
+bounded family descriptor registry: `REFERENCE_SCHEMA_FAMILY_ADAPTERS` maps
+known `SchemaRef` values to concrete family handlers without expanding the
+canonical Compact `SchemaRef`.
 
 ### Compact Claim-Type Surface
 Repository-aligned direct claim layouts are constrained by the current Compact
