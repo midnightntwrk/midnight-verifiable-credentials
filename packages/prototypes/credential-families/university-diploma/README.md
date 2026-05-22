@@ -50,7 +50,9 @@ Design notes:
   which mirrored fields a presentation authorizes for a verifier
 - the testing surface exports `UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY` for the
   current v1 direct-claim boundary and `UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE`
-  for the additive v2 target split
+  for compatibility with existing fixture consumers; new protocol/reporting
+  code should import the same metadata from the public `./privacy-profile`
+  package surface instead of importing fixture helpers
 - the Compact source also exports additive production-profile building blocks:
   `UniversityDiplomaProductionPublicClaims`,
   `UniversityDiplomaClaimCommitments`, per-field commitment helpers,

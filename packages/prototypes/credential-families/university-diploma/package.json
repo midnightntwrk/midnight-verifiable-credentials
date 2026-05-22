@@ -30,6 +30,12 @@
       "import": "./dist/testing.js",
       "default": "./dist/testing.js"
     },
+    "./privacy-profile": {
+      "types": "./dist/privacy-profile.d.ts",
+      "require": "./dist/privacy-profile.js",
+      "import": "./dist/privacy-profile.js",
+      "default": "./dist/privacy-profile.js"
+    },
     "./managed/university-diploma-credential/contract/index.js": {
       "types": "./dist/managed/university-diploma-credential/contract/index.d.ts",
       "import": "./dist/managed/university-diploma-credential/contract/index.js",
@@ -43,6 +49,9 @@
       ],
       "testing": [
         "dist/testing.d.ts"
+      ],
+      "privacy-profile": [
+        "dist/privacy-profile.d.ts"
       ],
       "managed/university-diploma-credential/contract/index.js": [
         "dist/managed/university-diploma-credential/contract/index.d.ts"

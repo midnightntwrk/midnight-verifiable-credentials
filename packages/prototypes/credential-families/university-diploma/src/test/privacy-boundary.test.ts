@@ -5,7 +5,6 @@ import type {
   UniversityDiplomaPresentation,
 } from "../managed/university-diploma-credential/contract/index.js";
 import {
-  createUniversityDiplomaFixture,
   UNIVERSITY_DIPLOMA_DIRECT_CLAIM_FIELDS,
   UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY,
   UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_CANDIDATES,
@@ -13,7 +12,8 @@ import {
   UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE,
   UNIVERSITY_DIPLOMA_PRODUCTION_PUBLIC_CLAIM_FIELDS,
   type UniversityDiplomaDirectClaimField,
-} from "../testing/credential-fixtures.js";
+} from "../privacy-profile.js";
+import { createUniversityDiplomaFixture } from "../testing/credential-fixtures.js";
 
 type MissingDirectClaimFields = Exclude<
   keyof UniversityDiplomaClaims,

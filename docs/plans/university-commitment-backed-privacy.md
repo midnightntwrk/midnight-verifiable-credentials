@@ -48,6 +48,12 @@ academic value and opening outside `UniversityDiplomaProductionDisclosures`
 while still proving that the value opens to the signed commitment and satisfies
 the verifier threshold.
 
+The production-profile field metadata is published through the
+`@midnight-ntwrk/midnight-did-credentials-university-diploma/privacy-profile`
+package surface. Protocol and reporting packages should consume that public
+surface when describing public, committed-private, and predicate-only fields
+instead of importing fixture-only testing helpers.
+
 ## Field Migration Target
 
 | Field | Current representation | Production target | Reason |

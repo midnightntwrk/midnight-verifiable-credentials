@@ -22,6 +22,11 @@ describe("university-diploma package surfaces", () => {
     expect(packageJson.exports).toHaveProperty("./testing");
   });
 
+  it("exports the production privacy-profile metadata surface", () => {
+    expect(packageJson.exports).toHaveProperty("./privacy-profile");
+    expect(packageJson.typesVersions?.["*"]).toHaveProperty("privacy-profile");
+  });
+
   it("exposes the managed contract surface for downstream type consumers", () => {
     expect(packageJson.exports).toHaveProperty(
       "./managed/university-diploma-credential/contract/index.js",
