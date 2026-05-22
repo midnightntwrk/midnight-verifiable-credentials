@@ -52,6 +52,8 @@ Build and test:
 - root contract introspection:
   - `./run.sh university-report-contract`
   - `npm run report:university-contract`
+  - both commands print the versioned contract JSON to stdout and do not update
+    `target/`
 - `npm run lint -w ./packages/use-cases/university/reporting`
 - `npm run typecheck -w ./packages/use-cases/university/reporting`
 - `npm run test:ci -w ./packages/use-cases/university/reporting`

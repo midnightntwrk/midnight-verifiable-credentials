@@ -258,6 +258,12 @@ Print the versioned university report summary contract:
 ./run.sh university-report-contract
 ```
 
+This target builds the reporting package quietly, prints the contract JSON to
+stdout, and does not write report artifacts. Use it when dashboards, CI, or
+handoff tooling need to compare `schemaId`, `schemaVersion`, handoff artifact
+ids, source artifact ids, transcript schema, and required privacy-profile
+sections without regenerating report artifacts.
+
 Run the smallest DID-aware handoff lane directly:
 
 ```bash

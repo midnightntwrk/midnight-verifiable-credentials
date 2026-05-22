@@ -207,7 +207,8 @@ Add the specific lane that matches your change:
 - transcript schema changes: `./run.sh university-protocol-export --light`
 - cohort/stress profile changes: `./run.sh university-protocol-cohort --light`
   and `./run.sh university-protocol-stress --light`
-- aggregate report changes: `./run.sh university-summary --light`
+- aggregate report changes: `./run.sh university-summary --light` and
+  `./run.sh university-report-contract`
 
 ### Rebuild all profile artifacts for a handoff
 
@@ -218,6 +219,7 @@ Add the specific lane that matches your change:
 ./run.sh university-protocol-stress
 ./run.sh university-batch-sweep
 ./run.sh university-summary
+./run.sh university-report-contract
 ```
 
 Use this when preparing a demo or when you want all report surfaces to reflect
