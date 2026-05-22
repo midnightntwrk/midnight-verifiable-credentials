@@ -45,7 +45,7 @@ const universityDataProfiles = {
 };
 
 const companyCountForProfile = (profile) =>
-  profile.companySet === "expanded" ? 6 : 3;
+  buildUniversityDataArtifactsForProfile(profile)["companies.json"].length;
 
 export const listUniversityDataProfiles = () =>
   Object.values(universityDataProfiles).map((profile) => ({
@@ -351,6 +351,7 @@ export const buildUniversityDataArtifactsForProfile = ({
     });
   }
 
+  const discountThreshold = mall.requestPolicy.minimumFinalGrade;
   const discountApplicants = students
     .slice(0, Math.min(discountApplicantCount, students.length))
     .map((student) => ({
@@ -358,12 +359,10 @@ export const buildUniversityDataArtifactsForProfile = ({
       fullName: student.fullName,
       finalGrade: student.diplomaClaimValues.finalGrade,
       expectedDiscountEligibility:
-        student.diplomaClaimValues.finalGrade >=
-        mall.requestPolicy.minimumFinalGrade,
+        student.diplomaClaimValues.finalGrade >= discountThreshold,
       explanation:
-        student.diplomaClaimValues.finalGrade >=
-        mall.requestPolicy.minimumFinalGrade
-          ? "grade is at least 91"
+        student.diplomaClaimValues.finalGrade >= discountThreshold
+          ? `grade is at least ${discountThreshold}`
           : "grade does not satisfy the mall threshold",
     }));
 
