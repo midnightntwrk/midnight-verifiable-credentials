@@ -192,6 +192,8 @@ const assertWorkflowUsesChangeClassifierCatalog = () => {
 };
 
 const assertWorkflowUsesLocalSetupActions = () => {
+  // Intentionally inspect only the primary workflow text. The composite
+  // actions themselves own the direct setup-node/cache/download-artifact uses.
   const requiredActionPaths = [
     ".github/actions/setup-node-npm/action.yml",
     ".github/actions/restore-compact-toolchain/action.yml",

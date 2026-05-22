@@ -4,8 +4,7 @@ description: Download, restore, activate, and verify the prepared Compact toolch
 inputs:
   compact-version:
     description: Compact compiler version to activate if the restored artifact is not already on PATH.
-    required: false
-    default: ""
+    required: true
 
 runs:
   using: composite
@@ -26,14 +25,16 @@ runs:
     - name: Activate Compact compiler
       shell: bash
       env:
+        COMPACT_VERSION_INPUT: ${{ inputs.compact-version }}
         GITHUB_TOKEN: ${{ github.token }}
       run: |
         if compact compile --version >/dev/null 2>&1; then
           exit 0
         fi
-        compact_version="${{ inputs.compact-version }}"
+        compact_version="$COMPACT_VERSION_INPUT"
         if [ -z "$compact_version" ]; then
-          compact_version="${COMPACT_COMPILER_VERSION:-latest}"
+          echo "compact-version input is required" >&2
+          exit 1
         fi
         if [ "$compact_version" = "latest" ]; then
           compact update
