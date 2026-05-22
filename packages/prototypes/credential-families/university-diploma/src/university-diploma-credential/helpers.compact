@@ -7,6 +7,12 @@ export pure circuit universityDiplomaCredentialBodyRoot(
   return credentialBodyRoot(credential);
 }
 
+export pure circuit universityDiplomaProductionCredentialBodyRoot(
+  credential: UniversityDiplomaProductionCredential
+): Bytes<32> {
+  return UniversityDiplomaProduction_credentialBodyRoot(credential);
+}
+
 export pure circuit universityDiplomaPresentationBodyRoot(
   presentation: UniversityDiplomaPresentation
 ): Bytes<32> {
@@ -32,6 +38,21 @@ export pure circuit assertValidUniversityDiplomaSchemaRef(schema: SchemaRef): []
     "University-diploma schema id mismatch"
   );
   assert(schema.majorVersion == 1, "University-diploma major version mismatch");
+}
+
+export pure circuit assertValidUniversityDiplomaProductionSchemaRef(schema: SchemaRef): [] {
+  assert(
+    schema.packageId == pad(32, "midnight:vc:uni-diploma"),
+    "University-diploma production package id mismatch"
+  );
+  assert(
+    schema.schemaId == pad(32, "uni-diploma:v2"),
+    "University-diploma production schema id mismatch"
+  );
+  assert(
+    schema.majorVersion == 2,
+    "University-diploma production major version mismatch"
+  );
 }
 
 export pure circuit assertValidUniversityDiplomaPresentationRequest(
@@ -68,6 +89,15 @@ export pure circuit assertValidUniversityDiplomaClaims(
   assert(claims.creditsEarned > 0, "University-diploma credits earned must be positive");
 }
 
+export pure circuit assertValidUniversityDiplomaProductionPublicClaims(
+  publicClaims: UniversityDiplomaProductionPublicClaims
+): [] {
+  assert(
+    publicClaims.graduationYear > 0,
+    "University-diploma production graduation year must be set"
+  );
+}
+
 // =====================
 // Credential and presentation validation
 // =====================
@@ -84,6 +114,24 @@ export pure circuit assertValidUniversityDiplomaCredential(
   assertValidExplicitHolderBinding(credential.holderBinding);
   assertValidNoStatusBinding(credential.statusBinding);
   assertValidCredentialProof(credential, proof);
+}
+
+export pure circuit assertValidUniversityDiplomaProductionCredential(
+  credential: UniversityDiplomaProductionCredential,
+  proof: Proof
+): [] {
+  assertValidUniversityDiplomaProductionSchemaRef(credential.schema);
+  assertValidUniversityDiplomaProductionPublicClaims(credential.claims);
+  UniversityDiplomaProduction_assertValidCredentialEnvelope(
+    credential,
+    universityDiplomaProductionClaimRoot(
+      credential.claims,
+      credential.claimCommitments
+    )
+  );
+  assertValidExplicitHolderBinding(credential.holderBinding);
+  assertValidNoStatusBinding(credential.statusBinding);
+  UniversityDiplomaProduction_assertValidCredentialProof(credential, proof);
 }
 
 export pure circuit assertValidUniversityDiplomaPresentation(

@@ -18,6 +18,7 @@ import {
   type UniversityDiplomaCredential,
   type UniversityDiplomaPresentation,
   type UniversityDiplomaPresentationRequest,
+  type UniversityDiplomaProductionCredential,
   type UniversityDiplomaProductionPublicClaims,
 } from "../managed/university-diploma-credential/contract/index.js";
 
@@ -199,6 +200,15 @@ export type UniversityDiplomaProductionClaimProfile = {
   readonly claimCommitments: UniversityDiplomaClaimCommitments;
   readonly openings: UniversityDiplomaProductionClaimOpenings;
   readonly claimRoot: Uint8Array;
+};
+
+export type UniversityDiplomaProductionCredentialFixture = {
+  readonly issuer: Signer;
+  readonly holder: Signer;
+  readonly sourceClaims: UniversityDiplomaClaims;
+  readonly profile: UniversityDiplomaProductionClaimProfile;
+  readonly credential: UniversityDiplomaProductionCredential;
+  readonly credentialProof: Proof;
 };
 
 /**
@@ -579,5 +589,84 @@ export const createUniversityDiplomaFixture = ({
     presentationRequest,
     presentation,
     presentationProof,
+  };
+};
+
+export const createUniversityDiplomaProductionCredentialFixture = ({
+  issuanceChallengeHash = sha256(
+    "challenge:university-diploma:production:issuance",
+  ),
+  claimOverrides = {},
+  openings = createUniversityDiplomaProductionClaimOpenings(),
+  issuerConfig,
+  holderConfig,
+  issuedAt = 40_000n,
+  credentialProofCreatedAt = 40_001n,
+}: {
+  readonly issuanceChallengeHash?: Uint8Array;
+  readonly claimOverrides?: Partial<UniversityDiplomaClaims>;
+  readonly openings?: UniversityDiplomaProductionClaimOpenings;
+  readonly issuerConfig?: UniversityDiplomaSignerOptions;
+  readonly holderConfig?: UniversityDiplomaSignerOptions;
+  readonly issuedAt?: bigint;
+  readonly credentialProofCreatedAt?: bigint;
+} = {}): UniversityDiplomaProductionCredentialFixture => {
+  const issuer = issuerConfig
+    ? createSigner(
+        issuerConfig.label,
+        issuerConfig.secretKey,
+        issuerConfig.methodId,
+      )
+    : createSigner("university-issuer", 141414141n);
+  const holder = holderConfig
+    ? createSigner(
+        holderConfig.label,
+        holderConfig.secretKey,
+        holderConfig.methodId,
+      )
+    : createSigner("university-student-holder", 282828282n);
+  const sourceClaims = createUniversityDiplomaClaims(claimOverrides);
+  const profile = createUniversityDiplomaProductionClaimProfile(
+    sourceClaims,
+    openings,
+  );
+
+  const credential: UniversityDiplomaProductionCredential = {
+    version: 1n,
+    schema: {
+      packageId: padText("midnight:vc:uni-diploma"),
+      schemaId: padText("uni-diploma:v2"),
+      majorVersion: 2n,
+      minorVersion: 0n,
+    },
+    issuerVerificationMethodRef: issuer.verificationMethodRef,
+    holderBinding: {
+      holderVerificationMethodRef: holder.verificationMethodRef,
+    },
+    statusBinding: {},
+    issuedAt,
+    hasExpiration: false,
+    expiresAt: 0n,
+    claims: profile.publicClaims,
+    claimCommitments: profile.claimCommitments,
+    claimRoot: profile.claimRoot,
+  };
+
+  const credentialProof = signProof({
+    bodyRoot:
+      pureCircuits.universityDiplomaProductionCredentialBodyRoot(credential),
+    context: "issuance",
+    signer: issuer,
+    createdAt: credentialProofCreatedAt,
+    challengeHash: issuanceChallengeHash,
+  });
+
+  return {
+    issuer,
+    holder,
+    sourceClaims,
+    profile,
+    credential,
+    credentialProof,
   };
 };

@@ -53,8 +53,9 @@ Design notes:
   for the additive v2 target split
 - the Compact source also exports additive production-profile building blocks:
   `UniversityDiplomaProductionPublicClaims`,
-  `UniversityDiplomaClaimCommitments`, per-field commitment helpers, and
-  `universityDiplomaProductionClaimRoot`
+  `UniversityDiplomaClaimCommitments`, per-field commitment helpers,
+  `universityDiplomaProductionClaimRoot`, and the additive
+  `UniversityDiplomaProductionCredential` v2 alias
 - the prototype assumes credit-bearing degree awards only; honorary or zero-credit diploma variants are intentionally out of scope for this first family cut
 
 Current and production-profile field categories:

@@ -420,6 +420,11 @@ forces a stop.
    - leaves the existing readable v1 BDD/protocol alias unchanged
    - follow-up slices add verifier-facing openings, predicates, and protocol DTO
      reporting over the committed profile
+   - 2026-05-22 delivery branch:
+     `codex/vc-university-production-credential-alias`
+   - adds the additive `UniversityDiplomaProductionCredential` v2 alias,
+     production fixture, proof validation helper, and drift tests proving
+     committed academic values are outside `credential.claims`
    - validation: university credential-family tests, university protocol tests,
      `./run.sh university-bdd`, `npm run docs:links`
 
