@@ -64,8 +64,16 @@ const companyCountForProfile = (profile) => {
   if (count == null) {
     throw new Error(`Unknown university company set ${profile.companySet}`);
   }
+  if (profile.discountApplicantCount > profile.studentCount) {
+    throw new Error(
+      `University data profile ${profile.profileId} declares ${profile.discountApplicantCount} discount applicants for ${profile.studentCount} students`,
+    );
+  }
   return count;
 };
+
+const isRecord = (value) =>
+  typeof value === "object" && value !== null && !Array.isArray(value);
 
 export const listUniversityDataProfiles = () =>
   Object.values(universityDataProfiles).map((profile) => ({
@@ -190,6 +198,12 @@ export const buildUniversityDataArtifactsForProfile = ({
   companySet = "standard",
   discountApplicantCount = 5,
 }) => {
+  if (discountApplicantCount > studentCount) {
+    throw new Error(
+      `Cannot generate ${discountApplicantCount} discount applicants for ${studentCount} students`,
+    );
+  }
+
   const northwindPolicyPreset = resolveUniversityRequestPolicyPreset(
     "job-application-grade-and-award",
   );
@@ -418,12 +432,22 @@ export const readUniversityDataArtifacts = (targetDir) =>
 export const checkUniversityDataArtifacts = (targetDir, artifacts) => {
   let mismatches = 0;
   const expectedFiles = [...generatedArtifactFilenames].sort();
+  const generatedFiles = Object.keys(artifacts)
+    .filter((filename) => filename.endsWith(".json"))
+    .sort();
   const committedFiles = readdirSync(targetDir)
     .filter(
       (filename) =>
         filename.endsWith(".json") && !staticCompanionJsonFiles.has(filename),
     )
     .sort();
+
+  if (expectedFiles.join("\n") !== generatedFiles.join("\n")) {
+    console.error(
+      "University data generator output file set does not match the lifecycle artifact catalog",
+    );
+    mismatches += 1;
+  }
 
   if (expectedFiles.join("\n") !== committedFiles.join("\n")) {
     console.error(
@@ -457,10 +481,34 @@ export const validateUniversityDataProfileArtifacts = (profile, artifacts) => {
   const issuanceBatches = artifacts["issuance-batches.json"];
   const discountApplicants = artifacts["discount-applicants.json"];
   const expectedCompanyCount = companyCountForProfile(profile);
-  const expectedDiscountApplicantCount = Math.min(
-    profile.discountApplicantCount,
-    profile.studentCount,
-  );
+  const expectedDiscountApplicantCount = profile.discountApplicantCount;
+  const mallRequestPolicy = isRecord(mall) ? mall.requestPolicy : undefined;
+
+  if (!isRecord(university)) {
+    addFinding("university.json must be an object");
+  }
+  if (!isRecord(mall)) {
+    addFinding("mall.json must be an object");
+  }
+  if (
+    !isRecord(mallRequestPolicy) ||
+    typeof mallRequestPolicy.minimumFinalGrade !== "number"
+  ) {
+    addFinding("mall.json requestPolicy.minimumFinalGrade must be a number");
+  }
+  for (const [filename, value] of [
+    ["companies.json", companies],
+    ["students.json", students],
+    ["issuance-batches.json", issuanceBatches],
+    ["discount-applicants.json", discountApplicants],
+  ]) {
+    if (!Array.isArray(value)) {
+      addFinding(`${filename} must be an array`);
+    }
+  }
+  if (findings.length > 0) {
+    return findings;
+  }
 
   if (university.batchSize !== profile.batchSize) {
     addFinding(
