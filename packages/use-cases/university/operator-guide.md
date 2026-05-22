@@ -56,7 +56,7 @@ The machine-readable lane catalog is generated at
 
 ```bash
 npm run --silent build:university-ci-matrix:markdown > packages/use-cases/university/ci-matrix.md
-npm run --silent build:university-operator-lanes:markdown
+npm run update:university-operator-guide
 npm run check:university-ci-matrix
 ```
 

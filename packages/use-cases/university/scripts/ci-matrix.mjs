@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
@@ -189,6 +189,8 @@ const hasScript = (scripts, scriptName) =>
 
 const markdownCell = (value) => String(value).replaceAll("|", "\\|");
 
+// Operators read the wiring check first, even though the JSON matrix keeps it
+// last so profile lanes stay grouped by execution flow.
 const operatorLaneOrder = [
   "ci-matrix-contract",
   "data-profiles",
@@ -247,6 +249,13 @@ const replaceGeneratedSection = (source, section, content) => {
   )}`;
 };
 
+const renderOperatorGuide = (source) =>
+  replaceGeneratedSection(
+    source,
+    generatedSection("university-operator-lanes"),
+    renderOperatorLaneTable(),
+  );
+
 const renderMarkdown = () => {
   const lines = [
     "# University CI Matrix",
@@ -301,8 +310,25 @@ const checkMatrix = () => {
   const workflow = readRepoFile(".github/workflows/ci.yml");
   const lightTargets = new Set(lightTargetNames);
   const artifactProfiles = new Set(profileNames);
+  const operatorLaneIds = new Set(operatorLaneOrder);
+
+  if (operatorLaneIds.size !== operatorLaneOrder.length) {
+    errors.push("operatorLaneOrder contains duplicate lane ids");
+  }
+  if (operatorLaneOrder.length !== universityCiMatrix.length) {
+    errors.push("operatorLaneOrder length must match universityCiMatrix");
+  }
 
   for (const lane of universityCiMatrix) {
+    if (!operatorLaneIds.has(lane.id)) {
+      errors.push(`operatorLaneOrder is missing lane: ${lane.id}`);
+    }
+    if (!lane.operatorGoal) {
+      errors.push(`Lane ${lane.id} is missing operatorGoal`);
+    }
+    if (!lane.operatorOutput) {
+      errors.push(`Lane ${lane.id} is missing operatorOutput`);
+    }
     if (!hasScript(scripts, lane.ciScript)) {
       errors.push(`Missing package.json script: ${lane.ciScript}`);
     }
@@ -363,14 +389,10 @@ const checkMatrix = () => {
   }
 
   const operatorGuide = readRepoFile("packages/use-cases/university/operator-guide.md");
-  const expectedOperatorGuide = replaceGeneratedSection(
-    operatorGuide,
-    generatedSection("university-operator-lanes"),
-    renderOperatorLaneTable(),
-  );
+  const expectedOperatorGuide = renderOperatorGuide(operatorGuide);
   if (operatorGuide !== expectedOperatorGuide) {
     errors.push(
-      "packages/use-cases/university/operator-guide.md lane table is out of sync; run `npm run --silent build:university-operator-lanes:markdown` and update the generated section",
+      "packages/use-cases/university/operator-guide.md lane table is out of sync; run `npm run update:university-operator-guide`",
     );
   }
 
@@ -405,7 +427,7 @@ const args = new Set(process.argv.slice(2));
 
 if (args.has("--help") || args.has("-h")) {
   console.log(
-    "Usage: node packages/use-cases/university/scripts/ci-matrix.mjs [--json|--markdown|--operator-lanes-markdown|--check]",
+    "Usage: node packages/use-cases/university/scripts/ci-matrix.mjs [--json|--markdown|--operator-lanes-markdown|--update-operator-guide|--check]",
   );
 } else if (args.has("--json")) {
   console.log(JSON.stringify(matrixDocument, null, 2));
@@ -413,6 +435,16 @@ if (args.has("--help") || args.has("-h")) {
   process.stdout.write(renderMarkdown());
 } else if (args.has("--operator-lanes-markdown")) {
   process.stdout.write(renderOperatorLaneTable());
+} else if (args.has("--update-operator-guide")) {
+  const operatorGuidePath = path.join(
+    repoRoot,
+    "packages/use-cases/university/operator-guide.md",
+  );
+  writeFileSync(
+    operatorGuidePath,
+    renderOperatorGuide(readFileSync(operatorGuidePath, "utf8")),
+  );
+  console.log("[university-ci-matrix] Updated packages/use-cases/university/operator-guide.md.");
 } else if (args.has("--check")) {
   checkMatrix();
 } else {
