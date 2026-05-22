@@ -224,7 +224,7 @@ describe("university artifact report summarizer", () => {
       validateUniversityArtifactSummaryContract(mutated as typeof summary),
     ).toEqual([
       "transcriptExport.schemaVersion must be midnight-university-protocol-export.v2",
-      "handoff.sourceArtifactIds must be readable-bdd-serenity, readable-protocol-transcript, stress-protocol-summary, issuer-batch-sweep-summary",
+      "handoff.sourceArtifactIds must equal ordered list [readable-bdd-serenity, readable-protocol-transcript, stress-protocol-summary, issuer-batch-sweep-summary]",
       "transcriptExport.privacyProfile.productionCommitmentFields must be non-empty",
     ]);
     const contractOnlyMutated = {

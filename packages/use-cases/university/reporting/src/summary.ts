@@ -47,6 +47,8 @@ export const UNIVERSITY_REPORT_SUMMARY_CONTRACT = {
     "productionCommitmentFields",
     "predicateOnlyFields",
   ],
+  // Printed contract documentation for humans and downstream dashboards; the
+  // validator enforces the concrete fields above.
   notes: [
     "summary.md is the primary human handoff.",
     "summary.json is the primary machine handoff.",
@@ -1057,8 +1059,13 @@ const arraysEqual = (
   left: readonly string[],
   right: readonly string[],
 ): boolean =>
+  // Report source artifacts are intentionally order-sensitive so humans can
+  // compare the handoff and manifest sections without sorting.
   left.length === right.length &&
   left.every((entry, index) => entry === right[index]);
+
+const formatOrderedList = (values: readonly string[]): string =>
+  `[${values.join(", ")}]`;
 
 // This is a lightweight runtime sanity check for the package's own emitted
 // artifact shape, not a recursive schema validator.
@@ -1168,7 +1175,7 @@ export const validateUniversityArtifactSummaryContract = (
     )
   ) {
     errors.push(
-      `handoff.sourceArtifactIds must be ${UNIVERSITY_REPORT_SUMMARY_CONTRACT.requiredSourceArtifactIds.join(", ")}`,
+      `handoff.sourceArtifactIds must equal ordered list ${formatOrderedList(UNIVERSITY_REPORT_SUMMARY_CONTRACT.requiredSourceArtifactIds)}`,
     );
   }
 
@@ -1182,10 +1189,14 @@ export const validateUniversityArtifactSummaryContract = (
     )
   ) {
     errors.push(
-      `artifactManifest.entries must be ${UNIVERSITY_REPORT_SUMMARY_CONTRACT.requiredSourceArtifactIds.join(", ")}`,
+      `artifactManifest.entries must equal ordered list ${formatOrderedList(UNIVERSITY_REPORT_SUMMARY_CONTRACT.requiredSourceArtifactIds)}`,
     );
   }
 
+  // Repeat privacy-profile array requirements here even when structural guards
+  // already reject most empty arrays. The exported validator is useful on its
+  // own for dashboard/read-model drift checks and should explain the contract
+  // without requiring callers to know the structural guard internals.
   for (const fieldName of UNIVERSITY_REPORT_SUMMARY_CONTRACT.requiredPrivacyProfileArrays) {
     const fieldValues = value.transcriptExport.privacyProfile[fieldName];
     if (fieldValues.length === 0) {
