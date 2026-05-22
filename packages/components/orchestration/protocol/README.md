@@ -83,11 +83,12 @@ provides:
 - canonical reference `SchemaRef` values for the explicit birth and
   blinded-secret birth families
 - schema capability descriptors for those families
-- descriptor-derived protocol feature hints for legacy message fields
+- descriptor-derived compatibility feature hints for legacy message fields
 - a no-hint family-resolution descriptor for the current closed ecosystem
 
-New adapters should validate incoming feature hints against a trusted schema
-descriptor or family registry before using them for routing or policy.
+New adapters should validate incoming compatibility feature hints against a
+trusted schema descriptor or family registry before using them for routing or
+policy.
 
 ## What This Package Is
 

@@ -18,7 +18,10 @@ import {
 } from "@midnight-ntwrk/midnight-did-credentials-birth-secret/managed/secret-birth-credential/contract/index.js";
 
 import { createEnvelope } from "../shared/envelope.js";
-import { assertBodyHasFields, assertMessageType } from "../shared/validation.js";
+import {
+  assertBodyHasFields,
+  assertMessageType,
+} from "../shared/validation.js";
 import type { MessageBus } from "../transport/message-bus.js";
 import type {
   ProtocolMessage,
@@ -40,7 +43,7 @@ import {
   type ProtocolRandomnessSource,
   unsafeReferenceDeterministicRandomnessSource,
 } from "./randomness.js";
-import { SECRET_BIRTH_PROTOCOL_FEATURES } from "./schema-descriptors.js";
+import { SECRET_BIRTH_COMPATIBILITY_FEATURE_HINTS } from "./schema-descriptors.js";
 
 const DEFAULT_PROTOCOL_CURRENT_DAY = 0n;
 const DEFAULT_ISSUANCE_REQUEST_EXPIRY_DAY = 1_000_000n;
@@ -247,7 +250,9 @@ export class SecretHolderAgent {
     };
 
     // Store request metadata keyed by request message ID for later validation.
-    const requestMessageId = Buffer.from(request.envelope.messageId).toString("hex");
+    const requestMessageId = Buffer.from(request.envelope.messageId).toString(
+      "hex",
+    );
     this.pendingIssuanceRequests.set(requestMessageId, {
       request,
       holderBindingBlindingFactor,
@@ -270,7 +275,9 @@ export class SecretHolderAgent {
     assertBodyHasFields(result, ["envelope", "schema", "body"]);
     const issuanceResult = result.body as SecretBirthCredentialIssuanceResult;
     pureCircuits.assertValidSecretBirthCredentialIssuanceResult(issuanceResult);
-    const respondsToId = Buffer.from(result.envelope.respondsToMessageId).toString("hex");
+    const respondsToId = Buffer.from(
+      result.envelope.respondsToMessageId,
+    ).toString("hex");
     const pendingIssuance = this.pendingIssuanceRequests.get(respondsToId);
     if (!pendingIssuance) {
       if (
@@ -286,7 +293,7 @@ export class SecretHolderAgent {
       }
       throw new Error(
         "No pending issuance request found for this credential result. " +
-        "Ensure receiveOfferAndSendRequest was called first.",
+          "Ensure receiveOfferAndSendRequest was called first.",
       );
     }
     pureCircuits.assertSecretBirthCredentialIssuanceResultMatchesRequest(
@@ -299,8 +306,7 @@ export class SecretHolderAgent {
     this.storedCredentials.set(String(credentialIndex), {
       credential: issuanceResult.body.credential,
       credentialProof: issuanceResult.body.credentialProof,
-      holderBindingBlindingFactor:
-        pendingIssuance.holderBindingBlindingFactor,
+      holderBindingBlindingFactor: pendingIssuance.holderBindingBlindingFactor,
     });
     this.credentialCountCache += 1;
     this.metadata.set(
@@ -335,7 +341,7 @@ export class SecretHolderAgent {
       }
       throw new Error(
         "No pending issuance request found for this credential rejection. " +
-        "Ensure receiveOfferAndSendRequest was called first.",
+          "Ensure receiveOfferAndSendRequest was called first.",
       );
     }
     this.pendingIssuanceRequests.delete(respondsToId);
@@ -456,7 +462,12 @@ export class SecretHolderAgent {
     options: SecretPresentationSubmissionOptions = {},
   ): void {
     assertMessageType(requestMessage, "presentation:request");
-    assertBodyHasFields(requestMessage, ["envelope", "schema", "verifierChallengeHash", "body"]);
+    assertBodyHasFields(requestMessage, [
+      "envelope",
+      "schema",
+      "verifierChallengeHash",
+      "body",
+    ]);
     const request =
       requestMessage.body as SecretBirthCredentialVerificationRequest;
     const nowMs = resolveCurrentTimeMs(options.currentTimeMs);
@@ -542,9 +553,9 @@ export class SecretHolderAgent {
       envelope: submission.envelope,
       body: submission,
     });
-    const submissionMessageId = Buffer.from(submission.envelope.messageId).toString(
-      "hex",
-    );
+    const submissionMessageId = Buffer.from(
+      submission.envelope.messageId,
+    ).toString("hex");
     this.pendingPresentationSubmissions.set(submissionMessageId, submission);
   }
 
@@ -575,7 +586,7 @@ export class SecretHolderAgent {
       }
       throw new Error(
         "No pending presentation submission found for this rejection outcome. " +
-        "Ensure receiveRequestAndSendPresentation was called first.",
+          "Ensure receiveRequestAndSendPresentation was called first.",
       );
     }
     this.pendingPresentationSubmissions.delete(respondsToId);
@@ -616,7 +627,7 @@ export class SecretHolderAgent {
       if (!pendingSubmission) {
         throw new Error(
           "No pending presentation submission found for this approved outcome. " +
-          "Ensure receiveRequestAndSendPresentation was called first.",
+            "Ensure receiveRequestAndSendPresentation was called first.",
         );
       }
       this.pendingPresentationSubmissions.delete(respondsToId);
@@ -778,7 +789,7 @@ export class SecretHolderAgent {
       schema: credential.schema,
       issuerVerificationMethodRef: credential.issuerVerificationMethodRef,
       holderBindingProfile: HolderBindingProfile.blindedSecretHolder,
-      features: SECRET_BIRTH_PROTOCOL_FEATURES,
+      features: SECRET_BIRTH_COMPATIBILITY_FEATURE_HINTS,
       verifierChallengeHash,
       body: {
         requireSubjectIdCommitmentDisclosure: false,

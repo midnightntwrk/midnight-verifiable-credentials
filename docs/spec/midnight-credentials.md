@@ -7,6 +7,7 @@ Status: Normative working draft
 Repository scope: `midnight-verifiable-credentials`
 
 ## Abstract
+
 This document defines the current normative working draft for Midnight-native
 Verifiable Credentials (VCs) and Verifiable Presentations (VPs).
 
@@ -28,6 +29,7 @@ This draft does not define a final standards-track publication process or a
 final interoperable web wire format.
 
 ## Status And Authority
+
 This document is normative for the current repository draft.
 
 Implementations in this repository should treat this document as the primary
@@ -59,6 +61,7 @@ Those normative companion documents are authoritative within their narrower scop
 - `hidden-holder-interoperability.md` owns the current adapter and transport obligations for hidden-holder flows
 
 This document takes precedence only where a broader repository-level requirement in this document overlaps with a narrower companion rule.
+
 - informative documents:
   - [`../guides/midnight-credentials-for-dummies.md`](../guides/midnight-credentials-for-dummies.md)
   - [`../guides/package-selection.md`](../guides/package-selection.md)
@@ -74,6 +77,7 @@ If an informative or plan document conflicts with this document, this document
 wins.
 
 ## Change Log
+
 ### `0.1-draft`
 
 - establishes the Compact-first canonical model for Midnight credentials
@@ -85,6 +89,7 @@ wins.
   implementations
 
 ## Scope
+
 This draft applies to the VC/VP model implemented in the
 `midnight-verifiable-credentials` repository.
 
@@ -111,11 +116,13 @@ It does not attempt to define:
 - a final interoperable rejection wire format for every protocol adapter
 
 ## Normative Language
+
 The key words `MUST`, `MUST NOT`, `SHOULD`, `SHOULD NOT`, and `MAY` in this
 document are to be interpreted as requirement-level statements for
 repository-aligned implementations.
 
 ## Objectives
+
 An implementation aligned to this draft should provide a credential model that:
 
 - is directly consumable by Midnight Compact contracts
@@ -132,27 +139,29 @@ An implementation aligned to this draft should provide a credential model that:
 
 ## Terminology
 
-| Term | Meaning in this specification |
-| --- | --- |
-| `VC` | A typed Midnight credential envelope with schema-defined claims and an issuer proof |
-| `VP` | A typed Midnight presentation envelope with bounded disclosures and holder-side presentation semantics |
-| `SchemaRef` | A Compact-native schema identifier containing package, schema, and version information |
-| `SchemaCapabilities` | Bounded credential-family capability metadata such as selective disclosure and predicate support |
-| `SchemaDescriptor` | Adapter/family metadata that pairs a `SchemaRef` with capabilities and an optional bounded resolver hint |
-| `VerificationMethodRef` | A Compact-native DID verification method reference shaped for on-chain Midnight DID verification |
-| `Holder binding` | The mechanism that binds a credential or presentation to a specific holder or holder-controlled secret |
-| `Body root` | The Compact-computed canonical digest over the credential or presentation body |
-| `Credential family` | A concrete schema package that specializes the generic VC/VP model |
-| `Direct claim` | A raw typed claim value carried in the signed credential body |
-| `Claim commitment` | A commitment digest carried in the signed credential body instead of the raw claim value |
-| `Predicate-only claim` | A committed claim value used only through a private witness and family-defined predicate |
-| `Profile` | A named holder-binding or verification model with explicit trust boundaries |
-| `Transport adapter` | A package or protocol layer that carries Compact values over JSON/OpenID/network envelopes without changing canonical VC/VP semantics |
-| `Protocol success result` | A protocol message that confirms a request succeeded and carries the success artifact for that stage |
-| `Protocol rejection result` | A protocol message or outcome that confirms a request failed and carries failure semantics instead of a success artifact |
+| Term                        | Meaning in this specification                                                                                                         |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `VC`                        | A typed Midnight credential envelope with schema-defined claims and an issuer proof                                                   |
+| `VP`                        | A typed Midnight presentation envelope with bounded disclosures and holder-side presentation semantics                                |
+| `SchemaRef`                 | A Compact-native schema identifier containing package, schema, and version information                                                |
+| `SchemaCapabilities`        | Bounded credential-family capability metadata such as selective disclosure and predicate support                                      |
+| `SchemaDescriptor`          | Adapter/family metadata that pairs a `SchemaRef` with capabilities and an optional bounded resolver hint                              |
+| `VerificationMethodRef`     | A Compact-native DID verification method reference shaped for on-chain Midnight DID verification                                      |
+| `Holder binding`            | The mechanism that binds a credential or presentation to a specific holder or holder-controlled secret                                |
+| `Body root`                 | The Compact-computed canonical digest over the credential or presentation body                                                        |
+| `Credential family`         | A concrete schema package that specializes the generic VC/VP model                                                                    |
+| `Direct claim`              | A raw typed claim value carried in the signed credential body                                                                         |
+| `Claim commitment`          | A commitment digest carried in the signed credential body instead of the raw claim value                                              |
+| `Predicate-only claim`      | A committed claim value used only through a private witness and family-defined predicate                                              |
+| `Profile`                   | A named holder-binding or verification model with explicit trust boundaries                                                           |
+| `Transport adapter`         | A package or protocol layer that carries Compact values over JSON/OpenID/network envelopes without changing canonical VC/VP semantics |
+| `Protocol success result`   | A protocol message that confirms a request succeeded and carries the success artifact for that stage                                  |
+| `Protocol rejection result` | A protocol message or outcome that confirms a request failed and carries failure semantics instead of a success artifact              |
 
 ## Canonical Model
+
 ### Canonical Representation
+
 The canonical representation of Midnight VC/VP data is the Compact value and
 its associated Compact circuits.
 
@@ -165,6 +174,7 @@ Implementations:
 - `MUST` recompute Compact-native roots during verification
 
 ### Generic Model Elements
+
 The generic VC layer defines repository-wide concepts including:
 
 - schema references
@@ -184,6 +194,7 @@ Concrete credential-family packages specialize those concepts with:
 - schema-specific validation circuits
 
 ### Credential Families
+
 A credential family implementation:
 
 - `MUST` define a deterministic claim layout
@@ -216,7 +227,8 @@ individual protocol messages. Repository-aligned families and adapters:
   unless they are validated against a schema descriptor or an equivalent trusted
   family registry
 - `MAY` carry protocol feature fields as compatibility transport hints while
-  existing adapters migrate
+  existing adapters migrate, but code should name those values as compatibility
+  hints rather than authoritative capabilities
 
 Generic wallets and holders need a way to find the credential-family adapter
 for a `SchemaRef`. Because Compact does not have an unbounded URI/string
@@ -234,6 +246,7 @@ family package set out of band. Open or semi-open ecosystems should provide a
 resolver hint or a registry mapping from `SchemaRef` to family adapter.
 
 ### Compact Claim-Type Surface
+
 Repository-aligned direct claim layouts are constrained by the current Compact
 compiler surface.
 
@@ -294,6 +307,7 @@ passport as the preferred model, rather than threshold-specific derived
 credentials such as a dedicated "age over 18" credential.
 
 ## Holder-Binding Model
+
 The generic VC/VP model is parameterized by holder-binding profile.
 
 A repository-aligned implementation:
@@ -324,7 +338,9 @@ normative relationship:
 - the generic VC/VP core defines envelope, proof, and serialization semantics
 
 ## Proof And Verification Model
+
 ### General Rule
+
 Verification `MUST` be performed against the canonical Compact model.
 
 An implementation `MUST`:
@@ -336,6 +352,7 @@ An implementation `MUST`:
   chosen profile semantics
 
 ### Issuer Proofs
+
 Issuer proofs bind the credential body to issuer-controlled verification
 material.
 
@@ -347,6 +364,7 @@ A repository-aligned implementation `MUST`:
   root
 
 ### Presentation Verification
+
 Presentation verification `MUST` preserve both:
 
 - schema/family semantics
@@ -361,6 +379,7 @@ A verifier implementation `MUST`:
 - validate any request-satisfaction rules claimed by the presentation flow
 
 ### Request Satisfaction
+
 Where a package supports verifier-defined request models, the verifier `MUST`
 validate request satisfaction against the schema-specific request semantics of
 that credential family.
@@ -369,6 +388,7 @@ A request implementation `MUST NOT` be treated as a generic untyped filter over
 arbitrary claims.
 
 ## Protocol Outcome Semantics
+
 Where a package defines an offer / request / result protocol, that package
 `MUST` distinguish between:
 
@@ -392,6 +412,7 @@ Repository-aligned implementations `MUST NOT` collapse success and rejection
 semantics into one ambiguous result shape.
 
 ### Current repository stance
+
 The current reference protocol layer does not yet define a final interoperable
 rejection message family for every protocol.
 
@@ -419,7 +440,9 @@ That is acceptable for a reference implementation, but it `MUST NOT` be
 described as a final transport/interoperability contract.
 
 ## Canonical Serialization
+
 ### Core Rule
+
 The canonical VC/VP representation is the Compact value, not JSON.
 
 Implementations:
@@ -431,6 +454,7 @@ Implementations:
 - `MAY` use JSON as a transport envelope around encoded Compact payloads
 
 ### Compact Runtime Boundary
+
 Repository implementations currently bridge Compact and TypeScript through:
 
 - generated TypeScript types
@@ -447,6 +471,7 @@ The preferred direction is:
 5. decode and reconstruct the typed Compact value before verification
 
 ### JSON And OpenID Envelopes
+
 JSON, OpenID, or application-specific payloads are informative outer layers.
 They `MUST NOT` redefine:
 
@@ -462,6 +487,7 @@ A transport adapter `MUST` be explicit about:
 - which Compact type is expected at decode time
 
 ### Unsafe Plain JSON Patterns
+
 Plain JSON is unsafe as a canonical representation because it can corrupt or
 weaken Compact-native values such as:
 
@@ -478,6 +504,7 @@ Therefore:
 - JSON `MUST NOT` replace the canonical Compact serialization boundary
 
 ## Transport Adapter Requirements
+
 A transport or domain adapter implementation:
 
 - `MUST` treat Compact payloads as canonical
@@ -494,12 +521,15 @@ Current repository transport and orchestration surfaces are described in:
 - [`./conformance.md`](./conformance.md)
 
 ## Security And Privacy Considerations
+
 ### Source-Fact Credentials
+
 Credential families should prefer issuer-attested source facts over derived
 threshold credentials where possible. This improves reuse and supports more
 privacy-preserving predicate proof reuse.
 
 ### Holder-Binding Boundaries
+
 Different holder-binding profiles make different privacy and trust tradeoffs.
 Implementations `MUST` document which profile they use and which guarantees are
 explicitly not provided.
@@ -516,6 +546,7 @@ Examples:
   but it is still not a final blind-issuance transport standard
 
 ### Hidden-Holder Production Claims
+
 Repository-aligned implementations `MUST` distinguish between:
 
 - a hidden-holder proof profile
@@ -563,6 +594,7 @@ issuance and presentation flows with explicit rejection outcomes and documented
 deferred areas.
 
 ### Mixed Maturity Repository
+
 This repository contains a mix of:
 
 - normative draft material
@@ -574,6 +606,7 @@ Implementations `MUST NOT` overstate repository-wide maturity. Maturity and
 conformance claims should be package-specific and profile-specific.
 
 ## Conformance
+
 Conformance categories and non-conformance examples are defined in:
 
 - [`./conformance.md`](./conformance.md)
@@ -587,6 +620,7 @@ At minimum, a repository-aligned implementation should disclose:
 - which prototype or deferred security/privacy limitations remain in scope
 
 ## Repository Evidence
+
 This repository includes implementation and test evidence for the current draft,
 but implementation coverage is not itself the specification.
 

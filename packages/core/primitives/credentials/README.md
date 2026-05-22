@@ -118,8 +118,8 @@ Deployability rule:
 - `credentials` provides Compact library/build roots
 - it is not the final business-contract surface an application should deploy
 - deploy Layer 3 contracts that compose these roots through a family or demo/business package
-They are alternative public surfaces, not internal layers underneath
-`composable.compact`, because Compact does not deduplicate repeated includes.
+  They are alternative public surfaces, not internal layers underneath
+  `composable.compact`, because Compact does not deduplicate repeated includes.
 
 ```mermaid
 graph TD
@@ -159,10 +159,10 @@ The reusable sidecar metadata is:
   sentinel from `noSchemaFamilyResolverHint()`
 - `SchemaDescriptor`: `SchemaRef` plus capabilities plus resolver hint
 
-Protocol `features` fields are compatibility hints, not schema authority. A
-wallet or verifier that receives protocol feature booleans should compare them
-against a trusted schema descriptor or family registry before treating them as
-capabilities.
+Protocol `features` fields are compatibility feature hints, not schema
+authority. A wallet or verifier that receives protocol feature booleans should
+compare them against a trusted schema descriptor or family registry before
+treating them as capabilities.
 
 `protocolFeaturesAsSchemaCapabilities(...)` exists as a migration drift guard:
 it is intentionally a name-only conversion today so protocol hint fields and
@@ -249,7 +249,7 @@ TypeScript compatibility note:
   - `OffchainMidnightHolderBinding`
 - the top-level TypeScript package also exports:
   - `OffchainDIDHolderBinding`
-  as the preferred public-facing alias for integrators
+    as the preferred public-facing alias for integrators
 - hidden holder-secret binding:
   - `secretHolderBindingCommitment(...)`
   - `secretHolderBindingChallengeResponse(...)`

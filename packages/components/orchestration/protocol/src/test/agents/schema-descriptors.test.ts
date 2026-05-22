@@ -6,14 +6,14 @@ import {
 import { describe, expect, it } from "vitest";
 
 import {
-  assertProtocolFeaturesMatchSchemaDescriptor,
-  BIRTH_PROTOCOL_FEATURES,
+  assertCompatibilityFeatureHintsMatchSchemaDescriptor,
+  BIRTH_COMPATIBILITY_FEATURE_HINTS,
   BIRTH_SCHEMA_CAPABILITIES,
   BIRTH_SCHEMA_DESCRIPTOR,
   createClosedEcosystemResolutionHint,
   createClosedEcosystemSchemaDescriptor,
-  protocolFeaturesFromSchemaCapabilities,
-  SECRET_BIRTH_PROTOCOL_FEATURES,
+  compatibilityFeatureHintsFromSchemaCapabilities,
+  SECRET_BIRTH_COMPATIBILITY_FEATURE_HINTS,
   SECRET_BIRTH_SCHEMA_CAPABILITIES,
   SECRET_BIRTH_SCHEMA_DESCRIPTOR,
 } from "../../agents/schema-descriptors.js";
@@ -41,31 +41,35 @@ describe("protocol schema descriptors", () => {
   });
 
   it("derives protocol compatibility features from schema capabilities", () => {
-    expect(BIRTH_PROTOCOL_FEATURES).toEqual(
-      protocolFeaturesFromSchemaCapabilities(BIRTH_SCHEMA_CAPABILITIES),
+    expect(BIRTH_COMPATIBILITY_FEATURE_HINTS).toEqual(
+      compatibilityFeatureHintsFromSchemaCapabilities(
+        BIRTH_SCHEMA_CAPABILITIES,
+      ),
     );
-    expect(SECRET_BIRTH_PROTOCOL_FEATURES).toEqual(
-      protocolFeaturesFromSchemaCapabilities(SECRET_BIRTH_SCHEMA_CAPABILITIES),
+    expect(SECRET_BIRTH_COMPATIBILITY_FEATURE_HINTS).toEqual(
+      compatibilityFeatureHintsFromSchemaCapabilities(
+        SECRET_BIRTH_SCHEMA_CAPABILITIES,
+      ),
     );
   });
 
   it("accepts protocol feature hints that match trusted schema descriptors", () => {
     expect(() =>
-      assertProtocolFeaturesMatchSchemaDescriptor(
-        BIRTH_PROTOCOL_FEATURES,
+      assertCompatibilityFeatureHintsMatchSchemaDescriptor(
+        BIRTH_COMPATIBILITY_FEATURE_HINTS,
         BIRTH_SCHEMA_DESCRIPTOR,
       ),
     ).not.toThrow();
     expect(() =>
-      assertProtocolFeaturesMatchSchemaDescriptor(
-        SECRET_BIRTH_PROTOCOL_FEATURES,
+      assertCompatibilityFeatureHintsMatchSchemaDescriptor(
+        SECRET_BIRTH_COMPATIBILITY_FEATURE_HINTS,
         SECRET_BIRTH_SCHEMA_DESCRIPTOR,
       ),
     ).not.toThrow();
   });
 
   it("keeps protocol feature derivation explicit when generated fields change", () => {
-    expect(Object.keys(BIRTH_PROTOCOL_FEATURES).sort()).toEqual(
+    expect(Object.keys(BIRTH_COMPATIBILITY_FEATURE_HINTS).sort()).toEqual(
       EXPECTED_PROTOCOL_FEATURE_KEYS,
     );
   });
@@ -73,10 +77,10 @@ describe("protocol schema descriptors", () => {
   it("rejects protocol feature hints that drift from schema descriptors", () => {
     for (const featureKey of EXPECTED_PROTOCOL_FEATURE_KEYS) {
       expect(() =>
-        assertProtocolFeaturesMatchSchemaDescriptor(
+        assertCompatibilityFeatureHintsMatchSchemaDescriptor(
           {
-            ...BIRTH_PROTOCOL_FEATURES,
-            [featureKey]: !BIRTH_PROTOCOL_FEATURES[featureKey],
+            ...BIRTH_COMPATIBILITY_FEATURE_HINTS,
+            [featureKey]: !BIRTH_COMPATIBILITY_FEATURE_HINTS[featureKey],
           },
           BIRTH_SCHEMA_DESCRIPTOR,
         ),
@@ -86,9 +90,9 @@ describe("protocol schema descriptors", () => {
 
   it("rejects both disabled and enabled feature drift", () => {
     expect(() =>
-      assertProtocolFeaturesMatchSchemaDescriptor(
+      assertCompatibilityFeatureHintsMatchSchemaDescriptor(
         {
-          ...BIRTH_PROTOCOL_FEATURES,
+          ...BIRTH_COMPATIBILITY_FEATURE_HINTS,
           supportsVerifierScopedPseudonym: true,
         },
         BIRTH_SCHEMA_DESCRIPTOR,
@@ -100,12 +104,12 @@ describe("protocol schema descriptors", () => {
     expect(BIRTH_SCHEMA_DESCRIPTOR.familyResolutionHint).toEqual(
       createClosedEcosystemResolutionHint(),
     );
-    expect(
-      BIRTH_SCHEMA_DESCRIPTOR.familyResolutionHint.resolverHint,
-    ).toEqual(genericPureCircuits.noSchemaFamilyResolverHint());
-    expect(
-      BIRTH_SCHEMA_DESCRIPTOR.familyResolutionHint.hasResolverHint,
-    ).toBe(false);
+    expect(BIRTH_SCHEMA_DESCRIPTOR.familyResolutionHint.resolverHint).toEqual(
+      genericPureCircuits.noSchemaFamilyResolverHint(),
+    );
+    expect(BIRTH_SCHEMA_DESCRIPTOR.familyResolutionHint.hasResolverHint).toBe(
+      false,
+    );
   });
 
   it("creates validated closed-ecosystem descriptors for local adapters", () => {

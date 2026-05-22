@@ -1,6 +1,12 @@
 #!/usr/bin/env node
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+} from "node:fs";
 import path from "node:path";
 
 const repoRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
@@ -19,8 +25,14 @@ const cleanupStaleScaffoldChecks = () => {
   }
 
   for (const entry of readdirSync(artifactRoot, { withFileTypes: true })) {
-    if (entry.isDirectory() && entry.name.startsWith("scaffold-surface-check-")) {
-      rmSync(path.join(artifactRoot, entry.name), { force: true, recursive: true });
+    if (
+      entry.isDirectory() &&
+      entry.name.startsWith("scaffold-surface-check-")
+    ) {
+      rmSync(path.join(artifactRoot, entry.name), {
+        force: true,
+        recursive: true,
+      });
     }
   }
 };
@@ -29,7 +41,20 @@ const requireIncludes = (relativePath, requiredFragments) => {
   const source = readRepoFile(relativePath);
   for (const fragment of requiredFragments) {
     if (!source.includes(fragment)) {
-      errors.push(`${relativePath} is missing required surface-discipline text: ${fragment}`);
+      errors.push(
+        `${relativePath} is missing required surface-discipline text: ${fragment}`,
+      );
+    }
+  }
+};
+
+const requireNotIncludes = (relativePath, forbiddenFragments) => {
+  const source = readRepoFile(relativePath);
+  for (const fragment of forbiddenFragments) {
+    if (source.includes(fragment)) {
+      errors.push(
+        `${relativePath} contains stale surface-discipline text: ${fragment}`,
+      );
     }
   }
 };
@@ -37,7 +62,12 @@ const requireIncludes = (relativePath, requiredFragments) => {
 // These fragments are intentionally exact. This guard is a release-discipline
 // tripwire: when contributors reword the guide/template/changelog, they should
 // consciously update the guard with the new canonical wording.
-const requireGeneratedScaffoldIncludes = ({ mode, slug, files, holder = "explicit" }) => {
+const requireGeneratedScaffoldIncludes = ({
+  mode,
+  slug,
+  files,
+  holder = "explicit",
+}) => {
   const outputRoot = path.join(
     artifactRoot,
     `scaffold-surface-check-${process.pid}-${mode}-${holder}`,
@@ -74,7 +104,10 @@ const requireGeneratedScaffoldIncludes = ({ mode, slug, files, holder = "explici
     }
 
     for (const [relativePath, requiredFragments] of Object.entries(files)) {
-      const generated = readFileSync(path.join(outputRoot, relativePath), "utf8");
+      const generated = readFileSync(
+        path.join(outputRoot, relativePath),
+        "utf8",
+      );
       for (const fragment of requiredFragments) {
         if (!generated.includes(fragment)) {
           errors.push(
@@ -83,7 +116,9 @@ const requireGeneratedScaffoldIncludes = ({ mode, slug, files, holder = "explici
         }
       }
       if (generated.includes("CredentialCredential")) {
-        errors.push(`Generated ${mode} scaffold ${relativePath} contains duplicate Credential suffix`);
+        errors.push(
+          `Generated ${mode} scaffold ${relativePath} contains duplicate Credential suffix`,
+        );
       }
     }
   } finally {
@@ -116,6 +151,31 @@ requireIncludes("tooling/scripts/scaffold-vc-family.mjs", [
   "NoClaimCommitments",
 ]);
 requireIncludes("tooling/artifacts/.gitignore", ["*"]);
+
+requireIncludes(
+  "packages/components/orchestration/protocol/src/agents/schema-descriptors.ts",
+  [
+    "compatibilityFeatureHintsFromSchemaCapabilities",
+    "assertCompatibilityFeatureHintsMatchSchemaDescriptor",
+    "BIRTH_COMPATIBILITY_FEATURE_HINTS",
+    "SECRET_BIRTH_COMPATIBILITY_FEATURE_HINTS",
+  ],
+);
+for (const relativePath of [
+  "packages/components/orchestration/protocol/src/agents/schema-descriptors.ts",
+  "packages/components/orchestration/protocol/src/agents/issuer-agent.ts",
+  "packages/components/orchestration/protocol/src/agents/secret-issuer-agent.ts",
+  "packages/components/orchestration/protocol/src/agents/verifier-agent.ts",
+  "packages/components/orchestration/protocol/src/agents/secret-holder-agent.ts",
+  "packages/components/orchestration/protocol/src/test/agents/schema-descriptors.test.ts",
+]) {
+  requireNotIncludes(relativePath, [
+    "BIRTH_PROTOCOL_FEATURES",
+    "SECRET_BIRTH_PROTOCOL_FEATURES",
+    "protocolFeaturesFromSchemaCapabilities",
+    "assertProtocolFeaturesMatchSchemaDescriptor",
+  ]);
+}
 
 cleanupStaleScaffoldChecks();
 
@@ -183,4 +243,6 @@ if (errors.length > 0) {
   process.exit(1);
 }
 
-console.log("[check-vc-surface-discipline] Verified release docs and scaffold claim-mode surfaces.");
+console.log(
+  "[check-vc-surface-discipline] Verified release docs and scaffold claim-mode surfaces.",
+);
