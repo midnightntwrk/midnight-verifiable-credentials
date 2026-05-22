@@ -90,6 +90,13 @@ provides:
 - `REFERENCE_SCHEMA_FAMILY_ADAPTERS` plus `resolveSchemaFamilyAdapter(...)` as a
   small TypeScript-side registry pattern for adapter routing
 
+Resolver hints are bounded Compact `Bytes<32>` values. String hints longer than
+32 UTF-8 bytes are rejected instead of truncated. The reference adapter registry
+therefore keeps parallel resolvable descriptors beside the closed-ecosystem
+no-hint descriptors; this is intentional so closed local tests and generic
+wallet routing can share the same `SchemaRef` without changing its canonical
+shape.
+
 New adapters should validate incoming compatibility feature hints against a
 trusted schema descriptor or family registry before using them for routing or
 policy.

@@ -15,6 +15,25 @@ const schemaRefText = (value: Uint8Array): string =>
 const bytesEqual = (left: Uint8Array, right: Uint8Array): boolean =>
   left.length === right.length && left.every((value, index) => value === right[index]);
 
+const createResolverHintBytes = (resolverHint: string | Uint8Array): Uint8Array => {
+  if (typeof resolverHint === "string") {
+    const encoded = new TextEncoder().encode(resolverHint);
+    if (encoded.length > 32) {
+      throw new RangeError(
+        `Schema family resolver hint "${resolverHint}" is ${encoded.length} bytes; expected at most 32 bytes.`,
+      );
+    }
+    return padText(resolverHint);
+  }
+
+  if (resolverHint.length !== 32) {
+    throw new RangeError(
+      `Schema family resolver hint is ${resolverHint.length} bytes; expected exactly 32 bytes.`,
+    );
+  }
+  return resolverHint;
+};
+
 export type SchemaFamilyAdapterDescriptor = {
   readonly familyId: string;
   readonly descriptor: SchemaDescriptor;
@@ -32,8 +51,7 @@ export const createSchemaFamilyResolutionHint = (
 ): SchemaFamilyResolutionHint => {
   const hint: SchemaFamilyResolutionHint = {
     hasResolverHint: true,
-    resolverHint:
-      typeof resolverHint === "string" ? padText(resolverHint) : resolverHint,
+    resolverHint: createResolverHintBytes(resolverHint),
   };
   genericPureCircuits.assertValidSchemaFamilyResolutionHint(hint);
   return hint;
@@ -107,6 +125,7 @@ export const assertCompatibilityFeatureHintsMatchSchemaDescriptor = (
   );
 };
 
+// Diagnostic log label only. This is not a round-trippable SchemaRef encoding.
 export const formatSchemaRef = (schema: SchemaRef): string =>
   `${schemaRefText(schema.packageId)}#${schemaRefText(schema.schemaId)}@${schema.majorVersion}.${schema.minorVersion}`;
 

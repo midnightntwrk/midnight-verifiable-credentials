@@ -159,6 +159,20 @@ describe("protocol schema descriptors", () => {
     ).toThrow(/Schema resolver hint must be set/);
   });
 
+  it("rejects resolver hints that do not fit the Compact byte bound", () => {
+    expect(() =>
+      createSchemaFamilyResolutionHint(
+        "registry:family-name-that-is-longer-than-thirty-two-bytes",
+      ),
+    ).toThrow(/expected at most 32 bytes/);
+    expect(() => createSchemaFamilyResolutionHint(new Uint8Array(31))).toThrow(
+      /expected exactly 32 bytes/,
+    );
+    expect(() => createSchemaFamilyResolutionHint(new Uint8Array(33))).toThrow(
+      /expected exactly 32 bytes/,
+    );
+  });
+
   it("creates resolvable descriptors without changing closed ecosystem defaults", () => {
     const descriptor = createResolvableSchemaDescriptor(
       BIRTH_SCHEMA_DESCRIPTOR.schema,
@@ -190,6 +204,9 @@ describe("protocol schema descriptors", () => {
     ).toBe(SECRET_BIRTH_SCHEMA_FAMILY_ADAPTER);
     expect(BIRTH_SCHEMA_FAMILY_ADAPTER.compatibilityFeatureHints).toEqual(
       BIRTH_COMPATIBILITY_FEATURE_HINTS,
+    );
+    expect(BIRTH_SCHEMA_FAMILY_ADAPTER.descriptor).not.toEqual(
+      BIRTH_SCHEMA_DESCRIPTOR,
     );
   });
 
