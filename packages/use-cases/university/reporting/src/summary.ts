@@ -25,6 +25,38 @@ export const UNIVERSITY_REPORT_ARTIFACT_MANIFEST_JSON_PATH =
 export const UNIVERSITY_REPORT_ARTIFACT_MANIFEST_MARKDOWN_PATH =
   `${UNIVERSITY_REPORT_TARGET_DIRECTORY}/artifact-manifest.md` as const;
 
+export const UNIVERSITY_REPORT_SUMMARY_CONTRACT = {
+  schemaId: UNIVERSITY_REPORT_SUMMARY_SCHEMA_ID,
+  schemaVersion: UNIVERSITY_REPORT_SUMMARY_SCHEMA_VERSION,
+  transcriptSchemaVersion: UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION,
+  handoffArtifactIds: {
+    primaryHuman: "university-report-summary-markdown",
+    primaryMachine: "university-report-summary-json",
+    sourceManifestJson: "university-report-artifact-manifest-json",
+    sourceManifestMarkdown: "university-report-artifact-manifest-markdown",
+  },
+  requiredSourceArtifactIds: [
+    "readable-bdd-serenity",
+    "readable-protocol-transcript",
+    "stress-protocol-summary",
+    "issuer-batch-sweep-summary",
+  ],
+  requiredPrivacyProfileArrays: [
+    "productionPublicClaimFields",
+    "productionCommitmentCandidates",
+    "productionCommitmentFields",
+    "predicateOnlyFields",
+  ],
+  // Printed contract documentation for humans and downstream dashboards; the
+  // validator enforces the concrete fields above.
+  notes: [
+    "summary.md is the primary human handoff.",
+    "summary.json is the primary machine handoff.",
+    "artifact-manifest.json is the source-evidence index.",
+    "The report summary pins the transcript export schema because privacy-profile shape changes must bump the report contract.",
+  ],
+} as const;
+
 type SerenityScenarioRecord = {
   readonly title: string;
   readonly startTime: string;
@@ -1015,13 +1047,20 @@ const handoffSourceArtifactIdsMatchManifest = (
   // The handoff keeps manifest order so humans can compare both sections
   // without sorting or guessing which source artifact moved.
   const manifestArtifactIds = manifest.entries.map((entry) => entry.artifactId);
-  return (
-    handoff.sourceArtifactIds.length === manifestArtifactIds.length &&
-    handoff.sourceArtifactIds.every(
-      (artifactId, index) => artifactId === manifestArtifactIds[index],
-    )
-  );
+  return arraysEqual(handoff.sourceArtifactIds, manifestArtifactIds);
 };
+
+const arraysEqual = (
+  left: readonly string[],
+  right: readonly string[],
+): boolean =>
+  // Report source artifacts are intentionally order-sensitive so humans can
+  // compare the handoff and manifest sections without sorting.
+  left.length === right.length &&
+  left.every((entry, index) => entry === right[index]);
+
+const formatOrderedList = (values: readonly string[]): string =>
+  `[${values.join(", ")}]`;
 
 // This is a lightweight runtime sanity check for the package's own emitted
 // artifact shape, not a recursive schema validator.
@@ -1066,12 +1105,119 @@ export const isUniversityArtifactSummary = (
   );
 };
 
+export const validateUniversityArtifactSummaryContract = (
+  value: UniversityArtifactSummary,
+): readonly string[] => {
+  const errors: string[] = [];
+
+  if (value.schemaId !== UNIVERSITY_REPORT_SUMMARY_CONTRACT.schemaId) {
+    errors.push(
+      `schemaId must be ${UNIVERSITY_REPORT_SUMMARY_CONTRACT.schemaId}`,
+    );
+  }
+
+  if (
+    value.schemaVersion !== UNIVERSITY_REPORT_SUMMARY_CONTRACT.schemaVersion
+  ) {
+    errors.push(
+      `schemaVersion must be ${UNIVERSITY_REPORT_SUMMARY_CONTRACT.schemaVersion}`,
+    );
+  }
+
+  if (
+    value.transcriptExport.schemaVersion !==
+    UNIVERSITY_REPORT_SUMMARY_CONTRACT.transcriptSchemaVersion
+  ) {
+    errors.push(
+      `transcriptExport.schemaVersion must be ${UNIVERSITY_REPORT_SUMMARY_CONTRACT.transcriptSchemaVersion}`,
+    );
+  }
+
+  const handoffArtifactIds = UNIVERSITY_REPORT_SUMMARY_CONTRACT.handoffArtifactIds;
+  // Repeat handoff IDs here for standalone/dashboard drift checks. The
+  // structural guard also validates them when assertUniversityArtifactSummaryConforms()
+  // is used as the entry point.
+  if (value.handoff.primaryHuman.artifactId !== handoffArtifactIds.primaryHuman) {
+    errors.push(
+      `handoff.primaryHuman.artifactId must be ${handoffArtifactIds.primaryHuman}`,
+    );
+  }
+  if (
+    value.handoff.primaryMachine.artifactId !== handoffArtifactIds.primaryMachine
+  ) {
+    errors.push(
+      `handoff.primaryMachine.artifactId must be ${handoffArtifactIds.primaryMachine}`,
+    );
+  }
+  if (
+    value.handoff.sourceManifestJson.artifactId !==
+    handoffArtifactIds.sourceManifestJson
+  ) {
+    errors.push(
+      `handoff.sourceManifestJson.artifactId must be ${handoffArtifactIds.sourceManifestJson}`,
+    );
+  }
+  if (
+    value.handoff.sourceManifestMarkdown.artifactId !==
+    handoffArtifactIds.sourceManifestMarkdown
+  ) {
+    errors.push(
+      `handoff.sourceManifestMarkdown.artifactId must be ${handoffArtifactIds.sourceManifestMarkdown}`,
+    );
+  }
+
+  if (
+    !arraysEqual(
+      value.handoff.sourceArtifactIds,
+      UNIVERSITY_REPORT_SUMMARY_CONTRACT.requiredSourceArtifactIds,
+    )
+  ) {
+    errors.push(
+      `handoff.sourceArtifactIds must equal ordered list ${formatOrderedList(UNIVERSITY_REPORT_SUMMARY_CONTRACT.requiredSourceArtifactIds)}`,
+    );
+  }
+
+  const manifestArtifactIds = value.artifactManifest.entries.map(
+    (entry) => entry.artifactId,
+  );
+  if (
+    !arraysEqual(
+      manifestArtifactIds,
+      UNIVERSITY_REPORT_SUMMARY_CONTRACT.requiredSourceArtifactIds,
+    )
+  ) {
+    errors.push(
+      `artifactManifest.entries must equal ordered list ${formatOrderedList(UNIVERSITY_REPORT_SUMMARY_CONTRACT.requiredSourceArtifactIds)}`,
+    );
+  }
+
+  // Repeat privacy-profile array requirements here even when structural guards
+  // already reject most empty arrays. The exported validator is useful on its
+  // own for dashboard/read-model drift checks and should explain the contract
+  // without requiring callers to know the structural guard internals.
+  for (const fieldName of UNIVERSITY_REPORT_SUMMARY_CONTRACT.requiredPrivacyProfileArrays) {
+    const fieldValues = value.transcriptExport.privacyProfile[fieldName];
+    if (fieldValues.length === 0) {
+      errors.push(`transcriptExport.privacyProfile.${fieldName} must be non-empty`);
+    }
+  }
+
+  return errors;
+};
+
 export const assertUniversityArtifactSummaryConforms = (
   value: unknown,
 ): asserts value is UniversityArtifactSummary => {
   if (!isUniversityArtifactSummary(value)) {
     throw new TypeError(
       "University artifact summary does not match the expected schema",
+    );
+  }
+
+  const contractErrors = validateUniversityArtifactSummaryContract(value);
+  if (contractErrors.length > 0) {
+    throw new TypeError(
+      `University artifact summary contract failed: ${contractErrors.join("; ")}`,
     );
   }
 };

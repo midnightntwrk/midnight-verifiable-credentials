@@ -138,6 +138,11 @@ becomes part of a stackable PR.
      transcript privacy profile into the aggregate one-page university report
      so operators can inspect the direct-claim prototype boundary and
      production commitment profile from `./run.sh university-summary`
+   - 2026-05-22 follow-up branch:
+     `codex/vc-university-report-schema-contract`
+   - exports a checked `UNIVERSITY_REPORT_SUMMARY_CONTRACT`, adds a package
+     contract-printing script, and validates the v5 handoff/source-artifact and
+     transcript privacy-profile expectations with actionable error names
 
 ## Human-Readability Rule
 

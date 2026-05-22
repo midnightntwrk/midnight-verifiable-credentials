@@ -25,6 +25,8 @@
     "test:ci": "npm run test",
     "render:summary": "npm run build && node ./scripts/render-summary.mjs",
     "render:summary:from-artifacts": "node ./scripts/render-summary.mjs",
+    "report:contract": "npm run build && node ./scripts/print-summary-contract.mjs",
+    "report:contract:from-artifacts": "node ./scripts/print-summary-contract.mjs",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "typecheck": "tsc -p tsconfig.json --noEmit",

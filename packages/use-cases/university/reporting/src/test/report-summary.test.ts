@@ -19,10 +19,12 @@ import {
   UNIVERSITY_ARTIFACT_MANIFEST_SCHEMA_VERSION,
   UNIVERSITY_REPORT_ARTIFACT_MANIFEST_JSON_PATH,
   UNIVERSITY_REPORT_ARTIFACT_MANIFEST_MARKDOWN_PATH,
+  UNIVERSITY_REPORT_SUMMARY_CONTRACT,
   UNIVERSITY_REPORT_SUMMARY_JSON_PATH,
   UNIVERSITY_REPORT_SUMMARY_MARKDOWN_PATH,
   UNIVERSITY_REPORT_SUMMARY_SCHEMA_ID,
   UNIVERSITY_REPORT_SUMMARY_SCHEMA_VERSION,
+  validateUniversityArtifactSummaryContract,
 } from "../index.js";
 
 const fixtureDir = path.resolve(
@@ -104,6 +106,20 @@ describe("university artifact report summarizer", () => {
     expect(summary.schemaVersion).toBe(
       UNIVERSITY_REPORT_SUMMARY_SCHEMA_VERSION,
     );
+    expect(UNIVERSITY_REPORT_SUMMARY_CONTRACT).toMatchObject({
+      schemaId: UNIVERSITY_REPORT_SUMMARY_SCHEMA_ID,
+      schemaVersion: UNIVERSITY_REPORT_SUMMARY_SCHEMA_VERSION,
+      transcriptSchemaVersion: "midnight-university-protocol-export.v2",
+    });
+    expect(UNIVERSITY_REPORT_SUMMARY_CONTRACT.requiredSourceArtifactIds).toEqual(
+      [
+        "readable-bdd-serenity",
+        "readable-protocol-transcript",
+        "stress-protocol-summary",
+        "issuer-batch-sweep-summary",
+      ],
+    );
+    expect(validateUniversityArtifactSummaryContract(summary)).toEqual([]);
     expect(summary.actors.universityPartyId).toBe("uni-example-001");
     expect(summary.actors.companyNames).toEqual([
       "Blue Ocean Analytics",
@@ -184,6 +200,48 @@ describe("university artifact report summarizer", () => {
     expect(() =>
       assertUniversityArtifactSummaryConforms(summary),
     ).not.toThrow();
+  });
+
+  it("reports contract drift with actionable field names", () => {
+    const summary = renderFixtureSummary();
+    const mutated = {
+      ...summary,
+      transcriptExport: {
+        ...summary.transcriptExport,
+        schemaVersion: "midnight-university-protocol-export.v1",
+        privacyProfile: {
+          ...summary.transcriptExport.privacyProfile,
+          productionCommitmentFields: [],
+        },
+      },
+      handoff: {
+        ...summary.handoff,
+        sourceArtifactIds: ["readable-bdd-serenity"],
+      },
+      artifactManifest: {
+        ...summary.artifactManifest,
+        entries: summary.artifactManifest.entries.slice(0, 1),
+      },
+    };
+
+    expect(
+      validateUniversityArtifactSummaryContract(mutated as typeof summary),
+    ).toEqual([
+      "transcriptExport.schemaVersion must be midnight-university-protocol-export.v2",
+      "handoff.sourceArtifactIds must equal ordered list [readable-bdd-serenity, readable-protocol-transcript, stress-protocol-summary, issuer-batch-sweep-summary]",
+      "artifactManifest.entries must equal ordered list [readable-bdd-serenity, readable-protocol-transcript, stress-protocol-summary, issuer-batch-sweep-summary]",
+      "transcriptExport.privacyProfile.productionCommitmentFields must be non-empty",
+    ]);
+    const contractOnlyMutated = {
+      ...summary,
+      transcriptExport: {
+        ...summary.transcriptExport,
+        schemaVersion: "midnight-university-protocol-export.v1",
+      },
+    };
+    expect(() => assertUniversityArtifactSummaryConforms(contractOnlyMutated)).toThrow(
+      /University artifact summary contract failed/u,
+    );
   });
 
   it("deduplicates Serenity scenarios by title and keeps the latest run", () => {

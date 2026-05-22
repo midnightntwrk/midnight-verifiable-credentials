@@ -33,6 +33,9 @@ Scope:
   contract and transcript privacy profile, so regenerate cached v4
   `summary.json` artifacts with
   `./run.sh university-summary` before validating them with this package
+- expose `UNIVERSITY_REPORT_SUMMARY_CONTRACT` and
+  `validateUniversityArtifactSummaryContract()` so dashboards and CI jobs can
+  fail on summary contract drift with actionable field names
 - highlight the slowest scenario and the dominant timing bottlenecks
 - fail fast when a required source artifact is missing; rerun the documented
   producer lane instead of publishing a partial report
@@ -57,3 +60,6 @@ Build and test:
     - `./packages/use-cases/university/reporting/target/summary.md`
     - `./packages/use-cases/university/reporting/target/artifact-manifest.json`
     - `./packages/use-cases/university/reporting/target/artifact-manifest.md`
+- print the current report contract:
+  - `npm run report:contract -w ./packages/use-cases/university/reporting`
+  - `npm run report:contract:from-artifacts -w ./packages/use-cases/university/reporting`
