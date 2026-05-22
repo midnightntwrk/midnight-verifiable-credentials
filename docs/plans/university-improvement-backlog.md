@@ -134,6 +134,10 @@ becomes part of a stackable PR.
      `claimCommitments` before treating the family as production privacy work
    - validation: university credential-family tests, university protocol tests,
      `./run.sh university-bdd`
+   - 2026-05-22: `codex/vc-university-report-privacy-profile` projects the
+     transcript privacy profile into the aggregate one-page university report
+     so operators can inspect the direct-claim prototype boundary and
+     production commitment profile from `./run.sh university-summary`
 
 ## Human-Readability Rule
 

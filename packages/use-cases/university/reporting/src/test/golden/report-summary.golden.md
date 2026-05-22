@@ -1,7 +1,7 @@
 # University Report Summary
 
 - schema id: midnight-university-report-summary
-- schema version: midnight-university-report-summary.v4
+- schema version: midnight-university-report-summary.v5
 - university issuer: uni-example-001
 - students: 10
 - companies: 3 (Blue Ocean Analytics, Northwind Robotics, Pioneer Systems)
@@ -22,12 +22,12 @@
 - The Serenity site and raw transcript/stress/batch artifacts remain source evidence, not the default handoff surface.
 
 ## Source Artifact Manifest
-- total bytes: 100220
+- total bytes: 101598
 
 | artifact | schema version | files | bytes | sha256 |
 | --- | --- | ---: | ---: | --- |
 | Readable BDD Serenity JSON | n/a | 13 | 2778 | 3885403dcd926e8fff77fb5de5b33b6cf3d19e540628f9bc240b670339c3ce72 |
-| Readable protocol transcript export | midnight-university-protocol-export.v1 | 1 | 74769 | d7c552e47e5d25b903863ff043b53718ac63dd16b6258d9879fa329421a84d19 |
+| Readable protocol transcript export | midnight-university-protocol-export.v2 | 1 | 76147 | a8e56f9750fd935f60140fa347e7ed31feee29580ef491dcc990fef6e3b950e2 |
 | Stress protocol summary | midnight-university-protocol-stress-summary.v2 | 1 | 13166 | eca86ee79f5cab71ada40ec9059711c1de243f832d83d4dad8d73826302d970c |
 | Issuer batch-sweep summary | midnight-university-batch-sweep-summary.v2 | 1 | 9507 | 7c60f98cbb138ea3ba0c98692a1fd2743f04b64c798193ec0bc640800d1a48fe |
 
@@ -54,7 +54,7 @@
 - A tampered holder method reference is rejected without affecting untampered job applications: 434.00 ms (SUCCESS)
 
 ## Transcript Export
-- schema version: midnight-university-protocol-export.v1
+- schema version: midnight-university-protocol-export.v2
 - transcript entries: 65
 - total threads: 25
 - issuance results: 10
@@ -63,6 +63,17 @@
 - discount accepted: 3
 - discount verification failed: 2
 - discount rejection reason: failed assert: University-diploma disclosed final grade is below the verifier minimum (2)
+
+## Transcript Privacy Profile
+- current credential profile: direct-claim-prototype
+- current claim commitment model: none
+- production credential profile: production-commitment-v2
+- production public claims: universityName, awardName, graduationYear
+- production commitment candidates: diplomaId, studentId, graduateName, facultyName, honorsCode, graduationMonth, finalGrade, creditsEarned
+- production commitment fields: diplomaIdCommitment, studentIdCommitment, graduateNameCommitment, facultyNameCommitment, honorsCodeCommitment, graduationMonthCommitment, finalGradeCommitment, creditsEarnedCommitment
+- predicate-only fields: finalGrade, creditsEarned
+- opening policy: Production issuance must use high-entropy field-domain-separated openings; deterministic fixture openings are only for tests.
+- statement: The production profile keeps routing facts public and moves stable identifiers plus sensitive academic facts into claim commitments.
 
 ## Stress Summary
 - dataset profile: stress-100

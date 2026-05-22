@@ -34,6 +34,7 @@ const goldenDir = path.resolve(
   "golden",
 );
 const serenityDirectory = path.join(fixtureDir, "serenity");
+const transcriptExportPath = path.join(fixtureDir, "transcript-export.json");
 
 const readGolden = (name: string): string =>
   readFileSync(path.join(goldenDir, name), "utf8");
@@ -60,10 +61,40 @@ const renderFixtureSummary = () =>
   buildUniversityArtifactSummary({
     artifactBaseDirectory: fixtureDir,
     serenityDirectory,
-    transcriptExportPath: path.join(fixtureDir, "transcript-export.json"),
+    transcriptExportPath,
     stressSummaryPath: path.join(fixtureDir, "stress-summary.json"),
     batchSweepSummaryPath: path.join(fixtureDir, "batch-sweep-summary.json"),
   });
+
+const buildSummaryWithTranscript = (nextTranscriptExportPath: string) =>
+  buildUniversityArtifactSummary({
+    artifactBaseDirectory: fixtureDir,
+    serenityDirectory,
+    transcriptExportPath: nextTranscriptExportPath,
+    stressSummaryPath: path.join(fixtureDir, "stress-summary.json"),
+    batchSweepSummaryPath: path.join(fixtureDir, "batch-sweep-summary.json"),
+  });
+
+const withMutatedTranscript = (
+  mutate: (transcript: Record<string, unknown>) => void,
+  assert: (transcriptPath: string) => void,
+): void => {
+  const tempRoot = mkdtempSync(
+    path.join(os.tmpdir(), "university-reporting-"),
+  );
+  const staleTranscriptPath = path.join(tempRoot, "transcript-export.json");
+  const transcript = JSON.parse(
+    readFileSync(transcriptExportPath, "utf8"),
+  ) as Record<string, unknown>;
+  mutate(transcript);
+  writeFileSync(staleTranscriptPath, JSON.stringify(transcript, null, 2));
+
+  try {
+    assert(staleTranscriptPath);
+  } finally {
+    rmSync(tempRoot, { recursive: true, force: true });
+  }
+};
 
 describe("university artifact report summarizer", () => {
   it("builds a conforming one-page summary from the committed fixtures", () => {
@@ -118,6 +149,26 @@ describe("university artifact report summarizer", () => {
     expect(summary.readableBdd.passedCount).toBe(13);
     expect(summary.readableBdd.failedCount).toBe(0);
     expect(summary.transcriptExport.counts.totalThreads).toBe(25);
+    expect(summary.transcriptExport.privacyProfile).toMatchObject({
+      currentProfile: "direct-claim-prototype",
+      claimCommitmentModel: "none",
+      productionProfile: "production-commitment-v2",
+    });
+    expect(
+      summary.transcriptExport.privacyProfile.productionPublicClaimFields,
+    ).toEqual(["universityName", "awardName", "graduationYear"]);
+    expect(
+      summary.transcriptExport.privacyProfile.productionCommitmentFields,
+    ).toContain("finalGradeCommitment");
+    expect(summary.transcriptExport.privacyProfile.predicateOnlyFields).toEqual(
+      ["finalGrade", "creditsEarned"],
+    );
+    expect(summary.transcriptExport.privacyProfile.openingPolicy).toBe(
+      "Production issuance must use high-entropy field-domain-separated openings; deterministic fixture openings are only for tests.",
+    );
+    expect(summary.transcriptExport.privacyProfile.statement).toBe(
+      "The production profile keeps routing facts public and moves stable identifiers plus sensitive academic facts into claim commitments.",
+    );
     expect(summary.stressSummary.datasetProfile).toBe("stress-100");
     expect(
       summary.batchSweep.fastestBatchSizeByWallClockCredentialsPerSecond,
@@ -249,6 +300,66 @@ describe("university artifact report summarizer", () => {
     } finally {
       rmSync(tempRoot, { recursive: true, force: true });
     }
+  });
+
+  it("rejects a transcript export missing the privacy profile contract", () => {
+    withMutatedTranscript(
+      (transcript) => {
+        delete transcript.privacyProfile;
+      },
+      (staleTranscriptPath) => {
+        expect(() => buildSummaryWithTranscript(staleTranscriptPath)).toThrow(
+          /valid privacyProfile block/u,
+        );
+      },
+    );
+  });
+
+  it("rejects a stale transcript export schema version", () => {
+    withMutatedTranscript(
+      (transcript) => {
+        transcript.schemaVersion = "midnight-university-protocol-export.v1";
+      },
+      (staleTranscriptPath) => {
+        expect(() => buildSummaryWithTranscript(staleTranscriptPath)).toThrow(
+          /midnight-university-protocol-export\.v2/u,
+        );
+      },
+    );
+  });
+
+  it("rejects a transcript export with mismatched reader compatibility", () => {
+    withMutatedTranscript(
+      (transcript) => {
+        transcript.compatibility = {
+          minimumReaderVersion: "midnight-university-protocol-export.v2",
+          maximumReaderVersion: "midnight-university-protocol-export.v1",
+        };
+      },
+      (staleTranscriptPath) => {
+        expect(() => buildSummaryWithTranscript(staleTranscriptPath)).toThrow(
+          /reader compatibility/u,
+        );
+      },
+    );
+  });
+
+  it("rejects a summary whose privacy profile arrays are malformed", () => {
+    const summary = renderFixtureSummary();
+    const malformedSummary = {
+      ...summary,
+      transcriptExport: {
+        ...summary.transcriptExport,
+        privacyProfile: {
+          ...summary.transcriptExport.privacyProfile,
+          productionCommitmentCandidates: ["diplomaId", 42],
+        },
+      },
+    };
+
+    expect(() =>
+      assertUniversityArtifactSummaryConforms(malformedSummary),
+    ).toThrow(/University artifact summary does not match/u);
   });
 
   it("rejects a handoff contract whose source artifact ids are reordered", () => {

@@ -5,9 +5,15 @@ import path from "node:path";
 export const UNIVERSITY_REPORT_SUMMARY_SCHEMA_ID =
   "midnight-university-report-summary" as const;
 export const UNIVERSITY_REPORT_SUMMARY_SCHEMA_VERSION =
-  "midnight-university-report-summary.v4" as const;
+  "midnight-university-report-summary.v5" as const;
 export const UNIVERSITY_ARTIFACT_MANIFEST_SCHEMA_VERSION =
   "midnight-university-artifact-manifest.v1" as const;
+const UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_ID =
+  "midnight-university-protocol-export" as const;
+// The one-page report intentionally pins the transcript export contract; a
+// transcript schema bump should be paired with a report schema bump.
+const UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION =
+  "midnight-university-protocol-export.v2" as const;
 const UNIVERSITY_REPORT_TARGET_DIRECTORY =
   "packages/use-cases/university/reporting/target" as const;
 export const UNIVERSITY_REPORT_SUMMARY_JSON_PATH =
@@ -28,7 +34,13 @@ type SerenityScenarioRecord = {
 };
 
 type UniversityProtocolTranscriptExport = {
-  readonly schemaVersion: string;
+  readonly schemaId: typeof UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_ID;
+  readonly schemaVersion: typeof UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION;
+  readonly compatibility: {
+    readonly minimumReaderVersion: typeof UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION;
+    readonly maximumReaderVersion: typeof UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION;
+  };
+  readonly privacyProfile: UniversityTranscriptPrivacyProfile;
   readonly dataset: {
     readonly studentCount: number;
     readonly companyCount: number;
@@ -90,6 +102,18 @@ type UniversityProtocolTranscriptExport = {
       }[];
     };
   };
+};
+
+type UniversityTranscriptPrivacyProfile = {
+  readonly currentProfile: string;
+  readonly claimCommitmentModel: string;
+  readonly productionProfile: string;
+  readonly productionPublicClaimFields: readonly string[];
+  readonly productionCommitmentCandidates: readonly string[];
+  readonly productionCommitmentFields: readonly string[];
+  readonly predicateOnlyFields: readonly string[];
+  readonly openingPolicy: string;
+  readonly statement: string;
 };
 
 type UniversityProtocolStressSummary = {
@@ -262,7 +286,8 @@ export type UniversityArtifactSummary = {
     readonly slowestScenarios: readonly LatestScenarioSummary[];
   };
   readonly transcriptExport: {
-    readonly schemaVersion: string;
+    readonly schemaVersion: UniversityProtocolTranscriptExport["schemaVersion"];
+    readonly privacyProfile: UniversityProtocolTranscriptExport["privacyProfile"];
     readonly dataset: UniversityProtocolTranscriptExport["dataset"];
     readonly counts: UniversityProtocolTranscriptExport["counts"];
     readonly rejections: UniversityProtocolTranscriptExport["rejectionBreakdown"];
@@ -383,6 +408,63 @@ const readJson = <T>(filePath: string): T => {
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
+
+const isStringArray = (value: unknown): value is readonly string[] =>
+  Array.isArray(value) && value.every((entry) => typeof entry === "string");
+
+const isNonEmptyStringArray = (value: unknown): value is readonly string[] =>
+  isStringArray(value) && value.length > 0;
+
+const isTranscriptPrivacyProfile = (
+  value: unknown,
+): value is UniversityTranscriptPrivacyProfile =>
+  isRecord(value) &&
+  typeof value.currentProfile === "string" &&
+  typeof value.claimCommitmentModel === "string" &&
+  typeof value.productionProfile === "string" &&
+  isNonEmptyStringArray(value.productionPublicClaimFields) &&
+  isNonEmptyStringArray(value.productionCommitmentCandidates) &&
+  isNonEmptyStringArray(value.productionCommitmentFields) &&
+  isStringArray(value.predicateOnlyFields) &&
+  typeof value.openingPolicy === "string" &&
+  typeof value.statement === "string";
+
+const assertTranscriptExportMatchesReportingContract = (
+  transcriptExport: UniversityProtocolTranscriptExport,
+  transcriptExportPath: string,
+): void => {
+  if (
+    transcriptExport.schemaId !== UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_ID ||
+    transcriptExport.schemaVersion !== UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION
+  ) {
+    throw new Error(
+      `Transcript export at ${transcriptExportPath} must use ${UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION}`,
+    );
+  }
+
+  if (!isRecord(transcriptExport.compatibility)) {
+    throw new Error(
+      `Transcript export at ${transcriptExportPath} must include a reader compatibility block`,
+    );
+  }
+
+  if (
+    transcriptExport.compatibility.minimumReaderVersion !==
+      UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION ||
+    transcriptExport.compatibility.maximumReaderVersion !==
+      UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION
+  ) {
+    throw new Error(
+      `Transcript export at ${transcriptExportPath} must declare ${UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_VERSION} reader compatibility`,
+    );
+  }
+
+  if (!isTranscriptPrivacyProfile(transcriptExport.privacyProfile)) {
+    throw new Error(
+      `Transcript export at ${transcriptExportPath} must include a valid privacyProfile block`,
+    );
+  }
+};
 
 const hashBuffer = (buffer: Uint8Array): string =>
   createHash("sha256").update(buffer).digest("hex");
@@ -654,6 +736,10 @@ export const buildUniversityArtifactSummary = (
   const transcriptExport = readJson<UniversityProtocolTranscriptExport>(
     artifactPaths.transcriptExportPath,
   );
+  assertTranscriptExportMatchesReportingContract(
+    transcriptExport,
+    artifactPaths.transcriptExportPath,
+  );
   const stressSummary = readJson<UniversityProtocolStressSummary>(
     artifactPaths.stressSummaryPath,
   );
@@ -776,6 +862,21 @@ export const buildUniversityArtifactSummary = (
     },
     transcriptExport: {
       schemaVersion: transcriptExport.schemaVersion,
+      privacyProfile: {
+        ...transcriptExport.privacyProfile,
+        productionPublicClaimFields: [
+          ...transcriptExport.privacyProfile.productionPublicClaimFields,
+        ],
+        productionCommitmentCandidates: [
+          ...transcriptExport.privacyProfile.productionCommitmentCandidates,
+        ],
+        productionCommitmentFields: [
+          ...transcriptExport.privacyProfile.productionCommitmentFields,
+        ],
+        predicateOnlyFields: [
+          ...transcriptExport.privacyProfile.predicateOnlyFields,
+        ],
+      },
       dataset: { ...transcriptExport.dataset },
       counts: { ...transcriptExport.counts },
       rejections: transcriptExport.rejectionBreakdown,
@@ -955,6 +1056,7 @@ export const isUniversityArtifactSummary = (
     typeof value.readableBdd.totalDurationMs === "number" &&
     isRecord(value.transcriptExport) &&
     typeof value.transcriptExport.schemaVersion === "string" &&
+    isTranscriptPrivacyProfile(value.transcriptExport.privacyProfile) &&
     isRecord(value.stressSummary) &&
     typeof value.stressSummary.schemaVersion === "string" &&
     isRecord(value.batchSweep) &&
@@ -1070,6 +1172,17 @@ export const renderUniversityArtifactSummaryMarkdown = (
       (entry) =>
         `- discount rejection reason: ${entry.reason} (${entry.count})`,
     ),
+    "",
+    "## Transcript Privacy Profile",
+    `- current credential profile: ${summary.transcriptExport.privacyProfile.currentProfile}`,
+    `- current claim commitment model: ${summary.transcriptExport.privacyProfile.claimCommitmentModel}`,
+    `- production credential profile: ${summary.transcriptExport.privacyProfile.productionProfile}`,
+    `- production public claims: ${summary.transcriptExport.privacyProfile.productionPublicClaimFields.join(", ")}`,
+    `- production commitment candidates: ${summary.transcriptExport.privacyProfile.productionCommitmentCandidates.join(", ")}`,
+    `- production commitment fields: ${summary.transcriptExport.privacyProfile.productionCommitmentFields.join(", ")}`,
+    `- predicate-only fields: ${summary.transcriptExport.privacyProfile.predicateOnlyFields.join(", ")}`,
+    `- opening policy: ${summary.transcriptExport.privacyProfile.openingPolicy}`,
+    `- statement: ${summary.transcriptExport.privacyProfile.statement}`,
     "",
     "## Stress Summary",
     `- dataset profile: ${summary.stressSummary.datasetProfile}`,

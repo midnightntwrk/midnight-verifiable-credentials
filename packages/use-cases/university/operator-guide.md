@@ -149,6 +149,10 @@ packages/use-cases/university/scenarios/target/standalone-timing/summary.json
 
 The reporting paths above are generated outputs. They are intended for local
 inspection and CI retention, not for ordinary source-control edits.
+The aggregate summary includes the transcript privacy-profile section, so
+`university-summary` is the fastest lane for checking whether the readable
+direct-claim prototype and production commitment-profile guidance stayed aligned
+after transcript-export changes.
 
 ## Reading The Serenity Report
 

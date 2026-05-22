@@ -447,8 +447,14 @@ forces a stop.
    - consumes that public metadata surface from the university protocol
      transcript exporter and adds compact JSON/Markdown profile handoff fields
      for report readers
+   - 2026-05-22 follow-up branch:
+     `codex/vc-university-report-privacy-profile`
+   - projects the same transcript privacy-profile metadata into the one-page
+     university reporting summary so operators can inspect the direct-claim
+     prototype boundary and production commitment-profile guidance without
+     opening the full transcript artifact
    - validation: university credential-family tests, university protocol tests,
-     `./run.sh university-bdd`, `npm run docs:links`
+     university reporting tests, `./run.sh university-bdd`, `npm run docs:links`
 
 ## Validation Defaults
 

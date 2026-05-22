@@ -1,6 +1,6 @@
 {
   "schemaId": "midnight-university-report-summary",
-  "schemaVersion": "midnight-university-report-summary.v4",
+  "schemaVersion": "midnight-university-report-summary.v5",
   "actors": {
     "universityPartyId": "uni-example-001",
     "studentCount": 10,
@@ -68,7 +68,7 @@
   "artifactManifest": {
     "manifestSchemaVersion": "midnight-university-artifact-manifest.v1",
     "artifactSet": "midnight-university-reporting-inputs",
-    "totalBytes": 100220,
+    "totalBytes": 101598,
     "entries": [
       {
         "artifactId": "readable-bdd-serenity",
@@ -87,11 +87,11 @@
         "label": "Readable protocol transcript export",
         "path": "transcript-export.json",
         "format": "university-json-artifact",
-        "schemaVersion": "midnight-university-protocol-export.v1",
+        "schemaVersion": "midnight-university-protocol-export.v2",
         "producedBy": "./run.sh university-protocol-export",
         "purpose": "student, issuer, employer, and mall protocol DTO transcript",
-        "bytes": 74769,
-        "sha256": "d7c552e47e5d25b903863ff043b53718ac63dd16b6258d9879fa329421a84d19",
+        "bytes": 76147,
+        "sha256": "a8e56f9750fd935f60140fa347e7ed31feee29580ef491dcc990fef6e3b950e2",
         "fileCount": 1
       },
       {
@@ -174,7 +174,43 @@
     ]
   },
   "transcriptExport": {
-    "schemaVersion": "midnight-university-protocol-export.v1",
+    "schemaVersion": "midnight-university-protocol-export.v2",
+    "privacyProfile": {
+      "currentProfile": "direct-claim-prototype",
+      "claimCommitmentModel": "none",
+      "productionProfile": "production-commitment-v2",
+      "productionPublicClaimFields": [
+        "universityName",
+        "awardName",
+        "graduationYear"
+      ],
+      "productionCommitmentCandidates": [
+        "diplomaId",
+        "studentId",
+        "graduateName",
+        "facultyName",
+        "honorsCode",
+        "graduationMonth",
+        "finalGrade",
+        "creditsEarned"
+      ],
+      "productionCommitmentFields": [
+        "diplomaIdCommitment",
+        "studentIdCommitment",
+        "graduateNameCommitment",
+        "facultyNameCommitment",
+        "honorsCodeCommitment",
+        "graduationMonthCommitment",
+        "finalGradeCommitment",
+        "creditsEarnedCommitment"
+      ],
+      "predicateOnlyFields": [
+        "finalGrade",
+        "creditsEarned"
+      ],
+      "openingPolicy": "Production issuance must use high-entropy field-domain-separated openings; deterministic fixture openings are only for tests.",
+      "statement": "The production profile keeps routing facts public and moves stable identifiers plus sensitive academic facts into claim commitments."
+    },
     "dataset": {
       "studentCount": 10,
       "companyCount": 3,
