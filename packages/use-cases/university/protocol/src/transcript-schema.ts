@@ -233,7 +233,7 @@ export const assertUniversityProtocolTranscriptExportConforms: (
     UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionPublicClaimFields,
     "transcript export.privacyProfile.productionPublicClaimFields",
   );
-  const productionCommitmentCandidates = expectExactStringArray(
+  expectExactStringArray(
     privacyProfile.productionCommitmentCandidates,
     UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionCommitmentCandidates,
     "transcript export.privacyProfile.productionCommitmentCandidates",
@@ -243,18 +243,11 @@ export const assertUniversityProtocolTranscriptExportConforms: (
     UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.productionCommitmentFields,
     "transcript export.privacyProfile.productionCommitmentFields",
   );
-  const predicateOnlyFields = expectExactStringArray(
+  expectExactStringArray(
     privacyProfile.predicateOnlyFields,
     UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE.predicateOnlyFields,
     "transcript export.privacyProfile.predicateOnlyFields",
   );
-  for (const [index, field] of predicateOnlyFields.entries()) {
-    if (!productionCommitmentCandidates.includes(field)) {
-      throw new Error(
-        `transcript export.privacyProfile.predicateOnlyFields[${index}] must be included in productionCommitmentCandidates`,
-      );
-    }
-  }
   expectString(
     privacyProfile.openingPolicy,
     "transcript export.privacyProfile.openingPolicy",

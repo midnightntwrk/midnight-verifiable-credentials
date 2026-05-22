@@ -163,8 +163,8 @@ Build and test:
     - `schemaVersion` is `midnight-university-protocol-export.v2`
     - `compatibility.minimumReaderVersion` and
       `compatibility.maximumReaderVersion` are both pinned to the same value in
-      this schema generation, so consumers should exact-match the reported
-      schema version
+      this schema generation, so consumers should exact-match
+      `midnight-university-protocol-export.v2`
     - any export-shape change that requires a different reader should bump the
       schema version and widen or replace the compatibility window deliberately
 - stress summary:
