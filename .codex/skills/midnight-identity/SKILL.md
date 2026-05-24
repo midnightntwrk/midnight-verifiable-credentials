@@ -22,16 +22,18 @@ Use this skill from the `midnight-verifiable-credentials` repository, whether cl
 
 ## PR Gate (required before any PR)
 
-- Mandatory:
+- In-workspace gate that keeps DID/VC integration healthy:
+  - `cd <workspace-root>/midnight-identity-workspace && ./run.sh --light --strict --repos vc`
+  - `cd <workspace-root>/midnight-identity-workspace && ./run.sh --light --strict --repos did`
+- Repo-local gate:
   - `./run.sh --light`
   - `./run.sh bdd`
   - `./run.sh university-protocol`
+  - `./run.sh university-summary`
   - `./run.sh clean-artifacts`
   - `./run.sh integration-report`
-- Required cross-repo sanity:
-  - `cd <workspace-root>/midnight-identity-workspace && ./run.sh --light --repos vc`
 
-Do not open or push PRs before completing this gate.
+Do not open the PR until all required gate commands pass.
 
 ## Validation
 

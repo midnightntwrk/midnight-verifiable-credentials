@@ -34,7 +34,8 @@ export const runBddScenarioReportPipeline = async ({
 
   const executeExitCode = await runner(executeScript);
   const summaryExitCode = await runner(summaryScript);
-  const reportExitCode = await runner(reportScript);
+  const shouldSkipReport = process.env.SKIP_BDD_REPORT === "1";
+  const reportExitCode = shouldSkipReport ? 0 : await runner(reportScript);
 
   // Preserve the original scenario failure code after still attempting summary
   // and report generation, because the failing scenarios are the primary cause.
