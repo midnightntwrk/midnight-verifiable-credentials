@@ -20,6 +20,19 @@ Use this skill from the `midnight-verifiable-credentials` repository, whether cl
 - Preserve the generic envelope `VC<TPublicClaims, TClaimCommitments, THolderBinding, TStatusBinding>`.
 - Keep BDD under `packages/use-cases/`.
 
+## PR Gate (required before any PR)
+
+- Mandatory:
+  - `./run.sh --light`
+  - `./run.sh bdd`
+  - `./run.sh university-protocol`
+  - `./run.sh clean-artifacts`
+  - `./run.sh integration-report`
+- Required cross-repo sanity:
+  - `cd <workspace-root>/midnight-identity-workspace && ./run.sh --light --repos vc`
+
+Do not open or push PRs before completing this gate.
+
 ## Validation
 
 ```bash
