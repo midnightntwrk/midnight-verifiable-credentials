@@ -205,6 +205,8 @@ Light default pipeline:
 ./run.sh --light
 ```
 
+Current stabilization checkpoint (documented for local process): develop at `44c611b` ran `./run.sh --light` successfully (lint, light typecheck/build/test, BDD smoke, Serenity report generation) as observed on 2026-05-23. Refresh this entry whenever workflows change.
+
 Core lanes:
 
 ```bash
