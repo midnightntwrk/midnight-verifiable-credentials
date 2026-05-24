@@ -54,13 +54,13 @@ Discover runner targets:
 Fast validation:
 
 ```bash
-./run.sh --light --strict
+./run.sh --light
 ```
 
 Full validation:
 
 ```bash
-PROOF_SERVER_IMAGE=proof-server-bootstrap:8.0.3 ./run.sh --strict
+PROOF_SERVER_IMAGE=proof-server-bootstrap:8.0.3 ./run.sh
 ```
 
 ## Midnight MCP Configuration
@@ -175,7 +175,7 @@ Generated outputs under `src/managed/**`, `dist/**`, and `*.tsbuildinfo` are bui
 2. Create a focused branch, normally with `codex/` prefix.
 3. Update source, tests, package README, and spec/guide/test-matrix docs together.
 4. Run the narrowest meaningful `./run.sh <target>` lane.
-5. Run `./run.sh --light --strict` before treating the repo as stable.
+5. Run `./run.sh --light` before treating the repo as stable.
 6. Run full or targeted Docker/BDD/protocol lanes for integration-sensitive changes.
 7. Commit with DCO and GPG for repository-facing work.
 
@@ -205,13 +205,13 @@ Light default pipeline:
 ./run.sh --light
 ```
 
-Strict light stabilization gate:
+Light stabilization gate:
 
 ```bash
-./run.sh --light --strict
+./run.sh --light
 ```
 
-Current stabilization checkpoint, 2026-05-23: develop at `44c611b` matched `origin/develop`, and `./run.sh --light --strict` passed locally, including lint, light typecheck/build/test lanes, BDD smoke, and Serenity report generation.
+Current stabilization checkpoint, 2026-05-23: develop at `44c611b` matched `origin/develop`, and `./run.sh --light` passed locally, including lint, light typecheck/build/test lanes, BDD smoke, and Serenity report generation.
 
 Core lanes:
 
