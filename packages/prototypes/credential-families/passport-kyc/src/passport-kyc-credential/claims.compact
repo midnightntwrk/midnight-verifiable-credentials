@@ -1,14 +1,38 @@
+// Passport-KYC claim commitments and claim-root hashing.
+// This file stays schema-local on purpose so the generic VC core does not need
+// to know anything about passport-kyc field layout.
 export struct PassportKycClaimCommitments {
-  subjectIdCommitment: Bytes<32>,
-  primaryClaimCommitment: Bytes<32>,
-  contextCommitment: Bytes<32>,
+  firstNameCommitment: Bytes<32>,
+  lastNameCommitment: Bytes<32>,
+  dateOfBirthCommitment: Bytes<32>,
 }
 
-export pure circuit passportKycClaimRoot(
-  claimCommitments: PassportKycClaimCommitments
-): Bytes<32> {
-  return persistentHash<Vector<2, Bytes<32>>>([
-    pad(32, "midnight:vc:passport-kyc:v1"),
-    persistentHash<PassportKycClaimCommitments>(claimCommitments)
-  ]);
+export pure circuit passportKycClaimRoot(commitments: PassportKycClaimCommitments): Bytes<32> {
+  return persistentHash<Vector<4, Bytes<32>>>(
+           [pad(32, "midnight:vc:passport-kyc:v1"),
+            commitments.firstNameCommitment,
+            commitments.lastNameCommitment,
+            commitments.dateOfBirthCommitment]
+           );
+}
+
+// =====================
+// Individual claim commitments
+// =====================
+export pure circuit firstNameCommitment(
+                      firstNameValuePadded: Bytes<64>,
+                      opening: Bytes<32>
+                      ): Bytes<32> {
+  return persistentCommit<Bytes<64>>(firstNameValuePadded, opening);
+}
+
+export pure circuit lastNameCommitment(
+                      lastNameValuePadded: Bytes<64>,
+                      opening: Bytes<32>
+                      ): Bytes<32> {
+  return persistentCommit<Bytes<64>>(lastNameValuePadded, opening);
+}
+
+export pure circuit dateOfBirthCommitment(dateOfBirthDays: Uint<32>, opening: Bytes<32>): Bytes<32> {
+  return persistentCommit<Uint<32>>(dateOfBirthDays, opening);
 }

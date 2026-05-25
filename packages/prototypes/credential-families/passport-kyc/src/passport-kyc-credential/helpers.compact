@@ -1,83 +1,189 @@
-export pure circuit passportKycCredentialBodyRoot(
-  credential: PassportKycCredential
-): Bytes<32> {
+// Passport-KYC-family schema helpers and request normalization.
+// These helpers stay pure because they only derive schema-local roots and
+// verifier-request shapes; they never read ledger state.
+export pure circuit passportKycCredentialBodyRoot(credential: PassportKycCredential): Bytes<32> {
   return credentialBodyRoot(credential);
 }
 
 export pure circuit passportKycPresentationBodyRoot(
-  presentation: PassportKycPresentation
-): Bytes<32> {
+                      presentation: PassportKycPresentation
+                      ): Bytes<32> {
   return presentationBodyRoot(presentation);
 }
 
 export pure circuit passportKycPresentationRequestBodyRoot(
-  request: PassportKycPresentationRequest
-): Bytes<32> {
+                      request: PassportKycPresentationRequest
+                      ): Bytes<32> {
   return persistentHash<PassportKycPresentationRequest>(request);
 }
 
-export pure circuit assertValidPassportKycSchemaRef(
-  schema: SchemaRef
-): [] {
-  assert(
-    schema.packageId == pad(32, "midnight:vc:passport-kyc"),
-    "PassportKyc package id mismatch"
-  );
-  assert(
-    schema.schemaId == pad(32, "passport-kyc:v1"),
-    "PassportKyc schema id mismatch"
-  );
-  assert(schema.majorVersion == 1, "PassportKyc major version mismatch");
+// =====================
+// Schema and verifier-request validation
+// =====================
+export pure circuit assertValidPassportKycSchemaRef(schema: SchemaRef): [] {
+  assert(schema.packageId == pad(32, "midnight:vc:passport-kyc"),
+         "Passport-KYC package identifier mismatch"
+         );
+  assert(schema.schemaId == pad(32, "passport-kyc:v1"), "Passport-KYC schema identifier mismatch");
+  assert(schema.majorVersion == 1, "Passport-KYC major version mismatch");
 }
 
 export pure circuit assertValidPassportKycPresentationRequest(
-  request: PassportKycPresentationRequest
-): [] {
-  assert(request.version == 1, "PassportKyc request version mismatch");
+                      request: PassportKycPresentationRequest
+                      ): [] {
+  assert(request.version == 1, "Passport-KYC request version mismatch");
   assertValidPassportKycSchemaRef(request.schema);
-  assert(
-    request.verifierChallengeHash != pad(32, ""),
-    "PassportKyc verifier challenge must be set"
-  );
+  assertValidVerificationMethodRef(request.issuerVerificationMethodRef);
+  if (request.requireAgeOverThreshold) {
+    assert(request.requestedAgeThresholdYears > 0, "Requested age threshold must be positive");
+  } else {
+    assert(request.requestedAgeThresholdYears == 0,
+           "Requested age threshold must be zero when disabled"
+           );
+  }
+  assert(request.verifierChallengeHash != pad(32, ""),
+         "Passport-KYC verifier challenge must be set"
+         );
 }
 
+// NOTE: this normalization deliberately strips the transport envelope so the
+// credential-family request semantics stay reusable across protocol wrappers.
+export pure circuit passportKycPresentationRequestFromProtocol(
+                      request: PassportKycVerificationRequest
+                      ): PassportKycPresentationRequest {
+  return PassportKycPresentationRequest { version: request.envelope.version,
+                                          schema: request.schema,
+                                          issuerVerificationMethodRef: request.issuerVerificationMethodRef,
+                                          requireFirstNameDisclosure: request.body.requireFirstNameDisclosure,
+                                          requireLastNameDisclosure: request.body.requireLastNameDisclosure,
+                                          requireAgeOverThreshold: request.body.requireAgeOverThreshold,
+                                          requestedAgeThresholdYears: request.body.requestedAgeThresholdYears,
+                                          verifierChallengeHash: request.verifierChallengeHash, };
+}
+
+// =====================
+// Credential and presentation validation
+// =====================
 export pure circuit assertValidPassportKycCredential(
-  credential: PassportKycCredential,
-  proof: Proof
-): [] {
+                      credential: PassportKycCredential,
+                      proof: Proof
+                      ): [] {
   assertValidPassportKycSchemaRef(credential.schema);
-  assertValidCredentialEnvelope(
-    credential,
-    passportKycClaimRoot(credential.claimCommitments)
-  );
-  assertValidExplicitHolderBinding(credential.holderBinding);
+  assertValidCredentialEnvelope(credential, passportKycClaimRoot(credential.claimCommitments));
   assertValidNoStatusBinding(credential.statusBinding);
+  assertValidExplicitHolderBinding(credential.holderBinding);
   assertValidCredentialProof(credential, proof);
 }
 
 export pure circuit assertValidPassportKycPresentation(
-  credential: PassportKycCredential,
-  presentation: PassportKycPresentation
-): [] {
+                      credential: PassportKycCredential,
+                      credentialProof: Proof,
+                      presentation: PassportKycPresentation,
+                      presentationProof: Proof
+                      ): [] {
+  assertValidPassportKycCredential(credential, credentialProof);
   assertValidPassportKycSchemaRef(presentation.schema);
   assertValidPresentationEnvelope(presentation);
-  PassportKycPresentation_assertMatchingCredentialPresentation(
-    credential,
-    presentation
-  );
+  PassportKycPresentation_assertMatchingCredentialPresentation(credential, presentation);
+  assertValidExplicitHolderBinding(presentation.holderBinding);
   assertMatchingExplicitHolderBindings(credential.holderBinding, presentation.holderBinding);
+
+  if (presentation.disclosed.revealFirstName) {
+    assert(firstNameCommitment(
+             presentation.disclosed.firstNameValuePadded,
+             presentation.disclosed.firstNameOpening
+             ) ==
+           credential.claimCommitments.firstNameCommitment,
+           "Presentation first-name disclosure does not match the credential"
+           );
+  }
+  if (presentation.disclosed.revealLastName) {
+    assert(lastNameCommitment(
+             presentation.disclosed.lastNameValuePadded,
+             presentation.disclosed.lastNameOpening
+             ) ==
+           credential.claimCommitments.lastNameCommitment,
+           "Presentation last-name disclosure does not match the credential"
+           );
+  }
+  if (presentation.disclosed.proveAgeOverThreshold) {
+    assert(presentation.disclosed.ageThresholdYears > 0, "Age threshold must be positive");
+  }
+
+  assertProofMatchesExplicitHolderBinding(presentation.holderBinding, presentationProof);
+  assertValidPresentationContextProof(
+    passportKycPresentationBodyRoot(presentation),
+    presentationProof
+    );
 }
 
+// TRUST BOUNDARY: `request` is verifier-supplied and may be stricter than the
+// holder expects. This helper only proves that the presentation satisfies the
+// declared request semantics; it does not authenticate who authored the
+// request outside the challenge and issuer-binding checks below.
 export pure circuit assertPassportKycPresentationSatisfiesRequest(
-  request: PassportKycPresentationRequest,
-  presentation: PassportKycPresentation
-): [] {
+                      credential: PassportKycCredential,
+                      request: PassportKycPresentationRequest,
+                      presentation: PassportKycPresentation,
+                      presentationProof: Proof
+                      ): [] {
   assertValidPassportKycPresentationRequest(request);
   assertValidPassportKycSchemaRef(presentation.schema);
-  if (request.requirePrimaryClaimDisclosure) {
-    assert(
-      presentation.disclosed.revealPrimaryClaim,
-      "PassportKyc request requires primary claim disclosure"
-    );
+  assertMatchingSchemaRefs(request.schema, credential.schema);
+  assertMatchingSchemaRefs(request.schema, presentation.schema);
+  assert(request.issuerVerificationMethodRef.didContractAddress ==
+         credential.issuerVerificationMethodRef.didContractAddress,
+         "Presentation request issuer contract does not match the credential issuer"
+         );
+  assert(request.issuerVerificationMethodRef.methodId ==
+         credential.issuerVerificationMethodRef.methodId,
+         "Presentation request issuer method reference does not match the credential issuer"
+         );
+  assert(presentationProof.challengeHash == request.verifierChallengeHash,
+         "Presentation proof challenge does not match the request challenge"
+         );
+  if (request.requireFirstNameDisclosure) {
+    assert(presentation.disclosed.revealFirstName,
+           "Presentation request requires the first-name disclosure"
+           );
   }
+  if (request.requireLastNameDisclosure) {
+    assert(presentation.disclosed.revealLastName,
+           "Presentation request requires the last-name disclosure"
+           );
+  }
+  if (request.requireAgeOverThreshold) {
+    assert(presentation.disclosed.proveAgeOverThreshold,
+           "Presentation request requires the age-over-threshold predicate"
+           );
+    assert(presentation.disclosed.ageThresholdYears == request.requestedAgeThresholdYears,
+           "Presentation age threshold does not match the request"
+           );
+  }
+}
+
+// =====================
+// Predicate validation
+// =====================
+// TRUST BOUNDARY: `currentDay` is caller-supplied policy input. Callers must
+// source it from a trustworthy time/calendar oracle when the age predicate is
+// used for real acceptance decisions.
+export pure circuit assertValidPassportKycAgePredicate(
+                      credential: PassportKycCredential,
+                      presentation: PassportKycPresentation,
+                      currentDay: Uint<32>,
+                      dateOfBirthDays: Uint<32>,
+                      dateOfBirthOpening: Bytes<32>
+                      ): [] {
+  assert(presentation.disclosed.proveAgeOverThreshold,
+         "Presentation must request the age-over-threshold predicate"
+         );
+  assert(dateOfBirthCommitment(dateOfBirthDays, dateOfBirthOpening) ==
+         credential.claimCommitments.dateOfBirthCommitment,
+         "Date-of-birth witness does not match credential commitment"
+         );
+  assert(currentDay >= dateOfBirthDays, "Current day must not precede the date-of-birth witness");
+  assert(currentDay - dateOfBirthDays >= presentation.disclosed.ageThresholdYears * 365,
+         "Age predicate does not satisfy the requested threshold"
+         );
 }

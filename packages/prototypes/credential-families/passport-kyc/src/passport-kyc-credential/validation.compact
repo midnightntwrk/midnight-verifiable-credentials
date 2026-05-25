@@ -1,0 +1,160 @@
+// Passport-KYC-family issuance, presentation, and predicate validation.
+// =====================
+// Issuance-message validation
+// =====================
+export pure circuit assertValidPassportKycIssuanceOffer(offer: PassportKycIssuanceOffer): [] {
+  PassportKycIssuance_assertValidOfferMessage(offer);
+  assertValidPassportKycSchemaRef(offer.schema);
+  assert(offer.holderBindingProfile == HolderBindingProfile.explicitDid,
+         "Passport-KYC issuance offer must use explicit DID holder binding"
+         );
+  if (offer.body.supportsExpiration) {
+    assert(offer.body.defaultExpirationDays > 0,
+           "Passport-KYC issuance offer default expiration must be positive when supported"
+           );
+  } else {
+    assert(offer.body.defaultExpirationDays == 0,
+           "Passport-KYC issuance offer default expiration must be zero when expiration is disabled"
+           );
+  }
+}
+
+export pure circuit assertValidPassportKycIssuanceRequest(request: PassportKycIssuanceRequest): [] {
+  PassportKycIssuance_assertValidRequestMessage(request);
+  assertValidPassportKycSchemaRef(request.schema);
+  assert(request.holderBindingProfile == HolderBindingProfile.explicitDid,
+         "Passport-KYC issuance request must use explicit DID holder binding"
+         );
+  assertValidExplicitHolderBinding(request.body.holderBinding);
+  assert(request.body.holderChallengeHash != noProtocolResponseReference(),
+         "Passport-KYC issuance request holder challenge must be set"
+         );
+  if (request.body.requestExpiration) {
+    assert(request.body.requestedExpirationDays > 0,
+           "Passport-KYC issuance request expiration days must be positive when requested"
+           );
+  } else {
+    assert(request.body.requestedExpirationDays == 0,
+           "Passport-KYC issuance request expiration days must be zero when disabled"
+           );
+  }
+}
+
+export pure circuit assertPassportKycIssuanceRequestMatchesOffer(
+                      offer: PassportKycIssuanceOffer,
+                      request: PassportKycIssuanceRequest
+                      ): [] {
+  assertValidPassportKycIssuanceOffer(offer);
+  assertValidPassportKycIssuanceRequest(request);
+  PassportKycIssuance_assertOfferRequestAlignment(offer, request);
+  if (request.body.requestExpiration) {
+    assert(offer.body.supportsExpiration,
+           "Passport-KYC issuance request cannot require expiration when the offer disables it"
+           );
+  }
+}
+
+export pure circuit assertValidPassportKycIssuanceResult(result: PassportKycIssuanceResult): [] {
+  PassportKycIssuance_assertValidResultMessage(result);
+  assertValidPassportKycSchemaRef(result.schema);
+  assert(result.holderBindingProfile == HolderBindingProfile.explicitDid,
+         "Passport-KYC issuance result must use explicit DID holder binding"
+         );
+  assertValidPassportKycCredential(result.body.credential, result.body.credentialProof);
+  assert(result.body.credentialProof.challengeHash == result.body.issuanceChallengeHash,
+         "Passport-KYC issuance result challenge must match the issuer proof challenge"
+         );
+}
+
+export pure circuit assertPassportKycIssuanceResultMatchesRequest(
+                      request: PassportKycIssuanceRequest,
+                      result: PassportKycIssuanceResult
+                      ): [] {
+  assertValidPassportKycIssuanceRequest(request);
+  assertValidPassportKycIssuanceResult(result);
+  PassportKycIssuance_assertRequestResultAlignment(request, result);
+  assert(request.body.holderChallengeHash == result.body.issuanceChallengeHash,
+         "Passport-KYC issuance result challenge must match the request challenge"
+         );
+  assertMatchingExplicitHolderBindings(
+    request.body.holderBinding,
+    result.body.credential.holderBinding
+    );
+  assert(jubjubPointX(request.body.holderPublicKey) == jubjubPointX(result.body.holderPublicKey) &&
+         jubjubPointY(request.body.holderPublicKey) == jubjubPointY(result.body.holderPublicKey),
+         "Passport-KYC issuance result holder public key does not match the request"
+         );
+}
+
+// =====================
+// Presentation-message validation
+// =====================
+export pure circuit assertValidPassportKycVerificationRequestMessage(
+                      request: PassportKycVerificationRequest
+                      ): [] {
+  PassportKycVerification_assertValidRequestMessage(request);
+  assertValidPassportKycSchemaRef(request.schema);
+  assert(request.holderBindingProfile == HolderBindingProfile.explicitDid,
+         "Passport-KYC verification request must use explicit DID holder binding"
+         );
+  assertValidPassportKycPresentationRequest(passportKycPresentationRequestFromProtocol(request));
+}
+
+export pure circuit assertValidPassportKycVerificationSubmissionMessage(
+                      submission: PassportKycVerificationSubmission
+                      ): [] {
+  PassportKycVerification_assertValidSubmissionMessage(submission);
+  assertValidPassportKycSchemaRef(submission.schema);
+  assert(submission.holderBindingProfile == HolderBindingProfile.explicitDid,
+         "Passport-KYC verification submission must use explicit DID holder binding"
+         );
+  assertValidPassportKycPresentation(
+    submission.body.credential,
+    submission.body.credentialProof,
+    submission.body.presentation,
+    submission.body.presentationProof
+    );
+  assert(submission.body.presentationProof.challengeHash == submission.challengeHash,
+         "Passport-KYC verification submission challenge must match the presentation proof challenge"
+         );
+}
+
+export pure circuit assertPassportKycVerificationSubmissionMatchesRequest(
+                      request: PassportKycVerificationRequest,
+                      submission: PassportKycVerificationSubmission
+                      ): [] {
+  assertValidPassportKycVerificationRequestMessage(request);
+  assertValidPassportKycVerificationSubmissionMessage(submission);
+  PassportKycVerification_assertRequestSubmissionAlignment(request, submission);
+  assertPassportKycPresentationSatisfiesRequest(
+    submission.body.credential,
+    passportKycPresentationRequestFromProtocol(request),
+    submission.body.presentation,
+    submission.body.presentationProof
+    );
+}
+
+export pure circuit assertValidPassportKycVerificationResultMessage(
+                      result: PassportKycVerificationResult
+                      ): [] {
+  PassportKycVerification_assertValidResultMessage(result);
+  if (result.approved) {
+    assert(result.body.credentialRoot != noProtocolResponseReference(),
+           "Passport-KYC verification result must include a credential root when approved"
+           );
+  }
+}
+
+export pure circuit assertPassportKycVerificationResultMatchesSubmission(
+                      submission: PassportKycVerificationSubmission,
+                      result: PassportKycVerificationResult
+                      ): [] {
+  assertValidPassportKycVerificationSubmissionMessage(submission);
+  assertValidPassportKycVerificationResultMessage(result);
+  PassportKycVerification_assertSubmissionResultAlignment(submission, result);
+  if (result.approved) {
+    assert(result.body.credentialRoot == passportKycCredentialBodyRoot(submission.body.credential),
+           "Passport-KYC verification result credential root does not match the submission"
+           );
+  }
+}

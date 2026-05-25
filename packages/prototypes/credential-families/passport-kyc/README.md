@@ -3,80 +3,162 @@
 > Maturity: `reference`
 > Package class: `dist`
 
-Status: starter scaffold for an explicit-holder family package built on `ExplicitHolderBinding` and `NoStatusBinding`.
+Passport-KYC credential specialization for the generic Midnight VC/VP core.
 
-Purpose:
+Status:
 
-- give engineers a real thin-core family package skeleton instead of another blank folder
-- keep naming, scripts, and directory layout aligned with the current VC repository
-- make the next customization steps explicit
+- reference implementation
 
-Generated location:
+Tier:
 
-- `prototypes/credential-families/passport-kyc`
+- credential-family package
 
-Generated claim mode:
+Dependency direction:
 
-- `commitment`: commitment-only claims (`claims` is `NoPublicClaims` and `claimCommitments` carries private digests)
+- depends on reusable core packages
+- may be composed by Layer 3 contracts and Layer 4 adapters
+- should not depend on protocol/orchestration packages, demos, or standalone
+  integration harnesses
 
-Generated shape:
+Reusable outside this repo:
 
-```text
-prototypes/credential-families/passport-kyc/
-├── README.md
-├── eslint.config.mjs
-├── package.json
-├── tsconfig.json
-├── tsconfig.build.json
-├── scripts/
-│   ├── align-runtime-version.mjs
-│   ├── ensure-compact-package-aliases.mjs
-│   ├── find-repo-root.mjs
-│   └── strip-managed-sourcemaps.mjs
-└── src/
-    ├── passport-kyc-credential.compact
-    ├── contract.ts
-    ├── index.ts
-    ├── passport-kyc-credential/
-    │   ├── claims.compact
-    │   ├── helpers.compact
-    │   └── model.compact
-    └── test/
-        ├── claim-root.test.ts
-        ├── package-surfaces.test.ts
-        └── presentation-request.test.ts
+- yes
+
+Surface classification:
+
+- `On-chain + off-chain`
+- `src/passport-kyc-credential.compact` is the authoritative contract-authoring surface
+- generated/runtime TypeScript exports are off-chain mirrors only
+- `./testing` is an `Off-chain only` fixture surface for integration tests;
+  do not import `../<package>/src/...` from sibling workspaces
+- example:
+  `import { createPassportKycFixtureForParticipants } from "@midnight-ntwrk/midnight-did-credentials-passport-kyc/testing";`
+
+Start here:
+
+1. use this package when you want passport-KYC credential commitment-only claims
+   on top of the generic Midnight VC/VP core
+2. write contracts against the Compact family entrypoint
+3. use generated/runtime exports only in tests, wallets, verifiers, and
+   adapter code
+4. read [`../../../../docs/guides/integration-surface-map.md`](../../../../docs/guides/integration-surface-map.md)
+   for the Compact/runtime split
+
+Related docs:
+
+- spec: [`../../../../docs/spec/midnight-credentials.md`](../../../../docs/spec/midnight-credentials.md)
+- profiles: [`../../../../docs/spec/profiles.md`](../../../../docs/spec/profiles.md)
+- conformance: [`../../../../docs/spec/conformance.md`](../../../../docs/spec/conformance.md)
+- companion guide: [`../../../../docs/guides/midnight-credentials-for-dummies.md`](../../../../docs/guides/midnight-credentials-for-dummies.md)
+- test matrix: [`../../../../docs/testing/test-matrix.md`](../../../../docs/testing/test-matrix.md)
+
+## Purpose
+
+This package defines the passport-KYC credential family on top of the generic
+[`credentials`](../../../../packages/core/primitives/credentials/README.md) package.
+
+It owns the schema-specific parts that should not live in the generic core:
+
+- passport-KYC claim commitments
+- passport-KYC schema validation
+- typed passport-KYC presentation requests
+- first-name, last-name, and date-of-birth selective disclosure
+- age-over-threshold predicate validation
+
+## Claim Schema
+
+| Field | Compact Type | Representation | Notes |
+|---|---|---|---|
+| `firstName` | `Bytes<64>` | `committedPrivate` | Text-padded to 64 bytes; revealed on request via `revealFirstName` |
+| `lastName` | `Bytes<64>` | `committedPrivate` | Text-padded to 64 bytes; revealed on request via `revealLastName` |
+| `dateOfBirth` | `Uint<32>` | `committedPrivate` + `predicateOnly` | Days since Unix epoch; supports age-over-threshold predicate without revealing the date |
+
+Schema identifiers:
+
+- `packageId = "midnight:vc:passport-kyc"`
+- `schemaId = "passport-kyc:v1"`
+- `majorVersion = 1`
+
+The claim root uses domain-separated hashing:
+```
+persistentHash<Vector<4, Bytes<32>>>([
+  pad(32, "midnight:vc:passport-kyc:v1"),
+  firstNameCommitment,
+  lastNameCommitment,
+  dateOfBirthCommitment,
+])
 ```
 
-Next steps:
+## Holder Binding
 
-1. rename the placeholder claim/disclosure/request structs to the real schema vocabulary
-2. replace the placeholder schema id and package id with the real family identifiers
-3. replace the example disclosure gate with real family proof and request semantics
-4. add a dedicated `./testing` surface only when another package truly needs fixtures from this family
-5. wire the package into root workspaces only after it has a real owner and validation path
+This family uses `ExplicitHolderBinding`: the holder binds their DID
+verification method reference directly into the credential and presentation.
+The generic core validates the holder binding proof.
 
-Current Compact claim-shape guardrails:
+## Status Binding
 
-- The generated family is commitment-only: raw placeholder values stay outside the credential body, `credential.claims` uses `NoPublicClaims`, and `credential.claimCommitments` carries private digests.
-- native direct Compact claim fields today should stay within:
-  - `Boolean`
-  - `Uint<n>`
-  - `Bytes<n>`
-  - `Field`
-  - vectors and nested structs built only from those supported kinds
-- do not model `String`, `Int<n>`, or `Float<n>` as if they were native
-  Compact claim fields
-- do not model `Vector<k, T>` when `T` is itself an unsupported field kind
-- prefer flat claims by default; use nested structs only when they reflect a
-  real domain grouping
-- keep `claims` for intentionally public/direct values only
-- keep `claimCommitments` for private disclosure or predicate-only digests only
+This family uses `NoStatusBinding`: credentials have no on-chain revocation or
+suspension status. Status checking, if needed, is an off-chain concern.
 
-Reference packages:
+## Disclosures
 
-- smallest starter family:
-  - `packages/prototypes/credential-families/hello-family`
-- broad direct claim-surface laboratory:
-  - `packages/prototypes/credential-families/dummy-claims`
-- mixed public/private claim-representation laboratory:
-  - `packages/prototypes/credential-families/mixed-claims`
+`PassportKycDisclosures` supports three disclosure modes:
+
+| Disclosure | Field | Description |
+|---|---|---|
+| `revealFirstName` | `firstNameValuePadded` + `firstNameOpening` | Opens the first-name commitment to reveal the padded text value |
+| `revealLastName` | `lastNameValuePadded` + `lastNameOpening` | Opens the last-name commitment to reveal the padded text value |
+| `proveAgeOverThreshold` | `ageThresholdYears` | Proves the holder is at least `ageThresholdYears` years old without revealing `dateOfBirth` |
+
+## Presentation Requests
+
+`PassportKycPresentationRequest` allows a verifier to request one or more
+disclosures:
+
+| Field | Description |
+|---|---|
+| `requireFirstNameDisclosure` | Require the holder to reveal their first name |
+| `requireLastNameDisclosure` | Require the holder to reveal their last name |
+| `requireAgeOverThreshold` | Require the holder to prove age over `requestedAgeThresholdYears` |
+| `requestedAgeThresholdYears` | The minimum age in years (must be > 0 when `requireAgeOverThreshold` is true, 0 otherwise) |
+| `verifierChallengeHash` | Anti-replay challenge from the verifier (must be non-empty) |
+
+## Validation Circuits
+
+| Circuit | Purpose |
+|---|---|
+| `passportKycClaimRoot` | Domain-separated claim root from commitments |
+| `firstNameCommitment` / `lastNameCommitment` / `dateOfBirthCommitment` | Individual commitment circuits |
+| `assertValidPassportKycSchemaRef` | Validates schema identifiers |
+| `assertValidPassportKycPresentationRequest` | Validates request structure and constraints |
+| `assertValidPassportKycCredential` | Validates the full credential envelope |
+| `assertValidPassportKycPresentation` | Validates a presentation and its disclosures |
+| `assertPassportKycPresentationSatisfiesRequest` | Checks that disclosures match request requirements |
+| `assertValidPassportKycAgePredicate` | Validates the age-over-threshold predicate with a current-day witness |
+
+## Protocol Model
+
+This family follows the thin-core protocol model (VC/VP types + claim root):
+
+- `PassportKycIssuanceOffer`, `PassportKycIssuanceRequest`, `PassportKycIssuanceResult`
+- `PassportKycVerificationRequest`, `PassportKycVerificationSubmission`, `PassportKycVerificationResult`
+
+## Relationship to midnight-passport-kyc SD-JWT claims
+
+The passport-KYC Compact credential family is the on-chain complement to the
+off-chain SD-JWT passport-KYC credential defined in the `midnight-passport-kyc`
+workspace. The SD-JWT claims source the same fields:
+- `first_name` → `firstName` (`Bytes<64>`, text-padded)
+- `last_name` → `lastName` (`Bytes<64>`, text-padded)
+- `date_of_birth` → `dateOfBirth` (`Uint<32>`, days since epoch)
+
+An adapter layer maps between SD-JWT selective-disclosure claims and the
+Compact commitment-based disclosures. The Compact family provides stronger
+privacy guarantees because raw values never appear in the signed credential
+body — only commitment digests.
+
+## Build and test
+
+- Compile Compact artifacts: `npm run contract -w credentials-passport-kyc`
+- Build TS exports: `npm run build -w credentials-passport-kyc`
+- Run tests: `npm test -w credentials-passport-kyc`
