@@ -210,28 +210,52 @@ case "$target" in
     ;;
   bdd)
     echo "[run] BDD smoke lane"
-    npm run test:bdd:smoke
+    if [[ "${light_requested}" == "1" ]]; then
+      SKIP_BDD_REPORT=1 npm run test:bdd:smoke
+    else
+      npm run test:bdd:smoke
+    fi
     ;;
   bdd-negative)
     echo "[run] BDD negative lane"
-    npm run test:bdd:negative
+    if [[ "${light_requested}" == "1" ]]; then
+      SKIP_BDD_REPORT=1 npm run test:bdd:negative
+    else
+      npm run test:bdd:negative
+    fi
     ;;
   bdd-all)
     echo "[run] BDD full lane"
-    npm run test:bdd:all
+    if [[ "${light_requested}" == "1" ]]; then
+      SKIP_BDD_REPORT=1 npm run test:bdd:all
+    else
+      npm run test:bdd:all
+    fi
     ;;
   university-bdd)
     echo "[run] University diploma BDD lane"
-    npm run ci:university-bdd
+    if [[ "${light_requested}" == "1" ]]; then
+      SKIP_BDD_REPORT=1 npm run ci:university-bdd
+    else
+      npm run ci:university-bdd
+    fi
     ;;
   university-bdd-proof-server)
     echo "[run] University diploma proof-server-contract BDD lane"
-    npm run ci:university-bdd:proof-server
+    if [[ "${light_requested}" == "1" ]]; then
+      SKIP_BDD_REPORT=1 npm run ci:university-bdd:proof-server
+    else
+      npm run ci:university-bdd:proof-server
+    fi
     ;;
   university-bdd-standalone)
     if docker info >/dev/null 2>&1; then
       echo "[run] University diploma standalone-hybrid BDD lane"
-      npm run ci:university-bdd:standalone
+      if [[ "${light_requested}" == "1" ]]; then
+        SKIP_BDD_REPORT=1 npm run ci:university-bdd:standalone
+      else
+        npm run ci:university-bdd:standalone
+      fi
     else
       echo "[run] Docker unavailable; cannot run university standalone-hybrid BDD lane"
       exit 1
