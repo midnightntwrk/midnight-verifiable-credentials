@@ -1,0 +1,14 @@
+export struct PassportKycClaimCommitments {
+  subjectIdCommitment: Bytes<32>,
+  primaryClaimCommitment: Bytes<32>,
+  contextCommitment: Bytes<32>,
+}
+
+export pure circuit passportKycClaimRoot(
+  claimCommitments: PassportKycClaimCommitments
+): Bytes<32> {
+  return persistentHash<Vector<2, Bytes<32>>>([
+    pad(32, "midnight:vc:passport-kyc:v1"),
+    persistentHash<PassportKycClaimCommitments>(claimCommitments)
+  ]);
+}

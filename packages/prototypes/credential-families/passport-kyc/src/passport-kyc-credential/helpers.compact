@@ -1,0 +1,83 @@
+export pure circuit passportKycCredentialBodyRoot(
+  credential: PassportKycCredential
+): Bytes<32> {
+  return credentialBodyRoot(credential);
+}
+
+export pure circuit passportKycPresentationBodyRoot(
+  presentation: PassportKycPresentation
+): Bytes<32> {
+  return presentationBodyRoot(presentation);
+}
+
+export pure circuit passportKycPresentationRequestBodyRoot(
+  request: PassportKycPresentationRequest
+): Bytes<32> {
+  return persistentHash<PassportKycPresentationRequest>(request);
+}
+
+export pure circuit assertValidPassportKycSchemaRef(
+  schema: SchemaRef
+): [] {
+  assert(
+    schema.packageId == pad(32, "midnight:vc:passport-kyc"),
+    "PassportKyc package id mismatch"
+  );
+  assert(
+    schema.schemaId == pad(32, "passport-kyc:v1"),
+    "PassportKyc schema id mismatch"
+  );
+  assert(schema.majorVersion == 1, "PassportKyc major version mismatch");
+}
+
+export pure circuit assertValidPassportKycPresentationRequest(
+  request: PassportKycPresentationRequest
+): [] {
+  assert(request.version == 1, "PassportKyc request version mismatch");
+  assertValidPassportKycSchemaRef(request.schema);
+  assert(
+    request.verifierChallengeHash != pad(32, ""),
+    "PassportKyc verifier challenge must be set"
+  );
+}
+
+export pure circuit assertValidPassportKycCredential(
+  credential: PassportKycCredential,
+  proof: Proof
+): [] {
+  assertValidPassportKycSchemaRef(credential.schema);
+  assertValidCredentialEnvelope(
+    credential,
+    passportKycClaimRoot(credential.claimCommitments)
+  );
+  assertValidExplicitHolderBinding(credential.holderBinding);
+  assertValidNoStatusBinding(credential.statusBinding);
+  assertValidCredentialProof(credential, proof);
+}
+
+export pure circuit assertValidPassportKycPresentation(
+  credential: PassportKycCredential,
+  presentation: PassportKycPresentation
+): [] {
+  assertValidPassportKycSchemaRef(presentation.schema);
+  assertValidPresentationEnvelope(presentation);
+  PassportKycPresentation_assertMatchingCredentialPresentation(
+    credential,
+    presentation
+  );
+  assertMatchingExplicitHolderBindings(credential.holderBinding, presentation.holderBinding);
+}
+
+export pure circuit assertPassportKycPresentationSatisfiesRequest(
+  request: PassportKycPresentationRequest,
+  presentation: PassportKycPresentation
+): [] {
+  assertValidPassportKycPresentationRequest(request);
+  assertValidPassportKycSchemaRef(presentation.schema);
+  if (request.requirePrimaryClaimDisclosure) {
+    assert(
+      presentation.disclosed.revealPrimaryClaim,
+      "PassportKyc request requires primary claim disclosure"
+    );
+  }
+}

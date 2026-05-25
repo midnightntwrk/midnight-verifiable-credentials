@@ -1,0 +1,13 @@
+export struct PassportKycDisclosures {
+  revealPrimaryClaim: Boolean,
+  primaryClaimValuePadded: Bytes<32>,
+  primaryClaimOpening: Bytes<32>,
+}
+
+export struct PassportKycPresentationRequest {
+  version: Uint<16>,
+  schema: SchemaRef,
+  issuerVerificationMethodRef: VerificationMethodRef,
+  requirePrimaryClaimDisclosure: Boolean,
+  verifierChallengeHash: Bytes<32>,
+}

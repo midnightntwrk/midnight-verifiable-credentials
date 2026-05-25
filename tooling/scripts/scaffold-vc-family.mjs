@@ -130,7 +130,7 @@ const buildClaimSurface = ({ slug, familyPascal, familyCamel, claimMode }) => {
   contextCode: Bytes<32>,
 }
 
-export circuit ${familyCamel}ClaimRoot(
+export pure circuit ${familyCamel}ClaimRoot(
   claims: ${familyPascal}PublicClaims
 ): Bytes<32> {
   return persistentHash<Vector<2, Bytes<32>>>([
@@ -163,19 +163,19 @@ export struct ${familyPascal}ClaimCommitments {
   contextCommitment: Bytes<32>,
 }
 
-export circuit ${familyCamel}PublicClaimsRoot(
+export pure circuit ${familyCamel}PublicClaimsRoot(
   claims: ${familyPascal}PublicClaims
 ): Bytes<32> {
   return persistentHash<${familyPascal}PublicClaims>(claims);
 }
 
-export circuit ${familyCamel}ClaimCommitmentsRoot(
+export pure circuit ${familyCamel}ClaimCommitmentsRoot(
   claimCommitments: ${familyPascal}ClaimCommitments
 ): Bytes<32> {
   return persistentHash<${familyPascal}ClaimCommitments>(claimCommitments);
 }
 
-export circuit ${familyCamel}ClaimRoot(
+export pure circuit ${familyCamel}ClaimRoot(
   claims: ${familyPascal}PublicClaims,
   claimCommitments: ${familyPascal}ClaimCommitments
 ): Bytes<32> {
@@ -203,7 +203,7 @@ export circuit ${familyCamel}ClaimRoot(
   contextCommitment: Bytes<32>,
 }
 
-export circuit ${familyCamel}ClaimRoot(
+export pure circuit ${familyCamel}ClaimRoot(
   claimCommitments: ${familyPascal}ClaimCommitments
 ): Bytes<32> {
   return persistentHash<Vector<2, Bytes<32>>>([
@@ -665,25 +665,25 @@ export struct ${familyPascal}PresentationRequest {
     ],
     [
       `src/${familyStem}/helpers.compact`,
-      `export circuit ${familyCamel}CredentialBodyRoot(
+      `export pure circuit ${familyCamel}CredentialBodyRoot(
   credential: ${familyPascal}Credential
 ): Bytes<32> {
   return credentialBodyRoot(credential);
 }
 
-export circuit ${familyCamel}PresentationBodyRoot(
+export pure circuit ${familyCamel}PresentationBodyRoot(
   presentation: ${familyPascal}Presentation
 ): Bytes<32> {
   return presentationBodyRoot(presentation);
 }
 
-export circuit ${familyCamel}PresentationRequestBodyRoot(
+export pure circuit ${familyCamel}PresentationRequestBodyRoot(
   request: ${familyPascal}PresentationRequest
 ): Bytes<32> {
   return persistentHash<${familyPascal}PresentationRequest>(request);
 }
 
-export circuit assertValid${familyPascal}SchemaRef(
+export pure circuit assertValid${familyPascal}SchemaRef(
   schema: SchemaRef
 ): [] {
   assert(
@@ -697,7 +697,7 @@ export circuit assertValid${familyPascal}SchemaRef(
   assert(schema.majorVersion == 1, "${familyPascal} major version mismatch");
 }
 
-export circuit assertValid${familyPascal}PresentationRequest(
+export pure circuit assertValid${familyPascal}PresentationRequest(
   request: ${familyPascal}PresentationRequest
 ): [] {
   assert(request.version == 1, "${familyPascal} request version mismatch");
@@ -708,7 +708,7 @@ export circuit assertValid${familyPascal}PresentationRequest(
   );
 }
 
-export circuit assertValid${familyPascal}Credential(
+export pure circuit assertValid${familyPascal}Credential(
   credential: ${familyPascal}Credential,
   proof: Proof
 ): [] {
@@ -722,7 +722,7 @@ export circuit assertValid${familyPascal}Credential(
   assertValidCredentialProof(credential, proof);
 }
 
-export circuit assertValid${familyPascal}Presentation(
+export pure circuit assertValid${familyPascal}Presentation(
   credential: ${familyPascal}Credential,
   presentation: ${familyPascal}Presentation
 ): [] {
@@ -735,7 +735,7 @@ export circuit assertValid${familyPascal}Presentation(
   ${holderMatch}${claimSurface.publicDisclosureValidation ? `\n${claimSurface.publicDisclosureValidation}` : ""}
 }
 
-export circuit assert${familyPascal}PresentationSatisfiesRequest(
+export pure circuit assert${familyPascal}PresentationSatisfiesRequest(
   request: ${familyPascal}PresentationRequest,
   presentation: ${familyPascal}Presentation
 ): [] {
