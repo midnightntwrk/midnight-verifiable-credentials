@@ -136,4 +136,67 @@ describe("passport-kyc presentation request", () => {
       /Presentation proof challenge does not match the request challenge/,
     );
   });
+
+  it("rejects a presentation with a disclosure opening that does not match the credential commitment", () => {
+    const fixture = createPassportKycFixture();
+    const mismatchedPresentation = {
+      ...fixture.presentation,
+      disclosed: {
+        ...fixture.presentation.disclosed,
+        revealLastName: true,
+        lastNameOpening: new Uint8Array(32).fill(2),
+      },
+    };
+    const mismatchedPresentationProof = signProof({
+      bodyRoot:
+        pureCircuits.passportKycPresentationBodyRoot(mismatchedPresentation),
+      context: "presentation",
+      signer: fixture.holder,
+      createdAt: fixture.presentationProof.createdAt + 1n,
+      challengeHash: fixture.presentationProof.challengeHash,
+      nonceScalar: 29n,
+    });
+
+    expect(() =>
+      pureCircuits.assertValidPassportKycPresentation(
+        fixture.credential,
+        fixture.credentialProof,
+        mismatchedPresentation,
+        mismatchedPresentationProof,
+      ),
+    ).toThrow(
+      /Presentation last-name disclosure does not match the credential/,
+    );
+  });
+
+  it("rejects a presentation where the disclosed age threshold does not match the requested threshold", () => {
+    const fixture = createPassportKycFixture();
+    const mismatchedThresholdPresentation = {
+      ...fixture.presentation,
+      disclosed: {
+        ...fixture.presentation.disclosed,
+        ageThresholdYears: 21n,
+      },
+    };
+    const mismatchedThresholdProof = signProof({
+      bodyRoot:
+        pureCircuits.passportKycPresentationBodyRoot(mismatchedThresholdPresentation),
+      context: "presentation",
+      signer: fixture.holder,
+      createdAt: fixture.presentationProof.createdAt + 1n,
+      challengeHash: fixture.presentationProof.challengeHash,
+      nonceScalar: 31n,
+    });
+
+    expect(() =>
+      pureCircuits.assertPassportKycPresentationSatisfiesRequest(
+        fixture.credential,
+        fixture.presentationRequest,
+        mismatchedThresholdPresentation,
+        mismatchedThresholdProof,
+      ),
+    ).toThrow(
+      /Presentation age threshold does not match the request/,
+    );
+  });
 });
