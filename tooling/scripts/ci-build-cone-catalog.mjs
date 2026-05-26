@@ -41,6 +41,7 @@ export const ciBuildCones = [
       "packages/prototypes/credential-families/dummy-claims",
       "packages/prototypes/credential-families/mixed-claims",
       "packages/prototypes/credential-families/university-diploma",
+      "packages/prototypes/credential-families/digital-passport",
     ],
     outputPaths: [
       "packages/prototypes/credential-families/birth/src/managed",
@@ -55,6 +56,8 @@ export const ciBuildCones = [
       "packages/prototypes/credential-families/mixed-claims/dist",
       "packages/prototypes/credential-families/university-diploma/src/managed",
       "packages/prototypes/credential-families/university-diploma/dist",
+      "packages/prototypes/credential-families/digital-passport/src/managed",
+      "packages/prototypes/credential-families/digital-passport/dist",
     ],
   },
   {
@@ -72,6 +75,7 @@ export const ciBuildCones = [
       "packages/prototypes/credential-families/dummy-claims",
       "packages/prototypes/credential-families/mixed-claims",
       "packages/prototypes/credential-families/university-diploma",
+      "packages/prototypes/credential-families/digital-passport",
       "packages/use-cases/age-gate/contract",
       "packages/use-cases/hello-verifier/contract",
     ],
