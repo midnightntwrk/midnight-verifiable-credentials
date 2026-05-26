@@ -6,7 +6,7 @@
   "type": "module",
   "engines": {
     "node": ">=24",
-    "npm": ">=10"
+    "pnpm": ">=10"
   },
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -22,17 +22,17 @@
   "scripts": {
     "build": "rm -rf dist && tsc -b tsconfig.build.json --force",
     "test": "vitest run",
-    "test:ci": "npm run test",
-    "render:summary": "npm run build && node ./scripts/render-summary.mjs",
+    "test:ci": "pnpm run test",
+    "render:summary": "pnpm run build && node ./scripts/render-summary.mjs",
     "render:summary:from-artifacts": "node ./scripts/render-summary.mjs",
-    "report:contract": "npm run build && node ./scripts/print-summary-contract.mjs",
+    "report:contract": "pnpm run build && node ./scripts/print-summary-contract.mjs",
     "report:contract:from-artifacts": "node ./scripts/print-summary-contract.mjs",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "clean": "rm -rf dist && rm -rf coverage && rm -rf target",
-    "all": "npm run build && npm run test:ci",
-    "prepack": "npm run build"
+    "all": "pnpm run build && pnpm run test:ci",
+    "prepack": "pnpm run build"
   },
   "files": [
     "dist/**",

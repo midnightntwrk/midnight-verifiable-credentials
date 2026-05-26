@@ -130,7 +130,7 @@ Selective disclosure model:
 
 Build and test:
 
-- `npm run build -w ./packages/prototypes/credential-families/university-diploma`
-- `npm run lint -w ./packages/prototypes/credential-families/university-diploma`
-- `npm run typecheck -w ./packages/prototypes/credential-families/university-diploma`
-- `npm run test:ci -w ./packages/prototypes/credential-families/university-diploma`
+- `pnpm --dir ./packages/prototypes/credential-families/university-diploma run build`
+- `pnpm --dir ./packages/prototypes/credential-families/university-diploma run lint`
+- `pnpm --dir ./packages/prototypes/credential-families/university-diploma run typecheck`
+- `pnpm --dir ./packages/prototypes/credential-families/university-diploma run test:ci`

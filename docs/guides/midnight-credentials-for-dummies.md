@@ -217,13 +217,13 @@ If you are onboarding a new engineer, this is the lowest-friction current path t
 
 | Step | Run | What you should learn from it |
 | --- | --- | --- |
-| 1 | `npm run test:ci -w credentials-birth` | the explicit-holder birth family works on its own before any business contract is added |
-| 2 | `npm run test:ci -w packages/use-cases/hello-verifier/contract` | the smallest verifier contract can build one typed request and verify one presentation |
-| 3 | `npm run test:ci -w packages/use-cases/age-gate/contract` | the explicit-holder business flow can issue, verify, mint a capability, and later claim it |
-| 4 | `npm run test:ci -w credentials-birth-secret` | hidden-holder binding, blinded issuance anchors, pseudonyms, same-holder composition, and prototype status-aware family checks all work at the family layer |
-| 5 | `npm run test:bdd:smoke` | the age-gate use-cases are also captured as living-documentation scenarios rather than only as unit tests |
-| 6 | `npm run test:ci -w packages/components/orchestration/protocol` | issuer, holder, and verifier can be isolated into agents without cheating on party boundaries |
-| 7 | `npm run test:integration -w packages/components/orchestration/protocol` | the protocol flow still works against real Midnight-backed infrastructure; requires Docker |
+| 1 | `pnpm --dir credentials-birth run test:ci` | the explicit-holder birth family works on its own before any business contract is added |
+| 2 | `pnpm --dir packages/use-cases/hello-verifier/contract run test:ci` | the smallest verifier contract can build one typed request and verify one presentation |
+| 3 | `pnpm --dir packages/use-cases/age-gate/contract run test:ci` | the explicit-holder business flow can issue, verify, mint a capability, and later claim it |
+| 4 | `pnpm --dir credentials-birth-secret run test:ci` | hidden-holder binding, blinded issuance anchors, pseudonyms, same-holder composition, and prototype status-aware family checks all work at the family layer |
+| 5 | `pnpm run test:bdd:smoke` | the age-gate use-cases are also captured as living-documentation scenarios rather than only as unit tests |
+| 6 | `pnpm --dir packages/components/orchestration/protocol run test:ci` | issuer, holder, and verifier can be isolated into agents without cheating on party boundaries |
+| 7 | `pnpm --dir packages/components/orchestration/protocol run test:integration` | the protocol flow still works against real Midnight-backed infrastructure; requires Docker |
 
 Rule of thumb:
 

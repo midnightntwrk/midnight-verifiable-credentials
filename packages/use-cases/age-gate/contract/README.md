@@ -157,6 +157,6 @@ Layer 3 surface while avoiding unnecessary proof-key generation cost.
 
 ## Build and test
 
-- Compile Compact artifacts: `npm run contract -w packages/use-cases/age-gate/contract`
-- Build TS exports: `npm run build -w packages/use-cases/age-gate/contract`
-- Run tests: `npm test -w packages/use-cases/age-gate/contract`
+- Compile Compact artifacts: `pnpm --dir packages/use-cases/age-gate/contract run contract`
+- Build TS exports: `pnpm --dir packages/use-cases/age-gate/contract run build`
+- Run tests: `pnpm --dir packages/use-cases/age-gate/contract run test`

@@ -20,7 +20,7 @@ tarballs into
 `tooling/artifacts/npm/` first:
 
 ```bash
-npm run artifacts:pack
+pnpm run artifacts:pack
 ```
 
 Then refresh `tooling/vendor/` directly if needed:

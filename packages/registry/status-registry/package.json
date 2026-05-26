@@ -6,7 +6,7 @@
   "type": "module",
   "engines": {
     "node": ">=24",
-    "npm": ">=10"
+    "pnpm": ">=10"
   },
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -50,20 +50,20 @@
     }
   },
   "scripts": {
-    "prepare:credentials": "npm --prefix ../../../packages/core/primitives/credentials run build",
-    "contract": "npm run compact",
+    "prepare:credentials": "pnpm --dir ../../../packages/core/primitives/credentials run build",
+    "contract": "pnpm run compact",
     "compact": "node ../../../tooling/scripts/ensure-compact-package-aliases.mjs && compact compile src/revocation-registry.compact src/managed/revocation-registry && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
-    "pretest": "npm run prepare:credentials && npm run compact",
-    "pretest:ci": "npm run prepare:credentials && npm run compact",
+    "pretest": "pnpm run prepare:credentials && pnpm run compact",
+    "pretest:ci": "pnpm run prepare:credentials && pnpm run compact",
     "test": "vitest run",
     "test:ci": "vitest run",
-    "prepack": "npm run build",
+    "prepack": "pnpm run build",
     "clean": "rm -rf dist && rm -rf coverage && rm -rf reports && rm -rf src/managed",
-    "build": "npm run prepare:credentials && npm run compact && rm -rf dist && mkdir -p dist && tsc -b tsconfig.build.json --force && cp -Rf ./src/managed ./dist/ && cp ./src/revocation-registry.compact ./dist && cp ./src/status-proof-protocol.compact ./dist",
+    "build": "pnpm run prepare:credentials && pnpm run compact && rm -rf dist && mkdir -p dist && tsc -b tsconfig.build.json --force && cp -Rf ./src/managed ./dist/ && cp ./src/revocation-registry.compact ./dist && cp ./src/status-proof-protocol.compact ./dist",
     "lint": "eslint src --ignore-pattern 'src/managed/**'",
     "lint:fix": "eslint src --fix --ignore-pattern 'src/managed/**'",
-    "typecheck": "npm run prepare:credentials && npm run compact && tsc -p tsconfig.json --noEmit",
-    "all": "npm run build && npm run test:ci"
+    "typecheck": "pnpm run prepare:credentials && pnpm run compact && tsc -p tsconfig.json --noEmit",
+    "all": "pnpm run build && pnpm run test:ci"
   },
   "dependencies": {
     "@midnight-ntwrk/compact-runtime": "*",

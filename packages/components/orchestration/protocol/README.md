@@ -396,8 +396,8 @@ composition:
 Run the package in isolation:
 
 ```sh
-npm run lint -w packages/components/orchestration/protocol
-npm run typecheck -w packages/components/orchestration/protocol
-npm run all -w packages/components/orchestration/protocol
-npm run test:integration -w packages/components/orchestration/protocol
+pnpm --dir packages/components/orchestration/protocol run lint
+pnpm --dir packages/components/orchestration/protocol run typecheck
+pnpm --dir packages/components/orchestration/protocol run all
+pnpm --dir packages/components/orchestration/protocol run test:integration
 ```

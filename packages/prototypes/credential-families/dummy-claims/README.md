@@ -64,7 +64,7 @@ Design note:
 
 Build and test:
 
-- `npm run build -w ./packages/prototypes/credential-families/dummy-claims`
-- `npm run lint -w ./packages/prototypes/credential-families/dummy-claims`
-- `npm run typecheck -w ./packages/prototypes/credential-families/dummy-claims`
-- `npm run test:ci -w ./packages/prototypes/credential-families/dummy-claims`
+- `pnpm --dir ./packages/prototypes/credential-families/dummy-claims run build`
+- `pnpm --dir ./packages/prototypes/credential-families/dummy-claims run lint`
+- `pnpm --dir ./packages/prototypes/credential-families/dummy-claims run typecheck`
+- `pnpm --dir ./packages/prototypes/credential-families/dummy-claims run test:ci`

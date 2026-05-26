@@ -1,9 +1,9 @@
-name: Setup Node and npm
-description: Setup Node.js 24, optionally install npm dependencies, and optionally restore the Turbo cache.
+name: Setup Node and pnpm
+description: Setup Node.js 24, optionally install pnpm dependencies, and optionally restore the Turbo cache.
 
 inputs:
   install:
-    description: Run npm ci after setting up Node.js.
+    description: Run pnpm install after setting up Node.js.
     required: false
     default: "true"
   turbo-cache:
@@ -18,20 +18,24 @@ runs:
       uses: actions/setup-node@v4
       with:
         node-version: "24"
-        cache: npm
-        cache-dependency-path: package-lock.json
+        cache: pnpm
+        cache-dependency-path: pnpm-lock.yaml
+
+    - name: Enable pnpm
+      shell: bash
+      run: corepack enable pnpm
 
     - name: Install dependencies
       if: inputs.install == 'true'
       shell: bash
-      run: npm ci --prefer-offline
+      run: pnpm install --frozen-lockfile --prefer-offline
 
     - name: Restore turbo cache
       if: inputs.turbo-cache == 'true'
       uses: actions/cache@v4
       with:
         path: .turbo
-        key: ${{ runner.os }}-turbo-${{ github.job }}-${{ hashFiles('package-lock.json', 'turbo.json') }}
+        key: ${{ runner.os }}-turbo-${{ github.job }}-${{ hashFiles('pnpm-lock.yaml', 'turbo.json') }}
         restore-keys: |
           ${{ runner.os }}-turbo-${{ github.job }}-
           ${{ runner.os }}-turbo-

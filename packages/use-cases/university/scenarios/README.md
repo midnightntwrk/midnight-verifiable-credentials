@@ -49,10 +49,10 @@ Execution:
 - one-page reporting lane:
   - `./run.sh university-summary`
 - direct workspace lane:
-  - `npm run test:bdd:university`
-  - `npm run test:bdd:university:proof-server`
-  - `npm run test:bdd:university:standalone`
-  - `npm run test:batch-sweep -w packages/use-cases/university/scenarios`
+  - `pnpm run test:bdd:university`
+  - `pnpm run test:bdd:university:proof-server`
+  - `pnpm run test:bdd:university:standalone`
+  - `pnpm --dir packages/use-cases/university/scenarios run test:batch-sweep`
 
 Standalone-hybrid notes:
 

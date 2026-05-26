@@ -6,7 +6,7 @@
   "type": "module",
   "engines": {
     "node": ">=24",
-    "npm": ">=10"
+    "pnpm": ">=10"
   },
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -67,25 +67,25 @@
     }
   },
   "scripts": {
-    "prepare:status-registry": "npm --prefix ../../../../packages/registry/status-registry run build",
-    "contract": "npm run compact",
-    "compact": "npm run compact:demo && npm run compact:demo-revocation && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
+    "prepare:status-registry": "pnpm --dir ../../../../packages/registry/status-registry run build",
+    "contract": "pnpm run compact",
+    "compact": "pnpm run compact:demo && pnpm run compact:demo-revocation && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
     "compact:demo": "compact compile src/demo.compact src/managed/demo",
     "compact:demo-revocation": "compact compile src/demo-revocation.compact src/managed/demo-revocation",
-    "prebuild": "npm run prepare:status-registry",
-    "pretypecheck": "npm run prepare:status-registry",
-    "pretest": "npm run prepare:status-registry && npm run compact",
+    "prebuild": "pnpm run prepare:status-registry",
+    "pretypecheck": "pnpm run prepare:status-registry",
+    "pretest": "pnpm run prepare:status-registry && pnpm run compact",
     "test": "vitest run --exclude src/test/integration/**/*.test.ts",
-    "pretest:ci": "npm run prepare:status-registry && npm run compact",
+    "pretest:ci": "pnpm run prepare:status-registry && pnpm run compact",
     "test:integration": "vitest run --dir src/test/integration",
     "test:ci": "vitest run --exclude src/test/integration/**/*.test.ts",
-    "prepack": "npm run build",
+    "prepack": "pnpm run build",
     "clean": "rm -rf dist && rm -rf coverage && rm -rf reports && rm -rf src/managed",
-    "build": "npm run compact && rm -rf dist && tsc -b tsconfig.build.json --force && mkdir -p dist && cp -Rf ./src/managed ./dist/ && cp ./src/demo.compact ./dist && cp ./src/demo-revocation.compact ./dist",
+    "build": "pnpm run compact && rm -rf dist && tsc -b tsconfig.build.json --force && mkdir -p dist && cp -Rf ./src/managed ./dist/ && cp ./src/demo.compact ./dist && cp ./src/demo-revocation.compact ./dist",
     "lint": "eslint src --ignore-pattern 'src/managed/**'",
     "lint:fix": "eslint src --fix --ignore-pattern 'src/managed/**'",
-    "typecheck": "npm run compact && tsc -p tsconfig.json --noEmit",
-    "all": "npm run compact && npm run build && npm run test:ci"
+    "typecheck": "pnpm run compact && tsc -p tsconfig.json --noEmit",
+    "all": "pnpm run compact && pnpm run build && pnpm run test:ci"
   },
   "dependencies": {
     "@midnight-ntwrk/compact-runtime": "*",

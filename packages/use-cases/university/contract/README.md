@@ -32,7 +32,7 @@ Privacy note:
 
 Build and test:
 
-- `npm run build -w ./packages/use-cases/university/contract`
-- `npm run lint -w ./packages/use-cases/university/contract`
-- `npm run typecheck -w ./packages/use-cases/university/contract`
-- `npm run test:ci -w ./packages/use-cases/university/contract`
+- `pnpm --dir ./packages/use-cases/university/contract run build`
+- `pnpm --dir ./packages/use-cases/university/contract run lint`
+- `pnpm --dir ./packages/use-cases/university/contract run typecheck`
+- `pnpm --dir ./packages/use-cases/university/contract run test:ci`

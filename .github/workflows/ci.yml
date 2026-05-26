@@ -17,8 +17,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  NPM_CONFIG_AUDIT: "false"
-  NPM_CONFIG_FUND: "false"
+  PNPM_CONFIG_AUDIT: "false"
+  PNPM_CONFIG_FUND: "false"
   COMPACT_COMPILER_VERSION: 0.30.0
   PROOF_SERVER_IMAGE: ${{ vars.PROOF_SERVER_IMAGE != '' && vars.PROOF_SERVER_IMAGE || 'midnightntwrk/proof-server:8.0.3' }}
 
@@ -67,7 +67,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: ./.github/actions/setup-node-npm
+        uses: ./.github/actions/setup-node-pnpm
         with:
           install: "false"
 
@@ -75,7 +75,7 @@ jobs:
         run: git diff --check
 
       - name: Check markdown links
-        run: npm run docs:links
+        run: pnpm run docs:links
 
       - name: Record docs-only fast path
         run: |
@@ -95,7 +95,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Node.js and install dependencies
-        uses: ./.github/actions/setup-node-npm
+        uses: ./.github/actions/setup-node-pnpm
 
       - name: Restore Compact toolchain
         uses: ./.github/actions/restore-compact-toolchain
@@ -103,13 +103,13 @@ jobs:
           compact-version: ${{ env.COMPACT_COMPILER_VERSION }}
 
       - name: Check BDD summary artifact contract
-        run: npm run check:bdd-summary-artifacts
+        run: pnpm run check:bdd-summary-artifacts
 
       - name: Run BDD summary lanes
         shell: bash
         run: |
-          npm run test:bdd:smoke || age_gate_status=$?
-          npm run test:bdd:university || university_status=$?
+          pnpm run test:bdd:smoke || age_gate_status=$?
+          pnpm run test:bdd:university || university_status=$?
           exit "${age_gate_status:-${university_status:-0}}"
 
       - name: Upload BDD summary artifacts
@@ -290,7 +290,7 @@ jobs:
 
       - name: Set up Node.js, dependencies, and turbo cache
         if: steps.cone-cache.outputs.any_missing == 'true'
-        uses: ./.github/actions/setup-node-npm
+        uses: ./.github/actions/setup-node-pnpm
         with:
           turbo-cache: "true"
 
@@ -302,19 +302,19 @@ jobs:
 
       - name: Build foundation outputs
         if: steps.verify-foundation-cache.outputs.cache_ready != 'true'
-        run: npm run build:cone:foundation
+        run: pnpm run build:cone:foundation
 
       - name: Build birth-family outputs
         if: steps.verify-birth-family-cache.outputs.cache_ready != 'true'
-        run: npm run build:cone:birth-family
+        run: pnpm run build:cone:birth-family
 
       - name: Build age-gate outputs
         if: steps.verify-age-gate-cache.outputs.cache_ready != 'true'
-        run: npm run build:cone:age-gate
+        run: pnpm run build:cone:age-gate
 
       - name: Build protocol outputs
         if: steps.verify-protocol-cache.outputs.cache_ready != 'true'
-        run: npm run build:cone:protocol
+        run: pnpm run build:cone:protocol
 
       - name: Save foundation build outputs
         if: steps.verify-foundation-cache.outputs.cache_ready != 'true'
@@ -393,12 +393,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Node.js, dependencies, and turbo cache
-        uses: ./.github/actions/setup-node-npm
+        uses: ./.github/actions/setup-node-pnpm
         with:
           turbo-cache: "true"
 
       - name: Run lint lane
-        run: npm run ci:lint
+        run: pnpm run ci:lint
 
   typecheck:
     name: Typecheck
@@ -411,7 +411,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Node.js and install dependencies
-        uses: ./.github/actions/setup-node-npm
+        uses: ./.github/actions/setup-node-pnpm
 
       - name: Download foundation CI artifact
         uses: actions/download-artifact@v4
@@ -446,7 +446,7 @@ jobs:
             "$RUNNER_TEMP/ci-build-outputs/ci-build-protocol.tar.gz"
 
       - name: Run typecheck lane
-        run: npm run ci:typecheck:from-artifacts
+        run: pnpm run ci:typecheck:from-artifacts
 
   package-tests:
     name: Build and Package Tests
@@ -459,7 +459,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Node.js and install dependencies
-        uses: ./.github/actions/setup-node-npm
+        uses: ./.github/actions/setup-node-pnpm
 
       - name: Restore Compact toolchain
         uses: ./.github/actions/restore-compact-toolchain
@@ -499,7 +499,7 @@ jobs:
             "$RUNNER_TEMP/ci-build-outputs/ci-build-protocol.tar.gz"
 
       - name: Run package build and test lane
-        run: npm run ci:package-tests:from-artifacts
+        run: pnpm run ci:package-tests:from-artifacts
 
   university-validation:
     name: University Validation
@@ -512,7 +512,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Node.js and install dependencies
-        uses: ./.github/actions/setup-node-npm
+        uses: ./.github/actions/setup-node-pnpm
 
       - name: Restore Compact toolchain
         uses: ./.github/actions/restore-compact-toolchain
@@ -520,7 +520,7 @@ jobs:
           compact-version: ${{ env.COMPACT_COMPILER_VERSION }}
 
       - name: Run university profile lanes
-        run: npm run ci:university-protocol-profiles
+        run: pnpm run ci:university-protocol-profiles
 
       - name: Upload university protocol profile artifacts
         if: always()
@@ -543,7 +543,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Node.js and install dependencies
-        uses: ./.github/actions/setup-node-npm
+        uses: ./.github/actions/setup-node-pnpm
 
       - name: Restore Compact toolchain
         uses: ./.github/actions/restore-compact-toolchain
@@ -576,7 +576,7 @@ jobs:
             "$RUNNER_TEMP/ci-build-outputs/ci-build-age-gate.tar.gz"
 
       - name: Run hello-smoke lane
-        run: npm run ci:hello-smoke:from-artifacts
+        run: pnpm run ci:hello-smoke:from-artifacts
 
   revocation:
     name: Revocation Demo Lane
@@ -589,7 +589,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Node.js and install dependencies
-        uses: ./.github/actions/setup-node-npm
+        uses: ./.github/actions/setup-node-pnpm
 
       - name: Download foundation CI artifact
         uses: actions/download-artifact@v4
@@ -617,7 +617,7 @@ jobs:
             "$RUNNER_TEMP/ci-build-outputs/ci-build-age-gate.tar.gz"
 
       - name: Run revocation-focused lane
-        run: npm run ci:revocation:from-artifacts
+        run: pnpm run ci:revocation:from-artifacts
 
   integration-demo-contract:
     name: "Standalone Integration: Demo Contract"
@@ -630,7 +630,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Node.js and install dependencies
-        uses: ./.github/actions/setup-node-npm
+        uses: ./.github/actions/setup-node-pnpm
 
       - name: Download foundation CI artifact
         uses: actions/download-artifact@v4
@@ -658,7 +658,7 @@ jobs:
             "$RUNNER_TEMP/ci-build-outputs/ci-build-age-gate.tar.gz"
 
       - name: Run demo-contract integration lane
-        run: npm run ci:integration:demo-contract:from-artifacts
+        run: pnpm run ci:integration:demo-contract:from-artifacts
 
   integration-protocol:
     name: "Standalone Integration: Protocol"
@@ -671,7 +671,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Node.js and install dependencies
-        uses: ./.github/actions/setup-node-npm
+        uses: ./.github/actions/setup-node-pnpm
 
       - name: Download foundation CI artifact
         uses: actions/download-artifact@v4
@@ -706,4 +706,4 @@ jobs:
             "$RUNNER_TEMP/ci-build-outputs/ci-build-protocol.tar.gz"
 
       - name: Run protocol integration lane
-        run: npm run ci:integration:protocol:from-artifacts
+        run: pnpm run ci:integration:protocol:from-artifacts

@@ -26,5 +26,5 @@ rm -f "$DEST_DIR"/*.tgz
 cd "$ROOT_DIR"
 for workspace in "${workspaces[@]}"; do
   echo "[pack-artifacts] Packing ${workspace} -> ${DEST_DIR}"
-  npm pack --pack-destination "$DEST_DIR" -w "$workspace"
+  pnpm --dir "$workspace" pack --pack-destination "$DEST_DIR"
 done

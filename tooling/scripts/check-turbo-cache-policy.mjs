@@ -66,7 +66,7 @@ const requireEnv = (taskName, expected) => {
 
 requireIncludes("globalDependencies", turbo.globalDependencies, [
   "package.json",
-  "package-lock.json",
+  "pnpm-lock.yaml",
   "turbo.json",
   "tsconfig*.json",
   ".eslintrc*",

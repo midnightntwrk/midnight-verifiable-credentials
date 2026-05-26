@@ -87,7 +87,7 @@ for (const artifactPath of missingArtifacts) {
   console.log(`- ${artifactPath}`);
 }
 
-const child = spawn("npm", ["run", "build:integration-prereqs:shared"], {
+const child = spawn(process.platform === "win32" ? "pnpm.cmd" : "pnpm", ["run", "build:integration-prereqs:shared"], {
   cwd: repoRoot,
   stdio: "inherit",
   shell: process.platform === "win32",

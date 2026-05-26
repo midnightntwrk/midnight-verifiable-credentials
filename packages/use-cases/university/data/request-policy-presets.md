@@ -5,8 +5,8 @@ Status: generated from [`request-policy-presets.json`](./request-policy-presets.
 Regenerate with:
 
 ```bash
-npm run update:university-request-policy-presets
-npm run check:university-request-policy-presets
+pnpm run update:university-request-policy-presets
+pnpm run check:university-request-policy-presets
 ```
 
 ## `job-application-grade-and-award`

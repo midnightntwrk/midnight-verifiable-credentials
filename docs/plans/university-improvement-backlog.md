@@ -50,7 +50,7 @@ these as a separate stack.
    - remove low-level schema names from feature text where possible
    - keep roots, DID method refs, credential DTOs, and proof details in step
      notes and artifacts
-   - validation: `./run.sh university-bdd`, `npm run docs:links`
+   - validation: `./run.sh university-bdd`, `pnpm run docs:links`
 
 The following entries are university-only follow-ons that are not yet scheduled
 as parent queue items. Promote them into the repository audit backlog when one
@@ -61,9 +61,9 @@ becomes part of a stackable PR.
      used by CI checks
    - 2026-05-22: `codex/vc-university-operator-lane-docs` generates the
      operator guide execution-lane table from the university CI matrix and
-     extends `npm run check:university-ci-matrix` so local runbook commands,
+     extends `pnpm run check:university-ci-matrix` so local runbook commands,
      outputs, and "when to run" guidance cannot drift from CI lane metadata
-   - validation: `npm run check:university-ci-matrix`, `npm run docs:links`
+   - validation: `pnpm run check:university-ci-matrix`, `pnpm run docs:links`
 
 5. University-only follow-on: `university-report-surface-slimming`
    - reduce overlapping report artifacts to one human handoff and one tool
@@ -80,8 +80,8 @@ becomes part of a stackable PR.
      contract through `./run.sh university-report-contract`, the run-target
      catalog, and the generated university CI/operator matrix
    - validation: reporting package tests, `./run.sh university-summary`,
-     `./run.sh university-report-contract`, `npm run check:run-target-contract`,
-     and `npm run check:university-ci-matrix`
+     `./run.sh university-report-contract`, `pnpm run check:run-target-contract`,
+     and `pnpm run check:university-ci-matrix`
 
 6. University-only follow-on: `university-negative-flow-triage`
    - move low-level tampering checks into protocol tests when they read like
@@ -120,7 +120,7 @@ becomes part of a stackable PR.
      the policy-catalog audit so preset rationale fields must correspond to
      fields present in the preset `requestPolicy`, catching stale policy prose
      when a disclosure or threshold field is removed
-   - validation: `npm run check:university-request-policy-presets`,
+   - validation: `pnpm run check:university-request-policy-presets`,
      `./run.sh university-policy-catalog`, protocol tests
 
 10. Expansion for `age-gate-bdd-style-alignment`

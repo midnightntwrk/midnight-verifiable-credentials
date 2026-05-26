@@ -59,7 +59,7 @@ Run:
 
 ```bash
 ./run.sh check-integration
-npm run check:did-integration
+pnpm run check:did-integration
 ```
 
 Repair flow:
@@ -160,6 +160,6 @@ Before sending a DID/VC integration PR for review:
 ```bash
 ./run.sh integration-report
 ./run.sh check-integration
-npm run docs:links
+pnpm run docs:links
 git diff --check
 ```

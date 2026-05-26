@@ -45,10 +45,10 @@ Important carry-forward rule from `#247`:
   - split transcript and message helper utilities into internal modules
   - keep `UniversityProtocolFlowRunner` public API stable
 - validation:
-  - `npm run lint -w ./packages/use-cases/university/protocol`
-  - `npm run typecheck:university-protocol`
-  - `npm run test:university-protocol`
-  - `npm run docs:links`
+  - `pnpm --dir ./packages/use-cases/university/protocol run lint`
+  - `pnpm run typecheck:university-protocol`
+  - `pnpm run test:university-protocol`
+  - `pnpm run docs:links`
 
 2. `university-policy-catalog-audit`
 
@@ -59,7 +59,7 @@ Important carry-forward rule from `#247`:
   - document policy rationale per request preset
 - validation:
   - `./run.sh university-policy-catalog`
-  - `npm run test:university-policy-catalog`
+  - `pnpm run test:university-policy-catalog`
 
 3. `university-proof-server-backend-contract`
 
@@ -70,8 +70,8 @@ Important carry-forward rule from `#247`:
   - add deterministic contract tests with a fake proof-server adapter
   - document which simulator proofs map to remote proof calls
 - validation:
-  - `npm exec -w ./packages/use-cases/university/protocol -- vitest run src/test/proof-server-contract.test.ts`
-  - `npm run test:university-protocol`
+  - `pnpm --dir ./packages/use-cases/university/protocol exec vitest run src/test/proof-server-contract.test.ts`
+  - `pnpm run test:university-protocol`
 
 4. `university-proof-server-bdd-wiring`
 
@@ -97,10 +97,10 @@ Important carry-forward rule from `#247`:
 - validation:
   - `./run.sh university-bdd`
   - `./run.sh university-bdd-proof-server`
-  - `npm run test:standalone-timing:contract -w packages/use-cases/university/scenarios`
-  - `npm run test:backend-mode:contract -w packages/use-cases/university/scenarios`
-  - `npm run typecheck -w packages/use-cases/university/scenarios`
-  - `npm run docs:links`
+  - `pnpm --dir packages/use-cases/university/scenarios run test:standalone-timing:contract`
+  - `pnpm --dir packages/use-cases/university/scenarios run test:backend-mode:contract`
+  - `pnpm --dir packages/use-cases/university/scenarios run typecheck`
+  - `pnpm run docs:links`
   - `bash -n run.sh`
   - `git diff --check`
 
@@ -115,11 +115,11 @@ Important carry-forward rule from `#247`:
   - preserve the readable lane as sequential
   - report correctness and timing deltas side by side
 - validation:
-  - `npm run test:batch-sweep:contract -w packages/use-cases/university/scenarios`
-  - `npm run test:batch-sweep -w packages/use-cases/university/scenarios`
-  - `npm run test -w packages/use-cases/university/reporting`
-  - `npm run typecheck -w packages/use-cases/university/scenarios`
-  - `npm run typecheck -w packages/use-cases/university/reporting`
+  - `pnpm --dir packages/use-cases/university/scenarios run test:batch-sweep:contract`
+  - `pnpm --dir packages/use-cases/university/scenarios run test:batch-sweep`
+  - `pnpm --dir packages/use-cases/university/reporting run test`
+  - `pnpm --dir packages/use-cases/university/scenarios run typecheck`
+  - `pnpm --dir packages/use-cases/university/reporting run typecheck`
   - `./run.sh university-batch-sweep`
 
 7. `university-separate-process-simulator`
@@ -133,9 +133,9 @@ Important carry-forward rule from `#247`:
   - keep the same transcript envelope shape as the in-process simulator
   - add transcript equivalence checks
 - validation:
-  - `npm exec -w ./packages/use-cases/university/protocol -- vitest run src/test/process-transport.test.ts`
-  - `npm run typecheck -w ./packages/use-cases/university/protocol`
-  - `npm run test:university-protocol`
+  - `pnpm --dir ./packages/use-cases/university/protocol exec vitest run src/test/process-transport.test.ts`
+  - `pnpm --dir ./packages/use-cases/university/protocol run typecheck`
+  - `pnpm run test:university-protocol`
   - `./run.sh university-protocol --light`
 
 8. `university-protocol-persistence-restart`
@@ -148,8 +148,8 @@ Important carry-forward rule from `#247`:
   - simulate restart during issuance and presentation phases
   - document durable versus reconstructed state
 - validation:
-  - `npm exec -w ./packages/use-cases/university/protocol -- vitest run src/test/restart-flow.test.ts`
-  - `npm run typecheck -w ./packages/use-cases/university/protocol`
+  - `pnpm --dir ./packages/use-cases/university/protocol exec vitest run src/test/restart-flow.test.ts`
+  - `pnpm --dir ./packages/use-cases/university/protocol run typecheck`
   - `./run.sh university-protocol --light`
 
 9. `university-large-cohort-pack`
@@ -166,7 +166,7 @@ Important carry-forward rule from `#247`:
 - validation:
   - `./run.sh university-data-profiles`
   - `./run.sh university-policy-catalog`
-  - `npm exec -w ./packages/use-cases/university/protocol -- vitest run src/test/stress-export.test.ts src/test/policy-catalog.test.ts`
+  - `pnpm --dir ./packages/use-cases/university/protocol exec vitest run src/test/stress-export.test.ts src/test/policy-catalog.test.ts`
   - `./run.sh university-protocol-cohort --light`
 
 10. `university-ci-matrix-refinement`
@@ -178,10 +178,10 @@ Important carry-forward rule from `#247`:
   - document local, PR, and dispatch lane selection
 - validation:
   - `./run.sh university-ci-matrix`
-  - `npm run check:university-ci-matrix`
-  - `npm run build:university-ci-matrix:json`
-  - `npm run docs:links`
-  - `npm run check:run-target-contract`
+  - `pnpm run check:university-ci-matrix`
+  - `pnpm run build:university-ci-matrix:json`
+  - `pnpm run docs:links`
+  - `pnpm run check:run-target-contract`
   - `bash -n run.sh && git diff --check`
 
 11. `university-reference-guide-closeout`
@@ -192,7 +192,7 @@ Important carry-forward rule from `#247`:
   - cover readable, stress, standalone-hybrid, transcript export, and known
     proof-server boundaries
 - validation:
-  - `npm run docs:links`
+  - `pnpm run docs:links`
   - `git diff --check`
 
 12. `turbo-package-graph-generated-artifacts`
@@ -205,8 +205,8 @@ Important carry-forward rule from `#247`:
     parallel Turbo execution
   - move or document generated outputs so build cones become deterministic
 - validation:
-  - `npm run check:ci-build-cones`
-  - `npm run docs:links`
+  - `pnpm run check:ci-build-cones`
+  - `pnpm run docs:links`
   - `git diff --check`
 
 13. `turbo-build-cone-contracts`
@@ -216,10 +216,10 @@ Important carry-forward rule from `#247`:
   - add guardrails for root runner targets and Turbo filter contracts
   - prevent future CI drift between package graph and documented cones
 - validation:
-  - `npm run check:ci-workflow-cones`
-  - `npm run check:ci-build-cones`
-  - `npm run ci:lint`
-  - `npm run docs:links`
+  - `pnpm run check:ci-workflow-cones`
+  - `pnpm run check:ci-build-cones`
+  - `pnpm run ci:lint`
+  - `pnpm run docs:links`
   - `git diff --check`
 
 14. `holder-binding-name-deprecation-closeout`
@@ -229,9 +229,9 @@ Important carry-forward rule from `#247`:
   - finish deprecating stale holder-binding terminology in docs/comments
   - keep compatibility names explicit where they still exist
 - validation:
-  - `npm run check:holder-binding-terminology`
-  - `npm run docs:links`
-  - `npm run ci:lint`
+  - `pnpm run check:holder-binding-terminology`
+  - `pnpm run docs:links`
+  - `pnpm run ci:lint`
 
 15. `compatibility-shim-and-path-hygiene`
 

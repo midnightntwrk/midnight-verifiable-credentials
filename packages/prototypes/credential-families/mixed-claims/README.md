@@ -77,9 +77,9 @@ Related docs:
 
 Build and test:
 
-- `npm run compact -w ./packages/prototypes/credential-families/mixed-claims`
-- `npm run build -w ./packages/prototypes/credential-families/mixed-claims`
-- `npm run lint -w ./packages/prototypes/credential-families/mixed-claims`
-- `npm run typecheck -w ./packages/prototypes/credential-families/mixed-claims`
-- `npm run test:ci -w ./packages/prototypes/credential-families/mixed-claims`
+- `pnpm --dir ./packages/prototypes/credential-families/mixed-claims run compact`
+- `pnpm --dir ./packages/prototypes/credential-families/mixed-claims run build`
+- `pnpm --dir ./packages/prototypes/credential-families/mixed-claims run lint`
+- `pnpm --dir ./packages/prototypes/credential-families/mixed-claims run typecheck`
+- `pnpm --dir ./packages/prototypes/credential-families/mixed-claims run test:ci`
 - root light lanes: `./run.sh build --light` and `./run.sh test --light`

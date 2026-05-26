@@ -23,7 +23,7 @@ for the pre-collapse VC-MAT, audit, and PR-number history.
 High-level maturity themes:
 
 1. Delete or document dead top-level compatibility surfaces.
-2. Make runner targets, root npm scripts, CI cones, and workflow classifiers
+2. Make runner targets, root pnpm scripts, CI cones, and workflow classifiers
    validate against one source of truth.
 3. Make managed-artifact reuse fail closed through source/compiler/version
    freshness manifests.

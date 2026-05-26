@@ -51,20 +51,20 @@ Build and test:
   - `./run.sh university-summary --light`
 - root contract introspection:
   - `./run.sh university-report-contract`
-  - `npm run report:university-contract`
+  - `pnpm run report:university-contract`
   - both commands print the versioned contract JSON to stdout and do not update
     `target/`
-- `npm run lint -w ./packages/use-cases/university/reporting`
-- `npm run typecheck -w ./packages/use-cases/university/reporting`
-- `npm run test:ci -w ./packages/use-cases/university/reporting`
-- `npm run build -w ./packages/use-cases/university/reporting`
+- `pnpm --dir ./packages/use-cases/university/reporting run lint`
+- `pnpm --dir ./packages/use-cases/university/reporting run typecheck`
+- `pnpm --dir ./packages/use-cases/university/reporting run test:ci`
+- `pnpm --dir ./packages/use-cases/university/reporting run build`
 - render summary from artifacts:
-  - `npm run render:summary -w ./packages/use-cases/university/reporting`
+  - `pnpm --dir ./packages/use-cases/university/reporting run render:summary`
   - outputs:
     - `./packages/use-cases/university/reporting/target/summary.json`
     - `./packages/use-cases/university/reporting/target/summary.md`
     - `./packages/use-cases/university/reporting/target/artifact-manifest.json`
     - `./packages/use-cases/university/reporting/target/artifact-manifest.md`
 - print the current report contract:
-  - `npm run report:contract -w ./packages/use-cases/university/reporting`
-  - `npm run report:contract:from-artifacts -w ./packages/use-cases/university/reporting`
+  - `pnpm --dir ./packages/use-cases/university/reporting run report:contract`
+  - `pnpm --dir ./packages/use-cases/university/reporting run report:contract:from-artifacts`

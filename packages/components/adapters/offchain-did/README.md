@@ -71,6 +71,6 @@ Compatibility aliases are also exported temporarily for the historical
 
 ## Build
 
-- Build: `npm run build -w packages/components/adapters/offchain-did`
-- Test: `npm run test:ci -w packages/components/adapters/offchain-did`
-- Typecheck: `npm run typecheck -w packages/components/adapters/offchain-did`
+- Build: `pnpm --dir packages/components/adapters/offchain-did run build`
+- Test: `pnpm --dir packages/components/adapters/offchain-did run test:ci`
+- Typecheck: `pnpm --dir packages/components/adapters/offchain-did run typecheck`

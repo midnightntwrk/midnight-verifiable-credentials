@@ -10,4 +10,4 @@ work planning.
 
 One internal link in `vc-maturity-backlog.pre-collapse.md` was redirected from
 `repository-audit-backlog.md` to `repository-audit-backlog.pre-collapse.md` so
-the archived snapshot remains navigable and `npm run docs:links` stays green.
+the archived snapshot remains navigable and `pnpm run docs:links` stays green.

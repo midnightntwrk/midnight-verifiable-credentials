@@ -56,9 +56,9 @@ The machine-readable lane catalog is generated at
 [`./ci-matrix.md`](./ci-matrix.md). Regenerate or verify it with:
 
 ```bash
-npm run --silent build:university-ci-matrix:markdown > packages/use-cases/university/ci-matrix.md
-npm run update:university-operator-guide
-npm run check:university-ci-matrix
+pnpm --silent run build:university-ci-matrix:markdown > packages/use-cases/university/ci-matrix.md
+pnpm run update:university-operator-guide
+pnpm run check:university-ci-matrix
 ```
 
 ## Backend Modes
@@ -195,7 +195,7 @@ The step notes are intentionally verbose. They are the fastest way to inspect:
 ./run.sh university-data-profiles
 ./run.sh university-policy-catalog
 ./run.sh university-protocol --light
-npm run docs:links
+pnpm run docs:links
 ```
 
 Add the specific lane that matches your change:

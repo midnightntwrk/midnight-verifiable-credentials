@@ -189,6 +189,6 @@ Treat this path as the current minimum bar for a production-shaped claim:
 ## Local validation
 
 ```bash
-npm run test:ci -w packages/components/orchestration/protocol
-npm exec -w packages/components/orchestration/protocol -- vitest run src/test/reference/node-reference-path.test.ts
+pnpm --dir packages/components/orchestration/protocol run test:ci
+pnpm --dir packages/components/orchestration/protocol exec vitest run src/test/reference/node-reference-path.test.ts
 ```

@@ -5,8 +5,8 @@ Status: generated from `data-profile-registry.mjs` and the deterministic fixture
 Regenerate with:
 
 ```bash
-npm run update:university-data-profiles
-npm run check:university-data-profiles
+pnpm run update:university-data-profiles
+pnpm run check:university-data-profiles
 ```
 
 ## `readable-10`

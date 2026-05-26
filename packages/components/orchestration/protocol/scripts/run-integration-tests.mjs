@@ -20,10 +20,9 @@ for (const testFile of testFiles) {
   console.error(`[integration] ${relativePath}`);
 
   const result = spawnSync(
-    process.platform === "win32" ? "npm.cmd" : "npm",
+    process.platform === "win32" ? "pnpm.cmd" : "pnpm",
     [
       "exec",
-      "--",
       "vitest",
       "run",
       "--config",

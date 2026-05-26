@@ -156,8 +156,8 @@ opening secrecy until predicate witnesses replace raw-value openings.
 ## Validation
 
 ```bash
-npm run test:ci -w ./packages/prototypes/credential-families/university-diploma
+pnpm --dir ./packages/prototypes/credential-families/university-diploma run test:ci
 ./run.sh university-protocol --light
 ./run.sh university-bdd
-npm run docs:links
+pnpm run docs:links
 ```

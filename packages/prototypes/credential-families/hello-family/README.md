@@ -120,9 +120,9 @@ a direct-claim laboratory:
 
 ## Build and test
 
-- `npm run build -w ./packages/prototypes/credential-families/hello-family`
-- `npm run lint -w ./packages/prototypes/credential-families/hello-family`
-- `npm run test:ci -w ./packages/prototypes/credential-families/hello-family`
+- `pnpm --dir ./packages/prototypes/credential-families/hello-family run build`
+- `pnpm --dir ./packages/prototypes/credential-families/hello-family run lint`
+- `pnpm --dir ./packages/prototypes/credential-families/hello-family run test:ci`
 
 ## DID-aware starter path
 

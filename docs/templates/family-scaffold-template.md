@@ -9,10 +9,10 @@ validation rules.
 Fastest repo-local path:
 
 ```bash
-npm run scaffold:family -- --slug example-family
-npm run scaffold:family -- --slug example-family --claim-mode public
-npm run scaffold:family -- --slug example-family --claim-mode commitment
-npm run scaffold:family -- --slug example-family --claim-mode mixed
+pnpm run scaffold:family -- --slug example-family
+pnpm run scaffold:family -- --slug example-family --claim-mode public
+pnpm run scaffold:family -- --slug example-family --claim-mode commitment
+pnpm run scaffold:family -- --slug example-family --claim-mode mixed
 ```
 
 Supported claim modes: `--claim-mode public|commitment|mixed`.

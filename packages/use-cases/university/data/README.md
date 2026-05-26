@@ -44,10 +44,10 @@ Validation:
 - `./run.sh university-data-profiles`
 - `./run.sh university-policy-catalog`
 - `node ./packages/use-cases/university/scripts/list-data-profiles.mjs --json`
-- `npm run update:university-data-profiles`
-- `npm run check:university-data-profiles`
-- `npm run update:university-request-policy-presets`
-- `npm run check:university-request-policy-presets`
+- `pnpm run update:university-data-profiles`
+- `pnpm run check:university-data-profiles`
+- `pnpm run update:university-request-policy-presets`
+- `pnpm run check:university-request-policy-presets`
 - the data-profile lifecycle check proves generated profile JSON, batch
   coverage, company assignments, mall-discount eligibility, and the generated
   profile runbook stay synchronized

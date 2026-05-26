@@ -109,6 +109,6 @@ Use it when you want to understand:
 
 ## Build and test
 
-- Compile Compact artifacts: `npm run contract -w credentials-birth`
-- Build TS exports: `npm run build -w credentials-birth`
-- Run tests: `npm test -w credentials-birth`
+- Compile Compact artifacts: `pnpm --dir credentials-birth run contract`
+- Build TS exports: `pnpm --dir credentials-birth run build`
+- Run tests: `pnpm --dir credentials-birth run test`
