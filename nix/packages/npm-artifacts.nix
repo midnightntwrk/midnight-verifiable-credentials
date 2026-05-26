@@ -148,7 +148,7 @@ buildNpmPackage {
 
   nodejs = nodejs_24;
 
-  npmDepsHash = "sha256-FraU7Kb5mgp2i2Fz1YOGiE1N2LFECXzNlxfT2UKLhw0=";
+  npmDepsHash = "sha256-Am/5dPQwfIPD7pPAhO+RONE9i0w4DhZydpjYohnYhQ4=";
   npmDepsFetcherVersion = 2;
 
 
