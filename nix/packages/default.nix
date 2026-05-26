@@ -1,9 +1,10 @@
+{ self, ... }:
+
 {
   perSystem =
     { pkgs, ... }:
     {
-      packages = {
-        compact-midnight = pkgs.callPackage ./compact-midnight.nix { };
-      };
+      # Placeholder — full implementation tracked by TASK-7.1
+      packages.npm-artifacts = pkgs.runCommand "npm-artifacts-placeholder" { } "mkdir $out";
     };
 }

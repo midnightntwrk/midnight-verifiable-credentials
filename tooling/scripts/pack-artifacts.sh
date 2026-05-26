@@ -16,8 +16,9 @@ workspaces=(
   packages/prototypes/credential-families/birth-secret
   packages/prototypes/credential-families/hello-family
   packages/prototypes/credential-families/dummy-claims
+  packages/prototypes/credential-families/mixed-claims
+  packages/prototypes/credential-families/passport-kyc
   packages/prototypes/credential-families/university-diploma
-  packages/components/integration/standalone-environment
 )
 
 mkdir -p "$DEST_DIR"

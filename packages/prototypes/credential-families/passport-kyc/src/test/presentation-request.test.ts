@@ -148,8 +148,9 @@ describe("passport-kyc presentation request", () => {
       },
     };
     const mismatchedPresentationProof = signProof({
-      bodyRoot:
-        pureCircuits.passportKycPresentationBodyRoot(mismatchedPresentation),
+      bodyRoot: pureCircuits.passportKycPresentationBodyRoot(
+        mismatchedPresentation,
+      ),
       context: "presentation",
       signer: fixture.holder,
       createdAt: fixture.presentationProof.createdAt + 1n,
@@ -179,8 +180,9 @@ describe("passport-kyc presentation request", () => {
       },
     };
     const mismatchedThresholdProof = signProof({
-      bodyRoot:
-        pureCircuits.passportKycPresentationBodyRoot(mismatchedThresholdPresentation),
+      bodyRoot: pureCircuits.passportKycPresentationBodyRoot(
+        mismatchedThresholdPresentation,
+      ),
       context: "presentation",
       signer: fixture.holder,
       createdAt: fixture.presentationProof.createdAt + 1n,
@@ -195,8 +197,6 @@ describe("passport-kyc presentation request", () => {
         mismatchedThresholdPresentation,
         mismatchedThresholdProof,
       ),
-    ).toThrow(
-      /Presentation age threshold does not match the request/,
-    );
+    ).toThrow(/Presentation age threshold does not match the request/);
   });
 });

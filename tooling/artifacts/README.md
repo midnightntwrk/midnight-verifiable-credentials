@@ -3,7 +3,7 @@
 Generated tarballs live under `tooling/artifacts/npm/`.
 
 Purpose:
-- provide a stable packaging target for unpublished VC and standalone-environment packages
+- provide a stable packaging target for unpublished VC packages
 - avoid patching tarballs in downstream repos
 - make downstream vendor refreshes a copy operation instead of an ad hoc rebuild
 
