@@ -68,6 +68,31 @@ describe("BDD report pipeline support", () => {
     expect(exitCode).toBe(3);
   });
 
+  it("skips report generation when SKIP_BDD_REPORT=1", async () => {
+    const previousValue = process.env.SKIP_BDD_REPORT;
+    process.env.SKIP_BDD_REPORT = "1";
+    const calls: string[] = [];
+
+    try {
+      const exitCode = await runBddScenarioReportPipeline({
+        executeScript: "test:execute",
+        runner: async (scriptName) => {
+          calls.push(scriptName);
+          return 0;
+        },
+      });
+
+      expect(exitCode).toBe(0);
+      expect(calls).toEqual(["clean", "test:execute", "summary"]);
+    } finally {
+      if (previousValue === undefined) {
+        delete process.env.SKIP_BDD_REPORT;
+      } else {
+        process.env.SKIP_BDD_REPORT = previousValue;
+      }
+    }
+  });
+
   it("preserves the execute failure code when later reporting also fails", async () => {
     const exitCode = await runBddScenarioReportPipeline({
       executeScript: "test:execute",
