@@ -1,10 +1,19 @@
-{ self, ... }:
+{ self, inputs, ... }:
 
+let
+  midnight-did = inputs.midnight-did;
+in
 {
   perSystem =
-    { pkgs, ... }:
+    { system, pkgs, ... }:
+    let
+      midnight-did-pkgs = midnight-did.packages.${system};
+    in
     {
-      # Placeholder — full implementation tracked by TASK-7.1
-      packages.npm-artifacts = pkgs.runCommand "npm-artifacts-placeholder" { } "mkdir $out";
+      packages.npm-artifacts = pkgs.callPackage ./npm-artifacts.nix {
+        midnight-did-npm-artifacts = midnight-did-pkgs.npm-artifacts;
+        inherit (midnight-did-pkgs) compact-toolchain;
+        src = self;
+      };
     };
 }
