@@ -12,7 +12,7 @@ in
     {
       packages.npm-artifacts = pkgs.callPackage ./npm-artifacts.nix {
         midnight-did-npm-artifacts = midnight-did-pkgs.npm-artifacts;
-        inherit (midnight-did-pkgs) compact-toolchain;
+        inherit (midnight-did-pkgs) compact-toolchain compact-midnight midnight-circuit-params;
         src = self;
       };
     };

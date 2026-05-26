@@ -6,6 +6,8 @@
   python3,
   midnight-did-npm-artifacts,
   compact-toolchain,
+  compact-midnight,
+  midnight-circuit-params,
   src,
 }:
 
@@ -152,20 +154,85 @@ buildNpmPackage {
 
 
   nativeBuildInputs = [
+    compact-midnight
     compact-toolchain
   ];
 
-  # Placeholder build phase — TASK-7.4 fills in the real build + packaging
   buildPhase = ''
     runHook preBuild
-    echo "npm-artifacts: dependency resolution verified (build phase is TASK-7.4)"
+
+    export COMPACT_DIRECTORY=${compact-toolchain}
+    export HOME=$TMPDIR
+
+    # Pre-populate zkir circuit parameters (required for compact compile in offline sandbox)
+    mkdir -p $HOME/.cache/midnight/zk-params
+    cp -r ${midnight-circuit-params}/* $HOME/.cache/midnight/zk-params/
+
+    # Run postinstall scripts that were stripped from package.json
+    # (ensure-midnight-did-api-paths is NOT run here: the flake-built .tgz
+    # restructures config.js to re-export from package-paths.js, so patching
+    # package-paths.js via substituteInPlace below is sufficient.)
+    node ./tooling/scripts/ensure-midnight-did-package-aliases.mjs
+    node ./tooling/scripts/ensure-compact-package-aliases.mjs
+
+    # Patch midnight-did-api contract path: the flake-built .tgz uses package-paths.js
+    # for the contract path config. config.js re-exports from package-paths.js, so
+    # patching package-paths.js is sufficient.
+    # The ensure-midnight-did-api-paths.mjs script cannot be used here — it expects
+    # the path string to be inline in config.js, but the flake-built layout
+    # moved it to package-paths.js, causing the script to throw.
+    substituteInPlace node_modules/@midnight-ntwrk/midnight-did-api/dist/package-paths.js \
+      --replace-fail '"contract", "src", "managed", "did"' '"midnight-did-contract", "dist", "managed", "did"'
+
+    # Build all 14 workspaces in dependency layer order.
+    # No turbo — its caching and parallel scheduling provide zero value in a
+    # clean Nix sandbox. Explicit ordering is simpler, more auditable, and
+    # consistent with the pack-artifacts.sh pattern.
+
+    ## Layer 1: core primitives (no vc-internal deps)
+    npm run build -w packages/core/primitives/credentials
+
+    ## Layer 2: depend on credentials
+    npm run build -w packages/registry/status-registry
+    npm run build -w packages/core/capabilities/same-holder
+    npm run build -w packages/core/primitives/iso-registry
+
+    ## Layer 3: pure TypeScript (no compact compile)
+    npm run build -w packages/components/adapters/offchain-did
+    npm run build -w packages/protocols/openid
+
+    ## Layer 4: credential families (depend on layers 1-3)
+    npm run build -w packages/prototypes/credential-families/birth
+    npm run build -w packages/prototypes/credential-families/birth-secret
+    npm run build -w packages/prototypes/credential-families/hello-family
+    npm run build -w packages/prototypes/credential-families/dummy-claims
+    npm run build -w packages/prototypes/credential-families/mixed-claims
+    npm run build -w packages/prototypes/credential-families/university-diploma
+    npm run build -w packages/prototypes/credential-families/passport-kyc
+
+    ## Layer 5: orchestration (depends on birth + age-gate contracts)
+    npm run build -w packages/components/orchestration/protocol
+
     runHook postBuild
   '';
 
   installPhase = ''
     runHook preInstall
-    mkdir $out
-    echo "npm-artifacts: packaging is TASK-7.4" > $out/README
+
+    # Pre-populate circuit parameters again for passport-kyc's prepack → compact compile
+    export HOME=$TMPDIR
+    mkdir -p $HOME/.cache/midnight/zk-params
+    cp -r ${midnight-circuit-params}/* $HOME/.cache/midnight/zk-params/
+
+    export COMPACT_DIRECTORY=${compact-toolchain}
+
+    # Patch pack-artifacts.sh: replace git rev-parse with PWD (no .git in sandbox)
+    substituteInPlace tooling/scripts/pack-artifacts.sh \
+      --replace-fail 'ROOT_DIR="$(git rev-parse --show-toplevel)"' 'ROOT_DIR="$PWD"'
+
+    mkdir -p $out
+    bash tooling/scripts/pack-artifacts.sh "$out"
+
     runHook postInstall
   '';
 
