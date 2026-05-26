@@ -4,8 +4,8 @@ import path from "node:path";
 import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { describe, expect, it } from "vitest";
 
-import { pureCircuits } from "../managed/passport-kyc-credential/contract/index.js";
-import { createPassportKycFixture } from "../testing/credential-fixtures.js";
+import { pureCircuits } from "../managed/digital-passport-credential/contract/index.js";
+import { createDigitalPassportFixture } from "../testing/credential-fixtures.js";
 
 setNetworkId("undeployed");
 
@@ -13,22 +13,22 @@ const claimsSource = readFileSync(
   path.resolve(
     import.meta.dirname,
     "..",
-    "passport-kyc-credential",
+    "digital-passport-credential",
     "claims.compact",
   ),
   "utf8",
 );
 
-describe("passport-kyc claim root", () => {
+describe("digital-passport claim root", () => {
   it("uses a family-scoped domain separation tag", () => {
-    expect(claimsSource).toContain("midnight:vc:passport-kyc:v1");
+    expect(claimsSource).toContain("midnight:vc:digital-passport:v1");
   });
 
   it("commits each claim field through a domain-separated claim root", () => {
-    const fixture = createPassportKycFixture();
+    const fixture = createDigitalPassportFixture();
 
     // The claim root should change if any commitment changes.
-    const root1 = pureCircuits.passportKycClaimRoot(
+    const root1 = pureCircuits.digitalPassportClaimRoot(
       fixture.credential.claimCommitments,
     );
     expect(root1).toBeInstanceOf(Uint8Array);
@@ -39,12 +39,12 @@ describe("passport-kyc claim root", () => {
       ...fixture.credential.claimCommitments,
       dateOfBirthCommitment: new Uint8Array(32).fill(99),
     };
-    const root2 = pureCircuits.passportKycClaimRoot(alteredCommitments);
+    const root2 = pureCircuits.digitalPassportClaimRoot(alteredCommitments);
     expect(root2).not.toEqual(root1);
   });
 
   it("produces deterministic commitments for each field", () => {
-    const fixture = createPassportKycFixture();
+    const fixture = createDigitalPassportFixture();
 
     const firstNameCommit = pureCircuits.firstNameCommitment(
       fixture.witness.firstNameValuePadded,

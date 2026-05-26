@@ -1,16 +1,16 @@
 import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { describe, expect, it } from "vitest";
 
-import { pureCircuits } from "../managed/passport-kyc-credential/contract/index.js";
-import { createPassportKycProtocolFixture } from "../testing/credential-fixtures.js";
+import { pureCircuits } from "../managed/digital-passport-credential/contract/index.js";
+import { createDigitalPassportProtocolFixture } from "../testing/credential-fixtures.js";
 
 setNetworkId("undeployed");
 
-describe("passport-kyc credential: protocol layer", () => {
+describe("digital-passport credential: protocol layer", () => {
   it("maps a protocol verification request into the concrete presentation request shape", () => {
-    const fixture = createPassportKycProtocolFixture();
+    const fixture = createDigitalPassportProtocolFixture();
 
-    const request = pureCircuits.passportKycPresentationRequestFromProtocol(
+    const request = pureCircuits.digitalPassportPresentationRequestFromProtocol(
       fixture.verificationRequest,
     );
 
@@ -18,17 +18,17 @@ describe("passport-kyc credential: protocol layer", () => {
   });
 
   it("accepts a concrete issuance flow aligned to the generic protocol thread model", () => {
-    const fixture = createPassportKycProtocolFixture();
+    const fixture = createDigitalPassportProtocolFixture();
 
     expect(() =>
-      pureCircuits.assertPassportKycIssuanceRequestMatchesOffer(
+      pureCircuits.assertDigitalPassportIssuanceRequestMatchesOffer(
         fixture.issuanceOffer,
         fixture.issuanceRequest,
       ),
     ).not.toThrow();
 
     expect(() =>
-      pureCircuits.assertPassportKycIssuanceResultMatchesRequest(
+      pureCircuits.assertDigitalPassportIssuanceResultMatchesRequest(
         fixture.issuanceRequest,
         fixture.issuanceResult,
       ),
@@ -36,7 +36,7 @@ describe("passport-kyc credential: protocol layer", () => {
   });
 
   it("rejects an issuance result when the issuance challenge no longer matches the request", () => {
-    const fixture = createPassportKycProtocolFixture();
+    const fixture = createDigitalPassportProtocolFixture();
     const tamperedResult = {
       ...fixture.issuanceResult,
       body: {
@@ -46,27 +46,27 @@ describe("passport-kyc credential: protocol layer", () => {
     };
 
     expect(() =>
-      pureCircuits.assertPassportKycIssuanceResultMatchesRequest(
+      pureCircuits.assertDigitalPassportIssuanceResultMatchesRequest(
         fixture.issuanceRequest,
         tamperedResult,
       ),
     ).toThrow(
-      /Passport-KYC issuance result challenge must match the request challenge|Passport-KYC issuance result challenge must match the issuer proof challenge/,
+      /Digital-passport issuance result challenge must match the request challenge|Digital-passport issuance result challenge must match the issuer proof challenge/,
     );
   });
 
   it("accepts a concrete verification submission aligned to the generic verification protocol", () => {
-    const fixture = createPassportKycProtocolFixture();
+    const fixture = createDigitalPassportProtocolFixture();
 
     expect(() =>
-      pureCircuits.assertPassportKycVerificationSubmissionMatchesRequest(
+      pureCircuits.assertDigitalPassportVerificationSubmissionMatchesRequest(
         fixture.verificationRequest,
         fixture.verificationSubmission,
       ),
     ).not.toThrow();
 
     expect(() =>
-      pureCircuits.assertPassportKycVerificationResultMatchesSubmission(
+      pureCircuits.assertDigitalPassportVerificationResultMatchesSubmission(
         fixture.verificationSubmission,
         fixture.verificationResult,
       ),
@@ -74,14 +74,14 @@ describe("passport-kyc credential: protocol layer", () => {
   });
 
   it("rejects a verification submission when the protocol challenge diverges from the request", () => {
-    const fixture = createPassportKycProtocolFixture();
+    const fixture = createDigitalPassportProtocolFixture();
     const tamperedRequest = {
       ...fixture.verificationRequest,
       verifierChallengeHash: new Uint8Array(32).fill(9),
     };
 
     expect(() =>
-      pureCircuits.assertPassportKycVerificationSubmissionMatchesRequest(
+      pureCircuits.assertDigitalPassportVerificationSubmissionMatchesRequest(
         tamperedRequest,
         fixture.verificationSubmission,
       ),

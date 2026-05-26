@@ -20,7 +20,7 @@ const packageJson = JSON.parse(
   readFileSync(path.resolve(packageRoot, "package.json"), "utf8"),
 ) as { exports?: Record<string, unknown> };
 
-describe("credentials-passport-kyc package surfaces", () => {
+describe("credentials-digital-passport package surfaces", () => {
   it("declares a stable contract subpath export", () => {
     expect(packageJson.exports?.["./contract"]).toBeDefined();
     expect(existsSync(sourceSurface("contract.ts"))).toEqual(true);
@@ -28,7 +28,7 @@ describe("credentials-passport-kyc package surfaces", () => {
 
   it("keeps the root package surface free of duplicate contract namespaces", () => {
     expect(indexSource).not.toContain(
-      "export * as PassportKycCredentialContract",
+      "export * as DigitalPassportCredentialContract",
     );
   });
 
@@ -48,7 +48,7 @@ describe("credentials-passport-kyc package surfaces", () => {
     // Re-import dynamically to avoid build-time dependency issues in the
     // scaffold test; the real assertions run in the integration tests.
     expect(indexSource).toContain(
-      "managed/passport-kyc-credential/contract/index.js",
+      "managed/digital-passport-credential/contract/index.js",
     );
   });
 });

@@ -17,7 +17,7 @@ workspaces=(
   packages/prototypes/credential-families/hello-family
   packages/prototypes/credential-families/dummy-claims
   packages/prototypes/credential-families/mixed-claims
-  packages/prototypes/credential-families/passport-kyc
+  packages/prototypes/credential-families/digital-passport
   packages/prototypes/credential-families/university-diploma
 )
 

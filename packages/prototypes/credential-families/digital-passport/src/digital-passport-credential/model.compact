@@ -1,4 +1,4 @@
-export struct PassportKycDisclosures {
+export struct DigitalPassportDisclosures {
   revealFirstName: Boolean,
   firstNameValuePadded: Bytes<64>,
   firstNameOpening: Bytes<32>,
@@ -9,7 +9,7 @@ export struct PassportKycDisclosures {
   ageThresholdYears: Uint<8>,
 }
 
-export struct PassportKycPresentationRequest {
+export struct DigitalPassportPresentationRequest {
   version: Uint<16>,
   schema: SchemaRef,
   issuerVerificationMethodRef: VerificationMethodRef,

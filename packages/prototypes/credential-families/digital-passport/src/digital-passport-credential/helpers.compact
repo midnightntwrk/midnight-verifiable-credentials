@@ -1,38 +1,42 @@
-// Passport-KYC-family schema helpers and request normalization.
+// Digital-passport-family schema helpers and request normalization.
 // These helpers stay pure because they only derive schema-local roots and
 // verifier-request shapes; they never read ledger state.
-export pure circuit passportKycCredentialBodyRoot(credential: PassportKycCredential): Bytes<32> {
+export pure circuit digitalPassportCredentialBodyRoot(
+                      credential: DigitalPassportCredential
+                      ): Bytes<32> {
   return credentialBodyRoot(credential);
 }
 
-export pure circuit passportKycPresentationBodyRoot(
-                      presentation: PassportKycPresentation
+export pure circuit digitalPassportPresentationBodyRoot(
+                      presentation: DigitalPassportPresentation
                       ): Bytes<32> {
   return presentationBodyRoot(presentation);
 }
 
-export pure circuit passportKycPresentationRequestBodyRoot(
-                      request: PassportKycPresentationRequest
+export pure circuit digitalPassportPresentationRequestBodyRoot(
+                      request: DigitalPassportPresentationRequest
                       ): Bytes<32> {
-  return persistentHash<PassportKycPresentationRequest>(request);
+  return persistentHash<DigitalPassportPresentationRequest>(request);
 }
 
 // =====================
 // Schema and verifier-request validation
 // =====================
-export pure circuit assertValidPassportKycSchemaRef(schema: SchemaRef): [] {
-  assert(schema.packageId == pad(32, "midnight:vc:passport-kyc"),
-         "Passport-KYC package identifier mismatch"
+export pure circuit assertValidDigitalPassportSchemaRef(schema: SchemaRef): [] {
+  assert(schema.packageId == pad(32, "midnight:vc:digital-passport"),
+         "Digital-passport package identifier mismatch"
          );
-  assert(schema.schemaId == pad(32, "passport-kyc:v1"), "Passport-KYC schema identifier mismatch");
-  assert(schema.majorVersion == 1, "Passport-KYC major version mismatch");
+  assert(schema.schemaId == pad(32, "digital-passport:v1"),
+         "Digital-passport schema identifier mismatch"
+         );
+  assert(schema.majorVersion == 1, "Digital-passport major version mismatch");
 }
 
-export pure circuit assertValidPassportKycPresentationRequest(
-                      request: PassportKycPresentationRequest
+export pure circuit assertValidDigitalPassportPresentationRequest(
+                      request: DigitalPassportPresentationRequest
                       ): [] {
-  assert(request.version == 1, "Passport-KYC request version mismatch");
-  assertValidPassportKycSchemaRef(request.schema);
+  assert(request.version == 1, "Digital-passport request version mismatch");
+  assertValidDigitalPassportSchemaRef(request.schema);
   assertValidVerificationMethodRef(request.issuerVerificationMethodRef);
   if (request.requireAgeOverThreshold) {
     assert(request.requestedAgeThresholdYears > 0, "Requested age threshold must be positive");
@@ -42,49 +46,49 @@ export pure circuit assertValidPassportKycPresentationRequest(
            );
   }
   assert(request.verifierChallengeHash != pad(32, ""),
-         "Passport-KYC verifier challenge must be set"
+         "Digital-passport verifier challenge must be set"
          );
 }
 
 // NOTE: this normalization deliberately strips the transport envelope so the
 // credential-family request semantics stay reusable across protocol wrappers.
-export pure circuit passportKycPresentationRequestFromProtocol(
-                      request: PassportKycVerificationRequest
-                      ): PassportKycPresentationRequest {
-  return PassportKycPresentationRequest { version: request.envelope.version,
-                                          schema: request.schema,
-                                          issuerVerificationMethodRef: request.issuerVerificationMethodRef,
-                                          requireFirstNameDisclosure: request.body.requireFirstNameDisclosure,
-                                          requireLastNameDisclosure: request.body.requireLastNameDisclosure,
-                                          requireAgeOverThreshold: request.body.requireAgeOverThreshold,
-                                          requestedAgeThresholdYears: request.body.requestedAgeThresholdYears,
-                                          verifierChallengeHash: request.verifierChallengeHash, };
+export pure circuit digitalPassportPresentationRequestFromProtocol(
+                      request: DigitalPassportVerificationRequest
+                      ): DigitalPassportPresentationRequest {
+  return DigitalPassportPresentationRequest { version: request.envelope.version,
+                                              schema: request.schema,
+                                              issuerVerificationMethodRef: request.issuerVerificationMethodRef,
+                                              requireFirstNameDisclosure: request.body.requireFirstNameDisclosure,
+                                              requireLastNameDisclosure: request.body.requireLastNameDisclosure,
+                                              requireAgeOverThreshold: request.body.requireAgeOverThreshold,
+                                              requestedAgeThresholdYears: request.body.requestedAgeThresholdYears,
+                                              verifierChallengeHash: request.verifierChallengeHash, };
 }
 
 // =====================
 // Credential and presentation validation
 // =====================
-export pure circuit assertValidPassportKycCredential(
-                      credential: PassportKycCredential,
+export pure circuit assertValidDigitalPassportCredential(
+                      credential: DigitalPassportCredential,
                       proof: Proof
                       ): [] {
-  assertValidPassportKycSchemaRef(credential.schema);
-  assertValidCredentialEnvelope(credential, passportKycClaimRoot(credential.claimCommitments));
+  assertValidDigitalPassportSchemaRef(credential.schema);
+  assertValidCredentialEnvelope(credential, digitalPassportClaimRoot(credential.claimCommitments));
   assertValidNoStatusBinding(credential.statusBinding);
   assertValidExplicitHolderBinding(credential.holderBinding);
   assertValidCredentialProof(credential, proof);
 }
 
-export pure circuit assertValidPassportKycPresentation(
-                      credential: PassportKycCredential,
+export pure circuit assertValidDigitalPassportPresentation(
+                      credential: DigitalPassportCredential,
                       credentialProof: Proof,
-                      presentation: PassportKycPresentation,
+                      presentation: DigitalPassportPresentation,
                       presentationProof: Proof
                       ): [] {
-  assertValidPassportKycCredential(credential, credentialProof);
-  assertValidPassportKycSchemaRef(presentation.schema);
+  assertValidDigitalPassportCredential(credential, credentialProof);
+  assertValidDigitalPassportSchemaRef(presentation.schema);
   assertValidPresentationEnvelope(presentation);
-  PassportKycPresentation_assertMatchingCredentialPresentation(credential, presentation);
+  DigitalPassportPresentation_assertMatchingCredentialPresentation(credential, presentation);
   assertValidExplicitHolderBinding(presentation.holderBinding);
   assertMatchingExplicitHolderBindings(credential.holderBinding, presentation.holderBinding);
 
@@ -112,7 +116,7 @@ export pure circuit assertValidPassportKycPresentation(
 
   assertProofMatchesExplicitHolderBinding(presentation.holderBinding, presentationProof);
   assertValidPresentationContextProof(
-    passportKycPresentationBodyRoot(presentation),
+    digitalPassportPresentationBodyRoot(presentation),
     presentationProof
     );
 }
@@ -121,14 +125,14 @@ export pure circuit assertValidPassportKycPresentation(
 // holder expects. This helper only proves that the presentation satisfies the
 // declared request semantics; it does not authenticate who authored the
 // request outside the challenge and issuer-binding checks below.
-export pure circuit assertPassportKycPresentationSatisfiesRequest(
-                      credential: PassportKycCredential,
-                      request: PassportKycPresentationRequest,
-                      presentation: PassportKycPresentation,
+export pure circuit assertDigitalPassportPresentationSatisfiesRequest(
+                      credential: DigitalPassportCredential,
+                      request: DigitalPassportPresentationRequest,
+                      presentation: DigitalPassportPresentation,
                       presentationProof: Proof
                       ): [] {
-  assertValidPassportKycPresentationRequest(request);
-  assertValidPassportKycSchemaRef(presentation.schema);
+  assertValidDigitalPassportPresentationRequest(request);
+  assertValidDigitalPassportSchemaRef(presentation.schema);
   assertMatchingSchemaRefs(request.schema, credential.schema);
   assertMatchingSchemaRefs(request.schema, presentation.schema);
   assert(request.issuerVerificationMethodRef.didContractAddress ==
@@ -168,9 +172,9 @@ export pure circuit assertPassportKycPresentationSatisfiesRequest(
 // TRUST BOUNDARY: `currentDay` is caller-supplied policy input. Callers must
 // source it from a trustworthy time/calendar oracle when the age predicate is
 // used for real acceptance decisions.
-export pure circuit assertValidPassportKycAgePredicate(
-                      credential: PassportKycCredential,
-                      presentation: PassportKycPresentation,
+export pure circuit assertValidDigitalPassportAgePredicate(
+                      credential: DigitalPassportCredential,
+                      presentation: DigitalPassportPresentation,
                       currentDay: Uint<32>,
                       dateOfBirthDays: Uint<32>,
                       dateOfBirthOpening: Bytes<32>

@@ -1,15 +1,17 @@
-// Passport-KYC claim commitments and claim-root hashing.
+// Digital-passport claim commitments and claim-root hashing.
 // This file stays schema-local on purpose so the generic VC core does not need
-// to know anything about passport-kyc field layout.
-export struct PassportKycClaimCommitments {
+// to know anything about digital-passport field layout.
+export struct DigitalPassportClaimCommitments {
   firstNameCommitment: Bytes<32>,
   lastNameCommitment: Bytes<32>,
   dateOfBirthCommitment: Bytes<32>,
 }
 
-export pure circuit passportKycClaimRoot(commitments: PassportKycClaimCommitments): Bytes<32> {
+export pure circuit digitalPassportClaimRoot(
+                      commitments: DigitalPassportClaimCommitments
+                      ): Bytes<32> {
   return persistentHash<Vector<4, Bytes<32>>>(
-           [pad(32, "midnight:vc:passport-kyc:v1"),
+           [pad(32, "midnight:vc:digital-passport:v1"),
             commitments.firstNameCommitment,
             commitments.lastNameCommitment,
             commitments.dateOfBirthCommitment]

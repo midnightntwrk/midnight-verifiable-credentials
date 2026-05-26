@@ -148,7 +148,7 @@ buildNpmPackage {
 
   nodejs = nodejs_24;
 
-  npmDepsHash = "sha256-RyGQhLcoYlN3JbeIOslVauRHfBjj/kMS8/n++kjeSJw=";
+  npmDepsHash = "sha256-FraU7Kb5mgp2i2Fz1YOGiE1N2LFECXzNlxfT2UKLhw0=";
   npmDepsFetcherVersion = 2;
 
 
@@ -208,7 +208,7 @@ buildNpmPackage {
     npm run build -w packages/prototypes/credential-families/dummy-claims
     npm run build -w packages/prototypes/credential-families/mixed-claims
     npm run build -w packages/prototypes/credential-families/university-diploma
-    npm run build -w packages/prototypes/credential-families/passport-kyc
+    npm run build -w packages/prototypes/credential-families/digital-passport
 
     ## Layer 5: orchestration (depends on birth + age-gate contracts)
     npm run build -w packages/components/orchestration/protocol
@@ -219,7 +219,7 @@ buildNpmPackage {
   installPhase = ''
     runHook preInstall
 
-    # Pre-populate circuit parameters again for passport-kyc's prepack → compact compile
+    # Pre-populate circuit parameters again for digital-passport's prepack → compact compile
     export HOME=$TMPDIR
     mkdir -p $HOME/.cache/midnight/zk-params
     cp -r ${midnight-circuit-params}/* $HOME/.cache/midnight/zk-params/

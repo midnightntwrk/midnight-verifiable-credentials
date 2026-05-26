@@ -1,9 +1,9 @@
-# @midnight-ntwrk/midnight-did-credentials-passport-kyc
+# @midnight-ntwrk/midnight-did-credentials-digital-passport
 
 > Maturity: `reference`
 > Package class: `dist`
 
-Passport-KYC credential specialization for the generic Midnight VC/VP core.
+Digital-passport credential specialization for the generic Midnight VC/VP core.
 
 Status:
 
@@ -27,16 +27,16 @@ Reusable outside this repo:
 Surface classification:
 
 - `On-chain + off-chain`
-- `src/passport-kyc-credential.compact` is the authoritative contract-authoring surface
+- `src/digital-passport-credential.compact` is the authoritative contract-authoring surface
 - generated/runtime TypeScript exports are off-chain mirrors only
 - `./testing` is an `Off-chain only` fixture surface for integration tests;
   do not import `../<package>/src/...` from sibling workspaces
 - example:
-  `import { createPassportKycFixtureForParticipants } from "@midnight-ntwrk/midnight-did-credentials-passport-kyc/testing";`
+  `import { createDigitalPassportFixtureForParticipants } from "@midnight-ntwrk/midnight-did-credentials-digital-passport/testing";`
 
 Start here:
 
-1. use this package when you want passport-KYC credential commitment-only claims
+1. use this package when you want digital-passport credential commitment-only claims
    on top of the generic Midnight VC/VP core
 2. write contracts against the Compact family entrypoint
 3. use generated/runtime exports only in tests, wallets, verifiers, and
@@ -54,14 +54,14 @@ Related docs:
 
 ## Purpose
 
-This package defines the passport-KYC credential family on top of the generic
+This package defines the digital-passport credential family on top of the generic
 [`credentials`](../../../../packages/core/primitives/credentials/README.md) package.
 
 It owns the schema-specific parts that should not live in the generic core:
 
-- passport-KYC claim commitments
-- passport-KYC schema validation
-- typed passport-KYC presentation requests
+- digital-passport claim commitments
+- digital-passport schema validation
+- typed digital-passport presentation requests
 - first-name, last-name, and date-of-birth selective disclosure
 - age-over-threshold predicate validation
 
@@ -75,14 +75,14 @@ It owns the schema-specific parts that should not live in the generic core:
 
 Schema identifiers:
 
-- `packageId = "midnight:vc:passport-kyc"`
-- `schemaId = "passport-kyc:v1"`
+- `packageId = "midnight:vc:digital-passport"`
+- `schemaId = "digital-passport:v1"`
 - `majorVersion = 1`
 
 The claim root uses domain-separated hashing:
 ```
 persistentHash<Vector<4, Bytes<32>>>([
-  pad(32, "midnight:vc:passport-kyc:v1"),
+  pad(32, "midnight:vc:digital-passport:v1"),
   firstNameCommitment,
   lastNameCommitment,
   dateOfBirthCommitment,
@@ -102,7 +102,7 @@ suspension status. Status checking, if needed, is an off-chain concern.
 
 ## Disclosures
 
-`PassportKycDisclosures` supports three disclosure modes:
+`DigitalPassportDisclosures` supports three disclosure modes:
 
 | Disclosure | Field | Description |
 |---|---|---|
@@ -112,7 +112,7 @@ suspension status. Status checking, if needed, is an off-chain concern.
 
 ## Presentation Requests
 
-`PassportKycPresentationRequest` allows a verifier to request one or more
+`DigitalPassportPresentationRequest` allows a verifier to request one or more
 disclosures:
 
 | Field | Description |
@@ -127,26 +127,26 @@ disclosures:
 
 | Circuit | Purpose |
 |---|---|
-| `passportKycClaimRoot` | Domain-separated claim root from commitments |
+| `digitalPassportClaimRoot` | Domain-separated claim root from commitments |
 | `firstNameCommitment` / `lastNameCommitment` / `dateOfBirthCommitment` | Individual commitment circuits |
-| `assertValidPassportKycSchemaRef` | Validates schema identifiers |
-| `assertValidPassportKycPresentationRequest` | Validates request structure and constraints |
-| `assertValidPassportKycCredential` | Validates the full credential envelope |
-| `assertValidPassportKycPresentation` | Validates a presentation and its disclosures |
-| `assertPassportKycPresentationSatisfiesRequest` | Checks that disclosures match request requirements |
-| `assertValidPassportKycAgePredicate` | Validates the age-over-threshold predicate with a current-day witness |
+| `assertValidDigitalPassportSchemaRef` | Validates schema identifiers |
+| `assertValidDigitalPassportPresentationRequest` | Validates request structure and constraints |
+| `assertValidDigitalPassportCredential` | Validates the full credential envelope |
+| `assertValidDigitalPassportPresentation` | Validates a presentation and its disclosures |
+| `assertDigitalPassportPresentationSatisfiesRequest` | Checks that disclosures match request requirements |
+| `assertValidDigitalPassportAgePredicate` | Validates the age-over-threshold predicate with a current-day witness |
 
 ## Protocol Model
 
 This family follows the thin-core protocol model (VC/VP types + claim root):
 
-- `PassportKycIssuanceOffer`, `PassportKycIssuanceRequest`, `PassportKycIssuanceResult`
-- `PassportKycVerificationRequest`, `PassportKycVerificationSubmission`, `PassportKycVerificationResult`
+- `DigitalPassportIssuanceOffer`, `DigitalPassportIssuanceRequest`, `DigitalPassportIssuanceResult`
+- `DigitalPassportVerificationRequest`, `DigitalPassportVerificationSubmission`, `DigitalPassportVerificationResult`
 
-## Relationship to midnight-passport-kyc SD-JWT claims
+## Relationship to midnight-passport-issuer SD-JWT claims
 
-The passport-KYC Compact credential family is the on-chain complement to the
-off-chain SD-JWT passport-KYC credential defined in the `midnight-passport-kyc`
+The digital-passport Compact credential family is the on-chain complement to the
+off-chain SD-JWT digital-passport credential defined in the `midnight-passport-issuer`
 workspace. The SD-JWT claims source the same fields:
 - `first_name` → `firstName` (`Bytes<64>`, text-padded)
 - `last_name` → `lastName` (`Bytes<64>`, text-padded)
@@ -159,6 +159,6 @@ body — only commitment digests.
 
 ## Build and test
 
-- Compile Compact artifacts: `npm run contract -w credentials-passport-kyc`
-- Build TS exports: `npm run build -w credentials-passport-kyc`
-- Run tests: `npm test -w credentials-passport-kyc`
+- Compile Compact artifacts: `npm run contract -w credentials-digital-passport`
+- Build TS exports: `npm run build -w credentials-digital-passport`
+- Run tests: `npm test -w credentials-digital-passport`

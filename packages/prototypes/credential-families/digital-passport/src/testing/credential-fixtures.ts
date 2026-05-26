@@ -13,19 +13,19 @@ import {
 
 import {
   type CredentialProtocolFeatures,
+  type DigitalPassportCredential,
+  type DigitalPassportIssuanceOffer,
+  type DigitalPassportIssuanceRequest,
+  type DigitalPassportIssuanceResult,
+  type DigitalPassportPresentation,
+  type DigitalPassportPresentationRequest,
+  type DigitalPassportVerificationRequest,
+  type DigitalPassportVerificationResult,
+  type DigitalPassportVerificationSubmission,
   HolderBindingProfile,
-  type PassportKycCredential,
-  type PassportKycIssuanceOffer,
-  type PassportKycIssuanceRequest,
-  type PassportKycIssuanceResult,
-  type PassportKycPresentation,
-  type PassportKycPresentationRequest,
-  type PassportKycVerificationRequest,
-  type PassportKycVerificationResult,
-  type PassportKycVerificationSubmission,
   type ProtocolMessageEnvelope,
   pureCircuits,
-} from "../managed/passport-kyc-credential/contract/index.js";
+} from "../managed/digital-passport-credential/contract/index.js";
 
 const JUBJUB_SUBGROUP_ORDER =
   6554484396890773809930967563523245729705921265872317281365359162392183254199n;
@@ -39,13 +39,13 @@ export type Signer = {
 
 export type ProofContext = "issuance" | "presentation";
 
-export type PassportKycFixture = {
+export type DigitalPassportFixture = {
   readonly issuer: Signer;
   readonly holder: Signer;
-  readonly credential: PassportKycCredential;
+  readonly credential: DigitalPassportCredential;
   readonly credentialProof: Proof;
-  readonly presentationRequest: PassportKycPresentationRequest;
-  readonly presentation: PassportKycPresentation;
+  readonly presentationRequest: DigitalPassportPresentationRequest;
+  readonly presentation: DigitalPassportPresentation;
   readonly presentationProof: Proof;
   readonly witness: {
     readonly firstNameValuePadded: Uint8Array;
@@ -58,14 +58,14 @@ export type PassportKycFixture = {
   };
 };
 
-export type PassportKycProtocolFixture = PassportKycFixture & {
+export type DigitalPassportProtocolFixture = DigitalPassportFixture & {
   readonly features: CredentialProtocolFeatures;
-  readonly issuanceOffer: PassportKycIssuanceOffer;
-  readonly issuanceRequest: PassportKycIssuanceRequest;
-  readonly issuanceResult: PassportKycIssuanceResult;
-  readonly verificationRequest: PassportKycVerificationRequest;
-  readonly verificationSubmission: PassportKycVerificationSubmission;
-  readonly verificationResult: PassportKycVerificationResult;
+  readonly issuanceOffer: DigitalPassportIssuanceOffer;
+  readonly issuanceRequest: DigitalPassportIssuanceRequest;
+  readonly issuanceResult: DigitalPassportIssuanceResult;
+  readonly verificationRequest: DigitalPassportVerificationRequest;
+  readonly verificationSubmission: DigitalPassportVerificationSubmission;
+  readonly verificationResult: DigitalPassportVerificationResult;
 };
 
 const sha256 = (value: string): Uint8Array =>
@@ -180,11 +180,11 @@ export const signProof = ({
   };
 };
 
-const buildPassportKycFixture = (
+const buildDigitalPassportFixture = (
   issuer: Signer,
   holder: Signer,
   verifierChallengeHash = sha256("challenge:verifier"),
-): PassportKycFixture => {
+): DigitalPassportFixture => {
   const witness = {
     firstNameValuePadded: padText("Alice", 64),
     firstNameOpening: sha256("opening:first-name"),
@@ -210,11 +210,11 @@ const buildPassportKycFixture = (
     ),
   };
 
-  const credential: PassportKycCredential = {
+  const credential: DigitalPassportCredential = {
     version: 1n,
     schema: {
-      packageId: padText("midnight:vc:passport-kyc"),
-      schemaId: padText("passport-kyc:v1"),
+      packageId: padText("midnight:vc:digital-passport"),
+      schemaId: padText("digital-passport:v1"),
       majorVersion: 1n,
       minorVersion: 0n,
     },
@@ -228,11 +228,11 @@ const buildPassportKycFixture = (
     expiresAt: 20_000n,
     claims: {},
     claimCommitments,
-    claimRoot: pureCircuits.passportKycClaimRoot(claimCommitments),
+    claimRoot: pureCircuits.digitalPassportClaimRoot(claimCommitments),
   };
 
   const credentialProof = signProof({
-    bodyRoot: pureCircuits.passportKycCredentialBodyRoot(credential),
+    bodyRoot: pureCircuits.digitalPassportCredentialBodyRoot(credential),
     context: "issuance",
     signer: issuer,
     createdAt: 10_001n,
@@ -240,7 +240,7 @@ const buildPassportKycFixture = (
     nonceScalar: 11n,
   });
 
-  const presentationRequest: PassportKycPresentationRequest = {
+  const presentationRequest: DigitalPassportPresentationRequest = {
     version: 1n,
     schema: credential.schema,
     issuerVerificationMethodRef: credential.issuerVerificationMethodRef,
@@ -251,7 +251,7 @@ const buildPassportKycFixture = (
     verifierChallengeHash,
   };
 
-  const presentation: PassportKycPresentation = {
+  const presentation: DigitalPassportPresentation = {
     version: 1n,
     schema: credential.schema,
     credentialClaimRoot: credential.claimRoot,
@@ -270,7 +270,7 @@ const buildPassportKycFixture = (
   };
 
   const presentationProof = signProof({
-    bodyRoot: pureCircuits.passportKycPresentationBodyRoot(presentation),
+    bodyRoot: pureCircuits.digitalPassportPresentationBodyRoot(presentation),
     context: "presentation",
     signer: holder,
     createdAt: 10_100n,
@@ -290,22 +290,22 @@ const buildPassportKycFixture = (
   };
 };
 
-export const createPassportKycFixture = (): PassportKycFixture =>
-  buildPassportKycFixture(
+export const createDigitalPassportFixture = (): DigitalPassportFixture =>
+  buildDigitalPassportFixture(
     createSigner("issuer", 123456789n),
     createSigner("holder", 987654321n),
   );
 
-export const createPassportKycFixtureForParticipants = (
+export const createDigitalPassportFixtureForParticipants = (
   issuer: Signer,
   holder: Signer,
   verifierChallengeHash?: Uint8Array,
-): PassportKycFixture =>
-  buildPassportKycFixture(issuer, holder, verifierChallengeHash);
+): DigitalPassportFixture =>
+  buildDigitalPassportFixture(issuer, holder, verifierChallengeHash);
 
-export const createPassportKycProtocolFixture =
-  (): PassportKycProtocolFixture => {
-    const fixture = createPassportKycFixture();
+export const createDigitalPassportProtocolFixture =
+  (): DigitalPassportProtocolFixture => {
+    const fixture = createDigitalPassportFixture();
     const features: CredentialProtocolFeatures = {
       supportsSelectiveDisclosure: true,
       supportsPredicateProofs: true,
@@ -313,31 +313,31 @@ export const createPassportKycProtocolFixture =
       supportsSameHolderProof: false,
     };
 
-    return createPassportKycProtocolFixtureFromFixture(fixture, features);
+    return createDigitalPassportProtocolFixtureFromFixture(fixture, features);
   };
 
-export const createPassportKycProtocolFixtureForParticipants = (
+export const createDigitalPassportProtocolFixtureForParticipants = (
   issuer: Signer,
   holder: Signer,
   verifierChallengeHash?: Uint8Array,
-): PassportKycProtocolFixture =>
-  createPassportKycProtocolFixtureFromFixture(
-    createPassportKycFixtureForParticipants(
+): DigitalPassportProtocolFixture =>
+  createDigitalPassportProtocolFixtureFromFixture(
+    createDigitalPassportFixtureForParticipants(
       issuer,
       holder,
       verifierChallengeHash,
     ),
   );
 
-const createPassportKycProtocolFixtureFromFixture = (
-  fixture: PassportKycFixture,
+const createDigitalPassportProtocolFixtureFromFixture = (
+  fixture: DigitalPassportFixture,
   features: CredentialProtocolFeatures = {
     supportsSelectiveDisclosure: true,
     supportsPredicateProofs: true,
     supportsVerifierScopedPseudonym: false,
     supportsSameHolderProof: false,
   },
-): PassportKycProtocolFixture => {
+): DigitalPassportProtocolFixture => {
   const normalizedFeatures: CredentialProtocolFeatures = {
     supportsSelectiveDisclosure: features.supportsSelectiveDisclosure,
     supportsPredicateProofs: features.supportsPredicateProofs,
@@ -345,10 +345,10 @@ const createPassportKycProtocolFixtureFromFixture = (
     supportsSameHolderProof: features.supportsSameHolderProof,
   };
 
-  const issuanceOffer: PassportKycIssuanceOffer = {
+  const issuanceOffer: DigitalPassportIssuanceOffer = {
     envelope: createProtocolEnvelope({
       label: "issuance-offer",
-      threadLabel: "passport-kyc-issuance",
+      threadLabel: "digital-passport-issuance",
       initialMessage: true,
       createdAt: 20_000n,
     }),
@@ -363,10 +363,10 @@ const createPassportKycProtocolFixtureFromFixture = (
     },
   };
 
-  const issuanceRequest: PassportKycIssuanceRequest = {
+  const issuanceRequest: DigitalPassportIssuanceRequest = {
     envelope: createProtocolEnvelope({
       label: "issuance-request",
-      threadLabel: "passport-kyc-issuance",
+      threadLabel: "digital-passport-issuance",
       initialMessage: false,
       respondsToMessageId: issuanceOffer.envelope.messageId,
       createdAt: 20_010n,
@@ -383,10 +383,10 @@ const createPassportKycProtocolFixtureFromFixture = (
     },
   };
 
-  const issuanceResult: PassportKycIssuanceResult = {
+  const issuanceResult: DigitalPassportIssuanceResult = {
     envelope: createProtocolEnvelope({
       label: "issuance-result",
-      threadLabel: "passport-kyc-issuance",
+      threadLabel: "digital-passport-issuance",
       initialMessage: false,
       respondsToMessageId: issuanceRequest.envelope.messageId,
       createdAt: 20_020n,
@@ -402,10 +402,10 @@ const createPassportKycProtocolFixtureFromFixture = (
     },
   };
 
-  const verificationRequest: PassportKycVerificationRequest = {
+  const verificationRequest: DigitalPassportVerificationRequest = {
     envelope: createProtocolEnvelope({
       label: "verification-request",
-      threadLabel: "passport-kyc-verification",
+      threadLabel: "digital-passport-verification",
       initialMessage: true,
       createdAt: 21_000n,
     }),
@@ -426,10 +426,10 @@ const createPassportKycProtocolFixtureFromFixture = (
     },
   };
 
-  const verificationSubmission: PassportKycVerificationSubmission = {
+  const verificationSubmission: DigitalPassportVerificationSubmission = {
     envelope: createProtocolEnvelope({
       label: "verification-submission",
-      threadLabel: "passport-kyc-verification",
+      threadLabel: "digital-passport-verification",
       initialMessage: false,
       respondsToMessageId: verificationRequest.envelope.messageId,
       createdAt: 21_010n,
@@ -446,17 +446,17 @@ const createPassportKycProtocolFixtureFromFixture = (
     },
   };
 
-  const verificationResult: PassportKycVerificationResult = {
+  const verificationResult: DigitalPassportVerificationResult = {
     envelope: createProtocolEnvelope({
       label: "verification-result",
-      threadLabel: "passport-kyc-verification",
+      threadLabel: "digital-passport-verification",
       initialMessage: false,
       respondsToMessageId: verificationSubmission.envelope.messageId,
       createdAt: 21_020n,
     }),
     approved: true,
     body: {
-      credentialRoot: pureCircuits.passportKycCredentialBodyRoot(
+      credentialRoot: pureCircuits.digitalPassportCredentialBodyRoot(
         fixture.credential,
       ),
       verifiedThresholdYears: fixture.presentation.disclosed.ageThresholdYears,

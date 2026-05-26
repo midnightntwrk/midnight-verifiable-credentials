@@ -1,20 +1,20 @@
 import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { describe, expect, it } from "vitest";
 
-import { pureCircuits } from "../managed/passport-kyc-credential/contract/index.js";
+import { pureCircuits } from "../managed/digital-passport-credential/contract/index.js";
 import {
-  createPassportKycFixture,
+  createDigitalPassportFixture,
   signProof,
 } from "../testing/credential-fixtures.js";
 
 setNetworkId("undeployed");
 
-describe("passport-kyc credential: age predicate", () => {
+describe("digital-passport credential: age predicate", () => {
   it("checks the private age witness against the committed date of birth", () => {
-    const fixture = createPassportKycFixture();
+    const fixture = createDigitalPassportFixture();
 
     expect(() =>
-      pureCircuits.assertValidPassportKycAgePredicate(
+      pureCircuits.assertValidDigitalPassportAgePredicate(
         fixture.credential,
         fixture.presentation,
         fixture.witness.currentDay,
@@ -24,7 +24,7 @@ describe("passport-kyc credential: age predicate", () => {
     ).not.toThrow();
 
     expect(() =>
-      pureCircuits.assertValidPassportKycAgePredicate(
+      pureCircuits.assertValidDigitalPassportAgePredicate(
         fixture.credential,
         fixture.presentation,
         fixture.witness.currentDay,
@@ -35,7 +35,7 @@ describe("passport-kyc credential: age predicate", () => {
   });
 
   it("rejects a predicate proof when the holder is below the requested threshold", () => {
-    const fixture = createPassportKycFixture();
+    const fixture = createDigitalPassportFixture();
 
     const strictPresentation = {
       ...fixture.presentation,
@@ -46,7 +46,7 @@ describe("passport-kyc credential: age predicate", () => {
     };
     const strictPresentationProof = signProof({
       bodyRoot:
-        pureCircuits.passportKycPresentationBodyRoot(strictPresentation),
+        pureCircuits.digitalPassportPresentationBodyRoot(strictPresentation),
       context: "presentation",
       signer: fixture.holder,
       createdAt: fixture.presentationProof.createdAt + 1n,
@@ -55,7 +55,7 @@ describe("passport-kyc credential: age predicate", () => {
     });
 
     expect(() =>
-      pureCircuits.assertValidPassportKycPresentation(
+      pureCircuits.assertValidDigitalPassportPresentation(
         fixture.credential,
         fixture.credentialProof,
         strictPresentation,
@@ -64,7 +64,7 @@ describe("passport-kyc credential: age predicate", () => {
     ).not.toThrow();
 
     expect(() =>
-      pureCircuits.assertValidPassportKycAgePredicate(
+      pureCircuits.assertValidDigitalPassportAgePredicate(
         fixture.credential,
         strictPresentation,
         fixture.witness.currentDay,

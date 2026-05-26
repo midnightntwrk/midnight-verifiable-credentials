@@ -24,7 +24,7 @@ const targetFile = path.join(
   packageRoot,
   "src",
   "managed",
-  "passport-kyc-credential",
+  "digital-passport-credential",
   "contract",
   "index.js",
 );
