@@ -102,6 +102,6 @@ dependency on `credentials` only.
 
 ## Build and test
 
-- Compile Compact artifacts: `npm run contract -w credentials-same-holder`
-- Build TS exports: `npm run build -w credentials-same-holder`
-- Run tests: `npm test -w credentials-same-holder`
+- Compile Compact artifacts: `pnpm --dir credentials-same-holder run contract`
+- Build TS exports: `pnpm --dir credentials-same-holder run build`
+- Run tests: `pnpm --dir credentials-same-holder run test`

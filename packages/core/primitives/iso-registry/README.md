@@ -66,5 +66,5 @@ driving license, national ID, and AML/KYC.
 ## Validation
 
 ```sh
-npm run all -w credentials-iso-registry
+pnpm --dir credentials-iso-registry run all
 ```

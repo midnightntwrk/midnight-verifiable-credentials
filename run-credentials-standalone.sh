@@ -17,12 +17,12 @@ if ! docker info >/dev/null 2>&1; then
 fi
 
 echo "[credentials-standalone] Shared integration prerequisites"
-npm run build:integration-prereqs
+pnpm run build:integration-prereqs
 
 echo "[credentials-standalone] Demo verifier contract integration"
-npm run test:integration:demo-contract
+pnpm run test:integration:demo-contract
 
 echo "[credentials-standalone] Birth protocol integration"
-npm run test:integration:protocol
+pnpm run test:integration:protocol
 
 echo "[credentials-standalone] Done"

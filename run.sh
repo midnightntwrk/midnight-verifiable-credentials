@@ -7,7 +7,7 @@ run_common_usage() {
   cat <<'EOF'
 Usage:
   ./run.sh [target] [--light]
-  ./run.sh <root-npm-script> [--light] [-- <script args...>]
+  ./run.sh <root-pnpm-script> [--light] [-- <script args...>]
 
 Options:
   --light                    Use reduced-scope or restored-artifact variants when supported; ignored otherwise
@@ -87,7 +87,7 @@ if [[ $# -gt 0 ]]; then
     shift
   elif [[ "$1" != -* ]] && run_common_root_script_exists "$1"; then
     target="$1"
-    target_kind="npm-script"
+    target_kind="pnpm-script"
     shift
   fi
 fi
@@ -147,7 +147,7 @@ case "$target" in
     ;;
   university-report-contract)
     run_common_ensure_node
-    npm run --silent report:university-contract
+    pnpm --silent run report:university-contract
     exit 0
     ;;
 esac
@@ -162,12 +162,12 @@ else
   run_common_repo_setup
 fi
 
-if [[ "$target_kind" == "npm-script" ]]; then
-  echo "[run] Root npm script: $target"
+if [[ "$target_kind" == "pnpm-script" ]]; then
+  echo "[run] Root pnpm script: $target"
   if [[ ${#forward_args[@]} -gt 0 ]]; then
-    npm run "$target" -- "${forward_args[@]}"
+    pnpm run "$target" -- "${forward_args[@]}"
   else
-    npm run "$target"
+    pnpm run "$target"
   fi
   exit 0
 fi
@@ -175,87 +175,63 @@ fi
 case "$target" in
   lint)
     echo "[run] Lint lane"
-    npm run ci:lint
+    pnpm run ci:lint
     ;;
   typecheck)
     if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
       echo "[run] Light typecheck lane"
       run_common_ensure_artifacts "run" managed-light
-      npm run typecheck:light:from-artifacts
+      pnpm run typecheck:light:from-artifacts
     else
       echo "[run] Full typecheck lane"
       run_common_ensure_artifacts "run" managed-all
-      npm run ci:typecheck:from-artifacts
+      pnpm run ci:typecheck:from-artifacts
     fi
     ;;
   build)
     if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
       echo "[run] Light build lane"
-      npm run build:light
+      pnpm run build:light
     else
       echo "[run] Full build lane"
-      npm run build:all
+      pnpm run build:all
     fi
     ;;
   test)
     if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
       echo "[run] Light package test lane"
       run_common_ensure_artifacts "run" managed-light
-      npm run test:light:from-artifacts
+      pnpm run test:light:from-artifacts
     else
       echo "[run] Full package test lane"
       run_common_ensure_artifacts "run" managed-all
-      npm run test:all:from-artifacts
+      pnpm run test:all:from-artifacts
     fi
     ;;
   bdd)
     echo "[run] BDD smoke lane"
-    if [[ "${light_requested}" == "1" ]]; then
-      SKIP_BDD_REPORT=1 npm run test:bdd:smoke
-    else
-      npm run test:bdd:smoke
-    fi
+    pnpm run test:bdd:smoke
     ;;
   bdd-negative)
     echo "[run] BDD negative lane"
-    if [[ "${light_requested}" == "1" ]]; then
-      SKIP_BDD_REPORT=1 npm run test:bdd:negative
-    else
-      npm run test:bdd:negative
-    fi
+    pnpm run test:bdd:negative
     ;;
   bdd-all)
     echo "[run] BDD full lane"
-    if [[ "${light_requested}" == "1" ]]; then
-      SKIP_BDD_REPORT=1 npm run test:bdd:all
-    else
-      npm run test:bdd:all
-    fi
+    pnpm run test:bdd:all
     ;;
   university-bdd)
     echo "[run] University diploma BDD lane"
-    if [[ "${light_requested}" == "1" ]]; then
-      SKIP_BDD_REPORT=1 npm run ci:university-bdd
-    else
-      npm run ci:university-bdd
-    fi
+    pnpm run ci:university-bdd
     ;;
   university-bdd-proof-server)
     echo "[run] University diploma proof-server-contract BDD lane"
-    if [[ "${light_requested}" == "1" ]]; then
-      SKIP_BDD_REPORT=1 npm run ci:university-bdd:proof-server
-    else
-      npm run ci:university-bdd:proof-server
-    fi
+    pnpm run ci:university-bdd:proof-server
     ;;
   university-bdd-standalone)
     if docker info >/dev/null 2>&1; then
       echo "[run] University diploma standalone-hybrid BDD lane"
-      if [[ "${light_requested}" == "1" ]]; then
-        SKIP_BDD_REPORT=1 npm run ci:university-bdd:standalone
-      else
-        npm run ci:university-bdd:standalone
-      fi
+      pnpm run ci:university-bdd:standalone
     else
       echo "[run] Docker unavailable; cannot run university standalone-hybrid BDD lane"
       exit 1
@@ -263,75 +239,75 @@ case "$target" in
     ;;
   university-batch-sweep)
     echo "[run] University issuance batch-sweep lane"
-    npm run ci:university-batch-sweep
+    pnpm run ci:university-batch-sweep
     ;;
   university-ci-matrix)
     echo "[run] University CI matrix contract lane"
-    npm run ci:university-ci-matrix
+    pnpm run ci:university-ci-matrix
     ;;
   university-data-profiles)
     echo "[run] University data-profile validation lane"
-    npm run ci:university-data-profiles
+    pnpm run ci:university-data-profiles
     ;;
   university-policy-catalog)
     echo "[run] University policy-catalog validation lane"
-    npm run ci:university-policy-catalog
+    pnpm run ci:university-policy-catalog
     ;;
   university-protocol)
     if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
       echo "[run] Light university protocol lane"
       run_common_ensure_artifacts "run" managed-university-protocol
-      npm run ci:university-protocol:from-artifacts
+      pnpm run ci:university-protocol:from-artifacts
     else
       echo "[run] University protocol lane"
-      npm run ci:university-protocol
+      pnpm run ci:university-protocol
     fi
     ;;
   university-protocol-export)
     if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
       echo "[run] Light university protocol export lane"
       run_common_ensure_artifacts "run" managed-university-protocol-export
-      npm run ci:university-protocol:export:from-artifacts
+      pnpm run ci:university-protocol:export:from-artifacts
     else
       echo "[run] University protocol export lane"
-      npm run ci:university-protocol:export
+      pnpm run ci:university-protocol:export
     fi
     ;;
   university-protocol-cohort)
     if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
       echo "[run] Light university protocol cohort lane"
       run_common_ensure_artifacts "run" managed-university-protocol-cohort
-      npm run ci:university-protocol:cohort:from-artifacts
+      pnpm run ci:university-protocol:cohort:from-artifacts
     else
       echo "[run] University protocol cohort lane"
-      npm run ci:university-protocol:cohort
+      pnpm run ci:university-protocol:cohort
     fi
     ;;
   university-protocol-stress)
     if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
       echo "[run] Light university protocol stress lane"
       run_common_ensure_artifacts "run" managed-university-protocol-stress
-      npm run ci:university-protocol:stress:from-artifacts
+      pnpm run ci:university-protocol:stress:from-artifacts
     else
       echo "[run] University protocol stress lane"
-      npm run ci:university-protocol:stress
+      pnpm run ci:university-protocol:stress
     fi
     ;;
   university-summary)
     if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
       echo "[run] Light university summary lane"
       run_common_ensure_artifacts "run" managed-university-summary
-      npm run ci:university-summary:from-artifacts
+      pnpm run ci:university-summary:from-artifacts
     else
       echo "[run] University summary lane"
-      npm run ci:university-summary
+      pnpm run ci:university-summary
     fi
     ;;
   hello-smoke)
     if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
       echo "[run] Light DID + VC hello smoke lane"
       run_common_ensure_artifacts "run" managed-hello-smoke
-      npm run ci:hello-smoke:from-artifacts
+      pnpm run ci:hello-smoke:from-artifacts
     else
       # NOTE: the default lane stays package-local and build-light on purpose.
       # `hello-family` and `hello-verifier` already compile the Compact surfaces
@@ -339,37 +315,37 @@ case "$target" in
       # does not prebuild shared artifacts unless `--light` explicitly asks for
       # restored-artifact parity with CI.
       echo "[run] DID + VC hello smoke lane"
-      npm run ci:hello-smoke
+      pnpm run ci:hello-smoke
     fi
     ;;
   dummy-claims-lab)
     if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
       echo "[run] Light dummy-claims verifier lab lane"
       run_common_ensure_artifacts "run" managed-dummy-claims-lab
-      npm run ci:dummy-claims-lab:from-artifacts
+      pnpm run ci:dummy-claims-lab:from-artifacts
     else
       # NOTE: this lab lane intentionally stays narrower than `hello-smoke`.
       # It validates the broad claim-surface family and the dedicated verifier
       # lab test file without re-running the whole starter path.
       echo "[run] Dummy-claims verifier lab lane"
-      npm run ci:dummy-claims-lab
+      pnpm run ci:dummy-claims-lab
     fi
     ;;
   revocation)
     echo "[run] Revocation-focused lane"
-    npm run lint:revocation
+    pnpm run lint:revocation
     run_common_ensure_artifacts "run" managed-revocation
-    npm run typecheck:revocation:from-artifacts
-    npm run test:revocation:from-artifacts
+    pnpm run typecheck:revocation:from-artifacts
+    pnpm run test:revocation:from-artifacts
     ;;
   integration)
     if docker info >/dev/null 2>&1; then
       run_common_integration_target \
         "Standalone demo-contract integration" \
-        bash -lc 'source ./tooling/scripts/run-common.sh && run_common_ensure_artifacts "run" integration-demo-contract && npm run ci:integration:demo-contract:from-artifacts'
+        bash -lc 'source ./tooling/scripts/run-common.sh && run_common_ensure_artifacts "run" integration-demo-contract && pnpm run ci:integration:demo-contract:from-artifacts'
       run_common_integration_target \
         "Standalone protocol integration" \
-        bash -lc 'source ./tooling/scripts/run-common.sh && run_common_ensure_artifacts "run" integration-protocol && npm run ci:integration:protocol:from-artifacts'
+        bash -lc 'source ./tooling/scripts/run-common.sh && run_common_ensure_artifacts "run" integration-protocol && pnpm run ci:integration:protocol:from-artifacts'
     else
       echo "[run] Docker unavailable; cannot run standalone integrations"
       exit 1
@@ -379,7 +355,7 @@ case "$target" in
     if docker info >/dev/null 2>&1; then
       run_common_integration_target \
         "Standalone demo-contract integration" \
-        bash -lc 'source ./tooling/scripts/run-common.sh && run_common_ensure_artifacts "run" integration-demo-contract && npm run ci:integration:demo-contract:from-artifacts'
+        bash -lc 'source ./tooling/scripts/run-common.sh && run_common_ensure_artifacts "run" integration-demo-contract && pnpm run ci:integration:demo-contract:from-artifacts'
     else
       echo "[run] Docker unavailable; cannot run demo-contract integration"
       exit 1
@@ -389,7 +365,7 @@ case "$target" in
     if docker info >/dev/null 2>&1; then
       run_common_integration_target \
         "Standalone protocol integration" \
-        bash -lc 'source ./tooling/scripts/run-common.sh && run_common_ensure_artifacts "run" integration-protocol && npm run ci:integration:protocol:from-artifacts'
+        bash -lc 'source ./tooling/scripts/run-common.sh && run_common_ensure_artifacts "run" integration-protocol && pnpm run ci:integration:protocol:from-artifacts'
     else
       echo "[run] Docker unavailable; cannot run protocol integration"
       exit 1

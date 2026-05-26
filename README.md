@@ -290,17 +290,17 @@ Run the full BDD scenario set:
 
 Direct package-wide validation entrypoints:
 
-- `npm run lint`
-- `npm run build:all`
-- `npm run test:all`
-- `npm run docs:links`
+- `pnpm run lint`
+- `pnpm run build:all`
+- `pnpm run test:all`
+- `pnpm run docs:links`
 
 Inspect DID package integration wiring:
 
 ```bash
 ./run.sh integration-report
 ./run.sh check-integration
-npm run check:did-integration
+pnpm run check:did-integration
 ```
 
 ## Artifact packaging
@@ -309,8 +309,8 @@ Stable tarball output lives under [`tooling/artifacts/npm/`](./tooling/artifacts
 
 Commands:
 
-- `npm run artifacts:pack`
-- `npm run upgrade:vendor`
+- `pnpm run artifacts:pack`
+- `pnpm run upgrade:vendor`
 - `./upgrade-libs.sh --destination /path/to/downstream-repo`
 
 Published/exported local tarball set currently includes:

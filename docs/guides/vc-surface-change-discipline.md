@@ -82,8 +82,8 @@ Good PR text:
   `credential.claimCommitments` for mixed families
 
 ## Validation
-- npm run check:vc-surface-discipline
-- npm run docs:links
+- pnpm run check:vc-surface-discipline
+- pnpm run docs:links
 ```
 
 Bad PR text:
@@ -134,9 +134,9 @@ When a PR changes holder-binding profiles, aliases, adapters, or proof wording:
 The family scaffold supports the current claim boundary explicitly:
 
 ```bash
-npm run scaffold:family -- --slug example-family --claim-mode commitment
-npm run scaffold:family -- --slug example-family --claim-mode public
-npm run scaffold:family -- --slug example-family --claim-mode mixed
+pnpm run scaffold:family -- --slug example-family --claim-mode commitment
+pnpm run scaffold:family -- --slug example-family --claim-mode public
+pnpm run scaffold:family -- --slug example-family --claim-mode mixed
 ```
 
 Default to `commitment` when the placeholder field carries a personal identifier,
@@ -151,8 +151,8 @@ Run the guard after touching generated surfaces, templates, claim representation
 or PR/release guidance:
 
 ```bash
-npm run check:vc-surface-discipline
-npm run check:holder-binding-terminology
+pnpm run check:vc-surface-discipline
+pnpm run check:holder-binding-terminology
 ```
 
 The guard verifies that:

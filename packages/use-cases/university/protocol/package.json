@@ -6,7 +6,7 @@
   "type": "module",
   "engines": {
     "node": ">=24",
-    "npm": ">=10"
+    "pnpm": ">=10"
   },
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -27,27 +27,29 @@
   },
   "typesVersions": {
     "*": {
-      "testing": ["dist/testing.d.ts"]
+      "testing": [
+        "dist/testing.d.ts"
+      ]
     }
   },
   "scripts": {
     "prepare:deps": "node ./scripts/ensure-prereqs.mjs",
-    "build": "npm run prepare:deps && rm -rf dist && tsc -b tsconfig.build.json --force",
-    "test": "npm run prepare:deps && vitest run",
-    "test:policy-catalog": "npm run prepare:deps && vitest run src/test/policy-catalog.test.ts",
-    "test:ci": "npm run test",
-    "export:transcript": "npm run build && node ./scripts/export-transcript.mjs",
+    "build": "pnpm run prepare:deps && rm -rf dist && tsc -b tsconfig.build.json --force",
+    "test": "pnpm run prepare:deps && vitest run",
+    "test:policy-catalog": "pnpm run prepare:deps && vitest run src/test/policy-catalog.test.ts",
+    "test:ci": "pnpm run test",
+    "export:transcript": "pnpm run build && node ./scripts/export-transcript.mjs",
     "export:transcript:from-artifacts": "node ./scripts/export-transcript.mjs",
-    "export:application-decisions": "npm run build && node ./scripts/export-application-decisions.mjs",
+    "export:application-decisions": "pnpm run build && node ./scripts/export-application-decisions.mjs",
     "export:application-decisions:from-artifacts": "node ./scripts/export-application-decisions.mjs",
     "stress:run:from-artifacts": "node ./scripts/run-stress-flow.mjs",
-    "stress:run": "npm run build && node ./scripts/run-stress-flow.mjs",
+    "stress:run": "pnpm run build && node ./scripts/run-stress-flow.mjs",
     "lint": "eslint src --ignore-pattern 'src/managed/**'",
     "lint:fix": "eslint src --fix --ignore-pattern 'src/managed/**'",
-    "typecheck": "npm run prepare:deps && tsc -p tsconfig.json --noEmit",
+    "typecheck": "pnpm run prepare:deps && tsc -p tsconfig.json --noEmit",
     "clean": "rm -rf dist && rm -rf coverage",
-    "all": "npm run build && npm run test:ci",
-    "prepack": "npm run build"
+    "all": "pnpm run build && pnpm run test:ci",
+    "prepack": "pnpm run build"
   },
   "dependencies": {
     "@midnight-ntwrk/midnight-did-credentials-protocol": "*",

@@ -113,9 +113,9 @@ artifact and must not be part of its package surface.
 Run:
 
 ```bash
-npm run check:workspace-manifests
+pnpm run check:workspace-manifests
 ```
 
-The guard is also part of `npm run ci:lint`. Update the guard and this document
+The guard is also part of `pnpm run ci:lint`. Update the guard and this document
 in the same PR when adding a new workspace, adding a new workspace package
 class, or intentionally changing a package entrypoint.

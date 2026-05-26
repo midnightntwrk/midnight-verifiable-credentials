@@ -7,12 +7,12 @@
   "main": "src/index.ts",
   "engines": {
     "node": ">=24",
-    "npm": ">=10"
+    "pnpm": ">=10"
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test:unit": "vitest run",
-    "test:ci": "npm run typecheck && npm run test:unit"
+    "test:ci": "pnpm run typecheck && pnpm run test:unit"
   },
   "files": [
     "src/**/*.ts",

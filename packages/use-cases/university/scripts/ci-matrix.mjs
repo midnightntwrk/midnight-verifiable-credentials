@@ -291,7 +291,7 @@ const renderMarkdown = () => {
     "Regenerate this view with:",
     "",
     "```bash",
-    "npm run --silent build:university-ci-matrix:markdown",
+    "pnpm --silent run build:university-ci-matrix:markdown",
     "```",
     "",
     "| Lane | Run target | CI script | Light/artifacts | When to run |",
@@ -416,7 +416,7 @@ const checkMatrix = () => {
   const committedMarkdown = readRepoFile("packages/use-cases/university/ci-matrix.md");
   if (committedMarkdown !== renderMarkdown()) {
     errors.push(
-      "packages/use-cases/university/ci-matrix.md is out of sync; run `npm run --silent build:university-ci-matrix:markdown > packages/use-cases/university/ci-matrix.md`",
+      "packages/use-cases/university/ci-matrix.md is out of sync; run `pnpm --silent run build:university-ci-matrix:markdown > packages/use-cases/university/ci-matrix.md`",
     );
   }
 
@@ -424,7 +424,7 @@ const checkMatrix = () => {
   const expectedOperatorGuide = renderOperatorGuide(operatorGuide);
   if (operatorGuide !== expectedOperatorGuide) {
     errors.push(
-      "packages/use-cases/university/operator-guide.md lane table is out of sync; run `npm run update:university-operator-guide`",
+      "packages/use-cases/university/operator-guide.md lane table is out of sync; run `pnpm run update:university-operator-guide`",
     );
   }
 
@@ -432,7 +432,7 @@ const checkMatrix = () => {
     "run_university",
     "university-validation:",
     "University Validation",
-    "npm run ci:university-protocol-profiles",
+    "pnpm run ci:university-protocol-profiles",
     "university-protocol-targets",
   ]) {
     assertIncludes(

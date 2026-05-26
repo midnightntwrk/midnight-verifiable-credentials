@@ -674,8 +674,8 @@ export const renderUniversityDataProfilesMarkdown = () => {
     "Regenerate with:",
     "",
     "```bash",
-    "npm run update:university-data-profiles",
-    "npm run check:university-data-profiles",
+    "pnpm run update:university-data-profiles",
+    "pnpm run check:university-data-profiles",
     "```",
     "",
   ];
@@ -708,7 +708,7 @@ export const checkUniversityDataProfilesMarkdown = () => {
     if (error && typeof error === "object" && "code" in error) {
       if (error.code === "ENOENT") {
         throw new Error(
-          "Missing packages/use-cases/university/data/data-profiles.md; run `npm run update:university-data-profiles`.",
+          "Missing packages/use-cases/university/data/data-profiles.md; run `pnpm run update:university-data-profiles`.",
         );
       }
     }
@@ -716,7 +716,7 @@ export const checkUniversityDataProfilesMarkdown = () => {
   }
   if (actual !== expected) {
     throw new Error(
-      "packages/use-cases/university/data/data-profiles.md is out of sync; run `npm run update:university-data-profiles`.",
+      "packages/use-cases/university/data/data-profiles.md is out of sync; run `pnpm run update:university-data-profiles`.",
     );
   }
 };

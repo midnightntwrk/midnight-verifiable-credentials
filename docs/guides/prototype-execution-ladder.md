@@ -43,7 +43,7 @@ Use this lane when you want to verify:
 If you want the verifier contract without the DID-aware handoff, run:
 
 ```bash
-npm run test:ci -w packages/use-cases/hello-verifier/contract
+pnpm --dir packages/use-cases/hello-verifier/contract run test:ci
 ```
 
 Use this package when you want to understand:
@@ -61,7 +61,7 @@ complexity.
 Next, run the concrete explicit-holder age-gate package:
 
 ```bash
-npm run test:ci -w packages/use-cases/age-gate/contract
+pnpm --dir packages/use-cases/age-gate/contract run test:ci
 ```
 
 This adds:

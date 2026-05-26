@@ -6,7 +6,7 @@
   "type": "module",
   "engines": {
     "node": ">=24",
-    "npm": ">=10"
+    "pnpm": ">=10"
   },
   "scripts": {
     "clean": "rm -rf target",
@@ -15,13 +15,13 @@
     "test:execute:smoke": "mkdir -p target && cucumber-js --config cucumber.cjs --tags @smoke",
     "test:execute:negative": "mkdir -p target && cucumber-js --config cucumber.cjs --tags @negative",
     "report:setup": "serenity-bdd update",
-    "test:report": "npm run report:setup && serenity-bdd run --features features --output target/site/serenity",
-    "summary": "npx ts-node-esm ./scripts/build-bdd-summary.ts",
-    "test:step-insight:contract": "npx ts-node-esm ./scripts/check-step-insight-contract.ts",
-    "test:smoke": "npx ts-node-esm ./scripts/run-bdd-pipeline.ts test:execute:smoke",
-    "test:negative": "npx ts-node-esm ./scripts/run-bdd-pipeline.ts test:execute:negative",
-    "test:all": "npx ts-node-esm ./scripts/run-bdd-pipeline.ts test:execute",
-    "test:ci": "npm run test:step-insight:contract && npm run test:all"
+    "test:report": "pnpm run report:setup && serenity-bdd run --features features --output target/site/serenity",
+    "summary": "pnpm exec ts-node-esm ./scripts/build-bdd-summary.ts",
+    "test:step-insight:contract": "pnpm exec ts-node-esm ./scripts/check-step-insight-contract.ts",
+    "test:smoke": "pnpm exec ts-node-esm ./scripts/run-bdd-pipeline.ts test:execute:smoke",
+    "test:negative": "pnpm exec ts-node-esm ./scripts/run-bdd-pipeline.ts test:execute:negative",
+    "test:all": "pnpm exec ts-node-esm ./scripts/run-bdd-pipeline.ts test:execute",
+    "test:ci": "pnpm run test:step-insight:contract && pnpm run test:all"
   },
   "dependencies": {
     "@cucumber/cucumber": "^11.3.0",

@@ -97,5 +97,5 @@ helpers, generated Compact literals, or adapter aliases should update:
 Run the terminology guard after changing holder-binding profile text:
 
 ```bash
-npm run check:holder-binding-terminology
+pnpm run check:holder-binding-terminology
 ```

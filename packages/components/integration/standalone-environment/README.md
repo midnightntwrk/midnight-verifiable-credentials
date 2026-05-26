@@ -79,14 +79,14 @@ It exists so package-level integration tests do not each reinvent:
 ## Validation
 
 ```sh
-npm run check:workspace-manifests # from the repository root
-npm run typecheck -w packages/components/integration/standalone-environment
-npm run build -w packages/components/integration/standalone-environment
+pnpm run check:workspace-manifests # from the repository root
+pnpm --dir packages/components/integration/standalone-environment run typecheck
+pnpm --dir packages/components/integration/standalone-environment run build
 ```
 
 Integration execution happens through the consuming packages:
 
 ```sh
-npm run test:integration -w packages/use-cases/age-gate/contract
-npm run test:integration -w packages/components/orchestration/protocol
+pnpm --dir packages/use-cases/age-gate/contract run test:integration
+pnpm --dir packages/components/orchestration/protocol run test:integration
 ```

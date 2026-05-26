@@ -68,11 +68,11 @@ Included in `#231`:
 
 Validation used before opening the replacement PR:
 
-- `npm run typecheck -w packages/use-cases/university/scenarios`
-- `npm run test:bdd:university`
-- `npm run lint -w ./packages/use-cases/university/protocol`
-- `npm run typecheck:university-protocol`
-- `npm run test:university-protocol`
+- `pnpm --dir packages/use-cases/university/scenarios run typecheck`
+- `pnpm run test:bdd:university`
+- `pnpm --dir ./packages/use-cases/university/protocol run lint`
+- `pnpm run typecheck:university-protocol`
+- `pnpm run test:university-protocol`
 - focused application-decision schema/export tests
 - `git diff --check`
 

@@ -155,7 +155,7 @@ Use the release-discipline guide for the checklist:
 Run the guard before review when those surfaces change:
 
 ```bash
-npm run check:vc-surface-discipline
+pnpm run check:vc-surface-discipline
 ```
 
 ## Requirements for Acceptable Contributions:

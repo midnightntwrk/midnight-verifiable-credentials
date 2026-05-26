@@ -81,8 +81,8 @@ export const renderUniversityRequestPolicyPresetMarkdown = () => {
     "Regenerate with:",
     "",
     "```bash",
-    "npm run update:university-request-policy-presets",
-    "npm run check:university-request-policy-presets",
+    "pnpm run update:university-request-policy-presets",
+    "pnpm run check:university-request-policy-presets",
     "```",
     "",
   ];
@@ -126,7 +126,7 @@ export const checkUniversityRequestPolicyPresetMarkdown = () => {
     if (error && typeof error === "object" && "code" in error) {
       if (error.code === "ENOENT") {
         throw new Error(
-          "Missing packages/use-cases/university/data/request-policy-presets.md; run `npm run update:university-request-policy-presets`.",
+          "Missing packages/use-cases/university/data/request-policy-presets.md; run `pnpm run update:university-request-policy-presets`.",
         );
       }
     }
@@ -134,7 +134,7 @@ export const checkUniversityRequestPolicyPresetMarkdown = () => {
   }
   if (actual !== expected) {
     throw new Error(
-      "packages/use-cases/university/data/request-policy-presets.md is out of sync; run `npm run update:university-request-policy-presets`.",
+      "packages/use-cases/university/data/request-policy-presets.md is out of sync; run `pnpm run update:university-request-policy-presets`.",
     );
   }
 };

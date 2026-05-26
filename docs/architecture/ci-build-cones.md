@@ -58,7 +58,7 @@ Each cone hash includes:
 
 - root build inputs:
   - `package.json`
-  - `package-lock.json`
+  - `pnpm-lock.yaml`
   - `turbo.json`
   - `tsconfig.json`
   - `.eslintrc.json`
@@ -86,7 +86,7 @@ Turbo keys decide whether a package task can be skipped inside a job.
 The root `turbo.json` therefore declares repository-wide invalidators for
 inputs that sit outside package directories but still affect package tasks:
 
-- root npm, TypeScript, Turbo, and Node version files
+- root pnpm, TypeScript, Turbo, and Node version files
 - GitHub workflow definitions
 - all checked tooling scripts, including runner, cone, artifact, cleanup, and
   policy lanes; this intentionally includes the cache-policy checker itself so
@@ -99,7 +99,7 @@ The cacheable tasks keep explicit `outputs` entries. Build tasks own `dist`,
 declare empty outputs so they can cache success without publishing generated
 files.
 
-`npm run check:turbo-cache-policy` guards these invariants and is wired into
+`pnpm run check:turbo-cache-policy` guards these invariants and is wired into
 `ci:lint`, so future task additions cannot silently become cacheable without an
 explicit output policy.
 
@@ -108,8 +108,8 @@ explicit output policy.
 Run the build-cone contract check locally with:
 
 ```bash
-npm run check:ci-build-cones
-npm run check:ci-workflow-cones
+pnpm run check:ci-build-cones
+pnpm run check:ci-workflow-cones
 ```
 
 The check reads the same shell definitions used by CI and verifies that:

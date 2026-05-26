@@ -67,17 +67,17 @@ const uploadStep = stepBlock("Upload BDD summary artifacts");
 // local to the owning steps so accidental moves are still caught in CI.
 assertIncludes(
   contractCheckStep,
-  "npm run check:bdd-summary-artifacts",
+  "pnpm run check:bdd-summary-artifacts",
   ".github/workflows/ci.yml BDD summary contract step",
 );
 assertIncludes(
   runStep,
-  "npm run test:bdd:smoke",
+  "pnpm run test:bdd:smoke",
   ".github/workflows/ci.yml BDD summary run step",
 );
 assertIncludes(
   runStep,
-  "npm run test:bdd:university",
+  "pnpm run test:bdd:university",
   ".github/workflows/ci.yml BDD summary run step",
 );
 assertIncludes(

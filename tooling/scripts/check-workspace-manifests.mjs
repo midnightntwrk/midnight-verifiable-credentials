@@ -305,7 +305,7 @@ const assertScenarioPackage = (packageJson, workspace) => {
   assert(packageJson.private === true, `${workspace} must remain private`);
   assert(packageJson.type === "module", `${workspace} must be an ESM package`);
   assert(packageJson.engines?.node === ">=24", `${workspace} must declare Node 24 engine`);
-  assert(packageJson.engines?.npm === ">=10", `${workspace} must declare npm 10 engine`);
+  assert(packageJson.engines?.pnpm === ">=10", `${workspace} must declare pnpm 10 engine`);
   assertNoPublicEntrypoint(packageJson, workspace);
 };
 
@@ -318,7 +318,7 @@ assert(
   "root package.json must expose check:workspace-manifests",
 );
 assert(
-  rootPackage.scripts?.["ci:lint"]?.includes("npm run check:workspace-manifests"),
+  rootPackage.scripts?.["ci:lint"]?.includes("pnpm run check:workspace-manifests"),
   "ci:lint must run check:workspace-manifests",
 );
 assert(

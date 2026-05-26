@@ -358,9 +358,9 @@ That balance is the point of this refactor.
 
 ## Build
 
-- Compile Compact artifacts: `npm run contract -w credentials`
-- Build TS exports: `npm run build -w credentials`
-- Run tests: `npm test -w credentials`
+- Compile Compact artifacts: `pnpm --dir credentials run contract`
+- Build TS exports: `pnpm --dir credentials run build`
+- Run tests: `pnpm --dir credentials run test`
 
 ## Note
 

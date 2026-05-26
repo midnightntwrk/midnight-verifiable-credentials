@@ -6,7 +6,7 @@ source "$ROOT_DIR/tooling/scripts/ci-build-output-groups.sh"
 
 root_inputs=(
   package.json
-  package-lock.json
+  pnpm-lock.yaml
   turbo.json
   tsconfig.json
   .eslintrc.json

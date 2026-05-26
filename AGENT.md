@@ -32,7 +32,7 @@ Prerequisites:
 Standalone setup:
 
 ```bash
-npm ci
+pnpm install --frozen-lockfile
 compact update 0.30.0
 ```
 
@@ -42,7 +42,7 @@ Workspace setup:
 cd /path/to/midnight-identity-workspace
 nix develop
 cd midnight-verifiable-credentials
-npm ci
+pnpm install --frozen-lockfile
 ```
 
 Discover runner targets:
@@ -69,8 +69,8 @@ For Codex or another MCP-capable client, configure the Midnight MCP server at us
 
 ```toml
 [mcp_servers.midnight]
-command = "npx"
-args = ["-y", "midnight-mcp@latest"]
+command = "pnpm"
+args = ["exec", "midnight-mcp@latest"]
 ```
 
 Use it to inspect Compact entry points, TypeScript package exports, generated `src/managed` outputs, package dependency surfaces, and DID/VC wiring. Always confirm changes with local scripts and tests.
@@ -263,43 +263,43 @@ University lanes:
 Important root guards:
 
 ```bash
-npm run check:package-boundaries
-npm run check:ci-build-cones
-npm run check:ci-workflow-cones
-npm run check:run-target-contract
-npm run check:run-target-catalog
-npm run check:managed-artifact-catalog
-npm run check:did-integration
-npm run check:vc-surface-discipline
-npm run check:workspace-manifests
-npm run check:holder-binding-terminology
-npm run check:university-ci-matrix
-npm run clean:artifacts
-npm run report:did-integration
-npm run report:university-contract
+pnpm run check:package-boundaries
+pnpm run check:ci-build-cones
+pnpm run check:ci-workflow-cones
+pnpm run check:run-target-contract
+pnpm run check:run-target-catalog
+pnpm run check:managed-artifact-catalog
+pnpm run check:did-integration
+pnpm run check:vc-surface-discipline
+pnpm run check:workspace-manifests
+pnpm run check:holder-binding-terminology
+pnpm run check:university-ci-matrix
+pnpm run clean:artifacts
+pnpm run report:did-integration
+pnpm run report:university-contract
 ```
 
 Build cones:
 
 ```bash
-npm run build:cone:foundation
-npm run build:cone:birth-family
-npm run build:cone:age-gate
-npm run build:cone:protocol
-npm run build:all
+pnpm run build:cone:foundation
+pnpm run build:cone:birth-family
+pnpm run build:cone:age-gate
+pnpm run build:cone:protocol
+pnpm run build:all
 ```
 
 CI-style lanes:
 
 ```bash
-npm run ci:lint
-npm run ci:typecheck
-npm run ci:package-tests
-npm run ci:revocation
-npm run ci:hello-smoke
-npm run ci:dummy-claims-lab
-npm run ci:integration
-npm run ci:university-protocol
+pnpm run ci:lint
+pnpm run ci:typecheck
+pnpm run ci:package-tests
+pnpm run ci:revocation
+pnpm run ci:hello-smoke
+pnpm run ci:dummy-claims-lab
+pnpm run ci:integration
+pnpm run ci:university-protocol
 ```
 
 ## BDD and University Use Case
@@ -368,7 +368,7 @@ Integration commands:
 Pack VC packages:
 
 ```bash
-npm run artifacts:pack
+pnpm run artifacts:pack
 ```
 
 Refresh a downstream repo or vendor directory:
@@ -390,7 +390,7 @@ Rules:
 - Use `tooling/artifacts/npm/` as the stable packed-artifact output.
 - Use `tooling/vendor/` for vendored unpublished dependencies.
 - Do not hand-copy `dist/` output into consumers.
-- Keep root npm `overrides` out unless there is a deliberate workspace-wide reason; packages that need vendored tarballs should pin them explicitly.
+- Keep root pnpm `overrides` out unless there is a deliberate workspace-wide reason; packages that need vendored tarballs should pin them explicitly.
 - Keep package `files` lists and build/prepack hooks correct so tarballs are self-sufficient.
 
 ## CI Shape
@@ -505,7 +505,7 @@ Clean stale test infrastructure:
 Common fixes:
 
 - Missing DID tarball shape: refresh `tooling/vendor/midnight-did` from `midnight-did` artifacts.
-- Missing Compact aliases: run `npm ci` or the `ensure-compact-package-aliases.mjs` helper.
+- Missing Compact aliases: run `pnpm install --frozen-lockfile` or the `ensure-compact-package-aliases.mjs` helper.
 - Missing managed outputs: run the owning build cone instead of copying generated files.
 - Standalone Docker failure: run cleanup, verify Docker is running, then retry the focused integration lane.
 - BDD report stale or unreadable: rerun the owning BDD lane and inspect `packages/use-cases/*/scenarios/target/site/serenity/`.

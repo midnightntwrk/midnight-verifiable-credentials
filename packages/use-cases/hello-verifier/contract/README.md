@@ -40,8 +40,8 @@ the verifier flow stays easy to read.
 Run locally:
 
 ```bash
-npm run build -w packages/use-cases/hello-verifier/contract
-npm run test:ci -w packages/use-cases/hello-verifier/contract
+pnpm --dir packages/use-cases/hello-verifier/contract run build
+pnpm --dir packages/use-cases/hello-verifier/contract run test:ci
 ```
 
 Dummy-claims lab path:

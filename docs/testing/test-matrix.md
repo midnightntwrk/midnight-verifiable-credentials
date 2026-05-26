@@ -435,9 +435,9 @@ Current gap:
   - `packages/use-cases/age-gate/scenarios/features/hidden_holder_unsupported_authority_mode.feature`
   - `packages/use-cases/age-gate/scenarios/features/hidden_holder_revoked_credential.feature`
 - root commands:
-  - `npm run test:bdd:smoke`
-  - `npm run test:bdd:negative`
-  - `npm run test:bdd:all`
+  - `pnpm run test:bdd:smoke`
+  - `pnpm run test:bdd:negative`
+  - `pnpm run test:bdd:all`
   - `./run.sh bdd`
   - `./run.sh bdd-negative`
   - `./run.sh bdd-all`

@@ -26,6 +26,10 @@ const workflowDir = path.join(repoRoot, ".github/workflows");
 // Cone wiring checks are intentionally pinned to the primary CI workflow;
 // root-script existence is checked across every workflow below.
 const workflowText = readFileSync(path.join(workflowDir, "ci.yml"), "utf8");
+const setupNodePnpmActionText = readFileSync(
+  path.join(repoRoot, ".github/actions/setup-node-pnpm/action.yml"),
+  "utf8",
+);
 const managedArtifactCatalogText = readFileSync(
   path.join(repoRoot, "tooling/scripts/managed-artifact-catalog.mjs"),
   "utf8",
@@ -47,19 +51,24 @@ const tokenizeCommandTail = (tail) =>
     .map((token) => token.replace(/^['"]|['"]$/gu, ""))
     .filter(Boolean);
 
-const npmScriptReferencesFromWorkflowText = (text) => {
+const pnpmScriptReferencesFromWorkflowText = (text) => {
   const references = [];
 
   for (const match of text.matchAll(
-    /\bnpm\s+(?:run|run-script)\s+([^\n|&;\\)<>]+)/gu,
+    /\bpnpm\s+((?:(?:--dir|-C)\s+[^\s]+\s+)?)run\s+([^\n|&;\\)<>]+)/gu,
   )) {
-    const tokens = tokenizeCommandTail(match[1]);
+    const commandPrefix = match[1] ?? "";
+    const tokens = tokenizeCommandTail(match[2]);
     const workspaceScoped = tokens.some(
       (token) =>
+        commandPrefix.trim().length > 0 ||
         token === "-w" ||
         token === "--workspace" ||
+        token === "--filter" ||
+        token === "-F" ||
         token.startsWith("-w=") ||
-        token.startsWith("--workspace="),
+        token.startsWith("--workspace=") ||
+        token.startsWith("--filter="),
     );
 
     while (tokens.length > 0) {
@@ -109,11 +118,11 @@ const npmScriptReferencesFromWorkflowText = (text) => {
   );
 };
 
-const assertWorkflowNpmScriptsExist = () => {
+const assertWorkflowPnpmScriptsExist = () => {
   for (const workflowFile of workflowFiles) {
     const relativeWorkflowPath = `.github/workflows/${workflowFile}`;
     const text = readFileSync(path.join(workflowDir, workflowFile), "utf8");
-    const referencedScripts = npmScriptReferencesFromWorkflowText(text);
+    const referencedScripts = pnpmScriptReferencesFromWorkflowText(text);
 
     for (const { scriptName, workspaceScoped } of referencedScripts) {
       if (workspaceScoped) {
@@ -129,12 +138,11 @@ const assertWorkflowNpmScriptsExist = () => {
   }
 };
 
-const assertNpmScriptReferenceParser = () => {
-  const references = npmScriptReferencesFromWorkflowText(`
-    run: npm run lint
-    run: npm run -w @midnight/example build
-    run: npm run test:ci -w packages/example
-    run: npm run \${{ matrix.script }}
+const assertPnpmScriptReferenceParser = () => {
+  const references = pnpmScriptReferencesFromWorkflowText(`
+    run: pnpm run lint
+    run: pnpm --dir packages/example run test:ci
+    run: pnpm run \${{ matrix.script }}
   `);
   const rootScripts = references
     .filter((reference) => !reference.workspaceScoped)
@@ -144,23 +152,22 @@ const assertNpmScriptReferenceParser = () => {
     .map((reference) => reference.scriptName)
     .sort();
 
-  if (references.length !== 3) {
+  if (references.length !== 2) {
     errors.push(
-      "workflow npm-script parser should ignore dynamic script tokens",
+      "workflow pnpm-script parser should ignore dynamic script tokens",
     );
   }
   if (rootScripts.length !== 1 || rootScripts[0] !== "lint") {
     errors.push(
-      "workflow npm-script parser should keep only root-scoped root scripts",
+      "workflow pnpm-script parser should keep only root-scoped root scripts",
     );
   }
   if (
-    workspaceScripts.length !== 2 ||
-    workspaceScripts[0] !== "build" ||
-    workspaceScripts[1] !== "test:ci"
+    workspaceScripts.length !== 1 ||
+    workspaceScripts[0] !== "test:ci"
   ) {
     errors.push(
-      "workflow npm-script parser should identify workspace-scoped scripts",
+      "workflow pnpm-script parser should identify workspace-scoped scripts",
     );
   }
 };
@@ -184,7 +191,7 @@ const assertWorkflowUsesChangeClassifierCatalog = () => {
 
   if (
     !packageJson.scripts?.["ci:lint"]?.includes(
-      "npm run check:ci-change-classification",
+      "pnpm run check:ci-change-classification",
     )
   ) {
     errors.push("ci:lint must run check:ci-change-classification");
@@ -195,7 +202,7 @@ const assertWorkflowUsesLocalSetupActions = () => {
   // Intentionally inspect only the primary workflow text. The composite
   // actions themselves own the direct setup-node/cache/download-artifact uses.
   const requiredActionPaths = [
-    ".github/actions/setup-node-npm/action.yml",
+    ".github/actions/setup-node-pnpm/action.yml",
     ".github/actions/restore-compact-toolchain/action.yml",
   ];
 
@@ -206,7 +213,7 @@ const assertWorkflowUsesLocalSetupActions = () => {
   }
 
   for (const actionRef of [
-    "./.github/actions/setup-node-npm",
+    "./.github/actions/setup-node-pnpm",
     "./.github/actions/restore-compact-toolchain",
   ]) {
     if (!workflowText.includes(actionRef)) {
@@ -216,19 +223,49 @@ const assertWorkflowUsesLocalSetupActions = () => {
 
   if (/uses:\s+actions\/setup-node@v\d+/u.test(workflowText)) {
     errors.push(
-      "CI workflow must use ./.github/actions/setup-node-npm instead of direct actions/setup-node@v4 steps",
+      "CI workflow must use ./.github/actions/setup-node-pnpm instead of direct actions/setup-node@v4 steps",
     );
   }
 
   if (/uses:\s+actions\/cache@v4/u.test(workflowText)) {
     errors.push(
-      "CI workflow must use ./.github/actions/setup-node-npm for Turbo cache restoration",
+      "CI workflow must use ./.github/actions/setup-node-pnpm for Turbo cache restoration",
     );
   }
 
   if (/compact update\s+"\$COMPACT_COMPILER_VERSION"/u.test(workflowText)) {
     errors.push(
       "CI workflow must restore/activate Compact through ./.github/actions/restore-compact-toolchain",
+    );
+  }
+
+  const pnpmActionIndex = setupNodePnpmActionText.indexOf(
+    "uses: pnpm/action-setup@v4",
+  );
+  const setupNodeIndex = setupNodePnpmActionText.indexOf(
+    "uses: actions/setup-node@v4",
+  );
+  const setupNodePnpmCacheIndex = setupNodePnpmActionText.indexOf(
+    "cache: pnpm",
+  );
+
+  if (pnpmActionIndex === -1) {
+    errors.push(
+      "setup-node-pnpm action must install pnpm with pnpm/action-setup before setup-node enables pnpm caching",
+    );
+  }
+
+  if (setupNodePnpmCacheIndex === -1) {
+    errors.push("setup-node-pnpm action must enable actions/setup-node pnpm caching");
+  }
+
+  if (
+    pnpmActionIndex !== -1 &&
+    setupNodeIndex !== -1 &&
+    pnpmActionIndex > setupNodeIndex
+  ) {
+    errors.push(
+      "setup-node-pnpm action must run pnpm/action-setup before actions/setup-node so cache: pnpm can find the pnpm executable",
     );
   }
 };
@@ -272,7 +309,7 @@ function failOnErrors() {
 }
 
 const parseDirectBuildWorkspaces = (script) =>
-  [...script.matchAll(/npm\s+run\s+build\s+-w\s+\.\/([^\s"'&;|()<>,]+)/gu)].map(
+  [...script.matchAll(/pnpm\s+--dir\s+\.\/([^\s"'&;|()<>,]+)\s+run\s+build/gu)].map(
     (match) => match[1],
   );
 
@@ -303,8 +340,8 @@ const assertSameSet = ({ actual, expected, label }) => {
 };
 
 const groups = readShellList("ci_build_output_groups");
-assertNpmScriptReferenceParser();
-assertWorkflowNpmScriptsExist();
+assertPnpmScriptReferenceParser();
+assertWorkflowPnpmScriptsExist();
 assertWorkflowUsesChangeClassifierCatalog();
 assertWorkflowUsesLocalSetupActions();
 const managedArtifactConeImport = managedArtifactCatalogText.match(
@@ -425,7 +462,7 @@ for (const group of groups) {
     },
     {
       label: `build command for '${group}'`,
-      pattern: new RegExp(`npm\\s+run\\s+build:cone:${escapedGroup}\\b`, "u"),
+      pattern: new RegExp(`pnpm\\s+run\\s+build:cone:${escapedGroup}\\b`, "u"),
     },
     {
       label: `artifact upload for '${group}'`,

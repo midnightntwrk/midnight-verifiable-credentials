@@ -89,7 +89,7 @@ It is intentionally build-less at the root level:
 The repository now also exposes a CI-native parity path:
 
 - root script:
-  - `npm run ci:hello-smoke:from-artifacts`
+  - `pnpm run ci:hello-smoke:from-artifacts`
 - GitHub Actions check:
   - `Hello Smoke Lane`
 - purpose:
@@ -100,8 +100,8 @@ If you want to reproduce that restored-artifact parity path locally without the
 root runner wrapper:
 
 ```bash
-npm run build:starter-smoke-prereqs
-npm run ci:hello-smoke:from-artifacts
+pnpm run build:starter-smoke-prereqs
+pnpm run ci:hello-smoke:from-artifacts
 ```
 
 That is the narrowest local recipe matching the CI lane shape:
@@ -113,16 +113,16 @@ That is the narrowest local recipe matching the CI lane shape:
 Equivalent package-local commands:
 
 ```bash
-npm run test:ci -w packages/components/adapters/offchain-did
-npm run test:ci -w packages/prototypes/credential-families/hello-family
-npm run test:ci -w packages/use-cases/hello-verifier/contract
+pnpm --dir packages/components/adapters/offchain-did run test:ci
+pnpm --dir packages/prototypes/credential-families/hello-family run test:ci
+pnpm --dir packages/use-cases/hello-verifier/contract run test:ci
 ```
 
 If you want the narrowest DID-aware proof only:
 
 ```bash
-npm exec -w packages/prototypes/credential-families/hello-family -- vitest run src/test/offchain-did-smoke.test.ts
-npm exec -w packages/use-cases/hello-verifier/contract -- vitest run src/test/hello-verifier.test.ts
+pnpm --dir packages/prototypes/credential-families/hello-family exec vitest run src/test/offchain-did-smoke.test.ts
+pnpm --dir packages/use-cases/hello-verifier/contract exec vitest run src/test/hello-verifier.test.ts
 ```
 
 ## Compatibility matrix seed

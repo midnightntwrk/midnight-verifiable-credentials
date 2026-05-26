@@ -10,9 +10,9 @@ export type BddScenarioReportPipelineOptions = {
 
 export type BddPipelineRunner = (scriptName: string) => Promise<number>;
 
-const runNpmScript: BddPipelineRunner = (scriptName) =>
+const runPnpmScript: BddPipelineRunner = (scriptName) =>
   new Promise((resolve, reject) => {
-    const child = spawn("npm", ["run", scriptName], {
+    const child = spawn(process.platform === "win32" ? "pnpm.cmd" : "pnpm", ["run", scriptName], {
       stdio: "inherit",
       shell: process.platform === "win32",
     });
@@ -25,7 +25,7 @@ export const runBddScenarioReportPipeline = async ({
   cleanScript = "clean",
   summaryScript = "summary",
   reportScript = "test:report",
-  runner = runNpmScript,
+  runner = runPnpmScript,
 }: BddScenarioReportPipelineOptions): Promise<number> => {
   const cleanExitCode = await runner(cleanScript);
   if (cleanExitCode !== 0) {

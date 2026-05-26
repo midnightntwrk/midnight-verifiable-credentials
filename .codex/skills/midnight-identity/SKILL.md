@@ -50,9 +50,9 @@ Do not open the PR until all required gate commands pass.
 ./run.sh clean-artifacts
 ./run.sh integration-report
 ./run.sh check-integration
-npm run check:run-target-catalog
-npm run check:managed-artifact-catalog
-npm run check:did-integration
+pnpm run check:run-target-catalog
+pnpm run check:managed-artifact-catalog
+pnpm run check:did-integration
 PROOF_SERVER_IMAGE=proof-server-bootstrap:8.0.3 ./run.sh
 ```
 
@@ -61,7 +61,7 @@ Use `packages/use-cases/university/operator-guide.md` when choosing university B
 ## Packaging
 
 ```bash
-npm run artifacts:pack
+pnpm run artifacts:pack
 ./upgrade-libs.sh --destination /path/to/downstream-repo
 ```
 
@@ -73,6 +73,6 @@ Use a user-level Midnight MCP config when available; do not commit personal MCP 
 
 ```toml
 [mcp_servers.midnight]
-command = "npx"
-args = ["-y", "midnight-mcp@latest"]
+command = "pnpm"
+args = ["exec", "midnight-mcp@latest"]
 ```

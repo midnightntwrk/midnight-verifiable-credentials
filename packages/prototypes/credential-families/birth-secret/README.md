@@ -198,6 +198,6 @@ follows:
 
 ## Build and test
 
-- Compile Compact artifacts: `npm run contract -w credentials-birth-secret`
-- Build TS exports: `npm run build -w credentials-birth-secret`
-- Run tests: `npm test -w credentials-birth-secret`
+- Compile Compact artifacts: `pnpm --dir credentials-birth-secret run contract`
+- Build TS exports: `pnpm --dir credentials-birth-secret run build`
+- Run tests: `pnpm --dir credentials-birth-secret run test`

@@ -5,7 +5,7 @@ Status: generated lane contract for local runs, CI selection, and artifact reten
 Regenerate this view with:
 
 ```bash
-npm run --silent build:university-ci-matrix:markdown
+pnpm --silent run build:university-ci-matrix:markdown
 ```
 
 | Lane | Run target | CI script | Light/artifacts | When to run |

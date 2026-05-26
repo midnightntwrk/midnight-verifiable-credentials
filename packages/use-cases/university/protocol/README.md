@@ -143,18 +143,18 @@ Build and test:
   - `./run.sh university-protocol-cohort --light`
   - `./run.sh university-protocol-stress`
   - `./run.sh university-protocol-stress --light`
-- `npm run lint -w ./packages/use-cases/university/protocol`
-- `npm run typecheck -w ./packages/use-cases/university/protocol`
-- `npm run test:ci -w ./packages/use-cases/university/protocol`
-- `npm run build -w ./packages/use-cases/university/protocol`
+- `pnpm --dir ./packages/use-cases/university/protocol run lint`
+- `pnpm --dir ./packages/use-cases/university/protocol run typecheck`
+- `pnpm --dir ./packages/use-cases/university/protocol run test:ci`
+- `pnpm --dir ./packages/use-cases/university/protocol run build`
 - focused proof-server contract test:
-  - `npm exec -w ./packages/use-cases/university/protocol -- vitest run src/test/proof-server-contract.test.ts`
+  - `pnpm --dir ./packages/use-cases/university/protocol exec vitest run src/test/proof-server-contract.test.ts`
 - focused process-boundary transport test:
-  - `npm exec -w ./packages/use-cases/university/protocol -- vitest run src/test/process-transport.test.ts`
+  - `pnpm --dir ./packages/use-cases/university/protocol exec vitest run src/test/process-transport.test.ts`
 - focused restart-persistence test:
-  - `npm exec -w ./packages/use-cases/university/protocol -- vitest run src/test/restart-flow.test.ts`
+  - `pnpm --dir ./packages/use-cases/university/protocol exec vitest run src/test/restart-flow.test.ts`
 - transcript export:
-  - `npm run export:transcript -w ./packages/use-cases/university/protocol`
+  - `pnpm --dir ./packages/use-cases/university/protocol run export:transcript`
   - outputs:
     - `./packages/use-cases/university/protocol/target/readable-10/transcript-export.json`
     - `./packages/use-cases/university/protocol/target/readable-10/transcript-export.md`
@@ -168,8 +168,8 @@ Build and test:
     - any export-shape change that requires a different reader should bump the
       schema version and widen or replace the compatibility window deliberately
 - stress summary:
-  - `npm run stress:run -w ./packages/use-cases/university/protocol`
-  - `UNIVERSITY_PROTOCOL_PROFILE=cohort-30 npm run stress:run -w ./packages/use-cases/university/protocol`
+  - `pnpm --dir ./packages/use-cases/university/protocol run stress:run`
+  - `UNIVERSITY_PROTOCOL_PROFILE=cohort-30 pnpm --dir ./packages/use-cases/university/protocol run stress:run`
   - output:
     - `./packages/use-cases/university/protocol/target/cohort-30/summary.json`
     - `./packages/use-cases/university/protocol/target/cohort-30/summary.md`

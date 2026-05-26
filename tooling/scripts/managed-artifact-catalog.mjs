@@ -29,18 +29,18 @@ const ageGateConeInputs = unionOfConeInputs("age-gate");
 
 export const profileDefinitions = {
   "managed-light": {
-    buildCommand: "npm run build:light",
+    buildCommand: "pnpm run build:light",
     ciBuildCones: ["foundation", "birth-family"],
     managedPackages: [...foundationOutputOwners, ...familyOutputOwners],
   },
   "managed-all": {
-    buildCommand: "npm run build:all",
+    buildCommand: "pnpm run build:all",
     ciBuildCones: ["age-gate"],
     extends: ["managed-light"],
     managedPackages: ageGateOutputOwners,
   },
   "managed-revocation": {
-    buildCommand: "npm run build:revocation",
+    buildCommand: "pnpm run build:revocation",
     managedPackages: [
       "packages/core/primitives/credentials",
       "packages/registry/status-registry",
@@ -51,7 +51,7 @@ export const profileDefinitions = {
     ],
   },
   "managed-hello-smoke": {
-    buildCommand: "npm run build:starter-smoke-prereqs",
+    buildCommand: "pnpm run build:starter-smoke-prereqs",
     // This smoke readiness profile is narrower than the build cones: it checks
     // only artifacts consumed by the hello lane after the cone build runs.
     managedPackages: [
@@ -64,12 +64,12 @@ export const profileDefinitions = {
     ],
   },
   "managed-dummy-claims-lab": {
-    buildCommand: "npm run build:dummy-claims-lab-prereqs",
+    buildCommand: "pnpm run build:dummy-claims-lab-prereqs",
     extends: ["managed-hello-smoke"],
     managedPackages: ["packages/prototypes/credential-families/dummy-claims"],
   },
   "managed-university-protocol": {
-    buildCommand: "npm run build:university-protocol:prereqs",
+    buildCommand: "pnpm run build:university-protocol:prereqs",
     outputs: [
       output("packages/components/orchestration/protocol/dist/index.js", [
         "packages/components/orchestration/protocol/src",
@@ -86,7 +86,7 @@ export const profileDefinitions = {
     ],
   },
   "managed-university-protocol-export": {
-    buildCommand: "npm run build:university-protocol:export:prereqs",
+    buildCommand: "pnpm run build:university-protocol:export:prereqs",
     extends: ["managed-university-protocol"],
     outputs: [
       output("packages/use-cases/university/protocol/dist/index.js", [
@@ -96,7 +96,7 @@ export const profileDefinitions = {
     ],
   },
   "managed-university-protocol-stress": {
-    buildCommand: "npm run build:university-protocol-stress:prereqs",
+    buildCommand: "pnpm run build:university-protocol-stress:prereqs",
     extends: ["managed-university-protocol-export"],
     outputs: [
       output("packages/use-cases/university/data/stress-100/students.json", [
@@ -110,7 +110,7 @@ export const profileDefinitions = {
     ],
   },
   "managed-university-protocol-cohort": {
-    buildCommand: "npm run build:university-protocol-cohort:prereqs",
+    buildCommand: "pnpm run build:university-protocol-cohort:prereqs",
     extends: ["managed-university-protocol-export"],
     outputs: [
       output("packages/use-cases/university/data/cohort-30/students.json", [
@@ -124,7 +124,7 @@ export const profileDefinitions = {
     ],
   },
   "managed-university-summary": {
-    buildCommand: "npm run build:university-summary:prereqs",
+    buildCommand: "pnpm run build:university-summary:prereqs",
     extends: ["managed-university-protocol-stress"],
     outputs: [
       output("packages/use-cases/university/scenarios/target/site/serenity/index.html", [], {
@@ -146,18 +146,18 @@ export const profileDefinitions = {
     },
   },
   light: {
-    buildCommand: "npm run build:light",
+    buildCommand: "pnpm run build:light",
     ciBuildCones: ["foundation", "birth-family"],
     distPackages: lightConeInputs,
   },
   all: {
-    buildCommand: "npm run build:all",
+    buildCommand: "pnpm run build:all",
     ciBuildCones: ["age-gate", "protocol"],
     extends: ["light"],
     distPackages: [...ageGateOutputOwners, ...protocolOutputOwners],
   },
   revocation: {
-    buildCommand: "npm run build:revocation",
+    buildCommand: "pnpm run build:revocation",
     distPackages: [
       "packages/core/primitives/credentials",
       "packages/registry/status-registry",
@@ -168,14 +168,14 @@ export const profileDefinitions = {
     ],
   },
   "integration-demo-contract": {
-    buildCommand: "npm run build:integration-prereqs:demo-contract",
+    buildCommand: "pnpm run build:integration-prereqs:demo-contract",
     ciBuildCones: ["foundation", "birth-family", "age-gate"],
     // This follows the age-gate cone inputs, so the readiness profile also
     // checks hello-verifier outputs produced by the integration prereq build.
     distPackages: ageGateConeInputs,
   },
   "integration-protocol": {
-    buildCommand: "npm run build:integration-prereqs:protocol",
+    buildCommand: "pnpm run build:integration-prereqs:protocol",
     ciBuildCones: ["protocol"],
     extends: ["integration-demo-contract"],
     distPackages: protocolOutputOwners,
@@ -364,7 +364,7 @@ const checkCatalog = () => {
       errors.push(`${profileName} is missing buildCommand`);
     }
 
-    const scriptName = profile.buildCommand?.match(/^npm run ([^\s]+)/u)?.[1];
+    const scriptName = profile.buildCommand?.match(/^pnpm run ([^\s]+)/u)?.[1];
     if (scriptName && !scripts[scriptName]) {
       errors.push(`${profileName} references missing root script: ${scriptName}`);
     }

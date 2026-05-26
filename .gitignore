@@ -34,6 +34,7 @@ jspm_packages/
 
 # Optional npm cache directory
 .npm
+.pnpm-store
 
 # Optional local npm cache used by packaging scripts
 .npm-cache

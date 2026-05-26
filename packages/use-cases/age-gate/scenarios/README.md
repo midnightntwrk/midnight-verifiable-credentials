@@ -55,12 +55,12 @@ From the repository root:
 ./run.sh bdd-all
 ```
 
-Equivalent npm entrypoints:
+Equivalent pnpm entrypoints:
 
 ```bash
-npm run test:bdd:smoke
-npm run test:bdd:negative
-npm run test:bdd:all
+pnpm run test:bdd:smoke
+pnpm run test:bdd:negative
+pnpm run test:bdd:all
 ```
 
 Those commands reuse existing VC build artifacts when they are already present
@@ -69,7 +69,7 @@ and only fall back to the shared VC build prerequisites when they are missing.
 Contract check:
 
 ```bash
-npm run test:step-insight:contract -w ./packages/use-cases/age-gate/scenarios
+pnpm --dir ./packages/use-cases/age-gate/scenarios run test:step-insight:contract
 ```
 
 That contract check verifies the `midnight-age-gate-step-insight.v1` schema,

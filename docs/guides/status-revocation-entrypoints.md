@@ -87,13 +87,13 @@ For a status/revocation change, run the narrowest relevant lane first:
 
 ```bash
 ./run.sh revocation
-npm run test:ci -w ./packages/registry/status-registry
+pnpm --dir ./packages/registry/status-registry run test:ci
 ```
 
 Before PR review, run the documentation and integration checks:
 
 ```bash
-npm run docs:links
+pnpm run docs:links
 ./run.sh integration-report
 ./run.sh check-integration
 ```

@@ -30,10 +30,10 @@ surfaces, reducing duplicate catalogs, and making university/use-case paths more
 human-readable.
 
 `./run.sh clean-artifacts` is the developer-facing wrapper for
-`npm run clean:artifacts`; both surfaces resolve to the same cleanup script.
+`pnpm run clean:artifacts`; both surfaces resolve to the same cleanup script.
 Dry-run JSON is available through both
 `./run.sh clean-artifacts -- --dry-run --json` and
-`npm run clean:artifacts -- --dry-run --json`.
+`pnpm run clean:artifacts -- --dry-run --json`.
 CHANGELOG/release-note discipline remains release-management work and is not part
 of this simplification stack.
 
@@ -58,7 +58,7 @@ DID package integration work should start from:
 - [`docs/guides/did-integration-modes.md`](../guides/did-integration-modes.md)
 - `./run.sh integration-report`
 - `./run.sh check-integration`
-- `npm run check:did-integration`
+- `pnpm run check:did-integration`
 
 ## Audit Findings
 
@@ -130,7 +130,7 @@ They add four review-driven backlog decisions:
    - decide whether top-level `midnight-did-credentials*` symlinks are official
      developer aliases or removable compatibility residue
    - document and guard the lifecycle in install/cleanup scripts
-   - report alias health through `npm run check:did-integration`,
+   - report alias health through `pnpm run check:did-integration`,
      `./run.sh integration-report`, and `./run.sh check-integration`
 
 3. `missing-ci-script-repair`
@@ -238,8 +238,8 @@ file splits, BDD readability, and maturity tags.
    - covers `dead-top-level-shell-removal`, `missing-ci-script-repair`,
      `cleanup-artifact-coverage`, and the safe parts of
      `compatibility-alias-lifecycle`
-   - validation: `git diff --check`, `npm run check:workspace-manifests`,
-     `npm run check:run-target-catalog`, `npm run check:ci-workflow-cones`,
+   - validation: `git diff --check`, `pnpm run check:workspace-manifests`,
+     `pnpm run check:run-target-catalog`, `pnpm run check:ci-workflow-cones`,
      `./run.sh --light` as the safety smoke that cleanup did not break the
      light lane
 
@@ -248,7 +248,7 @@ file splits, BDD readability, and maturity tags.
      maturity index, README, and status/revocation specs mutually discoverable
    - 2026-05-21 delivery branch:
      `codex/vc-status-did-integration-entrypoints`
-   - validation: `git diff --check`, `npm run docs:links`
+   - validation: `git diff --check`, `pnpm run docs:links`
 
 3. `vc-did-integration-docs`
    - covers `did-integration-mode-docs` and the documented lifecycle for aliases
@@ -256,7 +256,7 @@ file splits, BDD readability, and maturity tags.
    - 2026-05-21 delivery branch:
      `codex/vc-status-did-integration-entrypoints`
    - validation: `./run.sh integration-report`, `./run.sh check-integration`,
-     `npm run docs:links`
+     `pnpm run docs:links`
 
 4. `vc-runner-catalog-authority`
    - covers `runner-catalog-authority`, `root-script-cone-deduplication`,
@@ -268,8 +268,8 @@ file splits, BDD readability, and maturity tags.
    - centralizes runner target script metadata, CI build-cone package/output
      lists, root `build:cone:*` commands, and workflow change-classification
      patterns in checked tooling catalogs
-   - validation: `npm run check:run-target-catalog`,
-     `npm run check:ci-build-cones`, `npm run check:ci-workflow-cones`,
+   - validation: `pnpm run check:run-target-catalog`,
+     `pnpm run check:ci-build-cones`, `pnpm run check:ci-workflow-cones`,
      `./run.sh targets`
 
 5. `vc-managed-artifact-freshness`
@@ -280,7 +280,7 @@ file splits, BDD readability, and maturity tags.
    - managed-artifact profiles now derive package groups from the checked CI
      build-cone catalog, so local readiness checks and GitHub artifact lanes use
      the same package ownership source
-   - validation: `npm run check:managed-artifact-catalog`,
+   - validation: `pnpm run check:managed-artifact-catalog`,
      `./run.sh typecheck --light`, `./run.sh build --light`
 
 6. `vc-standalone-package-policy`
@@ -340,8 +340,8 @@ file splits, BDD readability, and maturity tags.
       task orchestration into `features/support/age-gate-reporting.ts`, then
       extends the step-insight contract check to lock the full scenario catalog
     - validation: `./run.sh bdd`, `./run.sh bdd-negative`,
-      `npm run check:workspace-manifests`, `npm run check:vc-surface-discipline`,
-      `npm run docs:links`
+      `pnpm run check:workspace-manifests`, `pnpm run check:vc-surface-discipline`,
+      `pnpm run docs:links`
 
 11. `vc-bdd-summary-first-output`
     - covers `bdd-summary-first-output`
@@ -350,9 +350,9 @@ file splits, BDD readability, and maturity tags.
     - emits Cucumber JSON during BDD execution, then writes compact
       `target/summary.json` and `target/summary.md` artifacts from the shared
       BDD support package before the heavier Serenity HTML aggregation step
-    - validation: `npm run test:ci -w ./packages/use-cases/bdd-support`,
-      `npm run test:bdd:smoke`, `npm run test:bdd:university`,
-      `npm run docs:links`
+    - validation: `pnpm --dir ./packages/use-cases/bdd-support`, run test:ci
+      `pnpm run test:bdd:smoke`, `pnpm run test:bdd:university`,
+      `pnpm run docs:links`
 
 12. `vc-bdd-summary-ci-artifacts`
     - covers the CI-retention follow-up for `bdd-summary-first-output`
@@ -362,8 +362,8 @@ file splits, BDD readability, and maturity tags.
       lane, uploads Cucumber JSON plus `summary.json`/`summary.md` files under
       `bdd-summary-artifacts`, and adds a guard so future workflow edits do not
       drop the compact report handoff
-    - validation: `npm run check:bdd-summary-artifacts`,
-      `npm run check:ci-workflow-cones`, `npm run docs:links`
+    - validation: `pnpm run check:bdd-summary-artifacts`,
+      `pnpm run check:ci-workflow-cones`, `pnpm run docs:links`
 
 13. `vc-ci-setup-action-consolidation`
     - covers `ci-setup-action-consolidation`
@@ -372,8 +372,8 @@ file splits, BDD readability, and maturity tags.
     - extracts repeated Node/npm/Turbo and prepared Compact-toolchain restore
       blocks into local composite actions, then extends the workflow-cone guard
       so direct setup blocks do not drift back into the primary CI workflow
-    - validation: `npm run check:ci-workflow-cones`,
-      `npm run check:bdd-summary-artifacts`, `git diff --check`
+    - validation: `pnpm run check:ci-workflow-cones`,
+      `pnpm run check:bdd-summary-artifacts`, `git diff --check`
 
 ## Review-Driven Stack Additions
 
@@ -384,8 +384,8 @@ forces a stop.
 1. `vc-review-schema-capabilities`
    - covers `schema-capabilities-layering`,
      `schema-family-resolution-hints`, and `disclosure-shape-guidance`
-   - validation: `git diff --check`, `npm run docs:links`,
-     `npm run check:vc-surface-discipline`
+   - validation: `git diff --check`, `pnpm run docs:links`,
+     `pnpm run check:vc-surface-discipline`
 
 2. `vc-protocol-feature-hint-deprecation`
    - moves authoritative capability reads away from issue/present protocol
@@ -408,8 +408,8 @@ forces a stop.
    - adds direct-claim privacy-boundary tests and a migration plan for a future
      commitment-backed diploma family
    - validation:
-     `npm run test:ci -w ./packages/prototypes/credential-families/university-diploma`,
-     `./run.sh university-bdd`, `npm run docs:links`
+     `pnpm --dir ./packages/prototypes/credential-families/university-diploma`, run test:ci
+     `./run.sh university-bdd`, `pnpm run docs:links`
 
 4. `vc-university-commitment-backed-diploma`
    - starts the production privacy migration by adding an additive Compact and
@@ -467,8 +467,8 @@ forces a stop.
    - validation: university credential-family tests, university protocol tests,
      university reporting tests, `./run.sh university-bdd`,
      `./run.sh university-summary`, `./run.sh university-report-contract`,
-     `npm run check:run-target-contract`, `npm run check:university-ci-matrix`,
-     `npm run docs:links`
+     `pnpm run check:run-target-contract`, `pnpm run check:university-ci-matrix`,
+     `pnpm run docs:links`
 
 ## Validation Defaults
 
@@ -476,30 +476,30 @@ Fast docs/backlog slice:
 
 ```bash
 git diff --check
-npm run docs:links
-npm run check:run-target-catalog
-npm run check:workspace-manifests
+pnpm run docs:links
+pnpm run check:run-target-catalog
+pnpm run check:workspace-manifests
 ```
 
 Fast repository slice:
 
 ```bash
 git diff --check
-npm run check:package-boundaries
-npm run check:ci-build-cones
-npm run check:ci-workflow-cones
-npm run check:managed-artifact-catalog
-npm run check:did-integration
-npm run check:vc-surface-discipline
-npm run check:holder-binding-terminology
+pnpm run check:package-boundaries
+pnpm run check:ci-build-cones
+pnpm run check:ci-workflow-cones
+pnpm run check:managed-artifact-catalog
+pnpm run check:did-integration
+pnpm run check:vc-surface-discipline
+pnpm run check:holder-binding-terminology
 ./run.sh --light
 ```
 
 University slice:
 
 ```bash
-npm run check:university-ci-matrix
-npm run check:run-target-contract
+pnpm run check:university-ci-matrix
+pnpm run check:run-target-contract
 ./run.sh university-data-profiles
 ./run.sh university-policy-catalog
 ./run.sh university-protocol --light
