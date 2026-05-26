@@ -26,6 +26,10 @@ const workflowDir = path.join(repoRoot, ".github/workflows");
 // Cone wiring checks are intentionally pinned to the primary CI workflow;
 // root-script existence is checked across every workflow below.
 const workflowText = readFileSync(path.join(workflowDir, "ci.yml"), "utf8");
+const setupNodePnpmActionText = readFileSync(
+  path.join(repoRoot, ".github/actions/setup-node-pnpm/action.yml"),
+  "utf8",
+);
 const managedArtifactCatalogText = readFileSync(
   path.join(repoRoot, "tooling/scripts/managed-artifact-catalog.mjs"),
   "utf8",
@@ -232,6 +236,36 @@ const assertWorkflowUsesLocalSetupActions = () => {
   if (/compact update\s+"\$COMPACT_COMPILER_VERSION"/u.test(workflowText)) {
     errors.push(
       "CI workflow must restore/activate Compact through ./.github/actions/restore-compact-toolchain",
+    );
+  }
+
+  const pnpmActionIndex = setupNodePnpmActionText.indexOf(
+    "uses: pnpm/action-setup@v4",
+  );
+  const setupNodeIndex = setupNodePnpmActionText.indexOf(
+    "uses: actions/setup-node@v4",
+  );
+  const setupNodePnpmCacheIndex = setupNodePnpmActionText.indexOf(
+    "cache: pnpm",
+  );
+
+  if (pnpmActionIndex === -1) {
+    errors.push(
+      "setup-node-pnpm action must install pnpm with pnpm/action-setup before setup-node enables pnpm caching",
+    );
+  }
+
+  if (setupNodePnpmCacheIndex === -1) {
+    errors.push("setup-node-pnpm action must enable actions/setup-node pnpm caching");
+  }
+
+  if (
+    pnpmActionIndex !== -1 &&
+    setupNodeIndex !== -1 &&
+    pnpmActionIndex > setupNodeIndex
+  ) {
+    errors.push(
+      "setup-node-pnpm action must run pnpm/action-setup before actions/setup-node so cache: pnpm can find the pnpm executable",
     );
   }
 };
