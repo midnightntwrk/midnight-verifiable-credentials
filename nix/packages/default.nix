@@ -1,9 +1,18 @@
+{ self, inputs, ... }:
+
+let
+  midnight-did = inputs.midnight-did;
+in
 {
   perSystem =
-    { pkgs, ... }:
+    { system, pkgs, ... }:
+    let
+      midnight-did-pkgs = midnight-did.packages.${system};
+    in
     {
-      packages = {
-        compact-midnight = pkgs.callPackage ./compact-midnight.nix { };
+      packages.npm-artifacts = pkgs.callPackage ./npm-artifacts.nix {
+        inherit (midnight-did-pkgs) compact-toolchain compact-midnight midnight-circuit-params;
+        src = self;
       };
     };
 }

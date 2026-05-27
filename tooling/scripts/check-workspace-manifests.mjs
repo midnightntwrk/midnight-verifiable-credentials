@@ -34,6 +34,7 @@ const workspaceMaturity = new Map([
   ["packages/prototypes/credential-families/dummy-claims", { maturity: "lab", packageClass: "dist" }],
   ["packages/prototypes/credential-families/mixed-claims", { maturity: "lab", packageClass: "dist" }],
   ["packages/prototypes/credential-families/university-diploma", { maturity: "reference", packageClass: "dist" }],
+  ["packages/prototypes/credential-families/digital-passport", { maturity: "reference", packageClass: "dist" }],
   ["packages/use-cases/age-gate/contract", { maturity: "demo", packageClass: "dist" }],
   ["packages/use-cases/hello-verifier/contract", { maturity: "demo", packageClass: "dist" }],
   ["packages/use-cases/university/contract", { maturity: "demo", packageClass: "dist" }],

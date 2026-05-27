@@ -264,6 +264,15 @@ importers:
         specifier: '*'
         version: link:../../../registry/status-registry
 
+  packages/prototypes/credential-families/digital-passport:
+    dependencies:
+      '@midnight-ntwrk/compact-runtime':
+        specifier: '*'
+        version: 0.15.0
+      '@midnight-ntwrk/midnight-did-credentials':
+        specifier: '*'
+        version: link:../../../core/primitives/credentials
+
   packages/prototypes/credential-families/dummy-claims:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
