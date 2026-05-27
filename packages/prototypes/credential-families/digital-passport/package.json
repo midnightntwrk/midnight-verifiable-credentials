@@ -6,7 +6,7 @@
   "type": "module",
   "engines": {
     "node": ">=24",
-    "npm": ">=10"
+    "pnpm": ">=10"
   },
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -41,17 +41,17 @@
     }
   },
   "scripts": {
-    "contract": "npm run compact",
+    "contract": "pnpm run compact",
     "compact": "node ./scripts/ensure-compact-package-aliases.mjs && compact compile src/digital-passport-credential.compact src/managed/digital-passport-credential && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
     "test": "vitest run",
     "test:ci": "vitest run",
-    "prepack": "npm run build",
+    "prepack": "pnpm run build",
     "clean": "rm -rf dist && rm -rf coverage && rm -rf reports && rm -rf src/managed",
-    "build": "npm run compact && rm -rf dist && mkdir -p dist && tsc -b tsconfig.build.json --force && cp -Rf ./src/managed ./dist/ && cp ./src/digital-passport-credential.compact ./dist && cp -Rf ./src/digital-passport-credential ./dist/",
+    "build": "pnpm run compact && rm -rf dist && mkdir -p dist && tsc -b tsconfig.build.json --force && cp -Rf ./src/managed ./dist/ && cp ./src/digital-passport-credential.compact ./dist && cp -Rf ./src/digital-passport-credential ./dist/",
     "lint": "eslint src --ignore-pattern 'src/managed/**'",
     "lint:fix": "eslint src --fix --ignore-pattern 'src/managed/**'",
-    "typecheck": "npm run compact && tsc -p tsconfig.json --noEmit",
-    "all": "npm run compact && npm run build && npm run test:ci"
+    "typecheck": "pnpm run compact && tsc -p tsconfig.json --noEmit",
+    "all": "pnpm run compact && pnpm run build && pnpm run test:ci"
   },
   "dependencies": {
     "@midnight-ntwrk/compact-runtime": "*",
