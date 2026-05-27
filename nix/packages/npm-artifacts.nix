@@ -7,7 +7,6 @@
   pnpmConfigHook,
   runCommand,
   python3,
-  midnight-did-npm-artifacts,
   compact-toolchain,
   compact-midnight,
   midnight-circuit-params,
@@ -15,88 +14,23 @@
 }:
 
 let
-  # The 5 midnight-did .tgz files that must come from the flake input.
-  # midnight-did-secret-storage is NOT among these — it stays from the
-  # committed source tree because it is not a midnight-did artifact workspace.
-  vendorPackagesFromFlake = [
-    "midnight-did"
-    "midnight-did-api"
-    "midnight-did-contract"
-    "midnight-did-domain"
-    "midnight-did-jubjub-schnorr"
-  ];
+  # Strip the packageManager field from package.json so that pnpm does not
+  # try to switch to a specific version during the sandbox build.  The Nix
+  # derivation already pins pnpm_10 via nativeBuildInputs; the
+  # packageManager field is only useful for Corepack-based workflows
+  # outside the sandbox.
+  patchedSrc =
+    runCommand "vc-patched-src"
+      {
+        inherit src;
+        nativeBuildInputs = [ python3 ];
+      }
+      ''
+        cp -r $src $out
+        chmod -R u+w $out
 
-  # Map from vendor package short name to lockfile v3 path
-  vendorLockfilePaths = {
-    "midnight-did"              = "node_modules/@midnight-ntwrk/midnight-did";
-    "midnight-did-api"          = "node_modules/@midnight-ntwrk/midnight-did-api";
-    "midnight-did-contract"     = "node_modules/@midnight-ntwrk/midnight-did-contract";
-    "midnight-did-domain"       = "node_modules/@midnight-ntwrk/midnight-did-domain";
-    "midnight-did-jubjub-schnorr" = "node_modules/@midnight-ntwrk/midnight-did-jubjub-schnorr";
-    "midnight-did-secret-storage" = "node_modules/@midnight-ntwrk/midnight-did-secret-storage";
-  };
-
-  # Replace the 5 committed vendor .tgz files with those from midnight-did's
-  # npm-artifacts flake output and patch pnpm-lock.yaml with the replacement
-  # tarball integrity hashes.
-  patchedSrc = runCommand "vc-patched-src" {
-    inherit src;
-    nativeBuildInputs = [ python3 ];
-  } ''
-    cp -r $src $out
-    chmod -R u+w $out
-
-    # Replace 5 vendor .tgz files with those from midnight-did npm-artifacts
-    for pkg in ${lib.concatStringsSep " " vendorPackagesFromFlake}; do
-      tgzName="midnight-ntwrk-''${pkg}-0.1.0.tgz"
-      ln -sf ${midnight-did-npm-artifacts}/$tgzName \
-        $out/tooling/vendor/midnight-did/$tgzName
-    done
-
-    # Strip the packageManager field from package.json so that pnpm does not
-    # try to switch to a specific version during the sandbox build.  The Nix
-    # derivation already pins pnpm_10 via nativeBuildInputs; the
-    # packageManager field is only useful for Corepack-based workflows
-    # outside the sandbox.
-    python3 -c "import json,os; d=json.load(open('$out/package.json')); d.pop('packageManager',None); json.dump(d,open('$out/package.json','w'),indent=2)"
-
-    # Patch pnpm-lock.yaml:
-    python3 <<'PYEOF'
-    import base64, hashlib, os, re
-
-    out = os.environ["out"]
-
-    lockfile_path = os.path.join(out, "pnpm-lock.yaml")
-    with open(lockfile_path) as f:
-        lockfile = f.read()
-
-    vendor_dir = os.path.join(out, "tooling", "vendor", "midnight-did")
-    flake_pkgs = set(${builtins.toJSON vendorPackagesFromFlake})
-
-    for pkg_short in flake_pkgs:
-        tgz_name = f"midnight-ntwrk-{pkg_short}-0.1.0.tgz"
-        tgz_path = os.path.realpath(os.path.join(vendor_dir, tgz_name))
-
-        with open(tgz_path, "rb") as f:
-            content = f.read()
-
-        integrity_hash = hashlib.sha512(content).digest()
-        integrity = "sha512-" + base64.b64encode(integrity_hash).decode()
-
-        escaped_tgz = re.escape(tgz_name)
-        pattern = (
-            r"(resolution: \{integrity: )sha512-[^,}]+"
-            r"(, tarball: file:tooling/vendor/midnight-did/" + escaped_tgz + r"\})"
-        )
-        lockfile, count = re.subn(pattern, r"\1" + integrity + r"\2", lockfile)
-        if count != 1:
-            raise RuntimeError(f"Expected one pnpm lockfile integrity for {tgz_name}, found {count}")
-        print(f"Updated integrity for {pkg_short}: {integrity[:30]}...")
-
-    with open(lockfile_path, "w") as f:
-        f.write(lockfile)
-    PYEOF
-  '';
+        python3 -c "import json,os; d=json.load(open('$out/package.json')); d.pop('packageManager',None); json.dump(d,open('$out/package.json','w'),indent=2)"
+      '';
 
 in
 stdenvNoCC.mkDerivation (finalAttrs: {
@@ -113,7 +47,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     inherit (finalAttrs) pname version;
     src = patchedSrc;
     pnpm = pnpm_10;
-    hash = "sha256-rr2bPydOI+CMQv3pIdArDLSHcEBkq1oQrYLTdjqd0Mk=";
+    hash = "sha256-CRTMCOiYAdbhQc4soQiVas1iUP+gYhNDObfMOYmDjyc=";
     fetcherVersion = 3;
   };
 
@@ -135,31 +69,12 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     mkdir -p $HOME/.cache/midnight/zk-params
     cp -r ${midnight-circuit-params}/* $HOME/.cache/midnight/zk-params/
 
-    # Run postinstall scripts that were stripped from package.json
-    # (ensure-midnight-did-api-paths is NOT run here: the flake-built .tgz
-    # restructures config.js to re-export from package-paths.js, so patching
-    # package-paths.js via substituteInPlace below is sufficient.)
+    # Run postinstall scripts that were stripped from package.json.
+    # The vendor tarballs use the original config.js layout (inline paths),
+    # so ensure-midnight-did-api-paths.mjs works directly to redirect the
+    # contract path from the monorepo layout to the installed-package layout.
+    node ./tooling/scripts/ensure-midnight-did-api-paths.mjs
     node ./tooling/scripts/ensure-compact-package-aliases.mjs
-
-    # Patch midnight-did-api contract path: the flake-built .tgz uses package-paths.js
-    # for the contract path config. config.js re-exports from package-paths.js, so
-    # patching package-paths.js is sufficient.
-    # The ensure-midnight-did-api-paths.mjs script cannot be used here — it expects
-    # the path string to be inline in config.js, but the flake-built layout
-    # moved it to package-paths.js, causing the script to throw.
-    #
-    # pnpm installs @midnight-ntwrk/midnight-did-api into the .pnpm store
-    # (it is an override, not a direct root dependency), so its node_modules
-    # entry lives under node_modules/.pnpm/… rather than at the flat
-    # node_modules/@midnight-ntwrk/midnight-did-api/ path.  Use find to
-    # locate the real file.
-    API_PKG_PATHS_JS=$(find node_modules/.pnpm -path "*+midnight-did-api@*/dist/package-paths.js" | head -1)
-    if [ -z "$API_PKG_PATHS_JS" ]; then
-      echo "ERROR: could not find midnight-did-api/dist/package-paths.js in pnpm store"
-      exit 1
-    fi
-    substituteInPlace "$API_PKG_PATHS_JS" \
-      --replace-fail '"contract", "src", "managed", "did"' '"midnight-did-contract", "dist", "managed", "did"'
 
     # Build all 14 workspaces in dependency layer order.
     # No turbo — its caching and parallel scheduling provide zero value in a
