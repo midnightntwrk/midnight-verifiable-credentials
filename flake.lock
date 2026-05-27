@@ -42,16 +42,16 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1779862136,
-        "narHash": "sha256-+fEAZtFDvWUfqh12opFOa96FYa5n7jyayM7yqJ7/0U4=",
+        "lastModified": 1779767638,
+        "narHash": "sha256-ehSJ/e2bvOnY+Q86xkUOJlYdk1cyM3KjVd3l9u/P0YE=",
         "owner": "midnightntwrk",
         "repo": "midnight-did",
-        "rev": "3f5c3190095deb9a2ca7fb5feade76b8d01d5c4f",
+        "rev": "00bcbd944e1a1701927eaf9b374e2b4547308d26",
         "type": "github"
       },
       "original": {
         "owner": "midnightntwrk",
-        "ref": "develop",
+        "ref": "kyc-demo",
         "repo": "midnight-did",
         "type": "github"
       }

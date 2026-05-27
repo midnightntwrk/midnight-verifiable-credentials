@@ -3,12 +3,12 @@ import { createHash } from "node:crypto";
 import { TextEncoder } from "node:util";
 
 import {
-  type ResolvedLongFormOffchainMidnightDID,
-  resolveLongFormOffchainMidnightDID,
+  type ResolvedPortableOffchainMidnightDID,
+  resolvePortableOffchainMidnightDID,
 } from "@midnight-ntwrk/midnight-did";
 import type { OffchainMidnightHolderBinding as CoreOffchainMidnightHolderBinding } from "@midnight-ntwrk/midnight-did-credentials";
 import {
-  createLongFormOffchainMidnightDIDString,
+  createPortableOffchainMidnightDIDUrl,
   CurveType,
   KeyType,
 } from "@midnight-ntwrk/midnight-did-domain";
@@ -19,7 +19,7 @@ const HEX_BYTES32_LENGTH = BYTES32_LENGTH * 2;
 const OFFCHAIN_DID_METHOD_ID_DOMAIN = "midnight:offchain:holder-method-id:v1";
 
 type OffchainVerificationMethod =
-  ResolvedLongFormOffchainMidnightDID["state"]["verificationMethod"][number];
+  ResolvedPortableOffchainMidnightDID["state"]["verificationMethod"][number];
 
 export type OffchainDIDHolderBinding = CoreOffchainMidnightHolderBinding;
 
@@ -29,7 +29,7 @@ export type OffchainMidnightHolderBinding = OffchainDIDHolderBinding;
 export type ResolvedOffchainDIDHolderBinding = {
   readonly binding: OffchainDIDHolderBinding;
   readonly did: string;
-  readonly parsed: ResolvedLongFormOffchainMidnightDID["parsed"];
+  readonly parsed: ResolvedPortableOffchainMidnightDID["parsed"];
   readonly method: OffchainVerificationMethod;
 };
 
@@ -136,14 +136,14 @@ export const normalizeOffchainDIDMethodReference = (
 export const normalizeOffchainMidnightMethodReference =
   normalizeOffchainDIDMethodReference;
 
-export const createLongFormOffchainDIDStringForJubjubHolder = ({
+export const createPortableOffchainDIDUrlForJubjubHolder = ({
   publicKey,
   methodId = "#holder-key-1",
 }: {
   readonly publicKey: { readonly x: bigint; readonly y: bigint };
   readonly methodId?: string;
 }): string =>
-  createLongFormOffchainMidnightDIDString({
+  createPortableOffchainMidnightDIDUrl({
     version: 1,
     alsoKnownAs: [],
     verificationMethod: [
@@ -219,13 +219,13 @@ const selectMethod = ({
 };
 
 export const createOffchainDIDHolderBindingFromDidUrl = ({
-  longFormDid,
+  portableDidUrl,
   holderMethodId,
 }: {
-  readonly longFormDid: string;
+  readonly portableDidUrl: string;
   readonly holderMethodId?: string;
 }): ResolvedOffchainDIDHolderBinding => {
-  const resolved = resolveLongFormOffchainMidnightDID(longFormDid);
+  const resolved = resolvePortableOffchainMidnightDID(portableDidUrl);
   const method = selectMethod({
     did: resolved.did,
     verificationMethod: resolved.state.verificationMethod,
@@ -252,10 +252,6 @@ export const createOffchainDIDHolderBindingFromDidUrl = ({
     },
   };
 };
-
-/** @deprecated Use createLongFormOffchainDIDStringForJubjubHolder instead. */
-export const createPortableOffchainDIDUrlForJubjubHolder =
-  createLongFormOffchainDIDStringForJubjubHolder;
 
 /** @deprecated Use createOffchainDIDHolderBindingFromDidUrl instead. */
 export const createOffchainMidnightHolderBindingFromDidUrl =
