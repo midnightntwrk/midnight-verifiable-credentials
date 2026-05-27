@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
-    midnight-did.url = "github:midnightntwrk/midnight-did/kyc-demo";
+    midnight-did.url = "github:midnightntwrk/midnight-did/develop";
   };
 
   outputs =

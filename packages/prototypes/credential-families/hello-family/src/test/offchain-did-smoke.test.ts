@@ -12,12 +12,10 @@ describe("hello-family offchain DID smoke path", () => {
       revealBytesValue: true,
     });
 
-    expect(fixture.portableDidUrl.startsWith("did:midnight:offchain:")).toBe(
+    expect(fixture.longFormDid.startsWith("did:midnight:offchain:")).toBe(
       true,
     );
-    expect(fixture.resolvedHolder.did).toEqual(
-      fixture.portableDidUrl.split("?", 1)[0],
-    );
+    expect(fixture.resolvedHolder.did).toEqual(fixture.longFormDid);
     expect(fixture.resolvedHolder.method.id).toEqual("#holder-key-1");
     expect(fixture.resolvedHolder.binding.holderPublicKey).toEqual(
       fixture.holder.publicKey,
