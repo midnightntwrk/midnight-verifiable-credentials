@@ -52,6 +52,7 @@ try {
 const replacementSpecs = [
   {
     relativeFile: path.join('src', 'config.ts'),
+    optionalShape: true,
     from: `path.resolve(
     currentDir,
     "..",
@@ -71,8 +72,14 @@ const replacementSpecs = [
   },
   {
     relativeFile: path.join('dist', 'config.js'),
+    optionalShape: true,
     from: `path.resolve(currentDir, "..", "contract", "src", "managed", "did")`,
     to: `path.resolve(currentDir, "..", "midnight-did-contract", "dist", "managed", "did")`,
+  },
+  {
+    relativeFile: path.join('dist', 'package-paths.js'),
+    from: `path.resolve(apiPackageRoot, "..", "contract", "src", "managed", "did")`,
+    to: `path.resolve(apiPackageRoot, "..", "midnight-did-contract", "dist", "managed", "did")`,
   },
 ];
 
@@ -93,6 +100,10 @@ for (const packageDir of packageDirs) {
       continue;
     }
     if (!current.includes(replacement.from)) {
+      if (replacement.optionalShape) {
+        console.warn(`[ensure-midnight-did-api-paths] Skip unmatched optional config shape: ${file}`);
+        continue;
+      }
       throw new Error(`Unexpected @midnight-ntwrk/midnight-did-api config shape in ${file}`);
     }
     await writeFile(file, current.replace(replacement.from, replacement.to));

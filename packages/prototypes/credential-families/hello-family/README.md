@@ -131,7 +131,7 @@ profile for the repo's smallest DID-aware smoke path.
 
 Use that profile when you need to prove:
 
-- a portable offchain DID URL can derive a VC holder binding
+- a long-form offchain DID URL can derive a VC holder binding
 - the derived holder binding can issue and verify a starter presentation
 - the result can flow into the `hello-verifier` Layer 3 starter
 

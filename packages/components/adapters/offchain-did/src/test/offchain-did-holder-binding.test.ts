@@ -1,8 +1,16 @@
+import { Buffer } from "node:buffer";
+
 import { ecMulGenerator } from "@midnight-ntwrk/compact-runtime";
+import {
+  createLongFormOffchainMidnightDIDString,
+  CurveType,
+  KeyType,
+} from "@midnight-ntwrk/midnight-did-domain";
 import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { describe, expect, it } from "vitest";
 
 import {
+  createLongFormOffchainDIDUrlForJubjubHolder,
   createOffchainDIDHolderBindingFromDidUrl,
   createOffchainMidnightHolderBindingFromDidUrl,
   createPortableOffchainDIDUrlForJubjubHolder,
@@ -12,17 +20,84 @@ import {
 
 setNetworkId("undeployed");
 
-const HAPPY_DID_URL =
-  "did:midnight:offchain:0f48bc69bc2a23585f421256c6028dd9d731936658cba20409298d32f03be9ba?state=TU9EMQAAAC0AAAABAQAAAAAAAAAAAAAAAAAAAAAAAAABAQAAAA0jaG9sZGVyLWtleS0xAAAAAQEAAAACQVEAAAACQWcAAAABAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-const NON_JUBJUB_DID_URL =
-  "did:midnight:offchain:7504b09f89e228b168119f0db74229a41aaa586a456531622849f14f6f9e297e?state=TU9EMQAAAC0AAAABAQAAAAAAAAAAAAAAAAAAAAAAAAABAQAAAA0jaG9sZGVyLWtleS0xAAAAAQIAAAACQVEAAAAAAAAAAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-const NON_AUTH_DID_URL =
-  "did:midnight:offchain:36a4e7ace1d95d4519cba44ae8cbaa08fd41c89052cffb91ecfef2658289b3be?state=TU9EMQAAAC0AAAABAQAAAAAAAAAAAAAAAAAAAAAAAAABAQAAAA0jaG9sZGVyLWtleS0xAAAAAQEAAAACQVEAAAACQWcAAAABAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+const encodeBytes32 = (byte: number): string => {
+  const bytes = new Uint8Array(32);
+  bytes[31] = byte;
+  return Buffer.from(bytes).toString("base64url");
+};
+
+const didUrlWithMethod = ({
+  publicKeyJwk,
+  authentication = true,
+}: {
+  readonly publicKeyJwk: {
+    readonly kty: KeyType;
+    readonly crv: CurveType;
+    readonly x: string;
+    readonly y?: string;
+  };
+  readonly authentication?: boolean;
+}): string =>
+  createLongFormOffchainMidnightDIDString({
+    version: 1,
+    alsoKnownAs: [],
+    verificationMethod: [
+      {
+        id: "#holder-key-1",
+        publicKeyJwk,
+        relationships: {
+          authentication,
+          assertionMethod: false,
+          keyAgreement: false,
+          capabilityInvocation: false,
+          capabilityDelegation: false,
+        },
+      },
+    ],
+    service: [],
+  });
+
+const HAPPY_DID_URL = didUrlWithMethod({
+  publicKeyJwk: {
+    kty: KeyType.EC,
+    crv: CurveType.Jubjub,
+    x: encodeBytes32(1),
+    y: encodeBytes32(2),
+  },
+});
+const GOLDEN_HAPPY_DID_URL = [
+  "did:midnight:offchain:410f42705ae02b609d9746f99800cb195d87d6b52d33de081a07807501fcb68f:T",
+  "U9EMQAAAC0AAAABAQAAAAAAAAAAAAAAAAAAAAAAAAABAQAAAA0jaG9sZGVyLWtleS0xAAAAAQEAAAArQUFBQUFBQ",
+  "UFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBRQAAACtBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQ",
+  "UFBQUFBQUFBQUFBQUFBQUFJAAAAAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+  "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+  "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+].join("");
+const NON_JUBJUB_DID_URL = didUrlWithMethod({
+  publicKeyJwk: {
+    kty: KeyType.OKP,
+    crv: CurveType.Ed25519,
+    x: encodeBytes32(1),
+  },
+});
+const NON_AUTH_DID_URL = didUrlWithMethod({
+  authentication: false,
+  publicKeyJwk: {
+    kty: KeyType.EC,
+    crv: CurveType.Jubjub,
+    x: encodeBytes32(1),
+    y: encodeBytes32(2),
+  },
+});
 
 describe("credentials-offchain-did", () => {
-  it("derives a holder binding from a portable offchain DID URL", () => {
+  it("keeps the canonical long-form offchain DID fixture stable", () => {
+    expect(HAPPY_DID_URL).toEqual(GOLDEN_HAPPY_DID_URL);
+  });
+
+  it("derives a holder binding from a long-form offchain DID URL", () => {
     const resolved = createOffchainDIDHolderBindingFromDidUrl({
-      portableDidUrl: HAPPY_DID_URL,
+      longFormDidUrl: HAPPY_DID_URL,
     });
 
     expect(resolved.did.startsWith("did:midnight:offchain:")).toEqual(true);
@@ -40,24 +115,24 @@ describe("credentials-offchain-did", () => {
   it("accepts an explicit absolute DID URL method reference", () => {
     const did = HAPPY_DID_URL.split("?", 1)[0]!;
     const resolved = createOffchainDIDHolderBindingFromDidUrl({
-      portableDidUrl: HAPPY_DID_URL,
+      longFormDidUrl: HAPPY_DID_URL,
       holderMethodId: `${did}#holder-key-1`,
     });
 
     expect(resolved.method.id).toEqual("#holder-key-1");
   });
 
-  it("bootstraps a portable offchain DID URL from a Jubjub key and derives the VC holder binding", () => {
+  it("bootstraps a long-form offchain DID URL from a Jubjub key and derives the VC holder binding", () => {
     const holder = ecMulGenerator(222222221n);
-    const portableDidUrl = createPortableOffchainDIDUrlForJubjubHolder({
+    const longFormDidUrl = createLongFormOffchainDIDUrlForJubjubHolder({
       publicKey: holder,
     });
 
     const resolved = createOffchainDIDHolderBindingFromDidUrl({
-      portableDidUrl,
+      longFormDidUrl,
     });
 
-    expect(resolved.did).toEqual(portableDidUrl.split("?", 1)[0]);
+    expect(resolved.did).toEqual(longFormDidUrl.split("?", 1)[0]);
     expect(resolved.binding.holderPublicKey).toEqual(holder);
   });
 
@@ -110,7 +185,7 @@ describe("credentials-offchain-did", () => {
   it("rejects a non-Jubjub method", () => {
     expect(() =>
       createOffchainDIDHolderBindingFromDidUrl({
-        portableDidUrl: NON_JUBJUB_DID_URL,
+        longFormDidUrl: NON_JUBJUB_DID_URL,
       }),
     ).toThrow(/exactly one Jubjub authentication method/);
   });
@@ -118,10 +193,24 @@ describe("credentials-offchain-did", () => {
   it("rejects a method that is not marked for authentication", () => {
     expect(() =>
       createOffchainDIDHolderBindingFromDidUrl({
-        portableDidUrl: NON_AUTH_DID_URL,
+        longFormDidUrl: NON_AUTH_DID_URL,
         holderMethodId: "#holder-key-1",
       }),
     ).toThrow(/not marked for authentication/);
+  });
+
+  it("keeps the historical long-form DID URL helper alias working during migration", () => {
+    const holder = ecMulGenerator(222222221n);
+
+    expect(
+      createPortableOffchainDIDUrlForJubjubHolder({
+        publicKey: holder,
+      }),
+    ).toEqual(
+      createLongFormOffchainDIDUrlForJubjubHolder({
+        publicKey: holder,
+      }),
+    );
   });
 
   it("keeps the historical create alias working during migration", () => {
@@ -130,5 +219,22 @@ describe("credentials-offchain-did", () => {
     });
 
     expect(resolved.method.id).toEqual("#holder-key-1");
+  });
+
+  it("rejects JavaScript callers that omit or mix DID URL inputs", () => {
+    expect(() =>
+      createOffchainDIDHolderBindingFromDidUrl(
+        {} as Parameters<typeof createOffchainDIDHolderBindingFromDidUrl>[0],
+      ),
+    ).toThrow(/exactly one of longFormDidUrl or portableDidUrl/);
+
+    expect(() =>
+      createOffchainDIDHolderBindingFromDidUrl({
+        longFormDidUrl: HAPPY_DID_URL,
+        portableDidUrl: HAPPY_DID_URL,
+      } as unknown as Parameters<
+        typeof createOffchainDIDHolderBindingFromDidUrl
+      >[0]),
+    ).toThrow(/exactly one of longFormDidUrl or portableDidUrl/);
   });
 });

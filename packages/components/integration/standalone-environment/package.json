@@ -13,6 +13,8 @@
   "scripts": {
     "build": "rm -rf dist && tsc -p tsconfig.json",
     "clean": "rm -rf dist",
+    "test": "vitest run",
+    "test:ci": "vitest run",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

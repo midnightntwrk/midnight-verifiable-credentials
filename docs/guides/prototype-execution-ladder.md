@@ -32,7 +32,7 @@ Artifact-restored parity for that same lane:
 
 Use this lane when you want to verify:
 
-- portable offchain DID bootstrap
+- long-form offchain DID bootstrap
 - DID-aware holder-binding derivation
 - starter-family presentation verification
 - starter verifier-contract wiring

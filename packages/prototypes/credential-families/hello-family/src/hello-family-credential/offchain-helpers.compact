@@ -112,7 +112,7 @@ export pure circuit assertValidHelloFamilyOffchainPresentation(
   }
 }
 
-// TRUST BOUNDARY: this starter profile proves that a portable offchain DID can
+// TRUST BOUNDARY: this starter profile proves that a long-form offchain DID can
 // hand off into a VC holder-binding shape and a valid typed presentation flow.
 // It does not prove that the offchain DID lifecycle itself is production-ready.
 export pure circuit assertHelloFamilyOffchainPresentationSatisfiesRequest(

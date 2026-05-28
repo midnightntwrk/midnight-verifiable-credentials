@@ -224,7 +224,7 @@ Key rule:
   `OffchainMidnightHolderBinding`
 - `credentials-offchain-did` owns the preferred runtime/public-facing adapter
   name `OffchainDIDHolderBinding`
-- `credentials` must not own the runtime TS helper that parses a portable DID
+- `credentials` must not own the runtime TS helper that parses a long-form DID
   URL and produces that binding
 
 ### Credential-family packages
@@ -258,7 +258,7 @@ These packages should contain:
 - helper functions such as:
   - method-reference normalization
   - method-id hashing
-  - creation of DID-aware holder-binding structs from portable DID material
+  - creation of DID-aware holder-binding structs from long-form DID material
 
 They may depend on:
 

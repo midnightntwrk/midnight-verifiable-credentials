@@ -7,7 +7,7 @@ Status:
 
 Purpose:
 
-- prove the runtime handoff from a portable offchain Midnight DID URL into a VC
+- prove the runtime handoff from a long-form offchain Midnight DID URL into a VC
   holder binding
 - keep the path smaller than `age-gate` and smaller than the full protocol stack
 - show the thinnest current package chain for integrators who need one concrete
@@ -16,9 +16,9 @@ Purpose:
 ## Packages in the path
 
 1. `@midnight-ntwrk/midnight-did-domain`
-   - bootstraps the portable offchain DID URL from a compact DID state payload
+   - bootstraps the long-form offchain DID URL from a compact DID state payload
 2. `@midnight-ntwrk/midnight-did-credentials-offchain-did`
-   - derives `OffchainDIDHolderBinding` from that portable DID URL
+   - derives `OffchainDIDHolderBinding` from that long-form DID URL
 3. `@midnight-ntwrk/midnight-did-credentials-hello-family`
    - issues and verifies the typed starter credential/presentation using the
      offchain DID holder-binding profile
@@ -30,7 +30,7 @@ Purpose:
 The current repository now has one runnable path that proves all of the
 following in order:
 
-1. a Jubjub keypair can be embedded into a portable offchain Midnight DID URL
+1. a Jubjub keypair can be embedded into a long-form offchain Midnight DID URL
 2. the VC adapter can resolve that DID URL into an offchain holder binding
 3. a starter VC family can issue a credential to that offchain holder binding
 4. the same holder can produce a valid presentation proof for that credential
@@ -132,7 +132,7 @@ current smoke path.
 
 | DID side | VC side | Expected proof |
 | --- | --- | --- |
-| `@midnight-ntwrk/midnight-did-domain` `0.1.0` tarball | `@midnight-ntwrk/midnight-did-credentials-offchain-did` workspace package | can create and resolve a portable offchain DID URL |
+| `@midnight-ntwrk/midnight-did-domain` `0.1.0` tarball | `@midnight-ntwrk/midnight-did-credentials-offchain-did` workspace package | can create and resolve a long-form offchain DID URL |
 | `@midnight-ntwrk/midnight-did` `0.1.0` tarball | `@midnight-ntwrk/midnight-did-credentials-hello-family` workspace package | can derive `OffchainDIDHolderBinding` and verify the family-level presentation |
 | same as above | `@midnight-ntwrk/midnight-did-hello-verifier-contract` workspace package | can verify the offchain-DID-backed presentation in a Layer 3 starter contract |
 | same as above | root `./run.sh hello-smoke` lane | can rerun the full checked-in DID-aware starter handoff from one repo command |
