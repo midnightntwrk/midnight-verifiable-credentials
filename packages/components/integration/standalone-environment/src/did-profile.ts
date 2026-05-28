@@ -9,23 +9,22 @@ import type {
   MidnightDIDProviders,
 } from "@midnight-ntwrk/midnight-did-api";
 import {
-  addVerificationMethod,
+  addSchnorrJubjubVerificationMethod,
   addVerificationMethodRelation,
   createDID,
   initPrivateState,
   resolve,
 } from "@midnight-ntwrk/midnight-did-api";
-import { encodeFieldElement } from "@midnight-ntwrk/midnight-did-domain";
 import {
-  createVerificationMethod,
   CurveType,
+  encodeBase64Url,
   KeyType,
   VerificationMethodRelationType,
-  VerificationMethodType,
 } from "@midnight-ntwrk/midnight-did-domain";
 import { TIMEOUTS } from "./standalone-config.js";
 
 type Role = "issuer" | "holder" | "verifier";
+const BYTES32_LENGTH = 32;
 
 export interface ProtocolDidProfile {
   readonly role: Role;
@@ -65,11 +64,34 @@ const padText = (value: string, length = 32): Uint8Array => {
   return padded;
 };
 
-const methodJwkFromSigner = (publicKey: JubjubPoint) => ({
+const bigintToBytes32 = (value: bigint): Uint8Array => {
+  if (value < 0n) {
+    throw new Error("Jubjub public key coordinate must be non-negative");
+  }
+
+  const bytes = new Uint8Array(BYTES32_LENGTH);
+  let remaining = value;
+  for (let index = BYTES32_LENGTH - 1; index >= 0; index -= 1) {
+    bytes[index] = Number(remaining & 0xffn);
+    remaining >>= 8n;
+  }
+
+  if (remaining !== 0n) {
+    throw new Error("Jubjub public key coordinate must fit in 32 bytes");
+  }
+
+  return bytes;
+};
+
+export const encodeJubjubCoordinateAsBase64UrlBytes32 = (
+  value: bigint,
+): string => encodeBase64Url(bigintToBytes32(value));
+
+export const createJubjubPublicKeyJwk = (publicKey: JubjubPoint) => ({
   kty: KeyType.EC,
   crv: CurveType.Jubjub,
-  x: encodeFieldElement(jubjubPointX(publicKey)),
-  y: encodeFieldElement(jubjubPointY(publicKey)),
+  x: encodeJubjubCoordinateAsBase64UrlBytes32(jubjubPointX(publicKey)),
+  y: encodeJubjubCoordinateAsBase64UrlBytes32(jubjubPointY(publicKey)),
 });
 
 const createDidWithDustRetry = async (
@@ -136,15 +158,10 @@ const publishDidProfile = async (
   const verificationMethodRef = `${didString}${methodId}`;
 
   console.info(`[${logPrefix}] publishing verification method for ${role}`);
-  await addVerificationMethod(
-    contract,
-    createVerificationMethod({
-      id: verificationMethodRef,
-      type: VerificationMethodType.JsonWebKey,
-      controller: didString,
-      publicKeyJwk: methodJwkFromSigner(signer.publicKey),
-    }),
-  );
+  await addSchnorrJubjubVerificationMethod(contract, {
+    id: verificationMethodRef,
+    publicKey: signer.publicKey,
+  });
 
   await addVerificationMethodRelation(
     contract,

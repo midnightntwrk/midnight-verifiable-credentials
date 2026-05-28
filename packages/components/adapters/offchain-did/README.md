@@ -4,7 +4,7 @@
 > Package class: `dist`
 
 DID-aware runtime adapter package for deriving Midnight VC holder-binding values
-from portable offchain Midnight DID material.
+from long-form offchain Midnight DID material.
 
 Status:
 
@@ -50,7 +50,7 @@ Related docs:
 This package owns DID-aware runtime helpers that should not live in the generic
 `credentials` core package.
 
-It converts portable offchain Midnight DID inputs into the Compact-side holder
+It converts long-form offchain Midnight DID inputs into the Compact-side holder
 binding shape already defined by the VC core.
 
 ## Public API
@@ -58,6 +58,7 @@ binding shape already defined by the VC core.
 Primary exports:
 
 - `createOffchainDIDHolderBindingFromDidUrl(...)`
+- `createLongFormOffchainDIDUrlForJubjubHolder(...)`
 - `normalizeOffchainDIDMethodReference(...)`
 - `hashOffchainDIDMethodId(...)`
 
@@ -67,7 +68,7 @@ Type exports:
 - `ResolvedOffchainDIDHolderBinding`
 
 Compatibility aliases are also exported temporarily for the historical
-`OffchainMidnight...` naming.
+`OffchainMidnight...` naming and the earlier portable offchain DID helper name.
 
 ## Build
 

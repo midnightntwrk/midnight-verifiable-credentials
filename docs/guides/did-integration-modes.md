@@ -39,6 +39,46 @@ Run:
 This mode is best for active cross-repo work because it shows what the VC repo
 would consume from the current DID checkout before a package is published.
 
+## DID Key Normalization Compatibility
+
+VC packages that consume resolver output or `LedgerToDomain` from
+`midnight-did` must preserve DID's JWK projection rules. The on-ledger DID
+contract stores key material as opaque canonical `publicKeyJwk.x` and
+`publicKeyJwk.y` strings, while DID documents expose canonical JWKs.
+`Ed25519` and `X25519` verification methods are OKP/x-only keys in those
+documents, so their ledger `y` value is the empty-string sentinel and must not
+be emitted in the resolved DID document.
+
+Coverage:
+
+- `pnpm run test:did-key-normalization`
+  - verifies the vendored DID package surface emits x-only Ed25519/X25519 JWKs
+  - verifies EC JWK coordinate preservation for Jubjub, P-256, and secp256k1
+  - verifies the VC package-alias shim links to the same vendored DID package
+    surface instead of carrying a generated `LedgerToDomain` fallback
+
+## Ledger Version Boundary
+
+Vendored DID tarballs may temporarily carry a different
+`@midnight-ntwrk/ledger-v8` patch version than the rest of the VC workspace.
+For the current local DID refresh, `@midnight-ntwrk/midnight-did-jubjub-schnorr`
+uses `ledger-v8@8.0.3`, while VC packages and Midnight JS dependencies use
+`ledger-v8@8.1.0`.
+
+Keep those runtime paths separated. DID/Jubjub Schnorr helpers should consume
+their own vendored ledger dependency, and VC/Midnight JS transaction or codec
+paths should continue to consume the workspace ledger dependency. A future
+refresh that moves `ledger-v8@8.0.3` outside the vendored DID dependency tree
+should be treated as an integration risk and revalidated with real on-ledger
+publish/resolve/sign/verify flows.
+
+Check the boundary after refreshing tarballs:
+
+```bash
+pnpm run check:ledger-v8-boundary
+pnpm why --recursive @midnight-ntwrk/ledger-v8
+```
+
 ## Vendored Tarball Mode
 
 Use vendored tarball mode for standalone fixtures and CI paths that must not

@@ -58,6 +58,14 @@ Purpose:
 Binding mechanism:
 - `ExplicitHolderBinding`
 - holder proof is checked against `Proof.signerVerificationMethodRef`
+- DID verification material follows the `midnight-did` JWK projection. The
+  on-ledger representation stores canonical opaque `publicKeyJwk.x` and
+  `publicKeyJwk.y` strings for Ed25519, X25519, P-256, and secp256k1 material.
+  `Ed25519` and `X25519` resolve to OKP/x-only JWKs, so their ledger `y` value
+  must remain the empty-string sentinel and must not be surfaced in DID
+  documents. See
+  [`../guides/did-integration-modes.md#did-key-normalization-compatibility`](../guides/did-integration-modes.md#did-key-normalization-compatibility)
+  for the runtime compatibility checks.
 
 Current implementation packages:
 - [`../../packages/core/primitives/credentials/README.md`](../../packages/core/primitives/credentials/README.md)
@@ -69,6 +77,8 @@ Current test coverage:
 - birth protocol tests
 - protocol explicit-holder lifecycle tests
 - demo-contract verifier tests
+- DID key-normalization package tests for Ed25519/X25519 x-only JWKs and
+  Jubjub/P-256/secp256k1 EC coordinate preservation
 
 Current limitations:
 - on-chain DID-centric

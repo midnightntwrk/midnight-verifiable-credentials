@@ -3,12 +3,12 @@ import { createHash } from "node:crypto";
 import { TextEncoder } from "node:util";
 
 import {
-  type ResolvedPortableOffchainMidnightDID,
-  resolvePortableOffchainMidnightDID,
+  type ResolvedLongFormOffchainMidnightDID,
+  resolveLongFormOffchainMidnightDID,
 } from "@midnight-ntwrk/midnight-did";
 import type { OffchainMidnightHolderBinding as CoreOffchainMidnightHolderBinding } from "@midnight-ntwrk/midnight-did-credentials";
 import {
-  createPortableOffchainMidnightDIDUrl,
+  createLongFormOffchainMidnightDIDString,
   CurveType,
   KeyType,
 } from "@midnight-ntwrk/midnight-did-domain";
@@ -19,7 +19,7 @@ const HEX_BYTES32_LENGTH = BYTES32_LENGTH * 2;
 const OFFCHAIN_DID_METHOD_ID_DOMAIN = "midnight:offchain:holder-method-id:v1";
 
 type OffchainVerificationMethod =
-  ResolvedPortableOffchainMidnightDID["state"]["verificationMethod"][number];
+  ResolvedLongFormOffchainMidnightDID["state"]["verificationMethod"][number];
 
 export type OffchainDIDHolderBinding = CoreOffchainMidnightHolderBinding;
 
@@ -29,7 +29,7 @@ export type OffchainMidnightHolderBinding = OffchainDIDHolderBinding;
 export type ResolvedOffchainDIDHolderBinding = {
   readonly binding: OffchainDIDHolderBinding;
   readonly did: string;
-  readonly parsed: ResolvedPortableOffchainMidnightDID["parsed"];
+  readonly parsed: ResolvedLongFormOffchainMidnightDID["parsed"];
   readonly method: OffchainVerificationMethod;
 };
 
@@ -136,14 +136,14 @@ export const normalizeOffchainDIDMethodReference = (
 export const normalizeOffchainMidnightMethodReference =
   normalizeOffchainDIDMethodReference;
 
-export const createPortableOffchainDIDUrlForJubjubHolder = ({
+export const createLongFormOffchainDIDUrlForJubjubHolder = ({
   publicKey,
   methodId = "#holder-key-1",
 }: {
   readonly publicKey: { readonly x: bigint; readonly y: bigint };
   readonly methodId?: string;
 }): string =>
-  createPortableOffchainMidnightDIDUrl({
+  createLongFormOffchainMidnightDIDString({
     version: 1,
     alsoKnownAs: [],
     verificationMethod: [
@@ -166,6 +166,13 @@ export const createPortableOffchainDIDUrlForJubjubHolder = ({
     ],
     service: [],
   });
+
+/**
+ * @deprecated Use createLongFormOffchainDIDUrlForJubjubHolder instead. This
+ * transitional alias should be removed after downstream fixtures migrate.
+ */
+export const createPortableOffchainDIDUrlForJubjubHolder =
+  createLongFormOffchainDIDUrlForJubjubHolder;
 
 const isJubjubAuthenticationMethod = (
   method: OffchainVerificationMethod,
@@ -218,14 +225,40 @@ const selectMethod = ({
   return jubjubAuthenticationMethods[0]!;
 };
 
+export type CreateOffchainDIDHolderBindingInput = {
+  readonly holderMethodId?: string;
+} & (
+  | {
+      readonly longFormDidUrl: string;
+      /**
+       * @deprecated Use longFormDidUrl instead. This transitional alias should
+       * be removed after downstream fixtures migrate.
+       */
+      readonly portableDidUrl?: never;
+    }
+  | {
+      /**
+       * @deprecated Use longFormDidUrl instead. This transitional alias should
+       * be removed after downstream fixtures migrate.
+       */
+      readonly portableDidUrl: string;
+      readonly longFormDidUrl?: never;
+    }
+);
+
 export const createOffchainDIDHolderBindingFromDidUrl = ({
+  longFormDidUrl,
   portableDidUrl,
   holderMethodId,
-}: {
-  readonly portableDidUrl: string;
-  readonly holderMethodId?: string;
-}): ResolvedOffchainDIDHolderBinding => {
-  const resolved = resolvePortableOffchainMidnightDID(portableDidUrl);
+}: CreateOffchainDIDHolderBindingInput): ResolvedOffchainDIDHolderBinding => {
+  if (longFormDidUrl !== undefined && portableDidUrl !== undefined) {
+    throw new Error("Provide exactly one of longFormDidUrl or portableDidUrl");
+  }
+  const didUrl = longFormDidUrl ?? portableDidUrl;
+  if (didUrl === undefined) {
+    throw new Error("Provide exactly one of longFormDidUrl or portableDidUrl");
+  }
+  const resolved = resolveLongFormOffchainMidnightDID(didUrl);
   const method = selectMethod({
     did: resolved.did,
     verificationMethod: resolved.state.verificationMethod,

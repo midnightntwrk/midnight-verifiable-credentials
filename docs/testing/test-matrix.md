@@ -23,6 +23,18 @@ artifacts are tracked in
 
 ## DID-aware adapter package tests
 
+### DID package compatibility
+
+- `tooling/scripts/midnight-did-ledger-key-normalization.test.mjs`
+  - vendored `midnight-did` `LedgerToDomain` emits x-only Ed25519/X25519 JWKs
+    from opaque ledger strings and rejects non-empty OKP `y` values in DID
+    package coverage
+  - preserves Jubjub, P-256, and secp256k1 EC coordinates from opaque ledger
+    strings
+- `tooling/scripts/ensure-midnight-did-package-aliases.test.mjs`
+  - DID package alias shim links root imports to vendored packages instead of
+    carrying a generated split-byte `LedgerToDomain` fallback
+
 ### `credentials-offchain-did`
 
 - `packages/components/adapters/offchain-did/src/test/offchain-did-holder-binding.test.ts`

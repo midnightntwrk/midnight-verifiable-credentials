@@ -11,8 +11,8 @@ import {
   type VerificationMethodRef,
 } from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
 import {
+  createLongFormOffchainDIDUrlForJubjubHolder,
   createOffchainDIDHolderBindingFromDidUrl,
-  createPortableOffchainDIDUrlForJubjubHolder,
   type OffchainDIDHolderBinding,
   type ResolvedOffchainDIDHolderBinding,
 } from "@midnight-ntwrk/midnight-did-credentials-offchain-did";
@@ -59,6 +59,11 @@ export type HelloFamilyFixture = {
 export type HelloFamilyOffchainDidFixture = {
   readonly issuer: Signer;
   readonly holder: Signer;
+  readonly longFormDidUrl: string;
+  /**
+   * @deprecated Use longFormDidUrl instead. This transitional alias should be
+   * removed after downstream fixtures migrate.
+   */
   readonly portableDidUrl: string;
   readonly resolvedHolder: ResolvedOffchainDIDHolderBinding;
   readonly credential: HelloFamilyOffchainCredential;
@@ -206,7 +211,7 @@ const createVerificationMethodRefForOffchainBinding = (
 ): VerificationMethodRef => ({
   // NOTE: offchain DID bindings reuse VerificationMethodRef structurally. The
   // `didContractAddress` bytes carry the resolved DID state hash here so the
-  // same binding can be reconstructed from the portable DID URL at verification
+  // same binding can be reconstructed from the long-form DID URL at verification
   // time without a ledger-backed DID contract in this repo.
   didContractAddress: {
     bytes: binding.holderDidStateHash,
@@ -214,8 +219,8 @@ const createVerificationMethodRefForOffchainBinding = (
   methodId: binding.holderMethodId,
 });
 
-const createPortableDidUrlForOffchainSigner = (holder: Signer): string =>
-  createPortableOffchainDIDUrlForJubjubHolder({
+const createLongFormDidUrlForOffchainSigner = (holder: Signer): string =>
+  createLongFormOffchainDIDUrlForJubjubHolder({
     publicKey: holder.publicKey,
   });
 
@@ -312,9 +317,9 @@ export const createHelloFamilyOffchainDidFixture = ({
   const issuer = createSigner("hello-family-issuer", 123456789n);
   const holder = createSigner("hello-offchain-holder", 222222221n);
   const claims = createHelloFamilyClaims();
-  const portableDidUrl = createPortableDidUrlForOffchainSigner(holder);
+  const longFormDidUrl = createLongFormDidUrlForOffchainSigner(holder);
   const resolvedHolder = createOffchainDIDHolderBindingFromDidUrl({
-    portableDidUrl,
+    longFormDidUrl,
   });
 
   const credential: HelloFamilyOffchainCredential = {
@@ -380,7 +385,8 @@ export const createHelloFamilyOffchainDidFixture = ({
   return {
     issuer,
     holder,
-    portableDidUrl,
+    longFormDidUrl,
+    portableDidUrl: longFormDidUrl,
     resolvedHolder,
     credential,
     credentialProof,

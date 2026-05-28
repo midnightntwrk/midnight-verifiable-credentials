@@ -124,7 +124,7 @@ Examples currently in scope as strong repository surfaces are:
 This package is the dedicated DID-aware adapter layer for offchain DID holder
 binding.
 
-It owns runtime parsing and conversion from portable offchain Midnight DID
+It owns runtime parsing and conversion from long-form offchain Midnight DID
 inputs into the canonical VC holder-binding shape defined by `credentials`.
 
 ### `credentials-openid`

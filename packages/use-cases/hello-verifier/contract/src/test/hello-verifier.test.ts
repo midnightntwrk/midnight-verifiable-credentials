@@ -191,7 +191,7 @@ describe("hello-verifier offchain DID smoke path", () => {
     expect(state.lastVerifiedBytesValue).toEqual(
       fixture.credential.claims.bytesValue,
     );
-    expect(fixture.portableDidUrl.startsWith("did:midnight:offchain:")).toBe(
+    expect(fixture.longFormDidUrl.startsWith("did:midnight:offchain:")).toBe(
       true,
     );
   });
