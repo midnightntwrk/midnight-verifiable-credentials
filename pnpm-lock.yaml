@@ -5,11 +5,11 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@midnight-ntwrk/midnight-did': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-0.1.0.tgz
-  '@midnight-ntwrk/midnight-did-api': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-api-0.1.0.tgz
-  '@midnight-ntwrk/midnight-did-contract': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-contract-0.1.0.tgz
-  '@midnight-ntwrk/midnight-did-domain': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.1.0.tgz
-  '@midnight-ntwrk/midnight-did-jubjub-schnorr': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-jubjub-schnorr-0.1.0.tgz
+  '@midnight-ntwrk/midnight-did': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-0.2.0.tgz
+  '@midnight-ntwrk/midnight-did-api': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-api-0.2.0.tgz
+  '@midnight-ntwrk/midnight-did-contract': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-contract-0.2.0.tgz
+  '@midnight-ntwrk/midnight-did-domain': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.2.0.tgz
+  '@midnight-ntwrk/midnight-did-jubjub-schnorr': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-jubjub-schnorr-0.2.0.tgz
   '@midnight-ntwrk/midnight-did-secret-storage': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-secret-storage-0.1.0.tgz
   '@midnight-ntwrk/midnight-js-contracts': 4.0.4
   '@midnight-ntwrk/midnight-js-http-client-proof-provider': 4.0.4
@@ -140,14 +140,14 @@ importers:
   packages/components/adapters/offchain-did:
     dependencies:
       '@midnight-ntwrk/midnight-did':
-        specifier: file:../../../../tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-0.1.0.tgz
-        version: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-0.1.0.tgz
+        specifier: file:../../../../tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-0.2.0.tgz
+        version: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-0.2.0.tgz
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
       '@midnight-ntwrk/midnight-did-domain':
-        specifier: file:../../../../tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.1.0.tgz
-        version: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.1.0.tgz
+        specifier: file:../../../../tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.2.0.tgz
+        version: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.2.0.tgz
     devDependencies:
       '@midnight-ntwrk/compact-runtime':
         specifier: '*'
@@ -159,20 +159,20 @@ importers:
         specifier: '*'
         version: 0.15.0
       '@midnight-ntwrk/midnight-did':
-        specifier: file:../../../../tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-0.1.0.tgz
-        version: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-0.1.0.tgz
+        specifier: file:../../../../tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-0.2.0.tgz
+        version: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-0.2.0.tgz
       '@midnight-ntwrk/midnight-did-api':
-        specifier: file:../../../../tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-api-0.1.0.tgz
-        version: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-api-0.1.0.tgz
+        specifier: file:../../../../tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-api-0.2.0.tgz
+        version: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-api-0.2.0.tgz
       '@midnight-ntwrk/midnight-did-contract':
-        specifier: file:../../../../tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-contract-0.1.0.tgz
-        version: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-contract-0.1.0.tgz
+        specifier: file:../../../../tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-contract-0.2.0.tgz
+        version: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-contract-0.2.0.tgz
       '@midnight-ntwrk/midnight-did-domain':
-        specifier: file:../../../../tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.1.0.tgz
-        version: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.1.0.tgz
+        specifier: file:../../../../tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.2.0.tgz
+        version: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.2.0.tgz
       '@midnight-ntwrk/midnight-did-jubjub-schnorr':
-        specifier: file:../../../../tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-jubjub-schnorr-0.1.0.tgz
-        version: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-jubjub-schnorr-0.1.0.tgz
+        specifier: file:../../../../tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-jubjub-schnorr-0.2.0.tgz
+        version: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-jubjub-schnorr-0.2.0.tgz
       '@midnight-ntwrk/midnight-did-secret-storage':
         specifier: file:../../../../tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-secret-storage-0.1.0.tgz
         version: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-secret-storage-0.1.0.tgz
@@ -294,8 +294,8 @@ importers:
         specifier: '*'
         version: link:../../../components/adapters/offchain-did
       '@midnight-ntwrk/midnight-did-domain':
-        specifier: file:../../../../tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.1.0.tgz
-        version: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.1.0.tgz
+        specifier: file:../../../../tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.2.0.tgz
+        version: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.2.0.tgz
 
   packages/prototypes/credential-families/mixed-claims:
     dependencies:
@@ -972,24 +972,24 @@ packages:
   '@midnight-ntwrk/ledger-v8@8.1.0':
     resolution: {integrity: sha512-rwOVP5kBwACpYmmY6+oLeaiM3e5gHscRMjbZUOntOC5QdtqLdpeep6eQW1OngI+sxjjdVoGg2eE16sLf+DAHmQ==}
 
-  '@midnight-ntwrk/midnight-did-api@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-api-0.1.0.tgz':
-    resolution: {integrity: sha512-KoE4GqNllUdrONI+GL+LwgcYlrKkAhovq/4hHWPkfv8yXTwMonIOL7uvGPc/DfDJClbWeR5NZDZvudUoe0IrMQ==, tarball: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-api-0.1.0.tgz}
-    version: 0.1.0
+  '@midnight-ntwrk/midnight-did-api@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-api-0.2.0.tgz':
+    resolution: {integrity: sha512-nXLJeJb/zS+ZSfq6qR0Jf/YCaYV+ke24kBfXacvQv9p9NLVGV+OwvnqYva8Umy7G/rO7q+u3e9igwAEBJHJq8Q==, tarball: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-api-0.2.0.tgz}
+    version: 0.2.0
     engines: {node: '>=24', pnpm: '>=10'}
 
-  '@midnight-ntwrk/midnight-did-contract@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-contract-0.1.0.tgz':
-    resolution: {integrity: sha512-y/pp2K53ndBYY47x5yL0oyuDrEey6QgHBeuLPj8nEvzffs7QRWTMyKnRfHCJIIc8gftJN5HYDlSgKsC/HkO6sw==, tarball: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-contract-0.1.0.tgz}
-    version: 0.1.0
+  '@midnight-ntwrk/midnight-did-contract@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-contract-0.2.0.tgz':
+    resolution: {integrity: sha512-nkVsKFpPLb/zfWRdGIfyfQCziLAiaJikZZwPvJIhWPZ6h0YnHpWpdXptEoja48dgDkiKr9voZdE/HZiB5+J/jQ==, tarball: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-contract-0.2.0.tgz}
+    version: 0.2.0
     engines: {node: '>=24', pnpm: '>=10'}
 
-  '@midnight-ntwrk/midnight-did-domain@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.1.0.tgz':
-    resolution: {integrity: sha512-JEOz6UTiKs5QYD4t+0UUikVNXvBSw1Iw17R+YLzkxO1ZOIaLHGhmN9d+PplGbY2kPx0SraYgGujj68YrOOP9MA==, tarball: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.1.0.tgz}
-    version: 0.1.0
+  '@midnight-ntwrk/midnight-did-domain@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.2.0.tgz':
+    resolution: {integrity: sha512-ei1oVvnfPWEgDvy9EfMJZ33TCyg2AQPeIJKFSTTckLmmzO6PjImaQNsCZf+g0sesZlYMNdw6LdJ21eHX33Wt5w==, tarball: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.2.0.tgz}
+    version: 0.2.0
     engines: {node: '>=24', pnpm: '>=10'}
 
-  '@midnight-ntwrk/midnight-did-jubjub-schnorr@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-jubjub-schnorr-0.1.0.tgz':
-    resolution: {integrity: sha512-cGvqUn2VZUMYHy4RbSq9muDO2RvhYyMxkihcsd6/dlzla+FgLjQXY1mGfGBnx4LSSF6vN0YNHl4Rz+RqoCwAuA==, tarball: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-jubjub-schnorr-0.1.0.tgz}
-    version: 0.1.0
+  '@midnight-ntwrk/midnight-did-jubjub-schnorr@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-jubjub-schnorr-0.2.0.tgz':
+    resolution: {integrity: sha512-nwF8d567UZrnLBcMgMxS98nTFvBTeAISp3BtkePwRmhI6oBjA4p6hdlBvCCpUrSR7ExoyCul8/7E86F32Szbkw==, tarball: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-jubjub-schnorr-0.2.0.tgz}
+    version: 0.2.0
     engines: {node: '>=24', pnpm: '>=10'}
 
   '@midnight-ntwrk/midnight-did-secret-storage@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-secret-storage-0.1.0.tgz':
@@ -997,9 +997,9 @@ packages:
     version: 0.1.0
     engines: {node: '>=24', pnpm: '>=10'}
 
-  '@midnight-ntwrk/midnight-did@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-0.1.0.tgz':
-    resolution: {integrity: sha512-BU14TZj0knTyN2pC7RF9c9QxnbOahCfZj/xkW4uDE9WbjvipTXcEEOkOSaMlt6Hjozq3YJEImzHzPzHfVi7W2w==, tarball: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-0.1.0.tgz}
-    version: 0.1.0
+  '@midnight-ntwrk/midnight-did@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-0.2.0.tgz':
+    resolution: {integrity: sha512-yq14LpeQZlEegmZjlz6CgmbsmVMsaz7EFgXYr0qBtfZVsswvIxqe3CBnaCfwrzh5Nq2fgeSLMnYj7QU5yHkGeA==, tarball: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-0.2.0.tgz}
+    version: 0.2.0
     engines: {node: '>=24', pnpm: '>=10'}
 
   '@midnight-ntwrk/midnight-js-contracts@4.0.4':
@@ -5000,12 +5000,12 @@ snapshots:
 
   '@midnight-ntwrk/ledger-v8@8.1.0': {}
 
-  '@midnight-ntwrk/midnight-did-api@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-api-0.1.0.tgz':
+  '@midnight-ntwrk/midnight-did-api@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-api-0.2.0.tgz':
     dependencies:
       '@midnight-ntwrk/compact-js': 2.5.0
-      '@midnight-ntwrk/midnight-did': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-0.1.0.tgz
-      '@midnight-ntwrk/midnight-did-contract': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-contract-0.1.0.tgz
-      '@midnight-ntwrk/midnight-did-domain': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.1.0.tgz
+      '@midnight-ntwrk/midnight-did': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-0.2.0.tgz
+      '@midnight-ntwrk/midnight-did-contract': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-contract-0.2.0.tgz
+      '@midnight-ntwrk/midnight-did-domain': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.2.0.tgz
       '@midnight-ntwrk/midnight-js-contracts': 4.0.4
       '@midnight-ntwrk/midnight-js-http-client-proof-provider': 4.0.4
       '@midnight-ntwrk/midnight-js-indexer-public-data-provider': 4.0.4
@@ -5030,24 +5030,26 @@ snapshots:
       - subscriptions-transport-ws
       - utf-8-validate
 
-  '@midnight-ntwrk/midnight-did-contract@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-contract-0.1.0.tgz':
+  '@midnight-ntwrk/midnight-did-contract@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-contract-0.2.0.tgz':
     dependencies:
       '@midnight-ntwrk/compact-runtime': 0.15.0
-      '@midnight-ntwrk/midnight-did-jubjub-schnorr': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-jubjub-schnorr-0.1.0.tgz
+      '@midnight-ntwrk/midnight-did-jubjub-schnorr': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-jubjub-schnorr-0.2.0.tgz
 
-  '@midnight-ntwrk/midnight-did-domain@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.1.0.tgz':
+  '@midnight-ntwrk/midnight-did-domain@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.2.0.tgz':
     dependencies:
       '@midnight-ntwrk/compact-runtime': 0.15.0
+      '@noble/hashes': 2.2.0
       zod: 4.4.3
 
-  '@midnight-ntwrk/midnight-did-jubjub-schnorr@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-jubjub-schnorr-0.1.0.tgz':
+  '@midnight-ntwrk/midnight-did-jubjub-schnorr@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-jubjub-schnorr-0.2.0.tgz':
     dependencies:
       '@midnight-ntwrk/compact-runtime': 0.15.0
       '@midnight-ntwrk/ledger-v8': 8.0.3
+      '@noble/hashes': 2.2.0
 
   '@midnight-ntwrk/midnight-did-secret-storage@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-secret-storage-0.1.0.tgz':
     dependencies:
-      '@midnight-ntwrk/midnight-did-jubjub-schnorr': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-jubjub-schnorr-0.1.0.tgz
+      '@midnight-ntwrk/midnight-did-jubjub-schnorr': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-jubjub-schnorr-0.2.0.tgz
       '@midnight-ntwrk/wallet-sdk-hd': 3.0.2
       circomlibjs: 0.1.7
       zod: 4.4.3
@@ -5056,10 +5058,10 @@ snapshots:
       - react-native-b4a
       - utf-8-validate
 
-  '@midnight-ntwrk/midnight-did@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-0.1.0.tgz':
+  '@midnight-ntwrk/midnight-did@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-0.2.0.tgz':
     dependencies:
-      '@midnight-ntwrk/midnight-did-contract': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-contract-0.1.0.tgz
-      '@midnight-ntwrk/midnight-did-domain': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.1.0.tgz
+      '@midnight-ntwrk/midnight-did-contract': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-contract-0.2.0.tgz
+      '@midnight-ntwrk/midnight-did-domain': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.2.0.tgz
       zod: 4.4.3
 
   '@midnight-ntwrk/midnight-js-contracts@4.0.4':
