@@ -87,7 +87,7 @@
     "@midnight-ntwrk/compact-runtime": "*",
     "@midnight-ntwrk/midnight-did-credentials": "*",
     "@midnight-ntwrk/midnight-did-credentials-offchain-did": "*",
-    "@midnight-ntwrk/midnight-did-domain": "file:../../../../tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.1.0.tgz"
+    "@midnight-ntwrk/midnight-did-domain": "file:../../../../tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.4.0.tgz"
   },
   "files": [
     "dist/**",
