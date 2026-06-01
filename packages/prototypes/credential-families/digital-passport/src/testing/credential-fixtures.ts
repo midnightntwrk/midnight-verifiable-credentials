@@ -14,6 +14,7 @@ import {
 import {
   type CredentialProtocolFeatures,
   type DigitalPassportCredential,
+  type DigitalPassportCredentialPrivateParts,
   type DigitalPassportIssuanceOffer,
   type DigitalPassportIssuanceRequest,
   type DigitalPassportIssuanceResult,
@@ -45,19 +46,8 @@ export type DigitalPassportFixture = {
   readonly presentationRequest: DigitalPassportPresentationRequest;
   readonly presentation: DigitalPassportPresentation;
   readonly presentationProof: Proof;
-  readonly witness: {
-    readonly firstNameValuePadded: Uint8Array;
-    readonly firstNameOpening: Uint8Array;
-    readonly lastNameValuePadded: Uint8Array;
-    readonly lastNameOpening: Uint8Array;
-    readonly dateOfBirthDays: bigint;
-    readonly dateOfBirthOpening: Uint8Array;
-    readonly documentNumberValue: Uint8Array;
-    readonly documentNumberOpening: Uint8Array;
-    readonly issuingStateValue: Uint8Array;
-    readonly issuingStateOpening: Uint8Array;
-    readonly currentDay: bigint;
-  };
+  readonly privateParts: DigitalPassportCredentialPrivateParts;
+  readonly currentDay: bigint;
 };
 
 export type DigitalPassportProtocolFixture = DigitalPassportFixture & {
@@ -177,45 +167,66 @@ export const signProof = ({
   };
 };
 
+type FixtureOptions = {
+  readonly hasDocumentNumber?: boolean;
+};
+
 const buildDigitalPassportFixture = (
   issuer: Signer,
   holder: Signer,
   verifierChallengeHash = sha256("challenge:verifier"),
+  options: FixtureOptions = {},
 ): DigitalPassportFixture => {
-  const witness = {
+  const hasDocumentNumber = options.hasDocumentNumber ?? true;
+  const claimValues = {
     firstNameValuePadded: padText("Alice", 64),
-    firstNameOpening: sha256("opening:first-name"),
     lastNameValuePadded: padText("Example", 64),
-    lastNameOpening: sha256("opening:last-name"),
     dateOfBirthDays: 3650n,
-    dateOfBirthOpening: sha256("opening:date-of-birth"),
-    documentNumberValue: padText("AB1234567", 32),
-    documentNumberOpening: sha256("opening:document-number"),
+    documentNumberValue: hasDocumentNumber
+      ? padText("AB1234567", 32)
+      : new Uint8Array(32),
     issuingStateValue: padText("US", 32),
-    issuingStateOpening: sha256("opening:issuing-state"),
-    currentDay: 3650n + 365n * 25n,
   };
+
+  const openings = {
+    firstNameOpening: sha256("opening:first-name"),
+    lastNameOpening: sha256("opening:last-name"),
+    dateOfBirthOpening: sha256("opening:date-of-birth"),
+    documentNumberOpening: hasDocumentNumber
+      ? sha256("opening:document-number")
+      : new Uint8Array(32),
+    issuingStateOpening: sha256("opening:issuing-state"),
+  };
+
+  const privateParts: DigitalPassportCredentialPrivateParts = {
+    claimValues,
+    openings,
+  };
+
+  const currentDay = 3650n + 365n * 25n;
 
   const claimCommitments = {
     firstNameCommitment: pureCircuits.firstNameCommitment(
-      witness.firstNameValuePadded,
-      witness.firstNameOpening,
+      claimValues.firstNameValuePadded,
+      openings.firstNameOpening,
     ),
     lastNameCommitment: pureCircuits.lastNameCommitment(
-      witness.lastNameValuePadded,
-      witness.lastNameOpening,
+      claimValues.lastNameValuePadded,
+      openings.lastNameOpening,
     ),
     dateOfBirthCommitment: pureCircuits.dateOfBirthCommitment(
-      witness.dateOfBirthDays,
-      witness.dateOfBirthOpening,
+      claimValues.dateOfBirthDays,
+      openings.dateOfBirthOpening,
     ),
-    documentNumberCommitment: pureCircuits.documentNumberCommitment(
-      witness.documentNumberValue,
-      witness.documentNumberOpening,
-    ),
+    documentNumberCommitment: hasDocumentNumber
+      ? pureCircuits.documentNumberCommitment(
+          claimValues.documentNumberValue,
+          openings.documentNumberOpening,
+        )
+      : pureCircuits.documentNumberNullCommitment(),
     issuingStateCommitment: pureCircuits.issuingStateCommitment(
-      witness.issuingStateValue,
-      witness.issuingStateOpening,
+      claimValues.issuingStateValue,
+      openings.issuingStateOpening,
     ),
   };
 
@@ -273,8 +284,8 @@ const buildDigitalPassportFixture = (
       firstNameValuePadded: new Uint8Array(64),
       firstNameOpening: new Uint8Array(32),
       revealLastName: true,
-      lastNameValuePadded: witness.lastNameValuePadded,
-      lastNameOpening: witness.lastNameOpening,
+      lastNameValuePadded: claimValues.lastNameValuePadded,
+      lastNameOpening: openings.lastNameOpening,
       proveAgeOverThreshold: true,
       ageThresholdYears: 18n,
       revealDocumentNumber: false,
@@ -303,7 +314,8 @@ const buildDigitalPassportFixture = (
     presentationRequest,
     presentation,
     presentationProof,
-    witness,
+    privateParts,
+    currentDay,
   };
 };
 
@@ -312,6 +324,15 @@ export const createDigitalPassportFixture = (): DigitalPassportFixture =>
     createSigner("issuer", 123456789n),
     createSigner("holder", 987654321n),
   );
+
+export const createDigitalPassportFixtureWithoutDocumentNumber =
+  (): DigitalPassportFixture =>
+    buildDigitalPassportFixture(
+      createSigner("issuer", 123456789n),
+      createSigner("holder", 987654321n),
+      sha256("challenge:verifier"),
+      { hasDocumentNumber: false },
+    );
 
 export const createDigitalPassportFixtureForParticipants = (
   issuer: Signer,
@@ -416,6 +437,7 @@ const createDigitalPassportProtocolFixtureFromFixture = (
       credentialProof: fixture.credentialProof,
       holderPublicKey: fixture.holder.publicKey,
       issuanceChallengeHash: fixture.credentialProof.challengeHash,
+      privateParts: fixture.privateParts,
     },
   };
 

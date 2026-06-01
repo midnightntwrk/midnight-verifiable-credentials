@@ -68,6 +68,11 @@ export pure circuit assertValidDigitalPassportIssuanceResult(
   assert(result.body.credentialProof.challengeHash == result.body.issuanceChallengeHash,
          "Digital-passport issuance result challenge must match the issuer proof challenge"
          );
+  assertValidDigitalPassportCredentialPrivateParts(
+    result.body.credential.claimCommitments,
+    result.body.credential.claimRoot,
+    result.body.privateParts
+    );
 }
 
 export pure circuit assertDigitalPassportIssuanceResultMatchesRequest(

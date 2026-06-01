@@ -17,9 +17,9 @@ describe("digital-passport credential: age predicate", () => {
       pureCircuits.assertValidDigitalPassportAgePredicate(
         fixture.credential,
         fixture.presentation,
-        fixture.witness.currentDay,
-        fixture.witness.dateOfBirthDays,
-        fixture.witness.dateOfBirthOpening,
+        fixture.currentDay,
+        fixture.privateParts.claimValues.dateOfBirthDays,
+        fixture.privateParts.openings.dateOfBirthOpening,
       ),
     ).not.toThrow();
 
@@ -27,8 +27,8 @@ describe("digital-passport credential: age predicate", () => {
       pureCircuits.assertValidDigitalPassportAgePredicate(
         fixture.credential,
         fixture.presentation,
-        fixture.witness.currentDay,
-        fixture.witness.dateOfBirthDays,
+        fixture.currentDay,
+        fixture.privateParts.claimValues.dateOfBirthDays,
         new Uint8Array(32).fill(1),
       ),
     ).toThrow(/Date-of-birth witness does not match credential commitment/);
@@ -67,9 +67,9 @@ describe("digital-passport credential: age predicate", () => {
       pureCircuits.assertValidDigitalPassportAgePredicate(
         fixture.credential,
         strictPresentation,
-        fixture.witness.currentDay,
-        fixture.witness.dateOfBirthDays,
-        fixture.witness.dateOfBirthOpening,
+        fixture.currentDay,
+        fixture.privateParts.claimValues.dateOfBirthDays,
+        fixture.privateParts.openings.dateOfBirthOpening,
       ),
     ).toThrow(/Age predicate does not satisfy the requested threshold/);
   });

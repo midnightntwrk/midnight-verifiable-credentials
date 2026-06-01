@@ -17,6 +17,7 @@ export struct DigitalPassportIssuanceResultBody {
   credentialProof: Proof,
   holderPublicKey: JubjubPoint,
   issuanceChallengeHash: Bytes<32>,
+  privateParts: DigitalPassportCredentialPrivateParts,
 }
 
 export struct DigitalPassportVerificationRequestBody {

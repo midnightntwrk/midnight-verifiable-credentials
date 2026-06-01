@@ -47,24 +47,24 @@ describe("digital-passport claim root", () => {
     const fixture = createDigitalPassportFixture();
 
     const firstNameCommit = pureCircuits.firstNameCommitment(
-      fixture.witness.firstNameValuePadded,
-      fixture.witness.firstNameOpening,
+      fixture.privateParts.claimValues.firstNameValuePadded,
+      fixture.privateParts.openings.firstNameOpening,
     );
     const lastNameCommit = pureCircuits.lastNameCommitment(
-      fixture.witness.lastNameValuePadded,
-      fixture.witness.lastNameOpening,
+      fixture.privateParts.claimValues.lastNameValuePadded,
+      fixture.privateParts.openings.lastNameOpening,
     );
     const dateOfBirthCommit = pureCircuits.dateOfBirthCommitment(
-      fixture.witness.dateOfBirthDays,
-      fixture.witness.dateOfBirthOpening,
+      fixture.privateParts.claimValues.dateOfBirthDays,
+      fixture.privateParts.openings.dateOfBirthOpening,
     );
     const documentNumberCommit = pureCircuits.documentNumberCommitment(
-      fixture.witness.documentNumberValue,
-      fixture.witness.documentNumberOpening,
+      fixture.privateParts.claimValues.documentNumberValue,
+      fixture.privateParts.openings.documentNumberOpening,
     );
     const issuingStateCommit = pureCircuits.issuingStateCommitment(
-      fixture.witness.issuingStateValue,
-      fixture.witness.issuingStateOpening,
+      fixture.privateParts.claimValues.issuingStateValue,
+      fixture.privateParts.openings.issuingStateOpening,
     );
 
     expect(firstNameCommit).toEqual(
@@ -86,7 +86,7 @@ describe("digital-passport claim root", () => {
     // Opening the same value with a different opening must produce a different commitment.
     const differentOpening = new Uint8Array(32).fill(42);
     const firstNameCommit2 = pureCircuits.firstNameCommitment(
-      fixture.witness.firstNameValuePadded,
+      fixture.privateParts.claimValues.firstNameValuePadded,
       differentOpening,
     );
     expect(firstNameCommit2).not.toEqual(firstNameCommit);
