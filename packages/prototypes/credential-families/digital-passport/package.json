@@ -18,6 +18,12 @@
       "import": "./dist/index.js",
       "default": "./dist/index.js"
     },
+    "./codecs": {
+      "types": "./dist/codecs.d.ts",
+      "require": "./dist/codecs.js",
+      "import": "./dist/codecs.js",
+      "default": "./dist/codecs.js"
+    },
     "./contract": {
       "types": "./dist/contract.d.ts",
       "require": "./dist/contract.js",
@@ -34,6 +40,9 @@
     "*": {
       "contract": [
         "dist/contract.d.ts"
+      ],
+      "codecs": [
+        "dist/codecs.d.ts"
       ],
       "managed/digital-passport-credential/contract/index.js": [
         "dist/managed/digital-passport-credential/contract/index.d.ts"
@@ -55,7 +64,8 @@
   },
   "dependencies": {
     "@midnight-ntwrk/compact-runtime": "*",
-    "@midnight-ntwrk/midnight-did-credentials": "*"
+    "@midnight-ntwrk/midnight-did-credentials": "*",
+    "@midnight-ntwrk/midnight-did-credentials-openid": "*"
   },
   "files": [
     "dist/**",
