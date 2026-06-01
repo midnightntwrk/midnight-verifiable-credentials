@@ -54,6 +54,10 @@ export type DigitalPassportFixture = {
     readonly lastNameOpening: Uint8Array;
     readonly dateOfBirthDays: bigint;
     readonly dateOfBirthOpening: Uint8Array;
+    readonly documentNumberValue: Uint8Array;
+    readonly documentNumberOpening: Uint8Array;
+    readonly issuingStateValue: Uint8Array;
+    readonly issuingStateOpening: Uint8Array;
     readonly currentDay: bigint;
   };
 };
@@ -192,6 +196,10 @@ const buildDigitalPassportFixture = (
     lastNameOpening: sha256("opening:last-name"),
     dateOfBirthDays: 3650n,
     dateOfBirthOpening: sha256("opening:date-of-birth"),
+    documentNumberValue: padText("AB1234567", 32),
+    documentNumberOpening: sha256("opening:document-number"),
+    issuingStateValue: padText("US", 32),
+    issuingStateOpening: sha256("opening:issuing-state"),
     currentDay: 3650n + 365n * 25n,
   };
 
@@ -207,6 +215,14 @@ const buildDigitalPassportFixture = (
     dateOfBirthCommitment: pureCircuits.dateOfBirthCommitment(
       witness.dateOfBirthDays,
       witness.dateOfBirthOpening,
+    ),
+    documentNumberCommitment: pureCircuits.documentNumberCommitment(
+      witness.documentNumberValue,
+      witness.documentNumberOpening,
+    ),
+    issuingStateCommitment: pureCircuits.issuingStateCommitment(
+      witness.issuingStateValue,
+      witness.issuingStateOpening,
     ),
   };
 
@@ -248,6 +264,8 @@ const buildDigitalPassportFixture = (
     requireLastNameDisclosure: true,
     requireAgeOverThreshold: true,
     requestedAgeThresholdYears: 18n,
+    requireDocumentNumberDisclosure: false,
+    requireIssuingStateDisclosure: false,
     verifierChallengeHash,
   };
 
@@ -266,6 +284,12 @@ const buildDigitalPassportFixture = (
       lastNameOpening: witness.lastNameOpening,
       proveAgeOverThreshold: true,
       ageThresholdYears: 18n,
+      revealDocumentNumber: false,
+      documentNumberValue: new Uint8Array(32),
+      documentNumberOpening: new Uint8Array(32),
+      revealIssuingState: false,
+      issuingStateValue: new Uint8Array(32),
+      issuingStateOpening: new Uint8Array(32),
     },
   };
 
@@ -423,6 +447,10 @@ const createDigitalPassportProtocolFixtureFromFixture = (
         fixture.presentationRequest.requireAgeOverThreshold,
       requestedAgeThresholdYears:
         fixture.presentationRequest.requestedAgeThresholdYears,
+      requireDocumentNumberDisclosure:
+        fixture.presentationRequest.requireDocumentNumberDisclosure,
+      requireIssuingStateDisclosure:
+        fixture.presentationRequest.requireIssuingStateDisclosure,
     },
   };
 

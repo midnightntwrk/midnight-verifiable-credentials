@@ -5,16 +5,20 @@ export struct DigitalPassportClaimCommitments {
   firstNameCommitment: Bytes<32>,
   lastNameCommitment: Bytes<32>,
   dateOfBirthCommitment: Bytes<32>,
+  documentNumberCommitment: Bytes<32>,
+  issuingStateCommitment: Bytes<32>,
 }
 
 export pure circuit digitalPassportClaimRoot(
                       commitments: DigitalPassportClaimCommitments
                       ): Bytes<32> {
-  return persistentHash<Vector<4, Bytes<32>>>(
+  return persistentHash<Vector<6, Bytes<32>>>(
            [pad(32, "midnight:vc:digital-passport:v1"),
             commitments.firstNameCommitment,
             commitments.lastNameCommitment,
-            commitments.dateOfBirthCommitment]
+            commitments.dateOfBirthCommitment,
+            commitments.documentNumberCommitment,
+            commitments.issuingStateCommitment]
            );
 }
 
@@ -37,4 +41,29 @@ export pure circuit lastNameCommitment(
 
 export pure circuit dateOfBirthCommitment(dateOfBirthDays: Uint<32>, opening: Bytes<32>): Bytes<32> {
   return persistentCommit<Uint<32>>(dateOfBirthDays, opening);
+}
+
+export pure circuit documentNumberCommitment(
+                      documentNumberValue: Bytes<32>,
+                      opening: Bytes<32>
+                      ): Bytes<32> {
+  return persistentCommit<Bytes<32>>(documentNumberValue, opening);
+}
+
+export pure circuit issuingStateCommitment(
+                      issuingStateValue: Bytes<32>,
+                      opening: Bytes<32>
+                      ): Bytes<32> {
+  return persistentCommit<Bytes<32>>(issuingStateValue, opening);
+}
+
+// Sentinel null commitment for absent documentNumber.
+// This is a hash-domain-separated value that is not in the range of persistentCommit,
+// so no valid (value, opening) pair can ever open it. Validation guards ensure that
+// revealDocumentNumber is never asserted when this commitment is present.
+export pure circuit documentNumberNullCommitment(): Bytes<32> {
+  return persistentHash<Vector<2, Bytes<32>>>(
+           [pad(32, "midnight:vc:digital-passport:nil"),
+            pad(32, "document-number")]
+           );
 }

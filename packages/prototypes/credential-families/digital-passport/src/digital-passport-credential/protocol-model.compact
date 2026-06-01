@@ -24,6 +24,8 @@ export struct DigitalPassportVerificationRequestBody {
   requireLastNameDisclosure: Boolean,
   requireAgeOverThreshold: Boolean,
   requestedAgeThresholdYears: Uint<8>,
+  requireDocumentNumberDisclosure: Boolean,
+  requireIssuingStateDisclosure: Boolean,
 }
 
 export struct DigitalPassportVerificationSubmissionBody {
