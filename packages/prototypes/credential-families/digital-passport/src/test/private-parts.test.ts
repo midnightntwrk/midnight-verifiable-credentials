@@ -41,7 +41,9 @@ describe("digital-passport credential: private-parts validation", () => {
         fixture.credential.claimRoot,
         tampered,
       ),
-    ).toThrow(/Private-parts first-name value does not match credential commitment/);
+    ).toThrow(
+      /Private-parts first-name value does not match credential commitment/,
+    );
   });
 
   it("rejects a wrong last-name value", () => {
@@ -63,7 +65,9 @@ describe("digital-passport credential: private-parts validation", () => {
         fixture.credential.claimRoot,
         tampered,
       ),
-    ).toThrow(/Private-parts last-name value does not match credential commitment/);
+    ).toThrow(
+      /Private-parts last-name value does not match credential commitment/,
+    );
   });
 
   it("rejects a wrong date-of-birth opening", () => {
@@ -85,7 +89,9 @@ describe("digital-passport credential: private-parts validation", () => {
         fixture.credential.claimRoot,
         tampered,
       ),
-    ).toThrow(/Private-parts date-of-birth value does not match credential commitment/);
+    ).toThrow(
+      /Private-parts date-of-birth value does not match credential commitment/,
+    );
   });
 
   it("rejects a wrong issuing-state value", () => {
@@ -107,7 +113,9 @@ describe("digital-passport credential: private-parts validation", () => {
         fixture.credential.claimRoot,
         tampered,
       ),
-    ).toThrow(/Private-parts issuing-state value does not match credential commitment/);
+    ).toThrow(
+      /Private-parts issuing-state value does not match credential commitment/,
+    );
   });
 
   it("rejects private parts when the claim root does not match", () => {
@@ -143,7 +151,9 @@ describe("digital-passport credential: private-parts validation", () => {
         fixture.credential.claimRoot,
         tampered,
       ),
-    ).toThrow(/Private-parts document-number value does not match credential commitment/);
+    ).toThrow(
+      /Private-parts document-number value does not match credential commitment/,
+    );
   });
 
   it("rejects a wrong document-number opening when document number is present", () => {
@@ -165,37 +175,38 @@ describe("digital-passport credential: private-parts validation", () => {
         fixture.credential.claimRoot,
         tampered,
       ),
-    ).toThrow(/Private-parts document-number value does not match credential commitment/);
+    ).toThrow(
+      /Private-parts document-number value does not match credential commitment/,
+    );
   });
 });
 
 describe("digital-passport credential: private-parts validation with absent document number", () => {
-  const nullDocumentNumberCommitment = pureCircuits.documentNumberNullCommitment();
+  const nullDocumentNumberCommitment =
+    pureCircuits.documentNumberNullCommitment();
 
   // Build claim commitments where documentNumber uses the null sentinel.
   const claimCommitments = {
-    firstNameCommitment:
-      pureCircuits.firstNameCommitment(
-        new Uint8Array(64).fill(0),
-        new Uint8Array(32).fill(1),
-      ),
-    lastNameCommitment:
-      pureCircuits.lastNameCommitment(
-        new Uint8Array(64).fill(0),
-        new Uint8Array(32).fill(2),
-      ),
-    dateOfBirthCommitment:
-      pureCircuits.dateOfBirthCommitment(0n, new Uint8Array(32).fill(3)),
+    firstNameCommitment: pureCircuits.firstNameCommitment(
+      new Uint8Array(64).fill(0),
+      new Uint8Array(32).fill(1),
+    ),
+    lastNameCommitment: pureCircuits.lastNameCommitment(
+      new Uint8Array(64).fill(0),
+      new Uint8Array(32).fill(2),
+    ),
+    dateOfBirthCommitment: pureCircuits.dateOfBirthCommitment(
+      0n,
+      new Uint8Array(32).fill(3),
+    ),
     documentNumberCommitment: nullDocumentNumberCommitment,
-    issuingStateCommitment:
-      pureCircuits.issuingStateCommitment(
-        new Uint8Array(32).fill(0),
-        new Uint8Array(32).fill(4),
-      ),
+    issuingStateCommitment: pureCircuits.issuingStateCommitment(
+      new Uint8Array(32).fill(0),
+      new Uint8Array(32).fill(4),
+    ),
   };
 
-  const claimRoot =
-    pureCircuits.digitalPassportClaimRoot(claimCommitments);
+  const claimRoot = pureCircuits.digitalPassportClaimRoot(claimCommitments);
 
   const privateParts = {
     claimValues: {
@@ -239,7 +250,9 @@ describe("digital-passport credential: private-parts validation with absent docu
         claimRoot,
         tampered,
       ),
-    ).toThrow(/Private-parts document-number value must be zero-filled when document number is absent/);
+    ).toThrow(
+      /Private-parts document-number value must be zero-filled when document number is absent/,
+    );
   });
 
   it("rejects a non-zero document-number opening when the commitment is the null sentinel", () => {
@@ -257,7 +270,9 @@ describe("digital-passport credential: private-parts validation with absent docu
         claimRoot,
         tampered,
       ),
-    ).toThrow(/Private-parts document-number opening must be zero-filled when document number is absent/);
+    ).toThrow(
+      /Private-parts document-number opening must be zero-filled when document number is absent/,
+    );
   });
 });
 
