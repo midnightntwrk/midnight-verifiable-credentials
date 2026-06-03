@@ -17,6 +17,7 @@ export struct DigitalPassportIssuanceResultBody {
   credentialProof: Proof,
   holderPublicKey: JubjubPoint,
   issuanceChallengeHash: Bytes<32>,
+  privateParts: DigitalPassportCredentialPrivateParts,
 }
 
 export struct DigitalPassportVerificationRequestBody {
@@ -24,6 +25,8 @@ export struct DigitalPassportVerificationRequestBody {
   requireLastNameDisclosure: Boolean,
   requireAgeOverThreshold: Boolean,
   requestedAgeThresholdYears: Uint<8>,
+  requireDocumentNumberDisclosure: Boolean,
+  requireIssuingStateDisclosure: Boolean,
 }
 
 export struct DigitalPassportVerificationSubmissionBody {

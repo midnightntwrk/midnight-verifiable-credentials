@@ -272,6 +272,9 @@ importers:
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
+      '@midnight-ntwrk/midnight-did-credentials-openid':
+        specifier: '*'
+        version: link:../../../protocols/openid
 
   packages/prototypes/credential-families/dummy-claims:
     dependencies:

@@ -32,6 +32,8 @@ describe("digital-passport presentation request", () => {
     expect(modelSource).toContain("requireFirstNameDisclosure");
     expect(modelSource).toContain("requireLastNameDisclosure");
     expect(modelSource).toContain("requireAgeOverThreshold");
+    expect(modelSource).toContain("requireDocumentNumberDisclosure");
+    expect(modelSource).toContain("requireIssuingStateDisclosure");
   });
 
   it("includes age threshold fields in the request shape", () => {
@@ -120,6 +122,144 @@ describe("digital-passport presentation request", () => {
         fixture.presentationProof,
       ),
     ).toThrow(/Presentation request requires the first-name disclosure/);
+  });
+
+  it("rejects when a required document-number disclosure is not presented", () => {
+    const fixture = createDigitalPassportFixture();
+    const stricterRequest = {
+      ...fixture.presentationRequest,
+      requireDocumentNumberDisclosure: true,
+    };
+
+    expect(() =>
+      pureCircuits.assertDigitalPassportPresentationSatisfiesRequest(
+        fixture.credential,
+        stricterRequest,
+        fixture.presentation,
+        fixture.presentationProof,
+      ),
+    ).toThrow(/Presentation request requires the document-number disclosure/);
+  });
+
+  it("rejects when a required issuing-state disclosure is not presented", () => {
+    const fixture = createDigitalPassportFixture();
+    const stricterRequest = {
+      ...fixture.presentationRequest,
+      requireIssuingStateDisclosure: true,
+    };
+
+    expect(() =>
+      pureCircuits.assertDigitalPassportPresentationSatisfiesRequest(
+        fixture.credential,
+        stricterRequest,
+        fixture.presentation,
+        fixture.presentationProof,
+      ),
+    ).toThrow(/Presentation request requires the issuing-state disclosure/);
+  });
+
+  it("rejects document-number reveal when the credential has a null document-number commitment", () => {
+    const fixture = createDigitalPassportFixture();
+    const nullCommitment = pureCircuits.documentNumberNullCommitment();
+    const newClaimCommitments = {
+      ...fixture.credential.claimCommitments,
+      documentNumberCommitment: nullCommitment,
+    };
+    const newClaimRoot =
+      pureCircuits.digitalPassportClaimRoot(newClaimCommitments);
+    const credentialWithNullDoc = {
+      ...fixture.credential,
+      claimCommitments: newClaimCommitments,
+      claimRoot: newClaimRoot,
+    };
+    const credentialProof = signProof({
+      bodyRoot: pureCircuits.digitalPassportCredentialBodyRoot(
+        credentialWithNullDoc,
+      ),
+      context: "issuance",
+      signer: fixture.issuer,
+      createdAt: fixture.credentialProof.createdAt + 1n,
+      challengeHash: fixture.credentialProof.challengeHash,
+      nonceScalar: 13n,
+    });
+    const presentationRevealingDoc = {
+      ...fixture.presentation,
+      credentialClaimRoot: newClaimRoot,
+      disclosed: {
+        ...fixture.presentation.disclosed,
+        revealDocumentNumber: true,
+        documentNumberValue: new Uint8Array(32).fill(1),
+        documentNumberOpening: new Uint8Array(32).fill(2),
+      },
+    };
+    const presentationProof = signProof({
+      bodyRoot: pureCircuits.digitalPassportPresentationBodyRoot(
+        presentationRevealingDoc,
+      ),
+      context: "presentation",
+      signer: fixture.holder,
+      createdAt: fixture.presentationProof.createdAt + 1n,
+      challengeHash: fixture.presentationProof.challengeHash,
+      nonceScalar: 37n,
+    });
+
+    expect(() =>
+      pureCircuits.assertValidDigitalPassportPresentation(
+        credentialWithNullDoc,
+        credentialProof,
+        presentationRevealingDoc,
+        presentationProof,
+      ),
+    ).toThrow(
+      /Cannot reveal document-number when the credential has no document number/,
+    );
+  });
+
+  it("accepts a presentation that does not reveal document-number when the credential has a null commitment", () => {
+    const fixture = createDigitalPassportFixture();
+    const nullCommitment = pureCircuits.documentNumberNullCommitment();
+    const newClaimCommitments = {
+      ...fixture.credential.claimCommitments,
+      documentNumberCommitment: nullCommitment,
+    };
+    const newClaimRoot =
+      pureCircuits.digitalPassportClaimRoot(newClaimCommitments);
+    const credentialWithNullDoc = {
+      ...fixture.credential,
+      claimCommitments: newClaimCommitments,
+      claimRoot: newClaimRoot,
+    };
+    const credentialProof = signProof({
+      bodyRoot: pureCircuits.digitalPassportCredentialBodyRoot(
+        credentialWithNullDoc,
+      ),
+      context: "issuance",
+      signer: fixture.issuer,
+      createdAt: fixture.credentialProof.createdAt + 1n,
+      challengeHash: fixture.credentialProof.challengeHash,
+      nonceScalar: 14n,
+    });
+    const presentation = {
+      ...fixture.presentation,
+      credentialClaimRoot: newClaimRoot,
+    };
+    const presentationProof = signProof({
+      bodyRoot: pureCircuits.digitalPassportPresentationBodyRoot(presentation),
+      context: "presentation",
+      signer: fixture.holder,
+      createdAt: fixture.presentationProof.createdAt + 1n,
+      challengeHash: fixture.presentationProof.challengeHash,
+      nonceScalar: 38n,
+    });
+
+    expect(() =>
+      pureCircuits.assertValidDigitalPassportPresentation(
+        credentialWithNullDoc,
+        credentialProof,
+        presentation,
+        presentationProof,
+      ),
+    ).not.toThrow();
   });
 
   it("rejects when the verifier challenge does not match the presentation proof", () => {

@@ -62,6 +62,8 @@ export pure circuit digitalPassportPresentationRequestFromProtocol(
                                               requireLastNameDisclosure: request.body.requireLastNameDisclosure,
                                               requireAgeOverThreshold: request.body.requireAgeOverThreshold,
                                               requestedAgeThresholdYears: request.body.requestedAgeThresholdYears,
+                                              requireDocumentNumberDisclosure: request.body.requireDocumentNumberDisclosure,
+                                              requireIssuingStateDisclosure: request.body.requireIssuingStateDisclosure,
                                               verifierChallengeHash: request.verifierChallengeHash, };
 }
 
@@ -108,6 +110,34 @@ export pure circuit assertValidDigitalPassportPresentation(
              ) ==
            credential.claimCommitments.lastNameCommitment,
            "Presentation last-name disclosure does not match the credential"
+           );
+  }
+  // Null-commitment guard: documentNumber may be absent (sentinel commitment).
+  // When the credential carries the null sentinel, the holder must not claim
+  // to disclose a documentNumber value. This check must precede the
+  // disclosure-verification check so that the descriptive null-commitment
+  // error is returned instead of a generic commitment-mismatch error.
+  if (credential.claimCommitments.documentNumberCommitment == documentNumberNullCommitment()) {
+    assert(!presentation.disclosed.revealDocumentNumber,
+           "Cannot reveal document-number when the credential has no document number (null commitment)"
+           );
+  }
+  if (presentation.disclosed.revealDocumentNumber) {
+    assert(documentNumberCommitment(
+             presentation.disclosed.documentNumberValue,
+             presentation.disclosed.documentNumberOpening
+             ) ==
+           credential.claimCommitments.documentNumberCommitment,
+           "Presentation document-number disclosure does not match the credential"
+           );
+  }
+  if (presentation.disclosed.revealIssuingState) {
+    assert(issuingStateCommitment(
+             presentation.disclosed.issuingStateValue,
+             presentation.disclosed.issuingStateOpening
+             ) ==
+           credential.claimCommitments.issuingStateCommitment,
+           "Presentation issuing-state disclosure does not match the credential"
            );
   }
   if (presentation.disclosed.proveAgeOverThreshold) {
@@ -162,6 +192,16 @@ export pure circuit assertDigitalPassportPresentationSatisfiesRequest(
            );
     assert(presentation.disclosed.ageThresholdYears == request.requestedAgeThresholdYears,
            "Presentation age threshold does not match the request"
+           );
+  }
+  if (request.requireDocumentNumberDisclosure) {
+    assert(presentation.disclosed.revealDocumentNumber,
+           "Presentation request requires the document-number disclosure"
+           );
+  }
+  if (request.requireIssuingStateDisclosure) {
+    assert(presentation.disclosed.revealIssuingState,
+           "Presentation request requires the issuing-state disclosure"
            );
   }
 }
