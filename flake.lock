@@ -42,11 +42,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1780472663,
-        "narHash": "sha256-CPM6FoGcocfqmv/zqQSDQ73WpR6S6iXeMZ5vfat2Mxo=",
+        "lastModified": 1780475639,
+        "narHash": "sha256-C5oQO4A3IroUMj6Fz62Mt8r0fG+shbk/3Ry3UINb+N0=",
         "owner": "midnightntwrk",
         "repo": "midnight-did",
-        "rev": "f11590c5e0884e41982e22e7fec6db29ef00d3e9",
+        "rev": "05b237a5e51f9c22853b424e7d4236dfa9384c24",
         "type": "github"
       },
       "original": {
