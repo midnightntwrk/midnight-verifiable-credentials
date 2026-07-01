@@ -9,11 +9,11 @@ tradeoffs without changing package source.
 
 ## Mode Matrix
 
-| Mode               | Purpose                                             | Source of DID Packages              | Validation                                                                                    |
-| ------------------ | --------------------------------------------------- | ----------------------------------- | --------------------------------------------------------------------------------------------- |
-| Sibling checkout   | Local DID + VC development in adjacent repositories | `../midnight-did`                   | `./run.sh integration-report`                                                                 |
-| Vendored tarballs  | Reproducible standalone fixtures and CI paths       | `tooling/vendor/midnight-did/*.tgz` | `./run.sh check-integration`                                                                  |
-| Published packages | Normal downstream package consumption               | npm registry package specs          | package manager install plus package tests; no dedicated published-consumer smoke fixture yet |
+| Mode                  | Purpose                                             | Source of DID Packages                         | Validation                                                                                    |
+| --------------------- | --------------------------------------------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Sibling checkout      | Local DID + VC development in adjacent repositories | `../midnight-did`                              | `./run.sh integration-report`                                                                 |
+| Package-root Git tags | Reproducible standalone fixtures and CI paths       | `midnight-did` package-root Git tags for 0.4.0 | `./run.sh check-integration`                                                                  |
+| Published packages    | Normal downstream package consumption               | npm registry package specs                     | package manager install plus package tests; no dedicated published-consumer smoke fixture yet |
 
 ## Sibling Checkout Mode
 
@@ -52,48 +52,52 @@ be emitted in the resolved DID document.
 Coverage:
 
 - `pnpm run test:did-key-normalization`
-  - verifies the vendored DID package surface emits x-only Ed25519/X25519 JWKs
+  - verifies the DID package surface emits x-only Ed25519/X25519 JWKs
   - verifies EC JWK coordinate preservation for Jubjub, P-256, and secp256k1
-  - verifies the VC package-alias shim links to the same vendored DID package
+  - verifies the VC package-alias shim links to the same DID package
     surface instead of carrying a generated `LedgerToDomain` fallback
 
 ## Ledger Version Boundary
 
-Vendored DID tarballs may temporarily carry a different
+The pinned DID package refs may temporarily carry a different
 `@midnight-ntwrk/ledger-v8` patch version than the rest of the VC workspace.
 For the current local DID refresh, `@midnight-ntwrk/midnight-did-jubjub-schnorr`
 uses `ledger-v8@8.0.3`, while VC packages and Midnight JS dependencies use
 `ledger-v8@8.1.0`.
 
 Keep those runtime paths separated. DID/Jubjub Schnorr helpers should consume
-their own vendored ledger dependency, and VC/Midnight JS transaction or codec
+their own ledger dependency, and VC/Midnight JS transaction or codec
 paths should continue to consume the workspace ledger dependency. A future
-refresh that moves `ledger-v8@8.0.3` outside the vendored DID dependency tree
+refresh that moves `ledger-v8@8.0.3` outside the DID dependency tree
 should be treated as an integration risk and revalidated with real on-ledger
 publish/resolve/sign/verify flows.
 
-Check the boundary after refreshing tarballs:
+Check the boundary after changing DID package refs:
 
 ```bash
 pnpm run check:ledger-v8-boundary
 pnpm why --recursive @midnight-ntwrk/ledger-v8
 ```
 
-## Vendored Tarball Mode
+## Package-Root Git Tag Mode
 
-Use vendored tarball mode for standalone fixtures and CI paths that must not
-depend on a live sibling checkout.
+Use package-root Git tag mode for standalone fixtures and CI paths that must
+not depend on a live sibling checkout or GitHub Packages access.
 
-Vendored DID packages live under:
+The DID package refs are pinned centrally in the root `pnpm.overrides` block:
 
-```text
-tooling/vendor/midnight-did/
+```json
+"@midnight-ntwrk/midnight-did-domain": "git+https://github.com/midnightntwrk/midnight-did.git#npm-midnight-did-domain-v0.4.0"
 ```
 
-VC package manifests that need DID packages should point at the matching
-`file:` tarball when they are intentionally testing a bundled DID artifact. The
-integration check verifies that the package spec matches the sibling package
-version when a sibling checkout exists and that the expected tarball is present.
+VC package manifests that need DID packages should use the release version
+(`0.4.0`) and rely on the root override. The package-root Git tags contain
+the built package contents from the DID 0.4.0 package tarballs, so installs do
+not rebuild DID from the monorepo checkout.
+
+`@midnight-ntwrk/midnight-did-secret-storage` remains resolver-owned and is
+the only package currently kept as a local tarball under
+`tooling/vendor/midnight-did/`.
 
 Run:
 
@@ -104,11 +108,12 @@ pnpm run check:did-integration
 
 Repair flow:
 
-1. Build and pack the DID repository from the matching DID branch.
-2. Refresh the tarballs under `tooling/vendor/midnight-did/`.
+1. Build and pack the DID repository from the matching DID release.
+2. Publish package-root Git tags for the DID package tarball contents.
 3. Re-run `./run.sh integration-report` to inspect the expected package names,
-   versions, and tarball filenames.
-4. Re-run `./run.sh check-integration` before committing.
+   versions, and package refs.
+4. Update stale root overrides if a package moved or was renamed.
+5. Re-run `./run.sh check-integration` before committing.
 
 ## Published Package Mode
 
@@ -183,11 +188,12 @@ Fail the command when stale wiring is detected:
 
 Common failures:
 
-- missing sibling DID checkout: acceptable for tarball-only consumers, but the
-  report can only compare against vendored specs
-- missing vendor tarball: refresh `tooling/vendor/midnight-did/`
-- stale `file:` spec: update the consuming package manifest to the expected
-  tarball path shown by the report
+- missing sibling DID checkout: acceptable for package-tag consumers, but the
+  report can only compare against the pinned package specs
+- stale DID package ref: update the root `pnpm.overrides` entry to the matching
+  package-root Git tag
+- missing resolver-owned secret-storage tarball: refresh
+  `tooling/vendor/midnight-did/`
 - missing compatibility alias: run install/setup or inspect
   `tooling/scripts/compatibility-aliases.mjs`
 - unexpected top-level `midnight-did-credentials*` entry: remove the stray

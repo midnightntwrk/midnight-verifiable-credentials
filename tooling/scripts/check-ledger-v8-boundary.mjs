@@ -14,7 +14,7 @@ const LEDGER_PACKAGE = '@midnight-ntwrk/ledger-v8';
 const DID_JUBJUB_SCHNORR_PACKAGE =
   '@midnight-ntwrk/midnight-did-jubjub-schnorr';
 // Keep these versions in sync with tooling/vendor/midnight-did/README.md when
-// refreshing vendored DID tarballs or the workspace Midnight JS baseline.
+// changing DID package refs or the workspace Midnight JS baseline.
 const DID_LEDGER_VERSION = '8.0.3';
 const WORKSPACE_LEDGER_VERSION = '8.1.0';
 

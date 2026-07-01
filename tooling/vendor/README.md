@@ -6,9 +6,10 @@ are published.
 Use this directory only for versioned vendor tarballs, not copied build
 artifacts.
 
-Expected future transitional inputs if needed:
+Expected transitional inputs if needed:
 
-- `tooling/vendor/midnight-did/*.tgz`
+- `tooling/vendor/midnight-did/*.tgz` for resolver-owned packages that do not
+  yet have a package source available to VC
 - `tooling/vendor/midnight-verifiable-credentials/*.tgz`
 
 Do not hand-copy `dist/` output here.

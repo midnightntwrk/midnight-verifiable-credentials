@@ -163,15 +163,15 @@ assert.equal(
 const integrationReportJson = JSON.parse(integrationReportJsonResult.stdout);
 assert.deepEqual(
   integrationReportJson.didIntegrationModes.map((mode) => mode.name),
-  ["sibling checkout", "vendored tarballs", "published packages"],
+  ["sibling checkout", "package-root Git tags", "published packages"],
   "DID integration JSON report should include supported mode names",
 );
 assert.deepEqual(
   integrationReportJson.didIntegrationRepairFlow,
   [
-    "build and pack the matching midnight-did branch when package versions change",
-    "refresh tooling/vendor/midnight-did/*.tgz for vendored integration fixtures",
-    "update stale file: specs in VC package manifests to the expected tarball paths",
+    "publish package-root Git tags from the matching midnight-did release tarballs when package versions change",
+    "update root pnpm overrides to the matching midnight-did package-root Git tags",
+    "keep the resolver-owned secret-storage tarball refreshed only when secret-storage changes",
     "re-run ./run.sh integration-report, then ./run.sh check-integration",
   ],
   "DID integration JSON report should include repair-flow guidance",

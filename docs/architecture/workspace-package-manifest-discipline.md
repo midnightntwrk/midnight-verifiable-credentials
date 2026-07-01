@@ -81,7 +81,7 @@ BDD scenario packages are executable harnesses, not library surfaces. They must:
 ## Source-Only Integration Rule
 
 `packages/components/integration/standalone-environment` remains source-only because it
-is a local integration harness over vendored DID tarballs and Testcontainers. It
+is a local integration harness over DID package refs and Testcontainers. It
 must stay private and declare its source files explicitly rather than pretending
 to be a dist package.
 

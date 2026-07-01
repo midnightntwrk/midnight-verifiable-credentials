@@ -220,8 +220,8 @@ const didIntegrationModes = Object.freeze([
     purpose: "inspect ../midnight-did for local cross-repo development",
   },
   {
-    name: "vendored tarballs",
-    purpose: "use tooling/vendor/midnight-did/*.tgz for standalone fixtures",
+    name: "package-root Git tags",
+    purpose: "consume midnight-did 0.4.0 packages from GitHub package-root tags",
   },
   {
     name: "published packages",
@@ -229,9 +229,9 @@ const didIntegrationModes = Object.freeze([
   },
 ]);
 const didIntegrationRepairFlow = Object.freeze([
-  "build and pack the matching midnight-did branch when package versions change",
-  "refresh tooling/vendor/midnight-did/*.tgz for vendored integration fixtures",
-  "update stale file: specs in VC package manifests to the expected tarball paths",
+  "publish package-root Git tags from the matching midnight-did release tarballs when package versions change",
+  "update root pnpm overrides to the matching midnight-did package-root Git tags",
+  "keep the resolver-owned secret-storage tarball refreshed only when secret-storage changes",
   "re-run ./run.sh integration-report, then ./run.sh check-integration",
 ]);
 
@@ -400,7 +400,7 @@ if (json) {
   }
 
   console.log("");
-  console.log("## DID Vendor References");
+  console.log("## DID Package References");
   if (report.references.length === 0) {
     console.log("- no DID package references found");
   } else {
