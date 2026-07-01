@@ -31,6 +31,22 @@ runs:
       shell: bash
       run: corepack enable
 
+    - name: Configure private GitHub git dependencies
+      if: inputs.install == 'true'
+      shell: bash
+      run: |
+        if [[ -z "${VC_GITHUB_DEPENDENCY_TOKEN:-}" ]]; then
+          echo "No GitHub dependency token configured; skipping private Git dependency rewrite."
+          exit 0
+        fi
+
+        echo "::add-mask::${VC_GITHUB_DEPENDENCY_TOKEN}"
+        git config --global url."https://x-access-token:${VC_GITHUB_DEPENDENCY_TOKEN}@github.com/".insteadOf "git@github.com:"
+        git config --global --add url."https://x-access-token:${VC_GITHUB_DEPENDENCY_TOKEN}@github.com/".insteadOf "ssh://git@github.com/"
+        git config --global --add url."https://x-access-token:${VC_GITHUB_DEPENDENCY_TOKEN}@github.com/".insteadOf "git+ssh://git@github.com/"
+        git config --global --add url."https://x-access-token:${VC_GITHUB_DEPENDENCY_TOKEN}@github.com/".insteadOf "https://git@github.com/"
+        git config --global --add url."https://x-access-token:${VC_GITHUB_DEPENDENCY_TOKEN}@github.com/".insteadOf "git+https://git@github.com/"
+
     - name: Install dependencies
       if: inputs.install == 'true'
       shell: bash
