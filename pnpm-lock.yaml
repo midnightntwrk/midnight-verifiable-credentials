@@ -5,13 +5,14 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@midnight-ntwrk/midnight-did': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-0.4.0.tgz
-  '@midnight-ntwrk/midnight-did-api': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-api-0.4.0.tgz
-  '@midnight-ntwrk/midnight-did-contract': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-contract-0.4.0.tgz
-  '@midnight-ntwrk/midnight-did-domain': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.4.0.tgz
-  '@midnight-ntwrk/midnight-did-jubjub-schnorr': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-jubjub-schnorr-0.4.0.tgz
+  '@midnight-ntwrk/midnight-did': git+https://github.com/midnightntwrk/midnight-did.git#npm-midnight-did-v0.4.0
+  '@midnight-ntwrk/midnight-did-api': git+https://github.com/midnightntwrk/midnight-did.git#npm-midnight-did-api-v0.4.0
+  '@midnight-ntwrk/midnight-did-contract': git+https://github.com/midnightntwrk/midnight-did.git#npm-midnight-did-contract-v0.4.0
+  '@midnight-ntwrk/midnight-did-domain': git+https://github.com/midnightntwrk/midnight-did.git#npm-midnight-did-domain-v0.4.0
+  '@midnight-ntwrk/midnight-did-jubjub-schnorr': git+https://github.com/midnightntwrk/midnight-did.git#npm-midnight-did-jubjub-schnorr-v0.4.0
   '@midnight-ntwrk/midnight-did-secret-storage': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-secret-storage-0.1.0.tgz
   '@midnight-ntwrk/midnight-js-contracts': 4.0.4
+  '@midnight-ntwrk/midnight-js-fetch-zk-config-provider': 4.0.4
   '@midnight-ntwrk/midnight-js-http-client-proof-provider': 4.0.4
   '@midnight-ntwrk/midnight-js-indexer-public-data-provider': 4.0.4
   '@midnight-ntwrk/midnight-js-level-private-state-provider': 4.0.4
@@ -31,6 +32,9 @@ importers:
         specifier: ^8.0.0
         version: 8.1.0
       '@midnight-ntwrk/midnight-js-contracts':
+        specifier: 4.0.4
+        version: 4.0.4
+      '@midnight-ntwrk/midnight-js-fetch-zk-config-provider':
         specifier: 4.0.4
         version: 4.0.4
       '@midnight-ntwrk/midnight-js-http-client-proof-provider':
@@ -140,14 +144,14 @@ importers:
   packages/components/adapters/offchain-did:
     dependencies:
       '@midnight-ntwrk/midnight-did':
-        specifier: file:../../../../tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-0.4.0.tgz
-        version: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-0.4.0.tgz
+        specifier: git+https://github.com/midnightntwrk/midnight-did.git#npm-midnight-did-v0.4.0
+        version: git+https://git@github.com:midnightntwrk/midnight-did.git#d3e581c57c7efc7dc3ee97618a5de8f899669890
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
       '@midnight-ntwrk/midnight-did-domain':
-        specifier: file:../../../../tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.4.0.tgz
-        version: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.4.0.tgz
+        specifier: git+https://github.com/midnightntwrk/midnight-did.git#npm-midnight-did-domain-v0.4.0
+        version: git+https://git@github.com:midnightntwrk/midnight-did.git#7ab3a5d52951c07eda92295147493339d9470b55
     devDependencies:
       '@midnight-ntwrk/compact-runtime':
         specifier: '*'
@@ -159,20 +163,20 @@ importers:
         specifier: '*'
         version: 0.15.0
       '@midnight-ntwrk/midnight-did':
-        specifier: file:../../../../tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-0.4.0.tgz
-        version: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-0.4.0.tgz
+        specifier: git+https://github.com/midnightntwrk/midnight-did.git#npm-midnight-did-v0.4.0
+        version: git+https://git@github.com:midnightntwrk/midnight-did.git#d3e581c57c7efc7dc3ee97618a5de8f899669890
       '@midnight-ntwrk/midnight-did-api':
-        specifier: file:../../../../tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-api-0.4.0.tgz
-        version: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-api-0.4.0.tgz
+        specifier: git+https://github.com/midnightntwrk/midnight-did.git#npm-midnight-did-api-v0.4.0
+        version: git+https://git@github.com:midnightntwrk/midnight-did.git#684c62efce4ca367b4d479c96b7f68caa7be6c2c
       '@midnight-ntwrk/midnight-did-contract':
-        specifier: file:../../../../tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-contract-0.4.0.tgz
-        version: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-contract-0.4.0.tgz
+        specifier: git+https://github.com/midnightntwrk/midnight-did.git#npm-midnight-did-contract-v0.4.0
+        version: git+https://git@github.com:midnightntwrk/midnight-did.git#cc09f70ccd8d6e34514d663a87eafafec87a0631
       '@midnight-ntwrk/midnight-did-domain':
-        specifier: file:../../../../tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.4.0.tgz
-        version: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.4.0.tgz
+        specifier: git+https://github.com/midnightntwrk/midnight-did.git#npm-midnight-did-domain-v0.4.0
+        version: git+https://git@github.com:midnightntwrk/midnight-did.git#7ab3a5d52951c07eda92295147493339d9470b55
       '@midnight-ntwrk/midnight-did-jubjub-schnorr':
-        specifier: file:../../../../tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-jubjub-schnorr-0.4.0.tgz
-        version: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-jubjub-schnorr-0.4.0.tgz
+        specifier: git+https://github.com/midnightntwrk/midnight-did.git#npm-midnight-did-jubjub-schnorr-v0.4.0
+        version: git+https://git@github.com:midnightntwrk/midnight-did.git#34b90bb734c7bee04446d8e3130e7d9384a8d094
       '@midnight-ntwrk/midnight-did-secret-storage':
         specifier: file:../../../../tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-secret-storage-0.1.0.tgz
         version: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-secret-storage-0.1.0.tgz
@@ -297,8 +301,8 @@ importers:
         specifier: '*'
         version: link:../../../components/adapters/offchain-did
       '@midnight-ntwrk/midnight-did-domain':
-        specifier: file:../../../../tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.4.0.tgz
-        version: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.4.0.tgz
+        specifier: git+https://github.com/midnightntwrk/midnight-did.git#npm-midnight-did-domain-v0.4.0
+        version: git+https://git@github.com:midnightntwrk/midnight-did.git#7ab3a5d52951c07eda92295147493339d9470b55
 
   packages/prototypes/credential-families/mixed-claims:
     dependencies:
@@ -975,23 +979,23 @@ packages:
   '@midnight-ntwrk/ledger-v8@8.1.0':
     resolution: {integrity: sha512-rwOVP5kBwACpYmmY6+oLeaiM3e5gHscRMjbZUOntOC5QdtqLdpeep6eQW1OngI+sxjjdVoGg2eE16sLf+DAHmQ==}
 
-  '@midnight-ntwrk/midnight-did-api@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-api-0.4.0.tgz':
-    resolution: {integrity: sha512-q2nem3Ggqbzy9p0D4Op5HXuITLOBIRvhQHSFxIL8VPsh0fVM9CAt6L5EQnbwG+tPNwCNifMMtjtQLw9rq9mMjw==, tarball: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-api-0.4.0.tgz}
+  '@midnight-ntwrk/midnight-did-api@git+https://git@github.com:midnightntwrk/midnight-did.git#684c62efce4ca367b4d479c96b7f68caa7be6c2c':
+    resolution: {commit: 684c62efce4ca367b4d479c96b7f68caa7be6c2c, repo: git@github.com:midnightntwrk/midnight-did.git, type: git}
     version: 0.4.0
     engines: {node: '>=24', pnpm: '>=10'}
 
-  '@midnight-ntwrk/midnight-did-contract@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-contract-0.4.0.tgz':
-    resolution: {integrity: sha512-7mO1h6iQUyBE9w8xAN5Yv66mzV3NfbBR//4KnqKJHVBwl5wykY9CHxgonRpmDGMrVoh1fv7sKI7Vt9PTyP/aVg==, tarball: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-contract-0.4.0.tgz}
+  '@midnight-ntwrk/midnight-did-contract@git+https://git@github.com:midnightntwrk/midnight-did.git#cc09f70ccd8d6e34514d663a87eafafec87a0631':
+    resolution: {commit: cc09f70ccd8d6e34514d663a87eafafec87a0631, repo: git@github.com:midnightntwrk/midnight-did.git, type: git}
     version: 0.4.0
     engines: {node: '>=24', pnpm: '>=10'}
 
-  '@midnight-ntwrk/midnight-did-domain@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.4.0.tgz':
-    resolution: {integrity: sha512-5ykMRqmrQAr2mc4k75liboq6T9zTr35DMt7FJ4qa8XJ/vElAXZAjxG0i/pjtos1uEBW03icwoVSM3q2d0mvpQA==, tarball: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.4.0.tgz}
+  '@midnight-ntwrk/midnight-did-domain@git+https://git@github.com:midnightntwrk/midnight-did.git#7ab3a5d52951c07eda92295147493339d9470b55':
+    resolution: {commit: 7ab3a5d52951c07eda92295147493339d9470b55, repo: git@github.com:midnightntwrk/midnight-did.git, type: git}
     version: 0.4.0
     engines: {node: '>=24', pnpm: '>=10'}
 
-  '@midnight-ntwrk/midnight-did-jubjub-schnorr@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-jubjub-schnorr-0.4.0.tgz':
-    resolution: {integrity: sha512-gt+jxwYNgT7Y1MyEX9krjy1cP9mLbZkHC+Q5KCWab6rYnvwJzxvhhBbNIWx5XL1M2bw1J33c5xcatm3Y/STeyA==, tarball: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-jubjub-schnorr-0.4.0.tgz}
+  '@midnight-ntwrk/midnight-did-jubjub-schnorr@git+https://git@github.com:midnightntwrk/midnight-did.git#34b90bb734c7bee04446d8e3130e7d9384a8d094':
+    resolution: {commit: 34b90bb734c7bee04446d8e3130e7d9384a8d094, repo: git@github.com:midnightntwrk/midnight-did.git, type: git}
     version: 0.4.0
     engines: {node: '>=24', pnpm: '>=10'}
 
@@ -1000,13 +1004,16 @@ packages:
     version: 0.1.0
     engines: {node: '>=24', pnpm: '>=10'}
 
-  '@midnight-ntwrk/midnight-did@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-0.4.0.tgz':
-    resolution: {integrity: sha512-TJoxuYh5UyAR6LLWxhTtLNXT2kfJjYCs1GJtL9ey08xFR84uIiM2NLfWdjFjnTolAZ+DceLF17dTHR2w595NrQ==, tarball: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-0.4.0.tgz}
+  '@midnight-ntwrk/midnight-did@git+https://git@github.com:midnightntwrk/midnight-did.git#d3e581c57c7efc7dc3ee97618a5de8f899669890':
+    resolution: {commit: d3e581c57c7efc7dc3ee97618a5de8f899669890, repo: git@github.com:midnightntwrk/midnight-did.git, type: git}
     version: 0.4.0
     engines: {node: '>=24', pnpm: '>=10'}
 
   '@midnight-ntwrk/midnight-js-contracts@4.0.4':
     resolution: {integrity: sha512-lu9A45upwvPSy/YohU0TMvaeL2ru1zJt6axbuGwGup2L16p+fN8ojjHji6YGEC6XkgyISH3L0GfsgxsQKmt56g==}
+
+  '@midnight-ntwrk/midnight-js-fetch-zk-config-provider@4.0.4':
+    resolution: {integrity: sha512-WMXxBVqDlAiu3c0ZTE3WaEUfNR4fRAEmaTlhr0U3pjaFKu77qiBp7bB+oIB8N6Xtj0Y1KRn/wlGLbZjxEL9jVg==}
 
   '@midnight-ntwrk/midnight-js-http-client-proof-provider@4.0.4':
     resolution: {integrity: sha512-G6q7uPqKhCGZyKUo21MhoBjtfQ4pw6AEMBM6zrAvhrCFE9WV4FVrG1rpbJDtwxr/VVecIt1tD4myVqg2sEPNhg==}
@@ -5003,12 +5010,12 @@ snapshots:
 
   '@midnight-ntwrk/ledger-v8@8.1.0': {}
 
-  '@midnight-ntwrk/midnight-did-api@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-api-0.4.0.tgz':
+  '@midnight-ntwrk/midnight-did-api@git+https://git@github.com:midnightntwrk/midnight-did.git#684c62efce4ca367b4d479c96b7f68caa7be6c2c':
     dependencies:
       '@midnight-ntwrk/compact-js': 2.5.0
-      '@midnight-ntwrk/midnight-did': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-0.4.0.tgz
-      '@midnight-ntwrk/midnight-did-contract': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-contract-0.4.0.tgz
-      '@midnight-ntwrk/midnight-did-domain': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.4.0.tgz
+      '@midnight-ntwrk/midnight-did': git+https://git@github.com:midnightntwrk/midnight-did.git#d3e581c57c7efc7dc3ee97618a5de8f899669890
+      '@midnight-ntwrk/midnight-did-contract': git+https://git@github.com:midnightntwrk/midnight-did.git#cc09f70ccd8d6e34514d663a87eafafec87a0631
+      '@midnight-ntwrk/midnight-did-domain': git+https://git@github.com:midnightntwrk/midnight-did.git#7ab3a5d52951c07eda92295147493339d9470b55
       '@midnight-ntwrk/midnight-js-contracts': 4.0.4
       '@midnight-ntwrk/midnight-js-http-client-proof-provider': 4.0.4
       '@midnight-ntwrk/midnight-js-indexer-public-data-provider': 4.0.4
@@ -5033,18 +5040,18 @@ snapshots:
       - subscriptions-transport-ws
       - utf-8-validate
 
-  '@midnight-ntwrk/midnight-did-contract@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-contract-0.4.0.tgz':
+  '@midnight-ntwrk/midnight-did-contract@git+https://git@github.com:midnightntwrk/midnight-did.git#cc09f70ccd8d6e34514d663a87eafafec87a0631':
     dependencies:
       '@midnight-ntwrk/compact-runtime': 0.15.0
-      '@midnight-ntwrk/midnight-did-jubjub-schnorr': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-jubjub-schnorr-0.4.0.tgz
+      '@midnight-ntwrk/midnight-did-jubjub-schnorr': git+https://git@github.com:midnightntwrk/midnight-did.git#34b90bb734c7bee04446d8e3130e7d9384a8d094
 
-  '@midnight-ntwrk/midnight-did-domain@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.4.0.tgz':
+  '@midnight-ntwrk/midnight-did-domain@git+https://git@github.com:midnightntwrk/midnight-did.git#7ab3a5d52951c07eda92295147493339d9470b55':
     dependencies:
       '@midnight-ntwrk/compact-runtime': 0.15.0
       '@noble/hashes': 2.2.0
       zod: 4.4.3
 
-  '@midnight-ntwrk/midnight-did-jubjub-schnorr@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-jubjub-schnorr-0.4.0.tgz':
+  '@midnight-ntwrk/midnight-did-jubjub-schnorr@git+https://git@github.com:midnightntwrk/midnight-did.git#34b90bb734c7bee04446d8e3130e7d9384a8d094':
     dependencies:
       '@midnight-ntwrk/compact-runtime': 0.15.0
       '@midnight-ntwrk/ledger-v8': 8.0.3
@@ -5052,7 +5059,7 @@ snapshots:
 
   '@midnight-ntwrk/midnight-did-secret-storage@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-secret-storage-0.1.0.tgz':
     dependencies:
-      '@midnight-ntwrk/midnight-did-jubjub-schnorr': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-jubjub-schnorr-0.4.0.tgz
+      '@midnight-ntwrk/midnight-did-jubjub-schnorr': git+https://git@github.com:midnightntwrk/midnight-did.git#34b90bb734c7bee04446d8e3130e7d9384a8d094
       '@midnight-ntwrk/wallet-sdk-hd': 3.0.2
       circomlibjs: 0.1.7
       zod: 4.4.3
@@ -5061,10 +5068,10 @@ snapshots:
       - react-native-b4a
       - utf-8-validate
 
-  '@midnight-ntwrk/midnight-did@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-0.4.0.tgz':
+  '@midnight-ntwrk/midnight-did@git+https://git@github.com:midnightntwrk/midnight-did.git#d3e581c57c7efc7dc3ee97618a5de8f899669890':
     dependencies:
-      '@midnight-ntwrk/midnight-did-contract': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-contract-0.4.0.tgz
-      '@midnight-ntwrk/midnight-did-domain': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-domain-0.4.0.tgz
+      '@midnight-ntwrk/midnight-did-contract': git+https://git@github.com:midnightntwrk/midnight-did.git#cc09f70ccd8d6e34514d663a87eafafec87a0631
+      '@midnight-ntwrk/midnight-did-domain': git+https://git@github.com:midnightntwrk/midnight-did.git#7ab3a5d52951c07eda92295147493339d9470b55
       zod: 4.4.3
 
   '@midnight-ntwrk/midnight-js-contracts@4.0.4':
@@ -5073,6 +5080,13 @@ snapshots:
       '@midnight-ntwrk/midnight-js-network-id': 4.0.4
       '@midnight-ntwrk/midnight-js-types': 4.0.4
       '@midnight-ntwrk/midnight-js-utils': 4.0.4
+
+  '@midnight-ntwrk/midnight-js-fetch-zk-config-provider@4.0.4':
+    dependencies:
+      '@midnight-ntwrk/midnight-js-types': 4.0.4
+      cross-fetch: 4.1.0
+    transitivePeerDependencies:
+      - encoding
 
   '@midnight-ntwrk/midnight-js-http-client-proof-provider@4.0.4':
     dependencies:

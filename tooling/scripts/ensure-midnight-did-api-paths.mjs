@@ -90,7 +90,9 @@ for (const packageDir of packageDirs) {
       await access(file);
     } catch (error) {
       if (error && typeof error === 'object' && 'code' in error && error.code === 'ENOENT') {
-        console.warn(`[ensure-midnight-did-api-paths] Skip missing file: ${file}`);
+        if (!replacement.optionalShape) {
+          console.warn(`[ensure-midnight-did-api-paths] Skip missing file: ${file}`);
+        }
         continue;
       }
       throw error;
@@ -101,7 +103,6 @@ for (const packageDir of packageDirs) {
     }
     if (!current.includes(replacement.from)) {
       if (replacement.optionalShape) {
-        console.warn(`[ensure-midnight-did-api-paths] Skip unmatched optional config shape: ${file}`);
         continue;
       }
       throw new Error(`Unexpected @midnight-ntwrk/midnight-did-api config shape in ${file}`);
