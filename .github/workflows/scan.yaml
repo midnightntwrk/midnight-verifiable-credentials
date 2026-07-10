@@ -3,20 +3,19 @@ permissions: {}
 
 on:
   push:
-    branches: [main]
+    branches: [develop, main]
   pull_request:
-    branches: [main]
+    branches: [develop, main]
   workflow_dispatch: {}   # so you can still run it manually
   schedule:
     - cron: '0 0 * * *'   # run daily at midnight UTC
 concurrency:
-  group:
-    ${{ github.event_name != 'merge_group' && format('{0}-{1}', github.workflow, github.head_ref) || github.run_id }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  scan:
+    runs-on: ubuntu-24.04
     permissions:
       actions: read
       contents: read
@@ -24,7 +23,10 @@ jobs:
       statuses: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  #v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  #v6.0.3
 
       - name: Scan code
-        uses: midnightntwrk/upload-sarif-github-action/scan@4a845f28b9c18477052e3ee02c4e549970b1e904
+        uses: midnightntwrk/upload-sarif-github-action@4bbe849e9707b46342832d4b7f94fec585823ca4  # main 2026-07-10, includes #113 scan-context fix
+        with:
+          fail_severity: "high"
+          scorecard_checks: "Binary-Artifacts,Dangerous-Workflow,Security-Policy,License,Pinned-Dependencies,Token-Permissions"
