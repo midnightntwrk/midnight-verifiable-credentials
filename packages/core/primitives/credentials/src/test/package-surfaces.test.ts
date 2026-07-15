@@ -23,6 +23,7 @@ const packageJson = JSON.parse(
 ) as {
   exports?: Record<string, unknown>;
   midnight?: { releaseStage?: string };
+  typesVersions?: Record<string, Record<string, string[]>>;
 };
 
 describe("credentials package surfaces", () => {
@@ -33,6 +34,9 @@ describe("credentials package surfaces", () => {
 
   it("declares a browser-safe Jubjub utility subpath", () => {
     expect(packageJson.exports?.["./jubjub"]).toBeDefined();
+    expect(packageJson.typesVersions?.["*"]?.jubjub).toEqual([
+      "dist/jubjub.d.ts",
+    ]);
     expect(existsSync(sourceSurface("jubjub.ts"))).toEqual(true);
   });
 

@@ -23,6 +23,12 @@ const repoRoot = path.resolve(
   "../..",
 );
 const errors = [];
+const installLifecycleHooks = [
+  "preinstall",
+  "install",
+  "postinstall",
+  "prepare",
+];
 
 const assert = (condition, message) => {
   if (!condition) {
@@ -129,7 +135,7 @@ const assertCandidateManifest = (entry) => {
   assert(packageJson.engines?.node === ">=24", `${label} must declare the supported Node engine`);
   assert(packageJson.midnight?.releaseStage === "candidate", `${label} must declare candidate release metadata`);
   assert(packageJson.scripts?.prepack === "pnpm run build", `${label} must build deterministically during prepack`);
-  for (const lifecycleHook of ["preinstall", "install", "postinstall", "prepare"]) {
+  for (const lifecycleHook of installLifecycleHooks) {
     assert(
       packageJson.scripts?.[lifecycleHook] === undefined,
       `${label} must not run ${lifecycleHook} in a consumer install`,
@@ -277,6 +283,12 @@ const assertCandidateTarball = (entry, tarballDirectory) => {
   assert(packedPackageJson.version === sourcePackageJson.version, `${label} package version drifted`);
   assert(packedPackageJson.private === true, `${label} must remain private`);
   assert(packedPackageJson.publishConfig === undefined, `${label} must not select a registry`);
+  for (const lifecycleHook of installLifecycleHooks) {
+    assert(
+      packedPackageJson.scripts?.[lifecycleHook] === undefined,
+      `${label} must not run ${lifecycleHook} in a consumer install`,
+    );
+  }
 
   visitExportMap(packedPackageJson.exports, `${label} exports`, (target, targetLabel) => {
     const packedTarget = `package/${target.slice(2)}`;

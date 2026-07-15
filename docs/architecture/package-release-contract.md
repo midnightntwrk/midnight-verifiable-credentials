@@ -81,13 +81,17 @@ allowed while `0.16.0` is excluded.
 
 `tooling/scripts/test-release-package-consumers.mjs` copies each candidate
 tarball and its declared fixture to an operating-system temporary directory.
-It performs a normal isolated install and rejects workspace links, sibling
-paths, repository paths, or package resolution outside that temporary project.
+It first resolves a lockfile with scripts disabled, rejects every local locator
+except the copied candidate tarball, and only then performs a normal isolated
+install. The lane also rejects lifecycle hooks in both source and packed
+manifests, repository paths, or package resolution outside that temporary
+project.
 
 The core candidate currently proves:
 
 - Node ESM imports of the root, generated contract, and managed subpaths;
 - strict `NodeNext` declaration consumption with `skipLibCheck: false`;
+- legacy TypeScript `node` resolution for declared compatibility subpaths;
 - a browser-targeted ESM bundle through the pure `./jubjub` subpath; and
 - Compact compilation through the installed package `dist` directory and
   `include "credentials"`.

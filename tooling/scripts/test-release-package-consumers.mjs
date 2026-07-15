@@ -52,6 +52,12 @@ delete environment.COMPACT_PATH;
 delete environment.NODE_PATH;
 delete environment.npm_config_workspace;
 delete environment.NPM_CONFIG_WORKSPACE;
+const installLifecycleHooks = [
+  "preinstall",
+  "install",
+  "postinstall",
+  "prepare",
+];
 
 const run = (command, commandArgs, cwd, label) => {
   console.log(`[test-release-package-consumers] ${label}`);
@@ -62,24 +68,29 @@ const run = (command, commandArgs, cwd, label) => {
   });
 };
 
-const candidates = workspaceCatalog.filter(
-  (entry) => entry.releaseStage === "candidate",
+const releasePackages = workspaceCatalog.filter(
+  (entry) => entry.releaseStage !== "internal",
 );
-if (candidates.length === 0) {
-  fail("workspace catalog has no release candidates");
+if (releasePackages.length === 0) {
+  fail("workspace catalog has no candidate or supported release packages");
 }
 
-for (const candidate of candidates) {
-  if (typeof candidate.consumerFixture !== "string") {
-    fail(`${candidate.path} has no clean-consumer fixture`);
+for (const releasePackage of releasePackages) {
+  if (typeof releasePackage.consumerFixture !== "string") {
+    fail(`${releasePackage.path} has no clean-consumer fixture`);
   }
 
   const sourcePackageJson = JSON.parse(
-    readFileSync(path.join(repoRoot, candidate.path, "package.json"), "utf8"),
+    readFileSync(
+      path.join(repoRoot, releasePackage.path, "package.json"),
+      "utf8",
+    ),
   );
-  const fixtureRoot = path.resolve(repoRoot, candidate.consumerFixture);
+  const fixtureRoot = path.resolve(repoRoot, releasePackage.consumerFixture);
   if (!isWithin(repoRoot, fixtureRoot)) {
-    fail(`${candidate.path} consumer fixture must stay inside the repository`);
+    fail(
+      `${releasePackage.path} consumer fixture must stay inside the repository`,
+    );
   }
   const fixturePackageJson = JSON.parse(
     readFileSync(path.join(fixtureRoot, "package.json"), "utf8"),
@@ -93,7 +104,7 @@ for (const candidate of candidates) {
     "file:./vendor/candidate.tgz"
   ) {
     fail(
-      `${candidate.consumerFixture} must install only ${sourcePackageJson.name} from the copied tarball`,
+      `${releasePackage.consumerFixture} must install only ${sourcePackageJson.name} from the copied tarball`,
     );
   }
 
@@ -103,6 +114,18 @@ for (const candidate of candidates) {
   );
   if (!existsSync(tarballPath)) {
     fail(`${path.relative(repoRoot, tarballPath)} is missing`);
+  }
+  const packedPackageJson = JSON.parse(
+    execFileSync("tar", ["-xOf", tarballPath, "package/package.json"], {
+      encoding: "utf8",
+    }),
+  );
+  for (const lifecycleHook of installLifecycleHooks) {
+    if (packedPackageJson.scripts?.[lifecycleHook] !== undefined) {
+      fail(
+        `${sourcePackageJson.name} tarball must not run ${lifecycleHook} during install`,
+      );
+    }
   }
 
   const temporaryRoot = mkdtempSync(
@@ -125,7 +148,40 @@ for (const candidate of candidates) {
       "pnpm",
       [
         "install",
+        "--lockfile-only",
+        "--ignore-scripts",
         "--no-frozen-lockfile",
+        "--prefer-offline",
+        "--strict-peer-dependencies",
+      ],
+      consumerRoot,
+      `${sourcePackageJson.name}: scripts-disabled dependency resolution`,
+    );
+
+    const lockfile = readFileSync(
+      path.join(consumerRoot, "pnpm-lock.yaml"),
+      "utf8",
+    );
+    const localLocators = lockfile.match(
+      /(?:file|link|workspace):[^\s,'"}\]]+/gu,
+    ) ?? [];
+    for (const locator of localLocators) {
+      if (
+        locator !== "file:./vendor/candidate.tgz" &&
+        locator !== "file:vendor/candidate.tgz"
+      ) {
+        fail(`consumer lockfile contains forbidden local locator ${locator}`);
+      }
+    }
+    if (lockfile.includes(repoRoot)) {
+      fail("consumer lockfile contains the repository path");
+    }
+
+    run(
+      "pnpm",
+      [
+        "install",
+        "--frozen-lockfile",
         "--prefer-offline",
         "--strict-peer-dependencies",
       ],
@@ -144,28 +200,10 @@ for (const candidate of candidates) {
       fail(`${sourcePackageJson.name} resolved outside the temporary consumer`);
     }
 
-    const lockfile = readFileSync(
-      path.join(consumerRoot, "pnpm-lock.yaml"),
-      "utf8",
-    );
-    for (const [label, pattern] of [
-      ["workspace dependency", /workspace:/u],
-      ["linked dependency", /link:/u],
-      ["parent-relative file dependency", /file:\.\.(?:\/|\\)/u],
-    ]) {
-      if (pattern.test(lockfile)) {
-        fail(
-          `consumer lockfile contains forbidden ${label}`,
-        );
-      }
-    }
-    if (lockfile.includes(repoRoot)) {
-      fail("consumer lockfile contains the repository path");
-    }
-
     for (const [script, label] of [
       ["test:node", "Node ESM"],
       ["typecheck", "strict TypeScript"],
+      ["typecheck:legacy", "legacy TypeScript resolution"],
       ["bundle", "browser bundle"],
       ["test:bundle", "bundled execution"],
     ]) {

@@ -496,6 +496,7 @@ project outside the repository, installs only the copied tarball, and verifies:
 
 - Node ESM root, contract, managed, and Compact export resolution;
 - strict TypeScript declarations with `skipLibCheck: false`;
+- legacy TypeScript `node` resolution for compatibility subpaths;
 - browser-targeted bundling and execution through the pure `./jubjub` subpath;
 - Compact compilation with the installed package `dist` directory on
   `--compact-path`; and

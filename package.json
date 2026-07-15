@@ -104,7 +104,7 @@
     "scaffold:family": "node ./tooling/scripts/scaffold-vc-family.mjs",
     "postinstall": "node ./tooling/scripts/ensure-midnight-did-package-aliases.mjs && node ./tooling/scripts/ensure-midnight-did-api-paths.mjs && node ./tooling/scripts/ensure-compact-package-aliases.mjs",
     "artifacts:pack": "./tooling/scripts/pack-artifacts.sh",
-    "test:release-package-consumers": "node ./tooling/scripts/test-release-package-consumers.mjs --tarballs ./tooling/artifacts/npm",
+    "test:release-package-consumers": "node ./tooling/scripts/check-release-package-contract.mjs --tarballs ./tooling/artifacts/npm && node ./tooling/scripts/test-release-package-consumers.mjs --tarballs ./tooling/artifacts/npm",
     "typecheck:light": "pnpm run build:light && pnpm run typecheck:light:from-artifacts",
     "typecheck:all": "pnpm run build:all && pnpm run typecheck:all:from-artifacts",
     "typecheck:light:from-artifacts": "node ./tooling/scripts/workspace-catalog.mjs --exec-typecheck-from-artifacts",
