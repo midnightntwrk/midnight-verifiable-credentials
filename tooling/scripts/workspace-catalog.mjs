@@ -14,6 +14,7 @@ const workspace = (workspacePath, maturity, packageClass, options = {}) => ({
   path: workspacePath,
   maturity,
   packageClass,
+  releaseStage: options.releaseStage ?? "internal",
   releaseTasks:
     options.releaseTasks ??
     (packageClass === "dist"
@@ -34,7 +35,9 @@ const workspace = (workspacePath, maturity, packageClass, options = {}) => ({
 // catalog in the same review so its maturity, gate, and packaging policy are
 // visible in one diff.
 export const workspaceCatalog = [
-  workspace("packages/core/primitives/credentials", "core", "dist"),
+  workspace("packages/core/primitives/credentials", "core", "dist", {
+    releaseStage: "candidate",
+  }),
   workspace("packages/registry/status-registry", "reference", "dist"),
   workspace("packages/core/capabilities/same-holder", "core", "dist"),
   workspace("packages/core/primitives/iso-registry", "reference", "dist"),
@@ -134,6 +137,11 @@ export const allowedPackageClasses = new Set([
   "scenario",
   "source-only",
 ]);
+export const allowedReleaseStages = new Set([
+  "internal",
+  "candidate",
+  "supported",
+]);
 export const workspaceCatalogByPath = new Map(
   workspaceCatalog.map((entry) => [entry.path, entry]),
 );
@@ -145,6 +153,12 @@ export const packageTestWorkspacePaths = workspaceCatalog
     (entry) =>
       entry.packageTest && entry.releaseTasks.includes("test:ci"),
   )
+  .map((entry) => entry.path);
+export const releaseCandidateWorkspacePaths = workspaceCatalog
+  .filter((entry) => entry.releaseStage === "candidate")
+  .map((entry) => entry.path);
+export const supportedWorkspacePaths = workspaceCatalog
+  .filter((entry) => entry.releaseStage === "supported")
   .map((entry) => entry.path);
 
 const repoRoot = path.resolve(
@@ -198,6 +212,14 @@ const checkCatalog = () => {
       allowedPackageClasses.has(entry.packageClass),
       `${entry.path} has unsupported package class '${entry.packageClass}'`,
     );
+    assert.ok(
+      allowedReleaseStages.has(entry.releaseStage),
+      `${entry.path} has unsupported release stage '${entry.releaseStage}'`,
+    );
+    assert.ok(
+      entry.releaseStage === "internal" || entry.packageClass === "dist",
+      `${entry.path} release candidates and supported packages must be dist packages`,
+    );
     assert.equal(
       entry.pack,
       entry.packageClass === "dist",
@@ -214,6 +236,16 @@ const checkCatalog = () => {
     );
     assert.equal(packageJson.midnight?.maturity, entry.maturity);
     assert.equal(packageJson.midnight?.packageClass, entry.packageClass);
+    assert.equal(
+      packageJson.midnight?.releaseStage ?? "internal",
+      entry.releaseStage,
+      `${entry.path} release stage metadata must match the catalog`,
+    );
+    assert.equal(
+      packageJson.private,
+      entry.releaseStage !== "supported",
+      `${entry.path} private must match its release stage`,
+    );
     for (const task of entry.releaseTasks) {
       assert.ok(
         packageJson.scripts?.[task],

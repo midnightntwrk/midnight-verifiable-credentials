@@ -140,6 +140,10 @@
   - [`architecture/workspace-package-manifest-discipline.md`](./architecture/workspace-package-manifest-discipline.md)
   - for contributors adding or changing package entrypoints, export maps,
     tarball `files` manifests, or scenario/source-only workspace metadata
+- package release contract:
+  - [`architecture/package-release-contract.md`](./architecture/package-release-contract.md)
+  - for release stages, the current package support inventory, candidate
+    tarball requirements, and graduation criteria
 - Compact source conventions, purity, and commitment research:
   - [`architecture/compact-source-conventions-and-purity-research.md`](./architecture/compact-source-conventions-and-purity-research.md)
   - for the current comment-style, pure-circuit, and commitment-standardization research cut

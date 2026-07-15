@@ -5,6 +5,7 @@ import path from "node:path";
 import {
   allowedMaturityValues,
   allowedPackageClasses,
+  allowedReleaseStages,
   workspaceCatalog,
   workspaceCatalogByPath,
 } from "./workspace-catalog.mjs";
@@ -143,6 +144,10 @@ const assertMaturityMetadata = (packageJson, workspace) => {
     allowedPackageClasses.has(expected.packageClass),
     `${workspace} package class policy uses unsupported value: ${expected.packageClass}`,
   );
+  assert(
+    allowedReleaseStages.has(expected.releaseStage),
+    `${workspace} release policy uses unsupported value: ${expected.releaseStage}`,
+  );
 
   assert(isRecord(packageJson.midnight), `${workspace} must define midnight metadata`);
   if (!isRecord(packageJson.midnight)) {
@@ -164,6 +169,10 @@ const assertMaturityMetadata = (packageJson, workspace) => {
   assert(
     packageJson.midnight.packageClass === expected.packageClass,
     `${workspace} midnight.packageClass must be ${expected.packageClass}`,
+  );
+  assert(
+    (packageJson.midnight.releaseStage ?? "internal") === expected.releaseStage,
+    `${workspace} midnight.releaseStage must be ${expected.releaseStage}`,
   );
 
   const readmePath = path.join(repoRoot, workspace, "README.md");
@@ -220,15 +229,23 @@ const assertDistEntrypoints = (packageJson, workspace) => {
 };
 
 const assertDistPackage = (packageJson, workspace) => {
+  const releaseStage = workspaceCatalogByPath.get(workspace).releaseStage;
   assert(packageJson.license === "Apache-2.0", `${workspace} must declare Apache-2.0 license`);
-  assert(packageJson.private === true, `${workspace} must remain private until publish policy changes`);
+  assert(
+    packageJson.private === (releaseStage !== "supported"),
+    `${workspace} private must match release stage ${releaseStage}`,
+  );
   assert(packageJson.type === "module", `${workspace} must be an ESM package`);
   assert(packageJson.main === "dist/index.js", `${workspace} main must be dist/index.js`);
   assert(packageJson.module === "dist/index.js", `${workspace} module must be dist/index.js`);
   assert(packageJson.types === "./dist/index.d.ts", `${workspace} types must be ./dist/index.d.ts`);
   assertDistEntrypoints(packageJson, workspace);
 
-  for (const fileEntry of requiredDistFiles) {
+  const requiredFiles =
+    releaseStage === "internal"
+      ? requiredDistFiles
+      : ["dist/**", "README.md", "CHANGELOG.md", "package.json"];
+  for (const fileEntry of requiredFiles) {
     assertArrayIncludes(packageJson.files, fileEntry, `${workspace} files`);
   }
 

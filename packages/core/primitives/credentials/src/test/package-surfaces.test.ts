@@ -20,12 +20,29 @@ const indexSource = readFileSync(sourceSurface("index.ts"), "utf8");
 
 const packageJson = JSON.parse(
   readFileSync(path.resolve(packageRoot, "package.json"), "utf8"),
-) as { exports?: Record<string, unknown> };
+) as {
+  exports?: Record<string, unknown>;
+  midnight?: { releaseStage?: string };
+};
 
 describe("credentials package surfaces", () => {
   it("declares a stable contract subpath export", () => {
     expect(packageJson.exports?.["./contract"]).toBeDefined();
     expect(existsSync(sourceSurface("contract.ts"))).toEqual(true);
+  });
+
+  it("declares an ESM-only release-candidate surface", () => {
+    expect(packageJson.midnight?.releaseStage).toEqual("candidate");
+    expect(JSON.stringify(packageJson.exports)).not.toContain('"require"');
+  });
+
+  it("exports the audited Compact source entrypoints", () => {
+    expect(packageJson.exports?.["./credentials.compact"]).toEqual(
+      "./dist/credentials.compact",
+    );
+    expect(packageJson.exports?.["./credentials/*.compact"]).toEqual(
+      "./dist/credentials/*.compact",
+    );
   });
 
   it("keeps the root package surface free of duplicate contract namespaces", () => {

@@ -11,7 +11,8 @@ Each workspace package also declares checked Midnight metadata:
 ```json
 "midnight": {
   "maturity": "core | reference | lab | demo | infrastructure",
-  "packageClass": "dist | scenario | source-only"
+  "packageClass": "dist | scenario | source-only",
+  "releaseStage": "candidate | supported"
 }
 ```
 
@@ -21,6 +22,9 @@ The metadata answers two different questions:
   specs, and downstream demos.
 - `packageClass` tells tooling which manifest surface the package is allowed to
   expose.
+- `releaseStage` is omitted for internal workspaces. Candidate and supported
+  packages declare it explicitly; pack eligibility alone is not a release
+  promise.
 
 Maturity values:
 
@@ -40,13 +44,13 @@ lab/demo packages from looking like publish-ready primitives by accident.
 
 | Class | Workspaces | Manifest contract |
 |---|---|---|
-| Dist package | Core, registry, adapters, protocol, credential families, verifier contracts, university protocol/reporting | `license`, `private`, `type`, `main`, `module`, `types`, root `exports`, and `files` point at `dist/**` plus minimal metadata |
+| Dist package | Core, registry, adapters, protocol, credential families, verifier contracts, university protocol/reporting | `license`, release-stage-appropriate `private`, `type`, `main`, `module`, `types`, root `exports`, and `files` point at `dist/**` plus minimal metadata |
 | Source-only integration package | `packages/components/integration/standalone-environment` | private source package with `main` and `files` pointing at `src/**/*.ts`; no dist export map is promised |
 | Scenario package | `packages/use-cases/*/scenarios` | private executable package with no publish entrypoint or tarball surface |
 
 ## Dist Package Rules
 
-Dist packages must expose:
+Internal dist packages must expose:
 
 - `license: "Apache-2.0"`
 - `private: true`
@@ -67,6 +71,21 @@ Dist packages must expose:
 If the package has Compact sources under `src/`, its `files` list must also
 include `src/**/*.compact` so generated tarballs keep the Compact source
 contract visible to auditors.
+
+Release candidates additionally must:
+
+- declare `midnight.releaseStage: "candidate"` and remain `private: true`;
+- omit `publishConfig` until a registry and release workflow are approved;
+- include `CHANGELOG.md` in place of build-only scripts and TypeScript configs
+  in the tarball allowlist;
+- expose one truthful runtime format with no CommonJS `require` condition for
+  ESM output;
+- define complete release metadata and release-compatible dependency ranges;
+  and
+- pass [`./package-release-contract.md`](./package-release-contract.md).
+
+A future supported package declares `midnight.releaseStage: "supported"` and
+may set `private: false` only in the reviewed publication-enablement change.
 
 ## Scenario Package Rules
 
@@ -114,6 +133,7 @@ Run:
 
 ```bash
 pnpm run check:workspace-manifests
+pnpm run check:release-package-contract
 ```
 
 The guard is also part of `pnpm run ci:lint`. Update the guard and this document

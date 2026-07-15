@@ -91,6 +91,7 @@ Start here:
   - [`docs/architecture/overview.md`](./docs/architecture/overview.md)
   - [`docs/architecture/package-boundaries.md`](./docs/architecture/package-boundaries.md)
   - [`docs/architecture/workspace-package-manifest-discipline.md`](./docs/architecture/workspace-package-manifest-discipline.md)
+  - [`docs/architecture/package-release-contract.md`](./docs/architecture/package-release-contract.md)
   - [`docs/architecture/package-tier-inventory.md`](./docs/architecture/package-tier-inventory.md)
   - [`docs/architecture/holder-binding-terminology.md`](./docs/architecture/holder-binding-terminology.md)
   - [`docs/architecture/protocol-classification.md`](./docs/architecture/protocol-classification.md)
@@ -310,6 +311,9 @@ pnpm run check:did-integration
 ## Artifact packaging
 
 Stable tarball output lives under [`tooling/artifacts/npm/`](./tooling/artifacts/README.md).
+Packable artifacts are not automatically supported releases. See the
+[package release contract](./docs/architecture/package-release-contract.md)
+for the explicit candidate/support inventory and graduation requirements.
 
 Commands:
 
@@ -317,7 +321,7 @@ Commands:
 - `pnpm run upgrade:vendor`
 - `./upgrade-libs.sh --destination /path/to/downstream-repo`
 
-Published/exported local tarball set currently includes:
+Packable local tarball set currently includes:
 
 - `@midnight-ntwrk/midnight-did-credentials`
 - `@midnight-ntwrk/midnight-did-credentials-status-registry`

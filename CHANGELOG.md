@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- added explicit `internal`, `candidate`, and `supported` package release
+  stages, a canonical package support inventory, and fail-closed release
+  candidate manifest/tarball validation.
+- added ADR-0008 to separate packable workspace artifacts from supported
+  public releases while VC packages use root-workspace-distributed tarballs.
+
 - added `SchemaCapabilities`, `SchemaFamilyResolutionHint`, and
   `SchemaDescriptor` to the credentials core so wallets and adapters can bind
   bounded credential-family capability metadata and resolver hints to a
@@ -66,6 +72,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `credentials-demo-contract`.
 
 ### Changed
+
+- promoted only `@midnight-ntwrk/midnight-did-credentials` to a private pre-1.0
+  release candidate with ESM-only exports, explicit Compact subpaths, complete
+  package metadata, a package changelog, and a compatible Compact `0.15.x`
+  runtime range. Registry publication remains blocked on clean consumers,
+  ownership, support policy, provenance, and release operations.
 
 - protocol reference agents now derive generated issue/present message
   `features` compatibility hints from schema descriptors instead of maintaining
