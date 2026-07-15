@@ -1,16 +1,16 @@
 # University Improvement Backlog
 
-Status: university-focused expansion for current `origin/develop`.
+Status: historical university-focused May 2026 expansion. Remaining production
+work is owned by [`vc-maturity-backlog.md`](./vc-maturity-backlog.md).
 Last audited: 2026-05-21.
 
 The large university runtime/backend port is merged. Current university work is
 no longer about proving that the scenario can run; it is about making the flow
 simpler to maintain, easier for humans to read, and easier for tools to consume.
 
-This file expands the university-related slices in
+This file records the university-related slices from
 [`repository-audit-backlog.md`](./repository-audit-backlog.md). It is not an
-independent PR queue; the repository audit backlog remains the scheduling
-authority.
+independent PR queue or current scheduling authority.
 
 ## Current Baseline
 

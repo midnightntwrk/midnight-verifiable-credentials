@@ -22,6 +22,8 @@ Related documents:
   - [`../guides/integration-surface-map.md`](../guides/integration-surface-map.md)
 - VC maturity backlog:
   - [`../plans/vc-maturity-backlog.md`](../plans/vc-maturity-backlog.md)
+- credential product repository decision:
+  - [`../decisions/0001-credential-product-repository-boundary.md`](../decisions/0001-credential-product-repository-boundary.md)
 
 ## Package classes
 
@@ -48,6 +50,7 @@ Related documents:
 | `credentials-dummy-claims` | Credential-family package | Prototype laboratory | Yes, as a claim-surface reference | Broad direct Compact claim-surface and selective-disclosure laboratory |
 | `credentials-mixed-claims` | Credential-family package | Prototype laboratory | Yes, as a claim-representation reference | Mixed public/direct plus committed-private claim-representation laboratory |
 | `credentials-university-diploma` | Credential-family package | Prototype use-case family | Yes, as a use-case reference | Non-revocable academic diploma family for batch issuance and verifier-policy flows |
+| `credentials-digital-passport` | Credential-family package | Reference candidate; not product-ready | Yes, after boundary and correctness work | Five-claim passport family and first independent product graduation candidate; currently has a transport-layer dependency that must be removed |
 | `credentials-offchain-did` | DID-aware adapter package | Reference implementation | Yes | Runtime-only DID conversion helpers |
 | `credentials-openid` | Transport or orchestration package | Reference transport-adapter implementation | Yes, with transport-layer scope | OpenID-shaped JSON/domain envelopes around Compact payloads |
 | `credentials-protocol` | Transport or orchestration package | Reference orchestration implementation, evolving API | Limited | Off-chain reference agent flows and protocol state management |

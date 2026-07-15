@@ -1,0 +1,89 @@
+# ADR-0003: ZK artifact distribution and discovery
+
+- Status: Accepted
+- Date: 2026-07-15
+- Owners: credential product, release engineering, and verifier maintainers
+- Supersedes: none
+
+## Context
+
+Midnight deployable contracts need exact prover, verifier, and ZKIR artifacts.
+These files may be large and are sensitive to Compact source, compiler,
+runtime, and composition changes. Package versions, schema versions, artifact
+digests, and deployment addresses identify different things and must not be
+collapsed into one version string.
+
+Mutable URLs or package-relative assumptions make it possible to prove or
+verify with artifacts that do not correspond to the deployed contract.
+
+## Decision
+
+Pure credential-family packages publish no proving artifacts. The final
+deployable contract owns the artifact bundle generated from its complete
+composition.
+
+Each release produces an immutable build manifest containing at least:
+
+- product, package, schema, and contract identifiers;
+- source commit and clean-tree assertion;
+- Compact compiler, runtime, and generator versions;
+- circuit identifiers and parameterization;
+- artifact paths, byte sizes, and cryptographic digests;
+- dependency lockfile digest;
+- SBOM and provenance references; and
+- the digest of the manifest itself.
+
+The canonical bundle preserves the Midnight artifact layout expected by
+runtime tooling, including `keys/<circuit>.prover`,
+`keys/<circuit>.verifier`, and `zkir/<circuit>.bzkir` where those files are
+required.
+
+A separate signed deployment manifest binds a build-manifest digest to:
+
+- network and chain identifiers;
+- contract address and deployment transaction or block reference;
+- constructor/configuration digest;
+- accepted DID, trust-registry, status, and policy references;
+- governance owner and support window; and
+- predecessor, successor, deprecation, or revocation information.
+
+Artifacts are distributed by digest through an OCI-compatible registry and a
+matching release attachment. Package tarballs contain typed locator metadata
+and verification code, not mutable copies of large proving keys. An optional
+offline bundle may include the tarballs and artifacts while preserving the same
+digests.
+
+Consumers resolve an exact manifest digest, verify all bytes before use, cache
+by digest, and fail closed on mismatch. `latest`, branch names, and mutable tags
+are not valid production selectors. Trust-registry entries may discover an
+approved deployment-manifest digest but do not host the artifacts.
+
+## Consequences
+
+- A verifier can prove that local artifacts correspond to a known build and
+  deployment.
+- Package release, schema evolution, artifact generation, and deployment can
+  evolve independently without ambiguous identifiers.
+- Release automation must generate, sign, publish, mirror, and test manifests.
+- Offline and mobile clients need storage and eviction policies for large
+  digest-addressed assets.
+
+## Rejected alternatives
+
+- **Embed all keys in npm tarballs:** increases package size and couples
+  JavaScript package installation to runtime-specific artifacts.
+- **Publish mutable object-store paths:** cannot give reproducible or fail-closed
+  resolution.
+- **Store binaries in the trust registry:** mixes authorization metadata with
+  large artifact distribution and availability concerns.
+
+## Follow-up
+
+Manifest schemas, signing policy, consumer verification, publication lanes,
+and disaster recovery are tracked in
+[`../plans/vc-maturity-backlog.md`](../plans/vc-maturity-backlog.md).
+
+## References
+
+- [OCI Distribution Specification](https://specs.opencontainers.org/distribution-spec/)
+- [SLSA artifact verification](https://slsa.dev/spec/v1.2/verifying-artifacts)

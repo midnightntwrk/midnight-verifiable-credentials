@@ -1,12 +1,12 @@
 # Midnight VC Repository Audit Backlog
 
-Status: current simplification, maintainability, and university-readability
-backlog for `origin/develop`.
+Status: historical May 2026 simplification audit. Remaining production work is
+owned by [`vc-maturity-backlog.md`](./vc-maturity-backlog.md).
 Last audited: 2026-05-21.
 
-This document is the primary VC repository backlog. Older capability plans stay
-in `docs/plans/` for traceability, but this file owns the active execution
-queue unless a more specific plan explicitly supersedes an item.
+This document is retained for delivery traceability. It no longer owns the
+active repository execution queue. Open findings must be reconciled into the
+canonical production backlog before implementation.
 
 ## Current Baseline
 
