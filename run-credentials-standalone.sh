@@ -3,6 +3,12 @@ set -euo pipefail
 
 source ./tooling/scripts/run-common.sh
 
+if [[ $# -ne 0 ]]; then
+  echo "[credentials-standalone] This runner does not accept arguments" >&2
+  echo "Usage: ./run-credentials-standalone.sh" >&2
+  exit 1
+fi
+
 run_common_setup_cleanup_trap
 run_common_ensure_node
 run_common_ensure_runtime_helpers

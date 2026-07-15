@@ -10,7 +10,7 @@ Usage:
   ./run.sh <root-pnpm-script> [--light] [-- <script args...>]
 
 Options:
-  --light                    Use reduced-scope or restored-artifact variants when supported; ignored otherwise
+  --light                    Use the complete non-Docker release gate or a target's light variant
 
 EOF
   run_common_catalog --targets
@@ -21,6 +21,13 @@ Targets that currently honor `--light`:
 EOF
   printf '  '
   run_common_print_light_targets
+
+  cat <<'EOF'
+
+The default `--light` gate runs these non-Docker release targets:
+EOF
+  printf '  '
+  run_common_print_release_gate_targets
 
   if command -v node >/dev/null 2>&1; then
     echo
@@ -89,6 +96,10 @@ if [[ $# -gt 0 ]]; then
     target="$1"
     target_kind="pnpm-script"
     shift
+  elif [[ "$1" != -* ]]; then
+    echo "[run] Unknown target: $1" >&2
+    run_common_usage >&2
+    exit 1
   fi
 fi
 
@@ -107,12 +118,23 @@ while [[ $# -gt 0 ]]; do
         shift
       done
       ;;
+    -*)
+      echo "[run] Unknown option: $1" >&2
+      echo "[run] Pass script arguments after --." >&2
+      exit 1
+      ;;
     *)
-      forward_args+=("$1")
-      shift
+      echo "[run] Unexpected argument: $1" >&2
+      echo "[run] Pass script arguments after --." >&2
+      exit 1
       ;;
   esac
 done
+
+if [[ "$target_kind" == "wrapper" && ${#forward_args[@]} -gt 0 && "$target" != "clean-artifacts" ]]; then
+  echo "[run] Target '$target' does not accept forwarded arguments" >&2
+  exit 1
+fi
 
 case "$target" in
   full)
@@ -178,10 +200,12 @@ case "$target" in
     pnpm run ci:lint
     ;;
   typecheck)
-    if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
+    if [[ "${MIDNIGHT_RELEASE_GATE_BUILD_READY:-0}" == "1" ]]; then
+      echo "[run] Reuse release-gate build for typecheck lane"
+      pnpm run typecheck:all:from-artifacts
+    elif [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
       echo "[run] Light typecheck lane"
-      run_common_ensure_artifacts "run" managed-light
-      pnpm run typecheck:light:from-artifacts
+      pnpm run typecheck:light
     else
       echo "[run] Full typecheck lane"
       run_common_ensure_artifacts "run" managed-all
@@ -198,15 +222,21 @@ case "$target" in
     fi
     ;;
   test)
-    if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
+    if [[ "${MIDNIGHT_RELEASE_GATE_BUILD_READY:-0}" == "1" ]]; then
+      echo "[run] Reuse release-gate build for package test lane"
+      pnpm run test:all:from-artifacts
+    elif [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
       echo "[run] Light package test lane"
-      run_common_ensure_artifacts "run" managed-light
-      pnpm run test:light:from-artifacts
+      pnpm run test:light
     else
       echo "[run] Full package test lane"
       run_common_ensure_artifacts "run" managed-all
       pnpm run test:all:from-artifacts
     fi
+    ;;
+  package)
+    echo "[run] Package artifact lane"
+    pnpm run artifacts:pack
     ;;
   bdd)
     echo "[run] BDD smoke lane"

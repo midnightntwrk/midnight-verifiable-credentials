@@ -374,7 +374,7 @@ const allowedNonGroupWorkflowReferences = new Set([
   "outputs",
 ]);
 const coneOutputOwnersByGroup = new Map();
-const coneOutputOwnerSet = new Set();
+const coneProtectedOutputOwnerSet = new Set();
 
 for (const group of groups) {
   const outputOwners = [
@@ -384,8 +384,10 @@ for (const group of groups) {
   ];
 
   coneOutputOwnersByGroup.set(group, outputOwners);
-  for (const owner of outputOwners) {
-    coneOutputOwnerSet.add(owner);
+  if (!ciBuildConeByName.get(group)?.allowFocusedBuildScripts) {
+    for (const owner of outputOwners) {
+      coneProtectedOutputOwnerSet.add(owner);
+    }
   }
 }
 failOnErrors();
@@ -425,7 +427,7 @@ for (const [scriptName, script] of Object.entries(packageJson.scripts ?? {})) {
   }
 
   for (const workspacePath of parseDirectBuildWorkspaces(script)) {
-    if (coneOutputOwnerSet.has(workspacePath)) {
+    if (coneProtectedOutputOwnerSet.has(workspacePath)) {
       errors.push(
         `Root package script '${scriptName}' directly builds cone-managed workspace '${workspacePath}'; use the matching build:cone:* script`,
       );

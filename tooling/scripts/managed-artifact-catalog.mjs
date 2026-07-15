@@ -35,9 +35,9 @@ export const profileDefinitions = {
   },
   "managed-all": {
     buildCommand: "pnpm run build:all",
-    ciBuildCones: ["age-gate"],
+    ciBuildCones: ["age-gate", "protocol"],
     extends: ["managed-light"],
-    managedPackages: ageGateOutputOwners,
+    managedPackages: [...ageGateOutputOwners, ...protocolOutputOwners],
   },
   "managed-revocation": {
     buildCommand: "pnpm run build:revocation",

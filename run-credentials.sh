@@ -3,6 +3,14 @@ set -euo pipefail
 
 source ./tooling/scripts/run-common.sh
 
+for arg in "$@"; do
+  if [[ "$arg" != "--light" ]]; then
+    echo "[credentials] Unknown option: $arg" >&2
+    echo "Usage: ./run-credentials.sh [--light]" >&2
+    exit 1
+  fi
+done
+
 run_common_apply_light_mode "$@"
 run_common_setup_cleanup_trap
 run_common_ensure_node
@@ -21,27 +29,37 @@ run_credentials_integration_target() {
   run_common_cleanup_test_infra
 }
 
-echo "[credentials] Lint"
 if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
-  echo "[credentials] Light wrapper lanes"
-  ./run.sh lint
-  ./run.sh typecheck --light
-  ./run.sh build --light
-  ./run.sh test --light
-else
-  echo "[credentials] Full wrapper lanes"
-  ./run.sh lint
-  ./run.sh typecheck
-  ./run.sh build
-  ./run.sh test
+  echo "[credentials] Complete non-Docker release gate"
+  for target in "${run_common_release_gate_targets[@]}"; do
+    echo "[credentials] Release target: ${target}"
+    if run_common_target_supports_light "$target"; then
+      ./run.sh "$target" --light
+    else
+      ./run.sh "$target"
+    fi
+    if [[ "$target" == "build" ]]; then
+      export MIDNIGHT_RELEASE_GATE_BUILD_READY=1
+    fi
+  done
+  echo "[credentials] Standalone Docker integrations are the only excluded release targets"
+  echo "[credentials] Done"
+  exit 0
 fi
 
-echo "[credentials] BDD smoke lane"
-./run.sh bdd
+echo "[credentials] Complete release gate"
+for target in "${run_common_release_gate_targets[@]}"; do
+  echo "[credentials] Release target: ${target}"
+  ./run.sh "$target"
+  if [[ "$target" == "build" ]]; then
+    export MIDNIGHT_RELEASE_GATE_BUILD_READY=1
+  fi
+done
 
-if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
-  echo "[credentials] Skip standalone integrations (SKIP_LONG_RUNNING=1)"
-elif docker info >/dev/null 2>&1; then
+if docker info >/dev/null 2>&1; then
+  run_credentials_integration_target \
+    "University standalone-hybrid BDD" \
+    ./run.sh university-bdd-standalone
   run_credentials_integration_target \
     "Standalone demo-contract integration" \
     ./run.sh integration-demo-contract

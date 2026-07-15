@@ -24,12 +24,12 @@ tarballs into
 pnpm run artifacts:pack
 ```
 
-Then refresh `tooling/vendor/` directly if needed:
-
-Refresh the local tarballs for this repository with:
+Refresh the local tarballs for this repository when needed:
 
 ```bash
 ./upgrade-libs.sh --destination ./tooling/vendor
 ```
 
-The default pack script intentionally skips `credentials-demo-contract` because that workspace composes Passport-specific packages that now live in `midnight-identity-solution-examples`.
+The default pack script reads `tooling/scripts/workspace-catalog.mjs` and packs
+every `dist`-class workspace. Scenario and source-only harnesses are validated
+by the release gate but are not distribution artifacts.

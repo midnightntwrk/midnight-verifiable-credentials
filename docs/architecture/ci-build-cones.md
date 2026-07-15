@@ -14,12 +14,18 @@ This repository uses four shared build cones for reusable CI outputs:
    - `credentials-birth-secret`
    - `credentials-hello-family`
    - `credentials-dummy-claims`
+   - `credentials-mixed-claims`
    - `credentials-university-diploma`
+   - `credentials-digital-passport`
 3. `age-gate`
    - `packages/use-cases/age-gate/contract`
    - `packages/use-cases/hello-verifier/contract`
 4. `protocol`
    - `packages/components/orchestration/protocol`
+   - `packages/use-cases/university/contract`
+   - `packages/use-cases/university/protocol`
+   - `packages/use-cases/university/reporting`
+   - `packages/components/integration/standalone-environment`
 
 ## Why Cones
 
@@ -41,16 +47,19 @@ the university diploma family used by the larger university use case.
 `birth-family` so verifier-lab changes invalidate and restore with the other
 credential-family artifacts.
 
-Intentional exclusions:
+The `protocol` name is also historical shorthand. It is the final downstream
+cone and owns every build output that is not assigned to the foundation,
+credential-family, or age-gate cones. This includes the private standalone
+environment's TypeScript output; its Docker-backed integration tests remain
+separate and are not run by the shared build job.
 
-- `packages/use-cases/university/contract` is built by university-specific prerequisites,
-  not by the shared build cones
-- `packages/use-cases/university/protocol`, `packages/use-cases/university/scenarios`, and
-  `packages/use-cases/university/reporting` are profile/reporting packages with their
-  own artifact contracts
-- `packages/components/integration/standalone-environment` is kept outside the reusable
-  cone cache because Docker-backed integration has separate setup and teardown
-  concerns
+Intentional build-output exclusions:
+
+- `packages/use-cases/age-gate/scenarios` and
+  `packages/use-cases/university/scenarios` are scenario workspaces whose BDD
+  reports are produced by dedicated validation lanes
+- `packages/use-cases/bdd-support` is a source-only test-support workspace with
+  no build task
 
 ## Hashing Rule
 
@@ -70,8 +79,8 @@ downstream consumers:
 
 - `birth-family` includes the full `foundation` input set
 - `age-gate` includes the full `birth-family` input set
-- `protocol` includes the full `foundation` input set plus the birth,
-  birth-secret, and age-gate contract packages it consumes
+- `protocol` hashes all 20 build-capable release workspaces because its
+  downstream outputs compose the lower-level package surfaces
 
 This keeps cache invalidation aligned with the actual dependency chain without
 forcing a single monolithic cache key or making the protocol cone restore
@@ -123,6 +132,7 @@ The check reads the same shell definitions used by CI and verifies that:
   `protocol`, `birth-family` is included by `age-gate`, and `protocol` carries
   its required birth, birth-secret, and age-gate inputs
 - no cone output path is owned by more than one cone
+- every build-capable workspace has exactly one cone output owner
 - no cone output path is tracked by git
 - every cone output path is ignored by `.gitignore`
 
@@ -134,8 +144,9 @@ quietly drift from the repository's generated-artifact policy.
 
 - every `build:cone:*` root script uses Turbo filters that match the cone's
   generated output owners
-- aggregate root build scripts do not directly rebuild cone-managed workspaces
-  outside the cone runner
+- foundational aggregate root build scripts do not directly rebuild
+  cone-managed workspaces outside the cone runner; focused university/report
+  scripts may rebuild their downstream owner directly
 - `.github/workflows/ci.yml` hashes, verifies, builds, packs, and uploads every
   declared cone group
 - the workflow does not reference unknown `ci-build-*` cache or artifact groups
@@ -174,6 +185,7 @@ This model does not yet attempt to:
 
 - publish one artifact per workspace package
 - use Nix as the primary build cache
-- model `standalone-environment` as a reusable artifact cone
+- split the downstream `protocol` cone into smaller protocol, university, and
+  integration-support artifacts
 
 Those can be revisited later if the current four-cone model stops being coarse enough.

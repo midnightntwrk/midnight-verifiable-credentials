@@ -14,17 +14,22 @@ const outputKeys = [
 ];
 
 export const ciChangeClassificationCatalog = {
-  docsPatterns: ["*.md", "docs/*"],
+  docsPatterns: [
+    "README.md",
+    "AGENT.md",
+    "CHANGELOG.md",
+    "CODE_OF_CONDUCT.md",
+    "CONTRIBUTING.md",
+    "SECURITY.md",
+    "docs/*",
+    ".github/*.md",
+  ],
   bddOnlyPatterns: [
     "packages/use-cases/*/scenarios/*",
     "docs/plans/serenity-js-bdd-layer.md",
     "docs/testing/test-strategy.md",
     "docs/testing/test-matrix.md",
     "docs/README.md",
-    "package.json",
-    "pnpm-lock.yaml",
-    "run.sh",
-    "run-credentials.sh",
   ],
   bddRelatedPatterns: [
     "packages/use-cases/*/scenarios/*",
@@ -38,6 +43,7 @@ export const ciChangeClassificationCatalog = {
     "tooling/vendor/*",
     "package.json",
     "pnpm-lock.yaml",
+    "pnpm-workspace.yaml",
     "turbo.json",
     "tsconfig*.json",
     ".eslintrc.json",
@@ -217,6 +223,26 @@ const runSelfTest = () => {
   assert.equal(packageOnly.bdd_only, false);
   for (const key of outputKeys.filter((key) => key.startsWith("run_"))) {
     assert.equal(packageOnly[key], true);
+  }
+  assert.equal(
+    classifyChangedFiles(["run.sh"]).bdd_only,
+    false,
+    "runner changes must execute the full non-Docker CI matrix",
+  );
+  assert.equal(
+    classifyChangedFiles(["run-credentials.sh"]).bdd_only,
+    false,
+    "wrapper changes must execute the full non-Docker CI matrix",
+  );
+  assert.equal(
+    classifyChangedFiles(["packages/core/primitives/credentials/README.md"])
+      .docs_only,
+    false,
+    "workspace README changes must execute package-class policy checks",
+  );
+  const pnpmWorkspaceChange = classifyChangedFiles(["pnpm-workspace.yaml"]);
+  for (const key of outputKeys.filter((key) => key.startsWith("run_"))) {
+    assert.equal(pnpmWorkspaceChange[key], true);
   }
   const sharedCredentialPrimitive = classifyChangedFiles([
     "packages/core/primitives/credentials/src/index.ts",
