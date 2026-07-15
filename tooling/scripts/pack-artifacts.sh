@@ -36,4 +36,5 @@ if [[ "$actual_count" != "$expected_count" ]]; then
   echo "[pack-artifacts] Expected ${expected_count} tarballs, found ${actual_count}" >&2
   exit 1
 fi
+node "$ROOT_DIR/tooling/scripts/check-release-package-contract.mjs" --tarballs "$DEST_DIR"
 echo "[pack-artifacts] Packed ${actual_count} tarballs"

@@ -24,6 +24,8 @@ Related documents:
   - [`../plans/vc-maturity-backlog.md`](../plans/vc-maturity-backlog.md)
 - credential product repository decision:
   - [`../decisions/0001-credential-product-repository-boundary.md`](../decisions/0001-credential-product-repository-boundary.md)
+- package release contract:
+  - [`./package-release-contract.md`](./package-release-contract.md)
 
 ## Package classes
 
@@ -37,6 +39,12 @@ Related documents:
 | Shared integration infrastructure | Docker/runtime/test harness support | No, except for repo-local testing | Depends outward on runtime/test infrastructure |
 
 ## Package inventory
+
+Maturity and reuse do not imply release support. The complete package release
+stage, distribution channel, ownership, and support inventory lives in the
+[package release contract](./package-release-contract.md). At present only
+`credentials` is a private pre-1.0 release candidate; every other package in
+this table remains internal.
 
 | Package | Class | Current stability | Reusable outside this repo | Notes |
 | --- | --- | --- | --- | --- |

@@ -223,7 +223,7 @@ importers:
   packages/core/primitives/credentials:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
+        specifier: ^0.15.0
         version: 0.15.0
 
   packages/core/primitives/iso-registry:
