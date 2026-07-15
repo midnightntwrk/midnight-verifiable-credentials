@@ -129,6 +129,16 @@ const assertCandidateManifest = (entry) => {
   assert(packageJson.engines?.node === ">=24", `${label} must declare the supported Node engine`);
   assert(packageJson.midnight?.releaseStage === "candidate", `${label} must declare candidate release metadata`);
   assert(packageJson.scripts?.prepack === "pnpm run build", `${label} must build deterministically during prepack`);
+  for (const lifecycleHook of ["preinstall", "install", "postinstall", "prepare"]) {
+    assert(
+      packageJson.scripts?.[lifecycleHook] === undefined,
+      `${label} must not run ${lifecycleHook} in a consumer install`,
+    );
+  }
+  assert(
+    typeof entry.consumerFixture === "string" && entry.consumerFixture.length > 0,
+    `${entry.path} must declare a clean-consumer fixture`,
+  );
   assert(existsSync(path.join(repoRoot, entry.path, "CHANGELOG.md")), `${entry.path} must include CHANGELOG.md`);
   const readmePreamble = readFileSync(
     path.join(repoRoot, entry.path, "README.md"),

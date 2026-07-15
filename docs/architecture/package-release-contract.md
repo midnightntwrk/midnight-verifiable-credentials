@@ -66,7 +66,9 @@ Every candidate must:
   sibling-source, Git, or URL runtime dependencies;
 - carry description, repository directory, keywords, side-effect metadata,
   engines, license, README, and package changelog;
-- build deterministically through `prepack`; and
+- build deterministically through `prepack`;
+- avoid install-time lifecycle hooks; a consumer install must not need producer
+  source, scripts, or a workspace checkout; and
 - pass the tarball allowlist and export-target checks run by
   `tooling/scripts/check-release-package-contract.mjs`.
 
@@ -74,6 +76,25 @@ For Compact `0.x` dependencies, a caret range preserves the compiler/runtime
 minor compatibility boundary. The core candidate therefore requires
 `@midnight-ntwrk/compact-runtime@^0.15.0`: compatible `0.15.x` patches are
 allowed while `0.16.0` is excluded.
+
+## Clean-consumer evidence
+
+`tooling/scripts/test-release-package-consumers.mjs` copies each candidate
+tarball and its declared fixture to an operating-system temporary directory.
+It performs a normal isolated install and rejects workspace links, sibling
+paths, repository paths, or package resolution outside that temporary project.
+
+The core candidate currently proves:
+
+- Node ESM imports of the root, generated contract, and managed subpaths;
+- strict `NodeNext` declaration consumption with `skipLibCheck: false`;
+- a browser-targeted ESM bundle through the pure `./jubjub` subpath; and
+- Compact compilation through the installed package `dist` directory and
+  `include "credentials"`.
+
+This evidence satisfies the technical consumer portion of graduation. It does
+not provide the missing ownership, support, registry, provenance, rollback, or
+authority approvals.
 
 ## Graduation
 
@@ -100,6 +121,8 @@ Run:
 ```bash
 pnpm run check:release-package-contract
 pnpm run artifacts:pack
+# Optional focused rerun against the tarballs produced above.
+pnpm run test:release-package-consumers
 ```
 
 `artifacts:pack` validates candidate tarball paths, required files, allowlisted
@@ -107,3 +130,5 @@ contents, packed metadata, and every concrete or wildcard export target before
 the packaging target succeeds. It then packs each candidate again and requires
 an identical SHA-256 digest, proving byte-for-byte reproducibility in the same
 checkout.
+The packaging command then runs the clean-consumer matrix against the validated
+tarball before succeeding.

@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   candidate manifest/tarball validation.
 - added ADR-0008 to separate packable workspace artifacts from supported
   public releases while VC packages use root-workspace-distributed tarballs.
+- added a clean non-workspace consumer matrix that installs the core candidate
+  tarball and exercises Node ESM, strict TypeScript, browser bundling, and
+  Compact package-path resolution.
 
 - added `SchemaCapabilities`, `SchemaFamilyResolutionHint`, and
   `SchemaDescriptor` to the credentials core so wallets and adapters can bind
@@ -76,8 +79,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - promoted only `@midnight-ntwrk/midnight-did-credentials` to a private pre-1.0
   release candidate with ESM-only exports, explicit Compact subpaths, complete
   package metadata, a package changelog, and a compatible Compact `0.15.x`
-  runtime range. Registry publication remains blocked on clean consumers,
-  ownership, support policy, provenance, and release operations.
+  runtime range. Registry publication remains blocked on ownership, support
+  policy, provenance, and release operations.
+- added a browser-safe `@midnight-ntwrk/midnight-did-credentials/jubjub`
+  subpath so pure arithmetic consumers do not pull generated on-chain WASM into
+  a web bundle.
 
 - protocol reference agents now derive generated issue/present message
   `features` compatibility hints from schema descriptors instead of maintaining

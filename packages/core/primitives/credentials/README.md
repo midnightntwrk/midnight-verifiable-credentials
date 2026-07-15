@@ -33,7 +33,7 @@ Surface classification:
 
 Start here:
 
-1. write on-chain contracts against:
+1. repository authors write on-chain contracts against:
    - `src/credentials.compact`
    - `src/credentials/composable.compact`
    - narrower support entrypoints when composition requires less surface
@@ -43,6 +43,36 @@ Start here:
    when choosing between Compact and TypeScript surfaces
 4. do not deploy this package root as a business contract; use it as a library surface
    for credential families and Layer 3 verifier/business contracts
+
+## Installed Tarball Usage
+
+The package is ESM-only. An isolated Node or TypeScript consumer can use the
+root and explicit subpaths without repository-relative imports:
+
+```ts
+import { modJubjubSubgroupOrder } from "@midnight-ntwrk/midnight-did-credentials";
+import { Contract } from "@midnight-ntwrk/midnight-did-credentials/contract";
+import { JUBJUB_SUBGROUP_ORDER } from "@midnight-ntwrk/midnight-did-credentials/jubjub";
+```
+
+Browser bundles that need only pure Jubjub arithmetic should use `./jubjub`.
+The root and `./contract` surfaces intentionally expose generated contract code
+and its on-chain runtime.
+
+Installed Compact consumers resolve the exported package root from `dist`:
+
+```compact
+include "credentials";
+```
+
+```bash
+compact compile --skip-zk \
+  --compact-path node_modules/@midnight-ntwrk/midnight-did-credentials/dist \
+  ./consumer.compact ./managed/consumer
+```
+
+The package lane verifies these forms from a copied tarball in a temporary
+project outside this repository.
 
 Related docs:
 

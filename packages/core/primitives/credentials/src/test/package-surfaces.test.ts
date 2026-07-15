@@ -31,6 +31,11 @@ describe("credentials package surfaces", () => {
     expect(existsSync(sourceSurface("contract.ts"))).toEqual(true);
   });
 
+  it("declares a browser-safe Jubjub utility subpath", () => {
+    expect(packageJson.exports?.["./jubjub"]).toBeDefined();
+    expect(existsSync(sourceSurface("jubjub.ts"))).toEqual(true);
+  });
+
   it("declares an ESM-only release-candidate surface", () => {
     expect(packageJson.midnight?.releaseStage).toEqual("candidate");
     expect(JSON.stringify(packageJson.exports)).not.toContain('"require"');

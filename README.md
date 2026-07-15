@@ -318,6 +318,7 @@ for the explicit candidate/support inventory and graduation requirements.
 Commands:
 
 - `pnpm run artifacts:pack`
+- `pnpm run test:release-package-consumers` (focused rerun against already packed artifacts)
 - `pnpm run upgrade:vendor`
 - `./upgrade-libs.sh --destination /path/to/downstream-repo`
 
