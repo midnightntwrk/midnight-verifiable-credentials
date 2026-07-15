@@ -123,8 +123,9 @@ The current public exports are intentionally narrow:
 - explicit-holder and secret-holder agent classes
 - injectable randomness interfaces for protocol challenges, issuer nonces,
   blinding factors, and signing nonces
-- a Node/runtime randomness implementation for production-shaped deployments:
-  `NodeCryptoRandomnessSource`
+- CSPRNG defaults for protocol randomness plus message and thread identifiers
+  through Node `crypto.randomBytes`
+- explicitly named deterministic sources for reproducible repository fixtures
 - a generic `ProtocolStateStore` interface plus an in-memory reference
   implementation for protocol session state
 - a byte-backed codec adapter seam so persistent stores can expose
@@ -199,7 +200,6 @@ holder profile. The second is still a production-hardening track. In
 particular, this package does not yet claim:
 
 - durable pending state across restarts or delayed delivery
-- production randomness/nonce interfaces instead of test/reference generation
 - a final external interoperability contract for OIDC, DIDComm, or another wire
   protocol
 - a final protocol-level status/revocation interoperability contract
@@ -213,10 +213,14 @@ Randomness hardening rule:
 
 - agent-local challenge/nonce/blinding generation now sits behind an injectable
   `ProtocolRandomnessSource` interface
-- the exported default implementation is intentionally marked as unsafe and
-  deterministic for repository tests
-- production integrators should supply their own randomness source rather than
-  relying on the default
+- agents use `NodeCryptoRandomnessSource` by default, and envelopes use a
+  Node-CSPRNG identifier source by default
+- deterministic singleton sources are explicitly prefixed `unsafeReference`;
+  their `ReferenceDeterministic*` classes are also fixture-only
+- agent constructors accept an `envelopeIdentifierSource` so runtimes can
+  inject reviewed CSPRNG/HSM implementations or deterministic fixture sources
+- production integrators may inject a runtime or HSM-backed source while
+  preserving the fail-closed CSPRNG contract
 
 State hardening rule:
 
@@ -325,7 +329,8 @@ Persistent adapter checklist:
 
 Minimum production posture:
 
-1. replace the default deterministic randomness source
+1. keep the CSPRNG default or inject a reviewed runtime/HSM-backed source; never
+   select an `unsafeReference` deterministic source
 2. replace the in-memory store when restart-safe or delayed-delivery behavior
    matters
 3. define replay/idempotency retention semantics explicitly

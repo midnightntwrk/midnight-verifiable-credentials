@@ -1,6 +1,13 @@
 import { performance } from "node:perf_hooks";
 
-import { MessageBus } from "@midnight-ntwrk/midnight-did-credentials-protocol";
+import {
+  createProtocolEnvelopeFactory,
+  MessageBus,
+  type ProtocolEnvelopeFactory,
+  type ProtocolEnvelopeIdentifierSource,
+  secureProtocolEnvelopeIdentifierSource,
+  unsafeReferenceDeterministicEnvelopeIdentifierSource,
+} from "@midnight-ntwrk/midnight-did-credentials-protocol";
 
 import {
   UniversityCompanyVerifierAgent,
@@ -83,6 +90,7 @@ export type {
 
 export type UniversityProtocolFlowRunnerOptions = {
   readonly dataPaths?: Partial<UniversityProtocolDataPaths>;
+  readonly envelopeIdentifierSource?: ProtocolEnvelopeIdentifierSource;
   readonly exerciseOptions?: UniversityProtocolExerciseOptions;
   readonly partyRuntime?: UniversityPartyRuntime;
   readonly proofExecutionBackend?: UniversityProofExecutionBackend;
@@ -94,6 +102,8 @@ export class UniversityProtocolFlowRunner {
   readonly exerciseOptions: UniversityProtocolExerciseOptions;
   readonly partyRuntime: UniversityPartyRuntime;
   readonly proofExecutionBackend: UniversityProofExecutionBackend;
+  readonly envelopeIdentifierSource: ProtocolEnvelopeIdentifierSource;
+  readonly createEnvelope: ProtocolEnvelopeFactory;
   readonly duplicateIssuanceRequestStudentIds: ReadonlySet<string>;
   readonly duplicateJobApplicationSubmissionStudentIds: ReadonlySet<string>;
   readonly duplicateMallDiscountSubmissionStudentIds: ReadonlySet<string>;
@@ -150,6 +160,14 @@ export class UniversityProtocolFlowRunner {
     });
     this.partyRuntime =
       options?.partyRuntime ?? new DeterministicUniversityPartyRuntime();
+    this.envelopeIdentifierSource =
+      options?.envelopeIdentifierSource ??
+      (this.partyRuntime.descriptor().mode === "deterministic"
+        ? unsafeReferenceDeterministicEnvelopeIdentifierSource
+        : secureProtocolEnvelopeIdentifierSource);
+    this.createEnvelope = createProtocolEnvelopeFactory(
+      this.envelopeIdentifierSource,
+    );
     this.proofExecutionBackend =
       options?.proofExecutionBackend ??
       new SimulatorUniversityProofExecutionBackend();
@@ -168,6 +186,7 @@ export class UniversityProtocolFlowRunner {
       this.partyRuntime.issuerProfileForUniversity(this.university),
       this.partyRuntime,
       this.proofExecutionBackend,
+      this.createEnvelope,
     );
     this.studentAgents = this.buildStudentAgents();
     this.companyAgents = this.buildCompanyAgents();
@@ -179,6 +198,7 @@ export class UniversityProtocolFlowRunner {
         this.mall.verifierMethodId,
       ),
       this.proofExecutionBackend,
+      this.createEnvelope,
     );
   }
 
@@ -280,6 +300,7 @@ export class UniversityProtocolFlowRunner {
           this.partyRuntime.studentProfileForStudent(student),
           this.partyRuntime,
           this.proofExecutionBackend,
+          this.createEnvelope,
         ),
       ]),
     );
@@ -297,6 +318,7 @@ export class UniversityProtocolFlowRunner {
             company.verifierMethodId,
           ),
           this.proofExecutionBackend,
+          this.createEnvelope,
           this.exerciseOptions.companyRequestPolicyOverrides?.[
             company.companyId
           ],
@@ -345,6 +367,7 @@ export class UniversityProtocolFlowRunner {
     // resumed transcript remains byte-for-byte comparable with the baseline.
     return {
       dataPaths: this.dataPaths,
+      envelopeIdentifierSource: this.envelopeIdentifierSource,
       exerciseOptions: this.exerciseOptions,
       partyRuntime: this.partyRuntime,
       proofExecutionBackend: this.proofExecutionBackend,

@@ -1,6 +1,6 @@
 import type { MessageBus } from "@midnight-ntwrk/midnight-did-credentials-protocol";
 import {
-  createEnvelope,
+  type ProtocolEnvelopeFactory,
   sha256,
 } from "@midnight-ntwrk/midnight-did-credentials-protocol";
 import type { UniversityDiplomaCredential } from "@midnight-ntwrk/midnight-did-credentials-university-diploma/contract";
@@ -40,6 +40,7 @@ export class UniversityStudentAgent {
     readonly profile: AgentProfile,
     readonly partyRuntime: UniversityPartyRuntime,
     readonly proofBackend: UniversityProofExecutionBackend,
+    readonly createEnvelope: ProtocolEnvelopeFactory,
   ) {}
 
   sendIssuanceRequest(
@@ -52,7 +53,7 @@ export class UniversityStudentAgent {
       type: "issuance:request",
       from: this.profile.partyId,
       to: issuerPartyId,
-      envelope: createEnvelope(
+      envelope: this.createEnvelope(
         `university-issuance-request:${this.record.studentId}`,
         `university-issuance:${this.record.studentId}`,
         true,
@@ -115,7 +116,7 @@ export class UniversityStudentAgent {
       type: "presentation:submission",
       from: this.profile.partyId,
       to: message.from,
-      envelope: createEnvelope(
+      envelope: this.createEnvelope(
         `university-presentation-submission:${message.body.kind}:${this.record.studentId}`,
         `university-presentation:${message.body.kind}:${this.record.studentId}`,
         false,
@@ -148,6 +149,7 @@ export class UniversityIssuerProtocolAgent {
     readonly profile: AgentProfile,
     readonly partyRuntime: UniversityPartyRuntime,
     readonly proofBackend: UniversityProofExecutionBackend,
+    readonly createEnvelope: ProtocolEnvelopeFactory,
   ) {}
 
   processIssuanceBatches(
@@ -199,7 +201,7 @@ export class UniversityIssuerProtocolAgent {
           type: "issuance:result",
           from: this.profile.partyId,
           to: student.profile.partyId,
-          envelope: createEnvelope(
+          envelope: this.createEnvelope(
             `university-issuance-result:${studentId}`,
             `university-issuance:${studentId}`,
             false,
@@ -253,6 +255,7 @@ export class UniversityCompanyVerifierAgent {
     readonly company: CompanyRecord,
     readonly profile: AgentProfile,
     readonly proofBackend: UniversityProofExecutionBackend,
+    readonly createEnvelope: ProtocolEnvelopeFactory,
     readonly requestPolicyOverrides?: VerifierRequestPolicyOverride,
   ) {}
 
@@ -276,7 +279,7 @@ export class UniversityCompanyVerifierAgent {
       type: "presentation:request",
       from: this.profile.partyId,
       to: student.profile.partyId,
-      envelope: createEnvelope(
+      envelope: this.createEnvelope(
         `job-request:${this.company.companyId}:${student.record.studentId}`,
         `job-application:${this.company.companyId}:${student.record.studentId}`,
         true,
@@ -334,7 +337,7 @@ export class UniversityCompanyVerifierAgent {
       type: "presentation:result",
       from: this.profile.partyId,
       to: message.from,
-      envelope: createEnvelope(
+      envelope: this.createEnvelope(
         `job-result:${this.company.companyId}:${message.body.studentId}`,
         `job-application:${this.company.companyId}:${message.body.studentId}`,
         false,
@@ -371,6 +374,7 @@ export class UniversityMallVerifierAgent {
     readonly mall: MallRecord,
     readonly profile: AgentProfile,
     readonly proofBackend: UniversityProofExecutionBackend,
+    readonly createEnvelope: ProtocolEnvelopeFactory,
   ) {}
 
   sendRequest(
@@ -392,7 +396,7 @@ export class UniversityMallVerifierAgent {
       type: "presentation:request",
       from: this.profile.partyId,
       to: student.profile.partyId,
-      envelope: createEnvelope(
+      envelope: this.createEnvelope(
         `discount-request:${this.mall.mallId}:${student.record.studentId}`,
         `discount:${this.mall.mallId}:${student.record.studentId}`,
         true,
@@ -449,7 +453,7 @@ export class UniversityMallVerifierAgent {
       type: "presentation:result",
       from: this.profile.partyId,
       to: message.from,
-      envelope: createEnvelope(
+      envelope: this.createEnvelope(
         `discount-result:${this.mall.mallId}:${message.body.studentId}`,
         `discount:${this.mall.mallId}:${message.body.studentId}`,
         false,

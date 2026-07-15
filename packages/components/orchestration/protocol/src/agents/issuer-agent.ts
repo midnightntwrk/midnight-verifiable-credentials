@@ -13,13 +13,17 @@ import {
 } from "@midnight-ntwrk/midnight-did-credentials-birth/managed/birth-credential/contract/index.js";
 
 import { mod } from "../shared/crypto.js";
-import { createEnvelope } from "../shared/envelope.js";
+import {
+  createProtocolEnvelopeFactory,
+  type ProtocolEnvelopeFactory,
+  type ProtocolEnvelopeIdentifierSource,
+} from "../shared/envelope.js";
 import { assertBodyHasFields, assertMessageType } from "../shared/validation.js";
 import type { MessageBus } from "../transport/message-bus.js";
 import type { PartyId,ProtocolMessage } from "../transport/types.js";
 import {
   type ProtocolRandomnessSource,
-  unsafeReferenceDeterministicRandomnessSource,
+  secureProtocolRandomnessSource,
 } from "./randomness.js";
 import {
   BIRTH_COMPATIBILITY_FEATURE_HINTS,
@@ -51,24 +55,32 @@ export class IssuerAgent {
   private readonly profile: DIDProfile;
   private readonly bus: MessageBus;
   private readonly randomness: ProtocolRandomnessSource;
+  private readonly createEnvelope: ProtocolEnvelopeFactory;
   private issuanceCounter = 0;
 
   constructor(
     profile: DIDProfile,
     bus: MessageBus,
     options: {
+      readonly envelopeIdentifierSource?: ProtocolEnvelopeIdentifierSource;
       readonly randomness?: ProtocolRandomnessSource;
     } = {},
   ) {
     this.profile = profile;
     this.bus = bus;
-    this.randomness =
-      options.randomness ?? unsafeReferenceDeterministicRandomnessSource;
+    this.randomness = options.randomness ?? secureProtocolRandomnessSource;
+    this.createEnvelope = createProtocolEnvelopeFactory(
+      options.envelopeIdentifierSource,
+    );
   }
 
   createAndSendOffer(holderLabel: PartyId): void {
     const offer: BirthCredentialIssuanceOffer = {
-      envelope: createEnvelope("issuance-offer", "birth-issuance", true),
+      envelope: this.createEnvelope(
+        "issuance-offer",
+        "birth-issuance",
+        true,
+      ),
       schema: BIRTH_SCHEMA,
       issuerVerificationMethodRef: this.profile.signer.verificationMethodRef,
       holderBindingProfile: HolderBindingProfile.explicitDid,
@@ -167,7 +179,7 @@ export class IssuerAgent {
     };
 
     const result: BirthCredentialIssuanceResult = {
-      envelope: createEnvelope(
+      envelope: this.createEnvelope(
         "issuance-result",
         "birth-issuance",
         false,

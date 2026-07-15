@@ -17,7 +17,11 @@ import {
 } from "@midnight-ntwrk/midnight-did-credentials-birth/managed/birth-credential/contract/index.js";
 
 import { mod } from "../shared/crypto.js";
-import { createEnvelope } from "../shared/envelope.js";
+import {
+  createProtocolEnvelopeFactory,
+  type ProtocolEnvelopeFactory,
+  type ProtocolEnvelopeIdentifierSource,
+} from "../shared/envelope.js";
 import { assertBodyHasFields,assertMessageType } from "../shared/validation.js";
 import type { MessageBus } from "../transport/message-bus.js";
 import type { ProtocolMessage } from "../transport/types.js";
@@ -29,7 +33,7 @@ import {
 } from "./protocol-state-store.js";
 import {
   type ProtocolRandomnessSource,
-  unsafeReferenceDeterministicRandomnessSource,
+  secureProtocolRandomnessSource,
 } from "./randomness.js";
 import type { DIDProfile } from "./types.js";
 
@@ -52,6 +56,7 @@ export class HolderAgent {
   private readonly profile: DIDProfile;
   private readonly bus: MessageBus;
   private readonly randomness: ProtocolRandomnessSource;
+  private readonly createEnvelope: ProtocolEnvelopeFactory;
   private readonly storedCredentials: ProtocolStateCollection<StoredCredential>;
   private readonly metadata: ProtocolStateCollection<number>;
   private credentialCountCache = 0;
@@ -62,14 +67,17 @@ export class HolderAgent {
     profile: DIDProfile,
     bus: MessageBus,
     options: {
+      readonly envelopeIdentifierSource?: ProtocolEnvelopeIdentifierSource;
       readonly randomness?: ProtocolRandomnessSource;
       readonly stateStore?: ProtocolStateStore;
     } = {},
   ) {
     this.profile = profile;
     this.bus = bus;
-    this.randomness =
-      options.randomness ?? unsafeReferenceDeterministicRandomnessSource;
+    this.randomness = options.randomness ?? secureProtocolRandomnessSource;
+    this.createEnvelope = createProtocolEnvelopeFactory(
+      options.envelopeIdentifierSource,
+    );
     const stateStore = options.stateStore ?? new InMemoryProtocolStateStore();
     const stateScope = `holder:${this.profile.label}`;
     this.storedCredentials = stateStore.collection(
@@ -94,7 +102,7 @@ export class HolderAgent {
     });
 
     const request: BirthCredentialIssuanceRequest = {
-      envelope: createEnvelope(
+      envelope: this.createEnvelope(
         "issuance-request",
         "birth-issuance",
         false,
@@ -267,7 +275,7 @@ export class HolderAgent {
       );
 
     const submissionBody: BirthCredentialVerificationSubmission = {
-      envelope: createEnvelope(
+      envelope: this.createEnvelope(
         "presentation-submission",
         "birth-presentation",
         false,

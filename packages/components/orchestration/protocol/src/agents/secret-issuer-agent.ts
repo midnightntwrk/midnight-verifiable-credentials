@@ -15,7 +15,11 @@ import {
 } from "@midnight-ntwrk/midnight-did-credentials-birth-secret/managed/secret-birth-credential/contract/index.js";
 
 import { mod } from "../shared/crypto.js";
-import { createEnvelope } from "../shared/envelope.js";
+import {
+  createProtocolEnvelopeFactory,
+  type ProtocolEnvelopeFactory,
+  type ProtocolEnvelopeIdentifierSource,
+} from "../shared/envelope.js";
 import { assertBodyHasFields, assertMessageType } from "../shared/validation.js";
 import type { MessageBus } from "../transport/message-bus.js";
 import type {
@@ -36,7 +40,7 @@ import {
 } from "./protocol-state-store.js";
 import {
   type ProtocolRandomnessSource,
-  unsafeReferenceDeterministicRandomnessSource,
+  secureProtocolRandomnessSource,
 } from "./randomness.js";
 import {
   SECRET_BIRTH_COMPATIBILITY_FEATURE_HINTS,
@@ -96,6 +100,7 @@ export class SecretIssuerAgent {
   private readonly profile: DIDProfile;
   private readonly bus: MessageBus;
   private readonly randomness: ProtocolRandomnessSource;
+  private readonly createEnvelope: ProtocolEnvelopeFactory;
   private readonly retentionPolicy: ProtocolStateRetentionPolicy;
   private issuanceCounter = 0;
   private readonly pendingOffers: ProtocolStateCollection<SecretBirthCredentialIssuanceOffer>;
@@ -107,6 +112,7 @@ export class SecretIssuerAgent {
     profile: DIDProfile,
     bus: MessageBus,
     options: {
+      readonly envelopeIdentifierSource?: ProtocolEnvelopeIdentifierSource;
       readonly randomness?: ProtocolRandomnessSource;
       readonly stateStore?: ProtocolStateStore;
       readonly stateRetention?: ProtocolStateRetentionPolicy;
@@ -114,8 +120,10 @@ export class SecretIssuerAgent {
   ) {
     this.profile = profile;
     this.bus = bus;
-    this.randomness =
-      options.randomness ?? unsafeReferenceDeterministicRandomnessSource;
+    this.randomness = options.randomness ?? secureProtocolRandomnessSource;
+    this.createEnvelope = createProtocolEnvelopeFactory(
+      options.envelopeIdentifierSource,
+    );
     this.retentionPolicy = options.stateRetention ?? {};
     const stateStore = options.stateStore ?? new InMemoryProtocolStateStore();
     const stateScope = `secret-issuer:${this.profile.label}`;
@@ -132,7 +140,7 @@ export class SecretIssuerAgent {
     options: SecretIssuanceOfferOptions = {},
   ): void {
     const offer: SecretBirthCredentialIssuanceOffer = {
-      envelope: createEnvelope(
+      envelope: this.createEnvelope(
         "secret-issuance-offer",
         "secret-birth-issuance",
         true,
@@ -168,7 +176,7 @@ export class SecretIssuerAgent {
     retryable = false,
   ): SecretBirthCredentialIssuanceRejection {
     return {
-      envelope: createEnvelope(
+      envelope: this.createEnvelope(
         "secret-issuance-rejection",
         "secret-birth-issuance",
         false,
@@ -410,7 +418,7 @@ export class SecretIssuerAgent {
     };
 
     const result: SecretBirthCredentialIssuanceResult = {
-      envelope: createEnvelope(
+      envelope: this.createEnvelope(
         "secret-issuance-result",
         "secret-birth-issuance",
         false,
