@@ -179,31 +179,29 @@ Main repo validation:
 ./run.sh
 ```
 
-Light mode:
+The default gate runs the same cataloged release targets and adds the standalone
+Docker lanes when Docker is available.
+
+The light gate runs every cataloged non-Docker validation target, including
+all workspace package classes and tarball packaging:
 
 ```bash
 ./run.sh --light
 ```
 
-Targets that currently honor `--light`:
-
-- `./run.sh`
-- `./run.sh build`
-- `./run.sh typecheck`
-- `./run.sh test`
-- `./run.sh hello-smoke`
-- `./run.sh dummy-claims-lab`
-- `./run.sh university-protocol`
-- `./run.sh university-protocol-export`
-- `./run.sh university-protocol-cohort`
-- `./run.sh university-protocol-stress`
-- `./run.sh university-summary`
-- `./run.sh university-report-contract`
-
-Discover explicit repository targets:
+Targets without a reduced variant still run their normal non-Docker lane when
+they are part of the default light gate. Inspect the authoritative light-target,
+release-target, and workspace catalogs with:
 
 ```bash
 ./run.sh targets
+node ./tooling/scripts/workspace-catalog.mjs --json
+```
+
+Package all `dist`-class workspaces selected by the workspace catalog:
+
+```bash
+./run.sh package
 ```
 
 Run any root `package.json` script through the same entrypoint:

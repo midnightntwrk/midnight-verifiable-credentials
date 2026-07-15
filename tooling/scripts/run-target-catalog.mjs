@@ -194,6 +194,13 @@ export const targets = [
     script: "ci:revocation",
   },
   {
+    name: "package",
+    description: "Pack every dist-class workspace from the workspace catalog.",
+    category: "release",
+    supportsLight: false,
+    script: "artifacts:pack",
+  },
+  {
     name: "integration",
     description: "Both standalone Docker integration lanes.",
     category: "integration",
@@ -227,6 +234,7 @@ export const targets = [
       "Remove generated build/test artifacts without deleting dependencies, vendor tarballs, or local secrets.",
     category: "maintenance",
     supportsLight: false,
+    releaseGate: false,
     script: "clean:artifacts",
   },
   {
@@ -235,6 +243,7 @@ export const targets = [
       "Print DID integration modes, repair flow, and vendor/sibling readiness report.",
     category: "maintenance",
     supportsLight: false,
+    releaseGate: false,
     script: "report:did-integration",
   },
   {
@@ -250,12 +259,14 @@ export const targets = [
     description: "Print this target list.",
     category: "help",
     supportsLight: false,
+    releaseGate: false,
   },
   {
     name: "help",
     description: "Print this target list.",
     category: "help",
     supportsLight: false,
+    releaseGate: false,
   },
 ];
 
@@ -263,6 +274,28 @@ export const targetNames = new Set(targets.map((target) => target.name));
 export const lightTargetNames = targets
   .filter((target) => target.supportsLight)
   .map((target) => target.name);
+const releaseGateOrder = new Map([
+  ["lint", 0],
+  ["build", 1],
+  ["typecheck", 2],
+  ["test", 3],
+  ["package", 100],
+]);
+export const releaseGateTargets = targets
+  .filter(
+    (target) =>
+      target.name !== "full" &&
+      !target.requiresDocker &&
+      target.releaseGate !== false,
+  )
+  .sort(
+    (left, right) =>
+      (releaseGateOrder.get(left.name) ?? 4) -
+      (releaseGateOrder.get(right.name) ?? 4),
+  );
+export const releaseGateTargetNames = releaseGateTargets.map(
+  (target) => target.name,
+);
 export const targetsByName = new Map(
   targets.map((target) => [target.name, target]),
 );
@@ -281,6 +314,7 @@ const categoryOrder = [
   "bdd",
   "university",
   "focused",
+  "release",
   "integration",
   "maintenance",
   "help",
@@ -292,6 +326,8 @@ const printRows = (rows) => {
     stdout.write(`  ${name.padEnd(width)}  ${description}\n`);
   }
 };
+
+const printLines = (lines) => stdout.write(`${lines.join("\n")}\n`);
 
 export const printTargetList = () => {
   stdout.write("Targets:\n");
@@ -353,6 +389,9 @@ if (isDirectExecution) {
       break;
     case "--light-targets":
       printLightTargets();
+      break;
+    case "--release-gate-targets":
+      printLines(releaseGateTargetNames);
       break;
     case "--targets":
     case "--help":

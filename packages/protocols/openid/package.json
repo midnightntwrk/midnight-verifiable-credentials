@@ -22,6 +22,7 @@
   },
   "scripts": {
     "build": "rm -rf dist && tsc -b tsconfig.build.json --force",
+    "prepack": "pnpm run build",
     "pretypecheck": "pnpm run build",
     "test": "vitest run --config vitest.config.ts",
     "test:ci": "vitest run --config vitest.config.ts",

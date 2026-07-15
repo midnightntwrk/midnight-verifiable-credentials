@@ -17,15 +17,47 @@ run_common_artifact_catalog() {
   node "$(run_common_repo_root)/tooling/scripts/managed-artifact-catalog.mjs" "$@"
 }
 
+run_common_light_targets_output="$(run_common_catalog --light-targets)" || {
+  echo "[run-common] Failed to load light targets" >&2
+  return 1 2>/dev/null || exit 1
+}
+if [[ -z "${run_common_light_targets_output}" ]]; then
+  echo "[run-common] Light target catalog is empty" >&2
+  return 1 2>/dev/null || exit 1
+fi
+
 run_common_light_supported_targets=()
 while IFS= read -r target; do
   if [[ -n "${target}" ]]; then
     run_common_light_supported_targets+=("${target}")
   fi
-done < <(run_common_catalog --light-targets)
+done <<< "${run_common_light_targets_output}"
+unset run_common_light_targets_output
 
 run_common_print_light_targets() {
   local joined="${run_common_light_supported_targets[*]}"
+  printf '%s\n' "${joined// /, }"
+}
+
+run_common_release_targets_output="$(run_common_catalog --release-gate-targets)" || {
+  echo "[run-common] Failed to load release-gate targets" >&2
+  return 1 2>/dev/null || exit 1
+}
+if [[ -z "${run_common_release_targets_output}" ]]; then
+  echo "[run-common] Release-gate target catalog is empty" >&2
+  return 1 2>/dev/null || exit 1
+fi
+
+run_common_release_gate_targets=()
+while IFS= read -r target; do
+  if [[ -n "${target}" ]]; then
+    run_common_release_gate_targets+=("${target}")
+  fi
+done <<< "${run_common_release_targets_output}"
+unset run_common_release_targets_output
+
+run_common_print_release_gate_targets() {
+  local joined="${run_common_release_gate_targets[*]-}"
   printf '%s\n' "${joined// /, }"
 }
 

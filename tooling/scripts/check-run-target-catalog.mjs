@@ -14,6 +14,8 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import {
   lightTargetNames,
+  releaseGateTargetNames,
+  releaseGateTargets,
   targetScriptNames,
   targets,
 } from "./run-target-catalog.mjs";
@@ -63,6 +65,10 @@ assert.ok(
   targetNames.includes("check-integration"),
   "runner target catalog must include check-integration",
 );
+assert.ok(
+  targetNames.includes("package"),
+  "runner target catalog must include package",
+);
 assert.deepEqual(
   [...lightTargetNames].sort(),
   targets
@@ -70,6 +76,46 @@ assert.deepEqual(
     .map((target) => target.name)
     .sort(),
   "light target names must match catalog supportsLight flags",
+);
+assert.ok(
+  releaseGateTargetNames.includes("package"),
+  "non-Docker release gate must include package",
+);
+assert.ok(
+  releaseGateTargetNames.includes("check-integration"),
+  "non-Docker release gate must include integration wiring validation",
+);
+assert.ok(
+  !releaseGateTargetNames.includes("clean-artifacts") &&
+    !releaseGateTargetNames.includes("integration-report"),
+  "non-validation maintenance commands must stay outside the release gate",
+);
+assert.ok(
+  releaseGateTargets.every((target) => !target.requiresDocker),
+  "non-Docker release gate must exclude Docker targets",
+);
+assert.deepEqual(
+  [...releaseGateTargetNames].sort(),
+  targets
+    .filter(
+      (target) =>
+        target.name !== "full" &&
+        !target.requiresDocker &&
+        target.releaseGate !== false,
+    )
+    .map((target) => target.name)
+    .sort(),
+  "release gate targets must include every cataloged validation target that does not require Docker",
+);
+assert.deepEqual(
+  releaseGateTargetNames.slice(0, 4),
+  ["lint", "build", "typecheck", "test"],
+  "release gate must build once before artifact-backed typecheck and tests",
+);
+assert.equal(
+  releaseGateTargetNames.at(-1),
+  "package",
+  "release gate must package only after validation targets pass",
 );
 // `full` is a meta-target that delegates to run-credentials.sh instead of a
 // single root package script.
@@ -117,6 +163,22 @@ assert.equal(
   "run-common light targets must match the catalog",
 );
 
+const releaseGateList = runWithTimeout([
+  "bash",
+  "-lc",
+  "source ./tooling/scripts/run-common.sh; run_common_print_release_gate_targets",
+]);
+assert.equal(
+  releaseGateList.status,
+  0,
+  "run_common_print_release_gate_targets should exit successfully",
+);
+assert.equal(
+  releaseGateList.stdout.trim(),
+  releaseGateTargetNames.join(", "),
+  "run-common release targets must match the catalog",
+);
+
 const supportedLightProbe = runWithTimeout([
   "bash",
   "-lc",
@@ -149,6 +211,140 @@ assert.ok(
   !targetsResult.stderr.includes("[run] Warning:"),
   "targets --light should not warn",
 );
+
+const unknownTarget = runWithTimeout(["./run.sh", "not-a-real-target"]);
+assert.notEqual(unknownTarget.status, 0, "unknown runner targets must fail");
+assert.match(unknownTarget.stderr, /Unknown target/u);
+
+const unknownOption = runWithTimeout(["./run.sh", "--not-a-real-option"]);
+assert.notEqual(unknownOption.status, 0, "unknown runner options must fail");
+assert.match(unknownOption.stderr, /Unknown option/u);
+
+const unexpectedArgument = runWithTimeout(["./run.sh", "help", "extra"]);
+assert.notEqual(
+  unexpectedArgument.status,
+  0,
+  "runner arguments before -- must fail",
+);
+assert.match(unexpectedArgument.stderr, /Unexpected argument/u);
+
+const discardedForwardArgument = runWithTimeout([
+  "./run.sh",
+  "lint",
+  "--",
+  "--not-consumed",
+]);
+assert.notEqual(
+  discardedForwardArgument.status,
+  0,
+  "wrapper targets must reject forwarded arguments they cannot consume",
+);
+assert.match(discardedForwardArgument.stderr, /does not accept/u);
+
+const directWrapperOption = runWithTimeout([
+  "./run-credentials.sh",
+  "--not-a-real-option",
+]);
+assert.notEqual(
+  directWrapperOption.status,
+  0,
+  "direct credentials runner options must be validated",
+);
+
+const standaloneWrapperOption = runWithTimeout([
+  "./run-credentials-standalone.sh",
+  "--not-a-real-option",
+]);
+assert.notEqual(
+  standaloneWrapperOption.status,
+  0,
+  "standalone runner must reject arguments",
+);
+
+const failClosedFixtureRoot = mkdtempSync(
+  path.join(tmpdir(), "vc-run-target-catalog-fail-closed-"),
+);
+try {
+  for (const relativePath of [
+    "tooling/scripts/run-common.sh",
+    "tooling/scripts/pack-artifacts.sh",
+  ]) {
+    copyFixtureFile(failClosedFixtureRoot, relativePath);
+  }
+  const fixtureCatalogPath = path.join(
+    failClosedFixtureRoot,
+    "tooling/scripts/run-target-catalog.mjs",
+  );
+  const fixtureWorkspaceCatalogPath = path.join(
+    failClosedFixtureRoot,
+    "tooling/scripts/workspace-catalog.mjs",
+  );
+  writeFileSync(fixtureCatalogPath, "process.exit(23);\n");
+  writeFileSync(fixtureWorkspaceCatalogPath, "process.exit(24);\n");
+
+  const fixtureGitInit = runWithTimeout(
+    ["git", "init", "--quiet"],
+    5000,
+    failClosedFixtureRoot,
+  );
+  assert.equal(fixtureGitInit.status, 0, "fail-closed fixture git init");
+
+  const brokenRunnerCatalog = runWithTimeout(
+    ["bash", "-c", "source ./tooling/scripts/run-common.sh"],
+    5000,
+    failClosedFixtureRoot,
+  );
+  assert.notEqual(
+    brokenRunnerCatalog.status,
+    0,
+    "runner setup must fail when its target catalog cannot load",
+  );
+
+  const brokenWorkspaceCatalog = runWithTimeout(
+    [
+      "bash",
+      "./tooling/scripts/pack-artifacts.sh",
+      path.join(failClosedFixtureRoot, "artifacts"),
+    ],
+    5000,
+    failClosedFixtureRoot,
+  );
+  assert.notEqual(
+    brokenWorkspaceCatalog.status,
+    0,
+    "packaging must fail when its workspace catalog cannot load",
+  );
+
+  writeFileSync(
+    fixtureWorkspaceCatalogPath,
+    'console.log("packages/example");\n',
+  );
+  const fixtureBinDir = path.join(failClosedFixtureRoot, "bin");
+  const fixturePnpmPath = path.join(fixtureBinDir, "pnpm");
+  mkdirSync(fixtureBinDir, { recursive: true });
+  writeFileSync(fixturePnpmPath, "#!/usr/bin/env bash\nexit 0\n");
+  chmodSync(fixturePnpmPath, 0o755);
+
+  const missingTarball = runWithTimeout(
+    [
+      "env",
+      `PATH=${fixtureBinDir}:${process.env.PATH}`,
+      "bash",
+      "./tooling/scripts/pack-artifacts.sh",
+      path.join(failClosedFixtureRoot, "artifacts"),
+    ],
+    5000,
+    failClosedFixtureRoot,
+  );
+  assert.notEqual(
+    missingTarball.status,
+    0,
+    "packaging must fail when a successful pack command produces no tarball",
+  );
+  assert.match(missingTarball.stderr, /Expected 1 tarballs, found 0/u);
+} finally {
+  rmSync(failClosedFixtureRoot, { recursive: true, force: true });
+}
 
 const integrationReportJsonResult = runWithTimeout([
   "node",

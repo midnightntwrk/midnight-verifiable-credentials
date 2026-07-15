@@ -1,6 +1,11 @@
 #!/usr/bin/env node
 import { spawnSync } from "node:child_process";
 import { stderr, stdout } from "node:process";
+import { workspaceCatalog } from "./workspace-catalog.mjs";
+
+const releaseBuildWorkspaces = workspaceCatalog
+  .filter((entry) => entry.releaseTasks.includes("build"))
+  .map((entry) => entry.path);
 
 export const ciBuildCones = [
   {
@@ -89,19 +94,20 @@ export const ciBuildCones = [
   },
   {
     name: "protocol",
-    inputPackages: [
-      "packages/core/primitives/credentials",
-      "packages/registry/status-registry",
-      "packages/core/capabilities/same-holder",
-      "packages/core/primitives/iso-registry",
-      "packages/components/adapters/offchain-did",
-      "packages/protocols/openid",
-      "packages/prototypes/credential-families/birth",
-      "packages/prototypes/credential-families/birth-secret",
-      "packages/use-cases/age-gate/contract",
-      "packages/components/orchestration/protocol",
+    // This final cone owns every build output not assigned to the lower-level
+    // foundation, family, or age-gate cones. Hash all release-build workspaces
+    // because these downstream packages compose those lower-level surfaces.
+    inputPackages: releaseBuildWorkspaces,
+    outputPaths: [
+      "packages/components/orchestration/protocol/dist",
+      "packages/use-cases/university/contract/src/managed",
+      "packages/use-cases/university/contract/dist",
+      "packages/use-cases/university/protocol/dist",
+      "packages/use-cases/university/reporting/dist",
+      "packages/components/integration/standalone-environment/dist",
     ],
-    outputPaths: ["packages/components/orchestration/protocol/dist"],
+    allowFocusedBuildScripts: true,
+    turboOptions: ["--concurrency=1", "--ui=stream"],
   },
 ];
 
@@ -173,6 +179,18 @@ const checkCatalog = () => {
         );
       }
       seenOutputOwners.set(owner, cone.name);
+    }
+  }
+
+  const expectedBuildOwners = new Set(releaseBuildWorkspaces);
+  for (const owner of expectedBuildOwners) {
+    if (!seenOutputOwners.has(owner)) {
+      errors.push(`Release build workspace has no CI build cone: ${owner}`);
+    }
+  }
+  for (const owner of seenOutputOwners.keys()) {
+    if (!expectedBuildOwners.has(owner)) {
+      errors.push(`CI build cone owns a non-release build workspace: ${owner}`);
     }
   }
 

@@ -2,6 +2,12 @@
 import { execFileSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
+import {
+  allowedMaturityValues,
+  allowedPackageClasses,
+  workspaceCatalog,
+  workspaceCatalogByPath,
+} from "./workspace-catalog.mjs";
 
 const repoRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
   encoding: "utf8",
@@ -9,48 +15,11 @@ const repoRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
 
 const errors = [];
 
-const allowedMaturityValues = new Set([
-  "core",
-  "reference",
-  "lab",
-  "demo",
-  "infrastructure",
-]);
-const allowedPackageClasses = new Set(["dist", "scenario", "source-only"]);
-
-// Keep this in root package.json workspace order so diff reviews can compare
-// package additions against their policy classification directly.
-const workspaceMaturity = new Map([
-  ["packages/core/primitives/credentials", { maturity: "core", packageClass: "dist" }],
-  ["packages/registry/status-registry", { maturity: "reference", packageClass: "dist" }],
-  ["packages/core/capabilities/same-holder", { maturity: "core", packageClass: "dist" }],
-  ["packages/core/primitives/iso-registry", { maturity: "reference", packageClass: "dist" }],
-  ["packages/components/adapters/offchain-did", { maturity: "infrastructure", packageClass: "dist" }],
-  ["packages/protocols/openid", { maturity: "reference", packageClass: "dist" }],
-  ["packages/components/orchestration/protocol", { maturity: "infrastructure", packageClass: "dist" }],
-  ["packages/prototypes/credential-families/birth", { maturity: "reference", packageClass: "dist" }],
-  ["packages/prototypes/credential-families/birth-secret", { maturity: "reference", packageClass: "dist" }],
-  ["packages/prototypes/credential-families/hello-family", { maturity: "reference", packageClass: "dist" }],
-  ["packages/prototypes/credential-families/dummy-claims", { maturity: "lab", packageClass: "dist" }],
-  ["packages/prototypes/credential-families/mixed-claims", { maturity: "lab", packageClass: "dist" }],
-  ["packages/prototypes/credential-families/university-diploma", { maturity: "reference", packageClass: "dist" }],
-  ["packages/prototypes/credential-families/digital-passport", { maturity: "reference", packageClass: "dist" }],
-  ["packages/use-cases/age-gate/contract", { maturity: "demo", packageClass: "dist" }],
-  ["packages/use-cases/hello-verifier/contract", { maturity: "demo", packageClass: "dist" }],
-  ["packages/use-cases/university/contract", { maturity: "demo", packageClass: "dist" }],
-  ["packages/use-cases/age-gate/scenarios", { maturity: "demo", packageClass: "scenario" }],
-  ["packages/use-cases/bdd-support", { maturity: "infrastructure", packageClass: "source-only" }],
-  ["packages/use-cases/university/scenarios", { maturity: "demo", packageClass: "scenario" }],
-  ["packages/use-cases/university/protocol", { maturity: "demo", packageClass: "dist" }],
-  ["packages/use-cases/university/reporting", { maturity: "demo", packageClass: "dist" }],
-  ["packages/components/integration/standalone-environment", { maturity: "infrastructure", packageClass: "source-only" }],
-]);
-
 const workspacesByPackageClass = (packageClass) =>
   new Set(
-    [...workspaceMaturity]
-      .filter(([, metadata]) => metadata.packageClass === packageClass)
-      .map(([workspace]) => workspace),
+    workspaceCatalog
+      .filter((entry) => entry.packageClass === packageClass)
+      .map((entry) => entry.path),
   );
 
 const sourceOnlyWorkspaces = workspacesByPackageClass("source-only");
@@ -161,7 +130,7 @@ const assertNoPublicEntrypoint = (packageJson, workspace) => {
 };
 
 const assertMaturityMetadata = (packageJson, workspace) => {
-  const expected = workspaceMaturity.get(workspace);
+  const expected = workspaceCatalogByPath.get(workspace);
   assert(expected !== undefined, `${workspace} must have a checked maturity policy`);
   if (expected === undefined) {
     return;
@@ -323,10 +292,10 @@ assert(
   "ci:lint must run check:workspace-manifests",
 );
 assert(
-  workspaceMaturity.size === workspaces.length,
+  workspaceCatalog.length === workspaces.length,
   "workspace maturity policy must classify every root workspace",
 );
-for (const workspace of workspaceMaturity.keys()) {
+for (const { path: workspace } of workspaceCatalog) {
   assert(
     workspaces.includes(workspace),
     `workspace maturity policy references unknown workspace: ${workspace}`,
