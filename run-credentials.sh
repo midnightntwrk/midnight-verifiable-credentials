@@ -33,7 +33,11 @@ if [[ "${SKIP_LONG_RUNNING:-0}" == "1" ]]; then
   echo "[credentials] Complete non-Docker release gate"
   for target in "${run_common_release_gate_targets[@]}"; do
     echo "[credentials] Release target: ${target}"
-    ./run.sh "$target" --light
+    if run_common_target_supports_light "$target"; then
+      ./run.sh "$target" --light
+    else
+      ./run.sh "$target"
+    fi
     if [[ "$target" == "build" ]]; then
       export MIDNIGHT_RELEASE_GATE_BUILD_READY=1
     fi

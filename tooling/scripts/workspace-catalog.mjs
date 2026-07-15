@@ -23,7 +23,6 @@ const workspace = (workspacePath, maturity, packageClass, options = {}) => ({
         : sourceOnlyReleaseTasks),
   pack: packageClass === "dist",
   packageTest: options.packageTest ?? packageClass !== "scenario",
-  dockerIntegration: options.dockerIntegration ?? false,
   testFromArtifacts:
     options.testFromArtifacts ??
     (packageClass === "scenario"
@@ -119,7 +118,6 @@ export const workspaceCatalog = [
     "source-only",
     {
       releaseTasks: ["typecheck", "build", "test:ci"],
-      dockerIntegration: true,
     },
   ),
 ];
