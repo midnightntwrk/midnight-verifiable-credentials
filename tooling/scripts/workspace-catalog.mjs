@@ -142,6 +142,13 @@ export const allowedReleaseStages = new Set([
   "candidate",
   "supported",
 ]);
+export const releaseCandidateFiles = (hasCompactSources) => [
+  "dist/**",
+  ...(hasCompactSources ? ["src/**/*.compact"] : []),
+  "README.md",
+  "CHANGELOG.md",
+  "package.json",
+];
 export const workspaceCatalogByPath = new Map(
   workspaceCatalog.map((entry) => [entry.path, entry]),
 );

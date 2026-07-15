@@ -6,6 +6,7 @@ import {
   allowedMaturityValues,
   allowedPackageClasses,
   allowedReleaseStages,
+  releaseCandidateFiles,
   workspaceCatalog,
   workspaceCatalogByPath,
 } from "./workspace-catalog.mjs";
@@ -244,7 +245,7 @@ const assertDistPackage = (packageJson, workspace) => {
   const requiredFiles =
     releaseStage === "internal"
       ? requiredDistFiles
-      : ["dist/**", "README.md", "CHANGELOG.md", "package.json"];
+      : releaseCandidateFiles(hasCompactSources(workspace));
   for (const fileEntry of requiredFiles) {
     assertArrayIncludes(packageJson.files, fileEntry, `${workspace} files`);
   }
