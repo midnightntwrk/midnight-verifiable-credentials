@@ -84,6 +84,7 @@ export const createEnvelope = (
 
 export type ProtocolEnvelopeFactory = typeof createEnvelope;
 
+/** Bind one identifier source for every envelope produced by the factory. */
 export const createProtocolEnvelopeFactory = (
   identifierSource: ProtocolEnvelopeIdentifierSource =
     secureProtocolEnvelopeIdentifierSource,

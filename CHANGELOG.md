@@ -7,11 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
+### Changed
 
-- made protocol challenges, issuer nonces, blinding factors, signing nonces,
-  message IDs, and thread IDs CSPRNG-backed by default while retaining
-  explicitly unsafe deterministic sources for reproducible fixtures.
+- protocol challenges, issuer nonces, blinding factors, signing nonces,
+  message IDs, and thread IDs are now CSPRNG-backed by default; consumers that
+  need reproducible fixtures must select an explicit deterministic source.
+
+### Added
 
 - added explicit `internal`, `candidate`, and `supported` package release
   stages, a canonical package support inventory, and fail-closed release

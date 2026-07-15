@@ -1,5 +1,10 @@
+import {
+  secureProtocolEnvelopeIdentifierSource,
+  unsafeReferenceDeterministicEnvelopeIdentifierSource,
+} from "@midnight-ntwrk/midnight-did-credentials-protocol";
 import { describe, expect, it } from "vitest";
 
+import { UniversityProtocolFlowRunner } from "../flow.js";
 import {
   DeterministicUniversityPartyRuntime,
   loadUniversityFixtureData,
@@ -99,5 +104,41 @@ describe("university party runtime", () => {
         company.verifierMethodId,
       ).secretKey,
     ).toBe(33n);
+  });
+
+  it("uses deterministic envelope IDs only for the fixture runtime", () => {
+    const fixture = loadUniversityFixtureData();
+    const seedRuntime = new DeterministicUniversityPartyRuntime();
+    seedRuntime.issuerProfileForUniversity(fixture.university);
+    for (const student of fixture.students) {
+      seedRuntime.studentProfileForStudent(student);
+    }
+    for (const company of fixture.companies) {
+      seedRuntime.verifierProfile(
+        company.companyId,
+        company.verifierDidUrl,
+        company.verifierMethodId,
+      );
+    }
+    seedRuntime.verifierProfile(
+      fixture.mall.mallId,
+      fixture.mall.verifierDidUrl,
+      fixture.mall.verifierMethodId,
+    );
+    const provisionedRuntime = new PreloadedUniversityPartyRuntime(
+      seedRuntime.listParties().map((party) => ({
+        ...party,
+        source: "standalone-provisioned" as const,
+      })),
+    );
+
+    expect(
+      new UniversityProtocolFlowRunner().envelopeIdentifierSource,
+    ).toBe(unsafeReferenceDeterministicEnvelopeIdentifierSource);
+    expect(
+      new UniversityProtocolFlowRunner({
+        partyRuntime: provisionedRuntime,
+      }).envelopeIdentifierSource,
+    ).toBe(secureProtocolEnvelopeIdentifierSource);
   });
 });
