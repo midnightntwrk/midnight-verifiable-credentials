@@ -504,12 +504,17 @@ Recommended `package.json` conventions:
 - pin compatible `@midnight-ntwrk/compact-runtime` and Compact compiler/runtime
   expectations
 
-Open question:
+Validated Compact package resolution:
 
-- The best published import path for Compact source dependencies needs a real
-  package-consumer experiment. Today the repo uses relative `include` paths.
-  Before publishing, create a small external consumer contract and verify the
-  compiler can resolve the intended package source paths cleanly.
+- release candidates export their Compact roots into the tarball `dist`
+  directory;
+- an installed consumer passes that directory through `--compact-path` and
+  uses `include "credentials"` or a narrower exported root; and
+- `tooling/scripts/test-release-package-consumers.mjs` compiles this form from
+  a temporary project outside the workspace on every packaging lane.
+
+Repository-relative `include` paths remain appropriate for internal workspace
+composition, but they are not the external package contract.
 
 ## Generated Code Guidance
 

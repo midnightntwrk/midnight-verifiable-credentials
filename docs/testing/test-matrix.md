@@ -488,6 +488,24 @@ Executed through:
 
 or directly through package-level `test:integration` commands when Docker is available.
 
+## Release package consumers
+
+The package lane runs `pnpm run test:release-package-consumers` after producing
+and auditing all workspace tarballs. For every release candidate it creates a
+project outside the repository, installs only the copied tarball, and verifies:
+
+- Node ESM root, contract, managed, and Compact export resolution;
+- strict TypeScript declarations with `skipLibCheck: false`;
+- legacy TypeScript `node` resolution for compatibility subpaths;
+- browser-targeted bundling and execution through the pure `./jubjub` subpath;
+- Compact compilation with the installed package `dist` directory on
+  `--compact-path`; and
+- absence of workspace links, sibling paths, repository paths, and
+  install-time package hooks.
+
+The temporary consumer is always removed. The lane is also part of
+`pnpm run artifacts:pack`, `pnpm run ci:package-tests`, and `./run.sh --light`.
+
 ## Repository Runner Targets
 
 `./run.sh` now exposes the main repository lanes directly:

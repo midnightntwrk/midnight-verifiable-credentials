@@ -13,6 +13,8 @@ and versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - defined the package as a private pre-1.0 release candidate for local tarball
   distribution;
 - declared an ESM-only JavaScript surface and explicit Compact source exports;
+- added a browser-safe `./jubjub` export and clean installed-tarball consumer
+  checks for Node ESM, TypeScript, bundlers, and Compact;
 - bounded the Compact runtime dependency to compatible `0.15.x` releases; and
 - restricted the tarball to runtime output, audited Compact source, licensing,
   documentation, changelog, and package metadata.

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { stderr, stdout } from "node:process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -15,6 +15,7 @@ const workspace = (workspacePath, maturity, packageClass, options = {}) => ({
   maturity,
   packageClass,
   releaseStage: options.releaseStage ?? "internal",
+  consumerFixture: options.consumerFixture ?? null,
   releaseTasks:
     options.releaseTasks ??
     (packageClass === "dist"
@@ -37,6 +38,7 @@ const workspace = (workspacePath, maturity, packageClass, options = {}) => ({
 export const workspaceCatalog = [
   workspace("packages/core/primitives/credentials", "core", "dist", {
     releaseStage: "candidate",
+    consumerFixture: "tooling/fixtures/release-package-consumer",
   }),
   workspace("packages/registry/status-registry", "reference", "dist"),
   workspace("packages/core/capabilities/same-holder", "core", "dist"),
@@ -227,6 +229,18 @@ const checkCatalog = () => {
       entry.releaseStage === "internal" || entry.packageClass === "dist",
       `${entry.path} release candidates and supported packages must be dist packages`,
     );
+    assert.equal(
+      entry.releaseStage !== "internal",
+      typeof entry.consumerFixture === "string" &&
+        entry.consumerFixture.length > 0,
+      `${entry.path} consumer fixture must match external release status`,
+    );
+    if (entry.consumerFixture !== null) {
+      assert.ok(
+        existsSync(path.join(repoRoot, entry.consumerFixture, "package.json")),
+        `${entry.path} consumer fixture must include package.json`,
+      );
+    }
     assert.equal(
       entry.pack,
       entry.packageClass === "dist",
