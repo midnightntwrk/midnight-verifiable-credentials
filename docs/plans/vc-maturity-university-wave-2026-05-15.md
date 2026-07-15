@@ -1,6 +1,7 @@
 # VC Maturity and University Closeout Wave
 
-Status: active 20-iteration execution plan targeting `origin/develop`.
+Status: historical 20-iteration execution wave. Remaining production work is
+owned by [`vc-maturity-backlog.md`](./vc-maturity-backlog.md).
 
 Purpose:
 

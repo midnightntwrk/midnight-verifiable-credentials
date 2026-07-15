@@ -39,6 +39,8 @@ Current maturity is mixed by package:
     - mixed explicit/public plus committed/private claim-representation laboratory
   - [`credentials-university-diploma`](./packages/prototypes/credential-families/university-diploma/README.md)
     - academic diploma prototype aligned to the university issuance and verifier-flow use case
+  - [`credentials-digital-passport`](./packages/prototypes/credential-families/digital-passport/README.md)
+    - first credential-product graduation candidate; not yet production-ready
   - [`credentials-iso-registry`](./packages/core/primitives/iso-registry/README.md)
   - [`credentials-offchain-did`](./packages/components/adapters/offchain-did/README.md)
   - [`credentials-openid`](./packages/protocols/openid/README.md)
@@ -97,6 +99,8 @@ Start here:
   - [`docs/testing/test-strategy.md`](./docs/testing/test-strategy.md)
   - [`docs/testing/test-matrix.md`](./docs/testing/test-matrix.md)
 - design/comparison notes:
+  - [`docs/decisions/README.md`](./docs/decisions/README.md)
+  - [`docs/plans/vc-maturity-backlog.md`](./docs/plans/vc-maturity-backlog.md)
   - [`docs/decisions/anoncreds-comparison.md`](./docs/decisions/anoncreds-comparison.md)
   - [`docs/plans/holder-binding-extension-plan.md`](./docs/plans/holder-binding-extension-plan.md)
 
@@ -124,6 +128,8 @@ Start here:
   - mixed explicit/public plus committed/private claim-representation laboratory
 - [`credentials-university-diploma`](./packages/prototypes/credential-families/university-diploma/README.md)
   - academic diploma prototype with batch-issuance and verifier-policy flows
+- [`credentials-digital-passport`](./packages/prototypes/credential-families/digital-passport/README.md)
+  - digital-passport reference family and first independent product candidate
 - [`credentials-openid`](./packages/protocols/openid/README.md)
   - OID4VCI / OID4VP-inspired transport/domain adapters
 - [`credentials-protocol`](./packages/components/orchestration/protocol/README.md)

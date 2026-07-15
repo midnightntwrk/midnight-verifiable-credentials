@@ -106,6 +106,9 @@
 - academic diploma family prototype:
   - [`../packages/prototypes/credential-families/university-diploma/README.md`](../packages/prototypes/credential-families/university-diploma/README.md)
   - for engineers who need a larger explicit-holder family with non-revocable issuance and verifier-side grade policies
+- digital-passport family prototype:
+  - [`../packages/prototypes/credential-families/digital-passport/README.md`](../packages/prototypes/credential-families/digital-passport/README.md)
+  - for engineers evaluating the first credential-product graduation candidate
 
 ## Architecture
 
@@ -158,6 +161,10 @@
 
 ## Decisions and plans
 
+- architecture decision register:
+  - [`decisions/README.md`](./decisions/README.md)
+  - for accepted repository, contract, artifact, rendering, verification, and
+    connector/protocol boundaries
 - AnonCreds comparison:
   - [`decisions/anoncreds-comparison.md`](./decisions/anoncreds-comparison.md)
   - for positioning and design tradeoff context
@@ -179,15 +186,16 @@
   - for choosing the first Midnight-native status/revocation implementation path
 - VC maturity backlog:
   - [`plans/vc-maturity-backlog.md`](./plans/vc-maturity-backlog.md)
-  - for maturity status snapshots and historical capability /
-    release-discipline gap tracking
+  - for the canonical dependency-ordered production-readiness queue
+- VC production execution plan:
+  - [`plans/vc-production-execution-plan-2026-07-16.md`](./plans/vc-production-execution-plan-2026-07-16.md)
+  - for dedicated branch, PR dependency, CI, review, and merge sequencing
 - repository audit backlog:
   - [`plans/repository-audit-backlog.md`](./plans/repository-audit-backlog.md)
-  - for repo-wide simplification findings, package/docs drift, and
-    developer-experience follow-up queues
+  - for historical May 2026 simplification findings and delivery traceability
 - VC maturity and university closeout wave:
   - [`plans/vc-maturity-university-wave-2026-05-15.md`](./plans/vc-maturity-university-wave-2026-05-15.md)
-  - for the active 20-iteration execution plan targeting `develop`
+  - for the historical 20-iteration execution wave
 - Serenity/JS BDD layer plan:
   - [`plans/serenity-js-bdd-layer.md`](./plans/serenity-js-bdd-layer.md)
   - for the TypeScript screenplay-style living-documentation test layer
