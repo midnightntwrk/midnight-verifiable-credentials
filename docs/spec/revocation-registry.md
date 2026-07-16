@@ -9,6 +9,7 @@ Companion documents:
 - [`./credential-status.md`](./credential-status.md)
 - [`./status-error-taxonomy.md`](./status-error-taxonomy.md)
 - [`./status-verification-protocol.md`](./status-verification-protocol.md)
+- [`./status-time-authority-v1.md`](./status-time-authority-v1.md)
 - [`../architecture/status-verification-modes.md`](../architecture/status-verification-modes.md)
 - [`./profiles.md`](./profiles.md)
 - [`./conformance.md`](./conformance.md)
@@ -43,7 +44,8 @@ This document defines:
 This document does not define:
 
 - final wire formats
-- final governance / multi-authority policy
+- the detailed authority records and negative-test gates, which are defined in
+  [`status-time-authority-v1.md`](./status-time-authority-v1.md)
 - a public status-list fallback as the primary target
 - the exact Compact syntax of the final implementation
 
@@ -284,6 +286,13 @@ The prototype registry model is:
   - `registryId`
   - `revokedRoot`
   - `registryVersion`
+
+Production authority warning: the current Compact prototype exposes
+unauthenticated initialization and revocation and starts initialized state at
+version `0`. It cannot back a supported profile. The v1 production target
+derives an issuer/family/schema-major namespace, authenticates every controller
+and operator transition, and starts at version `1` as specified in
+[`status-time-authority-v1.md`](./status-time-authority-v1.md).
 
 The empty revoked-set root is valid for an initialized registry with zero
 revocations. Callers must not treat an all-zero `revokedRoot` as malformed by

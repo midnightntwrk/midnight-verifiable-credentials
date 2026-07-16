@@ -39,9 +39,9 @@ develop
 |  `- PR-A3 final ledger profiles (after authority dependencies)
 |- Track B: identity/status authority
 |  |- PR-B0 status/time authority threat model and negative-test design
-|  |- PR-B1 authenticated status mutation and registry ownership (after B0)
-|  |- PR-B2 accepted-root and non-membership proof (stacked only when feasible)
-|  `- PR-B3 trusted-time evidence adapter (independent after B0)
+|  |- PR-B3 trusted-time evidence adapter (after B0)
+|  |- PR-B1 authenticated status mutation and registry ownership (after B0/B3)
+|  `- PR-B2 accepted-root and non-membership proof (stacked only when feasible)
 |- Track C: release correctness
 |  |- PR-C1 publishable package contract and export policy
 |  `- PR-C2 clean-consumer pack tests (stacked on C1)
@@ -76,8 +76,8 @@ useful.
 | PR-A1 | `codex/vc-verification-contract-v1` | `develop` after A0 | authoritative `persistentHash` encoding spike, transcript/public-input/result types, evidence bindings, fail-closed API skeleton, digest and mutation tests; no final-profile claim | A0 merged; supported Compact encoding surface identified; cross-runtime digest vectors; core build/test, typecheck, surface discipline, light gate, Claude security review |
 | PR-A2 | `codex/vc-decision-nullifier-v1` | PR-A1 | request/holder/credential replay scopes, persistent nullifier semantics, and atomic generic capability tests | focused contract tests, restart/race/rollback tests, light gate, Claude security review |
 | PR-A3 | `codex/vc-verification-profiles-v1` | `develop` after required B/G and upstream authority work | final `ledger-local-v1` and `ledger-attested-v1` evidence adapters and profile integration | DID/trust/status/time/artifact/connector prerequisites for claimed modes, full differential matrix, light gate, independent security review |
-| PR-B0 | `codex/vc-status-time-threat-model-v1` | `develop` | authenticated registry ownership, root/non-membership, freshness, and trusted-time threat model plus negative-test design | docs links, policy checks, light gate, Claude security review |
-| PR-B1 | `codex/vc-status-registry-authority` | `develop` after B0 | authenticated initialization/mutation, issuer/schema-major ownership, negative tests | B0 merged; revocation lane, Compact build/tests, light gate, Claude security review |
+| PR-B0 | `codex/vc-status-time-threat-model-v1` | `develop` | ADRs and normative contract for authenticated registry ownership, root/non-membership, freshness, trusted time, and the required negative-test design | docs links, policy checks, light gate, Claude security review |
+| PR-B1 | `codex/vc-status-registry-authority` | `develop` after B0 and the required B3 time surface | authenticated initialization/mutation, issuer/schema-major ownership, negative tests | B0 merged; authorization time source is authoritative; revocation lane, Compact build/tests, light gate, Claude security review |
 | PR-B2 | `codex/vc-status-root-nonmembership` | PR-B1 | accepted-root equality and actual non-membership proof | upstream capability confirmed, revocation + integration lanes, full proof metrics, Claude cryptography review |
 | PR-B3 | `codex/vc-trusted-time-authority` | `develop` after B0 | ledger-derived or bounded authority-attested time evidence and freshness adapter | trusted-time capability confirmed, expiry/future/stale vectors, light gate, Claude security review |
 | PR-C1 | `codex/vc-release-package-contract` | `develop` | public inventory, versions/ranges, ESM/CJS policy, metadata and prepack correctness | manifest checks, build/package tests, light gate, Claude release review |

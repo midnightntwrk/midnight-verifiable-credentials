@@ -352,6 +352,7 @@ digest. The minimum owned records are:
 | `disclosureDigest` | Ordered disclosed field identifiers and disclosure mode, not values |
 | `predicateDigest` | Ordered predicate identifiers, operators, public thresholds, and result commitments |
 | `trustScopeDigest` | Issuer, verifier, schema, role, network, and policy scope |
+| `statusRegistryDigest` | Exact `StatusRegistryRefV1` from the credential binding, as defined by the status/time authority specification |
 | `statusFreshnessPolicyDigest` | Version floor, max age, time unit, and accepted status mode |
 | `policyDigest` | Policy identifier/version and every policy parameter |
 | `actionInvocationDigest` | Action class plus exact target, recipient, resource, amount, and typed arguments |
@@ -512,7 +513,7 @@ The final circuit MUST enforce this matrix:
 | Profile/authority | Allowed required evidence modes | Additional rule |
 | --- | --- | --- |
 | `ledger-local-v1` / `ledger-local` | `local-ledger`, or `cryptographic-proof` anchored to locally accepted ledger state | No required binding may use `authority-attested`; status mode is `none`, `same-contract-live`, or locally anchored `external-nonmembership`; origin mode is `none` |
-| `ledger-attested-v1` / `ledger-attested` | `local-ledger`, locally anchored `cryptographic-proof`, and `authority-attested` | At least one required binding uses `authority-attested`; status mode `authority-attested` requires attested status evidence; wallet-attested origin requires attested connector evidence |
+| `ledger-attested-v1` / `ledger-attested` | `local-ledger`, `cryptographic-proof` anchored to accepted local or typed authority-attested state, and `authority-attested` | At least one required binding is directly `authority-attested` or contains a specification-owned, verified authority-attested state anchor; status mode `authority-attested` requires direct attested status evidence; wallet-attested origin requires attested connector evidence |
 | `offchain-public-v1` / `local-process` | `not-required`, `unavailable`, `local-ledger`, `authority-attested`, or `cryptographic-proof`, but only with entirely public inputs evaluated locally | No private witness, hidden binding, ledger side effect, or ledger receipt; origin is `none` or `local-request`; nullifier/replay mode is `none` |
 
 An optional evidence class uses only `not-required`. A required class cannot
@@ -522,8 +523,11 @@ this matrix is malformed and has a negative vector.
 
 The transcript `authority` field records the authority targeted by its selected
 profile. The result `authority` field records authority actually achieved by
-execution, so a local preflight for a ledger profile has target authority in its
-transcript but `authority: local-process` in `LocalVerificationAttemptV1`.
+execution and is derived from the profile plus every direct and typed nested
+evidence authority. No status-table row or outer evidence mode can raise the
+result above the weakest required binding. A local preflight for a ledger profile
+has target authority in its transcript but `authority: local-process` in
+`LocalVerificationAttemptV1`.
 
 Status and time combinations are exhaustive:
 
@@ -531,7 +535,7 @@ Status and time combinations are exhaustive:
 | --- | --- | --- |
 | status `none` | status `not-required` | Any profile |
 | status `same-contract-live` | status `local-ledger` | Any ledger profile; off-chain evaluation remains `local-process` |
-| status `external-nonmembership` | status `cryptographic-proof` anchored to accepted ledger state | Any ledger profile; off-chain evaluation remains `local-process` |
+| status `external-nonmembership` | status `cryptographic-proof` anchored to accepted local ledger state or a verified typed authority-attested state anchor | Any ledger profile; an attested anchor requires `ledger-attested-v1`; off-chain evaluation remains `local-process` |
 | status `authority-attested` | status `authority-attested` | `ledger-attested-v1` only |
 | time `none` | time `not-required`, trusted time zero | Any profile whose policy has no time rule |
 | time `ledger` | time `local-ledger` | Any ledger profile; off-chain evaluation remains `local-process` |

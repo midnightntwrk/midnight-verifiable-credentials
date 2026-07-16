@@ -26,6 +26,8 @@ supersedes them.
 | [0008](./0008-package-release-stages-and-candidate-contract.md) | Accepted | Separate packable artifacts from release candidates and supported packages |
 | [0009](./0009-supply-chain-evidence-and-exceptions.md) | Accepted | Gate supported releases on reviewable dependencies, expiring exceptions, SBOMs, provenance, and attestations |
 | [0010](./0010-verification-transcript-and-decision-nullifier.md) | Accepted | Bind verification decisions to a canonical transcript, orthogonal result axes, and an atomic decision nullifier |
+| [0011](./0011-status-registry-namespace-and-authority.md) | Accepted | Derive registry namespaces and authenticate controller, delegate, mutation, audit, rotation, and migration transitions |
+| [0012](./0012-trusted-time-and-status-freshness.md) | Accepted | Accept status freshness and time only from explicit ledger or independently anchored authority sources |
 
 [`anoncreds-comparison.md`](./anoncreds-comparison.md) remains design research,
 not an ADR.
