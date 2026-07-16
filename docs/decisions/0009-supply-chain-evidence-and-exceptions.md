@@ -26,6 +26,9 @@ must satisfy; it does not claim that a supported release workflow exists now.
    and reject newly introduced high or critical vulnerabilities. Private
    repositories require GitHub Advanced Security for the dependency-review
    API, so this gate remains dormant during the current private staging phase.
+   The branch and scheduled scan separately reject every unaccepted Scorecard
+   vulnerability finding, regardless of advisory severity; dependency review
+   is a supplemental diff gate rather than the baseline policy.
 3. Pin every action introduced into a security or release workflow to a full
    commit SHA. Version comments may document the human-readable release.
 4. Do not add a vulnerability allowlist without a linked risk-acceptance
@@ -61,6 +64,9 @@ must satisfy; it does not claim that a supported release workflow exists now.
 - The repository has an explicit, expiring exception process instead of
   permanent inline suppressions. OSV ignores fail closed after their recorded
   expiry and remain under security/SRE code ownership.
+- Exact pnpm overrides used to remediate transitive findings remain visible in
+  the vulnerability register because Dependabot does not maintain those pins.
+  Scheduled scans still evaluate the pinned versions against new advisories.
 - Current tarballs remain development artifacts. This ADR deliberately blocks
   promotion to `supported` until SBOM, provenance, signing/attestation, and
   clean-consumer verification are implemented.
