@@ -24,6 +24,7 @@ supersedes them.
 | [0006](./0006-existing-dapp-connector-credentials-extension.md) | Accepted | Add a versioned credentials extension to the existing Midnight DApp Connector API |
 | [0007](./0007-openid-credential-protocols-and-didcomm.md) | Accepted | Use OID4VCI and OID4VP as the interoperable protocols and keep DIDComm optional |
 | [0008](./0008-package-release-stages-and-candidate-contract.md) | Accepted | Separate packable artifacts from release candidates and supported packages |
+| [0009](./0009-supply-chain-evidence-and-exceptions.md) | Accepted | Gate supported releases on reviewable dependencies, expiring exceptions, SBOMs, provenance, and attestations |
 
 [`anoncreds-comparison.md`](./anoncreds-comparison.md) remains design research,
 not an ADR.

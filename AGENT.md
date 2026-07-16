@@ -266,6 +266,7 @@ Important root guards:
 pnpm run check:package-boundaries
 pnpm run check:ci-build-cones
 pnpm run check:ci-workflow-cones
+pnpm run check:security-workflows
 pnpm run check:run-target-contract
 pnpm run check:run-target-catalog
 pnpm run check:managed-artifact-catalog
