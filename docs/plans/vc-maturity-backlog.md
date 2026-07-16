@@ -109,11 +109,24 @@ Acceptance:
 
 ### P0-3. Implement the verification authority contract
 
+Design prerequisite:
+
+- the canonical transcript, orthogonal result axes, authority labels, and
+  atomic nullifier decision are fixed by
+  [`ADR-0010`](../decisions/0010-verification-transcript-and-decision-nullifier.md)
+  and [`verification-contract-v1.md`](../spec/verification-contract-v1.md);
+- implementation is gated by the threat model and negative-test design in
+  [`verification-authority-v1-test-design.md`](../testing/verification-authority-v1-test-design.md);
+  and
+- this prerequisite does not complete the Compact implementation or close the
+  DID, trust, status, time, artifact, and deployment authority blockers.
+
 Deliver:
 
 - versioned `VerificationTranscriptV1` and `VerificationPublicInputsV1` types;
-- result taxonomy `malformed | invalid | indeterminate | policyDenied | replay`
-  with profile, authority, and anchor evidence;
+- orthogonal proof status `malformed | invalid | indeterminate | valid`,
+  decision status `notEvaluated | approved | policyDenied | replay`, and a
+  discriminated local-attempt versus committed-ledger-receipt contract;
 - `ledger-local-v1` and `ledger-attested-v1` final verification profiles;
 - restricted `offchain-public-v1` with `authority: local-process` and no private
   witness or privacy-preserving predicate support;
@@ -129,6 +142,11 @@ Acceptance:
 - policy may deny a valid proof but cannot make an invalid proof valid; and
 - a final receipt discloses only minimal decision hashes and anchors, never raw
   claims or private witnesses.
+
+V1 is a single-credential authority chain. Authoritative multi-credential and
+same-holder VP decisions require a later aggregate decision-set contract that
+binds every credential's issuer, trust, and status evidence; they must not
+reuse one credential's chain as a proxy for the set.
 
 ### P0-4. Establish a real package and release contract
 

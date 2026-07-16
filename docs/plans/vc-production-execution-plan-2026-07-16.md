@@ -33,11 +33,15 @@ PR-00 architecture/backlog (independent)
 
 develop
 |- Track A: verification authority
-|  |- PR-A1 verification transcript and result contract
-|  `- PR-A2 decision nullifier and replay semantics (stacked on A1)
+|  |- PR-A0 verification threat model, v1 specification, and test design
+|  |- PR-A1 verification transcript and result contract (after A0)
+|  |- PR-A2 decision nullifier and replay semantics (stacked on A1)
+|  `- PR-A3 final ledger profiles (after authority dependencies)
 |- Track B: identity/status authority
-|  |- PR-B1 authenticated status mutation and registry ownership
-|  `- PR-B2 accepted-root and non-membership proof (stacked only when feasible)
+|  |- PR-B0 status/time authority threat model and negative-test design
+|  |- PR-B1 authenticated status mutation and registry ownership (after B0)
+|  |- PR-B2 accepted-root and non-membership proof (stacked only when feasible)
+|  `- PR-B3 trusted-time evidence adapter (independent after B0)
 |- Track C: release correctness
 |  |- PR-C1 publishable package contract and export policy
 |  `- PR-C2 clean-consumer pack tests (stacked on C1)
@@ -68,10 +72,14 @@ useful.
 | ID | Branch | Base | Scope | Required before merge |
 | --- | --- | --- | --- | --- |
 | PR-00 | `codex/vc-production-readiness-backlog` | `develop` | ADR register, canonical backlog, package inventory, this execution map | docs links, policy checks, light gate, Claude review, CI |
-| PR-A1 | `codex/vc-verification-contract-v1` | `develop` | `VerificationTranscriptV1`, public-input/result types, authority labels, API skeleton, mutation tests | core build/test, typecheck, surface discipline, light gate, Claude security review |
-| PR-A2 | `codex/vc-decision-nullifier-v1` | PR-A1 | persistent nullifier semantics and atomic capability decision tests | focused contract tests, revocation/age-gate lanes, light gate, Claude security review |
-| PR-B1 | `codex/vc-status-registry-authority` | `develop` | authenticated initialization/mutation, issuer/schema-major ownership, negative tests | revocation lane, Compact build/tests, light gate, Claude security review |
+| PR-A0 | `codex/vc-verification-threat-model-v1` | `develop` | canonical transcript/nullifier ADR, v1 authority specification, threat model, and negative-test design | docs links, policy checks, light gate, Claude security review |
+| PR-A1 | `codex/vc-verification-contract-v1` | `develop` after A0 | authoritative `persistentHash` encoding spike, transcript/public-input/result types, evidence bindings, fail-closed API skeleton, digest and mutation tests; no final-profile claim | A0 merged; supported Compact encoding surface identified; cross-runtime digest vectors; core build/test, typecheck, surface discipline, light gate, Claude security review |
+| PR-A2 | `codex/vc-decision-nullifier-v1` | PR-A1 | request/holder/credential replay scopes, persistent nullifier semantics, and atomic generic capability tests | focused contract tests, restart/race/rollback tests, light gate, Claude security review |
+| PR-A3 | `codex/vc-verification-profiles-v1` | `develop` after required B/G and upstream authority work | final `ledger-local-v1` and `ledger-attested-v1` evidence adapters and profile integration | DID/trust/status/time/artifact/connector prerequisites for claimed modes, full differential matrix, light gate, independent security review |
+| PR-B0 | `codex/vc-status-time-threat-model-v1` | `develop` | authenticated registry ownership, root/non-membership, freshness, and trusted-time threat model plus negative-test design | docs links, policy checks, light gate, Claude security review |
+| PR-B1 | `codex/vc-status-registry-authority` | `develop` after B0 | authenticated initialization/mutation, issuer/schema-major ownership, negative tests | B0 merged; revocation lane, Compact build/tests, light gate, Claude security review |
 | PR-B2 | `codex/vc-status-root-nonmembership` | PR-B1 | accepted-root equality and actual non-membership proof | upstream capability confirmed, revocation + integration lanes, full proof metrics, Claude cryptography review |
+| PR-B3 | `codex/vc-trusted-time-authority` | `develop` after B0 | ledger-derived or bounded authority-attested time evidence and freshness adapter | trusted-time capability confirmed, expiry/future/stale vectors, light gate, Claude security review |
 | PR-C1 | `codex/vc-release-package-contract` | `develop` | public inventory, versions/ranges, ESM/CJS policy, metadata and prepack correctness | manifest checks, build/package tests, light gate, Claude release review |
 | PR-C2 | `codex/vc-pack-consumer-tests` | PR-C1 | clean-checkout tarball installation and representative Node/bundler/Compact consumers | pack matrix, no-workspace consumer tests, light gate, Claude review |
 | PR-D1 | `codex/vc-truthful-light-gate` | `develop` | catalog-driven inclusion of all non-Docker workspaces and packaging; reject unknown flags | catalog self-tests, all light targets, light gate, CI workflow checks, Claude CI review |
@@ -140,8 +148,9 @@ The first autonomous window is deliberately bounded:
    clean Claude review, and verified GPG/DCO commits.
 
 Security-critical Compact changes in Tracks A and B require a dedicated
-threat-model and test-design pass before editing. They are not rushed merely to
-fill the first time window.
+threat-model and test-design pass before editing. PR-A0 provides that gate for
+Track A; Track B requires its own authority-specific equivalent. These changes
+are not rushed merely to fill the first time window.
 
 ## Stop conditions
 
