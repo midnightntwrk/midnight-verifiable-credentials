@@ -1,4 +1,4 @@
-import { access, stat } from "node:fs/promises";
+import { access, readdir, stat } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -15,7 +15,7 @@ const repoRoot = path.resolve(
 const requiredBuildSurfaces = [
   {
     artifactPath: "packages/components/orchestration/protocol/dist/index.js",
-    sourcePaths: ["packages/components/orchestration/protocol/src/index.ts"],
+    sourcePaths: ["packages/components/orchestration/protocol/src"],
   },
   {
     artifactPath:
@@ -58,13 +58,28 @@ async function needsRebuild({ artifactPath, sourcePaths }) {
 
   const artifactStat = await stat(path.join(repoRoot, artifactPath));
 
+  async function newestSourceMtime(relativePath) {
+    const absolutePath = path.join(repoRoot, relativePath);
+    const sourceStat = await stat(absolutePath);
+    if (!sourceStat.isDirectory()) {
+      return sourceStat.mtimeMs;
+    }
+
+    const entries = await readdir(absolutePath, { withFileTypes: true });
+    const entryMtimes = await Promise.all(
+      entries.map((entry) =>
+        newestSourceMtime(path.join(relativePath, entry.name)),
+      ),
+    );
+    return Math.max(sourceStat.mtimeMs, ...entryMtimes);
+  }
+
   for (const sourcePath of sourcePaths) {
     if (!(await exists(sourcePath))) {
       continue;
     }
 
-    const sourceStat = await stat(path.join(repoRoot, sourcePath));
-    if (sourceStat.mtimeMs > artifactStat.mtimeMs) {
+    if ((await newestSourceMtime(sourcePath)) > artifactStat.mtimeMs) {
       return true;
     }
   }

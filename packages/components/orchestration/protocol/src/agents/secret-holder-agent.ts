@@ -17,7 +17,11 @@ import {
   type SecretBirthCredentialVerificationSubmission,
 } from "@midnight-ntwrk/midnight-did-credentials-birth-secret/managed/secret-birth-credential/contract/index.js";
 
-import { createEnvelope } from "../shared/envelope.js";
+import {
+  createProtocolEnvelopeFactory,
+  type ProtocolEnvelopeFactory,
+  type ProtocolEnvelopeIdentifierSource,
+} from "../shared/envelope.js";
 import { assertBodyHasFields, assertMessageType } from "../shared/validation.js";
 import type { MessageBus } from "../transport/message-bus.js";
 import type {
@@ -38,7 +42,7 @@ import {
 } from "./protocol-state-store.js";
 import {
   type ProtocolRandomnessSource,
-  unsafeReferenceDeterministicRandomnessSource,
+  secureProtocolRandomnessSource,
 } from "./randomness.js";
 import { SECRET_BIRTH_COMPATIBILITY_FEATURE_HINTS } from "./schema-descriptors.js";
 
@@ -124,6 +128,7 @@ export class SecretHolderAgent {
   private readonly holderSecretOpening: Uint8Array;
   private readonly bus: MessageBus;
   private readonly randomness: ProtocolRandomnessSource;
+  private readonly createEnvelope: ProtocolEnvelopeFactory;
   private readonly retentionPolicy: ProtocolStateRetentionPolicy;
   private readonly storedCredentials: ProtocolStateCollection<SecretStoredCredential>;
   private readonly metadata: ProtocolStateCollection<number>;
@@ -149,6 +154,7 @@ export class SecretHolderAgent {
     },
     bus: MessageBus,
     options: {
+      readonly envelopeIdentifierSource?: ProtocolEnvelopeIdentifierSource;
       readonly randomness?: ProtocolRandomnessSource;
       readonly stateStore?: ProtocolStateStore;
       readonly stateRetention?: ProtocolStateRetentionPolicy;
@@ -158,8 +164,10 @@ export class SecretHolderAgent {
     this.holderSecret = config.holderSecret;
     this.holderSecretOpening = config.holderSecretOpening;
     this.bus = bus;
-    this.randomness =
-      options.randomness ?? unsafeReferenceDeterministicRandomnessSource;
+    this.randomness = options.randomness ?? secureProtocolRandomnessSource;
+    this.createEnvelope = createProtocolEnvelopeFactory(
+      options.envelopeIdentifierSource,
+    );
     this.retentionPolicy = options.stateRetention ?? {};
     const stateStore = options.stateStore ?? new InMemoryProtocolStateStore();
     const stateScope = `secret-holder:${this.label}`;
@@ -222,7 +230,7 @@ export class SecretHolderAgent {
     });
 
     const request: SecretBirthCredentialIssuanceRequest = {
-      envelope: createEnvelope(
+      envelope: this.createEnvelope(
         "secret-issuance-request",
         "secret-birth-issuance",
         false,
@@ -513,7 +521,7 @@ export class SecretHolderAgent {
     };
 
     const submission: SecretBirthCredentialVerificationSubmission = {
-      envelope: createEnvelope(
+      envelope: this.createEnvelope(
         "secret-presentation-submission",
         "secret-birth-presentation",
         false,
@@ -770,7 +778,7 @@ export class SecretHolderAgent {
     verifierChallengeHash: Uint8Array,
   ): SecretBirthCredentialVerificationRequest {
     return {
-      envelope: createEnvelope(
+      envelope: this.createEnvelope(
         "same-holder-presentation-request",
         "secret-birth-presentation",
         true,

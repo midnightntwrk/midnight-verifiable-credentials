@@ -200,6 +200,43 @@ describe("explicit-holder issuance", () => {
     );
   });
 
+  it("uses CSPRNG holder challenges when randomness is omitted", () => {
+    const offerBus = new MessageBus();
+    new IssuerAgent(issuerProfile, offerBus).createAndSendOffer("holder");
+    const offer = offerBus.receive("holder")!;
+
+    const requestChallenge = (): Uint8Array => {
+      const bus = new MessageBus();
+      new HolderAgent(holderProfile, bus).receiveOfferAndSendRequest(offer);
+      const request = bus.receive("issuer")!;
+      return (request.body as BirthCredentialIssuanceRequest).body
+        .holderChallengeHash;
+    };
+
+    const first = requestChallenge();
+    const second = requestChallenge();
+    expect(first).toHaveLength(32);
+    expect(first).not.toEqual(second);
+  });
+
+  it("accepts an explicit envelope identifier source", () => {
+    const expectedMessageId = sha256("custom:envelope:message");
+    const expectedThreadId = sha256("custom:envelope:thread");
+    const bus = new MessageBus();
+    const issuer = new IssuerAgent(issuerProfile, bus, {
+      envelopeIdentifierSource: {
+        nextMessageId: () => expectedMessageId,
+        nextThreadId: () => expectedThreadId,
+      },
+    });
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+
+    expect(offer.envelope.messageId).toEqual(expectedMessageId);
+    expect(offer.envelope.threadId).toEqual(expectedThreadId);
+  });
+
   it("persists explicit-holder credentials across agent restarts with a shared state store", () => {
     const bus = new MessageBus();
     const issuer = new IssuerAgent(issuerProfile, bus);

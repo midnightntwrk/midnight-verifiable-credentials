@@ -1,4 +1,5 @@
 import { Buffer } from "node:buffer";
+import { randomBytes } from "node:crypto";
 
 import { mod, sha256 } from "../shared/crypto.js";
 
@@ -33,6 +34,9 @@ export interface ProtocolRandomnessSource {
 
 const bytesToBigInt = (bytes: Uint8Array): bigint =>
   bytes.reduce((accumulator, byte) => (accumulator << 8n) + BigInt(byte), 0n);
+
+const takeRandomBytes = (length: number): Uint8Array =>
+  new Uint8Array(randomBytes(length));
 
 const encodeContext = (
   kind: string,
@@ -91,6 +95,32 @@ export class ReferenceDeterministicRandomnessSource
     }
   }
 }
+
+export class NodeCryptoRandomnessSource implements ProtocolRandomnessSource {
+  nextChallengeHash(_context: ProtocolRandomnessContext): Uint8Array {
+    return takeRandomBytes(32);
+  }
+
+  nextIssuerNonce(_context: ProtocolRandomnessContext): Uint8Array {
+    return takeRandomBytes(32);
+  }
+
+  nextBlindingFactor(_context: ProtocolRandomnessContext): Uint8Array {
+    return takeRandomBytes(32);
+  }
+
+  nextSigningNonceScalar(_context: ProtocolRandomnessContext): bigint {
+    while (true) {
+      const scalar = mod(bytesToBigInt(takeRandomBytes(64)));
+      if (scalar !== 0n) {
+        return scalar;
+      }
+    }
+  }
+}
+
+export const secureProtocolRandomnessSource =
+  new NodeCryptoRandomnessSource();
 
 export const unsafeReferenceDeterministicRandomnessSource =
   new ReferenceDeterministicRandomnessSource();

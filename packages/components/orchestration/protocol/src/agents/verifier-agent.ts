@@ -21,7 +21,11 @@ import {
   type SecretBirthCredentialVerificationSubmission,
 } from "@midnight-ntwrk/midnight-did-credentials-birth-secret/managed/secret-birth-credential/contract/index.js";
 
-import { createEnvelope } from "../shared/envelope.js";
+import {
+  createProtocolEnvelopeFactory,
+  type ProtocolEnvelopeFactory,
+  type ProtocolEnvelopeIdentifierSource,
+} from "../shared/envelope.js";
 import { assertBodyHasFields, assertMessageType } from "../shared/validation.js";
 import type { MessageBus } from "../transport/message-bus.js";
 import type {
@@ -43,7 +47,7 @@ import {
 import {
   type ProtocolRandomnessFlow,
   type ProtocolRandomnessSource,
-  unsafeReferenceDeterministicRandomnessSource,
+  secureProtocolRandomnessSource,
 } from "./randomness.js";
 import {
   BIRTH_COMPATIBILITY_FEATURE_HINTS,
@@ -173,6 +177,7 @@ export class VerifierAgent {
   private readonly profile: DIDProfile;
   private readonly bus: MessageBus;
   private readonly randomness: ProtocolRandomnessSource;
+  private readonly createEnvelope: ProtocolEnvelopeFactory;
   private readonly retentionPolicy: ProtocolStateRetentionPolicy;
   private challengeCounter = 0;
   private readonly completedSecretPresentationOutcomes: ProtocolStateCollection<
@@ -183,6 +188,7 @@ export class VerifierAgent {
     profile: DIDProfile,
     bus: MessageBus,
     options: {
+      readonly envelopeIdentifierSource?: ProtocolEnvelopeIdentifierSource;
       readonly randomness?: ProtocolRandomnessSource;
       readonly stateStore?: ProtocolStateStore;
       readonly stateRetention?: ProtocolStateRetentionPolicy;
@@ -190,8 +196,10 @@ export class VerifierAgent {
   ) {
     this.profile = profile;
     this.bus = bus;
-    this.randomness =
-      options.randomness ?? unsafeReferenceDeterministicRandomnessSource;
+    this.randomness = options.randomness ?? secureProtocolRandomnessSource;
+    this.createEnvelope = createProtocolEnvelopeFactory(
+      options.envelopeIdentifierSource,
+    );
     this.retentionPolicy = options.stateRetention ?? {};
     const stateStore = options.stateStore ?? new InMemoryProtocolStateStore();
     this.completedSecretPresentationOutcomes = stateStore.collection(
@@ -230,7 +238,7 @@ export class VerifierAgent {
     requirements: PresentationRequirements,
   ): void {
     const request: BirthCredentialVerificationRequest = {
-      envelope: createEnvelope(
+      envelope: this.createEnvelope(
         "presentation-request",
         "birth-presentation",
         true,
@@ -313,7 +321,7 @@ export class VerifierAgent {
     }
 
     const result: BirthCredentialVerificationResult = {
-      envelope: createEnvelope(
+      envelope: this.createEnvelope(
         "presentation-result",
         "birth-presentation",
         false,
@@ -344,7 +352,7 @@ export class VerifierAgent {
     options: SecretPresentationRequestOptions = {},
   ): void {
     const request: SecretBirthCredentialVerificationRequest = {
-      envelope: createEnvelope(
+      envelope: this.createEnvelope(
         "secret-presentation-request",
         "secret-birth-presentation",
         true,
@@ -447,7 +455,7 @@ export class VerifierAgent {
       : undefined;
 
     const result: SecretBirthCredentialVerificationResult = {
-      envelope: createEnvelope(
+      envelope: this.createEnvelope(
         "secret-presentation-result",
         "secret-birth-presentation",
         false,
@@ -560,7 +568,7 @@ export class VerifierAgent {
     retryable = false,
   ): SecretBirthCredentialVerificationRejection {
     return {
-      envelope: createEnvelope(
+      envelope: this.createEnvelope(
         "secret-presentation-rejection",
         "secret-birth-presentation",
         false,

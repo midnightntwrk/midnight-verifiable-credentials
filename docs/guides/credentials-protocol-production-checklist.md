@@ -15,21 +15,25 @@ Current reference implementation:
 
 ## 1. Randomness
 
-Do not ship the default randomness source.
+The default Node path uses `crypto.randomBytes` for protocol randomness,
+message IDs, and thread IDs. Do not replace it with a deterministic fixture
+source in a production entrypoint.
 
 Required:
 
-- provide an explicit `ProtocolRandomnessSource`
+- retain the default `NodeCryptoRandomnessSource` or provide an explicit
+  runtime/HSM-backed `ProtocolRandomnessSource`
 - generate challenge hashes, issuer nonces, blinding factors, and signing
   nonces from a cryptographically strong source
+- generate message and thread identifiers from a cryptographically strong
+  source
 - document which runtime or HSM boundary owns that generation
-- current shipped Node reference:
-  - `NodeCryptoRandomnessSource`
+- keep every `unsafeReference*` source restricted to deterministic fixtures
 
 Fail closed rule:
 
-- if the deployment cannot supply a production randomness source, do not claim
-  production protocol hardening
+- if the deployment cannot supply the default or an equivalent reviewed CSPRNG
+  source, fail before constructing protocol agents
 
 ## 2. Durable state
 
