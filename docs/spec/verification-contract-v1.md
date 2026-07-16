@@ -73,17 +73,45 @@ type VerificationExecutionStatusV1 =
   | "reverted"
   | "committed";
 
-interface LocalVerificationAttemptV1 {
+interface LocalVerificationAttemptCommonV1 {
   version: 1;
   kind: "local-attempt";
   targetProfile: "ledger-local-v1" | "ledger-attested-v1" | "offchain-public-v1";
   authority: "local-process";
-  proofStatus: VerificationProofStatusV1;
-  decisionStatus: "notEvaluated" | "approved" | "policyDenied";
-  executionStatus: "notSubmitted" | "rejected" | "reverted";
   transcriptDigest?: Uint8Array;
   reasonCode?: string;
 }
+
+type LocalVerificationAttemptV1 = LocalVerificationAttemptCommonV1 & (
+  | {
+      proofStatus: "malformed";
+      decisionStatus: "notEvaluated";
+      executionStatus: "notSubmitted";
+    }
+  | {
+      proofStatus: "invalid" | "indeterminate";
+      decisionStatus: "notEvaluated";
+      executionStatus: "notSubmitted" | "rejected" | "reverted";
+    }
+  | {
+      targetProfile: "offchain-public-v1";
+      proofStatus: "valid";
+      decisionStatus: "approved" | "policyDenied";
+      executionStatus: "notSubmitted";
+    }
+  | {
+      targetProfile: "ledger-local-v1" | "ledger-attested-v1";
+      proofStatus: "valid";
+      decisionStatus: "approved";
+      executionStatus: "notSubmitted" | "rejected" | "reverted";
+    }
+  | {
+      targetProfile: "ledger-local-v1" | "ledger-attested-v1";
+      proofStatus: "valid";
+      decisionStatus: "policyDenied";
+      executionStatus: "notSubmitted";
+    }
+);
 
 interface LedgerVerificationReceiptV1 {
   version: 1;
@@ -116,14 +144,20 @@ nullifier.
 Only a committed transaction can produce `LedgerVerificationReceiptV1`.
 Compact assertion failure, typed-decoding failure, submission failure, and a
 reverted transaction produce `LocalVerificationAttemptV1`; adapters MUST NOT
-invent a ledger receipt from those failures.
+invent a ledger receipt from those failures. Malformed input is detected before
+submission and therefore can only be `notSubmitted`. A proof rejected before
+block inclusion is `invalid/rejected`; a proof-invalidating assertion reached
+during included transaction execution is `invalid/reverted`. The same execution
+distinction applies to unavailable authority classified as `indeterminate`.
 
 Allowed execution combinations are:
 
 | Result | Proof/decision | Execution |
 | --- | --- | --- |
-| Local malformed, invalid, or indeterminate attempt | `notEvaluated` | `notSubmitted`, `rejected`, or `reverted` as observed |
+| Local malformed attempt | `notEvaluated` | `notSubmitted` |
+| Local invalid or indeterminate attempt | `notEvaluated` | `notSubmitted`, `rejected`, or `reverted` as observed |
 | Local public verification | `valid/approved` or `valid/policyDenied` | `notSubmitted` |
+| Valid ledger preflight denied by local policy | `valid/policyDenied` | `notSubmitted` |
 | Valid approved ledger attempt whose write fails | `valid/approved` | `reverted` |
 | Ledger receipt | `valid/approved`, `valid/policyDenied`, or `valid/replay` | `committed` |
 
@@ -249,7 +283,7 @@ unknown code to a default.
 | 33 | `statusMode` | `Uint<8>` | Explicit no-status, live, non-membership, or attested mode |
 | 34 | `statusRegistryDigest` | `Bytes<32>` | Credential-bound registry namespace; zero only for status mode `none` |
 | 35 | `statusRoot` | `Bytes<32>` | Accepted status root; equality alone is not non-membership proof |
-| 36 | `statusRegistryVersion` | `Uint<64>` | Exact accepted registry version, or zero for status mode `none` |
+| 36 | `statusRegistryVersion` | `Uint<64>` | Exact accepted registry version; zero is reserved for status mode `none`, so the first authenticated live version is `1` |
 | 37 | `statusFreshnessPolicyDigest` | `Bytes<32>` | Version floor, maximum age, and accepted time-unit policy |
 | 38 | `statusEvidenceDigest` | `Bytes<32>` | Mode-specific evidence binding or canonical `not-required` binding |
 | 39 | `timeMode` | `Uint<8>` | Explicit no-time-policy, ledger, or attested mode |
@@ -432,8 +466,9 @@ which evidence was requested. It always produces
 required binding to an accepted mode, authority, subject, anchor, statement,
 and freshness interval.
 
-`originMode: local-request` is valid only for `offchain-public-v1`. A ledger
-profile that makes origin part of authorization MUST use
+`originMode: local-request` is valid only for `offchain-public-v1`.
+`ledger-local-v1` therefore always uses `originMode: none`. A ledger profile
+that makes origin part of authorization MUST use
 `originMode: wallet-attested`, require `authority-attested` connector evidence,
 and verify that evidence against an accepted connector authority. Its
 `statementDigest` MUST equal `consentDigest`. A flow with no origin

@@ -87,9 +87,10 @@ or receipt.
 
 The holder's presentation proof binds a canonical consent digest containing
 the profile, audience, origin, request, challenge, expiry, disclosure,
-predicates, policy, and exact protected action invocation. A verifier cannot
-reuse a proof or wallet consent for a different action by constructing a new
-internally consistent transcript.
+predicates, policy, and exact protected action invocation. The normative
+`ConsentBindingV1` record defines the complete field set. A verifier cannot reuse
+a proof or wallet consent for a different action by constructing a new internally
+consistent transcript.
 
 ### Derive the decision nullifier independently
 
