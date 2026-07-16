@@ -163,6 +163,13 @@
   - root `pnpm run docs:links`
   - for the checked-in relative-link fast path used by docs-only CI
 
+## Security
+
+- vulnerability exception register:
+  - [`security/vulnerability-exceptions.md`](./security/vulnerability-exceptions.md)
+  - for the owner, scope, controls, remediation, and expiry of each temporary
+    OSV exception
+
 ## Decisions and plans
 
 - architecture decision register:

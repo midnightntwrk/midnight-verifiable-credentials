@@ -37,8 +37,9 @@ jobs:
       run_university: ${{ steps.classify.outputs.run_university }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
+          persist-credentials: false
           fetch-depth: 0
 
       - name: Classify docs-only, BDD-only, and heavy-lane changes
@@ -65,7 +66,9 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js
         uses: ./.github/actions/setup-node-pnpm
@@ -93,7 +96,9 @@ jobs:
     if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only == 'true'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js and install dependencies
         uses: ./.github/actions/setup-node-pnpm
@@ -115,7 +120,7 @@ jobs:
 
       - name: Upload BDD summary artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: bdd-summary-artifacts
           path: |
@@ -136,7 +141,7 @@ jobs:
     if: needs.changes.outputs.docs_only != 'true'
     steps:
       - name: Set up Compact toolchain
-        uses: midnightntwrk/setup-compact-action@v1
+        uses: midnightntwrk/setup-compact-action@836895c8fffbbea6bd986af2b17e8941ff29d1f8 # v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
@@ -162,7 +167,7 @@ jobs:
           tar -C "$HOME" -czf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz" "${compact_paths[@]}"
 
       - name: Upload Compact toolchain artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: compact-toolchain
           path: ${{ runner.temp }}/compact-toolchain/compact-toolchain.tar.gz
@@ -176,7 +181,9 @@ jobs:
     if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
 
       - name: Compute build input hashes
         id: build-input-hashes
@@ -210,7 +217,7 @@ jobs:
 
       - name: Restore foundation build outputs
         id: restore-foundation-cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{ steps.cone-paths.outputs.foundation }}
           key: ${{ runner.os }}-ci-build-foundation-${{ env.COMPACT_COMPILER_VERSION }}-${{ steps.build-input-hashes.outputs.foundation }}
@@ -227,7 +234,7 @@ jobs:
 
       - name: Restore birth-family build outputs
         id: restore-birth-family-cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{ steps.cone-paths.outputs.birth_family }}
           key: ${{ runner.os }}-ci-build-birth-family-${{ env.COMPACT_COMPILER_VERSION }}-${{ steps.build-input-hashes.outputs.birth_family }}
@@ -244,7 +251,7 @@ jobs:
 
       - name: Restore age-gate build outputs
         id: restore-age-gate-cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{ steps.cone-paths.outputs.age_gate }}
           key: ${{ runner.os }}-ci-build-age-gate-${{ env.COMPACT_COMPILER_VERSION }}-${{ steps.build-input-hashes.outputs.age_gate }}
@@ -261,7 +268,7 @@ jobs:
 
       - name: Restore protocol build outputs
         id: restore-protocol-cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{ steps.cone-paths.outputs.protocol }}
           key: ${{ runner.os }}-ci-build-protocol-${{ env.COMPACT_COMPILER_VERSION }}-${{ steps.build-input-hashes.outputs.protocol }}
@@ -279,11 +286,16 @@ jobs:
       - name: Summarize cone cache state
         id: cone-cache
         shell: bash
+        env:
+          FOUNDATION_CACHE_READY: ${{ steps.verify-foundation-cache.outputs.cache_ready }}
+          BIRTH_FAMILY_CACHE_READY: ${{ steps.verify-birth-family-cache.outputs.cache_ready }}
+          AGE_GATE_CACHE_READY: ${{ steps.verify-age-gate-cache.outputs.cache_ready }}
+          PROTOCOL_CACHE_READY: ${{ steps.verify-protocol-cache.outputs.cache_ready }}
         run: |
-          if [[ "${{ steps.verify-foundation-cache.outputs.cache_ready }}" == 'true' \
-             && "${{ steps.verify-birth-family-cache.outputs.cache_ready }}" == 'true' \
-             && "${{ steps.verify-age-gate-cache.outputs.cache_ready }}" == 'true' \
-             && "${{ steps.verify-protocol-cache.outputs.cache_ready }}" == 'true' ]]; then
+          if [[ "$FOUNDATION_CACHE_READY" == 'true' \
+             && "$BIRTH_FAMILY_CACHE_READY" == 'true' \
+             && "$AGE_GATE_CACHE_READY" == 'true' \
+             && "$PROTOCOL_CACHE_READY" == 'true' ]]; then
             echo "any_missing=false" >> "$GITHUB_OUTPUT"
           else
             echo "any_missing=true" >> "$GITHUB_OUTPUT"
@@ -319,28 +331,28 @@ jobs:
 
       - name: Save foundation build outputs
         if: steps.verify-foundation-cache.outputs.cache_ready != 'true'
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{ steps.cone-paths.outputs.foundation }}
           key: ${{ runner.os }}-ci-build-foundation-${{ env.COMPACT_COMPILER_VERSION }}-${{ steps.build-input-hashes.outputs.foundation }}
 
       - name: Save birth-family build outputs
         if: steps.verify-birth-family-cache.outputs.cache_ready != 'true'
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{ steps.cone-paths.outputs.birth_family }}
           key: ${{ runner.os }}-ci-build-birth-family-${{ env.COMPACT_COMPILER_VERSION }}-${{ steps.build-input-hashes.outputs.birth_family }}
 
       - name: Save age-gate build outputs
         if: steps.verify-age-gate-cache.outputs.cache_ready != 'true'
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{ steps.cone-paths.outputs.age_gate }}
           key: ${{ runner.os }}-ci-build-age-gate-${{ env.COMPACT_COMPILER_VERSION }}-${{ steps.build-input-hashes.outputs.age_gate }}
 
       - name: Save protocol build outputs
         if: steps.verify-protocol-cache.outputs.cache_ready != 'true'
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{ steps.cone-paths.outputs.protocol }}
           key: ${{ runner.os }}-ci-build-protocol-${{ env.COMPACT_COMPILER_VERSION }}-${{ steps.build-input-hashes.outputs.protocol }}
@@ -352,7 +364,7 @@ jobs:
             "$RUNNER_TEMP/ci-build-outputs"
 
       - name: Upload foundation CI artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: ci-build-foundation
           path: ${{ runner.temp }}/ci-build-outputs/ci-build-foundation.tar.gz
@@ -360,7 +372,7 @@ jobs:
           compression-level: 0
 
       - name: Upload birth-family CI artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: ci-build-birth-family
           path: ${{ runner.temp }}/ci-build-outputs/ci-build-birth-family.tar.gz
@@ -368,7 +380,7 @@ jobs:
           compression-level: 0
 
       - name: Upload age-gate CI artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: ci-build-age-gate
           path: ${{ runner.temp }}/ci-build-outputs/ci-build-age-gate.tar.gz
@@ -376,7 +388,7 @@ jobs:
           compression-level: 0
 
       - name: Upload protocol CI artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: ci-build-protocol
           path: ${{ runner.temp }}/ci-build-outputs/ci-build-protocol.tar.gz
@@ -391,7 +403,9 @@ jobs:
     if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js, dependencies, and turbo cache
         uses: ./.github/actions/setup-node-pnpm
@@ -409,31 +423,33 @@ jobs:
     if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js and install dependencies
         uses: ./.github/actions/setup-node-pnpm
 
       - name: Download foundation CI artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ci-build-foundation
           path: ${{ runner.temp }}/ci-build-outputs
 
       - name: Download birth-family CI artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ci-build-birth-family
           path: ${{ runner.temp }}/ci-build-outputs
 
       - name: Download age-gate CI artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ci-build-age-gate
           path: ${{ runner.temp }}/ci-build-outputs
 
       - name: Download protocol CI artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ci-build-protocol
           path: ${{ runner.temp }}/ci-build-outputs
@@ -457,7 +473,9 @@ jobs:
     if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js and install dependencies
         uses: ./.github/actions/setup-node-pnpm
@@ -468,25 +486,25 @@ jobs:
           compact-version: ${{ env.COMPACT_COMPILER_VERSION }}
 
       - name: Download foundation CI artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ci-build-foundation
           path: ${{ runner.temp }}/ci-build-outputs
 
       - name: Download birth-family CI artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ci-build-birth-family
           path: ${{ runner.temp }}/ci-build-outputs
 
       - name: Download age-gate CI artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ci-build-age-gate
           path: ${{ runner.temp }}/ci-build-outputs
 
       - name: Download protocol CI artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ci-build-protocol
           path: ${{ runner.temp }}/ci-build-outputs
@@ -510,7 +528,9 @@ jobs:
     if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true' && needs.changes.outputs.run_university == 'true'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js and install dependencies
         uses: ./.github/actions/setup-node-pnpm
@@ -525,7 +545,7 @@ jobs:
 
       - name: Upload university protocol profile artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: university-protocol-targets
           path: |
@@ -541,7 +561,9 @@ jobs:
     if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true' && needs.changes.outputs.run_hello_smoke == 'true'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js and install dependencies
         uses: ./.github/actions/setup-node-pnpm
@@ -552,19 +574,19 @@ jobs:
           compact-version: ${{ env.COMPACT_COMPILER_VERSION }}
 
       - name: Download foundation CI artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ci-build-foundation
           path: ${{ runner.temp }}/ci-build-outputs
 
       - name: Download birth-family CI artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ci-build-birth-family
           path: ${{ runner.temp }}/ci-build-outputs
 
       - name: Download age-gate CI artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ci-build-age-gate
           path: ${{ runner.temp }}/ci-build-outputs
@@ -587,25 +609,27 @@ jobs:
     if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true' && needs.changes.outputs.run_revocation == 'true'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js and install dependencies
         uses: ./.github/actions/setup-node-pnpm
 
       - name: Download foundation CI artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ci-build-foundation
           path: ${{ runner.temp }}/ci-build-outputs
 
       - name: Download birth-family CI artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ci-build-birth-family
           path: ${{ runner.temp }}/ci-build-outputs
 
       - name: Download age-gate CI artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ci-build-age-gate
           path: ${{ runner.temp }}/ci-build-outputs
@@ -628,25 +652,27 @@ jobs:
     if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true' && needs.changes.outputs.run_integration_demo_contract == 'true'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js and install dependencies
         uses: ./.github/actions/setup-node-pnpm
 
       - name: Download foundation CI artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ci-build-foundation
           path: ${{ runner.temp }}/ci-build-outputs
 
       - name: Download birth-family CI artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ci-build-birth-family
           path: ${{ runner.temp }}/ci-build-outputs
 
       - name: Download age-gate CI artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ci-build-age-gate
           path: ${{ runner.temp }}/ci-build-outputs
@@ -669,31 +695,33 @@ jobs:
     if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true' && needs.changes.outputs.run_integration_protocol == 'true'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js and install dependencies
         uses: ./.github/actions/setup-node-pnpm
 
       - name: Download foundation CI artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ci-build-foundation
           path: ${{ runner.temp }}/ci-build-outputs
 
       - name: Download birth-family CI artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ci-build-birth-family
           path: ${{ runner.temp }}/ci-build-outputs
 
       - name: Download age-gate CI artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ci-build-age-gate
           path: ${{ runner.temp }}/ci-build-outputs
 
       - name: Download protocol CI artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ci-build-protocol
           path: ${{ runner.temp }}/ci-build-outputs

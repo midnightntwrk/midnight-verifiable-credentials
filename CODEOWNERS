@@ -3,7 +3,10 @@
 /.github/PULL_REQUEST_TEMPLATE/ @midnightntwrk/mn-security @midnightntwrk/mn-sre
 /.github/pull_request_template.md @midnightntwrk/mn-security @midnightntwrk/mn-sre
 /.github/workflows/scan.yaml @midnightntwrk/mn-security @midnightntwrk/mn-sre
+/.github/workflows/dependency-review.yml @midnightntwrk/mn-security @midnightntwrk/mn-sre
 /.github/dependabot.yml @midnightntwrk/mn-security @midnightntwrk/mn-sre
+/docs/security/vulnerability-exceptions.md @midnightntwrk/mn-security @midnightntwrk/mn-sre
+/osv-scanner.toml @midnightntwrk/mn-security @midnightntwrk/mn-sre
 CODE_OF_CONDUCT.md @midnightntwrk/mn-security @midnightntwrk/mn-sre
 CODEOWNERS @midnightntwrk/mn-security @midnightntwrk/mn-sre
 CONTRIBUTING.md @midnightntwrk/mn-security @midnightntwrk/mn-sre

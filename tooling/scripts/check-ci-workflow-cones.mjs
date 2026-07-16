@@ -239,12 +239,14 @@ const assertWorkflowUsesLocalSetupActions = () => {
     );
   }
 
-  const pnpmActionIndex = setupNodePnpmActionText.indexOf(
-    "uses: pnpm/action-setup@v4",
-  );
-  const setupNodeIndex = setupNodePnpmActionText.indexOf(
-    "uses: actions/setup-node@v4",
-  );
+  const pnpmActionIndex =
+    setupNodePnpmActionText.match(
+      /uses:\s+pnpm\/action-setup@[0-9a-f]{40}\b/u,
+    )?.index ?? -1;
+  const setupNodeIndex =
+    setupNodePnpmActionText.match(
+      /uses:\s+actions\/setup-node@[0-9a-f]{40}\b/u,
+    )?.index ?? -1;
   const setupNodePnpmCacheIndex = setupNodePnpmActionText.indexOf(
     "cache: pnpm",
   );
