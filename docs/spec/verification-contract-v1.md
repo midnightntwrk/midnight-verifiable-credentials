@@ -266,7 +266,7 @@ unknown code to a default.
 | 1 | `domain` | `Bytes<32>` | Transcript v1 domain tag |
 | 2 | `version` | `Uint<16>` | Exact value `1` |
 | 3 | `profile` | `Uint<8>` | Bounded profile code |
-| 4 | `authority` | `Uint<8>` | Bounded authority code; final contract constrains it to the profile |
+| 4 | `authority` | `Uint<8>` | Target authority required by the profile; final contract constrains it to the profile |
 | 5 | `networkIdDigest` | `Bytes<32>` | MUST match ledger-initialized deployment context or accepted manifest evidence |
 | 6 | `verifierContractDigest` | `Bytes<32>` | Final verifier identity/deployment binding |
 | 7 | `deploymentDigest` | `Bytes<32>` | Accepted deployment manifest or initialized configuration |
@@ -404,9 +404,12 @@ Their exact ASCII domains are
 `midnight:vc:presentation-binding:v1` respectively.
 
 Consent binds holder- and verifier-controlled request, presentation, policy,
-and action fields. Issuer, trust, and status authority fields are instead bound
-by their authenticated evidence records and the full transcript hash; they are
-not copied into wallet consent merely to duplicate authority-owned statements.
+and action fields. It also binds the exact status mode, registry, accepted
+root/version, and freshness policy that the holder authorizes the verifier to
+check. Status evidence remains outside consent and is authenticated by its
+evidence record. Issuer and trust authority statements are likewise bound by
+authenticated evidence and the full transcript rather than copied into wallet
+consent.
 
 Explicit credential mode hashes `CredentialBindingV1`. Hidden credential mode
 uses `persistentCommit<CredentialBindingV1>(binding, presentationOpening)`;
@@ -508,7 +511,7 @@ The final circuit MUST enforce this matrix:
 
 | Profile/authority | Allowed required evidence modes | Additional rule |
 | --- | --- | --- |
-| `ledger-local-v1` / `ledger-local` | `local-ledger`, or `cryptographic-proof` anchored to locally accepted ledger state | No required binding may use `authority-attested`; status mode is `none`, `same-contract-live`, or locally anchored `external-nonmembership`; origin mode cannot be `wallet-attested` |
+| `ledger-local-v1` / `ledger-local` | `local-ledger`, or `cryptographic-proof` anchored to locally accepted ledger state | No required binding may use `authority-attested`; status mode is `none`, `same-contract-live`, or locally anchored `external-nonmembership`; origin mode is `none` |
 | `ledger-attested-v1` / `ledger-attested` | `local-ledger`, locally anchored `cryptographic-proof`, and `authority-attested` | At least one required binding uses `authority-attested`; status mode `authority-attested` requires attested status evidence; wallet-attested origin requires attested connector evidence |
 | `offchain-public-v1` / `local-process` | `not-required`, `unavailable`, `local-ledger`, `authority-attested`, or `cryptographic-proof`, but only with entirely public inputs evaluated locally | No private witness, hidden binding, ledger side effect, or ledger receipt; origin is `none` or `local-request`; nullifier/replay mode is `none` |
 
@@ -516,6 +519,11 @@ An optional evidence class uses only `not-required`. A required class cannot
 use `not-required`; an unavailable required class returns indeterminate before
 any decision. Every profile/evidence/status/origin combination not admitted by
 this matrix is malformed and has a negative vector.
+
+The transcript `authority` field records the authority targeted by its selected
+profile. The result `authority` field records authority actually achieved by
+execution, so a local preflight for a ledger profile has target authority in its
+transcript but `authority: local-process` in `LocalVerificationAttemptV1`.
 
 Status and time combinations are exhaustive:
 
