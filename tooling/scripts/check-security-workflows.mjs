@@ -28,19 +28,47 @@ const assertBranches = (workflow, eventName, relativePath) => {
   }
 };
 
+const assertExternalActionPinned = (action, location) => {
+  if (typeof action !== "string" || action.startsWith("./")) {
+    return;
+  }
+  if (action.startsWith("docker://")) {
+    if (!/@sha256:[0-9a-f]{64}$/u.test(action)) {
+      errors.push(`${location} must pin ${action} to a sha256 image digest`);
+    }
+    return;
+  }
+
+  const separatorIndex = action.lastIndexOf("@");
+  const reference =
+    separatorIndex === -1 ? "" : action.slice(separatorIndex + 1);
+  if (!/^[0-9a-f]{40}$/u.test(reference)) {
+    errors.push(`${location} must pin ${action} to a full commit SHA`);
+  }
+};
+
 const assertExternalActionsPinned = (workflow, relativePath) => {
   for (const [jobName, job] of Object.entries(workflow.jobs ?? {})) {
+    assertExternalActionPinned(job.uses, `${relativePath} job ${jobName}`);
     for (const step of job.steps ?? []) {
-      const action = step.uses;
-      if (typeof action !== "string" || action.startsWith("./")) {
-        continue;
-      }
-      const separatorIndex = action.lastIndexOf("@");
-      const reference =
-        separatorIndex === -1 ? "" : action.slice(separatorIndex + 1);
-      if (!/^[0-9a-f]{40}$/u.test(reference)) {
+      assertExternalActionPinned(
+        step.uses,
+        `${relativePath} job ${jobName} step ${step.name ?? "<unnamed>"}`,
+      );
+    }
+  }
+};
+
+const assertCheckoutsDoNotPersistCredentials = (workflow, relativePath) => {
+  for (const [jobName, job] of Object.entries(workflow.jobs ?? {})) {
+    for (const step of job.steps ?? []) {
+      if (
+        typeof step.uses === "string" &&
+        step.uses.startsWith("actions/checkout@") &&
+        step.with?.["persist-credentials"] !== false
+      ) {
         errors.push(
-          `${relativePath} job ${jobName} must pin ${action} to a full commit SHA`,
+          `${relativePath} job ${jobName} checkout must set persist-credentials: false`,
         );
       }
     }
@@ -52,6 +80,7 @@ const scan = readYaml(scanPath);
 assertBranches(scan, "push", scanPath);
 assertBranches(scan, "pull_request", scanPath);
 assertExternalActionsPinned(scan, scanPath);
+assertCheckoutsDoNotPersistCredentials(scan, scanPath);
 if (scan.jobs?.build?.permissions?.["security-events"] !== "write") {
   errors.push(`${scanPath} scan job must grant security-events: write`);
 }
@@ -60,6 +89,10 @@ const dependencyReviewPath = ".github/workflows/dependency-review.yml";
 const dependencyReview = readYaml(dependencyReviewPath);
 assertBranches(dependencyReview, "pull_request", dependencyReviewPath);
 assertExternalActionsPinned(dependencyReview, dependencyReviewPath);
+assertCheckoutsDoNotPersistCredentials(
+  dependencyReview,
+  dependencyReviewPath,
+);
 
 if (
   dependencyReview.jobs?.["dependency-review"]?.if !==
