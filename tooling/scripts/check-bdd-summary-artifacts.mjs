@@ -39,6 +39,12 @@ const assertIncludes = (haystack, needle, label) => {
   }
 };
 
+const assertMatches = (haystack, pattern, expected, label) => {
+  if (!pattern.test(haystack)) {
+    errors.push(`${label} must include ${expected}`);
+  }
+};
+
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 const stepBlock = (stepName) => {
@@ -90,9 +96,10 @@ assertIncludes(
   "if: always()",
   ".github/workflows/ci.yml BDD summary upload",
 );
-assertIncludes(
+assertMatches(
   uploadStep,
-  "uses: actions/upload-artifact@v4",
+  /uses:\s+actions\/upload-artifact@[0-9a-f]{40}\b/u,
+  "an immutable actions/upload-artifact reference",
   ".github/workflows/ci.yml BDD summary upload",
 );
 assertIncludes(

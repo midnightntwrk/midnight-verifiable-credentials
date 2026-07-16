@@ -10,7 +10,7 @@ runs:
   using: composite
   steps:
     - name: Download Compact toolchain artifact
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
       with:
         name: compact-toolchain
         path: ${{ runner.temp }}/compact-toolchain
@@ -20,7 +20,7 @@ runs:
       run: |
         mkdir -p "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.config" "$HOME/.compact"
         tar -C "$HOME" -xzf "$RUNNER_TEMP/compact-toolchain/compact-toolchain.tar.gz"
-        echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+        sudo ln -sfn "$HOME/.local/bin/compact" /usr/local/bin/compact
 
     - name: Activate Compact compiler
       shell: bash

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 import { parse } from "yaml";
@@ -75,12 +75,33 @@ const assertCheckoutsDoNotPersistCredentials = (workflow, relativePath) => {
   }
 };
 
+const workflowDirectory = ".github/workflows";
+for (const fileName of readdirSync(path.join(repoRoot, workflowDirectory))) {
+  if (!/\.ya?ml$/u.test(fileName)) {
+    continue;
+  }
+  const relativePath = `${workflowDirectory}/${fileName}`;
+  const workflow = readYaml(relativePath);
+  assertExternalActionsPinned(workflow, relativePath);
+  assertCheckoutsDoNotPersistCredentials(workflow, relativePath);
+}
+
+const actionsDirectory = ".github/actions";
+for (const actionName of readdirSync(path.join(repoRoot, actionsDirectory))) {
+  const relativePath = `${actionsDirectory}/${actionName}/action.yml`;
+  const action = readYaml(relativePath);
+  for (const step of action.runs?.steps ?? []) {
+    assertExternalActionPinned(
+      step.uses,
+      `${relativePath} step ${step.name ?? "<unnamed>"}`,
+    );
+  }
+}
+
 const scanPath = ".github/workflows/scan.yaml";
 const scan = readYaml(scanPath);
 assertBranches(scan, "push", scanPath);
 assertBranches(scan, "pull_request", scanPath);
-assertExternalActionsPinned(scan, scanPath);
-assertCheckoutsDoNotPersistCredentials(scan, scanPath);
 if (scan.jobs?.build?.permissions?.["security-events"] !== "write") {
   errors.push(`${scanPath} scan job must grant security-events: write`);
 }
@@ -88,12 +109,6 @@ if (scan.jobs?.build?.permissions?.["security-events"] !== "write") {
 const dependencyReviewPath = ".github/workflows/dependency-review.yml";
 const dependencyReview = readYaml(dependencyReviewPath);
 assertBranches(dependencyReview, "pull_request", dependencyReviewPath);
-assertExternalActionsPinned(dependencyReview, dependencyReviewPath);
-assertCheckoutsDoNotPersistCredentials(
-  dependencyReview,
-  dependencyReviewPath,
-);
-
 if (
   dependencyReview.jobs?.["dependency-review"]?.if !==
   "github.event.repository.private == false"
@@ -152,5 +167,5 @@ if (errors.length > 0) {
 }
 
 console.log(
-  "Security workflow contract is valid: branch coverage, public dependency review, Dependabot, and immutable action refs.",
+  "Security workflow contract is valid: branch coverage, public dependency review, Dependabot, immutable action refs, and checkout credential hygiene.",
 );
