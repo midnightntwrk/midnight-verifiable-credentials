@@ -93,6 +93,7 @@
     "test:hello-smoke:from-artifacts": "pnpm --dir ./packages/components/adapters/offchain-did exec vitest run && pnpm --dir ./packages/prototypes/credential-families/hello-family exec vitest run && pnpm --dir ./packages/use-cases/hello-verifier/contract exec vitest run",
     "test:dummy-claims-lab:from-artifacts": "pnpm --dir ./packages/prototypes/credential-families/dummy-claims exec vitest run && pnpm --dir ./packages/use-cases/hello-verifier/contract exec vitest run src/test/dummy-claims-verifier.test.ts",
     "test:university-protocol:from-artifacts": "pnpm --dir ./packages/use-cases/university/protocol exec vitest run",
+    "test:trusted-time-capability": "pnpm --dir ./packages/registry/status-registry run test:trusted-time-capability",
     "test:light:from-artifacts": "node ./tooling/scripts/workspace-catalog.mjs --exec-tests-from-artifacts",
     "test:all:from-artifacts": "node ./tooling/scripts/workspace-catalog.mjs --exec-tests-from-artifacts",
     "test:revocation:from-artifacts": "pnpm --dir ./packages/core/primitives/credentials exec vitest run && pnpm --dir ./packages/registry/status-registry exec vitest run && pnpm --dir ./packages/core/capabilities/same-holder exec vitest run && pnpm --dir ./packages/prototypes/credential-families/birth exec vitest run && pnpm --dir ./packages/prototypes/credential-families/birth-secret exec vitest run && pnpm --dir ./packages/use-cases/age-gate/contract exec vitest run --exclude src/test/integration/**/*.test.ts",

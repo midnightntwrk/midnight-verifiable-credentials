@@ -175,6 +175,10 @@
   - [`testing/status-time-authority-v1-test-design.md`](./testing/status-time-authority-v1-test-design.md)
   - for the negative, atomicity, privacy, and differential gates required
     before authenticated registry, root-proof, or trusted-time implementation
+- Compact trusted-time capability report:
+  - [`testing/compact-trusted-time-capability-2026-07-17.md`](./testing/compact-trusted-time-capability-2026-07-17.md)
+  - for the tested comparison-only Unix-seconds surface and the unsupported
+    anchor fields that currently block production B3
 - markdown link validation:
   - root `pnpm run docs:links`
   - for the checked-in relative-link fast path used by docs-only CI

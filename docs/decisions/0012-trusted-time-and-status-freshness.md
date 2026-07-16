@@ -26,8 +26,10 @@ V1 has three time modes:
 
 - `none`: the selected profile has no time-dependent policy and uses canonical
   not-required evidence;
-- `ledger`: the final contract obtains time or an ordered ledger position from
-  accepted execution context, never from a public caller argument; and
+- `ledger`: the final contract constrains time or an ordered ledger position to
+  accepted execution context and never accepts a caller argument as authority;
+  a disclosed candidate is acceptable only when supported ledger primitives
+  constrain it in the same protected transition; and
 - `authority-attested`: the final contract verifies a bounded time statement
   from an accepted authority and an independent freshness anchor.
 
@@ -42,6 +44,16 @@ time-dependent authoritative decision also binds a freshness value or validity
 window read from the current ledger execution context. A stored monotonic
 authority sequence detects rollback but cannot prove that a delayed first
 submission is current.
+
+The pinned Compact 0.30.0 stack exposes comparison-only nominal Unix-seconds
+time. As recorded in the
+[`Compact trusted-time capability report`](../testing/compact-trusted-time-capability-2026-07-17.md),
+asserting both `blockTimeGte(candidate)` and `blockTimeLte(candidate)` proves a
+disclosed candidate equals nominal context time. The comparison primitives can
+constrain that nominal time against disclosed validity bounds, but they do not
+expose or bind a context-derived error window, ordered position, or context
+digest. Because those fields are mandatory in the accepted V1 anchor, this
+bounded capability does not unblock production B3.
 
 ### Bind authoritative time evidence
 
@@ -101,8 +113,9 @@ eligible for a hidden-holder final profile.
 
 - Existing caller-time freshness checks remain useful only for local preflight.
 - B2 must prove both accepted-root binding and actual non-membership.
-- B3 begins with a toolchain capability check and cannot fabricate ledger time
-  from application input.
+- B3's toolchain capability check confirms nominal comparison-only ledger time,
+  but production B3 remains blocked on the mandatory anchor fields; it cannot
+  fabricate or silently omit those fields.
 - Final verification profiles must declare exact status, time, authority, and
   failure-classification combinations.
 
@@ -128,3 +141,4 @@ defined by:
 
 - [`../spec/status-time-authority-v1.md`](../spec/status-time-authority-v1.md)
 - [`../testing/status-time-authority-v1-test-design.md`](../testing/status-time-authority-v1-test-design.md)
+- [`../testing/compact-trusted-time-capability-2026-07-17.md`](../testing/compact-trusted-time-capability-2026-07-17.md)

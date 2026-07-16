@@ -769,6 +769,25 @@ verification result.
 The supported toolchain must define the exact ledger unit before B3. Different
 units are never compared by implicit conversion.
 
+The pinned Compact 0.30.0 capability is documented in
+[`compact-trusted-time-capability-2026-07-17.md`](../testing/compact-trusted-time-capability-2026-07-17.md).
+It exposes comparison-only nominal Unix seconds. In the final circuit, asserting
+both `blockTimeGte(disclose(candidate))` and
+`blockTimeLte(disclose(candidate))` constrains a disclosed `Uint<64>` candidate
+to nominal execution-context seconds. The comparison primitives can constrain
+that nominal time against disclosed validity bounds, but they do not expose or
+bind a context-derived error window, ordered position, or context digest.
+Exact-time equality also fails when execution advances to another nominal
+second.
+
+This is a confirmed bounded capability, not a completed `ledger` mode. The
+current V1 `LedgerExecutionTimeAnchorV1` requires fields the pinned toolchain
+cannot establish. Production B3 and authority-attested time remain blocked
+until the toolchain supplies those fields or a separately reviewed normative
+revision provides equivalent security. Implementations MUST NOT zero,
+fabricate, witness, or read the unsupported fields from TypeScript and label
+the result ledger-authoritative.
+
 For mode `none`, no `TrustedTimeStatementV1` or `TrustedTimeEvidenceV1` is
 constructed. Transcript `trustedTime` is zero, while `timeEvidenceDigest` equals
 the persistent hash of the canonical `EvidenceBindingV1` with mode
@@ -1408,8 +1427,12 @@ authority never becomes valid-with-warning.
 
 ### Before B3: trusted time
 
-- identify a supported ledger time/slot/ordered-position primitive and exact
-  unit, or document `ledger` mode as unavailable;
+- preserve the confirmed nominal Unix-seconds comparator matrix and the
+  documented absence of raw time, error, slot/position, and context-digest
+  getters;
+- resolve the mandatory execution-position, context-error/window, and
+  context-digest blocker without fabricating authority or weakening this
+  contract;
 - define any authority-attested time authority and typed mandatory current
   execution-context ledger anchor;
 - implement monotonic checkpoint, rollback, future-skew, expiry, max-age,
