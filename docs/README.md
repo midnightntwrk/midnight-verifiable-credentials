@@ -30,6 +30,10 @@
 - hidden-holder interoperability:
   - [`spec/hidden-holder-interoperability.md`](./spec/hidden-holder-interoperability.md)
   - for readers defining transport and adapter obligations for hidden-holder flows
+- verification authority contract:
+  - [`spec/verification-contract-v1.md`](./spec/verification-contract-v1.md)
+  - for implementers of the canonical transcript, result axes, authority
+    profiles, and atomic decision nullifier
 
 ## Guides
 
@@ -159,6 +163,10 @@
 - matrix:
   - [`testing/test-matrix.md`](./testing/test-matrix.md)
   - for the currently implemented test surface
+- verification authority threat model and test design:
+  - [`testing/verification-authority-v1-test-design.md`](./testing/verification-authority-v1-test-design.md)
+  - for the negative and differential gates required before authoritative
+    verifier-contract implementation
 - markdown link validation:
   - root `pnpm run docs:links`
   - for the checked-in relative-link fast path used by docs-only CI
