@@ -36,7 +36,7 @@ ADR-0005 because it materially changes and completes the result contract.
 `VerificationResultV1` has four independent axes:
 
 - `proofStatus`: `malformed | invalid | indeterminate | valid`;
-- `decisionStatus`: `notEvaluated | approved | policyDenied | replay`; and
+- `decisionStatus`: `notEvaluated | approved | policyDenied | replay`;
 - `executionStatus`: `notSubmitted | rejected | reverted | committed`; and
 - `authority`: `ledger-local | ledger-attested | local-process`.
 

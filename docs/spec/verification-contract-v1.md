@@ -79,7 +79,7 @@ interface LocalVerificationAttemptV1 {
   targetProfile: "ledger-local-v1" | "ledger-attested-v1" | "offchain-public-v1";
   authority: "local-process";
   proofStatus: VerificationProofStatusV1;
-  decisionStatus: VerificationDecisionStatusV1;
+  decisionStatus: "notEvaluated" | "approved" | "policyDenied";
   executionStatus: "notSubmitted" | "rejected" | "reverted";
   transcriptDigest?: Uint8Array;
   reasonCode?: string;
@@ -278,12 +278,14 @@ Text identifiers use this exact digest framing:
 SHA-256(UTF8(domain) || 0x00 || uint32be(byteLength) || canonicalUtf8Bytes)
 ```
 
-The field's domain is `midnight:vc:<field-name>:v1`. DID URLs use the DID
-method's canonical form; origins use the connector's origin rules; OID4VC
-identifiers use their profile rules; schema, policy, artifact, and deployment
-identifiers use their signed manifest formats. Raw 32-byte protocol values such
-as challenges are copied only when the owning protocol already defines them as
-uniform `Bytes<32>`; otherwise they use the framing above.
+In this framing formula, `domain` is the raw ASCII domain identifier, not the
+SHA-256-derived `Bytes<32>` domain tag embedded in a structured Compact record.
+The field's raw domain identifier is `midnight:vc:<field-name>:v1`. DID URLs use
+the DID method's canonical form; origins use the connector's origin rules;
+OID4VC identifiers use their profile rules; schema, policy, artifact, and
+deployment identifiers use their signed manifest formats. Raw 32-byte protocol
+values such as challenges are copied only when the owning protocol already
+defines them as uniform `Bytes<32>`; otherwise they use the framing above.
 
 Structured digests use `persistentHash<OwnedRecordV1>` over a fixed Compact
 record whose first fields
