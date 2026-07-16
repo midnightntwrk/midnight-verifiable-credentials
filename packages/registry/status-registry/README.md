@@ -9,6 +9,23 @@ Status:
 
 - prototype / evolving capability package
 
+Security boundary:
+
+- the current Compact registry has unauthenticated initialization and mutation
+- current freshness helpers accept runtime/verifier observation time
+- current supplied-root checks do not prove equality to the live Merkle root or
+  final non-membership in-circuit
+- current authority-attested proofs do not bind their submitter-supplied public
+  key bytes to the referenced active DID method
+- current demos/helpers may retain or print stable status identifiers and are
+  not hidden-holder production surfaces
+- therefore this package MUST NOT back a supported or production verification
+  profile until the B1/B2/B3 gates in
+  [`../../../docs/spec/status-time-authority-v1.md`](../../../docs/spec/status-time-authority-v1.md)
+  and
+  [`../../../docs/testing/status-time-authority-v1-test-design.md`](../../../docs/testing/status-time-authority-v1-test-design.md)
+  pass
+
 Tier:
 
 - reusable core capability package with prototype trust semantics
@@ -52,6 +69,7 @@ Start here:
    - [`../../../docs/guides/status-revocation-entrypoints.md`](../../../docs/guides/status-revocation-entrypoints.md)
    - [`../../../docs/spec/revocation-registry.md`](../../../docs/spec/revocation-registry.md)
    - [`../../../docs/spec/status-verification-protocol.md`](../../../docs/spec/status-verification-protocol.md)
+   - [`../../../docs/spec/status-time-authority-v1.md`](../../../docs/spec/status-time-authority-v1.md)
    - [`../../../docs/architecture/status-verification-modes.md`](../../../docs/architecture/status-verification-modes.md)
    - [`../../../docs/architecture/protocol-classification.md`](../../../docs/architecture/protocol-classification.md)
    - [`../../../docs/guides/integration-surface-map.md`](../../../docs/guides/integration-surface-map.md)

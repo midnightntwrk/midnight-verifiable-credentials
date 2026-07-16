@@ -7,6 +7,8 @@ Companion documents:
 - [`./credential-status.md`](./credential-status.md)
 - [`./revocation-registry.md`](./revocation-registry.md)
 - [`./status-verification-protocol.md`](./status-verification-protocol.md)
+- [`./status-time-authority-v1.md`](./status-time-authority-v1.md)
+- [`./verification-contract-v1.md`](./verification-contract-v1.md)
 - [`./conformance.md`](./conformance.md)
 
 ## Purpose
@@ -42,6 +44,13 @@ Business outcomes such as `superseded`, `corrected`, or domain-specific access
 denial remain separate and may exist only after the underlying VC/VP has
 verified successfully.
 
+This hard-invalidity rule applies when authenticated evidence is available and
+proves the adverse condition. If required status, DID, root, proof, or trusted-
+time authority cannot be obtained or authenticated, the v1 verification result
+is `indeterminate/notEvaluated`, not valid and not hard invalid. This distinction
+preserves fail-closed behavior without falsely claiming that unavailable
+evidence proved revocation or another adverse fact.
+
 ## Canonical status errors
 
 | Error | Meaning | Required disposition |
@@ -52,10 +61,23 @@ verified successfully.
 | `unsupportedStatusProofMode` | The verifier or contract does not support the presented status proof mode for this request | hard invalidity |
 | `statusBindingMismatch` | The VC-side committed binding does not match the presented request, witness, or attestation | hard invalidity |
 | `statusRequestMismatch` | The public status request and holder/authority status payloads do not agree on registry domain, root, version, or challenge | hard invalidity |
-| `authorityMismatch` | The authority-attested proof was not signed by the authority referenced by the VC-side binding | hard invalidity |
+| `authorityMismatch` | The authority-attested proof key is not the exact active DID method/key/relationship accepted by the stable VC-side authority policy | hard invalidity |
 | `attestationExpired` | The attested status statement is past its absolute expiration time | hard invalidity |
 | `attestationTooOld` | The attested status statement exceeds the verifier-enforced max-age window | hard invalidity |
 | `futureDatedAttestation` | The attested status statement is created in the future relative to accepted verifier time | hard invalidity |
+
+## Authority-unavailable outcomes
+
+| Outcome | Meaning | Required disposition |
+| --- | --- | --- |
+| `statusAuthorityUnavailable` | Required active DID/status authority evidence cannot be obtained or authenticated | `indeterminate/notEvaluated` |
+| `statusStateUnavailable` | Required registry/root/checkpoint evidence cannot be obtained or authenticated | `indeterminate/notEvaluated` |
+| `statusProofUnavailable` | A required non-membership witness or proof dependency cannot be obtained | `indeterminate/notEvaluated` |
+| `trustedTimeUnavailable` | The profile's required authoritative time source or independent freshness anchor is unavailable | `indeterminate/notEvaluated` |
+
+These outcomes still reject the verification attempt and protected action. They
+MUST NOT be reported as a valid credential, warning-only success, policy denial,
+or one of the hard-invalidity errors above.
 
 ## Helper-surface reserved failure code
 

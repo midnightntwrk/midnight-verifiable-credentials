@@ -88,6 +88,18 @@ Acceptance:
 
 ### P0-2. Close status, time, and replay trust boundaries
 
+Design prerequisite:
+
+- registry namespaces, authenticated initialization/mutation, delegation,
+  rotation, audit, and migration are fixed by
+  [`ADR-0011`](../decisions/0011-status-registry-namespace-and-authority.md);
+- accepted status roots, non-membership, trusted-time modes, and freshness
+  authority are fixed by
+  [`ADR-0012`](../decisions/0012-trusted-time-and-status-freshness.md) and
+  [`status-time-authority-v1.md`](../spec/status-time-authority-v1.md); and
+- B1/B2/B3 implementation is gated by
+  [`status-time-authority-v1-test-design.md`](../testing/status-time-authority-v1-test-design.md).
+
 Deliver:
 
 - authenticated status-registry initialization and mutation;

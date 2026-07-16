@@ -27,6 +27,10 @@
 - status verification protocol:
   - [`spec/status-verification-protocol.md`](./spec/status-verification-protocol.md)
   - for readers implementing verifier-supplied roots and Layer 3 status-aware verification
+- status and trusted-time authority contract:
+  - [`spec/status-time-authority-v1.md`](./spec/status-time-authority-v1.md)
+  - for implementers of authenticated registry governance, accepted roots,
+    non-membership authority, and trusted freshness evidence
 - hidden-holder interoperability:
   - [`spec/hidden-holder-interoperability.md`](./spec/hidden-holder-interoperability.md)
   - for readers defining transport and adapter obligations for hidden-holder flows
@@ -167,6 +171,10 @@
   - [`testing/verification-authority-v1-test-design.md`](./testing/verification-authority-v1-test-design.md)
   - for the negative and differential gates required before authoritative
     verifier-contract implementation
+- status and trusted-time authority threat model and test design:
+  - [`testing/status-time-authority-v1-test-design.md`](./testing/status-time-authority-v1-test-design.md)
+  - for the negative, atomicity, privacy, and differential gates required
+    before authenticated registry, root-proof, or trusted-time implementation
 - markdown link validation:
   - root `pnpm run docs:links`
   - for the checked-in relative-link fast path used by docs-only CI

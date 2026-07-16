@@ -262,12 +262,20 @@ The authority attestation is bound to:
 The authority signs that statement with the repository's generic `Proof`
 container under a dedicated `midnight:vc:status-attestation` context.
 
+Production warning: the current prototype verifies the public key carried by
+that `Proof` but does not prove that those key bytes belong to the referenced
+active DID method. Matching a method reference alone is insufficient. Final
+profiles must use the DID key-provenance, distinct attestation-role, root-
+freshness, and trusted-time contract in
+[`status-time-authority-v1.md`](./status-time-authority-v1.md).
+
 ## Authority role
 
 The trusted signer for `AuthorityAttestedStatusProof` should be:
 
 - the issuer, or
-- a delegated status authority referenced by `StatusRegistryRef`
+- a separately delegated status-attestation authority accepted by the
+  credential's stable registry/issuer policy
 
 This is the current prototype trust model.
 
