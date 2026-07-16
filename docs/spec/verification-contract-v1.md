@@ -134,6 +134,9 @@ type VerificationResultV1 =
 
 The byte arrays shown above are exactly 32 bytes. A production API SHOULD use
 branded fixed-width types instead of accepting arbitrary `Uint8Array` values.
+`transcriptDigest` is absent only when normalization or typed decoding fails
+before a complete transcript exists. It MUST be present on every other local
+attempt, including rejected and reverted submissions.
 
 `malformed`, `invalid`, and `indeterminate` MUST use `notEvaluated`. A local
 `offchain-public-v1` result MAY use `valid/approved` or
@@ -142,6 +145,10 @@ An attempt whose proof and policy pass but whose protected transaction reverts
 uses `valid/approved/reverted`; it is not a ledger approval and consumes no
 nullifier.
 Only a committed transaction can produce `LedgerVerificationReceiptV1`.
+Here, `committed` means that the transaction completed successfully and its
+accepted state transition landed, not merely that it was included in a block.
+A replay check can commit a deliberate no-op receipt; a reverted transaction
+lands no accepted verifier state and remains a local-process result.
 Compact assertion failure, typed-decoding failure, submission failure, and a
 reverted transaction produce `LocalVerificationAttemptV1`; adapters MUST NOT
 invent a ledger receipt from those failures. Malformed input is detected before
@@ -191,6 +198,14 @@ identifier named by the field. A1 MUST check in the resulting hex constants and
 cross-runtime test vectors. The transcript domain identifier is
 `midnight:vc:verification-transcript:v1`; the nullifier domain identifier is
 `midnight:vc:decision-nullifier:v1`.
+
+A1 MUST begin with a bounded encoding spike that identifies the authoritative
+Compact toolchain API or published byte-encoding specification for
+`persistentHash<Record>`. The TypeScript mirror MUST use that authority to
+reproduce record hashes and MUST NOT infer an encoding from JSON, field values,
+or reverse-engineered samples. If no supported encoding surface exists, A1 is
+blocked until one is provided; checked-in Compact-generated vectors alone are
+test oracles, not an independent TypeScript implementation.
 
 The bounded enum code points are part of v1:
 
@@ -388,6 +403,11 @@ Their exact ASCII domains are
 `midnight:vc:holder-binding:v1`, `midnight:vc:consent-binding:v1`, and
 `midnight:vc:presentation-binding:v1` respectively.
 
+Consent binds holder- and verifier-controlled request, presentation, policy,
+and action fields. Issuer, trust, and status authority fields are instead bound
+by their authenticated evidence records and the full transcript hash; they are
+not copied into wallet consent merely to duplicate authority-owned statements.
+
 Explicit credential mode hashes `CredentialBindingV1`. Hidden credential mode
 uses `persistentCommit<CredentialBindingV1>(binding, presentationOpening)`;
 the root and opening remain private while verifier, challenge, family, and
@@ -583,6 +603,10 @@ the challenge-scoped `HolderBindingV1` or `CredentialBindingV1` digest.
 Fresh request IDs and challenges affect only `request` policy. They are
 deliberately absent from `holder-action` and `credential-action`, so requesting
 a new challenge cannot bypass a product-wide one-time action.
+Consequently, an action-scoped nullifier is intentionally a stable holder- or
+credential-scoped pseudonym within the same verifier deployment and action
+class. Receipts using these modes are not anonymous within that scope; changing
+verifier or deployment scope produces a different binding.
 
 For `nullifierMode: none`, replay policy is `none`; action class, action
 invocation, replay scope, and decision nullifier MUST be zero. Such a
