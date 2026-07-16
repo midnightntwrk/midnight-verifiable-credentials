@@ -30,8 +30,11 @@ must satisfy; it does not claim that a supported release workflow exists now.
    commit SHA. Version comments may document the human-readable release.
 4. Do not add a vulnerability allowlist without a linked risk-acceptance
    record containing the advisory, affected artifacts, rationale, compensating
-   controls, accountable owner, and an expiry no later than 30 days. Critical
-   exceptions require both the package owner and the security code owner.
+   controls, accountable owner, and an expiry no later than 30 days. The
+   machine-readable entries live in `osv-scanner.toml`; the corresponding
+   review records live in `docs/security/vulnerability-exceptions.md`.
+   Critical exceptions require both the package owner and the security code
+   owner.
 5. Before a package or ZK bundle advances to `supported`, its release workflow
    must emit:
    - a CycloneDX SBOM for packaged runtime contents;
@@ -56,7 +59,8 @@ must satisfy; it does not claim that a supported release workflow exists now.
 - Security checks cover the branch used for integration and dependency changes
   receive a dedicated review gate.
 - The repository has an explicit, expiring exception process instead of
-  permanent inline suppressions.
+  permanent inline suppressions. OSV ignores fail closed after their recorded
+  expiry and remain under security/SRE code ownership.
 - Current tarballs remain development artifacts. This ADR deliberately blocks
   promotion to `supported` until SBOM, provenance, signing/attestation, and
   clean-consumer verification are implemented.
