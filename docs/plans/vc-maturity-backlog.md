@@ -99,6 +99,9 @@ Design prerequisite:
   [`status-time-authority-v1.md`](../spec/status-time-authority-v1.md); and
 - B1/B2/B3 implementation is gated by
   [`status-time-authority-v1-test-design.md`](../testing/status-time-authority-v1-test-design.md).
+- the pinned Compact comparison-only time capability and the remaining full
+  anchor blocker are recorded in
+  [`compact-trusted-time-capability-2026-07-17.md`](../testing/compact-trusted-time-capability-2026-07-17.md).
 
 Deliver:
 

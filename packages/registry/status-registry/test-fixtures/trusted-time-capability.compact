@@ -1,0 +1,48 @@
+pragma language_version >= 0.20;
+
+import CompactStandardLibrary;
+
+// Capability probe for the comparison-only ledger-time surface in Compact
+// 0.30. This is test tooling, not the production B3 evidence adapter.
+
+export circuit assertBlockTimeLt(candidateSeconds: Uint<64>): [] {
+  assert(blockTimeLt(disclose(candidateSeconds)),
+         "Expected nominal ledger time to be less than candidate"
+         );
+}
+
+export circuit assertBlockTimeGte(candidateSeconds: Uint<64>): [] {
+  assert(blockTimeGte(disclose(candidateSeconds)),
+         "Expected nominal ledger time to be at least candidate"
+         );
+}
+
+export circuit assertBlockTimeGt(candidateSeconds: Uint<64>): [] {
+  assert(blockTimeGt(disclose(candidateSeconds)),
+         "Expected nominal ledger time to be greater than candidate"
+         );
+}
+
+export circuit assertBlockTimeLte(candidateSeconds: Uint<64>): [] {
+  assert(blockTimeLte(disclose(candidateSeconds)),
+         "Expected nominal ledger time to be at most candidate"
+         );
+}
+
+export circuit assertExactNominalLedgerTime(candidateSeconds: Uint<64>): [] {
+  assert(blockTimeGte(disclose(candidateSeconds)),
+         "Candidate nominal ledger time must not be in the future"
+         );
+  assert(blockTimeLte(disclose(candidateSeconds)),
+         "Candidate nominal ledger time must not be in the past"
+         );
+}
+
+export circuit assertNominalLedgerTimeWindow(
+                 notBeforeSeconds: Uint<64>,
+                 notAfterSeconds: Uint<64>
+                 ): [] {
+  assert(disclose(notBeforeSeconds <= notAfterSeconds), "Ledger time window must be ordered");
+  assert(blockTimeGte(disclose(notBeforeSeconds)), "Nominal ledger time is before the window");
+  assert(blockTimeLte(disclose(notAfterSeconds)), "Nominal ledger time is after the window");
+}

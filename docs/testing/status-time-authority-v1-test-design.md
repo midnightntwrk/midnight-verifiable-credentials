@@ -397,10 +397,18 @@ and audit reduce its blast radius.
 
 ### B3 may merge only when
 
+- the comparison-only capability gate and source/API audit pass for the pinned
+  compiler, ledger target, and runtime versions;
 - `STA-TIME-*` and relevant `STA-DIFF-*` tests pass;
 - the exact ledger time/position unit and source are documented; and
 - no authoritative path accepts runtime/caller time or an unanchored signed
   timestamp.
+
+The current capability result is recorded in
+[`compact-trusted-time-capability-2026-07-17.md`](./compact-trusted-time-capability-2026-07-17.md).
+It proves nominal Unix-seconds comparisons but does not satisfy the mandatory
+position, context-error/window, or context-digest anchor fields. B3 remains
+blocked; this test-design gate must not be interpreted as complete.
 
 ### A3 may advertise a final profile only when
 

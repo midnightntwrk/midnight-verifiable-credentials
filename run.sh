@@ -234,6 +234,10 @@ case "$target" in
       pnpm run test:all:from-artifacts
     fi
     ;;
+  trusted-time-capability)
+    echo "[run] Compact trusted-time capability lane"
+    pnpm run test:trusted-time-capability
+    ;;
   package)
     echo "[run] Package artifact lane"
     pnpm run artifacts:pack

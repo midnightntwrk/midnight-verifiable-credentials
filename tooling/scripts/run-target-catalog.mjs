@@ -44,6 +44,13 @@ export const targets = [
     lightScript: "test:light:from-artifacts",
   },
   {
+    name: "trusted-time-capability",
+    description: "Validate the pinned Compact trusted-time capability surface.",
+    category: "core",
+    supportsLight: false,
+    script: "test:trusted-time-capability",
+  },
+  {
     name: "bdd",
     description: "Serenity/JS BDD smoke scenarios.",
     category: "bdd",
@@ -279,6 +286,7 @@ const releaseGateOrder = new Map([
   ["build", 1],
   ["typecheck", 2],
   ["test", 3],
+  ["trusted-time-capability", 4],
   ["package", 100],
 ]);
 export const releaseGateTargets = targets

@@ -140,6 +140,14 @@ jobs:
     needs: changes
     if: needs.changes.outputs.docs_only != 'true'
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js and install dependencies
+        uses: ./.github/actions/setup-node-pnpm
+
       - name: Set up Compact toolchain
         uses: midnightntwrk/setup-compact-action@836895c8fffbbea6bd986af2b17e8941ff29d1f8 # v1
         env:
@@ -149,6 +157,9 @@ jobs:
 
       - name: Verify Compact installation
         run: compact compile --version
+
+      - name: Validate trusted-time capability
+        run: pnpm run test:trusted-time-capability
 
       - name: Pack Compact toolchain
         shell: bash
