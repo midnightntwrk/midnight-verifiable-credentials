@@ -221,6 +221,10 @@
 - VC production execution plan:
   - [`plans/vc-production-execution-plan-2026-07-16.md`](./plans/vc-production-execution-plan-2026-07-16.md)
   - for dedicated branch, PR dependency, CI, review, and merge sequencing
+- remaining VC production deliverables:
+  - [`plans/vc-remaining-deliverables.md`](./plans/vc-remaining-deliverables.md)
+  - for the current completed baseline, outstanding deliverables, dependency
+    blockers, closure evidence, and recommended next PR order
 - repository audit backlog:
   - [`plans/repository-audit-backlog.md`](./plans/repository-audit-backlog.md)
   - for historical May 2026 simplification findings and delivery traceability
