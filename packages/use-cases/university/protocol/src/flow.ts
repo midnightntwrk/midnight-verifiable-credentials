@@ -494,6 +494,29 @@ export class UniversityProtocolFlowRunner {
     this.jobMessages.push(...state.messages.jobApplications);
     this.discountMessages.push(...state.messages.discounts);
 
+    // #267: submissions carry no plaintext studentId; verifiers correlate via
+    // the request thread they opened. Re-prime that correlation from the
+    // restored presentation:request messages.
+    for (const message of this.jobMessages) {
+      if (message.type !== "presentation:request") {
+        continue;
+      }
+      const company = this.companyAgents.get(message.body.verifierId);
+      company?.primeRequestThread(
+        Buffer.from(message.envelope.threadId).toString("hex"),
+        message.body.studentId,
+      );
+    }
+    for (const message of this.discountMessages) {
+      if (message.type !== "presentation:request") {
+        continue;
+      }
+      this.mallAgent.primeRequestThread(
+        Buffer.from(message.envelope.threadId).toString("hex"),
+        message.body.studentId,
+      );
+    }
+
     for (const studentState of state.students) {
       const student = this.requireStudentAgent(studentState.studentId);
       student.storedIssuedCredential = studentState.storedIssuedCredential;

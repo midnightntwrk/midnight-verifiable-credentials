@@ -39,7 +39,7 @@
   - verificationFailed: 2
   - duplicate: 0
   - by reason:
-    - failed assert: University-diploma disclosed final grade is below the verifier minimum: 2
+    - failed assert: University-diploma production final grade predicate is below the verifier minimum: 2
 
 ## Timings (ms)
 - issuance: <measured>

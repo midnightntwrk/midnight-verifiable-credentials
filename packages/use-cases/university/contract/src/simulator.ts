@@ -12,9 +12,10 @@ import {
   ledger,
   type Proof,
   pureCircuits,
-  type UniversityDiplomaCredential,
-  type UniversityDiplomaPresentation,
-  type UniversityDiplomaPresentationRequest,
+  type UniversityDiplomaProductionCredential,
+  type UniversityDiplomaProductionFinalGradePredicateWitness,
+  type UniversityDiplomaProductionPresentation,
+  type UniversityDiplomaProductionPresentationRequest,
 } from "./managed/university-verifier/contract/index.js";
 import {
   type UniversityVerifierPrivateState,
@@ -70,10 +71,10 @@ export class UniversityVerifierSimulator {
   }
 
   universityJobApplicationRequest(
-    issuerVerificationMethodRef: UniversityDiplomaCredential["issuerVerificationMethodRef"],
+    issuerVerificationMethodRef: UniversityDiplomaProductionCredential["issuerVerificationMethodRef"],
     verifierChallengeHash: Uint8Array,
     options: UniversityJobApplicationRequestOptions = {},
-  ): UniversityDiplomaPresentationRequest {
+  ): UniversityDiplomaProductionPresentationRequest {
     const {
       requireDiplomaIdDisclosure = false,
       requireStudentIdDisclosure = false,
@@ -98,10 +99,10 @@ export class UniversityVerifierSimulator {
   }
 
   universityMallDiscountRequest(
-    issuerVerificationMethodRef: UniversityDiplomaCredential["issuerVerificationMethodRef"],
+    issuerVerificationMethodRef: UniversityDiplomaProductionCredential["issuerVerificationMethodRef"],
     verifierChallengeHash: Uint8Array,
     minimumFinalGrade: bigint,
-  ): UniversityDiplomaPresentationRequest {
+  ): UniversityDiplomaProductionPresentationRequest {
     return pureCircuits.universityMallDiscountRequest(
       issuerVerificationMethodRef,
       verifierChallengeHash,
@@ -110,10 +111,10 @@ export class UniversityVerifierSimulator {
   }
 
   verifyUniversityDiplomaForJobApplication(
-    credential: UniversityDiplomaCredential,
+    credential: UniversityDiplomaProductionCredential,
     credentialProof: Proof,
-    request: UniversityDiplomaPresentationRequest,
-    presentation: UniversityDiplomaPresentation,
+    request: UniversityDiplomaProductionPresentationRequest,
+    presentation: UniversityDiplomaProductionPresentation,
     presentationProof: Proof,
   ): void {
     this.executeCircuit(() =>
@@ -129,11 +130,12 @@ export class UniversityVerifierSimulator {
   }
 
   verifyUniversityDiplomaForMallDiscount(
-    credential: UniversityDiplomaCredential,
+    credential: UniversityDiplomaProductionCredential,
     credentialProof: Proof,
-    request: UniversityDiplomaPresentationRequest,
-    presentation: UniversityDiplomaPresentation,
+    request: UniversityDiplomaProductionPresentationRequest,
+    presentation: UniversityDiplomaProductionPresentation,
     presentationProof: Proof,
+    finalGradePredicateWitness: UniversityDiplomaProductionFinalGradePredicateWitness,
   ): void {
     this.executeCircuit(() =>
       this.contract.impureCircuits.verifyUniversityDiplomaForMallDiscount(
@@ -143,6 +145,7 @@ export class UniversityVerifierSimulator {
         request,
         presentation,
         presentationProof,
+        finalGradePredicateWitness,
       ),
     );
   }

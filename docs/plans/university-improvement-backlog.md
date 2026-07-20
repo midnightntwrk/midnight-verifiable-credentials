@@ -152,6 +152,11 @@ becomes part of a stackable PR.
    - exports a checked `UNIVERSITY_REPORT_SUMMARY_CONTRACT`, adds a package
      contract-printing script, and validates the v5 handoff/source-artifact and
      transcript privacy-profile expectations with actionable error names
+   - 2026-07 (#267): executed — the use case now presents the commitment-backed
+     production profile (`uni-diploma:v2`); submissions ship `applicantRef`
+     plus salted commitments instead of hidden claim plaintext, and the mall
+     verifier proves the grade threshold via a predicate witness. See
+     `docs/plans/university-commitment-backed-privacy.md`.
 
 ## Human-Readability Rule
 

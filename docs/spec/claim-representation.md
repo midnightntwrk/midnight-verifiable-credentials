@@ -74,7 +74,8 @@ the credentials core:
 
 - `NoPublicClaims` for commitment-only credentials such as the birth family
 - `NoClaimCommitments` for direct-claim laboratories such as dummy-claims and
-  university-diploma
+  the university-diploma v1 prototype alias (the presented university profile
+  is commitment-backed)
 
 The generic envelope does not decide which fields are safe to publish. That is
 still a family/schema responsibility, but the type shape prevents commitment
@@ -181,17 +182,18 @@ The repository carries working examples across the representation taxonomy:
 
 - direct selectively disclosed laboratory:
   [`../../packages/prototypes/credential-families/dummy-claims`](../../packages/prototypes/credential-families/dummy-claims)
-- direct academic prototype:
+- academic family (commitment-backed production profile presented by the
+  university use case, plus a readable v1 direct-claim prototype alias):
   [`../../packages/prototypes/credential-families/university-diploma`](../../packages/prototypes/credential-families/university-diploma)
-- additive academic production-profile building blocks:
+- academic production-profile building blocks:
   `UniversityDiplomaProductionPublicClaims` plus
   `UniversityDiplomaClaimCommitments` in
   [`../../packages/prototypes/credential-families/university-diploma/src/university-diploma-credential/claims.compact`](../../packages/prototypes/credential-families/university-diploma/src/university-diploma-credential/claims.compact)
-- additive academic production disclosures:
+- academic production disclosures:
   `UniversityDiplomaProductionDisclosures` and
   `UniversityDiplomaProductionPresentation` in
   [`../../packages/prototypes/credential-families/university-diploma/src/university-diploma-credential/model.compact`](../../packages/prototypes/credential-families/university-diploma/src/university-diploma-credential/model.compact)
-- additive academic production predicate witnesses:
+- academic production predicate witnesses:
   `UniversityDiplomaProductionFinalGradePredicateWitness`,
   `UniversityDiplomaProductionCreditsEarnedPredicateWitness`, and matching
   threshold helper circuits in

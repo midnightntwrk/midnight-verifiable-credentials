@@ -83,18 +83,18 @@ Policy rationale:
 
 - Kind: `mallDiscount`
 - Title: Grade-above-90 discount
-- Purpose: Use when a verifier needs institution identity plus a strict grade threshold check for a student discount offer.
+- Purpose: Use when a verifier needs a reveal-nothing grade-threshold eligibility proof for a student discount offer without collecting any diploma claims.
 
 Request policy:
 
-- `requireUniversityNameDisclosure`: `true`
-- `requireFinalGradeDisclosure`: `true`
+- `requireUniversityNameDisclosure`: `false`
+- `requireFinalGradeDisclosure`: `false`
 - `enforceMinimumFinalGrade`: `true`
 - `minimumFinalGrade`: `91`
 
 Policy rationale:
 
-- `requireUniversityNameDisclosure`: Show the student belongs to the trusted university population eligible for the mall offer.
-- `requireFinalGradeDisclosure`: Expose the final grade because the offer is defined by a strict grade threshold.
-- `enforceMinimumFinalGrade`: Apply the business rule in verifier logic instead of relying on a self-attested statement.
+- `requireUniversityNameDisclosure`: Keep the university name hidden; issuer trust comes from verifying the credential against the trusted issuer verification method, not from a disclosed claim.
+- `requireFinalGradeDisclosure`: Keep the final grade hidden; the threshold is proven in-circuit against the salted finalGradeCommitment instead of a disclosed grade.
+- `enforceMinimumFinalGrade`: Apply the business rule as an in-circuit predicate instead of relying on a disclosed grade or self-attested statement.
 - `minimumFinalGrade`: Use 91 to represent a greater-than-90 threshold with integer fixture grades.

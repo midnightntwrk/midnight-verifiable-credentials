@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - protocol challenges, issuer nonces, blinding factors, signing nonces,
   message IDs, and thread IDs are now CSPRNG-backed by default; consumers that
   need reproducible fixtures must select an explicit deterministic source.
+- university-diploma credentials move to commitment-backed selective
+  disclosure (verifier schemaRef `uni-diploma:v1`->`v2`). Presentation
+  submissions now ship salted per-field commitments instead of plaintext
+  `credential.claims`; the submission DTO field `studentId` becomes
+  `applicantRef` (studentId-commitment hex) and issuance exports show
+  `finalGradeCommitmentHex`. Fixes selective disclosure so hidden fields
+  are absent from the wire, not merely flagged.
 
 ### Added
 

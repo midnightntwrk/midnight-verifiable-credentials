@@ -37,7 +37,8 @@ Shared verifier request presets:
 - `job-application-credits-and-grade`
   - employer requests earned credits plus the final grade
 - `mall-discount-grade-over-90`
-  - mall requests university name and final grade with `minimumFinalGrade = 91`
+  - mall requests no claim disclosure; `minimumFinalGrade = 91` is proven as an
+    in-circuit commitment predicate
 
 Validation:
 

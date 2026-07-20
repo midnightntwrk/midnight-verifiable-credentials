@@ -92,19 +92,23 @@ export const UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE: UniversityDiplomaProductionP
   };
 
 export type UniversityDiplomaPrivacyBoundary = {
-  readonly profile: "direct-claim-prototype";
-  readonly claimCommitmentModel: "none";
+  readonly profile: "production-commitment-v2";
+  readonly claimCommitmentModel: "salted-per-field-persistent-commit";
   readonly directClaimFields: readonly UniversityDiplomaDirectClaimField[];
   readonly productionTarget: UniversityDiplomaProductionProfile;
   readonly statement: string;
 };
 
+// #267 FIX: the presented university credential family is now the
+// commitment-backed production profile. Reveal flags select which committed
+// claims are opened (value + opening) for a verifier; unopened claims cross
+// the wire only as salted persistentCommit outputs.
 export const UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY: UniversityDiplomaPrivacyBoundary =
   {
-    profile: "direct-claim-prototype",
-    claimCommitmentModel: "none",
+    profile: "production-commitment-v2",
+    claimCommitmentModel: "salted-per-field-persistent-commit",
     directClaimFields: UNIVERSITY_DIPLOMA_DIRECT_CLAIM_FIELDS,
     productionTarget: UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE,
     statement:
-      "University diploma reveal flags authorize presentation use only; they do not hide raw direct claims from a party that receives the credential body.",
+      "The presented university credential carries public routing claims plus salted per-field commitments; hidden claims exist on the wire only as commitments, opened selectively per verifier policy or proven via predicates.",
   };

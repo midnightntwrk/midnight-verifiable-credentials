@@ -130,7 +130,7 @@ describe("university protocol stress summary exporter", () => {
     expect(summary.rejections.discounts.byReason).toEqual([
       {
         reason:
-          "failed assert: University-diploma disclosed final grade is below the verifier minimum",
+          "failed assert: University-diploma production final grade predicate is below the verifier minimum",
         count: 2,
       },
     ]);
@@ -181,7 +181,7 @@ describe("university protocol stress summary exporter", () => {
     expect(summary.rejections.discounts.byReason).toEqual([
       {
         reason:
-          "failed assert: University-diploma disclosed final grade is below the verifier minimum",
+          "failed assert: University-diploma production final grade predicate is below the verifier minimum",
         count: 5,
       },
     ]);

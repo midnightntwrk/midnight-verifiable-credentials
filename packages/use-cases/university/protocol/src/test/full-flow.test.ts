@@ -95,7 +95,7 @@ describe("university protocol-style multi-party flow", () => {
       rejectedDiscountReasons.every(
         ({ reason, rejectionKind }) =>
           rejectionKind === "verificationFailed" &&
-          reason.includes("disclosed final grade is below the verifier minimum"),
+          reason.includes("final grade predicate is below the verifier minimum"),
       ),
     ).toBe(true);
   });

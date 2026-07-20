@@ -25,10 +25,12 @@ Scope:
 
 Privacy note:
 
-- the employer path records the disclosed employer-facing claim values to ledger
-  state for demo visibility
-- the mall-discount path verifies the grade threshold but intentionally does not
-  persist the student's exact final grade afterward
+- the employer path records to ledger state only claim material the request
+  explicitly required (opened against the signed commitments) plus the public
+  routing claims, for demo visibility
+- the mall-discount path proves the grade threshold against the salted
+  `finalGradeCommitment` via a predicate witness; the exact grade never reaches
+  the verifier or public ledger state
 
 Build and test:
 

@@ -108,10 +108,10 @@ describe("university-diploma privacy boundary", () => {
     }
   });
 
-  it("documents that reveal flags are request policy gates, not credential-body secrecy", () => {
+  it("documents that the presented family is the commitment-backed production profile (#267)", () => {
     expect(UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY).toMatchObject({
-      profile: "direct-claim-prototype",
-      claimCommitmentModel: "none",
+      profile: "production-commitment-v2",
+      claimCommitmentModel: "salted-per-field-persistent-commit",
       directClaimFields: UNIVERSITY_DIPLOMA_DIRECT_CLAIM_FIELDS,
       productionTarget: {
         profile: "production-commitment-v2",
@@ -127,7 +127,7 @@ describe("university-diploma privacy boundary", () => {
       UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE,
     );
     expect(UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY.statement).toContain(
-      "do not hide raw direct claims",
+      "only as commitments",
     );
     expect(UNIVERSITY_DIPLOMA_PRODUCTION_COMMITMENT_CANDIDATES).toEqual([
       "diplomaId",

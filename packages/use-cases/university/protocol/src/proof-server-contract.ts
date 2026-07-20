@@ -32,7 +32,10 @@ export type UniversityProofServerVerificationMethodRef = {
 };
 
 export type UniversityProofServerCredentialRef = {
-  readonly studentId: string;
+  // Subject reference valid in the caller's context: the plaintext studentId
+  // on the issuance/holder side, the salted studentId-commitment applicantRef
+  // on the verifier side (#267 — verifiers never see the raw studentId).
+  readonly subjectRef: string;
   readonly issuerVerificationMethodRef: UniversityProofServerVerificationMethodRef;
   readonly claimRootHex: string;
   readonly issuanceChallengeHashHex: string;
@@ -105,7 +108,7 @@ export type UniversityProofServerRequest =
     }
   | {
       readonly operationKind: "verifyJobApplication" | "verifyMallDiscount";
-      readonly studentId: string;
+      readonly applicantRef: string;
       readonly credential: UniversityProofServerCredentialRef;
       readonly request: UniversityProofServerPresentationRequestSummary;
       readonly credentialProof: UniversityProofServerProofRef;
@@ -226,10 +229,10 @@ const partyRef = (
 });
 
 const credentialRef = (
-  studentId: string,
+  subjectRef: string,
   storedCredential: StoredIssuedCredential,
 ): UniversityProofServerCredentialRef => ({
-  studentId,
+  subjectRef,
   issuerVerificationMethodRef: methodRef(
     storedCredential.credential.issuerVerificationMethodRef,
   ),
@@ -245,7 +248,7 @@ const credentialRef = (
 const credentialRefFromSubmission = (
   submission: UniversityPresentationSubmissionBody,
 ): UniversityProofServerCredentialRef => ({
-  studentId: submission.studentId,
+  subjectRef: submission.applicantRef,
   issuerVerificationMethodRef: methodRef(
     submission.credential.issuerVerificationMethodRef,
   ),
@@ -646,7 +649,7 @@ const verificationRequest = (
   >,
   "operationKind"
 > => ({
-  studentId: submission.studentId,
+  applicantRef: submission.applicantRef,
   credential: credentialRefFromSubmission(submission),
   request: requestSummary(submission.request),
   credentialProof: proofRef(submission.credentialProof),

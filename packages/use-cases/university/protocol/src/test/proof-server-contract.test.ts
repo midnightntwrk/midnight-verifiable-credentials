@@ -152,7 +152,7 @@ describe("university proof-server backend contract", () => {
     });
     expect(exchanges[3]!.request).toMatchObject({
       operationKind: "verifyJobApplication",
-      studentId: student.studentId,
+      applicantRef: submission.applicantRef,
     });
     if (
       exchanges[0]!.result.status !== "succeeded" ||
@@ -246,12 +246,14 @@ describe("university proof-server backend contract", () => {
       operationKind: "buildMallDiscountRequest",
       minimumFinalGrade: "91",
     });
+    // #267: the mall predicate request is reveal-nothing — no disclosed
+    // fields; the grade threshold is proven against the commitment.
     expect(exchanges[1]!.result).toMatchObject({
       status: "succeeded",
       response: {
         operationKind: "buildMallDiscountRequest",
         request: {
-          disclosedFields: ["universityName", "finalGrade"],
+          disclosedFields: [],
           enforceMinimumFinalGrade: true,
           minimumFinalGrade: "91",
         },
@@ -261,7 +263,7 @@ describe("university proof-server backend contract", () => {
       operationKind: "buildPresentationSubmission",
       presentationKind: "mallDiscount",
       request: {
-        disclosedFields: ["universityName", "finalGrade"],
+        disclosedFields: [],
         enforceMinimumFinalGrade: true,
       },
       studentId: student.studentId,
@@ -269,10 +271,10 @@ describe("university proof-server backend contract", () => {
     expect(exchanges[3]!.request).toMatchObject({
       operationKind: "verifyMallDiscount",
       request: {
-        disclosedFields: ["universityName", "finalGrade"],
+        disclosedFields: [],
         minimumFinalGrade: "91",
       },
-      studentId: student.studentId,
+      applicantRef: submission.applicantRef,
     });
     expect(backend.snapshotMetrics().map((metric) => metric.name)).toEqual(
       expect.arrayContaining([
@@ -415,18 +417,19 @@ describe("university proof-server backend contract", () => {
       backend.verifyJobApplication({
         submission: {
           ...submission,
-          studentId: "STU-9999",
+          credential: {
+            ...submission.credential,
+            claimRoot: new Uint8Array(32).fill(7),
+          },
         },
       }),
-    ).toThrow(/does not match the diploma credential studentId claim/);
+    ).toThrow(/failed assert/);
 
     const failedExchange = adapter.snapshotExchanges().at(-1)!;
     expect(failedExchange.request.operationKind).toBe("verifyJobApplication");
     expect(failedExchange.result).toMatchObject({
       status: "failed",
-      errorMessage: expect.stringMatching(
-        /does not match the diploma credential studentId claim/,
-      ),
+      errorMessage: expect.stringMatching(/failed assert/),
     });
     expect(
       backend

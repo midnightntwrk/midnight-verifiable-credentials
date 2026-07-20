@@ -27,8 +27,8 @@ Scope:
   surface, `summary.json` is the primary machine surface, and
   `artifact-manifest.json` is the source-evidence index
 - project the transcript privacy-profile section into the one-page report so
-  readers see the direct-claim prototype boundary and the additive production
-  commitment profile without opening the full transcript export
+  readers see the presented commitment-backed production boundary without
+  opening the full transcript export
 - emit `midnight-university-report-summary.v5`; v5 requires the `handoff`
   contract and transcript privacy profile, so regenerate cached v4
   `summary.json` artifacts with

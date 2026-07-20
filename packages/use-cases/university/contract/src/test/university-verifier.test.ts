@@ -6,7 +6,8 @@ import {
   pureCircuits as universityDiplomaPureCircuits,
 } from "@midnight-ntwrk/midnight-did-credentials-university-diploma/contract";
 import {
-  createUniversityDiplomaFixture,
+  createUniversityDiplomaProductionFinalGradePredicateWitness,
+  createUniversityDiplomaProductionPresentationFixture,
 } from "@midnight-ntwrk/midnight-did-credentials-university-diploma/testing";
 import { describe, expect, it } from "vitest";
 
@@ -73,9 +74,6 @@ const blueOceanJobPolicy = resolveUniversityRequestPolicyPreset(
 const pioneerJobPolicy = resolveUniversityRequestPolicyPreset(
   "job-application-credits-and-grade",
 ).requestPolicy as VerifierRequestPolicy;
-const mallDiscountPolicy = resolveUniversityRequestPolicyPreset(
-  "mall-discount-grade-over-90",
-).requestPolicy as VerifierRequestPolicy;
 
 const assertSupportedJobApplicationPolicy = (
   presetId: string,
@@ -134,7 +132,7 @@ const buildJobApplicationFixture = (
     readonly revealCreditsEarned?: boolean;
   } = {},
 ) => {
-  const baseFixture = createUniversityDiplomaFixture();
+  const baseFixture = createUniversityDiplomaProductionPresentationFixture();
   const simulator = new UniversityVerifierSimulator();
   assertSupportedJobApplicationPolicy(presetId, policy);
   const request = simulator.universityJobApplicationRequest(
@@ -143,7 +141,7 @@ const buildJobApplicationFixture = (
     toJobApplicationRequestOptions(policy),
   );
 
-  const fixture = createUniversityDiplomaFixture({
+  const fixture = createUniversityDiplomaProductionPresentationFixture({
     verifierChallengeHash: request.verifierChallengeHash,
     request: {
       requireDiplomaIdDisclosure: request.requireDiplomaIdDisclosure,
@@ -195,9 +193,8 @@ const buildJobApplicationFixture = (
 const buildDiscountFixture = (
   minimumFinalGrade: bigint,
   finalGrade = 94n,
-  policy: VerifierRequestPolicy = mallDiscountPolicy,
 ) => {
-  const baseFixture = createUniversityDiplomaFixture({
+  const baseFixture = createUniversityDiplomaProductionPresentationFixture({
     claimOverrides: { finalGrade },
   });
   const simulator = new UniversityVerifierSimulator();
@@ -207,31 +204,36 @@ const buildDiscountFixture = (
     minimumFinalGrade,
   );
 
-  const fixture = createUniversityDiplomaFixture({
+  // Reveal-nothing presentation: every disclosure flag is off; the grade
+  // threshold is proven via the commitment-opening predicate witness only.
+  const fixture = createUniversityDiplomaProductionPresentationFixture({
     verifierChallengeHash: request.verifierChallengeHash,
     claimOverrides: { finalGrade },
     request: {
-      requireDiplomaIdDisclosure: request.requireDiplomaIdDisclosure,
-      requireStudentIdDisclosure: request.requireStudentIdDisclosure,
-      requireGraduateNameDisclosure: request.requireGraduateNameDisclosure,
-      requireUniversityNameDisclosure: request.requireUniversityNameDisclosure,
-      requireFacultyNameDisclosure: request.requireFacultyNameDisclosure,
-      requireAwardNameDisclosure: request.requireAwardNameDisclosure,
-      requireHonorsCodeDisclosure: request.requireHonorsCodeDisclosure,
-      requireGraduationYearDisclosure: request.requireGraduationYearDisclosure,
-      requireGraduationMonthDisclosure: request.requireGraduationMonthDisclosure,
-      requireFinalGradeDisclosure: request.requireFinalGradeDisclosure,
-      requireCreditsEarnedDisclosure: request.requireCreditsEarnedDisclosure,
+      requireGraduateNameDisclosure: false,
+      requireUniversityNameDisclosure: false,
+      requireAwardNameDisclosure: false,
+      requireGraduationYearDisclosure: false,
+      requireFinalGradeDisclosure: false,
       enforceMinimumFinalGrade: request.enforceMinimumFinalGrade,
       minimumFinalGrade: request.minimumFinalGrade,
     },
     disclosure: {
-      revealUniversityName: policy.requireUniversityNameDisclosure ?? false,
-      revealFinalGrade: policy.requireFinalGradeDisclosure ?? false,
+      revealGraduateName: false,
+      revealUniversityName: false,
+      revealAwardName: false,
+      revealGraduationYear: false,
+      revealFinalGrade: false,
     },
   });
 
-  return { simulator, request, fixture };
+  const predicateWitness =
+    createUniversityDiplomaProductionFinalGradePredicateWitness({
+      claims: fixture.sourceClaims,
+      openings: fixture.profile.openings,
+    });
+
+  return { simulator, request, fixture, predicateWitness };
 };
 
 describe("university verifier contract", () => {
@@ -257,7 +259,7 @@ describe("university verifier contract", () => {
   });
 
   it("rejects a discount request threshold above 100", () => {
-    const baseFixture = createUniversityDiplomaFixture();
+    const baseFixture = createUniversityDiplomaProductionPresentationFixture();
     const simulator = new UniversityVerifierSimulator();
 
     expect(() =>
@@ -287,7 +289,7 @@ describe("university verifier contract", () => {
     expect(state.successfulJobApplicationVerificationCount).toEqual(1n);
     expect(state.successfulDiscountVerificationCount).toEqual(0n);
     expect(state.lastVerifiedCredentialRoot).toEqual(
-      universityDiplomaPureCircuits.universityDiplomaCredentialBodyRoot(
+      universityDiplomaPureCircuits.universityDiplomaProductionCredentialBodyRoot(
         fixture.credential,
       ),
     );
@@ -295,7 +297,7 @@ describe("university verifier contract", () => {
       request.verifierChallengeHash,
     );
     expect(state.lastVerifiedGraduateName).toEqual(
-      fixture.credential.claims.graduateName,
+      fixture.sourceClaims.graduateName,
     );
     expect(state.lastVerifiedUniversityName).toEqual(
       fixture.credential.claims.universityName,
@@ -307,18 +309,18 @@ describe("university verifier contract", () => {
       fixture.credential.claims.graduationYear,
     );
     expect(state.lastVerifiedFinalGrade).toEqual(
-      fixture.credential.claims.finalGrade,
+      fixture.sourceClaims.finalGrade,
     );
     expect(state.lastVerifiedVerifierKind).toEqual(1n);
   });
 
   it("rejects a job application request that enforces a minimum grade", () => {
-    const { simulator, fixture } = buildJobApplicationFixture(
+    const { simulator, request, fixture } = buildJobApplicationFixture(
       "job-application-grade-and-award",
       northwindJobPolicy,
     );
     const invalidRequest = {
-      ...fixture.presentationRequest,
+      ...request,
       enforceMinimumFinalGrade: true,
       minimumFinalGrade: 91n,
     };
@@ -354,7 +356,8 @@ describe("university verifier contract", () => {
   });
 
   it("rejects a discount request when the student's grade is below the threshold", () => {
-    const { simulator, request, fixture } = buildDiscountFixture(91n, 90n);
+    const { simulator, request, fixture, predicateWitness } =
+      buildDiscountFixture(91n, 90n);
 
     expect(() =>
       simulator.verifyUniversityDiplomaForMallDiscount(
@@ -363,8 +366,9 @@ describe("university verifier contract", () => {
         request,
         fixture.presentation,
         fixture.presentationProof,
+        predicateWitness,
       ),
-    ).toThrow(/disclosed final grade is below the verifier minimum/);
+    ).toThrow(/final grade predicate is below the verifier minimum/);
 
     const state = simulator.getLedger();
     expect(state.successfulDiscountVerificationCount).toEqual(0n);
@@ -372,8 +376,9 @@ describe("university verifier contract", () => {
     expect(state.lastVerifiedDiscountThreshold).toEqual(0n);
   });
 
-  it("verifies a discount request and records the accepted threshold", () => {
-    const { simulator, request, fixture } = buildDiscountFixture(91n, 98n);
+  it("verifies a reveal-nothing discount request and records only the threshold", () => {
+    const { simulator, request, fixture, predicateWitness } =
+      buildDiscountFixture(91n, 98n);
 
     simulator.verifyUniversityDiplomaForMallDiscount(
       fixture.credential,
@@ -381,6 +386,7 @@ describe("university verifier contract", () => {
       request,
       fixture.presentation,
       fixture.presentationProof,
+      predicateWitness,
     );
 
     const state = simulator.getLedger();
@@ -397,11 +403,12 @@ describe("university verifier contract", () => {
     expect(state.lastVerifiedVerifierKind).toEqual(2n);
   });
 
-  it("rejects a mall request that does not require final-grade disclosure", () => {
-    const { simulator, fixture } = buildDiscountFixture(91n, 98n);
+  it("rejects a mall request that demands final-grade disclosure", () => {
+    const { simulator, request, fixture, predicateWitness } =
+      buildDiscountFixture(91n, 98n);
     const invalidRequest = {
-      ...fixture.presentationRequest,
-      requireFinalGradeDisclosure: false,
+      ...request,
+      requireFinalGradeDisclosure: true,
     };
 
     expect(() =>
@@ -411,19 +418,19 @@ describe("university verifier contract", () => {
         invalidRequest,
         fixture.presentation,
         fixture.presentationProof,
+        predicateWitness,
       ),
-    ).toThrow(/requires final-grade disclosure/);
+    ).toThrow(/must not demand final-grade disclosure/);
 
     const state = simulator.getLedger();
     expect(state.successfulDiscountVerificationCount).toEqual(0n);
-    expect(state.lastVerifiedFinalGrade).toEqual(0n);
-    expect(state.lastVerifiedDiscountThreshold).toEqual(0n);
   });
 
   it("rejects a mall request that does not enforce a minimum grade", () => {
-    const { simulator, fixture } = buildDiscountFixture(91n, 98n);
+    const { simulator, request, fixture, predicateWitness } =
+      buildDiscountFixture(91n, 98n);
     const invalidRequest = {
-      ...fixture.presentationRequest,
+      ...request,
       enforceMinimumFinalGrade: false,
     };
 
@@ -434,12 +441,33 @@ describe("university verifier contract", () => {
         invalidRequest,
         fixture.presentation,
         fixture.presentationProof,
+        predicateWitness,
       ),
     ).toThrow(/must enforce a minimum grade/);
 
     const state = simulator.getLedger();
     expect(state.successfulDiscountVerificationCount).toEqual(0n);
-    expect(state.lastVerifiedFinalGrade).toEqual(0n);
-    expect(state.lastVerifiedDiscountThreshold).toEqual(0n);
+  });
+
+  it("rejects a tampered predicate witness opening", () => {
+    const { simulator, request, fixture, predicateWitness } =
+      buildDiscountFixture(91n, 98n);
+
+    expect(() =>
+      simulator.verifyUniversityDiplomaForMallDiscount(
+        fixture.credential,
+        fixture.credentialProof,
+        request,
+        fixture.presentation,
+        fixture.presentationProof,
+        {
+          ...predicateWitness,
+          finalGradeOpening: new Uint8Array(32).fill(9),
+        },
+      ),
+    ).toThrow(/final grade predicate commitment mismatch/);
+
+    const state = simulator.getLedger();
+    expect(state.successfulDiscountVerificationCount).toEqual(0n);
   });
 });

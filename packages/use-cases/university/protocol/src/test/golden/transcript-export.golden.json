@@ -6,8 +6,8 @@
     "maximumReaderVersion": "midnight-university-protocol-export.v2"
   },
   "privacyProfile": {
-    "currentProfile": "direct-claim-prototype",
-    "claimCommitmentModel": "none",
+    "currentProfile": "production-commitment-v2",
+    "claimCommitmentModel": "salted-per-field-persistent-commit",
     "productionProfile": "production-commitment-v2",
     "productionPublicClaimFields": [
       "universityName",
@@ -128,7 +128,7 @@
       "duplicate": 0,
       "byReason": [
         {
-          "reason": "failed assert: University-diploma disclosed final grade is below the verifier minimum",
+          "reason": "failed assert: University-diploma production final grade predicate is below the verifier minimum",
           "count": 2
         }
       ]
@@ -187,7 +187,7 @@
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
               "universityName": "Example University",
               "awardName": "BSc Computer Science",
-              "finalGrade": "98"
+              "finalGradeCommitmentHex": "<hex>"
             }
           }
         ]
@@ -243,7 +243,7 @@
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
               "universityName": "Example University",
               "awardName": "BSc Data Science",
-              "finalGrade": "94"
+              "finalGradeCommitmentHex": "<hex>"
             }
           }
         ]
@@ -299,7 +299,7 @@
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
               "universityName": "Example University",
               "awardName": "BEng Electrical Eng",
-              "finalGrade": "91"
+              "finalGradeCommitmentHex": "<hex>"
             }
           }
         ]
@@ -355,7 +355,7 @@
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
               "universityName": "Example University",
               "awardName": "BA Business Analytics",
-              "finalGrade": "90"
+              "finalGradeCommitmentHex": "<hex>"
             }
           }
         ]
@@ -411,7 +411,7 @@
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
               "universityName": "Example University",
               "awardName": "BSc Computer Science",
-              "finalGrade": "72"
+              "finalGradeCommitmentHex": "<hex>"
             }
           }
         ]
@@ -467,7 +467,7 @@
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
               "universityName": "Example University",
               "awardName": "BSc Data Science",
-              "finalGrade": "100"
+              "finalGradeCommitmentHex": "<hex>"
             }
           }
         ]
@@ -523,7 +523,7 @@
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
               "universityName": "Example University",
               "awardName": "BEng Electrical Eng",
-              "finalGrade": "71"
+              "finalGradeCommitmentHex": "<hex>"
             }
           }
         ]
@@ -579,7 +579,7 @@
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
               "universityName": "Example University",
               "awardName": "BA Business Analytics",
-              "finalGrade": "78"
+              "finalGradeCommitmentHex": "<hex>"
             }
           }
         ]
@@ -635,7 +635,7 @@
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
               "universityName": "Example University",
               "awardName": "BSc Computer Science",
-              "finalGrade": "85"
+              "finalGradeCommitmentHex": "<hex>"
             }
           }
         ]
@@ -691,7 +691,7 @@
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
               "universityName": "Example University",
               "awardName": "BSc Data Science",
-              "finalGrade": "92"
+              "finalGradeCommitmentHex": "<hex>"
             }
           }
         ]
@@ -749,7 +749,7 @@
             "summary": "Student STU-0001 submitted a jobApplication presentation",
             "dto": {
               "kind": "jobApplication",
-              "studentId": "STU-0001",
+              "applicantRef": "<hex>",
               "disclosures": [
                 "graduateName",
                 "universityName",
@@ -829,7 +829,7 @@
             "summary": "Student STU-0002 submitted a jobApplication presentation",
             "dto": {
               "kind": "jobApplication",
-              "studentId": "STU-0002",
+              "applicantRef": "<hex>",
               "disclosures": [
                 "graduateName",
                 "universityName",
@@ -910,7 +910,7 @@
             "summary": "Student STU-0003 submitted a jobApplication presentation",
             "dto": {
               "kind": "jobApplication",
-              "studentId": "STU-0003",
+              "applicantRef": "<hex>",
               "disclosures": [
                 "graduateName",
                 "universityName",
@@ -991,7 +991,7 @@
             "summary": "Student STU-0004 submitted a jobApplication presentation",
             "dto": {
               "kind": "jobApplication",
-              "studentId": "STU-0004",
+              "applicantRef": "<hex>",
               "disclosures": [
                 "graduateName",
                 "universityName",
@@ -1071,7 +1071,7 @@
             "summary": "Student STU-0005 submitted a jobApplication presentation",
             "dto": {
               "kind": "jobApplication",
-              "studentId": "STU-0005",
+              "applicantRef": "<hex>",
               "disclosures": [
                 "graduateName",
                 "universityName",
@@ -1152,7 +1152,7 @@
             "summary": "Student STU-0006 submitted a jobApplication presentation",
             "dto": {
               "kind": "jobApplication",
-              "studentId": "STU-0006",
+              "applicantRef": "<hex>",
               "disclosures": [
                 "graduateName",
                 "universityName",
@@ -1233,7 +1233,7 @@
             "summary": "Student STU-0007 submitted a jobApplication presentation",
             "dto": {
               "kind": "jobApplication",
-              "studentId": "STU-0007",
+              "applicantRef": "<hex>",
               "disclosures": [
                 "graduateName",
                 "universityName",
@@ -1313,7 +1313,7 @@
             "summary": "Student STU-0008 submitted a jobApplication presentation",
             "dto": {
               "kind": "jobApplication",
-              "studentId": "STU-0008",
+              "applicantRef": "<hex>",
               "disclosures": [
                 "graduateName",
                 "universityName",
@@ -1394,7 +1394,7 @@
             "summary": "Student STU-0009 submitted a jobApplication presentation",
             "dto": {
               "kind": "jobApplication",
-              "studentId": "STU-0009",
+              "applicantRef": "<hex>",
               "disclosures": [
                 "graduateName",
                 "universityName",
@@ -1475,7 +1475,7 @@
             "summary": "Student STU-0010 submitted a jobApplication presentation",
             "dto": {
               "kind": "jobApplication",
-              "studentId": "STU-0010",
+              "applicantRef": "<hex>",
               "disclosures": [
                 "graduateName",
                 "universityName",
@@ -1536,10 +1536,7 @@
               "studentId": "STU-0001",
               "verifierId": "mall-student-square",
               "requestedRole": null,
-              "disclosures": [
-                "universityName",
-                "finalGrade"
-              ],
+              "disclosures": [],
               "enforceMinimumFinalGrade": true,
               "minimumFinalGrade": "91",
               "verifierChallengeHashHex": "<hex>"
@@ -1554,11 +1551,8 @@
             "summary": "Student STU-0001 submitted a mallDiscount presentation",
             "dto": {
               "kind": "mallDiscount",
-              "studentId": "STU-0001",
-              "disclosures": [
-                "universityName",
-                "finalGrade"
-              ],
+              "applicantRef": "<hex>",
+              "disclosures": [],
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
               "verifierChallengeHashHex": "<hex>"
             }
@@ -1610,10 +1604,7 @@
               "studentId": "STU-0002",
               "verifierId": "mall-student-square",
               "requestedRole": null,
-              "disclosures": [
-                "universityName",
-                "finalGrade"
-              ],
+              "disclosures": [],
               "enforceMinimumFinalGrade": true,
               "minimumFinalGrade": "91",
               "verifierChallengeHashHex": "<hex>"
@@ -1628,11 +1619,8 @@
             "summary": "Student STU-0002 submitted a mallDiscount presentation",
             "dto": {
               "kind": "mallDiscount",
-              "studentId": "STU-0002",
-              "disclosures": [
-                "universityName",
-                "finalGrade"
-              ],
+              "applicantRef": "<hex>",
+              "disclosures": [],
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
               "verifierChallengeHashHex": "<hex>"
             }
@@ -1684,10 +1672,7 @@
               "studentId": "STU-0003",
               "verifierId": "mall-student-square",
               "requestedRole": null,
-              "disclosures": [
-                "universityName",
-                "finalGrade"
-              ],
+              "disclosures": [],
               "enforceMinimumFinalGrade": true,
               "minimumFinalGrade": "91",
               "verifierChallengeHashHex": "<hex>"
@@ -1702,11 +1687,8 @@
             "summary": "Student STU-0003 submitted a mallDiscount presentation",
             "dto": {
               "kind": "mallDiscount",
-              "studentId": "STU-0003",
-              "disclosures": [
-                "universityName",
-                "finalGrade"
-              ],
+              "applicantRef": "<hex>",
+              "disclosures": [],
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
               "verifierChallengeHashHex": "<hex>"
             }
@@ -1760,10 +1742,7 @@
               "studentId": "STU-0004",
               "verifierId": "mall-student-square",
               "requestedRole": null,
-              "disclosures": [
-                "universityName",
-                "finalGrade"
-              ],
+              "disclosures": [],
               "enforceMinimumFinalGrade": true,
               "minimumFinalGrade": "91",
               "verifierChallengeHashHex": "<hex>"
@@ -1778,11 +1757,8 @@
             "summary": "Student STU-0004 submitted a mallDiscount presentation",
             "dto": {
               "kind": "mallDiscount",
-              "studentId": "STU-0004",
-              "disclosures": [
-                "universityName",
-                "finalGrade"
-              ],
+              "applicantRef": "<hex>",
+              "disclosures": [],
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
               "verifierChallengeHashHex": "<hex>"
             }
@@ -1798,7 +1774,7 @@
               "kind": "mallDiscount",
               "studentId": "STU-0004",
               "accepted": false,
-              "reason": "failed assert: University-diploma disclosed final grade is below the verifier minimum",
+              "reason": "failed assert: University-diploma production final grade predicate is below the verifier minimum",
               "rejectionKind": "verificationFailed"
             }
           }
@@ -1836,10 +1812,7 @@
               "studentId": "STU-0005",
               "verifierId": "mall-student-square",
               "requestedRole": null,
-              "disclosures": [
-                "universityName",
-                "finalGrade"
-              ],
+              "disclosures": [],
               "enforceMinimumFinalGrade": true,
               "minimumFinalGrade": "91",
               "verifierChallengeHashHex": "<hex>"
@@ -1854,11 +1827,8 @@
             "summary": "Student STU-0005 submitted a mallDiscount presentation",
             "dto": {
               "kind": "mallDiscount",
-              "studentId": "STU-0005",
-              "disclosures": [
-                "universityName",
-                "finalGrade"
-              ],
+              "applicantRef": "<hex>",
+              "disclosures": [],
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
               "verifierChallengeHashHex": "<hex>"
             }
@@ -1874,7 +1844,7 @@
               "kind": "mallDiscount",
               "studentId": "STU-0005",
               "accepted": false,
-              "reason": "failed assert: University-diploma disclosed final grade is below the verifier minimum",
+              "reason": "failed assert: University-diploma production final grade predicate is below the verifier minimum",
               "rejectionKind": "verificationFailed"
             }
           }

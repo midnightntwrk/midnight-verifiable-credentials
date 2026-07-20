@@ -165,16 +165,17 @@ describe("university protocol restart persistence", () => {
     expect(() =>
       assertUniversityProtocolCheckpointCompatible({
         ...checkpoint,
-        // Deliberately violate the literal v1 type to exercise the negative path.
-        schemaVersion: 2 as typeof checkpoint.schemaVersion,
+        // A pre-#267 v1 checkpoint predates claimOpenings/applicantRef and
+        // must be rejected cleanly instead of failing deep inside the flow.
+        schemaVersion: 1 as typeof checkpoint.schemaVersion,
       }),
     ).toThrow(/Unsupported university protocol checkpoint schema version/u);
     expect(() =>
       assertUniversityProtocolCheckpointCompatible({
         ...checkpoint,
         compatibility: {
-          minimumReaderVersion: 2 as typeof checkpoint.compatibility.minimumReaderVersion,
-          maximumReaderVersion: 2 as typeof checkpoint.compatibility.maximumReaderVersion,
+          minimumReaderVersion: 3 as typeof checkpoint.compatibility.minimumReaderVersion,
+          maximumReaderVersion: 3 as typeof checkpoint.compatibility.maximumReaderVersion,
         },
       }),
     ).toThrow(/Unsupported university protocol checkpoint schema version/u);

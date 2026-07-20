@@ -1,28 +1,38 @@
 # University Commitment-Backed Privacy Plan
 
-Status: active migration plan for `university-commitment-backed-privacy`.
+Status: executed (#267). The university use case now presents the
+commitment-backed production profile (`UniversityDiplomaProductionCredential`,
+verifier schemaRef `uni-diploma:v2`): submissions ship salted per-field
+commitments instead of hidden claim plaintext, the transport `studentId` field
+became `applicantRef` (the salted studentId-commitment hex), and the
+mall-discount verifier proves the grade threshold via a predicate witness
+without any disclosure. Remaining follow-up: `applicantRef` is a stable
+pseudonym reused across verifiers; a per-presentation blinded reference is the
+production answer. The sections below are kept as the migration's design
+record.
 
-The current `university-diploma` family is a direct-claim prototype. It is
-valuable because the BDD reports, protocol transcripts, and verifier policies
-are easy for humans to read. It is not a production privacy profile.
+The pre-migration `university-diploma` family was a direct-claim prototype. It
+was valuable because the BDD reports, protocol transcripts, and verifier
+policies were easy for humans to read. It was not a production privacy profile.
 
-## Current Boundary
+## Pre-Migration Boundary
 
-Current credential shape:
+Pre-migration credential shape:
 
 ```text
 VC<UniversityDiplomaClaims, NoClaimCommitments, ExplicitHolderBinding, NoStatusBinding>
 ```
 
-Consequences:
+Consequences of that shape:
 
-- every academic field lives in `credential.claims`
-- `claimCommitments` is empty
-- `reveal*` booleans authorize what the presentation says the verifier may use
-- `reveal*` booleans do not hide raw values from a party that receives the
+- every academic field lived in `credential.claims`
+- `claimCommitments` was empty
+- `reveal*` booleans authorized what the presentation said the verifier may use
+- `reveal*` booleans did not hide raw values from a party that received the
   credential body
 
-The package pins this boundary through
+The package now pins the post-migration boundary
+(`production-commitment-v2`, `salted-per-field-persistent-commit`) through
 `UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY`, its `productionTarget` metadata, and
 fixture tests in
 `packages/prototypes/credential-families/university-diploma/src/test/privacy-boundary.test.ts`.
@@ -56,7 +66,7 @@ instead of importing fixture-only testing helpers.
 
 ## Field Migration Target
 
-| Field | Current representation | Production target | Reason |
+| Field | v1 prototype representation | Production target | Reason |
 | --- | --- | --- | --- |
 | `diplomaId` | direct claim | committed private | stable credential identifier and correlation handle |
 | `studentId` | direct claim | committed private | stable student identifier |
@@ -119,24 +129,27 @@ opening secrecy until predicate witnesses replace raw-value openings.
 
 ## Execution Slices
 
-1. Keep the current direct-claim prototype readable and explicitly labeled.
+1. Keep the v1 direct-claim prototype readable and explicitly labeled. Done;
+   it remains a fixture/comparison alias.
 2. Add a separate commitment-backed diploma family or v2 surface instead of
-   silently changing the v1 claim root. The additive Compact/fixture building
-   blocks now cover the field split, v2 claim-root shape, and
+   silently changing the v1 claim root. Done: the additive Compact/fixture
+   building blocks cover the field split, v2 claim-root shape, and
    `UniversityDiplomaProductionCredential` alias.
 3. Move stable identifiers and sensitive academic facts into `claimCommitments`
-   in the actual v2 credential alias. This is now covered at the credential
-   envelope level; follow-up protocol slices still need verifier openings and
-   predicates.
-4. Add opening witnesses for disclosed private fields. This is covered by the
-   additive v2 production presentation surface and fixture tests.
-5. Add predicate witnesses for final-grade and credit-threshold policies. This
-   is covered by the additive v2 production predicate helper circuits and
-   fixture tests.
+   in the actual v2 credential alias. Done via #267: the verifier contract and
+   university protocol present the v2 credential, with in-circuit openings and
+   the mall-discount predicate path.
+4. Add opening witnesses for disclosed private fields. Done: covered by the v2
+   production presentation surface and fixture tests.
+5. Add predicate witnesses for final-grade and credit-threshold policies. Done:
+   covered by the v2 production predicate helper circuits, fixture tests, and
+   the reveal-nothing predicate satisfies-request circuit.
 6. Update university protocol DTOs and BDD notes so reports show opened values
-   only when the verifier policy requires them.
+   only when the verifier policy requires them. Done via #267: submissions
+   carry `applicantRef` plus commitments, and issuance exports show
+   `finalGradeCommitmentHex`.
 7. Keep compatibility fixtures for the readable v1 prototype until downstream
-   examples no longer depend on it.
+   examples no longer depend on it. Ongoing.
 
 ## Acceptance
 

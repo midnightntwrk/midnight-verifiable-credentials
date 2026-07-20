@@ -5,10 +5,11 @@ import type {
 import type {
   Proof,
   UniversityDiplomaClaims,
-  UniversityDiplomaCredential,
-  UniversityDiplomaPresentation,
-  UniversityDiplomaPresentationRequest,
+  UniversityDiplomaProductionCredential,
+  UniversityDiplomaProductionPresentation,
+  UniversityDiplomaProductionPresentationRequest,
 } from "@midnight-ntwrk/midnight-did-credentials-university-diploma/contract";
+import type { UniversityDiplomaProductionClaimOpenings } from "@midnight-ntwrk/midnight-did-credentials-university-diploma/testing";
 
 export type UniversityProfile = {
   readonly universityId: string;
@@ -105,8 +106,13 @@ export type AgentProfile = {
 };
 
 export type StoredIssuedCredential = {
-  readonly credential: UniversityDiplomaCredential;
+  readonly credential: UniversityDiplomaProductionCredential;
   readonly credentialProof: Proof;
+  // HOLDER-PRIVATE: per-field commitment openings transferred on the private
+  // issuance channel. Only policy-selected (value, opening) pairs may ever be
+  // copied into a presentation disclosure; the set itself never enters a
+  // presentation:submission message.
+  readonly claimOpenings: UniversityDiplomaProductionClaimOpenings;
   readonly issuedAt: bigint;
   readonly credentialProofCreatedAt: bigint;
   readonly presentationProofCreatedAt: bigint;
@@ -122,8 +128,11 @@ export type UniversityIssuanceRequestBody = {
 
 export type UniversityIssuanceResultBody = {
   readonly studentId: string;
-  readonly credential: UniversityDiplomaCredential;
+  readonly credential: UniversityDiplomaProductionCredential;
   readonly credentialProof: Proof;
+  // Issuer -> holder on the private issuance channel: the openings the holder
+  // needs to selectively open its committed claims later.
+  readonly claimOpenings: UniversityDiplomaProductionClaimOpenings;
   readonly issuedAt: bigint;
   readonly credentialProofCreatedAt: bigint;
   readonly presentationProofCreatedAt: bigint;
@@ -133,18 +142,29 @@ export type UniversityIssuanceResultBody = {
 export type UniversityPresentationRequestBody = {
   readonly kind: "jobApplication" | "mallDiscount";
   readonly studentId: string;
-  readonly request: UniversityDiplomaPresentationRequest;
+  readonly request: UniversityDiplomaProductionPresentationRequest;
   readonly requestedRole?: string;
   readonly verifierId: string;
 };
 
+// #267 FIX: the submission body carries NO hidden claim plaintext.
+// - `credential` is the production commitment-backed credential: three public
+//   routing claims plus eight salted commitments.
+// - `presentation.disclosed` carries (value, opening) pairs ONLY for fields
+//   the request required; all other slots are zeroed.
+// - The transport-level `studentId` correlation field is gone: studentId is a
+//   hidden claim, so the body exposes only `applicantRef`, the salted
+//   studentId commitment (hex). The commitment hides the value without the
+//   opening, but it is reused verbatim across verifiers and requests, so it is
+//   a stable pseudonym: colluding verifiers can link the same applicant across
+//   contexts. A per-presentation blinded reference is the production answer.
 export type UniversityPresentationSubmissionBody = {
   readonly kind: "jobApplication" | "mallDiscount";
-  readonly studentId: string;
-  readonly credential: UniversityDiplomaCredential;
+  readonly applicantRef: string;
+  readonly credential: UniversityDiplomaProductionCredential;
   readonly credentialProof: Proof;
-  readonly request: UniversityDiplomaPresentationRequest;
-  readonly presentation: UniversityDiplomaPresentation;
+  readonly request: UniversityDiplomaProductionPresentationRequest;
+  readonly presentation: UniversityDiplomaProductionPresentation;
   readonly presentationProof: Proof;
 };
 

@@ -108,9 +108,10 @@ They add four review-driven backlog decisions:
     resolver-hint helpers and a TypeScript-side reference family adapter
     registry in the protocol orchestration package without expanding canonical
     Compact `SchemaRef`.
-- `university-commitment-backed-privacy`: the current university family is a
-  direct-claim prototype; `reveal*` flags enforce presentation policy but do not
-  hide raw credential-body values.
+- `university-commitment-backed-privacy`: at triage time the university family
+  was a direct-claim prototype whose `reveal*` flags enforced presentation
+  policy without hiding raw credential-body values; executed 2026-07 (#267) —
+  see `docs/plans/university-commitment-backed-privacy.md`.
 - `disclosure-shape-guidance`: `Maybe<T>`-style disclosure structs are allowed
   for new families when useful, but existing `reveal*` structs should not churn
   for style only.

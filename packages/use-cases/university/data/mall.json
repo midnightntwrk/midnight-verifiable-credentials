@@ -6,10 +6,10 @@
   "offerId": "discount-grade-over-90",
   "requestPresetId": "mall-discount-grade-over-90",
   "requestPresetTitle": "Grade-above-90 discount",
-  "requestPolicyPurpose": "Use when a verifier needs institution identity plus a strict grade threshold check for a student discount offer.",
+  "requestPolicyPurpose": "Use when a verifier needs a reveal-nothing grade-threshold eligibility proof for a student discount offer without collecting any diploma claims.",
   "requestPolicy": {
-    "requireUniversityNameDisclosure": true,
-    "requireFinalGradeDisclosure": true,
+    "requireUniversityNameDisclosure": false,
+    "requireFinalGradeDisclosure": false,
     "enforceMinimumFinalGrade": true,
     "minimumFinalGrade": 91
   }

@@ -1202,15 +1202,7 @@ export class UseUniversityScenario extends Ability {
             readonly claims: {
               readonly universityName: Uint8Array;
               readonly awardName: Uint8Array;
-              readonly finalGrade: bigint;
-              readonly diplomaId?: Uint8Array;
-              readonly studentId?: Uint8Array;
-              readonly graduateName?: Uint8Array;
-              readonly facultyName?: Uint8Array;
-              readonly honorsCode?: Uint8Array;
-              readonly graduationYear?: bigint;
-              readonly graduationMonth?: bigint;
-              readonly creditsEarned?: bigint;
+              readonly graduationYear: bigint;
             };
           };
         };
@@ -1262,9 +1254,12 @@ export class UseUniversityScenario extends Ability {
         };
       }
       case "presentation:submission": {
+        // #267: submissions carry no plaintext studentId; the body ships the
+        // production commitment-backed credential plus the applicantRef
+        // (salted studentId commitment hex).
         const body = message.body as {
           readonly kind: "jobApplication" | "mallDiscount";
-          readonly studentId: string;
+          readonly applicantRef: string;
           readonly request: {
             readonly requireDiplomaIdDisclosure?: boolean;
             readonly requireStudentIdDisclosure?: boolean;
@@ -1285,17 +1280,12 @@ export class UseUniversityScenario extends Ability {
               readonly methodId: Uint8Array;
             };
             readonly claims: {
-              readonly diplomaId: Uint8Array;
-              readonly studentId: Uint8Array;
-              readonly graduateName: Uint8Array;
               readonly universityName: Uint8Array;
-              readonly facultyName: Uint8Array;
               readonly awardName: Uint8Array;
-              readonly honorsCode: Uint8Array;
               readonly graduationYear: bigint;
-              readonly graduationMonth: bigint;
-              readonly finalGrade: bigint;
-              readonly creditsEarned: bigint;
+            };
+            readonly claimCommitments: {
+              readonly studentIdCommitment: Uint8Array;
             };
           };
           readonly presentation: {
@@ -1321,7 +1311,7 @@ export class UseUniversityScenario extends Ability {
         );
         return {
           kind: body.kind,
-          studentId: body.studentId,
+          applicantRef: body.applicantRef,
           disclosures: disclosureNamesForRequest(body.request),
           issuerVerificationMethodRef: verificationMethodRefToString(
             body.credential.issuerVerificationMethodRef,

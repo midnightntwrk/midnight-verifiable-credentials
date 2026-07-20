@@ -25,8 +25,8 @@ Feature: Selected students present diploma credentials to request a mall discoun
     # REQUEST:
     # - The mall publishes a verifier request.
     # RESPONSE:
-    # - The student learns that the request requires university name, final grade,
-    #   and a minimum final grade of 91.
+    # - The student learns that the request demands no claim disclosure and
+    #   enforces a minimum final grade of 91 as an in-circuit predicate.
     # CHECKS:
     # - The request encodes the business rule `grade >= 91` as `minimumFinalGrade = 91`.
     Given the "Student Square Mall" verifier policy is loaded
@@ -41,12 +41,13 @@ Feature: Selected students present diploma credentials to request a mall discoun
     And the selected student "<fullName>" with id "<studentId>" is loaded from the committed discount applicant list
 
     # REQUEST:
-    # - The student builds a diploma presentation that discloses the university name and final grade.
+    # - The student builds a reveal-nothing diploma presentation with a
+    #   final-grade predicate witness that opens the salted commitment in-circuit.
     # RESPONSE:
     # - The mall receives the presentation proof.
     # CHECKS:
     # - The presentation challenge matches the mall verifier request.
-    # - The final grade is disclosed because the request requires it.
+    # - No claim is disclosed; the grade threshold is proven without revealing the grade.
     When the student submits a discount request presentation with final grade <finalGrade>
 
     # REQUEST:
@@ -72,5 +73,5 @@ Feature: Selected students present diploma credentials to request a mall discoun
       | Ada Avery 0001  | STU-0001  | 98         | accepted        | grade is at least the mall threshold (91)                                    |
       | Ben Avery 0002  | STU-0002  | 94         | accepted        | grade is at least the mall threshold (91)                                    |
       | Cara Avery 0003 | STU-0003  | 91         | accepted        | grade is at least the mall threshold (91)                                    |
-      | Dion Avery 0004 | STU-0004  | 90         | rejected        | failed assert: University-diploma disclosed final grade is below the verifier minimum |
-      | Ella Avery 0005 | STU-0005  | 72         | rejected        | failed assert: University-diploma disclosed final grade is below the verifier minimum |
+      | Dion Avery 0004 | STU-0004  | 90         | rejected        | failed assert: University-diploma production final grade predicate is below the verifier minimum |
+      | Ella Avery 0005 | STU-0005  | 72         | rejected        | failed assert: University-diploma production final grade predicate is below the verifier minimum |

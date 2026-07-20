@@ -1,15 +1,15 @@
 import { TextEncoder } from "node:util";
+
+import { pureCircuits as familyPureCircuits } from "@midnight-ntwrk/midnight-did-credentials-university-diploma/contract";
 import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { pureCircuits as familyPureCircuits } from "@midnight-ntwrk/midnight-did-credentials-university-diploma/contract";
-
-import { encodeUniversityProtocolTransportValue } from "../process-transport.js";
-import { UniversityProtocolFlowRunner } from "../testing.js";
 import type {
   StudentRecord,
   UniversityProtocolMessage,
 } from "../model.js";
+import { encodeUniversityProtocolTransportValue } from "../process-transport.js";
+import { UniversityProtocolFlowRunner } from "../testing.js";
 
 /**
  * Repro + regression test for issue #267:
@@ -213,6 +213,18 @@ describe("issue #267 — hidden claims must not ship in presentation submissions
         presentation: body["presentation"],
       });
 
+      // Values legitimately revealed in THIS submission (per request policy)
+      // can contain short hidden values as substrings (e.g. facultyName
+      // "Science" inside revealed awardName "BSc Data Science"). The
+      // raw-substring probes skip those scanner false positives; the padded
+      // fixed-width probe — the actual wire encoding of a claim — always runs.
+      const revealedPlaintexts = CLAIM_FIELDS.filter(
+        (candidate) =>
+          candidate.kind === "text" &&
+          (PUBLIC_ROUTING_FIELDS.has(candidate.field) ||
+            request[candidate.requireFlag] === true),
+      ).map((candidate) => claims[candidate.field as TextClaimField["field"]]);
+
       for (const claimField of CLAIM_FIELDS) {
         if (PUBLIC_ROUTING_FIELDS.has(claimField.field)) {
           continue;
@@ -228,14 +240,19 @@ describe("issue #267 — hidden claims must not ship in presentation submissions
             anyBufferContains(leaves, padText(raw, claimField.pad)),
             `hidden padded plaintext leaked: ${label}`,
           ).toBe(false);
-          expect(
-            anyBufferContains(leaves, new TextEncoder().encode(raw)),
-            `hidden raw-bytes plaintext leaked: ${label}`,
-          ).toBe(false);
-          expect(
-            anyStringContains(leaves, raw),
-            `hidden string plaintext leaked: ${label}`,
-          ).toBe(false);
+          const isSubstringOfRevealed = revealedPlaintexts.some((revealed) =>
+            revealed.includes(raw),
+          );
+          if (!isSubstringOfRevealed) {
+            expect(
+              anyBufferContains(leaves, new TextEncoder().encode(raw)),
+              `hidden raw-bytes plaintext leaked: ${label}`,
+            ).toBe(false);
+            expect(
+              anyStringContains(leaves, raw),
+              `hidden string plaintext leaked: ${label}`,
+            ).toBe(false);
+          }
         } else {
           expect(
             anyBigintEquals(numericLeaves, BigInt(claims[claimField.field])),

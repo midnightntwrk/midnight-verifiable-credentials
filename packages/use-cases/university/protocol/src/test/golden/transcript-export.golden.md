@@ -4,7 +4,7 @@
 - schema version: midnight-university-protocol-export.v2
 - compatible reader floor: midnight-university-protocol-export.v2
 - compatible reader ceiling: midnight-university-protocol-export.v2
-- current privacy profile: direct-claim-prototype
+- current privacy profile: production-commitment-v2
 - production privacy profile: production-commitment-v2
 - students: 10
 - companies: 3
@@ -31,11 +31,11 @@
 
 ## Discount Rejection Reasons
 
-- failed assert: University-diploma disclosed final grade is below the verifier minimum: 2
+- failed assert: University-diploma production final grade predicate is below the verifier minimum: 2
 
 ## Privacy Profile
 
-- current claim commitment model: none
+- current claim commitment model: salted-per-field-persistent-commit
 - production public claims: universityName, awardName, graduationYear
 - production committed/private candidates: diplomaId, studentId, graduateName, facultyName, honorsCode, graduationMonth, finalGrade, creditsEarned
 - production commitment fields: diplomaIdCommitment, studentIdCommitment, graduateNameCommitment, facultyNameCommitment, honorsCodeCommitment, graduationMonthCommitment, finalGradeCommitment, creditsEarnedCommitment

@@ -79,6 +79,9 @@ export class UniversityStudentAgent {
     this.storedIssuedCredential = {
       credential: message.body.credential,
       credentialProof: message.body.credentialProof,
+      // Openings arrive on the private issuance channel and stay in holder
+      // state; they never enter a presentation:submission message.
+      claimOpenings: message.body.claimOpenings,
       issuedAt: message.body.issuedAt,
       credentialProofCreatedAt: message.body.credentialProofCreatedAt,
       presentationProofCreatedAt: message.body.presentationProofCreatedAt,
@@ -247,6 +250,10 @@ export class UniversityIssuerProtocolAgent {
 /** @internal Protocol-flow helper; not exported from the package public API. */
 export class UniversityCompanyVerifierAgent {
   readonly processedThreadIds = new Set<string>();
+  // #267: the submission body no longer carries a plaintext studentId (it is
+  // a hidden claim). The verifier correlates submissions back to the party it
+  // solicited via the request thread it opened itself.
+  readonly #studentIdByThread = new Map<string, string>();
   acceptedCount = 0;
   duplicateRejectedCount = 0;
   verificationRejectedCount = 0;
@@ -293,6 +300,11 @@ export class UniversityCompanyVerifierAgent {
       },
     };
 
+    this.#studentIdByThread.set(
+      universityProtocolMessageIdHex(message.envelope.threadId),
+      student.record.studentId,
+    );
+
     bus.send(message);
     messages.push(message);
     transcript.record(
@@ -300,6 +312,11 @@ export class UniversityCompanyVerifierAgent {
       message,
       `Company ${this.company.companyId} requested a diploma presentation from ${student.record.studentId}`,
     );
+  }
+
+  /** Re-prime request-thread correlation after a checkpoint restore. */
+  primeRequestThread(threadIdHex: string, studentId: string): void {
+    this.#studentIdByThread.set(threadIdHex, studentId);
   }
 
   receiveSubmissionAndSendResult(
@@ -312,6 +329,12 @@ export class UniversityCompanyVerifierAgent {
     let reason = "job application accepted";
     let rejectionKind: UniversityPresentationResultBody["rejectionKind"] = "none";
     const threadIdHex = universityProtocolMessageIdHex(message.envelope.threadId);
+    const studentId = this.#studentIdByThread.get(threadIdHex);
+    if (!studentId) {
+      throw new Error(
+        `Company ${this.company.companyId} received a submission on an unknown thread ${threadIdHex}`,
+      );
+    }
 
     if (this.processedThreadIds.has(threadIdHex)) {
       accepted = false;
@@ -338,15 +361,15 @@ export class UniversityCompanyVerifierAgent {
       from: this.profile.partyId,
       to: message.from,
       envelope: this.createEnvelope(
-        `job-result:${this.company.companyId}:${message.body.studentId}`,
-        `job-application:${this.company.companyId}:${message.body.studentId}`,
+        `job-result:${this.company.companyId}:${studentId}`,
+        `job-application:${this.company.companyId}:${studentId}`,
         false,
         message.envelope.messageId,
         message.envelope.threadId,
       ),
       body: {
         kind: "jobApplication",
-        studentId: message.body.studentId,
+        studentId,
         accepted,
         reason,
         rejectionKind,
@@ -358,7 +381,7 @@ export class UniversityCompanyVerifierAgent {
     transcript.record(
       "jobApplications",
       result,
-      `Company ${this.company.companyId} returned ${accepted ? "accepted" : "rejected"} for ${message.body.studentId}`,
+      `Company ${this.company.companyId} returned ${accepted ? "accepted" : "rejected"} for ${studentId}`,
     );
   }
 }
@@ -366,6 +389,8 @@ export class UniversityCompanyVerifierAgent {
 /** @internal Protocol-flow helper; not exported from the package public API. */
 export class UniversityMallVerifierAgent {
   readonly processedThreadIds = new Set<string>();
+  // #267: correlate submissions via the request thread, not plaintext claims.
+  readonly #studentIdByThread = new Map<string, string>();
   acceptedCount = 0;
   duplicateRejectedCount = 0;
   verificationRejectedCount = 0;
@@ -409,6 +434,11 @@ export class UniversityMallVerifierAgent {
       },
     };
 
+    this.#studentIdByThread.set(
+      universityProtocolMessageIdHex(message.envelope.threadId),
+      student.record.studentId,
+    );
+
     bus.send(message);
     messages.push(message);
     transcript.record(
@@ -416,6 +446,11 @@ export class UniversityMallVerifierAgent {
       message,
       `Mall ${this.mall.mallId} requested a diploma presentation from ${student.record.studentId}`,
     );
+  }
+
+  /** Re-prime request-thread correlation after a checkpoint restore. */
+  primeRequestThread(threadIdHex: string, studentId: string): void {
+    this.#studentIdByThread.set(threadIdHex, studentId);
   }
 
   receiveSubmissionAndSendResult(
@@ -428,6 +463,12 @@ export class UniversityMallVerifierAgent {
     let reason = "mall discount accepted";
     let rejectionKind: UniversityPresentationResultBody["rejectionKind"] = "none";
     const threadIdHex = universityProtocolMessageIdHex(message.envelope.threadId);
+    const studentId = this.#studentIdByThread.get(threadIdHex);
+    if (!studentId) {
+      throw new Error(
+        `Mall ${this.mall.mallId} received a submission on an unknown thread ${threadIdHex}`,
+      );
+    }
 
     if (this.processedThreadIds.has(threadIdHex)) {
       accepted = false;
@@ -454,15 +495,15 @@ export class UniversityMallVerifierAgent {
       from: this.profile.partyId,
       to: message.from,
       envelope: this.createEnvelope(
-        `discount-result:${this.mall.mallId}:${message.body.studentId}`,
-        `discount:${this.mall.mallId}:${message.body.studentId}`,
+        `discount-result:${this.mall.mallId}:${studentId}`,
+        `discount:${this.mall.mallId}:${studentId}`,
         false,
         message.envelope.messageId,
         message.envelope.threadId,
       ),
       body: {
         kind: "mallDiscount",
-        studentId: message.body.studentId,
+        studentId,
         accepted,
         reason,
         rejectionKind,
@@ -474,7 +515,7 @@ export class UniversityMallVerifierAgent {
     transcript.record(
       "discounts",
       result,
-      `Mall ${this.mall.mallId} returned ${accepted ? "accepted" : "rejected"} for ${message.body.studentId}`,
+      `Mall ${this.mall.mallId} returned ${accepted ? "accepted" : "rejected"} for ${studentId}`,
     );
   }
 }

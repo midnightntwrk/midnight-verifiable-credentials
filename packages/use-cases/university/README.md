@@ -129,24 +129,27 @@ Credential family package:
 
 Credential shape:
 
-- `VC<UniversityDiplomaClaims, NoClaimCommitments, ExplicitHolderBinding, NoStatusBinding>`
+- `VC<UniversityDiplomaProductionPublicClaims, UniversityDiplomaClaimCommitments, ExplicitHolderBinding, NoStatusBinding>`
+  (`UniversityDiplomaProductionCredential`, verifier schemaRef `uni-diploma:v2`)
 
 Privacy boundary:
 
-- the current diploma family is a direct-claim prototype optimized for readable
-  BDD and protocol reporting
-- raw academic facts live in `credential.claims`; any party that receives the
-  credential body can read them
-- presentation `reveal*` flags authorize what a verifier request may use in a
-  presentation, but they do not hide values already present in the credential
-  body
-- the credential-family package now exposes additive production-profile
-  building blocks that move stable identifiers and sensitive academic facts into
-  `claimCommitments`; the current BDD/protocol use case still runs on the
-  readable v1 direct-claim alias
-- the next production slices should add verifier-facing openings and predicate
-  witnesses for committed academic facts
-- migration plan:
+- the use case runs on the commitment-backed production profile (#267): the
+  presented credential carries three public routing claims (`universityName`,
+  `awardName`, `graduationYear`) plus eight salted per-field commitments
+- hidden academic facts cross the wire only as commitments; a presentation
+  opens (value, opening) pairs solely for fields the verifier request requires
+- issuance delivers the per-field commitment openings to the holder on the
+  private issuance channel; openings never enter a presentation submission
+- presentation submissions carry no plaintext `studentId`; they expose
+  `applicantRef`, the salted studentId-commitment hex. That commitment hides
+  the value but is reused verbatim across verifiers, so it is a stable
+  pseudonym — a per-presentation blinded reference remains future work
+- the readable v1 direct-claim alias still exists in the family package for
+  fixtures and comparison, but the BDD/protocol use case no longer presents it
+- authoritative boundary metadata: `UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY` on the
+  family package's `./privacy-profile` surface
+- migration plan (executed):
   [`../../../docs/plans/university-commitment-backed-privacy.md`](../../../docs/plans/university-commitment-backed-privacy.md)
 
 Key schema fields:
@@ -314,15 +317,16 @@ prototype data set.
 
 ### 3. Mall discount
 
-1. the mall publishes a verifier request requiring:
-   - university name disclosure
-   - final grade disclosure
-   - minimum final grade `91`
-   - the preset documents why the verifier needs each disclosure and why `91`
-     represents a strict `> 90` integer threshold
+1. the mall publishes a reveal-nothing verifier request:
+   - no claim disclosure is demanded
+   - minimum final grade `91`, enforced as an in-circuit predicate
+   - the preset documents why `91` represents a strict `> 90` integer threshold
 2. a selected student requests the discount
-3. the student presents the diploma VC with the required fields disclosed
-4. the mall verifies the presentation and checks the minimum-grade predicate
+3. the student presents the diploma VC with no fields disclosed, plus a
+   final-grade predicate witness that opens the salted `finalGradeCommitment`
+   in-circuit
+4. the mall verifies the presentation and the minimum-grade predicate without
+   ever seeing the grade
 5. applicants with grades `91` or above succeed; applicants at `90` or below
    fail
 

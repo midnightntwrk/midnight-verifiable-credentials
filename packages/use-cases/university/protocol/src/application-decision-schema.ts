@@ -61,7 +61,8 @@ export type UniversityProtocolIssuanceDecisionRecord = {
     readonly presentationProofCreatedAt: string;
     readonly universityName: string;
     readonly awardName: string;
-    readonly finalGrade: string;
+    // #267: the credential carries only the salted finalGrade commitment.
+    readonly finalGradeCommitmentHex: string;
   };
 };
 
@@ -286,7 +287,10 @@ const assertIssuanceRecord = (value: unknown, label: string): void => {
   );
   expectString(credential.universityName, `${label}.credential.universityName`);
   expectString(credential.awardName, `${label}.credential.awardName`);
-  expectString(credential.finalGrade, `${label}.credential.finalGrade`);
+  expectString(
+    credential.finalGradeCommitmentHex,
+    `${label}.credential.finalGradeCommitmentHex`,
+  );
 };
 
 const assertDecisionRecord = (value: unknown, label: string): void => {

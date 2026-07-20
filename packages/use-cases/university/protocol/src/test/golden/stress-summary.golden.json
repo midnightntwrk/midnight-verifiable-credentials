@@ -40,7 +40,7 @@
       "duplicate": 0,
       "byReason": [
         {
-          "reason": "failed assert: University-diploma disclosed final grade is below the verifier minimum",
+          "reason": "failed assert: University-diploma production final grade predicate is below the verifier minimum",
           "count": 2
         }
       ]

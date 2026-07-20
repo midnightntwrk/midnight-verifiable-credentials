@@ -118,15 +118,14 @@ Current constraint:
 - string-like claim fields still use bounded `Bytes<N>` encodings because
   `Opaque<"string">` cannot be used in the canonical
   `persistentHash<Claims>(claims)` claim-root pattern used by this repository
-- the current family is a direct-claim prototype: presentation `reveal*` flags
-  authorize verifier use, but raw academic facts remain readable in
-  `credential.claims` by any party that receives the credential body
-- the package now exposes additive production-profile helpers for
-  `UniversityDiplomaProductionPublicClaims`,
-  `UniversityDiplomaClaimCommitments`, and a domain-separated production claim
-  root, exported from `claims.compact`; the v1 BDD/protocol surface still uses
-  the readable direct-claim alias
-- production privacy work should continue through
+- the presented family is the commitment-backed production profile (#267):
+  public routing claims plus salted per-field commitments, with hidden fields
+  absent from the wire except as commitments; the readable v1 direct-claim
+  alias remains only as a fixture/comparison surface
+- privacy-boundary details live in the family README and the
+  `UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY` metadata on the family package's
+  `./privacy-profile` surface
+- migration history:
   [`../plans/university-commitment-backed-privacy.md`](../plans/university-commitment-backed-privacy.md)
 
 ### I need same-holder correlation across credentials

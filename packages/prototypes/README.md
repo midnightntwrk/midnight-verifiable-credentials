@@ -27,7 +27,7 @@ values for readers:
 | `credential-families/birth` | `reference` | `dist` | Commitment-backed birth family and simplest reusable age-predicate reference. |
 | `credential-families/birth-secret` | `reference` | `dist` | Hidden-holder birth family with status/revocation and same-holder capability coverage. |
 | `credential-families/hello-family` | `reference` | `dist` | Starter explicit-holder family and offchain-DID smoke path. |
-| `credential-families/university-diploma` | `reference` | `dist` | University diploma direct-claim reference used by the university use case. |
+| `credential-families/university-diploma` | `reference` | `dist` | University diploma family used by the university use case: commitment-backed production profile plus a readable v1 direct-claim alias. |
 | `credential-families/dummy-claims` | `lab` | `dist` | Broad direct-claim compiler-surface laboratory. |
 | `credential-families/mixed-claims` | `lab` | `dist` | Public/direct plus commitment-backed claim-representation laboratory. |
 

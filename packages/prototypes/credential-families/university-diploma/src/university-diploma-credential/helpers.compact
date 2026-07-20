@@ -622,14 +622,17 @@ export pure circuit assertUniversityDiplomaPresentationSatisfiesRequest(
   }
 }
 
-export pure circuit assertUniversityDiplomaProductionPresentationSatisfiesRequest(
+// Shared body for production request-satisfaction circuits: envelope,
+// issuer, challenge, and required-disclosure checks — everything except
+// minimum-final-grade policy, which differs between the disclosure-based
+// and predicate-based (commitment-opening witness) paths.
+export pure circuit assertUniversityDiplomaProductionPresentationSatisfiesRequestCore(
   credential: UniversityDiplomaProductionCredential,
   credentialProof: Proof,
   request: UniversityDiplomaProductionPresentationRequest,
   presentation: UniversityDiplomaProductionPresentation,
   presentationProof: Proof
 ): [] {
-  assertValidUniversityDiplomaProductionPresentationRequest(request);
   assertValidUniversityDiplomaProductionPresentation(
     credential,
     credentialProof,
@@ -719,6 +722,23 @@ export pure circuit assertUniversityDiplomaProductionPresentationSatisfiesReques
       "University-diploma production request requires credits disclosure"
     );
   }
+}
+
+export pure circuit assertUniversityDiplomaProductionPresentationSatisfiesRequest(
+  credential: UniversityDiplomaProductionCredential,
+  credentialProof: Proof,
+  request: UniversityDiplomaProductionPresentationRequest,
+  presentation: UniversityDiplomaProductionPresentation,
+  presentationProof: Proof
+): [] {
+  assertValidUniversityDiplomaProductionPresentationRequest(request);
+  assertUniversityDiplomaProductionPresentationSatisfiesRequestCore(
+    credential,
+    credentialProof,
+    request,
+    presentation,
+    presentationProof
+  );
   if (request.enforceMinimumFinalGrade) {
     assert(
       presentation.disclosed.revealFinalGrade,
@@ -729,4 +749,58 @@ export pure circuit assertUniversityDiplomaProductionPresentationSatisfiesReques
       "University-diploma production disclosed final grade is below the verifier minimum"
     );
   }
+}
+
+// Predicate-request validation: a minimum-grade policy that never sees the
+// grade. The request must NOT demand final-grade disclosure — the threshold
+// is proven in-circuit against the salted finalGrade commitment instead.
+export pure circuit assertValidUniversityDiplomaProductionPredicatePresentationRequest(
+  request: UniversityDiplomaProductionPresentationRequest
+): [] {
+  assert(request.version == 1, "University-diploma production request version mismatch");
+  assertValidUniversityDiplomaProductionSchemaRef(request.schema);
+  assertValidVerificationMethodRef(request.issuerVerificationMethodRef);
+  assert(
+    request.verifierChallengeHash != pad(32, ""),
+    "University-diploma production verifier challenge must be set"
+  );
+  assert(
+    request.minimumFinalGrade <= 100,
+    "University-diploma production minimum final grade must be at most 100"
+  );
+  assert(
+    request.enforceMinimumFinalGrade,
+    "University-diploma production predicate request must enforce a minimum grade"
+  );
+  assert(
+    !request.requireFinalGradeDisclosure,
+    "University-diploma production predicate request must not demand final grade disclosure"
+  );
+}
+
+// Request satisfaction with the minimum-grade policy proven via the
+// commitment-opening predicate witness. The final grade value and its
+// opening stay in the holder's witness: they are never part of the
+// presentation, the request, or any disclosed slot.
+export pure circuit assertUniversityDiplomaProductionPresentationSatisfiesRequestWithFinalGradePredicate(
+  credential: UniversityDiplomaProductionCredential,
+  credentialProof: Proof,
+  request: UniversityDiplomaProductionPresentationRequest,
+  presentation: UniversityDiplomaProductionPresentation,
+  presentationProof: Proof,
+  finalGradePredicateWitness: UniversityDiplomaProductionFinalGradePredicateWitness
+): [] {
+  assertValidUniversityDiplomaProductionPredicatePresentationRequest(request);
+  assertUniversityDiplomaProductionPresentationSatisfiesRequestCore(
+    credential,
+    credentialProof,
+    request,
+    presentation,
+    presentationProof
+  );
+  assertUniversityDiplomaProductionFinalGradeAtLeast(
+    credential,
+    finalGradePredicateWitness,
+    request.minimumFinalGrade
+  );
 }

@@ -18,7 +18,7 @@ export ledger lastVerifiedDiscountThreshold: Uint<8>;
 export ledger lastVerifiedVerifierKind: Uint<8>;
 
 constructor() {
-  contractVersion = 1;
+  contractVersion = 2;
   lastVerifiedCredentialRoot = pad(32, "university:none");
   lastVerifiedRequestChallenge = pad(32, "university:no-request");
   lastVerifiedGraduateName = pad(32, "");
@@ -30,16 +30,21 @@ constructor() {
   lastVerifiedVerifierKind = 0;
 }
 
+// Production commitment-backed schema (uni-diploma:v2): three public routing
+// claims plus eight salted per-field commitments. Fixes #267 — the presented
+// credential no longer carries plaintext for hidden claims at all.
 export pure circuit universityDiplomaSchemaRef(): SchemaRef {
   return SchemaRef {
     packageId: pad(32, "midnight:vc:uni-diploma"),
-    schemaId: pad(32, "uni-diploma:v1"),
-    majorVersion: 1,
+    schemaId: pad(32, "uni-diploma:v2"),
+    majorVersion: 2,
     minorVersion: 0,
   };
 }
 
 // Request-builder helper for employer-side university diploma checks.
+// Fields the employer does not require stay hidden: they exist in the
+// presented credential only as salted commitments.
 export pure circuit universityJobApplicationRequest(
   issuerVerificationMethodRef: VerificationMethodRef,
   verifierChallengeHash: Bytes<32>,
@@ -50,8 +55,8 @@ export pure circuit universityJobApplicationRequest(
   requireGraduationMonthDisclosure: Boolean,
   requireFinalGradeDisclosure: Boolean,
   requireCreditsEarnedDisclosure: Boolean
-): UniversityDiplomaPresentationRequest {
-  return UniversityDiplomaPresentationRequest {
+): UniversityDiplomaProductionPresentationRequest {
+  return UniversityDiplomaProductionPresentationRequest {
     version: 1,
     schema: universityDiplomaSchemaRef(),
     issuerVerificationMethodRef: issuerVerificationMethodRef,
@@ -73,30 +78,33 @@ export pure circuit universityJobApplicationRequest(
 }
 
 // Request-builder helper for the university discount use case.
+// Reveal-nothing predicate request: no claim disclosure is demanded; the
+// grade threshold is proven in-circuit against the salted finalGrade
+// commitment via the holder's predicate witness.
 export pure circuit universityMallDiscountRequest(
   issuerVerificationMethodRef: VerificationMethodRef,
   verifierChallengeHash: Bytes<32>,
   minimumFinalGrade: Uint<8>
-): UniversityDiplomaPresentationRequest {
+): UniversityDiplomaProductionPresentationRequest {
   assert(
     minimumFinalGrade <= 100,
     "University discount threshold must be <= 100"
   );
 
-  return UniversityDiplomaPresentationRequest {
+  return UniversityDiplomaProductionPresentationRequest {
     version: 1,
     schema: universityDiplomaSchemaRef(),
     issuerVerificationMethodRef: issuerVerificationMethodRef,
     requireDiplomaIdDisclosure: false,
     requireStudentIdDisclosure: false,
     requireGraduateNameDisclosure: false,
-    requireUniversityNameDisclosure: true,
+    requireUniversityNameDisclosure: false,
     requireFacultyNameDisclosure: false,
     requireAwardNameDisclosure: false,
     requireHonorsCodeDisclosure: false,
     requireGraduationYearDisclosure: false,
     requireGraduationMonthDisclosure: false,
-    requireFinalGradeDisclosure: true,
+    requireFinalGradeDisclosure: false,
     requireCreditsEarnedDisclosure: false,
     enforceMinimumFinalGrade: true,
     minimumFinalGrade: minimumFinalGrade,
@@ -106,18 +114,20 @@ export pure circuit universityMallDiscountRequest(
 
 // TRUST BOUNDARY: this contract models verifier-side request construction and
 // diploma presentation checks only. It does not add revocation, protocol
-// delivery, or external time/state binding. Employer-facing verifier paths
-// persist disclosed claim material to ledger state for demo visibility, while
-// the mall-discount path intentionally avoids persisting the student's exact
-// final grade after the threshold check succeeds.
+// delivery, or external time/state binding. The employer-facing path persists
+// only claim material the request explicitly required (opened against the
+// signed commitments), while the mall-discount path proves the grade
+// threshold against the finalGrade commitment without ever seeing the grade.
 export circuit verifyUniversityDiplomaForJobApplication(
-  credential: UniversityDiplomaCredential,
+  credential: UniversityDiplomaProductionCredential,
   credentialProof: Proof,
-  request: UniversityDiplomaPresentationRequest,
-  presentation: UniversityDiplomaPresentation,
+  request: UniversityDiplomaProductionPresentationRequest,
+  presentation: UniversityDiplomaProductionPresentation,
   presentationProof: Proof
 ): [] {
-  const credentialRoot = disclose(universityDiplomaCredentialBodyRoot(credential));
+  const credentialRoot = disclose(
+    universityDiplomaProductionCredentialBodyRoot(credential)
+  );
 
   assert(
     request.requireGraduateNameDisclosure,
@@ -140,7 +150,7 @@ export circuit verifyUniversityDiplomaForJobApplication(
     "University job application request must not enforce a minimum grade"
   );
 
-  assertUniversityDiplomaPresentationSatisfiesRequest(
+  assertUniversityDiplomaProductionPresentationSatisfiesRequest(
     credential,
     credentialProof,
     request,
@@ -150,10 +160,14 @@ export circuit verifyUniversityDiplomaForJobApplication(
 
   lastVerifiedCredentialRoot = credentialRoot;
   lastVerifiedRequestChallenge = disclose(request.verifierChallengeHash);
+  // graduateName is a committed claim: the persisted value was opened against
+  // the issuer-signed commitment inside the satisfies-request circuit.
   lastVerifiedGraduateName = disclose(presentation.disclosed.graduateName);
-  lastVerifiedUniversityName = disclose(presentation.disclosed.universityName);
-  lastVerifiedAwardName = disclose(presentation.disclosed.awardName);
-  lastVerifiedGraduationYear = disclose(presentation.disclosed.graduationYear);
+  // universityName / awardName / graduationYear are public routing claims of
+  // the production profile, matched against the credential body.
+  lastVerifiedUniversityName = disclose(credential.claims.universityName);
+  lastVerifiedAwardName = disclose(credential.claims.awardName);
+  lastVerifiedGraduationYear = disclose(credential.claims.graduationYear);
   // NOTE: `0` is the current prototype sentinel for "not disclosed on this
   // verifier request". The ledger does not yet carry a separate
   // `lastVerifiedFinalGradeDisclosed` flag.
@@ -170,43 +184,45 @@ export circuit verifyUniversityDiplomaForJobApplication(
 }
 
 export circuit verifyUniversityDiplomaForMallDiscount(
-  credential: UniversityDiplomaCredential,
+  credential: UniversityDiplomaProductionCredential,
   credentialProof: Proof,
-  request: UniversityDiplomaPresentationRequest,
-  presentation: UniversityDiplomaPresentation,
-  presentationProof: Proof
+  request: UniversityDiplomaProductionPresentationRequest,
+  presentation: UniversityDiplomaProductionPresentation,
+  presentationProof: Proof,
+  finalGradePredicateWitness: UniversityDiplomaProductionFinalGradePredicateWitness
 ): [] {
-  const credentialRoot = disclose(universityDiplomaCredentialBodyRoot(credential));
+  const credentialRoot = disclose(
+    universityDiplomaProductionCredentialBodyRoot(credential)
+  );
 
-  assert(
-    request.requireUniversityNameDisclosure,
-    "University mall discount requires university-name disclosure"
-  );
-  assert(
-    request.requireFinalGradeDisclosure,
-    "University mall discount requires final-grade disclosure"
-  );
   assert(
     request.enforceMinimumFinalGrade,
     "University mall discount request must enforce a minimum grade"
   );
+  assert(
+    !request.requireFinalGradeDisclosure,
+    "University mall discount must not demand final-grade disclosure"
+  );
 
-  assertUniversityDiplomaPresentationSatisfiesRequest(
+  assertUniversityDiplomaProductionPresentationSatisfiesRequestWithFinalGradePredicate(
     credential,
     credentialProof,
     request,
     presentation,
-    presentationProof
+    presentationProof,
+    finalGradePredicateWitness
   );
 
   lastVerifiedCredentialRoot = credentialRoot;
   lastVerifiedRequestChallenge = disclose(request.verifierChallengeHash);
   lastVerifiedGraduateName = pad(32, "");
-  lastVerifiedUniversityName = disclose(presentation.disclosed.universityName);
+  // universityName is a public routing claim of the production profile.
+  lastVerifiedUniversityName = disclose(credential.claims.universityName);
   lastVerifiedAwardName = pad(32, "");
   lastVerifiedGraduationYear = 0;
-  // NOTE: the mall verifier proves the threshold check but does not keep the
-  // student's exact disclosed grade in public ledger state.
+  // The mall verifier proves the threshold predicate against the finalGrade
+  // commitment; the exact grade never reaches public ledger state (or the
+  // verifier at all).
   lastVerifiedFinalGrade = 0;
   lastVerifiedDiscountThreshold = disclose(request.minimumFinalGrade);
   lastVerifiedVerifierKind = 2;

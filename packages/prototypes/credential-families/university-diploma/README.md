@@ -16,12 +16,17 @@ Purpose:
 
 Scope:
 
-- explicit-holder `VC<UniversityDiplomaClaims, NoClaimCommitments, ExplicitHolderBinding, NoStatusBinding>`
-- non-revocable diploma credential
-- direct typed `selectivelyDisclosed` claims only; no hidden-holder or
-  status-aware extensions
-- selective disclosure over the academic fields most relevant to job applications
-- verifier-side minimum-grade predicate for discount verification
+- presented production profile (#267): explicit-holder
+  `VC<UniversityDiplomaProductionPublicClaims, UniversityDiplomaClaimCommitments, ExplicitHolderBinding, NoStatusBinding>`
+  (`UniversityDiplomaProductionCredential`, schemaRef `uni-diploma:v2`)
+- readable v1 prototype alias retained for fixtures and comparison:
+  explicit-holder
+  `VC<UniversityDiplomaClaims, NoClaimCommitments, ExplicitHolderBinding, NoStatusBinding>`
+- non-revocable diploma credential; no hidden-holder or status-aware extensions
+- commitment-backed selective disclosure over the academic fields most relevant
+  to job applications
+- verifier-side minimum-grade predicate for discount verification, proven
+  against the salted `finalGradeCommitment`
 
 Claim model:
 
@@ -42,35 +47,39 @@ Design notes:
 - human-readable text is encoded as fixed-width `Bytes<N>` because Compact still does not support `String`
 - issuer identity comes from the credential envelope proof and issuer verification method reference, not from an in-claim DID string
 - the family keeps the holder binding explicit and non-private on purpose because this slice is about large-scale issuance and verification flow clarity, not hidden-holder privacy
-- the family chooses direct claims for BDD readability and prototype simplicity;
-  fields such as `studentId` and `diplomaId` should move to commitments before
-  a privacy-preserving production profile claims minimization
-- because this family uses `NoClaimCommitments`, raw academic facts are visible
-  to any party that receives the credential body; `reveal*` flags only control
-  which mirrored fields a presentation authorizes for a verifier
-- the testing surface exports `UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY` for the
-  current v1 direct-claim boundary and `UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE`
-  for compatibility with existing fixture consumers; new protocol/reporting
-  code should import the same metadata from the public `./privacy-profile`
-  package surface instead of importing fixture helpers
-- the Compact source also exports additive production-profile building blocks:
+- the presented production profile moves stable identifiers and sensitive
+  academic facts (`diplomaId`, `studentId`, `graduateName`, `facultyName`,
+  `honorsCode`, `graduationMonth`, `finalGrade`, `creditsEarned`) into salted
+  per-field `claimCommitments`; hidden fields cross the wire only as
+  commitments (#267)
+- the v1 prototype alias uses `NoClaimCommitments`: raw academic facts are
+  visible to any party that receives that credential body, and its `reveal*`
+  flags only control which mirrored fields a presentation authorizes — it
+  remains a fixture/comparison surface, not the presented profile
+- the testing surface exports `UNIVERSITY_DIPLOMA_PRIVACY_BOUNDARY`
+  (now describing the production-commitment-v2 boundary) and
+  `UNIVERSITY_DIPLOMA_PRODUCTION_PROFILE` for compatibility with existing
+  fixture consumers; new protocol/reporting code should import the same
+  metadata from the public `./privacy-profile` package surface instead of
+  importing fixture helpers
+- the Compact source exports the production-profile building blocks:
   `UniversityDiplomaProductionPublicClaims`,
   `UniversityDiplomaClaimCommitments`, per-field commitment helpers,
-  `universityDiplomaProductionClaimRoot`, and the additive
+  `universityDiplomaProductionClaimRoot`, and the
   `UniversityDiplomaProductionCredential` v2 alias
-- the additive production presentation surface validates disclosed private
-  values by recomputing their per-field commitments from the supplied raw value
-  plus opening; public routing fields are checked directly against
+- the production presentation surface validates disclosed private values by
+  recomputing their per-field commitments from the supplied raw value plus
+  opening; public routing fields are checked directly against
   `credential.claims`
-- the additive production predicate helpers validate final-grade and
-  credits-earned thresholds against private witness values plus openings, so a
-  verifier can check threshold policy without requiring those raw values in
+- the production predicate helpers validate final-grade and credits-earned
+  thresholds against private witness values plus openings, so a verifier can
+  check threshold policy without requiring those raw values in
   `UniversityDiplomaProductionDisclosures`
 - the prototype assumes credit-bearing degree awards only; honorary or zero-credit diploma variants are intentionally out of scope for this first family cut
 
-Current and production-profile field categories:
+v1-prototype and production-profile field categories:
 
-| Field | Current v1 representation | Production-profile building block |
+| Field | v1 prototype representation | Production-profile representation |
 | --- | --- | --- |
 | `diplomaId` | direct claim | `diplomaIdCommitment` |
 | `studentId` | direct claim | `studentIdCommitment` |
@@ -84,9 +93,9 @@ Current and production-profile field categories:
 | `finalGrade` | direct claim | `finalGradeCommitment` plus `UniversityDiplomaProductionFinalGradePredicateWitness` |
 | `creditsEarned` | direct claim | `creditsEarnedCommitment` plus `UniversityDiplomaProductionCreditsEarnedPredicateWitness` |
 
-Production-profile helpers are intentionally additive. They make the field split
-and commitment root executable without silently changing the existing v1
-credential alias used by BDD, protocol transcripts, and reports.
+The v1 alias is unchanged by the production helpers; since #267 the BDD,
+protocol-transcript, and reporting lanes present the production
+commitment-backed profile.
 
 Production-profile presentation helpers:
 
@@ -98,8 +107,14 @@ Production-profile presentation helpers:
   credential proof, holder-bound presentation proof, VC/VP linkage, and every
   disclosed opening
 - `assertUniversityDiplomaProductionPresentationSatisfiesRequest(...)` adds the
-  verifier request policy checks, including required disclosures and the current
-  minimum-grade policy over an opened `finalGrade`
+  verifier request policy checks, including required disclosures and the
+  disclosure-based minimum-grade policy over an opened `finalGrade`
+- `assertUniversityDiplomaProductionPresentationSatisfiesRequestWithFinalGradePredicate(...)`
+  satisfies a reveal-nothing minimum-grade request instead: the request must
+  not demand final-grade disclosure
+  (`assertValidUniversityDiplomaProductionPredicatePresentationRequest`), and
+  the threshold is proven against the salted `finalGradeCommitment` via a
+  holder-supplied predicate witness
 
 Production-profile predicate helpers:
 
@@ -109,24 +124,27 @@ Production-profile predicate helpers:
 - `assertUniversityDiplomaProductionCreditsEarnedAtLeast(...)` checks that a
   private credits-earned witness opens to the signed `creditsEarnedCommitment`,
   stays positive, and meets a verifier threshold
-- these helpers are separate from the current presentation request shape so the
-  v2 production profile can support predicate-only policies without making the
-  raw value appear in `UniversityDiplomaProductionDisclosures`
+- predicate witnesses keep the raw value and opening out of
+  `UniversityDiplomaProductionDisclosures`; the mall-discount verifier uses the
+  final-grade predicate path through the reveal-nothing satisfies-request
+  circuit above
 
 Migration plan:
 
 - [`../../../../docs/plans/university-commitment-backed-privacy.md`](../../../../docs/plans/university-commitment-backed-privacy.md)
 
-Selective disclosure model:
+Selective disclosure model (production profile):
 
-- companies can ask for graduate identity, award, year, and final grade
-- the mall flow can ask for final grade and enforce a minimum grade threshold
-- fields like faculty, honors, credits, diploma id, and student id can be absent
-  from a presentation unless the verifier asks for them; they are not hidden
-  from a party that already has the credential body
+- companies can ask for committed claims such as graduate identity and final
+  grade; each required field is opened as a (value, opening) pair validated
+  against its signed commitment, while `universityName`, `awardName`, and
+  `graduationYear` are public routing claims
+- the mall flow demands no disclosure at all: it enforces the minimum grade
+  through the final-grade predicate witness against `finalGradeCommitment`
+- fields the request does not require stay hidden — they exist in the presented
+  credential only as salted commitments, and their disclosure slots are zeroed
 - when a field is not revealed, the verifier must treat the matching `reveal*`
-  flag as authoritative and ignore the corresponding value slot; well-behaved
-  holders should still zero or clear unrevealed slots
+  flag as authoritative and ignore the corresponding value slot
 
 Build and test:
 

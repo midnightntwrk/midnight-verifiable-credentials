@@ -154,7 +154,11 @@ const normalizedBody = (message: UniversityProtocolMessage): unknown => {
           body.credential.claims.universityName,
         ),
         awardName: paddedTextToString(body.credential.claims.awardName),
-        finalGrade: body.credential.claims.finalGrade,
+        // #267: finalGrade is a committed claim — only its salted commitment
+        // exists in the credential.
+        finalGradeCommitmentHex: bytesToHex(
+          body.credential.claimCommitments.finalGradeCommitment,
+        ),
       };
     }
     case "presentation:request": {
@@ -176,7 +180,9 @@ const normalizedBody = (message: UniversityProtocolMessage): unknown => {
       const body = message.body;
       return {
         kind: body.kind,
-        studentId: body.studentId,
+        // #267: submissions identify the applicant only by the salted
+        // studentId commitment.
+        applicantRef: body.applicantRef,
         disclosures: disclosureNamesForRequest(body.request),
         issuerVerificationMethodRef: verificationMethodRefToString(
           body.credential.issuerVerificationMethodRef,
@@ -225,7 +231,7 @@ const messageSummary = (
       }
       case "presentation:submission": {
         const body = message.body;
-        return `${body.kind} submission from ${message.from} for ${body.studentId}`;
+        return `${body.kind} submission from ${message.from}`;
       }
       case "presentation:result": {
         const body = message.body;
@@ -279,16 +285,21 @@ const buildDecisionRecord = (
 ): UniversityProtocolApplicationDecisionRecord => {
   const requestDto = messageSummary(request);
   const verifierIdentitySummary = verifierIdentity(verifier);
-  const submissions = [
-    ...filterMessagesByStudent<
-      MessageWithBody<UniversityPresentationSubmissionBody>
-    >(messages, student.studentId, "presentation:submission"),
-  ].sort((left, right) =>
-    compareText(
-      bytesToHex(left.envelope.messageId),
-      bytesToHex(right.envelope.messageId),
-    ),
-  );
+  // #267: submission bodies no longer carry a plaintext studentId, so
+  // submissions are correlated to the verifier's own request thread.
+  const requestThreadHex = bytesToHex(request.envelope.threadId);
+  const submissions = messages
+    .filter(
+      (message): message is MessageWithBody<UniversityPresentationSubmissionBody> =>
+        message.type === "presentation:submission" &&
+        bytesToHex(message.envelope.threadId) === requestThreadHex,
+    )
+    .sort((left, right) =>
+      compareText(
+        bytesToHex(left.envelope.messageId),
+        bytesToHex(right.envelope.messageId),
+      ),
+    );
 
   const resultMessages = [
     ...filterMessagesByStudent<
@@ -422,8 +433,11 @@ export const buildUniversityProtocolApplicationDecisionsExport = (
             awardName: paddedTextToString(
               issuanceResultBody.credential.claims.awardName,
             ),
-            finalGrade:
-              issuanceResultBody.credential.claims.finalGrade.toString(),
+            // #267: the credential carries only the salted commitment for
+            // finalGrade; the plaintext grade exists solely in holder state.
+            finalGradeCommitmentHex: bytesToHex(
+              issuanceResultBody.credential.claimCommitments.finalGradeCommitment,
+            ),
           },
         };
       })

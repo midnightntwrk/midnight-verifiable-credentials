@@ -6,7 +6,11 @@ import type {
 export const universityProtocolCheckpointSchemaId =
   "midnight.university.protocol.checkpoint";
 
-export const universityProtocolCheckpointSchemaVersion = 1;
+// v2 (#267): StoredIssuedCredential carries required claimOpenings, the
+// credential moved to the production commitment-backed struct, and submission
+// bodies replaced studentId with applicantRef. v1 checkpoints predate that
+// shape and must be rejected at restore time.
+export const universityProtocolCheckpointSchemaVersion = 2;
 
 export type UniversityProtocolRestartPoint =
   | "afterIssuanceRequests"

@@ -107,8 +107,8 @@ Scope:
   on unsupported shapes instead of guessing from ad hoc field presence
 - transcript exports now include the university diploma privacy-profile
   metadata from the public `./privacy-profile` package surface so report
-  readers can distinguish the current direct-claim prototype from the additive
-  production commitment profile without importing fixture helpers
+  readers can inspect the presented commitment-backed production boundary
+  without importing fixture helpers
 - the cohort and 100-student stress lanes now emit both JSON and Markdown
   artifacts under `target/cohort-30` and `target/stress-100`
 - readable and stress lanes now resolve their fixture directories from the

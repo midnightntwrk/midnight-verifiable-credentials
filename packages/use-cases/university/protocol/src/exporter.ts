@@ -259,7 +259,9 @@ const dtoForMessage = (message: FlowMessage): JsonValue => {
           readonly claims: {
             readonly universityName: Uint8Array;
             readonly awardName: Uint8Array;
-            readonly finalGrade: bigint;
+          };
+          readonly claimCommitments: {
+            readonly finalGradeCommitment: Uint8Array;
           };
         };
       };
@@ -271,7 +273,11 @@ const dtoForMessage = (message: FlowMessage): JsonValue => {
         ),
         universityName: paddedTextToString(body.credential.claims.universityName),
         awardName: paddedTextToString(body.credential.claims.awardName),
-        finalGrade: body.credential.claims.finalGrade,
+        // #267: finalGrade exists in the credential only as its salted
+        // commitment.
+        finalGradeCommitmentHex: bytesToHex(
+          body.credential.claimCommitments.finalGradeCommitment,
+        ),
       });
     }
     case "presentation:request": {
@@ -311,7 +317,7 @@ const dtoForMessage = (message: FlowMessage): JsonValue => {
     case "presentation:submission": {
       const body = message.body as {
         readonly kind: "jobApplication" | "mallDiscount";
-        readonly studentId: string;
+        readonly applicantRef: string;
         readonly request: {
           readonly requireDiplomaIdDisclosure?: boolean;
           readonly requireStudentIdDisclosure?: boolean;
@@ -335,7 +341,8 @@ const dtoForMessage = (message: FlowMessage): JsonValue => {
       };
       return normalizeJson({
         kind: body.kind,
-        studentId: body.studentId,
+        // #267: submissions carry only the salted studentId commitment.
+        applicantRef: body.applicantRef,
         disclosures: disclosureNamesForRequest(body.request),
         issuerVerificationMethodRef: verificationMethodRefToString(
           body.credential.issuerVerificationMethodRef,

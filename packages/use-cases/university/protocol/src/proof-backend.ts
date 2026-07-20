@@ -1,12 +1,18 @@
+import { randomBytes } from "node:crypto";
 import { performance } from "node:perf_hooks";
 
 import {
   pureCircuits as universityDiplomaPureCircuits,
+  type UniversityDiplomaProductionFinalGradePredicateWitness,
 } from "@midnight-ntwrk/midnight-did-credentials-university-diploma/contract";
 import {
-  createUniversityDiplomaFixture,
+  createUniversityDiplomaProductionClaimOpenings,
+  createUniversityDiplomaProductionCredentialFixture,
+  createUniversityDiplomaProductionFinalGradePredicateWitness,
+  createUniversityDiplomaProductionPresentationFixture,
   padText,
   type UniversityDiplomaDisclosureOptions,
+  type UniversityDiplomaProductionClaimOpenings,
   type UniversityDiplomaRequestOptions,
 } from "@midnight-ntwrk/midnight-did-credentials-university-diploma/testing";
 import {
@@ -59,6 +65,9 @@ const requestOptionsFromRequest = (
   minimumFinalGrade: request.minimumFinalGrade,
 });
 
+// #267 FIX: disclosure is driven strictly by what the verifier's request
+// requires. Fields that are not required are NOT copied into the disclosure
+// payload — they remain hidden behind their salted commitments.
 const disclosureOptionsFromRequest = (
   request: UniversityPresentationRequestBody["request"],
 ): UniversityDiplomaDisclosureOptions => ({
@@ -96,22 +105,68 @@ const applyRequestPolicyOverrides = (
 const tamperedBytesLike = (value: Uint8Array, fill: number): Uint8Array =>
   new Uint8Array(value.length).fill(fill);
 
-const bytesEqual = (left: Uint8Array, right: Uint8Array): boolean =>
-  Buffer.compare(Buffer.from(left), Buffer.from(right)) === 0;
+const bytesHex = (value: Uint8Array): string =>
+  Buffer.from(value).toString("hex");
 
 const assertNeverTamperingMode = (value: never): never => {
   throw new Error(`Unsupported presentation tampering mode: ${String(value)}`);
 };
 
-const assertSubmissionStudentIdMatchesCredential = (
-  submission: UniversityPresentationSubmissionBody,
-): void => {
-  const expectedStudentId = padText(submission.studentId, 16);
-  if (!bytesEqual(submission.credential.claims.studentId, expectedStudentId)) {
-    throw new Error(
-      `Presentation submission studentId ${submission.studentId} does not match the diploma credential studentId claim`,
+export const universityApplicantRef = (
+  credential: StoredIssuedCredential["credential"],
+): string => bytesHex(credential.claimCommitments.studentIdCommitment);
+
+export interface UniversityClaimOpeningsSource {
+  openingsForStudent(
+    student: StudentRecord,
+  ): UniversityDiplomaProductionClaimOpenings;
+}
+
+const takeRandomBytes = (length: number): Uint8Array =>
+  new Uint8Array(randomBytes(length));
+
+export class NodeCryptoUniversityClaimOpeningsSource
+  implements UniversityClaimOpeningsSource
+{
+  openingsForStudent(): UniversityDiplomaProductionClaimOpenings {
+    return {
+      diplomaIdOpening: takeRandomBytes(32),
+      studentIdOpening: takeRandomBytes(32),
+      graduateNameOpening: takeRandomBytes(32),
+      facultyNameOpening: takeRandomBytes(32),
+      honorsCodeOpening: takeRandomBytes(32),
+      graduationMonthOpening: takeRandomBytes(32),
+      finalGradeOpening: takeRandomBytes(32),
+      creditsEarnedOpening: takeRandomBytes(32),
+    };
+  }
+}
+
+/**
+ * Reference-only deterministic per-student openings. Openings derived from a
+ * low-entropy studentId are brute-forceable, so this source is reserved for
+ * the deterministic fixture runtime whose baselines must be reproducible.
+ */
+export class ReferenceDeterministicUniversityClaimOpeningsSource
+  implements UniversityClaimOpeningsSource
+{
+  openingsForStudent(
+    student: StudentRecord,
+  ): UniversityDiplomaProductionClaimOpenings {
+    return createUniversityDiplomaProductionClaimOpenings(
+      `student:${student.studentId}`,
     );
   }
+}
+
+export const secureUniversityClaimOpeningsSource =
+  new NodeCryptoUniversityClaimOpeningsSource();
+
+export const unsafeReferenceDeterministicUniversityClaimOpeningsSource =
+  new ReferenceDeterministicUniversityClaimOpeningsSource();
+
+export type UniversityProofExecutionBackendOptions = {
+  readonly claimOpeningsSource?: UniversityClaimOpeningsSource;
 };
 
 export const applyPresentationTampering = (
@@ -296,6 +351,21 @@ abstract class MeasuredUniversityProofExecutionBackend
 {
   readonly verifier = new UniversityVerifierSimulator();
   readonly #metrics: UniversityProofExecutionBackendMetric[] = [];
+  // HOLDER-PRIVATE proving material, keyed by request challenge + applicant
+  // ref. In the simulator backend both parties run in-process; this map
+  // stands in for the holder's local proving step, where predicate witnesses
+  // (claim value + commitment opening) feed the ZK circuit WITHOUT ever
+  // entering a protocol message. In the real contract flow these are witness
+  // inputs to the holder's transaction proof and never leave the holder.
+  readonly #holderPredicateWitnesses = new Map<
+    string,
+    UniversityDiplomaProductionFinalGradePredicateWitness
+  >();
+  readonly #claimOpeningsSource?: UniversityClaimOpeningsSource;
+
+  constructor(options?: UniversityProofExecutionBackendOptions) {
+    this.#claimOpeningsSource = options?.claimOpeningsSource;
+  }
 
   abstract descriptor(): UniversityProofExecutionBackendDescriptor;
 
@@ -330,6 +400,24 @@ abstract class MeasuredUniversityProofExecutionBackend
     }
   }
 
+  #witnessKey(
+    verifierChallengeHash: Uint8Array,
+    applicantRef: string,
+  ): string {
+    return `${bytesHex(verifierChallengeHash)}:${applicantRef}`;
+  }
+
+  #claimOpeningsSourceFor(
+    issuerRuntime: UniversityPartyRuntime,
+  ): UniversityClaimOpeningsSource {
+    return (
+      this.#claimOpeningsSource ??
+      (issuerRuntime.descriptor().mode === "deterministic"
+        ? unsafeReferenceDeterministicUniversityClaimOpeningsSource
+        : secureUniversityClaimOpeningsSource)
+    );
+  }
+
   issueDiplomaCredential(options: {
     readonly issuerProfile: AgentProfile;
     readonly issuerRuntime: UniversityPartyRuntime;
@@ -344,19 +432,23 @@ abstract class MeasuredUniversityProofExecutionBackend
     return this.measure(
       "proof_issue_diploma_ms",
       () => {
-        const fixture = createUniversityDiplomaFixture({
+        const openings = this.#claimOpeningsSourceFor(
+          options.issuerRuntime,
+        ).openingsForStudent(options.student);
+        const fixture = createUniversityDiplomaProductionCredentialFixture({
           issuerConfig: options.issuerRuntime.signerOptionsFor(options.issuerProfile),
           holderConfig: options.holderRuntime.signerOptionsFor(options.holderProfile),
           claimOverrides: encodeClaims(options.student),
+          openings,
           issuanceChallengeHash: options.issuanceChallengeHash,
           issuedAt: options.issuedAt,
           credentialProofCreatedAt: options.credentialProofCreatedAt,
-          presentationProofCreatedAt: options.presentationProofCreatedAt,
         });
 
         return {
           credential: fixture.credential,
           credentialProof: fixture.credentialProof,
+          claimOpenings: fixture.profile.openings,
           issuedAt: options.issuedAt,
           credentialProofCreatedAt: options.credentialProofCreatedAt,
           presentationProofCreatedAt: options.presentationProofCreatedAt,
@@ -381,39 +473,55 @@ abstract class MeasuredUniversityProofExecutionBackend
     return this.measure(
       "proof_build_presentation_submission_ms",
       () => {
-        const presentationFixture = createUniversityDiplomaFixture({
-          issuerConfig: options.issuerRuntime.signerOptionsFor(options.issuerProfile),
-          holderConfig: options.holderRuntime.signerOptionsFor(options.holderProfile),
-          claimOverrides: encodeClaims(options.student),
-          request: requestOptionsFromRequest(options.request),
-          disclosure: disclosureOptionsFromRequest(options.request),
-          verifierChallengeHash: options.request.verifierChallengeHash,
-          issuanceChallengeHash: options.storedCredential.issuanceChallengeHash,
-          issuedAt: options.storedCredential.issuedAt,
-          credentialProofCreatedAt: options.storedCredential.credentialProofCreatedAt,
-          presentationProofCreatedAt: options.storedCredential.presentationProofCreatedAt,
-        });
+        const presentationFixture =
+          createUniversityDiplomaProductionPresentationFixture({
+            issuerConfig: options.issuerRuntime.signerOptionsFor(options.issuerProfile),
+            holderConfig: options.holderRuntime.signerOptionsFor(options.holderProfile),
+            claimOverrides: encodeClaims(options.student),
+            openings: options.storedCredential.claimOpenings,
+            request: requestOptionsFromRequest(options.request),
+            disclosure: disclosureOptionsFromRequest(options.request),
+            verifierChallengeHash: options.request.verifierChallengeHash,
+            issuanceChallengeHash: options.storedCredential.issuanceChallengeHash,
+            issuedAt: options.storedCredential.issuedAt,
+            credentialProofCreatedAt: options.storedCredential.credentialProofCreatedAt,
+            presentationProofCreatedAt: options.storedCredential.presentationProofCreatedAt,
+          });
 
         const storedRoot =
-          universityDiplomaPureCircuits.universityDiplomaCredentialBodyRoot(
+          universityDiplomaPureCircuits.universityDiplomaProductionCredentialBodyRoot(
             options.storedCredential.credential,
           );
         const rebuiltRoot =
-          universityDiplomaPureCircuits.universityDiplomaCredentialBodyRoot(
+          universityDiplomaPureCircuits.universityDiplomaProductionCredentialBodyRoot(
             presentationFixture.credential,
           );
-        if (
-          Buffer.from(storedRoot).toString("hex") !==
-          Buffer.from(rebuiltRoot).toString("hex")
-        ) {
+        if (bytesHex(storedRoot) !== bytesHex(rebuiltRoot)) {
           throw new Error(
             `Rebuilt university diploma root drift for ${options.student.studentId}`,
           );
         }
 
+        const applicantRef = universityApplicantRef(
+          options.storedCredential.credential,
+        );
+
+        if (options.kind === "mallDiscount") {
+          // The predicate witness is the holder's local proving input. It is
+          // deliberately kept OUT of the submission body: hidden claims cross
+          // the wire only as salted commitments.
+          this.#holderPredicateWitnesses.set(
+            this.#witnessKey(options.request.verifierChallengeHash, applicantRef),
+            createUniversityDiplomaProductionFinalGradePredicateWitness({
+              claims: presentationFixture.sourceClaims,
+              openings: options.storedCredential.claimOpenings,
+            }),
+          );
+        }
+
         const untampered: UniversityPresentationSubmissionBody = {
           kind: options.kind,
-          studentId: options.student.studentId,
+          applicantRef,
           credential: options.storedCredential.credential,
           credentialProof: options.storedCredential.credentialProof,
           request: options.request,
@@ -443,7 +551,20 @@ abstract class MeasuredUniversityProofExecutionBackend
           options.issuerVerificationMethodRef,
           options.verifierChallengeHash,
           {
-            ...options.requestPolicy,
+            requireDiplomaIdDisclosure:
+              options.requestPolicy.requireDiplomaIdDisclosure ?? false,
+            requireStudentIdDisclosure:
+              options.requestPolicy.requireStudentIdDisclosure ?? false,
+            requireFacultyNameDisclosure:
+              options.requestPolicy.requireFacultyNameDisclosure ?? false,
+            requireHonorsCodeDisclosure:
+              options.requestPolicy.requireHonorsCodeDisclosure ?? false,
+            requireGraduationMonthDisclosure:
+              options.requestPolicy.requireGraduationMonthDisclosure ?? false,
+            requireFinalGradeDisclosure:
+              options.requestPolicy.requireFinalGradeDisclosure ?? false,
+            requireCreditsEarnedDisclosure:
+              options.requestPolicy.requireCreditsEarnedDisclosure ?? false,
           } satisfies UniversityJobApplicationRequestOptions,
         ),
         options.requestPolicyOverrides,
@@ -471,7 +592,9 @@ abstract class MeasuredUniversityProofExecutionBackend
     this.measure(
       "proof_verify_job_application_ms",
       () => {
-        assertSubmissionStudentIdMatchesCredential(options.submission);
+        // #267: the old transport-level studentId-vs-claims check is gone —
+        // studentId is a hidden claim. Holder binding between credential and
+        // presentation is enforced in-circuit.
         this.verifier.verifyUniversityDiplomaForJobApplication(
           options.submission.credential,
           options.submission.credentialProof,
@@ -480,7 +603,7 @@ abstract class MeasuredUniversityProofExecutionBackend
           options.submission.presentationProof,
         );
       },
-      { studentId: options.submission.studentId },
+      { applicantRef: options.submission.applicantRef },
     );
   }
 
@@ -490,16 +613,31 @@ abstract class MeasuredUniversityProofExecutionBackend
     this.measure(
       "proof_verify_mall_discount_ms",
       () => {
-        assertSubmissionStudentIdMatchesCredential(options.submission);
+        // Retrieve the holder's private proving witness for this
+        // (challenge, applicant) pair. This models the holder-side proving
+        // step of the reveal-nothing predicate: the witness feeds the
+        // circuit, not the wire.
+        const witness = this.#holderPredicateWitnesses.get(
+          this.#witnessKey(
+            options.submission.request.verifierChallengeHash,
+            options.submission.applicantRef,
+          ),
+        );
+        if (!witness) {
+          throw new Error(
+            `Missing holder predicate witness for applicant ${options.submission.applicantRef}`,
+          );
+        }
         this.verifier.verifyUniversityDiplomaForMallDiscount(
           options.submission.credential,
           options.submission.credentialProof,
           options.submission.request,
           options.submission.presentation,
           options.submission.presentationProof,
+          witness,
         );
       },
-      { studentId: options.submission.studentId },
+      { applicantRef: options.submission.applicantRef },
     );
   }
 }

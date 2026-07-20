@@ -61,8 +61,8 @@ describe("university protocol transcript exporter", () => {
       UNIVERSITY_PROTOCOL_TRANSCRIPT_SCHEMA_COMPATIBILITY,
     );
     expect(exported.privacyProfile).toMatchObject({
-      currentProfile: "direct-claim-prototype",
-      claimCommitmentModel: "none",
+      currentProfile: "production-commitment-v2",
+      claimCommitmentModel: "salted-per-field-persistent-commit",
       productionProfile: "production-commitment-v2",
       predicateOnlyFields: ["finalGrade", "creditsEarned"],
     });
@@ -81,7 +81,7 @@ describe("university protocol transcript exporter", () => {
     expect(exported.counts.totalThreads).toBe(25);
     expect(exported.rejectionBreakdown.discounts.byReason).toEqual([
       {
-        reason: "failed assert: University-diploma disclosed final grade is below the verifier minimum",
+        reason: "failed assert: University-diploma production final grade predicate is below the verifier minimum",
         count: 2,
       },
     ]);

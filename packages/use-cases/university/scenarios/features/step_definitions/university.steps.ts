@@ -436,7 +436,7 @@ Given(
         "The harness exposes the required disclosures and the encoded minimum final-grade predicate.",
       checks: [
         "The mall name matches the scenario actor.",
-        "The policy requires university name and final grade disclosure.",
+        "The policy demands no claim disclosure; the grade stays hidden behind its commitment.",
         "The business rule grade > 90 is encoded as minimumFinalGrade = 91.",
       ],
       dto: summary,
