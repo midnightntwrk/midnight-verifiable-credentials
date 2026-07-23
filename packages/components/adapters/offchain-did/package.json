@@ -32,9 +32,9 @@
     "all": "pnpm run build && pnpm run test:ci"
   },
   "dependencies": {
-    "@midnight-ntwrk/midnight-did": "0.4.0",
+    "@midnight-ntwrk/midnight-did": "0.5.0-rc1",
     "@midnight-ntwrk/midnight-did-credentials": "*",
-    "@midnight-ntwrk/midnight-did-domain": "0.4.0"
+    "@midnight-ntwrk/midnight-did-domain": "0.5.0-rc1"
   },
   "devDependencies": {
     "@midnight-ntwrk/compact-runtime": "*"

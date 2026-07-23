@@ -4,7 +4,8 @@ services:
     image: "${PROOF_SERVER_IMAGE:-midnightntwrk/proof-server:8.0.3}"
     command: ["midnight-proof-server -v"]
     ports:
-      - "127.0.0.1:6300:6300"
+      - target: 6300
+        host_ip: "127.0.0.1"
     environment:
       RUST_BACKTRACE: "full"
     healthcheck:
@@ -23,7 +24,8 @@ services:
     image: "midnightntwrk/indexer-standalone:4.0.0"
     env_file: standalone.env.example
     ports:
-      - "127.0.0.1:8088:8088"
+      - target: 8088
+        host_ip: "127.0.0.1"
     environment:
       RUST_LOG: "indexer=info,chain_indexer=info,indexer_api=info,wallet_indexer=info,indexer_common=info,fastrace_opentelemetry=off,info"
       APP__APPLICATION__NETWORK_ID: "undeployed"
@@ -45,7 +47,8 @@ services:
     container_name: "${MIDNIGHT_STACK_NAME:-did}-node"
     image: "midnightntwrk/midnight-node:0.22.3"
     ports:
-      - "127.0.0.1:9944:9944"
+      - target: 9944
+        host_ip: "127.0.0.1"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9944/health"]
       interval: 2s

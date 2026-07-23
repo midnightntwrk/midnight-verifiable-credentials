@@ -1,28 +1,32 @@
 # Resolver-Owned Secret Storage Package
 
-The DID 0.4.0 packages are consumed through package-root Git tags in the
-`midnight-did` repository and pinned in the root `pnpm.overrides` block.
+The DID package cohort is consumed from npm at exact version `0.5.0-rc1` and
+pinned in the root `pnpm.overrides` block.
 
 This directory only keeps the resolver-owned
 `@midnight-ntwrk/midnight-did-secret-storage` tarball until that package has a
 published package source available to VC.
 
 Refreshed:
-- DID package source: `midnightntwrk/midnight-did` package-root Git tags
-  `npm-midnight-did*-v0.4.0`
+
+- DID package source: npm package cohort `0.5.0-rc1`
 - Secret-storage source: `../midnight-did-resolver`
 
 Validation:
+
 - `pnpm install --frozen-lockfile`
 - `./run.sh --light`
 
 Dependency note:
-- `@midnight-ntwrk/midnight-did-jubjub-schnorr` declares
+
+- `@midnight-ntwrk/midnight-did-api` and
+  `@midnight-ntwrk/midnight-did-jubjub-schnorr` declare
   `@midnight-ntwrk/ledger-v8@8.0.3`.
-- The VC workspace and Midnight JS packages continue to use
-  `@midnight-ntwrk/ledger-v8@8.1.0`.
-- `pnpm why --recursive @midnight-ntwrk/ledger-v8` shows the `8.0.3` copy is
-  scoped under the DID/Jubjub Schnorr dependency tree, while `8.1.0`
-  remains under the Midnight JS/Compact JS dependency tree.
-- `pnpm run check:ledger-v8-boundary` enforces this dependency boundary in the
-  fast local/CI check lane.
+- The DID API passes ledger objects into the Midnight wallet SDK, so duplicate
+  ledger versions are not runtime-isolated: their WASM-backed classes fail
+  identity checks across package boundaries.
+- The root override resolves the entire dependency graph to
+  `@midnight-ntwrk/ledger-v8@8.1.0`, matching the VC, Midnight JS, and wallet
+  SDK baseline.
+- `pnpm run check:ledger-v8-boundary` enforces the single-version requirement
+  in the fast local/CI check lane.

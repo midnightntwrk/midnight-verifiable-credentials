@@ -1,6 +1,7 @@
 import { access, readdir, readFile, realpath, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { isMidnightDidApiStoreEntry } from './midnight-did-api-paths.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, '..', '..');
@@ -31,7 +32,7 @@ try {
 try {
   const pnpmStoreDir = path.join(repoRoot, 'node_modules', '.pnpm');
   for (const entry of await readdir(pnpmStoreDir)) {
-    if (entry.startsWith('@midnight-ntwrk+midnight-did-api@file+')) {
+    if (isMidnightDidApiStoreEntry(entry)) {
       packageDirs.add(
         path.join(
           pnpmStoreDir,
