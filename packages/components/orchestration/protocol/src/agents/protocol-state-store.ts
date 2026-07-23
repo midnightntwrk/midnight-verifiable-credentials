@@ -28,6 +28,24 @@ export interface ProtocolStateStore {
 export interface ProtocolStateByteCollection {
   get(key: string): Uint8Array | undefined;
   set(key: string, value: Uint8Array): void;
+  /**
+   * Atomically stores `value` only when `key` does not exist.
+   *
+   * Implementations must copy or otherwise take ownership of `value`. Atomicity
+   * covers every writer sharing the same backing collection, with the key
+   * creation as the linearization point. `true` means the value was committed
+   * to the backing store's documented lifetime before return; durable adapters
+   * must persist it across restart, while in-memory adapters promise process
+   * lifetime only. `false` means another immutable value already won creation
+   * and is immediately readable unless a caller violates the collection's
+   * no-delete-while-in-use contract.
+   *
+   * An exception may be ambiguous after the storage-native create operation:
+   * callers must retry and compare the retained value rather than assume the
+   * key is absent. Callers that require atomic delivery registration must fail
+   * closed when this method is unavailable.
+   */
+  setIfAbsent?(key: string, value: Uint8Array): boolean;
   delete(key: string): boolean;
   deleteMany?(keys: readonly string[]): number;
   has(key: string): boolean;
@@ -124,11 +142,20 @@ class InMemoryProtocolStateByteCollection
   constructor(private readonly backingMap: Map<string, Uint8Array>) {}
 
   get(key: string): Uint8Array | undefined {
-    return this.backingMap.get(key);
+    const value = this.backingMap.get(key);
+    return value === undefined ? undefined : new Uint8Array(value);
   }
 
   set(key: string, value: Uint8Array): void {
-    this.backingMap.set(key, value);
+    this.backingMap.set(key, new Uint8Array(value));
+  }
+
+  setIfAbsent(key: string, value: Uint8Array): boolean {
+    if (this.backingMap.has(key)) {
+      return false;
+    }
+    this.backingMap.set(key, new Uint8Array(value));
+    return true;
   }
 
   delete(key: string): boolean {
@@ -162,8 +189,10 @@ class InMemoryProtocolStateByteCollection
     return maxOrdinalKey;
   }
 
-  entries(): IterableIterator<[string, Uint8Array]> {
-    return this.backingMap.entries();
+  *entries(): IterableIterator<[string, Uint8Array]> {
+    for (const [key, value] of this.backingMap.entries()) {
+      yield [key, new Uint8Array(value)];
+    }
   }
 }
 

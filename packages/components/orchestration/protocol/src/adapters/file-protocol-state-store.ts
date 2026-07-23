@@ -1,18 +1,21 @@
 import { Buffer } from "node:buffer";
+import { randomBytes } from "node:crypto";
 import {
+  chmodSync,
   closeSync,
   existsSync,
   fsyncSync,
+  linkSync,
   mkdirSync,
   openSync,
   readdirSync,
   readFileSync,
   renameSync,
   rmSync,
+  statSync,
   writeFileSync,
 } from "node:fs";
 import { dirname, join, resolve } from "node:path";
-import process from "node:process";
 
 import type {
   ProtocolStateByteCollection,
@@ -25,10 +28,32 @@ const encodePathSegment = (value: string): string =>
 const decodePathSegment = (value: string): string =>
   Buffer.from(value, "hex").toString("utf8");
 
-let tempWriteCounter = 0;
-
 const isMissingFileError = (error: unknown): boolean =>
   error instanceof Error && "code" in error && error.code === "ENOENT";
+
+const isExistingFileError = (error: unknown): boolean =>
+  error instanceof Error && "code" in error && error.code === "EEXIST";
+
+const ensureDirectoryExistsDurably = (directoryPath: string): void => {
+  if (existsSync(directoryPath)) {
+    return;
+  }
+
+  const parentDirectory = dirname(directoryPath);
+  if (parentDirectory !== directoryPath) {
+    ensureDirectoryExistsDurably(parentDirectory);
+  }
+
+  try {
+    mkdirSync(directoryPath, { mode: 0o700 });
+  } catch (error) {
+    if (!isExistingFileError(error)) {
+      throw error;
+    }
+    return;
+  }
+  syncDirectory(parentDirectory);
+};
 
 // NOTE: this fsync-on-directory pattern is aimed at the Linux/macOS class of
 // local filesystems used by the current reference path. It is not meant as a
@@ -43,11 +68,51 @@ const syncDirectory = (directoryPath: string): void => {
   }
 };
 
+const ensurePrivateDirectory = (directoryPath: string): void => {
+  ensureDirectoryExistsDurably(directoryPath);
+  if (!statSync(directoryPath).isDirectory()) {
+    throw new TypeError(
+      `Protocol state path "${directoryPath}" must be a directory.`,
+    );
+  }
+  chmodSync(directoryPath, 0o700);
+  syncDirectory(directoryPath);
+};
+
+const removeTemporaryFile = (tempPath: string): void => {
+  try {
+    rmSync(tempPath);
+    syncDirectory(dirname(tempPath));
+  } catch (error) {
+    if (!isMissingFileError(error)) {
+      throw error;
+    }
+  }
+};
+
+const writeDurableTemporaryFile = (
+  tempPath: string,
+  value: Uint8Array,
+): void => {
+  const tempFd = openSync(tempPath, "wx", 0o600);
+  try {
+    try {
+      writeFileSync(tempFd, value);
+      fsyncSync(tempFd);
+    } finally {
+      closeSync(tempFd);
+    }
+  } catch (error) {
+    removeTemporaryFile(tempPath);
+    throw error;
+  }
+};
+
 class FileSystemProtocolStateByteCollection
   implements ProtocolStateByteCollection
 {
   constructor(private readonly collectionDir: string) {
-    mkdirSync(this.collectionDir, { recursive: true });
+    ensurePrivateDirectory(this.collectionDir);
   }
 
   private filePathFor(key: string): string {
@@ -55,8 +120,7 @@ class FileSystemProtocolStateByteCollection
   }
 
   private nextTempPath(filePath: string): string {
-    tempWriteCounter += 1;
-    return `${filePath}.tmp-${process.pid}-${Date.now()}-${tempWriteCounter}`;
+    return `${filePath}.tmp-${randomBytes(16).toString("hex")}`;
   }
 
   private entryPath(entryName: string): string {
@@ -82,15 +146,40 @@ class FileSystemProtocolStateByteCollection
   set(key: string, value: Uint8Array): void {
     const filePath = this.filePathFor(key);
     const tempPath = this.nextTempPath(filePath);
-    const tempFd = openSync(tempPath, "w");
-    try {
-      writeFileSync(tempFd, value);
-      fsyncSync(tempFd);
-    } finally {
-      closeSync(tempFd);
-    }
+    writeDurableTemporaryFile(tempPath, value);
     renameSync(tempPath, filePath);
     syncDirectory(dirname(filePath));
+  }
+
+  /**
+   * Publishes a fully flushed temporary file with an atomic hard-link create.
+   * The final path therefore never exposes a partially written payload, and
+   * exactly one process can win creation of a previously absent key.
+   */
+  setIfAbsent(key: string, value: Uint8Array): boolean {
+    const filePath = this.filePathFor(key);
+    const tempPath = this.nextTempPath(filePath);
+    writeDurableTemporaryFile(tempPath, value);
+
+    try {
+      linkSync(tempPath, filePath);
+    } catch (error) {
+      removeTemporaryFile(tempPath);
+      if (isExistingFileError(error)) {
+        return false;
+      }
+      throw error;
+    }
+
+    try {
+      removeTemporaryFile(tempPath);
+    } catch {
+      // The final hard link is already the committed record. A cleanup failure
+      // may leave an ignored temp name, but must not relabel the winner as a
+      // duplicate during the registry's ambiguous-write reconciliation.
+    }
+    syncDirectory(dirname(filePath));
+    return true;
   }
 
   delete(key: string): boolean {
@@ -174,7 +263,7 @@ export class FileSystemProtocolStateByteStore implements ProtocolStateByteStore 
 
   constructor(rootDir: string) {
     this.rootDir = resolve(rootDir);
-    mkdirSync(this.rootDir, { recursive: true });
+    ensurePrivateDirectory(this.rootDir);
   }
 
   collection(name: string): ProtocolStateByteCollection {
