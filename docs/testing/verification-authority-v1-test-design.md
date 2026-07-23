@@ -1,6 +1,8 @@
 # Verification Authority V1 Threat Model and Test Design
 
-Status: required design gate for Tracks A1 and A2; tests are not yet implemented.
+Status: required design gate for Tracks A1 and A2; the A1 encoding, synthetic
+direct-path, and transcript-mutation suites are implemented, while A2 and A3
+gates remain open.
 
 Companion documents:
 

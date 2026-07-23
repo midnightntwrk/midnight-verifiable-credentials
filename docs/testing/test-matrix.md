@@ -1,6 +1,6 @@
 # Midnight VC Test Matrix
 
-Status: current implemented test surface as of 2026-05-11.
+Status: current implemented test surface as of 2026-07-17.
 
 University-specific run targets, light-artifact profiles, and retained summary
 artifacts are tracked in
@@ -20,6 +20,11 @@ artifacts are tracked in
   - exported package surfaces
 - `packages/core/primitives/credentials/src/test/offchain-did-holder-binding-alias.test.ts`
   - public TypeScript alias compatibility for `OffchainDIDHolderBinding`
+- `packages/core/primitives/credentials/src/test/verification-v1.test.ts`
+  - authoritative Compact/runtime digest vectors for every core-owned
+    verification V1 record and one synthetic extension
+  - direct Compact-path mutation coverage over all 47 transcript fields
+  - fail-closed public-input, enum, evidence, result-state, and adapter behavior
 
 ## DID-aware adapter package tests
 

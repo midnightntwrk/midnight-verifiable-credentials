@@ -171,6 +171,10 @@
   - [`testing/verification-authority-v1-test-design.md`](./testing/verification-authority-v1-test-design.md)
   - for the negative and differential gates required before authoritative
     verifier-contract implementation
+- Compact persistent-hash record encoding spike:
+  - [`testing/compact-persistent-hash-record-encoding-2026-07-17.md`](./testing/compact-persistent-hash-record-encoding-2026-07-17.md)
+  - for the authoritative runtime encoding surface and cross-runtime vectors
+    used by verification-contract A1
 - status and trusted-time authority threat model and test design:
   - [`testing/status-time-authority-v1-test-design.md`](./testing/status-time-authority-v1-test-design.md)
   - for the negative, atomicity, privacy, and differential gates required

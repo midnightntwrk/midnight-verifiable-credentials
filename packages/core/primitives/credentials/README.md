@@ -31,6 +31,20 @@ Surface classification:
 - Compact entrypoints are the authoritative contract-authoring surface
 - generated/runtime TypeScript exports are off-chain mirrors only
 
+Verification-contract V1 status:
+
+- the canonical transcript, public-input, evidence, result, and owned-record
+  types are available from the Compact and root TypeScript surfaces
+- `prepareVerification`, `preflightVerification`,
+  `submitLedgerVerification`, and `verifyPublicOffchain` currently provide
+  strict normalization and deterministic fail-closed adapter skeletons
+- no ledger-authoritative profile or persistent decision-nullifier behavior is
+  implemented by this package yet; those remain separate A2/A3 deliverables
+- see the
+  [`verification V1 specification`](../../../../docs/spec/verification-contract-v1.md)
+  and
+  [`encoding spike`](../../../../docs/testing/compact-persistent-hash-record-encoding-2026-07-17.md)
+
 Start here:
 
 1. repository authors write on-chain contracts against:

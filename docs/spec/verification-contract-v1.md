@@ -1,6 +1,7 @@
 # Midnight VC Verification Contract V1
 
-Status: normative design prerequisite; implementation is not yet complete.
+Status: A1 public shape and fail-closed skeleton implemented; authoritative
+profiles and stateful nullifier semantics remain incomplete.
 
 Companion documents:
 
