@@ -20,6 +20,11 @@ intentional: the current distribution channel is an immutable local tarball
 copied by the identity workspace, not an npm registry. Removing `private` or
 selecting a registry is a separate release decision.
 
+Concrete credential families, prototypes, product contracts, and use-case
+packages are not eligible for `candidate` or `supported` status in this
+repository. They remain private evidence workspaces until they are reduced to
+conformance fixtures, removed, or graduated to an independent repository.
+
 ## Current inventory
 
 | Package | Stage | Channel | Technical/support owner | Support posture |
@@ -47,6 +52,10 @@ selecting a registry is a separate release decision.
 The two BDD scenario workspaces, `bdd-support`, and
 `standalone-environment` are not release packages. They remain private
 scenario or source-only workspaces and are never copied as VC tarballs.
+
+All credential-family and university rows above are migration inventory, not a
+publication queue. Their presence in the workspace does not permit packing or
+publishing them for upstream consumption.
 
 GitHub `CODEOWNERS` review is a repository protection mechanism. It does not
 substitute for a named package maintainer, support contact, response policy, or

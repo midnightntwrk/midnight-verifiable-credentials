@@ -108,7 +108,7 @@ Some P0 outcomes cannot be implemented safely in VC alone:
   `@midnight-ntwrk/dapp-connector-api`. The VC branch starts only after that API
   contract is agreed or available as a released package/tarball.
 - A concrete digital-passport repository is created only after ownership,
-  governance, release, and support criteria in ADR-0001 are satisfied.
+  governance, release, and support criteria in ADR-0013 are satisfied.
 
 Cross-repository PRs are independent queues. Their downstream VC PRs wait for a
 merged producer release and a workspace tarball sync.
