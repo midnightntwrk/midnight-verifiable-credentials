@@ -130,6 +130,9 @@ The current public exports are intentionally narrow:
   implementation for protocol session state
 - a byte-backed codec adapter seam so persistent stores can expose
   `ProtocolStateStore` without reimplementing typed collection logic
+- an `ExactByteProtocolDeliveryRegistry` for atomic first-delivery
+  registration, exact-byte duplicate detection, and same-ID/different-bytes
+  rejection
 - a restart-safe tagged JSON codec/store helper path for local persistence:
   - `createStableJsonProtocolStateStore(...)`
   - `createNodeFileBackedProtocolStateStore(...)`
@@ -237,6 +240,53 @@ State hardening rule:
 - finalized replay/idempotency outcomes can now be retained with a configurable
   TTL and/or bounded count
 
+Exact-byte delivery rule:
+
+- register the exact transport-received bytes with
+  `ExactByteProtocolDeliveryRegistry` before decoding the message or performing
+  protocol side effects
+- the first payload for a message ID returns `accepted`
+- later delivery of the same ID and exactly the same bytes returns `duplicate`
+- later delivery of the same ID with any byte difference throws
+  `ProtocolMessageIdReuseError` and leaves the first payload unchanged
+- the registry fails closed with `AtomicProtocolStateUnavailableError` when
+  the supplied byte-store collection does not implement atomic
+  `setIfAbsent(...)`
+- persistent storage errors are reconciled against the retained bytes; bounded
+  unresolved races fail with `ProtocolDeliveryRegistrationContentionError`
+- `FileSystemProtocolStateByteStore` publishes a fully flushed temporary file
+  through an atomic hard-link create, so independent local processes cannot
+  both win registration of the same absent ID
+- the file adapter creates and enforces private `0700` state directories,
+  including a caller-supplied existing root, and creates `0600` records; it does
+  not encrypt message bytes, so use encrypted transport envelopes or a
+  production secret-storage adapter whenever wire payloads contain sensitive
+  data
+- dedicate the registry collection to immutable delivery records; do not mix
+  its writes with overwrite-style `set(...)` calls or delete records while
+  registrations are in flight
+
+```ts
+const deliveries = new ExactByteProtocolDeliveryRegistry(
+  new FileSystemProtocolStateByteStore("./state"),
+  "issuer:example:issuance-deliveries",
+);
+
+const registration = deliveries.register(messageId, receivedWireBytes);
+if (registration === "duplicate") {
+  // Registration proves only that these exact bytes were seen. Load a durable
+  // finalized outcome or acquire a processing lease and resume incomplete work.
+}
+```
+
+The registry does not derive bytes from `ProtocolMessage`. Transports must
+preserve and supply the original wire bytes; parsing and re-serializing JSON is
+not an exact-byte idempotency contract. A `duplicate` result does not prove that
+the original process completed side effects or retained an outcome. The current
+agent entrypoints do not yet invoke this registry automatically, so end-to-end
+transport wiring, processing-lease recovery, and atomic coupling between
+delivery registration and finalized outcomes remain E2 follow-up work.
+
 For blinded-secret issuance, the transport-shaped API is now the preferred
 reference surface:
 
@@ -297,6 +347,9 @@ Persistent state adapter rule:
   `ProtocolStateCodecResolver`, and `createCodecBackedProtocolStateStore(...)`
   as the preferred integration path when the persistence layer naturally
   stores bytes or blobs
+- byte-store adapters that participate in exact-byte delivery registration
+  must implement atomic `setIfAbsent(...)`; a read-then-write emulation is not
+  sufficient for multi-instance semantics
 - the package now also exports a restart-safe tagged JSON reference path for local durable
   Node deployments:
   - `createStableJsonProtocolStateStore(...)`
@@ -342,6 +395,8 @@ Use the dedicated guide for the full checklist:
 
 - [`../../../../docs/guides/credentials-protocol-production-checklist.md`](../../../../docs/guides/credentials-protocol-production-checklist.md)
 - preserve deterministic replay/idempotency behavior after restart
+- register exact received bytes atomically before decode or side effects when
+  message-ID idempotency is claimed
 - document whether retention is bounded by TTL, count, or both
 - document whether the adapter is sync-only facade over async storage or a
   truly synchronous backend
