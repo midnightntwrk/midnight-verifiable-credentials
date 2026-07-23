@@ -3,41 +3,21 @@
 Use this page when a VC package, use case, or integration harness needs
 packages from `midnight-did`.
 
-The VC repository supports three DID integration modes. They are intentionally
-separate so local development, CI, and published consumers can make different
-tradeoffs without changing package source.
+The VC repository supports one canonical DID package cohort plus one temporary
+local-artifact exception. Repository checkouts remain independent.
 
 ## Mode Matrix
 
-| Mode                  | Purpose                                             | Source of DID Packages                         | Validation                                                                                    |
-| --------------------- | --------------------------------------------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| Sibling checkout      | Local DID + VC development in adjacent repositories | `../midnight-did`                              | `./run.sh integration-report`                                                                 |
-| Package-root Git tags | Reproducible standalone fixtures and CI paths       | `midnight-did` package-root Git tags for 0.4.0 | `./run.sh check-integration`                                                                  |
-| Published packages    | Normal downstream package consumption               | npm registry package specs                     | package manager install plus package tests; no dedicated published-consumer smoke fixture yet |
+| Mode                            | Purpose                                     | Source                                      | Validation                                      |
+| ------------------------------- | ------------------------------------------- | ------------------------------------------- | ----------------------------------------------- |
+| npm registry cohort             | Canonical DID runtime and contract packages | Five exact `0.5.0-rc1` npm package versions | `pnpm install` and `./run.sh check-integration` |
+| Resolver secret-storage tarball | Temporary unpublished custody dependency    | `tooling/vendor/midnight-did/`              | integration report and frozen-lockfile install  |
 
-## Sibling Checkout Mode
+## Repository Isolation
 
-Use sibling checkout mode when `midnight-did` and
-`midnight-verifiable-credentials` are cloned side by side:
-
-```text
-parent/
-  midnight-did/
-  midnight-verifiable-credentials/
-```
-
-The integration report inspects `../midnight-did/package.json`, enumerates DID
-workspace packages, and verifies whether expected `dist/` and managed artifact
-surfaces exist.
-
-Run:
-
-```bash
-./run.sh integration-report
-```
-
-This mode is best for active cross-repo work because it shows what the VC repo
-would consume from the current DID checkout before a package is published.
+Package manifests, scripts, TypeScript configuration, Compact includes, and
+integration checks must not resolve source from a sibling `midnight-did`
+checkout. The npm cohort must be published before VC consumes a DID change.
 
 ## DID Key Normalization Compatibility
 
@@ -59,18 +39,17 @@ Coverage:
 
 ## Ledger Version Boundary
 
-The pinned DID package refs may temporarily carry a different
-`@midnight-ntwrk/ledger-v8` patch version than the rest of the VC workspace.
-For the current local DID refresh, `@midnight-ntwrk/midnight-did-jubjub-schnorr`
-uses `ledger-v8@8.0.3`, while VC packages and Midnight JS dependencies use
-`ledger-v8@8.1.0`.
+The published `0.5.0-rc1` DID API and Jubjub Schnorr packages declare
+`@midnight-ntwrk/ledger-v8@8.0.3`, while VC, Midnight JS, and the wallet SDK use
+`ledger-v8@8.1.0`. These paths are not runtime-isolated: the DID API passes
+ledger values into wallet SDK methods, and independently loaded WASM-backed
+classes fail identity checks even when their public shapes match.
 
-Keep those runtime paths separated. DID/Jubjub Schnorr helpers should consume
-their own ledger dependency, and VC/Midnight JS transaction or codec
-paths should continue to consume the workspace ledger dependency. A future
-refresh that moves `ledger-v8@8.0.3` outside the DID dependency tree
-should be treated as an integration risk and revalidated with real on-ledger
-publish/resolve/sign/verify flows.
+The root override therefore resolves every `ledger-v8` edge to `8.1.0`. Treat
+this as a release-candidate compatibility override, not evidence that arbitrary
+ledger versions are interchangeable. Revalidate the override with real
+on-ledger publish/resolve/sign/verify flows whenever the DID or Midnight SDK
+cohort changes.
 
 Check the boundary after changing DID package refs:
 
@@ -79,49 +58,49 @@ pnpm run check:ledger-v8-boundary
 pnpm why --recursive @midnight-ntwrk/ledger-v8
 ```
 
-## Package-Root Git Tag Mode
+## npm Registry Cohort
 
-Use package-root Git tag mode for standalone fixtures and CI paths that must
-not depend on a live sibling checkout or GitHub Packages access.
-
-The DID package refs are pinned centrally in the root `pnpm.overrides` block:
+All five DID packages are pinned centrally in the root `pnpm.overrides` block
+and directly in consuming package manifests:
 
 ```json
-"@midnight-ntwrk/midnight-did-domain": "git+https://github.com/midnightntwrk/midnight-did.git#npm-midnight-did-domain-v0.4.0"
+"@midnight-ntwrk/midnight-did-domain": "0.5.0-rc1"
 ```
 
-VC package manifests that need DID packages should use the release version
-(`0.4.0`) and rely on the root override. The package-root Git tags contain
-the built package contents from the DID 0.4.0 package tarballs, so installs do
-not rebuild DID from the monorepo checkout.
+The cohort is:
 
-`@midnight-ntwrk/midnight-did-secret-storage` remains resolver-owned and is
-the only package currently kept as a local tarball under
-`tooling/vendor/midnight-did/`.
+- `@midnight-ntwrk/midnight-did`
+- `@midnight-ntwrk/midnight-did-api`
+- `@midnight-ntwrk/midnight-did-contract`
+- `@midnight-ntwrk/midnight-did-domain`
+- `@midnight-ntwrk/midnight-did-jubjub-schnorr`
 
-Run:
+Use exact prerelease versions. Do not use `^0.5.0-rc1`, a dist-tag, a Git URL,
+or a sibling path. The complete root override is required while the vendored
+secret-storage package still declares a non-portable local dependency on
+Jubjub Schnorr.
+
+`@midnight-ntwrk/midnight-did-secret-storage` is resolver-owned and remains the
+only local tarball under `tooling/vendor/midnight-did/`.
+
+Validate with:
 
 ```bash
+pnpm install --frozen-lockfile
 ./run.sh check-integration
 pnpm run check:did-integration
 ```
 
 Repair flow:
 
-1. Build and pack the DID repository from the matching DID release.
-2. Publish package-root Git tags for the DID package tarball contents.
-3. Re-run `./run.sh integration-report` to inspect the expected package names,
-   versions, and package refs.
-4. Update stale root overrides if a package moved or was renamed.
+1. Publish one coherent DID package cohort to npm.
+2. Update every direct DID dependency and root override to the same exact
+   version.
+3. Refresh the resolver-owned tarball only when secret storage changes.
+4. Re-run `./run.sh integration-report`.
 5. Re-run `./run.sh check-integration` before committing.
 
-## Published Package Mode
-
-Use published package mode for consumers outside this monorepo-style workspace.
-
-In this mode package specs should resolve through the package manager instead
-of local `file:` tarballs. VC source should keep importing stable package
-surfaces such as:
+VC source imports stable package surfaces such as:
 
 ```text
 @midnight-ntwrk/midnight-did
@@ -134,10 +113,11 @@ service path. If a VC use case needs resolver service behavior, put that
 adapter in the owning integration package rather than reintroducing resolver
 service code into the VC package graph.
 
-There is no dedicated published-consumer smoke fixture in this repository yet.
-Until that exists, validate published-package mode with the consuming project's
-package-manager install and package tests, plus this repository's normal
-package surface checks before publishing artifacts.
+The `0.5.0-rc1` npm contract package includes managed code, prover keys,
+verifier keys, and ZKIR. The corresponding DID release workflow failed after
+npm publication, so GHCR and GitHub Release artifact channels are not validated
+for this release. Use package-local artifacts until a later release proves
+those channels.
 
 ## Compatibility Alias Lifecycle
 
@@ -188,10 +168,8 @@ Fail the command when stale wiring is detected:
 
 Common failures:
 
-- missing sibling DID checkout: acceptable for package-tag consumers, but the
-  report can only compare against the pinned package specs
-- stale DID package ref: update the root `pnpm.overrides` entry to the matching
-  package-root Git tag
+- stale DID package ref: update every direct spec and root override to the same
+  exact published cohort
 - missing resolver-owned secret-storage tarball: refresh
   `tooling/vendor/midnight-did/`
 - missing compatibility alias: run install/setup or inspect

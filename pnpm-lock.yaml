@@ -5,12 +5,13 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@midnight-ntwrk/midnight-did': git+https://github.com/midnightntwrk/midnight-did.git#npm-midnight-did-v0.4.0
-  '@midnight-ntwrk/midnight-did-api': git+https://github.com/midnightntwrk/midnight-did.git#npm-midnight-did-api-v0.4.0
-  '@midnight-ntwrk/midnight-did-contract': git+https://github.com/midnightntwrk/midnight-did.git#npm-midnight-did-contract-v0.4.0
-  '@midnight-ntwrk/midnight-did-domain': git+https://github.com/midnightntwrk/midnight-did.git#npm-midnight-did-domain-v0.4.0
-  '@midnight-ntwrk/midnight-did-jubjub-schnorr': git+https://github.com/midnightntwrk/midnight-did.git#npm-midnight-did-jubjub-schnorr-v0.4.0
+  '@midnight-ntwrk/midnight-did': 0.5.0-rc1
+  '@midnight-ntwrk/midnight-did-api': 0.5.0-rc1
+  '@midnight-ntwrk/midnight-did-contract': 0.5.0-rc1
+  '@midnight-ntwrk/midnight-did-domain': 0.5.0-rc1
+  '@midnight-ntwrk/midnight-did-jubjub-schnorr': 0.5.0-rc1
   '@midnight-ntwrk/midnight-did-secret-storage': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-secret-storage-0.1.0.tgz
+  '@midnight-ntwrk/ledger-v8': 8.1.0
   '@midnight-ntwrk/midnight-js-contracts': 4.0.4
   '@midnight-ntwrk/midnight-js-fetch-zk-config-provider': 4.0.4
   '@midnight-ntwrk/midnight-js-http-client-proof-provider': 4.0.4
@@ -20,6 +21,10 @@ overrides:
   '@midnight-ntwrk/midnight-js-node-zk-config-provider': 4.0.4
   '@midnight-ntwrk/midnight-js-types': 4.0.4
   '@midnight-ntwrk/midnight-js-utils': 4.0.4
+  axios: 1.18.0
+  brace-expansion@1: 1.1.16
+  brace-expansion@2: 2.1.2
+  brace-expansion@5: 5.0.7
   esbuild: 0.28.1
   form-data: 4.0.6
   js-yaml: 4.3.0
@@ -37,7 +42,7 @@ importers:
         specifier: 0.15.0
         version: 0.15.0
       '@midnight-ntwrk/ledger-v8':
-        specifier: ^8.0.0
+        specifier: 8.1.0
         version: 8.1.0
       '@midnight-ntwrk/midnight-js-contracts':
         specifier: 4.0.4
@@ -155,14 +160,14 @@ importers:
   packages/components/adapters/offchain-did:
     dependencies:
       '@midnight-ntwrk/midnight-did':
-        specifier: git+https://github.com/midnightntwrk/midnight-did.git#npm-midnight-did-v0.4.0
-        version: git+https://git@github.com:midnightntwrk/midnight-did.git#d3e581c57c7efc7dc3ee97618a5de8f899669890
+        specifier: 0.5.0-rc1
+        version: 0.5.0-rc1
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
       '@midnight-ntwrk/midnight-did-domain':
-        specifier: git+https://github.com/midnightntwrk/midnight-did.git#npm-midnight-did-domain-v0.4.0
-        version: git+https://git@github.com:midnightntwrk/midnight-did.git#7ab3a5d52951c07eda92295147493339d9470b55
+        specifier: 0.5.0-rc1
+        version: 0.5.0-rc1
     devDependencies:
       '@midnight-ntwrk/compact-runtime':
         specifier: '*'
@@ -174,20 +179,20 @@ importers:
         specifier: '*'
         version: 0.15.0
       '@midnight-ntwrk/midnight-did':
-        specifier: git+https://github.com/midnightntwrk/midnight-did.git#npm-midnight-did-v0.4.0
-        version: git+https://git@github.com:midnightntwrk/midnight-did.git#d3e581c57c7efc7dc3ee97618a5de8f899669890
+        specifier: 0.5.0-rc1
+        version: 0.5.0-rc1
       '@midnight-ntwrk/midnight-did-api':
-        specifier: git+https://github.com/midnightntwrk/midnight-did.git#npm-midnight-did-api-v0.4.0
-        version: git+https://git@github.com:midnightntwrk/midnight-did.git#684c62efce4ca367b4d479c96b7f68caa7be6c2c
+        specifier: 0.5.0-rc1
+        version: 0.5.0-rc1
       '@midnight-ntwrk/midnight-did-contract':
-        specifier: git+https://github.com/midnightntwrk/midnight-did.git#npm-midnight-did-contract-v0.4.0
-        version: git+https://git@github.com:midnightntwrk/midnight-did.git#cc09f70ccd8d6e34514d663a87eafafec87a0631
+        specifier: 0.5.0-rc1
+        version: 0.5.0-rc1
       '@midnight-ntwrk/midnight-did-domain':
-        specifier: git+https://github.com/midnightntwrk/midnight-did.git#npm-midnight-did-domain-v0.4.0
-        version: git+https://git@github.com:midnightntwrk/midnight-did.git#7ab3a5d52951c07eda92295147493339d9470b55
+        specifier: 0.5.0-rc1
+        version: 0.5.0-rc1
       '@midnight-ntwrk/midnight-did-jubjub-schnorr':
-        specifier: git+https://github.com/midnightntwrk/midnight-did.git#npm-midnight-did-jubjub-schnorr-v0.4.0
-        version: git+https://git@github.com:midnightntwrk/midnight-did.git#34b90bb734c7bee04446d8e3130e7d9384a8d094
+        specifier: 0.5.0-rc1
+        version: 0.5.0-rc1
       '@midnight-ntwrk/midnight-did-secret-storage':
         specifier: file:../../../../tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-secret-storage-0.1.0.tgz
         version: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-secret-storage-0.1.0.tgz
@@ -312,8 +317,8 @@ importers:
         specifier: '*'
         version: link:../../../components/adapters/offchain-did
       '@midnight-ntwrk/midnight-did-domain':
-        specifier: git+https://github.com/midnightntwrk/midnight-did.git#npm-midnight-did-domain-v0.4.0
-        version: git+https://git@github.com:midnightntwrk/midnight-did.git#7ab3a5d52951c07eda92295147493339d9470b55
+        specifier: 0.5.0-rc1
+        version: 0.5.0-rc1
 
   packages/prototypes/credential-families/mixed-claims:
     dependencies:
@@ -984,30 +989,23 @@ packages:
   '@midnight-ntwrk/compact-runtime@0.15.0':
     resolution: {integrity: sha512-6+odrxb83ZZwF29SqNBBgaOR3hf5ej4KZVGibDwdXta9+uiv6qYW0fMrsKP9S+c2AqvY+vEb5NEFFI54lA7G5A==}
 
-  '@midnight-ntwrk/ledger-v8@8.0.3':
-    resolution: {integrity: sha512-2BLMfHnZyKAHZxaGWjlenhity096lZ9jvyp1qrQH5J3ogpy7H5ostCW8kRj70dGv5T55qDAC5nJ+wnU/8CGUcQ==}
-
   '@midnight-ntwrk/ledger-v8@8.1.0':
     resolution: {integrity: sha512-rwOVP5kBwACpYmmY6+oLeaiM3e5gHscRMjbZUOntOC5QdtqLdpeep6eQW1OngI+sxjjdVoGg2eE16sLf+DAHmQ==}
 
-  '@midnight-ntwrk/midnight-did-api@git+https://git@github.com:midnightntwrk/midnight-did.git#684c62efce4ca367b4d479c96b7f68caa7be6c2c':
-    resolution: {commit: 684c62efce4ca367b4d479c96b7f68caa7be6c2c, repo: git@github.com:midnightntwrk/midnight-did.git, type: git}
-    version: 0.4.0
+  '@midnight-ntwrk/midnight-did-api@0.5.0-rc1':
+    resolution: {integrity: sha512-TZnCSbgTfwgD9oCtPu19/0g4pPUxCY8dRxXPhKeP8uTTfA8mlmFzM23YThQtmcN1MRQJ7XQWiVxlZkW87Q8nWQ==}
     engines: {node: '>=24', pnpm: '>=10'}
 
-  '@midnight-ntwrk/midnight-did-contract@git+https://git@github.com:midnightntwrk/midnight-did.git#cc09f70ccd8d6e34514d663a87eafafec87a0631':
-    resolution: {commit: cc09f70ccd8d6e34514d663a87eafafec87a0631, repo: git@github.com:midnightntwrk/midnight-did.git, type: git}
-    version: 0.4.0
+  '@midnight-ntwrk/midnight-did-contract@0.5.0-rc1':
+    resolution: {integrity: sha512-AeQo+4Phn6FLumnz1Sl7G1EOKPxdg07F1zZvJkp3NL5H8SceUuYFzRTv7PM6jH8brzbjH3WRY8I1Tv35FfqVJg==}
     engines: {node: '>=24', pnpm: '>=10'}
 
-  '@midnight-ntwrk/midnight-did-domain@git+https://git@github.com:midnightntwrk/midnight-did.git#7ab3a5d52951c07eda92295147493339d9470b55':
-    resolution: {commit: 7ab3a5d52951c07eda92295147493339d9470b55, repo: git@github.com:midnightntwrk/midnight-did.git, type: git}
-    version: 0.4.0
+  '@midnight-ntwrk/midnight-did-domain@0.5.0-rc1':
+    resolution: {integrity: sha512-CatUIptgtXHrZeBcBDoLVFGx1kQxYYGdOcdGHT41gRpPdZeReiEr2RE4rsIg43Zexl7ADGiijlnBbg3QlVn/iA==}
     engines: {node: '>=24', pnpm: '>=10'}
 
-  '@midnight-ntwrk/midnight-did-jubjub-schnorr@git+https://git@github.com:midnightntwrk/midnight-did.git#34b90bb734c7bee04446d8e3130e7d9384a8d094':
-    resolution: {commit: 34b90bb734c7bee04446d8e3130e7d9384a8d094, repo: git@github.com:midnightntwrk/midnight-did.git, type: git}
-    version: 0.4.0
+  '@midnight-ntwrk/midnight-did-jubjub-schnorr@0.5.0-rc1':
+    resolution: {integrity: sha512-I7TleiZk0p2xHKBbYv+A3Is5Gglxo1kYf7RrvPE4r7T+6O7lMrjBS1cyJhuvNNLgDLZSn/CE/l12AV1Zuxw5zQ==}
     engines: {node: '>=24', pnpm: '>=10'}
 
   '@midnight-ntwrk/midnight-did-secret-storage@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-secret-storage-0.1.0.tgz':
@@ -1015,9 +1013,8 @@ packages:
     version: 0.1.0
     engines: {node: '>=24', pnpm: '>=10'}
 
-  '@midnight-ntwrk/midnight-did@git+https://git@github.com:midnightntwrk/midnight-did.git#d3e581c57c7efc7dc3ee97618a5de8f899669890':
-    resolution: {commit: d3e581c57c7efc7dc3ee97618a5de8f899669890, repo: git@github.com:midnightntwrk/midnight-did.git, type: git}
-    version: 0.4.0
+  '@midnight-ntwrk/midnight-did@0.5.0-rc1':
+    resolution: {integrity: sha512-17ySmMtMklYPdcyJ2kcyCnL2cUmvUymkWWtN/8AzXr3XAOhXPH1fewCHhMIEbRC0G2hPn/vhEi3R1Z2age54Kg==}
     engines: {node: '>=24', pnpm: '>=10'}
 
   '@midnight-ntwrk/midnight-js-contracts@4.0.4':
@@ -1076,6 +1073,9 @@ packages:
 
   '@midnight-ntwrk/wallet-sdk-facade@3.0.0':
     resolution: {integrity: sha512-UrMHh0JI5eBKI6NcyWQ8r90CLAMF3cxnGWvChEpdTGYVQmK6LleBkXsFvfDJhORMjd+RB1aOt+oG5bEpY1o/9g==}
+
+  '@midnight-ntwrk/wallet-sdk-hd@3.0.0':
+    resolution: {integrity: sha512-HP2ljS4+611rN5S1sO8JqpggVdtl8hviKBowOowcZ8nbnll6smXXn/8FBD2W5MhNIp3aqd0fiBuVLe1si7yLYQ==}
 
   '@midnight-ntwrk/wallet-sdk-hd@3.0.2':
     resolution: {integrity: sha512-GdzZsfURF4WBh+bmSiimwOnj2vLjtd1pvMUJjRtY3OOnnr1mSesuX9//UPzb0fCjU1ZMCNb6UK7M2YcI4Gef4A==}
@@ -1520,8 +1520,14 @@ packages:
   '@scure/base@2.2.0':
     resolution: {integrity: sha512-b8XEupJibegiXV+tDUseI8oLQc8ei3d/4Jkb2RpbHh3MfE054ov3uIz2dhFkB3FI8iwYkEh0gGCApkrYggkPNg==}
 
+  '@scure/bip32@1.7.0':
+    resolution: {integrity: sha512-E4FFX/N3f4B80AKWp5dP6ow+flD1LQZo/w8UnLGYZO674jS6YnYeepycOOksv+vLPSpgN35wgKgy+ybfTb2SMw==}
+
   '@scure/bip32@2.2.0':
     resolution: {integrity: sha512-zFr7t2F+a9+5tB7QbarF2HQNYrgjCNaoLAupZdKkrFMYMozJf5zqH2WJCQibMzm1qQ0QogrxVGO3qXfQDYMaQg==}
+
+  '@scure/bip39@1.6.0':
+    resolution: {integrity: sha512-+lF0BbLiJNwVlev4eKelw1WWLaiKXw7sSl8T6FvBlWkdX+94aGJ4o8XjUdlyhTCjd8c+B3KT3JfS8P0bLRNU6A==}
 
   '@scure/bip39@2.2.0':
     resolution: {integrity: sha512-T/Bj/YvYMNkIPq6EENO6/rcs2e7qTNuyoUXf0KBFDmp0ZDu0H2X4Lq6yC3i0c8PcWkov5EbW+yQZZbdMmk154A==}
@@ -1943,6 +1949,10 @@ packages:
   aes-js@3.0.0:
     resolution: {integrity: sha512-H7wUZRn8WpTq9jocdxQ2c8x2sKo9ZVmzfRE13GiNJXfp7NcKYEdvl3vspKjXox6RIG2VtaRe4JFvxG4rqp2Zuw==}
 
+  agent-base@6.0.2:
+    resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
+    engines: {node: '>= 6.0.0'}
+
   agent-base@7.1.4:
     resolution: {integrity: sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ==}
     engines: {node: '>= 14'}
@@ -2045,8 +2055,8 @@ packages:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
     engines: {node: '>= 0.4'}
 
-  axios@1.16.0:
-    resolution: {integrity: sha512-6hp5CwvTPlN2A31g5dxnwAX0orzM7pmCRDLnZSX772mv8WDqICwFjowHuPs04Mc8deIld1+ejhtaMn5vp6b+1w==}
+  axios@1.18.0:
+    resolution: {integrity: sha512-E32NzpYKp++W7XRe52rHiXV2ehxmh3wbdgO7MHeFM+vqxLBYHzt0ElkiImtOBxtOmyp0yoC8C6uESVV84Y2/hw==}
 
   b4a@1.8.1:
     resolution: {integrity: sha512-aiqre1Nr0B/6DgE2N5vwTc+2/oQZ4Wh1t4NznYY4E00y8LCt6NqdRv81so00oo27D8MVKTpUa/MwUUtBLXCoDw==}
@@ -2132,14 +2142,14 @@ packages:
   bn.js@5.2.3:
     resolution: {integrity: sha512-EAcmnPkxpntVL+DS7bO1zhcZNvCkxqtkd0ZY53h06GNQ3DEkkGZ/gKgmDv6DdZQGj9BgfSPKtJJ7Dp1GPP8f7w==}
 
-  brace-expansion@1.1.14:
-    resolution: {integrity: sha512-MWPGfDxnyzKU7rNOW9SP/c50vi3xrmrua/+6hfPbCS2ABNWfx24vPidzvC7krjU/RTo235sV776ymlsMtGKj8g==}
+  brace-expansion@1.1.16:
+    resolution: {integrity: sha512-IDw48K2/2kRkg9LdJxurvq3lV3aBgq0REY89duEqFRthjlPdXHKMj7EnQOXVckxzgisinf3nHfrcE2FufFLXMw==}
 
-  brace-expansion@2.1.1:
-    resolution: {integrity: sha512-WR1cURNjuvBLMZBMbqM0UoE+WAfdUcEV1ccD8PVBVOI+Z3ND4+SZbN8RsfT2bMuG1qwz5RFvPukSZm5fF2D5eA==}
+  brace-expansion@2.1.2:
+    resolution: {integrity: sha512-w5JZcKgdhDOgOwm8H+KgbosopHMuGcl6qbulwjtz3SM7I7P3yW1eAjzMPLrIE+NQ9vjgANKHWeMHnrT0OXW1oA==}
 
-  brace-expansion@5.0.6:
-    resolution: {integrity: sha512-kLpxurY4Z4r9sgMsyG0Z9uzsBlgiU/EFKhj/h91/8yHu0edo7XuixOIH3VcJ8kkxs6/jPzoI6U9Vj3WqbMQ94g==}
+  brace-expansion@5.0.7:
+    resolution: {integrity: sha512-7oFy703dxfY3/NLxC1fh2SUCQ0H9rmAY+5EpDVfXjUTTs+HEwR2nYaqLv+GWcTsumwxPfiz6CzCNkwXwBUwqCA==}
     engines: {node: 18 || 20 || >=22}
 
   braces@3.0.3:
@@ -2876,6 +2886,10 @@ packages:
   http-proxy-agent@7.0.2:
     resolution: {integrity: sha512-T1gkAiYYDWYx3V5Bmyu7HcfcvL7mUrTWiM6yOfa3PIphViJ/gFPbvidQ+veqSOHci/PxBcDabeUNCzpOODJZig==}
     engines: {node: '>= 14'}
+
+  https-proxy-agent@5.0.1:
+    resolution: {integrity: sha512-dFcAjpTQFgoLMzC2VwU+C/CbS7uRL0lWmxDITmqm7C+7F0Odmj6s9l6alZc6AELXhrnggM2CeWSXHGOdX2YtwA==}
+    engines: {node: '>= 6'}
 
   https-proxy-agent@7.0.6:
     resolution: {integrity: sha512-vK9P5/iUfdl95AI+JVyUuIcVtd4ofvtrOr3HNtM2yxC9bnMbEdp3x01OhQNnjb8IJYi38VlTE3mBXwcfvywuSw==}
@@ -5006,16 +5020,16 @@ snapshots:
       '@types/object-inspect': 1.13.0
       object-inspect: 1.13.4
 
-  '@midnight-ntwrk/ledger-v8@8.0.3': {}
-
   '@midnight-ntwrk/ledger-v8@8.1.0': {}
 
-  '@midnight-ntwrk/midnight-did-api@git+https://git@github.com:midnightntwrk/midnight-did.git#684c62efce4ca367b4d479c96b7f68caa7be6c2c':
+  '@midnight-ntwrk/midnight-did-api@0.5.0-rc1':
     dependencies:
       '@midnight-ntwrk/compact-js': 2.5.0
-      '@midnight-ntwrk/midnight-did': git+https://git@github.com:midnightntwrk/midnight-did.git#d3e581c57c7efc7dc3ee97618a5de8f899669890
-      '@midnight-ntwrk/midnight-did-contract': git+https://git@github.com:midnightntwrk/midnight-did.git#cc09f70ccd8d6e34514d663a87eafafec87a0631
-      '@midnight-ntwrk/midnight-did-domain': git+https://git@github.com:midnightntwrk/midnight-did.git#7ab3a5d52951c07eda92295147493339d9470b55
+      '@midnight-ntwrk/compact-runtime': 0.15.0
+      '@midnight-ntwrk/ledger-v8': 8.1.0
+      '@midnight-ntwrk/midnight-did': 0.5.0-rc1
+      '@midnight-ntwrk/midnight-did-contract': 0.5.0-rc1
+      '@midnight-ntwrk/midnight-did-domain': 0.5.0-rc1
       '@midnight-ntwrk/midnight-js-contracts': 4.0.4
       '@midnight-ntwrk/midnight-js-http-client-proof-provider': 4.0.4
       '@midnight-ntwrk/midnight-js-indexer-public-data-provider': 4.0.4
@@ -5024,6 +5038,12 @@ snapshots:
       '@midnight-ntwrk/midnight-js-node-zk-config-provider': 4.0.4
       '@midnight-ntwrk/midnight-js-types': 4.0.4
       '@midnight-ntwrk/midnight-js-utils': 4.0.4
+      '@midnight-ntwrk/wallet-sdk-dust-wallet': 3.0.0(ws@8.21.1)
+      '@midnight-ntwrk/wallet-sdk-facade': 3.0.0(ws@8.21.1)
+      '@midnight-ntwrk/wallet-sdk-hd': 3.0.0
+      '@midnight-ntwrk/wallet-sdk-shielded': 2.1.0(ws@8.21.1)
+      '@midnight-ntwrk/wallet-sdk-unshielded-wallet': 2.1.0(ws@8.21.1)
+      '@noble/curves': 1.9.7
       pino: 9.14.0
       pino-pretty: 13.1.3
       rxjs: 7.8.2
@@ -5038,28 +5058,29 @@ snapshots:
       - react
       - react-dom
       - subscriptions-transport-ws
+      - supports-color
       - utf-8-validate
 
-  '@midnight-ntwrk/midnight-did-contract@git+https://git@github.com:midnightntwrk/midnight-did.git#cc09f70ccd8d6e34514d663a87eafafec87a0631':
+  '@midnight-ntwrk/midnight-did-contract@0.5.0-rc1':
     dependencies:
       '@midnight-ntwrk/compact-runtime': 0.15.0
-      '@midnight-ntwrk/midnight-did-jubjub-schnorr': git+https://git@github.com:midnightntwrk/midnight-did.git#34b90bb734c7bee04446d8e3130e7d9384a8d094
+      '@midnight-ntwrk/midnight-did-jubjub-schnorr': 0.5.0-rc1
 
-  '@midnight-ntwrk/midnight-did-domain@git+https://git@github.com:midnightntwrk/midnight-did.git#7ab3a5d52951c07eda92295147493339d9470b55':
+  '@midnight-ntwrk/midnight-did-domain@0.5.0-rc1':
     dependencies:
       '@midnight-ntwrk/compact-runtime': 0.15.0
       '@noble/hashes': 2.2.0
       zod: 4.4.3
 
-  '@midnight-ntwrk/midnight-did-jubjub-schnorr@git+https://git@github.com:midnightntwrk/midnight-did.git#34b90bb734c7bee04446d8e3130e7d9384a8d094':
+  '@midnight-ntwrk/midnight-did-jubjub-schnorr@0.5.0-rc1':
     dependencies:
       '@midnight-ntwrk/compact-runtime': 0.15.0
-      '@midnight-ntwrk/ledger-v8': 8.0.3
+      '@midnight-ntwrk/ledger-v8': 8.1.0
       '@noble/hashes': 2.2.0
 
   '@midnight-ntwrk/midnight-did-secret-storage@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-secret-storage-0.1.0.tgz':
     dependencies:
-      '@midnight-ntwrk/midnight-did-jubjub-schnorr': git+https://git@github.com:midnightntwrk/midnight-did.git#34b90bb734c7bee04446d8e3130e7d9384a8d094
+      '@midnight-ntwrk/midnight-did-jubjub-schnorr': 0.5.0-rc1
       '@midnight-ntwrk/wallet-sdk-hd': 3.0.2
       circomlibjs: 0.1.7
       zod: 4.4.3
@@ -5068,10 +5089,10 @@ snapshots:
       - react-native-b4a
       - utf-8-validate
 
-  '@midnight-ntwrk/midnight-did@git+https://git@github.com:midnightntwrk/midnight-did.git#d3e581c57c7efc7dc3ee97618a5de8f899669890':
+  '@midnight-ntwrk/midnight-did@0.5.0-rc1':
     dependencies:
-      '@midnight-ntwrk/midnight-did-contract': git+https://git@github.com:midnightntwrk/midnight-did.git#cc09f70ccd8d6e34514d663a87eafafec87a0631
-      '@midnight-ntwrk/midnight-did-domain': git+https://git@github.com:midnightntwrk/midnight-did.git#7ab3a5d52951c07eda92295147493339d9470b55
+      '@midnight-ntwrk/midnight-did-contract': 0.5.0-rc1
+      '@midnight-ntwrk/midnight-did-domain': 0.5.0-rc1
       zod: 4.4.3
 
   '@midnight-ntwrk/midnight-js-contracts@4.0.4':
@@ -5254,6 +5275,12 @@ snapshots:
       - supports-color
       - utf-8-validate
       - ws
+
+  '@midnight-ntwrk/wallet-sdk-hd@3.0.0':
+    dependencies:
+      '@scure/base': 1.2.6
+      '@scure/bip32': 1.7.0
+      '@scure/bip39': 1.6.0
 
   '@midnight-ntwrk/wallet-sdk-hd@3.0.2':
     dependencies:
@@ -5846,11 +5873,22 @@ snapshots:
 
   '@scure/base@2.2.0': {}
 
+  '@scure/bip32@1.7.0':
+    dependencies:
+      '@noble/curves': 1.9.7
+      '@noble/hashes': 1.8.0
+      '@scure/base': 1.2.6
+
   '@scure/bip32@2.2.0':
     dependencies:
       '@noble/curves': 2.2.0
       '@noble/hashes': 2.2.0
       '@scure/base': 2.2.0
+
+  '@scure/bip39@1.6.0':
+    dependencies:
+      '@noble/hashes': 1.8.0
+      '@scure/base': 1.2.6
 
   '@scure/bip39@2.2.0':
     dependencies:
@@ -5901,7 +5939,7 @@ snapshots:
     dependencies:
       '@serenity-js/core': 3.43.2
       agent-base: 7.1.4
-      axios: 1.16.0
+      axios: 1.18.0
       http-proxy-agent: 7.0.2
       https-proxy-agent: 7.0.6
       lru-cache: 11.3.6
@@ -5916,7 +5954,7 @@ snapshots:
       '@serenity-js/core': 3.43.2
       '@serenity-js/rest': 3.43.2
       ansi-regex: 5.0.1
-      axios: 1.16.0
+      axios: 1.18.0
       chalk: 4.1.2
       find-java-home: 2.0.0
       progress: 2.0.3
@@ -6326,6 +6364,12 @@ snapshots:
 
   aes-js@3.0.0: {}
 
+  agent-base@6.0.2:
+    dependencies:
+      debug: 4.4.3(supports-color@8.1.1)
+    transitivePeerDependencies:
+      - supports-color
+
   agent-base@7.1.4: {}
 
   ajv@6.15.0:
@@ -6459,13 +6503,15 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.1.0
 
-  axios@1.16.0:
+  axios@1.18.0:
     dependencies:
       follow-redirects: 1.16.0
       form-data: 4.0.6
+      https-proxy-agent: 5.0.1
       proxy-from-env: 2.1.0
     transitivePeerDependencies:
       - debug
+      - supports-color
 
   b4a@1.8.1: {}
 
@@ -6543,16 +6589,16 @@ snapshots:
 
   bn.js@5.2.3: {}
 
-  brace-expansion@1.1.14:
+  brace-expansion@1.1.16:
     dependencies:
       balanced-match: 1.0.2
       concat-map: 0.0.1
 
-  brace-expansion@2.1.1:
+  brace-expansion@2.1.2:
     dependencies:
       balanced-match: 1.0.2
 
-  brace-expansion@5.0.6:
+  brace-expansion@5.0.7:
     dependencies:
       balanced-match: 4.0.4
 
@@ -7438,6 +7484,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  https-proxy-agent@5.0.1:
+    dependencies:
+      agent-base: 6.0.2
+      debug: 4.4.3(supports-color@8.1.1)
+    transitivePeerDependencies:
+      - supports-color
+
   https-proxy-agent@7.0.6:
     dependencies:
       agent-base: 7.1.4
@@ -7771,19 +7824,19 @@ snapshots:
 
   minimatch@10.2.5:
     dependencies:
-      brace-expansion: 5.0.6
+      brace-expansion: 5.0.7
 
   minimatch@3.1.5:
     dependencies:
-      brace-expansion: 1.1.14
+      brace-expansion: 1.1.16
 
   minimatch@5.1.9:
     dependencies:
-      brace-expansion: 2.1.1
+      brace-expansion: 2.1.2
 
   minimatch@9.0.9:
     dependencies:
-      brace-expansion: 2.1.1
+      brace-expansion: 2.1.2
 
   minimist@1.2.8: {}
 

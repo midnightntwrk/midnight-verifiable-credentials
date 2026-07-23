@@ -20,7 +20,6 @@ const repoRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
 const args = new Set(process.argv.slice(2));
 const check = args.has("--check");
 const json = args.has("--json");
-const siblingDidRoot = path.resolve(repoRoot, "..", "midnight-did");
 const didVendorRoot = path.join(repoRoot, "tooling/vendor/midnight-did");
 const errors = [];
 const warnings = [];
@@ -30,11 +29,17 @@ const vendorOnlyDidPackages = new Set([
   // resolver package becomes the distribution source.
   "@midnight-ntwrk/midnight-did-secret-storage",
 ]);
+const publishedDidVersion = "0.5.0-rc1";
+const publishedDidPackages = new Set([
+  "@midnight-ntwrk/midnight-did",
+  "@midnight-ntwrk/midnight-did-api",
+  "@midnight-ntwrk/midnight-did-contract",
+  "@midnight-ntwrk/midnight-did-domain",
+  "@midnight-ntwrk/midnight-did-jubjub-schnorr",
+]);
 
 const readJson = (absolutePath) =>
   JSON.parse(readFileSync(absolutePath, "utf8"));
-const npmPackFileName = (packageName, version) =>
-  `${packageName.replace(/^@/u, "").replaceAll("/", "-")}-${version}.tgz`;
 const gitValue = (args) => {
   try {
     return execFileSync("git", args, {
@@ -159,54 +164,15 @@ const findPackageJsonFiles = (root) => {
   return results.sort();
 };
 
-const loadDidPackages = () => {
-  const packages = new Map();
-
-  if (!existsSync(path.join(siblingDidRoot, "package.json"))) {
-    warnings.push(
-      "Sibling midnight-did checkout was not found; using vendor specs only.",
-    );
-    return packages;
-  }
-
-  const rootPackage = readJson(path.join(siblingDidRoot, "package.json"));
-  for (const workspacePath of rootPackage.workspaces ?? []) {
-    const packageJsonPath = path.join(
-      siblingDidRoot,
-      workspacePath,
-      "package.json",
-    );
-    if (!existsSync(packageJsonPath)) {
-      warnings.push(
-        `DID workspace package is missing package.json: ${workspacePath}`,
-      );
-      continue;
-    }
-
-    const packageJson = readJson(packageJsonPath);
-    if (!packageJson.name?.startsWith("@midnight-ntwrk/midnight-did")) {
-      continue;
-    }
-
-    packages.set(packageJson.name, {
-      name: packageJson.name,
-      version: packageJson.version,
-      path: workspacePath,
-      tarball: npmPackFileName(packageJson.name, packageJson.version),
-      distIndex: existsSync(
-        path.join(siblingDidRoot, workspacePath, "dist/index.js"),
-      ),
-      managedIndex: existsSync(
-        path.join(siblingDidRoot, workspacePath, "src/managed"),
-      ),
-    });
-  }
-
-  return packages;
-};
-
-const didPackages = loadDidPackages();
 const compatibilityAliases = inspectCompatibilityAliases();
+const rootPackageJson = readJson(path.join(repoRoot, "package.json"));
+const rootOverrides = rootPackageJson.pnpm?.overrides ?? {};
+const packageJsonPaths = findPackageJsonFiles(repoRoot);
+const workspacePackageNames = new Set(
+  packageJsonPaths
+    .map((packageJsonPath) => readJson(packageJsonPath).name)
+    .filter((packageName) => typeof packageName === "string"),
+);
 const vendorTarballs = existsSync(didVendorRoot)
   ? readdirSync(didVendorRoot)
       .filter((entry) => entry.endsWith(".tgz"))
@@ -216,26 +182,33 @@ const references = [];
 // Keep these labels aligned with docs/guides/did-integration-modes.md.
 const didIntegrationModes = Object.freeze([
   {
-    name: "sibling checkout",
-    purpose: "inspect ../midnight-did for local cross-repo development",
+    name: "npm registry cohort",
+    purpose:
+      `consume the five @midnight-ntwrk/midnight-did* packages at exact ${publishedDidVersion}`,
   },
   {
-    name: "package-root Git tags",
-    purpose: "consume midnight-did 0.4.0 packages from GitHub package-root tags",
-  },
-  {
-    name: "published packages",
-    purpose: "consume @midnight-ntwrk/midnight-did* packages through npm",
+    name: "resolver secret-storage tarball",
+    purpose:
+      "consume the unpublished resolver-owned secret-storage package as the sole local artifact exception",
   },
 ]);
 const didIntegrationRepairFlow = Object.freeze([
-  "publish package-root Git tags from the matching midnight-did release tarballs when package versions change",
-  "update root pnpm overrides to the matching midnight-did package-root Git tags",
+  "publish one coherent midnight-did package cohort to npm before changing VC consumers",
+  "update every direct DID dependency and root override to the same exact registry version",
   "keep the resolver-owned secret-storage tarball refreshed only when secret-storage changes",
   "re-run ./run.sh integration-report, then ./run.sh check-integration",
 ]);
 
-for (const packageJsonPath of findPackageJsonFiles(repoRoot)) {
+for (const packageName of publishedDidPackages) {
+  if (rootOverrides[packageName] !== publishedDidVersion) {
+    errors.push(
+      `Root override ${packageName} must be exactly ${publishedDidVersion}; ` +
+        `found ${rootOverrides[packageName] ?? "missing"}`,
+    );
+  }
+}
+
+for (const packageJsonPath of packageJsonPaths) {
   const packageJson = readJson(packageJsonPath);
   const dependencyScopes = [
     packageJson.dependencies ?? {},
@@ -250,19 +223,7 @@ for (const packageJsonPath of findPackageJsonFiles(repoRoot)) {
         continue;
       }
 
-      if (
-        dependencyName.startsWith("@midnight-ntwrk/midnight-did-credentials")
-      ) {
-        continue;
-      }
-
-      if (
-        dependencyName ===
-          "@midnight-ntwrk/midnight-did-standalone-environment" ||
-        dependencyName === "@midnight-ntwrk/midnight-did-university-protocol" ||
-        dependencyName ===
-          "@midnight-ntwrk/midnight-did-university-verifier-contract"
-      ) {
+      if (workspacePackageNames.has(dependencyName)) {
         continue;
       }
 
@@ -270,9 +231,7 @@ for (const packageJsonPath of findPackageJsonFiles(repoRoot)) {
         .relative(repoRoot, packageJsonPath)
         .split(path.sep)
         .join("/");
-      const didPackage = didPackages.get(dependencyName);
-      const expectedTarball =
-        didPackage?.tarball ?? spec.match(/([^/]+\.tgz)$/u)?.[1] ?? null;
+      const expectedTarball = spec.match(/([^/]+\.tgz)$/u)?.[1] ?? null;
       const expectedFileSpec = expectedTarball
         ? `file:${path.relative(path.dirname(packageJsonPath), path.join(didVendorRoot, expectedTarball)).split(path.sep).join("/")}`
         : null;
@@ -285,7 +244,6 @@ for (const packageJsonPath of findPackageJsonFiles(repoRoot)) {
         consumer: packageJson.name ?? consumerPackageJson,
         packageJson: consumerPackageJson,
         vendorOnly,
-        siblingPackagePresent: Boolean(didPackage),
         fileSpecMatchesCurrentVersion: expectedFileSpec
           ? spec === expectedFileSpec
           : false,
@@ -296,9 +254,16 @@ for (const packageJsonPath of findPackageJsonFiles(repoRoot)) {
 
       references.push(reference);
 
-      if (!didPackage && didPackages.size > 0 && !vendorOnly) {
+      if (!vendorOnly && !publishedDidPackages.has(dependencyName)) {
         errors.push(
-          `${reference.consumer} references ${dependencyName}, but sibling DID does not provide it`,
+          `${reference.consumer} references unsupported DID package ${dependencyName}`,
+        );
+      }
+
+      if (!vendorOnly && spec !== publishedDidVersion) {
+        errors.push(
+          `${reference.consumer} references ${dependencyName} as ${spec}; ` +
+            `expected exact registry version ${publishedDidVersion}`,
         );
       }
 
@@ -332,16 +297,13 @@ const report = {
     branch: gitValue(["branch", "--show-current"]),
     commit: gitValue(["rev-parse", "--short", "HEAD"]),
   },
-  siblingDid: {
-    path: siblingDidRoot,
-    present: didPackages.size > 0,
-    packages: [...didPackages.values()].sort((a, b) =>
-      a.name.localeCompare(b.name),
-    ),
-  },
   vendor: {
     path: didVendorRoot,
     tarballs: vendorTarballs,
+  },
+  registryCohort: {
+    version: publishedDidVersion,
+    packages: [...publishedDidPackages].sort(),
   },
   didIntegrationModes,
   didIntegrationRepairFlow,
@@ -373,15 +335,10 @@ if (json) {
     console.log(`- ${step}`);
   }
   console.log("");
-  console.log("## Sibling DID Packages");
-  if (report.siblingDid.packages.length === 0) {
-    console.log("- sibling DID checkout not found");
-  } else {
-    for (const didPackage of report.siblingDid.packages) {
-      console.log(
-        `- ${didPackage.name}@${didPackage.version} (${didPackage.path}) dist=${didPackage.distIndex ? "yes" : "no"} managed=${didPackage.managedIndex ? "yes" : "no"}`,
-      );
-    }
+  console.log("## Registry Cohort");
+  console.log(`- version: ${report.registryCohort.version}`);
+  for (const packageName of report.registryCohort.packages) {
+    console.log(`- ${packageName}`);
   }
 
   console.log("");

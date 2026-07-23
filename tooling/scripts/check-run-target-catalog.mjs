@@ -359,14 +359,19 @@ assert.equal(
 const integrationReportJson = JSON.parse(integrationReportJsonResult.stdout);
 assert.deepEqual(
   integrationReportJson.didIntegrationModes.map((mode) => mode.name),
-  ["sibling checkout", "package-root Git tags", "published packages"],
+  ["npm registry cohort", "resolver secret-storage tarball"],
   "DID integration JSON report should include supported mode names",
+);
+assert.equal(
+  integrationReportJson.registryCohort.version,
+  "0.5.0-rc1",
+  "DID integration JSON report should pin the published cohort",
 );
 assert.deepEqual(
   integrationReportJson.didIntegrationRepairFlow,
   [
-    "publish package-root Git tags from the matching midnight-did release tarballs when package versions change",
-    "update root pnpm overrides to the matching midnight-did package-root Git tags",
+    "publish one coherent midnight-did package cohort to npm before changing VC consumers",
+    "update every direct DID dependency and root override to the same exact registry version",
     "keep the resolver-owned secret-storage tarball refreshed only when secret-storage changes",
     "re-run ./run.sh integration-report, then ./run.sh check-integration",
   ],

@@ -493,7 +493,10 @@ Use `midnight-trust-registry` for:
 
 - trust-registry data model and governance integration work
 
-When DID package changes are required here, land and pack DID first, then refresh this repo's vendored DID tarballs.
+When DID package changes are required here, publish one coherent DID package
+cohort first, then update all VC direct dependencies and root overrides to the
+same exact registry version. The resolver-owned secret-storage tarball is the
+only current local DID artifact exception.
 
 ## Troubleshooting
 
@@ -505,7 +508,10 @@ Clean stale test infrastructure:
 
 Common fixes:
 
-- Missing DID tarball shape: refresh `tooling/vendor/midnight-did` from `midnight-did` artifacts.
+- DID cohort drift: align every direct DID dependency and root override to the
+  same exact npm version.
+- Missing secret-storage tarball: refresh `tooling/vendor/midnight-did` from
+  the resolver-owned package artifact.
 - Missing Compact aliases: run `pnpm install --frozen-lockfile` or the `ensure-compact-package-aliases.mjs` helper.
 - Missing managed outputs: run the owning build cone instead of copying generated files.
 - Standalone Docker failure: run cleanup, verify Docker is running, then retry the focused integration lane.

@@ -51,9 +51,10 @@ Port binding:
 
 - the shared standalone compose files bind service ports to `127.0.0.1` so
   proof server, indexer, and node APIs are not exposed on the LAN
-- those ports are fixed by default (`6300`, `8088`, and `9944`), so run one
-  standalone stack at a time unless the infrastructure is extended with
-  explicit per-stack port overrides
+- Testcontainers assigns dynamic host ports for the proof server, indexer, and
+  node, then the harness discovers those mappings before configuring providers
+- independent standalone integration runs can execute concurrently without
+  claiming fixed host ports
 
 It exists so package-level integration tests do not each reinvent:
 
