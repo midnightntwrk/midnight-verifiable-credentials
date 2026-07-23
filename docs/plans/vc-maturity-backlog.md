@@ -21,8 +21,9 @@ of arbitrary options.
 The accepted architecture is recorded in the
 [`ADR register`](../decisions/README.md):
 
-1. Independently governed credential products graduate to independent
-   repositories; issuers and schema patches do not automatically get repos.
+1. This repository publishes reusable, schema-neutral building blocks only.
+   Concrete credential families graduate to independent repositories; private
+   prototypes and use cases remain solely as time-bounded composition evidence.
 2. Credential families remain pure Compact libraries. Deployable issuance,
    status, verifier, and governance contracts are explicit compositions.
 3. ZK artifacts belong to final deployable contracts and are resolved by exact
@@ -34,6 +35,66 @@ The accepted architecture is recorded in the
 6. VC wallet flows extend the existing Midnight DApp Connector API through a
    nested, versioned credentials capability.
 7. OID4VCI/OID4VP are the normative wire protocols; DIDComm is optional.
+
+ADR-0013 supersedes the former reference-family release model. Existing family
+workspaces are migration inventory, not a core publication queue.
+
+### Repository-boundary migration
+
+Deliver:
+
+- freeze new product feature work in core credential-family packages;
+- define owner, capability hypothesis, limitations, and exit criteria for each
+  retained prototype;
+- invert family dependencies out of reusable orchestration through injected
+  codecs, builders, and verifier ports;
+- move retained prototypes and use cases to private `examples/` workspaces;
+- port digital passport to
+  `midnight-verifiable-credential-digital-passport` with independent consumer,
+  conformance, package, and release evidence; and
+- remove the duplicate core passport package, aliases, catalog entries, and
+  release artifacts after the independent repository is validated.
+
+Acceptance:
+
+- reusable packages have no dependency on examples, prototypes, use cases, or
+  product repositories;
+- no concrete family or use-case package is packable or publishable from core;
+- external family repositories consume versioned registry packages or
+  immutable release artifacts, never sibling source; and
+- each retained example has a recorded graduate, reduce, or remove outcome.
+
+### Orthogonal package and publication graph
+
+Design source:
+
+- [`ADR-0014`](../decisions/0014-orthogonal-package-architecture.md)
+- [`package-publication-catalog.md`](../architecture/package-publication-catalog.md)
+
+Deliver:
+
+- a machine-checked publication allowlist and forbidden-edge graph;
+- a protocol-neutral `CredentialFamilyDefinition`, separate family protocol
+  and display profiles, and codec, artifact, proof, verification, status,
+  protocol, session, DID, and display ports;
+- a machine-enforced allowed-edge matrix that keeps protocol and session
+  independent and splits Midnight status contract, read, and authority
+  boundaries;
+- separation of family agents and storage adapters from reusable protocol
+  state machines;
+- separation of generic status semantics from the Midnight registry
+  implementation;
+- final OID4VCI and OID4VP packages that depend on generic codecs rather than
+  own them; and
+- clean external-family conformance and consumer fixtures.
+
+Acceptance:
+
+- the digital-passport repository installs only published semantic versions;
+- family code remains unchanged when protocol, session, DID, proof, status, or
+  display adapters are swapped; and
+- no public package depends on prototype, use-case, BDD, reporting,
+  integration, local-path, Git, URL, or deep-source surfaces.
 
 ## Current baseline
 
@@ -299,7 +360,7 @@ Before extraction:
   conformance tests independently.
 
 Extraction happens only after owners, governance, support, and release cadence
-satisfy ADR-0001.
+satisfy ADR-0013.
 
 ### P1-4. Compose trust-registry discovery and authorization
 

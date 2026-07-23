@@ -11,14 +11,18 @@ This repository can be cloned independently or checked out as `midnight-identity
 - Compact-first VC/VP primitives
 - public/direct claims and commitment-backed claim representation
 - holder-binding and same-holder capabilities
-- credential-family reference packages
 - status and revocation capability work
 - OpenID-shaped protocol bindings
 - protocol orchestration helpers
-- runnable use cases and BDD living documentation
+- private credential-type prototypes used to prove reusable capabilities
+- runnable use cases and BDD living documentation used as contribution evidence
 - standalone integration infrastructure
 
-DID method implementation belongs in `midnight-did`. Product-specific Passport flows belong in `midnight-identity-solution-examples` or product repos.
+DID method implementation belongs in `midnight-did`. Concrete credential
+families, including digital passport, belong in independent product
+repositories with their own release trains. This repository publishes only
+reusable, schema-neutral packages. Existing family workspaces are temporary,
+private migration inventory and must not become product release surfaces.
 
 ## Quick Start
 
@@ -90,12 +94,16 @@ Use it when a task starts from an independent `midnight-verifiable-credentials` 
 | `packages/registry/` | Registry packages, currently status/revocation registry work. |
 | `packages/protocols/` | Transport/protocol bindings such as OpenID-shaped schemas and Compact framing. |
 | `packages/components/` | Runtime adapters, protocol orchestration, and standalone integration helpers. |
-| `packages/prototypes/` | Reference credential-family packages and experimental/lab surfaces. |
-| `packages/use-cases/` | Concrete runnable flows, BDD living documentation, demo contracts, and university scenarios. |
+| `packages/prototypes/` | Temporary private credential-family migration inventory and experimental/lab surfaces; target location is `examples/credential-types/`. |
+| `packages/use-cases/` | Private runnable composition evidence, BDD living documentation, demo contracts, and university scenarios; target location is `examples/use-cases/`. |
 | `tooling/` | Build, artifact, vendor, runner, scaffolding, and package-boundary scripts. |
 | `docs/guides/assets/` | Static explanatory assets used by human-facing guides. |
 
 BDD belongs under `packages/use-cases/`, not under low-level package tests or prototype-only directories.
+
+No new supported credential family may be added under `packages/`. Prototype
+work must declare an owner, capability hypothesis, limitations, and an exit
+criterion. Reusable packages must not depend on prototypes or use cases.
 
 ## Package Map
 

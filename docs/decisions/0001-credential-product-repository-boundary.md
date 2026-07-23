@@ -1,9 +1,14 @@
 # ADR-0001: Credential product repository boundary
 
-- Status: Accepted
+- Status: Superseded by ADR-0013
 - Date: 2026-07-15
 - Owners: VC maintainers and credential product owners
 - Supersedes: none
+
+This record is retained for history. ADR-0013 establishes the stricter rule
+that this repository publishes reusable schema-neutral packages only and keeps
+concrete credential types solely as private, time-bounded evidence before
+graduation, fixture reduction, or removal.
 
 ## Context
 

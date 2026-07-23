@@ -22,17 +22,19 @@ Related documents:
   - [`../guides/integration-surface-map.md`](../guides/integration-surface-map.md)
 - VC maturity backlog:
   - [`../plans/vc-maturity-backlog.md`](../plans/vc-maturity-backlog.md)
-- credential product repository decision:
-  - [`../decisions/0001-credential-product-repository-boundary.md`](../decisions/0001-credential-product-repository-boundary.md)
+- reusable-core and credential-family lifecycle decision:
+  - [`../decisions/0013-reusable-core-and-credential-family-lifecycle.md`](../decisions/0013-reusable-core-and-credential-family-lifecycle.md)
 - package release contract:
   - [`./package-release-contract.md`](./package-release-contract.md)
+- target publication catalog:
+  - [`./package-publication-catalog.md`](./package-publication-catalog.md)
 
 ## Package classes
 
 | Class | Meaning | Reusable outside this repo | Dependency direction |
 | --- | --- | --- | --- |
 | Reusable core package | Canonical VC semantics or Compact-first reusable capability | Usually yes | Must not depend on adapters, orchestration, demos, or integration harnesses |
-| Credential-family package | Concrete claim/disclosure/request/predicate family built on the core | Yes | Depends on core packages; higher layers may compose it |
+| Credential-family prototype | Private concrete claim/disclosure/request/predicate example used to prove core composition | No; governed families graduate to independent repositories | Depends on reusable packages; reusable packages must never depend on it |
 | DID-aware adapter package | Runtime-only DID conversion helpers that adapt DID material into VC shapes | Yes, in DID-aware runtimes | Depends on DID/runtime packages plus VC core; never imported by Compact contracts |
 | Transport or orchestration package | Layer 4 runtime, transport, or protocol composition helper | Sometimes, but not as canonical core | Depends downward on core and family packages; packages/core/families must not depend on it |
 | Demo / prototype package | Business-facing example or evolving prototype flow | No, except as example source | Depends downward on packages/core/families/capabilities |
@@ -50,15 +52,15 @@ this table remains internal.
 | --- | --- | --- | --- | --- |
 | `credentials` | Reusable core package | Reference implementation | Yes | Canonical Compact-first VC/VP core and VC-side status binding vocabulary |
 | `credentials-same-holder` | Reusable core package | Reference implementation | Yes | Focused same-holder capability package |
-| `credentials-iso-registry` | Reusable core package | Reference implementation | Yes | Shared Compact-native ISO code types |
+| `credentials-iso-registry` | Reusable core package | Incubating abstraction | Not yet | Shared Compact-native ISO code types; remains internal until two independent family repositories demonstrate the boundary |
 | `credentials-status-registry` | Reusable core package with prototype trust model | Mixed: core-capability package, evolving trust model | Yes, with prototype status caveats | Registry contract, proof-protocol helpers, and off-chain status builders |
-| `credentials-birth` | Credential-family package | Reference implementation | Yes | Simplest explicit-holder family |
-| `credentials-birth-secret` | Credential-family package | Reference implementation with prototype status-aware extensions | Yes, with status-path caveats | Hidden-holder reference family |
-| `credentials-hello-family` | Credential-family package | Starter / playground | Yes, as a starter reference | Smallest compileable starter family and DID/VC smoke-path base |
-| `credentials-dummy-claims` | Credential-family package | Prototype laboratory | Yes, as a claim-surface reference | Broad direct Compact claim-surface and selective-disclosure laboratory |
-| `credentials-mixed-claims` | Credential-family package | Prototype laboratory | Yes, as a claim-representation reference | Mixed public/direct plus committed-private claim-representation laboratory |
-| `credentials-university-diploma` | Credential-family package | Prototype use-case family | Yes, as a use-case reference | Non-revocable academic diploma family for batch issuance and verifier-policy flows |
-| `credentials-digital-passport` | Credential-family package | Reference candidate; not product-ready | Yes, after boundary and correctness work | Five-claim passport family and first independent product graduation candidate; currently has a transport-layer dependency that must be removed |
+| `credentials-birth` | Credential-family prototype | Migration inventory | No | Explicit-holder conformance example; reduce to a minimal fixture or graduate |
+| `credentials-birth-secret` | Credential-family prototype | Migration inventory with prototype status-aware extensions | No | Hidden-holder conformance example; reduce to a minimal fixture or graduate |
+| `credentials-hello-family` | Credential-family prototype | Starter / playground | No | Smallest compileable family evidence; target a minimal synthetic fixture |
+| `credentials-dummy-claims` | Credential-family prototype | Prototype laboratory | No | Direct Compact claim-surface and selective-disclosure evidence |
+| `credentials-mixed-claims` | Credential-family prototype | Prototype laboratory | No | Mixed public/direct and committed-private claim-representation evidence |
+| `credentials-university-diploma` | Credential-family prototype | Prototype use-case family | No | Private academic-flow evidence; not a product implementation or release package |
+| `credentials-digital-passport` | Credential-family prototype | Frozen graduation inventory | No | Remove its OpenID transport dependency, port it to `midnight-verifiable-credential-digital-passport`, then remove the duplicate core implementation |
 | `credentials-offchain-did` | DID-aware adapter package | Reference implementation | Yes | Runtime-only DID conversion helpers |
 | `credentials-openid` | Transport or orchestration package | Reference transport-adapter implementation | Yes, with transport-layer scope | OpenID-shaped JSON/domain envelopes around Compact payloads |
 | `credentials-protocol` | Transport or orchestration package | Reference orchestration implementation, evolving API | Limited | Off-chain reference agent flows and protocol state management |
@@ -100,8 +102,9 @@ These protocol surfaces are useful, but they are not the canonical VC core.
 ## Reading rules for integrators
 
 1. Start from the smallest package that owns your feature.
-2. Treat `credentials` and family packages as the canonical core unless the
-   problem is explicitly transport, orchestration, or demo composition.
+2. Treat reusable packages as the canonical core. Treat credential-family
+   workspaces as private evidence or migration inventory, never as supported
+   upstream dependencies.
 3. Treat `credentials-protocol` as wiring and orchestration, not as the core
    protocol specification.
 4. Treat `credentials-demo-contract` as example source, not as a reusable core
