@@ -109,6 +109,7 @@ criterion. Reusable packages must not depend on prototypes or use cases.
 
 | Path | Package | Responsibility |
 | --- | --- | --- |
+| `packages/core/model` | `@midnight-ntwrk/credential-model` | Protocol-neutral family definitions, descriptors, codecs, composition manifests, and errors. |
 | `packages/core/primitives/credentials` | `@midnight-ntwrk/midnight-did-credentials` | Generic VC/VP Compact primitives, claim envelope, holder/status binding types, proof helpers. |
 | `packages/core/capabilities/same-holder` | `@midnight-ntwrk/midnight-did-credentials-same-holder` | Same-holder composition capability. |
 | `packages/core/primitives/iso-registry` | `@midnight-ntwrk/midnight-did-credentials-iso-registry` | ISO-style registry primitives. |
@@ -123,6 +124,7 @@ criterion. Reusable packages must not depend on prototypes or use cases.
 | `packages/prototypes/credential-families/dummy-claims` | `@midnight-ntwrk/midnight-did-credentials-dummy-claims` | Broad direct-claims verifier lab. |
 | `packages/prototypes/credential-families/mixed-claims` | `@midnight-ntwrk/midnight-did-credentials-mixed-claims` | Reference lab for mixed public/direct and commitment-backed claims. |
 | `packages/prototypes/credential-families/university-diploma` | `@midnight-ntwrk/midnight-did-credentials-university-diploma` | University diploma credential family. |
+| `packages/prototypes/credential-families/digital-passport` | `@midnight-ntwrk/midnight-did-credentials-digital-passport` | Frozen migration evidence for the independent digital-passport repository. |
 | `packages/use-cases/age-gate/contract` | `@midnight-ntwrk/midnight-did-credentials-demo-contract` | Generic age-gate and revocation-aware verifier demo contracts. |
 | `packages/use-cases/age-gate/scenarios` | `vc-bdd-scenarios` | Age-gate Serenity/JS BDD scenarios. |
 | `packages/use-cases/hello-verifier/contract` | `@midnight-ntwrk/midnight-did-hello-verifier-contract` | Hello verifier contract path. |
@@ -130,6 +132,11 @@ criterion. Reusable packages must not depend on prototypes or use cases.
 | `packages/use-cases/university/protocol` | `@midnight-ntwrk/midnight-did-university-protocol` | Multi-party university protocol flow and transcript exports. |
 | `packages/use-cases/university/reporting` | `@midnight-ntwrk/midnight-did-university-reporting` | University reporting and summary artifacts. |
 | `packages/use-cases/university/scenarios` | `vc-university-bdd-scenarios` | University diploma Serenity/JS BDD scenarios. |
+
+Only workspaces marked `candidate` or `supported` in
+`tooling/scripts/workspace-catalog.mjs` may be packed. Prototypes, use cases,
+and internal compatibility packages remain private evidence and must not be
+published from this repository.
 
 ## Core Claim Representation
 

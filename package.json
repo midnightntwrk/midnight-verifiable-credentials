@@ -9,6 +9,7 @@
     "pnpm": ">=10"
   },
   "workspaces": [
+    "packages/core/model",
     "packages/core/primitives/credentials",
     "packages/registry/status-registry",
     "packages/core/capabilities/same-holder",
@@ -34,7 +35,7 @@
     "packages/components/integration/standalone-environment"
   ],
   "scripts": {
-    "clean": "turbo run clean --filter=./packages/core/primitives/credentials --filter=./packages/registry/status-registry --filter=./packages/core/capabilities/same-holder --filter=./packages/core/primitives/iso-registry --filter=./packages/components/adapters/offchain-did --filter=./packages/prototypes/credential-families/birth --filter=./packages/prototypes/credential-families/birth-secret --filter=./packages/prototypes/credential-families/hello-family --filter=./packages/prototypes/credential-families/dummy-claims --filter=./packages/prototypes/credential-families/mixed-claims --filter=./packages/prototypes/credential-families/university-diploma --filter=./packages/prototypes/credential-families/digital-passport --filter=./packages/protocols/openid --filter=./packages/use-cases/age-gate/contract --filter=./packages/use-cases/hello-verifier/contract --filter=./packages/components/orchestration/protocol --continue",
+    "clean": "turbo run clean --filter=./packages/core/model --filter=./packages/core/primitives/credentials --filter=./packages/registry/status-registry --filter=./packages/core/capabilities/same-holder --filter=./packages/core/primitives/iso-registry --filter=./packages/components/adapters/offchain-did --filter=./packages/prototypes/credential-families/birth --filter=./packages/prototypes/credential-families/birth-secret --filter=./packages/prototypes/credential-families/hello-family --filter=./packages/prototypes/credential-families/dummy-claims --filter=./packages/prototypes/credential-families/mixed-claims --filter=./packages/prototypes/credential-families/university-diploma --filter=./packages/prototypes/credential-families/digital-passport --filter=./packages/protocols/openid --filter=./packages/use-cases/age-gate/contract --filter=./packages/use-cases/hello-verifier/contract --filter=./packages/components/orchestration/protocol --continue",
     "check:package-boundaries": "bash ./tooling/scripts/check-package-boundaries.sh",
     "check:ci-build-cones": "node ./tooling/scripts/check-ci-build-cones.mjs",
     "check:ci-workflow-cones": "node ./tooling/scripts/check-ci-workflow-cones.mjs",
@@ -63,7 +64,7 @@
     "update:university-operator-guide": "node ./packages/use-cases/university/scripts/ci-matrix.mjs --update-operator-guide",
     "ci:university-ci-matrix": "pnpm run check:university-ci-matrix && pnpm --silent run build:university-ci-matrix:json",
     "lint": "node ./tooling/scripts/workspace-catalog.mjs --exec-task lint",
-    "lint:fix": "turbo run lint:fix --filter=./packages/core/primitives/credentials --filter=./packages/registry/status-registry --filter=./packages/core/capabilities/same-holder --filter=./packages/core/primitives/iso-registry --filter=./packages/components/adapters/offchain-did --filter=./packages/prototypes/credential-families/birth --filter=./packages/prototypes/credential-families/birth-secret --filter=./packages/prototypes/credential-families/hello-family --filter=./packages/prototypes/credential-families/dummy-claims --filter=./packages/prototypes/credential-families/mixed-claims --filter=./packages/prototypes/credential-families/university-diploma --filter=./packages/prototypes/credential-families/digital-passport --filter=./packages/protocols/openid --filter=./packages/use-cases/age-gate/contract --filter=./packages/use-cases/hello-verifier/contract --filter=./packages/components/orchestration/protocol --continue",
+    "lint:fix": "turbo run lint:fix --filter=./packages/core/model --filter=./packages/core/primitives/credentials --filter=./packages/registry/status-registry --filter=./packages/core/capabilities/same-holder --filter=./packages/core/primitives/iso-registry --filter=./packages/components/adapters/offchain-did --filter=./packages/prototypes/credential-families/birth --filter=./packages/prototypes/credential-families/birth-secret --filter=./packages/prototypes/credential-families/hello-family --filter=./packages/prototypes/credential-families/dummy-claims --filter=./packages/prototypes/credential-families/mixed-claims --filter=./packages/prototypes/credential-families/university-diploma --filter=./packages/prototypes/credential-families/digital-passport --filter=./packages/protocols/openid --filter=./packages/use-cases/age-gate/contract --filter=./packages/use-cases/hello-verifier/contract --filter=./packages/components/orchestration/protocol --continue",
     "lint:hello-smoke": "turbo run lint --filter=./packages/components/adapters/offchain-did --filter=./packages/prototypes/credential-families/hello-family --filter=./packages/use-cases/hello-verifier/contract --continue",
     "lint:dummy-claims-lab": "turbo run lint --filter=./packages/prototypes/credential-families/dummy-claims --filter=./packages/use-cases/hello-verifier/contract --continue",
     "build:core": "pnpm run build:cone:foundation",

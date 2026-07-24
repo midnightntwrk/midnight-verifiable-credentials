@@ -58,6 +58,13 @@ const installLifecycleHooks = [
   "postinstall",
   "prepare",
 ];
+const scriptChecks = [
+  ["node", "test:node", "Node ESM"],
+  ["typescript", "typecheck", "strict TypeScript"],
+  ["legacy-typescript", "typecheck:legacy", "legacy TypeScript resolution"],
+  ["browser", "bundle", "browser bundle"],
+  ["browser", "test:bundle", "bundled execution"],
+];
 
 const run = (command, commandArgs, cwd, label) => {
   console.log(`[test-release-package-consumers] ${label}`);
@@ -200,13 +207,10 @@ for (const releasePackage of releasePackages) {
       fail(`${sourcePackageJson.name} resolved outside the temporary consumer`);
     }
 
-    for (const [script, label] of [
-      ["test:node", "Node ESM"],
-      ["typecheck", "strict TypeScript"],
-      ["typecheck:legacy", "legacy TypeScript resolution"],
-      ["bundle", "browser bundle"],
-      ["test:bundle", "bundled execution"],
-    ]) {
+    for (const [check, script, label] of scriptChecks) {
+      if (!releasePackage.consumerChecks.includes(check)) {
+        continue;
+      }
       run(
         "pnpm",
         ["run", script],
@@ -214,20 +218,22 @@ for (const releasePackage of releasePackages) {
         `${sourcePackageJson.name}: ${label}`,
       );
     }
-    run(
-      "compact",
-      [
-        "compile",
-        "+0.30.0",
-        "--skip-zk",
-        "--compact-path",
-        path.join(installedPackageRoot, "dist"),
-        path.join(consumerRoot, "consumer.compact"),
-        path.join(consumerRoot, "compact-output"),
-      ],
-      consumerRoot,
-      `${sourcePackageJson.name}: Compact package resolution`,
-    );
+    if (releasePackage.consumerChecks.includes("compact")) {
+      run(
+        "compact",
+        [
+          "compile",
+          "+0.30.0",
+          "--skip-zk",
+          "--compact-path",
+          path.join(installedPackageRoot, "dist"),
+          path.join(consumerRoot, "consumer.compact"),
+          path.join(consumerRoot, "compact-output"),
+        ],
+        consumerRoot,
+        `${sourcePackageJson.name}: Compact package resolution`,
+      );
+    }
 
     console.log(
       `[test-release-package-consumers] ${sourcePackageJson.name} passed all clean-consumer checks.`,

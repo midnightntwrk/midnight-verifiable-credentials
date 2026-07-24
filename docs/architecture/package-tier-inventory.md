@@ -45,12 +45,13 @@ Related documents:
 Maturity and reuse do not imply release support. The complete package release
 stage, distribution channel, ownership, and support inventory lives in the
 [package release contract](./package-release-contract.md). At present only
-`credentials` is a private pre-1.0 release candidate; every other package in
-this table remains internal.
+`credential-model` is a private pre-1.0 release candidate; every other package
+in this table remains internal.
 
 | Package | Class | Current stability | Reusable outside this repo | Notes |
 | --- | --- | --- | --- | --- |
-| `credentials` | Reusable core package | Reference implementation | Yes | Canonical Compact-first VC/VP core and VC-side status binding vocabulary |
+| `credential-model` | Reusable core package | Pre-1.0 release candidate | Yes | Protocol-neutral family definitions, descriptors, codecs, composition manifests, and errors |
+| `credentials` | Reusable core package | Internal compatibility implementation | Not yet | Canonical Compact-first VC/VP core being decomposed into the new publication graph |
 | `credentials-same-holder` | Reusable core package | Reference implementation | Yes | Focused same-holder capability package |
 | `credentials-iso-registry` | Reusable core package | Incubating abstraction | Not yet | Shared Compact-native ISO code types; remains internal until two independent family repositories demonstrate the boundary |
 | `credentials-status-registry` | Reusable core package with prototype trust model | Mixed: core-capability package, evolving trust model | Yes, with prototype status caveats | Registry contract, proof-protocol helpers, and off-chain status builders |

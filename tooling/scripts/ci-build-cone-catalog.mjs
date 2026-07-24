@@ -11,6 +11,7 @@ export const ciBuildCones = [
   {
     name: "foundation",
     inputPackages: [
+      "packages/core/model",
       "packages/core/primitives/credentials",
       "packages/registry/status-registry",
       "packages/core/capabilities/same-holder",
@@ -19,6 +20,7 @@ export const ciBuildCones = [
       "packages/protocols/openid",
     ],
     outputPaths: [
+      "packages/core/model/dist",
       "packages/core/primitives/credentials/src/managed",
       "packages/core/primitives/credentials/dist",
       "packages/registry/status-registry/src/managed",
@@ -34,6 +36,7 @@ export const ciBuildCones = [
   {
     name: "birth-family",
     inputPackages: [
+      "packages/core/model",
       "packages/core/primitives/credentials",
       "packages/registry/status-registry",
       "packages/core/capabilities/same-holder",
@@ -68,6 +71,7 @@ export const ciBuildCones = [
   {
     name: "age-gate",
     inputPackages: [
+      "packages/core/model",
       "packages/core/primitives/credentials",
       "packages/registry/status-registry",
       "packages/core/capabilities/same-holder",

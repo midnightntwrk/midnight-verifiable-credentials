@@ -10,36 +10,49 @@ const distReleaseTasks = ["lint", "typecheck", "build", "test:ci", "prepack"];
 const scenarioReleaseTasks = ["typecheck", "test:ci"];
 const sourceOnlyReleaseTasks = ["typecheck", "test:ci"];
 
-const workspace = (workspacePath, maturity, packageClass, options = {}) => ({
-  path: workspacePath,
-  maturity,
-  packageClass,
-  releaseStage: options.releaseStage ?? "internal",
-  consumerFixture: options.consumerFixture ?? null,
-  releaseTasks:
-    options.releaseTasks ??
-    (packageClass === "dist"
-      ? distReleaseTasks
-      : packageClass === "scenario"
-        ? scenarioReleaseTasks
-        : sourceOnlyReleaseTasks),
-  pack: packageClass === "dist",
-  packageTest: options.packageTest ?? packageClass !== "scenario",
-  testFromArtifacts:
-    options.testFromArtifacts ??
-    (packageClass === "scenario"
-      ? ["run", "test:ci"]
-      : ["exec", "vitest", "run"]),
-});
+const workspace = (workspacePath, maturity, packageClass, options = {}) => {
+  const releaseStage = options.releaseStage ?? "internal";
+  return {
+    path: workspacePath,
+    maturity,
+    packageClass,
+    releaseStage,
+    consumerFixture: options.consumerFixture ?? null,
+    consumerChecks: options.consumerChecks ?? [],
+    publicationDependencies: options.publicationDependencies ?? [],
+    releaseTasks:
+      options.releaseTasks ??
+      (packageClass === "dist"
+        ? distReleaseTasks
+        : packageClass === "scenario"
+          ? scenarioReleaseTasks
+          : sourceOnlyReleaseTasks),
+    pack: releaseStage !== "internal",
+    packageTest: options.packageTest ?? packageClass !== "scenario",
+    testFromArtifacts:
+      options.testFromArtifacts ??
+      (packageClass === "scenario"
+        ? ["run", "test:ci"]
+        : ["exec", "vitest", "run"]),
+  };
+};
 
 // Root package.json order is intentional. A workspace addition must update this
 // catalog in the same review so its maturity, gate, and packaging policy are
 // visible in one diff.
 export const workspaceCatalog = [
-  workspace("packages/core/primitives/credentials", "core", "dist", {
+  workspace("packages/core/model", "core", "dist", {
     releaseStage: "candidate",
-    consumerFixture: "tooling/fixtures/release-package-consumer",
+    consumerFixture: "tooling/fixtures/credential-model-consumer",
+    consumerChecks: [
+      "node",
+      "typescript",
+      "legacy-typescript",
+      "browser",
+    ],
+    publicationDependencies: [],
   }),
+  workspace("packages/core/primitives/credentials", "core", "dist"),
   workspace("packages/registry/status-registry", "reference", "dist"),
   workspace("packages/core/capabilities/same-holder", "core", "dist"),
   workspace("packages/core/primitives/iso-registry", "reference", "dist"),
@@ -144,6 +157,13 @@ export const allowedReleaseStages = new Set([
   "candidate",
   "supported",
 ]);
+export const allowedConsumerChecks = new Set([
+  "node",
+  "typescript",
+  "legacy-typescript",
+  "browser",
+  "compact",
+]);
 export const releaseCandidateFiles = (hasCompactSources) => [
   "dist/**",
   ...(hasCompactSources ? ["src/**/*.compact"] : []),
@@ -180,11 +200,30 @@ const checkCatalog = () => {
     readFileSync(path.join(repoRoot, "package.json"), "utf8"),
   );
   const catalogPaths = workspaceCatalog.map((entry) => entry.path);
+  const workspacePackageJsonByPath = new Map(
+    workspaceCatalog.map((entry) => [
+      entry.path,
+      JSON.parse(
+        readFileSync(path.join(repoRoot, entry.path, "package.json"), "utf8"),
+      ),
+    ]),
+  );
+  const workspaceCatalogByName = new Map(
+    workspaceCatalog.map((entry) => [
+      workspacePackageJsonByPath.get(entry.path).name,
+      entry,
+    ]),
+  );
 
   assert.equal(
     new Set(catalogPaths).size,
     catalogPaths.length,
     "workspace catalog must not contain duplicate paths",
+  );
+  assert.equal(
+    workspaceCatalogByName.size,
+    workspaceCatalog.length,
+    "workspace catalog must not contain duplicate package names",
   );
   assert.deepEqual(
     catalogPaths,
@@ -235,6 +274,29 @@ const checkCatalog = () => {
         entry.consumerFixture.length > 0,
       `${entry.path} consumer fixture must match external release status`,
     );
+    assert.equal(
+      entry.releaseStage !== "internal",
+      entry.consumerChecks.length > 0,
+      `${entry.path} consumer checks must match external release status`,
+    );
+    assert.ok(
+      Array.isArray(entry.publicationDependencies),
+      `${entry.path} publication dependencies must be an array`,
+    );
+    assert.ok(
+      entry.consumerChecks.every((check) => allowedConsumerChecks.has(check)),
+      `${entry.path} has an unsupported clean-consumer check`,
+    );
+    assert.equal(
+      new Set(entry.consumerChecks).size,
+      entry.consumerChecks.length,
+      `${entry.path} clean-consumer checks must be unique`,
+    );
+    assert.equal(
+      new Set(entry.publicationDependencies).size,
+      entry.publicationDependencies.length,
+      `${entry.path} publication dependencies must be unique`,
+    );
     if (entry.consumerFixture !== null) {
       assert.ok(
         existsSync(path.join(repoRoot, entry.consumerFixture, "package.json")),
@@ -243,8 +305,8 @@ const checkCatalog = () => {
     }
     assert.equal(
       entry.pack,
-      entry.packageClass === "dist",
-      `${entry.path} pack eligibility must follow its package class`,
+      entry.releaseStage !== "internal",
+      `${entry.path} pack eligibility must follow its release stage`,
     );
     assert.equal(
       entry.packageTest,
@@ -252,9 +314,7 @@ const checkCatalog = () => {
       `${entry.path} package-test eligibility must exclude only scenario workspaces`,
     );
 
-    const packageJson = JSON.parse(
-      readFileSync(path.join(repoRoot, entry.path, "package.json"), "utf8"),
-    );
+    const packageJson = workspacePackageJsonByPath.get(entry.path);
     assert.equal(packageJson.midnight?.maturity, entry.maturity);
     assert.equal(packageJson.midnight?.packageClass, entry.packageClass);
     assert.equal(
@@ -267,6 +327,29 @@ const checkCatalog = () => {
       entry.releaseStage !== "supported",
       `${entry.path} private must match its release stage`,
     );
+    const workspaceDependencies = new Set([
+      ...Object.keys(packageJson.dependencies ?? {}),
+      ...Object.keys(packageJson.optionalDependencies ?? {}),
+      ...Object.keys(packageJson.peerDependencies ?? {}),
+    ]);
+    const publicationWorkspaceDependencies = [...workspaceDependencies]
+      .filter((dependencyName) => workspaceCatalogByName.has(dependencyName))
+      .sort();
+    if (entry.releaseStage !== "internal") {
+      assert.deepEqual(
+        publicationWorkspaceDependencies,
+        [...entry.publicationDependencies].sort(),
+        `${entry.path} workspace dependencies must match its publication allowlist`,
+      );
+      for (const dependencyName of entry.publicationDependencies) {
+        const dependencyEntry = workspaceCatalogByName.get(dependencyName);
+        assert.notEqual(
+          dependencyEntry?.releaseStage,
+          "internal",
+          `${entry.path} publication dependency ${dependencyName} must be candidate or supported`,
+        );
+      }
+    }
     for (const task of entry.releaseTasks) {
       assert.ok(
         packageJson.scripts?.[task],

@@ -5,12 +5,12 @@
 
 ## Context
 
-The monorepo produces tarballs for nineteen dist-class workspaces. Those
-artifacts support isolated repository development while no VC npm registry is
-available. Historically, all packages were private `0.1.0` packages with
-wildcard ranges and ESM files exposed through `require` conditions. A tarball
-could therefore exist without being consumer-correct, supported, or safe to
-publish.
+The monorepo historically produced tarballs for every dist-class workspace.
+Those artifacts supported isolated repository development while no VC npm
+registry was available. Historically, all packages were private `0.1.0`
+packages with wildcard ranges and ESM files exposed through `require`
+conditions. A tarball could therefore exist without being consumer-correct,
+supported, or safe to publish.
 
 The repository also contains mixed maturity levels: reusable core,
 experimental capabilities, credential-family references, orchestration,
@@ -22,32 +22,33 @@ closure.
 
 1. Track `internal`, `candidate`, and `supported` release stages independently
    from package class, maturity, and pack eligibility.
-2. Make only `@midnight-ntwrk/midnight-did-credentials` the first pre-1.0
-   candidate. It has no VC workspace or sibling-repository runtime dependency.
-3. Keep candidates private and registry-neutral while distribution uses
-   workspace-produced tarballs. Packability does not imply publication or
-   support.
+2. Pack only candidate and supported dist-class packages. Internal, scenario,
+   and source-only workspaces are not packable.
+3. Make `@midnight-ntwrk/credential-model` the first package in the new
+   publication graph. Keep the legacy Compact package internal while reusable
+   surfaces are extracted.
 4. Require candidates to expose one truthful module format, explicit runtime
    and Compact exports, compatible dependency ranges, complete metadata, a
    package changelog, deterministic prepack, and checked tarball contents.
 5. Require clean external consumer evidence, named ownership, support and
    deprecation policy, registry selection, provenance, rollback, and release
    operations before advancing a candidate to `supported`.
-6. Keep cross-repository consumption tarball-based and mediated by the root
-   identity workspace; release packages never import sibling repository
-   source.
+6. Use registry versions for published dependencies. Where an unpublished
+   package still requires cross-repository integration, keep tarball handoff
+   mediated by the root identity workspace; release packages never import
+   sibling repository source.
 
 ## Consequences
 
-- The core package can mature as a bounded release unit without implying that
+- The model package can mature as a bounded release unit without implying that
   status, OpenID, credential families, demos, or integration harnesses are
   supported.
 - `private: true` is an intentional guard for candidates until publication is
   separately approved.
 - Consumers have an ESM-only contract and a bounded Compact runtime minor
   line instead of a false CommonJS path or wildcard runtime compatibility.
-- CI packaging becomes slower because it proves each current tarball can build;
-  performance optimization must preserve the candidate contract.
-- The next stacked release task is a clean non-workspace consumer matrix. It
-  provides evidence for graduation but does not itself select a registry or
-  assign organizational ownership.
+- CI packaging becomes faster and more accurate because it packs only
+  release-approved packages and proves each tarball against its declared clean
+  consumer matrix.
+- Publication enablement remains a separate reviewed change that selects the
+  registry, provenance, version, and release operations.

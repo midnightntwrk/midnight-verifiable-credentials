@@ -1,0 +1,57 @@
+{
+  "name": "@midnight-ntwrk/credential-model",
+  "version": "0.1.0",
+  "description": "Protocol-neutral credential-family contracts for Midnight verifiable credentials",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/midnightntwrk/midnight-verifiable-credentials.git",
+    "directory": "packages/core/model"
+  },
+  "keywords": [
+    "midnight",
+    "verifiable-credentials",
+    "credential-model",
+    "self-sovereign-identity",
+    "typescript"
+  ],
+  "sideEffects": [],
+  "engines": {
+    "node": ">=24",
+    "pnpm": ">=10"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "rm -rf dist .cache && tsc -b tsconfig.build.json --force",
+    "prepack": "pnpm run build",
+    "test": "vitest run --config vitest.config.ts",
+    "test:ci": "vitest run --config vitest.config.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint \"src/**/*.ts\"",
+    "lint:fix": "eslint \"src/**/*.ts\" --fix",
+    "clean": "rm -rf dist coverage .cache *.tsbuildinfo",
+    "all": "pnpm run lint && pnpm run typecheck && pnpm run build && pnpm run test:ci"
+  },
+  "files": [
+    "dist/**",
+    "README.md",
+    "CHANGELOG.md",
+    "package.json"
+  ],
+  "midnight": {
+    "maturity": "core",
+    "packageClass": "dist",
+    "releaseStage": "candidate"
+  }
+}

@@ -2,8 +2,9 @@
 
 Status: canonical pre-publication package release policy.
 
-This repository can build many tarballs, but a successful `pnpm pack` is not a
-support promise. Release state is explicit in
+This repository builds tarballs only for packages approved as candidates or
+supported releases. A successful `pnpm pack` is not a support promise. Release
+state is explicit in
 `tooling/scripts/workspace-catalog.mjs` and is independent from package class,
 maturity, and pack eligibility.
 
@@ -15,10 +16,9 @@ maturity, and pack eligibility.
 | `candidate` | Pre-1.0 tarball with checked metadata, exports, dependency ranges, changelog, and package contents | Forbidden until graduation |
 | `supported` | Approved public package with named ownership, compatibility policy, consumer evidence, provenance, and release operations | Allowed through the approved registry workflow |
 
-Candidate packages remain `private: true` and omit `publishConfig`. This is
-intentional: the current distribution channel is an immutable local tarball
-copied by the identity workspace, not an npm registry. Removing `private` or
-selecting a registry is a separate release decision.
+Candidate packages remain `private: true` and omit `publishConfig`. Removing
+`private` or selecting a registry is a separate release decision made when a
+candidate graduates to `supported`.
 
 Concrete credential families, prototypes, product contracts, and use-case
 packages are not eligible for `candidate` or `supported` status in this
@@ -29,7 +29,8 @@ conformance fixtures, removed, or graduated to an independent repository.
 
 | Package | Stage | Channel | Technical/support owner | Support posture |
 | --- | --- | --- | --- | --- |
-| `@midnight-ntwrk/midnight-did-credentials` | `candidate` | private `0.1.x` workspace tarball | Unassigned; graduation blocker | Pre-1.0 reference, no production SLA |
+| `@midnight-ntwrk/credential-model` | `candidate` | private `0.1.x` validation tarball | VC package maintainers | Pre-1.0 family-authoring substrate |
+| `@midnight-ntwrk/midnight-did-credentials` | `internal` | none | VC package maintainers | Transitional Compact compatibility package |
 | `@midnight-ntwrk/midnight-did-credentials-status-registry` | `internal` | workspace tarball only | Unassigned | Prototype trust model |
 | `@midnight-ntwrk/midnight-did-credentials-same-holder` | `internal` | workspace tarball only | Unassigned | Reference capability |
 | `@midnight-ntwrk/midnight-did-credentials-iso-registry` | `internal` | workspace tarball only | Unassigned | Reference primitive |
@@ -53,9 +54,9 @@ The two BDD scenario workspaces, `bdd-support`, and
 `standalone-environment` are not release packages. They remain private
 scenario or source-only workspaces and are never copied as VC tarballs.
 
-All credential-family and university rows above are migration inventory, not a
-publication queue. Their presence in the workspace does not permit packing or
-publishing them for upstream consumption.
+All internal rows above are migration inventory, not a publication queue.
+Their presence in the workspace does not permit packing or publishing them for
+upstream consumption.
 
 GitHub `CODEOWNERS` review is a repository protection mechanism. It does not
 substitute for a named package maintainer, support contact, response policy, or
@@ -96,18 +97,16 @@ install. The lane also rejects lifecycle hooks in both source and packed
 manifests, repository paths, or package resolution outside that temporary
 project.
 
-The core candidate currently proves:
+The `credential-model` candidate currently proves:
 
-- Node ESM imports of the root, generated contract, and managed subpaths;
+- Node ESM imports and runtime descriptor validation;
 - strict `NodeNext` declaration consumption with `skipLibCheck: false`;
-- legacy TypeScript `node` resolution for declared compatibility subpaths;
-- a browser-targeted ESM bundle through the pure `./jubjub` subpath; and
-- Compact compilation through the installed package `dist` directory and
-  `include "credentials"`.
+- legacy TypeScript `node` resolution for the root declaration surface; and
+- a browser-targeted ESM bundle that defines and exercises a synthetic family.
 
-This evidence satisfies the technical consumer portion of graduation. It does
-not provide the missing ownership, support, registry, provenance, rollback, or
-authority approvals.
+Compact compilation is not applicable to this zero-runtime-dependency
+TypeScript package. Packages that expose Compact sources must declare and pass
+the Compact clean-consumer check.
 
 ## Graduation
 
@@ -124,8 +123,8 @@ implemented:
 6. package metadata changes to `private: false` only in the reviewed
    publication-enablement change.
 
-The current core candidate does not satisfy these graduation criteria and must
-not be described as production ready.
+The current candidate does not satisfy every graduation criterion and must not
+be described as production ready.
 
 ## Validation
 
@@ -138,10 +137,10 @@ pnpm run artifacts:pack
 pnpm run test:release-package-consumers
 ```
 
-`artifacts:pack` validates candidate tarball paths, required files, allowlisted
-contents, packed metadata, and every concrete or wildcard export target before
-the packaging target succeeds. It then packs each candidate again and requires
-an identical SHA-256 digest, proving byte-for-byte reproducibility in the same
-checkout.
-The packaging command then runs the clean-consumer matrix against the validated
+`artifacts:pack` packs only candidate and supported workspaces. It validates
+tarball paths, required files, allowlisted contents, packed metadata, and every
+concrete or wildcard export target before the packaging target succeeds. It
+then packs each candidate again and requires an identical SHA-256 digest,
+proving byte-for-byte reproducibility in the same checkout. The packaging
+command then runs the declared clean-consumer matrix against the validated
 tarball before succeeding.

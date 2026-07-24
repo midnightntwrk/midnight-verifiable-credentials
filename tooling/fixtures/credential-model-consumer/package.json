@@ -1,5 +1,5 @@
 {
-  "name": "midnight-vc-release-package-consumer",
+  "name": "midnight-credential-model-consumer",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -16,7 +16,7 @@
     "test:bundle": "node ./dist/browser.mjs"
   },
   "dependencies": {
-    "@midnight-ntwrk/midnight-did-credentials": "file:./vendor/candidate.tgz"
+    "@midnight-ntwrk/credential-model": "file:./vendor/candidate.tgz"
   },
   "devDependencies": {
     "esbuild": "0.27.7",

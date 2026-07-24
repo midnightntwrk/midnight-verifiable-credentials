@@ -3,6 +3,7 @@
 This repository uses four shared build cones for reusable CI outputs:
 
 1. `foundation`
+   - `credential-model`
    - `credentials`
    - `credentials-status-registry`
    - `credentials-same-holder`
@@ -79,8 +80,8 @@ downstream consumers:
 
 - `birth-family` includes the full `foundation` input set
 - `age-gate` includes the full `birth-family` input set
-- `protocol` hashes all 20 build-capable release workspaces because its
-  downstream outputs compose the lower-level package surfaces
+- `protocol` hashes all build-capable workspaces because its downstream
+  outputs compose the lower-level package surfaces
 
 This keeps cache invalidation aligned with the actual dependency chain without
 forcing a single monolithic cache key or making the protocol cone restore

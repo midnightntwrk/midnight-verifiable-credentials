@@ -40,8 +40,8 @@ describe("credentials package surfaces", () => {
     expect(existsSync(sourceSurface("jubjub.ts"))).toEqual(true);
   });
 
-  it("declares an ESM-only release-candidate surface", () => {
-    expect(packageJson.midnight?.releaseStage).toEqual("candidate");
+  it("keeps the internal compatibility surface ESM-only", () => {
+    expect(packageJson.midnight?.releaseStage).toBeUndefined();
     expect(JSON.stringify(packageJson.exports)).not.toContain('"require"');
   });
 
