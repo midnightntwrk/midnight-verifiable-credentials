@@ -4,8 +4,8 @@ Compact-first Verifiable Credentials and Verifiable Presentations for Midnight.
 
 This repository contains:
 
-- the generic Midnight VC/VP core
-- concrete credential-family packages
+- reusable Midnight VC/VP building blocks
+- private credential-family prototypes used as architecture and conformance evidence
 - transport/domain adapters
 - protocol/reference orchestration packages
 - verifier-contract demos
@@ -26,6 +26,8 @@ Current maturity is mixed by package:
 - claim representation companion:
   - [`docs/spec/claim-representation.md`](./docs/spec/claim-representation.md)
 - reference implementation packages:
+  - [`credential-model`](./packages/core/model/README.md)
+    - protocol-neutral family-authoring release candidate
   - [`credentials`](./packages/core/primitives/credentials/README.md)
   - [`credentials-status-registry`](./packages/registry/status-registry/README.md)
     - reusable registry package with the current prototype status / revocation trust model
@@ -107,6 +109,8 @@ Start here:
 
 ## Workspace map
 
+- [`credential-model`](./packages/core/model/README.md)
+  - protocol-neutral family definitions, descriptors, codecs, and manifests
 - [`credentials`](./packages/core/primitives/credentials/README.md)
   - generic VC/VP envelopes, proof model, holder-binding profiles
 - [`credentials-same-holder`](./packages/core/capabilities/same-holder/README.md)
@@ -311,7 +315,8 @@ pnpm run check:did-integration
 ## Artifact packaging
 
 Stable tarball output lives under [`tooling/artifacts/npm/`](./tooling/artifacts/README.md).
-Packable artifacts are not automatically supported releases. See the
+Only candidate and supported packages are packable; a candidate artifact is
+not automatically a supported release. See the
 [package release contract](./docs/architecture/package-release-contract.md)
 for the explicit candidate/support inventory and graduation requirements.
 
@@ -322,24 +327,10 @@ Commands:
 - `pnpm run upgrade:vendor`
 - `./upgrade-libs.sh --destination /path/to/downstream-repo`
 
-Packable local tarball set currently includes:
+The current packable candidate set contains only:
 
-- `@midnight-ntwrk/midnight-did-credentials`
-- `@midnight-ntwrk/midnight-did-credentials-status-registry`
-- `@midnight-ntwrk/midnight-did-credentials-same-holder`
-- `@midnight-ntwrk/midnight-did-credentials-iso-registry`
-- `@midnight-ntwrk/midnight-did-credentials-offchain-did`
-- `@midnight-ntwrk/midnight-did-credentials-openid`
-- `@midnight-ntwrk/midnight-did-credentials-protocol`
-- `@midnight-ntwrk/midnight-did-credentials-birth`
-- `@midnight-ntwrk/midnight-did-credentials-birth-secret`
-- `@midnight-ntwrk/midnight-did-credentials-hello-family`
-- `@midnight-ntwrk/midnight-did-credentials-dummy-claims`
-- `@midnight-ntwrk/midnight-did-credentials-mixed-claims`
-- `@midnight-ntwrk/midnight-did-credentials-university-diploma`
-- `@midnight-ntwrk/midnight-did-standalone-environment`
+- `@midnight-ntwrk/credential-model`
 
-Intentionally excluded:
-
-- `@midnight-ntwrk/midnight-did-credentials-demo-contract`
-- `@midnight-ntwrk/midnight-did-hello-verifier-contract`
+All legacy packages, prototypes, use cases, scenarios, reporting, and
+integration workspaces are intentionally excluded from the publication
+artifact set.

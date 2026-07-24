@@ -2,13 +2,14 @@
 
 > Maturity: `core`
 > Package class: `dist`
-> Release stage: `candidate`
+> Release stage: `internal`
 
 Generic Midnight VC/VP core for Compact-first credential families.
 
 Status:
 
-- pre-1.0 reference release candidate distributed as a private local tarball
+- internal compatibility package retained while reusable surfaces are extracted
+- excluded from the publication and workspace artifact pack allowlists
 - not a production-readiness claim; authority and assurance blockers remain
 
 Tier:

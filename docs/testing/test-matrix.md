@@ -496,15 +496,14 @@ or directly through package-level `test:integration` commands when Docker is ava
 ## Release package consumers
 
 The package lane runs `pnpm run test:release-package-consumers` after producing
-and auditing all workspace tarballs. For every release candidate it creates a
+and auditing release-approved workspace tarballs. For every release candidate
+or supported package it creates a
 project outside the repository, installs only the copied tarball, and verifies:
 
-- Node ESM root, contract, managed, and Compact export resolution;
-- strict TypeScript declarations with `skipLibCheck: false`;
-- legacy TypeScript `node` resolution for compatibility subpaths;
-- browser-targeted bundling and execution through the pure `./jubjub` subpath;
-- Compact compilation with the installed package `dist` directory on
-  `--compact-path`; and
+- each package's declared Node ESM, strict TypeScript, legacy TypeScript,
+  browser-bundle, and Compact checks;
+- Compact compilation against installed package exports when the package
+  exposes Compact sources; and
 - absence of workspace links, sibling paths, repository paths, and
   install-time package hooks.
 

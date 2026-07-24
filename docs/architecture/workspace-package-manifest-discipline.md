@@ -23,8 +23,7 @@ The metadata answers two different questions:
 - `packageClass` tells tooling which manifest surface the package is allowed to
   expose.
 - `releaseStage` is omitted for internal workspaces. Candidate and supported
-  packages declare it explicitly; pack eligibility alone is not a release
-  promise.
+  packages declare it explicitly and are the only packable workspaces.
 
 Maturity values:
 
