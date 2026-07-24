@@ -44,7 +44,20 @@ export NPM_CONFIG_USERCONFIG="${npmrc}"
 read_tag() {
   local package_name="$1"
   local tag="$2"
-  "${npm_command}" view "${package_name}" "dist-tags.${tag}" --registry "${registry}" 2>/dev/null || true
+  local output
+  local status
+
+  if output="$("${npm_command}" view "${package_name}" "dist-tags.${tag}" --registry "${registry}" 2>&1)"; then
+    printf '%s\n' "${output}"
+    return 0
+  else
+    status=$?
+  fi
+  if grep -Eq "(E404|404 Not Found)" <<< "${output}"; then
+    return 0
+  fi
+  echo "::error::npm view failed for ${package_name} tag ${tag}: ${output}" >&2
+  return "${status}"
 }
 
 published_version() {

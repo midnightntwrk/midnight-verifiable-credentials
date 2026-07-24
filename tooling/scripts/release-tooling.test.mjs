@@ -249,6 +249,52 @@ exit 0
   }
 });
 
+test("fails closed when npm cannot read the previous latest tag", () => {
+  const temporaryRoot = mkdtempSync(
+    path.join(os.tmpdir(), "midnight-vc-tag-read-error-test-"),
+  );
+  const fakeNpm = path.join(temporaryRoot, "npm");
+  const tarballName = "midnight-ntwrk-credential-model-0.1.0.tgz";
+  writeFileSync(
+    fakeNpm,
+    `#!/usr/bin/env bash
+set -euo pipefail
+if [[ "$1" == "view" && "$3" == "dist-tags.latest" ]]; then
+  echo "npm error code E503" >&2
+  exit 23
+fi
+exit 0
+`,
+  );
+  chmodSync(fakeNpm, 0o755);
+  writeFileSync(path.join(temporaryRoot, tarballName), "");
+
+  try {
+    const result = spawnSync(
+      "bash",
+      ["tooling/scripts/publish-npm-packages.sh"],
+      {
+        cwd: repoRoot,
+        encoding: "utf8",
+        env: {
+          ...process.env,
+          ARTIFACT_DIRECTORY: temporaryRoot,
+          NPM_ACCESS: "public",
+          NPM_COMMAND: fakeNpm,
+          NPM_REGISTRY: "https://registry.npmjs.org/",
+          NPM_TAG: "rc",
+          VERSION: "0.1.0",
+        },
+      },
+    );
+    assert.equal(result.status, 23);
+    assert.match(result.stderr, /tag latest/u);
+    assert.doesNotMatch(result.stdout, /Publishing tested/u);
+  } finally {
+    rmSync(temporaryRoot, { recursive: true, force: true });
+  }
+});
+
 test("verifies that an rc publication preserves latest", () => {
   const temporaryRoot = mkdtempSync(
     path.join(os.tmpdir(), "midnight-vc-tag-state-test-"),

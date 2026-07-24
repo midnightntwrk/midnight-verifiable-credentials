@@ -11,6 +11,7 @@ const repoRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "../..",
 );
+const npmCommand = process.env.NPM_COMMAND ?? "npm";
 
 const parseArgs = (args) => {
   const options = {
@@ -72,7 +73,7 @@ for (let attempt = 1; attempt <= options.attempts; attempt += 1) {
   missing = packageNames.filter((packageName) => {
     try {
       const publishedVersion = execFileSync(
-        "npm",
+        npmCommand,
         [
           "view",
           `${packageName}@${options.version}`,

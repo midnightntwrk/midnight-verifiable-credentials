@@ -38,9 +38,12 @@ older npm CLI before any release work begins.
 
 npm OIDC currently authorizes publication but not separate `dist-tag` or
 `access` commands. The normal path therefore sets access and the intended tag
-on `npm publish`. An idempotent rerun is a no-op when that tag is already
-correct; an actual tag repair requires the scoped token or an authenticated
-release operator. See the
+on `npm publish`. Per npm's dist-tag contract, `--tag rc` applies `rc` instead
+of `latest`, including on the first publication. The workflow snapshots and
+verifies `latest` independently and fails closed when registry metadata cannot
+be read. An idempotent rerun is a no-op when that tag is already correct; an
+actual tag repair requires the scoped token or an authenticated release
+operator. See the
 [npm trusted-publishing limitations](https://docs.npmjs.com/trusted-publishers/#limitations-and-future-improvements).
 
 ## Release gates
@@ -72,6 +75,11 @@ rc_index: 1
 The expected version is `0.1.0-rc1` under the `rc` dist-tag. The workflow
 preserves an existing `latest` tag and fails if npm changes `latest` during a
 prerelease.
+
+Source manifests retain the base `0.1.0` version. The workflow applies the
+channel suffix only to its ephemeral release checkout, so the changelog names
+the externally visible `0.1.0-rc1` while the reviewed source stays ready for
+the next channel dispatch.
 
 Branch rules are fail closed:
 
