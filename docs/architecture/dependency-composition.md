@@ -506,12 +506,18 @@ Recommended `package.json` conventions:
 
 Validated Compact package resolution:
 
-- release candidates export their Compact roots into the tarball `dist`
-  directory;
+- release candidates with Compact surfaces export their roots into the
+  tarball `dist` directory;
 - an installed consumer passes that directory through `--compact-path` and
-  uses `include "credentials"` or a narrower exported root; and
-- `tooling/scripts/test-release-package-consumers.mjs` compiles this form from
-  a temporary project outside the workspace on every packaging lane.
+  uses the package's declared root; and
+- `tooling/scripts/test-release-package-consumers.mjs` compiles this form when
+  the package catalog declares the `compact` consumer check.
+
+The current `credential-model` candidate has no Compact surface, so its
+packaging lane exercises Node, TypeScript, and browser consumers only. Compact
+resolution returns to the mandatory matrix when a reusable Compact package
+advances to `candidate`; internal compatibility packages are not release
+evidence.
 
 Repository-relative `include` paths remain appropriate for internal workspace
 composition, but they are not the external package contract.

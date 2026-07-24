@@ -10,6 +10,24 @@ const packageVersionPattern =
   /^(?:[~^]|>=|<=|>|<)?(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?$/u;
 const packageNamePattern =
   /^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*$/u;
+const claimDisclosures = new Set([
+  "public",
+  "selective",
+  "committed",
+  "predicate-only",
+]);
+const capabilityKinds = new Set([
+  "holder-binding",
+  "status",
+  "proof",
+  "presentation",
+]);
+const artifactPurposes = new Set([
+  "prover",
+  "verifier",
+  "circuit",
+  "metadata",
+]);
 
 const assertIdentifier = (value: string, path: string): void => {
   if (typeof value !== "string" || value.trim() !== value || value.length === 0) {
@@ -52,7 +70,12 @@ const assertUniqueIds = (
 export const assertCredentialCompositionManifest = (
   manifest: CredentialCompositionManifest,
 ): void => {
-  if (manifest.formatVersion !== 1 || !Array.isArray(manifest.packages)) {
+  if (
+    typeof manifest !== "object" ||
+    manifest === null ||
+    manifest.formatVersion !== 1 ||
+    !Array.isArray(manifest.packages)
+  ) {
     throw new CredentialModelError(
       "INVALID_DESCRIPTOR",
       "composition",
@@ -71,8 +94,8 @@ export const assertCredentialCompositionManifest = (
       );
     }
     if (
-      !packageVersionPattern.test(requirement.version) ||
-      /^(?:file|link|workspace|git|https?):/u.test(requirement.version)
+      /^(?:file|link|workspace|git|https?):/u.test(requirement.version) ||
+      !packageVersionPattern.test(requirement.version)
     ) {
       throw new CredentialModelError(
         "INVALID_PACKAGE_REQUIREMENT",
@@ -89,6 +112,16 @@ export const assertCredentialCompositionManifest = (
     }
     packageNames.add(requirement.name);
 
+    if (
+      requirement.exports !== undefined &&
+      !Array.isArray(requirement.exports)
+    ) {
+      throw new CredentialModelError(
+        "INVALID_PACKAGE_REQUIREMENT",
+        `${requirementPath}.exports`,
+        "must be an array of explicit package export paths",
+      );
+    }
     for (const [exportIndex, exportPath] of (
       requirement.exports ?? []
     ).entries()) {
@@ -120,6 +153,18 @@ export const assertCredentialFamilyDefinition = <
     TEncodedPresentation
   >,
 ): void => {
+  if (
+    typeof definition !== "object" ||
+    definition === null ||
+    typeof definition.schema !== "object" ||
+    definition.schema === null
+  ) {
+    throw new CredentialModelError(
+      "INVALID_DESCRIPTOR",
+      "definition",
+      "must declare a credential schema",
+    );
+  }
   assertIdentifier(definition.id, "id");
   assertVersion(definition.version, "version");
   assertIdentifier(definition.schema.id, "schema.id");
@@ -148,6 +193,26 @@ export const assertCredentialFamilyDefinition = <
   }
   assertUniqueIds(definition.schema.claims, "schema.claims");
   for (const [index, claim] of definition.schema.claims.entries()) {
+    if (!claimDisclosures.has(claim.disclosure)) {
+      throw new CredentialModelError(
+        "INVALID_DESCRIPTOR",
+        `schema.claims[${index}].disclosure`,
+        "must be public, selective, committed, or predicate-only",
+      );
+    }
+    if (typeof claim.required !== "boolean") {
+      throw new CredentialModelError(
+        "INVALID_DESCRIPTOR",
+        `schema.claims[${index}].required`,
+        "must be a boolean",
+      );
+    }
+    if (claim.valueType !== undefined) {
+      assertIdentifier(
+        claim.valueType,
+        `schema.claims[${index}].valueType`,
+      );
+    }
     if (!Array.isArray(claim.path) || claim.path.length === 0) {
       throw new CredentialModelError(
         "INVALID_DESCRIPTOR",
@@ -173,8 +238,42 @@ export const assertCredentialFamilyDefinition = <
   assertUniqueIds(definition.capabilities, "capabilities");
   assertUniqueIds(definition.artifacts, "artifacts");
   for (const [index, capability] of definition.capabilities.entries()) {
+    if (!capabilityKinds.has(capability.kind)) {
+      throw new CredentialModelError(
+        "INVALID_DESCRIPTOR",
+        `capabilities[${index}].kind`,
+        "must be holder-binding, status, proof, or presentation",
+      );
+    }
+    if (typeof capability.required !== "boolean") {
+      throw new CredentialModelError(
+        "INVALID_DESCRIPTOR",
+        `capabilities[${index}].required`,
+        "must be a boolean",
+      );
+    }
     if (capability.version !== undefined) {
       assertVersion(capability.version, `capabilities[${index}].version`);
+    }
+  }
+  for (const [index, artifact] of definition.artifacts.entries()) {
+    assertIdentifier(artifact.mediaType, `artifacts[${index}].mediaType`);
+    if (!artifactPurposes.has(artifact.purpose)) {
+      throw new CredentialModelError(
+        "INVALID_DESCRIPTOR",
+        `artifacts[${index}].purpose`,
+        "must be prover, verifier, circuit, or metadata",
+      );
+    }
+    if (
+      artifact.optional !== undefined &&
+      typeof artifact.optional !== "boolean"
+    ) {
+      throw new CredentialModelError(
+        "INVALID_DESCRIPTOR",
+        `artifacts[${index}].optional`,
+        "must be a boolean when present",
+      );
     }
   }
 
@@ -187,6 +286,7 @@ export const assertCredentialFamilyDefinition = <
       typeof codec !== "object" ||
       codec === null ||
       typeof codec.mediaType !== "string" ||
+      codec.mediaType.trim() !== codec.mediaType ||
       codec.mediaType.length === 0 ||
       typeof codec.encode !== "function" ||
       typeof codec.decode !== "function"

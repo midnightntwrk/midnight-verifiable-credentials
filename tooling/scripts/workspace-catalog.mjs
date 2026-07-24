@@ -27,7 +27,7 @@ const workspace = (workspacePath, maturity, packageClass, options = {}) => {
         : packageClass === "scenario"
           ? scenarioReleaseTasks
           : sourceOnlyReleaseTasks),
-    pack: options.pack ?? releaseStage !== "internal",
+    pack: releaseStage !== "internal",
     packageTest: options.packageTest ?? packageClass !== "scenario",
     testFromArtifacts:
       options.testFromArtifacts ??

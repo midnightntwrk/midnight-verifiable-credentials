@@ -140,4 +140,98 @@ describe("defineCredentialFamily", () => {
       }),
     );
   });
+
+  it.each([
+    {
+      label: "claim disclosure",
+      mutate: (definition: ReturnType<typeof family>) => ({
+        ...definition,
+        schema: {
+          ...definition.schema,
+          claims: [
+            {
+              ...definition.schema.claims[0],
+              disclosure: "sometimes",
+            },
+          ],
+        },
+      }),
+      path: "schema.claims[0].disclosure",
+    },
+    {
+      label: "capability kind",
+      mutate: (definition: ReturnType<typeof family>) => ({
+        ...definition,
+        capabilities: [
+          {
+            ...definition.capabilities[0],
+            kind: "transport",
+          },
+        ],
+      }),
+      path: "capabilities[0].kind",
+    },
+    {
+      label: "artifact purpose",
+      mutate: (definition: ReturnType<typeof family>) => ({
+        ...definition,
+        artifacts: [
+          {
+            id: "artifact.example",
+            mediaType: "application/octet-stream",
+            purpose: "deployment",
+          },
+        ],
+      }),
+      path: "artifacts[0].purpose",
+    },
+  ])("rejects an invalid $label", ({ mutate, path }) => {
+    const invalid = mutate(family());
+
+    expect(() =>
+      defineCredentialFamily(
+        invalid as unknown as ReturnType<typeof family>,
+      ),
+    ).toThrowError(
+      expect.objectContaining<Partial<CredentialModelError>>({
+        code: "INVALID_DESCRIPTOR",
+        path,
+      }),
+    );
+  });
+
+  it("rejects malformed versions and package export maps", () => {
+    expect(() =>
+      defineCredentialFamily({
+        ...family(),
+        version: "next",
+      }),
+    ).toThrowError(
+      expect.objectContaining<Partial<CredentialModelError>>({
+        code: "INVALID_VERSION",
+        path: "version",
+      }),
+    );
+
+    const invalidExports = family();
+    expect(() =>
+      defineCredentialFamily({
+        ...invalidExports,
+        composition: {
+          formatVersion: 1,
+          packages: [
+            {
+              ...invalidExports.composition.packages[0],
+              exports: "dist/internal",
+            },
+          ],
+        },
+      } as unknown as ReturnType<typeof family>),
+    ).toThrowError(
+      expect.objectContaining<Partial<CredentialModelError>>({
+        code: "INVALID_PACKAGE_REQUIREMENT",
+        path: "composition.packages[0].exports",
+      }),
+    );
+  });
 });
