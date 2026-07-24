@@ -2,7 +2,7 @@
 
 > Maturity: `core`
 > Package class: `dist`
-> Release stage: `candidate`
+> Release stage: `supported`
 
 Protocol-neutral TypeScript contracts for defining a credential family without
 depending on Compact, a ledger, a wallet, a transport, or generated family
@@ -19,8 +19,12 @@ The package provides:
 
 ## Install
 
-The candidate is currently validated as an isolated tarball. Registry
-publication requires the separate release-enablement change.
+```bash
+pnpm add @midnight-ntwrk/credential-model@rc
+```
+
+The first public release line is pre-1.0. Pin an exact version when a
+credential-family repository requires reproducible builds.
 
 ## Define a family
 
@@ -88,3 +92,18 @@ This package has zero runtime dependencies. It does not define proof
 execution, status storage, DID resolution, exchange protocols, sessions,
 display rendering, or deployment behavior. Those capabilities belong in
 separate packages that depend on this model.
+
+## Compatibility and support
+
+- The package is ESM-only and supports Node.js 24 or newer, strict TypeScript,
+  and browser bundlers that consume standard ESM.
+- During `0.x`, breaking API changes may ship in a minor release. Patch
+  releases remain backward compatible within their minor line.
+- Release candidates are supported only until a newer release candidate or
+  stable version in the same minor line is published.
+- Deprecations, migrations, and known limitations are recorded in this
+  changelog and README before a replacement release is promoted.
+
+Technical ownership belongs to `@midnightntwrk/ex-identus`. Release operations
+belong to `@midnightntwrk/mn-sre`. Security reports follow the repository
+[`SECURITY.md`](../../../SECURITY.md) process.

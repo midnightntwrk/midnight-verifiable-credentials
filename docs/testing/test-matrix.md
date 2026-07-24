@@ -510,6 +510,12 @@ project outside the repository, installs only the copied tarball, and verifies:
 The temporary consumer is always removed. The lane is also part of
 `pnpm run artifacts:pack`, `pnpm run ci:package-tests`, and `./run.sh --light`.
 
+The manual npmjs workflow repeats the same matrix against the exact published
+version after bounded registry-propagation polling. Registry mode rejects all
+local locators, installs with lifecycle scripts disabled during dependency
+resolution, verifies the resolved package version, and then runs every
+cataloged consumer check.
+
 ## Repository Runner Targets
 
 `./run.sh` now exposes the main repository lanes directly:

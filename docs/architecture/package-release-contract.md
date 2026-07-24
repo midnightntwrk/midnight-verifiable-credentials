@@ -1,6 +1,6 @@
 # Package Release Contract
 
-Status: canonical pre-publication package release policy.
+Status: canonical package release and publication policy.
 
 This repository builds tarballs only for packages approved as candidates or
 supported releases. A successful `pnpm pack` is not a support promise. Release
@@ -29,7 +29,7 @@ conformance fixtures, removed, or graduated to an independent repository.
 
 | Package | Stage | Channel | Technical/support owner | Support posture |
 | --- | --- | --- | --- | --- |
-| `@midnight-ntwrk/credential-model` | `candidate` | private `0.1.x` validation tarball | VC package maintainers | Pre-1.0 family-authoring substrate |
+| `@midnight-ntwrk/credential-model` | `supported` | npmjs `rc`; stable after explicit approval | `@midnightntwrk/ex-identus` / `@midnightntwrk/mn-sre` | Pre-1.0 family-authoring substrate |
 | `@midnight-ntwrk/midnight-did-credentials` | `internal` | none | VC package maintainers | Transitional Compact compatibility package |
 | `@midnight-ntwrk/midnight-did-credentials-status-registry` | `internal` | workspace tarball only | Unassigned | Prototype trust model |
 | `@midnight-ntwrk/midnight-did-credentials-same-holder` | `internal` | workspace tarball only | Unassigned | Reference capability |
@@ -58,9 +58,10 @@ All internal rows above are migration inventory, not a publication queue.
 Their presence in the workspace does not permit packing or publishing them for
 upstream consumption.
 
-GitHub `CODEOWNERS` review is a repository protection mechanism. It does not
-substitute for a named package maintainer, support contact, response policy, or
-deprecation owner.
+GitHub `CODEOWNERS` review is a repository protection mechanism. Package
+technical ownership belongs to `@midnightntwrk/ex-identus`; npmjs credentials,
+the protected release environment, and release incident operations belong to
+`@midnightntwrk/mn-sre`. Security disclosure follows `SECURITY.md`.
 
 ## Candidate contract
 
@@ -89,15 +90,15 @@ allowed while `0.16.0` is excluded.
 
 ## Clean-consumer evidence
 
-`tooling/scripts/test-release-package-consumers.mjs` copies each candidate
+`tooling/scripts/test-release-package-consumers.mjs` copies each release
 tarball and its declared fixture to an operating-system temporary directory.
 It first resolves a lockfile with scripts disabled, rejects every local locator
-except the copied candidate tarball, and only then performs a normal isolated
+except the copied package tarball, and only then performs a normal isolated
 install. The lane also rejects lifecycle hooks in both source and packed
 manifests, repository paths, or package resolution outside that temporary
 project.
 
-The `credential-model` candidate currently proves:
+The `credential-model` package currently proves:
 
 - Node ESM imports and runtime descriptor validation;
 - strict `NodeNext` declaration consumption with `skipLibCheck: false`;
@@ -123,8 +124,26 @@ implemented:
 6. package metadata changes to `private: false` only in the reviewed
    publication-enablement change.
 
-The current candidate does not satisfy every graduation criterion and must not
-be described as production ready.
+Support is deliberately bounded: `0.x` minor releases may break APIs, patch
+releases remain compatible within their minor line, and an RC is supported
+only until its replacement in the same line is published. Package support
+does not make any prototype credential family production ready.
+
+## Publication
+
+`.github/workflows/publish.yml` is the only approved npmjs publication path.
+It is manual-only, validates branch/channel rules, runs the repository light
+gate, prepares an ephemeral release version, packs and tests deterministic
+tarballs, generates SPDX SBOM evidence, and publishes those exact tarballs
+with npm provenance. The workflow then polls npmjs and reruns the clean
+consumer matrix against the registry version. A before/after dist-tag snapshot
+also proves that prerelease publication preserves `latest`.
+
+The publish allowlist is emitted by
+`tooling/scripts/workspace-catalog.mjs --publishable-paths`. Only `supported`
+entries appear. Candidate tarballs may be tested locally but remain private.
+See the [npmjs publication runbook](../guides/npmjs-publication.md) for
+dispatch, authentication, rollback, and incident procedures.
 
 ## Validation
 
@@ -140,7 +159,7 @@ pnpm run test:release-package-consumers
 `artifacts:pack` packs only candidate and supported workspaces. It validates
 tarball paths, required files, allowlisted contents, packed metadata, and every
 concrete or wildcard export target before the packaging target succeeds. It
-then packs each candidate again and requires an identical SHA-256 digest,
+then packs each release package again and requires an identical SHA-256 digest,
 proving byte-for-byte reproducibility in the same checkout. The packaging
 command then runs the declared clean-consumer matrix against the validated
 tarball before succeeding.

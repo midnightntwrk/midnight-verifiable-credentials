@@ -83,8 +83,12 @@ Release candidates additionally must:
   and
 - pass [`./package-release-contract.md`](./package-release-contract.md).
 
-A future supported package declares `midnight.releaseStage: "supported"` and
-may set `private: false` only in the reviewed publication-enablement change.
+A supported package declares `midnight.releaseStage: "supported"`, sets
+`private: false`, and selects the public npmjs registry and access level in
+`publishConfig`. Only supported paths emitted by
+`workspace-catalog.mjs --publishable-paths` may reach the publication script.
+The publication workflow must use the tested tarball, not rebuild an
+unvalidated package during `npm publish`.
 
 ## Scenario Package Rules
 

@@ -9,6 +9,7 @@ import {
   readFileSync,
   realpathSync,
   rmSync,
+  writeFileSync,
 } from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -38,13 +39,33 @@ const tarballName = (packageJson) =>
   `${packageJson.name.slice(1).replace("/", "-")}-${packageJson.version}.tgz`;
 
 const args = process.argv.slice(2);
-if (args.length !== 2 || args[0] !== "--tarballs") {
-  fail("Usage: test-release-package-consumers.mjs --tarballs <directory>");
+const tarballMode = args.length === 2 && args[0] === "--tarballs";
+const registryMode =
+  args.length === 4 &&
+  args[0] === "--registry" &&
+  args[2] === "--version";
+if (!tarballMode && !registryMode) {
+  fail(
+    "Usage: test-release-package-consumers.mjs --tarballs <directory> | --registry <url> --version <version>",
+  );
 }
 
-const tarballDirectory = path.resolve(repoRoot, args[1]);
-if (!existsSync(tarballDirectory)) {
+const tarballDirectory = tarballMode
+  ? path.resolve(repoRoot, args[1])
+  : undefined;
+const registry = registryMode ? args[1] : undefined;
+const expectedVersion = registryMode ? args[3] : undefined;
+if (tarballDirectory !== undefined && !existsSync(tarballDirectory)) {
   fail(`${args[1]} tarball directory is missing`);
+}
+if (
+  registry !== undefined &&
+  (new URL(registry).protocol !== "https:" ||
+    !/^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?$/u.test(
+      expectedVersion,
+    ))
+) {
+  fail("registry mode requires an HTTPS registry and semantic version");
 }
 
 const environment = { ...process.env };
@@ -115,23 +136,25 @@ for (const releasePackage of releasePackages) {
     );
   }
 
-  const tarballPath = path.join(
-    tarballDirectory,
-    tarballName(sourcePackageJson),
-  );
-  if (!existsSync(tarballPath)) {
-    fail(`${path.relative(repoRoot, tarballPath)} is missing`);
-  }
-  const packedPackageJson = JSON.parse(
-    execFileSync("tar", ["-xOf", tarballPath, "package/package.json"], {
-      encoding: "utf8",
-    }),
-  );
-  for (const lifecycleHook of installLifecycleHooks) {
-    if (packedPackageJson.scripts?.[lifecycleHook] !== undefined) {
-      fail(
-        `${sourcePackageJson.name} tarball must not run ${lifecycleHook} during install`,
-      );
+  const tarballPath =
+    tarballDirectory === undefined
+      ? undefined
+      : path.join(tarballDirectory, tarballName(sourcePackageJson));
+  if (tarballPath !== undefined) {
+    if (!existsSync(tarballPath)) {
+      fail(`${path.relative(repoRoot, tarballPath)} is missing`);
+    }
+    const packedPackageJson = JSON.parse(
+      execFileSync("tar", ["-xOf", tarballPath, "package/package.json"], {
+        encoding: "utf8",
+      }),
+    );
+    for (const lifecycleHook of installLifecycleHooks) {
+      if (packedPackageJson.scripts?.[lifecycleHook] !== undefined) {
+        fail(
+          `${sourcePackageJson.name} tarball must not run ${lifecycleHook} during install`,
+        );
+      }
     }
   }
 
@@ -145,11 +168,23 @@ for (const releasePackage of releasePackages) {
       fail("temporary consumer must live outside the repository");
     }
     cpSync(fixtureRoot, consumerRoot, { recursive: true });
-    mkdirSync(path.join(consumerRoot, "vendor"));
-    copyFileSync(
-      tarballPath,
-      path.join(consumerRoot, "vendor", "candidate.tgz"),
-    );
+    if (tarballPath !== undefined) {
+      mkdirSync(path.join(consumerRoot, "vendor"));
+      copyFileSync(
+        tarballPath,
+        path.join(consumerRoot, "vendor", "candidate.tgz"),
+      );
+    } else {
+      fixturePackageJson.dependencies[sourcePackageJson.name] = expectedVersion;
+      writeFileSync(
+        path.join(consumerRoot, "package.json"),
+        `${JSON.stringify(fixturePackageJson, null, 2)}\n`,
+      );
+      writeFileSync(
+        path.join(consumerRoot, ".npmrc"),
+        `registry=${registry}\n`,
+      );
+    }
 
     run(
       "pnpm",
@@ -160,6 +195,7 @@ for (const releasePackage of releasePackages) {
         "--no-frozen-lockfile",
         "--prefer-offline",
         "--strict-peer-dependencies",
+        ...(registry === undefined ? [] : ["--registry", registry]),
       ],
       consumerRoot,
       `${sourcePackageJson.name}: scripts-disabled dependency resolution`,
@@ -174,11 +210,13 @@ for (const releasePackage of releasePackages) {
     ) ?? [];
     for (const locator of localLocators) {
       if (
-        locator !== "file:./vendor/candidate.tgz" &&
-        locator !== "file:vendor/candidate.tgz"
+        tarballPath !== undefined &&
+        (locator === "file:./vendor/candidate.tgz" ||
+          locator === "file:vendor/candidate.tgz")
       ) {
-        fail(`consumer lockfile contains forbidden local locator ${locator}`);
+        continue;
       }
+      fail(`consumer lockfile contains forbidden local locator ${locator}`);
     }
     if (lockfile.includes(repoRoot)) {
       fail("consumer lockfile contains the repository path");
@@ -191,6 +229,7 @@ for (const releasePackage of releasePackages) {
         "--frozen-lockfile",
         "--prefer-offline",
         "--strict-peer-dependencies",
+        ...(registry === undefined ? [] : ["--registry", registry]),
       ],
       consumerRoot,
       `${sourcePackageJson.name}: isolated install`,
@@ -205,6 +244,24 @@ for (const releasePackage of releasePackages) {
     );
     if (!isWithin(realTemporaryRoot, installedPackageRoot)) {
       fail(`${sourcePackageJson.name} resolved outside the temporary consumer`);
+    }
+    const installedPackageJson = JSON.parse(
+      readFileSync(path.join(installedPackageRoot, "package.json"), "utf8"),
+    );
+    if (
+      expectedVersion !== undefined &&
+      installedPackageJson.version !== expectedVersion
+    ) {
+      fail(
+        `${sourcePackageJson.name} resolved ${installedPackageJson.version} instead of ${expectedVersion}`,
+      );
+    }
+    for (const lifecycleHook of installLifecycleHooks) {
+      if (installedPackageJson.scripts?.[lifecycleHook] !== undefined) {
+        fail(
+          `${sourcePackageJson.name} install contains forbidden ${lifecycleHook} hook`,
+        );
+      }
     }
 
     for (const [check, script, label] of scriptChecks) {
