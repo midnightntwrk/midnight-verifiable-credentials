@@ -234,4 +234,80 @@ describe("defineCredentialFamily", () => {
       }),
     );
   });
+
+  it.each([
+    {
+      label: "null claim",
+      mutate: (definition: ReturnType<typeof family>) => ({
+        ...definition,
+        schema: {
+          ...definition.schema,
+          claims: [null],
+        },
+      }),
+      code: "INVALID_DESCRIPTOR",
+      path: "schema.claims[0]",
+    },
+    {
+      label: "null package requirement",
+      mutate: (definition: ReturnType<typeof family>) => ({
+        ...definition,
+        composition: {
+          formatVersion: 1,
+          packages: [null],
+        },
+      }),
+      code: "INVALID_PACKAGE_REQUIREMENT",
+      path: "composition.packages[0]",
+    },
+    {
+      label: "non-string package name",
+      mutate: (definition: ReturnType<typeof family>) => ({
+        ...definition,
+        composition: {
+          formatVersion: 1,
+          packages: [
+            {
+              ...definition.composition.packages[0],
+              name: 1,
+            },
+          ],
+        },
+      }),
+      code: "INVALID_PACKAGE_REQUIREMENT",
+      path: "composition.packages[0].name",
+    },
+  ])("returns a model error for a $label", ({ mutate, code, path }) => {
+    expect(() =>
+      defineCredentialFamily(
+        mutate(family()) as unknown as ReturnType<typeof family>,
+      ),
+    ).toThrowError(
+      expect.objectContaining<Partial<CredentialModelError>>({
+        code: code as CredentialModelError["code"],
+        path,
+      }),
+    );
+  });
+
+  it("rejects duplicate composition package names", () => {
+    const definition = family();
+    expect(() =>
+      defineCredentialFamily({
+        ...definition,
+        composition: {
+          formatVersion: 1,
+          packages: [
+            definition.composition.packages[0],
+            definition.composition.packages[0],
+          ],
+        },
+      }),
+    ).toThrowError(
+      expect.objectContaining<Partial<CredentialModelError>>({
+        code: "DUPLICATE_ID",
+        path: "composition.packages[1].name",
+      }),
+    );
+  });
 });

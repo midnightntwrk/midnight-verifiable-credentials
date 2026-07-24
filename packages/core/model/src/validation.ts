@@ -50,20 +50,28 @@ const assertVersion = (value: string, path: string): void => {
 };
 
 const assertUniqueIds = (
-  values: readonly { readonly id: string }[],
+  values: readonly unknown[],
   path: string,
 ): void => {
   const ids = new Set<string>();
   for (const [index, value] of values.entries()) {
-    assertIdentifier(value.id, `${path}[${index}].id`);
-    if (ids.has(value.id)) {
+    if (typeof value !== "object" || value === null) {
+      throw new CredentialModelError(
+        "INVALID_DESCRIPTOR",
+        `${path}[${index}]`,
+        "must be an object",
+      );
+    }
+    const identified = value as { readonly id?: unknown };
+    assertIdentifier(identified.id as string, `${path}[${index}].id`);
+    if (ids.has(identified.id as string)) {
       throw new CredentialModelError(
         "DUPLICATE_ID",
         `${path}[${index}].id`,
-        `duplicates '${value.id}'`,
+        `duplicates '${identified.id}'`,
       );
     }
-    ids.add(value.id);
+    ids.add(identified.id as string);
   }
 };
 
@@ -86,7 +94,17 @@ export const assertCredentialCompositionManifest = (
   const packageNames = new Set<string>();
   for (const [index, requirement] of manifest.packages.entries()) {
     const requirementPath = `composition.packages[${index}]`;
-    if (!packageNamePattern.test(requirement.name)) {
+    if (typeof requirement !== "object" || requirement === null) {
+      throw new CredentialModelError(
+        "INVALID_PACKAGE_REQUIREMENT",
+        requirementPath,
+        "must be an object",
+      );
+    }
+    if (
+      typeof requirement.name !== "string" ||
+      !packageNamePattern.test(requirement.name)
+    ) {
       throw new CredentialModelError(
         "INVALID_PACKAGE_REQUIREMENT",
         `${requirementPath}.name`,
