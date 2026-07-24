@@ -295,6 +295,64 @@ exit 0
   }
 });
 
+test("repairs an incorrect tag without mixing npm notices into metadata", () => {
+  const temporaryRoot = mkdtempSync(
+    path.join(os.tmpdir(), "midnight-vc-tag-repair-test-"),
+  );
+  const fakeNpm = path.join(temporaryRoot, "npm");
+  const npmLog = path.join(temporaryRoot, "npm.log");
+  const tarballName = "midnight-ntwrk-credential-model-0.1.0.tgz";
+  writeFileSync(
+    fakeNpm,
+    `#!/usr/bin/env bash
+set -euo pipefail
+printf '%s\\n' "$*" >> "\${FAKE_NPM_LOG}"
+if [[ "$1" == "view" && "$2" == *"@0.1.0" && "$3" == "version" ]]; then
+  echo "npm notice registry metadata is current" >&2
+  echo "0.1.0"
+elif [[ "$1" == "view" && "$3" == "dist-tags.latest" ]]; then
+  echo "0.0.9"
+elif [[ "$1" == "view" ]]; then
+  exit 0
+fi
+`,
+  );
+  chmodSync(fakeNpm, 0o755);
+  writeFileSync(path.join(temporaryRoot, tarballName), "");
+
+  try {
+    const result = spawnSync(
+      "bash",
+      ["tooling/scripts/publish-npm-packages.sh"],
+      {
+        cwd: repoRoot,
+        encoding: "utf8",
+        env: {
+          ...process.env,
+          ARTIFACT_DIRECTORY: temporaryRoot,
+          FAKE_NPM_LOG: npmLog,
+          NODE_AUTH_TOKEN: "test-token",
+          NPM_ACCESS: "public",
+          NPM_COMMAND: fakeNpm,
+          NPM_REGISTRY: "https://registry.npmjs.org/",
+          NPM_TAG: "rc",
+          VERSION: "0.1.0",
+        },
+      },
+    );
+    assert.equal(result.status, 0, result.stderr);
+    const commands = readFileSync(npmLog, "utf8");
+    assert.match(
+      commands,
+      /dist-tag add @midnight-ntwrk\/credential-model@0\.1\.0 rc/u,
+    );
+    assert.doesNotMatch(commands, /^publish /mu);
+    assert.doesNotMatch(commands, /dist-tag rm/u);
+  } finally {
+    rmSync(temporaryRoot, { recursive: true, force: true });
+  }
+});
+
 test("verifies that an rc publication preserves latest", () => {
   const temporaryRoot = mkdtempSync(
     path.join(os.tmpdir(), "midnight-vc-tag-state-test-"),

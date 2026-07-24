@@ -28,8 +28,9 @@ if [[ ! "${npm_tag}" =~ ^[0-9A-Za-z._-]+$ ]]; then
 fi
 
 npmrc="$(mktemp)"
+view_stderr="${npmrc}.view-stderr"
 cleanup() {
-  rm -f "${npmrc}"
+  rm -f "${npmrc}" "${view_stderr}"
 }
 trap cleanup EXIT
 
@@ -45,36 +46,48 @@ read_tag() {
   local package_name="$1"
   local tag="$2"
   local output
+  local stderr_output
   local status
 
-  if output="$("${npm_command}" view "${package_name}" "dist-tags.${tag}" --registry "${registry}" 2>&1)"; then
+  if output="$("${npm_command}" view "${package_name}" "dist-tags.${tag}" --registry "${registry}" 2>"${view_stderr}")"; then
+    stderr_output="$(<"${view_stderr}")"
+    if [[ -n "${stderr_output}" ]]; then
+      printf '%s\n' "${stderr_output}" >&2
+    fi
     printf '%s\n' "${output}"
     return 0
   else
     status=$?
   fi
-  if grep -Eq "(E404|404 Not Found)" <<< "${output}"; then
+  stderr_output="$(<"${view_stderr}")"
+  if grep -Eq "(E404|404 Not Found)" <<< "${output}"$'\n'"${stderr_output}"; then
     return 0
   fi
-  echo "::error::npm view failed for ${package_name} tag ${tag}: ${output}" >&2
+  echo "::error::npm view failed for ${package_name} tag ${tag}: ${output}${stderr_output}" >&2
   return "${status}"
 }
 
 published_version() {
   local package_name="$1"
   local output
+  local stderr_output
   local status
 
-  if output="$("${npm_command}" view "${package_name}@${version}" version --registry "${registry}" 2>&1)"; then
+  if output="$("${npm_command}" view "${package_name}@${version}" version --registry "${registry}" 2>"${view_stderr}")"; then
+    stderr_output="$(<"${view_stderr}")"
+    if [[ -n "${stderr_output}" ]]; then
+      printf '%s\n' "${stderr_output}" >&2
+    fi
     printf '%s\n' "${output}"
     return 0
   else
     status=$?
   fi
-  if grep -Eq "(E404|404 Not Found)" <<< "${output}"; then
+  stderr_output="$(<"${view_stderr}")"
+  if grep -Eq "(E404|404 Not Found)" <<< "${output}"$'\n'"${stderr_output}"; then
     return 0
   fi
-  echo "::error::npm view failed for ${package_name}@${version}: ${output}" >&2
+  echo "::error::npm view failed for ${package_name}@${version}: ${output}${stderr_output}" >&2
   return "${status}"
 }
 
