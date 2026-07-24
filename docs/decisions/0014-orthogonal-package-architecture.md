@@ -2,6 +2,7 @@
 
 - Status: Proposed
 - Date: 2026-07-23
+- Updated: 2026-07-24
 - Owners: VC package maintainers
 - Supersedes: none
 
@@ -21,20 +22,23 @@ and release boundaries rather than produce one package for every source folder.
 
 ## Decision
 
-Adopt a ports-and-adapters package graph with `@midnight-ntwrk/vc-*` as the
-target public naming convention. The exact publication stages and migration
-mapping are recorded in
+Adopt a ports-and-adapters package graph with domain-first
+`@midnight-ntwrk/credential-*` names. Do not use the broad `ssi` label or the
+abbreviated `vc` prefix for new packages. Retain `openid4vc` as the standards
+family name. The exact publication stages and migration mapping are recorded in
 [`../architecture/package-publication-catalog.md`](../architecture/package-publication-catalog.md).
 
 The approximate dependency tiers are illustrated below. The publication
 catalog's allowed-edge matrix is the canonical graph.
 
 ```text
-vc-core
-  <- vc-compact / vc-artifacts / vc-status
-  <- vc-proof / vc-verification / vc-same-holder
-  <- vc-protocol / vc-session
+credential-model
+  <- credential-compact / credential-proofs / credential-status
+  <- credential-verification
+  <- credential-exchange
   <- OID4VC / DIDComm / Midnight / DApp Connector / storage adapters
+
+credential-testkit -> public packages under test
 ```
 
 The main family composition point is a protocol-neutral
@@ -64,23 +68,39 @@ Stable ports include:
 These ports must use stable family-neutral types. They must not expose a
 concrete family's generated Compact types.
 
-Verification has an independent `vc-verification` boundary. It owns canonical
-transcripts, the proof/decision/execution/authority result axes, policy
-composition, and decision-nullifier contracts from ADR-0010. `vc-proof` owns
-proof execution only, `vc-status` owns status semantics only, and
-`vc-artifacts` owns versioned artifact and deployment manifest contracts.
+Verification has an independent `credential-verification` boundary. It owns
+canonical transcripts, the proof/decision/execution/authority result axes,
+policy composition, and decision-nullifier contracts from ADR-0010.
+`credential-proofs` owns family-neutral proof execution contracts together
+with versioned artifact and deployment manifest contracts.
+`credential-status` owns status semantics only.
 
 Upon acceptance of this ADR, the exact allowed-edge matrix in the publication
 catalog is normative. Unlisted internal edges are denied by default and CI must
-enforce the matrix. In particular, `vc-protocol` and `vc-session` do not depend
-on each other; applications and connector adapters compose both.
+enforce the matrix.
+
+Package boundaries should not mirror every source directory. Modules may share
+a package when they have compatible dependencies and require one compatibility
+contract:
+
+- same-holder Compact support is a subpath of `credential-compact`;
+- proof-resource manifests and proof provider/verifier ports share
+  `credential-proofs`;
+- fixtures and black-box conformance suites share `credential-testkit`;
+- protocol and durable-session modules share `credential-exchange`; and
+- OID4VCI and OID4VP share `openid4vc`.
+
+These consolidations do not permit internal cycles. In particular,
+`credential-exchange/session` remains protocol-implementation neutral and
+depends only on family-neutral model contracts. The package root may compose
+the protocol and session modules, and Node storage remains a separate adapter.
 
 Midnight status support is split by security boundary into contract,
 read/verification, and authority/write packages. DID integration resolves and
 validates `did:midnight` relationships but does not own signing keys. File and
-database session adapters are separate packages. Capability-first adapter names
-use `vc-did-midnight`, `vc-proof-midnight`, and
-`vc-status-midnight-*`.
+database session adapters are separate from the universal exchange package.
+Capability-first adapter names use `credential-did-midnight`,
+`credential-proofs-midnight`, and `credential-status-midnight-*`.
 
 The following dependency edges are forbidden:
 
@@ -112,6 +132,10 @@ API is added to those facades.
 - An external credential family can install only the capabilities it needs.
 - Protocol, DID, storage, proof, and UI integrations can be replaced without
   changing family semantics.
+- The target graph contains 17 packages instead of 22; cohesive modules share
+  one release train and expose explicit subpaths.
+- Protocol/session and OID4VCI/OID4VP modules no longer have independent
+  package versions, so their compatibility changes must be released together.
 - The initial publication wave is limited to the family-authoring substrate;
   protocol, session, and platform adapters advance independently.
 - Current packages must be split incrementally; this is not a directory rename.
@@ -125,6 +149,12 @@ API is added to those facades.
 
 - **One public SDK package:** it would couple browser, Node, Compact, protocol,
   status, and Midnight runtime dependencies and prevent selective adoption.
+- **Keep all 22 proposed packages:** separate packages for modules with the
+  same dependency and compatibility boundary would create avoidable release,
+  ownership, and consumer-selection cost.
+- **Combine every platform adapter:** DID resolution, proof execution, status
+  verification, and status mutation have different dependency and authority
+  boundaries and must remain independently installable.
 - **Publish the current workspace graph:** it exposes family coupling and
   private integration dependencies as public contracts.
 - **One package per source folder:** source organization alone is not a release

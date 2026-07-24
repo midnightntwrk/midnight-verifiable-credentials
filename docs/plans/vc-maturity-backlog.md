@@ -75,17 +75,17 @@ Deliver:
 
 - a machine-checked publication allowlist and forbidden-edge graph;
 - a protocol-neutral `CredentialFamilyDefinition`, separate family protocol
-  and display profiles, and codec, artifact, proof, verification, status,
-  protocol, session, DID, and display ports;
+  and display profiles, and model, Compact, proof-resource, verification,
+  status, exchange, session-store, DID, and display ports;
 - a machine-enforced allowed-edge matrix that keeps protocol and session
-  independent and splits Midnight status contract, read, and authority
-  boundaries;
+  modules internally acyclic and splits Midnight status contract, verifier,
+  and authority boundaries;
 - separation of family agents and storage adapters from reusable protocol
   state machines;
 - separation of generic status semantics from the Midnight registry
   implementation;
-- final OID4VCI and OID4VP packages that depend on generic codecs rather than
-  own them; and
+- final OID4VCI and OID4VP subpaths in `openid4vc` that depend on generic
+  codecs rather than own them; and
 - clean external-family conformance and consumer fixtures.
 
 Acceptance:

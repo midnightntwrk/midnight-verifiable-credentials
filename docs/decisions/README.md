@@ -29,7 +29,7 @@ supersedes them.
 | [0011](./0011-status-registry-namespace-and-authority.md) | Accepted | Derive registry namespaces and authenticate controller, delegate, mutation, audit, rotation, and migration transitions |
 | [0012](./0012-trusted-time-and-status-freshness.md) | Accepted | Accept status freshness and time only from explicit ledger or independently anchored authority sources |
 | [0013](./0013-reusable-core-and-credential-family-lifecycle.md) | Accepted | Publish reusable schema-neutral packages from core and move governed credential families to independent repositories |
-| [0014](./0014-orthogonal-package-architecture.md) | Proposed | Split reusable VC capabilities behind family-neutral ports and publish an explicit package catalog |
+| [0014](./0014-orthogonal-package-architecture.md) | Proposed | Publish a consolidated, domain-named credential package graph behind family-neutral ports |
 
 [`anoncreds-comparison.md`](./anoncreds-comparison.md) remains design research,
 not an ADR.
