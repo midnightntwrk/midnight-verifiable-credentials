@@ -200,11 +200,30 @@ const checkCatalog = () => {
     readFileSync(path.join(repoRoot, "package.json"), "utf8"),
   );
   const catalogPaths = workspaceCatalog.map((entry) => entry.path);
+  const workspacePackageJsonByPath = new Map(
+    workspaceCatalog.map((entry) => [
+      entry.path,
+      JSON.parse(
+        readFileSync(path.join(repoRoot, entry.path, "package.json"), "utf8"),
+      ),
+    ]),
+  );
+  const workspaceCatalogByName = new Map(
+    workspaceCatalog.map((entry) => [
+      workspacePackageJsonByPath.get(entry.path).name,
+      entry,
+    ]),
+  );
 
   assert.equal(
     new Set(catalogPaths).size,
     catalogPaths.length,
     "workspace catalog must not contain duplicate paths",
+  );
+  assert.equal(
+    workspaceCatalogByName.size,
+    workspaceCatalog.length,
+    "workspace catalog must not contain duplicate package names",
   );
   assert.deepEqual(
     catalogPaths,
@@ -295,9 +314,7 @@ const checkCatalog = () => {
       `${entry.path} package-test eligibility must exclude only scenario workspaces`,
     );
 
-    const packageJson = JSON.parse(
-      readFileSync(path.join(repoRoot, entry.path, "package.json"), "utf8"),
-    );
+    const packageJson = workspacePackageJsonByPath.get(entry.path);
     assert.equal(packageJson.midnight?.maturity, entry.maturity);
     assert.equal(packageJson.midnight?.packageClass, entry.packageClass);
     assert.equal(
@@ -316,17 +333,7 @@ const checkCatalog = () => {
       ...Object.keys(packageJson.peerDependencies ?? {}),
     ]);
     const publicationWorkspaceDependencies = [...workspaceDependencies]
-      .filter((dependencyName) =>
-        [...workspaceCatalogByPath.values()].some(
-          (dependencyEntry) =>
-            JSON.parse(
-              readFileSync(
-                path.join(repoRoot, dependencyEntry.path, "package.json"),
-                "utf8",
-              ),
-            ).name === dependencyName,
-        ),
-      )
+      .filter((dependencyName) => workspaceCatalogByName.has(dependencyName))
       .sort();
     if (entry.releaseStage !== "internal") {
       assert.deepEqual(
@@ -334,6 +341,14 @@ const checkCatalog = () => {
         [...entry.publicationDependencies].sort(),
         `${entry.path} workspace dependencies must match its publication allowlist`,
       );
+      for (const dependencyName of entry.publicationDependencies) {
+        const dependencyEntry = workspaceCatalogByName.get(dependencyName);
+        assert.notEqual(
+          dependencyEntry?.releaseStage,
+          "internal",
+          `${entry.path} publication dependency ${dependencyName} must be candidate or supported`,
+        );
+      }
     }
     for (const task of entry.releaseTasks) {
       assert.ok(
