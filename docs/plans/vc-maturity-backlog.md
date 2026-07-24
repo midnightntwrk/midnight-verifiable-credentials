@@ -106,8 +106,9 @@ repo-local GitHub community-file fixes.
 
 That breadth is not a production claim. The audit found these current facts:
 
-- packages are still private, versioned `0.1.0`, and have no supported release
-  train or consumer compatibility contract;
+- `@midnight-ntwrk/credential-model` is the first supported pre-1.0 package
+  with a manual npmjs release train and clean-consumer contract; all other
+  workspaces remain private and internal;
 - wildcard dependency ranges and ESM export maps with `require` aliases can
   produce incorrect consumer packages;
 - the release gate does not execute every workspace and does not package-test

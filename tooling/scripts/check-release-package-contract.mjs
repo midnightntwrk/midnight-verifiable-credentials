@@ -58,6 +58,9 @@ const releaseCandidates = workspaceCatalog.filter(
 const supportedPackages = workspaceCatalog.filter(
   (entry) => entry.releaseStage === "supported",
 );
+const releasePackages = workspaceCatalog.filter(
+  (entry) => entry.releaseStage !== "internal",
+);
 const releaseContract = readFileSync(
   path.join(repoRoot, "docs/architecture/package-release-contract.md"),
   "utf8",
@@ -104,14 +107,36 @@ const visitExportMap = (value, label, visitor) => {
   }
 };
 
-const assertCandidateManifest = (entry) => {
+const assertReleaseManifest = (entry) => {
   const packageJson = packageJsonByWorkspace.get(entry.path);
   const label = `${entry.path}/package.json`;
   const compactSources = compactSourcePaths(entry);
+  const isSupported = entry.releaseStage === "supported";
 
-  assert(entry.packageClass === "dist", `${entry.path} release candidate must be a dist package`);
-  assert(packageJson.private === true, `${label} must remain private before publication approval`);
-  assert(packageJson.publishConfig === undefined, `${label} must not select a registry before publication approval`);
+  assert(entry.packageClass === "dist", `${entry.path} release package must be a dist package`);
+  assert(
+    packageJson.private === !isSupported,
+    `${label} private must match release stage ${entry.releaseStage}`,
+  );
+  if (isSupported) {
+    assert(
+      packageJson.publishConfig?.access === "public",
+      `${label} supported package must publish with public access`,
+    );
+    assert(
+      packageJson.publishConfig?.registry === "https://registry.npmjs.org/",
+      `${label} supported package must select the npmjs registry`,
+    );
+    assert(
+      packageJson.publishConfig?.provenance === true,
+      `${label} supported package must require npm provenance`,
+    );
+  } else {
+    assert(
+      packageJson.publishConfig === undefined,
+      `${label} candidate must not select a registry before publication approval`,
+    );
+  }
   assert(/^0\.\d+\.\d+(?:[-+].*)?$/u.test(packageJson.version), `${label} must use a pre-1.0 semantic version`);
   assert(typeof packageJson.description === "string" && packageJson.description.length > 0, `${label} must define description`);
   assert(Array.isArray(packageJson.keywords) && packageJson.keywords.length > 0, `${label} must define keywords`);
@@ -133,7 +158,10 @@ const assertCandidateManifest = (entry) => {
     );
   }
   assert(packageJson.engines?.node === ">=24", `${label} must declare the supported Node engine`);
-  assert(packageJson.midnight?.releaseStage === "candidate", `${label} must declare candidate release metadata`);
+  assert(
+    packageJson.midnight?.releaseStage === entry.releaseStage,
+    `${label} must declare ${entry.releaseStage} release metadata`,
+  );
   assert(packageJson.scripts?.prepack === "pnpm run build", `${label} must build deterministically during prepack`);
   for (const lifecycleHook of installLifecycleHooks) {
     assert(
@@ -154,8 +182,8 @@ const assertCandidateManifest = (entry) => {
     .slice(0, 10)
     .join("\n");
   assert(
-    readmePreamble.includes("> Release stage: `candidate`"),
-    `${entry.path}/README.md must identify the candidate release stage`,
+    readmePreamble.includes(`> Release stage: \`${entry.releaseStage}\``),
+    `${entry.path}/README.md must identify the ${entry.releaseStage} release stage`,
   );
 
   const expectedFiles = releaseCandidateFiles(compactSources.length > 0);
@@ -219,7 +247,7 @@ const wildcardPattern = (target) => {
   return new RegExp(`^${escaped.replaceAll("*", "[^/]+")}$`, "u");
 };
 
-const assertCandidateTarball = (entry, tarballDirectory) => {
+const assertReleaseTarball = (entry, tarballDirectory) => {
   const sourcePackageJson = packageJsonByWorkspace.get(entry.path);
   const compactSources = compactSourcePaths(entry);
   const tarballPath = path.join(tarballDirectory, tarballName(sourcePackageJson));
@@ -281,8 +309,30 @@ const assertCandidateTarball = (entry, tarballDirectory) => {
   );
   assert(packedPackageJson.name === sourcePackageJson.name, `${label} package name drifted`);
   assert(packedPackageJson.version === sourcePackageJson.version, `${label} package version drifted`);
-  assert(packedPackageJson.private === true, `${label} must remain private`);
-  assert(packedPackageJson.publishConfig === undefined, `${label} must not select a registry`);
+  assert(
+    packedPackageJson.private === (entry.releaseStage !== "supported"),
+    `${label} private must match release stage ${entry.releaseStage}`,
+  );
+  if (entry.releaseStage === "supported") {
+    assert(
+      packedPackageJson.publishConfig?.access === "public",
+      `${label} must retain public npm access`,
+    );
+    assert(
+      packedPackageJson.publishConfig?.registry ===
+        "https://registry.npmjs.org/",
+      `${label} must retain the npmjs registry`,
+    );
+    assert(
+      packedPackageJson.publishConfig?.provenance === true,
+      `${label} must retain npm provenance`,
+    );
+  } else {
+    assert(
+      packedPackageJson.publishConfig === undefined,
+      `${label} candidate must not select a registry`,
+    );
+  }
   for (const lifecycleHook of installLifecycleHooks) {
     assert(
       packedPackageJson.scripts?.[lifecycleHook] === undefined,
@@ -344,10 +394,13 @@ const assertCandidateTarball = (entry, tarballDirectory) => {
   }
 };
 
-assert(releaseCandidates.length > 0, "workspace catalog must declare at least one release candidate");
 assert(
-  supportedPackages.length === 0,
-  "supported packages require an approved registry, provenance, and publication workflow",
+  releasePackages.length > 0,
+  "workspace catalog must declare at least one candidate or supported package",
+);
+assert(
+  supportedPackages.length > 0,
+  "registry enablement must declare at least one supported package",
 );
 for (const entry of workspaceCatalog.filter(
   (workspace) => workspace.packageClass === "dist",
@@ -360,8 +413,8 @@ for (const entry of workspaceCatalog.filter(
     `${packageName} must have a synchronized release-stage inventory row`,
   );
 }
-for (const entry of releaseCandidates) {
-  assertCandidateManifest(entry);
+for (const entry of releasePackages) {
+  assertReleaseManifest(entry);
 }
 
 const args = process.argv.slice(2);
@@ -374,8 +427,8 @@ if (args.length > 0) {
     const tarballDirectory = path.resolve(repoRoot, args[1]);
     assert(existsSync(tarballDirectory), `${args[1]} tarball directory is missing`);
     if (existsSync(tarballDirectory)) {
-      for (const entry of releaseCandidates) {
-        assertCandidateTarball(entry, tarballDirectory);
+      for (const entry of releasePackages) {
+        assertReleaseTarball(entry, tarballDirectory);
       }
     }
   }
@@ -389,5 +442,5 @@ if (errors.length > 0) {
 }
 
 console.log(
-  `[check-release-package-contract] Validated ${releaseCandidates.length} release candidate(s).`,
+  `[check-release-package-contract] Validated ${releaseCandidates.length} candidate(s) and ${supportedPackages.length} supported package(s).`,
 );

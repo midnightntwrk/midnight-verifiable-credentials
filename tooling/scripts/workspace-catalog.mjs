@@ -42,7 +42,7 @@ const workspace = (workspacePath, maturity, packageClass, options = {}) => {
 // visible in one diff.
 export const workspaceCatalog = [
   workspace("packages/core/model", "core", "dist", {
-    releaseStage: "candidate",
+    releaseStage: "supported",
     consumerFixture: "tooling/fixtures/credential-model-consumer",
     consumerChecks: [
       "node",
@@ -188,6 +188,9 @@ export const releaseCandidateWorkspacePaths = workspaceCatalog
   .map((entry) => entry.path);
 export const supportedWorkspacePaths = workspaceCatalog
   .filter((entry) => entry.releaseStage === "supported")
+  .map((entry) => entry.path);
+export const releaseWorkspacePaths = workspaceCatalog
+  .filter((entry) => entry.releaseStage !== "internal")
   .map((entry) => entry.path);
 
 const repoRoot = path.resolve(
@@ -469,6 +472,12 @@ if (isDirectExecution) {
       case "--packable-paths":
         printLines(packableWorkspacePaths);
         break;
+      case "--release-paths":
+        printLines(releaseWorkspacePaths);
+        break;
+      case "--publishable-paths":
+        printLines(supportedWorkspacePaths);
+        break;
       case "--package-test-paths":
         printLines(packageTestWorkspacePaths);
         break;
@@ -487,7 +496,7 @@ if (isDirectExecution) {
         break;
       default:
         stderr.write(
-          "Usage: workspace-catalog.mjs --check | --json | --paths | --packable-paths | --package-test-paths | --exec-task <task> | --exec-typecheck-from-artifacts | --exec-tests-from-artifacts\n",
+          "Usage: workspace-catalog.mjs --check | --json | --paths | --packable-paths | --release-paths | --publishable-paths | --package-test-paths | --exec-task <task> | --exec-typecheck-from-artifacts | --exec-tests-from-artifacts\n",
         );
         process.exit(command === undefined ? 0 : 1);
     }

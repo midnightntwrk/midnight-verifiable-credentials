@@ -4,7 +4,16 @@
 /.github/pull_request_template.md @midnightntwrk/mn-security @midnightntwrk/mn-sre
 /.github/workflows/scan.yaml @midnightntwrk/mn-security @midnightntwrk/mn-sre
 /.github/workflows/dependency-review.yml @midnightntwrk/mn-security @midnightntwrk/mn-sre
+/.github/workflows/publish.yml @midnightntwrk/ex-identus @midnightntwrk/mn-security @midnightntwrk/mn-sre
 /.github/dependabot.yml @midnightntwrk/mn-security @midnightntwrk/mn-sre
+/packages/core/model/ @midnightntwrk/ex-identus
+/docs/guides/npmjs-publication.md @midnightntwrk/ex-identus @midnightntwrk/mn-sre
+/tooling/scripts/generate-release-sbom.mjs @midnightntwrk/ex-identus @midnightntwrk/mn-sre
+/tooling/scripts/npm-release-state.mjs @midnightntwrk/ex-identus @midnightntwrk/mn-sre
+/tooling/scripts/prepare-release-version.mjs @midnightntwrk/ex-identus @midnightntwrk/mn-sre
+/tooling/scripts/publish-npm-packages.sh @midnightntwrk/ex-identus @midnightntwrk/mn-sre
+/tooling/scripts/release-resolve-context.sh @midnightntwrk/ex-identus @midnightntwrk/mn-sre
+/tooling/scripts/wait-for-npm-packages.mjs @midnightntwrk/ex-identus @midnightntwrk/mn-sre
 /docs/security/vulnerability-exceptions.md @midnightntwrk/mn-security @midnightntwrk/mn-sre
 /osv-scanner.toml @midnightntwrk/mn-security @midnightntwrk/mn-sre
 CODE_OF_CONDUCT.md @midnightntwrk/mn-security @midnightntwrk/mn-sre

@@ -52,3 +52,11 @@ closure.
   consumer matrix.
 - Publication enablement remains a separate reviewed change that selects the
   registry, provenance, version, and release operations.
+
+## Implementation status
+
+The first implementation of this decision promotes
+`@midnight-ntwrk/credential-model` to `supported` and adds the manual npmjs
+workflow. Candidate packages remain private. The workflow publishes only
+supported paths from the workspace catalog and cannot publish prototypes,
+use cases, or internal compatibility workspaces.

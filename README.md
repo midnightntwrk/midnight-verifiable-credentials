@@ -27,7 +27,7 @@ Current maturity is mixed by package:
   - [`docs/spec/claim-representation.md`](./docs/spec/claim-representation.md)
 - reference implementation packages:
   - [`credential-model`](./packages/core/model/README.md)
-    - protocol-neutral family-authoring release candidate
+    - protocol-neutral family-authoring package and first supported npm surface
   - [`credentials`](./packages/core/primitives/credentials/README.md)
   - [`credentials-status-registry`](./packages/registry/status-registry/README.md)
     - reusable registry package with the current prototype status / revocation trust model
@@ -315,8 +315,9 @@ pnpm run check:did-integration
 ## Artifact packaging
 
 Stable tarball output lives under [`tooling/artifacts/npm/`](./tooling/artifacts/README.md).
-Only candidate and supported packages are packable; a candidate artifact is
-not automatically a supported release. See the
+Only candidate and supported packages are packable; only supported packages
+are publishable. A candidate artifact is not automatically a supported
+release. See the
 [package release contract](./docs/architecture/package-release-contract.md)
 for the explicit candidate/support inventory and graduation requirements.
 
@@ -324,13 +325,18 @@ Commands:
 
 - `pnpm run artifacts:pack`
 - `pnpm run test:release-package-consumers` (focused rerun against already packed artifacts)
+- `pnpm run test:release-tooling`
 - `pnpm run upgrade:vendor`
 - `./upgrade-libs.sh --destination /path/to/downstream-repo`
 
-The current packable candidate set contains only:
+The current supported publication set contains only:
 
 - `@midnight-ntwrk/credential-model`
 
 All legacy packages, prototypes, use cases, scenarios, reporting, and
 integration workspaces are intentionally excluded from the publication
 artifact set.
+
+Release operators should follow the
+[npmjs publication runbook](./docs/guides/npmjs-publication.md). Public
+publication is manual and runs only through `.github/workflows/publish.yml`.

@@ -3,8 +3,9 @@
 Status: proposed target package graph for ADR-0014.
 
 This catalog defines the reusable packages intended for independent
-credential-family repositories. It is a target inventory, not a statement that
-the packages are currently supported or published.
+credential-family repositories. `@midnight-ntwrk/credential-model` is the
+first supported package; every other row remains a target rather than a claim
+that the package is currently supported or published.
 
 The naming convention uses credential-domain terms instead of the broad `ssi`
 label or the abbreviated `vc` prefix. Package names describe the capability
@@ -173,6 +174,10 @@ Acceptance for this slice is a zero-runtime-dependency package that can define
 a synthetic credential family in an isolated fixture without importing
 workspace source. No existing Compact or product behavior should move in the
 same PR.
+
+This slice is now implemented. The separate publication-enablement change
+promotes the package from private `candidate` to `supported` and adds the
+manual npmjs release train without widening the package graph.
 
 ## Delivery order
 

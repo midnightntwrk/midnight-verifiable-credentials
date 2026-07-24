@@ -152,6 +152,10 @@
   - [`architecture/package-release-contract.md`](./architecture/package-release-contract.md)
   - for release stages, the current package support inventory, candidate
     tarball requirements, and graduation criteria
+- npmjs publication:
+  - [`guides/npmjs-publication.md`](./guides/npmjs-publication.md)
+  - for manual dispatch, npm authentication, provenance, SBOM evidence,
+    dist-tag repair, rollback, and incident response
 - Compact source conventions, purity, and commitment research:
   - [`architecture/compact-source-conventions-and-purity-research.md`](./architecture/compact-source-conventions-and-purity-research.md)
   - for the current comment-style, pure-circuit, and commitment-standardization research cut
