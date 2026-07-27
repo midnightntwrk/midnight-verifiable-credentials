@@ -24,6 +24,7 @@ const __dirname = path.dirname(__filename);
 const REPO_ROOT = path.resolve(__dirname, "../../");
 const DEFAULT_COMPOSE_DIR = path.resolve(REPO_ROOT, "infrastructure", "standalone");
 const DEFAULT_COMPOSE_FILE = "standalone.yml";
+const INDEXER_DEVELOPMENT_KEY = Buffer.alloc(33, 1).toString("hex");
 
 export class StandaloneEnvironment {
   private env: StartedDockerComposeEnvironment | undefined;
@@ -70,7 +71,10 @@ export class StandaloneEnvironment {
     const baseConfig = new StandaloneConfig();
     const dockerEnv = new DockerComposeEnvironment(composePath, composeFile)
       .withProjectName(this.projectName)
-      .withEnvironment({ MIDNIGHT_STACK_NAME: this.projectName })
+      .withEnvironment({
+        INDEXER_DEVELOPMENT_KEY,
+        MIDNIGHT_STACK_NAME: this.projectName,
+      })
       .withWaitStrategy(
         "proof-server",
         Wait.forHttp("/version", 6300).withStartupTimeout(180_000),

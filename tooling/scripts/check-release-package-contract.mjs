@@ -22,6 +22,18 @@ const repoRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "../..",
 );
+const pnpmInvocation = (args) => {
+  if (process.platform !== "win32") {
+    return { command: "pnpm", args };
+  }
+  if (!process.env.npm_execpath) {
+    throw new Error("Windows release checks must be invoked through pnpm");
+  }
+  return {
+    command: process.execPath,
+    args: [process.env.npm_execpath, ...args],
+  };
+};
 const errors = [];
 const installLifecycleHooks = [
   "preinstall",
@@ -357,21 +369,17 @@ const assertReleaseTarball = (entry, tarballDirectory) => {
     path.join(os.tmpdir(), "midnight-vc-release-pack-"),
   );
   try {
-    const result = spawnSync(
-      "pnpm",
-      [
-        "--dir",
-        entry.path,
-        "pack",
-        "--pack-destination",
-        repeatDirectory,
-      ],
-      {
-        cwd: repoRoot,
-        shell: process.platform === "win32",
-        stdio: "inherit",
-      },
-    );
+    const invocation = pnpmInvocation([
+      "--dir",
+      entry.path,
+      "pack",
+      "--pack-destination",
+      repeatDirectory,
+    ]);
+    const result = spawnSync(invocation.command, invocation.args, {
+      cwd: repoRoot,
+      stdio: "inherit",
+    });
     assert(
       result.status === 0,
       `${label} reproducibility pack failed with status ${result.status}`,

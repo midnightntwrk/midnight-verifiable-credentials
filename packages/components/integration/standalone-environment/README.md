@@ -41,11 +41,22 @@ Related docs:
 This package centralizes the Docker-backed environment used by credentials
 integration tests:
 
-- starts the standalone Midnight stack from `api/standalone.yml`
+- starts the standalone Midnight stack from
+  [`../infrastructure/standalone/standalone.yml`](../infrastructure/standalone/standalone.yml)
 - builds and funds a wallet from the dev genesis seed
 - configures API providers against mapped Docker ports
 - provisions real Midnight DID profiles for issuer, holder, and verifier roles
 - tears the environment down cleanly after tests
+
+Runtime requirements:
+
+- Docker Engine with Docker Compose 2.24 or newer; the standalone environment
+  file uses `env_file` variable interpolation
+- automated integration flows must start the stack through
+  `StandaloneEnvironment`, which supplies a deterministic non-secret
+  `INDEXER_DEVELOPMENT_KEY`
+- direct Compose invocations must provide `INDEXER_DEVELOPMENT_KEY` as a
+  nonzero 33-byte hexadecimal development key
 
 Port binding:
 
