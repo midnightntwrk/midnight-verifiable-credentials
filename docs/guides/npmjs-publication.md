@@ -8,28 +8,28 @@ of this release train.
 ## Ownership
 
 - Technical package owner: `@midnightntwrk/ex-identus`
-- Release environment, npm credentials, and incident owner:
-  `@midnightntwrk/mn-sre`
+- npm credentials and incident owner: `@midnightntwrk/mn-sre`
 - Security disclosure and escalation: [`SECURITY.md`](../../SECURITY.md)
 
-The GitHub `npmjs` environment should require an authorized reviewer. The
-repository workflow needs `contents: read` and `id-token: write`; it does not
-need repository write access.
+The initial release path follows `midnight-did`: it uses the organization
+`MIDNIGHTCI_NPMJS_TOKEN` secret directly from the reviewed workflow. A
+protected GitHub environment may be added when repository administration and
+release policy support it, but it is not required to bootstrap publication.
+The workflow needs `contents: read` and `id-token: write`; it does not need
+repository write access.
 
 ## Authentication
 
-Prefer npm trusted publishing for
-`midnightntwrk/midnight-verifiable-credentials` and
-`.github/workflows/publish.yml`. A first publication may require the existing
-`MIDNIGHTCI_NPMJS_TOKEN` because npm trusted-publisher settings are configured
-on an existing package. That token must be a granular read/write token with
-bypass 2FA enabled and only the `@midnight-ntwrk` package permissions needed
-for this release.
+The first publication uses the existing `MIDNIGHTCI_NPMJS_TOKEN`, matching the
+working `midnight-did` npmjs release path. That token must be a granular
+read/write token with bypass 2FA enabled and only the `@midnight-ntwrk` package
+permissions needed for this release.
 
-`@midnightntwrk/mn-sre` owns token creation, GitHub environment configuration,
-rotation, and revocation. Never place a token in repository files, workflow
-inputs, command arguments, artifacts, or logs. After the first release,
-configure the package's trusted publisher and remove the token fallback when
+`@midnightntwrk/mn-sre` owns token creation, rotation, and revocation. Never
+place a token in repository files, workflow inputs, command arguments,
+artifacts, or logs. After the first release, configure npm trusted publishing
+for `midnightntwrk/midnight-verifiable-credentials` and
+`.github/workflows/publish.yml`, then remove the token fallback when
 organization policy permits.
 
 npm trusted publishing requires npm 11.5.1 or newer and Node.js 22.14.0 or
@@ -54,8 +54,8 @@ Before dispatch:
 2. Confirm `workspace-catalog.mjs --publishable-paths` lists only approved
    reusable packages.
 3. Confirm the package changelog, support policy, and version are current.
-4. Confirm the `npmjs` environment and either trusted publishing or
-   `MIDNIGHTCI_NPMJS_TOKEN` are configured.
+4. Confirm `MIDNIGHTCI_NPMJS_TOKEN` is available to this repository and has
+   the required npm scope permissions.
 5. Confirm the requested version does not already contain different bytes.
 
 The workflow reruns `./run.sh --light`, deterministic pack checks, local

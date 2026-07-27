@@ -102,7 +102,7 @@ const scanPath = ".github/workflows/scan.yaml";
 const scan = readYaml(scanPath);
 assertBranches(scan, "push", scanPath);
 assertBranches(scan, "pull_request", scanPath);
-if (scan.jobs?.build?.permissions?.["security-events"] !== "write") {
+if (scan.jobs?.scan?.permissions?.["security-events"] !== "write") {
   errors.push(`${scanPath} scan job must grant security-events: write`);
 }
 
@@ -188,9 +188,6 @@ if (
   errors.push(
     `${publishPath} publish job must grant only read contents and write id-token`,
   );
-}
-if (publishJob?.environment !== "npmjs") {
-  errors.push(`${publishPath} publish job must use the npmjs environment`);
 }
 const publishStep = publishJob?.steps?.find(
   (step) => step.run === "./tooling/scripts/publish-npm-packages.sh",
