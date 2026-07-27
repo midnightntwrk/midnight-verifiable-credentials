@@ -39,7 +39,6 @@ jobs:
     name: Publish supported packages
     runs-on: ubuntu-latest
     timeout-minutes: 120
-    environment: npmjs
     permissions:
       contents: read
       id-token: write
