@@ -11,6 +11,18 @@ const repoRoot = path.resolve(
   "..",
   "..",
 );
+const pnpmInvocation = (args) => {
+  if (process.platform !== "win32") {
+    return { command: "pnpm", args };
+  }
+  if (!process.env.npm_execpath) {
+    throw new Error("Windows BDD prerequisites must be invoked through pnpm");
+  }
+  return {
+    command: process.execPath,
+    args: [process.env.npm_execpath, ...args],
+  };
+};
 const requiredBuildSurfaces = [
   {
     artifactPath: "packages/core/primitives/credentials/dist/index.js",
@@ -87,10 +99,10 @@ for (const artifactPath of missingArtifacts) {
   console.log(`- ${artifactPath}`);
 }
 
-const child = spawn(process.platform === "win32" ? "pnpm.cmd" : "pnpm", ["run", "build:integration-prereqs:shared"], {
+const invocation = pnpmInvocation(["run", "build:integration-prereqs:shared"]);
+const child = spawn(invocation.command, invocation.args, {
   cwd: repoRoot,
   stdio: "inherit",
-  shell: process.platform === "win32",
 });
 
 child.on("exit", (code) => {

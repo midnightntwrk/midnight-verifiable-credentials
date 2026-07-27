@@ -10,11 +10,24 @@ export type BddScenarioReportPipelineOptions = {
 
 export type BddPipelineRunner = (scriptName: string) => Promise<number>;
 
+const pnpmInvocation = (args: readonly string[]) => {
+  if (process.platform !== "win32") {
+    return { command: "pnpm", args };
+  }
+  if (!process.env.npm_execpath) {
+    throw new Error("Windows BDD pipelines must be invoked through pnpm");
+  }
+  return {
+    command: process.execPath,
+    args: [process.env.npm_execpath, ...args],
+  };
+};
+
 const runPnpmScript: BddPipelineRunner = (scriptName) =>
   new Promise((resolve, reject) => {
-    const child = spawn(process.platform === "win32" ? "pnpm.cmd" : "pnpm", ["run", scriptName], {
+    const invocation = pnpmInvocation(["run", scriptName]);
+    const child = spawn(invocation.command, invocation.args, {
       stdio: "inherit",
-      shell: process.platform === "win32",
     });
     child.on("error", reject);
     child.on("exit", (code) => resolve(code ?? 1));

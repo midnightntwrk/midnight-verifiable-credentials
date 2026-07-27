@@ -9,6 +9,18 @@ import { fileURLToPath } from "node:url";
 const distReleaseTasks = ["lint", "typecheck", "build", "test:ci", "prepack"];
 const scenarioReleaseTasks = ["typecheck", "test:ci"];
 const sourceOnlyReleaseTasks = ["typecheck", "test:ci"];
+const pnpmInvocation = (args) => {
+  if (process.platform !== "win32") {
+    return { command: "pnpm", args };
+  }
+  if (!process.env.npm_execpath) {
+    throw new Error("Windows workspace commands must be invoked through pnpm");
+  }
+  return {
+    command: process.execPath,
+    args: [process.env.npm_execpath, ...args],
+  };
+};
 
 const workspace = (workspacePath, maturity, packageClass, options = {}) => {
   const releaseStage = options.releaseStage ?? "internal";
@@ -234,10 +246,17 @@ const checkCatalog = () => {
     "workspace catalog must match root package.json order and membership",
   );
 
+  const workspaceInvocation = pnpmInvocation([
+    "--recursive",
+    "list",
+    "--depth",
+    "-1",
+    "--json",
+  ]);
   const pnpmWorkspaceResult = spawnSync(
-    "pnpm",
-    ["--recursive", "list", "--depth", "-1", "--json"],
-    { cwd: repoRoot, encoding: "utf8", shell: process.platform === "win32" },
+    workspaceInvocation.command,
+    workspaceInvocation.args,
+    { cwd: repoRoot, encoding: "utf8" },
   );
   assert.equal(
     pnpmWorkspaceResult.status,
@@ -398,9 +417,9 @@ const executeReleaseTask = (task) => {
   }
 
   stdout.write(`[workspace-catalog] pnpm ${args.join(" ")}\n`);
-  const result = spawnSync("pnpm", args, {
+  const invocation = pnpmInvocation(args);
+  const result = spawnSync(invocation.command, invocation.args, {
     cwd: repoRoot,
-    shell: process.platform === "win32",
     stdio: "inherit",
   });
   process.exitCode = result.status ?? (result.signal ? 128 : 1);
@@ -422,9 +441,9 @@ const executeTypecheckFromArtifacts = () => {
       "--noEmit",
     ];
     stdout.write(`[workspace-catalog] pnpm ${args.join(" ")}\n`);
-    const result = spawnSync("pnpm", args, {
+    const invocation = pnpmInvocation(args);
+    const result = spawnSync(invocation.command, invocation.args, {
       cwd: repoRoot,
-      shell: process.platform === "win32",
       stdio: "inherit",
     });
     if (result.status !== 0) {
@@ -445,9 +464,9 @@ const executeTestsFromArtifacts = () => {
   for (const entry of eligible) {
     const args = ["--dir", entry.path, ...entry.testFromArtifacts];
     stdout.write(`[workspace-catalog] pnpm ${args.join(" ")}\n`);
-    const result = spawnSync("pnpm", args, {
+    const invocation = pnpmInvocation(args);
+    const result = spawnSync(invocation.command, invocation.args, {
       cwd: repoRoot,
-      shell: process.platform === "win32",
       stdio: "inherit",
     });
     if (result.status !== 0) {

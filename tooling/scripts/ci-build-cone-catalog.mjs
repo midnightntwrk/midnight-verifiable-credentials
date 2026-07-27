@@ -3,6 +3,19 @@ import { spawnSync } from "node:child_process";
 import { stderr, stdout } from "node:process";
 import { workspaceCatalog } from "./workspace-catalog.mjs";
 
+const pnpmInvocation = (args) => {
+  if (process.platform !== "win32") {
+    return { command: "pnpm", args };
+  }
+  if (!process.env.npm_execpath) {
+    throw new Error("Windows CI build cones must be invoked through pnpm");
+  }
+  return {
+    command: process.execPath,
+    args: [process.env.npm_execpath, ...args],
+  };
+};
+
 const releaseBuildWorkspaces = workspaceCatalog
   .filter((entry) => entry.releaseTasks.includes("build"))
   .map((entry) => entry.path);
@@ -235,14 +248,14 @@ if (isDirectExecution) {
         stdout.write(`${buildConeScriptCommand(value)}\n`);
         break;
       case "--exec-build": {
-        const result = spawnSync(
+        const invocation = pnpmInvocation([
+          "exec",
           "turbo",
-          buildConeCommandArgs(requireCone(value)),
-          {
-            shell: process.platform === "win32",
-            stdio: "inherit",
-          },
-        );
+          ...buildConeCommandArgs(requireCone(value)),
+        ]);
+        const result = spawnSync(invocation.command, invocation.args, {
+          stdio: "inherit",
+        });
         process.exitCode = result.status ?? (result.signal ? 128 : 1);
         break;
       }
