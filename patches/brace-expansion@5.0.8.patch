@@ -1,0 +1,18 @@
+diff --git a/dist/commonjs/index.js b/dist/commonjs/index.js
+index be9df86be09c7655787a65c55ae6da01858894c3..1b1a5bcdf81fa08faae63b5210923801fe3da5de 100644
+--- a/dist/commonjs/index.js
++++ b/dist/commonjs/index.js
+@@ -260,4 +260,13 @@ function expand_(str, max, maxLength, isTop) {
+     }
+     return acc;
+ }
++// Legacy minimatch releases require the package itself as a function, while
++// current releases consume named exports. Preserve both APIs so every
++// transitive consumer can use the patched v5 implementation.
++expand.expand = expand;
++expand.default = expand;
++expand.EXPANSION_MAX = exports.EXPANSION_MAX;
++expand.EXPANSION_MAX_LENGTH = exports.EXPANSION_MAX_LENGTH;
++Object.defineProperty(expand, "__esModule", { value: true });
++module.exports = expand;
+ //# sourceMappingURL=index.js.map
