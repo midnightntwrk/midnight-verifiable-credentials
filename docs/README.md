@@ -233,6 +233,10 @@
 - VC production execution plan:
   - [`plans/vc-production-execution-plan-2026-07-16.md`](./plans/vc-production-execution-plan-2026-07-16.md)
   - for dedicated branch, PR dependency, CI, review, and merge sequencing
+- public repository hardening:
+  - [`plans/public-repository-hardening.md`](./plans/public-repository-hardening.md)
+  - for Scorecard evidence, repository-local controls, and GitHub/IaC owner
+    actions
 - remaining VC production deliverables:
   - [`plans/vc-remaining-deliverables.md`](./plans/vc-remaining-deliverables.md)
   - for the current completed baseline, outstanding deliverables, dependency

@@ -1,5 +1,7 @@
 # Midnight Verifiable Credentials
 
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/midnightntwrk/midnight-verifiable-credentials/badge)](https://scorecard.dev/viewer/?uri=github.com/midnightntwrk/midnight-verifiable-credentials)
+
 Compact-first Verifiable Credentials and Verifiable Presentations for Midnight.
 
 This repository contains:
