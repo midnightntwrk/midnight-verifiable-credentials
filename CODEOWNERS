@@ -1,10 +1,10 @@
-* @midnightntwrk/mn-codeowners-mnf-se
-/.github/ISSUE_TEMPLATE/ @midnightntwrk/mn-security @midnightntwrk/mn-sre
-/.github/PULL_REQUEST_TEMPLATE/ @midnightntwrk/mn-security @midnightntwrk/mn-sre
-/.github/workflows/scan.yaml @midnightntwrk/mn-security @midnightntwrk/mn-sre
-/.github/workflows/dependabot.yml @midnightntwrk/mn-security @midnightntwrk/mn-sre
-CODE_OF_CONDUCT.md @midnightntwrk/mn-security @midnightntwrk/mn-sre
-CODEOWNERS @midnightntwrk/mn-security @midnightntwrk/mn-sre
-CONTRIBUTING.md @midnightntwrk/mn-security @midnightntwrk/mn-sre
-LICENSE @midnightntwrk/mn-security @midnightntwrk/mn-sre
-SECURITY.md @midnightntwrk/mn-security @midnightntwrk/mn-sre
+* @midnightntwrk/ex-identus @midnightntwrk/mn-codeowners-mnf-se
+/.github/ISSUE_TEMPLATE/ @midnightntwrk/ex-identus @midnightntwrk/mn-security @midnightntwrk/mn-sre
+/.github/PULL_REQUEST_TEMPLATE/ @midnightntwrk/ex-identus @midnightntwrk/mn-security @midnightntwrk/mn-sre
+/.github/workflows/scan.yaml @midnightntwrk/ex-identus @midnightntwrk/mn-security @midnightntwrk/mn-sre
+/.github/workflows/dependabot.yml @midnightntwrk/ex-identus @midnightntwrk/mn-security @midnightntwrk/mn-sre
+CODE_OF_CONDUCT.md @midnightntwrk/ex-identus @midnightntwrk/mn-security @midnightntwrk/mn-sre
+CODEOWNERS @midnightntwrk/ex-identus @midnightntwrk/mn-security @midnightntwrk/mn-sre
+CONTRIBUTING.md @midnightntwrk/ex-identus @midnightntwrk/mn-security @midnightntwrk/mn-sre
+LICENSE @midnightntwrk/ex-identus @midnightntwrk/mn-security @midnightntwrk/mn-sre
+SECURITY.md @midnightntwrk/ex-identus @midnightntwrk/mn-security @midnightntwrk/mn-sre
