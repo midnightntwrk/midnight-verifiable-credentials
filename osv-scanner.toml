@@ -1,4 +1,4 @@
 [[IgnoredVulns]]
 id = "GHSA-848j-6mx2-7j84"
-ignoreUntil = 2026-08-15
+ignoreUntil = 2026-11-15
 reason = "No upstream elliptic release fixes this issue. Risk acceptance: docs/security/vulnerability-exceptions.md#ghsa-848j-6mx2-7j84"
