@@ -76,6 +76,8 @@ Start here:
 - claim representation companion:
   - [`docs/spec/claim-representation.md`](./docs/spec/claim-representation.md)
 - companion guides:
+  - [`docs/pi-development.md`](./docs/pi-development.md)
+    - optional pinned Pi development-loop interface and VC-specific review policy
   - [`docs/guides/midnight-credentials-for-dummies.md`](./docs/guides/midnight-credentials-for-dummies.md)
   - [`docs/guides/package-selection.md`](./docs/guides/package-selection.md)
   - [`docs/guides/integration-surface-map.md`](./docs/guides/integration-surface-map.md)

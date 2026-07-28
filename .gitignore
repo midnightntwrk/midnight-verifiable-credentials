@@ -41,6 +41,8 @@ jspm_packages/
 cli/.npm-cache
 contract/.npm-cache
 .turbo/
+.pi/*
+!.pi/settings.json
 .tmp-trusted-time-capability-*
 
 # Optional eslint cache
