@@ -105,6 +105,70 @@ assertBranches(scan, "pull_request", scanPath);
 if (scan.jobs?.scan?.permissions?.["security-events"] !== "write") {
   errors.push(`${scanPath} scan job must grant security-events: write`);
 }
+const scanActionStep = scan.jobs?.scan?.steps?.find(
+  (step) =>
+    typeof step.uses === "string" &&
+    step.uses.startsWith("midnightntwrk/upload-sarif-github-action@"),
+);
+if (scanActionStep?.with?.skip_scorecard_scan !== "true") {
+  errors.push(
+    `${scanPath} must skip Scorecard because the dedicated workflow owns it`,
+  );
+}
+if (scanActionStep?.with?.scorecard_checks !== undefined) {
+  errors.push(`${scanPath} must not configure competing Scorecard checks`);
+}
+
+const scorecardPath = ".github/workflows/scorecard.yml";
+const scorecard = readYaml(scorecardPath);
+const scorecardEvents = scorecard.on ?? {};
+if (!scorecardEvents.push?.branches?.includes("main")) {
+  errors.push(`${scorecardPath} must run on pushes to main`);
+}
+if (scorecardEvents.pull_request !== undefined) {
+  errors.push(`${scorecardPath} must not publish results from pull requests`);
+}
+if (!scorecardEvents.workflow_dispatch) {
+  errors.push(`${scorecardPath} must be manually dispatchable`);
+}
+if (
+  !Array.isArray(scorecardEvents.schedule) ||
+  scorecardEvents.schedule.length === 0
+) {
+  errors.push(`${scorecardPath} must run on a schedule`);
+}
+
+const scorecardJob = scorecard.jobs?.analysis;
+if (
+  scorecardJob?.permissions?.contents !== "read" ||
+  scorecardJob?.permissions?.["id-token"] !== "write" ||
+  scorecardJob?.permissions?.["security-events"] !== "write"
+) {
+  errors.push(
+    `${scorecardPath} analysis must grant read contents, write id-token, and write security-events`,
+  );
+}
+const scorecardStep = scorecardJob?.steps?.find(
+  (step) =>
+    typeof step.uses === "string" &&
+    step.uses.startsWith("ossf/scorecard-action@"),
+);
+if (
+  scorecardStep?.with?.results_format !== "sarif" ||
+  scorecardStep?.with?.publish_results !== true
+) {
+  errors.push(
+    `${scorecardPath} must publish official Scorecard results in SARIF format`,
+  );
+}
+const scorecardUploadStep = scorecardJob?.steps?.find(
+  (step) =>
+    typeof step.uses === "string" &&
+    step.uses.startsWith("github/codeql-action/upload-sarif@"),
+);
+if (scorecardUploadStep?.with?.sarif_file !== "results.sarif") {
+  errors.push(`${scorecardPath} must upload results.sarif`);
+}
 
 const dependencyReviewPath = ".github/workflows/dependency-review.yml";
 const dependencyReview = readYaml(dependencyReviewPath);
@@ -242,5 +306,5 @@ if (errors.length > 0) {
 }
 
 console.log(
-  "Security workflow contract is valid: branch coverage, public dependency review, Dependabot, immutable action refs, checkout credential hygiene, and manual provenance publication.",
+  "Security workflow contract is valid: branch coverage, dedicated Scorecard publication, public dependency review, Dependabot, immutable action refs, checkout credential hygiene, and manual provenance publication.",
 );
