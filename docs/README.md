@@ -41,6 +41,10 @@
 
 ## Guides
 
+- optional Pi development loop:
+  - [`pi-development.md`](./pi-development.md)
+  - for maintainers using the pinned local agent harness and VC-specific
+    review, validation, CI-triage, and human-approval policy
 - companion explainer:
   - [`guides/midnight-credentials-for-dummies.md`](./guides/midnight-credentials-for-dummies.md)
   - for readers new to Midnight VC concepts
