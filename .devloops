@@ -156,7 +156,7 @@ validation:
           - integration/**
           - tests/**
           - run-credentials-standalone.sh
-          - tooling/scripts/report-integration.mjs
+          - tooling/scripts/report-did-integration.mjs
   prePr:
     required: true
     repeatPreCommit: true
