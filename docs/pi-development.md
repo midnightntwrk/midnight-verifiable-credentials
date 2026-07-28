@@ -4,9 +4,33 @@ This repository supports Pi as an optional local interface for the pinned
 `dev-loops` development workflow. The repository does not require Pi to build,
 test, publish, or review code.
 
+## Bootstrap from Nix
+
+From the repository root, enter the development shell:
+
+```sh
+nix develop
+```
+
+The shell provides the pinned Node/pnpm toolchain, Midnight Compact tools,
+common repository CLIs (`git`, `gh`, `jq`, `just`), and a repo-local Pi install
+under `.pi/nix-global`. It runs `just bootstrap` automatically, which installs
+pnpm dependencies when needed and installs Pi locally if missing.
+
+Use these helpers inside the shell:
+
+```sh
+just targets     # list repository validation targets
+just check       # run the light non-Docker gate
+just pi-doctor   # show Pi/dev-loop wiring
+```
+
+Set `MVVC_SKIP_BOOTSTRAP=1 nix develop` to skip the automatic bootstrap and run
+individual `just` targets manually.
+
 ## Start a session
 
-From the repository root, after installing and authenticating Pi:
+From the repository root, after entering `nix develop` and authenticating Pi:
 
 ```sh
 pi
@@ -14,8 +38,8 @@ pi
 
 The first session may ask you to trust the repository because it contains
 `.pi/settings.json`. Trust is required before Pi loads the project-local
-`dev-loops` package. Pi packages run with the permissions of the invoking user,
-so review package-pin changes as executable tooling.
+`dev-loops` and `pi-subagents` packages. Pi packages run with the permissions of
+the invoking user, so review package-pin changes as executable tooling.
 
 Check the loop tooling with:
 
