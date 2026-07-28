@@ -184,11 +184,12 @@ externalReview:
     claude:
       enabled: true
       command: >-
-        claude --print --allowedTools 'Bash(git *),Bash(gh *),Bash(rg *),Read'
+        claude --print --allowedTools
+        'Bash(git diff *),Bash(git log *),Bash(git show *),Bash(git status *),Bash(gh pr diff *),Bash(gh pr view *),Bash(rg *),Read'
     codex:
       enabled: true
       command: >-
-        codex -m gpt-5.5 review --base origin/develop
+        codex review --base origin/develop
   instructions: >-
     Review this PR for correctness, security, stale docs, package/API
     compatibility, tests, and regression risk. Do not modify files. Return only
