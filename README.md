@@ -13,6 +13,26 @@ This repository contains:
 - verifier-contract demos
 - standalone integration infrastructure
 
+## Quick start
+
+Use the pinned Nix development shell for the repo toolchain, Node/pnpm deps,
+Midnight Compact tools, and the optional Pi development harness:
+
+```sh
+nix develop
+```
+
+The shell runs `just bootstrap` automatically. After it finishes, use:
+
+```sh
+pi              # start the Pi development interface
+just targets    # list repository validation targets
+just check      # run the light non-Docker gate
+```
+
+Set `MVVC_SKIP_BOOTSTRAP=1 nix develop` if you want to enter the shell without
+installing/updating local dependencies.
+
 ## Status
 
 Current maturity is mixed by package:

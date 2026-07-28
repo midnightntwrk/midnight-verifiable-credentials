@@ -103,6 +103,8 @@ research/identity-examples/**/.env
 .claude/*
 !.claude/skills/
 !.claude/skills/**
+.pi-subagents/
+tmp/worktrees/
 review/
 
 docs-site/.vitepress/.temp/
