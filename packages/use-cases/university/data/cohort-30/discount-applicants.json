@@ -1,0 +1,72 @@
+[
+  {
+    "studentId": "STU-0001",
+    "fullName": "Ada Avery 0001",
+    "finalGrade": 98,
+    "expectedDiscountEligibility": true,
+    "explanation": "grade is at least the mall threshold (91)"
+  },
+  {
+    "studentId": "STU-0002",
+    "fullName": "Ben Avery 0002",
+    "finalGrade": 94,
+    "expectedDiscountEligibility": true,
+    "explanation": "grade is at least the mall threshold (91)"
+  },
+  {
+    "studentId": "STU-0003",
+    "fullName": "Cara Avery 0003",
+    "finalGrade": 91,
+    "expectedDiscountEligibility": true,
+    "explanation": "grade is at least the mall threshold (91)"
+  },
+  {
+    "studentId": "STU-0004",
+    "fullName": "Dion Avery 0004",
+    "finalGrade": 90,
+    "expectedDiscountEligibility": false,
+    "explanation": "grade is below the mall threshold (91)"
+  },
+  {
+    "studentId": "STU-0005",
+    "fullName": "Ella Avery 0005",
+    "finalGrade": 72,
+    "expectedDiscountEligibility": false,
+    "explanation": "grade is below the mall threshold (91)"
+  },
+  {
+    "studentId": "STU-0006",
+    "fullName": "Finn Avery 0006",
+    "finalGrade": 100,
+    "expectedDiscountEligibility": true,
+    "explanation": "grade is at least the mall threshold (91)"
+  },
+  {
+    "studentId": "STU-0007",
+    "fullName": "Gia Avery 0007",
+    "finalGrade": 71,
+    "expectedDiscountEligibility": false,
+    "explanation": "grade is below the mall threshold (91)"
+  },
+  {
+    "studentId": "STU-0008",
+    "fullName": "Hugo Avery 0008",
+    "finalGrade": 78,
+    "expectedDiscountEligibility": false,
+    "explanation": "grade is below the mall threshold (91)"
+  },
+  {
+    "studentId": "STU-0009",
+    "fullName": "Iris Avery 0009",
+    "finalGrade": 85,
+    "expectedDiscountEligibility": false,
+    "explanation": "grade is below the mall threshold (91)"
+  },
+  {
+    "studentId": "STU-0010",
+    "fullName": "Jude Avery 0010",
+    "finalGrade": 92,
+    "expectedDiscountEligibility": true,
+    "explanation": "grade is at least the mall threshold (91)"
+  }
+]

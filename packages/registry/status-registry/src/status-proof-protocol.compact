@@ -1,0 +1,715 @@
+pragma language_version >= 0.20;
+
+import CompactStandardLibrary;
+
+// Status proof protocol surface.
+// Owns the verifier-supplied-root, same-contract live-state, and
+// authority-attested status protocol model above the VC-side binding layer.
+// It intentionally does not own the ledger mutation path or the final generic
+// Merkle non-membership proof.
+
+// Include rule:
+// - callers must include the shared `credentials` Compact surface before this
+//   file.
+// - this file depends on `credentials` for:
+//   - VC-side binding types such as `RegistryBoundStatusBinding` and
+//     `StatusRegistryRef`
+//   - proof primitives such as `Proof` and
+//     `assertValidStatusAttestationContextProof`
+//   - shared validators such as `assertValidRegistryBoundStatusBinding`
+// - current callers satisfy that prerequisite directly:
+//   - `revocation-registry.compact` via the bundled `credentials` surface
+//   - `secret-birth-credential.compact` via `credentials/composable`
+// - this file does not re-include `credentials` directly because Compact
+//   repeated includes can surface duplicate bindings in downstream families.
+
+// =====================
+// Capability and policy model
+// =====================
+
+export enum StatusCapabilityKind {
+  noStatus,
+  publicStatus,
+  revokedSetNonMembership,
+  authorityAttestedStatus
+}
+
+export struct NoStatusCapability {}
+
+export struct RevokedSetNonMembershipStatusCapability {
+  statusType: StatusType,
+  registryRef: StatusRegistryRef,
+  statusHandleCommitment: Bytes<32>,
+}
+
+export struct AuthorityAttestedStatusCapability {
+  statusType: StatusType,
+  registryRef: StatusRegistryRef,
+  statusHandleCommitment: Bytes<32>,
+}
+
+export struct VerifierStatusPolicy {
+  requireStatus: Boolean,
+  acceptedStatusCapability: StatusCapabilityKind,
+  enforceRegistryId: Boolean,
+  acceptedRegistryId: Bytes<32>,
+  // `maxAttestationAge` uses the same time unit as the verifier-supplied
+  // `currentTime` and the authority-attested proof `createdAt`.
+  enforceAttestationMaxAge: Boolean,
+  maxAttestationAge: Uint<64>,
+}
+
+export struct RevocationRegistryState {
+  registryId: Bytes<32>,
+  revokedRoot: Bytes<32>,
+  registryVersion: Uint<64>,
+}
+
+export struct RevokedSetStatusRequest {
+  registryState: RevocationRegistryState,
+  verifierChallengeHash: Bytes<32>,
+}
+
+export struct RevokedSetNonMembershipWitnessInput {
+  registryState: RevocationRegistryState,
+  statusHandle: Bytes<32>,
+  statusHandleOpening: Bytes<32>,
+}
+
+export struct LiveStatusWitnessInput {
+  statusHandle: Bytes<32>,
+  statusHandleOpening: Bytes<32>,
+}
+
+export struct RevokedSetNonMembershipStatusProofProtocol {
+  request: RevokedSetStatusRequest,
+  witnessInput: RevokedSetNonMembershipWitnessInput,
+}
+
+export struct AuthorityAttestedStatusStatement {
+  registryState: RevocationRegistryState,
+  statusHandleCommitment: Bytes<32>,
+  verifierChallengeHash: Bytes<32>,
+  hasExpiration: Boolean,
+  expiresAt: Uint<64>,
+}
+
+export struct AuthorityAttestedStatusProof {
+  statement: AuthorityAttestedStatusStatement,
+  proof: Proof,
+}
+
+export struct AuthorityAttestedStatusProofProtocol {
+  request: RevokedSetStatusRequest,
+  attestation: AuthorityAttestedStatusProof,
+}
+
+// =====================
+// Capability and request validation
+// =====================
+export pure circuit assertValidNoStatusCapability(
+  capability: NoStatusCapability
+): [] {
+  // NOTE: NoStatusCapability is intentionally empty; this validator stays as a
+  // symmetry point with the real capability variants.
+}
+
+export pure circuit assertValidRevokedSetNonMembershipStatusCapability(
+  capability: RevokedSetNonMembershipStatusCapability
+): [] {
+  assert(
+    capability.statusType == StatusType.revocationRegistry,
+    "Revoked-set status capability type must be revocationRegistry"
+  );
+  assertValidStatusRegistryRef(capability.registryRef);
+  assert(
+    capability.statusHandleCommitment != pad(32, ""),
+    "Status handle commitment must be set"
+  );
+}
+
+export pure circuit assertValidAuthorityAttestedStatusCapability(
+  capability: AuthorityAttestedStatusCapability
+): [] {
+  assert(
+    capability.statusType == StatusType.revocationRegistry,
+    "Authority-attested status capability type must be revocationRegistry"
+  );
+  assertValidStatusRegistryRef(capability.registryRef);
+  assert(
+    capability.statusHandleCommitment != pad(32, ""),
+    "Authority-attested status handle commitment must be set"
+  );
+}
+
+export pure circuit assertValidVerifierStatusPolicy(
+  policy: VerifierStatusPolicy
+): [] {
+  if (policy.requireStatus) {
+    assert(
+      policy.acceptedStatusCapability != StatusCapabilityKind.noStatus,
+      "Required status policy must request a real status capability"
+    );
+  } else {
+    assert(
+      policy.acceptedStatusCapability == StatusCapabilityKind.noStatus,
+      "Optional status policy must collapse to NoStatusCapability"
+    );
+    assert(
+      !policy.enforceRegistryId,
+      "Optional status policy must not enforce a registry"
+    );
+    assert(
+      !policy.enforceAttestationMaxAge,
+      "Optional status policy must not enforce attestation max-age"
+    );
+    assert(
+      policy.maxAttestationAge == 0,
+      "Optional status policy must not set attestation max-age"
+    );
+  }
+
+  if (policy.enforceRegistryId) {
+    assert(
+      policy.acceptedRegistryId != pad(32, ""),
+      "Accepted status registry id must be set when enforced"
+    );
+  }
+
+  if (policy.enforceAttestationMaxAge) {
+    assert(
+      policy.acceptedStatusCapability == StatusCapabilityKind.authorityAttestedStatus,
+      "Attestation max-age policy only applies to authority-attested status"
+    );
+    assert(
+      policy.maxAttestationAge >= 1,
+      "Attestation max-age policy must request a real freshness window"
+    );
+  } else {
+    assert(
+      policy.maxAttestationAge == 0,
+      "Disabled attestation max-age policy must not carry a freshness window"
+    );
+  }
+}
+
+export pure circuit assertValidRevocationRegistryState(
+  state: RevocationRegistryState
+): [] {
+  assert(
+    state.registryId != pad(32, ""),
+    "Revocation registry id must be set"
+  );
+  assert(
+    state.registryVersion == 0 || state.revokedRoot != pad(32, ""),
+    "Revocation registry root must be set after the registry version advances"
+  );
+}
+
+export pure circuit assertValidRevokedSetStatusRequest(
+  request: RevokedSetStatusRequest
+): [] {
+  assertValidRevocationRegistryState(request.registryState);
+  assert(
+    request.verifierChallengeHash != pad(32, ""),
+    "Status request verifier challenge hash must be set"
+  );
+}
+
+export pure circuit revokedSetStatusHandleCommitment(
+  statusHandle: Bytes<32>,
+  opening: Bytes<32>
+): Bytes<32> {
+  return persistentCommit<Bytes<32>>(statusHandle, opening);
+}
+
+export pure circuit revokedSetStatusHandle(
+  credentialClaimRoot: Bytes<32>,
+  registryId: Bytes<32>,
+  issuerStatusSalt: Bytes<32>
+): Bytes<32> {
+  return persistentHash<Vector<4, Bytes<32>>>([
+    pad(32, "midnight:vc:status-handle"),
+    credentialClaimRoot,
+    registryId,
+    issuerStatusSalt
+  ]);
+}
+
+export pure circuit assertValidRevokedSetNonMembershipWitnessInput(
+  witnessInput: RevokedSetNonMembershipWitnessInput
+): [] {
+  assertValidRevocationRegistryState(witnessInput.registryState);
+  assert(
+    witnessInput.statusHandle != pad(32, ""),
+    "Revoked-set status handle witness must be set"
+  );
+  assert(
+    witnessInput.statusHandleOpening != pad(32, ""),
+    "Revoked-set status handle opening witness must be set"
+  );
+}
+
+export pure circuit assertValidLiveStatusWitnessInput(
+  witnessInput: LiveStatusWitnessInput
+): [] {
+  assert(
+    witnessInput.statusHandle != pad(32, ""),
+    "Live status handle witness must be set"
+  );
+  assert(
+    witnessInput.statusHandleOpening != pad(32, ""),
+    "Live status handle opening witness must be set"
+  );
+}
+
+// =====================
+// Revoked-set observed-snapshot and live-state protocol matching
+// =====================
+export pure circuit assertValidRevokedSetNonMembershipStatusProofProtocol(
+  protocol: RevokedSetNonMembershipStatusProofProtocol
+): [] {
+  assertValidRevokedSetStatusRequest(protocol.request);
+  assertValidRevokedSetNonMembershipWitnessInput(protocol.witnessInput);
+  assert(
+    protocol.request.registryState.registryId
+      == protocol.witnessInput.registryState.registryId,
+    "Revoked-set status proof protocol registry id does not match the verifier request"
+  );
+  assert(
+    protocol.request.registryState.revokedRoot
+      == protocol.witnessInput.registryState.revokedRoot,
+    "Revoked-set status proof protocol revoked root does not match the verifier request"
+  );
+  assert(
+    protocol.request.registryState.registryVersion
+      == protocol.witnessInput.registryState.registryVersion,
+    "Revoked-set status proof protocol registry version does not match the verifier request"
+  );
+}
+
+export pure circuit assertRegistryBoundStatusBindingMatchesRevokedSetNonMembershipStatusProofProtocol(
+  binding: RegistryBoundStatusBinding,
+  protocol: RevokedSetNonMembershipStatusProofProtocol
+): [] {
+  assertValidRegistryBoundStatusBinding(binding);
+  assertValidRevokedSetNonMembershipStatusProofProtocol(protocol);
+  // PROTOTYPE: this binds witness inputs to the committed status-handle and
+  // verifier-supplied registry snapshot only. It does not yet prove Merkle
+  // non-membership of `protocol.witnessInput.statusHandle` against
+  // `protocol.request.registryState.revokedRoot`.
+  assert(
+    binding.registryRef.registryId == protocol.request.registryState.registryId,
+    "Revoked-set status proof protocol registry does not match the status binding"
+  );
+  assert(
+    binding.statusHandleCommitment == revokedSetStatusHandleCommitment(
+      protocol.witnessInput.statusHandle,
+      protocol.witnessInput.statusHandleOpening
+    ),
+    "Revoked-set status proof protocol does not match the status handle commitment"
+  );
+}
+
+export pure circuit assertRevokedSetNonMembershipWitnessMatchesBinding(
+  binding: RegistryBoundStatusBinding,
+  witnessInput: RevokedSetNonMembershipWitnessInput
+): [] {
+  assertValidRegistryBoundStatusBinding(binding);
+  assertValidRevokedSetNonMembershipWitnessInput(witnessInput);
+  // PROTOTYPE: this binds witness inputs to the committed status-handle and
+  // registry domain only. It does not yet prove Merkle non-membership of
+  // `witnessInput.statusHandle` against `witnessInput.registryState.revokedRoot`.
+  assert(
+    binding.registryRef.registryId == witnessInput.registryState.registryId,
+    "Revoked-set status witness registry does not match the status binding"
+  );
+  assert(
+    binding.statusHandleCommitment == revokedSetStatusHandleCommitment(
+      witnessInput.statusHandle,
+      witnessInput.statusHandleOpening
+    ),
+    "Revoked-set status witness does not match the status binding handle commitment"
+  );
+}
+
+export pure circuit assertLiveStatusWitnessMatchesBinding(
+  binding: RegistryBoundStatusBinding,
+  witnessInput: LiveStatusWitnessInput
+): [] {
+  assertValidRegistryBoundStatusBinding(binding);
+  assertValidLiveStatusWitnessInput(witnessInput);
+  assert(
+    binding.statusHandleCommitment == revokedSetStatusHandleCommitment(
+      witnessInput.statusHandle,
+      witnessInput.statusHandleOpening
+    ),
+    "Live status witness does not match the status binding handle commitment"
+  );
+}
+
+// =====================
+// Authority-attested status statements and proof matching
+// =====================
+export pure circuit authorityAttestedStatusStatementRoot(
+  statement: AuthorityAttestedStatusStatement
+): Bytes<32> {
+  return persistentHash<AuthorityAttestedStatusStatement>(statement);
+}
+
+export pure circuit assertValidAuthorityAttestedStatusStatement(
+  statement: AuthorityAttestedStatusStatement
+): [] {
+  assertValidRevocationRegistryState(statement.registryState);
+  assert(
+    statement.statusHandleCommitment != pad(32, ""),
+    "Authority-attested status handle commitment must be set"
+  );
+  assert(
+    statement.verifierChallengeHash != pad(32, ""),
+    "Authority-attested verifier challenge hash must be set"
+  );
+  if (statement.hasExpiration) {
+    assert(
+      statement.expiresAt >= 1,
+      "Authority-attested status expiration must be a real timestamp"
+    );
+  }
+}
+
+export pure circuit assertValidAuthorityAttestedStatusProof(
+  attestation: AuthorityAttestedStatusProof
+): [] {
+  assertValidAuthorityAttestedStatusStatement(attestation.statement);
+  assert(
+    attestation.proof.challengeHash == attestation.statement.verifierChallengeHash,
+    "Authority-attested status proof challenge hash does not match the statement"
+  );
+  if (attestation.statement.hasExpiration) {
+    assert(
+      attestation.statement.expiresAt >= attestation.proof.createdAt,
+      "Authority-attested status expiration must not precede proof creation"
+    );
+  }
+  assertValidStatusAttestationContextProof(
+    authorityAttestedStatusStatementRoot(attestation.statement),
+    attestation.proof
+  );
+}
+
+export pure circuit assertValidAuthorityAttestedStatusProofProtocol(
+  protocol: AuthorityAttestedStatusProofProtocol
+): [] {
+  assertValidRevokedSetStatusRequest(protocol.request);
+  assertValidAuthorityAttestedStatusProof(protocol.attestation);
+  assert(
+    protocol.request.registryState.registryId
+      == protocol.attestation.statement.registryState.registryId,
+    "Authority-attested status proof protocol registry id does not match the verifier request"
+  );
+  assert(
+    protocol.request.registryState.revokedRoot
+      == protocol.attestation.statement.registryState.revokedRoot,
+    "Authority-attested status proof protocol revoked root does not match the verifier request"
+  );
+  assert(
+    protocol.request.registryState.registryVersion
+      == protocol.attestation.statement.registryState.registryVersion,
+    "Authority-attested status proof protocol registry version does not match the verifier request"
+  );
+  assert(
+    protocol.request.verifierChallengeHash
+      == protocol.attestation.statement.verifierChallengeHash,
+    "Authority-attested status proof protocol challenge hash does not match the verifier request"
+  );
+}
+
+export pure circuit assertRegistryBoundStatusBindingMatchesAuthorityAttestedStatusProofProtocol(
+  binding: RegistryBoundStatusBinding,
+  protocol: AuthorityAttestedStatusProofProtocol,
+  currentTime: Uint<64>
+): [] {
+  assertValidRegistryBoundStatusBinding(binding);
+  assertValidAuthorityAttestedStatusProofProtocol(protocol);
+  assertAuthorityAttestedStatusProofMatchesRequest(
+    protocol.request,
+    protocol.attestation,
+    currentTime
+  );
+  assert(
+    binding.registryRef.registryId == protocol.request.registryState.registryId,
+    "Authority-attested status proof protocol registry does not match the status binding"
+  );
+  assert(
+    binding.statusHandleCommitment
+      == protocol.attestation.statement.statusHandleCommitment,
+    "Authority-attested status handle commitment does not match the status binding"
+  );
+  assert(
+    binding.registryRef.authorityVerificationMethodRef.didContractAddress
+      == protocol.attestation.proof.signerVerificationMethodRef.didContractAddress,
+    "Authority-attested proof contract address does not match the status authority"
+  );
+  assert(
+    binding.registryRef.authorityVerificationMethodRef.methodId
+      == protocol.attestation.proof.signerVerificationMethodRef.methodId,
+    "Authority-attested proof method reference does not match the status authority"
+  );
+}
+
+export pure circuit assertAuthorityAttestedStatusProofMatchesBinding(
+  binding: RegistryBoundStatusBinding,
+  attestation: AuthorityAttestedStatusProof
+): [] {
+  assertValidRegistryBoundStatusBinding(binding);
+  assertValidAuthorityAttestedStatusProof(attestation);
+  assert(
+    binding.registryRef.registryId == attestation.statement.registryState.registryId,
+    "Authority-attested status registry does not match the status binding"
+  );
+  assert(
+    binding.statusHandleCommitment == attestation.statement.statusHandleCommitment,
+    "Authority-attested status handle commitment does not match the status binding"
+  );
+  assert(
+    binding.registryRef.authorityVerificationMethodRef.didContractAddress
+      == attestation.proof.signerVerificationMethodRef.didContractAddress,
+    "Authority-attested proof contract address does not match the status authority"
+  );
+  assert(
+    binding.registryRef.authorityVerificationMethodRef.methodId
+      == attestation.proof.signerVerificationMethodRef.methodId,
+    "Authority-attested proof method reference does not match the status authority"
+  );
+}
+
+export pure circuit assertAuthorityAttestedStatusProofMatchesRequest(
+  request: RevokedSetStatusRequest,
+  attestation: AuthorityAttestedStatusProof,
+  currentTime: Uint<64>
+): [] {
+  assertValidRevokedSetStatusRequest(request);
+  assertValidAuthorityAttestedStatusProof(attestation);
+  assert(
+    request.registryState.registryId == attestation.statement.registryState.registryId,
+    "Authority-attested status registry id does not match the verifier request"
+  );
+  assert(
+    request.registryState.revokedRoot == attestation.statement.registryState.revokedRoot,
+    "Authority-attested revoked root does not match the verifier request"
+  );
+  assert(
+    request.registryState.registryVersion
+      == attestation.statement.registryState.registryVersion,
+    "Authority-attested registry version does not match the verifier request"
+  );
+  assert(
+    request.verifierChallengeHash == attestation.statement.verifierChallengeHash,
+    "Authority-attested verifier challenge hash does not match the request"
+  );
+  assert(
+    currentTime >= attestation.proof.createdAt,
+    "Authority-attested status proof creation time cannot be in the future"
+  );
+  if (attestation.statement.hasExpiration) {
+    assert(
+      currentTime <= attestation.statement.expiresAt,
+      "Authority-attested status proof has expired"
+    );
+  }
+}
+
+export pure circuit assertAuthorityAttestedStatusProofFreshEnough(
+  policy: VerifierStatusPolicy,
+  attestation: AuthorityAttestedStatusProof,
+  currentTime: Uint<64>
+): [] {
+  assertValidVerifierStatusPolicy(policy);
+  assertValidAuthorityAttestedStatusProof(attestation);
+  // Keep the future-time check here so this freshness helper remains safe as a
+  // standalone entrypoint, even though higher-level acceptance circuits also
+  // reach the same guard through `assertAuthorityAttestedStatusProofMatchesRequest`.
+  assert(
+    currentTime >= attestation.proof.createdAt,
+    "Authority-attested status proof creation time cannot be in the future"
+  );
+  if (policy.enforceAttestationMaxAge) {
+    assert(
+      currentTime - attestation.proof.createdAt <= policy.maxAttestationAge,
+      "Authority-attested status proof exceeds the verifier max-age policy"
+    );
+  }
+}
+
+// =====================
+// Policy acceptance entrypoints
+// =====================
+export pure circuit assertVerifierStatusPolicyAcceptsRevokedSetNonMembershipBinding(
+  policy: VerifierStatusPolicy,
+  binding: RegistryBoundStatusBinding,
+  witnessInput: RevokedSetNonMembershipWitnessInput
+): [] {
+  assertValidVerifierStatusPolicy(policy);
+  assertRevokedSetNonMembershipWitnessMatchesBinding(
+    binding,
+    witnessInput
+  );
+  assert(
+    policy.requireStatus,
+    "Verifier status policy must require status for revoked-set non-membership"
+  );
+  assert(
+    policy.acceptedStatusCapability == StatusCapabilityKind.revokedSetNonMembership,
+    "Verifier status policy does not accept revoked-set non-membership"
+  );
+  // PROTOTYPE: policy acceptance currently composes status-binding and a
+  // caller-supplied registry snapshot. Final Level-2 behavior
+  // still needs the in-circuit Merkle non-membership proof against
+  // `witnessInput.registryState.revokedRoot`.
+  if (policy.enforceRegistryId) {
+    assert(
+      policy.acceptedRegistryId == binding.registryRef.registryId,
+      "Verifier status policy registry id does not match the supplied status binding"
+    );
+    assert(
+      policy.acceptedRegistryId == witnessInput.registryState.registryId,
+      "Verifier status policy registry id does not match the supplied status registry"
+    );
+  }
+}
+
+export pure circuit assertVerifierStatusPolicyAcceptsLiveStatusBinding(
+  policy: VerifierStatusPolicy,
+  binding: RegistryBoundStatusBinding,
+  witnessInput: LiveStatusWitnessInput
+): [] {
+  assertValidVerifierStatusPolicy(policy);
+  assertLiveStatusWitnessMatchesBinding(
+    binding,
+    witnessInput
+  );
+  assert(
+    policy.requireStatus,
+    "Verifier status policy must require status for live revoked-set verification"
+  );
+  assert(
+    policy.acceptedStatusCapability == StatusCapabilityKind.revokedSetNonMembership,
+    "Verifier status policy does not accept live revoked-set verification"
+  );
+  if (policy.enforceRegistryId) {
+    assert(
+      policy.acceptedRegistryId == binding.registryRef.registryId,
+      "Verifier status policy registry id does not match the supplied status binding"
+    );
+  }
+}
+
+export pure circuit assertVerifierStatusPolicyAcceptsRevokedSetNonMembershipStatusProofProtocol(
+  policy: VerifierStatusPolicy,
+  binding: RegistryBoundStatusBinding,
+  protocol: RevokedSetNonMembershipStatusProofProtocol
+): [] {
+  assertValidVerifierStatusPolicy(policy);
+  assertRegistryBoundStatusBindingMatchesRevokedSetNonMembershipStatusProofProtocol(
+    binding,
+    protocol
+  );
+  assert(
+    policy.requireStatus,
+    "Verifier status policy must require status for revoked-set non-membership"
+  );
+  assert(
+    policy.acceptedStatusCapability == StatusCapabilityKind.revokedSetNonMembership,
+    "Verifier status policy does not accept revoked-set non-membership"
+  );
+  // PROTOTYPE: policy acceptance currently composes status-binding and a
+  // caller-supplied registry snapshot. Final Level-2 behavior
+  // still needs the in-circuit Merkle non-membership proof against
+  // `protocol.request.registryState.revokedRoot`.
+  if (policy.enforceRegistryId) {
+    assert(
+      policy.acceptedRegistryId == binding.registryRef.registryId,
+      "Verifier status policy registry id does not match the supplied status binding"
+    );
+    assert(
+      policy.acceptedRegistryId == protocol.request.registryState.registryId,
+      "Verifier status policy registry id does not match the supplied status registry"
+    );
+  }
+}
+
+export pure circuit assertVerifierStatusPolicyAcceptsAuthorityAttestedStatusBinding(
+  policy: VerifierStatusPolicy,
+  binding: RegistryBoundStatusBinding,
+  request: RevokedSetStatusRequest,
+  attestation: AuthorityAttestedStatusProof,
+  currentTime: Uint<64>
+): [] {
+  assertValidVerifierStatusPolicy(policy);
+  assertAuthorityAttestedStatusProofMatchesBinding(binding, attestation);
+  assertAuthorityAttestedStatusProofMatchesRequest(
+    request,
+    attestation,
+    currentTime
+  );
+  assertAuthorityAttestedStatusProofFreshEnough(
+    policy,
+    attestation,
+    currentTime
+  );
+  assert(
+    policy.requireStatus,
+    "Verifier status policy must require status for authority-attested status"
+  );
+  assert(
+    policy.acceptedStatusCapability == StatusCapabilityKind.authorityAttestedStatus,
+    "Verifier status policy does not accept authority-attested status"
+  );
+  if (policy.enforceRegistryId) {
+    assert(
+      policy.acceptedRegistryId == binding.registryRef.registryId,
+      "Verifier status policy registry id does not match the supplied status binding"
+    );
+    assert(
+      policy.acceptedRegistryId == request.registryState.registryId,
+      "Verifier status policy registry id does not match the verifier request"
+    );
+  }
+}
+
+export pure circuit assertVerifierStatusPolicyAcceptsAuthorityAttestedStatusProofProtocol(
+  policy: VerifierStatusPolicy,
+  binding: RegistryBoundStatusBinding,
+  protocol: AuthorityAttestedStatusProofProtocol,
+  currentTime: Uint<64>
+): [] {
+  assertValidVerifierStatusPolicy(policy);
+  assertRegistryBoundStatusBindingMatchesAuthorityAttestedStatusProofProtocol(
+    binding,
+    protocol,
+    currentTime
+  );
+  assertAuthorityAttestedStatusProofFreshEnough(
+    policy,
+    protocol.attestation,
+    currentTime
+  );
+  assert(
+    policy.requireStatus,
+    "Verifier status policy must require status for authority-attested status"
+  );
+  assert(
+    policy.acceptedStatusCapability == StatusCapabilityKind.authorityAttestedStatus,
+    "Verifier status policy does not accept authority-attested status"
+  );
+  if (policy.enforceRegistryId) {
+    assert(
+      policy.acceptedRegistryId == binding.registryRef.registryId,
+      "Verifier status policy registry id does not match the supplied status binding"
+    );
+    assert(
+      policy.acceptedRegistryId == protocol.request.registryState.registryId,
+      "Verifier status policy registry id does not match the verifier request"
+    );
+  }
+}

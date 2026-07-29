@@ -1,0 +1,43 @@
+{
+  "name": "vc-bdd-scenarios",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24",
+    "pnpm": ">=10"
+  },
+  "scripts": {
+    "clean": "rm -rf target",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test:execute": "mkdir -p target && cucumber-js --config cucumber.cjs",
+    "test:execute:smoke": "mkdir -p target && cucumber-js --config cucumber.cjs --tags @smoke",
+    "test:execute:negative": "mkdir -p target && cucumber-js --config cucumber.cjs --tags @negative",
+    "report:setup": "serenity-bdd update",
+    "test:report": "pnpm run report:setup && serenity-bdd run --features features --output target/site/serenity",
+    "summary": "pnpm exec ts-node-esm ./scripts/build-bdd-summary.ts",
+    "test:step-insight:contract": "pnpm exec ts-node-esm ./scripts/check-step-insight-contract.ts",
+    "test:smoke": "pnpm exec ts-node-esm ./scripts/run-bdd-pipeline.ts test:execute:smoke",
+    "test:negative": "pnpm exec ts-node-esm ./scripts/run-bdd-pipeline.ts test:execute:negative",
+    "test:all": "pnpm exec ts-node-esm ./scripts/run-bdd-pipeline.ts test:execute",
+    "test:ci": "pnpm run test:step-insight:contract && pnpm run test:all"
+  },
+  "dependencies": {
+    "@cucumber/cucumber": "^11.3.0",
+    "@midnight-ntwrk/midnight-did-credentials-bdd-support": "*",
+    "@midnight-ntwrk/midnight-did-credentials-birth": "*",
+    "@midnight-ntwrk/midnight-did-credentials-demo-contract": "*",
+    "@serenity-js/assertions": "^3.34.0",
+    "@serenity-js/console-reporter": "^3.34.0",
+    "@serenity-js/core": "^3.34.0",
+    "@serenity-js/cucumber": "^3.34.0",
+    "@serenity-js/serenity-bdd": "^3.34.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "midnight": {
+    "maturity": "demo",
+    "packageClass": "scenario"
+  }
+}

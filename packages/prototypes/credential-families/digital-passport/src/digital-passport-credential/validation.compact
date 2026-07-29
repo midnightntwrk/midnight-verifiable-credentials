@@ -1,0 +1,172 @@
+// Digital-passport-family issuance, presentation, and predicate validation.
+// =====================
+// Issuance-message validation
+// =====================
+export pure circuit assertValidDigitalPassportIssuanceOffer(offer: DigitalPassportIssuanceOffer): [] {
+  DigitalPassportIssuance_assertValidOfferMessage(offer);
+  assertValidDigitalPassportSchemaRef(offer.schema);
+  assert(offer.holderBindingProfile == HolderBindingProfile.explicitDid,
+         "Digital-passport issuance offer must use explicit DID holder binding"
+         );
+  if (offer.body.supportsExpiration) {
+    assert(offer.body.defaultExpirationDays > 0,
+           "Digital-passport issuance offer default expiration must be positive when supported"
+           );
+  } else {
+    assert(offer.body.defaultExpirationDays == 0,
+           "Digital-passport issuance offer default expiration must be zero when expiration is disabled"
+           );
+  }
+}
+
+export pure circuit assertValidDigitalPassportIssuanceRequest(
+                      request: DigitalPassportIssuanceRequest
+                      ): [] {
+  DigitalPassportIssuance_assertValidRequestMessage(request);
+  assertValidDigitalPassportSchemaRef(request.schema);
+  assert(request.holderBindingProfile == HolderBindingProfile.explicitDid,
+         "Digital-passport issuance request must use explicit DID holder binding"
+         );
+  assertValidExplicitHolderBinding(request.body.holderBinding);
+  assert(request.body.holderChallengeHash != noProtocolResponseReference(),
+         "Digital-passport issuance request holder challenge must be set"
+         );
+  if (request.body.requestExpiration) {
+    assert(request.body.requestedExpirationDays > 0,
+           "Digital-passport issuance request expiration days must be positive when requested"
+           );
+  } else {
+    assert(request.body.requestedExpirationDays == 0,
+           "Digital-passport issuance request expiration days must be zero when disabled"
+           );
+  }
+}
+
+export pure circuit assertDigitalPassportIssuanceRequestMatchesOffer(
+                      offer: DigitalPassportIssuanceOffer,
+                      request: DigitalPassportIssuanceRequest
+                      ): [] {
+  assertValidDigitalPassportIssuanceOffer(offer);
+  assertValidDigitalPassportIssuanceRequest(request);
+  DigitalPassportIssuance_assertOfferRequestAlignment(offer, request);
+  if (request.body.requestExpiration) {
+    assert(offer.body.supportsExpiration,
+           "Digital-passport issuance request cannot require expiration when the offer disables it"
+           );
+  }
+}
+
+export pure circuit assertValidDigitalPassportIssuanceResult(
+                      result: DigitalPassportIssuanceResult
+                      ): [] {
+  DigitalPassportIssuance_assertValidResultMessage(result);
+  assertValidDigitalPassportSchemaRef(result.schema);
+  assert(result.holderBindingProfile == HolderBindingProfile.explicitDid,
+         "Digital-passport issuance result must use explicit DID holder binding"
+         );
+  assertValidDigitalPassportCredential(result.body.credential, result.body.credentialProof);
+  assert(result.body.credentialProof.challengeHash == result.body.issuanceChallengeHash,
+         "Digital-passport issuance result challenge must match the issuer proof challenge"
+         );
+  assertValidDigitalPassportCredentialPrivateParts(
+    result.body.credential.claimCommitments,
+    result.body.credential.claimRoot,
+    result.body.privateParts
+    );
+}
+
+export pure circuit assertDigitalPassportIssuanceResultMatchesRequest(
+                      request: DigitalPassportIssuanceRequest,
+                      result: DigitalPassportIssuanceResult
+                      ): [] {
+  assertValidDigitalPassportIssuanceRequest(request);
+  assertValidDigitalPassportIssuanceResult(result);
+  DigitalPassportIssuance_assertRequestResultAlignment(request, result);
+  assert(request.body.holderChallengeHash == result.body.issuanceChallengeHash,
+         "Digital-passport issuance result challenge must match the request challenge"
+         );
+  assertMatchingExplicitHolderBindings(
+    request.body.holderBinding,
+    result.body.credential.holderBinding
+    );
+  assert(jubjubPointX(request.body.holderPublicKey) == jubjubPointX(result.body.holderPublicKey) &&
+         jubjubPointY(request.body.holderPublicKey) == jubjubPointY(result.body.holderPublicKey),
+         "Digital-passport issuance result holder public key does not match the request"
+         );
+}
+
+// =====================
+// Presentation-message validation
+// =====================
+export pure circuit assertValidDigitalPassportVerificationRequestMessage(
+                      request: DigitalPassportVerificationRequest
+                      ): [] {
+  DigitalPassportVerification_assertValidRequestMessage(request);
+  assertValidDigitalPassportSchemaRef(request.schema);
+  assert(request.holderBindingProfile == HolderBindingProfile.explicitDid,
+         "Digital-passport verification request must use explicit DID holder binding"
+         );
+  assertValidDigitalPassportPresentationRequest(
+    digitalPassportPresentationRequestFromProtocol(request)
+    );
+}
+
+export pure circuit assertValidDigitalPassportVerificationSubmissionMessage(
+                      submission: DigitalPassportVerificationSubmission
+                      ): [] {
+  DigitalPassportVerification_assertValidSubmissionMessage(submission);
+  assertValidDigitalPassportSchemaRef(submission.schema);
+  assert(submission.holderBindingProfile == HolderBindingProfile.explicitDid,
+         "Digital-passport verification submission must use explicit DID holder binding"
+         );
+  assertValidDigitalPassportPresentation(
+    submission.body.credential,
+    submission.body.credentialProof,
+    submission.body.presentation,
+    submission.body.presentationProof
+    );
+  assert(submission.body.presentationProof.challengeHash == submission.challengeHash,
+         "Digital-passport verification submission challenge must match the presentation proof challenge"
+         );
+}
+
+export pure circuit assertDigitalPassportVerificationSubmissionMatchesRequest(
+                      request: DigitalPassportVerificationRequest,
+                      submission: DigitalPassportVerificationSubmission
+                      ): [] {
+  assertValidDigitalPassportVerificationRequestMessage(request);
+  assertValidDigitalPassportVerificationSubmissionMessage(submission);
+  DigitalPassportVerification_assertRequestSubmissionAlignment(request, submission);
+  assertDigitalPassportPresentationSatisfiesRequest(
+    submission.body.credential,
+    digitalPassportPresentationRequestFromProtocol(request),
+    submission.body.presentation,
+    submission.body.presentationProof
+    );
+}
+
+export pure circuit assertValidDigitalPassportVerificationResultMessage(
+                      result: DigitalPassportVerificationResult
+                      ): [] {
+  DigitalPassportVerification_assertValidResultMessage(result);
+  if (result.approved) {
+    assert(result.body.credentialRoot != noProtocolResponseReference(),
+           "Digital-passport verification result must include a credential root when approved"
+           );
+  }
+}
+
+export pure circuit assertDigitalPassportVerificationResultMatchesSubmission(
+                      submission: DigitalPassportVerificationSubmission,
+                      result: DigitalPassportVerificationResult
+                      ): [] {
+  assertValidDigitalPassportVerificationSubmissionMessage(submission);
+  assertValidDigitalPassportVerificationResultMessage(result);
+  DigitalPassportVerification_assertSubmissionResultAlignment(submission, result);
+  if (result.approved) {
+    assert(result.body.credentialRoot ==
+           digitalPassportCredentialBodyRoot(submission.body.credential),
+           "Digital-passport verification result credential root does not match the submission"
+           );
+  }
+}

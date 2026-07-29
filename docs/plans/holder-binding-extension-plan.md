@@ -1,0 +1,82 @@
+<!--
+  This file is part of midnightntwrk/midnight-verifiable-credentials.
+  Copyright (C) 2026 Midnight Foundation
+  SPDX-License-Identifier: Apache-2.0
+-->
+
+# Offchain DID and Legacy Holder Binding Extension Plan
+
+## Issue
+
+- [#6](https://github.com/midnightntwrk/midnight-verifiable-credentials/issues/6)
+
+## Goal
+
+Add lightweight Midnight VC holder-binding profiles for prototypes and demos
+that do not want to require full DID deployment and DID resolution.
+
+## Why legacy compatibility `JubjubHolderBinding` is still needed
+
+Yes, we really need it.
+
+Reason:
+
+- it is the smallest viable prototype binding profile
+- it matches the current Midnight proof suite directly
+- it works for NightFi and Passport-style demos immediately
+- it remains useful even after offchain Midnight DID exists
+
+The canonical Compact/core shape remains `OffchainMidnightHolderBinding`.
+The preferred runtime/public-facing adapter name is `OffchainDIDHolderBinding`.
+That split should build on the same idea, not replace it.
+
+Terminology authority:
+
+- [`../architecture/holder-binding-terminology.md`](../architecture/holder-binding-terminology.md)
+
+## New binding profiles
+
+### 1. Legacy compatibility `JubjubHolderBinding`
+
+Bind the credential holder directly to a JubJub public key.
+
+Purpose:
+
+- local issuer/holder demos
+- contract examples
+- prototype issuance and presentation without DID resolution
+
+### 2. `OffchainMidnightHolderBinding`
+
+Carry:
+
+- holder offchain DID state hash
+- holder method id
+- holder JubJub public key
+
+Purpose:
+
+- DID-shaped demo flows
+- portable examples that use the offchain Midnight DID extension
+
+Public naming note:
+
+- keep `OffchainMidnightHolderBinding` as the Compact/core struct
+- expose `OffchainDIDHolderBinding` as the preferred runtime/public-facing name
+- preserve compatibility aliases while downstream code migrates
+
+## Current implementation constraint
+
+The generic `Proof` type still carries a DID-oriented `VerificationMethodRef`.
+That means the new lightweight binding profiles currently enforce holder
+ownership through `proof.publicKey`, not through `proof.signerVerificationMethodRef`.
+
+This is acceptable for the first slice because the cryptographic property that
+matters most for the demo is proof-of-possession of the bound holder key.
+
+## Recommended follow-up
+
+Later, if we want offchain DID binding to be first-class all the way through the
+proof object, we should consider a more general signer reference abstraction.
+That is a larger proof-model change and should not block the lightweight binding
+profiles now.

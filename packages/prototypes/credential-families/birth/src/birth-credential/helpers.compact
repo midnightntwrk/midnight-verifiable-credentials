@@ -1,0 +1,57 @@
+// Birth-family schema helpers and request normalization.
+// These helpers stay pure because they only derive schema-local roots and
+// verifier-request shapes; they never read ledger state.
+export pure circuit birthCredentialBodyRoot(credential: BirthCredential): Bytes<32> {
+  return credentialBodyRoot(credential);
+}
+
+export pure circuit birthCredentialPresentationBodyRoot(
+  presentation: BirthCredentialPresentation
+): Bytes<32> {
+  return presentationBodyRoot(presentation);
+}
+
+export pure circuit birthCredentialPresentationRequestBodyRoot(
+  request: BirthCredentialPresentationRequest
+): Bytes<32> {
+  return persistentHash<BirthCredentialPresentationRequest>(request);
+}
+
+// =====================
+// Schema and verifier-request validation
+// =====================
+export pure circuit assertValidBirthSchemaRef(schema: SchemaRef): [] {
+  assert(schema.packageId == pad(32, "midnight-did:vc:birth"), "Unexpected schema package identifier");
+  assert(schema.schemaId == pad(32, "birth-credential:v1"), "Unexpected schema identifier");
+  assert(schema.majorVersion == 1, "Birth credential major version mismatch");
+}
+
+export pure circuit assertValidBirthCredentialPresentationRequest(
+  request: BirthCredentialPresentationRequest
+): [] {
+  assert(request.version == 1, "Presentation request version mismatch");
+  assertValidBirthSchemaRef(request.schema);
+  assertValidVerificationMethodRef(request.issuerVerificationMethodRef);
+  if (request.requireAgeOverThreshold) {
+    assert(request.requestedAgeThresholdYears > 0, "Requested age threshold must be positive");
+  } else {
+    assert(request.requestedAgeThresholdYears == 0, "Requested age threshold must be zero when disabled");
+  }
+}
+
+// NOTE: this normalization deliberately strips the transport envelope so the
+// credential-family request semantics stay reusable across protocol wrappers.
+export pure circuit birthCredentialPresentationRequestFromProtocol(
+  request: BirthCredentialVerificationRequest
+): BirthCredentialPresentationRequest {
+  return BirthCredentialPresentationRequest {
+    version: request.envelope.version,
+    schema: request.schema,
+    issuerVerificationMethodRef: request.issuerVerificationMethodRef,
+    requireSubjectIdCommitmentDisclosure: request.body.requireSubjectIdCommitmentDisclosure,
+    requireBirthCountryDisclosure: request.body.requireBirthCountryDisclosure,
+    requireAgeOverThreshold: request.body.requireAgeOverThreshold,
+    requestedAgeThresholdYears: request.body.requestedAgeThresholdYears,
+    verifierChallengeHash: request.verifierChallengeHash,
+  };
+}

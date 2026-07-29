@@ -1,0 +1,260 @@
+{
+  "schemaVersion": "midnight-university-batch-sweep-summary.v2",
+  "sweepConfig": {
+    "studentCount": 100,
+    "batchSizes": [2, 5, 10, 20],
+    "compileConcurrencyLevels": [1, 2, 4]
+  },
+  "runs": [
+    {
+      "studentCount": 100,
+      "batchSize": 2,
+      "batchCount": 50,
+      "issuedCredentialCount": 100,
+      "acceptedRequestCount": 100,
+      "issuanceWallClockMs": 373.49037500000003,
+      "wallClockCredentialsPerSecond": 267.7445168433055,
+      "credentialsPerSecond": 268.98203388839005,
+      "phaseTotalsMs": {
+        "queueWait": 9508.299728500004,
+        "compile": 371.22041900000005,
+        "sign": 0.06624900000088019,
+        "delivery": 0.04499800000070309
+      },
+      "phaseAverageMs": {
+        "queueWait": 190.16599457000007,
+        "compile": 7.424408380000001,
+        "sign": 0.0013249800000176037,
+        "delivery": 0.0008999600000140618
+      },
+      "phaseMaxMs": {
+        "queueWait": 364.938167,
+        "compile": 15.24716699999999,
+        "sign": 0.024165999999979704,
+        "delivery": 0.016499999999950887
+      },
+      "compileConcurrencyProjections": [
+        {
+          "compileConcurrency": 1,
+          "workerLoadsMs": [371.22041899999965],
+          "estimatedCompileWallClockMs": 371.22041899999965,
+          "estimatedIssuerWallClockMs": 373.49037500000003,
+          "projectedCredentialsPerSecond": 267.7445168433055,
+          "projectedSpeedupVsSequential": 1,
+          "compileEfficiency": 1
+        },
+        {
+          "compileConcurrency": 2,
+          "workerLoadsMs": [185.61020949999994, 185.61020949999994],
+          "estimatedCompileWallClockMs": 185.61020949999994,
+          "estimatedIssuerWallClockMs": 187.88016550000032,
+          "projectedCredentialsPerSecond": 532.254161762487,
+          "projectedSpeedupVsSequential": 1.9879180647198196,
+          "compileEfficiency": 0.9999999999999993
+        },
+        {
+          "compileConcurrency": 4,
+          "workerLoadsMs": [
+            96.51730894000002, 96.51730894000002, 89.09290056000002,
+            89.09290056000002
+          ],
+          "estimatedCompileWallClockMs": 96.51730894000002,
+          "estimatedIssuerWallClockMs": 98.7872649400004,
+          "projectedCredentialsPerSecond": 1012.2762287298486,
+          "projectedSpeedupVsSequential": 3.7807542827189695,
+          "compileEfficiency": 0.9615384615384605
+        }
+      ]
+    },
+    {
+      "studentCount": 100,
+      "batchSize": 5,
+      "batchCount": 20,
+      "issuedCredentialCount": 100,
+      "acceptedRequestCount": 100,
+      "issuanceWallClockMs": 354.2952919999999,
+      "wallClockCredentialsPerSecond": 282.2504341943105,
+      "credentialsPerSecond": 283.0932138109255,
+      "phaseTotalsMs": {
+        "queueWait": 3368.634354,
+        "compile": 353.0697090000001,
+        "sign": 0.02591699999982211,
+        "delivery": 0.015917999999714993
+      },
+      "phaseAverageMs": {
+        "queueWait": 168.43171769999998,
+        "compile": 17.653485450000005,
+        "sign": 0.0012958499999911055,
+        "delivery": 0.0007958999999857497
+      },
+      "phaseMaxMs": {
+        "queueWait": 336.42060019999997,
+        "compile": 24.281708000000094,
+        "sign": 0.0025409999999510546,
+        "delivery": 0.0016669999999976426
+      },
+      "compileConcurrencyProjections": [
+        {
+          "compileConcurrency": 1,
+          "workerLoadsMs": [353.0697090000001],
+          "estimatedCompileWallClockMs": 353.0697090000001,
+          "estimatedIssuerWallClockMs": 354.2952919999999,
+          "projectedCredentialsPerSecond": 282.2504341943105,
+          "projectedSpeedupVsSequential": 1,
+          "compileEfficiency": 1
+        },
+        {
+          "compileConcurrency": 2,
+          "workerLoadsMs": [176.53485450000005, 176.53485450000005],
+          "estimatedCompileWallClockMs": 176.53485450000005,
+          "estimatedIssuerWallClockMs": 177.76043749999985,
+          "projectedCredentialsPerSecond": 562.5548710747299,
+          "projectedSpeedupVsSequential": 1.9931054231344374,
+          "compileEfficiency": 1
+        },
+        {
+          "compileConcurrency": 4,
+          "workerLoadsMs": [
+            88.26742725000003, 88.26742725000003, 88.26742725000003,
+            88.26742725000003
+          ],
+          "estimatedCompileWallClockMs": 88.26742725000003,
+          "estimatedIssuerWallClockMs": 89.49301024999983,
+          "projectedCredentialsPerSecond": 1117.4057026425726,
+          "projectedSpeedupVsSequential": 3.958915797002153,
+          "compileEfficiency": 1
+        }
+      ]
+    },
+    {
+      "studentCount": 100,
+      "batchSize": 10,
+      "batchCount": 10,
+      "issuedCredentialCount": 100,
+      "acceptedRequestCount": 100,
+      "issuanceWallClockMs": 345.810375,
+      "wallClockCredentialsPerSecond": 289.17582359985585,
+      "credentialsPerSecond": 289.7859858048334,
+      "phaseTotalsMs": {
+        "queueWait": 1551.1104577,
+        "compile": 344.9371670000005,
+        "sign": 0.02816700000016681,
+        "delivery": 0.017832999999882304
+      },
+      "phaseAverageMs": {
+        "queueWait": 155.11104577,
+        "compile": 34.49371670000005,
+        "sign": 0.0028167000000166808,
+        "delivery": 0.0017832999999882304
+      },
+      "phaseMaxMs": {
+        "queueWait": 310.2375667,
+        "compile": 35.06008300000008,
+        "sign": 0.004666999999926702,
+        "delivery": 0.007416000000148415
+      },
+      "compileConcurrencyProjections": [
+        {
+          "compileConcurrency": 1,
+          "workerLoadsMs": [344.9371670000005],
+          "estimatedCompileWallClockMs": 344.9371670000005,
+          "estimatedIssuerWallClockMs": 345.810375,
+          "projectedCredentialsPerSecond": 289.17582359985585,
+          "projectedSpeedupVsSequential": 1,
+          "compileEfficiency": 1
+        },
+        {
+          "compileConcurrency": 2,
+          "workerLoadsMs": [172.46858350000025, 172.46858350000025],
+          "estimatedCompileWallClockMs": 172.46858350000025,
+          "estimatedIssuerWallClockMs": 173.34179149999977,
+          "projectedCredentialsPerSecond": 576.8949261148033,
+          "projectedSpeedupVsSequential": 1.9949625073535742,
+          "compileEfficiency": 1
+        },
+        {
+          "compileConcurrency": 4,
+          "workerLoadsMs": [
+            103.48115010000015, 103.48115010000015, 68.9874334000001,
+            68.9874334000001
+          ],
+          "estimatedCompileWallClockMs": 103.48115010000015,
+          "estimatedIssuerWallClockMs": 104.35435809999967,
+          "projectedCredentialsPerSecond": 958.2733468991586,
+          "projectedSpeedupVsSequential": 3.313808654437031,
+          "compileEfficiency": 0.8333333333333334
+        }
+      ]
+    },
+    {
+      "studentCount": 100,
+      "batchSize": 20,
+      "batchCount": 5,
+      "issuedCredentialCount": 100,
+      "acceptedRequestCount": 100,
+      "issuanceWallClockMs": 363.59558300000003,
+      "wallClockCredentialsPerSecond": 275.0308438152836,
+      "credentialsPerSecond": 275.9195683200829,
+      "phaseTotalsMs": {
+        "queueWait": 686.3849467499999,
+        "compile": 362.3488749999999,
+        "sign": 0.017708000000311586,
+        "delivery": 0.0075409999997191335
+      },
+      "phaseAverageMs": {
+        "queueWait": 137.27698934999998,
+        "compile": 72.46977499999998,
+        "sign": 0.003541600000062317,
+        "delivery": 0.0015081999999438267
+      },
+      "phaseMaxMs": {
+        "queueWait": 274.17051499999997,
+        "compile": 88.31283400000007,
+        "sign": 0.005165999999917403,
+        "delivery": 0.002457999999933236
+      },
+      "compileConcurrencyProjections": [
+        {
+          "compileConcurrency": 1,
+          "workerLoadsMs": [362.3488749999999],
+          "estimatedCompileWallClockMs": 362.3488749999999,
+          "estimatedIssuerWallClockMs": 363.59558300000003,
+          "projectedCredentialsPerSecond": 275.0308438152836,
+          "projectedSpeedupVsSequential": 1,
+          "compileEfficiency": 1
+        },
+        {
+          "compileConcurrency": 2,
+          "workerLoadsMs": [217.40932499999997, 144.93954999999997],
+          "estimatedCompileWallClockMs": 217.40932499999997,
+          "estimatedIssuerWallClockMs": 218.6560330000001,
+          "projectedCredentialsPerSecond": 457.3393133863357,
+          "projectedSpeedupVsSequential": 1.6628655427952443,
+          "compileEfficiency": 0.8333333333333333
+        },
+        {
+          "compileConcurrency": 4,
+          "workerLoadsMs": [
+            144.93954999999997, 72.46977499999998, 72.46977499999998,
+            72.46977499999998
+          ],
+          "estimatedCompileWallClockMs": 144.93954999999997,
+          "estimatedIssuerWallClockMs": 146.1862580000001,
+          "projectedCredentialsPerSecond": 684.0588258302633,
+          "projectedSpeedupVsSequential": 2.4872076758405006,
+          "compileEfficiency": 0.625
+        }
+      ]
+    }
+  ],
+  "fastestBatchSizeByWallClockCredentialsPerSecond": 10,
+  "artifactRetention": {
+    "targetDir": "packages/use-cases/university/scenarios/target/batch-sweep",
+    "files": ["summary.json", "summary.md"]
+  },
+  "notes": [
+    "This sweep exercises the issuance harness only so compile/sign/delivery phase timings stay visible.",
+    "Compile-concurrency projections keep actual issuance sequential and estimate only the fixture-construction phase.",
+    "All timings are machine-local measurements and should be compared by relative trend, not exact value."
+  ]
+}

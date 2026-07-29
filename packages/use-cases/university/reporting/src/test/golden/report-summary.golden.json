@@ -1,0 +1,538 @@
+{
+  "schemaId": "midnight-university-report-summary",
+  "schemaVersion": "midnight-university-report-summary.v5",
+  "actors": {
+    "universityPartyId": "uni-example-001",
+    "studentCount": 10,
+    "companyCount": 3,
+    "companyNames": [
+      "Blue Ocean Analytics",
+      "Northwind Robotics",
+      "Pioneer Systems"
+    ],
+    "mallId": "mall-student-square",
+    "mallName": "Student Square Mall",
+    "discountApplicantCount": 5
+  },
+  "sources": {
+    "serenityDirectory": "<fixtures>/serenity",
+    "transcriptExportPath": "<fixtures>/transcript-export.json",
+    "stressSummaryPath": "<fixtures>/stress-summary.json",
+    "batchSweepSummaryPath": "<fixtures>/batch-sweep-summary.json"
+  },
+  "handoff": {
+    "primaryHuman": {
+      "artifactId": "university-report-summary-markdown",
+      "label": "Primary human handoff",
+      "path": "packages/use-cases/university/reporting/target/summary.md",
+      "format": "markdown",
+      "producedBy": "./run.sh university-summary",
+      "purpose": "One-page Markdown digest for engineers, operators, and reviewers."
+    },
+    "primaryMachine": {
+      "artifactId": "university-report-summary-json",
+      "label": "Primary machine handoff",
+      "path": "packages/use-cases/university/reporting/target/summary.json",
+      "format": "json",
+      "producedBy": "./run.sh university-summary",
+      "purpose": "Stable JSON summary for tooling, CI artifacts, and downstream dashboards."
+    },
+    "sourceManifestJson": {
+      "artifactId": "university-report-artifact-manifest-json",
+      "label": "Source artifact manifest",
+      "path": "packages/use-cases/university/reporting/target/artifact-manifest.json",
+      "format": "json",
+      "producedBy": "./run.sh university-summary",
+      "purpose": "Machine-readable source-artifact index with schema versions, sizes, and SHA-256 digests."
+    },
+    "sourceManifestMarkdown": {
+      "artifactId": "university-report-artifact-manifest-markdown",
+      "label": "Source artifact manifest digest",
+      "path": "packages/use-cases/university/reporting/target/artifact-manifest.md",
+      "format": "markdown",
+      "producedBy": "./run.sh university-summary",
+      "purpose": "Human-readable source-artifact index for quick provenance checks."
+    },
+    "sourceArtifactIds": [
+      "readable-bdd-serenity",
+      "readable-protocol-transcript",
+      "stress-protocol-summary",
+      "issuer-batch-sweep-summary"
+    ],
+    "notes": [
+      "Use summary.md as the human handoff and summary.json as the machine handoff.",
+      "Use artifact-manifest.json when a consumer needs to verify which source artifacts were summarized.",
+      "The Serenity site and raw transcript/stress/batch artifacts remain source evidence, not the default handoff surface."
+    ]
+  },
+  "artifactManifest": {
+    "manifestSchemaVersion": "midnight-university-artifact-manifest.v1",
+    "artifactSet": "midnight-university-reporting-inputs",
+    "totalBytes": 101598,
+    "entries": [
+      {
+        "artifactId": "readable-bdd-serenity",
+        "label": "Readable BDD Serenity JSON",
+        "path": "serenity",
+        "format": "serenity-json-directory",
+        "schemaVersion": null,
+        "producedBy": "./run.sh university-bdd",
+        "purpose": "Readable university BDD scenario JSON; 13 latest scenario titles are summarized by the report",
+        "bytes": 2778,
+        "sha256": "3885403dcd926e8fff77fb5de5b33b6cf3d19e540628f9bc240b670339c3ce72",
+        "fileCount": 13
+      },
+      {
+        "artifactId": "readable-protocol-transcript",
+        "label": "Readable protocol transcript export",
+        "path": "transcript-export.json",
+        "format": "university-json-artifact",
+        "schemaVersion": "midnight-university-protocol-export.v2",
+        "producedBy": "./run.sh university-protocol-export",
+        "purpose": "student, issuer, employer, and mall protocol DTO transcript",
+        "bytes": 76147,
+        "sha256": "a8e56f9750fd935f60140fa347e7ed31feee29580ef491dcc990fef6e3b950e2",
+        "fileCount": 1
+      },
+      {
+        "artifactId": "stress-protocol-summary",
+        "label": "Stress protocol summary",
+        "path": "stress-summary.json",
+        "format": "university-json-artifact",
+        "schemaVersion": "midnight-university-protocol-stress-summary.v2",
+        "producedBy": "./run.sh university-protocol-stress",
+        "purpose": "100-student throughput and rejection summary",
+        "bytes": 13166,
+        "sha256": "eca86ee79f5cab71ada40ec9059711c1de243f832d83d4dad8d73826302d970c",
+        "fileCount": 1
+      },
+      {
+        "artifactId": "issuer-batch-sweep-summary",
+        "label": "Issuer batch-sweep summary",
+        "path": "batch-sweep-summary.json",
+        "format": "university-json-artifact",
+        "schemaVersion": "midnight-university-batch-sweep-summary.v2",
+        "producedBy": "./run.sh university-batch-sweep",
+        "purpose": "batch size and compile-concurrency projection summary",
+        "bytes": 9507,
+        "sha256": "7c60f98cbb138ea3ba0c98692a1fd2743f04b64c798193ec0bc640800d1a48fe",
+        "fileCount": 1
+      }
+    ],
+    "notes": [
+      "Hashes are deterministic SHA-256 digests over source artifact bytes.",
+      "The Serenity directory hash includes each JSON filename before its file bytes so renamed files change the digest.",
+      "The manifest is an index over already-rendered artifacts; missing source artifacts fail summary rendering instead of producing partial reports."
+    ]
+  },
+  "readableBdd": {
+    "scenarioCount": 13,
+    "passedCount": 13,
+    "failedCount": 0,
+    "totalDurationMs": 5030,
+    "categories": {
+      "jobApplications": 1,
+      "duplicateJobApplication": 1,
+      "duplicateMallDiscount": 1,
+      "tamperedPresentation": 3,
+      "holderBindingTampering": 4,
+      "invalidPolicy": 1,
+      "issuanceReplay": 1,
+      "batchIssuance": 1
+    },
+    "slowestScenarios": [
+      {
+        "title": "A duplicate job-application submission is rejected without replacing the original acceptance",
+        "result": "SUCCESS",
+        "durationMs": 490,
+        "startTime": "2026-05-12T20:49:16.950Z"
+      },
+      {
+        "title": "A duplicate mall discount submission is rejected without replacing the original mall outcome",
+        "result": "SUCCESS",
+        "durationMs": 470,
+        "startTime": "2026-05-12T20:49:17.442Z"
+      },
+      {
+        "title": "A tampered issuer verification method is rejected without affecting untampered job applications",
+        "result": "SUCCESS",
+        "durationMs": 457,
+        "startTime": "2026-05-12T20:49:18.777Z"
+      },
+      {
+        "title": "A tampered verifier challenge is rejected without affecting untampered job applications",
+        "result": "SUCCESS",
+        "durationMs": 438,
+        "startTime": "2026-05-12T20:49:18.338Z"
+      },
+      {
+        "title": "A tampered holder method reference is rejected without affecting untampered job applications",
+        "result": "SUCCESS",
+        "durationMs": 434,
+        "startTime": "2026-05-12T20:49:19.661Z"
+      }
+    ]
+  },
+  "transcriptExport": {
+    "schemaVersion": "midnight-university-protocol-export.v2",
+    "privacyProfile": {
+      "currentProfile": "direct-claim-prototype",
+      "claimCommitmentModel": "none",
+      "productionProfile": "production-commitment-v2",
+      "productionPublicClaimFields": [
+        "universityName",
+        "awardName",
+        "graduationYear"
+      ],
+      "productionCommitmentCandidates": [
+        "diplomaId",
+        "studentId",
+        "graduateName",
+        "facultyName",
+        "honorsCode",
+        "graduationMonth",
+        "finalGrade",
+        "creditsEarned"
+      ],
+      "productionCommitmentFields": [
+        "diplomaIdCommitment",
+        "studentIdCommitment",
+        "graduateNameCommitment",
+        "facultyNameCommitment",
+        "honorsCodeCommitment",
+        "graduationMonthCommitment",
+        "finalGradeCommitment",
+        "creditsEarnedCommitment"
+      ],
+      "predicateOnlyFields": [
+        "finalGrade",
+        "creditsEarned"
+      ],
+      "openingPolicy": "Production issuance must use high-entropy field-domain-separated openings; deterministic fixture openings are only for tests.",
+      "statement": "The production profile keeps routing facts public and moves stable identifiers plus sensitive academic facts into claim commitments."
+    },
+    "dataset": {
+      "studentCount": 10,
+      "companyCount": 3,
+      "discountApplicantCount": 5,
+      "batchCount": 2,
+      "batchSize": 5
+    },
+    "counts": {
+      "issuanceRequests": 10,
+      "issuanceResults": 10,
+      "jobApplicationRequests": 10,
+      "jobApplicationSubmissions": 10,
+      "jobApplicationResults": 10,
+      "discountRequests": 5,
+      "discountSubmissions": 5,
+      "discountResults": 5,
+      "transcriptEntries": 65,
+      "totalThreads": 25
+    },
+    "rejections": {
+      "jobApplications": {
+        "accepted": 10,
+        "verificationFailed": 0,
+        "duplicate": 0,
+        "byCompany": [
+          {
+            "companyId": "company-blue-ocean-analytics",
+            "companyName": "Blue Ocean Analytics",
+            "accepted": 3,
+            "verificationFailed": 0,
+            "duplicate": 0
+          },
+          {
+            "companyId": "company-northwind-robotics",
+            "companyName": "Northwind Robotics",
+            "accepted": 4,
+            "verificationFailed": 0,
+            "duplicate": 0
+          },
+          {
+            "companyId": "company-pioneer-systems",
+            "companyName": "Pioneer Systems",
+            "accepted": 3,
+            "verificationFailed": 0,
+            "duplicate": 0
+          }
+        ]
+      },
+      "discounts": {
+        "accepted": 3,
+        "verificationFailed": 2,
+        "duplicate": 0,
+        "byReason": [
+          {
+            "reason": "failed assert: University-diploma disclosed final grade is below the verifier minimum",
+            "count": 2
+          }
+        ]
+      }
+    }
+  },
+  "stressSummary": {
+    "schemaVersion": "midnight-university-protocol-stress-summary.v2",
+    "datasetProfile": "stress-100",
+    "dataset": {
+      "studentCount": 100,
+      "companyCount": 3,
+      "discountApplicantCount": 5,
+      "batchCount": 5,
+      "batchSize": 20
+    },
+    "counts": {
+      "issuanceRequests": 100,
+      "issuanceResults": 100,
+      "jobApplicationRequests": 100,
+      "jobApplicationSubmissions": 100,
+      "jobApplicationResults": 100,
+      "discountRequests": 5,
+      "discountSubmissions": 5,
+      "discountResults": 5,
+      "transcriptEntries": 515,
+      "totalThreads": 205
+    },
+    "outcomes": {
+      "acceptedJobApplications": 100,
+      "companyAcceptedCounts": {
+        "company-blue-ocean-analytics": 33,
+        "company-northwind-robotics": 34,
+        "company-pioneer-systems": 33
+      },
+      "acceptedDiscounts": 3,
+      "rejectedDiscounts": 2
+    },
+    "rejections": {
+      "jobApplications": {
+        "verificationFailed": 0,
+        "duplicate": 0
+      },
+      "discounts": {
+        "verificationFailed": 2,
+        "duplicate": 0,
+        "byReason": [
+          {
+            "reason": "failed assert: University-diploma disclosed final grade is below the verifier minimum",
+            "count": 2
+          }
+        ]
+      }
+    },
+    "timingsMs": {
+      "issuance": 370.52575,
+      "jobApplications": 1725.90425,
+      "discounts": 71.75370800000019,
+      "runnerTotal": 2168.184791,
+      "wallClock": 2211.456167
+    },
+    "throughput": {
+      "issuanceCredentialsPerSecond": 269.8867757504033,
+      "jobApplicationResultsPerSecond": 57.94064184035702,
+      "discountEvaluationsPerSecond": 69.68280998105334,
+      "transcriptEntriesPerSecond": 232.87823095251974
+    }
+  },
+  "batchSweep": {
+    "schemaVersion": "midnight-university-batch-sweep-summary.v2",
+    "studentCount": 100,
+    "batchSizes": [
+      2,
+      5,
+      10,
+      20
+    ],
+    "compileConcurrencyLevels": [
+      1,
+      2,
+      4
+    ],
+    "fastestBatchSizeByWallClockCredentialsPerSecond": 10,
+    "bestCompileConcurrencyProjection": {
+      "batchSize": 5,
+      "compileConcurrency": 4,
+      "estimatedCompileWallClockMs": 88.26742725000003,
+      "estimatedIssuerWallClockMs": 89.49301024999983,
+      "projectedCredentialsPerSecond": 1117.4057026425726,
+      "projectedSpeedupVsSequential": 3.958915797002153,
+      "compileEfficiency": 1
+    },
+    "runs": [
+      {
+        "batchSize": 2,
+        "batchCount": 50,
+        "issuedCredentialCount": 100,
+        "issuanceWallClockMs": 373.49037500000003,
+        "wallClockCredentialsPerSecond": 267.7445168433055,
+        "compileAverageMs": 7.424408380000001,
+        "queueWaitAverageMs": 190.16599457000007,
+        "compileConcurrencyProjections": [
+          {
+            "batchSize": 2,
+            "compileConcurrency": 1,
+            "estimatedCompileWallClockMs": 371.22041899999965,
+            "estimatedIssuerWallClockMs": 373.49037500000003,
+            "projectedCredentialsPerSecond": 267.7445168433055,
+            "projectedSpeedupVsSequential": 1,
+            "compileEfficiency": 1
+          },
+          {
+            "batchSize": 2,
+            "compileConcurrency": 2,
+            "estimatedCompileWallClockMs": 185.61020949999994,
+            "estimatedIssuerWallClockMs": 187.88016550000032,
+            "projectedCredentialsPerSecond": 532.254161762487,
+            "projectedSpeedupVsSequential": 1.9879180647198196,
+            "compileEfficiency": 0.9999999999999993
+          },
+          {
+            "batchSize": 2,
+            "compileConcurrency": 4,
+            "estimatedCompileWallClockMs": 96.51730894000002,
+            "estimatedIssuerWallClockMs": 98.7872649400004,
+            "projectedCredentialsPerSecond": 1012.2762287298486,
+            "projectedSpeedupVsSequential": 3.7807542827189695,
+            "compileEfficiency": 0.9615384615384605
+          }
+        ]
+      },
+      {
+        "batchSize": 5,
+        "batchCount": 20,
+        "issuedCredentialCount": 100,
+        "issuanceWallClockMs": 354.2952919999999,
+        "wallClockCredentialsPerSecond": 282.2504341943105,
+        "compileAverageMs": 17.653485450000005,
+        "queueWaitAverageMs": 168.43171769999998,
+        "compileConcurrencyProjections": [
+          {
+            "batchSize": 5,
+            "compileConcurrency": 1,
+            "estimatedCompileWallClockMs": 353.0697090000001,
+            "estimatedIssuerWallClockMs": 354.2952919999999,
+            "projectedCredentialsPerSecond": 282.2504341943105,
+            "projectedSpeedupVsSequential": 1,
+            "compileEfficiency": 1
+          },
+          {
+            "batchSize": 5,
+            "compileConcurrency": 2,
+            "estimatedCompileWallClockMs": 176.53485450000005,
+            "estimatedIssuerWallClockMs": 177.76043749999985,
+            "projectedCredentialsPerSecond": 562.5548710747299,
+            "projectedSpeedupVsSequential": 1.9931054231344374,
+            "compileEfficiency": 1
+          },
+          {
+            "batchSize": 5,
+            "compileConcurrency": 4,
+            "estimatedCompileWallClockMs": 88.26742725000003,
+            "estimatedIssuerWallClockMs": 89.49301024999983,
+            "projectedCredentialsPerSecond": 1117.4057026425726,
+            "projectedSpeedupVsSequential": 3.958915797002153,
+            "compileEfficiency": 1
+          }
+        ]
+      },
+      {
+        "batchSize": 10,
+        "batchCount": 10,
+        "issuedCredentialCount": 100,
+        "issuanceWallClockMs": 345.810375,
+        "wallClockCredentialsPerSecond": 289.17582359985585,
+        "compileAverageMs": 34.49371670000005,
+        "queueWaitAverageMs": 155.11104577,
+        "compileConcurrencyProjections": [
+          {
+            "batchSize": 10,
+            "compileConcurrency": 1,
+            "estimatedCompileWallClockMs": 344.9371670000005,
+            "estimatedIssuerWallClockMs": 345.810375,
+            "projectedCredentialsPerSecond": 289.17582359985585,
+            "projectedSpeedupVsSequential": 1,
+            "compileEfficiency": 1
+          },
+          {
+            "batchSize": 10,
+            "compileConcurrency": 2,
+            "estimatedCompileWallClockMs": 172.46858350000025,
+            "estimatedIssuerWallClockMs": 173.34179149999977,
+            "projectedCredentialsPerSecond": 576.8949261148033,
+            "projectedSpeedupVsSequential": 1.9949625073535742,
+            "compileEfficiency": 1
+          },
+          {
+            "batchSize": 10,
+            "compileConcurrency": 4,
+            "estimatedCompileWallClockMs": 103.48115010000015,
+            "estimatedIssuerWallClockMs": 104.35435809999967,
+            "projectedCredentialsPerSecond": 958.2733468991586,
+            "projectedSpeedupVsSequential": 3.313808654437031,
+            "compileEfficiency": 0.8333333333333334
+          }
+        ]
+      },
+      {
+        "batchSize": 20,
+        "batchCount": 5,
+        "issuedCredentialCount": 100,
+        "issuanceWallClockMs": 363.59558300000003,
+        "wallClockCredentialsPerSecond": 275.0308438152836,
+        "compileAverageMs": 72.46977499999998,
+        "queueWaitAverageMs": 137.27698934999998,
+        "compileConcurrencyProjections": [
+          {
+            "batchSize": 20,
+            "compileConcurrency": 1,
+            "estimatedCompileWallClockMs": 362.3488749999999,
+            "estimatedIssuerWallClockMs": 363.59558300000003,
+            "projectedCredentialsPerSecond": 275.0308438152836,
+            "projectedSpeedupVsSequential": 1,
+            "compileEfficiency": 1
+          },
+          {
+            "batchSize": 20,
+            "compileConcurrency": 2,
+            "estimatedCompileWallClockMs": 217.40932499999997,
+            "estimatedIssuerWallClockMs": 218.6560330000001,
+            "projectedCredentialsPerSecond": 457.3393133863357,
+            "projectedSpeedupVsSequential": 1.6628655427952443,
+            "compileEfficiency": 0.8333333333333333
+          },
+          {
+            "batchSize": 20,
+            "compileConcurrency": 4,
+            "estimatedCompileWallClockMs": 144.93954999999997,
+            "estimatedIssuerWallClockMs": 146.1862580000001,
+            "projectedCredentialsPerSecond": 684.0588258302633,
+            "projectedSpeedupVsSequential": 2.4872076758405006,
+            "compileEfficiency": 0.625
+          }
+        ]
+      }
+    ]
+  },
+  "bottlenecks": {
+    "slowestReadableScenario": {
+      "title": "A duplicate job-application submission is rejected without replacing the original acceptance",
+      "result": "SUCCESS",
+      "durationMs": 490,
+      "startTime": "2026-05-12T20:49:16.950Z"
+    },
+    "slowestBatchSweepCompileAverage": {
+      "batchSize": 20,
+      "compileAverageMs": 72.46977499999998
+    },
+    "slowestStressPhase": {
+      "phase": "jobApplications",
+      "durationMs": 1725.90425
+    }
+  },
+  "notes": [
+    "Readable BDD counts are deduplicated by scenario title and keep only the latest recorded run per title.",
+    "This report summarizes existing artifacts; it does not rerun issuance, protocol, or verifier logic internally.",
+    "Batch-sweep and stress timings remain machine-local measurements and should be compared by trend, not by exact absolute value.",
+    "Batch compile-concurrency projections parallelize only the fixture-construction phase in the model; the underlying readable issuance lane remains sequential."
+  ]
+}

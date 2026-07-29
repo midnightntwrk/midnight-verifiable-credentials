@@ -1,0 +1,7 @@
+{
+  "title": "An invalid company verifier policy rejects only the routed company cohort",
+  "startTime": "2026-05-12T20:49:16.565Z",
+  "result": "SUCCESS",
+  "duration": 383,
+  "testSource": "JS"
+}

@@ -1,0 +1,229 @@
+name: Publish npmjs Packages
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: Publication channel
+        required: true
+        type: choice
+        default: rc
+        options:
+          - snapshot
+          - rc
+          - release
+      version:
+        description: Base semantic version, for example 0.1.0
+        required: false
+        type: string
+      rc_index:
+        description: Positive RC number; 1 creates x.y.z-rc1
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vc-npm-publish-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  COMPACT_COMPILER_VERSION: 0.30.0
+  NPM_REGISTRY: https://registry.npmjs.org/
+  PNPM_CONFIG_AUDIT: "false"
+  PNPM_CONFIG_FUND: "false"
+
+jobs:
+  publish:
+    name: Publish supported packages
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Resolve publication context
+        id: context
+        env:
+          DISPATCH_CHANNEL: ${{ inputs.channel }}
+          DISPATCH_VERSION: ${{ inputs.version }}
+          DISPATCH_RC_INDEX: ${{ inputs.rc_index }}
+        run: ./tooling/scripts/release-resolve-context.sh
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        with:
+          version: 10.23.0
+          run_install: false
+
+      - name: Set up Node.js for npmjs
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          package-manager-cache: false
+          registry-url: https://registry.npmjs.org/
+
+      - name: Verify npm trusted-publishing support
+        run: |
+          npm_version="$(npm --version)"
+          node -e '
+            const [major, minor, patch] = process.argv[1].split(".").map(Number);
+            if (
+              !Number.isInteger(major) ||
+              major < 11 ||
+              (major === 11 && (minor < 5 || (minor === 5 && patch < 1)))
+            ) {
+              throw new Error(`npm ${process.argv[1]} does not support trusted publishing`);
+            }
+            console.log(`npm ${process.argv[1]} supports trusted publishing`);
+          ' "$npm_version"
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Set up Compact toolchain
+        uses: midnightntwrk/setup-compact-action@836895c8fffbbea6bd986af2b17e8941ff29d1f8 # v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          compact-version: ${{ env.COMPACT_COMPILER_VERSION }}
+
+      - name: Verify Compact installation
+        run: compact compile --version
+
+      - name: Configure private Git dependencies
+        env:
+          VC_GITHUB_DEPENDENCY_TOKEN: ${{ secrets.MIDNIGHTCI_REPO || github.token }}
+        run: |
+          echo "::add-mask::${VC_GITHUB_DEPENDENCY_TOKEN}"
+          git config --global url."https://x-access-token:${VC_GITHUB_DEPENDENCY_TOKEN}@github.com/".insteadOf "git@github.com:"
+          git config --global --add url."https://x-access-token:${VC_GITHUB_DEPENDENCY_TOKEN}@github.com/".insteadOf "ssh://git@github.com/"
+          git config --global --add url."https://x-access-token:${VC_GITHUB_DEPENDENCY_TOKEN}@github.com/".insteadOf "git+ssh://git@github.com/"
+          git config --global --add url."https://x-access-token:${VC_GITHUB_DEPENDENCY_TOKEN}@github.com/".insteadOf "https://git@github.com/"
+          git config --global --add url."https://x-access-token:${VC_GITHUB_DEPENDENCY_TOKEN}@github.com/".insteadOf "git+https://git@github.com/"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --prefer-offline
+
+      - name: Remove private Git credentials
+        if: always()
+        env:
+          VC_GITHUB_DEPENDENCY_TOKEN: ${{ secrets.MIDNIGHTCI_REPO || github.token }}
+        run: |
+          git config --global --remove-section \
+            "url.https://x-access-token:${VC_GITHUB_DEPENDENCY_TOKEN}@github.com/" \
+            2>/dev/null || true
+
+      - name: Test release tooling
+        run: pnpm run test:release-tooling
+
+      - name: Run repository light gate
+        run: ./run.sh --light
+
+      - name: Prepare release version
+        id: version
+        env:
+          CHANNEL: ${{ steps.context.outputs.channel }}
+          VERSION: ${{ steps.context.outputs.version }}
+          RC_INDEX: ${{ steps.context.outputs.rc_index }}
+        run: |
+          args=(--channel "$CHANNEL" --github-output "$GITHUB_OUTPUT")
+          if [[ -n "$VERSION" ]]; then
+            args+=(--version "$VERSION")
+          fi
+          if [[ -n "$RC_INDEX" ]]; then
+            args+=(--rc-index "$RC_INDEX")
+          fi
+          node ./tooling/scripts/prepare-release-version.mjs "${args[@]}"
+
+      - name: Pack and test release artifacts
+        run: pnpm run artifacts:pack
+
+      - name: Generate SPDX SBOMs
+        run: |
+          export SOURCE_DATE_EPOCH
+          SOURCE_DATE_EPOCH="$(git show -s --format=%ct "$GITHUB_SHA")"
+          node ./tooling/scripts/generate-release-sbom.mjs \
+            --tarballs ./tooling/artifacts/npm \
+            --output ./tooling/artifacts/sbom
+
+      - name: Snapshot npm dist-tags
+        run: |
+          node ./tooling/scripts/npm-release-state.mjs \
+            --snapshot \
+            --registry "$NPM_REGISTRY" \
+            --output ./tooling/artifacts/npm/release-state.json
+
+      - name: Upload release evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: vc-npm-release-${{ steps.version.outputs.version }}
+          if-no-files-found: error
+          retention-days: 90
+          path: |
+            tooling/artifacts/npm/*.tgz
+            tooling/artifacts/npm/release-state.json
+            tooling/artifacts/sbom/*.spdx.json
+
+      - name: Publish tested tarballs to npmjs
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.MIDNIGHTCI_NPMJS_TOKEN }}
+          NPM_ACCESS: public
+          NPM_TAG: ${{ steps.version.outputs.npm_tag }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: ./tooling/scripts/publish-npm-packages.sh
+
+      - name: Wait for npmjs propagation
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          node ./tooling/scripts/wait-for-npm-packages.mjs \
+            --version "$VERSION" \
+            --registry "$NPM_REGISTRY" \
+            --attempts 10 \
+            --delay-ms 15000
+
+      - name: Verify npm dist-tags
+        env:
+          NPM_TAG: ${{ steps.version.outputs.npm_tag }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          node ./tooling/scripts/npm-release-state.mjs \
+            --verify \
+            --registry "$NPM_REGISTRY" \
+            --input ./tooling/artifacts/npm/release-state.json \
+            --tag "$NPM_TAG" \
+            --version "$VERSION"
+
+      - name: Test clean npmjs consumers
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          node ./tooling/scripts/test-release-package-consumers.mjs \
+            --registry "$NPM_REGISTRY" \
+            --version "$VERSION"
+
+      - name: Write publication summary
+        env:
+          CHANNEL: ${{ steps.version.outputs.channel }}
+          NPM_TAG: ${{ steps.version.outputs.npm_tag }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          {
+            echo "## VC npmjs publication"
+            echo
+            echo "- Version: \`$VERSION\`"
+            echo "- Channel: \`$CHANNEL\`"
+            echo "- npm tag: \`$NPM_TAG\`"
+            echo "- Supported packages:"
+            while IFS= read -r workspace; do
+              node -e 'const fs = require("node:fs"); const p = JSON.parse(fs.readFileSync(process.argv[1], "utf8")); console.log(`  - ${p.name}@${p.version}`);' "$workspace/package.json"
+            done < <(node ./tooling/scripts/workspace-catalog.mjs --publishable-paths)
+          } >> "$GITHUB_STEP_SUMMARY"

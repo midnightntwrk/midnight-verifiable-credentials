@@ -1,0 +1,18 @@
+export struct HelloFamilyDisclosures {
+  revealBooleanValue: Boolean,
+  booleanValue: Boolean,
+  revealBytesValue: Boolean,
+  bytesValue: Bytes<32>,
+  revealBigUnsignedValue: Boolean,
+  bigUnsignedValue: Uint<248>,
+}
+
+export struct HelloFamilyPresentationRequest {
+  version: Uint<16>,
+  schema: SchemaRef,
+  issuerVerificationMethodRef: VerificationMethodRef,
+  requireBooleanValueDisclosure: Boolean,
+  requireBytesValueDisclosure: Boolean,
+  requireBigUnsignedValueDisclosure: Boolean,
+  verifierChallengeHash: Bytes<32>,
+}

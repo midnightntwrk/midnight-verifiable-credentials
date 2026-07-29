@@ -1,0 +1,93 @@
+pragma language_version >= 0.20;
+
+import CompactStandardLibrary;
+
+include "../../../../../packages/prototypes/credential-families/hello-family/src/hello-family-credential";
+
+export ledger contractVersion: Uint<32>;
+export ledger successfulVerificationCount: Counter;
+export ledger lastVerifiedCredentialRoot: Bytes<32>;
+export ledger lastVerifiedRequestChallenge: Bytes<32>;
+export ledger lastVerifiedBooleanValue: Boolean;
+export ledger lastVerifiedBigUnsignedValue: Uint<248>;
+export ledger lastVerifiedBytesValue: Bytes<32>;
+
+constructor() {
+  contractVersion = 1;
+  lastVerifiedCredentialRoot = pad(32, "hello-verifier:none");
+  lastVerifiedRequestChallenge = pad(32, "hello-verifier:no-request");
+  lastVerifiedBooleanValue = false;
+  lastVerifiedBigUnsignedValue = 0;
+  lastVerifiedBytesValue = pad(32, "");
+}
+
+// Request-builder helper for the smallest verifier starter.
+// This surface is pure because the starter policy is fully caller-supplied.
+export pure circuit helloVerifierRequest(
+  issuerVerificationMethodRef: VerificationMethodRef,
+  verifierChallengeHash: Bytes<32>,
+  requireBytesValueDisclosure: Boolean
+): HelloFamilyPresentationRequest {
+  return HelloFamilyPresentationRequest {
+    version: 1,
+    schema: SchemaRef {
+      packageId: pad(32, "midnight:vc:hello-family"),
+      schemaId: pad(32, "hello-family:v1"),
+      majorVersion: 1,
+      minorVersion: 0,
+    },
+    issuerVerificationMethodRef: issuerVerificationMethodRef,
+    requireBooleanValueDisclosure: true,
+    requireBytesValueDisclosure: requireBytesValueDisclosure,
+    requireBigUnsignedValueDisclosure: true,
+    verifierChallengeHash: verifierChallengeHash,
+  };
+}
+
+// TRUST BOUNDARY: this starter only demonstrates typed request construction,
+// family verification, and disclosure consumption. It does not add status,
+// external time binding, or durable business-capability semantics.
+export circuit verifyHelloFamilyPresentationForHelloVerifier(
+  credential: HelloFamilyCredential,
+  credentialProof: Proof,
+  request: HelloFamilyPresentationRequest,
+  presentation: HelloFamilyPresentation,
+  presentationProof: Proof
+): [] {
+  const credentialRoot = disclose(helloFamilyCredentialBodyRoot(credential));
+
+  assert(
+    request.requireBooleanValueDisclosure,
+    "Hello-verifier starter requires boolean disclosure"
+  );
+  assert(
+    request.requireBigUnsignedValueDisclosure,
+    "Hello-verifier starter requires big-unsigned disclosure"
+  );
+
+  assertHelloFamilyPresentationSatisfiesRequest(
+    credential,
+    credentialProof,
+    request,
+    presentation,
+    presentationProof
+  );
+
+  lastVerifiedCredentialRoot = credentialRoot;
+  lastVerifiedRequestChallenge = disclose(request.verifierChallengeHash);
+  // CONFORMANCE LOCK: this circuit now enforces boolean and bigUnsigned
+  // disclosure as an invariant, so they do not need a conditional reset path.
+  lastVerifiedBooleanValue = disclose(presentation.disclosed.booleanValue);
+  lastVerifiedBigUnsignedValue = disclose(
+    presentation.disclosed.bigUnsignedValue
+  );
+  const revealedBytesValue = disclose(presentation.disclosed.revealBytesValue);
+
+  if (revealedBytesValue) {
+    lastVerifiedBytesValue = disclose(presentation.disclosed.bytesValue);
+  } else {
+    lastVerifiedBytesValue = pad(32, "");
+  }
+
+  successfulVerificationCount.increment(1);
+}

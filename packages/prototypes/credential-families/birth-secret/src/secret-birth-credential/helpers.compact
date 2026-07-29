@@ -1,0 +1,100 @@
+// Secret birth-family schema helpers and request normalization.
+// This file is pure because it only derives family-local roots and projections
+// over already-supplied credential or request values.
+export pure circuit secretBirthCredentialBodyRoot(
+  credential: SecretBirthCredential
+): Bytes<32> {
+  return credentialBodyRoot(credential);
+}
+
+export pure circuit secretBirthCredentialRegistryBoundStatusBodyRoot(
+  credential: SecretBirthStatusCredential
+): Bytes<32> {
+  return SecretBirthStatus_credentialBodyRoot(credential);
+}
+
+export pure circuit secretBirthCredentialWithStatusBindingBodyRoot(
+  credentialWithStatus: SecretBirthCredentialWithStatusBinding
+): Bytes<32> {
+  return secretBirthCredentialRegistryBoundStatusBodyRoot(
+    credentialWithStatus.credential
+  );
+}
+
+export pure circuit secretBirthCredentialPresentationBodyRoot(
+  presentation: SecretBirthCredentialPresentation
+): Bytes<32> {
+  return presentationBodyRoot(presentation);
+}
+
+export pure circuit secretBirthCredentialPresentationRequestBodyRoot(
+  request: SecretBirthCredentialPresentationRequest
+): Bytes<32> {
+  return persistentHash<SecretBirthCredentialPresentationRequest>(request);
+}
+
+// =====================
+// Schema and verifier-request validation
+// =====================
+export pure circuit assertValidSecretBirthSchemaRef(schema: SchemaRef): [] {
+  assert(
+    schema.packageId == pad(32, "midnight-did:vc:birth-secret"),
+    "Unexpected secret birth schema package identifier"
+  );
+  assert(schema.schemaId == pad(32, "birth-credential:v1"), "Unexpected schema identifier");
+  assert(schema.majorVersion == 1, "Secret birth credential major version mismatch");
+}
+
+export pure circuit assertValidSecretBirthCredentialPresentationRequest(
+  request: SecretBirthCredentialPresentationRequest
+): [] {
+  assert(request.version == 1, "Presentation request version mismatch");
+  assertValidSecretBirthSchemaRef(request.schema);
+  assertValidVerificationMethodRef(request.issuerVerificationMethodRef);
+  if (request.requireAgeOverThreshold) {
+    assert(request.requestedAgeThresholdYears > 0, "Requested age threshold must be positive");
+  } else {
+    assert(request.requestedAgeThresholdYears == 0, "Requested age threshold must be zero when disabled");
+  }
+}
+
+// NOTE: this collapses the transport wrapper into the family-local request so
+// the same credential semantics can be reused by same-holder composition and
+// by the status-aware overlays in `status-validation.compact`.
+export pure circuit secretBirthCredentialPresentationRequestFromProtocol(
+  request: SecretBirthCredentialVerificationRequest
+): SecretBirthCredentialPresentationRequest {
+  return SecretBirthCredentialPresentationRequest {
+    version: request.envelope.version,
+    schema: request.schema,
+    issuerVerificationMethodRef: request.issuerVerificationMethodRef,
+    requireSubjectIdCommitmentDisclosure: request.body.requireSubjectIdCommitmentDisclosure,
+    requireBirthCountryDisclosure: request.body.requireBirthCountryDisclosure,
+    requireVerifierScopedPseudonym: request.body.requireVerifierScopedPseudonym,
+    verifierDomainHash: request.body.verifierDomainHash,
+    requireAgeOverThreshold: request.body.requireAgeOverThreshold,
+    requestedAgeThresholdYears: request.body.requestedAgeThresholdYears,
+    verifierChallengeHash: request.verifierChallengeHash,
+  };
+}
+
+// NOTE: status-aware verification paths still need a plain `NoStatusBinding`
+// view because the generic presentation relations are defined over the
+// non-status credential body root.
+export pure circuit secretBirthCredentialWithoutStatusBinding(
+  credential: SecretBirthStatusCredential
+): SecretBirthCredential {
+  return SecretBirthCredential {
+    version: credential.version,
+    schema: credential.schema,
+    issuerVerificationMethodRef: credential.issuerVerificationMethodRef,
+    holderBinding: credential.holderBinding,
+    statusBinding: NoStatusBinding {},
+    issuedAt: credential.issuedAt,
+    hasExpiration: credential.hasExpiration,
+    expiresAt: credential.expiresAt,
+    claims: NoPublicClaims {},
+    claimCommitments: credential.claimCommitments,
+    claimRoot: credential.claimRoot,
+  };
+}

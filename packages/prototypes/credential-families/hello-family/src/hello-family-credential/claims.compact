@@ -1,0 +1,28 @@
+// Hello-family direct typed claims.
+// This family intentionally keeps claims as first-class typed fields rather
+// than commitments so it can act as a laboratory for the current Compact type
+// surface.
+export struct HelloFamilyClaims {
+  booleanValue: Boolean,
+  smallUintValue: Uint<8>,
+  bigUnsignedValue: Uint<248>,
+  bytesValue: Bytes<32>,
+  fieldValue: Field,
+  booleanVector: Vector<2, Boolean>,
+  uintVector: Vector<2, Uint<64>>,
+  bytesVector: Vector<2, Bytes<16>>,
+  fieldVector: Vector<2, Field>,
+}
+
+export pure circuit helloFamilyClaimPayloadRoot(
+  claims: HelloFamilyClaims
+): Bytes<32> {
+  return persistentHash<HelloFamilyClaims>(claims);
+}
+
+export pure circuit helloFamilyClaimRoot(claims: HelloFamilyClaims): Bytes<32> {
+  return persistentHash<Vector<2, Bytes<32>>>([
+    pad(32, "midnight:vc:hello-family:v1"),
+    helloFamilyClaimPayloadRoot(claims)
+  ]);
+}

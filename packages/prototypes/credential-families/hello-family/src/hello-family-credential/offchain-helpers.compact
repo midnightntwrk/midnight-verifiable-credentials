@@ -1,0 +1,169 @@
+// Hello-family offchain-DID schema helpers and direct-claim validation.
+// This profile keeps the same typed claims as the explicit starter, but swaps
+// in the lightweight offchain Midnight DID holder-binding surface.
+// NOTE: this starter intentionally keeps a parallel helper surface beside the
+// explicit-holder profile so the DID-aware path stays compileable without
+// introducing a second layer of generic helper indirection here.
+export pure circuit helloFamilyOffchainCredentialBodyRoot(
+  credential: HelloFamilyOffchainCredential
+): Bytes<32> {
+  return credentialBodyRoot(credential);
+}
+
+export pure circuit helloFamilyOffchainPresentationBodyRoot(
+  presentation: HelloFamilyOffchainPresentation
+): Bytes<32> {
+  return presentationBodyRoot(presentation);
+}
+
+export pure circuit helloFamilyOffchainPresentationRequestBodyRoot(
+  request: HelloFamilyPresentationRequest
+): Bytes<32> {
+  return persistentHash<HelloFamilyPresentationRequest>(request);
+}
+
+// =====================
+// Schema and request validation
+// =====================
+export pure circuit assertValidHelloFamilyOffchainSchemaRef(
+  schema: SchemaRef
+): [] {
+  assert(
+    schema.packageId == pad(32, "midnight:vc:hello-family"),
+    "Hello-family package id mismatch"
+  );
+  assert(
+    schema.schemaId == pad(32, "hello-family:v1"),
+    "Hello-family schema id mismatch"
+  );
+  assert(schema.majorVersion == 1, "Hello-family major version mismatch");
+}
+
+export pure circuit assertValidHelloFamilyOffchainPresentationRequest(
+  request: HelloFamilyPresentationRequest
+): [] {
+  assert(request.version == 1, "Hello-family request version mismatch");
+  assertValidHelloFamilyOffchainSchemaRef(request.schema);
+  assertValidVerificationMethodRef(request.issuerVerificationMethodRef);
+  assert(
+    request.verifierChallengeHash != pad(32, ""),
+    "Hello-family verifier challenge must be set"
+  );
+}
+
+// =====================
+// Credential and presentation validation
+// =====================
+export pure circuit assertValidHelloFamilyOffchainCredential(
+  credential: HelloFamilyOffchainCredential,
+  proof: Proof
+): [] {
+  assertValidHelloFamilyOffchainSchemaRef(credential.schema);
+  assertValidCredentialEnvelope(credential, helloFamilyClaimRoot(credential.claims));
+  assertValidOffchainMidnightHolderBinding(credential.holderBinding);
+  assertValidNoStatusBinding(credential.statusBinding);
+  assertValidCredentialProof(credential, proof);
+}
+
+export pure circuit assertValidHelloFamilyOffchainPresentation(
+  credential: HelloFamilyOffchainCredential,
+  credentialProof: Proof,
+  presentation: HelloFamilyOffchainPresentation,
+  presentationProof: Proof
+): [] {
+  assertValidHelloFamilyOffchainCredential(credential, credentialProof);
+  assertValidHelloFamilyOffchainSchemaRef(presentation.schema);
+  assertValidPresentationEnvelope(presentation);
+  HelloFamilyOffchainPresentation_assertMatchingCredentialPresentation(
+    credential,
+    presentation
+  );
+  assertValidOffchainMidnightHolderBinding(presentation.holderBinding);
+  assertMatchingOffchainMidnightHolderBindings(
+    credential.holderBinding,
+    presentation.holderBinding
+  );
+  assertProofMatchesOffchainMidnightHolderBinding(
+    presentation.holderBinding,
+    presentationProof
+  );
+  assertValidPresentationContextProof(
+    helloFamilyOffchainPresentationBodyRoot(presentation),
+    presentationProof
+  );
+
+  if (presentation.disclosed.revealBooleanValue) {
+    assert(
+      presentation.disclosed.booleanValue == credential.claims.booleanValue,
+      "Hello-family boolean disclosure does not match the credential"
+    );
+  }
+  if (presentation.disclosed.revealBytesValue) {
+    assert(
+      presentation.disclosed.bytesValue == credential.claims.bytesValue,
+      "Hello-family bytes disclosure does not match the credential"
+    );
+  }
+  if (presentation.disclosed.revealBigUnsignedValue) {
+    assert(
+      presentation.disclosed.bigUnsignedValue == credential.claims.bigUnsignedValue,
+      "Hello-family bigint-like disclosure does not match the credential"
+    );
+  }
+}
+
+// TRUST BOUNDARY: this starter profile proves that a long-form offchain DID can
+// hand off into a VC holder-binding shape and a valid typed presentation flow.
+// It does not prove that the offchain DID lifecycle itself is production-ready.
+export pure circuit assertHelloFamilyOffchainPresentationSatisfiesRequest(
+  credential: HelloFamilyOffchainCredential,
+  credentialProof: Proof,
+  request: HelloFamilyPresentationRequest,
+  presentation: HelloFamilyOffchainPresentation,
+  presentationProof: Proof
+): [] {
+  // CONFORMANCE LOCK: keep this request contract aligned with the explicit
+  // starter profile so both hello-family tracks enforce the same disclosure
+  // and issuer/challenge invariants.
+  assertValidHelloFamilyOffchainPresentationRequest(request);
+  assertValidHelloFamilyOffchainPresentation(
+    credential,
+    credentialProof,
+    presentation,
+    presentationProof
+  );
+  assertMatchingSchemaRefs(request.schema, credential.schema);
+  assertMatchingSchemaRefs(request.schema, presentation.schema);
+  assert(
+    request.issuerVerificationMethodRef.didContractAddress
+      == credential.issuerVerificationMethodRef.didContractAddress,
+    "Hello-family request issuer contract does not match the credential issuer"
+  );
+  assert(
+    request.issuerVerificationMethodRef.methodId
+      == credential.issuerVerificationMethodRef.methodId,
+    "Hello-family request issuer method does not match the credential issuer"
+  );
+  assert(
+    presentationProof.challengeHash == request.verifierChallengeHash,
+    "Hello-family presentation proof challenge does not match the request"
+  );
+  if (request.requireBooleanValueDisclosure) {
+    assert(
+      presentation.disclosed.revealBooleanValue,
+      "Hello-family request requires boolean disclosure"
+    );
+  }
+  if (request.requireBytesValueDisclosure) {
+    assert(
+      presentation.disclosed.revealBytesValue,
+      "Hello-family request requires bytes disclosure"
+    );
+  }
+  if (request.requireBigUnsignedValueDisclosure) {
+    assert(
+      presentation.disclosed.revealBigUnsignedValue,
+      "Hello-family request requires bigint-like disclosure"
+    );
+  }
+}

@@ -1,0 +1,270 @@
+// Secret birth-family status-aware verification overlays.
+// These helpers remain pure because the live/off-chain/authority-attested
+// status evidence is passed in as parameters rather than being fetched from
+// contract state here.
+export pure circuit assertValidSecretBirthCredentialWithStatusBinding(
+  credentialWithStatus: SecretBirthCredentialWithStatusBinding
+): [] {
+  assertValidSecretBirthSchemaRef(credentialWithStatus.credential.schema);
+  SecretBirthStatus_assertValidCredentialEnvelope(
+    credentialWithStatus.credential,
+    birthCredentialClaimRoot(credentialWithStatus.credential.claimCommitments)
+  );
+  assertValidRegistryBoundStatusBinding(
+    credentialWithStatus.credential.statusBinding
+  );
+  assertValidBlindedSecretHolderCredentialBinding(
+    credentialWithStatus.credential.holderBinding
+  );
+  SecretBirthStatus_assertValidCredentialProofForBodyRoot(
+    credentialWithStatus.credential,
+    credentialWithStatus.credentialProof,
+    secretBirthCredentialWithStatusBindingBodyRoot(credentialWithStatus)
+  );
+}
+
+// =====================
+// Status request and input validation
+// =====================
+export pure circuit assertValidSecretBirthCredentialVerificationAuthorityAttestedStatusRequest(
+  request: SecretBirthCredentialVerificationAuthorityAttestedStatusRequest
+): [] {
+  assertValidSecretBirthCredentialVerificationRequestMessage(
+    request.verificationRequest
+  );
+  assertValidVerifierStatusPolicy(request.statusPolicy);
+  assertValidRevokedSetStatusRequest(request.statusRequest);
+  assert(
+    request.statusPolicy.requireStatus,
+    "Secret birth authority-attested status verification request must require credential status"
+  );
+  assert(
+    request.statusRequest.verifierChallengeHash
+      == request.verificationRequest.verifierChallengeHash,
+    "Secret birth authority-attested status request challenge must match the verification request challenge"
+  );
+}
+
+export pure circuit assertValidSecretBirthCredentialVerificationRevokedSetStatusRequest(
+  request: SecretBirthCredentialVerificationRevokedSetStatusRequest
+): [] {
+  assertValidSecretBirthCredentialVerificationRequestMessage(
+    request.verificationRequest
+  );
+  assertValidVerifierStatusPolicy(request.statusPolicy);
+  assertValidRevokedSetStatusRequest(request.statusRequest);
+  assert(
+    request.statusPolicy.requireStatus,
+    "Secret birth revoked-set status verification request must require credential status"
+  );
+  assert(
+    request.statusRequest.verifierChallengeHash
+      == request.verificationRequest.verifierChallengeHash,
+    "Secret birth revoked-set status request challenge must match the verification request challenge"
+  );
+}
+
+export pure circuit assertValidSecretBirthCredentialVerificationLiveStatusRequest(
+  request: SecretBirthCredentialVerificationLiveStatusRequest
+): [] {
+  assertValidSecretBirthCredentialVerificationRequestMessage(
+    request.verificationRequest
+  );
+  assertValidVerifierStatusPolicy(request.statusPolicy);
+  assert(
+    request.statusPolicy.requireStatus,
+    "Secret birth live status verification request must require credential status"
+  );
+}
+
+export pure circuit assertValidSecretBirthCredentialVerificationRevokedSetStatusInputs(
+  statusInputs: SecretBirthCredentialVerificationRevokedSetStatusInputs
+): [] {
+  assertValidRevokedSetNonMembershipStatusProofProtocol(
+    statusInputs.statusProofProtocol
+  );
+}
+
+export pure circuit assertValidSecretBirthCredentialVerificationLiveStatusInputs(
+  statusInputs: SecretBirthCredentialVerificationLiveStatusInputs
+): [] {
+  assertValidLiveStatusWitnessInput(
+    statusInputs.witnessInput
+  );
+}
+
+export pure circuit assertValidSecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs(
+  statusInputs: SecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs
+): [] {
+  assertValidAuthorityAttestedStatusProofProtocol(
+    statusInputs.statusProofProtocol
+  );
+}
+
+// =====================
+// Status-aware submission matching
+// =====================
+export pure circuit assertSecretBirthCredentialVerificationSubmissionMatchesRevokedSetStatusRequest(
+  credentialWithStatus: SecretBirthCredentialWithStatusBinding,
+  request: SecretBirthCredentialVerificationRevokedSetStatusRequest,
+  submission: SecretBirthCredentialVerificationSubmission,
+  statusInputs: SecretBirthCredentialVerificationRevokedSetStatusInputs,
+  holderSecret: Bytes<32>,
+  holderSecretOpening: Bytes<32>,
+  holderBindingBlindingFactor: Bytes<32>
+): [] {
+  const plainCredential = secretBirthCredentialWithoutStatusBinding(
+    credentialWithStatus.credential
+  );
+  assertValidSecretBirthCredentialWithStatusBinding(credentialWithStatus);
+  assertValidSecretBirthCredentialVerificationRevokedSetStatusRequest(request);
+  assertValidSecretBirthCredentialVerificationRevokedSetStatusInputs(
+    statusInputs
+  );
+  assert(
+    secretBirthCredentialBodyRoot(submission.body.credential)
+      == secretBirthCredentialBodyRoot(plainCredential),
+    "Revoked-set status verification submission credential does not match the status-bound credential body"
+  );
+  assert(
+    submission.body.credentialProof.challengeHash
+      == credentialWithStatus.credentialProof.challengeHash,
+    "Revoked-set status verification submission credential proof does not match the status-bound credential proof"
+  );
+  assertSecretBirthCredentialVerificationSubmissionMatchesRequest(
+    request.verificationRequest,
+    submission,
+    holderSecret,
+    holderSecretOpening,
+    holderBindingBlindingFactor
+  );
+  assert(
+    statusInputs.statusProofProtocol.request.verifierChallengeHash
+      == request.verificationRequest.verifierChallengeHash,
+    "Revoked-set status proof protocol challenge must match the verification request challenge"
+  );
+  assert(
+    statusInputs.statusProofProtocol.request.registryState.registryId
+      == request.statusRequest.registryState.registryId,
+    "Revoked-set status proof protocol registry id does not match the verifier request"
+  );
+  assert(
+    statusInputs.statusProofProtocol.request.registryState.revokedRoot
+      == request.statusRequest.registryState.revokedRoot,
+    "Revoked-set status proof protocol revoked root does not match the verifier request"
+  );
+  assert(
+    statusInputs.statusProofProtocol.request.registryState.registryVersion
+      == request.statusRequest.registryState.registryVersion,
+    "Revoked-set status proof protocol registry version does not match the verifier request"
+  );
+  assertVerifierStatusPolicyAcceptsRevokedSetNonMembershipStatusProofProtocol(
+    request.statusPolicy,
+    credentialWithStatus.credential.statusBinding,
+    statusInputs.statusProofProtocol
+  );
+}
+
+export pure circuit assertSecretBirthCredentialVerificationSubmissionMatchesLiveStatusRequest(
+  credentialWithStatus: SecretBirthCredentialWithStatusBinding,
+  request: SecretBirthCredentialVerificationLiveStatusRequest,
+  submission: SecretBirthCredentialVerificationSubmission,
+  statusInputs: SecretBirthCredentialVerificationLiveStatusInputs,
+  holderSecret: Bytes<32>,
+  holderSecretOpening: Bytes<32>,
+  holderBindingBlindingFactor: Bytes<32>
+): [] {
+  const plainCredential = secretBirthCredentialWithoutStatusBinding(
+    credentialWithStatus.credential
+  );
+  assertValidSecretBirthCredentialWithStatusBinding(credentialWithStatus);
+  assertValidSecretBirthCredentialVerificationLiveStatusRequest(request);
+  assertValidSecretBirthCredentialVerificationLiveStatusInputs(
+    statusInputs
+  );
+  assert(
+    secretBirthCredentialBodyRoot(submission.body.credential)
+      == secretBirthCredentialBodyRoot(plainCredential),
+    "Live status verification submission credential does not match the status-bound credential body"
+  );
+  assert(
+    submission.body.credentialProof.challengeHash
+      == credentialWithStatus.credentialProof.challengeHash,
+    "Live status verification submission credential proof does not match the status-bound credential proof"
+  );
+  assertSecretBirthCredentialVerificationSubmissionMatchesRequest(
+    request.verificationRequest,
+    submission,
+    holderSecret,
+    holderSecretOpening,
+    holderBindingBlindingFactor
+  );
+  assertVerifierStatusPolicyAcceptsLiveStatusBinding(
+    request.statusPolicy,
+    credentialWithStatus.credential.statusBinding,
+    statusInputs.witnessInput
+  );
+}
+
+// CONFORMANCE LOCK: authority-attested and verifier-supplied snapshot flows
+// must keep the same request/protocol alignment checks so cross-mode verifier
+// classification stays stable.
+export pure circuit assertSecretBirthCredentialVerificationSubmissionMatchesAuthorityAttestedStatusProtocolRequest(
+  credentialWithStatus: SecretBirthCredentialWithStatusBinding,
+  request: SecretBirthCredentialVerificationAuthorityAttestedStatusRequest,
+  submission: SecretBirthCredentialVerificationSubmission,
+  statusInputs: SecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs,
+  holderSecret: Bytes<32>,
+  holderSecretOpening: Bytes<32>,
+  holderBindingBlindingFactor: Bytes<32>,
+  currentTime: Uint<64>
+): [] {
+  const plainCredential = secretBirthCredentialWithoutStatusBinding(
+    credentialWithStatus.credential
+  );
+  assertValidSecretBirthCredentialWithStatusBinding(credentialWithStatus);
+  assertValidSecretBirthCredentialVerificationAuthorityAttestedStatusRequest(
+    request
+  );
+  assertValidSecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs(
+    statusInputs
+  );
+  assert(
+    secretBirthCredentialBodyRoot(submission.body.credential)
+      == secretBirthCredentialBodyRoot(plainCredential),
+    "Authority-attested status protocol submission credential does not match the status-bound credential body"
+  );
+  assert(
+    submission.body.credentialProof.challengeHash
+      == credentialWithStatus.credentialProof.challengeHash,
+    "Authority-attested status protocol submission credential proof does not match the status-bound credential proof"
+  );
+  assertSecretBirthCredentialVerificationSubmissionMatchesRequest(
+    request.verificationRequest,
+    submission,
+    holderSecret,
+    holderSecretOpening,
+    holderBindingBlindingFactor
+  );
+  assert(
+    statusInputs.statusProofProtocol.request.registryState.registryId
+      == request.statusRequest.registryState.registryId,
+    "Authority-attested status proof protocol registry id does not match the verifier request"
+  );
+  assert(
+    statusInputs.statusProofProtocol.request.registryState.revokedRoot
+      == request.statusRequest.registryState.revokedRoot,
+    "Authority-attested status proof protocol revoked root does not match the verifier request"
+  );
+  assert(
+    statusInputs.statusProofProtocol.request.registryState.registryVersion
+      == request.statusRequest.registryState.registryVersion,
+    "Authority-attested status proof protocol registry version does not match the verifier request"
+  );
+  assertVerifierStatusPolicyAcceptsAuthorityAttestedStatusProofProtocol(
+    request.statusPolicy,
+    credentialWithStatus.credential.statusBinding,
+    statusInputs.statusProofProtocol,
+    currentTime
+  );
+}

@@ -1,0 +1,55 @@
+[
+  {
+    "companyId": "company-northwind-robotics",
+    "companyName": "Northwind Robotics",
+    "verifierDidUrl": "did:midnight:company:northwind-robotics",
+    "verifierMethodId": "#verifier-key-1",
+    "hiringStream": "robotics-software",
+    "requestPresetId": "job-application-grade-and-award",
+    "requestPresetTitle": "Grade and award verification",
+    "requestPolicyPurpose": "Use when an employer needs the graduate identity, institution, degree, year, and final grade for an academic screening pass.",
+    "requestPolicy": {
+      "requireGraduateNameDisclosure": true,
+      "requireUniversityNameDisclosure": true,
+      "requireAwardNameDisclosure": true,
+      "requireGraduationYearDisclosure": true,
+      "requireFinalGradeDisclosure": true
+    }
+  },
+  {
+    "companyId": "company-blue-ocean-analytics",
+    "companyName": "Blue Ocean Analytics",
+    "verifierDidUrl": "did:midnight:company:blue-ocean-analytics",
+    "verifierMethodId": "#verifier-key-1",
+    "hiringStream": "data-analytics",
+    "requestPresetId": "job-application-honors-without-grade",
+    "requestPresetTitle": "Honors without raw grade",
+    "requestPolicyPurpose": "Use when an employer needs degree context and honors classification but intentionally avoids collecting the raw final grade.",
+    "requestPolicy": {
+      "requireGraduateNameDisclosure": true,
+      "requireUniversityNameDisclosure": true,
+      "requireAwardNameDisclosure": true,
+      "requireGraduationYearDisclosure": true,
+      "requireHonorsCodeDisclosure": true,
+      "requireFinalGradeDisclosure": false
+    }
+  },
+  {
+    "companyId": "company-pioneer-systems",
+    "companyName": "Pioneer Systems",
+    "verifierDidUrl": "did:midnight:company:pioneer-systems",
+    "verifierMethodId": "#verifier-key-1",
+    "hiringStream": "platform-engineering",
+    "requestPresetId": "job-application-credits-and-grade",
+    "requestPresetTitle": "Credits and grade verification",
+    "requestPolicyPurpose": "Use when an employer needs the degree outcome plus the earned-credit total to compare curriculum depth across graduates.",
+    "requestPolicy": {
+      "requireGraduateNameDisclosure": true,
+      "requireUniversityNameDisclosure": true,
+      "requireAwardNameDisclosure": true,
+      "requireGraduationYearDisclosure": true,
+      "requireCreditsEarnedDisclosure": true,
+      "requireFinalGradeDisclosure": true
+    }
+  }
+]

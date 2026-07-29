@@ -1,0 +1,29 @@
+export struct DigitalPassportDisclosures {
+  revealFirstName: Boolean,
+  firstNameValuePadded: Bytes<64>,
+  firstNameOpening: Bytes<32>,
+  revealLastName: Boolean,
+  lastNameValuePadded: Bytes<64>,
+  lastNameOpening: Bytes<32>,
+  proveAgeOverThreshold: Boolean,
+  ageThresholdYears: Uint<8>,
+  revealDocumentNumber: Boolean,
+  documentNumberValue: Bytes<32>,
+  documentNumberOpening: Bytes<32>,
+  revealIssuingState: Boolean,
+  issuingStateValue: Bytes<32>,
+  issuingStateOpening: Bytes<32>,
+}
+
+export struct DigitalPassportPresentationRequest {
+  version: Uint<16>,
+  schema: SchemaRef,
+  issuerVerificationMethodRef: VerificationMethodRef,
+  requireFirstNameDisclosure: Boolean,
+  requireLastNameDisclosure: Boolean,
+  requireAgeOverThreshold: Boolean,
+  requestedAgeThresholdYears: Uint<8>,
+  requireDocumentNumberDisclosure: Boolean,
+  requireIssuingStateDisclosure: Boolean,
+  verifierChallengeHash: Bytes<32>,
+}

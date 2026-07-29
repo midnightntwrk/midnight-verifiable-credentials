@@ -1,0 +1,7 @@
+{
+  "title": "A tampered issuer verification method is rejected without affecting untampered job applications",
+  "startTime": "2026-05-12T20:49:18.777Z",
+  "result": "SUCCESS",
+  "duration": 457,
+  "testSource": "JS"
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Midnight Identity VC"
+  short_description: "VC repository development, BDD, university, status, CI cones, and packaging"
+  default_prompt: "Use this for midnight-verifiable-credentials VC/VP packages, BDD, university use case, status/revocation, run.sh validation, and artifacts."
