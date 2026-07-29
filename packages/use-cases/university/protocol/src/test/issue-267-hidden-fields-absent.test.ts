@@ -139,6 +139,51 @@ const anyStringContains = (leaves: ScanLeaves, needle: string): boolean =>
 const anyBigintEquals = (leaves: ScanLeaves, needle: bigint): boolean =>
   leaves.bigints.some((value) => value === needle);
 
+const redactBuffer = (buffer: Buffer, needles: readonly Buffer[]): Buffer => {
+  const redacted = Buffer.from(buffer);
+  for (const needle of needles) {
+    let index = redacted.indexOf(needle);
+    while (index !== -1) {
+      redacted.fill(0, index, index + needle.length);
+      index = redacted.indexOf(needle, index + needle.length);
+    }
+  }
+  return redacted;
+};
+
+const redactString = (value: string, needles: readonly string[]): string => {
+  let redacted = value;
+  for (const needle of needles) {
+    redacted = redacted.split(needle).join("\u0000".repeat(needle.length));
+  }
+  return redacted;
+};
+
+/**
+ * Redact every occurrence of the legitimately revealed plaintexts from the
+ * scanned leaves (length-preserving NUL fill, longest needle first) so the
+ * raw-bytes / raw-string probes can run for EVERY hidden claim — including one
+ * whose plaintext is a substring of a revealed claim (e.g. hidden facultyName
+ * "Science" inside revealed awardName "BSc Data Science"). Claim plaintexts
+ * never contain NUL, so redaction cannot fabricate a match; any hidden
+ * plaintext that survives redaction sits outside every revealed value and is
+ * therefore a genuine leak.
+ */
+const redactRevealed = (
+  leaves: ScanLeaves,
+  revealed: readonly string[],
+): ScanLeaves => {
+  const needles = revealed
+    .filter((value) => value.length > 0)
+    .sort((left, right) => right.length - left.length);
+  const encodedNeedles = needles.map((value) => Buffer.from(value, "utf8"));
+  return {
+    buffers: leaves.buffers.map((buffer) => redactBuffer(buffer, encodedNeedles)),
+    strings: leaves.strings.map((value) => redactString(value, needles)),
+    bigints: leaves.bigints,
+  };
+};
+
 const submissionsOf = (
   messages: readonly UniversityProtocolMessage[],
 ): UniversityProtocolMessage[] =>
@@ -215,15 +260,18 @@ describe("issue #267 — hidden claims must not ship in presentation submissions
 
       // Values legitimately revealed in THIS submission (per request policy)
       // can contain short hidden values as substrings (e.g. facultyName
-      // "Science" inside revealed awardName "BSc Data Science"). The
-      // raw-substring probes skip those scanner false positives; the padded
-      // fixed-width probe — the actual wire encoding of a claim — always runs.
+      // "Science" inside revealed awardName "BSc Data Science"). Rather than
+      // skipping the raw probes for such fields, redact the revealed
+      // plaintexts out of the scanned leaves first: the raw probes then run
+      // for EVERY hidden claim, and the padded fixed-width probe — the actual
+      // wire encoding of a claim — still runs on the unredacted leaves.
       const revealedPlaintexts = CLAIM_FIELDS.filter(
         (candidate) =>
           candidate.kind === "text" &&
           (PUBLIC_ROUTING_FIELDS.has(candidate.field) ||
             request[candidate.requireFlag] === true),
       ).map((candidate) => claims[candidate.field as TextClaimField["field"]]);
+      const redactedLeaves = redactRevealed(leaves, revealedPlaintexts);
 
       for (const claimField of CLAIM_FIELDS) {
         if (PUBLIC_ROUTING_FIELDS.has(claimField.field)) {
@@ -240,19 +288,14 @@ describe("issue #267 — hidden claims must not ship in presentation submissions
             anyBufferContains(leaves, padText(raw, claimField.pad)),
             `hidden padded plaintext leaked: ${label}`,
           ).toBe(false);
-          const isSubstringOfRevealed = revealedPlaintexts.some((revealed) =>
-            revealed.includes(raw),
-          );
-          if (!isSubstringOfRevealed) {
-            expect(
-              anyBufferContains(leaves, new TextEncoder().encode(raw)),
-              `hidden raw-bytes plaintext leaked: ${label}`,
-            ).toBe(false);
-            expect(
-              anyStringContains(leaves, raw),
-              `hidden string plaintext leaked: ${label}`,
-            ).toBe(false);
-          }
+          expect(
+            anyBufferContains(redactedLeaves, new TextEncoder().encode(raw)),
+            `hidden raw-bytes plaintext leaked: ${label}`,
+          ).toBe(false);
+          expect(
+            anyStringContains(redactedLeaves, raw),
+            `hidden string plaintext leaked: ${label}`,
+          ).toBe(false);
         } else {
           expect(
             anyBigintEquals(numericLeaves, BigInt(claims[claimField.field])),
