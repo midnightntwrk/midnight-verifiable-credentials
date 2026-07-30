@@ -58,6 +58,26 @@ by digest, and fail closed on mismatch. `latest`, branch names, and mutable tags
 are not valid production selectors. Trust-registry entries may discover an
 approved deployment-manifest digest but do not host the artifacts.
 
+## Public prototype/use-case fixture exception
+
+The production distribution decision above does not prohibit a deliberately
+curated public test-fixture set. `tooling/fixtures/compact-public/manifest.json`
+defines the only prototype/use-case `src/managed` roots that may be restored by
+ordinary CI. Managed code, prover keys, verifier keys, `zkir`, and `bzkir` are
+public build artifacts in this fixture set, not secret keys. They remain bound to
+source, compiler/runtime, lockfile, and per-file digest/byte metadata.
+
+This exception is not a production bundle or npm package surface: `dist/`,
+reports, caches, deployment manifests, and unlisted package outputs remain
+excluded. Wallet/controller/signing keys, seed material, npm/GitHub credentials,
+deployment secrets, and private witnesses remain prohibited. Fixture validation
+fails closed on drift; missing or stale fixtures invoke the explicit source-build
+fallback rather than silently accepting stale output.
+
+Large fixture files must use repository-approved Git LFS or artifact storage.
+The regeneration command refuses to write oversized files when Git LFS is not
+available, so an operator must establish storage before adding them.
+
 ## Consequences
 
 - A verifier can prove that local artifacts correspond to a known build and

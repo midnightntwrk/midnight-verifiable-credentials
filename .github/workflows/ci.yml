@@ -747,3 +747,48 @@ jobs:
 
       - name: Run protocol integration lane
         run: pnpm run ci:integration:protocol:from-artifacts
+
+  public-compact-fixtures:
+    name: Restore and Validate Public Compact Fixtures
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    needs: changes
+    if: needs.changes.outputs.docs_only != 'true'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          lfs: true
+
+      - name: Set up Node.js and install dependencies
+        uses: ./.github/actions/setup-node-pnpm
+
+      - name: Validate committed fixture manifest
+        id: fixtures
+        shell: bash
+        run: |
+          set -o pipefail
+          if ! node ./tooling/scripts/compact-fixtures.mjs --allow-missing | tee "$RUNNER_TEMP/compact-fixtures.json"; then
+            echo 'Fixture manifest is invalid; refusing to use generated outputs.' >&2
+            exit 1
+          fi
+          if grep -q '"fallbackRequired": true' "$RUNNER_TEMP/compact-fixtures.json"; then
+            echo 'ready=false' >> "$GITHUB_OUTPUT"
+          else
+            echo 'ready=true' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Test and typecheck from validated fixtures
+        if: steps.fixtures.outputs.ready == 'true'
+        run: |
+          pnpm run test:light:from-artifacts
+          pnpm run typecheck:light:from-artifacts
+
+      - name: Rebuild source fallback when fixtures are unavailable
+        if: steps.fixtures.outputs.ready != 'true'
+        run: |
+          echo 'Public fixtures are unavailable or stale; running the explicit source rebuild fallback.'
+          pnpm run build:light
+          pnpm run test:light:from-artifacts
+          pnpm run typecheck:light:from-artifacts

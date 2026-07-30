@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "fixtureSet": "public-prototype-use-case-compact-v1",
+  "status": "awaiting-lfs-storage",
+  "compiler": {
+    "name": "compact",
+    "version": "0.30.0"
+  },
+  "runtime": {
+    "packageInputs": [
+      "package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "lockfileInputs": [
+    "pnpm-lock.yaml"
+  ],
+  "generator": {
+    "command": "pnpm run fixtures:regenerate",
+    "sourceOfTruth": "tooling/fixtures/compact-public/manifest.json"
+  },
+  "artifactPolicy": {
+    "included": [
+      "managed JavaScript and declarations",
+      "prover keys",
+      "verifier keys",
+      "zkir",
+      "bzkir",
+      "compiler metadata"
+    ],
+    "excluded": [
+      "wallet/controller/signing keys",
+      "seed material",
+      "npm/GitHub credentials",
+      "deployment secrets",
+      "private witnesses"
+    ],
+    "trackedRootsOnly": true,
+    "maxNormalGitBytes": 104857600
+  },
+  "fixtureRoots": [
+    {
+      "id": "credentials",
+      "path": "packages/core/primitives/credentials/src/managed",
+      "sourceRoot": "packages/core/primitives/credentials"
+    },
+    {
+      "id": "status-registry",
+      "path": "packages/registry/status-registry/src/managed",
+      "sourceRoot": "packages/registry/status-registry"
+    },
+    {
+      "id": "same-holder",
+      "path": "packages/core/capabilities/same-holder/src/managed",
+      "sourceRoot": "packages/core/capabilities/same-holder"
+    },
+    {
+      "id": "iso-registry",
+      "path": "packages/core/primitives/iso-registry/src/managed",
+      "sourceRoot": "packages/core/primitives/iso-registry"
+    },
+    {
+      "id": "birth",
+      "path": "packages/prototypes/credential-families/birth/src/managed",
+      "sourceRoot": "packages/prototypes/credential-families/birth"
+    },
+    {
+      "id": "hello-family",
+      "path": "packages/prototypes/credential-families/hello-family/src/managed",
+      "sourceRoot": "packages/prototypes/credential-families/hello-family"
+    },
+    {
+      "id": "dummy-claims",
+      "path": "packages/prototypes/credential-families/dummy-claims/src/managed",
+      "sourceRoot": "packages/prototypes/credential-families/dummy-claims"
+    },
+    {
+      "id": "mixed-claims",
+      "path": "packages/prototypes/credential-families/mixed-claims/src/managed",
+      "sourceRoot": "packages/prototypes/credential-families/mixed-claims"
+    },
+    {
+      "id": "university-diploma",
+      "path": "packages/prototypes/credential-families/university-diploma/src/managed",
+      "sourceRoot": "packages/prototypes/credential-families/university-diploma"
+    },
+    {
+      "id": "age-gate",
+      "path": "packages/use-cases/age-gate/contract/src/managed",
+      "sourceRoot": "packages/use-cases/age-gate/contract"
+    },
+    {
+      "id": "hello-verifier",
+      "path": "packages/use-cases/hello-verifier/contract/src/managed",
+      "sourceRoot": "packages/use-cases/hello-verifier/contract"
+    },
+    {
+      "id": "university-verifier",
+      "path": "packages/use-cases/university/contract/src/managed",
+      "sourceRoot": "packages/use-cases/university/contract"
+    }
+  ],
+  "provenance": {
+    "sourceDigest": "d19e839418d18b9d3c0c7a3cebbd8bc4534089c9219968f14a94553fc2d16212",
+    "compilerVersion": "0.30.0",
+    "runtimeDigest": "d83ff8db0aade22df7fa2b56600ac65a05ec70e74f7aa4ea2d31ee11a4e17b87",
+    "lockfileDigest": "6475946437d0f10867b57734c94902842f9b0ad628f9eb7a428fe4a6fdb84d5e",
+    "generatedAt": "2026-07-30T12:08:34.537Z",
+    "artifactCount": 0,
+    "artifactBytes": 0,
+    "byFixture": {
+      "credentials": {
+        "files": 0,
+        "bytes": 0
+      },
+      "status-registry": {
+        "files": 0,
+        "bytes": 0
+      },
+      "same-holder": {
+        "files": 0,
+        "bytes": 0
+      },
+      "iso-registry": {
+        "files": 0,
+        "bytes": 0
+      },
+      "birth": {
+        "files": 0,
+        "bytes": 0
+      },
+      "hello-family": {
+        "files": 0,
+        "bytes": 0
+      },
+      "dummy-claims": {
+        "files": 0,
+        "bytes": 0
+      },
+      "mixed-claims": {
+        "files": 0,
+        "bytes": 0
+      },
+      "university-diploma": {
+        "files": 0,
+        "bytes": 0
+      },
+      "age-gate": {
+        "files": 0,
+        "bytes": 0
+      },
+      "hello-verifier": {
+        "files": 0,
+        "bytes": 0
+      },
+      "university-verifier": {
+        "files": 0,
+        "bytes": 0
+      }
+    },
+    "byType": {},
+    "largestArtifact": null
+  },
+  "artifacts": []
+}
