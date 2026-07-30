@@ -1,75 +1,115 @@
 # Contributing
 
-We welcome your contributions to the Midnight network! By contributing, you'll play a vital role in shaping the future of a blockchain focused on data privacy.
+We welcome contributions to Midnight Verifiable Credentials. This repository
+focuses on reusable VC/VP packages, protocol and runtime adapters, and
+credential-family prototypes used as architecture and conformance evidence.
 
 ## Contributor License Agreement
 
-Like many other open source projects, we ask contributors to sign a contributor
-License Agreement before accepting contributions. We use CLA assistant (https://github.com/cla-assistant/cla-assistant) to streamline the CLA
-signing process, enabling contributors to sign our CLAs directly within a GitHub pull request.
+Contributors must sign the project Contributor License Agreement. CLA Assistant
+guides contributors through signing from the pull request when required.
 
-## Getting Started
+## Before You Start
 
-* **Review Existing Contributions and Issues:** Before submitting, please check if a similar issue or feature request already exists by searching our issue tracker.
-* **Understand the Project:** Familiarize yourself with Midnight's architecture, technology, and coding standards. You can find relevant information in our litepaper.
-* **Set up Your Development Environment:** Ensure you have the necessary tools and dependencies installed. See our developer [documentation](https://docs.midnight.network/) for detailed instructions.
+- Search existing issues and pull requests for related work.
+- Read [`AGENT.md`](./AGENT.md) for repository boundaries and validation.
+- Read the [package boundary guide](./docs/architecture/package-boundaries.md)
+  before adding or moving reusable code.
+- Open or confirm an issue for substantial behavior, architecture, security, or
+  public API changes.
+- Keep concrete, independently released credential families in their owning
+  repositories; this repository may carry prototypes and use cases as evidence.
 
-## Submitting Issues
+## Contribution Workflow
 
-Use one of the [templates] to submit an issue to the Project Board. The Midnight team or a community member will address it if it's relevant.
-Ensure the title is a clear summary of the requirement and provides enough context.
+- Fork the repository and create a focused branch from `develop`.
+- Keep changes scoped to the owning package and update nearby tests and docs.
+- Follow the existing TypeScript, Compact, linting, and formatting conventions.
+- Include unit, integration, negative, or conformance evidence appropriate to
+  the change.
+- Use clear Conventional Commit style messages.
+- Include a DCO sign-off (`Signed-off-by: Name <email>`). GPG-signed commits are
+  required for repository-facing maintainer work and encouraged for external
+  contributors.
+- Open normal engineering pull requests against `develop`. Release-promotion
+  pull requests target `main`.
+- Respond to review and CI findings without widening the PR scope silently.
 
-**Issue Types:**
+Avoid force-pushing after review unless a maintainer asks for a rebase or
+history rewrite; force-pushes make incremental review harder.
 
-* **Bug Report:** Provide detailed information about the issue, including steps to reproduce it, expected behavior, and actual behavior, screenshots, or any other relevant information.
-* **Documentation Improvement:** Clearly describe the improvement requested for existing content and/or raise missing areas of documentation and provide details for what should be included.
-* **Feature Request:** Clearly describe your feature, its benefits, and most importantly, the expected outcome. This helps us analyze the proposed solution and develop alternatives.
-* **Enhancement:** (WIP)
+## Commit Convention
 
-## Code Contribution Process
+Use:
 
-* **Pull Requests:** Code contributions are submitted via Pull Requests.
-* **Fork the Repository:** Create your own fork of the Midnight repository.
-* **Create a Branch:** Make your changes in a separate branch,
-  prefixed with a short name moniker (e.g. `jill-my-feature`).
-* **Follow Coding Standards:** Adhere to the coding style guides specified in our documentation.
-* **Write Tests:** Include unit tests and integration tests to cover your changes.
-* **Commit Messages:** Write clear and concise commit messages.
-* **Submit Pull Request:** Submit your pull request to the appropriate branch in the main repository.
-* **Please do not `--force` pushes** - doing so means that reviewers will have to re-review all
-  commits in the PR rather than commits since last review.
-* **Code Review:** All pull requests undergo code review by project maintainers.
-  Be prepared to address feedback from reviewers.
-
-## Requirements for Acceptable Contributions:
-
-* **Coding Standards:** Code must adhere to the coding style guides defined in our documentation
-* **Testing:** New functionality must include corresponding unit tests and integration tests.
-* **Documentation:** Code changes should be accompanied by proposed relevant documentation updates.
-* **License:** All contributions must be compatible with the project's license.
-  Where possible all files should have this license header:
-
-```ts
-// This file is part of <REPLACE WITH REPOSITORY NAME>.
-// Copyright (C) 2025 Midnight Foundation
-// SPDX-License-Identifier: Apache-2.0
-// Licensed under the Apache License, Version 2.0 (the "License");
-// You may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//	https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+```text
+<type>(<scope>): <summary>
 ```
 
-Where this is not possible, a copy of the Apache 2.0 or the repository's top-level LICENSE file in the same directory is required
+Common types are `feat`, `fix`, `docs`, `refactor`, `test`, `build`, `ci`, and
+`chore`.
 
-## Support and Communication:
+Preferred architecture scopes include `root`, `docs`, `spec`, `core`,
+`registry`, `protocols`, `components`, `prototypes`, `use-cases`, `tooling`,
+and `assets`. A package-specific scope is appropriate for a narrowly owned
+change.
 
-Ask anything about Midnight! We're here to help. Connect with us on [Discord](https://discord.com/invite/midnightnetwork), [Telegram](https://t.me/Midnight_Network_Official), and [X](https://x.com/MidnightNtwrk) and Join the Community to stay updated and engage with other Midnight enthusiasts.
+Keep the summary imperative and concise. Every commit in a multi-commit pull
+request should remain meaningful on its own.
 
-We appreciate your contributions!
+## Public Surface Changes
+
+Treat these as public VC surfaces:
+
+- Compact exported structs, circuits, and generated managed artifacts
+- package exports, entrypoints, dependency boundaries, and release manifests
+- credential, presentation, protocol, connector, and status/revocation DTOs
+- claim representation, holder binding, verification, and error semantics
+- `./run.sh`, CI workflows, package publishing, and artifact contracts
+
+For surface changes, update tests, package documentation, specifications, and
+migration notes in the same pull request. Run:
+
+```bash
+pnpm run check:vc-surface-discipline
+```
+
+## Validation
+
+For most pull requests, run:
+
+```bash
+./run.sh --light
+```
+
+For Compact, protocol, package, release, or integration-sensitive changes, run
+the focused target first and the broader non-light or integration lane required
+by [`AGENT.md`](./AGENT.md).
+
+If you cannot run a required command locally, explain why in the pull request
+body and include the closest successful focused validation.
+
+## Pull Request Description
+
+Describe what changed, why it is needed, the issue and acceptance criteria, the
+validation commands, and any explicit follow-up. Use real Markdown and actual
+newlines. Surface-changing pull requests must identify migration and downstream
+release implications.
+
+## License Headers
+
+All contributions must be compatible with Apache-2.0. New source files should
+use an SPDX header appropriate for the file type where practical:
+
+```text
+// SPDX-License-Identifier: Apache-2.0
+```
+
+Do not add placeholder copyright-holder text. Generated or third-party files
+must retain their required notices and make provenance clear.
+
+## Support and Communication
+
+Use GitHub issues and pull requests for repository-specific coordination. Use
+the public channels linked from the Midnight documentation and website for
+general Midnight questions.

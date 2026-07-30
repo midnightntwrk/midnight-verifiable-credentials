@@ -1,0 +1,7 @@
+{
+  "title": "A tampered credential claim root is rejected without affecting untampered job applications",
+  "startTime": "2026-05-12T20:49:17.913Z",
+  "result": "SUCCESS",
+  "duration": 424,
+  "testSource": "JS"
+}

@@ -1,0 +1,121 @@
+import { access, readdir, stat } from "node:fs/promises";
+import { spawn } from "node:child_process";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const repoRoot = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "..",
+  "..",
+  "..",
+  "..",
+  "..",
+);
+
+const requiredBuildSurfaces = [
+  {
+    artifactPath: "packages/components/orchestration/protocol/dist/index.js",
+    sourcePaths: ["packages/components/orchestration/protocol/src"],
+  },
+  {
+    artifactPath:
+      "packages/prototypes/credential-families/university-diploma/dist/testing.js",
+    sourcePaths: [
+      "packages/prototypes/credential-families/university-diploma/src/testing.ts",
+      "packages/prototypes/credential-families/university-diploma/src/testing/credential-fixtures.ts",
+    ],
+  },
+  {
+    artifactPath:
+      "packages/prototypes/credential-families/university-diploma/dist/privacy-profile.js",
+    sourcePaths: [
+      "packages/prototypes/credential-families/university-diploma/src/privacy-profile.ts",
+    ],
+  },
+  {
+    artifactPath: "packages/use-cases/university/contract/dist/testing.js",
+    sourcePaths: [
+      "packages/use-cases/university/contract/src/testing.ts",
+      "packages/use-cases/university/contract/src/university-verifier.compact",
+      "packages/use-cases/university/contract/src/simulator.ts",
+    ],
+  },
+];
+
+async function exists(relativePath) {
+  try {
+    await access(path.join(repoRoot, relativePath));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function needsRebuild({ artifactPath, sourcePaths }) {
+  if (!(await exists(artifactPath))) {
+    return true;
+  }
+
+  const artifactStat = await stat(path.join(repoRoot, artifactPath));
+
+  async function newestSourceMtime(relativePath) {
+    const absolutePath = path.join(repoRoot, relativePath);
+    const sourceStat = await stat(absolutePath);
+    if (!sourceStat.isDirectory()) {
+      return sourceStat.mtimeMs;
+    }
+
+    const entries = await readdir(absolutePath, { withFileTypes: true });
+    const entryMtimes = await Promise.all(
+      entries.map((entry) =>
+        newestSourceMtime(path.join(relativePath, entry.name)),
+      ),
+    );
+    return Math.max(sourceStat.mtimeMs, ...entryMtimes);
+  }
+
+  for (const sourcePath of sourcePaths) {
+    if (!(await exists(sourcePath))) {
+      continue;
+    }
+
+    if ((await newestSourceMtime(sourcePath)) > artifactStat.mtimeMs) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+const missingArtifacts = [];
+for (const buildSurface of requiredBuildSurfaces) {
+  if (await needsRebuild(buildSurface)) {
+    missingArtifacts.push(buildSurface.artifactPath);
+  }
+}
+
+if (missingArtifacts.length === 0) {
+  console.log("University protocol prerequisites already built.");
+  process.exit(0);
+}
+
+console.log("Missing university protocol prerequisites:");
+for (const artifactPath of missingArtifacts) {
+  console.log(`- ${artifactPath}`);
+}
+
+const child = spawn(
+  "bash",
+  [
+    "-lc",
+    "pnpm run build:core && pnpm --dir ./packages/prototypes/credential-families/birth run build && pnpm --dir ./packages/prototypes/credential-families/birth-secret run build && pnpm --dir ./packages/components/orchestration/protocol run build && pnpm --dir ./packages/prototypes/credential-families/university-diploma run build && pnpm --dir ./packages/use-cases/university/contract run build",
+  ],
+  {
+    cwd: repoRoot,
+    stdio: "inherit",
+  },
+);
+
+child.on("exit", (code) => {
+  process.exit(code ?? 1);
+});

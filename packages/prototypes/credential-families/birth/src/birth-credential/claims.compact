@@ -1,0 +1,52 @@
+// Birth-credential claim commitments and claim-root hashing.
+// This file stays schema-local on purpose so the generic VC core does not need
+// to know anything about birth-credential field layout.
+export struct BirthCredentialClaimCommitments {
+  subjectIdCommitment: Bytes<32>,
+  legalNameCommitment: Bytes<32>,
+  birthDateCommitment: Bytes<32>,
+  birthCountryCodeCommitment: Bytes<32>,
+}
+
+export pure circuit birthCredentialClaimRoot(
+  commitments: BirthCredentialClaimCommitments
+): Bytes<32> {
+  return persistentHash<Vector<5, Bytes<32>>>([
+    pad(32, "midnight:vc:birth:v1"),
+    commitments.subjectIdCommitment,
+    commitments.legalNameCommitment,
+    commitments.birthDateCommitment,
+    commitments.birthCountryCodeCommitment
+  ]);
+}
+
+// =====================
+// Individual claim commitments
+// =====================
+export pure circuit subjectIdCommitment(
+  subjectId: Bytes<32>,
+  opening: Bytes<32>
+): Bytes<32> {
+  return persistentCommit<Bytes<32>>(subjectId, opening);
+}
+
+export pure circuit birthDateCommitment(
+  birthDateDays: Uint<32>,
+  opening: Bytes<32>
+): Bytes<32> {
+  return persistentCommit<Uint<32>>(birthDateDays, opening);
+}
+
+export pure circuit legalNameCommitment(
+  legalNamePadded: Bytes<32>,
+  opening: Bytes<32>
+): Bytes<32> {
+  return persistentCommit<Bytes<32>>(legalNamePadded, opening);
+}
+
+export pure circuit birthCountryCodeCommitment(
+  birthCountryCodePadded: Bytes<32>,
+  opening: Bytes<32>
+): Bytes<32> {
+  return persistentCommit<Bytes<32>>(birthCountryCodePadded, opening);
+}

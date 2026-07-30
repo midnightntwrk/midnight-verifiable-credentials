@@ -1,0 +1,52 @@
+{
+  "name": "@midnight-ntwrk/midnight-did-credentials-openid",
+  "version": "0.1.0",
+  "description": "OID4VCI/OID4VP-inspired domain schemas for Midnight Credentials",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24",
+    "pnpm": ">=10"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "rm -rf dist && tsc -b tsconfig.build.json --force",
+    "prepack": "pnpm run build",
+    "pretypecheck": "pnpm run build",
+    "test": "vitest run --config vitest.config.ts",
+    "test:ci": "vitest run --config vitest.config.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint \"src/**/*.ts\" --ignore-pattern '**/*.d.ts'",
+    "lint:fix": "eslint \"src/**/*.ts\" --ignore-pattern '**/*.d.ts' --fix",
+    "clean": "rm -rf dist && rm -rf coverage && rm -f src/*.js src/*.js.map src/*.d.ts src/*.d.ts.map",
+    "all": "pnpm run build && pnpm run test:ci"
+  },
+  "dependencies": {
+    "@midnight-ntwrk/compact-runtime": "*",
+    "zod": "^4.1.0"
+  },
+  "files": [
+    "dist/**",
+    "src/**/*.compact",
+    "README.md",
+    "scripts/*.mjs",
+    "package.json",
+    "tsconfig.json",
+    "tsconfig.build.json"
+  ],
+  "midnight": {
+    "maturity": "reference",
+    "packageClass": "dist"
+  }
+}

@@ -1,0 +1,160 @@
+// Digital-passport claim commitments and claim-root hashing.
+// This file stays schema-local on purpose so the generic VC core does not need
+// to know anything about digital-passport field layout.
+export struct DigitalPassportClaimCommitments {
+  firstNameCommitment: Bytes<32>,
+  lastNameCommitment: Bytes<32>,
+  dateOfBirthCommitment: Bytes<32>,
+  documentNumberCommitment: Bytes<32>,
+  issuingStateCommitment: Bytes<32>,
+}
+
+export pure circuit digitalPassportClaimRoot(
+                      commitments: DigitalPassportClaimCommitments
+                      ): Bytes<32> {
+  return persistentHash<Vector<6, Bytes<32>>>(
+           [pad(32, "midnight:vc:digital-passport:v1"),
+            commitments.firstNameCommitment,
+            commitments.lastNameCommitment,
+            commitments.dateOfBirthCommitment,
+            commitments.documentNumberCommitment,
+            commitments.issuingStateCommitment]
+           );
+}
+
+// =====================
+// Individual claim commitments
+// =====================
+export pure circuit firstNameCommitment(
+                      firstNameValuePadded: Bytes<64>,
+                      opening: Bytes<32>
+                      ): Bytes<32> {
+  return persistentCommit<Bytes<64>>(firstNameValuePadded, opening);
+}
+
+export pure circuit lastNameCommitment(
+                      lastNameValuePadded: Bytes<64>,
+                      opening: Bytes<32>
+                      ): Bytes<32> {
+  return persistentCommit<Bytes<64>>(lastNameValuePadded, opening);
+}
+
+export pure circuit dateOfBirthCommitment(dateOfBirthDays: Uint<32>, opening: Bytes<32>): Bytes<32> {
+  return persistentCommit<Uint<32>>(dateOfBirthDays, opening);
+}
+
+export pure circuit documentNumberCommitment(
+                      documentNumberValue: Bytes<32>,
+                      opening: Bytes<32>
+                      ): Bytes<32> {
+  return persistentCommit<Bytes<32>>(documentNumberValue, opening);
+}
+
+export pure circuit issuingStateCommitment(
+                      issuingStateValue: Bytes<32>,
+                      opening: Bytes<32>
+                      ): Bytes<32> {
+  return persistentCommit<Bytes<32>>(issuingStateValue, opening);
+}
+
+// Sentinel null commitment for absent documentNumber.
+// This is a hash-domain-separated value that is not in the range of persistentCommit,
+// so no valid (value, opening) pair can ever open it. Validation guards ensure that
+// revealDocumentNumber is never asserted when this commitment is present.
+export pure circuit documentNumberNullCommitment(): Bytes<32> {
+  return persistentHash<Vector<2, Bytes<32>>>(
+           [pad(32, "midnight:vc:digital-passport:nil"),
+            pad(32, "document-number")]
+           );
+}
+
+// =====================
+// Credential private-parts structs
+// =====================
+export struct DigitalPassportClaimValues {
+  firstNameValuePadded: Bytes<64>,
+  lastNameValuePadded: Bytes<64>,
+  dateOfBirthDays: Uint<32>,
+  documentNumberValue: Bytes<32>,
+  issuingStateValue: Bytes<32>,
+}
+
+export struct DigitalPassportOpenings {
+  firstNameOpening: Bytes<32>,
+  lastNameOpening: Bytes<32>,
+  dateOfBirthOpening: Bytes<32>,
+  documentNumberOpening: Bytes<32>,
+  issuingStateOpening: Bytes<32>,
+}
+
+export struct DigitalPassportCredentialPrivateParts {
+  claimValues: DigitalPassportClaimValues,
+  openings: DigitalPassportOpenings,
+}
+
+// =====================
+// Private-parts validation
+// =====================
+// Accepts claimCommitments + claimRoot instead of the full DigitalPassportCredential
+// because DigitalPassportCredential is not in scope in this file (it is defined later
+// in the main .compact file after import VC<...>). The caller in validation.compact
+// passes credential.claimCommitments and credential.claimRoot.
+export pure circuit assertValidDigitalPassportCredentialPrivateParts(
+                      claimCommitments: DigitalPassportClaimCommitments,
+                      claimRoot: Bytes<32>,
+                      privateParts: DigitalPassportCredentialPrivateParts
+                      ): [] {
+  // Re-derive firstName commitment
+  assert(firstNameCommitment(
+           privateParts.claimValues.firstNameValuePadded,
+           privateParts.openings.firstNameOpening
+           ) ==
+         claimCommitments.firstNameCommitment,
+         "Private-parts first-name value does not match credential commitment"
+         );
+  // Re-derive lastName commitment
+  assert(lastNameCommitment(
+           privateParts.claimValues.lastNameValuePadded,
+           privateParts.openings.lastNameOpening
+           ) ==
+         claimCommitments.lastNameCommitment,
+         "Private-parts last-name value does not match credential commitment"
+         );
+  // Re-derive dateOfBirth commitment
+  assert(dateOfBirthCommitment(
+           privateParts.claimValues.dateOfBirthDays,
+           privateParts.openings.dateOfBirthOpening
+           ) ==
+         claimCommitments.dateOfBirthCommitment,
+         "Private-parts date-of-birth value does not match credential commitment"
+         );
+  // documentNumber: check null commitment to detect absent documentNumber
+  if (claimCommitments.documentNumberCommitment == documentNumberNullCommitment()) {
+    assert(privateParts.claimValues.documentNumberValue == pad(32, ""),
+           "Private-parts document-number value must be zero-filled when document number is absent"
+           );
+    assert(privateParts.openings.documentNumberOpening == pad(32, ""),
+           "Private-parts document-number opening must be zero-filled when document number is absent"
+           );
+  } else {
+    assert(documentNumberCommitment(
+             privateParts.claimValues.documentNumberValue,
+             privateParts.openings.documentNumberOpening
+             ) ==
+           claimCommitments.documentNumberCommitment,
+           "Private-parts document-number value does not match credential commitment"
+           );
+  }
+  // issuingState (always required)
+  assert(issuingStateCommitment(
+           privateParts.claimValues.issuingStateValue,
+           privateParts.openings.issuingStateOpening
+           ) ==
+         claimCommitments.issuingStateCommitment,
+         "Private-parts issuing-state value does not match credential commitment"
+         );
+  // Verify claim root matches
+  assert(claimRoot == digitalPassportClaimRoot(claimCommitments),
+         "Private-parts claim root does not match credential"
+         );
+}

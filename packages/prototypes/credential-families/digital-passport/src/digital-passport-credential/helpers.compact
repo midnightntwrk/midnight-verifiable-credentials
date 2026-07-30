@@ -1,0 +1,233 @@
+// Digital-passport-family schema helpers and request normalization.
+// These helpers stay pure because they only derive schema-local roots and
+// verifier-request shapes; they never read ledger state.
+export pure circuit digitalPassportCredentialBodyRoot(
+                      credential: DigitalPassportCredential
+                      ): Bytes<32> {
+  return credentialBodyRoot(credential);
+}
+
+export pure circuit digitalPassportPresentationBodyRoot(
+                      presentation: DigitalPassportPresentation
+                      ): Bytes<32> {
+  return presentationBodyRoot(presentation);
+}
+
+export pure circuit digitalPassportPresentationRequestBodyRoot(
+                      request: DigitalPassportPresentationRequest
+                      ): Bytes<32> {
+  return persistentHash<DigitalPassportPresentationRequest>(request);
+}
+
+// =====================
+// Schema and verifier-request validation
+// =====================
+export pure circuit assertValidDigitalPassportSchemaRef(schema: SchemaRef): [] {
+  assert(schema.packageId == pad(32, "midnight:vc:digital-passport"),
+         "Digital-passport package identifier mismatch"
+         );
+  assert(schema.schemaId == pad(32, "digital-passport:v1"),
+         "Digital-passport schema identifier mismatch"
+         );
+  assert(schema.majorVersion == 1, "Digital-passport major version mismatch");
+}
+
+export pure circuit assertValidDigitalPassportPresentationRequest(
+                      request: DigitalPassportPresentationRequest
+                      ): [] {
+  assert(request.version == 1, "Digital-passport request version mismatch");
+  assertValidDigitalPassportSchemaRef(request.schema);
+  assertValidVerificationMethodRef(request.issuerVerificationMethodRef);
+  if (request.requireAgeOverThreshold) {
+    assert(request.requestedAgeThresholdYears > 0, "Requested age threshold must be positive");
+  } else {
+    assert(request.requestedAgeThresholdYears == 0,
+           "Requested age threshold must be zero when disabled"
+           );
+  }
+  assert(request.verifierChallengeHash != pad(32, ""),
+         "Digital-passport verifier challenge must be set"
+         );
+}
+
+// NOTE: this normalization deliberately strips the transport envelope so the
+// credential-family request semantics stay reusable across protocol wrappers.
+export pure circuit digitalPassportPresentationRequestFromProtocol(
+                      request: DigitalPassportVerificationRequest
+                      ): DigitalPassportPresentationRequest {
+  return DigitalPassportPresentationRequest { version: request.envelope.version,
+                                              schema: request.schema,
+                                              issuerVerificationMethodRef: request.issuerVerificationMethodRef,
+                                              requireFirstNameDisclosure: request.body.requireFirstNameDisclosure,
+                                              requireLastNameDisclosure: request.body.requireLastNameDisclosure,
+                                              requireAgeOverThreshold: request.body.requireAgeOverThreshold,
+                                              requestedAgeThresholdYears: request.body.requestedAgeThresholdYears,
+                                              requireDocumentNumberDisclosure: request.body.requireDocumentNumberDisclosure,
+                                              requireIssuingStateDisclosure: request.body.requireIssuingStateDisclosure,
+                                              verifierChallengeHash: request.verifierChallengeHash, };
+}
+
+// =====================
+// Credential and presentation validation
+// =====================
+export pure circuit assertValidDigitalPassportCredential(
+                      credential: DigitalPassportCredential,
+                      proof: Proof
+                      ): [] {
+  assertValidDigitalPassportSchemaRef(credential.schema);
+  assertValidCredentialEnvelope(credential, digitalPassportClaimRoot(credential.claimCommitments));
+  assertValidNoStatusBinding(credential.statusBinding);
+  assertValidExplicitHolderBinding(credential.holderBinding);
+  assertValidCredentialProof(credential, proof);
+}
+
+export pure circuit assertValidDigitalPassportPresentation(
+                      credential: DigitalPassportCredential,
+                      credentialProof: Proof,
+                      presentation: DigitalPassportPresentation,
+                      presentationProof: Proof
+                      ): [] {
+  assertValidDigitalPassportCredential(credential, credentialProof);
+  assertValidDigitalPassportSchemaRef(presentation.schema);
+  assertValidPresentationEnvelope(presentation);
+  DigitalPassportPresentation_assertMatchingCredentialPresentation(credential, presentation);
+  assertValidExplicitHolderBinding(presentation.holderBinding);
+  assertMatchingExplicitHolderBindings(credential.holderBinding, presentation.holderBinding);
+
+  if (presentation.disclosed.revealFirstName) {
+    assert(firstNameCommitment(
+             presentation.disclosed.firstNameValuePadded,
+             presentation.disclosed.firstNameOpening
+             ) ==
+           credential.claimCommitments.firstNameCommitment,
+           "Presentation first-name disclosure does not match the credential"
+           );
+  }
+  if (presentation.disclosed.revealLastName) {
+    assert(lastNameCommitment(
+             presentation.disclosed.lastNameValuePadded,
+             presentation.disclosed.lastNameOpening
+             ) ==
+           credential.claimCommitments.lastNameCommitment,
+           "Presentation last-name disclosure does not match the credential"
+           );
+  }
+  // Null-commitment guard: documentNumber may be absent (sentinel commitment).
+  // When the credential carries the null sentinel, the holder must not claim
+  // to disclose a documentNumber value. This check must precede the
+  // disclosure-verification check so that the descriptive null-commitment
+  // error is returned instead of a generic commitment-mismatch error.
+  if (credential.claimCommitments.documentNumberCommitment == documentNumberNullCommitment()) {
+    assert(!presentation.disclosed.revealDocumentNumber,
+           "Cannot reveal document-number when the credential has no document number (null commitment)"
+           );
+  }
+  if (presentation.disclosed.revealDocumentNumber) {
+    assert(documentNumberCommitment(
+             presentation.disclosed.documentNumberValue,
+             presentation.disclosed.documentNumberOpening
+             ) ==
+           credential.claimCommitments.documentNumberCommitment,
+           "Presentation document-number disclosure does not match the credential"
+           );
+  }
+  if (presentation.disclosed.revealIssuingState) {
+    assert(issuingStateCommitment(
+             presentation.disclosed.issuingStateValue,
+             presentation.disclosed.issuingStateOpening
+             ) ==
+           credential.claimCommitments.issuingStateCommitment,
+           "Presentation issuing-state disclosure does not match the credential"
+           );
+  }
+  if (presentation.disclosed.proveAgeOverThreshold) {
+    assert(presentation.disclosed.ageThresholdYears > 0, "Age threshold must be positive");
+  }
+
+  assertProofMatchesExplicitHolderBinding(presentation.holderBinding, presentationProof);
+  assertValidPresentationContextProof(
+    digitalPassportPresentationBodyRoot(presentation),
+    presentationProof
+    );
+}
+
+// TRUST BOUNDARY: `request` is verifier-supplied and may be stricter than the
+// holder expects. This helper only proves that the presentation satisfies the
+// declared request semantics; it does not authenticate who authored the
+// request outside the challenge and issuer-binding checks below.
+export pure circuit assertDigitalPassportPresentationSatisfiesRequest(
+                      credential: DigitalPassportCredential,
+                      request: DigitalPassportPresentationRequest,
+                      presentation: DigitalPassportPresentation,
+                      presentationProof: Proof
+                      ): [] {
+  assertValidDigitalPassportPresentationRequest(request);
+  assertValidDigitalPassportSchemaRef(presentation.schema);
+  assertMatchingSchemaRefs(request.schema, credential.schema);
+  assertMatchingSchemaRefs(request.schema, presentation.schema);
+  assert(request.issuerVerificationMethodRef.didContractAddress ==
+         credential.issuerVerificationMethodRef.didContractAddress,
+         "Presentation request issuer contract does not match the credential issuer"
+         );
+  assert(request.issuerVerificationMethodRef.methodId ==
+         credential.issuerVerificationMethodRef.methodId,
+         "Presentation request issuer method reference does not match the credential issuer"
+         );
+  assert(presentationProof.challengeHash == request.verifierChallengeHash,
+         "Presentation proof challenge does not match the request challenge"
+         );
+  if (request.requireFirstNameDisclosure) {
+    assert(presentation.disclosed.revealFirstName,
+           "Presentation request requires the first-name disclosure"
+           );
+  }
+  if (request.requireLastNameDisclosure) {
+    assert(presentation.disclosed.revealLastName,
+           "Presentation request requires the last-name disclosure"
+           );
+  }
+  if (request.requireAgeOverThreshold) {
+    assert(presentation.disclosed.proveAgeOverThreshold,
+           "Presentation request requires the age-over-threshold predicate"
+           );
+    assert(presentation.disclosed.ageThresholdYears == request.requestedAgeThresholdYears,
+           "Presentation age threshold does not match the request"
+           );
+  }
+  if (request.requireDocumentNumberDisclosure) {
+    assert(presentation.disclosed.revealDocumentNumber,
+           "Presentation request requires the document-number disclosure"
+           );
+  }
+  if (request.requireIssuingStateDisclosure) {
+    assert(presentation.disclosed.revealIssuingState,
+           "Presentation request requires the issuing-state disclosure"
+           );
+  }
+}
+
+// =====================
+// Predicate validation
+// =====================
+// TRUST BOUNDARY: `currentDay` is caller-supplied policy input. Callers must
+// source it from a trustworthy time/calendar oracle when the age predicate is
+// used for real acceptance decisions.
+export pure circuit assertValidDigitalPassportAgePredicate(
+                      credential: DigitalPassportCredential,
+                      presentation: DigitalPassportPresentation,
+                      currentDay: Uint<32>,
+                      dateOfBirthDays: Uint<32>,
+                      dateOfBirthOpening: Bytes<32>
+                      ): [] {
+  assert(presentation.disclosed.proveAgeOverThreshold,
+         "Presentation must request the age-over-threshold predicate"
+         );
+  assert(dateOfBirthCommitment(dateOfBirthDays, dateOfBirthOpening) ==
+         credential.claimCommitments.dateOfBirthCommitment,
+         "Date-of-birth witness does not match credential commitment"
+         );
+  assert(currentDay >= dateOfBirthDays, "Current day must not precede the date-of-birth witness");
+  assert(currentDay - dateOfBirthDays >= presentation.disclosed.ageThresholdYears * 365,
+         "Age predicate does not satisfy the requested threshold"
+         );
+}

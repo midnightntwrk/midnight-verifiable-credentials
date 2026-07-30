@@ -1,0 +1,42 @@
+export struct DigitalPassportIssuanceOfferBody {
+  supportsExpiration: Boolean,
+  defaultExpirationDays: Uint<16>,
+  requiresHolderPublicKey: Boolean,
+}
+
+export struct DigitalPassportIssuanceRequestBody {
+  holderBinding: ExplicitHolderBinding,
+  holderPublicKey: JubjubPoint,
+  holderChallengeHash: Bytes<32>,
+  requestExpiration: Boolean,
+  requestedExpirationDays: Uint<16>,
+}
+
+export struct DigitalPassportIssuanceResultBody {
+  credential: DigitalPassportCredential,
+  credentialProof: Proof,
+  holderPublicKey: JubjubPoint,
+  issuanceChallengeHash: Bytes<32>,
+  privateParts: DigitalPassportCredentialPrivateParts,
+}
+
+export struct DigitalPassportVerificationRequestBody {
+  requireFirstNameDisclosure: Boolean,
+  requireLastNameDisclosure: Boolean,
+  requireAgeOverThreshold: Boolean,
+  requestedAgeThresholdYears: Uint<8>,
+  requireDocumentNumberDisclosure: Boolean,
+  requireIssuingStateDisclosure: Boolean,
+}
+
+export struct DigitalPassportVerificationSubmissionBody {
+  credential: DigitalPassportCredential,
+  credentialProof: Proof,
+  presentation: DigitalPassportPresentation,
+  presentationProof: Proof,
+}
+
+export struct DigitalPassportVerificationResultBody {
+  credentialRoot: Bytes<32>,
+  verifiedThresholdYears: Uint<8>,
+}

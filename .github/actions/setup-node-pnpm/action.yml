@@ -1,0 +1,63 @@
+name: Setup Node and pnpm
+description: Setup Node.js 24, optionally install pnpm dependencies, and optionally restore the Turbo cache.
+
+inputs:
+  install:
+    description: Run pnpm install after setting up Node.js.
+    required: false
+    default: "true"
+  turbo-cache:
+    description: Restore the repository Turbo cache for the current job.
+    required: false
+    default: "false"
+
+runs:
+  using: composite
+  steps:
+    - name: Set up pnpm
+      uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+      with:
+        version: 10.23.0
+        run_install: false
+
+    - name: Set up Node.js
+      uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      with:
+        node-version: "24"
+        cache: pnpm
+        cache-dependency-path: pnpm-lock.yaml
+
+    - name: Enable Corepack
+      shell: bash
+      run: corepack enable
+
+    - name: Configure private GitHub git dependencies
+      if: inputs.install == 'true'
+      shell: bash
+      run: |
+        if [[ -z "${VC_GITHUB_DEPENDENCY_TOKEN:-}" ]]; then
+          echo "No GitHub dependency token configured; skipping private Git dependency rewrite."
+          exit 0
+        fi
+
+        echo "::add-mask::${VC_GITHUB_DEPENDENCY_TOKEN}"
+        git config --global url."https://x-access-token:${VC_GITHUB_DEPENDENCY_TOKEN}@github.com/".insteadOf "git@github.com:"
+        git config --global --add url."https://x-access-token:${VC_GITHUB_DEPENDENCY_TOKEN}@github.com/".insteadOf "ssh://git@github.com/"
+        git config --global --add url."https://x-access-token:${VC_GITHUB_DEPENDENCY_TOKEN}@github.com/".insteadOf "git+ssh://git@github.com/"
+        git config --global --add url."https://x-access-token:${VC_GITHUB_DEPENDENCY_TOKEN}@github.com/".insteadOf "https://git@github.com/"
+        git config --global --add url."https://x-access-token:${VC_GITHUB_DEPENDENCY_TOKEN}@github.com/".insteadOf "git+https://git@github.com/"
+
+    - name: Install dependencies
+      if: inputs.install == 'true'
+      shell: bash
+      run: pnpm install --frozen-lockfile --prefer-offline
+
+    - name: Restore turbo cache
+      if: inputs.turbo-cache == 'true'
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: .turbo
+        key: ${{ runner.os }}-turbo-${{ github.job }}-${{ hashFiles('pnpm-lock.yaml', 'turbo.json') }}
+        restore-keys: |
+          ${{ runner.os }}-turbo-${{ github.job }}-
+          ${{ runner.os }}-turbo-

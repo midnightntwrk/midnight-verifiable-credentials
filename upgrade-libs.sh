@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
+DESTINATION=""
+
+usage() {
+  cat >&2 <<USAGE
+Usage: $0 --destination <path>
+
+Refresh local packed VC dependencies from the midnight-verifiable-credentials repository.
+
+Arguments:
+  --destination <path>  Target repo root, vendor root, legacy libs root, or concrete output dir
+USAGE
+}
+
+resolve_dest_dir() {
+  local destination="$1"
+
+  if [[ -d "$destination/tooling/vendor" ]] || [[ -f "$destination/package.json" ]]; then
+    printf '%s/tooling/vendor/midnight-verifiable-credentials\n' "$destination"
+  elif [[ "$(basename "$destination")" == "vendor" ]] || [[ "$(basename "$destination")" == "libs" ]]; then
+    printf '%s/midnight-verifiable-credentials\n' "$destination"
+  elif [[ "$(basename "$destination")" == "artifacts" ]]; then
+    printf '%s/npm\n' "$destination"
+  else
+    printf '%s\n' "$destination"
+  fi
+}
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --destination)
+      DESTINATION="${2:-}"
+      shift
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "[upgrade-libs] Unknown option: $1" >&2
+      usage
+      exit 1
+      ;;
+  esac
+  shift
+done
+
+if [[ -z "$DESTINATION" ]]; then
+  usage
+  exit 1
+fi
+
+VC_DEST="$(resolve_dest_dir "$DESTINATION")"
+"$ROOT_DIR/tooling/scripts/pack-midnight-vc-libs.sh" "$VC_DEST"
+echo "[upgrade-libs] VC tarballs refreshed in $VC_DEST"

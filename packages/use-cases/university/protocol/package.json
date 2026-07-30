@@ -1,0 +1,70 @@
+{
+  "name": "@midnight-ntwrk/midnight-did-university-protocol",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24",
+    "pnpm": ">=10"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./testing": {
+      "types": "./dist/testing.d.ts",
+      "require": "./dist/testing.js",
+      "import": "./dist/testing.js",
+      "default": "./dist/testing.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "testing": [
+        "dist/testing.d.ts"
+      ]
+    }
+  },
+  "scripts": {
+    "prepare:deps": "node ./scripts/ensure-prereqs.mjs",
+    "build": "pnpm run prepare:deps && rm -rf dist && tsc -b tsconfig.build.json --force",
+    "test": "pnpm run prepare:deps && vitest run",
+    "test:policy-catalog": "pnpm run prepare:deps && vitest run src/test/policy-catalog.test.ts",
+    "test:ci": "pnpm run test",
+    "export:transcript": "pnpm run build && node ./scripts/export-transcript.mjs",
+    "export:transcript:from-artifacts": "node ./scripts/export-transcript.mjs",
+    "export:application-decisions": "pnpm run build && node ./scripts/export-application-decisions.mjs",
+    "export:application-decisions:from-artifacts": "node ./scripts/export-application-decisions.mjs",
+    "stress:run:from-artifacts": "node ./scripts/run-stress-flow.mjs",
+    "stress:run": "pnpm run build && node ./scripts/run-stress-flow.mjs",
+    "lint": "eslint src --ignore-pattern 'src/managed/**'",
+    "lint:fix": "eslint src --fix --ignore-pattern 'src/managed/**'",
+    "typecheck": "pnpm run prepare:deps && tsc -p tsconfig.json --noEmit",
+    "clean": "rm -rf dist && rm -rf coverage",
+    "all": "pnpm run build && pnpm run test:ci",
+    "prepack": "pnpm run build"
+  },
+  "dependencies": {
+    "@midnight-ntwrk/midnight-did-credentials-protocol": "*",
+    "@midnight-ntwrk/midnight-did-credentials-university-diploma": "*",
+    "@midnight-ntwrk/midnight-did-university-verifier-contract": "*"
+  },
+  "files": [
+    "dist/**",
+    "README.md",
+    "package.json",
+    "tsconfig.json",
+    "tsconfig.build.json"
+  ],
+  "midnight": {
+    "maturity": "demo",
+    "packageClass": "dist"
+  }
+}

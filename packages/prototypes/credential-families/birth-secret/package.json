@@ -1,0 +1,89 @@
+{
+  "name": "@midnight-ntwrk/midnight-did-credentials-birth-secret",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24",
+    "pnpm": ">=10"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./contract": {
+      "types": "./dist/contract.d.ts",
+      "require": "./dist/contract.js",
+      "import": "./dist/contract.js",
+      "default": "./dist/contract.js"
+    },
+    "./testing": {
+      "types": "./dist/testing.d.ts",
+      "require": "./dist/testing.js",
+      "import": "./dist/testing.js",
+      "default": "./dist/testing.js"
+    },
+    "./managed/secret-birth-credential/contract/index.js": {
+      "types": "./dist/managed/secret-birth-credential/contract/index.d.ts",
+      "import": "./dist/managed/secret-birth-credential/contract/index.js",
+      "default": "./dist/managed/secret-birth-credential/contract/index.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "contract": [
+        "dist/contract.d.ts"
+      ],
+      "testing": [
+        "dist/testing.d.ts"
+      ],
+      "managed/secret-birth-credential/contract/index.js": [
+        "dist/managed/secret-birth-credential/contract/index.d.ts"
+      ]
+    }
+  },
+  "scripts": {
+    "contract": "pnpm run compact",
+    "compact": "node ../../../../tooling/scripts/ensure-compact-package-aliases.mjs && compact compile src/secret-birth-credential.compact src/managed/secret-birth-credential && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
+    "prebuild": "(test -f ../../../../packages/core/primitives/credentials/dist/managed/credentials/contract/index.js || pnpm --dir ../../../../packages/core/primitives/credentials run build) && (test -f ../../../../packages/core/capabilities/same-holder/dist/index.js || pnpm --dir ../../../../packages/core/capabilities/same-holder run build) && (test -f ../birth/dist/managed/birth-credential/contract/index.js || pnpm --dir ../birth run build)",
+    "pretypecheck": "pnpm --dir ../../../../packages/core/primitives/credentials run build && pnpm --dir ../../../../packages/core/capabilities/same-holder run build && pnpm --dir ../birth run build",
+    "pretest": "pnpm --dir ../../../../packages/core/primitives/credentials run build && pnpm --dir ../../../../packages/core/capabilities/same-holder run build && pnpm --dir ../birth run build && pnpm run compact",
+    "pretest:ci": "pnpm --dir ../../../../packages/core/primitives/credentials run build && pnpm --dir ../../../../packages/core/capabilities/same-holder run build && pnpm --dir ../birth run build && pnpm run compact",
+    "test": "vitest run",
+    "test:ci": "vitest run",
+    "prepack": "pnpm run build",
+    "clean": "rm -rf dist && rm -rf coverage && rm -rf reports && rm -rf src/managed",
+    "build": "pnpm run compact && rm -rf dist && mkdir -p dist && tsc -b tsconfig.build.json --force && cp -Rf ./src/managed ./dist/ && cp ./src/secret-birth-credential.compact ./dist",
+    "lint": "eslint src --ignore-pattern 'src/managed/**'",
+    "lint:fix": "eslint src --fix --ignore-pattern 'src/managed/**'",
+    "typecheck": "pnpm run compact && tsc -p tsconfig.json --noEmit",
+    "all": "pnpm run build && pnpm run test:ci"
+  },
+  "dependencies": {
+    "@midnight-ntwrk/compact-runtime": "*",
+    "@midnight-ntwrk/midnight-did-credentials": "*",
+    "@midnight-ntwrk/midnight-did-credentials-birth": "*",
+    "@midnight-ntwrk/midnight-did-credentials-status-registry": "*",
+    "@midnight-ntwrk/midnight-did-credentials-same-holder": "*"
+  },
+  "files": [
+    "dist/**",
+    "src/**/*.compact",
+    "README.md",
+    "tooling/scripts/*.mjs",
+    "package.json",
+    "tsconfig.json",
+    "tsconfig.build.json"
+  ],
+  "midnight": {
+    "maturity": "reference",
+    "packageClass": "dist"
+  }
+}
