@@ -2,7 +2,7 @@
 
 Status: canonical production-readiness backlog for `origin/develop`.
 
-Last audited: 2026-07-15 at `c4d4581`, after public-readiness PR #323.
+Last audited: 2026-07-30 at `origin/main` commit `b34878b` (signed PR #358 promotion); execution remains on `origin/develop` at `50dffbb`.
 
 This file is the scheduling authority for repository-wide maturity work. Older
 plans remain as delivery history and narrow design research; they do not define
@@ -122,6 +122,57 @@ That breadth is not a production claim. The audit found these current facts:
 - managed-artifact freshness is only partially enforced; and
 - the digital-passport reference package has schema/docs, status, time, text
   encoding, and dependency-boundary work before it can graduate.
+
+## 2026-07-30 reconciliation
+
+The signed `develop`-to-`main` promotion in PR #358 is the current main baseline,
+not a production release and not closure of any P0/P1 deliverable. PR #353's
+CODEOWNERS change merged at `16710ce`; its owner union still needs an explicit
+post-#358 audit. PR #346 is closed and superseded by #358. The verified current
+PR/issue state is:
+
+| Item | Verified state on 2026-07-30 | Maturity mapping and next condition |
+| --- | --- | --- |
+| [#336](https://github.com/midnightntwrk/midnight-verifiable-credentials/pull/336) | Open; head `bd4c7d4`; only CLA is currently reported, so no terminal full-gate evidence | Partial evidence for P1-3/G3 and disclosure correctness; reconcile `pnpm-lock.yaml` against current `develop`, then rerun CI and review. Not passport graduation or generic disclosure closure. |
+| [#337](https://github.com/midnightntwrk/midnight-verifiable-credentials/pull/337) | Open; head `860e0fa`; one checkout-action pin only; required checks include a pending Standalone Integration: Protocol run | P0-6 maintenance candidate; complete the required draft-gate metadata and obtain current-head terminal evidence before merge. |
+| [#353](https://github.com/midnightntwrk/midnight-verifiable-credentials/pull/353) | Merged CODEOWNERS fix at `16710ce` | P0-6 branch-security ownership evidence; audit the post-#358 union of ex-identus, security, SRE, and path-specific owners before treating the work as complete. |
+| [#357](https://github.com/midnightntwrk/midnight-verifiable-credentials/pull/357) | Open; head `66c1cc0`; six manifest-only files; Build and Package Tests fails | Partial P0-4/C1 manifest hygiene only. Keep scoped to manifest cleanup, isolate the digital-passport failure, and resolve the gate/tooling evidence (including the recorded invalid `.devloops` configuration) before merge. |
+| [#358](https://github.com/midnightntwrk/midnight-verifiable-credentials/pull/358) | Merged at signed promotion commit `b34878b`, the signed replacement for the then-current `origin/main..origin/develop` promotion | Completed main-branch promotion maintenance; it does not close package publication, clean-consumer, provenance, authority, or production-label requirements. |
+| [#346](https://github.com/midnightntwrk/midnight-verifiable-credentials/pull/346) | Closed | Superseded by #358; do not requeue it or create a new maturity item. |
+| [#342](https://github.com/midnightntwrk/midnight-verifiable-credentials/issues/342) | Open | Keep open until `0.1.0-rc1` is published and verified from a clean consumer. |
+| [#347](https://github.com/midnightntwrk/midnight-verifiable-credentials/issues/347) | Open | Closeability candidate only after confirming its OSV-exception remediation is present on `main`; the remediation is currently evidenced on `develop`, not yet on `main`. |
+| [#324](https://github.com/midnightntwrk/midnight-verifiable-credentials/issues/324) and [#350](https://github.com/midnightntwrk/midnight-verifiable-credentials/issues/350) | Open | Keep open until repository settings, topics, rulesets, secret scanning, vulnerability reporting, and Scorecard publication are externally confirmed. |
+
+All other existing maturity issues remain open and mapped to their existing
+work; in particular #321, #272, #268, #267, #266, #265, #40, #36, #34, #31,
+#23, #21, and #15 are not closeable solely because #358 merged. Completed P0
+baseline PRs #326–#333 remain completed and are not re-queued.
+
+### Midnight-DID benchmark themes
+
+The `midnight-did` benchmark is a release and authority discipline, not merely
+more CI. VC's recorded benchmark requires:
+
+- **Exact package cohort and compatibility:** the five exact `0.5.0-rc1` npm
+  packages (`@midnight-ntwrk/midnight-did`, `-api`, `-contract`, `-domain`, and
+  `-jubjub-schnorr`), one lockfile resolution, and a ledger-v8 boundary check;
+- **Clean-consumer tests:** isolated tarball installation with scripts disabled,
+  no local locators, and Node ESM, declarations, bundler, and applicable
+  Compact consumer coverage;
+- **Provenance and release evidence:** deterministic tarballs, SBOM, npm
+  provenance, registry/tag snapshots, artifact digests, and explicit evidence
+  for each release channel (npm, GHCR, GitHub Release, and generated ZK assets);
+- **Integration compatibility:** real on-ledger publish/resolve/sign/verify
+  flows whenever the DID, ledger, or SDK cohort changes, not only version
+  assertions;
+- **Ownership and support:** a public supported-package allowlist, named
+  technical/SRE/security owners, support windows, and incident/rollback
+  procedures; and
+- **Authority and security gaps:** issuer-DID `assertionMethod` binding,
+  authenticated status roots and non-membership, trusted time, atomic replay
+  or nullifier decisions, DID relationship checks, and final OID4VP
+  conformance remain P0 evidence gaps. No family, demo, or verification
+  profile receives a production label from packaging evidence alone.
 
 ## P0: Release and security blockers
 

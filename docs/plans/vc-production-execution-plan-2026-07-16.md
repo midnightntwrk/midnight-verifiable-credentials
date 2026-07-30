@@ -2,6 +2,9 @@
 
 Status: active branch and PR map.
 
+2026-07-30 reconciliation: `origin/main` is signed promotion commit `b34878b`
+(PR #358), while execution remains on `origin/develop` at `50dffbb`.
+
 Execution window starts 2026-07-16. The canonical scope and acceptance criteria
 remain in [`vc-maturity-backlog.md`](./vc-maturity-backlog.md); this document
 defines how that backlog is divided into reviewable branches.
@@ -25,6 +28,39 @@ defines how that backlog is divided into reviewable branches.
    `develop`, rerun its focused gate, and use `--force-with-lease` when needed.
 9. Repository boundaries remain strict. Cross-repository changes are separate
    PRs and flow through published packages or workspace-copied tarballs.
+
+## 2026-07-30 current PR reconciliation and ordered queue
+
+Verified current state: #336 is open at `bd4c7d4` without terminal full-gate
+evidence; #337 is open at `860e0fa` with Standalone Integration: Protocol
+pending; #353 merged its CODEOWNERS fix at `16710ce` and therefore needs an
+audit, not a new rebase of the merged PR; #357 is open at `66c1cc0` with Build
+and Package Tests failing; #358 merged at signed commit `b34878b`; and #346 is
+closed/superseded. Keep all maturity issues open unless their independent
+conditions are evidenced.
+
+Today's queue is ordered by dependency and release risk, not PR number:
+
+1. **#336:** reconcile against current `develop`, resolve `pnpm-lock.yaml`,
+   then rerun CI and review. Its disclosure work is partial P1-3/G3 evidence,
+   not passport graduation or generic disclosure closure.
+2. **#337:** complete the metadata and gate requirements, then merge only after
+   current-head terminal gate evidence; it remains a P0-6 maintenance candidate.
+3. **#353:** audit the merged CODEOWNERS change against post-#358 `main` and
+   preserve the union of ex-identus, security, SRE, and path-specific owners;
+   create a narrowly scoped follow-up only if that audit finds a gap.
+4. **#357:** keep the PR limited to manifest cleanup, separate its unrelated
+   digital-passport failure, and repair the recorded invalid `.devloops` gate
+   configuration before rerunning CI.
+5. **#342:** advance only after the release contract, exact artifact/provenance
+   evidence, and clean-consumer verification support `0.1.0-rc1`.
+6. **A1/E2/F1/G1:** begin only on the disjoint surfaces and with their existing
+   authority dependencies; no final profile status is scheduled before DID,
+   trust, status, time, replay, artifact, and gate prerequisites are real.
+
+Keep maximum active stack depth at two. A promotion or green summary does not
+remove the existing stop conditions, and no queue item is merge-ready merely
+because #358 made `main` current.
 
 ## Branch graph
 
