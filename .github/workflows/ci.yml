@@ -752,8 +752,8 @@ jobs:
     name: Restore and Validate Public Compact Fixtures
     runs-on: ubuntu-latest
     timeout-minutes: 45
-    needs: changes
-    if: needs.changes.outputs.docs_only != 'true'
+    needs: [changes, build-artifacts]
+    if: needs.changes.outputs.docs_only != 'true' && needs.build-artifacts.result == 'success'
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -764,12 +764,17 @@ jobs:
       - name: Set up Node.js and install dependencies
         uses: ./.github/actions/setup-node-pnpm
 
+      - name: Restore Compact toolchain
+        uses: ./.github/actions/restore-compact-toolchain
+        with:
+          compact-version: ${{ env.COMPACT_COMPILER_VERSION }}
+
       - name: Validate committed fixture manifest
         id: fixtures
         shell: bash
         run: |
           set -o pipefail
-          if ! node ./tooling/scripts/compact-fixtures.mjs --allow-missing | tee "$RUNNER_TEMP/compact-fixtures.json"; then
+          if ! node ./tooling/scripts/compact-fixtures.mjs --allow-missing --require-lfs --require-hydrated | tee "$RUNNER_TEMP/compact-fixtures.json"; then
             echo 'Fixture manifest is invalid; refusing to use generated outputs.' >&2
             exit 1
           fi
@@ -782,8 +787,8 @@ jobs:
       - name: Test and typecheck from validated fixtures
         if: steps.fixtures.outputs.ready == 'true'
         run: |
-          pnpm run test:light:from-artifacts
-          pnpm run typecheck:light:from-artifacts
+          pnpm run test:fixtures:from-artifacts
+          pnpm run typecheck:fixtures:from-artifacts
 
       - name: Rebuild source fallback when fixtures are unavailable
         if: steps.fixtures.outputs.ready != 'true'

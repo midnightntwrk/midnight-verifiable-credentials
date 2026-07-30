@@ -3,7 +3,7 @@
 This repository tracks only the explicitly listed `src/managed` roots in
 [`tooling/fixtures/compact-public/manifest.json`](../../tooling/fixtures/compact-public/manifest.json).
 The set is prototype/use-case test evidence, not a production distribution
-bundle. `dist/`, reports, caches, and the `birth-secret` prototype are excluded.
+bundle. `dist/`, reports, caches, and the `birth-secret` and `digital-passport` prototypes are excluded from the fixture set; those omitted workspaces remain covered by the source-build fallback.
 
 The fixture policy permits Compact-managed code, compiler metadata, prover keys,
 verifier keys, `zkir`, and `bzkir`. It rejects wallet/controller/signing keys,

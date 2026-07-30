@@ -425,6 +425,10 @@ const executeReleaseTask = (task) => {
   process.exitCode = result.status ?? (result.signal ? 128 : 1);
 };
 
+const publicFixtureManifest = JSON.parse(readFileSync(path.join(repoRoot, "tooling/fixtures/compact-public/manifest.json"), "utf8"));
+const publicFixtureWorkspacePaths = new Set(publicFixtureManifest.fixtureRoots.map((fixture) => fixture.sourceRoot));
+const fixtureWorkspaceEntries = workspaceCatalog.filter((entry) => publicFixtureWorkspacePaths.has(entry.path));
+
 const executeTypecheckFromArtifacts = () => {
   const eligible = workspaceCatalog.filter((entry) =>
     entry.releaseTasks.includes("typecheck"),
@@ -449,6 +453,26 @@ const executeTypecheckFromArtifacts = () => {
     if (result.status !== 0) {
       process.exit(result.status ?? (result.signal ? 128 : 1));
     }
+  }
+};
+
+const executeTypecheckFromFixtures = () => {
+  for (const entry of fixtureWorkspaceEntries.filter((item) => item.releaseTasks.includes("typecheck"))) {
+    const args = ["--dir", entry.path, "exec", "tsc", "-p", "tsconfig.json", "--noEmit"];
+    stdout.write("[workspace-catalog] pnpm " + args.join(" ") + "\n");
+    const invocation = pnpmInvocation(args);
+    const result = spawnSync(invocation.command, invocation.args, { cwd: repoRoot, stdio: "inherit" });
+    if (result.status !== 0) process.exit(result.status ?? (result.signal ? 128 : 1));
+  }
+};
+
+const executeTestsFromFixtures = () => {
+  for (const entry of fixtureWorkspaceEntries.filter((item) => item.packageTest && item.releaseTasks.includes("test:ci"))) {
+    const args = ["--dir", entry.path, ...entry.testFromArtifacts];
+    stdout.write("[workspace-catalog] pnpm " + args.join(" ") + "\n");
+    const invocation = pnpmInvocation(args);
+    const result = spawnSync(invocation.command, invocation.args, { cwd: repoRoot, stdio: "inherit" });
+    if (result.status !== 0) process.exit(result.status ?? (result.signal ? 128 : 1));
   }
 };
 
@@ -506,8 +530,14 @@ if (isDirectExecution) {
       case "--exec-typecheck-from-artifacts":
         executeTypecheckFromArtifacts();
         break;
+      case "--exec-typecheck-from-fixtures":
+        executeTypecheckFromFixtures();
+        break;
       case "--exec-tests-from-artifacts":
         executeTestsFromArtifacts();
+        break;
+      case "--exec-tests-from-fixtures":
+        executeTestsFromFixtures();
         break;
       case "--check":
         checkCatalog();

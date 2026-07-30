@@ -33,7 +33,8 @@
       "seed material",
       "npm/GitHub credentials",
       "deployment secrets",
-      "private witnesses"
+      "private witnesses",
+      "birth-secret and digital-passport generated roots (source-build fallback only)"
     ],
     "trackedRootsOnly": true,
     "maxNormalGitBytes": 104857600
@@ -103,9 +104,9 @@
   "provenance": {
     "sourceDigest": "d19e839418d18b9d3c0c7a3cebbd8bc4534089c9219968f14a94553fc2d16212",
     "compilerVersion": "0.30.0",
-    "runtimeDigest": "d83ff8db0aade22df7fa2b56600ac65a05ec70e74f7aa4ea2d31ee11a4e17b87",
+    "runtimeDigest": "5f7be58be515fe657cc5fd3906e94058ebeee45824726bf03f037bc30e6ebe1c",
     "lockfileDigest": "6475946437d0f10867b57734c94902842f9b0ad628f9eb7a428fe4a6fdb84d5e",
-    "generatedAt": "2026-07-30T13:09:33.015Z",
+    "generatedAt": "2026-07-30T13:24:56.405Z",
     "artifactCount": 164,
     "artifactBytes": 809891335,
     "byFixture": {

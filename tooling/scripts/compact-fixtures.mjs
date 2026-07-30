@@ -53,7 +53,7 @@ function artifactDigest(root, file) {
 
 function hasLfsAttribute(root, file) {
   try {
-    const result = execFileSync("git", ["check-attr", "filter", "--", file], { cwd: root, encoding: "utf8" }).trim();
+    const result = execFileSync("git", ["check-attr", "filter", "--", file], { cwd: root, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
     return result.endsWith(": filter: lfs");
   } catch {
     return false;
@@ -113,7 +113,8 @@ export function inventoryManifest(root, manifest) {
   };
 }
 
-export function validateManifest(root, manifest, { allowMissing = false } = {}) {
+export function validateManifest(root, manifest, { allowMissing = false, requireLfs = false, requireHydrated = false } = {}) {
+  const lfsFiles = requireLfs ? new Set(execFileSync("git", ["lfs", "ls-files", "--name-only"], { cwd: root, encoding: "utf8" }).split(/\r?\n/u).filter(Boolean)) : null;
   const errors = [];
   let inventory;
   try { inventory = inventoryManifest(root, manifest); } catch (error) { return { ok: false, errors: [error.message] }; }
@@ -125,6 +126,8 @@ export function validateManifest(root, manifest, { allowMissing = false } = {}) 
     else if (declared.bytes !== item.bytes || declared.sha256 !== item.sha256) errors.push(`artifact digest/bytes mismatch: ${item.path}`);
     const lfsRequired = LFS_ARTIFACT.test(item.path);
     const lfsTracked = item.lfsPointer || hasLfsAttribute(root, item.path);
+    if (requireLfs && LFS_ARTIFACT.test(item.path) && !lfsFiles.has(item.path)) errors.push("fixture artifact is not present in Git LFS tracking: " + item.path);
+    if (requireHydrated && item.lfsPointer) errors.push("fixture artifact is not hydrated in the worktree: " + item.path);
     if (lfsRequired && !lfsTracked) errors.push(`fixture artifact is not Git LFS tracked: ${item.path}`);
     if (item.bytes > (manifest.artifactPolicy?.maxNormalGitBytes ?? 104857600) && !lfsTracked) errors.push(`oversized artifact requires Git LFS: ${item.path} (${item.bytes} bytes)`);
   }
@@ -156,7 +159,7 @@ if (process.argv[1]?.endsWith("compact-fixtures.mjs")) {
   const manifestPath = process.argv.includes("--manifest") ? process.argv[process.argv.indexOf("--manifest") + 1] : DEFAULT_MANIFEST;
   const manifest = readJson(root, manifestPath);
   if (args.has("--update")) { console.log(JSON.stringify(updateManifest(root, manifestPath), null, 2)); process.exit(0); }
-  const result = validateManifest(root, manifest, { allowMissing: args.has("--allow-missing") });
+  const result = validateManifest(root, manifest, { allowMissing: args.has("--allow-missing"), requireLfs: args.has("--require-lfs"), requireHydrated: args.has("--require-hydrated") });
   console.log(JSON.stringify(result, null, 2));
   if (!result.ok && !(args.has("--allow-missing") && result.fallbackRequired)) process.exit(1);
 }

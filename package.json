@@ -198,7 +198,9 @@
     "fixtures:inventory": "node ./tooling/scripts/compact-fixtures.mjs --allow-missing",
     "fixtures:validate": "node ./tooling/scripts/compact-fixtures.mjs",
     "fixtures:regenerate": "pnpm run build:all && node ./tooling/scripts/compact-fixtures.mjs --update",
-    "test:fixtures": "node --test ./tooling/scripts/compact-fixtures.test.mjs"
+    "test:fixtures": "node --test ./tooling/scripts/compact-fixtures.test.mjs",
+    "test:fixtures:from-artifacts": "node ./tooling/scripts/workspace-catalog.mjs --exec-tests-from-fixtures",
+    "typecheck:fixtures:from-artifacts": "node ./tooling/scripts/workspace-catalog.mjs --exec-typecheck-from-fixtures"
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
