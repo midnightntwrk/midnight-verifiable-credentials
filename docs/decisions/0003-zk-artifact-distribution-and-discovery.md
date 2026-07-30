@@ -74,9 +74,10 @@ deployment secrets, and private witnesses remain prohibited. Fixture validation
 fails closed on drift; missing or stale fixtures invoke the explicit source-build
 fallback rather than silently accepting stale output.
 
-Large fixture files must use repository-approved Git LFS or artifact storage.
-The regeneration command refuses to write oversized files when Git LFS is not
-available, so an operator must establish storage before adding them.
+Large fixture files use the repository-approved Git LFS policy in `.gitattributes`;
+this approved storage path keeps generated public keys and circuits out of normal
+Git blobs while preserving their manifest digests and byte sizes. The regeneration
+command still refuses oversized files when Git LFS is unavailable.
 
 ## Consequences
 

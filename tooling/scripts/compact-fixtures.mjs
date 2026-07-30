@@ -6,6 +6,7 @@ import { execFileSync } from "node:child_process";
 
 export const DEFAULT_MANIFEST = "tooling/fixtures/compact-public/manifest.json";
 const ALLOWED = /\.(?:js|d\.ts|js\.map|json|prover|verifier|zkir|bzkir)$/u;
+const LFS_ARTIFACT = /\/managed\/.*\/(?:keys\/.*\.(?:prover|verifier)|zkir\/.*\.(?:zkir|bzkir))$/u;
 const FORBIDDEN = /(?:^|[/._-])(wallet|controller|sign(?:ing)?|seed|witness|deployment|credential-secret)(?:[._/-]|$)/iu;
 
 const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
@@ -36,12 +37,37 @@ function digestFiles(root, files) {
   return hash.digest("hex");
 }
 
+function parseLfsPointer(bytes) {
+  const text = bytes.toString("utf8");
+  if (!text.startsWith("version https://git-lfs.github.com/spec/v1\n")) return null;
+  const oid = text.match(/^oid sha256:([a-f0-9]{64})$/mu)?.[1];
+  const size = text.match(/^size (\d+)$/mu)?.[1];
+  if (!oid || !size) throw new Error("invalid Git LFS pointer");
+  return { bytes: Number(size), sha256: oid, lfsPointer: true };
+}
+
+function artifactDigest(root, file) {
+  const bytes = readFileSync(path.join(root, file));
+  return parseLfsPointer(bytes) ?? { bytes: bytes.length, sha256: sha256(bytes), lfsPointer: false };
+}
+
+function hasLfsAttribute(root, file) {
+  try {
+    const result = execFileSync("git", ["check-attr", "filter", "--", file], { cwd: root, encoding: "utf8" }).trim();
+    return result.endsWith(": filter: lfs");
+  } catch {
+    return false;
+  }
+}
+
 function sourceFiles(root, sourceRoot) {
   const prefix = `${normalize(sourceRoot)}/`;
   return filesUnder(root, sourceRoot).filter((file) =>
     !file.startsWith(`${prefix}src/managed/`) &&
     !file.startsWith(`${prefix}dist/`) &&
     !file.includes("/target/") &&
+    !file.includes("/.turbo/") &&
+    !file.endsWith(".tsbuildinfo") &&
     !file.includes("/node_modules/")
   );
 }
@@ -56,8 +82,7 @@ export function inventoryManifest(root, manifest) {
     for (const file of rootFiles) {
       if (FORBIDDEN.test(file)) throw new Error(`forbidden private-material path in fixture root: ${file}`);
       if (!ALLOWED.test(file)) continue;
-      const bytes = statSync(path.join(root, file)).size;
-      artifacts.push({ path: file, bytes, sha256: sha256(readFileSync(path.join(root, file))), fixture: fixture.id });
+      artifacts.push({ path: file, ...artifactDigest(root, file), fixture: fixture.id });
     }
     sources.push(...sourceFiles(root, fixture.sourceRoot), `${fixture.sourceRoot}/package.json`);
   }
@@ -98,7 +123,10 @@ export function validateManifest(root, manifest, { allowMissing = false } = {}) 
     const declared = expected.get(item.path);
     if (!declared) errors.push(`artifact is not declared in manifest: ${item.path}`);
     else if (declared.bytes !== item.bytes || declared.sha256 !== item.sha256) errors.push(`artifact digest/bytes mismatch: ${item.path}`);
-    if (item.bytes > (manifest.artifactPolicy?.maxNormalGitBytes ?? 104857600)) errors.push(`oversized artifact requires Git LFS: ${item.path} (${item.bytes} bytes)`);
+    const lfsRequired = LFS_ARTIFACT.test(item.path);
+    const lfsTracked = item.lfsPointer || hasLfsAttribute(root, item.path);
+    if (lfsRequired && !lfsTracked) errors.push(`fixture artifact is not Git LFS tracked: ${item.path}`);
+    if (item.bytes > (manifest.artifactPolicy?.maxNormalGitBytes ?? 104857600) && !lfsTracked) errors.push(`oversized artifact requires Git LFS: ${item.path} (${item.bytes} bytes)`);
   }
   for (const item of expected.values()) if (!inventory.artifacts.some((actual) => actual.path === item.path)) errors.push(`declared artifact is missing: ${item.path}`);
   if (manifest.provenance?.sourceDigest && manifest.provenance.sourceDigest !== inventory.sourceDigest) errors.push("source input digest mismatch");
