@@ -28,6 +28,8 @@ jobs:
           compact-version: '0.30.0'
       - name: Regenerate the governed fixture set
         run: pnpm run fixtures:regenerate
+      - name: Verify hydrated Git LFS fixture material
+        run: node ./tooling/scripts/compact-fixtures.mjs --require-lfs --require-hydrated
       - name: Report fixture drift for review
         run: |
           git diff --stat -- tooling/fixtures/compact-public
