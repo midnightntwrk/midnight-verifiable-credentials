@@ -764,7 +764,39 @@ jobs:
       - name: Set up Node.js and install dependencies
         uses: ./.github/actions/setup-node-pnpm
 
+      - name: Download foundation CI artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: ci-build-foundation
+          path: ${{ runner.temp }}/ci-build-outputs
+
+      - name: Download birth-family CI artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: ci-build-birth-family
+          path: ${{ runner.temp }}/ci-build-outputs
+
+      - name: Download age-gate CI artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: ci-build-age-gate
+          path: ${{ runner.temp }}/ci-build-outputs
+
+      - name: Download protocol CI artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: ci-build-protocol
+          path: ${{ runner.temp }}/ci-build-outputs
+
+      - name: Restore reusable CI artifacts
+        run: |
+          ./tooling/scripts/restore-ci-build-outputs.sh \
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-foundation.tar.gz" \
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-birth-family.tar.gz" \
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-age-gate.tar.gz" \
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-protocol.tar.gz"
       - name: Restore Compact toolchain
+
         uses: ./.github/actions/restore-compact-toolchain
         with:
           compact-version: ${{ env.COMPACT_COMPILER_VERSION }}
