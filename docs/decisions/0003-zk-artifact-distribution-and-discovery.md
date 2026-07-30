@@ -4,6 +4,7 @@
 - Date: 2026-07-15
 - Owners: credential product, release engineering, and verifier maintainers
 - Supersedes: none
+- Reconciled by: [Credential-family ownership policy](../architecture/credential-family-ownership-policy.md) (issues #374/#378)
 
 ## Context
 
@@ -87,3 +88,14 @@ and disaster recovery are tracked in
 
 - [OCI Distribution Specification](https://specs.opencontainers.org/distribution-spec/)
 - [SLSA artifact verification](https://slsa.dev/spec/v1.2/verifying-artifacts)
+
+
+## Repository ownership reconciliation (2026-07-30)
+
+This ADR remains the artifact authority. Pure credential-family prototypes do
+not own final proving, verifier, or ZKIR bundles; a complete deployable
+composition owns the immutable manifest. The approximately 758 MB storage
+decision is not approved by issues #374/#378. Artifact storage (#376) and CI
+restore/regeneration/drift behavior (#377) remain separate follow-up work. No
+signing secret, controller/private key, deployment credential, seed, or other
+operational secret may be committed.

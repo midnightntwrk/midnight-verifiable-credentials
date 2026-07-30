@@ -3,7 +3,10 @@
 Status: proposed target package graph for ADR-0014.
 
 This catalog defines the reusable packages intended for independent
-credential-family repositories. `@midnight-ntwrk/credential-model` is the
+credential-family repositories. Current concrete families are private evidence
+under `packages/prototypes/credential-families`; the ownership, dependant
+inventory, and graduation gates are maintained in
+[`credential-family-ownership-policy.md`](./credential-family-ownership-policy.md). `@midnight-ntwrk/credential-model` is the
 first supported package; every other row remains a target rather than a claim
 that the package is currently supported or published.
 

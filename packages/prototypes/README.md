@@ -40,3 +40,12 @@ Graduation rule:
   semantics.
 - BDD scenarios in `packages/use-cases/` should link back to the family package
   they exercise rather than duplicating maturity policy locally.
+
+
+## Ownership and graduation
+
+These packages are private evidence, not production release surfaces. Keep
+family-specific tests with the family. A production-shaped composition belongs
+under `packages/use-cases/`, and graduation requires the security, API/schema,
+interoperability, test/CI, operational-ownership, and explicit-approval gates
+in [`docs/architecture/credential-family-ownership-policy.md`](../../docs/architecture/credential-family-ownership-policy.md).
