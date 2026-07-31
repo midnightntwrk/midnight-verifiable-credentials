@@ -8,6 +8,9 @@ on:
 permissions:
   contents: read
 
+env:
+  COMPACT_COMPILER_VERSION: 0.30.0
+
 jobs:
   regenerate:
     name: Regenerate and report fixture drift
@@ -25,7 +28,7 @@ jobs:
       - name: Restore Compact toolchain
         uses: ./.github/actions/restore-compact-toolchain
         with:
-          compact-version: '0.30.0'
+          compact-version: ${{ env.COMPACT_COMPILER_VERSION }}
       - name: Regenerate the governed fixture set
         run: pnpm run fixtures:regenerate
       - name: Verify hydrated Git LFS fixture material
