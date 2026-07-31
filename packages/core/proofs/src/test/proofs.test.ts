@@ -79,4 +79,26 @@ describe("credential-proofs contracts", () => {
     expect(() => defineBuildManifest({ ...build, artifacts: [{ ...build.artifacts[0], path: "../outside" }] })).toThrow(/parent traversal/);
     expect(() => defineDeploymentManifest({ ...deployment, supportWindow: { notBefore: "2026-01-01" } })).toThrow(/timestamp/);
   });
+
+  it("rejects non-canonical parameters, timestamps, windows, and circuit references", () => {
+    expect(() => defineBuildManifest({
+      ...build,
+      circuits: [{ ...build.circuits[0], parameters: { threshold: Number.NaN } }],
+    })).toThrow(/finite/);
+    expect(() => defineDeploymentManifest({
+      ...deployment,
+      supportWindow: { notBefore: "2026-02-31T00:00:00Z" },
+    })).toThrow(/timestamp/);
+    expect(() => defineDeploymentManifest({
+      ...deployment,
+      supportWindow: {
+        notBefore: "2026-02-02T00:00:00Z",
+        notAfter: "2026-02-01T00:00:00Z",
+      },
+    })).toThrow(/notAfter/);
+    expect(() => defineBuildManifest({
+      ...build,
+      proofs: [{ ...proof, circuitId: "undeclared-circuit" }],
+    })).toThrow(/declared circuit/);
+  });
 });

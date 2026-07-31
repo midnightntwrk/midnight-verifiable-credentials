@@ -43,10 +43,33 @@ const unique = (values: readonly { readonly id: string }[], path: string): void 
     seen.add(value.id);
   });
 };
-const date = (value: unknown, path: string): void => {
-  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/u.test(value) || Number.isNaN(Date.parse(value))) {
+const scalar = (value: unknown, path: string): void => {
+  if (typeof value === "string" || typeof value === "boolean") {
+    return;
+  }
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return;
+  }
+  throw new CredentialProofsError(
+    "INVALID_MANIFEST",
+    path,
+    "must be a finite number, string, or boolean",
+  );
+};
+const date = (value: unknown, path: string): number => {
+  if (typeof value !== "string") {
     throw new CredentialProofsError("INVALID_TIMESTAMP", path, "must be an ISO-8601 UTC timestamp");
   }
+  const match = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})(\.\d{3})?Z$/u.exec(value);
+  const parsed = Date.parse(value);
+  const canonical = match === null || Number.isNaN(parsed)
+    ? undefined
+    : new Date(parsed).toISOString().replace(/\.000Z$/u, match?.[2] === undefined ? "Z" : ".000Z");
+  const expected = value;
+  if (canonical === undefined || canonical !== expected) {
+    throw new CredentialProofsError("INVALID_TIMESTAMP", path, "must be a valid ISO-8601 UTC timestamp");
+  }
+  return parsed;
 };
 const deepFreeze = <T>(value: T): T => {
   if (value !== null && typeof value === "object" && !ArrayBuffer.isView(value) && !Object.isFrozen(value)) {
@@ -131,6 +154,7 @@ const assertCircuit = (circuit: ProofCircuitDescriptor, index: number): void => 
   identifier(circuit.id, `${path}.id`);
   version(circuit.version, `${path}.version`);
   if (typeof circuit.parameters !== "object" || circuit.parameters === null || Array.isArray(circuit.parameters)) throw new CredentialProofsError("INVALID_MANIFEST", `${path}.parameters`, "must be a record");
+  for (const [name, value] of Object.entries(circuit.parameters)) scalar(value, `${path}.parameters.${name}`);
   array(circuit.artifactIds, `${path}.artifactIds`);
   circuit.artifactIds.forEach((id, itemIndex) => identifier(id, `${path}.artifactIds[${itemIndex}]`));
 };
@@ -144,6 +168,7 @@ export const assertBuildManifest = (manifest: BuildManifest): void => {
   if (!packageNamePattern.test(manifest.packageName)) throw new CredentialProofsError("INVALID_IDENTIFIER", "build.packageName", "must be a package name");
   if (manifest.cleanTree !== true) throw new CredentialProofsError("INVALID_MANIFEST", "build.cleanTree", "must be true for a reproducible build");
   if (typeof manifest.toolchain !== "object" || manifest.toolchain === null || Array.isArray(manifest.toolchain)) throw new CredentialProofsError("INVALID_MANIFEST", "build.toolchain", "must be a record");
+  for (const [name, value] of Object.entries(manifest.toolchain)) identifier(value, `build.toolchain.${name}`);
   array(manifest.circuits, "build.circuits");
   manifest.circuits.forEach(assertCircuit);
   unique(manifest.circuits, "build.circuits");
@@ -154,8 +179,12 @@ export const assertBuildManifest = (manifest: BuildManifest): void => {
   manifest.artifacts.forEach(assertArtifact);
   unique(manifest.artifacts, "build.artifacts");
   const artifactIds = new Set(manifest.artifacts.map((artifact) => artifact.id));
+  const circuitIds = new Set(manifest.circuits.map((circuit) => circuit.id));
   for (const [index, circuit] of manifest.circuits.entries()) for (const [artifactIndex, artifactId] of circuit.artifactIds.entries()) if (!artifactIds.has(artifactId)) throw new CredentialProofsError("MISMATCHED_REFERENCE", `build.circuits[${index}].artifactIds[${artifactIndex}]`, `does not identify a build artifact`);
-  for (const [index, proofManifest] of manifest.proofs.entries()) for (const [artifactIndex, artifactId] of proofManifest.artifactIds.entries()) if (!artifactIds.has(artifactId)) throw new CredentialProofsError("MISMATCHED_REFERENCE", `build.proofs[${index}].artifactIds[${artifactIndex}]`, `does not identify a build artifact`);
+  for (const [index, proofManifest] of manifest.proofs.entries()) {
+    if (!circuitIds.has(proofManifest.circuitId)) throw new CredentialProofsError("MISMATCHED_REFERENCE", `build.proofs[${index}].circuitId`, "does not identify a declared circuit");
+    for (const [artifactIndex, artifactId] of proofManifest.artifactIds.entries()) if (!artifactIds.has(artifactId)) throw new CredentialProofsError("MISMATCHED_REFERENCE", `build.proofs[${index}].artifactIds[${artifactIndex}]`, `does not identify a build artifact`);
+  }
   digest(manifest.lockfileDigest, "build.lockfileDigest");
   if (manifest.sbomReference !== undefined) identifier(manifest.sbomReference, "build.sbomReference");
   if (manifest.provenanceReference !== undefined) identifier(manifest.provenanceReference, "build.provenanceReference");
@@ -173,8 +202,11 @@ export const assertDeploymentManifest = (manifest: DeploymentManifest): void => 
   manifest.acceptedReferences.forEach((reference, index) => { identifier(reference.id, `deployment.acceptedReferences[${index}].id`); digest(reference.digest, `deployment.acceptedReferences[${index}].digest`); });
   unique(manifest.acceptedReferences, "deployment.acceptedReferences");
   if (typeof manifest.supportWindow !== "object" || manifest.supportWindow === null) throw new CredentialProofsError("INVALID_MANIFEST", "deployment.supportWindow", "must be an object");
-  date(manifest.supportWindow.notBefore, "deployment.supportWindow.notBefore");
-  if (manifest.supportWindow.notAfter !== undefined) date(manifest.supportWindow.notAfter, "deployment.supportWindow.notAfter");
+  const notBefore = date(manifest.supportWindow.notBefore, "deployment.supportWindow.notBefore");
+  if (manifest.supportWindow.notAfter !== undefined) {
+    const notAfter = date(manifest.supportWindow.notAfter, "deployment.supportWindow.notAfter");
+    if (notAfter < notBefore) throw new CredentialProofsError("INVALID_TIMESTAMP", "deployment.supportWindow", "notAfter must not precede notBefore");
+  }
   if (manifest.predecessor !== undefined) digest(manifest.predecessor, "deployment.predecessor");
   if (manifest.successor !== undefined) digest(manifest.successor, "deployment.successor");
   if (manifest.deprecation !== undefined) identifier(manifest.deprecation, "deployment.deprecation");
