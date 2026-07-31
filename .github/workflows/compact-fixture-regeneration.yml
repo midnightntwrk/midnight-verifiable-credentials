@@ -1,0 +1,36 @@
+name: Compact Fixture Regeneration and Drift
+
+on:
+  schedule:
+    - cron: '17 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  regenerate:
+    name: Regenerate and report fixture drift
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          lfs: true
+          fetch-depth: 0
+      - name: Set up Node.js and install dependencies
+        uses: ./.github/actions/setup-node-pnpm
+      - name: Restore Compact toolchain
+        uses: ./.github/actions/restore-compact-toolchain
+        with:
+          compact-version: '0.30.0'
+      - name: Regenerate the governed fixture set
+        run: pnpm run fixtures:regenerate
+      - name: Verify hydrated Git LFS fixture material
+        run: node ./tooling/scripts/compact-fixtures.mjs --require-lfs --require-hydrated
+      - name: Report fixture drift for review
+        run: |
+          git diff --stat -- tooling/fixtures/compact-public
+          git diff --exit-code -- tooling/fixtures/compact-public/manifest.json

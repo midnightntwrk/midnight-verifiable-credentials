@@ -10,6 +10,8 @@ root_inputs=(
   turbo.json
   tsconfig.json
   .eslintrc.json
+  .gitattributes
+  tooling/fixtures/compact-public/manifest.json
 )
 
 include_file() {

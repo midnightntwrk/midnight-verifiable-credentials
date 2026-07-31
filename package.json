@@ -194,7 +194,13 @@
     "ci:university-protocol-profiles:from-artifacts": "pnpm run ci:university-data-profiles && pnpm run ci:university-request-policy-presets && pnpm run ci:university-policy-catalog && pnpm run ci:university-protocol:cohort:from-artifacts && pnpm run ci:university-protocol:stress:from-artifacts",
     "ci:university-protocol-profiles": "pnpm run build:university-protocol-cohort:prereqs && pnpm run build:university-protocol-stress:data && pnpm run ci:university-protocol-profiles:from-artifacts",
     "check:ci-change-classification": "node ./tooling/scripts/ci-change-classification-catalog.mjs --self-test",
-    "check:ci-build-cone-catalog": "node ./tooling/scripts/ci-build-cone-catalog.mjs --check"
+    "check:ci-build-cone-catalog": "node ./tooling/scripts/ci-build-cone-catalog.mjs --check",
+    "fixtures:inventory": "node ./tooling/scripts/compact-fixtures.mjs --allow-missing",
+    "fixtures:validate": "node ./tooling/scripts/compact-fixtures.mjs",
+    "fixtures:regenerate": "pnpm run build:all && node ./tooling/scripts/compact-fixtures.mjs --update",
+    "test:fixtures": "node --test ./tooling/scripts/compact-fixtures.test.mjs",
+    "test:fixtures:from-artifacts": "node ./tooling/scripts/workspace-catalog.mjs --exec-tests-from-fixtures",
+    "typecheck:fixtures:from-artifacts": "node ./tooling/scripts/workspace-catalog.mjs --exec-typecheck-from-fixtures"
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
