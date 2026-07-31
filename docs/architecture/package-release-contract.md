@@ -31,6 +31,7 @@ conformance fixtures, removed, or graduated to an independent repository.
 | --- | --- | --- | --- | --- |
 | `@midnight-ntwrk/credential-model` | `supported` | npmjs `rc`; stable after explicit approval | `@midnightntwrk/ex-identus` / `@midnightntwrk/mn-sre` | Pre-1.0 family-authoring substrate |
 | `@midnight-ntwrk/credential-compact` | `candidate` | private tarball only | VC package maintainers / support unassigned | Curated family-neutral Compact semantics; compiler/runtime tuple and API remain candidate evidence |
+| `@midnight-ntwrk/credential-status` | `candidate` | private tarball only | VC package maintainers / support unassigned | Generic status semantics and replaceable ports; no registry authority or ledger implementation |
 | `@midnight-ntwrk/midnight-did-credentials` | `internal` | none | VC package maintainers | Transitional Compact compatibility package |
 | `@midnight-ntwrk/midnight-did-credentials-status-registry` | `internal` | workspace tarball only | Unassigned | Prototype trust model |
 | `@midnight-ntwrk/midnight-did-credentials-same-holder` | `internal` | workspace tarball only | Unassigned | Reference capability |

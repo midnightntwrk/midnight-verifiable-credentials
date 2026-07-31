@@ -11,6 +11,7 @@
   "workspaces": [
     "packages/core/model",
     "packages/core/compact",
+    "packages/core/status",
     "packages/core/primitives/credentials",
     "packages/registry/status-registry",
     "packages/core/capabilities/same-holder",

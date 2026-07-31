@@ -8,9 +8,9 @@ under `packages/prototypes/credential-families`; the ownership, dependant
 inventory, and graduation gates are maintained in
 [`credential-family-ownership-policy.md`](./credential-family-ownership-policy.md).
 `@midnight-ntwrk/credential-model` is the first supported package;
-`credential-compact` is now an executable private candidate, while every other
-row remains a target rather than a claim that the package is currently
-supported or published. ADR-0014 remains Proposed; this implementation records
+`credential-compact` and `credential-status` are now executable private
+candidates, while every other row remains a target rather than a claim that
+the package is currently supported or published. ADR-0014 remains Proposed; this implementation records
 candidate evidence only and does not enforce its graph.
 
 The naming convention uses credential-domain terms instead of the broad `ssi`
@@ -25,7 +25,7 @@ first and put platform or protocol qualifiers last. The exception is
 | `@midnight-ntwrk/credential-model` | Pure TypeScript credential-family model, schema and capability descriptors, composition manifests, codecs, and errors | Public | P0 |
 | `@midnight-ntwrk/credential-compact` | Generic Compact VC/VP envelopes, holder bindings, same-holder capability, and curated generated exports | Private candidate (not published) | P0 |
 | `@midnight-ntwrk/credential-proofs` | Family-neutral proof jobs, provider/verifier ports, artifact resolver ports, and versioned proof/deployment manifest contracts | Public | P0 |
-| `@midnight-ntwrk/credential-status` | Generic credential-status bindings, policies, and reader/writer/verifier ports | Public | P0 |
+| `@midnight-ntwrk/credential-status` | Generic credential-status bindings, policies, and reader/writer/verifier ports | Private candidate (not published) | P0 |
 | `@midnight-ntwrk/credential-verification` | Canonical transcripts, result axes, policy composition, and decision-nullifier contracts | Public | P0 |
 | `@midnight-ntwrk/credential-testkit` | Deterministic fixtures, fake ports, and black-box family, protocol, package, and composition conformance suites | Public development package | P0 |
 | `@midnight-ntwrk/credential-exchange` | Family-neutral issuance/presentation messages and state machines plus durable session codecs, replay/idempotency contracts, transport ports, and a CAS storage port | Public candidate | P1 |
@@ -193,16 +193,17 @@ manual npmjs release train without widening the package graph.
    fixture.
 3. Extract `credential-compact` and `credential-proofs`, including the
    same-holder and artifact/proof consolidations.
-4. Extract `credential-status`, `credential-verification`, and
-   `credential-testkit`.
-5. Validate digital passport as the first independent consumer.
-6. Move family-neutral exchange and durable session modules into
+4. Extract `credential-status` generic bindings, policies, outcomes, and ports;
+   keep Midnight status implementations in later P1 packages.
+5. Extract `credential-verification` and `credential-testkit`.
+6. Validate digital passport as the first independent consumer.
+7. Move family-neutral exchange and durable session modules into
    `credential-exchange`; move Node file storage into
    `credential-session-node`.
-7. Move the generic Compact codec out of OpenID and implement final OID4VCI and
+8. Move the generic Compact codec out of OpenID and implement final OID4VCI and
    OID4VP subpaths in `openid4vc`.
-8. Split generic status semantics from Midnight contract, verifier, and
+9. Split generic status semantics from Midnight contract, verifier, and
    authority implementations.
-9. Add the Midnight DID/proof adapters and wallet-connector extension.
-10. Publish through prerelease promotion, retain compatibility facades for one
+10. Add the Midnight DID/proof adapters and wallet-connector extension.
+11. Publish through prerelease promotion, retain compatibility facades for one
     documented cycle, then remove the old names.

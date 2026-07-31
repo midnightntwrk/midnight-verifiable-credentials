@@ -70,6 +70,12 @@ export const workspaceCatalog = [
     consumerChecks: ["node", "typescript", "compact"],
     publicationDependencies: [],
   }),
+  workspace("packages/core/status", "core", "dist", {
+    releaseStage: "candidate",
+    consumerFixture: "tooling/fixtures/credential-status-consumer",
+    consumerChecks: ["node", "typescript"],
+    publicationDependencies: ["@midnight-ntwrk/credential-model"],
+  }),
   workspace("packages/core/primitives/credentials", "core", "dist"),
   workspace("packages/registry/status-registry", "reference", "dist"),
   workspace("packages/core/capabilities/same-holder", "core", "dist"),
