@@ -135,6 +135,9 @@ describe("credential-did-midnight", () => {
       ),
     ).toBe("#holder-key-1");
     expect(() =>
+      normalizeOffchainDIDMethodReference("", "did:midnight:offchain:abc"),
+    ).toThrow(/must not be empty/);
+    expect(() =>
       normalizeOffchainDIDMethodReference(
         "did:midnight:offchain:abc#holder-key-1#extra",
         "did:midnight:offchain:abc",

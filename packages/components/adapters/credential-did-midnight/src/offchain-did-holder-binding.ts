@@ -124,6 +124,9 @@ export const normalizeOffchainDIDMethodReference = (
   methodReference: string,
   did: string,
 ): string => {
+  if (methodReference.length === 0) {
+    throw new Error("Offchain DID method reference must not be empty");
+  }
   if (methodReference.startsWith("#")) {
     if (methodReference.length === 1 || methodReference.slice(1).includes("#")) {
       throw new Error("Offchain DID method reference must contain exactly one non-empty fragment");
