@@ -1,0 +1,55 @@
+{
+  "name": "@midnight-ntwrk/credential-did-midnight",
+  "version": "0.1.0",
+  "description": "Private candidate runtime adapter for offchain did:midnight holder bindings",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/midnightntwrk/midnight-verifiable-credentials.git",
+    "directory": "packages/components/adapters/credential-did-midnight"
+  },
+  "keywords": ["midnight", "did", "verifiable-credentials", "holder-binding"],
+  "sideEffects": [],
+  "engines": {
+    "node": ">=24",
+    "pnpm": ">=10"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "rm -rf dist && tsc -b tsconfig.build.json --force",
+    "prepack": "pnpm run build",
+    "test": "vitest run",
+    "test:ci": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "clean": "rm -rf dist && rm -rf coverage",
+    "all": "pnpm run build && pnpm run test:ci"
+  },
+  "dependencies": {
+    "@midnight-ntwrk/midnight-did": "0.5.0-rc1",
+    "@midnight-ntwrk/midnight-did-domain": "0.5.0-rc1"
+  },
+  "files": [
+    "dist/**",
+    "README.md",
+    "CHANGELOG.md",
+    "package.json"
+  ],
+  "midnight": {
+    "maturity": "infrastructure",
+    "packageClass": "dist",
+    "releaseStage": "candidate"
+  }
+}

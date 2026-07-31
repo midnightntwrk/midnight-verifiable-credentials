@@ -1,0 +1,16 @@
+{
+  "name": "credential-did-midnight-consumer",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@midnight-ntwrk/credential-did-midnight": "file:./vendor/candidate.tgz"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.29",
+    "typescript": "^5.8.3"
+  },
+  "scripts": {
+    "test:node": "node --input-type=module -e \"import('@midnight-ntwrk/credential-did-midnight').then(({ createOffchainDIDHolderBindingFromDidUrl }) => { if (typeof createOffchainDIDHolderBindingFromDidUrl !== 'function') process.exit(1); })\"",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  }
+}

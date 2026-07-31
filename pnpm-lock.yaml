@@ -165,6 +165,15 @@ importers:
         specifier: ^2.9.0
         version: 2.9.0
 
+  packages/components/adapters/credential-did-midnight:
+    dependencies:
+      '@midnight-ntwrk/midnight-did':
+        specifier: 0.5.0-rc1
+        version: 0.5.0-rc1
+      '@midnight-ntwrk/midnight-did-domain':
+        specifier: 0.5.0-rc1
+        version: 0.5.0-rc1
+
   packages/components/adapters/offchain-did:
     dependencies:
       '@midnight-ntwrk/midnight-did':

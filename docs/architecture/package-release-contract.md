@@ -33,6 +33,7 @@ conformance fixtures, removed, or graduated to an independent repository.
 | `@midnight-ntwrk/credential-compact` | `candidate` | private tarball only | VC package maintainers / support unassigned | Curated family-neutral Compact semantics; compiler/runtime tuple and API remain candidate evidence |
 | `@midnight-ntwrk/credential-proofs` | `candidate` | private tarball only | VC package maintainers / support unassigned | Family-neutral proof ports and immutable manifest contracts; generated artifacts and authority remain outside the package |
 | `@midnight-ntwrk/credential-status` | `candidate` | private tarball only | VC package maintainers / support unassigned | Generic status semantics and replaceable ports; no registry authority or ledger implementation |
+| `@midnight-ntwrk/credential-did-midnight` | `candidate` | private tarball only | VC package maintainers / support unassigned | Offchain `did:midnight` resolution and holder-binding runtime adapter; signing and key custody remain injected |
 | `@midnight-ntwrk/midnight-did-credentials` | `internal` | none | VC package maintainers | Transitional Compact compatibility package |
 | `@midnight-ntwrk/midnight-did-credentials-status-registry` | `internal` | workspace tarball only | Unassigned | Prototype trust model |
 | `@midnight-ntwrk/midnight-did-credentials-same-holder` | `internal` | workspace tarball only | Unassigned | Reference capability |
