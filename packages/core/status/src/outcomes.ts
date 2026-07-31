@@ -44,7 +44,10 @@ export class StatusVerificationError extends Error {
 export const isStatusValid = (
   outcome: StatusVerificationOutcome,
 ): outcome is Extract<StatusVerificationOutcome, { verdict: "valid" }> =>
-  outcome.verdict === "valid";
+  typeof outcome === "object" &&
+  outcome !== null &&
+  outcome.verdict === "valid" &&
+  outcome.state === "active";
 
 /** Fail closed for both proved invalidity and unavailable required evidence. */
 export const assertStatusOutcome = (

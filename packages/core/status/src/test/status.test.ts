@@ -35,6 +35,17 @@ describe("status outcomes", () => {
     );
   });
 
+  it("rejects malformed runtime valid outcomes", () => {
+    for (const outcome of [
+      { verdict: "valid" },
+      { verdict: "valid", state: "revoked" },
+      null,
+    ] as unknown[]) {
+      expect(isStatusValid(outcome as StatusVerificationOutcome)).toBe(false);
+      expect(() => assertStatusOutcome(outcome as StatusVerificationOutcome)).toThrow();
+    }
+  });
+
   it("does not turn unavailable evidence into revoked", () => {
     const unavailable: StatusVerificationOutcome = {
       verdict: "indeterminate",
