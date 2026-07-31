@@ -187,8 +187,9 @@ jobs:
           node ./tooling/scripts/wait-for-npm-packages.mjs \
             --version "$VERSION" \
             --registry "$NPM_REGISTRY" \
-            --attempts 10 \
-            --delay-ms 15000
+            --attempts 20 \
+            --delay-ms 15000 \
+            --max-delay-ms 60000
 
       - name: Verify npm dist-tags
         env:
