@@ -64,6 +64,12 @@ export const workspaceCatalog = [
     ],
     publicationDependencies: [],
   }),
+  workspace("packages/core/compact", "core", "dist", {
+    releaseStage: "candidate",
+    consumerFixture: "tooling/fixtures/credential-compact-consumer",
+    consumerChecks: ["node", "typescript", "compact"],
+    publicationDependencies: [],
+  }),
   workspace("packages/core/primitives/credentials", "core", "dist"),
   workspace("packages/registry/status-registry", "reference", "dist"),
   workspace("packages/core/capabilities/same-holder", "core", "dist"),

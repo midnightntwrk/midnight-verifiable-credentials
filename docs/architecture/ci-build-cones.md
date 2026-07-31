@@ -4,6 +4,7 @@ This repository uses four shared build cones for reusable CI outputs:
 
 1. `foundation`
    - `credential-model`
+   - `credential-compact`
    - `credentials`
    - `credentials-status-registry`
    - `credentials-same-holder`
