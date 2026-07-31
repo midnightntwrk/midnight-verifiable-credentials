@@ -37,6 +37,8 @@ Related documents:
   - [`../spec/profiles.md`](../spec/profiles.md)
 - holder-binding terminology:
   - [`./holder-binding-terminology.md`](./holder-binding-terminology.md)
+- credential-family ownership and graduation policy:
+  - [`./credential-family-ownership-policy.md`](./credential-family-ownership-policy.md)
 
 ## Design goals
 
@@ -495,3 +497,14 @@ This decision is being followed if:
 - prototypes and demos are explicit and structurally separated
 - engineers can build Layer 3 and Layer 4 solutions by composing package
   classes without importing private implementation debris
+
+
+## Concrete-family ownership boundary
+
+The concrete-family placement and graduation rules are normative in the
+[credential-family ownership policy](./credential-family-ownership-policy.md).
+In summary, reusable core remains family-agnostic; family-specific tests stay
+with private prototype families; and production-shaped compositions belong under
+`packages/use-cases/` without implying production approval. The workspace catalog
+and package-boundary guard enforce the dependency direction and require any
+legacy composition exception to be enumerated explicitly.

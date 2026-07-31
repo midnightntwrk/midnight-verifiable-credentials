@@ -51,6 +51,21 @@ Related documents:
   - [`./protocol-classification.md`](./protocol-classification.md)
 - VC maturity backlog:
   - [`../plans/vc-maturity-backlog.md`](../plans/vc-maturity-backlog.md)
+- ownership and graduation policy:
+  - [`./credential-family-ownership-policy.md`](./credential-family-ownership-policy.md)
+
+## Approved first bounded phase
+
+Issues #374 and #378 establish governance before physical movement. Existing
+credential families already mostly live under
+`packages/prototypes/credential-families`; this phase audits that inventory,
+keeps family tests with each prototype, reconciles ADR-0002/0003, aligns the
+workspace/package catalogs, and adds the narrow dependency guard. It does not
+move packages, graduate a family, approve the reported ~758 MB generated
+artifact bundle, or implement #375/#376/#377.
+
+The durable rules and current exception are maintained in
+[credential-family ownership and graduation policy](./credential-family-ownership-policy.md).
 
 ## Problem
 
