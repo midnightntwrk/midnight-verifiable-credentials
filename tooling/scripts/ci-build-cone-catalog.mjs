@@ -26,6 +26,7 @@ export const ciBuildCones = [
     inputPackages: [
       "packages/core/model",
       "packages/core/compact",
+      "packages/core/proofs",
       "packages/core/status",
       "packages/core/primitives/credentials",
       "packages/registry/status-registry",
@@ -42,6 +43,7 @@ export const ciBuildCones = [
       "packages/core/model/dist",
       "packages/core/compact/src/managed",
       "packages/core/compact/dist",
+      "packages/core/proofs/dist",
       "packages/core/status/dist",
       "packages/core/primitives/credentials/src/managed",
       "packages/core/primitives/credentials/dist",
@@ -60,6 +62,7 @@ export const ciBuildCones = [
     inputPackages: [
       "packages/core/model",
       "packages/core/compact",
+      "packages/core/proofs",
       "packages/core/status",
       "packages/core/primitives/credentials",
       "packages/registry/status-registry",
@@ -100,6 +103,7 @@ export const ciBuildCones = [
     inputPackages: [
       "packages/core/model",
       "packages/core/compact",
+      "packages/core/proofs",
       "packages/core/status",
       "packages/core/primitives/credentials",
       "packages/registry/status-registry",
