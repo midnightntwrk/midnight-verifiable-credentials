@@ -5,11 +5,11 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@midnight-ntwrk/midnight-did': 0.5.0-rc1
-  '@midnight-ntwrk/midnight-did-api': 0.5.0-rc1
-  '@midnight-ntwrk/midnight-did-contract': 0.5.0-rc1
-  '@midnight-ntwrk/midnight-did-domain': 0.5.0-rc1
-  '@midnight-ntwrk/midnight-did-jubjub-schnorr': 0.5.0-rc1
+  '@midnight-ntwrk/midnight-did': 0.5.0
+  '@midnight-ntwrk/midnight-did-api': 0.5.0
+  '@midnight-ntwrk/midnight-did-contract': 0.5.0
+  '@midnight-ntwrk/midnight-did-domain': 0.5.0
+  '@midnight-ntwrk/midnight-did-jubjub-schnorr': 0.5.0
   '@midnight-ntwrk/midnight-did-secret-storage': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-secret-storage-0.1.0.tgz
   '@midnight-ntwrk/ledger-v8': 8.1.0
   '@midnight-ntwrk/midnight-js-contracts': 4.0.4
@@ -168,14 +168,14 @@ importers:
   packages/components/adapters/offchain-did:
     dependencies:
       '@midnight-ntwrk/midnight-did':
-        specifier: 0.5.0-rc1
-        version: 0.5.0-rc1
+        specifier: 0.5.0
+        version: 0.5.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
       '@midnight-ntwrk/midnight-did-domain':
-        specifier: 0.5.0-rc1
-        version: 0.5.0-rc1
+        specifier: 0.5.0
+        version: 0.5.0
     devDependencies:
       '@midnight-ntwrk/compact-runtime':
         specifier: '*'
@@ -187,20 +187,20 @@ importers:
         specifier: '*'
         version: 0.15.0
       '@midnight-ntwrk/midnight-did':
-        specifier: 0.5.0-rc1
-        version: 0.5.0-rc1
+        specifier: 0.5.0
+        version: 0.5.0
       '@midnight-ntwrk/midnight-did-api':
-        specifier: 0.5.0-rc1
-        version: 0.5.0-rc1
+        specifier: 0.5.0
+        version: 0.5.0
       '@midnight-ntwrk/midnight-did-contract':
-        specifier: 0.5.0-rc1
-        version: 0.5.0-rc1
+        specifier: 0.5.0
+        version: 0.5.0
       '@midnight-ntwrk/midnight-did-domain':
-        specifier: 0.5.0-rc1
-        version: 0.5.0-rc1
+        specifier: 0.5.0
+        version: 0.5.0
       '@midnight-ntwrk/midnight-did-jubjub-schnorr':
-        specifier: 0.5.0-rc1
-        version: 0.5.0-rc1
+        specifier: 0.5.0
+        version: 0.5.0
       '@midnight-ntwrk/midnight-did-secret-storage':
         specifier: file:../../../../tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-secret-storage-0.1.0.tgz
         version: file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-secret-storage-0.1.0.tgz
@@ -345,8 +345,8 @@ importers:
         specifier: '*'
         version: link:../../../components/adapters/offchain-did
       '@midnight-ntwrk/midnight-did-domain':
-        specifier: 0.5.0-rc1
-        version: 0.5.0-rc1
+        specifier: 0.5.0
+        version: 0.5.0
 
   packages/prototypes/credential-families/mixed-claims:
     dependencies:
@@ -1017,23 +1017,26 @@ packages:
   '@midnight-ntwrk/compact-runtime@0.15.0':
     resolution: {integrity: sha512-6+odrxb83ZZwF29SqNBBgaOR3hf5ej4KZVGibDwdXta9+uiv6qYW0fMrsKP9S+c2AqvY+vEb5NEFFI54lA7G5A==}
 
+  '@midnight-ntwrk/compact-runtime@0.16.0':
+    resolution: {integrity: sha512-UR8+MI5zol+gkne17ZZru8xmZNf11xMgQJkiLT9KWsF+QD8Wuz1WONaqQLL0RAZ2aN2XlRsBFd0ViKDVh8prFw==}
+
   '@midnight-ntwrk/ledger-v8@8.1.0':
     resolution: {integrity: sha512-rwOVP5kBwACpYmmY6+oLeaiM3e5gHscRMjbZUOntOC5QdtqLdpeep6eQW1OngI+sxjjdVoGg2eE16sLf+DAHmQ==}
 
-  '@midnight-ntwrk/midnight-did-api@0.5.0-rc1':
-    resolution: {integrity: sha512-TZnCSbgTfwgD9oCtPu19/0g4pPUxCY8dRxXPhKeP8uTTfA8mlmFzM23YThQtmcN1MRQJ7XQWiVxlZkW87Q8nWQ==}
+  '@midnight-ntwrk/midnight-did-api@0.5.0':
+    resolution: {integrity: sha512-KU8OXjyxSC7od/E4/AxK0rXezErbBWhz5eYDV4/JO/ufLMUdavYZsa0pU5aWC8GnoCgWHyjUa+kWfhvKgIrNhQ==}
     engines: {node: '>=24', pnpm: '>=10'}
 
-  '@midnight-ntwrk/midnight-did-contract@0.5.0-rc1':
-    resolution: {integrity: sha512-AeQo+4Phn6FLumnz1Sl7G1EOKPxdg07F1zZvJkp3NL5H8SceUuYFzRTv7PM6jH8brzbjH3WRY8I1Tv35FfqVJg==}
+  '@midnight-ntwrk/midnight-did-contract@0.5.0':
+    resolution: {integrity: sha512-HyJ5Prp3uHtQ/7AGllDw3U/lNnLbYve+coRz1hZyMFO9Wwl8Og1VODYs0FPaHdp1mHVr2vSHvjn2uwQTpHrZyQ==}
     engines: {node: '>=24', pnpm: '>=10'}
 
-  '@midnight-ntwrk/midnight-did-domain@0.5.0-rc1':
-    resolution: {integrity: sha512-CatUIptgtXHrZeBcBDoLVFGx1kQxYYGdOcdGHT41gRpPdZeReiEr2RE4rsIg43Zexl7ADGiijlnBbg3QlVn/iA==}
+  '@midnight-ntwrk/midnight-did-domain@0.5.0':
+    resolution: {integrity: sha512-p1dgNxC6fpa2OhJgUMxLiyTkUB8UH/01xglXDQggFRcFy3rZ9WX21dfnHU/gdYtoEbl07CWb7CXwAHeNKuMKag==}
     engines: {node: '>=24', pnpm: '>=10'}
 
-  '@midnight-ntwrk/midnight-did-jubjub-schnorr@0.5.0-rc1':
-    resolution: {integrity: sha512-I7TleiZk0p2xHKBbYv+A3Is5Gglxo1kYf7RrvPE4r7T+6O7lMrjBS1cyJhuvNNLgDLZSn/CE/l12AV1Zuxw5zQ==}
+  '@midnight-ntwrk/midnight-did-jubjub-schnorr@0.5.0':
+    resolution: {integrity: sha512-RlANQYJKTbF8QRpcoRD1xw2zJSCsalpQkn31eWSRXjysZ+5mhMLQUO0+Lj8nHjYNFGKabKp0bz+Y96SZ/TMVWw==}
     engines: {node: '>=24', pnpm: '>=10'}
 
   '@midnight-ntwrk/midnight-did-secret-storage@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-secret-storage-0.1.0.tgz':
@@ -1041,8 +1044,8 @@ packages:
     version: 0.1.0
     engines: {node: '>=24', pnpm: '>=10'}
 
-  '@midnight-ntwrk/midnight-did@0.5.0-rc1':
-    resolution: {integrity: sha512-17ySmMtMklYPdcyJ2kcyCnL2cUmvUymkWWtN/8AzXr3XAOhXPH1fewCHhMIEbRC0G2hPn/vhEi3R1Z2age54Kg==}
+  '@midnight-ntwrk/midnight-did@0.5.0':
+    resolution: {integrity: sha512-NdOW55sjhpidSGEOJ66mKGS4GNtdMNJcv2qEugbtgUIYxTrW3PjAXS8ePR0wr2y47sSynQZO8ZUN/UrmU9MjWQ==}
     engines: {node: '>=24', pnpm: '>=10'}
 
   '@midnight-ntwrk/midnight-js-contracts@4.0.4':
@@ -5054,16 +5057,22 @@ snapshots:
       '@types/object-inspect': 1.13.0
       object-inspect: 1.13.4
 
+  '@midnight-ntwrk/compact-runtime@0.16.0':
+    dependencies:
+      '@midnight-ntwrk/onchain-runtime-v3': 3.0.0
+      '@types/object-inspect': 1.13.0
+      object-inspect: 1.13.4
+
   '@midnight-ntwrk/ledger-v8@8.1.0': {}
 
-  '@midnight-ntwrk/midnight-did-api@0.5.0-rc1':
+  '@midnight-ntwrk/midnight-did-api@0.5.0':
     dependencies:
       '@midnight-ntwrk/compact-js': 2.5.0
-      '@midnight-ntwrk/compact-runtime': 0.15.0
+      '@midnight-ntwrk/compact-runtime': 0.16.0
       '@midnight-ntwrk/ledger-v8': 8.1.0
-      '@midnight-ntwrk/midnight-did': 0.5.0-rc1
-      '@midnight-ntwrk/midnight-did-contract': 0.5.0-rc1
-      '@midnight-ntwrk/midnight-did-domain': 0.5.0-rc1
+      '@midnight-ntwrk/midnight-did': 0.5.0
+      '@midnight-ntwrk/midnight-did-contract': 0.5.0
+      '@midnight-ntwrk/midnight-did-domain': 0.5.0
       '@midnight-ntwrk/midnight-js-contracts': 4.0.4
       '@midnight-ntwrk/midnight-js-http-client-proof-provider': 4.0.4
       '@midnight-ntwrk/midnight-js-indexer-public-data-provider': 4.0.4
@@ -5095,26 +5104,26 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@midnight-ntwrk/midnight-did-contract@0.5.0-rc1':
+  '@midnight-ntwrk/midnight-did-contract@0.5.0':
     dependencies:
-      '@midnight-ntwrk/compact-runtime': 0.15.0
-      '@midnight-ntwrk/midnight-did-jubjub-schnorr': 0.5.0-rc1
+      '@midnight-ntwrk/compact-runtime': 0.16.0
+      '@midnight-ntwrk/midnight-did-jubjub-schnorr': 0.5.0
 
-  '@midnight-ntwrk/midnight-did-domain@0.5.0-rc1':
+  '@midnight-ntwrk/midnight-did-domain@0.5.0':
     dependencies:
-      '@midnight-ntwrk/compact-runtime': 0.15.0
+      '@midnight-ntwrk/compact-runtime': 0.16.0
       '@noble/hashes': 2.2.0
       zod: 4.4.3
 
-  '@midnight-ntwrk/midnight-did-jubjub-schnorr@0.5.0-rc1':
+  '@midnight-ntwrk/midnight-did-jubjub-schnorr@0.5.0':
     dependencies:
-      '@midnight-ntwrk/compact-runtime': 0.15.0
+      '@midnight-ntwrk/compact-runtime': 0.16.0
       '@midnight-ntwrk/ledger-v8': 8.1.0
       '@noble/hashes': 2.2.0
 
   '@midnight-ntwrk/midnight-did-secret-storage@file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-secret-storage-0.1.0.tgz':
     dependencies:
-      '@midnight-ntwrk/midnight-did-jubjub-schnorr': 0.5.0-rc1
+      '@midnight-ntwrk/midnight-did-jubjub-schnorr': 0.5.0
       '@midnight-ntwrk/wallet-sdk-hd': 3.0.2
       circomlibjs: 0.1.7
       zod: 4.4.3
@@ -5123,10 +5132,10 @@ snapshots:
       - react-native-b4a
       - utf-8-validate
 
-  '@midnight-ntwrk/midnight-did@0.5.0-rc1':
+  '@midnight-ntwrk/midnight-did@0.5.0':
     dependencies:
-      '@midnight-ntwrk/midnight-did-contract': 0.5.0-rc1
-      '@midnight-ntwrk/midnight-did-domain': 0.5.0-rc1
+      '@midnight-ntwrk/midnight-did-contract': 0.5.0
+      '@midnight-ntwrk/midnight-did-domain': 0.5.0
       zod: 4.4.3
 
   '@midnight-ntwrk/midnight-js-contracts@4.0.4':

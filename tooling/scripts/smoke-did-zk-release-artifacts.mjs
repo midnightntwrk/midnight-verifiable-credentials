@@ -5,7 +5,7 @@ import { createRequire } from "node:module";
 import { NodeZkConfigProvider } from "@midnight-ntwrk/midnight-js-node-zk-config-provider";
 
 const require = createRequire(import.meta.url);
-const expectedVersion = "0.5.0-rc1";
+const expectedVersion = "0.5.0"
 const contractEntry = require.resolve("@midnight-ntwrk/midnight-did-contract");
 const contractDist = path.dirname(contractEntry);
 const contractRoot = path.resolve(contractDist, "..");

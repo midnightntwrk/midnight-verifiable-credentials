@@ -10,7 +10,7 @@ local-artifact exception. Repository checkouts remain independent.
 
 | Mode                            | Purpose                                     | Source                                      | Validation                                      |
 | ------------------------------- | ------------------------------------------- | ------------------------------------------- | ----------------------------------------------- |
-| npm registry cohort             | Canonical DID runtime and contract packages | Five exact `0.5.0-rc1` npm package versions | `pnpm install` and `./run.sh check-integration` |
+| npm registry cohort             | Canonical DID runtime and contract packages | Five exact `0.5.0` npm package versions | `pnpm install` and `./run.sh check-integration` |
 | Resolver secret-storage tarball | Temporary unpublished custody dependency    | `tooling/vendor/midnight-did/`              | integration report and frozen-lockfile install  |
 
 ## Repository Isolation
@@ -37,9 +37,32 @@ Coverage:
   - verifies the VC package-alias shim links to the same DID package
     surface instead of carrying a generated `LedgerToDomain` fallback
 
+## 0.5.0 Migration Notes
+
+The released `0.5.0` cohort is breaking relative to `0.5.0-rc1`. The VC
+migration is tracked in [issue #391](https://github.com/midnightntwrk/midnight-verifiable-credentials/issues/391).
+The changes relevant to this repository are:
+
+- Midnight DID API mutation helpers now receive `MidnightDIDProviders`
+  explicitly; the standalone integration passes its providers to
+  `addSchnorrJubjubVerificationMethod`.
+- DID contract controller authorization uses `JubjubPoint`-typed public keys
+  and explicit authorization witnesses in the generated contract surface.
+  VC code must not treat controller keys as opaque 32-byte values.
+- The released contract/API packages contain regenerated managed code and ZK
+  artifacts. VC must consume those package artifacts rather than copying
+  generated files from a sibling checkout.
+- The domain package keeps the DID document and off-chain DID surfaces used by
+  the VC adapter; the adapter and consumer tests are required to prove that
+  those surfaces still resolve and bind holders correctly.
+
+No compatibility shim is added for the old mutation signatures. Call sites
+must use the released API directly so future package upgrades fail at
+compile-time instead of silently taking an obsolete path.
+
 ## Ledger Version Boundary
 
-The published `0.5.0-rc1` DID API and Jubjub Schnorr packages declare
+The released `0.5.0` DID API and Jubjub Schnorr packages declare
 `@midnight-ntwrk/ledger-v8@8.0.3`, while VC, Midnight JS, and the wallet SDK use
 `ledger-v8@8.1.0`. These paths are not runtime-isolated: the DID API passes
 ledger values into wallet SDK methods, and independently loaded WASM-backed
@@ -64,7 +87,7 @@ All five DID packages are pinned centrally in the root `pnpm.overrides` block
 and directly in consuming package manifests:
 
 ```json
-"@midnight-ntwrk/midnight-did-domain": "0.5.0-rc1"
+"@midnight-ntwrk/midnight-did-domain": "0.5.0"
 ```
 
 The cohort is:
@@ -75,7 +98,7 @@ The cohort is:
 - `@midnight-ntwrk/midnight-did-domain`
 - `@midnight-ntwrk/midnight-did-jubjub-schnorr`
 
-Use exact prerelease versions. Do not use `^0.5.0-rc1`, a dist-tag, a Git URL,
+Use the exact released version. Do not use `^0.5.0`, a dist-tag, a Git URL,
 or a sibling path. The complete root override is required while the vendored
 secret-storage package still declares a non-portable local dependency on
 Jubjub Schnorr.
@@ -113,11 +136,10 @@ service path. If a VC use case needs resolver service behavior, put that
 adapter in the owning integration package rather than reintroducing resolver
 service code into the VC package graph.
 
-The `0.5.0-rc1` npm contract package includes managed code, prover keys,
-verifier keys, and ZKIR. The corresponding DID release workflow failed after
-npm publication, so GHCR and GitHub Release artifact channels are not validated
-for this release. Use package-local artifacts until a later release proves
-those channels.
+The `0.5.0` npm contract package includes managed code, prover keys,
+verifier keys, and ZKIR. This migration validates the npm package-local
+artifacts; GHCR and GitHub Release artifact channels are outside the VC package
+consumption path and are not introduced by this change.
 
 ## Compatibility Alias Lifecycle
 

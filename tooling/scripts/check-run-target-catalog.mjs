@@ -364,7 +364,7 @@ assert.deepEqual(
 );
 assert.equal(
   integrationReportJson.registryCohort.version,
-  "0.5.0-rc1",
+  "0.5.0",
   "DID integration JSON report should pin the published cohort",
 );
 assert.deepEqual(

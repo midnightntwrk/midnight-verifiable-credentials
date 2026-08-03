@@ -6,7 +6,7 @@ describe('midnight DID API pnpm-store discovery', () => {
   it('recognizes registry and file-backed DID API package entries', () => {
     expect(
       isMidnightDidApiStoreEntry(
-        '@midnight-ntwrk+midnight-did-api@0.5.0-rc1_abc123',
+        '@midnight-ntwrk+midnight-did-api@0.5.0_abc123',
       ),
     ).toBe(true);
     expect(
@@ -19,7 +19,7 @@ describe('midnight DID API pnpm-store discovery', () => {
   it('rejects unrelated pnpm-store entries', () => {
     expect(
       isMidnightDidApiStoreEntry(
-        '@midnight-ntwrk+midnight-did-contract@0.5.0-rc1',
+        '@midnight-ntwrk+midnight-did-contract@0.5.0',
       ),
     ).toBe(false);
   });
