@@ -41,11 +41,24 @@ export class StatusVerificationError extends Error {
   }
 }
 
+const isPlainRecord = (value: unknown): value is Record<string, unknown> => {
+  if (typeof value !== "object" || value === null) return false;
+  try {
+    const prototype = Object.getPrototypeOf(value);
+    return (
+      (prototype === Object.prototype || prototype === null) &&
+      Object.hasOwn(value, "verdict") &&
+      Object.hasOwn(value, "state")
+    );
+  } catch {
+    return false;
+  }
+};
+
 export const isStatusValid = (
   outcome: StatusVerificationOutcome,
 ): outcome is Extract<StatusVerificationOutcome, { verdict: "valid" }> =>
-  typeof outcome === "object" &&
-  outcome !== null &&
+  isPlainRecord(outcome) &&
   outcome.verdict === "valid" &&
   outcome.state === "active";
 

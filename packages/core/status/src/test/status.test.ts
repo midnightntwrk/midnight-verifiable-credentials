@@ -46,6 +46,19 @@ describe("status outcomes", () => {
     }
   });
 
+  it("rejects inherited and non-plain valid outcomes", () => {
+    class CraftedOutcome {
+      readonly verdict = "valid";
+      readonly state = "active";
+    }
+    const inherited = Object.create({ verdict: "valid", state: "active" });
+
+    for (const outcome of [new CraftedOutcome(), inherited]) {
+      expect(isStatusValid(outcome as StatusVerificationOutcome)).toBe(false);
+      expect(() => assertStatusOutcome(outcome as StatusVerificationOutcome)).toThrow();
+    }
+  });
+
   it("does not turn unavailable evidence into revoked", () => {
     const unavailable: StatusVerificationOutcome = {
       verdict: "indeterminate",
