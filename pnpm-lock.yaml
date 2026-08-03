@@ -264,6 +264,12 @@ importers:
         specifier: '*'
         version: 0.15.0
 
+  packages/core/proofs:
+    dependencies:
+      '@midnight-ntwrk/credential-model':
+        specifier: ^0.1.0-rc1
+        version: link:../model
+
   packages/protocols/openid:
     dependencies:
       '@midnight-ntwrk/compact-runtime':

@@ -1,0 +1,28 @@
+export type {
+  ArtifactResolver,
+  BuildManifest,
+  DeploymentManifest,
+  DeploymentManifestSignature,
+  DeploymentReference,
+  DeploymentSupportWindow,
+  ProofArtifactDescriptor,
+  ProofArtifactRole,
+  ProofBuildManifest,
+  ProofBuildToolchain,
+  ProofCircuitDescriptor,
+  ProofDeploymentManifest,
+  ProofManifest,
+  ResolvedProofArtifact,
+  Sha256Digest,
+} from "./types.js";
+export {
+  assertBuildManifest,
+  assertDeploymentManifest,
+  assertProofManifest,
+  defineBuildManifest,
+  defineDeploymentManifest,
+  defineProofManifest,
+  validateBuildManifest,
+  validateDeploymentManifest,
+  validateProofManifest,
+} from "./validation.js";
