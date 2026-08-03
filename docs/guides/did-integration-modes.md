@@ -52,6 +52,10 @@ The changes relevant to this repository are:
 - The released contract/API packages contain regenerated managed code and ZK
   artifacts. VC must consume those package artifacts rather than copying
   generated files from a sibling checkout.
+- The released DID cohort brings `@midnight-ntwrk/compact-runtime@0.16.0`
+  while VC Compact packages remain on `0.15.0`. This dual-runtime boundary is
+  intentional, and the integration/ledger checks must continue to exercise it;
+  do not collapse the versions or bypass the checks with a broad override.
 - The domain package keeps the DID document and off-chain DID surfaces used by
   the VC adapter; the adapter and consumer tests are required to prove that
   those surfaces still resolve and bind holders correctly.
