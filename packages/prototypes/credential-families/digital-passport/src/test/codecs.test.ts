@@ -53,8 +53,8 @@ function randomVerificationMethodRef() {
 /** Use fixed-width public references when testing encoded-size stability. */
 function fixedVerificationMethodRef() {
   return {
-    didContractAddress: { bytes: new Uint8Array(32).fill(0x11) },
-    methodId: new Uint8Array(32).fill(0x22),
+    didContractAddress: { bytes: Buffer.alloc(32, 0x11) },
+    methodId: Buffer.alloc(32, 0x22),
   };
 }
 
