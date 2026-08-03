@@ -193,7 +193,7 @@ const selectMethod = ({
   readonly verificationMethod: readonly OffchainVerificationMethod[];
   readonly methodId?: string;
 }): OffchainVerificationMethod => {
-  if (methodId) {
+  if (methodId !== undefined) {
     const normalizedMethodId = normalizeOffchainDIDMethodReference(
       methodId,
       did,

@@ -145,6 +145,15 @@ describe("credential-did-midnight", () => {
     ).toThrow(/only one fragment separator/);
   });
 
+  it("rejects an empty explicitly selected method", () => {
+    expect(() =>
+      createOffchainDIDHolderBindingFromDidUrl({
+        longFormDidUrl: happyDidUrl,
+        holderMethodId: "",
+      }),
+    ).toThrow(/must not be empty/);
+  });
+
   it("rejects non-Jubjub and non-authentication methods", () => {
     expect(() =>
       createOffchainDIDHolderBindingFromDidUrl({
