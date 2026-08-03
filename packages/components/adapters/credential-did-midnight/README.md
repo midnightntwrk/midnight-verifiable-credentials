@@ -34,7 +34,7 @@ The root ESM export provides:
 - `ResolvedOffchainDIDHolderBinding`
 
 Use package exports rather than repository source paths. The candidate pins the
-published Midnight DID runtime cohort at `0.5.0-rc1`; this is an exact
+published Midnight DID runtime cohort at `0.5.0`; this is an exact
 registry-resolvable version, not a workspace or local dependency.
 
 ## Validation
