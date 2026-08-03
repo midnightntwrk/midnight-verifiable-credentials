@@ -13,26 +13,26 @@ export var StatusType;
   StatusType[StatusType['revocationRegistry'] = 0] = 'revocationRegistry';
 })(StatusType || (StatusType = {}));
 
-const _descriptor_0 = new __compactRuntime.CompactTypeBytes(32);
+const _descriptor_0 = new __compactRuntime.CompactTypeUnsignedInteger(255n, 1);
 
 const _descriptor_1 = new __compactRuntime.CompactTypeUnsignedInteger(65535n, 2);
 
-const _descriptor_2 = new __compactRuntime.CompactTypeUnsignedInteger(255n, 1);
+const _descriptor_2 = new __compactRuntime.CompactTypeBytes(32);
 
 class _SchemaRef_0 {
   alignment() {
-    return _descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment())));
+    return _descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment())));
   }
   fromValue(value_0) {
     return {
-      packageId: _descriptor_0.fromValue(value_0),
-      schemaId: _descriptor_0.fromValue(value_0),
+      packageId: _descriptor_2.fromValue(value_0),
+      schemaId: _descriptor_2.fromValue(value_0),
       majorVersion: _descriptor_1.fromValue(value_0),
       minorVersion: _descriptor_1.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_0.toValue(value_0.packageId).concat(_descriptor_0.toValue(value_0.schemaId).concat(_descriptor_1.toValue(value_0.majorVersion).concat(_descriptor_1.toValue(value_0.minorVersion))));
+    return _descriptor_2.toValue(value_0.packageId).concat(_descriptor_2.toValue(value_0.schemaId).concat(_descriptor_1.toValue(value_0.majorVersion).concat(_descriptor_1.toValue(value_0.minorVersion))));
   }
 }
 
@@ -40,15 +40,15 @@ const _descriptor_3 = new _SchemaRef_0();
 
 class _ContractAddress_0 {
   alignment() {
-    return _descriptor_0.alignment();
+    return _descriptor_2.alignment();
   }
   fromValue(value_0) {
     return {
-      bytes: _descriptor_0.fromValue(value_0)
+      bytes: _descriptor_2.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_0.toValue(value_0.bytes);
+    return _descriptor_2.toValue(value_0.bytes);
   }
 }
 
@@ -56,16 +56,16 @@ const _descriptor_4 = new _ContractAddress_0();
 
 class _VerificationMethodRef_0 {
   alignment() {
-    return _descriptor_4.alignment().concat(_descriptor_0.alignment());
+    return _descriptor_4.alignment().concat(_descriptor_2.alignment());
   }
   fromValue(value_0) {
     return {
       didContractAddress: _descriptor_4.fromValue(value_0),
-      methodId: _descriptor_0.fromValue(value_0)
+      methodId: _descriptor_2.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_4.toValue(value_0.didContractAddress).concat(_descriptor_0.toValue(value_0.methodId));
+    return _descriptor_4.toValue(value_0.didContractAddress).concat(_descriptor_2.toValue(value_0.methodId));
   }
 }
 
@@ -106,33 +106,256 @@ const _descriptor_8 = new __compactRuntime.CompactTypeUnsignedInteger(1844674407
 
 const _descriptor_9 = __compactRuntime.CompactTypeBoolean;
 
-const _descriptor_10 = new __compactRuntime.CompactTypeBytes(16);
-
-class _UniversityDiplomaClaims_0 {
+class _UniversityDiplomaProductionPublicClaims_0 {
   alignment() {
-    return _descriptor_0.alignment().concat(_descriptor_10.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_10.alignment().concat(_descriptor_1.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_1.alignment()))))))))));
+    return _descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_1.alignment()));
   }
   fromValue(value_0) {
     return {
-      diplomaId: _descriptor_0.fromValue(value_0),
-      studentId: _descriptor_10.fromValue(value_0),
-      graduateName: _descriptor_0.fromValue(value_0),
-      universityName: _descriptor_0.fromValue(value_0),
-      facultyName: _descriptor_0.fromValue(value_0),
-      awardName: _descriptor_0.fromValue(value_0),
-      honorsCode: _descriptor_10.fromValue(value_0),
+      universityName: _descriptor_2.fromValue(value_0),
+      awardName: _descriptor_2.fromValue(value_0),
+      graduationYear: _descriptor_1.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_2.toValue(value_0.universityName).concat(_descriptor_2.toValue(value_0.awardName).concat(_descriptor_1.toValue(value_0.graduationYear)));
+  }
+}
+
+const _descriptor_10 = new _UniversityDiplomaProductionPublicClaims_0();
+
+class _UniversityDiplomaClaimCommitments_0 {
+  alignment() {
+    return _descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment())))))));
+  }
+  fromValue(value_0) {
+    return {
+      diplomaIdCommitment: _descriptor_2.fromValue(value_0),
+      studentIdCommitment: _descriptor_2.fromValue(value_0),
+      graduateNameCommitment: _descriptor_2.fromValue(value_0),
+      facultyNameCommitment: _descriptor_2.fromValue(value_0),
+      honorsCodeCommitment: _descriptor_2.fromValue(value_0),
+      graduationMonthCommitment: _descriptor_2.fromValue(value_0),
+      finalGradeCommitment: _descriptor_2.fromValue(value_0),
+      creditsEarnedCommitment: _descriptor_2.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_2.toValue(value_0.diplomaIdCommitment).concat(_descriptor_2.toValue(value_0.studentIdCommitment).concat(_descriptor_2.toValue(value_0.graduateNameCommitment).concat(_descriptor_2.toValue(value_0.facultyNameCommitment).concat(_descriptor_2.toValue(value_0.honorsCodeCommitment).concat(_descriptor_2.toValue(value_0.graduationMonthCommitment).concat(_descriptor_2.toValue(value_0.finalGradeCommitment).concat(_descriptor_2.toValue(value_0.creditsEarnedCommitment))))))));
+  }
+}
+
+const _descriptor_11 = new _UniversityDiplomaClaimCommitments_0();
+
+class _Credential_0 {
+  alignment() {
+    return _descriptor_1.alignment().concat(_descriptor_3.alignment().concat(_descriptor_5.alignment().concat(_descriptor_6.alignment().concat(_descriptor_7.alignment().concat(_descriptor_8.alignment().concat(_descriptor_9.alignment().concat(_descriptor_8.alignment().concat(_descriptor_10.alignment().concat(_descriptor_11.alignment().concat(_descriptor_2.alignment()))))))))));
+  }
+  fromValue(value_0) {
+    return {
+      version: _descriptor_1.fromValue(value_0),
+      schema: _descriptor_3.fromValue(value_0),
+      issuerVerificationMethodRef: _descriptor_5.fromValue(value_0),
+      holderBinding: _descriptor_6.fromValue(value_0),
+      statusBinding: _descriptor_7.fromValue(value_0),
+      issuedAt: _descriptor_8.fromValue(value_0),
+      hasExpiration: _descriptor_9.fromValue(value_0),
+      expiresAt: _descriptor_8.fromValue(value_0),
+      claims: _descriptor_10.fromValue(value_0),
+      claimCommitments: _descriptor_11.fromValue(value_0),
+      claimRoot: _descriptor_2.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_1.toValue(value_0.version).concat(_descriptor_3.toValue(value_0.schema).concat(_descriptor_5.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_6.toValue(value_0.holderBinding).concat(_descriptor_7.toValue(value_0.statusBinding).concat(_descriptor_8.toValue(value_0.issuedAt).concat(_descriptor_9.toValue(value_0.hasExpiration).concat(_descriptor_8.toValue(value_0.expiresAt).concat(_descriptor_10.toValue(value_0.claims).concat(_descriptor_11.toValue(value_0.claimCommitments).concat(_descriptor_2.toValue(value_0.claimRoot)))))))))));
+  }
+}
+
+const _descriptor_12 = new _Credential_0();
+
+const _descriptor_13 = __compactRuntime.CompactTypeJubjubPoint;
+
+const _descriptor_14 = __compactRuntime.CompactTypeField;
+
+class _Signature_0 {
+  alignment() {
+    return _descriptor_13.alignment().concat(_descriptor_14.alignment());
+  }
+  fromValue(value_0) {
+    return {
+      r: _descriptor_13.fromValue(value_0),
+      s: _descriptor_14.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_13.toValue(value_0.r).concat(_descriptor_14.toValue(value_0.s));
+  }
+}
+
+const _descriptor_15 = new _Signature_0();
+
+class _Proof_0 {
+  alignment() {
+    return _descriptor_5.alignment().concat(_descriptor_8.alignment().concat(_descriptor_2.alignment().concat(_descriptor_13.alignment().concat(_descriptor_15.alignment()))));
+  }
+  fromValue(value_0) {
+    return {
+      signerVerificationMethodRef: _descriptor_5.fromValue(value_0),
+      createdAt: _descriptor_8.fromValue(value_0),
+      challengeHash: _descriptor_2.fromValue(value_0),
+      publicKey: _descriptor_13.fromValue(value_0),
+      signature: _descriptor_15.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_5.toValue(value_0.signerVerificationMethodRef).concat(_descriptor_8.toValue(value_0.createdAt).concat(_descriptor_2.toValue(value_0.challengeHash).concat(_descriptor_13.toValue(value_0.publicKey).concat(_descriptor_15.toValue(value_0.signature)))));
+  }
+}
+
+const _descriptor_16 = new _Proof_0();
+
+class _UniversityDiplomaProductionPresentationRequest_0 {
+  alignment() {
+    return _descriptor_1.alignment().concat(_descriptor_3.alignment().concat(_descriptor_5.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment()))))))))))))))));
+  }
+  fromValue(value_0) {
+    return {
+      version: _descriptor_1.fromValue(value_0),
+      schema: _descriptor_3.fromValue(value_0),
+      issuerVerificationMethodRef: _descriptor_5.fromValue(value_0),
+      requireDiplomaIdDisclosure: _descriptor_9.fromValue(value_0),
+      requireStudentIdDisclosure: _descriptor_9.fromValue(value_0),
+      requireGraduateNameDisclosure: _descriptor_9.fromValue(value_0),
+      requireUniversityNameDisclosure: _descriptor_9.fromValue(value_0),
+      requireFacultyNameDisclosure: _descriptor_9.fromValue(value_0),
+      requireAwardNameDisclosure: _descriptor_9.fromValue(value_0),
+      requireHonorsCodeDisclosure: _descriptor_9.fromValue(value_0),
+      requireGraduationYearDisclosure: _descriptor_9.fromValue(value_0),
+      requireGraduationMonthDisclosure: _descriptor_9.fromValue(value_0),
+      requireFinalGradeDisclosure: _descriptor_9.fromValue(value_0),
+      requireCreditsEarnedDisclosure: _descriptor_9.fromValue(value_0),
+      enforceMinimumFinalGrade: _descriptor_9.fromValue(value_0),
+      minimumFinalGrade: _descriptor_0.fromValue(value_0),
+      verifierChallengeHash: _descriptor_2.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_1.toValue(value_0.version).concat(_descriptor_3.toValue(value_0.schema).concat(_descriptor_5.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_9.toValue(value_0.requireDiplomaIdDisclosure).concat(_descriptor_9.toValue(value_0.requireStudentIdDisclosure).concat(_descriptor_9.toValue(value_0.requireGraduateNameDisclosure).concat(_descriptor_9.toValue(value_0.requireUniversityNameDisclosure).concat(_descriptor_9.toValue(value_0.requireFacultyNameDisclosure).concat(_descriptor_9.toValue(value_0.requireAwardNameDisclosure).concat(_descriptor_9.toValue(value_0.requireHonorsCodeDisclosure).concat(_descriptor_9.toValue(value_0.requireGraduationYearDisclosure).concat(_descriptor_9.toValue(value_0.requireGraduationMonthDisclosure).concat(_descriptor_9.toValue(value_0.requireFinalGradeDisclosure).concat(_descriptor_9.toValue(value_0.requireCreditsEarnedDisclosure).concat(_descriptor_9.toValue(value_0.enforceMinimumFinalGrade).concat(_descriptor_0.toValue(value_0.minimumFinalGrade).concat(_descriptor_2.toValue(value_0.verifierChallengeHash)))))))))))))))));
+  }
+}
+
+const _descriptor_17 = new _UniversityDiplomaProductionPresentationRequest_0();
+
+const _descriptor_18 = new __compactRuntime.CompactTypeBytes(16);
+
+class _UniversityDiplomaProductionDisclosures_0 {
+  alignment() {
+    return _descriptor_9.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_9.alignment().concat(_descriptor_18.alignment().concat(_descriptor_2.alignment().concat(_descriptor_9.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_9.alignment().concat(_descriptor_2.alignment().concat(_descriptor_9.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_9.alignment().concat(_descriptor_2.alignment().concat(_descriptor_9.alignment().concat(_descriptor_18.alignment().concat(_descriptor_2.alignment().concat(_descriptor_9.alignment().concat(_descriptor_1.alignment().concat(_descriptor_9.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_9.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_9.alignment().concat(_descriptor_1.alignment().concat(_descriptor_2.alignment())))))))))))))))))))))))))))));
+  }
+  fromValue(value_0) {
+    return {
+      revealDiplomaId: _descriptor_9.fromValue(value_0),
+      diplomaId: _descriptor_2.fromValue(value_0),
+      diplomaIdOpening: _descriptor_2.fromValue(value_0),
+      revealStudentId: _descriptor_9.fromValue(value_0),
+      studentId: _descriptor_18.fromValue(value_0),
+      studentIdOpening: _descriptor_2.fromValue(value_0),
+      revealGraduateName: _descriptor_9.fromValue(value_0),
+      graduateName: _descriptor_2.fromValue(value_0),
+      graduateNameOpening: _descriptor_2.fromValue(value_0),
+      revealUniversityName: _descriptor_9.fromValue(value_0),
+      universityName: _descriptor_2.fromValue(value_0),
+      revealFacultyName: _descriptor_9.fromValue(value_0),
+      facultyName: _descriptor_2.fromValue(value_0),
+      facultyNameOpening: _descriptor_2.fromValue(value_0),
+      revealAwardName: _descriptor_9.fromValue(value_0),
+      awardName: _descriptor_2.fromValue(value_0),
+      revealHonorsCode: _descriptor_9.fromValue(value_0),
+      honorsCode: _descriptor_18.fromValue(value_0),
+      honorsCodeOpening: _descriptor_2.fromValue(value_0),
+      revealGraduationYear: _descriptor_9.fromValue(value_0),
       graduationYear: _descriptor_1.fromValue(value_0),
-      graduationMonth: _descriptor_2.fromValue(value_0),
-      finalGrade: _descriptor_2.fromValue(value_0),
+      revealGraduationMonth: _descriptor_9.fromValue(value_0),
+      graduationMonth: _descriptor_0.fromValue(value_0),
+      graduationMonthOpening: _descriptor_2.fromValue(value_0),
+      revealFinalGrade: _descriptor_9.fromValue(value_0),
+      finalGrade: _descriptor_0.fromValue(value_0),
+      finalGradeOpening: _descriptor_2.fromValue(value_0),
+      revealCreditsEarned: _descriptor_9.fromValue(value_0),
+      creditsEarned: _descriptor_1.fromValue(value_0),
+      creditsEarnedOpening: _descriptor_2.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_9.toValue(value_0.revealDiplomaId).concat(_descriptor_2.toValue(value_0.diplomaId).concat(_descriptor_2.toValue(value_0.diplomaIdOpening).concat(_descriptor_9.toValue(value_0.revealStudentId).concat(_descriptor_18.toValue(value_0.studentId).concat(_descriptor_2.toValue(value_0.studentIdOpening).concat(_descriptor_9.toValue(value_0.revealGraduateName).concat(_descriptor_2.toValue(value_0.graduateName).concat(_descriptor_2.toValue(value_0.graduateNameOpening).concat(_descriptor_9.toValue(value_0.revealUniversityName).concat(_descriptor_2.toValue(value_0.universityName).concat(_descriptor_9.toValue(value_0.revealFacultyName).concat(_descriptor_2.toValue(value_0.facultyName).concat(_descriptor_2.toValue(value_0.facultyNameOpening).concat(_descriptor_9.toValue(value_0.revealAwardName).concat(_descriptor_2.toValue(value_0.awardName).concat(_descriptor_9.toValue(value_0.revealHonorsCode).concat(_descriptor_18.toValue(value_0.honorsCode).concat(_descriptor_2.toValue(value_0.honorsCodeOpening).concat(_descriptor_9.toValue(value_0.revealGraduationYear).concat(_descriptor_1.toValue(value_0.graduationYear).concat(_descriptor_9.toValue(value_0.revealGraduationMonth).concat(_descriptor_0.toValue(value_0.graduationMonth).concat(_descriptor_2.toValue(value_0.graduationMonthOpening).concat(_descriptor_9.toValue(value_0.revealFinalGrade).concat(_descriptor_0.toValue(value_0.finalGrade).concat(_descriptor_2.toValue(value_0.finalGradeOpening).concat(_descriptor_9.toValue(value_0.revealCreditsEarned).concat(_descriptor_1.toValue(value_0.creditsEarned).concat(_descriptor_2.toValue(value_0.creditsEarnedOpening))))))))))))))))))))))))))))));
+  }
+}
+
+const _descriptor_19 = new _UniversityDiplomaProductionDisclosures_0();
+
+class _Presentation_0 {
+  alignment() {
+    return _descriptor_1.alignment().concat(_descriptor_3.alignment().concat(_descriptor_2.alignment().concat(_descriptor_5.alignment().concat(_descriptor_6.alignment().concat(_descriptor_19.alignment())))));
+  }
+  fromValue(value_0) {
+    return {
+      version: _descriptor_1.fromValue(value_0),
+      schema: _descriptor_3.fromValue(value_0),
+      credentialClaimRoot: _descriptor_2.fromValue(value_0),
+      issuerVerificationMethodRef: _descriptor_5.fromValue(value_0),
+      holderBinding: _descriptor_6.fromValue(value_0),
+      disclosed: _descriptor_19.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_1.toValue(value_0.version).concat(_descriptor_3.toValue(value_0.schema).concat(_descriptor_2.toValue(value_0.credentialClaimRoot).concat(_descriptor_5.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_6.toValue(value_0.holderBinding).concat(_descriptor_19.toValue(value_0.disclosed))))));
+  }
+}
+
+const _descriptor_20 = new _Presentation_0();
+
+class _UniversityDiplomaProductionFinalGradePredicateWitness_0 {
+  alignment() {
+    return _descriptor_0.alignment().concat(_descriptor_2.alignment());
+  }
+  fromValue(value_0) {
+    return {
+      finalGrade: _descriptor_0.fromValue(value_0),
+      finalGradeOpening: _descriptor_2.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_0.toValue(value_0.finalGrade).concat(_descriptor_2.toValue(value_0.finalGradeOpening));
+  }
+}
+
+const _descriptor_21 = new _UniversityDiplomaProductionFinalGradePredicateWitness_0();
+
+class _UniversityDiplomaClaims_0 {
+  alignment() {
+    return _descriptor_2.alignment().concat(_descriptor_18.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_18.alignment().concat(_descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_1.alignment()))))))))));
+  }
+  fromValue(value_0) {
+    return {
+      diplomaId: _descriptor_2.fromValue(value_0),
+      studentId: _descriptor_18.fromValue(value_0),
+      graduateName: _descriptor_2.fromValue(value_0),
+      universityName: _descriptor_2.fromValue(value_0),
+      facultyName: _descriptor_2.fromValue(value_0),
+      awardName: _descriptor_2.fromValue(value_0),
+      honorsCode: _descriptor_18.fromValue(value_0),
+      graduationYear: _descriptor_1.fromValue(value_0),
+      graduationMonth: _descriptor_0.fromValue(value_0),
+      finalGrade: _descriptor_0.fromValue(value_0),
       creditsEarned: _descriptor_1.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_0.toValue(value_0.diplomaId).concat(_descriptor_10.toValue(value_0.studentId).concat(_descriptor_0.toValue(value_0.graduateName).concat(_descriptor_0.toValue(value_0.universityName).concat(_descriptor_0.toValue(value_0.facultyName).concat(_descriptor_0.toValue(value_0.awardName).concat(_descriptor_10.toValue(value_0.honorsCode).concat(_descriptor_1.toValue(value_0.graduationYear).concat(_descriptor_2.toValue(value_0.graduationMonth).concat(_descriptor_2.toValue(value_0.finalGrade).concat(_descriptor_1.toValue(value_0.creditsEarned)))))))))));
+    return _descriptor_2.toValue(value_0.diplomaId).concat(_descriptor_18.toValue(value_0.studentId).concat(_descriptor_2.toValue(value_0.graduateName).concat(_descriptor_2.toValue(value_0.universityName).concat(_descriptor_2.toValue(value_0.facultyName).concat(_descriptor_2.toValue(value_0.awardName).concat(_descriptor_18.toValue(value_0.honorsCode).concat(_descriptor_1.toValue(value_0.graduationYear).concat(_descriptor_0.toValue(value_0.graduationMonth).concat(_descriptor_0.toValue(value_0.finalGrade).concat(_descriptor_1.toValue(value_0.creditsEarned)))))))))));
   }
 }
 
-const _descriptor_11 = new _UniversityDiplomaClaims_0();
+const _descriptor_22 = new _UniversityDiplomaClaims_0();
 
 class _NoClaimCommitments_0 {
   alignment() {
@@ -147,11 +370,11 @@ class _NoClaimCommitments_0 {
   }
 }
 
-const _descriptor_12 = new _NoClaimCommitments_0();
+const _descriptor_23 = new _NoClaimCommitments_0();
 
-class _Credential_0 {
+class _Credential_1 {
   alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_3.alignment().concat(_descriptor_5.alignment().concat(_descriptor_6.alignment().concat(_descriptor_7.alignment().concat(_descriptor_8.alignment().concat(_descriptor_9.alignment().concat(_descriptor_8.alignment().concat(_descriptor_11.alignment().concat(_descriptor_12.alignment().concat(_descriptor_0.alignment()))))))))));
+    return _descriptor_1.alignment().concat(_descriptor_3.alignment().concat(_descriptor_5.alignment().concat(_descriptor_6.alignment().concat(_descriptor_7.alignment().concat(_descriptor_8.alignment().concat(_descriptor_9.alignment().concat(_descriptor_8.alignment().concat(_descriptor_22.alignment().concat(_descriptor_23.alignment().concat(_descriptor_2.alignment()))))))))));
   }
   fromValue(value_0) {
     return {
@@ -163,405 +386,182 @@ class _Credential_0 {
       issuedAt: _descriptor_8.fromValue(value_0),
       hasExpiration: _descriptor_9.fromValue(value_0),
       expiresAt: _descriptor_8.fromValue(value_0),
-      claims: _descriptor_11.fromValue(value_0),
-      claimCommitments: _descriptor_12.fromValue(value_0),
-      claimRoot: _descriptor_0.fromValue(value_0)
+      claims: _descriptor_22.fromValue(value_0),
+      claimCommitments: _descriptor_23.fromValue(value_0),
+      claimRoot: _descriptor_2.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_1.toValue(value_0.version).concat(_descriptor_3.toValue(value_0.schema).concat(_descriptor_5.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_6.toValue(value_0.holderBinding).concat(_descriptor_7.toValue(value_0.statusBinding).concat(_descriptor_8.toValue(value_0.issuedAt).concat(_descriptor_9.toValue(value_0.hasExpiration).concat(_descriptor_8.toValue(value_0.expiresAt).concat(_descriptor_11.toValue(value_0.claims).concat(_descriptor_12.toValue(value_0.claimCommitments).concat(_descriptor_0.toValue(value_0.claimRoot)))))))))));
+    return _descriptor_1.toValue(value_0.version).concat(_descriptor_3.toValue(value_0.schema).concat(_descriptor_5.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_6.toValue(value_0.holderBinding).concat(_descriptor_7.toValue(value_0.statusBinding).concat(_descriptor_8.toValue(value_0.issuedAt).concat(_descriptor_9.toValue(value_0.hasExpiration).concat(_descriptor_8.toValue(value_0.expiresAt).concat(_descriptor_22.toValue(value_0.claims).concat(_descriptor_23.toValue(value_0.claimCommitments).concat(_descriptor_2.toValue(value_0.claimRoot)))))))))));
   }
 }
 
-const _descriptor_13 = new _Credential_0();
-
-const _descriptor_14 = __compactRuntime.CompactTypeJubjubPoint;
-
-const _descriptor_15 = __compactRuntime.CompactTypeField;
-
-class _Signature_0 {
-  alignment() {
-    return _descriptor_14.alignment().concat(_descriptor_15.alignment());
-  }
-  fromValue(value_0) {
-    return {
-      r: _descriptor_14.fromValue(value_0),
-      s: _descriptor_15.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_14.toValue(value_0.r).concat(_descriptor_15.toValue(value_0.s));
-  }
-}
-
-const _descriptor_16 = new _Signature_0();
-
-class _Proof_0 {
-  alignment() {
-    return _descriptor_5.alignment().concat(_descriptor_8.alignment().concat(_descriptor_0.alignment().concat(_descriptor_14.alignment().concat(_descriptor_16.alignment()))));
-  }
-  fromValue(value_0) {
-    return {
-      signerVerificationMethodRef: _descriptor_5.fromValue(value_0),
-      createdAt: _descriptor_8.fromValue(value_0),
-      challengeHash: _descriptor_0.fromValue(value_0),
-      publicKey: _descriptor_14.fromValue(value_0),
-      signature: _descriptor_16.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_5.toValue(value_0.signerVerificationMethodRef).concat(_descriptor_8.toValue(value_0.createdAt).concat(_descriptor_0.toValue(value_0.challengeHash).concat(_descriptor_14.toValue(value_0.publicKey).concat(_descriptor_16.toValue(value_0.signature)))));
-  }
-}
-
-const _descriptor_17 = new _Proof_0();
-
-class _UniversityDiplomaPresentationRequest_0 {
-  alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_3.alignment().concat(_descriptor_5.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_2.alignment().concat(_descriptor_0.alignment()))))))))))))))));
-  }
-  fromValue(value_0) {
-    return {
-      version: _descriptor_1.fromValue(value_0),
-      schema: _descriptor_3.fromValue(value_0),
-      issuerVerificationMethodRef: _descriptor_5.fromValue(value_0),
-      requireDiplomaIdDisclosure: _descriptor_9.fromValue(value_0),
-      requireStudentIdDisclosure: _descriptor_9.fromValue(value_0),
-      requireGraduateNameDisclosure: _descriptor_9.fromValue(value_0),
-      requireUniversityNameDisclosure: _descriptor_9.fromValue(value_0),
-      requireFacultyNameDisclosure: _descriptor_9.fromValue(value_0),
-      requireAwardNameDisclosure: _descriptor_9.fromValue(value_0),
-      requireHonorsCodeDisclosure: _descriptor_9.fromValue(value_0),
-      requireGraduationYearDisclosure: _descriptor_9.fromValue(value_0),
-      requireGraduationMonthDisclosure: _descriptor_9.fromValue(value_0),
-      requireFinalGradeDisclosure: _descriptor_9.fromValue(value_0),
-      requireCreditsEarnedDisclosure: _descriptor_9.fromValue(value_0),
-      enforceMinimumFinalGrade: _descriptor_9.fromValue(value_0),
-      minimumFinalGrade: _descriptor_2.fromValue(value_0),
-      verifierChallengeHash: _descriptor_0.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_1.toValue(value_0.version).concat(_descriptor_3.toValue(value_0.schema).concat(_descriptor_5.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_9.toValue(value_0.requireDiplomaIdDisclosure).concat(_descriptor_9.toValue(value_0.requireStudentIdDisclosure).concat(_descriptor_9.toValue(value_0.requireGraduateNameDisclosure).concat(_descriptor_9.toValue(value_0.requireUniversityNameDisclosure).concat(_descriptor_9.toValue(value_0.requireFacultyNameDisclosure).concat(_descriptor_9.toValue(value_0.requireAwardNameDisclosure).concat(_descriptor_9.toValue(value_0.requireHonorsCodeDisclosure).concat(_descriptor_9.toValue(value_0.requireGraduationYearDisclosure).concat(_descriptor_9.toValue(value_0.requireGraduationMonthDisclosure).concat(_descriptor_9.toValue(value_0.requireFinalGradeDisclosure).concat(_descriptor_9.toValue(value_0.requireCreditsEarnedDisclosure).concat(_descriptor_9.toValue(value_0.enforceMinimumFinalGrade).concat(_descriptor_2.toValue(value_0.minimumFinalGrade).concat(_descriptor_0.toValue(value_0.verifierChallengeHash)))))))))))))))));
-  }
-}
-
-const _descriptor_18 = new _UniversityDiplomaPresentationRequest_0();
+const _descriptor_24 = new _Credential_1();
 
 class _UniversityDiplomaDisclosures_0 {
   alignment() {
-    return _descriptor_9.alignment().concat(_descriptor_0.alignment().concat(_descriptor_9.alignment().concat(_descriptor_10.alignment().concat(_descriptor_9.alignment().concat(_descriptor_0.alignment().concat(_descriptor_9.alignment().concat(_descriptor_0.alignment().concat(_descriptor_9.alignment().concat(_descriptor_0.alignment().concat(_descriptor_9.alignment().concat(_descriptor_0.alignment().concat(_descriptor_9.alignment().concat(_descriptor_10.alignment().concat(_descriptor_9.alignment().concat(_descriptor_1.alignment().concat(_descriptor_9.alignment().concat(_descriptor_2.alignment().concat(_descriptor_9.alignment().concat(_descriptor_2.alignment().concat(_descriptor_9.alignment().concat(_descriptor_1.alignment())))))))))))))))))))));
+    return _descriptor_9.alignment().concat(_descriptor_2.alignment().concat(_descriptor_9.alignment().concat(_descriptor_18.alignment().concat(_descriptor_9.alignment().concat(_descriptor_2.alignment().concat(_descriptor_9.alignment().concat(_descriptor_2.alignment().concat(_descriptor_9.alignment().concat(_descriptor_2.alignment().concat(_descriptor_9.alignment().concat(_descriptor_2.alignment().concat(_descriptor_9.alignment().concat(_descriptor_18.alignment().concat(_descriptor_9.alignment().concat(_descriptor_1.alignment().concat(_descriptor_9.alignment().concat(_descriptor_0.alignment().concat(_descriptor_9.alignment().concat(_descriptor_0.alignment().concat(_descriptor_9.alignment().concat(_descriptor_1.alignment())))))))))))))))))))));
   }
   fromValue(value_0) {
     return {
       revealDiplomaId: _descriptor_9.fromValue(value_0),
-      diplomaId: _descriptor_0.fromValue(value_0),
+      diplomaId: _descriptor_2.fromValue(value_0),
       revealStudentId: _descriptor_9.fromValue(value_0),
-      studentId: _descriptor_10.fromValue(value_0),
+      studentId: _descriptor_18.fromValue(value_0),
       revealGraduateName: _descriptor_9.fromValue(value_0),
-      graduateName: _descriptor_0.fromValue(value_0),
+      graduateName: _descriptor_2.fromValue(value_0),
       revealUniversityName: _descriptor_9.fromValue(value_0),
-      universityName: _descriptor_0.fromValue(value_0),
+      universityName: _descriptor_2.fromValue(value_0),
       revealFacultyName: _descriptor_9.fromValue(value_0),
-      facultyName: _descriptor_0.fromValue(value_0),
+      facultyName: _descriptor_2.fromValue(value_0),
       revealAwardName: _descriptor_9.fromValue(value_0),
-      awardName: _descriptor_0.fromValue(value_0),
+      awardName: _descriptor_2.fromValue(value_0),
       revealHonorsCode: _descriptor_9.fromValue(value_0),
-      honorsCode: _descriptor_10.fromValue(value_0),
+      honorsCode: _descriptor_18.fromValue(value_0),
       revealGraduationYear: _descriptor_9.fromValue(value_0),
       graduationYear: _descriptor_1.fromValue(value_0),
       revealGraduationMonth: _descriptor_9.fromValue(value_0),
-      graduationMonth: _descriptor_2.fromValue(value_0),
+      graduationMonth: _descriptor_0.fromValue(value_0),
       revealFinalGrade: _descriptor_9.fromValue(value_0),
-      finalGrade: _descriptor_2.fromValue(value_0),
+      finalGrade: _descriptor_0.fromValue(value_0),
       revealCreditsEarned: _descriptor_9.fromValue(value_0),
       creditsEarned: _descriptor_1.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_9.toValue(value_0.revealDiplomaId).concat(_descriptor_0.toValue(value_0.diplomaId).concat(_descriptor_9.toValue(value_0.revealStudentId).concat(_descriptor_10.toValue(value_0.studentId).concat(_descriptor_9.toValue(value_0.revealGraduateName).concat(_descriptor_0.toValue(value_0.graduateName).concat(_descriptor_9.toValue(value_0.revealUniversityName).concat(_descriptor_0.toValue(value_0.universityName).concat(_descriptor_9.toValue(value_0.revealFacultyName).concat(_descriptor_0.toValue(value_0.facultyName).concat(_descriptor_9.toValue(value_0.revealAwardName).concat(_descriptor_0.toValue(value_0.awardName).concat(_descriptor_9.toValue(value_0.revealHonorsCode).concat(_descriptor_10.toValue(value_0.honorsCode).concat(_descriptor_9.toValue(value_0.revealGraduationYear).concat(_descriptor_1.toValue(value_0.graduationYear).concat(_descriptor_9.toValue(value_0.revealGraduationMonth).concat(_descriptor_2.toValue(value_0.graduationMonth).concat(_descriptor_9.toValue(value_0.revealFinalGrade).concat(_descriptor_2.toValue(value_0.finalGrade).concat(_descriptor_9.toValue(value_0.revealCreditsEarned).concat(_descriptor_1.toValue(value_0.creditsEarned))))))))))))))))))))));
+    return _descriptor_9.toValue(value_0.revealDiplomaId).concat(_descriptor_2.toValue(value_0.diplomaId).concat(_descriptor_9.toValue(value_0.revealStudentId).concat(_descriptor_18.toValue(value_0.studentId).concat(_descriptor_9.toValue(value_0.revealGraduateName).concat(_descriptor_2.toValue(value_0.graduateName).concat(_descriptor_9.toValue(value_0.revealUniversityName).concat(_descriptor_2.toValue(value_0.universityName).concat(_descriptor_9.toValue(value_0.revealFacultyName).concat(_descriptor_2.toValue(value_0.facultyName).concat(_descriptor_9.toValue(value_0.revealAwardName).concat(_descriptor_2.toValue(value_0.awardName).concat(_descriptor_9.toValue(value_0.revealHonorsCode).concat(_descriptor_18.toValue(value_0.honorsCode).concat(_descriptor_9.toValue(value_0.revealGraduationYear).concat(_descriptor_1.toValue(value_0.graduationYear).concat(_descriptor_9.toValue(value_0.revealGraduationMonth).concat(_descriptor_0.toValue(value_0.graduationMonth).concat(_descriptor_9.toValue(value_0.revealFinalGrade).concat(_descriptor_0.toValue(value_0.finalGrade).concat(_descriptor_9.toValue(value_0.revealCreditsEarned).concat(_descriptor_1.toValue(value_0.creditsEarned))))))))))))))))))))));
   }
 }
 
-const _descriptor_19 = new _UniversityDiplomaDisclosures_0();
-
-class _Presentation_0 {
-  alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_3.alignment().concat(_descriptor_0.alignment().concat(_descriptor_5.alignment().concat(_descriptor_6.alignment().concat(_descriptor_19.alignment())))));
-  }
-  fromValue(value_0) {
-    return {
-      version: _descriptor_1.fromValue(value_0),
-      schema: _descriptor_3.fromValue(value_0),
-      credentialClaimRoot: _descriptor_0.fromValue(value_0),
-      issuerVerificationMethodRef: _descriptor_5.fromValue(value_0),
-      holderBinding: _descriptor_6.fromValue(value_0),
-      disclosed: _descriptor_19.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_1.toValue(value_0.version).concat(_descriptor_3.toValue(value_0.schema).concat(_descriptor_0.toValue(value_0.credentialClaimRoot).concat(_descriptor_5.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_6.toValue(value_0.holderBinding).concat(_descriptor_19.toValue(value_0.disclosed))))));
-  }
-}
-
-const _descriptor_20 = new _Presentation_0();
-
-class _UniversityDiplomaProductionPublicClaims_0 {
-  alignment() {
-    return _descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_1.alignment()));
-  }
-  fromValue(value_0) {
-    return {
-      universityName: _descriptor_0.fromValue(value_0),
-      awardName: _descriptor_0.fromValue(value_0),
-      graduationYear: _descriptor_1.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_0.toValue(value_0.universityName).concat(_descriptor_0.toValue(value_0.awardName).concat(_descriptor_1.toValue(value_0.graduationYear)));
-  }
-}
-
-const _descriptor_21 = new _UniversityDiplomaProductionPublicClaims_0();
-
-class _UniversityDiplomaClaimCommitments_0 {
-  alignment() {
-    return _descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment())))))));
-  }
-  fromValue(value_0) {
-    return {
-      diplomaIdCommitment: _descriptor_0.fromValue(value_0),
-      studentIdCommitment: _descriptor_0.fromValue(value_0),
-      graduateNameCommitment: _descriptor_0.fromValue(value_0),
-      facultyNameCommitment: _descriptor_0.fromValue(value_0),
-      honorsCodeCommitment: _descriptor_0.fromValue(value_0),
-      graduationMonthCommitment: _descriptor_0.fromValue(value_0),
-      finalGradeCommitment: _descriptor_0.fromValue(value_0),
-      creditsEarnedCommitment: _descriptor_0.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_0.toValue(value_0.diplomaIdCommitment).concat(_descriptor_0.toValue(value_0.studentIdCommitment).concat(_descriptor_0.toValue(value_0.graduateNameCommitment).concat(_descriptor_0.toValue(value_0.facultyNameCommitment).concat(_descriptor_0.toValue(value_0.honorsCodeCommitment).concat(_descriptor_0.toValue(value_0.graduationMonthCommitment).concat(_descriptor_0.toValue(value_0.finalGradeCommitment).concat(_descriptor_0.toValue(value_0.creditsEarnedCommitment))))))));
-  }
-}
-
-const _descriptor_22 = new _UniversityDiplomaClaimCommitments_0();
-
-class _Credential_1 {
-  alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_3.alignment().concat(_descriptor_5.alignment().concat(_descriptor_6.alignment().concat(_descriptor_7.alignment().concat(_descriptor_8.alignment().concat(_descriptor_9.alignment().concat(_descriptor_8.alignment().concat(_descriptor_21.alignment().concat(_descriptor_22.alignment().concat(_descriptor_0.alignment()))))))))));
-  }
-  fromValue(value_0) {
-    return {
-      version: _descriptor_1.fromValue(value_0),
-      schema: _descriptor_3.fromValue(value_0),
-      issuerVerificationMethodRef: _descriptor_5.fromValue(value_0),
-      holderBinding: _descriptor_6.fromValue(value_0),
-      statusBinding: _descriptor_7.fromValue(value_0),
-      issuedAt: _descriptor_8.fromValue(value_0),
-      hasExpiration: _descriptor_9.fromValue(value_0),
-      expiresAt: _descriptor_8.fromValue(value_0),
-      claims: _descriptor_21.fromValue(value_0),
-      claimCommitments: _descriptor_22.fromValue(value_0),
-      claimRoot: _descriptor_0.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_1.toValue(value_0.version).concat(_descriptor_3.toValue(value_0.schema).concat(_descriptor_5.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_6.toValue(value_0.holderBinding).concat(_descriptor_7.toValue(value_0.statusBinding).concat(_descriptor_8.toValue(value_0.issuedAt).concat(_descriptor_9.toValue(value_0.hasExpiration).concat(_descriptor_8.toValue(value_0.expiresAt).concat(_descriptor_21.toValue(value_0.claims).concat(_descriptor_22.toValue(value_0.claimCommitments).concat(_descriptor_0.toValue(value_0.claimRoot)))))))))));
-  }
-}
-
-const _descriptor_23 = new _Credential_1();
-
-class _UniversityDiplomaProductionPresentationRequest_0 {
-  alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_3.alignment().concat(_descriptor_5.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_2.alignment().concat(_descriptor_0.alignment()))))))))))))))));
-  }
-  fromValue(value_0) {
-    return {
-      version: _descriptor_1.fromValue(value_0),
-      schema: _descriptor_3.fromValue(value_0),
-      issuerVerificationMethodRef: _descriptor_5.fromValue(value_0),
-      requireDiplomaIdDisclosure: _descriptor_9.fromValue(value_0),
-      requireStudentIdDisclosure: _descriptor_9.fromValue(value_0),
-      requireGraduateNameDisclosure: _descriptor_9.fromValue(value_0),
-      requireUniversityNameDisclosure: _descriptor_9.fromValue(value_0),
-      requireFacultyNameDisclosure: _descriptor_9.fromValue(value_0),
-      requireAwardNameDisclosure: _descriptor_9.fromValue(value_0),
-      requireHonorsCodeDisclosure: _descriptor_9.fromValue(value_0),
-      requireGraduationYearDisclosure: _descriptor_9.fromValue(value_0),
-      requireGraduationMonthDisclosure: _descriptor_9.fromValue(value_0),
-      requireFinalGradeDisclosure: _descriptor_9.fromValue(value_0),
-      requireCreditsEarnedDisclosure: _descriptor_9.fromValue(value_0),
-      enforceMinimumFinalGrade: _descriptor_9.fromValue(value_0),
-      minimumFinalGrade: _descriptor_2.fromValue(value_0),
-      verifierChallengeHash: _descriptor_0.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_1.toValue(value_0.version).concat(_descriptor_3.toValue(value_0.schema).concat(_descriptor_5.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_9.toValue(value_0.requireDiplomaIdDisclosure).concat(_descriptor_9.toValue(value_0.requireStudentIdDisclosure).concat(_descriptor_9.toValue(value_0.requireGraduateNameDisclosure).concat(_descriptor_9.toValue(value_0.requireUniversityNameDisclosure).concat(_descriptor_9.toValue(value_0.requireFacultyNameDisclosure).concat(_descriptor_9.toValue(value_0.requireAwardNameDisclosure).concat(_descriptor_9.toValue(value_0.requireHonorsCodeDisclosure).concat(_descriptor_9.toValue(value_0.requireGraduationYearDisclosure).concat(_descriptor_9.toValue(value_0.requireGraduationMonthDisclosure).concat(_descriptor_9.toValue(value_0.requireFinalGradeDisclosure).concat(_descriptor_9.toValue(value_0.requireCreditsEarnedDisclosure).concat(_descriptor_9.toValue(value_0.enforceMinimumFinalGrade).concat(_descriptor_2.toValue(value_0.minimumFinalGrade).concat(_descriptor_0.toValue(value_0.verifierChallengeHash)))))))))))))))));
-  }
-}
-
-const _descriptor_24 = new _UniversityDiplomaProductionPresentationRequest_0();
-
-class _UniversityDiplomaProductionDisclosures_0 {
-  alignment() {
-    return _descriptor_9.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_9.alignment().concat(_descriptor_10.alignment().concat(_descriptor_0.alignment().concat(_descriptor_9.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_9.alignment().concat(_descriptor_0.alignment().concat(_descriptor_9.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_9.alignment().concat(_descriptor_0.alignment().concat(_descriptor_9.alignment().concat(_descriptor_10.alignment().concat(_descriptor_0.alignment().concat(_descriptor_9.alignment().concat(_descriptor_1.alignment().concat(_descriptor_9.alignment().concat(_descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_9.alignment().concat(_descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_9.alignment().concat(_descriptor_1.alignment().concat(_descriptor_0.alignment())))))))))))))))))))))))))))));
-  }
-  fromValue(value_0) {
-    return {
-      revealDiplomaId: _descriptor_9.fromValue(value_0),
-      diplomaId: _descriptor_0.fromValue(value_0),
-      diplomaIdOpening: _descriptor_0.fromValue(value_0),
-      revealStudentId: _descriptor_9.fromValue(value_0),
-      studentId: _descriptor_10.fromValue(value_0),
-      studentIdOpening: _descriptor_0.fromValue(value_0),
-      revealGraduateName: _descriptor_9.fromValue(value_0),
-      graduateName: _descriptor_0.fromValue(value_0),
-      graduateNameOpening: _descriptor_0.fromValue(value_0),
-      revealUniversityName: _descriptor_9.fromValue(value_0),
-      universityName: _descriptor_0.fromValue(value_0),
-      revealFacultyName: _descriptor_9.fromValue(value_0),
-      facultyName: _descriptor_0.fromValue(value_0),
-      facultyNameOpening: _descriptor_0.fromValue(value_0),
-      revealAwardName: _descriptor_9.fromValue(value_0),
-      awardName: _descriptor_0.fromValue(value_0),
-      revealHonorsCode: _descriptor_9.fromValue(value_0),
-      honorsCode: _descriptor_10.fromValue(value_0),
-      honorsCodeOpening: _descriptor_0.fromValue(value_0),
-      revealGraduationYear: _descriptor_9.fromValue(value_0),
-      graduationYear: _descriptor_1.fromValue(value_0),
-      revealGraduationMonth: _descriptor_9.fromValue(value_0),
-      graduationMonth: _descriptor_2.fromValue(value_0),
-      graduationMonthOpening: _descriptor_0.fromValue(value_0),
-      revealFinalGrade: _descriptor_9.fromValue(value_0),
-      finalGrade: _descriptor_2.fromValue(value_0),
-      finalGradeOpening: _descriptor_0.fromValue(value_0),
-      revealCreditsEarned: _descriptor_9.fromValue(value_0),
-      creditsEarned: _descriptor_1.fromValue(value_0),
-      creditsEarnedOpening: _descriptor_0.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_9.toValue(value_0.revealDiplomaId).concat(_descriptor_0.toValue(value_0.diplomaId).concat(_descriptor_0.toValue(value_0.diplomaIdOpening).concat(_descriptor_9.toValue(value_0.revealStudentId).concat(_descriptor_10.toValue(value_0.studentId).concat(_descriptor_0.toValue(value_0.studentIdOpening).concat(_descriptor_9.toValue(value_0.revealGraduateName).concat(_descriptor_0.toValue(value_0.graduateName).concat(_descriptor_0.toValue(value_0.graduateNameOpening).concat(_descriptor_9.toValue(value_0.revealUniversityName).concat(_descriptor_0.toValue(value_0.universityName).concat(_descriptor_9.toValue(value_0.revealFacultyName).concat(_descriptor_0.toValue(value_0.facultyName).concat(_descriptor_0.toValue(value_0.facultyNameOpening).concat(_descriptor_9.toValue(value_0.revealAwardName).concat(_descriptor_0.toValue(value_0.awardName).concat(_descriptor_9.toValue(value_0.revealHonorsCode).concat(_descriptor_10.toValue(value_0.honorsCode).concat(_descriptor_0.toValue(value_0.honorsCodeOpening).concat(_descriptor_9.toValue(value_0.revealGraduationYear).concat(_descriptor_1.toValue(value_0.graduationYear).concat(_descriptor_9.toValue(value_0.revealGraduationMonth).concat(_descriptor_2.toValue(value_0.graduationMonth).concat(_descriptor_0.toValue(value_0.graduationMonthOpening).concat(_descriptor_9.toValue(value_0.revealFinalGrade).concat(_descriptor_2.toValue(value_0.finalGrade).concat(_descriptor_0.toValue(value_0.finalGradeOpening).concat(_descriptor_9.toValue(value_0.revealCreditsEarned).concat(_descriptor_1.toValue(value_0.creditsEarned).concat(_descriptor_0.toValue(value_0.creditsEarnedOpening))))))))))))))))))))))))))))));
-  }
-}
-
-const _descriptor_25 = new _UniversityDiplomaProductionDisclosures_0();
+const _descriptor_25 = new _UniversityDiplomaDisclosures_0();
 
 class _Presentation_1 {
   alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_3.alignment().concat(_descriptor_0.alignment().concat(_descriptor_5.alignment().concat(_descriptor_6.alignment().concat(_descriptor_25.alignment())))));
+    return _descriptor_1.alignment().concat(_descriptor_3.alignment().concat(_descriptor_2.alignment().concat(_descriptor_5.alignment().concat(_descriptor_6.alignment().concat(_descriptor_25.alignment())))));
   }
   fromValue(value_0) {
     return {
       version: _descriptor_1.fromValue(value_0),
       schema: _descriptor_3.fromValue(value_0),
-      credentialClaimRoot: _descriptor_0.fromValue(value_0),
+      credentialClaimRoot: _descriptor_2.fromValue(value_0),
       issuerVerificationMethodRef: _descriptor_5.fromValue(value_0),
       holderBinding: _descriptor_6.fromValue(value_0),
       disclosed: _descriptor_25.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_1.toValue(value_0.version).concat(_descriptor_3.toValue(value_0.schema).concat(_descriptor_0.toValue(value_0.credentialClaimRoot).concat(_descriptor_5.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_6.toValue(value_0.holderBinding).concat(_descriptor_25.toValue(value_0.disclosed))))));
+    return _descriptor_1.toValue(value_0.version).concat(_descriptor_3.toValue(value_0.schema).concat(_descriptor_2.toValue(value_0.credentialClaimRoot).concat(_descriptor_5.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_6.toValue(value_0.holderBinding).concat(_descriptor_25.toValue(value_0.disclosed))))));
   }
 }
 
 const _descriptor_26 = new _Presentation_1();
 
+class _UniversityDiplomaPresentationRequest_0 {
+  alignment() {
+    return _descriptor_1.alignment().concat(_descriptor_3.alignment().concat(_descriptor_5.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment()))))))))))))))));
+  }
+  fromValue(value_0) {
+    return {
+      version: _descriptor_1.fromValue(value_0),
+      schema: _descriptor_3.fromValue(value_0),
+      issuerVerificationMethodRef: _descriptor_5.fromValue(value_0),
+      requireDiplomaIdDisclosure: _descriptor_9.fromValue(value_0),
+      requireStudentIdDisclosure: _descriptor_9.fromValue(value_0),
+      requireGraduateNameDisclosure: _descriptor_9.fromValue(value_0),
+      requireUniversityNameDisclosure: _descriptor_9.fromValue(value_0),
+      requireFacultyNameDisclosure: _descriptor_9.fromValue(value_0),
+      requireAwardNameDisclosure: _descriptor_9.fromValue(value_0),
+      requireHonorsCodeDisclosure: _descriptor_9.fromValue(value_0),
+      requireGraduationYearDisclosure: _descriptor_9.fromValue(value_0),
+      requireGraduationMonthDisclosure: _descriptor_9.fromValue(value_0),
+      requireFinalGradeDisclosure: _descriptor_9.fromValue(value_0),
+      requireCreditsEarnedDisclosure: _descriptor_9.fromValue(value_0),
+      enforceMinimumFinalGrade: _descriptor_9.fromValue(value_0),
+      minimumFinalGrade: _descriptor_0.fromValue(value_0),
+      verifierChallengeHash: _descriptor_2.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_1.toValue(value_0.version).concat(_descriptor_3.toValue(value_0.schema).concat(_descriptor_5.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_9.toValue(value_0.requireDiplomaIdDisclosure).concat(_descriptor_9.toValue(value_0.requireStudentIdDisclosure).concat(_descriptor_9.toValue(value_0.requireGraduateNameDisclosure).concat(_descriptor_9.toValue(value_0.requireUniversityNameDisclosure).concat(_descriptor_9.toValue(value_0.requireFacultyNameDisclosure).concat(_descriptor_9.toValue(value_0.requireAwardNameDisclosure).concat(_descriptor_9.toValue(value_0.requireHonorsCodeDisclosure).concat(_descriptor_9.toValue(value_0.requireGraduationYearDisclosure).concat(_descriptor_9.toValue(value_0.requireGraduationMonthDisclosure).concat(_descriptor_9.toValue(value_0.requireFinalGradeDisclosure).concat(_descriptor_9.toValue(value_0.requireCreditsEarnedDisclosure).concat(_descriptor_9.toValue(value_0.enforceMinimumFinalGrade).concat(_descriptor_0.toValue(value_0.minimumFinalGrade).concat(_descriptor_2.toValue(value_0.verifierChallengeHash)))))))))))))))));
+  }
+}
+
+const _descriptor_27 = new _UniversityDiplomaPresentationRequest_0();
+
 class _UniversityDiplomaProductionCreditsEarnedPredicateWitness_0 {
   alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_0.alignment());
+    return _descriptor_1.alignment().concat(_descriptor_2.alignment());
   }
   fromValue(value_0) {
     return {
       creditsEarned: _descriptor_1.fromValue(value_0),
-      creditsEarnedOpening: _descriptor_0.fromValue(value_0)
+      creditsEarnedOpening: _descriptor_2.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_1.toValue(value_0.creditsEarned).concat(_descriptor_0.toValue(value_0.creditsEarnedOpening));
+    return _descriptor_1.toValue(value_0.creditsEarned).concat(_descriptor_2.toValue(value_0.creditsEarnedOpening));
   }
 }
 
-const _descriptor_27 = new _UniversityDiplomaProductionCreditsEarnedPredicateWitness_0();
-
-class _UniversityDiplomaProductionFinalGradePredicateWitness_0 {
-  alignment() {
-    return _descriptor_2.alignment().concat(_descriptor_0.alignment());
-  }
-  fromValue(value_0) {
-    return {
-      finalGrade: _descriptor_2.fromValue(value_0),
-      finalGradeOpening: _descriptor_0.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_2.toValue(value_0.finalGrade).concat(_descriptor_0.toValue(value_0.finalGradeOpening));
-  }
-}
-
-const _descriptor_28 = new _UniversityDiplomaProductionFinalGradePredicateWitness_0();
+const _descriptor_28 = new _UniversityDiplomaProductionCreditsEarnedPredicateWitness_0();
 
 class _VerificationTranscriptV1_0 {
   alignment() {
-    return _descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_8.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_8.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_8.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment()))))))))))))))))))))))))))))))))))))))))))))));
+    return _descriptor_2.alignment().concat(_descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_8.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_8.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_8.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment()))))))))))))))))))))))))))))))))))))))))))))));
   }
   fromValue(value_0) {
     return {
-      domain: _descriptor_0.fromValue(value_0),
+      domain: _descriptor_2.fromValue(value_0),
       version: _descriptor_1.fromValue(value_0),
-      profile: _descriptor_2.fromValue(value_0),
-      authority: _descriptor_2.fromValue(value_0),
-      networkIdDigest: _descriptor_0.fromValue(value_0),
-      verifierContractDigest: _descriptor_0.fromValue(value_0),
-      deploymentDigest: _descriptor_0.fromValue(value_0),
-      audienceDigest: _descriptor_0.fromValue(value_0),
-      originMode: _descriptor_2.fromValue(value_0),
-      originDigest: _descriptor_0.fromValue(value_0),
-      connectorEvidenceDigest: _descriptor_0.fromValue(value_0),
-      requestIdDigest: _descriptor_0.fromValue(value_0),
-      challengeDigest: _descriptor_0.fromValue(value_0),
+      profile: _descriptor_0.fromValue(value_0),
+      authority: _descriptor_0.fromValue(value_0),
+      networkIdDigest: _descriptor_2.fromValue(value_0),
+      verifierContractDigest: _descriptor_2.fromValue(value_0),
+      deploymentDigest: _descriptor_2.fromValue(value_0),
+      audienceDigest: _descriptor_2.fromValue(value_0),
+      originMode: _descriptor_0.fromValue(value_0),
+      originDigest: _descriptor_2.fromValue(value_0),
+      connectorEvidenceDigest: _descriptor_2.fromValue(value_0),
+      requestIdDigest: _descriptor_2.fromValue(value_0),
+      challengeDigest: _descriptor_2.fromValue(value_0),
       expiresAt: _descriptor_8.fromValue(value_0),
-      credentialFamilyDigest: _descriptor_0.fromValue(value_0),
-      schemaDigest: _descriptor_0.fromValue(value_0),
-      credentialBindingMode: _descriptor_2.fromValue(value_0),
-      credentialBindingDigest: _descriptor_0.fromValue(value_0),
-      disclosureDigest: _descriptor_0.fromValue(value_0),
-      predicateDigest: _descriptor_0.fromValue(value_0),
-      holderBindingDigest: _descriptor_0.fromValue(value_0),
-      policyDigest: _descriptor_0.fromValue(value_0),
-      actionClassDigest: _descriptor_0.fromValue(value_0),
-      actionInvocationDigest: _descriptor_0.fromValue(value_0),
-      consentDigest: _descriptor_0.fromValue(value_0),
-      presentationBindingDigest: _descriptor_0.fromValue(value_0),
-      issuerDidDigest: _descriptor_0.fromValue(value_0),
-      issuerMethodDigest: _descriptor_0.fromValue(value_0),
-      issuerRelationship: _descriptor_2.fromValue(value_0),
-      issuerEvidenceDigest: _descriptor_0.fromValue(value_0),
-      trustScopeDigest: _descriptor_0.fromValue(value_0),
-      trustEvidenceDigest: _descriptor_0.fromValue(value_0),
-      statusMode: _descriptor_2.fromValue(value_0),
-      statusRegistryDigest: _descriptor_0.fromValue(value_0),
-      statusRoot: _descriptor_0.fromValue(value_0),
+      credentialFamilyDigest: _descriptor_2.fromValue(value_0),
+      schemaDigest: _descriptor_2.fromValue(value_0),
+      credentialBindingMode: _descriptor_0.fromValue(value_0),
+      credentialBindingDigest: _descriptor_2.fromValue(value_0),
+      disclosureDigest: _descriptor_2.fromValue(value_0),
+      predicateDigest: _descriptor_2.fromValue(value_0),
+      holderBindingDigest: _descriptor_2.fromValue(value_0),
+      policyDigest: _descriptor_2.fromValue(value_0),
+      actionClassDigest: _descriptor_2.fromValue(value_0),
+      actionInvocationDigest: _descriptor_2.fromValue(value_0),
+      consentDigest: _descriptor_2.fromValue(value_0),
+      presentationBindingDigest: _descriptor_2.fromValue(value_0),
+      issuerDidDigest: _descriptor_2.fromValue(value_0),
+      issuerMethodDigest: _descriptor_2.fromValue(value_0),
+      issuerRelationship: _descriptor_0.fromValue(value_0),
+      issuerEvidenceDigest: _descriptor_2.fromValue(value_0),
+      trustScopeDigest: _descriptor_2.fromValue(value_0),
+      trustEvidenceDigest: _descriptor_2.fromValue(value_0),
+      statusMode: _descriptor_0.fromValue(value_0),
+      statusRegistryDigest: _descriptor_2.fromValue(value_0),
+      statusRoot: _descriptor_2.fromValue(value_0),
       statusRegistryVersion: _descriptor_8.fromValue(value_0),
-      statusFreshnessPolicyDigest: _descriptor_0.fromValue(value_0),
-      statusEvidenceDigest: _descriptor_0.fromValue(value_0),
-      timeMode: _descriptor_2.fromValue(value_0),
+      statusFreshnessPolicyDigest: _descriptor_2.fromValue(value_0),
+      statusEvidenceDigest: _descriptor_2.fromValue(value_0),
+      timeMode: _descriptor_0.fromValue(value_0),
       trustedTime: _descriptor_8.fromValue(value_0),
-      timeEvidenceDigest: _descriptor_0.fromValue(value_0),
-      artifactManifestDigest: _descriptor_0.fromValue(value_0),
-      artifactEvidenceDigest: _descriptor_0.fromValue(value_0),
-      nullifierMode: _descriptor_2.fromValue(value_0),
-      replayPolicy: _descriptor_2.fromValue(value_0),
-      replayScopeDigest: _descriptor_0.fromValue(value_0),
-      decisionNullifier: _descriptor_0.fromValue(value_0)
+      timeEvidenceDigest: _descriptor_2.fromValue(value_0),
+      artifactManifestDigest: _descriptor_2.fromValue(value_0),
+      artifactEvidenceDigest: _descriptor_2.fromValue(value_0),
+      nullifierMode: _descriptor_0.fromValue(value_0),
+      replayPolicy: _descriptor_0.fromValue(value_0),
+      replayScopeDigest: _descriptor_2.fromValue(value_0),
+      decisionNullifier: _descriptor_2.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_1.toValue(value_0.version).concat(_descriptor_2.toValue(value_0.profile).concat(_descriptor_2.toValue(value_0.authority).concat(_descriptor_0.toValue(value_0.networkIdDigest).concat(_descriptor_0.toValue(value_0.verifierContractDigest).concat(_descriptor_0.toValue(value_0.deploymentDigest).concat(_descriptor_0.toValue(value_0.audienceDigest).concat(_descriptor_2.toValue(value_0.originMode).concat(_descriptor_0.toValue(value_0.originDigest).concat(_descriptor_0.toValue(value_0.connectorEvidenceDigest).concat(_descriptor_0.toValue(value_0.requestIdDigest).concat(_descriptor_0.toValue(value_0.challengeDigest).concat(_descriptor_8.toValue(value_0.expiresAt).concat(_descriptor_0.toValue(value_0.credentialFamilyDigest).concat(_descriptor_0.toValue(value_0.schemaDigest).concat(_descriptor_2.toValue(value_0.credentialBindingMode).concat(_descriptor_0.toValue(value_0.credentialBindingDigest).concat(_descriptor_0.toValue(value_0.disclosureDigest).concat(_descriptor_0.toValue(value_0.predicateDigest).concat(_descriptor_0.toValue(value_0.holderBindingDigest).concat(_descriptor_0.toValue(value_0.policyDigest).concat(_descriptor_0.toValue(value_0.actionClassDigest).concat(_descriptor_0.toValue(value_0.actionInvocationDigest).concat(_descriptor_0.toValue(value_0.consentDigest).concat(_descriptor_0.toValue(value_0.presentationBindingDigest).concat(_descriptor_0.toValue(value_0.issuerDidDigest).concat(_descriptor_0.toValue(value_0.issuerMethodDigest).concat(_descriptor_2.toValue(value_0.issuerRelationship).concat(_descriptor_0.toValue(value_0.issuerEvidenceDigest).concat(_descriptor_0.toValue(value_0.trustScopeDigest).concat(_descriptor_0.toValue(value_0.trustEvidenceDigest).concat(_descriptor_2.toValue(value_0.statusMode).concat(_descriptor_0.toValue(value_0.statusRegistryDigest).concat(_descriptor_0.toValue(value_0.statusRoot).concat(_descriptor_8.toValue(value_0.statusRegistryVersion).concat(_descriptor_0.toValue(value_0.statusFreshnessPolicyDigest).concat(_descriptor_0.toValue(value_0.statusEvidenceDigest).concat(_descriptor_2.toValue(value_0.timeMode).concat(_descriptor_8.toValue(value_0.trustedTime).concat(_descriptor_0.toValue(value_0.timeEvidenceDigest).concat(_descriptor_0.toValue(value_0.artifactManifestDigest).concat(_descriptor_0.toValue(value_0.artifactEvidenceDigest).concat(_descriptor_2.toValue(value_0.nullifierMode).concat(_descriptor_2.toValue(value_0.replayPolicy).concat(_descriptor_0.toValue(value_0.replayScopeDigest).concat(_descriptor_0.toValue(value_0.decisionNullifier)))))))))))))))))))))))))))))))))))))))))))))));
+    return _descriptor_2.toValue(value_0.domain).concat(_descriptor_1.toValue(value_0.version).concat(_descriptor_0.toValue(value_0.profile).concat(_descriptor_0.toValue(value_0.authority).concat(_descriptor_2.toValue(value_0.networkIdDigest).concat(_descriptor_2.toValue(value_0.verifierContractDigest).concat(_descriptor_2.toValue(value_0.deploymentDigest).concat(_descriptor_2.toValue(value_0.audienceDigest).concat(_descriptor_0.toValue(value_0.originMode).concat(_descriptor_2.toValue(value_0.originDigest).concat(_descriptor_2.toValue(value_0.connectorEvidenceDigest).concat(_descriptor_2.toValue(value_0.requestIdDigest).concat(_descriptor_2.toValue(value_0.challengeDigest).concat(_descriptor_8.toValue(value_0.expiresAt).concat(_descriptor_2.toValue(value_0.credentialFamilyDigest).concat(_descriptor_2.toValue(value_0.schemaDigest).concat(_descriptor_0.toValue(value_0.credentialBindingMode).concat(_descriptor_2.toValue(value_0.credentialBindingDigest).concat(_descriptor_2.toValue(value_0.disclosureDigest).concat(_descriptor_2.toValue(value_0.predicateDigest).concat(_descriptor_2.toValue(value_0.holderBindingDigest).concat(_descriptor_2.toValue(value_0.policyDigest).concat(_descriptor_2.toValue(value_0.actionClassDigest).concat(_descriptor_2.toValue(value_0.actionInvocationDigest).concat(_descriptor_2.toValue(value_0.consentDigest).concat(_descriptor_2.toValue(value_0.presentationBindingDigest).concat(_descriptor_2.toValue(value_0.issuerDidDigest).concat(_descriptor_2.toValue(value_0.issuerMethodDigest).concat(_descriptor_0.toValue(value_0.issuerRelationship).concat(_descriptor_2.toValue(value_0.issuerEvidenceDigest).concat(_descriptor_2.toValue(value_0.trustScopeDigest).concat(_descriptor_2.toValue(value_0.trustEvidenceDigest).concat(_descriptor_0.toValue(value_0.statusMode).concat(_descriptor_2.toValue(value_0.statusRegistryDigest).concat(_descriptor_2.toValue(value_0.statusRoot).concat(_descriptor_8.toValue(value_0.statusRegistryVersion).concat(_descriptor_2.toValue(value_0.statusFreshnessPolicyDigest).concat(_descriptor_2.toValue(value_0.statusEvidenceDigest).concat(_descriptor_0.toValue(value_0.timeMode).concat(_descriptor_8.toValue(value_0.trustedTime).concat(_descriptor_2.toValue(value_0.timeEvidenceDigest).concat(_descriptor_2.toValue(value_0.artifactManifestDigest).concat(_descriptor_2.toValue(value_0.artifactEvidenceDigest).concat(_descriptor_0.toValue(value_0.nullifierMode).concat(_descriptor_0.toValue(value_0.replayPolicy).concat(_descriptor_2.toValue(value_0.replayScopeDigest).concat(_descriptor_2.toValue(value_0.decisionNullifier)))))))))))))))))))))))))))))))))))))))))))))));
   }
 }
 
@@ -569,23 +569,23 @@ const _descriptor_29 = new _VerificationTranscriptV1_0();
 
 class _EvidenceBindingV1_0 {
   alignment() {
-    return _descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_8.alignment().concat(_descriptor_8.alignment()))))))));
+    return _descriptor_2.alignment().concat(_descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_8.alignment().concat(_descriptor_8.alignment()))))))));
   }
   fromValue(value_0) {
     return {
-      domain: _descriptor_0.fromValue(value_0),
+      domain: _descriptor_2.fromValue(value_0),
       version: _descriptor_1.fromValue(value_0),
-      mode: _descriptor_2.fromValue(value_0),
-      authorityDigest: _descriptor_0.fromValue(value_0),
-      subjectDigest: _descriptor_0.fromValue(value_0),
-      stateAnchorDigest: _descriptor_0.fromValue(value_0),
-      statementDigest: _descriptor_0.fromValue(value_0),
+      mode: _descriptor_0.fromValue(value_0),
+      authorityDigest: _descriptor_2.fromValue(value_0),
+      subjectDigest: _descriptor_2.fromValue(value_0),
+      stateAnchorDigest: _descriptor_2.fromValue(value_0),
+      statementDigest: _descriptor_2.fromValue(value_0),
       createdAt: _descriptor_8.fromValue(value_0),
       expiresAt: _descriptor_8.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_1.toValue(value_0.version).concat(_descriptor_2.toValue(value_0.mode).concat(_descriptor_0.toValue(value_0.authorityDigest).concat(_descriptor_0.toValue(value_0.subjectDigest).concat(_descriptor_0.toValue(value_0.stateAnchorDigest).concat(_descriptor_0.toValue(value_0.statementDigest).concat(_descriptor_8.toValue(value_0.createdAt).concat(_descriptor_8.toValue(value_0.expiresAt)))))))));
+    return _descriptor_2.toValue(value_0.domain).concat(_descriptor_1.toValue(value_0.version).concat(_descriptor_0.toValue(value_0.mode).concat(_descriptor_2.toValue(value_0.authorityDigest).concat(_descriptor_2.toValue(value_0.subjectDigest).concat(_descriptor_2.toValue(value_0.stateAnchorDigest).concat(_descriptor_2.toValue(value_0.statementDigest).concat(_descriptor_8.toValue(value_0.createdAt).concat(_descriptor_8.toValue(value_0.expiresAt)))))))));
   }
 }
 
@@ -615,19 +615,19 @@ const _descriptor_31 = new _VerificationPublicInputsV1_0();
 
 class _SyntheticVerificationAttemptV1_0 {
   alignment() {
-    return _descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_0.alignment()))));
+    return _descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment()))));
   }
   fromValue(value_0) {
     return {
-      proofStatus: _descriptor_2.fromValue(value_0),
-      decisionStatus: _descriptor_2.fromValue(value_0),
-      authority: _descriptor_2.fromValue(value_0),
-      executionStatus: _descriptor_2.fromValue(value_0),
-      transcriptDigest: _descriptor_0.fromValue(value_0)
+      proofStatus: _descriptor_0.fromValue(value_0),
+      decisionStatus: _descriptor_0.fromValue(value_0),
+      authority: _descriptor_0.fromValue(value_0),
+      executionStatus: _descriptor_0.fromValue(value_0),
+      transcriptDigest: _descriptor_2.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_2.toValue(value_0.proofStatus).concat(_descriptor_2.toValue(value_0.decisionStatus).concat(_descriptor_2.toValue(value_0.authority).concat(_descriptor_2.toValue(value_0.executionStatus).concat(_descriptor_0.toValue(value_0.transcriptDigest)))));
+    return _descriptor_0.toValue(value_0.proofStatus).concat(_descriptor_0.toValue(value_0.decisionStatus).concat(_descriptor_0.toValue(value_0.authority).concat(_descriptor_0.toValue(value_0.executionStatus).concat(_descriptor_2.toValue(value_0.transcriptDigest)))));
   }
 }
 
@@ -635,20 +635,20 @@ const _descriptor_32 = new _SyntheticVerificationAttemptV1_0();
 
 class _DecisionNullifierMaterialV1_0 {
   alignment() {
-    return _descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_0.alignment())))));
+    return _descriptor_2.alignment().concat(_descriptor_1.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment())))));
   }
   fromValue(value_0) {
     return {
-      domain: _descriptor_0.fromValue(value_0),
+      domain: _descriptor_2.fromValue(value_0),
       version: _descriptor_1.fromValue(value_0),
-      deploymentDigest: _descriptor_0.fromValue(value_0),
-      verifierContractDigest: _descriptor_0.fromValue(value_0),
-      replayPolicy: _descriptor_2.fromValue(value_0),
-      replayScopeDigest: _descriptor_0.fromValue(value_0)
+      deploymentDigest: _descriptor_2.fromValue(value_0),
+      verifierContractDigest: _descriptor_2.fromValue(value_0),
+      replayPolicy: _descriptor_0.fromValue(value_0),
+      replayScopeDigest: _descriptor_2.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_1.toValue(value_0.version).concat(_descriptor_0.toValue(value_0.deploymentDigest).concat(_descriptor_0.toValue(value_0.verifierContractDigest).concat(_descriptor_2.toValue(value_0.replayPolicy).concat(_descriptor_0.toValue(value_0.replayScopeDigest))))));
+    return _descriptor_2.toValue(value_0.domain).concat(_descriptor_1.toValue(value_0.version).concat(_descriptor_2.toValue(value_0.deploymentDigest).concat(_descriptor_2.toValue(value_0.verifierContractDigest).concat(_descriptor_0.toValue(value_0.replayPolicy).concat(_descriptor_2.toValue(value_0.replayScopeDigest))))));
   }
 }
 
@@ -656,18 +656,18 @@ const _descriptor_33 = new _DecisionNullifierMaterialV1_0();
 
 class _SyntheticVerificationExtensionV1_0 {
   alignment() {
-    return _descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment())));
+    return _descriptor_2.alignment().concat(_descriptor_1.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment())));
   }
   fromValue(value_0) {
     return {
-      domain: _descriptor_0.fromValue(value_0),
+      domain: _descriptor_2.fromValue(value_0),
       version: _descriptor_1.fromValue(value_0),
-      familyDigest: _descriptor_0.fromValue(value_0),
-      valueDigest: _descriptor_0.fromValue(value_0)
+      familyDigest: _descriptor_2.fromValue(value_0),
+      valueDigest: _descriptor_2.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_1.toValue(value_0.version).concat(_descriptor_0.toValue(value_0.familyDigest).concat(_descriptor_0.toValue(value_0.valueDigest))));
+    return _descriptor_2.toValue(value_0.domain).concat(_descriptor_1.toValue(value_0.version).concat(_descriptor_2.toValue(value_0.familyDigest).concat(_descriptor_2.toValue(value_0.valueDigest))));
   }
 }
 
@@ -675,22 +675,22 @@ const _descriptor_34 = new _SyntheticVerificationExtensionV1_0();
 
 class _AnchorEvidenceReceiptV1_0 {
   alignment() {
-    return _descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment())))))));
+    return _descriptor_2.alignment().concat(_descriptor_1.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment())))))));
   }
   fromValue(value_0) {
     return {
-      domain: _descriptor_0.fromValue(value_0),
+      domain: _descriptor_2.fromValue(value_0),
       version: _descriptor_1.fromValue(value_0),
-      issuerEvidenceDigest: _descriptor_0.fromValue(value_0),
-      trustEvidenceDigest: _descriptor_0.fromValue(value_0),
-      statusEvidenceDigest: _descriptor_0.fromValue(value_0),
-      timeEvidenceDigest: _descriptor_0.fromValue(value_0),
-      artifactEvidenceDigest: _descriptor_0.fromValue(value_0),
-      connectorEvidenceDigest: _descriptor_0.fromValue(value_0)
+      issuerEvidenceDigest: _descriptor_2.fromValue(value_0),
+      trustEvidenceDigest: _descriptor_2.fromValue(value_0),
+      statusEvidenceDigest: _descriptor_2.fromValue(value_0),
+      timeEvidenceDigest: _descriptor_2.fromValue(value_0),
+      artifactEvidenceDigest: _descriptor_2.fromValue(value_0),
+      connectorEvidenceDigest: _descriptor_2.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_1.toValue(value_0.version).concat(_descriptor_0.toValue(value_0.issuerEvidenceDigest).concat(_descriptor_0.toValue(value_0.trustEvidenceDigest).concat(_descriptor_0.toValue(value_0.statusEvidenceDigest).concat(_descriptor_0.toValue(value_0.timeEvidenceDigest).concat(_descriptor_0.toValue(value_0.artifactEvidenceDigest).concat(_descriptor_0.toValue(value_0.connectorEvidenceDigest))))))));
+    return _descriptor_2.toValue(value_0.domain).concat(_descriptor_1.toValue(value_0.version).concat(_descriptor_2.toValue(value_0.issuerEvidenceDigest).concat(_descriptor_2.toValue(value_0.trustEvidenceDigest).concat(_descriptor_2.toValue(value_0.statusEvidenceDigest).concat(_descriptor_2.toValue(value_0.timeEvidenceDigest).concat(_descriptor_2.toValue(value_0.artifactEvidenceDigest).concat(_descriptor_2.toValue(value_0.connectorEvidenceDigest))))))));
   }
 }
 
@@ -698,40 +698,40 @@ const _descriptor_35 = new _AnchorEvidenceReceiptV1_0();
 
 class _ConsentBindingV1_0 {
   alignment() {
-    return _descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_8.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_8.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment())))))))))))))))))))))))));
+    return _descriptor_2.alignment().concat(_descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_8.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_8.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_0.alignment())))))))))))))))))))))))));
   }
   fromValue(value_0) {
     return {
-      domain: _descriptor_0.fromValue(value_0),
+      domain: _descriptor_2.fromValue(value_0),
       version: _descriptor_1.fromValue(value_0),
-      profile: _descriptor_2.fromValue(value_0),
-      networkIdDigest: _descriptor_0.fromValue(value_0),
-      verifierContractDigest: _descriptor_0.fromValue(value_0),
-      deploymentDigest: _descriptor_0.fromValue(value_0),
-      audienceDigest: _descriptor_0.fromValue(value_0),
-      originMode: _descriptor_2.fromValue(value_0),
-      originDigest: _descriptor_0.fromValue(value_0),
-      requestIdDigest: _descriptor_0.fromValue(value_0),
-      challengeDigest: _descriptor_0.fromValue(value_0),
+      profile: _descriptor_0.fromValue(value_0),
+      networkIdDigest: _descriptor_2.fromValue(value_0),
+      verifierContractDigest: _descriptor_2.fromValue(value_0),
+      deploymentDigest: _descriptor_2.fromValue(value_0),
+      audienceDigest: _descriptor_2.fromValue(value_0),
+      originMode: _descriptor_0.fromValue(value_0),
+      originDigest: _descriptor_2.fromValue(value_0),
+      requestIdDigest: _descriptor_2.fromValue(value_0),
+      challengeDigest: _descriptor_2.fromValue(value_0),
       expiresAt: _descriptor_8.fromValue(value_0),
-      credentialFamilyDigest: _descriptor_0.fromValue(value_0),
-      schemaDigest: _descriptor_0.fromValue(value_0),
-      disclosureDigest: _descriptor_0.fromValue(value_0),
-      predicateDigest: _descriptor_0.fromValue(value_0),
-      statusMode: _descriptor_2.fromValue(value_0),
-      statusRegistryDigest: _descriptor_0.fromValue(value_0),
-      statusRoot: _descriptor_0.fromValue(value_0),
+      credentialFamilyDigest: _descriptor_2.fromValue(value_0),
+      schemaDigest: _descriptor_2.fromValue(value_0),
+      disclosureDigest: _descriptor_2.fromValue(value_0),
+      predicateDigest: _descriptor_2.fromValue(value_0),
+      statusMode: _descriptor_0.fromValue(value_0),
+      statusRegistryDigest: _descriptor_2.fromValue(value_0),
+      statusRoot: _descriptor_2.fromValue(value_0),
       statusRegistryVersion: _descriptor_8.fromValue(value_0),
-      statusFreshnessPolicyDigest: _descriptor_0.fromValue(value_0),
-      policyDigest: _descriptor_0.fromValue(value_0),
-      actionClassDigest: _descriptor_0.fromValue(value_0),
-      actionInvocationDigest: _descriptor_0.fromValue(value_0),
-      artifactManifestDigest: _descriptor_0.fromValue(value_0),
-      replayPolicy: _descriptor_2.fromValue(value_0)
+      statusFreshnessPolicyDigest: _descriptor_2.fromValue(value_0),
+      policyDigest: _descriptor_2.fromValue(value_0),
+      actionClassDigest: _descriptor_2.fromValue(value_0),
+      actionInvocationDigest: _descriptor_2.fromValue(value_0),
+      artifactManifestDigest: _descriptor_2.fromValue(value_0),
+      replayPolicy: _descriptor_0.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_1.toValue(value_0.version).concat(_descriptor_2.toValue(value_0.profile).concat(_descriptor_0.toValue(value_0.networkIdDigest).concat(_descriptor_0.toValue(value_0.verifierContractDigest).concat(_descriptor_0.toValue(value_0.deploymentDigest).concat(_descriptor_0.toValue(value_0.audienceDigest).concat(_descriptor_2.toValue(value_0.originMode).concat(_descriptor_0.toValue(value_0.originDigest).concat(_descriptor_0.toValue(value_0.requestIdDigest).concat(_descriptor_0.toValue(value_0.challengeDigest).concat(_descriptor_8.toValue(value_0.expiresAt).concat(_descriptor_0.toValue(value_0.credentialFamilyDigest).concat(_descriptor_0.toValue(value_0.schemaDigest).concat(_descriptor_0.toValue(value_0.disclosureDigest).concat(_descriptor_0.toValue(value_0.predicateDigest).concat(_descriptor_2.toValue(value_0.statusMode).concat(_descriptor_0.toValue(value_0.statusRegistryDigest).concat(_descriptor_0.toValue(value_0.statusRoot).concat(_descriptor_8.toValue(value_0.statusRegistryVersion).concat(_descriptor_0.toValue(value_0.statusFreshnessPolicyDigest).concat(_descriptor_0.toValue(value_0.policyDigest).concat(_descriptor_0.toValue(value_0.actionClassDigest).concat(_descriptor_0.toValue(value_0.actionInvocationDigest).concat(_descriptor_0.toValue(value_0.artifactManifestDigest).concat(_descriptor_2.toValue(value_0.replayPolicy))))))))))))))))))))))))));
+    return _descriptor_2.toValue(value_0.domain).concat(_descriptor_1.toValue(value_0.version).concat(_descriptor_0.toValue(value_0.profile).concat(_descriptor_2.toValue(value_0.networkIdDigest).concat(_descriptor_2.toValue(value_0.verifierContractDigest).concat(_descriptor_2.toValue(value_0.deploymentDigest).concat(_descriptor_2.toValue(value_0.audienceDigest).concat(_descriptor_0.toValue(value_0.originMode).concat(_descriptor_2.toValue(value_0.originDigest).concat(_descriptor_2.toValue(value_0.requestIdDigest).concat(_descriptor_2.toValue(value_0.challengeDigest).concat(_descriptor_8.toValue(value_0.expiresAt).concat(_descriptor_2.toValue(value_0.credentialFamilyDigest).concat(_descriptor_2.toValue(value_0.schemaDigest).concat(_descriptor_2.toValue(value_0.disclosureDigest).concat(_descriptor_2.toValue(value_0.predicateDigest).concat(_descriptor_0.toValue(value_0.statusMode).concat(_descriptor_2.toValue(value_0.statusRegistryDigest).concat(_descriptor_2.toValue(value_0.statusRoot).concat(_descriptor_8.toValue(value_0.statusRegistryVersion).concat(_descriptor_2.toValue(value_0.statusFreshnessPolicyDigest).concat(_descriptor_2.toValue(value_0.policyDigest).concat(_descriptor_2.toValue(value_0.actionClassDigest).concat(_descriptor_2.toValue(value_0.actionInvocationDigest).concat(_descriptor_2.toValue(value_0.artifactManifestDigest).concat(_descriptor_0.toValue(value_0.replayPolicy))))))))))))))))))))))))));
   }
 }
 
@@ -739,21 +739,21 @@ const _descriptor_36 = new _ConsentBindingV1_0();
 
 class _PresentationBindingV1_0 {
   alignment() {
-    return _descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment()))))));
+    return _descriptor_2.alignment().concat(_descriptor_1.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment()))))));
   }
   fromValue(value_0) {
     return {
-      domain: _descriptor_0.fromValue(value_0),
+      domain: _descriptor_2.fromValue(value_0),
       version: _descriptor_1.fromValue(value_0),
-      credentialBindingDigest: _descriptor_0.fromValue(value_0),
-      holderBindingDigest: _descriptor_0.fromValue(value_0),
-      disclosureDigest: _descriptor_0.fromValue(value_0),
-      predicateDigest: _descriptor_0.fromValue(value_0),
-      consentDigest: _descriptor_0.fromValue(value_0)
+      credentialBindingDigest: _descriptor_2.fromValue(value_0),
+      holderBindingDigest: _descriptor_2.fromValue(value_0),
+      disclosureDigest: _descriptor_2.fromValue(value_0),
+      predicateDigest: _descriptor_2.fromValue(value_0),
+      consentDigest: _descriptor_2.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_1.toValue(value_0.version).concat(_descriptor_0.toValue(value_0.credentialBindingDigest).concat(_descriptor_0.toValue(value_0.holderBindingDigest).concat(_descriptor_0.toValue(value_0.disclosureDigest).concat(_descriptor_0.toValue(value_0.predicateDigest).concat(_descriptor_0.toValue(value_0.consentDigest)))))));
+    return _descriptor_2.toValue(value_0.domain).concat(_descriptor_1.toValue(value_0.version).concat(_descriptor_2.toValue(value_0.credentialBindingDigest).concat(_descriptor_2.toValue(value_0.holderBindingDigest).concat(_descriptor_2.toValue(value_0.disclosureDigest).concat(_descriptor_2.toValue(value_0.predicateDigest).concat(_descriptor_2.toValue(value_0.consentDigest)))))));
   }
 }
 
@@ -761,22 +761,22 @@ const _descriptor_37 = new _PresentationBindingV1_0();
 
 class _CredentialBindingV1_0 {
   alignment() {
-    return _descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment())))))));
+    return _descriptor_2.alignment().concat(_descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment())))))));
   }
   fromValue(value_0) {
     return {
-      domain: _descriptor_0.fromValue(value_0),
+      domain: _descriptor_2.fromValue(value_0),
       version: _descriptor_1.fromValue(value_0),
-      mode: _descriptor_2.fromValue(value_0),
-      credentialFamilyDigest: _descriptor_0.fromValue(value_0),
-      schemaDigest: _descriptor_0.fromValue(value_0),
-      verifierContractDigest: _descriptor_0.fromValue(value_0),
-      challengeDigest: _descriptor_0.fromValue(value_0),
-      credentialRoot: _descriptor_0.fromValue(value_0)
+      mode: _descriptor_0.fromValue(value_0),
+      credentialFamilyDigest: _descriptor_2.fromValue(value_0),
+      schemaDigest: _descriptor_2.fromValue(value_0),
+      verifierContractDigest: _descriptor_2.fromValue(value_0),
+      challengeDigest: _descriptor_2.fromValue(value_0),
+      credentialRoot: _descriptor_2.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_1.toValue(value_0.version).concat(_descriptor_2.toValue(value_0.mode).concat(_descriptor_0.toValue(value_0.credentialFamilyDigest).concat(_descriptor_0.toValue(value_0.schemaDigest).concat(_descriptor_0.toValue(value_0.verifierContractDigest).concat(_descriptor_0.toValue(value_0.challengeDigest).concat(_descriptor_0.toValue(value_0.credentialRoot))))))));
+    return _descriptor_2.toValue(value_0.domain).concat(_descriptor_1.toValue(value_0.version).concat(_descriptor_0.toValue(value_0.mode).concat(_descriptor_2.toValue(value_0.credentialFamilyDigest).concat(_descriptor_2.toValue(value_0.schemaDigest).concat(_descriptor_2.toValue(value_0.verifierContractDigest).concat(_descriptor_2.toValue(value_0.challengeDigest).concat(_descriptor_2.toValue(value_0.credentialRoot))))))));
   }
 }
 
@@ -784,20 +784,20 @@ const _descriptor_38 = new _CredentialBindingV1_0();
 
 class _HolderBindingV1_0 {
   alignment() {
-    return _descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment())))));
+    return _descriptor_2.alignment().concat(_descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment())))));
   }
   fromValue(value_0) {
     return {
-      domain: _descriptor_0.fromValue(value_0),
+      domain: _descriptor_2.fromValue(value_0),
       version: _descriptor_1.fromValue(value_0),
-      mode: _descriptor_2.fromValue(value_0),
-      verifierContractDigest: _descriptor_0.fromValue(value_0),
-      challengeDigest: _descriptor_0.fromValue(value_0),
-      subjectBindingDigest: _descriptor_0.fromValue(value_0)
+      mode: _descriptor_0.fromValue(value_0),
+      verifierContractDigest: _descriptor_2.fromValue(value_0),
+      challengeDigest: _descriptor_2.fromValue(value_0),
+      subjectBindingDigest: _descriptor_2.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_1.toValue(value_0.version).concat(_descriptor_2.toValue(value_0.mode).concat(_descriptor_0.toValue(value_0.verifierContractDigest).concat(_descriptor_0.toValue(value_0.challengeDigest).concat(_descriptor_0.toValue(value_0.subjectBindingDigest))))));
+    return _descriptor_2.toValue(value_0.domain).concat(_descriptor_1.toValue(value_0.version).concat(_descriptor_0.toValue(value_0.mode).concat(_descriptor_2.toValue(value_0.verifierContractDigest).concat(_descriptor_2.toValue(value_0.challengeDigest).concat(_descriptor_2.toValue(value_0.subjectBindingDigest))))));
   }
 }
 
@@ -807,16 +807,16 @@ const _descriptor_40 = new __compactRuntime.CompactTypeEnum(0, 0);
 
 class _StatusRegistryRef_0 {
   alignment() {
-    return _descriptor_0.alignment().concat(_descriptor_5.alignment());
+    return _descriptor_2.alignment().concat(_descriptor_5.alignment());
   }
   fromValue(value_0) {
     return {
-      registryId: _descriptor_0.fromValue(value_0),
+      registryId: _descriptor_2.fromValue(value_0),
       authorityVerificationMethodRef: _descriptor_5.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_0.toValue(value_0.registryId).concat(_descriptor_5.toValue(value_0.authorityVerificationMethodRef));
+    return _descriptor_2.toValue(value_0.registryId).concat(_descriptor_5.toValue(value_0.authorityVerificationMethodRef));
   }
 }
 
@@ -824,17 +824,17 @@ const _descriptor_41 = new _StatusRegistryRef_0();
 
 class _RegistryBoundStatusBinding_0 {
   alignment() {
-    return _descriptor_40.alignment().concat(_descriptor_41.alignment().concat(_descriptor_0.alignment()));
+    return _descriptor_40.alignment().concat(_descriptor_41.alignment().concat(_descriptor_2.alignment()));
   }
   fromValue(value_0) {
     return {
       statusType: _descriptor_40.fromValue(value_0),
       registryRef: _descriptor_41.fromValue(value_0),
-      statusHandleCommitment: _descriptor_0.fromValue(value_0)
+      statusHandleCommitment: _descriptor_2.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_40.toValue(value_0.statusType).concat(_descriptor_41.toValue(value_0.registryRef).concat(_descriptor_0.toValue(value_0.statusHandleCommitment)));
+    return _descriptor_40.toValue(value_0.statusType).concat(_descriptor_41.toValue(value_0.registryRef).concat(_descriptor_2.toValue(value_0.statusHandleCommitment)));
   }
 }
 
@@ -842,22 +842,22 @@ const _descriptor_42 = new _RegistryBoundStatusBinding_0();
 
 class _ProtocolMessageEnvelope_0 {
   alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_9.alignment().concat(_descriptor_0.alignment().concat(_descriptor_8.alignment().concat(_descriptor_9.alignment().concat(_descriptor_8.alignment())))))));
+    return _descriptor_1.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_9.alignment().concat(_descriptor_2.alignment().concat(_descriptor_8.alignment().concat(_descriptor_9.alignment().concat(_descriptor_8.alignment())))))));
   }
   fromValue(value_0) {
     return {
       version: _descriptor_1.fromValue(value_0),
-      messageId: _descriptor_0.fromValue(value_0),
-      threadId: _descriptor_0.fromValue(value_0),
+      messageId: _descriptor_2.fromValue(value_0),
+      threadId: _descriptor_2.fromValue(value_0),
       initialMessage: _descriptor_9.fromValue(value_0),
-      respondsToMessageId: _descriptor_0.fromValue(value_0),
+      respondsToMessageId: _descriptor_2.fromValue(value_0),
       createdAt: _descriptor_8.fromValue(value_0),
       hasExpiresAt: _descriptor_9.fromValue(value_0),
       expiresAt: _descriptor_8.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_1.toValue(value_0.version).concat(_descriptor_0.toValue(value_0.messageId).concat(_descriptor_0.toValue(value_0.threadId).concat(_descriptor_9.toValue(value_0.initialMessage).concat(_descriptor_0.toValue(value_0.respondsToMessageId).concat(_descriptor_8.toValue(value_0.createdAt).concat(_descriptor_9.toValue(value_0.hasExpiresAt).concat(_descriptor_8.toValue(value_0.expiresAt))))))));
+    return _descriptor_1.toValue(value_0.version).concat(_descriptor_2.toValue(value_0.messageId).concat(_descriptor_2.toValue(value_0.threadId).concat(_descriptor_9.toValue(value_0.initialMessage).concat(_descriptor_2.toValue(value_0.respondsToMessageId).concat(_descriptor_8.toValue(value_0.createdAt).concat(_descriptor_9.toValue(value_0.hasExpiresAt).concat(_descriptor_8.toValue(value_0.expiresAt))))))));
   }
 }
 
@@ -903,17 +903,17 @@ const _descriptor_45 = new _SchemaCapabilities_0();
 
 class _BlindedSecretHolderBinding_0 {
   alignment() {
-    return _descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment()));
+    return _descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment()));
   }
   fromValue(value_0) {
     return {
-      blindedHolderSecretCommitment: _descriptor_0.fromValue(value_0),
-      issuerNonce: _descriptor_0.fromValue(value_0),
-      requestChallengeResponse: _descriptor_0.fromValue(value_0)
+      blindedHolderSecretCommitment: _descriptor_2.fromValue(value_0),
+      issuerNonce: _descriptor_2.fromValue(value_0),
+      requestChallengeResponse: _descriptor_2.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_0.toValue(value_0.blindedHolderSecretCommitment).concat(_descriptor_0.toValue(value_0.issuerNonce).concat(_descriptor_0.toValue(value_0.requestChallengeResponse)));
+    return _descriptor_2.toValue(value_0.blindedHolderSecretCommitment).concat(_descriptor_2.toValue(value_0.issuerNonce).concat(_descriptor_2.toValue(value_0.requestChallengeResponse)));
   }
 }
 
@@ -921,16 +921,16 @@ const _descriptor_46 = new _BlindedSecretHolderBinding_0();
 
 class _SecretHolderBinding_0 {
   alignment() {
-    return _descriptor_0.alignment().concat(_descriptor_0.alignment());
+    return _descriptor_2.alignment().concat(_descriptor_2.alignment());
   }
   fromValue(value_0) {
     return {
-      holderSecretCommitment: _descriptor_0.fromValue(value_0),
-      requestChallengeResponse: _descriptor_0.fromValue(value_0)
+      holderSecretCommitment: _descriptor_2.fromValue(value_0),
+      requestChallengeResponse: _descriptor_2.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_0.toValue(value_0.holderSecretCommitment).concat(_descriptor_0.toValue(value_0.requestChallengeResponse));
+    return _descriptor_2.toValue(value_0.holderSecretCommitment).concat(_descriptor_2.toValue(value_0.requestChallengeResponse));
   }
 }
 
@@ -938,17 +938,17 @@ const _descriptor_47 = new _SecretHolderBinding_0();
 
 class _OffchainMidnightHolderBinding_0 {
   alignment() {
-    return _descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_14.alignment()));
+    return _descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_13.alignment()));
   }
   fromValue(value_0) {
     return {
-      holderDidStateHash: _descriptor_0.fromValue(value_0),
-      holderMethodId: _descriptor_0.fromValue(value_0),
-      holderPublicKey: _descriptor_14.fromValue(value_0)
+      holderDidStateHash: _descriptor_2.fromValue(value_0),
+      holderMethodId: _descriptor_2.fromValue(value_0),
+      holderPublicKey: _descriptor_13.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_0.toValue(value_0.holderDidStateHash).concat(_descriptor_0.toValue(value_0.holderMethodId).concat(_descriptor_14.toValue(value_0.holderPublicKey)));
+    return _descriptor_2.toValue(value_0.holderDidStateHash).concat(_descriptor_2.toValue(value_0.holderMethodId).concat(_descriptor_13.toValue(value_0.holderPublicKey)));
   }
 }
 
@@ -956,15 +956,15 @@ const _descriptor_48 = new _OffchainMidnightHolderBinding_0();
 
 class _JubjubHolderBinding_0 {
   alignment() {
-    return _descriptor_14.alignment();
+    return _descriptor_13.alignment();
   }
   fromValue(value_0) {
     return {
-      holderPublicKey: _descriptor_14.fromValue(value_0)
+      holderPublicKey: _descriptor_13.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_14.toValue(value_0.holderPublicKey);
+    return _descriptor_13.toValue(value_0.holderPublicKey);
   }
 }
 
@@ -972,16 +972,16 @@ const _descriptor_49 = new _JubjubHolderBinding_0();
 
 class _SchemaFamilyResolutionHint_0 {
   alignment() {
-    return _descriptor_9.alignment().concat(_descriptor_0.alignment());
+    return _descriptor_9.alignment().concat(_descriptor_2.alignment());
   }
   fromValue(value_0) {
     return {
       hasResolverHint: _descriptor_9.fromValue(value_0),
-      resolverHint: _descriptor_0.fromValue(value_0)
+      resolverHint: _descriptor_2.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_9.toValue(value_0.hasResolverHint).concat(_descriptor_0.toValue(value_0.resolverHint));
+    return _descriptor_9.toValue(value_0.hasResolverHint).concat(_descriptor_2.toValue(value_0.resolverHint));
   }
 }
 
@@ -1005,27 +1005,27 @@ class _SchemaDescriptor_0 {
 
 const _descriptor_51 = new _SchemaDescriptor_0();
 
-const _descriptor_52 = new __compactRuntime.CompactTypeVector(3, _descriptor_0);
+const _descriptor_52 = new __compactRuntime.CompactTypeVector(3, _descriptor_2);
 
-const _descriptor_53 = new __compactRuntime.CompactTypeVector(2, _descriptor_0);
+const _descriptor_53 = new __compactRuntime.CompactTypeVector(2, _descriptor_2);
 
-const _descriptor_54 = new __compactRuntime.CompactTypeVector(4, _descriptor_0);
+const _descriptor_54 = new __compactRuntime.CompactTypeVector(4, _descriptor_2);
 
-const _descriptor_55 = new __compactRuntime.CompactTypeVector(5, _descriptor_0);
+const _descriptor_55 = new __compactRuntime.CompactTypeVector(5, _descriptor_2);
 
 class _Either_0 {
   alignment() {
-    return _descriptor_9.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment()));
+    return _descriptor_9.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment()));
   }
   fromValue(value_0) {
     return {
       is_left: _descriptor_9.fromValue(value_0),
-      left: _descriptor_0.fromValue(value_0),
-      right: _descriptor_0.fromValue(value_0)
+      left: _descriptor_2.fromValue(value_0),
+      right: _descriptor_2.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_9.toValue(value_0.is_left).concat(_descriptor_0.toValue(value_0.left).concat(_descriptor_0.toValue(value_0.right)));
+    return _descriptor_9.toValue(value_0.is_left).concat(_descriptor_2.toValue(value_0.left).concat(_descriptor_2.toValue(value_0.right)));
   }
 }
 
@@ -1386,8 +1386,17 @@ export class Contract {
       assertUniversityDiplomaPresentationSatisfiesRequest(context, ...args_1) {
         return { result: pureCircuits.assertUniversityDiplomaPresentationSatisfiesRequest(...args_1), context };
       },
+      assertUniversityDiplomaProductionPresentationSatisfiesRequestCore(context, ...args_1) {
+        return { result: pureCircuits.assertUniversityDiplomaProductionPresentationSatisfiesRequestCore(...args_1), context };
+      },
       assertUniversityDiplomaProductionPresentationSatisfiesRequest(context, ...args_1) {
         return { result: pureCircuits.assertUniversityDiplomaProductionPresentationSatisfiesRequest(...args_1), context };
+      },
+      assertValidUniversityDiplomaProductionPredicatePresentationRequest(context, ...args_1) {
+        return { result: pureCircuits.assertValidUniversityDiplomaProductionPredicatePresentationRequest(...args_1), context };
+      },
+      assertUniversityDiplomaProductionPresentationSatisfiesRequestWithFinalGradePredicate(context, ...args_1) {
+        return { result: pureCircuits.assertUniversityDiplomaProductionPresentationSatisfiesRequestWithFinalGradePredicate(...args_1), context };
       },
       universityDiplomaSchemaRef(context, ...args_1) {
         return { result: pureCircuits.universityDiplomaSchemaRef(...args_1), context };
@@ -1411,50 +1420,50 @@ export class Contract {
         if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.currentQueryContext != undefined)) {
           __compactRuntime.typeError('verifyUniversityDiplomaForJobApplication',
                                      'argument 1 (as invoked from Typescript)',
-                                     'university-verifier.compact line 113 char 1',
+                                     'university-verifier.compact line 121 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
-        if (!(typeof(credential_0) === 'object' && typeof(credential_0.version) === 'bigint' && credential_0.version >= 0n && credential_0.version <= 65535n && typeof(credential_0.schema) === 'object' && credential_0.schema.packageId.buffer instanceof ArrayBuffer && credential_0.schema.packageId.BYTES_PER_ELEMENT === 1 && credential_0.schema.packageId.length === 32 && credential_0.schema.schemaId.buffer instanceof ArrayBuffer && credential_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && credential_0.schema.schemaId.length === 32 && typeof(credential_0.schema.majorVersion) === 'bigint' && credential_0.schema.majorVersion >= 0n && credential_0.schema.majorVersion <= 65535n && typeof(credential_0.schema.minorVersion) === 'bigint' && credential_0.schema.minorVersion >= 0n && credential_0.schema.minorVersion <= 65535n && typeof(credential_0.issuerVerificationMethodRef) === 'object' && typeof(credential_0.issuerVerificationMethodRef.didContractAddress) === 'object' && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && credential_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credential_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credential_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(credential_0.holderBinding) === 'object' && typeof(credential_0.holderBinding.holderVerificationMethodRef) === 'object' && typeof(credential_0.holderBinding.holderVerificationMethodRef.didContractAddress) === 'object' && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.length === 32 && credential_0.holderBinding.holderVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credential_0.holderBinding.holderVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.holderVerificationMethodRef.methodId.length === 32 && typeof(credential_0.statusBinding) === 'object' && typeof(credential_0.issuedAt) === 'bigint' && credential_0.issuedAt >= 0n && credential_0.issuedAt <= 18446744073709551615n && typeof(credential_0.hasExpiration) === 'boolean' && typeof(credential_0.expiresAt) === 'bigint' && credential_0.expiresAt >= 0n && credential_0.expiresAt <= 18446744073709551615n && typeof(credential_0.claims) === 'object' && credential_0.claims.diplomaId.buffer instanceof ArrayBuffer && credential_0.claims.diplomaId.BYTES_PER_ELEMENT === 1 && credential_0.claims.diplomaId.length === 32 && credential_0.claims.studentId.buffer instanceof ArrayBuffer && credential_0.claims.studentId.BYTES_PER_ELEMENT === 1 && credential_0.claims.studentId.length === 16 && credential_0.claims.graduateName.buffer instanceof ArrayBuffer && credential_0.claims.graduateName.BYTES_PER_ELEMENT === 1 && credential_0.claims.graduateName.length === 32 && credential_0.claims.universityName.buffer instanceof ArrayBuffer && credential_0.claims.universityName.BYTES_PER_ELEMENT === 1 && credential_0.claims.universityName.length === 32 && credential_0.claims.facultyName.buffer instanceof ArrayBuffer && credential_0.claims.facultyName.BYTES_PER_ELEMENT === 1 && credential_0.claims.facultyName.length === 32 && credential_0.claims.awardName.buffer instanceof ArrayBuffer && credential_0.claims.awardName.BYTES_PER_ELEMENT === 1 && credential_0.claims.awardName.length === 32 && credential_0.claims.honorsCode.buffer instanceof ArrayBuffer && credential_0.claims.honorsCode.BYTES_PER_ELEMENT === 1 && credential_0.claims.honorsCode.length === 16 && typeof(credential_0.claims.graduationYear) === 'bigint' && credential_0.claims.graduationYear >= 0n && credential_0.claims.graduationYear <= 65535n && typeof(credential_0.claims.graduationMonth) === 'bigint' && credential_0.claims.graduationMonth >= 0n && credential_0.claims.graduationMonth <= 255n && typeof(credential_0.claims.finalGrade) === 'bigint' && credential_0.claims.finalGrade >= 0n && credential_0.claims.finalGrade <= 255n && typeof(credential_0.claims.creditsEarned) === 'bigint' && credential_0.claims.creditsEarned >= 0n && credential_0.claims.creditsEarned <= 65535n && typeof(credential_0.claimCommitments) === 'object' && credential_0.claimRoot.buffer instanceof ArrayBuffer && credential_0.claimRoot.BYTES_PER_ELEMENT === 1 && credential_0.claimRoot.length === 32)) {
+        if (!(typeof(credential_0) === 'object' && typeof(credential_0.version) === 'bigint' && credential_0.version >= 0n && credential_0.version <= 65535n && typeof(credential_0.schema) === 'object' && credential_0.schema.packageId.buffer instanceof ArrayBuffer && credential_0.schema.packageId.BYTES_PER_ELEMENT === 1 && credential_0.schema.packageId.length === 32 && credential_0.schema.schemaId.buffer instanceof ArrayBuffer && credential_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && credential_0.schema.schemaId.length === 32 && typeof(credential_0.schema.majorVersion) === 'bigint' && credential_0.schema.majorVersion >= 0n && credential_0.schema.majorVersion <= 65535n && typeof(credential_0.schema.minorVersion) === 'bigint' && credential_0.schema.minorVersion >= 0n && credential_0.schema.minorVersion <= 65535n && typeof(credential_0.issuerVerificationMethodRef) === 'object' && typeof(credential_0.issuerVerificationMethodRef.didContractAddress) === 'object' && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && credential_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credential_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credential_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(credential_0.holderBinding) === 'object' && typeof(credential_0.holderBinding.holderVerificationMethodRef) === 'object' && typeof(credential_0.holderBinding.holderVerificationMethodRef.didContractAddress) === 'object' && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.length === 32 && credential_0.holderBinding.holderVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credential_0.holderBinding.holderVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.holderVerificationMethodRef.methodId.length === 32 && typeof(credential_0.statusBinding) === 'object' && typeof(credential_0.issuedAt) === 'bigint' && credential_0.issuedAt >= 0n && credential_0.issuedAt <= 18446744073709551615n && typeof(credential_0.hasExpiration) === 'boolean' && typeof(credential_0.expiresAt) === 'bigint' && credential_0.expiresAt >= 0n && credential_0.expiresAt <= 18446744073709551615n && typeof(credential_0.claims) === 'object' && credential_0.claims.universityName.buffer instanceof ArrayBuffer && credential_0.claims.universityName.BYTES_PER_ELEMENT === 1 && credential_0.claims.universityName.length === 32 && credential_0.claims.awardName.buffer instanceof ArrayBuffer && credential_0.claims.awardName.BYTES_PER_ELEMENT === 1 && credential_0.claims.awardName.length === 32 && typeof(credential_0.claims.graduationYear) === 'bigint' && credential_0.claims.graduationYear >= 0n && credential_0.claims.graduationYear <= 65535n && typeof(credential_0.claimCommitments) === 'object' && credential_0.claimCommitments.diplomaIdCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.diplomaIdCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.diplomaIdCommitment.length === 32 && credential_0.claimCommitments.studentIdCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.studentIdCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.studentIdCommitment.length === 32 && credential_0.claimCommitments.graduateNameCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.graduateNameCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.graduateNameCommitment.length === 32 && credential_0.claimCommitments.facultyNameCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.facultyNameCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.facultyNameCommitment.length === 32 && credential_0.claimCommitments.honorsCodeCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.honorsCodeCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.honorsCodeCommitment.length === 32 && credential_0.claimCommitments.graduationMonthCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.graduationMonthCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.graduationMonthCommitment.length === 32 && credential_0.claimCommitments.finalGradeCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.finalGradeCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.finalGradeCommitment.length === 32 && credential_0.claimCommitments.creditsEarnedCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.creditsEarnedCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.creditsEarnedCommitment.length === 32 && credential_0.claimRoot.buffer instanceof ArrayBuffer && credential_0.claimRoot.BYTES_PER_ELEMENT === 1 && credential_0.claimRoot.length === 32)) {
           __compactRuntime.typeError('verifyUniversityDiplomaForJobApplication',
                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                     'university-verifier.compact line 113 char 1',
-                                     'struct Credential<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct ExplicitHolderBinding<holderVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>>, statusBinding: struct NoStatusBinding<>, issuedAt: Uint<0..18446744073709551616>, hasExpiration: Boolean, expiresAt: Uint<0..18446744073709551616>, claims: struct UniversityDiplomaClaims<diplomaId: Bytes<32>, studentId: Bytes<16>, graduateName: Bytes<32>, universityName: Bytes<32>, facultyName: Bytes<32>, awardName: Bytes<32>, honorsCode: Bytes<16>, graduationYear: Uint<0..65536>, graduationMonth: Uint<0..256>, finalGrade: Uint<0..256>, creditsEarned: Uint<0..65536>>, claimCommitments: struct NoClaimCommitments<>, claimRoot: Bytes<32>>',
+                                     'university-verifier.compact line 121 char 1',
+                                     'struct Credential<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct ExplicitHolderBinding<holderVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>>, statusBinding: struct NoStatusBinding<>, issuedAt: Uint<0..18446744073709551616>, hasExpiration: Boolean, expiresAt: Uint<0..18446744073709551616>, claims: struct UniversityDiplomaProductionPublicClaims<universityName: Bytes<32>, awardName: Bytes<32>, graduationYear: Uint<0..65536>>, claimCommitments: struct UniversityDiplomaClaimCommitments<diplomaIdCommitment: Bytes<32>, studentIdCommitment: Bytes<32>, graduateNameCommitment: Bytes<32>, facultyNameCommitment: Bytes<32>, honorsCodeCommitment: Bytes<32>, graduationMonthCommitment: Bytes<32>, finalGradeCommitment: Bytes<32>, creditsEarnedCommitment: Bytes<32>>, claimRoot: Bytes<32>>',
                                      credential_0)
         }
         if (!(typeof(credentialProof_0) === 'object' && typeof(credentialProof_0.signerVerificationMethodRef) === 'object' && typeof(credentialProof_0.signerVerificationMethodRef.didContractAddress) === 'object' && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && credentialProof_0.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credentialProof_0.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credentialProof_0.signerVerificationMethodRef.methodId.length === 32 && typeof(credentialProof_0.createdAt) === 'bigint' && credentialProof_0.createdAt >= 0n && credentialProof_0.createdAt <= 18446744073709551615n && credentialProof_0.challengeHash.buffer instanceof ArrayBuffer && credentialProof_0.challengeHash.BYTES_PER_ELEMENT === 1 && credentialProof_0.challengeHash.length === 32 && true && typeof(credentialProof_0.signature) === 'object' && true && typeof(credentialProof_0.signature.s) === 'bigint' && credentialProof_0.signature.s >= 0 && credentialProof_0.signature.s <= __compactRuntime.MAX_FIELD)) {
           __compactRuntime.typeError('verifyUniversityDiplomaForJobApplication',
                                      'argument 2 (argument 3 as invoked from Typescript)',
-                                     'university-verifier.compact line 113 char 1',
+                                     'university-verifier.compact line 121 char 1',
                                      'struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>',
                                      credentialProof_0)
         }
         if (!(typeof(request_0) === 'object' && typeof(request_0.version) === 'bigint' && request_0.version >= 0n && request_0.version <= 65535n && typeof(request_0.schema) === 'object' && request_0.schema.packageId.buffer instanceof ArrayBuffer && request_0.schema.packageId.BYTES_PER_ELEMENT === 1 && request_0.schema.packageId.length === 32 && request_0.schema.schemaId.buffer instanceof ArrayBuffer && request_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && request_0.schema.schemaId.length === 32 && typeof(request_0.schema.majorVersion) === 'bigint' && request_0.schema.majorVersion >= 0n && request_0.schema.majorVersion <= 65535n && typeof(request_0.schema.minorVersion) === 'bigint' && request_0.schema.minorVersion >= 0n && request_0.schema.minorVersion <= 65535n && typeof(request_0.issuerVerificationMethodRef) === 'object' && typeof(request_0.issuerVerificationMethodRef.didContractAddress) === 'object' && request_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && request_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && request_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && request_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && request_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && request_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(request_0.requireDiplomaIdDisclosure) === 'boolean' && typeof(request_0.requireStudentIdDisclosure) === 'boolean' && typeof(request_0.requireGraduateNameDisclosure) === 'boolean' && typeof(request_0.requireUniversityNameDisclosure) === 'boolean' && typeof(request_0.requireFacultyNameDisclosure) === 'boolean' && typeof(request_0.requireAwardNameDisclosure) === 'boolean' && typeof(request_0.requireHonorsCodeDisclosure) === 'boolean' && typeof(request_0.requireGraduationYearDisclosure) === 'boolean' && typeof(request_0.requireGraduationMonthDisclosure) === 'boolean' && typeof(request_0.requireFinalGradeDisclosure) === 'boolean' && typeof(request_0.requireCreditsEarnedDisclosure) === 'boolean' && typeof(request_0.enforceMinimumFinalGrade) === 'boolean' && typeof(request_0.minimumFinalGrade) === 'bigint' && request_0.minimumFinalGrade >= 0n && request_0.minimumFinalGrade <= 255n && request_0.verifierChallengeHash.buffer instanceof ArrayBuffer && request_0.verifierChallengeHash.BYTES_PER_ELEMENT === 1 && request_0.verifierChallengeHash.length === 32)) {
           __compactRuntime.typeError('verifyUniversityDiplomaForJobApplication',
                                      'argument 3 (argument 4 as invoked from Typescript)',
-                                     'university-verifier.compact line 113 char 1',
-                                     'struct UniversityDiplomaPresentationRequest<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, requireDiplomaIdDisclosure: Boolean, requireStudentIdDisclosure: Boolean, requireGraduateNameDisclosure: Boolean, requireUniversityNameDisclosure: Boolean, requireFacultyNameDisclosure: Boolean, requireAwardNameDisclosure: Boolean, requireHonorsCodeDisclosure: Boolean, requireGraduationYearDisclosure: Boolean, requireGraduationMonthDisclosure: Boolean, requireFinalGradeDisclosure: Boolean, requireCreditsEarnedDisclosure: Boolean, enforceMinimumFinalGrade: Boolean, minimumFinalGrade: Uint<0..256>, verifierChallengeHash: Bytes<32>>',
+                                     'university-verifier.compact line 121 char 1',
+                                     'struct UniversityDiplomaProductionPresentationRequest<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, requireDiplomaIdDisclosure: Boolean, requireStudentIdDisclosure: Boolean, requireGraduateNameDisclosure: Boolean, requireUniversityNameDisclosure: Boolean, requireFacultyNameDisclosure: Boolean, requireAwardNameDisclosure: Boolean, requireHonorsCodeDisclosure: Boolean, requireGraduationYearDisclosure: Boolean, requireGraduationMonthDisclosure: Boolean, requireFinalGradeDisclosure: Boolean, requireCreditsEarnedDisclosure: Boolean, enforceMinimumFinalGrade: Boolean, minimumFinalGrade: Uint<0..256>, verifierChallengeHash: Bytes<32>>',
                                      request_0)
         }
-        if (!(typeof(presentation_0) === 'object' && typeof(presentation_0.version) === 'bigint' && presentation_0.version >= 0n && presentation_0.version <= 65535n && typeof(presentation_0.schema) === 'object' && presentation_0.schema.packageId.buffer instanceof ArrayBuffer && presentation_0.schema.packageId.BYTES_PER_ELEMENT === 1 && presentation_0.schema.packageId.length === 32 && presentation_0.schema.schemaId.buffer instanceof ArrayBuffer && presentation_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && presentation_0.schema.schemaId.length === 32 && typeof(presentation_0.schema.majorVersion) === 'bigint' && presentation_0.schema.majorVersion >= 0n && presentation_0.schema.majorVersion <= 65535n && typeof(presentation_0.schema.minorVersion) === 'bigint' && presentation_0.schema.minorVersion >= 0n && presentation_0.schema.minorVersion <= 65535n && presentation_0.credentialClaimRoot.buffer instanceof ArrayBuffer && presentation_0.credentialClaimRoot.BYTES_PER_ELEMENT === 1 && presentation_0.credentialClaimRoot.length === 32 && typeof(presentation_0.issuerVerificationMethodRef) === 'object' && typeof(presentation_0.issuerVerificationMethodRef.didContractAddress) === 'object' && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && presentation_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && presentation_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && presentation_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(presentation_0.holderBinding) === 'object' && typeof(presentation_0.holderBinding.holderVerificationMethodRef) === 'object' && typeof(presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress) === 'object' && presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.length === 32 && presentation_0.holderBinding.holderVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && presentation_0.holderBinding.holderVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && presentation_0.holderBinding.holderVerificationMethodRef.methodId.length === 32 && typeof(presentation_0.disclosed) === 'object' && typeof(presentation_0.disclosed.revealDiplomaId) === 'boolean' && presentation_0.disclosed.diplomaId.buffer instanceof ArrayBuffer && presentation_0.disclosed.diplomaId.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.diplomaId.length === 32 && typeof(presentation_0.disclosed.revealStudentId) === 'boolean' && presentation_0.disclosed.studentId.buffer instanceof ArrayBuffer && presentation_0.disclosed.studentId.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.studentId.length === 16 && typeof(presentation_0.disclosed.revealGraduateName) === 'boolean' && presentation_0.disclosed.graduateName.buffer instanceof ArrayBuffer && presentation_0.disclosed.graduateName.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.graduateName.length === 32 && typeof(presentation_0.disclosed.revealUniversityName) === 'boolean' && presentation_0.disclosed.universityName.buffer instanceof ArrayBuffer && presentation_0.disclosed.universityName.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.universityName.length === 32 && typeof(presentation_0.disclosed.revealFacultyName) === 'boolean' && presentation_0.disclosed.facultyName.buffer instanceof ArrayBuffer && presentation_0.disclosed.facultyName.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.facultyName.length === 32 && typeof(presentation_0.disclosed.revealAwardName) === 'boolean' && presentation_0.disclosed.awardName.buffer instanceof ArrayBuffer && presentation_0.disclosed.awardName.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.awardName.length === 32 && typeof(presentation_0.disclosed.revealHonorsCode) === 'boolean' && presentation_0.disclosed.honorsCode.buffer instanceof ArrayBuffer && presentation_0.disclosed.honorsCode.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.honorsCode.length === 16 && typeof(presentation_0.disclosed.revealGraduationYear) === 'boolean' && typeof(presentation_0.disclosed.graduationYear) === 'bigint' && presentation_0.disclosed.graduationYear >= 0n && presentation_0.disclosed.graduationYear <= 65535n && typeof(presentation_0.disclosed.revealGraduationMonth) === 'boolean' && typeof(presentation_0.disclosed.graduationMonth) === 'bigint' && presentation_0.disclosed.graduationMonth >= 0n && presentation_0.disclosed.graduationMonth <= 255n && typeof(presentation_0.disclosed.revealFinalGrade) === 'boolean' && typeof(presentation_0.disclosed.finalGrade) === 'bigint' && presentation_0.disclosed.finalGrade >= 0n && presentation_0.disclosed.finalGrade <= 255n && typeof(presentation_0.disclosed.revealCreditsEarned) === 'boolean' && typeof(presentation_0.disclosed.creditsEarned) === 'bigint' && presentation_0.disclosed.creditsEarned >= 0n && presentation_0.disclosed.creditsEarned <= 65535n)) {
+        if (!(typeof(presentation_0) === 'object' && typeof(presentation_0.version) === 'bigint' && presentation_0.version >= 0n && presentation_0.version <= 65535n && typeof(presentation_0.schema) === 'object' && presentation_0.schema.packageId.buffer instanceof ArrayBuffer && presentation_0.schema.packageId.BYTES_PER_ELEMENT === 1 && presentation_0.schema.packageId.length === 32 && presentation_0.schema.schemaId.buffer instanceof ArrayBuffer && presentation_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && presentation_0.schema.schemaId.length === 32 && typeof(presentation_0.schema.majorVersion) === 'bigint' && presentation_0.schema.majorVersion >= 0n && presentation_0.schema.majorVersion <= 65535n && typeof(presentation_0.schema.minorVersion) === 'bigint' && presentation_0.schema.minorVersion >= 0n && presentation_0.schema.minorVersion <= 65535n && presentation_0.credentialClaimRoot.buffer instanceof ArrayBuffer && presentation_0.credentialClaimRoot.BYTES_PER_ELEMENT === 1 && presentation_0.credentialClaimRoot.length === 32 && typeof(presentation_0.issuerVerificationMethodRef) === 'object' && typeof(presentation_0.issuerVerificationMethodRef.didContractAddress) === 'object' && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && presentation_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && presentation_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && presentation_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(presentation_0.holderBinding) === 'object' && typeof(presentation_0.holderBinding.holderVerificationMethodRef) === 'object' && typeof(presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress) === 'object' && presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.length === 32 && presentation_0.holderBinding.holderVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && presentation_0.holderBinding.holderVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && presentation_0.holderBinding.holderVerificationMethodRef.methodId.length === 32 && typeof(presentation_0.disclosed) === 'object' && typeof(presentation_0.disclosed.revealDiplomaId) === 'boolean' && presentation_0.disclosed.diplomaId.buffer instanceof ArrayBuffer && presentation_0.disclosed.diplomaId.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.diplomaId.length === 32 && presentation_0.disclosed.diplomaIdOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.diplomaIdOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.diplomaIdOpening.length === 32 && typeof(presentation_0.disclosed.revealStudentId) === 'boolean' && presentation_0.disclosed.studentId.buffer instanceof ArrayBuffer && presentation_0.disclosed.studentId.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.studentId.length === 16 && presentation_0.disclosed.studentIdOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.studentIdOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.studentIdOpening.length === 32 && typeof(presentation_0.disclosed.revealGraduateName) === 'boolean' && presentation_0.disclosed.graduateName.buffer instanceof ArrayBuffer && presentation_0.disclosed.graduateName.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.graduateName.length === 32 && presentation_0.disclosed.graduateNameOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.graduateNameOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.graduateNameOpening.length === 32 && typeof(presentation_0.disclosed.revealUniversityName) === 'boolean' && presentation_0.disclosed.universityName.buffer instanceof ArrayBuffer && presentation_0.disclosed.universityName.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.universityName.length === 32 && typeof(presentation_0.disclosed.revealFacultyName) === 'boolean' && presentation_0.disclosed.facultyName.buffer instanceof ArrayBuffer && presentation_0.disclosed.facultyName.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.facultyName.length === 32 && presentation_0.disclosed.facultyNameOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.facultyNameOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.facultyNameOpening.length === 32 && typeof(presentation_0.disclosed.revealAwardName) === 'boolean' && presentation_0.disclosed.awardName.buffer instanceof ArrayBuffer && presentation_0.disclosed.awardName.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.awardName.length === 32 && typeof(presentation_0.disclosed.revealHonorsCode) === 'boolean' && presentation_0.disclosed.honorsCode.buffer instanceof ArrayBuffer && presentation_0.disclosed.honorsCode.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.honorsCode.length === 16 && presentation_0.disclosed.honorsCodeOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.honorsCodeOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.honorsCodeOpening.length === 32 && typeof(presentation_0.disclosed.revealGraduationYear) === 'boolean' && typeof(presentation_0.disclosed.graduationYear) === 'bigint' && presentation_0.disclosed.graduationYear >= 0n && presentation_0.disclosed.graduationYear <= 65535n && typeof(presentation_0.disclosed.revealGraduationMonth) === 'boolean' && typeof(presentation_0.disclosed.graduationMonth) === 'bigint' && presentation_0.disclosed.graduationMonth >= 0n && presentation_0.disclosed.graduationMonth <= 255n && presentation_0.disclosed.graduationMonthOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.graduationMonthOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.graduationMonthOpening.length === 32 && typeof(presentation_0.disclosed.revealFinalGrade) === 'boolean' && typeof(presentation_0.disclosed.finalGrade) === 'bigint' && presentation_0.disclosed.finalGrade >= 0n && presentation_0.disclosed.finalGrade <= 255n && presentation_0.disclosed.finalGradeOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.finalGradeOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.finalGradeOpening.length === 32 && typeof(presentation_0.disclosed.revealCreditsEarned) === 'boolean' && typeof(presentation_0.disclosed.creditsEarned) === 'bigint' && presentation_0.disclosed.creditsEarned >= 0n && presentation_0.disclosed.creditsEarned <= 65535n && presentation_0.disclosed.creditsEarnedOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.creditsEarnedOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.creditsEarnedOpening.length === 32)) {
           __compactRuntime.typeError('verifyUniversityDiplomaForJobApplication',
                                      'argument 4 (argument 5 as invoked from Typescript)',
-                                     'university-verifier.compact line 113 char 1',
-                                     'struct Presentation<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, credentialClaimRoot: Bytes<32>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct ExplicitHolderBinding<holderVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>>, disclosed: struct UniversityDiplomaDisclosures<revealDiplomaId: Boolean, diplomaId: Bytes<32>, revealStudentId: Boolean, studentId: Bytes<16>, revealGraduateName: Boolean, graduateName: Bytes<32>, revealUniversityName: Boolean, universityName: Bytes<32>, revealFacultyName: Boolean, facultyName: Bytes<32>, revealAwardName: Boolean, awardName: Bytes<32>, revealHonorsCode: Boolean, honorsCode: Bytes<16>, revealGraduationYear: Boolean, graduationYear: Uint<0..65536>, revealGraduationMonth: Boolean, graduationMonth: Uint<0..256>, revealFinalGrade: Boolean, finalGrade: Uint<0..256>, revealCreditsEarned: Boolean, creditsEarned: Uint<0..65536>>>',
+                                     'university-verifier.compact line 121 char 1',
+                                     'struct Presentation<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, credentialClaimRoot: Bytes<32>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct ExplicitHolderBinding<holderVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>>, disclosed: struct UniversityDiplomaProductionDisclosures<revealDiplomaId: Boolean, diplomaId: Bytes<32>, diplomaIdOpening: Bytes<32>, revealStudentId: Boolean, studentId: Bytes<16>, studentIdOpening: Bytes<32>, revealGraduateName: Boolean, graduateName: Bytes<32>, graduateNameOpening: Bytes<32>, revealUniversityName: Boolean, universityName: Bytes<32>, revealFacultyName: Boolean, facultyName: Bytes<32>, facultyNameOpening: Bytes<32>, revealAwardName: Boolean, awardName: Bytes<32>, revealHonorsCode: Boolean, honorsCode: Bytes<16>, honorsCodeOpening: Bytes<32>, revealGraduationYear: Boolean, graduationYear: Uint<0..65536>, revealGraduationMonth: Boolean, graduationMonth: Uint<0..256>, graduationMonthOpening: Bytes<32>, revealFinalGrade: Boolean, finalGrade: Uint<0..256>, finalGradeOpening: Bytes<32>, revealCreditsEarned: Boolean, creditsEarned: Uint<0..65536>, creditsEarnedOpening: Bytes<32>>>',
                                      presentation_0)
         }
         if (!(typeof(presentationProof_0) === 'object' && typeof(presentationProof_0.signerVerificationMethodRef) === 'object' && typeof(presentationProof_0.signerVerificationMethodRef.didContractAddress) === 'object' && presentationProof_0.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && presentationProof_0.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && presentationProof_0.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && presentationProof_0.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && presentationProof_0.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && presentationProof_0.signerVerificationMethodRef.methodId.length === 32 && typeof(presentationProof_0.createdAt) === 'bigint' && presentationProof_0.createdAt >= 0n && presentationProof_0.createdAt <= 18446744073709551615n && presentationProof_0.challengeHash.buffer instanceof ArrayBuffer && presentationProof_0.challengeHash.BYTES_PER_ELEMENT === 1 && presentationProof_0.challengeHash.length === 32 && true && typeof(presentationProof_0.signature) === 'object' && true && typeof(presentationProof_0.signature.s) === 'bigint' && presentationProof_0.signature.s >= 0 && presentationProof_0.signature.s <= __compactRuntime.MAX_FIELD)) {
           __compactRuntime.typeError('verifyUniversityDiplomaForJobApplication',
                                      'argument 5 (argument 6 as invoked from Typescript)',
-                                     'university-verifier.compact line 113 char 1',
+                                     'university-verifier.compact line 121 char 1',
                                      'struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>',
                                      presentationProof_0)
         }
         const context = { ...contextOrig_0, gasCost: __compactRuntime.emptyRunningCost() };
         const partialProofData = {
           input: {
-            value: _descriptor_13.toValue(credential_0).concat(_descriptor_17.toValue(credentialProof_0).concat(_descriptor_18.toValue(request_0).concat(_descriptor_20.toValue(presentation_0).concat(_descriptor_17.toValue(presentationProof_0))))),
-            alignment: _descriptor_13.alignment().concat(_descriptor_17.alignment().concat(_descriptor_18.alignment().concat(_descriptor_20.alignment().concat(_descriptor_17.alignment()))))
+            value: _descriptor_12.toValue(credential_0).concat(_descriptor_16.toValue(credentialProof_0).concat(_descriptor_17.toValue(request_0).concat(_descriptor_20.toValue(presentation_0).concat(_descriptor_16.toValue(presentationProof_0))))),
+            alignment: _descriptor_12.alignment().concat(_descriptor_16.alignment().concat(_descriptor_17.alignment().concat(_descriptor_20.alignment().concat(_descriptor_16.alignment()))))
           },
           output: undefined,
           publicTranscript: [],
@@ -1471,8 +1480,8 @@ export class Contract {
         return { result: result_0, context: context, proofData: partialProofData, gasCost: context.gasCost };
       },
       verifyUniversityDiplomaForMallDiscount: (...args_1) => {
-        if (args_1.length !== 6) {
-          throw new __compactRuntime.CompactError(`verifyUniversityDiplomaForMallDiscount: expected 6 arguments (as invoked from Typescript), received ${args_1.length}`);
+        if (args_1.length !== 7) {
+          throw new __compactRuntime.CompactError(`verifyUniversityDiplomaForMallDiscount: expected 7 arguments (as invoked from Typescript), received ${args_1.length}`);
         }
         const contextOrig_0 = args_1[0];
         const credential_0 = args_1[1];
@@ -1480,53 +1489,61 @@ export class Contract {
         const request_0 = args_1[3];
         const presentation_0 = args_1[4];
         const presentationProof_0 = args_1[5];
+        const finalGradePredicateWitness_0 = args_1[6];
         if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.currentQueryContext != undefined)) {
           __compactRuntime.typeError('verifyUniversityDiplomaForMallDiscount',
                                      'argument 1 (as invoked from Typescript)',
-                                     'university-verifier.compact line 172 char 1',
+                                     'university-verifier.compact line 186 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
-        if (!(typeof(credential_0) === 'object' && typeof(credential_0.version) === 'bigint' && credential_0.version >= 0n && credential_0.version <= 65535n && typeof(credential_0.schema) === 'object' && credential_0.schema.packageId.buffer instanceof ArrayBuffer && credential_0.schema.packageId.BYTES_PER_ELEMENT === 1 && credential_0.schema.packageId.length === 32 && credential_0.schema.schemaId.buffer instanceof ArrayBuffer && credential_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && credential_0.schema.schemaId.length === 32 && typeof(credential_0.schema.majorVersion) === 'bigint' && credential_0.schema.majorVersion >= 0n && credential_0.schema.majorVersion <= 65535n && typeof(credential_0.schema.minorVersion) === 'bigint' && credential_0.schema.minorVersion >= 0n && credential_0.schema.minorVersion <= 65535n && typeof(credential_0.issuerVerificationMethodRef) === 'object' && typeof(credential_0.issuerVerificationMethodRef.didContractAddress) === 'object' && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && credential_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credential_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credential_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(credential_0.holderBinding) === 'object' && typeof(credential_0.holderBinding.holderVerificationMethodRef) === 'object' && typeof(credential_0.holderBinding.holderVerificationMethodRef.didContractAddress) === 'object' && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.length === 32 && credential_0.holderBinding.holderVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credential_0.holderBinding.holderVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.holderVerificationMethodRef.methodId.length === 32 && typeof(credential_0.statusBinding) === 'object' && typeof(credential_0.issuedAt) === 'bigint' && credential_0.issuedAt >= 0n && credential_0.issuedAt <= 18446744073709551615n && typeof(credential_0.hasExpiration) === 'boolean' && typeof(credential_0.expiresAt) === 'bigint' && credential_0.expiresAt >= 0n && credential_0.expiresAt <= 18446744073709551615n && typeof(credential_0.claims) === 'object' && credential_0.claims.diplomaId.buffer instanceof ArrayBuffer && credential_0.claims.diplomaId.BYTES_PER_ELEMENT === 1 && credential_0.claims.diplomaId.length === 32 && credential_0.claims.studentId.buffer instanceof ArrayBuffer && credential_0.claims.studentId.BYTES_PER_ELEMENT === 1 && credential_0.claims.studentId.length === 16 && credential_0.claims.graduateName.buffer instanceof ArrayBuffer && credential_0.claims.graduateName.BYTES_PER_ELEMENT === 1 && credential_0.claims.graduateName.length === 32 && credential_0.claims.universityName.buffer instanceof ArrayBuffer && credential_0.claims.universityName.BYTES_PER_ELEMENT === 1 && credential_0.claims.universityName.length === 32 && credential_0.claims.facultyName.buffer instanceof ArrayBuffer && credential_0.claims.facultyName.BYTES_PER_ELEMENT === 1 && credential_0.claims.facultyName.length === 32 && credential_0.claims.awardName.buffer instanceof ArrayBuffer && credential_0.claims.awardName.BYTES_PER_ELEMENT === 1 && credential_0.claims.awardName.length === 32 && credential_0.claims.honorsCode.buffer instanceof ArrayBuffer && credential_0.claims.honorsCode.BYTES_PER_ELEMENT === 1 && credential_0.claims.honorsCode.length === 16 && typeof(credential_0.claims.graduationYear) === 'bigint' && credential_0.claims.graduationYear >= 0n && credential_0.claims.graduationYear <= 65535n && typeof(credential_0.claims.graduationMonth) === 'bigint' && credential_0.claims.graduationMonth >= 0n && credential_0.claims.graduationMonth <= 255n && typeof(credential_0.claims.finalGrade) === 'bigint' && credential_0.claims.finalGrade >= 0n && credential_0.claims.finalGrade <= 255n && typeof(credential_0.claims.creditsEarned) === 'bigint' && credential_0.claims.creditsEarned >= 0n && credential_0.claims.creditsEarned <= 65535n && typeof(credential_0.claimCommitments) === 'object' && credential_0.claimRoot.buffer instanceof ArrayBuffer && credential_0.claimRoot.BYTES_PER_ELEMENT === 1 && credential_0.claimRoot.length === 32)) {
+        if (!(typeof(credential_0) === 'object' && typeof(credential_0.version) === 'bigint' && credential_0.version >= 0n && credential_0.version <= 65535n && typeof(credential_0.schema) === 'object' && credential_0.schema.packageId.buffer instanceof ArrayBuffer && credential_0.schema.packageId.BYTES_PER_ELEMENT === 1 && credential_0.schema.packageId.length === 32 && credential_0.schema.schemaId.buffer instanceof ArrayBuffer && credential_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && credential_0.schema.schemaId.length === 32 && typeof(credential_0.schema.majorVersion) === 'bigint' && credential_0.schema.majorVersion >= 0n && credential_0.schema.majorVersion <= 65535n && typeof(credential_0.schema.minorVersion) === 'bigint' && credential_0.schema.minorVersion >= 0n && credential_0.schema.minorVersion <= 65535n && typeof(credential_0.issuerVerificationMethodRef) === 'object' && typeof(credential_0.issuerVerificationMethodRef.didContractAddress) === 'object' && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && credential_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credential_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credential_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(credential_0.holderBinding) === 'object' && typeof(credential_0.holderBinding.holderVerificationMethodRef) === 'object' && typeof(credential_0.holderBinding.holderVerificationMethodRef.didContractAddress) === 'object' && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.length === 32 && credential_0.holderBinding.holderVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credential_0.holderBinding.holderVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.holderVerificationMethodRef.methodId.length === 32 && typeof(credential_0.statusBinding) === 'object' && typeof(credential_0.issuedAt) === 'bigint' && credential_0.issuedAt >= 0n && credential_0.issuedAt <= 18446744073709551615n && typeof(credential_0.hasExpiration) === 'boolean' && typeof(credential_0.expiresAt) === 'bigint' && credential_0.expiresAt >= 0n && credential_0.expiresAt <= 18446744073709551615n && typeof(credential_0.claims) === 'object' && credential_0.claims.universityName.buffer instanceof ArrayBuffer && credential_0.claims.universityName.BYTES_PER_ELEMENT === 1 && credential_0.claims.universityName.length === 32 && credential_0.claims.awardName.buffer instanceof ArrayBuffer && credential_0.claims.awardName.BYTES_PER_ELEMENT === 1 && credential_0.claims.awardName.length === 32 && typeof(credential_0.claims.graduationYear) === 'bigint' && credential_0.claims.graduationYear >= 0n && credential_0.claims.graduationYear <= 65535n && typeof(credential_0.claimCommitments) === 'object' && credential_0.claimCommitments.diplomaIdCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.diplomaIdCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.diplomaIdCommitment.length === 32 && credential_0.claimCommitments.studentIdCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.studentIdCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.studentIdCommitment.length === 32 && credential_0.claimCommitments.graduateNameCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.graduateNameCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.graduateNameCommitment.length === 32 && credential_0.claimCommitments.facultyNameCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.facultyNameCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.facultyNameCommitment.length === 32 && credential_0.claimCommitments.honorsCodeCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.honorsCodeCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.honorsCodeCommitment.length === 32 && credential_0.claimCommitments.graduationMonthCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.graduationMonthCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.graduationMonthCommitment.length === 32 && credential_0.claimCommitments.finalGradeCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.finalGradeCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.finalGradeCommitment.length === 32 && credential_0.claimCommitments.creditsEarnedCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.creditsEarnedCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.creditsEarnedCommitment.length === 32 && credential_0.claimRoot.buffer instanceof ArrayBuffer && credential_0.claimRoot.BYTES_PER_ELEMENT === 1 && credential_0.claimRoot.length === 32)) {
           __compactRuntime.typeError('verifyUniversityDiplomaForMallDiscount',
                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                     'university-verifier.compact line 172 char 1',
-                                     'struct Credential<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct ExplicitHolderBinding<holderVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>>, statusBinding: struct NoStatusBinding<>, issuedAt: Uint<0..18446744073709551616>, hasExpiration: Boolean, expiresAt: Uint<0..18446744073709551616>, claims: struct UniversityDiplomaClaims<diplomaId: Bytes<32>, studentId: Bytes<16>, graduateName: Bytes<32>, universityName: Bytes<32>, facultyName: Bytes<32>, awardName: Bytes<32>, honorsCode: Bytes<16>, graduationYear: Uint<0..65536>, graduationMonth: Uint<0..256>, finalGrade: Uint<0..256>, creditsEarned: Uint<0..65536>>, claimCommitments: struct NoClaimCommitments<>, claimRoot: Bytes<32>>',
+                                     'university-verifier.compact line 186 char 1',
+                                     'struct Credential<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct ExplicitHolderBinding<holderVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>>, statusBinding: struct NoStatusBinding<>, issuedAt: Uint<0..18446744073709551616>, hasExpiration: Boolean, expiresAt: Uint<0..18446744073709551616>, claims: struct UniversityDiplomaProductionPublicClaims<universityName: Bytes<32>, awardName: Bytes<32>, graduationYear: Uint<0..65536>>, claimCommitments: struct UniversityDiplomaClaimCommitments<diplomaIdCommitment: Bytes<32>, studentIdCommitment: Bytes<32>, graduateNameCommitment: Bytes<32>, facultyNameCommitment: Bytes<32>, honorsCodeCommitment: Bytes<32>, graduationMonthCommitment: Bytes<32>, finalGradeCommitment: Bytes<32>, creditsEarnedCommitment: Bytes<32>>, claimRoot: Bytes<32>>',
                                      credential_0)
         }
         if (!(typeof(credentialProof_0) === 'object' && typeof(credentialProof_0.signerVerificationMethodRef) === 'object' && typeof(credentialProof_0.signerVerificationMethodRef.didContractAddress) === 'object' && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && credentialProof_0.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credentialProof_0.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credentialProof_0.signerVerificationMethodRef.methodId.length === 32 && typeof(credentialProof_0.createdAt) === 'bigint' && credentialProof_0.createdAt >= 0n && credentialProof_0.createdAt <= 18446744073709551615n && credentialProof_0.challengeHash.buffer instanceof ArrayBuffer && credentialProof_0.challengeHash.BYTES_PER_ELEMENT === 1 && credentialProof_0.challengeHash.length === 32 && true && typeof(credentialProof_0.signature) === 'object' && true && typeof(credentialProof_0.signature.s) === 'bigint' && credentialProof_0.signature.s >= 0 && credentialProof_0.signature.s <= __compactRuntime.MAX_FIELD)) {
           __compactRuntime.typeError('verifyUniversityDiplomaForMallDiscount',
                                      'argument 2 (argument 3 as invoked from Typescript)',
-                                     'university-verifier.compact line 172 char 1',
+                                     'university-verifier.compact line 186 char 1',
                                      'struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>',
                                      credentialProof_0)
         }
         if (!(typeof(request_0) === 'object' && typeof(request_0.version) === 'bigint' && request_0.version >= 0n && request_0.version <= 65535n && typeof(request_0.schema) === 'object' && request_0.schema.packageId.buffer instanceof ArrayBuffer && request_0.schema.packageId.BYTES_PER_ELEMENT === 1 && request_0.schema.packageId.length === 32 && request_0.schema.schemaId.buffer instanceof ArrayBuffer && request_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && request_0.schema.schemaId.length === 32 && typeof(request_0.schema.majorVersion) === 'bigint' && request_0.schema.majorVersion >= 0n && request_0.schema.majorVersion <= 65535n && typeof(request_0.schema.minorVersion) === 'bigint' && request_0.schema.minorVersion >= 0n && request_0.schema.minorVersion <= 65535n && typeof(request_0.issuerVerificationMethodRef) === 'object' && typeof(request_0.issuerVerificationMethodRef.didContractAddress) === 'object' && request_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && request_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && request_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && request_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && request_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && request_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(request_0.requireDiplomaIdDisclosure) === 'boolean' && typeof(request_0.requireStudentIdDisclosure) === 'boolean' && typeof(request_0.requireGraduateNameDisclosure) === 'boolean' && typeof(request_0.requireUniversityNameDisclosure) === 'boolean' && typeof(request_0.requireFacultyNameDisclosure) === 'boolean' && typeof(request_0.requireAwardNameDisclosure) === 'boolean' && typeof(request_0.requireHonorsCodeDisclosure) === 'boolean' && typeof(request_0.requireGraduationYearDisclosure) === 'boolean' && typeof(request_0.requireGraduationMonthDisclosure) === 'boolean' && typeof(request_0.requireFinalGradeDisclosure) === 'boolean' && typeof(request_0.requireCreditsEarnedDisclosure) === 'boolean' && typeof(request_0.enforceMinimumFinalGrade) === 'boolean' && typeof(request_0.minimumFinalGrade) === 'bigint' && request_0.minimumFinalGrade >= 0n && request_0.minimumFinalGrade <= 255n && request_0.verifierChallengeHash.buffer instanceof ArrayBuffer && request_0.verifierChallengeHash.BYTES_PER_ELEMENT === 1 && request_0.verifierChallengeHash.length === 32)) {
           __compactRuntime.typeError('verifyUniversityDiplomaForMallDiscount',
                                      'argument 3 (argument 4 as invoked from Typescript)',
-                                     'university-verifier.compact line 172 char 1',
-                                     'struct UniversityDiplomaPresentationRequest<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, requireDiplomaIdDisclosure: Boolean, requireStudentIdDisclosure: Boolean, requireGraduateNameDisclosure: Boolean, requireUniversityNameDisclosure: Boolean, requireFacultyNameDisclosure: Boolean, requireAwardNameDisclosure: Boolean, requireHonorsCodeDisclosure: Boolean, requireGraduationYearDisclosure: Boolean, requireGraduationMonthDisclosure: Boolean, requireFinalGradeDisclosure: Boolean, requireCreditsEarnedDisclosure: Boolean, enforceMinimumFinalGrade: Boolean, minimumFinalGrade: Uint<0..256>, verifierChallengeHash: Bytes<32>>',
+                                     'university-verifier.compact line 186 char 1',
+                                     'struct UniversityDiplomaProductionPresentationRequest<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, requireDiplomaIdDisclosure: Boolean, requireStudentIdDisclosure: Boolean, requireGraduateNameDisclosure: Boolean, requireUniversityNameDisclosure: Boolean, requireFacultyNameDisclosure: Boolean, requireAwardNameDisclosure: Boolean, requireHonorsCodeDisclosure: Boolean, requireGraduationYearDisclosure: Boolean, requireGraduationMonthDisclosure: Boolean, requireFinalGradeDisclosure: Boolean, requireCreditsEarnedDisclosure: Boolean, enforceMinimumFinalGrade: Boolean, minimumFinalGrade: Uint<0..256>, verifierChallengeHash: Bytes<32>>',
                                      request_0)
         }
-        if (!(typeof(presentation_0) === 'object' && typeof(presentation_0.version) === 'bigint' && presentation_0.version >= 0n && presentation_0.version <= 65535n && typeof(presentation_0.schema) === 'object' && presentation_0.schema.packageId.buffer instanceof ArrayBuffer && presentation_0.schema.packageId.BYTES_PER_ELEMENT === 1 && presentation_0.schema.packageId.length === 32 && presentation_0.schema.schemaId.buffer instanceof ArrayBuffer && presentation_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && presentation_0.schema.schemaId.length === 32 && typeof(presentation_0.schema.majorVersion) === 'bigint' && presentation_0.schema.majorVersion >= 0n && presentation_0.schema.majorVersion <= 65535n && typeof(presentation_0.schema.minorVersion) === 'bigint' && presentation_0.schema.minorVersion >= 0n && presentation_0.schema.minorVersion <= 65535n && presentation_0.credentialClaimRoot.buffer instanceof ArrayBuffer && presentation_0.credentialClaimRoot.BYTES_PER_ELEMENT === 1 && presentation_0.credentialClaimRoot.length === 32 && typeof(presentation_0.issuerVerificationMethodRef) === 'object' && typeof(presentation_0.issuerVerificationMethodRef.didContractAddress) === 'object' && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && presentation_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && presentation_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && presentation_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(presentation_0.holderBinding) === 'object' && typeof(presentation_0.holderBinding.holderVerificationMethodRef) === 'object' && typeof(presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress) === 'object' && presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.length === 32 && presentation_0.holderBinding.holderVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && presentation_0.holderBinding.holderVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && presentation_0.holderBinding.holderVerificationMethodRef.methodId.length === 32 && typeof(presentation_0.disclosed) === 'object' && typeof(presentation_0.disclosed.revealDiplomaId) === 'boolean' && presentation_0.disclosed.diplomaId.buffer instanceof ArrayBuffer && presentation_0.disclosed.diplomaId.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.diplomaId.length === 32 && typeof(presentation_0.disclosed.revealStudentId) === 'boolean' && presentation_0.disclosed.studentId.buffer instanceof ArrayBuffer && presentation_0.disclosed.studentId.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.studentId.length === 16 && typeof(presentation_0.disclosed.revealGraduateName) === 'boolean' && presentation_0.disclosed.graduateName.buffer instanceof ArrayBuffer && presentation_0.disclosed.graduateName.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.graduateName.length === 32 && typeof(presentation_0.disclosed.revealUniversityName) === 'boolean' && presentation_0.disclosed.universityName.buffer instanceof ArrayBuffer && presentation_0.disclosed.universityName.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.universityName.length === 32 && typeof(presentation_0.disclosed.revealFacultyName) === 'boolean' && presentation_0.disclosed.facultyName.buffer instanceof ArrayBuffer && presentation_0.disclosed.facultyName.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.facultyName.length === 32 && typeof(presentation_0.disclosed.revealAwardName) === 'boolean' && presentation_0.disclosed.awardName.buffer instanceof ArrayBuffer && presentation_0.disclosed.awardName.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.awardName.length === 32 && typeof(presentation_0.disclosed.revealHonorsCode) === 'boolean' && presentation_0.disclosed.honorsCode.buffer instanceof ArrayBuffer && presentation_0.disclosed.honorsCode.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.honorsCode.length === 16 && typeof(presentation_0.disclosed.revealGraduationYear) === 'boolean' && typeof(presentation_0.disclosed.graduationYear) === 'bigint' && presentation_0.disclosed.graduationYear >= 0n && presentation_0.disclosed.graduationYear <= 65535n && typeof(presentation_0.disclosed.revealGraduationMonth) === 'boolean' && typeof(presentation_0.disclosed.graduationMonth) === 'bigint' && presentation_0.disclosed.graduationMonth >= 0n && presentation_0.disclosed.graduationMonth <= 255n && typeof(presentation_0.disclosed.revealFinalGrade) === 'boolean' && typeof(presentation_0.disclosed.finalGrade) === 'bigint' && presentation_0.disclosed.finalGrade >= 0n && presentation_0.disclosed.finalGrade <= 255n && typeof(presentation_0.disclosed.revealCreditsEarned) === 'boolean' && typeof(presentation_0.disclosed.creditsEarned) === 'bigint' && presentation_0.disclosed.creditsEarned >= 0n && presentation_0.disclosed.creditsEarned <= 65535n)) {
+        if (!(typeof(presentation_0) === 'object' && typeof(presentation_0.version) === 'bigint' && presentation_0.version >= 0n && presentation_0.version <= 65535n && typeof(presentation_0.schema) === 'object' && presentation_0.schema.packageId.buffer instanceof ArrayBuffer && presentation_0.schema.packageId.BYTES_PER_ELEMENT === 1 && presentation_0.schema.packageId.length === 32 && presentation_0.schema.schemaId.buffer instanceof ArrayBuffer && presentation_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && presentation_0.schema.schemaId.length === 32 && typeof(presentation_0.schema.majorVersion) === 'bigint' && presentation_0.schema.majorVersion >= 0n && presentation_0.schema.majorVersion <= 65535n && typeof(presentation_0.schema.minorVersion) === 'bigint' && presentation_0.schema.minorVersion >= 0n && presentation_0.schema.minorVersion <= 65535n && presentation_0.credentialClaimRoot.buffer instanceof ArrayBuffer && presentation_0.credentialClaimRoot.BYTES_PER_ELEMENT === 1 && presentation_0.credentialClaimRoot.length === 32 && typeof(presentation_0.issuerVerificationMethodRef) === 'object' && typeof(presentation_0.issuerVerificationMethodRef.didContractAddress) === 'object' && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && presentation_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && presentation_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && presentation_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(presentation_0.holderBinding) === 'object' && typeof(presentation_0.holderBinding.holderVerificationMethodRef) === 'object' && typeof(presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress) === 'object' && presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.length === 32 && presentation_0.holderBinding.holderVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && presentation_0.holderBinding.holderVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && presentation_0.holderBinding.holderVerificationMethodRef.methodId.length === 32 && typeof(presentation_0.disclosed) === 'object' && typeof(presentation_0.disclosed.revealDiplomaId) === 'boolean' && presentation_0.disclosed.diplomaId.buffer instanceof ArrayBuffer && presentation_0.disclosed.diplomaId.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.diplomaId.length === 32 && presentation_0.disclosed.diplomaIdOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.diplomaIdOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.diplomaIdOpening.length === 32 && typeof(presentation_0.disclosed.revealStudentId) === 'boolean' && presentation_0.disclosed.studentId.buffer instanceof ArrayBuffer && presentation_0.disclosed.studentId.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.studentId.length === 16 && presentation_0.disclosed.studentIdOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.studentIdOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.studentIdOpening.length === 32 && typeof(presentation_0.disclosed.revealGraduateName) === 'boolean' && presentation_0.disclosed.graduateName.buffer instanceof ArrayBuffer && presentation_0.disclosed.graduateName.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.graduateName.length === 32 && presentation_0.disclosed.graduateNameOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.graduateNameOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.graduateNameOpening.length === 32 && typeof(presentation_0.disclosed.revealUniversityName) === 'boolean' && presentation_0.disclosed.universityName.buffer instanceof ArrayBuffer && presentation_0.disclosed.universityName.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.universityName.length === 32 && typeof(presentation_0.disclosed.revealFacultyName) === 'boolean' && presentation_0.disclosed.facultyName.buffer instanceof ArrayBuffer && presentation_0.disclosed.facultyName.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.facultyName.length === 32 && presentation_0.disclosed.facultyNameOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.facultyNameOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.facultyNameOpening.length === 32 && typeof(presentation_0.disclosed.revealAwardName) === 'boolean' && presentation_0.disclosed.awardName.buffer instanceof ArrayBuffer && presentation_0.disclosed.awardName.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.awardName.length === 32 && typeof(presentation_0.disclosed.revealHonorsCode) === 'boolean' && presentation_0.disclosed.honorsCode.buffer instanceof ArrayBuffer && presentation_0.disclosed.honorsCode.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.honorsCode.length === 16 && presentation_0.disclosed.honorsCodeOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.honorsCodeOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.honorsCodeOpening.length === 32 && typeof(presentation_0.disclosed.revealGraduationYear) === 'boolean' && typeof(presentation_0.disclosed.graduationYear) === 'bigint' && presentation_0.disclosed.graduationYear >= 0n && presentation_0.disclosed.graduationYear <= 65535n && typeof(presentation_0.disclosed.revealGraduationMonth) === 'boolean' && typeof(presentation_0.disclosed.graduationMonth) === 'bigint' && presentation_0.disclosed.graduationMonth >= 0n && presentation_0.disclosed.graduationMonth <= 255n && presentation_0.disclosed.graduationMonthOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.graduationMonthOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.graduationMonthOpening.length === 32 && typeof(presentation_0.disclosed.revealFinalGrade) === 'boolean' && typeof(presentation_0.disclosed.finalGrade) === 'bigint' && presentation_0.disclosed.finalGrade >= 0n && presentation_0.disclosed.finalGrade <= 255n && presentation_0.disclosed.finalGradeOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.finalGradeOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.finalGradeOpening.length === 32 && typeof(presentation_0.disclosed.revealCreditsEarned) === 'boolean' && typeof(presentation_0.disclosed.creditsEarned) === 'bigint' && presentation_0.disclosed.creditsEarned >= 0n && presentation_0.disclosed.creditsEarned <= 65535n && presentation_0.disclosed.creditsEarnedOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.creditsEarnedOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.creditsEarnedOpening.length === 32)) {
           __compactRuntime.typeError('verifyUniversityDiplomaForMallDiscount',
                                      'argument 4 (argument 5 as invoked from Typescript)',
-                                     'university-verifier.compact line 172 char 1',
-                                     'struct Presentation<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, credentialClaimRoot: Bytes<32>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct ExplicitHolderBinding<holderVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>>, disclosed: struct UniversityDiplomaDisclosures<revealDiplomaId: Boolean, diplomaId: Bytes<32>, revealStudentId: Boolean, studentId: Bytes<16>, revealGraduateName: Boolean, graduateName: Bytes<32>, revealUniversityName: Boolean, universityName: Bytes<32>, revealFacultyName: Boolean, facultyName: Bytes<32>, revealAwardName: Boolean, awardName: Bytes<32>, revealHonorsCode: Boolean, honorsCode: Bytes<16>, revealGraduationYear: Boolean, graduationYear: Uint<0..65536>, revealGraduationMonth: Boolean, graduationMonth: Uint<0..256>, revealFinalGrade: Boolean, finalGrade: Uint<0..256>, revealCreditsEarned: Boolean, creditsEarned: Uint<0..65536>>>',
+                                     'university-verifier.compact line 186 char 1',
+                                     'struct Presentation<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, credentialClaimRoot: Bytes<32>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct ExplicitHolderBinding<holderVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>>, disclosed: struct UniversityDiplomaProductionDisclosures<revealDiplomaId: Boolean, diplomaId: Bytes<32>, diplomaIdOpening: Bytes<32>, revealStudentId: Boolean, studentId: Bytes<16>, studentIdOpening: Bytes<32>, revealGraduateName: Boolean, graduateName: Bytes<32>, graduateNameOpening: Bytes<32>, revealUniversityName: Boolean, universityName: Bytes<32>, revealFacultyName: Boolean, facultyName: Bytes<32>, facultyNameOpening: Bytes<32>, revealAwardName: Boolean, awardName: Bytes<32>, revealHonorsCode: Boolean, honorsCode: Bytes<16>, honorsCodeOpening: Bytes<32>, revealGraduationYear: Boolean, graduationYear: Uint<0..65536>, revealGraduationMonth: Boolean, graduationMonth: Uint<0..256>, graduationMonthOpening: Bytes<32>, revealFinalGrade: Boolean, finalGrade: Uint<0..256>, finalGradeOpening: Bytes<32>, revealCreditsEarned: Boolean, creditsEarned: Uint<0..65536>, creditsEarnedOpening: Bytes<32>>>',
                                      presentation_0)
         }
         if (!(typeof(presentationProof_0) === 'object' && typeof(presentationProof_0.signerVerificationMethodRef) === 'object' && typeof(presentationProof_0.signerVerificationMethodRef.didContractAddress) === 'object' && presentationProof_0.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && presentationProof_0.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && presentationProof_0.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && presentationProof_0.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && presentationProof_0.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && presentationProof_0.signerVerificationMethodRef.methodId.length === 32 && typeof(presentationProof_0.createdAt) === 'bigint' && presentationProof_0.createdAt >= 0n && presentationProof_0.createdAt <= 18446744073709551615n && presentationProof_0.challengeHash.buffer instanceof ArrayBuffer && presentationProof_0.challengeHash.BYTES_PER_ELEMENT === 1 && presentationProof_0.challengeHash.length === 32 && true && typeof(presentationProof_0.signature) === 'object' && true && typeof(presentationProof_0.signature.s) === 'bigint' && presentationProof_0.signature.s >= 0 && presentationProof_0.signature.s <= __compactRuntime.MAX_FIELD)) {
           __compactRuntime.typeError('verifyUniversityDiplomaForMallDiscount',
                                      'argument 5 (argument 6 as invoked from Typescript)',
-                                     'university-verifier.compact line 172 char 1',
+                                     'university-verifier.compact line 186 char 1',
                                      'struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>',
                                      presentationProof_0)
+        }
+        if (!(typeof(finalGradePredicateWitness_0) === 'object' && typeof(finalGradePredicateWitness_0.finalGrade) === 'bigint' && finalGradePredicateWitness_0.finalGrade >= 0n && finalGradePredicateWitness_0.finalGrade <= 255n && finalGradePredicateWitness_0.finalGradeOpening.buffer instanceof ArrayBuffer && finalGradePredicateWitness_0.finalGradeOpening.BYTES_PER_ELEMENT === 1 && finalGradePredicateWitness_0.finalGradeOpening.length === 32)) {
+          __compactRuntime.typeError('verifyUniversityDiplomaForMallDiscount',
+                                     'argument 6 (argument 7 as invoked from Typescript)',
+                                     'university-verifier.compact line 186 char 1',
+                                     'struct UniversityDiplomaProductionFinalGradePredicateWitness<finalGrade: Uint<0..256>, finalGradeOpening: Bytes<32>>',
+                                     finalGradePredicateWitness_0)
         }
         const context = { ...contextOrig_0, gasCost: __compactRuntime.emptyRunningCost() };
         const partialProofData = {
           input: {
-            value: _descriptor_13.toValue(credential_0).concat(_descriptor_17.toValue(credentialProof_0).concat(_descriptor_18.toValue(request_0).concat(_descriptor_20.toValue(presentation_0).concat(_descriptor_17.toValue(presentationProof_0))))),
-            alignment: _descriptor_13.alignment().concat(_descriptor_17.alignment().concat(_descriptor_18.alignment().concat(_descriptor_20.alignment().concat(_descriptor_17.alignment()))))
+            value: _descriptor_12.toValue(credential_0).concat(_descriptor_16.toValue(credentialProof_0).concat(_descriptor_17.toValue(request_0).concat(_descriptor_20.toValue(presentation_0).concat(_descriptor_16.toValue(presentationProof_0).concat(_descriptor_21.toValue(finalGradePredicateWitness_0)))))),
+            alignment: _descriptor_12.alignment().concat(_descriptor_16.alignment().concat(_descriptor_17.alignment().concat(_descriptor_20.alignment().concat(_descriptor_16.alignment().concat(_descriptor_21.alignment())))))
           },
           output: undefined,
           publicTranscript: [],
@@ -1538,7 +1555,8 @@ export class Contract {
                                                                         credentialProof_0,
                                                                         request_0,
                                                                         presentation_0,
-                                                                        presentationProof_0);
+                                                                        presentationProof_0,
+                                                                        finalGradePredicateWitness_0);
         partialProofData.output = { value: [], alignment: [] };
         return { result: result_0, context: context, proofData: partialProofData, gasCost: context.gasCost };
       }
@@ -1594,8 +1612,8 @@ export class Contract {
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(0n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(0n),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { push: { storage: true,
                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_58.toValue(0n),
                                                                                               alignment: _descriptor_58.alignment() }).encode() } },
@@ -1604,8 +1622,8 @@ export class Contract {
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(1n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(1n),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { push: { storage: true,
                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_8.toValue(0n),
                                                                                               alignment: _descriptor_8.alignment() }).encode() } },
@@ -1614,8 +1632,8 @@ export class Contract {
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(2n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(2n),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { push: { storage: true,
                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_8.toValue(0n),
                                                                                               alignment: _descriptor_8.alignment() }).encode() } },
@@ -1624,58 +1642,58 @@ export class Contract {
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(3n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
-                                       { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(new Uint8Array(32)),
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(3n),
                                                                                               alignment: _descriptor_0.alignment() }).encode() } },
+                                       { push: { storage: true,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(new Uint8Array(32)),
+                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(4n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
-                                       { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(new Uint8Array(32)),
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(4n),
                                                                                               alignment: _descriptor_0.alignment() }).encode() } },
+                                       { push: { storage: true,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(new Uint8Array(32)),
+                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(5n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
-                                       { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(new Uint8Array(32)),
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(5n),
                                                                                               alignment: _descriptor_0.alignment() }).encode() } },
+                                       { push: { storage: true,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(new Uint8Array(32)),
+                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(6n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
-                                       { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(new Uint8Array(32)),
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(6n),
                                                                                               alignment: _descriptor_0.alignment() }).encode() } },
+                                       { push: { storage: true,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(new Uint8Array(32)),
+                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(7n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
-                                       { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(new Uint8Array(32)),
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(7n),
                                                                                               alignment: _descriptor_0.alignment() }).encode() } },
+                                       { push: { storage: true,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(new Uint8Array(32)),
+                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(8n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(8n),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { push: { storage: true,
                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_1.toValue(0n),
                                                                                               alignment: _descriptor_1.alignment() }).encode() } },
@@ -1684,39 +1702,39 @@ export class Contract {
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(9n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(9n),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(0n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(0n),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(10n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(10n),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(0n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(0n),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(11n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(11n),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(0n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(0n),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
-    const tmp_0 = 1n;
+    const tmp_0 = 2n;
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(0n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(0n),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { push: { storage: true,
                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_58.toValue(tmp_0),
                                                                                               alignment: _descriptor_58.alignment() }).encode() } },
@@ -1725,59 +1743,59 @@ export class Contract {
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(3n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
-                                       { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(new Uint8Array([117, 110, 105, 118, 101, 114, 115, 105, 116, 121, 58, 110, 111, 110, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(3n),
                                                                                               alignment: _descriptor_0.alignment() }).encode() } },
+                                       { push: { storage: true,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(new Uint8Array([117, 110, 105, 118, 101, 114, 115, 105, 116, 121, 58, 110, 111, 110, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(4n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
-                                       { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(new Uint8Array([117, 110, 105, 118, 101, 114, 115, 105, 116, 121, 58, 110, 111, 45, 114, 101, 113, 117, 101, 115, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(4n),
                                                                                               alignment: _descriptor_0.alignment() }).encode() } },
+                                       { push: { storage: true,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(new Uint8Array([117, 110, 105, 118, 101, 114, 115, 105, 116, 121, 58, 110, 111, 45, 114, 101, 113, 117, 101, 115, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(5n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
-                                       { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(5n),
                                                                                               alignment: _descriptor_0.alignment() }).encode() } },
+                                       { push: { storage: true,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(6n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
-                                       { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(6n),
                                                                                               alignment: _descriptor_0.alignment() }).encode() } },
+                                       { push: { storage: true,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(7n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
-                                       { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(7n),
                                                                                               alignment: _descriptor_0.alignment() }).encode() } },
+                                       { push: { storage: true,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
     const tmp_1 = 0n;
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(8n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(8n),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { push: { storage: true,
                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_1.toValue(tmp_1),
                                                                                               alignment: _descriptor_1.alignment() }).encode() } },
@@ -1787,33 +1805,33 @@ export class Contract {
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(9n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(9n),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(tmp_2),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(tmp_2),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
     const tmp_3 = 0n;
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(10n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(10n),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(tmp_3),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(tmp_3),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
     const tmp_4 = 0n;
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(11n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(11n),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(tmp_4),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(tmp_4),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
     state_0.data = new __compactRuntime.ChargedState(context.currentQueryContext.state.state);
     return {
@@ -1823,7 +1841,7 @@ export class Contract {
     }
   }
   _transientHash_0(value_0) {
-    const result_0 = __compactRuntime.transientHash(_descriptor_14, value_0);
+    const result_0 = __compactRuntime.transientHash(_descriptor_13, value_0);
     return result_0;
   }
   _transientHash_1(value_0) {
@@ -1883,11 +1901,11 @@ export class Contract {
     return result_0;
   }
   _persistentHash_13(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_11, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_22, value_0);
     return result_0;
   }
   _persistentHash_14(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_21, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_10, value_0);
     return result_0;
   }
   _persistentHash_15(value_0) {
@@ -1895,7 +1913,7 @@ export class Contract {
     return result_0;
   }
   _persistentHash_16(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_22, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_11, value_0);
     return result_0;
   }
   _persistentHash_17(value_0) {
@@ -1903,43 +1921,43 @@ export class Contract {
     return result_0;
   }
   _persistentHash_18(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_26, value_0);
-    return result_0;
-  }
-  _persistentHash_19(value_0) {
     const result_0 = __compactRuntime.persistentHash(_descriptor_20, value_0);
     return result_0;
   }
+  _persistentHash_19(value_0) {
+    const result_0 = __compactRuntime.persistentHash(_descriptor_26, value_0);
+    return result_0;
+  }
   _persistentHash_20(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_18, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_27, value_0);
     return result_0;
   }
   _persistentHash_21(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_24, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_17, value_0);
     return result_0;
   }
   _persistentHash_22(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_23, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_12, value_0);
     return result_0;
   }
   _persistentHash_23(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_13, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_24, value_0);
     return result_0;
   }
   _persistentCommit_0(value_0, rand_0) {
-    const result_0 = __compactRuntime.persistentCommit(_descriptor_0,
+    const result_0 = __compactRuntime.persistentCommit(_descriptor_2,
                                                        value_0,
                                                        rand_0);
     return result_0;
   }
   _persistentCommit_1(value_0, rand_0) {
-    const result_0 = __compactRuntime.persistentCommit(_descriptor_10,
+    const result_0 = __compactRuntime.persistentCommit(_descriptor_18,
                                                        value_0,
                                                        rand_0);
     return result_0;
   }
   _persistentCommit_2(value_0, rand_0) {
-    const result_0 = __compactRuntime.persistentCommit(_descriptor_2,
+    const result_0 = __compactRuntime.persistentCommit(_descriptor_0,
                                                        value_0,
                                                        rand_0);
     return result_0;
@@ -3916,13 +3934,12 @@ export class Contract {
     }
     return [];
   }
-  _assertUniversityDiplomaProductionPresentationSatisfiesRequest_0(credential_0,
-                                                                   credentialProof_0,
-                                                                   request_0,
-                                                                   presentation_0,
-                                                                   presentationProof_0)
+  _assertUniversityDiplomaProductionPresentationSatisfiesRequestCore_0(credential_0,
+                                                                       credentialProof_0,
+                                                                       request_0,
+                                                                       presentation_0,
+                                                                       presentationProof_0)
   {
-    this._assertValidUniversityDiplomaProductionPresentationRequest_0(request_0);
     this._assertValidUniversityDiplomaProductionPresentation_0(credential_0,
                                                                credentialProof_0,
                                                                presentation_0,
@@ -3982,6 +3999,20 @@ export class Contract {
       __compactRuntime.assert(presentation_0.disclosed.revealCreditsEarned,
                               'University-diploma production request requires credits disclosure');
     }
+    return [];
+  }
+  _assertUniversityDiplomaProductionPresentationSatisfiesRequest_0(credential_0,
+                                                                   credentialProof_0,
+                                                                   request_0,
+                                                                   presentation_0,
+                                                                   presentationProof_0)
+  {
+    this._assertValidUniversityDiplomaProductionPresentationRequest_0(request_0);
+    this._assertUniversityDiplomaProductionPresentationSatisfiesRequestCore_0(credential_0,
+                                                                              credentialProof_0,
+                                                                              request_0,
+                                                                              presentation_0,
+                                                                              presentationProof_0);
     if (request_0.enforceMinimumFinalGrade) {
       __compactRuntime.assert(presentation_0.disclosed.revealFinalGrade,
                               'University-diploma production minimum-grade request requires final grade disclosure');
@@ -3992,12 +4023,48 @@ export class Contract {
     }
     return [];
   }
+  _assertValidUniversityDiplomaProductionPredicatePresentationRequest_0(request_0)
+  {
+    __compactRuntime.assert(this._equal_213(request_0.version, 1n),
+                            'University-diploma production request version mismatch');
+    this._assertValidUniversityDiplomaProductionSchemaRef_0(request_0.schema);
+    this._assertValidVerificationMethodRef_0(request_0.issuerVerificationMethodRef);
+    __compactRuntime.assert(!this._equal_214(request_0.verifierChallengeHash,
+                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+                            'University-diploma production verifier challenge must be set');
+    let t_0;
+    __compactRuntime.assert((t_0 = request_0.minimumFinalGrade, t_0 <= 100n),
+                            'University-diploma production minimum final grade must be at most 100');
+    __compactRuntime.assert(request_0.enforceMinimumFinalGrade,
+                            'University-diploma production predicate request must enforce a minimum grade');
+    __compactRuntime.assert(!request_0.requireFinalGradeDisclosure,
+                            'University-diploma production predicate request must not demand final grade disclosure');
+    return [];
+  }
+  _assertUniversityDiplomaProductionPresentationSatisfiesRequestWithFinalGradePredicate_0(credential_0,
+                                                                                          credentialProof_0,
+                                                                                          request_0,
+                                                                                          presentation_0,
+                                                                                          presentationProof_0,
+                                                                                          finalGradePredicateWitness_0)
+  {
+    this._assertValidUniversityDiplomaProductionPredicatePresentationRequest_0(request_0);
+    this._assertUniversityDiplomaProductionPresentationSatisfiesRequestCore_0(credential_0,
+                                                                              credentialProof_0,
+                                                                              request_0,
+                                                                              presentation_0,
+                                                                              presentationProof_0);
+    this._assertUniversityDiplomaProductionFinalGradeAtLeast_0(credential_0,
+                                                               finalGradePredicateWitness_0,
+                                                               request_0.minimumFinalGrade);
+    return [];
+  }
   _universityDiplomaSchemaRef_0() {
     return { packageId:
                new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 117, 110, 105, 45, 100, 105, 112, 108, 111, 109, 97, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
              schemaId:
-               new Uint8Array([117, 110, 105, 45, 100, 105, 112, 108, 111, 109, 97, 58, 118, 49, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
-             majorVersion: 1n,
+               new Uint8Array([117, 110, 105, 45, 100, 105, 112, 108, 111, 109, 97, 58, 118, 50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+             majorVersion: 2n,
              minorVersion: 0n };
   }
   _universityJobApplicationRequest_0(issuerVerificationMethodRef_0,
@@ -4041,13 +4108,13 @@ export class Contract {
              requireDiplomaIdDisclosure: false,
              requireStudentIdDisclosure: false,
              requireGraduateNameDisclosure: false,
-             requireUniversityNameDisclosure: true,
+             requireUniversityNameDisclosure: false,
              requireFacultyNameDisclosure: false,
              requireAwardNameDisclosure: false,
              requireHonorsCodeDisclosure: false,
              requireGraduationYearDisclosure: false,
              requireGraduationMonthDisclosure: false,
-             requireFinalGradeDisclosure: true,
+             requireFinalGradeDisclosure: false,
              requireCreditsEarnedDisclosure: false,
              enforceMinimumFinalGrade: true,
              minimumFinalGrade: minimumFinalGrade_0,
@@ -4061,7 +4128,7 @@ export class Contract {
                                               presentation_0,
                                               presentationProof_0)
   {
-    const credentialRoot_0 = this._universityDiplomaCredentialBodyRoot_0(credential_0);
+    const credentialRoot_0 = this._universityDiplomaProductionCredentialBodyRoot_0(credential_0);
     __compactRuntime.assert(request_0.requireGraduateNameDisclosure,
                             'University job application requires graduate-name disclosure');
     __compactRuntime.assert(request_0.requireUniversityNameDisclosure,
@@ -4072,72 +4139,72 @@ export class Contract {
                             'University job application requires graduation-year disclosure');
     __compactRuntime.assert(!request_0.enforceMinimumFinalGrade,
                             'University job application request must not enforce a minimum grade');
-    this._assertUniversityDiplomaPresentationSatisfiesRequest_0(credential_0,
-                                                                credentialProof_0,
-                                                                request_0,
-                                                                presentation_0,
-                                                                presentationProof_0);
+    this._assertUniversityDiplomaProductionPresentationSatisfiesRequest_0(credential_0,
+                                                                          credentialProof_0,
+                                                                          request_0,
+                                                                          presentation_0,
+                                                                          presentationProof_0);
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(3n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
-                                       { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(credentialRoot_0),
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(3n),
                                                                                               alignment: _descriptor_0.alignment() }).encode() } },
+                                       { push: { storage: true,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(credentialRoot_0),
+                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
     const tmp_0 = request_0.verifierChallengeHash;
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(4n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
-                                       { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(tmp_0),
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(4n),
                                                                                               alignment: _descriptor_0.alignment() }).encode() } },
+                                       { push: { storage: true,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(tmp_0),
+                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
     const tmp_1 = presentation_0.disclosed.graduateName;
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(5n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
-                                       { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(tmp_1),
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(5n),
                                                                                               alignment: _descriptor_0.alignment() }).encode() } },
+                                       { push: { storage: true,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(tmp_1),
+                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
-    const tmp_2 = presentation_0.disclosed.universityName;
+    const tmp_2 = credential_0.claims.universityName;
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(6n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
-                                       { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(tmp_2),
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(6n),
                                                                                               alignment: _descriptor_0.alignment() }).encode() } },
+                                       { push: { storage: true,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(tmp_2),
+                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
-    const tmp_3 = presentation_0.disclosed.awardName;
+    const tmp_3 = credential_0.claims.awardName;
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(7n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
-                                       { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(tmp_3),
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(7n),
                                                                                               alignment: _descriptor_0.alignment() }).encode() } },
+                                       { push: { storage: true,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(tmp_3),
+                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
-    const tmp_4 = presentation_0.disclosed.graduationYear;
+    const tmp_4 = credential_0.claims.graduationYear;
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(8n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(8n),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { push: { storage: true,
                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_1.toValue(tmp_4),
                                                                                               alignment: _descriptor_1.alignment() }).encode() } },
@@ -4149,11 +4216,11 @@ export class Contract {
                                         partialProofData,
                                         [
                                          { push: { storage: false,
-                                                   value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(9n),
-                                                                                                alignment: _descriptor_2.alignment() }).encode() } },
+                                                   value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(9n),
+                                                                                                alignment: _descriptor_0.alignment() }).encode() } },
                                          { push: { storage: true,
-                                                   value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(tmp_5),
-                                                                                                alignment: _descriptor_2.alignment() }).encode() } },
+                                                   value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(tmp_5),
+                                                                                                alignment: _descriptor_0.alignment() }).encode() } },
                                          { ins: { cached: false, n: 1 } }]);
     } else {
       const tmp_6 = 0n;
@@ -4161,11 +4228,11 @@ export class Contract {
                                         partialProofData,
                                         [
                                          { push: { storage: false,
-                                                   value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(9n),
-                                                                                                alignment: _descriptor_2.alignment() }).encode() } },
+                                                   value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(9n),
+                                                                                                alignment: _descriptor_0.alignment() }).encode() } },
                                          { push: { storage: true,
-                                                   value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(tmp_6),
-                                                                                                alignment: _descriptor_2.alignment() }).encode() } },
+                                                   value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(tmp_6),
+                                                                                                alignment: _descriptor_0.alignment() }).encode() } },
                                          { ins: { cached: false, n: 1 } }]);
     }
     const tmp_7 = 0n;
@@ -4173,22 +4240,22 @@ export class Contract {
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(10n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(10n),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(tmp_7),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(tmp_7),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
     const tmp_8 = 1n;
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(11n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(11n),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(tmp_8),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(tmp_8),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
     const tmp_9 = 1n;
     __compactRuntime.queryLedgerState(context,
@@ -4198,8 +4265,8 @@ export class Contract {
                                                 pushPath: true,
                                                 path: [
                                                        { tag: 'value',
-                                                         value: { value: _descriptor_2.toValue(1n),
-                                                                  alignment: _descriptor_2.alignment() } }] } },
+                                                         value: { value: _descriptor_0.toValue(1n),
+                                                                  alignment: _descriptor_0.alignment() } }] } },
                                        { addi: { immediate: parseInt(__compactRuntime.valueToBigInt(
                                                               { value: _descriptor_1.toValue(tmp_9),
                                                                 alignment: _descriptor_1.alignment() }
@@ -4214,79 +4281,79 @@ export class Contract {
                                             credentialProof_0,
                                             request_0,
                                             presentation_0,
-                                            presentationProof_0)
+                                            presentationProof_0,
+                                            finalGradePredicateWitness_0)
   {
-    const credentialRoot_0 = this._universityDiplomaCredentialBodyRoot_0(credential_0);
-    __compactRuntime.assert(request_0.requireUniversityNameDisclosure,
-                            'University mall discount requires university-name disclosure');
-    __compactRuntime.assert(request_0.requireFinalGradeDisclosure,
-                            'University mall discount requires final-grade disclosure');
+    const credentialRoot_0 = this._universityDiplomaProductionCredentialBodyRoot_0(credential_0);
     __compactRuntime.assert(request_0.enforceMinimumFinalGrade,
                             'University mall discount request must enforce a minimum grade');
-    this._assertUniversityDiplomaPresentationSatisfiesRequest_0(credential_0,
-                                                                credentialProof_0,
-                                                                request_0,
-                                                                presentation_0,
-                                                                presentationProof_0);
+    __compactRuntime.assert(!request_0.requireFinalGradeDisclosure,
+                            'University mall discount must not demand final-grade disclosure');
+    this._assertUniversityDiplomaProductionPresentationSatisfiesRequestWithFinalGradePredicate_0(credential_0,
+                                                                                                 credentialProof_0,
+                                                                                                 request_0,
+                                                                                                 presentation_0,
+                                                                                                 presentationProof_0,
+                                                                                                 finalGradePredicateWitness_0);
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(3n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
-                                       { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(credentialRoot_0),
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(3n),
                                                                                               alignment: _descriptor_0.alignment() }).encode() } },
+                                       { push: { storage: true,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(credentialRoot_0),
+                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
     const tmp_0 = request_0.verifierChallengeHash;
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(4n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
-                                       { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(tmp_0),
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(4n),
                                                                                               alignment: _descriptor_0.alignment() }).encode() } },
+                                       { push: { storage: true,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(tmp_0),
+                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(5n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
-                                       { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(5n),
                                                                                               alignment: _descriptor_0.alignment() }).encode() } },
+                                       { push: { storage: true,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
-    const tmp_1 = presentation_0.disclosed.universityName;
+    const tmp_1 = credential_0.claims.universityName;
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(6n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
-                                       { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(tmp_1),
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(6n),
                                                                                               alignment: _descriptor_0.alignment() }).encode() } },
+                                       { push: { storage: true,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(tmp_1),
+                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(7n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
-                                       { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(7n),
                                                                                               alignment: _descriptor_0.alignment() }).encode() } },
+                                       { push: { storage: true,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
     const tmp_2 = 0n;
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(8n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(8n),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { push: { storage: true,
                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_1.toValue(tmp_2),
                                                                                               alignment: _descriptor_1.alignment() }).encode() } },
@@ -4296,33 +4363,33 @@ export class Contract {
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(9n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(9n),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(tmp_3),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(tmp_3),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
     const tmp_4 = request_0.minimumFinalGrade;
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(10n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(10n),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(tmp_4),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(tmp_4),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
     const tmp_5 = 2n;
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(11n),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(11n),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(tmp_5),
-                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(tmp_5),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
     const tmp_6 = 1n;
     __compactRuntime.queryLedgerState(context,
@@ -4332,8 +4399,8 @@ export class Contract {
                                                 pushPath: true,
                                                 path: [
                                                        { tag: 'value',
-                                                         value: { value: _descriptor_2.toValue(2n),
-                                                                  alignment: _descriptor_2.alignment() } }] } },
+                                                         value: { value: _descriptor_0.toValue(2n),
+                                                                  alignment: _descriptor_0.alignment() } }] } },
                                        { addi: { immediate: parseInt(__compactRuntime.valueToBigInt(
                                                               { value: _descriptor_1.toValue(tmp_6),
                                                                 alignment: _descriptor_1.alignment() }
@@ -5226,6 +5293,14 @@ export class Contract {
     if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
+  _equal_213(x0, y0) {
+    if (x0 !== y0) { return false; }
+    return true;
+  }
+  _equal_214(x0, y0) {
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    return true;
+  }
 }
 export function ledger(stateOrChargedState) {
   const state = stateOrChargedState instanceof __compactRuntime.StateValue ? stateOrChargedState : stateOrChargedState.state;
@@ -5250,8 +5325,8 @@ export function ledger(stateOrChargedState) {
                                                                                   pushPath: false,
                                                                                   path: [
                                                                                          { tag: 'value',
-                                                                                           value: { value: _descriptor_2.toValue(0n),
-                                                                                                    alignment: _descriptor_2.alignment() } }] } },
+                                                                                           value: { value: _descriptor_0.toValue(0n),
+                                                                                                    alignment: _descriptor_0.alignment() } }] } },
                                                                          { popeq: { cached: false,
                                                                                     result: undefined } }]).value);
     },
@@ -5264,8 +5339,8 @@ export function ledger(stateOrChargedState) {
                                                                                  pushPath: false,
                                                                                  path: [
                                                                                         { tag: 'value',
-                                                                                          value: { value: _descriptor_2.toValue(1n),
-                                                                                                   alignment: _descriptor_2.alignment() } }] } },
+                                                                                          value: { value: _descriptor_0.toValue(1n),
+                                                                                                   alignment: _descriptor_0.alignment() } }] } },
                                                                         { popeq: { cached: true,
                                                                                    result: undefined } }]).value);
     },
@@ -5278,13 +5353,13 @@ export function ledger(stateOrChargedState) {
                                                                                  pushPath: false,
                                                                                  path: [
                                                                                         { tag: 'value',
-                                                                                          value: { value: _descriptor_2.toValue(2n),
-                                                                                                   alignment: _descriptor_2.alignment() } }] } },
+                                                                                          value: { value: _descriptor_0.toValue(2n),
+                                                                                                   alignment: _descriptor_0.alignment() } }] } },
                                                                         { popeq: { cached: true,
                                                                                    result: undefined } }]).value);
     },
     get lastVerifiedCredentialRoot() {
-      return _descriptor_0.fromValue(__compactRuntime.queryLedgerState(context,
+      return _descriptor_2.fromValue(__compactRuntime.queryLedgerState(context,
                                                                        partialProofData,
                                                                        [
                                                                         { dup: { n: 0 } },
@@ -5292,13 +5367,13 @@ export function ledger(stateOrChargedState) {
                                                                                  pushPath: false,
                                                                                  path: [
                                                                                         { tag: 'value',
-                                                                                          value: { value: _descriptor_2.toValue(3n),
-                                                                                                   alignment: _descriptor_2.alignment() } }] } },
+                                                                                          value: { value: _descriptor_0.toValue(3n),
+                                                                                                   alignment: _descriptor_0.alignment() } }] } },
                                                                         { popeq: { cached: false,
                                                                                    result: undefined } }]).value);
     },
     get lastVerifiedRequestChallenge() {
-      return _descriptor_0.fromValue(__compactRuntime.queryLedgerState(context,
+      return _descriptor_2.fromValue(__compactRuntime.queryLedgerState(context,
                                                                        partialProofData,
                                                                        [
                                                                         { dup: { n: 0 } },
@@ -5306,13 +5381,13 @@ export function ledger(stateOrChargedState) {
                                                                                  pushPath: false,
                                                                                  path: [
                                                                                         { tag: 'value',
-                                                                                          value: { value: _descriptor_2.toValue(4n),
-                                                                                                   alignment: _descriptor_2.alignment() } }] } },
+                                                                                          value: { value: _descriptor_0.toValue(4n),
+                                                                                                   alignment: _descriptor_0.alignment() } }] } },
                                                                         { popeq: { cached: false,
                                                                                    result: undefined } }]).value);
     },
     get lastVerifiedGraduateName() {
-      return _descriptor_0.fromValue(__compactRuntime.queryLedgerState(context,
+      return _descriptor_2.fromValue(__compactRuntime.queryLedgerState(context,
                                                                        partialProofData,
                                                                        [
                                                                         { dup: { n: 0 } },
@@ -5320,13 +5395,13 @@ export function ledger(stateOrChargedState) {
                                                                                  pushPath: false,
                                                                                  path: [
                                                                                         { tag: 'value',
-                                                                                          value: { value: _descriptor_2.toValue(5n),
-                                                                                                   alignment: _descriptor_2.alignment() } }] } },
+                                                                                          value: { value: _descriptor_0.toValue(5n),
+                                                                                                   alignment: _descriptor_0.alignment() } }] } },
                                                                         { popeq: { cached: false,
                                                                                    result: undefined } }]).value);
     },
     get lastVerifiedUniversityName() {
-      return _descriptor_0.fromValue(__compactRuntime.queryLedgerState(context,
+      return _descriptor_2.fromValue(__compactRuntime.queryLedgerState(context,
                                                                        partialProofData,
                                                                        [
                                                                         { dup: { n: 0 } },
@@ -5334,13 +5409,13 @@ export function ledger(stateOrChargedState) {
                                                                                  pushPath: false,
                                                                                  path: [
                                                                                         { tag: 'value',
-                                                                                          value: { value: _descriptor_2.toValue(6n),
-                                                                                                   alignment: _descriptor_2.alignment() } }] } },
+                                                                                          value: { value: _descriptor_0.toValue(6n),
+                                                                                                   alignment: _descriptor_0.alignment() } }] } },
                                                                         { popeq: { cached: false,
                                                                                    result: undefined } }]).value);
     },
     get lastVerifiedAwardName() {
-      return _descriptor_0.fromValue(__compactRuntime.queryLedgerState(context,
+      return _descriptor_2.fromValue(__compactRuntime.queryLedgerState(context,
                                                                        partialProofData,
                                                                        [
                                                                         { dup: { n: 0 } },
@@ -5348,8 +5423,8 @@ export function ledger(stateOrChargedState) {
                                                                                  pushPath: false,
                                                                                  path: [
                                                                                         { tag: 'value',
-                                                                                          value: { value: _descriptor_2.toValue(7n),
-                                                                                                   alignment: _descriptor_2.alignment() } }] } },
+                                                                                          value: { value: _descriptor_0.toValue(7n),
+                                                                                                   alignment: _descriptor_0.alignment() } }] } },
                                                                         { popeq: { cached: false,
                                                                                    result: undefined } }]).value);
     },
@@ -5362,13 +5437,13 @@ export function ledger(stateOrChargedState) {
                                                                                  pushPath: false,
                                                                                  path: [
                                                                                         { tag: 'value',
-                                                                                          value: { value: _descriptor_2.toValue(8n),
-                                                                                                   alignment: _descriptor_2.alignment() } }] } },
+                                                                                          value: { value: _descriptor_0.toValue(8n),
+                                                                                                   alignment: _descriptor_0.alignment() } }] } },
                                                                         { popeq: { cached: false,
                                                                                    result: undefined } }]).value);
     },
     get lastVerifiedFinalGrade() {
-      return _descriptor_2.fromValue(__compactRuntime.queryLedgerState(context,
+      return _descriptor_0.fromValue(__compactRuntime.queryLedgerState(context,
                                                                        partialProofData,
                                                                        [
                                                                         { dup: { n: 0 } },
@@ -5376,13 +5451,13 @@ export function ledger(stateOrChargedState) {
                                                                                  pushPath: false,
                                                                                  path: [
                                                                                         { tag: 'value',
-                                                                                          value: { value: _descriptor_2.toValue(9n),
-                                                                                                   alignment: _descriptor_2.alignment() } }] } },
+                                                                                          value: { value: _descriptor_0.toValue(9n),
+                                                                                                   alignment: _descriptor_0.alignment() } }] } },
                                                                         { popeq: { cached: false,
                                                                                    result: undefined } }]).value);
     },
     get lastVerifiedDiscountThreshold() {
-      return _descriptor_2.fromValue(__compactRuntime.queryLedgerState(context,
+      return _descriptor_0.fromValue(__compactRuntime.queryLedgerState(context,
                                                                        partialProofData,
                                                                        [
                                                                         { dup: { n: 0 } },
@@ -5390,13 +5465,13 @@ export function ledger(stateOrChargedState) {
                                                                                  pushPath: false,
                                                                                  path: [
                                                                                         { tag: 'value',
-                                                                                          value: { value: _descriptor_2.toValue(10n),
-                                                                                                   alignment: _descriptor_2.alignment() } }] } },
+                                                                                          value: { value: _descriptor_0.toValue(10n),
+                                                                                                   alignment: _descriptor_0.alignment() } }] } },
                                                                         { popeq: { cached: false,
                                                                                    result: undefined } }]).value);
     },
     get lastVerifiedVerifierKind() {
-      return _descriptor_2.fromValue(__compactRuntime.queryLedgerState(context,
+      return _descriptor_0.fromValue(__compactRuntime.queryLedgerState(context,
                                                                        partialProofData,
                                                                        [
                                                                         { dup: { n: 0 } },
@@ -5404,8 +5479,8 @@ export function ledger(stateOrChargedState) {
                                                                                  pushPath: false,
                                                                                  path: [
                                                                                         { tag: 'value',
-                                                                                          value: { value: _descriptor_2.toValue(11n),
-                                                                                                   alignment: _descriptor_2.alignment() } }] } },
+                                                                                          value: { value: _descriptor_0.toValue(11n),
+                                                                                                   alignment: _descriptor_0.alignment() } }] } },
                                                                         { popeq: { cached: false,
                                                                                    result: undefined } }]).value);
     }
@@ -7407,6 +7482,56 @@ export const pureCircuits = {
                                                                                  presentation_0,
                                                                                  presentationProof_0);
   },
+  assertUniversityDiplomaProductionPresentationSatisfiesRequestCore: (...args_0) => {
+    if (args_0.length !== 5) {
+      throw new __compactRuntime.CompactError(`assertUniversityDiplomaProductionPresentationSatisfiesRequestCore: expected 5 arguments (as invoked from Typescript), received ${args_0.length}`);
+    }
+    const credential_0 = args_0[0];
+    const credentialProof_0 = args_0[1];
+    const request_0 = args_0[2];
+    const presentation_0 = args_0[3];
+    const presentationProof_0 = args_0[4];
+    if (!(typeof(credential_0) === 'object' && typeof(credential_0.version) === 'bigint' && credential_0.version >= 0n && credential_0.version <= 65535n && typeof(credential_0.schema) === 'object' && credential_0.schema.packageId.buffer instanceof ArrayBuffer && credential_0.schema.packageId.BYTES_PER_ELEMENT === 1 && credential_0.schema.packageId.length === 32 && credential_0.schema.schemaId.buffer instanceof ArrayBuffer && credential_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && credential_0.schema.schemaId.length === 32 && typeof(credential_0.schema.majorVersion) === 'bigint' && credential_0.schema.majorVersion >= 0n && credential_0.schema.majorVersion <= 65535n && typeof(credential_0.schema.minorVersion) === 'bigint' && credential_0.schema.minorVersion >= 0n && credential_0.schema.minorVersion <= 65535n && typeof(credential_0.issuerVerificationMethodRef) === 'object' && typeof(credential_0.issuerVerificationMethodRef.didContractAddress) === 'object' && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && credential_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credential_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credential_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(credential_0.holderBinding) === 'object' && typeof(credential_0.holderBinding.holderVerificationMethodRef) === 'object' && typeof(credential_0.holderBinding.holderVerificationMethodRef.didContractAddress) === 'object' && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.length === 32 && credential_0.holderBinding.holderVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credential_0.holderBinding.holderVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.holderVerificationMethodRef.methodId.length === 32 && typeof(credential_0.statusBinding) === 'object' && typeof(credential_0.issuedAt) === 'bigint' && credential_0.issuedAt >= 0n && credential_0.issuedAt <= 18446744073709551615n && typeof(credential_0.hasExpiration) === 'boolean' && typeof(credential_0.expiresAt) === 'bigint' && credential_0.expiresAt >= 0n && credential_0.expiresAt <= 18446744073709551615n && typeof(credential_0.claims) === 'object' && credential_0.claims.universityName.buffer instanceof ArrayBuffer && credential_0.claims.universityName.BYTES_PER_ELEMENT === 1 && credential_0.claims.universityName.length === 32 && credential_0.claims.awardName.buffer instanceof ArrayBuffer && credential_0.claims.awardName.BYTES_PER_ELEMENT === 1 && credential_0.claims.awardName.length === 32 && typeof(credential_0.claims.graduationYear) === 'bigint' && credential_0.claims.graduationYear >= 0n && credential_0.claims.graduationYear <= 65535n && typeof(credential_0.claimCommitments) === 'object' && credential_0.claimCommitments.diplomaIdCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.diplomaIdCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.diplomaIdCommitment.length === 32 && credential_0.claimCommitments.studentIdCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.studentIdCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.studentIdCommitment.length === 32 && credential_0.claimCommitments.graduateNameCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.graduateNameCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.graduateNameCommitment.length === 32 && credential_0.claimCommitments.facultyNameCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.facultyNameCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.facultyNameCommitment.length === 32 && credential_0.claimCommitments.honorsCodeCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.honorsCodeCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.honorsCodeCommitment.length === 32 && credential_0.claimCommitments.graduationMonthCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.graduationMonthCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.graduationMonthCommitment.length === 32 && credential_0.claimCommitments.finalGradeCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.finalGradeCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.finalGradeCommitment.length === 32 && credential_0.claimCommitments.creditsEarnedCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.creditsEarnedCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.creditsEarnedCommitment.length === 32 && credential_0.claimRoot.buffer instanceof ArrayBuffer && credential_0.claimRoot.BYTES_PER_ELEMENT === 1 && credential_0.claimRoot.length === 32)) {
+      __compactRuntime.typeError('assertUniversityDiplomaProductionPresentationSatisfiesRequestCore',
+                                 'argument 1',
+                                 'helpers.compact line 629 char 1',
+                                 'struct Credential<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct ExplicitHolderBinding<holderVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>>, statusBinding: struct NoStatusBinding<>, issuedAt: Uint<0..18446744073709551616>, hasExpiration: Boolean, expiresAt: Uint<0..18446744073709551616>, claims: struct UniversityDiplomaProductionPublicClaims<universityName: Bytes<32>, awardName: Bytes<32>, graduationYear: Uint<0..65536>>, claimCommitments: struct UniversityDiplomaClaimCommitments<diplomaIdCommitment: Bytes<32>, studentIdCommitment: Bytes<32>, graduateNameCommitment: Bytes<32>, facultyNameCommitment: Bytes<32>, honorsCodeCommitment: Bytes<32>, graduationMonthCommitment: Bytes<32>, finalGradeCommitment: Bytes<32>, creditsEarnedCommitment: Bytes<32>>, claimRoot: Bytes<32>>',
+                                 credential_0)
+    }
+    if (!(typeof(credentialProof_0) === 'object' && typeof(credentialProof_0.signerVerificationMethodRef) === 'object' && typeof(credentialProof_0.signerVerificationMethodRef.didContractAddress) === 'object' && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && credentialProof_0.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credentialProof_0.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credentialProof_0.signerVerificationMethodRef.methodId.length === 32 && typeof(credentialProof_0.createdAt) === 'bigint' && credentialProof_0.createdAt >= 0n && credentialProof_0.createdAt <= 18446744073709551615n && credentialProof_0.challengeHash.buffer instanceof ArrayBuffer && credentialProof_0.challengeHash.BYTES_PER_ELEMENT === 1 && credentialProof_0.challengeHash.length === 32 && true && typeof(credentialProof_0.signature) === 'object' && true && typeof(credentialProof_0.signature.s) === 'bigint' && credentialProof_0.signature.s >= 0 && credentialProof_0.signature.s <= __compactRuntime.MAX_FIELD)) {
+      __compactRuntime.typeError('assertUniversityDiplomaProductionPresentationSatisfiesRequestCore',
+                                 'argument 2',
+                                 'helpers.compact line 629 char 1',
+                                 'struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>',
+                                 credentialProof_0)
+    }
+    if (!(typeof(request_0) === 'object' && typeof(request_0.version) === 'bigint' && request_0.version >= 0n && request_0.version <= 65535n && typeof(request_0.schema) === 'object' && request_0.schema.packageId.buffer instanceof ArrayBuffer && request_0.schema.packageId.BYTES_PER_ELEMENT === 1 && request_0.schema.packageId.length === 32 && request_0.schema.schemaId.buffer instanceof ArrayBuffer && request_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && request_0.schema.schemaId.length === 32 && typeof(request_0.schema.majorVersion) === 'bigint' && request_0.schema.majorVersion >= 0n && request_0.schema.majorVersion <= 65535n && typeof(request_0.schema.minorVersion) === 'bigint' && request_0.schema.minorVersion >= 0n && request_0.schema.minorVersion <= 65535n && typeof(request_0.issuerVerificationMethodRef) === 'object' && typeof(request_0.issuerVerificationMethodRef.didContractAddress) === 'object' && request_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && request_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && request_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && request_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && request_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && request_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(request_0.requireDiplomaIdDisclosure) === 'boolean' && typeof(request_0.requireStudentIdDisclosure) === 'boolean' && typeof(request_0.requireGraduateNameDisclosure) === 'boolean' && typeof(request_0.requireUniversityNameDisclosure) === 'boolean' && typeof(request_0.requireFacultyNameDisclosure) === 'boolean' && typeof(request_0.requireAwardNameDisclosure) === 'boolean' && typeof(request_0.requireHonorsCodeDisclosure) === 'boolean' && typeof(request_0.requireGraduationYearDisclosure) === 'boolean' && typeof(request_0.requireGraduationMonthDisclosure) === 'boolean' && typeof(request_0.requireFinalGradeDisclosure) === 'boolean' && typeof(request_0.requireCreditsEarnedDisclosure) === 'boolean' && typeof(request_0.enforceMinimumFinalGrade) === 'boolean' && typeof(request_0.minimumFinalGrade) === 'bigint' && request_0.minimumFinalGrade >= 0n && request_0.minimumFinalGrade <= 255n && request_0.verifierChallengeHash.buffer instanceof ArrayBuffer && request_0.verifierChallengeHash.BYTES_PER_ELEMENT === 1 && request_0.verifierChallengeHash.length === 32)) {
+      __compactRuntime.typeError('assertUniversityDiplomaProductionPresentationSatisfiesRequestCore',
+                                 'argument 3',
+                                 'helpers.compact line 629 char 1',
+                                 'struct UniversityDiplomaProductionPresentationRequest<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, requireDiplomaIdDisclosure: Boolean, requireStudentIdDisclosure: Boolean, requireGraduateNameDisclosure: Boolean, requireUniversityNameDisclosure: Boolean, requireFacultyNameDisclosure: Boolean, requireAwardNameDisclosure: Boolean, requireHonorsCodeDisclosure: Boolean, requireGraduationYearDisclosure: Boolean, requireGraduationMonthDisclosure: Boolean, requireFinalGradeDisclosure: Boolean, requireCreditsEarnedDisclosure: Boolean, enforceMinimumFinalGrade: Boolean, minimumFinalGrade: Uint<0..256>, verifierChallengeHash: Bytes<32>>',
+                                 request_0)
+    }
+    if (!(typeof(presentation_0) === 'object' && typeof(presentation_0.version) === 'bigint' && presentation_0.version >= 0n && presentation_0.version <= 65535n && typeof(presentation_0.schema) === 'object' && presentation_0.schema.packageId.buffer instanceof ArrayBuffer && presentation_0.schema.packageId.BYTES_PER_ELEMENT === 1 && presentation_0.schema.packageId.length === 32 && presentation_0.schema.schemaId.buffer instanceof ArrayBuffer && presentation_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && presentation_0.schema.schemaId.length === 32 && typeof(presentation_0.schema.majorVersion) === 'bigint' && presentation_0.schema.majorVersion >= 0n && presentation_0.schema.majorVersion <= 65535n && typeof(presentation_0.schema.minorVersion) === 'bigint' && presentation_0.schema.minorVersion >= 0n && presentation_0.schema.minorVersion <= 65535n && presentation_0.credentialClaimRoot.buffer instanceof ArrayBuffer && presentation_0.credentialClaimRoot.BYTES_PER_ELEMENT === 1 && presentation_0.credentialClaimRoot.length === 32 && typeof(presentation_0.issuerVerificationMethodRef) === 'object' && typeof(presentation_0.issuerVerificationMethodRef.didContractAddress) === 'object' && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && presentation_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && presentation_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && presentation_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(presentation_0.holderBinding) === 'object' && typeof(presentation_0.holderBinding.holderVerificationMethodRef) === 'object' && typeof(presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress) === 'object' && presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.length === 32 && presentation_0.holderBinding.holderVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && presentation_0.holderBinding.holderVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && presentation_0.holderBinding.holderVerificationMethodRef.methodId.length === 32 && typeof(presentation_0.disclosed) === 'object' && typeof(presentation_0.disclosed.revealDiplomaId) === 'boolean' && presentation_0.disclosed.diplomaId.buffer instanceof ArrayBuffer && presentation_0.disclosed.diplomaId.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.diplomaId.length === 32 && presentation_0.disclosed.diplomaIdOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.diplomaIdOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.diplomaIdOpening.length === 32 && typeof(presentation_0.disclosed.revealStudentId) === 'boolean' && presentation_0.disclosed.studentId.buffer instanceof ArrayBuffer && presentation_0.disclosed.studentId.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.studentId.length === 16 && presentation_0.disclosed.studentIdOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.studentIdOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.studentIdOpening.length === 32 && typeof(presentation_0.disclosed.revealGraduateName) === 'boolean' && presentation_0.disclosed.graduateName.buffer instanceof ArrayBuffer && presentation_0.disclosed.graduateName.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.graduateName.length === 32 && presentation_0.disclosed.graduateNameOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.graduateNameOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.graduateNameOpening.length === 32 && typeof(presentation_0.disclosed.revealUniversityName) === 'boolean' && presentation_0.disclosed.universityName.buffer instanceof ArrayBuffer && presentation_0.disclosed.universityName.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.universityName.length === 32 && typeof(presentation_0.disclosed.revealFacultyName) === 'boolean' && presentation_0.disclosed.facultyName.buffer instanceof ArrayBuffer && presentation_0.disclosed.facultyName.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.facultyName.length === 32 && presentation_0.disclosed.facultyNameOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.facultyNameOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.facultyNameOpening.length === 32 && typeof(presentation_0.disclosed.revealAwardName) === 'boolean' && presentation_0.disclosed.awardName.buffer instanceof ArrayBuffer && presentation_0.disclosed.awardName.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.awardName.length === 32 && typeof(presentation_0.disclosed.revealHonorsCode) === 'boolean' && presentation_0.disclosed.honorsCode.buffer instanceof ArrayBuffer && presentation_0.disclosed.honorsCode.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.honorsCode.length === 16 && presentation_0.disclosed.honorsCodeOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.honorsCodeOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.honorsCodeOpening.length === 32 && typeof(presentation_0.disclosed.revealGraduationYear) === 'boolean' && typeof(presentation_0.disclosed.graduationYear) === 'bigint' && presentation_0.disclosed.graduationYear >= 0n && presentation_0.disclosed.graduationYear <= 65535n && typeof(presentation_0.disclosed.revealGraduationMonth) === 'boolean' && typeof(presentation_0.disclosed.graduationMonth) === 'bigint' && presentation_0.disclosed.graduationMonth >= 0n && presentation_0.disclosed.graduationMonth <= 255n && presentation_0.disclosed.graduationMonthOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.graduationMonthOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.graduationMonthOpening.length === 32 && typeof(presentation_0.disclosed.revealFinalGrade) === 'boolean' && typeof(presentation_0.disclosed.finalGrade) === 'bigint' && presentation_0.disclosed.finalGrade >= 0n && presentation_0.disclosed.finalGrade <= 255n && presentation_0.disclosed.finalGradeOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.finalGradeOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.finalGradeOpening.length === 32 && typeof(presentation_0.disclosed.revealCreditsEarned) === 'boolean' && typeof(presentation_0.disclosed.creditsEarned) === 'bigint' && presentation_0.disclosed.creditsEarned >= 0n && presentation_0.disclosed.creditsEarned <= 65535n && presentation_0.disclosed.creditsEarnedOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.creditsEarnedOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.creditsEarnedOpening.length === 32)) {
+      __compactRuntime.typeError('assertUniversityDiplomaProductionPresentationSatisfiesRequestCore',
+                                 'argument 4',
+                                 'helpers.compact line 629 char 1',
+                                 'struct Presentation<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, credentialClaimRoot: Bytes<32>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct ExplicitHolderBinding<holderVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>>, disclosed: struct UniversityDiplomaProductionDisclosures<revealDiplomaId: Boolean, diplomaId: Bytes<32>, diplomaIdOpening: Bytes<32>, revealStudentId: Boolean, studentId: Bytes<16>, studentIdOpening: Bytes<32>, revealGraduateName: Boolean, graduateName: Bytes<32>, graduateNameOpening: Bytes<32>, revealUniversityName: Boolean, universityName: Bytes<32>, revealFacultyName: Boolean, facultyName: Bytes<32>, facultyNameOpening: Bytes<32>, revealAwardName: Boolean, awardName: Bytes<32>, revealHonorsCode: Boolean, honorsCode: Bytes<16>, honorsCodeOpening: Bytes<32>, revealGraduationYear: Boolean, graduationYear: Uint<0..65536>, revealGraduationMonth: Boolean, graduationMonth: Uint<0..256>, graduationMonthOpening: Bytes<32>, revealFinalGrade: Boolean, finalGrade: Uint<0..256>, finalGradeOpening: Bytes<32>, revealCreditsEarned: Boolean, creditsEarned: Uint<0..65536>, creditsEarnedOpening: Bytes<32>>>',
+                                 presentation_0)
+    }
+    if (!(typeof(presentationProof_0) === 'object' && typeof(presentationProof_0.signerVerificationMethodRef) === 'object' && typeof(presentationProof_0.signerVerificationMethodRef.didContractAddress) === 'object' && presentationProof_0.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && presentationProof_0.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && presentationProof_0.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && presentationProof_0.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && presentationProof_0.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && presentationProof_0.signerVerificationMethodRef.methodId.length === 32 && typeof(presentationProof_0.createdAt) === 'bigint' && presentationProof_0.createdAt >= 0n && presentationProof_0.createdAt <= 18446744073709551615n && presentationProof_0.challengeHash.buffer instanceof ArrayBuffer && presentationProof_0.challengeHash.BYTES_PER_ELEMENT === 1 && presentationProof_0.challengeHash.length === 32 && true && typeof(presentationProof_0.signature) === 'object' && true && typeof(presentationProof_0.signature.s) === 'bigint' && presentationProof_0.signature.s >= 0 && presentationProof_0.signature.s <= __compactRuntime.MAX_FIELD)) {
+      __compactRuntime.typeError('assertUniversityDiplomaProductionPresentationSatisfiesRequestCore',
+                                 'argument 5',
+                                 'helpers.compact line 629 char 1',
+                                 'struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>',
+                                 presentationProof_0)
+    }
+    return _dummyContract._assertUniversityDiplomaProductionPresentationSatisfiesRequestCore_0(credential_0,
+                                                                                               credentialProof_0,
+                                                                                               request_0,
+                                                                                               presentation_0,
+                                                                                               presentationProof_0);
+  },
   assertUniversityDiplomaProductionPresentationSatisfiesRequest: (...args_0) => {
     if (args_0.length !== 5) {
       throw new __compactRuntime.CompactError(`assertUniversityDiplomaProductionPresentationSatisfiesRequest: expected 5 arguments (as invoked from Typescript), received ${args_0.length}`);
@@ -7419,35 +7544,35 @@ export const pureCircuits = {
     if (!(typeof(credential_0) === 'object' && typeof(credential_0.version) === 'bigint' && credential_0.version >= 0n && credential_0.version <= 65535n && typeof(credential_0.schema) === 'object' && credential_0.schema.packageId.buffer instanceof ArrayBuffer && credential_0.schema.packageId.BYTES_PER_ELEMENT === 1 && credential_0.schema.packageId.length === 32 && credential_0.schema.schemaId.buffer instanceof ArrayBuffer && credential_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && credential_0.schema.schemaId.length === 32 && typeof(credential_0.schema.majorVersion) === 'bigint' && credential_0.schema.majorVersion >= 0n && credential_0.schema.majorVersion <= 65535n && typeof(credential_0.schema.minorVersion) === 'bigint' && credential_0.schema.minorVersion >= 0n && credential_0.schema.minorVersion <= 65535n && typeof(credential_0.issuerVerificationMethodRef) === 'object' && typeof(credential_0.issuerVerificationMethodRef.didContractAddress) === 'object' && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && credential_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credential_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credential_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(credential_0.holderBinding) === 'object' && typeof(credential_0.holderBinding.holderVerificationMethodRef) === 'object' && typeof(credential_0.holderBinding.holderVerificationMethodRef.didContractAddress) === 'object' && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.length === 32 && credential_0.holderBinding.holderVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credential_0.holderBinding.holderVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.holderVerificationMethodRef.methodId.length === 32 && typeof(credential_0.statusBinding) === 'object' && typeof(credential_0.issuedAt) === 'bigint' && credential_0.issuedAt >= 0n && credential_0.issuedAt <= 18446744073709551615n && typeof(credential_0.hasExpiration) === 'boolean' && typeof(credential_0.expiresAt) === 'bigint' && credential_0.expiresAt >= 0n && credential_0.expiresAt <= 18446744073709551615n && typeof(credential_0.claims) === 'object' && credential_0.claims.universityName.buffer instanceof ArrayBuffer && credential_0.claims.universityName.BYTES_PER_ELEMENT === 1 && credential_0.claims.universityName.length === 32 && credential_0.claims.awardName.buffer instanceof ArrayBuffer && credential_0.claims.awardName.BYTES_PER_ELEMENT === 1 && credential_0.claims.awardName.length === 32 && typeof(credential_0.claims.graduationYear) === 'bigint' && credential_0.claims.graduationYear >= 0n && credential_0.claims.graduationYear <= 65535n && typeof(credential_0.claimCommitments) === 'object' && credential_0.claimCommitments.diplomaIdCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.diplomaIdCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.diplomaIdCommitment.length === 32 && credential_0.claimCommitments.studentIdCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.studentIdCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.studentIdCommitment.length === 32 && credential_0.claimCommitments.graduateNameCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.graduateNameCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.graduateNameCommitment.length === 32 && credential_0.claimCommitments.facultyNameCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.facultyNameCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.facultyNameCommitment.length === 32 && credential_0.claimCommitments.honorsCodeCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.honorsCodeCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.honorsCodeCommitment.length === 32 && credential_0.claimCommitments.graduationMonthCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.graduationMonthCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.graduationMonthCommitment.length === 32 && credential_0.claimCommitments.finalGradeCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.finalGradeCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.finalGradeCommitment.length === 32 && credential_0.claimCommitments.creditsEarnedCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.creditsEarnedCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.creditsEarnedCommitment.length === 32 && credential_0.claimRoot.buffer instanceof ArrayBuffer && credential_0.claimRoot.BYTES_PER_ELEMENT === 1 && credential_0.claimRoot.length === 32)) {
       __compactRuntime.typeError('assertUniversityDiplomaProductionPresentationSatisfiesRequest',
                                  'argument 1',
-                                 'helpers.compact line 625 char 1',
+                                 'helpers.compact line 727 char 1',
                                  'struct Credential<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct ExplicitHolderBinding<holderVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>>, statusBinding: struct NoStatusBinding<>, issuedAt: Uint<0..18446744073709551616>, hasExpiration: Boolean, expiresAt: Uint<0..18446744073709551616>, claims: struct UniversityDiplomaProductionPublicClaims<universityName: Bytes<32>, awardName: Bytes<32>, graduationYear: Uint<0..65536>>, claimCommitments: struct UniversityDiplomaClaimCommitments<diplomaIdCommitment: Bytes<32>, studentIdCommitment: Bytes<32>, graduateNameCommitment: Bytes<32>, facultyNameCommitment: Bytes<32>, honorsCodeCommitment: Bytes<32>, graduationMonthCommitment: Bytes<32>, finalGradeCommitment: Bytes<32>, creditsEarnedCommitment: Bytes<32>>, claimRoot: Bytes<32>>',
                                  credential_0)
     }
     if (!(typeof(credentialProof_0) === 'object' && typeof(credentialProof_0.signerVerificationMethodRef) === 'object' && typeof(credentialProof_0.signerVerificationMethodRef.didContractAddress) === 'object' && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && credentialProof_0.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credentialProof_0.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credentialProof_0.signerVerificationMethodRef.methodId.length === 32 && typeof(credentialProof_0.createdAt) === 'bigint' && credentialProof_0.createdAt >= 0n && credentialProof_0.createdAt <= 18446744073709551615n && credentialProof_0.challengeHash.buffer instanceof ArrayBuffer && credentialProof_0.challengeHash.BYTES_PER_ELEMENT === 1 && credentialProof_0.challengeHash.length === 32 && true && typeof(credentialProof_0.signature) === 'object' && true && typeof(credentialProof_0.signature.s) === 'bigint' && credentialProof_0.signature.s >= 0 && credentialProof_0.signature.s <= __compactRuntime.MAX_FIELD)) {
       __compactRuntime.typeError('assertUniversityDiplomaProductionPresentationSatisfiesRequest',
                                  'argument 2',
-                                 'helpers.compact line 625 char 1',
+                                 'helpers.compact line 727 char 1',
                                  'struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>',
                                  credentialProof_0)
     }
     if (!(typeof(request_0) === 'object' && typeof(request_0.version) === 'bigint' && request_0.version >= 0n && request_0.version <= 65535n && typeof(request_0.schema) === 'object' && request_0.schema.packageId.buffer instanceof ArrayBuffer && request_0.schema.packageId.BYTES_PER_ELEMENT === 1 && request_0.schema.packageId.length === 32 && request_0.schema.schemaId.buffer instanceof ArrayBuffer && request_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && request_0.schema.schemaId.length === 32 && typeof(request_0.schema.majorVersion) === 'bigint' && request_0.schema.majorVersion >= 0n && request_0.schema.majorVersion <= 65535n && typeof(request_0.schema.minorVersion) === 'bigint' && request_0.schema.minorVersion >= 0n && request_0.schema.minorVersion <= 65535n && typeof(request_0.issuerVerificationMethodRef) === 'object' && typeof(request_0.issuerVerificationMethodRef.didContractAddress) === 'object' && request_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && request_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && request_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && request_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && request_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && request_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(request_0.requireDiplomaIdDisclosure) === 'boolean' && typeof(request_0.requireStudentIdDisclosure) === 'boolean' && typeof(request_0.requireGraduateNameDisclosure) === 'boolean' && typeof(request_0.requireUniversityNameDisclosure) === 'boolean' && typeof(request_0.requireFacultyNameDisclosure) === 'boolean' && typeof(request_0.requireAwardNameDisclosure) === 'boolean' && typeof(request_0.requireHonorsCodeDisclosure) === 'boolean' && typeof(request_0.requireGraduationYearDisclosure) === 'boolean' && typeof(request_0.requireGraduationMonthDisclosure) === 'boolean' && typeof(request_0.requireFinalGradeDisclosure) === 'boolean' && typeof(request_0.requireCreditsEarnedDisclosure) === 'boolean' && typeof(request_0.enforceMinimumFinalGrade) === 'boolean' && typeof(request_0.minimumFinalGrade) === 'bigint' && request_0.minimumFinalGrade >= 0n && request_0.minimumFinalGrade <= 255n && request_0.verifierChallengeHash.buffer instanceof ArrayBuffer && request_0.verifierChallengeHash.BYTES_PER_ELEMENT === 1 && request_0.verifierChallengeHash.length === 32)) {
       __compactRuntime.typeError('assertUniversityDiplomaProductionPresentationSatisfiesRequest',
                                  'argument 3',
-                                 'helpers.compact line 625 char 1',
+                                 'helpers.compact line 727 char 1',
                                  'struct UniversityDiplomaProductionPresentationRequest<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, requireDiplomaIdDisclosure: Boolean, requireStudentIdDisclosure: Boolean, requireGraduateNameDisclosure: Boolean, requireUniversityNameDisclosure: Boolean, requireFacultyNameDisclosure: Boolean, requireAwardNameDisclosure: Boolean, requireHonorsCodeDisclosure: Boolean, requireGraduationYearDisclosure: Boolean, requireGraduationMonthDisclosure: Boolean, requireFinalGradeDisclosure: Boolean, requireCreditsEarnedDisclosure: Boolean, enforceMinimumFinalGrade: Boolean, minimumFinalGrade: Uint<0..256>, verifierChallengeHash: Bytes<32>>',
                                  request_0)
     }
     if (!(typeof(presentation_0) === 'object' && typeof(presentation_0.version) === 'bigint' && presentation_0.version >= 0n && presentation_0.version <= 65535n && typeof(presentation_0.schema) === 'object' && presentation_0.schema.packageId.buffer instanceof ArrayBuffer && presentation_0.schema.packageId.BYTES_PER_ELEMENT === 1 && presentation_0.schema.packageId.length === 32 && presentation_0.schema.schemaId.buffer instanceof ArrayBuffer && presentation_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && presentation_0.schema.schemaId.length === 32 && typeof(presentation_0.schema.majorVersion) === 'bigint' && presentation_0.schema.majorVersion >= 0n && presentation_0.schema.majorVersion <= 65535n && typeof(presentation_0.schema.minorVersion) === 'bigint' && presentation_0.schema.minorVersion >= 0n && presentation_0.schema.minorVersion <= 65535n && presentation_0.credentialClaimRoot.buffer instanceof ArrayBuffer && presentation_0.credentialClaimRoot.BYTES_PER_ELEMENT === 1 && presentation_0.credentialClaimRoot.length === 32 && typeof(presentation_0.issuerVerificationMethodRef) === 'object' && typeof(presentation_0.issuerVerificationMethodRef.didContractAddress) === 'object' && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && presentation_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && presentation_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && presentation_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(presentation_0.holderBinding) === 'object' && typeof(presentation_0.holderBinding.holderVerificationMethodRef) === 'object' && typeof(presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress) === 'object' && presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.length === 32 && presentation_0.holderBinding.holderVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && presentation_0.holderBinding.holderVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && presentation_0.holderBinding.holderVerificationMethodRef.methodId.length === 32 && typeof(presentation_0.disclosed) === 'object' && typeof(presentation_0.disclosed.revealDiplomaId) === 'boolean' && presentation_0.disclosed.diplomaId.buffer instanceof ArrayBuffer && presentation_0.disclosed.diplomaId.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.diplomaId.length === 32 && presentation_0.disclosed.diplomaIdOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.diplomaIdOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.diplomaIdOpening.length === 32 && typeof(presentation_0.disclosed.revealStudentId) === 'boolean' && presentation_0.disclosed.studentId.buffer instanceof ArrayBuffer && presentation_0.disclosed.studentId.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.studentId.length === 16 && presentation_0.disclosed.studentIdOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.studentIdOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.studentIdOpening.length === 32 && typeof(presentation_0.disclosed.revealGraduateName) === 'boolean' && presentation_0.disclosed.graduateName.buffer instanceof ArrayBuffer && presentation_0.disclosed.graduateName.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.graduateName.length === 32 && presentation_0.disclosed.graduateNameOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.graduateNameOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.graduateNameOpening.length === 32 && typeof(presentation_0.disclosed.revealUniversityName) === 'boolean' && presentation_0.disclosed.universityName.buffer instanceof ArrayBuffer && presentation_0.disclosed.universityName.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.universityName.length === 32 && typeof(presentation_0.disclosed.revealFacultyName) === 'boolean' && presentation_0.disclosed.facultyName.buffer instanceof ArrayBuffer && presentation_0.disclosed.facultyName.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.facultyName.length === 32 && presentation_0.disclosed.facultyNameOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.facultyNameOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.facultyNameOpening.length === 32 && typeof(presentation_0.disclosed.revealAwardName) === 'boolean' && presentation_0.disclosed.awardName.buffer instanceof ArrayBuffer && presentation_0.disclosed.awardName.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.awardName.length === 32 && typeof(presentation_0.disclosed.revealHonorsCode) === 'boolean' && presentation_0.disclosed.honorsCode.buffer instanceof ArrayBuffer && presentation_0.disclosed.honorsCode.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.honorsCode.length === 16 && presentation_0.disclosed.honorsCodeOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.honorsCodeOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.honorsCodeOpening.length === 32 && typeof(presentation_0.disclosed.revealGraduationYear) === 'boolean' && typeof(presentation_0.disclosed.graduationYear) === 'bigint' && presentation_0.disclosed.graduationYear >= 0n && presentation_0.disclosed.graduationYear <= 65535n && typeof(presentation_0.disclosed.revealGraduationMonth) === 'boolean' && typeof(presentation_0.disclosed.graduationMonth) === 'bigint' && presentation_0.disclosed.graduationMonth >= 0n && presentation_0.disclosed.graduationMonth <= 255n && presentation_0.disclosed.graduationMonthOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.graduationMonthOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.graduationMonthOpening.length === 32 && typeof(presentation_0.disclosed.revealFinalGrade) === 'boolean' && typeof(presentation_0.disclosed.finalGrade) === 'bigint' && presentation_0.disclosed.finalGrade >= 0n && presentation_0.disclosed.finalGrade <= 255n && presentation_0.disclosed.finalGradeOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.finalGradeOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.finalGradeOpening.length === 32 && typeof(presentation_0.disclosed.revealCreditsEarned) === 'boolean' && typeof(presentation_0.disclosed.creditsEarned) === 'bigint' && presentation_0.disclosed.creditsEarned >= 0n && presentation_0.disclosed.creditsEarned <= 65535n && presentation_0.disclosed.creditsEarnedOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.creditsEarnedOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.creditsEarnedOpening.length === 32)) {
       __compactRuntime.typeError('assertUniversityDiplomaProductionPresentationSatisfiesRequest',
                                  'argument 4',
-                                 'helpers.compact line 625 char 1',
+                                 'helpers.compact line 727 char 1',
                                  'struct Presentation<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, credentialClaimRoot: Bytes<32>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct ExplicitHolderBinding<holderVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>>, disclosed: struct UniversityDiplomaProductionDisclosures<revealDiplomaId: Boolean, diplomaId: Bytes<32>, diplomaIdOpening: Bytes<32>, revealStudentId: Boolean, studentId: Bytes<16>, studentIdOpening: Bytes<32>, revealGraduateName: Boolean, graduateName: Bytes<32>, graduateNameOpening: Bytes<32>, revealUniversityName: Boolean, universityName: Bytes<32>, revealFacultyName: Boolean, facultyName: Bytes<32>, facultyNameOpening: Bytes<32>, revealAwardName: Boolean, awardName: Bytes<32>, revealHonorsCode: Boolean, honorsCode: Bytes<16>, honorsCodeOpening: Bytes<32>, revealGraduationYear: Boolean, graduationYear: Uint<0..65536>, revealGraduationMonth: Boolean, graduationMonth: Uint<0..256>, graduationMonthOpening: Bytes<32>, revealFinalGrade: Boolean, finalGrade: Uint<0..256>, finalGradeOpening: Bytes<32>, revealCreditsEarned: Boolean, creditsEarned: Uint<0..65536>, creditsEarnedOpening: Bytes<32>>>',
                                  presentation_0)
     }
     if (!(typeof(presentationProof_0) === 'object' && typeof(presentationProof_0.signerVerificationMethodRef) === 'object' && typeof(presentationProof_0.signerVerificationMethodRef.didContractAddress) === 'object' && presentationProof_0.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && presentationProof_0.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && presentationProof_0.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && presentationProof_0.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && presentationProof_0.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && presentationProof_0.signerVerificationMethodRef.methodId.length === 32 && typeof(presentationProof_0.createdAt) === 'bigint' && presentationProof_0.createdAt >= 0n && presentationProof_0.createdAt <= 18446744073709551615n && presentationProof_0.challengeHash.buffer instanceof ArrayBuffer && presentationProof_0.challengeHash.BYTES_PER_ELEMENT === 1 && presentationProof_0.challengeHash.length === 32 && true && typeof(presentationProof_0.signature) === 'object' && true && typeof(presentationProof_0.signature.s) === 'bigint' && presentationProof_0.signature.s >= 0 && presentationProof_0.signature.s <= __compactRuntime.MAX_FIELD)) {
       __compactRuntime.typeError('assertUniversityDiplomaProductionPresentationSatisfiesRequest',
                                  'argument 5',
-                                 'helpers.compact line 625 char 1',
+                                 'helpers.compact line 727 char 1',
                                  'struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>',
                                  presentationProof_0)
     }
@@ -7456,6 +7581,79 @@ export const pureCircuits = {
                                                                                            request_0,
                                                                                            presentation_0,
                                                                                            presentationProof_0);
+  },
+  assertValidUniversityDiplomaProductionPredicatePresentationRequest: (...args_0) => {
+    if (args_0.length !== 1) {
+      throw new __compactRuntime.CompactError(`assertValidUniversityDiplomaProductionPredicatePresentationRequest: expected 1 argument (as invoked from Typescript), received ${args_0.length}`);
+    }
+    const request_0 = args_0[0];
+    if (!(typeof(request_0) === 'object' && typeof(request_0.version) === 'bigint' && request_0.version >= 0n && request_0.version <= 65535n && typeof(request_0.schema) === 'object' && request_0.schema.packageId.buffer instanceof ArrayBuffer && request_0.schema.packageId.BYTES_PER_ELEMENT === 1 && request_0.schema.packageId.length === 32 && request_0.schema.schemaId.buffer instanceof ArrayBuffer && request_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && request_0.schema.schemaId.length === 32 && typeof(request_0.schema.majorVersion) === 'bigint' && request_0.schema.majorVersion >= 0n && request_0.schema.majorVersion <= 65535n && typeof(request_0.schema.minorVersion) === 'bigint' && request_0.schema.minorVersion >= 0n && request_0.schema.minorVersion <= 65535n && typeof(request_0.issuerVerificationMethodRef) === 'object' && typeof(request_0.issuerVerificationMethodRef.didContractAddress) === 'object' && request_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && request_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && request_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && request_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && request_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && request_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(request_0.requireDiplomaIdDisclosure) === 'boolean' && typeof(request_0.requireStudentIdDisclosure) === 'boolean' && typeof(request_0.requireGraduateNameDisclosure) === 'boolean' && typeof(request_0.requireUniversityNameDisclosure) === 'boolean' && typeof(request_0.requireFacultyNameDisclosure) === 'boolean' && typeof(request_0.requireAwardNameDisclosure) === 'boolean' && typeof(request_0.requireHonorsCodeDisclosure) === 'boolean' && typeof(request_0.requireGraduationYearDisclosure) === 'boolean' && typeof(request_0.requireGraduationMonthDisclosure) === 'boolean' && typeof(request_0.requireFinalGradeDisclosure) === 'boolean' && typeof(request_0.requireCreditsEarnedDisclosure) === 'boolean' && typeof(request_0.enforceMinimumFinalGrade) === 'boolean' && typeof(request_0.minimumFinalGrade) === 'bigint' && request_0.minimumFinalGrade >= 0n && request_0.minimumFinalGrade <= 255n && request_0.verifierChallengeHash.buffer instanceof ArrayBuffer && request_0.verifierChallengeHash.BYTES_PER_ELEMENT === 1 && request_0.verifierChallengeHash.length === 32)) {
+      __compactRuntime.typeError('assertValidUniversityDiplomaProductionPredicatePresentationRequest',
+                                 'argument 1',
+                                 'helpers.compact line 757 char 1',
+                                 'struct UniversityDiplomaProductionPresentationRequest<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, requireDiplomaIdDisclosure: Boolean, requireStudentIdDisclosure: Boolean, requireGraduateNameDisclosure: Boolean, requireUniversityNameDisclosure: Boolean, requireFacultyNameDisclosure: Boolean, requireAwardNameDisclosure: Boolean, requireHonorsCodeDisclosure: Boolean, requireGraduationYearDisclosure: Boolean, requireGraduationMonthDisclosure: Boolean, requireFinalGradeDisclosure: Boolean, requireCreditsEarnedDisclosure: Boolean, enforceMinimumFinalGrade: Boolean, minimumFinalGrade: Uint<0..256>, verifierChallengeHash: Bytes<32>>',
+                                 request_0)
+    }
+    return _dummyContract._assertValidUniversityDiplomaProductionPredicatePresentationRequest_0(request_0);
+  },
+  assertUniversityDiplomaProductionPresentationSatisfiesRequestWithFinalGradePredicate: (...args_0) => {
+    if (args_0.length !== 6) {
+      throw new __compactRuntime.CompactError(`assertUniversityDiplomaProductionPresentationSatisfiesRequestWithFinalGradePredicate: expected 6 arguments (as invoked from Typescript), received ${args_0.length}`);
+    }
+    const credential_0 = args_0[0];
+    const credentialProof_0 = args_0[1];
+    const request_0 = args_0[2];
+    const presentation_0 = args_0[3];
+    const presentationProof_0 = args_0[4];
+    const finalGradePredicateWitness_0 = args_0[5];
+    if (!(typeof(credential_0) === 'object' && typeof(credential_0.version) === 'bigint' && credential_0.version >= 0n && credential_0.version <= 65535n && typeof(credential_0.schema) === 'object' && credential_0.schema.packageId.buffer instanceof ArrayBuffer && credential_0.schema.packageId.BYTES_PER_ELEMENT === 1 && credential_0.schema.packageId.length === 32 && credential_0.schema.schemaId.buffer instanceof ArrayBuffer && credential_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && credential_0.schema.schemaId.length === 32 && typeof(credential_0.schema.majorVersion) === 'bigint' && credential_0.schema.majorVersion >= 0n && credential_0.schema.majorVersion <= 65535n && typeof(credential_0.schema.minorVersion) === 'bigint' && credential_0.schema.minorVersion >= 0n && credential_0.schema.minorVersion <= 65535n && typeof(credential_0.issuerVerificationMethodRef) === 'object' && typeof(credential_0.issuerVerificationMethodRef.didContractAddress) === 'object' && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && credential_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credential_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credential_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(credential_0.holderBinding) === 'object' && typeof(credential_0.holderBinding.holderVerificationMethodRef) === 'object' && typeof(credential_0.holderBinding.holderVerificationMethodRef.didContractAddress) === 'object' && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.length === 32 && credential_0.holderBinding.holderVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credential_0.holderBinding.holderVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.holderVerificationMethodRef.methodId.length === 32 && typeof(credential_0.statusBinding) === 'object' && typeof(credential_0.issuedAt) === 'bigint' && credential_0.issuedAt >= 0n && credential_0.issuedAt <= 18446744073709551615n && typeof(credential_0.hasExpiration) === 'boolean' && typeof(credential_0.expiresAt) === 'bigint' && credential_0.expiresAt >= 0n && credential_0.expiresAt <= 18446744073709551615n && typeof(credential_0.claims) === 'object' && credential_0.claims.universityName.buffer instanceof ArrayBuffer && credential_0.claims.universityName.BYTES_PER_ELEMENT === 1 && credential_0.claims.universityName.length === 32 && credential_0.claims.awardName.buffer instanceof ArrayBuffer && credential_0.claims.awardName.BYTES_PER_ELEMENT === 1 && credential_0.claims.awardName.length === 32 && typeof(credential_0.claims.graduationYear) === 'bigint' && credential_0.claims.graduationYear >= 0n && credential_0.claims.graduationYear <= 65535n && typeof(credential_0.claimCommitments) === 'object' && credential_0.claimCommitments.diplomaIdCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.diplomaIdCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.diplomaIdCommitment.length === 32 && credential_0.claimCommitments.studentIdCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.studentIdCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.studentIdCommitment.length === 32 && credential_0.claimCommitments.graduateNameCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.graduateNameCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.graduateNameCommitment.length === 32 && credential_0.claimCommitments.facultyNameCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.facultyNameCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.facultyNameCommitment.length === 32 && credential_0.claimCommitments.honorsCodeCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.honorsCodeCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.honorsCodeCommitment.length === 32 && credential_0.claimCommitments.graduationMonthCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.graduationMonthCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.graduationMonthCommitment.length === 32 && credential_0.claimCommitments.finalGradeCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.finalGradeCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.finalGradeCommitment.length === 32 && credential_0.claimCommitments.creditsEarnedCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.creditsEarnedCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.creditsEarnedCommitment.length === 32 && credential_0.claimRoot.buffer instanceof ArrayBuffer && credential_0.claimRoot.BYTES_PER_ELEMENT === 1 && credential_0.claimRoot.length === 32)) {
+      __compactRuntime.typeError('assertUniversityDiplomaProductionPresentationSatisfiesRequestWithFinalGradePredicate',
+                                 'argument 1',
+                                 'helpers.compact line 785 char 1',
+                                 'struct Credential<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct ExplicitHolderBinding<holderVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>>, statusBinding: struct NoStatusBinding<>, issuedAt: Uint<0..18446744073709551616>, hasExpiration: Boolean, expiresAt: Uint<0..18446744073709551616>, claims: struct UniversityDiplomaProductionPublicClaims<universityName: Bytes<32>, awardName: Bytes<32>, graduationYear: Uint<0..65536>>, claimCommitments: struct UniversityDiplomaClaimCommitments<diplomaIdCommitment: Bytes<32>, studentIdCommitment: Bytes<32>, graduateNameCommitment: Bytes<32>, facultyNameCommitment: Bytes<32>, honorsCodeCommitment: Bytes<32>, graduationMonthCommitment: Bytes<32>, finalGradeCommitment: Bytes<32>, creditsEarnedCommitment: Bytes<32>>, claimRoot: Bytes<32>>',
+                                 credential_0)
+    }
+    if (!(typeof(credentialProof_0) === 'object' && typeof(credentialProof_0.signerVerificationMethodRef) === 'object' && typeof(credentialProof_0.signerVerificationMethodRef.didContractAddress) === 'object' && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && credentialProof_0.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credentialProof_0.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credentialProof_0.signerVerificationMethodRef.methodId.length === 32 && typeof(credentialProof_0.createdAt) === 'bigint' && credentialProof_0.createdAt >= 0n && credentialProof_0.createdAt <= 18446744073709551615n && credentialProof_0.challengeHash.buffer instanceof ArrayBuffer && credentialProof_0.challengeHash.BYTES_PER_ELEMENT === 1 && credentialProof_0.challengeHash.length === 32 && true && typeof(credentialProof_0.signature) === 'object' && true && typeof(credentialProof_0.signature.s) === 'bigint' && credentialProof_0.signature.s >= 0 && credentialProof_0.signature.s <= __compactRuntime.MAX_FIELD)) {
+      __compactRuntime.typeError('assertUniversityDiplomaProductionPresentationSatisfiesRequestWithFinalGradePredicate',
+                                 'argument 2',
+                                 'helpers.compact line 785 char 1',
+                                 'struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>',
+                                 credentialProof_0)
+    }
+    if (!(typeof(request_0) === 'object' && typeof(request_0.version) === 'bigint' && request_0.version >= 0n && request_0.version <= 65535n && typeof(request_0.schema) === 'object' && request_0.schema.packageId.buffer instanceof ArrayBuffer && request_0.schema.packageId.BYTES_PER_ELEMENT === 1 && request_0.schema.packageId.length === 32 && request_0.schema.schemaId.buffer instanceof ArrayBuffer && request_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && request_0.schema.schemaId.length === 32 && typeof(request_0.schema.majorVersion) === 'bigint' && request_0.schema.majorVersion >= 0n && request_0.schema.majorVersion <= 65535n && typeof(request_0.schema.minorVersion) === 'bigint' && request_0.schema.minorVersion >= 0n && request_0.schema.minorVersion <= 65535n && typeof(request_0.issuerVerificationMethodRef) === 'object' && typeof(request_0.issuerVerificationMethodRef.didContractAddress) === 'object' && request_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && request_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && request_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && request_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && request_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && request_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(request_0.requireDiplomaIdDisclosure) === 'boolean' && typeof(request_0.requireStudentIdDisclosure) === 'boolean' && typeof(request_0.requireGraduateNameDisclosure) === 'boolean' && typeof(request_0.requireUniversityNameDisclosure) === 'boolean' && typeof(request_0.requireFacultyNameDisclosure) === 'boolean' && typeof(request_0.requireAwardNameDisclosure) === 'boolean' && typeof(request_0.requireHonorsCodeDisclosure) === 'boolean' && typeof(request_0.requireGraduationYearDisclosure) === 'boolean' && typeof(request_0.requireGraduationMonthDisclosure) === 'boolean' && typeof(request_0.requireFinalGradeDisclosure) === 'boolean' && typeof(request_0.requireCreditsEarnedDisclosure) === 'boolean' && typeof(request_0.enforceMinimumFinalGrade) === 'boolean' && typeof(request_0.minimumFinalGrade) === 'bigint' && request_0.minimumFinalGrade >= 0n && request_0.minimumFinalGrade <= 255n && request_0.verifierChallengeHash.buffer instanceof ArrayBuffer && request_0.verifierChallengeHash.BYTES_PER_ELEMENT === 1 && request_0.verifierChallengeHash.length === 32)) {
+      __compactRuntime.typeError('assertUniversityDiplomaProductionPresentationSatisfiesRequestWithFinalGradePredicate',
+                                 'argument 3',
+                                 'helpers.compact line 785 char 1',
+                                 'struct UniversityDiplomaProductionPresentationRequest<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, requireDiplomaIdDisclosure: Boolean, requireStudentIdDisclosure: Boolean, requireGraduateNameDisclosure: Boolean, requireUniversityNameDisclosure: Boolean, requireFacultyNameDisclosure: Boolean, requireAwardNameDisclosure: Boolean, requireHonorsCodeDisclosure: Boolean, requireGraduationYearDisclosure: Boolean, requireGraduationMonthDisclosure: Boolean, requireFinalGradeDisclosure: Boolean, requireCreditsEarnedDisclosure: Boolean, enforceMinimumFinalGrade: Boolean, minimumFinalGrade: Uint<0..256>, verifierChallengeHash: Bytes<32>>',
+                                 request_0)
+    }
+    if (!(typeof(presentation_0) === 'object' && typeof(presentation_0.version) === 'bigint' && presentation_0.version >= 0n && presentation_0.version <= 65535n && typeof(presentation_0.schema) === 'object' && presentation_0.schema.packageId.buffer instanceof ArrayBuffer && presentation_0.schema.packageId.BYTES_PER_ELEMENT === 1 && presentation_0.schema.packageId.length === 32 && presentation_0.schema.schemaId.buffer instanceof ArrayBuffer && presentation_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && presentation_0.schema.schemaId.length === 32 && typeof(presentation_0.schema.majorVersion) === 'bigint' && presentation_0.schema.majorVersion >= 0n && presentation_0.schema.majorVersion <= 65535n && typeof(presentation_0.schema.minorVersion) === 'bigint' && presentation_0.schema.minorVersion >= 0n && presentation_0.schema.minorVersion <= 65535n && presentation_0.credentialClaimRoot.buffer instanceof ArrayBuffer && presentation_0.credentialClaimRoot.BYTES_PER_ELEMENT === 1 && presentation_0.credentialClaimRoot.length === 32 && typeof(presentation_0.issuerVerificationMethodRef) === 'object' && typeof(presentation_0.issuerVerificationMethodRef.didContractAddress) === 'object' && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && presentation_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && presentation_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && presentation_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(presentation_0.holderBinding) === 'object' && typeof(presentation_0.holderBinding.holderVerificationMethodRef) === 'object' && typeof(presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress) === 'object' && presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.length === 32 && presentation_0.holderBinding.holderVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && presentation_0.holderBinding.holderVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && presentation_0.holderBinding.holderVerificationMethodRef.methodId.length === 32 && typeof(presentation_0.disclosed) === 'object' && typeof(presentation_0.disclosed.revealDiplomaId) === 'boolean' && presentation_0.disclosed.diplomaId.buffer instanceof ArrayBuffer && presentation_0.disclosed.diplomaId.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.diplomaId.length === 32 && presentation_0.disclosed.diplomaIdOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.diplomaIdOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.diplomaIdOpening.length === 32 && typeof(presentation_0.disclosed.revealStudentId) === 'boolean' && presentation_0.disclosed.studentId.buffer instanceof ArrayBuffer && presentation_0.disclosed.studentId.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.studentId.length === 16 && presentation_0.disclosed.studentIdOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.studentIdOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.studentIdOpening.length === 32 && typeof(presentation_0.disclosed.revealGraduateName) === 'boolean' && presentation_0.disclosed.graduateName.buffer instanceof ArrayBuffer && presentation_0.disclosed.graduateName.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.graduateName.length === 32 && presentation_0.disclosed.graduateNameOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.graduateNameOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.graduateNameOpening.length === 32 && typeof(presentation_0.disclosed.revealUniversityName) === 'boolean' && presentation_0.disclosed.universityName.buffer instanceof ArrayBuffer && presentation_0.disclosed.universityName.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.universityName.length === 32 && typeof(presentation_0.disclosed.revealFacultyName) === 'boolean' && presentation_0.disclosed.facultyName.buffer instanceof ArrayBuffer && presentation_0.disclosed.facultyName.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.facultyName.length === 32 && presentation_0.disclosed.facultyNameOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.facultyNameOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.facultyNameOpening.length === 32 && typeof(presentation_0.disclosed.revealAwardName) === 'boolean' && presentation_0.disclosed.awardName.buffer instanceof ArrayBuffer && presentation_0.disclosed.awardName.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.awardName.length === 32 && typeof(presentation_0.disclosed.revealHonorsCode) === 'boolean' && presentation_0.disclosed.honorsCode.buffer instanceof ArrayBuffer && presentation_0.disclosed.honorsCode.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.honorsCode.length === 16 && presentation_0.disclosed.honorsCodeOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.honorsCodeOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.honorsCodeOpening.length === 32 && typeof(presentation_0.disclosed.revealGraduationYear) === 'boolean' && typeof(presentation_0.disclosed.graduationYear) === 'bigint' && presentation_0.disclosed.graduationYear >= 0n && presentation_0.disclosed.graduationYear <= 65535n && typeof(presentation_0.disclosed.revealGraduationMonth) === 'boolean' && typeof(presentation_0.disclosed.graduationMonth) === 'bigint' && presentation_0.disclosed.graduationMonth >= 0n && presentation_0.disclosed.graduationMonth <= 255n && presentation_0.disclosed.graduationMonthOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.graduationMonthOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.graduationMonthOpening.length === 32 && typeof(presentation_0.disclosed.revealFinalGrade) === 'boolean' && typeof(presentation_0.disclosed.finalGrade) === 'bigint' && presentation_0.disclosed.finalGrade >= 0n && presentation_0.disclosed.finalGrade <= 255n && presentation_0.disclosed.finalGradeOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.finalGradeOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.finalGradeOpening.length === 32 && typeof(presentation_0.disclosed.revealCreditsEarned) === 'boolean' && typeof(presentation_0.disclosed.creditsEarned) === 'bigint' && presentation_0.disclosed.creditsEarned >= 0n && presentation_0.disclosed.creditsEarned <= 65535n && presentation_0.disclosed.creditsEarnedOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.creditsEarnedOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.creditsEarnedOpening.length === 32)) {
+      __compactRuntime.typeError('assertUniversityDiplomaProductionPresentationSatisfiesRequestWithFinalGradePredicate',
+                                 'argument 4',
+                                 'helpers.compact line 785 char 1',
+                                 'struct Presentation<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, credentialClaimRoot: Bytes<32>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct ExplicitHolderBinding<holderVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>>, disclosed: struct UniversityDiplomaProductionDisclosures<revealDiplomaId: Boolean, diplomaId: Bytes<32>, diplomaIdOpening: Bytes<32>, revealStudentId: Boolean, studentId: Bytes<16>, studentIdOpening: Bytes<32>, revealGraduateName: Boolean, graduateName: Bytes<32>, graduateNameOpening: Bytes<32>, revealUniversityName: Boolean, universityName: Bytes<32>, revealFacultyName: Boolean, facultyName: Bytes<32>, facultyNameOpening: Bytes<32>, revealAwardName: Boolean, awardName: Bytes<32>, revealHonorsCode: Boolean, honorsCode: Bytes<16>, honorsCodeOpening: Bytes<32>, revealGraduationYear: Boolean, graduationYear: Uint<0..65536>, revealGraduationMonth: Boolean, graduationMonth: Uint<0..256>, graduationMonthOpening: Bytes<32>, revealFinalGrade: Boolean, finalGrade: Uint<0..256>, finalGradeOpening: Bytes<32>, revealCreditsEarned: Boolean, creditsEarned: Uint<0..65536>, creditsEarnedOpening: Bytes<32>>>',
+                                 presentation_0)
+    }
+    if (!(typeof(presentationProof_0) === 'object' && typeof(presentationProof_0.signerVerificationMethodRef) === 'object' && typeof(presentationProof_0.signerVerificationMethodRef.didContractAddress) === 'object' && presentationProof_0.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && presentationProof_0.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && presentationProof_0.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && presentationProof_0.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && presentationProof_0.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && presentationProof_0.signerVerificationMethodRef.methodId.length === 32 && typeof(presentationProof_0.createdAt) === 'bigint' && presentationProof_0.createdAt >= 0n && presentationProof_0.createdAt <= 18446744073709551615n && presentationProof_0.challengeHash.buffer instanceof ArrayBuffer && presentationProof_0.challengeHash.BYTES_PER_ELEMENT === 1 && presentationProof_0.challengeHash.length === 32 && true && typeof(presentationProof_0.signature) === 'object' && true && typeof(presentationProof_0.signature.s) === 'bigint' && presentationProof_0.signature.s >= 0 && presentationProof_0.signature.s <= __compactRuntime.MAX_FIELD)) {
+      __compactRuntime.typeError('assertUniversityDiplomaProductionPresentationSatisfiesRequestWithFinalGradePredicate',
+                                 'argument 5',
+                                 'helpers.compact line 785 char 1',
+                                 'struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>',
+                                 presentationProof_0)
+    }
+    if (!(typeof(finalGradePredicateWitness_0) === 'object' && typeof(finalGradePredicateWitness_0.finalGrade) === 'bigint' && finalGradePredicateWitness_0.finalGrade >= 0n && finalGradePredicateWitness_0.finalGrade <= 255n && finalGradePredicateWitness_0.finalGradeOpening.buffer instanceof ArrayBuffer && finalGradePredicateWitness_0.finalGradeOpening.BYTES_PER_ELEMENT === 1 && finalGradePredicateWitness_0.finalGradeOpening.length === 32)) {
+      __compactRuntime.typeError('assertUniversityDiplomaProductionPresentationSatisfiesRequestWithFinalGradePredicate',
+                                 'argument 6',
+                                 'helpers.compact line 785 char 1',
+                                 'struct UniversityDiplomaProductionFinalGradePredicateWitness<finalGrade: Uint<0..256>, finalGradeOpening: Bytes<32>>',
+                                 finalGradePredicateWitness_0)
+    }
+    return _dummyContract._assertUniversityDiplomaProductionPresentationSatisfiesRequestWithFinalGradePredicate_0(credential_0,
+                                                                                                                  credentialProof_0,
+                                                                                                                  request_0,
+                                                                                                                  presentation_0,
+                                                                                                                  presentationProof_0,
+                                                                                                                  finalGradePredicateWitness_0);
   },
   universityDiplomaSchemaRef: (...args_0) => {
     if (args_0.length !== 0) {
@@ -7479,63 +7677,63 @@ export const pureCircuits = {
     if (!(typeof(issuerVerificationMethodRef_0) === 'object' && typeof(issuerVerificationMethodRef_0.didContractAddress) === 'object' && issuerVerificationMethodRef_0.didContractAddress.bytes.buffer instanceof ArrayBuffer && issuerVerificationMethodRef_0.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && issuerVerificationMethodRef_0.didContractAddress.bytes.length === 32 && issuerVerificationMethodRef_0.methodId.buffer instanceof ArrayBuffer && issuerVerificationMethodRef_0.methodId.BYTES_PER_ELEMENT === 1 && issuerVerificationMethodRef_0.methodId.length === 32)) {
       __compactRuntime.typeError('universityJobApplicationRequest',
                                  'argument 1',
-                                 'university-verifier.compact line 43 char 1',
+                                 'university-verifier.compact line 48 char 1',
                                  'struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>',
                                  issuerVerificationMethodRef_0)
     }
     if (!(verifierChallengeHash_0.buffer instanceof ArrayBuffer && verifierChallengeHash_0.BYTES_PER_ELEMENT === 1 && verifierChallengeHash_0.length === 32)) {
       __compactRuntime.typeError('universityJobApplicationRequest',
                                  'argument 2',
-                                 'university-verifier.compact line 43 char 1',
+                                 'university-verifier.compact line 48 char 1',
                                  'Bytes<32>',
                                  verifierChallengeHash_0)
     }
     if (!(typeof(requireDiplomaIdDisclosure_0) === 'boolean')) {
       __compactRuntime.typeError('universityJobApplicationRequest',
                                  'argument 3',
-                                 'university-verifier.compact line 43 char 1',
+                                 'university-verifier.compact line 48 char 1',
                                  'Boolean',
                                  requireDiplomaIdDisclosure_0)
     }
     if (!(typeof(requireStudentIdDisclosure_0) === 'boolean')) {
       __compactRuntime.typeError('universityJobApplicationRequest',
                                  'argument 4',
-                                 'university-verifier.compact line 43 char 1',
+                                 'university-verifier.compact line 48 char 1',
                                  'Boolean',
                                  requireStudentIdDisclosure_0)
     }
     if (!(typeof(requireFacultyNameDisclosure_0) === 'boolean')) {
       __compactRuntime.typeError('universityJobApplicationRequest',
                                  'argument 5',
-                                 'university-verifier.compact line 43 char 1',
+                                 'university-verifier.compact line 48 char 1',
                                  'Boolean',
                                  requireFacultyNameDisclosure_0)
     }
     if (!(typeof(requireHonorsCodeDisclosure_0) === 'boolean')) {
       __compactRuntime.typeError('universityJobApplicationRequest',
                                  'argument 6',
-                                 'university-verifier.compact line 43 char 1',
+                                 'university-verifier.compact line 48 char 1',
                                  'Boolean',
                                  requireHonorsCodeDisclosure_0)
     }
     if (!(typeof(requireGraduationMonthDisclosure_0) === 'boolean')) {
       __compactRuntime.typeError('universityJobApplicationRequest',
                                  'argument 7',
-                                 'university-verifier.compact line 43 char 1',
+                                 'university-verifier.compact line 48 char 1',
                                  'Boolean',
                                  requireGraduationMonthDisclosure_0)
     }
     if (!(typeof(requireFinalGradeDisclosure_0) === 'boolean')) {
       __compactRuntime.typeError('universityJobApplicationRequest',
                                  'argument 8',
-                                 'university-verifier.compact line 43 char 1',
+                                 'university-verifier.compact line 48 char 1',
                                  'Boolean',
                                  requireFinalGradeDisclosure_0)
     }
     if (!(typeof(requireCreditsEarnedDisclosure_0) === 'boolean')) {
       __compactRuntime.typeError('universityJobApplicationRequest',
                                  'argument 9',
-                                 'university-verifier.compact line 43 char 1',
+                                 'university-verifier.compact line 48 char 1',
                                  'Boolean',
                                  requireCreditsEarnedDisclosure_0)
     }
@@ -7559,21 +7757,21 @@ export const pureCircuits = {
     if (!(typeof(issuerVerificationMethodRef_0) === 'object' && typeof(issuerVerificationMethodRef_0.didContractAddress) === 'object' && issuerVerificationMethodRef_0.didContractAddress.bytes.buffer instanceof ArrayBuffer && issuerVerificationMethodRef_0.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && issuerVerificationMethodRef_0.didContractAddress.bytes.length === 32 && issuerVerificationMethodRef_0.methodId.buffer instanceof ArrayBuffer && issuerVerificationMethodRef_0.methodId.BYTES_PER_ELEMENT === 1 && issuerVerificationMethodRef_0.methodId.length === 32)) {
       __compactRuntime.typeError('universityMallDiscountRequest',
                                  'argument 1',
-                                 'university-verifier.compact line 76 char 1',
+                                 'university-verifier.compact line 84 char 1',
                                  'struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>',
                                  issuerVerificationMethodRef_0)
     }
     if (!(verifierChallengeHash_0.buffer instanceof ArrayBuffer && verifierChallengeHash_0.BYTES_PER_ELEMENT === 1 && verifierChallengeHash_0.length === 32)) {
       __compactRuntime.typeError('universityMallDiscountRequest',
                                  'argument 2',
-                                 'university-verifier.compact line 76 char 1',
+                                 'university-verifier.compact line 84 char 1',
                                  'Bytes<32>',
                                  verifierChallengeHash_0)
     }
     if (!(typeof(minimumFinalGrade_0) === 'bigint' && minimumFinalGrade_0 >= 0n && minimumFinalGrade_0 <= 255n)) {
       __compactRuntime.typeError('universityMallDiscountRequest',
                                  'argument 3',
-                                 'university-verifier.compact line 76 char 1',
+                                 'university-verifier.compact line 84 char 1',
                                  'Uint<0..256>',
                                  minimumFinalGrade_0)
     }

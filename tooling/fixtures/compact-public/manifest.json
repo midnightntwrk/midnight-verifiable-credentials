@@ -102,13 +102,13 @@
     }
   ],
   "provenance": {
-    "sourceDigest": "d19e839418d18b9d3c0c7a3cebbd8bc4534089c9219968f14a94553fc2d16212",
+    "sourceDigest": "960fbeb29e2fe215d750446a128b902c3ef76f8390fd565f45db01b8d5bfa554",
     "compilerVersion": "0.30.0",
-    "runtimeDigest": "5f7be58be515fe657cc5fd3906e94058ebeee45824726bf03f037bc30e6ebe1c",
-    "lockfileDigest": "6475946437d0f10867b57734c94902842f9b0ad628f9eb7a428fe4a6fdb84d5e",
-    "generatedAt": "2026-07-30T13:24:56.405Z",
+    "runtimeDigest": "71c9e7f13063b8fac9f84288767a7b332bfe2bfd4aa24494fc9cbb7a7e61e485",
+    "lockfileDigest": "23586864c297aa9c9b076474c87ee31eba284b39477af069fb137b4af2eebcb5",
+    "generatedAt": "2026-08-03T03:15:38.015Z",
     "artifactCount": 164,
-    "artifactBytes": 809891335,
+    "artifactBytes": 894563029,
     "byFixture": {
       "credentials": {
         "files": 4,
@@ -144,7 +144,7 @@
       },
       "university-diploma": {
         "files": 4,
-        "bytes": 1145406
+        "bytes": 1275248
       },
       "age-gate": {
         "files": 76,
@@ -156,29 +156,29 @@
       },
       "university-verifier": {
         "files": 12,
-        "bytes": 87023760
+        "bytes": 171565612
       }
     },
     "byType": {
       ".json": {
         "files": 16,
-        "bytes": 6014343
+        "bytes": 6153282
       },
       ".ts": {
         "files": 16,
-        "bytes": 872809
+        "bytes": 880497
       },
       ".js": {
         "files": 16,
-        "bytes": 8829525
+        "bytes": 8952482
       },
       ".map": {
         "files": 16,
-        "bytes": 415041
+        "bytes": 417225
       },
       ".prover": {
         "files": 25,
-        "bytes": 793037208
+        "bytes": 877420505
       },
       ".verifier": {
         "files": 25,
@@ -186,11 +186,11 @@
       },
       ".bzkir": {
         "files": 25,
-        "bytes": 51214
+        "bytes": 52713
       },
       ".zkir": {
         "files": 25,
-        "bytes": 621100
+        "bytes": 636230
       }
     },
     "largestArtifact": {
@@ -428,29 +428,29 @@
     },
     {
       "path": "packages/prototypes/credential-families/university-diploma/src/managed/university-diploma-credential/compiler/contract-info.json",
-      "bytes": 431404,
-      "sha256": "d1685bef8b71f332a73048683c82f1ee35c265b57760880063c62680916088ca",
+      "bytes": 498531,
+      "sha256": "ae381e06a0d9f6d340c7f39ed50277eb4c31b737a91f50d851fa8975eed2205f",
       "lfsPointer": false,
       "fixture": "university-diploma"
     },
     {
       "path": "packages/prototypes/credential-families/university-diploma/src/managed/university-diploma-credential/contract/index.d.ts",
-      "bytes": 67836,
-      "sha256": "334dab953a66b1fe48a7c0a80e29e99ddd5c0068d89414ff8dea433e2ef1283f",
+      "bytes": 71381,
+      "sha256": "577472439b752d2d9e7462dbf3097f291d2698f7b30a6ebfae94961b49d92b35",
       "lfsPointer": false,
       "fixture": "university-diploma"
     },
     {
       "path": "packages/prototypes/credential-families/university-diploma/src/managed/university-diploma-credential/contract/index.js",
-      "bytes": 616359,
-      "sha256": "5dcba2a9d73d7b1d98301053be009b2f28d003777da38fa34f62d8c6573db41a",
+      "bytes": 674469,
+      "sha256": "c9772f0b191ac592464bd1e00a8092dafbefc063d973a575739cf0307466890a",
       "lfsPointer": false,
       "fixture": "university-diploma"
     },
     {
       "path": "packages/prototypes/credential-families/university-diploma/src/managed/university-diploma-credential/contract/index.js.map",
-      "bytes": 29807,
-      "sha256": "1478285449675aa904f85a692e0ba2cf8fc60937d99e50b6da11a00121e5fcb1",
+      "bytes": 30867,
+      "sha256": "2f02df6417a6b68e88cb6df0d5bf3eb872a8754070c6ad1ff60cd6f10bfc03da",
       "lfsPointer": false,
       "fixture": "university-diploma"
     },
@@ -1268,85 +1268,85 @@
     },
     {
       "path": "packages/use-cases/university/contract/src/managed/university-verifier/compiler/contract-info.json",
-      "bytes": 501571,
-      "sha256": "5e72cfc54ccb34398a5de804e3591f130e8f9a37332be61ad9d12bb063144947",
+      "bytes": 573383,
+      "sha256": "c3950d767ef864fc6761767e95250e9191d2403a80c845cc42bf85506a1def32",
       "lfsPointer": false,
       "fixture": "university-verifier"
     },
     {
       "path": "packages/use-cases/university/contract/src/managed/university-verifier/contract/index.d.ts",
-      "bytes": 73978,
-      "sha256": "892e883f58f6ad966541e0ad6c3aaa12d5645d5ffafce1330260275b3f7934dc",
+      "bytes": 78121,
+      "sha256": "0e45107bee4a488b728db96fb54c83bbdf23e7635bfbdd89c7f520be40c3e9e6",
       "lfsPointer": false,
       "fixture": "university-verifier"
     },
     {
       "path": "packages/use-cases/university/contract/src/managed/university-verifier/contract/index.js",
-      "bytes": 735849,
-      "sha256": "d14055be88a167f3f8d54210694a846fec695883d25c3553270b93cfc19fff70",
+      "bytes": 800696,
+      "sha256": "52b4ad36920e1b4a6129e9b278c78e8a1a3c1a0770015ed0ed01ba9c76332df3",
       "lfsPointer": false,
       "fixture": "university-verifier"
     },
     {
       "path": "packages/use-cases/university/contract/src/managed/university-verifier/contract/index.js.map",
-      "bytes": 34637,
-      "sha256": "0840ef482dd09febf3d60e9e77e039cf314a7c71f2d1dbb8229dd9c416875bd6",
+      "bytes": 35761,
+      "sha256": "d6626bd424bdef924892d8d45e883b7358d158c620f48ffcb0a40b8c4a1cd871",
       "lfsPointer": false,
       "fixture": "university-verifier"
     },
     {
       "path": "packages/use-cases/university/contract/src/managed/university-verifier/keys/verifyUniversityDiplomaForJobApplication.prover",
-      "bytes": 42795297,
-      "sha256": "d498751ba7bd894ee000af984d6fe96dffd796ea32ef7bbd188ad46cf343fbe1",
+      "bytes": 84984901,
+      "sha256": "679ad61486e229b0c68cc82adabe5475c7a7c5a39009698b9d180fd0dcc9f4dc",
       "lfsPointer": false,
       "fixture": "university-verifier"
     },
     {
       "path": "packages/use-cases/university/contract/src/managed/university-verifier/keys/verifyUniversityDiplomaForJobApplication.verifier",
       "bytes": 2311,
-      "sha256": "5e55235b855968a7c41b80b9867baf797259452e695c3fdb6d55bfdf5480ac43",
+      "sha256": "308a52131baf7ca7a374f9b6e8e0fb3d7187811940e8e1771b2c4e01f07a2e3f",
       "lfsPointer": false,
       "fixture": "university-verifier"
     },
     {
       "path": "packages/use-cases/university/contract/src/managed/university-verifier/keys/verifyUniversityDiplomaForMallDiscount.prover",
-      "bytes": 42795129,
-      "sha256": "455ea1054dfbc268ea3fae6ef47fe60187855424674c7c833c7b814c11e16a91",
+      "bytes": 84988822,
+      "sha256": "e5aee932a8f0c89517809119c9c8810e532d43c09ae5ed35ea6d0bdc5e66eceb",
       "lfsPointer": false,
       "fixture": "university-verifier"
     },
     {
       "path": "packages/use-cases/university/contract/src/managed/university-verifier/keys/verifyUniversityDiplomaForMallDiscount.verifier",
       "bytes": 2311,
-      "sha256": "3d17cd2bb9c2c90d1c70412e67563d481339d27c17765cb457d265f81bdea693",
+      "sha256": "694333bfdc38b421ec66a82c41d749b6aebc43824f618f75281e8144579162e4",
       "lfsPointer": false,
       "fixture": "university-verifier"
     },
     {
       "path": "packages/use-cases/university/contract/src/managed/university-verifier/zkir/verifyUniversityDiplomaForJobApplication.bzkir",
-      "bytes": 3207,
-      "sha256": "b9c1f82040dcdf386d1dc58d3e864096bc670863b8171ad87d8cdabe4fee7cfa",
+      "bytes": 3921,
+      "sha256": "712751ceb55441a4595d729229b694e0265687d0a6ae936c5d169326630fa51d",
       "lfsPointer": false,
       "fixture": "university-verifier"
     },
     {
       "path": "packages/use-cases/university/contract/src/managed/university-verifier/zkir/verifyUniversityDiplomaForJobApplication.zkir",
-      "bytes": 38929,
-      "sha256": "dca869b0375595c7fc5b45bd8586a206578d26979e85ee29245624ec8af9a494",
+      "bytes": 46093,
+      "sha256": "05a8352a61b12b5c4b7b106dc97268fbad49785e806bf453574002a96af4feb0",
       "lfsPointer": false,
       "fixture": "university-verifier"
     },
     {
       "path": "packages/use-cases/university/contract/src/managed/university-verifier/zkir/verifyUniversityDiplomaForMallDiscount.bzkir",
-      "bytes": 3070,
-      "sha256": "8e5b74d7240e428649db3d1109a66b1ab0e26011ab56c8336c7a284aff8af3a9",
+      "bytes": 3855,
+      "sha256": "3a54ec4a3d2bb02445d0a87d4b28a647c40dc555b7517831b18f502a8e285aba",
       "lfsPointer": false,
       "fixture": "university-verifier"
     },
     {
       "path": "packages/use-cases/university/contract/src/managed/university-verifier/zkir/verifyUniversityDiplomaForMallDiscount.zkir",
-      "bytes": 37471,
-      "sha256": "27f34bd03202fe8810319b2f0313e265c2283d7665b52754a5116b58ecb112eb",
+      "bytes": 45437,
+      "sha256": "fe9730dc3dcbf8124e0c53f800f16a2f4d42a9ddf3d6536c6212b96d09cd264c",
       "lfsPointer": false,
       "fixture": "university-verifier"
     }

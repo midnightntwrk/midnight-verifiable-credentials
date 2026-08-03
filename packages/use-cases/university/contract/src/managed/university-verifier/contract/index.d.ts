@@ -424,32 +424,34 @@ export type Witnesses<PS> = {
 
 export type ImpureCircuits<PS> = {
   verifyUniversityDiplomaForJobApplication(context: __compactRuntime.CircuitContext<PS>,
-                                           credential_0: UniversityDiplomaCredential,
+                                           credential_0: UniversityDiplomaProductionCredential,
                                            credentialProof_0: Proof,
-                                           request_0: UniversityDiplomaPresentationRequest,
-                                           presentation_0: UniversityDiplomaPresentation,
+                                           request_0: UniversityDiplomaProductionPresentationRequest,
+                                           presentation_0: UniversityDiplomaProductionPresentation,
                                            presentationProof_0: Proof): __compactRuntime.CircuitResults<PS, []>;
   verifyUniversityDiplomaForMallDiscount(context: __compactRuntime.CircuitContext<PS>,
-                                         credential_0: UniversityDiplomaCredential,
+                                         credential_0: UniversityDiplomaProductionCredential,
                                          credentialProof_0: Proof,
-                                         request_0: UniversityDiplomaPresentationRequest,
-                                         presentation_0: UniversityDiplomaPresentation,
-                                         presentationProof_0: Proof): __compactRuntime.CircuitResults<PS, []>;
+                                         request_0: UniversityDiplomaProductionPresentationRequest,
+                                         presentation_0: UniversityDiplomaProductionPresentation,
+                                         presentationProof_0: Proof,
+                                         finalGradePredicateWitness_0: UniversityDiplomaProductionFinalGradePredicateWitness): __compactRuntime.CircuitResults<PS, []>;
 }
 
 export type ProvableCircuits<PS> = {
   verifyUniversityDiplomaForJobApplication(context: __compactRuntime.CircuitContext<PS>,
-                                           credential_0: UniversityDiplomaCredential,
+                                           credential_0: UniversityDiplomaProductionCredential,
                                            credentialProof_0: Proof,
-                                           request_0: UniversityDiplomaPresentationRequest,
-                                           presentation_0: UniversityDiplomaPresentation,
+                                           request_0: UniversityDiplomaProductionPresentationRequest,
+                                           presentation_0: UniversityDiplomaProductionPresentation,
                                            presentationProof_0: Proof): __compactRuntime.CircuitResults<PS, []>;
   verifyUniversityDiplomaForMallDiscount(context: __compactRuntime.CircuitContext<PS>,
-                                         credential_0: UniversityDiplomaCredential,
+                                         credential_0: UniversityDiplomaProductionCredential,
                                          credentialProof_0: Proof,
-                                         request_0: UniversityDiplomaPresentationRequest,
-                                         presentation_0: UniversityDiplomaPresentation,
-                                         presentationProof_0: Proof): __compactRuntime.CircuitResults<PS, []>;
+                                         request_0: UniversityDiplomaProductionPresentationRequest,
+                                         presentation_0: UniversityDiplomaProductionPresentation,
+                                         presentationProof_0: Proof,
+                                         finalGradePredicateWitness_0: UniversityDiplomaProductionFinalGradePredicateWitness): __compactRuntime.CircuitResults<PS, []>;
 }
 
 export type PureCircuits = {
@@ -621,11 +623,23 @@ export type PureCircuits = {
                                                       request_0: UniversityDiplomaPresentationRequest,
                                                       presentation_0: UniversityDiplomaPresentation,
                                                       presentationProof_0: Proof): [];
+  assertUniversityDiplomaProductionPresentationSatisfiesRequestCore(credential_0: UniversityDiplomaProductionCredential,
+                                                                    credentialProof_0: Proof,
+                                                                    request_0: UniversityDiplomaProductionPresentationRequest,
+                                                                    presentation_0: UniversityDiplomaProductionPresentation,
+                                                                    presentationProof_0: Proof): [];
   assertUniversityDiplomaProductionPresentationSatisfiesRequest(credential_0: UniversityDiplomaProductionCredential,
                                                                 credentialProof_0: Proof,
                                                                 request_0: UniversityDiplomaProductionPresentationRequest,
                                                                 presentation_0: UniversityDiplomaProductionPresentation,
                                                                 presentationProof_0: Proof): [];
+  assertValidUniversityDiplomaProductionPredicatePresentationRequest(request_0: UniversityDiplomaProductionPresentationRequest): [];
+  assertUniversityDiplomaProductionPresentationSatisfiesRequestWithFinalGradePredicate(credential_0: UniversityDiplomaProductionCredential,
+                                                                                       credentialProof_0: Proof,
+                                                                                       request_0: UniversityDiplomaProductionPresentationRequest,
+                                                                                       presentation_0: UniversityDiplomaProductionPresentation,
+                                                                                       presentationProof_0: Proof,
+                                                                                       finalGradePredicateWitness_0: UniversityDiplomaProductionFinalGradePredicateWitness): [];
   universityDiplomaSchemaRef(): SchemaRef;
   universityJobApplicationRequest(issuerVerificationMethodRef_0: VerificationMethodRef,
                                   verifierChallengeHash_0: Uint8Array,
@@ -635,10 +649,10 @@ export type PureCircuits = {
                                   requireHonorsCodeDisclosure_0: boolean,
                                   requireGraduationMonthDisclosure_0: boolean,
                                   requireFinalGradeDisclosure_0: boolean,
-                                  requireCreditsEarnedDisclosure_0: boolean): UniversityDiplomaPresentationRequest;
+                                  requireCreditsEarnedDisclosure_0: boolean): UniversityDiplomaProductionPresentationRequest;
   universityMallDiscountRequest(issuerVerificationMethodRef_0: VerificationMethodRef,
                                 verifierChallengeHash_0: Uint8Array,
-                                minimumFinalGrade_0: bigint): UniversityDiplomaPresentationRequest;
+                                minimumFinalGrade_0: bigint): UniversityDiplomaProductionPresentationRequest;
 }
 
 export type Circuits<PS> = {
@@ -913,12 +927,27 @@ export type Circuits<PS> = {
                                                       request_0: UniversityDiplomaPresentationRequest,
                                                       presentation_0: UniversityDiplomaPresentation,
                                                       presentationProof_0: Proof): __compactRuntime.CircuitResults<PS, []>;
+  assertUniversityDiplomaProductionPresentationSatisfiesRequestCore(context: __compactRuntime.CircuitContext<PS>,
+                                                                    credential_0: UniversityDiplomaProductionCredential,
+                                                                    credentialProof_0: Proof,
+                                                                    request_0: UniversityDiplomaProductionPresentationRequest,
+                                                                    presentation_0: UniversityDiplomaProductionPresentation,
+                                                                    presentationProof_0: Proof): __compactRuntime.CircuitResults<PS, []>;
   assertUniversityDiplomaProductionPresentationSatisfiesRequest(context: __compactRuntime.CircuitContext<PS>,
                                                                 credential_0: UniversityDiplomaProductionCredential,
                                                                 credentialProof_0: Proof,
                                                                 request_0: UniversityDiplomaProductionPresentationRequest,
                                                                 presentation_0: UniversityDiplomaProductionPresentation,
                                                                 presentationProof_0: Proof): __compactRuntime.CircuitResults<PS, []>;
+  assertValidUniversityDiplomaProductionPredicatePresentationRequest(context: __compactRuntime.CircuitContext<PS>,
+                                                                     request_0: UniversityDiplomaProductionPresentationRequest): __compactRuntime.CircuitResults<PS, []>;
+  assertUniversityDiplomaProductionPresentationSatisfiesRequestWithFinalGradePredicate(context: __compactRuntime.CircuitContext<PS>,
+                                                                                       credential_0: UniversityDiplomaProductionCredential,
+                                                                                       credentialProof_0: Proof,
+                                                                                       request_0: UniversityDiplomaProductionPresentationRequest,
+                                                                                       presentation_0: UniversityDiplomaProductionPresentation,
+                                                                                       presentationProof_0: Proof,
+                                                                                       finalGradePredicateWitness_0: UniversityDiplomaProductionFinalGradePredicateWitness): __compactRuntime.CircuitResults<PS, []>;
   universityDiplomaSchemaRef(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, SchemaRef>;
   universityJobApplicationRequest(context: __compactRuntime.CircuitContext<PS>,
                                   issuerVerificationMethodRef_0: VerificationMethodRef,
@@ -929,23 +958,24 @@ export type Circuits<PS> = {
                                   requireHonorsCodeDisclosure_0: boolean,
                                   requireGraduationMonthDisclosure_0: boolean,
                                   requireFinalGradeDisclosure_0: boolean,
-                                  requireCreditsEarnedDisclosure_0: boolean): __compactRuntime.CircuitResults<PS, UniversityDiplomaPresentationRequest>;
+                                  requireCreditsEarnedDisclosure_0: boolean): __compactRuntime.CircuitResults<PS, UniversityDiplomaProductionPresentationRequest>;
   universityMallDiscountRequest(context: __compactRuntime.CircuitContext<PS>,
                                 issuerVerificationMethodRef_0: VerificationMethodRef,
                                 verifierChallengeHash_0: Uint8Array,
-                                minimumFinalGrade_0: bigint): __compactRuntime.CircuitResults<PS, UniversityDiplomaPresentationRequest>;
+                                minimumFinalGrade_0: bigint): __compactRuntime.CircuitResults<PS, UniversityDiplomaProductionPresentationRequest>;
   verifyUniversityDiplomaForJobApplication(context: __compactRuntime.CircuitContext<PS>,
-                                           credential_0: UniversityDiplomaCredential,
+                                           credential_0: UniversityDiplomaProductionCredential,
                                            credentialProof_0: Proof,
-                                           request_0: UniversityDiplomaPresentationRequest,
-                                           presentation_0: UniversityDiplomaPresentation,
+                                           request_0: UniversityDiplomaProductionPresentationRequest,
+                                           presentation_0: UniversityDiplomaProductionPresentation,
                                            presentationProof_0: Proof): __compactRuntime.CircuitResults<PS, []>;
   verifyUniversityDiplomaForMallDiscount(context: __compactRuntime.CircuitContext<PS>,
-                                         credential_0: UniversityDiplomaCredential,
+                                         credential_0: UniversityDiplomaProductionCredential,
                                          credentialProof_0: Proof,
-                                         request_0: UniversityDiplomaPresentationRequest,
-                                         presentation_0: UniversityDiplomaPresentation,
-                                         presentationProof_0: Proof): __compactRuntime.CircuitResults<PS, []>;
+                                         request_0: UniversityDiplomaProductionPresentationRequest,
+                                         presentation_0: UniversityDiplomaProductionPresentation,
+                                         presentationProof_0: Proof,
+                                         finalGradePredicateWitness_0: UniversityDiplomaProductionFinalGradePredicateWitness): __compactRuntime.CircuitResults<PS, []>;
 }
 
 export type Ledger = {

@@ -597,11 +597,23 @@ export type PureCircuits = {
                                                       request_0: UniversityDiplomaPresentationRequest,
                                                       presentation_0: UniversityDiplomaPresentation,
                                                       presentationProof_0: Proof): [];
+  assertUniversityDiplomaProductionPresentationSatisfiesRequestCore(credential_0: UniversityDiplomaProductionCredential,
+                                                                    credentialProof_0: Proof,
+                                                                    request_0: UniversityDiplomaProductionPresentationRequest,
+                                                                    presentation_0: UniversityDiplomaProductionPresentation,
+                                                                    presentationProof_0: Proof): [];
   assertUniversityDiplomaProductionPresentationSatisfiesRequest(credential_0: UniversityDiplomaProductionCredential,
                                                                 credentialProof_0: Proof,
                                                                 request_0: UniversityDiplomaProductionPresentationRequest,
                                                                 presentation_0: UniversityDiplomaProductionPresentation,
                                                                 presentationProof_0: Proof): [];
+  assertValidUniversityDiplomaProductionPredicatePresentationRequest(request_0: UniversityDiplomaProductionPresentationRequest): [];
+  assertUniversityDiplomaProductionPresentationSatisfiesRequestWithFinalGradePredicate(credential_0: UniversityDiplomaProductionCredential,
+                                                                                       credentialProof_0: Proof,
+                                                                                       request_0: UniversityDiplomaProductionPresentationRequest,
+                                                                                       presentation_0: UniversityDiplomaProductionPresentation,
+                                                                                       presentationProof_0: Proof,
+                                                                                       finalGradePredicateWitness_0: UniversityDiplomaProductionFinalGradePredicateWitness): [];
 }
 
 export type Circuits<PS> = {
@@ -876,12 +888,27 @@ export type Circuits<PS> = {
                                                       request_0: UniversityDiplomaPresentationRequest,
                                                       presentation_0: UniversityDiplomaPresentation,
                                                       presentationProof_0: Proof): __compactRuntime.CircuitResults<PS, []>;
+  assertUniversityDiplomaProductionPresentationSatisfiesRequestCore(context: __compactRuntime.CircuitContext<PS>,
+                                                                    credential_0: UniversityDiplomaProductionCredential,
+                                                                    credentialProof_0: Proof,
+                                                                    request_0: UniversityDiplomaProductionPresentationRequest,
+                                                                    presentation_0: UniversityDiplomaProductionPresentation,
+                                                                    presentationProof_0: Proof): __compactRuntime.CircuitResults<PS, []>;
   assertUniversityDiplomaProductionPresentationSatisfiesRequest(context: __compactRuntime.CircuitContext<PS>,
                                                                 credential_0: UniversityDiplomaProductionCredential,
                                                                 credentialProof_0: Proof,
                                                                 request_0: UniversityDiplomaProductionPresentationRequest,
                                                                 presentation_0: UniversityDiplomaProductionPresentation,
                                                                 presentationProof_0: Proof): __compactRuntime.CircuitResults<PS, []>;
+  assertValidUniversityDiplomaProductionPredicatePresentationRequest(context: __compactRuntime.CircuitContext<PS>,
+                                                                     request_0: UniversityDiplomaProductionPresentationRequest): __compactRuntime.CircuitResults<PS, []>;
+  assertUniversityDiplomaProductionPresentationSatisfiesRequestWithFinalGradePredicate(context: __compactRuntime.CircuitContext<PS>,
+                                                                                       credential_0: UniversityDiplomaProductionCredential,
+                                                                                       credentialProof_0: Proof,
+                                                                                       request_0: UniversityDiplomaProductionPresentationRequest,
+                                                                                       presentation_0: UniversityDiplomaProductionPresentation,
+                                                                                       presentationProof_0: Proof,
+                                                                                       finalGradePredicateWitness_0: UniversityDiplomaProductionFinalGradePredicateWitness): __compactRuntime.CircuitResults<PS, []>;
 }
 
 export type Ledger = {

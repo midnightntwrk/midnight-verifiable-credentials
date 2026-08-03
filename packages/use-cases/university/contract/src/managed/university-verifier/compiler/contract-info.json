@@ -13743,6 +13743,971 @@
       }
     },
     {
+      "name": "assertUniversityDiplomaProductionPresentationSatisfiesRequestCore",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "credential",
+          "type": {
+            "type-name": "Struct",
+            "name": "Credential",
+            "elements": [
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "schema",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "SchemaRef",
+                  "elements": [
+                    {
+                      "name": "packageId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "schemaId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "majorVersion",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "minorVersion",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "issuerVerificationMethodRef",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "VerificationMethodRef",
+                  "elements": [
+                    {
+                      "name": "didContractAddress",
+                      "type": {
+                        "type-name": "Struct",
+                        "name": "ContractAddress",
+                        "elements": [
+                          {
+                            "name": "bytes",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "methodId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "holderBinding",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "ExplicitHolderBinding",
+                  "elements": [
+                    {
+                      "name": "holderVerificationMethodRef",
+                      "type": {
+                        "type-name": "Struct",
+                        "name": "VerificationMethodRef",
+                        "elements": [
+                          {
+                            "name": "didContractAddress",
+                            "type": {
+                              "type-name": "Struct",
+                              "name": "ContractAddress",
+                              "elements": [
+                                {
+                                  "name": "bytes",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "name": "methodId",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "statusBinding",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "NoStatusBinding",
+                  "elements": [
+                  ]
+                }
+              },
+              {
+                "name": "issuedAt",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 18446744073709551615
+                }
+              },
+              {
+                "name": "hasExpiration",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "expiresAt",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 18446744073709551615
+                }
+              },
+              {
+                "name": "claims",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "UniversityDiplomaProductionPublicClaims",
+                  "elements": [
+                    {
+                      "name": "universityName",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "awardName",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "graduationYear",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "claimCommitments",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "UniversityDiplomaClaimCommitments",
+                  "elements": [
+                    {
+                      "name": "diplomaIdCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "studentIdCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "graduateNameCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "facultyNameCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "honorsCodeCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "graduationMonthCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "finalGradeCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "creditsEarnedCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "claimRoot",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "credentialProof",
+          "type": {
+            "type-name": "Struct",
+            "name": "Proof",
+            "elements": [
+              {
+                "name": "signerVerificationMethodRef",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "VerificationMethodRef",
+                  "elements": [
+                    {
+                      "name": "didContractAddress",
+                      "type": {
+                        "type-name": "Struct",
+                        "name": "ContractAddress",
+                        "elements": [
+                          {
+                            "name": "bytes",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "methodId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "createdAt",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 18446744073709551615
+                }
+              },
+              {
+                "name": "challengeHash",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "publicKey",
+                "type": {
+                  "type-name": "Alias",
+                  "name": "JubjubPoint",
+                  "type": {
+                    "type-name": "Opaque",
+                    "tsType": "JubjubPoint"
+                  }
+                }
+              },
+              {
+                "name": "signature",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "Signature",
+                  "elements": [
+                    {
+                      "name": "r",
+                      "type": {
+                        "type-name": "Alias",
+                        "name": "JubjubPoint",
+                        "type": {
+                          "type-name": "Opaque",
+                          "tsType": "JubjubPoint"
+                        }
+                      }
+                    },
+                    {
+                      "name": "s",
+                      "type": {
+                        "type-name": "Field"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "request",
+          "type": {
+            "type-name": "Struct",
+            "name": "UniversityDiplomaProductionPresentationRequest",
+            "elements": [
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "schema",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "SchemaRef",
+                  "elements": [
+                    {
+                      "name": "packageId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "schemaId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "majorVersion",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "minorVersion",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "issuerVerificationMethodRef",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "VerificationMethodRef",
+                  "elements": [
+                    {
+                      "name": "didContractAddress",
+                      "type": {
+                        "type-name": "Struct",
+                        "name": "ContractAddress",
+                        "elements": [
+                          {
+                            "name": "bytes",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "methodId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "requireDiplomaIdDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireStudentIdDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireGraduateNameDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireUniversityNameDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireFacultyNameDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireAwardNameDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireHonorsCodeDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireGraduationYearDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireGraduationMonthDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireFinalGradeDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireCreditsEarnedDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "enforceMinimumFinalGrade",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "minimumFinalGrade",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "verifierChallengeHash",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "presentation",
+          "type": {
+            "type-name": "Struct",
+            "name": "Presentation",
+            "elements": [
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "schema",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "SchemaRef",
+                  "elements": [
+                    {
+                      "name": "packageId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "schemaId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "majorVersion",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "minorVersion",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "credentialClaimRoot",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "issuerVerificationMethodRef",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "VerificationMethodRef",
+                  "elements": [
+                    {
+                      "name": "didContractAddress",
+                      "type": {
+                        "type-name": "Struct",
+                        "name": "ContractAddress",
+                        "elements": [
+                          {
+                            "name": "bytes",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "methodId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "holderBinding",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "ExplicitHolderBinding",
+                  "elements": [
+                    {
+                      "name": "holderVerificationMethodRef",
+                      "type": {
+                        "type-name": "Struct",
+                        "name": "VerificationMethodRef",
+                        "elements": [
+                          {
+                            "name": "didContractAddress",
+                            "type": {
+                              "type-name": "Struct",
+                              "name": "ContractAddress",
+                              "elements": [
+                                {
+                                  "name": "bytes",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "name": "methodId",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "disclosed",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "UniversityDiplomaProductionDisclosures",
+                  "elements": [
+                    {
+                      "name": "revealDiplomaId",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "diplomaId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "diplomaIdOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "revealStudentId",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "studentId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 16
+                      }
+                    },
+                    {
+                      "name": "studentIdOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "revealGraduateName",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "graduateName",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "graduateNameOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "revealUniversityName",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "universityName",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "revealFacultyName",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "facultyName",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "facultyNameOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "revealAwardName",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "awardName",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "revealHonorsCode",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "honorsCode",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 16
+                      }
+                    },
+                    {
+                      "name": "honorsCodeOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "revealGraduationYear",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "graduationYear",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "revealGraduationMonth",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "graduationMonth",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "graduationMonthOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "revealFinalGrade",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "finalGrade",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "finalGradeOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "revealCreditsEarned",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "creditsEarned",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "creditsEarnedOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "presentationProof",
+          "type": {
+            "type-name": "Struct",
+            "name": "Proof",
+            "elements": [
+              {
+                "name": "signerVerificationMethodRef",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "VerificationMethodRef",
+                  "elements": [
+                    {
+                      "name": "didContractAddress",
+                      "type": {
+                        "type-name": "Struct",
+                        "name": "ContractAddress",
+                        "elements": [
+                          {
+                            "name": "bytes",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "methodId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "createdAt",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 18446744073709551615
+                }
+              },
+              {
+                "name": "challengeHash",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "publicKey",
+                "type": {
+                  "type-name": "Alias",
+                  "name": "JubjubPoint",
+                  "type": {
+                    "type-name": "Opaque",
+                    "tsType": "JubjubPoint"
+                  }
+                }
+              },
+              {
+                "name": "signature",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "Signature",
+                  "elements": [
+                    {
+                      "name": "r",
+                      "type": {
+                        "type-name": "Alias",
+                        "name": "JubjubPoint",
+                        "type": {
+                          "type-name": "Opaque",
+                          "tsType": "JubjubPoint"
+                        }
+                      }
+                    },
+                    {
+                      "name": "s",
+                      "type": {
+                        "type-name": "Field"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Tuple",
+        "types": [
+        ]
+      }
+    },
+    {
       "name": "assertUniversityDiplomaProductionPresentationSatisfiesRequest",
       "pure": true,
       "proof": false,
@@ -14708,6 +15673,1177 @@
       }
     },
     {
+      "name": "assertValidUniversityDiplomaProductionPredicatePresentationRequest",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "request",
+          "type": {
+            "type-name": "Struct",
+            "name": "UniversityDiplomaProductionPresentationRequest",
+            "elements": [
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "schema",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "SchemaRef",
+                  "elements": [
+                    {
+                      "name": "packageId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "schemaId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "majorVersion",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "minorVersion",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "issuerVerificationMethodRef",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "VerificationMethodRef",
+                  "elements": [
+                    {
+                      "name": "didContractAddress",
+                      "type": {
+                        "type-name": "Struct",
+                        "name": "ContractAddress",
+                        "elements": [
+                          {
+                            "name": "bytes",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "methodId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "requireDiplomaIdDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireStudentIdDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireGraduateNameDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireUniversityNameDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireFacultyNameDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireAwardNameDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireHonorsCodeDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireGraduationYearDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireGraduationMonthDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireFinalGradeDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireCreditsEarnedDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "enforceMinimumFinalGrade",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "minimumFinalGrade",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "verifierChallengeHash",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Tuple",
+        "types": [
+        ]
+      }
+    },
+    {
+      "name": "assertUniversityDiplomaProductionPresentationSatisfiesRequestWithFinalGradePredicate",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "credential",
+          "type": {
+            "type-name": "Struct",
+            "name": "Credential",
+            "elements": [
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "schema",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "SchemaRef",
+                  "elements": [
+                    {
+                      "name": "packageId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "schemaId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "majorVersion",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "minorVersion",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "issuerVerificationMethodRef",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "VerificationMethodRef",
+                  "elements": [
+                    {
+                      "name": "didContractAddress",
+                      "type": {
+                        "type-name": "Struct",
+                        "name": "ContractAddress",
+                        "elements": [
+                          {
+                            "name": "bytes",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "methodId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "holderBinding",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "ExplicitHolderBinding",
+                  "elements": [
+                    {
+                      "name": "holderVerificationMethodRef",
+                      "type": {
+                        "type-name": "Struct",
+                        "name": "VerificationMethodRef",
+                        "elements": [
+                          {
+                            "name": "didContractAddress",
+                            "type": {
+                              "type-name": "Struct",
+                              "name": "ContractAddress",
+                              "elements": [
+                                {
+                                  "name": "bytes",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "name": "methodId",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "statusBinding",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "NoStatusBinding",
+                  "elements": [
+                  ]
+                }
+              },
+              {
+                "name": "issuedAt",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 18446744073709551615
+                }
+              },
+              {
+                "name": "hasExpiration",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "expiresAt",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 18446744073709551615
+                }
+              },
+              {
+                "name": "claims",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "UniversityDiplomaProductionPublicClaims",
+                  "elements": [
+                    {
+                      "name": "universityName",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "awardName",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "graduationYear",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "claimCommitments",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "UniversityDiplomaClaimCommitments",
+                  "elements": [
+                    {
+                      "name": "diplomaIdCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "studentIdCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "graduateNameCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "facultyNameCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "honorsCodeCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "graduationMonthCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "finalGradeCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "creditsEarnedCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "claimRoot",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "credentialProof",
+          "type": {
+            "type-name": "Struct",
+            "name": "Proof",
+            "elements": [
+              {
+                "name": "signerVerificationMethodRef",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "VerificationMethodRef",
+                  "elements": [
+                    {
+                      "name": "didContractAddress",
+                      "type": {
+                        "type-name": "Struct",
+                        "name": "ContractAddress",
+                        "elements": [
+                          {
+                            "name": "bytes",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "methodId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "createdAt",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 18446744073709551615
+                }
+              },
+              {
+                "name": "challengeHash",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "publicKey",
+                "type": {
+                  "type-name": "Alias",
+                  "name": "JubjubPoint",
+                  "type": {
+                    "type-name": "Opaque",
+                    "tsType": "JubjubPoint"
+                  }
+                }
+              },
+              {
+                "name": "signature",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "Signature",
+                  "elements": [
+                    {
+                      "name": "r",
+                      "type": {
+                        "type-name": "Alias",
+                        "name": "JubjubPoint",
+                        "type": {
+                          "type-name": "Opaque",
+                          "tsType": "JubjubPoint"
+                        }
+                      }
+                    },
+                    {
+                      "name": "s",
+                      "type": {
+                        "type-name": "Field"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "request",
+          "type": {
+            "type-name": "Struct",
+            "name": "UniversityDiplomaProductionPresentationRequest",
+            "elements": [
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "schema",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "SchemaRef",
+                  "elements": [
+                    {
+                      "name": "packageId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "schemaId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "majorVersion",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "minorVersion",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "issuerVerificationMethodRef",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "VerificationMethodRef",
+                  "elements": [
+                    {
+                      "name": "didContractAddress",
+                      "type": {
+                        "type-name": "Struct",
+                        "name": "ContractAddress",
+                        "elements": [
+                          {
+                            "name": "bytes",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "methodId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "requireDiplomaIdDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireStudentIdDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireGraduateNameDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireUniversityNameDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireFacultyNameDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireAwardNameDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireHonorsCodeDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireGraduationYearDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireGraduationMonthDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireFinalGradeDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireCreditsEarnedDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "enforceMinimumFinalGrade",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "minimumFinalGrade",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "verifierChallengeHash",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "presentation",
+          "type": {
+            "type-name": "Struct",
+            "name": "Presentation",
+            "elements": [
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "schema",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "SchemaRef",
+                  "elements": [
+                    {
+                      "name": "packageId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "schemaId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "majorVersion",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "minorVersion",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "credentialClaimRoot",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "issuerVerificationMethodRef",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "VerificationMethodRef",
+                  "elements": [
+                    {
+                      "name": "didContractAddress",
+                      "type": {
+                        "type-name": "Struct",
+                        "name": "ContractAddress",
+                        "elements": [
+                          {
+                            "name": "bytes",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "methodId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "holderBinding",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "ExplicitHolderBinding",
+                  "elements": [
+                    {
+                      "name": "holderVerificationMethodRef",
+                      "type": {
+                        "type-name": "Struct",
+                        "name": "VerificationMethodRef",
+                        "elements": [
+                          {
+                            "name": "didContractAddress",
+                            "type": {
+                              "type-name": "Struct",
+                              "name": "ContractAddress",
+                              "elements": [
+                                {
+                                  "name": "bytes",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "name": "methodId",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "disclosed",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "UniversityDiplomaProductionDisclosures",
+                  "elements": [
+                    {
+                      "name": "revealDiplomaId",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "diplomaId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "diplomaIdOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "revealStudentId",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "studentId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 16
+                      }
+                    },
+                    {
+                      "name": "studentIdOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "revealGraduateName",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "graduateName",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "graduateNameOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "revealUniversityName",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "universityName",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "revealFacultyName",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "facultyName",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "facultyNameOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "revealAwardName",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "awardName",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "revealHonorsCode",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "honorsCode",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 16
+                      }
+                    },
+                    {
+                      "name": "honorsCodeOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "revealGraduationYear",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "graduationYear",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "revealGraduationMonth",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "graduationMonth",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "graduationMonthOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "revealFinalGrade",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "finalGrade",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "finalGradeOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "revealCreditsEarned",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "creditsEarned",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "creditsEarnedOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "presentationProof",
+          "type": {
+            "type-name": "Struct",
+            "name": "Proof",
+            "elements": [
+              {
+                "name": "signerVerificationMethodRef",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "VerificationMethodRef",
+                  "elements": [
+                    {
+                      "name": "didContractAddress",
+                      "type": {
+                        "type-name": "Struct",
+                        "name": "ContractAddress",
+                        "elements": [
+                          {
+                            "name": "bytes",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "methodId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "createdAt",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 18446744073709551615
+                }
+              },
+              {
+                "name": "challengeHash",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "publicKey",
+                "type": {
+                  "type-name": "Alias",
+                  "name": "JubjubPoint",
+                  "type": {
+                    "type-name": "Opaque",
+                    "tsType": "JubjubPoint"
+                  }
+                }
+              },
+              {
+                "name": "signature",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "Signature",
+                  "elements": [
+                    {
+                      "name": "r",
+                      "type": {
+                        "type-name": "Alias",
+                        "name": "JubjubPoint",
+                        "type": {
+                          "type-name": "Opaque",
+                          "tsType": "JubjubPoint"
+                        }
+                      }
+                    },
+                    {
+                      "name": "s",
+                      "type": {
+                        "type-name": "Field"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "finalGradePredicateWitness",
+          "type": {
+            "type-name": "Struct",
+            "name": "UniversityDiplomaProductionFinalGradePredicateWitness",
+            "elements": [
+              {
+                "name": "finalGrade",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "finalGradeOpening",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Tuple",
+        "types": [
+        ]
+      }
+    },
+    {
       "name": "universityDiplomaSchemaRef",
       "pure": true,
       "proof": false,
@@ -14837,7 +16973,7 @@
       ],
       "result-type": {
         "type-name": "Struct",
-        "name": "UniversityDiplomaPresentationRequest",
+        "name": "UniversityDiplomaProductionPresentationRequest",
         "elements": [
           {
             "name": "version",
@@ -15058,7 +17194,7 @@
       ],
       "result-type": {
         "type-name": "Struct",
-        "name": "UniversityDiplomaPresentationRequest",
+        "name": "UniversityDiplomaProductionPresentationRequest",
         "elements": [
           {
             "name": "version",
@@ -15386,38 +17522,10 @@
                 "name": "claims",
                 "type": {
                   "type-name": "Struct",
-                  "name": "UniversityDiplomaClaims",
+                  "name": "UniversityDiplomaProductionPublicClaims",
                   "elements": [
                     {
-                      "name": "diplomaId",
-                      "type": {
-                        "type-name": "Bytes",
-                        "length": 32
-                      }
-                    },
-                    {
-                      "name": "studentId",
-                      "type": {
-                        "type-name": "Bytes",
-                        "length": 16
-                      }
-                    },
-                    {
-                      "name": "graduateName",
-                      "type": {
-                        "type-name": "Bytes",
-                        "length": 32
-                      }
-                    },
-                    {
                       "name": "universityName",
-                      "type": {
-                        "type-name": "Bytes",
-                        "length": 32
-                      }
-                    },
-                    {
-                      "name": "facultyName",
                       "type": {
                         "type-name": "Bytes",
                         "length": 32
@@ -15431,35 +17539,7 @@
                       }
                     },
                     {
-                      "name": "honorsCode",
-                      "type": {
-                        "type-name": "Bytes",
-                        "length": 16
-                      }
-                    },
-                    {
                       "name": "graduationYear",
-                      "type": {
-                        "type-name": "Uint",
-                        "maxval": 65535
-                      }
-                    },
-                    {
-                      "name": "graduationMonth",
-                      "type": {
-                        "type-name": "Uint",
-                        "maxval": 255
-                      }
-                    },
-                    {
-                      "name": "finalGrade",
-                      "type": {
-                        "type-name": "Uint",
-                        "maxval": 255
-                      }
-                    },
-                    {
-                      "name": "creditsEarned",
                       "type": {
                         "type-name": "Uint",
                         "maxval": 65535
@@ -15472,8 +17552,64 @@
                 "name": "claimCommitments",
                 "type": {
                   "type-name": "Struct",
-                  "name": "NoClaimCommitments",
+                  "name": "UniversityDiplomaClaimCommitments",
                   "elements": [
+                    {
+                      "name": "diplomaIdCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "studentIdCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "graduateNameCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "facultyNameCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "honorsCodeCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "graduationMonthCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "finalGradeCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "creditsEarnedCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
                   ]
                 }
               },
@@ -15583,7 +17719,7 @@
           "name": "request",
           "type": {
             "type-name": "Struct",
-            "name": "UniversityDiplomaPresentationRequest",
+            "name": "UniversityDiplomaProductionPresentationRequest",
             "elements": [
               {
                 "name": "version",
@@ -15884,7 +18020,7 @@
                 "name": "disclosed",
                 "type": {
                   "type-name": "Struct",
-                  "name": "UniversityDiplomaDisclosures",
+                  "name": "UniversityDiplomaProductionDisclosures",
                   "elements": [
                     {
                       "name": "revealDiplomaId",
@@ -15894,6 +18030,13 @@
                     },
                     {
                       "name": "diplomaId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "diplomaIdOpening",
                       "type": {
                         "type-name": "Bytes",
                         "length": 32
@@ -15913,6 +18056,13 @@
                       }
                     },
                     {
+                      "name": "studentIdOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
                       "name": "revealGraduateName",
                       "type": {
                         "type-name": "Boolean"
@@ -15920,6 +18070,13 @@
                     },
                     {
                       "name": "graduateName",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "graduateNameOpening",
                       "type": {
                         "type-name": "Bytes",
                         "length": 32
@@ -15952,6 +18109,13 @@
                       }
                     },
                     {
+                      "name": "facultyNameOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
                       "name": "revealAwardName",
                       "type": {
                         "type-name": "Boolean"
@@ -15975,6 +18139,13 @@
                       "type": {
                         "type-name": "Bytes",
                         "length": 16
+                      }
+                    },
+                    {
+                      "name": "honorsCodeOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
                       }
                     },
                     {
@@ -16004,6 +18175,13 @@
                       }
                     },
                     {
+                      "name": "graduationMonthOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
                       "name": "revealFinalGrade",
                       "type": {
                         "type-name": "Boolean"
@@ -16017,6 +18195,13 @@
                       }
                     },
                     {
+                      "name": "finalGradeOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
                       "name": "revealCreditsEarned",
                       "type": {
                         "type-name": "Boolean"
@@ -16027,6 +18212,13 @@
                       "type": {
                         "type-name": "Uint",
                         "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "creditsEarnedOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
                       }
                     }
                   ]
@@ -16295,38 +18487,10 @@
                 "name": "claims",
                 "type": {
                   "type-name": "Struct",
-                  "name": "UniversityDiplomaClaims",
+                  "name": "UniversityDiplomaProductionPublicClaims",
                   "elements": [
                     {
-                      "name": "diplomaId",
-                      "type": {
-                        "type-name": "Bytes",
-                        "length": 32
-                      }
-                    },
-                    {
-                      "name": "studentId",
-                      "type": {
-                        "type-name": "Bytes",
-                        "length": 16
-                      }
-                    },
-                    {
-                      "name": "graduateName",
-                      "type": {
-                        "type-name": "Bytes",
-                        "length": 32
-                      }
-                    },
-                    {
                       "name": "universityName",
-                      "type": {
-                        "type-name": "Bytes",
-                        "length": 32
-                      }
-                    },
-                    {
-                      "name": "facultyName",
                       "type": {
                         "type-name": "Bytes",
                         "length": 32
@@ -16340,35 +18504,7 @@
                       }
                     },
                     {
-                      "name": "honorsCode",
-                      "type": {
-                        "type-name": "Bytes",
-                        "length": 16
-                      }
-                    },
-                    {
                       "name": "graduationYear",
-                      "type": {
-                        "type-name": "Uint",
-                        "maxval": 65535
-                      }
-                    },
-                    {
-                      "name": "graduationMonth",
-                      "type": {
-                        "type-name": "Uint",
-                        "maxval": 255
-                      }
-                    },
-                    {
-                      "name": "finalGrade",
-                      "type": {
-                        "type-name": "Uint",
-                        "maxval": 255
-                      }
-                    },
-                    {
-                      "name": "creditsEarned",
                       "type": {
                         "type-name": "Uint",
                         "maxval": 65535
@@ -16381,8 +18517,64 @@
                 "name": "claimCommitments",
                 "type": {
                   "type-name": "Struct",
-                  "name": "NoClaimCommitments",
+                  "name": "UniversityDiplomaClaimCommitments",
                   "elements": [
+                    {
+                      "name": "diplomaIdCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "studentIdCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "graduateNameCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "facultyNameCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "honorsCodeCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "graduationMonthCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "finalGradeCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "creditsEarnedCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
                   ]
                 }
               },
@@ -16492,7 +18684,7 @@
           "name": "request",
           "type": {
             "type-name": "Struct",
-            "name": "UniversityDiplomaPresentationRequest",
+            "name": "UniversityDiplomaProductionPresentationRequest",
             "elements": [
               {
                 "name": "version",
@@ -16793,7 +18985,7 @@
                 "name": "disclosed",
                 "type": {
                   "type-name": "Struct",
-                  "name": "UniversityDiplomaDisclosures",
+                  "name": "UniversityDiplomaProductionDisclosures",
                   "elements": [
                     {
                       "name": "revealDiplomaId",
@@ -16803,6 +18995,13 @@
                     },
                     {
                       "name": "diplomaId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "diplomaIdOpening",
                       "type": {
                         "type-name": "Bytes",
                         "length": 32
@@ -16822,6 +19021,13 @@
                       }
                     },
                     {
+                      "name": "studentIdOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
                       "name": "revealGraduateName",
                       "type": {
                         "type-name": "Boolean"
@@ -16829,6 +19035,13 @@
                     },
                     {
                       "name": "graduateName",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "graduateNameOpening",
                       "type": {
                         "type-name": "Bytes",
                         "length": 32
@@ -16861,6 +19074,13 @@
                       }
                     },
                     {
+                      "name": "facultyNameOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
                       "name": "revealAwardName",
                       "type": {
                         "type-name": "Boolean"
@@ -16884,6 +19104,13 @@
                       "type": {
                         "type-name": "Bytes",
                         "length": 16
+                      }
+                    },
+                    {
+                      "name": "honorsCodeOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
                       }
                     },
                     {
@@ -16913,6 +19140,13 @@
                       }
                     },
                     {
+                      "name": "graduationMonthOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
                       "name": "revealFinalGrade",
                       "type": {
                         "type-name": "Boolean"
@@ -16926,6 +19160,13 @@
                       }
                     },
                     {
+                      "name": "finalGradeOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
                       "name": "revealCreditsEarned",
                       "type": {
                         "type-name": "Boolean"
@@ -16936,6 +19177,13 @@
                       "type": {
                         "type-name": "Uint",
                         "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "creditsEarnedOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
                       }
                     }
                   ]
@@ -17031,6 +19279,29 @@
                       }
                     }
                   ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "finalGradePredicateWitness",
+          "type": {
+            "type-name": "Struct",
+            "name": "UniversityDiplomaProductionFinalGradePredicateWitness",
+            "elements": [
+              {
+                "name": "finalGrade",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "finalGradeOpening",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
                 }
               }
             ]
