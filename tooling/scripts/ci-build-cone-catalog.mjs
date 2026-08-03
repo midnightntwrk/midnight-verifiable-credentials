@@ -25,6 +25,7 @@ export const ciBuildCones = [
     name: "foundation",
     inputPackages: [
       "packages/core/model",
+      "packages/core/compact",
       "packages/core/primitives/credentials",
       "packages/registry/status-registry",
       "packages/core/capabilities/same-holder",
@@ -38,6 +39,8 @@ export const ciBuildCones = [
     turboOptions: ["--concurrency=1", "--ui=stream"],
     outputPaths: [
       "packages/core/model/dist",
+      "packages/core/compact/src/managed",
+      "packages/core/compact/dist",
       "packages/core/primitives/credentials/src/managed",
       "packages/core/primitives/credentials/dist",
       "packages/registry/status-registry/src/managed",
@@ -54,6 +57,7 @@ export const ciBuildCones = [
     name: "birth-family",
     inputPackages: [
       "packages/core/model",
+      "packages/core/compact",
       "packages/core/primitives/credentials",
       "packages/registry/status-registry",
       "packages/core/capabilities/same-holder",
@@ -92,6 +96,7 @@ export const ciBuildCones = [
     name: "age-gate",
     inputPackages: [
       "packages/core/model",
+      "packages/core/compact",
       "packages/core/primitives/credentials",
       "packages/registry/status-registry",
       "packages/core/capabilities/same-holder",

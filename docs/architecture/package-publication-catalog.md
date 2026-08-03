@@ -6,9 +6,12 @@ This catalog defines the reusable packages intended for independent
 credential-family repositories. Current concrete families are private evidence
 under `packages/prototypes/credential-families`; the ownership, dependant
 inventory, and graduation gates are maintained in
-[`credential-family-ownership-policy.md`](./credential-family-ownership-policy.md). `@midnight-ntwrk/credential-model` is the
-first supported package; every other row remains a target rather than a claim
-that the package is currently supported or published.
+[`credential-family-ownership-policy.md`](./credential-family-ownership-policy.md).
+`@midnight-ntwrk/credential-model` is the first supported package;
+`credential-compact` is now an executable private candidate, while every other
+row remains a target rather than a claim that the package is currently
+supported or published. ADR-0014 remains Proposed; this implementation records
+candidate evidence only and does not enforce its graph.
 
 The naming convention uses credential-domain terms instead of the broad `ssi`
 label or the abbreviated `vc` prefix. Package names describe the capability
@@ -20,7 +23,7 @@ first and put platform or protocol qualifiers last. The exception is
 | Package | Responsibility | Target stage | Priority |
 | --- | --- | --- | --- |
 | `@midnight-ntwrk/credential-model` | Pure TypeScript credential-family model, schema and capability descriptors, composition manifests, codecs, and errors | Public | P0 |
-| `@midnight-ntwrk/credential-compact` | Generic Compact VC/VP envelopes, holder bindings, same-holder capability, and curated generated exports | Public | P0 |
+| `@midnight-ntwrk/credential-compact` | Generic Compact VC/VP envelopes, holder bindings, same-holder capability, and curated generated exports | Private candidate (not published) | P0 |
 | `@midnight-ntwrk/credential-proofs` | Family-neutral proof jobs, provider/verifier ports, artifact resolver ports, and versioned proof/deployment manifest contracts | Public | P0 |
 | `@midnight-ntwrk/credential-status` | Generic credential-status bindings, policies, and reader/writer/verifier ports | Public | P0 |
 | `@midnight-ntwrk/credential-verification` | Canonical transcripts, result axes, policy composition, and decision-nullifier contracts | Public | P0 |

@@ -244,6 +244,12 @@ importers:
         specifier: '*'
         version: link:../../primitives/credentials
 
+  packages/core/compact:
+    dependencies:
+      '@midnight-ntwrk/compact-runtime':
+        specifier: 0.15.0
+        version: 0.15.0
+
   packages/core/model: {}
 
   packages/core/primitives/credentials:
