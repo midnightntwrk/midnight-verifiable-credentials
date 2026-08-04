@@ -29,7 +29,7 @@ const vendorOnlyDidPackages = new Set([
   // resolver package becomes the distribution source.
   "@midnight-ntwrk/midnight-did-secret-storage",
 ]);
-const publishedDidVersion = "0.5.0-rc1";
+const publishedDidVersion = "0.5.0";
 const publishedDidPackages = new Set([
   "@midnight-ntwrk/midnight-did",
   "@midnight-ntwrk/midnight-did-api",

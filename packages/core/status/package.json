@@ -1,0 +1,66 @@
+{
+  "name": "@midnight-ntwrk/credential-status",
+  "version": "0.1.0",
+  "description": "Private candidate library of generic credential-status semantics and ports",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/midnightntwrk/midnight-verifiable-credentials.git",
+    "directory": "packages/core/status"
+  },
+  "keywords": ["midnight", "verifiable-credentials", "credential-status", "revocation", "typescript"],
+  "sideEffects": [],
+  "engines": { "node": ">=24", "pnpm": ">=10" },
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./bindings": {
+      "types": "./dist/bindings.d.ts",
+      "import": "./dist/bindings.js",
+      "default": "./dist/bindings.js"
+    },
+    "./outcomes": {
+      "types": "./dist/outcomes.d.ts",
+      "import": "./dist/outcomes.js",
+      "default": "./dist/outcomes.js"
+    },
+    "./ports": {
+      "types": "./dist/ports.d.ts",
+      "import": "./dist/ports.js",
+      "default": "./dist/ports.js"
+    },
+    "./policy": {
+      "types": "./dist/policy.d.ts",
+      "import": "./dist/policy.js",
+      "default": "./dist/policy.js"
+    }
+  },
+  "scripts": {
+    "build": "rm -rf dist .cache && tsc -b tsconfig.build.json --force",
+    "prepack": "pnpm run build",
+    "test": "vitest run",
+    "test:ci": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint \"src/**/*.ts\"",
+    "lint:fix": "eslint \"src/**/*.ts\" --fix",
+    "clean": "rm -rf dist coverage .cache *.tsbuildinfo",
+    "all": "pnpm run lint && pnpm run typecheck && pnpm run build && pnpm run test:ci"
+  },
+  "dependencies": {
+    "@midnight-ntwrk/credential-model": "^0.1.0-rc1"
+  },
+  "files": ["dist/**", "README.md", "CHANGELOG.md", "package.json"],
+  "midnight": {
+    "maturity": "core",
+    "packageClass": "dist",
+    "releaseStage": "candidate"
+  }
+}

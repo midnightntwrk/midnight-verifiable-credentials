@@ -1,0 +1,16 @@
+{
+  "name": "credential-status-consumer",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@midnight-ntwrk/credential-status": "file:./vendor/candidate.tgz"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.29",
+    "typescript": "^5.8.3"
+  },
+  "scripts": {
+    "test:node": "node --input-type=module -e \"import('@midnight-ntwrk/credential-status').then(({ statusModes }) => { if (statusModes.none !== 'none') process.exit(1); })\"",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  }
+}

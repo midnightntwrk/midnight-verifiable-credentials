@@ -11,6 +11,8 @@
   "workspaces": [
     "packages/core/model",
     "packages/core/compact",
+    "packages/core/proofs",
+    "packages/core/status",
     "packages/core/primitives/credentials",
     "packages/registry/status-registry",
     "packages/core/capabilities/same-holder",
@@ -36,7 +38,7 @@
     "packages/components/integration/standalone-environment"
   ],
   "scripts": {
-    "clean": "turbo run clean --filter=./packages/core/model --filter=./packages/core/primitives/credentials --filter=./packages/registry/status-registry --filter=./packages/core/capabilities/same-holder --filter=./packages/core/primitives/iso-registry --filter=./packages/components/adapters/offchain-did --filter=./packages/prototypes/credential-families/birth --filter=./packages/prototypes/credential-families/birth-secret --filter=./packages/prototypes/credential-families/hello-family --filter=./packages/prototypes/credential-families/dummy-claims --filter=./packages/prototypes/credential-families/mixed-claims --filter=./packages/prototypes/credential-families/university-diploma --filter=./packages/prototypes/credential-families/digital-passport --filter=./packages/protocols/openid --filter=./packages/use-cases/age-gate/contract --filter=./packages/use-cases/hello-verifier/contract --filter=./packages/components/orchestration/protocol --continue",
+    "clean": "turbo run clean --filter=./packages/core/model --filter=./packages/core/proofs --filter=./packages/core/primitives/credentials --filter=./packages/registry/status-registry --filter=./packages/core/capabilities/same-holder --filter=./packages/core/primitives/iso-registry --filter=./packages/components/adapters/offchain-did --filter=./packages/prototypes/credential-families/birth --filter=./packages/prototypes/credential-families/birth-secret --filter=./packages/prototypes/credential-families/hello-family --filter=./packages/prototypes/credential-families/dummy-claims --filter=./packages/prototypes/credential-families/mixed-claims --filter=./packages/prototypes/credential-families/university-diploma --filter=./packages/prototypes/credential-families/digital-passport --filter=./packages/protocols/openid --filter=./packages/use-cases/age-gate/contract --filter=./packages/use-cases/hello-verifier/contract --filter=./packages/components/orchestration/protocol --continue",
     "check:package-boundaries": "bash ./tooling/scripts/check-package-boundaries.sh && node ./tooling/scripts/check-package-boundaries.mjs",
     "check:ci-build-cones": "node ./tooling/scripts/check-ci-build-cones.mjs",
     "check:ci-workflow-cones": "node ./tooling/scripts/check-ci-workflow-cones.mjs",
@@ -68,7 +70,7 @@
     "update:university-operator-guide": "node ./packages/use-cases/university/scripts/ci-matrix.mjs --update-operator-guide",
     "ci:university-ci-matrix": "pnpm run check:university-ci-matrix && pnpm --silent run build:university-ci-matrix:json",
     "lint": "node ./tooling/scripts/workspace-catalog.mjs --exec-task lint",
-    "lint:fix": "turbo run lint:fix --filter=./packages/core/model --filter=./packages/core/primitives/credentials --filter=./packages/registry/status-registry --filter=./packages/core/capabilities/same-holder --filter=./packages/core/primitives/iso-registry --filter=./packages/components/adapters/offchain-did --filter=./packages/prototypes/credential-families/birth --filter=./packages/prototypes/credential-families/birth-secret --filter=./packages/prototypes/credential-families/hello-family --filter=./packages/prototypes/credential-families/dummy-claims --filter=./packages/prototypes/credential-families/mixed-claims --filter=./packages/prototypes/credential-families/university-diploma --filter=./packages/prototypes/credential-families/digital-passport --filter=./packages/protocols/openid --filter=./packages/use-cases/age-gate/contract --filter=./packages/use-cases/hello-verifier/contract --filter=./packages/components/orchestration/protocol --continue",
+    "lint:fix": "turbo run lint:fix --filter=./packages/core/model --filter=./packages/core/proofs --filter=./packages/core/primitives/credentials --filter=./packages/registry/status-registry --filter=./packages/core/capabilities/same-holder --filter=./packages/core/primitives/iso-registry --filter=./packages/components/adapters/offchain-did --filter=./packages/prototypes/credential-families/birth --filter=./packages/prototypes/credential-families/birth-secret --filter=./packages/prototypes/credential-families/hello-family --filter=./packages/prototypes/credential-families/dummy-claims --filter=./packages/prototypes/credential-families/mixed-claims --filter=./packages/prototypes/credential-families/university-diploma --filter=./packages/prototypes/credential-families/digital-passport --filter=./packages/protocols/openid --filter=./packages/use-cases/age-gate/contract --filter=./packages/use-cases/hello-verifier/contract --filter=./packages/components/orchestration/protocol --continue",
     "lint:hello-smoke": "turbo run lint --filter=./packages/components/adapters/offchain-did --filter=./packages/prototypes/credential-families/hello-family --filter=./packages/use-cases/hello-verifier/contract --continue",
     "lint:dummy-claims-lab": "turbo run lint --filter=./packages/prototypes/credential-families/dummy-claims --filter=./packages/use-cases/hello-verifier/contract --continue",
     "build:core": "pnpm run build:cone:foundation",
@@ -249,11 +251,11 @@
   },
   "pnpm": {
     "overrides": {
-      "@midnight-ntwrk/midnight-did": "0.5.0-rc1",
-      "@midnight-ntwrk/midnight-did-api": "0.5.0-rc1",
-      "@midnight-ntwrk/midnight-did-contract": "0.5.0-rc1",
-      "@midnight-ntwrk/midnight-did-domain": "0.5.0-rc1",
-      "@midnight-ntwrk/midnight-did-jubjub-schnorr": "0.5.0-rc1",
+      "@midnight-ntwrk/midnight-did": "0.5.0",
+      "@midnight-ntwrk/midnight-did-api": "0.5.0",
+      "@midnight-ntwrk/midnight-did-contract": "0.5.0",
+      "@midnight-ntwrk/midnight-did-domain": "0.5.0",
+      "@midnight-ntwrk/midnight-did-jubjub-schnorr": "0.5.0",
       "@midnight-ntwrk/midnight-did-secret-storage": "file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-secret-storage-0.1.0.tgz",
       "@midnight-ntwrk/ledger-v8": "8.1.0",
       "@midnight-ntwrk/midnight-js-contracts": "4.0.4",
@@ -266,23 +268,23 @@
       "@midnight-ntwrk/midnight-js-types": "4.0.4",
       "@midnight-ntwrk/midnight-js-utils": "4.0.4",
       "axios": "1.18.0",
-      "brace-expansion@1": "5.0.8",
-      "brace-expansion@2": "5.0.8",
-      "brace-expansion@5": "5.0.8",
+      "brace-expansion@1": "5.0.9",
+      "brace-expansion@2": "5.0.9",
+      "brace-expansion@5": "5.0.9",
       "esbuild": "0.28.1",
       "form-data": "4.0.6",
       "js-yaml": "4.3.0",
       "postcss": "8.5.23",
       "protobufjs": "7.6.5",
       "tmp": "0.2.7",
-      "undici": "7.28.0",
+      "undici": "7.29.0",
       "uuid@10": "11.1.1",
       "uuid@11": "11.1.1",
       "vite": "7.3.6",
       "ws": "8.21.1"
     },
     "patchedDependencies": {
-      "brace-expansion@5.0.8": "patches/brace-expansion@5.0.8.patch"
+      "brace-expansion@5.0.9": "patches/brace-expansion@5.0.9.patch"
     }
   }
 }

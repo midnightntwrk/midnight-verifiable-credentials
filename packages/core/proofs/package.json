@@ -1,0 +1,56 @@
+{
+  "name": "@midnight-ntwrk/credential-proofs",
+  "version": "0.1.0",
+  "description": "Family-neutral proof ports and immutable artifact manifest contracts",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/midnightntwrk/midnight-verifiable-credentials.git",
+    "directory": "packages/core/proofs"
+  },
+  "keywords": ["midnight", "verifiable-credentials", "credential-proofs", "zero-knowledge"],
+  "sideEffects": [],
+  "engines": { "node": ">=24", "pnpm": ">=10" },
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./artifacts": {
+      "types": "./dist/artifacts.d.ts",
+      "import": "./dist/artifacts.js",
+      "default": "./dist/artifacts.js"
+    },
+    "./providers": {
+      "types": "./dist/providers.d.ts",
+      "import": "./dist/providers.js",
+      "default": "./dist/providers.js"
+    }
+  },
+  "scripts": {
+    "build": "rm -rf dist .cache && tsc -b tsconfig.build.json --force",
+    "prepack": "pnpm run build",
+    "test": "vitest run",
+    "test:ci": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint \"src/**/*.ts\"",
+    "lint:fix": "eslint \"src/**/*.ts\" --fix",
+    "clean": "rm -rf dist coverage .cache *.tsbuildinfo",
+    "all": "pnpm run lint && pnpm run typecheck && pnpm run build && pnpm run test:ci"
+  },
+  "files": ["dist/**", "README.md", "CHANGELOG.md", "package.json"],
+  "dependencies": {
+    "@midnight-ntwrk/credential-model": "^0.1.0-rc1"
+  },
+  "midnight": {
+    "maturity": "core",
+    "packageClass": "dist",
+    "releaseStage": "candidate"
+  }
+}
