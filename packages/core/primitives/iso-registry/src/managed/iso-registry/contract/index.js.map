@@ -1,0 +1,8 @@
+{
+  "version": 3,
+  "file": "index.js",
+  "sourceRoot": "../../../../",
+  "sources": ["src/iso-registry.compact", "src/./iso-registry/codes.compact"],
+  "names": [],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;EAAA;;;;;;;;;;MCqBA,AAAA,mBAKC;;OAAA;MAED,AAAA,yBAKC;;OAAA;;;;GD5BA;EALD;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;GAKC;ECgBD,AAAA,sBAKC,CAJC,QAAmB,EACnB,UAAkB;0CAEX,QAAM,QAAU,UAAQ;;;GAChC;EAED,AAAA,4BAKC,CAJC,QAAkB,EAClB,iBAAyB;0CAElB,QAAM,UAAY,iBAAe;;;GACzC;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;EAZD,AAAA,mBAKC;;;;UAJC,QAAmB;UACnB,UAAkB;;;;;;;;;;;;;;;iDADlB,QAAmB,EACnB,UAAkB;GAGnB;EAED,AAAA,yBAKC;;;;UAJC,QAAkB;UAClB,iBAAyB;;;;;;;;;;;;;;;uDADzB,QAAkB;uDAClB,iBAAyB;GAG1B;;;;"
+}
