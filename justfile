@@ -7,8 +7,8 @@ pi_web_version := env_var_or_default("PI_WEB_VERSION", "1.202607.3")
 default:
   @just --list
 
-# Bootstrap the repo for day-to-day development and Pi/PI WEB usage.
-bootstrap: deps pi-bootstrap pi-web-bootstrap
+# Bootstrap the repo for day-to-day development and Pi usage.
+bootstrap: deps pi-bootstrap
 
 # Install/update the project workspace dependencies when needed.
 deps:
@@ -30,27 +30,18 @@ pi-bootstrap:
   fi
   @echo "Project Pi packages are pinned in .pi/settings.json. Start with: pi"
 
-# Install the pinned PI WEB browser UI into the repo-local Pi prefix.
+# Verify the PI WEB binary supplied by the Nix dev shell.
 pi-web-bootstrap:
-  @mkdir -p .pi/nix-global
-  @if [ ! -x "$PWD/.pi/nix-global/bin/pi-web" ]; then \
-    echo "Installing PI WEB {{pi_web_version}}..."; \
-    npm install -g --prefix "$PWD/.pi/nix-global" --allow-scripts=node-pty "@jmfederico/pi-web@{{pi_web_version}}"; \
-  else \
-    echo "repo-local PI WEB available: $("$PWD/.pi/nix-global/bin/pi-web" --version 2>/dev/null || echo unknown)"; \
-  fi
-  @spawn_helpers="$PWD/.pi/nix-global/lib/node_modules/@jmfederico/pi-web/node_modules/node-pty/prebuilds"; \
-  if [ -d "$spawn_helpers" ]; then find "$spawn_helpers" -type f -name spawn-helper -exec chmod +x {} +; fi
+  @command -v pi-web >/dev/null || (echo "PI WEB is available from nix develop; enter the Nix shell first." >&2; exit 1)
+  @echo "PI WEB {{pi_web_version}} available from the Nix flake: $(pi-web --version)"
 
 # Force-refresh the repo-local pi.dev installation.
 pi-update:
   npm install -g --prefix "$PWD/.pi/nix-global" --ignore-scripts @earendil-works/pi-coding-agent@latest
 
-# Force-refresh the pinned PI WEB installation.
+# PI WEB is updated by changing the pinned Nix package and its hashes.
 pi-web-update:
-  npm install -g --prefix "$PWD/.pi/nix-global" --allow-scripts=node-pty "@jmfederico/pi-web@{{pi_web_version}}"
-  @spawn_helpers="$PWD/.pi/nix-global/lib/node_modules/@jmfederico/pi-web/node_modules/node-pty/prebuilds"; \
-  if [ -d "$spawn_helpers" ]; then find "$spawn_helpers" -type f -name spawn-helper -exec chmod +x {} +; fi
+  @echo "PI WEB is pinned in nix/packages/pi-web.nix; update its version, source hash, and npmDepsHash, then run nix build .#pi-web."
 
 pi-web-doctor:
   pi-web doctor

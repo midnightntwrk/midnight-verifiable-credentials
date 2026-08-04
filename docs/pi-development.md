@@ -65,8 +65,8 @@ The repository includes a project-local PI WEB configuration at
 `.pi-web/uploads/`; uploaded files are ignored by Git.
 
 Entering `nix develop` (or allowing direnv to load this checkout) exposes the
-pinned PI WEB version and `just bootstrap` installs it into the repo-local
-`.pi/nix-global` prefix. To install or refresh it explicitly:
+pinned PI WEB binary from the flake. Verify it and install the user services
+with:
 
 ```sh
 just pi-web-bootstrap
@@ -74,14 +74,10 @@ just pi-web-doctor
 pi-web install
 ```
 
-The pinned version is `1.202607.3`. For a manual install outside the Nix shell,
-use:
-
-```sh
-npm install -g @jmfederico/pi-web@1.202607.3 --allow-scripts=node-pty
-pi-web doctor
-pi-web install
-```
+The pinned version is `1.202607.3`; update it in `nix/packages/pi-web.nix`,
+the lockfile hash, and `PI_WEB_VERSION` when deliberately upgrading. PI WEB
+is intentionally not installed by npm; use `nix develop` for the supported
+installation path.
 
 Then open <http://127.0.0.1:8504>, add this repository as a project, and use the
 browser UI to supervise persistent Pi sessions. PI WEB must remain bound to a

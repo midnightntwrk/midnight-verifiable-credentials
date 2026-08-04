@@ -13,10 +13,11 @@ in
         inherit compact-toolchain compact-midnight midnight-circuit-params;
         src = self;
       };
+      pi-web = pkgs.callPackage ./pi-web.nix { };
     in
     {
       packages = {
-        inherit npm-artifacts;
+        inherit npm-artifacts pi-web;
         default = npm-artifacts;
       };
 
@@ -36,6 +37,7 @@ in
           pkgs.openssl
           pkgs.pnpm_10
           pkgs.which
+          pi-web
         ];
 
         COMPACT_DIRECTORY = compact-toolchain;
@@ -46,7 +48,7 @@ in
           export PI_REPO_NPM_PREFIX="$PWD/.pi/nix-global"
           export NPM_CONFIG_PREFIX="$PI_REPO_NPM_PREFIX"
           export PI_WEB_PROJECT_ROOT="$PWD"
-          export PATH="$PI_REPO_NPM_PREFIX/bin:${compact-midnight}/bin:${compact-toolchain}/bin:${pkgs.nodejs_24}/bin:${pkgs.pnpm_10}/bin:$PATH"
+          export PATH="${pi-web}/bin:$PI_REPO_NPM_PREFIX/bin:${compact-midnight}/bin:${compact-toolchain}/bin:${pkgs.nodejs_24}/bin:${pkgs.pnpm_10}/bin:$PATH"
 
           mkdir -p "$HOME/.cache/midnight/zk-params" "$PI_REPO_NPM_PREFIX"
           cp -Rn ${midnight-circuit-params}/. "$HOME/.cache/midnight/zk-params/" 2>/dev/null || true
