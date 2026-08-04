@@ -564,8 +564,12 @@ export class SecretIssuerAgent {
     try {
       this.receiveRequestAndIssueCredential(request, claimWitness, options);
     } catch (error) {
-      this.pendingOffers.delete(respondsToId);
       const classification = this.classifyIssuanceError(error);
+      const transportCorrelationMismatch =
+        classification.category === "correlation_mismatch";
+      if (!transportCorrelationMismatch) {
+        this.pendingOffers.delete(respondsToId);
+      }
       const rejection = this.buildIssuanceRejection(
         request,
         classification.category,
@@ -580,7 +584,7 @@ export class SecretIssuerAgent {
         body: rejection,
       };
       this.bus.send(rejectionMessage);
-      if (completedOutcome) {
+      if (completedOutcome || transportCorrelationMismatch) {
         return;
       }
       writeRetainedProtocolState(

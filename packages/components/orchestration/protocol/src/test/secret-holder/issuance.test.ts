@@ -854,6 +854,11 @@ describe("secret-holder issuance", () => {
       (rejectionMessage.body as SecretBirthCredentialIssuanceRejection).body
         .category,
     ).toBe("correlation_mismatch");
+
+    issuer.receiveRequestAndRespond(request, claimWitness);
+    const resultMessage = bus.receive("holder")!;
+    expect(resultMessage.type).toBe("issuance:result");
+    expect(holder.receiveIssuanceOutcome(resultMessage).kind).toBe("issued");
   });
 
   it("rejects issuance requests from a party other than the offered holder", () => {
@@ -877,6 +882,11 @@ describe("secret-holder issuance", () => {
       (rejectionMessage.body as SecretBirthCredentialIssuanceRejection).body
         .category,
     ).toBe("correlation_mismatch");
+
+    issuer.receiveRequestAndRespond(request, claimWitness);
+    const resultMessage = bus.receive("holder")!;
+    expect(resultMessage.type).toBe("issuance:result");
+    expect(holder.receiveIssuanceOutcome(resultMessage).kind).toBe("issued");
   });
 
   it("rejects issuance requests addressed to a different issuer", () => {
@@ -900,6 +910,11 @@ describe("secret-holder issuance", () => {
       (rejectionMessage.body as SecretBirthCredentialIssuanceRejection).body
         .category,
     ).toBe("correlation_mismatch");
+
+    issuer.receiveRequestAndRespond(request, claimWitness);
+    const resultMessage = bus.receive("holder")!;
+    expect(resultMessage.type).toBe("issuance:result");
+    expect(holder.receiveIssuanceOutcome(resultMessage).kind).toBe("issued");
   });
 
   it("sends an explicit rejection result for offer/request mismatches", () => {
