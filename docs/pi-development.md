@@ -64,10 +64,21 @@ The repository includes a project-local PI WEB configuration at
 `.pi-web/config.json`. It keeps manual uploads workspace-relative under
 `.pi-web/uploads/`; uploaded files are ignored by Git.
 
-Install and start PI WEB on the machine that owns this checkout:
+Entering `nix develop` (or allowing direnv to load this checkout) exposes the
+pinned PI WEB version and `just bootstrap` installs it into the repo-local
+`.pi/nix-global` prefix. To install or refresh it explicitly:
 
 ```sh
-npm install -g @jmfederico/pi-web --allow-scripts=node-pty
+just pi-web-bootstrap
+just pi-web-doctor
+pi-web install
+```
+
+The pinned version is `1.202607.3`. For a manual install outside the Nix shell,
+use:
+
+```sh
+npm install -g @jmfederico/pi-web@1.202607.3 --allow-scripts=node-pty
 pi-web doctor
 pi-web install
 ```
@@ -82,9 +93,10 @@ ssh -L 8504:127.0.0.1:8504 user@server
 ```
 
 The service requires Node.js 22.19 or newer, Pi 0.82.x, and a login-shell PATH
-that exposes `node`, `npm`, `pi`, and repository tooling. Run `pi-web status` and
-`pi-web logs` for service diagnostics. The project config is portable; service
-installation and credentials remain machine-local and are not committed.
+that exposes `node`, `npm`, `pi`, and repository tooling. Run `just pi-web-status`,
+`pi-web status`, or `pi-web logs` for service diagnostics. The project config is
+portable; service installation and credentials remain machine-local and are not
+committed.
 
 ## Repository harness policy
 

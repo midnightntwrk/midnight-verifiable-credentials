@@ -1,12 +1,14 @@
 set dotenv-load := false
 set shell := ["bash", "-euo", "pipefail", "-c"]
 
+pi_web_version := env_var_or_default("PI_WEB_VERSION", "1.202607.3")
+
 # List available targets.
 default:
   @just --list
 
-# Bootstrap the repo for day-to-day development and Pi usage.
-bootstrap: deps pi-bootstrap
+# Bootstrap the repo for day-to-day development and Pi/PI WEB usage.
+bootstrap: deps pi-bootstrap pi-web-bootstrap
 
 # Install/update the project workspace dependencies when needed.
 deps:
@@ -28,9 +30,36 @@ pi-bootstrap:
   fi
   @echo "Project Pi packages are pinned in .pi/settings.json. Start with: pi"
 
+# Install the pinned PI WEB browser UI into the repo-local Pi prefix.
+pi-web-bootstrap:
+  @mkdir -p .pi/nix-global
+  @if [ ! -x "$PWD/.pi/nix-global/bin/pi-web" ]; then \
+    echo "Installing PI WEB {{pi_web_version}}..."; \
+    npm install -g --prefix "$PWD/.pi/nix-global" --allow-scripts=node-pty "@jmfederico/pi-web@{{pi_web_version}}"; \
+  else \
+    echo "repo-local PI WEB available: $("$PWD/.pi/nix-global/bin/pi-web" --version 2>/dev/null || echo unknown)"; \
+  fi
+  @spawn_helpers="$PWD/.pi/nix-global/lib/node_modules/@jmfederico/pi-web/node_modules/node-pty/prebuilds"; \
+  if [ -d "$spawn_helpers" ]; then find "$spawn_helpers" -type f -name spawn-helper -exec chmod +x {} +; fi
+
 # Force-refresh the repo-local pi.dev installation.
 pi-update:
   npm install -g --prefix "$PWD/.pi/nix-global" --ignore-scripts @earendil-works/pi-coding-agent@latest
+
+# Force-refresh the pinned PI WEB installation.
+pi-web-update:
+  npm install -g --prefix "$PWD/.pi/nix-global" --allow-scripts=node-pty "@jmfederico/pi-web@{{pi_web_version}}"
+  @spawn_helpers="$PWD/.pi/nix-global/lib/node_modules/@jmfederico/pi-web/node_modules/node-pty/prebuilds"; \
+  if [ -d "$spawn_helpers" ]; then find "$spawn_helpers" -type f -name spawn-helper -exec chmod +x {} +; fi
+
+pi-web-doctor:
+  pi-web doctor
+
+pi-web-install:
+  pi-web install
+
+pi-web-status:
+  pi-web status
 
 # Show Pi and project package wiring without starting an interactive model turn.
 pi-doctor:
