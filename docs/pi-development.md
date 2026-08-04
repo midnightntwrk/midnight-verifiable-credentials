@@ -58,6 +58,34 @@ Use the normal issue and pull-request lifecycle from the Pi shell:
 
 The exact command help exposed by the installed package is authoritative.
 
+## Use the PI WEB browser UI
+
+The repository includes a project-local PI WEB configuration at
+`.pi-web/config.json`. It keeps manual uploads workspace-relative under
+`.pi-web/uploads/`; uploaded files are ignored by Git.
+
+Install and start PI WEB on the machine that owns this checkout:
+
+```sh
+npm install -g @jmfederico/pi-web --allow-scripts=node-pty
+pi-web doctor
+pi-web install
+```
+
+Then open <http://127.0.0.1:8504>, add this repository as a project, and use the
+browser UI to supervise persistent Pi sessions. PI WEB must remain bound to a
+trusted local/private network path; do not expose the unauthenticated service
+directly to the public internet. For a remote machine, use an SSH tunnel:
+
+```sh
+ssh -L 8504:127.0.0.1:8504 user@server
+```
+
+The service requires Node.js 22.19 or newer, Pi 0.82.x, and a login-shell PATH
+that exposes `node`, `npm`, `pi`, and repository tooling. Run `pi-web status` and
+`pi-web logs` for service diagnostics. The project config is portable; service
+installation and credentials remain machine-local and are not committed.
+
 ## Repository harness policy
 
 The repository-root `.devloops` file configures the review and lifecycle

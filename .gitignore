@@ -64,6 +64,9 @@ contract/.npm-cache
 .env.local
 .env.*.local
 
+# PI WEB local uploads and state
+.pi-web/uploads/
+
 # Local app state and secrets
 .midnight-did/
 .midnight-test/
