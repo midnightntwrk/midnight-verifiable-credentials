@@ -17,7 +17,7 @@ overrides:
   '@midnight-ntwrk/midnight-js-http-client-proof-provider': 4.0.4
   '@midnight-ntwrk/midnight-js-indexer-public-data-provider': 4.0.4
   '@midnight-ntwrk/midnight-js-level-private-state-provider': 4.0.4
-  '@midnight-ntwrk/midnight-js-network-id': 4.0.4
+  '@midnight-ntwrk/midnight-js-network-id': 4.1.1
   '@midnight-ntwrk/midnight-js-node-zk-config-provider': 4.0.4
   '@midnight-ntwrk/midnight-js-types': 4.0.4
   '@midnight-ntwrk/midnight-js-utils': 4.0.4
@@ -68,8 +68,8 @@ importers:
         specifier: 4.0.4
         version: 4.0.4
       '@midnight-ntwrk/midnight-js-network-id':
-        specifier: 4.0.4
-        version: 4.0.4
+        specifier: 4.1.1
+        version: 4.1.1
       '@midnight-ntwrk/midnight-js-node-zk-config-provider':
         specifier: 4.0.4
         version: 4.0.4
@@ -1063,8 +1063,8 @@ packages:
   '@midnight-ntwrk/midnight-js-level-private-state-provider@4.0.4':
     resolution: {integrity: sha512-/qjvkxZWkkaAxFXqqhAQiloczHjw/gS4aC7L8FyRvgxeOfT1oecVp8+/tbsvZb3Zd2eolQJ46HHcjm/sKBgEbQ==}
 
-  '@midnight-ntwrk/midnight-js-network-id@4.0.4':
-    resolution: {integrity: sha512-bieKcN9ybIf+HoaHPjCJGxmYrcmUrdEOErxkxhiqgos2k7DKM9mZO7AgzN0WnBbPHYdT4z0c740QAcG95BaV8g==}
+  '@midnight-ntwrk/midnight-js-network-id@4.1.1':
+    resolution: {integrity: sha512-g49IBK0In1Jt2wKgi18rUvoy1ShGVrfb/VvgWALkc9Noc6+4MX5NTLVg5zqu+CyO2waIGb5lqDPnAhTD9wPAOQ==}
 
   '@midnight-ntwrk/midnight-js-node-zk-config-provider@4.0.4':
     resolution: {integrity: sha512-7Knmnuak0gD2+ZEmwm/mBqBT9HeH6utgcCOlT8YUT6TOFYByrJ8t23wR2yfoQ2PKZV16CXEQLWlT0wYs1tep0g==}
@@ -5077,7 +5077,7 @@ snapshots:
       '@midnight-ntwrk/midnight-js-http-client-proof-provider': 4.0.4
       '@midnight-ntwrk/midnight-js-indexer-public-data-provider': 4.0.4
       '@midnight-ntwrk/midnight-js-level-private-state-provider': 4.0.4
-      '@midnight-ntwrk/midnight-js-network-id': 4.0.4
+      '@midnight-ntwrk/midnight-js-network-id': 4.1.1
       '@midnight-ntwrk/midnight-js-node-zk-config-provider': 4.0.4
       '@midnight-ntwrk/midnight-js-types': 4.0.4
       '@midnight-ntwrk/midnight-js-utils': 4.0.4
@@ -5141,7 +5141,7 @@ snapshots:
   '@midnight-ntwrk/midnight-js-contracts@4.0.4':
     dependencies:
       '@midnight-ntwrk/compact-js': 2.5.0
-      '@midnight-ntwrk/midnight-js-network-id': 4.0.4
+      '@midnight-ntwrk/midnight-js-network-id': 4.1.1
       '@midnight-ntwrk/midnight-js-types': 4.0.4
       '@midnight-ntwrk/midnight-js-utils': 4.0.4
 
@@ -5155,7 +5155,7 @@ snapshots:
   '@midnight-ntwrk/midnight-js-http-client-proof-provider@4.0.4':
     dependencies:
       '@midnight-ntwrk/midnight-js-contracts': 4.0.4
-      '@midnight-ntwrk/midnight-js-network-id': 4.0.4
+      '@midnight-ntwrk/midnight-js-network-id': 4.1.1
       '@midnight-ntwrk/midnight-js-types': 4.0.4
       '@midnight-ntwrk/midnight-js-utils': 4.0.4
       cross-fetch: 4.1.0
@@ -5167,7 +5167,7 @@ snapshots:
   '@midnight-ntwrk/midnight-js-indexer-public-data-provider@4.0.4':
     dependencies:
       '@apollo/client': 3.14.1(graphql-ws@6.0.8(graphql@16.14.0)(ws@8.21.1))(graphql@16.14.0)
-      '@midnight-ntwrk/midnight-js-network-id': 4.0.4
+      '@midnight-ntwrk/midnight-js-network-id': 4.1.1
       '@midnight-ntwrk/midnight-js-types': 4.0.4
       '@midnight-ntwrk/midnight-js-utils': 4.0.4
       buffer: 6.0.3
@@ -5199,7 +5199,7 @@ snapshots:
       level: 10.0.0
       superjson: 2.2.6
 
-  '@midnight-ntwrk/midnight-js-network-id@4.0.4': {}
+  '@midnight-ntwrk/midnight-js-network-id@4.1.1': {}
 
   '@midnight-ntwrk/midnight-js-node-zk-config-provider@4.0.4':
     dependencies:
@@ -5213,7 +5213,7 @@ snapshots:
 
   '@midnight-ntwrk/midnight-js-utils@4.0.4':
     dependencies:
-      '@midnight-ntwrk/midnight-js-network-id': 4.0.4
+      '@midnight-ntwrk/midnight-js-network-id': 4.1.1
       '@scure/base': 2.2.0
 
   '@midnight-ntwrk/onchain-runtime-v3@3.0.0': {}
