@@ -1,0 +1,22 @@
+{
+  "name": "midnight-credential-proofs-consumer",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.23.0",
+  "engines": { "node": ">=24", "pnpm": ">=10" },
+  "scripts": {
+    "test:node": "node ./node-esm.mjs",
+    "typecheck": "tsc -p ./tsconfig.json --noEmit",
+    "typecheck:legacy": "tsc -p ./tsconfig.legacy.json --noEmit",
+    "bundle": "esbuild ./browser-entry.ts --bundle --platform=browser --format=esm --target=es2022 --outfile=./dist/browser.mjs --log-level=warning",
+    "test:bundle": "node ./dist/browser.mjs"
+  },
+  "dependencies": {
+    "@midnight-ntwrk/credential-proofs": "file:./vendor/candidate.tgz"
+  },
+  "devDependencies": {
+    "esbuild": "0.27.7",
+    "typescript": "5.9.3"
+  }
+}

@@ -26,6 +26,8 @@ Related documents:
   - [`../decisions/0013-reusable-core-and-credential-family-lifecycle.md`](../decisions/0013-reusable-core-and-credential-family-lifecycle.md)
 - package release contract:
   - [`./package-release-contract.md`](./package-release-contract.md)
+- credential-family ownership and graduation policy:
+  - [`./credential-family-ownership-policy.md`](./credential-family-ownership-policy.md)
 - target publication catalog:
   - [`./package-publication-catalog.md`](./package-publication-catalog.md)
 
@@ -132,3 +134,13 @@ Package READMEs should expose these fields near the top:
 
 This header is the minimum durable summary that an integrator or architect
 should be able to scan before reading deeper package details.
+
+
+## Ownership and graduation reading rule
+
+This inventory classifies current private evidence; it does not grant support or
+production status. The [credential-family ownership policy](./credential-family-ownership-policy.md)
+contains the complete family inventory, current workspace dependants, closed
+migration exception, and objective graduation gates. A package under
+`packages/use-cases/` is a production-shaped composition only; explicit security,
+interoperability, API, CI, operational, and approval evidence is still required.

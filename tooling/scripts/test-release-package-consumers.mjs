@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { execFileSync } from "node:child_process";
+import { createRequire } from "node:module";
 import {
   copyFileSync,
   cpSync,
@@ -206,7 +207,7 @@ for (const releasePackage of releasePackages) {
       "utf8",
     );
     const localLocators = lockfile.match(
-      /(?:file|link|workspace):[^\s,'"}\]]+/gu,
+      /(?:file|link|workspace|git(?:\+[^:]+)?|https?):[^\s,'"}\]]+/gu,
     ) ?? [];
     for (const locator of localLocators) {
       if (
@@ -248,6 +249,25 @@ for (const releasePackage of releasePackages) {
     const installedPackageJson = JSON.parse(
       readFileSync(path.join(installedPackageRoot, "package.json"), "utf8"),
     );
+    if (installedPackageJson.midnight?.compactCompilerVersion !== undefined) {
+      const expectedCompiler = installedPackageJson.midnight.compactCompilerVersion;
+      const expectedRuntime = installedPackageJson.midnight.compactRuntimeVersion;
+      const buildManifest = JSON.parse(
+        readFileSync(path.join(installedPackageRoot, "dist/compact-build.json"), "utf8"),
+      );
+      const runtimePackagePath = createRequire(
+        path.join(installedPackageRoot, "dist/index.js"),
+      ).resolve("@midnight-ntwrk/compact-runtime/package.json");
+      const resolvedRuntime = JSON.parse(
+        readFileSync(runtimePackagePath, "utf8"),
+      ).version;
+      if (buildManifest.compiler !== expectedCompiler || buildManifest.runtime?.version !== expectedRuntime) {
+        fail(`${sourcePackageJson.name} generated metadata does not match pinned Compact tuple`);
+      }
+      if (resolvedRuntime !== expectedRuntime) {
+        fail(`${sourcePackageJson.name} resolved runtime ${resolvedRuntime} instead of ${expectedRuntime}`);
+      }
+    }
     if (
       expectedVersion !== undefined &&
       installedPackageJson.version !== expectedVersion
@@ -276,11 +296,15 @@ for (const releasePackage of releasePackages) {
       );
     }
     if (releasePackage.consumerChecks.includes("compact")) {
+      const expectedCompactCompiler = installedPackageJson.midnight?.compactCompilerVersion;
+      if (typeof expectedCompactCompiler !== "string") {
+        fail(`${sourcePackageJson.name} does not declare an exact Compact compiler version`);
+      }
       run(
         "compact",
         [
           "compile",
-          "+0.30.0",
+          `+${expectedCompactCompiler}`,
           "--skip-zk",
           "--compact-path",
           path.join(installedPackageRoot, "dist"),
@@ -290,6 +314,62 @@ for (const releasePackage of releasePackages) {
         consumerRoot,
         `${sourcePackageJson.name}: Compact package resolution`,
       );
+    }
+
+    const compactEntrypoints = installedPackageJson.midnight?.compactEntrypoints;
+    if (compactEntrypoints !== undefined) {
+      const standalone = compactEntrypoints.standalone;
+      const composition = compactEntrypoints.composition;
+      if (!Array.isArray(standalone) || !Array.isArray(composition)) {
+        fail(`${sourcePackageJson.name} has invalid Compact entrypoint metadata`);
+      }
+      const compactExports = Object.entries(installedPackageJson.exports ?? {})
+        .filter(([subpath, target]) => subpath.endsWith(".compact") && typeof target === "string")
+        .map(([subpath]) => subpath);
+      for (const entrypoint of [...standalone, ...composition]) {
+        if (!compactExports.includes(entrypoint)) {
+          fail(`${sourcePackageJson.name} metadata advertises unexported Compact entrypoint ${entrypoint}`);
+        }
+      }
+      const compileExternal = (name, includes) => {
+        const wrapper = path.join(consumerRoot, `${name}.compact`);
+        const output = path.join(installedPackageRoot, ".compact-consumer", `${name}-output`);
+        writeFileSync(
+          wrapper,
+          `pragma language_version >= 0.20;\nimport CompactStandardLibrary;\n${includes
+            .map((include) => `include "${include.replace("./", "").replace(".compact", "")}";`)
+            .join("\n")}\n`,
+        );
+        run(
+          "compact",
+          ["compile", `+${installedPackageJson.midnight.compactCompilerVersion}`, "--skip-zk", "--compact-path", path.join(installedPackageRoot, "dist"), wrapper, output],
+          consumerRoot,
+          `${sourcePackageJson.name}: external Compact ${name}`,
+        );
+        return realpathSync(output);
+      };
+      for (const [index, entrypoint] of standalone.entries()) {
+        compileExternal(`compact-standalone-${index}`, [entrypoint]);
+      }
+      for (const [index, entrypoint] of composition.entries()) {
+        const output = compileExternal(`compact-composition-${index}`, ["./credentials/bindings.compact", entrypoint]);
+        run(
+          "node",
+          [path.join(fixtureRoot, "same-holder-vectors.mjs"), output],
+          consumerRoot,
+          `${sourcePackageJson.name}: same-holder semantic vectors (${index})`,
+        );
+      }
+      for (const entrypoint of standalone) {
+        if (!entrypoint.includes("same-holder")) continue;
+        const output = compileExternal(`compact-vector-${standalone.indexOf(entrypoint)}`, [entrypoint]);
+        run(
+          "node",
+          [path.join(fixtureRoot, "same-holder-vectors.mjs"), output],
+          consumerRoot,
+          `${sourcePackageJson.name}: standalone same-holder semantic vectors`,
+        );
+      }
     }
 
     console.log(

@@ -25,6 +25,9 @@ export const ciBuildCones = [
     name: "foundation",
     inputPackages: [
       "packages/core/model",
+      "packages/core/compact",
+      "packages/core/proofs",
+      "packages/core/status",
       "packages/core/primitives/credentials",
       "packages/registry/status-registry",
       "packages/core/capabilities/same-holder",
@@ -32,8 +35,16 @@ export const ciBuildCones = [
       "packages/components/adapters/offchain-did",
       "packages/protocols/openid",
     ],
+    // Foundation packages include standalone prebuild hooks that can invoke
+    // another foundation build. Serialize this cone so those hooks cannot
+    // concurrently clean/write shared managed outputs.
+    turboOptions: ["--concurrency=1", "--ui=stream"],
     outputPaths: [
       "packages/core/model/dist",
+      "packages/core/compact/src/managed",
+      "packages/core/compact/dist",
+      "packages/core/proofs/dist",
+      "packages/core/status/dist",
       "packages/core/primitives/credentials/src/managed",
       "packages/core/primitives/credentials/dist",
       "packages/registry/status-registry/src/managed",
@@ -50,6 +61,9 @@ export const ciBuildCones = [
     name: "birth-family",
     inputPackages: [
       "packages/core/model",
+      "packages/core/compact",
+      "packages/core/proofs",
+      "packages/core/status",
       "packages/core/primitives/credentials",
       "packages/registry/status-registry",
       "packages/core/capabilities/same-holder",
@@ -64,6 +78,9 @@ export const ciBuildCones = [
       "packages/prototypes/credential-families/university-diploma",
       "packages/prototypes/credential-families/digital-passport",
     ],
+    // Family builds can pull in standalone foundation hooks (notably the
+    // status-registry credentials preparation), so serialize shared outputs.
+    turboOptions: ["--concurrency=1", "--ui=stream"],
     outputPaths: [
       "packages/prototypes/credential-families/birth/src/managed",
       "packages/prototypes/credential-families/birth/dist",
@@ -85,6 +102,9 @@ export const ciBuildCones = [
     name: "age-gate",
     inputPackages: [
       "packages/core/model",
+      "packages/core/compact",
+      "packages/core/proofs",
+      "packages/core/status",
       "packages/core/primitives/credentials",
       "packages/registry/status-registry",
       "packages/core/capabilities/same-holder",

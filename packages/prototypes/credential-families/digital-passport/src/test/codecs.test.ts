@@ -50,6 +50,14 @@ function randomVerificationMethodRef() {
   };
 }
 
+/** Use fixed-width public references when testing encoded-size stability. */
+function fixedVerificationMethodRef() {
+  return {
+    didContractAddress: { bytes: Buffer.alloc(32, 0x11) },
+    methodId: Buffer.alloc(32, 0x22),
+  };
+}
+
 /** Build a credential + proof for testing using the package's pure circuits. */
 function buildTestCredential(params: {
   firstName: string;
@@ -595,8 +603,8 @@ describe("Byte-layout regression guard", () => {
         documentNumber: "P12345678",
         issuingState: "USA",
         issuerSecretKey: BigInt(10000 + i),
-        issuerVerificationMethodRef: randomVerificationMethodRef(),
-        holderVerificationMethodRef: randomVerificationMethodRef(),
+        issuerVerificationMethodRef: fixedVerificationMethodRef(),
+        holderVerificationMethodRef: fixedVerificationMethodRef(),
       });
 
       const encoded = encodeDigitalPassportProof(credentialProof);

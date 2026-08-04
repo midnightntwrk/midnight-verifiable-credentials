@@ -30,6 +30,9 @@ conformance fixtures, removed, or graduated to an independent repository.
 | Package | Stage | Channel | Technical/support owner | Support posture |
 | --- | --- | --- | --- | --- |
 | `@midnight-ntwrk/credential-model` | `supported` | npmjs `rc`; stable after explicit approval | `@midnightntwrk/ex-identus` / `@midnightntwrk/mn-sre` | Pre-1.0 family-authoring substrate |
+| `@midnight-ntwrk/credential-compact` | `candidate` | private tarball only | VC package maintainers / support unassigned | Curated family-neutral Compact semantics; compiler/runtime tuple and API remain candidate evidence |
+| `@midnight-ntwrk/credential-proofs` | `candidate` | private tarball only | VC package maintainers / support unassigned | Family-neutral proof ports and immutable manifest contracts; generated artifacts and authority remain outside the package |
+| `@midnight-ntwrk/credential-status` | `candidate` | private tarball only | VC package maintainers / support unassigned | Generic status semantics and replaceable ports; no registry authority or ledger implementation |
 | `@midnight-ntwrk/midnight-did-credentials` | `internal` | none | VC package maintainers | Transitional Compact compatibility package |
 | `@midnight-ntwrk/midnight-did-credentials-status-registry` | `internal` | workspace tarball only | Unassigned | Prototype trust model |
 | `@midnight-ntwrk/midnight-did-credentials-same-holder` | `internal` | workspace tarball only | Unassigned | Reference capability |
@@ -107,7 +110,11 @@ The `credential-model` package currently proves:
 
 Compact compilation is not applicable to this zero-runtime-dependency
 TypeScript package. Packages that expose Compact sources must declare and pass
-the Compact clean-consumer check.
+the Compact clean-consumer check. The private `credential-compact` candidate
+also records compiler identity, generated-output provenance, source/artifact
+digests, same-holder standalone/composable gate results, explicit Compact
+exports, and a forbidden-artifact tarball scan. It does not claim status-registry
+authority or verification-v1 compatibility.
 
 ## Graduation
 
