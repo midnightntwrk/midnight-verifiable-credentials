@@ -873,6 +873,13 @@ describe("secret-holder presentation", () => {
         ...approvedMessage.envelope,
         respondsToMessageId: sha256("unknown-presentation-submission"),
       },
+      body: {
+        ...(approvedMessage.body as { envelope: typeof approvedMessage.envelope }),
+        envelope: {
+          ...approvedMessage.envelope,
+          respondsToMessageId: sha256("unknown-presentation-submission"),
+        },
+      },
     };
 
     expect(() =>
@@ -892,6 +899,13 @@ describe("secret-holder presentation", () => {
       envelope: {
         ...rejectionMessage.envelope,
         respondsToMessageId: sha256("unknown-presentation-submission"),
+      },
+      body: {
+        ...(rejectionMessage.body as { envelope: typeof rejectionMessage.envelope }),
+        envelope: {
+          ...rejectionMessage.envelope,
+          respondsToMessageId: sha256("unknown-presentation-submission"),
+        },
       },
     };
 

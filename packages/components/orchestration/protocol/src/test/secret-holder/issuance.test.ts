@@ -793,6 +793,36 @@ describe("secret-holder issuance", () => {
     expect(holder.credentialCount).toBe(0);
   });
 
+  it("rejects requests whose transport and body correlation envelopes disagree", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    holder.receiveOfferAndSendRequest(offer);
+    const request = bus.receive("issuer")!;
+
+    issuer.receiveRequestAndRespond(
+      {
+        ...request,
+        envelope: {
+          ...request.envelope,
+          threadId: sha256("correlation-mismatch"),
+        },
+      },
+      claimWitness,
+    );
+
+    const rejectionMessage = bus.receive("holder")!;
+    const outcome = holder.receiveIssuanceOutcome(rejectionMessage);
+    expect(outcome.kind).toBe("rejected");
+    if (outcome.kind === "rejected") {
+      expect(outcome.rejection.body.category).toBe("correlation_mismatch");
+      expect(outcome.rejection.body.retryable).toBe(false);
+    }
+  });
+
   it("sends an explicit rejection result for offer/request mismatches", () => {
     const bus = new MessageBus();
     const issuer = new SecretIssuerAgent(issuerProfile, bus);
@@ -938,16 +968,21 @@ describe("secret-holder issuance", () => {
     holder.receiveOfferAndSendRequest(offer);
 
     const request = bus.receive("issuer")!;
-    issuer.receiveRequestAndRespond(
-      {
-        ...request,
+    const unknownOfferRequest = {
+      ...request,
+      envelope: {
+        ...request.envelope,
+        respondsToMessageId: sha256("unknown-offer"),
+      },
+      body: {
+        ...(request.body as SecretBirthCredentialIssuanceRequest),
         envelope: {
-          ...request.envelope,
+          ...(request.body as SecretBirthCredentialIssuanceRequest).envelope,
           respondsToMessageId: sha256("unknown-offer"),
         },
       },
-      claimWitness,
-    );
+    };
+    issuer.receiveRequestAndRespond(unknownOfferRequest, claimWitness);
 
     const rejectionMessage = bus.receive("holder")!;
     expect(rejectionMessage.type).toBe("issuance:rejection");
@@ -960,6 +995,58 @@ describe("secret-holder issuance", () => {
         /No pending issuance offer found/i,
       );
     }
+  });
+
+  it("rejects a conflicting replay that reuses a finalized request ID", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    holder.receiveOfferAndSendRequest(offer);
+    const request = bus.receive("issuer")!;
+    issuer.receiveRequestAndRespond(request, claimWitness);
+    const result = bus.receive("holder")!;
+    holder.receiveIssuanceOutcome(result);
+
+    const replayedRequest: typeof request = {
+      ...request,
+      body: {
+        ...(request.body as SecretBirthCredentialIssuanceRequest),
+        body: {
+          ...(request.body as SecretBirthCredentialIssuanceRequest).body,
+          holderChallengeHash: sha256("conflicting-replay"),
+        },
+      },
+    };
+    issuer.receiveRequestAndRespond(replayedRequest, claimWitness);
+
+    const rejection = bus.receive("holder")!;
+    expect(rejection.type).toBe("issuance:rejection");
+    expect(
+      (rejection.body as SecretBirthCredentialIssuanceRejection).body.category,
+    ).toBe("replayed_request");
+    expect(holder.credentialCount).toBe(1);
+  });
+
+  it("rejects a replayed issuance result after the request is finalized", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    holder.receiveOfferAndSendRequest(offer);
+    const request = bus.receive("issuer")!;
+    issuer.receiveRequestAndRespond(request, claimWitness);
+    const result = bus.receive("holder")!;
+    holder.receiveIssuanceOutcome(result);
+
+    expect(() => holder.receiveCredentialResult(result)).toThrow(
+      /already finalized/i,
+    );
+    expect(holder.credentialCount).toBe(1);
   });
 
   it("treats duplicate success results as idempotent at the holder outcome boundary", () => {

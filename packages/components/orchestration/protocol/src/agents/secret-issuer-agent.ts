@@ -20,7 +20,12 @@ import {
   type ProtocolEnvelopeFactory,
   type ProtocolEnvelopeIdentifierSource,
 } from "../shared/envelope.js";
-import { assertBodyHasFields, assertMessageType } from "../shared/validation.js";
+import {
+  assertBodyHasFields,
+  assertMessageType,
+  assertProtocolMessageEnvelopeAlignment,
+  protocolMessagesEquivalent,
+} from "../shared/validation.js";
 import type { MessageBus } from "../transport/message-bus.js";
 import type {
   PartyId,
@@ -107,6 +112,7 @@ export class SecretIssuerAgent {
   private readonly completedOutcomes: ProtocolStateCollection<
     RetainedProtocolState<ProtocolMessage>
   >;
+  private readonly completedRequests: ProtocolStateCollection<ProtocolMessage>;
 
   constructor(
     profile: DIDProfile,
@@ -132,6 +138,9 @@ export class SecretIssuerAgent {
     );
     this.completedOutcomes = stateStore.collection(
       `${stateScope}:completed-outcomes`,
+    );
+    this.completedRequests = stateStore.collection(
+      `${stateScope}:completed-requests`,
     );
   }
 
@@ -285,7 +294,22 @@ export class SecretIssuerAgent {
   ): void {
     assertMessageType(request, "issuance:request");
     assertBodyHasFields(request, ["envelope", "schema", "body"]);
+    try {
+      assertProtocolMessageEnvelopeAlignment(request);
+    } catch (error) {
+      throw new IssuanceProtocolError(
+        "correlation_mismatch",
+        error instanceof Error ? error.message : String(error),
+      );
+    }
     const requestMessageId = Buffer.from(request.envelope.messageId).toString("hex");
+    const completedRequest = this.completedRequests.get(requestMessageId);
+    if (completedRequest && !protocolMessagesEquivalent(completedRequest, request)) {
+      throw new IssuanceProtocolError(
+        "replayed_request",
+        "This blinded-secret issuance message ID was already used with different message content.",
+      );
+    }
     if (
       readRetainedProtocolState(
         this.completedOutcomes,
@@ -294,7 +318,7 @@ export class SecretIssuerAgent {
       )
     ) {
       throw new IssuanceProtocolError(
-        "malformed_request",
+        "replayed_request",
         "This blinded-secret issuance request was already finalized and cannot be processed again.",
       );
     }
@@ -443,6 +467,7 @@ export class SecretIssuerAgent {
       body: result,
     };
     this.bus.send(resultMessage);
+    this.completedRequests.set(requestMessageId, request);
     writeRetainedProtocolState(
       this.completedOutcomes,
       requestMessageId,
@@ -468,7 +493,11 @@ export class SecretIssuerAgent {
       requestMessageId,
       resolveCurrentTimeMs(options.currentTimeMs),
     );
-    if (completedOutcome) {
+    const completedRequest = this.completedRequests.get(requestMessageId);
+    if (
+      completedOutcome &&
+      (!completedRequest || protocolMessagesEquivalent(completedRequest, request))
+    ) {
       this.bus.send(completedOutcome);
       return;
     }
@@ -494,6 +523,12 @@ export class SecretIssuerAgent {
         body: rejection,
       };
       this.bus.send(rejectionMessage);
+      if (!completedOutcome) {
+        this.completedRequests.set(requestMessageId, request);
+      }
+      if (completedOutcome) {
+        return;
+      }
       writeRetainedProtocolState(
         this.completedOutcomes,
         requestMessageId,

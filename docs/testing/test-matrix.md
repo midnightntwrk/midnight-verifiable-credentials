@@ -366,10 +366,11 @@ Implemented prototype coverage:
   - helper-level finalized-outcome retention coverage for TTL expiry and
     bounded-count eviction
   - explicit blinded-secret issuance rejection messages in the reference
-    protocol layer for malformed requests, offer/request mismatches, unknown
-    offer references, expired offers, and expired requests
-  - idempotent re-delivery of duplicate blinded-secret issuance requests and
-    duplicate blinded-secret issuance outcomes
+    protocol layer for malformed requests, wrapper/body correlation mismatches,
+    offer/request mismatches, unknown offer references, expired offers, expired
+    requests, and conflicting replayed requests
+  - idempotent re-delivery of exact duplicate blinded-secret issuance requests
+    and duplicate blinded-secret issuance outcomes
   - explicit blinded-secret presentation rejection messages in the reference
     protocol layer for malformed submissions, request/submission mismatches,
     unsatisfied verifier requests, expired requests, and expired submissions

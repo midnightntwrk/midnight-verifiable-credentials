@@ -22,7 +22,11 @@ import {
   type ProtocolEnvelopeFactory,
   type ProtocolEnvelopeIdentifierSource,
 } from "../shared/envelope.js";
-import { assertBodyHasFields, assertMessageType } from "../shared/validation.js";
+import {
+  assertBodyHasFields,
+  assertMessageType,
+  assertProtocolMessageEnvelopeAlignment,
+} from "../shared/validation.js";
 import type { MessageBus } from "../transport/message-bus.js";
 import type {
   ProtocolMessage,
@@ -276,6 +280,7 @@ export class SecretHolderAgent {
   ): void {
     assertMessageType(result, "issuance:result");
     assertBodyHasFields(result, ["envelope", "schema", "body"]);
+    assertProtocolMessageEnvelopeAlignment(result);
     const issuanceResult = result.body as SecretBirthCredentialIssuanceResult;
     pureCircuits.assertValidSecretBirthCredentialIssuanceResult(issuanceResult);
     const respondsToId = Buffer.from(result.envelope.respondsToMessageId).toString("hex");
@@ -323,6 +328,7 @@ export class SecretHolderAgent {
   ): SecretBirthCredentialIssuanceRejection {
     assertMessageType(rejectionMessage, "issuance:rejection");
     assertBodyHasFields(rejectionMessage, ["envelope", "schema", "body"]);
+    assertProtocolMessageEnvelopeAlignment(rejectionMessage);
     const rejection =
       rejectionMessage.body as SecretBirthCredentialIssuanceRejection;
     const respondsToId = Buffer.from(
@@ -355,6 +361,7 @@ export class SecretHolderAgent {
     options: SecretOutcomeReadOptions = {},
   ): SecretIssuanceOutcome {
     const nowMs = resolveCurrentTimeMs(options.currentTimeMs);
+    assertProtocolMessageEnvelopeAlignment(message);
     const respondsToId = Buffer.from(
       message.envelope.respondsToMessageId,
     ).toString("hex");
@@ -465,6 +472,7 @@ export class SecretHolderAgent {
   ): void {
     assertMessageType(requestMessage, "presentation:request");
     assertBodyHasFields(requestMessage, ["envelope", "schema", "verifierChallengeHash", "body"]);
+    assertProtocolMessageEnvelopeAlignment(requestMessage);
     const request =
       requestMessage.body as SecretBirthCredentialVerificationRequest;
     const nowMs = resolveCurrentTimeMs(options.currentTimeMs);
@@ -595,6 +603,7 @@ export class SecretHolderAgent {
     options: SecretOutcomeReadOptions = {},
   ): SecretPresentationOutcome {
     const nowMs = resolveCurrentTimeMs(options.currentTimeMs);
+    assertProtocolMessageEnvelopeAlignment(message);
     const respondsToId = Buffer.from(
       message.envelope.respondsToMessageId,
     ).toString("hex");
