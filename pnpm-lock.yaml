@@ -417,8 +417,8 @@ importers:
         specifier: ^3.34.0
         version: 3.43.2
       '@serenity-js/core':
-        specifier: ^3.34.0
-        version: 3.43.2
+        specifier: ^3.44.1
+        version: 3.44.1
       '@serenity-js/cucumber':
         specifier: ^3.34.0
         version: 3.43.2(@cucumber/cucumber@11.3.0)
@@ -435,8 +435,8 @@ importers:
   packages/use-cases/bdd-support:
     dependencies:
       '@serenity-js/core':
-        specifier: ^3.34.0
-        version: 3.43.2
+        specifier: ^3.44.1
+        version: 3.44.1
 
   packages/use-cases/hello-verifier/contract:
     dependencies:
@@ -500,8 +500,8 @@ importers:
         specifier: ^3.34.0
         version: 3.43.2
       '@serenity-js/core':
-        specifier: ^3.34.0
-        version: 3.43.2
+        specifier: ^3.44.1
+        version: 3.44.1
       '@serenity-js/cucumber':
         specifier: ^3.34.0
         version: 3.43.2(@cucumber/cucumber@11.3.0)
@@ -1574,6 +1574,10 @@ packages:
   '@serenity-js/core@3.43.2':
     resolution: {integrity: sha512-lXWJvVyRQFmmUEh4LdVcoQh9HuhIeW3phpc1nwg8jlcM9ATMjAXMJkay66CAreKHPNkLCjuYowt2Ct6P8cDiow==}
     engines: {node: ^20 || ^22 || ^24}
+
+  '@serenity-js/core@3.44.1':
+    resolution: {integrity: sha512-Jl5GWNLNSMvsPpmZjNSg34k2Q2MgZVXi2M2vwGDNGqwbCDKBOo9HlyTlQZigI/faahnclQgpBQOQ08/iZRMbFg==}
+    engines: {node: '>=22.12 || ^24'}
 
   '@serenity-js/cucumber@3.43.2':
     resolution: {integrity: sha512-fmRhFufNhroUg7Ry8Qe+meM8zuhRX2SfoLVG7nf62hthDmONj5pS4XJzN3eY21rfkb6XejIkoZvMplIQXnLIbg==}
@@ -3760,11 +3764,6 @@ packages:
 
   semver@7.8.0:
     resolution: {integrity: sha512-AcM7dV/5ul4EekoQ29Agm5vri8JNqRyj39o0qpX6vDF2GZrtutZl5RwgD1XnZjiTAfncsJhMI48QQH3sN87YNA==}
-    engines: {node: '>=10'}
-    hasBin: true
-
-  semver@7.8.1:
-    resolution: {integrity: sha512-rkVq3IXh+4FDGch+KwzX3aV9W3kO54GyEgpvBzSyctDA6Xtd7RJQV1xmXbeQp5v7+VzLOfVqiutSE6GICgPFvg==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -5966,6 +5965,20 @@ snapshots:
       upath: 2.0.1
       validate-npm-package-name: 7.0.2
 
+  '@serenity-js/core@3.44.1':
+    dependencies:
+      '@paralleldrive/cuid2': 2.3.1
+      chalk: 4.1.2
+      diff: 8.0.4
+      error-stack-parser: 2.1.4
+      fast-glob: 3.3.3
+      filenamify: 4.3.0
+      graceful-fs: 4.2.11
+      semver: 7.8.5
+      tiny-types: 2.0.5
+      upath: 2.0.1
+      validate-npm-package-name: 7.0.2
+
   '@serenity-js/cucumber@3.43.2(@cucumber/cucumber@11.3.0)':
     dependencies:
       '@cucumber/gherkin': 39.1.0
@@ -6214,7 +6227,7 @@ snapshots:
       '@typescript-eslint/visitor-keys': 8.60.0
       debug: 4.4.3(supports-color@8.1.1)
       minimatch: 10.2.5
-      semver: 7.8.1
+      semver: 7.8.5
       tinyglobby: 0.2.17
       ts-api-utils: 2.5.0(typescript@5.9.3)
       typescript: 5.9.3
@@ -8393,8 +8406,6 @@ snapshots:
   semver@7.7.1: {}
 
   semver@7.8.0: {}
-
-  semver@7.8.1: {}
 
   semver@7.8.5: {}
 

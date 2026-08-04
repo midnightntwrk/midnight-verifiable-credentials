@@ -36,7 +36,7 @@
     "@midnight-ntwrk/midnight-did-credentials-university-diploma": "*",
     "@serenity-js/assertions": "^3.34.0",
     "@serenity-js/console-reporter": "^3.34.0",
-    "@serenity-js/core": "^3.34.0",
+    "@serenity-js/core": "^3.44.1",
     "@serenity-js/cucumber": "^3.34.0",
     "@serenity-js/serenity-bdd": "^3.34.0",
     "ts-node": "^10.9.2",
