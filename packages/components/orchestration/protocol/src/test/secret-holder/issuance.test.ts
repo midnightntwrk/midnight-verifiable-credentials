@@ -815,12 +815,9 @@ describe("secret-holder issuance", () => {
     );
 
     const rejectionMessage = bus.receive("holder")!;
-    const outcome = holder.receiveIssuanceOutcome(rejectionMessage);
-    expect(outcome.kind).toBe("rejected");
-    if (outcome.kind === "rejected") {
-      expect(outcome.rejection.body.category).toBe("correlation_mismatch");
-      expect(outcome.rejection.body.retryable).toBe(false);
-    }
+    expect(() => holder.receiveIssuanceOutcome(rejectionMessage)).toThrow(
+      /does not match the pending request correlation or issuer/i,
+    );
   });
 
   it("sends an explicit rejection result for offer/request mismatches", () => {
@@ -1237,5 +1234,131 @@ describe("secret-holder issuance", () => {
         body: forgedRejection,
       }),
     ).toThrow(/outcome type does not match the previously finalized outcome/i);
+  });
+
+  it("rejects forged issuance rejections from the wrong issuer or thread", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    holder.receiveOfferAndSendRequest(offer);
+    const request = bus.receive("issuer")!;
+    issuer.receiveRequestAndRespond(
+      {
+        ...request,
+        body: {
+          ...(request.body as SecretBirthCredentialIssuanceRequest),
+          body: {
+            ...(request.body as SecretBirthCredentialIssuanceRequest).body,
+            holderChallengeHash: genericPureCircuits.noProtocolResponseReference(),
+          },
+        },
+      },
+      claimWitness,
+    );
+    const rejection = bus.receive("holder")!;
+
+    expect(() =>
+      holder.receiveIssuanceOutcome({ ...rejection, from: "attacker" }),
+    ).toThrow(/pending request correlation or issuer/i);
+    expect(() =>
+      holder.receiveIssuanceOutcome({
+        ...rejection,
+        envelope: {
+          ...rejection.envelope,
+          threadId: sha256("forged-thread"),
+        },
+        body: {
+          ...(rejection.body as SecretBirthCredentialIssuanceRejection),
+          envelope: {
+            ...(rejection.body as SecretBirthCredentialIssuanceRejection).envelope,
+            threadId: sha256("forged-thread"),
+          },
+        },
+      }),
+    ).toThrow(/pending request correlation or issuer/i);
+  });
+
+  it("rejects conflicting finalized results instead of treating them as duplicates", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder");
+    holder.receiveOfferAndSendRequest(bus.receive("holder")!);
+    const request = bus.receive("issuer")!;
+    issuer.receiveRequestAndRespond(request, claimWitness);
+    const result = bus.receive("holder")!;
+    holder.receiveIssuanceOutcome(result);
+
+    const resultBody = result.body as SecretBirthCredentialIssuanceResult;
+    const conflictingResult = forgeIssuanceResultWithChallenge(
+      resultBody,
+      sha256("conflicting-finalized-result"),
+    );
+    expect(() =>
+      holder.receiveIssuanceOutcome({ ...result, body: conflictingResult }),
+    ).toThrow(/previously finalized response identity/i);
+  });
+
+  it("rejects cross-protocol messages before consulting the issuance cache", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder");
+    holder.receiveOfferAndSendRequest(bus.receive("holder")!);
+    const request = bus.receive("issuer")!;
+    issuer.receiveRequestAndRespond(request, claimWitness);
+    const result = bus.receive("holder")!;
+    holder.receiveIssuanceOutcome(result);
+
+    expect(() =>
+      holder.receiveIssuanceOutcome({ ...result, type: "presentation:result" }),
+    ).toThrow(/Expected message type/);
+  });
+
+  it("rejects issuance offers whose wrapper and body envelopes diverge", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    expect(() =>
+      holder.receiveOfferAndSendRequest({
+        ...offer,
+        envelope: {
+          ...offer.envelope,
+          threadId: sha256("offer-wrapper-thread"),
+        },
+      }),
+    ).toThrow(/envelope does not match the envelope in its body/i);
+  });
+
+  it("fails closed when a finalized issuer outcome has no replay identity", () => {
+    const bus = new MessageBus();
+    const stateStore = new InMemoryProtocolStateStore();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus, { stateStore });
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder");
+    holder.receiveOfferAndSendRequest(bus.receive("holder")!);
+    const request = bus.receive("issuer")!;
+    issuer.receiveRequestAndRespond(request, claimWitness);
+    bus.receive("holder");
+    const requestId = Buffer.from(request.envelope.messageId).toString("hex");
+    stateStore
+      .collection(`secret-issuer:${issuerProfile.label}:completed-requests`)
+      .delete(requestId);
+
+    issuer.receiveRequestAndRespond(request, claimWitness);
+    const rejection = bus.receive("holder")!;
+    expect(rejection.type).toBe("issuance:rejection");
+    expect(
+      (rejection.body as SecretBirthCredentialIssuanceRejection).body.category,
+    ).toBe("replayed_request");
   });
 });

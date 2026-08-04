@@ -26,11 +26,14 @@ import {
   assertBodyHasFields,
   assertMessageType,
   assertProtocolMessageEnvelopeAlignment,
+  protocolMessageDigest,
+  protocolValuesEquivalent,
 } from "../shared/validation.js";
 import type { MessageBus } from "../transport/message-bus.js";
 import type {
   ProtocolMessage,
   SecretBirthCredentialIssuanceRejection,
+  SecretBirthCredentialIssuanceRejectionCategory,
   SecretBirthCredentialVerificationRejection,
 } from "../transport/types.js";
 import {
@@ -138,10 +141,15 @@ export class SecretHolderAgent {
   private readonly metadata: ProtocolStateCollection<number>;
   private readonly pendingIssuanceRequests: ProtocolStateCollection<{
     readonly request: SecretBirthCredentialIssuanceRequest;
+    readonly issuer: string;
     readonly holderBindingBlindingFactor: Uint8Array;
   }>;
   private readonly completedIssuanceOutcomes: ProtocolStateCollection<
-    RetainedProtocolState<SecretIssuanceOutcome>
+    RetainedProtocolState<{
+      readonly outcome: SecretIssuanceOutcome;
+      readonly responseIdentity: Uint8Array;
+      readonly responseType: "issuance:result" | "issuance:rejection";
+    }>
   >;
   private readonly pendingPresentationSubmissions: ProtocolStateCollection<SecretBirthCredentialVerificationSubmission>;
   private readonly completedPresentationOutcomes: ProtocolStateCollection<
@@ -200,6 +208,7 @@ export class SecretHolderAgent {
   ): void {
     assertMessageType(offer, "issuance:offer");
     assertBodyHasFields(offer, ["envelope", "schema", "body"]);
+    assertProtocolMessageEnvelopeAlignment(offer);
     const issuanceOffer = offer.body as SecretBirthCredentialIssuanceOffer;
     pureCircuits.assertValidSecretBirthCredentialIssuanceOffer(issuanceOffer);
     const currentDay = options.currentDay ?? DEFAULT_PROTOCOL_CURRENT_DAY;
@@ -262,6 +271,7 @@ export class SecretHolderAgent {
     const requestMessageId = Buffer.from(request.envelope.messageId).toString("hex");
     this.pendingIssuanceRequests.set(requestMessageId, {
       request,
+      issuer: offer.from,
       holderBindingBlindingFactor,
     });
 
@@ -272,6 +282,69 @@ export class SecretHolderAgent {
       envelope: request.envelope,
       body: request,
     });
+  }
+
+  private assertIssuanceRejectionShape(
+    message: ProtocolMessage,
+  ): SecretBirthCredentialIssuanceRejection {
+    assertBodyHasFields(message, ["envelope", "schema", "body"]);
+    const rejection = message.body as SecretBirthCredentialIssuanceRejection;
+    const category = rejection.body?.category;
+    const categories: readonly SecretBirthCredentialIssuanceRejectionCategory[] = [
+      "malformed_request",
+      "correlation_mismatch",
+      "offer_request_mismatch",
+      "unknown_offer_reference",
+      "expired_offer",
+      "expired_request",
+      "replayed_request",
+    ];
+    if (
+      !rejection.body ||
+      typeof category !== "string" ||
+      !categories.includes(category as SecretBirthCredentialIssuanceRejectionCategory) ||
+      typeof rejection.body.detail !== "string" ||
+      typeof rejection.body.retryable !== "boolean"
+    ) {
+      throw new Error(
+        "Blinded-secret issuance rejection has an invalid category or body shape",
+      );
+    }
+    return rejection;
+  }
+
+  private assertIssuanceResponseMatchesPending(
+    message: ProtocolMessage,
+    pendingIssuance: {
+      readonly request: SecretBirthCredentialIssuanceRequest;
+      readonly issuer: string;
+      readonly holderBindingBlindingFactor: Uint8Array;
+    },
+  ): void {
+    const request = pendingIssuance.request;
+    const sameBytes = (left: Uint8Array, right: Uint8Array): boolean =>
+      Buffer.compare(Buffer.from(left), Buffer.from(right)) === 0;
+    const body = message.body as {
+      readonly schema?: unknown;
+      readonly issuerVerificationMethodRef?: unknown;
+      readonly holderBindingProfile?: unknown;
+    };
+    if (
+      message.from !== pendingIssuance.issuer ||
+      message.to !== this.label ||
+      !sameBytes(message.envelope.respondsToMessageId, request.envelope.messageId) ||
+      !sameBytes(message.envelope.threadId, request.envelope.threadId) ||
+      !protocolValuesEquivalent(body.schema, request.schema) ||
+      !protocolValuesEquivalent(
+        body.issuerVerificationMethodRef,
+        request.issuerVerificationMethodRef,
+      ) ||
+      body.holderBindingProfile !== request.holderBindingProfile
+    ) {
+      throw new Error(
+        "Blinded-secret issuance outcome does not match the pending request correlation or issuer",
+      );
+    }
   }
 
   receiveCredentialResult(
@@ -302,6 +375,7 @@ export class SecretHolderAgent {
         "Ensure receiveOfferAndSendRequest was called first.",
       );
     }
+    this.assertIssuanceResponseMatchesPending(result, pendingIssuance);
     pureCircuits.assertSecretBirthCredentialIssuanceResultMatchesRequest(
       pendingIssuance.request,
       issuanceResult,
@@ -329,8 +403,7 @@ export class SecretHolderAgent {
     assertMessageType(rejectionMessage, "issuance:rejection");
     assertBodyHasFields(rejectionMessage, ["envelope", "schema", "body"]);
     assertProtocolMessageEnvelopeAlignment(rejectionMessage);
-    const rejection =
-      rejectionMessage.body as SecretBirthCredentialIssuanceRejection;
+    const rejection = this.assertIssuanceRejectionShape(rejectionMessage);
     const respondsToId = Buffer.from(
       rejectionMessage.envelope.respondsToMessageId,
     ).toString("hex");
@@ -352,6 +425,7 @@ export class SecretHolderAgent {
         "Ensure receiveOfferAndSendRequest was called first.",
       );
     }
+    this.assertIssuanceResponseMatchesPending(rejectionMessage, pendingIssuance);
     this.pendingIssuanceRequests.delete(respondsToId);
     return rejection;
   }
@@ -361,7 +435,24 @@ export class SecretHolderAgent {
     options: SecretOutcomeReadOptions = {},
   ): SecretIssuanceOutcome {
     const nowMs = resolveCurrentTimeMs(options.currentTimeMs);
+    if (
+      message.type !== "issuance:result" &&
+      message.type !== "issuance:rejection"
+    ) {
+      throw new Error(
+        `Expected message type "issuance:result" or "issuance:rejection", got "${message.type}"`,
+      );
+    }
+    assertBodyHasFields(message, ["envelope", "schema", "body"]);
     assertProtocolMessageEnvelopeAlignment(message);
+    if (message.type === "issuance:result") {
+      pureCircuits.assertValidSecretBirthCredentialIssuanceResult(
+        message.body as SecretBirthCredentialIssuanceResult,
+      );
+    } else {
+      this.assertIssuanceRejectionShape(message);
+    }
+
     const respondsToId = Buffer.from(
       message.envelope.respondsToMessageId,
     ).toString("hex");
@@ -372,16 +463,32 @@ export class SecretHolderAgent {
     );
     if (completedOutcome) {
       if (
-        (message.type === "issuance:result" &&
-          completedOutcome.kind !== "issued") ||
-        (message.type === "issuance:rejection" &&
-          completedOutcome.kind !== "rejected")
+        !completedOutcome.outcome ||
+        !completedOutcome.responseType ||
+        !(completedOutcome.responseIdentity instanceof Uint8Array) ||
+        completedOutcome.responseIdentity.length === 0
       ) {
+        throw new Error(
+          "Finalized blinded-secret issuance outcome is missing its replay identity",
+        );
+      }
+      if (completedOutcome.responseType !== message.type) {
         throw new Error(
           "This blinded-secret issuance outcome type does not match the previously finalized outcome for the same request.",
         );
       }
-      return completedOutcome;
+      const responseIdentity = protocolMessageDigest(message);
+      if (
+        responseIdentity.length !== completedOutcome.responseIdentity.length ||
+        !responseIdentity.every(
+          (value, index) => value === completedOutcome.responseIdentity[index],
+        )
+      ) {
+        throw new Error(
+          "This blinded-secret issuance outcome does not match the previously finalized response identity.",
+        );
+      }
+      return completedOutcome.outcome;
     }
 
     if (message.type === "issuance:result") {
@@ -394,7 +501,11 @@ export class SecretHolderAgent {
       writeRetainedProtocolState(
         this.completedIssuanceOutcomes,
         respondsToId,
-        outcome,
+        {
+          outcome,
+          responseIdentity: protocolMessageDigest(message),
+          responseType: message.type,
+        },
         nowMs,
         this.retentionPolicy,
         pendingIssuance?.request.envelope.hasExpiresAt
@@ -412,7 +523,11 @@ export class SecretHolderAgent {
     writeRetainedProtocolState(
       this.completedIssuanceOutcomes,
       respondsToId,
-      outcome,
+      {
+        outcome,
+        responseIdentity: protocolMessageDigest(message),
+        responseType: message.type,
+      },
       nowMs,
       this.retentionPolicy,
       pendingIssuance?.request.envelope.hasExpiresAt

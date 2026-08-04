@@ -24,7 +24,7 @@ import {
   assertBodyHasFields,
   assertMessageType,
   assertProtocolMessageEnvelopeAlignment,
-  protocolMessagesEquivalent,
+  protocolMessageDigest,
 } from "../shared/validation.js";
 import type { MessageBus } from "../transport/message-bus.js";
 import type {
@@ -112,7 +112,9 @@ export class SecretIssuerAgent {
   private readonly completedOutcomes: ProtocolStateCollection<
     RetainedProtocolState<ProtocolMessage>
   >;
-  private readonly completedRequests: ProtocolStateCollection<ProtocolMessage>;
+  private readonly completedRequests: ProtocolStateCollection<
+    RetainedProtocolState<Uint8Array>
+  >;
 
   constructor(
     profile: DIDProfile,
@@ -303,20 +305,37 @@ export class SecretIssuerAgent {
       );
     }
     const requestMessageId = Buffer.from(request.envelope.messageId).toString("hex");
-    const completedRequest = this.completedRequests.get(requestMessageId);
-    if (completedRequest && !protocolMessagesEquivalent(completedRequest, request)) {
+    const nowMs = resolveCurrentTimeMs(options.currentTimeMs);
+    const requestIdentity = protocolMessageDigest(request);
+    const completedRequest = readRetainedProtocolState(
+      this.completedRequests,
+      requestMessageId,
+      nowMs,
+    );
+    if (
+      completedRequest &&
+      (completedRequest.length !== requestIdentity.length ||
+        !completedRequest.every(
+          (value, index) => value === requestIdentity[index],
+        ))
+    ) {
       throw new IssuanceProtocolError(
         "replayed_request",
         "This blinded-secret issuance message ID was already used with different message content.",
       );
     }
-    if (
-      readRetainedProtocolState(
-        this.completedOutcomes,
-        requestMessageId,
-        resolveCurrentTimeMs(options.currentTimeMs),
-      )
-    ) {
+    const completedOutcome = readRetainedProtocolState(
+      this.completedOutcomes,
+      requestMessageId,
+      nowMs,
+    );
+    if (completedOutcome) {
+      if (!completedRequest || completedRequest.length === 0) {
+        throw new IssuanceProtocolError(
+          "replayed_request",
+          "This finalized issuance outcome has no replay identity and cannot be redelivered.",
+        );
+      }
       throw new IssuanceProtocolError(
         "replayed_request",
         "This blinded-secret issuance request was already finalized and cannot be processed again.",
@@ -467,12 +486,21 @@ export class SecretIssuerAgent {
       body: result,
     };
     this.bus.send(resultMessage);
-    this.completedRequests.set(requestMessageId, request);
     writeRetainedProtocolState(
       this.completedOutcomes,
       requestMessageId,
       resultMessage,
-      resolveCurrentTimeMs(options.currentTimeMs),
+      nowMs,
+      this.retentionPolicy,
+      issuanceRequest.envelope.hasExpiresAt
+        ? issuanceRequest.envelope.expiresAt
+        : undefined,
+    );
+    writeRetainedProtocolState(
+      this.completedRequests,
+      requestMessageId,
+      requestIdentity,
+      nowMs,
       this.retentionPolicy,
       issuanceRequest.envelope.hasExpiresAt
         ? issuanceRequest.envelope.expiresAt
@@ -488,15 +516,23 @@ export class SecretIssuerAgent {
     const requestMessageId = Buffer.from(
       request.envelope.messageId,
     ).toString("hex");
+    const nowMs = resolveCurrentTimeMs(options.currentTimeMs);
+    const requestIdentity = protocolMessageDigest(request);
     const completedOutcome = readRetainedProtocolState(
       this.completedOutcomes,
       requestMessageId,
-      resolveCurrentTimeMs(options.currentTimeMs),
+      nowMs,
     );
-    const completedRequest = this.completedRequests.get(requestMessageId);
+    const completedRequest = readRetainedProtocolState(
+      this.completedRequests,
+      requestMessageId,
+      nowMs,
+    );
     if (
       completedOutcome &&
-      (!completedRequest || protocolMessagesEquivalent(completedRequest, request))
+      completedRequest &&
+      completedRequest.length === requestIdentity.length &&
+      completedRequest.every((value, index) => value === requestIdentity[index])
     ) {
       this.bus.send(completedOutcome);
       return;
@@ -523,9 +559,6 @@ export class SecretIssuerAgent {
         body: rejection,
       };
       this.bus.send(rejectionMessage);
-      if (!completedOutcome) {
-        this.completedRequests.set(requestMessageId, request);
-      }
       if (completedOutcome) {
         return;
       }
@@ -533,7 +566,17 @@ export class SecretIssuerAgent {
         this.completedOutcomes,
         requestMessageId,
         rejectionMessage,
-        resolveCurrentTimeMs(options.currentTimeMs),
+        nowMs,
+        this.retentionPolicy,
+        request.envelope.hasExpiresAt
+          ? request.envelope.expiresAt
+          : undefined,
+      );
+      writeRetainedProtocolState(
+        this.completedRequests,
+        requestMessageId,
+        requestIdentity,
+        nowMs,
         this.retentionPolicy,
         request.envelope.hasExpiresAt
           ? request.envelope.expiresAt
