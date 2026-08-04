@@ -22,25 +22,25 @@ overrides:
   '@midnight-ntwrk/midnight-js-types': 4.0.4
   '@midnight-ntwrk/midnight-js-utils': 4.0.4
   axios: 1.18.0
-  brace-expansion@1: 5.0.8
-  brace-expansion@2: 5.0.8
-  brace-expansion@5: 5.0.8
+  brace-expansion@1: 5.0.9
+  brace-expansion@2: 5.0.9
+  brace-expansion@5: 5.0.9
   esbuild: 0.28.1
   form-data: 4.0.6
   js-yaml: 4.3.0
   postcss: 8.5.23
   protobufjs: 7.6.5
   tmp: 0.2.7
-  undici: 7.28.0
+  undici: 7.29.0
   uuid@10: 11.1.1
   uuid@11: 11.1.1
   vite: 7.3.6
   ws: 8.21.1
 
 patchedDependencies:
-  brace-expansion@5.0.8:
-    hash: f3911632f63023fe45fd33b73c16270e1bbc40a5e6754a940e194cb58d051cd3
-    path: patches/brace-expansion@5.0.8.patch
+  brace-expansion@5.0.9:
+    hash: b14c294649ec3e568b6982324ad845fece2ea9ea8ee2a402e5dcc596577d369a
+    path: patches/brace-expansion@5.0.9.patch
 
 importers:
 
@@ -2149,8 +2149,8 @@ packages:
   bn.js@5.2.3:
     resolution: {integrity: sha512-EAcmnPkxpntVL+DS7bO1zhcZNvCkxqtkd0ZY53h06GNQ3DEkkGZ/gKgmDv6DdZQGj9BgfSPKtJJ7Dp1GPP8f7w==}
 
-  brace-expansion@5.0.8:
-    resolution: {integrity: sha512-JZyDyq3D4AUifKTPOB7DELf6XsB3WdPuNxCtob1vFXPsSXhdAiHBWJ/tJ8HAc9aH84BK+5JFZLNkJKx3G9kzQg==}
+  brace-expansion@5.0.9:
+    resolution: {integrity: sha512-ScQ4IuvIEF1TMlP7Zt+vjJ//9zlPb2SDcxWxM3bk8s6t6GGdJ7KO1dCcTidOPJKePW30LE/2cT7wCyPho9/Wxg==}
     engines: {node: 20 || >=22}
 
   braces@3.0.3:
@@ -4086,8 +4086,8 @@ packages:
   undici-types@6.21.0:
     resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
 
-  undici@7.28.0:
-    resolution: {integrity: sha512-cRZYrTDwWznlnRiPjggAGxZXanty6M8RV1ff8Wm4LWXBp7/IG8v5DnOm74DtUBp9OONpK75YlPnIjQqX0dBDtA==}
+  undici@7.29.0:
+    resolution: {integrity: sha512-IDxfleLmmbSskfWSUATiN1nfn2rDuvnMOqb5CWR92iIfojA0Ud+ulOAAEQ57LPr9rWmsreUyf5lwyao+7GNNVw==}
     engines: {node: '>=20.18.1'}
 
   unicorn-magic@0.1.0:
@@ -6580,7 +6580,7 @@ snapshots:
 
   bn.js@5.2.3: {}
 
-  brace-expansion@5.0.8(patch_hash=f3911632f63023fe45fd33b73c16270e1bbc40a5e6754a940e194cb58d051cd3):
+  brace-expansion@5.0.9(patch_hash=b14c294649ec3e568b6982324ad845fece2ea9ea8ee2a402e5dcc596577d369a):
     dependencies:
       balanced-match: 4.0.4
 
@@ -7804,19 +7804,19 @@ snapshots:
 
   minimatch@10.2.5:
     dependencies:
-      brace-expansion: 5.0.8(patch_hash=f3911632f63023fe45fd33b73c16270e1bbc40a5e6754a940e194cb58d051cd3)
+      brace-expansion: 5.0.9(patch_hash=b14c294649ec3e568b6982324ad845fece2ea9ea8ee2a402e5dcc596577d369a)
 
   minimatch@3.1.5:
     dependencies:
-      brace-expansion: 5.0.8(patch_hash=f3911632f63023fe45fd33b73c16270e1bbc40a5e6754a940e194cb58d051cd3)
+      brace-expansion: 5.0.9(patch_hash=b14c294649ec3e568b6982324ad845fece2ea9ea8ee2a402e5dcc596577d369a)
 
   minimatch@5.1.9:
     dependencies:
-      brace-expansion: 5.0.8(patch_hash=f3911632f63023fe45fd33b73c16270e1bbc40a5e6754a940e194cb58d051cd3)
+      brace-expansion: 5.0.9(patch_hash=b14c294649ec3e568b6982324ad845fece2ea9ea8ee2a402e5dcc596577d369a)
 
   minimatch@9.0.9:
     dependencies:
-      brace-expansion: 5.0.8(patch_hash=f3911632f63023fe45fd33b73c16270e1bbc40a5e6754a940e194cb58d051cd3)
+      brace-expansion: 5.0.9(patch_hash=b14c294649ec3e568b6982324ad845fece2ea9ea8ee2a402e5dcc596577d369a)
 
   minimist@1.2.8: {}
 
@@ -8621,7 +8621,7 @@ snapshots:
       ssh-remote-port-forward: 1.0.4
       tar-fs: 3.1.2
       tmp: 0.2.7
-      undici: 7.28.0
+      undici: 7.29.0
     transitivePeerDependencies:
       - bare-abort-controller
       - bare-buffer
@@ -8779,7 +8779,7 @@ snapshots:
 
   undici-types@6.21.0: {}
 
-  undici@7.28.0: {}
+  undici@7.29.0: {}
 
   unicorn-magic@0.1.0: {}
 
