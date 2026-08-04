@@ -85,6 +85,11 @@ type SecretIssuanceProcessingOptions = {
   readonly currentTimeMs?: bigint;
 };
 
+type PendingSecretIssuanceOffer = {
+  readonly offer: SecretBirthCredentialIssuanceOffer;
+  readonly holder: PartyId;
+};
+
 class IssuanceProtocolError extends Error {
   readonly category: SecretBirthCredentialIssuanceRejectionCategory;
   readonly retryable: boolean;
@@ -108,7 +113,7 @@ export class SecretIssuerAgent {
   private readonly createEnvelope: ProtocolEnvelopeFactory;
   private readonly retentionPolicy: ProtocolStateRetentionPolicy;
   private issuanceCounter = 0;
-  private readonly pendingOffers: ProtocolStateCollection<SecretBirthCredentialIssuanceOffer>;
+  private readonly pendingOffers: ProtocolStateCollection<PendingSecretIssuanceOffer>;
   private readonly completedOutcomes: ProtocolStateCollection<
     RetainedProtocolState<ProtocolMessage>
   >;
@@ -177,7 +182,10 @@ export class SecretIssuerAgent {
       body: offer,
     });
     const offerMessageId = Buffer.from(offer.envelope.messageId).toString("hex");
-    this.pendingOffers.set(offerMessageId, offer);
+    this.pendingOffers.set(offerMessageId, {
+      offer,
+      holder: holderLabel,
+    });
   }
 
   private buildIssuanceRejection(
@@ -346,12 +354,25 @@ export class SecretIssuerAgent {
     const respondsToId = Buffer.from(
       request.envelope.respondsToMessageId,
     ).toString("hex");
-    const offer = this.pendingOffers.get(respondsToId);
-    if (!offer) {
+    const pendingOffer = this.pendingOffers.get(respondsToId);
+    if (!pendingOffer) {
       throw new IssuanceProtocolError(
         "unknown_offer_reference",
         "No pending issuance offer found for this credential request. " +
         "Ensure createAndSendOffer was called first.",
+      );
+    }
+    const offer = pendingOffer.offer;
+    const sameBytes = (left: Uint8Array, right: Uint8Array): boolean =>
+      Buffer.compare(Buffer.from(left), Buffer.from(right)) === 0;
+    if (
+      request.to !== this.profile.label ||
+      request.from !== pendingOffer.holder ||
+      !sameBytes(request.envelope.threadId, offer.envelope.threadId)
+    ) {
+      throw new IssuanceProtocolError(
+        "correlation_mismatch",
+        "Secret birth credential issuance request transport parties and thread must match the offered session",
       );
     }
     this.assertRequestMatchesOffer(offer, issuanceRequest);

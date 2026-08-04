@@ -820,6 +820,88 @@ describe("secret-holder issuance", () => {
     );
   });
 
+  it("rejects an aligned request whose thread differs from the offered session", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    holder.receiveOfferAndSendRequest(offer);
+    const request = bus.receive("issuer")!;
+    const wrongThread = sha256("aligned-wrong-offer-thread");
+    const requestBody = request.body as SecretBirthCredentialIssuanceRequest;
+    const wrongThreadRequest = {
+      ...request,
+      envelope: {
+        ...request.envelope,
+        threadId: wrongThread,
+      },
+      body: {
+        ...requestBody,
+        envelope: {
+          ...requestBody.envelope,
+          threadId: wrongThread,
+        },
+      },
+    };
+
+    issuer.receiveRequestAndRespond(wrongThreadRequest, claimWitness);
+
+    const rejectionMessage = bus.receive("holder")!;
+    expect(rejectionMessage.type).toBe("issuance:rejection");
+    expect(
+      (rejectionMessage.body as SecretBirthCredentialIssuanceRejection).body
+        .category,
+    ).toBe("correlation_mismatch");
+  });
+
+  it("rejects issuance requests from a party other than the offered holder", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    holder.receiveOfferAndSendRequest(offer);
+    const request = bus.receive("issuer")!;
+
+    issuer.receiveRequestAndRespond(
+      { ...request, from: "attacker" },
+      claimWitness,
+    );
+
+    const rejectionMessage = bus.receive("attacker")!;
+    expect(rejectionMessage.type).toBe("issuance:rejection");
+    expect(
+      (rejectionMessage.body as SecretBirthCredentialIssuanceRejection).body
+        .category,
+    ).toBe("correlation_mismatch");
+  });
+
+  it("rejects issuance requests addressed to a different issuer", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+
+    issuer.createAndSendOffer("holder");
+    const offer = bus.receive("holder")!;
+    holder.receiveOfferAndSendRequest(offer);
+    const request = bus.receive("issuer")!;
+
+    issuer.receiveRequestAndRespond(
+      { ...request, to: "other-issuer" },
+      claimWitness,
+    );
+
+    const rejectionMessage = bus.receive("holder")!;
+    expect(rejectionMessage.type).toBe("issuance:rejection");
+    expect(
+      (rejectionMessage.body as SecretBirthCredentialIssuanceRejection).body
+        .category,
+    ).toBe("correlation_mismatch");
+  });
+
   it("sends an explicit rejection result for offer/request mismatches", () => {
     const bus = new MessageBus();
     const issuer = new SecretIssuerAgent(issuerProfile, bus);

@@ -166,8 +166,8 @@ validate:
   wrapper/body correlation mismatches, offer/request mismatches, unknown offer
   references, expired offers, expired requests, and conflicting replayed
   requests
-- idempotent re-delivery of duplicate blinded-secret issuance requests and
-  duplicate blinded-secret issuance outcomes
+- idempotent re-delivery of exact duplicate blinded-secret issuance requests
+  and duplicate blinded-secret issuance outcomes
 - explicit blinded-secret presentation rejection messages for malformed
   submissions, request/submission mismatches, and unsatisfied verifier
   requests
