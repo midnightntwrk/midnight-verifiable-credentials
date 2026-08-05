@@ -238,10 +238,12 @@ A protocol/orchestration implementation conforms when it:
 
 For the current reference protocol layer, conformance claims about
 blinded-secret issuance may include explicit rejection messages for malformed
-requests, offer/request mismatches, unknown offer references, expired offers,
-and expired requests. The same flow may also claim explicit idempotent
-re-delivery semantics for duplicate blinded-secret issuance deliveries. Broader
-transport interoperability guarantees remain deferred. The same reference
+requests, wrapper/body correlation mismatches, offer/request mismatches,
+unknown offer references, expired offers, expired requests, and conflicting
+replayed requests. The same flow may also claim explicit idempotent
+re-delivery semantics for exact duplicate blinded-secret issuance deliveries;
+conflicting reuse of a finalized request ID is rejected rather than treated as
+idempotent. Broader transport interoperability guarantees remain deferred. The same reference
 protocol layer may also claim explicit blinded-secret presentation rejection
 messages for malformed submissions, request/submission mismatches,
 unsatisfied verifier requests, expired requests, and expired submissions. It

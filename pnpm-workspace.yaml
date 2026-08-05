@@ -8,6 +8,7 @@ packages:
   - packages/core/capabilities/same-holder
   - packages/core/primitives/iso-registry
   - packages/components/adapters/offchain-did
+  - packages/components/adapters/credential-did-midnight
   - packages/protocols/openid
   - packages/components/orchestration/protocol
   - packages/prototypes/credential-families/birth
