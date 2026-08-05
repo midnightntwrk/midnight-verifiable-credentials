@@ -20,7 +20,7 @@ overrides:
   '@midnight-ntwrk/midnight-js-network-id': 4.1.1
   '@midnight-ntwrk/midnight-js-node-zk-config-provider': 4.0.4
   '@midnight-ntwrk/midnight-js-types': 4.0.4
-  '@midnight-ntwrk/midnight-js-utils': 4.0.4
+  '@midnight-ntwrk/midnight-js-utils': 4.1.1
   axios: 1.18.0
   brace-expansion@1: 5.0.9
   brace-expansion@2: 5.0.9
@@ -77,8 +77,8 @@ importers:
         specifier: 4.0.4
         version: 4.0.4
       '@midnight-ntwrk/midnight-js-utils':
-        specifier: 4.0.4
-        version: 4.0.4
+        specifier: 4.1.1
+        version: 4.1.1
       '@midnight-ntwrk/wallet-sdk-address-format':
         specifier: ^3.0.0
         version: 3.1.1
@@ -1079,8 +1079,8 @@ packages:
   '@midnight-ntwrk/midnight-js-types@4.0.4':
     resolution: {integrity: sha512-/roDMGA7WgSXyNZPc0Xhg6Ane7IJuRJLNZ1euZxmDH4RH/XNa413L197GNpxZuZ9CNR4AozSH20VFlDpZDvERw==}
 
-  '@midnight-ntwrk/midnight-js-utils@4.0.4':
-    resolution: {integrity: sha512-x0G2hqpFEyXv/v0Yx/L/veU9UygaJxJxZzf3LtCLMlMf1uoACqo10PiCrssynsn5Xg6Obju9I1cv1IPp5uliRg==}
+  '@midnight-ntwrk/midnight-js-utils@4.1.1':
+    resolution: {integrity: sha512-b65QADd2FaZbWXe9D3fe9mSGmPlP1DTRMGSruJqhl9fOTNxBhQIzIKs0j/eL9Kv77dVeGDYgQdbV+JkDj3j5Qg==}
 
   '@midnight-ntwrk/onchain-runtime-v3@3.0.0':
     resolution: {integrity: sha512-HbFbUOsvgpEFy1OT0Ni2LMFk4jnMQS1em+H+Mof/B3DpnNKl0Lkx5QiulKOc6pyU4KPEagOqx4fYNyVXFwgZ7g==}
@@ -5055,7 +5055,7 @@ snapshots:
       '@midnight-ntwrk/midnight-js-network-id': 4.1.1
       '@midnight-ntwrk/midnight-js-node-zk-config-provider': 4.0.4
       '@midnight-ntwrk/midnight-js-types': 4.0.4
-      '@midnight-ntwrk/midnight-js-utils': 4.0.4
+      '@midnight-ntwrk/midnight-js-utils': 4.1.1
       '@midnight-ntwrk/wallet-sdk-dust-wallet': 3.0.0(ws@8.21.1)
       '@midnight-ntwrk/wallet-sdk-facade': 3.0.0(ws@8.21.1)
       '@midnight-ntwrk/wallet-sdk-hd': 3.0.0
@@ -5117,7 +5117,7 @@ snapshots:
       '@midnight-ntwrk/compact-js': 2.5.0
       '@midnight-ntwrk/midnight-js-network-id': 4.1.1
       '@midnight-ntwrk/midnight-js-types': 4.0.4
-      '@midnight-ntwrk/midnight-js-utils': 4.0.4
+      '@midnight-ntwrk/midnight-js-utils': 4.1.1
 
   '@midnight-ntwrk/midnight-js-fetch-zk-config-provider@4.0.4':
     dependencies:
@@ -5131,7 +5131,7 @@ snapshots:
       '@midnight-ntwrk/midnight-js-contracts': 4.0.4
       '@midnight-ntwrk/midnight-js-network-id': 4.1.1
       '@midnight-ntwrk/midnight-js-types': 4.0.4
-      '@midnight-ntwrk/midnight-js-utils': 4.0.4
+      '@midnight-ntwrk/midnight-js-utils': 4.1.1
       cross-fetch: 4.1.0
       fetch-retry: 6.0.0
       lodash: 4.18.1
@@ -5145,7 +5145,7 @@ snapshots:
       '@midnight-ntwrk/midnight-js-network-id': 4.1.1
       '@midnight-ntwrk/midnight-js-protocol': 4.1.1
       '@midnight-ntwrk/midnight-js-types': 4.0.4
-      '@midnight-ntwrk/midnight-js-utils': 4.0.4
+      '@midnight-ntwrk/midnight-js-utils': 4.1.1
       buffer: 6.0.3
       cross-fetch: 4.1.0
       graphql: 16.14.2
@@ -5193,10 +5193,11 @@ snapshots:
       '@midnight-ntwrk/platform-js': 2.2.4
       rxjs: 7.8.2
 
-  '@midnight-ntwrk/midnight-js-utils@4.0.4':
+  '@midnight-ntwrk/midnight-js-utils@4.1.1':
     dependencies:
       '@midnight-ntwrk/midnight-js-network-id': 4.1.1
-      '@scure/base': 2.2.0
+      '@midnight-ntwrk/midnight-js-protocol': 4.1.1
+      '@midnight-ntwrk/wallet-sdk-address-format': 3.1.1
 
   '@midnight-ntwrk/onchain-runtime-v3@3.0.0': {}
 
