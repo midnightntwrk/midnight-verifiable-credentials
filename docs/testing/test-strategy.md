@@ -216,8 +216,9 @@ actually restores those packages on `develop`.
 Current repository stance:
 
 - the reference protocol layer now proves explicit rejection results for
-  blinded-secret issuance, including malformed requests, offer/request
-  mismatches, unknown offer references, expired offers, and expired requests
+  blinded-secret issuance, including malformed requests, wrapper/body
+  correlation mismatches, offer/request mismatches, unknown offer references,
+  expired offers, expired requests, and conflicting replayed requests
 - the same reference protocol layer now proves explicit rejection results for
   blinded-secret presentation, including malformed submissions,
   request/submission mismatches, unsatisfied verifier requests, expired
@@ -225,9 +226,10 @@ Current repository stance:
 - the same reference protocol layer now proves idempotent re-delivery for
   duplicate blinded-secret presentation submissions and duplicate presentation
   outcomes
-- the same reference layer now proves idempotent re-delivery for duplicate
-  blinded-secret issuance requests and duplicate blinded-secret issuance
-  outcomes
+- the same reference layer now proves idempotent re-delivery for exact
+  duplicate blinded-secret issuance requests and duplicate blinded-secret
+  issuance outcomes, while conflicting reuse of a finalized request ID is
+  rejected
 - the reference transport-shaped API now uses one normalized default time rule:
   omitted `currentDay` means `0n`
 - holder-side tests still prove local rejection behavior for uncorrelated
