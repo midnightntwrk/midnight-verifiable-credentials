@@ -254,9 +254,25 @@ const assertReleaseManifest = (entry) => {
 const tarballName = (packageJson) =>
   `${packageJson.name.slice(1).replace("/", "-")}-${packageJson.version}.tgz`;
 
-const wildcardPattern = (target) => {
-  const escaped = target.replace(/[.+?^${}()|[\]\\]/gu, "\\$&");
-  return new RegExp(`^${escaped.replaceAll("*", "[^/]+")}$`, "u");
+const wildcardMatches = (target, value) => {
+  const segments = target.split("*");
+  if (segments.length === 1) return target === value;
+  if (!value.startsWith(segments[0])) return false;
+  let cursor = segments[0].length;
+  for (const segment of segments.slice(1, -1)) {
+    if (segment.length === 0) {
+      if (value[cursor] === undefined || value[cursor] === "/") return false;
+      cursor += 1;
+      continue;
+    }
+    const next = value.indexOf(segment, cursor + 1);
+    if (next < 0 || value.slice(cursor, next).includes("/")) return false;
+    cursor = next + segment.length;
+  }
+  const suffix = segments.at(-1);
+  if (!value.endsWith(suffix)) return false;
+  const suffixStart = value.length - suffix.length;
+  return suffixStart >= cursor + 1 && !value.slice(cursor, suffixStart).includes("/");
 };
 
 const assertReleaseTarball = (entry, tarballDirectory) => {
@@ -438,9 +454,9 @@ const assertReleaseTarball = (entry, tarballDirectory) => {
   visitExportMap(packedPackageJson.exports, `${label} exports`, (target, targetLabel) => {
     const packedTarget = `package/${target.slice(2)}`;
     if (packedTarget.includes("*")) {
-      const pattern = wildcardPattern(packedTarget);
+      const pattern = (entryPath) => wildcardMatches(packedTarget, entryPath);
       assert(
-        entries.some((entryPath) => pattern.test(entryPath)),
+        entries.some((entryPath) => pattern(entryPath)),
         `${targetLabel} wildcard has no packaged target`,
       );
     } else {
