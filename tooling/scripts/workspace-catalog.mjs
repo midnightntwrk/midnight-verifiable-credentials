@@ -91,6 +91,17 @@ export const workspaceCatalog = [
     "infrastructure",
     "dist",
   ),
+  workspace(
+    "packages/components/adapters/credential-did-midnight",
+    "infrastructure",
+    "dist",
+    {
+      releaseStage: "candidate",
+      consumerFixture: "tooling/fixtures/credential-did-midnight-consumer",
+      consumerChecks: ["node", "typescript"],
+      publicationDependencies: [],
+    },
+  ),
   workspace("packages/protocols/openid", "reference", "dist", {
     testFromArtifacts: [
       "exec",
