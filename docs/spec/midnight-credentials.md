@@ -406,8 +406,9 @@ Today:
 - the reference `packages/components/orchestration/protocol` layer now defines explicit
   rejection messages for blinded-secret issuance and blinded-secret
   presentation
-- the same reference layer now treats duplicate blinded-secret issuance
-  deliveries as idempotent re-delivery of the prior outcome
+- the same reference layer now treats exact duplicate blinded-secret issuance
+  deliveries as idempotent re-delivery of the prior outcome and rejects
+  conflicting reuse of a finalized request ID as `replayed_request`
 - the same reference layer now treats duplicate blinded-secret presentation
   deliveries as idempotent re-delivery of the prior outcome
 - the same reference layer now models explicit offer and request expiry fields

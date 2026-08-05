@@ -163,10 +163,11 @@ validate:
 - response envelope threading
 - request/result matching rules for blinded-secret issuance
 - explicit blinded-secret issuance rejection messages for malformed requests,
-  offer/request mismatches, unknown offer references, expired offers, and
-  expired requests
-- idempotent re-delivery of duplicate blinded-secret issuance requests and
-  duplicate blinded-secret issuance outcomes
+  wrapper/body correlation mismatches, offer/request mismatches, unknown offer
+  references, expired offers, expired requests, and conflicting replayed
+  requests
+- idempotent re-delivery of exact duplicate blinded-secret issuance requests
+  and duplicate blinded-secret issuance outcomes
 - explicit blinded-secret presentation rejection messages for malformed
   submissions, request/submission mismatches, and unsatisfied verifier
   requests
@@ -299,7 +300,16 @@ reference surface:
 - verifier: `receiveSecretSubmissionAndRespond(...)`
 - holder: `receivePresentationOutcome(...)`
 
-Reference outcome rule:
+Reference issuance outcome rule:
+
+- exact duplicate blinded-secret issuance requests re-deliver the same prior
+  approved or rejected outcome without minting a second credential
+- reuse of a finalized request ID with different parsed content is rejected as
+  `replayed_request` and cannot replace the original outcome
+- a result delivered directly after its request has been finalized is rejected
+  at the holder boundary rather than stored again
+
+Reference presentation outcome rule:
 
 - duplicate blinded-secret presentation submissions re-deliver the same prior
   approved or rejected outcome

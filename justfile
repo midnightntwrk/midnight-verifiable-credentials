@@ -1,6 +1,8 @@
 set dotenv-load := false
 set shell := ["bash", "-euo", "pipefail", "-c"]
 
+pi_web_version := env_var_or_default("PI_WEB_VERSION", "1.202607.3")
+
 # List available targets.
 default:
   @just --list
@@ -28,9 +30,27 @@ pi-bootstrap:
   fi
   @echo "Project Pi packages are pinned in .pi/settings.json. Start with: pi"
 
+# Verify the PI WEB binary supplied by the Nix dev shell.
+pi-web-bootstrap:
+  @command -v pi-web >/dev/null || (echo "PI WEB is available from nix develop; enter the Nix shell first." >&2; exit 1)
+  @echo "PI WEB {{pi_web_version}} available from the Nix flake: $(pi-web --version)"
+
 # Force-refresh the repo-local pi.dev installation.
 pi-update:
   npm install -g --prefix "$PWD/.pi/nix-global" --ignore-scripts @earendil-works/pi-coding-agent@latest
+
+# PI WEB is updated by changing the pinned Nix package and its hashes.
+pi-web-update:
+  @echo "PI WEB is pinned in nix/packages/pi-web.nix; update its version, source hash, and npmDepsHash, then run nix build .#pi-web."
+
+pi-web-doctor:
+  pi-web doctor
+
+pi-web-install:
+  pi-web install
+
+pi-web-status:
+  pi-web status
 
 # Show Pi and project package wiring without starting an interactive model turn.
 pi-doctor:

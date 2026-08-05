@@ -30,7 +30,7 @@ first and put platform or protocol qualifiers last. The exception is
 | `@midnight-ntwrk/credential-testkit` | Deterministic fixtures, fake ports, and black-box family, protocol, package, and composition conformance suites | Public development package | P0 |
 | `@midnight-ntwrk/credential-exchange` | Family-neutral issuance/presentation messages and state machines plus durable session codecs, replay/idempotency contracts, transport ports, and a CAS storage port | Public candidate | P1 |
 | `@midnight-ntwrk/openid4vc` | OpenID4VCI Final issuance and OpenID4VP Final presentation bindings, including DCQL and request binding | Public | P1 |
-| `@midnight-ntwrk/credential-did-midnight` | `did:midnight` resolution and verification-relationship adapters; signing remains an injected wallet/issuer port | Public | P1 |
+| `@midnight-ntwrk/credential-did-midnight` | `did:midnight` resolution and verification-relationship adapters; signing remains an injected wallet/issuer port | Private candidate (not published) | P1 |
 | `@midnight-ntwrk/credential-proofs-midnight` | Compact/Midnight proving and verification adapters | Public | P1 |
 | `@midnight-ntwrk/credential-status-midnight-contract` | Generic Midnight status-registry contract and curated generated exports | Public candidate | P1 |
 | `@midnight-ntwrk/credential-status-midnight-verifier` | Midnight status witness, observation, read, and verification adapter | Public candidate | P1 |
