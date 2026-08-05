@@ -58,6 +58,42 @@ Use the normal issue and pull-request lifecycle from the Pi shell:
 
 The exact command help exposed by the installed package is authoritative.
 
+## Use the PI WEB browser UI
+
+The repository includes a project-local PI WEB configuration at
+`.pi-web/config.json`. It keeps manual uploads workspace-relative under
+`.pi-web/uploads/`; uploaded files are ignored by Git.
+
+Entering `nix develop` (or allowing direnv to load this checkout) exposes the
+pinned PI WEB binary from the flake. Verify it and install the user services
+with:
+
+```sh
+just pi-web-bootstrap
+just pi-web-doctor
+pi-web install
+```
+
+The pinned version is `1.202607.3`; update it in `nix/packages/pi-web.nix`,
+the lockfile hash, and `PI_WEB_VERSION` when deliberately upgrading. PI WEB
+is intentionally not installed by npm; use `nix develop` for the supported
+installation path.
+
+Then open <http://127.0.0.1:8504>, add this repository as a project, and use the
+browser UI to supervise persistent Pi sessions. PI WEB must remain bound to a
+trusted local/private network path; do not expose the unauthenticated service
+directly to the public internet. For a remote machine, use an SSH tunnel:
+
+```sh
+ssh -L 8504:127.0.0.1:8504 user@server
+```
+
+The service requires Node.js 22.19 or newer, Pi 0.82.x, and a login-shell PATH
+that exposes `node`, `npm`, `pi`, and repository tooling. Run `just pi-web-status`,
+`pi-web status`, or `pi-web logs` for service diagnostics. The project config is
+portable; service installation and credentials remain machine-local and are not
+committed.
+
 ## Repository harness policy
 
 The repository-root `.devloops` file configures the review and lifecycle
