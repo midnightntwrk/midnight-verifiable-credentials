@@ -203,6 +203,118 @@ exit 0
   }
 });
 
+test("waits with a clean public metadata probe", () => {
+  const temporaryRoot = mkdtempSync(
+    path.join(os.tmpdir(), "midnight-vc-npm-waiter-clean-probe-test-"),
+  );
+  const fakeNpm = path.join(temporaryRoot, "npm");
+  const npmLog = path.join(temporaryRoot, "npm.log");
+  writeFileSync(
+    fakeNpm,
+    `#!/usr/bin/env bash
+set -euo pipefail
+if env | grep -Fq "publish-secret"; then
+  echo "probe received publish credentials" >&2
+  exit 42
+fi
+printf '%s\\n' "$*" > "\${FAKE_NPM_LOG}"
+echo "0.1.0"
+`,
+  );
+  chmodSync(fakeNpm, 0o755);
+
+  try {
+    const result = spawnSync(
+      process.execPath,
+      [
+        "tooling/scripts/wait-for-npm-packages.mjs",
+        "--version",
+        "0.1.0",
+        "--attempts",
+        "1",
+        "--delay-ms",
+        "0",
+      ],
+      {
+        cwd: repoRoot,
+        encoding: "utf8",
+        env: {
+          ...process.env,
+          FAKE_NPM_LOG: npmLog,
+          NODE_AUTH_TOKEN: "publish-secret",
+          "NPM_CONFIG_//registry.npmjs.org/:_authToken": "publish-secret",
+          NPM_COMMAND: fakeNpm,
+        },
+      },
+    );
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /1 package\(s\) visible/u);
+    assert.match(readFileSync(npmLog, "utf8"), /--userconfig \/dev\/null/u);
+    assert.doesNotMatch(result.stdout, /publish-secret/u);
+    assert.doesNotMatch(result.stderr, /publish-secret/u);
+  } finally {
+    rmSync(temporaryRoot, { recursive: true, force: true });
+  }
+});
+
+test("distinguishes a missing version from npm view errors and fails closed", () => {
+  const temporaryRoot = mkdtempSync(
+    path.join(os.tmpdir(), "midnight-vc-npm-waiter-diagnostics-test-"),
+  );
+  const fakeNpm = path.join(temporaryRoot, "npm");
+  writeFileSync(
+    fakeNpm,
+    `#!/usr/bin/env bash
+set -euo pipefail
+if [[ "\${FAKE_NPM_MODE}" == "error" ]]; then
+  echo "npm error code E503" >&2
+  exit 17
+fi
+echo "0.0.9"
+`,
+  );
+  chmodSync(fakeNpm, 0o755);
+
+  const runProbe = (mode) =>
+    spawnSync(
+      process.execPath,
+      [
+        "tooling/scripts/wait-for-npm-packages.mjs",
+        "--version",
+        "0.1.0",
+        "--attempts",
+        "1",
+        "--delay-ms",
+        "0",
+      ],
+      {
+        cwd: repoRoot,
+        encoding: "utf8",
+        env: {
+          ...process.env,
+          FAKE_NPM_MODE: mode,
+          NPM_COMMAND: fakeNpm,
+        },
+      },
+    );
+
+  try {
+    const missing = runProbe("missing");
+    assert.notEqual(missing.status, 0);
+    assert.match(missing.stderr, /missing version/u);
+    assert.match(missing.stderr, /version not visible/u);
+    assert.doesNotMatch(missing.stderr, /npm view\/registry errors/u);
+
+    const error = runProbe("error");
+    assert.notEqual(error.status, 0);
+    assert.match(error.stderr, /npm view\/registry errors/u);
+    assert.match(error.stderr, /E503/u);
+    assert.doesNotMatch(error.stderr, /publish-secret/u);
+  } finally {
+    rmSync(temporaryRoot, { recursive: true, force: true });
+  }
+});
+
 test("fails closed when npm cannot determine whether a version exists", () => {
   const temporaryRoot = mkdtempSync(
     path.join(os.tmpdir(), "midnight-vc-publish-error-test-"),

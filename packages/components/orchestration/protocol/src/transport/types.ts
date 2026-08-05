@@ -19,10 +19,12 @@ export type ProtocolMessageType =
 
 export type SecretBirthCredentialIssuanceRejectionCategory =
   | "malformed_request"
+  | "correlation_mismatch"
   | "offer_request_mismatch"
   | "unknown_offer_reference"
   | "expired_offer"
-  | "expired_request";
+  | "expired_request"
+  | "replayed_request";
 
 export type SecretBirthCredentialIssuanceRejection = {
   readonly envelope: ProtocolMessageEnvelope;

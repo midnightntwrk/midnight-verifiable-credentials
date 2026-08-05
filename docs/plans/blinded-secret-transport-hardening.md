@@ -106,6 +106,47 @@ After a successful result, the holder stores:
 - enough correlation metadata to explain which issuance session produced the
   credential
 
+## Reference transport contract (normative for this package)
+
+The reference transport has four terminal outcomes: `issued`, `rejected`,
+`expired`, and `replayed`. Expiry is represented in the issuance body as an
+inclusive last-valid day: a message is valid when `currentDay <= expiry`, and
+expired when `currentDay > expiry`. The caller supplies `currentDay`; the
+reference default is `0n`, not a wall-clock authority.
+
+- An offer starts one session. Its `messageId` is the only value a request may
+  name in `respondsToMessageId`; the offer's `threadId` is copied to the
+  request.
+- A request carries the holder challenge and names exactly one offer. The
+  result or rejection copies the request `messageId` into
+  `respondsToMessageId` and copies its `threadId`.
+- The transport wrapper envelope and generated message-body envelope must be
+  identical. A mismatch is a `correlation_mismatch` rejection (or a local
+  boundary error when the holder receives an outcome).
+- A request received after offer expiry is rejected as `expired_offer`; a
+  request received after its own expiry is rejected as `expired_request`. These
+  categories are retryable only in the sense that a caller may start a new
+  session; the finalized request itself is not reopened.
+- Exact re-delivery of a finalized request is idempotent: the issuer re-sends
+  the byte-independent reference result or rejection it retained, and the
+  holder accepts a duplicate outcome without minting another credential.
+- Reuse of a finalized request `messageId` with different parsed message
+  content is `replayed_request`; it is rejected and never replaces the first
+  terminal outcome. Direct holder result handling also rejects a result replay
+  after the request has already been finalized.
+
+The currently emitted issuance rejection categories are `malformed_request`,
+`correlation_mismatch`, `offer_request_mismatch`, `unknown_offer_reference`,
+`expired_offer`, `expired_request`, and `replayed_request`. The reference
+issuer does not emit `malformed_offer` or `issuer_refused` because it does not
+receive or apply an issuer policy object at this layer. `replayed_result` is a
+holder-side local rejection rather than an issuer response category.
+
+These rules describe the in-memory/injectable reference orchestration only.
+They do not define exact-wire-byte idempotency, durable pending state, crash or
+multi-instance atomicity, a production clock/skew policy, or external
+interoperability.
+
 ## Transport rules that should become explicit
 
 ### Correlation
