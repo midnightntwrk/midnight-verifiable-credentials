@@ -10,6 +10,12 @@ Companion documents:
 - [`./midnight-credentials.md`](./midnight-credentials.md)
 - [`./profiles.md`](./profiles.md)
 - [`./conformance.md`](./conformance.md)
+- [`../plans/hidden-holder-production-contract.md`](../plans/hidden-holder-production-contract.md)
+
+The production-contract plan is the canonical #31 maturity boundary. This
+specification owns only the adapter/transport obligations that overlap with
+#23; it does not define status authority or turn the reference orchestration
+layer into a final network protocol.
 
 ## Scope
 
@@ -123,6 +129,11 @@ Repository-aligned adapters may implement this through:
 - `ProtocolStateStore` directly
 - a byte-backed `ProtocolStateByteStore` plus codecs
 
+A persistent store or file-backed restart example is evidence for local
+recovery only. It is not, by itself, evidence of multi-instance locking,
+transactional coupling to credential/business side effects, cancellation, or
+one-time result consumption.
+
 ## Byte-store adapter obligations
 
 Where an adapter uses the byte-backed state seam, it should provide:
@@ -176,10 +187,12 @@ But it `MUST NOT` redefine:
 
 Today the repository provides enough evidence to support:
 
-- reference-compatible hidden-holder adapters
-- restart-safe adapters when the integrator supplies a persistent state store
+- reference-compatible hidden-holder adapters that preserve the declared
+  Compact and envelope semantics
+- local restart-safe adapters when the integrator supplies a persistent state
+  store and accepts its documented single-instance boundary
 - envelope-level presentation timeout enforcement in the reference protocol
-  layer
+  layer when the caller supplies the clock input
 
 Today the repository still does not provide a final claim for:
 
