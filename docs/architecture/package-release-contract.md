@@ -145,8 +145,11 @@ It is manual-only, validates branch/channel rules, runs the repository light
 gate, prepares an ephemeral release version, packs and tests deterministic
 tarballs, generates SPDX SBOM evidence, and publishes those exact tarballs
 with npm provenance. The workflow then polls npmjs and reruns the clean
-consumer matrix against the registry version. A before/after dist-tag snapshot
-also proves that prerelease publication preserves `latest`.
+consumer matrix against the registry version. By default, a before/after
+dist-tag snapshot proves that prerelease publication preserves `latest`. An
+explicit `promote_latest` dispatch is the reviewed exception: it requires the
+scoped npm token and proves that both the requested prerelease tag and
+`latest` resolve to the published version.
 
 The publish allowlist is emitted by
 `tooling/scripts/workspace-catalog.mjs --publishable-paths`. Only `supported`
