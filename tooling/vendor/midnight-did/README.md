@@ -1,6 +1,6 @@
 # Resolver-Owned Secret Storage Package
 
-The DID package cohort is consumed from npm at exact version `0.5.0-rc1` and
+The DID package cohort is consumed from npm at exact version `0.5.0` and
 pinned in the root `pnpm.overrides` block.
 
 This directory only keeps the resolver-owned
@@ -9,7 +9,7 @@ published package source available to VC.
 
 Refreshed:
 
-- DID package source: npm package cohort `0.5.0-rc1`
+- DID package source: npm package cohort `0.5.0`
 - Secret-storage source: `../midnight-did-resolver`
 
 Validation:
@@ -18,6 +18,11 @@ Validation:
 - `./run.sh --light`
 
 Dependency note:
+
+The vendored secret-storage tarball is intentionally repacked from the resolver
+artifact with its unused `circomlibjs` dependency removed. The generated
+`dist` contains no `circomlibjs` or `ethers` imports; retaining that stale
+manifest entry would reintroduce `elliptic` through `ethers@5`.
 
 - `@midnight-ntwrk/midnight-did-api` and
   `@midnight-ntwrk/midnight-did-jubjub-schnorr` declare

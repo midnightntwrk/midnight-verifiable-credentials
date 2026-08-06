@@ -4,6 +4,7 @@
 - Date: 2026-07-15
 - Owners: VC, DID, trust-registry, and credential product maintainers
 - Supersedes: none
+- Reconciled by: [Credential-family ownership policy](../architecture/credential-family-ownership-policy.md) (issues #374/#378)
 
 ## Context
 
@@ -77,3 +78,12 @@ not accepted as unconstrained caller input.
 Authentication, DID relationship binding, trusted time, status-root binding,
 and product contract templates are P0 work in
 [`../plans/vc-maturity-backlog.md`](../plans/vc-maturity-backlog.md).
+
+
+## Repository ownership reconciliation (2026-07-30)
+
+This ADR governs what a complete product composition may contain; it does not
+make a concrete family a product. Concrete families remain private prototypes
+with family-local tests, while production-shaped compositions are documented
+under `packages/use-cases/` and require the explicit graduation gates in the
+ownership policy. No family is graduated by this reconciliation.

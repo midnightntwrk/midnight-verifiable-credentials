@@ -4,11 +4,14 @@ This repository uses four shared build cones for reusable CI outputs:
 
 1. `foundation`
    - `credential-model`
+   - `credential-compact`
+   - `credential-proofs`
    - `credentials`
    - `credentials-status-registry`
    - `credentials-same-holder`
    - `credentials-iso-registry`
    - `packages/components/adapters/offchain-did`
+   - `packages/components/adapters/credential-did-midnight`
    - `packages/protocols/openid`
 2. `birth-family`
    - `credentials-birth`

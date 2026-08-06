@@ -39,6 +39,18 @@ The accepted architecture is recorded in the
 ADR-0013 supersedes the former reference-family release model. Existing family
 workspaces are migration inventory, not a core publication queue.
 
+### First bounded governance slice (#374/#378)
+
+The first restructuring PR establishes the ownership boundary before physical
+movement: audit the seven current credential-family prototypes, keep their
+family-local tests and private catalog status, reconcile ADR-0002/0003, and
+run the narrow package dependency guard. The canonical details are in
+[`credential-family-ownership-policy.md`](../architecture/credential-family-ownership-policy.md).
+This slice does not move packages, graduate digital-passport, approve the
+approximately 758 MB generated-artifact proposal, or implement #375, #376, or
+#377. Artifact storage (#376) and CI/regeneration/restore/drift work (#377)
+remain separate follow-ups; secrets are never fixtures.
+
 ### Repository-boundary migration
 
 Deliver:

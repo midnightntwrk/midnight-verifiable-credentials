@@ -130,6 +130,9 @@
 - package boundaries:
   - [`architecture/package-boundaries.md`](./architecture/package-boundaries.md)
   - for package authors deciding where new VC, DID-aware, protocol, or demo logic belongs
+- credential-family ownership policy:
+  - [`architecture/credential-family-ownership-policy.md`](./architecture/credential-family-ownership-policy.md)
+  - for the prototype/use-case boundary, inventory, graduation gates, and artifact non-goals
 - repository restructure RFC:
   - [`architecture/repository-restructure-rfc.md`](./architecture/repository-restructure-rfc.md)
   - for the proposed target top-level repository model and migration phases

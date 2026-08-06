@@ -1,0 +1,94 @@
+{
+  "name": "@midnight-ntwrk/credential-compact",
+  "version": "0.1.0",
+  "description": "Private candidate library of family-neutral Compact VC and VP semantics",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/midnightntwrk/midnight-verifiable-credentials.git",
+    "directory": "packages/core/compact"
+  },
+  "keywords": ["midnight", "verifiable-credentials", "compact", "vc", "vp"],
+  "sideEffects": [],
+  "engines": { "node": ">=24", "pnpm": ">=10" },
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./contract": {
+      "types": "./dist/contract.d.ts",
+      "import": "./dist/contract.js",
+      "default": "./dist/contract.js"
+    },
+    "./jubjub": {
+      "types": "./dist/jubjub.d.ts",
+      "import": "./dist/jubjub.js",
+      "default": "./dist/jubjub.js"
+    },
+    "./holder-binding/same-holder": {
+      "types": "./dist/holder-binding/same-holder.d.ts",
+      "import": "./dist/holder-binding/same-holder.js",
+      "default": "./dist/holder-binding/same-holder.js"
+    },
+    "./credentials.compact": "./dist/credentials.compact",
+    "./holder-binding/same-holder.compact": "./dist/holder-binding/same-holder.compact",
+    "./holder-binding/same-holder/composable.compact": "./dist/holder-binding/same-holder/composable.compact"
+  },
+  "scripts": {
+    "check-toolchain": "node scripts/check-toolchain.mjs",
+    "compact": "pnpm run check-toolchain && rm -rf src/managed && compact compile src/credentials.compact src/managed/credentials && compact compile src/holder-binding/same-holder.compact src/managed/same-holder && rm -rf src/managed/credentials/compiler src/managed/same-holder/compiler",
+    "build": "pnpm run compact && rm -rf dist && mkdir -p dist && tsc -b tsconfig.build.json --force && cp -Rf src/managed dist/ && cp src/credentials.compact dist/ && cp -Rf src/credentials dist/ && mkdir -p dist/holder-binding && cp src/holder-binding/same-holder.compact dist/holder-binding/ && cp -Rf src/holder-binding/same-holder dist/holder-binding/ && node scripts/write-build-manifest.mjs",
+    "typecheck": "pnpm run compact && tsc -p tsconfig.json --noEmit",
+    "lint": "eslint src --ignore-pattern 'src/managed/**'",
+    "test": "vitest run",
+    "test:ci": "pnpm run compact && vitest run",
+    "prepack": "pnpm run build",
+    "clean": "rm -rf dist src/managed coverage reports *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@midnight-ntwrk/compact-runtime": "0.15.0"
+  },
+  "files": ["dist/**", "src/**/*.compact", "README.md", "CHANGELOG.md", "package.json"],
+  "midnight": {
+    "maturity": "core",
+    "packageClass": "dist",
+    "releaseStage": "candidate",
+    "compactCompilerVersion": "0.30.0",
+    "compactRuntimeVersion": "0.15.0",
+    "compactSources": [
+      "src/credentials.compact",
+      "src/credentials/bindings.compact",
+      "src/credentials/composable.compact",
+      "src/credentials/holder-bindings.compact",
+      "src/credentials/issue.compact",
+      "src/credentials/present.compact",
+      "src/credentials/proofs.compact",
+      "src/credentials/protocol-support.compact",
+      "src/credentials/protocols.compact",
+      "src/credentials/relations.compact",
+      "src/credentials/status-bindings.compact",
+      "src/credentials/types.compact",
+      "src/credentials/vc-support.compact",
+      "src/credentials/vc.compact",
+      "src/credentials/vp.compact",
+      "src/holder-binding/same-holder.compact",
+      "src/holder-binding/same-holder/composable.compact"
+    ],
+    "compactEntrypoints": {
+      "standalone": [
+        "./credentials.compact",
+        "./holder-binding/same-holder.compact"
+      ],
+      "composition": [
+        "./holder-binding/same-holder/composable.compact"
+      ]
+    }
+  }
+}

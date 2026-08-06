@@ -21,3 +21,12 @@ Current subtrees:
 
 BDD scenarios belong here because they document concrete flows rather than low-
 level prototype matrices.
+
+
+## Production-shaped does not mean production-approved
+
+Use-case placement records composition evidence and living documentation. It
+does not itself graduate a credential family or approve deployment. Use the
+[ownership policy](../../docs/architecture/credential-family-ownership-policy.md)
+for the required security, API/schema, interoperability, test/CI, operational,
+and explicit-approval gates.

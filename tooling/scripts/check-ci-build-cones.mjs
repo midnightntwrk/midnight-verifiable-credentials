@@ -94,6 +94,10 @@ const isGeneratedOutputPath = (relativePath) =>
 const packageJson = JSON.parse(readFileSync(path.join(repoRoot, "package.json"), "utf8"));
 const workspaceEntries = packageJson.workspaces ?? [];
 const workspaceSet = new Set(workspaceEntries);
+const fixtureManifest = JSON.parse(readFileSync(path.join(repoRoot, "tooling/fixtures/compact-public/manifest.json"), "utf8"));
+const curatedFixtureRoots = fixtureManifest.fixtureRoots.map((fixture) => fixture.path);
+const isCuratedFixtureOutput = (relativePath) =>
+  curatedFixtureRoots.some((fixtureRoot) => relativePath === fixtureRoot || relativePath.startsWith(`${fixtureRoot}/`));
 const trackedFiles = runGit(["ls-files"])
   .split(/\r?\n/u)
   .filter(Boolean);
@@ -212,7 +216,7 @@ for (const group of groups) {
     }
     seenOutputs.set(outputPath, group);
 
-    if (trackedFiles.some((file) => file === outputPath || file.startsWith(`${outputPath}/`))) {
+    if (trackedFiles.some((file) => file === outputPath || file.startsWith(`${outputPath}/`)) && !isCuratedFixtureOutput(outputPath)) {
       errors.push(`CI build cone '${group}' output is tracked by git: ${outputPath}`);
     }
 

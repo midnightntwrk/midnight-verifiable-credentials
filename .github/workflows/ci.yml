@@ -37,7 +37,7 @@ jobs:
       run_university: ${{ steps.classify.outputs.run_university }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -66,7 +66,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout repository
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -96,7 +96,7 @@ jobs:
     if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only == 'true'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -141,7 +141,7 @@ jobs:
     if: needs.changes.outputs.docs_only != 'true'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -192,7 +192,7 @@ jobs:
     if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -414,7 +414,7 @@ jobs:
     if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -434,7 +434,7 @@ jobs:
     if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -484,7 +484,7 @@ jobs:
     if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -539,7 +539,7 @@ jobs:
     if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true' && needs.changes.outputs.run_university == 'true'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -572,7 +572,7 @@ jobs:
     if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true' && needs.changes.outputs.run_hello_smoke == 'true'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -620,7 +620,7 @@ jobs:
     if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true' && needs.changes.outputs.run_revocation == 'true'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -663,7 +663,7 @@ jobs:
     if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true' && needs.changes.outputs.run_integration_demo_contract == 'true'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -706,7 +706,7 @@ jobs:
     if: needs.changes.outputs.docs_only != 'true' && needs.changes.outputs.bdd_only != 'true' && needs.changes.outputs.run_integration_protocol == 'true'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -747,3 +747,129 @@ jobs:
 
       - name: Run protocol integration lane
         run: pnpm run ci:integration:protocol:from-artifacts
+
+  public-compact-fixtures:
+    name: Restore and Validate Public Compact Fixtures
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    needs: [changes, build-artifacts]
+    if: needs.changes.outputs.docs_only != 'true' && needs.build-artifacts.result == 'success'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          lfs: false
+
+      - name: Set up Node.js and install dependencies
+        uses: ./.github/actions/setup-node-pnpm
+
+      - name: Resolve public fixture cache identity and paths
+        id: fixture-cache-meta
+        shell: bash
+        run: |
+          set -euo pipefail
+          key="$(node ./tooling/scripts/compact-fixtures.mjs --cache-key)"
+          paths="$(node ./tooling/scripts/compact-fixtures.mjs --cache-paths)"
+          {
+            echo "key=$key"
+            echo 'paths<<FIXTURE_CACHE_PATHS'
+            echo "$paths"
+            echo 'FIXTURE_CACHE_PATHS'
+            echo "lfs-include=$(printf '%s\n' "$paths" | paste -sd, -)"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Restore hydrated public ZKP fixtures
+        id: fixture-cache-restore
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ steps.fixture-cache-meta.outputs.paths }}
+          key: ${{ runner.os }}-compact-public-zkp-v1-${{ steps.fixture-cache-meta.outputs.key }}
+
+      - name: Hydrate public ZKP fixtures on an exact-cache miss
+        if: steps.fixture-cache-restore.outputs.cache-hit != 'true'
+        shell: bash
+        run: |
+          set -uo pipefail
+          echo 'No exact public fixture cache entry; attempting scoped Git LFS hydration.'
+          if ! git lfs pull --include="${{ steps.fixture-cache-meta.outputs.lfs-include }}"; then
+            echo 'Scoped Git LFS hydration failed; the fixture validator will select source rebuild fallback.' >&2
+          fi
+
+
+      - name: Download foundation CI artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: ci-build-foundation
+          path: ${{ runner.temp }}/ci-build-outputs
+
+      - name: Download birth-family CI artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: ci-build-birth-family
+          path: ${{ runner.temp }}/ci-build-outputs
+
+      - name: Download age-gate CI artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: ci-build-age-gate
+          path: ${{ runner.temp }}/ci-build-outputs
+
+      - name: Download protocol CI artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: ci-build-protocol
+          path: ${{ runner.temp }}/ci-build-outputs
+
+      - name: Restore reusable CI artifacts
+        run: |
+          ./tooling/scripts/restore-ci-build-outputs.sh \
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-foundation.tar.gz" \
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-birth-family.tar.gz" \
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-age-gate.tar.gz" \
+            "$RUNNER_TEMP/ci-build-outputs/ci-build-protocol.tar.gz"
+      - name: Restore Compact toolchain
+
+        uses: ./.github/actions/restore-compact-toolchain
+        with:
+          compact-version: ${{ env.COMPACT_COMPILER_VERSION }}
+
+      - name: Validate committed fixture manifest
+        id: fixtures
+        shell: bash
+        run: |
+          set -o pipefail
+          if ! node ./tooling/scripts/compact-fixtures.mjs --allow-missing --require-lfs --require-hydrated | tee "$RUNNER_TEMP/compact-fixtures.json"; then
+            echo 'Fixture manifest has a structural integrity failure; refusing to use generated outputs or source fallback.' >&2
+            exit 1
+          fi
+          if grep -q '"classification": "source-rebuild-fallback"' "$RUNNER_TEMP/compact-fixtures.json"; then
+            echo 'Fixture bytes are unavailable as hydrated LFS material; selecting the explicit source rebuild fallback.'
+            echo 'ready=false' >> "$GITHUB_OUTPUT"
+          elif grep -q '"classification": "ready"' "$RUNNER_TEMP/compact-fixtures.json"; then
+            echo 'ready=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'Fixture validator returned an unrecognized classification; failing closed.' >&2
+            exit 1
+          fi
+
+      - name: Save hydrated public ZKP fixtures after validation
+        if: steps.fixtures.outputs.ready == 'true' && steps.fixture-cache-restore.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ steps.fixture-cache-meta.outputs.paths }}
+          key: ${{ runner.os }}-compact-public-zkp-v1-${{ steps.fixture-cache-meta.outputs.key }}
+
+      - name: Test and typecheck from validated fixtures
+        if: steps.fixtures.outputs.ready == 'true'
+        run: |
+          pnpm run test:fixtures:from-artifacts
+          pnpm run typecheck:fixtures:from-artifacts
+
+      - name: Rebuild source fallback when fixtures are unavailable
+        if: steps.fixtures.outputs.ready != 'true'
+        run: |
+          echo 'Public fixtures are unavailable or stale; running the explicit source rebuild fallback.'
+          pnpm run build:light
+          pnpm run test:light:from-artifacts
+          pnpm run typecheck:light:from-artifacts

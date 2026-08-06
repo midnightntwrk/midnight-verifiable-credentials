@@ -12,6 +12,11 @@ Companion document:
 - [`credential-status.md`](./credential-status.md)
 - [`status-error-taxonomy.md`](./status-error-taxonomy.md)
 - [`revocation-registry.md`](./revocation-registry.md)
+- [`../plans/hidden-holder-production-contract.md`](../plans/hidden-holder-production-contract.md)
+
+For hidden-holder claims, the production-contract plan is the canonical
+cross-document claim boundary; this conformance draft does not create a second
+maturity taxonomy.
 
 ## Scope
 
@@ -167,10 +172,13 @@ A holder-binding profile implementation conforms when it:
 - documents the trust boundary and known limitations of the profile
 
 For evolving privacy-oriented profiles such as blinded-secret binding,
-conformance claims must distinguish between:
+conformance claims must distinguish between the current-support and deferred
+columns in the
+[`hidden-holder production contract`](../plans/hidden-holder-production-contract.md):
 
 - a supported reference happy path validated by checked-in tests
-- production transport/interoperability guarantees that remain deferred
+- production authority, status, expiry, randomness, state, transport, and
+  interoperability guarantees that remain deferred
 
 For hidden-holder profiles, a production-shaped conformance claim should also
 state:
@@ -194,7 +202,7 @@ replay/idempotency data is expired or evicted.
 
 For hidden-holder adapters that claim interoperability, the same
 implementation should also disclose whether it follows the repository-aligned
-adapter rules in:
+adapter rules in the production contract and:
 
 - [`hidden-holder-interoperability.md`](./hidden-holder-interoperability.md)
 
@@ -230,10 +238,12 @@ A protocol/orchestration implementation conforms when it:
 
 For the current reference protocol layer, conformance claims about
 blinded-secret issuance may include explicit rejection messages for malformed
-requests, offer/request mismatches, unknown offer references, expired offers,
-and expired requests. The same flow may also claim explicit idempotent
-re-delivery semantics for duplicate blinded-secret issuance deliveries. Broader
-transport interoperability guarantees remain deferred. The same reference
+requests, wrapper/body correlation mismatches, offer/request mismatches,
+unknown offer references, expired offers, expired requests, and conflicting
+replayed requests. The same flow may also claim explicit idempotent
+re-delivery semantics for exact duplicate blinded-secret issuance deliveries;
+conflicting reuse of a finalized request ID is rejected rather than treated as
+idempotent. Broader transport interoperability guarantees remain deferred. The same reference
 protocol layer may also claim explicit blinded-secret presentation rejection
 messages for malformed submissions, request/submission mismatches,
 unsatisfied verifier requests, expired requests, and expired submissions. It

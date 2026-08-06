@@ -12,6 +12,11 @@ It is companion material to:
 - [`credential-status.md`](./credential-status.md)
 - [`revocation-registry.md`](./revocation-registry.md)
 - [`../architecture/holder-binding-terminology.md`](../architecture/holder-binding-terminology.md)
+- [`../plans/hidden-holder-production-contract.md`](../plans/hidden-holder-production-contract.md)
+
+For hidden-holder maturity claims, the production-contract plan is the
+canonical boundary between reference proof support and deferred deployment,
+authority, status, expiry, randomness, and interoperability guarantees.
 
 ## Purpose
 
@@ -116,7 +121,10 @@ Current test coverage:
 
 Current limitations:
 - production deployments still need explicit disclosure of holder-secret
-  storage, randomness/nonce handling, and external adapter assumptions
+  storage, randomness/nonce handling, durable state, and external adapter
+  assumptions
+- the proof profile is a reference capability; it is not a production-ready
+  authority, status, or transport claim by itself
 - the secret birth family now carries prototype status-aware verification
   surfaces, but the repository does not yet claim final production revocation
   support
@@ -150,13 +158,16 @@ Current test coverage:
 - secret-holder lifecycle integration tests
 
 Current limitations:
-- durable pending-state behavior across retries, restarts, or delayed delivery
-  is not yet complete
-- production randomness / nonce interfaces are not yet complete
+- durable pending-state behavior with crash recovery, multi-instance
+  coordination, and transactional side-effect coupling is not yet complete
+- the reference protocol exposes injectable randomness and defaults to Node
+  CSPRNG generation, but a deployment-level reviewed randomness/secret-storage
+  policy is still required
 - the reference protocol now models envelope-level presentation request and
   submission expiry, but the credential family still does not define final
   body-level timeout fields or an external interoperable timeout contract
-- production transport interoperability is still evolving
+- production transport interoperability is still evolving; no final
+  OID4VCI/OID4VP or DIDComm mapping is claimed here
 - the credential family now carries prototype status-aware verification
   surfaces, but the repository does not yet claim final production revocation
   support

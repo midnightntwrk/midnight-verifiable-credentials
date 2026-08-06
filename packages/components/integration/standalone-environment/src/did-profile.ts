@@ -158,7 +158,7 @@ const publishDidProfile = async (
   const verificationMethodRef = `${didString}${methodId}`;
 
   console.info(`[${logPrefix}] publishing verification method for ${role}`);
-  await addSchnorrJubjubVerificationMethod(contract, {
+  await addSchnorrJubjubVerificationMethod(contract, providers, {
     id: verificationMethodRef,
     publicKey: signer.publicKey,
   });
