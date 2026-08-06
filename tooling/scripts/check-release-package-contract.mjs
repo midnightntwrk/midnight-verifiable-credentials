@@ -416,8 +416,8 @@ const assertReleaseTarball = (entry, tarballDirectory) => {
   );
   assert(packedPackageJson.name === sourcePackageJson.name, `${label} package name drifted`);
   if (entry.path === "packages/core/compact") {
-    assert(packedPackageJson.private === true, `${label} candidate must remain private`);
-    assert(packedPackageJson.midnight?.releaseStage === "candidate", `${label} must remain a candidate`);
+    assert(packedPackageJson.private === false, `${label} supported package must be public`);
+    assert(packedPackageJson.midnight?.releaseStage === "supported", `${label} must be supported`);
   }
   assert(packedPackageJson.version === sourcePackageJson.version, `${label} package version drifted`);
   assert(

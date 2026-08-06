@@ -16,9 +16,9 @@ maturity, and pack eligibility.
 | `candidate` | Pre-1.0 tarball with checked metadata, exports, dependency ranges, changelog, and package contents | Forbidden until graduation |
 | `supported` | Approved public package with named ownership, compatibility policy, consumer evidence, provenance, and release operations | Allowed through the approved registry workflow |
 
-Candidate packages remain `private: true` and omit `publishConfig`. Removing
-`private` or selecting a registry is a separate release decision made when a
-candidate graduates to `supported`.
+Packages remain `private: true` and omit `publishConfig` until they graduate
+to `supported`. A supported package must set `private: false` and select the
+approved npmjs registry with provenance.
 
 Concrete credential families, prototypes, product contracts, and use-case
 packages are not eligible for `candidate` or `supported` status in this
@@ -30,10 +30,10 @@ conformance fixtures, removed, or graduated to an independent repository.
 | Package | Stage | Channel | Technical/support owner | Support posture |
 | --- | --- | --- | --- | --- |
 | `@midnight-ntwrk/credential-model` | `supported` | npmjs `rc`; stable after explicit approval | `@midnightntwrk/ex-identus` / `@midnightntwrk/mn-sre` | Pre-1.0 family-authoring substrate |
-| `@midnight-ntwrk/credential-compact` | `candidate` | private tarball only | VC package maintainers / support unassigned | Curated family-neutral Compact semantics; compiler/runtime tuple and API remain candidate evidence |
-| `@midnight-ntwrk/credential-proofs` | `candidate` | private tarball only | VC package maintainers / support unassigned | Family-neutral proof ports and immutable manifest contracts; generated artifacts and authority remain outside the package |
-| `@midnight-ntwrk/credential-status` | `candidate` | private tarball only | VC package maintainers / support unassigned | Generic status semantics and replaceable ports; no registry authority or ledger implementation |
-| `@midnight-ntwrk/credential-did-midnight` | `candidate` | private tarball only | VC package maintainers / support unassigned | Offchain `did:midnight` resolution and holder-binding runtime adapter; signing and key custody remain injected |
+| `@midnight-ntwrk/credential-compact` | `supported` | npmjs `rc`; stable after explicit approval | `@midnightntwrk/ex-identus` / `@midnightntwrk/mn-sre` | Curated family-neutral Compact semantics; no deployable family, authority, or proving material |
+| `@midnight-ntwrk/credential-proofs` | `supported` | npmjs `rc`; stable after explicit approval | `@midnightntwrk/ex-identus` / `@midnightntwrk/mn-sre` | Family-neutral proof ports and immutable manifest contracts; generated artifacts and authority remain outside the package |
+| `@midnight-ntwrk/credential-status` | `supported` | npmjs `rc`; stable after explicit approval | `@midnightntwrk/ex-identus` / `@midnightntwrk/mn-sre` | Generic status semantics and replaceable ports; no registry authority or ledger implementation |
+| `@midnight-ntwrk/credential-did-midnight` | `supported` | npmjs `rc`; stable after explicit approval | `@midnightntwrk/ex-identus` / `@midnightntwrk/mn-sre` | Offchain `did:midnight` resolution and holder-binding runtime adapter; signing and key custody remain injected |
 | `@midnight-ntwrk/midnight-did-credentials` | `internal` | none | VC package maintainers | Transitional Compact compatibility package |
 | `@midnight-ntwrk/midnight-did-credentials-status-registry` | `internal` | workspace tarball only | Unassigned | Prototype trust model |
 | `@midnight-ntwrk/midnight-did-credentials-same-holder` | `internal` | workspace tarball only | Unassigned | Reference capability |
@@ -87,10 +87,11 @@ Every candidate must:
 - pass the tarball allowlist and export-target checks run by
   `tooling/scripts/check-release-package-contract.mjs`.
 
-For Compact `0.x` dependencies, a caret range preserves the compiler/runtime
-minor compatibility boundary. The core candidate therefore requires
-`@midnight-ntwrk/compact-runtime@^0.15.0`: compatible `0.15.x` patches are
-allowed while `0.16.0` is excluded.
+The RC2 Compact package is validated against the exact compiler/runtime tuple
+`@midnight-ntwrk/compact-runtime@0.15.0` and Compact compiler `0.30.0`.
+Generated build metadata and clean-consumer checks reject runtime drift. A
+future compatible `0.15.x` range requires a separately reviewed compatibility
+change with oldest/newest patch evidence; `0.16.0` is excluded from this RC.
 
 ## Clean-consumer evidence
 
@@ -102,7 +103,7 @@ install. The lane also rejects lifecycle hooks in both source and packed
 manifests, repository paths, or package resolution outside that temporary
 project.
 
-The `credential-model` package currently proves:
+The RC2 package set currently proves:
 
 - Node ESM imports and runtime descriptor validation;
 - strict `NodeNext` declaration consumption with `skipLibCheck: false`;
@@ -111,11 +112,11 @@ The `credential-model` package currently proves:
 
 Compact compilation is not applicable to this zero-runtime-dependency
 TypeScript package. Packages that expose Compact sources must declare and pass
-the Compact clean-consumer check. The private `credential-compact` candidate
-also records compiler identity, generated-output provenance, source/artifact
-digests, same-holder standalone/composable gate results, explicit Compact
-exports, and a forbidden-artifact tarball scan. It does not claim status-registry
-authority or verification-v1 compatibility.
+the Compact clean-consumer check. The `credential-compact` package also records compiler identity,
+generated-output provenance, source/artifact digests, same-holder
+standalone/composable gate results, explicit Compact exports, and a
+forbidden-artifact tarball scan. It does not claim status-registry authority or
+verification-v1 compatibility.
 
 ## Graduation
 

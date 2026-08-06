@@ -2,7 +2,7 @@
 
 > Maturity: `core`
 > Package class: `dist`
-> Release stage: `candidate`
+> Release stage: `supported`
 
 Family-neutral proof execution ports and immutable, versioned proof/build/deployment
 manifest contracts for credential-family repositories.

@@ -49,7 +49,15 @@ Current maturity is mixed by package:
   - [`docs/spec/claim-representation.md`](./docs/spec/claim-representation.md)
 - reference implementation packages:
   - [`credential-model`](./packages/core/model/README.md)
-    - protocol-neutral family-authoring package and first supported npm surface
+    - protocol-neutral family-authoring package and supported RC2 npm foundation
+  - [`credential-compact`](./packages/core/compact/README.md)
+    - Compact VC/VP semantics, generated contract bindings, and holder-binding exports
+  - [`credential-proofs`](./packages/core/proofs/README.md)
+    - family-neutral proof and artifact contracts
+  - [`credential-status`](./packages/core/status/README.md)
+    - generic status bindings, policies, and replaceable ports
+  - [`credential-did-midnight`](./packages/components/adapters/credential-did-midnight/README.md)
+    - off-chain `did:midnight` resolution and holder-binding adapter
   - [`credentials`](./packages/core/primitives/credentials/README.md)
   - [`credentials-status-registry`](./packages/registry/status-registry/README.md)
     - reusable registry package with the current prototype status / revocation trust model
@@ -353,13 +361,18 @@ Commands:
 - `pnpm run upgrade:vendor`
 - `./upgrade-libs.sh --destination /path/to/downstream-repo`
 
-The current supported publication set contains only:
+The current supported RC2 publication set contains:
 
 - `@midnight-ntwrk/credential-model`
+- `@midnight-ntwrk/credential-compact`
+- `@midnight-ntwrk/credential-proofs`
+- `@midnight-ntwrk/credential-status`
+- `@midnight-ntwrk/credential-did-midnight`
 
-All legacy packages, prototypes, use cases, scenarios, reporting, and
-integration workspaces are intentionally excluded from the publication
-artifact set.
+This is the reusable VC development foundation, not a complete application
+stack: exchange/orchestration, wallet connectors, concrete credential families,
+status-registry authority, deployment artifacts, scenarios, reporting, and
+integration workspaces remain intentionally excluded.
 
 Release operators should follow the
 [npmjs publication runbook](./docs/guides/npmjs-publication.md). Public
