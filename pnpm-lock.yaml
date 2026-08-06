@@ -18,7 +18,7 @@ overrides:
   '@midnight-ntwrk/midnight-js-indexer-public-data-provider': 4.1.1
   '@midnight-ntwrk/midnight-js-level-private-state-provider': 4.0.4
   '@midnight-ntwrk/midnight-js-network-id': 4.1.1
-  '@midnight-ntwrk/midnight-js-node-zk-config-provider': 4.0.4
+  '@midnight-ntwrk/midnight-js-node-zk-config-provider': 4.1.1
   '@midnight-ntwrk/midnight-js-types': 4.0.4
   '@midnight-ntwrk/midnight-js-utils': 4.1.1
   axios: 1.18.0
@@ -71,8 +71,8 @@ importers:
         specifier: 4.1.1
         version: 4.1.1
       '@midnight-ntwrk/midnight-js-node-zk-config-provider':
-        specifier: 4.0.4
-        version: 4.0.4
+        specifier: 4.1.1
+        version: 4.1.1
       '@midnight-ntwrk/midnight-js-types':
         specifier: 4.0.4
         version: 4.0.4
@@ -992,8 +992,8 @@ packages:
   '@midnight-ntwrk/midnight-js-network-id@4.1.1':
     resolution: {integrity: sha512-g49IBK0In1Jt2wKgi18rUvoy1ShGVrfb/VvgWALkc9Noc6+4MX5NTLVg5zqu+CyO2waIGb5lqDPnAhTD9wPAOQ==}
 
-  '@midnight-ntwrk/midnight-js-node-zk-config-provider@4.0.4':
-    resolution: {integrity: sha512-7Knmnuak0gD2+ZEmwm/mBqBT9HeH6utgcCOlT8YUT6TOFYByrJ8t23wR2yfoQ2PKZV16CXEQLWlT0wYs1tep0g==}
+  '@midnight-ntwrk/midnight-js-node-zk-config-provider@4.1.1':
+    resolution: {integrity: sha512-fbBhLBhU/BjrQRnRJCcmKkhYRLlSqJyXEhq72vMS6vlKXprmDmAjlVV62+bn1aiAlNY9FXl1rrrMUFKQUmuZFg==}
 
   '@midnight-ntwrk/midnight-js-protocol@4.1.1':
     resolution: {integrity: sha512-JH1010ir3YrawKsA4C08aIXWpFGHrCrAaBkZFbn+xh+iwOX5Ss0WU4//mDSEnHvQN0wD6GTc2JwUfKYFaS2CcA==}
@@ -4649,7 +4649,7 @@ snapshots:
       '@midnight-ntwrk/midnight-js-indexer-public-data-provider': 4.1.1
       '@midnight-ntwrk/midnight-js-level-private-state-provider': 4.0.4
       '@midnight-ntwrk/midnight-js-network-id': 4.1.1
-      '@midnight-ntwrk/midnight-js-node-zk-config-provider': 4.0.4
+      '@midnight-ntwrk/midnight-js-node-zk-config-provider': 4.1.1
       '@midnight-ntwrk/midnight-js-types': 4.0.4
       '@midnight-ntwrk/midnight-js-utils': 4.1.1
       '@midnight-ntwrk/wallet-sdk-dust-wallet': 3.0.0(ws@8.21.1)
@@ -4766,9 +4766,10 @@ snapshots:
 
   '@midnight-ntwrk/midnight-js-network-id@4.1.1': {}
 
-  '@midnight-ntwrk/midnight-js-node-zk-config-provider@4.0.4':
+  '@midnight-ntwrk/midnight-js-node-zk-config-provider@4.1.1':
     dependencies:
       '@midnight-ntwrk/midnight-js-types': 4.0.4
+      '@midnight-ntwrk/midnight-js-utils': 4.1.1
 
   '@midnight-ntwrk/midnight-js-protocol@4.1.1':
     dependencies:
