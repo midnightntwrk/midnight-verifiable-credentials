@@ -36,14 +36,15 @@ npm trusted publishing requires npm 11.5.1 or newer and Node.js 22.14.0 or
 newer. The workflow uses the repository's Node.js 24 baseline and rejects an
 older npm CLI before any release work begins.
 
-npm OIDC currently authorizes publication but not separate `dist-tag` or
-`access` commands. The normal path therefore sets access and the intended tag
-on `npm publish`. Per npm's dist-tag contract, `--tag rc` applies `rc` instead
-of `latest`, including on the first publication. The workflow snapshots and
-verifies `latest` independently and fails closed when registry metadata cannot
-be read. An idempotent rerun is a no-op when that tag is already correct; an
-actual tag repair requires the scoped token or an authenticated release
-operator. See the
+npm OIDC authorizes publication but not separate `dist-tag` or `access`
+commands. The normal path therefore uses the scoped
+`MIDNIGHTCI_NPMJS_TOKEN` for access and tag operations. By default, `--tag rc`
+applies `rc` and preserves `latest`. For an explicitly approved prerelease
+default promotion, dispatch with `promote_latest: true`; the workflow then
+moves both `rc` and `latest` to the requested version. The workflow snapshots
+and verifies the selected tag policy independently and fails closed when
+registry metadata cannot be read. An idempotent rerun is a no-op when the
+requested tags are already correct. See the
 [npm trusted-publishing limitations](https://docs.npmjs.com/trusted-publishers/#limitations-and-future-improvements).
 
 ## Release gates
@@ -116,9 +117,10 @@ for package in \
 done
 ```
 
-The `rc` tag must resolve to `0.1.0-rc2` for all five packages. `latest` must
-remain unchanged. Retain the workflow URL and release-evidence artifact with
-the release record.
+The `rc` tag must resolve to `0.1.0-rc2` for all five packages. By default,
+`latest` remains unchanged. If `promote_latest: true` was explicitly selected,
+`latest` must also resolve to `0.1.0-rc2`. Retain the workflow URL and
+release-evidence artifact with the release record.
 
 ## Retry and rollback
 

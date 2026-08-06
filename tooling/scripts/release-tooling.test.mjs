@@ -199,6 +199,7 @@ exit 0
           NPM_COMMAND: fakeNpm,
           NPM_REGISTRY: "https://registry.npmjs.org/",
           NPM_TAG: "rc",
+          NODE_AUTH_TOKEN: "test-token",
           VERSION: "0.1.0",
         },
       },
@@ -212,7 +213,8 @@ exit 0
     assert.match(commands, /publish .*credential-did-midnight-0\.1\.0\.tgz/u);
     assert.match(commands, /--provenance/u);
     assert.match(commands, /--tag rc/u);
-    assert.doesNotMatch(commands, /^dist-tag /mu);
+    assert.match(commands, /dist-tag add .*credential-model@0\.1\.0 rc/u);
+    assert.doesNotMatch(commands, /dist-tag rm/u);
   } finally {
     rmSync(temporaryRoot, { recursive: true, force: true });
   }
@@ -376,7 +378,7 @@ exit 0
   }
 });
 
-test("fails closed when npm cannot read the previous latest tag", () => {
+test("fails closed when dist-tag updates lack npm token authority", () => {
   const temporaryRoot = mkdtempSync(
     path.join(os.tmpdir(), "midnight-vc-tag-read-error-test-"),
   );
@@ -414,9 +416,9 @@ exit 0
         },
       },
     );
-    assert.equal(result.status, 23);
-    assert.match(result.stderr, /tag latest/u);
-    assert.doesNotMatch(result.stdout, /Publishing tested/u);
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /dist-tag updates require the scoped npm token/u);
+    assert.match(result.stdout, /Publishing tested/u);
   } finally {
     rmSync(temporaryRoot, { recursive: true, force: true });
   }
@@ -492,6 +494,8 @@ set -euo pipefail
 if [[ "\${FAKE_NPM_PHASE}" == "before" ]]; then
   echo '{"latest":"0.0.9"}'
 elif [[ "\${FAKE_NPM_PHASE}" == "wrong" ]]; then
+  echo '{"latest":"0.1.0-rc1","rc":"0.1.0-rc1"}'
+elif [[ "\${FAKE_NPM_PHASE}" == "promoted" ]]; then
   echo '{"latest":"0.1.0-rc1","rc":"0.1.0-rc1"}'
 else
   echo '{"latest":"0.0.9","rc":"0.1.0-rc1"}'
@@ -569,6 +573,31 @@ fi
     );
     assert.notEqual(wrongLatest.status, 0);
     assert.match(wrongLatest.stderr, /unexpectedly changed latest/u);
+
+    const promoted = spawnSync(
+      process.execPath,
+      [
+        "tooling/scripts/npm-release-state.mjs",
+        "--verify",
+        "--input",
+        statePath,
+        "--tag",
+        "rc",
+        "--version",
+        "0.1.0-rc1",
+        "--promote-latest",
+      ],
+      {
+        cwd: repoRoot,
+        encoding: "utf8",
+        env: {
+          ...process.env,
+          FAKE_NPM_PHASE: "promoted",
+          NPM_COMMAND: fakeNpm,
+        },
+      },
+    );
+    assert.equal(promoted.status, 0, promoted.stderr);
   } finally {
     rmSync(temporaryRoot, { recursive: true, force: true });
   }
