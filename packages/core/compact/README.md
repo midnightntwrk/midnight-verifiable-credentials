@@ -1,12 +1,12 @@
 # @midnight-ntwrk/credential-compact
 
-> Release stage: `candidate`
+> Release stage: `supported`
 > Maturity: `core`
 > Package class: `dist`
 
-Private candidate for reusable, family-neutral Compact VC/VP semantics. This is a
-library include surface, not a deployable contract, credential family, proof
-artifact, or registry authority. It is not published or promoted by this phase.
+Supported prerelease package for reusable, family-neutral Compact VC/VP
+semantics. This is a library include surface, not a deployable contract,
+credential family, proof artifact, or registry authority.
 
 ## Scope
 

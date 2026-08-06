@@ -3,8 +3,13 @@
   "version": "0.1.0",
   "description": "Private candidate library of family-neutral Compact VC and VP semantics",
   "license": "Apache-2.0",
-  "private": true,
+  "private": false,
   "type": "module",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true,
+    "registry": "https://registry.npmjs.org/"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/midnightntwrk/midnight-verifiable-credentials.git",
@@ -59,7 +64,7 @@
   "midnight": {
     "maturity": "core",
     "packageClass": "dist",
-    "releaseStage": "candidate",
+    "releaseStage": "supported",
     "compactCompilerVersion": "0.30.0",
     "compactRuntimeVersion": "0.15.0",
     "compactSources": [

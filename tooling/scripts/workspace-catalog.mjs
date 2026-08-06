@@ -65,19 +65,19 @@ export const workspaceCatalog = [
     publicationDependencies: [],
   }),
   workspace("packages/core/compact", "core", "dist", {
-    releaseStage: "candidate",
+    releaseStage: "supported",
     consumerFixture: "tooling/fixtures/credential-compact-consumer",
     consumerChecks: ["node", "typescript", "compact"],
     publicationDependencies: [],
   }),
   workspace("packages/core/proofs", "core", "dist", {
-    releaseStage: "candidate",
+    releaseStage: "supported",
     consumerFixture: "tooling/fixtures/credential-proofs-consumer",
     consumerChecks: ["node", "typescript", "legacy-typescript", "browser"],
     publicationDependencies: ["@midnight-ntwrk/credential-model"],
   }),
   workspace("packages/core/status", "core", "dist", {
-    releaseStage: "candidate",
+    releaseStage: "supported",
     consumerFixture: "tooling/fixtures/credential-status-consumer",
     consumerChecks: ["node", "typescript"],
     publicationDependencies: ["@midnight-ntwrk/credential-model"],
@@ -96,7 +96,7 @@ export const workspaceCatalog = [
     "infrastructure",
     "dist",
     {
-      releaseStage: "candidate",
+      releaseStage: "supported",
       consumerFixture: "tooling/fixtures/credential-did-midnight-consumer",
       consumerChecks: ["node", "typescript"],
       publicationDependencies: [],
