@@ -47,8 +47,8 @@ importers:
   .:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: 0.15.0
-        version: 0.15.0
+        specifier: 0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/ledger-v8':
         specifier: 8.1.0
         version: 8.1.0
@@ -188,13 +188,13 @@ importers:
     devDependencies:
       '@midnight-ntwrk/compact-runtime':
         specifier: '*'
-        version: 0.15.0
+        version: 0.16.0
 
   packages/components/integration/standalone-environment:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
         specifier: '*'
-        version: 0.15.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did':
         specifier: 0.5.0
         version: 0.5.0
@@ -224,7 +224,7 @@ importers:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
         specifier: '*'
-        version: 0.15.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -248,7 +248,7 @@ importers:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
         specifier: '*'
-        version: 0.15.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../primitives/credentials
@@ -256,22 +256,22 @@ importers:
   packages/core/compact:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: 0.15.0
-        version: 0.15.0
+        specifier: 0.16.0
+        version: 0.16.0
 
   packages/core/model: {}
 
   packages/core/primitives/credentials:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: ^0.15.0
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
 
   packages/core/primitives/iso-registry:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
         specifier: '*'
-        version: 0.15.0
+        version: 0.16.0
 
   packages/core/proofs:
     dependencies:
@@ -289,7 +289,7 @@ importers:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
         specifier: '*'
-        version: 0.15.0
+        version: 0.16.0
       zod:
         specifier: ^4.1.0
         version: 4.4.3
@@ -298,7 +298,7 @@ importers:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
         specifier: '*'
-        version: 0.15.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -307,7 +307,7 @@ importers:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
         specifier: '*'
-        version: 0.15.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -325,7 +325,7 @@ importers:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
         specifier: '*'
-        version: 0.15.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -337,7 +337,7 @@ importers:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
         specifier: '*'
-        version: 0.15.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -346,7 +346,7 @@ importers:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
         specifier: '*'
-        version: 0.15.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -361,7 +361,7 @@ importers:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
         specifier: '*'
-        version: 0.15.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -370,7 +370,7 @@ importers:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
         specifier: '*'
-        version: 0.15.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -379,7 +379,7 @@ importers:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
         specifier: '*'
-        version: 0.15.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../core/primitives/credentials
@@ -388,7 +388,7 @@ importers:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
         specifier: '*'
-        version: 0.15.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -451,7 +451,7 @@ importers:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
         specifier: '*'
-        version: 0.15.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -466,7 +466,7 @@ importers:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
         specifier: '*'
-        version: 0.15.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -1006,6 +1006,9 @@ packages:
 
   '@midnight-ntwrk/onchain-runtime-v3@3.0.0':
     resolution: {integrity: sha512-HbFbUOsvgpEFy1OT0Ni2LMFk4jnMQS1em+H+Mof/B3DpnNKl0Lkx5QiulKOc6pyU4KPEagOqx4fYNyVXFwgZ7g==}
+
+  '@midnight-ntwrk/onchain-runtime-v3@3.1.0':
+    resolution: {integrity: sha512-TzxVsoxq9m7+gcS/sTQSgglsOmf7RcdPtonUwDpwwfsKeKJbrhZc9XlRm5TEDYPZhK6XCF0oHXRf4floohQjqw==}
 
   '@midnight-ntwrk/platform-js@2.2.4':
     resolution: {integrity: sha512-6mrYKSSE8kPgn/5rQ2xofDJk1yAZZRdLOO6Yelweuh5GOnOGz7Qw4venDG/c4TRqtV9ouFp+F5j7ta8aprMinw==}
@@ -4624,13 +4627,13 @@ snapshots:
 
   '@midnight-ntwrk/compact-runtime@0.15.0':
     dependencies:
-      '@midnight-ntwrk/onchain-runtime-v3': 3.0.0
+      '@midnight-ntwrk/onchain-runtime-v3': 3.1.0
       '@types/object-inspect': 1.13.0
       object-inspect: 1.13.4
 
   '@midnight-ntwrk/compact-runtime@0.16.0':
     dependencies:
-      '@midnight-ntwrk/onchain-runtime-v3': 3.0.0
+      '@midnight-ntwrk/onchain-runtime-v3': 3.1.0
       '@types/object-inspect': 1.13.0
       object-inspect: 1.13.4
 
@@ -4791,6 +4794,8 @@ snapshots:
       '@midnight-ntwrk/wallet-sdk-address-format': 3.1.1
 
   '@midnight-ntwrk/onchain-runtime-v3@3.0.0': {}
+
+  '@midnight-ntwrk/onchain-runtime-v3@3.1.0': {}
 
   '@midnight-ntwrk/platform-js@2.2.4':
     dependencies:
