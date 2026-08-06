@@ -1,0 +1,88 @@
+{
+  "compiler-version": "0.30.0",
+  "language-version": "0.22.0",
+  "runtime-version": "0.15.0",
+  "circuits": [
+    {
+      "name": "assertCountryEquals",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "actual",
+          "type": {
+            "type-name": "Struct",
+            "name": "CountryCode",
+            "elements": [
+              {
+                "name": "value",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "expected",
+          "type": {
+            "type-name": "Uint",
+            "maxval": 65535
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Tuple",
+        "types": [
+        ]
+      }
+    },
+    {
+      "name": "assertRegionCountryEquals",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "region",
+          "type": {
+            "type-name": "Struct",
+            "name": "RegionCode",
+            "elements": [
+              {
+                "name": "country",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "subdivision",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "expectedCountry",
+          "type": {
+            "type-name": "Uint",
+            "maxval": 65535
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Tuple",
+        "types": [
+        ]
+      }
+    }
+  ],
+  "witnesses": [
+  ],
+  "contracts": [
+  ]
+}

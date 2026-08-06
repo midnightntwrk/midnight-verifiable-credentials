@@ -20,7 +20,12 @@ import {
   type ProtocolEnvelopeFactory,
   type ProtocolEnvelopeIdentifierSource,
 } from "../shared/envelope.js";
-import { assertBodyHasFields, assertMessageType } from "../shared/validation.js";
+import {
+  assertBodyHasFields,
+  assertMessageType,
+  assertProtocolMessageEnvelopeAlignment,
+  protocolMessageDigest,
+} from "../shared/validation.js";
 import type { MessageBus } from "../transport/message-bus.js";
 import type {
   PartyId,
@@ -80,6 +85,11 @@ type SecretIssuanceProcessingOptions = {
   readonly currentTimeMs?: bigint;
 };
 
+type PendingSecretIssuanceOffer = {
+  readonly offer: SecretBirthCredentialIssuanceOffer;
+  readonly holder: PartyId;
+};
+
 class IssuanceProtocolError extends Error {
   readonly category: SecretBirthCredentialIssuanceRejectionCategory;
   readonly retryable: boolean;
@@ -103,9 +113,12 @@ export class SecretIssuerAgent {
   private readonly createEnvelope: ProtocolEnvelopeFactory;
   private readonly retentionPolicy: ProtocolStateRetentionPolicy;
   private issuanceCounter = 0;
-  private readonly pendingOffers: ProtocolStateCollection<SecretBirthCredentialIssuanceOffer>;
+  private readonly pendingOffers: ProtocolStateCollection<PendingSecretIssuanceOffer>;
   private readonly completedOutcomes: ProtocolStateCollection<
     RetainedProtocolState<ProtocolMessage>
+  >;
+  private readonly completedRequests: ProtocolStateCollection<
+    RetainedProtocolState<Uint8Array>
   >;
 
   constructor(
@@ -132,6 +145,9 @@ export class SecretIssuerAgent {
     );
     this.completedOutcomes = stateStore.collection(
       `${stateScope}:completed-outcomes`,
+    );
+    this.completedRequests = stateStore.collection(
+      `${stateScope}:completed-requests`,
     );
   }
 
@@ -166,7 +182,10 @@ export class SecretIssuerAgent {
       body: offer,
     });
     const offerMessageId = Buffer.from(offer.envelope.messageId).toString("hex");
-    this.pendingOffers.set(offerMessageId, offer);
+    this.pendingOffers.set(offerMessageId, {
+      offer,
+      holder: holderLabel,
+    });
   }
 
   private buildIssuanceRejection(
@@ -285,16 +304,48 @@ export class SecretIssuerAgent {
   ): void {
     assertMessageType(request, "issuance:request");
     assertBodyHasFields(request, ["envelope", "schema", "body"]);
+    try {
+      assertProtocolMessageEnvelopeAlignment(request);
+    } catch (error) {
+      throw new IssuanceProtocolError(
+        "correlation_mismatch",
+        error instanceof Error ? error.message : String(error),
+      );
+    }
     const requestMessageId = Buffer.from(request.envelope.messageId).toString("hex");
+    const nowMs = resolveCurrentTimeMs(options.currentTimeMs);
+    const requestIdentity = protocolMessageDigest(request);
+    const completedRequest = readRetainedProtocolState(
+      this.completedRequests,
+      requestMessageId,
+      nowMs,
+    );
     if (
-      readRetainedProtocolState(
-        this.completedOutcomes,
-        requestMessageId,
-        resolveCurrentTimeMs(options.currentTimeMs),
-      )
+      completedRequest &&
+      (completedRequest.length !== requestIdentity.length ||
+        !completedRequest.every(
+          (value, index) => value === requestIdentity[index],
+        ))
     ) {
       throw new IssuanceProtocolError(
-        "malformed_request",
+        "replayed_request",
+        "This blinded-secret issuance message ID was already used with different message content.",
+      );
+    }
+    const completedOutcome = readRetainedProtocolState(
+      this.completedOutcomes,
+      requestMessageId,
+      nowMs,
+    );
+    if (completedOutcome) {
+      if (!completedRequest || completedRequest.length === 0) {
+        throw new IssuanceProtocolError(
+          "replayed_request",
+          "This finalized issuance outcome has no replay identity and cannot be redelivered.",
+        );
+      }
+      throw new IssuanceProtocolError(
+        "replayed_request",
         "This blinded-secret issuance request was already finalized and cannot be processed again.",
       );
     }
@@ -303,12 +354,25 @@ export class SecretIssuerAgent {
     const respondsToId = Buffer.from(
       request.envelope.respondsToMessageId,
     ).toString("hex");
-    const offer = this.pendingOffers.get(respondsToId);
-    if (!offer) {
+    const pendingOffer = this.pendingOffers.get(respondsToId);
+    if (!pendingOffer) {
       throw new IssuanceProtocolError(
         "unknown_offer_reference",
         "No pending issuance offer found for this credential request. " +
         "Ensure createAndSendOffer was called first.",
+      );
+    }
+    const offer = pendingOffer.offer;
+    const sameBytes = (left: Uint8Array, right: Uint8Array): boolean =>
+      Buffer.compare(Buffer.from(left), Buffer.from(right)) === 0;
+    if (
+      request.to !== this.profile.label ||
+      request.from !== pendingOffer.holder ||
+      !sameBytes(request.envelope.threadId, offer.envelope.threadId)
+    ) {
+      throw new IssuanceProtocolError(
+        "correlation_mismatch",
+        "Secret birth credential issuance request transport parties and thread must match the offered session",
       );
     }
     this.assertRequestMatchesOffer(offer, issuanceRequest);
@@ -447,7 +511,17 @@ export class SecretIssuerAgent {
       this.completedOutcomes,
       requestMessageId,
       resultMessage,
-      resolveCurrentTimeMs(options.currentTimeMs),
+      nowMs,
+      this.retentionPolicy,
+      issuanceRequest.envelope.hasExpiresAt
+        ? issuanceRequest.envelope.expiresAt
+        : undefined,
+    );
+    writeRetainedProtocolState(
+      this.completedRequests,
+      requestMessageId,
+      requestIdentity,
+      nowMs,
       this.retentionPolicy,
       issuanceRequest.envelope.hasExpiresAt
         ? issuanceRequest.envelope.expiresAt
@@ -463,12 +537,24 @@ export class SecretIssuerAgent {
     const requestMessageId = Buffer.from(
       request.envelope.messageId,
     ).toString("hex");
+    const nowMs = resolveCurrentTimeMs(options.currentTimeMs);
+    const requestIdentity = protocolMessageDigest(request);
     const completedOutcome = readRetainedProtocolState(
       this.completedOutcomes,
       requestMessageId,
-      resolveCurrentTimeMs(options.currentTimeMs),
+      nowMs,
     );
-    if (completedOutcome) {
+    const completedRequest = readRetainedProtocolState(
+      this.completedRequests,
+      requestMessageId,
+      nowMs,
+    );
+    if (
+      completedOutcome &&
+      completedRequest &&
+      completedRequest.length === requestIdentity.length &&
+      completedRequest.every((value, index) => value === requestIdentity[index])
+    ) {
       this.bus.send(completedOutcome);
       return;
     }
@@ -478,8 +564,12 @@ export class SecretIssuerAgent {
     try {
       this.receiveRequestAndIssueCredential(request, claimWitness, options);
     } catch (error) {
-      this.pendingOffers.delete(respondsToId);
       const classification = this.classifyIssuanceError(error);
+      const transportCorrelationMismatch =
+        classification.category === "correlation_mismatch";
+      if (!transportCorrelationMismatch) {
+        this.pendingOffers.delete(respondsToId);
+      }
       const rejection = this.buildIssuanceRejection(
         request,
         classification.category,
@@ -494,11 +584,24 @@ export class SecretIssuerAgent {
         body: rejection,
       };
       this.bus.send(rejectionMessage);
+      if (completedOutcome || transportCorrelationMismatch) {
+        return;
+      }
       writeRetainedProtocolState(
         this.completedOutcomes,
         requestMessageId,
         rejectionMessage,
-        resolveCurrentTimeMs(options.currentTimeMs),
+        nowMs,
+        this.retentionPolicy,
+        request.envelope.hasExpiresAt
+          ? request.envelope.expiresAt
+          : undefined,
+      );
+      writeRetainedProtocolState(
+        this.completedRequests,
+        requestMessageId,
+        requestIdentity,
+        nowMs,
         this.retentionPolicy,
         request.envelope.hasExpiresAt
           ? request.envelope.expiresAt

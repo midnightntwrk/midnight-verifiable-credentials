@@ -3,6 +3,7 @@ import {
   jubjubPointX,
   jubjubPointY,
 } from "@midnight-ntwrk/compact-runtime";
+import { getMidnightNetwork } from "@midnight-ntwrk/midnight-did-api";
 import {
   createVerificationMethod,
   decodeBase64UrlBytes32,
@@ -21,6 +22,10 @@ const decodeBigEndianUnsigned = (bytes: Uint8Array): bigint => {
 };
 
 describe("standalone DID profile", () => {
+  it("loads the Midnight DID API with the resolved Midnight JS utility cohort", () => {
+    expect(getMidnightNetwork).toBeTypeOf("function");
+  });
+
   it("encodes Jubjub public keys as canonical 32-byte publicKeyJwk coordinates", () => {
     const publicKey = ecMulGenerator(222222221n);
     const publicKeyJwk = createJubjubPublicKeyJwk(publicKey);

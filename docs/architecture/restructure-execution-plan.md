@@ -27,6 +27,16 @@ Architecture notes:
 - BDD belongs under `packages/use-cases/`, not under repository-level prototype or low-level test trees
 - `demo` is a temporary historical label to eliminate, not a durable architecture area
 
+## Phase 0: Ownership policy and catalog enforcement (issues #374/#378)
+
+Before physical moves, audit the current family paths, tests, workspace
+membership, package scripts, CI references, and dependants. Reconcile ADR-0002
+and ADR-0003, document prototype/use-case ownership and graduation gates, keep
+prototype families private, and enforce the family-agnostic core with the
+workspace/package-boundary checks. This phase is documentation/policy/guard
+only: it does not move packages, approve generated artifacts, or implement
+#375/#376/#377.
+
 ## Execution phases
 
 ### Phase 1: Tooling and directory spine

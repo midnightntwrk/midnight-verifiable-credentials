@@ -254,14 +254,40 @@ const assertReleaseManifest = (entry) => {
 const tarballName = (packageJson) =>
   `${packageJson.name.slice(1).replace("/", "-")}-${packageJson.version}.tgz`;
 
-const wildcardPattern = (target) => {
-  const escaped = target.replace(/[.+?^${}()|[\]\\]/gu, "\\$&");
-  return new RegExp(`^${escaped.replaceAll("*", "[^/]+")}$`, "u");
+const wildcardMatches = (target, value) => {
+  const segments = target.split("*");
+  if (segments.length === 1) return target === value;
+  if (!value.startsWith(segments[0])) return false;
+  let cursor = segments[0].length;
+  for (const segment of segments.slice(1, -1)) {
+    if (segment.length === 0) {
+      if (value[cursor] === undefined || value[cursor] === "/") return false;
+      cursor += 1;
+      continue;
+    }
+    const next = value.indexOf(segment, cursor + 1);
+    if (next < 0 || value.slice(cursor, next).includes("/")) return false;
+    cursor = next + segment.length;
+  }
+  const suffix = segments.at(-1);
+  if (!value.endsWith(suffix)) return false;
+  const suffixStart = value.length - suffix.length;
+  return suffixStart >= cursor + 1 && !value.slice(cursor, suffixStart).includes("/");
 };
 
 const assertReleaseTarball = (entry, tarballDirectory) => {
   const sourcePackageJson = packageJsonByWorkspace.get(entry.path);
   const compactSources = compactSourcePaths(entry);
+  const declaredCompactSources = entry.path === "packages/core/compact"
+    ? new Set(sourcePackageJson.midnight?.compactSources ?? [])
+    : null;
+  if (declaredCompactSources) {
+    assert(
+      declaredCompactSources.size === compactSources.length &&
+        compactSources.every((sourcePath) => declaredCompactSources.has(sourcePath)),
+      `${entry.path} compactSources metadata must exactly match tracked Compact sources`,
+    );
+  }
   const tarballPath = path.join(tarballDirectory, tarballName(sourcePackageJson));
   const label = path.relative(repoRoot, tarballPath);
   assert(existsSync(tarballPath), `${label} is missing`);
@@ -276,14 +302,34 @@ const assertReleaseTarball = (entry, tarballDirectory) => {
     .split(/\r?\n/u)
     .filter(Boolean);
   const entrySet = new Set(entries);
+  const forbiddenCandidateArtifact = /(?:verification-v1|passport|birth|university|proving|verifying|zkir|bzkir|deployment|wallet|signing|seed|secret|witness|credential-secret|private-key)/iu;
+  const forbiddenGeneratedContent = [
+    /verification[-_]v1/iu,
+    /(?:birth|university|passport|family(?:claim|predicate|credential))/iu,
+    /\b(?:statusRegistryAuthority|statusRegistryRoot|mutateStatusRegistry|updateStatusRegistry|statusRegistryWitness)\b/iu,
+    /(?:proving|verification)[_-]?(?:key|artifact|circuit)/iu,
+    /(?:deployment|wallet|signing|private[_-]?key|secret[_-]?(?:key|material|value)|witness[_-]?(?:value|secret|material))/iu,
+    /\.(?:zkir|bzkir|prover|wasm|pk|vk)$/iu,
+  ];
+  const stripComments = (text) => text
+    .replace(/\/\*[\s\S]*?\*\//gu, "")
+    .replace(/(^|\s)\/\/.*$/gmu, "$1");
 
   for (const entryPath of entries) {
+    if (entry.path === "packages/core/compact") {
+      assert(!forbiddenCandidateArtifact.test(entryPath), `${label} contains forbidden candidate artifact ${entryPath}`);
+    }
     assert(
       !path.posix.isAbsolute(entryPath) &&
         !entryPath.split("/").includes(".."),
       `${label} contains unsafe path ${entryPath}`,
     );
     // pnpm pack emits files but no bare package/ directory entry.
+    const isCandidateCompact = entry.path === "packages/core/compact";
+    const isPackageSource = entryPath.startsWith("package/src/") && entryPath.endsWith(".compact");
+    const isDistPath = entryPath.startsWith("package/dist/");
+    const isDeclaredSource = isCandidateCompact && isPackageSource &&
+      declaredCompactSources.has(entryPath.slice("package/".length));
     const allowed =
       [
         "package/package.json",
@@ -291,10 +337,59 @@ const assertReleaseTarball = (entry, tarballDirectory) => {
         "package/README.md",
         "package/CHANGELOG.md",
       ].includes(entryPath) ||
-      entryPath.startsWith("package/dist/") ||
-      (entryPath.startsWith("package/src/") &&
-        (entryPath.endsWith(".compact") || entryPath.endsWith("/")));
+      isDistPath ||
+      isDeclaredSource ||
+      (entryPath.startsWith("package/src/") && !isCandidateCompact);
     assert(allowed, `${label} contains undeclared release file ${entryPath}`);
+    if (isCandidateCompact && isPackageSource) {
+      const sourcePath = entryPath.slice("package/".length);
+      assert(
+        declaredCompactSources.has(sourcePath),
+        `${label} contains undeclared Compact source ${entryPath}`,
+      );
+    }
+    if (isCandidateCompact && isDistPath) {
+      const relative = entryPath.slice("package/dist/".length);
+      const generatedOutputAllowlist = new Set([
+        "compact-build.json",
+        "contract.d.ts",
+        "contract.d.ts.map",
+        "contract.js",
+        "contract.js.map",
+        "index.d.ts",
+        "index.d.ts.map",
+        "index.js",
+        "index.js.map",
+        "jubjub.d.ts",
+        "jubjub.d.ts.map",
+        "jubjub.js",
+        "jubjub.js.map",
+        "holder-binding/same-holder.d.ts",
+        "holder-binding/same-holder.d.ts.map",
+        "holder-binding/same-holder.js",
+        "holder-binding/same-holder.js.map",
+        "managed/credentials/contract/index.d.ts",
+        "managed/credentials/contract/index.js",
+        "managed/credentials/contract/index.js.map",
+        "managed/same-holder/contract/index.d.ts",
+        "managed/same-holder/contract/index.js",
+        "managed/same-holder/contract/index.js.map",
+      ]);
+      const compactDistSources = new Set(
+        [...declaredCompactSources].map((sourcePath) => sourcePath.replace(/^src\//u, "")),
+      );
+      const generatedAllowed = relative.endsWith("/") ||
+        generatedOutputAllowlist.has(relative) ||
+        compactDistSources.has(relative);
+      assert(generatedAllowed, `${label} contains undeclared generated output ${entryPath}`);
+    }
+    if (isCandidateCompact && (isPackageSource || (isDistPath && !entryPath.endsWith("/")))) {
+      const content = execFileSync("tar", ["-xOf", tarballPath, entryPath], { encoding: "utf8" });
+      const executableContent = stripComments(content);
+      for (const pattern of forbiddenGeneratedContent) {
+        assert(!pattern.test(executableContent), `${label} contains forbidden generated content ${pattern} in ${entryPath}`);
+      }
+    }
   }
 
   const declaredPackageEntries = [
@@ -320,6 +415,10 @@ const assertReleaseTarball = (entry, tarballDirectory) => {
     }),
   );
   assert(packedPackageJson.name === sourcePackageJson.name, `${label} package name drifted`);
+  if (entry.path === "packages/core/compact") {
+    assert(packedPackageJson.private === true, `${label} candidate must remain private`);
+    assert(packedPackageJson.midnight?.releaseStage === "candidate", `${label} must remain a candidate`);
+  }
   assert(packedPackageJson.version === sourcePackageJson.version, `${label} package version drifted`);
   assert(
     packedPackageJson.private === (entry.releaseStage !== "supported"),
@@ -355,9 +454,9 @@ const assertReleaseTarball = (entry, tarballDirectory) => {
   visitExportMap(packedPackageJson.exports, `${label} exports`, (target, targetLabel) => {
     const packedTarget = `package/${target.slice(2)}`;
     if (packedTarget.includes("*")) {
-      const pattern = wildcardPattern(packedTarget);
+      const pattern = (entryPath) => wildcardMatches(packedTarget, entryPath);
       assert(
-        entries.some((entryPath) => pattern.test(entryPath)),
+        entries.some((entryPath) => pattern(entryPath)),
         `${targetLabel} wildcard has no packaged target`,
       );
     } else {

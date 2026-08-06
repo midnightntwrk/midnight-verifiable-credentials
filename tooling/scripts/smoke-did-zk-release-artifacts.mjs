@@ -5,7 +5,7 @@ import { createRequire } from "node:module";
 import { NodeZkConfigProvider } from "@midnight-ntwrk/midnight-js-node-zk-config-provider";
 
 const require = createRequire(import.meta.url);
-const expectedVersion = "0.5.0-rc1";
+const expectedVersion = "0.5.0"
 const contractEntry = require.resolve("@midnight-ntwrk/midnight-did-contract");
 const contractDist = path.dirname(contractEntry);
 const contractRoot = path.resolve(contractDist, "..");
@@ -27,9 +27,10 @@ const contractInfo = JSON.parse(
     "utf8",
   ),
 );
-// The rc1 release did not publish a signed artifact manifest. This smoke checks
-// package-local presence and provider readability, not artifact provenance or
-// digest integrity; ADR-0003 tracks the stronger release contract.
+// The released DID cohort does not provide a signed artifact manifest through
+// this VC package path. This smoke checks package-local presence and provider
+// readability, not artifact provenance or digest integrity; ADR-0003 tracks
+// the stronger release contract.
 const proofCircuitIds = contractInfo.circuits
   .filter((circuit) => circuit.proof === true)
   .map((circuit) => circuit.name);
