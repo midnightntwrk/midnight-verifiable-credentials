@@ -14,7 +14,7 @@ overrides:
   '@midnight-ntwrk/ledger-v8': 8.1.0
   '@midnight-ntwrk/midnight-js-contracts': 4.0.4
   '@midnight-ntwrk/midnight-js-fetch-zk-config-provider': 4.0.4
-  '@midnight-ntwrk/midnight-js-http-client-proof-provider': 4.0.4
+  '@midnight-ntwrk/midnight-js-http-client-proof-provider': 4.1.1
   '@midnight-ntwrk/midnight-js-indexer-public-data-provider': 4.1.1
   '@midnight-ntwrk/midnight-js-level-private-state-provider': 4.0.4
   '@midnight-ntwrk/midnight-js-network-id': 4.1.1
@@ -59,8 +59,8 @@ importers:
         specifier: 4.0.4
         version: 4.0.4
       '@midnight-ntwrk/midnight-js-http-client-proof-provider':
-        specifier: 4.0.4
-        version: 4.0.4
+        specifier: 4.1.1
+        version: 4.1.1
       '@midnight-ntwrk/midnight-js-indexer-public-data-provider':
         specifier: 4.1.1
         version: 4.1.1
@@ -980,8 +980,8 @@ packages:
   '@midnight-ntwrk/midnight-js-fetch-zk-config-provider@4.0.4':
     resolution: {integrity: sha512-WMXxBVqDlAiu3c0ZTE3WaEUfNR4fRAEmaTlhr0U3pjaFKu77qiBp7bB+oIB8N6Xtj0Y1KRn/wlGLbZjxEL9jVg==}
 
-  '@midnight-ntwrk/midnight-js-http-client-proof-provider@4.0.4':
-    resolution: {integrity: sha512-G6q7uPqKhCGZyKUo21MhoBjtfQ4pw6AEMBM6zrAvhrCFE9WV4FVrG1rpbJDtwxr/VVecIt1tD4myVqg2sEPNhg==}
+  '@midnight-ntwrk/midnight-js-http-client-proof-provider@4.1.1':
+    resolution: {integrity: sha512-Q2VNRTvuWlf3MbjV7C3asuLHeFwtZMdh6t5Z+u8c8RDpejW9GhKaSjlJ2zgJII5ckE8/cocPEDwt3GKBebGHWA==}
 
   '@midnight-ntwrk/midnight-js-indexer-public-data-provider@4.1.1':
     resolution: {integrity: sha512-50CjiYqw/msRintyfkuNrJl1v4Zj+AaBFmV2uLjY/zpkPop4VBFH4QZSrtKsG1ljT9vzWsxU7Eo4Tn1tgKkPlA==}
@@ -4645,7 +4645,7 @@ snapshots:
       '@midnight-ntwrk/midnight-did-contract': 0.5.0
       '@midnight-ntwrk/midnight-did-domain': 0.5.0
       '@midnight-ntwrk/midnight-js-contracts': 4.0.4
-      '@midnight-ntwrk/midnight-js-http-client-proof-provider': 4.0.4
+      '@midnight-ntwrk/midnight-js-http-client-proof-provider': 4.1.1
       '@midnight-ntwrk/midnight-js-indexer-public-data-provider': 4.1.1
       '@midnight-ntwrk/midnight-js-level-private-state-provider': 4.0.4
       '@midnight-ntwrk/midnight-js-network-id': 4.1.1
@@ -4717,15 +4717,15 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@midnight-ntwrk/midnight-js-http-client-proof-provider@4.0.4':
+  '@midnight-ntwrk/midnight-js-http-client-proof-provider@4.1.1':
     dependencies:
       '@midnight-ntwrk/midnight-js-contracts': 4.0.4
       '@midnight-ntwrk/midnight-js-network-id': 4.1.1
+      '@midnight-ntwrk/midnight-js-protocol': 4.1.1
       '@midnight-ntwrk/midnight-js-types': 4.0.4
       '@midnight-ntwrk/midnight-js-utils': 4.1.1
       cross-fetch: 4.1.0
       fetch-retry: 6.0.0
-      lodash: 4.18.1
     transitivePeerDependencies:
       - encoding
 
