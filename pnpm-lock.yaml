@@ -420,20 +420,20 @@ importers:
         specifier: '*'
         version: link:../contract
       '@serenity-js/assertions':
-        specifier: ^3.34.0
-        version: 3.43.2
+        specifier: ^3.44.1
+        version: 3.44.1
       '@serenity-js/console-reporter':
-        specifier: ^3.34.0
-        version: 3.43.2
+        specifier: ^3.44.1
+        version: 3.44.1
       '@serenity-js/core':
-        specifier: ^3.34.0
-        version: 3.43.2
+        specifier: ^3.44.1
+        version: 3.44.1
       '@serenity-js/cucumber':
-        specifier: ^3.34.0
-        version: 3.43.2(@cucumber/cucumber@11.3.0)
+        specifier: ^3.44.1
+        version: 3.44.1(@cucumber/cucumber@11.3.0)
       '@serenity-js/serenity-bdd':
-        specifier: ^3.34.0
-        version: 3.43.2
+        specifier: ^3.44.1
+        version: 3.44.1
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@22.20.1)(typescript@5.9.3)
@@ -444,8 +444,8 @@ importers:
   packages/use-cases/bdd-support:
     dependencies:
       '@serenity-js/core':
-        specifier: ^3.34.0
-        version: 3.43.2
+        specifier: ^3.44.1
+        version: 3.44.1
 
   packages/use-cases/hello-verifier/contract:
     dependencies:
@@ -503,20 +503,20 @@ importers:
         specifier: '*'
         version: link:../protocol
       '@serenity-js/assertions':
-        specifier: ^3.34.0
-        version: 3.43.2
+        specifier: ^3.44.1
+        version: 3.44.1
       '@serenity-js/console-reporter':
-        specifier: ^3.34.0
-        version: 3.43.2
+        specifier: ^3.44.1
+        version: 3.44.1
       '@serenity-js/core':
-        specifier: ^3.34.0
-        version: 3.43.2
+        specifier: ^3.44.1
+        version: 3.44.1
       '@serenity-js/cucumber':
-        specifier: ^3.34.0
-        version: 3.43.2(@cucumber/cucumber@11.3.0)
+        specifier: ^3.44.1
+        version: 3.44.1(@cucumber/cucumber@11.3.0)
       '@serenity-js/serenity-bdd':
-        specifier: ^3.34.0
-        version: 3.43.2
+        specifier: ^3.44.1
+        version: 3.44.1
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@22.20.1)(typescript@5.9.3)
@@ -614,8 +614,8 @@ packages:
   '@cucumber/gherkin@31.0.0':
     resolution: {integrity: sha512-wlZfdPif7JpBWJdqvHk1Mkr21L5vl4EfxVUOS4JinWGf3FLRV6IKUekBv5bb5VX79fkDcfDvESzcQ8WQc07Wgw==}
 
-  '@cucumber/gherkin@39.1.0':
-    resolution: {integrity: sha512-pqmSO2bUWxJm3TbNrKXlDaHjL6c77+ez9kWmfCd9oRPeTRPEVH3spZvpAqdXYWOZYSNYwWFCAAeZ4RGpkauNoQ==}
+  '@cucumber/gherkin@41.0.0':
+    resolution: {integrity: sha512-pKGx1EzNjtWbpw74kEevKDMj71dF3ZSaFJpLYuWVvRZKe+Cwoq5iEkuMaELIg1jxIu8jH/A2HPMpMR8UBvdG0w==}
 
   '@cucumber/html-formatter@21.10.1':
     resolution: {integrity: sha512-isaaNMNnBYThsvaHy7i+9kkk9V3+rhgdkt0pd6TCY6zY1CSRZQ7tG6ST9pYyRaECyfbCeF7UGH0KpNEnh6UNvQ==}
@@ -640,6 +640,9 @@ packages:
 
   '@cucumber/messages@32.3.1':
     resolution: {integrity: sha512-yNQq1KoXRYaEKrWMFmpUQX7TdeQuU9jeGgJAZ3dArTsC/T4NpJ6DnqaJIIgwPnz/wtQIQTNX7/h0rOuF5xY4qQ==}
+
+  '@cucumber/messages@34.0.1':
+    resolution: {integrity: sha512-Mvh8CkZD4TGykvXqM9qpnYVGy9cqMxYkImtghl2cF1hEuBtuDGU716zQk7KviLh0ssidM/phh9kdbJL/73dHpg==}
 
   '@cucumber/query@13.6.0':
     resolution: {integrity: sha512-tiDneuD5MoWsJ9VKPBmQok31mSX9Ybl+U4wqDoXeZgsXHDURqzM3rnpWVV3bC34y9W6vuFxrlwF/m7HdOxwqRw==}
@@ -1489,23 +1492,23 @@ packages:
   '@scure/sr25519@0.2.0':
     resolution: {integrity: sha512-uUuLP7Z126XdSizKtrCGqYyR3b3hYtJ6Fg/XFUXmc2//k2aXHDLqZwFeXxL97gg4XydPROPVnuaHGF2+xriSKg==}
 
-  '@serenity-js/assertions@3.43.2':
-    resolution: {integrity: sha512-DNwwyXpUM7+rZFJ6ttoK9MvGPa85ThKRbidAbIeXeXJNJbsvciWjpWPcNFvgWtt4tGlcn3SOxX+d9g7q+pzOBw==}
-    engines: {node: ^20 || ^22 || ^24}
+  '@serenity-js/assertions@3.44.1':
+    resolution: {integrity: sha512-yKinFIvxcpGKtQWXobBsubKh0AzMRGDyhDufB+9f9AWCGHg73bDsgyTCoS/RYjnz50VMbt9e4tq+L+296LjFBw==}
+    engines: {node: '>=22.12 || ^24'}
 
-  '@serenity-js/console-reporter@3.43.2':
-    resolution: {integrity: sha512-jROa5ofZmg38HQMnDgBMmSTKXQA7Hdh3FUIUvH2/ryDWbM5cJ40mZY122e830qgY1UdcATLYzsPlBYjnPYvAuA==}
-    engines: {node: ^20 || ^22 || ^24}
+  '@serenity-js/console-reporter@3.44.1':
+    resolution: {integrity: sha512-s03TWwx3FR6+fOEUrPzoR2qmtUe9fM00IwEEE9dXBhqEkF+DyJnmLGXpKlAZz3Js3jXlU6ZBivvXrmC05D9vHw==}
+    engines: {node: '>=22.12 || ^24'}
 
-  '@serenity-js/core@3.43.2':
-    resolution: {integrity: sha512-lXWJvVyRQFmmUEh4LdVcoQh9HuhIeW3phpc1nwg8jlcM9ATMjAXMJkay66CAreKHPNkLCjuYowt2Ct6P8cDiow==}
-    engines: {node: ^20 || ^22 || ^24}
+  '@serenity-js/core@3.44.1':
+    resolution: {integrity: sha512-Jl5GWNLNSMvsPpmZjNSg34k2Q2MgZVXi2M2vwGDNGqwbCDKBOo9HlyTlQZigI/faahnclQgpBQOQ08/iZRMbFg==}
+    engines: {node: '>=22.12 || ^24'}
 
-  '@serenity-js/cucumber@3.43.2':
-    resolution: {integrity: sha512-fmRhFufNhroUg7Ry8Qe+meM8zuhRX2SfoLVG7nf62hthDmONj5pS4XJzN3eY21rfkb6XejIkoZvMplIQXnLIbg==}
-    engines: {node: ^20 || ^22 || ^24}
+  '@serenity-js/cucumber@3.44.1':
+    resolution: {integrity: sha512-zUFwzDwIndKHUlyzqo0qBYjc3/hFrKyg37nMIXfjL/PjcYM8VpXaF/pl2c94pAT9+0oe7aPc7vj9lNUQqqikfw==}
+    engines: {node: '>=22.12 || ^24'}
     peerDependencies:
-      '@cucumber/cucumber': ^7.3.2 || ^8.5.0 || ^9.1.0 || ^10.0.0 || ^11.0.0 || ^12.0.0
+      '@cucumber/cucumber': ^7.3.2 || ^8.5.0 || ^9.1.0 || ^10.0.0 || ^11.0.0 || ^12.0.0 || ^13.0.0
       cucumber: ^1.3.3 || ^2.3.1 || ^3.2.1 || ^4.2.1 || ^5.0.0 || ^6.0.0
     peerDependenciesMeta:
       '@cucumber/cucumber':
@@ -1513,13 +1516,13 @@ packages:
       cucumber:
         optional: true
 
-  '@serenity-js/rest@3.43.2':
-    resolution: {integrity: sha512-LJuEfGc9DKfCJpYXJipRPEX99He/rDEt/1B34jyd6acLdj9JMsXEJWuN6M91FRMrhUJLO5UFOD6w1Zn9FRHz1A==}
-    engines: {node: ^20 || ^22 || ^24}
+  '@serenity-js/rest@3.44.1':
+    resolution: {integrity: sha512-dXdtwRsFTry/P0v3VcpDhPyLM+nSiqQnullQHPZrv7mKi3GTc1gpeZeX5rjFyg1RxKKl8PL2LAfbXyCvE5fWjw==}
+    engines: {node: '>=22.12 || ^24'}
 
-  '@serenity-js/serenity-bdd@3.43.2':
-    resolution: {integrity: sha512-JT1I1ZSHbcPhVNyEmGUNz6D6G36I31VdjmxH2YPORj19H4KhmuOGwau4LaVOXLEULFtp6t8/humQgJtTQ1x2fQ==}
-    engines: {node: ^20 || ^22 || ^24}
+  '@serenity-js/serenity-bdd@3.44.1':
+    resolution: {integrity: sha512-Tm8C5XhD+IWm7ddXlggnTc8HTEizBby2x+cDoy4g0CW7z83zr4Xhu9ieLcUFK3TeW318Gy5BS+EOW2Sbw7MHoQ==}
+    engines: {node: '>=22.12 || ^24'}
     hasBin: true
 
   '@standard-schema/spec@1.1.0':
@@ -3103,8 +3106,8 @@ packages:
   lru-cache@10.4.3:
     resolution: {integrity: sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==}
 
-  lru-cache@11.3.6:
-    resolution: {integrity: sha512-Gf/KoL3C/MlI7Bt0PGI9I+TeTC/I6r/csU58N4BSNc4lppLBeKsOdFYkK+dX0ABDUMJNfCHTyPpzwwO21Awd3A==}
+  lru-cache@11.5.1:
+    resolution: {integrity: sha512-RPimw/7aMdv2oqRrxKwvZXcPfwBrn/JZ2xYcY9Hus/6LaS3VOAKVWKWgNLCFSiOm1ESXinjsDlidVU7JlnCN2A==}
     engines: {node: 20 || >=22}
 
   luxon@3.6.1:
@@ -3599,16 +3602,6 @@ packages:
 
   semver@7.7.1:
     resolution: {integrity: sha512-hlq8tAfn0m/61p4BVRcPzIGr6LKiMwo4VM6dGi6pt4qcRkmNzTcWq6eCEjEh+qXjkMDvPlOFFSGwQjoEa6gyMA==}
-    engines: {node: '>=10'}
-    hasBin: true
-
-  semver@7.8.0:
-    resolution: {integrity: sha512-AcM7dV/5ul4EekoQ29Agm5vri8JNqRyj39o0qpX6vDF2GZrtutZl5RwgD1XnZjiTAfncsJhMI48QQH3sN87YNA==}
-    engines: {node: '>=10'}
-    hasBin: true
-
-  semver@7.8.1:
-    resolution: {integrity: sha512-rkVq3IXh+4FDGch+KwzX3aV9W3kO54GyEgpvBzSyctDA6Xtd7RJQV1xmXbeQp5v7+VzLOfVqiutSE6GICgPFvg==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -4179,6 +4172,10 @@ packages:
     resolution: {integrity: sha512-7dSzzRQ++CKnNI/krKnYRV7JKKPUXMEh61soaHKg9mrWEhzFWhFnxPxGl+69cD1Ou63C13NUPCnmIcrvqCuM6w==}
     engines: {node: '>=12'}
 
+  yargs@17.7.3:
+    resolution: {integrity: sha512-GZtjxm/J/4TSxuL3FNYjCmLktBTnIw/rVmKSIyKeYAZpmJB2ig9VauCC5xsa82GNKVKDAqpOn3KVzNt0zmrU0g==}
+    engines: {node: '>=12'}
+
   yn@3.1.1:
     resolution: {integrity: sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==}
     engines: {node: '>=6'}
@@ -4320,7 +4317,7 @@ snapshots:
     dependencies:
       '@cucumber/messages': 26.0.1
 
-  '@cucumber/gherkin@39.1.0':
+  '@cucumber/gherkin@41.0.0':
     dependencies:
       '@cucumber/messages': 32.3.1
 
@@ -4358,6 +4355,8 @@ snapshots:
     dependencies:
       class-transformer: 0.5.1
       reflect-metadata: 0.2.2
+
+  '@cucumber/messages@34.0.1': {}
 
   '@cucumber/query@13.6.0(@cucumber/messages@27.2.0)':
     dependencies:
@@ -5516,18 +5515,18 @@ snapshots:
       '@noble/curves': 1.9.7
       '@noble/hashes': 1.8.0
 
-  '@serenity-js/assertions@3.43.2':
+  '@serenity-js/assertions@3.44.1':
     dependencies:
-      '@serenity-js/core': 3.43.2
+      '@serenity-js/core': 3.44.1
       tiny-types: 2.0.5
 
-  '@serenity-js/console-reporter@3.43.2':
+  '@serenity-js/console-reporter@3.44.1':
     dependencies:
-      '@serenity-js/core': 3.43.2
+      '@serenity-js/core': 3.44.1
       chalk: 4.1.2
       tiny-types: 2.0.5
 
-  '@serenity-js/core@3.43.2':
+  '@serenity-js/core@3.44.1':
     dependencies:
       '@paralleldrive/cuid2': 2.3.1
       chalk: 4.1.2
@@ -5536,39 +5535,39 @@ snapshots:
       fast-glob: 3.3.3
       filenamify: 4.3.0
       graceful-fs: 4.2.11
-      semver: 7.8.0
+      semver: 7.8.5
       tiny-types: 2.0.5
       upath: 2.0.1
       validate-npm-package-name: 7.0.2
 
-  '@serenity-js/cucumber@3.43.2(@cucumber/cucumber@11.3.0)':
+  '@serenity-js/cucumber@3.44.1(@cucumber/cucumber@11.3.0)':
     dependencies:
-      '@cucumber/gherkin': 39.1.0
-      '@cucumber/messages': 32.3.1
-      '@serenity-js/core': 3.43.2
+      '@cucumber/gherkin': 41.0.0
+      '@cucumber/messages': 34.0.1
+      '@serenity-js/core': 3.44.1
       cli-table3: 0.6.5
       tiny-types: 2.0.5
     optionalDependencies:
       '@cucumber/cucumber': 11.3.0
 
-  '@serenity-js/rest@3.43.2':
+  '@serenity-js/rest@3.44.1':
     dependencies:
-      '@serenity-js/core': 3.43.2
+      '@serenity-js/core': 3.44.1
       agent-base: 7.1.4
       axios: 1.18.0
       http-proxy-agent: 7.0.2
       https-proxy-agent: 7.0.6
-      lru-cache: 11.3.6
+      lru-cache: 11.5.1
       tiny-types: 2.0.5
     transitivePeerDependencies:
       - debug
       - supports-color
 
-  '@serenity-js/serenity-bdd@3.43.2':
+  '@serenity-js/serenity-bdd@3.44.1':
     dependencies:
-      '@serenity-js/assertions': 3.43.2
-      '@serenity-js/core': 3.43.2
-      '@serenity-js/rest': 3.43.2
+      '@serenity-js/assertions': 3.44.1
+      '@serenity-js/core': 3.44.1
+      '@serenity-js/rest': 3.44.1
       ansi-regex: 5.0.1
       axios: 1.18.0
       chalk: 4.1.2
@@ -5576,7 +5575,7 @@ snapshots:
       progress: 2.0.3
       tiny-types: 2.0.5
       which: 6.0.1
-      yargs: 17.7.2
+      yargs: 17.7.3
     transitivePeerDependencies:
       - debug
       - supports-color
@@ -5787,7 +5786,7 @@ snapshots:
       '@typescript-eslint/visitor-keys': 8.60.0
       debug: 4.4.3(supports-color@8.1.1)
       minimatch: 10.2.5
-      semver: 7.8.1
+      semver: 7.8.5
       tinyglobby: 0.2.17
       ts-api-utils: 2.5.0(typescript@5.9.3)
       typescript: 5.9.3
@@ -7288,7 +7287,7 @@ snapshots:
 
   lru-cache@10.4.3: {}
 
-  lru-cache@11.3.6: {}
+  lru-cache@11.5.1: {}
 
   luxon@3.6.1: {}
 
@@ -7837,10 +7836,6 @@ snapshots:
   semver@6.3.1: {}
 
   semver@7.7.1: {}
-
-  semver@7.8.0: {}
-
-  semver@7.8.1: {}
 
   semver@7.8.5: {}
 
@@ -8536,6 +8531,16 @@ snapshots:
   yargs-parser@21.1.1: {}
 
   yargs@17.7.2:
+    dependencies:
+      cliui: 8.0.1
+      escalade: 3.2.0
+      get-caller-file: 2.0.5
+      require-directory: 2.1.1
+      string-width: 4.2.3
+      y18n: 5.0.8
+      yargs-parser: 21.1.1
+
+  yargs@17.7.3:
     dependencies:
       cliui: 8.0.1
       escalade: 3.2.0
