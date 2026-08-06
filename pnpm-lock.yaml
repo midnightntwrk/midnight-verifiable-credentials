@@ -13,7 +13,7 @@ overrides:
   '@midnight-ntwrk/midnight-did-secret-storage': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-secret-storage-0.1.0.tgz
   '@midnight-ntwrk/ledger-v8': 8.1.0
   '@midnight-ntwrk/midnight-js-contracts': 4.0.4
-  '@midnight-ntwrk/midnight-js-fetch-zk-config-provider': 4.0.4
+  '@midnight-ntwrk/midnight-js-fetch-zk-config-provider': 4.1.1
   '@midnight-ntwrk/midnight-js-http-client-proof-provider': 4.0.4
   '@midnight-ntwrk/midnight-js-indexer-public-data-provider': 4.1.1
   '@midnight-ntwrk/midnight-js-level-private-state-provider': 4.0.4
@@ -56,8 +56,8 @@ importers:
         specifier: 4.0.4
         version: 4.0.4
       '@midnight-ntwrk/midnight-js-fetch-zk-config-provider':
-        specifier: 4.0.4
-        version: 4.0.4
+        specifier: 4.1.1
+        version: 4.1.1
       '@midnight-ntwrk/midnight-js-http-client-proof-provider':
         specifier: 4.0.4
         version: 4.0.4
@@ -977,8 +977,8 @@ packages:
   '@midnight-ntwrk/midnight-js-contracts@4.0.4':
     resolution: {integrity: sha512-lu9A45upwvPSy/YohU0TMvaeL2ru1zJt6axbuGwGup2L16p+fN8ojjHji6YGEC6XkgyISH3L0GfsgxsQKmt56g==}
 
-  '@midnight-ntwrk/midnight-js-fetch-zk-config-provider@4.0.4':
-    resolution: {integrity: sha512-WMXxBVqDlAiu3c0ZTE3WaEUfNR4fRAEmaTlhr0U3pjaFKu77qiBp7bB+oIB8N6Xtj0Y1KRn/wlGLbZjxEL9jVg==}
+  '@midnight-ntwrk/midnight-js-fetch-zk-config-provider@4.1.1':
+    resolution: {integrity: sha512-d9vPAXjCvbe3KdPDBwp8Cp4HXwdo9jfCjeyJjJPfIDHCctXrIQ7btu+CqY1+bgV05FHVMOBLjJ9TS2tc2xdwrw==}
 
   '@midnight-ntwrk/midnight-js-http-client-proof-provider@4.0.4':
     resolution: {integrity: sha512-G6q7uPqKhCGZyKUo21MhoBjtfQ4pw6AEMBM6zrAvhrCFE9WV4FVrG1rpbJDtwxr/VVecIt1tD4myVqg2sEPNhg==}
@@ -4710,9 +4710,10 @@ snapshots:
       '@midnight-ntwrk/midnight-js-types': 4.0.4
       '@midnight-ntwrk/midnight-js-utils': 4.1.1
 
-  '@midnight-ntwrk/midnight-js-fetch-zk-config-provider@4.0.4':
+  '@midnight-ntwrk/midnight-js-fetch-zk-config-provider@4.1.1':
     dependencies:
       '@midnight-ntwrk/midnight-js-types': 4.0.4
+      '@midnight-ntwrk/midnight-js-utils': 4.1.1
       cross-fetch: 4.1.0
     transitivePeerDependencies:
       - encoding
