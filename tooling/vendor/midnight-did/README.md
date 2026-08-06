@@ -19,6 +19,11 @@ Validation:
 
 Dependency note:
 
+The vendored secret-storage tarball is intentionally repacked from the resolver
+artifact with its unused `circomlibjs` dependency removed. The generated
+`dist` contains no `circomlibjs` or `ethers` imports; retaining that stale
+manifest entry would reintroduce `elliptic` through `ethers@5`.
+
 - `@midnight-ntwrk/midnight-did-api` and
   `@midnight-ntwrk/midnight-did-jubjub-schnorr` declare
   `@midnight-ntwrk/ledger-v8@8.0.3`.
