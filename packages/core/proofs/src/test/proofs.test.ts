@@ -54,7 +54,7 @@ const deployment: DeploymentManifest = {
   acceptedReferences: [{ id: "status-policy", digest }],
   governanceOwner: "governance-key",
   supportWindow: { notBefore: "2026-01-01T00:00:00Z" },
-  signature: { algorithm: "example-signature", keyId: "key-1", value: "signature" },
+  signature: { algorithm: "Ed25519", keyId: "key-1", value: "A".repeat(86) },
 };
 
 describe("credential-proofs contracts", () => {
@@ -78,6 +78,25 @@ describe("credential-proofs contracts", () => {
     expect(() => defineProofJob({ ...({} as ProofJob), formatVersion: 1, id: "job", version: "0.1.0", familyId: "family", circuitId: "circuit", proofManifestDigest: "sha256:bad", input: {} })).toThrow(CredentialProofsError);
     expect(() => defineBuildManifest({ ...build, artifacts: [{ ...build.artifacts[0], path: "../outside" }] })).toThrow(/parent traversal/);
     expect(() => defineDeploymentManifest({ ...deployment, supportWindow: { notBefore: "2026-01-01" } })).toThrow(/timestamp/);
+  });
+
+  it("rejects duplicate circuit artifact references and invalid ZK artifact layouts", () => {
+    expect(() => defineBuildManifest({
+      ...build,
+      circuits: [{ ...build.circuits[0], artifactIds: ["circuit-metadata", "circuit-metadata"] }],
+    })).toThrow(/duplicates/u);
+    expect(() => defineBuildManifest({
+      ...build,
+      artifacts: [{ ...build.artifacts[0], role: "circuit", path: "metadata/circuit.bzkir" }],
+    })).toThrow(/circuit artifact layout/u);
+    expect(() => defineBuildManifest({
+      ...build,
+      artifacts: [{ ...build.artifacts[0], role: "prover-key", path: "zkir/circuit.bzkir" }],
+    })).toThrow(/prover-key artifact layout/u);
+    expect(() => defineBuildManifest({
+      ...build,
+      artifacts: [{ ...build.artifacts[0], role: "verifier-key", path: "keys/circuit.prover" }],
+    })).toThrow(/verifier-key artifact layout/u);
   });
 
   it("rejects non-canonical parameters, timestamps, windows, and circuit references", () => {
