@@ -48,7 +48,7 @@
   },
   "scripts": {
     "check-toolchain": "node scripts/check-toolchain.mjs",
-    "compact": "pnpm run check-toolchain && rm -rf src/managed && compact compile src/credentials.compact src/managed/credentials && compact compile src/holder-binding/same-holder.compact src/managed/same-holder && rm -rf src/managed/credentials/compiler src/managed/same-holder/compiler",
+    "compact": "pnpm run check-toolchain && node ../../../tooling/scripts/ensure-compact-artifacts.mjs --manifest src/managed/.compact-artifact.json --source-root src --output src/managed/credentials -- compact compile src/credentials.compact src/managed/credentials && node ../../../tooling/scripts/ensure-compact-artifacts.mjs --manifest src/managed/.compact-artifact.json --source-root src --output src/managed/same-holder -- compact compile src/holder-binding/same-holder.compact src/managed/same-holder && rm -rf src/managed/credentials/compiler src/managed/same-holder/compiler",
     "build": "pnpm run compact && rm -rf dist && mkdir -p dist && tsc -b tsconfig.build.json --force && cp -Rf src/managed dist/ && cp src/credentials.compact dist/ && cp -Rf src/credentials dist/ && mkdir -p dist/holder-binding && cp src/holder-binding/same-holder.compact dist/holder-binding/ && cp -Rf src/holder-binding/same-holder dist/holder-binding/ && node scripts/write-build-manifest.mjs",
     "typecheck": "pnpm run compact && tsc -p tsconfig.json --noEmit",
     "lint": "eslint src --ignore-pattern 'src/managed/**'",

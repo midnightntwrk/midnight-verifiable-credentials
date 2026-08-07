@@ -51,7 +51,7 @@
   },
   "scripts": {
     "contract": "pnpm run compact",
-    "compact": "node ../../../../tooling/scripts/ensure-compact-package-aliases.mjs && compact compile src/birth-credential.compact src/managed/birth-credential && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
+    "compact": "node ../../../../tooling/scripts/ensure-compact-package-aliases.mjs && node ../../../../tooling/scripts/ensure-compact-artifacts.mjs --manifest src/managed/.compact-artifact.json --source-root src --output src/managed/birth-credential -- compact compile src/birth-credential.compact src/managed/birth-credential && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
     "prebuild": "test -f ../../../../packages/core/primitives/credentials/dist/managed/credentials/contract/index.js || pnpm --dir ../../../../packages/core/primitives/credentials run build",
     "test": "vitest run",
     "test:ci": "vitest run",
