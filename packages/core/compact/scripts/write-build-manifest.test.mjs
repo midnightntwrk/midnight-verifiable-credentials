@@ -9,6 +9,7 @@ import {
 import {
   classifyArtifact,
   createBuildManifestFromOutput,
+  filterUnexpectedChanges,
 } from "./write-build-manifest.mjs";
 
 const packageJson = {
@@ -106,6 +107,12 @@ describe("write-build-manifest", () => {
       enforceCleanTree: false,
     });
     expect(manifest.cleanTree).toBe(true);
+  });
+
+  it("ignores generated source outputs but rejects other untracked files", () => {
+    expect(filterUnexpectedChanges("?? packages/core/compact/src/managed/generated.js", "packages/core/compact/src/managed")).toEqual([]);
+    expect(filterUnexpectedChanges("?? packages/core/compact/src/managed/generated.js\n?? unrelated.tmp", "packages/core/compact/src/managed")).toEqual(["?? unrelated.tmp"]);
+    expect(filterUnexpectedChanges(" M packages/core/compact/src/managed/generated.js", "packages/core/compact/src/managed")).toEqual([" M packages/core/compact/src/managed/generated.js"]);
   });
 
   it("rejects absent required build inputs", async () => {

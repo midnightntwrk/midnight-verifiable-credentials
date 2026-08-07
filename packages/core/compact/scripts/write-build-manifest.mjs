@@ -42,6 +42,16 @@ const git = (...args) => execFileSync("git", args, {
   stdio: ["ignore", "pipe", "pipe"],
 }).trim();
 
+const generatedSourceRoot = relativePath(repositoryRoot, resolve(packageRoot, "src/managed"));
+
+export const filterUnexpectedChanges = (status, generatedRoot = generatedSourceRoot) => status
+  .split("\n")
+  .filter((line) => {
+    if (line === "" || !line.startsWith("?? ")) return line !== "";
+    const path = line.slice(3).replace(/^"|"$/gu, "");
+    return path !== generatedRoot && !path.startsWith(`${generatedRoot}/`);
+  });
+
 const assertNonEmpty = (value, label) => {
   if (typeof value !== "string" || value.trim() === "") {
     throw new Error(`${label} is required`);
@@ -64,7 +74,8 @@ const resolveCompilerVersion = () => {
 
 const ensureCleanTree = () => {
   const status = git("status", "--porcelain", "--untracked-files=all");
-  if (status !== "") {
+  const unexpectedChanges = filterUnexpectedChanges(status);
+  if (unexpectedChanges.length > 0) {
     throw new Error("source tree must be clean before generating a release build manifest");
   }
 };
