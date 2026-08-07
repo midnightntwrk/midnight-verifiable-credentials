@@ -226,20 +226,38 @@ Randomness hardening rule:
 - production integrators may inject a runtime or HSM-backed source while
   preserving the fail-closed CSPRNG contract
 
-State hardening rule:
+State-store foundation rule:
 
 - agent-local pending offers, requests, submissions, and completed transport
-  outcomes now sit behind an injectable `ProtocolStateStore` interface
-- explicit-holder and hidden-holder stored credentials now also sit behind that
-  state-store seam, so restarted holder agents can recover issued credentials
-  when the backend is persistent
+  outcomes now have an injectable `ProtocolStateStore` seam
+- explicit-holder and hidden-holder stored credentials also have that seam, so
+  a persistent backend can support local restart recovery
 - holder agents recover their stored-credential counters at startup if metadata
   lags behind append-only stored credential records after a partial write
 - the exported default implementation is an in-memory reference store
-- production integrators should supply a persistent implementation if they need
-  restart-safe protocol session handling
-- finalized replay/idempotency outcomes can now be retained with a configurable
+- finalized replay/idempotency outcomes can be retained with a configurable
   TTL and/or bounded count
+- terminal sessions can use the exported
+  `atomicallyTransitionProtocolSession(...)` / `cancelProtocolSession(...)`
+  helpers; the first finalized or cancelled record wins an immutable
+  create-if-absent transition within one backend collection/key
+- `claimProtocolResultOnce(...)` records an at-most-once claim, while
+  `claimRetainedProtocolStateAtMostOnce(...)` reads a retained result and then
+  attempts that claim; neither operation is an end-to-end exactly-once delivery
+  guarantee
+
+These terminal transitions and result claims are a state-store foundation, not
+end-to-end exactly-once issuance or presentation delivery. Agent integration,
+transaction boundaries, processing leases and crash recovery, and coupling to
+business side effects remain E2 follow-ups. A backend without atomic
+create-if-absent support fails closed rather than emulating it with a racy
+read-then-write. Terminal records have no implicit expiry or tombstone
+protocol; retained outcomes are removed by the configured local retention
+helper, and distributed expiry/recovery semantics remain an adapter concern.
+The generic collection boundary cannot enforce immutability for arbitrary
+values, so helper-created cloneable terminal/claim/retained records use
+immutable defensive copies; custom adapters must preserve that guarantee when
+exposing their own direct collection operations.
 
 Exact-byte delivery rule:
 
