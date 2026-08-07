@@ -240,6 +240,29 @@ State hardening rule:
   restart-safe protocol session handling
 - finalized replay/idempotency outcomes can now be retained with a configurable
   TTL and/or bounded count
+- terminal sessions can use the exported
+  `atomicallyTransitionProtocolSession(...)` / `cancelProtocolSession(...)`
+  helpers; the first finalized or cancelled record wins an immutable
+  create-if-absent transition
+- `claimProtocolResultOnce(...)` and
+  `consumeRetainedProtocolStateOnce(...)` provide deterministic one-time
+  result consumption, including retries by the same consumer
+
+Durable terminal-session boundary:
+
+- the atomicity boundary is one named collection/key and its backend's
+  storage-native create-if-absent operation; it does **not** transactionally
+  couple terminal state to message delivery or business side effects
+- the in-memory reference and `FileSystemProtocolStateByteStore` provide this
+  boundary; the file path uses its flushed hard-link create and is restart-safe
+  for local filesystem processes
+- a backend without atomic create-if-absent support fails closed through
+  `AtomicProtocolSessionStateUnavailableError`; a read-then-write emulation
+  must not be used for cancellation, finalization, or result claims
+- terminal records are immutable and cancellation is a first-writer-wins
+  terminal transition, while result claims are one-time (a retry returns no
+  result). Claim collections should be retained at least as long as their
+  finalized-result collections.
 
 Exact-byte delivery rule:
 

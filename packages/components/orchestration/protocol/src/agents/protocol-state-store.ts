@@ -8,6 +8,13 @@
 export interface ProtocolStateCollection<T> {
   get(key: string): T | undefined;
   set(key: string, value: T): void;
+  /**
+   * Atomically stores `value` only when `key` is absent. Implementations that
+   * cannot provide a storage-native create-if-absent operation must leave this
+   * undefined; terminal-session helpers fail closed rather than emulating it
+   * with a racy read followed by a write.
+   */
+  setIfAbsent?(key: string, value: T): boolean;
   delete(key: string): boolean;
   deleteMany?(keys: readonly string[]): number;
   has(key: string): boolean;
@@ -60,6 +67,16 @@ export interface ProtocolStateByteStore {
   collection(name: string): ProtocolStateByteCollection;
 }
 
+/** Raised when a caller asks for an atomic session operation on a weak store. */
+export class AtomicProtocolSessionStateUnavailableError extends Error {
+  constructor(collectionName: string) {
+    super(
+      `Protocol state collection "${collectionName}" does not support atomic create-if-absent writes.`,
+    );
+    this.name = "AtomicProtocolSessionStateUnavailableError";
+  }
+}
+
 export interface ProtocolStateCodec<T> {
   encode(value: T): Uint8Array;
   decode(encodedValue: Uint8Array): T;
@@ -98,6 +115,14 @@ class InMemoryProtocolStateCollection<T> implements ProtocolStateCollection<T> {
 
   set(key: string, value: T): void {
     this.backingMap.set(key, value);
+  }
+
+  setIfAbsent(key: string, value: T): boolean {
+    if (this.backingMap.has(key)) {
+      return false;
+    }
+    this.backingMap.set(key, value);
+    return true;
   }
 
   delete(key: string): boolean {
@@ -199,10 +224,18 @@ class InMemoryProtocolStateByteCollection
 class CodecBackedProtocolStateCollection<T>
   implements ProtocolStateCollection<T>
 {
+  readonly setIfAbsent:
+    | ((key: string, value: T) => boolean)
+    | undefined;
+
   constructor(
     private readonly byteCollection: ProtocolStateByteCollection,
     private readonly codec: ProtocolStateCodec<T>,
-  ) {}
+  ) {
+    this.setIfAbsent = byteCollection.setIfAbsent
+      ? (key, value) => byteCollection.setIfAbsent!(key, this.codec.encode(value))
+      : undefined;
+  }
 
   get(key: string): T | undefined {
     const encodedValue = this.byteCollection.get(key);
@@ -289,6 +322,131 @@ export const createCodecBackedProtocolStateStore = (
   codecResolver: ProtocolStateCodecResolver,
 ): ProtocolStateStore =>
   new CodecBackedProtocolStateStore(byteStore, codecResolver);
+
+export type ProtocolTerminalSession<T> =
+  | {
+      readonly state: "finalized";
+      readonly result: T;
+      readonly finalizedAtMs: bigint;
+      readonly expiresAtMs?: bigint;
+    }
+  | {
+      readonly state: "cancelled";
+      readonly reason: string;
+      readonly cancelledAtMs: bigint;
+    };
+
+export type ProtocolTerminalTransition<T> =
+  | { readonly status: "committed"; readonly session: ProtocolTerminalSession<T> }
+  | {
+      readonly status: "already-terminal";
+      readonly session: ProtocolTerminalSession<T>;
+    };
+
+/**
+ * Atomically finalizes a pending session. A session key is immutable after its
+ * first terminal transition: cancellation and finalization race on the same
+ * create-if-absent linearization point, and the winner is returned to every
+ * later caller. This operation intentionally does not couple writes in other
+ * collections (for example, business side effects) into one transaction.
+ */
+export const atomicallyTransitionProtocolSession = <T>(
+  collection: ProtocolStateCollection<ProtocolTerminalSession<T>>,
+  key: string,
+  session: ProtocolTerminalSession<T>,
+  collectionName = "<unnamed>",
+): ProtocolTerminalTransition<T> => {
+  if (key.length === 0) {
+    throw new TypeError("Protocol session key must not be empty.");
+  }
+  if (session.state === "cancelled" && session.reason.trim().length === 0) {
+    throw new TypeError("Cancelled protocol sessions require a reason.");
+  }
+  if (!collection.setIfAbsent) {
+    throw new AtomicProtocolSessionStateUnavailableError(collectionName);
+  }
+  if (collection.setIfAbsent(key, session)) {
+    return { status: "committed", session };
+  }
+  const existing = collection.get(key);
+  if (!existing) {
+    throw new Error(
+      `Atomic protocol session transition for "${key}" lost its winner before it could be read.`,
+    );
+  }
+  return { status: "already-terminal", session: existing };
+};
+
+export const cancelProtocolSession = <T>(
+  collection: ProtocolStateCollection<ProtocolTerminalSession<T>>,
+  key: string,
+  reason: string,
+  cancelledAtMs: bigint,
+  collectionName = "<unnamed>",
+): ProtocolTerminalTransition<T> =>
+  atomicallyTransitionProtocolSession(
+    collection,
+    key,
+    { state: "cancelled", reason, cancelledAtMs },
+    collectionName,
+  );
+
+export type ProtocolResultClaim = {
+  readonly claimant: string;
+  readonly claimedAtMs: bigint;
+};
+
+/**
+ * Claims a retained result exactly once. Even the same claimant receives
+ * `already-claimed` on retry; callers must not treat a retry as a second
+ * consumption. The claim collection should retain entries at least as long as
+ * the corresponding finalized-result collection.
+ */
+export const claimProtocolResultOnce = (
+  claims: ProtocolStateCollection<ProtocolResultClaim>,
+  key: string,
+  claimant: string,
+  claimedAtMs: bigint,
+  collectionName = "<unnamed>",
+): "claimed" | "already-claimed" => {
+  if (key.length === 0 || claimant.length === 0) {
+    throw new TypeError("Protocol result keys and claimants must not be empty.");
+  }
+  if (!claims.setIfAbsent) {
+    throw new AtomicProtocolSessionStateUnavailableError(collectionName);
+  }
+  return claims.setIfAbsent(key, { claimant, claimedAtMs })
+    ? "claimed"
+    : "already-claimed";
+};
+
+/**
+ * Reads a retained result and atomically consumes it for one caller. A missing
+ * result and an already-consumed result both return `undefined` deliberately,
+ * giving transport adapters a deterministic one-time-consumption outcome.
+ */
+export const consumeRetainedProtocolStateOnce = <T>(
+  outcomes: ProtocolStateCollection<RetainedProtocolState<T>>,
+  claims: ProtocolStateCollection<ProtocolResultClaim>,
+  key: string,
+  currentTimeMs: bigint,
+  claimant: string,
+  claimsCollectionName = "<unnamed>",
+): T | undefined => {
+  const value = readRetainedProtocolState(outcomes, key, currentTimeMs);
+  if (value === undefined) {
+    return undefined;
+  }
+  return claimProtocolResultOnce(
+    claims,
+    key,
+    claimant,
+    currentTimeMs,
+    claimsCollectionName,
+  ) === "claimed"
+    ? value
+    : undefined;
+};
 
 /**
  * Recover an append-only ordinal count from stored records when metadata lags

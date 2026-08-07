@@ -9,11 +9,17 @@ import { describe, expect, it } from "vitest";
 import { FileSystemProtocolStateByteStore } from "../../adapters/file-protocol-state-store.js";
 import { createStableJsonProtocolStateStore } from "../../adapters/json-protocol-state-codec.js";
 import {
+  atomicallyTransitionProtocolSession,
+  cancelProtocolSession,
+  claimProtocolResultOnce,
+  consumeRetainedProtocolStateOnce,
   createCodecBackedProtocolStateStore,
   InMemoryProtocolStateByteStore,
   InMemoryProtocolStateStore,
+  type ProtocolResultClaim,
   type ProtocolStateCodecResolver,
   type ProtocolStateCollection,
+  type ProtocolTerminalSession,
   pruneExpiredRetainedProtocolState,
   readRetainedProtocolState,
   recoverAppendOnlyOrdinalCount,
@@ -30,6 +36,197 @@ const v8CodecResolver: ProtocolStateCodecResolver = {
     };
   },
 };
+
+describe("ProtocolStateStore terminal-session contract", () => {
+  it("allows exactly one terminal transition and makes cancellation deterministic", () => {
+    const store = new InMemoryProtocolStateStore();
+    const sessions = store.collection<ProtocolTerminalSession<string>>(
+      "test:sessions",
+    );
+
+    expect(
+      atomicallyTransitionProtocolSession(
+        sessions,
+        "session-1",
+        { state: "finalized", result: "approved", finalizedAtMs: 10n },
+        "test:sessions",
+      ),
+    ).toEqual({
+      status: "committed",
+      session: { state: "finalized", result: "approved", finalizedAtMs: 10n },
+    });
+    expect(
+      cancelProtocolSession(sessions, "session-1", "caller-aborted", 11n),
+    ).toEqual({
+      status: "already-terminal",
+      session: { state: "finalized", result: "approved", finalizedAtMs: 10n },
+    });
+    expect(
+      atomicallyTransitionProtocolSession(sessions, "session-1", {
+        state: "finalized",
+        result: "different",
+        finalizedAtMs: 12n,
+      }),
+    ).toEqual({
+      status: "already-terminal",
+      session: { state: "finalized", result: "approved", finalizedAtMs: 10n },
+    });
+  });
+
+  it("claims a finalized result once, including retries by the same consumer", () => {
+    const store = new InMemoryProtocolStateStore();
+    const outcomes = store.collection<RetainedProtocolState<string>>(
+      "test:outcomes",
+    );
+    const claims = store.collection<ProtocolResultClaim>("test:claims");
+    writeRetainedProtocolState(outcomes, "session-1", "approved", 100n, {});
+
+    expect(
+      consumeRetainedProtocolStateOnce(
+        outcomes,
+        claims,
+        "session-1",
+        100n,
+        "consumer-a",
+        "test:claims",
+      ),
+    ).toBe("approved");
+    expect(
+      consumeRetainedProtocolStateOnce(
+        outcomes,
+        claims,
+        "session-1",
+        100n,
+        "consumer-a",
+        "test:claims",
+      ),
+    ).toBeUndefined();
+    expect(
+      claimProtocolResultOnce(claims, "session-1", "consumer-b", 101n),
+    ).toBe("already-claimed");
+
+    writeRetainedProtocolState(
+      outcomes,
+      "session-expired",
+      "expired",
+      100n,
+      { finalizedOutcomeTtlMs: 10n },
+    );
+    expect(
+      consumeRetainedProtocolStateOnce(
+        outcomes,
+        claims,
+        "session-expired",
+        111n,
+        "consumer-a",
+        "test:claims",
+      ),
+    ).toBeUndefined();
+    expect(claims.has("session-expired")).toBe(false);
+  });
+
+  it("has one terminal winner across concurrent in-memory callers", async () => {
+    const store = new InMemoryProtocolStateStore();
+    const attempts = await Promise.all(
+      Array.from({ length: 32 }, (_, index) =>
+        Promise.resolve().then(() =>
+          atomicallyTransitionProtocolSession(
+            store.collection<ProtocolTerminalSession<string>>("test:races"),
+            "session-1",
+            {
+              state: "finalized",
+              result: `result-${index}`,
+              finalizedAtMs: BigInt(index),
+            },
+            "test:races",
+          ),
+        ),
+      ),
+    );
+
+    expect(attempts.filter(({ status }) => status === "committed")).toHaveLength(
+      1,
+    );
+    expect(
+      new Set(
+        attempts
+          .map(({ session }) =>
+            session.state === "finalized" ? session.result : undefined,
+          )
+          .filter((result): result is string => result !== undefined),
+      ).size,
+    ).toBe(1);
+  });
+
+  it("fails closed when a collection cannot provide atomic creation", () => {
+    const collection: ProtocolStateCollection<ProtocolTerminalSession<string>> = {
+      get: () => undefined,
+      set: () => undefined,
+      delete: () => false,
+      has: () => false,
+      entries: function* () {},
+    };
+
+    expect(() =>
+      atomicallyTransitionProtocolSession(
+        collection,
+        "session-1",
+        { state: "cancelled", reason: "caller-aborted", cancelledAtMs: 1n },
+        "weak-store",
+      ),
+    ).toThrow(/weak-store.*atomic/i);
+  });
+
+  it("retains a terminal transition and one-time claim across file-store recreation", () => {
+    const rootDir = mkdtempSync(join(tmpdir(), "vc-protocol-terminal-"));
+
+    try {
+      const createStore = () =>
+        createStableJsonProtocolStateStore(
+          new FileSystemProtocolStateByteStore(rootDir),
+        );
+      const sessions = createStore().collection<ProtocolTerminalSession<string>>(
+        "test:file-sessions",
+      );
+      const claims = createStore().collection<ProtocolResultClaim>(
+        "test:file-claims",
+      );
+      atomicallyTransitionProtocolSession(sessions, "session-1", {
+        state: "cancelled",
+        reason: "caller-aborted",
+        cancelledAtMs: 20n,
+      });
+      const outcomes = createStore().collection<RetainedProtocolState<string>>(
+        "test:file-outcomes",
+      );
+      writeRetainedProtocolState(outcomes, "session-2", "approved", 20n, {});
+      expect(
+        claimProtocolResultOnce(claims, "session-2", "consumer-a", 21n),
+      ).toBe("claimed");
+
+      const recreated = createStore();
+      expect(
+        recreated
+          .collection<ProtocolTerminalSession<string>>("test:file-sessions")
+          .get("session-1"),
+      ).toEqual({
+        state: "cancelled",
+        reason: "caller-aborted",
+        cancelledAtMs: 20n,
+      });
+      expect(
+        claimProtocolResultOnce(
+          recreated.collection<ProtocolResultClaim>("test:file-claims"),
+          "session-2",
+          "consumer-a",
+          22n,
+        ),
+      ).toBe("already-claimed");
+    } finally {
+      rmSync(rootDir, { recursive: true, force: true });
+    }
+  });
+});
 
 describe("ProtocolStateStore retention helpers", () => {
   it("evicts retained state after the ttl window expires", () => {
