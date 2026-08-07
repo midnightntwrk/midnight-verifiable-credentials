@@ -2,7 +2,12 @@
 
 Status: current execution view derived from the canonical production backlog.
 
-Last reconciled: 2026-07-17 at `develop` commit `b68ae4a`, after PR #333.
+Last reconciled: 2026-08-07 at `origin/develop` commit `103e3e8` after PRs #335, #415, and #416.
+
+The A2 replay/nullifier worktree contains an unmerged primitive checkpoint at
+`4b514ec`; it is not part of `origin/develop` and does not close A2. The G1
+and E2 entries below likewise record merged foundations only, not their full
+production acceptance.
 
 This document answers one question: what still has to ship before this
 repository can describe any package or verification profile as production
@@ -39,6 +44,9 @@ part of the baseline; they do not imply that the larger P0 category is closed.
 | Verification authority V1 specification, threat model, and negative-test design | PR #331 |
 | Status/time authority V1 specification, threat model, and negative-test design | PR #332 |
 | Executable Compact comparison-only trusted-time capability gate | PR #333 |
+| Verification transcript and public-input implementation foundation | PR #335 |
+| ZK artifact-manifest integrity contracts (foundation only) | PR #415 |
+| Durable protocol state-store foundation (not full session closure) | PR #416 |
 
 ## P0 deliverables
 
@@ -48,8 +56,7 @@ These items block a production label for the affected package or profile.
 | --- | --- | --- | --- | --- | --- |
 | X1 | External | `midnight-did` | Active DID verification-method and relationship evidence | DID package design and release | Issuer, holder, and verifier evidence binds the exact active method, relationship, network, rotation, and deactivation state, with negative vectors |
 | X2 | External | `midnight-trust-registry` | Issuer/verifier/schema authorization and epoch evidence | Trust-registry proof and release design | VC can consume pinned or fresh authorization evidence and reject suspension, removal, withdrawal, stale epochs, rollover, and migration errors |
-| A1 | Ready | VC | Verification transcript and public-input implementation | PR #331 design gate | Versioned transcript/input/result types, supported `persistentHash` encoding, evidence bindings, fail-closed APIs, cross-runtime digest vectors, and mutation tests are merged without claiming a final profile |
-| A2 | Blocked on A1 | VC | Atomic decision nullifier and replay contract | A1 | Persistent request/holder/credential replay scopes survive restart and races; the nullifier is consumed atomically before any capability or business mutation |
+| A2 | Partial | VC | Atomic decision nullifier and replay contract | A1 merged (#335) | The unmerged checkpoint `4b514ec` adds Compact/TypeScript replay-scope and fixed-policy nullifier primitives; closure still requires a supported stateful Compact fixture proving restart, races, rollback, and atomic nullifier-plus-business mutation |
 | B3 | Blocked | Compact/toolchain plus VC security review | Authoritative trusted-time adapter | Full current-execution anchor or an approved normative replacement | The final circuit binds every required time-anchor field and passes expiry, future, stale, rollback, replay, liveness, and finality vectors |
 | B1 | Blocked on B3 | VC | Authenticated status-registry authority | B3 and X1 | Initialization, mutation, delegation, rotation, migration, and issuer/schema-major namespacing are authenticated and audited; unauthorized and stale transitions fail closed |
 | B2 | Blocked on B1 and proof capability | VC | Accepted-root equality and actual non-membership proof | B1 plus supported in-circuit root/non-membership primitives | Every privacy-preserving non-revocation claim proves against the exact accepted root; revoked, stale, forked, mismatched, and malformed proofs fail |
@@ -57,7 +64,7 @@ These items block a production label for the affected package or profile.
 | C1 | Partial / ready | VC | Supported package and publication train | Registry, owners, support policy, and provenance decisions | Public inventory, semantic versions, compatible dependency ranges, truthful ESM/CJS exports, metadata, changelogs, publication workflow, and support windows exist for each supported package |
 | C2 | Partial | VC | Clean-consumer coverage for every supported package | C1 package inventory | Every supported tarball installs and runs in representative Node, bundler, and Compact consumers without monorepo source access |
 | D2 | Partial / ready | VC | Release supply-chain evidence and incident operations | C1 and G1 for final artifacts | SBOMs, provenance, signatures, attestations, vulnerability policy, key/package/artifact compromise response, rollback, and verification from a clean consumer are exercised |
-| E2 | Partial / ready | VC | Durable production protocol sessions | PR #329 CSPRNG baseline | Pending and finalized issuance/presentation sessions support multi-instance concurrency, exact-byte idempotency, same-ID/different-bytes rejection, cancellation, expiry, bounded retention, one-time result consumption, and crash/race/replay tests |
+| E2 | Partial | VC | Durable production protocol sessions | PR #329 CSPRNG baseline; state-store foundation merged in PR #416 | The merged foundation provides atomic state-store primitives, retained outcomes, cancellation, and one-time claims; closure still requires processing leases/agent wiring, multi-record transactions, multi-instance concurrency, crash recovery, and coupling to business side effects |
 | S1 | Ready to plan | VC plus independent reviewers | Independent security, cryptography, and privacy assurance | Stable implementations for the reviewed profiles | Threat-model coverage is maintained, findings have owners and SLAs, accepted findings have regression tests, and unresolved risks are explicitly accepted by named owners |
 
 ### Hard blocker: trusted time
@@ -94,7 +101,7 @@ operations after or alongside the P0 authority work.
 
 | ID | Status | Deliverable | Depends on | Close when |
 | --- | --- | --- | --- | --- |
-| G1 | Ready | Reproducible ZK build and signed deployment manifests, digest-addressed bundles, locator SDK, cache policy, revocation, offline recovery, and source/toolchain/output freshness checks | C1 for supported package publication | A clean consumer can resolve and verify the exact contract artifacts and deployment authority without mtime or monorepo assumptions |
+| G1 | Partial | Reproducible ZK build and signed deployment manifests, digest-addressed bundles, locator SDK, cache policy, revocation, offline recovery, and source/toolchain/output freshness checks | C1 for supported package publication; integrity foundation merged in PR #415 | PR #415 supplies canonical manifests, SHA-256 integrity, Ed25519 signatures, trusted-key verification, and fail-closed artifact resolution. Closure still requires real Compact-output generation, OCI/release distribution, locator/cache/offline recovery, revocation, deployment discovery, and external authority integration |
 | F1 | Ready | Final OID4VCI 1.0 and OID4VP 1.0 profile, including DCQL, request objects/by-reference, nonce/audience, authorization details, selected deferred issuance, format negotiation, errors, and conformance vectors | Stable canonical VC messages | OID mappings preserve canonical Compact bytes and threading identifiers and pass documented interoperability vectors |
 | F2 | External/blocking agreement | Nested `extensions["org.midnight.credentials"]` capability in the existing Midnight DApp Connector API | Upstream connector extension registry/API agreement plus E2 | Injected web and universal/deep-link/QR mobile flows provide capabilities, issuance, presentation, durable polling, cancellation, events, origin binding, and consent without exposing inventory, keys, or private proving inputs |
 | T1 | External plus VC composition | Trust-registry discovery and authorization composition | X2 and A3 evidence shapes | Exact schema, role, artifact, deployment, policy, and epoch references are resolved with pinned/fresh evidence; federation metadata never substitutes for authorization |
@@ -122,20 +129,24 @@ These are later work, not first-release blockers:
 ## Recommended next PR order
 
 The following independent starts provide the highest value without crossing a
-known security blocker:
+known security blocker. Active stack depth remains at two; independent tracks
+may be prepared locally but must not be treated as mergeable until their own
+focused and repository gates pass:
 
-1. **A1: verification contract core** - implement the transcript, encoding,
-   public-input, result, and fail-closed API skeleton defined by PR #331.
-2. **E2: durable protocol sessions** - close transactional, multi-instance,
-   cancellation, consumption, and race semantics on the existing state seam.
-3. **F1 or G1** - advance OID4VC conformance or artifact manifests on disjoint
-   package/tooling surfaces.
-4. **X1 and X2 in their owning repositories** - publish DID relationship and
-   trust-registry authorization evidence before downstream VC composition.
-5. **B3 unblock decision, then B1 and B2** - do not implement time-dependent
-   status authority while the mandatory execution anchor is unresolved.
-6. **A2 and A3** - land atomic replay protection, then compose final profiles
-   only when every claimed authority dependency is real and tested.
+1. **A2 follow-up** - finish the stateful Compact replay/atomicity fixture, but
+   first identify or add a supported ledger/emulator harness; the current
+   primitive checkpoint `4b514ec` is not a closure claim.
+2. **E2 follow-up** - add processing leases and agent integration on top of the
+   merged state-store foundation without claiming exactly-once delivery.
+3. **F1 or G1 follow-up** - advance the bounded OID4VCI/OID4VP profile/vector
+   surface or generate real Compact-output manifests from the PR #415 contracts.
+4. **H1 and Q1** - independently add the incubating display/locale model and
+   measurable quality-evidence catalog; neither depends on trusted time.
+5. **X1 and X2** - publish DID relationship and trust-registry authorization
+   evidence in their owning repositories before downstream VC composition.
+6. **B3 unblock decision, then B1/B2 and A3** - do not implement
+   time-dependent status authority or final profiles while the mandatory execution
+   anchor and external authority evidence remain unresolved.
 
 Keep active stack depth at two. Treat F2, G2, H2, and final passport extraction
 as dependency-gated work rather than parallel implementation targets.
