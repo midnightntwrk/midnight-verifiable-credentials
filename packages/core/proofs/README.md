@@ -14,8 +14,10 @@ This package defines `ProofJob`, `ProofProvider`, `ProofVerifier`, and
 build, and deployment manifests. It is a contract-only boundary: providers,
 verifiers, and resolvers are injected by an adapter; manifest serialization,
 SHA-256 integrity checks, artifact-byte checks, and Ed25519 deployment-signature
-verification are runtime-agnostic Web Crypto operations. It performs no proof
-execution, artifact fetching, signing-key custody, or deployment.
+verification are runtime-agnostic Web Crypto operations. The exported resolver
+helper verifies the requested manifest, descriptor identity, length, and digest
+before returning artifact bytes. It performs no proof execution, artifact
+fetching/publication, signing-key custody, or deployment.
 
 The package does **not** own family circuits, proving or verifier keys, ZKIR/BZKIR,
 deployment bundles, status authority, verification-v1 decisions/transcripts, or
@@ -26,7 +28,10 @@ explicit `Ed25519`; the deployment digest and signature omit only the
 self-referential signature bytes, while covering the algorithm, key id, and all
 deployment binding fields. This algorithm choice is scoped to generic off-chain
 G1 manifests and does not claim interoperability with a DID or trust-registry
-authority; any external authority profile requires a separate decision.
+authority; any external authority profile requires a separate decision. G1
+therefore remains integrity verification only: locator/publication,
+cache/revocation, recovery, deployment integration, and external trust/authority
+layers remain follow-ups and are not silently selected by this package.
 
 ## Example
 

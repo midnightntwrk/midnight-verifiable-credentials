@@ -34,6 +34,11 @@ const array = (value: unknown, path: string): void => {
   if (!Array.isArray(value)) {
     throw new CredentialProofsError("INVALID_MANIFEST", path, "must be an array");
   }
+  for (let index = 0; index < value.length; index += 1) {
+    if (!Object.hasOwn(value, index)) {
+      throw new CredentialProofsError("INVALID_MANIFEST", `${path}[${index}]`, "must not be a sparse array hole");
+    }
+  }
 };
 const unique = (values: readonly { readonly id: string }[], path: string): void => {
   const seen = new Set<string>();
@@ -42,6 +47,15 @@ const unique = (values: readonly { readonly id: string }[], path: string): void 
       throw new CredentialProofsError("DUPLICATE_ID", `${path}[${index}].id`, `duplicates '${value.id}'`);
     }
     seen.add(value.id);
+  });
+};
+const uniqueStrings = (values: readonly string[], path: string): void => {
+  const seen = new Set<string>();
+  values.forEach((value, index) => {
+    if (seen.has(value)) {
+      throw new CredentialProofsError("DUPLICATE_ID", `${path}[${index}]`, `duplicates '${value}'`);
+    }
+    seen.add(value);
   });
 };
 const scalar = (value: unknown, path: string): void => {
@@ -147,6 +161,20 @@ const assertArtifact = (artifact: ProofArtifactDescriptor, index: number): void 
     throw new CredentialProofsError("INVALID_ARTIFACT", `${path}.bytes`, "must be a non-negative safe integer");
   }
   digest(artifact.sha256, `${path}.sha256`);
+  const expectedPath = artifact.role === "prover-key"
+    ? /^keys\/[^/]+\.prover$/u
+    : artifact.role === "verifier-key"
+      ? /^keys\/[^/]+\.verifier$/u
+      : artifact.role === "circuit"
+        ? /^zkir\/[^/]+\.bzkir$/u
+        : undefined;
+  if (expectedPath !== undefined && !expectedPath.test(artifact.path)) {
+    throw new CredentialProofsError(
+      "INVALID_ARTIFACT",
+      `${path}.path`,
+      `does not match the ${artifact.role} artifact layout`,
+    );
+  }
 };
 
 const assertCircuit = (circuit: ProofCircuitDescriptor, index: number): void => {
@@ -158,6 +186,7 @@ const assertCircuit = (circuit: ProofCircuitDescriptor, index: number): void => 
   for (const [name, value] of Object.entries(circuit.parameters)) scalar(value, `${path}.parameters.${name}`);
   array(circuit.artifactIds, `${path}.artifactIds`);
   circuit.artifactIds.forEach((id, itemIndex) => identifier(id, `${path}.artifactIds[${itemIndex}]`));
+  uniqueStrings(circuit.artifactIds, `${path}.artifactIds`);
 };
 
 export const assertBuildManifest = (manifest: BuildManifest): void => {

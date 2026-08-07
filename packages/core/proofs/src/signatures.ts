@@ -1,17 +1,23 @@
 import { CredentialProofsError } from "./errors.js";
 import {
+  assertArtifactBytes,
   base64UrlDecode,
   base64UrlEncode,
   computeBuildManifestDigest,
   computeDeploymentManifestDigest,
+  computeProofManifestDigest,
   isEd25519Signature,
   MANIFEST_SIGNATURE_ALGORITHM,
   serializeDeploymentManifest,
 } from "./serialization.js";
 import type {
+  ArtifactResolver,
   BuildManifest,
   DeploymentManifest,
   DeploymentManifestSignature,
+  ManifestKeyResolver,
+  ProofManifest,
+  ResolvedProofArtifact,
   Sha256Digest,
 } from "./types.js";
 import {
@@ -19,6 +25,7 @@ import {
   assertDeploymentManifest,
   defineBuildManifest,
   defineDeploymentManifest,
+  defineProofManifest,
 } from "./validation.js";
 
 export interface ManifestSigningKey {
@@ -27,7 +34,12 @@ export interface ManifestSigningKey {
 }
 
 export interface DeploymentManifestVerificationOptions {
-  readonly publicKey: CryptoKey;
+  /** A directly supplied trusted key. Prefer pairing this with expectedKeyId. */
+  readonly publicKey?: CryptoKey;
+  /** Binds the envelope key id to the directly supplied trusted key. */
+  readonly expectedKeyId?: string;
+  /** Resolves only trusted key ids; an unknown id must return undefined/null. */
+  readonly keyResolver?: ManifestKeyResolver;
   readonly buildManifest?: BuildManifest;
   readonly expectedBuildManifestDigest?: Sha256Digest;
   readonly expectedNetworkId?: string;
@@ -84,6 +96,12 @@ const assertExpectedBinding = (
     ["chainId", options.expectedChainId, manifest.chainId],
     ["contractAddress", options.expectedContractAddress, manifest.contractAddress],
   ];
+  if (options.expectedKeyId !== undefined) {
+    assertKeyId(options.expectedKeyId);
+    if (manifest.signature.keyId !== options.expectedKeyId) {
+      throw new CredentialProofsError("MISMATCHED_DEPLOYMENT_BINDING", "deployment.signature.keyId", "does not match the expected trusted key");
+    }
+  }
   for (const [name, expected, actual] of checks) {
     if (expected !== undefined && expected !== actual) {
       throw new CredentialProofsError("MISMATCHED_DEPLOYMENT_BINDING", `deployment.${name}`, "does not match the expected deployment");
@@ -107,7 +125,7 @@ const assertExpectedBinding = (
 export const generateManifestSigningKeyPair = async (): Promise<CryptoKeyPair> =>
   globalThis.crypto.subtle.generateKey(
     { name: MANIFEST_SIGNATURE_ALGORITHM },
-    true,
+    false,
     ["sign", "verify"],
   ) as Promise<CryptoKeyPair>;
 
@@ -116,6 +134,9 @@ export const createDeploymentManifestSignature = async (
   signer: ManifestSigningKey,
 ): Promise<DeploymentManifestSignature> => {
   assertKeyId(signer.keyId);
+  if (manifest.signature?.keyId !== signer.keyId) {
+    throw new CredentialProofsError("MISMATCHED_DEPLOYMENT_BINDING", "deployment.signature.keyId", "must match the signer key id");
+  }
   assertKey(signer.privateKey, "sign");
   const value = await globalThis.crypto.subtle.sign(
     MANIFEST_SIGNATURE_ALGORITHM,
@@ -127,6 +148,14 @@ export const createDeploymentManifestSignature = async (
     keyId: signer.keyId,
     value: base64UrlEncode(new Uint8Array(value)),
   });
+};
+
+export const createProofManifest = async (
+  input: Omit<ProofManifest, "manifestDigest">,
+): Promise<ProofManifest> => {
+  const candidate = { ...input, manifestDigest: "sha256:" + "0".repeat(64) as Sha256Digest } as ProofManifest;
+  const manifestDigest = await computeProofManifestDigest(candidate);
+  return defineProofManifest({ ...input, manifestDigest } as ProofManifest);
 };
 
 export const createBuildManifest = async (
@@ -161,8 +190,52 @@ export const createDeploymentManifest = async (
   return defineDeploymentManifest(result);
 };
 
+/** Resolve one artifact only after its manifest and bytes pass all integrity checks. */
+export const resolveVerifiedArtifact = async (
+  resolver: ArtifactResolver,
+  manifestDigest: Sha256Digest,
+  artifactId: string,
+): Promise<Uint8Array> => {
+  const manifest = await resolver.resolveManifest(manifestDigest);
+  if (manifest.manifestDigest !== manifestDigest) {
+    throw new CredentialProofsError("MISMATCHED_REFERENCE", "build.manifestDigest", "resolver returned a different manifest");
+  }
+  await assertBuildManifestIntegrity(manifest);
+  const descriptor = manifest.artifacts.find((artifact) => artifact.id === artifactId);
+  if (descriptor === undefined) {
+    throw new CredentialProofsError("MISMATCHED_REFERENCE", "artifact.id", "is not declared by the requested manifest");
+  }
+  const resolvedValue: unknown = await resolver.resolveArtifact(manifestDigest, artifactId);
+  if (typeof resolvedValue !== "object" || resolvedValue === null) {
+    throw new CredentialProofsError("INVALID_ARTIFACT", "artifact", "resolver must return an artifact object");
+  }
+  const resolved = resolvedValue as ResolvedProofArtifact;
+  if (!((resolved.bytes as unknown) instanceof Uint8Array)) {
+    throw new CredentialProofsError("INVALID_ARTIFACT", "artifact.bytes", "resolver must return Uint8Array bytes");
+  }
+  if (
+    resolved.manifestDigest !== manifestDigest ||
+    resolved.artifactId !== descriptor.id ||
+    resolved.bytes.byteLength !== descriptor.bytes ||
+    resolved.sha256 !== descriptor.sha256
+  ) {
+    throw new CredentialProofsError("MISMATCHED_REFERENCE", "artifact", "resolver result does not match the manifest descriptor");
+  }
+  await assertArtifactBytes(descriptor, resolved.bytes);
+  return resolved.bytes;
+};
+
+/** Alias emphasizing that this helper returns verified bytes, not a locator. */
+export const resolveArtifactBytes = resolveVerifiedArtifact;
+
 export const assertBuildManifestIntegrity = async (manifest: BuildManifest): Promise<void> => {
   assertBuildManifest(manifest);
+  for (const [index, proofManifest] of manifest.proofs.entries()) {
+    const actualProofDigest = await computeProofManifestDigest(proofManifest);
+    if (actualProofDigest !== proofManifest.manifestDigest) {
+      throw new CredentialProofsError("WRONG_DIGEST", `build.proofs[${index}].manifestDigest`, `expected ${proofManifest.manifestDigest}, computed ${actualProofDigest}`);
+    }
+  }
   const actual = await computeBuildManifestDigest(manifest);
   if (actual !== manifest.manifestDigest) {
     throw new CredentialProofsError("WRONG_DIGEST", "build.manifestDigest", `expected ${manifest.manifestDigest}, computed ${actual}`);
@@ -191,11 +264,20 @@ export const assertDeploymentManifestIntegrity = async (
     await assertBuildManifestIntegrity(options.buildManifest);
   }
   assertExpectedBinding(manifest, options);
-  assertKey(options.publicKey, "verify");
+  if (options.expectedKeyId === undefined && options.keyResolver === undefined) {
+    throw new CredentialProofsError("INVALID_SIGNATURE_KEY", "deployment.signature.keyId", "must be bound to an expected key id or resolver");
+  }
+  const publicKey = options.keyResolver === undefined
+    ? options.publicKey
+    : await options.keyResolver(manifest.signature.keyId);
+  if (publicKey === undefined || publicKey === null) {
+    throw new CredentialProofsError("INVALID_SIGNATURE_KEY", "deployment.signature.keyId", "does not identify a trusted verification key");
+  }
+  assertKey(publicKey, "verify");
   assertSignature(manifest.signature);
   const valid = await globalThis.crypto.subtle.verify(
     MANIFEST_SIGNATURE_ALGORITHM,
-    options.publicKey,
+    publicKey,
     bufferSource(base64UrlDecode(manifest.signature.value)),
     bufferSource(serializeDeploymentManifest(manifest)),
   );

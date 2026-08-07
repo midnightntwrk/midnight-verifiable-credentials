@@ -80,6 +80,25 @@ describe("credential-proofs contracts", () => {
     expect(() => defineDeploymentManifest({ ...deployment, supportWindow: { notBefore: "2026-01-01" } })).toThrow(/timestamp/);
   });
 
+  it("rejects duplicate circuit artifact references and invalid ZK artifact layouts", () => {
+    expect(() => defineBuildManifest({
+      ...build,
+      circuits: [{ ...build.circuits[0], artifactIds: ["circuit-metadata", "circuit-metadata"] }],
+    })).toThrow(/duplicates/u);
+    expect(() => defineBuildManifest({
+      ...build,
+      artifacts: [{ ...build.artifacts[0], role: "circuit", path: "metadata/circuit.bzkir" }],
+    })).toThrow(/circuit artifact layout/u);
+    expect(() => defineBuildManifest({
+      ...build,
+      artifacts: [{ ...build.artifacts[0], role: "prover-key", path: "zkir/circuit.bzkir" }],
+    })).toThrow(/prover-key artifact layout/u);
+    expect(() => defineBuildManifest({
+      ...build,
+      artifacts: [{ ...build.artifacts[0], role: "verifier-key", path: "keys/circuit.prover" }],
+    })).toThrow(/verifier-key artifact layout/u);
+  });
+
   it("rejects non-canonical parameters, timestamps, windows, and circuit references", () => {
     expect(() => defineBuildManifest({
       ...build,

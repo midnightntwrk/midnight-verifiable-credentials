@@ -57,6 +57,11 @@ export interface ArtifactResolver {
   ): Promise<ResolvedProofArtifact>;
 }
 
+/** Runtime-agnostic lookup for a trusted deployment-signing public key. */
+export type ManifestKeyResolver = (
+  keyId: string,
+) => CryptoKey | null | undefined | Promise<CryptoKey | null | undefined>;
+
 export type ProofArtifactRole =
   | "prover-key"
   | "verifier-key"

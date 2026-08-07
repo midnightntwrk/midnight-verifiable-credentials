@@ -1,6 +1,7 @@
 import type {
   BuildManifest,
   DeploymentManifest,
+  ProofManifest,
   Sha256Digest,
 } from "./types.js";
 
@@ -9,6 +10,9 @@ const BASE64URL_PATTERN = /^[A-Za-z0-9_-]+$/u;
 
 /** The only signing algorithm supported by the G1 manifest envelope. */
 export const MANIFEST_SIGNATURE_ALGORITHM = "Ed25519" as const;
+
+/** Named, versioned canonical JSON profile used by manifest digests/signatures. */
+export const CANONICALIZATION_PROFILE = "canonical-json-v1" as const;
 
 const utf8 = (value: string): Uint8Array => new TextEncoder().encode(value);
 
@@ -22,7 +26,10 @@ const assertCanonicalValue = (value: unknown, path: string): void => {
     throw new TypeError(`${path} is not canonical JSON`);
   }
   if (Array.isArray(value)) {
-    value.forEach((item, index) => assertCanonicalValue(item, `${path}[${index}]`));
+    for (let index = 0; index < value.length; index += 1) {
+      if (!Object.hasOwn(value, index)) throw new TypeError(`${path}[${index}] must not be a sparse array hole`);
+      assertCanonicalValue(value[index], `${path}[${index}]`);
+    }
     return;
   }
   if (typeof value === "object") {
@@ -64,6 +71,11 @@ const withoutBuildDigest = (manifest: BuildManifest): Omit<BuildManifest, "manif
   return unsigned;
 };
 
+const withoutProofDigest = (manifest: ProofManifest): Omit<ProofManifest, "manifestDigest"> => {
+  const { manifestDigest: _manifestDigest, ...unsigned } = manifest;
+  return unsigned;
+};
+
 const withoutDeploymentEnvelope = (manifest: DeploymentManifest): Record<string, unknown> => {
   const {
     deploymentManifestDigest: _deploymentManifestDigest,
@@ -77,6 +89,10 @@ const withoutDeploymentEnvelope = (manifest: DeploymentManifest): Record<string,
     signature: { algorithm: signature.algorithm, keyId: signature.keyId },
   };
 };
+
+/** Bytes covered by a proof-manifest digest (the self-referential digest field is omitted). */
+export const serializeProofManifest = (manifest: ProofManifest): Uint8Array =>
+  serializeCanonicalJson(withoutProofDigest(manifest));
 
 /** Bytes covered by a build-manifest digest (the self-referential digest field is omitted). */
 export const serializeBuildManifest = (manifest: BuildManifest): Uint8Array =>
@@ -104,6 +120,9 @@ export const computeSha256Digest = async (bytes: Uint8Array): Promise<Sha256Dige
   const digest = new Uint8Array(await subtleCrypto().digest("SHA-256", bufferSource(bytes)));
   return `sha256:${hex(digest)}` as Sha256Digest;
 };
+
+export const computeProofManifestDigest = async (manifest: ProofManifest): Promise<Sha256Digest> =>
+  computeSha256Digest(serializeProofManifest(manifest));
 
 export const computeBuildManifestDigest = async (manifest: BuildManifest): Promise<Sha256Digest> =>
   computeSha256Digest(serializeBuildManifest(manifest));
