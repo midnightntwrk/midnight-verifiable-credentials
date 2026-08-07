@@ -133,9 +133,12 @@ export interface DeploymentSupportWindow {
   readonly notAfter?: string;
 }
 
+export type ManifestSignatureAlgorithm = "Ed25519";
+
 export interface DeploymentManifestSignature {
-  readonly algorithm: string;
+  readonly algorithm: ManifestSignatureAlgorithm;
   readonly keyId: string;
+  /** Unpadded base64url encoding of the 64-byte Ed25519 signature. */
   readonly value: string;
 }
 

@@ -54,7 +54,7 @@ const deployment: DeploymentManifest = {
   acceptedReferences: [{ id: "status-policy", digest }],
   governanceOwner: "governance-key",
   supportWindow: { notBefore: "2026-01-01T00:00:00Z" },
-  signature: { algorithm: "example-signature", keyId: "key-1", value: "signature" },
+  signature: { algorithm: "Ed25519", keyId: "key-1", value: "A".repeat(86) },
 };
 
 describe("credential-proofs contracts", () => {

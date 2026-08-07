@@ -1,4 +1,32 @@
 export { CredentialProofsError, type CredentialProofsErrorCode } from "./errors.js";
+export {
+  assertArtifactBytes,
+  base64UrlDecode,
+  base64UrlEncode,
+  canonicalize,
+  computeBuildManifestDigest,
+  computeDeploymentManifestDigest,
+  computeManifestDigest,
+  computeSha256Digest,
+  isEd25519Signature,
+  isSha256Digest,
+  MANIFEST_SIGNATURE_ALGORITHM,
+  serializeBuildManifest,
+  serializeCanonicalJson,
+  serializeDeploymentManifest,
+} from "./serialization.js";
+export {
+  assertBuildManifestIntegrity,
+  assertDeploymentManifestIntegrity,
+  createBuildManifest,
+  createDeploymentManifest,
+  createDeploymentManifestSignature,
+  type DeploymentManifestVerificationOptions,
+  generateManifestSigningKeyPair,
+  type ManifestSigningKey,
+  verifyBuildManifestDigest,
+  verifyDeploymentManifest,
+} from "./signatures.js";
 export type {
   ArtifactResolver,
   BuildManifest,
@@ -6,6 +34,7 @@ export type {
   DeploymentManifestSignature,
   DeploymentReference,
   DeploymentSupportWindow,
+  ManifestSignatureAlgorithm,
   ProofArtifactDescriptor,
   ProofArtifactRole,
   ProofBuildManifest,

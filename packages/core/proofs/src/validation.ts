@@ -1,4 +1,5 @@
 import { CredentialProofsError } from "./errors.js";
+import { isEd25519Signature, MANIFEST_SIGNATURE_ALGORITHM } from "./serialization.js";
 import type {
   BuildManifest,
   DeploymentManifest,
@@ -212,9 +213,13 @@ export const assertDeploymentManifest = (manifest: DeploymentManifest): void => 
   if (manifest.deprecation !== undefined) identifier(manifest.deprecation, "deployment.deprecation");
   if (manifest.revocation !== undefined) identifier(manifest.revocation, "deployment.revocation");
   if (typeof manifest.signature !== "object" || manifest.signature === null) throw new CredentialProofsError("INVALID_MANIFEST", "deployment.signature", "must be an object");
-  identifier(manifest.signature.algorithm, "deployment.signature.algorithm");
+  if (manifest.signature.algorithm !== MANIFEST_SIGNATURE_ALGORITHM) {
+    throw new CredentialProofsError("INVALID_SIGNATURE", "deployment.signature.algorithm", "must be Ed25519");
+  }
   identifier(manifest.signature.keyId, "deployment.signature.keyId");
-  identifier(manifest.signature.value, "deployment.signature.value");
+  if (!isEd25519Signature(manifest.signature.value)) {
+    throw new CredentialProofsError("INVALID_SIGNATURE", "deployment.signature.value", "must be a 64-byte unpadded base64url Ed25519 signature");
+  }
 };
 
 export const defineProofJob = <TInput>(job: ProofJob<TInput>): ProofJob<TInput> => { assertProofJob(job); return deepFreeze(job); };
