@@ -5,7 +5,7 @@
 
 Status:
 
-- reference implementation
+- reference-stage profile implementation (incubating; not final conformance)
 
 Tier:
 
@@ -42,9 +42,15 @@ Related docs:
 - companion guide: [`../../../docs/guides/midnight-credentials-for-dummies.md`](../../../docs/guides/midnight-credentials-for-dummies.md)
 - test matrix: [`../../../docs/testing/test-matrix.md`](../../../docs/testing/test-matrix.md)
 
-This package contains a small, transport-neutral TypeScript model inspired by
-OID4VCI and OID4VP. It intentionally does not implement OAuth, HTTP routing,
-DID resolution, JWT proof generation, or wallet UI behavior.
+This package contains a bounded, transport-neutral TypeScript model for an
+incubating Midnight profile subset informed by OID4VCI/OID4VP. It intentionally
+does not claim final OpenID conformance and does not implement OAuth, HTTP
+routing, DID resolution, cryptography, JWT proof generation, or wallet UI
+behavior. The profile schemas cover DCQL-shaped queries, canonical Compact
+payload/thread bindings, proof audience/nonce/request-digest inputs,
+request-object resolver/verifier seams, format negotiation, deferred issuance,
+and protocol errors. Legacy secret-bearing URI helpers remain explicitly
+informative and are not part of the safe profile reference surface.
 
 The goal is to keep Midnight-specific credential issuance and presentation flows
 compatible with familiar OpenID message shapes while preserving the Compact
@@ -59,19 +65,24 @@ Protocol reading rule:
 
 ## Scope
 
-- OID4VCI-style credential issuer metadata, credential offers, token requests,
-  credential requests, and credential responses.
-- OID4VP-style presentation definitions, authorization requests, presentation
-  submissions, and authorization responses.
+- OID4VCI-shaped issuer metadata, offers, token requests, credential requests,
+  responses, authorization details, deferred responses, and typed errors.
+- OID4VP-shaped authorization requests/responses with DCQL-shaped queries,
+  descriptor validation, and explicit request-digest/nonce binding inputs.
+- Canonical Compact payload and message-thread identifiers that preserve
+  `messageId`, `threadId`, and `respondsToMessageId` without interpreting proof
+  semantics.
 - Midnight extension schemas for Compact VC/VP payloads and holder-binding
   commitments.
 
 ## Non-goals
 
-- OAuth server/client implementation.
-- DIDComm or HTTP transport implementation.
-- Cryptographic verification. Compact circuits and credential-family packages
-  remain the source of truth for verification.
+- Final OID4VCI/OID4VP interoperability or conformance certification.
+- OAuth server/client, HTTP, DIDComm, or request-object fetching implementation.
+- DID resolution, signature/cryptographic verification, or wallet UI behavior.
+- Durable replay/nullifier consumption; that belongs to the verification and
+  session layers. Compact circuits and credential-family packages remain the
+  source of truth for verification.
 
 ## Compact Value Codec
 
