@@ -12,7 +12,7 @@ import {
   atomicallyTransitionProtocolSession,
   cancelProtocolSession,
   claimProtocolResultOnce,
-  consumeRetainedProtocolStateOnce,
+  claimRetainedProtocolStateAtMostOnce,
   createCodecBackedProtocolStateStore,
   InMemoryProtocolStateByteStore,
   InMemoryProtocolStateStore,
@@ -82,7 +82,7 @@ describe("ProtocolStateStore terminal-session contract", () => {
     writeRetainedProtocolState(outcomes, "session-1", "approved", 100n, {});
 
     expect(
-      consumeRetainedProtocolStateOnce(
+      claimRetainedProtocolStateAtMostOnce(
         outcomes,
         claims,
         "session-1",
@@ -92,7 +92,7 @@ describe("ProtocolStateStore terminal-session contract", () => {
       ),
     ).toBe("approved");
     expect(
-      consumeRetainedProtocolStateOnce(
+      claimRetainedProtocolStateAtMostOnce(
         outcomes,
         claims,
         "session-1",
@@ -113,7 +113,7 @@ describe("ProtocolStateStore terminal-session contract", () => {
       { finalizedOutcomeTtlMs: 10n },
     );
     expect(
-      consumeRetainedProtocolStateOnce(
+      claimRetainedProtocolStateAtMostOnce(
         outcomes,
         claims,
         "session-expired",
@@ -313,7 +313,7 @@ describe("ProtocolStateStore retention helpers", () => {
     });
   });
 
-  it("retains no finalized outcomes when the configured capacity is zero", () => {
+  it("clears all finalized outcomes when the configured capacity is zero", () => {
     const store = new InMemoryProtocolStateStore();
     const collection = store.collection<RetainedProtocolState<{ id: string }>>(
       "test:max-finalized-zero",
@@ -324,10 +324,118 @@ describe("ProtocolStateStore retention helpers", () => {
       "message-1",
       { id: "one" },
       100n,
+      {},
+    );
+    writeRetainedProtocolState(
+      collection,
+      "message-2",
+      { id: "two" },
+      101n,
+      {},
+    );
+    writeRetainedProtocolState(
+      collection,
+      "message-3",
+      { id: "three" },
+      102n,
       { maxFinalizedOutcomes: 0 },
     );
 
-    expect(readRetainedProtocolState(collection, "message-1", 100n)).toBeUndefined();
+    expect(Array.from(collection.entries())).toEqual([]);
+  });
+
+  it("rejects invalid finalized-outcome retention caps", () => {
+    const store = new InMemoryProtocolStateStore();
+    const collection = store.collection<RetainedProtocolState<string>>(
+      "test:max-finalized-invalid",
+    );
+
+    for (const maxFinalizedOutcomes of [-1, 1.5, Number.NaN, Infinity]) {
+      expect(() =>
+        writeRetainedProtocolState(
+          collection,
+          "message-1",
+          "value",
+          100n,
+          { maxFinalizedOutcomes },
+        ),
+      ).toThrow(/maxFinalizedOutcomes.*finite.*non-negative integer/i);
+    }
+  });
+
+  it("keeps terminal and retained records isolated from post-commit mutation", () => {
+    const store = new InMemoryProtocolStateStore();
+    const sessions = store.collection<
+      ProtocolTerminalSession<{ approved: boolean }>
+    >("test:immutable-sessions");
+    const result = { approved: true };
+    const committed = atomicallyTransitionProtocolSession(
+      sessions,
+      "session-1",
+      {
+        state: "finalized",
+        result,
+        finalizedAtMs: 100n,
+      },
+      "test:immutable-sessions",
+    );
+    result.approved = false;
+
+    expect(committed.status).toBe("committed");
+    if (committed.status === "committed") {
+      const session = committed.session;
+      if (session.state === "finalized") {
+        expect(Object.isFrozen(session)).toBe(true);
+        expect(Object.isFrozen(session.result)).toBe(true);
+        expect(() => {
+          (session.result as { approved: boolean }).approved = false;
+        }).toThrow();
+      }
+    }
+    expect(sessions.get("session-1")).toEqual({
+      state: "finalized",
+      result: { approved: true },
+      finalizedAtMs: 100n,
+    });
+
+    const claims = store.collection<ProtocolResultClaim>(
+      "test:immutable-claims",
+    );
+    expect(claimProtocolResultOnce(claims, "session-1", "consumer-a", 101n)).toBe(
+      "claimed",
+    );
+    const claim = claims.get("session-1");
+    expect(Object.isFrozen(claim)).toBe(true);
+    expect(() => {
+      if (claim) {
+        (claim as { claimant: string }).claimant = "consumer-b";
+      }
+    }).toThrow();
+    expect(claims.get("session-1")).toEqual({
+      claimant: "consumer-a",
+      claimedAtMs: 101n,
+    });
+
+    const outcomes = store.collection<
+      RetainedProtocolState<{ approved: boolean }>
+    >("test:immutable-outcomes");
+    writeRetainedProtocolState(
+      outcomes,
+      "session-2",
+      { approved: true },
+      100n,
+      {},
+    );
+    const retained = readRetainedProtocolState(outcomes, "session-2", 100n);
+    expect(Object.isFrozen(retained)).toBe(true);
+    expect(() => {
+      if (retained) {
+        retained.approved = false;
+      }
+    }).toThrow();
+    expect(readRetainedProtocolState(outcomes, "session-2", 100n)).toEqual({
+      approved: true,
+    });
   });
 
   it("prunes expired retained state from a snapshot before deleting entries", () => {
@@ -427,7 +535,7 @@ describe("ProtocolStateStore retention helpers", () => {
     expect(deletedKeyBatches).toEqual([["message-1", "message-3"]]);
   });
 
-  it("skips collection scans when finalized retention capacity is zero", () => {
+  it("scans and clears collection entries when finalized retention capacity is zero", () => {
     let scanned = false;
     const backing = new Map<string, RetainedProtocolState<{ id: string }>>();
     const collection: ProtocolStateCollection<RetainedProtocolState<{ id: string }>> =
@@ -452,7 +560,7 @@ describe("ProtocolStateStore retention helpers", () => {
       { maxFinalizedOutcomes: 0 },
     );
 
-    expect(scanned).toEqual(false);
+    expect(scanned).toEqual(true);
     expect(backing.size).toEqual(0);
   });
 
