@@ -14,7 +14,7 @@ import {
 } from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { workspaceCatalog } from "./workspace-catalog.mjs";
 
@@ -252,7 +252,40 @@ for (const releasePackage of releasePackages) {
     if (installedPackageJson.midnight?.compactCompilerVersion !== undefined) {
       const expectedCompiler = installedPackageJson.midnight.compactCompilerVersion;
       const expectedRuntime = installedPackageJson.midnight.compactRuntimeVersion;
-      const buildManifest = JSON.parse(
+      const buildManifestPath = path.join(installedPackageRoot, "dist/build-manifest.json");
+      if (!existsSync(buildManifestPath)) {
+        fail(`${sourcePackageJson.name} is missing canonical dist/build-manifest.json metadata`);
+      }
+      const buildManifest = JSON.parse(readFileSync(buildManifestPath, "utf8"));
+      const installedRequire = createRequire(path.join(installedPackageRoot, "dist/index.js"));
+      const proofsEntry = installedRequire.resolve("@midnight-ntwrk/credential-proofs");
+      const proofs = await import(pathToFileURL(proofsEntry).href);
+      try {
+        await proofs.assertBuildManifestIntegrity(buildManifest);
+        const manifestRoot = path.join(installedPackageRoot, "dist");
+        for (const artifact of buildManifest.artifacts) {
+          const artifactPath = path.resolve(manifestRoot, artifact.path);
+          if (!isWithin(manifestRoot, artifactPath)) {
+            fail(`${sourcePackageJson.name} manifest artifact escapes dist/: ${artifact.path}`);
+          }
+          await proofs.assertArtifactBytes(
+            artifact,
+            new Uint8Array(readFileSync(artifactPath)),
+          );
+        }
+      } catch (error) {
+        fail(`${sourcePackageJson.name} canonical build manifest integrity failed: ${error.message}`);
+      }
+      if (
+        buildManifest.formatVersion !== 1 ||
+        buildManifest.manifestKind !== "build" ||
+        !/^sha256:[0-9a-f]{64}$/u.test(buildManifest.manifestDigest) ||
+        !Array.isArray(buildManifest.artifacts) ||
+        buildManifest.artifacts.length === 0
+      ) {
+        fail(`${sourcePackageJson.name} contains an invalid canonical build manifest`);
+      }
+      const legacyManifest = JSON.parse(
         readFileSync(path.join(installedPackageRoot, "dist/compact-build.json"), "utf8"),
       );
       const runtimePackagePath = createRequire(
@@ -261,7 +294,7 @@ for (const releasePackage of releasePackages) {
       const resolvedRuntime = JSON.parse(
         readFileSync(runtimePackagePath, "utf8"),
       ).version;
-      if (buildManifest.compiler !== expectedCompiler || buildManifest.runtime?.version !== expectedRuntime) {
+      if (legacyManifest.compiler !== expectedCompiler || legacyManifest.runtime?.version !== expectedRuntime) {
         fail(`${sourcePackageJson.name} generated metadata does not match pinned Compact tuple`);
       }
       if (resolvedRuntime !== expectedRuntime) {

@@ -48,6 +48,7 @@
   },
   "scripts": {
     "check-toolchain": "node scripts/check-toolchain.mjs",
+    "test:manifest": "vitest run scripts/write-build-manifest.test.mjs",
     "compact": "pnpm run check-toolchain && rm -rf src/managed && compact compile src/credentials.compact src/managed/credentials && compact compile src/holder-binding/same-holder.compact src/managed/same-holder && rm -rf src/managed/credentials/compiler src/managed/same-holder/compiler",
     "build": "pnpm run compact && rm -rf dist && mkdir -p dist && tsc -b tsconfig.build.json --force && cp -Rf src/managed dist/ && cp src/credentials.compact dist/ && cp -Rf src/credentials dist/ && mkdir -p dist/holder-binding && cp src/holder-binding/same-holder.compact dist/holder-binding/ && cp -Rf src/holder-binding/same-holder dist/holder-binding/ && node scripts/write-build-manifest.mjs",
     "typecheck": "pnpm run compact && tsc -p tsconfig.json --noEmit",
@@ -58,7 +59,8 @@
     "clean": "rm -rf dist src/managed coverage reports *.tsbuildinfo"
   },
   "dependencies": {
-    "@midnight-ntwrk/compact-runtime": "0.15.0"
+    "@midnight-ntwrk/compact-runtime": "0.15.0",
+    "@midnight-ntwrk/credential-proofs": "0.1.0"
   },
   "files": ["dist/**", "src/**/*.compact", "README.md", "CHANGELOG.md", "package.json"],
   "midnight": {
@@ -93,6 +95,66 @@
       ],
       "composition": [
         "./holder-binding/same-holder/composable.compact"
+      ]
+    },
+    "buildManifest": {
+      "productId": "midnight-verifiable-credentials",
+      "schemaId": "midnight:vc:compact:v1",
+      "contractId": "@midnight-ntwrk/credential-compact",
+      "expectedArtifactPaths": [
+        "contract.d.ts",
+        "contract.d.ts.map",
+        "contract.js",
+        "contract.js.map",
+        "credentials.compact",
+        "credentials/bindings.compact",
+        "credentials/composable.compact",
+        "credentials/holder-bindings.compact",
+        "credentials/issue.compact",
+        "credentials/present.compact",
+        "credentials/proofs.compact",
+        "credentials/protocol-support.compact",
+        "credentials/protocols.compact",
+        "credentials/relations.compact",
+        "credentials/status-bindings.compact",
+        "credentials/types.compact",
+        "credentials/vc-support.compact",
+        "credentials/vc.compact",
+        "credentials/vp.compact",
+        "holder-binding/same-holder.compact",
+        "holder-binding/same-holder.d.ts",
+        "holder-binding/same-holder.d.ts.map",
+        "holder-binding/same-holder.js",
+        "holder-binding/same-holder.js.map",
+        "holder-binding/same-holder/composable.compact",
+        "index.d.ts",
+        "index.d.ts.map",
+        "index.js",
+        "index.js.map",
+        "jubjub.d.ts",
+        "jubjub.d.ts.map",
+        "jubjub.js",
+        "jubjub.js.map",
+        "managed/credentials/contract/index.d.ts",
+        "managed/credentials/contract/index.js",
+        "managed/credentials/contract/index.js.map",
+        "managed/same-holder/contract/index.d.ts",
+        "managed/same-holder/contract/index.js",
+        "managed/same-holder/contract/index.js.map"
+      ],
+      "circuits": [
+        {
+          "id": "credentials",
+          "version": "1.0.0",
+          "parameters": { "entrypoint": "src/credentials.compact" },
+          "artifactPathPrefix": "managed/credentials/"
+        },
+        {
+          "id": "same-holder",
+          "version": "1.0.0",
+          "parameters": { "entrypoint": "src/holder-binding/same-holder.compact" },
+          "artifactPathPrefix": "managed/same-holder/"
+        }
       ]
     }
   }

@@ -68,7 +68,7 @@ export const workspaceCatalog = [
     releaseStage: "supported",
     consumerFixture: "tooling/fixtures/credential-compact-consumer",
     consumerChecks: ["node", "typescript", "compact"],
-    publicationDependencies: [],
+    publicationDependencies: ["@midnight-ntwrk/credential-proofs"],
   }),
   workspace("packages/core/proofs", "core", "dist", {
     releaseStage: "supported",

@@ -26,8 +26,15 @@ The candidate is compiled and checked with the pinned Compact `0.30.0` compiler
 and exactly `@midnight-ntwrk/compact-runtime` `0.15.0`. Builds fail before
 generated output is accepted if either resolved version drifts. `src/managed` and
 `dist` are generated during build and are not hand-edited.
-`dist/compact-build.json` records the exact compiler/runtime tuple, source digest,
-and generated-artifact digest.
+`dist/build-manifest.json` is the canonical G1 artifact-level manifest. It records
+package/schema/contract identity, source commit and clean-tree status, the pinned
+compiler/runtime tuple, lockfile digest, circuit-to-artifact references, and
+per-file byte lengths and SHA-256 digests. `dist/compact-build.json` remains as a
+compatibility summary for one migration cycle; it is not a replacement for the
+signed build-manifest contract. This package emits the integrity foundation only:
+release-owned SBOM/provenance references, proving-key publication, deployment
+authority, OCI locators, caches, offline recovery, and revocation remain separate
+G1 follow-up concerns and are not implied by this manifest.
 
 Only `./credentials.compact` and `./holder-binding/same-holder.compact` are
 standalone roots. `./holder-binding/same-holder/composable.compact` is an

@@ -258,6 +258,9 @@ importers:
       '@midnight-ntwrk/compact-runtime':
         specifier: 0.15.0
         version: 0.15.0
+      '@midnight-ntwrk/credential-proofs':
+        specifier: 0.1.0
+        version: link:../proofs
 
   packages/core/model: {}
 
