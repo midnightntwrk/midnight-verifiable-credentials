@@ -24,6 +24,10 @@ export const ciChangeClassificationCatalog = {
     "docs/*",
     ".github/*.md",
   ],
+  docsOnlyExclusionPatterns: [
+    "docs/testing/quality-evidence.json",
+    "docs/testing/quality-evidence.md",
+  ],
   bddOnlyPatterns: [
     "packages/use-cases/*/scenarios/*",
     "docs/plans/serenity-js-bdd-layer.md",
@@ -144,7 +148,14 @@ export const classifyChangedFiles = (changedFiles) => {
   let bddRelated = false;
 
   for (const file of files) {
-    if (!matchesAny(file, ciChangeClassificationCatalog.docsPatterns)) {
+    const isDocsOnlyExcluded = matchesAny(
+      file,
+      ciChangeClassificationCatalog.docsOnlyExclusionPatterns,
+    );
+    if (
+      isDocsOnlyExcluded ||
+      !matchesAny(file, ciChangeClassificationCatalog.docsPatterns)
+    ) {
       classification.docs_only = false;
     }
 
@@ -207,7 +218,21 @@ const writeGitHubOutput = (classification) => {
 
 const runSelfTest = () => {
   assert.deepEqual(classifyChangedFiles([]), emptyClassification());
-  assert.equal(classifyChangedFiles(["docs/spec/example.md"]).docs_only, true);
+  const ordinaryDocsOnly = classifyChangedFiles(["docs/spec/example.md"]);
+  assert.equal(ordinaryDocsOnly.docs_only, true);
+  const qualityEvidenceOnly = classifyChangedFiles([
+    "docs/testing/quality-evidence.json",
+    "docs/testing/quality-evidence.md",
+  ]);
+  assert.equal(
+    qualityEvidenceOnly.docs_only,
+    false,
+    "quality evidence changes must run the normal lint/quality lane",
+  );
+  assert.equal(qualityEvidenceOnly.bdd_only, false);
+  for (const key of outputKeys.filter((key) => key.startsWith("run_"))) {
+    assert.equal(qualityEvidenceOnly[key], false);
+  }
   const bddOnly = classifyChangedFiles([
     "packages/use-cases/age-gate/scenarios/foo.ts",
   ]);
