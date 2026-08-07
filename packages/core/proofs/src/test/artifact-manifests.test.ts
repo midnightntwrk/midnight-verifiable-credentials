@@ -111,6 +111,14 @@ describe("artifact manifest integrity", () => {
     expect(() => canonicalize(sparse)).toThrow(/sparse array hole/u);
   });
 
+  it("sorts integer-like keys lexically without relying on object property order", () => {
+    expect(canonicalize({
+      "10": "ten",
+      "2": "two",
+      nested: { "11": "eleven", "3": "three", b: true },
+    })).toBe('{"10":"ten","2":"two","nested":{"11":"eleven","3":"three","b":true}}');
+  });
+
   it("verifies nested proof-manifest digests during async build integrity checks", async () => {
     const proof = await createProofManifest({
       formatVersion: 1,

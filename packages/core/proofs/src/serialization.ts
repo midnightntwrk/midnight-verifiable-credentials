@@ -45,24 +45,30 @@ const assertCanonicalValue = (value: unknown, path: string): void => {
   throw new TypeError(`${path} is not canonical JSON`);
 };
 
-const normalize = (value: unknown, path: string): unknown => {
-  assertCanonicalValue(value, path);
-  if (Array.isArray(value)) return value.map((item, index) => normalize(item, `${path}[${index}]`));
-  if (value !== null && typeof value === "object") {
-    return Object.fromEntries(
-      Object.entries(value as Record<string, unknown>)
-        .sort(([left], [right]) => left < right ? -1 : left > right ? 1 : 0)
-        .map(([key, child]) => [key, normalize(child, `${path}.${key}`)]),
-    );
+const serializeCanonicalValue = (value: unknown): string => {
+  if (value === null) return "null";
+  if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+    const serialized = JSON.stringify(value);
+    if (serialized === undefined) throw new TypeError("value is not canonical JSON");
+    return serialized;
   }
-  return value;
+  if (Array.isArray(value)) return `[${value.map(serializeCanonicalValue).join(",")}]`;
+  if (typeof value === "object") {
+    const entries = Object.entries(value as Record<string, unknown>)
+      .sort(([left], [right]) => left < right ? -1 : left > right ? 1 : 0);
+    return `{${entries.map(([key, child]) => `${JSON.stringify(key)}:${serializeCanonicalValue(child)}`).join(",")}}`;
+  }
+  throw new TypeError("value is not canonical JSON");
 };
 
 /**
  * Serialize a JSON value with recursively sorted object keys. This is the
  * versioned wire format used by manifest digests and signatures.
  */
-export const canonicalize = (value: unknown): string => JSON.stringify(normalize(value, "$"));
+export const canonicalize = (value: unknown): string => {
+  assertCanonicalValue(value, "$");
+  return serializeCanonicalValue(value);
+};
 
 export const serializeCanonicalJson = (value: unknown): Uint8Array => utf8(canonicalize(value));
 
