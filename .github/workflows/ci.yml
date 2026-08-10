@@ -844,7 +844,7 @@ jobs:
             exit 1
           fi
           if grep -q '"classification": "source-rebuild-fallback"' "$RUNNER_TEMP/compact-fixtures.json"; then
-            echo 'Fixture bytes are unavailable as hydrated LFS material; selecting the explicit source rebuild fallback.'
+            echo 'Fixture bytes are unavailable or provenance drifted; selecting the explicit source rebuild fallback.'
             echo 'ready=false' >> "$GITHUB_OUTPUT"
           elif grep -q '"classification": "ready"' "$RUNNER_TEMP/compact-fixtures.json"; then
             echo 'ready=true' >> "$GITHUB_OUTPUT"
@@ -869,7 +869,7 @@ jobs:
       - name: Rebuild source fallback when fixtures are unavailable
         if: steps.fixtures.outputs.ready != 'true'
         run: |
-          echo 'Public fixtures are unavailable or stale; running the explicit source rebuild fallback.'
+          echo 'Public fixtures are unavailable or their inputs drifted; running the explicit source rebuild fallback.'
           pnpm run build:light
           pnpm run test:light:from-artifacts
           pnpm run typecheck:light:from-artifacts
