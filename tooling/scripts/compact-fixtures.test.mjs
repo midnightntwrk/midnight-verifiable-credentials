@@ -4,6 +4,25 @@ import path from "node:path";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { cachePathsFromManifest, inventoryManifest, manifestKeyIdentity, validateManifest } from "./compact-fixtures.mjs";
+import { ensureProvableCircuitsAlias } from "./align-compact-runtime.mjs";
+
+test("runtime compatibility post-processing is idempotent when artifacts are reused", () => {
+  const generated = [
+    "  this.impureCircuits = {",
+    "    demo: this.circuits.demo",
+    "  };",
+    "  this.provableCircuits = {",
+    "    demo: this.circuits.demo",
+    "  };",
+    "",
+  ].join("\n");
+  const aligned = ensureProvableCircuitsAlias(generated);
+  assert.equal(ensureProvableCircuitsAlias(aligned), aligned);
+  assert.equal(
+    aligned.match(/this\.provableCircuits = this\.impureCircuits;/gu)?.length,
+    1,
+  );
+});
 
 test("fixture inventory records bytes and sha256 for the curated root", () => {
   const root = mkdtempSync(path.join(os.tmpdir(), "compact-fixtures-"));

@@ -3,6 +3,8 @@ import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { ensureProvableCircuitsAlias } from '../../../../../tooling/scripts/align-compact-runtime.mjs';
+
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const packageRoot = path.resolve(scriptDir, '..');
 const require = createRequire(import.meta.url);
@@ -32,10 +34,7 @@ let next = source.replace(
   /checkRuntimeVersion\('\d+\.\d+\.\d+'\);/,
   `checkRuntimeVersion('${runtimeVersion}');`,
 );
-next = next.replace(
-  /(\s*this\.impureCircuits = \{\n[\s\S]*?\n\s*\};\n)/,
-  `$1    this.provableCircuits = this.impureCircuits;\n`,
-);
+next = ensureProvableCircuitsAlias(next);
 if (next !== source) {
   await writeFile(targetFile, next, 'utf8');
 }
