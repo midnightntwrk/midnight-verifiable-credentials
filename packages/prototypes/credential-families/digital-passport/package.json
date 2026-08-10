@@ -56,7 +56,7 @@
     "test:ci": "vitest run",
     "prepack": "pnpm run build",
     "clean": "rm -rf dist && rm -rf coverage && rm -rf reports && rm -rf src/managed",
-    "build": "pnpm run compact && rm -rf dist && mkdir -p dist && tsc -b tsconfig.build.json --force && cp -Rf ./src/managed ./dist/ && cp ./src/digital-passport-credential.compact ./dist && cp -Rf ./src/digital-passport-credential ./dist/",
+    "build": "pnpm run compact && rm -rf dist && mkdir -p dist && tsc -b tsconfig.build.json --force && cp -Rf ./src/managed ./dist/ && rm -f ./dist/managed/.compact-artifact.json && cp ./src/digital-passport-credential.compact ./dist && cp -Rf ./src/digital-passport-credential ./dist/",
     "lint": "eslint src --ignore-pattern 'src/managed/**'",
     "lint:fix": "eslint src --fix --ignore-pattern 'src/managed/**'",
     "typecheck": "pnpm run compact && tsc -p tsconfig.json --noEmit",

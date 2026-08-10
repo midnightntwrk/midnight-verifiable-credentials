@@ -81,7 +81,7 @@
     "test:ci": "vitest run --exclude src/test/integration/**/*.test.ts",
     "prepack": "pnpm run build",
     "clean": "rm -rf dist && rm -rf coverage && rm -rf reports && rm -rf src/managed",
-    "build": "pnpm run compact && rm -rf dist && tsc -b tsconfig.build.json --force && mkdir -p dist && cp -Rf ./src/managed ./dist/ && cp ./src/demo.compact ./dist && cp ./src/demo-revocation.compact ./dist",
+    "build": "pnpm run compact && rm -rf dist && tsc -b tsconfig.build.json --force && mkdir -p dist && cp -Rf ./src/managed ./dist/ && rm -f ./dist/managed/.compact-artifact.json && cp ./src/demo.compact ./dist && cp ./src/demo-revocation.compact ./dist",
     "lint": "eslint src --ignore-pattern 'src/managed/**'",
     "lint:fix": "eslint src --fix --ignore-pattern 'src/managed/**'",
     "typecheck": "pnpm run compact && tsc -p tsconfig.json --noEmit",
