@@ -23,6 +23,20 @@ test("fixture inventory records bytes and sha256 for the curated root", () => {
   assert.match(inventory.artifacts[0].sha256, /^[a-f0-9]{64}$/u);
 });
 
+test("fixture inventory ignores local Compact reuse metadata", () => {
+  const root = mkdtempSync(path.join(os.tmpdir(), "compact-fixtures-"));
+  mkdirSync(path.join(root, "pkg/src/managed/demo"), { recursive: true });
+  writeFileSync(path.join(root, "pkg/src/managed/.compact-artifact.json"), "{}\n");
+  writeFileSync(path.join(root, "pkg/src/managed/demo/contract-info.json"), "fixture\n");
+  const manifest = {
+    fixtureRoots: [{ id: "demo", path: "pkg/src/managed", sourceRoot: "pkg" }],
+    lockfileInputs: [], runtime: { packageInputs: [] }, compiler: { version: "0.30.0" },
+    artifactPolicy: { maxNormalGitBytes: 100 }, artifacts: [], provenance: {},
+  };
+  const inventory = inventoryManifest(root, manifest);
+  assert.deepEqual(inventory.artifacts.map((item) => item.path), ["pkg/src/managed/demo/contract-info.json"]);
+});
+
 test("validation fails closed on undeclared artifacts and private material", () => {
   const root = mkdtempSync(path.join(os.tmpdir(), "compact-fixtures-"));
   mkdirSync(path.join(root, "pkg/src/managed/demo/keys"), { recursive: true });

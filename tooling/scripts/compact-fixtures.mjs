@@ -140,6 +140,7 @@ export function inventoryManifest(root, manifest) {
     const rootFiles = filesUnder(root, fixture.path);
     if (rootFiles.length === 0) missingRoots.push(fixture.path);
     for (const file of rootFiles) {
+      if (path.basename(file) === ".compact-artifact.json") continue;
       if (FORBIDDEN.test(file)) throw new Error(`forbidden private-material path in fixture root: ${file}`);
       if (!ALLOWED.test(file)) continue;
       artifacts.push({ path: file, ...artifactDigest(root, file), fixture: fixture.id });
