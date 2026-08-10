@@ -65,12 +65,14 @@ test("validation rejects stale and missing manifest artifacts", () => {
     artifacts: [
       { path: "pkg/src/managed/demo/compiler/contract-info.json", bytes: 99, sha256: "b".repeat(64) },
       { path: "pkg/src/managed/demo/compiler/missing.json", bytes: 1, sha256: "c".repeat(64) },
-    ], provenance: {},
+    ], provenance: { sourceDigest: "drifted-source" },
   };
   const result = validateManifest(root, manifest);
   assert.equal(result.ok, false);
   assert.ok(result.errors.some((error) => error.includes("digest/bytes mismatch")));
   assert.ok(result.errors.some((error) => error.includes("declared artifact is missing")));
+  assert.equal(result.fallbackRequired, false);
+  assert.equal(result.classification, "structural-integrity-failure");
 });
 
 test("cache paths are manifest-driven and limited to public ZKP artifacts", () => {
@@ -112,6 +114,12 @@ test("manifest cache identity is stable and changes when an artifact digest chan
   }));
   assert.notEqual(manifestKeyIdentity(manifest), manifestKeyIdentity({
     ...manifest, provenance: { ...manifest.provenance, runtimeDigest: "changed" },
+  }));
+  assert.notEqual(manifestKeyIdentity(manifest), manifestKeyIdentity({
+    ...manifest, compiler: { version: "0.31.0" },
+  }));
+  assert.notEqual(manifestKeyIdentity(manifest), manifestKeyIdentity({
+    ...manifest, provenance: { ...manifest.provenance, compilerVersion: "0.31.0" },
   }));
 });
 
@@ -193,4 +201,68 @@ test("invalid artifact plus provenance drift remains a structural failure", () =
   assert.equal(result.classification, "structural-integrity-failure");
   assert.ok(result.errors.some((error) => error.includes("artifact digest/bytes mismatch")));
   assert.ok(result.errors.some((error) => error.includes("source input digest mismatch")));
+});
+
+test("unhydrated valid LFS pointers plus provenance drift select source rebuild fallback", () => {
+  const root = mkdtempSync(path.join(os.tmpdir(), "compact-fixtures-"));
+  mkdirSync(path.join(root, "pkg/src/managed/demo/keys"), { recursive: true });
+  const oid = "a".repeat(64);
+  writeFileSync(path.join(root, "pkg/src/managed/demo/keys/demo.prover"), `version https://git-lfs.github.com/spec/v1\noid sha256:${oid}\nsize 123456\n`);
+  const manifest = {
+    fixtureRoots: [{ id: "demo", path: "pkg/src/managed", sourceRoot: "pkg" }],
+    lockfileInputs: [], runtime: { packageInputs: [] }, compiler: { version: "0.30.0" },
+    artifactPolicy: { maxNormalGitBytes: 100 },
+    artifacts: [{ path: "pkg/src/managed/demo/keys/demo.prover", bytes: 123456, sha256: oid, fixture: "demo" }],
+    provenance: { sourceDigest: "drifted-source" },
+  };
+  const result = validateManifest(root, manifest, { requireLfs: true, requireHydrated: true });
+  assert.equal(result.ok, false);
+  assert.equal(result.fallbackRequired, true);
+  assert.equal(result.classification, "source-rebuild-fallback");
+  assert.ok(result.errors.includes("fixture artifact is not hydrated in the worktree: pkg/src/managed/demo/keys/demo.prover"));
+  assert.ok(result.errors.includes("source input digest mismatch"));
+});
+
+test("compiler provenance drift prevents ready classification", () => {
+  const root = mkdtempSync(path.join(os.tmpdir(), "compact-fixtures-"));
+  mkdirSync(path.join(root, "pkg/src/managed/demo/compiler"), { recursive: true });
+  writeFileSync(path.join(root, "pkg/src/managed/demo/compiler/contract-info.json"), "fixture\n");
+  const manifest = {
+    fixtureRoots: [{ id: "demo", path: "pkg/src/managed", sourceRoot: "pkg" }],
+    lockfileInputs: [], runtime: { packageInputs: [] }, compiler: { version: "0.30.0" },
+    artifactPolicy: { maxNormalGitBytes: 100 },
+    artifacts: [{ path: "pkg/src/managed/demo/compiler/contract-info.json", bytes: 8, sha256: "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f", fixture: "demo" }],
+    provenance: { compilerVersion: "0.30.0" },
+  };
+  const previousCompilerVersion = process.env.COMPACT_COMPILER_VERSION;
+  process.env.COMPACT_COMPILER_VERSION = "0.31.0";
+  try {
+    const result = validateManifest(root, manifest);
+    assert.equal(result.ok, false);
+    assert.equal(result.fallbackRequired, true);
+    assert.equal(result.fallbackReason, "input-provenance-drift");
+    assert.equal(result.classification, "source-rebuild-fallback");
+    assert.ok(result.errors.includes("compiler provenance mismatch"));
+  } finally {
+    if (previousCompilerVersion === undefined) delete process.env.COMPACT_COMPILER_VERSION;
+    else process.env.COMPACT_COMPILER_VERSION = previousCompilerVersion;
+  }
+});
+
+test("malformed LFS pointers fail closed", () => {
+  const root = mkdtempSync(path.join(os.tmpdir(), "compact-fixtures-"));
+  mkdirSync(path.join(root, "pkg/src/managed/demo/keys"), { recursive: true });
+  writeFileSync(path.join(root, "pkg/src/managed/demo/keys/demo.prover"), "version https://git-lfs.github.com/spec/v1\noid sha256:not-a-digest\nsize 123456\n");
+  const manifest = {
+    fixtureRoots: [{ id: "demo", path: "pkg/src/managed", sourceRoot: "pkg" }],
+    lockfileInputs: [], runtime: { packageInputs: [] }, compiler: { version: "0.30.0" },
+    artifactPolicy: { maxNormalGitBytes: 100 },
+    artifacts: [{ path: "pkg/src/managed/demo/keys/demo.prover", bytes: 123456, sha256: "a".repeat(64), fixture: "demo" }],
+    provenance: { sourceDigest: "drifted-source" },
+  };
+  const result = validateManifest(root, manifest, { requireHydrated: true });
+  assert.equal(result.ok, false);
+  assert.equal(result.fallbackRequired, false);
+  assert.equal(result.classification, "structural-integrity-failure");
+  assert.match(result.errors[0], /invalid Git LFS pointer/u);
 });

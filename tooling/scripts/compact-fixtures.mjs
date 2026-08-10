@@ -203,17 +203,21 @@ export function validateManifest(root, manifest, { allowMissing = false, require
   }
   for (const item of expected.values()) if (!inventory.artifacts.some((actual) => actual.path === item.path)) errors.push(`declared artifact is missing: ${item.path}`);
   if (manifest.provenance?.sourceDigest && manifest.provenance.sourceDigest !== inventory.sourceDigest) errors.push("source input digest mismatch");
+  if (manifest.provenance?.compilerVersion && manifest.provenance.compilerVersion !== inventory.compilerVersion) errors.push("compiler provenance mismatch");
   if (manifest.provenance?.runtimeDigest && manifest.provenance.runtimeDigest !== inventory.runtimeDigest) errors.push("runtime input digest mismatch");
   if (manifest.provenance?.lockfileDigest && manifest.provenance.lockfileDigest !== inventory.lockfileDigest) errors.push("lockfile digest mismatch");
-  const onlyHydrationFailure = hydrationErrors.length > 0 && errors.length === hydrationErrors.length &&
-    inventory.artifacts.every((item) => item.lfsPointer || !LFS_ARTIFACT.test(item.path));
+  const hydrationOnlyErrors = errors.filter((error) => hydrationErrors.includes(error));
   const lfsUnavailable = Boolean(lfsCheckError) && inventory.artifacts.some((item) => item.lfsPointer) &&
     errors.every((error) => error.startsWith("fixture artifact is not hydrated in the worktree: "));
-  const provenanceErrors = errors.filter((error) => /^(?:source input|runtime input|lockfile) digest mismatch$/u.test(error));
-  const integrityErrors = errors.filter((error) => !provenanceErrors.includes(error));
+  const provenanceErrors = errors.filter((error) => /^(?:source input|runtime input|lockfile) digest mismatch$/u.test(error) || error === "compiler provenance mismatch");
+  const integrityErrors = errors.filter((error) => !provenanceErrors.includes(error) && !hydrationOnlyErrors.includes(error));
   const provenanceDriftOnly = provenanceErrors.length > 0 && integrityErrors.length === 0;
+  const onlyHydrationFailure = hydrationOnlyErrors.length > 0 && integrityErrors.length === 0 &&
+    inventory.artifacts.every((item) => item.lfsPointer || !LFS_ARTIFACT.test(item.path));
   const fallbackRequired = onlyHydrationFailure || lfsUnavailable || provenanceDriftOnly;
-  const fallbackReason = onlyHydrationFailure ? "unhydrated-lfs-pointers" : lfsUnavailable ? "lfs-unavailable" : provenanceDriftOnly ? "input-provenance-drift" : null;
+  const fallbackReason = onlyHydrationFailure && provenanceErrors.length > 0 ? "input-provenance-drift" :
+    onlyHydrationFailure ? "unhydrated-lfs-pointers" : lfsUnavailable ? "lfs-unavailable" :
+      provenanceDriftOnly ? "input-provenance-drift" : null;
   const classification = errors.length === 0 ? "ready" : fallbackRequired ? "source-rebuild-fallback" : "structural-integrity-failure";
   return { ok: errors.length === 0, fallbackRequired, fallbackReason, classification, errors, inventory };
 }
