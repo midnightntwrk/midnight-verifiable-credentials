@@ -110,6 +110,9 @@ test("manifest cache identity is stable and changes when an artifact digest chan
   assert.notEqual(manifestKeyIdentity(manifest), manifestKeyIdentity({
     ...manifest, artifacts: [{ ...manifest.artifacts[0], sha256: "e" }],
   }));
+  assert.notEqual(manifestKeyIdentity(manifest), manifestKeyIdentity({
+    ...manifest, provenance: { ...manifest.provenance, runtimeDigest: "changed" },
+  }));
 });
 
 test("unhydrated valid LFS pointers select the explicit source rebuild fallback", () => {
@@ -144,4 +147,50 @@ test("hydrated stale bytes remain a structural integrity failure", () => {
   assert.equal(result.ok, false);
   assert.equal(result.fallbackRequired, false);
   assert.equal(result.classification, "structural-integrity-failure");
+});
+
+test("valid artifacts plus source/runtime/lockfile drift select source rebuild fallback", () => {
+  const root = mkdtempSync(path.join(os.tmpdir(), "compact-fixtures-"));
+  mkdirSync(path.join(root, "pkg/src/managed/demo/compiler"), { recursive: true });
+  mkdirSync(path.join(root, "pkg/src"), { recursive: true });
+  writeFileSync(path.join(root, "pkg/src/demo.compact"), "export circuit demo {}\n");
+  writeFileSync(path.join(root, "pkg/package.json"), "{}\n");
+  writeFileSync(path.join(root, "pkg/pnpm-lock.yaml"), "lockfileVersion: 9\n");
+  writeFileSync(path.join(root, "pkg/src/managed/demo/compiler/contract-info.json"), "fixture\n");
+  const manifest = {
+    fixtureRoots: [{ id: "demo", path: "pkg/src/managed", sourceRoot: "pkg" }],
+    lockfileInputs: ["pkg/pnpm-lock.yaml"], runtime: { packageInputs: ["pkg/package.json"] }, compiler: { version: "0.30.0" },
+    artifactPolicy: { maxNormalGitBytes: 100 },
+    artifacts: [{ path: "pkg/src/managed/demo/compiler/contract-info.json", bytes: 8, sha256: "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f", fixture: "demo" }],
+    provenance: { sourceDigest: "drifted-source", runtimeDigest: "drifted-runtime", lockfileDigest: "drifted-lockfile" },
+  };
+  const result = validateManifest(root, manifest);
+  assert.equal(result.ok, false);
+  assert.equal(result.fallbackRequired, true);
+  assert.equal(result.fallbackReason, "input-provenance-drift");
+  assert.equal(result.classification, "source-rebuild-fallback");
+  assert.equal(result.errors.length, 3);
+  assert.ok(result.errors.every((error) => /(?:input )?digest mismatch$/u.test(error)));
+});
+
+test("invalid artifact plus provenance drift remains a structural failure", () => {
+  const root = mkdtempSync(path.join(os.tmpdir(), "compact-fixtures-"));
+  mkdirSync(path.join(root, "pkg/src/managed/demo/compiler"), { recursive: true });
+  mkdirSync(path.join(root, "pkg/src"), { recursive: true });
+  writeFileSync(path.join(root, "pkg/src/demo.compact"), "export circuit demo {}\n");
+  writeFileSync(path.join(root, "pkg/package.json"), "{}\n");
+  writeFileSync(path.join(root, "pkg/src/managed/demo/compiler/contract-info.json"), "tampered\n");
+  const manifest = {
+    fixtureRoots: [{ id: "demo", path: "pkg/src/managed", sourceRoot: "pkg" }],
+    lockfileInputs: [], runtime: { packageInputs: [] }, compiler: { version: "0.30.0" },
+    artifactPolicy: { maxNormalGitBytes: 100 },
+    artifacts: [{ path: "pkg/src/managed/demo/compiler/contract-info.json", bytes: 8, sha256: "b".repeat(64), fixture: "demo" }],
+    provenance: { sourceDigest: "drifted-source" },
+  };
+  const result = validateManifest(root, manifest);
+  assert.equal(result.ok, false);
+  assert.equal(result.fallbackRequired, false);
+  assert.equal(result.classification, "structural-integrity-failure");
+  assert.ok(result.errors.some((error) => error.includes("artifact digest/bytes mismatch")));
+  assert.ok(result.errors.some((error) => error.includes("source input digest mismatch")));
 });
