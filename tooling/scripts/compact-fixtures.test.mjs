@@ -4,6 +4,25 @@ import path from "node:path";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { cachePathsFromManifest, inventoryManifest, manifestKeyIdentity, validateManifest } from "./compact-fixtures.mjs";
+import { ensureProvableCircuitsAlias } from "./align-compact-runtime.mjs";
+
+test("runtime compatibility post-processing is idempotent when artifacts are reused", () => {
+  const generated = [
+    "  this.impureCircuits = {",
+    "    demo: this.circuits.demo",
+    "  };",
+    "  this.provableCircuits = {",
+    "    demo: this.circuits.demo",
+    "  };",
+    "",
+  ].join("\n");
+  const aligned = ensureProvableCircuitsAlias(generated);
+  assert.equal(ensureProvableCircuitsAlias(aligned), aligned);
+  assert.equal(
+    aligned.match(/this\.provableCircuits = this\.impureCircuits;/gu)?.length,
+    1,
+  );
+});
 
 test("fixture inventory records bytes and sha256 for the curated root", () => {
   const root = mkdtempSync(path.join(os.tmpdir(), "compact-fixtures-"));
@@ -21,6 +40,20 @@ test("fixture inventory records bytes and sha256 for the curated root", () => {
   assert.equal(inventory.artifactCount, 1);
   assert.equal(inventory.artifacts[0].bytes, 11);
   assert.match(inventory.artifacts[0].sha256, /^[a-f0-9]{64}$/u);
+});
+
+test("fixture inventory ignores local Compact reuse metadata", () => {
+  const root = mkdtempSync(path.join(os.tmpdir(), "compact-fixtures-"));
+  mkdirSync(path.join(root, "pkg/src/managed/demo"), { recursive: true });
+  writeFileSync(path.join(root, "pkg/src/managed/.compact-artifact.json"), "{}\n");
+  writeFileSync(path.join(root, "pkg/src/managed/demo/contract-info.json"), "fixture\n");
+  const manifest = {
+    fixtureRoots: [{ id: "demo", path: "pkg/src/managed", sourceRoot: "pkg" }],
+    lockfileInputs: [], runtime: { packageInputs: [] }, compiler: { version: "0.30.0" },
+    artifactPolicy: { maxNormalGitBytes: 100 }, artifacts: [], provenance: {},
+  };
+  const inventory = inventoryManifest(root, manifest);
+  assert.deepEqual(inventory.artifacts.map((item) => item.path), ["pkg/src/managed/demo/contract-info.json"]);
 });
 
 test("validation fails closed on undeclared artifacts and private material", () => {
