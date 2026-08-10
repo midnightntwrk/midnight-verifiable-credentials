@@ -43,6 +43,9 @@ const parseArgs = (args) => {
       case "--tag":
         options.tag = args[++index];
         break;
+      case "--promote-latest":
+        options.promoteLatest = true;
+        break;
       default:
         throw new Error(`unknown argument: ${args[index]}`);
     }
@@ -132,15 +135,23 @@ if (options.mode === "snapshot") {
       );
     }
     if (options.tag !== "latest") {
-      if (current.latest === options.version) {
-        throw new Error(
-          `${packageName} prerelease unexpectedly changed latest to ${options.version}`,
-        );
-      }
-      if (current.latest !== previous.latest) {
-        throw new Error(
-          `${packageName} latest changed from ${previous.latest ?? "<absent>"} to ${current.latest ?? "<absent>"}`,
-        );
+      if (options.promoteLatest) {
+        if (current.latest !== options.version) {
+          throw new Error(
+            `${packageName} latest resolves to ${current.latest ?? "<absent>"} instead of promoted ${options.version}`,
+          );
+        }
+      } else {
+        if (current.latest === options.version) {
+          throw new Error(
+            `${packageName} prerelease unexpectedly changed latest to ${options.version}`,
+          );
+        }
+        if (current.latest !== previous.latest) {
+          throw new Error(
+            `${packageName} latest changed from ${previous.latest ?? "<absent>"} to ${current.latest ?? "<absent>"}`,
+          );
+        }
       }
     }
   }
