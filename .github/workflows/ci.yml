@@ -73,7 +73,11 @@ jobs:
       - name: Set up Node.js
         uses: ./.github/actions/setup-node-pnpm
         with:
-          install: "true"
+          install: "false"
+
+      - name: Prepare pnpm cache path
+        shell: bash
+        run: mkdir -p "$(pnpm store path --silent)"
 
       - name: Verify docs-only diff has no whitespace issues
         run: git diff --check
