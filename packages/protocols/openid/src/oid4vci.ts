@@ -2,10 +2,17 @@ import { z } from "zod";
 
 import { MidnightCredentialRequestExtensionSchema } from "./midnight.js";
 import {
+  AuthorizationDetailsSchema,
+  createCredentialOfferReferenceUri,
+  DeferredCredentialResponseSchema,
+  IssuanceProofBindingSchema,
+  ProtocolErrorSchema,
+} from "./profile.js";
+import {
   JsonObjectSchema,
+  type JsonValue,
   JsonValueSchema,
   NonEmptyStringSchema,
-  NonNegativeIntegerSchema,
   PositiveIntegerSchema,
   UriSchema,
   UrlSchema,
@@ -118,6 +125,7 @@ export const TokenRequestSchema = z.object({
   grant_type: z.literal(PreAuthorizedCodeGrantType),
   "pre-authorized_code": NonEmptyStringSchema,
   tx_code: NonEmptyStringSchema.optional(),
+  authorization_details: z.array(AuthorizationDetailsSchema).min(1).optional(),
 });
 export type TokenRequest = z.infer<typeof TokenRequestSchema>;
 
@@ -135,6 +143,7 @@ export const CredentialProofSchema = z.object({
   jwt: NonEmptyStringSchema.optional(),
   ldp_vp: JsonObjectSchema.optional(),
   attestation: NonEmptyStringSchema.optional(),
+  binding: IssuanceProofBindingSchema.optional(),
 });
 export type CredentialProof = z.infer<typeof CredentialProofSchema>;
 
@@ -150,15 +159,57 @@ export const CredentialRequestSchema = z.object({
 });
 export type CredentialRequest = z.infer<typeof CredentialRequestSchema>;
 
-export const CredentialResponseSchema = z.object({
-  credential: JsonValueSchema.optional(),
-  credentials: z.array(JsonValueSchema).optional(),
-  transaction_id: NonEmptyStringSchema.optional(),
-  notification_id: NonEmptyStringSchema.optional(),
-  c_nonce: NonEmptyStringSchema.optional(),
-  c_nonce_expires_in: NonNegativeIntegerSchema.optional(),
-});
-export type CredentialResponse = z.infer<typeof CredentialResponseSchema>;
+const ImmediateCredentialResponseSchema = z.union([
+  z.strictObject({
+    credential: JsonValueSchema,
+    credentials: z.never().optional(),
+    transaction_id: z.never().optional(),
+    error: z.never().optional(),
+    notification_id: NonEmptyStringSchema.optional(),
+    c_nonce: NonEmptyStringSchema.optional(),
+    c_nonce_expires_in: PositiveIntegerSchema.optional(),
+  }),
+  z.strictObject({
+    credential: z.never().optional(),
+    credentials: z.array(JsonValueSchema).min(1),
+    transaction_id: z.never().optional(),
+    error: z.never().optional(),
+    notification_id: NonEmptyStringSchema.optional(),
+    c_nonce: NonEmptyStringSchema.optional(),
+    c_nonce_expires_in: PositiveIntegerSchema.optional(),
+  }),
+]);
+
+export const CredentialResponseSchema = z.union([
+  ImmediateCredentialResponseSchema,
+  DeferredCredentialResponseSchema,
+  ProtocolErrorSchema,
+]);
+type ImmediateCredentialResponse =
+  | {
+      readonly credential: JsonValue;
+      readonly credentials?: never;
+      readonly transaction_id?: never;
+      readonly error?: never;
+      readonly notification_id?: string;
+      readonly c_nonce?: string;
+      readonly c_nonce_expires_in?: number;
+    }
+  | {
+      readonly credential?: never;
+      readonly credentials: JsonValue[];
+      readonly transaction_id?: never;
+      readonly error?: never;
+      readonly notification_id?: string;
+      readonly c_nonce?: string;
+      readonly c_nonce_expires_in?: number;
+    };
+type DeferredCredentialResponse = z.infer<typeof DeferredCredentialResponseSchema>;
+type CredentialErrorResponse = z.infer<typeof ProtocolErrorSchema>;
+export type CredentialResponse =
+  | ImmediateCredentialResponse
+  | DeferredCredentialResponse
+  | CredentialErrorResponse;
 
 export const createPreAuthorizedCredentialOffer = (input: {
   readonly credentialIssuer: string;
@@ -204,7 +255,8 @@ export const createCredentialResponse = (
   input: CredentialResponse,
 ): CredentialResponse => CredentialResponseSchema.parse(input);
 
-export const credentialOfferUri = (input: {
+/** @deprecated Use createCredentialOfferReferenceUri; this legacy helper embeds secrets. */
+export const legacyCredentialOfferUri = (input: {
   readonly issuerOrigin: string;
   readonly offer: CredentialOffer;
 }): string => {
@@ -214,14 +266,15 @@ export const credentialOfferUri = (input: {
   return url.toString();
 };
 
+export const credentialOfferUri = createCredentialOfferReferenceUri;
+
 export const parseCredentialOffer = (input: unknown): CredentialOffer =>
   CredentialOfferSchema.parse(input);
 
-export const parseCredentialOfferUri = (uri: string): CredentialOffer => {
+/** @deprecated Legacy parser for secret-bearing offers; not part of the profile surface. */
+export const parseLegacyCredentialOfferUri = (uri: string): CredentialOffer => {
   const parsed = new URL(uri);
   const offer = parsed.searchParams.get("credential_offer");
-  if (!offer) {
-    throw new Error("Credential offer URI is missing credential_offer");
-  }
+  if (!offer) throw new Error("Legacy credential offer URI is missing credential_offer");
   return CredentialOfferSchema.parse(JSON.parse(offer) as unknown);
 };

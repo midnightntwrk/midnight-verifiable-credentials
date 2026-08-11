@@ -7,12 +7,12 @@ import {
   createCredentialResponse,
   createPreAuthorizedCredentialOffer,
   createPreAuthorizedTokenRequest,
-  credentialOfferUri,
+  CredentialResponseSchema,
   encodeCompactPayload,
-  parseCredentialOfferUri,
+  legacyCredentialOfferUri,
+  parseLegacyCredentialOfferUri,
   PreAuthorizedCodeGrantType,
 } from "../index.js";
-
 
 const bytes32 = new CompactTypeBytes(32);
 const createBytes = (seed: number): Uint8Array =>
@@ -24,6 +24,20 @@ const holderBinding = {
   blindedCommitment: "0xabcd1234",
   verifierDomain: "issuer.example",
 };
+
+const credentialResponseCompileTimeChecks = (): void => {
+  createCredentialResponse({ credential: "credential-1", notification_id: "notification-1" });
+  createCredentialResponse({ credentials: ["credential-1"], c_nonce: "nonce-1" });
+  createCredentialResponse({ transaction_id: "transaction-1", notification_id: "notification-1" });
+  createCredentialResponse({ error: "invalid_request" });
+  // @ts-expect-error Immediate responses cannot include a protocol error.
+  createCredentialResponse({ credential: "credential-1", error: "invalid_request" });
+  // @ts-expect-error Immediate responses cannot include deferred transaction identifiers.
+  createCredentialResponse({ credential: "credential-1", transaction_id: "transaction-1" });
+  // @ts-expect-error Deferred responses cannot include immediate credentials.
+  createCredentialResponse({ transaction_id: "transaction-1", credential: "credential-1" });
+};
+void credentialResponseCompileTimeChecks;
 
 describe("OID4VCI-inspired Midnight credential schemas", () => {
   it("models pre-authorized issuance without tying the holder to a DID URL", () => {
@@ -86,9 +100,11 @@ describe("OID4VCI-inspired Midnight credential schemas", () => {
     expect(request.midnight?.holderBinding.method).toBe(
       "blinded_secret_commitment",
     );
-    expect(response.credential).toMatchObject({
-      format: "midnight_compact_vc",
-      credentialFamily: "passport-secret",
+    expect(response).toMatchObject({
+      credential: {
+        format: "midnight_compact_vc",
+        credentialFamily: "passport-secret",
+      },
     });
   });
 
@@ -99,12 +115,37 @@ describe("OID4VCI-inspired Midnight credential schemas", () => {
       preAuthorizedCode: "preauth-compliance-1",
     });
 
-    const uri = credentialOfferUri({
+    const uri = legacyCredentialOfferUri({
       issuerOrigin: "https://issuer.example",
       offer,
     });
 
-    expect(parseCredentialOfferUri(uri)).toEqual(offer);
+    expect(parseLegacyCredentialOfferUri(uri)).toEqual(offer);
+  });
+
+  it("accepts immediate credential notifications and rejects ambiguous responses", () => {
+    const response = createCredentialResponse({
+      credential: { id: "credential-1" },
+      notification_id: "notification-1",
+    });
+    expect(response).toMatchObject({ notification_id: "notification-1" });
+    expect(() => CredentialResponseSchema.parse({})).toThrow();
+    expect(() => CredentialResponseSchema.parse({
+      credential: { id: "credential-1" },
+      credentials: [{ id: "credential-2" }],
+    })).toThrow();
+    expect(() => CredentialResponseSchema.parse({
+      credential: { id: "credential-1" },
+      error: "invalid_request",
+    })).toThrow();
+    expect(() => CredentialResponseSchema.parse({
+      credential: { id: "credential-1" },
+      c_nonce_expires_in: 0,
+    })).toThrow();
+    expect(() => CredentialResponseSchema.parse({
+      credentials: [{ id: "credential-1" }],
+      c_nonce_expires_in: 0,
+    })).toThrow();
   });
 
   it("rejects empty credential configuration lists", () => {
