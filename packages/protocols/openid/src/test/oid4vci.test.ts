@@ -138,6 +138,14 @@ describe("OID4VCI-inspired Midnight credential schemas", () => {
       credential: { id: "credential-1" },
       error: "invalid_request",
     })).toThrow();
+    expect(() => CredentialResponseSchema.parse({
+      credential: { id: "credential-1" },
+      c_nonce_expires_in: 0,
+    })).toThrow();
+    expect(() => CredentialResponseSchema.parse({
+      credentials: [{ id: "credential-1" }],
+      c_nonce_expires_in: 0,
+    })).toThrow();
   });
 
   it("rejects empty credential configuration lists", () => {

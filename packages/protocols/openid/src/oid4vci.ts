@@ -13,7 +13,6 @@ import {
   type JsonValue,
   JsonValueSchema,
   NonEmptyStringSchema,
-  NonNegativeIntegerSchema,
   PositiveIntegerSchema,
   UriSchema,
   UrlSchema,
@@ -168,7 +167,7 @@ const ImmediateCredentialResponseSchema = z.union([
     error: z.never().optional(),
     notification_id: NonEmptyStringSchema.optional(),
     c_nonce: NonEmptyStringSchema.optional(),
-    c_nonce_expires_in: NonNegativeIntegerSchema.optional(),
+    c_nonce_expires_in: PositiveIntegerSchema.optional(),
   }),
   z.strictObject({
     credential: z.never().optional(),
@@ -177,7 +176,7 @@ const ImmediateCredentialResponseSchema = z.union([
     error: z.never().optional(),
     notification_id: NonEmptyStringSchema.optional(),
     c_nonce: NonEmptyStringSchema.optional(),
-    c_nonce_expires_in: NonNegativeIntegerSchema.optional(),
+    c_nonce_expires_in: PositiveIntegerSchema.optional(),
   }),
 ]);
 
