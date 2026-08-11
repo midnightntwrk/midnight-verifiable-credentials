@@ -1,7 +1,7 @@
 # VC Production Backlog Execution Plan
 
-Status: active branch and PR map, reconciled 2026-08-11 against the
-`origin/develop` baseline at `103e3e8` plus current GitHub branch/PR state.
+Status: active branch and PR map, reconciled 2026-08-11 against current
+GitHub branch/PR state, with historical `origin/develop` baseline `103e3e8`.
 
 Merged baseline: PR-A1/#335 (verification core), PR-G1/#415 (artifact-manifest
 integrity foundation), and PR-E2/#416 (protocol state-store foundation). The

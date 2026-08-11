@@ -2,7 +2,7 @@
 
 Status: current execution view derived from the canonical production backlog.
 
-Last reconciled: 2026-08-11 for branch/PR state; baseline remains `origin/develop` commit `103e3e8` after PRs #335, #415, and #416.
+Last reconciled: 2026-08-11 for branch/PR state; the historical reconciliation baseline is `103e3e8` after PRs #335, #415, and #416.
 
 The A2 replay/nullifier worktree contains an unmerged primitive checkpoint at
 `4b514ec`; it is not part of `origin/develop` and does not close A2. The G1
