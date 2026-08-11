@@ -151,6 +151,9 @@
 - CI build cones:
   - [`architecture/ci-build-cones.md`](./architecture/ci-build-cones.md)
   - for the shared-build cache and artifact topology used by CI
+- Compact artifact contract:
+  - [`architecture/compact-artifact-contract.md`](./architecture/compact-artifact-contract.md)
+  - for source/dependency digests, complete output ownership, and serialized generation
 - workspace package-manifest discipline:
   - [`architecture/workspace-package-manifest-discipline.md`](./architecture/workspace-package-manifest-discipline.md)
   - for contributors adding or changing package entrypoints, export maps,
