@@ -1,7 +1,7 @@
 # VC Production Backlog Execution Plan
 
-Status: active branch and PR map, reconciled 2026-08-07 against
-`origin/develop` at `103e3e8`.
+Status: active branch and PR map, reconciled 2026-08-11 against the
+`origin/develop` baseline at `103e3e8` plus current GitHub branch/PR state.
 
 Merged baseline: PR-A1/#335 (verification core), PR-G1/#415 (artifact-manifest
 integrity foundation), and PR-E2/#416 (protocol state-store foundation). The
@@ -41,7 +41,7 @@ develop
 |- Track A: verification authority
 |  |- PR-A0 verification threat model, v1 specification, and test design
 |  |- PR-A1 verification transcript and result contract (after A0)
-|  |- PR-A2 decision nullifier and replay semantics (stacked on A1)
+|  |- PR-A2 replay/nullifier primitives (local checkpoint; stateful fixture pending)
 |  `- PR-A3 final ledger profiles (after authority dependencies)
 |- Track B: identity/status authority
 |  |- PR-B0 status/time authority threat model and negative-test design
@@ -56,7 +56,7 @@ develop
 |  `- PR-D2 develop-branch security and provenance gates (independent after D1)
 |- Track E: protocol safety
 |  |- PR-E1 CSPRNG-only production constructors
-|  `- PR-E2 durable idempotent session state (stacked on E1)
+|  `- PR-E2 durable idempotent session foundation (merged in #416; follow-up pending)
 |- Track F: interoperability and wallet
 |  |- PR-F1 final OID4VCI/OID4VP profile and DCQL
 |  `- PR-F2 existing DApp Connector credentials extension
@@ -99,20 +99,20 @@ useful.
 | PR-G3 | `codex/vc-digital-passport-correctness` | `develop` | five-claim/docs alignment, dependency boundary, calendar age, encoding/version/status posture | digital-passport build/tests, product fixtures, light gate, Claude domain/security review |
 | PR-H1 | `codex/vc-display-locale-model` | `develop` | framework-neutral privacy/display model with BCP 47, direction and normalization metadata | model/property/accessibility tests, pack tests, light gate, Claude privacy review |
 | PR-H2 | `codex/vc-passport-transliteration-profile` | PR-H1 or product repo | versioned original-script and ICAO-oriented transliteration profile | multilingual fixtures, normalization/bidi tests, product review, Claude privacy review |
+| PR-Q1 | `codex/vc-quality-evidence-catalog` | `develop` | measurable quality-evidence catalog and checker contracts | package/profile scopes, catalog fixtures, light gate, CI workflow checks, Claude CI review |
+## Current follow-up inventory
 
-## Current unmerged follow-up branches
+This inventory was reconciled on 2026-08-11 against the current GitHub
+branch/PR state. Only entries explicitly marked local are local preparation;
+open or draft PRs remain subject to their own review, repository gates, and
+current-head CI, and the closed entry is not an active lane:
 
-These branches are local preparation only; they are not GitHub PRs and must
-not be described as merge-ready until their focused review, repository gates,
-and current-head CI complete:
-
-- `codex/vc-a2-replay-scope-primitives` at `4b514ec` — A2 Compact/TypeScript primitive checkpoint; stateful atomic fixture remains open.
-- `codex/vc-e2-processing-leases` at `103e3e8` — E2 processing-lease/integration preparation; no additional changes yet.
-- `codex/vc-zk-artifact-manifest-generation` — G1 real-manifest-generation follow-up.
-- `codex/vc-oid4vc-final-profile` — F1 bounded profile/schema/vector work.
-- `codex/vc-display-locale-model` — H1 incubating display/locale model.
-- `codex/vc-quality-evidence-catalog` — Q1 evidence-contract/checker work.
-- `codex/vc-backlog-rebaseline` — this documentation reconciliation.
+- `codex/vc-a2-replay-scope-primitives` at `4b514ec` — **local** A2 Compact/TypeScript primitive checkpoint; the stateful atomic fixture remains open.
+- `codex/vc-display-locale-model` — **open PR #418** (H1 incubating display/locale model).
+- `codex/vc-zk-artifact-manifest-generation` — **closed PR #419** (G1 generation attempt); do not treat it as an active or merge-ready branch.
+- `codex/vc-quality-evidence-catalog` — **draft PR #421** (Q1 evidence-contract/checker work).
+- `codex/vc-backlog-rebaseline` — **open PR #420**, this documentation reconciliation.
+- E2 has no separate divergent local branch at this baseline: the foundation is merged in PR #416 and the processing-lease follow-up has not started.
 
 ## Cross-repository prerequisites
 
@@ -152,19 +152,19 @@ manually and attach evidence before merge.
 
 ## First eight-hour tranche
 
-The first autonomous window is deliberately bounded:
+The first autonomous window is deliberately bounded and its D1/E1 branch-start
+instructions are now historical: both tracks have completed their initial
+changes and must not be restarted as duplicate PRs:
 
-1. Publish PR-00, obtain Claude review, and watch all selected CI checks.
-2. Start PR-D1 from `origin/develop` as an independent branch because CI/gate
-   repair should not be stacked on documentation.
-3. If PR-D1 exposes a large or CI-only failure, stop that lane and start the
-   disjoint PR-E1 CSPRNG audit/implementation instead.
-4. If PR-D1 is locally green and remains reviewable, finish and publish it; do
-   not create PR-D2 until PR-D1 merges.
-5. Use remaining time for PR-C1 discovery and the smallest consumer-correct
-   package slice that can pass the full package/light gate. Do not mix all
-   package releases into one emergency refactor.
-6. Merge only PRs with terminal green CI, acceptable GitHub review state, a
+1. Preserve PR-00 as the bounded planning/reconciliation item, obtain review,
+   and watch all selected CI checks.
+2. PR-D1 is complete in PR #326; use its catalog-driven light-gate result as
+   the baseline for follow-up work rather than starting PR-D1 again.
+3. PR-E1 is complete in PR #329; use its CSPRNG constructor baseline for the
+   remaining protocol-session work rather than starting PR-E1 again.
+4. Continue only with disjoint, reviewable follow-up slices; do not create PR-D2
+   until the D1 baseline and its current gates are reconciled.
+5. Merge only PRs with terminal green CI, acceptable GitHub review state, a
    clean Claude review, and verified GPG/DCO commits.
 
 Security-critical Compact changes in Tracks A and B require a dedicated

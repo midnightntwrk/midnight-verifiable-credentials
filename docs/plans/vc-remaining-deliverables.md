@@ -2,7 +2,7 @@
 
 Status: current execution view derived from the canonical production backlog.
 
-Last reconciled: 2026-08-07 at `origin/develop` commit `103e3e8` after PRs #335, #415, and #416.
+Last reconciled: 2026-08-11 for branch/PR state; baseline remains `origin/develop` commit `103e3e8` after PRs #335, #415, and #416.
 
 The A2 replay/nullifier worktree contains an unmerged primitive checkpoint at
 `4b514ec`; it is not part of `origin/develop` and does not close A2. The G1
@@ -129,9 +129,11 @@ These are later work, not first-release blockers:
 ## Recommended next PR order
 
 The following independent starts provide the highest value without crossing a
-known security blocker. Active stack depth remains at two; independent tracks
-may be prepared locally but must not be treated as mergeable until their own
-focused and repository gates pass:
+known security blocker. The current inventory is not a green "active stack depth
+remains at two" claim: open PRs #418, #420, and draft PR #421 are active against
+`develop`, while PR #419 is closed and PR #417 merged. Treat this as a stop
+condition for starting another stacked PR until the queue is reconciled;
+independent tracks still require their own focused and repository gates:
 
 1. **A2 follow-up** - finish the stateful Compact replay/atomicity fixture, but
    first identify or add a supported ledger/emulator harness; the current
@@ -148,8 +150,9 @@ focused and repository gates pass:
    time-dependent status authority or final profiles while the mandatory execution
    anchor and external authority evidence remain unresolved.
 
-Keep active stack depth at two. Treat F2, G2, H2, and final passport extraction
-as dependency-gated work rather than parallel implementation targets.
+Do not start another stacked PR while that queue-level stop condition remains.
+Treat F2, G2, H2, and final passport extraction as dependency-gated work rather
+than parallel implementation targets.
 
 ## Production release closure
 
