@@ -74,6 +74,7 @@ jobs:
         uses: ./.github/actions/setup-node-pnpm
         with:
           install: "false"
+          pnpm-cache: "false"
 
       - name: Verify docs-only diff has no whitespace issues
         run: git diff --check

@@ -6,6 +6,10 @@ inputs:
     description: Run pnpm install after setting up Node.js.
     required: false
     default: "true"
+  pnpm-cache:
+    description: Enable actions/setup-node's pnpm store cache.
+    required: false
+    default: "true"
   turbo-cache:
     description: Restore the repository Turbo cache for the current job.
     required: false
@@ -24,7 +28,9 @@ runs:
       uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
       with:
         node-version: "24"
-        cache: pnpm
+        # The docs-only lane does not install dependencies, so it opts out of
+        # setup-node's pnpm store-path lookup. Full lanes retain the cache.
+        cache: ${{ inputs.pnpm-cache == 'true' && 'pnpm' || '' }}
         cache-dependency-path: pnpm-lock.yaml
 
     - name: Enable Corepack
