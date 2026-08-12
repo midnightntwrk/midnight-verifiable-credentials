@@ -248,7 +248,7 @@ const assertWorkflowUsesLocalSetupActions = () => {
       /uses:\s+actions\/setup-node@[0-9a-f]{40}\b/u,
     )?.index ?? -1;
   const setupNodePnpmCacheIndex = setupNodePnpmActionText.indexOf(
-    "cache: pnpm",
+    "cache:",
   );
 
   if (pnpmActionIndex === -1) {
@@ -258,7 +258,25 @@ const assertWorkflowUsesLocalSetupActions = () => {
   }
 
   if (setupNodePnpmCacheIndex === -1) {
-    errors.push("setup-node-pnpm action must enable actions/setup-node pnpm caching");
+    errors.push("setup-node-pnpm action must configure actions/setup-node caching");
+  }
+
+  if (!setupNodePnpmActionText.includes("pnpm-cache:")) {
+    errors.push("setup-node-pnpm action must expose the pnpm-cache opt-out for dependency-free jobs");
+  }
+
+  if (!setupNodePnpmActionText.includes("inputs.pnpm-cache == 'true' && 'pnpm' || ''")) {
+    errors.push("setup-node-pnpm action must make pnpm caching conditional on the pnpm-cache input");
+  }
+
+  const docsOnlyStart = workflowText.indexOf("docs-only-validation:");
+  const docsOnlyEnd = workflowText.indexOf("\n  bdd-scenarios:", docsOnlyStart);
+  const docsOnlyJob = workflowText.slice(docsOnlyStart, docsOnlyEnd === -1 ? undefined : docsOnlyEnd);
+  if (!docsOnlyJob.includes('install: "false"')) {
+    errors.push("docs-only-validation must keep dependency installation disabled");
+  }
+  if (!docsOnlyJob.includes('pnpm-cache: "false"')) {
+    errors.push("docs-only-validation must disable pnpm cache lookup when installation is disabled");
   }
 
   if (
