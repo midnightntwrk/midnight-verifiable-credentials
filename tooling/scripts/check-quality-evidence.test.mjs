@@ -115,21 +115,24 @@ test("push events use the pushed branch ref and pre-push SHA without remote-ref 
   const manifest = readManifest();
   const developResult = runManifest(manifest, "push", { baseRef: "refs/heads/develop", baseSha: priorBaseSha });
   assert.equal(developResult.status, 0, developResult.stderr);
-  const mainResult = runManifest(manifest, "push", { baseRef: "refs/heads/main", baseSha: priorBaseSha });
+  const mainResult = runManifest(manifest, "push", { baseRef: "refs/heads/codex/vc-quality-evidence-catalog", baseSha: priorBaseSha });
   assert.equal(mainResult.status, 0, mainResult.stderr);
 
   const invalidRef = runManifest(manifest, "push", { baseRef: "origin/develop", baseSha: priorBaseSha });
   assert.equal(invalidRef.status, 1);
   assert.match(invalidRef.stderr, /pushed branch ref as refs\/heads/u);
+  const malformedRef = runManifest(manifest, "push", { baseRef: "refs/headsXdevelop", baseSha: priorBaseSha });
+  assert.equal(malformedRef.status, 1);
+  assert.match(malformedRef.stderr, /pushed branch ref as refs\/heads/u);
 });
 
 test("workflow dispatch validates the selected ref and current SHA explicitly", () => {
   const manifest = readManifest();
-  const result = runManifest(manifest, "workflow_dispatch", { baseRef: "refs/heads/main" });
+  const result = runManifest(manifest, "workflow_dispatch", { baseRef: "refs/heads/codex/vc-quality-evidence-catalog" });
   assert.equal(result.status, 0, result.stderr);
 
   const stale = runManifest(manifest, "workflow_dispatch", {
-    baseRef: "refs/heads/main",
+    baseRef: "refs/heads/codex/vc-quality-evidence-catalog",
     baseSha: "0".repeat(40), pushBeforeSha: "0".repeat(40),
   });
   assert.equal(stale.status, 1);
@@ -138,6 +141,12 @@ test("workflow dispatch validates the selected ref and current SHA explicitly", 
   const invalidRef = runManifest(manifest, "workflow_dispatch", { baseRef: "origin/develop" });
   assert.equal(invalidRef.status, 1);
   assert.match(invalidRef.stderr, /selected refs\/heads/u);
+  const malformedRef = runManifest(manifest, "workflow_dispatch", { baseRef: "refs/headsXmain" });
+  assert.equal(malformedRef.status, 1);
+  assert.match(malformedRef.stderr, /selected refs\/heads/u);
+  const missingSelectedRef = runManifest(manifest, "workflow_dispatch", { baseRef: "refs/heads/missing-quality-base" });
+  assert.equal(missingSelectedRef.status, 1);
+  assert.match(missingSelectedRef.stderr, /unable to resolve workflow_dispatch baseRef/u);
 });
 
 test("fails closed for missing workflow inputs and unknown event names", () => {

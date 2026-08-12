@@ -25,8 +25,7 @@ export const ciChangeClassificationCatalog = {
     ".github/*.md",
   ],
   docsOnlyExclusionPatterns: [
-    "docs/testing/quality-evidence.json",
-    "docs/testing/quality-evidence.md",
+    "docs/testing/quality-evidence.*",
   ],
   bddOnlyPatterns: [
     "packages/use-cases/*/scenarios/*",
@@ -223,6 +222,7 @@ const runSelfTest = () => {
   const qualityEvidenceOnly = classifyChangedFiles([
     "docs/testing/quality-evidence.json",
     "docs/testing/quality-evidence.md",
+    "docs/testing/quality-evidence.yaml",
   ]);
   assert.equal(
     qualityEvidenceOnly.docs_only,

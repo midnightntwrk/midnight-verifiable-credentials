@@ -62,14 +62,17 @@ const parseArgs = (argv) => {
   return options;
 };
 
-const gitFailureMessage = (error) =>
-  error instanceof Error && error.message ? `: ${error.message}` : "";
+const gitFailureMessage = (error) => {
+  const stderr = typeof error?.stderr === "string" ? error.stderr.trim() : "";
+  if (stderr) return `: ${stderr}`;
+  return error instanceof Error && error.message ? `: ${error.message}` : "";
+};
 
 const ensureCommitExists = (root, sha) => {
   try {
     run("git", ["-C", root, "cat-file", "-e", `${sha}^{commit}`], {
       encoding: "utf8",
-      stdio: "ignore",
+      stdio: ["ignore", "pipe", "pipe"],
     });
   } catch (error) {
     fail(`unable to resolve baseSha ${sha} under ${root}${gitFailureMessage(error)}`);
@@ -135,19 +138,28 @@ const checkBaseSha = (root, baseRef, baseSha, eventName) => {
     if (!/^refs\/(?:heads|tags)\/[A-Za-z0-9._/-]+$/u.test(baseRef)) {
       fail(`workflow_dispatch evidence must declare the selected refs/heads/* or refs/tags/* ref (received ${baseRef})`);
     }
-    if (baseSha !== headSha) {
-      fail(`workflow_dispatch baseSha ${baseSha} must equal selected ref HEAD ${headSha}`);
+    let resolvedBaseSha;
+    try {
+      resolvedBaseSha = run("git", ["-C", root, "rev-parse", `${baseRef}^{commit}`], {
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "pipe"],
+      }).trim();
+    } catch (error) {
+      fail(`unable to resolve workflow_dispatch baseRef ${baseRef} under ${root}${gitFailureMessage(error)}`);
+    }
+    if (resolvedBaseSha !== baseSha || baseSha !== headSha) {
+      fail(`workflow_dispatch baseSha ${baseSha} must equal selected ref HEAD ${headSha} (resolved ${resolvedBaseSha})`);
     }
   } else if (normalizedEvent === "pull_request") {
     // The remote base ref may advance while a PR workflow is queued. Validate the
     // event SHA as an object instead of comparing it with that moving ref.
-    if (!/^refs\/(?:heads|remotes\/origin\/)\S+$/u.test(baseRef)) {
+    if (!/^refs\/(?:heads\/|remotes\/origin\/)\S+$/u.test(baseRef)) {
       fail(`pull_request evidence must declare a base branch ref (received ${baseRef})`);
     }
     try {
       run("git", ["-C", root, "show-ref", "--verify", "--quiet", baseRef], {
         encoding: "utf8",
-        stdio: "ignore",
+        stdio: ["ignore", "pipe", "pipe"],
       });
     } catch (error) {
       fail(`unable to resolve baseRef ${baseRef} under ${root}; CI checkouts must include the base ref history${gitFailureMessage(error)}`);
@@ -170,7 +182,7 @@ const checkBaseSha = (root, baseRef, baseSha, eventName) => {
   try {
     run("git", ["-C", root, "merge-base", "--is-ancestor", baseSha, headSha], {
       encoding: "utf8",
-      stdio: "ignore",
+      stdio: ["ignore", "pipe", "pipe"],
     });
   } catch (error) {
     fail(`baseSha ${baseSha} is stale or is not an ancestor of repository HEAD ${headSha}${gitFailureMessage(error)}`);
