@@ -10,6 +10,16 @@ const allowedBudgetStatuses = new Set(["defined", "unset"]);
 const shaPattern = /^[0-9a-f]{40}$/u;
 const datePattern = /^\d{4}-\d{2}-\d{2}$/u;
 
+const isValidDateOnly = (value) => {
+  if (!datePattern.test(value ?? "")) return false;
+  const year = Number(value.slice(0, 4));
+  const month = Number(value.slice(5, 7));
+  const day = Number(value.slice(8, 10));
+  const leapYear = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+  const daysInMonth = [31, leapYear ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  return month >= 1 && month <= 12 && day >= 1 && day <= daysInMonth[month - 1];
+};
+
 const fail = (message) => {
   throw new Error(message);
 };
@@ -35,7 +45,7 @@ const parseArgs = (argv) => {
     const argument = argv[index];
     if (argument === "--root" || argument === "--manifest") {
       const value = argv[++index];
-      if (!value) fail(`${argument} requires a value`);
+      if (!value || value.startsWith("-")) fail(`${argument} requires a non-flag value`);
       options[argument.slice(2)] = value;
       continue;
     }
@@ -52,14 +62,57 @@ const parseArgs = (argv) => {
   return options;
 };
 
+const gitFailureMessage = (error) =>
+  error instanceof Error && error.message ? `: ${error.message}` : "";
+
+const ensureCommitExists = (root, sha) => {
+  try {
+    run("git", ["-C", root, "cat-file", "-e", `${sha}^{commit}`], {
+      encoding: "utf8",
+      stdio: "ignore",
+    });
+  } catch (error) {
+    fail(`unable to resolve baseSha ${sha} under ${root}${gitFailureMessage(error)}`);
+  }
+};
+
+const checkPushBoundary = (root, baseSha, headSha) => {
+  if (baseSha === "0".repeat(40)) {
+    fail("push evidence cannot use the all-zero before SHA; use workflow_dispatch for a new branch");
+  }
+  ensureCommitExists(root, baseSha);
+  let firstPushedSha;
+  try {
+    firstPushedSha = run("git", ["-C", root, "rev-list", "--first-parent", "--reverse", `${baseSha}..${headSha}`], {
+      encoding: "utf8",
+    }).trim().split(/\r?\n/u).filter(Boolean)[0];
+  } catch (error) {
+    fail(`unable to determine the pushed commit range${gitFailureMessage(error)}`);
+  }
+  if (!firstPushedSha) {
+    fail(`push evidence baseSha ${baseSha} must precede the pushed HEAD ${headSha}`);
+  }
+  let firstPushedParents;
+  try {
+    firstPushedParents = run("git", ["-C", root, "rev-list", "--parents", "-n", "1", firstPushedSha], {
+      encoding: "utf8",
+    }).trim().split(/\s+/u).slice(1);
+  } catch (error) {
+    fail(`unable to inspect the first pushed commit ${firstPushedSha}${gitFailureMessage(error)}`);
+  }
+  if (!firstPushedParents.includes(baseSha)) {
+    fail(`push evidence baseSha ${baseSha} is not the prior tip of ${headSha}; use workflow_dispatch after a rewritten history`);
+  }
+};
+
 const checkBaseSha = (root, baseRef, baseSha, eventName) => {
   if (!shaPattern.test(baseSha)) fail("baseSha must be a 40-character lowercase Git SHA");
   nonEmptyString(baseRef, "baseRef");
   let headSha;
   try {
     headSha = run("git", ["-C", root, "rev-parse", "HEAD"], { encoding: "utf8" }).trim();
-  } catch {
-    fail(`unable to resolve repository HEAD under ${root}`);
+  } catch (error) {
+    fail(`unable to resolve repository HEAD under ${root}${gitFailureMessage(error)}`);
   }
   if (!shaPattern.test(headSha)) fail("repository HEAD is not a valid Git SHA");
 
@@ -73,6 +126,11 @@ const checkBaseSha = (root, baseRef, baseSha, eventName) => {
     if (!/^refs\/heads\/[A-Za-z0-9._/-]+$/u.test(baseRef)) {
       fail(`push evidence must declare the pushed branch ref as refs/heads/* (received ${baseRef})`);
     }
+    const eventBeforeSha = process.env.QUALITY_EVIDENCE_PUSH_BEFORE_SHA;
+    if (!shaPattern.test(eventBeforeSha ?? "") || eventBeforeSha !== baseSha) {
+      fail("push evidence baseSha must equal the immutable GitHub push before SHA");
+    }
+    checkPushBoundary(root, baseSha, headSha);
   } else if (normalizedEvent === "workflow_dispatch") {
     if (!/^refs\/(?:heads|tags)\/[A-Za-z0-9._/-]+$/u.test(baseRef)) {
       fail(`workflow_dispatch evidence must declare the selected refs/heads/* or refs/tags/* ref (received ${baseRef})`);
@@ -80,14 +138,29 @@ const checkBaseSha = (root, baseRef, baseSha, eventName) => {
     if (baseSha !== headSha) {
       fail(`workflow_dispatch baseSha ${baseSha} must equal selected ref HEAD ${headSha}`);
     }
+  } else if (normalizedEvent === "pull_request") {
+    // The remote base ref may advance while a PR workflow is queued. Validate the
+    // event SHA as an object instead of comparing it with that moving ref.
+    if (!/^refs\/(?:heads|remotes\/origin\/)\S+$/u.test(baseRef)) {
+      fail(`pull_request evidence must declare a base branch ref (received ${baseRef})`);
+    }
+    try {
+      run("git", ["-C", root, "show-ref", "--verify", "--quiet", baseRef], {
+        encoding: "utf8",
+        stdio: "ignore",
+      });
+    } catch (error) {
+      fail(`unable to resolve baseRef ${baseRef} under ${root}; CI checkouts must include the base ref history${gitFailureMessage(error)}`);
+    }
+    ensureCommitExists(root, baseSha);
   } else {
     let resolvedBaseSha;
     try {
       resolvedBaseSha = run("git", ["-C", root, "rev-parse", `${baseRef}^{commit}`], {
         encoding: "utf8",
       }).trim();
-    } catch {
-      fail(`unable to resolve baseRef ${baseRef} under ${root}; CI checkouts must include the base ref history`);
+    } catch (error) {
+      fail(`unable to resolve baseRef ${baseRef} under ${root}; CI checkouts must include the base ref history${gitFailureMessage(error)}`);
     }
     if (resolvedBaseSha !== baseSha) {
       fail(`baseSha ${baseSha} does not match resolved baseRef ${baseRef} (${resolvedBaseSha})`);
@@ -99,8 +172,8 @@ const checkBaseSha = (root, baseRef, baseSha, eventName) => {
       encoding: "utf8",
       stdio: "ignore",
     });
-  } catch {
-    fail(`baseSha ${baseSha} is stale or is not an ancestor of repository HEAD ${headSha}`);
+  } catch (error) {
+    fail(`baseSha ${baseSha} is stale or is not an ancestor of repository HEAD ${headSha}${gitFailureMessage(error)}`);
   }
 };
 
@@ -133,7 +206,7 @@ const validateEvidenceRow = (row, index, baseSha, observedAt) => {
     nonEmptyString(row.evidence.runId, `${label}.evidence.runId`);
   }
   nonEmptyString(row.owner, `${label}.owner`);
-  if (!datePattern.test(row.observedAt ?? observedAt ?? "")) {
+  if (!isValidDateOnly(row.observedAt ?? observedAt ?? "")) {
     fail(`${label}.observedAt must use YYYY-MM-DD`);
   }
   if (row.baseSha !== undefined && row.baseSha !== baseSha) {
@@ -155,7 +228,7 @@ const validateEvidenceRow = (row, index, baseSha, observedAt) => {
     fail(`${label}.review.status must be pending or reviewed`);
   }
   nonEmptyString(row.review.reviewer, `${label}.review.reviewer`);
-  if (row.review.status === "reviewed" && row.review.reviewer === "unassigned") {
+  if (row.review.status === "reviewed" && /^(?:unassigned|tbd|n\/?a|none|unknown|pending|todo)$/iu.test(row.review.reviewer.trim())) {
     fail(`${label}.review.reviewer must identify a reviewer when reviewed`);
   }
 
@@ -188,7 +261,7 @@ export const validateManifest = (manifest, root, eventName = process.env.QUALITY
   const baseRef = overrideRef ?? manifest.baseRef;
   const baseSha = overrideSha ?? manifest.baseSha;
   checkBaseSha(root, baseRef, baseSha, ciEvent);
-  if (!datePattern.test(manifest.observedAt ?? "")) {
+  if (!isValidDateOnly(manifest.observedAt ?? "")) {
     fail("observedAt must use YYYY-MM-DD");
   }
   if (!Array.isArray(manifest.evidence) || manifest.evidence.length === 0) {
@@ -196,7 +269,7 @@ export const validateManifest = (manifest, root, eventName = process.env.QUALITY
   }
   const ids = new Set();
   for (const [index, row] of manifest.evidence.entries()) {
-    validateEvidenceRow(row, index, manifest.baseSha, manifest.observedAt);
+    validateEvidenceRow(row, index, baseSha, manifest.observedAt);
     if (ids.has(row.id)) fail(`duplicate evidence id: ${row.id}`);
     ids.add(row.id);
   }

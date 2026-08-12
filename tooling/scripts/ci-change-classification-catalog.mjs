@@ -178,7 +178,7 @@ export const classifyChangedFiles = (changedFiles) => {
       continue;
     }
 
-    if (matchesAny(file, ciChangeClassificationCatalog.docsPatterns)) {
+    if (isDocsOnlyExcluded || matchesAny(file, ciChangeClassificationCatalog.docsPatterns)) {
       continue;
     }
 

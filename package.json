@@ -67,6 +67,8 @@
     "check:holder-binding-terminology": "node ./tooling/scripts/check-holder-binding-terminology.mjs",
     "check:university-ci-matrix": "node ./packages/use-cases/university/scripts/ci-matrix.mjs --check",
     "check:bdd-summary-artifacts": "node ./tooling/scripts/check-bdd-summary-artifacts.mjs",
+    "check:quality-evidence": "node ./tooling/scripts/check-quality-evidence.mjs",
+    "test:quality-evidence": "node --test ./tooling/scripts/check-quality-evidence.test.mjs",
     "build:university-ci-matrix:json": "node ./packages/use-cases/university/scripts/ci-matrix.mjs --json",
     "build:university-ci-matrix:markdown": "node ./packages/use-cases/university/scripts/ci-matrix.mjs --markdown",
     "build:university-operator-lanes:markdown": "node ./packages/use-cases/university/scripts/ci-matrix.mjs --operator-lanes-markdown",

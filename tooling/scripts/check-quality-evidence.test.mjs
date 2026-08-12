@@ -9,6 +9,8 @@ const repoRoot = path.resolve(".");
 const script = path.resolve("tooling/scripts/check-quality-evidence.mjs");
 const manifestPath = path.resolve("docs/testing/quality-evidence.json");
 const baseSha = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
+const priorBaseSha = execFileSync("git", ["rev-parse", "HEAD~1"], { encoding: "utf8" }).trim();
+const olderBaseSha = execFileSync("git", ["rev-parse", "HEAD~3"], { encoding: "utf8" }).trim();
 
 const readManifest = () => JSON.parse(readFileSync(manifestPath, "utf8"));
 
@@ -26,6 +28,7 @@ const runManifest = (manifest, eventName = "local", contract = {}) => {
   if (eventName !== "local") {
     env.QUALITY_EVIDENCE_BASE_REF = contract.baseRef ?? "HEAD";
     env.QUALITY_EVIDENCE_BASE_SHA = contract.baseSha ?? baseSha;
+    if (eventName === "push") env.QUALITY_EVIDENCE_PUSH_BEFORE_SHA = contract.pushBeforeSha ?? contract.baseSha ?? baseSha;
   } else {
     delete env.QUALITY_EVIDENCE_BASE_REF;
     delete env.QUALITY_EVIDENCE_BASE_SHA;
@@ -102,23 +105,20 @@ test("pull-request events require exact resolution of the workflow-provided base
   assert.equal(missingBase.status, 1);
   assert.match(missingBase.stderr, /requires QUALITY_EVIDENCE_BASE_REF/u);
 
-  const missingRef = runManifest(manifest, "pull_request", { baseRef: "origin/missing-quality-base" });
+  const missingRef = runManifest(manifest, "pull_request", { baseRef: "refs/remotes/origin/missing-quality-base" });
   assert.equal(missingRef.status, 1);
   assert.match(missingRef.stderr, /unable to resolve baseRef/u);
 
-  const mismatch = runManifest(manifest, "pull_request", { baseRef: "HEAD~1" });
-  assert.equal(mismatch.status, 1);
-  assert.match(mismatch.stderr, /does not match resolved baseRef/u);
 });
 
 test("push events use the pushed branch ref and pre-push SHA without remote-ref equality", () => {
   const manifest = readManifest();
-  const developResult = runManifest(manifest, "push", { baseRef: "refs/heads/develop" });
+  const developResult = runManifest(manifest, "push", { baseRef: "refs/heads/develop", baseSha: priorBaseSha });
   assert.equal(developResult.status, 0, developResult.stderr);
-  const mainResult = runManifest(manifest, "push", { baseRef: "refs/heads/main" });
+  const mainResult = runManifest(manifest, "push", { baseRef: "refs/heads/main", baseSha: priorBaseSha });
   assert.equal(mainResult.status, 0, mainResult.stderr);
 
-  const invalidRef = runManifest(manifest, "push", { baseRef: "origin/develop" });
+  const invalidRef = runManifest(manifest, "push", { baseRef: "origin/develop", baseSha: priorBaseSha });
   assert.equal(invalidRef.status, 1);
   assert.match(invalidRef.stderr, /pushed branch ref as refs\/heads/u);
 });
@@ -130,7 +130,7 @@ test("workflow dispatch validates the selected ref and current SHA explicitly", 
 
   const stale = runManifest(manifest, "workflow_dispatch", {
     baseRef: "refs/heads/main",
-    baseSha: "0".repeat(40),
+    baseSha: "0".repeat(40), pushBeforeSha: "0".repeat(40),
   });
   assert.equal(stale.status, 1);
   assert.match(stale.stderr, /40-character|must equal selected ref HEAD/u);
@@ -196,4 +196,62 @@ test("rejects measured rows that retain a null budget or an unreviewed reviewer"
   const result = runManifest(manifest);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /review\.reviewer must identify/u);
+});
+
+test("uses the effective CI base SHA for per-row provenance", () => {
+  const manifest = readManifest();
+  setLocalBase(manifest, baseSha);
+  manifest.evidence[0].baseSha = priorBaseSha;
+  const result = runManifest(manifest, "pull_request", {
+    baseRef: "refs/remotes/origin/develop",
+    baseSha: priorBaseSha,
+  });
+  assert.equal(result.status, 0, result.stderr);
+});
+
+test("rejects stale push boundaries and all-zero new-branch sentinels", () => {
+  const manifest = readManifest();
+  const stale = runManifest(manifest, "push", {
+    baseRef: "refs/heads/develop",
+    baseSha: olderBaseSha, pushBeforeSha: priorBaseSha,
+  });
+  assert.equal(stale.status, 1);
+  assert.match(stale.stderr, /immutable GitHub push before SHA|prior tip|stale/u);
+
+  const zero = runManifest(manifest, "push", {
+    baseRef: "refs/heads/develop",
+    baseSha: "0".repeat(40), pushBeforeSha: "0".repeat(40),
+  });
+  assert.equal(zero.status, 1);
+  assert.match(zero.stderr, /all-zero/u);
+});
+
+test("rejects impossible calendar dates", () => {
+  const manifest = readManifest();
+  manifest.observedAt = "2024-02-30";
+  const result = runManifest(manifest);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /observedAt must use YYYY-MM-DD/u);
+});
+
+test("rejects flag-looking option values", () => {
+  const result = spawnSync(process.execPath, [script, "--root", "--help"], {
+    cwd: repoRoot,
+    encoding: "utf8",
+    env: process.env,
+  });
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /non-flag value/u);
+});
+
+test("rejects placeholder reviewer names for reviewed evidence", () => {
+  for (const reviewer of ["TBD", "n/a", "none", "pending", "todo"]) {
+    const manifest = readManifest();
+    setLocalBase(manifest);
+    manifest.evidence[0].review.status = "reviewed";
+    manifest.evidence[0].review.reviewer = reviewer;
+    const result = runManifest(manifest);
+    assert.equal(result.status, 1, reviewer);
+    assert.match(result.stderr, /review\.reviewer must identify/u);
+  }
 });

@@ -23,14 +23,14 @@ Each row has:
 - the repository `baseSha` and observation date inherited from the manifest.
 
 The CI lint step passes an explicit base contract through
-`QUALITY_EVIDENCE_CI_EVENT`, `QUALITY_EVIDENCE_BASE_REF`, and
-`QUALITY_EVIDENCE_BASE_SHA`, and uses `fetch-depth: 0`:
-
-- `pull_request` passes the PR base ref and SHA; the ref must resolve exactly to
-  that SHA, which must be an ancestor of the checkout.
-- `push` passes the pushed branch ref (`refs/heads/develop` or
-  `refs/heads/main`) and the event's pre-push `before` SHA. The SHA must be an
-  ancestor, but is not compared with the now-advanced remote branch ref.
+`QUALITY_EVIDENCE_CI_EVENT`, `QUALITY_EVIDENCE_BASE_REF`,
+`QUALITY_EVIDENCE_BASE_SHA`, and the push-only immutable
+`QUALITY_EVIDENCE_PUSH_BEFORE_SHA`, and uses `fetch-depth: 0`:
+- `pull_request` passes the PR base ref and event-captured SHA; the ref must
+  resolve in the checkout, while the SHA is validated as an available ancestor.
+- `push` passes the pushed branch ref and immutable event `before` SHA. The
+  checker binds the SHA to `QUALITY_EVIDENCE_PUSH_BEFORE_SHA` and verifies it
+  is an ancestor of the pushed HEAD.
 - `workflow_dispatch` passes the selected ref and current SHA. The selected ref
   must be an explicit branch or tag ref and the SHA must equal the checkout
   HEAD; this is a validation mode, not an unknown-event bypass.
@@ -74,3 +74,12 @@ The checker validates the JSON shape, allowed statuses and metric fields,
 scope/command identity, review and budget records, and base ancestry. It does
 not execute every evidence command; each command remains the evidence owner's
 responsibility.
+
+## CI base-history recovery
+
+For `push` events, `QUALITY_EVIDENCE_BASE_SHA` is the event's `before` SHA and
+must be the parent boundary of the pushed range, not merely any older ancestor.
+The workflow rejects GitHub's all-zero `before` SHA for a newly created branch.
+If a force-push or rewritten history makes that boundary unavailable, rerun the
+lint evidence check through `workflow_dispatch` against the selected branch or
+tag; dispatch validates the selected ref's current HEAD directly.

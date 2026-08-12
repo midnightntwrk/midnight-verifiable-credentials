@@ -2,7 +2,7 @@
   "schema": "midnight-vc-quality-evidence",
   "version": 1,
   "baseRef": "origin/develop",
-  "baseSha": "765f625f9bbc314eb7e3d3451fb2625761821f40",
+  "baseSha": "39b1354212620b396e914b29603e6a38f2656546",
   "observedAt": "2026-08-07",
   "evidence": [
     {
