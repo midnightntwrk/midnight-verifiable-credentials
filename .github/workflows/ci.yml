@@ -417,6 +417,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
 
       - name: Set up Node.js, dependencies, and turbo cache
@@ -425,6 +426,11 @@ jobs:
           turbo-cache: "true"
 
       - name: Run lint lane
+        env:
+          QUALITY_EVIDENCE_CI_EVENT: ${{ github.event_name }}
+          QUALITY_EVIDENCE_BASE_REF: ${{ github.event_name == 'pull_request' && format('refs/remotes/origin/{0}', github.event.pull_request.base.ref) || github.ref }}
+          QUALITY_EVIDENCE_PUSH_BEFORE_SHA: ${{ github.event_name == 'push' && github.event.before || '' }}
+          QUALITY_EVIDENCE_BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || (github.event_name == 'push' && github.event.before || github.sha) }}
         run: pnpm run ci:lint
 
   typecheck:
