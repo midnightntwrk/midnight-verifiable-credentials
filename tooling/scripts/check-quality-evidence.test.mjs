@@ -1,5 +1,6 @@
 import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { execFileSync, spawnSync } from "node:child_process";
+import { randomBytes } from "node:crypto";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -11,6 +12,15 @@ const manifestPath = path.resolve("docs/testing/quality-evidence.json");
 const baseSha = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
 const priorBaseSha = execFileSync("git", ["rev-parse", "HEAD~1"], { encoding: "utf8" }).trim();
 const olderBaseSha = execFileSync("git", ["rev-parse", "HEAD~3"], { encoding: "utf8" }).trim();
+
+const workflowDispatchBranch = `quality-evidence-workflow-dispatch-${randomBytes(6).toString("hex")}`;
+execFileSync("git", ["branch", "-f", workflowDispatchBranch, "HEAD"], { encoding: "utf8" });
+process.on("exit", () => {
+  try {
+    execFileSync("git", ["branch", "-D", workflowDispatchBranch], { encoding: "utf8" });
+  } catch {}
+});
+const workflowDispatchRef = `refs/heads/${workflowDispatchBranch}`;
 
 const readManifest = () => JSON.parse(readFileSync(manifestPath, "utf8"));
 
@@ -128,11 +138,11 @@ test("push events use the pushed branch ref and pre-push SHA without remote-ref 
 
 test("workflow dispatch validates the selected ref and current SHA explicitly", () => {
   const manifest = readManifest();
-  const result = runManifest(manifest, "workflow_dispatch", { baseRef: "refs/heads/codex/vc-quality-evidence-catalog" });
+  const result = runManifest(manifest, "workflow_dispatch", { baseRef: workflowDispatchRef });
   assert.equal(result.status, 0, result.stderr);
 
   const stale = runManifest(manifest, "workflow_dispatch", {
-    baseRef: "refs/heads/codex/vc-quality-evidence-catalog",
+    baseRef: workflowDispatchRef,
     baseSha: "0".repeat(40), pushBeforeSha: "0".repeat(40),
   });
   assert.equal(stale.status, 1);
@@ -140,10 +150,10 @@ test("workflow dispatch validates the selected ref and current SHA explicitly", 
 
   const invalidRef = runManifest(manifest, "workflow_dispatch", { baseRef: "origin/develop" });
   assert.equal(invalidRef.status, 1);
-  assert.match(invalidRef.stderr, /selected refs\/heads/u);
+  assert.match(invalidRef.stderr, /selected refs\/heads\/|selected refs\/tags/u);
   const malformedRef = runManifest(manifest, "workflow_dispatch", { baseRef: "refs/headsXmain" });
   assert.equal(malformedRef.status, 1);
-  assert.match(malformedRef.stderr, /selected refs\/heads/u);
+  assert.match(malformedRef.stderr, /selected refs\/heads\/|selected refs\/tags/u);
   const missingSelectedRef = runManifest(manifest, "workflow_dispatch", { baseRef: "refs/heads/missing-quality-base" });
   assert.equal(missingSelectedRef.status, 1);
   assert.match(missingSelectedRef.stderr, /unable to resolve workflow_dispatch baseRef/u);
