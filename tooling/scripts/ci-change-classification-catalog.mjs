@@ -25,7 +25,10 @@ export const ciChangeClassificationCatalog = {
     ".github/*.md",
   ],
   docsOnlyExclusionPatterns: [
-    "docs/testing/quality-evidence.*",
+    "docs/testing/quality-evidence.json",
+    "docs/testing/quality-evidence.md",
+    "docs/testing/quality-evidence.yaml",
+    "docs/testing/quality-evidence.yml",
   ],
   bddOnlyPatterns: [
     "packages/use-cases/*/scenarios/*",
@@ -224,10 +227,18 @@ const runSelfTest = () => {
     "docs/testing/quality-evidence.md",
     "docs/testing/quality-evidence.yaml",
   ]);
+  const qualityEvidenceNested = classifyChangedFiles([
+    "docs/testing/quality-evidence.old/notes.md",
+  ]);
   assert.equal(
     qualityEvidenceOnly.docs_only,
     false,
     "quality evidence changes must run the normal lint/quality lane",
+  );
+  assert.equal(
+    qualityEvidenceNested.docs_only,
+    true,
+    "nested quality-evidence docs should be treated as docs-only",
   );
   assert.equal(qualityEvidenceOnly.bdd_only, false);
   for (const key of outputKeys.filter((key) => key.startsWith("run_"))) {

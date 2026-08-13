@@ -271,8 +271,8 @@ export const validateManifest = (manifest, root, eventName = process.env.QUALITY
     fail("CI quality evidence requires QUALITY_EVIDENCE_BASE_REF and QUALITY_EVIDENCE_BASE_SHA");
   }
   const baseRef = overrideRef ?? manifest.baseRef;
-  const baseSha = overrideSha ?? manifest.baseSha;
-  checkBaseSha(root, baseRef, baseSha, ciEvent);
+  const effectiveBaseSha = overrideSha ?? manifest.baseSha;
+  checkBaseSha(root, baseRef, effectiveBaseSha, ciEvent);
   if (!isValidDateOnly(manifest.observedAt ?? "")) {
     fail("observedAt must use YYYY-MM-DD");
   }
@@ -281,11 +281,11 @@ export const validateManifest = (manifest, root, eventName = process.env.QUALITY
   }
   const ids = new Set();
   for (const [index, row] of manifest.evidence.entries()) {
-    validateEvidenceRow(row, index, baseSha, manifest.observedAt);
+    validateEvidenceRow(row, index, effectiveBaseSha, manifest.observedAt);
     if (ids.has(row.id)) fail(`duplicate evidence id: ${row.id}`);
     ids.add(row.id);
   }
-  return manifest.evidence.length;
+  return { count: manifest.evidence.length, effectiveBaseSha };
 };
 
 const main = () => {
@@ -296,8 +296,8 @@ const main = () => {
   } catch (error) {
     fail(`unable to read JSON manifest ${options.manifest}: ${error.message}`);
   }
-  const count = validateManifest(manifest, options.root);
-  console.log(`quality evidence valid: ${count} row(s), base ${manifest.baseSha}`);
+  const { count, effectiveBaseSha } = validateManifest(manifest, options.root);
+  console.log(`quality evidence valid: ${count} row(s), base ${effectiveBaseSha}`);
 };
 
 try {
