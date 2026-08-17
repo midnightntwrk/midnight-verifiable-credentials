@@ -34,7 +34,7 @@
     "@midnight-ntwrk/midnight-did-credentials-bdd-support": "*",
     "@midnight-ntwrk/midnight-did-university-protocol": "*",
     "@midnight-ntwrk/midnight-did-credentials-university-diploma": "*",
-    "@serenity-js/assertions": "^3.44.1",
+    "@serenity-js/assertions": "^3.44.3",
     "@serenity-js/console-reporter": "^3.44.1",
     "@serenity-js/core": "^3.44.1",
     "@serenity-js/cucumber": "^3.44.1",
