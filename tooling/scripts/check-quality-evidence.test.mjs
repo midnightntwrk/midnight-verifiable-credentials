@@ -28,8 +28,8 @@ const withWorkflowDispatchRef = (run) => {
 
 const readManifest = () => JSON.parse(readFileSync(manifestPath, "utf8"));
 
-const setLocalBase = (manifest, sha = baseSha) => {
-  manifest.baseRef = "HEAD";
+const setLocalBase = (manifest, sha = baseSha, ref = "HEAD") => {
+  manifest.baseRef = ref;
   manifest.baseSha = sha;
   return manifest;
 };
@@ -105,11 +105,19 @@ test("rejects a measured row without a numeric metric", () => {
   assert.match(result.stderr, /metric\.value must be a finite/u);
 });
 
-test("accepts a local catalog base SHA that is an older current-HEAD ancestor", () => {
+test("accepts a historical local catalog base SHA on the declared base-ref history", () => {
   const manifest = readManifest();
-  setLocalBase(manifest, priorBaseSha);
+  setLocalBase(manifest, priorBaseSha, "origin/develop");
   const result = runManifest(manifest);
   assert.equal(result.status, 0, result.stderr);
+});
+
+test("rejects a local feature-only base SHA outside the declared base-ref history", () => {
+  const manifest = readManifest();
+  setLocalBase(manifest, baseSha, "origin/develop");
+  const result = runManifest(manifest);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /baseSha .* not an ancestor of declared baseRef origin\/develop/u);
 });
 
 test("rejects a stale or unrelated base SHA", () => {
