@@ -19,7 +19,7 @@ concurrency:
 env:
   PNPM_CONFIG_AUDIT: "false"
   PNPM_CONFIG_FUND: "false"
-  COMPACT_COMPILER_VERSION: 0.30.0
+  COMPACT_COMPILER_VERSION: 0.31.1
   PROOF_SERVER_IMAGE: ${{ vars.PROOF_SERVER_IMAGE != '' && vars.PROOF_SERVER_IMAGE || 'midnightntwrk/proof-server:8.0.3' }}
   VC_GITHUB_DEPENDENCY_TOKEN: ${{ secrets.MIDNIGHTCI_REPO || github.token }}
 

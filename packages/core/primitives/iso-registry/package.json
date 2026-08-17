@@ -21,7 +21,7 @@
   },
   "scripts": {
     "contract": "pnpm run compact",
-    "compact": "node ../../../../tooling/scripts/ensure-compact-artifacts.mjs --manifest src/managed/.compact-artifact.json --source-root src --output src/managed/iso-registry -- compact compile src/iso-registry.compact src/managed/iso-registry && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
+    "compact": "node ../../../../tooling/scripts/ensure-compact-artifacts.mjs --manifest src/managed/.compact-artifact.json --source-root src --output src/managed/iso-registry -- compact compile src/iso-registry.compact src/managed/iso-registry && node ./scripts/strip-managed-sourcemaps.mjs",
     "test": "vitest run",
     "test:ci": "vitest run",
     "prepack": "pnpm run build",
@@ -33,7 +33,7 @@
     "all": "pnpm run compact && pnpm run build && pnpm run test:ci"
   },
   "dependencies": {
-    "@midnight-ntwrk/compact-runtime": "*"
+    "@midnight-ntwrk/compact-runtime": "^0.16.0"
   },
   "files": [
     "dist/**",

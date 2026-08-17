@@ -58,15 +58,15 @@
     "clean": "rm -rf dist src/managed coverage reports *.tsbuildinfo"
   },
   "dependencies": {
-    "@midnight-ntwrk/compact-runtime": "0.15.0"
+    "@midnight-ntwrk/compact-runtime": "0.16.0"
   },
   "files": ["dist/**", "src/**/*.compact", "README.md", "CHANGELOG.md", "package.json"],
   "midnight": {
     "maturity": "core",
     "packageClass": "dist",
     "releaseStage": "supported",
-    "compactCompilerVersion": "0.30.0",
-    "compactRuntimeVersion": "0.15.0",
+    "compactCompilerVersion": "0.31.1",
+    "compactRuntimeVersion": "0.16.0",
     "compactSources": [
       "src/credentials.compact",
       "src/credentials/bindings.compact",

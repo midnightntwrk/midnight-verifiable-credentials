@@ -232,7 +232,10 @@ export function updateManifest(root, manifestPath = DEFAULT_MANIFEST) {
   try { execFileSync("git", ["lfs", "version"], { stdio: "ignore" }); lfsAvailable = true; } catch {}
   if (oversized.length > 0 && !lfsAvailable) throw new Error(`Git LFS unavailable; refusing to write oversized fixtures: ${oversized.map((item) => `${item.path} (${item.bytes} bytes)`).join(", ")}`);
   const { artifacts: _artifacts, missingRoots: _missingRoots, sourceFiles: _sourceFiles, ...provenance } = inventory;
-  const next = { ...manifest, status: inventory.artifactCount ? "validated" : "awaiting-lfs-storage", provenance: { ...manifest.provenance, ...provenance }, artifacts: inventory.artifacts };
+  // Keep the top-level compiler stamp in sync with provenance so cache keys and
+  // validation never disagree with the recorded compiler after regeneration.
+  const compiler = { ...manifest.compiler, version: provenance.compilerVersion };
+  const next = { ...manifest, compiler, status: inventory.artifactCount ? "validated" : "awaiting-lfs-storage", provenance: { ...manifest.provenance, ...provenance }, artifacts: inventory.artifacts };
   writeFileSync(absolute, `${JSON.stringify(next, null, 2)}\n`);
   return next;
 }

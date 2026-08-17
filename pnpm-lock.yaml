@@ -47,8 +47,8 @@ importers:
   .:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: 0.15.0
-        version: 0.15.0
+        specifier: 0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/ledger-v8':
         specifier: 8.1.0
         version: 8.1.0
@@ -187,14 +187,14 @@ importers:
         version: 0.5.0
     devDependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
 
   packages/components/integration/standalone-environment:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did':
         specifier: 0.5.0
         version: 0.5.0
@@ -223,8 +223,8 @@ importers:
   packages/components/orchestration/protocol:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -247,8 +247,8 @@ importers:
   packages/core/capabilities/same-holder:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../primitives/credentials
@@ -256,8 +256,8 @@ importers:
   packages/core/compact:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: 0.15.0
-        version: 0.15.0
+        specifier: 0.16.0
+        version: 0.16.0
 
   packages/core/display: {}
 
@@ -266,14 +266,14 @@ importers:
   packages/core/primitives/credentials:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: ^0.15.0
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
 
   packages/core/primitives/iso-registry:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
 
   packages/core/proofs:
     dependencies:
@@ -290,8 +290,8 @@ importers:
   packages/protocols/openid:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
       zod:
         specifier: ^4.1.0
         version: 4.4.3
@@ -299,8 +299,8 @@ importers:
   packages/prototypes/credential-families/birth:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -308,8 +308,8 @@ importers:
   packages/prototypes/credential-families/birth-secret:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -326,8 +326,8 @@ importers:
   packages/prototypes/credential-families/digital-passport:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -338,8 +338,8 @@ importers:
   packages/prototypes/credential-families/dummy-claims:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -347,8 +347,8 @@ importers:
   packages/prototypes/credential-families/hello-family:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -362,8 +362,8 @@ importers:
   packages/prototypes/credential-families/mixed-claims:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -371,8 +371,8 @@ importers:
   packages/prototypes/credential-families/university-diploma:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -380,8 +380,8 @@ importers:
   packages/registry/status-registry:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../core/primitives/credentials
@@ -389,8 +389,8 @@ importers:
   packages/use-cases/age-gate/contract:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -452,8 +452,8 @@ importers:
   packages/use-cases/hello-verifier/contract:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -467,8 +467,8 @@ importers:
   packages/use-cases/university/contract:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials

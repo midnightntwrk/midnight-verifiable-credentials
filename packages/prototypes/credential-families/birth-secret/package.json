@@ -51,7 +51,7 @@
   },
   "scripts": {
     "contract": "pnpm run compact",
-    "compact": "node ../../../../tooling/scripts/ensure-compact-package-aliases.mjs && node ../../../../tooling/scripts/ensure-compact-artifacts.mjs --manifest src/managed/.compact-artifact.json --source-root src --output src/managed/secret-birth-credential -- compact compile src/secret-birth-credential.compact src/managed/secret-birth-credential && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
+    "compact": "node ../../../../tooling/scripts/ensure-compact-package-aliases.mjs && node ../../../../tooling/scripts/ensure-compact-artifacts.mjs --manifest src/managed/.compact-artifact.json --source-root src --output src/managed/secret-birth-credential -- compact compile src/secret-birth-credential.compact src/managed/secret-birth-credential && node ./scripts/strip-managed-sourcemaps.mjs",
     "prebuild": "(test -f ../../../../packages/core/primitives/credentials/dist/managed/credentials/contract/index.js || pnpm --dir ../../../../packages/core/primitives/credentials run build) && (test -f ../../../../packages/core/capabilities/same-holder/dist/index.js || pnpm --dir ../../../../packages/core/capabilities/same-holder run build) && (test -f ../birth/dist/managed/birth-credential/contract/index.js || pnpm --dir ../birth run build)",
     "pretypecheck": "pnpm --dir ../../../../packages/core/primitives/credentials run build && pnpm --dir ../../../../packages/core/capabilities/same-holder run build && pnpm --dir ../birth run build",
     "pretest": "pnpm --dir ../../../../packages/core/primitives/credentials run build && pnpm --dir ../../../../packages/core/capabilities/same-holder run build && pnpm --dir ../birth run build && pnpm run compact",
@@ -67,11 +67,11 @@
     "all": "pnpm run build && pnpm run test:ci"
   },
   "dependencies": {
-    "@midnight-ntwrk/compact-runtime": "*",
+    "@midnight-ntwrk/compact-runtime": "^0.16.0",
     "@midnight-ntwrk/midnight-did-credentials": "*",
     "@midnight-ntwrk/midnight-did-credentials-birth": "*",
-    "@midnight-ntwrk/midnight-did-credentials-status-registry": "*",
-    "@midnight-ntwrk/midnight-did-credentials-same-holder": "*"
+    "@midnight-ntwrk/midnight-did-credentials-same-holder": "*",
+    "@midnight-ntwrk/midnight-did-credentials-status-registry": "*"
   },
   "files": [
     "dist/**",

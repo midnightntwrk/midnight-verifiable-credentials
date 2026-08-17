@@ -89,10 +89,14 @@ Every candidate must:
   `tooling/scripts/check-release-package-contract.mjs`.
 
 The RC2 Compact package is validated against the exact compiler/runtime tuple
-`@midnight-ntwrk/compact-runtime@0.15.0` and Compact compiler `0.30.0`.
-Generated build metadata and clean-consumer checks reject runtime drift. A
-future compatible `0.15.x` range requires a separately reviewed compatibility
-change with oldest/newest patch evidence; `0.16.0` is excluded from this RC.
+`@midnight-ntwrk/compact-runtime@0.16.0` and Compact compiler `0.31.1`.
+Generated build metadata and clean-consumer checks reject runtime drift. The
+Compact `0.31.1` toolchain natively targets `compact-runtime 0.16.0`
+(`checkRuntimeVersion('0.16.0')` is emitted directly by the compiler), so the
+historical post-compile runtime-version alignment workaround is no longer
+applied. A future compatible `0.16.x` range requires a separately reviewed
+compatibility change with oldest/newest patch evidence; `0.17.0` is excluded
+from this RC.
 
 ## Clean-consumer evidence
 

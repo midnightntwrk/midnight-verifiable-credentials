@@ -3,7 +3,7 @@
   "version": 1,
   "baseRef": "origin/develop",
   "baseSha": "0192ba65300bb742067d956465578ca154de89fc",
-  "observedAt": "2026-08-07",
+  "observedAt": "2026-08-17",
   "evidence": [
     {
       "id": "core-credentials-tests",
