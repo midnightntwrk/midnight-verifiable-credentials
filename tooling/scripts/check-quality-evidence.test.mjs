@@ -105,12 +105,19 @@ test("rejects a measured row without a numeric metric", () => {
   assert.match(result.stderr, /metric\.value must be a finite/u);
 });
 
+test("accepts a local catalog base SHA that is an older current-HEAD ancestor", () => {
+  const manifest = readManifest();
+  setLocalBase(manifest, priorBaseSha);
+  const result = runManifest(manifest);
+  assert.equal(result.status, 0, result.stderr);
+});
+
 test("rejects a stale or unrelated base SHA", () => {
   const manifest = readManifest();
   setLocalBase(manifest, "0000000000000000000000000000000000000000");
   const result = runManifest(manifest);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /baseSha .* 40-character|baseSha .* stale|does not match resolved baseRef/u);
+  assert.match(result.stderr, /baseSha .* 40-character|baseSha .* stale|unable to resolve baseSha/u);
 });
 
 test("pull-request events require exact resolution of the workflow-provided base ref and SHA", () => {
