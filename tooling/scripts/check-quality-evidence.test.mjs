@@ -49,7 +49,7 @@ const createLocalAncestryFixture = () => {
   git(["config", "user.email", "quality-evidence-test@example.invalid"]);
   git(["config", "commit.gpgSign", "false"]);
   const historicalBaseSha = commit("history.txt", "historical base\n", "historical base");
-  git(["branch", "quality-base"]);
+  git(["checkout", "-b", "quality-base"]);
   commit("history.txt", "advanced base\n", "advance base");
   git(["checkout", "-b", "quality-feature", historicalBaseSha]);
   const featureOnlySha = commit("feature.txt", "feature-only\n", "feature-only commit");
