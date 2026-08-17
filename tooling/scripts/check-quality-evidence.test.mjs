@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { execFileSync, spawnSync } from "node:child_process";
 import { randomBytes } from "node:crypto";
 import { tmpdir } from "node:os";
@@ -28,13 +28,41 @@ const withWorkflowDispatchRef = (run) => {
 
 const readManifest = () => JSON.parse(readFileSync(manifestPath, "utf8"));
 
-const setLocalBase = (manifest, sha = baseSha) => {
-  manifest.baseRef = "HEAD";
+const setLocalBase = (manifest, sha = baseSha, ref = "HEAD") => {
+  manifest.baseRef = ref;
   manifest.baseSha = sha;
   return manifest;
 };
 
-const runManifest = (manifest, eventName = "local", contract = {}) => {
+const createLocalAncestryFixture = () => {
+  const root = mkdtempSync(path.join(tmpdir(), "vc-quality-evidence-git-"));
+  const git = (args) => execFileSync("git", args, { cwd: root, encoding: "utf8" }).trim();
+  const commit = (filename, contents, message) => {
+    writeFileSync(path.join(root, filename), contents);
+    git(["add", filename]);
+    git(["-c", "commit.gpgSign=false", "commit", "-m", message]);
+    return git(["rev-parse", "HEAD"]);
+  };
+
+  git(["init", "--initial-branch=main"]);
+  git(["config", "user.name", "Quality Evidence Test"]);
+  git(["config", "user.email", "quality-evidence-test@example.invalid"]);
+  git(["config", "commit.gpgSign", "false"]);
+  const historicalBaseSha = commit("history.txt", "historical base\n", "historical base");
+  git(["checkout", "-b", "quality-base"]);
+  commit("history.txt", "advanced base\n", "advance base");
+  git(["checkout", "-b", "quality-feature", historicalBaseSha]);
+  const featureOnlySha = commit("feature.txt", "feature-only\n", "feature-only commit");
+
+  return {
+    root,
+    baseRef: "refs/heads/quality-base",
+    historicalBaseSha,
+    featureOnlySha,
+  };
+};
+
+const runManifest = (manifest, eventName = "local", contract = {}, root = repoRoot) => {
   const directory = mkdtempSync(path.join(tmpdir(), "vc-quality-evidence-"));
   const fixture = path.join(directory, "quality-evidence.json");
   writeFileSync(fixture, JSON.stringify(manifest, null, 2));
@@ -51,8 +79,8 @@ const runManifest = (manifest, eventName = "local", contract = {}) => {
     delete env.QUALITY_EVIDENCE_BASE_REF;
     delete env.QUALITY_EVIDENCE_BASE_SHA;
   }
-  return spawnSync(process.execPath, [script, "--root", repoRoot, "--manifest", fixture], {
-    cwd: repoRoot,
+  return spawnSync(process.execPath, [script, "--root", root, "--manifest", fixture], {
+    cwd: root,
     encoding: "utf8",
     env,
   });
@@ -105,12 +133,37 @@ test("rejects a measured row without a numeric metric", () => {
   assert.match(result.stderr, /metric\.value must be a finite/u);
 });
 
+test("accepts a historical local catalog base SHA on the declared base-ref history", () => {
+  const fixture = createLocalAncestryFixture();
+  try {
+    const manifest = readManifest();
+    setLocalBase(manifest, fixture.historicalBaseSha, fixture.baseRef);
+    const result = runManifest(manifest, "local", {}, fixture.root);
+    assert.equal(result.status, 0, result.stderr);
+  } finally {
+    rmSync(fixture.root, { recursive: true, force: true });
+  }
+});
+
+test("rejects a local feature-only base SHA outside the declared base-ref history", () => {
+  const fixture = createLocalAncestryFixture();
+  try {
+    const manifest = readManifest();
+    setLocalBase(manifest, fixture.featureOnlySha, fixture.baseRef);
+    const result = runManifest(manifest, "local", {}, fixture.root);
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /baseSha .* not an ancestor of declared baseRef refs\/heads\/quality-base/u);
+  } finally {
+    rmSync(fixture.root, { recursive: true, force: true });
+  }
+});
+
 test("rejects a stale or unrelated base SHA", () => {
   const manifest = readManifest();
   setLocalBase(manifest, "0000000000000000000000000000000000000000");
   const result = runManifest(manifest);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /baseSha .* 40-character|baseSha .* stale|does not match resolved baseRef/u);
+  assert.match(result.stderr, /baseSha .* 40-character|baseSha .* stale|unable to resolve baseSha/u);
 });
 
 test("pull-request events require exact resolution of the workflow-provided base ref and SHA", () => {
