@@ -40,13 +40,14 @@ const createLocalAncestryFixture = () => {
   const commit = (filename, contents, message) => {
     writeFileSync(path.join(root, filename), contents);
     git(["add", filename]);
-    git(["commit", "-m", message]);
+    git(["-c", "commit.gpgSign=false", "commit", "-m", message]);
     return git(["rev-parse", "HEAD"]);
   };
 
   git(["init", "--initial-branch=main"]);
   git(["config", "user.name", "Quality Evidence Test"]);
   git(["config", "user.email", "quality-evidence-test@example.invalid"]);
+  git(["config", "commit.gpgSign", "false"]);
   const historicalBaseSha = commit("history.txt", "historical base\n", "historical base");
   git(["branch", "quality-base"]);
   commit("history.txt", "advanced base\n", "advance base");
