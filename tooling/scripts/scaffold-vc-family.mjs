@@ -436,7 +436,7 @@ export default [
             all: "pnpm run compact && pnpm run build && pnpm run test:ci",
           },
           dependencies: {
-            "@midnight-ntwrk/compact-runtime": "*",
+            "@midnight-ntwrk/compact-runtime": "^0.16.0",
             "@midnight-ntwrk/midnight-did-credentials": "*",
           },
           files: [
