@@ -166,6 +166,10 @@ const checkBaseSha = (root, baseRef, baseSha, eventName) => {
     }
     ensureCommitExists(root, baseSha);
   } else {
+    // Local validation may run after the mutable base ref has advanced beyond
+    // the historical base where the catalog evidence was observed. Accept that
+    // historical base only when it remains on both the declared base-ref and
+    // checkout-HEAD histories.
     let resolvedBaseSha;
     try {
       resolvedBaseSha = run("git", ["-C", root, "rev-parse", `${baseRef}^{commit}`], {
@@ -174,8 +178,14 @@ const checkBaseSha = (root, baseRef, baseSha, eventName) => {
     } catch (error) {
       fail(`unable to resolve baseRef ${baseRef} under ${root}; CI checkouts must include the base ref history${gitFailureMessage(error)}`);
     }
-    if (resolvedBaseSha !== baseSha) {
-      fail(`baseSha ${baseSha} does not match resolved baseRef ${baseRef} (${resolvedBaseSha})`);
+    ensureCommitExists(root, baseSha);
+    try {
+      run("git", ["-C", root, "merge-base", "--is-ancestor", baseSha, resolvedBaseSha], {
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "pipe"],
+      });
+    } catch (error) {
+      fail(`baseSha ${baseSha} is not an ancestor of declared baseRef ${baseRef} (${resolvedBaseSha})${gitFailureMessage(error)}`);
     }
   }
 
