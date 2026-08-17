@@ -160,6 +160,20 @@ npx dev-loops@0.9.0 doctor
 npx dev-loops@0.9.0 gates
 ```
 
-To roll back the integration, remove `.pi/settings.json` and `.devloops`, then
-remove the Pi cache directories under `.pi/`. The ordinary shell, Codex,
-Claude, GitHub, and `./run.sh` workflows continue to work without Pi.
+To roll back the integration, remove `.pi/settings.json`, `.devloops`, and
+`.pi/extensions/vc-current-head-ci-watch.ts`, then remove the Pi cache
+directories under `.pi/`. The ordinary shell, Codex, Claude, GitHub, and
+`./run.sh` workflows continue to work without Pi.
+
+## Current-head CI watch (interactive Pi only)
+
+`.pi/extensions/vc-current-head-ci-watch.ts` is a trusted-session convenience
+watcher. After installing or updating the checkout, run `/reload` or restart
+Pi so it loads. While Pi remains open in an interactive trusted session, it
+checks this repository's open PRs authored by the authenticated `gh` user every
+five minutes. A newly observed failed current head queues an attributed
+`continue dev loop on PR <N>` follow-up with the failed check names; pending,
+unknown, and previously observed PR/head failures do not trigger it.
+
+This is an in-session dev-loop route/fix prompt, not a daemon. It never merges,
+approves, marks a PR ready, or changes GitHub state.

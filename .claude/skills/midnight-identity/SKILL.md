@@ -74,3 +74,50 @@ Use a user-level Midnight MCP config when available; do not commit personal MCP 
 command = "pnpm"
 args = ["exec", "midnight-mcp@latest"]
 ```
+
+## Workflow Safety
+
+### PR isolation and consolidation
+
+- Treat `develop` as the only default PR base. Before a mutating task, run
+  `git fetch origin` and use an isolated worktree/feature branch based on
+  `origin/develop`; do not edit, validate, commit, or merge from the primary
+  checkout.
+- Use the repository `dev-loop` entrypoint for issue/PR lifecycle work. Resolve
+  the issue/PR state first; when an open linked PR exists, continue that
+  canonical PR rather than opening a duplicate. Consolidate bot work only after
+  selecting compatible `develop`-target PRs with current-head evidence.
+- Keep one issue/scope per PR and one writer per worktree. Never merge a branch
+  into local `main`, never target `main` by default, and never run `gh pr merge`.
+  Stop at the human merge handoff.
+
+### CI failure triage
+
+- Re-baseline the canonical PR and current head SHA before acting. Identify the
+  failing check/job and confirm it ran against that head; use dev-loop CI-status
+  and CI-log helpers rather than shell polling or blind reruns.
+- Reproduce the named lane first. For university protocol changes, start with
+  `pnpm run ci:university-protocol`; add
+  `pnpm run ci:university-protocol-profiles` for profile/cohort/stress inputs.
+  Then run `./run.sh --light` and select the necessary full or integration runner target
+  from `AGENT.md`.
+- Classify each failure as repo-fixable, flaky/transient, CI configuration,
+  external-service outage, or unknown. Make one narrow validated fix per cycle.
+  If logs are unavailable or classification remains unknown, report the
+  head/check/job and stop; do not claim green, push speculation, or merge.
+
+### Selective-disclosure changes
+
+- Treat `claims` as public and `claimCommitments` as the private commitment
+  surface. Do not call a type cast or fixture constructor a privacy migration:
+  preserve the verifier/circuit trust boundary or stop for a contract decision.
+- Test serialized submission payloads, exports, and proof-server DTOs. Assert
+  hidden plaintext is absent, public claims are allowlisted, expected
+  commitments are present, and only requested `(value, opening)` pairs disclose.
+- Use private high-entropy, field-domain-separated openings and an unlinkable,
+  verifier/request-bound subject reference. Never derive either from public DID,
+  fixture, student, or routing data. Test altered openings and known/default
+  openings fail verification or recovery attempts.
+- Ensure holder-private opening/correlation material survives every supported
+  restart. Explicitly document any process-local or transport-linkability
+  limitation rather than representing the flow as durable/private by default.
