@@ -43,6 +43,9 @@ contract/.npm-cache
 .turbo/
 .pi/*
 !.pi/settings.json
+!.pi/extensions/
+.pi/extensions/*
+!.pi/extensions/vc-current-head-ci-watch.ts
 .tmp-trusted-time-capability-*
 
 # Optional eslint cache
