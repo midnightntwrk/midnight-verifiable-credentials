@@ -1,14 +1,12 @@
-{ self, inputs, ... }:
+{ self, ... }:
 
-let
-  midnight-did = inputs.midnight-did;
-in
 {
   perSystem =
-    { system, pkgs, ... }:
+    { pkgs, inputs', ... }:
     let
-      midnight-did-pkgs = midnight-did.packages.${system};
-      inherit (midnight-did-pkgs) compact-toolchain compact-midnight midnight-circuit-params;
+      compact-midnight = inputs'.flake-collection.packages.compact-midnight;
+      compact-toolchain = inputs'.flake-collection.packages.compact-toolchain;
+      midnight-circuit-params = pkgs.callPackage ./midnight-circuit-params.nix { };
       npm-artifacts = pkgs.callPackage ./npm-artifacts.nix {
         inherit compact-toolchain compact-midnight midnight-circuit-params;
         src = self;
@@ -17,7 +15,13 @@ in
     in
     {
       packages = {
-        inherit npm-artifacts pi-web;
+        inherit
+          npm-artifacts
+          pi-web
+          compact-midnight
+          compact-toolchain
+          midnight-circuit-params
+          ;
         default = npm-artifacts;
       };
 

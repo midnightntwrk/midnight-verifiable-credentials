@@ -51,7 +51,7 @@
   },
   "scripts": {
     "contract": "pnpm run compact",
-    "compact": "node ./scripts/ensure-compact-package-aliases.mjs && node ../../../../tooling/scripts/ensure-compact-artifacts.mjs --manifest src/managed/.compact-artifact.json --source-root src --output src/managed/digital-passport-credential -- compact compile src/digital-passport-credential.compact src/managed/digital-passport-credential && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
+    "compact": "node ./scripts/ensure-compact-package-aliases.mjs && node ../../../../tooling/scripts/ensure-compact-artifacts.mjs --manifest src/managed/.compact-artifact.json --source-root src --output src/managed/digital-passport-credential -- compact compile src/digital-passport-credential.compact src/managed/digital-passport-credential && node ./scripts/strip-managed-sourcemaps.mjs",
     "test": "vitest run",
     "test:ci": "vitest run",
     "prepack": "pnpm run build",

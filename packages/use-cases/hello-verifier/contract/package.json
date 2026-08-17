@@ -85,7 +85,7 @@
   },
   "scripts": {
     "contract": "pnpm run compact",
-    "compact": "node ../../../../tooling/scripts/ensure-compact-artifacts.mjs --manifest src/managed/.compact-artifact.json --source-root src --output src/managed/hello-verifier --output src/managed/hello-verifier-offchain --output src/managed/dummy-claims-verifier -- sh -c \"compact compile src/hello-verifier.compact src/managed/hello-verifier && compact compile src/hello-verifier-offchain.compact src/managed/hello-verifier-offchain && compact compile src/dummy-claims-verifier.compact src/managed/dummy-claims-verifier\" && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
+    "compact": "node ../../../../tooling/scripts/ensure-compact-artifacts.mjs --manifest src/managed/.compact-artifact.json --source-root src --output src/managed/hello-verifier --output src/managed/hello-verifier-offchain --output src/managed/dummy-claims-verifier -- sh -c \"compact compile src/hello-verifier.compact src/managed/hello-verifier && compact compile src/hello-verifier-offchain.compact src/managed/hello-verifier-offchain && compact compile src/dummy-claims-verifier.compact src/managed/dummy-claims-verifier\" && node ./scripts/strip-managed-sourcemaps.mjs",
     "prepare:credential-families": "pnpm --dir ../../../../packages/prototypes/credential-families/hello-family run build && pnpm --dir ../../../../packages/prototypes/credential-families/dummy-claims run build",
     "prebuild": "pnpm run prepare:credential-families",
     "pretypecheck": "pnpm run prepare:credential-families",

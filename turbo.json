@@ -38,6 +38,9 @@
       "env": [
         "CI"
       ],
+      "passThroughEnv": [
+        "COMPACT_DIRECTORY"
+      ],
       "outputs": []
     },
     "build": {
@@ -46,6 +49,9 @@
       ],
       "env": [
         "COMPACT_COMPILER_VERSION"
+      ],
+      "passThroughEnv": [
+        "COMPACT_DIRECTORY"
       ],
       "outputs": [
         "dist/**",
@@ -67,6 +73,9 @@
         "TEST_WALLET_SEED",
         "UNIVERSITY_PROTOCOL_PROFILE"
       ],
+      "passThroughEnv": [
+        "COMPACT_DIRECTORY"
+      ],
       "outputs": []
     },
     "test:ci": {
@@ -82,6 +91,9 @@
         "TEST_ENV",
         "TEST_WALLET_SEED",
         "UNIVERSITY_PROTOCOL_PROFILE"
+      ],
+      "passThroughEnv": [
+        "COMPACT_DIRECTORY"
       ],
       "outputs": []
     }

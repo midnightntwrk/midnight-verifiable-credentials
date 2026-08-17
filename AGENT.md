@@ -39,7 +39,7 @@ Standalone setup:
 
 ```bash
 pnpm install --frozen-lockfile
-compact update 0.30.0
+compact update 0.31.1
 ```
 
 Workspace setup:

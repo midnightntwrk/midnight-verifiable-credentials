@@ -47,8 +47,8 @@ importers:
   .:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: 0.15.0
-        version: 0.15.0
+        specifier: 0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/ledger-v8':
         specifier: 8.1.0
         version: 8.1.0
@@ -256,8 +256,8 @@ importers:
   packages/core/compact:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: 0.15.0
-        version: 0.15.0
+        specifier: 0.16.0
+        version: 0.16.0
 
   packages/core/display: {}
 
@@ -266,8 +266,8 @@ importers:
   packages/core/primitives/credentials:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: ^0.15.0
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
 
   packages/core/primitives/iso-registry:
     dependencies:
