@@ -101,8 +101,8 @@ args = ["exec", "midnight-mcp@latest"]
 - Reproduce the named lane first. For university protocol changes, start with
   `pnpm run ci:university-protocol`; add
   `pnpm run ci:university-protocol-profiles` for profile/cohort/stress inputs.
-  Then run `./run.sh --light` and the scope-triggered validation from
-  `.devloops`.
+  Then run `./run.sh --light` and select the necessary full or integration runner target
+  from `AGENT.md`.
 - Classify each failure as repo-fixable, flaky/transient, CI configuration,
   external-service outage, or unknown. Make one narrow validated fix per cycle.
   If logs are unavailable or classification remains unknown, report the

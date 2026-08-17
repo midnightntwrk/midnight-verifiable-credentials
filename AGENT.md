@@ -205,6 +205,10 @@ Commit form:
 git commit -S --signoff -m "<type>: <subject>"
 ```
 
+## Dev-loop PR policy
+
+For GitHub-first dev-loop work, follow [Dev-loop external review and CI remediation](docs/dev-loop-review-and-ci-remediation.md). The mandatory `external-review` gate requires an installed, authenticated Codex CLI. If `codex review --base origin/develop` cannot run, stop the gate and restore the CLI/authentication; do not waive the required review or mark the PR ready.
+
 ## Runner Targets
 
 Print target list:
