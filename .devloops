@@ -101,3 +101,10 @@ workflow:
   requireDraftFirst: true
   requireRetrospective: true
   devModeDefault: false
+
+# The mandatory external-review angle must run for every PR, including small diffs.
+localImplementation:
+  lightMode:
+    enabled: false
+    maxFiles: 2
+    maxLines: 100
