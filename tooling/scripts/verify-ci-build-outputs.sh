@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT_DIR="$(git rev-parse --show-toplevel)"
+ROOT_DIR="${ROOT_DIR:-$(git rev-parse --show-toplevel)}"
 source "$ROOT_DIR/tooling/scripts/ci-build-output-groups.sh"
 
 groups=("$@")
@@ -31,6 +31,9 @@ verify_managed_dist_mirror() {
 
   while IFS= read -r -d '' source_file; do
     local relative_file="${source_file#"$source_root/"}"
+    # The artifact manifest validates source-side reuse only. Package build
+    # scripts intentionally omit it from published dist/managed mirrors.
+    [[ "$relative_file" == ".compact-artifact.json" ]] && continue
     if [[ ! -f "$dist_root/$relative_file" ]]; then
       echo "[verify-ci-build-outputs] Missing dist mirror file: ${dist_root#"$ROOT_DIR/"}/$relative_file" >&2
       exit 1
