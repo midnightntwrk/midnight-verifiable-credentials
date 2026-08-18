@@ -51,7 +51,7 @@
   },
   "scripts": {
     "contract": "pnpm run compact",
-    "compact": "node ../../../../tooling/scripts/ensure-compact-artifacts.mjs --manifest src/managed/.compact-artifact.json --source-root src --output src/managed/university-verifier -- compact compile src/university-verifier.compact src/managed/university-verifier && node ./scripts/strip-managed-sourcemaps.mjs",
+    "compact": "node ../../../../tooling/scripts/ensure-compact-artifacts.mjs --manifest src/managed/.compact-artifact.json --source-root src --output src/managed/university-verifier --recipe-input scripts/strip-managed-sourcemaps.mjs -- sh -c \"compact compile src/university-verifier.compact src/managed/university-verifier && node ./scripts/strip-managed-sourcemaps.mjs\"",
     "pretest": "pnpm run compact",
     "test": "vitest run",
     "pretest:ci": "pnpm run compact",

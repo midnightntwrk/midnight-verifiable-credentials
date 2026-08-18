@@ -13,14 +13,18 @@ invocation. A manifest is reusable only when all of these facts still hold:
 - every Compact source below the package `src` root, plus every recursively
   included Compact source (including sources in another package), has the
   recorded digest;
-- the current `compact compile --version` and `@midnight-ntwrk/compact-runtime`
-  version match the manifest; and
-- every declared output contains its generated `contract/index.js` entrypoint.
+- the current `compact compile --version`, `@midnight-ntwrk/compact-runtime`
+  version, declared recipe-input contents, and deterministic compiler-command recipe digest match the manifest;
+  and
+- every declared output has the recorded complete generated-file inventory and
+  content digest (including its generated `contract/index.js` entrypoint).
 
-Missing or unresolved includes, malformed manifests, missing entrypoints, source
-changes, and toolchain changes invalidate generation. Include parsing consumes
-Compact comments and formatting variants, and resolves only `.compact` sources
-inside the repository. On invalidation, every output owned by the manifest is
+Missing or unresolved includes, malformed manifests, missing or stale generated
+files, source changes, compiler-recipe changes, and toolchain changes invalidate
+generation. Include parsing consumes Compact comments and formatting variants,
+and resolves only `.compact` sources inside the Git repository or, when Git
+metadata is unavailable, inside the bounded ancestor workspace marked by
+`pnpm-workspace.yaml`. On invalidation, every output owned by the manifest is
 removed and the owner command must regenerate the complete set before the
 manifest is atomically published. `sourceRoot`, outputs, and the manifest are
 required to remain within the package root; cross-package includes are read-only

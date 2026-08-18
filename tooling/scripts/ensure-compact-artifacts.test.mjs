@@ -18,8 +18,9 @@ const createFixture = () => {
 printf '%s\\n' "$*" >> "$COMPACT_LOG"
 if [[ "$1" == compile && "$2" == --version ]]; then printf '%s\\n' "${"${COMPACT_FAKE_VERSION:-0.30.0}"}"; exit 0; fi
 if [[ -n "\${COMPACT_SLEEP:-}" ]]; then sleep "$COMPACT_SLEEP"; fi
-mkdir -p "$3/contract"
+mkdir -p "$3/contract" "$3/compiler"
 printf '%s\\n' generated > "$3/contract/index.js"
+printf '%s\\n' compiler-metadata > "$3/compiler/contract-info.json"
 `);
   execFileSync("chmod", ["+x", path.join(bin, "compact")]);
   return { fixture, bin, log: path.join(fixture, "invocations.log") };
@@ -117,6 +118,71 @@ test("digest follows transitive Compact includes and fails closed when one is un
   }
 });
 
+test("uses the bounded workspace root for cross-package includes without Git metadata", () => {
+  const { fixture, bin, log } = createFixture();
+  const packageRoot = path.join(fixture, "packages", "consumer");
+  try {
+    mkdirSync(path.join(packageRoot, "src"), { recursive: true });
+    mkdirSync(path.join(fixture, "packages", "shared"), { recursive: true });
+    writeFileSync(path.join(fixture, "pnpm-workspace.yaml"), "packages:\n  - packages/*\n");
+    writeFileSync(path.join(packageRoot, "src/main.compact"), 'include "../../shared/common";\ncontract Main {}\n');
+    writeFileSync(path.join(fixture, "packages", "shared/common.compact"), "// shared v1\n");
+
+    run(packageRoot, bin, log);
+    writeFileSync(path.join(fixture, "packages", "shared/common.compact"), "// shared v2\n");
+    run(packageRoot, bin, log);
+
+    assert.equal(readFileSync(log, "utf8").split("\n").filter((line) => line === "compile src/main.compact src/managed/main").length, 2);
+  } finally {
+    rmSync(fixture, { recursive: true, force: true });
+  }
+});
+
+test("invalidates changed recipes and every generated output file", () => {
+  const { fixture, bin, log } = createFixture();
+  const output = path.join(fixture, "src/managed/main");
+  try {
+    run(fixture, bin, log);
+    run(fixture, bin, log);
+
+    rmSync(path.join(output, "compiler/contract-info.json"));
+    run(fixture, bin, log);
+    writeFileSync(path.join(output, "contract/index.js"), "stale\n");
+    run(fixture, bin, log);
+    writeFileSync(path.join(output, "stale-generated-file.js"), "stale\n");
+    run(fixture, bin, log);
+    run(fixture, bin, log, [], ["compact", "compile", "src/main.compact", "src/managed/main", "--changed-recipe"]);
+
+    const compileLines = readFileSync(log, "utf8").split("\n").filter((line) => line.startsWith("compile src/main.compact src/managed/main"));
+    assert.equal(compileLines.length, 5);
+    const manifest = JSON.parse(readFileSync(path.join(fixture, "src/managed/.compact-artifact.json"), "utf8"));
+    assert.match(manifest.recipeDigest, /^[a-f0-9]{64}$/u);
+    assert.deepEqual(manifest.outputInventory[0].files, ["compiler/contract-info.json", "contract/index.js"]);
+  } finally {
+    rmSync(fixture, { recursive: true, force: true });
+  }
+});
+
+test("records post-processed outputs and recipe inputs before deciding they are reusable", () => {
+  const { fixture, bin, log } = createFixture();
+  const postprocessed = ["sh", "-c", "compact compile src/main.compact src/managed/main && sh post.sh"];
+  const recipeInput = ["--recipe-input", "post.sh"];
+  try {
+    writeFileSync(path.join(fixture, "post.sh"), "printf v1 > src/managed/main/contract/postprocessed.txt\n");
+    run(fixture, bin, log, recipeInput, postprocessed);
+    run(fixture, bin, log, recipeInput, postprocessed);
+    assert.equal(readFileSync(log, "utf8").split("\n").filter((line) => line.startsWith("compile src/main.compact")).length, 1);
+    writeFileSync(path.join(fixture, "post.sh"), "printf v2 > src/managed/main/contract/postprocessed.txt\n");
+    run(fixture, bin, log, recipeInput, postprocessed);
+    assert.equal(readFileSync(path.join(fixture, "src/managed/main/contract/postprocessed.txt"), "utf8"), "v2");
+    rmSync(path.join(fixture, "src/managed/main/contract/postprocessed.txt"));
+    run(fixture, bin, log, recipeInput, postprocessed);
+    assert.equal(readFileSync(log, "utf8").split("\n").filter((line) => line.startsWith("compile src/main.compact")).length, 3);
+  } finally {
+    rmSync(fixture, { recursive: true, force: true });
+  }
+});
+
 test("rejects traversal before deletion and publication", () => {
   const { fixture, bin, log } = createFixture();
   try {
@@ -197,9 +263,14 @@ test("Compact package lifecycle scripts share the artifact-first generation owne
     const scripts = JSON.parse(readFileSync(path.join(root, relative), "utf8")).scripts;
     const compactEntries = Object.entries(scripts)
       .filter(([name]) => name === "compact" || name.startsWith("compact:"));
-    const compactScripts = compactEntries.map(([, command]) => command).join(" ");
-    assert.match(compactScripts, /ensure-compact-artifacts\.mjs/u, relative);
-    for (const [, command] of compactEntries) assert.doesNotMatch(command, /ensure-compact-artifacts\.mjs[\s\S]*&&\s+node\s+.*ensure-compact-artifacts\.mjs/u, relative);
+    const artifactOwnerCommands = compactEntries
+      .map(([, command]) => command)
+      .filter((command) => command.includes("ensure-compact-artifacts.mjs"));
+    assert.ok(artifactOwnerCommands.length > 0, relative);
+    for (const command of artifactOwnerCommands) {
+      assert.match(command, /ensure-compact-artifacts\.mjs[\s\S]*-- sh -c "/u, relative);
+      assert.match(command, /(?:strip-managed-sourcemaps\.mjs|rm -rf src\/managed\/credentials\/compiler)/u, relative);
+    }
     if (relative === "packages/use-cases/age-gate/contract/package.json") {
       assert.match(scripts["compact:demo"], /--output src\/managed\/demo-revocation/u, relative);
       assert.match(scripts["compact:demo-revocation"], /--output src\/managed\/demo/u, relative);

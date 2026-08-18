@@ -226,6 +226,7 @@ const buildFiles = ({
   claimMode,
 }) => {
   const srcDir = path.join(packageRoot, "src");
+  const artifactHelper = toImportPath(packageRoot, path.join(repoRoot, "tooling", "scripts", "ensure-compact-artifacts.mjs"));
   const coreDir = path.join(repoRoot, "core", "primitives", "credentials", "src", "credentials");
   const coreImport = toImportPath(srcDir, coreDir);
   const holderType = holder === "hidden" ? "BlindedSecretHolderBinding" : "ExplicitHolderBinding";
@@ -424,12 +425,12 @@ export default [
           },
           scripts: {
             contract: "pnpm run compact",
-            compact: `node ./scripts/ensure-compact-package-aliases.mjs && compact compile src/${familyStem}.compact src/managed/${familyStem} && node ./scripts/strip-managed-sourcemaps.mjs`,
+            compact: `node ./scripts/ensure-compact-package-aliases.mjs && node ${artifactHelper} --manifest src/managed/.compact-artifact.json --source-root src --output src/managed/${familyStem} --recipe-input scripts/strip-managed-sourcemaps.mjs -- sh -c "compact compile src/${familyStem}.compact src/managed/${familyStem} && node ./scripts/strip-managed-sourcemaps.mjs"`,
             test: "vitest run",
             "test:ci": "vitest run",
             prepack: "pnpm run build",
             clean: "rm -rf dist && rm -rf coverage && rm -rf reports && rm -rf src/managed",
-            build: `pnpm run compact && rm -rf dist && mkdir -p dist && tsc -b tsconfig.build.json --force && cp -Rf ./src/managed ./dist/ && cp ./src/${familyStem}.compact ./dist && cp -Rf ./src/${familyStem} ./dist/`,
+            build: `pnpm run compact && rm -rf dist && mkdir -p dist && tsc -b tsconfig.build.json --force && cp -Rf ./src/managed ./dist/ && rm -f ./dist/managed/.compact-artifact.json && cp ./src/${familyStem}.compact ./dist && cp -Rf ./src/${familyStem} ./dist/`,
             lint: "eslint src --ignore-pattern 'src/managed/**'",
             "lint:fix": "eslint src --fix --ignore-pattern 'src/managed/**'",
             typecheck: "pnpm run compact && tsc -p tsconfig.json --noEmit",

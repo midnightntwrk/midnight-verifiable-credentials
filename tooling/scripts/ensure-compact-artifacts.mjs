@@ -5,21 +5,21 @@ import { existsSync, readFileSync, readdirSync, statSync, writeFileSync, mkdirSy
 import path from "node:path";
 import { createRequire } from "node:module";
 
-const schema = 1;
+const schema = 3;
 const lockTimeoutMs = 5 * 60 * 1000;
 const ownerlessLockGraceMs = 1000;
-const usage = "ensure-compact-artifacts.mjs --manifest <path> --source-root <path> --output <path> [--output <path> ...] [--runtime-version <version>] -- <compiler command>";
+const usage = "ensure-compact-artifacts.mjs --manifest <path> --source-root <path> --output <path> [--output <path> ...] [--runtime-version <version>] [--recipe-input <path> ...] -- <compiler command>";
 
 const parseArgs = (argv) => {
-  const options = { outputs: [], command: [] };
+  const options = { outputs: [], recipeInputs: [], command: [] };
   let separator = argv.indexOf("--");
   if (separator < 0) separator = argv.length;
   for (let index = 0; index < separator; index += 1) {
     const arg = argv[index];
-    if (arg === "--manifest" || arg === "--source-root" || arg === "--output" || arg === "--runtime-version") {
+    if (arg === "--manifest" || arg === "--source-root" || arg === "--output" || arg === "--runtime-version" || arg === "--recipe-input") {
       const value = argv[++index];
       if (!value) throw new Error(`${arg} requires a value`);
-      if (arg === "--output") options.outputs.push(value); else if (arg === "--source-root") options.sourceRoot = value;
+      if (arg === "--output") options.outputs.push(value); else if (arg === "--recipe-input") options.recipeInputs.push(value); else if (arg === "--source-root") options.sourceRoot = value;
       else if (arg === "--runtime-version") options.runtime = value; else options[arg.slice(2).replaceAll("-", "_")] = value;
     } else {
       throw new Error(`Unknown argument: ${arg}\nUsage: ${usage}`);
@@ -82,11 +82,24 @@ const digest = (root, files) => {
   return hash.digest("hex");
 };
 
+const workspaceRootFor = (packageRoot) => {
+  let current = realpathSync(packageRoot);
+  // A Nix source derivation has no .git directory. Limit the search so an
+  // unrelated marker above the checkout cannot widen the include boundary.
+  for (let depth = 0; depth < 32; depth += 1) {
+    if (existsSync(path.join(current, "pnpm-workspace.yaml"))) return current;
+    const parent = path.dirname(current);
+    if (parent === current) break;
+    current = parent;
+  }
+  return realpathSync(packageRoot);
+};
+
 const repositoryRootFor = (packageRoot) => {
   try {
     return realpathSync(execFileSync("git", ["rev-parse", "--show-toplevel"], { cwd: packageRoot, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim());
   } catch {
-    return realpathSync(packageRoot);
+    return workspaceRootFor(packageRoot);
   }
 };
 
@@ -197,18 +210,55 @@ const runtimeVersion = (root, explicit) => {
   return JSON.parse(readFileSync(runtimePackage, "utf8")).version;
 };
 
-const outputIsValid = (output) => existsSync(path.join(output, "contract", "index.js"));
+const outputInventory = (output, packageRoot) => {
+  if (!existsSync(path.join(output, "contract", "index.js"))) return null;
+  const files = filesUnder(output, packageRoot);
+  return {
+    files: files.map((file) => path.relative(output, file).split(path.sep).join("/")).sort(),
+    digest: digest(output, files),
+  };
+};
+
+const recipeDigest = (root, command, inputs) => {
+  const hash = createHash("sha256");
+  hash.update(JSON.stringify(command));
+  for (const input of inputs) {
+    hash.update("\0");
+    hash.update(path.relative(root, input).split(path.sep).join("/"));
+    hash.update("\0");
+    hash.update(readFileSync(input));
+  }
+  return hash.digest("hex");
+};
+
+const sameOutputInventory = (left, right) => left.length === right.length
+  && left.every((output, index) => output.digest === right[index]?.digest
+    && output.files.length === right[index]?.files.length
+    && output.files.every((file, fileIndex) => file === right[index]?.files[fileIndex]));
 
 const validManifest = (manifest, packageRoot) => {
   if (!manifest || typeof manifest !== "object" || Array.isArray(manifest)) return false;
   if (typeof manifest.schema !== "number" || typeof manifest.sourceRoot !== "string"
       || typeof manifest.sourceDigest !== "string" || !/^[a-f0-9]{64}$/u.test(manifest.sourceDigest)
       || typeof manifest.compiler !== "string" || typeof manifest.runtime !== "string"
+      || typeof manifest.recipeDigest !== "string" || !/^[a-f0-9]{64}$/u.test(manifest.recipeDigest)
+      || !Array.isArray(manifest.recipeInputs) || manifest.recipeInputs.some((input) => typeof input !== "string" || input.length === 0)
+      || new Set(manifest.recipeInputs).size !== manifest.recipeInputs.length
       || !Array.isArray(manifest.outputs) || manifest.outputs.length === 0
       || manifest.outputs.some((output) => typeof output !== "string" || output.length === 0)
-      || new Set(manifest.outputs).size !== manifest.outputs.length) return false;
+      || new Set(manifest.outputs).size !== manifest.outputs.length
+      || !Array.isArray(manifest.outputInventory) || manifest.outputInventory.length !== manifest.outputs.length
+      || manifest.outputInventory.some((inventory) => !inventory || typeof inventory !== "object" || Array.isArray(inventory)
+        || typeof inventory.digest !== "string" || !/^[a-f0-9]{64}$/u.test(inventory.digest)
+        || !Array.isArray(inventory.files) || inventory.files.some((file) => typeof file !== "string" || file.length === 0
+          || path.isAbsolute(file) || file.split(/[\\/]/u).includes(".."))
+        || new Set(inventory.files).size !== inventory.files.length)) return false;
   try {
     assertPackagePath(packageRoot, manifest.sourceRoot, "Manifest sourceRoot", { allowRoot: true });
+    for (const input of manifest.recipeInputs) {
+      const recipeInput = assertPackagePath(packageRoot, input, "Manifest recipe input");
+      if (!statSync(recipeInput).isFile()) throw new Error("Manifest recipe input must be a file");
+    }
     for (const output of manifest.outputs) assertPackagePath(packageRoot, output, "Manifest output");
   } catch {
     return false;
@@ -284,11 +334,17 @@ const acquireLock = (lockPath) => {
   }
 };
 
-export const ensureArtifacts = ({ root = process.cwd(), manifest, sourceRoot, outputs, runtime, command, env = process.env }) => {
+export const ensureArtifacts = ({ root = process.cwd(), manifest, sourceRoot, outputs, recipeInputs = [], runtime, command, env = process.env }) => {
   const absoluteRoot = path.resolve(root);
   const packageRoot = realpathSync(absoluteRoot);
   const sourceRootPath = assertPackagePath(absoluteRoot, sourceRoot, "sourceRoot", { allowRoot: true });
   const requestedOutputNames = [...new Set(outputs)];
+  const requestedRecipeInputNames = [...new Set(recipeInputs)];
+  const requestedRecipeInputs = requestedRecipeInputNames.map((input) => {
+    const recipeInput = assertPackagePath(absoluteRoot, input, "recipe input");
+    if (!statSync(recipeInput).isFile()) throw new Error(`recipe input must be a file: ${input}`);
+    return recipeInput;
+  });
   const requestedOutputs = requestedOutputNames.map((output) => assertPackagePath(absoluteRoot, output, "output"));
   if (requestedOutputs.some((output) => output === sourceRootPath || isWithin(output, sourceRootPath))) {
     throw new Error("output must not contain or replace sourceRoot");
@@ -300,6 +356,7 @@ export const ensureArtifacts = ({ root = process.cwd(), manifest, sourceRoot, ou
     let currentSourceDigest = sourceDigest(packageRoot, sourceRootPath, repositoryRoot);
     const currentCompiler = compilerVersion();
     const currentRuntime = runtimeVersion(absoluteRoot, runtime);
+    const currentRecipeDigest = recipeDigest(packageRoot, command, requestedRecipeInputs);
     const previous = readManifest(manifestFile, packageRoot);
 
     // A manifest has one owner and declares that owner's complete output set. A
@@ -312,9 +369,12 @@ export const ensureArtifacts = ({ root = process.cwd(), manifest, sourceRoot, ou
       && previous.sourceDigest === currentSourceDigest
       && previous.compiler === currentCompiler
       && previous.runtime === currentRuntime
+      && previous.recipeDigest === currentRecipeDigest
+      && previous.recipeInputs?.length === requestedRecipeInputNames.length
+      && previous.recipeInputs.every((input) => requestedRecipeInputNames.includes(input))
       && previous.outputs?.length === requestedOutputNames.length
       && previous.outputs.every((output) => requestedOutputNames.includes(output))
-      && requestedOutputs.every((output) => outputIsValid(output));
+      && sameOutputInventory(previous.outputInventory, requestedOutputs.map((output) => outputInventory(output, packageRoot)));
 
     if (reusable) {
       console.log(`[compact-artifacts] Reusing validated outputs (${manifest})`);
@@ -330,7 +390,8 @@ export const ensureArtifacts = ({ root = process.cwd(), manifest, sourceRoot, ou
       const result = spawnSync(command[0], command.slice(1), { cwd: absoluteRoot, env, stdio: "inherit" });
       if (result.status !== 0) process.exitCode = result.status ?? 1;
       if (result.status !== 0) throw new Error(`Compact generation failed with exit status ${result.status}`);
-      if (!requestedOutputs.every((output) => outputIsValid(output))) {
+      const generatedOutputInventory = requestedOutputs.map((output) => outputInventory(output, packageRoot));
+      if (generatedOutputInventory.some((inventory) => inventory === null)) {
         throw new Error(`Compact generation completed without all required outputs: ${requestedOutputNames.join(", ")}`);
       }
       const completedSourceDigest = sourceDigest(packageRoot, sourceRootPath, repositoryRoot);
@@ -341,7 +402,7 @@ export const ensureArtifacts = ({ root = process.cwd(), manifest, sourceRoot, ou
       }
       mkdirSync(path.dirname(manifestFile), { recursive: true });
       const temporary = `${manifestFile}.tmp-${process.pid}`;
-      writeFileSync(temporary, `${JSON.stringify({ schema, sourceRoot, sourceDigest: currentSourceDigest, compiler: currentCompiler, runtime: currentRuntime, outputs: requestedOutputNames }, null, 2)}\n`);
+      writeFileSync(temporary, `${JSON.stringify({ schema, sourceRoot, sourceDigest: currentSourceDigest, compiler: currentCompiler, runtime: currentRuntime, recipeDigest: currentRecipeDigest, recipeInputs: requestedRecipeInputNames, outputs: requestedOutputNames, outputInventory: generatedOutputInventory }, null, 2)}\n`);
       renameSync(temporary, manifestFile);
       console.log(`[compact-artifacts] Generated validated outputs (${manifest})`);
       return { reused: false, sourceDigest: currentSourceDigest, compiler: currentCompiler, runtime: currentRuntime };

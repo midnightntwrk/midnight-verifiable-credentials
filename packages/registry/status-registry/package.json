@@ -52,7 +52,7 @@
   "scripts": {
     "prepare:credentials": "pnpm --dir ../../../packages/core/primitives/credentials run build",
     "contract": "pnpm run compact",
-    "compact": "node ../../../tooling/scripts/ensure-compact-package-aliases.mjs && node ../../../tooling/scripts/ensure-compact-artifacts.mjs --manifest src/managed/.compact-artifact.json --source-root src --output src/managed/revocation-registry -- compact compile src/revocation-registry.compact src/managed/revocation-registry && node ./scripts/strip-managed-sourcemaps.mjs",
+    "compact": "node ../../../tooling/scripts/ensure-compact-package-aliases.mjs && node ../../../tooling/scripts/ensure-compact-artifacts.mjs --manifest src/managed/.compact-artifact.json --source-root src --output src/managed/revocation-registry --recipe-input scripts/strip-managed-sourcemaps.mjs -- sh -c \"compact compile src/revocation-registry.compact src/managed/revocation-registry && node ./scripts/strip-managed-sourcemaps.mjs\"",
     "pretest": "pnpm run prepare:credentials && pnpm run compact",
     "pretest:ci": "pnpm run prepare:credentials && pnpm run compact",
     "test:trusted-time-capability": "node ./scripts/check-trusted-time-capability.mjs",

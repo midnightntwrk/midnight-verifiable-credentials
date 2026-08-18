@@ -61,7 +61,7 @@
     "check:workspace-manifests": "node ./tooling/scripts/check-workspace-manifests.mjs",
     "check:release-package-contract": "node ./tooling/scripts/check-release-package-contract.mjs",
     "test:release-tooling": "node --test ./tooling/scripts/release-tooling.test.mjs",
-    "test:compact-artifacts": "node --test ./tooling/scripts/ensure-compact-artifacts.test.mjs",
+    "test:compact-artifacts": "node --test ./tooling/scripts/ensure-compact-artifacts.test.mjs ./tooling/scripts/verify-ci-build-outputs.test.mjs ./tooling/scripts/scaffold-vc-family.test.mjs",
     "test:workspace-boundary-policy": "node --test ./tooling/scripts/workspace-boundary-policy.test.mjs",
     "check:turbo-cache-policy": "node ./tooling/scripts/check-turbo-cache-policy.mjs",
     "check:holder-binding-terminology": "node ./tooling/scripts/check-holder-binding-terminology.mjs",
