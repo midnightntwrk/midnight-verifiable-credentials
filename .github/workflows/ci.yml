@@ -19,7 +19,7 @@ concurrency:
 env:
   PNPM_CONFIG_AUDIT: "false"
   PNPM_CONFIG_FUND: "false"
-  COMPACT_COMPILER_VERSION: 0.30.0
+  COMPACT_COMPILER_VERSION: 0.31.1
   PROOF_SERVER_IMAGE: ${{ vars.PROOF_SERVER_IMAGE != '' && vars.PROOF_SERVER_IMAGE || 'midnightntwrk/proof-server:8.0.3' }}
   VC_GITHUB_DEPENDENCY_TOKEN: ${{ secrets.MIDNIGHTCI_REPO || github.token }}
 
@@ -74,6 +74,7 @@ jobs:
         uses: ./.github/actions/setup-node-pnpm
         with:
           install: "false"
+          pnpm-cache: "false"
 
       - name: Verify docs-only diff has no whitespace issues
         run: git diff --check
@@ -416,6 +417,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
 
       - name: Set up Node.js, dependencies, and turbo cache
@@ -424,6 +426,11 @@ jobs:
           turbo-cache: "true"
 
       - name: Run lint lane
+        env:
+          QUALITY_EVIDENCE_CI_EVENT: ${{ github.event_name }}
+          QUALITY_EVIDENCE_BASE_REF: ${{ github.event_name == 'pull_request' && format('refs/remotes/origin/{0}', github.event.pull_request.base.ref) || github.ref }}
+          QUALITY_EVIDENCE_PUSH_BEFORE_SHA: ${{ github.event_name == 'push' && github.event.before || '' }}
+          QUALITY_EVIDENCE_BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || (github.event_name == 'push' && github.event.before || github.sha) }}
         run: pnpm run ci:lint
 
   typecheck:
@@ -844,7 +851,7 @@ jobs:
             exit 1
           fi
           if grep -q '"classification": "source-rebuild-fallback"' "$RUNNER_TEMP/compact-fixtures.json"; then
-            echo 'Fixture bytes are unavailable as hydrated LFS material; selecting the explicit source rebuild fallback.'
+            echo 'Fixture bytes are unavailable or provenance drifted; selecting the explicit source rebuild fallback.'
             echo 'ready=false' >> "$GITHUB_OUTPUT"
           elif grep -q '"classification": "ready"' "$RUNNER_TEMP/compact-fixtures.json"; then
             echo 'ready=true' >> "$GITHUB_OUTPUT"
@@ -869,7 +876,7 @@ jobs:
       - name: Rebuild source fallback when fixtures are unavailable
         if: steps.fixtures.outputs.ready != 'true'
         run: |
-          echo 'Public fixtures are unavailable or stale; running the explicit source rebuild fallback.'
+          echo 'Public fixtures are unavailable or their inputs drifted; running the explicit source rebuild fallback.'
           pnpm run build:light
           pnpm run test:light:from-artifacts
           pnpm run typecheck:light:from-artifacts

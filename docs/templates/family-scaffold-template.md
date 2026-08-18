@@ -115,7 +115,6 @@ packages/prototypes/credential-families/example-family/
 ├── tsconfig.json
 ├── tsconfig.build.json
 ├── scripts/
-│   ├── align-runtime-version.mjs
 │   ├── ensure-compact-package-aliases.mjs
 │   ├── find-repo-root.mjs
 │   └── strip-managed-sourcemaps.mjs

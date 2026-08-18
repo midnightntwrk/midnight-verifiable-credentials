@@ -85,7 +85,7 @@
   },
   "scripts": {
     "contract": "pnpm run compact",
-    "compact": "compact compile src/hello-verifier.compact src/managed/hello-verifier && compact compile src/hello-verifier-offchain.compact src/managed/hello-verifier-offchain && compact compile src/dummy-claims-verifier.compact src/managed/dummy-claims-verifier && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
+    "compact": "node ../../../../tooling/scripts/ensure-compact-artifacts.mjs --manifest src/managed/.compact-artifact.json --source-root src --output src/managed/hello-verifier --output src/managed/hello-verifier-offchain --output src/managed/dummy-claims-verifier -- sh -c \"compact compile src/hello-verifier.compact src/managed/hello-verifier && compact compile src/hello-verifier-offchain.compact src/managed/hello-verifier-offchain && compact compile src/dummy-claims-verifier.compact src/managed/dummy-claims-verifier\" && node ./scripts/strip-managed-sourcemaps.mjs",
     "prepare:credential-families": "pnpm --dir ../../../../packages/prototypes/credential-families/hello-family run build && pnpm --dir ../../../../packages/prototypes/credential-families/dummy-claims run build",
     "prebuild": "pnpm run prepare:credential-families",
     "pretypecheck": "pnpm run prepare:credential-families",
@@ -95,14 +95,14 @@
     "test:ci": "vitest run",
     "prepack": "pnpm run build",
     "clean": "rm -rf dist && rm -rf coverage && rm -rf reports && rm -rf src/managed",
-    "build": "pnpm run compact && rm -rf dist && mkdir -p dist/managed && tsc -b tsconfig.build.json --force && cp -Rf ./src/managed/. ./dist/managed/ && cp ./src/hello-verifier.compact ./src/hello-verifier-offchain.compact ./src/dummy-claims-verifier.compact ./dist",
+    "build": "pnpm run compact && rm -rf dist && mkdir -p dist/managed && tsc -b tsconfig.build.json --force && cp -Rf ./src/managed/. ./dist/managed/ && rm -f ./dist/managed/.compact-artifact.json && cp ./src/hello-verifier.compact ./src/hello-verifier-offchain.compact ./src/dummy-claims-verifier.compact ./dist",
     "lint": "eslint src --ignore-pattern 'src/managed/**'",
     "lint:fix": "eslint src --fix --ignore-pattern 'src/managed/**'",
     "typecheck": "pnpm run compact && tsc -p tsconfig.json --noEmit",
     "all": "pnpm run compact && pnpm run build && pnpm run test:ci"
   },
   "dependencies": {
-    "@midnight-ntwrk/compact-runtime": "*",
+    "@midnight-ntwrk/compact-runtime": "^0.16.0",
     "@midnight-ntwrk/midnight-did-credentials": "*",
     "@midnight-ntwrk/midnight-did-credentials-dummy-claims": "*",
     "@midnight-ntwrk/midnight-did-credentials-hello-family": "*"

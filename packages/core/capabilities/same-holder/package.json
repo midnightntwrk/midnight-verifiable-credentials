@@ -27,21 +27,21 @@
   },
   "scripts": {
     "contract": "pnpm run compact",
-    "compact": "rm -rf src/managed && node ../../../../tooling/scripts/ensure-compact-package-aliases.mjs && compact compile src/same-holder.compact src/managed/same-holder && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
+    "compact": "node ../../../../tooling/scripts/ensure-compact-package-aliases.mjs && node ../../../../tooling/scripts/ensure-compact-artifacts.mjs --manifest src/managed/.compact-artifact.json --source-root src --output src/managed/same-holder -- compact compile src/same-holder.compact src/managed/same-holder && node ./scripts/strip-managed-sourcemaps.mjs",
     "pretest": "pnpm --dir ../../primitives/credentials run build && pnpm run compact",
     "pretest:ci": "pnpm --dir ../../primitives/credentials run build && pnpm run compact",
     "test": "vitest run",
     "test:ci": "vitest run",
     "prepack": "pnpm run build",
     "clean": "rm -rf dist && rm -rf coverage && rm -rf reports && rm -rf src/managed",
-    "build": "pnpm run compact && rm -rf dist && mkdir -p dist && tsc -b tsconfig.build.json --force && cp -Rf ./src/managed ./dist/ && cp ./src/same-holder.compact ./dist && cp -Rf ./src/same-holder ./dist/",
+    "build": "pnpm run compact && rm -rf dist && mkdir -p dist && tsc -b tsconfig.build.json --force && cp -Rf ./src/managed ./dist/ && rm -f ./dist/managed/.compact-artifact.json && cp ./src/same-holder.compact ./dist && cp -Rf ./src/same-holder ./dist/",
     "lint": "eslint src --ignore-pattern 'src/managed/**'",
     "lint:fix": "eslint src --fix --ignore-pattern 'src/managed/**'",
     "typecheck": "pnpm run compact && tsc -p tsconfig.json --noEmit",
     "all": "pnpm run compact && pnpm run build && pnpm run test:ci"
   },
   "dependencies": {
-    "@midnight-ntwrk/compact-runtime": "*",
+    "@midnight-ntwrk/compact-runtime": "^0.16.0",
     "@midnight-ntwrk/midnight-did-credentials": "*"
   },
   "files": [

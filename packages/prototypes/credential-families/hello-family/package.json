@@ -68,7 +68,7 @@
   },
   "scripts": {
     "contract": "pnpm run compact",
-    "compact": "node ../../../../tooling/scripts/ensure-compact-package-aliases.mjs && compact compile src/hello-family-credential.compact src/managed/hello-family-credential && compact compile src/hello-family-offchain-credential.compact src/managed/hello-family-offchain-credential && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
+    "compact": "node ../../../../tooling/scripts/ensure-compact-package-aliases.mjs && node ../../../../tooling/scripts/ensure-compact-artifacts.mjs --manifest src/managed/.compact-artifact.json --source-root src --output src/managed/hello-family-credential --output src/managed/hello-family-offchain-credential -- sh -c \"compact compile src/hello-family-credential.compact src/managed/hello-family-credential && compact compile src/hello-family-offchain-credential.compact src/managed/hello-family-offchain-credential\" && node ./scripts/strip-managed-sourcemaps.mjs",
     "prebuild": "(test -f ../../../../packages/core/primitives/credentials/dist/managed/credentials/contract/index.js || pnpm --dir ../../../../packages/core/primitives/credentials run build) && (test -f ../../../../packages/components/adapters/offchain-did/dist/index.js || pnpm --dir ../../../../packages/components/adapters/offchain-did run build)",
     "pretypecheck": "pnpm --dir ../../../../packages/core/primitives/credentials run build && pnpm --dir ../../../../packages/components/adapters/offchain-did run build",
     "pretest": "pnpm --dir ../../../../packages/core/primitives/credentials run build && pnpm --dir ../../../../packages/components/adapters/offchain-did run build && pnpm run compact",
@@ -77,14 +77,14 @@
     "test:ci": "vitest run",
     "prepack": "pnpm run build",
     "clean": "rm -rf dist && rm -rf coverage && rm -rf reports && rm -rf src/managed",
-    "build": "pnpm run compact && rm -rf dist && mkdir -p dist/managed && tsc -b tsconfig.build.json --force && cp -Rf ./src/managed/. ./dist/managed/ && cp ./src/hello-family-credential.compact ./src/hello-family-offchain-credential.compact ./dist && cp -Rf ./src/hello-family-credential ./dist/",
+    "build": "pnpm run compact && rm -rf dist && mkdir -p dist/managed && tsc -b tsconfig.build.json --force && cp -Rf ./src/managed/. ./dist/managed/ && rm -f ./dist/managed/.compact-artifact.json && cp ./src/hello-family-credential.compact ./src/hello-family-offchain-credential.compact ./dist && cp -Rf ./src/hello-family-credential ./dist/",
     "lint": "eslint src --ignore-pattern 'src/managed/**'",
     "lint:fix": "eslint src --fix --ignore-pattern 'src/managed/**'",
     "typecheck": "pnpm run compact && tsc -p tsconfig.json --noEmit",
     "all": "pnpm run compact && pnpm run build && pnpm run test:ci"
   },
   "dependencies": {
-    "@midnight-ntwrk/compact-runtime": "*",
+    "@midnight-ntwrk/compact-runtime": "^0.16.0",
     "@midnight-ntwrk/midnight-did-credentials": "*",
     "@midnight-ntwrk/midnight-did-credentials-offchain-did": "*",
     "@midnight-ntwrk/midnight-did-domain": "0.5.0"

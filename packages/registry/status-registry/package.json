@@ -52,7 +52,7 @@
   "scripts": {
     "prepare:credentials": "pnpm --dir ../../../packages/core/primitives/credentials run build",
     "contract": "pnpm run compact",
-    "compact": "node ../../../tooling/scripts/ensure-compact-package-aliases.mjs && compact compile src/revocation-registry.compact src/managed/revocation-registry && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs",
+    "compact": "node ../../../tooling/scripts/ensure-compact-package-aliases.mjs && node ../../../tooling/scripts/ensure-compact-artifacts.mjs --manifest src/managed/.compact-artifact.json --source-root src --output src/managed/revocation-registry -- compact compile src/revocation-registry.compact src/managed/revocation-registry && node ./scripts/strip-managed-sourcemaps.mjs",
     "pretest": "pnpm run prepare:credentials && pnpm run compact",
     "pretest:ci": "pnpm run prepare:credentials && pnpm run compact",
     "test:trusted-time-capability": "node ./scripts/check-trusted-time-capability.mjs",
@@ -60,14 +60,14 @@
     "test:ci": "pnpm run test:trusted-time-capability && vitest run",
     "prepack": "pnpm run build",
     "clean": "rm -rf dist && rm -rf coverage && rm -rf reports && rm -rf src/managed",
-    "build": "pnpm run prepare:credentials && pnpm run compact && rm -rf dist && mkdir -p dist && tsc -b tsconfig.build.json --force && cp -Rf ./src/managed ./dist/ && cp ./src/revocation-registry.compact ./dist && cp ./src/status-proof-protocol.compact ./dist",
+    "build": "pnpm run prepare:credentials && pnpm run compact && rm -rf dist && mkdir -p dist && tsc -b tsconfig.build.json --force && cp -Rf ./src/managed ./dist/ && rm -f ./dist/managed/.compact-artifact.json && cp ./src/revocation-registry.compact ./dist && cp ./src/status-proof-protocol.compact ./dist",
     "lint": "eslint src --ignore-pattern 'src/managed/**'",
     "lint:fix": "eslint src --fix --ignore-pattern 'src/managed/**'",
     "typecheck": "pnpm run prepare:credentials && pnpm run compact && tsc -p tsconfig.json --noEmit",
     "all": "pnpm run build && pnpm run test:ci"
   },
   "dependencies": {
-    "@midnight-ntwrk/compact-runtime": "*",
+    "@midnight-ntwrk/compact-runtime": "^0.16.0",
     "@midnight-ntwrk/midnight-did-credentials": "*"
   },
   "files": [

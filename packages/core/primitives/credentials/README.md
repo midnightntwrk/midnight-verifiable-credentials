@@ -81,7 +81,7 @@ include "credentials";
 ```
 
 ```bash
-compact compile +0.30.0 --skip-zk \
+compact compile +0.31.1 --skip-zk \
   --compact-path node_modules/@midnight-ntwrk/midnight-did-credentials/dist \
   ./consumer.compact ./managed/consumer
 ```

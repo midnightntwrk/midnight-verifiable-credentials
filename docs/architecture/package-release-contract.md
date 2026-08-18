@@ -40,6 +40,7 @@ conformance fixtures, removed, or graduated to an independent repository.
 | `@midnight-ntwrk/midnight-did-credentials-iso-registry` | `internal` | workspace tarball only | Unassigned | Reference primitive |
 | `@midnight-ntwrk/midnight-did-credentials-offchain-did` | `internal` | workspace tarball only | Unassigned | DID-aware adapter |
 | `@midnight-ntwrk/midnight-did-credentials-openid` | `internal` | workspace tarball only | Unassigned | Reference transport adapter |
+| `@midnight-ntwrk/credential-display` | `internal` | workspace tarball only | Unassigned | Incubating framework-neutral display metadata; not a support or publication commitment |
 | `@midnight-ntwrk/midnight-did-credentials-protocol` | `internal` | workspace tarball only | Unassigned | Evolving orchestration API |
 | `@midnight-ntwrk/midnight-did-credentials-birth` | `internal` | workspace tarball only | Unassigned | Reference family |
 | `@midnight-ntwrk/midnight-did-credentials-birth-secret` | `internal` | workspace tarball only | Unassigned | Reference family with status caveats |
@@ -88,10 +89,14 @@ Every candidate must:
   `tooling/scripts/check-release-package-contract.mjs`.
 
 The RC2 Compact package is validated against the exact compiler/runtime tuple
-`@midnight-ntwrk/compact-runtime@0.15.0` and Compact compiler `0.30.0`.
-Generated build metadata and clean-consumer checks reject runtime drift. A
-future compatible `0.15.x` range requires a separately reviewed compatibility
-change with oldest/newest patch evidence; `0.16.0` is excluded from this RC.
+`@midnight-ntwrk/compact-runtime@0.16.0` and Compact compiler `0.31.1`.
+Generated build metadata and clean-consumer checks reject runtime drift. The
+Compact `0.31.1` toolchain natively targets `compact-runtime 0.16.0`
+(`checkRuntimeVersion('0.16.0')` is emitted directly by the compiler), so the
+historical post-compile runtime-version alignment workaround is no longer
+applied. A future compatible `0.16.x` range requires a separately reviewed
+compatibility change with oldest/newest patch evidence; `0.17.0` is excluded
+from this RC.
 
 ## Clean-consumer evidence
 
@@ -145,8 +150,11 @@ It is manual-only, validates branch/channel rules, runs the repository light
 gate, prepares an ephemeral release version, packs and tests deterministic
 tarballs, generates SPDX SBOM evidence, and publishes those exact tarballs
 with npm provenance. The workflow then polls npmjs and reruns the clean
-consumer matrix against the registry version. A before/after dist-tag snapshot
-also proves that prerelease publication preserves `latest`.
+consumer matrix against the registry version. By default, a before/after
+dist-tag snapshot proves that prerelease publication preserves `latest`. An
+explicit `promote_latest` dispatch is the reviewed exception: it requires the
+scoped npm token and proves that both the requested prerelease tag and
+`latest` resolve to the published version.
 
 The publish allowlist is emitted by
 `tooling/scripts/workspace-catalog.mjs --publishable-paths`. Only `supported`

@@ -25,6 +25,7 @@ export const ciBuildCones = [
     name: "foundation",
     inputPackages: [
       "packages/core/model",
+      "packages/core/display",
       "packages/core/compact",
       "packages/core/proofs",
       "packages/core/status",
@@ -42,6 +43,7 @@ export const ciBuildCones = [
     turboOptions: ["--concurrency=1", "--ui=stream"],
     outputPaths: [
       "packages/core/model/dist",
+      "packages/core/display/dist",
       "packages/core/compact/src/managed",
       "packages/core/compact/dist",
       "packages/core/proofs/dist",
@@ -63,6 +65,7 @@ export const ciBuildCones = [
     name: "birth-family",
     inputPackages: [
       "packages/core/model",
+      "packages/core/display",
       "packages/core/compact",
       "packages/core/proofs",
       "packages/core/status",
@@ -105,6 +108,7 @@ export const ciBuildCones = [
     name: "age-gate",
     inputPackages: [
       "packages/core/model",
+      "packages/core/display",
       "packages/core/compact",
       "packages/core/proofs",
       "packages/core/status",

@@ -13,12 +13,12 @@ overrides:
   '@midnight-ntwrk/midnight-did-secret-storage': file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-secret-storage-0.1.0.tgz
   '@midnight-ntwrk/ledger-v8': 8.1.0
   '@midnight-ntwrk/midnight-js-contracts': 4.0.4
-  '@midnight-ntwrk/midnight-js-fetch-zk-config-provider': 4.0.4
-  '@midnight-ntwrk/midnight-js-http-client-proof-provider': 4.0.4
+  '@midnight-ntwrk/midnight-js-fetch-zk-config-provider': 4.1.1
+  '@midnight-ntwrk/midnight-js-http-client-proof-provider': 4.1.1
   '@midnight-ntwrk/midnight-js-indexer-public-data-provider': 4.1.1
-  '@midnight-ntwrk/midnight-js-level-private-state-provider': 4.0.4
+  '@midnight-ntwrk/midnight-js-level-private-state-provider': 4.1.1
   '@midnight-ntwrk/midnight-js-network-id': 4.1.1
-  '@midnight-ntwrk/midnight-js-node-zk-config-provider': 4.0.4
+  '@midnight-ntwrk/midnight-js-node-zk-config-provider': 4.1.1
   '@midnight-ntwrk/midnight-js-types': 4.0.4
   '@midnight-ntwrk/midnight-js-utils': 4.1.1
   axios: 1.18.0
@@ -47,8 +47,8 @@ importers:
   .:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: 0.15.0
-        version: 0.15.0
+        specifier: 0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/ledger-v8':
         specifier: 8.1.0
         version: 8.1.0
@@ -56,23 +56,23 @@ importers:
         specifier: 4.0.4
         version: 4.0.4
       '@midnight-ntwrk/midnight-js-fetch-zk-config-provider':
-        specifier: 4.0.4
-        version: 4.0.4
+        specifier: 4.1.1
+        version: 4.1.1
       '@midnight-ntwrk/midnight-js-http-client-proof-provider':
-        specifier: 4.0.4
-        version: 4.0.4
+        specifier: 4.1.1
+        version: 4.1.1
       '@midnight-ntwrk/midnight-js-indexer-public-data-provider':
         specifier: 4.1.1
         version: 4.1.1
       '@midnight-ntwrk/midnight-js-level-private-state-provider':
-        specifier: 4.0.4
-        version: 4.0.4
+        specifier: 4.1.1
+        version: 4.1.1
       '@midnight-ntwrk/midnight-js-network-id':
         specifier: 4.1.1
         version: 4.1.1
       '@midnight-ntwrk/midnight-js-node-zk-config-provider':
-        specifier: 4.0.4
-        version: 4.0.4
+        specifier: 4.1.1
+        version: 4.1.1
       '@midnight-ntwrk/midnight-js-types':
         specifier: 4.0.4
         version: 4.0.4
@@ -187,14 +187,14 @@ importers:
         version: 0.5.0
     devDependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
 
   packages/components/integration/standalone-environment:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did':
         specifier: 0.5.0
         version: 0.5.0
@@ -223,8 +223,8 @@ importers:
   packages/components/orchestration/protocol:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -247,8 +247,8 @@ importers:
   packages/core/capabilities/same-holder:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../primitives/credentials
@@ -256,22 +256,24 @@ importers:
   packages/core/compact:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: 0.15.0
-        version: 0.15.0
+        specifier: 0.16.0
+        version: 0.16.0
+
+  packages/core/display: {}
 
   packages/core/model: {}
 
   packages/core/primitives/credentials:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: ^0.15.0
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
 
   packages/core/primitives/iso-registry:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
 
   packages/core/proofs:
     dependencies:
@@ -288,8 +290,8 @@ importers:
   packages/protocols/openid:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
       zod:
         specifier: ^4.1.0
         version: 4.4.3
@@ -297,8 +299,8 @@ importers:
   packages/prototypes/credential-families/birth:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -306,8 +308,8 @@ importers:
   packages/prototypes/credential-families/birth-secret:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -324,8 +326,8 @@ importers:
   packages/prototypes/credential-families/digital-passport:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -336,8 +338,8 @@ importers:
   packages/prototypes/credential-families/dummy-claims:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -345,8 +347,8 @@ importers:
   packages/prototypes/credential-families/hello-family:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -360,8 +362,8 @@ importers:
   packages/prototypes/credential-families/mixed-claims:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -369,8 +371,8 @@ importers:
   packages/prototypes/credential-families/university-diploma:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -378,8 +380,8 @@ importers:
   packages/registry/status-registry:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../core/primitives/credentials
@@ -387,8 +389,8 @@ importers:
   packages/use-cases/age-gate/contract:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -420,8 +422,8 @@ importers:
         specifier: '*'
         version: link:../contract
       '@serenity-js/assertions':
-        specifier: ^3.44.1
-        version: 3.44.1
+        specifier: ^3.44.3
+        version: 3.44.3
       '@serenity-js/console-reporter':
         specifier: ^3.44.1
         version: 3.44.1
@@ -450,8 +452,8 @@ importers:
   packages/use-cases/hello-verifier/contract:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -465,8 +467,8 @@ importers:
   packages/use-cases/university/contract:
     dependencies:
       '@midnight-ntwrk/compact-runtime':
-        specifier: '*'
-        version: 0.15.0
+        specifier: ^0.16.0
+        version: 0.16.0
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -503,8 +505,8 @@ importers:
         specifier: '*'
         version: link:../protocol
       '@serenity-js/assertions':
-        specifier: ^3.44.1
-        version: 3.44.1
+        specifier: ^3.44.3
+        version: 3.44.3
       '@serenity-js/console-reporter':
         specifier: ^3.44.1
         version: 3.44.1
@@ -977,23 +979,23 @@ packages:
   '@midnight-ntwrk/midnight-js-contracts@4.0.4':
     resolution: {integrity: sha512-lu9A45upwvPSy/YohU0TMvaeL2ru1zJt6axbuGwGup2L16p+fN8ojjHji6YGEC6XkgyISH3L0GfsgxsQKmt56g==}
 
-  '@midnight-ntwrk/midnight-js-fetch-zk-config-provider@4.0.4':
-    resolution: {integrity: sha512-WMXxBVqDlAiu3c0ZTE3WaEUfNR4fRAEmaTlhr0U3pjaFKu77qiBp7bB+oIB8N6Xtj0Y1KRn/wlGLbZjxEL9jVg==}
+  '@midnight-ntwrk/midnight-js-fetch-zk-config-provider@4.1.1':
+    resolution: {integrity: sha512-d9vPAXjCvbe3KdPDBwp8Cp4HXwdo9jfCjeyJjJPfIDHCctXrIQ7btu+CqY1+bgV05FHVMOBLjJ9TS2tc2xdwrw==}
 
-  '@midnight-ntwrk/midnight-js-http-client-proof-provider@4.0.4':
-    resolution: {integrity: sha512-G6q7uPqKhCGZyKUo21MhoBjtfQ4pw6AEMBM6zrAvhrCFE9WV4FVrG1rpbJDtwxr/VVecIt1tD4myVqg2sEPNhg==}
+  '@midnight-ntwrk/midnight-js-http-client-proof-provider@4.1.1':
+    resolution: {integrity: sha512-Q2VNRTvuWlf3MbjV7C3asuLHeFwtZMdh6t5Z+u8c8RDpejW9GhKaSjlJ2zgJII5ckE8/cocPEDwt3GKBebGHWA==}
 
   '@midnight-ntwrk/midnight-js-indexer-public-data-provider@4.1.1':
     resolution: {integrity: sha512-50CjiYqw/msRintyfkuNrJl1v4Zj+AaBFmV2uLjY/zpkPop4VBFH4QZSrtKsG1ljT9vzWsxU7Eo4Tn1tgKkPlA==}
 
-  '@midnight-ntwrk/midnight-js-level-private-state-provider@4.0.4':
-    resolution: {integrity: sha512-/qjvkxZWkkaAxFXqqhAQiloczHjw/gS4aC7L8FyRvgxeOfT1oecVp8+/tbsvZb3Zd2eolQJ46HHcjm/sKBgEbQ==}
+  '@midnight-ntwrk/midnight-js-level-private-state-provider@4.1.1':
+    resolution: {integrity: sha512-i+1lXJ4rcRGERnOPXHc3/Oh5ef7X/yb6p51bOAUjITazdPPcuU8qTeTeFgX+lPhWTGxROb9/pgrrVPH9G0FxSw==}
 
   '@midnight-ntwrk/midnight-js-network-id@4.1.1':
     resolution: {integrity: sha512-g49IBK0In1Jt2wKgi18rUvoy1ShGVrfb/VvgWALkc9Noc6+4MX5NTLVg5zqu+CyO2waIGb5lqDPnAhTD9wPAOQ==}
 
-  '@midnight-ntwrk/midnight-js-node-zk-config-provider@4.0.4':
-    resolution: {integrity: sha512-7Knmnuak0gD2+ZEmwm/mBqBT9HeH6utgcCOlT8YUT6TOFYByrJ8t23wR2yfoQ2PKZV16CXEQLWlT0wYs1tep0g==}
+  '@midnight-ntwrk/midnight-js-node-zk-config-provider@4.1.1':
+    resolution: {integrity: sha512-fbBhLBhU/BjrQRnRJCcmKkhYRLlSqJyXEhq72vMS6vlKXprmDmAjlVV62+bn1aiAlNY9FXl1rrrMUFKQUmuZFg==}
 
   '@midnight-ntwrk/midnight-js-protocol@4.1.1':
     resolution: {integrity: sha512-JH1010ir3YrawKsA4C08aIXWpFGHrCrAaBkZFbn+xh+iwOX5Ss0WU4//mDSEnHvQN0wD6GTc2JwUfKYFaS2CcA==}
@@ -1107,6 +1109,10 @@ packages:
       '@emnapi/core': ^1.7.1 || ^2.0.0-alpha.3
       '@emnapi/runtime': ^1.7.1 || ^2.0.0-alpha.3
 
+  '@noble/ciphers@2.3.0':
+    resolution: {integrity: sha512-Clu/xdfgVTf9o7ngLOURaxePwR0j8sjclKEtVij10/jGulwFsPWCvvRgG/XjUVf8Nei+jLG6uwyXzUTGY1DQrw==}
+    engines: {node: '>= 20.19.0'}
+
   '@noble/curves@1.9.7':
     resolution: {integrity: sha512-gbKGcRUYIjA3/zCCNaWDciTMFI0dCkvou3TL8Zmy5Nc7sJ47a0jtOeZoTaMxkuqRo9cRhjOdZJXegxYE5FN/xw==}
     engines: {node: ^14.21.3 || >=16}
@@ -1121,6 +1127,10 @@ packages:
 
   '@noble/hashes@2.2.0':
     resolution: {integrity: sha512-IYqDGiTXab6FniAgnSdZwgWbomxpy9FtYvLKs7wCUs2a8RkITG+DFGO1DM9cr+E3/RgADRpFjrKVaJ1z6sjtEg==}
+    engines: {node: '>= 20.19.0'}
+
+  '@noble/hashes@2.3.0':
+    resolution: {integrity: sha512-oN+QwyX7VSHotibwubG3kpzbwKrfnyR6OOO+3Nk/53ADL7FmgHHz4TgrbaYKvvOw09u6QTx0oiH1cNCIOuN0CQ==}
     engines: {node: '>= 20.19.0'}
 
   '@nodelib/fs.scandir@2.1.5':
@@ -1377,66 +1387,79 @@ packages:
     resolution: {integrity: sha512-EIPRXTVQpHyF8WOo219AD2yEltPehLTcTMz2fn6JsatLYSzQf00hj3rulF+yauOlF9/FtM2WpkT/hJh/KJFGhA==}
     cpu: [arm]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-arm-musleabihf@4.60.4':
     resolution: {integrity: sha512-J3Yh9PzzF1Ovah2At+lHiGQdsYgArxBbXv/zHfSyaiFQEqvNv7DcW98pCrmdjCZBrqBiKrKKe2V+aaSGWuBe/w==}
     cpu: [arm]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-arm64-gnu@4.60.4':
     resolution: {integrity: sha512-BFDEZMYfUvLn37ONE1yMBojPxnMlTFsdyNoqncT0qFq1mAfllL+ATMMJd8TeuVMiX84s1KbcxcZbXInmcO2mRg==}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-arm64-musl@4.60.4':
     resolution: {integrity: sha512-pc9EYOSlOgdQ2uPl1o9PF6/kLSgaUosia7gOuS8mB69IxJvlclko1MECXysjs5ryez1/5zjYqx3+xYU0TU6R1A==}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-loong64-gnu@4.60.4':
     resolution: {integrity: sha512-NxnomyxYerDh5n4iLrNa+sH+Z+U4BMEE46V2PgQ/hoB909i8gV1M5wPojWg9fk1jWpO3IQnOs20K4wyZuFLEFQ==}
     cpu: [loong64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-loong64-musl@4.60.4':
     resolution: {integrity: sha512-nbJnQ8a3z1mtmrwImCYhc6BGpThAyYVRQxw9uKSKG4wR6aAYno9sVjJ0zaZcW9BPJX1GbrDPf+SvdWjgTuDmnw==}
     cpu: [loong64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-ppc64-gnu@4.60.4':
     resolution: {integrity: sha512-2EU6acNrQLd8tYvo/LXW535wupT3m6fo7HKo6lr7ktQoItxTyOL1ZCR/GfGCuXl2vR+zmfI6eRXkSemafv+iVg==}
     cpu: [ppc64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-ppc64-musl@4.60.4':
     resolution: {integrity: sha512-WeBtoMuaMxiiIrO2IYP3xs6GMWkJP2C0EoT8beTLkUPmzV1i/UcOSVw1d5r9KBODtHKilG5yFxsGRnBbK3wJ4A==}
     cpu: [ppc64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-riscv64-gnu@4.60.4':
     resolution: {integrity: sha512-FJHFfqpKUI3A10WrWKiFbBZ7yVbGT4q4B5o1qKFFojqpaYoh9LrQgqWCmmcxQzVSXYtyB5bzkXrYzlHTs21MYA==}
     cpu: [riscv64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-riscv64-musl@4.60.4':
     resolution: {integrity: sha512-mcEl6CUT5IAUmQf1m9FYSmVqCJlpQ8r8eyftFUHG8i9OhY7BkBXSUdnLH5DOf0wCOjcP9v/QO93zpmF1SptCCw==}
     cpu: [riscv64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-s390x-gnu@4.60.4':
     resolution: {integrity: sha512-ynt3JxVd2w2buzoKDWIyiV1pJW93xlQic1THVLXilz429oijRpSHivZAgp65KBu+cMcgf1eVVjdnTLvPxgCuoQ==}
     cpu: [s390x]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-x64-gnu@4.60.4':
     resolution: {integrity: sha512-Boiz5+MsaROEWDf+GGEwF8VMHGhlUoQMtIPjOgA5fv4osupqTVnJteQNKJwUcnUog2G55jYXH7KZFFiJe0TEzQ==}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-x64-musl@4.60.4':
     resolution: {integrity: sha512-+qfSY27qIrFfI/Hom04KYFw3GKZSGU4lXus51wsb5EuySfFlWRwjkKWoE9emgRw/ukoT4Udsj4W/+xxG8VbPKg==}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-openbsd-x64@4.60.4':
     resolution: {integrity: sha512-VpTfOPHgVXEBeeR8hZ2O0F3aSso+JDWqTWmTmzcQKted54IAdUVbxE+j/MVxUsKa8L20HJhv3vUezVPoquqWjA==}
@@ -1496,6 +1519,10 @@ packages:
     resolution: {integrity: sha512-yKinFIvxcpGKtQWXobBsubKh0AzMRGDyhDufB+9f9AWCGHg73bDsgyTCoS/RYjnz50VMbt9e4tq+L+296LjFBw==}
     engines: {node: '>=22.12 || ^24'}
 
+  '@serenity-js/assertions@3.44.3':
+    resolution: {integrity: sha512-hBCLKBApJbaLxe4KgenxX04umbUJSpiVydK9OUxZTnw9Hl7GgB8Q7qpE9GqiVAJEA+iyEw5OOpArBFXcBXD0rA==}
+    engines: {node: ^22.22.2 || ^24.15.0}
+
   '@serenity-js/console-reporter@3.44.1':
     resolution: {integrity: sha512-s03TWwx3FR6+fOEUrPzoR2qmtUe9fM00IwEEE9dXBhqEkF+DyJnmLGXpKlAZz3Js3jXlU6ZBivvXrmC05D9vHw==}
     engines: {node: '>=22.12 || ^24'}
@@ -1503,6 +1530,10 @@ packages:
   '@serenity-js/core@3.44.1':
     resolution: {integrity: sha512-Jl5GWNLNSMvsPpmZjNSg34k2Q2MgZVXi2M2vwGDNGqwbCDKBOo9HlyTlQZigI/faahnclQgpBQOQ08/iZRMbFg==}
     engines: {node: '>=22.12 || ^24'}
+
+  '@serenity-js/core@3.44.3':
+    resolution: {integrity: sha512-kK/gDO18LLBxRP169dummWnDiiD2GUfZyGsduKF5oplwGNfl0tXzGv6zrqB/vwbJvM3wU6Qplztcjzczv3FzUw==}
+    engines: {node: ^22.22.2 || ^24.15.0}
 
   '@serenity-js/cucumber@3.44.1':
     resolution: {integrity: sha512-zUFwzDwIndKHUlyzqo0qBYjc3/hFrKyg37nMIXfjL/PjcYM8VpXaF/pl2c94pAT9+0oe7aPc7vj9lNUQqqikfw==}
@@ -1756,51 +1787,61 @@ packages:
     resolution: {integrity: sha512-zJc0H99FEPoFfSrNpa91HYfxzfAJCr502oxNK1cfdC9hlaFI43RT+JFCann9JUgZmLzzntChHyn13Sgn9ljHNg==}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@unrs/resolver-binding-linux-arm64-musl@1.12.2':
     resolution: {integrity: sha512-KQ3Lki6l+Pz1k/eBipN41ES+YUK30beLGb9YqcB1O542cyLCNE6GaxrfcY3T6EezmGGk84wb5XyO9loTM9tkcA==}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@unrs/resolver-binding-linux-loong64-gnu@1.12.2':
     resolution: {integrity: sha512-3SJGEh1DborhG6pyxvhPzCT4bbSIVihsvgJc13P1bHG7KLdNDaF9T3gsTwFc7Jw/5Y5/iWOjkEx7Zy0NvCGX3Q==}
     cpu: [loong64]
     os: [linux]
+    libc: [glibc]
 
   '@unrs/resolver-binding-linux-loong64-musl@1.12.2':
     resolution: {integrity: sha512-jiuG/Obbel7uw1PwHNFfrkiKhLAF6mnyZ6aWlOAVN9WqKm8v0OFGnciJIHu8+CMvXLQ8AD51LPzAoUfT21D5Ew==}
     cpu: [loong64]
     os: [linux]
+    libc: [musl]
 
   '@unrs/resolver-binding-linux-ppc64-gnu@1.12.2':
     resolution: {integrity: sha512-q7xRvVpmcfeL+LlZg8Pbbo6QaTZwDU5BaGZbwfhkEsXJn3Was8xYfE0RBH266xZt0rM6B7i8xAYIvjthuUIWHg==}
     cpu: [ppc64]
     os: [linux]
+    libc: [glibc]
 
   '@unrs/resolver-binding-linux-riscv64-gnu@1.12.2':
     resolution: {integrity: sha512-0CVdx6lcnT3Q9inOH8tsMIOJ6ImndllMjqJHg8RLVdB7Vq4SfkEXl9mCSsVNuNA4MCYycRicCUxPCabVHJRr6A==}
     cpu: [riscv64]
     os: [linux]
+    libc: [glibc]
 
   '@unrs/resolver-binding-linux-riscv64-musl@1.12.2':
     resolution: {integrity: sha512-iOwlRo9vnp6R6ohHQS11n0NnfdXx/omhkocmIfaPRpQhKZ+3BDMkkdRVh53qjkFkpPddf+FETA28NwGN7l5l+w==}
     cpu: [riscv64]
     os: [linux]
+    libc: [musl]
 
   '@unrs/resolver-binding-linux-s390x-gnu@1.12.2':
     resolution: {integrity: sha512-HYJtLfXq94q8iZNFT1lknx258wlkkWhZeUXJRqzKBBUJ00CvZ+N33zgbCqimLjsyw5Va6uUxhVa12mI+kaveEw==}
     cpu: [s390x]
     os: [linux]
+    libc: [glibc]
 
   '@unrs/resolver-binding-linux-x64-gnu@1.12.2':
     resolution: {integrity: sha512-mPsUhunKKDih5O96Y6enDQyHc1SqBPlY1E/SfMWDM3EdJ95Z9CArPeCVwCCqbP45ljvivdEk8Fxn+SIb1rDAJQ==}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@unrs/resolver-binding-linux-x64-musl@1.12.2':
     resolution: {integrity: sha512-azrt6+5ydLd8Vt210AAFis/lZevSfPw93EJRIJG+xPu4WCJ8K0kppCTpMyLPcKT7H15M4Jnt2tMp5bOvCkRC6A==}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@unrs/resolver-binding-openharmony-arm64@1.12.2':
     resolution: {integrity: sha512-YZ9hP4O0X9PQb8eO980qmLNGH4zT3I9+SZTdt0Pr0YyuGQhYKoOZkV02VzrzyOZJ5xIJ3UFIenKkUkGg8GjgWQ==}
@@ -2640,9 +2681,6 @@ packages:
     resolution: {integrity: sha512-buewHzMvYL29jdeQTVILecSaZKnt/RJWjoZCF5OW60Z67/GmSLBkOFM7qh1PI3zFNtJbaZL5eQu1vLfazOwj4g==}
     engines: {node: '>=12.20.0'}
 
-  fp-ts@2.16.11:
-    resolution: {integrity: sha512-LaI+KaX2NFkfn1ZGHoKCmcfv7yrZsC3b8NtWsTVQeHkq4F27vI5igUuO53sxqDEa2gNQMHFPmpojDw/1zmUK7w==}
-
   fs-constants@1.0.0:
     resolution: {integrity: sha512-y6OAwoSIf7FyjMIv94u+b5rdheZEjzR63GTyZJm5qh4Bi+2YgwLCcI/fPFZkL5PSixOt6ZNKm+w+Hfp/Bciwow==}
 
@@ -2846,11 +2884,6 @@ packages:
   internal-slot@1.1.0:
     resolution: {integrity: sha512-4gd7VpWNQNB4UKKCFFVcp1AVv+FMOgs9NKzjHKusc8jTMhd5eL1NqQqOpE0KzMds804/yHlglp3uxgluOqAPLw==}
     engines: {node: '>= 0.4'}
-
-  io-ts@2.2.22:
-    resolution: {integrity: sha512-FHCCztTkHoV9mdBsHpocLpdTAfh956ZQcIkWQxxS0U5HT53vtrcuYdQneEJKH6xILaLNzXVl2Cvwtoy8XNN0AA==}
-    peerDependencies:
-      fp-ts: ^2.5.0
 
   is-array-buffer@3.0.5:
     resolution: {integrity: sha512-DDfANUiiG2wC1qawP66qlTugJeL5HyzMpfr8lLK+jMQirGzNod0B12cFB/9q838Ru27sBwfw78/rdoU7RERz6A==}
@@ -4645,11 +4678,11 @@ snapshots:
       '@midnight-ntwrk/midnight-did-contract': 0.5.0
       '@midnight-ntwrk/midnight-did-domain': 0.5.0
       '@midnight-ntwrk/midnight-js-contracts': 4.0.4
-      '@midnight-ntwrk/midnight-js-http-client-proof-provider': 4.0.4
+      '@midnight-ntwrk/midnight-js-http-client-proof-provider': 4.1.1
       '@midnight-ntwrk/midnight-js-indexer-public-data-provider': 4.1.1
-      '@midnight-ntwrk/midnight-js-level-private-state-provider': 4.0.4
+      '@midnight-ntwrk/midnight-js-level-private-state-provider': 4.1.1
       '@midnight-ntwrk/midnight-js-network-id': 4.1.1
-      '@midnight-ntwrk/midnight-js-node-zk-config-provider': 4.0.4
+      '@midnight-ntwrk/midnight-js-node-zk-config-provider': 4.1.1
       '@midnight-ntwrk/midnight-js-types': 4.0.4
       '@midnight-ntwrk/midnight-js-utils': 4.1.1
       '@midnight-ntwrk/wallet-sdk-dust-wallet': 3.0.0(ws@8.21.1)
@@ -4710,22 +4743,23 @@ snapshots:
       '@midnight-ntwrk/midnight-js-types': 4.0.4
       '@midnight-ntwrk/midnight-js-utils': 4.1.1
 
-  '@midnight-ntwrk/midnight-js-fetch-zk-config-provider@4.0.4':
+  '@midnight-ntwrk/midnight-js-fetch-zk-config-provider@4.1.1':
     dependencies:
       '@midnight-ntwrk/midnight-js-types': 4.0.4
+      '@midnight-ntwrk/midnight-js-utils': 4.1.1
       cross-fetch: 4.1.0
     transitivePeerDependencies:
       - encoding
 
-  '@midnight-ntwrk/midnight-js-http-client-proof-provider@4.0.4':
+  '@midnight-ntwrk/midnight-js-http-client-proof-provider@4.1.1':
     dependencies:
       '@midnight-ntwrk/midnight-js-contracts': 4.0.4
       '@midnight-ntwrk/midnight-js-network-id': 4.1.1
+      '@midnight-ntwrk/midnight-js-protocol': 4.1.1
       '@midnight-ntwrk/midnight-js-types': 4.0.4
       '@midnight-ntwrk/midnight-js-utils': 4.1.1
       cross-fetch: 4.1.0
       fetch-retry: 6.0.0
-      lodash: 4.18.1
     transitivePeerDependencies:
       - encoding
 
@@ -4754,21 +4788,24 @@ snapshots:
       - subscriptions-transport-ws
       - utf-8-validate
 
-  '@midnight-ntwrk/midnight-js-level-private-state-provider@4.0.4':
+  '@midnight-ntwrk/midnight-js-level-private-state-provider@4.1.1':
     dependencies:
+      '@midnight-ntwrk/midnight-js-protocol': 4.1.1
       '@midnight-ntwrk/midnight-js-types': 4.0.4
+      '@midnight-ntwrk/midnight-js-utils': 4.1.1
+      '@noble/ciphers': 2.3.0
+      '@noble/hashes': 2.3.0
       abstract-level: 3.1.1
       buffer: 6.0.3
-      fp-ts: 2.16.11
-      io-ts: 2.2.22(fp-ts@2.16.11)
       level: 10.0.0
       superjson: 2.2.6
 
   '@midnight-ntwrk/midnight-js-network-id@4.1.1': {}
 
-  '@midnight-ntwrk/midnight-js-node-zk-config-provider@4.0.4':
+  '@midnight-ntwrk/midnight-js-node-zk-config-provider@4.1.1':
     dependencies:
       '@midnight-ntwrk/midnight-js-types': 4.0.4
+      '@midnight-ntwrk/midnight-js-utils': 4.1.1
 
   '@midnight-ntwrk/midnight-js-protocol@4.1.1':
     dependencies:
@@ -5036,6 +5073,8 @@ snapshots:
       '@tybys/wasm-util': 0.10.3
     optional: true
 
+  '@noble/ciphers@2.3.0': {}
+
   '@noble/curves@1.9.7':
     dependencies:
       '@noble/hashes': 1.8.0
@@ -5047,6 +5086,8 @@ snapshots:
   '@noble/hashes@1.8.0': {}
 
   '@noble/hashes@2.2.0': {}
+
+  '@noble/hashes@2.3.0': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
@@ -5520,6 +5561,11 @@ snapshots:
       '@serenity-js/core': 3.44.1
       tiny-types: 2.0.5
 
+  '@serenity-js/assertions@3.44.3':
+    dependencies:
+      '@serenity-js/core': 3.44.3
+      tiny-types: 2.0.5
+
   '@serenity-js/console-reporter@3.44.1':
     dependencies:
       '@serenity-js/core': 3.44.1
@@ -5527,6 +5573,20 @@ snapshots:
       tiny-types: 2.0.5
 
   '@serenity-js/core@3.44.1':
+    dependencies:
+      '@paralleldrive/cuid2': 2.3.1
+      chalk: 4.1.2
+      diff: 8.0.4
+      error-stack-parser: 2.1.4
+      fast-glob: 3.3.3
+      filenamify: 4.3.0
+      graceful-fs: 4.2.11
+      semver: 7.8.5
+      tiny-types: 2.0.5
+      upath: 2.0.1
+      validate-npm-package-name: 7.0.2
+
+  '@serenity-js/core@3.44.3':
     dependencies:
       '@paralleldrive/cuid2': 2.3.1
       chalk: 4.1.2
@@ -6850,8 +6910,6 @@ snapshots:
     dependencies:
       fetch-blob: 3.2.0
 
-  fp-ts@2.16.11: {}
-
   fs-constants@1.0.0: {}
 
   fsevents@2.3.3:
@@ -7038,10 +7096,6 @@ snapshots:
       es-errors: 1.3.0
       hasown: 2.0.3
       side-channel: 1.1.0
-
-  io-ts@2.2.22(fp-ts@2.16.11):
-    dependencies:
-      fp-ts: 2.16.11
 
   is-array-buffer@3.0.5:
     dependencies:

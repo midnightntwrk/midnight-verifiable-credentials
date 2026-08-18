@@ -20,6 +20,11 @@ on:
         description: Positive RC number; 1 creates x.y.z-rc1
         required: false
         type: string
+      promote_latest:
+        description: Also move npm latest to the published version (requires dist-tag permissions)
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -29,7 +34,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  COMPACT_COMPILER_VERSION: 0.30.0
+  COMPACT_COMPILER_VERSION: 0.31.1
   NPM_REGISTRY: https://registry.npmjs.org/
   PNPM_CONFIG_AUDIT: "false"
   PNPM_CONFIG_FUND: "false"
@@ -58,7 +63,7 @@ jobs:
         run: ./tooling/scripts/release-resolve-context.sh
 
       - name: Set up pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
         with:
           version: 10.23.0
           run_install: false
@@ -177,6 +182,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.MIDNIGHTCI_NPMJS_TOKEN }}
           NPM_ACCESS: public
           NPM_TAG: ${{ steps.version.outputs.npm_tag }}
+          PROMOTE_LATEST: ${{ inputs.promote_latest }}
           VERSION: ${{ steps.version.outputs.version }}
         run: ./tooling/scripts/publish-npm-packages.sh
 
@@ -194,14 +200,20 @@ jobs:
       - name: Verify npm dist-tags
         env:
           NPM_TAG: ${{ steps.version.outputs.npm_tag }}
+          PROMOTE_LATEST: ${{ inputs.promote_latest }}
           VERSION: ${{ steps.version.outputs.version }}
         run: |
-          node ./tooling/scripts/npm-release-state.mjs \
-            --verify \
-            --registry "$NPM_REGISTRY" \
-            --input ./tooling/artifacts/npm/release-state.json \
-            --tag "$NPM_TAG" \
+          args=(
+            --verify
+            --registry "$NPM_REGISTRY"
+            --input ./tooling/artifacts/npm/release-state.json
+            --tag "$NPM_TAG"
             --version "$VERSION"
+          )
+          if [[ "$PROMOTE_LATEST" == "true" ]]; then
+            args+=(--promote-latest)
+          fi
+          node ./tooling/scripts/npm-release-state.mjs "${args[@]}"
 
       - name: Test clean npmjs consumers
         env:

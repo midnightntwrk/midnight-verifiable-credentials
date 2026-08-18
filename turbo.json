@@ -16,6 +16,9 @@
   "globalEnv": [
     "COMPACT_COMPILER_VERSION"
   ],
+  "globalPassThroughEnv": [
+    "COMPACT_DIRECTORY"
+  ],
   "tasks": {
     "clean": {
       "cache": false

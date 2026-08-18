@@ -50,6 +50,9 @@ const toBase64Url = (bytes: Uint8Array): string =>
     .replace(/=+$/u, "");
 
 const fromBase64Url = (value: string): Uint8Array => {
+  if (value.length === 0) {
+    throw new Error("Compact value payload must not be empty");
+  }
   if (!BASE64URL_TEXT.test(value) || value.length % 4 === 1) {
     throw new Error("Compact value payload is not valid unpadded base64url");
   }

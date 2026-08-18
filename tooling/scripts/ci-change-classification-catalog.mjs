@@ -24,6 +24,12 @@ export const ciChangeClassificationCatalog = {
     "docs/*",
     ".github/*.md",
   ],
+  docsOnlyExclusionPatterns: [
+    "docs/testing/quality-evidence.json",
+    "docs/testing/quality-evidence.md",
+    "docs/testing/quality-evidence.yaml",
+    "docs/testing/quality-evidence.yml",
+  ],
   bddOnlyPatterns: [
     "packages/use-cases/*/scenarios/*",
     "docs/plans/serenity-js-bdd-layer.md",
@@ -144,7 +150,14 @@ export const classifyChangedFiles = (changedFiles) => {
   let bddRelated = false;
 
   for (const file of files) {
-    if (!matchesAny(file, ciChangeClassificationCatalog.docsPatterns)) {
+    const isDocsOnlyExcluded = matchesAny(
+      file,
+      ciChangeClassificationCatalog.docsOnlyExclusionPatterns,
+    );
+    if (
+      isDocsOnlyExcluded ||
+      !matchesAny(file, ciChangeClassificationCatalog.docsPatterns)
+    ) {
       classification.docs_only = false;
     }
 
@@ -167,7 +180,7 @@ export const classifyChangedFiles = (changedFiles) => {
       continue;
     }
 
-    if (matchesAny(file, ciChangeClassificationCatalog.docsPatterns)) {
+    if (isDocsOnlyExcluded || matchesAny(file, ciChangeClassificationCatalog.docsPatterns)) {
       continue;
     }
 
@@ -207,7 +220,30 @@ const writeGitHubOutput = (classification) => {
 
 const runSelfTest = () => {
   assert.deepEqual(classifyChangedFiles([]), emptyClassification());
-  assert.equal(classifyChangedFiles(["docs/spec/example.md"]).docs_only, true);
+  const ordinaryDocsOnly = classifyChangedFiles(["docs/spec/example.md"]);
+  assert.equal(ordinaryDocsOnly.docs_only, true);
+  const qualityEvidenceOnly = classifyChangedFiles([
+    "docs/testing/quality-evidence.json",
+    "docs/testing/quality-evidence.md",
+    "docs/testing/quality-evidence.yaml",
+  ]);
+  const qualityEvidenceNested = classifyChangedFiles([
+    "docs/testing/quality-evidence.old/notes.md",
+  ]);
+  assert.equal(
+    qualityEvidenceOnly.docs_only,
+    false,
+    "quality evidence changes must run the normal lint/quality lane",
+  );
+  assert.equal(
+    qualityEvidenceNested.docs_only,
+    true,
+    "nested quality-evidence docs should be treated as docs-only",
+  );
+  assert.equal(qualityEvidenceOnly.bdd_only, false);
+  for (const key of outputKeys.filter((key) => key.startsWith("run_"))) {
+    assert.equal(qualityEvidenceOnly[key], false);
+  }
   const bddOnly = classifyChangedFiles([
     "packages/use-cases/age-gate/scenarios/foo.ts",
   ]);
