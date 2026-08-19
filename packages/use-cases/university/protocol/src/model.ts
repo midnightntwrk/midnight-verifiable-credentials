@@ -159,6 +159,7 @@ export type UniversityPresentationResultBody = {
 export type UniversityPresentationTamperingMode =
   | "credentialClaimRoot"
   | "requestChallenge"
+  | "requestPolicy"
   | "issuerVerificationMethodRef"
   | "holderBindingDidContractAddress"
   | "holderBindingMethodRef"
