@@ -3,7 +3,10 @@ import {
   type ProtocolEnvelopeFactory,
   sha256,
 } from "@midnight-ntwrk/midnight-did-credentials-protocol";
-import type { UniversityDiplomaCredential } from "@midnight-ntwrk/midnight-did-credentials-university-diploma/contract";
+import {
+  pureCircuits as universityDiplomaPureCircuits,
+  type UniversityDiplomaCredential,
+} from "@midnight-ntwrk/midnight-did-credentials-university-diploma/contract";
 
 import {
   type UniversityIssuanceRequestMessage,
@@ -30,6 +33,70 @@ import type { UniversityProofExecutionBackend } from "./proof-backend.js";
 import type { UniversityPartyRuntime } from "./runtime.js";
 import type { UniversityTranscriptRecorder } from "./transcript-recorder.js";
 
+/** @internal Durable verifier-side identity for an issued presentation request. */
+type UniversityPresentationRequestBinding = {
+  readonly threadIdHex: string;
+  readonly requestMessageIdHex: string;
+  readonly requestBodyRootHex: string;
+  readonly verifierPartyId: string;
+  readonly holderPartyId: string;
+  readonly kind: "jobApplication" | "mallDiscount";
+  readonly studentId: string;
+};
+
+const requestBoundVerifierChallengeHash = (
+  requestContext: string,
+  threadId: Uint8Array,
+): Uint8Array =>
+  sha256(
+    requestContext + ":" + universityProtocolMessageIdHex(threadId),
+  );
+
+const requestBindingFor = (
+  request: UniversityPresentationRequestMessage,
+): UniversityPresentationRequestBinding => ({
+  threadIdHex: universityProtocolMessageIdHex(request.envelope.threadId),
+  requestMessageIdHex: universityProtocolMessageIdHex(request.envelope.messageId),
+  requestBodyRootHex: Buffer.from(
+    universityDiplomaPureCircuits.universityDiplomaPresentationRequestBodyRoot(
+      request.body.request,
+    ),
+  ).toString("hex"),
+  verifierPartyId: request.from,
+  holderPartyId: request.to,
+  kind: request.body.kind,
+  studentId: request.body.studentId,
+});
+
+const assertSubmissionMatchesRequestBinding = (
+  submission: UniversityPresentationSubmissionMessage,
+  binding: UniversityPresentationRequestBinding | undefined,
+): void => {
+  if (!binding) {
+    throw new Error("Presentation submission does not match an issued presentation request");
+  }
+  if (
+    submission.from !== binding.holderPartyId ||
+    submission.to !== binding.verifierPartyId ||
+    submission.body.kind !== binding.kind ||
+    submission.body.studentId !== binding.studentId ||
+    universityProtocolMessageIdHex(submission.envelope.threadId) !== binding.threadIdHex ||
+    universityProtocolMessageIdHex(submission.envelope.respondsToMessageId) !==
+      binding.requestMessageIdHex
+  ) {
+    throw new Error("Presentation submission envelope does not match original request");
+  }
+  const submissionRequestRoot =
+    universityDiplomaPureCircuits.universityDiplomaPresentationRequestBodyRoot(
+      submission.body.request,
+    );
+  if (
+    Buffer.from(submissionRequestRoot).toString("hex") !==
+    binding.requestBodyRootHex
+  ) {
+    throw new Error("Presentation submission request does not match original request");
+  }
+};
 /** @internal Protocol-flow helper; not exported from the package public API. */
 export class UniversityStudentAgent {
   storedIssuedCredential: StoredIssuedCredential | undefined;
@@ -247,6 +314,10 @@ export class UniversityIssuerProtocolAgent {
 /** @internal Protocol-flow helper; not exported from the package public API. */
 export class UniversityCompanyVerifierAgent {
   readonly processedThreadIds = new Set<string>();
+  readonly presentationRequestBindings = new Map<
+    string,
+    UniversityPresentationRequestBinding
+  >();
   acceptedCount = 0;
   duplicateRejectedCount = 0;
   verificationRejectedCount = 0;
@@ -266,10 +337,21 @@ export class UniversityCompanyVerifierAgent {
     transcript: UniversityTranscriptRecorder,
     messages: UniversityProtocolMessage[],
   ): void {
+    const requestContext = [
+      "job-application",
+      this.company.companyId,
+      student.record.studentId,
+    ].join(":");
+    const envelope = this.createEnvelope(
+      "job-request:" + this.company.companyId + ":" + student.record.studentId,
+      requestContext,
+      true,
+    );
     const request = this.proofBackend.buildJobApplicationRequest({
       issuerVerificationMethodRef,
-      verifierChallengeHash: sha256(
-        `job-application:${this.company.companyId}:${student.record.studentId}`,
+      verifierChallengeHash: requestBoundVerifierChallengeHash(
+        requestContext,
+        envelope.threadId,
       ),
       requestPolicy: this.company.requestPolicy,
       requestPolicyOverrides: this.requestPolicyOverrides,
@@ -279,11 +361,7 @@ export class UniversityCompanyVerifierAgent {
       type: "presentation:request",
       from: this.profile.partyId,
       to: student.profile.partyId,
-      envelope: this.createEnvelope(
-        `job-request:${this.company.companyId}:${student.record.studentId}`,
-        `job-application:${this.company.companyId}:${student.record.studentId}`,
-        true,
-      ),
+      envelope,
       body: {
         kind: "jobApplication",
         studentId: student.record.studentId,
@@ -293,6 +371,7 @@ export class UniversityCompanyVerifierAgent {
       },
     };
 
+    this.primePresentationRequestBinding(message);
     bus.send(message);
     messages.push(message);
     transcript.record(
@@ -300,6 +379,13 @@ export class UniversityCompanyVerifierAgent {
       message,
       `Company ${this.company.companyId} requested a diploma presentation from ${student.record.studentId}`,
     );
+  }
+
+  primePresentationRequestBinding(
+    request: UniversityPresentationRequestMessage,
+  ): void {
+    const binding = requestBindingFor(request);
+    this.presentationRequestBindings.set(binding.threadIdHex, binding);
   }
 
   receiveSubmissionAndSendResult(
@@ -319,8 +405,14 @@ export class UniversityCompanyVerifierAgent {
       rejectionKind = "duplicate";
       this.duplicateRejectedCount += 1;
     } else {
-      this.processedThreadIds.add(threadIdHex);
       try {
+        // Do not let an unsolicited malformed submission consume a valid request thread.
+        // Do not let an unsolicited malformed submission consume a valid request thread.
+        assertSubmissionMatchesRequestBinding(
+          message,
+          this.presentationRequestBindings.get(threadIdHex),
+        );
+        this.processedThreadIds.add(threadIdHex);
         this.proofBackend.verifyJobApplication({
           submission: message.body,
         });
@@ -365,6 +457,10 @@ export class UniversityCompanyVerifierAgent {
 
 /** @internal Protocol-flow helper; not exported from the package public API. */
 export class UniversityMallVerifierAgent {
+  readonly presentationRequestBindings = new Map<
+    string,
+    UniversityPresentationRequestBinding
+  >();
   readonly processedThreadIds = new Set<string>();
   acceptedCount = 0;
   duplicateRejectedCount = 0;
@@ -384,10 +480,21 @@ export class UniversityMallVerifierAgent {
     transcript: UniversityTranscriptRecorder,
     messages: UniversityProtocolMessage[],
   ): void {
+    const requestContext = [
+      "discount",
+      this.mall.mallId,
+      student.record.studentId,
+    ].join(":");
+    const envelope = this.createEnvelope(
+      "discount-request:" + this.mall.mallId + ":" + student.record.studentId,
+      requestContext,
+      true,
+    );
     const request = this.proofBackend.buildMallDiscountRequest({
       issuerVerificationMethodRef,
-      verifierChallengeHash: sha256(
-        `discount:${this.mall.mallId}:${student.record.studentId}`,
+      verifierChallengeHash: requestBoundVerifierChallengeHash(
+        requestContext,
+        envelope.threadId,
       ),
       minimumFinalGrade: BigInt(this.mall.requestPolicy.minimumFinalGrade ?? 0),
     });
@@ -396,11 +503,7 @@ export class UniversityMallVerifierAgent {
       type: "presentation:request",
       from: this.profile.partyId,
       to: student.profile.partyId,
-      envelope: this.createEnvelope(
-        `discount-request:${this.mall.mallId}:${student.record.studentId}`,
-        `discount:${this.mall.mallId}:${student.record.studentId}`,
-        true,
-      ),
+      envelope,
       body: {
         kind: "mallDiscount",
         studentId: student.record.studentId,
@@ -409,6 +512,8 @@ export class UniversityMallVerifierAgent {
       },
     };
 
+    this.primePresentationRequestBinding(message);
+
     bus.send(message);
     messages.push(message);
     transcript.record(
@@ -416,6 +521,13 @@ export class UniversityMallVerifierAgent {
       message,
       `Mall ${this.mall.mallId} requested a diploma presentation from ${student.record.studentId}`,
     );
+  }
+
+  primePresentationRequestBinding(
+    request: UniversityPresentationRequestMessage,
+  ): void {
+    const binding = requestBindingFor(request);
+    this.presentationRequestBindings.set(binding.threadIdHex, binding);
   }
 
   receiveSubmissionAndSendResult(
@@ -435,8 +547,12 @@ export class UniversityMallVerifierAgent {
       rejectionKind = "duplicate";
       this.duplicateRejectedCount += 1;
     } else {
-      this.processedThreadIds.add(threadIdHex);
       try {
+        assertSubmissionMatchesRequestBinding(
+          message,
+          this.presentationRequestBindings.get(threadIdHex),
+        );
+        this.processedThreadIds.add(threadIdHex);
         this.proofBackend.verifyMallDiscount({
           submission: message.body,
         });

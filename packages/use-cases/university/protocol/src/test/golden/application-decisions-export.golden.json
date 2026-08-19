@@ -614,8 +614,36 @@
                 "graduationYear",
                 "finalGrade"
               ],
+              "presentationDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade"
+              ],
+              "directCredentialClaimFields": [
+                "awardName",
+                "creditsEarned",
+                "diplomaId",
+                "facultyName",
+                "finalGrade",
+                "graduateName",
+                "graduationMonth",
+                "graduationYear",
+                "honorsCode",
+                "studentId",
+                "universityName"
+              ],
+              "directCredentialClaimsTransported": true,
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
-              "verifierChallengeHashHex": "<hex>"
+              "verifierChallengeHashHex": "<hex>",
+              "requestedDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade"
+              ]
             }
           }
         ],
@@ -699,8 +727,36 @@
                 "honorsCode",
                 "graduationYear"
               ],
+              "presentationDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "honorsCode",
+                "graduationYear"
+              ],
+              "directCredentialClaimFields": [
+                "awardName",
+                "creditsEarned",
+                "diplomaId",
+                "facultyName",
+                "finalGrade",
+                "graduateName",
+                "graduationMonth",
+                "graduationYear",
+                "honorsCode",
+                "studentId",
+                "universityName"
+              ],
+              "directCredentialClaimsTransported": true,
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
-              "verifierChallengeHashHex": "<hex>"
+              "verifierChallengeHashHex": "<hex>",
+              "requestedDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "honorsCode",
+                "graduationYear"
+              ]
             }
           }
         ],
@@ -786,8 +842,38 @@
                 "finalGrade",
                 "creditsEarned"
               ],
+              "presentationDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade",
+                "creditsEarned"
+              ],
+              "directCredentialClaimFields": [
+                "awardName",
+                "creditsEarned",
+                "diplomaId",
+                "facultyName",
+                "finalGrade",
+                "graduateName",
+                "graduationMonth",
+                "graduationYear",
+                "honorsCode",
+                "studentId",
+                "universityName"
+              ],
+              "directCredentialClaimsTransported": true,
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
-              "verifierChallengeHashHex": "<hex>"
+              "verifierChallengeHashHex": "<hex>",
+              "requestedDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade",
+                "creditsEarned"
+              ]
             }
           }
         ],
@@ -871,8 +957,36 @@
                 "graduationYear",
                 "finalGrade"
               ],
+              "presentationDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade"
+              ],
+              "directCredentialClaimFields": [
+                "awardName",
+                "creditsEarned",
+                "diplomaId",
+                "facultyName",
+                "finalGrade",
+                "graduateName",
+                "graduationMonth",
+                "graduationYear",
+                "honorsCode",
+                "studentId",
+                "universityName"
+              ],
+              "directCredentialClaimsTransported": true,
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
-              "verifierChallengeHashHex": "<hex>"
+              "verifierChallengeHashHex": "<hex>",
+              "requestedDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade"
+              ]
             }
           }
         ],
@@ -956,8 +1070,36 @@
                 "honorsCode",
                 "graduationYear"
               ],
+              "presentationDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "honorsCode",
+                "graduationYear"
+              ],
+              "directCredentialClaimFields": [
+                "awardName",
+                "creditsEarned",
+                "diplomaId",
+                "facultyName",
+                "finalGrade",
+                "graduateName",
+                "graduationMonth",
+                "graduationYear",
+                "honorsCode",
+                "studentId",
+                "universityName"
+              ],
+              "directCredentialClaimsTransported": true,
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
-              "verifierChallengeHashHex": "<hex>"
+              "verifierChallengeHashHex": "<hex>",
+              "requestedDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "honorsCode",
+                "graduationYear"
+              ]
             }
           }
         ],
@@ -1043,8 +1185,38 @@
                 "finalGrade",
                 "creditsEarned"
               ],
+              "presentationDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade",
+                "creditsEarned"
+              ],
+              "directCredentialClaimFields": [
+                "awardName",
+                "creditsEarned",
+                "diplomaId",
+                "facultyName",
+                "finalGrade",
+                "graduateName",
+                "graduationMonth",
+                "graduationYear",
+                "honorsCode",
+                "studentId",
+                "universityName"
+              ],
+              "directCredentialClaimsTransported": true,
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
-              "verifierChallengeHashHex": "<hex>"
+              "verifierChallengeHashHex": "<hex>",
+              "requestedDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade",
+                "creditsEarned"
+              ]
             }
           }
         ],
@@ -1128,8 +1300,36 @@
                 "graduationYear",
                 "finalGrade"
               ],
+              "presentationDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade"
+              ],
+              "directCredentialClaimFields": [
+                "awardName",
+                "creditsEarned",
+                "diplomaId",
+                "facultyName",
+                "finalGrade",
+                "graduateName",
+                "graduationMonth",
+                "graduationYear",
+                "honorsCode",
+                "studentId",
+                "universityName"
+              ],
+              "directCredentialClaimsTransported": true,
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
-              "verifierChallengeHashHex": "<hex>"
+              "verifierChallengeHashHex": "<hex>",
+              "requestedDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade"
+              ]
             }
           }
         ],
@@ -1213,8 +1413,36 @@
                 "honorsCode",
                 "graduationYear"
               ],
+              "presentationDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "honorsCode",
+                "graduationYear"
+              ],
+              "directCredentialClaimFields": [
+                "awardName",
+                "creditsEarned",
+                "diplomaId",
+                "facultyName",
+                "finalGrade",
+                "graduateName",
+                "graduationMonth",
+                "graduationYear",
+                "honorsCode",
+                "studentId",
+                "universityName"
+              ],
+              "directCredentialClaimsTransported": true,
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
-              "verifierChallengeHashHex": "<hex>"
+              "verifierChallengeHashHex": "<hex>",
+              "requestedDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "honorsCode",
+                "graduationYear"
+              ]
             }
           }
         ],
@@ -1300,8 +1528,38 @@
                 "finalGrade",
                 "creditsEarned"
               ],
+              "presentationDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade",
+                "creditsEarned"
+              ],
+              "directCredentialClaimFields": [
+                "awardName",
+                "creditsEarned",
+                "diplomaId",
+                "facultyName",
+                "finalGrade",
+                "graduateName",
+                "graduationMonth",
+                "graduationYear",
+                "honorsCode",
+                "studentId",
+                "universityName"
+              ],
+              "directCredentialClaimsTransported": true,
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
-              "verifierChallengeHashHex": "<hex>"
+              "verifierChallengeHashHex": "<hex>",
+              "requestedDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade",
+                "creditsEarned"
+              ]
             }
           }
         ],
@@ -1385,8 +1643,36 @@
                 "graduationYear",
                 "finalGrade"
               ],
+              "presentationDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade"
+              ],
+              "directCredentialClaimFields": [
+                "awardName",
+                "creditsEarned",
+                "diplomaId",
+                "facultyName",
+                "finalGrade",
+                "graduateName",
+                "graduationMonth",
+                "graduationYear",
+                "honorsCode",
+                "studentId",
+                "universityName"
+              ],
+              "directCredentialClaimsTransported": true,
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
-              "verifierChallengeHashHex": "<hex>"
+              "verifierChallengeHashHex": "<hex>",
+              "requestedDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade"
+              ]
             }
           }
         ],
@@ -1468,8 +1754,30 @@
                 "universityName",
                 "finalGrade"
               ],
+              "presentationDisclosures": [
+                "universityName",
+                "finalGrade"
+              ],
+              "directCredentialClaimFields": [
+                "awardName",
+                "creditsEarned",
+                "diplomaId",
+                "facultyName",
+                "finalGrade",
+                "graduateName",
+                "graduationMonth",
+                "graduationYear",
+                "honorsCode",
+                "studentId",
+                "universityName"
+              ],
+              "directCredentialClaimsTransported": true,
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
-              "verifierChallengeHashHex": "<hex>"
+              "verifierChallengeHashHex": "<hex>",
+              "requestedDisclosures": [
+                "universityName",
+                "finalGrade"
+              ]
             }
           }
         ],
@@ -1547,8 +1855,30 @@
                 "universityName",
                 "finalGrade"
               ],
+              "presentationDisclosures": [
+                "universityName",
+                "finalGrade"
+              ],
+              "directCredentialClaimFields": [
+                "awardName",
+                "creditsEarned",
+                "diplomaId",
+                "facultyName",
+                "finalGrade",
+                "graduateName",
+                "graduationMonth",
+                "graduationYear",
+                "honorsCode",
+                "studentId",
+                "universityName"
+              ],
+              "directCredentialClaimsTransported": true,
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
-              "verifierChallengeHashHex": "<hex>"
+              "verifierChallengeHashHex": "<hex>",
+              "requestedDisclosures": [
+                "universityName",
+                "finalGrade"
+              ]
             }
           }
         ],
@@ -1626,8 +1956,30 @@
                 "universityName",
                 "finalGrade"
               ],
+              "presentationDisclosures": [
+                "universityName",
+                "finalGrade"
+              ],
+              "directCredentialClaimFields": [
+                "awardName",
+                "creditsEarned",
+                "diplomaId",
+                "facultyName",
+                "finalGrade",
+                "graduateName",
+                "graduationMonth",
+                "graduationYear",
+                "honorsCode",
+                "studentId",
+                "universityName"
+              ],
+              "directCredentialClaimsTransported": true,
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
-              "verifierChallengeHashHex": "<hex>"
+              "verifierChallengeHashHex": "<hex>",
+              "requestedDisclosures": [
+                "universityName",
+                "finalGrade"
+              ]
             }
           }
         ],
@@ -1705,8 +2057,30 @@
                 "universityName",
                 "finalGrade"
               ],
+              "presentationDisclosures": [
+                "universityName",
+                "finalGrade"
+              ],
+              "directCredentialClaimFields": [
+                "awardName",
+                "creditsEarned",
+                "diplomaId",
+                "facultyName",
+                "finalGrade",
+                "graduateName",
+                "graduationMonth",
+                "graduationYear",
+                "honorsCode",
+                "studentId",
+                "universityName"
+              ],
+              "directCredentialClaimsTransported": true,
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
-              "verifierChallengeHashHex": "<hex>"
+              "verifierChallengeHashHex": "<hex>",
+              "requestedDisclosures": [
+                "universityName",
+                "finalGrade"
+              ]
             }
           }
         ],
@@ -1784,8 +2158,30 @@
                 "universityName",
                 "finalGrade"
               ],
+              "presentationDisclosures": [
+                "universityName",
+                "finalGrade"
+              ],
+              "directCredentialClaimFields": [
+                "awardName",
+                "creditsEarned",
+                "diplomaId",
+                "facultyName",
+                "finalGrade",
+                "graduateName",
+                "graduationMonth",
+                "graduationYear",
+                "honorsCode",
+                "studentId",
+                "universityName"
+              ],
+              "directCredentialClaimsTransported": true,
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
-              "verifierChallengeHashHex": "<hex>"
+              "verifierChallengeHashHex": "<hex>",
+              "requestedDisclosures": [
+                "universityName",
+                "finalGrade"
+              ]
             }
           }
         ],
