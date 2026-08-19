@@ -125,6 +125,35 @@ const disclosureNamesForRequest = (request: {
     request.requireCreditsEarnedDisclosure ? "creditsEarned" : undefined,
   ].filter((value): value is string => value !== undefined);
 
+const disclosureNamesForPresentation = (presentation: {
+  readonly disclosed: {
+    readonly revealDiplomaId: boolean;
+    readonly revealStudentId: boolean;
+    readonly revealGraduateName: boolean;
+    readonly revealUniversityName: boolean;
+    readonly revealFacultyName: boolean;
+    readonly revealAwardName: boolean;
+    readonly revealHonorsCode: boolean;
+    readonly revealGraduationYear: boolean;
+    readonly revealGraduationMonth: boolean;
+    readonly revealFinalGrade: boolean;
+    readonly revealCreditsEarned: boolean;
+  };
+}): readonly string[] =>
+  [
+    presentation.disclosed.revealDiplomaId ? "diplomaId" : undefined,
+    presentation.disclosed.revealStudentId ? "studentId" : undefined,
+    presentation.disclosed.revealGraduateName ? "graduateName" : undefined,
+    presentation.disclosed.revealUniversityName ? "universityName" : undefined,
+    presentation.disclosed.revealFacultyName ? "facultyName" : undefined,
+    presentation.disclosed.revealAwardName ? "awardName" : undefined,
+    presentation.disclosed.revealHonorsCode ? "honorsCode" : undefined,
+    presentation.disclosed.revealGraduationYear ? "graduationYear" : undefined,
+    presentation.disclosed.revealGraduationMonth ? "graduationMonth" : undefined,
+    presentation.disclosed.revealFinalGrade ? "finalGrade" : undefined,
+    presentation.disclosed.revealCreditsEarned ? "creditsEarned" : undefined,
+  ].filter((value): value is string => value !== undefined);
+
 const normalizedBody = (message: UniversityProtocolMessage): unknown => {
   switch (message.type) {
     case "issuance:request": {
@@ -165,6 +194,7 @@ const normalizedBody = (message: UniversityProtocolMessage): unknown => {
         verifierId: body.verifierId,
         requestedRole: body.requestedRole ?? null,
         disclosures: disclosureNamesForRequest(body.request),
+        requestedDisclosures: disclosureNamesForRequest(body.request),
         enforceMinimumFinalGrade: body.request.enforceMinimumFinalGrade,
         minimumFinalGrade: body.request.minimumFinalGrade,
         verifierChallengeHashHex: bytesToHex(
@@ -177,7 +207,11 @@ const normalizedBody = (message: UniversityProtocolMessage): unknown => {
       return {
         kind: body.kind,
         studentId: body.studentId,
-        disclosures: disclosureNamesForRequest(body.request),
+        requestedDisclosures: disclosureNamesForRequest(body.request),
+        disclosures: disclosureNamesForPresentation(body.presentation),
+        presentationDisclosures: disclosureNamesForPresentation(body.presentation),
+        directCredentialClaimFields: Object.keys(body.credential.claims).sort(),
+        directCredentialClaimsTransported: true,
         issuerVerificationMethodRef: verificationMethodRefToString(
           body.credential.issuerVerificationMethodRef,
         ),

@@ -591,6 +591,13 @@
               "graduationYear",
               "finalGrade"
             ],
+            "requestedDisclosures": [
+              "graduateName",
+              "universityName",
+              "awardName",
+              "graduationYear",
+              "finalGrade"
+            ],
             "enforceMinimumFinalGrade": false,
             "minimumFinalGrade": "0",
             "verifierChallengeHashHex": "<hex>"
@@ -607,6 +614,13 @@
             "dto": {
               "kind": "jobApplication",
               "studentId": "STU-0001",
+              "requestedDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade"
+              ],
               "disclosures": [
                 "graduateName",
                 "universityName",
@@ -614,6 +628,27 @@
                 "graduationYear",
                 "finalGrade"
               ],
+              "presentationDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade"
+              ],
+              "directCredentialClaimFields": [
+                "awardName",
+                "creditsEarned",
+                "diplomaId",
+                "facultyName",
+                "finalGrade",
+                "graduateName",
+                "graduationMonth",
+                "graduationYear",
+                "honorsCode",
+                "studentId",
+                "universityName"
+              ],
+              "directCredentialClaimsTransported": true,
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
               "verifierChallengeHashHex": "<hex>"
             }
@@ -676,6 +711,13 @@
               "honorsCode",
               "graduationYear"
             ],
+            "requestedDisclosures": [
+              "graduateName",
+              "universityName",
+              "awardName",
+              "honorsCode",
+              "graduationYear"
+            ],
             "enforceMinimumFinalGrade": false,
             "minimumFinalGrade": "0",
             "verifierChallengeHashHex": "<hex>"
@@ -692,6 +734,13 @@
             "dto": {
               "kind": "jobApplication",
               "studentId": "STU-0002",
+              "requestedDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "honorsCode",
+                "graduationYear"
+              ],
               "disclosures": [
                 "graduateName",
                 "universityName",
@@ -699,6 +748,27 @@
                 "honorsCode",
                 "graduationYear"
               ],
+              "presentationDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "honorsCode",
+                "graduationYear"
+              ],
+              "directCredentialClaimFields": [
+                "awardName",
+                "creditsEarned",
+                "diplomaId",
+                "facultyName",
+                "finalGrade",
+                "graduateName",
+                "graduationMonth",
+                "graduationYear",
+                "honorsCode",
+                "studentId",
+                "universityName"
+              ],
+              "directCredentialClaimsTransported": true,
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
               "verifierChallengeHashHex": "<hex>"
             }
@@ -762,6 +832,14 @@
               "finalGrade",
               "creditsEarned"
             ],
+            "requestedDisclosures": [
+              "graduateName",
+              "universityName",
+              "awardName",
+              "graduationYear",
+              "finalGrade",
+              "creditsEarned"
+            ],
             "enforceMinimumFinalGrade": false,
             "minimumFinalGrade": "0",
             "verifierChallengeHashHex": "<hex>"
@@ -778,6 +856,14 @@
             "dto": {
               "kind": "jobApplication",
               "studentId": "STU-0003",
+              "requestedDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade",
+                "creditsEarned"
+              ],
               "disclosures": [
                 "graduateName",
                 "universityName",
@@ -786,6 +872,28 @@
                 "finalGrade",
                 "creditsEarned"
               ],
+              "presentationDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade",
+                "creditsEarned"
+              ],
+              "directCredentialClaimFields": [
+                "awardName",
+                "creditsEarned",
+                "diplomaId",
+                "facultyName",
+                "finalGrade",
+                "graduateName",
+                "graduationMonth",
+                "graduationYear",
+                "honorsCode",
+                "studentId",
+                "universityName"
+              ],
+              "directCredentialClaimsTransported": true,
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
               "verifierChallengeHashHex": "<hex>"
             }
@@ -848,6 +956,13 @@
               "graduationYear",
               "finalGrade"
             ],
+            "requestedDisclosures": [
+              "graduateName",
+              "universityName",
+              "awardName",
+              "graduationYear",
+              "finalGrade"
+            ],
             "enforceMinimumFinalGrade": false,
             "minimumFinalGrade": "0",
             "verifierChallengeHashHex": "<hex>"
@@ -864,6 +979,13 @@
             "dto": {
               "kind": "jobApplication",
               "studentId": "STU-0004",
+              "requestedDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade"
+              ],
               "disclosures": [
                 "graduateName",
                 "universityName",
@@ -871,6 +993,27 @@
                 "graduationYear",
                 "finalGrade"
               ],
+              "presentationDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade"
+              ],
+              "directCredentialClaimFields": [
+                "awardName",
+                "creditsEarned",
+                "diplomaId",
+                "facultyName",
+                "finalGrade",
+                "graduateName",
+                "graduationMonth",
+                "graduationYear",
+                "honorsCode",
+                "studentId",
+                "universityName"
+              ],
+              "directCredentialClaimsTransported": true,
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
               "verifierChallengeHashHex": "<hex>"
             }
@@ -933,6 +1076,13 @@
               "honorsCode",
               "graduationYear"
             ],
+            "requestedDisclosures": [
+              "graduateName",
+              "universityName",
+              "awardName",
+              "honorsCode",
+              "graduationYear"
+            ],
             "enforceMinimumFinalGrade": false,
             "minimumFinalGrade": "0",
             "verifierChallengeHashHex": "<hex>"
@@ -949,6 +1099,13 @@
             "dto": {
               "kind": "jobApplication",
               "studentId": "STU-0005",
+              "requestedDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "honorsCode",
+                "graduationYear"
+              ],
               "disclosures": [
                 "graduateName",
                 "universityName",
@@ -956,6 +1113,27 @@
                 "honorsCode",
                 "graduationYear"
               ],
+              "presentationDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "honorsCode",
+                "graduationYear"
+              ],
+              "directCredentialClaimFields": [
+                "awardName",
+                "creditsEarned",
+                "diplomaId",
+                "facultyName",
+                "finalGrade",
+                "graduateName",
+                "graduationMonth",
+                "graduationYear",
+                "honorsCode",
+                "studentId",
+                "universityName"
+              ],
+              "directCredentialClaimsTransported": true,
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
               "verifierChallengeHashHex": "<hex>"
             }
@@ -1019,6 +1197,14 @@
               "finalGrade",
               "creditsEarned"
             ],
+            "requestedDisclosures": [
+              "graduateName",
+              "universityName",
+              "awardName",
+              "graduationYear",
+              "finalGrade",
+              "creditsEarned"
+            ],
             "enforceMinimumFinalGrade": false,
             "minimumFinalGrade": "0",
             "verifierChallengeHashHex": "<hex>"
@@ -1035,6 +1221,14 @@
             "dto": {
               "kind": "jobApplication",
               "studentId": "STU-0006",
+              "requestedDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade",
+                "creditsEarned"
+              ],
               "disclosures": [
                 "graduateName",
                 "universityName",
@@ -1043,6 +1237,28 @@
                 "finalGrade",
                 "creditsEarned"
               ],
+              "presentationDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade",
+                "creditsEarned"
+              ],
+              "directCredentialClaimFields": [
+                "awardName",
+                "creditsEarned",
+                "diplomaId",
+                "facultyName",
+                "finalGrade",
+                "graduateName",
+                "graduationMonth",
+                "graduationYear",
+                "honorsCode",
+                "studentId",
+                "universityName"
+              ],
+              "directCredentialClaimsTransported": true,
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
               "verifierChallengeHashHex": "<hex>"
             }
@@ -1105,6 +1321,13 @@
               "graduationYear",
               "finalGrade"
             ],
+            "requestedDisclosures": [
+              "graduateName",
+              "universityName",
+              "awardName",
+              "graduationYear",
+              "finalGrade"
+            ],
             "enforceMinimumFinalGrade": false,
             "minimumFinalGrade": "0",
             "verifierChallengeHashHex": "<hex>"
@@ -1121,6 +1344,13 @@
             "dto": {
               "kind": "jobApplication",
               "studentId": "STU-0007",
+              "requestedDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade"
+              ],
               "disclosures": [
                 "graduateName",
                 "universityName",
@@ -1128,6 +1358,27 @@
                 "graduationYear",
                 "finalGrade"
               ],
+              "presentationDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade"
+              ],
+              "directCredentialClaimFields": [
+                "awardName",
+                "creditsEarned",
+                "diplomaId",
+                "facultyName",
+                "finalGrade",
+                "graduateName",
+                "graduationMonth",
+                "graduationYear",
+                "honorsCode",
+                "studentId",
+                "universityName"
+              ],
+              "directCredentialClaimsTransported": true,
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
               "verifierChallengeHashHex": "<hex>"
             }
@@ -1190,6 +1441,13 @@
               "honorsCode",
               "graduationYear"
             ],
+            "requestedDisclosures": [
+              "graduateName",
+              "universityName",
+              "awardName",
+              "honorsCode",
+              "graduationYear"
+            ],
             "enforceMinimumFinalGrade": false,
             "minimumFinalGrade": "0",
             "verifierChallengeHashHex": "<hex>"
@@ -1206,6 +1464,13 @@
             "dto": {
               "kind": "jobApplication",
               "studentId": "STU-0008",
+              "requestedDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "honorsCode",
+                "graduationYear"
+              ],
               "disclosures": [
                 "graduateName",
                 "universityName",
@@ -1213,6 +1478,27 @@
                 "honorsCode",
                 "graduationYear"
               ],
+              "presentationDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "honorsCode",
+                "graduationYear"
+              ],
+              "directCredentialClaimFields": [
+                "awardName",
+                "creditsEarned",
+                "diplomaId",
+                "facultyName",
+                "finalGrade",
+                "graduateName",
+                "graduationMonth",
+                "graduationYear",
+                "honorsCode",
+                "studentId",
+                "universityName"
+              ],
+              "directCredentialClaimsTransported": true,
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
               "verifierChallengeHashHex": "<hex>"
             }
@@ -1276,6 +1562,14 @@
               "finalGrade",
               "creditsEarned"
             ],
+            "requestedDisclosures": [
+              "graduateName",
+              "universityName",
+              "awardName",
+              "graduationYear",
+              "finalGrade",
+              "creditsEarned"
+            ],
             "enforceMinimumFinalGrade": false,
             "minimumFinalGrade": "0",
             "verifierChallengeHashHex": "<hex>"
@@ -1292,6 +1586,14 @@
             "dto": {
               "kind": "jobApplication",
               "studentId": "STU-0009",
+              "requestedDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade",
+                "creditsEarned"
+              ],
               "disclosures": [
                 "graduateName",
                 "universityName",
@@ -1300,6 +1602,28 @@
                 "finalGrade",
                 "creditsEarned"
               ],
+              "presentationDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade",
+                "creditsEarned"
+              ],
+              "directCredentialClaimFields": [
+                "awardName",
+                "creditsEarned",
+                "diplomaId",
+                "facultyName",
+                "finalGrade",
+                "graduateName",
+                "graduationMonth",
+                "graduationYear",
+                "honorsCode",
+                "studentId",
+                "universityName"
+              ],
+              "directCredentialClaimsTransported": true,
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
               "verifierChallengeHashHex": "<hex>"
             }
@@ -1362,6 +1686,13 @@
               "graduationYear",
               "finalGrade"
             ],
+            "requestedDisclosures": [
+              "graduateName",
+              "universityName",
+              "awardName",
+              "graduationYear",
+              "finalGrade"
+            ],
             "enforceMinimumFinalGrade": false,
             "minimumFinalGrade": "0",
             "verifierChallengeHashHex": "<hex>"
@@ -1378,6 +1709,13 @@
             "dto": {
               "kind": "jobApplication",
               "studentId": "STU-0010",
+              "requestedDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade"
+              ],
               "disclosures": [
                 "graduateName",
                 "universityName",
@@ -1385,6 +1723,27 @@
                 "graduationYear",
                 "finalGrade"
               ],
+              "presentationDisclosures": [
+                "graduateName",
+                "universityName",
+                "awardName",
+                "graduationYear",
+                "finalGrade"
+              ],
+              "directCredentialClaimFields": [
+                "awardName",
+                "creditsEarned",
+                "diplomaId",
+                "facultyName",
+                "finalGrade",
+                "graduateName",
+                "graduationMonth",
+                "graduationYear",
+                "honorsCode",
+                "studentId",
+                "universityName"
+              ],
+              "directCredentialClaimsTransported": true,
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
               "verifierChallengeHashHex": "<hex>"
             }
@@ -1448,6 +1807,10 @@
               "universityName",
               "finalGrade"
             ],
+            "requestedDisclosures": [
+              "universityName",
+              "finalGrade"
+            ],
             "enforceMinimumFinalGrade": true,
             "minimumFinalGrade": "91",
             "verifierChallengeHashHex": "<hex>"
@@ -1464,10 +1827,32 @@
             "dto": {
               "kind": "mallDiscount",
               "studentId": "STU-0001",
+              "requestedDisclosures": [
+                "universityName",
+                "finalGrade"
+              ],
               "disclosures": [
                 "universityName",
                 "finalGrade"
               ],
+              "presentationDisclosures": [
+                "universityName",
+                "finalGrade"
+              ],
+              "directCredentialClaimFields": [
+                "awardName",
+                "creditsEarned",
+                "diplomaId",
+                "facultyName",
+                "finalGrade",
+                "graduateName",
+                "graduationMonth",
+                "graduationYear",
+                "honorsCode",
+                "studentId",
+                "universityName"
+              ],
+              "directCredentialClaimsTransported": true,
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
               "verifierChallengeHashHex": "<hex>"
             }
@@ -1527,6 +1912,10 @@
               "universityName",
               "finalGrade"
             ],
+            "requestedDisclosures": [
+              "universityName",
+              "finalGrade"
+            ],
             "enforceMinimumFinalGrade": true,
             "minimumFinalGrade": "91",
             "verifierChallengeHashHex": "<hex>"
@@ -1543,10 +1932,32 @@
             "dto": {
               "kind": "mallDiscount",
               "studentId": "STU-0002",
+              "requestedDisclosures": [
+                "universityName",
+                "finalGrade"
+              ],
               "disclosures": [
                 "universityName",
                 "finalGrade"
               ],
+              "presentationDisclosures": [
+                "universityName",
+                "finalGrade"
+              ],
+              "directCredentialClaimFields": [
+                "awardName",
+                "creditsEarned",
+                "diplomaId",
+                "facultyName",
+                "finalGrade",
+                "graduateName",
+                "graduationMonth",
+                "graduationYear",
+                "honorsCode",
+                "studentId",
+                "universityName"
+              ],
+              "directCredentialClaimsTransported": true,
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
               "verifierChallengeHashHex": "<hex>"
             }
@@ -1606,6 +2017,10 @@
               "universityName",
               "finalGrade"
             ],
+            "requestedDisclosures": [
+              "universityName",
+              "finalGrade"
+            ],
             "enforceMinimumFinalGrade": true,
             "minimumFinalGrade": "91",
             "verifierChallengeHashHex": "<hex>"
@@ -1622,10 +2037,32 @@
             "dto": {
               "kind": "mallDiscount",
               "studentId": "STU-0003",
+              "requestedDisclosures": [
+                "universityName",
+                "finalGrade"
+              ],
               "disclosures": [
                 "universityName",
                 "finalGrade"
               ],
+              "presentationDisclosures": [
+                "universityName",
+                "finalGrade"
+              ],
+              "directCredentialClaimFields": [
+                "awardName",
+                "creditsEarned",
+                "diplomaId",
+                "facultyName",
+                "finalGrade",
+                "graduateName",
+                "graduationMonth",
+                "graduationYear",
+                "honorsCode",
+                "studentId",
+                "universityName"
+              ],
+              "directCredentialClaimsTransported": true,
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
               "verifierChallengeHashHex": "<hex>"
             }
@@ -1685,6 +2122,10 @@
               "universityName",
               "finalGrade"
             ],
+            "requestedDisclosures": [
+              "universityName",
+              "finalGrade"
+            ],
             "enforceMinimumFinalGrade": true,
             "minimumFinalGrade": "91",
             "verifierChallengeHashHex": "<hex>"
@@ -1701,10 +2142,32 @@
             "dto": {
               "kind": "mallDiscount",
               "studentId": "STU-0004",
+              "requestedDisclosures": [
+                "universityName",
+                "finalGrade"
+              ],
               "disclosures": [
                 "universityName",
                 "finalGrade"
               ],
+              "presentationDisclosures": [
+                "universityName",
+                "finalGrade"
+              ],
+              "directCredentialClaimFields": [
+                "awardName",
+                "creditsEarned",
+                "diplomaId",
+                "facultyName",
+                "finalGrade",
+                "graduateName",
+                "graduationMonth",
+                "graduationYear",
+                "honorsCode",
+                "studentId",
+                "universityName"
+              ],
+              "directCredentialClaimsTransported": true,
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
               "verifierChallengeHashHex": "<hex>"
             }
@@ -1764,6 +2227,10 @@
               "universityName",
               "finalGrade"
             ],
+            "requestedDisclosures": [
+              "universityName",
+              "finalGrade"
+            ],
             "enforceMinimumFinalGrade": true,
             "minimumFinalGrade": "91",
             "verifierChallengeHashHex": "<hex>"
@@ -1780,10 +2247,32 @@
             "dto": {
               "kind": "mallDiscount",
               "studentId": "STU-0005",
+              "requestedDisclosures": [
+                "universityName",
+                "finalGrade"
+              ],
               "disclosures": [
                 "universityName",
                 "finalGrade"
               ],
+              "presentationDisclosures": [
+                "universityName",
+                "finalGrade"
+              ],
+              "directCredentialClaimFields": [
+                "awardName",
+                "creditsEarned",
+                "diplomaId",
+                "facultyName",
+                "finalGrade",
+                "graduateName",
+                "graduationMonth",
+                "graduationYear",
+                "honorsCode",
+                "studentId",
+                "universityName"
+              ],
+              "directCredentialClaimsTransported": true,
               "issuerVerificationMethodRef": "<hex>:#issuer-key-1",
               "verifierChallengeHashHex": "<hex>"
             }

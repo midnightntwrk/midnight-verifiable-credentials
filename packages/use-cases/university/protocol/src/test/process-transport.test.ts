@@ -135,10 +135,48 @@ describe("serialized university protocol transport", () => {
           SerializedUniversityProtocolTransport["send"]
         >[0]["envelope"],
         body: {},
+
       }),
     ).toThrow(
       /Serialized university protocol transport only accepts university protocol messages/u,
     );
+  });
+
+  it("preserves direct v1 credential claims even when the presentation does not disclose them", () => {
+    const result = new UniversityProtocolFlowRunner({
+      transport: new SerializedUniversityProtocolTransport(),
+    }).runAll();
+    const submission = result.jobApplications.messages.find(
+      (message) =>
+        message.type === "presentation:submission" &&
+        message.body.studentId === "STU-0002",
+    );
+    if (!submission || submission.type !== "presentation:submission") {
+      throw new Error("Expected the STU-0002 presentation submission");
+    }
+
+    const decoded = decodeUniversityProtocolTransportValue(
+      encodeUniversityProtocolTransportValue(submission),
+    ) as typeof submission;
+
+    expect(decoded.body.request.requireStudentIdDisclosure).toBe(false);
+    expect(decoded.body.presentation.disclosed.revealStudentId).toBe(false);
+    expect(decoded.body.credential.claims.studentId).toEqual(
+      submission.body.credential.claims.studentId,
+    );
+    expect(Object.keys(decoded.body.credential.claims).sort()).toEqual([
+      "awardName",
+      "creditsEarned",
+      "diplomaId",
+      "facultyName",
+      "finalGrade",
+      "graduateName",
+      "graduationMonth",
+      "graduationYear",
+      "honorsCode",
+      "studentId",
+      "universityName",
+    ]);
   });
 
   it("rejects reserved transport tags inside message bodies", () => {

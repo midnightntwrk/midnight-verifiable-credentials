@@ -28,6 +28,23 @@ Boundary:
 - the student-side harness rebuilds presentation artifacts from stable local test keys and stored issuer outputs so the full flow can execute in one process
 - treat it as protocol-shape validation and bottleneck instrumentation, not as a reference for issuer-key isolation
 
+## V1 direct-claim transport limit
+
+The runnable University demonstration uses the existing `uni-diploma:v1`
+direct-claim prototype. Every presentation submission carries the credential
+body, so every v1 academic claim is transported to the verifier even when a
+request does not require that claim and its presentation `reveal*` flag is
+false. Request flags describe what the verifier asks for; presentation flags
+describe which presentation slots are authorized. Neither flag provides
+confidentiality or selective disclosure for the direct credential body.
+
+Application-decision exports therefore label `requestedDisclosures`,
+`presentationDisclosures`, and the direct credential claim fields separately.
+The verifier also binds each submission to the original request envelope
+(thread and response message ids) and full request root, including its
+challenge; unknown, mismatched, or replayed request flows are rejected. This
+is replay correctness for a private prototype, not a privacy guarantee.
+
 Scope:
 
 - 10 student-initiated issuance requests and 10 issuance results

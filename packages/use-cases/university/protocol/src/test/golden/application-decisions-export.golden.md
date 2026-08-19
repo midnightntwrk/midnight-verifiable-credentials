@@ -227,7 +227,7 @@
 - message: <hex>
 - responds-to: <hex>
 - summary: jobApplication request from company-northwind-robotics for STU-0001
-- dto: {"kind":"jobApplication","studentId":"STU-0001","verifierId":"company-northwind-robotics","requestedRole":"junior-platform-engineer","disclosures":["graduateName","universityName","awardName","graduationYear","finalGrade"],"enforceMinimumFinalGrade":false,"minimumFinalGrade":"0","verifierChallengeHashHex":"<hex>"}
+- dto: {"kind":"jobApplication","studentId":"STU-0001","verifierId":"company-northwind-robotics","requestedRole":"junior-platform-engineer","disclosures":["graduateName","universityName","awardName","graduationYear","finalGrade"],"requestedDisclosures":["graduateName","universityName","awardName","graduationYear","finalGrade"],"enforceMinimumFinalGrade":false,"minimumFinalGrade":"0","verifierChallengeHashHex":"<hex>"}
 - submissions:
   #### submission
   - thread: <hex>
@@ -236,7 +236,7 @@
   - message: <hex>
   - responds-to: <hex>
   - summary: jobApplication submission from STU-0001 for STU-0001
-  - dto: {"kind":"jobApplication","studentId":"STU-0001","disclosures":["graduateName","universityName","awardName","graduationYear","finalGrade"],"issuerVerificationMethodRef":"<hex>:#issuer-key-1","verifierChallengeHashHex":"<hex>"}
+  - dto: {"kind":"jobApplication","studentId":"STU-0001","requestedDisclosures":["graduateName","universityName","awardName","graduationYear","finalGrade"],"disclosures":["graduateName","universityName","awardName","graduationYear","finalGrade"],"presentationDisclosures":["graduateName","universityName","awardName","graduationYear","finalGrade"],"directCredentialClaimFields":["awardName","creditsEarned","diplomaId","facultyName","finalGrade","graduateName","graduationMonth","graduationYear","honorsCode","studentId","universityName"],"directCredentialClaimsTransported":true,"issuerVerificationMethodRef":"<hex>:#issuer-key-1","verifierChallengeHashHex":"<hex>"}
 - results:
   - sequence 1: accepted (none)
     - reason: job application accepted
@@ -254,7 +254,7 @@
 - message: <hex>
 - responds-to: <hex>
 - summary: jobApplication request from company-blue-ocean-analytics for STU-0002
-- dto: {"kind":"jobApplication","studentId":"STU-0002","verifierId":"company-blue-ocean-analytics","requestedRole":"data-analyst-trainee","disclosures":["graduateName","universityName","awardName","honorsCode","graduationYear"],"enforceMinimumFinalGrade":false,"minimumFinalGrade":"0","verifierChallengeHashHex":"<hex>"}
+- dto: {"kind":"jobApplication","studentId":"STU-0002","verifierId":"company-blue-ocean-analytics","requestedRole":"data-analyst-trainee","disclosures":["graduateName","universityName","awardName","honorsCode","graduationYear"],"requestedDisclosures":["graduateName","universityName","awardName","honorsCode","graduationYear"],"enforceMinimumFinalGrade":false,"minimumFinalGrade":"0","verifierChallengeHashHex":"<hex>"}
 - submissions:
   #### submission
   - thread: <hex>
@@ -263,7 +263,7 @@
   - message: <hex>
   - responds-to: <hex>
   - summary: jobApplication submission from STU-0002 for STU-0002
-  - dto: {"kind":"jobApplication","studentId":"STU-0002","disclosures":["graduateName","universityName","awardName","honorsCode","graduationYear"],"issuerVerificationMethodRef":"<hex>:#issuer-key-1","verifierChallengeHashHex":"<hex>"}
+  - dto: {"kind":"jobApplication","studentId":"STU-0002","requestedDisclosures":["graduateName","universityName","awardName","honorsCode","graduationYear"],"disclosures":["graduateName","universityName","awardName","honorsCode","graduationYear"],"presentationDisclosures":["graduateName","universityName","awardName","honorsCode","graduationYear"],"directCredentialClaimFields":["awardName","creditsEarned","diplomaId","facultyName","finalGrade","graduateName","graduationMonth","graduationYear","honorsCode","studentId","universityName"],"directCredentialClaimsTransported":true,"issuerVerificationMethodRef":"<hex>:#issuer-key-1","verifierChallengeHashHex":"<hex>"}
 - results:
   - sequence 1: accepted (none)
     - reason: job application accepted
@@ -281,7 +281,7 @@
 - message: <hex>
 - responds-to: <hex>
 - summary: jobApplication request from company-pioneer-systems for STU-0003
-- dto: {"kind":"jobApplication","studentId":"STU-0003","verifierId":"company-pioneer-systems","requestedRole":"robotics-software-intern","disclosures":["graduateName","universityName","awardName","graduationYear","finalGrade","creditsEarned"],"enforceMinimumFinalGrade":false,"minimumFinalGrade":"0","verifierChallengeHashHex":"<hex>"}
+- dto: {"kind":"jobApplication","studentId":"STU-0003","verifierId":"company-pioneer-systems","requestedRole":"robotics-software-intern","disclosures":["graduateName","universityName","awardName","graduationYear","finalGrade","creditsEarned"],"requestedDisclosures":["graduateName","universityName","awardName","graduationYear","finalGrade","creditsEarned"],"enforceMinimumFinalGrade":false,"minimumFinalGrade":"0","verifierChallengeHashHex":"<hex>"}
 - submissions:
   #### submission
   - thread: <hex>
@@ -290,7 +290,7 @@
   - message: <hex>
   - responds-to: <hex>
   - summary: jobApplication submission from STU-0003 for STU-0003
-  - dto: {"kind":"jobApplication","studentId":"STU-0003","disclosures":["graduateName","universityName","awardName","graduationYear","finalGrade","creditsEarned"],"issuerVerificationMethodRef":"<hex>:#issuer-key-1","verifierChallengeHashHex":"<hex>"}
+  - dto: {"kind":"jobApplication","studentId":"STU-0003","requestedDisclosures":["graduateName","universityName","awardName","graduationYear","finalGrade","creditsEarned"],"disclosures":["graduateName","universityName","awardName","graduationYear","finalGrade","creditsEarned"],"presentationDisclosures":["graduateName","universityName","awardName","graduationYear","finalGrade","creditsEarned"],"directCredentialClaimFields":["awardName","creditsEarned","diplomaId","facultyName","finalGrade","graduateName","graduationMonth","graduationYear","honorsCode","studentId","universityName"],"directCredentialClaimsTransported":true,"issuerVerificationMethodRef":"<hex>:#issuer-key-1","verifierChallengeHashHex":"<hex>"}
 - results:
   - sequence 1: accepted (none)
     - reason: job application accepted
@@ -308,7 +308,7 @@
 - message: <hex>
 - responds-to: <hex>
 - summary: jobApplication request from company-northwind-robotics for STU-0004
-- dto: {"kind":"jobApplication","studentId":"STU-0004","verifierId":"company-northwind-robotics","requestedRole":"business-operations-analyst","disclosures":["graduateName","universityName","awardName","graduationYear","finalGrade"],"enforceMinimumFinalGrade":false,"minimumFinalGrade":"0","verifierChallengeHashHex":"<hex>"}
+- dto: {"kind":"jobApplication","studentId":"STU-0004","verifierId":"company-northwind-robotics","requestedRole":"business-operations-analyst","disclosures":["graduateName","universityName","awardName","graduationYear","finalGrade"],"requestedDisclosures":["graduateName","universityName","awardName","graduationYear","finalGrade"],"enforceMinimumFinalGrade":false,"minimumFinalGrade":"0","verifierChallengeHashHex":"<hex>"}
 - submissions:
   #### submission
   - thread: <hex>
@@ -317,7 +317,7 @@
   - message: <hex>
   - responds-to: <hex>
   - summary: jobApplication submission from STU-0004 for STU-0004
-  - dto: {"kind":"jobApplication","studentId":"STU-0004","disclosures":["graduateName","universityName","awardName","graduationYear","finalGrade"],"issuerVerificationMethodRef":"<hex>:#issuer-key-1","verifierChallengeHashHex":"<hex>"}
+  - dto: {"kind":"jobApplication","studentId":"STU-0004","requestedDisclosures":["graduateName","universityName","awardName","graduationYear","finalGrade"],"disclosures":["graduateName","universityName","awardName","graduationYear","finalGrade"],"presentationDisclosures":["graduateName","universityName","awardName","graduationYear","finalGrade"],"directCredentialClaimFields":["awardName","creditsEarned","diplomaId","facultyName","finalGrade","graduateName","graduationMonth","graduationYear","honorsCode","studentId","universityName"],"directCredentialClaimsTransported":true,"issuerVerificationMethodRef":"<hex>:#issuer-key-1","verifierChallengeHashHex":"<hex>"}
 - results:
   - sequence 1: accepted (none)
     - reason: job application accepted
@@ -335,7 +335,7 @@
 - message: <hex>
 - responds-to: <hex>
 - summary: jobApplication request from company-blue-ocean-analytics for STU-0005
-- dto: {"kind":"jobApplication","studentId":"STU-0005","verifierId":"company-blue-ocean-analytics","requestedRole":"junior-platform-engineer","disclosures":["graduateName","universityName","awardName","honorsCode","graduationYear"],"enforceMinimumFinalGrade":false,"minimumFinalGrade":"0","verifierChallengeHashHex":"<hex>"}
+- dto: {"kind":"jobApplication","studentId":"STU-0005","verifierId":"company-blue-ocean-analytics","requestedRole":"junior-platform-engineer","disclosures":["graduateName","universityName","awardName","honorsCode","graduationYear"],"requestedDisclosures":["graduateName","universityName","awardName","honorsCode","graduationYear"],"enforceMinimumFinalGrade":false,"minimumFinalGrade":"0","verifierChallengeHashHex":"<hex>"}
 - submissions:
   #### submission
   - thread: <hex>
@@ -344,7 +344,7 @@
   - message: <hex>
   - responds-to: <hex>
   - summary: jobApplication submission from STU-0005 for STU-0005
-  - dto: {"kind":"jobApplication","studentId":"STU-0005","disclosures":["graduateName","universityName","awardName","honorsCode","graduationYear"],"issuerVerificationMethodRef":"<hex>:#issuer-key-1","verifierChallengeHashHex":"<hex>"}
+  - dto: {"kind":"jobApplication","studentId":"STU-0005","requestedDisclosures":["graduateName","universityName","awardName","honorsCode","graduationYear"],"disclosures":["graduateName","universityName","awardName","honorsCode","graduationYear"],"presentationDisclosures":["graduateName","universityName","awardName","honorsCode","graduationYear"],"directCredentialClaimFields":["awardName","creditsEarned","diplomaId","facultyName","finalGrade","graduateName","graduationMonth","graduationYear","honorsCode","studentId","universityName"],"directCredentialClaimsTransported":true,"issuerVerificationMethodRef":"<hex>:#issuer-key-1","verifierChallengeHashHex":"<hex>"}
 - results:
   - sequence 1: accepted (none)
     - reason: job application accepted
@@ -362,7 +362,7 @@
 - message: <hex>
 - responds-to: <hex>
 - summary: jobApplication request from company-pioneer-systems for STU-0006
-- dto: {"kind":"jobApplication","studentId":"STU-0006","verifierId":"company-pioneer-systems","requestedRole":"data-analyst-trainee","disclosures":["graduateName","universityName","awardName","graduationYear","finalGrade","creditsEarned"],"enforceMinimumFinalGrade":false,"minimumFinalGrade":"0","verifierChallengeHashHex":"<hex>"}
+- dto: {"kind":"jobApplication","studentId":"STU-0006","verifierId":"company-pioneer-systems","requestedRole":"data-analyst-trainee","disclosures":["graduateName","universityName","awardName","graduationYear","finalGrade","creditsEarned"],"requestedDisclosures":["graduateName","universityName","awardName","graduationYear","finalGrade","creditsEarned"],"enforceMinimumFinalGrade":false,"minimumFinalGrade":"0","verifierChallengeHashHex":"<hex>"}
 - submissions:
   #### submission
   - thread: <hex>
@@ -371,7 +371,7 @@
   - message: <hex>
   - responds-to: <hex>
   - summary: jobApplication submission from STU-0006 for STU-0006
-  - dto: {"kind":"jobApplication","studentId":"STU-0006","disclosures":["graduateName","universityName","awardName","graduationYear","finalGrade","creditsEarned"],"issuerVerificationMethodRef":"<hex>:#issuer-key-1","verifierChallengeHashHex":"<hex>"}
+  - dto: {"kind":"jobApplication","studentId":"STU-0006","requestedDisclosures":["graduateName","universityName","awardName","graduationYear","finalGrade","creditsEarned"],"disclosures":["graduateName","universityName","awardName","graduationYear","finalGrade","creditsEarned"],"presentationDisclosures":["graduateName","universityName","awardName","graduationYear","finalGrade","creditsEarned"],"directCredentialClaimFields":["awardName","creditsEarned","diplomaId","facultyName","finalGrade","graduateName","graduationMonth","graduationYear","honorsCode","studentId","universityName"],"directCredentialClaimsTransported":true,"issuerVerificationMethodRef":"<hex>:#issuer-key-1","verifierChallengeHashHex":"<hex>"}
 - results:
   - sequence 1: accepted (none)
     - reason: job application accepted
@@ -389,7 +389,7 @@
 - message: <hex>
 - responds-to: <hex>
 - summary: jobApplication request from company-northwind-robotics for STU-0007
-- dto: {"kind":"jobApplication","studentId":"STU-0007","verifierId":"company-northwind-robotics","requestedRole":"robotics-software-intern","disclosures":["graduateName","universityName","awardName","graduationYear","finalGrade"],"enforceMinimumFinalGrade":false,"minimumFinalGrade":"0","verifierChallengeHashHex":"<hex>"}
+- dto: {"kind":"jobApplication","studentId":"STU-0007","verifierId":"company-northwind-robotics","requestedRole":"robotics-software-intern","disclosures":["graduateName","universityName","awardName","graduationYear","finalGrade"],"requestedDisclosures":["graduateName","universityName","awardName","graduationYear","finalGrade"],"enforceMinimumFinalGrade":false,"minimumFinalGrade":"0","verifierChallengeHashHex":"<hex>"}
 - submissions:
   #### submission
   - thread: <hex>
@@ -398,7 +398,7 @@
   - message: <hex>
   - responds-to: <hex>
   - summary: jobApplication submission from STU-0007 for STU-0007
-  - dto: {"kind":"jobApplication","studentId":"STU-0007","disclosures":["graduateName","universityName","awardName","graduationYear","finalGrade"],"issuerVerificationMethodRef":"<hex>:#issuer-key-1","verifierChallengeHashHex":"<hex>"}
+  - dto: {"kind":"jobApplication","studentId":"STU-0007","requestedDisclosures":["graduateName","universityName","awardName","graduationYear","finalGrade"],"disclosures":["graduateName","universityName","awardName","graduationYear","finalGrade"],"presentationDisclosures":["graduateName","universityName","awardName","graduationYear","finalGrade"],"directCredentialClaimFields":["awardName","creditsEarned","diplomaId","facultyName","finalGrade","graduateName","graduationMonth","graduationYear","honorsCode","studentId","universityName"],"directCredentialClaimsTransported":true,"issuerVerificationMethodRef":"<hex>:#issuer-key-1","verifierChallengeHashHex":"<hex>"}
 - results:
   - sequence 1: accepted (none)
     - reason: job application accepted
@@ -416,7 +416,7 @@
 - message: <hex>
 - responds-to: <hex>
 - summary: jobApplication request from company-blue-ocean-analytics for STU-0008
-- dto: {"kind":"jobApplication","studentId":"STU-0008","verifierId":"company-blue-ocean-analytics","requestedRole":"business-operations-analyst","disclosures":["graduateName","universityName","awardName","honorsCode","graduationYear"],"enforceMinimumFinalGrade":false,"minimumFinalGrade":"0","verifierChallengeHashHex":"<hex>"}
+- dto: {"kind":"jobApplication","studentId":"STU-0008","verifierId":"company-blue-ocean-analytics","requestedRole":"business-operations-analyst","disclosures":["graduateName","universityName","awardName","honorsCode","graduationYear"],"requestedDisclosures":["graduateName","universityName","awardName","honorsCode","graduationYear"],"enforceMinimumFinalGrade":false,"minimumFinalGrade":"0","verifierChallengeHashHex":"<hex>"}
 - submissions:
   #### submission
   - thread: <hex>
@@ -425,7 +425,7 @@
   - message: <hex>
   - responds-to: <hex>
   - summary: jobApplication submission from STU-0008 for STU-0008
-  - dto: {"kind":"jobApplication","studentId":"STU-0008","disclosures":["graduateName","universityName","awardName","honorsCode","graduationYear"],"issuerVerificationMethodRef":"<hex>:#issuer-key-1","verifierChallengeHashHex":"<hex>"}
+  - dto: {"kind":"jobApplication","studentId":"STU-0008","requestedDisclosures":["graduateName","universityName","awardName","honorsCode","graduationYear"],"disclosures":["graduateName","universityName","awardName","honorsCode","graduationYear"],"presentationDisclosures":["graduateName","universityName","awardName","honorsCode","graduationYear"],"directCredentialClaimFields":["awardName","creditsEarned","diplomaId","facultyName","finalGrade","graduateName","graduationMonth","graduationYear","honorsCode","studentId","universityName"],"directCredentialClaimsTransported":true,"issuerVerificationMethodRef":"<hex>:#issuer-key-1","verifierChallengeHashHex":"<hex>"}
 - results:
   - sequence 1: accepted (none)
     - reason: job application accepted
@@ -443,7 +443,7 @@
 - message: <hex>
 - responds-to: <hex>
 - summary: jobApplication request from company-pioneer-systems for STU-0009
-- dto: {"kind":"jobApplication","studentId":"STU-0009","verifierId":"company-pioneer-systems","requestedRole":"junior-platform-engineer","disclosures":["graduateName","universityName","awardName","graduationYear","finalGrade","creditsEarned"],"enforceMinimumFinalGrade":false,"minimumFinalGrade":"0","verifierChallengeHashHex":"<hex>"}
+- dto: {"kind":"jobApplication","studentId":"STU-0009","verifierId":"company-pioneer-systems","requestedRole":"junior-platform-engineer","disclosures":["graduateName","universityName","awardName","graduationYear","finalGrade","creditsEarned"],"requestedDisclosures":["graduateName","universityName","awardName","graduationYear","finalGrade","creditsEarned"],"enforceMinimumFinalGrade":false,"minimumFinalGrade":"0","verifierChallengeHashHex":"<hex>"}
 - submissions:
   #### submission
   - thread: <hex>
@@ -452,7 +452,7 @@
   - message: <hex>
   - responds-to: <hex>
   - summary: jobApplication submission from STU-0009 for STU-0009
-  - dto: {"kind":"jobApplication","studentId":"STU-0009","disclosures":["graduateName","universityName","awardName","graduationYear","finalGrade","creditsEarned"],"issuerVerificationMethodRef":"<hex>:#issuer-key-1","verifierChallengeHashHex":"<hex>"}
+  - dto: {"kind":"jobApplication","studentId":"STU-0009","requestedDisclosures":["graduateName","universityName","awardName","graduationYear","finalGrade","creditsEarned"],"disclosures":["graduateName","universityName","awardName","graduationYear","finalGrade","creditsEarned"],"presentationDisclosures":["graduateName","universityName","awardName","graduationYear","finalGrade","creditsEarned"],"directCredentialClaimFields":["awardName","creditsEarned","diplomaId","facultyName","finalGrade","graduateName","graduationMonth","graduationYear","honorsCode","studentId","universityName"],"directCredentialClaimsTransported":true,"issuerVerificationMethodRef":"<hex>:#issuer-key-1","verifierChallengeHashHex":"<hex>"}
 - results:
   - sequence 1: accepted (none)
     - reason: job application accepted
@@ -470,7 +470,7 @@
 - message: <hex>
 - responds-to: <hex>
 - summary: jobApplication request from company-northwind-robotics for STU-0010
-- dto: {"kind":"jobApplication","studentId":"STU-0010","verifierId":"company-northwind-robotics","requestedRole":"data-analyst-trainee","disclosures":["graduateName","universityName","awardName","graduationYear","finalGrade"],"enforceMinimumFinalGrade":false,"minimumFinalGrade":"0","verifierChallengeHashHex":"<hex>"}
+- dto: {"kind":"jobApplication","studentId":"STU-0010","verifierId":"company-northwind-robotics","requestedRole":"data-analyst-trainee","disclosures":["graduateName","universityName","awardName","graduationYear","finalGrade"],"requestedDisclosures":["graduateName","universityName","awardName","graduationYear","finalGrade"],"enforceMinimumFinalGrade":false,"minimumFinalGrade":"0","verifierChallengeHashHex":"<hex>"}
 - submissions:
   #### submission
   - thread: <hex>
@@ -479,7 +479,7 @@
   - message: <hex>
   - responds-to: <hex>
   - summary: jobApplication submission from STU-0010 for STU-0010
-  - dto: {"kind":"jobApplication","studentId":"STU-0010","disclosures":["graduateName","universityName","awardName","graduationYear","finalGrade"],"issuerVerificationMethodRef":"<hex>:#issuer-key-1","verifierChallengeHashHex":"<hex>"}
+  - dto: {"kind":"jobApplication","studentId":"STU-0010","requestedDisclosures":["graduateName","universityName","awardName","graduationYear","finalGrade"],"disclosures":["graduateName","universityName","awardName","graduationYear","finalGrade"],"presentationDisclosures":["graduateName","universityName","awardName","graduationYear","finalGrade"],"directCredentialClaimFields":["awardName","creditsEarned","diplomaId","facultyName","finalGrade","graduateName","graduationMonth","graduationYear","honorsCode","studentId","universityName"],"directCredentialClaimsTransported":true,"issuerVerificationMethodRef":"<hex>:#issuer-key-1","verifierChallengeHashHex":"<hex>"}
 - results:
   - sequence 1: accepted (none)
     - reason: job application accepted
@@ -500,7 +500,7 @@
 - message: <hex>
 - responds-to: <hex>
 - summary: mallDiscount request from mall-student-square for STU-0001
-- dto: {"kind":"mallDiscount","studentId":"STU-0001","verifierId":"mall-student-square","requestedRole":null,"disclosures":["universityName","finalGrade"],"enforceMinimumFinalGrade":true,"minimumFinalGrade":"91","verifierChallengeHashHex":"<hex>"}
+- dto: {"kind":"mallDiscount","studentId":"STU-0001","verifierId":"mall-student-square","requestedRole":null,"disclosures":["universityName","finalGrade"],"requestedDisclosures":["universityName","finalGrade"],"enforceMinimumFinalGrade":true,"minimumFinalGrade":"91","verifierChallengeHashHex":"<hex>"}
 - submissions:
   #### submission
   - thread: <hex>
@@ -509,7 +509,7 @@
   - message: <hex>
   - responds-to: <hex>
   - summary: mallDiscount submission from STU-0001 for STU-0001
-  - dto: {"kind":"mallDiscount","studentId":"STU-0001","disclosures":["universityName","finalGrade"],"issuerVerificationMethodRef":"<hex>:#issuer-key-1","verifierChallengeHashHex":"<hex>"}
+  - dto: {"kind":"mallDiscount","studentId":"STU-0001","requestedDisclosures":["universityName","finalGrade"],"disclosures":["universityName","finalGrade"],"presentationDisclosures":["universityName","finalGrade"],"directCredentialClaimFields":["awardName","creditsEarned","diplomaId","facultyName","finalGrade","graduateName","graduationMonth","graduationYear","honorsCode","studentId","universityName"],"directCredentialClaimsTransported":true,"issuerVerificationMethodRef":"<hex>:#issuer-key-1","verifierChallengeHashHex":"<hex>"}
 - results:
   - sequence 1: accepted (none)
     - reason: mall discount accepted
@@ -527,7 +527,7 @@
 - message: <hex>
 - responds-to: <hex>
 - summary: mallDiscount request from mall-student-square for STU-0002
-- dto: {"kind":"mallDiscount","studentId":"STU-0002","verifierId":"mall-student-square","requestedRole":null,"disclosures":["universityName","finalGrade"],"enforceMinimumFinalGrade":true,"minimumFinalGrade":"91","verifierChallengeHashHex":"<hex>"}
+- dto: {"kind":"mallDiscount","studentId":"STU-0002","verifierId":"mall-student-square","requestedRole":null,"disclosures":["universityName","finalGrade"],"requestedDisclosures":["universityName","finalGrade"],"enforceMinimumFinalGrade":true,"minimumFinalGrade":"91","verifierChallengeHashHex":"<hex>"}
 - submissions:
   #### submission
   - thread: <hex>
@@ -536,7 +536,7 @@
   - message: <hex>
   - responds-to: <hex>
   - summary: mallDiscount submission from STU-0002 for STU-0002
-  - dto: {"kind":"mallDiscount","studentId":"STU-0002","disclosures":["universityName","finalGrade"],"issuerVerificationMethodRef":"<hex>:#issuer-key-1","verifierChallengeHashHex":"<hex>"}
+  - dto: {"kind":"mallDiscount","studentId":"STU-0002","requestedDisclosures":["universityName","finalGrade"],"disclosures":["universityName","finalGrade"],"presentationDisclosures":["universityName","finalGrade"],"directCredentialClaimFields":["awardName","creditsEarned","diplomaId","facultyName","finalGrade","graduateName","graduationMonth","graduationYear","honorsCode","studentId","universityName"],"directCredentialClaimsTransported":true,"issuerVerificationMethodRef":"<hex>:#issuer-key-1","verifierChallengeHashHex":"<hex>"}
 - results:
   - sequence 1: accepted (none)
     - reason: mall discount accepted
@@ -554,7 +554,7 @@
 - message: <hex>
 - responds-to: <hex>
 - summary: mallDiscount request from mall-student-square for STU-0003
-- dto: {"kind":"mallDiscount","studentId":"STU-0003","verifierId":"mall-student-square","requestedRole":null,"disclosures":["universityName","finalGrade"],"enforceMinimumFinalGrade":true,"minimumFinalGrade":"91","verifierChallengeHashHex":"<hex>"}
+- dto: {"kind":"mallDiscount","studentId":"STU-0003","verifierId":"mall-student-square","requestedRole":null,"disclosures":["universityName","finalGrade"],"requestedDisclosures":["universityName","finalGrade"],"enforceMinimumFinalGrade":true,"minimumFinalGrade":"91","verifierChallengeHashHex":"<hex>"}
 - submissions:
   #### submission
   - thread: <hex>
@@ -563,7 +563,7 @@
   - message: <hex>
   - responds-to: <hex>
   - summary: mallDiscount submission from STU-0003 for STU-0003
-  - dto: {"kind":"mallDiscount","studentId":"STU-0003","disclosures":["universityName","finalGrade"],"issuerVerificationMethodRef":"<hex>:#issuer-key-1","verifierChallengeHashHex":"<hex>"}
+  - dto: {"kind":"mallDiscount","studentId":"STU-0003","requestedDisclosures":["universityName","finalGrade"],"disclosures":["universityName","finalGrade"],"presentationDisclosures":["universityName","finalGrade"],"directCredentialClaimFields":["awardName","creditsEarned","diplomaId","facultyName","finalGrade","graduateName","graduationMonth","graduationYear","honorsCode","studentId","universityName"],"directCredentialClaimsTransported":true,"issuerVerificationMethodRef":"<hex>:#issuer-key-1","verifierChallengeHashHex":"<hex>"}
 - results:
   - sequence 1: accepted (none)
     - reason: mall discount accepted
@@ -581,7 +581,7 @@
 - message: <hex>
 - responds-to: <hex>
 - summary: mallDiscount request from mall-student-square for STU-0004
-- dto: {"kind":"mallDiscount","studentId":"STU-0004","verifierId":"mall-student-square","requestedRole":null,"disclosures":["universityName","finalGrade"],"enforceMinimumFinalGrade":true,"minimumFinalGrade":"91","verifierChallengeHashHex":"<hex>"}
+- dto: {"kind":"mallDiscount","studentId":"STU-0004","verifierId":"mall-student-square","requestedRole":null,"disclosures":["universityName","finalGrade"],"requestedDisclosures":["universityName","finalGrade"],"enforceMinimumFinalGrade":true,"minimumFinalGrade":"91","verifierChallengeHashHex":"<hex>"}
 - submissions:
   #### submission
   - thread: <hex>
@@ -590,7 +590,7 @@
   - message: <hex>
   - responds-to: <hex>
   - summary: mallDiscount submission from STU-0004 for STU-0004
-  - dto: {"kind":"mallDiscount","studentId":"STU-0004","disclosures":["universityName","finalGrade"],"issuerVerificationMethodRef":"<hex>:#issuer-key-1","verifierChallengeHashHex":"<hex>"}
+  - dto: {"kind":"mallDiscount","studentId":"STU-0004","requestedDisclosures":["universityName","finalGrade"],"disclosures":["universityName","finalGrade"],"presentationDisclosures":["universityName","finalGrade"],"directCredentialClaimFields":["awardName","creditsEarned","diplomaId","facultyName","finalGrade","graduateName","graduationMonth","graduationYear","honorsCode","studentId","universityName"],"directCredentialClaimsTransported":true,"issuerVerificationMethodRef":"<hex>:#issuer-key-1","verifierChallengeHashHex":"<hex>"}
 - results:
   - sequence 1: rejected (verificationFailed)
     - reason: failed assert: University-diploma disclosed final grade is below the verifier minimum
@@ -608,7 +608,7 @@
 - message: <hex>
 - responds-to: <hex>
 - summary: mallDiscount request from mall-student-square for STU-0005
-- dto: {"kind":"mallDiscount","studentId":"STU-0005","verifierId":"mall-student-square","requestedRole":null,"disclosures":["universityName","finalGrade"],"enforceMinimumFinalGrade":true,"minimumFinalGrade":"91","verifierChallengeHashHex":"<hex>"}
+- dto: {"kind":"mallDiscount","studentId":"STU-0005","verifierId":"mall-student-square","requestedRole":null,"disclosures":["universityName","finalGrade"],"requestedDisclosures":["universityName","finalGrade"],"enforceMinimumFinalGrade":true,"minimumFinalGrade":"91","verifierChallengeHashHex":"<hex>"}
 - submissions:
   #### submission
   - thread: <hex>
@@ -617,7 +617,7 @@
   - message: <hex>
   - responds-to: <hex>
   - summary: mallDiscount submission from STU-0005 for STU-0005
-  - dto: {"kind":"mallDiscount","studentId":"STU-0005","disclosures":["universityName","finalGrade"],"issuerVerificationMethodRef":"<hex>:#issuer-key-1","verifierChallengeHashHex":"<hex>"}
+  - dto: {"kind":"mallDiscount","studentId":"STU-0005","requestedDisclosures":["universityName","finalGrade"],"disclosures":["universityName","finalGrade"],"presentationDisclosures":["universityName","finalGrade"],"directCredentialClaimFields":["awardName","creditsEarned","diplomaId","facultyName","finalGrade","graduateName","graduationMonth","graduationYear","honorsCode","studentId","universityName"],"directCredentialClaimsTransported":true,"issuerVerificationMethodRef":"<hex>:#issuer-key-1","verifierChallengeHashHex":"<hex>"}
 - results:
   - sequence 1: rejected (verificationFailed)
     - reason: failed assert: University-diploma disclosed final grade is below the verifier minimum

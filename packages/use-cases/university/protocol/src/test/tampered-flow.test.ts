@@ -54,7 +54,13 @@ describe("university protocol tampered presentation flow", () => {
       studentId: "STU-0002",
       tamperingMode: "requestChallenge" as const,
       expectedReasonFragment:
-        "presentation proof challenge does not match the request",
+        "Presentation submission request does not match original request",
+    },
+    {
+      studentId: "STU-0002",
+      tamperingMode: "requestPolicy" as const,
+      expectedReasonFragment:
+        "Presentation submission request does not match original request",
     },
     {
       studentId: "STU-0003",
