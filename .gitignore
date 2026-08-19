@@ -67,7 +67,7 @@ contract/.npm-cache
 .env.local
 .env.*.local
 
-# PI WEB local uploads and state
+# Legacy Pi-Web uploads remain ignored during the manual post-merge cleanup.
 .pi-web/uploads/
 
 # Local app state and secrets
