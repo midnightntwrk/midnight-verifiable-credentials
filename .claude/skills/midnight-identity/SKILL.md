@@ -20,41 +20,21 @@ Use this skill from the `midnight-verifiable-credentials` repository, whether cl
 - Preserve the generic envelope `VC<TPublicClaims, TClaimCommitments, THolderBinding, TStatusBinding>`.
 - Keep BDD under `packages/use-cases/`.
 
-## PR Gate (required before any PR)
 
-- Mandatory:
-  - `./run.sh --light`
-  - `./run.sh bdd`
-  - `./run.sh university-protocol`
-  - `./run.sh clean-artifacts`
-  - `./run.sh integration-report`
-- Required cross-repo sanity:
-  - `cd <workspace-root>/midnight-identity-workspace && ./run.sh --light --repos vc`
+## Validation selection and PR gates
 
-Do not open or push PRs before completing this gate.
+[`AGENT.md`](../../../AGENT.md) is the sole authority for repository-local
+validation selection. Choose the narrowest relevant `./run.sh` lane from its
+Development Cycle and Runner Targets; use `./run.sh --light` as the baseline
+when the change needs a repository stability check. Documentation, Nix, and
+agent-instruction changes use their applicable static, Nix, and link checks
+rather than an unconditional application/BDD/integration matrix.
 
-## Validation
-
-```bash
-./run.sh targets
-./run.sh --light
-./run.sh lint
-./run.sh typecheck
-./run.sh build
-./run.sh test
-./run.sh bdd
-./run.sh university-protocol
-./run.sh university-summary
-./run.sh clean-artifacts
-./run.sh integration-report
-./run.sh check-integration
-pnpm run check:run-target-catalog
-pnpm run check:managed-artifact-catalog
-pnpm run check:did-integration
-PROOF_SERVER_IMAGE=proof-server-bootstrap:8.0.3 ./run.sh
-```
-
-Use `packages/use-cases/university/operator-guide.md` when choosing university BDD, proof-server, standalone, cohort, stress, and summary lanes.
+For `dev-loop` pull-request lifecycle gates, follow
+[`docs/dev-loop-review-and-ci-remediation.md`](../../../docs/dev-loop-review-and-ci-remediation.md)
+and the configured `.devloops` policy, including the required local Codex
+external review and current-head CI evidence. This mirror adds no independent
+mandatory PR gate, cross-repository lane, or validation list.
 
 ## Packaging
 

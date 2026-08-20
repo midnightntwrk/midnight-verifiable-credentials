@@ -29,9 +29,7 @@ a review-driven update as a new-head boundary. After either event:
 4. re-run the mandatory external-review angle after the update; and
 5. do not mark the PR ready before validation, and never merge automatically.
 
-Use `./run.sh --light` as the baseline local validation. Select the narrowest
-relevant runner lane and add full or integration validation for
-integration-sensitive changes, as required by `AGENT.md`.
+Select local validation through `AGENT.md`. `./run.sh --light` is the baseline only when that document requires a repository stability check for the changed surface; documentation, Nix, and agent-instruction-only changes use their applicable static, Nix, and link checks. Add full or integration validation only when `AGENT.md` requires it for an integration-sensitive change.
 
 ## Supported-config limit
 

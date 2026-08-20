@@ -205,6 +205,25 @@ Commit form:
 git commit -S --signoff -m "<type>: <subject>"
 ```
 
+
+## Validation authority
+
+`AGENT.md` is the single authority for selecting repository-local validation.
+Choose the narrowest relevant `./run.sh` lane from this file for the changed
+surface, and use `./run.sh --light` as the baseline before describing a branch
+as stable. Add full, BDD, protocol, Docker, package, or integration lanes only
+when this file or the changed surface requires them; documentation, Nix, and
+agent-instruction changes instead require their applicable static, Nix, and
+link checks.
+
+For a `dev-loop` pull request, `.devloops` and
+[`docs/dev-loop-review-and-ci-remediation.md`](docs/dev-loop-review-and-ci-remediation.md)
+provide the lifecycle gate configuration, including the mandatory local Codex
+external review and current-head CI rules. They do not replace this file's
+local validation selection. The `.codex` and `.claude` `midnight-identity`
+skills are mirrors: they must link here and must not add independent mandatory
+PR gates, cross-repository lanes, or unconditional validation lists.
+
 ## Dev-loop PR policy
 
 For GitHub-first dev-loop work, follow [Dev-loop external review and CI remediation](docs/dev-loop-review-and-ci-remediation.md). The mandatory `external-review` gate requires an installed, authenticated Codex CLI. If `codex review --base origin/develop` cannot run, stop the gate and restore the CLI/authentication; do not waive the required review or mark the PR ready.
@@ -229,7 +248,7 @@ Light default pipeline:
 ./run.sh --light
 ```
 
-Current stabilization checkpoint (documented for local process): develop at `44c611b` ran `./run.sh --light` successfully (lint, light typecheck/build/test, BDD smoke, Serenity report generation) as observed on 2026-05-23. Refresh this entry whenever workflows change.
+Current stabilization checkpoint (documented for local process): `origin/develop` at `ee79e7f` includes merged PR #453. A fresh `./run.sh --light` attempt on 2026-08-19, after `pnpm install --frozen-lockfile`, reached the credential primitive tests but is not green: generated credentials expect Compact runtime `0.15.0` while the installed runtime is `0.16.0`. This unrelated managed-artifact mismatch must be repaired in its own scoped work; do not treat the 2026-05-23 `44c611b` result as the current baseline.
 
 Core lanes:
 

@@ -58,50 +58,37 @@ Use the normal issue and pull-request lifecycle from the Pi shell:
 
 The exact command help exposed by the installed package is authoritative.
 
-## Use the PI WEB browser UI
 
-The repository includes a project-local PI WEB configuration at
-`.pi-web/config.json`. It keeps manual uploads workspace-relative under
-`.pi-web/uploads/`; uploaded files are ignored by Git.
+## Retired Pi-Web Nix package
 
-Entering `nix develop` (or allowing direnv to load this checkout) exposes the
-pinned PI WEB binary from the flake. Verify it and install the user services
-with:
+This repository no longer packages or configures Pi-Web. This change deliberately
+**does not modify any running user Nix profile**. The retained
+`.pi-web/uploads/` ignore rule protects legacy local uploads; it is not a
+repository Pi-Web configuration.
 
-```sh
-just pi-web-bootstrap
-just pi-web-doctor
-pi-web install
-```
+After this change is merged, each user who previously followed the old setup
+must perform this separate manual cleanup from their own shell, never from this
+repository or its bootstrap commands:
 
-The pinned version is `1.202607.3`; update it in `nix/packages/pi-web.nix`,
-the lockfile hash, and `PI_WEB_VERSION` when deliberately upgrading. PI WEB
-is intentionally not installed by npm; use `nix develop` for the supported
-installation path.
-
-Then open <http://127.0.0.1:8504>, add this repository as a project, and use the
-browser UI to supervise persistent Pi sessions. PI WEB must remain bound to a
-trusted local/private network path; do not expose the unauthenticated service
-directly to the public internet. For a remote machine, use an SSH tunnel:
-
-```sh
-ssh -L 8504:127.0.0.1:8504 user@server
-```
-
-The service requires Node.js 22.19 or newer, Pi 0.82.x, and a login-shell PATH
-that exposes `node`, `npm`, `pi`, and repository tooling. Run `just pi-web-status`,
-`pi-web status`, or `pi-web logs` for service diagnostics. The project config is
-portable; service installation and credentials remain machine-local and are not
-committed.
+1. While the old Pi-Web executable is still available, stop and uninstall its
+   user services with `pi-web uninstall` (or use the equivalent user-service
+   cleanup procedure for that installation).
+2. Inspect the user's Nix profile and remove its Pi-Web entry with the user's
+   normal profile-management and rollback procedure.
+3. Review or remove any local `.pi-web/uploads/` data deliberately; it can
+   contain user-provided material and remains ignored by Git.
 
 ## Repository harness policy
 
 The repository-root `.devloops` file configures the review and lifecycle
 policy. It requires refinement, draft-first pull requests, VC package and
 Compact boundary review, external review, validation evidence, CI triage, and
-a human-only merge. The authoritative repository rules remain `AGENT.md`, the
-bundled `midnight-identity` skill, the pull-request template, and the
-`./run.sh` validation targets.
+a human-only merge.
+
+`AGENT.md` is the authoritative validation-selection document. The Codex and
+Claude `midnight-identity` skills are mirrors only; they do not add mandatory
+gates. `docs/dev-loop-review-and-ci-remediation.md` and `.devloops` remain
+authoritative for dev-loop lifecycle gates and external review.
 
 The harness is additive. GitHub Issues, pull requests, protected branches, and
 GitHub Actions remain the source of truth for work and CI state. Pi cannot mark
