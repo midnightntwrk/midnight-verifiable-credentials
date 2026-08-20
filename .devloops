@@ -87,6 +87,8 @@ personas:
 
 refinement:
   fanOut: 3
+  # Required by the full 0.9.0 schema; preserves the installed default.
+  mode: parallel
   maxCopilotRounds: 0
 
 autonomy:

@@ -18,7 +18,7 @@ const isPresentationResult = (
 ): message is typeof message & PresentationResultShape => message.type === "presentation:result";
 
 describe("university protocol duplicate submission guard", () => {
-  it("rejects duplicate job-application submissions without reducing the accepted application count", () => {
+  it("rejects a replay of the original request-bound job-application submission without reducing the accepted application count", () => {
     setNetworkId("undeployed");
     const baselineRunner = new UniversityProtocolFlowRunner();
     const duplicateStudent = baselineRunner.students[0];
@@ -31,10 +31,32 @@ describe("university protocol duplicate submission guard", () => {
     });
 
     const result = runner.runAll();
+    const originalRequest = result.jobApplications.messages.find(
+      (message) =>
+        message.type === "presentation:request" &&
+        message.body.studentId === duplicateStudent.studentId,
+    );
+    if (!originalRequest || originalRequest.type !== "presentation:request") {
+      throw new Error("Missing original job-application request");
+    }
     const duplicateResults = result.jobApplications.messages
       .filter(isPresentationResult)
       .filter((message) => message.body.studentId === duplicateStudent.studentId);
 
+    const replayedSubmissions = result.jobApplications.messages.filter(
+      (message) =>
+        message.type === "presentation:submission" &&
+        message.body.studentId === duplicateStudent.studentId,
+    );
+    expect(replayedSubmissions).toHaveLength(2);
+    for (const submission of replayedSubmissions) {
+      expect(Buffer.from(submission.envelope.threadId)).toEqual(
+        Buffer.from(originalRequest.envelope.threadId),
+      );
+      expect(Buffer.from(submission.envelope.respondsToMessageId)).toEqual(
+        Buffer.from(originalRequest.envelope.messageId),
+      );
+    }
     expect(result.jobApplications.acceptedCount).toEqual(runner.students.length);
     expect(result.jobApplications.duplicateRejectedCount).toEqual(1);
     expect(result.jobApplications.verificationRejectedCount).toEqual(0);
