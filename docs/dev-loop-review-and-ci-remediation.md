@@ -7,12 +7,13 @@ head and return actionable findings (or `No findings`). PR lifecycle commands
 must explicitly use `--base develop`; the installed dev-loops schema has no
 repository-base setting.
 
-`@input-output-hk/agent-review-pi@0.5.0` is deliberately not activated in the
-project Pi settings yet. Its declared Pi peer is `>=0.83.0`, while the supported
-host is `0.82.1`; activating the pin would fail peer resolution. Revisit only
-after the host upgrade. Do not enable merge-capable agent-review taskflows or
-`autonomy: auto`; `autonomy.humanMergeOnly: true` remains the dev-loops
-human-authorization boundary.
+`@input-output-hk/agent-review-pi@0.6.0` is supported by the pinned Pi 0.84.2
+host as an optional user-scoped operator package. It is not a project
+`.pi/settings.json` dependency, so it does not require every checkout to
+authenticate to GitHub Packages. Bot-expedite and taskflow operation must
+remain propose-only by default; do not enable `autonomy: auto` or merge through
+these tools. `.devloops`'s `autonomy.humanMergeOnly` setting and branch
+protection remain the authorization boundaries.
 
 ## Watched PR remediation contract
 
