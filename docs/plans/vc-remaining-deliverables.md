@@ -2,7 +2,7 @@
 
 Status: current execution view derived from the canonical production backlog.
 
-Last reconciled: 2026-07-17 at `develop` commit `b68ae4a`, after PR #333.
+Last reconciled: 2026-07-30 at `origin/main` commit `b34878b` (signed PR #358 promotion); execution remains on `origin/develop` at `50dffbb`.
 
 This document answers one question: what still has to ship before this
 repository can describe any package or verification profile as production
@@ -39,6 +39,57 @@ part of the baseline; they do not imply that the larger P0 category is closed.
 | Verification authority V1 specification, threat model, and negative-test design | PR #331 |
 | Status/time authority V1 specification, threat model, and negative-test design | PR #332 |
 | Executable Compact comparison-only trusted-time capability gate | PR #333 |
+| Signed `develop`-to-`main` promotion; current main baseline | PR #358 (`b34878b`) |
+| CODEOWNERS ownership fix merged into main | PR #353 (`16710ce`); post-#358 union audit remains open |
+
+## 2026-07-30 PR reconciliation and closeability
+
+These are evidence and maintenance updates, not closures of the maturity IDs:
+
+| Item | Current state | Remaining condition |
+| --- | --- | --- |
+| #336 | Open, head `bd4c7d4`; current checks do not provide terminal full-gate evidence | Reconcile `pnpm-lock.yaml` against current `develop`, rerun CI/review, and keep its disclosure result mapped only to partial P1-3/G3 evidence. |
+| #337 | Open, head `860e0fa`; required Standalone Integration: Protocol check is pending | Complete draft-gate metadata and current-head terminal evidence; treat as P0-6 maintenance only. |
+| #353 | Merged CODEOWNERS fix at `16710ce` | Reconcile post-#358 owner union across ex-identus, security, SRE, and path-specific owners before closing the P0-6 work. |
+| #357 | Open, head `66c1cc0`; manifest-only scope, Build and Package Tests failing | Isolate the digital-passport failure and resolve the recorded invalid `.devloops` gate configuration; no C1/P0-4 acceptance yet. |
+| #358 | Merged signed promotion at `b34878b` | Main is current for a release rehearsal, but this does not close package publication, clean-consumer, provenance, authority, or production-label requirements. |
+| #346 | Closed and superseded by #358 | Do not requeue or create a replacement maturity item. |
+
+Closeability recommendations are deliberately conservative: keep issue #342
+open until `0.1.0-rc1` is published and verified from a clean consumer; consider
+#347 only after its OSV-exception remediation is confirmed on `main` (it is
+currently evidenced on `develop`); keep #324 and #350 open until repository
+settings, topics, rulesets, secret scanning, vulnerability reporting, and
+Scorecard publication are externally confirmed; and keep #321, #272, #268,
+#267, #266, #265, #40, #36, #34, #31, #23, #21, and #15 mapped to their
+existing work. No issue is closed by this reconciliation.
+
+### `0.1.0-rc1` release readiness
+
+PR #358 makes `main` current and enables a clean release rehearsal; it is not a
+release. Only the supported `@midnight-ntwrk/credential-model` candidate is
+eligible for an RC workflow. Every other VC package remains private/internal
+until separately owned and supported. Before publishing `0.1.0-rc1`, require
+package-contract checks, deterministic exact tarballs, isolated clean-consumer
+Node/bundler/Compact tests, SBOM and provenance plus artifact/registry evidence,
+green release gates, and named technical, support, and security owners. Keep
+npm, GHCR, GitHub Release, and generated ZK artifacts as separate channels and
+publish only channels with passing evidence. No package or verification profile
+may receive a production label.
+
+### Midnight-DID maturity themes
+
+The benchmark cohort is five exact `0.5.0-rc1` npm packages
+(`midnight-did`, `midnight-did-api`, `midnight-did-contract`,
+`midnight-did-domain`, and `midnight-did-jubjub-schnorr`) resolved together,
+with no ranges, tags, Git URLs, or sibling paths. Carry the same themes into
+VC's queue: isolated clean-consumer tests; deterministic pack, SBOM, provenance,
+digest, registry/tag, and release-channel evidence; real ledger/WASM
+publish/resolve/sign/verify compatibility checks; named ownership/support and
+incident procedures; and explicit authority/security work for DID relationships,
+issuer `assertionMethod`, authenticated status roots/non-membership, trusted
+time, atomic replay/nullifier decisions, and final OID4VP conformance. Package
+maturity cannot substitute for these authority properties.
 
 ## P0 deliverables
 
