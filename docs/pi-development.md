@@ -13,9 +13,9 @@ nix develop
 ```
 
 The shell provides the pinned Node/pnpm toolchain, Midnight Compact tools,
-common repository CLIs (`git`, `gh`, `jq`, `just`), and a repo-local Pi install
-under `.pi/nix-global`. It runs `just bootstrap` automatically, which installs
-pnpm dependencies when needed and installs Pi locally if missing.
+common repository CLIs (`git`, `gh`, `jq`, `just`), and Pi 0.84.2 under
+`.pi/nix-global`. It runs `just bootstrap` automatically, which installs pnpm
+dependencies when needed and reconciles Pi to that exact version.
 
 Use these helpers inside the shell:
 
@@ -80,19 +80,20 @@ repository or its bootstrap commands:
 
 ## Repository harness policy
 
-The repository-root `.devloops` file configures the review and lifecycle
-policy. It requires refinement, draft-first pull requests, VC package and
-Compact boundary review, external review, validation evidence, CI triage, and
-a human-only merge.
+The repository-root `.devloops` file uses the strict dev-loops 0.9.0
+`version: 1` schema. It owns the supported review gates and personas,
+refinement settings, draft-first flow, the pre-approval stop, and human-only
+merge. Do not add older, unsupported validation, CI-watch, or repository-policy
+keys: one schema error causes the repository layer to be rejected.
 
-`AGENT.md` is the authoritative validation-selection document. The Codex and
-Claude `midnight-identity` skills are mirrors only; they do not add mandatory
-gates. `docs/dev-loop-review-and-ci-remediation.md` and `.devloops` remain
-authoritative for dev-loop lifecycle gates and external review.
+`AGENT.md` and `run.sh` are authoritative for validation selection. GitHub
+branch protection and Actions are authoritative for CI and merge enforcement.
+The Codex and Claude `midnight-identity` skills are mirrors only;
+`docs/dev-loop-review-and-ci-remediation.md` provides operational guidance.
 
-The harness is additive. GitHub Issues, pull requests, protected branches, and
-GitHub Actions remain the source of truth for work and CI state. Pi cannot mark
-a pull request ready for human review or merge it under this repository policy.
+The harness is additive. GitHub Issues and pull requests remain the source of
+truth for work state. Pi cannot mark a pull request ready for human review or
+merge it under this repository policy.
 
 ## VC-specific review boundaries
 
@@ -136,15 +137,19 @@ configure an observability stack or a custom workflow dashboard.
 
 ## Versioning, update, and removal
 
-The project-local `dev-loops` package is pinned in `.pi/settings.json` so the
-workflow does not silently drift. Update the pin deliberately, review the
-package changes, and validate the development workflow before merging.
+The repository pins Pi 0.84.2 in `justfile`, plus `dev-loops` 0.9.0 and
+`pi-subagents` 0.56.0 in `.pi/settings.json`. Update these exact versions
+deliberately, review package changes as executable tooling, and validate the
+development workflow before merging. Restart Pi after updating the binary or
+packages so the running session loads the new code.
 
-Check the effective repository configuration:
+Check the installed versions and effective repository configuration:
 
 ```sh
-npx dev-loops@0.9.0 doctor
-npx dev-loops@0.9.0 gates
+pi --version
+pi list
+npx --yes dev-loops@0.9.0 doctor
+npx --yes dev-loops@0.9.0 gates
 ```
 
 To roll back the integration, remove `.pi/settings.json`, `.devloops`, and

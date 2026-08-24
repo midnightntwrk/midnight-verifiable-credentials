@@ -1,7 +1,7 @@
 set dotenv-load := false
 set shell := ["bash", "-euo", "pipefail", "-c"]
 
-pi_agent_version := env_var_or_default("PI_AGENT_VERSION", "0.82.1")
+pi_agent_version := "0.84.2"
 
 # List available targets.
 default:
