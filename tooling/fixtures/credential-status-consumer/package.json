@@ -6,8 +6,8 @@
     "@midnight-ntwrk/credential-status": "file:./vendor/candidate.tgz"
   },
   "devDependencies": {
-    "@types/node": "^22.15.29",
-    "typescript": "^5.8.3"
+    "@types/node": "22.20.1",
+    "typescript": "5.9.3"
   },
   "scripts": {
     "test:node": "node --input-type=module -e \"import('@midnight-ntwrk/credential-status').then(({ statusModes }) => { if (statusModes.none !== 'none') process.exit(1); })\"",
