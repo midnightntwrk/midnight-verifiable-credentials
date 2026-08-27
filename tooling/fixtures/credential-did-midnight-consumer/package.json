@@ -6,8 +6,8 @@
     "@midnight-ntwrk/credential-did-midnight": "file:./vendor/candidate.tgz"
   },
   "devDependencies": {
-    "@types/node": "^22.15.29",
-    "typescript": "^5.8.3"
+    "@types/node": "22.20.1",
+    "typescript": "5.9.3"
   },
   "scripts": {
     "test:node": "node ./node-esm.mjs",
