@@ -226,6 +226,7 @@ const buildFiles = ({
   claimMode,
 }) => {
   const srcDir = path.join(packageRoot, "src");
+  const artifactHelper = toImportPath(packageRoot, path.join(repoRoot, "tooling", "scripts", "ensure-compact-artifacts.mjs"));
   const coreDir = path.join(repoRoot, "core", "primitives", "credentials", "src", "credentials");
   const coreImport = toImportPath(srcDir, coreDir);
   const holderType = holder === "hidden" ? "BlindedSecretHolderBinding" : "ExplicitHolderBinding";
@@ -277,7 +278,6 @@ ${packageRelativeToRepo}/
 ├── tsconfig.json
 ├── tsconfig.build.json
 ├── scripts/
-│   ├── align-runtime-version.mjs
 │   ├── ensure-compact-package-aliases.mjs
 │   ├── find-repo-root.mjs
 │   └── strip-managed-sourcemaps.mjs
@@ -425,19 +425,19 @@ export default [
           },
           scripts: {
             contract: "pnpm run compact",
-            compact: `node ./scripts/ensure-compact-package-aliases.mjs && compact compile src/${familyStem}.compact src/managed/${familyStem} && node ./scripts/align-runtime-version.mjs && node ./scripts/strip-managed-sourcemaps.mjs`,
+            compact: `node ./scripts/ensure-compact-package-aliases.mjs && node ${artifactHelper} --manifest src/managed/.compact-artifact.json --source-root src --output src/managed/${familyStem} --recipe-input scripts/strip-managed-sourcemaps.mjs -- sh -c "compact compile src/${familyStem}.compact src/managed/${familyStem} && node ./scripts/strip-managed-sourcemaps.mjs"`,
             test: "vitest run",
             "test:ci": "vitest run",
             prepack: "pnpm run build",
             clean: "rm -rf dist && rm -rf coverage && rm -rf reports && rm -rf src/managed",
-            build: `pnpm run compact && rm -rf dist && mkdir -p dist && tsc -b tsconfig.build.json --force && cp -Rf ./src/managed ./dist/ && cp ./src/${familyStem}.compact ./dist && cp -Rf ./src/${familyStem} ./dist/`,
+            build: `pnpm run compact && rm -rf dist && mkdir -p dist && tsc -b tsconfig.build.json --force && cp -Rf ./src/managed ./dist/ && rm -f ./dist/managed/.compact-artifact.json && cp ./src/${familyStem}.compact ./dist && cp -Rf ./src/${familyStem} ./dist/`,
             lint: "eslint src --ignore-pattern 'src/managed/**'",
             "lint:fix": "eslint src --fix --ignore-pattern 'src/managed/**'",
             typecheck: "pnpm run compact && tsc -p tsconfig.json --noEmit",
             all: "pnpm run compact && pnpm run build && pnpm run test:ci",
           },
           dependencies: {
-            "@midnight-ntwrk/compact-runtime": "*",
+            "@midnight-ntwrk/compact-runtime": "^0.16.0",
             "@midnight-ntwrk/midnight-did-credentials": "*",
           },
           files: [
@@ -541,48 +541,6 @@ const helperPath = path.join(
 );
 
 await import(pathToFileURL(helperPath).href);
-`,
-    ],
-    [
-      "scripts/align-runtime-version.mjs",
-      `import { readFile, writeFile } from "node:fs/promises";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-
-import { findRepoRoot } from "./find-repo-root.mjs";
-
-const scriptDir = path.dirname(fileURLToPath(import.meta.url));
-const packageRoot = path.resolve(scriptDir, "..");
-const repoRoot = await findRepoRoot(packageRoot);
-const runtimePackage = JSON.parse(
-  await readFile(
-    path.join(
-      repoRoot,
-      "node_modules",
-      "@midnight-ntwrk",
-      "compact-runtime",
-      "package.json",
-    ),
-    "utf8",
-  ),
-);
-const runtimeVersion = runtimePackage.version;
-const targetFile = path.join(
-  packageRoot,
-  "src",
-  "managed",
-  "${familyStem}",
-  "contract",
-  "index.js",
-);
-const source = await readFile(targetFile, "utf8");
-const next = source.replace(
-  /checkRuntimeVersion\\('\\d+\\.\\d+\\.\\d+'\\);/,
-  "checkRuntimeVersion('" + runtimeVersion + "');",
-);
-if (next !== source) {
-  await writeFile(targetFile, next, "utf8");
-}
 `,
     ],
     [

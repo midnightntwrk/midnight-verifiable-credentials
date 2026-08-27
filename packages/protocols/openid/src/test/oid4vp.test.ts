@@ -7,6 +7,7 @@ import {
   createPresentationDefinition,
   createVpAuthorizationRequest,
   createVpAuthorizationResponse,
+  legacyPresentationRequestUri,
   presentationRequestUri,
 } from "../index.js";
 
@@ -86,7 +87,7 @@ describe("OID4VP-inspired Midnight presentation schemas", () => {
 
     assertPresentationSubmissionMatchesDefinition({ definition, submission });
     expect(request.midnight?.requireSameHolder).toBe(true);
-    expect(response.presentation_submission.descriptor_map).toHaveLength(2);
+    expect(response.presentation_submission?.descriptor_map).toHaveLength(2);
   });
 
   it("rejects presentation submissions that reference unknown descriptors", () => {
@@ -109,12 +110,103 @@ describe("OID4VP-inspired Midnight presentation schemas", () => {
     ).toThrow(/unknown input descriptor/);
   });
 
+  it("rejects duplicate and incomplete descriptor submissions", () => {
+    const definition = createPresentationDefinition({
+      id: "two-descriptors",
+      input_descriptors: [
+        { id: "first", constraints: { fields: [] } },
+        { id: "second", constraints: { fields: [] } },
+      ],
+    });
+
+    expect(() =>
+      assertPresentationSubmissionMatchesDefinition({
+        definition,
+        submission: {
+          id: "submission-duplicate",
+          definition_id: definition.id,
+          descriptor_map: [
+            createMidnightCompactDescriptor({ id: "first", path: "$.vp_token[0]" }),
+            createMidnightCompactDescriptor({ id: "first", path: "$.vp_token[1]" }),
+          ],
+        },
+      }),
+    ).toThrow(/duplicate/);
+
+    expect(() =>
+      assertPresentationSubmissionMatchesDefinition({
+        definition,
+        submission: {
+          id: "submission-incomplete",
+          definition_id: definition.id,
+          descriptor_map: [
+            createMidnightCompactDescriptor({ id: "first", path: "$.vp_token[0]" }),
+          ],
+        },
+      }),
+    ).toThrow(/every input descriptor/);
+  });
+
+  it("rejects malformed descriptor formats and paths", () => {
+    const definition = createPresentationDefinition({
+      id: "compact-definition",
+      format: { midnight_compact_vp: {} },
+      input_descriptors: [{ id: "compact", constraints: { fields: [] } }],
+    });
+    expect(() => assertPresentationSubmissionMatchesDefinition({
+      definition,
+      submission: {
+        id: "bad-format",
+        definition_id: definition.id,
+        descriptor_map: [{ id: "compact", format: "jwt_vc_json", path: "$.vp_token[0]" }],
+      },
+    })).toThrow(/format/);
+    expect(() => assertPresentationSubmissionMatchesDefinition({
+      definition,
+      submission: {
+        id: "bad-path",
+        definition_id: definition.id,
+        descriptor_map: [{ id: "compact", format: "midnight_compact_vp", path: "$.vp_token_evil" }],
+      },
+    })).toThrow(/exact vp_token/);
+
+    const contradictoryFormats = createPresentationDefinition({
+      id: "contradictory-formats",
+      format: { midnight_compact_vp: {} },
+      input_descriptors: [{
+        id: "compact",
+        format: { jwt_vc_json: {} },
+        constraints: { fields: [] },
+      }],
+    });
+    expect(() => assertPresentationSubmissionMatchesDefinition({
+      definition: contradictoryFormats,
+      submission: {
+        id: "descriptor-format-mismatch",
+        definition_id: contradictoryFormats.id,
+        descriptor_map: [{ id: "compact", format: "midnight_compact_vp", path: "$.vp_token[0]" }],
+      },
+    })).toThrow(/format/);
+  });
+
   it("creates a request-uri launcher for wallet UX", () => {
     expect(
-      presentationRequestUri({
+      legacyPresentationRequestUri({
         requestUri: "https://verifier.example/request/123",
         clientId: "did:midnight:verifier:1",
       }),
     ).toContain("openid4vp://authorize");
+    expect(
+      presentationRequestUri({
+        requestReference: "https://verifier.example/request/one-time-1",
+        clientId: "did:midnight:verifier:1",
+      }),
+    ).toContain("request_uri");
+    expect(() =>
+      presentationRequestUri({ requestReference: "x", clientId: "client" }),
+    ).toThrow();
+    expect(() =>
+      presentationRequestUri({ requestReference: `https://verifier.example/${"x".repeat(500)}`, clientId: "client" }),
+    ).toThrow(/short/);
   });
 });

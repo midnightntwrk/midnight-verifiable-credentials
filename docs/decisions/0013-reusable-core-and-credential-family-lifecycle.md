@@ -28,6 +28,25 @@ not become an accidental product release surface.
 
 ## Decision
 
+The repository boundary is unambiguous: this repository publishes reusable,
+schema-neutral primitives and packages. Every concrete VC/VP credential family,
+prototype, and use case retained here is private composition/conformance
+evidence, whether active-development work or frozen migration inventory. None
+is a production credential product, a distribution channel, or a supported
+concrete VC type, schema, or version.
+
+Concrete evidence therefore has no production backward-compatibility,
+product-release, or product-support obligation. It may change, be reduced to a
+fixture, or be removed through this ADR's lifecycle. This does not change the
+compatibility or release guarantees for reusable published packages; those
+remain governed by the package publication policy. Nor does it relax security,
+quality, reproducibility, or conformance requirements for either reusable
+packages or evidence. In particular, ADR-0003 continues to govern production
+artifact creation and distribution for downstream deployable compositions.
+
+Concrete product instances, governance, deployment and distribution, and
+schema/version lifecycle belong to downstream independent product repositories.
+
 The target repository model is:
 
 ```text

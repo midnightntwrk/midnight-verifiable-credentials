@@ -46,13 +46,18 @@ Related documents:
 
 Maturity and reuse do not imply release support. The complete package release
 stage, distribution channel, ownership, and support inventory lives in the
-[package release contract](./package-release-contract.md). At present only
-`credential-model` is a supported pre-1.0 npm package; every other package in
-this table remains internal.
+[package release contract](./package-release-contract.md). For RC2, the
+supported pre-1.0 npm foundation is `credential-model`, `credential-compact`,
+`credential-proofs`, `credential-status`, and `credential-did-midnight`.
+Legacy and future packages in this table remain internal or migration evidence.
 
 | Package | Class | Current stability | Reusable outside this repo | Notes |
 | --- | --- | --- | --- | --- |
-| `credential-model` | Reusable core package | Supported pre-1.0 npm release | Yes | Protocol-neutral family definitions, descriptors, codecs, composition manifests, and errors |
+| `credential-model` | Reusable core package | Supported RC2 prerelease | Yes | Protocol-neutral family definitions, descriptors, codecs, composition manifests, and errors |
+| `credential-compact` | Reusable core package | Supported RC2 prerelease | Yes | Generic Compact VC/VP envelopes, holder bindings, same-holder capability, and curated generated exports |
+| `credential-proofs` | Reusable core package | Supported RC2 prerelease | Yes | Family-neutral proof jobs, provider/verifier ports, artifact resolver ports, and versioned proof/build/deployment manifest contracts |
+| `credential-status` | Reusable core package | Supported RC2 prerelease | Yes | Generic credential-status bindings, policies, and reader/writer/verifier ports |
+| `credential-did-midnight` | DID-aware adapter package | Supported RC2 prerelease | Yes | `did:midnight` resolution and holder-binding conversion; signing remains injected |
 | `credentials` | Reusable core package | Internal compatibility implementation | Not yet | Canonical Compact-first VC/VP core being decomposed into the new publication graph |
 | `credentials-same-holder` | Reusable core package | Reference implementation | Yes | Focused same-holder capability package |
 | `credentials-iso-registry` | Reusable core package | Incubating abstraction | Not yet | Shared Compact-native ISO code types; remains internal until two independent family repositories demonstrate the boundary |

@@ -43,6 +43,9 @@ contract/.npm-cache
 .turbo/
 .pi/*
 !.pi/settings.json
+!.pi/extensions/
+.pi/extensions/*
+!.pi/extensions/vc-current-head-ci-watch.ts
 .tmp-trusted-time-capability-*
 
 # Optional eslint cache
@@ -64,7 +67,7 @@ contract/.npm-cache
 .env.local
 .env.*.local
 
-# PI WEB local uploads and state
+# Legacy Pi-Web uploads remain ignored during the manual post-merge cleanup.
 .pi-web/uploads/
 
 # Local app state and secrets

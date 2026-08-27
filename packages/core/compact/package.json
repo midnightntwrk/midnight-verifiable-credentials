@@ -3,16 +3,30 @@
   "version": "0.1.0",
   "description": "Private candidate library of family-neutral Compact VC and VP semantics",
   "license": "Apache-2.0",
-  "private": true,
+  "private": false,
   "type": "module",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true,
+    "registry": "https://registry.npmjs.org/"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/midnightntwrk/midnight-verifiable-credentials.git",
     "directory": "packages/core/compact"
   },
-  "keywords": ["midnight", "verifiable-credentials", "compact", "vc", "vp"],
+  "keywords": [
+    "midnight",
+    "verifiable-credentials",
+    "compact",
+    "vc",
+    "vp"
+  ],
   "sideEffects": [],
-  "engines": { "node": ">=24", "pnpm": ">=10" },
+  "engines": {
+    "node": ">=24",
+    "pnpm": ">=10"
+  },
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "./dist/index.d.ts",
@@ -43,8 +57,8 @@
   },
   "scripts": {
     "check-toolchain": "node scripts/check-toolchain.mjs",
-    "compact": "pnpm run check-toolchain && rm -rf src/managed && compact compile src/credentials.compact src/managed/credentials && compact compile src/holder-binding/same-holder.compact src/managed/same-holder && rm -rf src/managed/credentials/compiler src/managed/same-holder/compiler",
-    "build": "pnpm run compact && rm -rf dist && mkdir -p dist && tsc -b tsconfig.build.json --force && cp -Rf src/managed dist/ && cp src/credentials.compact dist/ && cp -Rf src/credentials dist/ && mkdir -p dist/holder-binding && cp src/holder-binding/same-holder.compact dist/holder-binding/ && cp -Rf src/holder-binding/same-holder dist/holder-binding/ && node scripts/write-build-manifest.mjs",
+    "compact": "pnpm run check-toolchain && node ../../../tooling/scripts/ensure-compact-artifacts.mjs --manifest src/managed/.compact-artifact.json --source-root src --output src/managed/credentials --output src/managed/same-holder -- sh -c \"compact compile src/credentials.compact src/managed/credentials && compact compile src/holder-binding/same-holder.compact src/managed/same-holder && rm -rf src/managed/credentials/compiler src/managed/same-holder/compiler\"",
+    "build": "pnpm run compact && rm -rf dist && mkdir -p dist && tsc -b tsconfig.build.json --force && cp -Rf src/managed dist/ && rm -f dist/managed/.compact-artifact.json && cp src/credentials.compact dist/ && cp -Rf src/credentials dist/ && mkdir -p dist/holder-binding && cp src/holder-binding/same-holder.compact dist/holder-binding/ && cp -Rf src/holder-binding/same-holder dist/holder-binding/ && node scripts/write-build-manifest.mjs",
     "typecheck": "pnpm run compact && tsc -p tsconfig.json --noEmit",
     "lint": "eslint src --ignore-pattern 'src/managed/**'",
     "test": "vitest run",
@@ -53,15 +67,21 @@
     "clean": "rm -rf dist src/managed coverage reports *.tsbuildinfo"
   },
   "dependencies": {
-    "@midnight-ntwrk/compact-runtime": "0.15.0"
+    "@midnight-ntwrk/compact-runtime": "0.16.0"
   },
-  "files": ["dist/**", "src/**/*.compact", "README.md", "CHANGELOG.md", "package.json"],
+  "files": [
+    "dist/**",
+    "src/**/*.compact",
+    "README.md",
+    "CHANGELOG.md",
+    "package.json"
+  ],
   "midnight": {
     "maturity": "core",
     "packageClass": "dist",
-    "releaseStage": "candidate",
-    "compactCompilerVersion": "0.30.0",
-    "compactRuntimeVersion": "0.15.0",
+    "releaseStage": "supported",
+    "compactCompilerVersion": "0.31.1",
+    "compactRuntimeVersion": "0.16.0",
     "compactSources": [
       "src/credentials.compact",
       "src/credentials/bindings.compact",

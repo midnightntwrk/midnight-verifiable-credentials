@@ -97,4 +97,13 @@ describe("Compact value transport codec", () => {
       }),
     ).toThrow(/base64url/);
   });
+
+  it("rejects empty transport payloads with a clear validation error", () => {
+    expect(() =>
+      decodeCompactValue({
+        encoding: COMPACT_VALUE_ENCODING,
+        payload: "",
+      }),
+    ).toThrow("Compact value payload must not be empty");
+  });
 });

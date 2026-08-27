@@ -6,7 +6,12 @@ export type CredentialProofsErrorCode =
   | "INVALID_ARTIFACT"
   | "INVALID_TIMESTAMP"
   | "DUPLICATE_ID"
-  | "MISMATCHED_REFERENCE";
+  | "MISMATCHED_REFERENCE"
+  | "WRONG_DIGEST"
+  | "INVALID_SIGNATURE"
+  | "INVALID_SIGNATURE_KEY"
+  | "MISMATCHED_DEPLOYMENT_BINDING"
+  | "STALE_DEPLOYMENT_BINDING";
 
 export class CredentialProofsError extends Error {
   readonly code: CredentialProofsErrorCode;

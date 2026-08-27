@@ -2,6 +2,12 @@
 
 Status: current implemented test surface as of 2026-07-17.
 
+Quality measurements and infrastructure gaps are tracked separately in
+[`quality-evidence.md`](./quality-evidence.md) and the machine-checked
+[`quality-evidence.json`](./quality-evidence.json). This matrix is an inventory
+of test surfaces; it does not claim that every listed lane has been run for the
+current base.
+
 University-specific run targets, light-artifact profiles, and retained summary
 artifacts are tracked in
 [`../../packages/use-cases/university/ci-matrix.md`](../../packages/use-cases/university/ci-matrix.md).

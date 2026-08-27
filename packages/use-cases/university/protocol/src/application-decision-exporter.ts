@@ -125,6 +125,35 @@ const disclosureNamesForRequest = (request: {
     request.requireCreditsEarnedDisclosure ? "creditsEarned" : undefined,
   ].filter((value): value is string => value !== undefined);
 
+const disclosureNamesForPresentation = (presentation: {
+  readonly disclosed: {
+    readonly revealDiplomaId: boolean;
+    readonly revealStudentId: boolean;
+    readonly revealGraduateName: boolean;
+    readonly revealUniversityName: boolean;
+    readonly revealFacultyName: boolean;
+    readonly revealAwardName: boolean;
+    readonly revealHonorsCode: boolean;
+    readonly revealGraduationYear: boolean;
+    readonly revealGraduationMonth: boolean;
+    readonly revealFinalGrade: boolean;
+    readonly revealCreditsEarned: boolean;
+  };
+}): readonly string[] =>
+  [
+    presentation.disclosed.revealDiplomaId ? "diplomaId" : undefined,
+    presentation.disclosed.revealStudentId ? "studentId" : undefined,
+    presentation.disclosed.revealGraduateName ? "graduateName" : undefined,
+    presentation.disclosed.revealUniversityName ? "universityName" : undefined,
+    presentation.disclosed.revealFacultyName ? "facultyName" : undefined,
+    presentation.disclosed.revealAwardName ? "awardName" : undefined,
+    presentation.disclosed.revealHonorsCode ? "honorsCode" : undefined,
+    presentation.disclosed.revealGraduationYear ? "graduationYear" : undefined,
+    presentation.disclosed.revealGraduationMonth ? "graduationMonth" : undefined,
+    presentation.disclosed.revealFinalGrade ? "finalGrade" : undefined,
+    presentation.disclosed.revealCreditsEarned ? "creditsEarned" : undefined,
+  ].filter((value): value is string => value !== undefined);
+
 const normalizedBody = (message: UniversityProtocolMessage): unknown => {
   switch (message.type) {
     case "issuance:request": {
@@ -178,6 +207,9 @@ const normalizedBody = (message: UniversityProtocolMessage): unknown => {
         kind: body.kind,
         studentId: body.studentId,
         disclosures: disclosureNamesForRequest(body.request),
+        presentationDisclosures: disclosureNamesForPresentation(body.presentation),
+        directCredentialClaimFields: Object.keys(body.credential.claims).sort(),
+        directCredentialClaimsTransported: true,
         issuerVerificationMethodRef: verificationMethodRefToString(
           body.credential.issuerVerificationMethodRef,
         ),
@@ -201,8 +233,9 @@ const normalizedBody = (message: UniversityProtocolMessage): unknown => {
   }
 };
 
-const messageSummary = (
+const buildMessageSummary = (
   message: UniversityProtocolMessage,
+  dto: JsonValue,
 ): UniversityProtocolApplicationDecisionMessage => ({
   threadIdHex: bytesToHex(message.envelope.threadId),
   messageIdHex: bytesToHex(message.envelope.messageId),
@@ -235,8 +268,26 @@ const messageSummary = (
         return assertNever(message);
     }
   })(),
-  dto: normalizeJson(normalizedBody(message)),
+  dto,
 });
+
+const messageSummary = (
+  message: UniversityProtocolMessage,
+): UniversityProtocolApplicationDecisionMessage =>
+  buildMessageSummary(message, normalizeJson(normalizedBody(message)));
+
+
+const presentationSubmissionSummary = (
+  message: MessageWithBody<UniversityPresentationSubmissionBody>,
+  requestedDisclosures: readonly string[],
+): UniversityProtocolApplicationDecisionMessage =>
+  buildMessageSummary(
+    message,
+    normalizeJson({
+      ...(normalizedBody(message) as Record<string, unknown>),
+      requestedDisclosures,
+    }),
+  );
 
 const filterMessagesByStudent = <T extends UniversityProtocolMessage>(
   messages: readonly UniversityProtocolMessage[],
@@ -278,6 +329,10 @@ const buildDecisionRecord = (
   verifierName: string,
 ): UniversityProtocolApplicationDecisionRecord => {
   const requestDto = messageSummary(request);
+  const verifierRequestedDisclosures =
+    request.type === "presentation:request"
+      ? disclosureNamesForRequest(request.body.request)
+      : [];
   const verifierIdentitySummary = verifierIdentity(verifier);
   const submissions = [
     ...filterMessagesByStudent<
@@ -326,7 +381,9 @@ const buildDecisionRecord = (
     verifierMethodId: verifier.verifierMethodId,
     requestedRole: kind === "jobApplication" ? student.requestedJobRole : null,
     request: requestDto,
-    submissions: submissions.map(messageSummary),
+    submissions: submissions.map((message) =>
+      presentationSubmissionSummary(message, verifierRequestedDisclosures),
+    ),
     results,
     finalAccepted: firstResult?.accepted ?? false,
     finalReason: firstResult?.reason ?? "No result received",

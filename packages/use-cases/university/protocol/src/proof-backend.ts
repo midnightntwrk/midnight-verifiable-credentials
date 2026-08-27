@@ -140,6 +140,18 @@ export const applyPresentationTampering = (
           ),
         },
       };
+    case "requestPolicy":
+      return {
+        ...submission,
+        request: {
+          ...submission.request,
+          // This changes an optional disclosure request without changing the
+          // presentation proof challenge. The protocol receiver must still
+          // reject it because the submission is bound to the original request.
+          requireHonorsCodeDisclosure:
+            !submission.request.requireHonorsCodeDisclosure,
+        },
+      };
     case "issuerVerificationMethodRef":
       return {
         ...submission,

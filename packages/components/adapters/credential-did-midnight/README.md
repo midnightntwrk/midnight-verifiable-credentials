@@ -1,12 +1,11 @@
 # @midnight-ntwrk/credential-did-midnight
 
-> Release stage: `candidate`
+> Release stage: `supported`
 > Maturity: `infrastructure`
 > Package class: `dist`
 
-Private P1 candidate for reusable off-chain `did:midnight` resolution and
-holder-binding conversion. This package is not published or promoted by this
-phase.
+Supported prerelease package for reusable off-chain `did:midnight`
+resolution and holder-binding conversion.
 
 ## Scope
 

@@ -36,14 +36,15 @@ npm trusted publishing requires npm 11.5.1 or newer and Node.js 22.14.0 or
 newer. The workflow uses the repository's Node.js 24 baseline and rejects an
 older npm CLI before any release work begins.
 
-npm OIDC currently authorizes publication but not separate `dist-tag` or
-`access` commands. The normal path therefore sets access and the intended tag
-on `npm publish`. Per npm's dist-tag contract, `--tag rc` applies `rc` instead
-of `latest`, including on the first publication. The workflow snapshots and
-verifies `latest` independently and fails closed when registry metadata cannot
-be read. An idempotent rerun is a no-op when that tag is already correct; an
-actual tag repair requires the scoped token or an authenticated release
-operator. See the
+npm OIDC authorizes publication but not separate `dist-tag` or `access`
+commands. The normal path therefore uses the scoped
+`MIDNIGHTCI_NPMJS_TOKEN` for access and tag operations. By default, `--tag rc`
+applies `rc` and preserves `latest`. For an explicitly approved prerelease
+default promotion, dispatch with `promote_latest: true`; the workflow then
+moves both `rc` and `latest` to the requested version. The workflow snapshots
+and verifies the selected tag policy independently and fails closed when
+registry metadata cannot be read. An idempotent rerun is a no-op when the
+requested tags are already correct. See the
 [npm trusted-publishing limitations](https://docs.npmjs.com/trusted-publishers/#limitations-and-future-improvements).
 
 ## Release gates
@@ -62,24 +63,31 @@ The workflow reruns `./run.sh --light`, deterministic pack checks, local
 clean-consumer tests, SBOM generation, and provenance publication. It uploads
 the tested tarballs and SPDX SBOMs as a 90-day GitHub Actions artifact.
 
-## First release
+## RC2 publication
 
-Dispatch `Publish npmjs Packages` from `develop` with:
+Dispatch `Publish npmjs Packages` from the protected `develop` branch with:
 
 ```text
 channel: rc
 version: 0.1.0
-rc_index: 1
+rc_index: 2
 ```
 
-The expected version is `0.1.0-rc1` under the `rc` dist-tag. The workflow
-preserves an existing `latest` tag and fails if npm changes `latest` during a
-prerelease.
+The expected result is the five-package VC development foundation at
+`0.1.0-rc2` under the `rc` dist-tag:
+
+- `@midnight-ntwrk/credential-model`
+- `@midnight-ntwrk/credential-compact`
+- `@midnight-ntwrk/credential-proofs`
+- `@midnight-ntwrk/credential-status`
+- `@midnight-ntwrk/credential-did-midnight`
+
+The workflow preserves an existing `latest` tag and fails if npm changes it
+during a prerelease.
 
 Source manifests retain the base `0.1.0` version. The workflow applies the
-channel suffix only to its ephemeral release checkout, so the changelog names
-the externally visible `0.1.0-rc1` while the reviewed source stays ready for
-the next channel dispatch.
+channel suffix only to its ephemeral release checkout, so the reviewed source
+stays ready for the next channel dispatch.
 
 Branch rules are fail closed:
 
@@ -95,15 +103,24 @@ The workflow waits for bounded npmjs propagation, installs each exact package
 version into a fresh temporary project, rejects local locators, and runs the
 cataloged Node, TypeScript, browser, and applicable Compact checks.
 
-For the first release, verify:
+For RC2, verify every package version and the moving tags:
 
 ```bash
-npm view @midnight-ntwrk/credential-model@0.1.0-rc1 version
-npm view @midnight-ntwrk/credential-model dist-tags --json
+for package in \
+  @midnight-ntwrk/credential-model \
+  @midnight-ntwrk/credential-compact \
+  @midnight-ntwrk/credential-proofs \
+  @midnight-ntwrk/credential-status \
+  @midnight-ntwrk/credential-did-midnight; do
+  npm view "${package}@0.1.0-rc2" version
+  npm view "${package}" dist-tags --json
+done
 ```
 
-The `rc` tag must resolve to `0.1.0-rc1`. `latest` must be absent or unchanged.
-Retain the workflow URL and release-evidence artifact with the release record.
+The `rc` tag must resolve to `0.1.0-rc2` for all five packages. By default,
+`latest` remains unchanged. If `promote_latest: true` was explicitly selected,
+`latest` must also resolve to `0.1.0-rc2`. Retain the workflow URL and
+release-evidence artifact with the release record.
 
 ## Retry and rollback
 
@@ -122,8 +139,15 @@ For a bad RC:
 Example operator commands:
 
 ```bash
-npm dist-tag rm @midnight-ntwrk/credential-model rc
-npm deprecate @midnight-ntwrk/credential-model@0.1.0-rc1 "Use the replacement RC"
+for package in \
+  @midnight-ntwrk/credential-model \
+  @midnight-ntwrk/credential-compact \
+  @midnight-ntwrk/credential-proofs \
+  @midnight-ntwrk/credential-status \
+  @midnight-ntwrk/credential-did-midnight; do
+  npm dist-tag rm "${package}" rc
+  npm deprecate "${package}@0.1.0-rc2" "Use the replacement RC"
+done
 ```
 
 Do not move `latest` during RC rollback.

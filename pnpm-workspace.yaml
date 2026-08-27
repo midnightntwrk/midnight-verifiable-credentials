@@ -1,5 +1,6 @@
 packages:
   - packages/core/model
+  - packages/core/display
   - packages/core/compact
   - packages/core/proofs
   - packages/core/status

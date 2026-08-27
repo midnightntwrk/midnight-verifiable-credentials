@@ -24,9 +24,11 @@ closure.
    from package class, maturity, and pack eligibility.
 2. Pack only candidate and supported dist-class packages. Internal, scenario,
    and source-only workspaces are not packable.
-3. Make `@midnight-ntwrk/credential-model` the first package in the new
-   publication graph. Keep the legacy Compact package internal while reusable
-   surfaces are extracted.
+3. Establish the RC2 publication foundation as five supported packages:
+   `credential-model`, `credential-compact`, `credential-proofs`,
+   `credential-status`, and `credential-did-midnight`. Keep legacy Compact,
+   concrete families, authority implementations, and application wiring
+   internal while reusable surfaces are extracted.
 4. Require candidates to expose one truthful module format, explicit runtime
    and Compact exports, compatible dependency ranges, complete metadata, a
    package changelog, deterministic prepack, and checked tarball contents.
@@ -55,8 +57,9 @@ closure.
 
 ## Implementation status
 
-The first implementation of this decision promotes
-`@midnight-ntwrk/credential-model` to `supported` and adds the manual npmjs
-workflow. Candidate packages remain private. The workflow publishes only
-supported paths from the workspace catalog and cannot publish prototypes,
-use cases, or internal compatibility workspaces.
+The first implementation of this decision promoted
+`@midnight-ntwrk/credential-model` to `supported` and added the manual npmjs
+workflow. RC2 extends that supported surface to the four reusable VC
+packages listed above. The workflow publishes only supported paths from the
+workspace catalog and cannot publish prototypes, use cases, or internal
+compatibility workspaces.

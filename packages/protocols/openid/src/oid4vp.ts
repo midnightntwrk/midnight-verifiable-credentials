@@ -2,10 +2,13 @@ import { z } from "zod";
 
 import { MidnightPresentationRequestExtensionSchema } from "./midnight.js";
 import {
+  DcqlQuerySchema,
+  VpRequestBindingSchema,
+} from "./profile.js";
+import {
   JsonObjectSchema,
   JsonValueSchema,
   NonEmptyStringSchema,
-  UriSchema,
   UrlSchema,
 } from "./shared.js";
 
@@ -44,28 +47,52 @@ export const InputDescriptorSchema = z.object({
 });
 export type InputDescriptor = z.infer<typeof InputDescriptorSchema>;
 
-export const PresentationDefinitionSchema = z.object({
-  id: NonEmptyStringSchema,
-  name: NonEmptyStringSchema.optional(),
-  purpose: NonEmptyStringSchema.optional(),
-  format: z.record(NonEmptyStringSchema, ClaimFormatDesignationSchema).optional(),
-  input_descriptors: z.array(InputDescriptorSchema).min(1),
-});
+export const PresentationDefinitionSchema = z
+  .object({
+    id: NonEmptyStringSchema,
+    name: NonEmptyStringSchema.optional(),
+    purpose: NonEmptyStringSchema.optional(),
+    format: z.record(NonEmptyStringSchema, ClaimFormatDesignationSchema).optional(),
+    input_descriptors: z.array(InputDescriptorSchema).min(1),
+  })
+  .superRefine((definition, context) => {
+    const ids = definition.input_descriptors.map((descriptor) => descriptor.id);
+    if (new Set(ids).size !== ids.length) {
+      context.addIssue({ code: "custom", path: ["input_descriptors"], message: "Input descriptor ids must be unique" });
+    }
+  });
 export type PresentationDefinition = z.infer<
   typeof PresentationDefinitionSchema
 >;
 
-export const VpAuthorizationRequestSchema = z.object({
-  response_type: z.literal("vp_token"),
-  client_id: NonEmptyStringSchema,
-  redirect_uri: UrlSchema.optional(),
-  response_mode: z.enum(["direct_post", "direct_post.jwt", "fragment"]).optional(),
-  state: NonEmptyStringSchema.optional(),
-  nonce: NonEmptyStringSchema,
-  presentation_definition: PresentationDefinitionSchema,
-  client_metadata: JsonObjectSchema.optional(),
-  midnight: MidnightPresentationRequestExtensionSchema.optional(),
-});
+export const VpAuthorizationRequestSchema = z
+  .object({
+    response_type: z.literal("vp_token"),
+    client_id: NonEmptyStringSchema,
+    redirect_uri: UrlSchema.optional(),
+    response_mode: z
+      .enum(["direct_post", "direct_post.jwt", "fragment"])
+      .optional(),
+    state: NonEmptyStringSchema.optional(),
+    nonce: NonEmptyStringSchema,
+    presentation_definition: PresentationDefinitionSchema.optional(),
+    dcql_query: DcqlQuerySchema.optional(),
+    request_uri: UrlSchema.optional(),
+    request_digest: VpRequestBindingSchema.shape.request_digest.optional(),
+    client_metadata: JsonObjectSchema.optional(),
+    midnight: MidnightPresentationRequestExtensionSchema.optional(),
+  })
+  .refine(
+    (request) =>
+      request.presentation_definition !== undefined ||
+      request.dcql_query !== undefined ||
+      request.request_uri !== undefined,
+    {
+      message:
+        "VP authorization request requires a presentation definition, DCQL query, or request_uri",
+      path: ["presentation_definition"],
+    },
+  );
 export type VpAuthorizationRequest = z.infer<
   typeof VpAuthorizationRequestSchema
 >;
@@ -96,7 +123,8 @@ export type PresentationSubmission = z.infer<
 export const VpAuthorizationResponseSchema = z.object({
   state: NonEmptyStringSchema.optional(),
   vp_token: JsonValueSchema,
-  presentation_submission: PresentationSubmissionSchema,
+  presentation_submission: PresentationSubmissionSchema.optional(),
+  request_digest: VpRequestBindingSchema.shape.request_digest.optional(),
 });
 export type VpAuthorizationResponse = z.infer<
   typeof VpAuthorizationResponseSchema
@@ -114,15 +142,31 @@ export const createVpAuthorizationResponse = (
   input: VpAuthorizationResponse,
 ): VpAuthorizationResponse => VpAuthorizationResponseSchema.parse(input);
 
-export const presentationRequestUri = (input: {
+/** @deprecated Legacy helper; it accepts arbitrary request URIs. */
+export const legacyPresentationRequestUri = (input: {
   readonly requestUri: string;
   readonly clientId?: string;
 }): string => {
   const url = new URL("openid4vp://authorize");
   url.searchParams.set("request_uri", input.requestUri);
-  if (input.clientId) {
-    url.searchParams.set("client_id", input.clientId);
+  if (input.clientId) url.searchParams.set("client_id", input.clientId);
+  return url.toString();
+};
+
+export const presentationRequestUri = (input: {
+  readonly requestReference: string;
+  readonly clientId: string;
+}): string => {
+  const reference = new URL(input.requestReference);
+  if (reference.protocol !== "https:" || reference.username || reference.password) {
+    throw new Error("Presentation request reference must be an HTTPS URL without credentials");
   }
+  if (input.requestReference.length > 512 || /[\r\n]/u.test(input.requestReference)) {
+    throw new Error("Presentation request reference must be short and opaque");
+  }
+  const url = new URL("openid4vp://authorize");
+  url.searchParams.set("request_uri", input.requestReference);
+  url.searchParams.set("client_id", input.clientId);
   return url.toString();
 };
 
@@ -134,15 +178,46 @@ export const assertPresentationSubmissionMatchesDefinition = (input: {
   readonly definition: PresentationDefinition;
   readonly submission: PresentationSubmission;
 }): void => {
+  if (input.submission.definition_id !== input.definition.id) {
+    throw new Error("Presentation submission definition_id does not match the request");
+  }
   const descriptorIds = new Set(
     input.definition.input_descriptors.map((descriptor) => descriptor.id),
   );
+  const submittedIds = input.submission.descriptor_map.map(
+    (descriptor) => descriptor.id,
+  );
+  if (new Set(submittedIds).size !== submittedIds.length) {
+    throw new Error("Presentation submission contains duplicate descriptor ids");
+  }
   for (const descriptor of input.submission.descriptor_map) {
-    if (!descriptorIds.has(descriptor.id)) {
+    const inputDescriptor = input.definition.input_descriptors.find((candidate) => candidate.id === descriptor.id);
+    if (!inputDescriptor) {
       throw new Error(
         `Presentation submission references unknown input descriptor "${descriptor.id}"`,
       );
     }
+    const definitionFormats = Object.keys(input.definition.format ?? {});
+    const descriptorFormats = Object.keys(inputDescriptor.format ?? {});
+    if (
+      (definitionFormats.length > 0 && !definitionFormats.includes(descriptor.format)) ||
+      (descriptorFormats.length > 0 && !descriptorFormats.includes(descriptor.format))
+    ) {
+      throw new Error(`Presentation submission format does not match descriptor "${descriptor.id}"`);
+    }
+    const assertDescriptorPath = (current: DescriptorMap, parent?: DescriptorMap): void => {
+      if (current.format === "midnight_compact_vp" && !/^\$\.vp_token(?:\[\d+\])?$/u.test(current.path)) {
+        throw new Error(`Midnight descriptor path is not an exact vp_token path for "${descriptor.id}"`);
+      }
+      if (parent && current.path === parent.path) {
+        throw new Error(`Nested descriptor path must differ for "${descriptor.id}"`);
+      }
+      if (current.path_nested) assertDescriptorPath(current.path_nested, current);
+    };
+    assertDescriptorPath(descriptor);
+  }
+  if (submittedIds.length !== descriptorIds.size) {
+    throw new Error("Presentation submission does not cover every input descriptor");
   }
 };
 

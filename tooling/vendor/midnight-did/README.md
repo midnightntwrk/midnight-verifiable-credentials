@@ -31,7 +31,7 @@ manifest entry would reintroduce `elliptic` through `ethers@5`.
   ledger versions are not runtime-isolated: their WASM-backed classes fail
   identity checks across package boundaries.
 - The root override resolves the entire dependency graph to
-  `@midnight-ntwrk/ledger-v8@8.1.0`, matching the VC, Midnight JS, and wallet
+  `@midnight-ntwrk/ledger-v8@8.1.1`, matching the VC, Midnight JS, and wallet
   SDK baseline.
 - `pnpm run check:ledger-v8-boundary` enforces the single-version requirement
   in the fast local/CI check lane.

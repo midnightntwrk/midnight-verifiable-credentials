@@ -33,7 +33,7 @@
     "all": "pnpm run build && pnpm run test:ci"
   },
   "dependencies": {
-    "@midnight-ntwrk/compact-runtime": "*",
+    "@midnight-ntwrk/compact-runtime": "^0.16.0",
     "zod": "^4.1.0"
   },
   "files": [

@@ -1,12 +1,11 @@
 # @midnight-ntwrk/credential-status
 
-> Release stage: `candidate`
+> Release stage: `supported`
 > Maturity: `core`
 > Package class: `dist`
 
-Private candidate for the protocol-neutral credential-status boundary. It is
-stacked on `@midnight-ntwrk/credential-compact`'s P0 branch for repository
-delivery, but intentionally has no Compact, ledger, runtime, or deployment
+Supported prerelease package for the protocol-neutral credential-status
+boundary. It intentionally has no Compact, ledger, runtime, or deployment
 dependency.
 
 ## Scope
@@ -35,5 +34,5 @@ artifacts.
 
 Import the root or one of the explicit subpaths (`./bindings`, `./outcomes`,
 `./policy`, and `./ports`). Consumers must use the package name rather than
-repository-relative source paths. This is a private candidate and is not
-published or promoted by this phase.
+repository-relative source paths. This package is published as part of the
+supported RC development surface.

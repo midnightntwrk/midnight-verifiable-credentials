@@ -98,8 +98,78 @@ describe("university protocol application-decisions exporter", () => {
     ).not.toThrow();
   });
 
+  it("labels requested, presentation, and credential-body data separately for v1", () => {
+    setNetworkId("undeployed");
+    const runner = new UniversityProtocolFlowRunner();
+    const exported = buildUniversityProtocolApplicationDecisionsExport(
+      runner,
+      runner.runAll(),
+    );
+    const decision = exported.jobApplications.byStudentCompany.find(
+      (entry) => entry.studentId === "STU-0002",
+    );
+    if (!decision) {
+      throw new Error("Expected the STU-0002 job-application decision");
+    }
+    const request = decision.request.dto as {
+      readonly disclosures: readonly string[];
+    };
+    const submission = decision.submissions[0]?.dto as {
+      readonly requestedDisclosures: readonly string[];
+      readonly presentationDisclosures: readonly string[];
+      readonly directCredentialClaimFields: readonly string[];
+      readonly directCredentialClaimsTransported: boolean;
+      readonly disclosures: readonly string[];
+    };
+
+    expect(request.disclosures).toContain("honorsCode");
+    expect(submission.requestedDisclosures).toEqual(
+      request.disclosures,
+    );
+    expect(submission.presentationDisclosures).toEqual(
+      request.disclosures,
+    );
+    expect(submission.directCredentialClaimsTransported).toBe(true);
+    expect(submission.directCredentialClaimFields).toContain("studentId");
+    expect(submission.disclosures).toEqual(submission.presentationDisclosures);
+  });
+
+  it("keeps verifier requests distinct from a tampered submission request", () => {
+    setNetworkId("undeployed");
+    const runner = new UniversityProtocolFlowRunner({
+      exerciseOptions: {
+        jobApplicationTamperingByStudentId: {
+          "STU-0002": "requestPolicy",
+        },
+      },
+    });
+    const exported = buildUniversityProtocolApplicationDecisionsExport(
+      runner,
+      runner.runAll(),
+    );
+    const decision = exported.jobApplications.byStudentCompany.find(
+      (entry) => entry.studentId === "STU-0002",
+    );
+    if (!decision) {
+      throw new Error("Expected the STU-0002 job-application decision");
+    }
+    const request = decision.request.dto as {
+      readonly disclosures: readonly string[];
+    };
+    const submission = decision.submissions[0]?.dto as {
+      readonly disclosures: readonly string[];
+      readonly requestedDisclosures: readonly string[];
+      readonly presentationDisclosures: readonly string[];
+    };
+
+    expect(submission.requestedDisclosures).toEqual(request.disclosures);
+    expect(submission.presentationDisclosures).toEqual(request.disclosures);
+    expect(submission.disclosures).not.toEqual(request.disclosures);
+  });
+
   it("matches the checked-in JSON golden export", () => {
     setNetworkId("undeployed");
+
     const runner = new UniversityProtocolFlowRunner();
     const exported = buildUniversityProtocolApplicationDecisionsExport(
       runner,

@@ -4,7 +4,7 @@
   "status": "validated",
   "compiler": {
     "name": "compact",
-    "version": "0.30.0"
+    "version": "0.31.1"
   },
   "runtime": {
     "packageInputs": [
@@ -102,67 +102,67 @@
     }
   ],
   "provenance": {
-    "sourceDigest": "920e67e94aa9b839a8a4e2010aa58ade3a2c293c0e7eedfe5f6a146ed0c62b5f",
-    "compilerVersion": "0.30.0",
-    "runtimeDigest": "05d73f32f61ee090dfab65e6b7abb549c4174b8aab38d628b2a54bac3e65da9d",
-    "lockfileDigest": "a5bc022fe6022cc928297ae21abd03ad10f7a50bf7e47259ea79f183f850ecfa",
-    "generatedAt": "2026-08-06T06:28:36.415Z",
+    "sourceDigest": "abbd5223c8887747da2b084ca4bd1e31e3f489d724fdb7f3e0690bfc37fd540a",
+    "compilerVersion": "0.31.1",
+    "runtimeDigest": "4cd9a9473994f6344baddcce3eebcd400a2fa8ce7e52b690bacbf0278b44302d",
+    "lockfileDigest": "9849adf3493da765dab4857d6f89daa90368b028027ac0d15c952a55c5a9afa7",
+    "generatedAt": "2026-08-18T13:17:37.545Z",
     "artifactCount": 164,
-    "artifactBytes": 809891335,
+    "artifactBytes": 809912309,
     "byFixture": {
       "credentials": {
         "files": 4,
-        "bytes": 572204
+        "bytes": 572223
       },
       "status-registry": {
         "files": 16,
-        "bytes": 4197454
+        "bytes": 4198219
       },
       "same-holder": {
         "files": 4,
-        "bytes": 626479
+        "bytes": 626498
       },
       "iso-registry": {
         "files": 4,
-        "bytes": 13358
+        "bytes": 13377
       },
       "birth": {
         "files": 4,
-        "bytes": 1140658
+        "bytes": 1140677
       },
       "hello-family": {
         "files": 8,
-        "bytes": 1498098
+        "bytes": 1498136
       },
       "dummy-claims": {
         "files": 4,
-        "bytes": 865965
+        "bytes": 865984
       },
       "mixed-claims": {
         "files": 4,
-        "bytes": 810486
+        "bytes": 810505
       },
       "university-diploma": {
         "files": 4,
-        "bytes": 1145406
+        "bytes": 1145425
       },
       "age-gate": {
         "files": 76,
-        "bytes": 538509554
+        "bytes": 538518799
       },
       "hello-verifier": {
         "files": 24,
-        "bytes": 173487913
+        "bytes": 173496430
       },
       "university-verifier": {
         "files": 12,
-        "bytes": 87023760
+        "bytes": 87026036
       }
     },
     "byType": {
       ".json": {
         "files": 16,
-        "bytes": 6014343
+        "bytes": 6035303
       },
       ".ts": {
         "files": 16,
@@ -170,7 +170,7 @@
       },
       ".js": {
         "files": 16,
-        "bytes": 8829525
+        "bytes": 8829476
       },
       ".map": {
         "files": 16,
@@ -178,7 +178,7 @@
       },
       ".prover": {
         "files": 25,
-        "bytes": 793037208
+        "bytes": 793037204
       },
       ".verifier": {
         "files": 25,
@@ -186,17 +186,17 @@
       },
       ".bzkir": {
         "files": 25,
-        "bytes": 51214
+        "bytes": 51221
       },
       ".zkir": {
         "files": 25,
-        "bytes": 621100
+        "bytes": 621160
       }
     },
     "largestArtifact": {
       "path": "packages/use-cases/age-gate/contract/src/managed/demo-revocation/keys/issueRevocationAwareCapabilityWithAuthorityAttestation.prover",
-      "bytes": 169672149,
-      "sha256": "82b58e230a36c5318afe62503e46e70d55433509b90f2afb140cc2c3252607ef",
+      "bytes": 169672145,
+      "sha256": "7133dbf2638a9c526c88792b464919790674418b9bff56e47eb642f927ebffcb",
       "lfsPointer": false,
       "fixture": "age-gate"
     }
@@ -204,8 +204,8 @@
   "artifacts": [
     {
       "path": "packages/core/capabilities/same-holder/src/managed/same-holder/compiler/contract-info.json",
-      "bytes": 199370,
-      "sha256": "fbff9311d1bad8b11cbc6c1787a561ced843e2c70392144977a797ac5e950968",
+      "bytes": 199389,
+      "sha256": "6994946e98efc58687bc96e71cd709734b208bd95f335f4d0749fadb13ad4ab3",
       "lfsPointer": false,
       "fixture": "same-holder"
     },
@@ -219,7 +219,7 @@
     {
       "path": "packages/core/capabilities/same-holder/src/managed/same-holder/contract/index.js",
       "bytes": 361628,
-      "sha256": "794feb22fc60ab96344d6572b1f126651c1980d82386850bcd93cfe75d14255e",
+      "sha256": "b225ddfdb5e25b1605c3d7cb558f22b9ebc3eae9603daa8f61b355ac20673cfd",
       "lfsPointer": false,
       "fixture": "same-holder"
     },
@@ -232,8 +232,8 @@
     },
     {
       "path": "packages/core/primitives/credentials/src/managed/credentials/compiler/contract-info.json",
-      "bytes": 187970,
-      "sha256": "5819608e695462a5e433877a4ef55da2cab5a9319dff0eddf6b928df82ef9973",
+      "bytes": 187989,
+      "sha256": "68c7009d77bad24bea973d2c6fb0f867f1252cbd376a02471ee8687da85f635a",
       "lfsPointer": false,
       "fixture": "credentials"
     },
@@ -247,7 +247,7 @@
     {
       "path": "packages/core/primitives/credentials/src/managed/credentials/contract/index.js",
       "bytes": 327376,
-      "sha256": "76e7a071818625c2681ca984c2f29e07dcae091d9edebfe931bf33fcdeea964a",
+      "sha256": "7aaf39f45ce3848e82ddc3df60aeab89879aa9c99d231c3714e55faa829475d1",
       "lfsPointer": false,
       "fixture": "credentials"
     },
@@ -260,8 +260,8 @@
     },
     {
       "path": "packages/core/primitives/iso-registry/src/managed/iso-registry/compiler/contract-info.json",
-      "bytes": 1821,
-      "sha256": "f17dd05374138cd7e6347fc684e82b302e431d3d92a7cbbc58ea8f37b4734295",
+      "bytes": 1840,
+      "sha256": "e89dd0f77902f72a2b7bb6e6a6e5f618adcba5327ab884aa635a90da099047e2",
       "lfsPointer": false,
       "fixture": "iso-registry"
     },
@@ -275,7 +275,7 @@
     {
       "path": "packages/core/primitives/iso-registry/src/managed/iso-registry/contract/index.js",
       "bytes": 9086,
-      "sha256": "5299077276b7b68937e598a74f1dfed3f925916d525d5db83979c22102c07441",
+      "sha256": "17db7cb3154cf206f73d5ba9f10342d21c29137b075fa6ebb0e0aed1cf18da99",
       "lfsPointer": false,
       "fixture": "iso-registry"
     },
@@ -288,8 +288,8 @@
     },
     {
       "path": "packages/prototypes/credential-families/birth/src/managed/birth-credential/compiler/contract-info.json",
-      "bytes": 475615,
-      "sha256": "51fb1182a4bbd3175ec9300bf8877dd27a26e1132a9adf836b5dafa79abb0531",
+      "bytes": 475634,
+      "sha256": "8dd52d4cd875e71fa7d3fd395dfbdb565a165fe1d4aada2b0d1ce2c476e08c4f",
       "lfsPointer": false,
       "fixture": "birth"
     },
@@ -303,7 +303,7 @@
     {
       "path": "packages/prototypes/credential-families/birth/src/managed/birth-credential/contract/index.js",
       "bytes": 580694,
-      "sha256": "7bdf0ccc4fff05ae998501bdd6ad61453336f699460f3b4bda3f38046430dc80",
+      "sha256": "c5366f86da331f19777509bb6b377dda909b7e48f6c04790f6bd4206e83a0a1c",
       "lfsPointer": false,
       "fixture": "birth"
     },
@@ -316,8 +316,8 @@
     },
     {
       "path": "packages/prototypes/credential-families/dummy-claims/src/managed/dummy-claims-credential/compiler/contract-info.json",
-      "bytes": 325622,
-      "sha256": "54b4d4c81cefd87122788ae9cbb88a86b24b954f9e19b7e51e1c3f625b13dca6",
+      "bytes": 325641,
+      "sha256": "e90d3b24cd13418e79722e89b353ff2927d4fd61bf6510e709189bfb4264c2f1",
       "lfsPointer": false,
       "fixture": "dummy-claims"
     },
@@ -331,7 +331,7 @@
     {
       "path": "packages/prototypes/credential-families/dummy-claims/src/managed/dummy-claims-credential/contract/index.js",
       "bytes": 467530,
-      "sha256": "cff18a1b2dde49d522691d6f874a387e4ccc398d5ee5a607586e827f07c74bd3",
+      "sha256": "fadb6d94136da40d7f1203cc2ad31a198814c3bae815f088c3a0a86dd809f988",
       "lfsPointer": false,
       "fixture": "dummy-claims"
     },
@@ -344,8 +344,8 @@
     },
     {
       "path": "packages/prototypes/credential-families/hello-family/src/managed/hello-family-credential/compiler/contract-info.json",
-      "bytes": 270774,
-      "sha256": "b150fbe08dd43761944cb71ba3494d158f310e7777978bc41be95af92a1b6d5f",
+      "bytes": 270793,
+      "sha256": "f9a225a2bcad6ea43b628e71caf241013cc5459caa3bb6ca8b73e25a80e8fdad",
       "lfsPointer": false,
       "fixture": "hello-family"
     },
@@ -359,7 +359,7 @@
     {
       "path": "packages/prototypes/credential-families/hello-family/src/managed/hello-family-credential/contract/index.js",
       "bytes": 412497,
-      "sha256": "39329185491a075692e162ddc3290c2070483314986f27a95457092677e6b5c4",
+      "sha256": "68287c19872674e0565c835d6998a1b3246d981e4e53ca74fd6c6170407b09d7",
       "lfsPointer": false,
       "fixture": "hello-family"
     },
@@ -372,8 +372,8 @@
     },
     {
       "path": "packages/prototypes/credential-families/hello-family/src/managed/hello-family-offchain-credential/compiler/contract-info.json",
-      "bytes": 268080,
-      "sha256": "7e896f872c587961fb3ca93c3cf175fdb26fb7219e181a8f146427085a6e54b1",
+      "bytes": 268099,
+      "sha256": "37bef094ec2910f3d5806247af984bd4a79b019cda6f5af1efac8727fc8cfcc9",
       "lfsPointer": false,
       "fixture": "hello-family"
     },
@@ -387,7 +387,7 @@
     {
       "path": "packages/prototypes/credential-families/hello-family/src/managed/hello-family-offchain-credential/contract/index.js",
       "bytes": 410884,
-      "sha256": "4862e8f35c5a37b7fd213ca19c0035db2b1947d933df75b7f51ce2a29aca99e2",
+      "sha256": "53fdab9d03226ff68a7b4734f4b09d16cbcba64a77b27ee52eb9c4045ff1663f",
       "lfsPointer": false,
       "fixture": "hello-family"
     },
@@ -400,8 +400,8 @@
     },
     {
       "path": "packages/prototypes/credential-families/mixed-claims/src/managed/mixed-claims-credential/compiler/contract-info.json",
-      "bytes": 287420,
-      "sha256": "7c9bffaf791d0282539f86680850f426c9702a973084b48908d23f454d90eb79",
+      "bytes": 287439,
+      "sha256": "5294aab0b8cb4a34335b445744ccb3f31d98bf0d33306f9e2d21ea4bd662b925",
       "lfsPointer": false,
       "fixture": "mixed-claims"
     },
@@ -415,7 +415,7 @@
     {
       "path": "packages/prototypes/credential-families/mixed-claims/src/managed/mixed-claims-credential/contract/index.js",
       "bytes": 448010,
-      "sha256": "dc362d3f952ffb1784910ec7a5b0e1b8a052a4c0de7f75b71a71ac0cad22ef1b",
+      "sha256": "6a1f7afa8e3ab7ce21f8a51c84a09e4a84bd8987315854ee1312c7d2e6a92cd1",
       "lfsPointer": false,
       "fixture": "mixed-claims"
     },
@@ -428,8 +428,8 @@
     },
     {
       "path": "packages/prototypes/credential-families/university-diploma/src/managed/university-diploma-credential/compiler/contract-info.json",
-      "bytes": 431404,
-      "sha256": "d1685bef8b71f332a73048683c82f1ee35c265b57760880063c62680916088ca",
+      "bytes": 431423,
+      "sha256": "1bef7d2a07520e94debf03ffde38ad677f4a734659c3d5191f49f478d3ae3f49",
       "lfsPointer": false,
       "fixture": "university-diploma"
     },
@@ -443,7 +443,7 @@
     {
       "path": "packages/prototypes/credential-families/university-diploma/src/managed/university-diploma-credential/contract/index.js",
       "bytes": 616359,
-      "sha256": "5dcba2a9d73d7b1d98301053be009b2f28d003777da38fa34f62d8c6573db41a",
+      "sha256": "aacbec56ecbe2230740ac23a98c5df00f23b008884fa71984ca7e0c4b453d701",
       "lfsPointer": false,
       "fixture": "university-diploma"
     },
@@ -456,8 +456,8 @@
     },
     {
       "path": "packages/registry/status-registry/src/managed/revocation-registry/compiler/contract-info.json",
-      "bytes": 320284,
-      "sha256": "29d26f2c7f45be4364116b9bcff787c0827d63a0e4ed58f5c20c0e1e53351fab",
+      "bytes": 321098,
+      "sha256": "f344064d52a1e660ad9cc434819ee816b1518e1cb1667d3bf6a4fc26e26ebeb0",
       "lfsPointer": false,
       "fixture": "status-registry"
     },
@@ -470,8 +470,8 @@
     },
     {
       "path": "packages/registry/status-registry/src/managed/revocation-registry/contract/index.js",
-      "bytes": 531390,
-      "sha256": "1ceb40027e6ca0229247ff1c6cdb1f38f4a9b80e703f3abb37d0cdcf08d1dbb9",
+      "bytes": 531341,
+      "sha256": "61cb0a03b1e0478f2ec929b9445eb9ecc833e9d9ffd7727a98a959bbc5f7efeb",
       "lfsPointer": false,
       "fixture": "status-registry"
     },
@@ -568,8 +568,8 @@
     },
     {
       "path": "packages/use-cases/age-gate/contract/src/managed/demo-revocation/compiler/contract-info.json",
-      "bytes": 1226425,
-      "sha256": "df7dfa10735115933dfb7c86c9b6e0e08b15cf34454ce91b4a47515b6bc8cf17",
+      "bytes": 1231691,
+      "sha256": "cb23cca17c958986c66df9d62b4b4a9ad19870a55d076f0f3aad34cc3f37ba54",
       "lfsPointer": false,
       "fixture": "age-gate"
     },
@@ -583,7 +583,7 @@
     {
       "path": "packages/use-cases/age-gate/contract/src/managed/demo-revocation/contract/index.js",
       "bytes": 1566311,
-      "sha256": "e525857338ea7d1bdcf28fe2b0d1f7a6b42bc15b94f8e3c3a50a25fba188f45c",
+      "sha256": "288c0d40d047dda6061408778114abbcbb3bc8f29305a0e38334c64a9fab0469",
       "lfsPointer": false,
       "fixture": "age-gate"
     },
@@ -624,15 +624,15 @@
     },
     {
       "path": "packages/use-cases/age-gate/contract/src/managed/demo-revocation/keys/issueRevocationAwareCapabilityWithAuthorityAttestation.prover",
-      "bytes": 169672149,
-      "sha256": "82b58e230a36c5318afe62503e46e70d55433509b90f2afb140cc2c3252607ef",
+      "bytes": 169672145,
+      "sha256": "7133dbf2638a9c526c88792b464919790674418b9bff56e47eb642f927ebffcb",
       "lfsPointer": false,
       "fixture": "age-gate"
     },
     {
       "path": "packages/use-cases/age-gate/contract/src/managed/demo-revocation/keys/issueRevocationAwareCapabilityWithAuthorityAttestation.verifier",
       "bytes": 2311,
-      "sha256": "509a7d973ab3d600e2c4fccddbf08bd7dac27688baed7b61d2032d094c4bb66a",
+      "sha256": "d1908c6d4e4fe6e46854bf8191ea2010f28eb23505972928763f9158ccee5548",
       "lfsPointer": false,
       "fixture": "age-gate"
     },
@@ -778,15 +778,15 @@
     },
     {
       "path": "packages/use-cases/age-gate/contract/src/managed/demo-revocation/zkir/issueRevocationAwareCapabilityWithAuthorityAttestation.bzkir",
-      "bytes": 7738,
-      "sha256": "ca2d5ae7080c27aca89e15385133aff0a4f34afa7235ef0241855afb9fced5aa",
+      "bytes": 7745,
+      "sha256": "f343d7bed6ec62d37b09d10830aa1f990e50742d89979c8aaa819a971e54c9ea",
       "lfsPointer": false,
       "fixture": "age-gate"
     },
     {
       "path": "packages/use-cases/age-gate/contract/src/managed/demo-revocation/zkir/issueRevocationAwareCapabilityWithAuthorityAttestation.zkir",
-      "bytes": 85725,
-      "sha256": "7f8d5fccaa2d0941458380390291137e66ebd320985ac579c109d856f0781ac5",
+      "bytes": 85785,
+      "sha256": "501c1826b8a45c71d2fdc40923b673b56e42e79db5e225c003b8cd10afa53f1a",
       "lfsPointer": false,
       "fixture": "age-gate"
     },
@@ -904,8 +904,8 @@
     },
     {
       "path": "packages/use-cases/age-gate/contract/src/managed/demo/compiler/contract-info.json",
-      "bytes": 555216,
-      "sha256": "a2bcb93faa89a40edb891a5ccdc09a92c45b6abc70409ebcf92a7e78296d3be3",
+      "bytes": 559132,
+      "sha256": "a9b4ecaf5dd09b10f2f41e1fd013d6f5469c063557291979461adc2ec24caf0d",
       "lfsPointer": false,
       "fixture": "age-gate"
     },
@@ -919,7 +919,7 @@
     {
       "path": "packages/use-cases/age-gate/contract/src/managed/demo/contract/index.js",
       "bytes": 805740,
-      "sha256": "ab4b16775d0e735ad48721123a317123e85d0c227e7529480aa4d7c33212eaaf",
+      "sha256": "4444ae7bdd68c4a9682cb526fd207e5a9c4496f81816e46fe4b64593f7148bc1",
       "lfsPointer": false,
       "fixture": "age-gate"
     },
@@ -1100,8 +1100,8 @@
     },
     {
       "path": "packages/use-cases/hello-verifier/contract/src/managed/dummy-claims-verifier/compiler/contract-info.json",
-      "bytes": 369493,
-      "sha256": "2e03311dd5c0e2336d57a3b863400cfa2e64e0a3c529dba7952b9365b9f46557",
+      "bytes": 375240,
+      "sha256": "f1e67f41f3b0a0705b81e71209b0f53ca7837b5a10fb8965d626b30e8ddfcc5b",
       "lfsPointer": false,
       "fixture": "hello-verifier"
     },
@@ -1115,7 +1115,7 @@
     {
       "path": "packages/use-cases/hello-verifier/contract/src/managed/dummy-claims-verifier/contract/index.js",
       "bytes": 626012,
-      "sha256": "13e86b9f22658ecc11d24cefbacc95227c7b9ee07890926befa4c1c065bfc054",
+      "sha256": "d2a79b74b88c4ff8756f79e030360adf4a93bec2b853e77236adb1dd031c8682",
       "lfsPointer": false,
       "fixture": "hello-verifier"
     },
@@ -1156,8 +1156,8 @@
     },
     {
       "path": "packages/use-cases/hello-verifier/contract/src/managed/hello-verifier-offchain/compiler/contract-info.json",
-      "bytes": 294902,
-      "sha256": "7c710a761e9fc561388a1211cb25814c1e722243886db8945b41163466df9cfb",
+      "bytes": 296287,
+      "sha256": "058619c275f964ecfdfe98b0407f7e318f44566c2ac4f22505d1cc6c906ff633",
       "lfsPointer": false,
       "fixture": "hello-verifier"
     },
@@ -1171,7 +1171,7 @@
     {
       "path": "packages/use-cases/hello-verifier/contract/src/managed/hello-verifier-offchain/contract/index.js",
       "bytes": 464039,
-      "sha256": "e31a3946114623ec73f905ceca1618e822bb6e60f739a7b8506178b9b5644bf6",
+      "sha256": "a2bcb0d05b91f921be1a1c5409a3e43accdcd724da58bd29b7ea527363c6587a",
       "lfsPointer": false,
       "fixture": "hello-verifier"
     },
@@ -1212,8 +1212,8 @@
     },
     {
       "path": "packages/use-cases/hello-verifier/contract/src/managed/hello-verifier/compiler/contract-info.json",
-      "bytes": 298376,
-      "sha256": "0fe0305e1527fb690c0ee3827c8ac247a13ed68128d785bcc8558b43ce7bcd78",
+      "bytes": 299761,
+      "sha256": "ca66b4a08066ae57dc25f331e8c85699856ea14963313528968f0ba3d3e83e58",
       "lfsPointer": false,
       "fixture": "hello-verifier"
     },
@@ -1227,7 +1227,7 @@
     {
       "path": "packages/use-cases/hello-verifier/contract/src/managed/hello-verifier/contract/index.js",
       "bytes": 466120,
-      "sha256": "c07d535596d0f94a5906c6cf3250e4469fae8652b14a8cd7df80cef086eaaa19",
+      "sha256": "a7ab32b0964f813e96e95906e631c8584ad10692e9151b8fd7c88e2defb2d8f7",
       "lfsPointer": false,
       "fixture": "hello-verifier"
     },
@@ -1268,8 +1268,8 @@
     },
     {
       "path": "packages/use-cases/university/contract/src/managed/university-verifier/compiler/contract-info.json",
-      "bytes": 501571,
-      "sha256": "5e72cfc54ccb34398a5de804e3591f130e8f9a37332be61ad9d12bb063144947",
+      "bytes": 503847,
+      "sha256": "63b89351fd623dcc0b10f8c388d180515656fff49005420f0549d6956af6f271",
       "lfsPointer": false,
       "fixture": "university-verifier"
     },
@@ -1283,7 +1283,7 @@
     {
       "path": "packages/use-cases/university/contract/src/managed/university-verifier/contract/index.js",
       "bytes": 735849,
-      "sha256": "d14055be88a167f3f8d54210694a846fec695883d25c3553270b93cfc19fff70",
+      "sha256": "3df839d100ba5dfb6ea49bb15ae0e306b558618d2735449e101f39a5efd1a98c",
       "lfsPointer": false,
       "fixture": "university-verifier"
     },
