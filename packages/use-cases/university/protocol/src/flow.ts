@@ -518,14 +518,36 @@ export class UniversityProtocolFlowRunner {
       company.verificationRejectedCount = companyState.verificationRejectedCount;
     }
 
+    for (const message of state.messages.jobApplications) {
+      if (message.type !== "presentation:request") {
+        continue;
+      }
+      const company = this.companyAgents.get(message.from);
+      if (!company) {
+        throw new Error(`Missing company verifier for restored request ${message.from}`);
+      }
+      company.primePresentationRequestBinding(message);
+    }
+
     this.mallAgent.processedThreadIds.clear();
     for (const threadId of state.mall.processedThreadIds) {
       this.mallAgent.processedThreadIds.add(threadId);
+
     }
     this.mallAgent.acceptedCount = state.mall.acceptedCount;
     this.mallAgent.duplicateRejectedCount = state.mall.duplicateRejectedCount;
     this.mallAgent.verificationRejectedCount =
       state.mall.verificationRejectedCount;
+
+    for (const message of state.messages.discounts) {
+      if (message.type !== "presentation:request") {
+        continue;
+      }
+      if (message.from !== this.mallAgent.profile.partyId) {
+        throw new Error(`Unexpected mall verifier for restored request ${message.from}`);
+      }
+      this.mallAgent.primePresentationRequestBinding(message);
+    }
   }
 
   private runIssuance(): IssuanceFlowExecutionResult {

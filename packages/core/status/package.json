@@ -3,8 +3,13 @@
   "version": "0.1.0",
   "description": "Private candidate library of generic credential-status semantics and ports",
   "license": "Apache-2.0",
-  "private": true,
+  "private": false,
   "type": "module",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true,
+    "registry": "https://registry.npmjs.org/"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/midnightntwrk/midnight-verifiable-credentials.git",
@@ -61,6 +66,6 @@
   "midnight": {
     "maturity": "core",
     "packageClass": "dist",
-    "releaseStage": "candidate"
+    "releaseStage": "supported"
   }
 }

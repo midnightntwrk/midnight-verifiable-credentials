@@ -1,12 +1,12 @@
 # @midnight-ntwrk/credential-compact
 
-> Release stage: `candidate`
+> Release stage: `supported`
 > Maturity: `core`
 > Package class: `dist`
 
-Private candidate for reusable, family-neutral Compact VC/VP semantics. This is a
-library include surface, not a deployable contract, credential family, proof
-artifact, or registry authority. It is not published or promoted by this phase.
+Supported prerelease package for reusable, family-neutral Compact VC/VP
+semantics. This is a library include surface, not a deployable contract,
+credential family, proof artifact, or registry authority.
 
 ## Scope
 
@@ -22,8 +22,8 @@ use-case code are deliberately excluded.
 
 ## Toolchain and generated output
 
-The candidate is compiled and checked with the pinned Compact `0.30.0` compiler
-and exactly `@midnight-ntwrk/compact-runtime` `0.15.0`. Builds fail before
+The candidate is compiled and checked with the pinned Compact `0.31.1` compiler
+and exactly `@midnight-ntwrk/compact-runtime` `0.16.0`. Builds fail before
 generated output is accepted if either resolved version drifts. `src/managed` and
 `dist` are generated during build and are not hand-edited.
 `dist/compact-build.json` records the exact compiler/runtime tuple, source digest,

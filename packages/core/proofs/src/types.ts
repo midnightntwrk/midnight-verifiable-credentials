@@ -57,6 +57,11 @@ export interface ArtifactResolver {
   ): Promise<ResolvedProofArtifact>;
 }
 
+/** Runtime-agnostic lookup for a trusted deployment-signing public key. */
+export type ManifestKeyResolver = (
+  keyId: string,
+) => CryptoKey | null | undefined | Promise<CryptoKey | null | undefined>;
+
 export type ProofArtifactRole =
   | "prover-key"
   | "verifier-key"
@@ -133,9 +138,12 @@ export interface DeploymentSupportWindow {
   readonly notAfter?: string;
 }
 
+export type ManifestSignatureAlgorithm = "Ed25519";
+
 export interface DeploymentManifestSignature {
-  readonly algorithm: string;
+  readonly algorithm: ManifestSignatureAlgorithm;
   readonly keyId: string;
+  /** Unpadded base64url encoding of the 64-byte Ed25519 signature. */
   readonly value: string;
 }
 

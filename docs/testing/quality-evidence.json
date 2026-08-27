@@ -1,0 +1,225 @@
+{
+  "schema": "midnight-vc-quality-evidence",
+  "version": 1,
+  "baseRef": "origin/develop",
+  "baseSha": "161d33d9d0bcd1c0351f011887ce6875511306a8",
+  "observedAt": "2026-08-27",
+  "evidence": [
+    {
+      "id": "core-credentials-tests",
+      "category": "tests",
+      "scope": {
+        "kind": "package",
+        "id": "@midnight-ntwrk/midnight-did-credentials"
+      },
+      "status": "not-run",
+      "commandStatus": "defined",
+      "command": "pnpm --dir packages/core/primitives/credentials test",
+      "metric": {
+        "name": "passing-tests",
+        "unit": "tests",
+        "value": null
+      },
+      "reason": "Workspace dependencies were not installed in the evidence checkout; no test result is claimed.",
+      "owner": "vc-maintainers",
+      "review": {
+        "status": "pending",
+        "reviewer": "unassigned"
+      },
+      "budget": {
+        "status": "unset",
+        "unit": "tests",
+        "value": null
+      }
+    },
+    {
+      "id": "proofs-artifact-integrity-tests",
+      "category": "artifact-integrity",
+      "scope": {
+        "kind": "package",
+        "id": "@midnight-ntwrk/credential-proofs"
+      },
+      "status": "not-run",
+      "commandStatus": "defined",
+      "command": "pnpm --dir packages/core/proofs test",
+      "metric": {
+        "name": "passing-tests",
+        "unit": "tests",
+        "value": null
+      },
+      "reason": "Workspace dependencies were not installed in the evidence checkout; no integrity-test result is claimed.",
+      "owner": "vc-maintainers",
+      "review": {
+        "status": "pending",
+        "reviewer": "unassigned"
+      },
+      "budget": {
+        "status": "unset",
+        "unit": "tests",
+        "value": null
+      }
+    },
+    {
+      "id": "coverage",
+      "category": "coverage",
+      "scope": {
+        "kind": "repository",
+        "id": "midnight-verifiable-credentials"
+      },
+      "status": "not-run",
+      "commandStatus": "undefined",
+      "command": null,
+      "metric": {
+        "name": "line-coverage",
+        "unit": "percent",
+        "value": null
+      },
+      "reason": "No coverage run is retained for this base.",
+      "owner": "vc-maintainers",
+      "review": {
+        "status": "pending",
+        "reviewer": "unassigned"
+      },
+      "budget": {
+        "status": "unset",
+        "unit": "percent",
+        "value": null
+      }
+    },
+    {
+      "id": "mutation",
+      "category": "mutation",
+      "scope": {
+        "kind": "repository",
+        "id": "midnight-verifiable-credentials"
+      },
+      "status": "not-run",
+      "commandStatus": "undefined",
+      "command": null,
+      "metric": {
+        "name": "mutation-score",
+        "unit": "percent",
+        "value": null
+      },
+      "reason": "Mutation tooling and a reviewed budget are not yet defined.",
+      "owner": "vc-maintainers",
+      "review": {
+        "status": "pending",
+        "reviewer": "unassigned"
+      },
+      "budget": {
+        "status": "unset",
+        "unit": "percent",
+        "value": null
+      }
+    },
+    {
+      "id": "fuzz",
+      "category": "fuzz",
+      "scope": {
+        "kind": "repository",
+        "id": "midnight-verifiable-credentials"
+      },
+      "status": "not-run",
+      "commandStatus": "undefined",
+      "command": null,
+      "metric": {
+        "name": "executions",
+        "unit": "cases",
+        "value": null
+      },
+      "reason": "No reproducible fuzz campaign is currently retained.",
+      "owner": "vc-maintainers",
+      "review": {
+        "status": "pending",
+        "reviewer": "unassigned"
+      },
+      "budget": {
+        "status": "unset",
+        "unit": "cases",
+        "value": null
+      }
+    },
+    {
+      "id": "benchmark",
+      "category": "benchmark",
+      "scope": {
+        "kind": "repository",
+        "id": "midnight-verifiable-credentials"
+      },
+      "status": "not-run",
+      "commandStatus": "undefined",
+      "command": null,
+      "metric": {
+        "name": "latency",
+        "unit": "milliseconds",
+        "value": null
+      },
+      "reason": "No reviewed benchmark baseline is currently retained.",
+      "owner": "vc-maintainers",
+      "review": {
+        "status": "pending",
+        "reviewer": "unassigned"
+      },
+      "budget": {
+        "status": "unset",
+        "unit": "milliseconds",
+        "value": null
+      }
+    },
+    {
+      "id": "proof-server",
+      "category": "proof-server",
+      "scope": {
+        "kind": "repository",
+        "id": "midnight-verifiable-credentials"
+      },
+      "status": "blocked",
+      "commandStatus": "undefined",
+      "command": null,
+      "metric": {
+        "name": "proof-throughput",
+        "unit": "proofs-per-second",
+        "value": null
+      },
+      "reason": "Docker-backed proof-server evidence is unavailable in this checkout.",
+      "owner": "vc-maintainers",
+      "review": {
+        "status": "pending",
+        "reviewer": "unassigned"
+      },
+      "budget": {
+        "status": "unset",
+        "unit": "proofs-per-second",
+        "value": null
+      }
+    },
+    {
+      "id": "mobile-download",
+      "category": "mobile",
+      "scope": {
+        "kind": "repository",
+        "id": "midnight-verifiable-credentials"
+      },
+      "status": "blocked",
+      "commandStatus": "undefined",
+      "command": null,
+      "metric": {
+        "name": "download-size",
+        "unit": "bytes",
+        "value": null
+      },
+      "reason": "No supported mobile consumer or download measurement harness exists.",
+      "owner": "vc-maintainers",
+      "review": {
+        "status": "pending",
+        "reviewer": "unassigned"
+      },
+      "budget": {
+        "status": "unset",
+        "unit": "bytes",
+        "value": null
+      }
+    }
+  ]
+}

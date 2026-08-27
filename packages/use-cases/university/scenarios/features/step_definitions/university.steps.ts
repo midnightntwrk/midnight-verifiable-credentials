@@ -779,7 +779,7 @@ Then(
       request:
         "Inspect the targeted student's verification-failure message after the tampered submission run.",
       response:
-        "The verifier returns a family-level validation error that explains exactly which diploma or proof invariant was violated.",
+        "The verifier returns a deterministic request-binding or family-level validation error that explains the rejected submission.",
       checks: [
         "A verificationFailed result exists for the named student.",
         `The reason contains the fragment ${expectedReasonFragment}.`,

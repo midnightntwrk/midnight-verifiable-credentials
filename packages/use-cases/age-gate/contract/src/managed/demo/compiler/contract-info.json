@@ -1,7 +1,7 @@
 {
-  "compiler-version": "0.30.0",
-  "language-version": "0.22.0",
-  "runtime-version": "0.15.0",
+  "compiler-version": "0.31.1",
+  "language-version": "0.23.0",
+  "runtime-version": "0.16.0",
   "circuits": [
     {
       "name": "noSchemaFamilyResolverHint",
@@ -17640,5 +17640,225 @@
     }
   ],
   "contracts": [
+  ],
+  "ledger": [
+    {
+      "name": "contractVersion",
+      "index": [
+        0,
+        0
+      ],
+      "exported": true,
+      "storage": "Cell",
+      "type": {
+        "type-name": "Uint",
+        "maxval": 4294967295
+      }
+    },
+    {
+      "name": "issuedCredentialCount",
+      "index": [
+        0,
+        1
+      ],
+      "exported": true,
+      "storage": "Counter"
+    },
+    {
+      "name": "verifiedPresentationCount",
+      "index": [
+        1,
+        0
+      ],
+      "exported": true,
+      "storage": "Counter"
+    },
+    {
+      "name": "minimumAccessAgeYears",
+      "index": [
+        1,
+        1
+      ],
+      "exported": true,
+      "storage": "Cell",
+      "type": {
+        "type-name": "Uint",
+        "maxval": 255
+      }
+    },
+    {
+      "name": "ageGateRequiresBirthCountryDisclosure",
+      "index": [
+        1,
+        2
+      ],
+      "exported": true,
+      "storage": "Cell",
+      "type": {
+        "type-name": "Boolean"
+      }
+    },
+    {
+      "name": "issuedCredentialClaimRoots",
+      "index": [
+        1,
+        3
+      ],
+      "exported": true,
+      "storage": "Set",
+      "type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "issuedCredentialHolderPublicKeys",
+      "index": [
+        1,
+        4
+      ],
+      "exported": true,
+      "storage": "Map",
+      "key": {
+        "type-name": "Bytes",
+        "length": 32
+      },
+      "value": {
+        "type-name": "Alias",
+        "name": "JubjubPoint",
+        "type": {
+          "type-name": "Opaque",
+          "tsType": "JubjubPoint"
+        }
+      }
+    },
+    {
+      "name": "lastVerifiedCredentialRoot",
+      "index": [
+        1,
+        5
+      ],
+      "exported": true,
+      "storage": "Cell",
+      "type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "lastVerifiedCurrentDay",
+      "index": [
+        1,
+        6
+      ],
+      "exported": true,
+      "storage": "Cell",
+      "type": {
+        "type-name": "Uint",
+        "maxval": 4294967295
+      }
+    },
+    {
+      "name": "lastVerifiedThresholdYears",
+      "index": [
+        1,
+        7
+      ],
+      "exported": true,
+      "storage": "Cell",
+      "type": {
+        "type-name": "Uint",
+        "maxval": 255
+      }
+    },
+    {
+      "name": "lastVerifiedRequestChallenge",
+      "index": [
+        1,
+        8
+      ],
+      "exported": true,
+      "storage": "Cell",
+      "type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "issuedAccessCapabilityCount",
+      "index": [
+        1,
+        9
+      ],
+      "exported": true,
+      "storage": "Counter"
+    },
+    {
+      "name": "consumedAccessCapabilityCount",
+      "index": [
+        1,
+        10
+      ],
+      "exported": true,
+      "storage": "Counter"
+    },
+    {
+      "name": "activeAccessCapabilities",
+      "index": [
+        1,
+        11
+      ],
+      "exported": true,
+      "storage": "Set",
+      "type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "consumedAccessCapabilities",
+      "index": [
+        1,
+        12
+      ],
+      "exported": true,
+      "storage": "Set",
+      "type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "lastIssuedAccessCapability",
+      "index": [
+        1,
+        13
+      ],
+      "exported": true,
+      "storage": "Cell",
+      "type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "lastBusinessDecision",
+      "index": [
+        1,
+        14
+      ],
+      "exported": true,
+      "storage": "Cell",
+      "type": {
+        "type-name": "Enum",
+        "name": "AccessDecision",
+        "elements": [
+          "noDecision",
+          "approved",
+          "unknownCapability",
+          "alreadyConsumed"
+        ]
+      }
+    }
   ]
 }

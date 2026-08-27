@@ -1,5 +1,5 @@
 import * as __compactRuntime from '@midnight-ntwrk/compact-runtime';
-__compactRuntime.checkRuntimeVersion('0.15.0');
+__compactRuntime.checkRuntimeVersion('0.16.0');
 
 export var HolderBindingProfile;
 (function (HolderBindingProfile) {
@@ -1359,7 +1359,6 @@ export class Contract {
       assertStateUsesThisRegistry: this.circuits.assertStateUsesThisRegistry,
       revokeStatusHandle: this.circuits.revokeStatusHandle
     };
-    this.provableCircuits = this.impureCircuits;
     this.provableCircuits = {
       initializeRegistry: this.circuits.initializeRegistry,
       assertStateUsesThisRegistry: this.circuits.assertStateUsesThisRegistry,

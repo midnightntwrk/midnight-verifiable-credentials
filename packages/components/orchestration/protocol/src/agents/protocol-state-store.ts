@@ -8,6 +8,13 @@
 export interface ProtocolStateCollection<T> {
   get(key: string): T | undefined;
   set(key: string, value: T): void;
+  /**
+   * Atomically stores `value` only when `key` is absent. Implementations that
+   * cannot provide a storage-native create-if-absent operation must leave this
+   * undefined; terminal-session helpers fail closed rather than emulating it
+   * with a racy read followed by a write.
+   */
+  setIfAbsent?(key: string, value: T): boolean;
   delete(key: string): boolean;
   deleteMany?(keys: readonly string[]): number;
   has(key: string): boolean;
@@ -60,6 +67,16 @@ export interface ProtocolStateByteStore {
   collection(name: string): ProtocolStateByteCollection;
 }
 
+/** Raised when a caller asks for an atomic session operation on a weak store. */
+export class AtomicProtocolSessionStateUnavailableError extends Error {
+  constructor(collectionName: string) {
+    super(
+      `Protocol state collection "${collectionName}" does not support atomic create-if-absent writes.`,
+    );
+    this.name = "AtomicProtocolSessionStateUnavailableError";
+  }
+}
+
 export interface ProtocolStateCodec<T> {
   encode(value: T): Uint8Array;
   decode(encodedValue: Uint8Array): T;
@@ -78,7 +95,7 @@ export type ProtocolStateRetentionPolicy = {
   readonly finalizedOutcomeTtlMs?: bigint;
   /**
    * Optional cap on retained finalized outcomes inside one collection.
-   * Values less than or equal to zero effectively retain no finalized records.
+   * The value must be a finite, non-negative integer. Zero retains no records.
    */
   readonly maxFinalizedOutcomes?: number;
 };
@@ -87,6 +104,39 @@ export type RetainedProtocolState<T> = {
   readonly value: T;
   readonly storedAtMs: bigint;
   readonly expiresAtMs?: bigint;
+};
+
+/**
+ * Clone helper-owned records before storing and returning them. The generic
+ * collection interface cannot enforce immutability for arbitrary values, but
+ * the state records created by these helpers are cloneable protocol records.
+ */
+const cloneAndFreeze = <T>(value: T): T => {
+  const cloned = globalThis.structuredClone(value);
+  const seen = new WeakSet<object>();
+
+  const freeze = (candidate: unknown): void => {
+    if (candidate === null || typeof candidate !== "object") {
+      return;
+    }
+    if (seen.has(candidate)) {
+      return;
+    }
+    seen.add(candidate);
+    for (const child of Object.values(candidate)) {
+      freeze(child);
+    }
+    // Typed-array views with elements cannot be frozen in JavaScript. They
+    // remain defensive copies, but are the unavoidable generic value boundary.
+    try {
+      Object.freeze(candidate);
+    } catch {
+      // The clone is still isolated from the caller's original value.
+    }
+  };
+
+  freeze(cloned);
+  return cloned;
 };
 
 class InMemoryProtocolStateCollection<T> implements ProtocolStateCollection<T> {
@@ -98,6 +148,14 @@ class InMemoryProtocolStateCollection<T> implements ProtocolStateCollection<T> {
 
   set(key: string, value: T): void {
     this.backingMap.set(key, value);
+  }
+
+  setIfAbsent(key: string, value: T): boolean {
+    if (this.backingMap.has(key)) {
+      return false;
+    }
+    this.backingMap.set(key, value);
+    return true;
   }
 
   delete(key: string): boolean {
@@ -199,10 +257,18 @@ class InMemoryProtocolStateByteCollection
 class CodecBackedProtocolStateCollection<T>
   implements ProtocolStateCollection<T>
 {
+  readonly setIfAbsent:
+    | ((key: string, value: T) => boolean)
+    | undefined;
+
   constructor(
     private readonly byteCollection: ProtocolStateByteCollection,
     private readonly codec: ProtocolStateCodec<T>,
-  ) {}
+  ) {
+    this.setIfAbsent = byteCollection.setIfAbsent
+      ? (key, value) => byteCollection.setIfAbsent!(key, this.codec.encode(value))
+      : undefined;
+  }
 
   get(key: string): T | undefined {
     const encodedValue = this.byteCollection.get(key);
@@ -290,6 +356,140 @@ export const createCodecBackedProtocolStateStore = (
 ): ProtocolStateStore =>
   new CodecBackedProtocolStateStore(byteStore, codecResolver);
 
+export type ProtocolTerminalSession<T> =
+  | {
+      readonly state: "finalized";
+      readonly result: T;
+      readonly finalizedAtMs: bigint;
+    }
+  | {
+      readonly state: "cancelled";
+      readonly reason: string;
+      readonly cancelledAtMs: bigint;
+    };
+
+export type ProtocolTerminalTransition<T> =
+  | { readonly status: "committed"; readonly session: ProtocolTerminalSession<T> }
+  | {
+      readonly status: "already-terminal";
+      readonly session: ProtocolTerminalSession<T>;
+    };
+
+/**
+ * Atomically finalizes a pending session. A session key is immutable after its
+ * first terminal transition: cancellation and finalization race on the same
+ * create-if-absent linearization point, and the winner is returned to every
+ * later caller. The helper stores and returns defensive immutable copies of
+ * cloneable protocol records. This operation intentionally does not couple
+ * writes in other collections (for example, business side effects) into one
+ * transaction, and it provides no lease or crash-recovery protocol.
+ */
+export const atomicallyTransitionProtocolSession = <T>(
+  collection: ProtocolStateCollection<ProtocolTerminalSession<T>>,
+  key: string,
+  session: ProtocolTerminalSession<T>,
+  collectionName = "<unnamed>",
+): ProtocolTerminalTransition<T> => {
+  if (key.length === 0) {
+    throw new TypeError("Protocol session key must not be empty.");
+  }
+  if (session.state === "cancelled" && session.reason.trim().length === 0) {
+    throw new TypeError("Cancelled protocol sessions require a reason.");
+  }
+  if (!collection.setIfAbsent) {
+    throw new AtomicProtocolSessionStateUnavailableError(collectionName);
+  }
+  const immutableSession = cloneAndFreeze(session);
+  if (collection.setIfAbsent(key, immutableSession)) {
+    return {
+      status: "committed",
+      session: cloneAndFreeze(immutableSession),
+    };
+  }
+  const existing = collection.get(key);
+  if (!existing) {
+    throw new Error(
+      `Atomic protocol session transition for "${key}" lost its winner before it could be read.`,
+    );
+  }
+  return { status: "already-terminal", session: cloneAndFreeze(existing) };
+};
+
+export const cancelProtocolSession = <T>(
+  collection: ProtocolStateCollection<ProtocolTerminalSession<T>>,
+  key: string,
+  reason: string,
+  cancelledAtMs: bigint,
+  collectionName = "<unnamed>",
+): ProtocolTerminalTransition<T> =>
+  atomicallyTransitionProtocolSession(
+    collection,
+    key,
+    { state: "cancelled", reason, cancelledAtMs },
+    collectionName,
+  );
+
+export type ProtocolResultClaim = {
+  readonly claimant: string;
+  readonly claimedAtMs: bigint;
+};
+
+/**
+ * Claims a retained result at most once. Even the same claimant receives
+ * `already-claimed` on retry; callers must not treat a retry as a second
+ * claim. The claim collection should retain entries at least as long as the
+ * corresponding finalized-result collection.
+ */
+export const claimProtocolResultOnce = (
+  claims: ProtocolStateCollection<ProtocolResultClaim>,
+  key: string,
+  claimant: string,
+  claimedAtMs: bigint,
+  collectionName = "<unnamed>",
+): "claimed" | "already-claimed" => {
+  if (key.length === 0 || claimant.length === 0) {
+    throw new TypeError("Protocol result keys and claimants must not be empty.");
+  }
+  if (!claims.setIfAbsent) {
+    throw new AtomicProtocolSessionStateUnavailableError(collectionName);
+  }
+  return claims.setIfAbsent(key, cloneAndFreeze({ claimant, claimedAtMs }))
+    ? "claimed"
+    : "already-claimed";
+};
+
+/**
+ * Reads a retained result and claims its key at most once for one caller. A
+ * missing result and an already-claimed result both return `undefined`.
+ *
+ * This is deliberately not an exactly-once consume operation: reading the
+ * outcome and creating the claim are separate collection operations. A
+ * transaction/ack protocol is required to couple result delivery with the
+ * claim and any business side effects.
+ */
+export const claimRetainedProtocolStateAtMostOnce = <T>(
+  outcomes: ProtocolStateCollection<RetainedProtocolState<T>>,
+  claims: ProtocolStateCollection<ProtocolResultClaim>,
+  key: string,
+  currentTimeMs: bigint,
+  claimant: string,
+  claimsCollectionName = "<unnamed>",
+): T | undefined => {
+  const value = readRetainedProtocolState(outcomes, key, currentTimeMs);
+  if (value === undefined) {
+    return undefined;
+  }
+  return claimProtocolResultOnce(
+    claims,
+    key,
+    claimant,
+    currentTimeMs,
+    claimsCollectionName,
+  ) === "claimed"
+    ? cloneAndFreeze(value)
+    : undefined;
+};
+
 /**
  * Recover an append-only ordinal count from stored records when metadata lags
  * behind due to a partial write. The helper trusts the largest stored integer
@@ -376,7 +576,7 @@ export const readRetainedProtocolState = <T>(
     collection.delete(key);
     return undefined;
   }
-  return retained.value;
+  return cloneAndFreeze(retained.value);
 };
 
 export const pruneExpiredRetainedProtocolState = <T>(
@@ -393,6 +593,29 @@ export const pruneExpiredRetainedProtocolState = <T>(
   deleteProtocolStateKeys(collection, expiredKeys);
 };
 
+const validateRetentionPolicy = (
+  policy: ProtocolStateRetentionPolicy,
+): void => {
+  if (
+    policy.finalizedOutcomeTtlMs !== undefined &&
+    policy.finalizedOutcomeTtlMs < 0n
+  ) {
+    throw new TypeError("finalizedOutcomeTtlMs must be non-negative.");
+  }
+  if (policy.maxFinalizedOutcomes === undefined) {
+    return;
+  }
+  if (
+    !Number.isFinite(policy.maxFinalizedOutcomes) ||
+    !Number.isInteger(policy.maxFinalizedOutcomes) ||
+    policy.maxFinalizedOutcomes < 0
+  ) {
+    throw new TypeError(
+      "maxFinalizedOutcomes must be a finite, non-negative integer.",
+    );
+  }
+};
+
 export const writeRetainedProtocolState = <T>(
   collection: ProtocolStateCollection<RetainedProtocolState<T>>,
   key: string,
@@ -401,28 +624,30 @@ export const writeRetainedProtocolState = <T>(
   policy: ProtocolStateRetentionPolicy,
   explicitExpiresAtMs?: bigint,
 ): void => {
+  validateRetentionPolicy(policy);
   // Reference-grade retention currently uses full collection iteration for TTL
   // cleanup and oldest-first eviction. Persistent adapters can preserve the
   // same semantics behind a more efficient storage-native implementation.
-  if (
-    policy.maxFinalizedOutcomes !== undefined &&
-    policy.maxFinalizedOutcomes <= 0
-  ) {
-    collection.delete(key);
+  if (policy.maxFinalizedOutcomes === 0) {
+    const retainedKeys = Array.from(collection.entries(), ([entryKey]) => entryKey);
+    deleteProtocolStateKeys(collection, retainedKeys);
     return;
   }
 
   pruneExpiredRetainedProtocolState(collection, currentTimeMs);
 
-  collection.set(key, {
-    value,
-    storedAtMs: currentTimeMs,
-    expiresAtMs: resolveExpirationMs(
-      currentTimeMs,
-      policy,
-      explicitExpiresAtMs,
-    ),
-  });
+  collection.set(
+    key,
+    cloneAndFreeze({
+      value,
+      storedAtMs: currentTimeMs,
+      expiresAtMs: resolveExpirationMs(
+        currentTimeMs,
+        policy,
+        explicitExpiresAtMs,
+      ),
+    }),
+  );
 
   if (policy.maxFinalizedOutcomes === undefined) {
     return;

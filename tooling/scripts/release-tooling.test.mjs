@@ -21,6 +21,18 @@ const repoRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "../..",
 );
+const supportedTarballNames = [
+  "midnight-ntwrk-credential-model",
+  "midnight-ntwrk-credential-compact",
+  "midnight-ntwrk-credential-proofs",
+  "midnight-ntwrk-credential-status",
+  "midnight-ntwrk-credential-did-midnight",
+];
+const writeSupportedTarballs = (directory, version = "0.1.0") => {
+  for (const packageName of supportedTarballNames) {
+    writeFileSync(path.join(directory, `${packageName}-${version}.tgz`), "");
+  }
+};
 
 test("computes rc and stable release metadata", () => {
   assert.deepEqual(
@@ -148,13 +160,12 @@ test("allows rc publication from develop and rejects stable publication", () => 
   }
 });
 
-test("publishes the tested tarball with provenance and the requested tag", () => {
+test("publishes the tested tarballs with provenance and the requested tag", () => {
   const temporaryRoot = mkdtempSync(
     path.join(os.tmpdir(), "midnight-vc-publish-test-"),
   );
   const fakeNpm = path.join(temporaryRoot, "npm");
   const npmLog = path.join(temporaryRoot, "npm.log");
-  const tarballName = "midnight-ntwrk-credential-model-0.1.0.tgz";
   writeFileSync(
     fakeNpm,
     `#!/usr/bin/env bash
@@ -171,7 +182,7 @@ exit 0
 `,
   );
   chmodSync(fakeNpm, 0o755);
-  writeFileSync(path.join(temporaryRoot, tarballName), "");
+  writeSupportedTarballs(temporaryRoot);
 
   try {
     const result = spawnSync(
@@ -188,6 +199,7 @@ exit 0
           NPM_COMMAND: fakeNpm,
           NPM_REGISTRY: "https://registry.npmjs.org/",
           NPM_TAG: "rc",
+          NODE_AUTH_TOKEN: "test-token",
           VERSION: "0.1.0",
         },
       },
@@ -195,9 +207,14 @@ exit 0
     assert.equal(result.status, 0, result.stderr);
     const commands = readFileSync(npmLog, "utf8");
     assert.match(commands, /publish .*credential-model-0\.1\.0\.tgz/u);
+    assert.match(commands, /publish .*credential-compact-0\.1\.0\.tgz/u);
+    assert.match(commands, /publish .*credential-proofs-0\.1\.0\.tgz/u);
+    assert.match(commands, /publish .*credential-status-0\.1\.0\.tgz/u);
+    assert.match(commands, /publish .*credential-did-midnight-0\.1\.0\.tgz/u);
     assert.match(commands, /--provenance/u);
     assert.match(commands, /--tag rc/u);
-    assert.doesNotMatch(commands, /^dist-tag /mu);
+    assert.match(commands, /dist-tag add .*credential-model@0\.1\.0 rc/u);
+    assert.doesNotMatch(commands, /dist-tag rm/u);
   } finally {
     rmSync(temporaryRoot, { recursive: true, force: true });
   }
@@ -248,7 +265,7 @@ echo "0.1.0"
       },
     );
     assert.equal(result.status, 0, result.stderr);
-    assert.match(result.stdout, /1 package\(s\) visible/u);
+    assert.match(result.stdout, /5 package\(s\) visible/u);
     assert.match(readFileSync(npmLog, "utf8"), /--userconfig \/dev\/null/u);
     assert.doesNotMatch(result.stdout, /publish-secret/u);
     assert.doesNotMatch(result.stderr, /publish-secret/u);
@@ -361,7 +378,7 @@ exit 0
   }
 });
 
-test("fails closed when npm cannot read the previous latest tag", () => {
+test("fails closed when dist-tag updates lack npm token authority", () => {
   const temporaryRoot = mkdtempSync(
     path.join(os.tmpdir(), "midnight-vc-tag-read-error-test-"),
   );
@@ -399,21 +416,20 @@ exit 0
         },
       },
     );
-    assert.equal(result.status, 23);
-    assert.match(result.stderr, /tag latest/u);
-    assert.doesNotMatch(result.stdout, /Publishing tested/u);
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /dist-tag updates require the scoped npm token/u);
+    assert.match(result.stdout, /Publishing tested/u);
   } finally {
     rmSync(temporaryRoot, { recursive: true, force: true });
   }
 });
 
-test("repairs an incorrect tag without mixing npm notices into metadata", () => {
+test("repairs incorrect tags without mixing npm notices into metadata", () => {
   const temporaryRoot = mkdtempSync(
     path.join(os.tmpdir(), "midnight-vc-tag-repair-test-"),
   );
   const fakeNpm = path.join(temporaryRoot, "npm");
   const npmLog = path.join(temporaryRoot, "npm.log");
-  const tarballName = "midnight-ntwrk-credential-model-0.1.0.tgz";
   writeFileSync(
     fakeNpm,
     `#!/usr/bin/env bash
@@ -430,7 +446,7 @@ fi
 `,
   );
   chmodSync(fakeNpm, 0o755);
-  writeFileSync(path.join(temporaryRoot, tarballName), "");
+  writeSupportedTarballs(temporaryRoot);
 
   try {
     const result = spawnSync(
@@ -478,6 +494,8 @@ set -euo pipefail
 if [[ "\${FAKE_NPM_PHASE}" == "before" ]]; then
   echo '{"latest":"0.0.9"}'
 elif [[ "\${FAKE_NPM_PHASE}" == "wrong" ]]; then
+  echo '{"latest":"0.1.0-rc1","rc":"0.1.0-rc1"}'
+elif [[ "\${FAKE_NPM_PHASE}" == "promoted" ]]; then
   echo '{"latest":"0.1.0-rc1","rc":"0.1.0-rc1"}'
 else
   echo '{"latest":"0.0.9","rc":"0.1.0-rc1"}'
@@ -555,6 +573,31 @@ fi
     );
     assert.notEqual(wrongLatest.status, 0);
     assert.match(wrongLatest.stderr, /unexpectedly changed latest/u);
+
+    const promoted = spawnSync(
+      process.execPath,
+      [
+        "tooling/scripts/npm-release-state.mjs",
+        "--verify",
+        "--input",
+        statePath,
+        "--tag",
+        "rc",
+        "--version",
+        "0.1.0-rc1",
+        "--promote-latest",
+      ],
+      {
+        cwd: repoRoot,
+        encoding: "utf8",
+        env: {
+          ...process.env,
+          FAKE_NPM_PHASE: "promoted",
+          NPM_COMMAND: fakeNpm,
+        },
+      },
+    );
+    assert.equal(promoted.status, 0, promoted.stderr);
   } finally {
     rmSync(temporaryRoot, { recursive: true, force: true });
   }

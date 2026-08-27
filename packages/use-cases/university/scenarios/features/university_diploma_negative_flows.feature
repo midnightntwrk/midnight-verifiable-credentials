@@ -64,7 +64,7 @@ Feature: University diploma negative flows stay readable and isolated
     And the student "Ben Avery 0002" with id "STU-0002" will tamper the university diploma submission using "requestChallenge"
     When every student builds and submits a job application to the assigned company
     Then the job application results for student "STU-0002" should contain 0 accepted result and 1 "verificationFailed" rejection
-    And the job application verification failure for student "STU-0002" should mention "presentation proof challenge does not match the request"
+    And the job application verification failure for student "STU-0002" should mention "Presentation submission request does not match original request"
     And the untampered job applications should still produce 9 accepted result and 1 verification rejection overall
 
   Scenario: A tampered issuer verification method is rejected without affecting untampered job applications

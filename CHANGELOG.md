@@ -9,6 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- upgraded the Compact toolchain from compiler `0.30.0` to `0.31.1` to match
+  midnight-did (midnightntwrk/midnight-did#409), and bumped
+  `@midnight-ntwrk/compact-runtime` from `0.15.0` to `0.16.0`; the `0.31.1`
+  compiler natively emits the `0.16.0` runtime guard, so the
+  `align-runtime-version` post-compile workaround (14 package copies plus the
+  shared helper and scaffold templates) is removed.
+- the Nix Compact toolchain is now sourced from
+  `MediaNoxLabs/flake-collection` instead of the `midnight-did` flake input
+  (whose pinned branch was deleted upstream); `midnight-circuit-params` is
+  vendored locally as a self-contained package.
+- all public Compact fixtures and managed artifacts were regenerated under
+  compiler `0.31.1`; the fixture manifest records the new compiler version and
+  digests.
 - protocol challenges, issuer nonces, blinding factors, signing nonces,
   message IDs, and thread IDs are now CSPRNG-backed by default; consumers that
   need reproducible fixtures must select an explicit deterministic source.

@@ -59,11 +59,11 @@ try {
       "utf8",
     ),
   );
-  assert.equal(contractInfo["compiler-version"], "0.30.0");
-  assert.equal(contractInfo["language-version"], "0.22.0");
-  assert.equal(contractInfo["runtime-version"], "0.15.0");
+  assert.equal(contractInfo["compiler-version"], "0.31.1");
+  assert.equal(contractInfo["language-version"], "0.23.0");
+  assert.equal(contractInfo["runtime-version"], "0.16.0");
   assert.equal(compactVersion("--ledger-version"), "ledger-8.0.2");
-  assert.equal(compactVersion("--runtime-version"), "0.15.0");
+  assert.equal(compactVersion("--runtime-version"), "0.16.0");
 
   const expectedCircuits = [
     "assertBlockTimeLt",

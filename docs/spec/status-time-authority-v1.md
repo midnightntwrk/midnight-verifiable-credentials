@@ -769,8 +769,11 @@ verification result.
 The supported toolchain must define the exact ledger unit before B3. Different
 units are never compared by implicit conversion.
 
-The pinned Compact 0.30.0 capability is documented in
-[`compact-trusted-time-capability-2026-07-17.md`](../testing/compact-trusted-time-capability-2026-07-17.md).
+The pinned Compact 0.31.1 capability is documented in
+[`compact-trusted-time-capability-2026-07-17.md`](../testing/compact-trusted-time-capability-2026-07-17.md)
+(evidence originally recorded against Compact 0.30.0; the trusted-time
+comparison semantics are unchanged under the 0.31.1 pin, which required no
+Compact source changes).
 It exposes comparison-only nominal Unix seconds. In the final circuit, asserting
 both `blockTimeGte(disclose(candidate))` and
 `blockTimeLte(disclose(candidate))` constrains a disclosed `Uint<64>` candidate

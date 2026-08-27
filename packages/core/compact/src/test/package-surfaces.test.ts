@@ -12,10 +12,10 @@ describe("candidate package surface", () => {
     );
     expect(manifest.type).toBe("module");
     expect(manifest.dependencies["@midnight-ntwrk/compact-runtime"]).toBe(
-      "0.15.0",
+      "0.16.0",
     );
-    expect(manifest.midnight.compactCompilerVersion).toBe("0.30.0");
-    expect(manifest.midnight.compactRuntimeVersion).toBe("0.15.0");
+    expect(manifest.midnight.compactCompilerVersion).toBe("0.31.1");
+    expect(manifest.midnight.compactRuntimeVersion).toBe("0.16.0");
     expect(manifest.exports["./credentials.compact"]).toBe(
       "./dist/credentials.compact",
     );

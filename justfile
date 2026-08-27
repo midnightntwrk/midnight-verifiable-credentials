@@ -1,7 +1,7 @@
 set dotenv-load := false
 set shell := ["bash", "-euo", "pipefail", "-c"]
 
-pi_web_version := env_var_or_default("PI_WEB_VERSION", "1.202607.3")
+pi_agent_version := "0.84.2"
 
 # List available targets.
 default:
@@ -22,35 +22,18 @@ deps:
 # Install pi.dev into a repo-local prefix and expose it through nix develop's PATH.
 pi-bootstrap:
   @mkdir -p .pi/nix-global
-  @if [ ! -x "$PWD/.pi/nix-global/bin/pi" ]; then \
-    echo "Installing pi.dev into .pi/nix-global..."; \
-    npm install -g --prefix "$PWD/.pi/nix-global" --ignore-scripts @earendil-works/pi-coding-agent; \
+  @installed_version=$("$PWD/.pi/nix-global/bin/pi" --version 2>/dev/null || true); \
+  if [ "$installed_version" != "{{pi_agent_version}}" ]; then \
+    echo "Installing pinned pi.dev {{pi_agent_version}} into .pi/nix-global..."; \
+    npm install -g --prefix "$PWD/.pi/nix-global" --ignore-scripts @earendil-works/pi-coding-agent@{{pi_agent_version}}; \
   else \
-    echo "repo-local pi available: $("$PWD/.pi/nix-global/bin/pi" --version 2>/dev/null || echo unknown)"; \
+    echo "repo-local pi {{pi_agent_version}} available"; \
   fi
   @echo "Project Pi packages are pinned in .pi/settings.json. Start with: pi"
 
-# Verify the PI WEB binary supplied by the Nix dev shell.
-pi-web-bootstrap:
-  @command -v pi-web >/dev/null || (echo "PI WEB is available from nix develop; enter the Nix shell first." >&2; exit 1)
-  @echo "PI WEB {{pi_web_version}} available from the Nix flake: $(pi-web --version)"
-
-# Force-refresh the repo-local pi.dev installation.
+# Force-refresh the pinned repo-local pi.dev installation.
 pi-update:
-  npm install -g --prefix "$PWD/.pi/nix-global" --ignore-scripts @earendil-works/pi-coding-agent@latest
-
-# PI WEB is updated by changing the pinned Nix package and its hashes.
-pi-web-update:
-  @echo "PI WEB is pinned in nix/packages/pi-web.nix; update its version, source hash, and npmDepsHash, then run nix build .#pi-web."
-
-pi-web-doctor:
-  pi-web doctor
-
-pi-web-install:
-  pi-web install
-
-pi-web-status:
-  pi-web status
+  npm install -g --prefix "$PWD/.pi/nix-global" --ignore-scripts @earendil-works/pi-coding-agent@{{pi_agent_version}}
 
 # Show Pi and project package wiring without starting an interactive model turn.
 pi-doctor:
