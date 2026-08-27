@@ -2,8 +2,8 @@
   "schema": "midnight-vc-quality-evidence",
   "version": 1,
   "baseRef": "origin/develop",
-  "baseSha": "0192ba65300bb742067d956465578ca154de89fc",
-  "observedAt": "2026-08-17",
+  "baseSha": "161d33d9d0bcd1c0351f011887ce6875511306a8",
+  "observedAt": "2026-08-27",
   "evidence": [
     {
       "id": "core-credentials-tests",
