@@ -15,7 +15,7 @@ const repoRoot = path.resolve(
 const LEDGER_PACKAGE = "@midnight-ntwrk/ledger-v8";
 // Keep these versions in sync with tooling/vendor/midnight-did/README.md when
 // changing DID package refs or the workspace Midnight JS baseline.
-const WORKSPACE_LEDGER_VERSION = "8.1.0";
+const WORKSPACE_LEDGER_VERSION = "8.1.1";
 
 const { stdout } = await execFileAsync(
   "pnpm",
