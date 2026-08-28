@@ -189,6 +189,7 @@ export function registerVcCurrentHeadCiWatch(
   let sessionActive = false;
   let sessionGeneration = 0;
   let restorePending = true;
+  let observationRotationOffset = 0;
   let observationController: AbortController | undefined;
   const seenFailures = new Set<string>();
   const pendingFailures = new Map<string, number>();
@@ -325,10 +326,21 @@ export function registerVcCurrentHeadCiWatch(
       if (prs.length === 0) {
         persistState([], [], restorePending);
         sendAttempts.clear();
+        observationRotationOffset = 0;
         restorePending = false;
         setStatus(ctx, "no open PRs authored by @me");
         return;
       }
+
+      // Rotate a stable PR order once per cadence so one API-heavy PR cannot
+      // repeatedly consume the shared lookup budget ahead of later red PRs.
+      const sortedPrs = [...prs].sort((left, right) => left.number - right.number);
+      const rotationIndex = observationRotationOffset % sortedPrs.length;
+      const lookupOrderedPrs = [
+        ...sortedPrs.slice(rotationIndex),
+        ...sortedPrs.slice(0, rotationIndex),
+      ];
+      observationRotationOffset = (rotationIndex + 1) % sortedPrs.length;
 
       const initialPayloads = new Map<number, PullRequestChecks>();
       if (restorePending) {
@@ -411,12 +423,18 @@ export function registerVcCurrentHeadCiWatch(
         prNumber: number;
       }>();
       let remainingActionsJobLookups = MAX_ACTIONS_JOB_LOOKUPS_PER_OBSERVATION;
+      let finalConfirmationPending = false;
       let finalEnrichmentActive = false;
       let finalEnrichmentWithinBudget = true;
       const actionsJobCache = new Map<string, Promise<ActionsJob | undefined>>();
       const loadActionsJob = (jobId: string): Promise<ActionsJob | undefined> => {
         const cached = actionsJobCache.get(jobId);
         if (cached) return cached;
+        // Once the rotated first candidate is known, preserve the remaining
+        // shared capacity for final confirmation before enriching later PRs.
+        if (finalConfirmationPending && !finalEnrichmentActive) {
+          return Promise.resolve(undefined);
+        }
         if (remainingActionsJobLookups < 1) {
           if (finalEnrichmentActive) finalEnrichmentWithinBudget = false;
           return Promise.resolve(undefined);
@@ -430,7 +448,7 @@ export function registerVcCurrentHeadCiWatch(
         return request;
       };
 
-      for (const pr of prs) {
+      for (const pr of lookupOrderedPrs) {
         if (!isCurrentSession(generation)) return;
         const payload = initialPayloads.get(pr.number) ?? await ghJson<PullRequestChecks>(pi, [
           "pr",
@@ -510,10 +528,12 @@ export function registerVcCurrentHeadCiWatch(
           headSha: confirmation.headSha,
           prNumber: pr.number,
         });
+        finalConfirmationPending = true;
       }
 
-      const orderedCandidates = [...dispatchCandidates.entries()]
-        .sort(([left], [right]) => left.localeCompare(right));
+      // Map insertion order follows the cadence's rotated PR order, extending
+      // the same fairness to final confirmation and the single-send boundary.
+      const orderedCandidates = [...dispatchCandidates.entries()];
       for (const [failureKey, candidate] of orderedCandidates) {
         if (!isCurrentSession(generation)) return;
         // The final pre-send read includes the complete rollup and repeats
@@ -612,6 +632,7 @@ export function registerVcCurrentHeadCiWatch(
     const generation = sessionGeneration;
     sessionActive = true;
     restorePending = true;
+    observationRotationOffset = 0;
     sendAttempts.clear();
     setStatus(ctx, "starting (5-minute interval)");
     deps.runDetached(observe(ctx, generation));

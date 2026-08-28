@@ -657,6 +657,48 @@ describe("vc-current-head-ci-watch extension handlers", () => {
     assert.equal(harness.messages.length, 0);
   });
 
+  it("rotates lookup priority across cadences through final confirmation", async () => {
+    const apiHeavy = actionsSuccessPayload(1, 100);
+    const finalActionsFailure: PullRequestChecks = {
+      headRefOid: CURRENT_HEAD,
+      statusCheckRollup: [101, 102].map((id) => ({
+        name: "scan",
+        workflowName: "Scan",
+        detailsUrl: `https://github.com/midnightntwrk/midnight-verifiable-credentials/actions/runs/42/job/${id}`,
+        status: "COMPLETED",
+        conclusion: "FAILURE",
+      })),
+    };
+    const harness = new ExtensionHarness();
+
+    harness.queueJson([{ number: 483 }, { number: 484 }]);
+    harness.queueJson(apiHeavy);
+    harness.queueJson(failurePayload());
+    for (let id = 1; id <= 100; id += 1) harness.queueJson(fixedRepositoryJob(id));
+    harness.queueJson(failurePayload());
+    harness.queueJson(finalActionsFailure);
+    await harness.start(harness.context());
+
+    const firstCadenceApiCalls = harness.execArgs.filter((args) => args[0] === "api").length;
+    assert.equal(firstCadenceApiCalls, 100, "the global first-cadence bound is preserved");
+    assert.equal(harness.messages.length, 0, "the later red PR initially lacks final lookup capacity");
+
+    harness.queueJson([{ number: 483 }, { number: 484 }]);
+    harness.queueJson(failurePayload());
+    harness.queueJson(failurePayload());
+    harness.queueJson(apiHeavy);
+    harness.queueJson(finalActionsFailure);
+    harness.queueJson(fixedRepositoryJob(101, { runAttempt: 1, runId: 42 }));
+    harness.queueJson(fixedRepositoryJob(102, { runAttempt: 2, runId: 42 }));
+    await harness.tick();
+
+    const secondCadenceApiCalls = harness.execArgs.filter((args) => args[0] === "api").length -
+      firstCadenceApiCalls;
+    assert.equal(secondCadenceApiCalls, 2, "rotation reserves final lookups before the API-heavy PR");
+    assert.equal(harness.messages.length, 1);
+    assert.match(harness.messages[0]!, /pr=484/u);
+  });
+
   it("uses the documented five-minute cadence", async () => {
     const harness = new ExtensionHarness();
     harness.queueJson([]);

@@ -216,9 +216,12 @@ marker appears in the bounded session branch. Missing markers retry on the
 five-minute cadence, with at most three sends per key in one session and at most
 one model-triggering dispatch across all watched PRs per observation. A real
 green observation or pruning after a head/PR change clears that key's in-memory
-attempt budget, so a later same-head refailure can notify. Dispatch candidates
-are tried in deterministic order until one message is actually sent; an
-unavailable final read or enrichment cannot starve a later confirmed-red head.
+attempt budget, so a later same-head refailure can notify. PR lookup priority
+rotates deterministically across cadences, including reserved final-confirmation
+capacity, so an API-heavy PR cannot repeatedly starve later red PRs while the
+100-lookup global bound remains intact. Dispatch candidates are tried in that
+rotated order until one message is actually sent; an unavailable final read or
+enrichment cannot starve a later confirmed-red head.
 Other red heads remain in the bounded outbox and status rollup for later
 cadences. Pending records survive restart, where an existing new marker is
 recovered or an absent marker receives a fresh bounded retry budget. State append failures prevent send,
