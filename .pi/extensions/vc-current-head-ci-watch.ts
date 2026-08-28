@@ -7,6 +7,8 @@ import {
   formatFailureNames,
   observeChecks,
   pruneSeenFailureKeys,
+  pruneSeenFailureKeysForOpenPullRequests,
+  reconcileRestoredFailureKeys,
   updateSeenFailureKeys,
   type ActionsJob,
   type PullRequestChecks,
@@ -36,16 +38,12 @@ async function ghJson<T>(
   }
 }
 
-function restoreSeenFailures(ctx: ExtensionContext, seenFailures: Set<string>): void {
+function* restoredFailureSnapshots(ctx: ExtensionContext): Iterable<unknown> {
   for (const entry of ctx.sessionManager.getBranch()) {
     const candidate = entry as unknown as { customType?: unknown; data?: unknown; type?: unknown };
     if (candidate.type !== "custom" || candidate.customType !== STATE_ENTRY_TYPE) continue;
     const data = candidate.data as { seenFailedHeads?: unknown } | undefined;
-    if (!Array.isArray(data?.seenFailedHeads)) continue;
-    seenFailures.clear();
-    for (const key of data.seenFailedHeads.slice(-MAX_SEEN_FAILURE_KEYS)) {
-      if (typeof key === "string" && /^\d+:[0-9a-f]{40}$/iu.test(key)) seenFailures.add(key);
-    }
+    yield data?.seenFailedHeads;
   }
 }
 
@@ -53,6 +51,7 @@ export default function (pi: ExtensionAPI) {
   let timer: ReturnType<typeof setInterval> | undefined;
   let running = false;
   let sessionActive = false;
+  let restorePending = true;
   let observationController: AbortController | undefined;
   const seenFailures = new Set<string>();
 
@@ -61,8 +60,11 @@ export default function (pi: ExtensionAPI) {
     ctx.ui.setStatus(STATUS_KEY, `VC PR CI watch: ${message}`);
   };
 
-  const persistSeenFailures = (next: string[]): boolean => {
-    if (next.length === seenFailures.size && next.every((key) => seenFailures.has(key))) return false;
+  const persistSeenFailures = (next: string[], force = false): boolean => {
+    if (next.length > MAX_SEEN_FAILURE_KEYS) {
+      throw new RangeError(`seen failure state exceeds the ${MAX_SEEN_FAILURE_KEYS} key bound`);
+    }
+    if (!force && next.length === seenFailures.size && next.every((key) => seenFailures.has(key))) return false;
     seenFailures.clear();
     for (const key of next) seenFailures.add(key);
     pi.appendEntry(STATE_ENTRY_TYPE, { seenFailedHeads: next });
@@ -101,9 +103,48 @@ export default function (pi: ExtensionAPI) {
         return;
       }
       if (prs.length === 0) {
+        persistSeenFailures([], restorePending);
+        restorePending = false;
         setStatus(ctx, "no open PRs authored by @me");
         return;
       }
+
+      const initialPayloads = new Map<number, PullRequestChecks>();
+      if (restorePending) {
+        const currentFailureKeys: string[] = [];
+        for (const pr of prs) {
+          const payload = await ghJson<PullRequestChecks>(pi, [
+            "pr",
+            "view",
+            String(pr.number),
+            "--repo",
+            REPOSITORY,
+            "--json",
+            "headRefOid,statusCheckRollup",
+          ], controller.signal);
+          const headSha = payload?.headRefOid?.trim();
+          if (!payload || !headSha || !/^[0-9a-f]{40}$/iu.test(headSha)) {
+            setStatus(ctx, "unable to reconcile saved failures with exact current heads; retrying");
+            return;
+          }
+          initialPayloads.set(pr.number, payload);
+          currentFailureKeys.push(`${pr.number}:${headSha}`);
+        }
+
+        persistSeenFailures(
+          reconcileRestoredFailureKeys(
+            restoredFailureSnapshots(ctx),
+            currentFailureKeys,
+            MAX_SEEN_FAILURE_KEYS,
+          ),
+          true,
+        );
+        restorePending = false;
+      }
+
+      persistSeenFailures(
+        pruneSeenFailureKeysForOpenPullRequests(seenFailures, prs.map((pr) => pr.number)),
+      );
 
       let failedCount = 0;
       let waitingCount = 0;
@@ -124,7 +165,7 @@ export default function (pi: ExtensionAPI) {
 
       for (const pr of prs) {
         if (!sessionActive) return;
-        const payload = await ghJson<PullRequestChecks>(pi, [
+        const payload = initialPayloads.get(pr.number) ?? await ghJson<PullRequestChecks>(pi, [
           "pr",
           "view",
           String(pr.number),
@@ -196,6 +237,7 @@ export default function (pi: ExtensionAPI) {
 
         if (!sessionActive) return;
         failedCount += 1;
+        pruneStaleFailures(pr.number, finalConfirmation.headSha);
         const failureKey = `${pr.number}:${finalConfirmation.headSha}`;
         if (!setFailureActive(failureKey, true)) continue;
         const failureNames = formatFailureNames(finalConfirmation.failures);
@@ -225,7 +267,6 @@ export default function (pi: ExtensionAPI) {
   pi.on("session_start", async (_event, ctx) => {
     if (ctx.mode !== "tui" || !ctx.isProjectTrusted()) return;
     sessionActive = true;
-    restoreSeenFailures(ctx, seenFailures);
     setStatus(ctx, "starting (5-minute interval)");
     void observe(ctx);
     timer = setInterval(() => void observe(ctx), WATCH_INTERVAL_MS);

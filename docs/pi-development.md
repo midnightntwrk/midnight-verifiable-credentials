@@ -166,9 +166,15 @@ Pi so it loads. While Pi remains open in an interactive trusted session, it
 checks a bounded set of up to 100 open PRs in this repository authored by the
 authenticated `gh` user every five minutes. Before a newly observed failure
 queues an attributed `continue dev loop on PR <N>` follow-up, the watcher
-re-reads the PR and confirms
-the exact current head. Pending, unknown, superseded, and previously observed
-PR/head failures do not trigger it. Within one Actions run, duplicate
+re-reads the PR and confirms the exact current head. On session startup it
+first reconciles the latest saved notification snapshot against the exact heads
+of that bounded open-PR set. If any head cannot be read, reconciliation retries
+without replacing state or sending an alert; once complete, the snapshot is
+compacted to at most one current-head key per watched PR. This preserves active
+legacy notifications without unbounded state growth, while a cleared key can
+still become actionable after a later real failure. Pending, unknown,
+superseded, and previously observed PR/head failures do not trigger it. Within
+one Actions run, duplicate
 cancellation is non-actionable only when an actual success on that exact head
 belongs to a later, one-to-one API-enriched attempt of the same workflow/check
 identity; Actions URLs without validated attempt metadata and ambiguous

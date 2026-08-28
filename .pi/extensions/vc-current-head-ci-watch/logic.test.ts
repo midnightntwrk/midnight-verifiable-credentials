@@ -9,6 +9,8 @@ import {
   formatFailureNames,
   observeChecks,
   pruneSeenFailureKeys,
+  pruneSeenFailureKeysForOpenPullRequests,
+  reconcileRestoredFailureKeys,
   updateSeenFailureKeys,
   type CheckObservation,
 } from "./logic.ts";
@@ -801,12 +803,60 @@ describe("confirmCurrentHeadFailure", () => {
   });
 });
 
+describe("reconcileRestoredFailureKeys", () => {
+  it("preserves an active current failure omitted by lexicographic legacy truncation", () => {
+    const activeFailure = `483:${"0".repeat(40)}`;
+    const legacySnapshot = [
+      activeFailure,
+      ...Array.from({ length: 150 }, (_, index) => `483:${(index + 1).toString(16).padStart(40, "0")}`),
+    ].sort();
+
+    assert.equal(legacySnapshot.slice(-100).includes(activeFailure), false);
+    assert.deepEqual(
+      reconcileRestoredFailureKeys([legacySnapshot], [activeFailure], 100),
+      [activeFailure],
+    );
+  });
+
+  it("honors the latest snapshot so a cleared failure can alert if it fails again", () => {
+    const failureKey = `483:${"b".repeat(40)}`;
+    assert.deepEqual(
+      reconcileRestoredFailureKeys([[failureKey], []], [failureKey], 100),
+      [],
+    );
+  });
+
+  it("fails closed instead of truncating an over-bound current-head set", () => {
+    const currentFailureKeys = Array.from(
+      { length: 101 },
+      (_, index) => `${index + 1}:${index.toString(16).padStart(40, "0")}`,
+    );
+    assert.throws(
+      () => reconcileRestoredFailureKeys([currentFailureKeys], currentFailureKeys, 100),
+      /exceeds the 100 key bound/u,
+    );
+  });
+});
+
 describe("updateSeenFailureKeys", () => {
   it("clears a resolved PR/head so a later failure can become new again", () => {
     const failureKey = "483:current-head";
     assert.deepEqual(updateSeenFailureKeys([], failureKey, true), [failureKey]);
     assert.deepEqual(updateSeenFailureKeys([failureKey], failureKey, false), []);
     assert.deepEqual(updateSeenFailureKeys([], failureKey, true), [failureKey]);
+  });
+
+  it("prunes failures for PRs outside the bounded open set", () => {
+    assert.deepEqual(
+      pruneSeenFailureKeysForOpenPullRequests(
+        [
+          `482:${"a".repeat(40)}`,
+          `483:${"b".repeat(40)}`,
+        ],
+        [483],
+      ),
+      [`483:${"b".repeat(40)}`],
+    );
   });
 
   it("prunes superseded heads without changing other PRs or the current head", () => {

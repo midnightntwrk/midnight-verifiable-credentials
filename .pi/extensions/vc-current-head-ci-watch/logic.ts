@@ -331,6 +331,39 @@ function groupOutcome(checks: StatusCheck[]): "failed" | "green" | "unknown" {
   return completed.length > 0 ? "green" : "unknown";
 }
 
+const FAILURE_KEY_PATTERN = /^\d+:[0-9a-f]{40}$/iu;
+
+export function reconcileRestoredFailureKeys(
+  snapshots: Iterable<unknown>,
+  currentFailureKeys: Iterable<string>,
+  maxFailureKeys: number,
+): string[] {
+  const current = new Set([...currentFailureKeys].filter((key) => FAILURE_KEY_PATTERN.test(key)));
+  if (current.size > maxFailureKeys) {
+    throw new RangeError(`current failure key count exceeds the ${maxFailureKeys} key bound`);
+  }
+
+  const restored = new Set<string>();
+  for (const snapshot of snapshots) {
+    if (!Array.isArray(snapshot)) continue;
+    restored.clear();
+    for (const key of snapshot) {
+      if (typeof key === "string" && current.has(key)) restored.add(key);
+    }
+  }
+  return [...restored].sort();
+}
+
+export function pruneSeenFailureKeysForOpenPullRequests(
+  seenFailureKeys: Iterable<string>,
+  openPullRequestNumbers: Iterable<number>,
+): string[] {
+  const open = new Set(openPullRequestNumbers);
+  return [...new Set(seenFailureKeys)]
+    .filter((key) => FAILURE_KEY_PATTERN.test(key) && open.has(Number(key.slice(0, key.indexOf(":")))))
+    .sort();
+}
+
 export function updateSeenFailureKeys(
   seenFailureKeys: Iterable<string>,
   failureKey: string,
