@@ -4,12 +4,10 @@ import {
   confirmActionableFailure,
   confirmCurrentHeadFailure,
   enrichActionsRunAttempts,
-  formatFailureNames,
   observeChecks,
   pruneSeenFailureKeys,
   pruneSeenFailureKeysForOpenPullRequests,
   reconcileRestoredFailureKeys,
-  updateSeenFailureKeys,
   type ActionsJob,
   type PullRequestChecks,
 } from "./vc-current-head-ci-watch/logic.ts";
@@ -20,12 +18,23 @@ const STATUS_KEY = "vc-current-head-ci-watch";
 const STATE_ENTRY_TYPE = "vc-current-head-ci-watch-state";
 const MAX_OPEN_PULL_REQUESTS = 100;
 const MAX_ACTIONS_JOB_LOOKUPS_PER_OBSERVATION = 100;
-const MAX_SEEN_FAILURE_KEYS = MAX_OPEN_PULL_REQUESTS;
+const MAX_FAILURE_KEYS = MAX_OPEN_PULL_REQUESTS;
 const MAX_RESTORE_BRANCH_ENTRIES = 1_000;
 const MAX_RAW_RESTORED_FAILURE_KEYS = 1_000;
+const MAX_NOTIFICATION_SEND_ATTEMPTS_PER_SESSION = 3;
+const FAILURE_KEY_PATTERN = /^(\d+):([0-9a-f]{40})$/iu;
 
 type PullRequest = { number: number };
 type IntervalHandle = unknown;
+type PendingNotification = {
+  failureKey: string;
+  markerOccurrencesBeforeSend: number;
+};
+
+type RestoredWatcherState = {
+  pendingNotifications: unknown;
+  seenFailedHeads: unknown;
+};
 
 export type WatcherDependencies = {
   clearInterval: (handle: IntervalHandle) => void;
@@ -55,8 +64,8 @@ async function ghJson<T>(
   }
 }
 
-function newestRestoredFailureSnapshot(ctx: ExtensionContext):
-  | { kind: "found"; snapshot: unknown }
+function newestRestoredWatcherState(ctx: ExtensionContext):
+  | { kind: "found"; snapshot: RestoredWatcherState }
   | { kind: "invalid"; reason: string }
   | { kind: "none" } {
   const branch = ctx.sessionManager.getBranch();
@@ -68,17 +77,106 @@ function newestRestoredFailureSnapshot(ctx: ExtensionContext):
       type?: unknown;
     };
     if (candidate.type !== "custom" || candidate.customType !== STATE_ENTRY_TYPE) continue;
-    const data = candidate.data as { seenFailedHeads?: unknown } | undefined;
-    const snapshot = data?.seenFailedHeads;
-    if (!Array.isArray(snapshot)) return { kind: "invalid", reason: "newest saved state is malformed" };
-    if (snapshot.length > MAX_RAW_RESTORED_FAILURE_KEYS) {
+    const data = candidate.data as {
+      pendingFailedHeads?: unknown;
+      pendingNotifications?: unknown;
+      seenFailedHeads?: unknown;
+    } | undefined;
+    if (!Array.isArray(data?.seenFailedHeads)) {
+      return { kind: "invalid", reason: "newest saved state is malformed" };
+    }
+    const pendingNotifications = data.pendingNotifications ?? (
+      Array.isArray(data.pendingFailedHeads)
+        ? data.pendingFailedHeads.map((failureKey) => ({ failureKey, markerOccurrencesBeforeSend: 0 }))
+        : []
+    );
+    if (!Array.isArray(pendingNotifications)) {
+      return { kind: "invalid", reason: "newest saved outbox is malformed" };
+    }
+    if (
+      data.seenFailedHeads.length > MAX_RAW_RESTORED_FAILURE_KEYS ||
+      pendingNotifications.length > MAX_RAW_RESTORED_FAILURE_KEYS
+    ) {
       return { kind: "invalid", reason: "newest saved state exceeds the raw key bound" };
     }
-    return { kind: "found", snapshot };
+    return {
+      kind: "found",
+      snapshot: { seenFailedHeads: data.seenFailedHeads, pendingNotifications },
+    };
   }
   return branch.length > MAX_RESTORE_BRANCH_ENTRIES
     ? { kind: "invalid", reason: "newest saved state is outside the branch scan bound" }
     : { kind: "none" };
+}
+
+function watcherMessageForFailure(failureKey: string): string | undefined {
+  const match = failureKey.match(FAILURE_KEY_PATTERN);
+  if (!match) return undefined;
+  const prNumber = Number(match[1]);
+  const expectedHeadSha = match[2]!.toLowerCase();
+  if (!Number.isSafeInteger(prNumber) || prNumber < 1) return undefined;
+  return (
+    `[vc-ci-watch pr=${prNumber} head=${expectedHeadSha}] ` +
+    `Current-head CI failed on PR #${prNumber}. ` +
+    `Before taking any action, confirm from the canonical pull request that PR #${prNumber} ` +
+    `still has the exact expected head SHA ${expectedHeadSha}; stop if it differs. ` +
+    `Continue dev loop on PR ${prNumber}.`
+  );
+}
+
+function exactUserMessage(entry: unknown): string | undefined {
+  const candidate = entry as {
+    message?: { content?: unknown; role?: unknown };
+    type?: unknown;
+  };
+  if (candidate.type !== "message" || candidate.message?.role !== "user") return undefined;
+  const content = candidate.message.content;
+  if (typeof content === "string") return content;
+  if (!Array.isArray(content) || content.length !== 1) return undefined;
+  const block = content[0] as { text?: unknown; type?: unknown };
+  return block.type === "text" && typeof block.text === "string" ? block.text : undefined;
+}
+
+function branchWatcherMessageCount(ctx: ExtensionContext, failureKey: string): number {
+  const expectedMessage = watcherMessageForFailure(failureKey);
+  if (!expectedMessage) return 0;
+  const branch = ctx.sessionManager.getBranch();
+  const firstIndex = Math.max(0, branch.length - MAX_RESTORE_BRANCH_ENTRIES);
+  let count = 0;
+  for (let index = branch.length - 1; index >= firstIndex; index -= 1) {
+    if (exactUserMessage(branch[index]) === expectedMessage) count += 1;
+  }
+  return count;
+}
+
+function reconcileRestoredPendingNotifications(
+  snapshot: unknown,
+  currentFailureKeys: Iterable<string>,
+): PendingNotification[] {
+  if (!Array.isArray(snapshot)) throw new TypeError("restored outbox is malformed");
+  const current = new Set(currentFailureKeys);
+  const restored = new Map<string, number>();
+  for (const item of snapshot) {
+    const candidate = item as Partial<PendingNotification>;
+    if (
+      typeof candidate.failureKey !== "string" ||
+      !FAILURE_KEY_PATTERN.test(candidate.failureKey) ||
+      !Number.isInteger(candidate.markerOccurrencesBeforeSend) ||
+      candidate.markerOccurrencesBeforeSend! < 0 ||
+      candidate.markerOccurrencesBeforeSend! > MAX_RESTORE_BRANCH_ENTRIES
+    ) {
+      throw new TypeError("restored outbox is malformed");
+    }
+    if (current.has(candidate.failureKey)) {
+      restored.set(candidate.failureKey, candidate.markerOccurrencesBeforeSend!);
+    }
+  }
+  return [...restored.entries()]
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([failureKey, markerOccurrencesBeforeSend]) => ({
+      failureKey,
+      markerOccurrencesBeforeSend,
+    }));
 }
 
 export function registerVcCurrentHeadCiWatch(
@@ -87,40 +185,103 @@ export function registerVcCurrentHeadCiWatch(
 ) {
   const deps: WatcherDependencies = { ...DEFAULT_DEPENDENCIES, ...dependencies };
   let timer: IntervalHandle | undefined;
-  let running = false;
+  let runningGeneration: number | undefined;
   let sessionActive = false;
+  let sessionGeneration = 0;
   let restorePending = true;
   let observationController: AbortController | undefined;
   const seenFailures = new Set<string>();
+  const pendingFailures = new Map<string, number>();
+  const sendAttempts = new Map<string, number>();
+
+  const isCurrentSession = (generation: number): boolean =>
+    sessionActive && generation === sessionGeneration;
 
   const setStatus = (ctx: ExtensionContext, message: string) => {
     if (!sessionActive) return;
     ctx.ui.setStatus(STATUS_KEY, `VC PR CI watch: ${message}`);
   };
 
-  const persistSeenFailures = (next: string[], force = false): boolean => {
-    if (next.length > MAX_SEEN_FAILURE_KEYS) {
-      throw new RangeError(`seen failure state exceeds the ${MAX_SEEN_FAILURE_KEYS} key bound`);
+  const persistState = (
+    nextSeen: string[],
+    nextPending: PendingNotification[],
+    force = false,
+  ): boolean => {
+    if (nextSeen.length > MAX_FAILURE_KEYS || nextPending.length > MAX_FAILURE_KEYS) {
+      throw new RangeError(`watcher state exceeds the ${MAX_FAILURE_KEYS} key bound`);
     }
-    if (!force && next.length === seenFailures.size && next.every((key) => seenFailures.has(key))) return false;
-    // Persist before mutating in-memory dedupe state. A failed append must not
-    // make a later notification look delivered or durably recorded.
-    pi.appendEntry(STATE_ENTRY_TYPE, { seenFailedHeads: next });
+    const seenUnchanged = nextSeen.length === seenFailures.size &&
+      nextSeen.every((key) => seenFailures.has(key));
+    const pendingUnchanged = nextPending.length === pendingFailures.size &&
+      nextPending.every((item) =>
+        pendingFailures.get(item.failureKey) === item.markerOccurrencesBeforeSend);
+    if (!force && seenUnchanged && pendingUnchanged) return false;
+
+    // appendEntry is the only durable acknowledgement. Mutate memory only
+    // after the complete seen+outbox snapshot is appended successfully.
+    pi.appendEntry(STATE_ENTRY_TYPE, {
+      version: 3,
+      seenFailedHeads: nextSeen,
+      pendingNotifications: nextPending,
+    });
     seenFailures.clear();
-    for (const key of next) seenFailures.add(key);
+    pendingFailures.clear();
+    for (const key of nextSeen) seenFailures.add(key);
+    for (const item of nextPending) {
+      pendingFailures.set(item.failureKey, item.markerOccurrencesBeforeSend);
+    }
     return true;
   };
 
-  const setFailureActive = (failureKey: string, active: boolean): boolean =>
-    persistSeenFailures(updateSeenFailureKeys(seenFailures, failureKey, active));
+  const pendingSnapshot = (): PendingNotification[] => [...pendingFailures.entries()]
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([failureKey, markerOccurrencesBeforeSend]) => ({
+      failureKey,
+      markerOccurrencesBeforeSend,
+    }));
+
+  const clearFailure = (failureKey: string): boolean => persistState(
+    [...seenFailures].filter((key) => key !== failureKey).sort(),
+    pendingSnapshot().filter((item) => item.failureKey !== failureKey),
+  );
+
+  const addPendingFailure = (ctx: ExtensionContext, failureKey: string): boolean => persistState(
+    [...seenFailures].sort(),
+    [
+      ...pendingSnapshot(),
+      {
+        failureKey,
+        markerOccurrencesBeforeSend: branchWatcherMessageCount(ctx, failureKey),
+      },
+    ].sort((left, right) => left.failureKey.localeCompare(right.failureKey)),
+  );
 
   const pruneStaleFailures = (prNumber: number, currentHeadSha: string): void => {
-    persistSeenFailures(pruneSeenFailureKeys(seenFailures, prNumber, currentHeadSha));
+    const pendingKeys = pruneSeenFailureKeys(pendingFailures.keys(), prNumber, currentHeadSha);
+    const retainedPending = new Set(pendingKeys);
+    persistState(
+      pruneSeenFailureKeys(seenFailures, prNumber, currentHeadSha),
+      pendingSnapshot().filter((item) => retainedPending.has(item.failureKey)),
+    );
   };
 
-  const observe = async (ctx: ExtensionContext) => {
-    if (!sessionActive || running) return;
-    running = true;
+  const confirmPendingMarkers = (ctx: ExtensionContext): number => {
+    const confirmed = pendingSnapshot().filter((item) =>
+      branchWatcherMessageCount(ctx, item.failureKey) > item.markerOccurrencesBeforeSend);
+    if (confirmed.length === 0) return 0;
+    const confirmedKeys = confirmed.map((item) => item.failureKey);
+    const confirmedSet = new Set(confirmedKeys);
+    persistState(
+      [...new Set([...seenFailures, ...confirmedKeys])].sort(),
+      pendingSnapshot().filter((item) => !confirmedSet.has(item.failureKey)),
+    );
+    for (const key of confirmedKeys) sendAttempts.delete(key);
+    return confirmed.length;
+  };
+
+  const observe = async (ctx: ExtensionContext, generation: number) => {
+    if (!isCurrentSession(generation) || runningGeneration === generation) return;
+    runningGeneration = generation;
     const controller = deps.createAbortController();
     observationController = controller;
     try {
@@ -138,12 +299,22 @@ export function registerVcCurrentHeadCiWatch(
         "--limit",
         String(MAX_OPEN_PULL_REQUESTS),
       ], controller.signal);
+      if (!isCurrentSession(generation)) return;
       if (!prs) {
         setStatus(ctx, "unable to read authenticated PRs; retrying");
         return;
       }
+      const prNumbers = prs.map((pr) => pr.number);
+      if (
+        prs.length > MAX_OPEN_PULL_REQUESTS ||
+        prNumbers.some((number) => !Number.isSafeInteger(number) || number < 1) ||
+        new Set(prNumbers).size !== prNumbers.length
+      ) {
+        setStatus(ctx, "authenticated PR list is malformed or exceeds bounds; retrying");
+        return;
+      }
       if (prs.length === 0) {
-        persistSeenFailures([], restorePending);
+        persistState([], [], restorePending);
         restorePending = false;
         setStatus(ctx, "no open PRs authored by @me");
         return;
@@ -162,38 +333,54 @@ export function registerVcCurrentHeadCiWatch(
             "--json",
             "headRefOid,statusCheckRollup",
           ], controller.signal);
+          if (!isCurrentSession(generation)) return;
           const headSha = payload?.headRefOid?.trim();
           if (!payload || !headSha || !/^[0-9a-f]{40}$/iu.test(headSha)) {
             setStatus(ctx, "unable to reconcile saved failures with exact current heads; retrying");
             return;
           }
           initialPayloads.set(pr.number, payload);
-          currentFailureKeys.push(`${pr.number}:${headSha}`);
+          currentFailureKeys.push(`${pr.number}:${headSha.toLowerCase()}`);
         }
 
-        const restored = newestRestoredFailureSnapshot(ctx);
+        const restored = newestRestoredWatcherState(ctx);
         if (restored.kind === "invalid") {
           setStatus(ctx, `${restored.reason}; retrying`);
           return;
         }
         try {
-          persistSeenFailures(
+          const snapshot = restored.kind === "found"
+            ? restored.snapshot
+            : { seenFailedHeads: [], pendingNotifications: [] };
+          persistState(
             reconcileRestoredFailureKeys(
-              restored.kind === "found" ? restored.snapshot : [],
+              snapshot.seenFailedHeads,
               currentFailureKeys,
-              MAX_SEEN_FAILURE_KEYS,
+              MAX_FAILURE_KEYS,
+            ),
+            reconcileRestoredPendingNotifications(
+              snapshot.pendingNotifications,
+              currentFailureKeys,
             ),
             true,
           );
           restorePending = false;
+          confirmPendingMarkers(ctx);
         } catch {
           setStatus(ctx, "newest saved state contains malformed failure keys; retrying");
           return;
         }
+      } else {
+        confirmPendingMarkers(ctx);
       }
 
-      persistSeenFailures(
+      const openPendingKeys = new Set(pruneSeenFailureKeysForOpenPullRequests(
+        pendingFailures.keys(),
+        prs.map((pr) => pr.number),
+      ));
+      persistState(
         pruneSeenFailureKeysForOpenPullRequests(seenFailures, prs.map((pr) => pr.number)),
+        pendingSnapshot().filter((item) => openPendingKeys.has(item.failureKey)),
       );
 
       let failedCount = 0;
@@ -214,7 +401,7 @@ export function registerVcCurrentHeadCiWatch(
       };
 
       for (const pr of prs) {
-        if (!sessionActive) return;
+        if (!isCurrentSession(generation)) return;
         const payload = initialPayloads.get(pr.number) ?? await ghJson<PullRequestChecks>(pi, [
           "pr",
           "view",
@@ -224,21 +411,23 @@ export function registerVcCurrentHeadCiWatch(
           "--json",
           "headRefOid,statusCheckRollup",
         ], controller.signal);
+        if (!isCurrentSession(generation)) return;
         if (!payload) {
           waitingCount += 1;
           continue;
         }
-        const observedHead = payload.headRefOid?.trim();
+        const observedHead = payload.headRefOid?.trim().toLowerCase();
         if (observedHead) pruneStaleFailures(pr.number, observedHead);
 
         const enrichedPayload = await enrichActionsRunAttempts(payload, loadActionsJob);
+        if (!isCurrentSession(generation)) return;
         const observation = observeChecks(enrichedPayload);
         if (observation.kind === "unknown") {
           waitingCount += 1;
           continue;
         }
         if (observation.kind === "green") {
-          setFailureActive(`${pr.number}:${observation.headSha}`, false);
+          clearFailure(`${pr.number}:${observation.headSha.toLowerCase()}`);
           continue;
         }
 
@@ -254,15 +443,17 @@ export function registerVcCurrentHeadCiWatch(
           "--json",
           "headRefOid,statusCheckRollup",
         ], controller.signal);
+        if (!isCurrentSession(generation)) return;
         if (!confirmationPayload) {
           waitingCount += 1;
           continue;
         }
         const confirmedChecks = await enrichActionsRunAttempts(confirmationPayload, loadActionsJob);
+        if (!isCurrentSession(generation)) return;
         const confirmation = confirmActionableFailure(observation, observeChecks(confirmedChecks));
         if (confirmation.kind !== "actionable") {
           if (confirmation.kind === "unknown") waitingCount += 1;
-          else setFailureActive(`${pr.number}:${observation.headSha}`, false);
+          else clearFailure(`${pr.number}:${observation.headSha.toLowerCase()}`);
           continue;
         }
 
@@ -275,6 +466,7 @@ export function registerVcCurrentHeadCiWatch(
           "--json",
           "headRefOid",
         ], controller.signal);
+        if (!isCurrentSession(generation)) return;
         const finalConfirmation = confirmCurrentHeadFailure(
           observation,
           observeChecks(confirmedChecks),
@@ -284,23 +476,30 @@ export function registerVcCurrentHeadCiWatch(
           waitingCount += 1;
           continue;
         }
+        if (!/^[0-9a-f]{40}$/iu.test(finalConfirmation.headSha)) {
+          waitingCount += 1;
+          continue;
+        }
 
-        if (!sessionActive) return;
-        pruneStaleFailures(pr.number, finalConfirmation.headSha);
-        const failureKey = `${pr.number}:${finalConfirmation.headSha}`;
-        if (seenFailures.has(failureKey)) continue;
-        const failureNames = formatFailureNames(finalConfirmation.failures);
-        // Queue delivery before recording the key. If delivery fails, the key
-        // remains unseen; if persistence then fails, in-memory state also
-        // remains unseen and a later observation safely retries the prompt.
-        pi.sendUserMessage(
-          `[vc-ci-watch] Current-head CI failed on PR #${pr.number} (${finalConfirmation.headSha.slice(0, 12)}). ` +
-            `Untrusted failure names (Unicode code points): ${failureNames}. ` +
-            `continue dev loop on PR ${pr.number}`,
-          { deliverAs: "followUp" },
-        );
-        setFailureActive(failureKey, true);
+        pruneStaleFailures(pr.number, finalConfirmation.headSha.toLowerCase());
+        const failureKey = `${pr.number}:${finalConfirmation.headSha.toLowerCase()}`;
         failedCount += 1;
+        if (seenFailures.has(failureKey)) continue;
+
+        // The durable outbox entry is written before the void send call. A key
+        // is promoted to durable dedupe only after the exact resulting user
+        // message is visible on the active session branch.
+        if (!pendingFailures.has(failureKey)) addPendingFailure(ctx, failureKey);
+        confirmPendingMarkers(ctx);
+        if (seenFailures.has(failureKey)) continue;
+
+        const attempts = sendAttempts.get(failureKey) ?? 0;
+        if (attempts >= MAX_NOTIFICATION_SEND_ATTEMPTS_PER_SESSION) continue;
+        const message = watcherMessageForFailure(failureKey);
+        if (!message || !isCurrentSession(generation)) continue;
+        sendAttempts.set(failureKey, attempts + 1);
+        pi.sendUserMessage(message, { deliverAs: "followUp" });
+        confirmPendingMarkers(ctx);
       }
 
       if (failedCount > 0) {
@@ -311,24 +510,34 @@ export function registerVcCurrentHeadCiWatch(
         setStatus(ctx, `watching ${prs.length} PR${prs.length === 1 ? "" : "s"}; current heads green`);
       }
     } catch {
-      setStatus(ctx, "watch error; retrying");
+      if (isCurrentSession(generation)) setStatus(ctx, "watch error; retrying");
     } finally {
       if (observationController === controller) observationController = undefined;
-      running = false;
+      if (runningGeneration === generation) runningGeneration = undefined;
     }
   };
 
+  pi.on("message_end", (_event, ctx) => {
+    if (!sessionActive) return;
+    confirmPendingMarkers(ctx);
+  });
+
   pi.on("session_start", async (_event, ctx) => {
     if (ctx.mode !== "tui" || !ctx.isProjectTrusted()) return;
+    sessionGeneration += 1;
+    const generation = sessionGeneration;
     sessionActive = true;
+    restorePending = true;
+    sendAttempts.clear();
     setStatus(ctx, "starting (5-minute interval)");
-    deps.runDetached(observe(ctx));
-    timer = deps.setInterval(() => deps.runDetached(observe(ctx)), WATCH_INTERVAL_MS);
+    deps.runDetached(observe(ctx, generation));
+    timer = deps.setInterval(() => deps.runDetached(observe(ctx, generation)), WATCH_INTERVAL_MS);
   });
 
   pi.on("session_shutdown", (_event, ctx) => {
     if (!sessionActive) return;
     sessionActive = false;
+    sessionGeneration += 1;
     observationController?.abort();
     observationController = undefined;
     if (timer) deps.clearInterval(timer);

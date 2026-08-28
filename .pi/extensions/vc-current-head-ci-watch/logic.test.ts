@@ -236,18 +236,28 @@ describe("observeChecks", () => {
     );
   });
 
-  it("keeps neutral/skipped-only rollups unknown instead of clearing a failure", () => {
+  it("keeps wholly neutral/skipped rollups unknown but accepts mixed settled success", () => {
     for (const conclusion of ["NEUTRAL", "SKIPPED"]) {
       assert.deepEqual(
         observeChecks({
           headRefOid: "current-head",
-          statusCheckRollup: [{ name: "build", status: "COMPLETED", conclusion }],
+          statusCheckRollup: [{ name: "optional", status: "COMPLETED", conclusion }],
         }),
         {
           kind: "unknown",
-          reason: "current-head checks are pending or unknown",
+          reason: "current-head checks are wholly neutral or skipped",
           headSha: "current-head",
         },
+      );
+      assert.deepEqual(
+        observeChecks({
+          headRefOid: "current-head",
+          statusCheckRollup: [
+            { name: "build", status: "COMPLETED", conclusion: "SUCCESS" },
+            { name: "optional", status: "COMPLETED", conclusion },
+          ],
+        }),
+        { kind: "green", headSha: "current-head" },
       );
     }
   });

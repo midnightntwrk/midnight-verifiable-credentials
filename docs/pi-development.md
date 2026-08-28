@@ -175,9 +175,11 @@ reconciliation retries without replacing state or sending an alert. Once
 complete, the snapshot is compacted to at most one current-head key per watched
 PR. This preserves active legacy notifications without unbounded state growth,
 while a cleared key can still become actionable after a later real failure.
-Pending, unknown, neutral-only, skipped-only, superseded, and previously
-observed PR/head failures do not trigger it. Within one Actions run, duplicate
-cancellation is non-actionable only when an actual success on that exact head
+Pending, unknown, wholly neutral/skipped, superseded, and previously observed
+PR/head failures do not trigger it. A settled rollup containing at least one
+actual success and only neutral/skipped peers is green; an all-neutral/skipped
+rollup remains unknown and cannot clear an active failure. Within one Actions
+run, duplicate cancellation is non-actionable only when an actual success on that exact head
 belongs to a later, one-to-one API-enriched attempt of the same workflow/check
 identity; Actions URLs without validated attempt metadata and ambiguous
 same-named jobs remain fail-closed. Across distinct Actions runs, suppression is
@@ -188,11 +190,27 @@ start time. Both jobs must also be verified through the fixed-repository Actions
 job API with matching job, run, head, name, and workflow metadata; unavailable or
 mismatched metadata remains fail-closed. Stable non-Actions provider URLs are
 grouped only with the same workflow/check identity. Only an actual successful
-observation clears prior PR/head notification state so a later failure on the
-same commit remains actionable. The prompt is queued before its failure key is
-persisted, and persistence mutates in-memory dedupe state only after the session
-entry append succeeds, so delivery or persistence errors retry rather than
-suppressing an undelivered prompt.
+observation clears prior PR/head notification state so a later failure on the same commit remains actionable. Reconfirmed red heads
+remain counted as red in the footer even when their notifications are already
+deduplicated.
+
+The model-triggering message contains no provider-supplied check names. Its only
+variable data is a validated positive PR number and the full validated 40-hex
+expected head SHA. It instructs the downstream dev loop to confirm that exact
+head from the canonical pull request before acting and to stop on mismatch; the
+watcher still performs its own final head re-read immediately before enqueue.
+
+Because Pi's `sendUserMessage` API is void, its return is not delivery evidence.
+The watcher first appends a bounded pending-notification outbox record containing
+the PR/head key and the count of matching markers already on the active branch.
+It promotes that key to durable dedupe only after a new exact watcher user-message
+marker appears in the bounded session branch. Missing markers retry on the
+five-minute cadence, with at most three sends per key in one session; pending
+records survive restart, where an existing new marker is recovered or an absent
+marker receives a fresh bounded retry budget. State append failures prevent send,
+malformed or unavailable restore data remains fail-closed, and session-generation
+checks prevent stale callbacks from delivering after shutdown or into a resumed
+session.
 
 This is an in-session dev-loop route/fix prompt, not a daemon. It never merges,
 approves, marks a PR ready, or changes GitHub state.

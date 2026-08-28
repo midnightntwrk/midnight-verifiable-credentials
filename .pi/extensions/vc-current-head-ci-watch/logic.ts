@@ -310,7 +310,7 @@ function latestTime(attempts: CompletedAttempt[], conclusions: Set<string>): num
   return times.length > 0 ? Math.max(...times) : undefined;
 }
 
-function groupOutcome(checks: StatusCheck[]): "failed" | "green" | "unknown" {
+function groupOutcome(checks: StatusCheck[]): "failed" | "green" | "neutral" | "unknown" {
   const completed: CompletedAttempt[] = [];
   const pendingOrUnknownOrders: Array<number | undefined> = [];
 
@@ -377,9 +377,10 @@ function groupOutcome(checks: StatusCheck[]): "failed" | "green" | "unknown" {
     latestSuccess > latestCancellation
   ) return "green";
   if (cancellations.length > 0) return "failed";
-  // Neutral/skipped-only rollups are settled but do not prove that an active
-  // failure resolved. Only an actual SUCCESS may clear watcher state.
-  return successes.length > 0 ? "green" : "unknown";
+  // Neutral/skipped-only groups are settled but do not independently prove
+  // that an active failure resolved. observeChecks distinguishes them from
+  // pending/unknown groups so they do not block an actual successful group.
+  return successes.length > 0 ? "green" : "neutral";
 }
 
 const FAILURE_KEY_PATTERN = /^\d+:[0-9a-f]{40}$/iu;
@@ -477,10 +478,12 @@ export function observeChecks(payload: PullRequestChecks): CheckObservation {
 
   const failures: string[] = [];
   let hasPendingOrUnknown = false;
+  let hasResolvingSuccess = false;
   for (const group of groups.values()) {
     const outcome = groupOutcome(group);
     if (outcome === "failed") failures.push(checkName(group[0]!));
     if (outcome === "unknown") hasPendingOrUnknown = true;
+    if (outcome === "green") hasResolvingSuccess = true;
   }
 
   if (failures.length > 0) {
@@ -489,7 +492,8 @@ export function observeChecks(payload: PullRequestChecks): CheckObservation {
   if (hasPendingOrUnknown) {
     return { kind: "unknown", reason: "current-head checks are pending or unknown", headSha };
   }
-  return { kind: "green", headSha };
+  if (hasResolvingSuccess) return { kind: "green", headSha };
+  return { kind: "unknown", reason: "current-head checks are wholly neutral or skipped", headSha };
 }
 
 export function confirmActionableFailure(

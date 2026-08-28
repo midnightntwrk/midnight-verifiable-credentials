@@ -2,7 +2,7 @@
 
 ## Status
 
-Implemented and locally validated on PR #483; fresh pre-approval correctness, security, and coverage findings on head `99e107ff` are remediated locally and exact-head gate/CI convergence must be rerun. The user authorized this bounded housekeeping change, the existing PR against `develop`, configured review/fix cycles, and merge only after every repository safety gate is satisfied.
+Implemented and locally validated on PR #483; fresh pre-approval correctness, security, and coverage findings on exact head `a66f7e792d117335371d4f54b77705a8626d5af6` are remediated in the current bounded pass, and exact-head gate/CI convergence must be rerun. The user authorized this bounded housekeeping change, the existing PR against `develop`, configured review/fix cycles, and merge only after every repository safety gate is satisfied.
 
 ## Objective
 
@@ -17,9 +17,10 @@ Audit the repository's dev-loops and Pi agent-review posture against the install
 - Extract deterministic, testable current-head check-rollup logic from `.pi/extensions/vc-current-head-ci-watch.ts`.
 - Suppress stale/superseded-head and cancelled-duplicate alerts only when a fresh exact-head observation proves them non-actionable; preserve fail-closed behavior for real current-head failures and pending/unknown states.
 - Add focused tests for a real failure, pending/unknown checks, superseded-head confirmation, duplicate cancelled-plus-success checks, and a later successful rerun.
-- Preserve Unicode code-point encoding and message/name bounds for untrusted check names.
+- Keep untrusted check names out of model-triggering messages. Retain bounded Unicode code-point helpers only as non-model logic evidence.
 - Reconcile only the newest bounded relevant watcher snapshot against the bounded exact current-head set, retaining active notifications while compacting stale history without unbounded growth; malformed or oversized newest state stays fail-closed.
-- Preserve active failures across neutral/skipped-only rollups, and queue notification delivery before durable/in-memory dedupe state so failed delivery or persistence retries safely.
+- Preserve active failures across wholly neutral/skipped rollups while allowing mixed actual-success plus neutral/skipped rollups to clear state.
+- Persist a bounded pending notification outbox before calling the void `sendUserMessage` API, promote a key to durable dedupe only after the exact watcher user-message marker appears in the active session branch, and recover/retry pending markers safely across cadence ticks and restarts.
 - Verify cross-run cancellation candidates through strict HTTPS fixed-repository URLs and authoritative Actions job/run/head/workflow metadata before suppression.
 - Exercise the registered extension handlers with injected fake API, timers, and abort controllers for deterministic startup, restoration, ordering, retry, dedupe, rerun, lookup-bound, and shutdown coverage.
 - Run focused extension unit/component tests and type checks, applicable repository lint, dev-loops diagnostics, lockfile consistency checks, and full configured PR gates/reviews.
@@ -38,7 +39,7 @@ Audit the repository's dev-loops and Pi agent-review posture against the install
 3. Both agent-review package identities are verified against the authenticated registry. Version 0.6.0 is recorded as a no-op if still latest, and a project pin is added only if precedence/conflict testing demonstrates it is appropriate.
 4. The watcher alerts for a real current-head failure, keeps pending/unknown non-actionable, confirms the head is still current before alerting, ignores cancelled duplicate attempts when the same exact-head check has a success, and does not alert after a later successful rerun supersedes a prior failed attempt.
 5. Current-head failures remain fail-closed when no exact-head success or rerun resolves them.
-6. Untrusted check-name Unicode encoding and all existing bounds remain enforced and deterministically tested.
+6. The model-triggering watcher prompt contains no untrusted check names, includes only a validated PR number and full validated expected head SHA as variable data, and requires downstream canonical exact-head confirmation before action; non-model Unicode encoding and all bounds remain deterministically tested.
 7. Restored notification state preserves every previously seen failure on the bounded current open-PR/head set, retries fail-closed when those heads cannot be reconciled, and compacts legacy history without suppressing a later failure after a cleared key.
 8. The diff stays limited to housekeeping config, harness extension/logic/tests, this plan/evidence documentation, and only justified package/lock changes.
 9. Focused tests, extension type/syntax checks, applicable `ci:lint`, dev-loops config diagnostics, package-lock consistency, and `git diff --check` pass.
@@ -60,14 +61,16 @@ Audit the repository's dev-loops and Pi agent-review posture against the install
 | Exact-head watcher semantics | Deterministic unit tests over extracted pure logic plus component tests over registered handlers |
 | Unicode and boundedness | Focused encoding, lookup, branch-tail, and raw-state bound tests |
 | Restored notification state | Newest-only restore, malformed/oversized retry, legacy compaction, latest-clear, and closed-PR pruning regressions |
-| Delivery and lifecycle | Fake API/timer tests for three-read ordering, delivery-before-persistence, retry, dedupe, shutdown abort, and trust/mode guards |
-| Repository quality | Focused type/syntax checks, applicable `ci:lint`, lock consistency, diff check |
+| Delivery and lifecycle | Fake API/timer tests for bounded outbox-before-send, exact branch-marker confirmation, restart retry/recovery, deduped-red status, five-minute cadence, shutdown abort, stale callback rejection, and trust/mode guards |
+| Shared lookup budget | Multi-PR component coverage proves `pr list --limit 100` and at most 100 fixed-repository Actions job API calls per observation |
+| Repository quality | Focused unit/component tests, deterministic strict TypeScript plus syntax checks in CI, applicable `ci:lint`, lock consistency, diff check |
 | Delivery safety | Signed+DCO commit, draft/pre-approval evidence, exact-head CI/reviews, protected merge |
 
 ## Open questions and risks
 
 - Cancelled and successful duplicate checks must be grouped by a stable check identity; name/context normalization needs to avoid coalescing unrelated checks while preserving provider output.
 - GitHub rollups can be eventually consistent. A second exact-head read immediately before notification plus a final head-only read is required to reject a superseded head and consume a newer rerun state.
+- Pi's `sendUserMessage` API is void and delivery can fail asynchronously. A bounded durable outbox plus exact active-branch marker count is therefore the acknowledgement boundary; three sends per key/session are allowed before waiting for a restart or marker confirmation.
 - Legacy snapshots may contain more keys than the current watcher bound. Startup must select only exact current-head keys after all watched heads are known; lexicographic truncation is not a recency signal and can forget an active failure.
 - A project-local package pin could duplicate globally loaded resources. Pi's project-wins identity rule and an actual package listing/install test determine whether the reproducibility benefit outweighs that risk.
 
@@ -78,7 +81,8 @@ Audit the repository's dev-loops and Pi agent-review posture against the install
 - The absent `.pi/dev-loop-retrospective-checkpoint.json` maps to the documented `none` state (no prior qualifying completion), not `missing`; startup with `workflow.requireRetrospective: true` therefore passed without bypass. A future `{ "state": "required" }` checkpoint will still fail closed until completed or explicitly skipped.
 - The checked-in all-`not-run` quality-evidence provenance still named superseded head `161d33d9`, which is not an ancestor of recreated `origin/develop` at `12cd5409`; it was truthfully rebaselined to exact `origin/develop` without changing or fabricating any metric.
 - Authenticated registry stable versions for `@input-output-hk/agent-review-pi` and `@input-output-hk/agent-review` are both 0.6.0, matching the user-level Pi package. This is a verified no-op.
-- Fresh pre-approval reviewers on `99e107ff` correctly found that neutral/skipped-only rollups could clear active state, notification state was recorded before delivery, cross-run suppression lacked authoritative fixed-repository metadata, restoration scanned every historical snapshot, and only pure logic had deterministic tests. The remediation makes actual `SUCCESS` the sole clear signal, delivers before persistence with append-before-memory mutation, validates both cross-run jobs against fixed API metadata, selects one bounded newest snapshot, and tests the actual registered handlers with injected fakes.
+- Fresh pre-approval reviewers on `99e107ff` correctly found that neutral/skipped-only rollups could clear active state, notification state was recorded before delivery, cross-run suppression lacked authoritative fixed-repository metadata, restoration scanned every historical snapshot, and only pure logic had deterministic tests. That pass made actual `SUCCESS` the sole clear signal, validated both cross-run jobs against fixed API metadata, selected one bounded newest snapshot, and added registered-handler tests.
+- Fresh pre-approval reviewers on `a66f7e792d117335371d4f54b77705a8626d5af6` then found mixed success plus neutral/skipped rollups remained unknown, deduped red heads were omitted from the footer, void message delivery was acknowledged too early, untrusted names entered the model prompt, the expected-head precondition was incomplete, and component/strict-type evidence had gaps. The current remediation distinguishes settled-neutral groups from pending unknowns, counts every reconfirmed red head, uses a bounded restart-safe outbox with exact branch-marker acknowledgement, emits a constant validated PR/full-SHA prompt, proves the shared lookup budget/restoration/cadence/stale-callback lifecycle, and wires strict TypeScript into `ci:lint`.
 - No repository-local agent-review pin is added. Pi's documented same-identity precedence would make a project entry shadow the user's package rather than load a duplicate, but agent peer review is authenticated user workflow tooling, the repository does not currently declare it as a project requirement, and adding it would broaden trusted project-startup code without an implementation need. The existing project pins for `dev-loops` and `pi-subagents` remain unchanged.
 
 ## Docs-grill findings
