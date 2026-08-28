@@ -6,6 +6,7 @@ import {
   enrichActionsRunAttempts,
   formatFailureNames,
   observeChecks,
+  pruneSeenFailureKeys,
   updateSeenFailureKeys,
   type ActionsJob,
   type PullRequestChecks,
@@ -17,6 +18,7 @@ const STATUS_KEY = "vc-current-head-ci-watch";
 const STATE_ENTRY_TYPE = "vc-current-head-ci-watch-state";
 const MAX_OPEN_PULL_REQUESTS = 100;
 const MAX_ACTIONS_JOB_LOOKUPS_PER_OBSERVATION = 100;
+const MAX_SEEN_FAILURE_KEYS = MAX_OPEN_PULL_REQUESTS;
 
 type PullRequest = { number: number };
 
@@ -41,8 +43,8 @@ function restoreSeenFailures(ctx: ExtensionContext, seenFailures: Set<string>): 
     const data = candidate.data as { seenFailedHeads?: unknown } | undefined;
     if (!Array.isArray(data?.seenFailedHeads)) continue;
     seenFailures.clear();
-    for (const key of data.seenFailedHeads) {
-      if (typeof key === "string") seenFailures.add(key);
+    for (const key of data.seenFailedHeads.slice(-MAX_SEEN_FAILURE_KEYS)) {
+      if (typeof key === "string" && /^\d+:[0-9a-f]{40}$/iu.test(key)) seenFailures.add(key);
     }
   }
 }
@@ -59,13 +61,19 @@ export default function (pi: ExtensionAPI) {
     ctx.ui.setStatus(STATUS_KEY, `VC PR CI watch: ${message}`);
   };
 
-  const setFailureActive = (failureKey: string, active: boolean): boolean => {
-    const next = updateSeenFailureKeys(seenFailures, failureKey, active);
+  const persistSeenFailures = (next: string[]): boolean => {
     if (next.length === seenFailures.size && next.every((key) => seenFailures.has(key))) return false;
     seenFailures.clear();
     for (const key of next) seenFailures.add(key);
     pi.appendEntry(STATE_ENTRY_TYPE, { seenFailedHeads: next });
     return true;
+  };
+
+  const setFailureActive = (failureKey: string, active: boolean): boolean =>
+    persistSeenFailures(updateSeenFailureKeys(seenFailures, failureKey, active));
+
+  const pruneStaleFailures = (prNumber: number, currentHeadSha: string): void => {
+    persistSeenFailures(pruneSeenFailureKeys(seenFailures, prNumber, currentHeadSha));
   };
 
   const observe = async (ctx: ExtensionContext) => {
@@ -129,6 +137,8 @@ export default function (pi: ExtensionAPI) {
           waitingCount += 1;
           continue;
         }
+        const observedHead = payload.headRefOid?.trim();
+        if (observedHead) pruneStaleFailures(pr.number, observedHead);
 
         const enrichedPayload = await enrichActionsRunAttempts(payload, loadActionsJob);
         const observation = observeChecks(enrichedPayload);
@@ -184,11 +194,10 @@ export default function (pi: ExtensionAPI) {
           continue;
         }
 
+        if (!sessionActive) return;
         failedCount += 1;
         const failureKey = `${pr.number}:${finalConfirmation.headSha}`;
         if (!setFailureActive(failureKey, true)) continue;
-
-        if (!sessionActive) return;
         const failureNames = formatFailureNames(finalConfirmation.failures);
         pi.sendUserMessage(
           `[vc-ci-watch] Current-head CI failed on PR #${pr.number} (${finalConfirmation.headSha.slice(0, 12)}). ` +

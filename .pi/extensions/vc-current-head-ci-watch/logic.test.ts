@@ -8,6 +8,7 @@ import {
   enrichActionsRunAttempts,
   formatFailureNames,
   observeChecks,
+  pruneSeenFailureKeys,
   updateSeenFailureKeys,
   type CheckObservation,
 } from "./logic.ts";
@@ -512,6 +513,76 @@ describe("observeChecks", () => {
     );
   });
 
+  it("lets the latest completed success settle older failures and pending attempts", () => {
+    assert.equal(
+      observeChecks({
+        headRefOid: "current-head",
+        statusCheckRollup: [
+          {
+            name: "scan",
+            workflowName: "PR scan",
+            actionsRunId: "42",
+            actionsRunAttempt: 1,
+            status: "COMPLETED",
+            conclusion: "FAILURE",
+          },
+          {
+            name: "scan",
+            workflowName: "PR scan",
+            actionsRunId: "42",
+            actionsRunAttempt: 2,
+            status: "IN_PROGRESS",
+            conclusion: null,
+          },
+          {
+            name: "scan",
+            workflowName: "PR scan",
+            actionsRunId: "42",
+            actionsRunAttempt: 3,
+            status: "COMPLETED",
+            conclusion: "SUCCESS",
+          },
+        ],
+      }).kind,
+      "green",
+    );
+  });
+
+  it("lets the latest completed success settle older cancellations and pending attempts", () => {
+    assert.equal(
+      observeChecks({
+        headRefOid: "current-head",
+        statusCheckRollup: [
+          {
+            name: "scan",
+            workflowName: "PR scan",
+            actionsRunId: "42",
+            actionsRunAttempt: 1,
+            status: "COMPLETED",
+            conclusion: "CANCELLED",
+          },
+          {
+            name: "scan",
+            workflowName: "PR scan",
+            actionsRunId: "42",
+            actionsRunAttempt: 2,
+            status: "IN_PROGRESS",
+            conclusion: null,
+          },
+          {
+            name: "scan",
+            workflowName: "PR scan",
+            actionsRunId: "42",
+            actionsRunAttempt: 3,
+            status: "COMPLETED",
+            conclusion: "SUCCESS",
+          },
+        ],
+      }).kind,
+      "green",
+    );
+  });
+
   it("does not let an older overlapping attempt that finishes later clear a newer failure", () => {
     assert.equal(
       observeChecks({
@@ -590,8 +661,8 @@ describe("enrichActionsRunAttempts", () => {
 
   it("enriches a one-to-one rerun lineage with validated attempts", async () => {
     const jobs = new Map([
-      ["1", { id: 1, run_id: 42, run_attempt: 1 }],
-      ["2", { id: 2, run_id: 42, run_attempt: 2 }],
+      ["1", { id: 1, name: "scan", run_id: 42, run_attempt: 1 }],
+      ["2", { id: 2, name: "scan", run_id: 42, run_attempt: 2 }],
     ]);
     const enriched = await enrichActionsRunAttempts(rerunChecks(), async (jobId) => jobs.get(jobId));
 
@@ -604,8 +675,8 @@ describe("enrichActionsRunAttempts", () => {
 
   it("refuses to coalesce distinct same-named jobs from one attempt", async () => {
     const jobs = new Map([
-      ["1", { id: 1, run_id: 42, run_attempt: 1 }],
-      ["2", { id: 2, run_id: 42, run_attempt: 1 }],
+      ["1", { id: 1, name: "scan", run_id: 42, run_attempt: 1 }],
+      ["2", { id: 2, name: "scan", run_id: 42, run_attempt: 1 }],
     ]);
     const enriched = await enrichActionsRunAttempts(rerunChecks(), async (jobId) => jobs.get(jobId));
 
@@ -618,11 +689,22 @@ describe("enrichActionsRunAttempts", () => {
 
   it("fails closed on mismatched job metadata or unavailable lookups", async () => {
     const mismatched = await enrichActionsRunAttempts(rerunChecks(), async (jobId) =>
-      jobId === "1" ? { id: 999, run_id: 42, run_attempt: 1 } : undefined,
+      jobId === "1" ? { id: 999, name: "scan", run_id: 42, run_attempt: 1 } : undefined,
     );
 
     assert.equal(observeChecks(mismatched).kind, "failed");
     assert.equal(mismatched.statusCheckRollup?.some((check) => check.actionsRunAttempt !== undefined), false);
+  });
+
+  it("fails closed when Actions job names do not match the rollup check", async () => {
+    const jobs = new Map([
+      ["1", { id: 1, name: "unrelated", run_id: 42, run_attempt: 1 }],
+      ["2", { id: 2, name: "scan", run_id: 42, run_attempt: 2 }],
+    ]);
+    const enriched = await enrichActionsRunAttempts(rerunChecks(), async (jobId) => jobs.get(jobId));
+
+    assert.equal(observeChecks(enriched).kind, "failed");
+    assert.equal(enriched.statusCheckRollup?.some((check) => check.actionsRunAttempt !== undefined), false);
   });
 
   it("treats a rejected lookup as unavailable metadata instead of aborting", async () => {
@@ -725,6 +807,24 @@ describe("updateSeenFailureKeys", () => {
     assert.deepEqual(updateSeenFailureKeys([], failureKey, true), [failureKey]);
     assert.deepEqual(updateSeenFailureKeys([failureKey], failureKey, false), []);
     assert.deepEqual(updateSeenFailureKeys([], failureKey, true), [failureKey]);
+  });
+
+  it("prunes superseded heads without changing other PRs or the current head", () => {
+    assert.deepEqual(
+      pruneSeenFailureKeys(
+        [
+          "482:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "483:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "483:cccccccccccccccccccccccccccccccccccccccc",
+        ],
+        483,
+        "cccccccccccccccccccccccccccccccccccccccc",
+      ),
+      [
+        "482:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "483:cccccccccccccccccccccccccccccccccccccccc",
+      ],
+    );
   });
 });
 

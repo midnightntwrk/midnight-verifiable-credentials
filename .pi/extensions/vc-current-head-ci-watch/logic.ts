@@ -207,6 +207,7 @@ export async function enrichActionsRunAttempts(
         !job ||
         String(job.id) !== candidate.jobId ||
         String(job.run_id) !== candidate.runId ||
+        job.name?.trim() !== candidate.check.name?.trim() ||
         !Number.isInteger(job.run_attempt) ||
         job.run_attempt! < 1
       ) return undefined;
@@ -288,15 +289,20 @@ function groupOutcome(checks: StatusCheck[]): "failed" | "green" | "unknown" {
     const allFailures = [...otherFailures, ...cancellations];
     const latestFailure = latestTime(allFailures, FAILED_CONCLUSIONS);
     if (allFailures.some((attempt) => attempt.order === undefined)) return "failed";
+
+    // Pending attempts older than the latest completed evidence cannot change
+    // that evidence. Only an unorderable or newer pending attempt keeps the
+    // lineage unsettled.
+    const latestSuccess = latestTime(successes, RESOLVING_SUCCESS_CONCLUSIONS);
+    const latestCompleted = Math.max(latestFailure ?? -Infinity, latestSuccess ?? -Infinity);
     const couldBeLaterRerun = pendingOrUnknownOrders.some(
-      (startedAt) => startedAt === undefined || latestFailure === undefined || startedAt > latestFailure,
+      (order) => order === undefined || order > latestCompleted,
     );
     if (couldBeLaterRerun) return "unknown";
 
     // A non-cancel failure is resolved only by a strictly later attempt in the
     // same Actions run/logical-job lineage. Missing or tied run-attempt values
     // remain fail-closed.
-    const latestSuccess = latestTime(successes, RESOLVING_SUCCESS_CONCLUSIONS);
     if (latestFailure !== undefined && latestSuccess !== undefined && latestSuccess > latestFailure) {
       return "green";
     }
@@ -304,15 +310,16 @@ function groupOutcome(checks: StatusCheck[]): "failed" | "green" | "unknown" {
   }
 
   const latestCancellation = latestTime(cancellations, new Set(["CANCELLED"]));
+  const latestSuccess = latestTime(successes, RESOLVING_SUCCESS_CONCLUSIONS);
+  const latestCompleted = Math.max(latestCancellation ?? -Infinity, latestSuccess ?? -Infinity);
   const couldBeLaterCancellationRerun = pendingOrUnknownOrders.some(
-    (order) => order === undefined || latestCancellation === undefined || order > latestCancellation,
+    (order) => order === undefined || order > latestCompleted,
   );
   if (couldBeLaterCancellationRerun) return "unknown";
 
   // A provider job can leave a cancelled attempt beside an actual success on a
   // later rerun of the same lineage. That exact-head success makes only the
   // older cancellation non-actionable.
-  const latestSuccess = latestTime(successes, RESOLVING_SUCCESS_CONCLUSIONS);
   if (
     cancellations.length > 0 &&
     !cancellations.some((attempt) => attempt.order === undefined) &&
@@ -333,6 +340,18 @@ export function updateSeenFailureKeys(
   if (active) next.add(failureKey);
   else next.delete(failureKey);
   return [...next].sort();
+}
+
+export function pruneSeenFailureKeys(
+  seenFailureKeys: Iterable<string>,
+  prNumber: number,
+  currentHeadSha: string,
+): string[] {
+  const prefix = `${prNumber}:`;
+  const currentKey = `${prefix}${currentHeadSha}`;
+  return [...new Set(seenFailureKeys)]
+    .filter((key) => !key.startsWith(prefix) || key === currentKey)
+    .sort();
 }
 
 export function encodeFailureName(name: string): string {

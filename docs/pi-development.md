@@ -163,9 +163,10 @@ cache directories under `.pi/`. The ordinary shell, Codex, Claude, GitHub, and
 `.pi/extensions/vc-current-head-ci-watch.ts` is a trusted-session convenience
 watcher. After installing or updating the checkout, run `/reload` or restart
 Pi so it loads. While Pi remains open in an interactive trusted session, it
-checks this repository's open PRs authored by the authenticated `gh` user every
-five minutes. Before a newly observed failure queues an attributed
-`continue dev loop on PR <N>` follow-up, the watcher re-reads the PR and confirms
+checks a bounded set of up to 100 open PRs in this repository authored by the
+authenticated `gh` user every five minutes. Before a newly observed failure
+queues an attributed `continue dev loop on PR <N>` follow-up, the watcher
+re-reads the PR and confirms
 the exact current head. Pending, unknown, superseded, and previously observed
 PR/head failures do not trigger it. Within one Actions run, duplicate
 cancellation is non-actionable only when an actual success on that exact head
