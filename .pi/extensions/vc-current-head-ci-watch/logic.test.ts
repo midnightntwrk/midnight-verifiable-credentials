@@ -458,6 +458,60 @@ describe("observeChecks", () => {
     );
   });
 
+  it("preserves a newer cancellation while an older same-lineage attempt is pending", () => {
+    assert.equal(
+      observeChecks({
+        headRefOid: "current-head",
+        statusCheckRollup: [
+          {
+            name: "scan",
+            workflowName: "PR scan",
+            actionsRunId: "42",
+            actionsRunAttempt: 1,
+            status: "IN_PROGRESS",
+            conclusion: null,
+          },
+          {
+            name: "scan",
+            workflowName: "PR scan",
+            actionsRunId: "42",
+            actionsRunAttempt: 2,
+            status: "COMPLETED",
+            conclusion: "CANCELLED",
+          },
+        ],
+      }).kind,
+      "failed",
+    );
+  });
+
+  it("keeps an older cancellation non-actionable while a newer same-lineage attempt is pending", () => {
+    assert.equal(
+      observeChecks({
+        headRefOid: "current-head",
+        statusCheckRollup: [
+          {
+            name: "scan",
+            workflowName: "PR scan",
+            actionsRunId: "42",
+            actionsRunAttempt: 1,
+            status: "COMPLETED",
+            conclusion: "CANCELLED",
+          },
+          {
+            name: "scan",
+            workflowName: "PR scan",
+            actionsRunId: "42",
+            actionsRunAttempt: 2,
+            status: "IN_PROGRESS",
+            conclusion: null,
+          },
+        ],
+      }).kind,
+      "unknown",
+    );
+  });
+
   it("does not let an older overlapping attempt that finishes later clear a newer failure", () => {
     assert.equal(
       observeChecks({

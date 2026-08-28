@@ -303,12 +303,15 @@ function groupOutcome(checks: StatusCheck[]): "failed" | "green" | "unknown" {
     return "failed";
   }
 
-  if (pendingOrUnknownOrders.length > 0) return "unknown";
+  const latestCancellation = latestTime(cancellations, new Set(["CANCELLED"]));
+  const couldBeLaterCancellationRerun = pendingOrUnknownOrders.some(
+    (order) => order === undefined || latestCancellation === undefined || order > latestCancellation,
+  );
+  if (couldBeLaterCancellationRerun) return "unknown";
 
   // A provider job can leave a cancelled attempt beside an actual success on a
   // later rerun of the same lineage. That exact-head success makes only the
   // older cancellation non-actionable.
-  const latestCancellation = latestTime(cancellations, new Set(["CANCELLED"]));
   const latestSuccess = latestTime(successes, RESOLVING_SUCCESS_CONCLUSIONS);
   if (
     cancellations.length > 0 &&
