@@ -204,7 +204,7 @@ function queueFailureCycle(
   const finalPayload = typeof final === "string" ? { ...confirmation, headRefOid: final } : final;
   harness.queueJson(finalPayload);
   if (queueFinalPrState) {
-    harness.queueJson({ headRefOid: finalPayload.headRefOid, state: "OPEN" });
+    harness.queueJson({ ...finalPayload, state: "OPEN" });
   }
 }
 
@@ -426,8 +426,8 @@ describe("vc-current-head-ci-watch extension handlers", () => {
     };
 
     for (const finalPrState of [
-      { headRefOid: NEW_HEAD, state: "OPEN" },
-      { headRefOid: CURRENT_HEAD, state: "CLOSED" },
+      { ...finalActionsFailure, headRefOid: NEW_HEAD, state: "OPEN" },
+      { ...finalActionsFailure, state: "CLOSED" },
     ]) {
       const harness = new ExtensionHarness();
       queueFailureCycle(harness, failurePayload(), failurePayload(), finalActionsFailure, false);
@@ -436,8 +436,39 @@ describe("vc-current-head-ci-watch extension handlers", () => {
       await harness.start(harness.context());
 
       assert.equal(harness.messages.length, 0);
-      assert.deepEqual(harness.execArgs.at(-1)?.slice(-2), ["--json", "headRefOid,state"]);
+      assert.deepEqual(harness.execArgs.at(-1)?.slice(-2), [
+        "--json",
+        "headRefOid,state,statusCheckRollup",
+      ]);
     }
+  });
+
+  it("defers a same-head green rollup that arrives during final Actions enrichment", async () => {
+    const finalActionsFailure: PullRequestChecks = {
+      headRefOid: CURRENT_HEAD,
+      statusCheckRollup: [{
+        name: "scan",
+        workflowName: "Scan",
+        detailsUrl: "https://github.com/midnightntwrk/midnight-verifiable-credentials/actions/runs/42/job/1",
+        status: "COMPLETED",
+        conclusion: "FAILURE",
+      }],
+    };
+    const harness = new ExtensionHarness();
+    queueFailureCycle(harness, failurePayload(), failurePayload(), finalActionsFailure, false);
+    harness.queueJson(fixedRepositoryJob(1, { runId: 42 }));
+    harness.queueJson({ ...successPayload(), state: "OPEN" });
+    await harness.start(harness.context());
+
+    assert.equal(harness.messages.length, 0);
+    assert.deepEqual(harness.execArgs.at(-1)?.slice(-2), [
+      "--json",
+      "headRefOid,state,statusCheckRollup",
+    ]);
+    assert.deepEqual(latestState(harness)?.seenFailedHeads, []);
+    assert.deepEqual(latestState(harness)?.pendingNotifications.map((item) => item.failureKey), [
+      `483:${CURRENT_HEAD}`,
+    ]);
   });
 
   it("does not dispatch when the final authoritative enrichment exceeds the shared bound", async () => {
@@ -482,7 +513,7 @@ describe("vc-current-head-ci-watch extension handlers", () => {
     harness.queueJson(failurePayload());
     harness.queueJson(failurePayload(NEW_HEAD));
     harness.queueJson(failurePayload());
-    harness.queueJson({ headRefOid: CURRENT_HEAD, state: "OPEN" });
+    harness.queueJson({ ...failurePayload(), state: "OPEN" });
     await harness.start(harness.context());
 
     assert.equal(harness.messages.length, 1);
@@ -502,7 +533,7 @@ describe("vc-current-head-ci-watch extension handlers", () => {
     harness.queueJson(failurePayload(NEW_HEAD));
     harness.queueJson(null);
     harness.queueJson(failurePayload(NEW_HEAD));
-    harness.queueJson({ headRefOid: NEW_HEAD, state: "OPEN" });
+    harness.queueJson({ ...failurePayload(NEW_HEAD), state: "OPEN" });
     await harness.start(harness.context());
 
     assert.equal(harness.messages.length, 1, "exactly one dispatch occurs in the observation");
@@ -724,7 +755,7 @@ describe("vc-current-head-ci-watch extension handlers", () => {
     harness.queueJson(finalActionsFailure);
     harness.queueJson(fixedRepositoryJob(101, { runAttempt: 1, runId: 42 }));
     harness.queueJson(fixedRepositoryJob(102, { runAttempt: 2, runId: 42 }));
-    harness.queueJson({ headRefOid: CURRENT_HEAD, state: "OPEN" });
+    harness.queueJson({ ...finalActionsFailure, state: "OPEN" });
     await harness.tick();
 
     const secondCadenceApiCalls = harness.execArgs.filter((args) => args[0] === "api").length -

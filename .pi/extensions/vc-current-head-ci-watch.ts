@@ -25,8 +25,7 @@ const MAX_NOTIFICATION_SEND_ATTEMPTS_PER_SESSION = 3;
 const FAILURE_KEY_PATTERN = /^(\d+):([0-9a-f]{40})$/iu;
 
 type PullRequest = { number: number };
-type PullRequestState = {
-  headRefOid?: string | null;
+type PullRequestState = PullRequestChecks & {
   state?: string | null;
 };
 type IntervalHandle = unknown;
@@ -597,7 +596,8 @@ export function registerVcCurrentHeadCiWatch(
 
         // Actions enrichment can outlive the rollup read. Make the canonical
         // PR state the last remote read before dispatch, and require the PR to
-        // remain open on the exact expected head.
+        // remain open on the exact expected head with the same raw rollup that
+        // was enriched. Any concurrent rollup change is handled next cadence.
         const finalPrState = await ghJson<PullRequestState>(pi, [
           "pr",
           "view",
@@ -605,12 +605,18 @@ export function registerVcCurrentHeadCiWatch(
           "--repo",
           REPOSITORY,
           "--json",
-          "headRefOid,state",
+          "headRefOid,state,statusCheckRollup",
         ], controller.signal);
         if (!isCurrentSession(generation)) return;
         const canonicalHead = finalPrState?.headRefOid?.trim().toLowerCase();
         const canonicalState = finalPrState?.state?.trim().toUpperCase();
-        if (canonicalState !== "OPEN" || canonicalHead !== finalConfirmation.headSha.toLowerCase()) {
+        const rawRollupUnchanged = JSON.stringify(finalPrState?.statusCheckRollup) ===
+          JSON.stringify(finalPayload.statusCheckRollup);
+        if (
+          canonicalState !== "OPEN" ||
+          canonicalHead !== finalConfirmation.headSha.toLowerCase() ||
+          !rawRollupUnchanged
+        ) {
           failedCount -= 1;
           waitingCount += 1;
           if (canonicalHead && /^[0-9a-f]{40}$/iu.test(canonicalHead)) {
