@@ -347,7 +347,6 @@ export function registerVcCurrentHeadCiWatch(
 
       const initialPayloads = new Map<number, PullRequestChecks>();
       if (restorePending) {
-        const currentFailureKeys: string[] = [];
         for (const pr of prs) {
           const payload = await ghJson<PullRequestChecks>(pi, [
             "pr",
@@ -365,7 +364,6 @@ export function registerVcCurrentHeadCiWatch(
             return;
           }
           initialPayloads.set(pr.number, payload);
-          currentFailureKeys.push(`${pr.number}:${headSha.toLowerCase()}`);
         }
 
         const restored = newestRestoredWatcherState(ctx);
@@ -373,6 +371,43 @@ export function registerVcCurrentHeadCiWatch(
           setStatus(ctx, `${restored.reason}; retrying`);
           return;
         }
+
+        // A first rollup read can lag the canonical PR head. Before restored
+        // dedupe/outbox state is pruned, confirm every current head with a
+        // second read whenever there is durable state to reconcile.
+        const restoredHasState = restored.kind === "outside_tail" || (
+          restored.kind === "found" && (
+            (Array.isArray(restored.snapshot.seenFailedHeads) &&
+              restored.snapshot.seenFailedHeads.length > 0) ||
+            (Array.isArray(restored.snapshot.pendingNotifications) &&
+              restored.snapshot.pendingNotifications.length > 0)
+          )
+        );
+        if (restoredHasState) {
+          for (const pr of prs) {
+            const confirmedPayload = await ghJson<PullRequestChecks>(pi, [
+              "pr",
+              "view",
+              String(pr.number),
+              "--repo",
+              REPOSITORY,
+              "--json",
+              "headRefOid,statusCheckRollup",
+            ], controller.signal);
+            if (!isCurrentSession(generation)) return;
+            const confirmedHeadSha = confirmedPayload?.headRefOid?.trim();
+            if (!confirmedPayload || !confirmedHeadSha || !/^[0-9a-f]{40}$/iu.test(confirmedHeadSha)) {
+              setStatus(ctx, "unable to confirm exact current heads before restoring failures; retrying");
+              return;
+            }
+            initialPayloads.set(pr.number, confirmedPayload);
+          }
+        }
+
+        const currentFailureKeys = prs.map((pr) => {
+          const headSha = initialPayloads.get(pr.number)!.headRefOid!.trim();
+          return `${pr.number}:${headSha.toLowerCase()}`;
+        });
         try {
           if (restored.kind === "outside_tail") {
             // The prior acknowledgement state is unavailable inside the bounded
@@ -467,19 +502,47 @@ export function registerVcCurrentHeadCiWatch(
           waitingCount += 1;
           continue;
         }
-        const observedHead = payload.headRefOid?.trim().toLowerCase();
-        if (observedHead) pruneStaleFailures(pr.number, observedHead);
-
         const enrichedPayload = await enrichActionsRunAttempts(payload, loadActionsJob);
         if (!isCurrentSession(generation)) return;
-        const observation = observeChecks(enrichedPayload);
+        let observation = observeChecks(enrichedPayload);
         if (observation.kind === "unknown") {
           waitingCount += 1;
           continue;
         }
         if (observation.kind === "green") {
-          clearFailure(`${pr.number}:${observation.headSha.toLowerCase()}`);
-          continue;
+          // Green clears durable state only after a second canonical read. If
+          // the first rollup lagged a newer red head, continue through the red
+          // confirmation path instead of pruning from the delayed first head.
+          const greenConfirmationPayload = await ghJson<PullRequestChecks>(pi, [
+            "pr",
+            "view",
+            String(pr.number),
+            "--repo",
+            REPOSITORY,
+            "--json",
+            "headRefOid,statusCheckRollup",
+          ], controller.signal);
+          if (!isCurrentSession(generation)) return;
+          if (!greenConfirmationPayload) {
+            waitingCount += 1;
+            continue;
+          }
+          const confirmedGreenChecks = await enrichActionsRunAttempts(
+            greenConfirmationPayload,
+            loadActionsJob,
+          );
+          if (!isCurrentSession(generation)) return;
+          observation = observeChecks(confirmedGreenChecks);
+          if (observation.kind === "unknown") {
+            waitingCount += 1;
+            continue;
+          }
+          if (observation.kind === "green") {
+            const confirmedHead = observation.headSha.toLowerCase();
+            pruneStaleFailures(pr.number, confirmedHead);
+            clearFailure(`${pr.number}:${confirmedHead}`);
+            continue;
+          }
         }
 
         // Re-read immediately before notifying. A delayed first rollup can
@@ -501,10 +564,16 @@ export function registerVcCurrentHeadCiWatch(
         }
         const confirmedChecks = await enrichActionsRunAttempts(confirmationPayload, loadActionsJob);
         if (!isCurrentSession(generation)) return;
-        const confirmation = confirmActionableFailure(observation, observeChecks(confirmedChecks));
+        const confirmedObservation = observeChecks(confirmedChecks);
+        const confirmation = confirmActionableFailure(observation, confirmedObservation);
         if (confirmation.kind !== "actionable") {
-          if (confirmation.kind === "unknown") waitingCount += 1;
-          else clearFailure(`${pr.number}:${observation.headSha.toLowerCase()}`);
+          if (confirmation.kind === "unknown") {
+            waitingCount += 1;
+          } else if (confirmedObservation.kind === "green") {
+            const confirmedHead = confirmedObservation.headSha.toLowerCase();
+            pruneStaleFailures(pr.number, confirmedHead);
+            clearFailure(`${pr.number}:${confirmedHead}`);
+          }
           continue;
         }
 
@@ -577,12 +646,15 @@ export function registerVcCurrentHeadCiWatch(
         );
         if (finalConfirmation.kind !== "actionable") {
           failedCount -= 1;
-          waitingCount += 1;
           const finalHead = finalChecks.headRefOid?.trim().toLowerCase();
           if (finalHead && /^[0-9a-f]{40}$/iu.test(finalHead)) {
             pruneStaleFailures(candidate.prNumber, finalHead);
           }
-          if (finalConfirmation.kind === "resolved") clearFailure(failureKey);
+          if (finalConfirmation.kind === "resolved") {
+            clearFailure(failureKey);
+          } else {
+            waitingCount += 1;
+          }
           continue;
         }
         if (!/^[0-9a-f]{40}$/iu.test(finalConfirmation.headSha)) {
@@ -624,6 +696,12 @@ export function registerVcCurrentHeadCiWatch(
           }
           continue;
         }
+
+        // The canonical reads above can overlap a concurrent branch update.
+        // Rescan at the final send boundary so an already-observable marker
+        // promotes the outbox entry and suppresses a duplicate notification.
+        confirmPendingMarkers(ctx);
+        if (seenFailures.has(failureKey) || !pendingFailures.has(failureKey)) continue;
 
         const attempts = sendAttempts.get(failureKey) ?? 0;
         const message = watcherMessageForFailure(failureKey);

@@ -197,9 +197,11 @@ function queueFailureCycle(
   confirmation = initial,
   final: PullRequestChecks | string = confirmation,
   queueFinalPrState = true,
+  queueRestoreConfirmation = false,
 ): void {
   queueOpenPr(harness);
   harness.queueJson(initial);
+  if (queueRestoreConfirmation) harness.queueJson(initial);
   harness.queueJson(confirmation);
   const finalPayload = typeof final === "string" ? { ...confirmation, headRefOid: final } : final;
   harness.queueJson(finalPayload);
@@ -258,12 +260,26 @@ describe("vc-current-head-ci-watch extension handlers", () => {
       stateEntry([`999:${OLD_HEAD}`, activeKey]),
     ];
     const harness = new ExtensionHarness();
-    queueFailureCycle(harness);
+    queueFailureCycle(harness, failurePayload(), failurePayload(), failurePayload(), true, true);
     await harness.start(harness.context({ branch }));
 
     assert.deepEqual(latestState(harness)?.seenFailedHeads, [activeKey]);
     assert.equal(harness.messages.length, 0, "restored active failure stays deduplicated");
     assert.match(harness.statusEvents.at(-1)?.[1] ?? "", /red current head detected on 1 PR/u);
+  });
+
+  it("does not prune a restored current-head marker from a delayed first head", async () => {
+    const activeKey = `483:${CURRENT_HEAD}`;
+    const branch = [stateEntry([activeKey])];
+    const harness = new ExtensionHarness();
+    queueOpenPr(harness);
+    harness.queueJson(failurePayload(OLD_HEAD));
+    harness.queueJson(failurePayload(CURRENT_HEAD));
+    harness.queueJson(failurePayload(CURRENT_HEAD));
+    await harness.start(harness.context({ branch }));
+
+    assert.equal(harness.messages.length, 0, "the confirmed current head remains deduplicated");
+    assert.deepEqual(latestState(harness)?.seenFailedHeads, [activeKey]);
   });
 
   it("retries unavailable and malformed restore state, then succeeds without weakening bounds", async () => {
@@ -278,6 +294,7 @@ describe("vc-current-head-ci-watch extension handlers", () => {
     assert.equal(harness.messages.length, 0);
 
     queueOpenPr(harness);
+    harness.queueJson(failurePayload());
     harness.queueJson(failurePayload());
     await harness.tick();
     assert.match(harness.statusEvents.at(-1)?.[1] ?? "", /malformed failure keys/u);
@@ -330,11 +347,13 @@ describe("vc-current-head-ci-watch extension handlers", () => {
     queueOpenPr(harness);
     harness.queueJson(failurePayload());
     harness.queueJson(failurePayload());
+    harness.queueJson(failurePayload());
     await harness.start(ctx);
     assert.equal(harness.messages.length, 0, "current red head is conservatively suppressed");
     assert.deepEqual(latestState(harness)?.seenFailedHeads, [`483:${CURRENT_HEAD}`]);
 
     queueOpenPr(harness);
+    harness.queueJson(successPayload());
     harness.queueJson(successPayload());
     await harness.tick();
     assert.deepEqual(latestState(harness)?.seenFailedHeads, [], "a real green transition clears recovery");
@@ -381,6 +400,28 @@ describe("vc-current-head-ci-watch extension handlers", () => {
     assert.deepEqual(latestState(harness)?.seenFailedHeads, [`483:${CURRENT_HEAD}`]);
   });
 
+  it("rescans branch markers at the final send boundary", async () => {
+    const branch: unknown[] = [];
+    const harness = new ExtensionHarness();
+    const marker =
+      `[vc-ci-watch pr=483 head=${CURRENT_HEAD}] Current-head CI failed on PR #483. ` +
+      `Before taking any action, confirm from the canonical pull request that PR #483 still has ` +
+      `the exact expected head SHA ${CURRENT_HEAD}; stop if it differs. Continue dev loop on PR 483.`;
+    queueOpenPr(harness);
+    harness.queueJson(failurePayload());
+    harness.queueJson(failurePayload());
+    harness.queueJson(failurePayload());
+    harness.queuePlan(async () => {
+      branch.push(userMessage(marker));
+      return { code: 0, stdout: JSON.stringify({ ...failurePayload(), state: "OPEN" }) };
+    });
+    await harness.start(harness.context({ branch }));
+
+    assert.equal(harness.messages.length, 0, "the concurrent marker suppresses a duplicate send");
+    assert.deepEqual(latestState(harness)?.seenFailedHeads, [`483:${CURRENT_HEAD}`]);
+    assert.deepEqual(latestState(harness)?.pendingNotifications, []);
+  });
+
   it("re-reads and authoritatively enriches the full final rollup before dispatch", async () => {
     const finalRerun: PullRequestChecks = {
       headRefOid: CURRENT_HEAD,
@@ -411,6 +452,21 @@ describe("vc-current-head-ci-watch extension handlers", () => {
     assert.equal(harness.execArgs.filter((args) => args[0] === "api").length, 2);
     assert.deepEqual(latestState(harness)?.seenFailedHeads, []);
     assert.deepEqual(latestState(harness)?.pendingNotifications, []);
+  });
+
+  it("reports resolved final green as green rather than pending", async () => {
+    const harness = new ExtensionHarness();
+    queueOpenPr(harness);
+    harness.queueJson(failurePayload());
+    harness.queueJson(failurePayload());
+    harness.queueJson(successPayload());
+    await harness.start(harness.context());
+
+    assert.equal(harness.messages.length, 0);
+    assert.deepEqual(latestState(harness)?.seenFailedHeads, []);
+    assert.deepEqual(latestState(harness)?.pendingNotifications, []);
+    assert.match(harness.statusEvents.at(-1)?.[1] ?? "", /current heads green/u);
+    assert.doesNotMatch(harness.statusEvents.at(-1)?.[1] ?? "", /pending\/unknown/u);
   });
 
   it("requires an open exact head from the canonical read after final Actions enrichment", async () => {
@@ -496,6 +552,7 @@ describe("vc-current-head-ci-watch extension handlers", () => {
     harness.queueJson(actionsSuccessPayload(1, 100));
     harness.queueJson(failurePayload(NEW_HEAD));
     for (let id = 1; id <= 100; id += 1) harness.queueJson(fixedRepositoryJob(id));
+    harness.queueJson(actionsSuccessPayload(1, 100));
     harness.queueJson(failurePayload(NEW_HEAD));
     harness.queueJson(finalRerun);
     await harness.start(harness.context());
@@ -593,6 +650,7 @@ describe("vc-current-head-ci-watch extension handlers", () => {
 
     queueOpenPr(harness);
     harness.queueJson(successPayload());
+    harness.queueJson(successPayload());
     await harness.tick();
     queueFailureCycle(harness);
     await harness.tick();
@@ -629,7 +687,7 @@ describe("vc-current-head-ci-watch extension handlers", () => {
       stateEntry([], [`483:${CURRENT_HEAD}`]),
     ];
     const retryHarness = new ExtensionHarness();
-    queueFailureCycle(retryHarness);
+    queueFailureCycle(retryHarness, failurePayload(), failurePayload(), failurePayload(), true, true);
     await retryHarness.start(retryHarness.context({ branch: branchWithoutMarker }));
     assert.equal(retryHarness.messages.length, 1, "restart resets only the bounded in-memory attempt budget");
 
@@ -639,7 +697,7 @@ describe("vc-current-head-ci-watch extension handlers", () => {
       userMessage(marker),
     ];
     const recoveredHarness = new ExtensionHarness();
-    queueFailureCycle(recoveredHarness);
+    queueFailureCycle(recoveredHarness, failurePayload(), failurePayload(), failurePayload(), true, true);
     await recoveredHarness.start(recoveredHarness.context({ branch: branchWithMarker }));
     assert.equal(recoveredHarness.messages.length, 0);
     assert.deepEqual(latestState(recoveredHarness)?.seenFailedHeads, [`483:${CURRENT_HEAD}`]);
@@ -686,13 +744,15 @@ describe("vc-current-head-ci-watch extension handlers", () => {
     assert.deepEqual(latestState(harness)?.seenFailedHeads, [`483:${CURRENT_HEAD}`]);
 
     queueOpenPr(harness);
-    harness.queueJson({
+    const mixedGreenPayload: PullRequestChecks = {
       headRefOid: CURRENT_HEAD,
       statusCheckRollup: [
         { name: "build", status: "COMPLETED", conclusion: "SUCCESS" },
         { name: "optional", status: "COMPLETED", conclusion: "SKIPPED" },
       ],
-    });
+    };
+    harness.queueJson(mixedGreenPayload);
+    harness.queueJson(mixedGreenPayload);
     await harness.tick();
     assert.deepEqual(latestState(harness)?.seenFailedHeads, []);
 
@@ -740,6 +800,7 @@ describe("vc-current-head-ci-watch extension handlers", () => {
     harness.queueJson(apiHeavy);
     harness.queueJson(failurePayload());
     for (let id = 1; id <= 100; id += 1) harness.queueJson(fixedRepositoryJob(id));
+    harness.queueJson(apiHeavy);
     harness.queueJson(failurePayload());
     harness.queueJson(finalActionsFailure);
     await harness.start(harness.context());
@@ -751,6 +812,7 @@ describe("vc-current-head-ci-watch extension handlers", () => {
     harness.queueJson([{ number: 483 }, { number: 484 }]);
     harness.queueJson(failurePayload());
     harness.queueJson(failurePayload());
+    harness.queueJson(apiHeavy);
     harness.queueJson(apiHeavy);
     harness.queueJson(finalActionsFailure);
     harness.queueJson(fixedRepositoryJob(101, { runAttempt: 1, runId: 42 }));
