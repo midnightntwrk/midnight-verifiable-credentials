@@ -25,6 +25,10 @@ const MAX_NOTIFICATION_SEND_ATTEMPTS_PER_SESSION = 3;
 const FAILURE_KEY_PATTERN = /^(\d+):([0-9a-f]{40})$/iu;
 
 type PullRequest = { number: number };
+type PullRequestState = {
+  headRefOid?: string | null;
+  state?: string | null;
+};
 type IntervalHandle = unknown;
 type PendingNotification = {
   failureKey: string;
@@ -590,6 +594,31 @@ export function registerVcCurrentHeadCiWatch(
 
         const finalFailureKey = `${candidate.prNumber}:${finalConfirmation.headSha.toLowerCase()}`;
         if (finalFailureKey !== failureKey || !pendingFailures.has(failureKey)) continue;
+
+        // Actions enrichment can outlive the rollup read. Make the canonical
+        // PR state the last remote read before dispatch, and require the PR to
+        // remain open on the exact expected head.
+        const finalPrState = await ghJson<PullRequestState>(pi, [
+          "pr",
+          "view",
+          String(candidate.prNumber),
+          "--repo",
+          REPOSITORY,
+          "--json",
+          "headRefOid,state",
+        ], controller.signal);
+        if (!isCurrentSession(generation)) return;
+        const canonicalHead = finalPrState?.headRefOid?.trim().toLowerCase();
+        const canonicalState = finalPrState?.state?.trim().toUpperCase();
+        if (canonicalState !== "OPEN" || canonicalHead !== finalConfirmation.headSha.toLowerCase()) {
+          failedCount -= 1;
+          waitingCount += 1;
+          if (canonicalHead && /^[0-9a-f]{40}$/iu.test(canonicalHead)) {
+            pruneStaleFailures(candidate.prNumber, canonicalHead);
+          }
+          continue;
+        }
+
         const attempts = sendAttempts.get(failureKey) ?? 0;
         const message = watcherMessageForFailure(failureKey);
         if (

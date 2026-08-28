@@ -206,17 +206,20 @@ expected head SHA. It instructs the downstream dev loop to confirm that exact
 head from the canonical pull request before acting and to stop on mismatch.
 Immediately before enqueue, the watcher re-reads the complete exact-head check
 rollup and repeats authoritative Actions enrichment; a same-head successful
-rerun suppresses the queued notification.
+rerun suppresses the queued notification. After that potentially long enrichment,
+it makes one last canonical PR-state read and sends only if the PR is still
+`OPEN` on the exact expected head SHA.
 
 Because Pi's `sendUserMessage` API is void, its return is not delivery evidence.
 The watcher first appends a bounded pending-notification outbox record containing
 the PR/head key and the count of matching markers already on the active branch.
 It promotes that key to durable dedupe only after a new exact watcher user-message
 marker appears in the bounded session branch. Missing markers retry on the
-five-minute cadence, with at most three sends per key in one session and at most
-one model-triggering dispatch across all watched PRs per observation. A real
-green observation or pruning after a head/PR change clears that key's in-memory
-attempt budget, so a later same-head refailure can notify. PR lookup priority
+five-minute cadence, with at most three sends per uninterrupted failure episode
+and at most one model-triggering dispatch across all watched PRs per observation.
+A real green observation or pruning after a head/PR change ends that episode and
+clears the key's in-memory attempt budget, so a later failure receives a fresh
+three-send budget. PR lookup priority
 rotates deterministically across cadences, including reserved final-confirmation
 capacity, so an API-heavy PR cannot repeatedly starve later red PRs while the
 100-lookup global bound remains intact. Dispatch candidates are tried in that
