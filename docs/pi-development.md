@@ -207,19 +207,21 @@ head from the canonical pull request before acting and to stop on mismatch.
 Immediately before enqueue, the watcher re-reads the complete exact-head check
 rollup and repeats authoritative Actions enrichment; a same-head successful
 rerun suppresses the queued notification. After that potentially long enrichment,
-it makes one last canonical PR-state read and sends only if the PR is still
-`OPEN` on the exact expected head SHA.
+it makes one last canonical PR-state and raw-rollup read. It sends only if the PR
+is still `OPEN` on the exact expected head SHA and the raw `statusCheckRollup` is
+unchanged from the rollup that was enriched.
 
 Because Pi's `sendUserMessage` API is void, its return is not delivery evidence.
 The watcher first appends a bounded pending-notification outbox record containing
 the PR/head key and the count of matching markers already on the active branch.
 It promotes that key to durable dedupe only after a new exact watcher user-message
 marker appears in the bounded session branch. Missing markers retry on the
-five-minute cadence, with at most three sends per uninterrupted failure episode
+five-minute cadence, with at most three sends per failure key per watcher session
 and at most one model-triggering dispatch across all watched PRs per observation.
-A real green observation or pruning after a head/PR change ends that episode and
-clears the key's in-memory attempt budget, so a later failure receives a fresh
-three-send budget. PR lookup priority
+A restart begins a new watcher session and grants a still-pending failure key
+whose marker is absent a fresh three-send budget. Within a session, a real green observation or pruning after a
+head/PR change clears the key's in-memory attempt budget, so a later failure also
+receives a fresh three-send budget. PR lookup priority
 rotates deterministically across cadences, including reserved final-confirmation
 capacity, so an API-heavy PR cannot repeatedly starve later red PRs while the
 100-lookup global bound remains intact. Dispatch candidates are tried in that
