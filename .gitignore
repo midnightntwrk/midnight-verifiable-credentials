@@ -46,6 +46,9 @@ contract/.npm-cache
 !.pi/extensions/
 .pi/extensions/*
 !.pi/extensions/vc-current-head-ci-watch.ts
+!.pi/extensions/vc-current-head-ci-watch/
+!.pi/extensions/vc-current-head-ci-watch/logic.ts
+!.pi/extensions/vc-current-head-ci-watch/logic.test.ts
 .tmp-trusted-time-capability-*
 
 # Optional eslint cache

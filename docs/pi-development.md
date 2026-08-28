@@ -152,9 +152,10 @@ npx --yes dev-loops@0.9.0 doctor
 npx --yes dev-loops@0.9.0 gates
 ```
 
-To roll back the integration, remove `.pi/settings.json`, `.devloops`, and
-`.pi/extensions/vc-current-head-ci-watch.ts`, then remove the Pi cache
-directories under `.pi/`. The ordinary shell, Codex, Claude, GitHub, and
+To roll back the integration, remove `.pi/settings.json`, `.devloops`,
+`.pi/extensions/vc-current-head-ci-watch.ts`, and its
+`.pi/extensions/vc-current-head-ci-watch/` support directory, then remove the Pi
+cache directories under `.pi/`. The ordinary shell, Codex, Claude, GitHub, and
 `./run.sh` workflows continue to work without Pi.
 
 ## Current-head CI watch (interactive Pi only)
@@ -162,10 +163,76 @@ directories under `.pi/`. The ordinary shell, Codex, Claude, GitHub, and
 `.pi/extensions/vc-current-head-ci-watch.ts` is a trusted-session convenience
 watcher. After installing or updating the checkout, run `/reload` or restart
 Pi so it loads. While Pi remains open in an interactive trusted session, it
-checks this repository's open PRs authored by the authenticated `gh` user every
-five minutes. A newly observed failed current head queues an attributed
-`continue dev loop on PR <N>` follow-up with the failed check names; pending,
-unknown, and previously observed PR/head failures do not trigger it.
+checks a bounded set of up to 100 open PRs in this repository authored by the
+authenticated `gh` user every five minutes. Before a newly observed failure
+queues an attributed `continue dev loop on PR <N>` follow-up, the watcher
+re-reads the PR and confirms the exact current head. On session startup it
+first selects only the newest watcher snapshot within the bounded 1,000-entry
+branch tail and reconciles at most 1,000 raw legacy keys against the exact heads
+of that bounded open-PR set. If any head cannot be read or the newest in-tail
+state is malformed or oversized, reconciliation retries without replacing state
+or sending an alert. An explicitly present null or malformed
+`pendingNotifications` value is invalid; only an absent property may use the
+legacy outbox fallback. If prior state is outside the bounded tail, the watcher
+writes one conservative bounded recovery snapshot that suppresses each current
+PR/head until an actual green observation clears it. A later real failure on
+that cleared head is actionable, so long sessions recover without unbounded
+history scans, permanent disablement, or duplicate active alerts. Once complete,
+the snapshot is compacted to at most one current-head key per watched PR.
+Pending, unknown, wholly neutral/skipped, superseded, and previously observed
+PR/head failures do not trigger it. A settled rollup containing at least one
+actual success and only neutral/skipped peers is green; an all-neutral/skipped
+rollup remains unknown and cannot clear an active failure. Within one Actions
+run, duplicate cancellation is non-actionable only when an actual success on that exact head
+belongs to a later, one-to-one API-enriched attempt of the same workflow/check
+identity; Actions URLs without validated attempt metadata and ambiguous
+same-named jobs remain fail-closed. Across distinct Actions runs, suppression is
+limited to the repository's known `Scan/scan` cross-trigger pair: exactly one
+completed cancellation and one completed success with strict HTTPS
+repository-local Actions URLs, different run IDs, and a strictly later valid
+`started_at` from each authoritative Actions job response. Rollup `startedAt`
+values are not trusted for cross-run ordering. Both jobs must also be verified
+through the fixed-repository Actions job API with matching job, run, head, name,
+and workflow metadata; unavailable, invalid, or mismatched metadata remains
+fail-closed. Stable non-Actions provider URLs are
+grouped only with the same workflow/check identity. Only an actual successful
+observation clears prior PR/head notification state so a later failure on the same commit remains actionable. Reconfirmed red heads
+remain counted as red in the footer even when their notifications are already
+deduplicated.
+
+The model-triggering message contains no provider-supplied check names. Its only
+variable data is a validated positive PR number and the full validated 40-hex
+expected head SHA. It instructs the downstream dev loop to confirm that exact
+head from the canonical pull request before acting and to stop on mismatch.
+Immediately before enqueue, the watcher re-reads the complete exact-head check
+rollup and repeats authoritative Actions enrichment; a same-head successful
+rerun suppresses the queued notification. After that potentially long enrichment,
+it makes one last canonical PR-state and raw-rollup read. It sends only if the PR
+is still `OPEN` on the exact expected head SHA and the raw `statusCheckRollup` is
+unchanged from the rollup that was enriched.
+
+Because Pi's `sendUserMessage` API is void, its return is not delivery evidence.
+The watcher first appends a bounded pending-notification outbox record containing
+the PR/head key and the count of matching markers already on the active branch.
+It promotes that key to durable dedupe only after a new exact watcher user-message
+marker appears in the bounded session branch. Missing markers retry on the
+five-minute cadence, with at most three sends per failure key per watcher session
+and at most one model-triggering dispatch across all watched PRs per observation.
+A restart begins a new watcher session and grants a still-pending failure key
+whose marker is absent a fresh three-send budget. Within a session, a real green observation or pruning after a
+head/PR change clears the key's in-memory attempt budget, so a later failure also
+receives a fresh three-send budget. PR lookup priority
+rotates deterministically across cadences, including reserved final-confirmation
+capacity, so an API-heavy PR cannot repeatedly starve later red PRs while the
+100-lookup global bound remains intact. Dispatch candidates are tried in that
+rotated order until one message is actually sent; an unavailable final read or
+enrichment cannot starve a later confirmed-red head.
+Other red heads remain in the bounded outbox and status rollup for later
+cadences. Pending records survive restart, where an existing new marker is
+recovered or an absent marker receives a fresh bounded retry budget. State append failures prevent send,
+malformed or unavailable restore data remains fail-closed, and session-generation
+checks prevent stale callbacks from delivering after shutdown or into a resumed
+session.
 
 This is an in-session dev-loop route/fix prompt, not a daemon. It never merges,
 approves, marks a PR ready, or changes GitHub state.
