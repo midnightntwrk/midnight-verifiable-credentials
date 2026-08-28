@@ -240,10 +240,14 @@ export function registerVcCurrentHeadCiWatch(
       markerOccurrencesBeforeSend,
     }));
 
-  const clearFailure = (failureKey: string): boolean => persistState(
-    [...seenFailures].filter((key) => key !== failureKey).sort(),
-    pendingSnapshot().filter((item) => item.failureKey !== failureKey),
-  );
+  const clearFailure = (failureKey: string): boolean => {
+    const changed = persistState(
+      [...seenFailures].filter((key) => key !== failureKey).sort(),
+      pendingSnapshot().filter((item) => item.failureKey !== failureKey),
+    );
+    sendAttempts.delete(failureKey);
+    return changed;
+  };
 
   const addPendingFailure = (ctx: ExtensionContext, failureKey: string): boolean => persistState(
     [...seenFailures].sort(),
@@ -257,12 +261,17 @@ export function registerVcCurrentHeadCiWatch(
   );
 
   const pruneStaleFailures = (prNumber: number, currentHeadSha: string): void => {
-    const pendingKeys = pruneSeenFailureKeys(pendingFailures.keys(), prNumber, currentHeadSha);
+    const normalizedHeadSha = currentHeadSha.toLowerCase();
+    const currentFailureKey = `${prNumber}:${normalizedHeadSha}`;
+    const pendingKeys = pruneSeenFailureKeys(pendingFailures.keys(), prNumber, normalizedHeadSha);
     const retainedPending = new Set(pendingKeys);
     persistState(
-      pruneSeenFailureKeys(seenFailures, prNumber, currentHeadSha),
+      pruneSeenFailureKeys(seenFailures, prNumber, normalizedHeadSha),
       pendingSnapshot().filter((item) => retainedPending.has(item.failureKey)),
     );
+    for (const key of sendAttempts.keys()) {
+      if (key.startsWith(`${prNumber}:`) && key !== currentFailureKey) sendAttempts.delete(key);
+    }
   };
 
   const confirmPendingMarkers = (ctx: ExtensionContext): number => {
@@ -315,6 +324,7 @@ export function registerVcCurrentHeadCiWatch(
       }
       if (prs.length === 0) {
         persistState([], [], restorePending);
+        sendAttempts.clear();
         restorePending = false;
         setStatus(ctx, "no open PRs authored by @me");
         return;
@@ -389,6 +399,9 @@ export function registerVcCurrentHeadCiWatch(
         pruneSeenFailureKeysForOpenPullRequests(seenFailures, prs.map((pr) => pr.number)),
         pendingSnapshot().filter((item) => openPendingKeys.has(item.failureKey)),
       );
+      for (const key of sendAttempts.keys()) {
+        if (!openPendingKeys.has(key)) sendAttempts.delete(key);
+      }
 
       let failedCount = 0;
       let waitingCount = 0;
@@ -499,13 +512,14 @@ export function registerVcCurrentHeadCiWatch(
         });
       }
 
-      const selected = [...dispatchCandidates.entries()]
-        .sort(([left], [right]) => left.localeCompare(right))[0];
-      if (selected && isCurrentSession(generation)) {
-        const [failureKey, candidate] = selected;
+      const orderedCandidates = [...dispatchCandidates.entries()]
+        .sort(([left], [right]) => left.localeCompare(right));
+      for (const [failureKey, candidate] of orderedCandidates) {
+        if (!isCurrentSession(generation)) return;
         // The final pre-send read includes the complete rollup and repeats
         // authoritative Actions enrichment. This is the dispatch boundary:
-        // a same-head successful rerun suppresses the queued notification.
+        // a same-head successful rerun suppresses this candidate, while a
+        // later confirmed-red candidate may still dispatch.
         const finalPayload = await ghJson<PullRequestChecks>(pi, [
           "pr",
           "view",
@@ -519,51 +533,56 @@ export function registerVcCurrentHeadCiWatch(
         if (!finalPayload) {
           failedCount -= 1;
           waitingCount += 1;
-        } else {
-          finalEnrichmentActive = true;
-          finalEnrichmentWithinBudget = true;
-          const finalChecks = await enrichActionsRunAttempts(finalPayload, loadActionsJob);
-          finalEnrichmentActive = false;
-          if (!isCurrentSession(generation)) return;
-          if (!finalEnrichmentWithinBudget) {
-            failedCount -= 1;
-            waitingCount += 1;
-          } else {
-            const finalConfirmation = confirmCurrentHeadFailure(
-              { kind: "failed", failures: candidate.failures, headSha: candidate.headSha },
-              observeChecks(finalChecks),
-              finalChecks.headRefOid,
-            );
-            if (finalConfirmation.kind !== "actionable") {
-              failedCount -= 1;
-              waitingCount += 1;
-              const finalHead = finalChecks.headRefOid?.trim().toLowerCase();
-              if (finalHead && /^[0-9a-f]{40}$/iu.test(finalHead)) {
-                pruneStaleFailures(candidate.prNumber, finalHead);
-              }
-              if (finalConfirmation.kind === "resolved") clearFailure(failureKey);
-            } else if (/^[0-9a-f]{40}$/iu.test(finalConfirmation.headSha)) {
-              const finalFailureKey = `${candidate.prNumber}:${finalConfirmation.headSha.toLowerCase()}`;
-              if (finalFailureKey === failureKey && pendingFailures.has(failureKey)) {
-                const attempts = sendAttempts.get(failureKey) ?? 0;
-                const message = watcherMessageForFailure(failureKey);
-                if (
-                  attempts < MAX_NOTIFICATION_SEND_ATTEMPTS_PER_SESSION &&
-                  message &&
-                  isCurrentSession(generation)
-                ) {
-                  // The outbox append happened above. The void send is only
-                  // acknowledged after its exact branch marker is observable.
-                  sendAttempts.set(failureKey, attempts + 1);
-                  pi.sendUserMessage(message, { deliverAs: "followUp" });
-                  confirmPendingMarkers(ctx);
-                }
-              }
-            } else {
-              failedCount -= 1;
-              waitingCount += 1;
-            }
+          continue;
+        }
+
+        finalEnrichmentActive = true;
+        finalEnrichmentWithinBudget = true;
+        const finalChecks = await enrichActionsRunAttempts(finalPayload, loadActionsJob);
+        finalEnrichmentActive = false;
+        if (!isCurrentSession(generation)) return;
+        if (!finalEnrichmentWithinBudget) {
+          failedCount -= 1;
+          waitingCount += 1;
+          continue;
+        }
+
+        const finalConfirmation = confirmCurrentHeadFailure(
+          { kind: "failed", failures: candidate.failures, headSha: candidate.headSha },
+          observeChecks(finalChecks),
+          finalChecks.headRefOid,
+        );
+        if (finalConfirmation.kind !== "actionable") {
+          failedCount -= 1;
+          waitingCount += 1;
+          const finalHead = finalChecks.headRefOid?.trim().toLowerCase();
+          if (finalHead && /^[0-9a-f]{40}$/iu.test(finalHead)) {
+            pruneStaleFailures(candidate.prNumber, finalHead);
           }
+          if (finalConfirmation.kind === "resolved") clearFailure(failureKey);
+          continue;
+        }
+        if (!/^[0-9a-f]{40}$/iu.test(finalConfirmation.headSha)) {
+          failedCount -= 1;
+          waitingCount += 1;
+          continue;
+        }
+
+        const finalFailureKey = `${candidate.prNumber}:${finalConfirmation.headSha.toLowerCase()}`;
+        if (finalFailureKey !== failureKey || !pendingFailures.has(failureKey)) continue;
+        const attempts = sendAttempts.get(failureKey) ?? 0;
+        const message = watcherMessageForFailure(failureKey);
+        if (
+          attempts < MAX_NOTIFICATION_SEND_ATTEMPTS_PER_SESSION &&
+          message &&
+          isCurrentSession(generation)
+        ) {
+          // The outbox append happened above. The void send is only
+          // acknowledged after its exact branch marker is observable.
+          sendAttempts.set(failureKey, attempts + 1);
+          pi.sendUserMessage(message, { deliverAs: "followUp" });
+          confirmPendingMarkers(ctx);
+          break;
         }
       }
 

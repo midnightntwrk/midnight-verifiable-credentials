@@ -460,6 +460,25 @@ describe("vc-current-head-ci-watch extension handlers", () => {
     ]);
   });
 
+  it("continues to a later candidate when the first cannot complete its final read", async () => {
+    const harness = new ExtensionHarness();
+    harness.queueJson([{ number: 483 }, { number: 484 }]);
+    harness.queueJson(failurePayload());
+    harness.queueJson(failurePayload(NEW_HEAD));
+    harness.queueJson(failurePayload());
+    harness.queueJson(failurePayload(NEW_HEAD));
+    harness.queueJson(null);
+    harness.queueJson(failurePayload(NEW_HEAD));
+    await harness.start(harness.context());
+
+    assert.equal(harness.messages.length, 1, "exactly one dispatch occurs in the observation");
+    assert.match(harness.messages[0]!, /pr=484/u);
+    assert.deepEqual(latestState(harness)?.seenFailedHeads, [`484:${NEW_HEAD}`]);
+    assert.deepEqual(latestState(harness)?.pendingNotifications.map((item) => item.failureKey), [
+      `483:${CURRENT_HEAD}`,
+    ]);
+  });
+
   it("keeps a bounded durable outbox until the exact user-message marker appears", async () => {
     const branch: unknown[] = [];
     const harness = new ExtensionHarness();
@@ -493,6 +512,51 @@ describe("vc-current-head-ci-watch extension handlers", () => {
     queueFailureCycle(harness);
     await harness.tick();
     assert.equal(harness.messages.length, 3, "confirmed exact marker enables durable dedupe");
+  });
+
+  it("resets the same-head attempt budget after a real green observation", async () => {
+    const harness = new ExtensionHarness();
+    const ctx = harness.context();
+    harness.dropSentMessages();
+
+    for (let attempt = 1; attempt <= 3; attempt += 1) {
+      queueFailureCycle(harness);
+      if (attempt === 1) await harness.start(ctx);
+      else await harness.tick();
+    }
+    assert.equal(harness.messages.length, 3);
+
+    queueOpenPr(harness);
+    harness.queueJson(successPayload());
+    await harness.tick();
+    queueFailureCycle(harness);
+    await harness.tick();
+
+    assert.equal(harness.messages.length, 4, "same-head refailure receives a fresh send budget");
+  });
+
+  it("resets pruned head and closed-PR attempt budgets", async () => {
+    const harness = new ExtensionHarness();
+    const ctx = harness.context();
+    harness.dropSentMessages();
+
+    for (let attempt = 1; attempt <= 3; attempt += 1) {
+      queueFailureCycle(harness);
+      if (attempt === 1) await harness.start(ctx);
+      else await harness.tick();
+    }
+
+    queueFailureCycle(harness, failurePayload(NEW_HEAD));
+    await harness.tick();
+    queueFailureCycle(harness);
+    await harness.tick();
+    assert.equal(harness.messages.length, 5, "head pruning resets the old head's attempt budget");
+
+    harness.queueJson([]);
+    await harness.tick();
+    queueFailureCycle(harness);
+    await harness.tick();
+    assert.equal(harness.messages.length, 6, "closed-PR pruning resets the attempt budget");
   });
 
   it("recovers pending outbox state across restart and retries only when no marker exists", async () => {
