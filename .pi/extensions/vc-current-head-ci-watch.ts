@@ -1,95 +1,28 @@
 import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
 
+import {
+  confirmActionableFailure,
+  formatFailureNames,
+  githubActionsJobReference,
+  observeChecks,
+  type PullRequestChecks,
+  type StatusCheck,
+} from "./vc-current-head-ci-watch/logic.ts";
+
 const REPOSITORY = "midnightntwrk/midnight-verifiable-credentials";
 const WATCH_INTERVAL_MS = 5 * 60 * 1000;
 const STATUS_KEY = "vc-current-head-ci-watch";
 const STATE_ENTRY_TYPE = "vc-current-head-ci-watch-state";
 const MAX_OPEN_PULL_REQUESTS = 1_000;
-const MAX_FAILURE_NAMES_IN_MESSAGE = 20;
-const MAX_FAILURE_NAME_CODE_POINTS = 120;
-const FAILED_CONCLUSIONS = new Set([
-  "ACTION_REQUIRED",
-  "CANCELLED",
-  "ERROR",
-  "FAILURE",
-  "FAILED",
-  "STALE",
-  "STARTUP_FAILURE",
-  "TIMED_OUT",
-]);
-const COMPLETED_SUCCESS_CONCLUSIONS = new Set(["NEUTRAL", "SKIPPED", "SUCCESS"]);
+const MAX_ACTIONS_JOB_LOOKUPS = 100;
+const ACTIONS_JOB_LOOKUP_BATCH_SIZE = 10;
 
 type PullRequest = { number: number };
-type StatusCheck = {
-  conclusion?: string | null;
-  context?: string | null;
-  name?: string | null;
-  state?: string | null;
-  status?: string | null;
+type ActionsJob = {
+  id?: number;
+  run_attempt?: number;
+  run_id?: number;
 };
-type PullRequestChecks = {
-  headRefOid?: string | null;
-  statusCheckRollup?: StatusCheck[] | null;
-};
-type CheckObservation =
-  | { kind: "failed"; failures: string[]; headSha: string }
-  | { kind: "green"; headSha: string }
-  | { kind: "unknown"; reason: string };
-
-function normalize(value: string | null | undefined): string | undefined {
-  return typeof value === "string" && value.trim() ? value.trim().toUpperCase() : undefined;
-}
-
-function checkName(check: StatusCheck): string {
-  return check.name?.trim() || check.context?.trim() || "unnamed check";
-}
-
-function encodeFailureName(name: string): string {
-  const codePoints = [...name];
-  const encoded = codePoints
-    .slice(0, MAX_FAILURE_NAME_CODE_POINTS)
-    .map((character) => `U+${character.codePointAt(0)!.toString(16).toUpperCase().padStart(4, "0")}`)
-    .join(" ");
-  return codePoints.length > MAX_FAILURE_NAME_CODE_POINTS ? `${encoded} (truncated)` : encoded;
-}
-
-function observeChecks(payload: PullRequestChecks): CheckObservation {
-  const headSha = payload.headRefOid?.trim();
-  const checks = payload.statusCheckRollup;
-  if (!headSha || !Array.isArray(checks) || checks.length === 0) {
-    return { kind: "unknown", reason: "awaiting a current-head check rollup" };
-  }
-
-  const failures: string[] = [];
-  let hasPendingOrUnknown = false;
-  for (const check of checks) {
-    const status = normalize(check.status);
-    const conclusion = normalize(check.conclusion ?? check.state);
-    if (status && status !== "COMPLETED") {
-      hasPendingOrUnknown = true;
-      continue;
-    }
-    if (!conclusion) {
-      hasPendingOrUnknown = true;
-      continue;
-    }
-    if (FAILED_CONCLUSIONS.has(conclusion)) {
-      failures.push(checkName(check));
-      continue;
-    }
-    if (!COMPLETED_SUCCESS_CONCLUSIONS.has(conclusion)) {
-      hasPendingOrUnknown = true;
-    }
-  }
-
-  if (failures.length > 0) {
-    return { kind: "failed", failures: [...new Set(failures)].sort(), headSha };
-  }
-  if (hasPendingOrUnknown) {
-    return { kind: "unknown", reason: "current-head checks are pending or unknown" };
-  }
-  return { kind: "green", headSha };
-}
 
 async function ghJson<T>(
   pi: ExtensionAPI,
@@ -103,6 +36,70 @@ async function ghJson<T>(
   } catch {
     return undefined;
   }
+}
+
+async function enrichActionsRunAttempts(
+  pi: ExtensionAPI,
+  payload: PullRequestChecks,
+  signal: AbortSignal,
+): Promise<PullRequestChecks> {
+  const checks = payload.statusCheckRollup;
+  if (!Array.isArray(checks)) return payload;
+
+  const duplicateGroups = new Map<string, Array<{ check: StatusCheck; jobId: string; runId: string }>>();
+  for (const check of checks) {
+    const reference = githubActionsJobReference(check);
+    const workflowName = check.workflowName?.trim();
+    const name = check.name?.trim();
+    if (!reference || !workflowName || !name) continue;
+    const key = JSON.stringify([reference.runId, workflowName, name]);
+    const group = duplicateGroups.get(key);
+    const candidate = { check, ...reference };
+    if (group) group.push(candidate);
+    else duplicateGroups.set(key, [candidate]);
+  }
+
+  const candidates = [...duplicateGroups.values()].filter((group) => group.length > 1).flat();
+  const jobIds = [...new Set(candidates.map((candidate) => candidate.jobId))];
+  if (jobIds.length === 0) return payload;
+  if (jobIds.length > MAX_ACTIONS_JOB_LOOKUPS) return payload;
+
+  const jobs = new Map<string, ActionsJob>();
+  for (let index = 0; index < jobIds.length; index += ACTIONS_JOB_LOOKUP_BATCH_SIZE) {
+    const batch = jobIds.slice(index, index + ACTIONS_JOB_LOOKUP_BATCH_SIZE);
+    const results = await Promise.all(batch.map(async (jobId) => ({
+      jobId,
+      job: await ghJson<ActionsJob>(pi, [
+        "api",
+        `repos/${REPOSITORY}/actions/jobs/${jobId}`,
+      ], signal),
+    })));
+    for (const { jobId, job } of results) {
+      if (job) jobs.set(jobId, job);
+    }
+  }
+
+  const references = new Map(candidates.map((candidate) => [candidate.check, candidate]));
+  return {
+    ...payload,
+    statusCheckRollup: checks.map((check) => {
+      const reference = references.get(check);
+      if (!reference) return check;
+      const job = jobs.get(reference.jobId);
+      if (
+        !job ||
+        String(job.id) !== reference.jobId ||
+        String(job.run_id) !== reference.runId ||
+        !Number.isInteger(job.run_attempt) ||
+        job.run_attempt! < 1
+      ) return check;
+      return {
+        ...check,
+        actionsRunId: reference.runId,
+        actionsRunAttempt: job.run_attempt,
+      };
+    }),
+  };
 }
 
 function restoreSeenFailures(ctx: ExtensionContext, seenFailures: Set<string>): void {
@@ -176,29 +173,62 @@ export default function (pi: ExtensionAPI) {
           continue;
         }
 
-        const observation = observeChecks(payload);
+        const enrichedPayload = await enrichActionsRunAttempts(pi, payload, controller.signal);
+        const observation = observeChecks(enrichedPayload);
         if (observation.kind === "unknown") {
           waitingCount += 1;
           continue;
         }
         if (observation.kind === "green") continue;
 
+        // Re-read immediately before notifying. A delayed first rollup can
+        // belong to a superseded head, and a duplicate/rerun may already have
+        // made the initially observed failure non-actionable.
+        const confirmationPayload = await ghJson<PullRequestChecks>(pi, [
+          "pr",
+          "view",
+          String(pr.number),
+          "--repo",
+          REPOSITORY,
+          "--json",
+          "headRefOid,statusCheckRollup",
+        ], controller.signal);
+        if (!confirmationPayload) {
+          waitingCount += 1;
+          continue;
+        }
+        const confirmedChecks = await enrichActionsRunAttempts(pi, confirmationPayload, controller.signal);
+        const confirmation = confirmActionableFailure(observation, observeChecks(confirmedChecks));
+        if (confirmation.kind !== "actionable") {
+          if (confirmation.kind === "unknown") waitingCount += 1;
+          continue;
+        }
+
+        const finalHead = await ghJson<{ headRefOid?: string | null }>(pi, [
+          "pr",
+          "view",
+          String(pr.number),
+          "--repo",
+          REPOSITORY,
+          "--json",
+          "headRefOid",
+        ], controller.signal);
+        if (finalHead?.headRefOid?.trim() !== confirmation.headSha) {
+          waitingCount += 1;
+          continue;
+        }
+
         failedCount += 1;
-        const failureKey = `${pr.number}:${observation.headSha}`;
+        const failureKey = `${pr.number}:${confirmation.headSha}`;
         if (seenFailures.has(failureKey)) continue;
 
         if (!sessionActive) return;
         seenFailures.add(failureKey);
         pi.appendEntry(STATE_ENTRY_TYPE, { seenFailedHeads: [...seenFailures].sort() });
-        const failureNames = observation.failures
-          .slice(0, MAX_FAILURE_NAMES_IN_MESSAGE)
-          .map(encodeFailureName)
-          .join("; ");
-        const omittedFailureCount = observation.failures.length - MAX_FAILURE_NAMES_IN_MESSAGE;
-        const failureSuffix = omittedFailureCount > 0 ? `; ${omittedFailureCount} additional failure name(s)` : "";
+        const failureNames = formatFailureNames(confirmation.failures);
         pi.sendUserMessage(
-          `[vc-ci-watch] Current-head CI failed on PR #${pr.number} (${observation.headSha.slice(0, 12)}). ` +
-            `Untrusted failure names (Unicode code points): ${failureNames}${failureSuffix}. ` +
+          `[vc-ci-watch] Current-head CI failed on PR #${pr.number} (${confirmation.headSha.slice(0, 12)}). ` +
+            `Untrusted failure names (Unicode code points): ${failureNames}. ` +
             `continue dev loop on PR ${pr.number}`,
           { deliverAs: "followUp" },
         );
