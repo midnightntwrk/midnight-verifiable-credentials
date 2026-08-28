@@ -2,6 +2,8 @@ const MAX_FAILURE_NAMES_IN_MESSAGE = 20;
 const MAX_FAILURE_NAME_CODE_POINTS = 120;
 const DEFAULT_MAX_ACTIONS_JOB_LOOKUPS = 100;
 const DEFAULT_ACTIONS_JOB_LOOKUP_BATCH_SIZE = 10;
+const EXPECTED_ACTIONS_REPOSITORY = "midnightntwrk/midnight-verifiable-credentials";
+const CROSS_TRIGGER_CANCELLATION_IDENTITIES = new Set([JSON.stringify(["Scan", "scan"])]);
 
 const FAILED_CONCLUSIONS = new Set([
   "ACTION_REQUIRED",
@@ -79,24 +81,47 @@ function actionsRunId(check: StatusCheck): string | undefined {
 }
 
 function shouldSuppressCrossRunCancellation(check: StatusCheck, checks: StatusCheck[]): boolean {
+  if (normalize(check.status) !== "COMPLETED") return false;
   if (normalize(check.conclusion ?? check.state) !== "CANCELLED") return false;
   const identity = crossRunCancellationIdentity(check);
-  const cancelledRunId = actionsRunId(check);
+  if (!identity || !CROSS_TRIGGER_CANCELLATION_IDENTITIES.has(identity)) return false;
+
+  // Cross-trigger suppression is intentionally limited to the one known
+  // repository workflow/check pair and an unambiguous cancelled/success pair.
+  // Anything broader remains fail-closed because display names alone do not
+  // prove that multiple same-named jobs share a logical identity.
+  const peers = checks.filter((candidate) => crossRunCancellationIdentity(candidate) === identity);
+  if (peers.length !== 2) return false;
+  const candidate = peers.find((peer) => peer !== check);
+  if (!candidate || normalize(candidate.status) !== "COMPLETED") return false;
+  if (normalize(candidate.conclusion ?? candidate.state) !== "SUCCESS") return false;
+
+  const cancelledReference = githubActionsJobReference(check);
+  const successfulReference = githubActionsJobReference(candidate);
   const cancelledStartedAt = startedTime(check);
-  if (!identity || !cancelledRunId || cancelledStartedAt === undefined) return false;
-  return checks.some((candidate) => {
-    const status = normalize(candidate.status);
-    const conclusion = normalize(candidate.conclusion ?? candidate.state);
+  const successfulStartedAt = startedTime(candidate);
+  return (
+    cancelledReference !== undefined &&
+    successfulReference !== undefined &&
+    actionsRunId(check) === cancelledReference.runId &&
+    actionsRunId(candidate) === successfulReference.runId &&
+    successfulReference.runId !== cancelledReference.runId &&
+    cancelledStartedAt !== undefined &&
+    successfulStartedAt !== undefined &&
+    successfulStartedAt > cancelledStartedAt
+  );
+}
+
+function isGithubActionsJobUrl(detailsUrl: string): boolean {
+  try {
+    const url = new URL(detailsUrl);
     return (
-      (!status || status === "COMPLETED") &&
-      conclusion === "SUCCESS" &&
-      crossRunCancellationIdentity(candidate) === identity &&
-      actionsRunId(candidate) !== undefined &&
-      actionsRunId(candidate) !== cancelledRunId &&
-      startedTime(candidate) !== undefined &&
-      startedTime(candidate)! > cancelledStartedAt
+      url.hostname.toLowerCase() === "github.com" &&
+      /^\/[^/]+\/[^/]+\/actions\/runs\/\d+\/job\/\d+\/?$/u.test(url.pathname)
     );
-  });
+  } catch {
+    return false;
+  }
 }
 
 function checkIdentity(check: StatusCheck): string | undefined {
@@ -108,7 +133,7 @@ function checkIdentity(check: StatusCheck): string | undefined {
     return JSON.stringify(["actions-run", runId, workflowName, name]);
   }
   const detailsUrl = check.detailsUrl?.trim();
-  if (!workflowName || !name || !detailsUrl) return undefined;
+  if (!workflowName || !name || !detailsUrl || isGithubActionsJobUrl(detailsUrl)) return undefined;
   try {
     return JSON.stringify(["exact-url", new URL(detailsUrl).href, workflowName, name]);
   } catch {
@@ -123,7 +148,9 @@ export function githubActionsJobReference(
   if (!detailsUrl) return undefined;
   try {
     const url = new URL(detailsUrl);
-    const match = url.pathname.match(/^\/[^/]+\/[^/]+\/actions\/runs\/(\d+)\/job\/(\d+)\/?$/u);
+    const match = url.pathname.match(
+      new RegExp(`^/${EXPECTED_ACTIONS_REPOSITORY}/actions/runs/(\\d+)/job/(\\d+)/?$`, "u"),
+    );
     if (url.hostname.toLowerCase() !== "github.com" || !match) return undefined;
     return { runId: match[1]!, jobId: match[2]! };
   } catch {
@@ -155,13 +182,18 @@ export async function enrichActionsRunAttempts(
   const groups = [...duplicateGroups.values()].filter((group) => group.length > 1);
   const jobIds = [...new Set(groups.flatMap((group) => group.map((candidate) => candidate.jobId)))];
   const maxLookups = limits.maxLookups ?? DEFAULT_MAX_ACTIONS_JOB_LOOKUPS;
+  if (!Number.isInteger(maxLookups) || maxLookups < 0) return payload;
   if (jobIds.length === 0 || jobIds.length > maxLookups) return payload;
 
   const jobs = new Map<string, ActionsJob>();
   const batchSize = limits.batchSize ?? DEFAULT_ACTIONS_JOB_LOOKUP_BATCH_SIZE;
+  if (!Number.isInteger(batchSize) || batchSize < 1) return payload;
   for (let index = 0; index < jobIds.length; index += batchSize) {
     const batch = jobIds.slice(index, index + batchSize);
-    const results = await Promise.all(batch.map(async (jobId) => ({ jobId, job: await loadJob(jobId) })));
+    const results = await Promise.all(batch.map(async (jobId) => ({
+      jobId,
+      job: await loadJob(jobId).catch(() => undefined),
+    })));
     for (const { jobId, job } of results) {
       if (job) jobs.set(jobId, job);
     }
@@ -287,6 +319,17 @@ function groupOutcome(checks: StatusCheck[]): "failed" | "green" | "unknown" {
   ) return "green";
   if (cancellations.length > 0) return "failed";
   return completed.length > 0 ? "green" : "unknown";
+}
+
+export function updateSeenFailureKeys(
+  seenFailureKeys: Iterable<string>,
+  failureKey: string,
+  active: boolean,
+): string[] {
+  const next = new Set(seenFailureKeys);
+  if (active) next.add(failureKey);
+  else next.delete(failureKey);
+  return [...next].sort();
 }
 
 export function encodeFailureName(name: string): string {

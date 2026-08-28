@@ -2,7 +2,7 @@
 
 ## Status
 
-Implemented and locally validated; draft PR and configured gate/review convergence are pending. The user authorized this bounded housekeeping change, draft PR creation against `develop`, configured review/fix cycles, and merge only after every repository safety gate is satisfied.
+Implemented and locally validated on draft PR #483; current-head gate review/fix convergence is in progress. The user authorized this bounded housekeeping change, the existing draft PR against `develop`, configured review/fix cycles, and merge only after every repository safety gate is satisfied.
 
 ## Objective
 
@@ -37,7 +37,7 @@ Audit the repository's dev-loops and Pi agent-review posture against the install
 6. Untrusted check-name Unicode encoding and all existing bounds remain enforced and deterministically tested.
 7. The diff stays limited to housekeeping config, harness extension/logic/tests, this plan/evidence documentation, and only justified package/lock changes.
 8. Focused tests, extension type/syntax checks, applicable `ci:lint`, dev-loops doctor/config diagnostics, package-lock consistency, and `git diff --check` pass.
-9. Commits are GPG-signed and DCO-signed-off; the draft and pre-approval gates, exact-head CI, configured independent/Copilot review, signatures, branch protection, and all merge requirements pass before merge.
+9. Commits are GPG-signed and DCO-signed-off; the draft and pre-approval gates, exact-head CI, configured independent review, signatures, branch protection, and all merge requirements pass before merge.
 
 ## Definition of done
 

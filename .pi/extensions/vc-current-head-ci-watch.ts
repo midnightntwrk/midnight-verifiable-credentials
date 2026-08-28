@@ -6,6 +6,7 @@ import {
   enrichActionsRunAttempts,
   formatFailureNames,
   observeChecks,
+  updateSeenFailureKeys,
   type ActionsJob,
   type PullRequestChecks,
 } from "./vc-current-head-ci-watch/logic.ts";
@@ -14,7 +15,8 @@ const REPOSITORY = "midnightntwrk/midnight-verifiable-credentials";
 const WATCH_INTERVAL_MS = 5 * 60 * 1000;
 const STATUS_KEY = "vc-current-head-ci-watch";
 const STATE_ENTRY_TYPE = "vc-current-head-ci-watch-state";
-const MAX_OPEN_PULL_REQUESTS = 1_000;
+const MAX_OPEN_PULL_REQUESTS = 100;
+const MAX_ACTIONS_JOB_LOOKUPS_PER_OBSERVATION = 100;
 
 type PullRequest = { number: number };
 
@@ -38,6 +40,7 @@ function restoreSeenFailures(ctx: ExtensionContext, seenFailures: Set<string>): 
     if (candidate.type !== "custom" || candidate.customType !== STATE_ENTRY_TYPE) continue;
     const data = candidate.data as { seenFailedHeads?: unknown } | undefined;
     if (!Array.isArray(data?.seenFailedHeads)) continue;
+    seenFailures.clear();
     for (const key of data.seenFailedHeads) {
       if (typeof key === "string") seenFailures.add(key);
     }
@@ -54,6 +57,15 @@ export default function (pi: ExtensionAPI) {
   const setStatus = (ctx: ExtensionContext, message: string) => {
     if (!sessionActive) return;
     ctx.ui.setStatus(STATUS_KEY, `VC PR CI watch: ${message}`);
+  };
+
+  const setFailureActive = (failureKey: string, active: boolean): boolean => {
+    const next = updateSeenFailureKeys(seenFailures, failureKey, active);
+    if (next.length === seenFailures.size && next.every((key) => seenFailures.has(key))) return false;
+    seenFailures.clear();
+    for (const key of next) seenFailures.add(key);
+    pi.appendEntry(STATE_ENTRY_TYPE, { seenFailedHeads: next });
+    return true;
   };
 
   const observe = async (ctx: ExtensionContext) => {
@@ -87,6 +99,21 @@ export default function (pi: ExtensionAPI) {
 
       let failedCount = 0;
       let waitingCount = 0;
+      let remainingActionsJobLookups = MAX_ACTIONS_JOB_LOOKUPS_PER_OBSERVATION;
+      const actionsJobCache = new Map<string, Promise<ActionsJob | undefined>>();
+      const loadActionsJob = (jobId: string): Promise<ActionsJob | undefined> => {
+        const cached = actionsJobCache.get(jobId);
+        if (cached) return cached;
+        if (remainingActionsJobLookups < 1) return Promise.resolve(undefined);
+        remainingActionsJobLookups -= 1;
+        const request = ghJson<ActionsJob>(pi, [
+          "api",
+          `repos/${REPOSITORY}/actions/jobs/${jobId}`,
+        ], controller.signal);
+        actionsJobCache.set(jobId, request);
+        return request;
+      };
+
       for (const pr of prs) {
         if (!sessionActive) return;
         const payload = await ghJson<PullRequestChecks>(pi, [
@@ -103,17 +130,16 @@ export default function (pi: ExtensionAPI) {
           continue;
         }
 
-        const loadActionsJob = (jobId: string) => ghJson<ActionsJob>(pi, [
-          "api",
-          `repos/${REPOSITORY}/actions/jobs/${jobId}`,
-        ], controller.signal);
         const enrichedPayload = await enrichActionsRunAttempts(payload, loadActionsJob);
         const observation = observeChecks(enrichedPayload);
         if (observation.kind === "unknown") {
           waitingCount += 1;
           continue;
         }
-        if (observation.kind === "green") continue;
+        if (observation.kind === "green") {
+          setFailureActive(`${pr.number}:${observation.headSha}`, false);
+          continue;
+        }
 
         // Re-read immediately before notifying. A delayed first rollup can
         // belong to a superseded head, and a duplicate/rerun may already have
@@ -135,6 +161,7 @@ export default function (pi: ExtensionAPI) {
         const confirmation = confirmActionableFailure(observation, observeChecks(confirmedChecks));
         if (confirmation.kind !== "actionable") {
           if (confirmation.kind === "unknown") waitingCount += 1;
+          else setFailureActive(`${pr.number}:${observation.headSha}`, false);
           continue;
         }
 
@@ -159,11 +186,9 @@ export default function (pi: ExtensionAPI) {
 
         failedCount += 1;
         const failureKey = `${pr.number}:${finalConfirmation.headSha}`;
-        if (seenFailures.has(failureKey)) continue;
+        if (!setFailureActive(failureKey, true)) continue;
 
         if (!sessionActive) return;
-        seenFailures.add(failureKey);
-        pi.appendEntry(STATE_ENTRY_TYPE, { seenFailedHeads: [...seenFailures].sort() });
         const failureNames = formatFailureNames(finalConfirmation.failures);
         pi.sendUserMessage(
           `[vc-ci-watch] Current-head CI failed on PR #${pr.number} (${finalConfirmation.headSha.slice(0, 12)}). ` +

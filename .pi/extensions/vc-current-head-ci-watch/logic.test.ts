@@ -8,6 +8,7 @@ import {
   enrichActionsRunAttempts,
   formatFailureNames,
   observeChecks,
+  updateSeenFailureKeys,
   type CheckObservation,
 } from "./logic.ts";
 
@@ -92,6 +93,73 @@ describe("observeChecks", () => {
     );
   });
 
+  it("does not suppress ambiguous same-named cross-run cancellations", () => {
+    assert.equal(
+      observeChecks({
+        headRefOid: "current-head",
+        statusCheckRollup: [
+          {
+            name: "scan",
+            workflowName: "Scan",
+            detailsUrl: "https://github.com/midnightntwrk/midnight-verifiable-credentials/actions/runs/41/job/1",
+            status: "COMPLETED",
+            conclusion: "CANCELLED",
+            startedAt: "2026-08-24T10:00:00.000Z",
+          },
+          {
+            name: "scan",
+            workflowName: "Scan",
+            detailsUrl: "https://github.com/midnightntwrk/midnight-verifiable-credentials/actions/runs/41/job/2",
+            status: "COMPLETED",
+            conclusion: "CANCELLED",
+            startedAt: "2026-08-24T10:01:00.000Z",
+          },
+          {
+            name: "scan",
+            workflowName: "Scan",
+            detailsUrl: "https://github.com/midnightntwrk/midnight-verifiable-credentials/actions/runs/42/job/3",
+            status: "COMPLETED",
+            conclusion: "SUCCESS",
+            startedAt: "2026-08-24T10:05:00.000Z",
+          },
+        ],
+      }).kind,
+      "failed",
+    );
+  });
+
+  it("requires complete status and the expected repository for cross-run suppression", () => {
+    for (const [detailsUrl, status] of [
+      ["https://github.com/other/repository/actions/runs/42/job/2", "COMPLETED"],
+      ["https://github.com/midnightntwrk/midnight-verifiable-credentials/actions/runs/42/job/2", null],
+    ] as const) {
+      assert.equal(
+        observeChecks({
+          headRefOid: "current-head",
+          statusCheckRollup: [
+            {
+              name: "scan",
+              workflowName: "Scan",
+              detailsUrl: "https://github.com/midnightntwrk/midnight-verifiable-credentials/actions/runs/41/job/1",
+              status: "COMPLETED",
+              conclusion: "CANCELLED",
+              startedAt: "2026-08-24T10:00:00.000Z",
+            },
+            {
+              name: "scan",
+              workflowName: "Scan",
+              detailsUrl,
+              status,
+              conclusion: "SUCCESS",
+              startedAt: "2026-08-24T10:05:00.000Z",
+            },
+          ],
+        }).kind,
+        "failed",
+      );
+    }
+  });
+
   it("does not suppress a newer cross-run cancellation behind an older success", () => {
     assert.equal(
       observeChecks({
@@ -119,7 +187,7 @@ describe("observeChecks", () => {
     );
   });
 
-  it("uses a later successful rerun to resolve an earlier same-head failure", () => {
+  it("uses a later stable-provider success to resolve an earlier same-head failure", () => {
     assert.deepEqual(
       observeChecks({
         headRefOid: "current-head",
@@ -127,7 +195,7 @@ describe("observeChecks", () => {
           {
             name: "scan",
             workflowName: "PR scan",
-            detailsUrl: "https://github.com/midnightntwrk/midnight-verifiable-credentials/actions/runs/42/job/1",
+            detailsUrl: "https://example.com/stable-scan",
             status: "COMPLETED",
             conclusion: "FAILURE",
             startedAt: "2026-08-24T10:00:00.000Z",
@@ -135,7 +203,7 @@ describe("observeChecks", () => {
           {
             name: "scan",
             workflowName: "PR scan",
-            detailsUrl: "https://github.com/midnightntwrk/midnight-verifiable-credentials/actions/runs/42/job/1",
+            detailsUrl: "https://example.com/stable-scan",
             status: "COMPLETED",
             conclusion: "SUCCESS",
             startedAt: "2026-08-24T10:05:00.000Z",
@@ -503,19 +571,30 @@ describe("enrichActionsRunAttempts", () => {
     assert.equal(mismatched.statusCheckRollup?.some((check) => check.actionsRunAttempt !== undefined), false);
   });
 
-  it("skips enrichment when the bounded lookup limit is exceeded", async () => {
-    let lookupCount = 0;
-    const enriched = await enrichActionsRunAttempts(
-      rerunChecks(),
-      async () => {
-        lookupCount += 1;
-        return undefined;
-      },
-      { maxLookups: 1 },
-    );
+  it("treats a rejected lookup as unavailable metadata instead of aborting", async () => {
+    const enriched = await enrichActionsRunAttempts(rerunChecks(), async () => {
+      throw new Error("lookup failed");
+    });
 
-    assert.equal(lookupCount, 0);
     assert.equal(observeChecks(enriched).kind, "failed");
+    assert.equal(enriched.statusCheckRollup?.some((check) => check.actionsRunAttempt !== undefined), false);
+  });
+
+  it("enforces lookup and batching bounds without hanging", async () => {
+    for (const limits of [{ maxLookups: 1 }, { batchSize: 0 }, { batchSize: -1 }, { maxLookups: -1 }]) {
+      let lookupCount = 0;
+      const enriched = await enrichActionsRunAttempts(
+        rerunChecks(),
+        async () => {
+          lookupCount += 1;
+          return undefined;
+        },
+        limits,
+      );
+
+      assert.equal(lookupCount, 0);
+      assert.equal(observeChecks(enriched).kind, "failed");
+    }
   });
 });
 
@@ -583,6 +662,15 @@ describe("confirmCurrentHeadFailure", () => {
       kind: "superseded",
       headSha: "new-head",
     });
+  });
+});
+
+describe("updateSeenFailureKeys", () => {
+  it("clears a resolved PR/head so a later failure can become new again", () => {
+    const failureKey = "483:current-head";
+    assert.deepEqual(updateSeenFailureKeys([], failureKey, true), [failureKey]);
+    assert.deepEqual(updateSeenFailureKeys([failureKey], failureKey, false), []);
+    assert.deepEqual(updateSeenFailureKeys([], failureKey, true), [failureKey]);
   });
 });
 
