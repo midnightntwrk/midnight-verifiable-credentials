@@ -3,9 +3,12 @@ import { describe, it } from "node:test";
 
 import {
   confirmActionableFailure,
+  confirmCurrentHeadFailure,
   encodeFailureName,
+  enrichActionsRunAttempts,
   formatFailureNames,
   observeChecks,
+  type CheckObservation,
 } from "./logic.ts";
 
 describe("observeChecks", () => {
@@ -442,6 +445,80 @@ describe("observeChecks", () => {
   });
 });
 
+describe("enrichActionsRunAttempts", () => {
+  const rerunChecks = () => ({
+    headRefOid: "current-head",
+    statusCheckRollup: [
+      {
+        name: "scan",
+        workflowName: "PR scan",
+        detailsUrl: "https://github.com/midnightntwrk/midnight-verifiable-credentials/actions/runs/42/job/1",
+        status: "COMPLETED",
+        conclusion: "FAILURE",
+      },
+      {
+        name: "scan",
+        workflowName: "PR scan",
+        detailsUrl: "https://github.com/midnightntwrk/midnight-verifiable-credentials/actions/runs/42/job/2",
+        status: "COMPLETED",
+        conclusion: "SUCCESS",
+      },
+    ],
+  });
+
+  it("enriches a one-to-one rerun lineage with validated attempts", async () => {
+    const jobs = new Map([
+      ["1", { id: 1, run_id: 42, run_attempt: 1 }],
+      ["2", { id: 2, run_id: 42, run_attempt: 2 }],
+    ]);
+    const enriched = await enrichActionsRunAttempts(rerunChecks(), async (jobId) => jobs.get(jobId));
+
+    assert.deepEqual(
+      enriched.statusCheckRollup?.map((check) => [check.actionsRunId, check.actionsRunAttempt]),
+      [["42", 1], ["42", 2]],
+    );
+    assert.equal(observeChecks(enriched).kind, "green");
+  });
+
+  it("refuses to coalesce distinct same-named jobs from one attempt", async () => {
+    const jobs = new Map([
+      ["1", { id: 1, run_id: 42, run_attempt: 1 }],
+      ["2", { id: 2, run_id: 42, run_attempt: 1 }],
+    ]);
+    const enriched = await enrichActionsRunAttempts(rerunChecks(), async (jobId) => jobs.get(jobId));
+
+    assert.deepEqual(
+      enriched.statusCheckRollup?.map((check) => [check.actionsRunId, check.actionsRunAttempt]),
+      [[undefined, undefined], [undefined, undefined]],
+    );
+    assert.equal(observeChecks(enriched).kind, "failed");
+  });
+
+  it("fails closed on mismatched job metadata or unavailable lookups", async () => {
+    const mismatched = await enrichActionsRunAttempts(rerunChecks(), async (jobId) =>
+      jobId === "1" ? { id: 999, run_id: 42, run_attempt: 1 } : undefined,
+    );
+
+    assert.equal(observeChecks(mismatched).kind, "failed");
+    assert.equal(mismatched.statusCheckRollup?.some((check) => check.actionsRunAttempt !== undefined), false);
+  });
+
+  it("skips enrichment when the bounded lookup limit is exceeded", async () => {
+    let lookupCount = 0;
+    const enriched = await enrichActionsRunAttempts(
+      rerunChecks(),
+      async () => {
+        lookupCount += 1;
+        return undefined;
+      },
+      { maxLookups: 1 },
+    );
+
+    assert.equal(lookupCount, 0);
+    assert.equal(observeChecks(enriched).kind, "failed");
+  });
+});
+
 describe("confirmActionableFailure", () => {
   it("rejects a delayed failure after a fresh read confirms a green superseding head", () => {
     assert.deepEqual(
@@ -471,6 +548,41 @@ describe("confirmActionableFailure", () => {
       ),
       { kind: "actionable", failures: ["scan"], headSha: "current-head" },
     );
+  });
+});
+
+describe("confirmCurrentHeadFailure", () => {
+  const initial: Extract<CheckObservation, { kind: "failed" }> = {
+    kind: "failed",
+    failures: ["scan"],
+    headSha: "current-head",
+  };
+  const confirmation: CheckObservation = {
+    kind: "failed",
+    failures: ["scan"],
+    headSha: "current-head",
+  };
+
+  it("keeps a stable freshly confirmed current-head failure actionable", () => {
+    assert.deepEqual(confirmCurrentHeadFailure(initial, confirmation, "current-head"), {
+      kind: "actionable",
+      failures: ["scan"],
+      headSha: "current-head",
+    });
+  });
+
+  it("fails closed when the final head read is missing", () => {
+    assert.deepEqual(confirmCurrentHeadFailure(initial, confirmation, undefined), {
+      kind: "unknown",
+      reason: "unable to confirm the final current head",
+    });
+  });
+
+  it("rejects a failure after the final head read changes", () => {
+    assert.deepEqual(confirmCurrentHeadFailure(initial, confirmation, "new-head"), {
+      kind: "superseded",
+      headSha: "new-head",
+    });
   });
 });
 

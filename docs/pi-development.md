@@ -167,11 +167,15 @@ checks this repository's open PRs authored by the authenticated `gh` user every
 five minutes. Before a newly observed failure queues an attributed
 `continue dev loop on PR <N>` follow-up, the watcher re-reads the PR and confirms
 the exact current head. Pending, unknown, superseded, and previously observed
-PR/head failures do not trigger it. Duplicate cancellation is non-actionable only
-when an actual success on that exact head belongs to a later attempt of the
-same enriched Actions run/logical-job lineage (or the same stable provider URL
-and workflow/check identity). Neutral or
-skipped conclusions never clear a real failure.
+PR/head failures do not trigger it. Within one Actions run, duplicate
+cancellation is non-actionable only when an actual success on that exact head
+belongs to a later, one-to-one enriched attempt of the same workflow/check
+identity; ambiguous same-named jobs remain fail-closed. Across distinct Actions
+runs, a cancelled cross-trigger duplicate is suppressed only when an exact-head
+success has the same workflow/check identity, a different run ID, and a strictly
+later valid start time. Stable non-Actions provider URLs are grouped only with
+the same workflow/check identity. Neutral or skipped conclusions never clear a
+real failure.
 
 This is an in-session dev-loop route/fix prompt, not a daemon. It never merges,
 approves, marks a PR ready, or changes GitHub state.

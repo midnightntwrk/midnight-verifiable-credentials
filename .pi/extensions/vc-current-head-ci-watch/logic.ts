@@ -1,5 +1,7 @@
 const MAX_FAILURE_NAMES_IN_MESSAGE = 20;
 const MAX_FAILURE_NAME_CODE_POINTS = 120;
+const DEFAULT_MAX_ACTIONS_JOB_LOOKUPS = 100;
+const DEFAULT_ACTIONS_JOB_LOOKUP_BATCH_SIZE = 10;
 
 const FAILED_CONCLUSIONS = new Set([
   "ACTION_REQUIRED",
@@ -32,6 +34,15 @@ export type PullRequestChecks = {
   headRefOid?: string | null;
   statusCheckRollup?: StatusCheck[] | null;
 };
+
+export type ActionsJob = {
+  id?: number;
+  name?: string;
+  run_attempt?: number;
+  run_id?: number;
+};
+
+export type ActionsJobLoader = (jobId: string) => Promise<ActionsJob | undefined>;
 
 export type CheckObservation =
   | { kind: "failed"; failures: string[]; headSha: string }
@@ -118,6 +129,81 @@ export function githubActionsJobReference(
   } catch {
     return undefined;
   }
+}
+
+export async function enrichActionsRunAttempts(
+  payload: PullRequestChecks,
+  loadJob: ActionsJobLoader,
+  limits: { batchSize?: number; maxLookups?: number } = {},
+): Promise<PullRequestChecks> {
+  const checks = payload.statusCheckRollup;
+  if (!Array.isArray(checks)) return payload;
+
+  const duplicateGroups = new Map<string, Array<{ check: StatusCheck; jobId: string; runId: string }>>();
+  for (const check of checks) {
+    const reference = githubActionsJobReference(check);
+    const workflowName = check.workflowName?.trim();
+    const name = check.name?.trim();
+    if (!reference || !workflowName || !name) continue;
+    const key = JSON.stringify([reference.runId, workflowName, name]);
+    const group = duplicateGroups.get(key);
+    const candidate = { check, ...reference };
+    if (group) group.push(candidate);
+    else duplicateGroups.set(key, [candidate]);
+  }
+
+  const groups = [...duplicateGroups.values()].filter((group) => group.length > 1);
+  const jobIds = [...new Set(groups.flatMap((group) => group.map((candidate) => candidate.jobId)))];
+  const maxLookups = limits.maxLookups ?? DEFAULT_MAX_ACTIONS_JOB_LOOKUPS;
+  if (jobIds.length === 0 || jobIds.length > maxLookups) return payload;
+
+  const jobs = new Map<string, ActionsJob>();
+  const batchSize = limits.batchSize ?? DEFAULT_ACTIONS_JOB_LOOKUP_BATCH_SIZE;
+  for (let index = 0; index < jobIds.length; index += batchSize) {
+    const batch = jobIds.slice(index, index + batchSize);
+    const results = await Promise.all(batch.map(async (jobId) => ({ jobId, job: await loadJob(jobId) })));
+    for (const { jobId, job } of results) {
+      if (job) jobs.set(jobId, job);
+    }
+  }
+
+  const enriched = new Map<StatusCheck, { runAttempt: number; runId: string }>();
+  for (const group of groups) {
+    const validated = group.map((candidate) => {
+      const job = jobs.get(candidate.jobId);
+      if (
+        !job ||
+        String(job.id) !== candidate.jobId ||
+        String(job.run_id) !== candidate.runId ||
+        !Number.isInteger(job.run_attempt) ||
+        job.run_attempt! < 1
+      ) return undefined;
+      return { candidate, runAttempt: job.run_attempt! };
+    });
+    if (validated.some((candidate) => candidate === undefined)) continue;
+
+    // Distinct same-named jobs in one workflow attempt are not a proven rerun
+    // lineage. Refuse to coalesce the whole group when attempt identity is not
+    // one-to-one, so one job's success cannot hide another job's failure.
+    const runAttempts = validated.map((candidate) => candidate!.runAttempt);
+    if (new Set(runAttempts).size !== runAttempts.length) continue;
+    for (const candidate of validated) {
+      enriched.set(candidate!.candidate.check, {
+        runAttempt: candidate!.runAttempt,
+        runId: candidate!.candidate.runId,
+      });
+    }
+  }
+
+  return {
+    ...payload,
+    statusCheckRollup: checks.map((check) => {
+      const enrichment = enriched.get(check);
+      return enrichment
+        ? { ...check, actionsRunId: enrichment.runId, actionsRunAttempt: enrichment.runAttempt }
+        : check;
+    }),
+  };
 }
 
 function startedTime(check: StatusCheck): number | undefined {
@@ -277,4 +363,17 @@ export function confirmActionableFailure(
     failures: confirmation.failures,
     headSha: confirmation.headSha,
   };
+}
+
+export function confirmCurrentHeadFailure(
+  initial: Extract<CheckObservation, { kind: "failed" }>,
+  confirmation: CheckObservation,
+  finalHeadSha: string | null | undefined,
+): FailureConfirmation {
+  const candidate = confirmActionableFailure(initial, confirmation);
+  if (candidate.kind !== "actionable") return candidate;
+  const finalHead = finalHeadSha?.trim();
+  if (!finalHead) return { kind: "unknown", reason: "unable to confirm the final current head" };
+  if (finalHead !== candidate.headSha) return { kind: "superseded", headSha: finalHead };
+  return candidate;
 }

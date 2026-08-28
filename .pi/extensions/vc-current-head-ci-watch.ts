@@ -2,11 +2,12 @@ import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-a
 
 import {
   confirmActionableFailure,
+  confirmCurrentHeadFailure,
+  enrichActionsRunAttempts,
   formatFailureNames,
-  githubActionsJobReference,
   observeChecks,
+  type ActionsJob,
   type PullRequestChecks,
-  type StatusCheck,
 } from "./vc-current-head-ci-watch/logic.ts";
 
 const REPOSITORY = "midnightntwrk/midnight-verifiable-credentials";
@@ -14,15 +15,8 @@ const WATCH_INTERVAL_MS = 5 * 60 * 1000;
 const STATUS_KEY = "vc-current-head-ci-watch";
 const STATE_ENTRY_TYPE = "vc-current-head-ci-watch-state";
 const MAX_OPEN_PULL_REQUESTS = 1_000;
-const MAX_ACTIONS_JOB_LOOKUPS = 100;
-const ACTIONS_JOB_LOOKUP_BATCH_SIZE = 10;
 
 type PullRequest = { number: number };
-type ActionsJob = {
-  id?: number;
-  run_attempt?: number;
-  run_id?: number;
-};
 
 async function ghJson<T>(
   pi: ExtensionAPI,
@@ -36,70 +30,6 @@ async function ghJson<T>(
   } catch {
     return undefined;
   }
-}
-
-async function enrichActionsRunAttempts(
-  pi: ExtensionAPI,
-  payload: PullRequestChecks,
-  signal: AbortSignal,
-): Promise<PullRequestChecks> {
-  const checks = payload.statusCheckRollup;
-  if (!Array.isArray(checks)) return payload;
-
-  const duplicateGroups = new Map<string, Array<{ check: StatusCheck; jobId: string; runId: string }>>();
-  for (const check of checks) {
-    const reference = githubActionsJobReference(check);
-    const workflowName = check.workflowName?.trim();
-    const name = check.name?.trim();
-    if (!reference || !workflowName || !name) continue;
-    const key = JSON.stringify([reference.runId, workflowName, name]);
-    const group = duplicateGroups.get(key);
-    const candidate = { check, ...reference };
-    if (group) group.push(candidate);
-    else duplicateGroups.set(key, [candidate]);
-  }
-
-  const candidates = [...duplicateGroups.values()].filter((group) => group.length > 1).flat();
-  const jobIds = [...new Set(candidates.map((candidate) => candidate.jobId))];
-  if (jobIds.length === 0) return payload;
-  if (jobIds.length > MAX_ACTIONS_JOB_LOOKUPS) return payload;
-
-  const jobs = new Map<string, ActionsJob>();
-  for (let index = 0; index < jobIds.length; index += ACTIONS_JOB_LOOKUP_BATCH_SIZE) {
-    const batch = jobIds.slice(index, index + ACTIONS_JOB_LOOKUP_BATCH_SIZE);
-    const results = await Promise.all(batch.map(async (jobId) => ({
-      jobId,
-      job: await ghJson<ActionsJob>(pi, [
-        "api",
-        `repos/${REPOSITORY}/actions/jobs/${jobId}`,
-      ], signal),
-    })));
-    for (const { jobId, job } of results) {
-      if (job) jobs.set(jobId, job);
-    }
-  }
-
-  const references = new Map(candidates.map((candidate) => [candidate.check, candidate]));
-  return {
-    ...payload,
-    statusCheckRollup: checks.map((check) => {
-      const reference = references.get(check);
-      if (!reference) return check;
-      const job = jobs.get(reference.jobId);
-      if (
-        !job ||
-        String(job.id) !== reference.jobId ||
-        String(job.run_id) !== reference.runId ||
-        !Number.isInteger(job.run_attempt) ||
-        job.run_attempt! < 1
-      ) return check;
-      return {
-        ...check,
-        actionsRunId: reference.runId,
-        actionsRunAttempt: job.run_attempt,
-      };
-    }),
-  };
 }
 
 function restoreSeenFailures(ctx: ExtensionContext, seenFailures: Set<string>): void {
@@ -173,7 +103,11 @@ export default function (pi: ExtensionAPI) {
           continue;
         }
 
-        const enrichedPayload = await enrichActionsRunAttempts(pi, payload, controller.signal);
+        const loadActionsJob = (jobId: string) => ghJson<ActionsJob>(pi, [
+          "api",
+          `repos/${REPOSITORY}/actions/jobs/${jobId}`,
+        ], controller.signal);
+        const enrichedPayload = await enrichActionsRunAttempts(payload, loadActionsJob);
         const observation = observeChecks(enrichedPayload);
         if (observation.kind === "unknown") {
           waitingCount += 1;
@@ -197,7 +131,7 @@ export default function (pi: ExtensionAPI) {
           waitingCount += 1;
           continue;
         }
-        const confirmedChecks = await enrichActionsRunAttempts(pi, confirmationPayload, controller.signal);
+        const confirmedChecks = await enrichActionsRunAttempts(confirmationPayload, loadActionsJob);
         const confirmation = confirmActionableFailure(observation, observeChecks(confirmedChecks));
         if (confirmation.kind !== "actionable") {
           if (confirmation.kind === "unknown") waitingCount += 1;
@@ -213,21 +147,26 @@ export default function (pi: ExtensionAPI) {
           "--json",
           "headRefOid",
         ], controller.signal);
-        if (finalHead?.headRefOid?.trim() !== confirmation.headSha) {
+        const finalConfirmation = confirmCurrentHeadFailure(
+          observation,
+          observeChecks(confirmedChecks),
+          finalHead?.headRefOid,
+        );
+        if (finalConfirmation.kind !== "actionable") {
           waitingCount += 1;
           continue;
         }
 
         failedCount += 1;
-        const failureKey = `${pr.number}:${confirmation.headSha}`;
+        const failureKey = `${pr.number}:${finalConfirmation.headSha}`;
         if (seenFailures.has(failureKey)) continue;
 
         if (!sessionActive) return;
         seenFailures.add(failureKey);
         pi.appendEntry(STATE_ENTRY_TYPE, { seenFailedHeads: [...seenFailures].sort() });
-        const failureNames = formatFailureNames(confirmation.failures);
+        const failureNames = formatFailureNames(finalConfirmation.failures);
         pi.sendUserMessage(
-          `[vc-ci-watch] Current-head CI failed on PR #${pr.number} (${confirmation.headSha.slice(0, 12)}). ` +
+          `[vc-ci-watch] Current-head CI failed on PR #${pr.number} (${finalConfirmation.headSha.slice(0, 12)}). ` +
             `Untrusted failure names (Unicode code points): ${failureNames}. ` +
             `continue dev loop on PR ${pr.number}`,
           { deliverAs: "followUp" },
