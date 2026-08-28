@@ -7,13 +7,42 @@ import {
   encodeFailureName,
   enrichActionsRunAttempts,
   formatFailureNames,
+  githubActionsJobReference,
   observeChecks,
   pruneSeenFailureKeys,
   pruneSeenFailureKeysForOpenPullRequests,
   reconcileRestoredFailureKeys,
   updateSeenFailureKeys,
+  type ActionsJob,
   type CheckObservation,
 } from "./logic.ts";
+
+function actionsJobMetadata({
+  headSha = "current-head",
+  id,
+  name = "scan",
+  runAttempt,
+  runId,
+  workflowName = "PR scan",
+}: {
+  headSha?: string;
+  id: number;
+  name?: string;
+  runAttempt: number;
+  runId: number;
+  workflowName?: string;
+}): ActionsJob {
+  return {
+    head_sha: headSha,
+    id,
+    name,
+    run_attempt: runAttempt,
+    run_id: runId,
+    run_url: `https://api.github.com/repos/midnightntwrk/midnight-verifiable-credentials/actions/runs/${runId}`,
+    url: `https://api.github.com/repos/midnightntwrk/midnight-verifiable-credentials/actions/jobs/${id}`,
+    workflow_name: workflowName,
+  };
+}
 
 describe("observeChecks", () => {
   it("reports a real current-head failure", () => {
@@ -69,31 +98,48 @@ describe("observeChecks", () => {
     );
   });
 
-  it("suppresses a cancelled cross-trigger Actions run when the exact-head peer run succeeded", () => {
-    assert.deepEqual(
-      observeChecks({
-        headRefOid: "current-head",
-        statusCheckRollup: [
-          {
-            name: "scan",
-            workflowName: "Scan",
-            detailsUrl: "https://github.com/midnightntwrk/midnight-verifiable-credentials/actions/runs/41/job/1",
-            status: "COMPLETED",
-            conclusion: "CANCELLED",
-            startedAt: "2026-08-24T10:00:00.000Z",
-          },
-          {
-            name: "scan",
-            workflowName: "Scan",
-            detailsUrl: "https://github.com/midnightntwrk/midnight-verifiable-credentials/actions/runs/42/job/1",
-            status: "COMPLETED",
-            conclusion: "SUCCESS",
-            startedAt: "2026-08-24T10:05:00.000Z",
-          },
-        ],
-      }),
-      { kind: "green", headSha: "current-head" },
-    );
+  it("suppresses a cancelled cross-trigger Actions run only after authoritative job verification", async () => {
+    const payload = {
+      headRefOid: "current-head",
+      statusCheckRollup: [
+        {
+          name: "scan",
+          workflowName: "Scan",
+          detailsUrl: "https://github.com/midnightntwrk/midnight-verifiable-credentials/actions/runs/41/job/1",
+          status: "COMPLETED",
+          conclusion: "CANCELLED",
+          startedAt: "2026-08-24T10:00:00.000Z",
+        },
+        {
+          name: "scan",
+          workflowName: "Scan",
+          detailsUrl: "https://github.com/midnightntwrk/midnight-verifiable-credentials/actions/runs/42/job/2",
+          status: "COMPLETED",
+          conclusion: "SUCCESS",
+          startedAt: "2026-08-24T10:05:00.000Z",
+        },
+      ],
+    };
+    assert.equal(observeChecks(payload).kind, "failed");
+
+    const jobs = new Map([
+      ["1", actionsJobMetadata({ id: 1, runId: 41, runAttempt: 1, workflowName: "Scan" })],
+      ["2", actionsJobMetadata({ id: 2, runId: 42, runAttempt: 1, workflowName: "Scan" })],
+    ]);
+    const enriched = await enrichActionsRunAttempts(payload, async (jobId) => jobs.get(jobId));
+    assert.deepEqual(observeChecks(enriched), { kind: "green", headSha: "current-head" });
+  });
+
+  it("requires strict HTTPS GitHub job URLs without credentials, ports, query, or fragment", () => {
+    for (const detailsUrl of [
+      "http://github.com/midnightntwrk/midnight-verifiable-credentials/actions/runs/42/job/2",
+      "https://user@github.com/midnightntwrk/midnight-verifiable-credentials/actions/runs/42/job/2",
+      "https://github.com:444/midnightntwrk/midnight-verifiable-credentials/actions/runs/42/job/2",
+      "https://github.com/midnightntwrk/midnight-verifiable-credentials/actions/runs/42/job/2?x=1",
+      "https://github.com/midnightntwrk/midnight-verifiable-credentials/actions/runs/42/job/2#x",
+    ]) {
+      assert.equal(githubActionsJobReference({ detailsUrl }), undefined);
+    }
   });
 
   it("does not suppress ambiguous same-named cross-run cancellations", () => {
@@ -188,6 +234,22 @@ describe("observeChecks", () => {
       }).kind,
       "failed",
     );
+  });
+
+  it("keeps neutral/skipped-only rollups unknown instead of clearing a failure", () => {
+    for (const conclusion of ["NEUTRAL", "SKIPPED"]) {
+      assert.deepEqual(
+        observeChecks({
+          headRefOid: "current-head",
+          statusCheckRollup: [{ name: "build", status: "COMPLETED", conclusion }],
+        }),
+        {
+          kind: "unknown",
+          reason: "current-head checks are pending or unknown",
+          headSha: "current-head",
+        },
+      );
+    }
   });
 
   it("uses a later stable-provider success to resolve an earlier same-head failure", () => {
@@ -663,8 +725,8 @@ describe("enrichActionsRunAttempts", () => {
 
   it("enriches a one-to-one rerun lineage with validated attempts", async () => {
     const jobs = new Map([
-      ["1", { id: 1, name: "scan", run_id: 42, run_attempt: 1 }],
-      ["2", { id: 2, name: "scan", run_id: 42, run_attempt: 2 }],
+      ["1", actionsJobMetadata({ id: 1, runId: 42, runAttempt: 1 })],
+      ["2", actionsJobMetadata({ id: 2, runId: 42, runAttempt: 2 })],
     ]);
     const enriched = await enrichActionsRunAttempts(rerunChecks(), async (jobId) => jobs.get(jobId));
 
@@ -677,8 +739,8 @@ describe("enrichActionsRunAttempts", () => {
 
   it("refuses to coalesce distinct same-named jobs from one attempt", async () => {
     const jobs = new Map([
-      ["1", { id: 1, name: "scan", run_id: 42, run_attempt: 1 }],
-      ["2", { id: 2, name: "scan", run_id: 42, run_attempt: 1 }],
+      ["1", actionsJobMetadata({ id: 1, runId: 42, runAttempt: 1 })],
+      ["2", actionsJobMetadata({ id: 2, runId: 42, runAttempt: 1 })],
     ]);
     const enriched = await enrichActionsRunAttempts(rerunChecks(), async (jobId) => jobs.get(jobId));
 
@@ -691,7 +753,7 @@ describe("enrichActionsRunAttempts", () => {
 
   it("fails closed on mismatched job metadata or unavailable lookups", async () => {
     const mismatched = await enrichActionsRunAttempts(rerunChecks(), async (jobId) =>
-      jobId === "1" ? { id: 999, name: "scan", run_id: 42, run_attempt: 1 } : undefined,
+      jobId === "1" ? actionsJobMetadata({ id: 999, runId: 42, runAttempt: 1 }) : undefined,
     );
 
     assert.equal(observeChecks(mismatched).kind, "failed");
@@ -700,13 +762,55 @@ describe("enrichActionsRunAttempts", () => {
 
   it("fails closed when Actions job names do not match the rollup check", async () => {
     const jobs = new Map([
-      ["1", { id: 1, name: "unrelated", run_id: 42, run_attempt: 1 }],
-      ["2", { id: 2, name: "scan", run_id: 42, run_attempt: 2 }],
+      ["1", actionsJobMetadata({ id: 1, runId: 42, runAttempt: 1, name: "unrelated" })],
+      ["2", actionsJobMetadata({ id: 2, runId: 42, runAttempt: 2 })],
     ]);
     const enriched = await enrichActionsRunAttempts(rerunChecks(), async (jobId) => jobs.get(jobId));
 
     assert.equal(observeChecks(enriched).kind, "failed");
     assert.equal(enriched.statusCheckRollup?.some((check) => check.actionsRunAttempt !== undefined), false);
+  });
+
+  it("fails closed when authoritative cross-run job/run/head/workflow metadata does not match", async () => {
+    const payload = {
+      headRefOid: "current-head",
+      statusCheckRollup: [
+        {
+          name: "scan",
+          workflowName: "Scan",
+          detailsUrl: "https://github.com/midnightntwrk/midnight-verifiable-credentials/actions/runs/41/job/1",
+          status: "COMPLETED",
+          conclusion: "CANCELLED",
+          startedAt: "2026-08-24T10:00:00.000Z",
+        },
+        {
+          name: "scan",
+          workflowName: "Scan",
+          detailsUrl: "https://github.com/midnightntwrk/midnight-verifiable-credentials/actions/runs/42/job/2",
+          status: "COMPLETED",
+          conclusion: "SUCCESS",
+          startedAt: "2026-08-24T10:05:00.000Z",
+        },
+      ],
+    };
+    const valid = new Map([
+      ["1", actionsJobMetadata({ id: 1, runId: 41, runAttempt: 1, workflowName: "Scan" })],
+      ["2", actionsJobMetadata({ id: 2, runId: 42, runAttempt: 1, workflowName: "Scan" })],
+    ]);
+
+    for (const patch of [
+      { head_sha: "other-head" },
+      { workflow_name: "Other" },
+      { run_id: 999 },
+      { run_url: "https://api.github.com/repos/other/repository/actions/runs/42" },
+      { url: "https://api.github.com/repos/other/repository/actions/jobs/2" },
+    ]) {
+      const enriched = await enrichActionsRunAttempts(payload, async (jobId) => {
+        const job = valid.get(jobId);
+        return jobId === "2" && job ? { ...job, ...patch } : job;
+      });
+      assert.equal(observeChecks(enriched).kind, "failed");
+    }
   });
 
   it("treats a rejected lookup as unavailable metadata instead of aborting", async () => {
@@ -813,16 +917,8 @@ describe("reconcileRestoredFailureKeys", () => {
 
     assert.equal(legacySnapshot.slice(-100).includes(activeFailure), false);
     assert.deepEqual(
-      reconcileRestoredFailureKeys([legacySnapshot], [activeFailure], 100),
+      reconcileRestoredFailureKeys(legacySnapshot, [activeFailure], 100),
       [activeFailure],
-    );
-  });
-
-  it("honors the latest snapshot so a cleared failure can alert if it fails again", () => {
-    const failureKey = `483:${"b".repeat(40)}`;
-    assert.deepEqual(
-      reconcileRestoredFailureKeys([[failureKey], []], [failureKey], 100),
-      [],
     );
   });
 
@@ -832,7 +928,7 @@ describe("reconcileRestoredFailureKeys", () => {
       (_, index) => `${index + 1}:${index.toString(16).padStart(40, "0")}`,
     );
     assert.throws(
-      () => reconcileRestoredFailureKeys([currentFailureKeys], currentFailureKeys, 100),
+      () => reconcileRestoredFailureKeys(currentFailureKeys, currentFailureKeys, 100),
       /exceeds the 100 key bound/u,
     );
   });

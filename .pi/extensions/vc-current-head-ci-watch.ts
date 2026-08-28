@@ -21,8 +21,25 @@ const STATE_ENTRY_TYPE = "vc-current-head-ci-watch-state";
 const MAX_OPEN_PULL_REQUESTS = 100;
 const MAX_ACTIONS_JOB_LOOKUPS_PER_OBSERVATION = 100;
 const MAX_SEEN_FAILURE_KEYS = MAX_OPEN_PULL_REQUESTS;
+const MAX_RESTORE_BRANCH_ENTRIES = 1_000;
+const MAX_RAW_RESTORED_FAILURE_KEYS = 1_000;
 
 type PullRequest = { number: number };
+type IntervalHandle = unknown;
+
+export type WatcherDependencies = {
+  clearInterval: (handle: IntervalHandle) => void;
+  createAbortController: () => AbortController;
+  runDetached: (task: Promise<void>) => void;
+  setInterval: (handler: () => void, intervalMs: number) => IntervalHandle;
+};
+
+const DEFAULT_DEPENDENCIES: WatcherDependencies = {
+  clearInterval: (handle) => clearInterval(handle as ReturnType<typeof setInterval>),
+  createAbortController: () => new AbortController(),
+  runDetached: (task) => void task,
+  setInterval: (handler, intervalMs) => setInterval(handler, intervalMs),
+};
 
 async function ghJson<T>(
   pi: ExtensionAPI,
@@ -38,17 +55,38 @@ async function ghJson<T>(
   }
 }
 
-function* restoredFailureSnapshots(ctx: ExtensionContext): Iterable<unknown> {
-  for (const entry of ctx.sessionManager.getBranch()) {
-    const candidate = entry as unknown as { customType?: unknown; data?: unknown; type?: unknown };
+function newestRestoredFailureSnapshot(ctx: ExtensionContext):
+  | { kind: "found"; snapshot: unknown }
+  | { kind: "invalid"; reason: string }
+  | { kind: "none" } {
+  const branch = ctx.sessionManager.getBranch();
+  const firstIndex = Math.max(0, branch.length - MAX_RESTORE_BRANCH_ENTRIES);
+  for (let index = branch.length - 1; index >= firstIndex; index -= 1) {
+    const candidate = branch[index] as unknown as {
+      customType?: unknown;
+      data?: unknown;
+      type?: unknown;
+    };
     if (candidate.type !== "custom" || candidate.customType !== STATE_ENTRY_TYPE) continue;
     const data = candidate.data as { seenFailedHeads?: unknown } | undefined;
-    yield data?.seenFailedHeads;
+    const snapshot = data?.seenFailedHeads;
+    if (!Array.isArray(snapshot)) return { kind: "invalid", reason: "newest saved state is malformed" };
+    if (snapshot.length > MAX_RAW_RESTORED_FAILURE_KEYS) {
+      return { kind: "invalid", reason: "newest saved state exceeds the raw key bound" };
+    }
+    return { kind: "found", snapshot };
   }
+  return branch.length > MAX_RESTORE_BRANCH_ENTRIES
+    ? { kind: "invalid", reason: "newest saved state is outside the branch scan bound" }
+    : { kind: "none" };
 }
 
-export default function (pi: ExtensionAPI) {
-  let timer: ReturnType<typeof setInterval> | undefined;
+export function registerVcCurrentHeadCiWatch(
+  pi: ExtensionAPI,
+  dependencies: Partial<WatcherDependencies> = {},
+) {
+  const deps: WatcherDependencies = { ...DEFAULT_DEPENDENCIES, ...dependencies };
+  let timer: IntervalHandle | undefined;
   let running = false;
   let sessionActive = false;
   let restorePending = true;
@@ -65,9 +103,11 @@ export default function (pi: ExtensionAPI) {
       throw new RangeError(`seen failure state exceeds the ${MAX_SEEN_FAILURE_KEYS} key bound`);
     }
     if (!force && next.length === seenFailures.size && next.every((key) => seenFailures.has(key))) return false;
+    // Persist before mutating in-memory dedupe state. A failed append must not
+    // make a later notification look delivered or durably recorded.
+    pi.appendEntry(STATE_ENTRY_TYPE, { seenFailedHeads: next });
     seenFailures.clear();
     for (const key of next) seenFailures.add(key);
-    pi.appendEntry(STATE_ENTRY_TYPE, { seenFailedHeads: next });
     return true;
   };
 
@@ -81,7 +121,7 @@ export default function (pi: ExtensionAPI) {
   const observe = async (ctx: ExtensionContext) => {
     if (!sessionActive || running) return;
     running = true;
-    const controller = new AbortController();
+    const controller = deps.createAbortController();
     observationController = controller;
     try {
       const prs = await ghJson<PullRequest[]>(pi, [
@@ -131,15 +171,25 @@ export default function (pi: ExtensionAPI) {
           currentFailureKeys.push(`${pr.number}:${headSha}`);
         }
 
-        persistSeenFailures(
-          reconcileRestoredFailureKeys(
-            restoredFailureSnapshots(ctx),
-            currentFailureKeys,
-            MAX_SEEN_FAILURE_KEYS,
-          ),
-          true,
-        );
-        restorePending = false;
+        const restored = newestRestoredFailureSnapshot(ctx);
+        if (restored.kind === "invalid") {
+          setStatus(ctx, `${restored.reason}; retrying`);
+          return;
+        }
+        try {
+          persistSeenFailures(
+            reconcileRestoredFailureKeys(
+              restored.kind === "found" ? restored.snapshot : [],
+              currentFailureKeys,
+              MAX_SEEN_FAILURE_KEYS,
+            ),
+            true,
+          );
+          restorePending = false;
+        } catch {
+          setStatus(ctx, "newest saved state contains malformed failure keys; retrying");
+          return;
+        }
       }
 
       persistSeenFailures(
@@ -236,17 +286,21 @@ export default function (pi: ExtensionAPI) {
         }
 
         if (!sessionActive) return;
-        failedCount += 1;
         pruneStaleFailures(pr.number, finalConfirmation.headSha);
         const failureKey = `${pr.number}:${finalConfirmation.headSha}`;
-        if (!setFailureActive(failureKey, true)) continue;
+        if (seenFailures.has(failureKey)) continue;
         const failureNames = formatFailureNames(finalConfirmation.failures);
+        // Queue delivery before recording the key. If delivery fails, the key
+        // remains unseen; if persistence then fails, in-memory state also
+        // remains unseen and a later observation safely retries the prompt.
         pi.sendUserMessage(
           `[vc-ci-watch] Current-head CI failed on PR #${pr.number} (${finalConfirmation.headSha.slice(0, 12)}). ` +
             `Untrusted failure names (Unicode code points): ${failureNames}. ` +
             `continue dev loop on PR ${pr.number}`,
           { deliverAs: "followUp" },
         );
+        setFailureActive(failureKey, true);
+        failedCount += 1;
       }
 
       if (failedCount > 0) {
@@ -268,8 +322,8 @@ export default function (pi: ExtensionAPI) {
     if (ctx.mode !== "tui" || !ctx.isProjectTrusted()) return;
     sessionActive = true;
     setStatus(ctx, "starting (5-minute interval)");
-    void observe(ctx);
-    timer = setInterval(() => void observe(ctx), WATCH_INTERVAL_MS);
+    deps.runDetached(observe(ctx));
+    timer = deps.setInterval(() => deps.runDetached(observe(ctx)), WATCH_INTERVAL_MS);
   });
 
   pi.on("session_shutdown", (_event, ctx) => {
@@ -277,8 +331,12 @@ export default function (pi: ExtensionAPI) {
     sessionActive = false;
     observationController?.abort();
     observationController = undefined;
-    if (timer) clearInterval(timer);
+    if (timer) deps.clearInterval(timer);
     timer = undefined;
     ctx.ui.setStatus(STATUS_KEY, undefined);
   });
+}
+
+export default function (pi: ExtensionAPI) {
+  registerVcCurrentHeadCiWatch(pi);
 }

@@ -167,25 +167,32 @@ checks a bounded set of up to 100 open PRs in this repository authored by the
 authenticated `gh` user every five minutes. Before a newly observed failure
 queues an attributed `continue dev loop on PR <N>` follow-up, the watcher
 re-reads the PR and confirms the exact current head. On session startup it
-first reconciles the latest saved notification snapshot against the exact heads
-of that bounded open-PR set. If any head cannot be read, reconciliation retries
-without replacing state or sending an alert; once complete, the snapshot is
-compacted to at most one current-head key per watched PR. This preserves active
-legacy notifications without unbounded state growth, while a cleared key can
-still become actionable after a later real failure. Pending, unknown,
-superseded, and previously observed PR/head failures do not trigger it. Within
-one Actions run, duplicate
+first selects only the newest watcher snapshot within the bounded 1,000-entry
+branch tail and reconciles at most 1,000 raw legacy keys against the exact heads
+of that bounded open-PR set. If any head cannot be read, the newest state is
+malformed or oversized, or no relevant snapshot is found within that tail,
+reconciliation retries without replacing state or sending an alert. Once
+complete, the snapshot is compacted to at most one current-head key per watched
+PR. This preserves active legacy notifications without unbounded state growth,
+while a cleared key can still become actionable after a later real failure.
+Pending, unknown, neutral-only, skipped-only, superseded, and previously
+observed PR/head failures do not trigger it. Within one Actions run, duplicate
 cancellation is non-actionable only when an actual success on that exact head
 belongs to a later, one-to-one API-enriched attempt of the same workflow/check
 identity; Actions URLs without validated attempt metadata and ambiguous
 same-named jobs remain fail-closed. Across distinct Actions runs, suppression is
 limited to the repository's known `Scan/scan` cross-trigger pair: exactly one
-completed cancellation and one completed success with repository-local Actions
-URLs, different run IDs, and a strictly later valid start time. Stable
-non-Actions provider URLs are grouped only with the same workflow/check identity.
-A green observation clears the prior PR/head notification state so a later
-failure on the same commit remains actionable. Neutral or skipped conclusions
-never clear a real failure.
+completed cancellation and one completed success with strict HTTPS
+repository-local Actions URLs, different run IDs, and a strictly later valid
+start time. Both jobs must also be verified through the fixed-repository Actions
+job API with matching job, run, head, name, and workflow metadata; unavailable or
+mismatched metadata remains fail-closed. Stable non-Actions provider URLs are
+grouped only with the same workflow/check identity. Only an actual successful
+observation clears prior PR/head notification state so a later failure on the
+same commit remains actionable. The prompt is queued before its failure key is
+persisted, and persistence mutates in-memory dedupe state only after the session
+entry append succeeds, so delivery or persistence errors retry rather than
+suppressing an undelivered prompt.
 
 This is an in-session dev-loop route/fix prompt, not a daemon. It never merges,
 approves, marks a PR ready, or changes GitHub state.

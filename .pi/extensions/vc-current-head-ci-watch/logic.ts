@@ -38,10 +38,23 @@ export type PullRequestChecks = {
 };
 
 export type ActionsJob = {
+  head_sha?: string;
   id?: number;
   name?: string;
   run_attempt?: number;
   run_id?: number;
+  run_url?: string;
+  url?: string;
+  workflow_name?: string;
+};
+
+const VERIFIED_ACTIONS_JOB = Symbol("verified-actions-job");
+
+type VerifiedActionsJob = {
+  headSha: string;
+  jobId: string;
+  runId: string;
+  workflowName: string;
 };
 
 export type ActionsJobLoader = (jobId: string) => Promise<ActionsJob | undefined>;
@@ -76,8 +89,10 @@ function crossRunCancellationIdentity(check: StatusCheck): string | undefined {
   return workflowName && name ? JSON.stringify([workflowName, name]) : undefined;
 }
 
-function actionsRunId(check: StatusCheck): string | undefined {
-  return check.actionsRunId?.trim() || githubActionsJobReference(check)?.runId;
+function verifiedActionsJob(check: StatusCheck): VerifiedActionsJob | undefined {
+  return (check as StatusCheck & { [VERIFIED_ACTIONS_JOB]?: VerifiedActionsJob })[
+    VERIFIED_ACTIONS_JOB
+  ];
 }
 
 function shouldSuppressCrossRunCancellation(check: StatusCheck, checks: StatusCheck[]): boolean {
@@ -88,24 +103,25 @@ function shouldSuppressCrossRunCancellation(check: StatusCheck, checks: StatusCh
 
   // Cross-trigger suppression is intentionally limited to the one known
   // repository workflow/check pair and an unambiguous cancelled/success pair.
-  // Anything broader remains fail-closed because display names alone do not
-  // prove that multiple same-named jobs share a logical identity.
+  // Both jobs must have authoritative metadata fetched from the fixed
+  // repository endpoint; display strings and GitHub-looking URLs alone are
+  // never enough to suppress an actionable cancellation.
   const peers = checks.filter((candidate) => crossRunCancellationIdentity(candidate) === identity);
   if (peers.length !== 2) return false;
   const candidate = peers.find((peer) => peer !== check);
   if (!candidate || normalize(candidate.status) !== "COMPLETED") return false;
   if (normalize(candidate.conclusion ?? candidate.state) !== "SUCCESS") return false;
 
-  const cancelledReference = githubActionsJobReference(check);
-  const successfulReference = githubActionsJobReference(candidate);
+  const cancelledJob = verifiedActionsJob(check);
+  const successfulJob = verifiedActionsJob(candidate);
   const cancelledStartedAt = startedTime(check);
   const successfulStartedAt = startedTime(candidate);
   return (
-    cancelledReference !== undefined &&
-    successfulReference !== undefined &&
-    actionsRunId(check) === cancelledReference.runId &&
-    actionsRunId(candidate) === successfulReference.runId &&
-    successfulReference.runId !== cancelledReference.runId &&
+    cancelledJob !== undefined &&
+    successfulJob !== undefined &&
+    cancelledJob.headSha === successfulJob.headSha &&
+    cancelledJob.workflowName === successfulJob.workflowName &&
+    cancelledJob.runId !== successfulJob.runId &&
     cancelledStartedAt !== undefined &&
     successfulStartedAt !== undefined &&
     successfulStartedAt > cancelledStartedAt
@@ -151,7 +167,8 @@ export function githubActionsJobReference(
     const match = url.pathname.match(
       new RegExp(`^/${EXPECTED_ACTIONS_REPOSITORY}/actions/runs/(\\d+)/job/(\\d+)/?$`, "u"),
     );
-    if (url.hostname.toLowerCase() !== "github.com" || !match) return undefined;
+    if (url.protocol !== "https:" || url.username || url.password || url.port) return undefined;
+    if (url.hostname.toLowerCase() !== "github.com" || url.search || url.hash || !match) return undefined;
     return { runId: match[1]!, jobId: match[2]! };
   } catch {
     return undefined;
@@ -167,20 +184,25 @@ export async function enrichActionsRunAttempts(
   if (!Array.isArray(checks)) return payload;
 
   const duplicateGroups = new Map<string, Array<{ check: StatusCheck; jobId: string; runId: string }>>();
+  const crossRunCandidates: Array<{ check: StatusCheck; jobId: string; runId: string }> = [];
   for (const check of checks) {
     const reference = githubActionsJobReference(check);
     const workflowName = check.workflowName?.trim();
     const name = check.name?.trim();
     if (!reference || !workflowName || !name) continue;
+    const candidate = { check, ...reference };
     const key = JSON.stringify([reference.runId, workflowName, name]);
     const group = duplicateGroups.get(key);
-    const candidate = { check, ...reference };
     if (group) group.push(candidate);
     else duplicateGroups.set(key, [candidate]);
+    if (CROSS_TRIGGER_CANCELLATION_IDENTITIES.has(JSON.stringify([workflowName, name]))) {
+      crossRunCandidates.push(candidate);
+    }
   }
 
   const groups = [...duplicateGroups.values()].filter((group) => group.length > 1);
-  const jobIds = [...new Set(groups.flatMap((group) => group.map((candidate) => candidate.jobId)))];
+  const candidates = [...new Set([...groups.flat(), ...crossRunCandidates])];
+  const jobIds = [...new Set(candidates.map((candidate) => candidate.jobId))];
   const maxLookups = limits.maxLookups ?? DEFAULT_MAX_ACTIONS_JOB_LOOKUPS;
   if (!Number.isInteger(maxLookups) || maxLookups < 0) return payload;
   if (jobIds.length === 0 || jobIds.length > maxLookups) return payload;
@@ -199,19 +221,39 @@ export async function enrichActionsRunAttempts(
     }
   }
 
-  const enriched = new Map<StatusCheck, { runAttempt: number; runId: string }>();
+  const validatedJobs = new Map<StatusCheck, { metadata: VerifiedActionsJob; runAttempt: number }>();
+  const headSha = payload.headRefOid?.trim();
+  for (const candidate of candidates) {
+    const job = jobs.get(candidate.jobId);
+    if (
+      !headSha ||
+      !job ||
+      String(job.id) !== candidate.jobId ||
+      String(job.run_id) !== candidate.runId ||
+      job.name?.trim() !== candidate.check.name?.trim() ||
+      job.workflow_name?.trim() !== candidate.check.workflowName?.trim() ||
+      job.head_sha?.trim() !== headSha ||
+      job.url !== `https://api.github.com/repos/${EXPECTED_ACTIONS_REPOSITORY}/actions/jobs/${candidate.jobId}` ||
+      job.run_url !== `https://api.github.com/repos/${EXPECTED_ACTIONS_REPOSITORY}/actions/runs/${candidate.runId}` ||
+      !Number.isInteger(job.run_attempt) ||
+      job.run_attempt! < 1
+    ) continue;
+    validatedJobs.set(candidate.check, {
+      metadata: {
+        headSha,
+        jobId: candidate.jobId,
+        runId: candidate.runId,
+        workflowName: job.workflow_name!.trim(),
+      },
+      runAttempt: job.run_attempt!,
+    });
+  }
+
+  const enrichedAttempts = new Map<StatusCheck, { runAttempt: number; runId: string }>();
   for (const group of groups) {
     const validated = group.map((candidate) => {
-      const job = jobs.get(candidate.jobId);
-      if (
-        !job ||
-        String(job.id) !== candidate.jobId ||
-        String(job.run_id) !== candidate.runId ||
-        job.name?.trim() !== candidate.check.name?.trim() ||
-        !Number.isInteger(job.run_attempt) ||
-        job.run_attempt! < 1
-      ) return undefined;
-      return { candidate, runAttempt: job.run_attempt! };
+      const job = validatedJobs.get(candidate.check);
+      return job ? { candidate, runAttempt: job.runAttempt } : undefined;
     });
     if (validated.some((candidate) => candidate === undefined)) continue;
 
@@ -221,7 +263,7 @@ export async function enrichActionsRunAttempts(
     const runAttempts = validated.map((candidate) => candidate!.runAttempt);
     if (new Set(runAttempts).size !== runAttempts.length) continue;
     for (const candidate of validated) {
-      enriched.set(candidate!.candidate.check, {
+      enrichedAttempts.set(candidate!.candidate.check, {
         runAttempt: candidate!.runAttempt,
         runId: candidate!.candidate.runId,
       });
@@ -231,10 +273,17 @@ export async function enrichActionsRunAttempts(
   return {
     ...payload,
     statusCheckRollup: checks.map((check) => {
-      const enrichment = enriched.get(check);
-      return enrichment
-        ? { ...check, actionsRunId: enrichment.runId, actionsRunAttempt: enrichment.runAttempt }
-        : check;
+      const attempt = enrichedAttempts.get(check);
+      const verified = validatedJobs.get(check);
+      if (!attempt && !verified) return check;
+      const enriched = {
+        ...check,
+        ...(attempt
+          ? { actionsRunId: attempt.runId, actionsRunAttempt: attempt.runAttempt }
+          : {}),
+      } as StatusCheck & { [VERIFIED_ACTIONS_JOB]?: VerifiedActionsJob };
+      if (verified) enriched[VERIFIED_ACTIONS_JOB] = verified.metadata;
+      return enriched;
     }),
   };
 }
@@ -328,13 +377,15 @@ function groupOutcome(checks: StatusCheck[]): "failed" | "green" | "unknown" {
     latestSuccess > latestCancellation
   ) return "green";
   if (cancellations.length > 0) return "failed";
-  return completed.length > 0 ? "green" : "unknown";
+  // Neutral/skipped-only rollups are settled but do not prove that an active
+  // failure resolved. Only an actual SUCCESS may clear watcher state.
+  return successes.length > 0 ? "green" : "unknown";
 }
 
 const FAILURE_KEY_PATTERN = /^\d+:[0-9a-f]{40}$/iu;
 
 export function reconcileRestoredFailureKeys(
-  snapshots: Iterable<unknown>,
+  snapshot: unknown,
   currentFailureKeys: Iterable<string>,
   maxFailureKeys: number,
 ): string[] {
@@ -343,13 +394,15 @@ export function reconcileRestoredFailureKeys(
     throw new RangeError(`current failure key count exceeds the ${maxFailureKeys} key bound`);
   }
 
+  if (!Array.isArray(snapshot) || snapshot.some(
+    (key) => typeof key !== "string" || !FAILURE_KEY_PATTERN.test(key),
+  )) {
+    throw new TypeError("restored failure state is malformed");
+  }
+
   const restored = new Set<string>();
-  for (const snapshot of snapshots) {
-    if (!Array.isArray(snapshot)) continue;
-    restored.clear();
-    for (const key of snapshot) {
-      if (typeof key === "string" && current.has(key)) restored.add(key);
-    }
+  for (const key of snapshot) {
+    if (current.has(key)) restored.add(key);
   }
   return [...restored].sort();
 }
