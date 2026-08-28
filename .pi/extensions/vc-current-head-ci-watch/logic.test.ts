@@ -23,6 +23,7 @@ function actionsJobMetadata({
   name = "scan",
   runAttempt,
   runId,
+  startedAt = "2026-08-24T10:00:00.000Z",
   workflowName = "PR scan",
 }: {
   headSha?: string;
@@ -30,6 +31,7 @@ function actionsJobMetadata({
   name?: string;
   runAttempt: number;
   runId: number;
+  startedAt?: string | null;
   workflowName?: string;
 }): ActionsJob {
   return {
@@ -39,6 +41,7 @@ function actionsJobMetadata({
     run_attempt: runAttempt,
     run_id: runId,
     run_url: `https://api.github.com/repos/midnightntwrk/midnight-verifiable-credentials/actions/runs/${runId}`,
+    started_at: startedAt,
     url: `https://api.github.com/repos/midnightntwrk/midnight-verifiable-credentials/actions/jobs/${id}`,
     workflow_name: workflowName,
   };
@@ -123,11 +126,68 @@ describe("observeChecks", () => {
     assert.equal(observeChecks(payload).kind, "failed");
 
     const jobs = new Map([
-      ["1", actionsJobMetadata({ id: 1, runId: 41, runAttempt: 1, workflowName: "Scan" })],
-      ["2", actionsJobMetadata({ id: 2, runId: 42, runAttempt: 1, workflowName: "Scan" })],
+      ["1", actionsJobMetadata({
+        id: 1,
+        runId: 41,
+        runAttempt: 1,
+        startedAt: "2026-08-24T10:00:00.000Z",
+        workflowName: "Scan",
+      })],
+      ["2", actionsJobMetadata({
+        id: 2,
+        runId: 42,
+        runAttempt: 1,
+        startedAt: "2026-08-24T10:05:00.000Z",
+        workflowName: "Scan",
+      })],
     ]);
     const enriched = await enrichActionsRunAttempts(payload, async (jobId) => jobs.get(jobId));
     assert.deepEqual(observeChecks(enriched), { kind: "green", headSha: "current-head" });
+  });
+
+  it("orders cross-run cancellation only by authoritative Actions job started_at", async () => {
+    const payload = {
+      headRefOid: "current-head",
+      statusCheckRollup: [
+        {
+          name: "scan",
+          workflowName: "Scan",
+          detailsUrl: "https://github.com/midnightntwrk/midnight-verifiable-credentials/actions/runs/41/job/1",
+          status: "COMPLETED",
+          conclusion: "CANCELLED",
+          startedAt: "2026-08-24T11:00:00.000Z",
+        },
+        {
+          name: "scan",
+          workflowName: "Scan",
+          detailsUrl: "https://github.com/midnightntwrk/midnight-verifiable-credentials/actions/runs/42/job/2",
+          status: "COMPLETED",
+          conclusion: "SUCCESS",
+          startedAt: "2026-08-24T09:00:00.000Z",
+        },
+      ],
+    };
+    const job = (id: number, runId: number, startedAt: string | null) => actionsJobMetadata({
+      id,
+      runId,
+      runAttempt: 1,
+      startedAt,
+      workflowName: "Scan",
+    });
+
+    const authoritativeLater = await enrichActionsRunAttempts(payload, async (jobId) =>
+      jobId === "1"
+        ? job(1, 41, "2026-08-24T10:00:00.000Z")
+        : job(2, 42, "2026-08-24T10:05:00.000Z"));
+    assert.equal(observeChecks(authoritativeLater).kind, "green");
+
+    for (const successStartedAt of ["2026-08-24T09:55:00.000Z", null, "not-a-date"]) {
+      const failClosed = await enrichActionsRunAttempts(payload, async (jobId) =>
+        jobId === "1"
+          ? job(1, 41, "2026-08-24T10:00:00.000Z")
+          : job(2, 42, successStartedAt));
+      assert.equal(observeChecks(failClosed).kind, "failed");
+    }
   });
 
   it("requires strict HTTPS GitHub job URLs without credentials, ports, query, or fragment", () => {

@@ -44,6 +44,7 @@ export type ActionsJob = {
   run_attempt?: number;
   run_id?: number;
   run_url?: string;
+  started_at?: string | null;
   url?: string;
   workflow_name?: string;
 };
@@ -54,6 +55,7 @@ type VerifiedActionsJob = {
   headSha: string;
   jobId: string;
   runId: string;
+  startedAt?: number;
   workflowName: string;
 };
 
@@ -114,17 +116,15 @@ function shouldSuppressCrossRunCancellation(check: StatusCheck, checks: StatusCh
 
   const cancelledJob = verifiedActionsJob(check);
   const successfulJob = verifiedActionsJob(candidate);
-  const cancelledStartedAt = startedTime(check);
-  const successfulStartedAt = startedTime(candidate);
   return (
     cancelledJob !== undefined &&
     successfulJob !== undefined &&
     cancelledJob.headSha === successfulJob.headSha &&
     cancelledJob.workflowName === successfulJob.workflowName &&
     cancelledJob.runId !== successfulJob.runId &&
-    cancelledStartedAt !== undefined &&
-    successfulStartedAt !== undefined &&
-    successfulStartedAt > cancelledStartedAt
+    cancelledJob.startedAt !== undefined &&
+    successfulJob.startedAt !== undefined &&
+    successfulJob.startedAt > cancelledJob.startedAt
   );
 }
 
@@ -238,11 +238,14 @@ export async function enrichActionsRunAttempts(
       !Number.isInteger(job.run_attempt) ||
       job.run_attempt! < 1
     ) continue;
+    const startedAt = job.started_at?.trim();
+    const parsedStartedAt = startedAt ? Date.parse(startedAt) : Number.NaN;
     validatedJobs.set(candidate.check, {
       metadata: {
         headSha,
         jobId: candidate.jobId,
         runId: candidate.runId,
+        ...(Number.isFinite(parsedStartedAt) ? { startedAt: parsedStartedAt } : {}),
         workflowName: job.workflow_name!.trim(),
       },
       runAttempt: job.run_attempt!,

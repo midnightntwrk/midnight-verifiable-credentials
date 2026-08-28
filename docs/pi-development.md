@@ -169,12 +169,16 @@ queues an attributed `continue dev loop on PR <N>` follow-up, the watcher
 re-reads the PR and confirms the exact current head. On session startup it
 first selects only the newest watcher snapshot within the bounded 1,000-entry
 branch tail and reconciles at most 1,000 raw legacy keys against the exact heads
-of that bounded open-PR set. If any head cannot be read, the newest state is
-malformed or oversized, or no relevant snapshot is found within that tail,
-reconciliation retries without replacing state or sending an alert. Once
-complete, the snapshot is compacted to at most one current-head key per watched
-PR. This preserves active legacy notifications without unbounded state growth,
-while a cleared key can still become actionable after a later real failure.
+of that bounded open-PR set. If any head cannot be read or the newest in-tail
+state is malformed or oversized, reconciliation retries without replacing state
+or sending an alert. An explicitly present null or malformed
+`pendingNotifications` value is invalid; only an absent property may use the
+legacy outbox fallback. If prior state is outside the bounded tail, the watcher
+writes one conservative bounded recovery snapshot that suppresses each current
+PR/head until an actual green observation clears it. A later real failure on
+that cleared head is actionable, so long sessions recover without unbounded
+history scans, permanent disablement, or duplicate active alerts. Once complete,
+the snapshot is compacted to at most one current-head key per watched PR.
 Pending, unknown, wholly neutral/skipped, superseded, and previously observed
 PR/head failures do not trigger it. A settled rollup containing at least one
 actual success and only neutral/skipped peers is green; an all-neutral/skipped
@@ -186,9 +190,11 @@ same-named jobs remain fail-closed. Across distinct Actions runs, suppression is
 limited to the repository's known `Scan/scan` cross-trigger pair: exactly one
 completed cancellation and one completed success with strict HTTPS
 repository-local Actions URLs, different run IDs, and a strictly later valid
-start time. Both jobs must also be verified through the fixed-repository Actions
-job API with matching job, run, head, name, and workflow metadata; unavailable or
-mismatched metadata remains fail-closed. Stable non-Actions provider URLs are
+`started_at` from each authoritative Actions job response. Rollup `startedAt`
+values are not trusted for cross-run ordering. Both jobs must also be verified
+through the fixed-repository Actions job API with matching job, run, head, name,
+and workflow metadata; unavailable, invalid, or mismatched metadata remains
+fail-closed. Stable non-Actions provider URLs are
 grouped only with the same workflow/check identity. Only an actual successful
 observation clears prior PR/head notification state so a later failure on the same commit remains actionable. Reconfirmed red heads
 remain counted as red in the footer even when their notifications are already
@@ -197,15 +203,19 @@ deduplicated.
 The model-triggering message contains no provider-supplied check names. Its only
 variable data is a validated positive PR number and the full validated 40-hex
 expected head SHA. It instructs the downstream dev loop to confirm that exact
-head from the canonical pull request before acting and to stop on mismatch; the
-watcher still performs its own final head re-read immediately before enqueue.
+head from the canonical pull request before acting and to stop on mismatch.
+Immediately before enqueue, the watcher re-reads the complete exact-head check
+rollup and repeats authoritative Actions enrichment; a same-head successful
+rerun suppresses the queued notification.
 
 Because Pi's `sendUserMessage` API is void, its return is not delivery evidence.
 The watcher first appends a bounded pending-notification outbox record containing
 the PR/head key and the count of matching markers already on the active branch.
 It promotes that key to durable dedupe only after a new exact watcher user-message
 marker appears in the bounded session branch. Missing markers retry on the
-five-minute cadence, with at most three sends per key in one session; pending
+five-minute cadence, with at most three sends per key in one session and at most
+one model-triggering dispatch across all watched PRs per observation. Other red
+heads remain in the bounded outbox and status rollup for later cadences. Pending
 records survive restart, where an existing new marker is recovered or an absent
 marker receives a fresh bounded retry budget. State append failures prevent send,
 malformed or unavailable restore data remains fail-closed, and session-generation

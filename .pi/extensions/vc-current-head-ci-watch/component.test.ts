@@ -195,12 +195,12 @@ function queueFailureCycle(
   harness: ExtensionHarness,
   initial = failurePayload(),
   confirmation = initial,
-  finalHeadSha = confirmation.headRefOid,
+  final: PullRequestChecks | string = confirmation,
 ): void {
   queueOpenPr(harness);
   harness.queueJson(initial);
   harness.queueJson(confirmation);
-  harness.queueJson({ headRefOid: finalHeadSha });
+  harness.queueJson(typeof final === "string" ? { ...confirmation, headRefOid: final } : final);
 }
 
 function latestState(harness: ExtensionHarness): WatcherState | undefined {
@@ -209,16 +209,21 @@ function latestState(harness: ExtensionHarness): WatcherState | undefined {
     .at(-1)?.data as WatcherState | undefined;
 }
 
-function fixedRepositoryJob(id: number): ActionsJob {
+function fixedRepositoryJob(
+  id: number,
+  options: { runAttempt?: number; runId?: number; workflowName?: string } = {},
+): ActionsJob {
+  const runId = options.runId ?? id;
   return {
     head_sha: CURRENT_HEAD,
     id,
     name: "scan",
-    run_attempt: 1,
-    run_id: id,
-    run_url: `https://api.github.com/repos/midnightntwrk/midnight-verifiable-credentials/actions/runs/${id}`,
+    run_attempt: options.runAttempt ?? 1,
+    run_id: runId,
+    run_url: `https://api.github.com/repos/midnightntwrk/midnight-verifiable-credentials/actions/runs/${runId}`,
+    started_at: new Date(Date.UTC(2026, 7, 24, 10, id)).toISOString(),
     url: `https://api.github.com/repos/midnightntwrk/midnight-verifiable-credentials/actions/jobs/${id}`,
-    workflow_name: "Scan",
+    workflow_name: options.workflowName ?? "Scan",
   };
 }
 
@@ -284,21 +289,57 @@ describe("vc-current-head-ci-watch extension handlers", () => {
     });
   });
 
-  it("fails closed on oversized newest state and on a relevant snapshot outside the branch scan bound", async () => {
-    for (const branch of [
-      [stateEntry(Array.from({ length: 1_001 }, (_, index) => `${index + 1}:${OLD_HEAD}`))],
-      [stateEntry([`483:${CURRENT_HEAD}`]), ...Array.from({ length: 1_000 }, () => ({ type: "message" }))],
-    ]) {
-      const harness = new ExtensionHarness();
-      queueOpenPr(harness);
-      harness.queueJson(successPayload());
-      await harness.start(harness.context({ branch }));
-      assert.equal(harness.messages.length, 0);
-      assert.match(harness.statusEvents.at(-1)?.[1] ?? "", /bound/u);
-    }
+  it("rejects an explicitly null restored outbox instead of applying legacy fallback", async () => {
+    const branch = [stateEntry([])];
+    (branch[0]!.data as Record<string, unknown>).pendingNotifications = null;
+    (branch[0]!.data as Record<string, unknown>).pendingFailedHeads = [`483:${CURRENT_HEAD}`];
+    const harness = new ExtensionHarness();
+    queueOpenPr(harness);
+    harness.queueJson(failurePayload());
+    await harness.start(harness.context({ branch }));
+
+    assert.equal(harness.messages.length, 0);
+    assert.match(harness.statusEvents.at(-1)?.[1] ?? "", /saved outbox is malformed/u);
   });
 
-  it("performs exactly three ordered PR reads and rejects a final head movement", async () => {
+  it("fails closed on an oversized newest state", async () => {
+    const branch = [
+      stateEntry(Array.from({ length: 1_001 }, (_, index) => `${index + 1}:${OLD_HEAD}`)),
+    ];
+    const harness = new ExtensionHarness();
+    queueOpenPr(harness);
+    harness.queueJson(successPayload());
+    await harness.start(harness.context({ branch }));
+    assert.equal(harness.messages.length, 0);
+    assert.match(harness.statusEvents.at(-1)?.[1] ?? "", /bound/u);
+  });
+
+  it("recovers conservatively when prior state is outside the branch tail", async () => {
+    const branch = [
+      stateEntry([`483:${CURRENT_HEAD}`]),
+      ...Array.from({ length: 1_000 }, () => ({ type: "message" })),
+    ];
+    const harness = new ExtensionHarness();
+    const ctx = harness.context({ branch });
+
+    queueOpenPr(harness);
+    harness.queueJson(failurePayload());
+    harness.queueJson(failurePayload());
+    await harness.start(ctx);
+    assert.equal(harness.messages.length, 0, "current red head is conservatively suppressed");
+    assert.deepEqual(latestState(harness)?.seenFailedHeads, [`483:${CURRENT_HEAD}`]);
+
+    queueOpenPr(harness);
+    harness.queueJson(successPayload());
+    await harness.tick();
+    assert.deepEqual(latestState(harness)?.seenFailedHeads, [], "a real green transition clears recovery");
+
+    queueFailureCycle(harness);
+    await harness.tick();
+    assert.equal(harness.messages.length, 1, "a later real failure remains actionable");
+  });
+
+  it("performs exactly three full-rollup PR reads and rejects a final head movement", async () => {
     const harness = new ExtensionHarness();
     queueFailureCycle(
       harness,
@@ -313,7 +354,7 @@ describe("vc-current-head-ci-watch extension handlers", () => {
     assert.deepEqual(prReads.map((args) => args.at(-1)), [
       "headRefOid,statusCheckRollup",
       "headRefOid,statusCheckRollup",
-      "headRefOid",
+      "headRefOid,statusCheckRollup",
     ]);
     assert.equal(harness.messages.length, 0);
   });
@@ -333,6 +374,90 @@ describe("vc-current-head-ci-watch extension handlers", () => {
     );
     assert.doesNotMatch(message, /ignore previous|🚨|U\+/u);
     assert.deepEqual(latestState(harness)?.seenFailedHeads, [`483:${CURRENT_HEAD}`]);
+  });
+
+  it("re-reads and authoritatively enriches the full final rollup before dispatch", async () => {
+    const finalRerun: PullRequestChecks = {
+      headRefOid: CURRENT_HEAD,
+      statusCheckRollup: [
+        {
+          name: "scan",
+          workflowName: "PR scan",
+          detailsUrl: "https://github.com/midnightntwrk/midnight-verifiable-credentials/actions/runs/42/job/1",
+          status: "COMPLETED",
+          conclusion: "FAILURE",
+        },
+        {
+          name: "scan",
+          workflowName: "PR scan",
+          detailsUrl: "https://github.com/midnightntwrk/midnight-verifiable-credentials/actions/runs/42/job/2",
+          status: "COMPLETED",
+          conclusion: "SUCCESS",
+        },
+      ],
+    };
+    const harness = new ExtensionHarness();
+    queueFailureCycle(harness, failurePayload(), failurePayload(), finalRerun);
+    harness.queueJson(fixedRepositoryJob(1, { runAttempt: 1, runId: 42, workflowName: "PR scan" }));
+    harness.queueJson(fixedRepositoryJob(2, { runAttempt: 2, runId: 42, workflowName: "PR scan" }));
+    await harness.start(harness.context());
+
+    assert.equal(harness.messages.length, 0, "the final same-head successful rerun suppresses dispatch");
+    assert.equal(harness.execArgs.filter((args) => args[0] === "api").length, 2);
+    assert.deepEqual(latestState(harness)?.seenFailedHeads, []);
+    assert.deepEqual(latestState(harness)?.pendingNotifications, []);
+  });
+
+  it("does not dispatch when the final authoritative enrichment exceeds the shared bound", async () => {
+    const finalRerun: PullRequestChecks = {
+      headRefOid: NEW_HEAD,
+      statusCheckRollup: [
+        {
+          name: "scan",
+          workflowName: "PR scan",
+          detailsUrl: "https://github.com/midnightntwrk/midnight-verifiable-credentials/actions/runs/42/job/101",
+          status: "COMPLETED",
+          conclusion: "FAILURE",
+        },
+        {
+          name: "scan",
+          workflowName: "PR scan",
+          detailsUrl: "https://github.com/midnightntwrk/midnight-verifiable-credentials/actions/runs/42/job/102",
+          status: "COMPLETED",
+          conclusion: "SUCCESS",
+        },
+      ],
+    };
+    const harness = new ExtensionHarness();
+    harness.queueJson([{ number: 483 }, { number: 484 }]);
+    harness.queueJson(actionsSuccessPayload(1, 100));
+    harness.queueJson(failurePayload(NEW_HEAD));
+    for (let id = 1; id <= 100; id += 1) harness.queueJson(fixedRepositoryJob(id));
+    harness.queueJson(failurePayload(NEW_HEAD));
+    harness.queueJson(finalRerun);
+    await harness.start(harness.context());
+
+    assert.equal(harness.execArgs.filter((args) => args[0] === "api").length, 100);
+    assert.equal(harness.messages.length, 0);
+    assert.match(harness.statusEvents.at(-1)?.[1] ?? "", /pending\/unknown/u);
+  });
+
+  it("dispatches at most one model-triggering message per observation", async () => {
+    const harness = new ExtensionHarness();
+    harness.queueJson([{ number: 483 }, { number: 484 }]);
+    harness.queueJson(failurePayload());
+    harness.queueJson(failurePayload(NEW_HEAD));
+    harness.queueJson(failurePayload());
+    harness.queueJson(failurePayload(NEW_HEAD));
+    harness.queueJson(failurePayload());
+    await harness.start(harness.context());
+
+    assert.equal(harness.messages.length, 1);
+    assert.match(harness.messages[0]!, /pr=483/u);
+    assert.deepEqual(latestState(harness)?.seenFailedHeads, [`483:${CURRENT_HEAD}`]);
+    assert.deepEqual(latestState(harness)?.pendingNotifications.map((item) => item.failureKey), [
+      `484:${NEW_HEAD}`,
+    ]);
   });
 
   it("keeps a bounded durable outbox until the exact user-message marker appears", async () => {
@@ -398,7 +523,9 @@ describe("vc-current-head-ci-watch extension handlers", () => {
     harness.failAppendWhen((data) =>
       (data as WatcherState).pendingNotifications?.length === 1);
 
-    queueFailureCycle(harness);
+    queueOpenPr(harness);
+    harness.queueJson(failurePayload());
+    harness.queueJson(failurePayload());
     await harness.start(ctx);
     assert.equal(harness.messages.length, 0);
 

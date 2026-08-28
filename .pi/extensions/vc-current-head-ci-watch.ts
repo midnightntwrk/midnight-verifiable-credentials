@@ -67,7 +67,8 @@ async function ghJson<T>(
 function newestRestoredWatcherState(ctx: ExtensionContext):
   | { kind: "found"; snapshot: RestoredWatcherState }
   | { kind: "invalid"; reason: string }
-  | { kind: "none" } {
+  | { kind: "none" }
+  | { kind: "outside_tail" } {
   const branch = ctx.sessionManager.getBranch();
   const firstIndex = Math.max(0, branch.length - MAX_RESTORE_BRANCH_ENTRIES);
   for (let index = branch.length - 1; index >= firstIndex; index -= 1) {
@@ -85,11 +86,12 @@ function newestRestoredWatcherState(ctx: ExtensionContext):
     if (!Array.isArray(data?.seenFailedHeads)) {
       return { kind: "invalid", reason: "newest saved state is malformed" };
     }
-    const pendingNotifications = data.pendingNotifications ?? (
-      Array.isArray(data.pendingFailedHeads)
+    const hasPendingNotifications = Object.hasOwn(data, "pendingNotifications");
+    const pendingNotifications = hasPendingNotifications
+      ? data.pendingNotifications
+      : Array.isArray(data.pendingFailedHeads)
         ? data.pendingFailedHeads.map((failureKey) => ({ failureKey, markerOccurrencesBeforeSend: 0 }))
-        : []
-    );
+        : [];
     if (!Array.isArray(pendingNotifications)) {
       return { kind: "invalid", reason: "newest saved outbox is malformed" };
     }
@@ -104,9 +106,7 @@ function newestRestoredWatcherState(ctx: ExtensionContext):
       snapshot: { seenFailedHeads: data.seenFailedHeads, pendingNotifications },
     };
   }
-  return branch.length > MAX_RESTORE_BRANCH_ENTRIES
-    ? { kind: "invalid", reason: "newest saved state is outside the branch scan bound" }
-    : { kind: "none" };
+  return branch.length > MAX_RESTORE_BRANCH_ENTRIES ? { kind: "outside_tail" } : { kind: "none" };
 }
 
 function watcherMessageForFailure(failureKey: string): string | undefined {
@@ -349,21 +349,28 @@ export function registerVcCurrentHeadCiWatch(
           return;
         }
         try {
-          const snapshot = restored.kind === "found"
-            ? restored.snapshot
-            : { seenFailedHeads: [], pendingNotifications: [] };
-          persistState(
-            reconcileRestoredFailureKeys(
-              snapshot.seenFailedHeads,
-              currentFailureKeys,
-              MAX_FAILURE_KEYS,
-            ),
-            reconcileRestoredPendingNotifications(
-              snapshot.pendingNotifications,
-              currentFailureKeys,
-            ),
-            true,
-          );
+          if (restored.kind === "outside_tail") {
+            // The prior acknowledgement state is unavailable inside the bounded
+            // branch tail. Conservatively suppress each current PR/head until
+            // a real green observation clears it, then allow a later failure.
+            persistState([...currentFailureKeys].sort(), [], true);
+          } else {
+            const snapshot = restored.kind === "found"
+              ? restored.snapshot
+              : { seenFailedHeads: [], pendingNotifications: [] };
+            persistState(
+              reconcileRestoredFailureKeys(
+                snapshot.seenFailedHeads,
+                currentFailureKeys,
+                MAX_FAILURE_KEYS,
+              ),
+              reconcileRestoredPendingNotifications(
+                snapshot.pendingNotifications,
+                currentFailureKeys,
+              ),
+              true,
+            );
+          }
           restorePending = false;
           confirmPendingMarkers(ctx);
         } catch {
@@ -385,12 +392,22 @@ export function registerVcCurrentHeadCiWatch(
 
       let failedCount = 0;
       let waitingCount = 0;
+      const dispatchCandidates = new Map<string, {
+        failures: string[];
+        headSha: string;
+        prNumber: number;
+      }>();
       let remainingActionsJobLookups = MAX_ACTIONS_JOB_LOOKUPS_PER_OBSERVATION;
+      let finalEnrichmentActive = false;
+      let finalEnrichmentWithinBudget = true;
       const actionsJobCache = new Map<string, Promise<ActionsJob | undefined>>();
       const loadActionsJob = (jobId: string): Promise<ActionsJob | undefined> => {
         const cached = actionsJobCache.get(jobId);
         if (cached) return cached;
-        if (remainingActionsJobLookups < 1) return Promise.resolve(undefined);
+        if (remainingActionsJobLookups < 1) {
+          if (finalEnrichmentActive) finalEnrichmentWithinBudget = false;
+          return Promise.resolve(undefined);
+        }
         remainingActionsJobLookups -= 1;
         const request = ghJson<ActionsJob>(pi, [
           "api",
@@ -457,49 +474,97 @@ export function registerVcCurrentHeadCiWatch(
           continue;
         }
 
-        const finalHead = await ghJson<{ headRefOid?: string | null }>(pi, [
-          "pr",
-          "view",
-          String(pr.number),
-          "--repo",
-          REPOSITORY,
-          "--json",
-          "headRefOid",
-        ], controller.signal);
-        if (!isCurrentSession(generation)) return;
-        const finalConfirmation = confirmCurrentHeadFailure(
-          observation,
-          observeChecks(confirmedChecks),
-          finalHead?.headRefOid,
-        );
-        if (finalConfirmation.kind !== "actionable") {
-          waitingCount += 1;
-          continue;
-        }
-        if (!/^[0-9a-f]{40}$/iu.test(finalConfirmation.headSha)) {
+        if (!/^[0-9a-f]{40}$/iu.test(confirmation.headSha)) {
           waitingCount += 1;
           continue;
         }
 
-        pruneStaleFailures(pr.number, finalConfirmation.headSha.toLowerCase());
-        const failureKey = `${pr.number}:${finalConfirmation.headSha.toLowerCase()}`;
+        pruneStaleFailures(pr.number, confirmation.headSha.toLowerCase());
+        const failureKey = `${pr.number}:${confirmation.headSha.toLowerCase()}`;
         failedCount += 1;
         if (seenFailures.has(failureKey)) continue;
 
-        // The durable outbox entry is written before the void send call. A key
-        // is promoted to durable dedupe only after the exact resulting user
-        // message is visible on the active session branch.
+        // Every actionable red head enters the durable outbox, but one
+        // observation may dispatch at most one model-triggering message.
         if (!pendingFailures.has(failureKey)) addPendingFailure(ctx, failureKey);
         confirmPendingMarkers(ctx);
         if (seenFailures.has(failureKey)) continue;
+        if ((sendAttempts.get(failureKey) ?? 0) >= MAX_NOTIFICATION_SEND_ATTEMPTS_PER_SESSION) {
+          continue;
+        }
+        dispatchCandidates.set(failureKey, {
+          failures: confirmation.failures,
+          headSha: confirmation.headSha,
+          prNumber: pr.number,
+        });
+      }
 
-        const attempts = sendAttempts.get(failureKey) ?? 0;
-        if (attempts >= MAX_NOTIFICATION_SEND_ATTEMPTS_PER_SESSION) continue;
-        const message = watcherMessageForFailure(failureKey);
-        if (!message || !isCurrentSession(generation)) continue;
-        sendAttempts.set(failureKey, attempts + 1);
-        pi.sendUserMessage(message, { deliverAs: "followUp" });
-        confirmPendingMarkers(ctx);
+      const selected = [...dispatchCandidates.entries()]
+        .sort(([left], [right]) => left.localeCompare(right))[0];
+      if (selected && isCurrentSession(generation)) {
+        const [failureKey, candidate] = selected;
+        // The final pre-send read includes the complete rollup and repeats
+        // authoritative Actions enrichment. This is the dispatch boundary:
+        // a same-head successful rerun suppresses the queued notification.
+        const finalPayload = await ghJson<PullRequestChecks>(pi, [
+          "pr",
+          "view",
+          String(candidate.prNumber),
+          "--repo",
+          REPOSITORY,
+          "--json",
+          "headRefOid,statusCheckRollup",
+        ], controller.signal);
+        if (!isCurrentSession(generation)) return;
+        if (!finalPayload) {
+          failedCount -= 1;
+          waitingCount += 1;
+        } else {
+          finalEnrichmentActive = true;
+          finalEnrichmentWithinBudget = true;
+          const finalChecks = await enrichActionsRunAttempts(finalPayload, loadActionsJob);
+          finalEnrichmentActive = false;
+          if (!isCurrentSession(generation)) return;
+          if (!finalEnrichmentWithinBudget) {
+            failedCount -= 1;
+            waitingCount += 1;
+          } else {
+            const finalConfirmation = confirmCurrentHeadFailure(
+              { kind: "failed", failures: candidate.failures, headSha: candidate.headSha },
+              observeChecks(finalChecks),
+              finalChecks.headRefOid,
+            );
+            if (finalConfirmation.kind !== "actionable") {
+              failedCount -= 1;
+              waitingCount += 1;
+              const finalHead = finalChecks.headRefOid?.trim().toLowerCase();
+              if (finalHead && /^[0-9a-f]{40}$/iu.test(finalHead)) {
+                pruneStaleFailures(candidate.prNumber, finalHead);
+              }
+              if (finalConfirmation.kind === "resolved") clearFailure(failureKey);
+            } else if (/^[0-9a-f]{40}$/iu.test(finalConfirmation.headSha)) {
+              const finalFailureKey = `${candidate.prNumber}:${finalConfirmation.headSha.toLowerCase()}`;
+              if (finalFailureKey === failureKey && pendingFailures.has(failureKey)) {
+                const attempts = sendAttempts.get(failureKey) ?? 0;
+                const message = watcherMessageForFailure(failureKey);
+                if (
+                  attempts < MAX_NOTIFICATION_SEND_ATTEMPTS_PER_SESSION &&
+                  message &&
+                  isCurrentSession(generation)
+                ) {
+                  // The outbox append happened above. The void send is only
+                  // acknowledged after its exact branch marker is observable.
+                  sendAttempts.set(failureKey, attempts + 1);
+                  pi.sendUserMessage(message, { deliverAs: "followUp" });
+                  confirmPendingMarkers(ctx);
+                }
+              }
+            } else {
+              failedCount -= 1;
+              waitingCount += 1;
+            }
+          }
+        }
       }
 
       if (failedCount > 0) {
