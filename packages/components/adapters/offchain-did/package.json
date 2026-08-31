@@ -37,7 +37,7 @@
     "@midnight-ntwrk/midnight-did-domain": "0.5.0"
   },
   "devDependencies": {
-    "@midnight-ntwrk/compact-runtime": "^0.16.0"
+    "@midnight-ntwrk/compact-runtime": "^0.19.0"
   },
   "files": [
     "dist/**",
