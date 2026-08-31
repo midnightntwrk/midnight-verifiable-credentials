@@ -13,13 +13,15 @@ Supersede obsolete PR #357 with a narrow manifest cleanup applied directly to cu
 - Remove the obsolete root `docs:vc-spec` placeholder script.
 - In the `same-holder`, `birth-secret`, `birth`, and `status-registry` package manifests, replace stale `tooling/scripts/*.mjs` package-file globs with package-local `scripts/*.mjs` globs after verifying those scripts exist.
 - In the `protocols/openid` package manifest, remove `src/**/*.compact` and `scripts/*.mjs` package-file globs after verifying those paths remain absent.
-- Validate workspace manifest policy, release package contracts, package boundaries, and the packed contents/catalog behavior for all six manifests.
+- Rebind the unchanged quality-evidence catalog to the recreated `develop` lineage after confirming the checked-in historical SHA is not its ancestor and the exact `origin/develop` baseline fails the same lint test.
+- Validate workspace manifest policy, release package contracts, package boundaries, quality-evidence ancestry, and the packed contents/catalog behavior for all six manifests.
 
 ## Explicit non-goals
 
 - Do not merge or cherry-pick stale PR #357 history or merge commit `849d70e`.
 - Do not change source code, generated outputs, lockfiles, package dependencies, build behavior, or unrelated manifests.
 - Do not broaden package publication scope beyond correcting the six stale manifests.
+- Do not weaken, skip, or change the quality-evidence checker; the baseline repair only updates the catalog's ancestry binding.
 - Do not merge the replacement PR; final merge remains a human decision.
 
 ## Acceptance criteria
@@ -28,8 +30,8 @@ Supersede obsolete PR #357 with a narrow manifest cleanup applied directly to cu
 - Root `package.json` no longer contains the obsolete `docs:vc-spec` placeholder.
 - The four package-local script globs reference existing `scripts/*.mjs` files and no longer reference nonexistent `tooling/scripts/*.mjs` paths.
 - `packages/protocols/openid/package.json` no longer lists absent Compact or package-local script paths.
-- The effective implementation diff contains only the six intended manifest edits plus this required plan artifact, with no generated output or lockfile churn.
-- Relevant manifest, package-boundary, release-package, and package-content validation passes.
+- The effective implementation diff contains only the six intended manifest edits, this required plan artifact, and the narrowly documented quality-evidence baseline repair, with no generated output or lockfile churn.
+- Relevant manifest, package-boundary, release-package, quality-evidence, and package-content validation passes.
 - The replacement PR targets `develop`, links and supersedes #357, and reaches green current-head CI with required review/gate evidence.
 
 ## Definition of done
@@ -57,4 +59,5 @@ Package archives or the release-package checker must demonstrate the expected pa
 ## Open questions and risks
 
 - `./run.sh --light` has a documented unrelated baseline risk from managed Compact runtime artifacts; failures must be compared with `origin/develop` and only PR-introduced failures fixed.
+- The quality-evidence lint failure is an `origin/develop` baseline regression caused by history recreation: catalog SHA `161d33d9d0bcd1c0351f011887ce6875511306a8` and current `develop` SHA `12cd540967271ed4fec83c1d95b44426d3a9631d` are sibling commits. The narrow rebind is included here because this PR must reach green CI without weakening the ancestry gate.
 - No scope questions remain; the user explicitly approved replacement rather than repair-in-place.
