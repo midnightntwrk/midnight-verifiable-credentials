@@ -48,7 +48,7 @@
     "dist/**",
     "src/**/*.compact",
     "README.md",
-    "tooling/scripts/*.mjs",
+    "scripts/*.mjs",
     "package.json",
     "tsconfig.json",
     "tsconfig.build.json"
