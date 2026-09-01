@@ -2,8 +2,14 @@
 
 Status: profile catalog for the current normative draft.
 
-This document describes the currently supported Midnight VC holder-binding and
-verification profiles.
+This document describes the currently recognized Midnight VC holder-binding and
+verification profiles. [ADR-0015](../decisions/0015-vc-family-profile-vocabulary-and-boundaries.md)
+is the authority for composition vocabulary, the separate future
+`CredentialFamilyProfileV1` and `CredentialDeploymentAssemblyV1` boundaries,
+initial profile-axis admission decisions, compatibility deny rules, and the
+independent API, security, standards, and production maturity dimensions. The
+catalog below reports current implementation evidence; it does not by itself
+admit a semantic composition or imply maturity on another dimension.
 
 It is companion material to:
 
@@ -51,6 +57,27 @@ Each profile section below states:
 - known limitations
 
 ## Profile taxonomy
+
+The current catalog records the four independent ADR-0015 maturity dimensions
+below. Each subject ID means the named catalog row together with its linked
+implementation, limitations, and test evidence at the exact Git revision that
+contains this document; it does not assess every future composition using the
+same holder-binding mechanism. No row identifies a resolved deployment
+assembly and named deployment, so production maturity is explicitly
+`not-assessed` rather than inferred from prototype or reference evidence.
+
+| Assessment subject | `apiMaturity` | `securityMaturity` | `standardsMaturity` | `productionMaturity` |
+| --- | --- | --- | --- | --- |
+| `catalog:explicit-did-holder-binding@this-revision` | `reference` | `unassessed` | `not-applicable` | `not-assessed` |
+| `catalog:secret-holder-binding@this-revision` | `reference` | `unassessed` | `not-applicable` | `not-assessed` |
+| `catalog:blinded-secret-holder-binding@this-revision` | `reference` | `unassessed` | `not-applicable` | `not-assessed` |
+| `catalog:verifier-domain-pseudonym@this-revision` | `prototype` | `unassessed` | `not-applicable` | `not-assessed` |
+| `catalog:same-holder-composition@this-revision` | `reference` | `unassessed` | `not-applicable` | `not-assessed` |
+| `catalog:offchain-did-holder-binding@this-revision` | `reference` | `unassessed` | `not-applicable` | `not-assessed` |
+| `catalog:legacy-jubjub-holder-binding@this-revision` | `reference` | `unassessed` | `not-applicable` | `not-assessed` |
+
+The existing free-form `Status` lines below summarize implementation posture;
+they do not replace these maturity fields or imply another dimension.
 
 ### 1. Explicit DID holder binding
 

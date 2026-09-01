@@ -30,6 +30,7 @@ supersedes them.
 | [0012](./0012-trusted-time-and-status-freshness.md) | Accepted | Accept status freshness and time only from explicit ledger or independently anchored authority sources |
 | [0013](./0013-reusable-core-and-credential-family-lifecycle.md) | Accepted | Publish reusable schema-neutral packages from core and move governed credential families to independent repositories |
 | [0014](./0014-orthogonal-package-architecture.md) | Proposed | Publish a consolidated, domain-named credential package graph behind family-neutral ports |
+| [0015](./0015-vc-family-profile-vocabulary-and-boundaries.md) | Accepted | Separate semantic VC-family profiles from deployment assembly and make vocabulary, compatibility, and maturity dimensions explicit |
 
 [`anoncreds-comparison.md`](./anoncreds-comparison.md) remains design research,
 not an ADR.
