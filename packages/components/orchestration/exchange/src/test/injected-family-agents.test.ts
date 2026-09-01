@@ -4,6 +4,8 @@ import {
   type CanonicalMessage,
   HolderAgent,
   type InjectedCredentialFamilyAdapter,
+  isInjectedCredentialFamilyAdapter,
+  isInjectedCredentialFamilyAdapterFor,
   IssuerAgent,
   type ProtocolMessageAdapter,
   VerifierAgent,
@@ -80,6 +82,38 @@ describe("family-neutral injected agents", () => {
   it("runs unchanged orchestration with two independently injected families", () => {
     expect(runLifecycle(familyAdapter("birth", "birth-proof")).valid).toBe(true);
     expect(runLifecycle(familyAdapter("hello", "hello-proof")).valid).toBe(true);
+  });
+
+  it("validates runtime-injected adapter surfaces without naming a family", () => {
+    expect(isInjectedCredentialFamilyAdapter(familyAdapter("runtime", "proof"))).toBe(
+      true,
+    );
+    expect(isInjectedCredentialFamilyAdapter({ family: { id: "runtime" } })).toBe(
+      false,
+    );
+    expect(isInjectedCredentialFamilyAdapter(undefined)).toBe(false);
+    expect(
+      isInjectedCredentialFamilyAdapterFor(
+        {
+          id: "runtime",
+          version: "1.0.0",
+          schemaId: "runtime:schema",
+          schemaVersion: "1.0.0",
+        },
+        familyAdapter("runtime", "proof"),
+      ),
+    ).toBe(true);
+    expect(
+      isInjectedCredentialFamilyAdapterFor(
+        {
+          id: "other",
+          version: "1.0.0",
+          schemaId: "other:schema",
+          schemaVersion: "1.0.0",
+        },
+        familyAdapter("runtime", "proof"),
+      ),
+    ).toBe(false);
   });
 
   it("keeps protocol wrapping outside family validity", () => {

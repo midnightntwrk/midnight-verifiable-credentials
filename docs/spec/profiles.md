@@ -50,6 +50,16 @@ Existing `CredentialFamilyDefinition` callers remain valid. Adoption is
 explicit and additive; there is no implicit migration from a family definition
 to either versioned composition contract.
 
+For runtime wallet resolution, `RuntimeCredentialFamilyRegistryV1` returns an
+untrusted record carrying those same explicit composition inputs plus exact
+package/export, SHA-256 artifact, public-surface, and scheme-neutral
+authentication metadata. `resolveRuntimeCredentialFamily(...)` reuses the
+combined resolver before invoking a deployment-supplied trust verifier and
+surface guard. Typed unsupported results cover unknown, unavailable, malformed,
+version-mismatched, incompatible, artifact-mismatched, and untrusted records.
+The model does not select trust roots, fetch artifacts, execute code, or define
+a plugin sandbox; those deployment/delivery concerns are not profile defaults.
+
 ## Purpose
 
 The core spec defines the data model and proof model. This document defines the

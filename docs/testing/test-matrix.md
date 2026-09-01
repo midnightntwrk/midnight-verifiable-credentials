@@ -592,13 +592,21 @@ In addition to the wrapper targets above, `./run.sh` now accepts any root
 
 | Evidence | Contract |
 | --- | --- |
-| `packages/components/orchestration/exchange/src/test/injected-family-agents.test.ts` | The same issuer/holder/verifier orchestration runs with two directly injected family adapters; cross-family messages fail before dispatch and transport wrapping cannot grant validity. |
+| `packages/components/orchestration/exchange/src/test/injected-family-agents.test.ts` | The same issuer/holder/verifier orchestration runs with directly and runtime-injected family adapters; the public guard binds exact family/schema versions, cross-family messages fail before dispatch, and transport wrapping cannot grant validity. |
 | `tooling/scripts/workspace-boundary-policy.test.mjs` | Family packages cannot depend on protocol, orchestration, or use-case workspaces; neutral exchange depends only on `credential-model`. |
-| `tooling/scripts/test-family-neutral-exchange-consumer.mjs` | Packed model/exchange tarballs install outside the workspace, type-check, and run an injected lifecycle. |
+| `tooling/scripts/test-family-neutral-exchange-consumer.mjs` | Packed model/exchange tarballs install outside the workspace; a generic wallet module with no concrete-family import resolves an authenticated runtime provider, type-checks, and runs an injected lifecycle. |
 | `packages/core/compact/src/test/compact-value-codec.test.ts` and OpenID compatibility tests | Protocol-neutral Compact value framing is canonical in `credential-compact` while the legacy OpenID export remains compatible. |
 
-These tests do not cover runtime unknown-family discovery or final protocol
-conformance.
+These tests do not claim final protocol conformance, package delivery, plugin
+execution, or production trust-root policy.
+
+## Runtime family resolution
+
+| Evidence | Contract |
+| --- | --- |
+| `packages/core/model/src/test/runtime-family-resolver.test.ts` positive registry case | A V1 provider resolves an unknown-at-build-time family through the exact #492 composition graph, authenticated package/export and SHA-256 artifact metadata, and a consumer surface guard. |
+| `packages/core/model/src/test/runtime-family-resolver.test.ts` negative cases | Unknown, unavailable, malformed, unsupported registry version, family/schema version mismatch, package/artifact tampering, incompatible composition, untrusted evidence, trust-service failure, and rejected surfaces return typed fail-closed results. |
+| `tooling/fixtures/runtime-family-wallet-consumer/` | Wallet code stays family-neutral while a separately defined runtime provider supplies the authenticated adapter; unchanged agents consume only the resolved injection. |
 
 ## Versioned profile and deployment resolution
 

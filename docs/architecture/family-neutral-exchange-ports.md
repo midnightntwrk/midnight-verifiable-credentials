@@ -19,8 +19,12 @@ The package defines:
 - `ProtocolMessageAdapter` for transport-only wrapping and unwrapping; and
 - injected `IssuerAgent`, `HolderAgent`, and `VerifierAgent` orchestration.
 
-Direct injection is intentional. This slice does not define a profile resolver,
-unknown-family discovery, plugin registry, OpenID conformance, HTTP, or DIDComm.
+Direct injection into agents remains intentional. Runtime discovery is owned by
+the supported `credential-model` package: a generic wallet resolves an
+authenticated, exact family/profile/assembly/public-surface record and validates
+it with `isInjectedCredentialFamilyAdapterFor(...)` before constructing the
+unchanged holder agent. Exchange does not fetch or execute plugins and still
+does not define OpenID conformance, HTTP, or DIDComm.
 
 ## Outward adapters and compatibility
 
@@ -56,5 +60,6 @@ Repository guards reject:
 - `tooling/scripts/workspace-boundary-policy.test.mjs` checks denied edges.
 - `tooling/scripts/test-family-neutral-exchange-consumer.mjs` packs the model
   and exchange packages, installs them outside the workspace, type-checks, and
-  runs an injected lifecycle.
+  runs a lifecycle whose generic wallet module imports no concrete family and
+  receives its adapter through the authenticated runtime registry contract.
 - Compact and OpenID codec suites protect canonical ownership and compatibility.

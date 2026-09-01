@@ -56,6 +56,23 @@ export {
   CredentialModelError,
   type CredentialModelErrorCode,
 } from "./errors.js";
+export { resolveRuntimeCredentialFamily } from "./runtime-family-resolver.js";
+export type {
+  ResolvedRuntimeCredentialFamily,
+  ResolveRuntimeCredentialFamilyInput,
+  RuntimeCredentialFamilyArtifactIdentity,
+  RuntimeCredentialFamilyAuthenticatedMetadataV1,
+  RuntimeCredentialFamilyAuthenticationEvidence,
+  RuntimeCredentialFamilyPackageIdentity,
+  RuntimeCredentialFamilyPublicSurfaceV1,
+  RuntimeCredentialFamilyRecordV1,
+  RuntimeCredentialFamilyRegistryV1,
+  RuntimeCredentialFamilyResolution,
+  RuntimeCredentialFamilyTrustDecision,
+  RuntimeCredentialFamilyTrustVerifier,
+  RuntimeCredentialFamilyUnsupported,
+  RuntimeCredentialFamilyUnsupportedCode,
+} from "./runtime-family-types.js";
 export type {
   ClaimDisclosure,
   CredentialCapabilityDescriptor,

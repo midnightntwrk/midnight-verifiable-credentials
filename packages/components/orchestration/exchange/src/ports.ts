@@ -1,5 +1,6 @@
 import type {
   CredentialFamilyDefinition,
+  CredentialFamilyReference as RuntimeCredentialFamilyReference,
   CredentialSchemaDescriptor,
 } from "@midnight-ntwrk/credential-model";
 
@@ -52,7 +53,7 @@ export interface VerificationAdapter<
   ): TResult;
 }
 
-/** Direct injection is deliberate; family discovery/resolution is out of scope. */
+/** Agents deliberately consume an already resolved adapter by injection. */
 export interface InjectedCredentialFamilyAdapter<
   TResult extends VerificationResult = VerificationResult,
 > {
@@ -61,3 +62,51 @@ export interface InjectedCredentialFamilyAdapter<
   readonly presentation: PresentationAdapter;
   readonly verification: VerificationAdapter<TResult>;
 }
+
+type UnknownRecord = Readonly<Record<string, unknown>>;
+
+const isRecord = (value: unknown): value is UnknownRecord =>
+  typeof value === "object" && value !== null && !Array.isArray(value);
+
+const isNonEmptyString = (value: unknown): value is string =>
+  typeof value === "string" && value.trim().length > 0;
+
+const hasFunction = (value: unknown, key: string): boolean =>
+  isRecord(value) && typeof value[key] === "function";
+
+/** Runtime guard suitable for `credential-model`'s injected surface validator. */
+export const isInjectedCredentialFamilyAdapter = (
+  value: unknown,
+): value is InjectedCredentialFamilyAdapter => {
+  if (!isRecord(value) || !isRecord(value.family)) return false;
+  const family = value.family;
+  if (
+    !isNonEmptyString(family.id) ||
+    !isNonEmptyString(family.version) ||
+    !isRecord(family.schema) ||
+    !isNonEmptyString(family.schema.id) ||
+    !isNonEmptyString(family.schema.version)
+  ) {
+    return false;
+  }
+
+  return (
+    hasFunction(value.issuance, "createOffer") &&
+    hasFunction(value.issuance, "createRequest") &&
+    hasFunction(value.issuance, "issue") &&
+    hasFunction(value.issuance, "accept") &&
+    hasFunction(value.presentation, "createRequest") &&
+    hasFunction(value.presentation, "present") &&
+    hasFunction(value.verification, "verify")
+  );
+};
+
+export const isInjectedCredentialFamilyAdapterFor = (
+  reference: RuntimeCredentialFamilyReference,
+  value: unknown,
+): value is InjectedCredentialFamilyAdapter =>
+  isInjectedCredentialFamilyAdapter(value) &&
+  value.family.id === reference.id &&
+  value.family.version === reference.version &&
+  value.family.schema.id === reference.schemaId &&
+  value.family.schema.version === reference.schemaVersion;
