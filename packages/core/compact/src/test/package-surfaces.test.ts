@@ -19,6 +19,12 @@ describe("candidate package surface", () => {
     expect(manifest.exports["./credentials.compact"]).toBe(
       "./dist/credentials.compact",
     );
+    expect(manifest.exports["./credentials/composable.compact"]).toBe(
+      "./dist/credentials/composable.compact",
+    );
+    expect(manifest.midnight.compactEntrypoints.composition).toContain(
+      "./credentials/composable.compact",
+    );
     expect(
       manifest.exports["./credentials/holder-bindings.compact"],
     ).toBeUndefined();

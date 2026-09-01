@@ -165,12 +165,11 @@ include "credentials-compliance/src/sanction-screening-credential/composable";
 Those family paths are design targets or adjacent prototype examples, not
 current workspace package paths in this repository.
 
-Open design choice:
+Implemented boundary:
 
-- either duplicate a small wrapper layer per family for standalone vs composable
-  entry points, or refactor family internals so the standalone entry point is a
-  thin wrapper around the composable entry point. The second option is cleaner
-  but requires more Compact source restructuring.
+- the standalone family entry point is a thin wrapper around the family
+  composable entrypoint and the canonical shared core; the composable owns
+  family-prefixed module instantiations and includes no shared core itself
 
 Recommended direction:
 
@@ -263,11 +262,11 @@ Shared package surfaces:
 
 | Package                    | Surface                                    | Purpose                                                                           |
 | -------------------------- | ------------------------------------------ | --------------------------------------------------------------------------------- |
-| `credentials`              | `src/credentials.compact`                  | standalone package root used for generated TS/JS artifacts                        |
-| `credentials`              | `src/credentials/composable.compact`       | full shared Layer 3 root for credential-family composables and business contracts |
-| `credentials`              | `src/credentials/vc-support.compact`       | VC envelope and proof-validation support                                          |
-| `credentials`              | `src/credentials/protocol-support.compact` | issuance and presentation protocol modules                                        |
-| `credentials`              | `src/credentials/bindings.compact`         | holder-binding structs and witness-validation helpers                             |
+| `credential-compact`       | `src/credentials.compact`                  | canonical standalone package root used for generated TS/JS artifacts              |
+| `credential-compact`       | `src/credentials/composable.compact`       | canonical shared Layer 3 root for family composables and business contracts        |
+| `credential-compact`       | `src/credentials/vc-support.compact`       | canonical VC envelope and proof-validation support                                |
+| `credential-compact`       | `src/credentials/protocol-support.compact` | canonical issuance and presentation protocol modules                              |
+| `credential-compact`       | `src/credentials/bindings.compact`         | canonical holder-binding structs and witness-validation helpers                   |
 | `credentials-same-holder`  | `src/same-holder.compact`                  | standalone package root used for generated TS/JS artifacts                        |
 | `credentials-same-holder`  | `src/same-holder/composable.compact`       | same-holder capability without re-including the whole `credentials` bundle        |
 | `credentials-iso-registry` | `src/iso-registry.compact`                 | flat shared vocabulary surface; no extra composable split needed today            |
@@ -386,12 +385,18 @@ export circuit verifyBusinessEligibility(
 For multi-credential policies, the Layer 3 contract should compose concrete
 families through composition-safe entry points.
 
-Current-workspace example:
+Current-workspace two-family compile evidence:
 
 ```compact
-include "../../packages/core/primitives/credentials/src/credentials/composable";
-include "../../packages/prototypes/credential-families/birth/src/birth-credential";
+include "../../packages/core/compact/src/credentials/composable";
+include "../../packages/prototypes/credential-families/birth/src/birth-credential/composable";
+include "../../packages/prototypes/credential-families/hello-family/src/hello-family-credential/composable";
 ```
+
+The checked-in fixture under
+`tooling/fixtures/compact-family-composition/` is explicitly non-authoritative:
+it proves include and symbol composition only, not aggregate issuer, trust,
+status, time, result-authority, or protected-mutation semantics.
 
 Adjacent-prototype example:
 

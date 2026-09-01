@@ -21,19 +21,52 @@ const packageJson = JSON.parse(
 ) as { exports?: Record<string, unknown> };
 
 describe("credentials-birth package surfaces", () => {
-  it("declares a stable contract subpath export", () => {
+  it("declares stable runtime and Compact entrypoint exports", () => {
     expect(packageJson.exports?.["./contract"]).toBeDefined();
+    expect(packageJson.exports?.["./birth-credential.compact"]).toBe(
+      "./dist/birth-credential.compact",
+    );
+    expect(packageJson.exports?.["./birth-credential/composable.compact"]).toBe(
+      "./dist/birth-credential/composable.compact",
+    );
     expect(existsSync(sourceSurface("contract.ts"))).toEqual(true);
+  });
+
+  it("keeps the standalone root thin and the composable root dependency-free", () => {
+    const standalone = readFileSync(
+      sourceSurface("birth-credential.compact"),
+      "utf8",
+    );
+    const composable = readFileSync(
+      sourceSurface("birth-credential/composable.compact"),
+      "utf8",
+    );
+
+    expect(standalone.match(/^include /gmu)).toHaveLength(2);
+    expect(standalone).toContain(
+      'include "../../../../../packages/core/compact/src/credentials/composable";',
+    );
+    expect(standalone).toContain('include "./birth-credential/composable";');
+    expect(composable).not.toMatch(/packages\/core|credentials\/composable/u);
+    expect(composable).toMatch(/import VC<[\s\S]+prefix BirthCredentialVC_;/u);
+    expect(composable).toMatch(/import VP<[\s\S]+prefix BirthCredentialVP_;/u);
+    expect(composable).not.toMatch(
+      /^export type (?:Credential|Presentation)\b/mu,
+    );
   });
 
   it("keeps the root package surface free of duplicate contract namespaces", () => {
     expect(indexSource).not.toContain("export * as BirthCredentialContract");
   });
 
-  it("publishes the stable contract subpath after build", () => {
+  it("publishes the stable runtime and Compact surfaces after build", () => {
     if (!existsSync(distRoot) || !existsSync(distSurface("index.js"))) {
       return;
     }
     expect(existsSync(distSurface("contract.js"))).toEqual(true);
+    expect(existsSync(distSurface("birth-credential.compact"))).toEqual(true);
+    expect(
+      existsSync(distSurface("birth-credential/composable.compact")),
+    ).toEqual(true);
   });
 });

@@ -24,6 +24,8 @@
       "import": "./dist/contract.js",
       "default": "./dist/contract.js"
     },
+    "./hello-family-credential.compact": "./dist/hello-family-credential.compact",
+    "./hello-family-credential/composable.compact": "./dist/hello-family-credential/composable.compact",
     "./testing": {
       "types": "./dist/testing.d.ts",
       "require": "./dist/testing.js",
@@ -85,6 +87,7 @@
   },
   "dependencies": {
     "@midnight-ntwrk/compact-runtime": "^0.16.0",
+    "@midnight-ntwrk/credential-compact": "*",
     "@midnight-ntwrk/midnight-did-credentials": "*",
     "@midnight-ntwrk/midnight-did-credentials-offchain-did": "*",
     "@midnight-ntwrk/midnight-did-domain": "0.5.0"

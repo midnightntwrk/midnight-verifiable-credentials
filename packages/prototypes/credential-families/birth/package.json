@@ -24,6 +24,8 @@
       "import": "./dist/contract.js",
       "default": "./dist/contract.js"
     },
+    "./birth-credential.compact": "./dist/birth-credential.compact",
+    "./birth-credential/composable.compact": "./dist/birth-credential/composable.compact",
     "./testing": {
       "types": "./dist/testing.d.ts",
       "require": "./dist/testing.js",
@@ -65,6 +67,7 @@
   },
   "dependencies": {
     "@midnight-ntwrk/compact-runtime": "^0.16.0",
+    "@midnight-ntwrk/credential-compact": "*",
     "@midnight-ntwrk/midnight-did-credentials": "*"
   },
   "files": [

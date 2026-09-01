@@ -29,13 +29,15 @@ generated output is accepted if either resolved version drifts. `src/managed` an
 `dist/compact-build.json` records the exact compiler/runtime tuple, source digest,
 and generated-artifact digest.
 
-Only `./credentials.compact` and `./holder-binding/same-holder.compact` are
-standalone roots. `./holder-binding/same-holder/composable.compact` is an
-explicit composition fragment: include `credentials/bindings` (or the full
-`credentials` root) first, then include the fragment exactly once. The other
-credential leaf modules remain packaged for internal composition but are not
-advertised as standalone exports because they rely on declarations supplied by
-the shared root.
+`./credentials.compact` and `./holder-binding/same-holder.compact` are the
+standalone roots. `./credentials/composable.compact` is the canonical shared
+Layer 3 composition root: include it exactly once before dependency-free family
+composition entrypoints. `./holder-binding/same-holder/composable.compact` is a
+smaller composition fragment: include `credentials/bindings` (or the full
+credentials composition root) first, then include the fragment exactly once.
+The other credential leaf modules remain packaged for internal composition but
+are not advertised as standalone exports because they rely on declarations
+supplied by the shared root.
 
 The external consumer gate compiles both standalone roots and the composition
 fragment, then runs positive and negative same-holder vectors (different holder
@@ -44,13 +46,16 @@ binding predicate and adds no family or business semantics.
 
 ## Compatibility and ownership
 
+This package is the single canonical owner of reusable Compact VC/VP semantics.
 The old private `@midnight-ntwrk/midnight-did-credentials` package remains an
 internal compatibility facade for one migration cycle and receives no new API.
-The old same-holder package remains private and unchanged as a compatibility
-implementation. Technical ownership is the VC package maintainers; support and
-publication ownership remain unassigned until a separate graduation review.
-ADR-0014 remains **Proposed**; this candidate records an implementation graph,
-not normative ADR acceptance.
+Every retained source shared with that facade is byte-equivalence-tested; its
+explicit legacy `verification-v1` and status-attestation extensions are not
+promoted into this canonical package. The old same-holder package remains
+private and unchanged as a compatibility implementation. Technical ownership
+is the VC package maintainers; support and publication ownership remain
+unassigned until a separate graduation review. ADR-0014 remains **Proposed**;
+this candidate records an implementation graph, not normative ADR acceptance.
 
 ## Usage boundary
 

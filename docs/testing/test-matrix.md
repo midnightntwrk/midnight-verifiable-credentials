@@ -14,6 +14,12 @@ artifacts are tracked in
 
 ## Core package tests
 
+- `packages/core/compact/src/test/package-surfaces.test.ts`
+  - canonical standalone and shared composition exports
+- `packages/core/compact/src/test/compatibility-facade-equivalence.test.ts`
+  - byte equivalence for every intentionally shared compatibility-facade source
+  - negative mutation proof that facade semantic drift is detected
+  - explicit exclusion of legacy verification/status extensions from canonical ownership
 - `packages/core/primitives/credentials/src/test/proof-context.test.ts`
   - proof challenge/context separation
 - `packages/core/primitives/credentials/src/test/protocol-envelope.test.ts`
@@ -67,6 +73,7 @@ artifacts are tracked in
 - capability profile tests
 - protocol tests
 - exported `./testing` fixture surface compatibility
+- independently compiled standalone root and family-prefixed composable export
 
 ### `credentials-birth-secret`
 
@@ -84,7 +91,7 @@ artifacts are tracked in
 
 - claim-root/domain-separation source checks
 - presentation-request source-shape checks
-- package export-surface checks
+- package export-surface checks for standalone and family-prefixed composable roots
 - real Compact compiler probes for currently supported versus unsupported
   primitive claim types
 - root `./run.sh hello-smoke` lane
@@ -92,6 +99,17 @@ artifacts are tracked in
     command
   - see `docs/guides/did-vc-hello-smoke-path.md` for the authoritative lane
     description
+
+### Two-family composition evidence
+
+- `pnpm run check:compact-composition-surfaces`
+  - compiles the canonical core exactly once with birth and hello-family
+    composables
+  - rejects shared-core includes and unprefixed VC/VP module aliases in family
+    composables
+  - reports zero proof circuits, `k` as not applicable, and no prover/verifier,
+    ZKIR, or BZKIR artifacts
+  - remains explicitly non-authoritative compile/composition evidence
 
 ### `hello-verifier` starter package
 

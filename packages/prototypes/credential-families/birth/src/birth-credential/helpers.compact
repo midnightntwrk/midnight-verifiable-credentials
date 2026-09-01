@@ -2,13 +2,13 @@
 // These helpers stay pure because they only derive schema-local roots and
 // verifier-request shapes; they never read ledger state.
 export pure circuit birthCredentialBodyRoot(credential: BirthCredential): Bytes<32> {
-  return credentialBodyRoot(credential);
+  return BirthCredentialVC_credentialBodyRoot(credential);
 }
 
 export pure circuit birthCredentialPresentationBodyRoot(
   presentation: BirthCredentialPresentation
 ): Bytes<32> {
-  return presentationBodyRoot(presentation);
+  return BirthCredentialVP_presentationBodyRoot(presentation);
 }
 
 export pure circuit birthCredentialPresentationRequestBodyRoot(

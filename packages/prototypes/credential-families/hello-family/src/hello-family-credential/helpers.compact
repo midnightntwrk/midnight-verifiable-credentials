@@ -4,13 +4,13 @@
 export pure circuit helloFamilyCredentialBodyRoot(
   credential: HelloFamilyCredential
 ): Bytes<32> {
-  return credentialBodyRoot(credential);
+  return HelloFamilyVC_credentialBodyRoot(credential);
 }
 
 export pure circuit helloFamilyPresentationBodyRoot(
   presentation: HelloFamilyPresentation
 ): Bytes<32> {
-  return presentationBodyRoot(presentation);
+  return HelloFamilyVP_presentationBodyRoot(presentation);
 }
 
 export pure circuit helloFamilyPresentationRequestBodyRoot(
@@ -54,10 +54,13 @@ export pure circuit assertValidHelloFamilyCredential(
   proof: Proof
 ): [] {
   assertValidHelloFamilySchemaRef(credential.schema);
-  assertValidCredentialEnvelope(credential, helloFamilyClaimRoot(credential.claims));
+  HelloFamilyVC_assertValidCredentialEnvelope(
+    credential,
+    helloFamilyClaimRoot(credential.claims)
+  );
   assertValidExplicitHolderBinding(credential.holderBinding);
   assertValidNoStatusBinding(credential.statusBinding);
-  assertValidCredentialProof(credential, proof);
+  HelloFamilyVC_assertValidCredentialProof(credential, proof);
 }
 
 export pure circuit assertValidHelloFamilyPresentation(
@@ -68,7 +71,7 @@ export pure circuit assertValidHelloFamilyPresentation(
 ): [] {
   assertValidHelloFamilyCredential(credential, credentialProof);
   assertValidHelloFamilySchemaRef(presentation.schema);
-  assertValidPresentationEnvelope(presentation);
+  HelloFamilyVP_assertValidPresentationEnvelope(presentation);
   HelloFamilyPresentation_assertMatchingCredentialPresentation(
     credential,
     presentation

@@ -52,6 +52,7 @@
       "default": "./dist/holder-binding/same-holder.js"
     },
     "./credentials.compact": "./dist/credentials.compact",
+    "./credentials/composable.compact": "./dist/credentials/composable.compact",
     "./holder-binding/same-holder.compact": "./dist/holder-binding/same-holder.compact",
     "./holder-binding/same-holder/composable.compact": "./dist/holder-binding/same-holder/composable.compact"
   },
@@ -107,6 +108,7 @@
         "./holder-binding/same-holder.compact"
       ],
       "composition": [
+        "./credentials/composable.compact",
         "./holder-binding/same-holder/composable.compact"
       ]
     }
