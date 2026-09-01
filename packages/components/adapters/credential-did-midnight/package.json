@@ -19,7 +19,7 @@
   "sideEffects": [],
   "engines": {
     "node": ">=24",
-    "pnpm": ">=10"
+    "pnpm": ">=10.34.5"
   },
   "main": "dist/index.js",
   "module": "dist/index.js",

@@ -3,10 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@10.23.0",
+  "packageManager": "pnpm@10.34.5",
   "engines": {
     "node": ">=24",
-    "pnpm": ">=10"
+    "pnpm": ">=10.34.5"
   },
   "scripts": {
     "test:node": "node ./node-esm.mjs",
