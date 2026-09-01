@@ -37,8 +37,8 @@ test("scaffold help and documentation advertise exactly the compiled mode matrix
   const claimModeList = claimModes.join("|");
   const holderModeList = holderModes.join("|");
 
-  assert.match(help, new RegExp(`--claim-mode ${claimModeList}`, "u"));
-  assert.match(help, new RegExp(`--holder ${holderModeList}`, "u"));
+  assert.equal(help.includes(`--claim-mode ${claimModeList}`), true);
+  assert.equal(help.includes(`--holder ${holderModeList}`), true);
   assert.equal(
     template.includes(`Supported claim modes: \`--claim-mode ${claimModeList}\`.`),
     true,
