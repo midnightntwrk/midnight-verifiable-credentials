@@ -164,11 +164,14 @@ flows, or app-facing workflows.
 
 Current packages:
 
-- `credentials-protocol`
-- `credentials-openid`
+- `credential-exchange` — private family-neutral injected orchestration candidate
+- `credentials-protocol` — private outward birth/birth-secret/age-gate reference and compatibility adapter
+- `credentials-openid` — protocol adapter
 
-These are where engineers should compose concrete VC capabilities into
-off-chain or transport-facing flows.
+Family-neutral exchange depends only on canonical model contracts. Concrete
+reference adapters compose family packages from the outer layer. Protocol
+adapters consume canonical family bytes and cannot redefine core validity.
+See [`./family-neutral-exchange-ports.md`](./family-neutral-exchange-ports.md).
 
 ### 6. Demo / prototype / integration packages
 

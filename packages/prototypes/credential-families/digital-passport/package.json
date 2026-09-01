@@ -64,8 +64,8 @@
   },
   "dependencies": {
     "@midnight-ntwrk/compact-runtime": "^0.16.0",
-    "@midnight-ntwrk/midnight-did-credentials": "*",
-    "@midnight-ntwrk/midnight-did-credentials-openid": "*"
+    "@midnight-ntwrk/credential-compact": "workspace:*",
+    "@midnight-ntwrk/midnight-did-credentials": "*"
   },
   "files": [
     "dist/**",

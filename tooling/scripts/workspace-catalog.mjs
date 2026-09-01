@@ -113,6 +113,11 @@ export const workspaceCatalog = [
     ],
   }),
   workspace(
+    "packages/components/orchestration/exchange",
+    "infrastructure",
+    "dist",
+  ),
+  workspace(
     "packages/components/orchestration/protocol",
     "infrastructure",
     "dist",

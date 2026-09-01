@@ -352,6 +352,10 @@ const assertReleaseTarball = (entry, tarballDirectory) => {
       const relative = entryPath.slice("package/dist/".length);
       const generatedOutputAllowlist = new Set([
         "compact-build.json",
+        "compact-value-codec.d.ts",
+        "compact-value-codec.d.ts.map",
+        "compact-value-codec.js",
+        "compact-value-codec.js.map",
         "contract.d.ts",
         "contract.d.ts.map",
         "contract.js",
