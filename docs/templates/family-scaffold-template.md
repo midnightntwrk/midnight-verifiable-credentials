@@ -13,9 +13,12 @@ pnpm run scaffold:family -- --slug example-family
 pnpm run scaffold:family -- --slug example-family --claim-mode public
 pnpm run scaffold:family -- --slug example-family --claim-mode commitment
 pnpm run scaffold:family -- --slug example-family --claim-mode mixed
+pnpm run scaffold:family -- --slug example-family --holder explicit
+pnpm run scaffold:family -- --slug example-family --holder hidden
 ```
 
 Supported claim modes: `--claim-mode public|commitment|mixed`.
+Supported holder modes: `--holder explicit|hidden`.
 
 That generator now creates a thin-core family package skeleton under:
 
@@ -29,7 +32,12 @@ The generated package includes:
 - helper scripts for Compact aliasing and managed-runtime cleanup
 - placeholder tests for package surfaces and core schema scaffolding
 
-It does not add the package to root workspaces automatically.
+It does not add the package to root workspaces automatically. Generated Compact
+resolves its canonical core through the package-local
+`@midnight-ntwrk/midnight-did-credentials` dependency, so it does not depend on
+a source-checkout-relative `packages/core` path. CI copies every advertised
+claim/holder combination into a clean consumer directory outside the source
+checkout and compiles it against that package surface.
 
 Default scaffold behavior is commitment-only. Use `--claim-mode public` for
 direct-only public claims, `--claim-mode commitment` for private commitment-only
@@ -139,7 +147,7 @@ pragma language_version >= 0.20;
 
 import CompactStandardLibrary;
 
-include "../../../packages/core/primitives/credentials/src/credentials";
+include "../node_modules/@midnight-ntwrk/midnight-did-credentials/dist/credentials";
 include "./example-family-credential/claims";
 include "./example-family-credential/model";
 

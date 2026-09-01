@@ -159,6 +159,9 @@ jobs:
       - name: Verify Compact installation
         run: compact compile --version
 
+      - name: Compile generated VC family scaffold matrix
+        run: pnpm run test:scaffold-compact
+
       - name: Validate trusted-time capability
         run: pnpm run test:trusted-time-capability
 

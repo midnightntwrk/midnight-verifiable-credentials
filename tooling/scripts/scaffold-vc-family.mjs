@@ -10,6 +10,7 @@ const usage = `Usage:
 
 Behavior:
   - generates a thin-core VC family package scaffold aligned with the current repository layout
+  - resolves Compact core imports through the package-local @midnight-ntwrk/midnight-did-credentials export
   - requires the output directory to stay inside the current VC repository
   - defaults to packages/prototypes/credential-families/<slug>
   - defaults to commitment-only claim storage so private placeholders do not leak into public claims
@@ -227,7 +228,14 @@ const buildFiles = ({
 }) => {
   const srcDir = path.join(packageRoot, "src");
   const artifactHelper = toImportPath(packageRoot, path.join(repoRoot, "tooling", "scripts", "ensure-compact-artifacts.mjs"));
-  const coreDir = path.join(repoRoot, "core", "primitives", "credentials", "src", "credentials");
+  const coreDir = path.join(
+    packageRoot,
+    "node_modules",
+    "@midnight-ntwrk",
+    "midnight-did-credentials",
+    "dist",
+    "credentials",
+  );
   const coreImport = toImportPath(srcDir, coreDir);
   const holderType = holder === "hidden" ? "BlindedSecretHolderBinding" : "ExplicitHolderBinding";
   const holderValidation =
