@@ -15,7 +15,9 @@ The package provides:
 - credential and presentation codec ports;
 - proof-artifact requirements;
 - bounded package composition manifests;
-- validation helpers and family-neutral errors.
+- validation helpers and family-neutral errors;
+- independently versioned semantic profiles and deployment assemblies;
+- capability-provider catalogs and an exact, fail-closed composition resolver.
 
 ## Install
 
@@ -85,6 +87,48 @@ export const employeeFamily = defineCredentialFamily({
 `defineCredentialFamily` validates descriptor identifiers, semantic versions,
 claim paths, unique IDs, package requirements, and codec functions. Codecs are
 responsible for validating their encoded data when decoding.
+
+## Resolve a semantic profile and deployment assembly
+
+`CredentialFamilyProfileV1` records semantic/security axes and exact package,
+export, Compact entrypoint, circuit, artifact, provider-capability, conformance,
+and maturity references. `CredentialDeploymentAssemblyV1` is independently
+versioned and records concrete provider instances, immutable artifact digests,
+and deployment identities. Neither contract selects or defaults the other.
+
+```ts
+import {
+  assertCapabilityProviderCatalogV1,
+  assertCredentialDeploymentAssemblyV1,
+  assertCredentialFamilyProfileV1,
+  resolveCredentialComposition,
+} from "@midnight-ntwrk/credential-model";
+
+assertCredentialFamilyProfileV1(profileFromConfiguration);
+assertCredentialDeploymentAssemblyV1(assemblyFromConfiguration);
+assertCapabilityProviderCatalogV1(providerCatalog);
+
+const exactGraph = resolveCredentialComposition({
+  family: employeeFamily,
+  profile: profileFromConfiguration,
+  assembly: assemblyFromConfiguration,
+  catalog: providerCatalog,
+});
+```
+
+The three validators accept `unknown`, reject omitted and unknown fields, and
+throw `CredentialModelError` with a stable `code` and path. The resolver binds
+one exact family/profile/assembly graph and rejects identity mismatches,
+uncataloged provider capabilities, package conflicts, missing artifacts, and
+the mandatory ADR-0015 deny rules. Every deployment role in
+`CREDENTIAL_DEPLOYMENT_ROLES` must be explicitly selected or `disabled`.
+Disabled status rejects status registry, proof, authority, and mutation edges;
+unrelated signing remains available.
+
+The API is additive: existing `CredentialFamilyDefinition` consumers need no
+migration. A consumer adopts composition resolution only when it has separate
+profile, assembly, and provider-catalog inputs. No compatibility default turns
+an old family definition into a deployment assembly.
 
 ## Boundaries
 

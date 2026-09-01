@@ -2,6 +2,15 @@
 
 All notable changes to this package are documented in this file.
 
+## Unreleased
+
+- Add independently versioned `CredentialFamilyProfileV1` and
+  `CredentialDeploymentAssemblyV1` contracts.
+- Add capability-provider catalogs, strict path-specific validators, and the
+  exact fail-closed composition resolver.
+- Preserve `CredentialFamilyDefinition` compatibility; composition adoption is
+  additive and requires explicit profile, assembly, and catalog inputs.
+
 ## 0.1.0-rc1 - 2026-07-26
 
 - Add protocol-neutral credential-family definitions.
