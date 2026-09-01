@@ -111,7 +111,6 @@
     "test:all:from-artifacts": "node ./tooling/scripts/workspace-catalog.mjs --exec-tests-from-artifacts",
     "test:revocation:from-artifacts": "pnpm --dir ./packages/core/primitives/credentials exec vitest run && pnpm --dir ./packages/registry/status-registry exec vitest run && pnpm --dir ./packages/core/capabilities/same-holder exec vitest run && pnpm --dir ./packages/prototypes/credential-families/birth exec vitest run && pnpm --dir ./packages/prototypes/credential-families/birth-secret exec vitest run && pnpm --dir ./packages/use-cases/age-gate/contract exec vitest run --exclude src/test/integration/**/*.test.ts",
     "docs:links": "node ./tooling/scripts/check-markdown-links.mjs README.md docs packages tooling/vendor",
-    "docs:vc-spec": "echo 'Add VC docs build once docs layout is bootstrapped'",
     "pack:vendor": "./tooling/scripts/pack-midnight-vc-libs.sh ./tooling/vendor",
     "upgrade:vendor": "./upgrade-libs.sh --destination ./tooling/vendor",
     "pack:libs": "pnpm run pack:vendor",
