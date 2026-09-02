@@ -21,8 +21,11 @@ const packageJson = JSON.parse(
 ) as { exports?: Record<string, unknown> };
 
 describe("credentials-digital-passport package surfaces", () => {
-  it("declares a stable contract subpath export", () => {
+  it("declares stable contract and Compact subpath exports", () => {
     expect(packageJson.exports?.["./contract"]).toBeDefined();
+    expect(packageJson.exports?.["./digital-passport-credential.compact"]).toBe(
+      "./dist/digital-passport-credential.compact",
+    );
     expect(existsSync(sourceSurface("contract.ts"))).toEqual(true);
   });
 

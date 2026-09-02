@@ -618,6 +618,9 @@ execution, or production trust-root policy.
 | `packages/core/model/src/test/composition-resolver.test.ts` structural/property-style negatives | Unknown and omitted fields, deployment-role omissions, unknown values, family/profile/assembly mismatches, provider capability gaps, package conflicts, and artifact gaps fail with stable paths. |
 | `packages/core/model/src/test/composition-resolver.test.ts` ADR-0015 deny table | All mandatory denial codes are exercised, including hidden/private public-only verification, missing status proof, caller time with ledger authority, non-atomic side effects, disabled status edges, uncommitted authority, and untested combinations. |
 | `tooling/fixtures/credential-model-consumer/node-esm.mjs` | A clean packed-package consumer validates and resolves a fixture composition using only package-root exports. |
+| `tooling/profile-coverage/profile-coverage.test.mjs` and [`prototype-profile-coverage.md`](./prototype-profile-coverage.md) | Seven retained-prototype manifests validate and resolve through the same #492 contracts. Deterministic property checks prove every declared supported value and every allowed pair across explicitly independent axes, fixed-axis rationales/interactions, all mandatory higher-order rows, every deny-rule negative, exact evidence links, and generated-output drift. |
 
-These tests deliberately do not migrate prototypes, generate covering arrays,
-implement concrete authority mechanisms, or select product deployment values.
+This evidence does not implement concrete authority mechanisms, assert
+exhaustive Cartesian coverage, claim OpenID conformance, select production
+use-case values, or promote same-holder reference evidence to production
+authority.

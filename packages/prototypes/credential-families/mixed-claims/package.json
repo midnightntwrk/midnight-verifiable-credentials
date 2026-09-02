@@ -18,6 +18,7 @@
       "import": "./dist/index.js",
       "default": "./dist/index.js"
     },
+    "./mixed-claims-credential.compact": "./dist/mixed-claims-credential.compact",
     "./contract": {
       "types": "./dist/contract.d.ts",
       "require": "./dist/contract.js",

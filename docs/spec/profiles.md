@@ -42,9 +42,11 @@ path-specific `CredentialModelError`; it never infers a profile from an
 assembly, fills an omitted axis, selects a provider, or weakens a semantic
 requirement. Disabled status removes status-registry, proof, authority, and
 mutation edges without removing unrelated signing. The contract is mechanism-
-neutral: prototype migration and finite covering arrays remain #493, concrete
-authority/provider mechanisms remain #494 and later, and product deployment
-values remain outside this repository's reusable model.
+neutral: retained-prototype manifests and the finite constraint-aware coverage
+matrix are tracked in [`../testing/prototype-profile-coverage.md`](../testing/prototype-profile-coverage.md).
+That evidence proves only its stated supported-value and allowed-pair guarantees;
+concrete authority/provider mechanisms remain #494 and later, and product
+deployment values remain outside this repository's reusable model.
 
 Existing `CredentialFamilyDefinition` callers remain valid. Adoption is
 explicit and additive; there is no implicit migration from a family definition

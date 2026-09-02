@@ -31,6 +31,15 @@ describe("credentials-status-registry package surfaces", () => {
     );
   });
 
+  it("declares Compact status and protocol subpaths", () => {
+    expect(packageJson.exports?.["./revocation-registry.compact"]).toBe(
+      "./dist/revocation-registry.compact",
+    );
+    expect(packageJson.exports?.["./status-proof-protocol.compact"]).toBe(
+      "./dist/status-proof-protocol.compact",
+    );
+  });
+
   it("declares a dedicated testing subpath for unsafe authority-attestation helpers", () => {
     expect(packageJson.exports?.["./testing"]).toBeDefined();
     expect(existsSync(sourceSurface("testing.ts"))).toEqual(true);

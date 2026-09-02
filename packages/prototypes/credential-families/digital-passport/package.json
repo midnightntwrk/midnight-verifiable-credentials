@@ -24,6 +24,7 @@
       "import": "./dist/codecs.js",
       "default": "./dist/codecs.js"
     },
+    "./digital-passport-credential.compact": "./dist/digital-passport-credential.compact",
     "./contract": {
       "types": "./dist/contract.d.ts",
       "require": "./dist/contract.js",

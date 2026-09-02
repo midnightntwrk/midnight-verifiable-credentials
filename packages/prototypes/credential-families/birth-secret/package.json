@@ -18,6 +18,7 @@
       "import": "./dist/index.js",
       "default": "./dist/index.js"
     },
+    "./secret-birth-credential.compact": "./dist/secret-birth-credential.compact",
     "./contract": {
       "types": "./dist/contract.d.ts",
       "require": "./dist/contract.js",

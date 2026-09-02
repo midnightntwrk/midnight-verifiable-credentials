@@ -32,7 +32,13 @@ describe("credentials-same-holder package surfaces", () => {
     );
   });
 
-  it("keeps the standalone and composable Compact entrypoints in source control", () => {
+  it("exports standalone and composable Compact entrypoints", () => {
+    expect(packageJson.exports?.["./same-holder.compact"]).toBe(
+      "./dist/same-holder.compact",
+    );
+    expect(packageJson.exports?.["./same-holder/composable.compact"]).toBe(
+      "./dist/same-holder/composable.compact",
+    );
     expect(existsSync(sourceSurface("same-holder.compact"))).toEqual(true);
     expect(existsSync(sourceSurface("same-holder/composable.compact"))).toEqual(
       true,

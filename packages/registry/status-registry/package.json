@@ -18,6 +18,8 @@
       "import": "./dist/index.js",
       "default": "./dist/index.js"
     },
+    "./revocation-registry.compact": "./dist/revocation-registry.compact",
+    "./status-proof-protocol.compact": "./dist/status-proof-protocol.compact",
     "./contract": {
       "types": "./dist/contract.d.ts",
       "require": "./dist/contract.js",

@@ -1,0 +1,90 @@
+{
+  "formatVersion": 1,
+  "id": "prototype.birth-secret",
+  "version": "0.1.0",
+  "schema": {
+    "id": "urn:midnight:prototype:birth-secret",
+    "version": "1.0.0",
+    "credentialTypes": [
+      "VerifiableCredential",
+      "prototype.birth-secret"
+    ],
+    "claims": [
+      {
+        "id": "subjectId",
+        "path": [
+          "credentialSubject",
+          "subjectId"
+        ],
+        "disclosure": "committed",
+        "required": true
+      },
+      {
+        "id": "legalName",
+        "path": [
+          "credentialSubject",
+          "legalName"
+        ],
+        "disclosure": "committed",
+        "required": true
+      },
+      {
+        "id": "birthDate",
+        "path": [
+          "credentialSubject",
+          "birthDate"
+        ],
+        "disclosure": "committed",
+        "required": true
+      },
+      {
+        "id": "birthCountryCode",
+        "path": [
+          "credentialSubject",
+          "birthCountryCode"
+        ],
+        "disclosure": "committed",
+        "required": true
+      }
+    ]
+  },
+  "capabilities": [
+    {
+      "id": "holder.blinded-secret",
+      "kind": "holder-binding",
+      "version": "1.0.0",
+      "required": true
+    },
+    {
+      "id": "proof.compact",
+      "kind": "proof",
+      "version": "1.0.0",
+      "required": true
+    },
+    {
+      "id": "presentation.vp",
+      "kind": "presentation",
+      "version": "1.0.0",
+      "required": true
+    },
+    {
+      "id": "status.authority-attested",
+      "kind": "status",
+      "version": "1.0.0",
+      "required": true
+    }
+  ],
+  "artifacts": [],
+  "composition": {
+    "formatVersion": 1,
+    "packages": [
+      {
+        "name": "@midnight-ntwrk/midnight-did-credentials-birth-secret",
+        "version": "^0.1.0",
+        "exports": [
+          "./secret-birth-credential.compact"
+        ]
+      }
+    ]
+  }
+}
