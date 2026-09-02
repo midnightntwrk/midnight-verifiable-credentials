@@ -1,12 +1,13 @@
 # VC Production Backlog Execution Plan
 
-Status: active branch and PR map, reconciled 2026-08-11 against current
-GitHub branch/PR state, with historical `origin/develop` baseline `103e3e8`.
+Status: active branch and PR map, reconciled 2026-09-02 for A2 implementation
+state, with historical `origin/develop` baseline `103e3e8`.
 
 Merged baseline: PR-A1/#335 (verification core), PR-G1/#415 (artifact-manifest
-integrity foundation), and PR-E2/#416 (protocol state-store foundation). The
-current A2 checkpoint `4b514ec` is local and unmerged; it adds replay/nullifier
-primitives only and does not close A2. No GitHub PR exists for that checkpoint.
+integrity foundation), and PR-E2/#416 (protocol state-store foundation). Issue
+#498 supersedes the old local A2 checkpoint `4b514ec` with replay primitives
+plus the required stateful atomicity fixture; it remains outside the merged
+baseline until its stacked PR merges.
 
 Execution window starts 2026-07-16. The canonical scope and acceptance criteria
 remain in [`vc-maturity-backlog.md`](./vc-maturity-backlog.md); this document
@@ -41,7 +42,7 @@ develop
 |- Track A: verification authority
 |  |- PR-A0 verification threat model, v1 specification, and test design
 |  |- PR-A1 verification transcript and result contract (after A0)
-|  |- PR-A2 replay/nullifier primitives (local checkpoint; stateful fixture pending)
+|  |- PR-A2 atomic replay/nullifier contract (#498 stacked implementation)
 |  `- PR-A3 final ledger profiles (after authority dependencies)
 |- Track B: identity/status authority
 |  |- PR-B0 status/time authority threat model and negative-test design
@@ -80,7 +81,7 @@ useful.
 | PR-00 | `codex/vc-production-readiness-backlog` | `develop` | ADR register, canonical backlog, package inventory, this execution map | docs links, policy checks, light gate, Claude review, CI |
 | PR-A0 | `codex/vc-verification-threat-model-v1` | `develop` | canonical transcript/nullifier ADR, v1 authority specification, threat model, and negative-test design | docs links, policy checks, light gate, Claude security review |
 | PR-A1 | `codex/vc-verification-contract-v1` | `develop` after A0 | **Merged in PR #335**: authoritative `persistentHash` encoding spike, transcript/public-input/result types, evidence bindings, fail-closed API skeleton, digest and mutation tests; no final-profile claim | Merged baseline; final profile remains open |
-| PR-A2 | `codex/vc-a2-replay-scope-primitives` | `develop` (A1 merged in #335) | **Local checkpoint `4b514ec`, not a GitHub PR**: Compact/TypeScript request/holder/credential replay scopes and fixed-policy nullifier primitives; stateful atomic fixture remains separate follow-up | Must add supported stateful Compact fixture with restart/race/rollback/atomic protected-write tests; no exactly-once claim |
+| PR-A2 | `codex/issue-498-atomic-decision-nullifier` | `codex/issue-497-trusted-time-evidence` | **Issue #498 implementation**: Compact/TypeScript request/holder/credential replay scopes plus explicit-holder age-gate contract-derived nullifier consumption, duplicate/conflict receipts, and stateful restart/concurrency/rollback evidence | Core and age-gate tests, generated artifact comparison, relevant use-case lane, light gate, external security review, stacked CI |
 | PR-A3 | `codex/vc-verification-profiles-v1` | `develop` after required B/G and upstream authority work | final `ledger-local-v1` and `ledger-attested-v1` evidence adapters and profile integration | DID/trust/status/time/artifact/connector prerequisites for claimed modes, full differential matrix, light gate, independent security review |
 | PR-B0 | `codex/vc-status-time-threat-model-v1` | `develop` | ADRs and normative contract for authenticated registry ownership, root/non-membership, freshness, trusted time, and the required negative-test design | docs links, policy checks, light gate, Claude security review |
 | PR-B1 | `codex/vc-status-registry-authority` | `develop` after B0 and the required B3 time surface | authenticated initialization/mutation, issuer/schema-major ownership, negative tests | B0 merged; authorization time source is authoritative; revocation lane, Compact build/tests, light gate, Claude security review |

@@ -35,6 +35,8 @@ artifacts are tracked in
 - `packages/core/primitives/credentials/src/test/verification-v1.test.ts`
   - authoritative Compact/runtime digest vectors for every core-owned
     verification V1 record and one synthetic extension
+  - request-, holder-action-, and credential-action replay-scope/nullifier
+    parity plus malformed scope, policy, deployment, and binding rejection
   - direct Compact-path mutation coverage over all 47 transcript fields
   - fail-closed public-input, enum, evidence, result-state, and adapter behavior
 - `packages/core/proofs/src/test/authority-evidence.test.ts`
@@ -63,6 +65,11 @@ artifacts are tracked in
   `demo-revocation.test.ts`
   - Compact/runtime parity at exact second and Unix-day boundaries; caller day/time
     mutation, future request, credential/status expiry, and stale status rejection
+  - explicit-holder decision-nullifier repeat/reorder/restart persistence,
+    separate-prestate relay competition with compare-and-swap commit,
+    verifier-issued request ID/challenge/expiry binding, cross-context and
+    trusted-time/transcript mutation, retained duplicate/conflict outcomes,
+    failed verification, and rolled-back transaction state
 
 ## DID-aware adapter package tests
 

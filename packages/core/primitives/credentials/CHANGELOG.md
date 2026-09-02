@@ -12,7 +12,10 @@ and versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - comparison-only Compact trusted-time helpers for ledger seconds, Unix days,
   and validity intervals, consumed directly by private authoritative contracts
-  and deliberately excluded from canonical reusable Compact composition.
+  and deliberately excluded from canonical reusable Compact composition;
+- canonical request-, holder-action-, and credential-action replay-scope records,
+  action bindings, and fixed-policy decision-nullifier derivation helpers with
+  Compact/TypeScript parity vectors.
 
 ### Changed
 

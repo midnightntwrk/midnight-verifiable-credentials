@@ -44,8 +44,13 @@ Verification-contract V1 status:
 - `prepareVerification`, `preflightVerification`,
   `submitLedgerVerification`, and `verifyPublicOffchain` currently provide
   strict normalization and deterministic fail-closed adapter skeletons
-- no ledger-authoritative profile or persistent decision-nullifier behavior is
-  implemented by this package yet; those remain separate A2/A3 deliverables
+- request-, holder-action-, and credential-action replay-scope records now have
+  matching Compact and TypeScript derivation helpers with cross-runtime vectors
+- the explicit-holder age-gate reference contract demonstrates persistent,
+  atomic nullifier consumption with a protected business mutation; this core
+  package remains stateless and does not own application ledgers
+- final ledger-authoritative and off-chain executors remain the separate A3/#499
+  deliverable; the replay primitive does not by itself claim executor authority
 - see the
   [`verification V1 specification`](../../../../docs/spec/verification-contract-v1.md)
   and

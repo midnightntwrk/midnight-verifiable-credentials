@@ -12,6 +12,29 @@ longer derive authority from simulator/caller clocks. Simulator time parameters
 only set reference ledger context for deterministic tests; production context is
 ledger-owned. See [`trusted-time-evidence-v1`](../../../../docs/spec/trusted-time-evidence-v1.md).
 
+The explicit-holder side-effecting path also uses the canonical Verification V1
+request replay scope. A verifier-issued ledger record fixes each request ID,
+challenge, and expiry before presentation; submission cannot refresh expiry or
+reuse the ID with another challenge. Network, deployment, verifier, profile,
+action, protected credential mutation, and trusted day are recomputed against
+constructor-sealed context. The resulting decision nullifier is inserted in the
+same Compact transaction as capability issuance. Receipts compare retained
+transcript/outcome data to distinguish `applied`, idempotent `duplicate`, and
+`conflict`; failed, stale, raced-out, or rolled-back work leaves both the
+nullifier set and business state unchanged. The simulator's compare-and-swap
+commit seam models separate relays evaluating one pre-state; distributed
+consensus remains the ledger runtime's responsibility. The side-effect circuit
+accepts only the issued request ID and the submitted transcript commitment,
+rebuilds the canonical transcript internally, and computes its 47-field digest
+once for comparison and committed replay state.
+
+Artifact budget: with Compact 0.31.1, this optimized path is `k=18`, 226,473
+rows, and an 85,149,980-byte prover key versus the stack parent's `k=17`,
+105,869 rows, and 42,832,409-byte key. The one-step `k` increase is unavoidable
+without weakening transcript binding: a compiler experiment that removes the
+only canonical transcript hash still produces `k=18` at 191,651 rows. The
+pre-fix three-hash form was `k=19` at 292,870 rows and is not retained.
+
 Status:
 
 - prototype use-case contract
@@ -158,7 +181,7 @@ Layer 3 surface while avoiding unnecessary proof-key generation cost.
 | Request-driven verification | `verifyBirthPresentationForRequest(...)` enforces a typed verifier request before accepting the presentation                                   |
 | Selective disclosure        | the presentation can disclose birth-country data with its opening                                                                              |
 | ZK predicate                | the contract checks the age predicate from a private birth-date witness                                                                        |
-| Anti-replay                 | both issuer and holder proofs carry a `challengeHash`                                                                                          |
+| Anti-replay                 | proof challenges plus a contract-derived Verification V1 decision nullifier atomically guard explicit-holder capability issuance              |
 | Status-aware verification   | `src/demo-revocation.compact` demonstrates same-contract live-status, verifier-supplied-root, and authority-attested status-gated verification |
 | Status freshness policy     | the authority-attested path adds verifier max-age freshness checks on top of attestation expiration                                            |
 

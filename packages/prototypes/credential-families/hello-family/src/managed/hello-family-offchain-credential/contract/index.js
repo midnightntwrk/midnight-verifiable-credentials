@@ -437,6 +437,137 @@ class _SyntheticVerificationExtensionV1_0 {
 
 const _descriptor_30 = new _SyntheticVerificationExtensionV1_0();
 
+class _ActionCredentialBindingV1_0 {
+  alignment() {
+    return _descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment())))))));
+  }
+  fromValue(value_0) {
+    return {
+      domain: _descriptor_1.fromValue(value_0),
+      version: _descriptor_0.fromValue(value_0),
+      deploymentDigest: _descriptor_1.fromValue(value_0),
+      verifierContractDigest: _descriptor_1.fromValue(value_0),
+      actionClassDigest: _descriptor_1.fromValue(value_0),
+      credentialFamilyDigest: _descriptor_1.fromValue(value_0),
+      schemaDigest: _descriptor_1.fromValue(value_0),
+      credentialRoot: _descriptor_1.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_1.toValue(value_0.domain).concat(_descriptor_0.toValue(value_0.version).concat(_descriptor_1.toValue(value_0.deploymentDigest).concat(_descriptor_1.toValue(value_0.verifierContractDigest).concat(_descriptor_1.toValue(value_0.actionClassDigest).concat(_descriptor_1.toValue(value_0.credentialFamilyDigest).concat(_descriptor_1.toValue(value_0.schemaDigest).concat(_descriptor_1.toValue(value_0.credentialRoot))))))));
+  }
+}
+
+const _descriptor_31 = new _ActionCredentialBindingV1_0();
+
+class _CredentialActionReplayScopeV1_0 {
+  alignment() {
+    return _descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_31.alignment()))))));
+  }
+  fromValue(value_0) {
+    return {
+      domain: _descriptor_1.fromValue(value_0),
+      version: _descriptor_0.fromValue(value_0),
+      deploymentDigest: _descriptor_1.fromValue(value_0),
+      verifierContractDigest: _descriptor_1.fromValue(value_0),
+      actionClassDigest: _descriptor_1.fromValue(value_0),
+      actionScopeParametersDigest: _descriptor_1.fromValue(value_0),
+      binding: _descriptor_31.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_1.toValue(value_0.domain).concat(_descriptor_0.toValue(value_0.version).concat(_descriptor_1.toValue(value_0.deploymentDigest).concat(_descriptor_1.toValue(value_0.verifierContractDigest).concat(_descriptor_1.toValue(value_0.actionClassDigest).concat(_descriptor_1.toValue(value_0.actionScopeParametersDigest).concat(_descriptor_31.toValue(value_0.binding)))))));
+  }
+}
+
+const _descriptor_32 = new _CredentialActionReplayScopeV1_0();
+
+class _RequestReplayScopeV1_0 {
+  alignment() {
+    return _descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment()))))));
+  }
+  fromValue(value_0) {
+    return {
+      domain: _descriptor_1.fromValue(value_0),
+      version: _descriptor_0.fromValue(value_0),
+      deploymentDigest: _descriptor_1.fromValue(value_0),
+      verifierContractDigest: _descriptor_1.fromValue(value_0),
+      requestIdDigest: _descriptor_1.fromValue(value_0),
+      challengeDigest: _descriptor_1.fromValue(value_0),
+      actionInvocationDigest: _descriptor_1.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_1.toValue(value_0.domain).concat(_descriptor_0.toValue(value_0.version).concat(_descriptor_1.toValue(value_0.deploymentDigest).concat(_descriptor_1.toValue(value_0.verifierContractDigest).concat(_descriptor_1.toValue(value_0.requestIdDigest).concat(_descriptor_1.toValue(value_0.challengeDigest).concat(_descriptor_1.toValue(value_0.actionInvocationDigest)))))));
+  }
+}
+
+const _descriptor_33 = new _RequestReplayScopeV1_0();
+
+class _ActionHolderBindingV1_0 {
+  alignment() {
+    return _descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment())))));
+  }
+  fromValue(value_0) {
+    return {
+      domain: _descriptor_1.fromValue(value_0),
+      version: _descriptor_0.fromValue(value_0),
+      deploymentDigest: _descriptor_1.fromValue(value_0),
+      verifierContractDigest: _descriptor_1.fromValue(value_0),
+      actionClassDigest: _descriptor_1.fromValue(value_0),
+      holderSubjectDigest: _descriptor_1.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_1.toValue(value_0.domain).concat(_descriptor_0.toValue(value_0.version).concat(_descriptor_1.toValue(value_0.deploymentDigest).concat(_descriptor_1.toValue(value_0.verifierContractDigest).concat(_descriptor_1.toValue(value_0.actionClassDigest).concat(_descriptor_1.toValue(value_0.holderSubjectDigest))))));
+  }
+}
+
+const _descriptor_34 = new _ActionHolderBindingV1_0();
+
+class _HolderActionReplayScopeV1_0 {
+  alignment() {
+    return _descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_34.alignment()))))));
+  }
+  fromValue(value_0) {
+    return {
+      domain: _descriptor_1.fromValue(value_0),
+      version: _descriptor_0.fromValue(value_0),
+      deploymentDigest: _descriptor_1.fromValue(value_0),
+      verifierContractDigest: _descriptor_1.fromValue(value_0),
+      actionClassDigest: _descriptor_1.fromValue(value_0),
+      actionScopeParametersDigest: _descriptor_1.fromValue(value_0),
+      binding: _descriptor_34.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_1.toValue(value_0.domain).concat(_descriptor_0.toValue(value_0.version).concat(_descriptor_1.toValue(value_0.deploymentDigest).concat(_descriptor_1.toValue(value_0.verifierContractDigest).concat(_descriptor_1.toValue(value_0.actionClassDigest).concat(_descriptor_1.toValue(value_0.actionScopeParametersDigest).concat(_descriptor_34.toValue(value_0.binding)))))));
+  }
+}
+
+const _descriptor_35 = new _HolderActionReplayScopeV1_0();
+
+class _DecisionNullifierMaterialV1_0 {
+  alignment() {
+    return _descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_10.alignment().concat(_descriptor_1.alignment())))));
+  }
+  fromValue(value_0) {
+    return {
+      domain: _descriptor_1.fromValue(value_0),
+      version: _descriptor_0.fromValue(value_0),
+      deploymentDigest: _descriptor_1.fromValue(value_0),
+      verifierContractDigest: _descriptor_1.fromValue(value_0),
+      replayPolicy: _descriptor_10.fromValue(value_0),
+      replayScopeDigest: _descriptor_1.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_1.toValue(value_0.domain).concat(_descriptor_0.toValue(value_0.version).concat(_descriptor_1.toValue(value_0.deploymentDigest).concat(_descriptor_1.toValue(value_0.verifierContractDigest).concat(_descriptor_10.toValue(value_0.replayPolicy).concat(_descriptor_1.toValue(value_0.replayScopeDigest))))));
+  }
+}
+
+const _descriptor_36 = new _DecisionNullifierMaterialV1_0();
+
 class _AnchorEvidenceReceiptV1_0 {
   alignment() {
     return _descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment())))))));
@@ -458,71 +589,7 @@ class _AnchorEvidenceReceiptV1_0 {
   }
 }
 
-const _descriptor_31 = new _AnchorEvidenceReceiptV1_0();
-
-class _DecisionNullifierMaterialV1_0 {
-  alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_10.alignment().concat(_descriptor_1.alignment())))));
-  }
-  fromValue(value_0) {
-    return {
-      domain: _descriptor_1.fromValue(value_0),
-      version: _descriptor_0.fromValue(value_0),
-      deploymentDigest: _descriptor_1.fromValue(value_0),
-      verifierContractDigest: _descriptor_1.fromValue(value_0),
-      replayPolicy: _descriptor_10.fromValue(value_0),
-      replayScopeDigest: _descriptor_1.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_1.toValue(value_0.domain).concat(_descriptor_0.toValue(value_0.version).concat(_descriptor_1.toValue(value_0.deploymentDigest).concat(_descriptor_1.toValue(value_0.verifierContractDigest).concat(_descriptor_10.toValue(value_0.replayPolicy).concat(_descriptor_1.toValue(value_0.replayScopeDigest))))));
-  }
-}
-
-const _descriptor_32 = new _DecisionNullifierMaterialV1_0();
-
-class _PresentationBindingV1_0 {
-  alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment()))))));
-  }
-  fromValue(value_0) {
-    return {
-      domain: _descriptor_1.fromValue(value_0),
-      version: _descriptor_0.fromValue(value_0),
-      credentialBindingDigest: _descriptor_1.fromValue(value_0),
-      holderBindingDigest: _descriptor_1.fromValue(value_0),
-      disclosureDigest: _descriptor_1.fromValue(value_0),
-      predicateDigest: _descriptor_1.fromValue(value_0),
-      consentDigest: _descriptor_1.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_1.toValue(value_0.domain).concat(_descriptor_0.toValue(value_0.version).concat(_descriptor_1.toValue(value_0.credentialBindingDigest).concat(_descriptor_1.toValue(value_0.holderBindingDigest).concat(_descriptor_1.toValue(value_0.disclosureDigest).concat(_descriptor_1.toValue(value_0.predicateDigest).concat(_descriptor_1.toValue(value_0.consentDigest)))))));
-  }
-}
-
-const _descriptor_33 = new _PresentationBindingV1_0();
-
-class _HolderBindingV1_0 {
-  alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_10.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment())))));
-  }
-  fromValue(value_0) {
-    return {
-      domain: _descriptor_1.fromValue(value_0),
-      version: _descriptor_0.fromValue(value_0),
-      mode: _descriptor_10.fromValue(value_0),
-      verifierContractDigest: _descriptor_1.fromValue(value_0),
-      challengeDigest: _descriptor_1.fromValue(value_0),
-      subjectBindingDigest: _descriptor_1.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_1.toValue(value_0.domain).concat(_descriptor_0.toValue(value_0.version).concat(_descriptor_10.toValue(value_0.mode).concat(_descriptor_1.toValue(value_0.verifierContractDigest).concat(_descriptor_1.toValue(value_0.challengeDigest).concat(_descriptor_1.toValue(value_0.subjectBindingDigest))))));
-  }
-}
-
-const _descriptor_34 = new _HolderBindingV1_0();
+const _descriptor_37 = new _AnchorEvidenceReceiptV1_0();
 
 class _ConsentBindingV1_0 {
   alignment() {
@@ -563,7 +630,29 @@ class _ConsentBindingV1_0 {
   }
 }
 
-const _descriptor_35 = new _ConsentBindingV1_0();
+const _descriptor_38 = new _ConsentBindingV1_0();
+
+class _PresentationBindingV1_0 {
+  alignment() {
+    return _descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment()))))));
+  }
+  fromValue(value_0) {
+    return {
+      domain: _descriptor_1.fromValue(value_0),
+      version: _descriptor_0.fromValue(value_0),
+      credentialBindingDigest: _descriptor_1.fromValue(value_0),
+      holderBindingDigest: _descriptor_1.fromValue(value_0),
+      disclosureDigest: _descriptor_1.fromValue(value_0),
+      predicateDigest: _descriptor_1.fromValue(value_0),
+      consentDigest: _descriptor_1.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_1.toValue(value_0.domain).concat(_descriptor_0.toValue(value_0.version).concat(_descriptor_1.toValue(value_0.credentialBindingDigest).concat(_descriptor_1.toValue(value_0.holderBindingDigest).concat(_descriptor_1.toValue(value_0.disclosureDigest).concat(_descriptor_1.toValue(value_0.predicateDigest).concat(_descriptor_1.toValue(value_0.consentDigest)))))));
+  }
+}
+
+const _descriptor_39 = new _PresentationBindingV1_0();
 
 class _CredentialBindingV1_0 {
   alignment() {
@@ -586,9 +675,30 @@ class _CredentialBindingV1_0 {
   }
 }
 
-const _descriptor_36 = new _CredentialBindingV1_0();
+const _descriptor_40 = new _CredentialBindingV1_0();
 
-const _descriptor_37 = new __compactRuntime.CompactTypeEnum(0, 0);
+class _HolderBindingV1_0 {
+  alignment() {
+    return _descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_10.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment())))));
+  }
+  fromValue(value_0) {
+    return {
+      domain: _descriptor_1.fromValue(value_0),
+      version: _descriptor_0.fromValue(value_0),
+      mode: _descriptor_10.fromValue(value_0),
+      verifierContractDigest: _descriptor_1.fromValue(value_0),
+      challengeDigest: _descriptor_1.fromValue(value_0),
+      subjectBindingDigest: _descriptor_1.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_1.toValue(value_0.domain).concat(_descriptor_0.toValue(value_0.version).concat(_descriptor_10.toValue(value_0.mode).concat(_descriptor_1.toValue(value_0.verifierContractDigest).concat(_descriptor_1.toValue(value_0.challengeDigest).concat(_descriptor_1.toValue(value_0.subjectBindingDigest))))));
+  }
+}
+
+const _descriptor_41 = new _HolderBindingV1_0();
+
+const _descriptor_42 = new __compactRuntime.CompactTypeEnum(0, 0);
 
 class _StatusRegistryRef_0 {
   alignment() {
@@ -605,25 +715,25 @@ class _StatusRegistryRef_0 {
   }
 }
 
-const _descriptor_38 = new _StatusRegistryRef_0();
+const _descriptor_43 = new _StatusRegistryRef_0();
 
 class _RegistryBoundStatusBinding_0 {
   alignment() {
-    return _descriptor_37.alignment().concat(_descriptor_38.alignment().concat(_descriptor_1.alignment()));
+    return _descriptor_42.alignment().concat(_descriptor_43.alignment().concat(_descriptor_1.alignment()));
   }
   fromValue(value_0) {
     return {
-      statusType: _descriptor_37.fromValue(value_0),
-      registryRef: _descriptor_38.fromValue(value_0),
+      statusType: _descriptor_42.fromValue(value_0),
+      registryRef: _descriptor_43.fromValue(value_0),
       statusHandleCommitment: _descriptor_1.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_37.toValue(value_0.statusType).concat(_descriptor_38.toValue(value_0.registryRef).concat(_descriptor_1.toValue(value_0.statusHandleCommitment)));
+    return _descriptor_42.toValue(value_0.statusType).concat(_descriptor_43.toValue(value_0.registryRef).concat(_descriptor_1.toValue(value_0.statusHandleCommitment)));
   }
 }
 
-const _descriptor_39 = new _RegistryBoundStatusBinding_0();
+const _descriptor_44 = new _RegistryBoundStatusBinding_0();
 
 class _ProtocolMessageEnvelope_0 {
   alignment() {
@@ -646,7 +756,7 @@ class _ProtocolMessageEnvelope_0 {
   }
 }
 
-const _descriptor_40 = new _ProtocolMessageEnvelope_0();
+const _descriptor_45 = new _ProtocolMessageEnvelope_0();
 
 class _CredentialProtocolFeatures_0 {
   alignment() {
@@ -665,7 +775,7 @@ class _CredentialProtocolFeatures_0 {
   }
 }
 
-const _descriptor_41 = new _CredentialProtocolFeatures_0();
+const _descriptor_46 = new _CredentialProtocolFeatures_0();
 
 class _SchemaCapabilities_0 {
   alignment() {
@@ -684,7 +794,7 @@ class _SchemaCapabilities_0 {
   }
 }
 
-const _descriptor_42 = new _SchemaCapabilities_0();
+const _descriptor_47 = new _SchemaCapabilities_0();
 
 class _SecretHolderBinding_0 {
   alignment() {
@@ -701,7 +811,7 @@ class _SecretHolderBinding_0 {
   }
 }
 
-const _descriptor_43 = new _SecretHolderBinding_0();
+const _descriptor_48 = new _SecretHolderBinding_0();
 
 class _BlindedSecretHolderBinding_0 {
   alignment() {
@@ -719,7 +829,7 @@ class _BlindedSecretHolderBinding_0 {
   }
 }
 
-const _descriptor_44 = new _BlindedSecretHolderBinding_0();
+const _descriptor_49 = new _BlindedSecretHolderBinding_0();
 
 class _JubjubHolderBinding_0 {
   alignment() {
@@ -735,7 +845,7 @@ class _JubjubHolderBinding_0 {
   }
 }
 
-const _descriptor_45 = new _JubjubHolderBinding_0();
+const _descriptor_50 = new _JubjubHolderBinding_0();
 
 class _ExplicitHolderBinding_0 {
   alignment() {
@@ -751,7 +861,7 @@ class _ExplicitHolderBinding_0 {
   }
 }
 
-const _descriptor_46 = new _ExplicitHolderBinding_0();
+const _descriptor_51 = new _ExplicitHolderBinding_0();
 
 class _SchemaFamilyResolutionHint_0 {
   alignment() {
@@ -768,33 +878,33 @@ class _SchemaFamilyResolutionHint_0 {
   }
 }
 
-const _descriptor_47 = new _SchemaFamilyResolutionHint_0();
+const _descriptor_52 = new _SchemaFamilyResolutionHint_0();
 
 class _SchemaDescriptor_0 {
   alignment() {
-    return _descriptor_2.alignment().concat(_descriptor_42.alignment().concat(_descriptor_47.alignment()));
+    return _descriptor_2.alignment().concat(_descriptor_47.alignment().concat(_descriptor_52.alignment()));
   }
   fromValue(value_0) {
     return {
       schema: _descriptor_2.fromValue(value_0),
-      capabilities: _descriptor_42.fromValue(value_0),
-      familyResolutionHint: _descriptor_47.fromValue(value_0)
+      capabilities: _descriptor_47.fromValue(value_0),
+      familyResolutionHint: _descriptor_52.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_2.toValue(value_0.schema).concat(_descriptor_42.toValue(value_0.capabilities).concat(_descriptor_47.toValue(value_0.familyResolutionHint)));
+    return _descriptor_2.toValue(value_0.schema).concat(_descriptor_47.toValue(value_0.capabilities).concat(_descriptor_52.toValue(value_0.familyResolutionHint)));
   }
 }
 
-const _descriptor_48 = new _SchemaDescriptor_0();
+const _descriptor_53 = new _SchemaDescriptor_0();
 
-const _descriptor_49 = new __compactRuntime.CompactTypeVector(2, _descriptor_1);
+const _descriptor_54 = new __compactRuntime.CompactTypeVector(2, _descriptor_1);
 
-const _descriptor_50 = new __compactRuntime.CompactTypeVector(4, _descriptor_1);
+const _descriptor_55 = new __compactRuntime.CompactTypeVector(3, _descriptor_1);
 
-const _descriptor_51 = new __compactRuntime.CompactTypeVector(3, _descriptor_1);
+const _descriptor_56 = new __compactRuntime.CompactTypeVector(4, _descriptor_1);
 
-const _descriptor_52 = new __compactRuntime.CompactTypeVector(5, _descriptor_1);
+const _descriptor_57 = new __compactRuntime.CompactTypeVector(5, _descriptor_1);
 
 class _Either_0 {
   alignment() {
@@ -812,9 +922,9 @@ class _Either_0 {
   }
 }
 
-const _descriptor_53 = new _Either_0();
+const _descriptor_58 = new _Either_0();
 
-const _descriptor_54 = new __compactRuntime.CompactTypeUnsignedInteger(340282366920938463463374607431768211455n, 16);
+const _descriptor_59 = new __compactRuntime.CompactTypeUnsignedInteger(340282366920938463463374607431768211455n, 16);
 
 export class Contract {
   witnesses;
@@ -993,6 +1103,21 @@ export class Contract {
       decisionNullifierDomainV1(context, ...args_1) {
         return { result: pureCircuits.decisionNullifierDomainV1(...args_1), context };
       },
+      replayScopeRequestDomainV1(context, ...args_1) {
+        return { result: pureCircuits.replayScopeRequestDomainV1(...args_1), context };
+      },
+      replayScopeHolderActionDomainV1(context, ...args_1) {
+        return { result: pureCircuits.replayScopeHolderActionDomainV1(...args_1), context };
+      },
+      replayScopeCredentialActionDomainV1(context, ...args_1) {
+        return { result: pureCircuits.replayScopeCredentialActionDomainV1(...args_1), context };
+      },
+      actionHolderBindingDomainV1(context, ...args_1) {
+        return { result: pureCircuits.actionHolderBindingDomainV1(...args_1), context };
+      },
+      actionCredentialBindingDomainV1(context, ...args_1) {
+        return { result: pureCircuits.actionCredentialBindingDomainV1(...args_1), context };
+      },
       credentialBindingDomainV1(context, ...args_1) {
         return { result: pureCircuits.credentialBindingDomainV1(...args_1), context };
       },
@@ -1049,6 +1174,51 @@ export class Contract {
       },
       decisionNullifierMaterialV1Digest(context, ...args_1) {
         return { result: pureCircuits.decisionNullifierMaterialV1Digest(...args_1), context };
+      },
+      actionHolderBindingV1Digest(context, ...args_1) {
+        return { result: pureCircuits.actionHolderBindingV1Digest(...args_1), context };
+      },
+      actionCredentialBindingV1Digest(context, ...args_1) {
+        return { result: pureCircuits.actionCredentialBindingV1Digest(...args_1), context };
+      },
+      requestReplayScopeV1Digest(context, ...args_1) {
+        return { result: pureCircuits.requestReplayScopeV1Digest(...args_1), context };
+      },
+      holderActionReplayScopeV1Digest(context, ...args_1) {
+        return { result: pureCircuits.holderActionReplayScopeV1Digest(...args_1), context };
+      },
+      credentialActionReplayScopeV1Digest(context, ...args_1) {
+        return { result: pureCircuits.credentialActionReplayScopeV1Digest(...args_1), context };
+      },
+      assertValidActionHolderBindingV1(context, ...args_1) {
+        return { result: pureCircuits.assertValidActionHolderBindingV1(...args_1), context };
+      },
+      assertValidActionCredentialBindingV1(context, ...args_1) {
+        return { result: pureCircuits.assertValidActionCredentialBindingV1(...args_1), context };
+      },
+      assertValidRequestReplayScopeV1(context, ...args_1) {
+        return { result: pureCircuits.assertValidRequestReplayScopeV1(...args_1), context };
+      },
+      assertValidHolderActionReplayScopeV1(context, ...args_1) {
+        return { result: pureCircuits.assertValidHolderActionReplayScopeV1(...args_1), context };
+      },
+      assertValidCredentialActionReplayScopeV1(context, ...args_1) {
+        return { result: pureCircuits.assertValidCredentialActionReplayScopeV1(...args_1), context };
+      },
+      assertValidDecisionNullifierContextV1(context, ...args_1) {
+        return { result: pureCircuits.assertValidDecisionNullifierContextV1(...args_1), context };
+      },
+      deriveRequestDecisionNullifierV1(context, ...args_1) {
+        return { result: pureCircuits.deriveRequestDecisionNullifierV1(...args_1), context };
+      },
+      deriveHolderActionDecisionNullifierV1(context, ...args_1) {
+        return { result: pureCircuits.deriveHolderActionDecisionNullifierV1(...args_1), context };
+      },
+      deriveCredentialActionDecisionNullifierV1(context, ...args_1) {
+        return { result: pureCircuits.deriveCredentialActionDecisionNullifierV1(...args_1), context };
+      },
+      deriveNoDecisionNullifierV1(context, ...args_1) {
+        return { result: pureCircuits.deriveNoDecisionNullifierV1(...args_1), context };
       },
       syntheticVerificationExtensionV1Digest(context, ...args_1) {
         return { result: pureCircuits.syntheticVerificationExtensionV1Digest(...args_1), context };
@@ -1142,7 +1312,7 @@ export class Contract {
     return result_0;
   }
   _persistentHash_0(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_52, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_57, value_0);
     return result_0;
   }
   _persistentHash_1(value_0) {
@@ -1150,31 +1320,31 @@ export class Contract {
     return result_0;
   }
   _persistentHash_2(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_51, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_55, value_0);
     return result_0;
   }
   _persistentHash_3(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_50, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_56, value_0);
     return result_0;
   }
   _persistentHash_4(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_39, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_44, value_0);
     return result_0;
   }
   _persistentHash_5(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_36, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_40, value_0);
     return result_0;
   }
   _persistentHash_6(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_34, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_41, value_0);
     return result_0;
   }
   _persistentHash_7(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_35, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_38, value_0);
     return result_0;
   }
   _persistentHash_8(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_33, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_39, value_0);
     return result_0;
   }
   _persistentHash_9(value_0) {
@@ -1182,38 +1352,58 @@ export class Contract {
     return result_0;
   }
   _persistentHash_10(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_31, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_37, value_0);
     return result_0;
   }
   _persistentHash_11(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_32, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_36, value_0);
     return result_0;
   }
   _persistentHash_12(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_30, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_34, value_0);
     return result_0;
   }
   _persistentHash_13(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_26, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_31, value_0);
     return result_0;
   }
   _persistentHash_14(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_18, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_33, value_0);
     return result_0;
   }
   _persistentHash_15(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_49, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_35, value_0);
     return result_0;
   }
   _persistentHash_16(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_24, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_32, value_0);
     return result_0;
   }
   _persistentHash_17(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_25, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_30, value_0);
     return result_0;
   }
   _persistentHash_18(value_0) {
+    const result_0 = __compactRuntime.persistentHash(_descriptor_26, value_0);
+    return result_0;
+  }
+  _persistentHash_19(value_0) {
+    const result_0 = __compactRuntime.persistentHash(_descriptor_18, value_0);
+    return result_0;
+  }
+  _persistentHash_20(value_0) {
+    const result_0 = __compactRuntime.persistentHash(_descriptor_54, value_0);
+    return result_0;
+  }
+  _persistentHash_21(value_0) {
+    const result_0 = __compactRuntime.persistentHash(_descriptor_24, value_0);
+    return result_0;
+  }
+  _persistentHash_22(value_0) {
+    const result_0 = __compactRuntime.persistentHash(_descriptor_25, value_0);
+    return result_0;
+  }
+  _persistentHash_23(value_0) {
     const result_0 = __compactRuntime.persistentHash(_descriptor_20, value_0);
     return result_0;
   }
@@ -1401,7 +1591,7 @@ export class Contract {
     return [];
   }
   _credentialBodyRoot_0(credential_0) {
-    return this._persistentHash_18(credential_0);
+    return this._persistentHash_23(credential_0);
   }
   _assertValidCredentialEnvelope_0(credential_0, expectedClaimRoot_0) {
     __compactRuntime.assert(this._equal_5(credential_0.version, 1n),
@@ -1435,7 +1625,7 @@ export class Contract {
     return [];
   }
   _presentationBodyRoot_0(presentation_0) {
-    return this._persistentHash_16(presentation_0);
+    return this._persistentHash_21(presentation_0);
   }
   _assertValidPresentationEnvelope_0(presentation_0) {
     __compactRuntime.assert(this._equal_9(presentation_0.version, 1n),
@@ -1837,6 +2027,181 @@ export class Contract {
                             37n,
                             90n,
                             75n],
+                           Number);
+  }
+  _replayScopeRequestDomainV1_0() {
+    return Uint8Array.from([199n,
+                            43n,
+                            122n,
+                            135n,
+                            95n,
+                            207n,
+                            238n,
+                            48n,
+                            203n,
+                            14n,
+                            222n,
+                            179n,
+                            183n,
+                            202n,
+                            33n,
+                            226n,
+                            134n,
+                            119n,
+                            128n,
+                            163n,
+                            110n,
+                            185n,
+                            112n,
+                            10n,
+                            40n,
+                            72n,
+                            101n,
+                            207n,
+                            207n,
+                            125n,
+                            64n,
+                            6n],
+                           Number);
+  }
+  _replayScopeHolderActionDomainV1_0() {
+    return Uint8Array.from([110n,
+                            79n,
+                            235n,
+                            246n,
+                            21n,
+                            158n,
+                            102n,
+                            188n,
+                            161n,
+                            135n,
+                            9n,
+                            218n,
+                            171n,
+                            171n,
+                            203n,
+                            72n,
+                            35n,
+                            169n,
+                            93n,
+                            4n,
+                            10n,
+                            9n,
+                            193n,
+                            185n,
+                            88n,
+                            119n,
+                            0n,
+                            135n,
+                            230n,
+                            68n,
+                            30n,
+                            65n],
+                           Number);
+  }
+  _replayScopeCredentialActionDomainV1_0() {
+    return Uint8Array.from([147n,
+                            151n,
+                            12n,
+                            133n,
+                            111n,
+                            148n,
+                            226n,
+                            146n,
+                            38n,
+                            161n,
+                            184n,
+                            79n,
+                            44n,
+                            102n,
+                            249n,
+                            49n,
+                            147n,
+                            119n,
+                            186n,
+                            178n,
+                            33n,
+                            247n,
+                            41n,
+                            99n,
+                            24n,
+                            92n,
+                            210n,
+                            51n,
+                            108n,
+                            181n,
+                            190n,
+                            142n],
+                           Number);
+  }
+  _actionHolderBindingDomainV1_0() {
+    return Uint8Array.from([0n,
+                            104n,
+                            217n,
+                            225n,
+                            166n,
+                            157n,
+                            91n,
+                            233n,
+                            42n,
+                            52n,
+                            156n,
+                            11n,
+                            199n,
+                            38n,
+                            84n,
+                            26n,
+                            172n,
+                            210n,
+                            11n,
+                            46n,
+                            152n,
+                            194n,
+                            29n,
+                            8n,
+                            206n,
+                            27n,
+                            147n,
+                            76n,
+                            61n,
+                            135n,
+                            192n,
+                            128n],
+                           Number);
+  }
+  _actionCredentialBindingDomainV1_0() {
+    return Uint8Array.from([134n,
+                            110n,
+                            67n,
+                            199n,
+                            68n,
+                            16n,
+                            200n,
+                            203n,
+                            114n,
+                            179n,
+                            164n,
+                            248n,
+                            223n,
+                            103n,
+                            12n,
+                            34n,
+                            17n,
+                            64n,
+                            126n,
+                            127n,
+                            116n,
+                            184n,
+                            114n,
+                            153n,
+                            246n,
+                            169n,
+                            53n,
+                            214n,
+                            110n,
+                            59n,
+                            193n,
+                            170n],
                            Number);
   }
   _credentialBindingDomainV1_0() {
@@ -2280,69 +2645,292 @@ export class Contract {
   _decisionNullifierMaterialV1Digest_0(material_0) {
     return this._persistentHash_11(material_0);
   }
+  _actionHolderBindingV1Digest_0(binding_0) {
+    return this._persistentHash_12(binding_0);
+  }
+  _actionCredentialBindingV1Digest_0(binding_0) {
+    return this._persistentHash_13(binding_0);
+  }
+  _requestReplayScopeV1Digest_0(scope_0) {
+    return this._persistentHash_14(scope_0);
+  }
+  _holderActionReplayScopeV1Digest_0(scope_0) {
+    return this._persistentHash_15(scope_0);
+  }
+  _credentialActionReplayScopeV1Digest_0(scope_0) {
+    return this._persistentHash_16(scope_0);
+  }
+  _assertValidActionHolderBindingV1_0(binding_0,
+                                      expectedDeploymentDigest_0,
+                                      expectedVerifierContractDigest_0,
+                                      expectedActionClassDigest_0)
+  {
+    __compactRuntime.assert(this._equal_49(binding_0.domain,
+                                           this._actionHolderBindingDomainV1_0()),
+                            'Action holder binding domain is unknown');
+    __compactRuntime.assert(this._equal_50(binding_0.version, 1n),
+                            'Action holder binding version must be 1');
+    __compactRuntime.assert(this._equal_51(binding_0.deploymentDigest,
+                                           expectedDeploymentDigest_0),
+                            'Action holder deployment binding mismatch');
+    __compactRuntime.assert(this._equal_52(binding_0.verifierContractDigest,
+                                           expectedVerifierContractDigest_0),
+                            'Action holder verifier binding mismatch');
+    __compactRuntime.assert(this._equal_53(binding_0.actionClassDigest,
+                                           expectedActionClassDigest_0),
+                            'Action holder action binding mismatch');
+    __compactRuntime.assert(!this._equal_54(binding_0.holderSubjectDigest,
+                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+                            'Action holder subject binding must be set');
+    return [];
+  }
+  _assertValidActionCredentialBindingV1_0(binding_0,
+                                          expectedDeploymentDigest_0,
+                                          expectedVerifierContractDigest_0,
+                                          expectedActionClassDigest_0)
+  {
+    __compactRuntime.assert(this._equal_55(binding_0.domain,
+                                           this._actionCredentialBindingDomainV1_0()),
+                            'Action credential binding domain is unknown');
+    __compactRuntime.assert(this._equal_56(binding_0.version, 1n),
+                            'Action credential binding version must be 1');
+    __compactRuntime.assert(this._equal_57(binding_0.deploymentDigest,
+                                           expectedDeploymentDigest_0),
+                            'Action credential deployment binding mismatch');
+    __compactRuntime.assert(this._equal_58(binding_0.verifierContractDigest,
+                                           expectedVerifierContractDigest_0),
+                            'Action credential verifier binding mismatch');
+    __compactRuntime.assert(this._equal_59(binding_0.actionClassDigest,
+                                           expectedActionClassDigest_0),
+                            'Action credential action binding mismatch');
+    __compactRuntime.assert(!this._equal_60(binding_0.credentialFamilyDigest,
+                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+                            'Action credential family binding must be set');
+    __compactRuntime.assert(!this._equal_61(binding_0.schemaDigest,
+                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+                            'Action credential schema binding must be set');
+    __compactRuntime.assert(!this._equal_62(binding_0.credentialRoot,
+                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+                            'Action credential root binding must be set');
+    return [];
+  }
+  _assertValidRequestReplayScopeV1_0(scope_0,
+                                     expectedDeploymentDigest_0,
+                                     expectedVerifierContractDigest_0)
+  {
+    __compactRuntime.assert(this._equal_63(scope_0.domain,
+                                           this._replayScopeRequestDomainV1_0()),
+                            'Request replay scope domain is unknown');
+    __compactRuntime.assert(this._equal_64(scope_0.version, 1n),
+                            'Request replay scope version must be 1');
+    __compactRuntime.assert(this._equal_65(scope_0.deploymentDigest,
+                                           expectedDeploymentDigest_0),
+                            'Request replay deployment binding mismatch');
+    __compactRuntime.assert(this._equal_66(scope_0.verifierContractDigest,
+                                           expectedVerifierContractDigest_0),
+                            'Request replay verifier binding mismatch');
+    __compactRuntime.assert(!this._equal_67(scope_0.requestIdDigest,
+                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+                            'Request replay request id must be set');
+    __compactRuntime.assert(!this._equal_68(scope_0.challengeDigest,
+                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+                            'Request replay challenge must be set');
+    __compactRuntime.assert(!this._equal_69(scope_0.actionInvocationDigest,
+                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+                            'Request replay action invocation must be set');
+    return [];
+  }
+  _assertValidHolderActionReplayScopeV1_0(scope_0,
+                                          expectedDeploymentDigest_0,
+                                          expectedVerifierContractDigest_0)
+  {
+    __compactRuntime.assert(this._equal_70(scope_0.domain,
+                                           this._replayScopeHolderActionDomainV1_0()),
+                            'Holder-action replay scope domain is unknown');
+    __compactRuntime.assert(this._equal_71(scope_0.version, 1n),
+                            'Holder-action replay scope version must be 1');
+    __compactRuntime.assert(this._equal_72(scope_0.deploymentDigest,
+                                           expectedDeploymentDigest_0),
+                            'Holder-action deployment binding mismatch');
+    __compactRuntime.assert(this._equal_73(scope_0.verifierContractDigest,
+                                           expectedVerifierContractDigest_0),
+                            'Holder-action verifier binding mismatch');
+    __compactRuntime.assert(!this._equal_74(scope_0.actionClassDigest,
+                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+                            'Holder-action class must be set');
+    __compactRuntime.assert(!this._equal_75(scope_0.actionScopeParametersDigest,
+                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+                            'Holder-action scope parameters must be set');
+    this._assertValidActionHolderBindingV1_0(scope_0.binding,
+                                             expectedDeploymentDigest_0,
+                                             expectedVerifierContractDigest_0,
+                                             scope_0.actionClassDigest);
+    return [];
+  }
+  _assertValidCredentialActionReplayScopeV1_0(scope_0,
+                                              expectedDeploymentDigest_0,
+                                              expectedVerifierContractDigest_0)
+  {
+    __compactRuntime.assert(this._equal_76(scope_0.domain,
+                                           this._replayScopeCredentialActionDomainV1_0()),
+                            'Credential-action replay scope domain is unknown');
+    __compactRuntime.assert(this._equal_77(scope_0.version, 1n),
+                            'Credential-action replay scope version must be 1');
+    __compactRuntime.assert(this._equal_78(scope_0.deploymentDigest,
+                                           expectedDeploymentDigest_0),
+                            'Credential-action deployment binding mismatch');
+    __compactRuntime.assert(this._equal_79(scope_0.verifierContractDigest,
+                                           expectedVerifierContractDigest_0),
+                            'Credential-action verifier binding mismatch');
+    __compactRuntime.assert(!this._equal_80(scope_0.actionClassDigest,
+                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+                            'Credential-action class must be set');
+    __compactRuntime.assert(!this._equal_81(scope_0.actionScopeParametersDigest,
+                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+                            'Credential-action scope parameters must be set');
+    this._assertValidActionCredentialBindingV1_0(scope_0.binding,
+                                                 expectedDeploymentDigest_0,
+                                                 expectedVerifierContractDigest_0,
+                                                 scope_0.actionClassDigest);
+    return [];
+  }
+  _assertValidDecisionNullifierContextV1_0(deploymentDigest_0,
+                                           verifierContractDigest_0)
+  {
+    __compactRuntime.assert(!this._equal_82(deploymentDigest_0,
+                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+                            'Deployment digest must be set');
+    __compactRuntime.assert(!this._equal_83(verifierContractDigest_0,
+                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+                            'Verifier contract digest must be set');
+    return [];
+  }
+  _deriveRequestDecisionNullifierV1_0(deploymentDigest_0,
+                                      verifierContractDigest_0,
+                                      scope_0)
+  {
+    this._assertValidDecisionNullifierContextV1_0(deploymentDigest_0,
+                                                  verifierContractDigest_0);
+    this._assertValidRequestReplayScopeV1_0(scope_0,
+                                            deploymentDigest_0,
+                                            verifierContractDigest_0);
+    return this._decisionNullifierMaterialV1Digest_0({ domain:
+                                                         this._decisionNullifierDomainV1_0(),
+                                                       version: 1n,
+                                                       deploymentDigest:
+                                                         deploymentDigest_0,
+                                                       verifierContractDigest:
+                                                         verifierContractDigest_0,
+                                                       replayPolicy: 1n,
+                                                       replayScopeDigest:
+                                                         this._requestReplayScopeV1Digest_0(scope_0) });
+  }
+  _deriveHolderActionDecisionNullifierV1_0(deploymentDigest_0,
+                                           verifierContractDigest_0,
+                                           scope_0)
+  {
+    this._assertValidDecisionNullifierContextV1_0(deploymentDigest_0,
+                                                  verifierContractDigest_0);
+    this._assertValidHolderActionReplayScopeV1_0(scope_0,
+                                                 deploymentDigest_0,
+                                                 verifierContractDigest_0);
+    return this._decisionNullifierMaterialV1Digest_0({ domain:
+                                                         this._decisionNullifierDomainV1_0(),
+                                                       version: 1n,
+                                                       deploymentDigest:
+                                                         deploymentDigest_0,
+                                                       verifierContractDigest:
+                                                         verifierContractDigest_0,
+                                                       replayPolicy: 2n,
+                                                       replayScopeDigest:
+                                                         this._holderActionReplayScopeV1Digest_0(scope_0) });
+  }
+  _deriveCredentialActionDecisionNullifierV1_0(deploymentDigest_0,
+                                               verifierContractDigest_0,
+                                               scope_0)
+  {
+    this._assertValidDecisionNullifierContextV1_0(deploymentDigest_0,
+                                                  verifierContractDigest_0);
+    this._assertValidCredentialActionReplayScopeV1_0(scope_0,
+                                                     deploymentDigest_0,
+                                                     verifierContractDigest_0);
+    return this._decisionNullifierMaterialV1Digest_0({ domain:
+                                                         this._decisionNullifierDomainV1_0(),
+                                                       version: 1n,
+                                                       deploymentDigest:
+                                                         deploymentDigest_0,
+                                                       verifierContractDigest:
+                                                         verifierContractDigest_0,
+                                                       replayPolicy: 3n,
+                                                       replayScopeDigest:
+                                                         this._credentialActionReplayScopeV1Digest_0(scope_0) });
+  }
+  _deriveNoDecisionNullifierV1_0() {
+    return new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+  }
   _syntheticVerificationExtensionV1Digest_0(extension_0) {
-    return this._persistentHash_12(extension_0);
+    return this._persistentHash_17(extension_0);
   }
   _verificationTranscriptV1Digest_0(transcript_0) {
-    return this._persistentHash_13(transcript_0);
+    return this._persistentHash_18(transcript_0);
   }
   _assertValidEvidenceBindingV1_0(binding_0, expectedDomain_0) {
-    __compactRuntime.assert(this._equal_49(binding_0.domain, expectedDomain_0),
+    __compactRuntime.assert(this._equal_84(binding_0.domain, expectedDomain_0),
                             'Evidence domain does not match its class');
-    __compactRuntime.assert(this._equal_50(binding_0.version, 1n),
+    __compactRuntime.assert(this._equal_85(binding_0.version, 1n),
                             'Evidence version must be 1');
     let t_0;
     __compactRuntime.assert((t_0 = binding_0.mode, t_0 <= 4n),
                             'Evidence mode is unknown');
-    if (this._equal_51(binding_0.mode, 0n)) {
-      __compactRuntime.assert(this._equal_52(binding_0.authorityDigest,
+    if (this._equal_86(binding_0.mode, 0n)) {
+      __compactRuntime.assert(this._equal_87(binding_0.authorityDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Not-required evidence authority must be zero');
-      __compactRuntime.assert(this._equal_53(binding_0.subjectDigest,
+      __compactRuntime.assert(this._equal_88(binding_0.subjectDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Not-required evidence subject must be zero');
-      __compactRuntime.assert(this._equal_54(binding_0.stateAnchorDigest,
+      __compactRuntime.assert(this._equal_89(binding_0.stateAnchorDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Not-required evidence anchor must be zero');
-      __compactRuntime.assert(this._equal_55(binding_0.statementDigest,
+      __compactRuntime.assert(this._equal_90(binding_0.statementDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Not-required evidence statement must be zero');
-      __compactRuntime.assert(this._equal_56(binding_0.createdAt, 0n),
+      __compactRuntime.assert(this._equal_91(binding_0.createdAt, 0n),
                               'Not-required evidence creation time must be zero');
-      __compactRuntime.assert(this._equal_57(binding_0.expiresAt, 0n),
+      __compactRuntime.assert(this._equal_92(binding_0.expiresAt, 0n),
                               'Not-required evidence expiry must be zero');
     }
-    if (this._equal_58(binding_0.mode, 1n)) {
-      __compactRuntime.assert(this._equal_59(binding_0.authorityDigest,
+    if (this._equal_93(binding_0.mode, 1n)) {
+      __compactRuntime.assert(this._equal_94(binding_0.authorityDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Unavailable evidence authority must be zero');
-      __compactRuntime.assert(!this._equal_60(binding_0.subjectDigest,
+      __compactRuntime.assert(!this._equal_95(binding_0.subjectDigest,
                                               new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Unavailable evidence subject must be scoped');
-      __compactRuntime.assert(this._equal_61(binding_0.stateAnchorDigest,
+      __compactRuntime.assert(this._equal_96(binding_0.stateAnchorDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Unavailable evidence anchor must be zero');
-      __compactRuntime.assert(this._equal_62(binding_0.statementDigest,
+      __compactRuntime.assert(this._equal_97(binding_0.statementDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Unavailable evidence statement must be zero');
-      __compactRuntime.assert(this._equal_63(binding_0.createdAt, 0n),
+      __compactRuntime.assert(this._equal_98(binding_0.createdAt, 0n),
                               'Unavailable evidence creation time must be zero');
-      __compactRuntime.assert(this._equal_64(binding_0.expiresAt, 0n),
+      __compactRuntime.assert(this._equal_99(binding_0.expiresAt, 0n),
                               'Unavailable evidence expiry must be zero');
     }
     let t_1;
     if (t_1 = binding_0.mode, t_1 >= 2n) {
-      __compactRuntime.assert(!this._equal_65(binding_0.authorityDigest,
-                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+      __compactRuntime.assert(!this._equal_100(binding_0.authorityDigest,
+                                               new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Accepted evidence authority must be set');
-      __compactRuntime.assert(!this._equal_66(binding_0.subjectDigest,
-                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+      __compactRuntime.assert(!this._equal_101(binding_0.subjectDigest,
+                                               new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Accepted evidence subject must be set');
-      __compactRuntime.assert(!this._equal_67(binding_0.stateAnchorDigest,
-                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+      __compactRuntime.assert(!this._equal_102(binding_0.stateAnchorDigest,
+                                               new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Accepted evidence anchor must be set');
-      __compactRuntime.assert(!this._equal_68(binding_0.statementDigest,
-                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+      __compactRuntime.assert(!this._equal_103(binding_0.statementDigest,
+                                               new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Accepted evidence statement must be set');
       let t_2;
       __compactRuntime.assert((t_2 = binding_0.expiresAt, t_2 > 0n),
@@ -2355,10 +2943,10 @@ export class Contract {
     return [];
   }
   _assertValidVerificationTranscriptV1_0(transcript_0) {
-    __compactRuntime.assert(this._equal_69(transcript_0.domain,
-                                           this._verificationTranscriptDomainV1_0()),
+    __compactRuntime.assert(this._equal_104(transcript_0.domain,
+                                            this._verificationTranscriptDomainV1_0()),
                             'Transcript domain must be V1');
-    __compactRuntime.assert(this._equal_70(transcript_0.version, 1n),
+    __compactRuntime.assert(this._equal_105(transcript_0.version, 1n),
                             'Transcript version must be 1');
     let t_0, t_1;
     __compactRuntime.assert((t_1 = transcript_0.profile, t_1 >= 1n)
@@ -2395,178 +2983,178 @@ export class Contract {
     let t_12;
     __compactRuntime.assert((t_12 = transcript_0.replayPolicy, t_12 <= 3n),
                             'Replay policy is unknown');
-    if (this._equal_71(transcript_0.profile, 1n)) {
-      __compactRuntime.assert(this._equal_72(transcript_0.authority, 1n),
+    if (this._equal_106(transcript_0.profile, 1n)) {
+      __compactRuntime.assert(this._equal_107(transcript_0.authority, 1n),
                               'Ledger-local profile requires ledger-local target authority');
-      __compactRuntime.assert(this._equal_73(transcript_0.originMode, 0n),
+      __compactRuntime.assert(this._equal_108(transcript_0.originMode, 0n),
                               'Ledger-local profile cannot claim browser origin authority');
     }
-    if (this._equal_74(transcript_0.profile, 2n)) {
-      __compactRuntime.assert(this._equal_75(transcript_0.authority, 2n),
+    if (this._equal_109(transcript_0.profile, 2n)) {
+      __compactRuntime.assert(this._equal_110(transcript_0.authority, 2n),
                               'Ledger-attested profile requires ledger-attested target authority');
       let t_13;
       __compactRuntime.assert((t_13 = transcript_0.originMode, t_13 <= 1n),
                               'Ledger-attested origin must be none or wallet-attested');
     }
-    if (this._equal_76(transcript_0.profile, 3n)) {
-      __compactRuntime.assert(this._equal_77(transcript_0.authority, 3n),
+    if (this._equal_111(transcript_0.profile, 3n)) {
+      __compactRuntime.assert(this._equal_112(transcript_0.authority, 3n),
                               'Off-chain profile requires local-process authority');
-      __compactRuntime.assert(this._equal_78(transcript_0.originMode, 0n)
+      __compactRuntime.assert(this._equal_113(transcript_0.originMode, 0n)
                               ||
-                              this._equal_79(transcript_0.originMode, 2n),
+                              this._equal_114(transcript_0.originMode, 2n),
                               'Off-chain origin must be none or local-request');
     }
-    if (this._equal_80(transcript_0.originMode, 0n)) {
-      __compactRuntime.assert(this._equal_81(transcript_0.originDigest,
-                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+    if (this._equal_115(transcript_0.originMode, 0n)) {
+      __compactRuntime.assert(this._equal_116(transcript_0.originDigest,
+                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'No-origin digest must be zero');
     } else {
-      __compactRuntime.assert(!this._equal_82(transcript_0.originDigest,
-                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+      __compactRuntime.assert(!this._equal_117(transcript_0.originDigest,
+                                               new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Enabled origin digest must be set');
     }
-    __compactRuntime.assert(!this._equal_83(transcript_0.networkIdDigest,
-                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+    __compactRuntime.assert(!this._equal_118(transcript_0.networkIdDigest,
+                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Network digest must be set');
-    __compactRuntime.assert(!this._equal_84(transcript_0.verifierContractDigest,
-                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+    __compactRuntime.assert(!this._equal_119(transcript_0.verifierContractDigest,
+                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Verifier contract digest must be set');
-    __compactRuntime.assert(!this._equal_85(transcript_0.deploymentDigest,
-                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+    __compactRuntime.assert(!this._equal_120(transcript_0.deploymentDigest,
+                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Deployment digest must be set');
-    __compactRuntime.assert(!this._equal_86(transcript_0.audienceDigest,
-                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+    __compactRuntime.assert(!this._equal_121(transcript_0.audienceDigest,
+                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Audience digest must be set');
-    __compactRuntime.assert(!this._equal_87(transcript_0.connectorEvidenceDigest,
-                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+    __compactRuntime.assert(!this._equal_122(transcript_0.connectorEvidenceDigest,
+                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Connector evidence digest must be set');
-    __compactRuntime.assert(!this._equal_88(transcript_0.requestIdDigest,
-                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+    __compactRuntime.assert(!this._equal_123(transcript_0.requestIdDigest,
+                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Request id digest must be set');
-    __compactRuntime.assert(!this._equal_89(transcript_0.challengeDigest,
-                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+    __compactRuntime.assert(!this._equal_124(transcript_0.challengeDigest,
+                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Challenge digest must be set');
     let t_14;
     __compactRuntime.assert((t_14 = transcript_0.expiresAt, t_14 > 0n),
                             'Transcript expiry must be set');
-    __compactRuntime.assert(!this._equal_90(transcript_0.credentialFamilyDigest,
-                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+    __compactRuntime.assert(!this._equal_125(transcript_0.credentialFamilyDigest,
+                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Credential family digest must be set');
-    __compactRuntime.assert(!this._equal_91(transcript_0.schemaDigest,
-                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+    __compactRuntime.assert(!this._equal_126(transcript_0.schemaDigest,
+                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Schema digest must be set');
-    __compactRuntime.assert(!this._equal_92(transcript_0.credentialBindingDigest,
-                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+    __compactRuntime.assert(!this._equal_127(transcript_0.credentialBindingDigest,
+                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Credential binding digest must be set');
-    __compactRuntime.assert(!this._equal_93(transcript_0.disclosureDigest,
-                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+    __compactRuntime.assert(!this._equal_128(transcript_0.disclosureDigest,
+                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Disclosure digest must be set');
-    __compactRuntime.assert(!this._equal_94(transcript_0.predicateDigest,
-                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+    __compactRuntime.assert(!this._equal_129(transcript_0.predicateDigest,
+                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Predicate digest must be set');
-    __compactRuntime.assert(!this._equal_95(transcript_0.holderBindingDigest,
-                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+    __compactRuntime.assert(!this._equal_130(transcript_0.holderBindingDigest,
+                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Holder binding digest must be set');
-    __compactRuntime.assert(!this._equal_96(transcript_0.policyDigest,
-                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+    __compactRuntime.assert(!this._equal_131(transcript_0.policyDigest,
+                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Policy digest must be set');
-    __compactRuntime.assert(!this._equal_97(transcript_0.consentDigest,
-                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+    __compactRuntime.assert(!this._equal_132(transcript_0.consentDigest,
+                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Consent digest must be set');
-    __compactRuntime.assert(!this._equal_98(transcript_0.presentationBindingDigest,
-                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+    __compactRuntime.assert(!this._equal_133(transcript_0.presentationBindingDigest,
+                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Presentation binding digest must be set');
-    __compactRuntime.assert(!this._equal_99(transcript_0.issuerDidDigest,
-                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+    __compactRuntime.assert(!this._equal_134(transcript_0.issuerDidDigest,
+                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Issuer DID digest must be set');
-    __compactRuntime.assert(!this._equal_100(transcript_0.issuerMethodDigest,
+    __compactRuntime.assert(!this._equal_135(transcript_0.issuerMethodDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Issuer method digest must be set');
-    __compactRuntime.assert(!this._equal_101(transcript_0.issuerEvidenceDigest,
+    __compactRuntime.assert(!this._equal_136(transcript_0.issuerEvidenceDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Issuer evidence digest must be set');
-    __compactRuntime.assert(!this._equal_102(transcript_0.trustScopeDigest,
+    __compactRuntime.assert(!this._equal_137(transcript_0.trustScopeDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Trust scope digest must be set');
-    __compactRuntime.assert(!this._equal_103(transcript_0.trustEvidenceDigest,
+    __compactRuntime.assert(!this._equal_138(transcript_0.trustEvidenceDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Trust evidence digest must be set');
-    __compactRuntime.assert(!this._equal_104(transcript_0.statusEvidenceDigest,
+    __compactRuntime.assert(!this._equal_139(transcript_0.statusEvidenceDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Status evidence digest must be set');
-    __compactRuntime.assert(!this._equal_105(transcript_0.timeEvidenceDigest,
+    __compactRuntime.assert(!this._equal_140(transcript_0.timeEvidenceDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Time evidence digest must be set');
-    __compactRuntime.assert(!this._equal_106(transcript_0.artifactManifestDigest,
+    __compactRuntime.assert(!this._equal_141(transcript_0.artifactManifestDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Artifact manifest digest must be set');
-    __compactRuntime.assert(!this._equal_107(transcript_0.artifactEvidenceDigest,
+    __compactRuntime.assert(!this._equal_142(transcript_0.artifactEvidenceDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Artifact evidence digest must be set');
-    if (this._equal_108(transcript_0.statusMode, 0n)) {
-      __compactRuntime.assert(this._equal_109(transcript_0.statusRegistryDigest,
+    if (this._equal_143(transcript_0.statusMode, 0n)) {
+      __compactRuntime.assert(this._equal_144(transcript_0.statusRegistryDigest,
                                               new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'No-status registry must be zero');
-      __compactRuntime.assert(this._equal_110(transcript_0.statusRoot,
+      __compactRuntime.assert(this._equal_145(transcript_0.statusRoot,
                                               new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'No-status root must be zero');
-      __compactRuntime.assert(this._equal_111(transcript_0.statusRegistryVersion,
+      __compactRuntime.assert(this._equal_146(transcript_0.statusRegistryVersion,
                                               0n),
                               'No-status registry version must be zero');
-      __compactRuntime.assert(this._equal_112(transcript_0.statusFreshnessPolicyDigest,
+      __compactRuntime.assert(this._equal_147(transcript_0.statusFreshnessPolicyDigest,
                                               new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'No-status freshness policy must be zero');
     } else {
-      __compactRuntime.assert(!this._equal_113(transcript_0.statusRegistryDigest,
+      __compactRuntime.assert(!this._equal_148(transcript_0.statusRegistryDigest,
                                                new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Enabled status registry must be set');
       let t_15;
       __compactRuntime.assert((t_15 = transcript_0.statusRegistryVersion,
                                t_15 > 0n),
                               'Enabled status registry version must be positive');
-      __compactRuntime.assert(!this._equal_114(transcript_0.statusFreshnessPolicyDigest,
+      __compactRuntime.assert(!this._equal_149(transcript_0.statusFreshnessPolicyDigest,
                                                new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Enabled status freshness policy must be set');
     }
-    if (this._equal_115(transcript_0.timeMode, 0n)) {
-      __compactRuntime.assert(this._equal_116(transcript_0.trustedTime, 0n),
+    if (this._equal_150(transcript_0.timeMode, 0n)) {
+      __compactRuntime.assert(this._equal_151(transcript_0.trustedTime, 0n),
                               'No-time mode requires zero trusted time');
     } else {
       let t_16;
       __compactRuntime.assert((t_16 = transcript_0.trustedTime, t_16 > 0n),
                               'Enabled time mode requires trusted time');
     }
-    if (this._equal_117(transcript_0.nullifierMode, 0n)) {
-      __compactRuntime.assert(this._equal_118(transcript_0.replayPolicy, 0n),
+    if (this._equal_152(transcript_0.nullifierMode, 0n)) {
+      __compactRuntime.assert(this._equal_153(transcript_0.replayPolicy, 0n),
                               'No-nullifier mode requires no replay policy');
-      __compactRuntime.assert(this._equal_119(transcript_0.actionClassDigest,
+      __compactRuntime.assert(this._equal_154(transcript_0.actionClassDigest,
                                               new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'No-nullifier action class must be zero');
-      __compactRuntime.assert(this._equal_120(transcript_0.actionInvocationDigest,
+      __compactRuntime.assert(this._equal_155(transcript_0.actionInvocationDigest,
                                               new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'No-nullifier action invocation must be zero');
-      __compactRuntime.assert(this._equal_121(transcript_0.replayScopeDigest,
+      __compactRuntime.assert(this._equal_156(transcript_0.replayScopeDigest,
                                               new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'No-nullifier replay scope must be zero');
-      __compactRuntime.assert(this._equal_122(transcript_0.decisionNullifier,
+      __compactRuntime.assert(this._equal_157(transcript_0.decisionNullifier,
                                               new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'No-nullifier decision nullifier must be zero');
     } else {
-      __compactRuntime.assert(!this._equal_123(transcript_0.profile, 3n),
+      __compactRuntime.assert(!this._equal_158(transcript_0.profile, 3n),
                               'Off-chain verification cannot require a nullifier');
       let t_17;
       __compactRuntime.assert((t_17 = transcript_0.replayPolicy, t_17 >= 1n),
                               'Required nullifier needs a replay policy');
-      __compactRuntime.assert(!this._equal_124(transcript_0.actionClassDigest,
+      __compactRuntime.assert(!this._equal_159(transcript_0.actionClassDigest,
                                                new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Required nullifier action class must be set');
-      __compactRuntime.assert(!this._equal_125(transcript_0.actionInvocationDigest,
+      __compactRuntime.assert(!this._equal_160(transcript_0.actionInvocationDigest,
                                                new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Required nullifier action invocation must be set');
-      __compactRuntime.assert(!this._equal_126(transcript_0.replayScopeDigest,
+      __compactRuntime.assert(!this._equal_161(transcript_0.replayScopeDigest,
                                                new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Required nullifier replay scope must be set');
-      __compactRuntime.assert(!this._equal_127(transcript_0.decisionNullifier,
+      __compactRuntime.assert(!this._equal_162(transcript_0.decisionNullifier,
                                                new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Required decision nullifier must be set');
     }
@@ -2586,47 +3174,47 @@ export class Contract {
                                          this._artifactEvidenceDomainV1_0());
     this._assertValidEvidenceBindingV1_0(inputs_0.connectorEvidence,
                                          this._connectorEvidenceDomainV1_0());
-    __compactRuntime.assert(this._equal_128(inputs_0.transcript.issuerEvidenceDigest,
+    __compactRuntime.assert(this._equal_163(inputs_0.transcript.issuerEvidenceDigest,
                                             this._evidenceBindingV1Digest_0(inputs_0.issuerEvidence)),
                             'Issuer evidence digest mismatch');
-    __compactRuntime.assert(this._equal_129(inputs_0.transcript.trustEvidenceDigest,
+    __compactRuntime.assert(this._equal_164(inputs_0.transcript.trustEvidenceDigest,
                                             this._evidenceBindingV1Digest_0(inputs_0.trustEvidence)),
                             'Trust evidence digest mismatch');
-    __compactRuntime.assert(this._equal_130(inputs_0.transcript.statusEvidenceDigest,
+    __compactRuntime.assert(this._equal_165(inputs_0.transcript.statusEvidenceDigest,
                                             this._evidenceBindingV1Digest_0(inputs_0.statusEvidence)),
                             'Status evidence digest mismatch');
-    __compactRuntime.assert(this._equal_131(inputs_0.transcript.timeEvidenceDigest,
+    __compactRuntime.assert(this._equal_166(inputs_0.transcript.timeEvidenceDigest,
                                             this._evidenceBindingV1Digest_0(inputs_0.timeEvidence)),
                             'Time evidence digest mismatch');
-    __compactRuntime.assert(this._equal_132(inputs_0.transcript.artifactEvidenceDigest,
+    __compactRuntime.assert(this._equal_167(inputs_0.transcript.artifactEvidenceDigest,
                                             this._evidenceBindingV1Digest_0(inputs_0.artifactEvidence)),
                             'Artifact evidence digest mismatch');
-    __compactRuntime.assert(this._equal_133(inputs_0.transcript.connectorEvidenceDigest,
+    __compactRuntime.assert(this._equal_168(inputs_0.transcript.connectorEvidenceDigest,
                                             this._evidenceBindingV1Digest_0(inputs_0.connectorEvidence)),
                             'Connector evidence digest mismatch');
-    if (this._equal_134(inputs_0.transcript.statusMode, 0n)) {
-      __compactRuntime.assert(this._equal_135(inputs_0.statusEvidence.mode, 0n),
+    if (this._equal_169(inputs_0.transcript.statusMode, 0n)) {
+      __compactRuntime.assert(this._equal_170(inputs_0.statusEvidence.mode, 0n),
                               'No-status mode requires not-required status evidence');
     } else {
-      __compactRuntime.assert(!this._equal_136(inputs_0.statusEvidence.mode, 0n),
+      __compactRuntime.assert(!this._equal_171(inputs_0.statusEvidence.mode, 0n),
                               'Enabled status mode requires status evidence');
     }
-    if (this._equal_137(inputs_0.transcript.timeMode, 0n)) {
-      __compactRuntime.assert(this._equal_138(inputs_0.timeEvidence.mode, 0n),
+    if (this._equal_172(inputs_0.transcript.timeMode, 0n)) {
+      __compactRuntime.assert(this._equal_173(inputs_0.timeEvidence.mode, 0n),
                               'No-time mode requires not-required time evidence');
     } else {
-      __compactRuntime.assert(!this._equal_139(inputs_0.timeEvidence.mode, 0n),
+      __compactRuntime.assert(!this._equal_174(inputs_0.timeEvidence.mode, 0n),
                               'Enabled time mode requires time evidence');
     }
-    if (this._equal_140(inputs_0.transcript.originMode, 0n)
+    if (this._equal_175(inputs_0.transcript.originMode, 0n)
         ||
-        this._equal_141(inputs_0.transcript.originMode, 2n))
+        this._equal_176(inputs_0.transcript.originMode, 2n))
     {
-      __compactRuntime.assert(this._equal_142(inputs_0.connectorEvidence.mode,
+      __compactRuntime.assert(this._equal_177(inputs_0.connectorEvidence.mode,
                                               0n),
                               'Unattested origin requires not-required connector evidence');
     } else {
-      __compactRuntime.assert(!this._equal_143(inputs_0.connectorEvidence.mode,
+      __compactRuntime.assert(!this._equal_178(inputs_0.connectorEvidence.mode,
                                                0n),
                               'Wallet-attested origin requires connector evidence');
     }
@@ -2637,24 +3225,24 @@ export class Contract {
   {
     this._assertValidVerificationPublicInputsV1_0(inputs_0);
     const transcriptDigest_0 = this._verificationTranscriptV1Digest_0(inputs_0.transcript);
-    __compactRuntime.assert(this._equal_144(transcriptDigest_0,
+    __compactRuntime.assert(this._equal_179(transcriptDigest_0,
                                             expectedTranscriptDigest_0),
                             'Transcript proof binding mismatch');
-    __compactRuntime.assert(this._equal_145(inputs_0.transcript.profile, 1n)
+    __compactRuntime.assert(this._equal_180(inputs_0.transcript.profile, 1n)
                             ||
-                            this._equal_146(inputs_0.transcript.profile, 2n),
+                            this._equal_181(inputs_0.transcript.profile, 2n),
                             'Synthetic authority fixture requires a ledger target profile');
-    __compactRuntime.assert(this._equal_147(inputs_0.issuerEvidence.mode, 1n)
+    __compactRuntime.assert(this._equal_182(inputs_0.issuerEvidence.mode, 1n)
                             ||
-                            this._equal_148(inputs_0.trustEvidence.mode, 1n)
+                            this._equal_183(inputs_0.trustEvidence.mode, 1n)
                             ||
-                            this._equal_149(inputs_0.statusEvidence.mode, 1n)
+                            this._equal_184(inputs_0.statusEvidence.mode, 1n)
                             ||
-                            this._equal_150(inputs_0.timeEvidence.mode, 1n)
+                            this._equal_185(inputs_0.timeEvidence.mode, 1n)
                             ||
-                            this._equal_151(inputs_0.artifactEvidence.mode, 1n)
+                            this._equal_186(inputs_0.artifactEvidence.mode, 1n)
                             ||
-                            this._equal_152(inputs_0.connectorEvidence.mode, 1n),
+                            this._equal_187(inputs_0.connectorEvidence.mode, 1n),
                             'Synthetic authority fixture requires unavailable evidence');
     return { proofStatus: 2n,
              decisionStatus: 0n,
@@ -2663,10 +3251,10 @@ export class Contract {
              transcriptDigest: transcriptDigest_0 };
   }
   _helloFamilyClaimPayloadRoot_0(claims_0) {
-    return this._persistentHash_14(claims_0);
+    return this._persistentHash_19(claims_0);
   }
   _helloFamilyClaimRoot_0(claims_0) {
-    return this._persistentHash_15([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 104, 101, 108, 108, 111, 45, 102, 97, 109, 105, 108, 121, 58, 118, 49, 0, 0, 0, 0, 0]),
+    return this._persistentHash_20([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 104, 101, 108, 108, 111, 45, 102, 97, 109, 105, 108, 121, 58, 118, 49, 0, 0, 0, 0, 0]),
                                     this._helloFamilyClaimPayloadRoot_0(claims_0)]);
   }
   _helloFamilyOffchainCredentialBodyRoot_0(credential_0) {
@@ -2676,25 +3264,25 @@ export class Contract {
     return this._presentationBodyRoot_0(presentation_0);
   }
   _helloFamilyOffchainPresentationRequestBodyRoot_0(request_0) {
-    return this._persistentHash_17(request_0);
+    return this._persistentHash_22(request_0);
   }
   _assertValidHelloFamilyOffchainSchemaRef_0(schema_0) {
-    __compactRuntime.assert(this._equal_153(schema_0.packageId,
+    __compactRuntime.assert(this._equal_188(schema_0.packageId,
                                             new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 104, 101, 108, 108, 111, 45, 102, 97, 109, 105, 108, 121, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Hello-family package id mismatch');
-    __compactRuntime.assert(this._equal_154(schema_0.schemaId,
+    __compactRuntime.assert(this._equal_189(schema_0.schemaId,
                                             new Uint8Array([104, 101, 108, 108, 111, 45, 102, 97, 109, 105, 108, 121, 58, 118, 49, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Hello-family schema id mismatch');
-    __compactRuntime.assert(this._equal_155(schema_0.majorVersion, 1n),
+    __compactRuntime.assert(this._equal_190(schema_0.majorVersion, 1n),
                             'Hello-family major version mismatch');
     return [];
   }
   _assertValidHelloFamilyOffchainPresentationRequest_0(request_0) {
-    __compactRuntime.assert(this._equal_156(request_0.version, 1n),
+    __compactRuntime.assert(this._equal_191(request_0.version, 1n),
                             'Hello-family request version mismatch');
     this._assertValidHelloFamilyOffchainSchemaRef_0(request_0.schema);
     this._assertValidVerificationMethodRef_0(request_0.issuerVerificationMethodRef);
-    __compactRuntime.assert(!this._equal_157(request_0.verifierChallengeHash,
+    __compactRuntime.assert(!this._equal_192(request_0.verifierChallengeHash,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Hello-family verifier challenge must be set');
     return [];
@@ -2732,12 +3320,12 @@ export class Contract {
                               'Hello-family boolean disclosure does not match the credential');
     }
     if (presentation_0.disclosed.revealBytesValue) {
-      __compactRuntime.assert(this._equal_158(presentation_0.disclosed.bytesValue,
+      __compactRuntime.assert(this._equal_193(presentation_0.disclosed.bytesValue,
                                               credential_0.claims.bytesValue),
                               'Hello-family bytes disclosure does not match the credential');
     }
     if (presentation_0.disclosed.revealBigUnsignedValue) {
-      __compactRuntime.assert(this._equal_159(presentation_0.disclosed.bigUnsignedValue,
+      __compactRuntime.assert(this._equal_194(presentation_0.disclosed.bigUnsignedValue,
                                               credential_0.claims.bigUnsignedValue),
                               'Hello-family bigint-like disclosure does not match the credential');
     }
@@ -2756,13 +3344,13 @@ export class Contract {
                                                        presentationProof_0);
     this._assertMatchingSchemaRefs_0(request_0.schema, credential_0.schema);
     this._assertMatchingSchemaRefs_0(request_0.schema, presentation_0.schema);
-    __compactRuntime.assert(this._equal_160(request_0.issuerVerificationMethodRef.didContractAddress,
+    __compactRuntime.assert(this._equal_195(request_0.issuerVerificationMethodRef.didContractAddress,
                                             credential_0.issuerVerificationMethodRef.didContractAddress),
                             'Hello-family request issuer contract does not match the credential issuer');
-    __compactRuntime.assert(this._equal_161(request_0.issuerVerificationMethodRef.methodId,
+    __compactRuntime.assert(this._equal_196(request_0.issuerVerificationMethodRef.methodId,
                                             credential_0.issuerVerificationMethodRef.methodId),
                             'Hello-family request issuer method does not match the credential issuer');
-    __compactRuntime.assert(this._equal_162(presentationProof_0.challengeHash,
+    __compactRuntime.assert(this._equal_197(presentationProof_0.challengeHash,
                                             request_0.verifierChallengeHash),
                             'Hello-family presentation proof challenge does not match the request');
     if (request_0.requireBooleanValueDisclosure) {
@@ -3000,7 +3588,7 @@ export class Contract {
     return true;
   }
   _equal_51(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_52(x0, y0) {
@@ -3024,11 +3612,11 @@ export class Contract {
     return true;
   }
   _equal_57(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_58(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_59(x0, y0) {
@@ -3048,7 +3636,7 @@ export class Contract {
     return true;
   }
   _equal_63(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_64(x0, y0) {
@@ -3076,7 +3664,7 @@ export class Contract {
     return true;
   }
   _equal_70(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_71(x0, y0) {
@@ -3084,23 +3672,23 @@ export class Contract {
     return true;
   }
   _equal_72(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_73(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_74(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_75(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_76(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_77(x0, y0) {
@@ -3108,15 +3696,15 @@ export class Contract {
     return true;
   }
   _equal_78(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_79(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_80(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_81(x0, y0) {
@@ -3136,11 +3724,11 @@ export class Contract {
     return true;
   }
   _equal_85(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_86(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_87(x0, y0) {
@@ -3160,15 +3748,15 @@ export class Contract {
     return true;
   }
   _equal_91(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_92(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_93(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_94(x0, y0) {
@@ -3188,11 +3776,11 @@ export class Contract {
     return true;
   }
   _equal_98(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_99(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_100(x0, y0) {
@@ -3216,15 +3804,15 @@ export class Contract {
     return true;
   }
   _equal_105(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_106(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_107(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_108(x0, y0) {
@@ -3232,11 +3820,11 @@ export class Contract {
     return true;
   }
   _equal_109(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_110(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_111(x0, y0) {
@@ -3244,15 +3832,15 @@ export class Contract {
     return true;
   }
   _equal_112(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_113(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_114(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_115(x0, y0) {
@@ -3260,15 +3848,15 @@ export class Contract {
     return true;
   }
   _equal_116(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_117(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_118(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_119(x0, y0) {
@@ -3288,7 +3876,7 @@ export class Contract {
     return true;
   }
   _equal_123(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_124(x0, y0) {
@@ -3332,39 +3920,39 @@ export class Contract {
     return true;
   }
   _equal_134(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_135(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_136(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_137(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_138(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_139(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_140(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_141(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_142(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_143(x0, y0) {
@@ -3376,7 +3964,7 @@ export class Contract {
     return true;
   }
   _equal_145(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_146(x0, y0) {
@@ -3384,15 +3972,15 @@ export class Contract {
     return true;
   }
   _equal_147(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_148(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_149(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_150(x0, y0) {
@@ -3408,7 +3996,7 @@ export class Contract {
     return true;
   }
   _equal_153(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_154(x0, y0) {
@@ -3416,11 +4004,11 @@ export class Contract {
     return true;
   }
   _equal_155(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_156(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_157(x0, y0) {
@@ -3428,19 +4016,15 @@ export class Contract {
     return true;
   }
   _equal_158(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
-    return true;
-  }
-  _equal_159(x0, y0) {
     if (x0 !== y0) { return false; }
     return true;
   }
+  _equal_159(x0, y0) {
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    return true;
+  }
   _equal_160(x0, y0) {
-    {
-      let x1 = x0.bytes;
-      let y1 = y0.bytes;
-      if (!x1.every((x, i) => y1[i] === x)) { return false; }
-    }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_161(x0, y0) {
@@ -3448,6 +4032,150 @@ export class Contract {
     return true;
   }
   _equal_162(x0, y0) {
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    return true;
+  }
+  _equal_163(x0, y0) {
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    return true;
+  }
+  _equal_164(x0, y0) {
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    return true;
+  }
+  _equal_165(x0, y0) {
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    return true;
+  }
+  _equal_166(x0, y0) {
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    return true;
+  }
+  _equal_167(x0, y0) {
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    return true;
+  }
+  _equal_168(x0, y0) {
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    return true;
+  }
+  _equal_169(x0, y0) {
+    if (x0 !== y0) { return false; }
+    return true;
+  }
+  _equal_170(x0, y0) {
+    if (x0 !== y0) { return false; }
+    return true;
+  }
+  _equal_171(x0, y0) {
+    if (x0 !== y0) { return false; }
+    return true;
+  }
+  _equal_172(x0, y0) {
+    if (x0 !== y0) { return false; }
+    return true;
+  }
+  _equal_173(x0, y0) {
+    if (x0 !== y0) { return false; }
+    return true;
+  }
+  _equal_174(x0, y0) {
+    if (x0 !== y0) { return false; }
+    return true;
+  }
+  _equal_175(x0, y0) {
+    if (x0 !== y0) { return false; }
+    return true;
+  }
+  _equal_176(x0, y0) {
+    if (x0 !== y0) { return false; }
+    return true;
+  }
+  _equal_177(x0, y0) {
+    if (x0 !== y0) { return false; }
+    return true;
+  }
+  _equal_178(x0, y0) {
+    if (x0 !== y0) { return false; }
+    return true;
+  }
+  _equal_179(x0, y0) {
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    return true;
+  }
+  _equal_180(x0, y0) {
+    if (x0 !== y0) { return false; }
+    return true;
+  }
+  _equal_181(x0, y0) {
+    if (x0 !== y0) { return false; }
+    return true;
+  }
+  _equal_182(x0, y0) {
+    if (x0 !== y0) { return false; }
+    return true;
+  }
+  _equal_183(x0, y0) {
+    if (x0 !== y0) { return false; }
+    return true;
+  }
+  _equal_184(x0, y0) {
+    if (x0 !== y0) { return false; }
+    return true;
+  }
+  _equal_185(x0, y0) {
+    if (x0 !== y0) { return false; }
+    return true;
+  }
+  _equal_186(x0, y0) {
+    if (x0 !== y0) { return false; }
+    return true;
+  }
+  _equal_187(x0, y0) {
+    if (x0 !== y0) { return false; }
+    return true;
+  }
+  _equal_188(x0, y0) {
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    return true;
+  }
+  _equal_189(x0, y0) {
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    return true;
+  }
+  _equal_190(x0, y0) {
+    if (x0 !== y0) { return false; }
+    return true;
+  }
+  _equal_191(x0, y0) {
+    if (x0 !== y0) { return false; }
+    return true;
+  }
+  _equal_192(x0, y0) {
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    return true;
+  }
+  _equal_193(x0, y0) {
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    return true;
+  }
+  _equal_194(x0, y0) {
+    if (x0 !== y0) { return false; }
+    return true;
+  }
+  _equal_195(x0, y0) {
+    {
+      let x1 = x0.bytes;
+      let y1 = y0.bytes;
+      if (!x1.every((x, i) => y1[i] === x)) { return false; }
+    }
+    return true;
+  }
+  _equal_196(x0, y0) {
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    return true;
+  }
+  _equal_197(x0, y0) {
     if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
@@ -4496,6 +5224,36 @@ export const pureCircuits = {
     }
     return _dummyContract._decisionNullifierDomainV1_0();
   },
+  replayScopeRequestDomainV1: (...args_0) => {
+    if (args_0.length !== 0) {
+      throw new __compactRuntime.CompactError(`replayScopeRequestDomainV1: expected 0 arguments (as invoked from Typescript), received ${args_0.length}`);
+    }
+    return _dummyContract._replayScopeRequestDomainV1_0();
+  },
+  replayScopeHolderActionDomainV1: (...args_0) => {
+    if (args_0.length !== 0) {
+      throw new __compactRuntime.CompactError(`replayScopeHolderActionDomainV1: expected 0 arguments (as invoked from Typescript), received ${args_0.length}`);
+    }
+    return _dummyContract._replayScopeHolderActionDomainV1_0();
+  },
+  replayScopeCredentialActionDomainV1: (...args_0) => {
+    if (args_0.length !== 0) {
+      throw new __compactRuntime.CompactError(`replayScopeCredentialActionDomainV1: expected 0 arguments (as invoked from Typescript), received ${args_0.length}`);
+    }
+    return _dummyContract._replayScopeCredentialActionDomainV1_0();
+  },
+  actionHolderBindingDomainV1: (...args_0) => {
+    if (args_0.length !== 0) {
+      throw new __compactRuntime.CompactError(`actionHolderBindingDomainV1: expected 0 arguments (as invoked from Typescript), received ${args_0.length}`);
+    }
+    return _dummyContract._actionHolderBindingDomainV1_0();
+  },
+  actionCredentialBindingDomainV1: (...args_0) => {
+    if (args_0.length !== 0) {
+      throw new __compactRuntime.CompactError(`actionCredentialBindingDomainV1: expected 0 arguments (as invoked from Typescript), received ${args_0.length}`);
+    }
+    return _dummyContract._actionCredentialBindingDomainV1_0();
+  },
   credentialBindingDomainV1: (...args_0) => {
     if (args_0.length !== 0) {
       throw new __compactRuntime.CompactError(`credentialBindingDomainV1: expected 0 arguments (as invoked from Typescript), received ${args_0.length}`);
@@ -4576,7 +5334,7 @@ export const pureCircuits = {
     if (!(typeof(binding_0) === 'object' && binding_0.domain.buffer instanceof ArrayBuffer && binding_0.domain.BYTES_PER_ELEMENT === 1 && binding_0.domain.length === 32 && typeof(binding_0.version) === 'bigint' && binding_0.version >= 0n && binding_0.version <= 65535n && typeof(binding_0.mode) === 'bigint' && binding_0.mode >= 0n && binding_0.mode <= 255n && binding_0.credentialFamilyDigest.buffer instanceof ArrayBuffer && binding_0.credentialFamilyDigest.BYTES_PER_ELEMENT === 1 && binding_0.credentialFamilyDigest.length === 32 && binding_0.schemaDigest.buffer instanceof ArrayBuffer && binding_0.schemaDigest.BYTES_PER_ELEMENT === 1 && binding_0.schemaDigest.length === 32 && binding_0.verifierContractDigest.buffer instanceof ArrayBuffer && binding_0.verifierContractDigest.BYTES_PER_ELEMENT === 1 && binding_0.verifierContractDigest.length === 32 && binding_0.challengeDigest.buffer instanceof ArrayBuffer && binding_0.challengeDigest.BYTES_PER_ELEMENT === 1 && binding_0.challengeDigest.length === 32 && binding_0.credentialRoot.buffer instanceof ArrayBuffer && binding_0.credentialRoot.BYTES_PER_ELEMENT === 1 && binding_0.credentialRoot.length === 32)) {
       __compactRuntime.typeError('credentialBindingV1Digest',
                                  'argument 1',
-                                 'verification-v1.compact line 227 char 1',
+                                 'verification-v1.compact line 298 char 1',
                                  'struct CredentialBindingV1<domain: Bytes<32>, version: Uint<0..65536>, mode: Uint<0..256>, credentialFamilyDigest: Bytes<32>, schemaDigest: Bytes<32>, verifierContractDigest: Bytes<32>, challengeDigest: Bytes<32>, credentialRoot: Bytes<32>>',
                                  binding_0)
     }
@@ -4590,7 +5348,7 @@ export const pureCircuits = {
     if (!(typeof(binding_0) === 'object' && binding_0.domain.buffer instanceof ArrayBuffer && binding_0.domain.BYTES_PER_ELEMENT === 1 && binding_0.domain.length === 32 && typeof(binding_0.version) === 'bigint' && binding_0.version >= 0n && binding_0.version <= 65535n && typeof(binding_0.mode) === 'bigint' && binding_0.mode >= 0n && binding_0.mode <= 255n && binding_0.verifierContractDigest.buffer instanceof ArrayBuffer && binding_0.verifierContractDigest.BYTES_PER_ELEMENT === 1 && binding_0.verifierContractDigest.length === 32 && binding_0.challengeDigest.buffer instanceof ArrayBuffer && binding_0.challengeDigest.BYTES_PER_ELEMENT === 1 && binding_0.challengeDigest.length === 32 && binding_0.subjectBindingDigest.buffer instanceof ArrayBuffer && binding_0.subjectBindingDigest.BYTES_PER_ELEMENT === 1 && binding_0.subjectBindingDigest.length === 32)) {
       __compactRuntime.typeError('holderBindingV1Digest',
                                  'argument 1',
-                                 'verification-v1.compact line 233 char 1',
+                                 'verification-v1.compact line 304 char 1',
                                  'struct HolderBindingV1<domain: Bytes<32>, version: Uint<0..65536>, mode: Uint<0..256>, verifierContractDigest: Bytes<32>, challengeDigest: Bytes<32>, subjectBindingDigest: Bytes<32>>',
                                  binding_0)
     }
@@ -4604,7 +5362,7 @@ export const pureCircuits = {
     if (!(typeof(binding_0) === 'object' && binding_0.domain.buffer instanceof ArrayBuffer && binding_0.domain.BYTES_PER_ELEMENT === 1 && binding_0.domain.length === 32 && typeof(binding_0.version) === 'bigint' && binding_0.version >= 0n && binding_0.version <= 65535n && typeof(binding_0.profile) === 'bigint' && binding_0.profile >= 0n && binding_0.profile <= 255n && binding_0.networkIdDigest.buffer instanceof ArrayBuffer && binding_0.networkIdDigest.BYTES_PER_ELEMENT === 1 && binding_0.networkIdDigest.length === 32 && binding_0.verifierContractDigest.buffer instanceof ArrayBuffer && binding_0.verifierContractDigest.BYTES_PER_ELEMENT === 1 && binding_0.verifierContractDigest.length === 32 && binding_0.deploymentDigest.buffer instanceof ArrayBuffer && binding_0.deploymentDigest.BYTES_PER_ELEMENT === 1 && binding_0.deploymentDigest.length === 32 && binding_0.audienceDigest.buffer instanceof ArrayBuffer && binding_0.audienceDigest.BYTES_PER_ELEMENT === 1 && binding_0.audienceDigest.length === 32 && typeof(binding_0.originMode) === 'bigint' && binding_0.originMode >= 0n && binding_0.originMode <= 255n && binding_0.originDigest.buffer instanceof ArrayBuffer && binding_0.originDigest.BYTES_PER_ELEMENT === 1 && binding_0.originDigest.length === 32 && binding_0.requestIdDigest.buffer instanceof ArrayBuffer && binding_0.requestIdDigest.BYTES_PER_ELEMENT === 1 && binding_0.requestIdDigest.length === 32 && binding_0.challengeDigest.buffer instanceof ArrayBuffer && binding_0.challengeDigest.BYTES_PER_ELEMENT === 1 && binding_0.challengeDigest.length === 32 && typeof(binding_0.expiresAt) === 'bigint' && binding_0.expiresAt >= 0n && binding_0.expiresAt <= 18446744073709551615n && binding_0.credentialFamilyDigest.buffer instanceof ArrayBuffer && binding_0.credentialFamilyDigest.BYTES_PER_ELEMENT === 1 && binding_0.credentialFamilyDigest.length === 32 && binding_0.schemaDigest.buffer instanceof ArrayBuffer && binding_0.schemaDigest.BYTES_PER_ELEMENT === 1 && binding_0.schemaDigest.length === 32 && binding_0.disclosureDigest.buffer instanceof ArrayBuffer && binding_0.disclosureDigest.BYTES_PER_ELEMENT === 1 && binding_0.disclosureDigest.length === 32 && binding_0.predicateDigest.buffer instanceof ArrayBuffer && binding_0.predicateDigest.BYTES_PER_ELEMENT === 1 && binding_0.predicateDigest.length === 32 && typeof(binding_0.statusMode) === 'bigint' && binding_0.statusMode >= 0n && binding_0.statusMode <= 255n && binding_0.statusRegistryDigest.buffer instanceof ArrayBuffer && binding_0.statusRegistryDigest.BYTES_PER_ELEMENT === 1 && binding_0.statusRegistryDigest.length === 32 && binding_0.statusRoot.buffer instanceof ArrayBuffer && binding_0.statusRoot.BYTES_PER_ELEMENT === 1 && binding_0.statusRoot.length === 32 && typeof(binding_0.statusRegistryVersion) === 'bigint' && binding_0.statusRegistryVersion >= 0n && binding_0.statusRegistryVersion <= 18446744073709551615n && binding_0.statusFreshnessPolicyDigest.buffer instanceof ArrayBuffer && binding_0.statusFreshnessPolicyDigest.BYTES_PER_ELEMENT === 1 && binding_0.statusFreshnessPolicyDigest.length === 32 && binding_0.policyDigest.buffer instanceof ArrayBuffer && binding_0.policyDigest.BYTES_PER_ELEMENT === 1 && binding_0.policyDigest.length === 32 && binding_0.actionClassDigest.buffer instanceof ArrayBuffer && binding_0.actionClassDigest.BYTES_PER_ELEMENT === 1 && binding_0.actionClassDigest.length === 32 && binding_0.actionInvocationDigest.buffer instanceof ArrayBuffer && binding_0.actionInvocationDigest.BYTES_PER_ELEMENT === 1 && binding_0.actionInvocationDigest.length === 32 && binding_0.artifactManifestDigest.buffer instanceof ArrayBuffer && binding_0.artifactManifestDigest.BYTES_PER_ELEMENT === 1 && binding_0.artifactManifestDigest.length === 32 && typeof(binding_0.replayPolicy) === 'bigint' && binding_0.replayPolicy >= 0n && binding_0.replayPolicy <= 255n)) {
       __compactRuntime.typeError('consentBindingV1Digest',
                                  'argument 1',
-                                 'verification-v1.compact line 239 char 1',
+                                 'verification-v1.compact line 310 char 1',
                                  'struct ConsentBindingV1<domain: Bytes<32>, version: Uint<0..65536>, profile: Uint<0..256>, networkIdDigest: Bytes<32>, verifierContractDigest: Bytes<32>, deploymentDigest: Bytes<32>, audienceDigest: Bytes<32>, originMode: Uint<0..256>, originDigest: Bytes<32>, requestIdDigest: Bytes<32>, challengeDigest: Bytes<32>, expiresAt: Uint<0..18446744073709551616>, credentialFamilyDigest: Bytes<32>, schemaDigest: Bytes<32>, disclosureDigest: Bytes<32>, predicateDigest: Bytes<32>, statusMode: Uint<0..256>, statusRegistryDigest: Bytes<32>, statusRoot: Bytes<32>, statusRegistryVersion: Uint<0..18446744073709551616>, statusFreshnessPolicyDigest: Bytes<32>, policyDigest: Bytes<32>, actionClassDigest: Bytes<32>, actionInvocationDigest: Bytes<32>, artifactManifestDigest: Bytes<32>, replayPolicy: Uint<0..256>>',
                                  binding_0)
     }
@@ -4618,7 +5376,7 @@ export const pureCircuits = {
     if (!(typeof(binding_0) === 'object' && binding_0.domain.buffer instanceof ArrayBuffer && binding_0.domain.BYTES_PER_ELEMENT === 1 && binding_0.domain.length === 32 && typeof(binding_0.version) === 'bigint' && binding_0.version >= 0n && binding_0.version <= 65535n && binding_0.credentialBindingDigest.buffer instanceof ArrayBuffer && binding_0.credentialBindingDigest.BYTES_PER_ELEMENT === 1 && binding_0.credentialBindingDigest.length === 32 && binding_0.holderBindingDigest.buffer instanceof ArrayBuffer && binding_0.holderBindingDigest.BYTES_PER_ELEMENT === 1 && binding_0.holderBindingDigest.length === 32 && binding_0.disclosureDigest.buffer instanceof ArrayBuffer && binding_0.disclosureDigest.BYTES_PER_ELEMENT === 1 && binding_0.disclosureDigest.length === 32 && binding_0.predicateDigest.buffer instanceof ArrayBuffer && binding_0.predicateDigest.BYTES_PER_ELEMENT === 1 && binding_0.predicateDigest.length === 32 && binding_0.consentDigest.buffer instanceof ArrayBuffer && binding_0.consentDigest.BYTES_PER_ELEMENT === 1 && binding_0.consentDigest.length === 32)) {
       __compactRuntime.typeError('presentationBindingV1Digest',
                                  'argument 1',
-                                 'verification-v1.compact line 245 char 1',
+                                 'verification-v1.compact line 316 char 1',
                                  'struct PresentationBindingV1<domain: Bytes<32>, version: Uint<0..65536>, credentialBindingDigest: Bytes<32>, holderBindingDigest: Bytes<32>, disclosureDigest: Bytes<32>, predicateDigest: Bytes<32>, consentDigest: Bytes<32>>',
                                  binding_0)
     }
@@ -4632,7 +5390,7 @@ export const pureCircuits = {
     if (!(typeof(binding_0) === 'object' && binding_0.domain.buffer instanceof ArrayBuffer && binding_0.domain.BYTES_PER_ELEMENT === 1 && binding_0.domain.length === 32 && typeof(binding_0.version) === 'bigint' && binding_0.version >= 0n && binding_0.version <= 65535n && typeof(binding_0.mode) === 'bigint' && binding_0.mode >= 0n && binding_0.mode <= 255n && binding_0.authorityDigest.buffer instanceof ArrayBuffer && binding_0.authorityDigest.BYTES_PER_ELEMENT === 1 && binding_0.authorityDigest.length === 32 && binding_0.subjectDigest.buffer instanceof ArrayBuffer && binding_0.subjectDigest.BYTES_PER_ELEMENT === 1 && binding_0.subjectDigest.length === 32 && binding_0.stateAnchorDigest.buffer instanceof ArrayBuffer && binding_0.stateAnchorDigest.BYTES_PER_ELEMENT === 1 && binding_0.stateAnchorDigest.length === 32 && binding_0.statementDigest.buffer instanceof ArrayBuffer && binding_0.statementDigest.BYTES_PER_ELEMENT === 1 && binding_0.statementDigest.length === 32 && typeof(binding_0.createdAt) === 'bigint' && binding_0.createdAt >= 0n && binding_0.createdAt <= 18446744073709551615n && typeof(binding_0.expiresAt) === 'bigint' && binding_0.expiresAt >= 0n && binding_0.expiresAt <= 18446744073709551615n)) {
       __compactRuntime.typeError('evidenceBindingV1Digest',
                                  'argument 1',
-                                 'verification-v1.compact line 251 char 1',
+                                 'verification-v1.compact line 322 char 1',
                                  'struct EvidenceBindingV1<domain: Bytes<32>, version: Uint<0..65536>, mode: Uint<0..256>, authorityDigest: Bytes<32>, subjectDigest: Bytes<32>, stateAnchorDigest: Bytes<32>, statementDigest: Bytes<32>, createdAt: Uint<0..18446744073709551616>, expiresAt: Uint<0..18446744073709551616>>',
                                  binding_0)
     }
@@ -4646,7 +5404,7 @@ export const pureCircuits = {
     if (!(typeof(receipt_0) === 'object' && receipt_0.domain.buffer instanceof ArrayBuffer && receipt_0.domain.BYTES_PER_ELEMENT === 1 && receipt_0.domain.length === 32 && typeof(receipt_0.version) === 'bigint' && receipt_0.version >= 0n && receipt_0.version <= 65535n && receipt_0.issuerEvidenceDigest.buffer instanceof ArrayBuffer && receipt_0.issuerEvidenceDigest.BYTES_PER_ELEMENT === 1 && receipt_0.issuerEvidenceDigest.length === 32 && receipt_0.trustEvidenceDigest.buffer instanceof ArrayBuffer && receipt_0.trustEvidenceDigest.BYTES_PER_ELEMENT === 1 && receipt_0.trustEvidenceDigest.length === 32 && receipt_0.statusEvidenceDigest.buffer instanceof ArrayBuffer && receipt_0.statusEvidenceDigest.BYTES_PER_ELEMENT === 1 && receipt_0.statusEvidenceDigest.length === 32 && receipt_0.timeEvidenceDigest.buffer instanceof ArrayBuffer && receipt_0.timeEvidenceDigest.BYTES_PER_ELEMENT === 1 && receipt_0.timeEvidenceDigest.length === 32 && receipt_0.artifactEvidenceDigest.buffer instanceof ArrayBuffer && receipt_0.artifactEvidenceDigest.BYTES_PER_ELEMENT === 1 && receipt_0.artifactEvidenceDigest.length === 32 && receipt_0.connectorEvidenceDigest.buffer instanceof ArrayBuffer && receipt_0.connectorEvidenceDigest.BYTES_PER_ELEMENT === 1 && receipt_0.connectorEvidenceDigest.length === 32)) {
       __compactRuntime.typeError('anchorEvidenceReceiptV1Digest',
                                  'argument 1',
-                                 'verification-v1.compact line 257 char 1',
+                                 'verification-v1.compact line 328 char 1',
                                  'struct AnchorEvidenceReceiptV1<domain: Bytes<32>, version: Uint<0..65536>, issuerEvidenceDigest: Bytes<32>, trustEvidenceDigest: Bytes<32>, statusEvidenceDigest: Bytes<32>, timeEvidenceDigest: Bytes<32>, artifactEvidenceDigest: Bytes<32>, connectorEvidenceDigest: Bytes<32>>',
                                  receipt_0)
     }
@@ -4660,11 +5418,384 @@ export const pureCircuits = {
     if (!(typeof(material_0) === 'object' && material_0.domain.buffer instanceof ArrayBuffer && material_0.domain.BYTES_PER_ELEMENT === 1 && material_0.domain.length === 32 && typeof(material_0.version) === 'bigint' && material_0.version >= 0n && material_0.version <= 65535n && material_0.deploymentDigest.buffer instanceof ArrayBuffer && material_0.deploymentDigest.BYTES_PER_ELEMENT === 1 && material_0.deploymentDigest.length === 32 && material_0.verifierContractDigest.buffer instanceof ArrayBuffer && material_0.verifierContractDigest.BYTES_PER_ELEMENT === 1 && material_0.verifierContractDigest.length === 32 && typeof(material_0.replayPolicy) === 'bigint' && material_0.replayPolicy >= 0n && material_0.replayPolicy <= 255n && material_0.replayScopeDigest.buffer instanceof ArrayBuffer && material_0.replayScopeDigest.BYTES_PER_ELEMENT === 1 && material_0.replayScopeDigest.length === 32)) {
       __compactRuntime.typeError('decisionNullifierMaterialV1Digest',
                                  'argument 1',
-                                 'verification-v1.compact line 263 char 1',
+                                 'verification-v1.compact line 334 char 1',
                                  'struct DecisionNullifierMaterialV1<domain: Bytes<32>, version: Uint<0..65536>, deploymentDigest: Bytes<32>, verifierContractDigest: Bytes<32>, replayPolicy: Uint<0..256>, replayScopeDigest: Bytes<32>>',
                                  material_0)
     }
     return _dummyContract._decisionNullifierMaterialV1Digest_0(material_0);
+  },
+  actionHolderBindingV1Digest: (...args_0) => {
+    if (args_0.length !== 1) {
+      throw new __compactRuntime.CompactError(`actionHolderBindingV1Digest: expected 1 argument (as invoked from Typescript), received ${args_0.length}`);
+    }
+    const binding_0 = args_0[0];
+    if (!(typeof(binding_0) === 'object' && binding_0.domain.buffer instanceof ArrayBuffer && binding_0.domain.BYTES_PER_ELEMENT === 1 && binding_0.domain.length === 32 && typeof(binding_0.version) === 'bigint' && binding_0.version >= 0n && binding_0.version <= 65535n && binding_0.deploymentDigest.buffer instanceof ArrayBuffer && binding_0.deploymentDigest.BYTES_PER_ELEMENT === 1 && binding_0.deploymentDigest.length === 32 && binding_0.verifierContractDigest.buffer instanceof ArrayBuffer && binding_0.verifierContractDigest.BYTES_PER_ELEMENT === 1 && binding_0.verifierContractDigest.length === 32 && binding_0.actionClassDigest.buffer instanceof ArrayBuffer && binding_0.actionClassDigest.BYTES_PER_ELEMENT === 1 && binding_0.actionClassDigest.length === 32 && binding_0.holderSubjectDigest.buffer instanceof ArrayBuffer && binding_0.holderSubjectDigest.BYTES_PER_ELEMENT === 1 && binding_0.holderSubjectDigest.length === 32)) {
+      __compactRuntime.typeError('actionHolderBindingV1Digest',
+                                 'argument 1',
+                                 'verification-v1.compact line 340 char 1',
+                                 'struct ActionHolderBindingV1<domain: Bytes<32>, version: Uint<0..65536>, deploymentDigest: Bytes<32>, verifierContractDigest: Bytes<32>, actionClassDigest: Bytes<32>, holderSubjectDigest: Bytes<32>>',
+                                 binding_0)
+    }
+    return _dummyContract._actionHolderBindingV1Digest_0(binding_0);
+  },
+  actionCredentialBindingV1Digest: (...args_0) => {
+    if (args_0.length !== 1) {
+      throw new __compactRuntime.CompactError(`actionCredentialBindingV1Digest: expected 1 argument (as invoked from Typescript), received ${args_0.length}`);
+    }
+    const binding_0 = args_0[0];
+    if (!(typeof(binding_0) === 'object' && binding_0.domain.buffer instanceof ArrayBuffer && binding_0.domain.BYTES_PER_ELEMENT === 1 && binding_0.domain.length === 32 && typeof(binding_0.version) === 'bigint' && binding_0.version >= 0n && binding_0.version <= 65535n && binding_0.deploymentDigest.buffer instanceof ArrayBuffer && binding_0.deploymentDigest.BYTES_PER_ELEMENT === 1 && binding_0.deploymentDigest.length === 32 && binding_0.verifierContractDigest.buffer instanceof ArrayBuffer && binding_0.verifierContractDigest.BYTES_PER_ELEMENT === 1 && binding_0.verifierContractDigest.length === 32 && binding_0.actionClassDigest.buffer instanceof ArrayBuffer && binding_0.actionClassDigest.BYTES_PER_ELEMENT === 1 && binding_0.actionClassDigest.length === 32 && binding_0.credentialFamilyDigest.buffer instanceof ArrayBuffer && binding_0.credentialFamilyDigest.BYTES_PER_ELEMENT === 1 && binding_0.credentialFamilyDigest.length === 32 && binding_0.schemaDigest.buffer instanceof ArrayBuffer && binding_0.schemaDigest.BYTES_PER_ELEMENT === 1 && binding_0.schemaDigest.length === 32 && binding_0.credentialRoot.buffer instanceof ArrayBuffer && binding_0.credentialRoot.BYTES_PER_ELEMENT === 1 && binding_0.credentialRoot.length === 32)) {
+      __compactRuntime.typeError('actionCredentialBindingV1Digest',
+                                 'argument 1',
+                                 'verification-v1.compact line 346 char 1',
+                                 'struct ActionCredentialBindingV1<domain: Bytes<32>, version: Uint<0..65536>, deploymentDigest: Bytes<32>, verifierContractDigest: Bytes<32>, actionClassDigest: Bytes<32>, credentialFamilyDigest: Bytes<32>, schemaDigest: Bytes<32>, credentialRoot: Bytes<32>>',
+                                 binding_0)
+    }
+    return _dummyContract._actionCredentialBindingV1Digest_0(binding_0);
+  },
+  requestReplayScopeV1Digest: (...args_0) => {
+    if (args_0.length !== 1) {
+      throw new __compactRuntime.CompactError(`requestReplayScopeV1Digest: expected 1 argument (as invoked from Typescript), received ${args_0.length}`);
+    }
+    const scope_0 = args_0[0];
+    if (!(typeof(scope_0) === 'object' && scope_0.domain.buffer instanceof ArrayBuffer && scope_0.domain.BYTES_PER_ELEMENT === 1 && scope_0.domain.length === 32 && typeof(scope_0.version) === 'bigint' && scope_0.version >= 0n && scope_0.version <= 65535n && scope_0.deploymentDigest.buffer instanceof ArrayBuffer && scope_0.deploymentDigest.BYTES_PER_ELEMENT === 1 && scope_0.deploymentDigest.length === 32 && scope_0.verifierContractDigest.buffer instanceof ArrayBuffer && scope_0.verifierContractDigest.BYTES_PER_ELEMENT === 1 && scope_0.verifierContractDigest.length === 32 && scope_0.requestIdDigest.buffer instanceof ArrayBuffer && scope_0.requestIdDigest.BYTES_PER_ELEMENT === 1 && scope_0.requestIdDigest.length === 32 && scope_0.challengeDigest.buffer instanceof ArrayBuffer && scope_0.challengeDigest.BYTES_PER_ELEMENT === 1 && scope_0.challengeDigest.length === 32 && scope_0.actionInvocationDigest.buffer instanceof ArrayBuffer && scope_0.actionInvocationDigest.BYTES_PER_ELEMENT === 1 && scope_0.actionInvocationDigest.length === 32)) {
+      __compactRuntime.typeError('requestReplayScopeV1Digest',
+                                 'argument 1',
+                                 'verification-v1.compact line 352 char 1',
+                                 'struct RequestReplayScopeV1<domain: Bytes<32>, version: Uint<0..65536>, deploymentDigest: Bytes<32>, verifierContractDigest: Bytes<32>, requestIdDigest: Bytes<32>, challengeDigest: Bytes<32>, actionInvocationDigest: Bytes<32>>',
+                                 scope_0)
+    }
+    return _dummyContract._requestReplayScopeV1Digest_0(scope_0);
+  },
+  holderActionReplayScopeV1Digest: (...args_0) => {
+    if (args_0.length !== 1) {
+      throw new __compactRuntime.CompactError(`holderActionReplayScopeV1Digest: expected 1 argument (as invoked from Typescript), received ${args_0.length}`);
+    }
+    const scope_0 = args_0[0];
+    if (!(typeof(scope_0) === 'object' && scope_0.domain.buffer instanceof ArrayBuffer && scope_0.domain.BYTES_PER_ELEMENT === 1 && scope_0.domain.length === 32 && typeof(scope_0.version) === 'bigint' && scope_0.version >= 0n && scope_0.version <= 65535n && scope_0.deploymentDigest.buffer instanceof ArrayBuffer && scope_0.deploymentDigest.BYTES_PER_ELEMENT === 1 && scope_0.deploymentDigest.length === 32 && scope_0.verifierContractDigest.buffer instanceof ArrayBuffer && scope_0.verifierContractDigest.BYTES_PER_ELEMENT === 1 && scope_0.verifierContractDigest.length === 32 && scope_0.actionClassDigest.buffer instanceof ArrayBuffer && scope_0.actionClassDigest.BYTES_PER_ELEMENT === 1 && scope_0.actionClassDigest.length === 32 && scope_0.actionScopeParametersDigest.buffer instanceof ArrayBuffer && scope_0.actionScopeParametersDigest.BYTES_PER_ELEMENT === 1 && scope_0.actionScopeParametersDigest.length === 32 && typeof(scope_0.binding) === 'object' && scope_0.binding.domain.buffer instanceof ArrayBuffer && scope_0.binding.domain.BYTES_PER_ELEMENT === 1 && scope_0.binding.domain.length === 32 && typeof(scope_0.binding.version) === 'bigint' && scope_0.binding.version >= 0n && scope_0.binding.version <= 65535n && scope_0.binding.deploymentDigest.buffer instanceof ArrayBuffer && scope_0.binding.deploymentDigest.BYTES_PER_ELEMENT === 1 && scope_0.binding.deploymentDigest.length === 32 && scope_0.binding.verifierContractDigest.buffer instanceof ArrayBuffer && scope_0.binding.verifierContractDigest.BYTES_PER_ELEMENT === 1 && scope_0.binding.verifierContractDigest.length === 32 && scope_0.binding.actionClassDigest.buffer instanceof ArrayBuffer && scope_0.binding.actionClassDigest.BYTES_PER_ELEMENT === 1 && scope_0.binding.actionClassDigest.length === 32 && scope_0.binding.holderSubjectDigest.buffer instanceof ArrayBuffer && scope_0.binding.holderSubjectDigest.BYTES_PER_ELEMENT === 1 && scope_0.binding.holderSubjectDigest.length === 32)) {
+      __compactRuntime.typeError('holderActionReplayScopeV1Digest',
+                                 'argument 1',
+                                 'verification-v1.compact line 358 char 1',
+                                 'struct HolderActionReplayScopeV1<domain: Bytes<32>, version: Uint<0..65536>, deploymentDigest: Bytes<32>, verifierContractDigest: Bytes<32>, actionClassDigest: Bytes<32>, actionScopeParametersDigest: Bytes<32>, binding: struct ActionHolderBindingV1<domain: Bytes<32>, version: Uint<0..65536>, deploymentDigest: Bytes<32>, verifierContractDigest: Bytes<32>, actionClassDigest: Bytes<32>, holderSubjectDigest: Bytes<32>>>',
+                                 scope_0)
+    }
+    return _dummyContract._holderActionReplayScopeV1Digest_0(scope_0);
+  },
+  credentialActionReplayScopeV1Digest: (...args_0) => {
+    if (args_0.length !== 1) {
+      throw new __compactRuntime.CompactError(`credentialActionReplayScopeV1Digest: expected 1 argument (as invoked from Typescript), received ${args_0.length}`);
+    }
+    const scope_0 = args_0[0];
+    if (!(typeof(scope_0) === 'object' && scope_0.domain.buffer instanceof ArrayBuffer && scope_0.domain.BYTES_PER_ELEMENT === 1 && scope_0.domain.length === 32 && typeof(scope_0.version) === 'bigint' && scope_0.version >= 0n && scope_0.version <= 65535n && scope_0.deploymentDigest.buffer instanceof ArrayBuffer && scope_0.deploymentDigest.BYTES_PER_ELEMENT === 1 && scope_0.deploymentDigest.length === 32 && scope_0.verifierContractDigest.buffer instanceof ArrayBuffer && scope_0.verifierContractDigest.BYTES_PER_ELEMENT === 1 && scope_0.verifierContractDigest.length === 32 && scope_0.actionClassDigest.buffer instanceof ArrayBuffer && scope_0.actionClassDigest.BYTES_PER_ELEMENT === 1 && scope_0.actionClassDigest.length === 32 && scope_0.actionScopeParametersDigest.buffer instanceof ArrayBuffer && scope_0.actionScopeParametersDigest.BYTES_PER_ELEMENT === 1 && scope_0.actionScopeParametersDigest.length === 32 && typeof(scope_0.binding) === 'object' && scope_0.binding.domain.buffer instanceof ArrayBuffer && scope_0.binding.domain.BYTES_PER_ELEMENT === 1 && scope_0.binding.domain.length === 32 && typeof(scope_0.binding.version) === 'bigint' && scope_0.binding.version >= 0n && scope_0.binding.version <= 65535n && scope_0.binding.deploymentDigest.buffer instanceof ArrayBuffer && scope_0.binding.deploymentDigest.BYTES_PER_ELEMENT === 1 && scope_0.binding.deploymentDigest.length === 32 && scope_0.binding.verifierContractDigest.buffer instanceof ArrayBuffer && scope_0.binding.verifierContractDigest.BYTES_PER_ELEMENT === 1 && scope_0.binding.verifierContractDigest.length === 32 && scope_0.binding.actionClassDigest.buffer instanceof ArrayBuffer && scope_0.binding.actionClassDigest.BYTES_PER_ELEMENT === 1 && scope_0.binding.actionClassDigest.length === 32 && scope_0.binding.credentialFamilyDigest.buffer instanceof ArrayBuffer && scope_0.binding.credentialFamilyDigest.BYTES_PER_ELEMENT === 1 && scope_0.binding.credentialFamilyDigest.length === 32 && scope_0.binding.schemaDigest.buffer instanceof ArrayBuffer && scope_0.binding.schemaDigest.BYTES_PER_ELEMENT === 1 && scope_0.binding.schemaDigest.length === 32 && scope_0.binding.credentialRoot.buffer instanceof ArrayBuffer && scope_0.binding.credentialRoot.BYTES_PER_ELEMENT === 1 && scope_0.binding.credentialRoot.length === 32)) {
+      __compactRuntime.typeError('credentialActionReplayScopeV1Digest',
+                                 'argument 1',
+                                 'verification-v1.compact line 364 char 1',
+                                 'struct CredentialActionReplayScopeV1<domain: Bytes<32>, version: Uint<0..65536>, deploymentDigest: Bytes<32>, verifierContractDigest: Bytes<32>, actionClassDigest: Bytes<32>, actionScopeParametersDigest: Bytes<32>, binding: struct ActionCredentialBindingV1<domain: Bytes<32>, version: Uint<0..65536>, deploymentDigest: Bytes<32>, verifierContractDigest: Bytes<32>, actionClassDigest: Bytes<32>, credentialFamilyDigest: Bytes<32>, schemaDigest: Bytes<32>, credentialRoot: Bytes<32>>>',
+                                 scope_0)
+    }
+    return _dummyContract._credentialActionReplayScopeV1Digest_0(scope_0);
+  },
+  assertValidActionHolderBindingV1: (...args_0) => {
+    if (args_0.length !== 4) {
+      throw new __compactRuntime.CompactError(`assertValidActionHolderBindingV1: expected 4 arguments (as invoked from Typescript), received ${args_0.length}`);
+    }
+    const binding_0 = args_0[0];
+    const expectedDeploymentDigest_0 = args_0[1];
+    const expectedVerifierContractDigest_0 = args_0[2];
+    const expectedActionClassDigest_0 = args_0[3];
+    if (!(typeof(binding_0) === 'object' && binding_0.domain.buffer instanceof ArrayBuffer && binding_0.domain.BYTES_PER_ELEMENT === 1 && binding_0.domain.length === 32 && typeof(binding_0.version) === 'bigint' && binding_0.version >= 0n && binding_0.version <= 65535n && binding_0.deploymentDigest.buffer instanceof ArrayBuffer && binding_0.deploymentDigest.BYTES_PER_ELEMENT === 1 && binding_0.deploymentDigest.length === 32 && binding_0.verifierContractDigest.buffer instanceof ArrayBuffer && binding_0.verifierContractDigest.BYTES_PER_ELEMENT === 1 && binding_0.verifierContractDigest.length === 32 && binding_0.actionClassDigest.buffer instanceof ArrayBuffer && binding_0.actionClassDigest.BYTES_PER_ELEMENT === 1 && binding_0.actionClassDigest.length === 32 && binding_0.holderSubjectDigest.buffer instanceof ArrayBuffer && binding_0.holderSubjectDigest.BYTES_PER_ELEMENT === 1 && binding_0.holderSubjectDigest.length === 32)) {
+      __compactRuntime.typeError('assertValidActionHolderBindingV1',
+                                 'argument 1',
+                                 'verification-v1.compact line 370 char 1',
+                                 'struct ActionHolderBindingV1<domain: Bytes<32>, version: Uint<0..65536>, deploymentDigest: Bytes<32>, verifierContractDigest: Bytes<32>, actionClassDigest: Bytes<32>, holderSubjectDigest: Bytes<32>>',
+                                 binding_0)
+    }
+    if (!(expectedDeploymentDigest_0.buffer instanceof ArrayBuffer && expectedDeploymentDigest_0.BYTES_PER_ELEMENT === 1 && expectedDeploymentDigest_0.length === 32)) {
+      __compactRuntime.typeError('assertValidActionHolderBindingV1',
+                                 'argument 2',
+                                 'verification-v1.compact line 370 char 1',
+                                 'Bytes<32>',
+                                 expectedDeploymentDigest_0)
+    }
+    if (!(expectedVerifierContractDigest_0.buffer instanceof ArrayBuffer && expectedVerifierContractDigest_0.BYTES_PER_ELEMENT === 1 && expectedVerifierContractDigest_0.length === 32)) {
+      __compactRuntime.typeError('assertValidActionHolderBindingV1',
+                                 'argument 3',
+                                 'verification-v1.compact line 370 char 1',
+                                 'Bytes<32>',
+                                 expectedVerifierContractDigest_0)
+    }
+    if (!(expectedActionClassDigest_0.buffer instanceof ArrayBuffer && expectedActionClassDigest_0.BYTES_PER_ELEMENT === 1 && expectedActionClassDigest_0.length === 32)) {
+      __compactRuntime.typeError('assertValidActionHolderBindingV1',
+                                 'argument 4',
+                                 'verification-v1.compact line 370 char 1',
+                                 'Bytes<32>',
+                                 expectedActionClassDigest_0)
+    }
+    return _dummyContract._assertValidActionHolderBindingV1_0(binding_0,
+                                                              expectedDeploymentDigest_0,
+                                                              expectedVerifierContractDigest_0,
+                                                              expectedActionClassDigest_0);
+  },
+  assertValidActionCredentialBindingV1: (...args_0) => {
+    if (args_0.length !== 4) {
+      throw new __compactRuntime.CompactError(`assertValidActionCredentialBindingV1: expected 4 arguments (as invoked from Typescript), received ${args_0.length}`);
+    }
+    const binding_0 = args_0[0];
+    const expectedDeploymentDigest_0 = args_0[1];
+    const expectedVerifierContractDigest_0 = args_0[2];
+    const expectedActionClassDigest_0 = args_0[3];
+    if (!(typeof(binding_0) === 'object' && binding_0.domain.buffer instanceof ArrayBuffer && binding_0.domain.BYTES_PER_ELEMENT === 1 && binding_0.domain.length === 32 && typeof(binding_0.version) === 'bigint' && binding_0.version >= 0n && binding_0.version <= 65535n && binding_0.deploymentDigest.buffer instanceof ArrayBuffer && binding_0.deploymentDigest.BYTES_PER_ELEMENT === 1 && binding_0.deploymentDigest.length === 32 && binding_0.verifierContractDigest.buffer instanceof ArrayBuffer && binding_0.verifierContractDigest.BYTES_PER_ELEMENT === 1 && binding_0.verifierContractDigest.length === 32 && binding_0.actionClassDigest.buffer instanceof ArrayBuffer && binding_0.actionClassDigest.BYTES_PER_ELEMENT === 1 && binding_0.actionClassDigest.length === 32 && binding_0.credentialFamilyDigest.buffer instanceof ArrayBuffer && binding_0.credentialFamilyDigest.BYTES_PER_ELEMENT === 1 && binding_0.credentialFamilyDigest.length === 32 && binding_0.schemaDigest.buffer instanceof ArrayBuffer && binding_0.schemaDigest.BYTES_PER_ELEMENT === 1 && binding_0.schemaDigest.length === 32 && binding_0.credentialRoot.buffer instanceof ArrayBuffer && binding_0.credentialRoot.BYTES_PER_ELEMENT === 1 && binding_0.credentialRoot.length === 32)) {
+      __compactRuntime.typeError('assertValidActionCredentialBindingV1',
+                                 'argument 1',
+                                 'verification-v1.compact line 384 char 1',
+                                 'struct ActionCredentialBindingV1<domain: Bytes<32>, version: Uint<0..65536>, deploymentDigest: Bytes<32>, verifierContractDigest: Bytes<32>, actionClassDigest: Bytes<32>, credentialFamilyDigest: Bytes<32>, schemaDigest: Bytes<32>, credentialRoot: Bytes<32>>',
+                                 binding_0)
+    }
+    if (!(expectedDeploymentDigest_0.buffer instanceof ArrayBuffer && expectedDeploymentDigest_0.BYTES_PER_ELEMENT === 1 && expectedDeploymentDigest_0.length === 32)) {
+      __compactRuntime.typeError('assertValidActionCredentialBindingV1',
+                                 'argument 2',
+                                 'verification-v1.compact line 384 char 1',
+                                 'Bytes<32>',
+                                 expectedDeploymentDigest_0)
+    }
+    if (!(expectedVerifierContractDigest_0.buffer instanceof ArrayBuffer && expectedVerifierContractDigest_0.BYTES_PER_ELEMENT === 1 && expectedVerifierContractDigest_0.length === 32)) {
+      __compactRuntime.typeError('assertValidActionCredentialBindingV1',
+                                 'argument 3',
+                                 'verification-v1.compact line 384 char 1',
+                                 'Bytes<32>',
+                                 expectedVerifierContractDigest_0)
+    }
+    if (!(expectedActionClassDigest_0.buffer instanceof ArrayBuffer && expectedActionClassDigest_0.BYTES_PER_ELEMENT === 1 && expectedActionClassDigest_0.length === 32)) {
+      __compactRuntime.typeError('assertValidActionCredentialBindingV1',
+                                 'argument 4',
+                                 'verification-v1.compact line 384 char 1',
+                                 'Bytes<32>',
+                                 expectedActionClassDigest_0)
+    }
+    return _dummyContract._assertValidActionCredentialBindingV1_0(binding_0,
+                                                                  expectedDeploymentDigest_0,
+                                                                  expectedVerifierContractDigest_0,
+                                                                  expectedActionClassDigest_0);
+  },
+  assertValidRequestReplayScopeV1: (...args_0) => {
+    if (args_0.length !== 3) {
+      throw new __compactRuntime.CompactError(`assertValidRequestReplayScopeV1: expected 3 arguments (as invoked from Typescript), received ${args_0.length}`);
+    }
+    const scope_0 = args_0[0];
+    const expectedDeploymentDigest_0 = args_0[1];
+    const expectedVerifierContractDigest_0 = args_0[2];
+    if (!(typeof(scope_0) === 'object' && scope_0.domain.buffer instanceof ArrayBuffer && scope_0.domain.BYTES_PER_ELEMENT === 1 && scope_0.domain.length === 32 && typeof(scope_0.version) === 'bigint' && scope_0.version >= 0n && scope_0.version <= 65535n && scope_0.deploymentDigest.buffer instanceof ArrayBuffer && scope_0.deploymentDigest.BYTES_PER_ELEMENT === 1 && scope_0.deploymentDigest.length === 32 && scope_0.verifierContractDigest.buffer instanceof ArrayBuffer && scope_0.verifierContractDigest.BYTES_PER_ELEMENT === 1 && scope_0.verifierContractDigest.length === 32 && scope_0.requestIdDigest.buffer instanceof ArrayBuffer && scope_0.requestIdDigest.BYTES_PER_ELEMENT === 1 && scope_0.requestIdDigest.length === 32 && scope_0.challengeDigest.buffer instanceof ArrayBuffer && scope_0.challengeDigest.BYTES_PER_ELEMENT === 1 && scope_0.challengeDigest.length === 32 && scope_0.actionInvocationDigest.buffer instanceof ArrayBuffer && scope_0.actionInvocationDigest.BYTES_PER_ELEMENT === 1 && scope_0.actionInvocationDigest.length === 32)) {
+      __compactRuntime.typeError('assertValidRequestReplayScopeV1',
+                                 'argument 1',
+                                 'verification-v1.compact line 400 char 1',
+                                 'struct RequestReplayScopeV1<domain: Bytes<32>, version: Uint<0..65536>, deploymentDigest: Bytes<32>, verifierContractDigest: Bytes<32>, requestIdDigest: Bytes<32>, challengeDigest: Bytes<32>, actionInvocationDigest: Bytes<32>>',
+                                 scope_0)
+    }
+    if (!(expectedDeploymentDigest_0.buffer instanceof ArrayBuffer && expectedDeploymentDigest_0.BYTES_PER_ELEMENT === 1 && expectedDeploymentDigest_0.length === 32)) {
+      __compactRuntime.typeError('assertValidRequestReplayScopeV1',
+                                 'argument 2',
+                                 'verification-v1.compact line 400 char 1',
+                                 'Bytes<32>',
+                                 expectedDeploymentDigest_0)
+    }
+    if (!(expectedVerifierContractDigest_0.buffer instanceof ArrayBuffer && expectedVerifierContractDigest_0.BYTES_PER_ELEMENT === 1 && expectedVerifierContractDigest_0.length === 32)) {
+      __compactRuntime.typeError('assertValidRequestReplayScopeV1',
+                                 'argument 3',
+                                 'verification-v1.compact line 400 char 1',
+                                 'Bytes<32>',
+                                 expectedVerifierContractDigest_0)
+    }
+    return _dummyContract._assertValidRequestReplayScopeV1_0(scope_0,
+                                                             expectedDeploymentDigest_0,
+                                                             expectedVerifierContractDigest_0);
+  },
+  assertValidHolderActionReplayScopeV1: (...args_0) => {
+    if (args_0.length !== 3) {
+      throw new __compactRuntime.CompactError(`assertValidHolderActionReplayScopeV1: expected 3 arguments (as invoked from Typescript), received ${args_0.length}`);
+    }
+    const scope_0 = args_0[0];
+    const expectedDeploymentDigest_0 = args_0[1];
+    const expectedVerifierContractDigest_0 = args_0[2];
+    if (!(typeof(scope_0) === 'object' && scope_0.domain.buffer instanceof ArrayBuffer && scope_0.domain.BYTES_PER_ELEMENT === 1 && scope_0.domain.length === 32 && typeof(scope_0.version) === 'bigint' && scope_0.version >= 0n && scope_0.version <= 65535n && scope_0.deploymentDigest.buffer instanceof ArrayBuffer && scope_0.deploymentDigest.BYTES_PER_ELEMENT === 1 && scope_0.deploymentDigest.length === 32 && scope_0.verifierContractDigest.buffer instanceof ArrayBuffer && scope_0.verifierContractDigest.BYTES_PER_ELEMENT === 1 && scope_0.verifierContractDigest.length === 32 && scope_0.actionClassDigest.buffer instanceof ArrayBuffer && scope_0.actionClassDigest.BYTES_PER_ELEMENT === 1 && scope_0.actionClassDigest.length === 32 && scope_0.actionScopeParametersDigest.buffer instanceof ArrayBuffer && scope_0.actionScopeParametersDigest.BYTES_PER_ELEMENT === 1 && scope_0.actionScopeParametersDigest.length === 32 && typeof(scope_0.binding) === 'object' && scope_0.binding.domain.buffer instanceof ArrayBuffer && scope_0.binding.domain.BYTES_PER_ELEMENT === 1 && scope_0.binding.domain.length === 32 && typeof(scope_0.binding.version) === 'bigint' && scope_0.binding.version >= 0n && scope_0.binding.version <= 65535n && scope_0.binding.deploymentDigest.buffer instanceof ArrayBuffer && scope_0.binding.deploymentDigest.BYTES_PER_ELEMENT === 1 && scope_0.binding.deploymentDigest.length === 32 && scope_0.binding.verifierContractDigest.buffer instanceof ArrayBuffer && scope_0.binding.verifierContractDigest.BYTES_PER_ELEMENT === 1 && scope_0.binding.verifierContractDigest.length === 32 && scope_0.binding.actionClassDigest.buffer instanceof ArrayBuffer && scope_0.binding.actionClassDigest.BYTES_PER_ELEMENT === 1 && scope_0.binding.actionClassDigest.length === 32 && scope_0.binding.holderSubjectDigest.buffer instanceof ArrayBuffer && scope_0.binding.holderSubjectDigest.BYTES_PER_ELEMENT === 1 && scope_0.binding.holderSubjectDigest.length === 32)) {
+      __compactRuntime.typeError('assertValidHolderActionReplayScopeV1',
+                                 'argument 1',
+                                 'verification-v1.compact line 414 char 1',
+                                 'struct HolderActionReplayScopeV1<domain: Bytes<32>, version: Uint<0..65536>, deploymentDigest: Bytes<32>, verifierContractDigest: Bytes<32>, actionClassDigest: Bytes<32>, actionScopeParametersDigest: Bytes<32>, binding: struct ActionHolderBindingV1<domain: Bytes<32>, version: Uint<0..65536>, deploymentDigest: Bytes<32>, verifierContractDigest: Bytes<32>, actionClassDigest: Bytes<32>, holderSubjectDigest: Bytes<32>>>',
+                                 scope_0)
+    }
+    if (!(expectedDeploymentDigest_0.buffer instanceof ArrayBuffer && expectedDeploymentDigest_0.BYTES_PER_ELEMENT === 1 && expectedDeploymentDigest_0.length === 32)) {
+      __compactRuntime.typeError('assertValidHolderActionReplayScopeV1',
+                                 'argument 2',
+                                 'verification-v1.compact line 414 char 1',
+                                 'Bytes<32>',
+                                 expectedDeploymentDigest_0)
+    }
+    if (!(expectedVerifierContractDigest_0.buffer instanceof ArrayBuffer && expectedVerifierContractDigest_0.BYTES_PER_ELEMENT === 1 && expectedVerifierContractDigest_0.length === 32)) {
+      __compactRuntime.typeError('assertValidHolderActionReplayScopeV1',
+                                 'argument 3',
+                                 'verification-v1.compact line 414 char 1',
+                                 'Bytes<32>',
+                                 expectedVerifierContractDigest_0)
+    }
+    return _dummyContract._assertValidHolderActionReplayScopeV1_0(scope_0,
+                                                                  expectedDeploymentDigest_0,
+                                                                  expectedVerifierContractDigest_0);
+  },
+  assertValidCredentialActionReplayScopeV1: (...args_0) => {
+    if (args_0.length !== 3) {
+      throw new __compactRuntime.CompactError(`assertValidCredentialActionReplayScopeV1: expected 3 arguments (as invoked from Typescript), received ${args_0.length}`);
+    }
+    const scope_0 = args_0[0];
+    const expectedDeploymentDigest_0 = args_0[1];
+    const expectedVerifierContractDigest_0 = args_0[2];
+    if (!(typeof(scope_0) === 'object' && scope_0.domain.buffer instanceof ArrayBuffer && scope_0.domain.BYTES_PER_ELEMENT === 1 && scope_0.domain.length === 32 && typeof(scope_0.version) === 'bigint' && scope_0.version >= 0n && scope_0.version <= 65535n && scope_0.deploymentDigest.buffer instanceof ArrayBuffer && scope_0.deploymentDigest.BYTES_PER_ELEMENT === 1 && scope_0.deploymentDigest.length === 32 && scope_0.verifierContractDigest.buffer instanceof ArrayBuffer && scope_0.verifierContractDigest.BYTES_PER_ELEMENT === 1 && scope_0.verifierContractDigest.length === 32 && scope_0.actionClassDigest.buffer instanceof ArrayBuffer && scope_0.actionClassDigest.BYTES_PER_ELEMENT === 1 && scope_0.actionClassDigest.length === 32 && scope_0.actionScopeParametersDigest.buffer instanceof ArrayBuffer && scope_0.actionScopeParametersDigest.BYTES_PER_ELEMENT === 1 && scope_0.actionScopeParametersDigest.length === 32 && typeof(scope_0.binding) === 'object' && scope_0.binding.domain.buffer instanceof ArrayBuffer && scope_0.binding.domain.BYTES_PER_ELEMENT === 1 && scope_0.binding.domain.length === 32 && typeof(scope_0.binding.version) === 'bigint' && scope_0.binding.version >= 0n && scope_0.binding.version <= 65535n && scope_0.binding.deploymentDigest.buffer instanceof ArrayBuffer && scope_0.binding.deploymentDigest.BYTES_PER_ELEMENT === 1 && scope_0.binding.deploymentDigest.length === 32 && scope_0.binding.verifierContractDigest.buffer instanceof ArrayBuffer && scope_0.binding.verifierContractDigest.BYTES_PER_ELEMENT === 1 && scope_0.binding.verifierContractDigest.length === 32 && scope_0.binding.actionClassDigest.buffer instanceof ArrayBuffer && scope_0.binding.actionClassDigest.BYTES_PER_ELEMENT === 1 && scope_0.binding.actionClassDigest.length === 32 && scope_0.binding.credentialFamilyDigest.buffer instanceof ArrayBuffer && scope_0.binding.credentialFamilyDigest.BYTES_PER_ELEMENT === 1 && scope_0.binding.credentialFamilyDigest.length === 32 && scope_0.binding.schemaDigest.buffer instanceof ArrayBuffer && scope_0.binding.schemaDigest.BYTES_PER_ELEMENT === 1 && scope_0.binding.schemaDigest.length === 32 && scope_0.binding.credentialRoot.buffer instanceof ArrayBuffer && scope_0.binding.credentialRoot.BYTES_PER_ELEMENT === 1 && scope_0.binding.credentialRoot.length === 32)) {
+      __compactRuntime.typeError('assertValidCredentialActionReplayScopeV1',
+                                 'argument 1',
+                                 'verification-v1.compact line 428 char 1',
+                                 'struct CredentialActionReplayScopeV1<domain: Bytes<32>, version: Uint<0..65536>, deploymentDigest: Bytes<32>, verifierContractDigest: Bytes<32>, actionClassDigest: Bytes<32>, actionScopeParametersDigest: Bytes<32>, binding: struct ActionCredentialBindingV1<domain: Bytes<32>, version: Uint<0..65536>, deploymentDigest: Bytes<32>, verifierContractDigest: Bytes<32>, actionClassDigest: Bytes<32>, credentialFamilyDigest: Bytes<32>, schemaDigest: Bytes<32>, credentialRoot: Bytes<32>>>',
+                                 scope_0)
+    }
+    if (!(expectedDeploymentDigest_0.buffer instanceof ArrayBuffer && expectedDeploymentDigest_0.BYTES_PER_ELEMENT === 1 && expectedDeploymentDigest_0.length === 32)) {
+      __compactRuntime.typeError('assertValidCredentialActionReplayScopeV1',
+                                 'argument 2',
+                                 'verification-v1.compact line 428 char 1',
+                                 'Bytes<32>',
+                                 expectedDeploymentDigest_0)
+    }
+    if (!(expectedVerifierContractDigest_0.buffer instanceof ArrayBuffer && expectedVerifierContractDigest_0.BYTES_PER_ELEMENT === 1 && expectedVerifierContractDigest_0.length === 32)) {
+      __compactRuntime.typeError('assertValidCredentialActionReplayScopeV1',
+                                 'argument 3',
+                                 'verification-v1.compact line 428 char 1',
+                                 'Bytes<32>',
+                                 expectedVerifierContractDigest_0)
+    }
+    return _dummyContract._assertValidCredentialActionReplayScopeV1_0(scope_0,
+                                                                      expectedDeploymentDigest_0,
+                                                                      expectedVerifierContractDigest_0);
+  },
+  assertValidDecisionNullifierContextV1: (...args_0) => {
+    if (args_0.length !== 2) {
+      throw new __compactRuntime.CompactError(`assertValidDecisionNullifierContextV1: expected 2 arguments (as invoked from Typescript), received ${args_0.length}`);
+    }
+    const deploymentDigest_0 = args_0[0];
+    const verifierContractDigest_0 = args_0[1];
+    if (!(deploymentDigest_0.buffer instanceof ArrayBuffer && deploymentDigest_0.BYTES_PER_ELEMENT === 1 && deploymentDigest_0.length === 32)) {
+      __compactRuntime.typeError('assertValidDecisionNullifierContextV1',
+                                 'argument 1',
+                                 'verification-v1.compact line 445 char 1',
+                                 'Bytes<32>',
+                                 deploymentDigest_0)
+    }
+    if (!(verifierContractDigest_0.buffer instanceof ArrayBuffer && verifierContractDigest_0.BYTES_PER_ELEMENT === 1 && verifierContractDigest_0.length === 32)) {
+      __compactRuntime.typeError('assertValidDecisionNullifierContextV1',
+                                 'argument 2',
+                                 'verification-v1.compact line 445 char 1',
+                                 'Bytes<32>',
+                                 verifierContractDigest_0)
+    }
+    return _dummyContract._assertValidDecisionNullifierContextV1_0(deploymentDigest_0,
+                                                                   verifierContractDigest_0);
+  },
+  deriveRequestDecisionNullifierV1: (...args_0) => {
+    if (args_0.length !== 3) {
+      throw new __compactRuntime.CompactError(`deriveRequestDecisionNullifierV1: expected 3 arguments (as invoked from Typescript), received ${args_0.length}`);
+    }
+    const deploymentDigest_0 = args_0[0];
+    const verifierContractDigest_0 = args_0[1];
+    const scope_0 = args_0[2];
+    if (!(deploymentDigest_0.buffer instanceof ArrayBuffer && deploymentDigest_0.BYTES_PER_ELEMENT === 1 && deploymentDigest_0.length === 32)) {
+      __compactRuntime.typeError('deriveRequestDecisionNullifierV1',
+                                 'argument 1',
+                                 'verification-v1.compact line 453 char 1',
+                                 'Bytes<32>',
+                                 deploymentDigest_0)
+    }
+    if (!(verifierContractDigest_0.buffer instanceof ArrayBuffer && verifierContractDigest_0.BYTES_PER_ELEMENT === 1 && verifierContractDigest_0.length === 32)) {
+      __compactRuntime.typeError('deriveRequestDecisionNullifierV1',
+                                 'argument 2',
+                                 'verification-v1.compact line 453 char 1',
+                                 'Bytes<32>',
+                                 verifierContractDigest_0)
+    }
+    if (!(typeof(scope_0) === 'object' && scope_0.domain.buffer instanceof ArrayBuffer && scope_0.domain.BYTES_PER_ELEMENT === 1 && scope_0.domain.length === 32 && typeof(scope_0.version) === 'bigint' && scope_0.version >= 0n && scope_0.version <= 65535n && scope_0.deploymentDigest.buffer instanceof ArrayBuffer && scope_0.deploymentDigest.BYTES_PER_ELEMENT === 1 && scope_0.deploymentDigest.length === 32 && scope_0.verifierContractDigest.buffer instanceof ArrayBuffer && scope_0.verifierContractDigest.BYTES_PER_ELEMENT === 1 && scope_0.verifierContractDigest.length === 32 && scope_0.requestIdDigest.buffer instanceof ArrayBuffer && scope_0.requestIdDigest.BYTES_PER_ELEMENT === 1 && scope_0.requestIdDigest.length === 32 && scope_0.challengeDigest.buffer instanceof ArrayBuffer && scope_0.challengeDigest.BYTES_PER_ELEMENT === 1 && scope_0.challengeDigest.length === 32 && scope_0.actionInvocationDigest.buffer instanceof ArrayBuffer && scope_0.actionInvocationDigest.BYTES_PER_ELEMENT === 1 && scope_0.actionInvocationDigest.length === 32)) {
+      __compactRuntime.typeError('deriveRequestDecisionNullifierV1',
+                                 'argument 3',
+                                 'verification-v1.compact line 453 char 1',
+                                 'struct RequestReplayScopeV1<domain: Bytes<32>, version: Uint<0..65536>, deploymentDigest: Bytes<32>, verifierContractDigest: Bytes<32>, requestIdDigest: Bytes<32>, challengeDigest: Bytes<32>, actionInvocationDigest: Bytes<32>>',
+                                 scope_0)
+    }
+    return _dummyContract._deriveRequestDecisionNullifierV1_0(deploymentDigest_0,
+                                                              verifierContractDigest_0,
+                                                              scope_0);
+  },
+  deriveHolderActionDecisionNullifierV1: (...args_0) => {
+    if (args_0.length !== 3) {
+      throw new __compactRuntime.CompactError(`deriveHolderActionDecisionNullifierV1: expected 3 arguments (as invoked from Typescript), received ${args_0.length}`);
+    }
+    const deploymentDigest_0 = args_0[0];
+    const verifierContractDigest_0 = args_0[1];
+    const scope_0 = args_0[2];
+    if (!(deploymentDigest_0.buffer instanceof ArrayBuffer && deploymentDigest_0.BYTES_PER_ELEMENT === 1 && deploymentDigest_0.length === 32)) {
+      __compactRuntime.typeError('deriveHolderActionDecisionNullifierV1',
+                                 'argument 1',
+                                 'verification-v1.compact line 470 char 1',
+                                 'Bytes<32>',
+                                 deploymentDigest_0)
+    }
+    if (!(verifierContractDigest_0.buffer instanceof ArrayBuffer && verifierContractDigest_0.BYTES_PER_ELEMENT === 1 && verifierContractDigest_0.length === 32)) {
+      __compactRuntime.typeError('deriveHolderActionDecisionNullifierV1',
+                                 'argument 2',
+                                 'verification-v1.compact line 470 char 1',
+                                 'Bytes<32>',
+                                 verifierContractDigest_0)
+    }
+    if (!(typeof(scope_0) === 'object' && scope_0.domain.buffer instanceof ArrayBuffer && scope_0.domain.BYTES_PER_ELEMENT === 1 && scope_0.domain.length === 32 && typeof(scope_0.version) === 'bigint' && scope_0.version >= 0n && scope_0.version <= 65535n && scope_0.deploymentDigest.buffer instanceof ArrayBuffer && scope_0.deploymentDigest.BYTES_PER_ELEMENT === 1 && scope_0.deploymentDigest.length === 32 && scope_0.verifierContractDigest.buffer instanceof ArrayBuffer && scope_0.verifierContractDigest.BYTES_PER_ELEMENT === 1 && scope_0.verifierContractDigest.length === 32 && scope_0.actionClassDigest.buffer instanceof ArrayBuffer && scope_0.actionClassDigest.BYTES_PER_ELEMENT === 1 && scope_0.actionClassDigest.length === 32 && scope_0.actionScopeParametersDigest.buffer instanceof ArrayBuffer && scope_0.actionScopeParametersDigest.BYTES_PER_ELEMENT === 1 && scope_0.actionScopeParametersDigest.length === 32 && typeof(scope_0.binding) === 'object' && scope_0.binding.domain.buffer instanceof ArrayBuffer && scope_0.binding.domain.BYTES_PER_ELEMENT === 1 && scope_0.binding.domain.length === 32 && typeof(scope_0.binding.version) === 'bigint' && scope_0.binding.version >= 0n && scope_0.binding.version <= 65535n && scope_0.binding.deploymentDigest.buffer instanceof ArrayBuffer && scope_0.binding.deploymentDigest.BYTES_PER_ELEMENT === 1 && scope_0.binding.deploymentDigest.length === 32 && scope_0.binding.verifierContractDigest.buffer instanceof ArrayBuffer && scope_0.binding.verifierContractDigest.BYTES_PER_ELEMENT === 1 && scope_0.binding.verifierContractDigest.length === 32 && scope_0.binding.actionClassDigest.buffer instanceof ArrayBuffer && scope_0.binding.actionClassDigest.BYTES_PER_ELEMENT === 1 && scope_0.binding.actionClassDigest.length === 32 && scope_0.binding.holderSubjectDigest.buffer instanceof ArrayBuffer && scope_0.binding.holderSubjectDigest.BYTES_PER_ELEMENT === 1 && scope_0.binding.holderSubjectDigest.length === 32)) {
+      __compactRuntime.typeError('deriveHolderActionDecisionNullifierV1',
+                                 'argument 3',
+                                 'verification-v1.compact line 470 char 1',
+                                 'struct HolderActionReplayScopeV1<domain: Bytes<32>, version: Uint<0..65536>, deploymentDigest: Bytes<32>, verifierContractDigest: Bytes<32>, actionClassDigest: Bytes<32>, actionScopeParametersDigest: Bytes<32>, binding: struct ActionHolderBindingV1<domain: Bytes<32>, version: Uint<0..65536>, deploymentDigest: Bytes<32>, verifierContractDigest: Bytes<32>, actionClassDigest: Bytes<32>, holderSubjectDigest: Bytes<32>>>',
+                                 scope_0)
+    }
+    return _dummyContract._deriveHolderActionDecisionNullifierV1_0(deploymentDigest_0,
+                                                                   verifierContractDigest_0,
+                                                                   scope_0);
+  },
+  deriveCredentialActionDecisionNullifierV1: (...args_0) => {
+    if (args_0.length !== 3) {
+      throw new __compactRuntime.CompactError(`deriveCredentialActionDecisionNullifierV1: expected 3 arguments (as invoked from Typescript), received ${args_0.length}`);
+    }
+    const deploymentDigest_0 = args_0[0];
+    const verifierContractDigest_0 = args_0[1];
+    const scope_0 = args_0[2];
+    if (!(deploymentDigest_0.buffer instanceof ArrayBuffer && deploymentDigest_0.BYTES_PER_ELEMENT === 1 && deploymentDigest_0.length === 32)) {
+      __compactRuntime.typeError('deriveCredentialActionDecisionNullifierV1',
+                                 'argument 1',
+                                 'verification-v1.compact line 487 char 1',
+                                 'Bytes<32>',
+                                 deploymentDigest_0)
+    }
+    if (!(verifierContractDigest_0.buffer instanceof ArrayBuffer && verifierContractDigest_0.BYTES_PER_ELEMENT === 1 && verifierContractDigest_0.length === 32)) {
+      __compactRuntime.typeError('deriveCredentialActionDecisionNullifierV1',
+                                 'argument 2',
+                                 'verification-v1.compact line 487 char 1',
+                                 'Bytes<32>',
+                                 verifierContractDigest_0)
+    }
+    if (!(typeof(scope_0) === 'object' && scope_0.domain.buffer instanceof ArrayBuffer && scope_0.domain.BYTES_PER_ELEMENT === 1 && scope_0.domain.length === 32 && typeof(scope_0.version) === 'bigint' && scope_0.version >= 0n && scope_0.version <= 65535n && scope_0.deploymentDigest.buffer instanceof ArrayBuffer && scope_0.deploymentDigest.BYTES_PER_ELEMENT === 1 && scope_0.deploymentDigest.length === 32 && scope_0.verifierContractDigest.buffer instanceof ArrayBuffer && scope_0.verifierContractDigest.BYTES_PER_ELEMENT === 1 && scope_0.verifierContractDigest.length === 32 && scope_0.actionClassDigest.buffer instanceof ArrayBuffer && scope_0.actionClassDigest.BYTES_PER_ELEMENT === 1 && scope_0.actionClassDigest.length === 32 && scope_0.actionScopeParametersDigest.buffer instanceof ArrayBuffer && scope_0.actionScopeParametersDigest.BYTES_PER_ELEMENT === 1 && scope_0.actionScopeParametersDigest.length === 32 && typeof(scope_0.binding) === 'object' && scope_0.binding.domain.buffer instanceof ArrayBuffer && scope_0.binding.domain.BYTES_PER_ELEMENT === 1 && scope_0.binding.domain.length === 32 && typeof(scope_0.binding.version) === 'bigint' && scope_0.binding.version >= 0n && scope_0.binding.version <= 65535n && scope_0.binding.deploymentDigest.buffer instanceof ArrayBuffer && scope_0.binding.deploymentDigest.BYTES_PER_ELEMENT === 1 && scope_0.binding.deploymentDigest.length === 32 && scope_0.binding.verifierContractDigest.buffer instanceof ArrayBuffer && scope_0.binding.verifierContractDigest.BYTES_PER_ELEMENT === 1 && scope_0.binding.verifierContractDigest.length === 32 && scope_0.binding.actionClassDigest.buffer instanceof ArrayBuffer && scope_0.binding.actionClassDigest.BYTES_PER_ELEMENT === 1 && scope_0.binding.actionClassDigest.length === 32 && scope_0.binding.credentialFamilyDigest.buffer instanceof ArrayBuffer && scope_0.binding.credentialFamilyDigest.BYTES_PER_ELEMENT === 1 && scope_0.binding.credentialFamilyDigest.length === 32 && scope_0.binding.schemaDigest.buffer instanceof ArrayBuffer && scope_0.binding.schemaDigest.BYTES_PER_ELEMENT === 1 && scope_0.binding.schemaDigest.length === 32 && scope_0.binding.credentialRoot.buffer instanceof ArrayBuffer && scope_0.binding.credentialRoot.BYTES_PER_ELEMENT === 1 && scope_0.binding.credentialRoot.length === 32)) {
+      __compactRuntime.typeError('deriveCredentialActionDecisionNullifierV1',
+                                 'argument 3',
+                                 'verification-v1.compact line 487 char 1',
+                                 'struct CredentialActionReplayScopeV1<domain: Bytes<32>, version: Uint<0..65536>, deploymentDigest: Bytes<32>, verifierContractDigest: Bytes<32>, actionClassDigest: Bytes<32>, actionScopeParametersDigest: Bytes<32>, binding: struct ActionCredentialBindingV1<domain: Bytes<32>, version: Uint<0..65536>, deploymentDigest: Bytes<32>, verifierContractDigest: Bytes<32>, actionClassDigest: Bytes<32>, credentialFamilyDigest: Bytes<32>, schemaDigest: Bytes<32>, credentialRoot: Bytes<32>>>',
+                                 scope_0)
+    }
+    return _dummyContract._deriveCredentialActionDecisionNullifierV1_0(deploymentDigest_0,
+                                                                       verifierContractDigest_0,
+                                                                       scope_0);
+  },
+  deriveNoDecisionNullifierV1: (...args_0) => {
+    if (args_0.length !== 0) {
+      throw new __compactRuntime.CompactError(`deriveNoDecisionNullifierV1: expected 0 arguments (as invoked from Typescript), received ${args_0.length}`);
+    }
+    return _dummyContract._deriveNoDecisionNullifierV1_0();
   },
   syntheticVerificationExtensionV1Digest: (...args_0) => {
     if (args_0.length !== 1) {
@@ -4674,7 +5805,7 @@ export const pureCircuits = {
     if (!(typeof(extension_0) === 'object' && extension_0.domain.buffer instanceof ArrayBuffer && extension_0.domain.BYTES_PER_ELEMENT === 1 && extension_0.domain.length === 32 && typeof(extension_0.version) === 'bigint' && extension_0.version >= 0n && extension_0.version <= 65535n && extension_0.familyDigest.buffer instanceof ArrayBuffer && extension_0.familyDigest.BYTES_PER_ELEMENT === 1 && extension_0.familyDigest.length === 32 && extension_0.valueDigest.buffer instanceof ArrayBuffer && extension_0.valueDigest.BYTES_PER_ELEMENT === 1 && extension_0.valueDigest.length === 32)) {
       __compactRuntime.typeError('syntheticVerificationExtensionV1Digest',
                                  'argument 1',
-                                 'verification-v1.compact line 269 char 1',
+                                 'verification-v1.compact line 508 char 1',
                                  'struct SyntheticVerificationExtensionV1<domain: Bytes<32>, version: Uint<0..65536>, familyDigest: Bytes<32>, valueDigest: Bytes<32>>',
                                  extension_0)
     }
@@ -4688,7 +5819,7 @@ export const pureCircuits = {
     if (!(typeof(transcript_0) === 'object' && transcript_0.domain.buffer instanceof ArrayBuffer && transcript_0.domain.BYTES_PER_ELEMENT === 1 && transcript_0.domain.length === 32 && typeof(transcript_0.version) === 'bigint' && transcript_0.version >= 0n && transcript_0.version <= 65535n && typeof(transcript_0.profile) === 'bigint' && transcript_0.profile >= 0n && transcript_0.profile <= 255n && typeof(transcript_0.authority) === 'bigint' && transcript_0.authority >= 0n && transcript_0.authority <= 255n && transcript_0.networkIdDigest.buffer instanceof ArrayBuffer && transcript_0.networkIdDigest.BYTES_PER_ELEMENT === 1 && transcript_0.networkIdDigest.length === 32 && transcript_0.verifierContractDigest.buffer instanceof ArrayBuffer && transcript_0.verifierContractDigest.BYTES_PER_ELEMENT === 1 && transcript_0.verifierContractDigest.length === 32 && transcript_0.deploymentDigest.buffer instanceof ArrayBuffer && transcript_0.deploymentDigest.BYTES_PER_ELEMENT === 1 && transcript_0.deploymentDigest.length === 32 && transcript_0.audienceDigest.buffer instanceof ArrayBuffer && transcript_0.audienceDigest.BYTES_PER_ELEMENT === 1 && transcript_0.audienceDigest.length === 32 && typeof(transcript_0.originMode) === 'bigint' && transcript_0.originMode >= 0n && transcript_0.originMode <= 255n && transcript_0.originDigest.buffer instanceof ArrayBuffer && transcript_0.originDigest.BYTES_PER_ELEMENT === 1 && transcript_0.originDigest.length === 32 && transcript_0.connectorEvidenceDigest.buffer instanceof ArrayBuffer && transcript_0.connectorEvidenceDigest.BYTES_PER_ELEMENT === 1 && transcript_0.connectorEvidenceDigest.length === 32 && transcript_0.requestIdDigest.buffer instanceof ArrayBuffer && transcript_0.requestIdDigest.BYTES_PER_ELEMENT === 1 && transcript_0.requestIdDigest.length === 32 && transcript_0.challengeDigest.buffer instanceof ArrayBuffer && transcript_0.challengeDigest.BYTES_PER_ELEMENT === 1 && transcript_0.challengeDigest.length === 32 && typeof(transcript_0.expiresAt) === 'bigint' && transcript_0.expiresAt >= 0n && transcript_0.expiresAt <= 18446744073709551615n && transcript_0.credentialFamilyDigest.buffer instanceof ArrayBuffer && transcript_0.credentialFamilyDigest.BYTES_PER_ELEMENT === 1 && transcript_0.credentialFamilyDigest.length === 32 && transcript_0.schemaDigest.buffer instanceof ArrayBuffer && transcript_0.schemaDigest.BYTES_PER_ELEMENT === 1 && transcript_0.schemaDigest.length === 32 && typeof(transcript_0.credentialBindingMode) === 'bigint' && transcript_0.credentialBindingMode >= 0n && transcript_0.credentialBindingMode <= 255n && transcript_0.credentialBindingDigest.buffer instanceof ArrayBuffer && transcript_0.credentialBindingDigest.BYTES_PER_ELEMENT === 1 && transcript_0.credentialBindingDigest.length === 32 && transcript_0.disclosureDigest.buffer instanceof ArrayBuffer && transcript_0.disclosureDigest.BYTES_PER_ELEMENT === 1 && transcript_0.disclosureDigest.length === 32 && transcript_0.predicateDigest.buffer instanceof ArrayBuffer && transcript_0.predicateDigest.BYTES_PER_ELEMENT === 1 && transcript_0.predicateDigest.length === 32 && transcript_0.holderBindingDigest.buffer instanceof ArrayBuffer && transcript_0.holderBindingDigest.BYTES_PER_ELEMENT === 1 && transcript_0.holderBindingDigest.length === 32 && transcript_0.policyDigest.buffer instanceof ArrayBuffer && transcript_0.policyDigest.BYTES_PER_ELEMENT === 1 && transcript_0.policyDigest.length === 32 && transcript_0.actionClassDigest.buffer instanceof ArrayBuffer && transcript_0.actionClassDigest.BYTES_PER_ELEMENT === 1 && transcript_0.actionClassDigest.length === 32 && transcript_0.actionInvocationDigest.buffer instanceof ArrayBuffer && transcript_0.actionInvocationDigest.BYTES_PER_ELEMENT === 1 && transcript_0.actionInvocationDigest.length === 32 && transcript_0.consentDigest.buffer instanceof ArrayBuffer && transcript_0.consentDigest.BYTES_PER_ELEMENT === 1 && transcript_0.consentDigest.length === 32 && transcript_0.presentationBindingDigest.buffer instanceof ArrayBuffer && transcript_0.presentationBindingDigest.BYTES_PER_ELEMENT === 1 && transcript_0.presentationBindingDigest.length === 32 && transcript_0.issuerDidDigest.buffer instanceof ArrayBuffer && transcript_0.issuerDidDigest.BYTES_PER_ELEMENT === 1 && transcript_0.issuerDidDigest.length === 32 && transcript_0.issuerMethodDigest.buffer instanceof ArrayBuffer && transcript_0.issuerMethodDigest.BYTES_PER_ELEMENT === 1 && transcript_0.issuerMethodDigest.length === 32 && typeof(transcript_0.issuerRelationship) === 'bigint' && transcript_0.issuerRelationship >= 0n && transcript_0.issuerRelationship <= 255n && transcript_0.issuerEvidenceDigest.buffer instanceof ArrayBuffer && transcript_0.issuerEvidenceDigest.BYTES_PER_ELEMENT === 1 && transcript_0.issuerEvidenceDigest.length === 32 && transcript_0.trustScopeDigest.buffer instanceof ArrayBuffer && transcript_0.trustScopeDigest.BYTES_PER_ELEMENT === 1 && transcript_0.trustScopeDigest.length === 32 && transcript_0.trustEvidenceDigest.buffer instanceof ArrayBuffer && transcript_0.trustEvidenceDigest.BYTES_PER_ELEMENT === 1 && transcript_0.trustEvidenceDigest.length === 32 && typeof(transcript_0.statusMode) === 'bigint' && transcript_0.statusMode >= 0n && transcript_0.statusMode <= 255n && transcript_0.statusRegistryDigest.buffer instanceof ArrayBuffer && transcript_0.statusRegistryDigest.BYTES_PER_ELEMENT === 1 && transcript_0.statusRegistryDigest.length === 32 && transcript_0.statusRoot.buffer instanceof ArrayBuffer && transcript_0.statusRoot.BYTES_PER_ELEMENT === 1 && transcript_0.statusRoot.length === 32 && typeof(transcript_0.statusRegistryVersion) === 'bigint' && transcript_0.statusRegistryVersion >= 0n && transcript_0.statusRegistryVersion <= 18446744073709551615n && transcript_0.statusFreshnessPolicyDigest.buffer instanceof ArrayBuffer && transcript_0.statusFreshnessPolicyDigest.BYTES_PER_ELEMENT === 1 && transcript_0.statusFreshnessPolicyDigest.length === 32 && transcript_0.statusEvidenceDigest.buffer instanceof ArrayBuffer && transcript_0.statusEvidenceDigest.BYTES_PER_ELEMENT === 1 && transcript_0.statusEvidenceDigest.length === 32 && typeof(transcript_0.timeMode) === 'bigint' && transcript_0.timeMode >= 0n && transcript_0.timeMode <= 255n && typeof(transcript_0.trustedTime) === 'bigint' && transcript_0.trustedTime >= 0n && transcript_0.trustedTime <= 18446744073709551615n && transcript_0.timeEvidenceDigest.buffer instanceof ArrayBuffer && transcript_0.timeEvidenceDigest.BYTES_PER_ELEMENT === 1 && transcript_0.timeEvidenceDigest.length === 32 && transcript_0.artifactManifestDigest.buffer instanceof ArrayBuffer && transcript_0.artifactManifestDigest.BYTES_PER_ELEMENT === 1 && transcript_0.artifactManifestDigest.length === 32 && transcript_0.artifactEvidenceDigest.buffer instanceof ArrayBuffer && transcript_0.artifactEvidenceDigest.BYTES_PER_ELEMENT === 1 && transcript_0.artifactEvidenceDigest.length === 32 && typeof(transcript_0.nullifierMode) === 'bigint' && transcript_0.nullifierMode >= 0n && transcript_0.nullifierMode <= 255n && typeof(transcript_0.replayPolicy) === 'bigint' && transcript_0.replayPolicy >= 0n && transcript_0.replayPolicy <= 255n && transcript_0.replayScopeDigest.buffer instanceof ArrayBuffer && transcript_0.replayScopeDigest.BYTES_PER_ELEMENT === 1 && transcript_0.replayScopeDigest.length === 32 && transcript_0.decisionNullifier.buffer instanceof ArrayBuffer && transcript_0.decisionNullifier.BYTES_PER_ELEMENT === 1 && transcript_0.decisionNullifier.length === 32)) {
       __compactRuntime.typeError('verificationTranscriptV1Digest',
                                  'argument 1',
-                                 'verification-v1.compact line 275 char 1',
+                                 'verification-v1.compact line 514 char 1',
                                  'struct VerificationTranscriptV1<domain: Bytes<32>, version: Uint<0..65536>, profile: Uint<0..256>, authority: Uint<0..256>, networkIdDigest: Bytes<32>, verifierContractDigest: Bytes<32>, deploymentDigest: Bytes<32>, audienceDigest: Bytes<32>, originMode: Uint<0..256>, originDigest: Bytes<32>, connectorEvidenceDigest: Bytes<32>, requestIdDigest: Bytes<32>, challengeDigest: Bytes<32>, expiresAt: Uint<0..18446744073709551616>, credentialFamilyDigest: Bytes<32>, schemaDigest: Bytes<32>, credentialBindingMode: Uint<0..256>, credentialBindingDigest: Bytes<32>, disclosureDigest: Bytes<32>, predicateDigest: Bytes<32>, holderBindingDigest: Bytes<32>, policyDigest: Bytes<32>, actionClassDigest: Bytes<32>, actionInvocationDigest: Bytes<32>, consentDigest: Bytes<32>, presentationBindingDigest: Bytes<32>, issuerDidDigest: Bytes<32>, issuerMethodDigest: Bytes<32>, issuerRelationship: Uint<0..256>, issuerEvidenceDigest: Bytes<32>, trustScopeDigest: Bytes<32>, trustEvidenceDigest: Bytes<32>, statusMode: Uint<0..256>, statusRegistryDigest: Bytes<32>, statusRoot: Bytes<32>, statusRegistryVersion: Uint<0..18446744073709551616>, statusFreshnessPolicyDigest: Bytes<32>, statusEvidenceDigest: Bytes<32>, timeMode: Uint<0..256>, trustedTime: Uint<0..18446744073709551616>, timeEvidenceDigest: Bytes<32>, artifactManifestDigest: Bytes<32>, artifactEvidenceDigest: Bytes<32>, nullifierMode: Uint<0..256>, replayPolicy: Uint<0..256>, replayScopeDigest: Bytes<32>, decisionNullifier: Bytes<32>>',
                                  transcript_0)
     }
@@ -4703,14 +5834,14 @@ export const pureCircuits = {
     if (!(typeof(binding_0) === 'object' && binding_0.domain.buffer instanceof ArrayBuffer && binding_0.domain.BYTES_PER_ELEMENT === 1 && binding_0.domain.length === 32 && typeof(binding_0.version) === 'bigint' && binding_0.version >= 0n && binding_0.version <= 65535n && typeof(binding_0.mode) === 'bigint' && binding_0.mode >= 0n && binding_0.mode <= 255n && binding_0.authorityDigest.buffer instanceof ArrayBuffer && binding_0.authorityDigest.BYTES_PER_ELEMENT === 1 && binding_0.authorityDigest.length === 32 && binding_0.subjectDigest.buffer instanceof ArrayBuffer && binding_0.subjectDigest.BYTES_PER_ELEMENT === 1 && binding_0.subjectDigest.length === 32 && binding_0.stateAnchorDigest.buffer instanceof ArrayBuffer && binding_0.stateAnchorDigest.BYTES_PER_ELEMENT === 1 && binding_0.stateAnchorDigest.length === 32 && binding_0.statementDigest.buffer instanceof ArrayBuffer && binding_0.statementDigest.BYTES_PER_ELEMENT === 1 && binding_0.statementDigest.length === 32 && typeof(binding_0.createdAt) === 'bigint' && binding_0.createdAt >= 0n && binding_0.createdAt <= 18446744073709551615n && typeof(binding_0.expiresAt) === 'bigint' && binding_0.expiresAt >= 0n && binding_0.expiresAt <= 18446744073709551615n)) {
       __compactRuntime.typeError('assertValidEvidenceBindingV1',
                                  'argument 1',
-                                 'verification-v1.compact line 281 char 1',
+                                 'verification-v1.compact line 520 char 1',
                                  'struct EvidenceBindingV1<domain: Bytes<32>, version: Uint<0..65536>, mode: Uint<0..256>, authorityDigest: Bytes<32>, subjectDigest: Bytes<32>, stateAnchorDigest: Bytes<32>, statementDigest: Bytes<32>, createdAt: Uint<0..18446744073709551616>, expiresAt: Uint<0..18446744073709551616>>',
                                  binding_0)
     }
     if (!(expectedDomain_0.buffer instanceof ArrayBuffer && expectedDomain_0.BYTES_PER_ELEMENT === 1 && expectedDomain_0.length === 32)) {
       __compactRuntime.typeError('assertValidEvidenceBindingV1',
                                  'argument 2',
-                                 'verification-v1.compact line 281 char 1',
+                                 'verification-v1.compact line 520 char 1',
                                  'Bytes<32>',
                                  expectedDomain_0)
     }
@@ -4725,7 +5856,7 @@ export const pureCircuits = {
     if (!(typeof(transcript_0) === 'object' && transcript_0.domain.buffer instanceof ArrayBuffer && transcript_0.domain.BYTES_PER_ELEMENT === 1 && transcript_0.domain.length === 32 && typeof(transcript_0.version) === 'bigint' && transcript_0.version >= 0n && transcript_0.version <= 65535n && typeof(transcript_0.profile) === 'bigint' && transcript_0.profile >= 0n && transcript_0.profile <= 255n && typeof(transcript_0.authority) === 'bigint' && transcript_0.authority >= 0n && transcript_0.authority <= 255n && transcript_0.networkIdDigest.buffer instanceof ArrayBuffer && transcript_0.networkIdDigest.BYTES_PER_ELEMENT === 1 && transcript_0.networkIdDigest.length === 32 && transcript_0.verifierContractDigest.buffer instanceof ArrayBuffer && transcript_0.verifierContractDigest.BYTES_PER_ELEMENT === 1 && transcript_0.verifierContractDigest.length === 32 && transcript_0.deploymentDigest.buffer instanceof ArrayBuffer && transcript_0.deploymentDigest.BYTES_PER_ELEMENT === 1 && transcript_0.deploymentDigest.length === 32 && transcript_0.audienceDigest.buffer instanceof ArrayBuffer && transcript_0.audienceDigest.BYTES_PER_ELEMENT === 1 && transcript_0.audienceDigest.length === 32 && typeof(transcript_0.originMode) === 'bigint' && transcript_0.originMode >= 0n && transcript_0.originMode <= 255n && transcript_0.originDigest.buffer instanceof ArrayBuffer && transcript_0.originDigest.BYTES_PER_ELEMENT === 1 && transcript_0.originDigest.length === 32 && transcript_0.connectorEvidenceDigest.buffer instanceof ArrayBuffer && transcript_0.connectorEvidenceDigest.BYTES_PER_ELEMENT === 1 && transcript_0.connectorEvidenceDigest.length === 32 && transcript_0.requestIdDigest.buffer instanceof ArrayBuffer && transcript_0.requestIdDigest.BYTES_PER_ELEMENT === 1 && transcript_0.requestIdDigest.length === 32 && transcript_0.challengeDigest.buffer instanceof ArrayBuffer && transcript_0.challengeDigest.BYTES_PER_ELEMENT === 1 && transcript_0.challengeDigest.length === 32 && typeof(transcript_0.expiresAt) === 'bigint' && transcript_0.expiresAt >= 0n && transcript_0.expiresAt <= 18446744073709551615n && transcript_0.credentialFamilyDigest.buffer instanceof ArrayBuffer && transcript_0.credentialFamilyDigest.BYTES_PER_ELEMENT === 1 && transcript_0.credentialFamilyDigest.length === 32 && transcript_0.schemaDigest.buffer instanceof ArrayBuffer && transcript_0.schemaDigest.BYTES_PER_ELEMENT === 1 && transcript_0.schemaDigest.length === 32 && typeof(transcript_0.credentialBindingMode) === 'bigint' && transcript_0.credentialBindingMode >= 0n && transcript_0.credentialBindingMode <= 255n && transcript_0.credentialBindingDigest.buffer instanceof ArrayBuffer && transcript_0.credentialBindingDigest.BYTES_PER_ELEMENT === 1 && transcript_0.credentialBindingDigest.length === 32 && transcript_0.disclosureDigest.buffer instanceof ArrayBuffer && transcript_0.disclosureDigest.BYTES_PER_ELEMENT === 1 && transcript_0.disclosureDigest.length === 32 && transcript_0.predicateDigest.buffer instanceof ArrayBuffer && transcript_0.predicateDigest.BYTES_PER_ELEMENT === 1 && transcript_0.predicateDigest.length === 32 && transcript_0.holderBindingDigest.buffer instanceof ArrayBuffer && transcript_0.holderBindingDigest.BYTES_PER_ELEMENT === 1 && transcript_0.holderBindingDigest.length === 32 && transcript_0.policyDigest.buffer instanceof ArrayBuffer && transcript_0.policyDigest.BYTES_PER_ELEMENT === 1 && transcript_0.policyDigest.length === 32 && transcript_0.actionClassDigest.buffer instanceof ArrayBuffer && transcript_0.actionClassDigest.BYTES_PER_ELEMENT === 1 && transcript_0.actionClassDigest.length === 32 && transcript_0.actionInvocationDigest.buffer instanceof ArrayBuffer && transcript_0.actionInvocationDigest.BYTES_PER_ELEMENT === 1 && transcript_0.actionInvocationDigest.length === 32 && transcript_0.consentDigest.buffer instanceof ArrayBuffer && transcript_0.consentDigest.BYTES_PER_ELEMENT === 1 && transcript_0.consentDigest.length === 32 && transcript_0.presentationBindingDigest.buffer instanceof ArrayBuffer && transcript_0.presentationBindingDigest.BYTES_PER_ELEMENT === 1 && transcript_0.presentationBindingDigest.length === 32 && transcript_0.issuerDidDigest.buffer instanceof ArrayBuffer && transcript_0.issuerDidDigest.BYTES_PER_ELEMENT === 1 && transcript_0.issuerDidDigest.length === 32 && transcript_0.issuerMethodDigest.buffer instanceof ArrayBuffer && transcript_0.issuerMethodDigest.BYTES_PER_ELEMENT === 1 && transcript_0.issuerMethodDigest.length === 32 && typeof(transcript_0.issuerRelationship) === 'bigint' && transcript_0.issuerRelationship >= 0n && transcript_0.issuerRelationship <= 255n && transcript_0.issuerEvidenceDigest.buffer instanceof ArrayBuffer && transcript_0.issuerEvidenceDigest.BYTES_PER_ELEMENT === 1 && transcript_0.issuerEvidenceDigest.length === 32 && transcript_0.trustScopeDigest.buffer instanceof ArrayBuffer && transcript_0.trustScopeDigest.BYTES_PER_ELEMENT === 1 && transcript_0.trustScopeDigest.length === 32 && transcript_0.trustEvidenceDigest.buffer instanceof ArrayBuffer && transcript_0.trustEvidenceDigest.BYTES_PER_ELEMENT === 1 && transcript_0.trustEvidenceDigest.length === 32 && typeof(transcript_0.statusMode) === 'bigint' && transcript_0.statusMode >= 0n && transcript_0.statusMode <= 255n && transcript_0.statusRegistryDigest.buffer instanceof ArrayBuffer && transcript_0.statusRegistryDigest.BYTES_PER_ELEMENT === 1 && transcript_0.statusRegistryDigest.length === 32 && transcript_0.statusRoot.buffer instanceof ArrayBuffer && transcript_0.statusRoot.BYTES_PER_ELEMENT === 1 && transcript_0.statusRoot.length === 32 && typeof(transcript_0.statusRegistryVersion) === 'bigint' && transcript_0.statusRegistryVersion >= 0n && transcript_0.statusRegistryVersion <= 18446744073709551615n && transcript_0.statusFreshnessPolicyDigest.buffer instanceof ArrayBuffer && transcript_0.statusFreshnessPolicyDigest.BYTES_PER_ELEMENT === 1 && transcript_0.statusFreshnessPolicyDigest.length === 32 && transcript_0.statusEvidenceDigest.buffer instanceof ArrayBuffer && transcript_0.statusEvidenceDigest.BYTES_PER_ELEMENT === 1 && transcript_0.statusEvidenceDigest.length === 32 && typeof(transcript_0.timeMode) === 'bigint' && transcript_0.timeMode >= 0n && transcript_0.timeMode <= 255n && typeof(transcript_0.trustedTime) === 'bigint' && transcript_0.trustedTime >= 0n && transcript_0.trustedTime <= 18446744073709551615n && transcript_0.timeEvidenceDigest.buffer instanceof ArrayBuffer && transcript_0.timeEvidenceDigest.BYTES_PER_ELEMENT === 1 && transcript_0.timeEvidenceDigest.length === 32 && transcript_0.artifactManifestDigest.buffer instanceof ArrayBuffer && transcript_0.artifactManifestDigest.BYTES_PER_ELEMENT === 1 && transcript_0.artifactManifestDigest.length === 32 && transcript_0.artifactEvidenceDigest.buffer instanceof ArrayBuffer && transcript_0.artifactEvidenceDigest.BYTES_PER_ELEMENT === 1 && transcript_0.artifactEvidenceDigest.length === 32 && typeof(transcript_0.nullifierMode) === 'bigint' && transcript_0.nullifierMode >= 0n && transcript_0.nullifierMode <= 255n && typeof(transcript_0.replayPolicy) === 'bigint' && transcript_0.replayPolicy >= 0n && transcript_0.replayPolicy <= 255n && transcript_0.replayScopeDigest.buffer instanceof ArrayBuffer && transcript_0.replayScopeDigest.BYTES_PER_ELEMENT === 1 && transcript_0.replayScopeDigest.length === 32 && transcript_0.decisionNullifier.buffer instanceof ArrayBuffer && transcript_0.decisionNullifier.BYTES_PER_ELEMENT === 1 && transcript_0.decisionNullifier.length === 32)) {
       __compactRuntime.typeError('assertValidVerificationTranscriptV1',
                                  'argument 1',
-                                 'verification-v1.compact line 317 char 1',
+                                 'verification-v1.compact line 556 char 1',
                                  'struct VerificationTranscriptV1<domain: Bytes<32>, version: Uint<0..65536>, profile: Uint<0..256>, authority: Uint<0..256>, networkIdDigest: Bytes<32>, verifierContractDigest: Bytes<32>, deploymentDigest: Bytes<32>, audienceDigest: Bytes<32>, originMode: Uint<0..256>, originDigest: Bytes<32>, connectorEvidenceDigest: Bytes<32>, requestIdDigest: Bytes<32>, challengeDigest: Bytes<32>, expiresAt: Uint<0..18446744073709551616>, credentialFamilyDigest: Bytes<32>, schemaDigest: Bytes<32>, credentialBindingMode: Uint<0..256>, credentialBindingDigest: Bytes<32>, disclosureDigest: Bytes<32>, predicateDigest: Bytes<32>, holderBindingDigest: Bytes<32>, policyDigest: Bytes<32>, actionClassDigest: Bytes<32>, actionInvocationDigest: Bytes<32>, consentDigest: Bytes<32>, presentationBindingDigest: Bytes<32>, issuerDidDigest: Bytes<32>, issuerMethodDigest: Bytes<32>, issuerRelationship: Uint<0..256>, issuerEvidenceDigest: Bytes<32>, trustScopeDigest: Bytes<32>, trustEvidenceDigest: Bytes<32>, statusMode: Uint<0..256>, statusRegistryDigest: Bytes<32>, statusRoot: Bytes<32>, statusRegistryVersion: Uint<0..18446744073709551616>, statusFreshnessPolicyDigest: Bytes<32>, statusEvidenceDigest: Bytes<32>, timeMode: Uint<0..256>, trustedTime: Uint<0..18446744073709551616>, timeEvidenceDigest: Bytes<32>, artifactManifestDigest: Bytes<32>, artifactEvidenceDigest: Bytes<32>, nullifierMode: Uint<0..256>, replayPolicy: Uint<0..256>, replayScopeDigest: Bytes<32>, decisionNullifier: Bytes<32>>',
                                  transcript_0)
     }
@@ -4739,7 +5870,7 @@ export const pureCircuits = {
     if (!(typeof(inputs_0) === 'object' && typeof(inputs_0.transcript) === 'object' && inputs_0.transcript.domain.buffer instanceof ArrayBuffer && inputs_0.transcript.domain.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.domain.length === 32 && typeof(inputs_0.transcript.version) === 'bigint' && inputs_0.transcript.version >= 0n && inputs_0.transcript.version <= 65535n && typeof(inputs_0.transcript.profile) === 'bigint' && inputs_0.transcript.profile >= 0n && inputs_0.transcript.profile <= 255n && typeof(inputs_0.transcript.authority) === 'bigint' && inputs_0.transcript.authority >= 0n && inputs_0.transcript.authority <= 255n && inputs_0.transcript.networkIdDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.networkIdDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.networkIdDigest.length === 32 && inputs_0.transcript.verifierContractDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.verifierContractDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.verifierContractDigest.length === 32 && inputs_0.transcript.deploymentDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.deploymentDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.deploymentDigest.length === 32 && inputs_0.transcript.audienceDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.audienceDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.audienceDigest.length === 32 && typeof(inputs_0.transcript.originMode) === 'bigint' && inputs_0.transcript.originMode >= 0n && inputs_0.transcript.originMode <= 255n && inputs_0.transcript.originDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.originDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.originDigest.length === 32 && inputs_0.transcript.connectorEvidenceDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.connectorEvidenceDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.connectorEvidenceDigest.length === 32 && inputs_0.transcript.requestIdDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.requestIdDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.requestIdDigest.length === 32 && inputs_0.transcript.challengeDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.challengeDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.challengeDigest.length === 32 && typeof(inputs_0.transcript.expiresAt) === 'bigint' && inputs_0.transcript.expiresAt >= 0n && inputs_0.transcript.expiresAt <= 18446744073709551615n && inputs_0.transcript.credentialFamilyDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.credentialFamilyDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.credentialFamilyDigest.length === 32 && inputs_0.transcript.schemaDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.schemaDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.schemaDigest.length === 32 && typeof(inputs_0.transcript.credentialBindingMode) === 'bigint' && inputs_0.transcript.credentialBindingMode >= 0n && inputs_0.transcript.credentialBindingMode <= 255n && inputs_0.transcript.credentialBindingDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.credentialBindingDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.credentialBindingDigest.length === 32 && inputs_0.transcript.disclosureDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.disclosureDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.disclosureDigest.length === 32 && inputs_0.transcript.predicateDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.predicateDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.predicateDigest.length === 32 && inputs_0.transcript.holderBindingDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.holderBindingDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.holderBindingDigest.length === 32 && inputs_0.transcript.policyDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.policyDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.policyDigest.length === 32 && inputs_0.transcript.actionClassDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.actionClassDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.actionClassDigest.length === 32 && inputs_0.transcript.actionInvocationDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.actionInvocationDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.actionInvocationDigest.length === 32 && inputs_0.transcript.consentDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.consentDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.consentDigest.length === 32 && inputs_0.transcript.presentationBindingDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.presentationBindingDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.presentationBindingDigest.length === 32 && inputs_0.transcript.issuerDidDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.issuerDidDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.issuerDidDigest.length === 32 && inputs_0.transcript.issuerMethodDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.issuerMethodDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.issuerMethodDigest.length === 32 && typeof(inputs_0.transcript.issuerRelationship) === 'bigint' && inputs_0.transcript.issuerRelationship >= 0n && inputs_0.transcript.issuerRelationship <= 255n && inputs_0.transcript.issuerEvidenceDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.issuerEvidenceDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.issuerEvidenceDigest.length === 32 && inputs_0.transcript.trustScopeDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.trustScopeDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.trustScopeDigest.length === 32 && inputs_0.transcript.trustEvidenceDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.trustEvidenceDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.trustEvidenceDigest.length === 32 && typeof(inputs_0.transcript.statusMode) === 'bigint' && inputs_0.transcript.statusMode >= 0n && inputs_0.transcript.statusMode <= 255n && inputs_0.transcript.statusRegistryDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.statusRegistryDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.statusRegistryDigest.length === 32 && inputs_0.transcript.statusRoot.buffer instanceof ArrayBuffer && inputs_0.transcript.statusRoot.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.statusRoot.length === 32 && typeof(inputs_0.transcript.statusRegistryVersion) === 'bigint' && inputs_0.transcript.statusRegistryVersion >= 0n && inputs_0.transcript.statusRegistryVersion <= 18446744073709551615n && inputs_0.transcript.statusFreshnessPolicyDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.statusFreshnessPolicyDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.statusFreshnessPolicyDigest.length === 32 && inputs_0.transcript.statusEvidenceDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.statusEvidenceDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.statusEvidenceDigest.length === 32 && typeof(inputs_0.transcript.timeMode) === 'bigint' && inputs_0.transcript.timeMode >= 0n && inputs_0.transcript.timeMode <= 255n && typeof(inputs_0.transcript.trustedTime) === 'bigint' && inputs_0.transcript.trustedTime >= 0n && inputs_0.transcript.trustedTime <= 18446744073709551615n && inputs_0.transcript.timeEvidenceDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.timeEvidenceDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.timeEvidenceDigest.length === 32 && inputs_0.transcript.artifactManifestDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.artifactManifestDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.artifactManifestDigest.length === 32 && inputs_0.transcript.artifactEvidenceDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.artifactEvidenceDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.artifactEvidenceDigest.length === 32 && typeof(inputs_0.transcript.nullifierMode) === 'bigint' && inputs_0.transcript.nullifierMode >= 0n && inputs_0.transcript.nullifierMode <= 255n && typeof(inputs_0.transcript.replayPolicy) === 'bigint' && inputs_0.transcript.replayPolicy >= 0n && inputs_0.transcript.replayPolicy <= 255n && inputs_0.transcript.replayScopeDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.replayScopeDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.replayScopeDigest.length === 32 && inputs_0.transcript.decisionNullifier.buffer instanceof ArrayBuffer && inputs_0.transcript.decisionNullifier.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.decisionNullifier.length === 32 && typeof(inputs_0.issuerEvidence) === 'object' && inputs_0.issuerEvidence.domain.buffer instanceof ArrayBuffer && inputs_0.issuerEvidence.domain.BYTES_PER_ELEMENT === 1 && inputs_0.issuerEvidence.domain.length === 32 && typeof(inputs_0.issuerEvidence.version) === 'bigint' && inputs_0.issuerEvidence.version >= 0n && inputs_0.issuerEvidence.version <= 65535n && typeof(inputs_0.issuerEvidence.mode) === 'bigint' && inputs_0.issuerEvidence.mode >= 0n && inputs_0.issuerEvidence.mode <= 255n && inputs_0.issuerEvidence.authorityDigest.buffer instanceof ArrayBuffer && inputs_0.issuerEvidence.authorityDigest.BYTES_PER_ELEMENT === 1 && inputs_0.issuerEvidence.authorityDigest.length === 32 && inputs_0.issuerEvidence.subjectDigest.buffer instanceof ArrayBuffer && inputs_0.issuerEvidence.subjectDigest.BYTES_PER_ELEMENT === 1 && inputs_0.issuerEvidence.subjectDigest.length === 32 && inputs_0.issuerEvidence.stateAnchorDigest.buffer instanceof ArrayBuffer && inputs_0.issuerEvidence.stateAnchorDigest.BYTES_PER_ELEMENT === 1 && inputs_0.issuerEvidence.stateAnchorDigest.length === 32 && inputs_0.issuerEvidence.statementDigest.buffer instanceof ArrayBuffer && inputs_0.issuerEvidence.statementDigest.BYTES_PER_ELEMENT === 1 && inputs_0.issuerEvidence.statementDigest.length === 32 && typeof(inputs_0.issuerEvidence.createdAt) === 'bigint' && inputs_0.issuerEvidence.createdAt >= 0n && inputs_0.issuerEvidence.createdAt <= 18446744073709551615n && typeof(inputs_0.issuerEvidence.expiresAt) === 'bigint' && inputs_0.issuerEvidence.expiresAt >= 0n && inputs_0.issuerEvidence.expiresAt <= 18446744073709551615n && typeof(inputs_0.trustEvidence) === 'object' && inputs_0.trustEvidence.domain.buffer instanceof ArrayBuffer && inputs_0.trustEvidence.domain.BYTES_PER_ELEMENT === 1 && inputs_0.trustEvidence.domain.length === 32 && typeof(inputs_0.trustEvidence.version) === 'bigint' && inputs_0.trustEvidence.version >= 0n && inputs_0.trustEvidence.version <= 65535n && typeof(inputs_0.trustEvidence.mode) === 'bigint' && inputs_0.trustEvidence.mode >= 0n && inputs_0.trustEvidence.mode <= 255n && inputs_0.trustEvidence.authorityDigest.buffer instanceof ArrayBuffer && inputs_0.trustEvidence.authorityDigest.BYTES_PER_ELEMENT === 1 && inputs_0.trustEvidence.authorityDigest.length === 32 && inputs_0.trustEvidence.subjectDigest.buffer instanceof ArrayBuffer && inputs_0.trustEvidence.subjectDigest.BYTES_PER_ELEMENT === 1 && inputs_0.trustEvidence.subjectDigest.length === 32 && inputs_0.trustEvidence.stateAnchorDigest.buffer instanceof ArrayBuffer && inputs_0.trustEvidence.stateAnchorDigest.BYTES_PER_ELEMENT === 1 && inputs_0.trustEvidence.stateAnchorDigest.length === 32 && inputs_0.trustEvidence.statementDigest.buffer instanceof ArrayBuffer && inputs_0.trustEvidence.statementDigest.BYTES_PER_ELEMENT === 1 && inputs_0.trustEvidence.statementDigest.length === 32 && typeof(inputs_0.trustEvidence.createdAt) === 'bigint' && inputs_0.trustEvidence.createdAt >= 0n && inputs_0.trustEvidence.createdAt <= 18446744073709551615n && typeof(inputs_0.trustEvidence.expiresAt) === 'bigint' && inputs_0.trustEvidence.expiresAt >= 0n && inputs_0.trustEvidence.expiresAt <= 18446744073709551615n && typeof(inputs_0.statusEvidence) === 'object' && inputs_0.statusEvidence.domain.buffer instanceof ArrayBuffer && inputs_0.statusEvidence.domain.BYTES_PER_ELEMENT === 1 && inputs_0.statusEvidence.domain.length === 32 && typeof(inputs_0.statusEvidence.version) === 'bigint' && inputs_0.statusEvidence.version >= 0n && inputs_0.statusEvidence.version <= 65535n && typeof(inputs_0.statusEvidence.mode) === 'bigint' && inputs_0.statusEvidence.mode >= 0n && inputs_0.statusEvidence.mode <= 255n && inputs_0.statusEvidence.authorityDigest.buffer instanceof ArrayBuffer && inputs_0.statusEvidence.authorityDigest.BYTES_PER_ELEMENT === 1 && inputs_0.statusEvidence.authorityDigest.length === 32 && inputs_0.statusEvidence.subjectDigest.buffer instanceof ArrayBuffer && inputs_0.statusEvidence.subjectDigest.BYTES_PER_ELEMENT === 1 && inputs_0.statusEvidence.subjectDigest.length === 32 && inputs_0.statusEvidence.stateAnchorDigest.buffer instanceof ArrayBuffer && inputs_0.statusEvidence.stateAnchorDigest.BYTES_PER_ELEMENT === 1 && inputs_0.statusEvidence.stateAnchorDigest.length === 32 && inputs_0.statusEvidence.statementDigest.buffer instanceof ArrayBuffer && inputs_0.statusEvidence.statementDigest.BYTES_PER_ELEMENT === 1 && inputs_0.statusEvidence.statementDigest.length === 32 && typeof(inputs_0.statusEvidence.createdAt) === 'bigint' && inputs_0.statusEvidence.createdAt >= 0n && inputs_0.statusEvidence.createdAt <= 18446744073709551615n && typeof(inputs_0.statusEvidence.expiresAt) === 'bigint' && inputs_0.statusEvidence.expiresAt >= 0n && inputs_0.statusEvidence.expiresAt <= 18446744073709551615n && typeof(inputs_0.timeEvidence) === 'object' && inputs_0.timeEvidence.domain.buffer instanceof ArrayBuffer && inputs_0.timeEvidence.domain.BYTES_PER_ELEMENT === 1 && inputs_0.timeEvidence.domain.length === 32 && typeof(inputs_0.timeEvidence.version) === 'bigint' && inputs_0.timeEvidence.version >= 0n && inputs_0.timeEvidence.version <= 65535n && typeof(inputs_0.timeEvidence.mode) === 'bigint' && inputs_0.timeEvidence.mode >= 0n && inputs_0.timeEvidence.mode <= 255n && inputs_0.timeEvidence.authorityDigest.buffer instanceof ArrayBuffer && inputs_0.timeEvidence.authorityDigest.BYTES_PER_ELEMENT === 1 && inputs_0.timeEvidence.authorityDigest.length === 32 && inputs_0.timeEvidence.subjectDigest.buffer instanceof ArrayBuffer && inputs_0.timeEvidence.subjectDigest.BYTES_PER_ELEMENT === 1 && inputs_0.timeEvidence.subjectDigest.length === 32 && inputs_0.timeEvidence.stateAnchorDigest.buffer instanceof ArrayBuffer && inputs_0.timeEvidence.stateAnchorDigest.BYTES_PER_ELEMENT === 1 && inputs_0.timeEvidence.stateAnchorDigest.length === 32 && inputs_0.timeEvidence.statementDigest.buffer instanceof ArrayBuffer && inputs_0.timeEvidence.statementDigest.BYTES_PER_ELEMENT === 1 && inputs_0.timeEvidence.statementDigest.length === 32 && typeof(inputs_0.timeEvidence.createdAt) === 'bigint' && inputs_0.timeEvidence.createdAt >= 0n && inputs_0.timeEvidence.createdAt <= 18446744073709551615n && typeof(inputs_0.timeEvidence.expiresAt) === 'bigint' && inputs_0.timeEvidence.expiresAt >= 0n && inputs_0.timeEvidence.expiresAt <= 18446744073709551615n && typeof(inputs_0.artifactEvidence) === 'object' && inputs_0.artifactEvidence.domain.buffer instanceof ArrayBuffer && inputs_0.artifactEvidence.domain.BYTES_PER_ELEMENT === 1 && inputs_0.artifactEvidence.domain.length === 32 && typeof(inputs_0.artifactEvidence.version) === 'bigint' && inputs_0.artifactEvidence.version >= 0n && inputs_0.artifactEvidence.version <= 65535n && typeof(inputs_0.artifactEvidence.mode) === 'bigint' && inputs_0.artifactEvidence.mode >= 0n && inputs_0.artifactEvidence.mode <= 255n && inputs_0.artifactEvidence.authorityDigest.buffer instanceof ArrayBuffer && inputs_0.artifactEvidence.authorityDigest.BYTES_PER_ELEMENT === 1 && inputs_0.artifactEvidence.authorityDigest.length === 32 && inputs_0.artifactEvidence.subjectDigest.buffer instanceof ArrayBuffer && inputs_0.artifactEvidence.subjectDigest.BYTES_PER_ELEMENT === 1 && inputs_0.artifactEvidence.subjectDigest.length === 32 && inputs_0.artifactEvidence.stateAnchorDigest.buffer instanceof ArrayBuffer && inputs_0.artifactEvidence.stateAnchorDigest.BYTES_PER_ELEMENT === 1 && inputs_0.artifactEvidence.stateAnchorDigest.length === 32 && inputs_0.artifactEvidence.statementDigest.buffer instanceof ArrayBuffer && inputs_0.artifactEvidence.statementDigest.BYTES_PER_ELEMENT === 1 && inputs_0.artifactEvidence.statementDigest.length === 32 && typeof(inputs_0.artifactEvidence.createdAt) === 'bigint' && inputs_0.artifactEvidence.createdAt >= 0n && inputs_0.artifactEvidence.createdAt <= 18446744073709551615n && typeof(inputs_0.artifactEvidence.expiresAt) === 'bigint' && inputs_0.artifactEvidence.expiresAt >= 0n && inputs_0.artifactEvidence.expiresAt <= 18446744073709551615n && typeof(inputs_0.connectorEvidence) === 'object' && inputs_0.connectorEvidence.domain.buffer instanceof ArrayBuffer && inputs_0.connectorEvidence.domain.BYTES_PER_ELEMENT === 1 && inputs_0.connectorEvidence.domain.length === 32 && typeof(inputs_0.connectorEvidence.version) === 'bigint' && inputs_0.connectorEvidence.version >= 0n && inputs_0.connectorEvidence.version <= 65535n && typeof(inputs_0.connectorEvidence.mode) === 'bigint' && inputs_0.connectorEvidence.mode >= 0n && inputs_0.connectorEvidence.mode <= 255n && inputs_0.connectorEvidence.authorityDigest.buffer instanceof ArrayBuffer && inputs_0.connectorEvidence.authorityDigest.BYTES_PER_ELEMENT === 1 && inputs_0.connectorEvidence.authorityDigest.length === 32 && inputs_0.connectorEvidence.subjectDigest.buffer instanceof ArrayBuffer && inputs_0.connectorEvidence.subjectDigest.BYTES_PER_ELEMENT === 1 && inputs_0.connectorEvidence.subjectDigest.length === 32 && inputs_0.connectorEvidence.stateAnchorDigest.buffer instanceof ArrayBuffer && inputs_0.connectorEvidence.stateAnchorDigest.BYTES_PER_ELEMENT === 1 && inputs_0.connectorEvidence.stateAnchorDigest.length === 32 && inputs_0.connectorEvidence.statementDigest.buffer instanceof ArrayBuffer && inputs_0.connectorEvidence.statementDigest.BYTES_PER_ELEMENT === 1 && inputs_0.connectorEvidence.statementDigest.length === 32 && typeof(inputs_0.connectorEvidence.createdAt) === 'bigint' && inputs_0.connectorEvidence.createdAt >= 0n && inputs_0.connectorEvidence.createdAt <= 18446744073709551615n && typeof(inputs_0.connectorEvidence.expiresAt) === 'bigint' && inputs_0.connectorEvidence.expiresAt >= 0n && inputs_0.connectorEvidence.expiresAt <= 18446744073709551615n)) {
       __compactRuntime.typeError('assertValidVerificationPublicInputsV1',
                                  'argument 1',
-                                 'verification-v1.compact line 411 char 1',
+                                 'verification-v1.compact line 650 char 1',
                                  'struct VerificationPublicInputsV1<transcript: struct VerificationTranscriptV1<domain: Bytes<32>, version: Uint<0..65536>, profile: Uint<0..256>, authority: Uint<0..256>, networkIdDigest: Bytes<32>, verifierContractDigest: Bytes<32>, deploymentDigest: Bytes<32>, audienceDigest: Bytes<32>, originMode: Uint<0..256>, originDigest: Bytes<32>, connectorEvidenceDigest: Bytes<32>, requestIdDigest: Bytes<32>, challengeDigest: Bytes<32>, expiresAt: Uint<0..18446744073709551616>, credentialFamilyDigest: Bytes<32>, schemaDigest: Bytes<32>, credentialBindingMode: Uint<0..256>, credentialBindingDigest: Bytes<32>, disclosureDigest: Bytes<32>, predicateDigest: Bytes<32>, holderBindingDigest: Bytes<32>, policyDigest: Bytes<32>, actionClassDigest: Bytes<32>, actionInvocationDigest: Bytes<32>, consentDigest: Bytes<32>, presentationBindingDigest: Bytes<32>, issuerDidDigest: Bytes<32>, issuerMethodDigest: Bytes<32>, issuerRelationship: Uint<0..256>, issuerEvidenceDigest: Bytes<32>, trustScopeDigest: Bytes<32>, trustEvidenceDigest: Bytes<32>, statusMode: Uint<0..256>, statusRegistryDigest: Bytes<32>, statusRoot: Bytes<32>, statusRegistryVersion: Uint<0..18446744073709551616>, statusFreshnessPolicyDigest: Bytes<32>, statusEvidenceDigest: Bytes<32>, timeMode: Uint<0..256>, trustedTime: Uint<0..18446744073709551616>, timeEvidenceDigest: Bytes<32>, artifactManifestDigest: Bytes<32>, artifactEvidenceDigest: Bytes<32>, nullifierMode: Uint<0..256>, replayPolicy: Uint<0..256>, replayScopeDigest: Bytes<32>, decisionNullifier: Bytes<32>>, issuerEvidence: struct EvidenceBindingV1<domain: Bytes<32>, version: Uint<0..65536>, mode: Uint<0..256>, authorityDigest: Bytes<32>, subjectDigest: Bytes<32>, stateAnchorDigest: Bytes<32>, statementDigest: Bytes<32>, createdAt: Uint<0..18446744073709551616>, expiresAt: Uint<0..18446744073709551616>>, trustEvidence: struct EvidenceBindingV1<domain: Bytes<32>, version: Uint<0..65536>, mode: Uint<0..256>, authorityDigest: Bytes<32>, subjectDigest: Bytes<32>, stateAnchorDigest: Bytes<32>, statementDigest: Bytes<32>, createdAt: Uint<0..18446744073709551616>, expiresAt: Uint<0..18446744073709551616>>, statusEvidence: struct EvidenceBindingV1<domain: Bytes<32>, version: Uint<0..65536>, mode: Uint<0..256>, authorityDigest: Bytes<32>, subjectDigest: Bytes<32>, stateAnchorDigest: Bytes<32>, statementDigest: Bytes<32>, createdAt: Uint<0..18446744073709551616>, expiresAt: Uint<0..18446744073709551616>>, timeEvidence: struct EvidenceBindingV1<domain: Bytes<32>, version: Uint<0..65536>, mode: Uint<0..256>, authorityDigest: Bytes<32>, subjectDigest: Bytes<32>, stateAnchorDigest: Bytes<32>, statementDigest: Bytes<32>, createdAt: Uint<0..18446744073709551616>, expiresAt: Uint<0..18446744073709551616>>, artifactEvidence: struct EvidenceBindingV1<domain: Bytes<32>, version: Uint<0..65536>, mode: Uint<0..256>, authorityDigest: Bytes<32>, subjectDigest: Bytes<32>, stateAnchorDigest: Bytes<32>, statementDigest: Bytes<32>, createdAt: Uint<0..18446744073709551616>, expiresAt: Uint<0..18446744073709551616>>, connectorEvidence: struct EvidenceBindingV1<domain: Bytes<32>, version: Uint<0..65536>, mode: Uint<0..256>, authorityDigest: Bytes<32>, subjectDigest: Bytes<32>, stateAnchorDigest: Bytes<32>, statementDigest: Bytes<32>, createdAt: Uint<0..18446744073709551616>, expiresAt: Uint<0..18446744073709551616>>>',
                                  inputs_0)
     }
@@ -4754,14 +5885,14 @@ export const pureCircuits = {
     if (!(typeof(inputs_0) === 'object' && typeof(inputs_0.transcript) === 'object' && inputs_0.transcript.domain.buffer instanceof ArrayBuffer && inputs_0.transcript.domain.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.domain.length === 32 && typeof(inputs_0.transcript.version) === 'bigint' && inputs_0.transcript.version >= 0n && inputs_0.transcript.version <= 65535n && typeof(inputs_0.transcript.profile) === 'bigint' && inputs_0.transcript.profile >= 0n && inputs_0.transcript.profile <= 255n && typeof(inputs_0.transcript.authority) === 'bigint' && inputs_0.transcript.authority >= 0n && inputs_0.transcript.authority <= 255n && inputs_0.transcript.networkIdDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.networkIdDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.networkIdDigest.length === 32 && inputs_0.transcript.verifierContractDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.verifierContractDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.verifierContractDigest.length === 32 && inputs_0.transcript.deploymentDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.deploymentDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.deploymentDigest.length === 32 && inputs_0.transcript.audienceDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.audienceDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.audienceDigest.length === 32 && typeof(inputs_0.transcript.originMode) === 'bigint' && inputs_0.transcript.originMode >= 0n && inputs_0.transcript.originMode <= 255n && inputs_0.transcript.originDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.originDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.originDigest.length === 32 && inputs_0.transcript.connectorEvidenceDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.connectorEvidenceDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.connectorEvidenceDigest.length === 32 && inputs_0.transcript.requestIdDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.requestIdDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.requestIdDigest.length === 32 && inputs_0.transcript.challengeDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.challengeDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.challengeDigest.length === 32 && typeof(inputs_0.transcript.expiresAt) === 'bigint' && inputs_0.transcript.expiresAt >= 0n && inputs_0.transcript.expiresAt <= 18446744073709551615n && inputs_0.transcript.credentialFamilyDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.credentialFamilyDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.credentialFamilyDigest.length === 32 && inputs_0.transcript.schemaDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.schemaDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.schemaDigest.length === 32 && typeof(inputs_0.transcript.credentialBindingMode) === 'bigint' && inputs_0.transcript.credentialBindingMode >= 0n && inputs_0.transcript.credentialBindingMode <= 255n && inputs_0.transcript.credentialBindingDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.credentialBindingDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.credentialBindingDigest.length === 32 && inputs_0.transcript.disclosureDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.disclosureDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.disclosureDigest.length === 32 && inputs_0.transcript.predicateDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.predicateDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.predicateDigest.length === 32 && inputs_0.transcript.holderBindingDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.holderBindingDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.holderBindingDigest.length === 32 && inputs_0.transcript.policyDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.policyDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.policyDigest.length === 32 && inputs_0.transcript.actionClassDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.actionClassDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.actionClassDigest.length === 32 && inputs_0.transcript.actionInvocationDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.actionInvocationDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.actionInvocationDigest.length === 32 && inputs_0.transcript.consentDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.consentDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.consentDigest.length === 32 && inputs_0.transcript.presentationBindingDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.presentationBindingDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.presentationBindingDigest.length === 32 && inputs_0.transcript.issuerDidDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.issuerDidDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.issuerDidDigest.length === 32 && inputs_0.transcript.issuerMethodDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.issuerMethodDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.issuerMethodDigest.length === 32 && typeof(inputs_0.transcript.issuerRelationship) === 'bigint' && inputs_0.transcript.issuerRelationship >= 0n && inputs_0.transcript.issuerRelationship <= 255n && inputs_0.transcript.issuerEvidenceDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.issuerEvidenceDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.issuerEvidenceDigest.length === 32 && inputs_0.transcript.trustScopeDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.trustScopeDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.trustScopeDigest.length === 32 && inputs_0.transcript.trustEvidenceDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.trustEvidenceDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.trustEvidenceDigest.length === 32 && typeof(inputs_0.transcript.statusMode) === 'bigint' && inputs_0.transcript.statusMode >= 0n && inputs_0.transcript.statusMode <= 255n && inputs_0.transcript.statusRegistryDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.statusRegistryDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.statusRegistryDigest.length === 32 && inputs_0.transcript.statusRoot.buffer instanceof ArrayBuffer && inputs_0.transcript.statusRoot.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.statusRoot.length === 32 && typeof(inputs_0.transcript.statusRegistryVersion) === 'bigint' && inputs_0.transcript.statusRegistryVersion >= 0n && inputs_0.transcript.statusRegistryVersion <= 18446744073709551615n && inputs_0.transcript.statusFreshnessPolicyDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.statusFreshnessPolicyDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.statusFreshnessPolicyDigest.length === 32 && inputs_0.transcript.statusEvidenceDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.statusEvidenceDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.statusEvidenceDigest.length === 32 && typeof(inputs_0.transcript.timeMode) === 'bigint' && inputs_0.transcript.timeMode >= 0n && inputs_0.transcript.timeMode <= 255n && typeof(inputs_0.transcript.trustedTime) === 'bigint' && inputs_0.transcript.trustedTime >= 0n && inputs_0.transcript.trustedTime <= 18446744073709551615n && inputs_0.transcript.timeEvidenceDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.timeEvidenceDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.timeEvidenceDigest.length === 32 && inputs_0.transcript.artifactManifestDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.artifactManifestDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.artifactManifestDigest.length === 32 && inputs_0.transcript.artifactEvidenceDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.artifactEvidenceDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.artifactEvidenceDigest.length === 32 && typeof(inputs_0.transcript.nullifierMode) === 'bigint' && inputs_0.transcript.nullifierMode >= 0n && inputs_0.transcript.nullifierMode <= 255n && typeof(inputs_0.transcript.replayPolicy) === 'bigint' && inputs_0.transcript.replayPolicy >= 0n && inputs_0.transcript.replayPolicy <= 255n && inputs_0.transcript.replayScopeDigest.buffer instanceof ArrayBuffer && inputs_0.transcript.replayScopeDigest.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.replayScopeDigest.length === 32 && inputs_0.transcript.decisionNullifier.buffer instanceof ArrayBuffer && inputs_0.transcript.decisionNullifier.BYTES_PER_ELEMENT === 1 && inputs_0.transcript.decisionNullifier.length === 32 && typeof(inputs_0.issuerEvidence) === 'object' && inputs_0.issuerEvidence.domain.buffer instanceof ArrayBuffer && inputs_0.issuerEvidence.domain.BYTES_PER_ELEMENT === 1 && inputs_0.issuerEvidence.domain.length === 32 && typeof(inputs_0.issuerEvidence.version) === 'bigint' && inputs_0.issuerEvidence.version >= 0n && inputs_0.issuerEvidence.version <= 65535n && typeof(inputs_0.issuerEvidence.mode) === 'bigint' && inputs_0.issuerEvidence.mode >= 0n && inputs_0.issuerEvidence.mode <= 255n && inputs_0.issuerEvidence.authorityDigest.buffer instanceof ArrayBuffer && inputs_0.issuerEvidence.authorityDigest.BYTES_PER_ELEMENT === 1 && inputs_0.issuerEvidence.authorityDigest.length === 32 && inputs_0.issuerEvidence.subjectDigest.buffer instanceof ArrayBuffer && inputs_0.issuerEvidence.subjectDigest.BYTES_PER_ELEMENT === 1 && inputs_0.issuerEvidence.subjectDigest.length === 32 && inputs_0.issuerEvidence.stateAnchorDigest.buffer instanceof ArrayBuffer && inputs_0.issuerEvidence.stateAnchorDigest.BYTES_PER_ELEMENT === 1 && inputs_0.issuerEvidence.stateAnchorDigest.length === 32 && inputs_0.issuerEvidence.statementDigest.buffer instanceof ArrayBuffer && inputs_0.issuerEvidence.statementDigest.BYTES_PER_ELEMENT === 1 && inputs_0.issuerEvidence.statementDigest.length === 32 && typeof(inputs_0.issuerEvidence.createdAt) === 'bigint' && inputs_0.issuerEvidence.createdAt >= 0n && inputs_0.issuerEvidence.createdAt <= 18446744073709551615n && typeof(inputs_0.issuerEvidence.expiresAt) === 'bigint' && inputs_0.issuerEvidence.expiresAt >= 0n && inputs_0.issuerEvidence.expiresAt <= 18446744073709551615n && typeof(inputs_0.trustEvidence) === 'object' && inputs_0.trustEvidence.domain.buffer instanceof ArrayBuffer && inputs_0.trustEvidence.domain.BYTES_PER_ELEMENT === 1 && inputs_0.trustEvidence.domain.length === 32 && typeof(inputs_0.trustEvidence.version) === 'bigint' && inputs_0.trustEvidence.version >= 0n && inputs_0.trustEvidence.version <= 65535n && typeof(inputs_0.trustEvidence.mode) === 'bigint' && inputs_0.trustEvidence.mode >= 0n && inputs_0.trustEvidence.mode <= 255n && inputs_0.trustEvidence.authorityDigest.buffer instanceof ArrayBuffer && inputs_0.trustEvidence.authorityDigest.BYTES_PER_ELEMENT === 1 && inputs_0.trustEvidence.authorityDigest.length === 32 && inputs_0.trustEvidence.subjectDigest.buffer instanceof ArrayBuffer && inputs_0.trustEvidence.subjectDigest.BYTES_PER_ELEMENT === 1 && inputs_0.trustEvidence.subjectDigest.length === 32 && inputs_0.trustEvidence.stateAnchorDigest.buffer instanceof ArrayBuffer && inputs_0.trustEvidence.stateAnchorDigest.BYTES_PER_ELEMENT === 1 && inputs_0.trustEvidence.stateAnchorDigest.length === 32 && inputs_0.trustEvidence.statementDigest.buffer instanceof ArrayBuffer && inputs_0.trustEvidence.statementDigest.BYTES_PER_ELEMENT === 1 && inputs_0.trustEvidence.statementDigest.length === 32 && typeof(inputs_0.trustEvidence.createdAt) === 'bigint' && inputs_0.trustEvidence.createdAt >= 0n && inputs_0.trustEvidence.createdAt <= 18446744073709551615n && typeof(inputs_0.trustEvidence.expiresAt) === 'bigint' && inputs_0.trustEvidence.expiresAt >= 0n && inputs_0.trustEvidence.expiresAt <= 18446744073709551615n && typeof(inputs_0.statusEvidence) === 'object' && inputs_0.statusEvidence.domain.buffer instanceof ArrayBuffer && inputs_0.statusEvidence.domain.BYTES_PER_ELEMENT === 1 && inputs_0.statusEvidence.domain.length === 32 && typeof(inputs_0.statusEvidence.version) === 'bigint' && inputs_0.statusEvidence.version >= 0n && inputs_0.statusEvidence.version <= 65535n && typeof(inputs_0.statusEvidence.mode) === 'bigint' && inputs_0.statusEvidence.mode >= 0n && inputs_0.statusEvidence.mode <= 255n && inputs_0.statusEvidence.authorityDigest.buffer instanceof ArrayBuffer && inputs_0.statusEvidence.authorityDigest.BYTES_PER_ELEMENT === 1 && inputs_0.statusEvidence.authorityDigest.length === 32 && inputs_0.statusEvidence.subjectDigest.buffer instanceof ArrayBuffer && inputs_0.statusEvidence.subjectDigest.BYTES_PER_ELEMENT === 1 && inputs_0.statusEvidence.subjectDigest.length === 32 && inputs_0.statusEvidence.stateAnchorDigest.buffer instanceof ArrayBuffer && inputs_0.statusEvidence.stateAnchorDigest.BYTES_PER_ELEMENT === 1 && inputs_0.statusEvidence.stateAnchorDigest.length === 32 && inputs_0.statusEvidence.statementDigest.buffer instanceof ArrayBuffer && inputs_0.statusEvidence.statementDigest.BYTES_PER_ELEMENT === 1 && inputs_0.statusEvidence.statementDigest.length === 32 && typeof(inputs_0.statusEvidence.createdAt) === 'bigint' && inputs_0.statusEvidence.createdAt >= 0n && inputs_0.statusEvidence.createdAt <= 18446744073709551615n && typeof(inputs_0.statusEvidence.expiresAt) === 'bigint' && inputs_0.statusEvidence.expiresAt >= 0n && inputs_0.statusEvidence.expiresAt <= 18446744073709551615n && typeof(inputs_0.timeEvidence) === 'object' && inputs_0.timeEvidence.domain.buffer instanceof ArrayBuffer && inputs_0.timeEvidence.domain.BYTES_PER_ELEMENT === 1 && inputs_0.timeEvidence.domain.length === 32 && typeof(inputs_0.timeEvidence.version) === 'bigint' && inputs_0.timeEvidence.version >= 0n && inputs_0.timeEvidence.version <= 65535n && typeof(inputs_0.timeEvidence.mode) === 'bigint' && inputs_0.timeEvidence.mode >= 0n && inputs_0.timeEvidence.mode <= 255n && inputs_0.timeEvidence.authorityDigest.buffer instanceof ArrayBuffer && inputs_0.timeEvidence.authorityDigest.BYTES_PER_ELEMENT === 1 && inputs_0.timeEvidence.authorityDigest.length === 32 && inputs_0.timeEvidence.subjectDigest.buffer instanceof ArrayBuffer && inputs_0.timeEvidence.subjectDigest.BYTES_PER_ELEMENT === 1 && inputs_0.timeEvidence.subjectDigest.length === 32 && inputs_0.timeEvidence.stateAnchorDigest.buffer instanceof ArrayBuffer && inputs_0.timeEvidence.stateAnchorDigest.BYTES_PER_ELEMENT === 1 && inputs_0.timeEvidence.stateAnchorDigest.length === 32 && inputs_0.timeEvidence.statementDigest.buffer instanceof ArrayBuffer && inputs_0.timeEvidence.statementDigest.BYTES_PER_ELEMENT === 1 && inputs_0.timeEvidence.statementDigest.length === 32 && typeof(inputs_0.timeEvidence.createdAt) === 'bigint' && inputs_0.timeEvidence.createdAt >= 0n && inputs_0.timeEvidence.createdAt <= 18446744073709551615n && typeof(inputs_0.timeEvidence.expiresAt) === 'bigint' && inputs_0.timeEvidence.expiresAt >= 0n && inputs_0.timeEvidence.expiresAt <= 18446744073709551615n && typeof(inputs_0.artifactEvidence) === 'object' && inputs_0.artifactEvidence.domain.buffer instanceof ArrayBuffer && inputs_0.artifactEvidence.domain.BYTES_PER_ELEMENT === 1 && inputs_0.artifactEvidence.domain.length === 32 && typeof(inputs_0.artifactEvidence.version) === 'bigint' && inputs_0.artifactEvidence.version >= 0n && inputs_0.artifactEvidence.version <= 65535n && typeof(inputs_0.artifactEvidence.mode) === 'bigint' && inputs_0.artifactEvidence.mode >= 0n && inputs_0.artifactEvidence.mode <= 255n && inputs_0.artifactEvidence.authorityDigest.buffer instanceof ArrayBuffer && inputs_0.artifactEvidence.authorityDigest.BYTES_PER_ELEMENT === 1 && inputs_0.artifactEvidence.authorityDigest.length === 32 && inputs_0.artifactEvidence.subjectDigest.buffer instanceof ArrayBuffer && inputs_0.artifactEvidence.subjectDigest.BYTES_PER_ELEMENT === 1 && inputs_0.artifactEvidence.subjectDigest.length === 32 && inputs_0.artifactEvidence.stateAnchorDigest.buffer instanceof ArrayBuffer && inputs_0.artifactEvidence.stateAnchorDigest.BYTES_PER_ELEMENT === 1 && inputs_0.artifactEvidence.stateAnchorDigest.length === 32 && inputs_0.artifactEvidence.statementDigest.buffer instanceof ArrayBuffer && inputs_0.artifactEvidence.statementDigest.BYTES_PER_ELEMENT === 1 && inputs_0.artifactEvidence.statementDigest.length === 32 && typeof(inputs_0.artifactEvidence.createdAt) === 'bigint' && inputs_0.artifactEvidence.createdAt >= 0n && inputs_0.artifactEvidence.createdAt <= 18446744073709551615n && typeof(inputs_0.artifactEvidence.expiresAt) === 'bigint' && inputs_0.artifactEvidence.expiresAt >= 0n && inputs_0.artifactEvidence.expiresAt <= 18446744073709551615n && typeof(inputs_0.connectorEvidence) === 'object' && inputs_0.connectorEvidence.domain.buffer instanceof ArrayBuffer && inputs_0.connectorEvidence.domain.BYTES_PER_ELEMENT === 1 && inputs_0.connectorEvidence.domain.length === 32 && typeof(inputs_0.connectorEvidence.version) === 'bigint' && inputs_0.connectorEvidence.version >= 0n && inputs_0.connectorEvidence.version <= 65535n && typeof(inputs_0.connectorEvidence.mode) === 'bigint' && inputs_0.connectorEvidence.mode >= 0n && inputs_0.connectorEvidence.mode <= 255n && inputs_0.connectorEvidence.authorityDigest.buffer instanceof ArrayBuffer && inputs_0.connectorEvidence.authorityDigest.BYTES_PER_ELEMENT === 1 && inputs_0.connectorEvidence.authorityDigest.length === 32 && inputs_0.connectorEvidence.subjectDigest.buffer instanceof ArrayBuffer && inputs_0.connectorEvidence.subjectDigest.BYTES_PER_ELEMENT === 1 && inputs_0.connectorEvidence.subjectDigest.length === 32 && inputs_0.connectorEvidence.stateAnchorDigest.buffer instanceof ArrayBuffer && inputs_0.connectorEvidence.stateAnchorDigest.BYTES_PER_ELEMENT === 1 && inputs_0.connectorEvidence.stateAnchorDigest.length === 32 && inputs_0.connectorEvidence.statementDigest.buffer instanceof ArrayBuffer && inputs_0.connectorEvidence.statementDigest.BYTES_PER_ELEMENT === 1 && inputs_0.connectorEvidence.statementDigest.length === 32 && typeof(inputs_0.connectorEvidence.createdAt) === 'bigint' && inputs_0.connectorEvidence.createdAt >= 0n && inputs_0.connectorEvidence.createdAt <= 18446744073709551615n && typeof(inputs_0.connectorEvidence.expiresAt) === 'bigint' && inputs_0.connectorEvidence.expiresAt >= 0n && inputs_0.connectorEvidence.expiresAt <= 18446744073709551615n)) {
       __compactRuntime.typeError('syntheticUnavailableAuthorityVerificationV1',
                                  'argument 1',
-                                 'verification-v1.compact line 446 char 1',
+                                 'verification-v1.compact line 685 char 1',
                                  'struct VerificationPublicInputsV1<transcript: struct VerificationTranscriptV1<domain: Bytes<32>, version: Uint<0..65536>, profile: Uint<0..256>, authority: Uint<0..256>, networkIdDigest: Bytes<32>, verifierContractDigest: Bytes<32>, deploymentDigest: Bytes<32>, audienceDigest: Bytes<32>, originMode: Uint<0..256>, originDigest: Bytes<32>, connectorEvidenceDigest: Bytes<32>, requestIdDigest: Bytes<32>, challengeDigest: Bytes<32>, expiresAt: Uint<0..18446744073709551616>, credentialFamilyDigest: Bytes<32>, schemaDigest: Bytes<32>, credentialBindingMode: Uint<0..256>, credentialBindingDigest: Bytes<32>, disclosureDigest: Bytes<32>, predicateDigest: Bytes<32>, holderBindingDigest: Bytes<32>, policyDigest: Bytes<32>, actionClassDigest: Bytes<32>, actionInvocationDigest: Bytes<32>, consentDigest: Bytes<32>, presentationBindingDigest: Bytes<32>, issuerDidDigest: Bytes<32>, issuerMethodDigest: Bytes<32>, issuerRelationship: Uint<0..256>, issuerEvidenceDigest: Bytes<32>, trustScopeDigest: Bytes<32>, trustEvidenceDigest: Bytes<32>, statusMode: Uint<0..256>, statusRegistryDigest: Bytes<32>, statusRoot: Bytes<32>, statusRegistryVersion: Uint<0..18446744073709551616>, statusFreshnessPolicyDigest: Bytes<32>, statusEvidenceDigest: Bytes<32>, timeMode: Uint<0..256>, trustedTime: Uint<0..18446744073709551616>, timeEvidenceDigest: Bytes<32>, artifactManifestDigest: Bytes<32>, artifactEvidenceDigest: Bytes<32>, nullifierMode: Uint<0..256>, replayPolicy: Uint<0..256>, replayScopeDigest: Bytes<32>, decisionNullifier: Bytes<32>>, issuerEvidence: struct EvidenceBindingV1<domain: Bytes<32>, version: Uint<0..65536>, mode: Uint<0..256>, authorityDigest: Bytes<32>, subjectDigest: Bytes<32>, stateAnchorDigest: Bytes<32>, statementDigest: Bytes<32>, createdAt: Uint<0..18446744073709551616>, expiresAt: Uint<0..18446744073709551616>>, trustEvidence: struct EvidenceBindingV1<domain: Bytes<32>, version: Uint<0..65536>, mode: Uint<0..256>, authorityDigest: Bytes<32>, subjectDigest: Bytes<32>, stateAnchorDigest: Bytes<32>, statementDigest: Bytes<32>, createdAt: Uint<0..18446744073709551616>, expiresAt: Uint<0..18446744073709551616>>, statusEvidence: struct EvidenceBindingV1<domain: Bytes<32>, version: Uint<0..65536>, mode: Uint<0..256>, authorityDigest: Bytes<32>, subjectDigest: Bytes<32>, stateAnchorDigest: Bytes<32>, statementDigest: Bytes<32>, createdAt: Uint<0..18446744073709551616>, expiresAt: Uint<0..18446744073709551616>>, timeEvidence: struct EvidenceBindingV1<domain: Bytes<32>, version: Uint<0..65536>, mode: Uint<0..256>, authorityDigest: Bytes<32>, subjectDigest: Bytes<32>, stateAnchorDigest: Bytes<32>, statementDigest: Bytes<32>, createdAt: Uint<0..18446744073709551616>, expiresAt: Uint<0..18446744073709551616>>, artifactEvidence: struct EvidenceBindingV1<domain: Bytes<32>, version: Uint<0..65536>, mode: Uint<0..256>, authorityDigest: Bytes<32>, subjectDigest: Bytes<32>, stateAnchorDigest: Bytes<32>, statementDigest: Bytes<32>, createdAt: Uint<0..18446744073709551616>, expiresAt: Uint<0..18446744073709551616>>, connectorEvidence: struct EvidenceBindingV1<domain: Bytes<32>, version: Uint<0..65536>, mode: Uint<0..256>, authorityDigest: Bytes<32>, subjectDigest: Bytes<32>, stateAnchorDigest: Bytes<32>, statementDigest: Bytes<32>, createdAt: Uint<0..18446744073709551616>, expiresAt: Uint<0..18446744073709551616>>>',
                                  inputs_0)
     }
     if (!(expectedTranscriptDigest_0.buffer instanceof ArrayBuffer && expectedTranscriptDigest_0.BYTES_PER_ELEMENT === 1 && expectedTranscriptDigest_0.length === 32)) {
       __compactRuntime.typeError('syntheticUnavailableAuthorityVerificationV1',
                                  'argument 2',
-                                 'verification-v1.compact line 446 char 1',
+                                 'verification-v1.compact line 685 char 1',
                                  'Bytes<32>',
                                  expectedTranscriptDigest_0)
     }

@@ -11729,6 +11729,4679 @@
       }
     },
     {
+      "name": "verificationTranscriptDomainV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "decisionNullifierDomainV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "replayScopeRequestDomainV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "replayScopeHolderActionDomainV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "replayScopeCredentialActionDomainV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "actionHolderBindingDomainV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "actionCredentialBindingDomainV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "credentialBindingDomainV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "holderBindingDomainV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "consentBindingDomainV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "presentationBindingDomainV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "issuerEvidenceDomainV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "trustEvidenceDomainV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "statusEvidenceDomainV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "timeEvidenceDomainV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "artifactEvidenceDomainV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "connectorEvidenceDomainV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "anchorEvidenceReceiptDomainV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "syntheticVerificationExtensionDomainV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "credentialBindingV1Digest",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "binding",
+          "type": {
+            "type-name": "Struct",
+            "name": "CredentialBindingV1",
+            "elements": [
+              {
+                "name": "domain",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "mode",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "credentialFamilyDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "schemaDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "verifierContractDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "challengeDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "credentialRoot",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "holderBindingV1Digest",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "binding",
+          "type": {
+            "type-name": "Struct",
+            "name": "HolderBindingV1",
+            "elements": [
+              {
+                "name": "domain",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "mode",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "verifierContractDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "challengeDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "subjectBindingDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "consentBindingV1Digest",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "binding",
+          "type": {
+            "type-name": "Struct",
+            "name": "ConsentBindingV1",
+            "elements": [
+              {
+                "name": "domain",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "profile",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "networkIdDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "verifierContractDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "deploymentDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "audienceDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "originMode",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "originDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "requestIdDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "challengeDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "expiresAt",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 18446744073709551615
+                }
+              },
+              {
+                "name": "credentialFamilyDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "schemaDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "disclosureDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "predicateDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "statusMode",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "statusRegistryDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "statusRoot",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "statusRegistryVersion",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 18446744073709551615
+                }
+              },
+              {
+                "name": "statusFreshnessPolicyDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "policyDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "actionClassDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "actionInvocationDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "artifactManifestDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "replayPolicy",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "presentationBindingV1Digest",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "binding",
+          "type": {
+            "type-name": "Struct",
+            "name": "PresentationBindingV1",
+            "elements": [
+              {
+                "name": "domain",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "credentialBindingDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "holderBindingDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "disclosureDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "predicateDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "consentDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "evidenceBindingV1Digest",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "binding",
+          "type": {
+            "type-name": "Struct",
+            "name": "EvidenceBindingV1",
+            "elements": [
+              {
+                "name": "domain",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "mode",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "authorityDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "subjectDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "stateAnchorDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "statementDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "createdAt",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 18446744073709551615
+                }
+              },
+              {
+                "name": "expiresAt",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 18446744073709551615
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "anchorEvidenceReceiptV1Digest",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "receipt",
+          "type": {
+            "type-name": "Struct",
+            "name": "AnchorEvidenceReceiptV1",
+            "elements": [
+              {
+                "name": "domain",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "issuerEvidenceDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "trustEvidenceDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "statusEvidenceDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "timeEvidenceDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "artifactEvidenceDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "connectorEvidenceDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "decisionNullifierMaterialV1Digest",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "material",
+          "type": {
+            "type-name": "Struct",
+            "name": "DecisionNullifierMaterialV1",
+            "elements": [
+              {
+                "name": "domain",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "deploymentDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "verifierContractDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "replayPolicy",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "replayScopeDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "actionHolderBindingV1Digest",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "binding",
+          "type": {
+            "type-name": "Struct",
+            "name": "ActionHolderBindingV1",
+            "elements": [
+              {
+                "name": "domain",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "deploymentDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "verifierContractDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "actionClassDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "holderSubjectDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "actionCredentialBindingV1Digest",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "binding",
+          "type": {
+            "type-name": "Struct",
+            "name": "ActionCredentialBindingV1",
+            "elements": [
+              {
+                "name": "domain",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "deploymentDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "verifierContractDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "actionClassDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "credentialFamilyDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "schemaDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "credentialRoot",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "requestReplayScopeV1Digest",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "scope",
+          "type": {
+            "type-name": "Struct",
+            "name": "RequestReplayScopeV1",
+            "elements": [
+              {
+                "name": "domain",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "deploymentDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "verifierContractDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "requestIdDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "challengeDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "actionInvocationDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "holderActionReplayScopeV1Digest",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "scope",
+          "type": {
+            "type-name": "Struct",
+            "name": "HolderActionReplayScopeV1",
+            "elements": [
+              {
+                "name": "domain",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "deploymentDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "verifierContractDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "actionClassDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "actionScopeParametersDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "binding",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "ActionHolderBindingV1",
+                  "elements": [
+                    {
+                      "name": "domain",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "version",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "deploymentDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "verifierContractDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "actionClassDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "holderSubjectDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "credentialActionReplayScopeV1Digest",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "scope",
+          "type": {
+            "type-name": "Struct",
+            "name": "CredentialActionReplayScopeV1",
+            "elements": [
+              {
+                "name": "domain",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "deploymentDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "verifierContractDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "actionClassDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "actionScopeParametersDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "binding",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "ActionCredentialBindingV1",
+                  "elements": [
+                    {
+                      "name": "domain",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "version",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "deploymentDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "verifierContractDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "actionClassDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "credentialFamilyDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "schemaDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "credentialRoot",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "assertValidActionHolderBindingV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "binding",
+          "type": {
+            "type-name": "Struct",
+            "name": "ActionHolderBindingV1",
+            "elements": [
+              {
+                "name": "domain",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "deploymentDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "verifierContractDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "actionClassDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "holderSubjectDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "expectedDeploymentDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "expectedVerifierContractDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "expectedActionClassDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Tuple",
+        "types": [
+        ]
+      }
+    },
+    {
+      "name": "assertValidActionCredentialBindingV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "binding",
+          "type": {
+            "type-name": "Struct",
+            "name": "ActionCredentialBindingV1",
+            "elements": [
+              {
+                "name": "domain",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "deploymentDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "verifierContractDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "actionClassDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "credentialFamilyDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "schemaDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "credentialRoot",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "expectedDeploymentDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "expectedVerifierContractDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "expectedActionClassDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Tuple",
+        "types": [
+        ]
+      }
+    },
+    {
+      "name": "assertValidRequestReplayScopeV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "scope",
+          "type": {
+            "type-name": "Struct",
+            "name": "RequestReplayScopeV1",
+            "elements": [
+              {
+                "name": "domain",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "deploymentDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "verifierContractDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "requestIdDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "challengeDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "actionInvocationDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "expectedDeploymentDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "expectedVerifierContractDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Tuple",
+        "types": [
+        ]
+      }
+    },
+    {
+      "name": "assertValidHolderActionReplayScopeV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "scope",
+          "type": {
+            "type-name": "Struct",
+            "name": "HolderActionReplayScopeV1",
+            "elements": [
+              {
+                "name": "domain",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "deploymentDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "verifierContractDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "actionClassDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "actionScopeParametersDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "binding",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "ActionHolderBindingV1",
+                  "elements": [
+                    {
+                      "name": "domain",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "version",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "deploymentDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "verifierContractDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "actionClassDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "holderSubjectDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "expectedDeploymentDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "expectedVerifierContractDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Tuple",
+        "types": [
+        ]
+      }
+    },
+    {
+      "name": "assertValidCredentialActionReplayScopeV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "scope",
+          "type": {
+            "type-name": "Struct",
+            "name": "CredentialActionReplayScopeV1",
+            "elements": [
+              {
+                "name": "domain",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "deploymentDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "verifierContractDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "actionClassDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "actionScopeParametersDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "binding",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "ActionCredentialBindingV1",
+                  "elements": [
+                    {
+                      "name": "domain",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "version",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "deploymentDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "verifierContractDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "actionClassDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "credentialFamilyDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "schemaDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "credentialRoot",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "expectedDeploymentDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "expectedVerifierContractDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Tuple",
+        "types": [
+        ]
+      }
+    },
+    {
+      "name": "assertValidDecisionNullifierContextV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "deploymentDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "verifierContractDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Tuple",
+        "types": [
+        ]
+      }
+    },
+    {
+      "name": "deriveRequestDecisionNullifierV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "deploymentDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "verifierContractDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "scope",
+          "type": {
+            "type-name": "Struct",
+            "name": "RequestReplayScopeV1",
+            "elements": [
+              {
+                "name": "domain",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "deploymentDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "verifierContractDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "requestIdDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "challengeDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "actionInvocationDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "deriveHolderActionDecisionNullifierV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "deploymentDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "verifierContractDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "scope",
+          "type": {
+            "type-name": "Struct",
+            "name": "HolderActionReplayScopeV1",
+            "elements": [
+              {
+                "name": "domain",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "deploymentDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "verifierContractDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "actionClassDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "actionScopeParametersDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "binding",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "ActionHolderBindingV1",
+                  "elements": [
+                    {
+                      "name": "domain",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "version",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "deploymentDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "verifierContractDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "actionClassDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "holderSubjectDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "deriveCredentialActionDecisionNullifierV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "deploymentDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "verifierContractDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "scope",
+          "type": {
+            "type-name": "Struct",
+            "name": "CredentialActionReplayScopeV1",
+            "elements": [
+              {
+                "name": "domain",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "deploymentDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "verifierContractDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "actionClassDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "actionScopeParametersDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "binding",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "ActionCredentialBindingV1",
+                  "elements": [
+                    {
+                      "name": "domain",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "version",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "deploymentDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "verifierContractDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "actionClassDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "credentialFamilyDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "schemaDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "credentialRoot",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "deriveNoDecisionNullifierV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "syntheticVerificationExtensionV1Digest",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "extension",
+          "type": {
+            "type-name": "Struct",
+            "name": "SyntheticVerificationExtensionV1",
+            "elements": [
+              {
+                "name": "domain",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "familyDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "valueDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "verificationTranscriptV1Digest",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "transcript",
+          "type": {
+            "type-name": "Struct",
+            "name": "VerificationTranscriptV1",
+            "elements": [
+              {
+                "name": "domain",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "profile",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "authority",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "networkIdDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "verifierContractDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "deploymentDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "audienceDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "originMode",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "originDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "connectorEvidenceDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "requestIdDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "challengeDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "expiresAt",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 18446744073709551615
+                }
+              },
+              {
+                "name": "credentialFamilyDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "schemaDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "credentialBindingMode",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "credentialBindingDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "disclosureDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "predicateDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "holderBindingDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "policyDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "actionClassDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "actionInvocationDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "consentDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "presentationBindingDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "issuerDidDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "issuerMethodDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "issuerRelationship",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "issuerEvidenceDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "trustScopeDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "trustEvidenceDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "statusMode",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "statusRegistryDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "statusRoot",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "statusRegistryVersion",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 18446744073709551615
+                }
+              },
+              {
+                "name": "statusFreshnessPolicyDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "statusEvidenceDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "timeMode",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "trustedTime",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 18446744073709551615
+                }
+              },
+              {
+                "name": "timeEvidenceDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "artifactManifestDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "artifactEvidenceDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "nullifierMode",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "replayPolicy",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "replayScopeDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "decisionNullifier",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "assertValidEvidenceBindingV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "binding",
+          "type": {
+            "type-name": "Struct",
+            "name": "EvidenceBindingV1",
+            "elements": [
+              {
+                "name": "domain",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "mode",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "authorityDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "subjectDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "stateAnchorDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "statementDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "createdAt",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 18446744073709551615
+                }
+              },
+              {
+                "name": "expiresAt",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 18446744073709551615
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "expectedDomain",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Tuple",
+        "types": [
+        ]
+      }
+    },
+    {
+      "name": "assertValidVerificationTranscriptV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "transcript",
+          "type": {
+            "type-name": "Struct",
+            "name": "VerificationTranscriptV1",
+            "elements": [
+              {
+                "name": "domain",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "profile",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "authority",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "networkIdDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "verifierContractDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "deploymentDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "audienceDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "originMode",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "originDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "connectorEvidenceDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "requestIdDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "challengeDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "expiresAt",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 18446744073709551615
+                }
+              },
+              {
+                "name": "credentialFamilyDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "schemaDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "credentialBindingMode",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "credentialBindingDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "disclosureDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "predicateDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "holderBindingDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "policyDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "actionClassDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "actionInvocationDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "consentDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "presentationBindingDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "issuerDidDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "issuerMethodDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "issuerRelationship",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "issuerEvidenceDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "trustScopeDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "trustEvidenceDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "statusMode",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "statusRegistryDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "statusRoot",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "statusRegistryVersion",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 18446744073709551615
+                }
+              },
+              {
+                "name": "statusFreshnessPolicyDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "statusEvidenceDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "timeMode",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "trustedTime",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 18446744073709551615
+                }
+              },
+              {
+                "name": "timeEvidenceDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "artifactManifestDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "artifactEvidenceDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "nullifierMode",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "replayPolicy",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "replayScopeDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "decisionNullifier",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Tuple",
+        "types": [
+        ]
+      }
+    },
+    {
+      "name": "assertValidVerificationPublicInputsV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "inputs",
+          "type": {
+            "type-name": "Struct",
+            "name": "VerificationPublicInputsV1",
+            "elements": [
+              {
+                "name": "transcript",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "VerificationTranscriptV1",
+                  "elements": [
+                    {
+                      "name": "domain",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "version",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "profile",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "authority",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "networkIdDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "verifierContractDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "deploymentDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "audienceDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "originMode",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "originDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "connectorEvidenceDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "requestIdDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "challengeDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "expiresAt",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    },
+                    {
+                      "name": "credentialFamilyDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "schemaDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "credentialBindingMode",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "credentialBindingDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "disclosureDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "predicateDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "holderBindingDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "policyDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "actionClassDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "actionInvocationDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "consentDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "presentationBindingDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "issuerDidDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "issuerMethodDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "issuerRelationship",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "issuerEvidenceDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "trustScopeDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "trustEvidenceDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "statusMode",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "statusRegistryDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "statusRoot",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "statusRegistryVersion",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    },
+                    {
+                      "name": "statusFreshnessPolicyDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "statusEvidenceDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "timeMode",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "trustedTime",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    },
+                    {
+                      "name": "timeEvidenceDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "artifactManifestDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "artifactEvidenceDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "nullifierMode",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "replayPolicy",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "replayScopeDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "decisionNullifier",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "issuerEvidence",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "EvidenceBindingV1",
+                  "elements": [
+                    {
+                      "name": "domain",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "version",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "mode",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "authorityDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "subjectDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "stateAnchorDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "statementDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "createdAt",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    },
+                    {
+                      "name": "expiresAt",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "trustEvidence",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "EvidenceBindingV1",
+                  "elements": [
+                    {
+                      "name": "domain",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "version",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "mode",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "authorityDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "subjectDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "stateAnchorDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "statementDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "createdAt",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    },
+                    {
+                      "name": "expiresAt",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "statusEvidence",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "EvidenceBindingV1",
+                  "elements": [
+                    {
+                      "name": "domain",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "version",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "mode",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "authorityDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "subjectDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "stateAnchorDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "statementDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "createdAt",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    },
+                    {
+                      "name": "expiresAt",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "timeEvidence",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "EvidenceBindingV1",
+                  "elements": [
+                    {
+                      "name": "domain",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "version",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "mode",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "authorityDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "subjectDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "stateAnchorDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "statementDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "createdAt",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    },
+                    {
+                      "name": "expiresAt",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "artifactEvidence",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "EvidenceBindingV1",
+                  "elements": [
+                    {
+                      "name": "domain",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "version",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "mode",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "authorityDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "subjectDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "stateAnchorDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "statementDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "createdAt",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    },
+                    {
+                      "name": "expiresAt",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "connectorEvidence",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "EvidenceBindingV1",
+                  "elements": [
+                    {
+                      "name": "domain",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "version",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "mode",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "authorityDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "subjectDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "stateAnchorDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "statementDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "createdAt",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    },
+                    {
+                      "name": "expiresAt",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Tuple",
+        "types": [
+        ]
+      }
+    },
+    {
+      "name": "syntheticUnavailableAuthorityVerificationV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "inputs",
+          "type": {
+            "type-name": "Struct",
+            "name": "VerificationPublicInputsV1",
+            "elements": [
+              {
+                "name": "transcript",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "VerificationTranscriptV1",
+                  "elements": [
+                    {
+                      "name": "domain",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "version",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "profile",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "authority",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "networkIdDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "verifierContractDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "deploymentDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "audienceDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "originMode",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "originDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "connectorEvidenceDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "requestIdDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "challengeDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "expiresAt",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    },
+                    {
+                      "name": "credentialFamilyDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "schemaDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "credentialBindingMode",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "credentialBindingDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "disclosureDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "predicateDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "holderBindingDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "policyDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "actionClassDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "actionInvocationDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "consentDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "presentationBindingDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "issuerDidDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "issuerMethodDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "issuerRelationship",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "issuerEvidenceDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "trustScopeDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "trustEvidenceDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "statusMode",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "statusRegistryDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "statusRoot",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "statusRegistryVersion",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    },
+                    {
+                      "name": "statusFreshnessPolicyDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "statusEvidenceDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "timeMode",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "trustedTime",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    },
+                    {
+                      "name": "timeEvidenceDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "artifactManifestDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "artifactEvidenceDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "nullifierMode",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "replayPolicy",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "replayScopeDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "decisionNullifier",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "issuerEvidence",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "EvidenceBindingV1",
+                  "elements": [
+                    {
+                      "name": "domain",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "version",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "mode",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "authorityDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "subjectDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "stateAnchorDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "statementDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "createdAt",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    },
+                    {
+                      "name": "expiresAt",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "trustEvidence",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "EvidenceBindingV1",
+                  "elements": [
+                    {
+                      "name": "domain",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "version",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "mode",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "authorityDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "subjectDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "stateAnchorDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "statementDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "createdAt",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    },
+                    {
+                      "name": "expiresAt",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "statusEvidence",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "EvidenceBindingV1",
+                  "elements": [
+                    {
+                      "name": "domain",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "version",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "mode",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "authorityDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "subjectDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "stateAnchorDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "statementDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "createdAt",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    },
+                    {
+                      "name": "expiresAt",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "timeEvidence",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "EvidenceBindingV1",
+                  "elements": [
+                    {
+                      "name": "domain",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "version",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "mode",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "authorityDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "subjectDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "stateAnchorDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "statementDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "createdAt",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    },
+                    {
+                      "name": "expiresAt",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "artifactEvidence",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "EvidenceBindingV1",
+                  "elements": [
+                    {
+                      "name": "domain",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "version",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "mode",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "authorityDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "subjectDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "stateAnchorDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "statementDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "createdAt",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    },
+                    {
+                      "name": "expiresAt",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "connectorEvidence",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "EvidenceBindingV1",
+                  "elements": [
+                    {
+                      "name": "domain",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "version",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "mode",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    },
+                    {
+                      "name": "authorityDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "subjectDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "stateAnchorDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "statementDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "createdAt",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    },
+                    {
+                      "name": "expiresAt",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "expectedTranscriptDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Struct",
+        "name": "SyntheticVerificationAttemptV1",
+        "elements": [
+          {
+            "name": "proofStatus",
+            "type": {
+              "type-name": "Uint",
+              "maxval": 255
+            }
+          },
+          {
+            "name": "decisionStatus",
+            "type": {
+              "type-name": "Uint",
+              "maxval": 255
+            }
+          },
+          {
+            "name": "authority",
+            "type": {
+              "type-name": "Uint",
+              "maxval": 255
+            }
+          },
+          {
+            "name": "executionStatus",
+            "type": {
+              "type-name": "Uint",
+              "maxval": 255
+            }
+          },
+          {
+            "name": "transcriptDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          }
+        ]
+      }
+    },
+    {
       "name": "ageGateRequestForPolicy",
       "pure": true,
       "proof": false,
@@ -12059,6 +16732,248 @@
             }
           }
         ]
+      }
+    },
+    {
+      "name": "ageGateDecisionProfileV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+      ],
+      "result-type": {
+        "type-name": "Uint",
+        "maxval": 255
+      }
+    },
+    {
+      "name": "ageGateDecisionActionClassV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "ageGateRequestIdV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "networkIdDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "deploymentDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "verifierContractDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "request",
+          "type": {
+            "type-name": "Struct",
+            "name": "BirthCredentialPresentationRequest",
+            "elements": [
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "schema",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "SchemaRef",
+                  "elements": [
+                    {
+                      "name": "packageId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "schemaId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "majorVersion",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "minorVersion",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "issuerVerificationMethodRef",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "VerificationMethodRef",
+                  "elements": [
+                    {
+                      "name": "didContractAddress",
+                      "type": {
+                        "type-name": "Struct",
+                        "name": "ContractAddress",
+                        "elements": [
+                          {
+                            "name": "bytes",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "methodId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "requireSubjectIdCommitmentDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireBirthCountryDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireAgeOverThreshold",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requestedAgeThresholdYears",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "verifierChallengeHash",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "expiresAt",
+          "type": {
+            "type-name": "Uint",
+            "maxval": 18446744073709551615
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "issueAgeGateRequest",
+      "pure": false,
+      "proof": true,
+      "arguments": [
+        {
+          "name": "issuerVerificationMethodRef",
+          "type": {
+            "type-name": "Struct",
+            "name": "VerificationMethodRef",
+            "elements": [
+              {
+                "name": "didContractAddress",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "ContractAddress",
+                  "elements": [
+                    {
+                      "name": "bytes",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "methodId",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "verifierChallengeHash",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "currentDay",
+          "type": {
+            "type-name": "Uint",
+            "maxval": 4294967295
+          }
+        },
+        {
+          "name": "expiresAt",
+          "type": {
+            "type-name": "Uint",
+            "maxval": 18446744073709551615
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
       }
     },
     {
@@ -13700,6 +18615,871 @@
       }
     },
     {
+      "name": "ageGateProtectedMutationIdentityV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "deploymentDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "credentialRoot",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "verifierChallengeHash",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "ageGateActionInvocationV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "networkIdDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "deploymentDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "credentialRoot",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "verifierChallengeHash",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "ageThresholdYears",
+          "type": {
+            "type-name": "Uint",
+            "maxval": 255
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "ageGateDecisionTranscriptForContextV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "networkIdDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "deploymentDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "verifierContractDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "credential",
+          "type": {
+            "type-name": "Struct",
+            "name": "Credential",
+            "elements": [
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "schema",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "SchemaRef",
+                  "elements": [
+                    {
+                      "name": "packageId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "schemaId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "majorVersion",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "minorVersion",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "issuerVerificationMethodRef",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "VerificationMethodRef",
+                  "elements": [
+                    {
+                      "name": "didContractAddress",
+                      "type": {
+                        "type-name": "Struct",
+                        "name": "ContractAddress",
+                        "elements": [
+                          {
+                            "name": "bytes",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "methodId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "holderBinding",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "ExplicitHolderBinding",
+                  "elements": [
+                    {
+                      "name": "holderVerificationMethodRef",
+                      "type": {
+                        "type-name": "Struct",
+                        "name": "VerificationMethodRef",
+                        "elements": [
+                          {
+                            "name": "didContractAddress",
+                            "type": {
+                              "type-name": "Struct",
+                              "name": "ContractAddress",
+                              "elements": [
+                                {
+                                  "name": "bytes",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "name": "methodId",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "statusBinding",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "NoStatusBinding",
+                  "elements": [
+                  ]
+                }
+              },
+              {
+                "name": "issuedAt",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 18446744073709551615
+                }
+              },
+              {
+                "name": "hasExpiration",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "expiresAt",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 18446744073709551615
+                }
+              },
+              {
+                "name": "claims",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "NoPublicClaims",
+                  "elements": [
+                  ]
+                }
+              },
+              {
+                "name": "claimCommitments",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "BirthCredentialClaimCommitments",
+                  "elements": [
+                    {
+                      "name": "subjectIdCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "legalNameCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "birthDateCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "birthCountryCodeCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "claimRoot",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "presentation",
+          "type": {
+            "type-name": "Struct",
+            "name": "Presentation",
+            "elements": [
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "schema",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "SchemaRef",
+                  "elements": [
+                    {
+                      "name": "packageId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "schemaId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "majorVersion",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "minorVersion",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "credentialClaimRoot",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "issuerVerificationMethodRef",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "VerificationMethodRef",
+                  "elements": [
+                    {
+                      "name": "didContractAddress",
+                      "type": {
+                        "type-name": "Struct",
+                        "name": "ContractAddress",
+                        "elements": [
+                          {
+                            "name": "bytes",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "methodId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "holderBinding",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "ExplicitHolderBinding",
+                  "elements": [
+                    {
+                      "name": "holderVerificationMethodRef",
+                      "type": {
+                        "type-name": "Struct",
+                        "name": "VerificationMethodRef",
+                        "elements": [
+                          {
+                            "name": "didContractAddress",
+                            "type": {
+                              "type-name": "Struct",
+                              "name": "ContractAddress",
+                              "elements": [
+                                {
+                                  "name": "bytes",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "name": "methodId",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "disclosed",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "BirthCredentialDisclosures",
+                  "elements": [
+                    {
+                      "name": "revealSubjectIdCommitment",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "subjectIdCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "revealBirthCountryCode",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "birthCountryCodePadded",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "birthCountryCodeOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "proveAgeOverThreshold",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "ageThresholdYears",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "verifierChallengeHash",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "currentDay",
+          "type": {
+            "type-name": "Uint",
+            "maxval": 4294967295
+          }
+        },
+        {
+          "name": "requestIdDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "requestExpiresAt",
+          "type": {
+            "type-name": "Uint",
+            "maxval": 18446744073709551615
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Struct",
+        "name": "VerificationTranscriptV1",
+        "elements": [
+          {
+            "name": "domain",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "version",
+            "type": {
+              "type-name": "Uint",
+              "maxval": 65535
+            }
+          },
+          {
+            "name": "profile",
+            "type": {
+              "type-name": "Uint",
+              "maxval": 255
+            }
+          },
+          {
+            "name": "authority",
+            "type": {
+              "type-name": "Uint",
+              "maxval": 255
+            }
+          },
+          {
+            "name": "networkIdDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "verifierContractDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "deploymentDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "audienceDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "originMode",
+            "type": {
+              "type-name": "Uint",
+              "maxval": 255
+            }
+          },
+          {
+            "name": "originDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "connectorEvidenceDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "requestIdDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "challengeDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "expiresAt",
+            "type": {
+              "type-name": "Uint",
+              "maxval": 18446744073709551615
+            }
+          },
+          {
+            "name": "credentialFamilyDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "schemaDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "credentialBindingMode",
+            "type": {
+              "type-name": "Uint",
+              "maxval": 255
+            }
+          },
+          {
+            "name": "credentialBindingDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "disclosureDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "predicateDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "holderBindingDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "policyDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "actionClassDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "actionInvocationDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "consentDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "presentationBindingDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "issuerDidDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "issuerMethodDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "issuerRelationship",
+            "type": {
+              "type-name": "Uint",
+              "maxval": 255
+            }
+          },
+          {
+            "name": "issuerEvidenceDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "trustScopeDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "trustEvidenceDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "statusMode",
+            "type": {
+              "type-name": "Uint",
+              "maxval": 255
+            }
+          },
+          {
+            "name": "statusRegistryDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "statusRoot",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "statusRegistryVersion",
+            "type": {
+              "type-name": "Uint",
+              "maxval": 18446744073709551615
+            }
+          },
+          {
+            "name": "statusFreshnessPolicyDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "statusEvidenceDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "timeMode",
+            "type": {
+              "type-name": "Uint",
+              "maxval": 255
+            }
+          },
+          {
+            "name": "trustedTime",
+            "type": {
+              "type-name": "Uint",
+              "maxval": 18446744073709551615
+            }
+          },
+          {
+            "name": "timeEvidenceDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "artifactManifestDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "artifactEvidenceDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "nullifierMode",
+            "type": {
+              "type-name": "Uint",
+              "maxval": 255
+            }
+          },
+          {
+            "name": "replayPolicy",
+            "type": {
+              "type-name": "Uint",
+              "maxval": 255
+            }
+          },
+          {
+            "name": "replayScopeDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "decisionNullifier",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          }
+        ]
+      }
+    },
+    {
       "name": "issueAgeGateCapability",
       "pure": false,
       "proof": true,
@@ -14297,11 +20077,61 @@
             "type-name": "Uint",
             "maxval": 4294967295
           }
+        },
+        {
+          "name": "requestIdDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "submittedTranscriptDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
         }
       ],
       "result-type": {
-        "type-name": "Bytes",
-        "length": 32
+        "type-name": "Struct",
+        "name": "AgeGateDecisionReceiptV1",
+        "elements": [
+          {
+            "name": "status",
+            "type": {
+              "type-name": "Enum",
+              "name": "AgeGateDecisionStatusV1",
+              "elements": [
+                "noDecision",
+                "applied",
+                "duplicate",
+                "conflict"
+              ]
+            }
+          },
+          {
+            "name": "decisionNullifier",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "transcriptDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "capability",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          }
+        ]
       }
     },
     {
@@ -14377,8 +20207,8 @@
     {
       "name": "verifiedPresentationCount",
       "index": [
-        1,
-        0
+        0,
+        2
       ],
       "exported": true,
       "storage": "Counter"
@@ -14386,8 +20216,8 @@
     {
       "name": "minimumAccessAgeYears",
       "index": [
-        1,
-        1
+        0,
+        3
       ],
       "exported": true,
       "storage": "Cell",
@@ -14399,8 +20229,8 @@
     {
       "name": "ageGateRequiresBirthCountryDisclosure",
       "index": [
-        1,
-        2
+        0,
+        4
       ],
       "exported": true,
       "storage": "Cell",
@@ -14409,10 +20239,49 @@
       }
     },
     {
+      "name": "verificationNetworkIdDigest",
+      "index": [
+        0,
+        5
+      ],
+      "exported": true,
+      "storage": "Cell",
+      "type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "verificationDeploymentDigest",
+      "index": [
+        0,
+        6
+      ],
+      "exported": true,
+      "storage": "Cell",
+      "type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "verificationVerifierContractDigest",
+      "index": [
+        0,
+        7
+      ],
+      "exported": true,
+      "storage": "Cell",
+      "type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
       "name": "issuedCredentialClaimRoots",
       "index": [
-        1,
-        3
+        0,
+        8
       ],
       "exported": true,
       "storage": "Set",
@@ -14424,8 +20293,8 @@
     {
       "name": "issuedCredentialHolderPublicKeys",
       "index": [
-        1,
-        4
+        0,
+        9
       ],
       "exported": true,
       "storage": "Map",
@@ -14445,8 +20314,8 @@
     {
       "name": "lastVerifiedCredentialRoot",
       "index": [
-        1,
-        5
+        0,
+        10
       ],
       "exported": true,
       "storage": "Cell",
@@ -14458,8 +20327,8 @@
     {
       "name": "lastVerifiedCurrentDay",
       "index": [
-        1,
-        6
+        0,
+        11
       ],
       "exported": true,
       "storage": "Cell",
@@ -14471,8 +20340,8 @@
     {
       "name": "lastVerifiedThresholdYears",
       "index": [
-        1,
-        7
+        0,
+        12
       ],
       "exported": true,
       "storage": "Cell",
@@ -14484,8 +20353,8 @@
     {
       "name": "lastVerifiedRequestChallenge",
       "index": [
-        1,
-        8
+        0,
+        13
       ],
       "exported": true,
       "storage": "Cell",
@@ -14497,8 +20366,8 @@
     {
       "name": "issuedAccessCapabilityCount",
       "index": [
-        1,
-        9
+        0,
+        14
       ],
       "exported": true,
       "storage": "Counter"
@@ -14507,7 +20376,7 @@
       "name": "consumedAccessCapabilityCount",
       "index": [
         1,
-        10
+        0
       ],
       "exported": true,
       "storage": "Counter"
@@ -14516,7 +20385,7 @@
       "name": "activeAccessCapabilities",
       "index": [
         1,
-        11
+        1
       ],
       "exported": true,
       "storage": "Set",
@@ -14529,10 +20398,189 @@
       "name": "consumedAccessCapabilities",
       "index": [
         1,
-        12
+        2
       ],
       "exported": true,
       "storage": "Set",
+      "type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "issuedAgeGateRequestCount",
+      "index": [
+        1,
+        3
+      ],
+      "exported": true,
+      "storage": "Counter"
+    },
+    {
+      "name": "issuedAgeGateRequestIds",
+      "index": [
+        1,
+        4
+      ],
+      "exported": true,
+      "storage": "Set",
+      "type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "issuedAgeGateRequests",
+      "index": [
+        1,
+        5
+      ],
+      "exported": true,
+      "storage": "Map",
+      "key": {
+        "type-name": "Bytes",
+        "length": 32
+      },
+      "value": {
+        "type-name": "Struct",
+        "name": "IssuedAgeGateRequestStateV1",
+        "elements": [
+          {
+            "name": "challengeDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "expiresAt",
+            "type": {
+              "type-name": "Uint",
+              "maxval": 18446744073709551615
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "consumedDecisionNullifierCount",
+      "index": [
+        1,
+        6
+      ],
+      "exported": true,
+      "storage": "Counter"
+    },
+    {
+      "name": "consumedDecisionNullifiers",
+      "index": [
+        1,
+        7
+      ],
+      "exported": true,
+      "storage": "Set",
+      "type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "committedAgeGateDecisions",
+      "index": [
+        1,
+        8
+      ],
+      "exported": true,
+      "storage": "Map",
+      "key": {
+        "type-name": "Bytes",
+        "length": 32
+      },
+      "value": {
+        "type-name": "Struct",
+        "name": "CommittedAgeGateDecisionV1",
+        "elements": [
+          {
+            "name": "status",
+            "type": {
+              "type-name": "Enum",
+              "name": "AgeGateDecisionStatusV1",
+              "elements": [
+                "noDecision",
+                "applied",
+                "duplicate",
+                "conflict"
+              ]
+            }
+          },
+          {
+            "name": "transcriptDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "capability",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "protectedMutationIdentities",
+      "index": [
+        1,
+        9
+      ],
+      "exported": true,
+      "storage": "Set",
+      "type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "protectedMutationDecisionNullifiers",
+      "index": [
+        1,
+        10
+      ],
+      "exported": true,
+      "storage": "Map",
+      "key": {
+        "type-name": "Bytes",
+        "length": 32
+      },
+      "value": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "lastDecisionNullifier",
+      "index": [
+        1,
+        11
+      ],
+      "exported": true,
+      "storage": "Cell",
+      "type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "lastDecisionTranscriptDigest",
+      "index": [
+        1,
+        12
+      ],
+      "exported": true,
+      "storage": "Cell",
       "type": {
         "type-name": "Bytes",
         "length": 32

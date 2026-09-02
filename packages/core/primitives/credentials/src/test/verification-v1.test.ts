@@ -3,13 +3,23 @@ import { describe, expect, expectTypeOf, it } from "vitest";
 
 import {
   asBytes32,
+  deriveCredentialActionDecisionNullifierV1,
+  deriveHolderActionDecisionNullifierV1,
+  deriveNoDecisionNullifierV1,
+  deriveRequestDecisionNullifierV1,
+  hashActionCredentialBindingV1,
+  hashActionHolderBindingV1,
   hashAnchorEvidenceReceiptV1,
   hashConsentBindingV1,
+  hashCredentialActionReplayScopeV1,
   hashCredentialBindingV1,
   hashDecisionNullifierMaterialV1,
   hashEvidenceBindingV1,
+  hashHolderActionReplayScopeV1,
   hashHolderBindingV1,
   hashPresentationBindingV1,
+  hashReplayScopeV1,
+  hashRequestReplayScopeV1,
   hashSyntheticVerificationExtensionV1,
   hashVerificationTranscriptV1,
   type LedgerVerificationReceiptV1,
@@ -21,7 +31,12 @@ import {
   verifyPublicOffchain,
 } from "../index.js";
 import {
+  type ActionCredentialBindingV1,
+  type ActionHolderBindingV1,
+  type CredentialActionReplayScopeV1,
+  type HolderActionReplayScopeV1,
   pureCircuits,
+  type RequestReplayScopeV1,
   type VerificationPublicInputsV1,
   type VerificationTranscriptV1,
 } from "../managed/credentials/contract/index.js";
@@ -66,6 +81,22 @@ const EXPECTED_VECTORS = {
   extension: "c6a80b82bbbf6bee430c792e7e58b517e55ededd9e3e59484f9ec97bf7285b85",
   transcript:
     "20cc76e018b642a2a2bd9eec97181eed6ab32c1872f0c2e73f12389691ea3954",
+  actionHolderBinding:
+    "4126538a191a337a4893c8e531ecc26556c8dfa272d4881a7d787c91e74118bb",
+  actionCredentialBinding:
+    "8db09dda010e8e2ff2349cbe248f20700b5be2c6b584da74409091523132c92b",
+  requestReplayScope:
+    "55f5c70c9b6da6e2509b4384191036f54d22db17fe3368ce12e232fc8f8473fd",
+  holderActionReplayScope:
+    "299d2ebe877ce03c1cf7957e2cc7fa044fc6634fdf7d060ae3ce0e44205e594b",
+  credentialActionReplayScope:
+    "b4061e46989c65532feca979b663108d63b2ec5682db12a0b80a15dd94554da8",
+  requestDecisionNullifier:
+    "2fe663dac45c9cfb01b31882dfc3fad02239ddb12f86219357514fbe9bd26cf0",
+  holderActionDecisionNullifier:
+    "da92a7cb88aef404496101c5aa44928845633cec6601bf9cf064ed789749ca5c",
+  credentialActionDecisionNullifier:
+    "3404affcff312d8dfebb8705744572fecfa60ccb6eeb2c9a58ec3b2a3813691f",
 } as const;
 
 const TRANSCRIPT_FIELDS = [
@@ -158,6 +189,31 @@ describe("credentials core: verification contract v1", () => {
         "decisionNullifier",
         "midnight:vc:decision-nullifier:v1",
         pureCircuits.decisionNullifierDomainV1,
+      ],
+      [
+        "replayScopeRequest",
+        "midnight:vc:replay-scope:request:v1",
+        pureCircuits.replayScopeRequestDomainV1,
+      ],
+      [
+        "replayScopeHolderAction",
+        "midnight:vc:replay-scope:holder-action:v1",
+        pureCircuits.replayScopeHolderActionDomainV1,
+      ],
+      [
+        "replayScopeCredentialAction",
+        "midnight:vc:replay-scope:credential-action:v1",
+        pureCircuits.replayScopeCredentialActionDomainV1,
+      ],
+      [
+        "actionHolderBinding",
+        "midnight:vc:action-holder-binding:v1",
+        pureCircuits.actionHolderBindingDomainV1,
+      ],
+      [
+        "actionCredentialBinding",
+        "midnight:vc:action-credential-binding:v1",
+        pureCircuits.actionCredentialBindingDomainV1,
       ],
       [
         "credentialBinding",
@@ -493,6 +549,299 @@ describe("credentials core: verification contract v1", () => {
     const copied = asBytes32(source);
     source[0] ^= 0xff;
     expect(copied).not.toEqual(source);
+  });
+
+  it("derives policy-specific replay scopes and decision nullifiers", () => {
+    const fixture = createVerificationV1Fixture();
+    const deploymentDigest = fixture.transcript.deploymentDigest;
+    const verifierContractDigest = fixture.transcript.verifierContractDigest;
+    const requestScope: RequestReplayScopeV1 = {
+      domain: verificationDomainV1("replayScopeRequest"),
+      version: 1n,
+      deploymentDigest,
+      verifierContractDigest,
+      requestIdDigest: fixture.transcript.requestIdDigest,
+      challengeDigest: fixture.transcript.challengeDigest,
+      actionInvocationDigest: digest("verification-v1:action:request"),
+    };
+    const holderBinding: ActionHolderBindingV1 = {
+      domain: verificationDomainV1("actionHolderBinding"),
+      version: 1n,
+      deploymentDigest,
+      verifierContractDigest,
+      actionClassDigest: digest("verification-v1:action-class"),
+      holderSubjectDigest: digest("verification-v1:holder-subject"),
+    };
+    const credentialBinding: ActionCredentialBindingV1 = {
+      domain: verificationDomainV1("actionCredentialBinding"),
+      version: 1n,
+      deploymentDigest,
+      verifierContractDigest,
+      actionClassDigest: digest("verification-v1:action-class"),
+      credentialFamilyDigest: fixture.transcript.credentialFamilyDigest,
+      schemaDigest: fixture.transcript.schemaDigest,
+      credentialRoot: digest("verification-v1:credential-root"),
+    };
+    const holderScope: HolderActionReplayScopeV1 = {
+      domain: verificationDomainV1("replayScopeHolderAction"),
+      version: 1n,
+      deploymentDigest,
+      verifierContractDigest,
+      actionClassDigest: holderBinding.actionClassDigest,
+      actionScopeParametersDigest: digest("verification-v1:holder-scope"),
+      binding: holderBinding,
+    };
+    const credentialScope: CredentialActionReplayScopeV1 = {
+      domain: verificationDomainV1("replayScopeCredentialAction"),
+      version: 1n,
+      deploymentDigest,
+      verifierContractDigest,
+      actionClassDigest: credentialBinding.actionClassDigest,
+      actionScopeParametersDigest: digest("verification-v1:credential-scope"),
+      binding: credentialBinding,
+    };
+
+    const actionHolderBindingDigest = hashActionHolderBindingV1(holderBinding);
+    const actionCredentialBindingDigest =
+      hashActionCredentialBindingV1(credentialBinding);
+    const requestReplayScopeDigest = hashRequestReplayScopeV1(requestScope);
+    const holderActionReplayScopeDigest =
+      hashHolderActionReplayScopeV1(holderScope);
+    const credentialActionReplayScopeDigest =
+      hashCredentialActionReplayScopeV1(credentialScope);
+    expect(hashReplayScopeV1(requestScope)).toEqual(requestReplayScopeDigest);
+    expect(hashReplayScopeV1(holderScope)).toEqual(
+      holderActionReplayScopeDigest,
+    );
+    expect(hashReplayScopeV1(credentialScope)).toEqual(
+      credentialActionReplayScopeDigest,
+    );
+    expect(() =>
+      hashReplayScopeV1({
+        ...requestScope,
+        domain: digest("verification-v1:wrong-replay-scope-domain"),
+      }),
+    ).toThrow(/Replay scope domain is unknown/);
+    const malformedReplayScope = {
+      ...requestScope,
+      domain: new Uint8Array(31),
+    } as unknown as Parameters<typeof hashReplayScopeV1>[0];
+    expect(() => hashReplayScopeV1(malformedReplayScope)).toThrow(
+      /Replay scope domain is malformed/,
+    );
+    expect(toHex(actionHolderBindingDigest)).toBe(
+      EXPECTED_VECTORS.actionHolderBinding,
+    );
+    expect(toHex(pureCircuits.actionHolderBindingV1Digest(holderBinding))).toBe(
+      EXPECTED_VECTORS.actionHolderBinding,
+    );
+    expect(toHex(actionCredentialBindingDigest)).toBe(
+      EXPECTED_VECTORS.actionCredentialBinding,
+    );
+    expect(
+      toHex(pureCircuits.actionCredentialBindingV1Digest(credentialBinding)),
+    ).toBe(EXPECTED_VECTORS.actionCredentialBinding);
+    expect(toHex(requestReplayScopeDigest)).toBe(
+      EXPECTED_VECTORS.requestReplayScope,
+    );
+    expect(toHex(pureCircuits.requestReplayScopeV1Digest(requestScope))).toBe(
+      EXPECTED_VECTORS.requestReplayScope,
+    );
+    expect(toHex(holderActionReplayScopeDigest)).toBe(
+      EXPECTED_VECTORS.holderActionReplayScope,
+    );
+    expect(
+      toHex(pureCircuits.holderActionReplayScopeV1Digest(holderScope)),
+    ).toBe(EXPECTED_VECTORS.holderActionReplayScope);
+    expect(toHex(credentialActionReplayScopeDigest)).toBe(
+      EXPECTED_VECTORS.credentialActionReplayScope,
+    );
+    expect(
+      toHex(pureCircuits.credentialActionReplayScopeV1Digest(credentialScope)),
+    ).toBe(EXPECTED_VECTORS.credentialActionReplayScope);
+
+    const requestNullifier = deriveRequestDecisionNullifierV1({
+      deploymentDigest,
+      verifierContractDigest,
+      scope: requestScope,
+    });
+    const holderNullifier = deriveHolderActionDecisionNullifierV1({
+      deploymentDigest,
+      verifierContractDigest,
+      scope: holderScope,
+    });
+    const credentialNullifier = deriveCredentialActionDecisionNullifierV1({
+      deploymentDigest,
+      verifierContractDigest,
+      scope: credentialScope,
+    });
+    expect(toHex(requestNullifier)).toBe(
+      EXPECTED_VECTORS.requestDecisionNullifier,
+    );
+    expect(
+      toHex(
+        pureCircuits.deriveRequestDecisionNullifierV1(
+          deploymentDigest,
+          verifierContractDigest,
+          requestScope,
+        ),
+      ),
+    ).toBe(EXPECTED_VECTORS.requestDecisionNullifier);
+    expect(toHex(holderNullifier)).toBe(
+      EXPECTED_VECTORS.holderActionDecisionNullifier,
+    );
+    expect(
+      toHex(
+        pureCircuits.deriveHolderActionDecisionNullifierV1(
+          deploymentDigest,
+          verifierContractDigest,
+          holderScope,
+        ),
+      ),
+    ).toBe(EXPECTED_VECTORS.holderActionDecisionNullifier);
+    expect(toHex(credentialNullifier)).toBe(
+      EXPECTED_VECTORS.credentialActionDecisionNullifier,
+    );
+    expect(
+      toHex(
+        pureCircuits.deriveCredentialActionDecisionNullifierV1(
+          deploymentDigest,
+          verifierContractDigest,
+          credentialScope,
+        ),
+      ),
+    ).toBe(EXPECTED_VECTORS.credentialActionDecisionNullifier);
+    expect(requestNullifier).not.toEqual(holderNullifier);
+    expect(holderNullifier).not.toEqual(credentialNullifier);
+    expect(requestNullifier).toEqual(
+      hashDecisionNullifierMaterialV1({
+        domain: verificationDomainV1("decisionNullifier"),
+        version: 1n,
+        deploymentDigest,
+        verifierContractDigest,
+        replayPolicy: 1n,
+        replayScopeDigest: hashRequestReplayScopeV1(requestScope),
+      }),
+    );
+    expect(
+      pureCircuits.deriveRequestDecisionNullifierV1(
+        deploymentDigest,
+        verifierContractDigest,
+        requestScope,
+      ),
+    ).toEqual(requestNullifier);
+    expect(
+      pureCircuits.deriveHolderActionDecisionNullifierV1(
+        deploymentDigest,
+        verifierContractDigest,
+        holderScope,
+      ),
+    ).toEqual(holderNullifier);
+    expect(
+      pureCircuits.deriveCredentialActionDecisionNullifierV1(
+        deploymentDigest,
+        verifierContractDigest,
+        credentialScope,
+      ),
+    ).toEqual(credentialNullifier);
+    expect(deriveNoDecisionNullifierV1()).toEqual(new Uint8Array(32));
+    expect(pureCircuits.deriveNoDecisionNullifierV1()).toEqual(
+      new Uint8Array(32),
+    );
+
+    // Required-nullifier circuits reject absent deployment/verifier provenance
+    // directly; the zero circuit has no scope arguments to ignore.
+    const zero = new Uint8Array(32);
+    expect(() =>
+      pureCircuits.deriveRequestDecisionNullifierV1(
+        zero,
+        verifierContractDigest,
+        requestScope,
+      ),
+    ).toThrow(/Deployment digest must be set/);
+    expect(() =>
+      pureCircuits.deriveRequestDecisionNullifierV1(
+        deploymentDigest,
+        zero,
+        requestScope,
+      ),
+    ).toThrow(/Verifier contract digest must be set/);
+    expect(() =>
+      pureCircuits.deriveHolderActionDecisionNullifierV1(
+        zero,
+        verifierContractDigest,
+        holderScope,
+      ),
+    ).toThrow(/Deployment digest must be set/);
+    expect(() =>
+      pureCircuits.deriveCredentialActionDecisionNullifierV1(
+        deploymentDigest,
+        zero,
+        credentialScope,
+      ),
+    ).toThrow(/Verifier contract digest must be set/);
+
+    expect(() =>
+      pureCircuits.deriveRequestDecisionNullifierV1(
+        deploymentDigest,
+        verifierContractDigest,
+        { ...requestScope, domain: holderScope.domain },
+      ),
+    ).toThrow(/Request replay scope domain is unknown/);
+    expect(() =>
+      pureCircuits.deriveHolderActionDecisionNullifierV1(
+        deploymentDigest,
+        verifierContractDigest,
+        { ...holderScope, version: 2n },
+      ),
+    ).toThrow(/Holder-action replay scope version must be 1/);
+    expect(() =>
+      pureCircuits.deriveCredentialActionDecisionNullifierV1(
+        deploymentDigest,
+        verifierContractDigest,
+        {
+          ...credentialScope,
+          binding: {
+            ...credentialBinding,
+            credentialRoot: zero,
+          },
+        },
+      ),
+    ).toThrow(/Action credential root binding must be set/);
+
+    expect(() =>
+      deriveRequestDecisionNullifierV1({
+        deploymentDigest: zero,
+        verifierContractDigest,
+        scope: requestScope,
+      }),
+    ).toThrow(/Deployment digest must be set/);
+    expect(() =>
+      deriveHolderActionDecisionNullifierV1({
+        deploymentDigest,
+        verifierContractDigest: zero,
+        scope: holderScope,
+      }),
+    ).toThrow(/Verifier contract digest must be set/);
+  });
+
+  it("fails closed for malformed required-nullifier inputs", () => {
+    const fixture = createVerificationV1Fixture();
+    expect(() =>
+      deriveRequestDecisionNullifierV1({
+        deploymentDigest: fixture.transcript.deploymentDigest,
+        verifierContractDigest: fixture.transcript.verifierContractDigest,
+        scope: {
+          domain: asBytes32(digest("verification-v1:wrong-domain")),
+          version: 1n,
+          deploymentDigest: fixture.transcript.deploymentDigest,
+          verifierContractDigest: fixture.transcript.verifierContractDigest,
+          requestIdDigest: digest("verification-v1:request"),
+          challengeDigest: digest("verification-v1:challenge"),
+          actionInvocationDigest: digest("verification-v1:action"),
+        },
+      }),
+    ).toThrow(/Replay scope domain is unknown/);
   });
 
   it("makes impossible result combinations unrepresentable", () => {

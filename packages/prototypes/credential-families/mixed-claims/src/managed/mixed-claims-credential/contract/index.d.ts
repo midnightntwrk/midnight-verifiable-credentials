@@ -176,6 +176,51 @@ export type DecisionNullifierMaterialV1 = { domain: Uint8Array;
                                             replayScopeDigest: Uint8Array
                                           };
 
+export type ActionHolderBindingV1 = { domain: Uint8Array;
+                                      version: bigint;
+                                      deploymentDigest: Uint8Array;
+                                      verifierContractDigest: Uint8Array;
+                                      actionClassDigest: Uint8Array;
+                                      holderSubjectDigest: Uint8Array
+                                    };
+
+export type ActionCredentialBindingV1 = { domain: Uint8Array;
+                                          version: bigint;
+                                          deploymentDigest: Uint8Array;
+                                          verifierContractDigest: Uint8Array;
+                                          actionClassDigest: Uint8Array;
+                                          credentialFamilyDigest: Uint8Array;
+                                          schemaDigest: Uint8Array;
+                                          credentialRoot: Uint8Array
+                                        };
+
+export type RequestReplayScopeV1 = { domain: Uint8Array;
+                                     version: bigint;
+                                     deploymentDigest: Uint8Array;
+                                     verifierContractDigest: Uint8Array;
+                                     requestIdDigest: Uint8Array;
+                                     challengeDigest: Uint8Array;
+                                     actionInvocationDigest: Uint8Array
+                                   };
+
+export type HolderActionReplayScopeV1 = { domain: Uint8Array;
+                                          version: bigint;
+                                          deploymentDigest: Uint8Array;
+                                          verifierContractDigest: Uint8Array;
+                                          actionClassDigest: Uint8Array;
+                                          actionScopeParametersDigest: Uint8Array;
+                                          binding: ActionHolderBindingV1
+                                        };
+
+export type CredentialActionReplayScopeV1 = { domain: Uint8Array;
+                                              version: bigint;
+                                              deploymentDigest: Uint8Array;
+                                              verifierContractDigest: Uint8Array;
+                                              actionClassDigest: Uint8Array;
+                                              actionScopeParametersDigest: Uint8Array;
+                                              binding: ActionCredentialBindingV1
+                                            };
+
 export type SyntheticVerificationExtensionV1 = { domain: Uint8Array;
                                                  version: bigint;
                                                  familyDigest: Uint8Array;
@@ -391,6 +436,11 @@ export type PureCircuits = {
   registryBoundStatusBindingRoot(binding_0: RegistryBoundStatusBinding): Uint8Array;
   verificationTranscriptDomainV1(): Uint8Array;
   decisionNullifierDomainV1(): Uint8Array;
+  replayScopeRequestDomainV1(): Uint8Array;
+  replayScopeHolderActionDomainV1(): Uint8Array;
+  replayScopeCredentialActionDomainV1(): Uint8Array;
+  actionHolderBindingDomainV1(): Uint8Array;
+  actionCredentialBindingDomainV1(): Uint8Array;
   credentialBindingDomainV1(): Uint8Array;
   holderBindingDomainV1(): Uint8Array;
   consentBindingDomainV1(): Uint8Array;
@@ -410,6 +460,40 @@ export type PureCircuits = {
   evidenceBindingV1Digest(binding_0: EvidenceBindingV1): Uint8Array;
   anchorEvidenceReceiptV1Digest(receipt_0: AnchorEvidenceReceiptV1): Uint8Array;
   decisionNullifierMaterialV1Digest(material_0: DecisionNullifierMaterialV1): Uint8Array;
+  actionHolderBindingV1Digest(binding_0: ActionHolderBindingV1): Uint8Array;
+  actionCredentialBindingV1Digest(binding_0: ActionCredentialBindingV1): Uint8Array;
+  requestReplayScopeV1Digest(scope_0: RequestReplayScopeV1): Uint8Array;
+  holderActionReplayScopeV1Digest(scope_0: HolderActionReplayScopeV1): Uint8Array;
+  credentialActionReplayScopeV1Digest(scope_0: CredentialActionReplayScopeV1): Uint8Array;
+  assertValidActionHolderBindingV1(binding_0: ActionHolderBindingV1,
+                                   expectedDeploymentDigest_0: Uint8Array,
+                                   expectedVerifierContractDigest_0: Uint8Array,
+                                   expectedActionClassDigest_0: Uint8Array): [];
+  assertValidActionCredentialBindingV1(binding_0: ActionCredentialBindingV1,
+                                       expectedDeploymentDigest_0: Uint8Array,
+                                       expectedVerifierContractDigest_0: Uint8Array,
+                                       expectedActionClassDigest_0: Uint8Array): [];
+  assertValidRequestReplayScopeV1(scope_0: RequestReplayScopeV1,
+                                  expectedDeploymentDigest_0: Uint8Array,
+                                  expectedVerifierContractDigest_0: Uint8Array): [];
+  assertValidHolderActionReplayScopeV1(scope_0: HolderActionReplayScopeV1,
+                                       expectedDeploymentDigest_0: Uint8Array,
+                                       expectedVerifierContractDigest_0: Uint8Array): [];
+  assertValidCredentialActionReplayScopeV1(scope_0: CredentialActionReplayScopeV1,
+                                           expectedDeploymentDigest_0: Uint8Array,
+                                           expectedVerifierContractDigest_0: Uint8Array): [];
+  assertValidDecisionNullifierContextV1(deploymentDigest_0: Uint8Array,
+                                        verifierContractDigest_0: Uint8Array): [];
+  deriveRequestDecisionNullifierV1(deploymentDigest_0: Uint8Array,
+                                   verifierContractDigest_0: Uint8Array,
+                                   scope_0: RequestReplayScopeV1): Uint8Array;
+  deriveHolderActionDecisionNullifierV1(deploymentDigest_0: Uint8Array,
+                                        verifierContractDigest_0: Uint8Array,
+                                        scope_0: HolderActionReplayScopeV1): Uint8Array;
+  deriveCredentialActionDecisionNullifierV1(deploymentDigest_0: Uint8Array,
+                                            verifierContractDigest_0: Uint8Array,
+                                            scope_0: CredentialActionReplayScopeV1): Uint8Array;
+  deriveNoDecisionNullifierV1(): Uint8Array;
   syntheticVerificationExtensionV1Digest(extension_0: SyntheticVerificationExtensionV1): Uint8Array;
   verificationTranscriptV1Digest(transcript_0: VerificationTranscriptV1): Uint8Array;
   assertValidEvidenceBindingV1(binding_0: EvidenceBindingV1,
@@ -598,6 +682,11 @@ export type Circuits<PS> = {
                                  binding_0: RegistryBoundStatusBinding): __compactRuntime.CircuitResults<PS, Uint8Array>;
   verificationTranscriptDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
   decisionNullifierDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  replayScopeRequestDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  replayScopeHolderActionDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  replayScopeCredentialActionDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  actionHolderBindingDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  actionCredentialBindingDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
   credentialBindingDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
   holderBindingDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
   consentBindingDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
@@ -624,6 +713,54 @@ export type Circuits<PS> = {
                                 receipt_0: AnchorEvidenceReceiptV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
   decisionNullifierMaterialV1Digest(context: __compactRuntime.CircuitContext<PS>,
                                     material_0: DecisionNullifierMaterialV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  actionHolderBindingV1Digest(context: __compactRuntime.CircuitContext<PS>,
+                              binding_0: ActionHolderBindingV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  actionCredentialBindingV1Digest(context: __compactRuntime.CircuitContext<PS>,
+                                  binding_0: ActionCredentialBindingV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  requestReplayScopeV1Digest(context: __compactRuntime.CircuitContext<PS>,
+                             scope_0: RequestReplayScopeV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  holderActionReplayScopeV1Digest(context: __compactRuntime.CircuitContext<PS>,
+                                  scope_0: HolderActionReplayScopeV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  credentialActionReplayScopeV1Digest(context: __compactRuntime.CircuitContext<PS>,
+                                      scope_0: CredentialActionReplayScopeV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  assertValidActionHolderBindingV1(context: __compactRuntime.CircuitContext<PS>,
+                                   binding_0: ActionHolderBindingV1,
+                                   expectedDeploymentDigest_0: Uint8Array,
+                                   expectedVerifierContractDigest_0: Uint8Array,
+                                   expectedActionClassDigest_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  assertValidActionCredentialBindingV1(context: __compactRuntime.CircuitContext<PS>,
+                                       binding_0: ActionCredentialBindingV1,
+                                       expectedDeploymentDigest_0: Uint8Array,
+                                       expectedVerifierContractDigest_0: Uint8Array,
+                                       expectedActionClassDigest_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  assertValidRequestReplayScopeV1(context: __compactRuntime.CircuitContext<PS>,
+                                  scope_0: RequestReplayScopeV1,
+                                  expectedDeploymentDigest_0: Uint8Array,
+                                  expectedVerifierContractDigest_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  assertValidHolderActionReplayScopeV1(context: __compactRuntime.CircuitContext<PS>,
+                                       scope_0: HolderActionReplayScopeV1,
+                                       expectedDeploymentDigest_0: Uint8Array,
+                                       expectedVerifierContractDigest_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  assertValidCredentialActionReplayScopeV1(context: __compactRuntime.CircuitContext<PS>,
+                                           scope_0: CredentialActionReplayScopeV1,
+                                           expectedDeploymentDigest_0: Uint8Array,
+                                           expectedVerifierContractDigest_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  assertValidDecisionNullifierContextV1(context: __compactRuntime.CircuitContext<PS>,
+                                        deploymentDigest_0: Uint8Array,
+                                        verifierContractDigest_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  deriveRequestDecisionNullifierV1(context: __compactRuntime.CircuitContext<PS>,
+                                   deploymentDigest_0: Uint8Array,
+                                   verifierContractDigest_0: Uint8Array,
+                                   scope_0: RequestReplayScopeV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  deriveHolderActionDecisionNullifierV1(context: __compactRuntime.CircuitContext<PS>,
+                                        deploymentDigest_0: Uint8Array,
+                                        verifierContractDigest_0: Uint8Array,
+                                        scope_0: HolderActionReplayScopeV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  deriveCredentialActionDecisionNullifierV1(context: __compactRuntime.CircuitContext<PS>,
+                                            deploymentDigest_0: Uint8Array,
+                                            verifierContractDigest_0: Uint8Array,
+                                            scope_0: CredentialActionReplayScopeV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  deriveNoDecisionNullifierV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
   syntheticVerificationExtensionV1Digest(context: __compactRuntime.CircuitContext<PS>,
                                          extension_0: SyntheticVerificationExtensionV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
   verificationTranscriptV1Digest(context: __compactRuntime.CircuitContext<PS>,
