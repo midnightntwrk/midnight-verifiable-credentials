@@ -6,6 +6,9 @@ packages:
   - packages/core/status
   - packages/core/primitives/credentials
   - packages/registry/status-registry
+  - packages/registry/status-midnight-contract
+  - packages/registry/status-midnight-verifier
+  - packages/registry/status-midnight-authority
   - packages/core/capabilities/same-holder
   - packages/core/primitives/iso-registry
   - packages/components/adapters/offchain-did

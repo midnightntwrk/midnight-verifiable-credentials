@@ -555,10 +555,17 @@ describe("credential composition contracts", () => {
       catalog: catalog(),
     });
 
-    expect(graph.packages.map(({ domain }) => domain)).toContain("signing");
-    expect(graph.packages.map(({ domain }) => domain)).not.toContain(
-      "status-registry",
-    );
+    const packageDomains = graph.packages.map(({ domain }) => domain);
+    expect(packageDomains).toContain("signing");
+    expect(packageDomains).not.toContain("status-registry");
+    expect(packageDomains).not.toContain("status-proof");
+    expect(packageDomains).not.toContain("status-authority");
+    expect(packageDomains).not.toContain("status-mutation");
+    expect(
+      graph.packages.some(({ name }) =>
+        name.startsWith("@midnight-ntwrk/credential-status-midnight-"),
+      ),
+    ).toBe(false);
     expect(
       graph.providers.some(({ role }) => role.startsWith("status-")),
     ).toBe(false);
