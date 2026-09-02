@@ -118,8 +118,12 @@ try {
   const authorityOutput = run("node", [
     path.join(consumerRoot, "dist/authority-consumer.js"),
   ]);
+  const artifactAuthorityOutput = run("node", [
+    path.join(consumerRoot, "dist/artifact-authority-consumer.js"),
+  ]);
   process.stdout.write(output);
   process.stdout.write(authorityOutput);
+  process.stdout.write(artifactAuthorityOutput);
 } finally {
   rmSync(temporaryRoot, { recursive: true, force: true });
 }

@@ -469,6 +469,21 @@ const resolveArtifacts = (input: ResolveCredentialCompositionInput) => {
   const concrete = new Map(
     input.assembly.artifacts.map((artifact) => [artifact.requirementId, artifact]),
   );
+  const deployments = new Map(
+    input.assembly.deployments.map((deployment) => [deployment.id, deployment]),
+  );
+  for (const deployment of input.assembly.deployments) {
+    if (
+      deployment.profile.id !== input.profile.id ||
+      deployment.profile.version !== input.profile.version
+    ) {
+      incompatible(
+        "CONTRADICTORY_PROFILE",
+        `assembly.deployments.${deployment.id}.profile`,
+        "every deployment identity must bind the selected profile and version",
+      );
+    }
+  }
   for (const artifact of input.assembly.artifacts) {
     if (
       !input.profile.requirements.artifacts.some(
@@ -491,10 +506,54 @@ const resolveArtifacts = (input: ResolveCredentialCompositionInput) => {
         "profile artifact requirement has no concrete digest identity",
       );
     }
+    const resolved = artifact as NonNullable<typeof artifact>;
+    if (
+      resolved.profile.id !== input.profile.id ||
+      resolved.profile.version !== input.profile.version
+    ) {
+      incompatible(
+        "CONTRADICTORY_PROFILE",
+        `assembly.artifacts.${requirement.id}.profile`,
+        "artifact identity must bind the selected profile and version",
+      );
+    }
+    const circuit = input.profile.requirements.circuits.find(
+      (entry) => entry.id === requirement.circuitId,
+    );
+    if (
+      circuit === undefined ||
+      resolved.circuit.id !== circuit.id ||
+      resolved.circuit.version !== circuit.semanticVersion
+    ) {
+      incompatible(
+        "CONTRADICTORY_PROFILE",
+        `assembly.artifacts.${requirement.id}.circuit`,
+        "artifact identity must bind the required circuit and semantic version",
+      );
+    }
+    const deployment = deployments.get(resolved.deploymentId);
+    if (deployment === undefined) {
+      incompatible(
+        "CONTRADICTORY_PROFILE",
+        `assembly.artifacts.${requirement.id}.deploymentId`,
+        "artifact identity must bind a selected immutable deployment",
+      );
+    }
+    const selectedDeployment = deployment as NonNullable<typeof deployment>;
+    if (
+      selectedDeployment.profile.id !== input.profile.id ||
+      selectedDeployment.profile.version !== input.profile.version
+    ) {
+      incompatible(
+        "CONTRADICTORY_PROFILE",
+        `assembly.deployments.${selectedDeployment.id}.profile`,
+        "deployment identity must bind the selected profile and version",
+      );
+    }
     return {
       requirementId: requirement.id,
       requirement,
-      artifact: artifact as NonNullable<typeof artifact>,
+      artifact: resolved,
     };
   });
 };

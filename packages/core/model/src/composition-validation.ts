@@ -688,6 +688,7 @@ const validateRequirements = (
       "id",
       "mediaType",
       "artifactClass",
+      "circuitId",
       "digestAlgorithm",
       "trusted",
     ]);
@@ -700,6 +701,10 @@ const validateRequirements = (
       "bzkir",
       "circuit-metadata",
     ]);
+    const circuitId = identifier(candidate.circuitId, at(path, "circuitId"));
+    if (!circuits.some((entry) => (entry as { readonly id?: unknown }).id === circuitId)) {
+      fail("CAPABILITY_NOT_PROVIDED", at(path, "circuitId"), "must identify a required circuit");
+    }
     oneOf(candidate.digestAlgorithm, at(path, "digestAlgorithm"), ["sha256"]);
     if (candidate.trusted !== true) {
       fail("INVALID_DESCRIPTOR", at(path, "trusted"), "must explicitly require trusted artifacts");
@@ -905,12 +910,34 @@ export function assertCredentialDeploymentAssemblyV1(
 
   const artifacts = array(assembly.artifacts, "artifacts");
   unique(artifacts, "artifacts", (entry, path) => {
-    const candidate = exactObject(entry, path, ["requirementId", "id", "digest"]);
+    const candidate = exactObject(entry, path, [
+      "requirementId",
+      "id",
+      "version",
+      "buildManifestDigest",
+      "deploymentManifestDigest",
+      "digest",
+      "bytes",
+      "signerKeyId",
+      "profile",
+      "circuit",
+      "deploymentId",
+    ]);
     const requirementId = identifier(candidate.requirementId, at(path, "requirementId"));
     identifier(candidate.id, at(path, "id"));
-    if (typeof candidate.digest !== "string" || !digestPattern.test(candidate.digest)) {
-      fail("INVALID_DESCRIPTOR", at(path, "digest"), "must be a sha256 digest identity");
+    version(candidate.version, at(path, "version"));
+    for (const field of ["buildManifestDigest", "deploymentManifestDigest", "digest"] as const) {
+      if (typeof candidate[field] !== "string" || !digestPattern.test(candidate[field] as string)) {
+        fail("INVALID_DESCRIPTOR", at(path, field), "must be a sha256 digest identity");
+      }
     }
+    if (!Number.isSafeInteger(candidate.bytes) || (candidate.bytes as number) <= 0) {
+      fail("INVALID_DESCRIPTOR", at(path, "bytes"), "must be a positive safe integer");
+    }
+    identifier(candidate.signerKeyId, at(path, "signerKeyId"));
+    capability(candidate.profile, at(path, "profile"));
+    capability(candidate.circuit, at(path, "circuit"));
+    identifier(candidate.deploymentId, at(path, "deploymentId"));
     return requirementId;
   });
 
@@ -918,12 +945,18 @@ export function assertCredentialDeploymentAssemblyV1(
   unique(deployments, "deployments", (entry, path) => {
     const candidate = exactObject(entry, path, [
       "id",
+      "version",
       "kind",
       "domain",
       "identity",
+      "networkId",
+      "chainId",
+      "contractAddress",
+      "profile",
       "immutableInputs",
     ]);
     const id = identifier(candidate.id, at(path, "id"));
+    version(candidate.version, at(path, "version"));
     oneOf(candidate.kind, at(path, "kind"), [
       "compact-contract",
       "local-service",
@@ -931,6 +964,10 @@ export function assertCredentialDeploymentAssemblyV1(
     ]);
     oneOf(candidate.domain, at(path, "domain"), packageDomains);
     identifier(candidate.identity, at(path, "identity"));
+    identifier(candidate.networkId, at(path, "networkId"));
+    identifier(candidate.chainId, at(path, "chainId"));
+    identifier(candidate.contractAddress, at(path, "contractAddress"));
+    capability(candidate.profile, at(path, "profile"));
     const immutableInputs = object(candidate.immutableInputs, at(path, "immutableInputs"));
     for (const [key, input] of Object.entries(immutableInputs)) {
       identifier(key, `${path}.immutableInputs`);

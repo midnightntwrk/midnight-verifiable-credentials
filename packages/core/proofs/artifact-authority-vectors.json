@@ -1,0 +1,74 @@
+{
+  "formatVersion": 1,
+  "generatedBy": "@midnight-ntwrk/credential-proofs artifact-authority-v1",
+  "provenance": {
+    "sourceCommit": "0123456789abcdef0123456789abcdef01234567",
+    "cleanTree": true,
+    "reference": "slsa:fixture-regeneration-v1",
+    "toolchain": {
+      "compactCompiler": "0.30.0",
+      "runtime": "0.15.0",
+      "generator": "1.0.0"
+    }
+  },
+  "circuitReport": {
+    "id": "age-check",
+    "version": "1.0.0",
+    "k": 12,
+    "rows": 2048,
+    "artifactId": "age-check-zkir",
+    "artifactBytes": 3,
+    "artifactSha256": "sha256:09c35a71959962bed90e539ce01c9eba308873c66a3ff32152fd3bbb66b8a82e"
+  },
+  "digests": {
+    "buildManifest": "sha256:bcca468e9bf53df6771ab778c44d63cfaefe53f5542d7d6aada8da57b40ec7bf",
+    "deploymentManifest": "sha256:e0538b5473a3856ed193b98a745128f25ede96b5763a2b1f4a403be8754e960e",
+    "authorityBinding": "sha256:5f145d870203623ae6a9ebf999b082ccea42b7e9cb5440c4224f9c5c0df68dd6"
+  },
+  "deploymentReport": {
+    "id": "fixture-verifier@1",
+    "version": "1.0.0",
+    "identity": "urn:fixture:verifier:1",
+    "profile": { "id": "fixture.age-public", "version": "1.0.0" },
+    "networkId": "testnet",
+    "chainId": "chain-1",
+    "contractAddress": "contract-1",
+    "signerKeyId": "release-key-1"
+  },
+  "tamperVectors": [
+    { "id": "truncated-artifact", "expected": "invalid", "reasonCode": "ARTIFACT_INVALID" },
+    { "id": "artifact-digest-drift", "expected": "invalid", "reasonCode": "ARTIFACT_INVALID" },
+    { "id": "artifact-version-drift", "expected": "invalid", "reasonCode": "ARTIFACT_INVALID" },
+    { "id": "artifact-role-media-drift", "expected": "invalid", "reasonCode": "ARTIFACT_INVALID" },
+    { "id": "authority-transcript-digest-drift", "expected": "invalid", "reasonCode": "POLICY_INVALID" },
+    { "id": "deployment-signature-drift", "expected": "invalid", "reasonCode": "DEPLOYMENT_INVALID" },
+    { "id": "deployment-signer-drift", "expected": "invalid", "reasonCode": "DEPLOYMENT_INVALID" },
+    { "id": "deployment-network-drift", "expected": "invalid", "reasonCode": "DEPLOYMENT_INVALID" },
+    { "id": "receipt-stale", "expected": "invalid", "reasonCode": "RECEIPT_STALE" },
+    { "id": "receipt-unavailable", "expected": "indeterminate", "reasonCode": "RECEIPT_UNAVAILABLE" },
+    { "id": "artifact-unavailable", "expected": "indeterminate", "reasonCode": "ARTIFACT_UNAVAILABLE" },
+    { "id": "deployment-unavailable", "expected": "indeterminate", "reasonCode": "DEPLOYMENT_UNAVAILABLE" },
+    { "id": "signing-key-service-unavailable", "expected": "indeterminate", "reasonCode": "DEPLOYMENT_UNAVAILABLE" }
+  ],
+  "parityVectors": [
+    {
+      "id": "valid-local-ledger-label-divergence",
+      "classification": "valid",
+      "paths": [
+        { "pathId": "local-preflight", "authority": "local-process" },
+        { "pathId": "ledger-observation", "authority": "ledger-local" }
+      ],
+      "expected": "equivalent"
+    },
+    {
+      "id": "invalid-classification-divergence",
+      "classifications": ["valid", "invalid"],
+      "expected": "diverged"
+    },
+    {
+      "id": "unavailable-evidence",
+      "classification": "indeterminate",
+      "reasonCode": "DEPLOYMENT_UNAVAILABLE"
+    }
+  ]
+}

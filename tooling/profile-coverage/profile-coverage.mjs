@@ -483,13 +483,26 @@ const generatedProfileInput = (rowId, values) => {
   };
   const familyMetadata = JSON.parse(readFileSync(path.resolve(repoRoot, "tooling/profile-coverage/fixtures/family-definition.json"), "utf8"));
   const input = fixtureCompositionInput(profile, familyMetadata);
+  const deploymentAuthority = (id, identity) => ({
+    id,
+    version: "1.0.0",
+    identity,
+    networkId: `network.${rowId}`,
+    chainId: `chain.${rowId}`,
+    contractAddress: `contract.${id}`,
+    profile: { id: profile.id, version: profile.version },
+  });
   input.assembly.deployments = [
-    { id: `holder.${rowId}`, kind: "local-service", domain: "holder-binding", identity: `holder:${values.holderBinding}`, immutableInputs: { profile: values.holderBinding } },
+    {
+      ...deploymentAuthority(`holder.${rowId}`, `holder:${values.holderBinding}`),
+      kind: "local-service",
+      domain: "holder-binding",
+      immutableInputs: { profile: values.holderBinding },
+    },
     ...providerSpecs.map((provider) => ({
-      id: `deployment.${provider.id}.${rowId}`,
+      ...deploymentAuthority(`deployment.${provider.id}.${rowId}`, `${provider.id}:${rowId}`),
       kind: provider.role === "verification" && values.verification !== "offchain-public-v1" ? "compact-contract" : "local-service",
       domain: provider.package.domain,
-      identity: `${provider.id}:${rowId}`,
       immutableInputs: { capability: `${provider.capability.id}@${provider.capability.version}` },
     })),
   ];

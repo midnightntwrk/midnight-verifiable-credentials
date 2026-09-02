@@ -2222,36 +2222,68 @@
           "deployments": [
             {
               "id": "holder.positive-01",
+              "version": "1.0.0",
+              "identity": "holder:secret",
+              "networkId": "network.positive-01",
+              "chainId": "chain.positive-01",
+              "contractAddress": "contract.holder.positive-01",
+              "profile": {
+                "id": "coverage.positive-01",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "holder-binding",
-              "identity": "holder:secret",
               "immutableInputs": {
                 "profile": "secret"
               }
             },
             {
               "id": "deployment.verification.positive-01",
+              "version": "1.0.0",
+              "identity": "verification:positive-01",
+              "networkId": "network.positive-01",
+              "chainId": "chain.positive-01",
+              "contractAddress": "contract.deployment.verification.positive-01",
+              "profile": {
+                "id": "coverage.positive-01",
+                "version": "1.0.0"
+              },
               "kind": "compact-contract",
               "domain": "verification",
-              "identity": "verification:positive-01",
               "immutableInputs": {
                 "capability": "verification.ledger-local-v1@1.0.0"
               }
             },
             {
               "id": "deployment.proof-executor.positive-01",
+              "version": "1.0.0",
+              "identity": "proof-executor:positive-01",
+              "networkId": "network.positive-01",
+              "chainId": "chain.positive-01",
+              "contractAddress": "contract.deployment.proof-executor.positive-01",
+              "profile": {
+                "id": "coverage.positive-01",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "proof",
-              "identity": "proof-executor:positive-01",
               "immutableInputs": {
                 "capability": "proof.compact@1.0.0"
               }
             },
             {
               "id": "deployment.status-registry.positive-01",
+              "version": "1.0.0",
+              "identity": "status-registry:positive-01",
+              "networkId": "network.positive-01",
+              "chainId": "chain.positive-01",
+              "contractAddress": "contract.deployment.status-registry.positive-01",
+              "profile": {
+                "id": "coverage.positive-01",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "status-registry",
-              "identity": "status-registry:positive-01",
               "immutableInputs": {
                 "capability": "status.ledger-local@1.0.0"
               }
@@ -2483,36 +2515,68 @@
         "deployments": [
           {
             "id": "holder.positive-01",
+            "version": "1.0.0",
+            "identity": "holder:secret",
+            "networkId": "network.positive-01",
+            "chainId": "chain.positive-01",
+            "contractAddress": "contract.holder.positive-01",
+            "profile": {
+              "id": "coverage.positive-01",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "holder-binding",
-            "identity": "holder:secret",
             "immutableInputs": {
               "profile": "secret"
             }
           },
           {
             "id": "deployment.verification.positive-01",
+            "version": "1.0.0",
+            "identity": "verification:positive-01",
+            "networkId": "network.positive-01",
+            "chainId": "chain.positive-01",
+            "contractAddress": "contract.deployment.verification.positive-01",
+            "profile": {
+              "id": "coverage.positive-01",
+              "version": "1.0.0"
+            },
             "kind": "compact-contract",
             "domain": "verification",
-            "identity": "verification:positive-01",
             "immutableInputs": {
               "capability": "verification.ledger-local-v1@1.0.0"
             }
           },
           {
             "id": "deployment.proof-executor.positive-01",
+            "version": "1.0.0",
+            "identity": "proof-executor:positive-01",
+            "networkId": "network.positive-01",
+            "chainId": "chain.positive-01",
+            "contractAddress": "contract.deployment.proof-executor.positive-01",
+            "profile": {
+              "id": "coverage.positive-01",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "proof",
-            "identity": "proof-executor:positive-01",
             "immutableInputs": {
               "capability": "proof.compact@1.0.0"
             }
           },
           {
             "id": "deployment.status-registry.positive-01",
+            "version": "1.0.0",
+            "identity": "status-registry:positive-01",
+            "networkId": "network.positive-01",
+            "chainId": "chain.positive-01",
+            "contractAddress": "contract.deployment.status-registry.positive-01",
+            "profile": {
+              "id": "coverage.positive-01",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "status-registry",
-            "identity": "status-registry:positive-01",
             "immutableInputs": {
               "capability": "status.ledger-local@1.0.0"
             }
@@ -2801,18 +2865,34 @@
           "deployments": [
             {
               "id": "holder.positive-02",
+              "version": "1.0.0",
+              "identity": "holder:explicit-did",
+              "networkId": "network.positive-02",
+              "chainId": "chain.positive-02",
+              "contractAddress": "contract.holder.positive-02",
+              "profile": {
+                "id": "coverage.positive-02",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "holder-binding",
-              "identity": "holder:explicit-did",
               "immutableInputs": {
                 "profile": "explicit-did"
               }
             },
             {
               "id": "deployment.verification.positive-02",
+              "version": "1.0.0",
+              "identity": "verification:positive-02",
+              "networkId": "network.positive-02",
+              "chainId": "chain.positive-02",
+              "contractAddress": "contract.deployment.verification.positive-02",
+              "profile": {
+                "id": "coverage.positive-02",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "verification",
-              "identity": "verification:positive-02",
               "immutableInputs": {
                 "capability": "verification.offchain-public-v1@1.0.0"
               }
@@ -2945,18 +3025,34 @@
         "deployments": [
           {
             "id": "holder.positive-02",
+            "version": "1.0.0",
+            "identity": "holder:explicit-did",
+            "networkId": "network.positive-02",
+            "chainId": "chain.positive-02",
+            "contractAddress": "contract.holder.positive-02",
+            "profile": {
+              "id": "coverage.positive-02",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "holder-binding",
-            "identity": "holder:explicit-did",
             "immutableInputs": {
               "profile": "explicit-did"
             }
           },
           {
             "id": "deployment.verification.positive-02",
+            "version": "1.0.0",
+            "identity": "verification:positive-02",
+            "networkId": "network.positive-02",
+            "chainId": "chain.positive-02",
+            "contractAddress": "contract.deployment.verification.positive-02",
+            "profile": {
+              "id": "coverage.positive-02",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "verification",
-            "identity": "verification:positive-02",
             "immutableInputs": {
               "capability": "verification.offchain-public-v1@1.0.0"
             }
@@ -3259,27 +3355,51 @@
           "deployments": [
             {
               "id": "holder.positive-03",
+              "version": "1.0.0",
+              "identity": "holder:explicit-did",
+              "networkId": "network.positive-03",
+              "chainId": "chain.positive-03",
+              "contractAddress": "contract.holder.positive-03",
+              "profile": {
+                "id": "coverage.positive-03",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "holder-binding",
-              "identity": "holder:explicit-did",
               "immutableInputs": {
                 "profile": "explicit-did"
               }
             },
             {
               "id": "deployment.verification.positive-03",
+              "version": "1.0.0",
+              "identity": "verification:positive-03",
+              "networkId": "network.positive-03",
+              "chainId": "chain.positive-03",
+              "contractAddress": "contract.deployment.verification.positive-03",
+              "profile": {
+                "id": "coverage.positive-03",
+                "version": "1.0.0"
+              },
               "kind": "compact-contract",
               "domain": "verification",
-              "identity": "verification:positive-03",
               "immutableInputs": {
                 "capability": "verification.ledger-local-v1@1.0.0"
               }
             },
             {
               "id": "deployment.protocol-transport.positive-03",
+              "version": "1.0.0",
+              "identity": "protocol-transport:positive-03",
+              "networkId": "network.positive-03",
+              "chainId": "chain.positive-03",
+              "contractAddress": "contract.deployment.protocol-transport.positive-03",
+              "profile": {
+                "id": "coverage.positive-03",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "protocol",
-              "identity": "protocol-transport:positive-03",
               "immutableInputs": {
                 "capability": "protocol.oid4vp-1.0-final@1.0.0"
               }
@@ -3456,27 +3576,51 @@
         "deployments": [
           {
             "id": "holder.positive-03",
+            "version": "1.0.0",
+            "identity": "holder:explicit-did",
+            "networkId": "network.positive-03",
+            "chainId": "chain.positive-03",
+            "contractAddress": "contract.holder.positive-03",
+            "profile": {
+              "id": "coverage.positive-03",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "holder-binding",
-            "identity": "holder:explicit-did",
             "immutableInputs": {
               "profile": "explicit-did"
             }
           },
           {
             "id": "deployment.verification.positive-03",
+            "version": "1.0.0",
+            "identity": "verification:positive-03",
+            "networkId": "network.positive-03",
+            "chainId": "chain.positive-03",
+            "contractAddress": "contract.deployment.verification.positive-03",
+            "profile": {
+              "id": "coverage.positive-03",
+              "version": "1.0.0"
+            },
             "kind": "compact-contract",
             "domain": "verification",
-            "identity": "verification:positive-03",
             "immutableInputs": {
               "capability": "verification.ledger-local-v1@1.0.0"
             }
           },
           {
             "id": "deployment.protocol-transport.positive-03",
+            "version": "1.0.0",
+            "identity": "protocol-transport:positive-03",
+            "networkId": "network.positive-03",
+            "chainId": "chain.positive-03",
+            "contractAddress": "contract.deployment.protocol-transport.positive-03",
+            "profile": {
+              "id": "coverage.positive-03",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "protocol",
-            "identity": "protocol-transport:positive-03",
             "immutableInputs": {
               "capability": "protocol.oid4vp-1.0-final@1.0.0"
             }
@@ -3793,27 +3937,51 @@
           "deployments": [
             {
               "id": "holder.positive-04",
+              "version": "1.0.0",
+              "identity": "holder:blinded-secret",
+              "networkId": "network.positive-04",
+              "chainId": "chain.positive-04",
+              "contractAddress": "contract.holder.positive-04",
+              "profile": {
+                "id": "coverage.positive-04",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "holder-binding",
-              "identity": "holder:blinded-secret",
               "immutableInputs": {
                 "profile": "blinded-secret"
               }
             },
             {
               "id": "deployment.verification.positive-04",
+              "version": "1.0.0",
+              "identity": "verification:positive-04",
+              "networkId": "network.positive-04",
+              "chainId": "chain.positive-04",
+              "contractAddress": "contract.deployment.verification.positive-04",
+              "profile": {
+                "id": "coverage.positive-04",
+                "version": "1.0.0"
+              },
               "kind": "compact-contract",
               "domain": "verification",
-              "identity": "verification:positive-04",
               "immutableInputs": {
                 "capability": "verification.ledger-local-v1@1.0.0"
               }
             },
             {
               "id": "deployment.proof-executor.positive-04",
+              "version": "1.0.0",
+              "identity": "proof-executor:positive-04",
+              "networkId": "network.positive-04",
+              "chainId": "chain.positive-04",
+              "contractAddress": "contract.deployment.proof-executor.positive-04",
+              "profile": {
+                "id": "coverage.positive-04",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "proof",
-              "identity": "proof-executor:positive-04",
               "immutableInputs": {
                 "capability": "proof.same-holder@1.0.0"
               }
@@ -4001,27 +4169,51 @@
         "deployments": [
           {
             "id": "holder.positive-04",
+            "version": "1.0.0",
+            "identity": "holder:blinded-secret",
+            "networkId": "network.positive-04",
+            "chainId": "chain.positive-04",
+            "contractAddress": "contract.holder.positive-04",
+            "profile": {
+              "id": "coverage.positive-04",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "holder-binding",
-            "identity": "holder:blinded-secret",
             "immutableInputs": {
               "profile": "blinded-secret"
             }
           },
           {
             "id": "deployment.verification.positive-04",
+            "version": "1.0.0",
+            "identity": "verification:positive-04",
+            "networkId": "network.positive-04",
+            "chainId": "chain.positive-04",
+            "contractAddress": "contract.deployment.verification.positive-04",
+            "profile": {
+              "id": "coverage.positive-04",
+              "version": "1.0.0"
+            },
             "kind": "compact-contract",
             "domain": "verification",
-            "identity": "verification:positive-04",
             "immutableInputs": {
               "capability": "verification.ledger-local-v1@1.0.0"
             }
           },
           {
             "id": "deployment.proof-executor.positive-04",
+            "version": "1.0.0",
+            "identity": "proof-executor:positive-04",
+            "networkId": "network.positive-04",
+            "chainId": "chain.positive-04",
+            "contractAddress": "contract.deployment.proof-executor.positive-04",
+            "profile": {
+              "id": "coverage.positive-04",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "proof",
-            "identity": "proof-executor:positive-04",
             "immutableInputs": {
               "capability": "proof.same-holder@1.0.0"
             }
@@ -4335,27 +4527,51 @@
           "deployments": [
             {
               "id": "holder.positive-05",
+              "version": "1.0.0",
+              "identity": "holder:explicit-did",
+              "networkId": "network.positive-05",
+              "chainId": "chain.positive-05",
+              "contractAddress": "contract.holder.positive-05",
+              "profile": {
+                "id": "coverage.positive-05",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "holder-binding",
-              "identity": "holder:explicit-did",
               "immutableInputs": {
                 "profile": "explicit-did"
               }
             },
             {
               "id": "deployment.verification.positive-05",
+              "version": "1.0.0",
+              "identity": "verification:positive-05",
+              "networkId": "network.positive-05",
+              "chainId": "chain.positive-05",
+              "contractAddress": "contract.deployment.verification.positive-05",
+              "profile": {
+                "id": "coverage.positive-05",
+                "version": "1.0.0"
+              },
               "kind": "compact-contract",
               "domain": "verification",
-              "identity": "verification:positive-05",
               "immutableInputs": {
                 "capability": "verification.ledger-local-v1@1.0.0"
               }
             },
             {
               "id": "deployment.atomic-replay.positive-05",
+              "version": "1.0.0",
+              "identity": "atomic-replay:positive-05",
+              "networkId": "network.positive-05",
+              "chainId": "chain.positive-05",
+              "contractAddress": "contract.deployment.atomic-replay.positive-05",
+              "profile": {
+                "id": "coverage.positive-05",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "replay",
-              "identity": "atomic-replay:positive-05",
               "immutableInputs": {
                 "capability": "replay.atomic@1.0.0"
               }
@@ -4532,27 +4748,51 @@
         "deployments": [
           {
             "id": "holder.positive-05",
+            "version": "1.0.0",
+            "identity": "holder:explicit-did",
+            "networkId": "network.positive-05",
+            "chainId": "chain.positive-05",
+            "contractAddress": "contract.holder.positive-05",
+            "profile": {
+              "id": "coverage.positive-05",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "holder-binding",
-            "identity": "holder:explicit-did",
             "immutableInputs": {
               "profile": "explicit-did"
             }
           },
           {
             "id": "deployment.verification.positive-05",
+            "version": "1.0.0",
+            "identity": "verification:positive-05",
+            "networkId": "network.positive-05",
+            "chainId": "chain.positive-05",
+            "contractAddress": "contract.deployment.verification.positive-05",
+            "profile": {
+              "id": "coverage.positive-05",
+              "version": "1.0.0"
+            },
             "kind": "compact-contract",
             "domain": "verification",
-            "identity": "verification:positive-05",
             "immutableInputs": {
               "capability": "verification.ledger-local-v1@1.0.0"
             }
           },
           {
             "id": "deployment.atomic-replay.positive-05",
+            "version": "1.0.0",
+            "identity": "atomic-replay:positive-05",
+            "networkId": "network.positive-05",
+            "chainId": "chain.positive-05",
+            "contractAddress": "contract.deployment.atomic-replay.positive-05",
+            "profile": {
+              "id": "coverage.positive-05",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "replay",
-            "identity": "atomic-replay:positive-05",
             "immutableInputs": {
               "capability": "replay.atomic@1.0.0"
             }
@@ -4907,45 +5147,85 @@
           "deployments": [
             {
               "id": "holder.positive-06",
+              "version": "1.0.0",
+              "identity": "holder:blinded-secret",
+              "networkId": "network.positive-06",
+              "chainId": "chain.positive-06",
+              "contractAddress": "contract.holder.positive-06",
+              "profile": {
+                "id": "coverage.positive-06",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "holder-binding",
-              "identity": "holder:blinded-secret",
               "immutableInputs": {
                 "profile": "blinded-secret"
               }
             },
             {
               "id": "deployment.verification.positive-06",
+              "version": "1.0.0",
+              "identity": "verification:positive-06",
+              "networkId": "network.positive-06",
+              "chainId": "chain.positive-06",
+              "contractAddress": "contract.deployment.verification.positive-06",
+              "profile": {
+                "id": "coverage.positive-06",
+                "version": "1.0.0"
+              },
               "kind": "compact-contract",
               "domain": "verification",
-              "identity": "verification:positive-06",
               "immutableInputs": {
                 "capability": "verification.ledger-attested-v1@1.0.0"
               }
             },
             {
               "id": "deployment.proof-executor.positive-06",
+              "version": "1.0.0",
+              "identity": "proof-executor:positive-06",
+              "networkId": "network.positive-06",
+              "chainId": "chain.positive-06",
+              "contractAddress": "contract.deployment.proof-executor.positive-06",
+              "profile": {
+                "id": "coverage.positive-06",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "proof",
-              "identity": "proof-executor:positive-06",
               "immutableInputs": {
                 "capability": "proof.compact@1.0.0"
               }
             },
             {
               "id": "deployment.status-registry.positive-06",
+              "version": "1.0.0",
+              "identity": "status-registry:positive-06",
+              "networkId": "network.positive-06",
+              "chainId": "chain.positive-06",
+              "contractAddress": "contract.deployment.status-registry.positive-06",
+              "profile": {
+                "id": "coverage.positive-06",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "status-registry",
-              "identity": "status-registry:positive-06",
               "immutableInputs": {
                 "capability": "status.authority-attested@1.0.0"
               }
             },
             {
               "id": "deployment.protocol-transport.positive-06",
+              "version": "1.0.0",
+              "identity": "protocol-transport:positive-06",
+              "networkId": "network.positive-06",
+              "chainId": "chain.positive-06",
+              "contractAddress": "contract.deployment.protocol-transport.positive-06",
+              "profile": {
+                "id": "coverage.positive-06",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "protocol",
-              "identity": "protocol-transport:positive-06",
               "immutableInputs": {
                 "capability": "protocol.canonical-reference@1.0.0"
               }
@@ -5221,45 +5501,85 @@
         "deployments": [
           {
             "id": "holder.positive-06",
+            "version": "1.0.0",
+            "identity": "holder:blinded-secret",
+            "networkId": "network.positive-06",
+            "chainId": "chain.positive-06",
+            "contractAddress": "contract.holder.positive-06",
+            "profile": {
+              "id": "coverage.positive-06",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "holder-binding",
-            "identity": "holder:blinded-secret",
             "immutableInputs": {
               "profile": "blinded-secret"
             }
           },
           {
             "id": "deployment.verification.positive-06",
+            "version": "1.0.0",
+            "identity": "verification:positive-06",
+            "networkId": "network.positive-06",
+            "chainId": "chain.positive-06",
+            "contractAddress": "contract.deployment.verification.positive-06",
+            "profile": {
+              "id": "coverage.positive-06",
+              "version": "1.0.0"
+            },
             "kind": "compact-contract",
             "domain": "verification",
-            "identity": "verification:positive-06",
             "immutableInputs": {
               "capability": "verification.ledger-attested-v1@1.0.0"
             }
           },
           {
             "id": "deployment.proof-executor.positive-06",
+            "version": "1.0.0",
+            "identity": "proof-executor:positive-06",
+            "networkId": "network.positive-06",
+            "chainId": "chain.positive-06",
+            "contractAddress": "contract.deployment.proof-executor.positive-06",
+            "profile": {
+              "id": "coverage.positive-06",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "proof",
-            "identity": "proof-executor:positive-06",
             "immutableInputs": {
               "capability": "proof.compact@1.0.0"
             }
           },
           {
             "id": "deployment.status-registry.positive-06",
+            "version": "1.0.0",
+            "identity": "status-registry:positive-06",
+            "networkId": "network.positive-06",
+            "chainId": "chain.positive-06",
+            "contractAddress": "contract.deployment.status-registry.positive-06",
+            "profile": {
+              "id": "coverage.positive-06",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "status-registry",
-            "identity": "status-registry:positive-06",
             "immutableInputs": {
               "capability": "status.authority-attested@1.0.0"
             }
           },
           {
             "id": "deployment.protocol-transport.positive-06",
+            "version": "1.0.0",
+            "identity": "protocol-transport:positive-06",
+            "networkId": "network.positive-06",
+            "chainId": "chain.positive-06",
+            "contractAddress": "contract.deployment.protocol-transport.positive-06",
+            "profile": {
+              "id": "coverage.positive-06",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "protocol",
-            "identity": "protocol-transport:positive-06",
             "immutableInputs": {
               "capability": "protocol.canonical-reference@1.0.0"
             }
@@ -5640,54 +5960,102 @@
           "deployments": [
             {
               "id": "holder.positive-07",
+              "version": "1.0.0",
+              "identity": "holder:blinded-secret",
+              "networkId": "network.positive-07",
+              "chainId": "chain.positive-07",
+              "contractAddress": "contract.holder.positive-07",
+              "profile": {
+                "id": "coverage.positive-07",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "holder-binding",
-              "identity": "holder:blinded-secret",
               "immutableInputs": {
                 "profile": "blinded-secret"
               }
             },
             {
               "id": "deployment.verification.positive-07",
+              "version": "1.0.0",
+              "identity": "verification:positive-07",
+              "networkId": "network.positive-07",
+              "chainId": "chain.positive-07",
+              "contractAddress": "contract.deployment.verification.positive-07",
+              "profile": {
+                "id": "coverage.positive-07",
+                "version": "1.0.0"
+              },
               "kind": "compact-contract",
               "domain": "verification",
-              "identity": "verification:positive-07",
               "immutableInputs": {
                 "capability": "verification.ledger-attested-v1@1.0.0"
               }
             },
             {
               "id": "deployment.proof-executor.positive-07",
+              "version": "1.0.0",
+              "identity": "proof-executor:positive-07",
+              "networkId": "network.positive-07",
+              "chainId": "chain.positive-07",
+              "contractAddress": "contract.deployment.proof-executor.positive-07",
+              "profile": {
+                "id": "coverage.positive-07",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "proof",
-              "identity": "proof-executor:positive-07",
               "immutableInputs": {
                 "capability": "proof.same-holder@1.0.0"
               }
             },
             {
               "id": "deployment.status-registry.positive-07",
+              "version": "1.0.0",
+              "identity": "status-registry:positive-07",
+              "networkId": "network.positive-07",
+              "chainId": "chain.positive-07",
+              "contractAddress": "contract.deployment.status-registry.positive-07",
+              "profile": {
+                "id": "coverage.positive-07",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "status-registry",
-              "identity": "status-registry:positive-07",
               "immutableInputs": {
                 "capability": "status.authority-attested@1.0.0"
               }
             },
             {
               "id": "deployment.protocol-transport.positive-07",
+              "version": "1.0.0",
+              "identity": "protocol-transport:positive-07",
+              "networkId": "network.positive-07",
+              "chainId": "chain.positive-07",
+              "contractAddress": "contract.deployment.protocol-transport.positive-07",
+              "profile": {
+                "id": "coverage.positive-07",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "protocol",
-              "identity": "protocol-transport:positive-07",
               "immutableInputs": {
                 "capability": "protocol.oid4vp-1.0-final@1.0.0"
               }
             },
             {
               "id": "deployment.atomic-replay.positive-07",
+              "version": "1.0.0",
+              "identity": "atomic-replay:positive-07",
+              "networkId": "network.positive-07",
+              "chainId": "chain.positive-07",
+              "contractAddress": "contract.deployment.atomic-replay.positive-07",
+              "profile": {
+                "id": "coverage.positive-07",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "replay",
-              "identity": "atomic-replay:positive-07",
               "immutableInputs": {
                 "capability": "replay.atomic@1.0.0"
               }
@@ -6018,54 +6386,102 @@
         "deployments": [
           {
             "id": "holder.positive-07",
+            "version": "1.0.0",
+            "identity": "holder:blinded-secret",
+            "networkId": "network.positive-07",
+            "chainId": "chain.positive-07",
+            "contractAddress": "contract.holder.positive-07",
+            "profile": {
+              "id": "coverage.positive-07",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "holder-binding",
-            "identity": "holder:blinded-secret",
             "immutableInputs": {
               "profile": "blinded-secret"
             }
           },
           {
             "id": "deployment.verification.positive-07",
+            "version": "1.0.0",
+            "identity": "verification:positive-07",
+            "networkId": "network.positive-07",
+            "chainId": "chain.positive-07",
+            "contractAddress": "contract.deployment.verification.positive-07",
+            "profile": {
+              "id": "coverage.positive-07",
+              "version": "1.0.0"
+            },
             "kind": "compact-contract",
             "domain": "verification",
-            "identity": "verification:positive-07",
             "immutableInputs": {
               "capability": "verification.ledger-attested-v1@1.0.0"
             }
           },
           {
             "id": "deployment.proof-executor.positive-07",
+            "version": "1.0.0",
+            "identity": "proof-executor:positive-07",
+            "networkId": "network.positive-07",
+            "chainId": "chain.positive-07",
+            "contractAddress": "contract.deployment.proof-executor.positive-07",
+            "profile": {
+              "id": "coverage.positive-07",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "proof",
-            "identity": "proof-executor:positive-07",
             "immutableInputs": {
               "capability": "proof.same-holder@1.0.0"
             }
           },
           {
             "id": "deployment.status-registry.positive-07",
+            "version": "1.0.0",
+            "identity": "status-registry:positive-07",
+            "networkId": "network.positive-07",
+            "chainId": "chain.positive-07",
+            "contractAddress": "contract.deployment.status-registry.positive-07",
+            "profile": {
+              "id": "coverage.positive-07",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "status-registry",
-            "identity": "status-registry:positive-07",
             "immutableInputs": {
               "capability": "status.authority-attested@1.0.0"
             }
           },
           {
             "id": "deployment.protocol-transport.positive-07",
+            "version": "1.0.0",
+            "identity": "protocol-transport:positive-07",
+            "networkId": "network.positive-07",
+            "chainId": "chain.positive-07",
+            "contractAddress": "contract.deployment.protocol-transport.positive-07",
+            "profile": {
+              "id": "coverage.positive-07",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "protocol",
-            "identity": "protocol-transport:positive-07",
             "immutableInputs": {
               "capability": "protocol.oid4vp-1.0-final@1.0.0"
             }
           },
           {
             "id": "deployment.atomic-replay.positive-07",
+            "version": "1.0.0",
+            "identity": "atomic-replay:positive-07",
+            "networkId": "network.positive-07",
+            "chainId": "chain.positive-07",
+            "contractAddress": "contract.deployment.atomic-replay.positive-07",
+            "profile": {
+              "id": "coverage.positive-07",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "replay",
-            "identity": "atomic-replay:positive-07",
             "immutableInputs": {
               "capability": "replay.atomic@1.0.0"
             }
@@ -6457,54 +6873,102 @@
           "deployments": [
             {
               "id": "holder.positive-08",
+              "version": "1.0.0",
+              "identity": "holder:blinded-secret",
+              "networkId": "network.positive-08",
+              "chainId": "chain.positive-08",
+              "contractAddress": "contract.holder.positive-08",
+              "profile": {
+                "id": "coverage.positive-08",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "holder-binding",
-              "identity": "holder:blinded-secret",
               "immutableInputs": {
                 "profile": "blinded-secret"
               }
             },
             {
               "id": "deployment.verification.positive-08",
+              "version": "1.0.0",
+              "identity": "verification:positive-08",
+              "networkId": "network.positive-08",
+              "chainId": "chain.positive-08",
+              "contractAddress": "contract.deployment.verification.positive-08",
+              "profile": {
+                "id": "coverage.positive-08",
+                "version": "1.0.0"
+              },
               "kind": "compact-contract",
               "domain": "verification",
-              "identity": "verification:positive-08",
               "immutableInputs": {
                 "capability": "verification.ledger-local-v1@1.0.0"
               }
             },
             {
               "id": "deployment.proof-executor.positive-08",
+              "version": "1.0.0",
+              "identity": "proof-executor:positive-08",
+              "networkId": "network.positive-08",
+              "chainId": "chain.positive-08",
+              "contractAddress": "contract.deployment.proof-executor.positive-08",
+              "profile": {
+                "id": "coverage.positive-08",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "proof",
-              "identity": "proof-executor:positive-08",
               "immutableInputs": {
                 "capability": "proof.same-holder@1.0.0"
               }
             },
             {
               "id": "deployment.status-registry.positive-08",
+              "version": "1.0.0",
+              "identity": "status-registry:positive-08",
+              "networkId": "network.positive-08",
+              "chainId": "chain.positive-08",
+              "contractAddress": "contract.deployment.status-registry.positive-08",
+              "profile": {
+                "id": "coverage.positive-08",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "status-registry",
-              "identity": "status-registry:positive-08",
               "immutableInputs": {
                 "capability": "status.ledger-local@1.0.0"
               }
             },
             {
               "id": "deployment.protocol-transport.positive-08",
+              "version": "1.0.0",
+              "identity": "protocol-transport:positive-08",
+              "networkId": "network.positive-08",
+              "chainId": "chain.positive-08",
+              "contractAddress": "contract.deployment.protocol-transport.positive-08",
+              "profile": {
+                "id": "coverage.positive-08",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "protocol",
-              "identity": "protocol-transport:positive-08",
               "immutableInputs": {
                 "capability": "protocol.oid4vp-1.0-final@1.0.0"
               }
             },
             {
               "id": "deployment.atomic-replay.positive-08",
+              "version": "1.0.0",
+              "identity": "atomic-replay:positive-08",
+              "networkId": "network.positive-08",
+              "chainId": "chain.positive-08",
+              "contractAddress": "contract.deployment.atomic-replay.positive-08",
+              "profile": {
+                "id": "coverage.positive-08",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "replay",
-              "identity": "atomic-replay:positive-08",
               "immutableInputs": {
                 "capability": "replay.atomic@1.0.0"
               }
@@ -6835,54 +7299,102 @@
         "deployments": [
           {
             "id": "holder.positive-08",
+            "version": "1.0.0",
+            "identity": "holder:blinded-secret",
+            "networkId": "network.positive-08",
+            "chainId": "chain.positive-08",
+            "contractAddress": "contract.holder.positive-08",
+            "profile": {
+              "id": "coverage.positive-08",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "holder-binding",
-            "identity": "holder:blinded-secret",
             "immutableInputs": {
               "profile": "blinded-secret"
             }
           },
           {
             "id": "deployment.verification.positive-08",
+            "version": "1.0.0",
+            "identity": "verification:positive-08",
+            "networkId": "network.positive-08",
+            "chainId": "chain.positive-08",
+            "contractAddress": "contract.deployment.verification.positive-08",
+            "profile": {
+              "id": "coverage.positive-08",
+              "version": "1.0.0"
+            },
             "kind": "compact-contract",
             "domain": "verification",
-            "identity": "verification:positive-08",
             "immutableInputs": {
               "capability": "verification.ledger-local-v1@1.0.0"
             }
           },
           {
             "id": "deployment.proof-executor.positive-08",
+            "version": "1.0.0",
+            "identity": "proof-executor:positive-08",
+            "networkId": "network.positive-08",
+            "chainId": "chain.positive-08",
+            "contractAddress": "contract.deployment.proof-executor.positive-08",
+            "profile": {
+              "id": "coverage.positive-08",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "proof",
-            "identity": "proof-executor:positive-08",
             "immutableInputs": {
               "capability": "proof.same-holder@1.0.0"
             }
           },
           {
             "id": "deployment.status-registry.positive-08",
+            "version": "1.0.0",
+            "identity": "status-registry:positive-08",
+            "networkId": "network.positive-08",
+            "chainId": "chain.positive-08",
+            "contractAddress": "contract.deployment.status-registry.positive-08",
+            "profile": {
+              "id": "coverage.positive-08",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "status-registry",
-            "identity": "status-registry:positive-08",
             "immutableInputs": {
               "capability": "status.ledger-local@1.0.0"
             }
           },
           {
             "id": "deployment.protocol-transport.positive-08",
+            "version": "1.0.0",
+            "identity": "protocol-transport:positive-08",
+            "networkId": "network.positive-08",
+            "chainId": "chain.positive-08",
+            "contractAddress": "contract.deployment.protocol-transport.positive-08",
+            "profile": {
+              "id": "coverage.positive-08",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "protocol",
-            "identity": "protocol-transport:positive-08",
             "immutableInputs": {
               "capability": "protocol.oid4vp-1.0-final@1.0.0"
             }
           },
           {
             "id": "deployment.atomic-replay.positive-08",
+            "version": "1.0.0",
+            "identity": "atomic-replay:positive-08",
+            "networkId": "network.positive-08",
+            "chainId": "chain.positive-08",
+            "contractAddress": "contract.deployment.atomic-replay.positive-08",
+            "profile": {
+              "id": "coverage.positive-08",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "replay",
-            "identity": "atomic-replay:positive-08",
             "immutableInputs": {
               "capability": "replay.atomic@1.0.0"
             }
@@ -7232,36 +7744,68 @@
           "deployments": [
             {
               "id": "holder.positive-09",
+              "version": "1.0.0",
+              "identity": "holder:explicit-did",
+              "networkId": "network.positive-09",
+              "chainId": "chain.positive-09",
+              "contractAddress": "contract.holder.positive-09",
+              "profile": {
+                "id": "coverage.positive-09",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "holder-binding",
-              "identity": "holder:explicit-did",
               "immutableInputs": {
                 "profile": "explicit-did"
               }
             },
             {
               "id": "deployment.verification.positive-09",
+              "version": "1.0.0",
+              "identity": "verification:positive-09",
+              "networkId": "network.positive-09",
+              "chainId": "chain.positive-09",
+              "contractAddress": "contract.deployment.verification.positive-09",
+              "profile": {
+                "id": "coverage.positive-09",
+                "version": "1.0.0"
+              },
               "kind": "compact-contract",
               "domain": "verification",
-              "identity": "verification:positive-09",
               "immutableInputs": {
                 "capability": "verification.ledger-attested-v1@1.0.0"
               }
             },
             {
               "id": "deployment.status-registry.positive-09",
+              "version": "1.0.0",
+              "identity": "status-registry:positive-09",
+              "networkId": "network.positive-09",
+              "chainId": "chain.positive-09",
+              "contractAddress": "contract.deployment.status-registry.positive-09",
+              "profile": {
+                "id": "coverage.positive-09",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "status-registry",
-              "identity": "status-registry:positive-09",
               "immutableInputs": {
                 "capability": "status.authority-attested@1.0.0"
               }
             },
             {
               "id": "deployment.atomic-replay.positive-09",
+              "version": "1.0.0",
+              "identity": "atomic-replay:positive-09",
+              "networkId": "network.positive-09",
+              "chainId": "chain.positive-09",
+              "contractAddress": "contract.deployment.atomic-replay.positive-09",
+              "profile": {
+                "id": "coverage.positive-09",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "replay",
-              "identity": "atomic-replay:positive-09",
               "immutableInputs": {
                 "capability": "replay.atomic@1.0.0"
               }
@@ -7493,36 +8037,68 @@
         "deployments": [
           {
             "id": "holder.positive-09",
+            "version": "1.0.0",
+            "identity": "holder:explicit-did",
+            "networkId": "network.positive-09",
+            "chainId": "chain.positive-09",
+            "contractAddress": "contract.holder.positive-09",
+            "profile": {
+              "id": "coverage.positive-09",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "holder-binding",
-            "identity": "holder:explicit-did",
             "immutableInputs": {
               "profile": "explicit-did"
             }
           },
           {
             "id": "deployment.verification.positive-09",
+            "version": "1.0.0",
+            "identity": "verification:positive-09",
+            "networkId": "network.positive-09",
+            "chainId": "chain.positive-09",
+            "contractAddress": "contract.deployment.verification.positive-09",
+            "profile": {
+              "id": "coverage.positive-09",
+              "version": "1.0.0"
+            },
             "kind": "compact-contract",
             "domain": "verification",
-            "identity": "verification:positive-09",
             "immutableInputs": {
               "capability": "verification.ledger-attested-v1@1.0.0"
             }
           },
           {
             "id": "deployment.status-registry.positive-09",
+            "version": "1.0.0",
+            "identity": "status-registry:positive-09",
+            "networkId": "network.positive-09",
+            "chainId": "chain.positive-09",
+            "contractAddress": "contract.deployment.status-registry.positive-09",
+            "profile": {
+              "id": "coverage.positive-09",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "status-registry",
-            "identity": "status-registry:positive-09",
             "immutableInputs": {
               "capability": "status.authority-attested@1.0.0"
             }
           },
           {
             "id": "deployment.atomic-replay.positive-09",
+            "version": "1.0.0",
+            "identity": "atomic-replay:positive-09",
+            "networkId": "network.positive-09",
+            "chainId": "chain.positive-09",
+            "contractAddress": "contract.deployment.atomic-replay.positive-09",
+            "profile": {
+              "id": "coverage.positive-09",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "replay",
-            "identity": "atomic-replay:positive-09",
             "immutableInputs": {
               "capability": "replay.atomic@1.0.0"
             }
@@ -7875,45 +8451,85 @@
           "deployments": [
             {
               "id": "holder.positive-10",
+              "version": "1.0.0",
+              "identity": "holder:explicit-did",
+              "networkId": "network.positive-10",
+              "chainId": "chain.positive-10",
+              "contractAddress": "contract.holder.positive-10",
+              "profile": {
+                "id": "coverage.positive-10",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "holder-binding",
-              "identity": "holder:explicit-did",
               "immutableInputs": {
                 "profile": "explicit-did"
               }
             },
             {
               "id": "deployment.verification.positive-10",
+              "version": "1.0.0",
+              "identity": "verification:positive-10",
+              "networkId": "network.positive-10",
+              "chainId": "chain.positive-10",
+              "contractAddress": "contract.deployment.verification.positive-10",
+              "profile": {
+                "id": "coverage.positive-10",
+                "version": "1.0.0"
+              },
               "kind": "compact-contract",
               "domain": "verification",
-              "identity": "verification:positive-10",
               "immutableInputs": {
                 "capability": "verification.ledger-local-v1@1.0.0"
               }
             },
             {
               "id": "deployment.status-registry.positive-10",
+              "version": "1.0.0",
+              "identity": "status-registry:positive-10",
+              "networkId": "network.positive-10",
+              "chainId": "chain.positive-10",
+              "contractAddress": "contract.deployment.status-registry.positive-10",
+              "profile": {
+                "id": "coverage.positive-10",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "status-registry",
-              "identity": "status-registry:positive-10",
               "immutableInputs": {
                 "capability": "status.ledger-local@1.0.0"
               }
             },
             {
               "id": "deployment.protocol-transport.positive-10",
+              "version": "1.0.0",
+              "identity": "protocol-transport:positive-10",
+              "networkId": "network.positive-10",
+              "chainId": "chain.positive-10",
+              "contractAddress": "contract.deployment.protocol-transport.positive-10",
+              "profile": {
+                "id": "coverage.positive-10",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "protocol",
-              "identity": "protocol-transport:positive-10",
               "immutableInputs": {
                 "capability": "protocol.canonical-reference@1.0.0"
               }
             },
             {
               "id": "deployment.atomic-replay.positive-10",
+              "version": "1.0.0",
+              "identity": "atomic-replay:positive-10",
+              "networkId": "network.positive-10",
+              "chainId": "chain.positive-10",
+              "contractAddress": "contract.deployment.atomic-replay.positive-10",
+              "profile": {
+                "id": "coverage.positive-10",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "replay",
-              "identity": "atomic-replay:positive-10",
               "immutableInputs": {
                 "capability": "replay.atomic@1.0.0"
               }
@@ -8189,45 +8805,85 @@
         "deployments": [
           {
             "id": "holder.positive-10",
+            "version": "1.0.0",
+            "identity": "holder:explicit-did",
+            "networkId": "network.positive-10",
+            "chainId": "chain.positive-10",
+            "contractAddress": "contract.holder.positive-10",
+            "profile": {
+              "id": "coverage.positive-10",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "holder-binding",
-            "identity": "holder:explicit-did",
             "immutableInputs": {
               "profile": "explicit-did"
             }
           },
           {
             "id": "deployment.verification.positive-10",
+            "version": "1.0.0",
+            "identity": "verification:positive-10",
+            "networkId": "network.positive-10",
+            "chainId": "chain.positive-10",
+            "contractAddress": "contract.deployment.verification.positive-10",
+            "profile": {
+              "id": "coverage.positive-10",
+              "version": "1.0.0"
+            },
             "kind": "compact-contract",
             "domain": "verification",
-            "identity": "verification:positive-10",
             "immutableInputs": {
               "capability": "verification.ledger-local-v1@1.0.0"
             }
           },
           {
             "id": "deployment.status-registry.positive-10",
+            "version": "1.0.0",
+            "identity": "status-registry:positive-10",
+            "networkId": "network.positive-10",
+            "chainId": "chain.positive-10",
+            "contractAddress": "contract.deployment.status-registry.positive-10",
+            "profile": {
+              "id": "coverage.positive-10",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "status-registry",
-            "identity": "status-registry:positive-10",
             "immutableInputs": {
               "capability": "status.ledger-local@1.0.0"
             }
           },
           {
             "id": "deployment.protocol-transport.positive-10",
+            "version": "1.0.0",
+            "identity": "protocol-transport:positive-10",
+            "networkId": "network.positive-10",
+            "chainId": "chain.positive-10",
+            "contractAddress": "contract.deployment.protocol-transport.positive-10",
+            "profile": {
+              "id": "coverage.positive-10",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "protocol",
-            "identity": "protocol-transport:positive-10",
             "immutableInputs": {
               "capability": "protocol.canonical-reference@1.0.0"
             }
           },
           {
             "id": "deployment.atomic-replay.positive-10",
+            "version": "1.0.0",
+            "identity": "atomic-replay:positive-10",
+            "networkId": "network.positive-10",
+            "chainId": "chain.positive-10",
+            "contractAddress": "contract.deployment.atomic-replay.positive-10",
+            "profile": {
+              "id": "coverage.positive-10",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "replay",
-            "identity": "atomic-replay:positive-10",
             "immutableInputs": {
               "capability": "replay.atomic@1.0.0"
             }
@@ -8530,27 +9186,51 @@
           "deployments": [
             {
               "id": "holder.positive-11",
+              "version": "1.0.0",
+              "identity": "holder:offchain-did",
+              "networkId": "network.positive-11",
+              "chainId": "chain.positive-11",
+              "contractAddress": "contract.holder.positive-11",
+              "profile": {
+                "id": "coverage.positive-11",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "holder-binding",
-              "identity": "holder:offchain-did",
               "immutableInputs": {
                 "profile": "offchain-did"
               }
             },
             {
               "id": "deployment.verification.positive-11",
+              "version": "1.0.0",
+              "identity": "verification:positive-11",
+              "networkId": "network.positive-11",
+              "chainId": "chain.positive-11",
+              "contractAddress": "contract.deployment.verification.positive-11",
+              "profile": {
+                "id": "coverage.positive-11",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "verification",
-              "identity": "verification:positive-11",
               "immutableInputs": {
                 "capability": "verification.offchain-public-v1@1.0.0"
               }
             },
             {
               "id": "deployment.protocol-transport.positive-11",
+              "version": "1.0.0",
+              "identity": "protocol-transport:positive-11",
+              "networkId": "network.positive-11",
+              "chainId": "chain.positive-11",
+              "contractAddress": "contract.deployment.protocol-transport.positive-11",
+              "profile": {
+                "id": "coverage.positive-11",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "protocol",
-              "identity": "protocol-transport:positive-11",
               "immutableInputs": {
                 "capability": "protocol.canonical-reference@1.0.0"
               }
@@ -8727,27 +9407,51 @@
         "deployments": [
           {
             "id": "holder.positive-11",
+            "version": "1.0.0",
+            "identity": "holder:offchain-did",
+            "networkId": "network.positive-11",
+            "chainId": "chain.positive-11",
+            "contractAddress": "contract.holder.positive-11",
+            "profile": {
+              "id": "coverage.positive-11",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "holder-binding",
-            "identity": "holder:offchain-did",
             "immutableInputs": {
               "profile": "offchain-did"
             }
           },
           {
             "id": "deployment.verification.positive-11",
+            "version": "1.0.0",
+            "identity": "verification:positive-11",
+            "networkId": "network.positive-11",
+            "chainId": "chain.positive-11",
+            "contractAddress": "contract.deployment.verification.positive-11",
+            "profile": {
+              "id": "coverage.positive-11",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "verification",
-            "identity": "verification:positive-11",
             "immutableInputs": {
               "capability": "verification.offchain-public-v1@1.0.0"
             }
           },
           {
             "id": "deployment.protocol-transport.positive-11",
+            "version": "1.0.0",
+            "identity": "protocol-transport:positive-11",
+            "networkId": "network.positive-11",
+            "chainId": "chain.positive-11",
+            "contractAddress": "contract.deployment.protocol-transport.positive-11",
+            "profile": {
+              "id": "coverage.positive-11",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "protocol",
-            "identity": "protocol-transport:positive-11",
             "immutableInputs": {
               "capability": "protocol.canonical-reference@1.0.0"
             }
@@ -9036,18 +9740,34 @@
           "deployments": [
             {
               "id": "holder.positive-12",
+              "version": "1.0.0",
+              "identity": "holder:offchain-did",
+              "networkId": "network.positive-12",
+              "chainId": "chain.positive-12",
+              "contractAddress": "contract.holder.positive-12",
+              "profile": {
+                "id": "coverage.positive-12",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "holder-binding",
-              "identity": "holder:offchain-did",
               "immutableInputs": {
                 "profile": "offchain-did"
               }
             },
             {
               "id": "deployment.verification.positive-12",
+              "version": "1.0.0",
+              "identity": "verification:positive-12",
+              "networkId": "network.positive-12",
+              "chainId": "chain.positive-12",
+              "contractAddress": "contract.deployment.verification.positive-12",
+              "profile": {
+                "id": "coverage.positive-12",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "verification",
-              "identity": "verification:positive-12",
               "immutableInputs": {
                 "capability": "verification.offchain-public-v1@1.0.0"
               }
@@ -9180,18 +9900,34 @@
         "deployments": [
           {
             "id": "holder.positive-12",
+            "version": "1.0.0",
+            "identity": "holder:offchain-did",
+            "networkId": "network.positive-12",
+            "chainId": "chain.positive-12",
+            "contractAddress": "contract.holder.positive-12",
+            "profile": {
+              "id": "coverage.positive-12",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "holder-binding",
-            "identity": "holder:offchain-did",
             "immutableInputs": {
               "profile": "offchain-did"
             }
           },
           {
             "id": "deployment.verification.positive-12",
+            "version": "1.0.0",
+            "identity": "verification:positive-12",
+            "networkId": "network.positive-12",
+            "chainId": "chain.positive-12",
+            "contractAddress": "contract.deployment.verification.positive-12",
+            "profile": {
+              "id": "coverage.positive-12",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "verification",
-            "identity": "verification:positive-12",
             "immutableInputs": {
               "capability": "verification.offchain-public-v1@1.0.0"
             }
@@ -9494,27 +10230,51 @@
           "deployments": [
             {
               "id": "holder.positive-13",
+              "version": "1.0.0",
+              "identity": "holder:offchain-did",
+              "networkId": "network.positive-13",
+              "chainId": "chain.positive-13",
+              "contractAddress": "contract.holder.positive-13",
+              "profile": {
+                "id": "coverage.positive-13",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "holder-binding",
-              "identity": "holder:offchain-did",
               "immutableInputs": {
                 "profile": "offchain-did"
               }
             },
             {
               "id": "deployment.verification.positive-13",
+              "version": "1.0.0",
+              "identity": "verification:positive-13",
+              "networkId": "network.positive-13",
+              "chainId": "chain.positive-13",
+              "contractAddress": "contract.deployment.verification.positive-13",
+              "profile": {
+                "id": "coverage.positive-13",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "verification",
-              "identity": "verification:positive-13",
               "immutableInputs": {
                 "capability": "verification.offchain-public-v1@1.0.0"
               }
             },
             {
               "id": "deployment.protocol-transport.positive-13",
+              "version": "1.0.0",
+              "identity": "protocol-transport:positive-13",
+              "networkId": "network.positive-13",
+              "chainId": "chain.positive-13",
+              "contractAddress": "contract.deployment.protocol-transport.positive-13",
+              "profile": {
+                "id": "coverage.positive-13",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "protocol",
-              "identity": "protocol-transport:positive-13",
               "immutableInputs": {
                 "capability": "protocol.oid4vp-1.0-final@1.0.0"
               }
@@ -9691,27 +10451,51 @@
         "deployments": [
           {
             "id": "holder.positive-13",
+            "version": "1.0.0",
+            "identity": "holder:offchain-did",
+            "networkId": "network.positive-13",
+            "chainId": "chain.positive-13",
+            "contractAddress": "contract.holder.positive-13",
+            "profile": {
+              "id": "coverage.positive-13",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "holder-binding",
-            "identity": "holder:offchain-did",
             "immutableInputs": {
               "profile": "offchain-did"
             }
           },
           {
             "id": "deployment.verification.positive-13",
+            "version": "1.0.0",
+            "identity": "verification:positive-13",
+            "networkId": "network.positive-13",
+            "chainId": "chain.positive-13",
+            "contractAddress": "contract.deployment.verification.positive-13",
+            "profile": {
+              "id": "coverage.positive-13",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "verification",
-            "identity": "verification:positive-13",
             "immutableInputs": {
               "capability": "verification.offchain-public-v1@1.0.0"
             }
           },
           {
             "id": "deployment.protocol-transport.positive-13",
+            "version": "1.0.0",
+            "identity": "protocol-transport:positive-13",
+            "networkId": "network.positive-13",
+            "chainId": "chain.positive-13",
+            "contractAddress": "contract.deployment.protocol-transport.positive-13",
+            "profile": {
+              "id": "coverage.positive-13",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "protocol",
-            "identity": "protocol-transport:positive-13",
             "immutableInputs": {
               "capability": "protocol.oid4vp-1.0-final@1.0.0"
             }
@@ -10092,54 +10876,102 @@
           "deployments": [
             {
               "id": "holder.positive-14",
+              "version": "1.0.0",
+              "identity": "holder:secret",
+              "networkId": "network.positive-14",
+              "chainId": "chain.positive-14",
+              "contractAddress": "contract.holder.positive-14",
+              "profile": {
+                "id": "coverage.positive-14",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "holder-binding",
-              "identity": "holder:secret",
               "immutableInputs": {
                 "profile": "secret"
               }
             },
             {
               "id": "deployment.verification.positive-14",
+              "version": "1.0.0",
+              "identity": "verification:positive-14",
+              "networkId": "network.positive-14",
+              "chainId": "chain.positive-14",
+              "contractAddress": "contract.deployment.verification.positive-14",
+              "profile": {
+                "id": "coverage.positive-14",
+                "version": "1.0.0"
+              },
               "kind": "compact-contract",
               "domain": "verification",
-              "identity": "verification:positive-14",
               "immutableInputs": {
                 "capability": "verification.ledger-attested-v1@1.0.0"
               }
             },
             {
               "id": "deployment.proof-executor.positive-14",
+              "version": "1.0.0",
+              "identity": "proof-executor:positive-14",
+              "networkId": "network.positive-14",
+              "chainId": "chain.positive-14",
+              "contractAddress": "contract.deployment.proof-executor.positive-14",
+              "profile": {
+                "id": "coverage.positive-14",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "proof",
-              "identity": "proof-executor:positive-14",
               "immutableInputs": {
                 "capability": "proof.same-holder@1.0.0"
               }
             },
             {
               "id": "deployment.status-registry.positive-14",
+              "version": "1.0.0",
+              "identity": "status-registry:positive-14",
+              "networkId": "network.positive-14",
+              "chainId": "chain.positive-14",
+              "contractAddress": "contract.deployment.status-registry.positive-14",
+              "profile": {
+                "id": "coverage.positive-14",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "status-registry",
-              "identity": "status-registry:positive-14",
               "immutableInputs": {
                 "capability": "status.authority-attested@1.0.0"
               }
             },
             {
               "id": "deployment.protocol-transport.positive-14",
+              "version": "1.0.0",
+              "identity": "protocol-transport:positive-14",
+              "networkId": "network.positive-14",
+              "chainId": "chain.positive-14",
+              "contractAddress": "contract.deployment.protocol-transport.positive-14",
+              "profile": {
+                "id": "coverage.positive-14",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "protocol",
-              "identity": "protocol-transport:positive-14",
               "immutableInputs": {
                 "capability": "protocol.canonical-reference@1.0.0"
               }
             },
             {
               "id": "deployment.atomic-replay.positive-14",
+              "version": "1.0.0",
+              "identity": "atomic-replay:positive-14",
+              "networkId": "network.positive-14",
+              "chainId": "chain.positive-14",
+              "contractAddress": "contract.deployment.atomic-replay.positive-14",
+              "profile": {
+                "id": "coverage.positive-14",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "replay",
-              "identity": "atomic-replay:positive-14",
               "immutableInputs": {
                 "capability": "replay.atomic@1.0.0"
               }
@@ -10470,54 +11302,102 @@
         "deployments": [
           {
             "id": "holder.positive-14",
+            "version": "1.0.0",
+            "identity": "holder:secret",
+            "networkId": "network.positive-14",
+            "chainId": "chain.positive-14",
+            "contractAddress": "contract.holder.positive-14",
+            "profile": {
+              "id": "coverage.positive-14",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "holder-binding",
-            "identity": "holder:secret",
             "immutableInputs": {
               "profile": "secret"
             }
           },
           {
             "id": "deployment.verification.positive-14",
+            "version": "1.0.0",
+            "identity": "verification:positive-14",
+            "networkId": "network.positive-14",
+            "chainId": "chain.positive-14",
+            "contractAddress": "contract.deployment.verification.positive-14",
+            "profile": {
+              "id": "coverage.positive-14",
+              "version": "1.0.0"
+            },
             "kind": "compact-contract",
             "domain": "verification",
-            "identity": "verification:positive-14",
             "immutableInputs": {
               "capability": "verification.ledger-attested-v1@1.0.0"
             }
           },
           {
             "id": "deployment.proof-executor.positive-14",
+            "version": "1.0.0",
+            "identity": "proof-executor:positive-14",
+            "networkId": "network.positive-14",
+            "chainId": "chain.positive-14",
+            "contractAddress": "contract.deployment.proof-executor.positive-14",
+            "profile": {
+              "id": "coverage.positive-14",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "proof",
-            "identity": "proof-executor:positive-14",
             "immutableInputs": {
               "capability": "proof.same-holder@1.0.0"
             }
           },
           {
             "id": "deployment.status-registry.positive-14",
+            "version": "1.0.0",
+            "identity": "status-registry:positive-14",
+            "networkId": "network.positive-14",
+            "chainId": "chain.positive-14",
+            "contractAddress": "contract.deployment.status-registry.positive-14",
+            "profile": {
+              "id": "coverage.positive-14",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "status-registry",
-            "identity": "status-registry:positive-14",
             "immutableInputs": {
               "capability": "status.authority-attested@1.0.0"
             }
           },
           {
             "id": "deployment.protocol-transport.positive-14",
+            "version": "1.0.0",
+            "identity": "protocol-transport:positive-14",
+            "networkId": "network.positive-14",
+            "chainId": "chain.positive-14",
+            "contractAddress": "contract.deployment.protocol-transport.positive-14",
+            "profile": {
+              "id": "coverage.positive-14",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "protocol",
-            "identity": "protocol-transport:positive-14",
             "immutableInputs": {
               "capability": "protocol.canonical-reference@1.0.0"
             }
           },
           {
             "id": "deployment.atomic-replay.positive-14",
+            "version": "1.0.0",
+            "identity": "atomic-replay:positive-14",
+            "networkId": "network.positive-14",
+            "chainId": "chain.positive-14",
+            "contractAddress": "contract.deployment.atomic-replay.positive-14",
+            "profile": {
+              "id": "coverage.positive-14",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "replay",
-            "identity": "atomic-replay:positive-14",
             "immutableInputs": {
               "capability": "replay.atomic@1.0.0"
             }
@@ -10873,45 +11753,85 @@
           "deployments": [
             {
               "id": "holder.positive-15",
+              "version": "1.0.0",
+              "identity": "holder:secret",
+              "networkId": "network.positive-15",
+              "chainId": "chain.positive-15",
+              "contractAddress": "contract.holder.positive-15",
+              "profile": {
+                "id": "coverage.positive-15",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "holder-binding",
-              "identity": "holder:secret",
               "immutableInputs": {
                 "profile": "secret"
               }
             },
             {
               "id": "deployment.verification.positive-15",
+              "version": "1.0.0",
+              "identity": "verification:positive-15",
+              "networkId": "network.positive-15",
+              "chainId": "chain.positive-15",
+              "contractAddress": "contract.deployment.verification.positive-15",
+              "profile": {
+                "id": "coverage.positive-15",
+                "version": "1.0.0"
+              },
               "kind": "compact-contract",
               "domain": "verification",
-              "identity": "verification:positive-15",
               "immutableInputs": {
                 "capability": "verification.ledger-attested-v1@1.0.0"
               }
             },
             {
               "id": "deployment.proof-executor.positive-15",
+              "version": "1.0.0",
+              "identity": "proof-executor:positive-15",
+              "networkId": "network.positive-15",
+              "chainId": "chain.positive-15",
+              "contractAddress": "contract.deployment.proof-executor.positive-15",
+              "profile": {
+                "id": "coverage.positive-15",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "proof",
-              "identity": "proof-executor:positive-15",
               "immutableInputs": {
                 "capability": "proof.same-holder@1.0.0"
               }
             },
             {
               "id": "deployment.protocol-transport.positive-15",
+              "version": "1.0.0",
+              "identity": "protocol-transport:positive-15",
+              "networkId": "network.positive-15",
+              "chainId": "chain.positive-15",
+              "contractAddress": "contract.deployment.protocol-transport.positive-15",
+              "profile": {
+                "id": "coverage.positive-15",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "protocol",
-              "identity": "protocol-transport:positive-15",
               "immutableInputs": {
                 "capability": "protocol.oid4vp-1.0-final@1.0.0"
               }
             },
             {
               "id": "deployment.atomic-replay.positive-15",
+              "version": "1.0.0",
+              "identity": "atomic-replay:positive-15",
+              "networkId": "network.positive-15",
+              "chainId": "chain.positive-15",
+              "contractAddress": "contract.deployment.atomic-replay.positive-15",
+              "profile": {
+                "id": "coverage.positive-15",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "replay",
-              "identity": "atomic-replay:positive-15",
               "immutableInputs": {
                 "capability": "replay.atomic@1.0.0"
               }
@@ -11187,45 +12107,85 @@
         "deployments": [
           {
             "id": "holder.positive-15",
+            "version": "1.0.0",
+            "identity": "holder:secret",
+            "networkId": "network.positive-15",
+            "chainId": "chain.positive-15",
+            "contractAddress": "contract.holder.positive-15",
+            "profile": {
+              "id": "coverage.positive-15",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "holder-binding",
-            "identity": "holder:secret",
             "immutableInputs": {
               "profile": "secret"
             }
           },
           {
             "id": "deployment.verification.positive-15",
+            "version": "1.0.0",
+            "identity": "verification:positive-15",
+            "networkId": "network.positive-15",
+            "chainId": "chain.positive-15",
+            "contractAddress": "contract.deployment.verification.positive-15",
+            "profile": {
+              "id": "coverage.positive-15",
+              "version": "1.0.0"
+            },
             "kind": "compact-contract",
             "domain": "verification",
-            "identity": "verification:positive-15",
             "immutableInputs": {
               "capability": "verification.ledger-attested-v1@1.0.0"
             }
           },
           {
             "id": "deployment.proof-executor.positive-15",
+            "version": "1.0.0",
+            "identity": "proof-executor:positive-15",
+            "networkId": "network.positive-15",
+            "chainId": "chain.positive-15",
+            "contractAddress": "contract.deployment.proof-executor.positive-15",
+            "profile": {
+              "id": "coverage.positive-15",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "proof",
-            "identity": "proof-executor:positive-15",
             "immutableInputs": {
               "capability": "proof.same-holder@1.0.0"
             }
           },
           {
             "id": "deployment.protocol-transport.positive-15",
+            "version": "1.0.0",
+            "identity": "protocol-transport:positive-15",
+            "networkId": "network.positive-15",
+            "chainId": "chain.positive-15",
+            "contractAddress": "contract.deployment.protocol-transport.positive-15",
+            "profile": {
+              "id": "coverage.positive-15",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "protocol",
-            "identity": "protocol-transport:positive-15",
             "immutableInputs": {
               "capability": "protocol.oid4vp-1.0-final@1.0.0"
             }
           },
           {
             "id": "deployment.atomic-replay.positive-15",
+            "version": "1.0.0",
+            "identity": "atomic-replay:positive-15",
+            "networkId": "network.positive-15",
+            "chainId": "chain.positive-15",
+            "contractAddress": "contract.deployment.atomic-replay.positive-15",
+            "profile": {
+              "id": "coverage.positive-15",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "replay",
-            "identity": "atomic-replay:positive-15",
             "immutableInputs": {
               "capability": "replay.atomic@1.0.0"
             }

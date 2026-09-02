@@ -94,8 +94,12 @@ responsible for validating their encoded data when decoding.
 `CredentialFamilyProfileV1` records semantic/security axes and exact package,
 export, Compact entrypoint, circuit, artifact, provider-capability, conformance,
 and maturity references. `CredentialDeploymentAssemblyV1` is independently
-versioned and records concrete provider instances, immutable artifact digests,
-and deployment identities. Neither contract selects or defaults the other.
+versioned and records concrete provider instances and immutable artifact and
+deployment identities. Every concrete artifact binds its version, build and
+deployment manifest digests, byte length, SHA-256, trusted signer key, exact
+profile/circuit versions, and selected deployment. Every deployment binds an
+explicit version, network/chain/address, profile, and immutable constructor
+inputs. Neither contract selects or defaults the other.
 
 ```ts
 import {
@@ -120,8 +124,9 @@ const exactGraph = resolveCredentialComposition({
 The three validators accept `unknown`, reject omitted and unknown fields, and
 throw `CredentialModelError` with a stable `code` and path. The resolver binds
 one exact family/profile/assembly graph and rejects identity mismatches,
-uncataloged provider capabilities, package conflicts, missing artifacts, and
-the mandatory ADR-0015 deny rules. Every deployment role in
+uncataloged provider capabilities, package conflicts, missing artifacts,
+cross-profile/cross-circuit/cross-deployment artifact reuse, and the mandatory
+ADR-0015 deny rules. Every deployment role in
 `CREDENTIAL_DEPLOYMENT_ROLES` must be explicitly selected or `disabled`.
 Disabled status rejects status registry, proof, authority, and mutation edges;
 unrelated signing remains available.
