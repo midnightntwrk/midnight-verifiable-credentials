@@ -6,6 +6,7 @@ import {
   pureCircuits as genericPureCircuits,
 } from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
 import {
+  type BirthCredentialPrivateParts,
   pureCircuits,
   type SecretBirthCredential,
   type SecretBirthCredentialIssuanceOffer,
@@ -51,6 +52,11 @@ import type {
   SecretBirthCredentialIssuanceRejectionCategory,
   SecretBirthCredentialVerificationRejection,
 } from "../../transport/types.js";
+import {
+  type BirthClaimId,
+  recoverBirthClaimOpenings,
+  type RecoveredBirthClaimOpening,
+} from "./claim-opening-recovery.js";
 import { SECRET_BIRTH_COMPATIBILITY_FEATURE_HINTS } from "./schema-descriptors.js";
 
 const DEFAULT_PROTOCOL_CURRENT_DAY = 0n;
@@ -75,6 +81,7 @@ export type SecretStoredCredential = {
   readonly credential: SecretBirthCredential;
   readonly credentialProof: Proof;
   readonly holderBindingBlindingFactor: Uint8Array;
+  readonly privateParts: BirthCredentialPrivateParts;
 };
 
 export type SecretIssuanceOutcome =
@@ -388,6 +395,7 @@ export class SecretHolderAgent {
       credentialProof: issuanceResult.body.credentialProof,
       holderBindingBlindingFactor:
         pendingIssuance.holderBindingBlindingFactor,
+      privateParts: issuanceResult.body.privateParts,
     });
     this.credentialCountCache += 1;
     this.metadata.set(
@@ -554,7 +562,45 @@ export class SecretHolderAgent {
         `Credential index ${index} is missing from protocol state storage.`,
       );
     }
+    pureCircuits.assertValidSecretBirthCredential(
+      stored.credential,
+      stored.credentialProof,
+    );
+    pureCircuits.assertBirthCredentialPrivatePartsMatchCommitments(
+      stored.credential.claimCommitments,
+      stored.privateParts,
+    );
+    const holderSecretCommitment =
+      genericPureCircuits.secretHolderBindingCommitment(
+        this.holderSecret,
+        this.holderSecretOpening,
+      );
+    const expectedBlindedCommitment =
+      genericPureCircuits.blindedSecretHolderCommitment(
+        holderSecretCommitment,
+        stored.credential.holderBinding.issuerNonce,
+        stored.holderBindingBlindingFactor,
+      );
+    if (
+      Buffer.compare(
+        Buffer.from(expectedBlindedCommitment),
+        Buffer.from(
+          stored.credential.holderBinding.blindedHolderSecretCommitment,
+        ),
+      ) !== 0
+    ) {
+      throw new Error(
+        "Persisted blinded holder binding does not match this holder secret",
+      );
+    }
     return stored;
+  }
+
+  recoverClaimOpenings(
+    index: number,
+    claimIds: readonly BirthClaimId[],
+  ): readonly RecoveredBirthClaimOpening[] {
+    return recoverBirthClaimOpenings(this.getCredential(index).privateParts, claimIds);
   }
 
   private recoverCredentialCount(): number {

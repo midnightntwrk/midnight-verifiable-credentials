@@ -5,6 +5,11 @@ import type {
 } from "@midnight-ntwrk/credential-model";
 
 import type { CanonicalMessage } from "./canonical-messages.js";
+import type {
+  HolderClaimOpeningDelivery,
+  HolderClaimOpeningRequest,
+  HolderClaimOpeningSelection,
+} from "./claim-openings.js";
 
 export type CredentialFamilyReference = Pick<
   CredentialFamilyDefinition<unknown, unknown>,
@@ -12,6 +17,34 @@ export type CredentialFamilyReference = Pick<
 > & {
   readonly schema: Pick<CredentialSchemaDescriptor, "id" | "version">;
 };
+
+export interface ClaimOpeningAdapter {
+  /** Creates only the exact holder-requested opening set for confidential delivery. */
+  createDelivery(input: {
+    readonly request: CanonicalMessage<"issuance-request">;
+    readonly credential: CanonicalMessage<"credential">;
+    readonly holder: HolderClaimOpeningRequest;
+    readonly input?: unknown;
+  }): HolderClaimOpeningDelivery;
+
+  /**
+   * Recomputes and checks every delivered value/opening against the canonical
+   * credential. Throwing rejects acceptance and persistence.
+   */
+  validateDelivery(input: {
+    readonly request: CanonicalMessage<"issuance-request">;
+    readonly credential: CanonicalMessage<"credential">;
+    readonly delivery: HolderClaimOpeningDelivery;
+    readonly holder: HolderClaimOpeningRequest;
+  }): void;
+
+  /** Returns exactly the requested subset from an already validated delivery. */
+  select(input: {
+    readonly credential: CanonicalMessage<"credential">;
+    readonly delivery: HolderClaimOpeningDelivery;
+    readonly claimIds: readonly string[];
+  }): HolderClaimOpeningSelection;
+}
 
 export interface IssuanceAdapter {
   createOffer(input?: unknown): CanonicalMessage<"issuance-offer">;
@@ -26,6 +59,8 @@ export interface IssuanceAdapter {
   accept(
     credential: CanonicalMessage<"credential">,
   ): CanonicalMessage<"credential">;
+  /** Optional so direct-claim and existing adapters remain source compatible. */
+  readonly claimOpenings?: ClaimOpeningAdapter;
 }
 
 export interface PresentationAdapter {
@@ -90,11 +125,21 @@ export const isInjectedCredentialFamilyAdapter = (
     return false;
   }
 
+  const claimOpenings = isRecord(value.issuance)
+    ? value.issuance.claimOpenings
+    : undefined;
+  const validClaimOpeningSurface =
+    claimOpenings === undefined ||
+    (hasFunction(claimOpenings, "createDelivery") &&
+      hasFunction(claimOpenings, "validateDelivery") &&
+      hasFunction(claimOpenings, "select"));
+
   return (
     hasFunction(value.issuance, "createOffer") &&
     hasFunction(value.issuance, "createRequest") &&
     hasFunction(value.issuance, "issue") &&
     hasFunction(value.issuance, "accept") &&
+    validClaimOpeningSurface &&
     hasFunction(value.presentation, "createRequest") &&
     hasFunction(value.presentation, "present") &&
     hasFunction(value.verification, "verify")

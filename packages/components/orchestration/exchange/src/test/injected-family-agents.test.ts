@@ -93,6 +93,15 @@ describe("family-neutral injected agents", () => {
     );
     expect(isInjectedCredentialFamilyAdapter(undefined)).toBe(false);
     expect(
+      isInjectedCredentialFamilyAdapter({
+        ...familyAdapter("runtime", "proof"),
+        issuance: {
+          ...familyAdapter("runtime", "proof").issuance,
+          claimOpenings: { createDelivery: () => undefined },
+        },
+      }),
+    ).toBe(false);
+    expect(
       isInjectedCredentialFamilyAdapterFor(
         {
           id: "runtime",

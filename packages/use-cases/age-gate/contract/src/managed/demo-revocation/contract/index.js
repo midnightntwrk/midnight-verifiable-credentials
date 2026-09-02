@@ -817,27 +817,83 @@ class _ResultMessage_0 {
 
 const _descriptor_52 = new _ResultMessage_0();
 
+class _BirthCredentialPrivateClaims_0 {
+  alignment() {
+    return _descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_37.alignment().concat(_descriptor_2.alignment())));
+  }
+  fromValue(value_0) {
+    return {
+      subjectId: _descriptor_2.fromValue(value_0),
+      legalNamePadded: _descriptor_2.fromValue(value_0),
+      birthDateDays: _descriptor_37.fromValue(value_0),
+      birthCountryCodePadded: _descriptor_2.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_2.toValue(value_0.subjectId).concat(_descriptor_2.toValue(value_0.legalNamePadded).concat(_descriptor_37.toValue(value_0.birthDateDays).concat(_descriptor_2.toValue(value_0.birthCountryCodePadded))));
+  }
+}
+
+const _descriptor_53 = new _BirthCredentialPrivateClaims_0();
+
+class _BirthCredentialClaimOpenings_0 {
+  alignment() {
+    return _descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment())));
+  }
+  fromValue(value_0) {
+    return {
+      subjectOpening: _descriptor_2.fromValue(value_0),
+      legalNameOpening: _descriptor_2.fromValue(value_0),
+      birthDateOpening: _descriptor_2.fromValue(value_0),
+      birthCountryCodeOpening: _descriptor_2.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_2.toValue(value_0.subjectOpening).concat(_descriptor_2.toValue(value_0.legalNameOpening).concat(_descriptor_2.toValue(value_0.birthDateOpening).concat(_descriptor_2.toValue(value_0.birthCountryCodeOpening))));
+  }
+}
+
+const _descriptor_54 = new _BirthCredentialClaimOpenings_0();
+
+class _BirthCredentialPrivateParts_0 {
+  alignment() {
+    return _descriptor_53.alignment().concat(_descriptor_54.alignment());
+  }
+  fromValue(value_0) {
+    return {
+      claims: _descriptor_53.fromValue(value_0),
+      openings: _descriptor_54.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_53.toValue(value_0.claims).concat(_descriptor_54.toValue(value_0.openings));
+  }
+}
+
+const _descriptor_55 = new _BirthCredentialPrivateParts_0();
+
 class _SecretBirthCredentialIssuanceResultBody_0 {
   alignment() {
-    return _descriptor_30.alignment().concat(_descriptor_18.alignment().concat(_descriptor_2.alignment()));
+    return _descriptor_30.alignment().concat(_descriptor_18.alignment().concat(_descriptor_2.alignment().concat(_descriptor_55.alignment())));
   }
   fromValue(value_0) {
     return {
       credential: _descriptor_30.fromValue(value_0),
       credentialProof: _descriptor_18.fromValue(value_0),
-      issuanceChallengeHash: _descriptor_2.fromValue(value_0)
+      issuanceChallengeHash: _descriptor_2.fromValue(value_0),
+      privateParts: _descriptor_55.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_30.toValue(value_0.credential).concat(_descriptor_18.toValue(value_0.credentialProof).concat(_descriptor_2.toValue(value_0.issuanceChallengeHash)));
+    return _descriptor_30.toValue(value_0.credential).concat(_descriptor_18.toValue(value_0.credentialProof).concat(_descriptor_2.toValue(value_0.issuanceChallengeHash).concat(_descriptor_55.toValue(value_0.privateParts))));
   }
 }
 
-const _descriptor_53 = new _SecretBirthCredentialIssuanceResultBody_0();
+const _descriptor_56 = new _SecretBirthCredentialIssuanceResultBody_0();
 
 class _ResultMessage_1 {
   alignment() {
-    return _descriptor_20.alignment().concat(_descriptor_5.alignment().concat(_descriptor_7.alignment().concat(_descriptor_21.alignment().concat(_descriptor_53.alignment()))));
+    return _descriptor_20.alignment().concat(_descriptor_5.alignment().concat(_descriptor_7.alignment().concat(_descriptor_21.alignment().concat(_descriptor_56.alignment()))));
   }
   fromValue(value_0) {
     return {
@@ -845,15 +901,15 @@ class _ResultMessage_1 {
       schema: _descriptor_5.fromValue(value_0),
       issuerVerificationMethodRef: _descriptor_7.fromValue(value_0),
       holderBindingProfile: _descriptor_21.fromValue(value_0),
-      body: _descriptor_53.fromValue(value_0)
+      body: _descriptor_56.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_20.toValue(value_0.envelope).concat(_descriptor_5.toValue(value_0.schema).concat(_descriptor_7.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_21.toValue(value_0.holderBindingProfile).concat(_descriptor_53.toValue(value_0.body)))));
+    return _descriptor_20.toValue(value_0.envelope).concat(_descriptor_5.toValue(value_0.schema).concat(_descriptor_7.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_21.toValue(value_0.holderBindingProfile).concat(_descriptor_56.toValue(value_0.body)))));
   }
 }
 
-const _descriptor_54 = new _ResultMessage_1();
+const _descriptor_57 = new _ResultMessage_1();
 
 class _SecretBirthCredentialIssuanceRequestBody_0 {
   alignment() {
@@ -874,11 +930,11 @@ class _SecretBirthCredentialIssuanceRequestBody_0 {
   }
 }
 
-const _descriptor_55 = new _SecretBirthCredentialIssuanceRequestBody_0();
+const _descriptor_58 = new _SecretBirthCredentialIssuanceRequestBody_0();
 
 class _RequestMessage_1 {
   alignment() {
-    return _descriptor_20.alignment().concat(_descriptor_5.alignment().concat(_descriptor_7.alignment().concat(_descriptor_21.alignment().concat(_descriptor_55.alignment()))));
+    return _descriptor_20.alignment().concat(_descriptor_5.alignment().concat(_descriptor_7.alignment().concat(_descriptor_21.alignment().concat(_descriptor_58.alignment()))));
   }
   fromValue(value_0) {
     return {
@@ -886,15 +942,15 @@ class _RequestMessage_1 {
       schema: _descriptor_5.fromValue(value_0),
       issuerVerificationMethodRef: _descriptor_7.fromValue(value_0),
       holderBindingProfile: _descriptor_21.fromValue(value_0),
-      body: _descriptor_55.fromValue(value_0)
+      body: _descriptor_58.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_20.toValue(value_0.envelope).concat(_descriptor_5.toValue(value_0.schema).concat(_descriptor_7.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_21.toValue(value_0.holderBindingProfile).concat(_descriptor_55.toValue(value_0.body)))));
+    return _descriptor_20.toValue(value_0.envelope).concat(_descriptor_5.toValue(value_0.schema).concat(_descriptor_7.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_21.toValue(value_0.holderBindingProfile).concat(_descriptor_58.toValue(value_0.body)))));
   }
 }
 
-const _descriptor_56 = new _RequestMessage_1();
+const _descriptor_59 = new _RequestMessage_1();
 
 class _SecretBirthCredentialIssuanceOfferBody_0 {
   alignment() {
@@ -913,11 +969,11 @@ class _SecretBirthCredentialIssuanceOfferBody_0 {
   }
 }
 
-const _descriptor_57 = new _SecretBirthCredentialIssuanceOfferBody_0();
+const _descriptor_60 = new _SecretBirthCredentialIssuanceOfferBody_0();
 
 class _OfferMessage_0 {
   alignment() {
-    return _descriptor_20.alignment().concat(_descriptor_5.alignment().concat(_descriptor_7.alignment().concat(_descriptor_21.alignment().concat(_descriptor_22.alignment().concat(_descriptor_57.alignment())))));
+    return _descriptor_20.alignment().concat(_descriptor_5.alignment().concat(_descriptor_7.alignment().concat(_descriptor_21.alignment().concat(_descriptor_22.alignment().concat(_descriptor_60.alignment())))));
   }
   fromValue(value_0) {
     return {
@@ -926,48 +982,15 @@ class _OfferMessage_0 {
       issuerVerificationMethodRef: _descriptor_7.fromValue(value_0),
       holderBindingProfile: _descriptor_21.fromValue(value_0),
       features: _descriptor_22.fromValue(value_0),
-      body: _descriptor_57.fromValue(value_0)
+      body: _descriptor_60.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_20.toValue(value_0.envelope).concat(_descriptor_5.toValue(value_0.schema).concat(_descriptor_7.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_21.toValue(value_0.holderBindingProfile).concat(_descriptor_22.toValue(value_0.features).concat(_descriptor_57.toValue(value_0.body))))));
+    return _descriptor_20.toValue(value_0.envelope).concat(_descriptor_5.toValue(value_0.schema).concat(_descriptor_7.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_21.toValue(value_0.holderBindingProfile).concat(_descriptor_22.toValue(value_0.features).concat(_descriptor_60.toValue(value_0.body))))));
   }
 }
 
-const _descriptor_58 = new _OfferMessage_0();
-
-class _AuthorityAttestedStatusCapability_0 {
-  alignment() {
-    return _descriptor_9.alignment().concat(_descriptor_10.alignment().concat(_descriptor_2.alignment()));
-  }
-  fromValue(value_0) {
-    return {
-      statusType: _descriptor_9.fromValue(value_0),
-      registryRef: _descriptor_10.fromValue(value_0),
-      statusHandleCommitment: _descriptor_2.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_9.toValue(value_0.statusType).concat(_descriptor_10.toValue(value_0.registryRef).concat(_descriptor_2.toValue(value_0.statusHandleCommitment)));
-  }
-}
-
-const _descriptor_59 = new _AuthorityAttestedStatusCapability_0();
-
-class _NoStatusCapability_0 {
-  alignment() {
-    return [];
-  }
-  fromValue(value_0) {
-    return {
-    }
-  }
-  toValue(value_0) {
-    return [];
-  }
-}
-
-const _descriptor_60 = new _NoStatusCapability_0();
+const _descriptor_61 = new _OfferMessage_0();
 
 class _RevokedSetNonMembershipStatusCapability_0 {
   alignment() {
@@ -985,7 +1008,40 @@ class _RevokedSetNonMembershipStatusCapability_0 {
   }
 }
 
-const _descriptor_61 = new _RevokedSetNonMembershipStatusCapability_0();
+const _descriptor_62 = new _RevokedSetNonMembershipStatusCapability_0();
+
+class _AuthorityAttestedStatusCapability_0 {
+  alignment() {
+    return _descriptor_9.alignment().concat(_descriptor_10.alignment().concat(_descriptor_2.alignment()));
+  }
+  fromValue(value_0) {
+    return {
+      statusType: _descriptor_9.fromValue(value_0),
+      registryRef: _descriptor_10.fromValue(value_0),
+      statusHandleCommitment: _descriptor_2.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_9.toValue(value_0.statusType).concat(_descriptor_10.toValue(value_0.registryRef).concat(_descriptor_2.toValue(value_0.statusHandleCommitment)));
+  }
+}
+
+const _descriptor_63 = new _AuthorityAttestedStatusCapability_0();
+
+class _NoStatusCapability_0 {
+  alignment() {
+    return [];
+  }
+  fromValue(value_0) {
+    return {
+    }
+  }
+  toValue(value_0) {
+    return [];
+  }
+}
+
+const _descriptor_64 = new _NoStatusCapability_0();
 
 class _SecretHolderBinding_0 {
   alignment() {
@@ -1002,7 +1058,7 @@ class _SecretHolderBinding_0 {
   }
 }
 
-const _descriptor_62 = new _SecretHolderBinding_0();
+const _descriptor_65 = new _SecretHolderBinding_0();
 
 class _VerificationTranscriptV1_0 {
   alignment() {
@@ -1064,7 +1120,7 @@ class _VerificationTranscriptV1_0 {
   }
 }
 
-const _descriptor_63 = new _VerificationTranscriptV1_0();
+const _descriptor_66 = new _VerificationTranscriptV1_0();
 
 class _EvidenceBindingV1_0 {
   alignment() {
@@ -1088,29 +1144,29 @@ class _EvidenceBindingV1_0 {
   }
 }
 
-const _descriptor_64 = new _EvidenceBindingV1_0();
+const _descriptor_67 = new _EvidenceBindingV1_0();
 
 class _VerificationPublicInputsV1_0 {
   alignment() {
-    return _descriptor_63.alignment().concat(_descriptor_64.alignment().concat(_descriptor_64.alignment().concat(_descriptor_64.alignment().concat(_descriptor_64.alignment().concat(_descriptor_64.alignment().concat(_descriptor_64.alignment()))))));
+    return _descriptor_66.alignment().concat(_descriptor_67.alignment().concat(_descriptor_67.alignment().concat(_descriptor_67.alignment().concat(_descriptor_67.alignment().concat(_descriptor_67.alignment().concat(_descriptor_67.alignment()))))));
   }
   fromValue(value_0) {
     return {
-      transcript: _descriptor_63.fromValue(value_0),
-      issuerEvidence: _descriptor_64.fromValue(value_0),
-      trustEvidence: _descriptor_64.fromValue(value_0),
-      statusEvidence: _descriptor_64.fromValue(value_0),
-      timeEvidence: _descriptor_64.fromValue(value_0),
-      artifactEvidence: _descriptor_64.fromValue(value_0),
-      connectorEvidence: _descriptor_64.fromValue(value_0)
+      transcript: _descriptor_66.fromValue(value_0),
+      issuerEvidence: _descriptor_67.fromValue(value_0),
+      trustEvidence: _descriptor_67.fromValue(value_0),
+      statusEvidence: _descriptor_67.fromValue(value_0),
+      timeEvidence: _descriptor_67.fromValue(value_0),
+      artifactEvidence: _descriptor_67.fromValue(value_0),
+      connectorEvidence: _descriptor_67.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_63.toValue(value_0.transcript).concat(_descriptor_64.toValue(value_0.issuerEvidence).concat(_descriptor_64.toValue(value_0.trustEvidence).concat(_descriptor_64.toValue(value_0.statusEvidence).concat(_descriptor_64.toValue(value_0.timeEvidence).concat(_descriptor_64.toValue(value_0.artifactEvidence).concat(_descriptor_64.toValue(value_0.connectorEvidence)))))));
+    return _descriptor_66.toValue(value_0.transcript).concat(_descriptor_67.toValue(value_0.issuerEvidence).concat(_descriptor_67.toValue(value_0.trustEvidence).concat(_descriptor_67.toValue(value_0.statusEvidence).concat(_descriptor_67.toValue(value_0.timeEvidence).concat(_descriptor_67.toValue(value_0.artifactEvidence).concat(_descriptor_67.toValue(value_0.connectorEvidence)))))));
   }
 }
 
-const _descriptor_65 = new _VerificationPublicInputsV1_0();
+const _descriptor_68 = new _VerificationPublicInputsV1_0();
 
 class _SyntheticVerificationAttemptV1_0 {
   alignment() {
@@ -1130,7 +1186,28 @@ class _SyntheticVerificationAttemptV1_0 {
   }
 }
 
-const _descriptor_66 = new _SyntheticVerificationAttemptV1_0();
+const _descriptor_69 = new _SyntheticVerificationAttemptV1_0();
+
+class _DecisionNullifierMaterialV1_0 {
+  alignment() {
+    return _descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_23.alignment().concat(_descriptor_2.alignment())))));
+  }
+  fromValue(value_0) {
+    return {
+      domain: _descriptor_2.fromValue(value_0),
+      version: _descriptor_0.fromValue(value_0),
+      deploymentDigest: _descriptor_2.fromValue(value_0),
+      verifierContractDigest: _descriptor_2.fromValue(value_0),
+      replayPolicy: _descriptor_23.fromValue(value_0),
+      replayScopeDigest: _descriptor_2.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_2.toValue(value_0.domain).concat(_descriptor_0.toValue(value_0.version).concat(_descriptor_2.toValue(value_0.deploymentDigest).concat(_descriptor_2.toValue(value_0.verifierContractDigest).concat(_descriptor_23.toValue(value_0.replayPolicy).concat(_descriptor_2.toValue(value_0.replayScopeDigest))))));
+  }
+}
+
+const _descriptor_70 = new _DecisionNullifierMaterialV1_0();
 
 class _SyntheticVerificationExtensionV1_0 {
   alignment() {
@@ -1149,7 +1226,7 @@ class _SyntheticVerificationExtensionV1_0 {
   }
 }
 
-const _descriptor_67 = new _SyntheticVerificationExtensionV1_0();
+const _descriptor_71 = new _SyntheticVerificationExtensionV1_0();
 
 class _AnchorEvidenceReceiptV1_0 {
   alignment() {
@@ -1172,71 +1249,7 @@ class _AnchorEvidenceReceiptV1_0 {
   }
 }
 
-const _descriptor_68 = new _AnchorEvidenceReceiptV1_0();
-
-class _DecisionNullifierMaterialV1_0 {
-  alignment() {
-    return _descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_23.alignment().concat(_descriptor_2.alignment())))));
-  }
-  fromValue(value_0) {
-    return {
-      domain: _descriptor_2.fromValue(value_0),
-      version: _descriptor_0.fromValue(value_0),
-      deploymentDigest: _descriptor_2.fromValue(value_0),
-      verifierContractDigest: _descriptor_2.fromValue(value_0),
-      replayPolicy: _descriptor_23.fromValue(value_0),
-      replayScopeDigest: _descriptor_2.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_2.toValue(value_0.domain).concat(_descriptor_0.toValue(value_0.version).concat(_descriptor_2.toValue(value_0.deploymentDigest).concat(_descriptor_2.toValue(value_0.verifierContractDigest).concat(_descriptor_23.toValue(value_0.replayPolicy).concat(_descriptor_2.toValue(value_0.replayScopeDigest))))));
-  }
-}
-
-const _descriptor_69 = new _DecisionNullifierMaterialV1_0();
-
-class _PresentationBindingV1_0 {
-  alignment() {
-    return _descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment()))))));
-  }
-  fromValue(value_0) {
-    return {
-      domain: _descriptor_2.fromValue(value_0),
-      version: _descriptor_0.fromValue(value_0),
-      credentialBindingDigest: _descriptor_2.fromValue(value_0),
-      holderBindingDigest: _descriptor_2.fromValue(value_0),
-      disclosureDigest: _descriptor_2.fromValue(value_0),
-      predicateDigest: _descriptor_2.fromValue(value_0),
-      consentDigest: _descriptor_2.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_2.toValue(value_0.domain).concat(_descriptor_0.toValue(value_0.version).concat(_descriptor_2.toValue(value_0.credentialBindingDigest).concat(_descriptor_2.toValue(value_0.holderBindingDigest).concat(_descriptor_2.toValue(value_0.disclosureDigest).concat(_descriptor_2.toValue(value_0.predicateDigest).concat(_descriptor_2.toValue(value_0.consentDigest)))))));
-  }
-}
-
-const _descriptor_70 = new _PresentationBindingV1_0();
-
-class _HolderBindingV1_0 {
-  alignment() {
-    return _descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_23.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment())))));
-  }
-  fromValue(value_0) {
-    return {
-      domain: _descriptor_2.fromValue(value_0),
-      version: _descriptor_0.fromValue(value_0),
-      mode: _descriptor_23.fromValue(value_0),
-      verifierContractDigest: _descriptor_2.fromValue(value_0),
-      challengeDigest: _descriptor_2.fromValue(value_0),
-      subjectBindingDigest: _descriptor_2.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_2.toValue(value_0.domain).concat(_descriptor_0.toValue(value_0.version).concat(_descriptor_23.toValue(value_0.mode).concat(_descriptor_2.toValue(value_0.verifierContractDigest).concat(_descriptor_2.toValue(value_0.challengeDigest).concat(_descriptor_2.toValue(value_0.subjectBindingDigest))))));
-  }
-}
-
-const _descriptor_71 = new _HolderBindingV1_0();
+const _descriptor_72 = new _AnchorEvidenceReceiptV1_0();
 
 class _ConsentBindingV1_0 {
   alignment() {
@@ -1277,7 +1290,29 @@ class _ConsentBindingV1_0 {
   }
 }
 
-const _descriptor_72 = new _ConsentBindingV1_0();
+const _descriptor_73 = new _ConsentBindingV1_0();
+
+class _PresentationBindingV1_0 {
+  alignment() {
+    return _descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment()))))));
+  }
+  fromValue(value_0) {
+    return {
+      domain: _descriptor_2.fromValue(value_0),
+      version: _descriptor_0.fromValue(value_0),
+      credentialBindingDigest: _descriptor_2.fromValue(value_0),
+      holderBindingDigest: _descriptor_2.fromValue(value_0),
+      disclosureDigest: _descriptor_2.fromValue(value_0),
+      predicateDigest: _descriptor_2.fromValue(value_0),
+      consentDigest: _descriptor_2.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_2.toValue(value_0.domain).concat(_descriptor_0.toValue(value_0.version).concat(_descriptor_2.toValue(value_0.credentialBindingDigest).concat(_descriptor_2.toValue(value_0.holderBindingDigest).concat(_descriptor_2.toValue(value_0.disclosureDigest).concat(_descriptor_2.toValue(value_0.predicateDigest).concat(_descriptor_2.toValue(value_0.consentDigest)))))));
+  }
+}
+
+const _descriptor_74 = new _PresentationBindingV1_0();
 
 class _CredentialBindingV1_0 {
   alignment() {
@@ -1300,7 +1335,28 @@ class _CredentialBindingV1_0 {
   }
 }
 
-const _descriptor_73 = new _CredentialBindingV1_0();
+const _descriptor_75 = new _CredentialBindingV1_0();
+
+class _HolderBindingV1_0 {
+  alignment() {
+    return _descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_23.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment())))));
+  }
+  fromValue(value_0) {
+    return {
+      domain: _descriptor_2.fromValue(value_0),
+      version: _descriptor_0.fromValue(value_0),
+      mode: _descriptor_23.fromValue(value_0),
+      verifierContractDigest: _descriptor_2.fromValue(value_0),
+      challengeDigest: _descriptor_2.fromValue(value_0),
+      subjectBindingDigest: _descriptor_2.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_2.toValue(value_0.domain).concat(_descriptor_0.toValue(value_0.version).concat(_descriptor_23.toValue(value_0.mode).concat(_descriptor_2.toValue(value_0.verifierContractDigest).concat(_descriptor_2.toValue(value_0.challengeDigest).concat(_descriptor_2.toValue(value_0.subjectBindingDigest))))));
+  }
+}
+
+const _descriptor_76 = new _HolderBindingV1_0();
 
 class _SchemaCapabilities_0 {
   alignment() {
@@ -1319,7 +1375,7 @@ class _SchemaCapabilities_0 {
   }
 }
 
-const _descriptor_74 = new _SchemaCapabilities_0();
+const _descriptor_77 = new _SchemaCapabilities_0();
 
 class _OffchainMidnightHolderBinding_0 {
   alignment() {
@@ -1337,7 +1393,7 @@ class _OffchainMidnightHolderBinding_0 {
   }
 }
 
-const _descriptor_75 = new _OffchainMidnightHolderBinding_0();
+const _descriptor_78 = new _OffchainMidnightHolderBinding_0();
 
 class _JubjubHolderBinding_0 {
   alignment() {
@@ -1353,7 +1409,7 @@ class _JubjubHolderBinding_0 {
   }
 }
 
-const _descriptor_76 = new _JubjubHolderBinding_0();
+const _descriptor_79 = new _JubjubHolderBinding_0();
 
 class _ExplicitHolderBinding_0 {
   alignment() {
@@ -1369,7 +1425,7 @@ class _ExplicitHolderBinding_0 {
   }
 }
 
-const _descriptor_77 = new _ExplicitHolderBinding_0();
+const _descriptor_80 = new _ExplicitHolderBinding_0();
 
 class _SchemaFamilyResolutionHint_0 {
   alignment() {
@@ -1386,31 +1442,31 @@ class _SchemaFamilyResolutionHint_0 {
   }
 }
 
-const _descriptor_78 = new _SchemaFamilyResolutionHint_0();
+const _descriptor_81 = new _SchemaFamilyResolutionHint_0();
 
 class _SchemaDescriptor_0 {
   alignment() {
-    return _descriptor_5.alignment().concat(_descriptor_74.alignment().concat(_descriptor_78.alignment()));
+    return _descriptor_5.alignment().concat(_descriptor_77.alignment().concat(_descriptor_81.alignment()));
   }
   fromValue(value_0) {
     return {
       schema: _descriptor_5.fromValue(value_0),
-      capabilities: _descriptor_74.fromValue(value_0),
-      familyResolutionHint: _descriptor_78.fromValue(value_0)
+      capabilities: _descriptor_77.fromValue(value_0),
+      familyResolutionHint: _descriptor_81.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_5.toValue(value_0.schema).concat(_descriptor_74.toValue(value_0.capabilities).concat(_descriptor_78.toValue(value_0.familyResolutionHint)));
+    return _descriptor_5.toValue(value_0.schema).concat(_descriptor_77.toValue(value_0.capabilities).concat(_descriptor_81.toValue(value_0.familyResolutionHint)));
   }
 }
 
-const _descriptor_79 = new _SchemaDescriptor_0();
+const _descriptor_82 = new _SchemaDescriptor_0();
 
-const _descriptor_80 = new __compactRuntime.CompactTypeVector(5, _descriptor_2);
+const _descriptor_83 = new __compactRuntime.CompactTypeVector(3, _descriptor_2);
 
-const _descriptor_81 = new __compactRuntime.CompactTypeVector(3, _descriptor_2);
+const _descriptor_84 = new __compactRuntime.CompactTypeVector(5, _descriptor_2);
 
-const _descriptor_82 = new __compactRuntime.CompactTypeVector(4, _descriptor_2);
+const _descriptor_85 = new __compactRuntime.CompactTypeVector(4, _descriptor_2);
 
 class _Either_0 {
   alignment() {
@@ -1428,9 +1484,9 @@ class _Either_0 {
   }
 }
 
-const _descriptor_83 = new _Either_0();
+const _descriptor_86 = new _Either_0();
 
-const _descriptor_84 = new __compactRuntime.CompactTypeUnsignedInteger(340282366920938463463374607431768211455n, 16);
+const _descriptor_87 = new __compactRuntime.CompactTypeUnsignedInteger(340282366920938463463374607431768211455n, 16);
 
 export class Contract {
   witnesses;
@@ -1806,6 +1862,9 @@ export class Contract {
       },
       birthCountryCodeCommitment(context, ...args_1) {
         return { result: pureCircuits.birthCountryCodeCommitment(...args_1), context };
+      },
+      assertBirthCredentialPrivatePartsMatchCommitments(context, ...args_1) {
+        return { result: pureCircuits.assertBirthCredentialPrivatePartsMatchCommitments(...args_1), context };
       },
       secretBirthCredentialBodyRoot(context, ...args_1) {
         return { result: pureCircuits.secretBirthCredentialBodyRoot(...args_1), context };
@@ -3296,43 +3355,43 @@ export class Contract {
     return result_0;
   }
   _persistentHash_2(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_73, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_75, value_0);
     return result_0;
   }
   _persistentHash_3(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_71, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_76, value_0);
     return result_0;
   }
   _persistentHash_4(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_72, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_73, value_0);
     return result_0;
   }
   _persistentHash_5(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_70, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_74, value_0);
     return result_0;
   }
   _persistentHash_6(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_64, value_0);
-    return result_0;
-  }
-  _persistentHash_7(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_68, value_0);
-    return result_0;
-  }
-  _persistentHash_8(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_69, value_0);
-    return result_0;
-  }
-  _persistentHash_9(value_0) {
     const result_0 = __compactRuntime.persistentHash(_descriptor_67, value_0);
     return result_0;
   }
+  _persistentHash_7(value_0) {
+    const result_0 = __compactRuntime.persistentHash(_descriptor_72, value_0);
+    return result_0;
+  }
+  _persistentHash_8(value_0) {
+    const result_0 = __compactRuntime.persistentHash(_descriptor_70, value_0);
+    return result_0;
+  }
+  _persistentHash_9(value_0) {
+    const result_0 = __compactRuntime.persistentHash(_descriptor_71, value_0);
+    return result_0;
+  }
   _persistentHash_10(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_63, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_66, value_0);
     return result_0;
   }
   _persistentHash_11(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_82, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_85, value_0);
     return result_0;
   }
   _persistentHash_12(value_0) {
@@ -3356,11 +3415,11 @@ export class Contract {
     return result_0;
   }
   _persistentHash_17(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_81, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_83, value_0);
     return result_0;
   }
   _persistentHash_18(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_80, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_84, value_0);
     return result_0;
   }
   _persistentCommit_0(value_0, rand_0) {
@@ -5472,6 +5531,27 @@ export class Contract {
   _birthCountryCodeCommitment_0(birthCountryCodePadded_0, opening_0) {
     return this._persistentCommit_1(birthCountryCodePadded_0, opening_0);
   }
+  _assertBirthCredentialPrivatePartsMatchCommitments_0(commitments_0,
+                                                       privateParts_0)
+  {
+    __compactRuntime.assert(this._equal_221(this._subjectIdCommitment_0(privateParts_0.claims.subjectId,
+                                                                        privateParts_0.openings.subjectOpening),
+                                            commitments_0.subjectIdCommitment),
+                            'Delivered subject ID opening does not match the credential commitment');
+    __compactRuntime.assert(this._equal_222(this._legalNameCommitment_0(privateParts_0.claims.legalNamePadded,
+                                                                        privateParts_0.openings.legalNameOpening),
+                                            commitments_0.legalNameCommitment),
+                            'Delivered legal-name opening does not match the credential commitment');
+    __compactRuntime.assert(this._equal_223(this._birthDateCommitment_0(privateParts_0.claims.birthDateDays,
+                                                                        privateParts_0.openings.birthDateOpening),
+                                            commitments_0.birthDateCommitment),
+                            'Delivered birth-date opening does not match the credential commitment');
+    __compactRuntime.assert(this._equal_224(this._birthCountryCodeCommitment_0(privateParts_0.claims.birthCountryCodePadded,
+                                                                               privateParts_0.openings.birthCountryCodeOpening),
+                                            commitments_0.birthCountryCodeCommitment),
+                            'Delivered birth-country opening does not match the credential commitment');
+    return [];
+  }
   _secretBirthCredentialBodyRoot_0(credential_0) {
     return this._credentialBodyRoot_0(credential_0);
   }
@@ -5488,18 +5568,18 @@ export class Contract {
     return this._persistentHash_16(request_0);
   }
   _assertValidSecretBirthSchemaRef_0(schema_0) {
-    __compactRuntime.assert(this._equal_221(schema_0.packageId,
+    __compactRuntime.assert(this._equal_225(schema_0.packageId,
                                             new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 45, 100, 105, 100, 58, 118, 99, 58, 98, 105, 114, 116, 104, 45, 115, 101, 99, 114, 101, 116, 0, 0, 0, 0])),
                             'Unexpected secret birth schema package identifier');
-    __compactRuntime.assert(this._equal_222(schema_0.schemaId,
+    __compactRuntime.assert(this._equal_226(schema_0.schemaId,
                                             new Uint8Array([98, 105, 114, 116, 104, 45, 99, 114, 101, 100, 101, 110, 116, 105, 97, 108, 58, 118, 49, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Unexpected schema identifier');
-    __compactRuntime.assert(this._equal_223(schema_0.majorVersion, 1n),
+    __compactRuntime.assert(this._equal_227(schema_0.majorVersion, 1n),
                             'Secret birth credential major version mismatch');
     return [];
   }
   _assertValidSecretBirthCredentialPresentationRequest_0(request_0) {
-    __compactRuntime.assert(this._equal_224(request_0.version, 1n),
+    __compactRuntime.assert(this._equal_228(request_0.version, 1n),
                             'Presentation request version mismatch');
     this._assertValidSecretBirthSchemaRef_0(request_0.schema);
     this._assertValidVerificationMethodRef_0(request_0.issuerVerificationMethodRef);
@@ -5509,7 +5589,7 @@ export class Contract {
                                t_0 > 0n),
                               'Requested age threshold must be positive');
     } else {
-      __compactRuntime.assert(this._equal_225(request_0.requestedAgeThresholdYears,
+      __compactRuntime.assert(this._equal_229(request_0.requestedAgeThresholdYears,
                                               0n),
                               'Requested age threshold must be zero when disabled');
     }
@@ -5556,7 +5636,7 @@ export class Contract {
                                t_0 > 0n),
                               'Secret birth credential issuance offer default expiration must be positive when supported');
     } else {
-      __compactRuntime.assert(this._equal_226(offer_0.body.defaultExpirationDays,
+      __compactRuntime.assert(this._equal_230(offer_0.body.defaultExpirationDays,
                                               0n),
                               'Secret birth credential issuance offer default expiration must be zero when expiration is disabled');
     }
@@ -5570,13 +5650,13 @@ export class Contract {
     this._assertValidSecretBirthSchemaRef_0(request_0.schema);
     __compactRuntime.assert(request_0.holderBindingProfile === 2,
                             'Secret birth credential issuance request must use blinded secret holder binding');
-    __compactRuntime.assert(!this._equal_227(request_0.body.holderSecretCommitment,
+    __compactRuntime.assert(!this._equal_231(request_0.body.holderSecretCommitment,
                                              this._noProtocolResponseReference_0()),
                             'Secret birth credential issuance request holder secret commitment must be set');
-    __compactRuntime.assert(!this._equal_228(request_0.body.holderBindingBlindingFactor,
+    __compactRuntime.assert(!this._equal_232(request_0.body.holderBindingBlindingFactor,
                                              this._noProtocolResponseReference_0()),
                             'Secret birth credential issuance request holder binding blinding factor must be set');
-    __compactRuntime.assert(!this._equal_229(request_0.body.holderChallengeHash,
+    __compactRuntime.assert(!this._equal_233(request_0.body.holderChallengeHash,
                                              this._noProtocolResponseReference_0()),
                             'Secret birth credential issuance request holder challenge must be set');
     if (request_0.body.requestExpiration) {
@@ -5585,7 +5665,7 @@ export class Contract {
                                t_0 > 0n),
                               'Secret birth credential issuance request expiration days must be positive when requested');
     } else {
-      __compactRuntime.assert(this._equal_230(request_0.body.requestedExpirationDays,
+      __compactRuntime.assert(this._equal_234(request_0.body.requestedExpirationDays,
                                               0n),
                               'Secret birth credential issuance request expiration days must be zero when disabled');
     }
@@ -5612,7 +5692,9 @@ export class Contract {
                             'Secret birth credential issuance result must use blinded secret holder binding');
     this._assertValidSecretBirthCredential_0(result_0.body.credential,
                                              result_0.body.credentialProof);
-    __compactRuntime.assert(this._equal_231(result_0.body.credentialProof.challengeHash,
+    this._assertBirthCredentialPrivatePartsMatchCommitments_0(result_0.body.credential.claimCommitments,
+                                                              result_0.body.privateParts);
+    __compactRuntime.assert(this._equal_235(result_0.body.credentialProof.challengeHash,
                                             result_0.body.issuanceChallengeHash),
                             'Secret birth credential issuance result challenge must match the issuer proof challenge');
     return [];
@@ -5622,7 +5704,7 @@ export class Contract {
     this._assertValidSecretBirthCredentialIssuanceRequest_0(request_0);
     this._assertValidSecretBirthCredentialIssuanceResult_0(result_0);
     this._assertRequestResultAlignment_0(request_0, result_0);
-    __compactRuntime.assert(this._equal_232(request_0.body.holderChallengeHash,
+    __compactRuntime.assert(this._equal_236(request_0.body.holderChallengeHash,
                                             result_0.body.issuanceChallengeHash),
                             'Secret birth credential issuance result challenge must match the request challenge');
     return [];
@@ -5644,7 +5726,7 @@ export class Contract {
     this._assertValidSecretBirthCredentialPresentation_0(submission_0.body.credential,
                                                          submission_0.body.credentialProof,
                                                          submission_0.body.presentation);
-    __compactRuntime.assert(!this._equal_233(submission_0.challengeHash,
+    __compactRuntime.assert(!this._equal_237(submission_0.challengeHash,
                                              this._noProtocolResponseReference_0()),
                             'Secret birth credential verification submission challenge must be set');
     return [];
@@ -5670,11 +5752,11 @@ export class Contract {
   _assertValidSecretBirthCredentialVerificationResultMessage_0(result_0) {
     this._assertValidResultMessage_1(result_0);
     if (result_0.approved) {
-      __compactRuntime.assert(!this._equal_234(result_0.body.credentialRoot,
+      __compactRuntime.assert(!this._equal_238(result_0.body.credentialRoot,
                                                this._noProtocolResponseReference_0()),
                               'Secret birth credential verification result must include a credential root when approved');
       if (result_0.body.hasVerifierScopedPseudonym) {
-        __compactRuntime.assert(!this._equal_235(result_0.body.verifierScopedPseudonym,
+        __compactRuntime.assert(!this._equal_239(result_0.body.verifierScopedPseudonym,
                                                  this._noProtocolResponseReference_0()),
                                 'Secret birth credential verification result pseudonym must be set when marked as present');
       }
@@ -5688,11 +5770,11 @@ export class Contract {
     this._assertValidSecretBirthCredentialVerificationResultMessage_0(result_0);
     this._assertSubmissionResultAlignment_0(submission_0, result_0);
     if (result_0.approved) {
-      __compactRuntime.assert(this._equal_236(result_0.body.credentialRoot,
+      __compactRuntime.assert(this._equal_240(result_0.body.credentialRoot,
                                               this._secretBirthCredentialBodyRoot_0(submission_0.body.credential)),
                               'Secret birth credential verification result credential root does not match the submission');
       if (result_0.body.hasVerifierScopedPseudonym) {
-        __compactRuntime.assert(this._equal_237(result_0.body.verifierScopedPseudonym,
+        __compactRuntime.assert(this._equal_241(result_0.body.verifierScopedPseudonym,
                                                 submission_0.body.presentation.disclosed.verifierScopedPseudonym),
                                 'Secret birth credential verification result pseudonym does not match the submission');
       }
@@ -5726,18 +5808,18 @@ export class Contract {
     this._assertMatchingBlindedSecretHolderBindings_0(credential_0.holderBinding,
                                                       presentation_0.holderBinding);
     if (presentation_0.disclosed.revealSubjectIdCommitment) {
-      __compactRuntime.assert(this._equal_238(presentation_0.disclosed.subjectIdCommitment,
+      __compactRuntime.assert(this._equal_242(presentation_0.disclosed.subjectIdCommitment,
                                               credential_0.claimCommitments.subjectIdCommitment),
                               'Presentation subject commitment does not match the credential');
     }
     if (presentation_0.disclosed.revealBirthCountryCode) {
-      __compactRuntime.assert(this._equal_239(this._birthCountryCodeCommitment_0(presentation_0.disclosed.birthCountryCodePadded,
+      __compactRuntime.assert(this._equal_243(this._birthCountryCodeCommitment_0(presentation_0.disclosed.birthCountryCodePadded,
                                                                                  presentation_0.disclosed.birthCountryCodeOpening),
                                               credential_0.claimCommitments.birthCountryCodeCommitment),
                               'Presentation birth-country disclosure does not match the credential');
     }
     if (presentation_0.disclosed.revealVerifierScopedPseudonym) {
-      __compactRuntime.assert(!this._equal_240(presentation_0.disclosed.verifierScopedPseudonym,
+      __compactRuntime.assert(!this._equal_244(presentation_0.disclosed.verifierScopedPseudonym,
                                                new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Presentation verifier-scoped pseudonym must be set when enabled');
     }
@@ -5763,10 +5845,10 @@ export class Contract {
                                                          presentation_0);
     this._assertMatchingSchemaRefs_0(request_0.schema, credential_0.schema);
     this._assertMatchingSchemaRefs_0(request_0.schema, presentation_0.schema);
-    __compactRuntime.assert(this._equal_241(request_0.issuerVerificationMethodRef.didContractAddress,
+    __compactRuntime.assert(this._equal_245(request_0.issuerVerificationMethodRef.didContractAddress,
                                             credential_0.issuerVerificationMethodRef.didContractAddress),
                             'Presentation request issuer contract does not match the credential issuer');
-    __compactRuntime.assert(this._equal_242(request_0.issuerVerificationMethodRef.methodId,
+    __compactRuntime.assert(this._equal_246(request_0.issuerVerificationMethodRef.methodId,
                                             credential_0.issuerVerificationMethodRef.methodId),
                             'Presentation request issuer method id does not match the credential issuer');
     this._assertBlindedSecretHolderBindingWitness_0(presentation_0.holderBinding,
@@ -5794,7 +5876,7 @@ export class Contract {
     if (request_0.requireAgeOverThreshold) {
       __compactRuntime.assert(presentation_0.disclosed.proveAgeOverThreshold,
                               'Presentation request requires the age-over-threshold predicate');
-      __compactRuntime.assert(this._equal_243(presentation_0.disclosed.ageThresholdYears,
+      __compactRuntime.assert(this._equal_247(presentation_0.disclosed.ageThresholdYears,
                                               request_0.requestedAgeThresholdYears),
                               'Presentation age threshold does not match the request');
     }
@@ -5808,7 +5890,7 @@ export class Contract {
   {
     __compactRuntime.assert(presentation_0.disclosed.proveAgeOverThreshold,
                             'Presentation must request the age-over-threshold predicate');
-    __compactRuntime.assert(this._equal_244(this._birthDateCommitment_0(birthDateDays_0,
+    __compactRuntime.assert(this._equal_248(this._birthDateCommitment_0(birthDateDays_0,
                                                                         birthDateOpening_0),
                                             credential_0.claimCommitments.birthDateCommitment),
                             'Birth-date witness does not match credential commitment');
@@ -5840,7 +5922,7 @@ export class Contract {
                                               secondHolderSecretOpening_0,
                                               secondHolderBindingBlindingFactor_0)
   {
-    __compactRuntime.assert(this._equal_245(firstRequest_0.verifierChallengeHash,
+    __compactRuntime.assert(this._equal_249(firstRequest_0.verifierChallengeHash,
                                             secondRequest_0.verifierChallengeHash),
                             'Same-holder composition requires a shared verifier challenge');
     this._assertValidSecretBirthCredentialVerificationRequestMessage_0(firstRequest_0);
@@ -5889,10 +5971,10 @@ export class Contract {
                                                thirdHolderSecretOpening_0,
                                                thirdHolderBindingBlindingFactor_0)
   {
-    __compactRuntime.assert(this._equal_246(firstRequest_0.verifierChallengeHash,
+    __compactRuntime.assert(this._equal_250(firstRequest_0.verifierChallengeHash,
                                             secondRequest_0.verifierChallengeHash),
                             'Same-holder composition requires a shared verifier challenge');
-    __compactRuntime.assert(this._equal_247(firstRequest_0.verifierChallengeHash,
+    __compactRuntime.assert(this._equal_251(firstRequest_0.verifierChallengeHash,
                                             thirdRequest_0.verifierChallengeHash),
                             'Same-holder composition requires a shared verifier challenge');
     this._assertValidSecretBirthCredentialVerificationRequestMessage_0(firstRequest_0);
@@ -5950,7 +6032,7 @@ export class Contract {
     this._assertValidRevokedSetStatusRequest_0(request_0.statusRequest);
     __compactRuntime.assert(request_0.statusPolicy.requireStatus,
                             'Secret birth authority-attested status verification request must require credential status');
-    __compactRuntime.assert(this._equal_248(request_0.statusRequest.verifierChallengeHash,
+    __compactRuntime.assert(this._equal_252(request_0.statusRequest.verifierChallengeHash,
                                             request_0.verificationRequest.verifierChallengeHash),
                             'Secret birth authority-attested status request challenge must match the verification request challenge');
     return [];
@@ -5962,7 +6044,7 @@ export class Contract {
     this._assertValidRevokedSetStatusRequest_0(request_0.statusRequest);
     __compactRuntime.assert(request_0.statusPolicy.requireStatus,
                             'Secret birth revoked-set status verification request must require credential status');
-    __compactRuntime.assert(this._equal_249(request_0.statusRequest.verifierChallengeHash,
+    __compactRuntime.assert(this._equal_253(request_0.statusRequest.verifierChallengeHash,
                                             request_0.verificationRequest.verifierChallengeHash),
                             'Secret birth revoked-set status request challenge must match the verification request challenge');
     return [];
@@ -6001,10 +6083,10 @@ export class Contract {
     this._assertValidSecretBirthCredentialWithStatusBinding_0(credentialWithStatus_0);
     this._assertValidSecretBirthCredentialVerificationRevokedSetStatusRequest_0(request_0);
     this._assertValidSecretBirthCredentialVerificationRevokedSetStatusInputs_0(statusInputs_0);
-    __compactRuntime.assert(this._equal_250(this._secretBirthCredentialBodyRoot_0(submission_0.body.credential),
+    __compactRuntime.assert(this._equal_254(this._secretBirthCredentialBodyRoot_0(submission_0.body.credential),
                                             this._secretBirthCredentialBodyRoot_0(plainCredential_0)),
                             'Revoked-set status verification submission credential does not match the status-bound credential body');
-    __compactRuntime.assert(this._equal_251(submission_0.body.credentialProof.challengeHash,
+    __compactRuntime.assert(this._equal_255(submission_0.body.credentialProof.challengeHash,
                                             credentialWithStatus_0.credentialProof.challengeHash),
                             'Revoked-set status verification submission credential proof does not match the status-bound credential proof');
     this._assertSecretBirthCredentialVerificationSubmissionMatchesRequest_0(request_0.verificationRequest,
@@ -6012,16 +6094,16 @@ export class Contract {
                                                                             holderSecret_0,
                                                                             holderSecretOpening_0,
                                                                             holderBindingBlindingFactor_0);
-    __compactRuntime.assert(this._equal_252(statusInputs_0.statusProofProtocol.request.verifierChallengeHash,
+    __compactRuntime.assert(this._equal_256(statusInputs_0.statusProofProtocol.request.verifierChallengeHash,
                                             request_0.verificationRequest.verifierChallengeHash),
                             'Revoked-set status proof protocol challenge must match the verification request challenge');
-    __compactRuntime.assert(this._equal_253(statusInputs_0.statusProofProtocol.request.registryState.registryId,
+    __compactRuntime.assert(this._equal_257(statusInputs_0.statusProofProtocol.request.registryState.registryId,
                                             request_0.statusRequest.registryState.registryId),
                             'Revoked-set status proof protocol registry id does not match the verifier request');
-    __compactRuntime.assert(this._equal_254(statusInputs_0.statusProofProtocol.request.registryState.revokedRoot,
+    __compactRuntime.assert(this._equal_258(statusInputs_0.statusProofProtocol.request.registryState.revokedRoot,
                                             request_0.statusRequest.registryState.revokedRoot),
                             'Revoked-set status proof protocol revoked root does not match the verifier request');
-    __compactRuntime.assert(this._equal_255(statusInputs_0.statusProofProtocol.request.registryState.registryVersion,
+    __compactRuntime.assert(this._equal_259(statusInputs_0.statusProofProtocol.request.registryState.registryVersion,
                                             request_0.statusRequest.registryState.registryVersion),
                             'Revoked-set status proof protocol registry version does not match the verifier request');
     this._assertVerifierStatusPolicyAcceptsRevokedSetNonMembershipStatusProofProtocol_0(request_0.statusPolicy,
@@ -6041,10 +6123,10 @@ export class Contract {
     this._assertValidSecretBirthCredentialWithStatusBinding_0(credentialWithStatus_0);
     this._assertValidSecretBirthCredentialVerificationLiveStatusRequest_0(request_0);
     this._assertValidSecretBirthCredentialVerificationLiveStatusInputs_0(statusInputs_0);
-    __compactRuntime.assert(this._equal_256(this._secretBirthCredentialBodyRoot_0(submission_0.body.credential),
+    __compactRuntime.assert(this._equal_260(this._secretBirthCredentialBodyRoot_0(submission_0.body.credential),
                                             this._secretBirthCredentialBodyRoot_0(plainCredential_0)),
                             'Live status verification submission credential does not match the status-bound credential body');
-    __compactRuntime.assert(this._equal_257(submission_0.body.credentialProof.challengeHash,
+    __compactRuntime.assert(this._equal_261(submission_0.body.credentialProof.challengeHash,
                                             credentialWithStatus_0.credentialProof.challengeHash),
                             'Live status verification submission credential proof does not match the status-bound credential proof');
     this._assertSecretBirthCredentialVerificationSubmissionMatchesRequest_0(request_0.verificationRequest,
@@ -6070,10 +6152,10 @@ export class Contract {
     this._assertValidSecretBirthCredentialWithStatusBinding_0(credentialWithStatus_0);
     this._assertValidSecretBirthCredentialVerificationAuthorityAttestedStatusRequest_0(request_0);
     this._assertValidSecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs_0(statusInputs_0);
-    __compactRuntime.assert(this._equal_258(this._secretBirthCredentialBodyRoot_0(submission_0.body.credential),
+    __compactRuntime.assert(this._equal_262(this._secretBirthCredentialBodyRoot_0(submission_0.body.credential),
                                             this._secretBirthCredentialBodyRoot_0(plainCredential_0)),
                             'Authority-attested status protocol submission credential does not match the status-bound credential body');
-    __compactRuntime.assert(this._equal_259(submission_0.body.credentialProof.challengeHash,
+    __compactRuntime.assert(this._equal_263(submission_0.body.credentialProof.challengeHash,
                                             credentialWithStatus_0.credentialProof.challengeHash),
                             'Authority-attested status protocol submission credential proof does not match the status-bound credential proof');
     this._assertSecretBirthCredentialVerificationSubmissionMatchesRequest_0(request_0.verificationRequest,
@@ -6081,13 +6163,13 @@ export class Contract {
                                                                             holderSecret_0,
                                                                             holderSecretOpening_0,
                                                                             holderBindingBlindingFactor_0);
-    __compactRuntime.assert(this._equal_260(statusInputs_0.statusProofProtocol.request.registryState.registryId,
+    __compactRuntime.assert(this._equal_264(statusInputs_0.statusProofProtocol.request.registryState.registryId,
                                             request_0.statusRequest.registryState.registryId),
                             'Authority-attested status proof protocol registry id does not match the verifier request');
-    __compactRuntime.assert(this._equal_261(statusInputs_0.statusProofProtocol.request.registryState.revokedRoot,
+    __compactRuntime.assert(this._equal_265(statusInputs_0.statusProofProtocol.request.registryState.revokedRoot,
                                             request_0.statusRequest.registryState.revokedRoot),
                             'Authority-attested status proof protocol revoked root does not match the verifier request');
-    __compactRuntime.assert(this._equal_262(statusInputs_0.statusProofProtocol.request.registryState.registryVersion,
+    __compactRuntime.assert(this._equal_266(statusInputs_0.statusProofProtocol.request.registryState.registryVersion,
                                             request_0.statusRequest.registryState.registryVersion),
                             'Authority-attested status proof protocol registry version does not match the verifier request');
     this._assertVerifierStatusPolicyAcceptsAuthorityAttestedStatusProofProtocol_0(request_0.statusPolicy,
@@ -6228,7 +6310,7 @@ export class Contract {
                                                                                         { popeq: { cached: false,
                                                                                                    result: undefined } }]).value),
                             'Revocation demo live status registry has already been initialized');
-    __compactRuntime.assert(!this._equal_263(registryId_0,
+    __compactRuntime.assert(!this._equal_267(registryId_0,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Revocation demo live status registry id must be set');
     __compactRuntime.queryLedgerState(context,
@@ -6284,7 +6366,7 @@ export class Contract {
                                                                                        { popeq: { cached: false,
                                                                                                   result: undefined } }]).value),
                             'Revocation demo live status registry is not initialized');
-    __compactRuntime.assert(!this._equal_264(statusHandle_0,
+    __compactRuntime.assert(!this._equal_268(statusHandle_0,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Revocation demo live status handle must be set');
     __compactRuntime.queryLedgerState(context,
@@ -6596,7 +6678,7 @@ export class Contract {
                             ===
                             2,
                             'Revocation demo verifier-supplied-root request must require revoked-set status support');
-    __compactRuntime.assert(this._equal_265(request_0.statusRequest.verifierChallengeHash,
+    __compactRuntime.assert(this._equal_269(request_0.statusRequest.verifierChallengeHash,
                                             request_0.verificationRequest.verifierChallengeHash),
                             'Revocation demo status request challenge must match the verification request challenge');
     this._assertSecretBirthCredentialVerificationSubmissionMatchesRevokedSetStatusRequest_0(credentialWithStatus_0,
@@ -6847,7 +6929,7 @@ export class Contract {
                             ===
                             2,
                             'Revocation demo live status request must require revoked-set status support');
-    __compactRuntime.assert(this._equal_266(credentialWithStatus_0.credential.statusBinding.registryRef.registryId,
+    __compactRuntime.assert(this._equal_270(credentialWithStatus_0.credential.statusBinding.registryRef.registryId,
                                             _descriptor_2.fromValue(__compactRuntime.queryLedgerState(context,
                                                                                                       partialProofData,
                                                                                                       [
@@ -8720,31 +8802,31 @@ export class Contract {
     return true;
   }
   _equal_223(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_224(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_225(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_226(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_227(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_228(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_229(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_230(x0, y0) {
@@ -8764,7 +8846,7 @@ export class Contract {
     return true;
   }
   _equal_234(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_235(x0, y0) {
@@ -8792,11 +8874,7 @@ export class Contract {
     return true;
   }
   _equal_241(x0, y0) {
-    {
-      let x1 = x0.bytes;
-      let y1 = y0.bytes;
-      if (!x1.every((x, i) => y1[i] === x)) { return false; }
-    }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_242(x0, y0) {
@@ -8804,7 +8882,7 @@ export class Contract {
     return true;
   }
   _equal_243(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_244(x0, y0) {
@@ -8812,7 +8890,11 @@ export class Contract {
     return true;
   }
   _equal_245(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    {
+      let x1 = x0.bytes;
+      let y1 = y0.bytes;
+      if (!x1.every((x, i) => y1[i] === x)) { return false; }
+    }
     return true;
   }
   _equal_246(x0, y0) {
@@ -8820,7 +8902,7 @@ export class Contract {
     return true;
   }
   _equal_247(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_248(x0, y0) {
@@ -8852,7 +8934,7 @@ export class Contract {
     return true;
   }
   _equal_255(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_256(x0, y0) {
@@ -8868,7 +8950,7 @@ export class Contract {
     return true;
   }
   _equal_259(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_260(x0, y0) {
@@ -8880,7 +8962,7 @@ export class Contract {
     return true;
   }
   _equal_262(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_263(x0, y0) {
@@ -8896,6 +8978,22 @@ export class Contract {
     return true;
   }
   _equal_266(x0, y0) {
+    if (x0 !== y0) { return false; }
+    return true;
+  }
+  _equal_267(x0, y0) {
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    return true;
+  }
+  _equal_268(x0, y0) {
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    return true;
+  }
+  _equal_269(x0, y0) {
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    return true;
+  }
+  _equal_270(x0, y0) {
     if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
@@ -11830,7 +11928,7 @@ export const pureCircuits = {
     if (!(typeof(commitments_0) === 'object' && commitments_0.subjectIdCommitment.buffer instanceof ArrayBuffer && commitments_0.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && commitments_0.subjectIdCommitment.length === 32 && commitments_0.legalNameCommitment.buffer instanceof ArrayBuffer && commitments_0.legalNameCommitment.BYTES_PER_ELEMENT === 1 && commitments_0.legalNameCommitment.length === 32 && commitments_0.birthDateCommitment.buffer instanceof ArrayBuffer && commitments_0.birthDateCommitment.BYTES_PER_ELEMENT === 1 && commitments_0.birthDateCommitment.length === 32 && commitments_0.birthCountryCodeCommitment.buffer instanceof ArrayBuffer && commitments_0.birthCountryCodeCommitment.BYTES_PER_ELEMENT === 1 && commitments_0.birthCountryCodeCommitment.length === 32)) {
       __compactRuntime.typeError('birthCredentialClaimRoot',
                                  'argument 1',
-                                 'claims.compact line 11 char 1',
+                                 'claims.compact line 30 char 1',
                                  'struct BirthCredentialClaimCommitments<subjectIdCommitment: Bytes<32>, legalNameCommitment: Bytes<32>, birthDateCommitment: Bytes<32>, birthCountryCodeCommitment: Bytes<32>>',
                                  commitments_0)
     }
@@ -11845,14 +11943,14 @@ export const pureCircuits = {
     if (!(subjectId_0.buffer instanceof ArrayBuffer && subjectId_0.BYTES_PER_ELEMENT === 1 && subjectId_0.length === 32)) {
       __compactRuntime.typeError('subjectIdCommitment',
                                  'argument 1',
-                                 'claims.compact line 26 char 1',
+                                 'claims.compact line 45 char 1',
                                  'Bytes<32>',
                                  subjectId_0)
     }
     if (!(opening_0.buffer instanceof ArrayBuffer && opening_0.BYTES_PER_ELEMENT === 1 && opening_0.length === 32)) {
       __compactRuntime.typeError('subjectIdCommitment',
                                  'argument 2',
-                                 'claims.compact line 26 char 1',
+                                 'claims.compact line 45 char 1',
                                  'Bytes<32>',
                                  opening_0)
     }
@@ -11867,14 +11965,14 @@ export const pureCircuits = {
     if (!(typeof(birthDateDays_0) === 'bigint' && birthDateDays_0 >= 0n && birthDateDays_0 <= 4294967295n)) {
       __compactRuntime.typeError('birthDateCommitment',
                                  'argument 1',
-                                 'claims.compact line 33 char 1',
+                                 'claims.compact line 52 char 1',
                                  'Uint<0..4294967296>',
                                  birthDateDays_0)
     }
     if (!(opening_0.buffer instanceof ArrayBuffer && opening_0.BYTES_PER_ELEMENT === 1 && opening_0.length === 32)) {
       __compactRuntime.typeError('birthDateCommitment',
                                  'argument 2',
-                                 'claims.compact line 33 char 1',
+                                 'claims.compact line 52 char 1',
                                  'Bytes<32>',
                                  opening_0)
     }
@@ -11889,14 +11987,14 @@ export const pureCircuits = {
     if (!(legalNamePadded_0.buffer instanceof ArrayBuffer && legalNamePadded_0.BYTES_PER_ELEMENT === 1 && legalNamePadded_0.length === 32)) {
       __compactRuntime.typeError('legalNameCommitment',
                                  'argument 1',
-                                 'claims.compact line 40 char 1',
+                                 'claims.compact line 59 char 1',
                                  'Bytes<32>',
                                  legalNamePadded_0)
     }
     if (!(opening_0.buffer instanceof ArrayBuffer && opening_0.BYTES_PER_ELEMENT === 1 && opening_0.length === 32)) {
       __compactRuntime.typeError('legalNameCommitment',
                                  'argument 2',
-                                 'claims.compact line 40 char 1',
+                                 'claims.compact line 59 char 1',
                                  'Bytes<32>',
                                  opening_0)
     }
@@ -11911,19 +12009,42 @@ export const pureCircuits = {
     if (!(birthCountryCodePadded_0.buffer instanceof ArrayBuffer && birthCountryCodePadded_0.BYTES_PER_ELEMENT === 1 && birthCountryCodePadded_0.length === 32)) {
       __compactRuntime.typeError('birthCountryCodeCommitment',
                                  'argument 1',
-                                 'claims.compact line 47 char 1',
+                                 'claims.compact line 66 char 1',
                                  'Bytes<32>',
                                  birthCountryCodePadded_0)
     }
     if (!(opening_0.buffer instanceof ArrayBuffer && opening_0.BYTES_PER_ELEMENT === 1 && opening_0.length === 32)) {
       __compactRuntime.typeError('birthCountryCodeCommitment',
                                  'argument 2',
-                                 'claims.compact line 47 char 1',
+                                 'claims.compact line 66 char 1',
                                  'Bytes<32>',
                                  opening_0)
     }
     return _dummyContract._birthCountryCodeCommitment_0(birthCountryCodePadded_0,
                                                         opening_0);
+  },
+  assertBirthCredentialPrivatePartsMatchCommitments: (...args_0) => {
+    if (args_0.length !== 2) {
+      throw new __compactRuntime.CompactError(`assertBirthCredentialPrivatePartsMatchCommitments: expected 2 arguments (as invoked from Typescript), received ${args_0.length}`);
+    }
+    const commitments_0 = args_0[0];
+    const privateParts_0 = args_0[1];
+    if (!(typeof(commitments_0) === 'object' && commitments_0.subjectIdCommitment.buffer instanceof ArrayBuffer && commitments_0.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && commitments_0.subjectIdCommitment.length === 32 && commitments_0.legalNameCommitment.buffer instanceof ArrayBuffer && commitments_0.legalNameCommitment.BYTES_PER_ELEMENT === 1 && commitments_0.legalNameCommitment.length === 32 && commitments_0.birthDateCommitment.buffer instanceof ArrayBuffer && commitments_0.birthDateCommitment.BYTES_PER_ELEMENT === 1 && commitments_0.birthDateCommitment.length === 32 && commitments_0.birthCountryCodeCommitment.buffer instanceof ArrayBuffer && commitments_0.birthCountryCodeCommitment.BYTES_PER_ELEMENT === 1 && commitments_0.birthCountryCodeCommitment.length === 32)) {
+      __compactRuntime.typeError('assertBirthCredentialPrivatePartsMatchCommitments',
+                                 'argument 1',
+                                 'claims.compact line 73 char 1',
+                                 'struct BirthCredentialClaimCommitments<subjectIdCommitment: Bytes<32>, legalNameCommitment: Bytes<32>, birthDateCommitment: Bytes<32>, birthCountryCodeCommitment: Bytes<32>>',
+                                 commitments_0)
+    }
+    if (!(typeof(privateParts_0) === 'object' && typeof(privateParts_0.claims) === 'object' && privateParts_0.claims.subjectId.buffer instanceof ArrayBuffer && privateParts_0.claims.subjectId.BYTES_PER_ELEMENT === 1 && privateParts_0.claims.subjectId.length === 32 && privateParts_0.claims.legalNamePadded.buffer instanceof ArrayBuffer && privateParts_0.claims.legalNamePadded.BYTES_PER_ELEMENT === 1 && privateParts_0.claims.legalNamePadded.length === 32 && typeof(privateParts_0.claims.birthDateDays) === 'bigint' && privateParts_0.claims.birthDateDays >= 0n && privateParts_0.claims.birthDateDays <= 4294967295n && privateParts_0.claims.birthCountryCodePadded.buffer instanceof ArrayBuffer && privateParts_0.claims.birthCountryCodePadded.BYTES_PER_ELEMENT === 1 && privateParts_0.claims.birthCountryCodePadded.length === 32 && typeof(privateParts_0.openings) === 'object' && privateParts_0.openings.subjectOpening.buffer instanceof ArrayBuffer && privateParts_0.openings.subjectOpening.BYTES_PER_ELEMENT === 1 && privateParts_0.openings.subjectOpening.length === 32 && privateParts_0.openings.legalNameOpening.buffer instanceof ArrayBuffer && privateParts_0.openings.legalNameOpening.BYTES_PER_ELEMENT === 1 && privateParts_0.openings.legalNameOpening.length === 32 && privateParts_0.openings.birthDateOpening.buffer instanceof ArrayBuffer && privateParts_0.openings.birthDateOpening.BYTES_PER_ELEMENT === 1 && privateParts_0.openings.birthDateOpening.length === 32 && privateParts_0.openings.birthCountryCodeOpening.buffer instanceof ArrayBuffer && privateParts_0.openings.birthCountryCodeOpening.BYTES_PER_ELEMENT === 1 && privateParts_0.openings.birthCountryCodeOpening.length === 32)) {
+      __compactRuntime.typeError('assertBirthCredentialPrivatePartsMatchCommitments',
+                                 'argument 2',
+                                 'claims.compact line 73 char 1',
+                                 'struct BirthCredentialPrivateParts<claims: struct BirthCredentialPrivateClaims<subjectId: Bytes<32>, legalNamePadded: Bytes<32>, birthDateDays: Uint<0..4294967296>, birthCountryCodePadded: Bytes<32>>, openings: struct BirthCredentialClaimOpenings<subjectOpening: Bytes<32>, legalNameOpening: Bytes<32>, birthDateOpening: Bytes<32>, birthCountryCodeOpening: Bytes<32>>>',
+                                 privateParts_0)
+    }
+    return _dummyContract._assertBirthCredentialPrivatePartsMatchCommitments_0(commitments_0,
+                                                                               privateParts_0);
   },
   secretBirthCredentialBodyRoot: (...args_0) => {
     if (args_0.length !== 1) {
@@ -12107,11 +12228,11 @@ export const pureCircuits = {
       throw new __compactRuntime.CompactError(`assertValidSecretBirthCredentialIssuanceResult: expected 1 argument (as invoked from Typescript), received ${args_0.length}`);
     }
     const result_0 = args_0[0];
-    if (!(typeof(result_0) === 'object' && typeof(result_0.envelope) === 'object' && typeof(result_0.envelope.version) === 'bigint' && result_0.envelope.version >= 0n && result_0.envelope.version <= 65535n && result_0.envelope.messageId.buffer instanceof ArrayBuffer && result_0.envelope.messageId.BYTES_PER_ELEMENT === 1 && result_0.envelope.messageId.length === 32 && result_0.envelope.threadId.buffer instanceof ArrayBuffer && result_0.envelope.threadId.BYTES_PER_ELEMENT === 1 && result_0.envelope.threadId.length === 32 && typeof(result_0.envelope.initialMessage) === 'boolean' && result_0.envelope.respondsToMessageId.buffer instanceof ArrayBuffer && result_0.envelope.respondsToMessageId.BYTES_PER_ELEMENT === 1 && result_0.envelope.respondsToMessageId.length === 32 && typeof(result_0.envelope.createdAt) === 'bigint' && result_0.envelope.createdAt >= 0n && result_0.envelope.createdAt <= 18446744073709551615n && typeof(result_0.envelope.hasExpiresAt) === 'boolean' && typeof(result_0.envelope.expiresAt) === 'bigint' && result_0.envelope.expiresAt >= 0n && result_0.envelope.expiresAt <= 18446744073709551615n && typeof(result_0.schema) === 'object' && result_0.schema.packageId.buffer instanceof ArrayBuffer && result_0.schema.packageId.BYTES_PER_ELEMENT === 1 && result_0.schema.packageId.length === 32 && result_0.schema.schemaId.buffer instanceof ArrayBuffer && result_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && result_0.schema.schemaId.length === 32 && typeof(result_0.schema.majorVersion) === 'bigint' && result_0.schema.majorVersion >= 0n && result_0.schema.majorVersion <= 65535n && typeof(result_0.schema.minorVersion) === 'bigint' && result_0.schema.minorVersion >= 0n && result_0.schema.minorVersion <= 65535n && typeof(result_0.issuerVerificationMethodRef) === 'object' && typeof(result_0.issuerVerificationMethodRef.didContractAddress) === 'object' && result_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && result_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && result_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && result_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && result_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && result_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(result_0.holderBindingProfile) === 'number' && result_0.holderBindingProfile >= 0 && result_0.holderBindingProfile <= 2 && typeof(result_0.body) === 'object' && typeof(result_0.body.credential) === 'object' && typeof(result_0.body.credential.version) === 'bigint' && result_0.body.credential.version >= 0n && result_0.body.credential.version <= 65535n && typeof(result_0.body.credential.schema) === 'object' && result_0.body.credential.schema.packageId.buffer instanceof ArrayBuffer && result_0.body.credential.schema.packageId.BYTES_PER_ELEMENT === 1 && result_0.body.credential.schema.packageId.length === 32 && result_0.body.credential.schema.schemaId.buffer instanceof ArrayBuffer && result_0.body.credential.schema.schemaId.BYTES_PER_ELEMENT === 1 && result_0.body.credential.schema.schemaId.length === 32 && typeof(result_0.body.credential.schema.majorVersion) === 'bigint' && result_0.body.credential.schema.majorVersion >= 0n && result_0.body.credential.schema.majorVersion <= 65535n && typeof(result_0.body.credential.schema.minorVersion) === 'bigint' && result_0.body.credential.schema.minorVersion >= 0n && result_0.body.credential.schema.minorVersion <= 65535n && typeof(result_0.body.credential.issuerVerificationMethodRef) === 'object' && typeof(result_0.body.credential.issuerVerificationMethodRef.didContractAddress) === 'object' && result_0.body.credential.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && result_0.body.credential.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && result_0.body.credential.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && result_0.body.credential.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && result_0.body.credential.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && result_0.body.credential.issuerVerificationMethodRef.methodId.length === 32 && typeof(result_0.body.credential.holderBinding) === 'object' && result_0.body.credential.holderBinding.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && result_0.body.credential.holderBinding.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && result_0.body.credential.holderBinding.blindedHolderSecretCommitment.length === 32 && result_0.body.credential.holderBinding.issuerNonce.buffer instanceof ArrayBuffer && result_0.body.credential.holderBinding.issuerNonce.BYTES_PER_ELEMENT === 1 && result_0.body.credential.holderBinding.issuerNonce.length === 32 && result_0.body.credential.holderBinding.requestChallengeResponse.buffer instanceof ArrayBuffer && result_0.body.credential.holderBinding.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && result_0.body.credential.holderBinding.requestChallengeResponse.length === 32 && typeof(result_0.body.credential.statusBinding) === 'object' && typeof(result_0.body.credential.issuedAt) === 'bigint' && result_0.body.credential.issuedAt >= 0n && result_0.body.credential.issuedAt <= 18446744073709551615n && typeof(result_0.body.credential.hasExpiration) === 'boolean' && typeof(result_0.body.credential.expiresAt) === 'bigint' && result_0.body.credential.expiresAt >= 0n && result_0.body.credential.expiresAt <= 18446744073709551615n && typeof(result_0.body.credential.claims) === 'object' && typeof(result_0.body.credential.claimCommitments) === 'object' && result_0.body.credential.claimCommitments.subjectIdCommitment.buffer instanceof ArrayBuffer && result_0.body.credential.claimCommitments.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && result_0.body.credential.claimCommitments.subjectIdCommitment.length === 32 && result_0.body.credential.claimCommitments.legalNameCommitment.buffer instanceof ArrayBuffer && result_0.body.credential.claimCommitments.legalNameCommitment.BYTES_PER_ELEMENT === 1 && result_0.body.credential.claimCommitments.legalNameCommitment.length === 32 && result_0.body.credential.claimCommitments.birthDateCommitment.buffer instanceof ArrayBuffer && result_0.body.credential.claimCommitments.birthDateCommitment.BYTES_PER_ELEMENT === 1 && result_0.body.credential.claimCommitments.birthDateCommitment.length === 32 && result_0.body.credential.claimCommitments.birthCountryCodeCommitment.buffer instanceof ArrayBuffer && result_0.body.credential.claimCommitments.birthCountryCodeCommitment.BYTES_PER_ELEMENT === 1 && result_0.body.credential.claimCommitments.birthCountryCodeCommitment.length === 32 && result_0.body.credential.claimRoot.buffer instanceof ArrayBuffer && result_0.body.credential.claimRoot.BYTES_PER_ELEMENT === 1 && result_0.body.credential.claimRoot.length === 32 && typeof(result_0.body.credentialProof) === 'object' && typeof(result_0.body.credentialProof.signerVerificationMethodRef) === 'object' && typeof(result_0.body.credentialProof.signerVerificationMethodRef.didContractAddress) === 'object' && result_0.body.credentialProof.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && result_0.body.credentialProof.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && result_0.body.credentialProof.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && result_0.body.credentialProof.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && result_0.body.credentialProof.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && result_0.body.credentialProof.signerVerificationMethodRef.methodId.length === 32 && typeof(result_0.body.credentialProof.createdAt) === 'bigint' && result_0.body.credentialProof.createdAt >= 0n && result_0.body.credentialProof.createdAt <= 18446744073709551615n && result_0.body.credentialProof.challengeHash.buffer instanceof ArrayBuffer && result_0.body.credentialProof.challengeHash.BYTES_PER_ELEMENT === 1 && result_0.body.credentialProof.challengeHash.length === 32 && true && typeof(result_0.body.credentialProof.signature) === 'object' && true && typeof(result_0.body.credentialProof.signature.s) === 'bigint' && result_0.body.credentialProof.signature.s >= 0 && result_0.body.credentialProof.signature.s <= __compactRuntime.MAX_FIELD && result_0.body.issuanceChallengeHash.buffer instanceof ArrayBuffer && result_0.body.issuanceChallengeHash.BYTES_PER_ELEMENT === 1 && result_0.body.issuanceChallengeHash.length === 32)) {
+    if (!(typeof(result_0) === 'object' && typeof(result_0.envelope) === 'object' && typeof(result_0.envelope.version) === 'bigint' && result_0.envelope.version >= 0n && result_0.envelope.version <= 65535n && result_0.envelope.messageId.buffer instanceof ArrayBuffer && result_0.envelope.messageId.BYTES_PER_ELEMENT === 1 && result_0.envelope.messageId.length === 32 && result_0.envelope.threadId.buffer instanceof ArrayBuffer && result_0.envelope.threadId.BYTES_PER_ELEMENT === 1 && result_0.envelope.threadId.length === 32 && typeof(result_0.envelope.initialMessage) === 'boolean' && result_0.envelope.respondsToMessageId.buffer instanceof ArrayBuffer && result_0.envelope.respondsToMessageId.BYTES_PER_ELEMENT === 1 && result_0.envelope.respondsToMessageId.length === 32 && typeof(result_0.envelope.createdAt) === 'bigint' && result_0.envelope.createdAt >= 0n && result_0.envelope.createdAt <= 18446744073709551615n && typeof(result_0.envelope.hasExpiresAt) === 'boolean' && typeof(result_0.envelope.expiresAt) === 'bigint' && result_0.envelope.expiresAt >= 0n && result_0.envelope.expiresAt <= 18446744073709551615n && typeof(result_0.schema) === 'object' && result_0.schema.packageId.buffer instanceof ArrayBuffer && result_0.schema.packageId.BYTES_PER_ELEMENT === 1 && result_0.schema.packageId.length === 32 && result_0.schema.schemaId.buffer instanceof ArrayBuffer && result_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && result_0.schema.schemaId.length === 32 && typeof(result_0.schema.majorVersion) === 'bigint' && result_0.schema.majorVersion >= 0n && result_0.schema.majorVersion <= 65535n && typeof(result_0.schema.minorVersion) === 'bigint' && result_0.schema.minorVersion >= 0n && result_0.schema.minorVersion <= 65535n && typeof(result_0.issuerVerificationMethodRef) === 'object' && typeof(result_0.issuerVerificationMethodRef.didContractAddress) === 'object' && result_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && result_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && result_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && result_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && result_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && result_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(result_0.holderBindingProfile) === 'number' && result_0.holderBindingProfile >= 0 && result_0.holderBindingProfile <= 2 && typeof(result_0.body) === 'object' && typeof(result_0.body.credential) === 'object' && typeof(result_0.body.credential.version) === 'bigint' && result_0.body.credential.version >= 0n && result_0.body.credential.version <= 65535n && typeof(result_0.body.credential.schema) === 'object' && result_0.body.credential.schema.packageId.buffer instanceof ArrayBuffer && result_0.body.credential.schema.packageId.BYTES_PER_ELEMENT === 1 && result_0.body.credential.schema.packageId.length === 32 && result_0.body.credential.schema.schemaId.buffer instanceof ArrayBuffer && result_0.body.credential.schema.schemaId.BYTES_PER_ELEMENT === 1 && result_0.body.credential.schema.schemaId.length === 32 && typeof(result_0.body.credential.schema.majorVersion) === 'bigint' && result_0.body.credential.schema.majorVersion >= 0n && result_0.body.credential.schema.majorVersion <= 65535n && typeof(result_0.body.credential.schema.minorVersion) === 'bigint' && result_0.body.credential.schema.minorVersion >= 0n && result_0.body.credential.schema.minorVersion <= 65535n && typeof(result_0.body.credential.issuerVerificationMethodRef) === 'object' && typeof(result_0.body.credential.issuerVerificationMethodRef.didContractAddress) === 'object' && result_0.body.credential.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && result_0.body.credential.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && result_0.body.credential.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && result_0.body.credential.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && result_0.body.credential.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && result_0.body.credential.issuerVerificationMethodRef.methodId.length === 32 && typeof(result_0.body.credential.holderBinding) === 'object' && result_0.body.credential.holderBinding.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && result_0.body.credential.holderBinding.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && result_0.body.credential.holderBinding.blindedHolderSecretCommitment.length === 32 && result_0.body.credential.holderBinding.issuerNonce.buffer instanceof ArrayBuffer && result_0.body.credential.holderBinding.issuerNonce.BYTES_PER_ELEMENT === 1 && result_0.body.credential.holderBinding.issuerNonce.length === 32 && result_0.body.credential.holderBinding.requestChallengeResponse.buffer instanceof ArrayBuffer && result_0.body.credential.holderBinding.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && result_0.body.credential.holderBinding.requestChallengeResponse.length === 32 && typeof(result_0.body.credential.statusBinding) === 'object' && typeof(result_0.body.credential.issuedAt) === 'bigint' && result_0.body.credential.issuedAt >= 0n && result_0.body.credential.issuedAt <= 18446744073709551615n && typeof(result_0.body.credential.hasExpiration) === 'boolean' && typeof(result_0.body.credential.expiresAt) === 'bigint' && result_0.body.credential.expiresAt >= 0n && result_0.body.credential.expiresAt <= 18446744073709551615n && typeof(result_0.body.credential.claims) === 'object' && typeof(result_0.body.credential.claimCommitments) === 'object' && result_0.body.credential.claimCommitments.subjectIdCommitment.buffer instanceof ArrayBuffer && result_0.body.credential.claimCommitments.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && result_0.body.credential.claimCommitments.subjectIdCommitment.length === 32 && result_0.body.credential.claimCommitments.legalNameCommitment.buffer instanceof ArrayBuffer && result_0.body.credential.claimCommitments.legalNameCommitment.BYTES_PER_ELEMENT === 1 && result_0.body.credential.claimCommitments.legalNameCommitment.length === 32 && result_0.body.credential.claimCommitments.birthDateCommitment.buffer instanceof ArrayBuffer && result_0.body.credential.claimCommitments.birthDateCommitment.BYTES_PER_ELEMENT === 1 && result_0.body.credential.claimCommitments.birthDateCommitment.length === 32 && result_0.body.credential.claimCommitments.birthCountryCodeCommitment.buffer instanceof ArrayBuffer && result_0.body.credential.claimCommitments.birthCountryCodeCommitment.BYTES_PER_ELEMENT === 1 && result_0.body.credential.claimCommitments.birthCountryCodeCommitment.length === 32 && result_0.body.credential.claimRoot.buffer instanceof ArrayBuffer && result_0.body.credential.claimRoot.BYTES_PER_ELEMENT === 1 && result_0.body.credential.claimRoot.length === 32 && typeof(result_0.body.credentialProof) === 'object' && typeof(result_0.body.credentialProof.signerVerificationMethodRef) === 'object' && typeof(result_0.body.credentialProof.signerVerificationMethodRef.didContractAddress) === 'object' && result_0.body.credentialProof.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && result_0.body.credentialProof.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && result_0.body.credentialProof.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && result_0.body.credentialProof.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && result_0.body.credentialProof.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && result_0.body.credentialProof.signerVerificationMethodRef.methodId.length === 32 && typeof(result_0.body.credentialProof.createdAt) === 'bigint' && result_0.body.credentialProof.createdAt >= 0n && result_0.body.credentialProof.createdAt <= 18446744073709551615n && result_0.body.credentialProof.challengeHash.buffer instanceof ArrayBuffer && result_0.body.credentialProof.challengeHash.BYTES_PER_ELEMENT === 1 && result_0.body.credentialProof.challengeHash.length === 32 && true && typeof(result_0.body.credentialProof.signature) === 'object' && true && typeof(result_0.body.credentialProof.signature.s) === 'bigint' && result_0.body.credentialProof.signature.s >= 0 && result_0.body.credentialProof.signature.s <= __compactRuntime.MAX_FIELD && result_0.body.issuanceChallengeHash.buffer instanceof ArrayBuffer && result_0.body.issuanceChallengeHash.BYTES_PER_ELEMENT === 1 && result_0.body.issuanceChallengeHash.length === 32 && typeof(result_0.body.privateParts) === 'object' && typeof(result_0.body.privateParts.claims) === 'object' && result_0.body.privateParts.claims.subjectId.buffer instanceof ArrayBuffer && result_0.body.privateParts.claims.subjectId.BYTES_PER_ELEMENT === 1 && result_0.body.privateParts.claims.subjectId.length === 32 && result_0.body.privateParts.claims.legalNamePadded.buffer instanceof ArrayBuffer && result_0.body.privateParts.claims.legalNamePadded.BYTES_PER_ELEMENT === 1 && result_0.body.privateParts.claims.legalNamePadded.length === 32 && typeof(result_0.body.privateParts.claims.birthDateDays) === 'bigint' && result_0.body.privateParts.claims.birthDateDays >= 0n && result_0.body.privateParts.claims.birthDateDays <= 4294967295n && result_0.body.privateParts.claims.birthCountryCodePadded.buffer instanceof ArrayBuffer && result_0.body.privateParts.claims.birthCountryCodePadded.BYTES_PER_ELEMENT === 1 && result_0.body.privateParts.claims.birthCountryCodePadded.length === 32 && typeof(result_0.body.privateParts.openings) === 'object' && result_0.body.privateParts.openings.subjectOpening.buffer instanceof ArrayBuffer && result_0.body.privateParts.openings.subjectOpening.BYTES_PER_ELEMENT === 1 && result_0.body.privateParts.openings.subjectOpening.length === 32 && result_0.body.privateParts.openings.legalNameOpening.buffer instanceof ArrayBuffer && result_0.body.privateParts.openings.legalNameOpening.BYTES_PER_ELEMENT === 1 && result_0.body.privateParts.openings.legalNameOpening.length === 32 && result_0.body.privateParts.openings.birthDateOpening.buffer instanceof ArrayBuffer && result_0.body.privateParts.openings.birthDateOpening.BYTES_PER_ELEMENT === 1 && result_0.body.privateParts.openings.birthDateOpening.length === 32 && result_0.body.privateParts.openings.birthCountryCodeOpening.buffer instanceof ArrayBuffer && result_0.body.privateParts.openings.birthCountryCodeOpening.BYTES_PER_ELEMENT === 1 && result_0.body.privateParts.openings.birthCountryCodeOpening.length === 32)) {
       __compactRuntime.typeError('assertValidSecretBirthCredentialIssuanceResult',
                                  'argument 1',
                                  'validation.compact line 84 char 1',
-                                 'struct ResultMessage<envelope: struct ProtocolMessageEnvelope<version: Uint<0..65536>, messageId: Bytes<32>, threadId: Bytes<32>, initialMessage: Boolean, respondsToMessageId: Bytes<32>, createdAt: Uint<0..18446744073709551616>, hasExpiresAt: Boolean, expiresAt: Uint<0..18446744073709551616>>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBindingProfile: Enum<HolderBindingProfile, explicitDid, secretHolder, blindedSecretHolder>, body: struct SecretBirthCredentialIssuanceResultBody<credential: struct Credential<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>, statusBinding: struct NoStatusBinding<>, issuedAt: Uint<0..18446744073709551616>, hasExpiration: Boolean, expiresAt: Uint<0..18446744073709551616>, claims: struct NoPublicClaims<>, claimCommitments: struct BirthCredentialClaimCommitments<subjectIdCommitment: Bytes<32>, legalNameCommitment: Bytes<32>, birthDateCommitment: Bytes<32>, birthCountryCodeCommitment: Bytes<32>>, claimRoot: Bytes<32>>, credentialProof: struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>, issuanceChallengeHash: Bytes<32>>>',
+                                 'struct ResultMessage<envelope: struct ProtocolMessageEnvelope<version: Uint<0..65536>, messageId: Bytes<32>, threadId: Bytes<32>, initialMessage: Boolean, respondsToMessageId: Bytes<32>, createdAt: Uint<0..18446744073709551616>, hasExpiresAt: Boolean, expiresAt: Uint<0..18446744073709551616>>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBindingProfile: Enum<HolderBindingProfile, explicitDid, secretHolder, blindedSecretHolder>, body: struct SecretBirthCredentialIssuanceResultBody<credential: struct Credential<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>, statusBinding: struct NoStatusBinding<>, issuedAt: Uint<0..18446744073709551616>, hasExpiration: Boolean, expiresAt: Uint<0..18446744073709551616>, claims: struct NoPublicClaims<>, claimCommitments: struct BirthCredentialClaimCommitments<subjectIdCommitment: Bytes<32>, legalNameCommitment: Bytes<32>, birthDateCommitment: Bytes<32>, birthCountryCodeCommitment: Bytes<32>>, claimRoot: Bytes<32>>, credentialProof: struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>, issuanceChallengeHash: Bytes<32>, privateParts: struct BirthCredentialPrivateParts<claims: struct BirthCredentialPrivateClaims<subjectId: Bytes<32>, legalNamePadded: Bytes<32>, birthDateDays: Uint<0..4294967296>, birthCountryCodePadded: Bytes<32>>, openings: struct BirthCredentialClaimOpenings<subjectOpening: Bytes<32>, legalNameOpening: Bytes<32>, birthDateOpening: Bytes<32>, birthCountryCodeOpening: Bytes<32>>>>>',
                                  result_0)
     }
     return _dummyContract._assertValidSecretBirthCredentialIssuanceResult_0(result_0);
@@ -12125,15 +12246,15 @@ export const pureCircuits = {
     if (!(typeof(request_0) === 'object' && typeof(request_0.envelope) === 'object' && typeof(request_0.envelope.version) === 'bigint' && request_0.envelope.version >= 0n && request_0.envelope.version <= 65535n && request_0.envelope.messageId.buffer instanceof ArrayBuffer && request_0.envelope.messageId.BYTES_PER_ELEMENT === 1 && request_0.envelope.messageId.length === 32 && request_0.envelope.threadId.buffer instanceof ArrayBuffer && request_0.envelope.threadId.BYTES_PER_ELEMENT === 1 && request_0.envelope.threadId.length === 32 && typeof(request_0.envelope.initialMessage) === 'boolean' && request_0.envelope.respondsToMessageId.buffer instanceof ArrayBuffer && request_0.envelope.respondsToMessageId.BYTES_PER_ELEMENT === 1 && request_0.envelope.respondsToMessageId.length === 32 && typeof(request_0.envelope.createdAt) === 'bigint' && request_0.envelope.createdAt >= 0n && request_0.envelope.createdAt <= 18446744073709551615n && typeof(request_0.envelope.hasExpiresAt) === 'boolean' && typeof(request_0.envelope.expiresAt) === 'bigint' && request_0.envelope.expiresAt >= 0n && request_0.envelope.expiresAt <= 18446744073709551615n && typeof(request_0.schema) === 'object' && request_0.schema.packageId.buffer instanceof ArrayBuffer && request_0.schema.packageId.BYTES_PER_ELEMENT === 1 && request_0.schema.packageId.length === 32 && request_0.schema.schemaId.buffer instanceof ArrayBuffer && request_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && request_0.schema.schemaId.length === 32 && typeof(request_0.schema.majorVersion) === 'bigint' && request_0.schema.majorVersion >= 0n && request_0.schema.majorVersion <= 65535n && typeof(request_0.schema.minorVersion) === 'bigint' && request_0.schema.minorVersion >= 0n && request_0.schema.minorVersion <= 65535n && typeof(request_0.issuerVerificationMethodRef) === 'object' && typeof(request_0.issuerVerificationMethodRef.didContractAddress) === 'object' && request_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && request_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && request_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && request_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && request_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && request_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(request_0.holderBindingProfile) === 'number' && request_0.holderBindingProfile >= 0 && request_0.holderBindingProfile <= 2 && typeof(request_0.body) === 'object' && request_0.body.holderSecretCommitment.buffer instanceof ArrayBuffer && request_0.body.holderSecretCommitment.BYTES_PER_ELEMENT === 1 && request_0.body.holderSecretCommitment.length === 32 && request_0.body.holderBindingBlindingFactor.buffer instanceof ArrayBuffer && request_0.body.holderBindingBlindingFactor.BYTES_PER_ELEMENT === 1 && request_0.body.holderBindingBlindingFactor.length === 32 && request_0.body.holderChallengeHash.buffer instanceof ArrayBuffer && request_0.body.holderChallengeHash.BYTES_PER_ELEMENT === 1 && request_0.body.holderChallengeHash.length === 32 && typeof(request_0.body.requestExpiration) === 'boolean' && typeof(request_0.body.requestedExpirationDays) === 'bigint' && request_0.body.requestedExpirationDays >= 0n && request_0.body.requestedExpirationDays <= 65535n && typeof(request_0.body.requestExpiresAtDay) === 'bigint' && request_0.body.requestExpiresAtDay >= 0n && request_0.body.requestExpiresAtDay <= 4294967295n)) {
       __compactRuntime.typeError('assertSecretBirthCredentialIssuanceResultMatchesRequest',
                                  'argument 1',
-                                 'validation.compact line 103 char 1',
+                                 'validation.compact line 107 char 1',
                                  'struct RequestMessage<envelope: struct ProtocolMessageEnvelope<version: Uint<0..65536>, messageId: Bytes<32>, threadId: Bytes<32>, initialMessage: Boolean, respondsToMessageId: Bytes<32>, createdAt: Uint<0..18446744073709551616>, hasExpiresAt: Boolean, expiresAt: Uint<0..18446744073709551616>>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBindingProfile: Enum<HolderBindingProfile, explicitDid, secretHolder, blindedSecretHolder>, body: struct SecretBirthCredentialIssuanceRequestBody<holderSecretCommitment: Bytes<32>, holderBindingBlindingFactor: Bytes<32>, holderChallengeHash: Bytes<32>, requestExpiration: Boolean, requestedExpirationDays: Uint<0..65536>, requestExpiresAtDay: Uint<0..4294967296>>>',
                                  request_0)
     }
-    if (!(typeof(result_0) === 'object' && typeof(result_0.envelope) === 'object' && typeof(result_0.envelope.version) === 'bigint' && result_0.envelope.version >= 0n && result_0.envelope.version <= 65535n && result_0.envelope.messageId.buffer instanceof ArrayBuffer && result_0.envelope.messageId.BYTES_PER_ELEMENT === 1 && result_0.envelope.messageId.length === 32 && result_0.envelope.threadId.buffer instanceof ArrayBuffer && result_0.envelope.threadId.BYTES_PER_ELEMENT === 1 && result_0.envelope.threadId.length === 32 && typeof(result_0.envelope.initialMessage) === 'boolean' && result_0.envelope.respondsToMessageId.buffer instanceof ArrayBuffer && result_0.envelope.respondsToMessageId.BYTES_PER_ELEMENT === 1 && result_0.envelope.respondsToMessageId.length === 32 && typeof(result_0.envelope.createdAt) === 'bigint' && result_0.envelope.createdAt >= 0n && result_0.envelope.createdAt <= 18446744073709551615n && typeof(result_0.envelope.hasExpiresAt) === 'boolean' && typeof(result_0.envelope.expiresAt) === 'bigint' && result_0.envelope.expiresAt >= 0n && result_0.envelope.expiresAt <= 18446744073709551615n && typeof(result_0.schema) === 'object' && result_0.schema.packageId.buffer instanceof ArrayBuffer && result_0.schema.packageId.BYTES_PER_ELEMENT === 1 && result_0.schema.packageId.length === 32 && result_0.schema.schemaId.buffer instanceof ArrayBuffer && result_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && result_0.schema.schemaId.length === 32 && typeof(result_0.schema.majorVersion) === 'bigint' && result_0.schema.majorVersion >= 0n && result_0.schema.majorVersion <= 65535n && typeof(result_0.schema.minorVersion) === 'bigint' && result_0.schema.minorVersion >= 0n && result_0.schema.minorVersion <= 65535n && typeof(result_0.issuerVerificationMethodRef) === 'object' && typeof(result_0.issuerVerificationMethodRef.didContractAddress) === 'object' && result_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && result_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && result_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && result_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && result_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && result_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(result_0.holderBindingProfile) === 'number' && result_0.holderBindingProfile >= 0 && result_0.holderBindingProfile <= 2 && typeof(result_0.body) === 'object' && typeof(result_0.body.credential) === 'object' && typeof(result_0.body.credential.version) === 'bigint' && result_0.body.credential.version >= 0n && result_0.body.credential.version <= 65535n && typeof(result_0.body.credential.schema) === 'object' && result_0.body.credential.schema.packageId.buffer instanceof ArrayBuffer && result_0.body.credential.schema.packageId.BYTES_PER_ELEMENT === 1 && result_0.body.credential.schema.packageId.length === 32 && result_0.body.credential.schema.schemaId.buffer instanceof ArrayBuffer && result_0.body.credential.schema.schemaId.BYTES_PER_ELEMENT === 1 && result_0.body.credential.schema.schemaId.length === 32 && typeof(result_0.body.credential.schema.majorVersion) === 'bigint' && result_0.body.credential.schema.majorVersion >= 0n && result_0.body.credential.schema.majorVersion <= 65535n && typeof(result_0.body.credential.schema.minorVersion) === 'bigint' && result_0.body.credential.schema.minorVersion >= 0n && result_0.body.credential.schema.minorVersion <= 65535n && typeof(result_0.body.credential.issuerVerificationMethodRef) === 'object' && typeof(result_0.body.credential.issuerVerificationMethodRef.didContractAddress) === 'object' && result_0.body.credential.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && result_0.body.credential.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && result_0.body.credential.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && result_0.body.credential.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && result_0.body.credential.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && result_0.body.credential.issuerVerificationMethodRef.methodId.length === 32 && typeof(result_0.body.credential.holderBinding) === 'object' && result_0.body.credential.holderBinding.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && result_0.body.credential.holderBinding.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && result_0.body.credential.holderBinding.blindedHolderSecretCommitment.length === 32 && result_0.body.credential.holderBinding.issuerNonce.buffer instanceof ArrayBuffer && result_0.body.credential.holderBinding.issuerNonce.BYTES_PER_ELEMENT === 1 && result_0.body.credential.holderBinding.issuerNonce.length === 32 && result_0.body.credential.holderBinding.requestChallengeResponse.buffer instanceof ArrayBuffer && result_0.body.credential.holderBinding.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && result_0.body.credential.holderBinding.requestChallengeResponse.length === 32 && typeof(result_0.body.credential.statusBinding) === 'object' && typeof(result_0.body.credential.issuedAt) === 'bigint' && result_0.body.credential.issuedAt >= 0n && result_0.body.credential.issuedAt <= 18446744073709551615n && typeof(result_0.body.credential.hasExpiration) === 'boolean' && typeof(result_0.body.credential.expiresAt) === 'bigint' && result_0.body.credential.expiresAt >= 0n && result_0.body.credential.expiresAt <= 18446744073709551615n && typeof(result_0.body.credential.claims) === 'object' && typeof(result_0.body.credential.claimCommitments) === 'object' && result_0.body.credential.claimCommitments.subjectIdCommitment.buffer instanceof ArrayBuffer && result_0.body.credential.claimCommitments.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && result_0.body.credential.claimCommitments.subjectIdCommitment.length === 32 && result_0.body.credential.claimCommitments.legalNameCommitment.buffer instanceof ArrayBuffer && result_0.body.credential.claimCommitments.legalNameCommitment.BYTES_PER_ELEMENT === 1 && result_0.body.credential.claimCommitments.legalNameCommitment.length === 32 && result_0.body.credential.claimCommitments.birthDateCommitment.buffer instanceof ArrayBuffer && result_0.body.credential.claimCommitments.birthDateCommitment.BYTES_PER_ELEMENT === 1 && result_0.body.credential.claimCommitments.birthDateCommitment.length === 32 && result_0.body.credential.claimCommitments.birthCountryCodeCommitment.buffer instanceof ArrayBuffer && result_0.body.credential.claimCommitments.birthCountryCodeCommitment.BYTES_PER_ELEMENT === 1 && result_0.body.credential.claimCommitments.birthCountryCodeCommitment.length === 32 && result_0.body.credential.claimRoot.buffer instanceof ArrayBuffer && result_0.body.credential.claimRoot.BYTES_PER_ELEMENT === 1 && result_0.body.credential.claimRoot.length === 32 && typeof(result_0.body.credentialProof) === 'object' && typeof(result_0.body.credentialProof.signerVerificationMethodRef) === 'object' && typeof(result_0.body.credentialProof.signerVerificationMethodRef.didContractAddress) === 'object' && result_0.body.credentialProof.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && result_0.body.credentialProof.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && result_0.body.credentialProof.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && result_0.body.credentialProof.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && result_0.body.credentialProof.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && result_0.body.credentialProof.signerVerificationMethodRef.methodId.length === 32 && typeof(result_0.body.credentialProof.createdAt) === 'bigint' && result_0.body.credentialProof.createdAt >= 0n && result_0.body.credentialProof.createdAt <= 18446744073709551615n && result_0.body.credentialProof.challengeHash.buffer instanceof ArrayBuffer && result_0.body.credentialProof.challengeHash.BYTES_PER_ELEMENT === 1 && result_0.body.credentialProof.challengeHash.length === 32 && true && typeof(result_0.body.credentialProof.signature) === 'object' && true && typeof(result_0.body.credentialProof.signature.s) === 'bigint' && result_0.body.credentialProof.signature.s >= 0 && result_0.body.credentialProof.signature.s <= __compactRuntime.MAX_FIELD && result_0.body.issuanceChallengeHash.buffer instanceof ArrayBuffer && result_0.body.issuanceChallengeHash.BYTES_PER_ELEMENT === 1 && result_0.body.issuanceChallengeHash.length === 32)) {
+    if (!(typeof(result_0) === 'object' && typeof(result_0.envelope) === 'object' && typeof(result_0.envelope.version) === 'bigint' && result_0.envelope.version >= 0n && result_0.envelope.version <= 65535n && result_0.envelope.messageId.buffer instanceof ArrayBuffer && result_0.envelope.messageId.BYTES_PER_ELEMENT === 1 && result_0.envelope.messageId.length === 32 && result_0.envelope.threadId.buffer instanceof ArrayBuffer && result_0.envelope.threadId.BYTES_PER_ELEMENT === 1 && result_0.envelope.threadId.length === 32 && typeof(result_0.envelope.initialMessage) === 'boolean' && result_0.envelope.respondsToMessageId.buffer instanceof ArrayBuffer && result_0.envelope.respondsToMessageId.BYTES_PER_ELEMENT === 1 && result_0.envelope.respondsToMessageId.length === 32 && typeof(result_0.envelope.createdAt) === 'bigint' && result_0.envelope.createdAt >= 0n && result_0.envelope.createdAt <= 18446744073709551615n && typeof(result_0.envelope.hasExpiresAt) === 'boolean' && typeof(result_0.envelope.expiresAt) === 'bigint' && result_0.envelope.expiresAt >= 0n && result_0.envelope.expiresAt <= 18446744073709551615n && typeof(result_0.schema) === 'object' && result_0.schema.packageId.buffer instanceof ArrayBuffer && result_0.schema.packageId.BYTES_PER_ELEMENT === 1 && result_0.schema.packageId.length === 32 && result_0.schema.schemaId.buffer instanceof ArrayBuffer && result_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && result_0.schema.schemaId.length === 32 && typeof(result_0.schema.majorVersion) === 'bigint' && result_0.schema.majorVersion >= 0n && result_0.schema.majorVersion <= 65535n && typeof(result_0.schema.minorVersion) === 'bigint' && result_0.schema.minorVersion >= 0n && result_0.schema.minorVersion <= 65535n && typeof(result_0.issuerVerificationMethodRef) === 'object' && typeof(result_0.issuerVerificationMethodRef.didContractAddress) === 'object' && result_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && result_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && result_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && result_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && result_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && result_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(result_0.holderBindingProfile) === 'number' && result_0.holderBindingProfile >= 0 && result_0.holderBindingProfile <= 2 && typeof(result_0.body) === 'object' && typeof(result_0.body.credential) === 'object' && typeof(result_0.body.credential.version) === 'bigint' && result_0.body.credential.version >= 0n && result_0.body.credential.version <= 65535n && typeof(result_0.body.credential.schema) === 'object' && result_0.body.credential.schema.packageId.buffer instanceof ArrayBuffer && result_0.body.credential.schema.packageId.BYTES_PER_ELEMENT === 1 && result_0.body.credential.schema.packageId.length === 32 && result_0.body.credential.schema.schemaId.buffer instanceof ArrayBuffer && result_0.body.credential.schema.schemaId.BYTES_PER_ELEMENT === 1 && result_0.body.credential.schema.schemaId.length === 32 && typeof(result_0.body.credential.schema.majorVersion) === 'bigint' && result_0.body.credential.schema.majorVersion >= 0n && result_0.body.credential.schema.majorVersion <= 65535n && typeof(result_0.body.credential.schema.minorVersion) === 'bigint' && result_0.body.credential.schema.minorVersion >= 0n && result_0.body.credential.schema.minorVersion <= 65535n && typeof(result_0.body.credential.issuerVerificationMethodRef) === 'object' && typeof(result_0.body.credential.issuerVerificationMethodRef.didContractAddress) === 'object' && result_0.body.credential.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && result_0.body.credential.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && result_0.body.credential.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && result_0.body.credential.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && result_0.body.credential.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && result_0.body.credential.issuerVerificationMethodRef.methodId.length === 32 && typeof(result_0.body.credential.holderBinding) === 'object' && result_0.body.credential.holderBinding.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && result_0.body.credential.holderBinding.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && result_0.body.credential.holderBinding.blindedHolderSecretCommitment.length === 32 && result_0.body.credential.holderBinding.issuerNonce.buffer instanceof ArrayBuffer && result_0.body.credential.holderBinding.issuerNonce.BYTES_PER_ELEMENT === 1 && result_0.body.credential.holderBinding.issuerNonce.length === 32 && result_0.body.credential.holderBinding.requestChallengeResponse.buffer instanceof ArrayBuffer && result_0.body.credential.holderBinding.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && result_0.body.credential.holderBinding.requestChallengeResponse.length === 32 && typeof(result_0.body.credential.statusBinding) === 'object' && typeof(result_0.body.credential.issuedAt) === 'bigint' && result_0.body.credential.issuedAt >= 0n && result_0.body.credential.issuedAt <= 18446744073709551615n && typeof(result_0.body.credential.hasExpiration) === 'boolean' && typeof(result_0.body.credential.expiresAt) === 'bigint' && result_0.body.credential.expiresAt >= 0n && result_0.body.credential.expiresAt <= 18446744073709551615n && typeof(result_0.body.credential.claims) === 'object' && typeof(result_0.body.credential.claimCommitments) === 'object' && result_0.body.credential.claimCommitments.subjectIdCommitment.buffer instanceof ArrayBuffer && result_0.body.credential.claimCommitments.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && result_0.body.credential.claimCommitments.subjectIdCommitment.length === 32 && result_0.body.credential.claimCommitments.legalNameCommitment.buffer instanceof ArrayBuffer && result_0.body.credential.claimCommitments.legalNameCommitment.BYTES_PER_ELEMENT === 1 && result_0.body.credential.claimCommitments.legalNameCommitment.length === 32 && result_0.body.credential.claimCommitments.birthDateCommitment.buffer instanceof ArrayBuffer && result_0.body.credential.claimCommitments.birthDateCommitment.BYTES_PER_ELEMENT === 1 && result_0.body.credential.claimCommitments.birthDateCommitment.length === 32 && result_0.body.credential.claimCommitments.birthCountryCodeCommitment.buffer instanceof ArrayBuffer && result_0.body.credential.claimCommitments.birthCountryCodeCommitment.BYTES_PER_ELEMENT === 1 && result_0.body.credential.claimCommitments.birthCountryCodeCommitment.length === 32 && result_0.body.credential.claimRoot.buffer instanceof ArrayBuffer && result_0.body.credential.claimRoot.BYTES_PER_ELEMENT === 1 && result_0.body.credential.claimRoot.length === 32 && typeof(result_0.body.credentialProof) === 'object' && typeof(result_0.body.credentialProof.signerVerificationMethodRef) === 'object' && typeof(result_0.body.credentialProof.signerVerificationMethodRef.didContractAddress) === 'object' && result_0.body.credentialProof.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && result_0.body.credentialProof.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && result_0.body.credentialProof.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && result_0.body.credentialProof.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && result_0.body.credentialProof.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && result_0.body.credentialProof.signerVerificationMethodRef.methodId.length === 32 && typeof(result_0.body.credentialProof.createdAt) === 'bigint' && result_0.body.credentialProof.createdAt >= 0n && result_0.body.credentialProof.createdAt <= 18446744073709551615n && result_0.body.credentialProof.challengeHash.buffer instanceof ArrayBuffer && result_0.body.credentialProof.challengeHash.BYTES_PER_ELEMENT === 1 && result_0.body.credentialProof.challengeHash.length === 32 && true && typeof(result_0.body.credentialProof.signature) === 'object' && true && typeof(result_0.body.credentialProof.signature.s) === 'bigint' && result_0.body.credentialProof.signature.s >= 0 && result_0.body.credentialProof.signature.s <= __compactRuntime.MAX_FIELD && result_0.body.issuanceChallengeHash.buffer instanceof ArrayBuffer && result_0.body.issuanceChallengeHash.BYTES_PER_ELEMENT === 1 && result_0.body.issuanceChallengeHash.length === 32 && typeof(result_0.body.privateParts) === 'object' && typeof(result_0.body.privateParts.claims) === 'object' && result_0.body.privateParts.claims.subjectId.buffer instanceof ArrayBuffer && result_0.body.privateParts.claims.subjectId.BYTES_PER_ELEMENT === 1 && result_0.body.privateParts.claims.subjectId.length === 32 && result_0.body.privateParts.claims.legalNamePadded.buffer instanceof ArrayBuffer && result_0.body.privateParts.claims.legalNamePadded.BYTES_PER_ELEMENT === 1 && result_0.body.privateParts.claims.legalNamePadded.length === 32 && typeof(result_0.body.privateParts.claims.birthDateDays) === 'bigint' && result_0.body.privateParts.claims.birthDateDays >= 0n && result_0.body.privateParts.claims.birthDateDays <= 4294967295n && result_0.body.privateParts.claims.birthCountryCodePadded.buffer instanceof ArrayBuffer && result_0.body.privateParts.claims.birthCountryCodePadded.BYTES_PER_ELEMENT === 1 && result_0.body.privateParts.claims.birthCountryCodePadded.length === 32 && typeof(result_0.body.privateParts.openings) === 'object' && result_0.body.privateParts.openings.subjectOpening.buffer instanceof ArrayBuffer && result_0.body.privateParts.openings.subjectOpening.BYTES_PER_ELEMENT === 1 && result_0.body.privateParts.openings.subjectOpening.length === 32 && result_0.body.privateParts.openings.legalNameOpening.buffer instanceof ArrayBuffer && result_0.body.privateParts.openings.legalNameOpening.BYTES_PER_ELEMENT === 1 && result_0.body.privateParts.openings.legalNameOpening.length === 32 && result_0.body.privateParts.openings.birthDateOpening.buffer instanceof ArrayBuffer && result_0.body.privateParts.openings.birthDateOpening.BYTES_PER_ELEMENT === 1 && result_0.body.privateParts.openings.birthDateOpening.length === 32 && result_0.body.privateParts.openings.birthCountryCodeOpening.buffer instanceof ArrayBuffer && result_0.body.privateParts.openings.birthCountryCodeOpening.BYTES_PER_ELEMENT === 1 && result_0.body.privateParts.openings.birthCountryCodeOpening.length === 32)) {
       __compactRuntime.typeError('assertSecretBirthCredentialIssuanceResultMatchesRequest',
                                  'argument 2',
-                                 'validation.compact line 103 char 1',
-                                 'struct ResultMessage<envelope: struct ProtocolMessageEnvelope<version: Uint<0..65536>, messageId: Bytes<32>, threadId: Bytes<32>, initialMessage: Boolean, respondsToMessageId: Bytes<32>, createdAt: Uint<0..18446744073709551616>, hasExpiresAt: Boolean, expiresAt: Uint<0..18446744073709551616>>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBindingProfile: Enum<HolderBindingProfile, explicitDid, secretHolder, blindedSecretHolder>, body: struct SecretBirthCredentialIssuanceResultBody<credential: struct Credential<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>, statusBinding: struct NoStatusBinding<>, issuedAt: Uint<0..18446744073709551616>, hasExpiration: Boolean, expiresAt: Uint<0..18446744073709551616>, claims: struct NoPublicClaims<>, claimCommitments: struct BirthCredentialClaimCommitments<subjectIdCommitment: Bytes<32>, legalNameCommitment: Bytes<32>, birthDateCommitment: Bytes<32>, birthCountryCodeCommitment: Bytes<32>>, claimRoot: Bytes<32>>, credentialProof: struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>, issuanceChallengeHash: Bytes<32>>>',
+                                 'validation.compact line 107 char 1',
+                                 'struct ResultMessage<envelope: struct ProtocolMessageEnvelope<version: Uint<0..65536>, messageId: Bytes<32>, threadId: Bytes<32>, initialMessage: Boolean, respondsToMessageId: Bytes<32>, createdAt: Uint<0..18446744073709551616>, hasExpiresAt: Boolean, expiresAt: Uint<0..18446744073709551616>>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBindingProfile: Enum<HolderBindingProfile, explicitDid, secretHolder, blindedSecretHolder>, body: struct SecretBirthCredentialIssuanceResultBody<credential: struct Credential<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>, statusBinding: struct NoStatusBinding<>, issuedAt: Uint<0..18446744073709551616>, hasExpiration: Boolean, expiresAt: Uint<0..18446744073709551616>, claims: struct NoPublicClaims<>, claimCommitments: struct BirthCredentialClaimCommitments<subjectIdCommitment: Bytes<32>, legalNameCommitment: Bytes<32>, birthDateCommitment: Bytes<32>, birthCountryCodeCommitment: Bytes<32>>, claimRoot: Bytes<32>>, credentialProof: struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>, issuanceChallengeHash: Bytes<32>, privateParts: struct BirthCredentialPrivateParts<claims: struct BirthCredentialPrivateClaims<subjectId: Bytes<32>, legalNamePadded: Bytes<32>, birthDateDays: Uint<0..4294967296>, birthCountryCodePadded: Bytes<32>>, openings: struct BirthCredentialClaimOpenings<subjectOpening: Bytes<32>, legalNameOpening: Bytes<32>, birthDateOpening: Bytes<32>, birthCountryCodeOpening: Bytes<32>>>>>',
                                  result_0)
     }
     return _dummyContract._assertSecretBirthCredentialIssuanceResultMatchesRequest_0(request_0,
@@ -12147,7 +12268,7 @@ export const pureCircuits = {
     if (!(typeof(request_0) === 'object' && typeof(request_0.envelope) === 'object' && typeof(request_0.envelope.version) === 'bigint' && request_0.envelope.version >= 0n && request_0.envelope.version <= 65535n && request_0.envelope.messageId.buffer instanceof ArrayBuffer && request_0.envelope.messageId.BYTES_PER_ELEMENT === 1 && request_0.envelope.messageId.length === 32 && request_0.envelope.threadId.buffer instanceof ArrayBuffer && request_0.envelope.threadId.BYTES_PER_ELEMENT === 1 && request_0.envelope.threadId.length === 32 && typeof(request_0.envelope.initialMessage) === 'boolean' && request_0.envelope.respondsToMessageId.buffer instanceof ArrayBuffer && request_0.envelope.respondsToMessageId.BYTES_PER_ELEMENT === 1 && request_0.envelope.respondsToMessageId.length === 32 && typeof(request_0.envelope.createdAt) === 'bigint' && request_0.envelope.createdAt >= 0n && request_0.envelope.createdAt <= 18446744073709551615n && typeof(request_0.envelope.hasExpiresAt) === 'boolean' && typeof(request_0.envelope.expiresAt) === 'bigint' && request_0.envelope.expiresAt >= 0n && request_0.envelope.expiresAt <= 18446744073709551615n && typeof(request_0.schema) === 'object' && request_0.schema.packageId.buffer instanceof ArrayBuffer && request_0.schema.packageId.BYTES_PER_ELEMENT === 1 && request_0.schema.packageId.length === 32 && request_0.schema.schemaId.buffer instanceof ArrayBuffer && request_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && request_0.schema.schemaId.length === 32 && typeof(request_0.schema.majorVersion) === 'bigint' && request_0.schema.majorVersion >= 0n && request_0.schema.majorVersion <= 65535n && typeof(request_0.schema.minorVersion) === 'bigint' && request_0.schema.minorVersion >= 0n && request_0.schema.minorVersion <= 65535n && typeof(request_0.issuerVerificationMethodRef) === 'object' && typeof(request_0.issuerVerificationMethodRef.didContractAddress) === 'object' && request_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && request_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && request_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && request_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && request_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && request_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(request_0.holderBindingProfile) === 'number' && request_0.holderBindingProfile >= 0 && request_0.holderBindingProfile <= 2 && typeof(request_0.features) === 'object' && typeof(request_0.features.supportsSelectiveDisclosure) === 'boolean' && typeof(request_0.features.supportsPredicateProofs) === 'boolean' && typeof(request_0.features.supportsVerifierScopedPseudonym) === 'boolean' && typeof(request_0.features.supportsSameHolderProof) === 'boolean' && request_0.verifierChallengeHash.buffer instanceof ArrayBuffer && request_0.verifierChallengeHash.BYTES_PER_ELEMENT === 1 && request_0.verifierChallengeHash.length === 32 && typeof(request_0.body) === 'object' && typeof(request_0.body.requireSubjectIdCommitmentDisclosure) === 'boolean' && typeof(request_0.body.requireBirthCountryDisclosure) === 'boolean' && typeof(request_0.body.requireVerifierScopedPseudonym) === 'boolean' && request_0.body.verifierDomainHash.buffer instanceof ArrayBuffer && request_0.body.verifierDomainHash.BYTES_PER_ELEMENT === 1 && request_0.body.verifierDomainHash.length === 32 && typeof(request_0.body.requireAgeOverThreshold) === 'boolean' && typeof(request_0.body.requestedAgeThresholdYears) === 'bigint' && request_0.body.requestedAgeThresholdYears >= 0n && request_0.body.requestedAgeThresholdYears <= 255n)) {
       __compactRuntime.typeError('assertValidSecretBirthCredentialVerificationRequestMessage',
                                  'argument 1',
-                                 'validation.compact line 119 char 1',
+                                 'validation.compact line 123 char 1',
                                  'struct RequestMessage<envelope: struct ProtocolMessageEnvelope<version: Uint<0..65536>, messageId: Bytes<32>, threadId: Bytes<32>, initialMessage: Boolean, respondsToMessageId: Bytes<32>, createdAt: Uint<0..18446744073709551616>, hasExpiresAt: Boolean, expiresAt: Uint<0..18446744073709551616>>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBindingProfile: Enum<HolderBindingProfile, explicitDid, secretHolder, blindedSecretHolder>, features: struct CredentialProtocolFeatures<supportsSelectiveDisclosure: Boolean, supportsPredicateProofs: Boolean, supportsVerifierScopedPseudonym: Boolean, supportsSameHolderProof: Boolean>, verifierChallengeHash: Bytes<32>, body: struct SecretBirthCredentialVerificationRequestBody<requireSubjectIdCommitmentDisclosure: Boolean, requireBirthCountryDisclosure: Boolean, requireVerifierScopedPseudonym: Boolean, verifierDomainHash: Bytes<32>, requireAgeOverThreshold: Boolean, requestedAgeThresholdYears: Uint<0..256>>>',
                                  request_0)
     }
@@ -12161,7 +12282,7 @@ export const pureCircuits = {
     if (!(typeof(submission_0) === 'object' && typeof(submission_0.envelope) === 'object' && typeof(submission_0.envelope.version) === 'bigint' && submission_0.envelope.version >= 0n && submission_0.envelope.version <= 65535n && submission_0.envelope.messageId.buffer instanceof ArrayBuffer && submission_0.envelope.messageId.BYTES_PER_ELEMENT === 1 && submission_0.envelope.messageId.length === 32 && submission_0.envelope.threadId.buffer instanceof ArrayBuffer && submission_0.envelope.threadId.BYTES_PER_ELEMENT === 1 && submission_0.envelope.threadId.length === 32 && typeof(submission_0.envelope.initialMessage) === 'boolean' && submission_0.envelope.respondsToMessageId.buffer instanceof ArrayBuffer && submission_0.envelope.respondsToMessageId.BYTES_PER_ELEMENT === 1 && submission_0.envelope.respondsToMessageId.length === 32 && typeof(submission_0.envelope.createdAt) === 'bigint' && submission_0.envelope.createdAt >= 0n && submission_0.envelope.createdAt <= 18446744073709551615n && typeof(submission_0.envelope.hasExpiresAt) === 'boolean' && typeof(submission_0.envelope.expiresAt) === 'bigint' && submission_0.envelope.expiresAt >= 0n && submission_0.envelope.expiresAt <= 18446744073709551615n && typeof(submission_0.schema) === 'object' && submission_0.schema.packageId.buffer instanceof ArrayBuffer && submission_0.schema.packageId.BYTES_PER_ELEMENT === 1 && submission_0.schema.packageId.length === 32 && submission_0.schema.schemaId.buffer instanceof ArrayBuffer && submission_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && submission_0.schema.schemaId.length === 32 && typeof(submission_0.schema.majorVersion) === 'bigint' && submission_0.schema.majorVersion >= 0n && submission_0.schema.majorVersion <= 65535n && typeof(submission_0.schema.minorVersion) === 'bigint' && submission_0.schema.minorVersion >= 0n && submission_0.schema.minorVersion <= 65535n && typeof(submission_0.issuerVerificationMethodRef) === 'object' && typeof(submission_0.issuerVerificationMethodRef.didContractAddress) === 'object' && submission_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && submission_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && submission_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && submission_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && submission_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && submission_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(submission_0.holderBindingProfile) === 'number' && submission_0.holderBindingProfile >= 0 && submission_0.holderBindingProfile <= 2 && submission_0.challengeHash.buffer instanceof ArrayBuffer && submission_0.challengeHash.BYTES_PER_ELEMENT === 1 && submission_0.challengeHash.length === 32 && typeof(submission_0.body) === 'object' && typeof(submission_0.body.credential) === 'object' && typeof(submission_0.body.credential.version) === 'bigint' && submission_0.body.credential.version >= 0n && submission_0.body.credential.version <= 65535n && typeof(submission_0.body.credential.schema) === 'object' && submission_0.body.credential.schema.packageId.buffer instanceof ArrayBuffer && submission_0.body.credential.schema.packageId.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.schema.packageId.length === 32 && submission_0.body.credential.schema.schemaId.buffer instanceof ArrayBuffer && submission_0.body.credential.schema.schemaId.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.schema.schemaId.length === 32 && typeof(submission_0.body.credential.schema.majorVersion) === 'bigint' && submission_0.body.credential.schema.majorVersion >= 0n && submission_0.body.credential.schema.majorVersion <= 65535n && typeof(submission_0.body.credential.schema.minorVersion) === 'bigint' && submission_0.body.credential.schema.minorVersion >= 0n && submission_0.body.credential.schema.minorVersion <= 65535n && typeof(submission_0.body.credential.issuerVerificationMethodRef) === 'object' && typeof(submission_0.body.credential.issuerVerificationMethodRef.didContractAddress) === 'object' && submission_0.body.credential.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && submission_0.body.credential.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && submission_0.body.credential.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && submission_0.body.credential.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.issuerVerificationMethodRef.methodId.length === 32 && typeof(submission_0.body.credential.holderBinding) === 'object' && submission_0.body.credential.holderBinding.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && submission_0.body.credential.holderBinding.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.holderBinding.blindedHolderSecretCommitment.length === 32 && submission_0.body.credential.holderBinding.issuerNonce.buffer instanceof ArrayBuffer && submission_0.body.credential.holderBinding.issuerNonce.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.holderBinding.issuerNonce.length === 32 && submission_0.body.credential.holderBinding.requestChallengeResponse.buffer instanceof ArrayBuffer && submission_0.body.credential.holderBinding.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.holderBinding.requestChallengeResponse.length === 32 && typeof(submission_0.body.credential.statusBinding) === 'object' && typeof(submission_0.body.credential.issuedAt) === 'bigint' && submission_0.body.credential.issuedAt >= 0n && submission_0.body.credential.issuedAt <= 18446744073709551615n && typeof(submission_0.body.credential.hasExpiration) === 'boolean' && typeof(submission_0.body.credential.expiresAt) === 'bigint' && submission_0.body.credential.expiresAt >= 0n && submission_0.body.credential.expiresAt <= 18446744073709551615n && typeof(submission_0.body.credential.claims) === 'object' && typeof(submission_0.body.credential.claimCommitments) === 'object' && submission_0.body.credential.claimCommitments.subjectIdCommitment.buffer instanceof ArrayBuffer && submission_0.body.credential.claimCommitments.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.claimCommitments.subjectIdCommitment.length === 32 && submission_0.body.credential.claimCommitments.legalNameCommitment.buffer instanceof ArrayBuffer && submission_0.body.credential.claimCommitments.legalNameCommitment.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.claimCommitments.legalNameCommitment.length === 32 && submission_0.body.credential.claimCommitments.birthDateCommitment.buffer instanceof ArrayBuffer && submission_0.body.credential.claimCommitments.birthDateCommitment.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.claimCommitments.birthDateCommitment.length === 32 && submission_0.body.credential.claimCommitments.birthCountryCodeCommitment.buffer instanceof ArrayBuffer && submission_0.body.credential.claimCommitments.birthCountryCodeCommitment.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.claimCommitments.birthCountryCodeCommitment.length === 32 && submission_0.body.credential.claimRoot.buffer instanceof ArrayBuffer && submission_0.body.credential.claimRoot.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.claimRoot.length === 32 && typeof(submission_0.body.credentialProof) === 'object' && typeof(submission_0.body.credentialProof.signerVerificationMethodRef) === 'object' && typeof(submission_0.body.credentialProof.signerVerificationMethodRef.didContractAddress) === 'object' && submission_0.body.credentialProof.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && submission_0.body.credentialProof.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && submission_0.body.credentialProof.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && submission_0.body.credentialProof.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && submission_0.body.credentialProof.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && submission_0.body.credentialProof.signerVerificationMethodRef.methodId.length === 32 && typeof(submission_0.body.credentialProof.createdAt) === 'bigint' && submission_0.body.credentialProof.createdAt >= 0n && submission_0.body.credentialProof.createdAt <= 18446744073709551615n && submission_0.body.credentialProof.challengeHash.buffer instanceof ArrayBuffer && submission_0.body.credentialProof.challengeHash.BYTES_PER_ELEMENT === 1 && submission_0.body.credentialProof.challengeHash.length === 32 && true && typeof(submission_0.body.credentialProof.signature) === 'object' && true && typeof(submission_0.body.credentialProof.signature.s) === 'bigint' && submission_0.body.credentialProof.signature.s >= 0 && submission_0.body.credentialProof.signature.s <= __compactRuntime.MAX_FIELD && typeof(submission_0.body.presentation) === 'object' && typeof(submission_0.body.presentation.version) === 'bigint' && submission_0.body.presentation.version >= 0n && submission_0.body.presentation.version <= 65535n && typeof(submission_0.body.presentation.schema) === 'object' && submission_0.body.presentation.schema.packageId.buffer instanceof ArrayBuffer && submission_0.body.presentation.schema.packageId.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.schema.packageId.length === 32 && submission_0.body.presentation.schema.schemaId.buffer instanceof ArrayBuffer && submission_0.body.presentation.schema.schemaId.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.schema.schemaId.length === 32 && typeof(submission_0.body.presentation.schema.majorVersion) === 'bigint' && submission_0.body.presentation.schema.majorVersion >= 0n && submission_0.body.presentation.schema.majorVersion <= 65535n && typeof(submission_0.body.presentation.schema.minorVersion) === 'bigint' && submission_0.body.presentation.schema.minorVersion >= 0n && submission_0.body.presentation.schema.minorVersion <= 65535n && submission_0.body.presentation.credentialClaimRoot.buffer instanceof ArrayBuffer && submission_0.body.presentation.credentialClaimRoot.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.credentialClaimRoot.length === 32 && typeof(submission_0.body.presentation.issuerVerificationMethodRef) === 'object' && typeof(submission_0.body.presentation.issuerVerificationMethodRef.didContractAddress) === 'object' && submission_0.body.presentation.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && submission_0.body.presentation.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && submission_0.body.presentation.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && submission_0.body.presentation.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.issuerVerificationMethodRef.methodId.length === 32 && typeof(submission_0.body.presentation.holderBinding) === 'object' && submission_0.body.presentation.holderBinding.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && submission_0.body.presentation.holderBinding.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.holderBinding.blindedHolderSecretCommitment.length === 32 && submission_0.body.presentation.holderBinding.issuerNonce.buffer instanceof ArrayBuffer && submission_0.body.presentation.holderBinding.issuerNonce.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.holderBinding.issuerNonce.length === 32 && submission_0.body.presentation.holderBinding.requestChallengeResponse.buffer instanceof ArrayBuffer && submission_0.body.presentation.holderBinding.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.holderBinding.requestChallengeResponse.length === 32 && typeof(submission_0.body.presentation.disclosed) === 'object' && typeof(submission_0.body.presentation.disclosed.revealSubjectIdCommitment) === 'boolean' && submission_0.body.presentation.disclosed.subjectIdCommitment.buffer instanceof ArrayBuffer && submission_0.body.presentation.disclosed.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.disclosed.subjectIdCommitment.length === 32 && typeof(submission_0.body.presentation.disclosed.revealBirthCountryCode) === 'boolean' && submission_0.body.presentation.disclosed.birthCountryCodePadded.buffer instanceof ArrayBuffer && submission_0.body.presentation.disclosed.birthCountryCodePadded.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.disclosed.birthCountryCodePadded.length === 32 && submission_0.body.presentation.disclosed.birthCountryCodeOpening.buffer instanceof ArrayBuffer && submission_0.body.presentation.disclosed.birthCountryCodeOpening.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.disclosed.birthCountryCodeOpening.length === 32 && typeof(submission_0.body.presentation.disclosed.revealVerifierScopedPseudonym) === 'boolean' && submission_0.body.presentation.disclosed.verifierScopedPseudonym.buffer instanceof ArrayBuffer && submission_0.body.presentation.disclosed.verifierScopedPseudonym.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.disclosed.verifierScopedPseudonym.length === 32 && typeof(submission_0.body.presentation.disclosed.proveAgeOverThreshold) === 'boolean' && typeof(submission_0.body.presentation.disclosed.ageThresholdYears) === 'bigint' && submission_0.body.presentation.disclosed.ageThresholdYears >= 0n && submission_0.body.presentation.disclosed.ageThresholdYears <= 255n)) {
       __compactRuntime.typeError('assertValidSecretBirthCredentialVerificationSubmissionMessage',
                                  'argument 1',
-                                 'validation.compact line 133 char 1',
+                                 'validation.compact line 137 char 1',
                                  'struct SubmissionMessage<envelope: struct ProtocolMessageEnvelope<version: Uint<0..65536>, messageId: Bytes<32>, threadId: Bytes<32>, initialMessage: Boolean, respondsToMessageId: Bytes<32>, createdAt: Uint<0..18446744073709551616>, hasExpiresAt: Boolean, expiresAt: Uint<0..18446744073709551616>>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBindingProfile: Enum<HolderBindingProfile, explicitDid, secretHolder, blindedSecretHolder>, challengeHash: Bytes<32>, body: struct SecretBirthCredentialVerificationSubmissionBody<credential: struct Credential<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>, statusBinding: struct NoStatusBinding<>, issuedAt: Uint<0..18446744073709551616>, hasExpiration: Boolean, expiresAt: Uint<0..18446744073709551616>, claims: struct NoPublicClaims<>, claimCommitments: struct BirthCredentialClaimCommitments<subjectIdCommitment: Bytes<32>, legalNameCommitment: Bytes<32>, birthDateCommitment: Bytes<32>, birthCountryCodeCommitment: Bytes<32>>, claimRoot: Bytes<32>>, credentialProof: struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>, presentation: struct Presentation<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, credentialClaimRoot: Bytes<32>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>, disclosed: struct SecretBirthCredentialDisclosures<revealSubjectIdCommitment: Boolean, subjectIdCommitment: Bytes<32>, revealBirthCountryCode: Boolean, birthCountryCodePadded: Bytes<32>, birthCountryCodeOpening: Bytes<32>, revealVerifierScopedPseudonym: Boolean, verifierScopedPseudonym: Bytes<32>, proveAgeOverThreshold: Boolean, ageThresholdYears: Uint<0..256>>>>>',
                                  submission_0)
     }
@@ -12179,35 +12300,35 @@ export const pureCircuits = {
     if (!(typeof(request_0) === 'object' && typeof(request_0.envelope) === 'object' && typeof(request_0.envelope.version) === 'bigint' && request_0.envelope.version >= 0n && request_0.envelope.version <= 65535n && request_0.envelope.messageId.buffer instanceof ArrayBuffer && request_0.envelope.messageId.BYTES_PER_ELEMENT === 1 && request_0.envelope.messageId.length === 32 && request_0.envelope.threadId.buffer instanceof ArrayBuffer && request_0.envelope.threadId.BYTES_PER_ELEMENT === 1 && request_0.envelope.threadId.length === 32 && typeof(request_0.envelope.initialMessage) === 'boolean' && request_0.envelope.respondsToMessageId.buffer instanceof ArrayBuffer && request_0.envelope.respondsToMessageId.BYTES_PER_ELEMENT === 1 && request_0.envelope.respondsToMessageId.length === 32 && typeof(request_0.envelope.createdAt) === 'bigint' && request_0.envelope.createdAt >= 0n && request_0.envelope.createdAt <= 18446744073709551615n && typeof(request_0.envelope.hasExpiresAt) === 'boolean' && typeof(request_0.envelope.expiresAt) === 'bigint' && request_0.envelope.expiresAt >= 0n && request_0.envelope.expiresAt <= 18446744073709551615n && typeof(request_0.schema) === 'object' && request_0.schema.packageId.buffer instanceof ArrayBuffer && request_0.schema.packageId.BYTES_PER_ELEMENT === 1 && request_0.schema.packageId.length === 32 && request_0.schema.schemaId.buffer instanceof ArrayBuffer && request_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && request_0.schema.schemaId.length === 32 && typeof(request_0.schema.majorVersion) === 'bigint' && request_0.schema.majorVersion >= 0n && request_0.schema.majorVersion <= 65535n && typeof(request_0.schema.minorVersion) === 'bigint' && request_0.schema.minorVersion >= 0n && request_0.schema.minorVersion <= 65535n && typeof(request_0.issuerVerificationMethodRef) === 'object' && typeof(request_0.issuerVerificationMethodRef.didContractAddress) === 'object' && request_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && request_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && request_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && request_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && request_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && request_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(request_0.holderBindingProfile) === 'number' && request_0.holderBindingProfile >= 0 && request_0.holderBindingProfile <= 2 && typeof(request_0.features) === 'object' && typeof(request_0.features.supportsSelectiveDisclosure) === 'boolean' && typeof(request_0.features.supportsPredicateProofs) === 'boolean' && typeof(request_0.features.supportsVerifierScopedPseudonym) === 'boolean' && typeof(request_0.features.supportsSameHolderProof) === 'boolean' && request_0.verifierChallengeHash.buffer instanceof ArrayBuffer && request_0.verifierChallengeHash.BYTES_PER_ELEMENT === 1 && request_0.verifierChallengeHash.length === 32 && typeof(request_0.body) === 'object' && typeof(request_0.body.requireSubjectIdCommitmentDisclosure) === 'boolean' && typeof(request_0.body.requireBirthCountryDisclosure) === 'boolean' && typeof(request_0.body.requireVerifierScopedPseudonym) === 'boolean' && request_0.body.verifierDomainHash.buffer instanceof ArrayBuffer && request_0.body.verifierDomainHash.BYTES_PER_ELEMENT === 1 && request_0.body.verifierDomainHash.length === 32 && typeof(request_0.body.requireAgeOverThreshold) === 'boolean' && typeof(request_0.body.requestedAgeThresholdYears) === 'bigint' && request_0.body.requestedAgeThresholdYears >= 0n && request_0.body.requestedAgeThresholdYears <= 255n)) {
       __compactRuntime.typeError('assertSecretBirthCredentialVerificationSubmissionMatchesRequest',
                                  'argument 1',
-                                 'validation.compact line 153 char 1',
+                                 'validation.compact line 157 char 1',
                                  'struct RequestMessage<envelope: struct ProtocolMessageEnvelope<version: Uint<0..65536>, messageId: Bytes<32>, threadId: Bytes<32>, initialMessage: Boolean, respondsToMessageId: Bytes<32>, createdAt: Uint<0..18446744073709551616>, hasExpiresAt: Boolean, expiresAt: Uint<0..18446744073709551616>>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBindingProfile: Enum<HolderBindingProfile, explicitDid, secretHolder, blindedSecretHolder>, features: struct CredentialProtocolFeatures<supportsSelectiveDisclosure: Boolean, supportsPredicateProofs: Boolean, supportsVerifierScopedPseudonym: Boolean, supportsSameHolderProof: Boolean>, verifierChallengeHash: Bytes<32>, body: struct SecretBirthCredentialVerificationRequestBody<requireSubjectIdCommitmentDisclosure: Boolean, requireBirthCountryDisclosure: Boolean, requireVerifierScopedPseudonym: Boolean, verifierDomainHash: Bytes<32>, requireAgeOverThreshold: Boolean, requestedAgeThresholdYears: Uint<0..256>>>',
                                  request_0)
     }
     if (!(typeof(submission_0) === 'object' && typeof(submission_0.envelope) === 'object' && typeof(submission_0.envelope.version) === 'bigint' && submission_0.envelope.version >= 0n && submission_0.envelope.version <= 65535n && submission_0.envelope.messageId.buffer instanceof ArrayBuffer && submission_0.envelope.messageId.BYTES_PER_ELEMENT === 1 && submission_0.envelope.messageId.length === 32 && submission_0.envelope.threadId.buffer instanceof ArrayBuffer && submission_0.envelope.threadId.BYTES_PER_ELEMENT === 1 && submission_0.envelope.threadId.length === 32 && typeof(submission_0.envelope.initialMessage) === 'boolean' && submission_0.envelope.respondsToMessageId.buffer instanceof ArrayBuffer && submission_0.envelope.respondsToMessageId.BYTES_PER_ELEMENT === 1 && submission_0.envelope.respondsToMessageId.length === 32 && typeof(submission_0.envelope.createdAt) === 'bigint' && submission_0.envelope.createdAt >= 0n && submission_0.envelope.createdAt <= 18446744073709551615n && typeof(submission_0.envelope.hasExpiresAt) === 'boolean' && typeof(submission_0.envelope.expiresAt) === 'bigint' && submission_0.envelope.expiresAt >= 0n && submission_0.envelope.expiresAt <= 18446744073709551615n && typeof(submission_0.schema) === 'object' && submission_0.schema.packageId.buffer instanceof ArrayBuffer && submission_0.schema.packageId.BYTES_PER_ELEMENT === 1 && submission_0.schema.packageId.length === 32 && submission_0.schema.schemaId.buffer instanceof ArrayBuffer && submission_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && submission_0.schema.schemaId.length === 32 && typeof(submission_0.schema.majorVersion) === 'bigint' && submission_0.schema.majorVersion >= 0n && submission_0.schema.majorVersion <= 65535n && typeof(submission_0.schema.minorVersion) === 'bigint' && submission_0.schema.minorVersion >= 0n && submission_0.schema.minorVersion <= 65535n && typeof(submission_0.issuerVerificationMethodRef) === 'object' && typeof(submission_0.issuerVerificationMethodRef.didContractAddress) === 'object' && submission_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && submission_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && submission_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && submission_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && submission_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && submission_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(submission_0.holderBindingProfile) === 'number' && submission_0.holderBindingProfile >= 0 && submission_0.holderBindingProfile <= 2 && submission_0.challengeHash.buffer instanceof ArrayBuffer && submission_0.challengeHash.BYTES_PER_ELEMENT === 1 && submission_0.challengeHash.length === 32 && typeof(submission_0.body) === 'object' && typeof(submission_0.body.credential) === 'object' && typeof(submission_0.body.credential.version) === 'bigint' && submission_0.body.credential.version >= 0n && submission_0.body.credential.version <= 65535n && typeof(submission_0.body.credential.schema) === 'object' && submission_0.body.credential.schema.packageId.buffer instanceof ArrayBuffer && submission_0.body.credential.schema.packageId.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.schema.packageId.length === 32 && submission_0.body.credential.schema.schemaId.buffer instanceof ArrayBuffer && submission_0.body.credential.schema.schemaId.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.schema.schemaId.length === 32 && typeof(submission_0.body.credential.schema.majorVersion) === 'bigint' && submission_0.body.credential.schema.majorVersion >= 0n && submission_0.body.credential.schema.majorVersion <= 65535n && typeof(submission_0.body.credential.schema.minorVersion) === 'bigint' && submission_0.body.credential.schema.minorVersion >= 0n && submission_0.body.credential.schema.minorVersion <= 65535n && typeof(submission_0.body.credential.issuerVerificationMethodRef) === 'object' && typeof(submission_0.body.credential.issuerVerificationMethodRef.didContractAddress) === 'object' && submission_0.body.credential.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && submission_0.body.credential.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && submission_0.body.credential.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && submission_0.body.credential.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.issuerVerificationMethodRef.methodId.length === 32 && typeof(submission_0.body.credential.holderBinding) === 'object' && submission_0.body.credential.holderBinding.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && submission_0.body.credential.holderBinding.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.holderBinding.blindedHolderSecretCommitment.length === 32 && submission_0.body.credential.holderBinding.issuerNonce.buffer instanceof ArrayBuffer && submission_0.body.credential.holderBinding.issuerNonce.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.holderBinding.issuerNonce.length === 32 && submission_0.body.credential.holderBinding.requestChallengeResponse.buffer instanceof ArrayBuffer && submission_0.body.credential.holderBinding.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.holderBinding.requestChallengeResponse.length === 32 && typeof(submission_0.body.credential.statusBinding) === 'object' && typeof(submission_0.body.credential.issuedAt) === 'bigint' && submission_0.body.credential.issuedAt >= 0n && submission_0.body.credential.issuedAt <= 18446744073709551615n && typeof(submission_0.body.credential.hasExpiration) === 'boolean' && typeof(submission_0.body.credential.expiresAt) === 'bigint' && submission_0.body.credential.expiresAt >= 0n && submission_0.body.credential.expiresAt <= 18446744073709551615n && typeof(submission_0.body.credential.claims) === 'object' && typeof(submission_0.body.credential.claimCommitments) === 'object' && submission_0.body.credential.claimCommitments.subjectIdCommitment.buffer instanceof ArrayBuffer && submission_0.body.credential.claimCommitments.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.claimCommitments.subjectIdCommitment.length === 32 && submission_0.body.credential.claimCommitments.legalNameCommitment.buffer instanceof ArrayBuffer && submission_0.body.credential.claimCommitments.legalNameCommitment.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.claimCommitments.legalNameCommitment.length === 32 && submission_0.body.credential.claimCommitments.birthDateCommitment.buffer instanceof ArrayBuffer && submission_0.body.credential.claimCommitments.birthDateCommitment.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.claimCommitments.birthDateCommitment.length === 32 && submission_0.body.credential.claimCommitments.birthCountryCodeCommitment.buffer instanceof ArrayBuffer && submission_0.body.credential.claimCommitments.birthCountryCodeCommitment.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.claimCommitments.birthCountryCodeCommitment.length === 32 && submission_0.body.credential.claimRoot.buffer instanceof ArrayBuffer && submission_0.body.credential.claimRoot.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.claimRoot.length === 32 && typeof(submission_0.body.credentialProof) === 'object' && typeof(submission_0.body.credentialProof.signerVerificationMethodRef) === 'object' && typeof(submission_0.body.credentialProof.signerVerificationMethodRef.didContractAddress) === 'object' && submission_0.body.credentialProof.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && submission_0.body.credentialProof.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && submission_0.body.credentialProof.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && submission_0.body.credentialProof.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && submission_0.body.credentialProof.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && submission_0.body.credentialProof.signerVerificationMethodRef.methodId.length === 32 && typeof(submission_0.body.credentialProof.createdAt) === 'bigint' && submission_0.body.credentialProof.createdAt >= 0n && submission_0.body.credentialProof.createdAt <= 18446744073709551615n && submission_0.body.credentialProof.challengeHash.buffer instanceof ArrayBuffer && submission_0.body.credentialProof.challengeHash.BYTES_PER_ELEMENT === 1 && submission_0.body.credentialProof.challengeHash.length === 32 && true && typeof(submission_0.body.credentialProof.signature) === 'object' && true && typeof(submission_0.body.credentialProof.signature.s) === 'bigint' && submission_0.body.credentialProof.signature.s >= 0 && submission_0.body.credentialProof.signature.s <= __compactRuntime.MAX_FIELD && typeof(submission_0.body.presentation) === 'object' && typeof(submission_0.body.presentation.version) === 'bigint' && submission_0.body.presentation.version >= 0n && submission_0.body.presentation.version <= 65535n && typeof(submission_0.body.presentation.schema) === 'object' && submission_0.body.presentation.schema.packageId.buffer instanceof ArrayBuffer && submission_0.body.presentation.schema.packageId.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.schema.packageId.length === 32 && submission_0.body.presentation.schema.schemaId.buffer instanceof ArrayBuffer && submission_0.body.presentation.schema.schemaId.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.schema.schemaId.length === 32 && typeof(submission_0.body.presentation.schema.majorVersion) === 'bigint' && submission_0.body.presentation.schema.majorVersion >= 0n && submission_0.body.presentation.schema.majorVersion <= 65535n && typeof(submission_0.body.presentation.schema.minorVersion) === 'bigint' && submission_0.body.presentation.schema.minorVersion >= 0n && submission_0.body.presentation.schema.minorVersion <= 65535n && submission_0.body.presentation.credentialClaimRoot.buffer instanceof ArrayBuffer && submission_0.body.presentation.credentialClaimRoot.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.credentialClaimRoot.length === 32 && typeof(submission_0.body.presentation.issuerVerificationMethodRef) === 'object' && typeof(submission_0.body.presentation.issuerVerificationMethodRef.didContractAddress) === 'object' && submission_0.body.presentation.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && submission_0.body.presentation.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && submission_0.body.presentation.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && submission_0.body.presentation.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.issuerVerificationMethodRef.methodId.length === 32 && typeof(submission_0.body.presentation.holderBinding) === 'object' && submission_0.body.presentation.holderBinding.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && submission_0.body.presentation.holderBinding.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.holderBinding.blindedHolderSecretCommitment.length === 32 && submission_0.body.presentation.holderBinding.issuerNonce.buffer instanceof ArrayBuffer && submission_0.body.presentation.holderBinding.issuerNonce.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.holderBinding.issuerNonce.length === 32 && submission_0.body.presentation.holderBinding.requestChallengeResponse.buffer instanceof ArrayBuffer && submission_0.body.presentation.holderBinding.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.holderBinding.requestChallengeResponse.length === 32 && typeof(submission_0.body.presentation.disclosed) === 'object' && typeof(submission_0.body.presentation.disclosed.revealSubjectIdCommitment) === 'boolean' && submission_0.body.presentation.disclosed.subjectIdCommitment.buffer instanceof ArrayBuffer && submission_0.body.presentation.disclosed.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.disclosed.subjectIdCommitment.length === 32 && typeof(submission_0.body.presentation.disclosed.revealBirthCountryCode) === 'boolean' && submission_0.body.presentation.disclosed.birthCountryCodePadded.buffer instanceof ArrayBuffer && submission_0.body.presentation.disclosed.birthCountryCodePadded.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.disclosed.birthCountryCodePadded.length === 32 && submission_0.body.presentation.disclosed.birthCountryCodeOpening.buffer instanceof ArrayBuffer && submission_0.body.presentation.disclosed.birthCountryCodeOpening.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.disclosed.birthCountryCodeOpening.length === 32 && typeof(submission_0.body.presentation.disclosed.revealVerifierScopedPseudonym) === 'boolean' && submission_0.body.presentation.disclosed.verifierScopedPseudonym.buffer instanceof ArrayBuffer && submission_0.body.presentation.disclosed.verifierScopedPseudonym.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.disclosed.verifierScopedPseudonym.length === 32 && typeof(submission_0.body.presentation.disclosed.proveAgeOverThreshold) === 'boolean' && typeof(submission_0.body.presentation.disclosed.ageThresholdYears) === 'bigint' && submission_0.body.presentation.disclosed.ageThresholdYears >= 0n && submission_0.body.presentation.disclosed.ageThresholdYears <= 255n)) {
       __compactRuntime.typeError('assertSecretBirthCredentialVerificationSubmissionMatchesRequest',
                                  'argument 2',
-                                 'validation.compact line 153 char 1',
+                                 'validation.compact line 157 char 1',
                                  'struct SubmissionMessage<envelope: struct ProtocolMessageEnvelope<version: Uint<0..65536>, messageId: Bytes<32>, threadId: Bytes<32>, initialMessage: Boolean, respondsToMessageId: Bytes<32>, createdAt: Uint<0..18446744073709551616>, hasExpiresAt: Boolean, expiresAt: Uint<0..18446744073709551616>>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBindingProfile: Enum<HolderBindingProfile, explicitDid, secretHolder, blindedSecretHolder>, challengeHash: Bytes<32>, body: struct SecretBirthCredentialVerificationSubmissionBody<credential: struct Credential<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>, statusBinding: struct NoStatusBinding<>, issuedAt: Uint<0..18446744073709551616>, hasExpiration: Boolean, expiresAt: Uint<0..18446744073709551616>, claims: struct NoPublicClaims<>, claimCommitments: struct BirthCredentialClaimCommitments<subjectIdCommitment: Bytes<32>, legalNameCommitment: Bytes<32>, birthDateCommitment: Bytes<32>, birthCountryCodeCommitment: Bytes<32>>, claimRoot: Bytes<32>>, credentialProof: struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>, presentation: struct Presentation<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, credentialClaimRoot: Bytes<32>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>, disclosed: struct SecretBirthCredentialDisclosures<revealSubjectIdCommitment: Boolean, subjectIdCommitment: Bytes<32>, revealBirthCountryCode: Boolean, birthCountryCodePadded: Bytes<32>, birthCountryCodeOpening: Bytes<32>, revealVerifierScopedPseudonym: Boolean, verifierScopedPseudonym: Bytes<32>, proveAgeOverThreshold: Boolean, ageThresholdYears: Uint<0..256>>>>>',
                                  submission_0)
     }
     if (!(holderSecret_0.buffer instanceof ArrayBuffer && holderSecret_0.BYTES_PER_ELEMENT === 1 && holderSecret_0.length === 32)) {
       __compactRuntime.typeError('assertSecretBirthCredentialVerificationSubmissionMatchesRequest',
                                  'argument 3',
-                                 'validation.compact line 153 char 1',
+                                 'validation.compact line 157 char 1',
                                  'Bytes<32>',
                                  holderSecret_0)
     }
     if (!(holderSecretOpening_0.buffer instanceof ArrayBuffer && holderSecretOpening_0.BYTES_PER_ELEMENT === 1 && holderSecretOpening_0.length === 32)) {
       __compactRuntime.typeError('assertSecretBirthCredentialVerificationSubmissionMatchesRequest',
                                  'argument 4',
-                                 'validation.compact line 153 char 1',
+                                 'validation.compact line 157 char 1',
                                  'Bytes<32>',
                                  holderSecretOpening_0)
     }
     if (!(holderBindingBlindingFactor_0.buffer instanceof ArrayBuffer && holderBindingBlindingFactor_0.BYTES_PER_ELEMENT === 1 && holderBindingBlindingFactor_0.length === 32)) {
       __compactRuntime.typeError('assertSecretBirthCredentialVerificationSubmissionMatchesRequest',
                                  'argument 5',
-                                 'validation.compact line 153 char 1',
+                                 'validation.compact line 157 char 1',
                                  'Bytes<32>',
                                  holderBindingBlindingFactor_0)
     }
@@ -12225,7 +12346,7 @@ export const pureCircuits = {
     if (!(typeof(result_0) === 'object' && typeof(result_0.envelope) === 'object' && typeof(result_0.envelope.version) === 'bigint' && result_0.envelope.version >= 0n && result_0.envelope.version <= 65535n && result_0.envelope.messageId.buffer instanceof ArrayBuffer && result_0.envelope.messageId.BYTES_PER_ELEMENT === 1 && result_0.envelope.messageId.length === 32 && result_0.envelope.threadId.buffer instanceof ArrayBuffer && result_0.envelope.threadId.BYTES_PER_ELEMENT === 1 && result_0.envelope.threadId.length === 32 && typeof(result_0.envelope.initialMessage) === 'boolean' && result_0.envelope.respondsToMessageId.buffer instanceof ArrayBuffer && result_0.envelope.respondsToMessageId.BYTES_PER_ELEMENT === 1 && result_0.envelope.respondsToMessageId.length === 32 && typeof(result_0.envelope.createdAt) === 'bigint' && result_0.envelope.createdAt >= 0n && result_0.envelope.createdAt <= 18446744073709551615n && typeof(result_0.envelope.hasExpiresAt) === 'boolean' && typeof(result_0.envelope.expiresAt) === 'bigint' && result_0.envelope.expiresAt >= 0n && result_0.envelope.expiresAt <= 18446744073709551615n && typeof(result_0.approved) === 'boolean' && typeof(result_0.body) === 'object' && result_0.body.credentialRoot.buffer instanceof ArrayBuffer && result_0.body.credentialRoot.BYTES_PER_ELEMENT === 1 && result_0.body.credentialRoot.length === 32 && typeof(result_0.body.verifiedThresholdYears) === 'bigint' && result_0.body.verifiedThresholdYears >= 0n && result_0.body.verifiedThresholdYears <= 255n && typeof(result_0.body.hasVerifierScopedPseudonym) === 'boolean' && result_0.body.verifierScopedPseudonym.buffer instanceof ArrayBuffer && result_0.body.verifierScopedPseudonym.BYTES_PER_ELEMENT === 1 && result_0.body.verifierScopedPseudonym.length === 32)) {
       __compactRuntime.typeError('assertValidSecretBirthCredentialVerificationResultMessage',
                                  'argument 1',
-                                 'validation.compact line 177 char 1',
+                                 'validation.compact line 181 char 1',
                                  'struct ResultMessage<envelope: struct ProtocolMessageEnvelope<version: Uint<0..65536>, messageId: Bytes<32>, threadId: Bytes<32>, initialMessage: Boolean, respondsToMessageId: Bytes<32>, createdAt: Uint<0..18446744073709551616>, hasExpiresAt: Boolean, expiresAt: Uint<0..18446744073709551616>>, approved: Boolean, body: struct SecretBirthCredentialVerificationResultBody<credentialRoot: Bytes<32>, verifiedThresholdYears: Uint<0..256>, hasVerifierScopedPseudonym: Boolean, verifierScopedPseudonym: Bytes<32>>>',
                                  result_0)
     }
@@ -12240,14 +12361,14 @@ export const pureCircuits = {
     if (!(typeof(submission_0) === 'object' && typeof(submission_0.envelope) === 'object' && typeof(submission_0.envelope.version) === 'bigint' && submission_0.envelope.version >= 0n && submission_0.envelope.version <= 65535n && submission_0.envelope.messageId.buffer instanceof ArrayBuffer && submission_0.envelope.messageId.BYTES_PER_ELEMENT === 1 && submission_0.envelope.messageId.length === 32 && submission_0.envelope.threadId.buffer instanceof ArrayBuffer && submission_0.envelope.threadId.BYTES_PER_ELEMENT === 1 && submission_0.envelope.threadId.length === 32 && typeof(submission_0.envelope.initialMessage) === 'boolean' && submission_0.envelope.respondsToMessageId.buffer instanceof ArrayBuffer && submission_0.envelope.respondsToMessageId.BYTES_PER_ELEMENT === 1 && submission_0.envelope.respondsToMessageId.length === 32 && typeof(submission_0.envelope.createdAt) === 'bigint' && submission_0.envelope.createdAt >= 0n && submission_0.envelope.createdAt <= 18446744073709551615n && typeof(submission_0.envelope.hasExpiresAt) === 'boolean' && typeof(submission_0.envelope.expiresAt) === 'bigint' && submission_0.envelope.expiresAt >= 0n && submission_0.envelope.expiresAt <= 18446744073709551615n && typeof(submission_0.schema) === 'object' && submission_0.schema.packageId.buffer instanceof ArrayBuffer && submission_0.schema.packageId.BYTES_PER_ELEMENT === 1 && submission_0.schema.packageId.length === 32 && submission_0.schema.schemaId.buffer instanceof ArrayBuffer && submission_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && submission_0.schema.schemaId.length === 32 && typeof(submission_0.schema.majorVersion) === 'bigint' && submission_0.schema.majorVersion >= 0n && submission_0.schema.majorVersion <= 65535n && typeof(submission_0.schema.minorVersion) === 'bigint' && submission_0.schema.minorVersion >= 0n && submission_0.schema.minorVersion <= 65535n && typeof(submission_0.issuerVerificationMethodRef) === 'object' && typeof(submission_0.issuerVerificationMethodRef.didContractAddress) === 'object' && submission_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && submission_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && submission_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && submission_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && submission_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && submission_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(submission_0.holderBindingProfile) === 'number' && submission_0.holderBindingProfile >= 0 && submission_0.holderBindingProfile <= 2 && submission_0.challengeHash.buffer instanceof ArrayBuffer && submission_0.challengeHash.BYTES_PER_ELEMENT === 1 && submission_0.challengeHash.length === 32 && typeof(submission_0.body) === 'object' && typeof(submission_0.body.credential) === 'object' && typeof(submission_0.body.credential.version) === 'bigint' && submission_0.body.credential.version >= 0n && submission_0.body.credential.version <= 65535n && typeof(submission_0.body.credential.schema) === 'object' && submission_0.body.credential.schema.packageId.buffer instanceof ArrayBuffer && submission_0.body.credential.schema.packageId.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.schema.packageId.length === 32 && submission_0.body.credential.schema.schemaId.buffer instanceof ArrayBuffer && submission_0.body.credential.schema.schemaId.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.schema.schemaId.length === 32 && typeof(submission_0.body.credential.schema.majorVersion) === 'bigint' && submission_0.body.credential.schema.majorVersion >= 0n && submission_0.body.credential.schema.majorVersion <= 65535n && typeof(submission_0.body.credential.schema.minorVersion) === 'bigint' && submission_0.body.credential.schema.minorVersion >= 0n && submission_0.body.credential.schema.minorVersion <= 65535n && typeof(submission_0.body.credential.issuerVerificationMethodRef) === 'object' && typeof(submission_0.body.credential.issuerVerificationMethodRef.didContractAddress) === 'object' && submission_0.body.credential.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && submission_0.body.credential.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && submission_0.body.credential.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && submission_0.body.credential.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.issuerVerificationMethodRef.methodId.length === 32 && typeof(submission_0.body.credential.holderBinding) === 'object' && submission_0.body.credential.holderBinding.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && submission_0.body.credential.holderBinding.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.holderBinding.blindedHolderSecretCommitment.length === 32 && submission_0.body.credential.holderBinding.issuerNonce.buffer instanceof ArrayBuffer && submission_0.body.credential.holderBinding.issuerNonce.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.holderBinding.issuerNonce.length === 32 && submission_0.body.credential.holderBinding.requestChallengeResponse.buffer instanceof ArrayBuffer && submission_0.body.credential.holderBinding.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.holderBinding.requestChallengeResponse.length === 32 && typeof(submission_0.body.credential.statusBinding) === 'object' && typeof(submission_0.body.credential.issuedAt) === 'bigint' && submission_0.body.credential.issuedAt >= 0n && submission_0.body.credential.issuedAt <= 18446744073709551615n && typeof(submission_0.body.credential.hasExpiration) === 'boolean' && typeof(submission_0.body.credential.expiresAt) === 'bigint' && submission_0.body.credential.expiresAt >= 0n && submission_0.body.credential.expiresAt <= 18446744073709551615n && typeof(submission_0.body.credential.claims) === 'object' && typeof(submission_0.body.credential.claimCommitments) === 'object' && submission_0.body.credential.claimCommitments.subjectIdCommitment.buffer instanceof ArrayBuffer && submission_0.body.credential.claimCommitments.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.claimCommitments.subjectIdCommitment.length === 32 && submission_0.body.credential.claimCommitments.legalNameCommitment.buffer instanceof ArrayBuffer && submission_0.body.credential.claimCommitments.legalNameCommitment.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.claimCommitments.legalNameCommitment.length === 32 && submission_0.body.credential.claimCommitments.birthDateCommitment.buffer instanceof ArrayBuffer && submission_0.body.credential.claimCommitments.birthDateCommitment.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.claimCommitments.birthDateCommitment.length === 32 && submission_0.body.credential.claimCommitments.birthCountryCodeCommitment.buffer instanceof ArrayBuffer && submission_0.body.credential.claimCommitments.birthCountryCodeCommitment.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.claimCommitments.birthCountryCodeCommitment.length === 32 && submission_0.body.credential.claimRoot.buffer instanceof ArrayBuffer && submission_0.body.credential.claimRoot.BYTES_PER_ELEMENT === 1 && submission_0.body.credential.claimRoot.length === 32 && typeof(submission_0.body.credentialProof) === 'object' && typeof(submission_0.body.credentialProof.signerVerificationMethodRef) === 'object' && typeof(submission_0.body.credentialProof.signerVerificationMethodRef.didContractAddress) === 'object' && submission_0.body.credentialProof.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && submission_0.body.credentialProof.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && submission_0.body.credentialProof.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && submission_0.body.credentialProof.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && submission_0.body.credentialProof.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && submission_0.body.credentialProof.signerVerificationMethodRef.methodId.length === 32 && typeof(submission_0.body.credentialProof.createdAt) === 'bigint' && submission_0.body.credentialProof.createdAt >= 0n && submission_0.body.credentialProof.createdAt <= 18446744073709551615n && submission_0.body.credentialProof.challengeHash.buffer instanceof ArrayBuffer && submission_0.body.credentialProof.challengeHash.BYTES_PER_ELEMENT === 1 && submission_0.body.credentialProof.challengeHash.length === 32 && true && typeof(submission_0.body.credentialProof.signature) === 'object' && true && typeof(submission_0.body.credentialProof.signature.s) === 'bigint' && submission_0.body.credentialProof.signature.s >= 0 && submission_0.body.credentialProof.signature.s <= __compactRuntime.MAX_FIELD && typeof(submission_0.body.presentation) === 'object' && typeof(submission_0.body.presentation.version) === 'bigint' && submission_0.body.presentation.version >= 0n && submission_0.body.presentation.version <= 65535n && typeof(submission_0.body.presentation.schema) === 'object' && submission_0.body.presentation.schema.packageId.buffer instanceof ArrayBuffer && submission_0.body.presentation.schema.packageId.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.schema.packageId.length === 32 && submission_0.body.presentation.schema.schemaId.buffer instanceof ArrayBuffer && submission_0.body.presentation.schema.schemaId.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.schema.schemaId.length === 32 && typeof(submission_0.body.presentation.schema.majorVersion) === 'bigint' && submission_0.body.presentation.schema.majorVersion >= 0n && submission_0.body.presentation.schema.majorVersion <= 65535n && typeof(submission_0.body.presentation.schema.minorVersion) === 'bigint' && submission_0.body.presentation.schema.minorVersion >= 0n && submission_0.body.presentation.schema.minorVersion <= 65535n && submission_0.body.presentation.credentialClaimRoot.buffer instanceof ArrayBuffer && submission_0.body.presentation.credentialClaimRoot.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.credentialClaimRoot.length === 32 && typeof(submission_0.body.presentation.issuerVerificationMethodRef) === 'object' && typeof(submission_0.body.presentation.issuerVerificationMethodRef.didContractAddress) === 'object' && submission_0.body.presentation.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && submission_0.body.presentation.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && submission_0.body.presentation.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && submission_0.body.presentation.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.issuerVerificationMethodRef.methodId.length === 32 && typeof(submission_0.body.presentation.holderBinding) === 'object' && submission_0.body.presentation.holderBinding.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && submission_0.body.presentation.holderBinding.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.holderBinding.blindedHolderSecretCommitment.length === 32 && submission_0.body.presentation.holderBinding.issuerNonce.buffer instanceof ArrayBuffer && submission_0.body.presentation.holderBinding.issuerNonce.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.holderBinding.issuerNonce.length === 32 && submission_0.body.presentation.holderBinding.requestChallengeResponse.buffer instanceof ArrayBuffer && submission_0.body.presentation.holderBinding.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.holderBinding.requestChallengeResponse.length === 32 && typeof(submission_0.body.presentation.disclosed) === 'object' && typeof(submission_0.body.presentation.disclosed.revealSubjectIdCommitment) === 'boolean' && submission_0.body.presentation.disclosed.subjectIdCommitment.buffer instanceof ArrayBuffer && submission_0.body.presentation.disclosed.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.disclosed.subjectIdCommitment.length === 32 && typeof(submission_0.body.presentation.disclosed.revealBirthCountryCode) === 'boolean' && submission_0.body.presentation.disclosed.birthCountryCodePadded.buffer instanceof ArrayBuffer && submission_0.body.presentation.disclosed.birthCountryCodePadded.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.disclosed.birthCountryCodePadded.length === 32 && submission_0.body.presentation.disclosed.birthCountryCodeOpening.buffer instanceof ArrayBuffer && submission_0.body.presentation.disclosed.birthCountryCodeOpening.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.disclosed.birthCountryCodeOpening.length === 32 && typeof(submission_0.body.presentation.disclosed.revealVerifierScopedPseudonym) === 'boolean' && submission_0.body.presentation.disclosed.verifierScopedPseudonym.buffer instanceof ArrayBuffer && submission_0.body.presentation.disclosed.verifierScopedPseudonym.BYTES_PER_ELEMENT === 1 && submission_0.body.presentation.disclosed.verifierScopedPseudonym.length === 32 && typeof(submission_0.body.presentation.disclosed.proveAgeOverThreshold) === 'boolean' && typeof(submission_0.body.presentation.disclosed.ageThresholdYears) === 'bigint' && submission_0.body.presentation.disclosed.ageThresholdYears >= 0n && submission_0.body.presentation.disclosed.ageThresholdYears <= 255n)) {
       __compactRuntime.typeError('assertSecretBirthCredentialVerificationResultMatchesSubmission',
                                  'argument 1',
-                                 'validation.compact line 195 char 1',
+                                 'validation.compact line 199 char 1',
                                  'struct SubmissionMessage<envelope: struct ProtocolMessageEnvelope<version: Uint<0..65536>, messageId: Bytes<32>, threadId: Bytes<32>, initialMessage: Boolean, respondsToMessageId: Bytes<32>, createdAt: Uint<0..18446744073709551616>, hasExpiresAt: Boolean, expiresAt: Uint<0..18446744073709551616>>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBindingProfile: Enum<HolderBindingProfile, explicitDid, secretHolder, blindedSecretHolder>, challengeHash: Bytes<32>, body: struct SecretBirthCredentialVerificationSubmissionBody<credential: struct Credential<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>, statusBinding: struct NoStatusBinding<>, issuedAt: Uint<0..18446744073709551616>, hasExpiration: Boolean, expiresAt: Uint<0..18446744073709551616>, claims: struct NoPublicClaims<>, claimCommitments: struct BirthCredentialClaimCommitments<subjectIdCommitment: Bytes<32>, legalNameCommitment: Bytes<32>, birthDateCommitment: Bytes<32>, birthCountryCodeCommitment: Bytes<32>>, claimRoot: Bytes<32>>, credentialProof: struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>, presentation: struct Presentation<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, credentialClaimRoot: Bytes<32>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>, disclosed: struct SecretBirthCredentialDisclosures<revealSubjectIdCommitment: Boolean, subjectIdCommitment: Bytes<32>, revealBirthCountryCode: Boolean, birthCountryCodePadded: Bytes<32>, birthCountryCodeOpening: Bytes<32>, revealVerifierScopedPseudonym: Boolean, verifierScopedPseudonym: Bytes<32>, proveAgeOverThreshold: Boolean, ageThresholdYears: Uint<0..256>>>>>',
                                  submission_0)
     }
     if (!(typeof(result_0) === 'object' && typeof(result_0.envelope) === 'object' && typeof(result_0.envelope.version) === 'bigint' && result_0.envelope.version >= 0n && result_0.envelope.version <= 65535n && result_0.envelope.messageId.buffer instanceof ArrayBuffer && result_0.envelope.messageId.BYTES_PER_ELEMENT === 1 && result_0.envelope.messageId.length === 32 && result_0.envelope.threadId.buffer instanceof ArrayBuffer && result_0.envelope.threadId.BYTES_PER_ELEMENT === 1 && result_0.envelope.threadId.length === 32 && typeof(result_0.envelope.initialMessage) === 'boolean' && result_0.envelope.respondsToMessageId.buffer instanceof ArrayBuffer && result_0.envelope.respondsToMessageId.BYTES_PER_ELEMENT === 1 && result_0.envelope.respondsToMessageId.length === 32 && typeof(result_0.envelope.createdAt) === 'bigint' && result_0.envelope.createdAt >= 0n && result_0.envelope.createdAt <= 18446744073709551615n && typeof(result_0.envelope.hasExpiresAt) === 'boolean' && typeof(result_0.envelope.expiresAt) === 'bigint' && result_0.envelope.expiresAt >= 0n && result_0.envelope.expiresAt <= 18446744073709551615n && typeof(result_0.approved) === 'boolean' && typeof(result_0.body) === 'object' && result_0.body.credentialRoot.buffer instanceof ArrayBuffer && result_0.body.credentialRoot.BYTES_PER_ELEMENT === 1 && result_0.body.credentialRoot.length === 32 && typeof(result_0.body.verifiedThresholdYears) === 'bigint' && result_0.body.verifiedThresholdYears >= 0n && result_0.body.verifiedThresholdYears <= 255n && typeof(result_0.body.hasVerifierScopedPseudonym) === 'boolean' && result_0.body.verifierScopedPseudonym.buffer instanceof ArrayBuffer && result_0.body.verifierScopedPseudonym.BYTES_PER_ELEMENT === 1 && result_0.body.verifierScopedPseudonym.length === 32)) {
       __compactRuntime.typeError('assertSecretBirthCredentialVerificationResultMatchesSubmission',
                                  'argument 2',
-                                 'validation.compact line 195 char 1',
+                                 'validation.compact line 199 char 1',
                                  'struct ResultMessage<envelope: struct ProtocolMessageEnvelope<version: Uint<0..65536>, messageId: Bytes<32>, threadId: Bytes<32>, initialMessage: Boolean, respondsToMessageId: Bytes<32>, createdAt: Uint<0..18446744073709551616>, hasExpiresAt: Boolean, expiresAt: Uint<0..18446744073709551616>>, approved: Boolean, body: struct SecretBirthCredentialVerificationResultBody<credentialRoot: Bytes<32>, verifiedThresholdYears: Uint<0..256>, hasVerifierScopedPseudonym: Boolean, verifierScopedPseudonym: Bytes<32>>>',
                                  result_0)
     }
@@ -12263,14 +12384,14 @@ export const pureCircuits = {
     if (!(typeof(credential_0) === 'object' && typeof(credential_0.version) === 'bigint' && credential_0.version >= 0n && credential_0.version <= 65535n && typeof(credential_0.schema) === 'object' && credential_0.schema.packageId.buffer instanceof ArrayBuffer && credential_0.schema.packageId.BYTES_PER_ELEMENT === 1 && credential_0.schema.packageId.length === 32 && credential_0.schema.schemaId.buffer instanceof ArrayBuffer && credential_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && credential_0.schema.schemaId.length === 32 && typeof(credential_0.schema.majorVersion) === 'bigint' && credential_0.schema.majorVersion >= 0n && credential_0.schema.majorVersion <= 65535n && typeof(credential_0.schema.minorVersion) === 'bigint' && credential_0.schema.minorVersion >= 0n && credential_0.schema.minorVersion <= 65535n && typeof(credential_0.issuerVerificationMethodRef) === 'object' && typeof(credential_0.issuerVerificationMethodRef.didContractAddress) === 'object' && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && credential_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credential_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credential_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(credential_0.holderBinding) === 'object' && credential_0.holderBinding.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && credential_0.holderBinding.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.blindedHolderSecretCommitment.length === 32 && credential_0.holderBinding.issuerNonce.buffer instanceof ArrayBuffer && credential_0.holderBinding.issuerNonce.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.issuerNonce.length === 32 && credential_0.holderBinding.requestChallengeResponse.buffer instanceof ArrayBuffer && credential_0.holderBinding.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.requestChallengeResponse.length === 32 && typeof(credential_0.statusBinding) === 'object' && typeof(credential_0.issuedAt) === 'bigint' && credential_0.issuedAt >= 0n && credential_0.issuedAt <= 18446744073709551615n && typeof(credential_0.hasExpiration) === 'boolean' && typeof(credential_0.expiresAt) === 'bigint' && credential_0.expiresAt >= 0n && credential_0.expiresAt <= 18446744073709551615n && typeof(credential_0.claims) === 'object' && typeof(credential_0.claimCommitments) === 'object' && credential_0.claimCommitments.subjectIdCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.subjectIdCommitment.length === 32 && credential_0.claimCommitments.legalNameCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.legalNameCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.legalNameCommitment.length === 32 && credential_0.claimCommitments.birthDateCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.birthDateCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.birthDateCommitment.length === 32 && credential_0.claimCommitments.birthCountryCodeCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.birthCountryCodeCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.birthCountryCodeCommitment.length === 32 && credential_0.claimRoot.buffer instanceof ArrayBuffer && credential_0.claimRoot.BYTES_PER_ELEMENT === 1 && credential_0.claimRoot.length === 32)) {
       __compactRuntime.typeError('assertValidSecretBirthCredential',
                                  'argument 1',
-                                 'validation.compact line 222 char 1',
+                                 'validation.compact line 226 char 1',
                                  'struct Credential<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>, statusBinding: struct NoStatusBinding<>, issuedAt: Uint<0..18446744073709551616>, hasExpiration: Boolean, expiresAt: Uint<0..18446744073709551616>, claims: struct NoPublicClaims<>, claimCommitments: struct BirthCredentialClaimCommitments<subjectIdCommitment: Bytes<32>, legalNameCommitment: Bytes<32>, birthDateCommitment: Bytes<32>, birthCountryCodeCommitment: Bytes<32>>, claimRoot: Bytes<32>>',
                                  credential_0)
     }
     if (!(typeof(proof_0) === 'object' && typeof(proof_0.signerVerificationMethodRef) === 'object' && typeof(proof_0.signerVerificationMethodRef.didContractAddress) === 'object' && proof_0.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && proof_0.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && proof_0.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && proof_0.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && proof_0.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && proof_0.signerVerificationMethodRef.methodId.length === 32 && typeof(proof_0.createdAt) === 'bigint' && proof_0.createdAt >= 0n && proof_0.createdAt <= 18446744073709551615n && proof_0.challengeHash.buffer instanceof ArrayBuffer && proof_0.challengeHash.BYTES_PER_ELEMENT === 1 && proof_0.challengeHash.length === 32 && true && typeof(proof_0.signature) === 'object' && true && typeof(proof_0.signature.s) === 'bigint' && proof_0.signature.s >= 0 && proof_0.signature.s <= __compactRuntime.MAX_FIELD)) {
       __compactRuntime.typeError('assertValidSecretBirthCredential',
                                  'argument 2',
-                                 'validation.compact line 222 char 1',
+                                 'validation.compact line 226 char 1',
                                  'struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>',
                                  proof_0)
     }
@@ -12287,21 +12408,21 @@ export const pureCircuits = {
     if (!(typeof(credential_0) === 'object' && typeof(credential_0.version) === 'bigint' && credential_0.version >= 0n && credential_0.version <= 65535n && typeof(credential_0.schema) === 'object' && credential_0.schema.packageId.buffer instanceof ArrayBuffer && credential_0.schema.packageId.BYTES_PER_ELEMENT === 1 && credential_0.schema.packageId.length === 32 && credential_0.schema.schemaId.buffer instanceof ArrayBuffer && credential_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && credential_0.schema.schemaId.length === 32 && typeof(credential_0.schema.majorVersion) === 'bigint' && credential_0.schema.majorVersion >= 0n && credential_0.schema.majorVersion <= 65535n && typeof(credential_0.schema.minorVersion) === 'bigint' && credential_0.schema.minorVersion >= 0n && credential_0.schema.minorVersion <= 65535n && typeof(credential_0.issuerVerificationMethodRef) === 'object' && typeof(credential_0.issuerVerificationMethodRef.didContractAddress) === 'object' && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && credential_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credential_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credential_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(credential_0.holderBinding) === 'object' && credential_0.holderBinding.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && credential_0.holderBinding.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.blindedHolderSecretCommitment.length === 32 && credential_0.holderBinding.issuerNonce.buffer instanceof ArrayBuffer && credential_0.holderBinding.issuerNonce.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.issuerNonce.length === 32 && credential_0.holderBinding.requestChallengeResponse.buffer instanceof ArrayBuffer && credential_0.holderBinding.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.requestChallengeResponse.length === 32 && typeof(credential_0.statusBinding) === 'object' && typeof(credential_0.issuedAt) === 'bigint' && credential_0.issuedAt >= 0n && credential_0.issuedAt <= 18446744073709551615n && typeof(credential_0.hasExpiration) === 'boolean' && typeof(credential_0.expiresAt) === 'bigint' && credential_0.expiresAt >= 0n && credential_0.expiresAt <= 18446744073709551615n && typeof(credential_0.claims) === 'object' && typeof(credential_0.claimCommitments) === 'object' && credential_0.claimCommitments.subjectIdCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.subjectIdCommitment.length === 32 && credential_0.claimCommitments.legalNameCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.legalNameCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.legalNameCommitment.length === 32 && credential_0.claimCommitments.birthDateCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.birthDateCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.birthDateCommitment.length === 32 && credential_0.claimCommitments.birthCountryCodeCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.birthCountryCodeCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.birthCountryCodeCommitment.length === 32 && credential_0.claimRoot.buffer instanceof ArrayBuffer && credential_0.claimRoot.BYTES_PER_ELEMENT === 1 && credential_0.claimRoot.length === 32)) {
       __compactRuntime.typeError('assertValidSecretBirthCredentialPresentation',
                                  'argument 1',
-                                 'validation.compact line 243 char 1',
+                                 'validation.compact line 247 char 1',
                                  'struct Credential<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>, statusBinding: struct NoStatusBinding<>, issuedAt: Uint<0..18446744073709551616>, hasExpiration: Boolean, expiresAt: Uint<0..18446744073709551616>, claims: struct NoPublicClaims<>, claimCommitments: struct BirthCredentialClaimCommitments<subjectIdCommitment: Bytes<32>, legalNameCommitment: Bytes<32>, birthDateCommitment: Bytes<32>, birthCountryCodeCommitment: Bytes<32>>, claimRoot: Bytes<32>>',
                                  credential_0)
     }
     if (!(typeof(credentialProof_0) === 'object' && typeof(credentialProof_0.signerVerificationMethodRef) === 'object' && typeof(credentialProof_0.signerVerificationMethodRef.didContractAddress) === 'object' && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && credentialProof_0.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credentialProof_0.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credentialProof_0.signerVerificationMethodRef.methodId.length === 32 && typeof(credentialProof_0.createdAt) === 'bigint' && credentialProof_0.createdAt >= 0n && credentialProof_0.createdAt <= 18446744073709551615n && credentialProof_0.challengeHash.buffer instanceof ArrayBuffer && credentialProof_0.challengeHash.BYTES_PER_ELEMENT === 1 && credentialProof_0.challengeHash.length === 32 && true && typeof(credentialProof_0.signature) === 'object' && true && typeof(credentialProof_0.signature.s) === 'bigint' && credentialProof_0.signature.s >= 0 && credentialProof_0.signature.s <= __compactRuntime.MAX_FIELD)) {
       __compactRuntime.typeError('assertValidSecretBirthCredentialPresentation',
                                  'argument 2',
-                                 'validation.compact line 243 char 1',
+                                 'validation.compact line 247 char 1',
                                  'struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>',
                                  credentialProof_0)
     }
     if (!(typeof(presentation_0) === 'object' && typeof(presentation_0.version) === 'bigint' && presentation_0.version >= 0n && presentation_0.version <= 65535n && typeof(presentation_0.schema) === 'object' && presentation_0.schema.packageId.buffer instanceof ArrayBuffer && presentation_0.schema.packageId.BYTES_PER_ELEMENT === 1 && presentation_0.schema.packageId.length === 32 && presentation_0.schema.schemaId.buffer instanceof ArrayBuffer && presentation_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && presentation_0.schema.schemaId.length === 32 && typeof(presentation_0.schema.majorVersion) === 'bigint' && presentation_0.schema.majorVersion >= 0n && presentation_0.schema.majorVersion <= 65535n && typeof(presentation_0.schema.minorVersion) === 'bigint' && presentation_0.schema.minorVersion >= 0n && presentation_0.schema.minorVersion <= 65535n && presentation_0.credentialClaimRoot.buffer instanceof ArrayBuffer && presentation_0.credentialClaimRoot.BYTES_PER_ELEMENT === 1 && presentation_0.credentialClaimRoot.length === 32 && typeof(presentation_0.issuerVerificationMethodRef) === 'object' && typeof(presentation_0.issuerVerificationMethodRef.didContractAddress) === 'object' && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && presentation_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && presentation_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && presentation_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(presentation_0.holderBinding) === 'object' && presentation_0.holderBinding.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && presentation_0.holderBinding.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && presentation_0.holderBinding.blindedHolderSecretCommitment.length === 32 && presentation_0.holderBinding.issuerNonce.buffer instanceof ArrayBuffer && presentation_0.holderBinding.issuerNonce.BYTES_PER_ELEMENT === 1 && presentation_0.holderBinding.issuerNonce.length === 32 && presentation_0.holderBinding.requestChallengeResponse.buffer instanceof ArrayBuffer && presentation_0.holderBinding.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && presentation_0.holderBinding.requestChallengeResponse.length === 32 && typeof(presentation_0.disclosed) === 'object' && typeof(presentation_0.disclosed.revealSubjectIdCommitment) === 'boolean' && presentation_0.disclosed.subjectIdCommitment.buffer instanceof ArrayBuffer && presentation_0.disclosed.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.subjectIdCommitment.length === 32 && typeof(presentation_0.disclosed.revealBirthCountryCode) === 'boolean' && presentation_0.disclosed.birthCountryCodePadded.buffer instanceof ArrayBuffer && presentation_0.disclosed.birthCountryCodePadded.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.birthCountryCodePadded.length === 32 && presentation_0.disclosed.birthCountryCodeOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.birthCountryCodeOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.birthCountryCodeOpening.length === 32 && typeof(presentation_0.disclosed.revealVerifierScopedPseudonym) === 'boolean' && presentation_0.disclosed.verifierScopedPseudonym.buffer instanceof ArrayBuffer && presentation_0.disclosed.verifierScopedPseudonym.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.verifierScopedPseudonym.length === 32 && typeof(presentation_0.disclosed.proveAgeOverThreshold) === 'boolean' && typeof(presentation_0.disclosed.ageThresholdYears) === 'bigint' && presentation_0.disclosed.ageThresholdYears >= 0n && presentation_0.disclosed.ageThresholdYears <= 255n)) {
       __compactRuntime.typeError('assertValidSecretBirthCredentialPresentation',
                                  'argument 3',
-                                 'validation.compact line 243 char 1',
+                                 'validation.compact line 247 char 1',
                                  'struct Presentation<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, credentialClaimRoot: Bytes<32>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>, disclosed: struct SecretBirthCredentialDisclosures<revealSubjectIdCommitment: Boolean, subjectIdCommitment: Bytes<32>, revealBirthCountryCode: Boolean, birthCountryCodePadded: Bytes<32>, birthCountryCodeOpening: Bytes<32>, revealVerifierScopedPseudonym: Boolean, verifierScopedPseudonym: Bytes<32>, proveAgeOverThreshold: Boolean, ageThresholdYears: Uint<0..256>>>',
                                  presentation_0)
     }
@@ -12323,49 +12444,49 @@ export const pureCircuits = {
     if (!(typeof(credential_0) === 'object' && typeof(credential_0.version) === 'bigint' && credential_0.version >= 0n && credential_0.version <= 65535n && typeof(credential_0.schema) === 'object' && credential_0.schema.packageId.buffer instanceof ArrayBuffer && credential_0.schema.packageId.BYTES_PER_ELEMENT === 1 && credential_0.schema.packageId.length === 32 && credential_0.schema.schemaId.buffer instanceof ArrayBuffer && credential_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && credential_0.schema.schemaId.length === 32 && typeof(credential_0.schema.majorVersion) === 'bigint' && credential_0.schema.majorVersion >= 0n && credential_0.schema.majorVersion <= 65535n && typeof(credential_0.schema.minorVersion) === 'bigint' && credential_0.schema.minorVersion >= 0n && credential_0.schema.minorVersion <= 65535n && typeof(credential_0.issuerVerificationMethodRef) === 'object' && typeof(credential_0.issuerVerificationMethodRef.didContractAddress) === 'object' && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && credential_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credential_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credential_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(credential_0.holderBinding) === 'object' && credential_0.holderBinding.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && credential_0.holderBinding.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.blindedHolderSecretCommitment.length === 32 && credential_0.holderBinding.issuerNonce.buffer instanceof ArrayBuffer && credential_0.holderBinding.issuerNonce.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.issuerNonce.length === 32 && credential_0.holderBinding.requestChallengeResponse.buffer instanceof ArrayBuffer && credential_0.holderBinding.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.requestChallengeResponse.length === 32 && typeof(credential_0.statusBinding) === 'object' && typeof(credential_0.issuedAt) === 'bigint' && credential_0.issuedAt >= 0n && credential_0.issuedAt <= 18446744073709551615n && typeof(credential_0.hasExpiration) === 'boolean' && typeof(credential_0.expiresAt) === 'bigint' && credential_0.expiresAt >= 0n && credential_0.expiresAt <= 18446744073709551615n && typeof(credential_0.claims) === 'object' && typeof(credential_0.claimCommitments) === 'object' && credential_0.claimCommitments.subjectIdCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.subjectIdCommitment.length === 32 && credential_0.claimCommitments.legalNameCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.legalNameCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.legalNameCommitment.length === 32 && credential_0.claimCommitments.birthDateCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.birthDateCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.birthDateCommitment.length === 32 && credential_0.claimCommitments.birthCountryCodeCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.birthCountryCodeCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.birthCountryCodeCommitment.length === 32 && credential_0.claimRoot.buffer instanceof ArrayBuffer && credential_0.claimRoot.BYTES_PER_ELEMENT === 1 && credential_0.claimRoot.length === 32)) {
       __compactRuntime.typeError('assertSecretBirthPresentationSatisfiesRequest',
                                  'argument 1',
-                                 'validation.compact line 291 char 1',
+                                 'validation.compact line 295 char 1',
                                  'struct Credential<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>, statusBinding: struct NoStatusBinding<>, issuedAt: Uint<0..18446744073709551616>, hasExpiration: Boolean, expiresAt: Uint<0..18446744073709551616>, claims: struct NoPublicClaims<>, claimCommitments: struct BirthCredentialClaimCommitments<subjectIdCommitment: Bytes<32>, legalNameCommitment: Bytes<32>, birthDateCommitment: Bytes<32>, birthCountryCodeCommitment: Bytes<32>>, claimRoot: Bytes<32>>',
                                  credential_0)
     }
     if (!(typeof(credentialProof_0) === 'object' && typeof(credentialProof_0.signerVerificationMethodRef) === 'object' && typeof(credentialProof_0.signerVerificationMethodRef.didContractAddress) === 'object' && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && credentialProof_0.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credentialProof_0.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credentialProof_0.signerVerificationMethodRef.methodId.length === 32 && typeof(credentialProof_0.createdAt) === 'bigint' && credentialProof_0.createdAt >= 0n && credentialProof_0.createdAt <= 18446744073709551615n && credentialProof_0.challengeHash.buffer instanceof ArrayBuffer && credentialProof_0.challengeHash.BYTES_PER_ELEMENT === 1 && credentialProof_0.challengeHash.length === 32 && true && typeof(credentialProof_0.signature) === 'object' && true && typeof(credentialProof_0.signature.s) === 'bigint' && credentialProof_0.signature.s >= 0 && credentialProof_0.signature.s <= __compactRuntime.MAX_FIELD)) {
       __compactRuntime.typeError('assertSecretBirthPresentationSatisfiesRequest',
                                  'argument 2',
-                                 'validation.compact line 291 char 1',
+                                 'validation.compact line 295 char 1',
                                  'struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>',
                                  credentialProof_0)
     }
     if (!(typeof(request_0) === 'object' && typeof(request_0.version) === 'bigint' && request_0.version >= 0n && request_0.version <= 65535n && typeof(request_0.schema) === 'object' && request_0.schema.packageId.buffer instanceof ArrayBuffer && request_0.schema.packageId.BYTES_PER_ELEMENT === 1 && request_0.schema.packageId.length === 32 && request_0.schema.schemaId.buffer instanceof ArrayBuffer && request_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && request_0.schema.schemaId.length === 32 && typeof(request_0.schema.majorVersion) === 'bigint' && request_0.schema.majorVersion >= 0n && request_0.schema.majorVersion <= 65535n && typeof(request_0.schema.minorVersion) === 'bigint' && request_0.schema.minorVersion >= 0n && request_0.schema.minorVersion <= 65535n && typeof(request_0.issuerVerificationMethodRef) === 'object' && typeof(request_0.issuerVerificationMethodRef.didContractAddress) === 'object' && request_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && request_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && request_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && request_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && request_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && request_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(request_0.requireSubjectIdCommitmentDisclosure) === 'boolean' && typeof(request_0.requireBirthCountryDisclosure) === 'boolean' && typeof(request_0.requireVerifierScopedPseudonym) === 'boolean' && request_0.verifierDomainHash.buffer instanceof ArrayBuffer && request_0.verifierDomainHash.BYTES_PER_ELEMENT === 1 && request_0.verifierDomainHash.length === 32 && typeof(request_0.requireAgeOverThreshold) === 'boolean' && typeof(request_0.requestedAgeThresholdYears) === 'bigint' && request_0.requestedAgeThresholdYears >= 0n && request_0.requestedAgeThresholdYears <= 255n && request_0.verifierChallengeHash.buffer instanceof ArrayBuffer && request_0.verifierChallengeHash.BYTES_PER_ELEMENT === 1 && request_0.verifierChallengeHash.length === 32)) {
       __compactRuntime.typeError('assertSecretBirthPresentationSatisfiesRequest',
                                  'argument 3',
-                                 'validation.compact line 291 char 1',
+                                 'validation.compact line 295 char 1',
                                  'struct SecretBirthCredentialPresentationRequest<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, requireSubjectIdCommitmentDisclosure: Boolean, requireBirthCountryDisclosure: Boolean, requireVerifierScopedPseudonym: Boolean, verifierDomainHash: Bytes<32>, requireAgeOverThreshold: Boolean, requestedAgeThresholdYears: Uint<0..256>, verifierChallengeHash: Bytes<32>>',
                                  request_0)
     }
     if (!(typeof(presentation_0) === 'object' && typeof(presentation_0.version) === 'bigint' && presentation_0.version >= 0n && presentation_0.version <= 65535n && typeof(presentation_0.schema) === 'object' && presentation_0.schema.packageId.buffer instanceof ArrayBuffer && presentation_0.schema.packageId.BYTES_PER_ELEMENT === 1 && presentation_0.schema.packageId.length === 32 && presentation_0.schema.schemaId.buffer instanceof ArrayBuffer && presentation_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && presentation_0.schema.schemaId.length === 32 && typeof(presentation_0.schema.majorVersion) === 'bigint' && presentation_0.schema.majorVersion >= 0n && presentation_0.schema.majorVersion <= 65535n && typeof(presentation_0.schema.minorVersion) === 'bigint' && presentation_0.schema.minorVersion >= 0n && presentation_0.schema.minorVersion <= 65535n && presentation_0.credentialClaimRoot.buffer instanceof ArrayBuffer && presentation_0.credentialClaimRoot.BYTES_PER_ELEMENT === 1 && presentation_0.credentialClaimRoot.length === 32 && typeof(presentation_0.issuerVerificationMethodRef) === 'object' && typeof(presentation_0.issuerVerificationMethodRef.didContractAddress) === 'object' && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && presentation_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && presentation_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && presentation_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(presentation_0.holderBinding) === 'object' && presentation_0.holderBinding.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && presentation_0.holderBinding.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && presentation_0.holderBinding.blindedHolderSecretCommitment.length === 32 && presentation_0.holderBinding.issuerNonce.buffer instanceof ArrayBuffer && presentation_0.holderBinding.issuerNonce.BYTES_PER_ELEMENT === 1 && presentation_0.holderBinding.issuerNonce.length === 32 && presentation_0.holderBinding.requestChallengeResponse.buffer instanceof ArrayBuffer && presentation_0.holderBinding.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && presentation_0.holderBinding.requestChallengeResponse.length === 32 && typeof(presentation_0.disclosed) === 'object' && typeof(presentation_0.disclosed.revealSubjectIdCommitment) === 'boolean' && presentation_0.disclosed.subjectIdCommitment.buffer instanceof ArrayBuffer && presentation_0.disclosed.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.subjectIdCommitment.length === 32 && typeof(presentation_0.disclosed.revealBirthCountryCode) === 'boolean' && presentation_0.disclosed.birthCountryCodePadded.buffer instanceof ArrayBuffer && presentation_0.disclosed.birthCountryCodePadded.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.birthCountryCodePadded.length === 32 && presentation_0.disclosed.birthCountryCodeOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.birthCountryCodeOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.birthCountryCodeOpening.length === 32 && typeof(presentation_0.disclosed.revealVerifierScopedPseudonym) === 'boolean' && presentation_0.disclosed.verifierScopedPseudonym.buffer instanceof ArrayBuffer && presentation_0.disclosed.verifierScopedPseudonym.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.verifierScopedPseudonym.length === 32 && typeof(presentation_0.disclosed.proveAgeOverThreshold) === 'boolean' && typeof(presentation_0.disclosed.ageThresholdYears) === 'bigint' && presentation_0.disclosed.ageThresholdYears >= 0n && presentation_0.disclosed.ageThresholdYears <= 255n)) {
       __compactRuntime.typeError('assertSecretBirthPresentationSatisfiesRequest',
                                  'argument 4',
-                                 'validation.compact line 291 char 1',
+                                 'validation.compact line 295 char 1',
                                  'struct Presentation<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, credentialClaimRoot: Bytes<32>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>, disclosed: struct SecretBirthCredentialDisclosures<revealSubjectIdCommitment: Boolean, subjectIdCommitment: Bytes<32>, revealBirthCountryCode: Boolean, birthCountryCodePadded: Bytes<32>, birthCountryCodeOpening: Bytes<32>, revealVerifierScopedPseudonym: Boolean, verifierScopedPseudonym: Bytes<32>, proveAgeOverThreshold: Boolean, ageThresholdYears: Uint<0..256>>>',
                                  presentation_0)
     }
     if (!(holderSecret_0.buffer instanceof ArrayBuffer && holderSecret_0.BYTES_PER_ELEMENT === 1 && holderSecret_0.length === 32)) {
       __compactRuntime.typeError('assertSecretBirthPresentationSatisfiesRequest',
                                  'argument 5',
-                                 'validation.compact line 291 char 1',
+                                 'validation.compact line 295 char 1',
                                  'Bytes<32>',
                                  holderSecret_0)
     }
     if (!(holderSecretOpening_0.buffer instanceof ArrayBuffer && holderSecretOpening_0.BYTES_PER_ELEMENT === 1 && holderSecretOpening_0.length === 32)) {
       __compactRuntime.typeError('assertSecretBirthPresentationSatisfiesRequest',
                                  'argument 6',
-                                 'validation.compact line 291 char 1',
+                                 'validation.compact line 295 char 1',
                                  'Bytes<32>',
                                  holderSecretOpening_0)
     }
     if (!(holderBindingBlindingFactor_0.buffer instanceof ArrayBuffer && holderBindingBlindingFactor_0.BYTES_PER_ELEMENT === 1 && holderBindingBlindingFactor_0.length === 32)) {
       __compactRuntime.typeError('assertSecretBirthPresentationSatisfiesRequest',
                                  'argument 7',
-                                 'validation.compact line 291 char 1',
+                                 'validation.compact line 295 char 1',
                                  'Bytes<32>',
                                  holderBindingBlindingFactor_0)
     }
@@ -12389,35 +12510,35 @@ export const pureCircuits = {
     if (!(typeof(credential_0) === 'object' && typeof(credential_0.version) === 'bigint' && credential_0.version >= 0n && credential_0.version <= 65535n && typeof(credential_0.schema) === 'object' && credential_0.schema.packageId.buffer instanceof ArrayBuffer && credential_0.schema.packageId.BYTES_PER_ELEMENT === 1 && credential_0.schema.packageId.length === 32 && credential_0.schema.schemaId.buffer instanceof ArrayBuffer && credential_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && credential_0.schema.schemaId.length === 32 && typeof(credential_0.schema.majorVersion) === 'bigint' && credential_0.schema.majorVersion >= 0n && credential_0.schema.majorVersion <= 65535n && typeof(credential_0.schema.minorVersion) === 'bigint' && credential_0.schema.minorVersion >= 0n && credential_0.schema.minorVersion <= 65535n && typeof(credential_0.issuerVerificationMethodRef) === 'object' && typeof(credential_0.issuerVerificationMethodRef.didContractAddress) === 'object' && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && credential_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credential_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credential_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(credential_0.holderBinding) === 'object' && credential_0.holderBinding.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && credential_0.holderBinding.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.blindedHolderSecretCommitment.length === 32 && credential_0.holderBinding.issuerNonce.buffer instanceof ArrayBuffer && credential_0.holderBinding.issuerNonce.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.issuerNonce.length === 32 && credential_0.holderBinding.requestChallengeResponse.buffer instanceof ArrayBuffer && credential_0.holderBinding.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.requestChallengeResponse.length === 32 && typeof(credential_0.statusBinding) === 'object' && typeof(credential_0.issuedAt) === 'bigint' && credential_0.issuedAt >= 0n && credential_0.issuedAt <= 18446744073709551615n && typeof(credential_0.hasExpiration) === 'boolean' && typeof(credential_0.expiresAt) === 'bigint' && credential_0.expiresAt >= 0n && credential_0.expiresAt <= 18446744073709551615n && typeof(credential_0.claims) === 'object' && typeof(credential_0.claimCommitments) === 'object' && credential_0.claimCommitments.subjectIdCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.subjectIdCommitment.length === 32 && credential_0.claimCommitments.legalNameCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.legalNameCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.legalNameCommitment.length === 32 && credential_0.claimCommitments.birthDateCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.birthDateCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.birthDateCommitment.length === 32 && credential_0.claimCommitments.birthCountryCodeCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.birthCountryCodeCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.birthCountryCodeCommitment.length === 32 && credential_0.claimRoot.buffer instanceof ArrayBuffer && credential_0.claimRoot.BYTES_PER_ELEMENT === 1 && credential_0.claimRoot.length === 32)) {
       __compactRuntime.typeError('assertValidSecretBirthCredentialAgePredicate',
                                  'argument 1',
-                                 'validation.compact line 366 char 1',
+                                 'validation.compact line 370 char 1',
                                  'struct Credential<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>, statusBinding: struct NoStatusBinding<>, issuedAt: Uint<0..18446744073709551616>, hasExpiration: Boolean, expiresAt: Uint<0..18446744073709551616>, claims: struct NoPublicClaims<>, claimCommitments: struct BirthCredentialClaimCommitments<subjectIdCommitment: Bytes<32>, legalNameCommitment: Bytes<32>, birthDateCommitment: Bytes<32>, birthCountryCodeCommitment: Bytes<32>>, claimRoot: Bytes<32>>',
                                  credential_0)
     }
     if (!(typeof(presentation_0) === 'object' && typeof(presentation_0.version) === 'bigint' && presentation_0.version >= 0n && presentation_0.version <= 65535n && typeof(presentation_0.schema) === 'object' && presentation_0.schema.packageId.buffer instanceof ArrayBuffer && presentation_0.schema.packageId.BYTES_PER_ELEMENT === 1 && presentation_0.schema.packageId.length === 32 && presentation_0.schema.schemaId.buffer instanceof ArrayBuffer && presentation_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && presentation_0.schema.schemaId.length === 32 && typeof(presentation_0.schema.majorVersion) === 'bigint' && presentation_0.schema.majorVersion >= 0n && presentation_0.schema.majorVersion <= 65535n && typeof(presentation_0.schema.minorVersion) === 'bigint' && presentation_0.schema.minorVersion >= 0n && presentation_0.schema.minorVersion <= 65535n && presentation_0.credentialClaimRoot.buffer instanceof ArrayBuffer && presentation_0.credentialClaimRoot.BYTES_PER_ELEMENT === 1 && presentation_0.credentialClaimRoot.length === 32 && typeof(presentation_0.issuerVerificationMethodRef) === 'object' && typeof(presentation_0.issuerVerificationMethodRef.didContractAddress) === 'object' && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && presentation_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && presentation_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && presentation_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(presentation_0.holderBinding) === 'object' && presentation_0.holderBinding.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && presentation_0.holderBinding.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && presentation_0.holderBinding.blindedHolderSecretCommitment.length === 32 && presentation_0.holderBinding.issuerNonce.buffer instanceof ArrayBuffer && presentation_0.holderBinding.issuerNonce.BYTES_PER_ELEMENT === 1 && presentation_0.holderBinding.issuerNonce.length === 32 && presentation_0.holderBinding.requestChallengeResponse.buffer instanceof ArrayBuffer && presentation_0.holderBinding.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && presentation_0.holderBinding.requestChallengeResponse.length === 32 && typeof(presentation_0.disclosed) === 'object' && typeof(presentation_0.disclosed.revealSubjectIdCommitment) === 'boolean' && presentation_0.disclosed.subjectIdCommitment.buffer instanceof ArrayBuffer && presentation_0.disclosed.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.subjectIdCommitment.length === 32 && typeof(presentation_0.disclosed.revealBirthCountryCode) === 'boolean' && presentation_0.disclosed.birthCountryCodePadded.buffer instanceof ArrayBuffer && presentation_0.disclosed.birthCountryCodePadded.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.birthCountryCodePadded.length === 32 && presentation_0.disclosed.birthCountryCodeOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.birthCountryCodeOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.birthCountryCodeOpening.length === 32 && typeof(presentation_0.disclosed.revealVerifierScopedPseudonym) === 'boolean' && presentation_0.disclosed.verifierScopedPseudonym.buffer instanceof ArrayBuffer && presentation_0.disclosed.verifierScopedPseudonym.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.verifierScopedPseudonym.length === 32 && typeof(presentation_0.disclosed.proveAgeOverThreshold) === 'boolean' && typeof(presentation_0.disclosed.ageThresholdYears) === 'bigint' && presentation_0.disclosed.ageThresholdYears >= 0n && presentation_0.disclosed.ageThresholdYears <= 255n)) {
       __compactRuntime.typeError('assertValidSecretBirthCredentialAgePredicate',
                                  'argument 2',
-                                 'validation.compact line 366 char 1',
+                                 'validation.compact line 370 char 1',
                                  'struct Presentation<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, credentialClaimRoot: Bytes<32>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>, disclosed: struct SecretBirthCredentialDisclosures<revealSubjectIdCommitment: Boolean, subjectIdCommitment: Bytes<32>, revealBirthCountryCode: Boolean, birthCountryCodePadded: Bytes<32>, birthCountryCodeOpening: Bytes<32>, revealVerifierScopedPseudonym: Boolean, verifierScopedPseudonym: Bytes<32>, proveAgeOverThreshold: Boolean, ageThresholdYears: Uint<0..256>>>',
                                  presentation_0)
     }
     if (!(typeof(currentDay_0) === 'bigint' && currentDay_0 >= 0n && currentDay_0 <= 4294967295n)) {
       __compactRuntime.typeError('assertValidSecretBirthCredentialAgePredicate',
                                  'argument 3',
-                                 'validation.compact line 366 char 1',
+                                 'validation.compact line 370 char 1',
                                  'Uint<0..4294967296>',
                                  currentDay_0)
     }
     if (!(typeof(birthDateDays_0) === 'bigint' && birthDateDays_0 >= 0n && birthDateDays_0 <= 4294967295n)) {
       __compactRuntime.typeError('assertValidSecretBirthCredentialAgePredicate',
                                  'argument 4',
-                                 'validation.compact line 366 char 1',
+                                 'validation.compact line 370 char 1',
                                  'Uint<0..4294967296>',
                                  birthDateDays_0)
     }
     if (!(birthDateOpening_0.buffer instanceof ArrayBuffer && birthDateOpening_0.BYTES_PER_ELEMENT === 1 && birthDateOpening_0.length === 32)) {
       __compactRuntime.typeError('assertValidSecretBirthCredentialAgePredicate',
                                  'argument 5',
-                                 'validation.compact line 366 char 1',
+                                 'validation.compact line 370 char 1',
                                  'Bytes<32>',
                                  birthDateOpening_0)
     }
@@ -12447,91 +12568,91 @@ export const pureCircuits = {
     if (!(typeof(firstCredential_0) === 'object' && typeof(firstCredential_0.version) === 'bigint' && firstCredential_0.version >= 0n && firstCredential_0.version <= 65535n && typeof(firstCredential_0.schema) === 'object' && firstCredential_0.schema.packageId.buffer instanceof ArrayBuffer && firstCredential_0.schema.packageId.BYTES_PER_ELEMENT === 1 && firstCredential_0.schema.packageId.length === 32 && firstCredential_0.schema.schemaId.buffer instanceof ArrayBuffer && firstCredential_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && firstCredential_0.schema.schemaId.length === 32 && typeof(firstCredential_0.schema.majorVersion) === 'bigint' && firstCredential_0.schema.majorVersion >= 0n && firstCredential_0.schema.majorVersion <= 65535n && typeof(firstCredential_0.schema.minorVersion) === 'bigint' && firstCredential_0.schema.minorVersion >= 0n && firstCredential_0.schema.minorVersion <= 65535n && typeof(firstCredential_0.issuerVerificationMethodRef) === 'object' && typeof(firstCredential_0.issuerVerificationMethodRef.didContractAddress) === 'object' && firstCredential_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && firstCredential_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && firstCredential_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && firstCredential_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && firstCredential_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && firstCredential_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(firstCredential_0.holderBinding) === 'object' && firstCredential_0.holderBinding.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && firstCredential_0.holderBinding.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && firstCredential_0.holderBinding.blindedHolderSecretCommitment.length === 32 && firstCredential_0.holderBinding.issuerNonce.buffer instanceof ArrayBuffer && firstCredential_0.holderBinding.issuerNonce.BYTES_PER_ELEMENT === 1 && firstCredential_0.holderBinding.issuerNonce.length === 32 && firstCredential_0.holderBinding.requestChallengeResponse.buffer instanceof ArrayBuffer && firstCredential_0.holderBinding.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && firstCredential_0.holderBinding.requestChallengeResponse.length === 32 && typeof(firstCredential_0.statusBinding) === 'object' && typeof(firstCredential_0.issuedAt) === 'bigint' && firstCredential_0.issuedAt >= 0n && firstCredential_0.issuedAt <= 18446744073709551615n && typeof(firstCredential_0.hasExpiration) === 'boolean' && typeof(firstCredential_0.expiresAt) === 'bigint' && firstCredential_0.expiresAt >= 0n && firstCredential_0.expiresAt <= 18446744073709551615n && typeof(firstCredential_0.claims) === 'object' && typeof(firstCredential_0.claimCommitments) === 'object' && firstCredential_0.claimCommitments.subjectIdCommitment.buffer instanceof ArrayBuffer && firstCredential_0.claimCommitments.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && firstCredential_0.claimCommitments.subjectIdCommitment.length === 32 && firstCredential_0.claimCommitments.legalNameCommitment.buffer instanceof ArrayBuffer && firstCredential_0.claimCommitments.legalNameCommitment.BYTES_PER_ELEMENT === 1 && firstCredential_0.claimCommitments.legalNameCommitment.length === 32 && firstCredential_0.claimCommitments.birthDateCommitment.buffer instanceof ArrayBuffer && firstCredential_0.claimCommitments.birthDateCommitment.BYTES_PER_ELEMENT === 1 && firstCredential_0.claimCommitments.birthDateCommitment.length === 32 && firstCredential_0.claimCommitments.birthCountryCodeCommitment.buffer instanceof ArrayBuffer && firstCredential_0.claimCommitments.birthCountryCodeCommitment.BYTES_PER_ELEMENT === 1 && firstCredential_0.claimCommitments.birthCountryCodeCommitment.length === 32 && firstCredential_0.claimRoot.buffer instanceof ArrayBuffer && firstCredential_0.claimRoot.BYTES_PER_ELEMENT === 1 && firstCredential_0.claimRoot.length === 32)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations',
                                  'argument 1',
-                                 'validation.compact line 388 char 1',
+                                 'validation.compact line 392 char 1',
                                  'struct Credential<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>, statusBinding: struct NoStatusBinding<>, issuedAt: Uint<0..18446744073709551616>, hasExpiration: Boolean, expiresAt: Uint<0..18446744073709551616>, claims: struct NoPublicClaims<>, claimCommitments: struct BirthCredentialClaimCommitments<subjectIdCommitment: Bytes<32>, legalNameCommitment: Bytes<32>, birthDateCommitment: Bytes<32>, birthCountryCodeCommitment: Bytes<32>>, claimRoot: Bytes<32>>',
                                  firstCredential_0)
     }
     if (!(typeof(firstCredentialProof_0) === 'object' && typeof(firstCredentialProof_0.signerVerificationMethodRef) === 'object' && typeof(firstCredentialProof_0.signerVerificationMethodRef.didContractAddress) === 'object' && firstCredentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && firstCredentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && firstCredentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && firstCredentialProof_0.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && firstCredentialProof_0.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && firstCredentialProof_0.signerVerificationMethodRef.methodId.length === 32 && typeof(firstCredentialProof_0.createdAt) === 'bigint' && firstCredentialProof_0.createdAt >= 0n && firstCredentialProof_0.createdAt <= 18446744073709551615n && firstCredentialProof_0.challengeHash.buffer instanceof ArrayBuffer && firstCredentialProof_0.challengeHash.BYTES_PER_ELEMENT === 1 && firstCredentialProof_0.challengeHash.length === 32 && true && typeof(firstCredentialProof_0.signature) === 'object' && true && typeof(firstCredentialProof_0.signature.s) === 'bigint' && firstCredentialProof_0.signature.s >= 0 && firstCredentialProof_0.signature.s <= __compactRuntime.MAX_FIELD)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations',
                                  'argument 2',
-                                 'validation.compact line 388 char 1',
+                                 'validation.compact line 392 char 1',
                                  'struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>',
                                  firstCredentialProof_0)
     }
     if (!(typeof(firstRequest_0) === 'object' && typeof(firstRequest_0.envelope) === 'object' && typeof(firstRequest_0.envelope.version) === 'bigint' && firstRequest_0.envelope.version >= 0n && firstRequest_0.envelope.version <= 65535n && firstRequest_0.envelope.messageId.buffer instanceof ArrayBuffer && firstRequest_0.envelope.messageId.BYTES_PER_ELEMENT === 1 && firstRequest_0.envelope.messageId.length === 32 && firstRequest_0.envelope.threadId.buffer instanceof ArrayBuffer && firstRequest_0.envelope.threadId.BYTES_PER_ELEMENT === 1 && firstRequest_0.envelope.threadId.length === 32 && typeof(firstRequest_0.envelope.initialMessage) === 'boolean' && firstRequest_0.envelope.respondsToMessageId.buffer instanceof ArrayBuffer && firstRequest_0.envelope.respondsToMessageId.BYTES_PER_ELEMENT === 1 && firstRequest_0.envelope.respondsToMessageId.length === 32 && typeof(firstRequest_0.envelope.createdAt) === 'bigint' && firstRequest_0.envelope.createdAt >= 0n && firstRequest_0.envelope.createdAt <= 18446744073709551615n && typeof(firstRequest_0.envelope.hasExpiresAt) === 'boolean' && typeof(firstRequest_0.envelope.expiresAt) === 'bigint' && firstRequest_0.envelope.expiresAt >= 0n && firstRequest_0.envelope.expiresAt <= 18446744073709551615n && typeof(firstRequest_0.schema) === 'object' && firstRequest_0.schema.packageId.buffer instanceof ArrayBuffer && firstRequest_0.schema.packageId.BYTES_PER_ELEMENT === 1 && firstRequest_0.schema.packageId.length === 32 && firstRequest_0.schema.schemaId.buffer instanceof ArrayBuffer && firstRequest_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && firstRequest_0.schema.schemaId.length === 32 && typeof(firstRequest_0.schema.majorVersion) === 'bigint' && firstRequest_0.schema.majorVersion >= 0n && firstRequest_0.schema.majorVersion <= 65535n && typeof(firstRequest_0.schema.minorVersion) === 'bigint' && firstRequest_0.schema.minorVersion >= 0n && firstRequest_0.schema.minorVersion <= 65535n && typeof(firstRequest_0.issuerVerificationMethodRef) === 'object' && typeof(firstRequest_0.issuerVerificationMethodRef.didContractAddress) === 'object' && firstRequest_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && firstRequest_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && firstRequest_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && firstRequest_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && firstRequest_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && firstRequest_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(firstRequest_0.holderBindingProfile) === 'number' && firstRequest_0.holderBindingProfile >= 0 && firstRequest_0.holderBindingProfile <= 2 && typeof(firstRequest_0.features) === 'object' && typeof(firstRequest_0.features.supportsSelectiveDisclosure) === 'boolean' && typeof(firstRequest_0.features.supportsPredicateProofs) === 'boolean' && typeof(firstRequest_0.features.supportsVerifierScopedPseudonym) === 'boolean' && typeof(firstRequest_0.features.supportsSameHolderProof) === 'boolean' && firstRequest_0.verifierChallengeHash.buffer instanceof ArrayBuffer && firstRequest_0.verifierChallengeHash.BYTES_PER_ELEMENT === 1 && firstRequest_0.verifierChallengeHash.length === 32 && typeof(firstRequest_0.body) === 'object' && typeof(firstRequest_0.body.requireSubjectIdCommitmentDisclosure) === 'boolean' && typeof(firstRequest_0.body.requireBirthCountryDisclosure) === 'boolean' && typeof(firstRequest_0.body.requireVerifierScopedPseudonym) === 'boolean' && firstRequest_0.body.verifierDomainHash.buffer instanceof ArrayBuffer && firstRequest_0.body.verifierDomainHash.BYTES_PER_ELEMENT === 1 && firstRequest_0.body.verifierDomainHash.length === 32 && typeof(firstRequest_0.body.requireAgeOverThreshold) === 'boolean' && typeof(firstRequest_0.body.requestedAgeThresholdYears) === 'bigint' && firstRequest_0.body.requestedAgeThresholdYears >= 0n && firstRequest_0.body.requestedAgeThresholdYears <= 255n)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations',
                                  'argument 3',
-                                 'validation.compact line 388 char 1',
+                                 'validation.compact line 392 char 1',
                                  'struct RequestMessage<envelope: struct ProtocolMessageEnvelope<version: Uint<0..65536>, messageId: Bytes<32>, threadId: Bytes<32>, initialMessage: Boolean, respondsToMessageId: Bytes<32>, createdAt: Uint<0..18446744073709551616>, hasExpiresAt: Boolean, expiresAt: Uint<0..18446744073709551616>>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBindingProfile: Enum<HolderBindingProfile, explicitDid, secretHolder, blindedSecretHolder>, features: struct CredentialProtocolFeatures<supportsSelectiveDisclosure: Boolean, supportsPredicateProofs: Boolean, supportsVerifierScopedPseudonym: Boolean, supportsSameHolderProof: Boolean>, verifierChallengeHash: Bytes<32>, body: struct SecretBirthCredentialVerificationRequestBody<requireSubjectIdCommitmentDisclosure: Boolean, requireBirthCountryDisclosure: Boolean, requireVerifierScopedPseudonym: Boolean, verifierDomainHash: Bytes<32>, requireAgeOverThreshold: Boolean, requestedAgeThresholdYears: Uint<0..256>>>',
                                  firstRequest_0)
     }
     if (!(typeof(firstPresentation_0) === 'object' && typeof(firstPresentation_0.version) === 'bigint' && firstPresentation_0.version >= 0n && firstPresentation_0.version <= 65535n && typeof(firstPresentation_0.schema) === 'object' && firstPresentation_0.schema.packageId.buffer instanceof ArrayBuffer && firstPresentation_0.schema.packageId.BYTES_PER_ELEMENT === 1 && firstPresentation_0.schema.packageId.length === 32 && firstPresentation_0.schema.schemaId.buffer instanceof ArrayBuffer && firstPresentation_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && firstPresentation_0.schema.schemaId.length === 32 && typeof(firstPresentation_0.schema.majorVersion) === 'bigint' && firstPresentation_0.schema.majorVersion >= 0n && firstPresentation_0.schema.majorVersion <= 65535n && typeof(firstPresentation_0.schema.minorVersion) === 'bigint' && firstPresentation_0.schema.minorVersion >= 0n && firstPresentation_0.schema.minorVersion <= 65535n && firstPresentation_0.credentialClaimRoot.buffer instanceof ArrayBuffer && firstPresentation_0.credentialClaimRoot.BYTES_PER_ELEMENT === 1 && firstPresentation_0.credentialClaimRoot.length === 32 && typeof(firstPresentation_0.issuerVerificationMethodRef) === 'object' && typeof(firstPresentation_0.issuerVerificationMethodRef.didContractAddress) === 'object' && firstPresentation_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && firstPresentation_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && firstPresentation_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && firstPresentation_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && firstPresentation_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && firstPresentation_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(firstPresentation_0.holderBinding) === 'object' && firstPresentation_0.holderBinding.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && firstPresentation_0.holderBinding.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && firstPresentation_0.holderBinding.blindedHolderSecretCommitment.length === 32 && firstPresentation_0.holderBinding.issuerNonce.buffer instanceof ArrayBuffer && firstPresentation_0.holderBinding.issuerNonce.BYTES_PER_ELEMENT === 1 && firstPresentation_0.holderBinding.issuerNonce.length === 32 && firstPresentation_0.holderBinding.requestChallengeResponse.buffer instanceof ArrayBuffer && firstPresentation_0.holderBinding.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && firstPresentation_0.holderBinding.requestChallengeResponse.length === 32 && typeof(firstPresentation_0.disclosed) === 'object' && typeof(firstPresentation_0.disclosed.revealSubjectIdCommitment) === 'boolean' && firstPresentation_0.disclosed.subjectIdCommitment.buffer instanceof ArrayBuffer && firstPresentation_0.disclosed.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && firstPresentation_0.disclosed.subjectIdCommitment.length === 32 && typeof(firstPresentation_0.disclosed.revealBirthCountryCode) === 'boolean' && firstPresentation_0.disclosed.birthCountryCodePadded.buffer instanceof ArrayBuffer && firstPresentation_0.disclosed.birthCountryCodePadded.BYTES_PER_ELEMENT === 1 && firstPresentation_0.disclosed.birthCountryCodePadded.length === 32 && firstPresentation_0.disclosed.birthCountryCodeOpening.buffer instanceof ArrayBuffer && firstPresentation_0.disclosed.birthCountryCodeOpening.BYTES_PER_ELEMENT === 1 && firstPresentation_0.disclosed.birthCountryCodeOpening.length === 32 && typeof(firstPresentation_0.disclosed.revealVerifierScopedPseudonym) === 'boolean' && firstPresentation_0.disclosed.verifierScopedPseudonym.buffer instanceof ArrayBuffer && firstPresentation_0.disclosed.verifierScopedPseudonym.BYTES_PER_ELEMENT === 1 && firstPresentation_0.disclosed.verifierScopedPseudonym.length === 32 && typeof(firstPresentation_0.disclosed.proveAgeOverThreshold) === 'boolean' && typeof(firstPresentation_0.disclosed.ageThresholdYears) === 'bigint' && firstPresentation_0.disclosed.ageThresholdYears >= 0n && firstPresentation_0.disclosed.ageThresholdYears <= 255n)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations',
                                  'argument 4',
-                                 'validation.compact line 388 char 1',
+                                 'validation.compact line 392 char 1',
                                  'struct Presentation<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, credentialClaimRoot: Bytes<32>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>, disclosed: struct SecretBirthCredentialDisclosures<revealSubjectIdCommitment: Boolean, subjectIdCommitment: Bytes<32>, revealBirthCountryCode: Boolean, birthCountryCodePadded: Bytes<32>, birthCountryCodeOpening: Bytes<32>, revealVerifierScopedPseudonym: Boolean, verifierScopedPseudonym: Bytes<32>, proveAgeOverThreshold: Boolean, ageThresholdYears: Uint<0..256>>>',
                                  firstPresentation_0)
     }
     if (!(typeof(secondCredential_0) === 'object' && typeof(secondCredential_0.version) === 'bigint' && secondCredential_0.version >= 0n && secondCredential_0.version <= 65535n && typeof(secondCredential_0.schema) === 'object' && secondCredential_0.schema.packageId.buffer instanceof ArrayBuffer && secondCredential_0.schema.packageId.BYTES_PER_ELEMENT === 1 && secondCredential_0.schema.packageId.length === 32 && secondCredential_0.schema.schemaId.buffer instanceof ArrayBuffer && secondCredential_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && secondCredential_0.schema.schemaId.length === 32 && typeof(secondCredential_0.schema.majorVersion) === 'bigint' && secondCredential_0.schema.majorVersion >= 0n && secondCredential_0.schema.majorVersion <= 65535n && typeof(secondCredential_0.schema.minorVersion) === 'bigint' && secondCredential_0.schema.minorVersion >= 0n && secondCredential_0.schema.minorVersion <= 65535n && typeof(secondCredential_0.issuerVerificationMethodRef) === 'object' && typeof(secondCredential_0.issuerVerificationMethodRef.didContractAddress) === 'object' && secondCredential_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && secondCredential_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && secondCredential_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && secondCredential_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && secondCredential_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && secondCredential_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(secondCredential_0.holderBinding) === 'object' && secondCredential_0.holderBinding.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && secondCredential_0.holderBinding.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && secondCredential_0.holderBinding.blindedHolderSecretCommitment.length === 32 && secondCredential_0.holderBinding.issuerNonce.buffer instanceof ArrayBuffer && secondCredential_0.holderBinding.issuerNonce.BYTES_PER_ELEMENT === 1 && secondCredential_0.holderBinding.issuerNonce.length === 32 && secondCredential_0.holderBinding.requestChallengeResponse.buffer instanceof ArrayBuffer && secondCredential_0.holderBinding.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && secondCredential_0.holderBinding.requestChallengeResponse.length === 32 && typeof(secondCredential_0.statusBinding) === 'object' && typeof(secondCredential_0.issuedAt) === 'bigint' && secondCredential_0.issuedAt >= 0n && secondCredential_0.issuedAt <= 18446744073709551615n && typeof(secondCredential_0.hasExpiration) === 'boolean' && typeof(secondCredential_0.expiresAt) === 'bigint' && secondCredential_0.expiresAt >= 0n && secondCredential_0.expiresAt <= 18446744073709551615n && typeof(secondCredential_0.claims) === 'object' && typeof(secondCredential_0.claimCommitments) === 'object' && secondCredential_0.claimCommitments.subjectIdCommitment.buffer instanceof ArrayBuffer && secondCredential_0.claimCommitments.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && secondCredential_0.claimCommitments.subjectIdCommitment.length === 32 && secondCredential_0.claimCommitments.legalNameCommitment.buffer instanceof ArrayBuffer && secondCredential_0.claimCommitments.legalNameCommitment.BYTES_PER_ELEMENT === 1 && secondCredential_0.claimCommitments.legalNameCommitment.length === 32 && secondCredential_0.claimCommitments.birthDateCommitment.buffer instanceof ArrayBuffer && secondCredential_0.claimCommitments.birthDateCommitment.BYTES_PER_ELEMENT === 1 && secondCredential_0.claimCommitments.birthDateCommitment.length === 32 && secondCredential_0.claimCommitments.birthCountryCodeCommitment.buffer instanceof ArrayBuffer && secondCredential_0.claimCommitments.birthCountryCodeCommitment.BYTES_PER_ELEMENT === 1 && secondCredential_0.claimCommitments.birthCountryCodeCommitment.length === 32 && secondCredential_0.claimRoot.buffer instanceof ArrayBuffer && secondCredential_0.claimRoot.BYTES_PER_ELEMENT === 1 && secondCredential_0.claimRoot.length === 32)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations',
                                  'argument 5',
-                                 'validation.compact line 388 char 1',
+                                 'validation.compact line 392 char 1',
                                  'struct Credential<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>, statusBinding: struct NoStatusBinding<>, issuedAt: Uint<0..18446744073709551616>, hasExpiration: Boolean, expiresAt: Uint<0..18446744073709551616>, claims: struct NoPublicClaims<>, claimCommitments: struct BirthCredentialClaimCommitments<subjectIdCommitment: Bytes<32>, legalNameCommitment: Bytes<32>, birthDateCommitment: Bytes<32>, birthCountryCodeCommitment: Bytes<32>>, claimRoot: Bytes<32>>',
                                  secondCredential_0)
     }
     if (!(typeof(secondCredentialProof_0) === 'object' && typeof(secondCredentialProof_0.signerVerificationMethodRef) === 'object' && typeof(secondCredentialProof_0.signerVerificationMethodRef.didContractAddress) === 'object' && secondCredentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && secondCredentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && secondCredentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && secondCredentialProof_0.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && secondCredentialProof_0.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && secondCredentialProof_0.signerVerificationMethodRef.methodId.length === 32 && typeof(secondCredentialProof_0.createdAt) === 'bigint' && secondCredentialProof_0.createdAt >= 0n && secondCredentialProof_0.createdAt <= 18446744073709551615n && secondCredentialProof_0.challengeHash.buffer instanceof ArrayBuffer && secondCredentialProof_0.challengeHash.BYTES_PER_ELEMENT === 1 && secondCredentialProof_0.challengeHash.length === 32 && true && typeof(secondCredentialProof_0.signature) === 'object' && true && typeof(secondCredentialProof_0.signature.s) === 'bigint' && secondCredentialProof_0.signature.s >= 0 && secondCredentialProof_0.signature.s <= __compactRuntime.MAX_FIELD)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations',
                                  'argument 6',
-                                 'validation.compact line 388 char 1',
+                                 'validation.compact line 392 char 1',
                                  'struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>',
                                  secondCredentialProof_0)
     }
     if (!(typeof(secondRequest_0) === 'object' && typeof(secondRequest_0.envelope) === 'object' && typeof(secondRequest_0.envelope.version) === 'bigint' && secondRequest_0.envelope.version >= 0n && secondRequest_0.envelope.version <= 65535n && secondRequest_0.envelope.messageId.buffer instanceof ArrayBuffer && secondRequest_0.envelope.messageId.BYTES_PER_ELEMENT === 1 && secondRequest_0.envelope.messageId.length === 32 && secondRequest_0.envelope.threadId.buffer instanceof ArrayBuffer && secondRequest_0.envelope.threadId.BYTES_PER_ELEMENT === 1 && secondRequest_0.envelope.threadId.length === 32 && typeof(secondRequest_0.envelope.initialMessage) === 'boolean' && secondRequest_0.envelope.respondsToMessageId.buffer instanceof ArrayBuffer && secondRequest_0.envelope.respondsToMessageId.BYTES_PER_ELEMENT === 1 && secondRequest_0.envelope.respondsToMessageId.length === 32 && typeof(secondRequest_0.envelope.createdAt) === 'bigint' && secondRequest_0.envelope.createdAt >= 0n && secondRequest_0.envelope.createdAt <= 18446744073709551615n && typeof(secondRequest_0.envelope.hasExpiresAt) === 'boolean' && typeof(secondRequest_0.envelope.expiresAt) === 'bigint' && secondRequest_0.envelope.expiresAt >= 0n && secondRequest_0.envelope.expiresAt <= 18446744073709551615n && typeof(secondRequest_0.schema) === 'object' && secondRequest_0.schema.packageId.buffer instanceof ArrayBuffer && secondRequest_0.schema.packageId.BYTES_PER_ELEMENT === 1 && secondRequest_0.schema.packageId.length === 32 && secondRequest_0.schema.schemaId.buffer instanceof ArrayBuffer && secondRequest_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && secondRequest_0.schema.schemaId.length === 32 && typeof(secondRequest_0.schema.majorVersion) === 'bigint' && secondRequest_0.schema.majorVersion >= 0n && secondRequest_0.schema.majorVersion <= 65535n && typeof(secondRequest_0.schema.minorVersion) === 'bigint' && secondRequest_0.schema.minorVersion >= 0n && secondRequest_0.schema.minorVersion <= 65535n && typeof(secondRequest_0.issuerVerificationMethodRef) === 'object' && typeof(secondRequest_0.issuerVerificationMethodRef.didContractAddress) === 'object' && secondRequest_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && secondRequest_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && secondRequest_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && secondRequest_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && secondRequest_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && secondRequest_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(secondRequest_0.holderBindingProfile) === 'number' && secondRequest_0.holderBindingProfile >= 0 && secondRequest_0.holderBindingProfile <= 2 && typeof(secondRequest_0.features) === 'object' && typeof(secondRequest_0.features.supportsSelectiveDisclosure) === 'boolean' && typeof(secondRequest_0.features.supportsPredicateProofs) === 'boolean' && typeof(secondRequest_0.features.supportsVerifierScopedPseudonym) === 'boolean' && typeof(secondRequest_0.features.supportsSameHolderProof) === 'boolean' && secondRequest_0.verifierChallengeHash.buffer instanceof ArrayBuffer && secondRequest_0.verifierChallengeHash.BYTES_PER_ELEMENT === 1 && secondRequest_0.verifierChallengeHash.length === 32 && typeof(secondRequest_0.body) === 'object' && typeof(secondRequest_0.body.requireSubjectIdCommitmentDisclosure) === 'boolean' && typeof(secondRequest_0.body.requireBirthCountryDisclosure) === 'boolean' && typeof(secondRequest_0.body.requireVerifierScopedPseudonym) === 'boolean' && secondRequest_0.body.verifierDomainHash.buffer instanceof ArrayBuffer && secondRequest_0.body.verifierDomainHash.BYTES_PER_ELEMENT === 1 && secondRequest_0.body.verifierDomainHash.length === 32 && typeof(secondRequest_0.body.requireAgeOverThreshold) === 'boolean' && typeof(secondRequest_0.body.requestedAgeThresholdYears) === 'bigint' && secondRequest_0.body.requestedAgeThresholdYears >= 0n && secondRequest_0.body.requestedAgeThresholdYears <= 255n)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations',
                                  'argument 7',
-                                 'validation.compact line 388 char 1',
+                                 'validation.compact line 392 char 1',
                                  'struct RequestMessage<envelope: struct ProtocolMessageEnvelope<version: Uint<0..65536>, messageId: Bytes<32>, threadId: Bytes<32>, initialMessage: Boolean, respondsToMessageId: Bytes<32>, createdAt: Uint<0..18446744073709551616>, hasExpiresAt: Boolean, expiresAt: Uint<0..18446744073709551616>>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBindingProfile: Enum<HolderBindingProfile, explicitDid, secretHolder, blindedSecretHolder>, features: struct CredentialProtocolFeatures<supportsSelectiveDisclosure: Boolean, supportsPredicateProofs: Boolean, supportsVerifierScopedPseudonym: Boolean, supportsSameHolderProof: Boolean>, verifierChallengeHash: Bytes<32>, body: struct SecretBirthCredentialVerificationRequestBody<requireSubjectIdCommitmentDisclosure: Boolean, requireBirthCountryDisclosure: Boolean, requireVerifierScopedPseudonym: Boolean, verifierDomainHash: Bytes<32>, requireAgeOverThreshold: Boolean, requestedAgeThresholdYears: Uint<0..256>>>',
                                  secondRequest_0)
     }
     if (!(typeof(secondPresentation_0) === 'object' && typeof(secondPresentation_0.version) === 'bigint' && secondPresentation_0.version >= 0n && secondPresentation_0.version <= 65535n && typeof(secondPresentation_0.schema) === 'object' && secondPresentation_0.schema.packageId.buffer instanceof ArrayBuffer && secondPresentation_0.schema.packageId.BYTES_PER_ELEMENT === 1 && secondPresentation_0.schema.packageId.length === 32 && secondPresentation_0.schema.schemaId.buffer instanceof ArrayBuffer && secondPresentation_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && secondPresentation_0.schema.schemaId.length === 32 && typeof(secondPresentation_0.schema.majorVersion) === 'bigint' && secondPresentation_0.schema.majorVersion >= 0n && secondPresentation_0.schema.majorVersion <= 65535n && typeof(secondPresentation_0.schema.minorVersion) === 'bigint' && secondPresentation_0.schema.minorVersion >= 0n && secondPresentation_0.schema.minorVersion <= 65535n && secondPresentation_0.credentialClaimRoot.buffer instanceof ArrayBuffer && secondPresentation_0.credentialClaimRoot.BYTES_PER_ELEMENT === 1 && secondPresentation_0.credentialClaimRoot.length === 32 && typeof(secondPresentation_0.issuerVerificationMethodRef) === 'object' && typeof(secondPresentation_0.issuerVerificationMethodRef.didContractAddress) === 'object' && secondPresentation_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && secondPresentation_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && secondPresentation_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && secondPresentation_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && secondPresentation_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && secondPresentation_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(secondPresentation_0.holderBinding) === 'object' && secondPresentation_0.holderBinding.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && secondPresentation_0.holderBinding.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && secondPresentation_0.holderBinding.blindedHolderSecretCommitment.length === 32 && secondPresentation_0.holderBinding.issuerNonce.buffer instanceof ArrayBuffer && secondPresentation_0.holderBinding.issuerNonce.BYTES_PER_ELEMENT === 1 && secondPresentation_0.holderBinding.issuerNonce.length === 32 && secondPresentation_0.holderBinding.requestChallengeResponse.buffer instanceof ArrayBuffer && secondPresentation_0.holderBinding.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && secondPresentation_0.holderBinding.requestChallengeResponse.length === 32 && typeof(secondPresentation_0.disclosed) === 'object' && typeof(secondPresentation_0.disclosed.revealSubjectIdCommitment) === 'boolean' && secondPresentation_0.disclosed.subjectIdCommitment.buffer instanceof ArrayBuffer && secondPresentation_0.disclosed.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && secondPresentation_0.disclosed.subjectIdCommitment.length === 32 && typeof(secondPresentation_0.disclosed.revealBirthCountryCode) === 'boolean' && secondPresentation_0.disclosed.birthCountryCodePadded.buffer instanceof ArrayBuffer && secondPresentation_0.disclosed.birthCountryCodePadded.BYTES_PER_ELEMENT === 1 && secondPresentation_0.disclosed.birthCountryCodePadded.length === 32 && secondPresentation_0.disclosed.birthCountryCodeOpening.buffer instanceof ArrayBuffer && secondPresentation_0.disclosed.birthCountryCodeOpening.BYTES_PER_ELEMENT === 1 && secondPresentation_0.disclosed.birthCountryCodeOpening.length === 32 && typeof(secondPresentation_0.disclosed.revealVerifierScopedPseudonym) === 'boolean' && secondPresentation_0.disclosed.verifierScopedPseudonym.buffer instanceof ArrayBuffer && secondPresentation_0.disclosed.verifierScopedPseudonym.BYTES_PER_ELEMENT === 1 && secondPresentation_0.disclosed.verifierScopedPseudonym.length === 32 && typeof(secondPresentation_0.disclosed.proveAgeOverThreshold) === 'boolean' && typeof(secondPresentation_0.disclosed.ageThresholdYears) === 'bigint' && secondPresentation_0.disclosed.ageThresholdYears >= 0n && secondPresentation_0.disclosed.ageThresholdYears <= 255n)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations',
                                  'argument 8',
-                                 'validation.compact line 388 char 1',
+                                 'validation.compact line 392 char 1',
                                  'struct Presentation<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, credentialClaimRoot: Bytes<32>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>, disclosed: struct SecretBirthCredentialDisclosures<revealSubjectIdCommitment: Boolean, subjectIdCommitment: Bytes<32>, revealBirthCountryCode: Boolean, birthCountryCodePadded: Bytes<32>, birthCountryCodeOpening: Bytes<32>, revealVerifierScopedPseudonym: Boolean, verifierScopedPseudonym: Bytes<32>, proveAgeOverThreshold: Boolean, ageThresholdYears: Uint<0..256>>>',
                                  secondPresentation_0)
     }
     if (!(holderSecret_0.buffer instanceof ArrayBuffer && holderSecret_0.BYTES_PER_ELEMENT === 1 && holderSecret_0.length === 32)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations',
                                  'argument 9',
-                                 'validation.compact line 388 char 1',
+                                 'validation.compact line 392 char 1',
                                  'Bytes<32>',
                                  holderSecret_0)
     }
     if (!(firstHolderSecretOpening_0.buffer instanceof ArrayBuffer && firstHolderSecretOpening_0.BYTES_PER_ELEMENT === 1 && firstHolderSecretOpening_0.length === 32)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations',
                                  'argument 10',
-                                 'validation.compact line 388 char 1',
+                                 'validation.compact line 392 char 1',
                                  'Bytes<32>',
                                  firstHolderSecretOpening_0)
     }
     if (!(firstHolderBindingBlindingFactor_0.buffer instanceof ArrayBuffer && firstHolderBindingBlindingFactor_0.BYTES_PER_ELEMENT === 1 && firstHolderBindingBlindingFactor_0.length === 32)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations',
                                  'argument 11',
-                                 'validation.compact line 388 char 1',
+                                 'validation.compact line 392 char 1',
                                  'Bytes<32>',
                                  firstHolderBindingBlindingFactor_0)
     }
     if (!(secondHolderSecretOpening_0.buffer instanceof ArrayBuffer && secondHolderSecretOpening_0.BYTES_PER_ELEMENT === 1 && secondHolderSecretOpening_0.length === 32)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations',
                                  'argument 12',
-                                 'validation.compact line 388 char 1',
+                                 'validation.compact line 392 char 1',
                                  'Bytes<32>',
                                  secondHolderSecretOpening_0)
     }
     if (!(secondHolderBindingBlindingFactor_0.buffer instanceof ArrayBuffer && secondHolderBindingBlindingFactor_0.BYTES_PER_ELEMENT === 1 && secondHolderBindingBlindingFactor_0.length === 32)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations',
                                  'argument 13',
-                                 'validation.compact line 388 char 1',
+                                 'validation.compact line 392 char 1',
                                  'Bytes<32>',
                                  secondHolderBindingBlindingFactor_0)
     }
@@ -12575,133 +12696,133 @@ export const pureCircuits = {
     if (!(typeof(firstCredential_0) === 'object' && typeof(firstCredential_0.version) === 'bigint' && firstCredential_0.version >= 0n && firstCredential_0.version <= 65535n && typeof(firstCredential_0.schema) === 'object' && firstCredential_0.schema.packageId.buffer instanceof ArrayBuffer && firstCredential_0.schema.packageId.BYTES_PER_ELEMENT === 1 && firstCredential_0.schema.packageId.length === 32 && firstCredential_0.schema.schemaId.buffer instanceof ArrayBuffer && firstCredential_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && firstCredential_0.schema.schemaId.length === 32 && typeof(firstCredential_0.schema.majorVersion) === 'bigint' && firstCredential_0.schema.majorVersion >= 0n && firstCredential_0.schema.majorVersion <= 65535n && typeof(firstCredential_0.schema.minorVersion) === 'bigint' && firstCredential_0.schema.minorVersion >= 0n && firstCredential_0.schema.minorVersion <= 65535n && typeof(firstCredential_0.issuerVerificationMethodRef) === 'object' && typeof(firstCredential_0.issuerVerificationMethodRef.didContractAddress) === 'object' && firstCredential_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && firstCredential_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && firstCredential_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && firstCredential_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && firstCredential_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && firstCredential_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(firstCredential_0.holderBinding) === 'object' && firstCredential_0.holderBinding.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && firstCredential_0.holderBinding.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && firstCredential_0.holderBinding.blindedHolderSecretCommitment.length === 32 && firstCredential_0.holderBinding.issuerNonce.buffer instanceof ArrayBuffer && firstCredential_0.holderBinding.issuerNonce.BYTES_PER_ELEMENT === 1 && firstCredential_0.holderBinding.issuerNonce.length === 32 && firstCredential_0.holderBinding.requestChallengeResponse.buffer instanceof ArrayBuffer && firstCredential_0.holderBinding.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && firstCredential_0.holderBinding.requestChallengeResponse.length === 32 && typeof(firstCredential_0.statusBinding) === 'object' && typeof(firstCredential_0.issuedAt) === 'bigint' && firstCredential_0.issuedAt >= 0n && firstCredential_0.issuedAt <= 18446744073709551615n && typeof(firstCredential_0.hasExpiration) === 'boolean' && typeof(firstCredential_0.expiresAt) === 'bigint' && firstCredential_0.expiresAt >= 0n && firstCredential_0.expiresAt <= 18446744073709551615n && typeof(firstCredential_0.claims) === 'object' && typeof(firstCredential_0.claimCommitments) === 'object' && firstCredential_0.claimCommitments.subjectIdCommitment.buffer instanceof ArrayBuffer && firstCredential_0.claimCommitments.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && firstCredential_0.claimCommitments.subjectIdCommitment.length === 32 && firstCredential_0.claimCommitments.legalNameCommitment.buffer instanceof ArrayBuffer && firstCredential_0.claimCommitments.legalNameCommitment.BYTES_PER_ELEMENT === 1 && firstCredential_0.claimCommitments.legalNameCommitment.length === 32 && firstCredential_0.claimCommitments.birthDateCommitment.buffer instanceof ArrayBuffer && firstCredential_0.claimCommitments.birthDateCommitment.BYTES_PER_ELEMENT === 1 && firstCredential_0.claimCommitments.birthDateCommitment.length === 32 && firstCredential_0.claimCommitments.birthCountryCodeCommitment.buffer instanceof ArrayBuffer && firstCredential_0.claimCommitments.birthCountryCodeCommitment.BYTES_PER_ELEMENT === 1 && firstCredential_0.claimCommitments.birthCountryCodeCommitment.length === 32 && firstCredential_0.claimRoot.buffer instanceof ArrayBuffer && firstCredential_0.claimRoot.BYTES_PER_ELEMENT === 1 && firstCredential_0.claimRoot.length === 32)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations3',
                                  'argument 1',
-                                 'validation.compact line 441 char 1',
+                                 'validation.compact line 445 char 1',
                                  'struct Credential<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>, statusBinding: struct NoStatusBinding<>, issuedAt: Uint<0..18446744073709551616>, hasExpiration: Boolean, expiresAt: Uint<0..18446744073709551616>, claims: struct NoPublicClaims<>, claimCommitments: struct BirthCredentialClaimCommitments<subjectIdCommitment: Bytes<32>, legalNameCommitment: Bytes<32>, birthDateCommitment: Bytes<32>, birthCountryCodeCommitment: Bytes<32>>, claimRoot: Bytes<32>>',
                                  firstCredential_0)
     }
     if (!(typeof(firstCredentialProof_0) === 'object' && typeof(firstCredentialProof_0.signerVerificationMethodRef) === 'object' && typeof(firstCredentialProof_0.signerVerificationMethodRef.didContractAddress) === 'object' && firstCredentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && firstCredentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && firstCredentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && firstCredentialProof_0.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && firstCredentialProof_0.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && firstCredentialProof_0.signerVerificationMethodRef.methodId.length === 32 && typeof(firstCredentialProof_0.createdAt) === 'bigint' && firstCredentialProof_0.createdAt >= 0n && firstCredentialProof_0.createdAt <= 18446744073709551615n && firstCredentialProof_0.challengeHash.buffer instanceof ArrayBuffer && firstCredentialProof_0.challengeHash.BYTES_PER_ELEMENT === 1 && firstCredentialProof_0.challengeHash.length === 32 && true && typeof(firstCredentialProof_0.signature) === 'object' && true && typeof(firstCredentialProof_0.signature.s) === 'bigint' && firstCredentialProof_0.signature.s >= 0 && firstCredentialProof_0.signature.s <= __compactRuntime.MAX_FIELD)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations3',
                                  'argument 2',
-                                 'validation.compact line 441 char 1',
+                                 'validation.compact line 445 char 1',
                                  'struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>',
                                  firstCredentialProof_0)
     }
     if (!(typeof(firstRequest_0) === 'object' && typeof(firstRequest_0.envelope) === 'object' && typeof(firstRequest_0.envelope.version) === 'bigint' && firstRequest_0.envelope.version >= 0n && firstRequest_0.envelope.version <= 65535n && firstRequest_0.envelope.messageId.buffer instanceof ArrayBuffer && firstRequest_0.envelope.messageId.BYTES_PER_ELEMENT === 1 && firstRequest_0.envelope.messageId.length === 32 && firstRequest_0.envelope.threadId.buffer instanceof ArrayBuffer && firstRequest_0.envelope.threadId.BYTES_PER_ELEMENT === 1 && firstRequest_0.envelope.threadId.length === 32 && typeof(firstRequest_0.envelope.initialMessage) === 'boolean' && firstRequest_0.envelope.respondsToMessageId.buffer instanceof ArrayBuffer && firstRequest_0.envelope.respondsToMessageId.BYTES_PER_ELEMENT === 1 && firstRequest_0.envelope.respondsToMessageId.length === 32 && typeof(firstRequest_0.envelope.createdAt) === 'bigint' && firstRequest_0.envelope.createdAt >= 0n && firstRequest_0.envelope.createdAt <= 18446744073709551615n && typeof(firstRequest_0.envelope.hasExpiresAt) === 'boolean' && typeof(firstRequest_0.envelope.expiresAt) === 'bigint' && firstRequest_0.envelope.expiresAt >= 0n && firstRequest_0.envelope.expiresAt <= 18446744073709551615n && typeof(firstRequest_0.schema) === 'object' && firstRequest_0.schema.packageId.buffer instanceof ArrayBuffer && firstRequest_0.schema.packageId.BYTES_PER_ELEMENT === 1 && firstRequest_0.schema.packageId.length === 32 && firstRequest_0.schema.schemaId.buffer instanceof ArrayBuffer && firstRequest_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && firstRequest_0.schema.schemaId.length === 32 && typeof(firstRequest_0.schema.majorVersion) === 'bigint' && firstRequest_0.schema.majorVersion >= 0n && firstRequest_0.schema.majorVersion <= 65535n && typeof(firstRequest_0.schema.minorVersion) === 'bigint' && firstRequest_0.schema.minorVersion >= 0n && firstRequest_0.schema.minorVersion <= 65535n && typeof(firstRequest_0.issuerVerificationMethodRef) === 'object' && typeof(firstRequest_0.issuerVerificationMethodRef.didContractAddress) === 'object' && firstRequest_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && firstRequest_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && firstRequest_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && firstRequest_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && firstRequest_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && firstRequest_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(firstRequest_0.holderBindingProfile) === 'number' && firstRequest_0.holderBindingProfile >= 0 && firstRequest_0.holderBindingProfile <= 2 && typeof(firstRequest_0.features) === 'object' && typeof(firstRequest_0.features.supportsSelectiveDisclosure) === 'boolean' && typeof(firstRequest_0.features.supportsPredicateProofs) === 'boolean' && typeof(firstRequest_0.features.supportsVerifierScopedPseudonym) === 'boolean' && typeof(firstRequest_0.features.supportsSameHolderProof) === 'boolean' && firstRequest_0.verifierChallengeHash.buffer instanceof ArrayBuffer && firstRequest_0.verifierChallengeHash.BYTES_PER_ELEMENT === 1 && firstRequest_0.verifierChallengeHash.length === 32 && typeof(firstRequest_0.body) === 'object' && typeof(firstRequest_0.body.requireSubjectIdCommitmentDisclosure) === 'boolean' && typeof(firstRequest_0.body.requireBirthCountryDisclosure) === 'boolean' && typeof(firstRequest_0.body.requireVerifierScopedPseudonym) === 'boolean' && firstRequest_0.body.verifierDomainHash.buffer instanceof ArrayBuffer && firstRequest_0.body.verifierDomainHash.BYTES_PER_ELEMENT === 1 && firstRequest_0.body.verifierDomainHash.length === 32 && typeof(firstRequest_0.body.requireAgeOverThreshold) === 'boolean' && typeof(firstRequest_0.body.requestedAgeThresholdYears) === 'bigint' && firstRequest_0.body.requestedAgeThresholdYears >= 0n && firstRequest_0.body.requestedAgeThresholdYears <= 255n)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations3',
                                  'argument 3',
-                                 'validation.compact line 441 char 1',
+                                 'validation.compact line 445 char 1',
                                  'struct RequestMessage<envelope: struct ProtocolMessageEnvelope<version: Uint<0..65536>, messageId: Bytes<32>, threadId: Bytes<32>, initialMessage: Boolean, respondsToMessageId: Bytes<32>, createdAt: Uint<0..18446744073709551616>, hasExpiresAt: Boolean, expiresAt: Uint<0..18446744073709551616>>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBindingProfile: Enum<HolderBindingProfile, explicitDid, secretHolder, blindedSecretHolder>, features: struct CredentialProtocolFeatures<supportsSelectiveDisclosure: Boolean, supportsPredicateProofs: Boolean, supportsVerifierScopedPseudonym: Boolean, supportsSameHolderProof: Boolean>, verifierChallengeHash: Bytes<32>, body: struct SecretBirthCredentialVerificationRequestBody<requireSubjectIdCommitmentDisclosure: Boolean, requireBirthCountryDisclosure: Boolean, requireVerifierScopedPseudonym: Boolean, verifierDomainHash: Bytes<32>, requireAgeOverThreshold: Boolean, requestedAgeThresholdYears: Uint<0..256>>>',
                                  firstRequest_0)
     }
     if (!(typeof(firstPresentation_0) === 'object' && typeof(firstPresentation_0.version) === 'bigint' && firstPresentation_0.version >= 0n && firstPresentation_0.version <= 65535n && typeof(firstPresentation_0.schema) === 'object' && firstPresentation_0.schema.packageId.buffer instanceof ArrayBuffer && firstPresentation_0.schema.packageId.BYTES_PER_ELEMENT === 1 && firstPresentation_0.schema.packageId.length === 32 && firstPresentation_0.schema.schemaId.buffer instanceof ArrayBuffer && firstPresentation_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && firstPresentation_0.schema.schemaId.length === 32 && typeof(firstPresentation_0.schema.majorVersion) === 'bigint' && firstPresentation_0.schema.majorVersion >= 0n && firstPresentation_0.schema.majorVersion <= 65535n && typeof(firstPresentation_0.schema.minorVersion) === 'bigint' && firstPresentation_0.schema.minorVersion >= 0n && firstPresentation_0.schema.minorVersion <= 65535n && firstPresentation_0.credentialClaimRoot.buffer instanceof ArrayBuffer && firstPresentation_0.credentialClaimRoot.BYTES_PER_ELEMENT === 1 && firstPresentation_0.credentialClaimRoot.length === 32 && typeof(firstPresentation_0.issuerVerificationMethodRef) === 'object' && typeof(firstPresentation_0.issuerVerificationMethodRef.didContractAddress) === 'object' && firstPresentation_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && firstPresentation_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && firstPresentation_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && firstPresentation_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && firstPresentation_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && firstPresentation_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(firstPresentation_0.holderBinding) === 'object' && firstPresentation_0.holderBinding.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && firstPresentation_0.holderBinding.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && firstPresentation_0.holderBinding.blindedHolderSecretCommitment.length === 32 && firstPresentation_0.holderBinding.issuerNonce.buffer instanceof ArrayBuffer && firstPresentation_0.holderBinding.issuerNonce.BYTES_PER_ELEMENT === 1 && firstPresentation_0.holderBinding.issuerNonce.length === 32 && firstPresentation_0.holderBinding.requestChallengeResponse.buffer instanceof ArrayBuffer && firstPresentation_0.holderBinding.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && firstPresentation_0.holderBinding.requestChallengeResponse.length === 32 && typeof(firstPresentation_0.disclosed) === 'object' && typeof(firstPresentation_0.disclosed.revealSubjectIdCommitment) === 'boolean' && firstPresentation_0.disclosed.subjectIdCommitment.buffer instanceof ArrayBuffer && firstPresentation_0.disclosed.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && firstPresentation_0.disclosed.subjectIdCommitment.length === 32 && typeof(firstPresentation_0.disclosed.revealBirthCountryCode) === 'boolean' && firstPresentation_0.disclosed.birthCountryCodePadded.buffer instanceof ArrayBuffer && firstPresentation_0.disclosed.birthCountryCodePadded.BYTES_PER_ELEMENT === 1 && firstPresentation_0.disclosed.birthCountryCodePadded.length === 32 && firstPresentation_0.disclosed.birthCountryCodeOpening.buffer instanceof ArrayBuffer && firstPresentation_0.disclosed.birthCountryCodeOpening.BYTES_PER_ELEMENT === 1 && firstPresentation_0.disclosed.birthCountryCodeOpening.length === 32 && typeof(firstPresentation_0.disclosed.revealVerifierScopedPseudonym) === 'boolean' && firstPresentation_0.disclosed.verifierScopedPseudonym.buffer instanceof ArrayBuffer && firstPresentation_0.disclosed.verifierScopedPseudonym.BYTES_PER_ELEMENT === 1 && firstPresentation_0.disclosed.verifierScopedPseudonym.length === 32 && typeof(firstPresentation_0.disclosed.proveAgeOverThreshold) === 'boolean' && typeof(firstPresentation_0.disclosed.ageThresholdYears) === 'bigint' && firstPresentation_0.disclosed.ageThresholdYears >= 0n && firstPresentation_0.disclosed.ageThresholdYears <= 255n)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations3',
                                  'argument 4',
-                                 'validation.compact line 441 char 1',
+                                 'validation.compact line 445 char 1',
                                  'struct Presentation<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, credentialClaimRoot: Bytes<32>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>, disclosed: struct SecretBirthCredentialDisclosures<revealSubjectIdCommitment: Boolean, subjectIdCommitment: Bytes<32>, revealBirthCountryCode: Boolean, birthCountryCodePadded: Bytes<32>, birthCountryCodeOpening: Bytes<32>, revealVerifierScopedPseudonym: Boolean, verifierScopedPseudonym: Bytes<32>, proveAgeOverThreshold: Boolean, ageThresholdYears: Uint<0..256>>>',
                                  firstPresentation_0)
     }
     if (!(typeof(secondCredential_0) === 'object' && typeof(secondCredential_0.version) === 'bigint' && secondCredential_0.version >= 0n && secondCredential_0.version <= 65535n && typeof(secondCredential_0.schema) === 'object' && secondCredential_0.schema.packageId.buffer instanceof ArrayBuffer && secondCredential_0.schema.packageId.BYTES_PER_ELEMENT === 1 && secondCredential_0.schema.packageId.length === 32 && secondCredential_0.schema.schemaId.buffer instanceof ArrayBuffer && secondCredential_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && secondCredential_0.schema.schemaId.length === 32 && typeof(secondCredential_0.schema.majorVersion) === 'bigint' && secondCredential_0.schema.majorVersion >= 0n && secondCredential_0.schema.majorVersion <= 65535n && typeof(secondCredential_0.schema.minorVersion) === 'bigint' && secondCredential_0.schema.minorVersion >= 0n && secondCredential_0.schema.minorVersion <= 65535n && typeof(secondCredential_0.issuerVerificationMethodRef) === 'object' && typeof(secondCredential_0.issuerVerificationMethodRef.didContractAddress) === 'object' && secondCredential_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && secondCredential_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && secondCredential_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && secondCredential_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && secondCredential_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && secondCredential_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(secondCredential_0.holderBinding) === 'object' && secondCredential_0.holderBinding.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && secondCredential_0.holderBinding.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && secondCredential_0.holderBinding.blindedHolderSecretCommitment.length === 32 && secondCredential_0.holderBinding.issuerNonce.buffer instanceof ArrayBuffer && secondCredential_0.holderBinding.issuerNonce.BYTES_PER_ELEMENT === 1 && secondCredential_0.holderBinding.issuerNonce.length === 32 && secondCredential_0.holderBinding.requestChallengeResponse.buffer instanceof ArrayBuffer && secondCredential_0.holderBinding.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && secondCredential_0.holderBinding.requestChallengeResponse.length === 32 && typeof(secondCredential_0.statusBinding) === 'object' && typeof(secondCredential_0.issuedAt) === 'bigint' && secondCredential_0.issuedAt >= 0n && secondCredential_0.issuedAt <= 18446744073709551615n && typeof(secondCredential_0.hasExpiration) === 'boolean' && typeof(secondCredential_0.expiresAt) === 'bigint' && secondCredential_0.expiresAt >= 0n && secondCredential_0.expiresAt <= 18446744073709551615n && typeof(secondCredential_0.claims) === 'object' && typeof(secondCredential_0.claimCommitments) === 'object' && secondCredential_0.claimCommitments.subjectIdCommitment.buffer instanceof ArrayBuffer && secondCredential_0.claimCommitments.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && secondCredential_0.claimCommitments.subjectIdCommitment.length === 32 && secondCredential_0.claimCommitments.legalNameCommitment.buffer instanceof ArrayBuffer && secondCredential_0.claimCommitments.legalNameCommitment.BYTES_PER_ELEMENT === 1 && secondCredential_0.claimCommitments.legalNameCommitment.length === 32 && secondCredential_0.claimCommitments.birthDateCommitment.buffer instanceof ArrayBuffer && secondCredential_0.claimCommitments.birthDateCommitment.BYTES_PER_ELEMENT === 1 && secondCredential_0.claimCommitments.birthDateCommitment.length === 32 && secondCredential_0.claimCommitments.birthCountryCodeCommitment.buffer instanceof ArrayBuffer && secondCredential_0.claimCommitments.birthCountryCodeCommitment.BYTES_PER_ELEMENT === 1 && secondCredential_0.claimCommitments.birthCountryCodeCommitment.length === 32 && secondCredential_0.claimRoot.buffer instanceof ArrayBuffer && secondCredential_0.claimRoot.BYTES_PER_ELEMENT === 1 && secondCredential_0.claimRoot.length === 32)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations3',
                                  'argument 5',
-                                 'validation.compact line 441 char 1',
+                                 'validation.compact line 445 char 1',
                                  'struct Credential<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>, statusBinding: struct NoStatusBinding<>, issuedAt: Uint<0..18446744073709551616>, hasExpiration: Boolean, expiresAt: Uint<0..18446744073709551616>, claims: struct NoPublicClaims<>, claimCommitments: struct BirthCredentialClaimCommitments<subjectIdCommitment: Bytes<32>, legalNameCommitment: Bytes<32>, birthDateCommitment: Bytes<32>, birthCountryCodeCommitment: Bytes<32>>, claimRoot: Bytes<32>>',
                                  secondCredential_0)
     }
     if (!(typeof(secondCredentialProof_0) === 'object' && typeof(secondCredentialProof_0.signerVerificationMethodRef) === 'object' && typeof(secondCredentialProof_0.signerVerificationMethodRef.didContractAddress) === 'object' && secondCredentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && secondCredentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && secondCredentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && secondCredentialProof_0.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && secondCredentialProof_0.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && secondCredentialProof_0.signerVerificationMethodRef.methodId.length === 32 && typeof(secondCredentialProof_0.createdAt) === 'bigint' && secondCredentialProof_0.createdAt >= 0n && secondCredentialProof_0.createdAt <= 18446744073709551615n && secondCredentialProof_0.challengeHash.buffer instanceof ArrayBuffer && secondCredentialProof_0.challengeHash.BYTES_PER_ELEMENT === 1 && secondCredentialProof_0.challengeHash.length === 32 && true && typeof(secondCredentialProof_0.signature) === 'object' && true && typeof(secondCredentialProof_0.signature.s) === 'bigint' && secondCredentialProof_0.signature.s >= 0 && secondCredentialProof_0.signature.s <= __compactRuntime.MAX_FIELD)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations3',
                                  'argument 6',
-                                 'validation.compact line 441 char 1',
+                                 'validation.compact line 445 char 1',
                                  'struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>',
                                  secondCredentialProof_0)
     }
     if (!(typeof(secondRequest_0) === 'object' && typeof(secondRequest_0.envelope) === 'object' && typeof(secondRequest_0.envelope.version) === 'bigint' && secondRequest_0.envelope.version >= 0n && secondRequest_0.envelope.version <= 65535n && secondRequest_0.envelope.messageId.buffer instanceof ArrayBuffer && secondRequest_0.envelope.messageId.BYTES_PER_ELEMENT === 1 && secondRequest_0.envelope.messageId.length === 32 && secondRequest_0.envelope.threadId.buffer instanceof ArrayBuffer && secondRequest_0.envelope.threadId.BYTES_PER_ELEMENT === 1 && secondRequest_0.envelope.threadId.length === 32 && typeof(secondRequest_0.envelope.initialMessage) === 'boolean' && secondRequest_0.envelope.respondsToMessageId.buffer instanceof ArrayBuffer && secondRequest_0.envelope.respondsToMessageId.BYTES_PER_ELEMENT === 1 && secondRequest_0.envelope.respondsToMessageId.length === 32 && typeof(secondRequest_0.envelope.createdAt) === 'bigint' && secondRequest_0.envelope.createdAt >= 0n && secondRequest_0.envelope.createdAt <= 18446744073709551615n && typeof(secondRequest_0.envelope.hasExpiresAt) === 'boolean' && typeof(secondRequest_0.envelope.expiresAt) === 'bigint' && secondRequest_0.envelope.expiresAt >= 0n && secondRequest_0.envelope.expiresAt <= 18446744073709551615n && typeof(secondRequest_0.schema) === 'object' && secondRequest_0.schema.packageId.buffer instanceof ArrayBuffer && secondRequest_0.schema.packageId.BYTES_PER_ELEMENT === 1 && secondRequest_0.schema.packageId.length === 32 && secondRequest_0.schema.schemaId.buffer instanceof ArrayBuffer && secondRequest_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && secondRequest_0.schema.schemaId.length === 32 && typeof(secondRequest_0.schema.majorVersion) === 'bigint' && secondRequest_0.schema.majorVersion >= 0n && secondRequest_0.schema.majorVersion <= 65535n && typeof(secondRequest_0.schema.minorVersion) === 'bigint' && secondRequest_0.schema.minorVersion >= 0n && secondRequest_0.schema.minorVersion <= 65535n && typeof(secondRequest_0.issuerVerificationMethodRef) === 'object' && typeof(secondRequest_0.issuerVerificationMethodRef.didContractAddress) === 'object' && secondRequest_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && secondRequest_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && secondRequest_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && secondRequest_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && secondRequest_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && secondRequest_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(secondRequest_0.holderBindingProfile) === 'number' && secondRequest_0.holderBindingProfile >= 0 && secondRequest_0.holderBindingProfile <= 2 && typeof(secondRequest_0.features) === 'object' && typeof(secondRequest_0.features.supportsSelectiveDisclosure) === 'boolean' && typeof(secondRequest_0.features.supportsPredicateProofs) === 'boolean' && typeof(secondRequest_0.features.supportsVerifierScopedPseudonym) === 'boolean' && typeof(secondRequest_0.features.supportsSameHolderProof) === 'boolean' && secondRequest_0.verifierChallengeHash.buffer instanceof ArrayBuffer && secondRequest_0.verifierChallengeHash.BYTES_PER_ELEMENT === 1 && secondRequest_0.verifierChallengeHash.length === 32 && typeof(secondRequest_0.body) === 'object' && typeof(secondRequest_0.body.requireSubjectIdCommitmentDisclosure) === 'boolean' && typeof(secondRequest_0.body.requireBirthCountryDisclosure) === 'boolean' && typeof(secondRequest_0.body.requireVerifierScopedPseudonym) === 'boolean' && secondRequest_0.body.verifierDomainHash.buffer instanceof ArrayBuffer && secondRequest_0.body.verifierDomainHash.BYTES_PER_ELEMENT === 1 && secondRequest_0.body.verifierDomainHash.length === 32 && typeof(secondRequest_0.body.requireAgeOverThreshold) === 'boolean' && typeof(secondRequest_0.body.requestedAgeThresholdYears) === 'bigint' && secondRequest_0.body.requestedAgeThresholdYears >= 0n && secondRequest_0.body.requestedAgeThresholdYears <= 255n)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations3',
                                  'argument 7',
-                                 'validation.compact line 441 char 1',
+                                 'validation.compact line 445 char 1',
                                  'struct RequestMessage<envelope: struct ProtocolMessageEnvelope<version: Uint<0..65536>, messageId: Bytes<32>, threadId: Bytes<32>, initialMessage: Boolean, respondsToMessageId: Bytes<32>, createdAt: Uint<0..18446744073709551616>, hasExpiresAt: Boolean, expiresAt: Uint<0..18446744073709551616>>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBindingProfile: Enum<HolderBindingProfile, explicitDid, secretHolder, blindedSecretHolder>, features: struct CredentialProtocolFeatures<supportsSelectiveDisclosure: Boolean, supportsPredicateProofs: Boolean, supportsVerifierScopedPseudonym: Boolean, supportsSameHolderProof: Boolean>, verifierChallengeHash: Bytes<32>, body: struct SecretBirthCredentialVerificationRequestBody<requireSubjectIdCommitmentDisclosure: Boolean, requireBirthCountryDisclosure: Boolean, requireVerifierScopedPseudonym: Boolean, verifierDomainHash: Bytes<32>, requireAgeOverThreshold: Boolean, requestedAgeThresholdYears: Uint<0..256>>>',
                                  secondRequest_0)
     }
     if (!(typeof(secondPresentation_0) === 'object' && typeof(secondPresentation_0.version) === 'bigint' && secondPresentation_0.version >= 0n && secondPresentation_0.version <= 65535n && typeof(secondPresentation_0.schema) === 'object' && secondPresentation_0.schema.packageId.buffer instanceof ArrayBuffer && secondPresentation_0.schema.packageId.BYTES_PER_ELEMENT === 1 && secondPresentation_0.schema.packageId.length === 32 && secondPresentation_0.schema.schemaId.buffer instanceof ArrayBuffer && secondPresentation_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && secondPresentation_0.schema.schemaId.length === 32 && typeof(secondPresentation_0.schema.majorVersion) === 'bigint' && secondPresentation_0.schema.majorVersion >= 0n && secondPresentation_0.schema.majorVersion <= 65535n && typeof(secondPresentation_0.schema.minorVersion) === 'bigint' && secondPresentation_0.schema.minorVersion >= 0n && secondPresentation_0.schema.minorVersion <= 65535n && secondPresentation_0.credentialClaimRoot.buffer instanceof ArrayBuffer && secondPresentation_0.credentialClaimRoot.BYTES_PER_ELEMENT === 1 && secondPresentation_0.credentialClaimRoot.length === 32 && typeof(secondPresentation_0.issuerVerificationMethodRef) === 'object' && typeof(secondPresentation_0.issuerVerificationMethodRef.didContractAddress) === 'object' && secondPresentation_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && secondPresentation_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && secondPresentation_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && secondPresentation_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && secondPresentation_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && secondPresentation_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(secondPresentation_0.holderBinding) === 'object' && secondPresentation_0.holderBinding.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && secondPresentation_0.holderBinding.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && secondPresentation_0.holderBinding.blindedHolderSecretCommitment.length === 32 && secondPresentation_0.holderBinding.issuerNonce.buffer instanceof ArrayBuffer && secondPresentation_0.holderBinding.issuerNonce.BYTES_PER_ELEMENT === 1 && secondPresentation_0.holderBinding.issuerNonce.length === 32 && secondPresentation_0.holderBinding.requestChallengeResponse.buffer instanceof ArrayBuffer && secondPresentation_0.holderBinding.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && secondPresentation_0.holderBinding.requestChallengeResponse.length === 32 && typeof(secondPresentation_0.disclosed) === 'object' && typeof(secondPresentation_0.disclosed.revealSubjectIdCommitment) === 'boolean' && secondPresentation_0.disclosed.subjectIdCommitment.buffer instanceof ArrayBuffer && secondPresentation_0.disclosed.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && secondPresentation_0.disclosed.subjectIdCommitment.length === 32 && typeof(secondPresentation_0.disclosed.revealBirthCountryCode) === 'boolean' && secondPresentation_0.disclosed.birthCountryCodePadded.buffer instanceof ArrayBuffer && secondPresentation_0.disclosed.birthCountryCodePadded.BYTES_PER_ELEMENT === 1 && secondPresentation_0.disclosed.birthCountryCodePadded.length === 32 && secondPresentation_0.disclosed.birthCountryCodeOpening.buffer instanceof ArrayBuffer && secondPresentation_0.disclosed.birthCountryCodeOpening.BYTES_PER_ELEMENT === 1 && secondPresentation_0.disclosed.birthCountryCodeOpening.length === 32 && typeof(secondPresentation_0.disclosed.revealVerifierScopedPseudonym) === 'boolean' && secondPresentation_0.disclosed.verifierScopedPseudonym.buffer instanceof ArrayBuffer && secondPresentation_0.disclosed.verifierScopedPseudonym.BYTES_PER_ELEMENT === 1 && secondPresentation_0.disclosed.verifierScopedPseudonym.length === 32 && typeof(secondPresentation_0.disclosed.proveAgeOverThreshold) === 'boolean' && typeof(secondPresentation_0.disclosed.ageThresholdYears) === 'bigint' && secondPresentation_0.disclosed.ageThresholdYears >= 0n && secondPresentation_0.disclosed.ageThresholdYears <= 255n)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations3',
                                  'argument 8',
-                                 'validation.compact line 441 char 1',
+                                 'validation.compact line 445 char 1',
                                  'struct Presentation<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, credentialClaimRoot: Bytes<32>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>, disclosed: struct SecretBirthCredentialDisclosures<revealSubjectIdCommitment: Boolean, subjectIdCommitment: Bytes<32>, revealBirthCountryCode: Boolean, birthCountryCodePadded: Bytes<32>, birthCountryCodeOpening: Bytes<32>, revealVerifierScopedPseudonym: Boolean, verifierScopedPseudonym: Bytes<32>, proveAgeOverThreshold: Boolean, ageThresholdYears: Uint<0..256>>>',
                                  secondPresentation_0)
     }
     if (!(typeof(thirdCredential_0) === 'object' && typeof(thirdCredential_0.version) === 'bigint' && thirdCredential_0.version >= 0n && thirdCredential_0.version <= 65535n && typeof(thirdCredential_0.schema) === 'object' && thirdCredential_0.schema.packageId.buffer instanceof ArrayBuffer && thirdCredential_0.schema.packageId.BYTES_PER_ELEMENT === 1 && thirdCredential_0.schema.packageId.length === 32 && thirdCredential_0.schema.schemaId.buffer instanceof ArrayBuffer && thirdCredential_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && thirdCredential_0.schema.schemaId.length === 32 && typeof(thirdCredential_0.schema.majorVersion) === 'bigint' && thirdCredential_0.schema.majorVersion >= 0n && thirdCredential_0.schema.majorVersion <= 65535n && typeof(thirdCredential_0.schema.minorVersion) === 'bigint' && thirdCredential_0.schema.minorVersion >= 0n && thirdCredential_0.schema.minorVersion <= 65535n && typeof(thirdCredential_0.issuerVerificationMethodRef) === 'object' && typeof(thirdCredential_0.issuerVerificationMethodRef.didContractAddress) === 'object' && thirdCredential_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && thirdCredential_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && thirdCredential_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && thirdCredential_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && thirdCredential_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && thirdCredential_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(thirdCredential_0.holderBinding) === 'object' && thirdCredential_0.holderBinding.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && thirdCredential_0.holderBinding.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && thirdCredential_0.holderBinding.blindedHolderSecretCommitment.length === 32 && thirdCredential_0.holderBinding.issuerNonce.buffer instanceof ArrayBuffer && thirdCredential_0.holderBinding.issuerNonce.BYTES_PER_ELEMENT === 1 && thirdCredential_0.holderBinding.issuerNonce.length === 32 && thirdCredential_0.holderBinding.requestChallengeResponse.buffer instanceof ArrayBuffer && thirdCredential_0.holderBinding.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && thirdCredential_0.holderBinding.requestChallengeResponse.length === 32 && typeof(thirdCredential_0.statusBinding) === 'object' && typeof(thirdCredential_0.issuedAt) === 'bigint' && thirdCredential_0.issuedAt >= 0n && thirdCredential_0.issuedAt <= 18446744073709551615n && typeof(thirdCredential_0.hasExpiration) === 'boolean' && typeof(thirdCredential_0.expiresAt) === 'bigint' && thirdCredential_0.expiresAt >= 0n && thirdCredential_0.expiresAt <= 18446744073709551615n && typeof(thirdCredential_0.claims) === 'object' && typeof(thirdCredential_0.claimCommitments) === 'object' && thirdCredential_0.claimCommitments.subjectIdCommitment.buffer instanceof ArrayBuffer && thirdCredential_0.claimCommitments.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && thirdCredential_0.claimCommitments.subjectIdCommitment.length === 32 && thirdCredential_0.claimCommitments.legalNameCommitment.buffer instanceof ArrayBuffer && thirdCredential_0.claimCommitments.legalNameCommitment.BYTES_PER_ELEMENT === 1 && thirdCredential_0.claimCommitments.legalNameCommitment.length === 32 && thirdCredential_0.claimCommitments.birthDateCommitment.buffer instanceof ArrayBuffer && thirdCredential_0.claimCommitments.birthDateCommitment.BYTES_PER_ELEMENT === 1 && thirdCredential_0.claimCommitments.birthDateCommitment.length === 32 && thirdCredential_0.claimCommitments.birthCountryCodeCommitment.buffer instanceof ArrayBuffer && thirdCredential_0.claimCommitments.birthCountryCodeCommitment.BYTES_PER_ELEMENT === 1 && thirdCredential_0.claimCommitments.birthCountryCodeCommitment.length === 32 && thirdCredential_0.claimRoot.buffer instanceof ArrayBuffer && thirdCredential_0.claimRoot.BYTES_PER_ELEMENT === 1 && thirdCredential_0.claimRoot.length === 32)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations3',
                                  'argument 9',
-                                 'validation.compact line 441 char 1',
+                                 'validation.compact line 445 char 1',
                                  'struct Credential<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>, statusBinding: struct NoStatusBinding<>, issuedAt: Uint<0..18446744073709551616>, hasExpiration: Boolean, expiresAt: Uint<0..18446744073709551616>, claims: struct NoPublicClaims<>, claimCommitments: struct BirthCredentialClaimCommitments<subjectIdCommitment: Bytes<32>, legalNameCommitment: Bytes<32>, birthDateCommitment: Bytes<32>, birthCountryCodeCommitment: Bytes<32>>, claimRoot: Bytes<32>>',
                                  thirdCredential_0)
     }
     if (!(typeof(thirdCredentialProof_0) === 'object' && typeof(thirdCredentialProof_0.signerVerificationMethodRef) === 'object' && typeof(thirdCredentialProof_0.signerVerificationMethodRef.didContractAddress) === 'object' && thirdCredentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && thirdCredentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && thirdCredentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && thirdCredentialProof_0.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && thirdCredentialProof_0.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && thirdCredentialProof_0.signerVerificationMethodRef.methodId.length === 32 && typeof(thirdCredentialProof_0.createdAt) === 'bigint' && thirdCredentialProof_0.createdAt >= 0n && thirdCredentialProof_0.createdAt <= 18446744073709551615n && thirdCredentialProof_0.challengeHash.buffer instanceof ArrayBuffer && thirdCredentialProof_0.challengeHash.BYTES_PER_ELEMENT === 1 && thirdCredentialProof_0.challengeHash.length === 32 && true && typeof(thirdCredentialProof_0.signature) === 'object' && true && typeof(thirdCredentialProof_0.signature.s) === 'bigint' && thirdCredentialProof_0.signature.s >= 0 && thirdCredentialProof_0.signature.s <= __compactRuntime.MAX_FIELD)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations3',
                                  'argument 10',
-                                 'validation.compact line 441 char 1',
+                                 'validation.compact line 445 char 1',
                                  'struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>',
                                  thirdCredentialProof_0)
     }
     if (!(typeof(thirdRequest_0) === 'object' && typeof(thirdRequest_0.envelope) === 'object' && typeof(thirdRequest_0.envelope.version) === 'bigint' && thirdRequest_0.envelope.version >= 0n && thirdRequest_0.envelope.version <= 65535n && thirdRequest_0.envelope.messageId.buffer instanceof ArrayBuffer && thirdRequest_0.envelope.messageId.BYTES_PER_ELEMENT === 1 && thirdRequest_0.envelope.messageId.length === 32 && thirdRequest_0.envelope.threadId.buffer instanceof ArrayBuffer && thirdRequest_0.envelope.threadId.BYTES_PER_ELEMENT === 1 && thirdRequest_0.envelope.threadId.length === 32 && typeof(thirdRequest_0.envelope.initialMessage) === 'boolean' && thirdRequest_0.envelope.respondsToMessageId.buffer instanceof ArrayBuffer && thirdRequest_0.envelope.respondsToMessageId.BYTES_PER_ELEMENT === 1 && thirdRequest_0.envelope.respondsToMessageId.length === 32 && typeof(thirdRequest_0.envelope.createdAt) === 'bigint' && thirdRequest_0.envelope.createdAt >= 0n && thirdRequest_0.envelope.createdAt <= 18446744073709551615n && typeof(thirdRequest_0.envelope.hasExpiresAt) === 'boolean' && typeof(thirdRequest_0.envelope.expiresAt) === 'bigint' && thirdRequest_0.envelope.expiresAt >= 0n && thirdRequest_0.envelope.expiresAt <= 18446744073709551615n && typeof(thirdRequest_0.schema) === 'object' && thirdRequest_0.schema.packageId.buffer instanceof ArrayBuffer && thirdRequest_0.schema.packageId.BYTES_PER_ELEMENT === 1 && thirdRequest_0.schema.packageId.length === 32 && thirdRequest_0.schema.schemaId.buffer instanceof ArrayBuffer && thirdRequest_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && thirdRequest_0.schema.schemaId.length === 32 && typeof(thirdRequest_0.schema.majorVersion) === 'bigint' && thirdRequest_0.schema.majorVersion >= 0n && thirdRequest_0.schema.majorVersion <= 65535n && typeof(thirdRequest_0.schema.minorVersion) === 'bigint' && thirdRequest_0.schema.minorVersion >= 0n && thirdRequest_0.schema.minorVersion <= 65535n && typeof(thirdRequest_0.issuerVerificationMethodRef) === 'object' && typeof(thirdRequest_0.issuerVerificationMethodRef.didContractAddress) === 'object' && thirdRequest_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && thirdRequest_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && thirdRequest_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && thirdRequest_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && thirdRequest_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && thirdRequest_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(thirdRequest_0.holderBindingProfile) === 'number' && thirdRequest_0.holderBindingProfile >= 0 && thirdRequest_0.holderBindingProfile <= 2 && typeof(thirdRequest_0.features) === 'object' && typeof(thirdRequest_0.features.supportsSelectiveDisclosure) === 'boolean' && typeof(thirdRequest_0.features.supportsPredicateProofs) === 'boolean' && typeof(thirdRequest_0.features.supportsVerifierScopedPseudonym) === 'boolean' && typeof(thirdRequest_0.features.supportsSameHolderProof) === 'boolean' && thirdRequest_0.verifierChallengeHash.buffer instanceof ArrayBuffer && thirdRequest_0.verifierChallengeHash.BYTES_PER_ELEMENT === 1 && thirdRequest_0.verifierChallengeHash.length === 32 && typeof(thirdRequest_0.body) === 'object' && typeof(thirdRequest_0.body.requireSubjectIdCommitmentDisclosure) === 'boolean' && typeof(thirdRequest_0.body.requireBirthCountryDisclosure) === 'boolean' && typeof(thirdRequest_0.body.requireVerifierScopedPseudonym) === 'boolean' && thirdRequest_0.body.verifierDomainHash.buffer instanceof ArrayBuffer && thirdRequest_0.body.verifierDomainHash.BYTES_PER_ELEMENT === 1 && thirdRequest_0.body.verifierDomainHash.length === 32 && typeof(thirdRequest_0.body.requireAgeOverThreshold) === 'boolean' && typeof(thirdRequest_0.body.requestedAgeThresholdYears) === 'bigint' && thirdRequest_0.body.requestedAgeThresholdYears >= 0n && thirdRequest_0.body.requestedAgeThresholdYears <= 255n)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations3',
                                  'argument 11',
-                                 'validation.compact line 441 char 1',
+                                 'validation.compact line 445 char 1',
                                  'struct RequestMessage<envelope: struct ProtocolMessageEnvelope<version: Uint<0..65536>, messageId: Bytes<32>, threadId: Bytes<32>, initialMessage: Boolean, respondsToMessageId: Bytes<32>, createdAt: Uint<0..18446744073709551616>, hasExpiresAt: Boolean, expiresAt: Uint<0..18446744073709551616>>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBindingProfile: Enum<HolderBindingProfile, explicitDid, secretHolder, blindedSecretHolder>, features: struct CredentialProtocolFeatures<supportsSelectiveDisclosure: Boolean, supportsPredicateProofs: Boolean, supportsVerifierScopedPseudonym: Boolean, supportsSameHolderProof: Boolean>, verifierChallengeHash: Bytes<32>, body: struct SecretBirthCredentialVerificationRequestBody<requireSubjectIdCommitmentDisclosure: Boolean, requireBirthCountryDisclosure: Boolean, requireVerifierScopedPseudonym: Boolean, verifierDomainHash: Bytes<32>, requireAgeOverThreshold: Boolean, requestedAgeThresholdYears: Uint<0..256>>>',
                                  thirdRequest_0)
     }
     if (!(typeof(thirdPresentation_0) === 'object' && typeof(thirdPresentation_0.version) === 'bigint' && thirdPresentation_0.version >= 0n && thirdPresentation_0.version <= 65535n && typeof(thirdPresentation_0.schema) === 'object' && thirdPresentation_0.schema.packageId.buffer instanceof ArrayBuffer && thirdPresentation_0.schema.packageId.BYTES_PER_ELEMENT === 1 && thirdPresentation_0.schema.packageId.length === 32 && thirdPresentation_0.schema.schemaId.buffer instanceof ArrayBuffer && thirdPresentation_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && thirdPresentation_0.schema.schemaId.length === 32 && typeof(thirdPresentation_0.schema.majorVersion) === 'bigint' && thirdPresentation_0.schema.majorVersion >= 0n && thirdPresentation_0.schema.majorVersion <= 65535n && typeof(thirdPresentation_0.schema.minorVersion) === 'bigint' && thirdPresentation_0.schema.minorVersion >= 0n && thirdPresentation_0.schema.minorVersion <= 65535n && thirdPresentation_0.credentialClaimRoot.buffer instanceof ArrayBuffer && thirdPresentation_0.credentialClaimRoot.BYTES_PER_ELEMENT === 1 && thirdPresentation_0.credentialClaimRoot.length === 32 && typeof(thirdPresentation_0.issuerVerificationMethodRef) === 'object' && typeof(thirdPresentation_0.issuerVerificationMethodRef.didContractAddress) === 'object' && thirdPresentation_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && thirdPresentation_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && thirdPresentation_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && thirdPresentation_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && thirdPresentation_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && thirdPresentation_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(thirdPresentation_0.holderBinding) === 'object' && thirdPresentation_0.holderBinding.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && thirdPresentation_0.holderBinding.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && thirdPresentation_0.holderBinding.blindedHolderSecretCommitment.length === 32 && thirdPresentation_0.holderBinding.issuerNonce.buffer instanceof ArrayBuffer && thirdPresentation_0.holderBinding.issuerNonce.BYTES_PER_ELEMENT === 1 && thirdPresentation_0.holderBinding.issuerNonce.length === 32 && thirdPresentation_0.holderBinding.requestChallengeResponse.buffer instanceof ArrayBuffer && thirdPresentation_0.holderBinding.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && thirdPresentation_0.holderBinding.requestChallengeResponse.length === 32 && typeof(thirdPresentation_0.disclosed) === 'object' && typeof(thirdPresentation_0.disclosed.revealSubjectIdCommitment) === 'boolean' && thirdPresentation_0.disclosed.subjectIdCommitment.buffer instanceof ArrayBuffer && thirdPresentation_0.disclosed.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && thirdPresentation_0.disclosed.subjectIdCommitment.length === 32 && typeof(thirdPresentation_0.disclosed.revealBirthCountryCode) === 'boolean' && thirdPresentation_0.disclosed.birthCountryCodePadded.buffer instanceof ArrayBuffer && thirdPresentation_0.disclosed.birthCountryCodePadded.BYTES_PER_ELEMENT === 1 && thirdPresentation_0.disclosed.birthCountryCodePadded.length === 32 && thirdPresentation_0.disclosed.birthCountryCodeOpening.buffer instanceof ArrayBuffer && thirdPresentation_0.disclosed.birthCountryCodeOpening.BYTES_PER_ELEMENT === 1 && thirdPresentation_0.disclosed.birthCountryCodeOpening.length === 32 && typeof(thirdPresentation_0.disclosed.revealVerifierScopedPseudonym) === 'boolean' && thirdPresentation_0.disclosed.verifierScopedPseudonym.buffer instanceof ArrayBuffer && thirdPresentation_0.disclosed.verifierScopedPseudonym.BYTES_PER_ELEMENT === 1 && thirdPresentation_0.disclosed.verifierScopedPseudonym.length === 32 && typeof(thirdPresentation_0.disclosed.proveAgeOverThreshold) === 'boolean' && typeof(thirdPresentation_0.disclosed.ageThresholdYears) === 'bigint' && thirdPresentation_0.disclosed.ageThresholdYears >= 0n && thirdPresentation_0.disclosed.ageThresholdYears <= 255n)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations3',
                                  'argument 12',
-                                 'validation.compact line 441 char 1',
+                                 'validation.compact line 445 char 1',
                                  'struct Presentation<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, credentialClaimRoot: Bytes<32>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>, disclosed: struct SecretBirthCredentialDisclosures<revealSubjectIdCommitment: Boolean, subjectIdCommitment: Bytes<32>, revealBirthCountryCode: Boolean, birthCountryCodePadded: Bytes<32>, birthCountryCodeOpening: Bytes<32>, revealVerifierScopedPseudonym: Boolean, verifierScopedPseudonym: Bytes<32>, proveAgeOverThreshold: Boolean, ageThresholdYears: Uint<0..256>>>',
                                  thirdPresentation_0)
     }
     if (!(holderSecret_0.buffer instanceof ArrayBuffer && holderSecret_0.BYTES_PER_ELEMENT === 1 && holderSecret_0.length === 32)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations3',
                                  'argument 13',
-                                 'validation.compact line 441 char 1',
+                                 'validation.compact line 445 char 1',
                                  'Bytes<32>',
                                  holderSecret_0)
     }
     if (!(firstHolderSecretOpening_0.buffer instanceof ArrayBuffer && firstHolderSecretOpening_0.BYTES_PER_ELEMENT === 1 && firstHolderSecretOpening_0.length === 32)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations3',
                                  'argument 14',
-                                 'validation.compact line 441 char 1',
+                                 'validation.compact line 445 char 1',
                                  'Bytes<32>',
                                  firstHolderSecretOpening_0)
     }
     if (!(firstHolderBindingBlindingFactor_0.buffer instanceof ArrayBuffer && firstHolderBindingBlindingFactor_0.BYTES_PER_ELEMENT === 1 && firstHolderBindingBlindingFactor_0.length === 32)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations3',
                                  'argument 15',
-                                 'validation.compact line 441 char 1',
+                                 'validation.compact line 445 char 1',
                                  'Bytes<32>',
                                  firstHolderBindingBlindingFactor_0)
     }
     if (!(secondHolderSecretOpening_0.buffer instanceof ArrayBuffer && secondHolderSecretOpening_0.BYTES_PER_ELEMENT === 1 && secondHolderSecretOpening_0.length === 32)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations3',
                                  'argument 16',
-                                 'validation.compact line 441 char 1',
+                                 'validation.compact line 445 char 1',
                                  'Bytes<32>',
                                  secondHolderSecretOpening_0)
     }
     if (!(secondHolderBindingBlindingFactor_0.buffer instanceof ArrayBuffer && secondHolderBindingBlindingFactor_0.BYTES_PER_ELEMENT === 1 && secondHolderBindingBlindingFactor_0.length === 32)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations3',
                                  'argument 17',
-                                 'validation.compact line 441 char 1',
+                                 'validation.compact line 445 char 1',
                                  'Bytes<32>',
                                  secondHolderBindingBlindingFactor_0)
     }
     if (!(thirdHolderSecretOpening_0.buffer instanceof ArrayBuffer && thirdHolderSecretOpening_0.BYTES_PER_ELEMENT === 1 && thirdHolderSecretOpening_0.length === 32)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations3',
                                  'argument 18',
-                                 'validation.compact line 441 char 1',
+                                 'validation.compact line 445 char 1',
                                  'Bytes<32>',
                                  thirdHolderSecretOpening_0)
     }
     if (!(thirdHolderBindingBlindingFactor_0.buffer instanceof ArrayBuffer && thirdHolderBindingBlindingFactor_0.BYTES_PER_ELEMENT === 1 && thirdHolderBindingBlindingFactor_0.length === 32)) {
       __compactRuntime.typeError('assertSameHolderSecretBirthPresentations3',
                                  'argument 19',
-                                 'validation.compact line 441 char 1',
+                                 'validation.compact line 445 char 1',
                                  'Bytes<32>',
                                  thirdHolderBindingBlindingFactor_0)
     }

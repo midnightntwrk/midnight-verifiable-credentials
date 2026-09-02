@@ -1,3 +1,5 @@
+import { Buffer } from "node:buffer";
+
 import { ecMulGenerator } from "@midnight-ntwrk/compact-runtime";
 import {
   type Proof,
@@ -10,6 +12,7 @@ import {
   type BirthCredentialIssuanceResult,
   type BirthCredentialPresentation,
   type BirthCredentialPresentationRequest,
+  type BirthCredentialPrivateParts,
   type BirthCredentialVerificationRequest,
   type BirthCredentialVerificationSubmission,
   HolderBindingProfile,
@@ -33,13 +36,23 @@ import {
   type ProtocolEnvelopeFactory,
   type ProtocolEnvelopeIdentifierSource,
 } from "../../shared/envelope.js";
-import { assertBodyHasFields,assertMessageType } from "../../shared/validation.js";
+import {
+  assertBodyHasFields,
+  assertMessageType,
+  assertProtocolMessageEnvelopeAlignment,
+} from "../../shared/validation.js";
 import type { MessageBus } from "../../transport/message-bus.js";
 import type { ProtocolMessage } from "../../transport/types.js";
+import {
+  type BirthClaimId,
+  recoverBirthClaimOpenings,
+  type RecoveredBirthClaimOpening,
+} from "./claim-opening-recovery.js";
 
 export type StoredCredential = {
   readonly credential: BirthCredential;
   readonly credentialProof: Proof;
+  readonly privateParts: BirthCredentialPrivateParts;
 };
 
 export type PresentationWitness = {
@@ -58,6 +71,10 @@ export class HolderAgent {
   private readonly randomness: ProtocolRandomnessSource;
   private readonly createEnvelope: ProtocolEnvelopeFactory;
   private readonly storedCredentials: ProtocolStateCollection<StoredCredential>;
+  private readonly pendingIssuanceRequests: ProtocolStateCollection<{
+    readonly request: BirthCredentialIssuanceRequest;
+    readonly issuer: string;
+  }>;
   private readonly metadata: ProtocolStateCollection<number>;
   private credentialCountCache = 0;
   private issuanceRequestCounter = 0;
@@ -82,6 +99,9 @@ export class HolderAgent {
     const stateScope = `holder:${this.profile.label}`;
     this.storedCredentials = stateStore.collection(
       `${stateScope}:stored-credentials`,
+    );
+    this.pendingIssuanceRequests = stateStore.collection(
+      `${stateScope}:pending-issuance-requests`,
     );
     this.metadata = stateStore.collection(`${stateScope}:metadata`);
     this.credentialCountCache = this.recoverCredentialCount();
@@ -124,6 +144,10 @@ export class HolderAgent {
       },
     };
 
+    this.pendingIssuanceRequests.set(
+      Buffer.from(request.envelope.messageId).toString("hex"),
+      { request, issuer: offer.from },
+    );
     this.bus.send({
       type: "issuance:request",
       from: this.profile.label,
@@ -136,10 +160,37 @@ export class HolderAgent {
   receiveCredentialResult(result: ProtocolMessage): void {
     assertMessageType(result, "issuance:result");
     assertBodyHasFields(result, ["envelope", "schema", "body"]);
+    assertProtocolMessageEnvelopeAlignment(result);
+    const respondsToId = Buffer.from(
+      result.envelope.respondsToMessageId,
+    ).toString("hex");
+    const pending = this.pendingIssuanceRequests.get(respondsToId);
+    if (!pending) {
+      throw new Error("No pending birth credential request matches this result");
+    }
+    if (result.to !== this.profile.label || result.from !== pending.issuer) {
+      throw new Error("Birth credential issuance result parties do not match the pending request");
+    }
+    genericPureCircuits.assertProtocolResponseEnvelope(
+      pending.request.envelope,
+      result.envelope,
+    );
+    pureCircuits.assertMatchingExplicitHolderBindings(
+      pending.request.body.holderBinding,
+      {
+        holderVerificationMethodRef: this.profile.signer.verificationMethodRef,
+      },
+    );
     const issuanceResult = result.body as BirthCredentialIssuanceResult;
+    pureCircuits.assertBirthCredentialIssuanceResultMatchesRequest(
+      pending.request,
+      issuanceResult,
+    );
+    this.pendingIssuanceRequests.delete(respondsToId);
     this.storedCredentials.set(String(this.credentialCountCache), {
       credential: issuanceResult.body.credential,
       credentialProof: issuanceResult.body.credentialProof,
+      privateParts: issuanceResult.body.privateParts,
     });
     this.credentialCountCache += 1;
     this.metadata.set(
@@ -164,7 +215,28 @@ export class HolderAgent {
         `Credential index ${index} is missing from protocol state storage.`,
       );
     }
+    pureCircuits.assertValidBirthCredential(
+      stored.credential,
+      stored.credentialProof,
+    );
+    pureCircuits.assertBirthCredentialPrivatePartsMatchCommitments(
+      stored.credential.claimCommitments,
+      stored.privateParts,
+    );
+    pureCircuits.assertMatchingExplicitHolderBindings(
+      stored.credential.holderBinding,
+      {
+        holderVerificationMethodRef: this.profile.signer.verificationMethodRef,
+      },
+    );
     return stored;
+  }
+
+  recoverClaimOpenings(
+    index: number,
+    claimIds: readonly BirthClaimId[],
+  ): readonly RecoveredBirthClaimOpening[] {
+    return recoverBirthClaimOpenings(this.getCredential(index).privateParts, claimIds);
   }
 
   private recoverCredentialCount(): number {

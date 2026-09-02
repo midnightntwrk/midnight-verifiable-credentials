@@ -35,6 +35,27 @@ describe("birth credential: protocol layer", () => {
     ).not.toThrow();
   });
 
+  it("rejects an issuance result whose delivered opening does not match its commitment", () => {
+    const fixture = createBirthCredentialProtocolFixture();
+    const tamperedResult = {
+      ...fixture.issuanceResult,
+      body: {
+        ...fixture.issuanceResult.body,
+        privateParts: {
+          ...fixture.issuanceResult.body.privateParts,
+          openings: {
+            ...fixture.issuanceResult.body.privateParts.openings,
+            legalNameOpening: new Uint8Array(32).fill(9),
+          },
+        },
+      },
+    };
+
+    expect(() =>
+      pureCircuits.assertValidBirthCredentialIssuanceResult(tamperedResult),
+    ).toThrow(/legal-name opening does not match/i);
+  });
+
   it("rejects an issuance result when the issuance challenge no longer matches the request", () => {
     const fixture = createBirthCredentialProtocolFixture();
     const tamperedResult = {

@@ -406,6 +406,20 @@ const createBirthCredentialProtocolFixtureFromFixture = (
       credentialProof: fixture.credentialProof,
       holderPublicKey: fixture.holder.publicKey,
       issuanceChallengeHash: fixture.credentialProof.challengeHash,
+      privateParts: {
+        claims: {
+          subjectId: fixture.witness.subjectId,
+          legalNamePadded: fixture.witness.legalNamePadded,
+          birthDateDays: fixture.witness.birthDateDays,
+          birthCountryCodePadded: fixture.witness.birthCountryCodePadded,
+        },
+        openings: {
+          subjectOpening: fixture.witness.subjectOpening,
+          legalNameOpening: fixture.witness.legalNameOpening,
+          birthDateOpening: fixture.witness.birthDateOpening,
+          birthCountryCodeOpening: fixture.witness.birthCountryCodeOpening,
+        },
+      },
     },
   };
 

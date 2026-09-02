@@ -316,6 +316,22 @@ export type BirthCredentialClaimCommitments = { subjectIdCommitment: Uint8Array;
                                                 birthCountryCodeCommitment: Uint8Array
                                               };
 
+export type BirthCredentialPrivateClaims = { subjectId: Uint8Array;
+                                             legalNamePadded: Uint8Array;
+                                             birthDateDays: bigint;
+                                             birthCountryCodePadded: Uint8Array
+                                           };
+
+export type BirthCredentialClaimOpenings = { subjectOpening: Uint8Array;
+                                             legalNameOpening: Uint8Array;
+                                             birthDateOpening: Uint8Array;
+                                             birthCountryCodeOpening: Uint8Array
+                                           };
+
+export type BirthCredentialPrivateParts = { claims: BirthCredentialPrivateClaims;
+                                            openings: BirthCredentialClaimOpenings
+                                          };
+
 export type SecretBirthCredentialDisclosures = { revealSubjectIdCommitment: boolean;
                                                  subjectIdCommitment: Uint8Array;
                                                  revealBirthCountryCode: boolean;
@@ -416,7 +432,8 @@ export type SecretBirthCredentialIssuanceRequestBody = { holderSecretCommitment:
 
 export type SecretBirthCredentialIssuanceResultBody = { credential: SecretBirthCredential;
                                                         credentialProof: Proof;
-                                                        issuanceChallengeHash: Uint8Array
+                                                        issuanceChallengeHash: Uint8Array;
+                                                        privateParts: BirthCredentialPrivateParts
                                                       };
 
 export type SecretBirthCredentialVerificationRequestBody = { requireSubjectIdCommitmentDisclosure: boolean;
@@ -803,6 +820,8 @@ export type PureCircuits = {
   legalNameCommitment(legalNamePadded_0: Uint8Array, opening_0: Uint8Array): Uint8Array;
   birthCountryCodeCommitment(birthCountryCodePadded_0: Uint8Array,
                              opening_0: Uint8Array): Uint8Array;
+  assertBirthCredentialPrivatePartsMatchCommitments(commitments_0: BirthCredentialClaimCommitments,
+                                                    privateParts_0: BirthCredentialPrivateParts): [];
   secretBirthCredentialBodyRoot(credential_0: SecretBirthCredential): Uint8Array;
   secretBirthCredentialRegistryBoundStatusBodyRoot(credential_0: SecretBirthStatusCredential): Uint8Array;
   secretBirthCredentialWithStatusBindingBodyRoot(credentialWithStatus_0: SecretBirthCredentialWithStatusBinding): Uint8Array;
@@ -1220,6 +1239,9 @@ export type Circuits<PS> = {
   birthCountryCodeCommitment(context: __compactRuntime.CircuitContext<PS>,
                              birthCountryCodePadded_0: Uint8Array,
                              opening_0: Uint8Array): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  assertBirthCredentialPrivatePartsMatchCommitments(context: __compactRuntime.CircuitContext<PS>,
+                                                    commitments_0: BirthCredentialClaimCommitments,
+                                                    privateParts_0: BirthCredentialPrivateParts): __compactRuntime.CircuitResults<PS, []>;
   secretBirthCredentialBodyRoot(context: __compactRuntime.CircuitContext<PS>,
                                 credential_0: SecretBirthCredential): __compactRuntime.CircuitResults<PS, Uint8Array>;
   secretBirthCredentialRegistryBoundStatusBodyRoot(context: __compactRuntime.CircuitContext<PS>,
