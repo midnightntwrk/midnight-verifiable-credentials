@@ -280,6 +280,9 @@ importers:
       '@midnight-ntwrk/compact-runtime':
         specifier: ^0.16.0
         version: 0.16.0
+      '@midnight-ntwrk/credential-model':
+        specifier: workspace:*
+        version: link:../../model
 
   packages/core/primitives/iso-registry:
     dependencies:
