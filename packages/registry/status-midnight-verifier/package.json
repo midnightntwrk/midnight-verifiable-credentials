@@ -10,9 +10,12 @@
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "./dist/index.d.ts",
-  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js", "default": "./dist/index.js" } },
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js", "default": "./dist/index.js" },
+    "./test-vectors/authenticated-status-v1.json": "./dist/test-vectors/authenticated-status-v1.json"
+  },
   "scripts": {
-    "build": "rm -rf dist .cache && tsc -b tsconfig.build.json --force",
+    "build": "rm -rf dist .cache && tsc -b tsconfig.build.json --force && mkdir -p dist/test-vectors && cp test-vectors/*.json dist/test-vectors/",
     "prepack": "pnpm run build",
     "test": "vitest run",
     "test:ci": "vitest run",
@@ -23,6 +26,7 @@
     "all": "pnpm run lint && pnpm run typecheck && pnpm run build && pnpm run test:ci"
   },
   "dependencies": {
+    "@midnight-ntwrk/credential-proofs": "^0.1.0",
     "@midnight-ntwrk/credential-status": "^0.1.0-rc1",
     "@midnight-ntwrk/credential-status-midnight-contract": "^0.1.0"
   },

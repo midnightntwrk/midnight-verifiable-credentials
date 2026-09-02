@@ -1,5 +1,7 @@
 import { createHash } from "node:crypto";
 
+export * from "./authenticated-status.js";
+
 import type {
   StatusEvidence,
   StatusReader,
@@ -7,6 +9,7 @@ import type {
 } from "@midnight-ntwrk/credential-status";
 import {
   computeStatusRecordDigestV1,
+  computeStatusRegistryRootV1,
   type StatusRegistryBindingV1,
   type StatusRegistryStateV1,
   type StatusSha256DigestV1,
@@ -40,17 +43,30 @@ export const deriveStatusRegistryReferenceV1 = (
 const handleBytes = (value: string | Uint8Array): Uint8Array =>
   typeof value === "string" ? new TextEncoder().encode(value) : value;
 
+const hasAuthenticatedStateRoot = (state: StatusRegistryStateV1): boolean => {
+  try {
+    return state.revokedRoot === computeStatusRegistryRootV1(state.revokedStatusHandleDigests);
+  } catch {
+    return false;
+  }
+};
+
 export const createMidnightStatusReaderV1 = (
   registry: StatusRegistryReaderV1,
 ): StatusReader => ({
   read: async (query): Promise<StatusReadResult> => {
     const state = registry.readState();
-    if (!state.initialized) {
+    if (
+      !state.initialized ||
+      state.controllerDid === null ||
+      !hasAuthenticatedStateRoot(state)
+    ) {
       return { kind: "unavailable", code: "statusStateUnavailable" };
     }
     const handle = query.binding.statusHandle;
     if (
       query.binding.mode !== "same-contract-live" ||
+      !query.policy.acceptedModes.includes("same-contract-live") ||
       query.binding.statusType !== midnightStatusTypeV1 ||
       query.binding.statusReference !== deriveStatusRegistryReferenceV1(state.binding) ||
       handle === undefined
@@ -65,8 +81,12 @@ export const createMidnightStatusReaderV1 = (
         : "active",
       version: BigInt(state.registryVersion),
       payload: {
+        network: state.binding.network,
+        namespace: state.binding.namespace,
         registryId: state.binding.registryId,
         deployment: state.binding.deployment,
+        root: state.revokedRoot,
+        authorityDid: state.controllerDid,
         auditCommitment: state.auditCommitment,
       },
     };

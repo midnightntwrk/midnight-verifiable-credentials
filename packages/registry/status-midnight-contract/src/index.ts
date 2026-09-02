@@ -1,5 +1,17 @@
 import { createHash } from "node:crypto";
 
+import {
+  computeStatusRegistryRootV1,
+  emptyStatusRegistryRootV1,
+} from "./authenticated-root.js";
+
+export {
+  computeStatusMerkleLeafV1,
+  computeStatusMerkleParentV1,
+  computeStatusRegistryRootV1,
+  emptyStatusRegistryRootV1,
+} from "./authenticated-root.js";
+
 export type StatusSha256DigestV1 = `sha256:${string}`;
 
 export interface StatusRegistryBindingV1 {
@@ -41,6 +53,8 @@ export interface StatusRegistryStateV1 {
   readonly authorityGeneration: number;
   readonly registryVersion: number;
   readonly revokedStatusHandleCount: number;
+  /** Canonical SHA-256 reference root over revokedStatusHandleDigests. */
+  readonly revokedRoot: StatusSha256DigestV1;
   readonly acceptedAuthorizationCount: number;
   readonly auditSequence: number;
   readonly auditCommitment: StatusSha256DigestV1;
@@ -91,6 +105,7 @@ export interface StatusRegistryAuthorizationReceiptV1 {
   readonly authorityGeneration: number;
   readonly resultingRegistryVersion: number;
   readonly resultingRevokedStatusHandleCount: number;
+  readonly resultingRevokedRoot: StatusSha256DigestV1;
   readonly acceptedAuthorizationCount: number;
   readonly auditSequence: number;
   readonly auditCommitment: StatusSha256DigestV1;
@@ -225,6 +240,7 @@ export class InMemoryStatusRegistryContractV1 {
       authorityGeneration: 0,
       registryVersion: 0,
       revokedStatusHandleCount: 0,
+      revokedRoot: emptyStatusRegistryRootV1,
       acceptedAuthorizationCount: 0,
       auditSequence: 0,
       auditCommitment: zeroDigest,
@@ -336,6 +352,7 @@ export class InMemoryStatusRegistryContractV1 {
       authorityGeneration: input.state.authorityGeneration,
       resultingRegistryVersion: input.state.registryVersion,
       resultingRevokedStatusHandleCount: input.state.revokedStatusHandleCount,
+      resultingRevokedRoot: input.state.revokedRoot,
       acceptedAuthorizationCount: input.state.acceptedAuthorizationCount,
       auditSequence: input.state.auditSequence,
       auditCommitment: input.state.auditCommitment,
@@ -439,6 +456,7 @@ export class InMemoryStatusRegistryContractV1 {
       authorityGeneration: 1,
       registryVersion: 1,
       revokedStatusHandleCount: 0,
+      revokedRoot: emptyStatusRegistryRootV1,
       acceptedAuthorizationCount,
       auditSequence,
       auditCommitment,
@@ -484,6 +502,7 @@ export class InMemoryStatusRegistryContractV1 {
     const auditSequence = this.#state.auditSequence + 1;
     const registryVersion = this.#state.registryVersion + (alreadyRevoked ? 0 : 1);
     const revokedStatusHandleCount = this.#state.revokedStatusHandleCount + (alreadyRevoked ? 0 : 1);
+    const revokedRoot = computeStatusRegistryRootV1([...this.#revoked]);
     const auditCommitment = computeStatusRecordDigestV1({
       domain: "midnight:vc:status-audit:v1",
       previousAuditCommitment: this.#state.auditCommitment,
@@ -498,6 +517,8 @@ export class InMemoryStatusRegistryContractV1 {
       resultingRegistryVersion: registryVersion,
       previousRevokedStatusHandleCount: this.#state.revokedStatusHandleCount,
       resultingRevokedStatusHandleCount: revokedStatusHandleCount,
+      previousRevokedRoot: this.#state.revokedRoot,
+      resultingRevokedRoot: revokedRoot,
     });
     this.#state = this.#snapshot({
       initialized: true,
@@ -505,6 +526,7 @@ export class InMemoryStatusRegistryContractV1 {
       authorityGeneration: this.#state.authorityGeneration,
       registryVersion,
       revokedStatusHandleCount,
+      revokedRoot,
       acceptedAuthorizationCount,
       auditSequence,
       auditCommitment,

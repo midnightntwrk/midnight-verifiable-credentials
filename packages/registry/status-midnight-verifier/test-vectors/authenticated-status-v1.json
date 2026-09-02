@@ -1,0 +1,229 @@
+{
+  "formatVersion": 1,
+  "algorithm": "sha256-status-tree-v1",
+  "leaves": [
+    "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "sha256:8888888888888888888888888888888888888888888888888888888888888888"
+  ],
+  "root": "sha256:30935dd771a07e15dcef3b74a1207e4a865e54afdb9f24cdfd7d9eec71a98354",
+  "subject": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+  "proof": {
+    "formatVersion": 1,
+    "kind": "non-membership",
+    "treeSize": 2,
+    "lower": {
+      "formatVersion": 1,
+      "leaf": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "leafIndex": 0,
+      "treeSize": 2,
+      "siblings": [
+        "sha256:048d913ab15694f3b6675c7889ee4f5588eaa484fd25c9646289ed601aeb2c28"
+      ]
+    },
+    "upper": {
+      "formatVersion": 1,
+      "leaf": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+      "leafIndex": 1,
+      "treeSize": 2,
+      "siblings": [
+        "sha256:bc6f27de60abf5319d16ff4c98fe3c42022c84f6a7a2b207c8df19b0ec3d8d58"
+      ]
+    }
+  },
+  "proofDigest": "sha256:d50a3517695a838a344b3e37c1ee914bc513ead664bb5e211aedf533569575d8",
+  "policy": {
+    "profile": "ledger-attested-v1",
+    "mode": "external-nonmembership",
+    "binding": {
+      "formatVersion": 1,
+      "network": "midnight:testnet",
+      "namespace": "issuer:family:1:revoked-set",
+      "registryId": "registry:1",
+      "deployment": "contract:1"
+    },
+    "acceptedRoot": "sha256:30935dd771a07e15dcef3b74a1207e4a865e54afdb9f24cdfd7d9eec71a98354",
+    "acceptedRegistryVersion": 2,
+    "acceptedAuthority": {
+      "did": "did:midnight:testnet:status",
+      "methodId": "did:midnight:testnet:status#status-1",
+      "keyFingerprint": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "relationship": "capabilityInvocation"
+    },
+    "acceptedAuthorityPolicyDigest": "sha256:54c1a96d08b73c2691f19f3b3af04f40b550342633319dbebafaa55717e841ae",
+    "acceptedLeaf": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+    "acceptedCredentialBindingDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "acceptedPresentationBindingDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "acceptedChallengeDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "freshnessPolicyDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  },
+  "evidence": {
+    "formatVersion": 1,
+    "profile": "ledger-attested-v1",
+    "privacy": "public",
+    "binding": {
+      "formatVersion": 1,
+      "network": "midnight:testnet",
+      "namespace": "issuer:family:1:revoked-set",
+      "registryId": "registry:1",
+      "deployment": "contract:1"
+    },
+    "root": "sha256:30935dd771a07e15dcef3b74a1207e4a865e54afdb9f24cdfd7d9eec71a98354",
+    "registryVersion": 2,
+    "result": "not-revoked",
+    "leaf": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+    "credentialBindingDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "presentationBindingDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "challengeDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "freshnessPolicyDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "observedAt": 100,
+    "expiresAt": 200,
+    "proof": {
+      "formatVersion": 1,
+      "kind": "non-membership",
+      "treeSize": 2,
+      "lower": {
+        "formatVersion": 1,
+        "leaf": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "leafIndex": 0,
+        "treeSize": 2,
+        "siblings": [
+          "sha256:048d913ab15694f3b6675c7889ee4f5588eaa484fd25c9646289ed601aeb2c28"
+        ]
+      },
+      "upper": {
+        "formatVersion": 1,
+        "leaf": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+        "leafIndex": 1,
+        "treeSize": 2,
+        "siblings": [
+          "sha256:bc6f27de60abf5319d16ff4c98fe3c42022c84f6a7a2b207c8df19b0ec3d8d58"
+        ]
+      }
+    },
+    "proofDigest": "sha256:d50a3517695a838a344b3e37c1ee914bc513ead664bb5e211aedf533569575d8",
+    "authority": {
+      "policy": {
+        "formatVersion": 1,
+        "profile": {
+          "id": "ledger-attested-v1",
+          "version": "1"
+        },
+        "did": {
+          "method": "midnight",
+          "issuerRelationship": "assertionMethod",
+          "network": "midnight:testnet",
+          "versionEvidence": "ledger-state"
+        },
+        "trust": {
+          "scope": "vc-status",
+          "epochEvidence": "ledger-state"
+        },
+        "providers": {
+          "did": {
+            "requirementId": "did",
+            "role": "did-resolver",
+            "providerId": "did",
+            "providerVersion": "1",
+            "instanceId": "did:1"
+          },
+          "trust": {
+            "requirementId": "trust",
+            "role": "trust-resolver",
+            "providerId": "trust",
+            "providerVersion": "1",
+            "instanceId": "trust:1"
+          }
+        },
+        "actors": [
+          {
+            "role": "issuer",
+            "did": "did:midnight:testnet:issuer",
+            "methodId": "did:midnight:testnet:issuer#key-1",
+            "keyFingerprint": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "relationship": "assertionMethod",
+            "stateVersion": "10",
+            "trustEpoch": "20"
+          },
+          {
+            "role": "holder",
+            "did": "did:midnight:testnet:holder",
+            "methodId": "did:midnight:testnet:holder#key-1",
+            "keyFingerprint": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "relationship": "assertionMethod",
+            "stateVersion": "10",
+            "trustEpoch": "20"
+          },
+          {
+            "role": "verifier",
+            "did": "did:midnight:testnet:verifier",
+            "methodId": "did:midnight:testnet:verifier#key-1",
+            "keyFingerprint": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+            "relationship": "assertionMethod",
+            "stateVersion": "10",
+            "trustEpoch": "20"
+          },
+          {
+            "role": "status",
+            "did": "did:midnight:testnet:status",
+            "methodId": "did:midnight:testnet:status#status-1",
+            "keyFingerprint": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+            "relationship": "capabilityInvocation",
+            "stateVersion": "10",
+            "trustEpoch": "20"
+          }
+        ]
+      },
+      "context": {
+        "proofDigest": "sha256:d50a3517695a838a344b3e37c1ee914bc513ead664bb5e211aedf533569575d8",
+        "credentialDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "presentationDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "requestDigest": "sha256:a575c47c3a708cca66b18a0af79c96355f6f1d6f09817a96840745b1841671c8"
+      }
+    },
+    "freshnessEvidence": {
+      "checkpoint": "ledger:100"
+    }
+  },
+  "statusStatementDigest": "sha256:a575c47c3a708cca66b18a0af79c96355f6f1d6f09817a96840745b1841671c8",
+  "providerOutputs": {
+    "authorityTranscriptDigest": "sha256:9999999999999999999999999999999999999999999999999999999999999999",
+    "freshnessAnchorDigest": "sha256:6666666666666666666666666666666666666666666666666666666666666666"
+  },
+  "expectedTranscript": {
+    "formatVersion": 1,
+    "domain": "midnight:vc:authenticated-status-verification:v1",
+    "profile": "ledger-attested-v1",
+    "mode": "external-nonmembership",
+    "binding": {
+      "formatVersion": 1,
+      "network": "midnight:testnet",
+      "namespace": "issuer:family:1:revoked-set",
+      "registryId": "registry:1",
+      "deployment": "contract:1"
+    },
+    "root": "sha256:30935dd771a07e15dcef3b74a1207e4a865e54afdb9f24cdfd7d9eec71a98354",
+    "registryVersion": 2,
+    "privacy": "public",
+    "subjectDigest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+    "freshnessPolicyDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "freshnessAnchorDigest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+    "authorityPolicyDigest": "sha256:54c1a96d08b73c2691f19f3b3af04f40b550342633319dbebafaa55717e841ae",
+    "authorityTranscriptDigest": "sha256:9999999999999999999999999999999999999999999999999999999999999999",
+    "proofDigest": "sha256:d50a3517695a838a344b3e37c1ee914bc513ead664bb5e211aedf533569575d8",
+    "result": "not-revoked"
+  },
+  "expectedTranscriptDigest": "sha256:2fbfca72ccb30ab940ca1e6ff8384fce13d3537bdc39b085d27be065755b9f9b",
+  "requiredNegativeMutations": [
+    "network",
+    "namespace",
+    "registryId",
+    "deployment",
+    "root",
+    "registryVersion",
+    "authority",
+    "leaf",
+    "witness",
+    "freshness",
+    "profile"
+  ]
+}

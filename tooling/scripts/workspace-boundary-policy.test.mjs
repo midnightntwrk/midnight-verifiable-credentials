@@ -55,13 +55,13 @@ test("family-neutral exchange depends only on canonical reusable core", () => {
   assert.deepEqual(findFamilyNeutralExchangeSourceImportViolations(), []);
 });
 
-test("status verifier/read consumers cannot import mutation or signing authority transitively", () => {
+test("status verifier/proof consumers cannot import mutation or signing authority transitively", () => {
   const verifier = "packages/registry/status-midnight-verifier";
   const contract = "packages/registry/status-midnight-contract";
   const authority = "packages/registry/status-midnight-authority";
   assert.deepEqual(
     leastPrivilegeStatusDependencyEdges[verifier],
-    ["packages/core/status", contract],
+    ["packages/core/proofs", "packages/core/status", contract],
   );
   assert.ok(!transitiveWorkspaceDependencyPaths(verifier).includes(authority));
   assert.ok(!transitiveWorkspaceDependencyPaths(contract).includes(authority));

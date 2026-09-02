@@ -1,6 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 
 import {
+  computeStatusRegistryRootV1,
+  emptyStatusRegistryRootV1,
   InMemoryStatusRegistryContractV1,
   type StatusRegistryAuthorizationGateV1,
   type StatusRegistryAuthorizationRequestV1,
@@ -66,6 +68,15 @@ const mutation = (overrides: Partial<StatusRegistryAuthorizationRequestV1> = {})
 });
 
 describe("status registry contract state v1", () => {
+  it("commits a domain-separated authenticated root to empty, singleton, and ordered sets", () => {
+    expect(computeStatusRegistryRootV1([])).toBe(emptyStatusRegistryRootV1);
+    expect(computeStatusRegistryRootV1([digest("f")])).not.toBe(digest("f"));
+    expect(computeStatusRegistryRootV1([digest("1"), digest("f")])).toBe(
+      computeStatusRegistryRootV1([digest("f"), digest("1")]),
+    );
+    expect(() => computeStatusRegistryRootV1([digest("f"), digest("f")])).toThrow(/unique/u);
+  });
+
   it("rejects unauthorized initialization and mutation without changing state", async () => {
     const contract = new InMemoryStatusRegistryContractV1({
       binding,
@@ -195,7 +206,7 @@ describe("status registry contract state v1", () => {
     await contract.revoke(mutation());
     const duplicateHandle = await contract.revoke(mutation({ nonce: "mutate-2", expectedRegistryVersion: 2 }));
 
-    expect(duplicateHandle).toMatchObject({ status: "accepted", receipt: { result: "already-revoked", resultingRegistryVersion: 2 } });
+    expect(duplicateHandle).toMatchObject({ status: "accepted", receipt: { result: "already-revoked", resultingRegistryVersion: 2, resultingRevokedRoot: computeStatusRegistryRootV1([digest("f")]) } });
     const serialized = JSON.stringify(duplicateHandle.receipt);
     expect(serialized).not.toContain(digest("f"));
     expect(serialized).not.toContain("statusHandle");
