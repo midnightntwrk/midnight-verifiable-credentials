@@ -70,26 +70,44 @@ constructor() {
   liveStatusRegistryId = pad(32, "vc-demo:rev:no-live-registry");
 }
 
-pure circuit revocationDemoVerificationMessageId(
+export pure circuit revocationDemoVerificationMessageId(
   verifierChallengeHash: Bytes<32>,
-  verifierDomainHash: Bytes<32>
+  verifierIdentityDigest: Bytes<32>
 ): Bytes<32> {
   return persistentHash<Vector<3, Bytes<32>>>([
     pad(32, "vc-demo:rev:message"),
     verifierChallengeHash,
-    verifierDomainHash
+    verifierIdentityDigest
   ]);
 }
 
-pure circuit revocationDemoVerificationThreadId(
+export pure circuit revocationDemoVerificationThreadId(
   verifierChallengeHash: Bytes<32>,
-  verifierDomainHash: Bytes<32>
+  verifierIdentityDigest: Bytes<32>
 ): Bytes<32> {
   return persistentHash<Vector<3, Bytes<32>>>([
     pad(32, "vc-demo:rev:thread"),
     verifierChallengeHash,
-    verifierDomainHash
+    verifierIdentityDigest
   ]);
+}
+
+export pure circuit revocationDemoVerifierPseudonymScopeV1(
+  verifierIdentityDigest: Bytes<32>,
+  verifierChallengeHash: Bytes<32>
+): VerifierPseudonymScopeV1 {
+  return VerifierPseudonymScopeV1 {
+    verifierIdentityDigest: verifierIdentityDigest,
+    executionContextDigest: pad(32, "vc-demo:age-gate:deployment"),
+    audienceDigest: pad(32, "vc-demo:age-gate:audience"),
+    originDigest: pad(32, "vc-demo:age-gate:origin"),
+    consentDigest: pad(32, "vc-demo:age-gate:consent"),
+    requestDigest: revocationDemoVerificationMessageId(
+      verifierChallengeHash,
+      verifierIdentityDigest
+    ),
+    challengeDigest: verifierChallengeHash,
+  };
 }
 
 pure circuit revocationDemoStatusPolicy(
@@ -156,7 +174,7 @@ export circuit revokeLiveStatusHandle(
 
 export circuit revocationAwareAgeGateVerificationRequest(
   issuerVerificationMethodRef: VerificationMethodRef,
-  verifierDomainHash: Bytes<32>,
+  verifierIdentityDigest: Bytes<32>,
   verifierChallengeHash: Bytes<32>,
   trustedTime: Uint<64>
 ): SecretBirthCredentialVerificationRequest {
@@ -166,11 +184,11 @@ export circuit revocationAwareAgeGateVerificationRequest(
       version: 1,
       messageId: revocationDemoVerificationMessageId(
         verifierChallengeHash,
-        verifierDomainHash
+        verifierIdentityDigest
       ),
       threadId: revocationDemoVerificationThreadId(
         verifierChallengeHash,
-        verifierDomainHash
+        verifierIdentityDigest
       ),
       initialMessage: true,
       respondsToMessageId: noProtocolResponseReference(),
@@ -197,7 +215,10 @@ export circuit revocationAwareAgeGateVerificationRequest(
       requireSubjectIdCommitmentDisclosure: false,
       requireBirthCountryDisclosure: false,
       requireVerifierScopedPseudonym: requireVerifierScopedPseudonym,
-      verifierDomainHash: verifierDomainHash,
+      verifierPseudonymScope: revocationDemoVerifierPseudonymScopeV1(
+        verifierIdentityDigest,
+        verifierChallengeHash
+      ),
       requireAgeOverThreshold: true,
       requestedAgeThresholdYears: minimumAccessAgeYears,
     },
@@ -206,7 +227,7 @@ export circuit revocationAwareAgeGateVerificationRequest(
 
 export circuit revocationAwareVerifierSuppliedRootRequest(
   issuerVerificationMethodRef: VerificationMethodRef,
-  verifierDomainHash: Bytes<32>,
+  verifierIdentityDigest: Bytes<32>,
   verifierChallengeHash: Bytes<32>,
   registryState: RevocationRegistryState,
   trustedTime: Uint<64>
@@ -214,7 +235,7 @@ export circuit revocationAwareVerifierSuppliedRootRequest(
   return SecretBirthCredentialVerificationRevokedSetStatusRequest {
     verificationRequest: revocationAwareAgeGateVerificationRequest(
       issuerVerificationMethodRef,
-      verifierDomainHash,
+      verifierIdentityDigest,
       verifierChallengeHash,
       trustedTime
     ),
@@ -231,7 +252,7 @@ export circuit revocationAwareVerifierSuppliedRootRequest(
 
 export circuit revocationAwareAuthorityAttestedRequest(
   issuerVerificationMethodRef: VerificationMethodRef,
-  verifierDomainHash: Bytes<32>,
+  verifierIdentityDigest: Bytes<32>,
   verifierChallengeHash: Bytes<32>,
   registryState: RevocationRegistryState,
   trustedTime: Uint<64>
@@ -239,7 +260,7 @@ export circuit revocationAwareAuthorityAttestedRequest(
   return SecretBirthCredentialVerificationAuthorityAttestedStatusRequest {
     verificationRequest: revocationAwareAgeGateVerificationRequest(
       issuerVerificationMethodRef,
-      verifierDomainHash,
+      verifierIdentityDigest,
       verifierChallengeHash,
       trustedTime
     ),
@@ -255,7 +276,7 @@ export circuit revocationAwareAuthorityAttestedRequest(
 
 export circuit revocationAwareLiveStatusRequest(
   issuerVerificationMethodRef: VerificationMethodRef,
-  verifierDomainHash: Bytes<32>,
+  verifierIdentityDigest: Bytes<32>,
   verifierChallengeHash: Bytes<32>,
   trustedTime: Uint<64>
 ): SecretBirthCredentialVerificationLiveStatusRequest {
@@ -266,7 +287,7 @@ export circuit revocationAwareLiveStatusRequest(
   return SecretBirthCredentialVerificationLiveStatusRequest {
     verificationRequest: revocationAwareAgeGateVerificationRequest(
       issuerVerificationMethodRef,
-      verifierDomainHash,
+      verifierIdentityDigest,
       verifierChallengeHash,
       trustedTime
     ),

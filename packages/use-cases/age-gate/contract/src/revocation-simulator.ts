@@ -153,7 +153,7 @@ export class CredentialsDemoRevocationSimulator {
 
   public revocationAwareVerifierSuppliedRootRequest(
     issuerVerificationMethodRef: VerificationMethodRef,
-    verifierDomainHash: Uint8Array,
+    verifierIdentityDigest: Uint8Array,
     verifierChallengeHash: Uint8Array,
     registryState: RevocationRegistryState,
     trustedTime = DEFAULT_REFERENCE_LEDGER_TIME,
@@ -163,7 +163,7 @@ export class CredentialsDemoRevocationSimulator {
       this.contract.impureCircuits.revocationAwareVerifierSuppliedRootRequest(
         this.circuitContext,
         issuerVerificationMethodRef,
-        verifierDomainHash,
+        verifierIdentityDigest,
         verifierChallengeHash,
         registryState,
         trustedTime,
@@ -173,7 +173,7 @@ export class CredentialsDemoRevocationSimulator {
 
   public revocationAwareAuthorityAttestedRequest(
     issuerVerificationMethodRef: VerificationMethodRef,
-    verifierDomainHash: Uint8Array,
+    verifierIdentityDigest: Uint8Array,
     verifierChallengeHash: Uint8Array,
     registryState: RevocationRegistryState,
     trustedTime = DEFAULT_REFERENCE_LEDGER_TIME,
@@ -183,7 +183,7 @@ export class CredentialsDemoRevocationSimulator {
       this.contract.impureCircuits.revocationAwareAuthorityAttestedRequest(
         this.circuitContext,
         issuerVerificationMethodRef,
-        verifierDomainHash,
+        verifierIdentityDigest,
         verifierChallengeHash,
         registryState,
         trustedTime,
@@ -193,7 +193,7 @@ export class CredentialsDemoRevocationSimulator {
 
   public revocationAwareLiveStatusRequest(
     issuerVerificationMethodRef: VerificationMethodRef,
-    verifierDomainHash: Uint8Array,
+    verifierIdentityDigest: Uint8Array,
     verifierChallengeHash: Uint8Array,
     trustedTime = DEFAULT_REFERENCE_LEDGER_TIME,
   ): SecretBirthCredentialVerificationLiveStatusRequest {
@@ -202,7 +202,7 @@ export class CredentialsDemoRevocationSimulator {
       this.contract.impureCircuits.revocationAwareLiveStatusRequest(
         this.circuitContext,
         issuerVerificationMethodRef,
-        verifierDomainHash,
+        verifierIdentityDigest,
         verifierChallengeHash,
         trustedTime,
       ),

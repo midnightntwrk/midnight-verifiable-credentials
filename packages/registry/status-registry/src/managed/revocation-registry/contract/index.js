@@ -21,50 +21,50 @@ export var StatusCapabilityKind;
   StatusCapabilityKind[StatusCapabilityKind['authorityAttestedStatus'] = 3] = 'authorityAttestedStatus';
 })(StatusCapabilityKind || (StatusCapabilityKind = {}));
 
-const _descriptor_0 = new __compactRuntime.CompactTypeUnsignedInteger(65535n, 2);
+const _descriptor_0 = new __compactRuntime.CompactTypeBytes(32);
 
-const _descriptor_1 = new __compactRuntime.CompactTypeBytes(32);
+const _descriptor_1 = new __compactRuntime.CompactTypeUnsignedInteger(18446744073709551615n, 8);
 
 const _descriptor_2 = __compactRuntime.CompactTypeBoolean;
 
-const _descriptor_3 = new __compactRuntime.CompactTypeUnsignedInteger(18446744073709551615n, 8);
-
 class _RevocationRegistryState_0 {
   alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_3.alignment()));
+    return _descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_1.alignment()));
   }
   fromValue(value_0) {
     return {
-      registryId: _descriptor_1.fromValue(value_0),
-      revokedRoot: _descriptor_1.fromValue(value_0),
-      registryVersion: _descriptor_3.fromValue(value_0)
+      registryId: _descriptor_0.fromValue(value_0),
+      revokedRoot: _descriptor_0.fromValue(value_0),
+      registryVersion: _descriptor_1.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_1.toValue(value_0.registryId).concat(_descriptor_1.toValue(value_0.revokedRoot).concat(_descriptor_3.toValue(value_0.registryVersion)));
+    return _descriptor_0.toValue(value_0.registryId).concat(_descriptor_0.toValue(value_0.revokedRoot).concat(_descriptor_1.toValue(value_0.registryVersion)));
   }
 }
 
-const _descriptor_4 = new _RevocationRegistryState_0();
+const _descriptor_3 = new _RevocationRegistryState_0();
+
+const _descriptor_4 = new __compactRuntime.CompactTypeUnsignedInteger(65535n, 2);
 
 const _descriptor_5 = new __compactRuntime.CompactTypeEnum(3, 1);
 
 class _VerifierStatusPolicy_0 {
   alignment() {
-    return _descriptor_2.alignment().concat(_descriptor_5.alignment().concat(_descriptor_2.alignment().concat(_descriptor_1.alignment().concat(_descriptor_2.alignment().concat(_descriptor_3.alignment())))));
+    return _descriptor_2.alignment().concat(_descriptor_5.alignment().concat(_descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_1.alignment())))));
   }
   fromValue(value_0) {
     return {
       requireStatus: _descriptor_2.fromValue(value_0),
       acceptedStatusCapability: _descriptor_5.fromValue(value_0),
       enforceRegistryId: _descriptor_2.fromValue(value_0),
-      acceptedRegistryId: _descriptor_1.fromValue(value_0),
+      acceptedRegistryId: _descriptor_0.fromValue(value_0),
       enforceAttestationMaxAge: _descriptor_2.fromValue(value_0),
-      maxAttestationAge: _descriptor_3.fromValue(value_0)
+      maxAttestationAge: _descriptor_1.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_2.toValue(value_0.requireStatus).concat(_descriptor_5.toValue(value_0.acceptedStatusCapability).concat(_descriptor_2.toValue(value_0.enforceRegistryId).concat(_descriptor_1.toValue(value_0.acceptedRegistryId).concat(_descriptor_2.toValue(value_0.enforceAttestationMaxAge).concat(_descriptor_3.toValue(value_0.maxAttestationAge))))));
+    return _descriptor_2.toValue(value_0.requireStatus).concat(_descriptor_5.toValue(value_0.acceptedStatusCapability).concat(_descriptor_2.toValue(value_0.enforceRegistryId).concat(_descriptor_0.toValue(value_0.acceptedRegistryId).concat(_descriptor_2.toValue(value_0.enforceAttestationMaxAge).concat(_descriptor_1.toValue(value_0.maxAttestationAge))))));
   }
 }
 
@@ -74,15 +74,15 @@ const _descriptor_7 = new __compactRuntime.CompactTypeEnum(0, 0);
 
 class _ContractAddress_0 {
   alignment() {
-    return _descriptor_1.alignment();
+    return _descriptor_0.alignment();
   }
   fromValue(value_0) {
     return {
-      bytes: _descriptor_1.fromValue(value_0)
+      bytes: _descriptor_0.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_1.toValue(value_0.bytes);
+    return _descriptor_0.toValue(value_0.bytes);
   }
 }
 
@@ -90,16 +90,16 @@ const _descriptor_8 = new _ContractAddress_0();
 
 class _VerificationMethodRef_0 {
   alignment() {
-    return _descriptor_8.alignment().concat(_descriptor_1.alignment());
+    return _descriptor_8.alignment().concat(_descriptor_0.alignment());
   }
   fromValue(value_0) {
     return {
       didContractAddress: _descriptor_8.fromValue(value_0),
-      methodId: _descriptor_1.fromValue(value_0)
+      methodId: _descriptor_0.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_8.toValue(value_0.didContractAddress).concat(_descriptor_1.toValue(value_0.methodId));
+    return _descriptor_8.toValue(value_0.didContractAddress).concat(_descriptor_0.toValue(value_0.methodId));
   }
 }
 
@@ -107,16 +107,16 @@ const _descriptor_9 = new _VerificationMethodRef_0();
 
 class _StatusRegistryRef_0 {
   alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_9.alignment());
+    return _descriptor_0.alignment().concat(_descriptor_9.alignment());
   }
   fromValue(value_0) {
     return {
-      registryId: _descriptor_1.fromValue(value_0),
+      registryId: _descriptor_0.fromValue(value_0),
       authorityVerificationMethodRef: _descriptor_9.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_1.toValue(value_0.registryId).concat(_descriptor_9.toValue(value_0.authorityVerificationMethodRef));
+    return _descriptor_0.toValue(value_0.registryId).concat(_descriptor_9.toValue(value_0.authorityVerificationMethodRef));
   }
 }
 
@@ -124,17 +124,17 @@ const _descriptor_10 = new _StatusRegistryRef_0();
 
 class _RegistryBoundStatusBinding_0 {
   alignment() {
-    return _descriptor_7.alignment().concat(_descriptor_10.alignment().concat(_descriptor_1.alignment()));
+    return _descriptor_7.alignment().concat(_descriptor_10.alignment().concat(_descriptor_0.alignment()));
   }
   fromValue(value_0) {
     return {
       statusType: _descriptor_7.fromValue(value_0),
       registryRef: _descriptor_10.fromValue(value_0),
-      statusHandleCommitment: _descriptor_1.fromValue(value_0)
+      statusHandleCommitment: _descriptor_0.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_7.toValue(value_0.statusType).concat(_descriptor_10.toValue(value_0.registryRef).concat(_descriptor_1.toValue(value_0.statusHandleCommitment)));
+    return _descriptor_7.toValue(value_0.statusType).concat(_descriptor_10.toValue(value_0.registryRef).concat(_descriptor_0.toValue(value_0.statusHandleCommitment)));
   }
 }
 
@@ -142,16 +142,16 @@ const _descriptor_11 = new _RegistryBoundStatusBinding_0();
 
 class _RevokedSetStatusRequest_0 {
   alignment() {
-    return _descriptor_4.alignment().concat(_descriptor_1.alignment());
+    return _descriptor_3.alignment().concat(_descriptor_0.alignment());
   }
   fromValue(value_0) {
     return {
-      registryState: _descriptor_4.fromValue(value_0),
-      verifierChallengeHash: _descriptor_1.fromValue(value_0)
+      registryState: _descriptor_3.fromValue(value_0),
+      verifierChallengeHash: _descriptor_0.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_4.toValue(value_0.registryState).concat(_descriptor_1.toValue(value_0.verifierChallengeHash));
+    return _descriptor_3.toValue(value_0.registryState).concat(_descriptor_0.toValue(value_0.verifierChallengeHash));
   }
 }
 
@@ -159,19 +159,19 @@ const _descriptor_12 = new _RevokedSetStatusRequest_0();
 
 class _AuthorityAttestedStatusStatement_0 {
   alignment() {
-    return _descriptor_4.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_2.alignment().concat(_descriptor_3.alignment()))));
+    return _descriptor_3.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_1.alignment()))));
   }
   fromValue(value_0) {
     return {
-      registryState: _descriptor_4.fromValue(value_0),
-      statusHandleCommitment: _descriptor_1.fromValue(value_0),
-      verifierChallengeHash: _descriptor_1.fromValue(value_0),
+      registryState: _descriptor_3.fromValue(value_0),
+      statusHandleCommitment: _descriptor_0.fromValue(value_0),
+      verifierChallengeHash: _descriptor_0.fromValue(value_0),
       hasExpiration: _descriptor_2.fromValue(value_0),
-      expiresAt: _descriptor_3.fromValue(value_0)
+      expiresAt: _descriptor_1.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_4.toValue(value_0.registryState).concat(_descriptor_1.toValue(value_0.statusHandleCommitment).concat(_descriptor_1.toValue(value_0.verifierChallengeHash).concat(_descriptor_2.toValue(value_0.hasExpiration).concat(_descriptor_3.toValue(value_0.expiresAt)))));
+    return _descriptor_3.toValue(value_0.registryState).concat(_descriptor_0.toValue(value_0.statusHandleCommitment).concat(_descriptor_0.toValue(value_0.verifierChallengeHash).concat(_descriptor_2.toValue(value_0.hasExpiration).concat(_descriptor_1.toValue(value_0.expiresAt)))));
   }
 }
 
@@ -200,19 +200,19 @@ const _descriptor_16 = new _Signature_0();
 
 class _Proof_0 {
   alignment() {
-    return _descriptor_9.alignment().concat(_descriptor_3.alignment().concat(_descriptor_1.alignment().concat(_descriptor_14.alignment().concat(_descriptor_16.alignment()))));
+    return _descriptor_9.alignment().concat(_descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_14.alignment().concat(_descriptor_16.alignment()))));
   }
   fromValue(value_0) {
     return {
       signerVerificationMethodRef: _descriptor_9.fromValue(value_0),
-      createdAt: _descriptor_3.fromValue(value_0),
-      challengeHash: _descriptor_1.fromValue(value_0),
+      createdAt: _descriptor_1.fromValue(value_0),
+      challengeHash: _descriptor_0.fromValue(value_0),
       publicKey: _descriptor_14.fromValue(value_0),
       signature: _descriptor_16.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_9.toValue(value_0.signerVerificationMethodRef).concat(_descriptor_3.toValue(value_0.createdAt).concat(_descriptor_1.toValue(value_0.challengeHash).concat(_descriptor_14.toValue(value_0.publicKey).concat(_descriptor_16.toValue(value_0.signature)))));
+    return _descriptor_9.toValue(value_0.signerVerificationMethodRef).concat(_descriptor_1.toValue(value_0.createdAt).concat(_descriptor_0.toValue(value_0.challengeHash).concat(_descriptor_14.toValue(value_0.publicKey).concat(_descriptor_16.toValue(value_0.signature)))));
   }
 }
 
@@ -252,223 +252,75 @@ class _AuthorityAttestedStatusProofProtocol_0 {
 
 const _descriptor_19 = new _AuthorityAttestedStatusProofProtocol_0();
 
-class _LiveStatusWitnessInput_0 {
-  alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_1.alignment());
-  }
-  fromValue(value_0) {
-    return {
-      statusHandle: _descriptor_1.fromValue(value_0),
-      statusHandleOpening: _descriptor_1.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_1.toValue(value_0.statusHandle).concat(_descriptor_1.toValue(value_0.statusHandleOpening));
-  }
-}
-
-const _descriptor_20 = new _LiveStatusWitnessInput_0();
-
 class _RevokedSetNonMembershipWitnessInput_0 {
   alignment() {
-    return _descriptor_4.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment()));
+    return _descriptor_3.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment()));
   }
   fromValue(value_0) {
     return {
-      registryState: _descriptor_4.fromValue(value_0),
-      statusHandle: _descriptor_1.fromValue(value_0),
-      statusHandleOpening: _descriptor_1.fromValue(value_0)
+      registryState: _descriptor_3.fromValue(value_0),
+      statusHandle: _descriptor_0.fromValue(value_0),
+      statusHandleOpening: _descriptor_0.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_4.toValue(value_0.registryState).concat(_descriptor_1.toValue(value_0.statusHandle).concat(_descriptor_1.toValue(value_0.statusHandleOpening)));
+    return _descriptor_3.toValue(value_0.registryState).concat(_descriptor_0.toValue(value_0.statusHandle).concat(_descriptor_0.toValue(value_0.statusHandleOpening)));
   }
 }
 
-const _descriptor_21 = new _RevokedSetNonMembershipWitnessInput_0();
+const _descriptor_20 = new _RevokedSetNonMembershipWitnessInput_0();
 
 class _RevokedSetNonMembershipStatusProofProtocol_0 {
   alignment() {
-    return _descriptor_12.alignment().concat(_descriptor_21.alignment());
+    return _descriptor_12.alignment().concat(_descriptor_20.alignment());
   }
   fromValue(value_0) {
     return {
       request: _descriptor_12.fromValue(value_0),
-      witnessInput: _descriptor_21.fromValue(value_0)
+      witnessInput: _descriptor_20.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_12.toValue(value_0.request).concat(_descriptor_21.toValue(value_0.witnessInput));
+    return _descriptor_12.toValue(value_0.request).concat(_descriptor_20.toValue(value_0.witnessInput));
   }
 }
 
-const _descriptor_22 = new _RevokedSetNonMembershipStatusProofProtocol_0();
+const _descriptor_21 = new _RevokedSetNonMembershipStatusProofProtocol_0();
 
-class _RevokedSetNonMembershipStatusCapability_0 {
+class _LiveStatusWitnessInput_0 {
   alignment() {
-    return _descriptor_7.alignment().concat(_descriptor_10.alignment().concat(_descriptor_1.alignment()));
+    return _descriptor_0.alignment().concat(_descriptor_0.alignment());
   }
   fromValue(value_0) {
     return {
-      statusType: _descriptor_7.fromValue(value_0),
-      registryRef: _descriptor_10.fromValue(value_0),
-      statusHandleCommitment: _descriptor_1.fromValue(value_0)
+      statusHandle: _descriptor_0.fromValue(value_0),
+      statusHandleOpening: _descriptor_0.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_7.toValue(value_0.statusType).concat(_descriptor_10.toValue(value_0.registryRef).concat(_descriptor_1.toValue(value_0.statusHandleCommitment)));
+    return _descriptor_0.toValue(value_0.statusHandle).concat(_descriptor_0.toValue(value_0.statusHandleOpening));
   }
 }
 
-const _descriptor_23 = new _RevokedSetNonMembershipStatusCapability_0();
+const _descriptor_22 = new _LiveStatusWitnessInput_0();
 
 class _AuthorityAttestedStatusCapability_0 {
   alignment() {
-    return _descriptor_7.alignment().concat(_descriptor_10.alignment().concat(_descriptor_1.alignment()));
+    return _descriptor_7.alignment().concat(_descriptor_10.alignment().concat(_descriptor_0.alignment()));
   }
   fromValue(value_0) {
     return {
       statusType: _descriptor_7.fromValue(value_0),
       registryRef: _descriptor_10.fromValue(value_0),
-      statusHandleCommitment: _descriptor_1.fromValue(value_0)
+      statusHandleCommitment: _descriptor_0.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_7.toValue(value_0.statusType).concat(_descriptor_10.toValue(value_0.registryRef).concat(_descriptor_1.toValue(value_0.statusHandleCommitment)));
+    return _descriptor_7.toValue(value_0.statusType).concat(_descriptor_10.toValue(value_0.registryRef).concat(_descriptor_0.toValue(value_0.statusHandleCommitment)));
   }
 }
 
-const _descriptor_24 = new _AuthorityAttestedStatusCapability_0();
-
-const _descriptor_25 = new __compactRuntime.CompactTypeUnsignedInteger(255n, 1);
-
-class _VerificationTranscriptV1_0 {
-  alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_25.alignment().concat(_descriptor_25.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_25.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_3.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_25.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_25.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_25.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_3.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_25.alignment().concat(_descriptor_3.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_25.alignment().concat(_descriptor_25.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment()))))))))))))))))))))))))))))))))))))))))))))));
-  }
-  fromValue(value_0) {
-    return {
-      domain: _descriptor_1.fromValue(value_0),
-      version: _descriptor_0.fromValue(value_0),
-      profile: _descriptor_25.fromValue(value_0),
-      authority: _descriptor_25.fromValue(value_0),
-      networkIdDigest: _descriptor_1.fromValue(value_0),
-      verifierContractDigest: _descriptor_1.fromValue(value_0),
-      deploymentDigest: _descriptor_1.fromValue(value_0),
-      audienceDigest: _descriptor_1.fromValue(value_0),
-      originMode: _descriptor_25.fromValue(value_0),
-      originDigest: _descriptor_1.fromValue(value_0),
-      connectorEvidenceDigest: _descriptor_1.fromValue(value_0),
-      requestIdDigest: _descriptor_1.fromValue(value_0),
-      challengeDigest: _descriptor_1.fromValue(value_0),
-      expiresAt: _descriptor_3.fromValue(value_0),
-      credentialFamilyDigest: _descriptor_1.fromValue(value_0),
-      schemaDigest: _descriptor_1.fromValue(value_0),
-      credentialBindingMode: _descriptor_25.fromValue(value_0),
-      credentialBindingDigest: _descriptor_1.fromValue(value_0),
-      disclosureDigest: _descriptor_1.fromValue(value_0),
-      predicateDigest: _descriptor_1.fromValue(value_0),
-      holderBindingDigest: _descriptor_1.fromValue(value_0),
-      policyDigest: _descriptor_1.fromValue(value_0),
-      actionClassDigest: _descriptor_1.fromValue(value_0),
-      actionInvocationDigest: _descriptor_1.fromValue(value_0),
-      consentDigest: _descriptor_1.fromValue(value_0),
-      presentationBindingDigest: _descriptor_1.fromValue(value_0),
-      issuerDidDigest: _descriptor_1.fromValue(value_0),
-      issuerMethodDigest: _descriptor_1.fromValue(value_0),
-      issuerRelationship: _descriptor_25.fromValue(value_0),
-      issuerEvidenceDigest: _descriptor_1.fromValue(value_0),
-      trustScopeDigest: _descriptor_1.fromValue(value_0),
-      trustEvidenceDigest: _descriptor_1.fromValue(value_0),
-      statusMode: _descriptor_25.fromValue(value_0),
-      statusRegistryDigest: _descriptor_1.fromValue(value_0),
-      statusRoot: _descriptor_1.fromValue(value_0),
-      statusRegistryVersion: _descriptor_3.fromValue(value_0),
-      statusFreshnessPolicyDigest: _descriptor_1.fromValue(value_0),
-      statusEvidenceDigest: _descriptor_1.fromValue(value_0),
-      timeMode: _descriptor_25.fromValue(value_0),
-      trustedTime: _descriptor_3.fromValue(value_0),
-      timeEvidenceDigest: _descriptor_1.fromValue(value_0),
-      artifactManifestDigest: _descriptor_1.fromValue(value_0),
-      artifactEvidenceDigest: _descriptor_1.fromValue(value_0),
-      nullifierMode: _descriptor_25.fromValue(value_0),
-      replayPolicy: _descriptor_25.fromValue(value_0),
-      replayScopeDigest: _descriptor_1.fromValue(value_0),
-      decisionNullifier: _descriptor_1.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_1.toValue(value_0.domain).concat(_descriptor_0.toValue(value_0.version).concat(_descriptor_25.toValue(value_0.profile).concat(_descriptor_25.toValue(value_0.authority).concat(_descriptor_1.toValue(value_0.networkIdDigest).concat(_descriptor_1.toValue(value_0.verifierContractDigest).concat(_descriptor_1.toValue(value_0.deploymentDigest).concat(_descriptor_1.toValue(value_0.audienceDigest).concat(_descriptor_25.toValue(value_0.originMode).concat(_descriptor_1.toValue(value_0.originDigest).concat(_descriptor_1.toValue(value_0.connectorEvidenceDigest).concat(_descriptor_1.toValue(value_0.requestIdDigest).concat(_descriptor_1.toValue(value_0.challengeDigest).concat(_descriptor_3.toValue(value_0.expiresAt).concat(_descriptor_1.toValue(value_0.credentialFamilyDigest).concat(_descriptor_1.toValue(value_0.schemaDigest).concat(_descriptor_25.toValue(value_0.credentialBindingMode).concat(_descriptor_1.toValue(value_0.credentialBindingDigest).concat(_descriptor_1.toValue(value_0.disclosureDigest).concat(_descriptor_1.toValue(value_0.predicateDigest).concat(_descriptor_1.toValue(value_0.holderBindingDigest).concat(_descriptor_1.toValue(value_0.policyDigest).concat(_descriptor_1.toValue(value_0.actionClassDigest).concat(_descriptor_1.toValue(value_0.actionInvocationDigest).concat(_descriptor_1.toValue(value_0.consentDigest).concat(_descriptor_1.toValue(value_0.presentationBindingDigest).concat(_descriptor_1.toValue(value_0.issuerDidDigest).concat(_descriptor_1.toValue(value_0.issuerMethodDigest).concat(_descriptor_25.toValue(value_0.issuerRelationship).concat(_descriptor_1.toValue(value_0.issuerEvidenceDigest).concat(_descriptor_1.toValue(value_0.trustScopeDigest).concat(_descriptor_1.toValue(value_0.trustEvidenceDigest).concat(_descriptor_25.toValue(value_0.statusMode).concat(_descriptor_1.toValue(value_0.statusRegistryDigest).concat(_descriptor_1.toValue(value_0.statusRoot).concat(_descriptor_3.toValue(value_0.statusRegistryVersion).concat(_descriptor_1.toValue(value_0.statusFreshnessPolicyDigest).concat(_descriptor_1.toValue(value_0.statusEvidenceDigest).concat(_descriptor_25.toValue(value_0.timeMode).concat(_descriptor_3.toValue(value_0.trustedTime).concat(_descriptor_1.toValue(value_0.timeEvidenceDigest).concat(_descriptor_1.toValue(value_0.artifactManifestDigest).concat(_descriptor_1.toValue(value_0.artifactEvidenceDigest).concat(_descriptor_25.toValue(value_0.nullifierMode).concat(_descriptor_25.toValue(value_0.replayPolicy).concat(_descriptor_1.toValue(value_0.replayScopeDigest).concat(_descriptor_1.toValue(value_0.decisionNullifier)))))))))))))))))))))))))))))))))))))))))))))));
-  }
-}
-
-const _descriptor_26 = new _VerificationTranscriptV1_0();
-
-class _EvidenceBindingV1_0 {
-  alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_25.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_3.alignment().concat(_descriptor_3.alignment()))))))));
-  }
-  fromValue(value_0) {
-    return {
-      domain: _descriptor_1.fromValue(value_0),
-      version: _descriptor_0.fromValue(value_0),
-      mode: _descriptor_25.fromValue(value_0),
-      authorityDigest: _descriptor_1.fromValue(value_0),
-      subjectDigest: _descriptor_1.fromValue(value_0),
-      stateAnchorDigest: _descriptor_1.fromValue(value_0),
-      statementDigest: _descriptor_1.fromValue(value_0),
-      createdAt: _descriptor_3.fromValue(value_0),
-      expiresAt: _descriptor_3.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_1.toValue(value_0.domain).concat(_descriptor_0.toValue(value_0.version).concat(_descriptor_25.toValue(value_0.mode).concat(_descriptor_1.toValue(value_0.authorityDigest).concat(_descriptor_1.toValue(value_0.subjectDigest).concat(_descriptor_1.toValue(value_0.stateAnchorDigest).concat(_descriptor_1.toValue(value_0.statementDigest).concat(_descriptor_3.toValue(value_0.createdAt).concat(_descriptor_3.toValue(value_0.expiresAt)))))))));
-  }
-}
-
-const _descriptor_27 = new _EvidenceBindingV1_0();
-
-class _VerificationPublicInputsV1_0 {
-  alignment() {
-    return _descriptor_26.alignment().concat(_descriptor_27.alignment().concat(_descriptor_27.alignment().concat(_descriptor_27.alignment().concat(_descriptor_27.alignment().concat(_descriptor_27.alignment().concat(_descriptor_27.alignment()))))));
-  }
-  fromValue(value_0) {
-    return {
-      transcript: _descriptor_26.fromValue(value_0),
-      issuerEvidence: _descriptor_27.fromValue(value_0),
-      trustEvidence: _descriptor_27.fromValue(value_0),
-      statusEvidence: _descriptor_27.fromValue(value_0),
-      timeEvidence: _descriptor_27.fromValue(value_0),
-      artifactEvidence: _descriptor_27.fromValue(value_0),
-      connectorEvidence: _descriptor_27.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_26.toValue(value_0.transcript).concat(_descriptor_27.toValue(value_0.issuerEvidence).concat(_descriptor_27.toValue(value_0.trustEvidence).concat(_descriptor_27.toValue(value_0.statusEvidence).concat(_descriptor_27.toValue(value_0.timeEvidence).concat(_descriptor_27.toValue(value_0.artifactEvidence).concat(_descriptor_27.toValue(value_0.connectorEvidence)))))));
-  }
-}
-
-const _descriptor_28 = new _VerificationPublicInputsV1_0();
-
-class _SyntheticVerificationAttemptV1_0 {
-  alignment() {
-    return _descriptor_25.alignment().concat(_descriptor_25.alignment().concat(_descriptor_25.alignment().concat(_descriptor_25.alignment().concat(_descriptor_1.alignment()))));
-  }
-  fromValue(value_0) {
-    return {
-      proofStatus: _descriptor_25.fromValue(value_0),
-      decisionStatus: _descriptor_25.fromValue(value_0),
-      authority: _descriptor_25.fromValue(value_0),
-      executionStatus: _descriptor_25.fromValue(value_0),
-      transcriptDigest: _descriptor_1.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_25.toValue(value_0.proofStatus).concat(_descriptor_25.toValue(value_0.decisionStatus).concat(_descriptor_25.toValue(value_0.authority).concat(_descriptor_25.toValue(value_0.executionStatus).concat(_descriptor_1.toValue(value_0.transcriptDigest)))));
-  }
-}
-
-const _descriptor_29 = new _SyntheticVerificationAttemptV1_0();
+const _descriptor_23 = new _AuthorityAttestedStatusCapability_0();
 
 class _NoStatusCapability_0 {
   alignment() {
@@ -483,287 +335,435 @@ class _NoStatusCapability_0 {
   }
 }
 
-const _descriptor_30 = new _NoStatusCapability_0();
+const _descriptor_24 = new _NoStatusCapability_0();
 
-class _SyntheticVerificationExtensionV1_0 {
+class _RevokedSetNonMembershipStatusCapability_0 {
   alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment())));
+    return _descriptor_7.alignment().concat(_descriptor_10.alignment().concat(_descriptor_0.alignment()));
   }
   fromValue(value_0) {
     return {
-      domain: _descriptor_1.fromValue(value_0),
-      version: _descriptor_0.fromValue(value_0),
-      familyDigest: _descriptor_1.fromValue(value_0),
-      valueDigest: _descriptor_1.fromValue(value_0)
+      statusType: _descriptor_7.fromValue(value_0),
+      registryRef: _descriptor_10.fromValue(value_0),
+      statusHandleCommitment: _descriptor_0.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_1.toValue(value_0.domain).concat(_descriptor_0.toValue(value_0.version).concat(_descriptor_1.toValue(value_0.familyDigest).concat(_descriptor_1.toValue(value_0.valueDigest))));
+    return _descriptor_7.toValue(value_0.statusType).concat(_descriptor_10.toValue(value_0.registryRef).concat(_descriptor_0.toValue(value_0.statusHandleCommitment)));
+  }
+}
+
+const _descriptor_25 = new _RevokedSetNonMembershipStatusCapability_0();
+
+const _descriptor_26 = new __compactRuntime.CompactTypeUnsignedInteger(255n, 1);
+
+class _VerificationTranscriptV1_0 {
+  alignment() {
+    return _descriptor_0.alignment().concat(_descriptor_4.alignment().concat(_descriptor_26.alignment().concat(_descriptor_26.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_26.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_26.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_26.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_26.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_26.alignment().concat(_descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_26.alignment().concat(_descriptor_26.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment()))))))))))))))))))))))))))))))))))))))))))))));
+  }
+  fromValue(value_0) {
+    return {
+      domain: _descriptor_0.fromValue(value_0),
+      version: _descriptor_4.fromValue(value_0),
+      profile: _descriptor_26.fromValue(value_0),
+      authority: _descriptor_26.fromValue(value_0),
+      networkIdDigest: _descriptor_0.fromValue(value_0),
+      verifierContractDigest: _descriptor_0.fromValue(value_0),
+      deploymentDigest: _descriptor_0.fromValue(value_0),
+      audienceDigest: _descriptor_0.fromValue(value_0),
+      originMode: _descriptor_26.fromValue(value_0),
+      originDigest: _descriptor_0.fromValue(value_0),
+      connectorEvidenceDigest: _descriptor_0.fromValue(value_0),
+      requestIdDigest: _descriptor_0.fromValue(value_0),
+      challengeDigest: _descriptor_0.fromValue(value_0),
+      expiresAt: _descriptor_1.fromValue(value_0),
+      credentialFamilyDigest: _descriptor_0.fromValue(value_0),
+      schemaDigest: _descriptor_0.fromValue(value_0),
+      credentialBindingMode: _descriptor_26.fromValue(value_0),
+      credentialBindingDigest: _descriptor_0.fromValue(value_0),
+      disclosureDigest: _descriptor_0.fromValue(value_0),
+      predicateDigest: _descriptor_0.fromValue(value_0),
+      holderBindingDigest: _descriptor_0.fromValue(value_0),
+      policyDigest: _descriptor_0.fromValue(value_0),
+      actionClassDigest: _descriptor_0.fromValue(value_0),
+      actionInvocationDigest: _descriptor_0.fromValue(value_0),
+      consentDigest: _descriptor_0.fromValue(value_0),
+      presentationBindingDigest: _descriptor_0.fromValue(value_0),
+      issuerDidDigest: _descriptor_0.fromValue(value_0),
+      issuerMethodDigest: _descriptor_0.fromValue(value_0),
+      issuerRelationship: _descriptor_26.fromValue(value_0),
+      issuerEvidenceDigest: _descriptor_0.fromValue(value_0),
+      trustScopeDigest: _descriptor_0.fromValue(value_0),
+      trustEvidenceDigest: _descriptor_0.fromValue(value_0),
+      statusMode: _descriptor_26.fromValue(value_0),
+      statusRegistryDigest: _descriptor_0.fromValue(value_0),
+      statusRoot: _descriptor_0.fromValue(value_0),
+      statusRegistryVersion: _descriptor_1.fromValue(value_0),
+      statusFreshnessPolicyDigest: _descriptor_0.fromValue(value_0),
+      statusEvidenceDigest: _descriptor_0.fromValue(value_0),
+      timeMode: _descriptor_26.fromValue(value_0),
+      trustedTime: _descriptor_1.fromValue(value_0),
+      timeEvidenceDigest: _descriptor_0.fromValue(value_0),
+      artifactManifestDigest: _descriptor_0.fromValue(value_0),
+      artifactEvidenceDigest: _descriptor_0.fromValue(value_0),
+      nullifierMode: _descriptor_26.fromValue(value_0),
+      replayPolicy: _descriptor_26.fromValue(value_0),
+      replayScopeDigest: _descriptor_0.fromValue(value_0),
+      decisionNullifier: _descriptor_0.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_4.toValue(value_0.version).concat(_descriptor_26.toValue(value_0.profile).concat(_descriptor_26.toValue(value_0.authority).concat(_descriptor_0.toValue(value_0.networkIdDigest).concat(_descriptor_0.toValue(value_0.verifierContractDigest).concat(_descriptor_0.toValue(value_0.deploymentDigest).concat(_descriptor_0.toValue(value_0.audienceDigest).concat(_descriptor_26.toValue(value_0.originMode).concat(_descriptor_0.toValue(value_0.originDigest).concat(_descriptor_0.toValue(value_0.connectorEvidenceDigest).concat(_descriptor_0.toValue(value_0.requestIdDigest).concat(_descriptor_0.toValue(value_0.challengeDigest).concat(_descriptor_1.toValue(value_0.expiresAt).concat(_descriptor_0.toValue(value_0.credentialFamilyDigest).concat(_descriptor_0.toValue(value_0.schemaDigest).concat(_descriptor_26.toValue(value_0.credentialBindingMode).concat(_descriptor_0.toValue(value_0.credentialBindingDigest).concat(_descriptor_0.toValue(value_0.disclosureDigest).concat(_descriptor_0.toValue(value_0.predicateDigest).concat(_descriptor_0.toValue(value_0.holderBindingDigest).concat(_descriptor_0.toValue(value_0.policyDigest).concat(_descriptor_0.toValue(value_0.actionClassDigest).concat(_descriptor_0.toValue(value_0.actionInvocationDigest).concat(_descriptor_0.toValue(value_0.consentDigest).concat(_descriptor_0.toValue(value_0.presentationBindingDigest).concat(_descriptor_0.toValue(value_0.issuerDidDigest).concat(_descriptor_0.toValue(value_0.issuerMethodDigest).concat(_descriptor_26.toValue(value_0.issuerRelationship).concat(_descriptor_0.toValue(value_0.issuerEvidenceDigest).concat(_descriptor_0.toValue(value_0.trustScopeDigest).concat(_descriptor_0.toValue(value_0.trustEvidenceDigest).concat(_descriptor_26.toValue(value_0.statusMode).concat(_descriptor_0.toValue(value_0.statusRegistryDigest).concat(_descriptor_0.toValue(value_0.statusRoot).concat(_descriptor_1.toValue(value_0.statusRegistryVersion).concat(_descriptor_0.toValue(value_0.statusFreshnessPolicyDigest).concat(_descriptor_0.toValue(value_0.statusEvidenceDigest).concat(_descriptor_26.toValue(value_0.timeMode).concat(_descriptor_1.toValue(value_0.trustedTime).concat(_descriptor_0.toValue(value_0.timeEvidenceDigest).concat(_descriptor_0.toValue(value_0.artifactManifestDigest).concat(_descriptor_0.toValue(value_0.artifactEvidenceDigest).concat(_descriptor_26.toValue(value_0.nullifierMode).concat(_descriptor_26.toValue(value_0.replayPolicy).concat(_descriptor_0.toValue(value_0.replayScopeDigest).concat(_descriptor_0.toValue(value_0.decisionNullifier)))))))))))))))))))))))))))))))))))))))))))))));
+  }
+}
+
+const _descriptor_27 = new _VerificationTranscriptV1_0();
+
+class _EvidenceBindingV1_0 {
+  alignment() {
+    return _descriptor_0.alignment().concat(_descriptor_4.alignment().concat(_descriptor_26.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment()))))))));
+  }
+  fromValue(value_0) {
+    return {
+      domain: _descriptor_0.fromValue(value_0),
+      version: _descriptor_4.fromValue(value_0),
+      mode: _descriptor_26.fromValue(value_0),
+      authorityDigest: _descriptor_0.fromValue(value_0),
+      subjectDigest: _descriptor_0.fromValue(value_0),
+      stateAnchorDigest: _descriptor_0.fromValue(value_0),
+      statementDigest: _descriptor_0.fromValue(value_0),
+      createdAt: _descriptor_1.fromValue(value_0),
+      expiresAt: _descriptor_1.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_4.toValue(value_0.version).concat(_descriptor_26.toValue(value_0.mode).concat(_descriptor_0.toValue(value_0.authorityDigest).concat(_descriptor_0.toValue(value_0.subjectDigest).concat(_descriptor_0.toValue(value_0.stateAnchorDigest).concat(_descriptor_0.toValue(value_0.statementDigest).concat(_descriptor_1.toValue(value_0.createdAt).concat(_descriptor_1.toValue(value_0.expiresAt)))))))));
+  }
+}
+
+const _descriptor_28 = new _EvidenceBindingV1_0();
+
+class _VerificationPublicInputsV1_0 {
+  alignment() {
+    return _descriptor_27.alignment().concat(_descriptor_28.alignment().concat(_descriptor_28.alignment().concat(_descriptor_28.alignment().concat(_descriptor_28.alignment().concat(_descriptor_28.alignment().concat(_descriptor_28.alignment()))))));
+  }
+  fromValue(value_0) {
+    return {
+      transcript: _descriptor_27.fromValue(value_0),
+      issuerEvidence: _descriptor_28.fromValue(value_0),
+      trustEvidence: _descriptor_28.fromValue(value_0),
+      statusEvidence: _descriptor_28.fromValue(value_0),
+      timeEvidence: _descriptor_28.fromValue(value_0),
+      artifactEvidence: _descriptor_28.fromValue(value_0),
+      connectorEvidence: _descriptor_28.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_27.toValue(value_0.transcript).concat(_descriptor_28.toValue(value_0.issuerEvidence).concat(_descriptor_28.toValue(value_0.trustEvidence).concat(_descriptor_28.toValue(value_0.statusEvidence).concat(_descriptor_28.toValue(value_0.timeEvidence).concat(_descriptor_28.toValue(value_0.artifactEvidence).concat(_descriptor_28.toValue(value_0.connectorEvidence)))))));
+  }
+}
+
+const _descriptor_29 = new _VerificationPublicInputsV1_0();
+
+class _SyntheticVerificationAttemptV1_0 {
+  alignment() {
+    return _descriptor_26.alignment().concat(_descriptor_26.alignment().concat(_descriptor_26.alignment().concat(_descriptor_26.alignment().concat(_descriptor_0.alignment()))));
+  }
+  fromValue(value_0) {
+    return {
+      proofStatus: _descriptor_26.fromValue(value_0),
+      decisionStatus: _descriptor_26.fromValue(value_0),
+      authority: _descriptor_26.fromValue(value_0),
+      executionStatus: _descriptor_26.fromValue(value_0),
+      transcriptDigest: _descriptor_0.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_26.toValue(value_0.proofStatus).concat(_descriptor_26.toValue(value_0.decisionStatus).concat(_descriptor_26.toValue(value_0.authority).concat(_descriptor_26.toValue(value_0.executionStatus).concat(_descriptor_0.toValue(value_0.transcriptDigest)))));
+  }
+}
+
+const _descriptor_30 = new _SyntheticVerificationAttemptV1_0();
+
+class _SyntheticVerificationExtensionV1_0 {
+  alignment() {
+    return _descriptor_0.alignment().concat(_descriptor_4.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment())));
+  }
+  fromValue(value_0) {
+    return {
+      domain: _descriptor_0.fromValue(value_0),
+      version: _descriptor_4.fromValue(value_0),
+      familyDigest: _descriptor_0.fromValue(value_0),
+      valueDigest: _descriptor_0.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_4.toValue(value_0.version).concat(_descriptor_0.toValue(value_0.familyDigest).concat(_descriptor_0.toValue(value_0.valueDigest))));
   }
 }
 
 const _descriptor_31 = new _SyntheticVerificationExtensionV1_0();
 
-class _ActionHolderBindingV1_0 {
+class _ActionCredentialBindingV1_0 {
   alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment())))));
+    return _descriptor_0.alignment().concat(_descriptor_4.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment())))))));
   }
   fromValue(value_0) {
     return {
-      domain: _descriptor_1.fromValue(value_0),
-      version: _descriptor_0.fromValue(value_0),
-      deploymentDigest: _descriptor_1.fromValue(value_0),
-      verifierContractDigest: _descriptor_1.fromValue(value_0),
-      actionClassDigest: _descriptor_1.fromValue(value_0),
-      holderSubjectDigest: _descriptor_1.fromValue(value_0)
+      domain: _descriptor_0.fromValue(value_0),
+      version: _descriptor_4.fromValue(value_0),
+      deploymentDigest: _descriptor_0.fromValue(value_0),
+      verifierContractDigest: _descriptor_0.fromValue(value_0),
+      actionClassDigest: _descriptor_0.fromValue(value_0),
+      credentialFamilyDigest: _descriptor_0.fromValue(value_0),
+      schemaDigest: _descriptor_0.fromValue(value_0),
+      credentialRoot: _descriptor_0.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_1.toValue(value_0.domain).concat(_descriptor_0.toValue(value_0.version).concat(_descriptor_1.toValue(value_0.deploymentDigest).concat(_descriptor_1.toValue(value_0.verifierContractDigest).concat(_descriptor_1.toValue(value_0.actionClassDigest).concat(_descriptor_1.toValue(value_0.holderSubjectDigest))))));
+    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_4.toValue(value_0.version).concat(_descriptor_0.toValue(value_0.deploymentDigest).concat(_descriptor_0.toValue(value_0.verifierContractDigest).concat(_descriptor_0.toValue(value_0.actionClassDigest).concat(_descriptor_0.toValue(value_0.credentialFamilyDigest).concat(_descriptor_0.toValue(value_0.schemaDigest).concat(_descriptor_0.toValue(value_0.credentialRoot))))))));
   }
 }
 
-const _descriptor_32 = new _ActionHolderBindingV1_0();
+const _descriptor_32 = new _ActionCredentialBindingV1_0();
 
-class _HolderActionReplayScopeV1_0 {
+class _CredentialActionReplayScopeV1_0 {
   alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_32.alignment()))))));
+    return _descriptor_0.alignment().concat(_descriptor_4.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_32.alignment()))))));
   }
   fromValue(value_0) {
     return {
-      domain: _descriptor_1.fromValue(value_0),
-      version: _descriptor_0.fromValue(value_0),
-      deploymentDigest: _descriptor_1.fromValue(value_0),
-      verifierContractDigest: _descriptor_1.fromValue(value_0),
-      actionClassDigest: _descriptor_1.fromValue(value_0),
-      actionScopeParametersDigest: _descriptor_1.fromValue(value_0),
+      domain: _descriptor_0.fromValue(value_0),
+      version: _descriptor_4.fromValue(value_0),
+      deploymentDigest: _descriptor_0.fromValue(value_0),
+      verifierContractDigest: _descriptor_0.fromValue(value_0),
+      actionClassDigest: _descriptor_0.fromValue(value_0),
+      actionScopeParametersDigest: _descriptor_0.fromValue(value_0),
       binding: _descriptor_32.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_1.toValue(value_0.domain).concat(_descriptor_0.toValue(value_0.version).concat(_descriptor_1.toValue(value_0.deploymentDigest).concat(_descriptor_1.toValue(value_0.verifierContractDigest).concat(_descriptor_1.toValue(value_0.actionClassDigest).concat(_descriptor_1.toValue(value_0.actionScopeParametersDigest).concat(_descriptor_32.toValue(value_0.binding)))))));
+    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_4.toValue(value_0.version).concat(_descriptor_0.toValue(value_0.deploymentDigest).concat(_descriptor_0.toValue(value_0.verifierContractDigest).concat(_descriptor_0.toValue(value_0.actionClassDigest).concat(_descriptor_0.toValue(value_0.actionScopeParametersDigest).concat(_descriptor_32.toValue(value_0.binding)))))));
   }
 }
 
-const _descriptor_33 = new _HolderActionReplayScopeV1_0();
-
-class _ActionCredentialBindingV1_0 {
-  alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment())))))));
-  }
-  fromValue(value_0) {
-    return {
-      domain: _descriptor_1.fromValue(value_0),
-      version: _descriptor_0.fromValue(value_0),
-      deploymentDigest: _descriptor_1.fromValue(value_0),
-      verifierContractDigest: _descriptor_1.fromValue(value_0),
-      actionClassDigest: _descriptor_1.fromValue(value_0),
-      credentialFamilyDigest: _descriptor_1.fromValue(value_0),
-      schemaDigest: _descriptor_1.fromValue(value_0),
-      credentialRoot: _descriptor_1.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_1.toValue(value_0.domain).concat(_descriptor_0.toValue(value_0.version).concat(_descriptor_1.toValue(value_0.deploymentDigest).concat(_descriptor_1.toValue(value_0.verifierContractDigest).concat(_descriptor_1.toValue(value_0.actionClassDigest).concat(_descriptor_1.toValue(value_0.credentialFamilyDigest).concat(_descriptor_1.toValue(value_0.schemaDigest).concat(_descriptor_1.toValue(value_0.credentialRoot))))))));
-  }
-}
-
-const _descriptor_34 = new _ActionCredentialBindingV1_0();
-
-class _CredentialActionReplayScopeV1_0 {
-  alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_34.alignment()))))));
-  }
-  fromValue(value_0) {
-    return {
-      domain: _descriptor_1.fromValue(value_0),
-      version: _descriptor_0.fromValue(value_0),
-      deploymentDigest: _descriptor_1.fromValue(value_0),
-      verifierContractDigest: _descriptor_1.fromValue(value_0),
-      actionClassDigest: _descriptor_1.fromValue(value_0),
-      actionScopeParametersDigest: _descriptor_1.fromValue(value_0),
-      binding: _descriptor_34.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_1.toValue(value_0.domain).concat(_descriptor_0.toValue(value_0.version).concat(_descriptor_1.toValue(value_0.deploymentDigest).concat(_descriptor_1.toValue(value_0.verifierContractDigest).concat(_descriptor_1.toValue(value_0.actionClassDigest).concat(_descriptor_1.toValue(value_0.actionScopeParametersDigest).concat(_descriptor_34.toValue(value_0.binding)))))));
-  }
-}
-
-const _descriptor_35 = new _CredentialActionReplayScopeV1_0();
+const _descriptor_33 = new _CredentialActionReplayScopeV1_0();
 
 class _RequestReplayScopeV1_0 {
   alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment()))))));
+    return _descriptor_0.alignment().concat(_descriptor_4.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment()))))));
   }
   fromValue(value_0) {
     return {
-      domain: _descriptor_1.fromValue(value_0),
-      version: _descriptor_0.fromValue(value_0),
-      deploymentDigest: _descriptor_1.fromValue(value_0),
-      verifierContractDigest: _descriptor_1.fromValue(value_0),
-      requestIdDigest: _descriptor_1.fromValue(value_0),
-      challengeDigest: _descriptor_1.fromValue(value_0),
-      actionInvocationDigest: _descriptor_1.fromValue(value_0)
+      domain: _descriptor_0.fromValue(value_0),
+      version: _descriptor_4.fromValue(value_0),
+      deploymentDigest: _descriptor_0.fromValue(value_0),
+      verifierContractDigest: _descriptor_0.fromValue(value_0),
+      requestIdDigest: _descriptor_0.fromValue(value_0),
+      challengeDigest: _descriptor_0.fromValue(value_0),
+      actionInvocationDigest: _descriptor_0.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_1.toValue(value_0.domain).concat(_descriptor_0.toValue(value_0.version).concat(_descriptor_1.toValue(value_0.deploymentDigest).concat(_descriptor_1.toValue(value_0.verifierContractDigest).concat(_descriptor_1.toValue(value_0.requestIdDigest).concat(_descriptor_1.toValue(value_0.challengeDigest).concat(_descriptor_1.toValue(value_0.actionInvocationDigest)))))));
+    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_4.toValue(value_0.version).concat(_descriptor_0.toValue(value_0.deploymentDigest).concat(_descriptor_0.toValue(value_0.verifierContractDigest).concat(_descriptor_0.toValue(value_0.requestIdDigest).concat(_descriptor_0.toValue(value_0.challengeDigest).concat(_descriptor_0.toValue(value_0.actionInvocationDigest)))))));
   }
 }
 
-const _descriptor_36 = new _RequestReplayScopeV1_0();
+const _descriptor_34 = new _RequestReplayScopeV1_0();
 
-class _AnchorEvidenceReceiptV1_0 {
+class _ActionHolderBindingV1_0 {
   alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment())))))));
+    return _descriptor_0.alignment().concat(_descriptor_4.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment())))));
   }
   fromValue(value_0) {
     return {
-      domain: _descriptor_1.fromValue(value_0),
-      version: _descriptor_0.fromValue(value_0),
-      issuerEvidenceDigest: _descriptor_1.fromValue(value_0),
-      trustEvidenceDigest: _descriptor_1.fromValue(value_0),
-      statusEvidenceDigest: _descriptor_1.fromValue(value_0),
-      timeEvidenceDigest: _descriptor_1.fromValue(value_0),
-      artifactEvidenceDigest: _descriptor_1.fromValue(value_0),
-      connectorEvidenceDigest: _descriptor_1.fromValue(value_0)
+      domain: _descriptor_0.fromValue(value_0),
+      version: _descriptor_4.fromValue(value_0),
+      deploymentDigest: _descriptor_0.fromValue(value_0),
+      verifierContractDigest: _descriptor_0.fromValue(value_0),
+      actionClassDigest: _descriptor_0.fromValue(value_0),
+      holderSubjectDigest: _descriptor_0.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_1.toValue(value_0.domain).concat(_descriptor_0.toValue(value_0.version).concat(_descriptor_1.toValue(value_0.issuerEvidenceDigest).concat(_descriptor_1.toValue(value_0.trustEvidenceDigest).concat(_descriptor_1.toValue(value_0.statusEvidenceDigest).concat(_descriptor_1.toValue(value_0.timeEvidenceDigest).concat(_descriptor_1.toValue(value_0.artifactEvidenceDigest).concat(_descriptor_1.toValue(value_0.connectorEvidenceDigest))))))));
+    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_4.toValue(value_0.version).concat(_descriptor_0.toValue(value_0.deploymentDigest).concat(_descriptor_0.toValue(value_0.verifierContractDigest).concat(_descriptor_0.toValue(value_0.actionClassDigest).concat(_descriptor_0.toValue(value_0.holderSubjectDigest))))));
   }
 }
 
-const _descriptor_37 = new _AnchorEvidenceReceiptV1_0();
+const _descriptor_35 = new _ActionHolderBindingV1_0();
+
+class _HolderActionReplayScopeV1_0 {
+  alignment() {
+    return _descriptor_0.alignment().concat(_descriptor_4.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_35.alignment()))))));
+  }
+  fromValue(value_0) {
+    return {
+      domain: _descriptor_0.fromValue(value_0),
+      version: _descriptor_4.fromValue(value_0),
+      deploymentDigest: _descriptor_0.fromValue(value_0),
+      verifierContractDigest: _descriptor_0.fromValue(value_0),
+      actionClassDigest: _descriptor_0.fromValue(value_0),
+      actionScopeParametersDigest: _descriptor_0.fromValue(value_0),
+      binding: _descriptor_35.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_4.toValue(value_0.version).concat(_descriptor_0.toValue(value_0.deploymentDigest).concat(_descriptor_0.toValue(value_0.verifierContractDigest).concat(_descriptor_0.toValue(value_0.actionClassDigest).concat(_descriptor_0.toValue(value_0.actionScopeParametersDigest).concat(_descriptor_35.toValue(value_0.binding)))))));
+  }
+}
+
+const _descriptor_36 = new _HolderActionReplayScopeV1_0();
 
 class _DecisionNullifierMaterialV1_0 {
   alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_25.alignment().concat(_descriptor_1.alignment())))));
+    return _descriptor_0.alignment().concat(_descriptor_4.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_26.alignment().concat(_descriptor_0.alignment())))));
   }
   fromValue(value_0) {
     return {
-      domain: _descriptor_1.fromValue(value_0),
-      version: _descriptor_0.fromValue(value_0),
-      deploymentDigest: _descriptor_1.fromValue(value_0),
-      verifierContractDigest: _descriptor_1.fromValue(value_0),
-      replayPolicy: _descriptor_25.fromValue(value_0),
-      replayScopeDigest: _descriptor_1.fromValue(value_0)
+      domain: _descriptor_0.fromValue(value_0),
+      version: _descriptor_4.fromValue(value_0),
+      deploymentDigest: _descriptor_0.fromValue(value_0),
+      verifierContractDigest: _descriptor_0.fromValue(value_0),
+      replayPolicy: _descriptor_26.fromValue(value_0),
+      replayScopeDigest: _descriptor_0.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_1.toValue(value_0.domain).concat(_descriptor_0.toValue(value_0.version).concat(_descriptor_1.toValue(value_0.deploymentDigest).concat(_descriptor_1.toValue(value_0.verifierContractDigest).concat(_descriptor_25.toValue(value_0.replayPolicy).concat(_descriptor_1.toValue(value_0.replayScopeDigest))))));
+    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_4.toValue(value_0.version).concat(_descriptor_0.toValue(value_0.deploymentDigest).concat(_descriptor_0.toValue(value_0.verifierContractDigest).concat(_descriptor_26.toValue(value_0.replayPolicy).concat(_descriptor_0.toValue(value_0.replayScopeDigest))))));
   }
 }
 
-const _descriptor_38 = new _DecisionNullifierMaterialV1_0();
+const _descriptor_37 = new _DecisionNullifierMaterialV1_0();
 
-class _PresentationBindingV1_0 {
+class _AnchorEvidenceReceiptV1_0 {
   alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment()))))));
+    return _descriptor_0.alignment().concat(_descriptor_4.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment())))))));
   }
   fromValue(value_0) {
     return {
-      domain: _descriptor_1.fromValue(value_0),
-      version: _descriptor_0.fromValue(value_0),
-      credentialBindingDigest: _descriptor_1.fromValue(value_0),
-      holderBindingDigest: _descriptor_1.fromValue(value_0),
-      disclosureDigest: _descriptor_1.fromValue(value_0),
-      predicateDigest: _descriptor_1.fromValue(value_0),
-      consentDigest: _descriptor_1.fromValue(value_0)
+      domain: _descriptor_0.fromValue(value_0),
+      version: _descriptor_4.fromValue(value_0),
+      issuerEvidenceDigest: _descriptor_0.fromValue(value_0),
+      trustEvidenceDigest: _descriptor_0.fromValue(value_0),
+      statusEvidenceDigest: _descriptor_0.fromValue(value_0),
+      timeEvidenceDigest: _descriptor_0.fromValue(value_0),
+      artifactEvidenceDigest: _descriptor_0.fromValue(value_0),
+      connectorEvidenceDigest: _descriptor_0.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_1.toValue(value_0.domain).concat(_descriptor_0.toValue(value_0.version).concat(_descriptor_1.toValue(value_0.credentialBindingDigest).concat(_descriptor_1.toValue(value_0.holderBindingDigest).concat(_descriptor_1.toValue(value_0.disclosureDigest).concat(_descriptor_1.toValue(value_0.predicateDigest).concat(_descriptor_1.toValue(value_0.consentDigest)))))));
+    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_4.toValue(value_0.version).concat(_descriptor_0.toValue(value_0.issuerEvidenceDigest).concat(_descriptor_0.toValue(value_0.trustEvidenceDigest).concat(_descriptor_0.toValue(value_0.statusEvidenceDigest).concat(_descriptor_0.toValue(value_0.timeEvidenceDigest).concat(_descriptor_0.toValue(value_0.artifactEvidenceDigest).concat(_descriptor_0.toValue(value_0.connectorEvidenceDigest))))))));
   }
 }
 
-const _descriptor_39 = new _PresentationBindingV1_0();
-
-class _HolderBindingV1_0 {
-  alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_25.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment())))));
-  }
-  fromValue(value_0) {
-    return {
-      domain: _descriptor_1.fromValue(value_0),
-      version: _descriptor_0.fromValue(value_0),
-      mode: _descriptor_25.fromValue(value_0),
-      verifierContractDigest: _descriptor_1.fromValue(value_0),
-      challengeDigest: _descriptor_1.fromValue(value_0),
-      subjectBindingDigest: _descriptor_1.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_1.toValue(value_0.domain).concat(_descriptor_0.toValue(value_0.version).concat(_descriptor_25.toValue(value_0.mode).concat(_descriptor_1.toValue(value_0.verifierContractDigest).concat(_descriptor_1.toValue(value_0.challengeDigest).concat(_descriptor_1.toValue(value_0.subjectBindingDigest))))));
-  }
-}
-
-const _descriptor_40 = new _HolderBindingV1_0();
+const _descriptor_38 = new _AnchorEvidenceReceiptV1_0();
 
 class _ConsentBindingV1_0 {
   alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_25.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_25.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_3.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_25.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_3.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_25.alignment())))))))))))))))))))))))));
+    return _descriptor_0.alignment().concat(_descriptor_4.alignment().concat(_descriptor_26.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_26.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_26.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_26.alignment())))))))))))))))))))))))));
   }
   fromValue(value_0) {
     return {
-      domain: _descriptor_1.fromValue(value_0),
-      version: _descriptor_0.fromValue(value_0),
-      profile: _descriptor_25.fromValue(value_0),
-      networkIdDigest: _descriptor_1.fromValue(value_0),
-      verifierContractDigest: _descriptor_1.fromValue(value_0),
-      deploymentDigest: _descriptor_1.fromValue(value_0),
-      audienceDigest: _descriptor_1.fromValue(value_0),
-      originMode: _descriptor_25.fromValue(value_0),
-      originDigest: _descriptor_1.fromValue(value_0),
-      requestIdDigest: _descriptor_1.fromValue(value_0),
-      challengeDigest: _descriptor_1.fromValue(value_0),
-      expiresAt: _descriptor_3.fromValue(value_0),
-      credentialFamilyDigest: _descriptor_1.fromValue(value_0),
-      schemaDigest: _descriptor_1.fromValue(value_0),
-      disclosureDigest: _descriptor_1.fromValue(value_0),
-      predicateDigest: _descriptor_1.fromValue(value_0),
-      statusMode: _descriptor_25.fromValue(value_0),
-      statusRegistryDigest: _descriptor_1.fromValue(value_0),
-      statusRoot: _descriptor_1.fromValue(value_0),
-      statusRegistryVersion: _descriptor_3.fromValue(value_0),
-      statusFreshnessPolicyDigest: _descriptor_1.fromValue(value_0),
-      policyDigest: _descriptor_1.fromValue(value_0),
-      actionClassDigest: _descriptor_1.fromValue(value_0),
-      actionInvocationDigest: _descriptor_1.fromValue(value_0),
-      artifactManifestDigest: _descriptor_1.fromValue(value_0),
-      replayPolicy: _descriptor_25.fromValue(value_0)
+      domain: _descriptor_0.fromValue(value_0),
+      version: _descriptor_4.fromValue(value_0),
+      profile: _descriptor_26.fromValue(value_0),
+      networkIdDigest: _descriptor_0.fromValue(value_0),
+      verifierContractDigest: _descriptor_0.fromValue(value_0),
+      deploymentDigest: _descriptor_0.fromValue(value_0),
+      audienceDigest: _descriptor_0.fromValue(value_0),
+      originMode: _descriptor_26.fromValue(value_0),
+      originDigest: _descriptor_0.fromValue(value_0),
+      requestIdDigest: _descriptor_0.fromValue(value_0),
+      challengeDigest: _descriptor_0.fromValue(value_0),
+      expiresAt: _descriptor_1.fromValue(value_0),
+      credentialFamilyDigest: _descriptor_0.fromValue(value_0),
+      schemaDigest: _descriptor_0.fromValue(value_0),
+      disclosureDigest: _descriptor_0.fromValue(value_0),
+      predicateDigest: _descriptor_0.fromValue(value_0),
+      statusMode: _descriptor_26.fromValue(value_0),
+      statusRegistryDigest: _descriptor_0.fromValue(value_0),
+      statusRoot: _descriptor_0.fromValue(value_0),
+      statusRegistryVersion: _descriptor_1.fromValue(value_0),
+      statusFreshnessPolicyDigest: _descriptor_0.fromValue(value_0),
+      policyDigest: _descriptor_0.fromValue(value_0),
+      actionClassDigest: _descriptor_0.fromValue(value_0),
+      actionInvocationDigest: _descriptor_0.fromValue(value_0),
+      artifactManifestDigest: _descriptor_0.fromValue(value_0),
+      replayPolicy: _descriptor_26.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_1.toValue(value_0.domain).concat(_descriptor_0.toValue(value_0.version).concat(_descriptor_25.toValue(value_0.profile).concat(_descriptor_1.toValue(value_0.networkIdDigest).concat(_descriptor_1.toValue(value_0.verifierContractDigest).concat(_descriptor_1.toValue(value_0.deploymentDigest).concat(_descriptor_1.toValue(value_0.audienceDigest).concat(_descriptor_25.toValue(value_0.originMode).concat(_descriptor_1.toValue(value_0.originDigest).concat(_descriptor_1.toValue(value_0.requestIdDigest).concat(_descriptor_1.toValue(value_0.challengeDigest).concat(_descriptor_3.toValue(value_0.expiresAt).concat(_descriptor_1.toValue(value_0.credentialFamilyDigest).concat(_descriptor_1.toValue(value_0.schemaDigest).concat(_descriptor_1.toValue(value_0.disclosureDigest).concat(_descriptor_1.toValue(value_0.predicateDigest).concat(_descriptor_25.toValue(value_0.statusMode).concat(_descriptor_1.toValue(value_0.statusRegistryDigest).concat(_descriptor_1.toValue(value_0.statusRoot).concat(_descriptor_3.toValue(value_0.statusRegistryVersion).concat(_descriptor_1.toValue(value_0.statusFreshnessPolicyDigest).concat(_descriptor_1.toValue(value_0.policyDigest).concat(_descriptor_1.toValue(value_0.actionClassDigest).concat(_descriptor_1.toValue(value_0.actionInvocationDigest).concat(_descriptor_1.toValue(value_0.artifactManifestDigest).concat(_descriptor_25.toValue(value_0.replayPolicy))))))))))))))))))))))))));
+    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_4.toValue(value_0.version).concat(_descriptor_26.toValue(value_0.profile).concat(_descriptor_0.toValue(value_0.networkIdDigest).concat(_descriptor_0.toValue(value_0.verifierContractDigest).concat(_descriptor_0.toValue(value_0.deploymentDigest).concat(_descriptor_0.toValue(value_0.audienceDigest).concat(_descriptor_26.toValue(value_0.originMode).concat(_descriptor_0.toValue(value_0.originDigest).concat(_descriptor_0.toValue(value_0.requestIdDigest).concat(_descriptor_0.toValue(value_0.challengeDigest).concat(_descriptor_1.toValue(value_0.expiresAt).concat(_descriptor_0.toValue(value_0.credentialFamilyDigest).concat(_descriptor_0.toValue(value_0.schemaDigest).concat(_descriptor_0.toValue(value_0.disclosureDigest).concat(_descriptor_0.toValue(value_0.predicateDigest).concat(_descriptor_26.toValue(value_0.statusMode).concat(_descriptor_0.toValue(value_0.statusRegistryDigest).concat(_descriptor_0.toValue(value_0.statusRoot).concat(_descriptor_1.toValue(value_0.statusRegistryVersion).concat(_descriptor_0.toValue(value_0.statusFreshnessPolicyDigest).concat(_descriptor_0.toValue(value_0.policyDigest).concat(_descriptor_0.toValue(value_0.actionClassDigest).concat(_descriptor_0.toValue(value_0.actionInvocationDigest).concat(_descriptor_0.toValue(value_0.artifactManifestDigest).concat(_descriptor_26.toValue(value_0.replayPolicy))))))))))))))))))))))))));
   }
 }
 
-const _descriptor_41 = new _ConsentBindingV1_0();
+const _descriptor_39 = new _ConsentBindingV1_0();
+
+class _PresentationBindingV1_0 {
+  alignment() {
+    return _descriptor_0.alignment().concat(_descriptor_4.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment()))))));
+  }
+  fromValue(value_0) {
+    return {
+      domain: _descriptor_0.fromValue(value_0),
+      version: _descriptor_4.fromValue(value_0),
+      credentialBindingDigest: _descriptor_0.fromValue(value_0),
+      holderBindingDigest: _descriptor_0.fromValue(value_0),
+      disclosureDigest: _descriptor_0.fromValue(value_0),
+      predicateDigest: _descriptor_0.fromValue(value_0),
+      consentDigest: _descriptor_0.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_4.toValue(value_0.version).concat(_descriptor_0.toValue(value_0.credentialBindingDigest).concat(_descriptor_0.toValue(value_0.holderBindingDigest).concat(_descriptor_0.toValue(value_0.disclosureDigest).concat(_descriptor_0.toValue(value_0.predicateDigest).concat(_descriptor_0.toValue(value_0.consentDigest)))))));
+  }
+}
+
+const _descriptor_40 = new _PresentationBindingV1_0();
 
 class _CredentialBindingV1_0 {
   alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_25.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment())))))));
+    return _descriptor_0.alignment().concat(_descriptor_4.alignment().concat(_descriptor_26.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment())))))));
   }
   fromValue(value_0) {
     return {
-      domain: _descriptor_1.fromValue(value_0),
-      version: _descriptor_0.fromValue(value_0),
-      mode: _descriptor_25.fromValue(value_0),
-      credentialFamilyDigest: _descriptor_1.fromValue(value_0),
-      schemaDigest: _descriptor_1.fromValue(value_0),
-      verifierContractDigest: _descriptor_1.fromValue(value_0),
-      challengeDigest: _descriptor_1.fromValue(value_0),
-      credentialRoot: _descriptor_1.fromValue(value_0)
+      domain: _descriptor_0.fromValue(value_0),
+      version: _descriptor_4.fromValue(value_0),
+      mode: _descriptor_26.fromValue(value_0),
+      credentialFamilyDigest: _descriptor_0.fromValue(value_0),
+      schemaDigest: _descriptor_0.fromValue(value_0),
+      verifierContractDigest: _descriptor_0.fromValue(value_0),
+      challengeDigest: _descriptor_0.fromValue(value_0),
+      credentialRoot: _descriptor_0.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_1.toValue(value_0.domain).concat(_descriptor_0.toValue(value_0.version).concat(_descriptor_25.toValue(value_0.mode).concat(_descriptor_1.toValue(value_0.credentialFamilyDigest).concat(_descriptor_1.toValue(value_0.schemaDigest).concat(_descriptor_1.toValue(value_0.verifierContractDigest).concat(_descriptor_1.toValue(value_0.challengeDigest).concat(_descriptor_1.toValue(value_0.credentialRoot))))))));
+    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_4.toValue(value_0.version).concat(_descriptor_26.toValue(value_0.mode).concat(_descriptor_0.toValue(value_0.credentialFamilyDigest).concat(_descriptor_0.toValue(value_0.schemaDigest).concat(_descriptor_0.toValue(value_0.verifierContractDigest).concat(_descriptor_0.toValue(value_0.challengeDigest).concat(_descriptor_0.toValue(value_0.credentialRoot))))))));
   }
 }
 
-const _descriptor_42 = new _CredentialBindingV1_0();
+const _descriptor_41 = new _CredentialBindingV1_0();
+
+class _HolderBindingV1_0 {
+  alignment() {
+    return _descriptor_0.alignment().concat(_descriptor_4.alignment().concat(_descriptor_26.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment())))));
+  }
+  fromValue(value_0) {
+    return {
+      domain: _descriptor_0.fromValue(value_0),
+      version: _descriptor_4.fromValue(value_0),
+      mode: _descriptor_26.fromValue(value_0),
+      verifierContractDigest: _descriptor_0.fromValue(value_0),
+      challengeDigest: _descriptor_0.fromValue(value_0),
+      subjectBindingDigest: _descriptor_0.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_4.toValue(value_0.version).concat(_descriptor_26.toValue(value_0.mode).concat(_descriptor_0.toValue(value_0.verifierContractDigest).concat(_descriptor_0.toValue(value_0.challengeDigest).concat(_descriptor_0.toValue(value_0.subjectBindingDigest))))));
+  }
+}
+
+const _descriptor_42 = new _HolderBindingV1_0();
 
 class _NoStatusBinding_0 {
   alignment() {
@@ -782,22 +782,22 @@ const _descriptor_43 = new _NoStatusBinding_0();
 
 class _ProtocolMessageEnvelope_0 {
   alignment() {
-    return _descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_2.alignment().concat(_descriptor_1.alignment().concat(_descriptor_3.alignment().concat(_descriptor_2.alignment().concat(_descriptor_3.alignment())))))));
+    return _descriptor_4.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_1.alignment().concat(_descriptor_2.alignment().concat(_descriptor_1.alignment())))))));
   }
   fromValue(value_0) {
     return {
-      version: _descriptor_0.fromValue(value_0),
-      messageId: _descriptor_1.fromValue(value_0),
-      threadId: _descriptor_1.fromValue(value_0),
+      version: _descriptor_4.fromValue(value_0),
+      messageId: _descriptor_0.fromValue(value_0),
+      threadId: _descriptor_0.fromValue(value_0),
       initialMessage: _descriptor_2.fromValue(value_0),
-      respondsToMessageId: _descriptor_1.fromValue(value_0),
-      createdAt: _descriptor_3.fromValue(value_0),
+      respondsToMessageId: _descriptor_0.fromValue(value_0),
+      createdAt: _descriptor_1.fromValue(value_0),
       hasExpiresAt: _descriptor_2.fromValue(value_0),
-      expiresAt: _descriptor_3.fromValue(value_0)
+      expiresAt: _descriptor_1.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_0.toValue(value_0.version).concat(_descriptor_1.toValue(value_0.messageId).concat(_descriptor_1.toValue(value_0.threadId).concat(_descriptor_2.toValue(value_0.initialMessage).concat(_descriptor_1.toValue(value_0.respondsToMessageId).concat(_descriptor_3.toValue(value_0.createdAt).concat(_descriptor_2.toValue(value_0.hasExpiresAt).concat(_descriptor_3.toValue(value_0.expiresAt))))))));
+    return _descriptor_4.toValue(value_0.version).concat(_descriptor_0.toValue(value_0.messageId).concat(_descriptor_0.toValue(value_0.threadId).concat(_descriptor_2.toValue(value_0.initialMessage).concat(_descriptor_0.toValue(value_0.respondsToMessageId).concat(_descriptor_1.toValue(value_0.createdAt).concat(_descriptor_2.toValue(value_0.hasExpiresAt).concat(_descriptor_1.toValue(value_0.expiresAt))))))));
   }
 }
 
@@ -805,18 +805,18 @@ const _descriptor_44 = new _ProtocolMessageEnvelope_0();
 
 class _SchemaRef_0 {
   alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment())));
+    return _descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_4.alignment().concat(_descriptor_4.alignment())));
   }
   fromValue(value_0) {
     return {
-      packageId: _descriptor_1.fromValue(value_0),
-      schemaId: _descriptor_1.fromValue(value_0),
-      majorVersion: _descriptor_0.fromValue(value_0),
-      minorVersion: _descriptor_0.fromValue(value_0)
+      packageId: _descriptor_0.fromValue(value_0),
+      schemaId: _descriptor_0.fromValue(value_0),
+      majorVersion: _descriptor_4.fromValue(value_0),
+      minorVersion: _descriptor_4.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_1.toValue(value_0.packageId).concat(_descriptor_1.toValue(value_0.schemaId).concat(_descriptor_0.toValue(value_0.majorVersion).concat(_descriptor_0.toValue(value_0.minorVersion))));
+    return _descriptor_0.toValue(value_0.packageId).concat(_descriptor_0.toValue(value_0.schemaId).concat(_descriptor_4.toValue(value_0.majorVersion).concat(_descriptor_4.toValue(value_0.minorVersion))));
   }
 }
 
@@ -860,58 +860,80 @@ class _SchemaCapabilities_0 {
 
 const _descriptor_47 = new _SchemaCapabilities_0();
 
-class _BlindedSecretHolderBinding_0 {
-  alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment()));
-  }
-  fromValue(value_0) {
-    return {
-      blindedHolderSecretCommitment: _descriptor_1.fromValue(value_0),
-      issuerNonce: _descriptor_1.fromValue(value_0),
-      requestChallengeResponse: _descriptor_1.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_1.toValue(value_0.blindedHolderSecretCommitment).concat(_descriptor_1.toValue(value_0.issuerNonce).concat(_descriptor_1.toValue(value_0.requestChallengeResponse)));
-  }
-}
-
-const _descriptor_48 = new _BlindedSecretHolderBinding_0();
-
 class _SecretHolderBinding_0 {
   alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_1.alignment());
+    return _descriptor_0.alignment().concat(_descriptor_0.alignment());
   }
   fromValue(value_0) {
     return {
-      holderSecretCommitment: _descriptor_1.fromValue(value_0),
-      requestChallengeResponse: _descriptor_1.fromValue(value_0)
+      holderSecretCommitment: _descriptor_0.fromValue(value_0),
+      requestChallengeResponse: _descriptor_0.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_1.toValue(value_0.holderSecretCommitment).concat(_descriptor_1.toValue(value_0.requestChallengeResponse));
+    return _descriptor_0.toValue(value_0.holderSecretCommitment).concat(_descriptor_0.toValue(value_0.requestChallengeResponse));
   }
 }
 
-const _descriptor_49 = new _SecretHolderBinding_0();
+const _descriptor_48 = new _SecretHolderBinding_0();
+
+class _BlindedSecretHolderBinding_0 {
+  alignment() {
+    return _descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment()));
+  }
+  fromValue(value_0) {
+    return {
+      blindedHolderSecretCommitment: _descriptor_0.fromValue(value_0),
+      issuerNonce: _descriptor_0.fromValue(value_0),
+      requestChallengeResponse: _descriptor_0.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_0.toValue(value_0.blindedHolderSecretCommitment).concat(_descriptor_0.toValue(value_0.issuerNonce).concat(_descriptor_0.toValue(value_0.requestChallengeResponse)));
+  }
+}
+
+const _descriptor_49 = new _BlindedSecretHolderBinding_0();
+
+class _VerifierPseudonymScopeV1_0 {
+  alignment() {
+    return _descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment()))))));
+  }
+  fromValue(value_0) {
+    return {
+      verifierIdentityDigest: _descriptor_0.fromValue(value_0),
+      executionContextDigest: _descriptor_0.fromValue(value_0),
+      audienceDigest: _descriptor_0.fromValue(value_0),
+      originDigest: _descriptor_0.fromValue(value_0),
+      consentDigest: _descriptor_0.fromValue(value_0),
+      requestDigest: _descriptor_0.fromValue(value_0),
+      challengeDigest: _descriptor_0.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_0.toValue(value_0.verifierIdentityDigest).concat(_descriptor_0.toValue(value_0.executionContextDigest).concat(_descriptor_0.toValue(value_0.audienceDigest).concat(_descriptor_0.toValue(value_0.originDigest).concat(_descriptor_0.toValue(value_0.consentDigest).concat(_descriptor_0.toValue(value_0.requestDigest).concat(_descriptor_0.toValue(value_0.challengeDigest)))))));
+  }
+}
+
+const _descriptor_50 = new _VerifierPseudonymScopeV1_0();
 
 class _OffchainMidnightHolderBinding_0 {
   alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_1.alignment().concat(_descriptor_14.alignment()));
+    return _descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_14.alignment()));
   }
   fromValue(value_0) {
     return {
-      holderDidStateHash: _descriptor_1.fromValue(value_0),
-      holderMethodId: _descriptor_1.fromValue(value_0),
+      holderDidStateHash: _descriptor_0.fromValue(value_0),
+      holderMethodId: _descriptor_0.fromValue(value_0),
       holderPublicKey: _descriptor_14.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_1.toValue(value_0.holderDidStateHash).concat(_descriptor_1.toValue(value_0.holderMethodId).concat(_descriptor_14.toValue(value_0.holderPublicKey)));
+    return _descriptor_0.toValue(value_0.holderDidStateHash).concat(_descriptor_0.toValue(value_0.holderMethodId).concat(_descriptor_14.toValue(value_0.holderPublicKey)));
   }
 }
 
-const _descriptor_50 = new _OffchainMidnightHolderBinding_0();
+const _descriptor_51 = new _OffchainMidnightHolderBinding_0();
 
 class _JubjubHolderBinding_0 {
   alignment() {
@@ -927,7 +949,7 @@ class _JubjubHolderBinding_0 {
   }
 }
 
-const _descriptor_51 = new _JubjubHolderBinding_0();
+const _descriptor_52 = new _JubjubHolderBinding_0();
 
 class _ExplicitHolderBinding_0 {
   alignment() {
@@ -943,68 +965,70 @@ class _ExplicitHolderBinding_0 {
   }
 }
 
-const _descriptor_52 = new _ExplicitHolderBinding_0();
+const _descriptor_53 = new _ExplicitHolderBinding_0();
 
 class _SchemaFamilyResolutionHint_0 {
   alignment() {
-    return _descriptor_2.alignment().concat(_descriptor_1.alignment());
+    return _descriptor_2.alignment().concat(_descriptor_0.alignment());
   }
   fromValue(value_0) {
     return {
       hasResolverHint: _descriptor_2.fromValue(value_0),
-      resolverHint: _descriptor_1.fromValue(value_0)
+      resolverHint: _descriptor_0.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_2.toValue(value_0.hasResolverHint).concat(_descriptor_1.toValue(value_0.resolverHint));
+    return _descriptor_2.toValue(value_0.hasResolverHint).concat(_descriptor_0.toValue(value_0.resolverHint));
   }
 }
 
-const _descriptor_53 = new _SchemaFamilyResolutionHint_0();
+const _descriptor_54 = new _SchemaFamilyResolutionHint_0();
 
 class _SchemaDescriptor_0 {
   alignment() {
-    return _descriptor_45.alignment().concat(_descriptor_47.alignment().concat(_descriptor_53.alignment()));
+    return _descriptor_45.alignment().concat(_descriptor_47.alignment().concat(_descriptor_54.alignment()));
   }
   fromValue(value_0) {
     return {
       schema: _descriptor_45.fromValue(value_0),
       capabilities: _descriptor_47.fromValue(value_0),
-      familyResolutionHint: _descriptor_53.fromValue(value_0)
+      familyResolutionHint: _descriptor_54.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_45.toValue(value_0.schema).concat(_descriptor_47.toValue(value_0.capabilities).concat(_descriptor_53.toValue(value_0.familyResolutionHint)));
+    return _descriptor_45.toValue(value_0.schema).concat(_descriptor_47.toValue(value_0.capabilities).concat(_descriptor_54.toValue(value_0.familyResolutionHint)));
   }
 }
 
-const _descriptor_54 = new _SchemaDescriptor_0();
+const _descriptor_55 = new _SchemaDescriptor_0();
 
-const _descriptor_55 = new __compactRuntime.CompactTypeVector(4, _descriptor_1);
+const _descriptor_56 = new __compactRuntime.CompactTypeVector(4, _descriptor_0);
 
-const _descriptor_56 = new __compactRuntime.CompactTypeVector(3, _descriptor_1);
+const _descriptor_57 = new __compactRuntime.CompactTypeVector(3, _descriptor_0);
 
-const _descriptor_57 = new __compactRuntime.CompactTypeVector(5, _descriptor_1);
+const _descriptor_58 = new __compactRuntime.CompactTypeVector(2, _descriptor_0);
+
+const _descriptor_59 = new __compactRuntime.CompactTypeVector(5, _descriptor_0);
 
 class _Either_0 {
   alignment() {
-    return _descriptor_2.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment()));
+    return _descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment()));
   }
   fromValue(value_0) {
     return {
       is_left: _descriptor_2.fromValue(value_0),
-      left: _descriptor_1.fromValue(value_0),
-      right: _descriptor_1.fromValue(value_0)
+      left: _descriptor_0.fromValue(value_0),
+      right: _descriptor_0.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_2.toValue(value_0.is_left).concat(_descriptor_1.toValue(value_0.left).concat(_descriptor_1.toValue(value_0.right)));
+    return _descriptor_2.toValue(value_0.is_left).concat(_descriptor_0.toValue(value_0.left).concat(_descriptor_0.toValue(value_0.right)));
   }
 }
 
-const _descriptor_58 = new _Either_0();
+const _descriptor_60 = new _Either_0();
 
-const _descriptor_59 = new __compactRuntime.CompactTypeUnsignedInteger(340282366920938463463374607431768211455n, 16);
+const _descriptor_61 = new __compactRuntime.CompactTypeUnsignedInteger(340282366920938463463374607431768211455n, 16);
 
 class _MerkleTreeDigest_0 {
   alignment() {
@@ -1020,7 +1044,7 @@ class _MerkleTreeDigest_0 {
   }
 }
 
-const _descriptor_60 = new _MerkleTreeDigest_0();
+const _descriptor_62 = new _MerkleTreeDigest_0();
 
 export class Contract {
   witnesses;
@@ -1132,6 +1156,18 @@ export class Contract {
       },
       assertVerifierScopedPseudonym(context, ...args_1) {
         return { result: pureCircuits.assertVerifierScopedPseudonym(...args_1), context };
+      },
+      verifierIdentityDigestV1(context, ...args_1) {
+        return { result: pureCircuits.verifierIdentityDigestV1(...args_1), context };
+      },
+      verifierPseudonymScopeDigestV1(context, ...args_1) {
+        return { result: pureCircuits.verifierPseudonymScopeDigestV1(...args_1), context };
+      },
+      requestScopedVerifierPseudonymV1(context, ...args_1) {
+        return { result: pureCircuits.requestScopedVerifierPseudonymV1(...args_1), context };
+      },
+      assertRequestScopedVerifierPseudonymV1(context, ...args_1) {
+        return { result: pureCircuits.assertRequestScopedVerifierPseudonymV1(...args_1), context };
       },
       blindedSecretHolderCommitment(context, ...args_1) {
         return { result: pureCircuits.blindedSecretHolderCommitment(...args_1), context };
@@ -1438,8 +1474,8 @@ export class Contract {
         const context = { ...contextOrig_0, gasCost: __compactRuntime.emptyRunningCost() };
         const partialProofData = {
           input: {
-            value: _descriptor_1.toValue(nextRegistryId_0),
-            alignment: _descriptor_1.alignment()
+            value: _descriptor_0.toValue(nextRegistryId_0),
+            alignment: _descriptor_0.alignment()
           },
           output: undefined,
           publicTranscript: [],
@@ -1474,8 +1510,8 @@ export class Contract {
         const context = { ...contextOrig_0, gasCost: __compactRuntime.emptyRunningCost() };
         const partialProofData = {
           input: {
-            value: _descriptor_4.toValue(state_0),
-            alignment: _descriptor_4.alignment()
+            value: _descriptor_3.toValue(state_0),
+            alignment: _descriptor_3.alignment()
           },
           output: undefined,
           publicTranscript: [],
@@ -1510,8 +1546,8 @@ export class Contract {
         const context = { ...contextOrig_0, gasCost: __compactRuntime.emptyRunningCost() };
         const partialProofData = {
           input: {
-            value: _descriptor_1.toValue(statusHandle_0),
-            alignment: _descriptor_1.alignment()
+            value: _descriptor_0.toValue(statusHandle_0),
+            alignment: _descriptor_0.alignment()
           },
           output: undefined,
           publicTranscript: [],
@@ -1571,18 +1607,18 @@ export class Contract {
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_25.toValue(0n),
-                                                                                              alignment: _descriptor_25.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_26.toValue(0n),
+                                                                                              alignment: _descriptor_26.alignment() }).encode() } },
                                        { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_1.toValue(new Uint8Array(32)),
-                                                                                              alignment: _descriptor_1.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(new Uint8Array(32)),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_25.toValue(1n),
-                                                                                              alignment: _descriptor_25.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_26.toValue(1n),
+                                                                                              alignment: _descriptor_26.alignment() }).encode() } },
                                        { push: { storage: true,
                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(false),
                                                                                               alignment: _descriptor_2.alignment() }).encode() } },
@@ -1591,52 +1627,52 @@ export class Contract {
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_25.toValue(2n),
-                                                                                              alignment: _descriptor_25.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_26.toValue(2n),
+                                                                                              alignment: _descriptor_26.alignment() }).encode() } },
                                        { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_3.toValue(0n),
-                                                                                              alignment: _descriptor_3.alignment() }).encode() } },
-                                       { ins: { cached: false, n: 1 } }]);
-    __compactRuntime.queryLedgerState(context,
-                                      partialProofData,
-                                      [
-                                       { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_25.toValue(3n),
-                                                                                              alignment: _descriptor_25.alignment() }).encode() } },
-                                       { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_3.toValue(0n),
-                                                                                              alignment: _descriptor_3.alignment() }).encode() } },
-                                       { ins: { cached: false, n: 1 } }]);
-    __compactRuntime.queryLedgerState(context,
-                                      partialProofData,
-                                      [
-                                       { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_25.toValue(4n),
-                                                                                              alignment: _descriptor_25.alignment() }).encode() } },
-                                       { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newArray()
-                                                          .arrayPush(__compactRuntime.StateValue.newBoundedMerkleTree(
-                                                                       new __compactRuntime.StateBoundedMerkleTree(32)
-                                                                     )).arrayPush(__compactRuntime.StateValue.newCell({ value: _descriptor_3.toValue(0n),
-                                                                                                                        alignment: _descriptor_3.alignment() }))
-                                                          .encode() } },
-                                       { ins: { cached: false, n: 1 } }]);
-    __compactRuntime.queryLedgerState(context,
-                                      partialProofData,
-                                      [
-                                       { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_25.toValue(0n),
-                                                                                              alignment: _descriptor_25.alignment() }).encode() } },
-                                       { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_1.toValue(new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 115, 116, 97, 116, 117, 115, 58, 117, 110, 115, 101, 116, 0, 0, 0, 0, 0, 0, 0, 0])),
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_1.toValue(0n),
                                                                                               alignment: _descriptor_1.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_25.toValue(1n),
-                                                                                              alignment: _descriptor_25.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_26.toValue(3n),
+                                                                                              alignment: _descriptor_26.alignment() }).encode() } },
+                                       { push: { storage: true,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_1.toValue(0n),
+                                                                                              alignment: _descriptor_1.alignment() }).encode() } },
+                                       { ins: { cached: false, n: 1 } }]);
+    __compactRuntime.queryLedgerState(context,
+                                      partialProofData,
+                                      [
+                                       { push: { storage: false,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_26.toValue(4n),
+                                                                                              alignment: _descriptor_26.alignment() }).encode() } },
+                                       { push: { storage: true,
+                                                 value: __compactRuntime.StateValue.newArray()
+                                                          .arrayPush(__compactRuntime.StateValue.newBoundedMerkleTree(
+                                                                       new __compactRuntime.StateBoundedMerkleTree(32)
+                                                                     )).arrayPush(__compactRuntime.StateValue.newCell({ value: _descriptor_1.toValue(0n),
+                                                                                                                        alignment: _descriptor_1.alignment() }))
+                                                          .encode() } },
+                                       { ins: { cached: false, n: 1 } }]);
+    __compactRuntime.queryLedgerState(context,
+                                      partialProofData,
+                                      [
+                                       { push: { storage: false,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_26.toValue(0n),
+                                                                                              alignment: _descriptor_26.alignment() }).encode() } },
+                                       { push: { storage: true,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 115, 116, 97, 116, 117, 115, 58, 117, 110, 115, 101, 116, 0, 0, 0, 0, 0, 0, 0, 0])),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
+                                       { ins: { cached: false, n: 1 } }]);
+    __compactRuntime.queryLedgerState(context,
+                                      partialProofData,
+                                      [
+                                       { push: { storage: false,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_26.toValue(1n),
+                                                                                              alignment: _descriptor_26.alignment() }).encode() } },
                                        { push: { storage: true,
                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(false),
                                                                                               alignment: _descriptor_2.alignment() }).encode() } },
@@ -1653,11 +1689,11 @@ export class Contract {
     return result_0;
   }
   _transientHash_1(value_0) {
-    const result_0 = __compactRuntime.transientHash(_descriptor_3, value_0);
+    const result_0 = __compactRuntime.transientHash(_descriptor_1, value_0);
     return result_0;
   }
   _persistentHash_0(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_57, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_59, value_0);
     return result_0;
   }
   _persistentHash_1(value_0) {
@@ -1665,19 +1701,19 @@ export class Contract {
     return result_0;
   }
   _persistentHash_2(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_56, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_58, value_0);
     return result_0;
   }
   _persistentHash_3(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_11, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_50, value_0);
     return result_0;
   }
   _persistentHash_4(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_42, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_57, value_0);
     return result_0;
   }
   _persistentHash_5(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_40, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_11, value_0);
     return result_0;
   }
   _persistentHash_6(value_0) {
@@ -1685,59 +1721,67 @@ export class Contract {
     return result_0;
   }
   _persistentHash_7(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_39, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_42, value_0);
     return result_0;
   }
   _persistentHash_8(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_27, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_39, value_0);
     return result_0;
   }
   _persistentHash_9(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_37, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_40, value_0);
     return result_0;
   }
   _persistentHash_10(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_38, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_28, value_0);
     return result_0;
   }
   _persistentHash_11(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_32, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_38, value_0);
     return result_0;
   }
   _persistentHash_12(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_34, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_37, value_0);
     return result_0;
   }
   _persistentHash_13(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_36, value_0);
-    return result_0;
-  }
-  _persistentHash_14(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_33, value_0);
-    return result_0;
-  }
-  _persistentHash_15(value_0) {
     const result_0 = __compactRuntime.persistentHash(_descriptor_35, value_0);
     return result_0;
   }
+  _persistentHash_14(value_0) {
+    const result_0 = __compactRuntime.persistentHash(_descriptor_32, value_0);
+    return result_0;
+  }
+  _persistentHash_15(value_0) {
+    const result_0 = __compactRuntime.persistentHash(_descriptor_34, value_0);
+    return result_0;
+  }
   _persistentHash_16(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_31, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_36, value_0);
     return result_0;
   }
   _persistentHash_17(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_26, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_33, value_0);
     return result_0;
   }
   _persistentHash_18(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_55, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_31, value_0);
     return result_0;
   }
   _persistentHash_19(value_0) {
+    const result_0 = __compactRuntime.persistentHash(_descriptor_27, value_0);
+    return result_0;
+  }
+  _persistentHash_20(value_0) {
+    const result_0 = __compactRuntime.persistentHash(_descriptor_56, value_0);
+    return result_0;
+  }
+  _persistentHash_21(value_0) {
     const result_0 = __compactRuntime.persistentHash(_descriptor_13, value_0);
     return result_0;
   }
   _persistentCommit_0(value_0, rand_0) {
-    const result_0 = __compactRuntime.persistentCommit(_descriptor_1,
+    const result_0 = __compactRuntime.persistentCommit(_descriptor_0,
                                                        value_0,
                                                        rand_0);
     return result_0;
@@ -1856,7 +1900,7 @@ export class Contract {
                                    proof_0.challengeHash]);
   }
   _proofChallengeForContext_0(bodyRoot_0, contextTag_0, proof_0) {
-    return this._degradeToTransient_0(this._persistentHash_2([this._proofPayloadRootForContext_0(bodyRoot_0,
+    return this._degradeToTransient_0(this._persistentHash_4([this._proofPayloadRootForContext_0(bodyRoot_0,
                                                                                                  contextTag_0,
                                                                                                  proof_0),
                                                               this._upgradeFromTransient_0(this._transientHash_0(proof_0.publicKey)),
@@ -2028,12 +2072,12 @@ export class Contract {
   _secretHolderBindingChallengeResponse_0(holderSecret_0,
                                           verifierChallengeHash_0)
   {
-    return this._persistentHash_2([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 104, 111, 108, 100, 101, 114, 45, 99, 104, 97, 108, 108, 0, 0, 0, 0, 0, 0, 0, 0]),
+    return this._persistentHash_4([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 104, 111, 108, 100, 101, 114, 45, 99, 104, 97, 108, 108, 0, 0, 0, 0, 0, 0, 0, 0]),
                                    holderSecret_0,
                                    verifierChallengeHash_0]);
   }
   _verifierScopedPseudonym_0(holderSecret_0, verifierDomainHash_0) {
-    return this._persistentHash_2([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 104, 111, 108, 100, 101, 114, 45, 112, 115, 101, 117, 100, 111, 110, 121, 109, 0, 0, 0, 0]),
+    return this._persistentHash_4([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 104, 111, 108, 100, 101, 114, 45, 112, 115, 101, 117, 100, 111, 110, 121, 109, 0, 0, 0, 0]),
                                    holderSecret_0,
                                    verifierDomainHash_0]);
   }
@@ -2047,23 +2091,49 @@ export class Contract {
                             'Verifier-scoped pseudonym does not match the holder secret and verifier domain');
     return [];
   }
+  _verifierIdentityDigestV1_0(verificationMethodRef_0) {
+    __compactRuntime.assert(!this._equal_16(verificationMethodRef_0.didContractAddress.bytes,
+                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
+                            &&
+                            !this._equal_17(verificationMethodRef_0.methodId,
+                                            new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+                            'Verifier identity method reference must be set');
+    return this._persistentHash_1(verificationMethodRef_0);
+  }
+  _verifierPseudonymScopeDigestV1_0(scope_0) {
+    return this._persistentHash_2([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 112, 115, 101, 117, 100, 111, 110, 121, 109, 45, 115, 99, 111, 112, 101, 58, 118, 49, 0, 0]),
+                                   this._persistentHash_3(scope_0)]);
+  }
+  _requestScopedVerifierPseudonymV1_0(holderSecret_0, scope_0) {
+    return this._persistentHash_4([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 114, 101, 113, 45, 112, 115, 101, 117, 100, 111, 110, 121, 109, 58, 118, 49, 0, 0, 0, 0]),
+                                   holderSecret_0,
+                                   this._verifierPseudonymScopeDigestV1_0(scope_0)]);
+  }
+  _assertRequestScopedVerifierPseudonymV1_0(pseudonym_0, holderSecret_0, scope_0)
+  {
+    __compactRuntime.assert(this._equal_18(pseudonym_0,
+                                           this._requestScopedVerifierPseudonymV1_0(holderSecret_0,
+                                                                                    scope_0)),
+                            'Request-scoped verifier pseudonym context mismatch');
+    return [];
+  }
   _blindedSecretHolderCommitment_0(holderSecretCommitment_0,
                                    issuerNonce_0,
                                    blindingFactor_0)
   {
-    return this._persistentHash_18([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 98, 108, 105, 110, 100, 45, 104, 111, 108, 100, 101, 114, 0, 0, 0, 0, 0, 0, 0, 0]),
+    return this._persistentHash_20([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 98, 108, 105, 110, 100, 45, 104, 111, 108, 100, 101, 114, 0, 0, 0, 0, 0, 0, 0, 0]),
                                     holderSecretCommitment_0,
                                     issuerNonce_0,
                                     blindingFactor_0]);
   }
   _assertValidSecretHolderCredentialBinding_0(binding_0) {
-    __compactRuntime.assert(this._equal_16(binding_0.requestChallengeResponse,
+    __compactRuntime.assert(this._equal_19(binding_0.requestChallengeResponse,
                                            this._noSecretHolderChallengeResponse_0()),
                             'Credential secret holder binding must not embed a request challenge response');
     return [];
   }
   _assertValidSecretHolderPresentationBinding_0(binding_0) {
-    __compactRuntime.assert(!this._equal_17(binding_0.requestChallengeResponse,
+    __compactRuntime.assert(!this._equal_20(binding_0.requestChallengeResponse,
                                             this._noSecretHolderChallengeResponse_0()),
                             'Presentation secret holder binding must include a request challenge response');
     return [];
@@ -2071,19 +2141,19 @@ export class Contract {
   _assertMatchingSecretHolderBindings_0(credentialBinding_0,
                                         presentationBinding_0)
   {
-    __compactRuntime.assert(this._equal_18(credentialBinding_0.holderSecretCommitment,
+    __compactRuntime.assert(this._equal_21(credentialBinding_0.holderSecretCommitment,
                                            presentationBinding_0.holderSecretCommitment),
                             'Presentation holder secret commitment does not match the credential holder binding');
     return [];
   }
   _assertValidBlindedSecretHolderCredentialBinding_0(binding_0) {
-    __compactRuntime.assert(this._equal_19(binding_0.requestChallengeResponse,
+    __compactRuntime.assert(this._equal_22(binding_0.requestChallengeResponse,
                                            this._noSecretHolderChallengeResponse_0()),
                             'Credential blinded holder binding must not embed a request challenge response');
     return [];
   }
   _assertValidBlindedSecretHolderPresentationBinding_0(binding_0) {
-    __compactRuntime.assert(!this._equal_20(binding_0.requestChallengeResponse,
+    __compactRuntime.assert(!this._equal_23(binding_0.requestChallengeResponse,
                                             this._noSecretHolderChallengeResponse_0()),
                             'Presentation blinded holder binding must include a request challenge response');
     return [];
@@ -2091,10 +2161,10 @@ export class Contract {
   _assertMatchingBlindedSecretHolderBindings_0(credentialBinding_0,
                                                presentationBinding_0)
   {
-    __compactRuntime.assert(this._equal_21(credentialBinding_0.blindedHolderSecretCommitment,
+    __compactRuntime.assert(this._equal_24(credentialBinding_0.blindedHolderSecretCommitment,
                                            presentationBinding_0.blindedHolderSecretCommitment),
                             'Presentation blinded holder commitment does not match the credential holder binding');
-    __compactRuntime.assert(this._equal_22(credentialBinding_0.issuerNonce,
+    __compactRuntime.assert(this._equal_25(credentialBinding_0.issuerNonce,
                                            presentationBinding_0.issuerNonce),
                             'Presentation issuer nonce does not match the credential holder binding');
     return [];
@@ -2104,11 +2174,11 @@ export class Contract {
                                       holderSecret_0,
                                       opening_0)
   {
-    __compactRuntime.assert(this._equal_23(this._secretHolderBindingCommitment_0(holderSecret_0,
+    __compactRuntime.assert(this._equal_26(this._secretHolderBindingCommitment_0(holderSecret_0,
                                                                                  opening_0),
                                            binding_0.holderSecretCommitment),
                             'Holder secret witness does not match the holder-binding commitment');
-    __compactRuntime.assert(this._equal_24(this._secretHolderBindingChallengeResponse_0(holderSecret_0,
+    __compactRuntime.assert(this._equal_27(this._secretHolderBindingChallengeResponse_0(holderSecret_0,
                                                                                         verifierChallengeHash_0),
                                            binding_0.requestChallengeResponse),
                             'Holder secret challenge response does not match the verifier challenge');
@@ -2122,12 +2192,12 @@ export class Contract {
   {
     const holderCommitment_0 = this._secretHolderBindingCommitment_0(holderSecret_0,
                                                                      opening_0);
-    __compactRuntime.assert(this._equal_25(this._blindedSecretHolderCommitment_0(holderCommitment_0,
+    __compactRuntime.assert(this._equal_28(this._blindedSecretHolderCommitment_0(holderCommitment_0,
                                                                                  binding_0.issuerNonce,
                                                                                  blindingFactor_0),
                                            binding_0.blindedHolderSecretCommitment),
                             'Blinded holder commitment does not match the hidden holder secret witness');
-    __compactRuntime.assert(this._equal_26(this._secretHolderBindingChallengeResponse_0(holderSecret_0,
+    __compactRuntime.assert(this._equal_29(this._secretHolderBindingChallengeResponse_0(holderSecret_0,
                                                                                         verifierChallengeHash_0),
                                            binding_0.requestChallengeResponse),
                             'Blinded holder challenge response does not match the verifier challenge');
@@ -2149,7 +2219,7 @@ export class Contract {
     return new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 112, 114, 111, 116, 111, 99, 111, 108, 58, 110, 111, 110, 101, 0, 0, 0, 0, 0, 0, 0]);
   }
   _assertValidVerificationMethodRef_0(verificationMethodRef_0) {
-    __compactRuntime.assert(!this._equal_27(verificationMethodRef_0.methodId,
+    __compactRuntime.assert(!this._equal_30(verificationMethodRef_0.methodId,
                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Verification method reference must be set');
     return [];
@@ -2157,34 +2227,34 @@ export class Contract {
   _assertMatchingSchemaRefs_0(expected_0, actual_0) {
     this._assertValidSchemaRef_0(expected_0);
     this._assertValidSchemaRef_0(actual_0);
-    __compactRuntime.assert(this._equal_28(expected_0.packageId,
+    __compactRuntime.assert(this._equal_31(expected_0.packageId,
                                            actual_0.packageId)
                             &&
-                            this._equal_29(expected_0.schemaId,
+                            this._equal_32(expected_0.schemaId,
                                            actual_0.schemaId)
                             &&
-                            this._equal_30(expected_0.majorVersion,
+                            this._equal_33(expected_0.majorVersion,
                                            actual_0.majorVersion)
                             &&
-                            this._equal_31(expected_0.minorVersion,
+                            this._equal_34(expected_0.minorVersion,
                                            actual_0.minorVersion),
                             'Schema reference mismatch');
     return [];
   }
   _assertValidProtocolMessageEnvelope_0(envelope_0) {
     const noResponse_0 = this._noProtocolResponseReference_0();
-    __compactRuntime.assert(this._equal_32(envelope_0.version, 1n),
+    __compactRuntime.assert(this._equal_35(envelope_0.version, 1n),
                             'Protocol message version mismatch');
-    __compactRuntime.assert(!this._equal_33(envelope_0.messageId, noResponse_0),
+    __compactRuntime.assert(!this._equal_36(envelope_0.messageId, noResponse_0),
                             'Protocol message id must be set');
-    __compactRuntime.assert(!this._equal_34(envelope_0.threadId, noResponse_0),
+    __compactRuntime.assert(!this._equal_37(envelope_0.threadId, noResponse_0),
                             'Protocol thread id must be set');
     if (envelope_0.initialMessage) {
-      __compactRuntime.assert(this._equal_35(envelope_0.respondsToMessageId,
+      __compactRuntime.assert(this._equal_38(envelope_0.respondsToMessageId,
                                              noResponse_0),
                               'Initial protocol message must not reference a previous message');
     } else {
-      __compactRuntime.assert(!this._equal_36(envelope_0.respondsToMessageId,
+      __compactRuntime.assert(!this._equal_39(envelope_0.respondsToMessageId,
                                               noResponse_0),
                               'Protocol response message must reference a previous message');
     }
@@ -2201,10 +2271,10 @@ export class Contract {
     this._assertValidProtocolMessageEnvelope_0(responseEnvelope_0);
     __compactRuntime.assert(!responseEnvelope_0.initialMessage,
                             'Protocol response must not be initial');
-    __compactRuntime.assert(this._equal_37(responseEnvelope_0.threadId,
+    __compactRuntime.assert(this._equal_40(responseEnvelope_0.threadId,
                                            requestEnvelope_0.threadId),
                             'Protocol response thread id does not match the request thread id');
-    __compactRuntime.assert(this._equal_38(responseEnvelope_0.respondsToMessageId,
+    __compactRuntime.assert(this._equal_41(responseEnvelope_0.respondsToMessageId,
                                            requestEnvelope_0.messageId),
                             'Protocol response does not reference the request message id');
     let t_0;
@@ -2214,7 +2284,7 @@ export class Contract {
     return [];
   }
   _assertValidStatusRegistryRef_0(registryRef_0) {
-    __compactRuntime.assert(!this._equal_39(registryRef_0.registryId,
+    __compactRuntime.assert(!this._equal_42(registryRef_0.registryId,
                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Status registry id must be set');
     this._assertValidVerificationMethodRef_0(registryRef_0.authorityVerificationMethodRef);
@@ -2225,14 +2295,14 @@ export class Contract {
     __compactRuntime.assert(binding_0.statusType === 0,
                             'Registry-bound status type must be revocationRegistry');
     this._assertValidStatusRegistryRef_0(binding_0.registryRef);
-    __compactRuntime.assert(!this._equal_40(binding_0.statusHandleCommitment,
+    __compactRuntime.assert(!this._equal_43(binding_0.statusHandleCommitment,
                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Status handle commitment must be set');
     return [];
   }
   _registryBoundStatusBindingRoot_0(binding_0) {
     this._assertValidRegistryBoundStatusBinding_0(binding_0);
-    return this._persistentHash_3(binding_0);
+    return this._persistentHash_5(binding_0);
   }
   _verificationTranscriptDomainV1_0() {
     return Uint8Array.from([63n,
@@ -2900,61 +2970,61 @@ export class Contract {
                            Number);
   }
   _credentialBindingV1Digest_0(binding_0) {
-    return this._persistentHash_4(binding_0);
-  }
-  _holderBindingV1Digest_0(binding_0) {
-    return this._persistentHash_5(binding_0);
-  }
-  _consentBindingV1Digest_0(binding_0) {
     return this._persistentHash_6(binding_0);
   }
-  _presentationBindingV1Digest_0(binding_0) {
+  _holderBindingV1Digest_0(binding_0) {
     return this._persistentHash_7(binding_0);
   }
-  _evidenceBindingV1Digest_0(binding_0) {
+  _consentBindingV1Digest_0(binding_0) {
     return this._persistentHash_8(binding_0);
   }
+  _presentationBindingV1Digest_0(binding_0) {
+    return this._persistentHash_9(binding_0);
+  }
+  _evidenceBindingV1Digest_0(binding_0) {
+    return this._persistentHash_10(binding_0);
+  }
   _anchorEvidenceReceiptV1Digest_0(receipt_0) {
-    return this._persistentHash_9(receipt_0);
+    return this._persistentHash_11(receipt_0);
   }
   _decisionNullifierMaterialV1Digest_0(material_0) {
-    return this._persistentHash_10(material_0);
+    return this._persistentHash_12(material_0);
   }
   _actionHolderBindingV1Digest_0(binding_0) {
-    return this._persistentHash_11(binding_0);
+    return this._persistentHash_13(binding_0);
   }
   _actionCredentialBindingV1Digest_0(binding_0) {
-    return this._persistentHash_12(binding_0);
+    return this._persistentHash_14(binding_0);
   }
   _requestReplayScopeV1Digest_0(scope_0) {
-    return this._persistentHash_13(scope_0);
+    return this._persistentHash_15(scope_0);
   }
   _holderActionReplayScopeV1Digest_0(scope_0) {
-    return this._persistentHash_14(scope_0);
+    return this._persistentHash_16(scope_0);
   }
   _credentialActionReplayScopeV1Digest_0(scope_0) {
-    return this._persistentHash_15(scope_0);
+    return this._persistentHash_17(scope_0);
   }
   _assertValidActionHolderBindingV1_0(binding_0,
                                       expectedDeploymentDigest_0,
                                       expectedVerifierContractDigest_0,
                                       expectedActionClassDigest_0)
   {
-    __compactRuntime.assert(this._equal_41(binding_0.domain,
+    __compactRuntime.assert(this._equal_44(binding_0.domain,
                                            this._actionHolderBindingDomainV1_0()),
                             'Action holder binding domain is unknown');
-    __compactRuntime.assert(this._equal_42(binding_0.version, 1n),
+    __compactRuntime.assert(this._equal_45(binding_0.version, 1n),
                             'Action holder binding version must be 1');
-    __compactRuntime.assert(this._equal_43(binding_0.deploymentDigest,
+    __compactRuntime.assert(this._equal_46(binding_0.deploymentDigest,
                                            expectedDeploymentDigest_0),
                             'Action holder deployment binding mismatch');
-    __compactRuntime.assert(this._equal_44(binding_0.verifierContractDigest,
+    __compactRuntime.assert(this._equal_47(binding_0.verifierContractDigest,
                                            expectedVerifierContractDigest_0),
                             'Action holder verifier binding mismatch');
-    __compactRuntime.assert(this._equal_45(binding_0.actionClassDigest,
+    __compactRuntime.assert(this._equal_48(binding_0.actionClassDigest,
                                            expectedActionClassDigest_0),
                             'Action holder action binding mismatch');
-    __compactRuntime.assert(!this._equal_46(binding_0.holderSubjectDigest,
+    __compactRuntime.assert(!this._equal_49(binding_0.holderSubjectDigest,
                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Action holder subject binding must be set');
     return [];
@@ -2964,27 +3034,27 @@ export class Contract {
                                           expectedVerifierContractDigest_0,
                                           expectedActionClassDigest_0)
   {
-    __compactRuntime.assert(this._equal_47(binding_0.domain,
+    __compactRuntime.assert(this._equal_50(binding_0.domain,
                                            this._actionCredentialBindingDomainV1_0()),
                             'Action credential binding domain is unknown');
-    __compactRuntime.assert(this._equal_48(binding_0.version, 1n),
+    __compactRuntime.assert(this._equal_51(binding_0.version, 1n),
                             'Action credential binding version must be 1');
-    __compactRuntime.assert(this._equal_49(binding_0.deploymentDigest,
+    __compactRuntime.assert(this._equal_52(binding_0.deploymentDigest,
                                            expectedDeploymentDigest_0),
                             'Action credential deployment binding mismatch');
-    __compactRuntime.assert(this._equal_50(binding_0.verifierContractDigest,
+    __compactRuntime.assert(this._equal_53(binding_0.verifierContractDigest,
                                            expectedVerifierContractDigest_0),
                             'Action credential verifier binding mismatch');
-    __compactRuntime.assert(this._equal_51(binding_0.actionClassDigest,
+    __compactRuntime.assert(this._equal_54(binding_0.actionClassDigest,
                                            expectedActionClassDigest_0),
                             'Action credential action binding mismatch');
-    __compactRuntime.assert(!this._equal_52(binding_0.credentialFamilyDigest,
+    __compactRuntime.assert(!this._equal_55(binding_0.credentialFamilyDigest,
                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Action credential family binding must be set');
-    __compactRuntime.assert(!this._equal_53(binding_0.schemaDigest,
+    __compactRuntime.assert(!this._equal_56(binding_0.schemaDigest,
                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Action credential schema binding must be set');
-    __compactRuntime.assert(!this._equal_54(binding_0.credentialRoot,
+    __compactRuntime.assert(!this._equal_57(binding_0.credentialRoot,
                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Action credential root binding must be set');
     return [];
@@ -2993,24 +3063,24 @@ export class Contract {
                                      expectedDeploymentDigest_0,
                                      expectedVerifierContractDigest_0)
   {
-    __compactRuntime.assert(this._equal_55(scope_0.domain,
+    __compactRuntime.assert(this._equal_58(scope_0.domain,
                                            this._replayScopeRequestDomainV1_0()),
                             'Request replay scope domain is unknown');
-    __compactRuntime.assert(this._equal_56(scope_0.version, 1n),
+    __compactRuntime.assert(this._equal_59(scope_0.version, 1n),
                             'Request replay scope version must be 1');
-    __compactRuntime.assert(this._equal_57(scope_0.deploymentDigest,
+    __compactRuntime.assert(this._equal_60(scope_0.deploymentDigest,
                                            expectedDeploymentDigest_0),
                             'Request replay deployment binding mismatch');
-    __compactRuntime.assert(this._equal_58(scope_0.verifierContractDigest,
+    __compactRuntime.assert(this._equal_61(scope_0.verifierContractDigest,
                                            expectedVerifierContractDigest_0),
                             'Request replay verifier binding mismatch');
-    __compactRuntime.assert(!this._equal_59(scope_0.requestIdDigest,
+    __compactRuntime.assert(!this._equal_62(scope_0.requestIdDigest,
                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Request replay request id must be set');
-    __compactRuntime.assert(!this._equal_60(scope_0.challengeDigest,
+    __compactRuntime.assert(!this._equal_63(scope_0.challengeDigest,
                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Request replay challenge must be set');
-    __compactRuntime.assert(!this._equal_61(scope_0.actionInvocationDigest,
+    __compactRuntime.assert(!this._equal_64(scope_0.actionInvocationDigest,
                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Request replay action invocation must be set');
     return [];
@@ -3019,21 +3089,21 @@ export class Contract {
                                           expectedDeploymentDigest_0,
                                           expectedVerifierContractDigest_0)
   {
-    __compactRuntime.assert(this._equal_62(scope_0.domain,
+    __compactRuntime.assert(this._equal_65(scope_0.domain,
                                            this._replayScopeHolderActionDomainV1_0()),
                             'Holder-action replay scope domain is unknown');
-    __compactRuntime.assert(this._equal_63(scope_0.version, 1n),
+    __compactRuntime.assert(this._equal_66(scope_0.version, 1n),
                             'Holder-action replay scope version must be 1');
-    __compactRuntime.assert(this._equal_64(scope_0.deploymentDigest,
+    __compactRuntime.assert(this._equal_67(scope_0.deploymentDigest,
                                            expectedDeploymentDigest_0),
                             'Holder-action deployment binding mismatch');
-    __compactRuntime.assert(this._equal_65(scope_0.verifierContractDigest,
+    __compactRuntime.assert(this._equal_68(scope_0.verifierContractDigest,
                                            expectedVerifierContractDigest_0),
                             'Holder-action verifier binding mismatch');
-    __compactRuntime.assert(!this._equal_66(scope_0.actionClassDigest,
+    __compactRuntime.assert(!this._equal_69(scope_0.actionClassDigest,
                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Holder-action class must be set');
-    __compactRuntime.assert(!this._equal_67(scope_0.actionScopeParametersDigest,
+    __compactRuntime.assert(!this._equal_70(scope_0.actionScopeParametersDigest,
                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Holder-action scope parameters must be set');
     this._assertValidActionHolderBindingV1_0(scope_0.binding,
@@ -3046,21 +3116,21 @@ export class Contract {
                                               expectedDeploymentDigest_0,
                                               expectedVerifierContractDigest_0)
   {
-    __compactRuntime.assert(this._equal_68(scope_0.domain,
+    __compactRuntime.assert(this._equal_71(scope_0.domain,
                                            this._replayScopeCredentialActionDomainV1_0()),
                             'Credential-action replay scope domain is unknown');
-    __compactRuntime.assert(this._equal_69(scope_0.version, 1n),
+    __compactRuntime.assert(this._equal_72(scope_0.version, 1n),
                             'Credential-action replay scope version must be 1');
-    __compactRuntime.assert(this._equal_70(scope_0.deploymentDigest,
+    __compactRuntime.assert(this._equal_73(scope_0.deploymentDigest,
                                            expectedDeploymentDigest_0),
                             'Credential-action deployment binding mismatch');
-    __compactRuntime.assert(this._equal_71(scope_0.verifierContractDigest,
+    __compactRuntime.assert(this._equal_74(scope_0.verifierContractDigest,
                                            expectedVerifierContractDigest_0),
                             'Credential-action verifier binding mismatch');
-    __compactRuntime.assert(!this._equal_72(scope_0.actionClassDigest,
+    __compactRuntime.assert(!this._equal_75(scope_0.actionClassDigest,
                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Credential-action class must be set');
-    __compactRuntime.assert(!this._equal_73(scope_0.actionScopeParametersDigest,
+    __compactRuntime.assert(!this._equal_76(scope_0.actionScopeParametersDigest,
                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Credential-action scope parameters must be set');
     this._assertValidActionCredentialBindingV1_0(scope_0.binding,
@@ -3072,10 +3142,10 @@ export class Contract {
   _assertValidDecisionNullifierContextV1_0(deploymentDigest_0,
                                            verifierContractDigest_0)
   {
-    __compactRuntime.assert(!this._equal_74(deploymentDigest_0,
+    __compactRuntime.assert(!this._equal_77(deploymentDigest_0,
                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Deployment digest must be set');
-    __compactRuntime.assert(!this._equal_75(verifierContractDigest_0,
+    __compactRuntime.assert(!this._equal_78(verifierContractDigest_0,
                                             new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Verifier contract digest must be set');
     return [];
@@ -3144,67 +3214,67 @@ export class Contract {
     return new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
   }
   _syntheticVerificationExtensionV1Digest_0(extension_0) {
-    return this._persistentHash_16(extension_0);
+    return this._persistentHash_18(extension_0);
   }
   _verificationTranscriptV1Digest_0(transcript_0) {
-    return this._persistentHash_17(transcript_0);
+    return this._persistentHash_19(transcript_0);
   }
   _assertValidEvidenceBindingV1_0(binding_0, expectedDomain_0) {
-    __compactRuntime.assert(this._equal_76(binding_0.domain, expectedDomain_0),
+    __compactRuntime.assert(this._equal_79(binding_0.domain, expectedDomain_0),
                             'Evidence domain does not match its class');
-    __compactRuntime.assert(this._equal_77(binding_0.version, 1n),
+    __compactRuntime.assert(this._equal_80(binding_0.version, 1n),
                             'Evidence version must be 1');
     let t_0;
     __compactRuntime.assert((t_0 = binding_0.mode, t_0 <= 4n),
                             'Evidence mode is unknown');
-    if (this._equal_78(binding_0.mode, 0n)) {
-      __compactRuntime.assert(this._equal_79(binding_0.authorityDigest,
+    if (this._equal_81(binding_0.mode, 0n)) {
+      __compactRuntime.assert(this._equal_82(binding_0.authorityDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Not-required evidence authority must be zero');
-      __compactRuntime.assert(this._equal_80(binding_0.subjectDigest,
+      __compactRuntime.assert(this._equal_83(binding_0.subjectDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Not-required evidence subject must be zero');
-      __compactRuntime.assert(this._equal_81(binding_0.stateAnchorDigest,
+      __compactRuntime.assert(this._equal_84(binding_0.stateAnchorDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Not-required evidence anchor must be zero');
-      __compactRuntime.assert(this._equal_82(binding_0.statementDigest,
+      __compactRuntime.assert(this._equal_85(binding_0.statementDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Not-required evidence statement must be zero');
-      __compactRuntime.assert(this._equal_83(binding_0.createdAt, 0n),
+      __compactRuntime.assert(this._equal_86(binding_0.createdAt, 0n),
                               'Not-required evidence creation time must be zero');
-      __compactRuntime.assert(this._equal_84(binding_0.expiresAt, 0n),
+      __compactRuntime.assert(this._equal_87(binding_0.expiresAt, 0n),
                               'Not-required evidence expiry must be zero');
     }
-    if (this._equal_85(binding_0.mode, 1n)) {
-      __compactRuntime.assert(this._equal_86(binding_0.authorityDigest,
+    if (this._equal_88(binding_0.mode, 1n)) {
+      __compactRuntime.assert(this._equal_89(binding_0.authorityDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Unavailable evidence authority must be zero');
-      __compactRuntime.assert(!this._equal_87(binding_0.subjectDigest,
+      __compactRuntime.assert(!this._equal_90(binding_0.subjectDigest,
                                               new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Unavailable evidence subject must be scoped');
-      __compactRuntime.assert(this._equal_88(binding_0.stateAnchorDigest,
+      __compactRuntime.assert(this._equal_91(binding_0.stateAnchorDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Unavailable evidence anchor must be zero');
-      __compactRuntime.assert(this._equal_89(binding_0.statementDigest,
+      __compactRuntime.assert(this._equal_92(binding_0.statementDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Unavailable evidence statement must be zero');
-      __compactRuntime.assert(this._equal_90(binding_0.createdAt, 0n),
+      __compactRuntime.assert(this._equal_93(binding_0.createdAt, 0n),
                               'Unavailable evidence creation time must be zero');
-      __compactRuntime.assert(this._equal_91(binding_0.expiresAt, 0n),
+      __compactRuntime.assert(this._equal_94(binding_0.expiresAt, 0n),
                               'Unavailable evidence expiry must be zero');
     }
     let t_1;
     if (t_1 = binding_0.mode, t_1 >= 2n) {
-      __compactRuntime.assert(!this._equal_92(binding_0.authorityDigest,
+      __compactRuntime.assert(!this._equal_95(binding_0.authorityDigest,
                                               new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Accepted evidence authority must be set');
-      __compactRuntime.assert(!this._equal_93(binding_0.subjectDigest,
+      __compactRuntime.assert(!this._equal_96(binding_0.subjectDigest,
                                               new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Accepted evidence subject must be set');
-      __compactRuntime.assert(!this._equal_94(binding_0.stateAnchorDigest,
+      __compactRuntime.assert(!this._equal_97(binding_0.stateAnchorDigest,
                                               new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Accepted evidence anchor must be set');
-      __compactRuntime.assert(!this._equal_95(binding_0.statementDigest,
+      __compactRuntime.assert(!this._equal_98(binding_0.statementDigest,
                                               new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Accepted evidence statement must be set');
       let t_2;
@@ -3218,10 +3288,10 @@ export class Contract {
     return [];
   }
   _assertValidVerificationTranscriptV1_0(transcript_0) {
-    __compactRuntime.assert(this._equal_96(transcript_0.domain,
+    __compactRuntime.assert(this._equal_99(transcript_0.domain,
                                            this._verificationTranscriptDomainV1_0()),
                             'Transcript domain must be V1');
-    __compactRuntime.assert(this._equal_97(transcript_0.version, 1n),
+    __compactRuntime.assert(this._equal_100(transcript_0.version, 1n),
                             'Transcript version must be 1');
     let t_0, t_1;
     __compactRuntime.assert((t_1 = transcript_0.profile, t_1 >= 1n)
@@ -3258,178 +3328,178 @@ export class Contract {
     let t_12;
     __compactRuntime.assert((t_12 = transcript_0.replayPolicy, t_12 <= 3n),
                             'Replay policy is unknown');
-    if (this._equal_98(transcript_0.profile, 1n)) {
-      __compactRuntime.assert(this._equal_99(transcript_0.authority, 1n),
+    if (this._equal_101(transcript_0.profile, 1n)) {
+      __compactRuntime.assert(this._equal_102(transcript_0.authority, 1n),
                               'Ledger-local profile requires ledger-local target authority');
-      __compactRuntime.assert(this._equal_100(transcript_0.originMode, 0n),
+      __compactRuntime.assert(this._equal_103(transcript_0.originMode, 0n),
                               'Ledger-local profile cannot claim browser origin authority');
     }
-    if (this._equal_101(transcript_0.profile, 2n)) {
-      __compactRuntime.assert(this._equal_102(transcript_0.authority, 2n),
+    if (this._equal_104(transcript_0.profile, 2n)) {
+      __compactRuntime.assert(this._equal_105(transcript_0.authority, 2n),
                               'Ledger-attested profile requires ledger-attested target authority');
       let t_13;
       __compactRuntime.assert((t_13 = transcript_0.originMode, t_13 <= 1n),
                               'Ledger-attested origin must be none or wallet-attested');
     }
-    if (this._equal_103(transcript_0.profile, 3n)) {
-      __compactRuntime.assert(this._equal_104(transcript_0.authority, 3n),
+    if (this._equal_106(transcript_0.profile, 3n)) {
+      __compactRuntime.assert(this._equal_107(transcript_0.authority, 3n),
                               'Off-chain profile requires local-process authority');
-      __compactRuntime.assert(this._equal_105(transcript_0.originMode, 0n)
+      __compactRuntime.assert(this._equal_108(transcript_0.originMode, 0n)
                               ||
-                              this._equal_106(transcript_0.originMode, 2n),
+                              this._equal_109(transcript_0.originMode, 2n),
                               'Off-chain origin must be none or local-request');
     }
-    if (this._equal_107(transcript_0.originMode, 0n)) {
-      __compactRuntime.assert(this._equal_108(transcript_0.originDigest,
+    if (this._equal_110(transcript_0.originMode, 0n)) {
+      __compactRuntime.assert(this._equal_111(transcript_0.originDigest,
                                               new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'No-origin digest must be zero');
     } else {
-      __compactRuntime.assert(!this._equal_109(transcript_0.originDigest,
+      __compactRuntime.assert(!this._equal_112(transcript_0.originDigest,
                                                new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Enabled origin digest must be set');
     }
-    __compactRuntime.assert(!this._equal_110(transcript_0.networkIdDigest,
+    __compactRuntime.assert(!this._equal_113(transcript_0.networkIdDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Network digest must be set');
-    __compactRuntime.assert(!this._equal_111(transcript_0.verifierContractDigest,
+    __compactRuntime.assert(!this._equal_114(transcript_0.verifierContractDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Verifier contract digest must be set');
-    __compactRuntime.assert(!this._equal_112(transcript_0.deploymentDigest,
+    __compactRuntime.assert(!this._equal_115(transcript_0.deploymentDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Deployment digest must be set');
-    __compactRuntime.assert(!this._equal_113(transcript_0.audienceDigest,
+    __compactRuntime.assert(!this._equal_116(transcript_0.audienceDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Audience digest must be set');
-    __compactRuntime.assert(!this._equal_114(transcript_0.connectorEvidenceDigest,
+    __compactRuntime.assert(!this._equal_117(transcript_0.connectorEvidenceDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Connector evidence digest must be set');
-    __compactRuntime.assert(!this._equal_115(transcript_0.requestIdDigest,
+    __compactRuntime.assert(!this._equal_118(transcript_0.requestIdDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Request id digest must be set');
-    __compactRuntime.assert(!this._equal_116(transcript_0.challengeDigest,
+    __compactRuntime.assert(!this._equal_119(transcript_0.challengeDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Challenge digest must be set');
     let t_14;
     __compactRuntime.assert((t_14 = transcript_0.expiresAt, t_14 > 0n),
                             'Transcript expiry must be set');
-    __compactRuntime.assert(!this._equal_117(transcript_0.credentialFamilyDigest,
+    __compactRuntime.assert(!this._equal_120(transcript_0.credentialFamilyDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Credential family digest must be set');
-    __compactRuntime.assert(!this._equal_118(transcript_0.schemaDigest,
+    __compactRuntime.assert(!this._equal_121(transcript_0.schemaDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Schema digest must be set');
-    __compactRuntime.assert(!this._equal_119(transcript_0.credentialBindingDigest,
+    __compactRuntime.assert(!this._equal_122(transcript_0.credentialBindingDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Credential binding digest must be set');
-    __compactRuntime.assert(!this._equal_120(transcript_0.disclosureDigest,
+    __compactRuntime.assert(!this._equal_123(transcript_0.disclosureDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Disclosure digest must be set');
-    __compactRuntime.assert(!this._equal_121(transcript_0.predicateDigest,
+    __compactRuntime.assert(!this._equal_124(transcript_0.predicateDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Predicate digest must be set');
-    __compactRuntime.assert(!this._equal_122(transcript_0.holderBindingDigest,
+    __compactRuntime.assert(!this._equal_125(transcript_0.holderBindingDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Holder binding digest must be set');
-    __compactRuntime.assert(!this._equal_123(transcript_0.policyDigest,
+    __compactRuntime.assert(!this._equal_126(transcript_0.policyDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Policy digest must be set');
-    __compactRuntime.assert(!this._equal_124(transcript_0.consentDigest,
+    __compactRuntime.assert(!this._equal_127(transcript_0.consentDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Consent digest must be set');
-    __compactRuntime.assert(!this._equal_125(transcript_0.presentationBindingDigest,
+    __compactRuntime.assert(!this._equal_128(transcript_0.presentationBindingDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Presentation binding digest must be set');
-    __compactRuntime.assert(!this._equal_126(transcript_0.issuerDidDigest,
+    __compactRuntime.assert(!this._equal_129(transcript_0.issuerDidDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Issuer DID digest must be set');
-    __compactRuntime.assert(!this._equal_127(transcript_0.issuerMethodDigest,
+    __compactRuntime.assert(!this._equal_130(transcript_0.issuerMethodDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Issuer method digest must be set');
-    __compactRuntime.assert(!this._equal_128(transcript_0.issuerEvidenceDigest,
+    __compactRuntime.assert(!this._equal_131(transcript_0.issuerEvidenceDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Issuer evidence digest must be set');
-    __compactRuntime.assert(!this._equal_129(transcript_0.trustScopeDigest,
+    __compactRuntime.assert(!this._equal_132(transcript_0.trustScopeDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Trust scope digest must be set');
-    __compactRuntime.assert(!this._equal_130(transcript_0.trustEvidenceDigest,
+    __compactRuntime.assert(!this._equal_133(transcript_0.trustEvidenceDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Trust evidence digest must be set');
-    __compactRuntime.assert(!this._equal_131(transcript_0.statusEvidenceDigest,
+    __compactRuntime.assert(!this._equal_134(transcript_0.statusEvidenceDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Status evidence digest must be set');
-    __compactRuntime.assert(!this._equal_132(transcript_0.timeEvidenceDigest,
+    __compactRuntime.assert(!this._equal_135(transcript_0.timeEvidenceDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Time evidence digest must be set');
-    __compactRuntime.assert(!this._equal_133(transcript_0.artifactManifestDigest,
+    __compactRuntime.assert(!this._equal_136(transcript_0.artifactManifestDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Artifact manifest digest must be set');
-    __compactRuntime.assert(!this._equal_134(transcript_0.artifactEvidenceDigest,
+    __compactRuntime.assert(!this._equal_137(transcript_0.artifactEvidenceDigest,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Artifact evidence digest must be set');
-    if (this._equal_135(transcript_0.statusMode, 0n)) {
-      __compactRuntime.assert(this._equal_136(transcript_0.statusRegistryDigest,
+    if (this._equal_138(transcript_0.statusMode, 0n)) {
+      __compactRuntime.assert(this._equal_139(transcript_0.statusRegistryDigest,
                                               new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'No-status registry must be zero');
-      __compactRuntime.assert(this._equal_137(transcript_0.statusRoot,
+      __compactRuntime.assert(this._equal_140(transcript_0.statusRoot,
                                               new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'No-status root must be zero');
-      __compactRuntime.assert(this._equal_138(transcript_0.statusRegistryVersion,
+      __compactRuntime.assert(this._equal_141(transcript_0.statusRegistryVersion,
                                               0n),
                               'No-status registry version must be zero');
-      __compactRuntime.assert(this._equal_139(transcript_0.statusFreshnessPolicyDigest,
+      __compactRuntime.assert(this._equal_142(transcript_0.statusFreshnessPolicyDigest,
                                               new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'No-status freshness policy must be zero');
     } else {
-      __compactRuntime.assert(!this._equal_140(transcript_0.statusRegistryDigest,
+      __compactRuntime.assert(!this._equal_143(transcript_0.statusRegistryDigest,
                                                new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Enabled status registry must be set');
       let t_15;
       __compactRuntime.assert((t_15 = transcript_0.statusRegistryVersion,
                                t_15 > 0n),
                               'Enabled status registry version must be positive');
-      __compactRuntime.assert(!this._equal_141(transcript_0.statusFreshnessPolicyDigest,
+      __compactRuntime.assert(!this._equal_144(transcript_0.statusFreshnessPolicyDigest,
                                                new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Enabled status freshness policy must be set');
     }
-    if (this._equal_142(transcript_0.timeMode, 0n)) {
-      __compactRuntime.assert(this._equal_143(transcript_0.trustedTime, 0n),
+    if (this._equal_145(transcript_0.timeMode, 0n)) {
+      __compactRuntime.assert(this._equal_146(transcript_0.trustedTime, 0n),
                               'No-time mode requires zero trusted time');
     } else {
       let t_16;
       __compactRuntime.assert((t_16 = transcript_0.trustedTime, t_16 > 0n),
                               'Enabled time mode requires trusted time');
     }
-    if (this._equal_144(transcript_0.nullifierMode, 0n)) {
-      __compactRuntime.assert(this._equal_145(transcript_0.replayPolicy, 0n),
+    if (this._equal_147(transcript_0.nullifierMode, 0n)) {
+      __compactRuntime.assert(this._equal_148(transcript_0.replayPolicy, 0n),
                               'No-nullifier mode requires no replay policy');
-      __compactRuntime.assert(this._equal_146(transcript_0.actionClassDigest,
+      __compactRuntime.assert(this._equal_149(transcript_0.actionClassDigest,
                                               new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'No-nullifier action class must be zero');
-      __compactRuntime.assert(this._equal_147(transcript_0.actionInvocationDigest,
+      __compactRuntime.assert(this._equal_150(transcript_0.actionInvocationDigest,
                                               new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'No-nullifier action invocation must be zero');
-      __compactRuntime.assert(this._equal_148(transcript_0.replayScopeDigest,
+      __compactRuntime.assert(this._equal_151(transcript_0.replayScopeDigest,
                                               new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'No-nullifier replay scope must be zero');
-      __compactRuntime.assert(this._equal_149(transcript_0.decisionNullifier,
+      __compactRuntime.assert(this._equal_152(transcript_0.decisionNullifier,
                                               new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'No-nullifier decision nullifier must be zero');
     } else {
-      __compactRuntime.assert(!this._equal_150(transcript_0.profile, 3n),
+      __compactRuntime.assert(!this._equal_153(transcript_0.profile, 3n),
                               'Off-chain verification cannot require a nullifier');
       let t_17;
       __compactRuntime.assert((t_17 = transcript_0.replayPolicy, t_17 >= 1n),
                               'Required nullifier needs a replay policy');
-      __compactRuntime.assert(!this._equal_151(transcript_0.actionClassDigest,
+      __compactRuntime.assert(!this._equal_154(transcript_0.actionClassDigest,
                                                new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Required nullifier action class must be set');
-      __compactRuntime.assert(!this._equal_152(transcript_0.actionInvocationDigest,
+      __compactRuntime.assert(!this._equal_155(transcript_0.actionInvocationDigest,
                                                new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Required nullifier action invocation must be set');
-      __compactRuntime.assert(!this._equal_153(transcript_0.replayScopeDigest,
+      __compactRuntime.assert(!this._equal_156(transcript_0.replayScopeDigest,
                                                new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Required nullifier replay scope must be set');
-      __compactRuntime.assert(!this._equal_154(transcript_0.decisionNullifier,
+      __compactRuntime.assert(!this._equal_157(transcript_0.decisionNullifier,
                                                new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Required decision nullifier must be set');
     }
@@ -3449,47 +3519,47 @@ export class Contract {
                                          this._artifactEvidenceDomainV1_0());
     this._assertValidEvidenceBindingV1_0(inputs_0.connectorEvidence,
                                          this._connectorEvidenceDomainV1_0());
-    __compactRuntime.assert(this._equal_155(inputs_0.transcript.issuerEvidenceDigest,
+    __compactRuntime.assert(this._equal_158(inputs_0.transcript.issuerEvidenceDigest,
                                             this._evidenceBindingV1Digest_0(inputs_0.issuerEvidence)),
                             'Issuer evidence digest mismatch');
-    __compactRuntime.assert(this._equal_156(inputs_0.transcript.trustEvidenceDigest,
+    __compactRuntime.assert(this._equal_159(inputs_0.transcript.trustEvidenceDigest,
                                             this._evidenceBindingV1Digest_0(inputs_0.trustEvidence)),
                             'Trust evidence digest mismatch');
-    __compactRuntime.assert(this._equal_157(inputs_0.transcript.statusEvidenceDigest,
+    __compactRuntime.assert(this._equal_160(inputs_0.transcript.statusEvidenceDigest,
                                             this._evidenceBindingV1Digest_0(inputs_0.statusEvidence)),
                             'Status evidence digest mismatch');
-    __compactRuntime.assert(this._equal_158(inputs_0.transcript.timeEvidenceDigest,
+    __compactRuntime.assert(this._equal_161(inputs_0.transcript.timeEvidenceDigest,
                                             this._evidenceBindingV1Digest_0(inputs_0.timeEvidence)),
                             'Time evidence digest mismatch');
-    __compactRuntime.assert(this._equal_159(inputs_0.transcript.artifactEvidenceDigest,
+    __compactRuntime.assert(this._equal_162(inputs_0.transcript.artifactEvidenceDigest,
                                             this._evidenceBindingV1Digest_0(inputs_0.artifactEvidence)),
                             'Artifact evidence digest mismatch');
-    __compactRuntime.assert(this._equal_160(inputs_0.transcript.connectorEvidenceDigest,
+    __compactRuntime.assert(this._equal_163(inputs_0.transcript.connectorEvidenceDigest,
                                             this._evidenceBindingV1Digest_0(inputs_0.connectorEvidence)),
                             'Connector evidence digest mismatch');
-    if (this._equal_161(inputs_0.transcript.statusMode, 0n)) {
-      __compactRuntime.assert(this._equal_162(inputs_0.statusEvidence.mode, 0n),
+    if (this._equal_164(inputs_0.transcript.statusMode, 0n)) {
+      __compactRuntime.assert(this._equal_165(inputs_0.statusEvidence.mode, 0n),
                               'No-status mode requires not-required status evidence');
     } else {
-      __compactRuntime.assert(!this._equal_163(inputs_0.statusEvidence.mode, 0n),
+      __compactRuntime.assert(!this._equal_166(inputs_0.statusEvidence.mode, 0n),
                               'Enabled status mode requires status evidence');
     }
-    if (this._equal_164(inputs_0.transcript.timeMode, 0n)) {
-      __compactRuntime.assert(this._equal_165(inputs_0.timeEvidence.mode, 0n),
+    if (this._equal_167(inputs_0.transcript.timeMode, 0n)) {
+      __compactRuntime.assert(this._equal_168(inputs_0.timeEvidence.mode, 0n),
                               'No-time mode requires not-required time evidence');
     } else {
-      __compactRuntime.assert(!this._equal_166(inputs_0.timeEvidence.mode, 0n),
+      __compactRuntime.assert(!this._equal_169(inputs_0.timeEvidence.mode, 0n),
                               'Enabled time mode requires time evidence');
     }
-    if (this._equal_167(inputs_0.transcript.originMode, 0n)
+    if (this._equal_170(inputs_0.transcript.originMode, 0n)
         ||
-        this._equal_168(inputs_0.transcript.originMode, 2n))
+        this._equal_171(inputs_0.transcript.originMode, 2n))
     {
-      __compactRuntime.assert(this._equal_169(inputs_0.connectorEvidence.mode,
+      __compactRuntime.assert(this._equal_172(inputs_0.connectorEvidence.mode,
                                               0n),
                               'Unattested origin requires not-required connector evidence');
     } else {
-      __compactRuntime.assert(!this._equal_170(inputs_0.connectorEvidence.mode,
+      __compactRuntime.assert(!this._equal_173(inputs_0.connectorEvidence.mode,
                                                0n),
                               'Wallet-attested origin requires connector evidence');
     }
@@ -3500,24 +3570,24 @@ export class Contract {
   {
     this._assertValidVerificationPublicInputsV1_0(inputs_0);
     const transcriptDigest_0 = this._verificationTranscriptV1Digest_0(inputs_0.transcript);
-    __compactRuntime.assert(this._equal_171(transcriptDigest_0,
+    __compactRuntime.assert(this._equal_174(transcriptDigest_0,
                                             expectedTranscriptDigest_0),
                             'Transcript proof binding mismatch');
-    __compactRuntime.assert(this._equal_172(inputs_0.transcript.profile, 1n)
+    __compactRuntime.assert(this._equal_175(inputs_0.transcript.profile, 1n)
                             ||
-                            this._equal_173(inputs_0.transcript.profile, 2n),
+                            this._equal_176(inputs_0.transcript.profile, 2n),
                             'Synthetic authority fixture requires a ledger target profile');
-    __compactRuntime.assert(this._equal_174(inputs_0.issuerEvidence.mode, 1n)
+    __compactRuntime.assert(this._equal_177(inputs_0.issuerEvidence.mode, 1n)
                             ||
-                            this._equal_175(inputs_0.trustEvidence.mode, 1n)
+                            this._equal_178(inputs_0.trustEvidence.mode, 1n)
                             ||
-                            this._equal_176(inputs_0.statusEvidence.mode, 1n)
+                            this._equal_179(inputs_0.statusEvidence.mode, 1n)
                             ||
-                            this._equal_177(inputs_0.timeEvidence.mode, 1n)
+                            this._equal_180(inputs_0.timeEvidence.mode, 1n)
                             ||
-                            this._equal_178(inputs_0.artifactEvidence.mode, 1n)
+                            this._equal_181(inputs_0.artifactEvidence.mode, 1n)
                             ||
-                            this._equal_179(inputs_0.connectorEvidence.mode, 1n),
+                            this._equal_182(inputs_0.connectorEvidence.mode, 1n),
                             'Synthetic authority fixture requires unavailable evidence');
     return { proofStatus: 2n,
              decisionStatus: 0n,
@@ -3530,7 +3600,7 @@ export class Contract {
     __compactRuntime.assert(capability_0.statusType === 0,
                             'Revoked-set status capability type must be revocationRegistry');
     this._assertValidStatusRegistryRef_0(capability_0.registryRef);
-    __compactRuntime.assert(!this._equal_180(capability_0.statusHandleCommitment,
+    __compactRuntime.assert(!this._equal_183(capability_0.statusHandleCommitment,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Status handle commitment must be set');
     return [];
@@ -3539,7 +3609,7 @@ export class Contract {
     __compactRuntime.assert(capability_0.statusType === 0,
                             'Authority-attested status capability type must be revocationRegistry');
     this._assertValidStatusRegistryRef_0(capability_0.registryRef);
-    __compactRuntime.assert(!this._equal_181(capability_0.statusHandleCommitment,
+    __compactRuntime.assert(!this._equal_184(capability_0.statusHandleCommitment,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Authority-attested status handle commitment must be set');
     return [];
@@ -3555,11 +3625,11 @@ export class Contract {
                               'Optional status policy must not enforce a registry');
       __compactRuntime.assert(!policy_0.enforceAttestationMaxAge,
                               'Optional status policy must not enforce attestation max-age');
-      __compactRuntime.assert(this._equal_182(policy_0.maxAttestationAge, 0n),
+      __compactRuntime.assert(this._equal_185(policy_0.maxAttestationAge, 0n),
                               'Optional status policy must not set attestation max-age');
     }
     if (policy_0.enforceRegistryId) {
-      __compactRuntime.assert(!this._equal_183(policy_0.acceptedRegistryId,
+      __compactRuntime.assert(!this._equal_186(policy_0.acceptedRegistryId,
                                                new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                               'Accepted status registry id must be set when enforced');
     }
@@ -3570,25 +3640,25 @@ export class Contract {
       __compactRuntime.assert((t_0 = policy_0.maxAttestationAge, t_0 >= 1n),
                               'Attestation max-age policy must request a real freshness window');
     } else {
-      __compactRuntime.assert(this._equal_184(policy_0.maxAttestationAge, 0n),
+      __compactRuntime.assert(this._equal_187(policy_0.maxAttestationAge, 0n),
                               'Disabled attestation max-age policy must not carry a freshness window');
     }
     return [];
   }
   _assertValidRevocationRegistryState_0(state_0) {
-    __compactRuntime.assert(!this._equal_185(state_0.registryId,
+    __compactRuntime.assert(!this._equal_188(state_0.registryId,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Revocation registry id must be set');
-    __compactRuntime.assert(this._equal_186(state_0.registryVersion, 0n)
+    __compactRuntime.assert(this._equal_189(state_0.registryVersion, 0n)
                             ||
-                            !this._equal_187(state_0.revokedRoot,
+                            !this._equal_190(state_0.revokedRoot,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Revocation registry root must be set after the registry version advances');
     return [];
   }
   _assertValidRevokedSetStatusRequest_0(request_0) {
     this._assertValidRevocationRegistryState_0(request_0.registryState);
-    __compactRuntime.assert(!this._equal_188(request_0.verifierChallengeHash,
+    __compactRuntime.assert(!this._equal_191(request_0.verifierChallengeHash,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Status request verifier challenge hash must be set');
     return [];
@@ -3600,26 +3670,26 @@ export class Contract {
                             registryId_0,
                             issuerStatusSalt_0)
   {
-    return this._persistentHash_18([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 115, 116, 97, 116, 117, 115, 45, 104, 97, 110, 100, 108, 101, 0, 0, 0, 0, 0, 0, 0]),
+    return this._persistentHash_20([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 115, 116, 97, 116, 117, 115, 45, 104, 97, 110, 100, 108, 101, 0, 0, 0, 0, 0, 0, 0]),
                                     credentialClaimRoot_0,
                                     registryId_0,
                                     issuerStatusSalt_0]);
   }
   _assertValidRevokedSetNonMembershipWitnessInput_0(witnessInput_0) {
     this._assertValidRevocationRegistryState_0(witnessInput_0.registryState);
-    __compactRuntime.assert(!this._equal_189(witnessInput_0.statusHandle,
+    __compactRuntime.assert(!this._equal_192(witnessInput_0.statusHandle,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Revoked-set status handle witness must be set');
-    __compactRuntime.assert(!this._equal_190(witnessInput_0.statusHandleOpening,
+    __compactRuntime.assert(!this._equal_193(witnessInput_0.statusHandleOpening,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Revoked-set status handle opening witness must be set');
     return [];
   }
   _assertValidLiveStatusWitnessInput_0(witnessInput_0) {
-    __compactRuntime.assert(!this._equal_191(witnessInput_0.statusHandle,
+    __compactRuntime.assert(!this._equal_194(witnessInput_0.statusHandle,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Live status handle witness must be set');
-    __compactRuntime.assert(!this._equal_192(witnessInput_0.statusHandleOpening,
+    __compactRuntime.assert(!this._equal_195(witnessInput_0.statusHandleOpening,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Live status handle opening witness must be set');
     return [];
@@ -3627,13 +3697,13 @@ export class Contract {
   _assertValidRevokedSetNonMembershipStatusProofProtocol_0(protocol_0) {
     this._assertValidRevokedSetStatusRequest_0(protocol_0.request);
     this._assertValidRevokedSetNonMembershipWitnessInput_0(protocol_0.witnessInput);
-    __compactRuntime.assert(this._equal_193(protocol_0.request.registryState.registryId,
+    __compactRuntime.assert(this._equal_196(protocol_0.request.registryState.registryId,
                                             protocol_0.witnessInput.registryState.registryId),
                             'Revoked-set status proof protocol registry id does not match the verifier request');
-    __compactRuntime.assert(this._equal_194(protocol_0.request.registryState.revokedRoot,
+    __compactRuntime.assert(this._equal_197(protocol_0.request.registryState.revokedRoot,
                                             protocol_0.witnessInput.registryState.revokedRoot),
                             'Revoked-set status proof protocol revoked root does not match the verifier request');
-    __compactRuntime.assert(this._equal_195(protocol_0.request.registryState.registryVersion,
+    __compactRuntime.assert(this._equal_198(protocol_0.request.registryState.registryVersion,
                                             protocol_0.witnessInput.registryState.registryVersion),
                             'Revoked-set status proof protocol registry version does not match the verifier request');
     return [];
@@ -3643,10 +3713,10 @@ export class Contract {
   {
     this._assertValidRegistryBoundStatusBinding_0(binding_0);
     this._assertValidRevokedSetNonMembershipStatusProofProtocol_0(protocol_0);
-    __compactRuntime.assert(this._equal_196(binding_0.registryRef.registryId,
+    __compactRuntime.assert(this._equal_199(binding_0.registryRef.registryId,
                                             protocol_0.request.registryState.registryId),
                             'Revoked-set status proof protocol registry does not match the status binding');
-    __compactRuntime.assert(this._equal_197(binding_0.statusHandleCommitment,
+    __compactRuntime.assert(this._equal_200(binding_0.statusHandleCommitment,
                                             this._revokedSetStatusHandleCommitment_0(protocol_0.witnessInput.statusHandle,
                                                                                      protocol_0.witnessInput.statusHandleOpening)),
                             'Revoked-set status proof protocol does not match the status handle commitment');
@@ -3657,10 +3727,10 @@ export class Contract {
   {
     this._assertValidRegistryBoundStatusBinding_0(binding_0);
     this._assertValidRevokedSetNonMembershipWitnessInput_0(witnessInput_0);
-    __compactRuntime.assert(this._equal_198(binding_0.registryRef.registryId,
+    __compactRuntime.assert(this._equal_201(binding_0.registryRef.registryId,
                                             witnessInput_0.registryState.registryId),
                             'Revoked-set status witness registry does not match the status binding');
-    __compactRuntime.assert(this._equal_199(binding_0.statusHandleCommitment,
+    __compactRuntime.assert(this._equal_202(binding_0.statusHandleCommitment,
                                             this._revokedSetStatusHandleCommitment_0(witnessInput_0.statusHandle,
                                                                                      witnessInput_0.statusHandleOpening)),
                             'Revoked-set status witness does not match the status binding handle commitment');
@@ -3669,21 +3739,21 @@ export class Contract {
   _assertLiveStatusWitnessMatchesBinding_0(binding_0, witnessInput_0) {
     this._assertValidRegistryBoundStatusBinding_0(binding_0);
     this._assertValidLiveStatusWitnessInput_0(witnessInput_0);
-    __compactRuntime.assert(this._equal_200(binding_0.statusHandleCommitment,
+    __compactRuntime.assert(this._equal_203(binding_0.statusHandleCommitment,
                                             this._revokedSetStatusHandleCommitment_0(witnessInput_0.statusHandle,
                                                                                      witnessInput_0.statusHandleOpening)),
                             'Live status witness does not match the status binding handle commitment');
     return [];
   }
   _authorityAttestedStatusStatementRoot_0(statement_0) {
-    return this._persistentHash_19(statement_0);
+    return this._persistentHash_21(statement_0);
   }
   _assertValidAuthorityAttestedStatusStatement_0(statement_0) {
     this._assertValidRevocationRegistryState_0(statement_0.registryState);
-    __compactRuntime.assert(!this._equal_201(statement_0.statusHandleCommitment,
+    __compactRuntime.assert(!this._equal_204(statement_0.statusHandleCommitment,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Authority-attested status handle commitment must be set');
-    __compactRuntime.assert(!this._equal_202(statement_0.verifierChallengeHash,
+    __compactRuntime.assert(!this._equal_205(statement_0.verifierChallengeHash,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Authority-attested verifier challenge hash must be set');
     if (statement_0.hasExpiration) {
@@ -3695,7 +3765,7 @@ export class Contract {
   }
   _assertValidAuthorityAttestedStatusProof_0(attestation_0) {
     this._assertValidAuthorityAttestedStatusStatement_0(attestation_0.statement);
-    __compactRuntime.assert(this._equal_203(attestation_0.proof.challengeHash,
+    __compactRuntime.assert(this._equal_206(attestation_0.proof.challengeHash,
                                             attestation_0.statement.verifierChallengeHash),
                             'Authority-attested status proof challenge hash does not match the statement');
     if (attestation_0.statement.hasExpiration) {
@@ -3711,16 +3781,16 @@ export class Contract {
   _assertValidAuthorityAttestedStatusProofProtocol_0(protocol_0) {
     this._assertValidRevokedSetStatusRequest_0(protocol_0.request);
     this._assertValidAuthorityAttestedStatusProof_0(protocol_0.attestation);
-    __compactRuntime.assert(this._equal_204(protocol_0.request.registryState.registryId,
+    __compactRuntime.assert(this._equal_207(protocol_0.request.registryState.registryId,
                                             protocol_0.attestation.statement.registryState.registryId),
                             'Authority-attested status proof protocol registry id does not match the verifier request');
-    __compactRuntime.assert(this._equal_205(protocol_0.request.registryState.revokedRoot,
+    __compactRuntime.assert(this._equal_208(protocol_0.request.registryState.revokedRoot,
                                             protocol_0.attestation.statement.registryState.revokedRoot),
                             'Authority-attested status proof protocol revoked root does not match the verifier request');
-    __compactRuntime.assert(this._equal_206(protocol_0.request.registryState.registryVersion,
+    __compactRuntime.assert(this._equal_209(protocol_0.request.registryState.registryVersion,
                                             protocol_0.attestation.statement.registryState.registryVersion),
                             'Authority-attested status proof protocol registry version does not match the verifier request');
-    __compactRuntime.assert(this._equal_207(protocol_0.request.verifierChallengeHash,
+    __compactRuntime.assert(this._equal_210(protocol_0.request.verifierChallengeHash,
                                             protocol_0.attestation.statement.verifierChallengeHash),
                             'Authority-attested status proof protocol challenge hash does not match the verifier request');
     return [];
@@ -3734,16 +3804,16 @@ export class Contract {
     this._assertAuthorityAttestedStatusProofMatchesRequest_0(protocol_0.request,
                                                              protocol_0.attestation,
                                                              currentTime_0);
-    __compactRuntime.assert(this._equal_208(binding_0.registryRef.registryId,
+    __compactRuntime.assert(this._equal_211(binding_0.registryRef.registryId,
                                             protocol_0.request.registryState.registryId),
                             'Authority-attested status proof protocol registry does not match the status binding');
-    __compactRuntime.assert(this._equal_209(binding_0.statusHandleCommitment,
+    __compactRuntime.assert(this._equal_212(binding_0.statusHandleCommitment,
                                             protocol_0.attestation.statement.statusHandleCommitment),
                             'Authority-attested status handle commitment does not match the status binding');
-    __compactRuntime.assert(this._equal_210(binding_0.registryRef.authorityVerificationMethodRef.didContractAddress,
+    __compactRuntime.assert(this._equal_213(binding_0.registryRef.authorityVerificationMethodRef.didContractAddress,
                                             protocol_0.attestation.proof.signerVerificationMethodRef.didContractAddress),
                             'Authority-attested proof contract address does not match the status authority');
-    __compactRuntime.assert(this._equal_211(binding_0.registryRef.authorityVerificationMethodRef.methodId,
+    __compactRuntime.assert(this._equal_214(binding_0.registryRef.authorityVerificationMethodRef.methodId,
                                             protocol_0.attestation.proof.signerVerificationMethodRef.methodId),
                             'Authority-attested proof method reference does not match the status authority');
     return [];
@@ -3752,16 +3822,16 @@ export class Contract {
   {
     this._assertValidRegistryBoundStatusBinding_0(binding_0);
     this._assertValidAuthorityAttestedStatusProof_0(attestation_0);
-    __compactRuntime.assert(this._equal_212(binding_0.registryRef.registryId,
+    __compactRuntime.assert(this._equal_215(binding_0.registryRef.registryId,
                                             attestation_0.statement.registryState.registryId),
                             'Authority-attested status registry does not match the status binding');
-    __compactRuntime.assert(this._equal_213(binding_0.statusHandleCommitment,
+    __compactRuntime.assert(this._equal_216(binding_0.statusHandleCommitment,
                                             attestation_0.statement.statusHandleCommitment),
                             'Authority-attested status handle commitment does not match the status binding');
-    __compactRuntime.assert(this._equal_214(binding_0.registryRef.authorityVerificationMethodRef.didContractAddress,
+    __compactRuntime.assert(this._equal_217(binding_0.registryRef.authorityVerificationMethodRef.didContractAddress,
                                             attestation_0.proof.signerVerificationMethodRef.didContractAddress),
                             'Authority-attested proof contract address does not match the status authority');
-    __compactRuntime.assert(this._equal_215(binding_0.registryRef.authorityVerificationMethodRef.methodId,
+    __compactRuntime.assert(this._equal_218(binding_0.registryRef.authorityVerificationMethodRef.methodId,
                                             attestation_0.proof.signerVerificationMethodRef.methodId),
                             'Authority-attested proof method reference does not match the status authority');
     return [];
@@ -3772,16 +3842,16 @@ export class Contract {
   {
     this._assertValidRevokedSetStatusRequest_0(request_0);
     this._assertValidAuthorityAttestedStatusProof_0(attestation_0);
-    __compactRuntime.assert(this._equal_216(request_0.registryState.registryId,
+    __compactRuntime.assert(this._equal_219(request_0.registryState.registryId,
                                             attestation_0.statement.registryState.registryId),
                             'Authority-attested status registry id does not match the verifier request');
-    __compactRuntime.assert(this._equal_217(request_0.registryState.revokedRoot,
+    __compactRuntime.assert(this._equal_220(request_0.registryState.revokedRoot,
                                             attestation_0.statement.registryState.revokedRoot),
                             'Authority-attested revoked root does not match the verifier request');
-    __compactRuntime.assert(this._equal_218(request_0.registryState.registryVersion,
+    __compactRuntime.assert(this._equal_221(request_0.registryState.registryVersion,
                                             attestation_0.statement.registryState.registryVersion),
                             'Authority-attested registry version does not match the verifier request');
-    __compactRuntime.assert(this._equal_219(request_0.verifierChallengeHash,
+    __compactRuntime.assert(this._equal_222(request_0.verifierChallengeHash,
                                             attestation_0.statement.verifierChallengeHash),
                             'Authority-attested verifier challenge hash does not match the request');
     __compactRuntime.assert(currentTime_0 >= attestation_0.proof.createdAt,
@@ -3825,10 +3895,10 @@ export class Contract {
     __compactRuntime.assert(policy_0.acceptedStatusCapability === 2,
                             'Verifier status policy does not accept revoked-set non-membership');
     if (policy_0.enforceRegistryId) {
-      __compactRuntime.assert(this._equal_220(policy_0.acceptedRegistryId,
+      __compactRuntime.assert(this._equal_223(policy_0.acceptedRegistryId,
                                               binding_0.registryRef.registryId),
                               'Verifier status policy registry id does not match the supplied status binding');
-      __compactRuntime.assert(this._equal_221(policy_0.acceptedRegistryId,
+      __compactRuntime.assert(this._equal_224(policy_0.acceptedRegistryId,
                                               witnessInput_0.registryState.registryId),
                               'Verifier status policy registry id does not match the supplied status registry');
     }
@@ -3845,7 +3915,7 @@ export class Contract {
     __compactRuntime.assert(policy_0.acceptedStatusCapability === 2,
                             'Verifier status policy does not accept live revoked-set verification');
     if (policy_0.enforceRegistryId) {
-      __compactRuntime.assert(this._equal_222(policy_0.acceptedRegistryId,
+      __compactRuntime.assert(this._equal_225(policy_0.acceptedRegistryId,
                                               binding_0.registryRef.registryId),
                               'Verifier status policy registry id does not match the supplied status binding');
     }
@@ -3863,10 +3933,10 @@ export class Contract {
     __compactRuntime.assert(policy_0.acceptedStatusCapability === 2,
                             'Verifier status policy does not accept revoked-set non-membership');
     if (policy_0.enforceRegistryId) {
-      __compactRuntime.assert(this._equal_223(policy_0.acceptedRegistryId,
+      __compactRuntime.assert(this._equal_226(policy_0.acceptedRegistryId,
                                               binding_0.registryRef.registryId),
                               'Verifier status policy registry id does not match the supplied status binding');
-      __compactRuntime.assert(this._equal_224(policy_0.acceptedRegistryId,
+      __compactRuntime.assert(this._equal_227(policy_0.acceptedRegistryId,
                                               protocol_0.request.registryState.registryId),
                               'Verifier status policy registry id does not match the supplied status registry');
     }
@@ -3892,10 +3962,10 @@ export class Contract {
     __compactRuntime.assert(policy_0.acceptedStatusCapability === 3,
                             'Verifier status policy does not accept authority-attested status');
     if (policy_0.enforceRegistryId) {
-      __compactRuntime.assert(this._equal_225(policy_0.acceptedRegistryId,
+      __compactRuntime.assert(this._equal_228(policy_0.acceptedRegistryId,
                                               binding_0.registryRef.registryId),
                               'Verifier status policy registry id does not match the supplied status binding');
-      __compactRuntime.assert(this._equal_226(policy_0.acceptedRegistryId,
+      __compactRuntime.assert(this._equal_229(policy_0.acceptedRegistryId,
                                               request_0.registryState.registryId),
                               'Verifier status policy registry id does not match the verifier request');
     }
@@ -3918,10 +3988,10 @@ export class Contract {
     __compactRuntime.assert(policy_0.acceptedStatusCapability === 3,
                             'Verifier status policy does not accept authority-attested status');
     if (policy_0.enforceRegistryId) {
-      __compactRuntime.assert(this._equal_227(policy_0.acceptedRegistryId,
+      __compactRuntime.assert(this._equal_230(policy_0.acceptedRegistryId,
                                               binding_0.registryRef.registryId),
                               'Verifier status policy registry id does not match the supplied status binding');
-      __compactRuntime.assert(this._equal_228(policy_0.acceptedRegistryId,
+      __compactRuntime.assert(this._equal_231(policy_0.acceptedRegistryId,
                                               protocol_0.request.registryState.registryId),
                               'Verifier status policy registry id does not match the verifier request');
     }
@@ -3936,33 +4006,33 @@ export class Contract {
                                                                                                  pushPath: false,
                                                                                                  path: [
                                                                                                         { tag: 'value',
-                                                                                                          value: { value: _descriptor_25.toValue(1n),
-                                                                                                                   alignment: _descriptor_25.alignment() } }] } },
+                                                                                                          value: { value: _descriptor_26.toValue(1n),
+                                                                                                                   alignment: _descriptor_26.alignment() } }] } },
                                                                                         { popeq: { cached: false,
                                                                                                    result: undefined } }]).value),
                             'Revocation registry has already been initialized');
-    __compactRuntime.assert(!this._equal_229(nextRegistryId_0,
+    __compactRuntime.assert(!this._equal_232(nextRegistryId_0,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Revocation registry id must be set');
-    __compactRuntime.assert(!this._equal_230(nextRegistryId_0,
+    __compactRuntime.assert(!this._equal_233(nextRegistryId_0,
                                              new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 115, 116, 97, 116, 117, 115, 58, 117, 110, 115, 101, 116, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Revocation registry id must not reuse the unset sentinel');
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_25.toValue(0n),
-                                                                                              alignment: _descriptor_25.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_26.toValue(0n),
+                                                                                              alignment: _descriptor_26.alignment() }).encode() } },
                                        { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_1.toValue(nextRegistryId_0),
-                                                                                              alignment: _descriptor_1.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(nextRegistryId_0),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
                                        { push: { storage: false,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_25.toValue(1n),
-                                                                                              alignment: _descriptor_25.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_26.toValue(1n),
+                                                                                              alignment: _descriptor_26.alignment() }).encode() } },
                                        { push: { storage: true,
                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(true),
                                                                                               alignment: _descriptor_2.alignment() }).encode() } },
@@ -3978,13 +4048,27 @@ export class Contract {
                                                                                                 pushPath: false,
                                                                                                 path: [
                                                                                                        { tag: 'value',
-                                                                                                         value: { value: _descriptor_25.toValue(1n),
-                                                                                                                  alignment: _descriptor_25.alignment() } }] } },
+                                                                                                         value: { value: _descriptor_26.toValue(1n),
+                                                                                                                  alignment: _descriptor_26.alignment() } }] } },
                                                                                        { popeq: { cached: false,
                                                                                                   result: undefined } }]).value),
                             'Revocation registry is not initialized');
     this._assertValidRevocationRegistryState_0(state_0);
-    __compactRuntime.assert(this._equal_231(state_0.registryId,
+    __compactRuntime.assert(this._equal_234(state_0.registryId,
+                                            _descriptor_0.fromValue(__compactRuntime.queryLedgerState(context,
+                                                                                                      partialProofData,
+                                                                                                      [
+                                                                                                       { dup: { n: 0 } },
+                                                                                                       { idx: { cached: false,
+                                                                                                                pushPath: false,
+                                                                                                                path: [
+                                                                                                                       { tag: 'value',
+                                                                                                                         value: { value: _descriptor_26.toValue(0n),
+                                                                                                                                  alignment: _descriptor_26.alignment() } }] } },
+                                                                                                       { popeq: { cached: false,
+                                                                                                                  result: undefined } }]).value)),
+                            'Revocation registry state does not belong to this registry');
+    __compactRuntime.assert(this._equal_235(state_0.registryVersion,
                                             _descriptor_1.fromValue(__compactRuntime.queryLedgerState(context,
                                                                                                       partialProofData,
                                                                                                       [
@@ -3993,22 +4077,8 @@ export class Contract {
                                                                                                                 pushPath: false,
                                                                                                                 path: [
                                                                                                                        { tag: 'value',
-                                                                                                                         value: { value: _descriptor_25.toValue(0n),
-                                                                                                                                  alignment: _descriptor_25.alignment() } }] } },
-                                                                                                       { popeq: { cached: false,
-                                                                                                                  result: undefined } }]).value)),
-                            'Revocation registry state does not belong to this registry');
-    __compactRuntime.assert(this._equal_232(state_0.registryVersion,
-                                            _descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
-                                                                                                      partialProofData,
-                                                                                                      [
-                                                                                                       { dup: { n: 0 } },
-                                                                                                       { idx: { cached: false,
-                                                                                                                pushPath: false,
-                                                                                                                path: [
-                                                                                                                       { tag: 'value',
-                                                                                                                         value: { value: _descriptor_25.toValue(2n),
-                                                                                                                                  alignment: _descriptor_25.alignment() } }] } },
+                                                                                                                         value: { value: _descriptor_26.toValue(2n),
+                                                                                                                                  alignment: _descriptor_26.alignment() } }] } },
                                                                                                        { popeq: { cached: true,
                                                                                                                   result: undefined } }]).value)),
                             'Revocation registry state version does not match this registry');
@@ -4023,12 +4093,12 @@ export class Contract {
                                                                                                 pushPath: false,
                                                                                                 path: [
                                                                                                        { tag: 'value',
-                                                                                                         value: { value: _descriptor_25.toValue(1n),
-                                                                                                                  alignment: _descriptor_25.alignment() } }] } },
+                                                                                                         value: { value: _descriptor_26.toValue(1n),
+                                                                                                                  alignment: _descriptor_26.alignment() } }] } },
                                                                                        { popeq: { cached: false,
                                                                                                   result: undefined } }]).value),
                             'Revocation registry is not initialized');
-    __compactRuntime.assert(!this._equal_233(statusHandle_0,
+    __compactRuntime.assert(!this._equal_236(statusHandle_0,
                                              new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
                             'Revoked status handle must be set');
     __compactRuntime.queryLedgerState(context,
@@ -4038,25 +4108,25 @@ export class Contract {
                                                 pushPath: true,
                                                 path: [
                                                        { tag: 'value',
-                                                         value: { value: _descriptor_25.toValue(4n),
-                                                                  alignment: _descriptor_25.alignment() } }] } },
+                                                         value: { value: _descriptor_26.toValue(4n),
+                                                                  alignment: _descriptor_26.alignment() } }] } },
                                        { idx: { cached: false,
                                                 pushPath: true,
                                                 path: [
                                                        { tag: 'value',
-                                                         value: { value: _descriptor_25.toValue(0n),
-                                                                  alignment: _descriptor_25.alignment() } }] } },
+                                                         value: { value: _descriptor_26.toValue(0n),
+                                                                  alignment: _descriptor_26.alignment() } }] } },
                                        { dup: { n: 2 } },
                                        { idx: { cached: false,
                                                 pushPath: false,
                                                 path: [
                                                        { tag: 'value',
-                                                         value: { value: _descriptor_25.toValue(1n),
-                                                                  alignment: _descriptor_25.alignment() } }] } },
+                                                         value: { value: _descriptor_26.toValue(1n),
+                                                                  alignment: _descriptor_26.alignment() } }] } },
                                        { push: { storage: true,
                                                  value: __compactRuntime.StateValue.newCell(__compactRuntime.leafHash(
-                                                                                              { value: _descriptor_1.toValue(statusHandle_0),
-                                                                                                alignment: _descriptor_1.alignment() }
+                                                                                              { value: _descriptor_0.toValue(statusHandle_0),
+                                                                                                alignment: _descriptor_0.alignment() }
                                                                                             )).encode() } },
                                        { ins: { cached: false, n: 1 } },
                                        { ins: { cached: true, n: 1 } },
@@ -4064,8 +4134,8 @@ export class Contract {
                                                 pushPath: true,
                                                 path: [
                                                        { tag: 'value',
-                                                         value: { value: _descriptor_25.toValue(1n),
-                                                                  alignment: _descriptor_25.alignment() } }] } },
+                                                         value: { value: _descriptor_26.toValue(1n),
+                                                                  alignment: _descriptor_26.alignment() } }] } },
                                        { addi: { immediate: 1 } },
                                        { ins: { cached: true, n: 2 } }]);
     const tmp_0 = 1n;
@@ -4076,11 +4146,11 @@ export class Contract {
                                                 pushPath: true,
                                                 path: [
                                                        { tag: 'value',
-                                                         value: { value: _descriptor_25.toValue(3n),
-                                                                  alignment: _descriptor_25.alignment() } }] } },
+                                                         value: { value: _descriptor_26.toValue(3n),
+                                                                  alignment: _descriptor_26.alignment() } }] } },
                                        { addi: { immediate: parseInt(__compactRuntime.valueToBigInt(
-                                                              { value: _descriptor_0.toValue(tmp_0),
-                                                                alignment: _descriptor_0.alignment() }
+                                                              { value: _descriptor_4.toValue(tmp_0),
+                                                                alignment: _descriptor_4.alignment() }
                                                                 .value
                                                             )) } },
                                        { ins: { cached: true, n: 1 } }]);
@@ -4092,11 +4162,11 @@ export class Contract {
                                                 pushPath: true,
                                                 path: [
                                                        { tag: 'value',
-                                                         value: { value: _descriptor_25.toValue(2n),
-                                                                  alignment: _descriptor_25.alignment() } }] } },
+                                                         value: { value: _descriptor_26.toValue(2n),
+                                                                  alignment: _descriptor_26.alignment() } }] } },
                                        { addi: { immediate: parseInt(__compactRuntime.valueToBigInt(
-                                                              { value: _descriptor_0.toValue(tmp_1),
-                                                                alignment: _descriptor_0.alignment() }
+                                                              { value: _descriptor_4.toValue(tmp_1),
+                                                                alignment: _descriptor_4.alignment() }
                                                                 .value
                                                             )) } },
                                        { ins: { cached: true, n: 1 } }]);
@@ -4231,27 +4301,27 @@ export class Contract {
     return true;
   }
   _equal_30(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_31(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_32(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_33(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_34(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_35(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_36(x0, y0) {
@@ -4279,7 +4349,7 @@ export class Contract {
     return true;
   }
   _equal_42(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_43(x0, y0) {
@@ -4291,7 +4361,7 @@ export class Contract {
     return true;
   }
   _equal_45(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_46(x0, y0) {
@@ -4303,7 +4373,7 @@ export class Contract {
     return true;
   }
   _equal_48(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_49(x0, y0) {
@@ -4315,7 +4385,7 @@ export class Contract {
     return true;
   }
   _equal_51(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_52(x0, y0) {
@@ -4335,7 +4405,7 @@ export class Contract {
     return true;
   }
   _equal_56(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_57(x0, y0) {
@@ -4347,7 +4417,7 @@ export class Contract {
     return true;
   }
   _equal_59(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_60(x0, y0) {
@@ -4363,7 +4433,7 @@ export class Contract {
     return true;
   }
   _equal_63(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_64(x0, y0) {
@@ -4375,7 +4445,7 @@ export class Contract {
     return true;
   }
   _equal_66(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_67(x0, y0) {
@@ -4387,7 +4457,7 @@ export class Contract {
     return true;
   }
   _equal_69(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_70(x0, y0) {
@@ -4399,7 +4469,7 @@ export class Contract {
     return true;
   }
   _equal_72(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_73(x0, y0) {
@@ -4419,11 +4489,11 @@ export class Contract {
     return true;
   }
   _equal_77(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_78(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_79(x0, y0) {
@@ -4431,11 +4501,11 @@ export class Contract {
     return true;
   }
   _equal_80(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_81(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_82(x0, y0) {
@@ -4443,27 +4513,27 @@ export class Contract {
     return true;
   }
   _equal_83(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_84(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_85(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_86(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_87(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_88(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_89(x0, y0) {
@@ -4471,11 +4541,11 @@ export class Contract {
     return true;
   }
   _equal_90(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_91(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_92(x0, y0) {
@@ -4483,11 +4553,11 @@ export class Contract {
     return true;
   }
   _equal_93(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_94(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_95(x0, y0) {
@@ -4499,15 +4569,15 @@ export class Contract {
     return true;
   }
   _equal_97(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_98(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_99(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_100(x0, y0) {
@@ -4543,15 +4613,15 @@ export class Contract {
     return true;
   }
   _equal_108(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_109(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_110(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_111(x0, y0) {
@@ -4651,7 +4721,7 @@ export class Contract {
     return true;
   }
   _equal_135(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_136(x0, y0) {
@@ -4675,19 +4745,19 @@ export class Contract {
     return true;
   }
   _equal_141(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_142(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_143(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_144(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_145(x0, y0) {
@@ -4695,15 +4765,15 @@ export class Contract {
     return true;
   }
   _equal_146(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_147(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_148(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_149(x0, y0) {
@@ -4711,7 +4781,7 @@ export class Contract {
     return true;
   }
   _equal_150(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_151(x0, y0) {
@@ -4723,7 +4793,7 @@ export class Contract {
     return true;
   }
   _equal_153(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_154(x0, y0) {
@@ -4755,15 +4825,15 @@ export class Contract {
     return true;
   }
   _equal_161(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_162(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_163(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_164(x0, y0) {
@@ -4795,7 +4865,7 @@ export class Contract {
     return true;
   }
   _equal_171(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_172(x0, y0) {
@@ -4807,7 +4877,7 @@ export class Contract {
     return true;
   }
   _equal_174(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_175(x0, y0) {
@@ -4831,11 +4901,11 @@ export class Contract {
     return true;
   }
   _equal_180(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_181(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_182(x0, y0) {
@@ -4847,19 +4917,19 @@ export class Contract {
     return true;
   }
   _equal_184(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_185(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
-    return true;
-  }
-  _equal_186(x0, y0) {
     if (x0 !== y0) { return false; }
     return true;
   }
-  _equal_187(x0, y0) {
+  _equal_186(x0, y0) {
     if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    return true;
+  }
+  _equal_187(x0, y0) {
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_188(x0, y0) {
@@ -4867,7 +4937,7 @@ export class Contract {
     return true;
   }
   _equal_189(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_190(x0, y0) {
@@ -4891,7 +4961,7 @@ export class Contract {
     return true;
   }
   _equal_195(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_196(x0, y0) {
@@ -4903,7 +4973,7 @@ export class Contract {
     return true;
   }
   _equal_198(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_199(x0, y0) {
@@ -4935,7 +5005,7 @@ export class Contract {
     return true;
   }
   _equal_206(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_207(x0, y0) {
@@ -4947,15 +5017,11 @@ export class Contract {
     return true;
   }
   _equal_209(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_210(x0, y0) {
-    {
-      let x1 = x0.bytes;
-      let y1 = y0.bytes;
-      if (!x1.every((x, i) => y1[i] === x)) { return false; }
-    }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_211(x0, y0) {
@@ -4967,15 +5033,15 @@ export class Contract {
     return true;
   }
   _equal_213(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
-    return true;
-  }
-  _equal_214(x0, y0) {
     {
       let x1 = x0.bytes;
       let y1 = y0.bytes;
       if (!x1.every((x, i) => y1[i] === x)) { return false; }
     }
+    return true;
+  }
+  _equal_214(x0, y0) {
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_215(x0, y0) {
@@ -4987,11 +5053,15 @@ export class Contract {
     return true;
   }
   _equal_217(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    {
+      let x1 = x0.bytes;
+      let y1 = y0.bytes;
+      if (!x1.every((x, i) => y1[i] === x)) { return false; }
+    }
     return true;
   }
   _equal_218(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_219(x0, y0) {
@@ -5003,7 +5073,7 @@ export class Contract {
     return true;
   }
   _equal_221(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_222(x0, y0) {
@@ -5047,10 +5117,22 @@ export class Contract {
     return true;
   }
   _equal_232(x0, y0) {
-    if (x0 !== y0) { return false; }
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
   _equal_233(x0, y0) {
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    return true;
+  }
+  _equal_234(x0, y0) {
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    return true;
+  }
+  _equal_235(x0, y0) {
+    if (x0 !== y0) { return false; }
+    return true;
+  }
+  _equal_236(x0, y0) {
     if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
@@ -5070,7 +5152,7 @@ export function ledger(stateOrChargedState) {
   };
   return {
     get registryId() {
-      return _descriptor_1.fromValue(__compactRuntime.queryLedgerState(context,
+      return _descriptor_0.fromValue(__compactRuntime.queryLedgerState(context,
                                                                        partialProofData,
                                                                        [
                                                                         { dup: { n: 0 } },
@@ -5078,8 +5160,8 @@ export function ledger(stateOrChargedState) {
                                                                                  pushPath: false,
                                                                                  path: [
                                                                                         { tag: 'value',
-                                                                                          value: { value: _descriptor_25.toValue(0n),
-                                                                                                   alignment: _descriptor_25.alignment() } }] } },
+                                                                                          value: { value: _descriptor_26.toValue(0n),
+                                                                                                   alignment: _descriptor_26.alignment() } }] } },
                                                                         { popeq: { cached: false,
                                                                                    result: undefined } }]).value);
     },
@@ -5092,13 +5174,13 @@ export function ledger(stateOrChargedState) {
                                                                                  pushPath: false,
                                                                                  path: [
                                                                                         { tag: 'value',
-                                                                                          value: { value: _descriptor_25.toValue(1n),
-                                                                                                   alignment: _descriptor_25.alignment() } }] } },
+                                                                                          value: { value: _descriptor_26.toValue(1n),
+                                                                                                   alignment: _descriptor_26.alignment() } }] } },
                                                                         { popeq: { cached: false,
                                                                                    result: undefined } }]).value);
     },
     get version() {
-      return _descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
+      return _descriptor_1.fromValue(__compactRuntime.queryLedgerState(context,
                                                                        partialProofData,
                                                                        [
                                                                         { dup: { n: 0 } },
@@ -5106,13 +5188,13 @@ export function ledger(stateOrChargedState) {
                                                                                  pushPath: false,
                                                                                  path: [
                                                                                         { tag: 'value',
-                                                                                          value: { value: _descriptor_25.toValue(2n),
-                                                                                                   alignment: _descriptor_25.alignment() } }] } },
+                                                                                          value: { value: _descriptor_26.toValue(2n),
+                                                                                                   alignment: _descriptor_26.alignment() } }] } },
                                                                         { popeq: { cached: true,
                                                                                    result: undefined } }]).value);
     },
     get revokedStatusHandleCount() {
-      return _descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
+      return _descriptor_1.fromValue(__compactRuntime.queryLedgerState(context,
                                                                        partialProofData,
                                                                        [
                                                                         { dup: { n: 0 } },
@@ -5120,8 +5202,8 @@ export function ledger(stateOrChargedState) {
                                                                                  pushPath: false,
                                                                                  path: [
                                                                                         { tag: 'value',
-                                                                                          value: { value: _descriptor_25.toValue(3n),
-                                                                                                   alignment: _descriptor_25.alignment() } }] } },
+                                                                                          value: { value: _descriptor_26.toValue(3n),
+                                                                                                   alignment: _descriptor_26.alignment() } }] } },
                                                                         { popeq: { cached: true,
                                                                                    result: undefined } }]).value);
     },
@@ -5138,17 +5220,17 @@ export function ledger(stateOrChargedState) {
                                                                                    pushPath: false,
                                                                                    path: [
                                                                                           { tag: 'value',
-                                                                                            value: { value: _descriptor_25.toValue(4n),
-                                                                                                     alignment: _descriptor_25.alignment() } }] } },
+                                                                                            value: { value: _descriptor_26.toValue(4n),
+                                                                                                     alignment: _descriptor_26.alignment() } }] } },
                                                                           { idx: { cached: false,
                                                                                    pushPath: false,
                                                                                    path: [
                                                                                           { tag: 'value',
-                                                                                            value: { value: _descriptor_25.toValue(1n),
-                                                                                                     alignment: _descriptor_25.alignment() } }] } },
+                                                                                            value: { value: _descriptor_26.toValue(1n),
+                                                                                                     alignment: _descriptor_26.alignment() } }] } },
                                                                           { push: { storage: false,
-                                                                                    value: __compactRuntime.StateValue.newCell({ value: _descriptor_3.toValue(4294967296n),
-                                                                                                                                 alignment: _descriptor_3.alignment() }).encode() } },
+                                                                                    value: __compactRuntime.StateValue.newCell({ value: _descriptor_1.toValue(4294967296n),
+                                                                                                                                 alignment: _descriptor_1.alignment() }).encode() } },
                                                                           'lt',
                                                                           'neg',
                                                                           { popeq: { cached: true,
@@ -5174,18 +5256,18 @@ export function ledger(stateOrChargedState) {
                                                                                    pushPath: false,
                                                                                    path: [
                                                                                           { tag: 'value',
-                                                                                            value: { value: _descriptor_25.toValue(4n),
-                                                                                                     alignment: _descriptor_25.alignment() } }] } },
+                                                                                            value: { value: _descriptor_26.toValue(4n),
+                                                                                                     alignment: _descriptor_26.alignment() } }] } },
                                                                           { idx: { cached: false,
                                                                                    pushPath: false,
                                                                                    path: [
                                                                                           { tag: 'value',
-                                                                                            value: { value: _descriptor_25.toValue(0n),
-                                                                                                     alignment: _descriptor_25.alignment() } }] } },
+                                                                                            value: { value: _descriptor_26.toValue(0n),
+                                                                                                     alignment: _descriptor_26.alignment() } }] } },
                                                                           'root',
                                                                           { push: { storage: false,
-                                                                                    value: __compactRuntime.StateValue.newCell({ value: _descriptor_60.toValue(rt_0),
-                                                                                                                                 alignment: _descriptor_60.alignment() }).encode() } },
+                                                                                    value: __compactRuntime.StateValue.newCell({ value: _descriptor_62.toValue(rt_0),
+                                                                                                                                 alignment: _descriptor_62.alignment() }).encode() } },
                                                                           'eq',
                                                                           { popeq: { cached: true,
                                                                                      result: undefined } }]).value);
@@ -5225,7 +5307,7 @@ export function ledger(stateOrChargedState) {
                                      leaf_0)
         }
         const self_0 = state.asArray()[4];
-        return ((result) => result             ? new __compactRuntime.CompactTypeMerkleTreePath(32, _descriptor_1).fromValue(result)             : undefined)(  self_0.asArray()[0].asBoundedMerkleTree().rehash().pathForLeaf(    index_0,    {      value: _descriptor_1.toValue(leaf_0),      alignment: _descriptor_1.alignment()    }  )?.value);
+        return ((result) => result             ? new __compactRuntime.CompactTypeMerkleTreePath(32, _descriptor_0).fromValue(result)             : undefined)(  self_0.asArray()[0].asBoundedMerkleTree().rehash().pathForLeaf(    index_0,    {      value: _descriptor_0.toValue(leaf_0),      alignment: _descriptor_0.alignment()    }  )?.value);
       },
       findPathForLeaf(...args_0) {
         if (args_0.length !== 1) {
@@ -5240,7 +5322,7 @@ export function ledger(stateOrChargedState) {
                                      leaf_0)
         }
         const self_0 = state.asArray()[4];
-        return ((result) => result             ? new __compactRuntime.CompactTypeMerkleTreePath(32, _descriptor_1).fromValue(result)             : undefined)(  self_0.asArray()[0].asBoundedMerkleTree().rehash().findPathForLeaf(    {      value: _descriptor_1.toValue(leaf_0),      alignment: _descriptor_1.alignment()    }  )?.value);
+        return ((result) => result             ? new __compactRuntime.CompactTypeMerkleTreePath(32, _descriptor_0).fromValue(result)             : undefined)(  self_0.asArray()[0].asBoundedMerkleTree().rehash().findPathForLeaf(    {      value: _descriptor_0.toValue(leaf_0),      alignment: _descriptor_0.alignment()    }  )?.value);
       }
     }
   };
@@ -5818,14 +5900,14 @@ export const pureCircuits = {
     if (!(holderSecret_0.buffer instanceof ArrayBuffer && holderSecret_0.BYTES_PER_ELEMENT === 1 && holderSecret_0.length === 32)) {
       __compactRuntime.typeError('verifierScopedPseudonym',
                                  'argument 1',
-                                 'holder-bindings.compact line 175 char 1',
+                                 'holder-bindings.compact line 177 char 1',
                                  'Bytes<32>',
                                  holderSecret_0)
     }
     if (!(verifierDomainHash_0.buffer instanceof ArrayBuffer && verifierDomainHash_0.BYTES_PER_ELEMENT === 1 && verifierDomainHash_0.length === 32)) {
       __compactRuntime.typeError('verifierScopedPseudonym',
                                  'argument 2',
-                                 'holder-bindings.compact line 175 char 1',
+                                 'holder-bindings.compact line 177 char 1',
                                  'Bytes<32>',
                                  verifierDomainHash_0)
     }
@@ -5842,27 +5924,110 @@ export const pureCircuits = {
     if (!(pseudonym_0.buffer instanceof ArrayBuffer && pseudonym_0.BYTES_PER_ELEMENT === 1 && pseudonym_0.length === 32)) {
       __compactRuntime.typeError('assertVerifierScopedPseudonym',
                                  'argument 1',
-                                 'holder-bindings.compact line 186 char 1',
+                                 'holder-bindings.compact line 188 char 1',
                                  'Bytes<32>',
                                  pseudonym_0)
     }
     if (!(holderSecret_0.buffer instanceof ArrayBuffer && holderSecret_0.BYTES_PER_ELEMENT === 1 && holderSecret_0.length === 32)) {
       __compactRuntime.typeError('assertVerifierScopedPseudonym',
                                  'argument 2',
-                                 'holder-bindings.compact line 186 char 1',
+                                 'holder-bindings.compact line 188 char 1',
                                  'Bytes<32>',
                                  holderSecret_0)
     }
     if (!(verifierDomainHash_0.buffer instanceof ArrayBuffer && verifierDomainHash_0.BYTES_PER_ELEMENT === 1 && verifierDomainHash_0.length === 32)) {
       __compactRuntime.typeError('assertVerifierScopedPseudonym',
                                  'argument 3',
-                                 'holder-bindings.compact line 186 char 1',
+                                 'holder-bindings.compact line 188 char 1',
                                  'Bytes<32>',
                                  verifierDomainHash_0)
     }
     return _dummyContract._assertVerifierScopedPseudonym_0(pseudonym_0,
                                                            holderSecret_0,
                                                            verifierDomainHash_0);
+  },
+  verifierIdentityDigestV1: (...args_0) => {
+    if (args_0.length !== 1) {
+      throw new __compactRuntime.CompactError(`verifierIdentityDigestV1: expected 1 argument (as invoked from Typescript), received ${args_0.length}`);
+    }
+    const verificationMethodRef_0 = args_0[0];
+    if (!(typeof(verificationMethodRef_0) === 'object' && typeof(verificationMethodRef_0.didContractAddress) === 'object' && verificationMethodRef_0.didContractAddress.bytes.buffer instanceof ArrayBuffer && verificationMethodRef_0.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && verificationMethodRef_0.didContractAddress.bytes.length === 32 && verificationMethodRef_0.methodId.buffer instanceof ArrayBuffer && verificationMethodRef_0.methodId.BYTES_PER_ELEMENT === 1 && verificationMethodRef_0.methodId.length === 32)) {
+      __compactRuntime.typeError('verifierIdentityDigestV1',
+                                 'argument 1',
+                                 'holder-bindings.compact line 209 char 1',
+                                 'struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>',
+                                 verificationMethodRef_0)
+    }
+    return _dummyContract._verifierIdentityDigestV1_0(verificationMethodRef_0);
+  },
+  verifierPseudonymScopeDigestV1: (...args_0) => {
+    if (args_0.length !== 1) {
+      throw new __compactRuntime.CompactError(`verifierPseudonymScopeDigestV1: expected 1 argument (as invoked from Typescript), received ${args_0.length}`);
+    }
+    const scope_0 = args_0[0];
+    if (!(typeof(scope_0) === 'object' && scope_0.verifierIdentityDigest.buffer instanceof ArrayBuffer && scope_0.verifierIdentityDigest.BYTES_PER_ELEMENT === 1 && scope_0.verifierIdentityDigest.length === 32 && scope_0.executionContextDigest.buffer instanceof ArrayBuffer && scope_0.executionContextDigest.BYTES_PER_ELEMENT === 1 && scope_0.executionContextDigest.length === 32 && scope_0.audienceDigest.buffer instanceof ArrayBuffer && scope_0.audienceDigest.BYTES_PER_ELEMENT === 1 && scope_0.audienceDigest.length === 32 && scope_0.originDigest.buffer instanceof ArrayBuffer && scope_0.originDigest.BYTES_PER_ELEMENT === 1 && scope_0.originDigest.length === 32 && scope_0.consentDigest.buffer instanceof ArrayBuffer && scope_0.consentDigest.BYTES_PER_ELEMENT === 1 && scope_0.consentDigest.length === 32 && scope_0.requestDigest.buffer instanceof ArrayBuffer && scope_0.requestDigest.BYTES_PER_ELEMENT === 1 && scope_0.requestDigest.length === 32 && scope_0.challengeDigest.buffer instanceof ArrayBuffer && scope_0.challengeDigest.BYTES_PER_ELEMENT === 1 && scope_0.challengeDigest.length === 32)) {
+      __compactRuntime.typeError('verifierPseudonymScopeDigestV1',
+                                 'argument 1',
+                                 'holder-bindings.compact line 220 char 1',
+                                 'struct VerifierPseudonymScopeV1<verifierIdentityDigest: Bytes<32>, executionContextDigest: Bytes<32>, audienceDigest: Bytes<32>, originDigest: Bytes<32>, consentDigest: Bytes<32>, requestDigest: Bytes<32>, challengeDigest: Bytes<32>>',
+                                 scope_0)
+    }
+    return _dummyContract._verifierPseudonymScopeDigestV1_0(scope_0);
+  },
+  requestScopedVerifierPseudonymV1: (...args_0) => {
+    if (args_0.length !== 2) {
+      throw new __compactRuntime.CompactError(`requestScopedVerifierPseudonymV1: expected 2 arguments (as invoked from Typescript), received ${args_0.length}`);
+    }
+    const holderSecret_0 = args_0[0];
+    const scope_0 = args_0[1];
+    if (!(holderSecret_0.buffer instanceof ArrayBuffer && holderSecret_0.BYTES_PER_ELEMENT === 1 && holderSecret_0.length === 32)) {
+      __compactRuntime.typeError('requestScopedVerifierPseudonymV1',
+                                 'argument 1',
+                                 'holder-bindings.compact line 229 char 1',
+                                 'Bytes<32>',
+                                 holderSecret_0)
+    }
+    if (!(typeof(scope_0) === 'object' && scope_0.verifierIdentityDigest.buffer instanceof ArrayBuffer && scope_0.verifierIdentityDigest.BYTES_PER_ELEMENT === 1 && scope_0.verifierIdentityDigest.length === 32 && scope_0.executionContextDigest.buffer instanceof ArrayBuffer && scope_0.executionContextDigest.BYTES_PER_ELEMENT === 1 && scope_0.executionContextDigest.length === 32 && scope_0.audienceDigest.buffer instanceof ArrayBuffer && scope_0.audienceDigest.BYTES_PER_ELEMENT === 1 && scope_0.audienceDigest.length === 32 && scope_0.originDigest.buffer instanceof ArrayBuffer && scope_0.originDigest.BYTES_PER_ELEMENT === 1 && scope_0.originDigest.length === 32 && scope_0.consentDigest.buffer instanceof ArrayBuffer && scope_0.consentDigest.BYTES_PER_ELEMENT === 1 && scope_0.consentDigest.length === 32 && scope_0.requestDigest.buffer instanceof ArrayBuffer && scope_0.requestDigest.BYTES_PER_ELEMENT === 1 && scope_0.requestDigest.length === 32 && scope_0.challengeDigest.buffer instanceof ArrayBuffer && scope_0.challengeDigest.BYTES_PER_ELEMENT === 1 && scope_0.challengeDigest.length === 32)) {
+      __compactRuntime.typeError('requestScopedVerifierPseudonymV1',
+                                 'argument 2',
+                                 'holder-bindings.compact line 229 char 1',
+                                 'struct VerifierPseudonymScopeV1<verifierIdentityDigest: Bytes<32>, executionContextDigest: Bytes<32>, audienceDigest: Bytes<32>, originDigest: Bytes<32>, consentDigest: Bytes<32>, requestDigest: Bytes<32>, challengeDigest: Bytes<32>>',
+                                 scope_0)
+    }
+    return _dummyContract._requestScopedVerifierPseudonymV1_0(holderSecret_0,
+                                                              scope_0);
+  },
+  assertRequestScopedVerifierPseudonymV1: (...args_0) => {
+    if (args_0.length !== 3) {
+      throw new __compactRuntime.CompactError(`assertRequestScopedVerifierPseudonymV1: expected 3 arguments (as invoked from Typescript), received ${args_0.length}`);
+    }
+    const pseudonym_0 = args_0[0];
+    const holderSecret_0 = args_0[1];
+    const scope_0 = args_0[2];
+    if (!(pseudonym_0.buffer instanceof ArrayBuffer && pseudonym_0.BYTES_PER_ELEMENT === 1 && pseudonym_0.length === 32)) {
+      __compactRuntime.typeError('assertRequestScopedVerifierPseudonymV1',
+                                 'argument 1',
+                                 'holder-bindings.compact line 240 char 1',
+                                 'Bytes<32>',
+                                 pseudonym_0)
+    }
+    if (!(holderSecret_0.buffer instanceof ArrayBuffer && holderSecret_0.BYTES_PER_ELEMENT === 1 && holderSecret_0.length === 32)) {
+      __compactRuntime.typeError('assertRequestScopedVerifierPseudonymV1',
+                                 'argument 2',
+                                 'holder-bindings.compact line 240 char 1',
+                                 'Bytes<32>',
+                                 holderSecret_0)
+    }
+    if (!(typeof(scope_0) === 'object' && scope_0.verifierIdentityDigest.buffer instanceof ArrayBuffer && scope_0.verifierIdentityDigest.BYTES_PER_ELEMENT === 1 && scope_0.verifierIdentityDigest.length === 32 && scope_0.executionContextDigest.buffer instanceof ArrayBuffer && scope_0.executionContextDigest.BYTES_PER_ELEMENT === 1 && scope_0.executionContextDigest.length === 32 && scope_0.audienceDigest.buffer instanceof ArrayBuffer && scope_0.audienceDigest.BYTES_PER_ELEMENT === 1 && scope_0.audienceDigest.length === 32 && scope_0.originDigest.buffer instanceof ArrayBuffer && scope_0.originDigest.BYTES_PER_ELEMENT === 1 && scope_0.originDigest.length === 32 && scope_0.consentDigest.buffer instanceof ArrayBuffer && scope_0.consentDigest.BYTES_PER_ELEMENT === 1 && scope_0.consentDigest.length === 32 && scope_0.requestDigest.buffer instanceof ArrayBuffer && scope_0.requestDigest.BYTES_PER_ELEMENT === 1 && scope_0.requestDigest.length === 32 && scope_0.challengeDigest.buffer instanceof ArrayBuffer && scope_0.challengeDigest.BYTES_PER_ELEMENT === 1 && scope_0.challengeDigest.length === 32)) {
+      __compactRuntime.typeError('assertRequestScopedVerifierPseudonymV1',
+                                 'argument 3',
+                                 'holder-bindings.compact line 240 char 1',
+                                 'struct VerifierPseudonymScopeV1<verifierIdentityDigest: Bytes<32>, executionContextDigest: Bytes<32>, audienceDigest: Bytes<32>, originDigest: Bytes<32>, consentDigest: Bytes<32>, requestDigest: Bytes<32>, challengeDigest: Bytes<32>>',
+                                 scope_0)
+    }
+    return _dummyContract._assertRequestScopedVerifierPseudonymV1_0(pseudonym_0,
+                                                                    holderSecret_0,
+                                                                    scope_0);
   },
   blindedSecretHolderCommitment: (...args_0) => {
     if (args_0.length !== 3) {
@@ -5874,21 +6039,21 @@ export const pureCircuits = {
     if (!(holderSecretCommitment_0.buffer instanceof ArrayBuffer && holderSecretCommitment_0.BYTES_PER_ELEMENT === 1 && holderSecretCommitment_0.length === 32)) {
       __compactRuntime.typeError('blindedSecretHolderCommitment',
                                  'argument 1',
-                                 'holder-bindings.compact line 197 char 1',
+                                 'holder-bindings.compact line 251 char 1',
                                  'Bytes<32>',
                                  holderSecretCommitment_0)
     }
     if (!(issuerNonce_0.buffer instanceof ArrayBuffer && issuerNonce_0.BYTES_PER_ELEMENT === 1 && issuerNonce_0.length === 32)) {
       __compactRuntime.typeError('blindedSecretHolderCommitment',
                                  'argument 2',
-                                 'holder-bindings.compact line 197 char 1',
+                                 'holder-bindings.compact line 251 char 1',
                                  'Bytes<32>',
                                  issuerNonce_0)
     }
     if (!(blindingFactor_0.buffer instanceof ArrayBuffer && blindingFactor_0.BYTES_PER_ELEMENT === 1 && blindingFactor_0.length === 32)) {
       __compactRuntime.typeError('blindedSecretHolderCommitment',
                                  'argument 3',
-                                 'holder-bindings.compact line 197 char 1',
+                                 'holder-bindings.compact line 251 char 1',
                                  'Bytes<32>',
                                  blindingFactor_0)
     }
@@ -5904,7 +6069,7 @@ export const pureCircuits = {
     if (!(typeof(binding_0) === 'object' && binding_0.holderSecretCommitment.buffer instanceof ArrayBuffer && binding_0.holderSecretCommitment.BYTES_PER_ELEMENT === 1 && binding_0.holderSecretCommitment.length === 32 && binding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && binding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && binding_0.requestChallengeResponse.length === 32)) {
       __compactRuntime.typeError('assertValidSecretHolderCredentialBinding',
                                  'argument 1',
-                                 'holder-bindings.compact line 213 char 1',
+                                 'holder-bindings.compact line 267 char 1',
                                  'struct SecretHolderBinding<holderSecretCommitment: Bytes<32>, requestChallengeResponse: Bytes<32>>',
                                  binding_0)
     }
@@ -5918,7 +6083,7 @@ export const pureCircuits = {
     if (!(typeof(binding_0) === 'object' && binding_0.holderSecretCommitment.buffer instanceof ArrayBuffer && binding_0.holderSecretCommitment.BYTES_PER_ELEMENT === 1 && binding_0.holderSecretCommitment.length === 32 && binding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && binding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && binding_0.requestChallengeResponse.length === 32)) {
       __compactRuntime.typeError('assertValidSecretHolderPresentationBinding',
                                  'argument 1',
-                                 'holder-bindings.compact line 222 char 1',
+                                 'holder-bindings.compact line 276 char 1',
                                  'struct SecretHolderBinding<holderSecretCommitment: Bytes<32>, requestChallengeResponse: Bytes<32>>',
                                  binding_0)
     }
@@ -5933,14 +6098,14 @@ export const pureCircuits = {
     if (!(typeof(credentialBinding_0) === 'object' && credentialBinding_0.holderSecretCommitment.buffer instanceof ArrayBuffer && credentialBinding_0.holderSecretCommitment.BYTES_PER_ELEMENT === 1 && credentialBinding_0.holderSecretCommitment.length === 32 && credentialBinding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && credentialBinding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && credentialBinding_0.requestChallengeResponse.length === 32)) {
       __compactRuntime.typeError('assertMatchingSecretHolderBindings',
                                  'argument 1',
-                                 'holder-bindings.compact line 231 char 1',
+                                 'holder-bindings.compact line 285 char 1',
                                  'struct SecretHolderBinding<holderSecretCommitment: Bytes<32>, requestChallengeResponse: Bytes<32>>',
                                  credentialBinding_0)
     }
     if (!(typeof(presentationBinding_0) === 'object' && presentationBinding_0.holderSecretCommitment.buffer instanceof ArrayBuffer && presentationBinding_0.holderSecretCommitment.BYTES_PER_ELEMENT === 1 && presentationBinding_0.holderSecretCommitment.length === 32 && presentationBinding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && presentationBinding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && presentationBinding_0.requestChallengeResponse.length === 32)) {
       __compactRuntime.typeError('assertMatchingSecretHolderBindings',
                                  'argument 2',
-                                 'holder-bindings.compact line 231 char 1',
+                                 'holder-bindings.compact line 285 char 1',
                                  'struct SecretHolderBinding<holderSecretCommitment: Bytes<32>, requestChallengeResponse: Bytes<32>>',
                                  presentationBinding_0)
     }
@@ -5955,7 +6120,7 @@ export const pureCircuits = {
     if (!(typeof(binding_0) === 'object' && binding_0.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && binding_0.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && binding_0.blindedHolderSecretCommitment.length === 32 && binding_0.issuerNonce.buffer instanceof ArrayBuffer && binding_0.issuerNonce.BYTES_PER_ELEMENT === 1 && binding_0.issuerNonce.length === 32 && binding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && binding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && binding_0.requestChallengeResponse.length === 32)) {
       __compactRuntime.typeError('assertValidBlindedSecretHolderCredentialBinding',
                                  'argument 1',
-                                 'holder-bindings.compact line 241 char 1',
+                                 'holder-bindings.compact line 295 char 1',
                                  'struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>',
                                  binding_0)
     }
@@ -5969,7 +6134,7 @@ export const pureCircuits = {
     if (!(typeof(binding_0) === 'object' && binding_0.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && binding_0.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && binding_0.blindedHolderSecretCommitment.length === 32 && binding_0.issuerNonce.buffer instanceof ArrayBuffer && binding_0.issuerNonce.BYTES_PER_ELEMENT === 1 && binding_0.issuerNonce.length === 32 && binding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && binding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && binding_0.requestChallengeResponse.length === 32)) {
       __compactRuntime.typeError('assertValidBlindedSecretHolderPresentationBinding',
                                  'argument 1',
-                                 'holder-bindings.compact line 250 char 1',
+                                 'holder-bindings.compact line 304 char 1',
                                  'struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>',
                                  binding_0)
     }
@@ -5984,14 +6149,14 @@ export const pureCircuits = {
     if (!(typeof(credentialBinding_0) === 'object' && credentialBinding_0.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && credentialBinding_0.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && credentialBinding_0.blindedHolderSecretCommitment.length === 32 && credentialBinding_0.issuerNonce.buffer instanceof ArrayBuffer && credentialBinding_0.issuerNonce.BYTES_PER_ELEMENT === 1 && credentialBinding_0.issuerNonce.length === 32 && credentialBinding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && credentialBinding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && credentialBinding_0.requestChallengeResponse.length === 32)) {
       __compactRuntime.typeError('assertMatchingBlindedSecretHolderBindings',
                                  'argument 1',
-                                 'holder-bindings.compact line 259 char 1',
+                                 'holder-bindings.compact line 313 char 1',
                                  'struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>',
                                  credentialBinding_0)
     }
     if (!(typeof(presentationBinding_0) === 'object' && presentationBinding_0.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && presentationBinding_0.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && presentationBinding_0.blindedHolderSecretCommitment.length === 32 && presentationBinding_0.issuerNonce.buffer instanceof ArrayBuffer && presentationBinding_0.issuerNonce.BYTES_PER_ELEMENT === 1 && presentationBinding_0.issuerNonce.length === 32 && presentationBinding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && presentationBinding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && presentationBinding_0.requestChallengeResponse.length === 32)) {
       __compactRuntime.typeError('assertMatchingBlindedSecretHolderBindings',
                                  'argument 2',
-                                 'holder-bindings.compact line 259 char 1',
+                                 'holder-bindings.compact line 313 char 1',
                                  'struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>',
                                  presentationBinding_0)
     }
@@ -6009,28 +6174,28 @@ export const pureCircuits = {
     if (!(typeof(binding_0) === 'object' && binding_0.holderSecretCommitment.buffer instanceof ArrayBuffer && binding_0.holderSecretCommitment.BYTES_PER_ELEMENT === 1 && binding_0.holderSecretCommitment.length === 32 && binding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && binding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && binding_0.requestChallengeResponse.length === 32)) {
       __compactRuntime.typeError('assertSecretHolderBindingWitness',
                                  'argument 1',
-                                 'holder-bindings.compact line 279 char 1',
+                                 'holder-bindings.compact line 333 char 1',
                                  'struct SecretHolderBinding<holderSecretCommitment: Bytes<32>, requestChallengeResponse: Bytes<32>>',
                                  binding_0)
     }
     if (!(verifierChallengeHash_0.buffer instanceof ArrayBuffer && verifierChallengeHash_0.BYTES_PER_ELEMENT === 1 && verifierChallengeHash_0.length === 32)) {
       __compactRuntime.typeError('assertSecretHolderBindingWitness',
                                  'argument 2',
-                                 'holder-bindings.compact line 279 char 1',
+                                 'holder-bindings.compact line 333 char 1',
                                  'Bytes<32>',
                                  verifierChallengeHash_0)
     }
     if (!(holderSecret_0.buffer instanceof ArrayBuffer && holderSecret_0.BYTES_PER_ELEMENT === 1 && holderSecret_0.length === 32)) {
       __compactRuntime.typeError('assertSecretHolderBindingWitness',
                                  'argument 3',
-                                 'holder-bindings.compact line 279 char 1',
+                                 'holder-bindings.compact line 333 char 1',
                                  'Bytes<32>',
                                  holderSecret_0)
     }
     if (!(opening_0.buffer instanceof ArrayBuffer && opening_0.BYTES_PER_ELEMENT === 1 && opening_0.length === 32)) {
       __compactRuntime.typeError('assertSecretHolderBindingWitness',
                                  'argument 4',
-                                 'holder-bindings.compact line 279 char 1',
+                                 'holder-bindings.compact line 333 char 1',
                                  'Bytes<32>',
                                  opening_0)
     }
@@ -6051,35 +6216,35 @@ export const pureCircuits = {
     if (!(typeof(binding_0) === 'object' && binding_0.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && binding_0.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && binding_0.blindedHolderSecretCommitment.length === 32 && binding_0.issuerNonce.buffer instanceof ArrayBuffer && binding_0.issuerNonce.BYTES_PER_ELEMENT === 1 && binding_0.issuerNonce.length === 32 && binding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && binding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && binding_0.requestChallengeResponse.length === 32)) {
       __compactRuntime.typeError('assertBlindedSecretHolderBindingWitness',
                                  'argument 1',
-                                 'holder-bindings.compact line 296 char 1',
+                                 'holder-bindings.compact line 350 char 1',
                                  'struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>',
                                  binding_0)
     }
     if (!(verifierChallengeHash_0.buffer instanceof ArrayBuffer && verifierChallengeHash_0.BYTES_PER_ELEMENT === 1 && verifierChallengeHash_0.length === 32)) {
       __compactRuntime.typeError('assertBlindedSecretHolderBindingWitness',
                                  'argument 2',
-                                 'holder-bindings.compact line 296 char 1',
+                                 'holder-bindings.compact line 350 char 1',
                                  'Bytes<32>',
                                  verifierChallengeHash_0)
     }
     if (!(holderSecret_0.buffer instanceof ArrayBuffer && holderSecret_0.BYTES_PER_ELEMENT === 1 && holderSecret_0.length === 32)) {
       __compactRuntime.typeError('assertBlindedSecretHolderBindingWitness',
                                  'argument 3',
-                                 'holder-bindings.compact line 296 char 1',
+                                 'holder-bindings.compact line 350 char 1',
                                  'Bytes<32>',
                                  holderSecret_0)
     }
     if (!(opening_0.buffer instanceof ArrayBuffer && opening_0.BYTES_PER_ELEMENT === 1 && opening_0.length === 32)) {
       __compactRuntime.typeError('assertBlindedSecretHolderBindingWitness',
                                  'argument 4',
-                                 'holder-bindings.compact line 296 char 1',
+                                 'holder-bindings.compact line 350 char 1',
                                  'Bytes<32>',
                                  opening_0)
     }
     if (!(blindingFactor_0.buffer instanceof ArrayBuffer && blindingFactor_0.BYTES_PER_ELEMENT === 1 && blindingFactor_0.length === 32)) {
       __compactRuntime.typeError('assertBlindedSecretHolderBindingWitness',
                                  'argument 5',
-                                 'holder-bindings.compact line 296 char 1',
+                                 'holder-bindings.compact line 350 char 1',
                                  'Bytes<32>',
                                  blindingFactor_0)
     }

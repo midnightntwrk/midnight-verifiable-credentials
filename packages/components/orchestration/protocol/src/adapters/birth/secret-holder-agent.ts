@@ -42,6 +42,7 @@ import {
   assertBodyHasFields,
   assertMessageType,
   assertProtocolMessageEnvelopeAlignment,
+  protocolMessageAuthenticationDigest,
   protocolMessageDigest,
   protocolValuesEquivalent,
 } from "../../shared/validation.js";
@@ -61,6 +62,39 @@ import { SECRET_BIRTH_COMPATIBILITY_FEATURE_HINTS } from "./schema-descriptors.j
 
 const DEFAULT_PROTOCOL_CURRENT_DAY = 0n;
 const DEFAULT_ISSUANCE_REQUEST_EXPIRY_DAY = 1_000_000n;
+
+const equalBytes = (left: Uint8Array, right: Uint8Array): boolean =>
+  left.byteLength === right.byteLength && left.every((value, index) => value === right[index]);
+
+export type TrustedVerifierPseudonymContextV1 = {
+  readonly verifierLabel: string;
+  readonly verifierVerificationMethodRef: Proof["signerVerificationMethodRef"];
+  readonly verifierPublicKey: Proof["publicKey"];
+  readonly verifierIdentityDigest: Uint8Array;
+  readonly deploymentDigest: Uint8Array;
+  readonly audienceDigest: Uint8Array;
+  readonly originDigest: Uint8Array;
+  readonly consentDigest: Uint8Array;
+};
+
+const matchesTrustedVerifierContext = (
+  trusted: TrustedVerifierPseudonymContextV1,
+  scope: SecretBirthCredentialVerificationRequest["body"]["verifierPseudonymScope"],
+): boolean =>
+  equalBytes(trusted.verifierIdentityDigest, scope.verifierIdentityDigest) &&
+  equalBytes(trusted.deploymentDigest, scope.executionContextDigest) &&
+  equalBytes(trusted.audienceDigest, scope.audienceDigest) &&
+  equalBytes(trusted.originDigest, scope.originDigest) &&
+  equalBytes(trusted.consentDigest, scope.consentDigest);
+
+export class UntrustedVerifierContextError extends Error {
+  readonly code = "UNTRUSTED_VERIFIER_CONTEXT";
+
+  constructor() {
+    super("Hidden-holder verifier context is not trusted");
+    this.name = "UntrustedVerifierContextError";
+  }
+}
 
 type SecretIssuanceRequestOptions = {
   readonly currentDay?: bigint;
@@ -144,6 +178,7 @@ export class SecretHolderAgent {
   private readonly randomness: ProtocolRandomnessSource;
   private readonly createEnvelope: ProtocolEnvelopeFactory;
   private readonly retentionPolicy: ProtocolStateRetentionPolicy;
+  private readonly trustedVerifierContexts: readonly TrustedVerifierPseudonymContextV1[];
   private readonly storedCredentials: ProtocolStateCollection<SecretStoredCredential>;
   private readonly metadata: ProtocolStateCollection<number>;
   private readonly pendingIssuanceRequests: ProtocolStateCollection<{
@@ -159,6 +194,7 @@ export class SecretHolderAgent {
     }>
   >;
   private readonly pendingPresentationSubmissions: ProtocolStateCollection<SecretBirthCredentialVerificationSubmission>;
+  private readonly processedPresentationRequests: ProtocolStateCollection<Uint8Array>;
   private readonly completedPresentationOutcomes: ProtocolStateCollection<
     RetainedProtocolState<SecretPresentationOutcome>
   >;
@@ -177,6 +213,7 @@ export class SecretHolderAgent {
       readonly randomness?: ProtocolRandomnessSource;
       readonly stateStore?: ProtocolStateStore;
       readonly stateRetention?: ProtocolStateRetentionPolicy;
+      readonly trustedVerifierContexts?: readonly TrustedVerifierPseudonymContextV1[];
     } = {},
   ) {
     this.label = config.label;
@@ -188,6 +225,7 @@ export class SecretHolderAgent {
       options.envelopeIdentifierSource,
     );
     this.retentionPolicy = options.stateRetention ?? {};
+    this.trustedVerifierContexts = options.trustedVerifierContexts ?? [];
     const stateStore = options.stateStore ?? new InMemoryProtocolStateStore();
     const stateScope = `secret-holder:${this.label}`;
     this.storedCredentials = stateStore.collection(
@@ -202,6 +240,9 @@ export class SecretHolderAgent {
     );
     this.pendingPresentationSubmissions = stateStore.collection(
       `${stateScope}:pending-presentation-submissions`,
+    );
+    this.processedPresentationRequests = stateStore.collection(
+      `${stateScope}:processed-presentation-requests`,
     );
     this.completedPresentationOutcomes = stateStore.collection(
       `${stateScope}:completed-presentation-outcomes`,
@@ -636,7 +677,53 @@ export class SecretHolderAgent {
     assertProtocolMessageEnvelopeAlignment(requestMessage);
     const request =
       requestMessage.body as SecretBirthCredentialVerificationRequest;
+    pureCircuits.assertValidSecretBirthCredentialVerificationRequestMessage(
+      request,
+    );
     const nowMs = resolveCurrentTimeMs(options.currentTimeMs);
+    if (request.body.requireVerifierScopedPseudonym) {
+      const trustedVerifier = this.trustedVerifierContexts.find((trusted) =>
+        matchesTrustedVerifierContext(
+          trusted,
+          request.body.verifierPseudonymScope,
+        ),
+      );
+      const authentication = requestMessage.authentication;
+      if (
+        trustedVerifier === undefined ||
+        authentication === undefined ||
+        requestMessage.from !== trustedVerifier.verifierLabel ||
+        requestMessage.to !== this.label ||
+        !protocolValuesEquivalent(
+          authentication.signerVerificationMethodRef,
+          trustedVerifier.verifierVerificationMethodRef,
+        ) ||
+        !protocolValuesEquivalent(
+          authentication.publicKey,
+          trustedVerifier.verifierPublicKey,
+        ) ||
+        !equalBytes(
+          authentication.challengeHash,
+          request.envelope.messageId,
+        ) ||
+        !equalBytes(
+          genericPureCircuits.verifierIdentityDigestV1(
+            trustedVerifier.verifierVerificationMethodRef,
+          ),
+          trustedVerifier.verifierIdentityDigest,
+        )
+      ) {
+        throw new UntrustedVerifierContextError();
+      }
+      try {
+        genericPureCircuits.assertValidPresentationContextProof(
+          protocolMessageAuthenticationDigest(requestMessage),
+          authentication,
+        );
+      } catch {
+        throw new UntrustedVerifierContextError();
+      }
+    }
     if (
       requestMessage.envelope.hasExpiresAt &&
       nowMs > requestMessage.envelope.expiresAt
@@ -644,6 +731,22 @@ export class SecretHolderAgent {
       throw new Error(
         "This blinded-secret presentation request expired before the holder could answer it.",
       );
+    }
+    if (!this.processedPresentationRequests.setIfAbsent) {
+      throw new Error(
+        "Hidden-holder presentation request replay protection is unavailable",
+      );
+    }
+    const requestMessageId = Buffer.from(request.envelope.messageId).toString(
+      "hex",
+    );
+    if (
+      !this.processedPresentationRequests.setIfAbsent(
+        requestMessageId,
+        protocolMessageDigest(requestMessage),
+      )
+    ) {
+      throw new Error("Hidden-holder presentation request was already processed");
     }
     const stored = this.getCredential(witnessData.credentialIndex);
     const credential = stored.credential;
@@ -679,9 +782,9 @@ export class SecretHolderAgent {
         revealVerifierScopedPseudonym:
           request.body.requireVerifierScopedPseudonym,
         verifierScopedPseudonym: request.body.requireVerifierScopedPseudonym
-          ? genericPureCircuits.verifierScopedPseudonym(
+          ? genericPureCircuits.requestScopedVerifierPseudonymV1(
               this.holderSecret,
-              request.body.verifierDomainHash,
+              request.body.verifierPseudonymScope,
             )
           : new Uint8Array(32),
         proveAgeOverThreshold: request.body.requireAgeOverThreshold,
@@ -962,7 +1065,15 @@ export class SecretHolderAgent {
         requireSubjectIdCommitmentDisclosure: false,
         requireBirthCountryDisclosure: false,
         requireVerifierScopedPseudonym: false,
-        verifierDomainHash: new Uint8Array(32),
+        verifierPseudonymScope: {
+          verifierIdentityDigest: new Uint8Array(32),
+          executionContextDigest: new Uint8Array(32),
+          audienceDigest: new Uint8Array(32),
+          originDigest: new Uint8Array(32),
+          consentDigest: new Uint8Array(32),
+          requestDigest: new Uint8Array(32),
+          challengeDigest: new Uint8Array(32),
+        },
         requireAgeOverThreshold: false,
         requestedAgeThresholdYears: 0n,
       },

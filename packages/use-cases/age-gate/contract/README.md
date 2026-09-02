@@ -87,6 +87,9 @@ The package currently contains two demo contract roots:
 1. `src/demo.compact`
    - explicit-holder age-gate demo
 2. `src/demo-revocation.compact`
+   - hidden-holder status-aware age-gate demo using request-scoped verifier
+     pseudonyms bound to fixed demo deployment/audience/origin/consent context
+     plus verifier identity, request, and challenge
    - hidden-holder status-aware age-gate demo using:
      - same-contract live status verification against a local revoked-handle set
      - verifier-supplied `(registryId, revokedRoot)` coordination

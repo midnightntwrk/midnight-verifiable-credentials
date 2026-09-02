@@ -62,9 +62,14 @@ describe("secret birth credential: holder binding", () => {
 
   it("rejects a mismatched verifier challenge for the secret holder binding", () => {
     const fixture = createSecretBirthCredentialFixture();
+    const mismatchedChallenge = new Uint8Array(32).fill(7);
     const mismatchedRequest = {
       ...fixture.presentationRequest,
-      verifierChallengeHash: new Uint8Array(32).fill(7),
+      verifierChallengeHash: mismatchedChallenge,
+      verifierPseudonymScope: {
+        ...fixture.presentationRequest.verifierPseudonymScope,
+        challengeDigest: mismatchedChallenge,
+      },
     };
 
     expect(() =>
@@ -99,7 +104,10 @@ describe("secret birth credential: holder binding", () => {
 
     const mismatchedRequest = {
       ...fixture.presentationRequest,
-      verifierDomainHash: new Uint8Array(32).fill(3),
+      verifierPseudonymScope: {
+        ...fixture.presentationRequest.verifierPseudonymScope,
+        verifierIdentityDigest: new Uint8Array(32).fill(3),
+      },
     };
 
     expect(() =>
@@ -112,8 +120,54 @@ describe("secret birth credential: holder binding", () => {
         fixture.witness.holderSecretOpening,
         fixture.witness.holderBindingBlindingFactor,
       ),
-    ).toThrow(
-      /Verifier-scoped pseudonym does not match the holder secret and verifier domain/,
-    );
+    ).toThrow(/Request-scoped verifier pseudonym context mismatch/);
+  });
+
+  it.each([
+    "verifierIdentityDigest",
+    "executionContextDigest",
+    "audienceDigest",
+    "originDigest",
+    "consentDigest",
+    "requestDigest",
+    "challengeDigest",
+  ] as const)("rejects an empty %s in a requested pseudonym scope", (field) => {
+    const fixture = createSecretBirthCredentialFixture();
+    const request = {
+      ...fixture.verificationRequest,
+      body: {
+        ...fixture.verificationRequest.body,
+        verifierPseudonymScope: {
+          ...fixture.verificationRequest.body.verifierPseudonymScope,
+          [field]: new Uint8Array(32),
+        },
+      },
+    };
+
+    expect(() =>
+      pureCircuits.assertValidSecretBirthCredentialVerificationRequestMessage(
+        request,
+      ),
+    ).toThrow(/pseudonym scope|pseudonym.*(?:request|challenge)/iu);
+  });
+
+  it("rejects a pseudonym scope challenge that differs from the verifier challenge", () => {
+    const fixture = createSecretBirthCredentialFixture();
+    const request = {
+      ...fixture.verificationRequest,
+      body: {
+        ...fixture.verificationRequest.body,
+        verifierPseudonymScope: {
+          ...fixture.verificationRequest.body.verifierPseudonymScope,
+          challengeDigest: new Uint8Array(32).fill(91),
+        },
+      },
+    };
+
+    expect(() =>
+      pureCircuits.assertValidSecretBirthCredentialVerificationRequestMessage(
+        request,
+      ),
+    ).toThrow(/pseudonym scope challenge does not match/iu);
   });
 });
