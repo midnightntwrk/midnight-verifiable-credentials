@@ -35,6 +35,11 @@ The accepted architecture is recorded in the
 6. VC wallet flows extend the existing Midnight DApp Connector API through a
    nested, versioned credentials capability.
 7. OID4VCI/OID4VP are the normative wire protocols; DIDComm is optional.
+8. [`ADR-0015`](../decisions/0015-vc-family-profile-vocabulary-and-boundaries.md)
+   fixes the composition vocabulary, keeps the versioned semantic family
+   profile separate from deployment assembly, rejects unsafe initial
+   combinations explicitly, and records API, security, standards, and
+   production maturity independently.
 
 ADR-0013 supersedes the former reference-family release model. Existing family
 workspaces are migration inventory, not a core publication queue.
@@ -419,9 +424,9 @@ circuits and flows.
 
 ### P1-9. Define documentation and support authority
 
-Publish a stable architecture overview, ADR lifecycle, supported profile and
-package matrix, security assumptions, operator runbooks, compatibility policy,
-release guide, incident response, and end-of-life process. Replace placeholder
+Publish a stable architecture overview, ADR lifecycle, architecturally admitted
+profile and API-support package matrix, security assumptions, operator runbooks,
+compatibility policy, release guide, incident response, and end-of-life process. Replace placeholder
 documentation scripts and archive completed plans so contributors have one
 current backlog and one decision register.
 

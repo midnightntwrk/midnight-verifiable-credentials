@@ -71,7 +71,7 @@ prototypes or minimal conformance fixtures. Every prototype must record:
 
 - the reusable capability hypothesis it exercises;
 - an accountable owner and target milestone;
-- supported profiles and known limitations;
+- implemented or architecturally admitted profile IDs and known limitations;
 - synthetic test data and reproducible evidence; and
 - an exit criterion: graduate, reduce to a fixture, or remove.
 
