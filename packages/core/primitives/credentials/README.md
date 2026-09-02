@@ -42,15 +42,26 @@ Verification-contract V1 status:
 - the canonical transcript, public-input, evidence, result, and owned-record
   types are available from the Compact and root TypeScript surfaces
 - `prepareVerification`, `preflightVerification`,
-  `submitLedgerVerification`, and `verifyPublicOffchain` currently provide
-  strict normalization and deterministic fail-closed adapter skeletons
+  `submitLedgerVerification`, and `verifyPublicOffchain` provide strict
+  normalization and final injected executor boundaries over the same canonical
+  47-field transcript
 - request-, holder-action-, and credential-action replay-scope records now have
   matching Compact and TypeScript derivation helpers with cross-runtime vectors
 - the explicit-holder age-gate reference contract demonstrates persistent,
   atomic nullifier consumption with a protected business mutation; this core
   package remains stateless and does not own application ledgers
-- final ledger-authoritative and off-chain executors remain the separate A3/#499
-  deliverable; the replay primitive does not by itself claim executor authority
+- `ledger-local-v1` and `ledger-attested-v1` return their distinct ledger
+  authority only after exact evidence/nullifier/atomic-mutation binding and an
+  independently confirmed successful committed transaction; submitted,
+  included, reverted, failed, and unconfirmed observations stay local-process
+- `offchain-public-v1` is local-process only and requires an authenticated
+  resolved-profile identity bound to the transcript plus the profile's exact
+  empty private-input inventory; hidden-holder, private predicate,
+  same-holder, private status, and verifier-scoped hidden bindings are rejected
+- missing evaluators/providers remain machine-readably unsupported with bounded
+  indeterminate reason and failure-stage labels
+- `compareVerificationParityV1` checks proof/decision classification parity
+  without flattening executor authority labels
 - see the
   [`verification V1 specification`](../../../../docs/spec/verification-contract-v1.md)
   and

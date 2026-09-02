@@ -1,8 +1,10 @@
 # Verification Authority V1 Threat Model and Test Design
 
-Status: required design gate for Tracks A1 and A2; the A1 encoding, synthetic
-direct-path, and transcript-mutation suites are implemented, while A2 and A3
-gates remain open.
+Status: implemented design gate for A1–A3. Encoding, direct Compact-path,
+transcript mutation, nullifier atomicity, final executor parity, transaction
+confirmation, authority failure, and public-only privacy suites are active.
+Operational providers that are not configured remain explicit indeterminate
+results rather than skipped tests or authority claims.
 
 Companion documents:
 
@@ -242,14 +244,23 @@ attacker-controlled boundary from the contract's perspective.
 - Nullifier insertion is immediately adjacent to the protected state write in
   the reviewed final circuit.
 
-### Before A3 final-profile integration
+### A3 final-profile integration evidence
 
-- each advertised profile has a positive direct Compact fixture and a fixture
-  for every status/trust mode it claims;
+- each advertised executor consumes the same canonical 47-field transcript and
+  has valid, invalid, and indeterminate differential classifications;
 - DID relationship, trust, status, time, artifact/deployment, and any required
-  connector-origin adapters verify their actual authority witnesses;
-- all authority and downgrade cases run without skipped blockers; and
-- only committed transactions produce ledger-authority receipts.
+  connector-origin mechanisms enter through a transcript-rebound evaluator;
+- unavailable mechanisms and provider failures are bounded, typed,
+  `indeterminate/notEvaluated` local attempts;
+- public-only execution rejects hidden-holder, private-predicate, same-holder,
+  and private-status inputs; and
+- only an exact successful committed transaction observation accepted by an
+  independent confirmation verifier produces a ledger-authority receipt.
+
+Final profile support remains conditional on injecting those authoritative
+mechanisms. The executor never upgrades an unavailable adapter, local preflight,
+submitted/included transaction, reverted transaction, or unauthenticated
+receipt.
 
 ### Before a production label
 
