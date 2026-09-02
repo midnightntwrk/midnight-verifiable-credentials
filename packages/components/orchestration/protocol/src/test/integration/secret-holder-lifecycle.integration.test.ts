@@ -1,3 +1,4 @@
+import { pureCircuits as genericPureCircuits } from "@midnight-ntwrk/midnight-did-credentials/managed/credentials/contract/index.js";
 import {
   containerRuntimeAvailable,
   type ProtocolDidProfile,
@@ -61,6 +62,17 @@ describeIntegration("secret-holder lifecycle with real Midnight DIDs", () => {
         toDIDProfile(issuerProfile, 123456789n),
         bus,
       );
+      const verifierProfile: DIDProfile = {
+        role: "verifier",
+        label: "verifier",
+        signer: createSigner("verifier", verifierSecretKey),
+      };
+      const verifierContext = {
+        deploymentDigest: sha256("deployment:test:v1"),
+        audienceDigest: sha256("audience:test"),
+        originDigest: sha256("origin:https://test.example"),
+        consentDigest: sha256("consent:test"),
+      };
       const holder = new SecretHolderAgent(
         {
           label: "alice",
@@ -68,13 +80,21 @@ describeIntegration("secret-holder lifecycle with real Midnight DIDs", () => {
           holderSecretOpening: fill(13),
         },
         bus,
+        {
+          trustedVerifierContexts: [{
+            verifierLabel: verifierProfile.label,
+            verifierVerificationMethodRef:
+              verifierProfile.signer.verificationMethodRef,
+            verifierPublicKey: verifierProfile.signer.publicKey,
+            verifierIdentityDigest:
+              genericPureCircuits.verifierIdentityDigestV1(
+                verifierProfile.signer.verificationMethodRef,
+              ),
+            ...verifierContext,
+          }],
+        },
       );
 
-      const verifierProfile: DIDProfile = {
-        role: "verifier",
-        label: "verifier",
-        signer: createSigner("verifier", verifierSecretKey),
-      };
       const verifier = new VerifierAgent(verifierProfile, bus);
 
       // Issuance via protocol
@@ -106,13 +126,12 @@ describeIntegration("secret-holder lifecycle with real Midnight DIDs", () => {
       );
 
       // Presentation with pseudonym
-      const verifierDomainHash = sha256("verifier-domain:test");
       verifier.createAndSendSecretPresentationRequest("alice", {
         issuerVerificationMethodRef: issuerProfile.verificationMethodRefValue,
         requireSubjectIdCommitmentDisclosure: false,
         requireBirthCountryDisclosure: false,
         requireVerifierScopedPseudonym: true,
-        verifierDomainHash,
+        ...verifierContext,
         requireAgeOverThreshold: true,
         requestedAgeThresholdYears: 18,
       });

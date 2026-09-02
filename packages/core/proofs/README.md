@@ -8,6 +8,13 @@ Family-neutral proof execution ports, DID/trust authority-evidence binding, and
 immutable, versioned proof/build/deployment manifest contracts for
 credential-family repositories.
 
+The `hidden-holder-privacy` export provides a fail-closed public-surface scanner
+and byte-redacted snapshot helper. It rejects credential roots, holder
+identifiers/secrets, status handles/openings/witnesses, raw status leaves, and
+caller-supplied forbidden byte values without echoing the rejected path or
+value into its bounded error. It is a logging/artifact guard, not a substitute
+for a private proof or an authority check.
+
 ## Scope
 
 This package defines `ProofJob`, `ProofProvider`, `ProofVerifier`, and

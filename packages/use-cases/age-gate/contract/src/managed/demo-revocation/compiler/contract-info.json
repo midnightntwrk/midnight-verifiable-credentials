@@ -2293,6 +2293,278 @@
       }
     },
     {
+      "name": "verifierIdentityDigestV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "verificationMethodRef",
+          "type": {
+            "type-name": "Struct",
+            "name": "VerificationMethodRef",
+            "elements": [
+              {
+                "name": "didContractAddress",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "ContractAddress",
+                  "elements": [
+                    {
+                      "name": "bytes",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "methodId",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "verifierPseudonymScopeDigestV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "scope",
+          "type": {
+            "type-name": "Struct",
+            "name": "VerifierPseudonymScopeV1",
+            "elements": [
+              {
+                "name": "verifierIdentityDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "executionContextDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "audienceDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "originDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "consentDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "requestDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "challengeDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "requestScopedVerifierPseudonymV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "holderSecret",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "scope",
+          "type": {
+            "type-name": "Struct",
+            "name": "VerifierPseudonymScopeV1",
+            "elements": [
+              {
+                "name": "verifierIdentityDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "executionContextDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "audienceDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "originDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "consentDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "requestDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "challengeDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "assertRequestScopedVerifierPseudonymV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "pseudonym",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "holderSecret",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "scope",
+          "type": {
+            "type-name": "Struct",
+            "name": "VerifierPseudonymScopeV1",
+            "elements": [
+              {
+                "name": "verifierIdentityDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "executionContextDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "audienceDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "originDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "consentDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "requestDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "challengeDigest",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Tuple",
+        "types": [
+        ]
+      }
+    },
+    {
       "name": "blindedSecretHolderCommitment",
       "pure": true,
       "proof": false,
@@ -14096,10 +14368,640 @@
                 }
               },
               {
-                "name": "verifierDomainHash",
+                "name": "verifierPseudonymScope",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "VerifierPseudonymScopeV1",
+                  "elements": [
+                    {
+                      "name": "verifierIdentityDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "executionContextDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "audienceDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "originDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "consentDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "requestDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "challengeDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "requireAgeOverThreshold",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requestedAgeThresholdYears",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 255
+                }
+              },
+              {
+                "name": "verifierChallengeHash",
                 "type": {
                   "type-name": "Bytes",
                   "length": 32
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "secretBirthPresentationBindingDigestV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "credential",
+          "type": {
+            "type-name": "Struct",
+            "name": "Credential",
+            "elements": [
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "schema",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "SchemaRef",
+                  "elements": [
+                    {
+                      "name": "packageId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "schemaId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "majorVersion",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "minorVersion",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "issuerVerificationMethodRef",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "VerificationMethodRef",
+                  "elements": [
+                    {
+                      "name": "didContractAddress",
+                      "type": {
+                        "type-name": "Struct",
+                        "name": "ContractAddress",
+                        "elements": [
+                          {
+                            "name": "bytes",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "methodId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "holderBinding",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "BlindedSecretHolderBinding",
+                  "elements": [
+                    {
+                      "name": "blindedHolderSecretCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "issuerNonce",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "requestChallengeResponse",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "statusBinding",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "NoStatusBinding",
+                  "elements": [
+                  ]
+                }
+              },
+              {
+                "name": "issuedAt",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 18446744073709551615
+                }
+              },
+              {
+                "name": "hasExpiration",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "expiresAt",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 18446744073709551615
+                }
+              },
+              {
+                "name": "claims",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "NoPublicClaims",
+                  "elements": [
+                  ]
+                }
+              },
+              {
+                "name": "claimCommitments",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "BirthCredentialClaimCommitments",
+                  "elements": [
+                    {
+                      "name": "subjectIdCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "legalNameCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "birthDateCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "birthCountryCodeCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "claimRoot",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "presentation",
+          "type": {
+            "type-name": "Struct",
+            "name": "Presentation",
+            "elements": [
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "schema",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "SchemaRef",
+                  "elements": [
+                    {
+                      "name": "packageId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "schemaId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "majorVersion",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "minorVersion",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "credentialClaimRoot",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "issuerVerificationMethodRef",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "VerificationMethodRef",
+                  "elements": [
+                    {
+                      "name": "didContractAddress",
+                      "type": {
+                        "type-name": "Struct",
+                        "name": "ContractAddress",
+                        "elements": [
+                          {
+                            "name": "bytes",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "methodId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "holderBinding",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "BlindedSecretHolderBinding",
+                  "elements": [
+                    {
+                      "name": "blindedHolderSecretCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "issuerNonce",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "requestChallengeResponse",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "disclosed",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "SecretBirthCredentialDisclosures",
+                  "elements": [
+                    {
+                      "name": "revealSubjectIdCommitment",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "subjectIdCommitment",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "revealBirthCountryCode",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "birthCountryCodePadded",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "birthCountryCodeOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "revealVerifierScopedPseudonym",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "verifierScopedPseudonym",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "proveAgeOverThreshold",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "ageThresholdYears",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "request",
+          "type": {
+            "type-name": "Struct",
+            "name": "SecretBirthCredentialPresentationRequest",
+            "elements": [
+              {
+                "name": "version",
+                "type": {
+                  "type-name": "Uint",
+                  "maxval": 65535
+                }
+              },
+              {
+                "name": "schema",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "SchemaRef",
+                  "elements": [
+                    {
+                      "name": "packageId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "schemaId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "majorVersion",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "minorVersion",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "issuerVerificationMethodRef",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "VerificationMethodRef",
+                  "elements": [
+                    {
+                      "name": "didContractAddress",
+                      "type": {
+                        "type-name": "Struct",
+                        "name": "ContractAddress",
+                        "elements": [
+                          {
+                            "name": "bytes",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "methodId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "requireSubjectIdCommitmentDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireBirthCountryDisclosure",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "requireVerifierScopedPseudonym",
+                "type": {
+                  "type-name": "Boolean"
+                }
+              },
+              {
+                "name": "verifierPseudonymScope",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "VerifierPseudonymScopeV1",
+                  "elements": [
+                    {
+                      "name": "verifierIdentityDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "executionContextDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "audienceDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "originDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "consentDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "requestDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "challengeDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -14286,10 +15188,61 @@
                 }
               },
               {
-                "name": "verifierDomainHash",
+                "name": "verifierPseudonymScope",
                 "type": {
-                  "type-name": "Bytes",
-                  "length": 32
+                  "type-name": "Struct",
+                  "name": "VerifierPseudonymScopeV1",
+                  "elements": [
+                    {
+                      "name": "verifierIdentityDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "executionContextDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "audienceDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "originDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "consentDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "requestDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "challengeDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -14542,10 +15495,61 @@
                       }
                     },
                     {
-                      "name": "verifierDomainHash",
+                      "name": "verifierPseudonymScope",
                       "type": {
-                        "type-name": "Bytes",
-                        "length": 32
+                        "type-name": "Struct",
+                        "name": "VerifierPseudonymScopeV1",
+                        "elements": [
+                          {
+                            "name": "verifierIdentityDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "executionContextDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "audienceDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "originDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "consentDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "requestDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "challengeDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
                       }
                     },
                     {
@@ -14667,10 +15671,61 @@
             }
           },
           {
-            "name": "verifierDomainHash",
+            "name": "verifierPseudonymScope",
             "type": {
-              "type-name": "Bytes",
-              "length": 32
+              "type-name": "Struct",
+              "name": "VerifierPseudonymScopeV1",
+              "elements": [
+                {
+                  "name": "verifierIdentityDigest",
+                  "type": {
+                    "type-name": "Bytes",
+                    "length": 32
+                  }
+                },
+                {
+                  "name": "executionContextDigest",
+                  "type": {
+                    "type-name": "Bytes",
+                    "length": 32
+                  }
+                },
+                {
+                  "name": "audienceDigest",
+                  "type": {
+                    "type-name": "Bytes",
+                    "length": 32
+                  }
+                },
+                {
+                  "name": "originDigest",
+                  "type": {
+                    "type-name": "Bytes",
+                    "length": 32
+                  }
+                },
+                {
+                  "name": "consentDigest",
+                  "type": {
+                    "type-name": "Bytes",
+                    "length": 32
+                  }
+                },
+                {
+                  "name": "requestDigest",
+                  "type": {
+                    "type-name": "Bytes",
+                    "length": 32
+                  }
+                },
+                {
+                  "name": "challengeDigest",
+                  "type": {
+                    "type-name": "Bytes",
+                    "length": 32
+                  }
+                }
+              ]
             }
           },
           {
@@ -17572,10 +18627,61 @@
                       }
                     },
                     {
-                      "name": "verifierDomainHash",
+                      "name": "verifierPseudonymScope",
                       "type": {
-                        "type-name": "Bytes",
-                        "length": 32
+                        "type-name": "Struct",
+                        "name": "VerifierPseudonymScopeV1",
+                        "elements": [
+                          {
+                            "name": "verifierIdentityDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "executionContextDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "audienceDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "originDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "consentDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "requestDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "challengeDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
                       }
                     },
                     {
@@ -18484,10 +19590,61 @@
                       }
                     },
                     {
-                      "name": "verifierDomainHash",
+                      "name": "verifierPseudonymScope",
                       "type": {
-                        "type-name": "Bytes",
-                        "length": 32
+                        "type-name": "Struct",
+                        "name": "VerifierPseudonymScopeV1",
+                        "elements": [
+                          {
+                            "name": "verifierIdentityDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "executionContextDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "audienceDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "originDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "consentDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "requestDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "challengeDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
                       }
                     },
                     {
@@ -19272,7 +20429,7 @@
                   "name": "SecretBirthCredentialVerificationResultBody",
                   "elements": [
                     {
-                      "name": "credentialRoot",
+                      "name": "presentationBindingDigest",
                       "type": {
                         "type-name": "Bytes",
                         "length": 32
@@ -19316,6 +20473,297 @@
       "pure": true,
       "proof": false,
       "arguments": [
+        {
+          "name": "request",
+          "type": {
+            "type-name": "Struct",
+            "name": "RequestMessage",
+            "elements": [
+              {
+                "name": "envelope",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "ProtocolMessageEnvelope",
+                  "elements": [
+                    {
+                      "name": "version",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "messageId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "threadId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "initialMessage",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "respondsToMessageId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "createdAt",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    },
+                    {
+                      "name": "hasExpiresAt",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "expiresAt",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 18446744073709551615
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "schema",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "SchemaRef",
+                  "elements": [
+                    {
+                      "name": "packageId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "schemaId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "majorVersion",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    },
+                    {
+                      "name": "minorVersion",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 65535
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "issuerVerificationMethodRef",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "VerificationMethodRef",
+                  "elements": [
+                    {
+                      "name": "didContractAddress",
+                      "type": {
+                        "type-name": "Struct",
+                        "name": "ContractAddress",
+                        "elements": [
+                          {
+                            "name": "bytes",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "methodId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "holderBindingProfile",
+                "type": {
+                  "type-name": "Enum",
+                  "name": "HolderBindingProfile",
+                  "elements": [
+                    "explicitDid",
+                    "secretHolder",
+                    "blindedSecretHolder"
+                  ]
+                }
+              },
+              {
+                "name": "features",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "CredentialProtocolFeatures",
+                  "elements": [
+                    {
+                      "name": "supportsSelectiveDisclosure",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "supportsPredicateProofs",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "supportsVerifierScopedPseudonym",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "supportsSameHolderProof",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "verifierChallengeHash",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "body",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "SecretBirthCredentialVerificationRequestBody",
+                  "elements": [
+                    {
+                      "name": "requireSubjectIdCommitmentDisclosure",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "requireBirthCountryDisclosure",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "requireVerifierScopedPseudonym",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "verifierPseudonymScope",
+                      "type": {
+                        "type-name": "Struct",
+                        "name": "VerifierPseudonymScopeV1",
+                        "elements": [
+                          {
+                            "name": "verifierIdentityDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "executionContextDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "audienceDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "originDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "consentDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "requestDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "challengeDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "requireAgeOverThreshold",
+                      "type": {
+                        "type-name": "Boolean"
+                      }
+                    },
+                    {
+                      "name": "requestedAgeThresholdYears",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 255
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
         {
           "name": "submission",
           "type": {
@@ -20046,7 +21494,7 @@
                   "name": "SecretBirthCredentialVerificationResultBody",
                   "elements": [
                     {
-                      "name": "credentialRoot",
+                      "name": "presentationBindingDigest",
                       "type": {
                         "type-name": "Bytes",
                         "length": 32
@@ -21272,10 +22720,61 @@
                 }
               },
               {
-                "name": "verifierDomainHash",
+                "name": "verifierPseudonymScope",
                 "type": {
-                  "type-name": "Bytes",
-                  "length": 32
+                  "type-name": "Struct",
+                  "name": "VerifierPseudonymScopeV1",
+                  "elements": [
+                    {
+                      "name": "verifierIdentityDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "executionContextDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "audienceDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "originDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "consentDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "requestDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "challengeDigest",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -22448,10 +23947,61 @@
                       }
                     },
                     {
-                      "name": "verifierDomainHash",
+                      "name": "verifierPseudonymScope",
                       "type": {
-                        "type-name": "Bytes",
-                        "length": 32
+                        "type-name": "Struct",
+                        "name": "VerifierPseudonymScopeV1",
+                        "elements": [
+                          {
+                            "name": "verifierIdentityDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "executionContextDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "audienceDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "originDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "consentDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "requestDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "challengeDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
                       }
                     },
                     {
@@ -23167,10 +24717,61 @@
                       }
                     },
                     {
-                      "name": "verifierDomainHash",
+                      "name": "verifierPseudonymScope",
                       "type": {
-                        "type-name": "Bytes",
-                        "length": 32
+                        "type-name": "Struct",
+                        "name": "VerifierPseudonymScopeV1",
+                        "elements": [
+                          {
+                            "name": "verifierIdentityDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "executionContextDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "audienceDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "originDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "consentDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "requestDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "challengeDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
                       }
                     },
                     {
@@ -23933,10 +25534,61 @@
                       }
                     },
                     {
-                      "name": "verifierDomainHash",
+                      "name": "verifierPseudonymScope",
                       "type": {
-                        "type-name": "Bytes",
-                        "length": 32
+                        "type-name": "Struct",
+                        "name": "VerifierPseudonymScopeV1",
+                        "elements": [
+                          {
+                            "name": "verifierIdentityDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "executionContextDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "audienceDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "originDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "consentDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "requestDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "challengeDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
                       }
                     },
                     {
@@ -24652,10 +26304,61 @@
                       }
                     },
                     {
-                      "name": "verifierDomainHash",
+                      "name": "verifierPseudonymScope",
                       "type": {
-                        "type-name": "Bytes",
-                        "length": 32
+                        "type-name": "Struct",
+                        "name": "VerifierPseudonymScopeV1",
+                        "elements": [
+                          {
+                            "name": "verifierIdentityDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "executionContextDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "audienceDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "originDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "consentDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "requestDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "challengeDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
                       }
                     },
                     {
@@ -25371,10 +27074,61 @@
                       }
                     },
                     {
-                      "name": "verifierDomainHash",
+                      "name": "verifierPseudonymScope",
                       "type": {
-                        "type-name": "Bytes",
-                        "length": 32
+                        "type-name": "Struct",
+                        "name": "VerifierPseudonymScopeV1",
+                        "elements": [
+                          {
+                            "name": "verifierIdentityDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "executionContextDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "audienceDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "originDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "consentDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "requestDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          },
+                          {
+                            "name": "challengeDigest",
+                            "type": {
+                              "type-name": "Bytes",
+                              "length": 32
+                            }
+                          }
+                        ]
                       }
                     },
                     {
@@ -26243,10 +27997,61 @@
                             }
                           },
                           {
-                            "name": "verifierDomainHash",
+                            "name": "verifierPseudonymScope",
                             "type": {
-                              "type-name": "Bytes",
-                              "length": 32
+                              "type-name": "Struct",
+                              "name": "VerifierPseudonymScopeV1",
+                              "elements": [
+                                {
+                                  "name": "verifierIdentityDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "executionContextDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "audienceDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "originDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "consentDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "requestDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "challengeDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                }
+                              ]
                             }
                           },
                           {
@@ -26604,10 +28409,61 @@
                             }
                           },
                           {
-                            "name": "verifierDomainHash",
+                            "name": "verifierPseudonymScope",
                             "type": {
-                              "type-name": "Bytes",
-                              "length": 32
+                              "type-name": "Struct",
+                              "name": "VerifierPseudonymScopeV1",
+                              "elements": [
+                                {
+                                  "name": "verifierIdentityDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "executionContextDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "audienceDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "originDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "consentDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "requestDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "challengeDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                }
+                              ]
                             }
                           },
                           {
@@ -26965,10 +28821,61 @@
                             }
                           },
                           {
-                            "name": "verifierDomainHash",
+                            "name": "verifierPseudonymScope",
                             "type": {
-                              "type-name": "Bytes",
-                              "length": 32
+                              "type-name": "Struct",
+                              "name": "VerifierPseudonymScopeV1",
+                              "elements": [
+                                {
+                                  "name": "verifierIdentityDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "executionContextDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "audienceDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "originDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "consentDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "requestDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "challengeDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                }
+                              ]
                             }
                           },
                           {
@@ -28059,10 +29966,61 @@
                             }
                           },
                           {
-                            "name": "verifierDomainHash",
+                            "name": "verifierPseudonymScope",
                             "type": {
-                              "type-name": "Bytes",
-                              "length": 32
+                              "type-name": "Struct",
+                              "name": "VerifierPseudonymScopeV1",
+                              "elements": [
+                                {
+                                  "name": "verifierIdentityDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "executionContextDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "audienceDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "originDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "consentDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "requestDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "challengeDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                }
+                              ]
                             }
                           },
                           {
@@ -29569,10 +31527,61 @@
                             }
                           },
                           {
-                            "name": "verifierDomainHash",
+                            "name": "verifierPseudonymScope",
                             "type": {
-                              "type-name": "Bytes",
-                              "length": 32
+                              "type-name": "Struct",
+                              "name": "VerifierPseudonymScopeV1",
+                              "elements": [
+                                {
+                                  "name": "verifierIdentityDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "executionContextDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "audienceDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "originDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "consentDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "requestDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "challengeDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                }
+                              ]
                             }
                           },
                           {
@@ -30948,10 +32957,61 @@
                             }
                           },
                           {
-                            "name": "verifierDomainHash",
+                            "name": "verifierPseudonymScope",
                             "type": {
-                              "type-name": "Bytes",
-                              "length": 32
+                              "type-name": "Struct",
+                              "name": "VerifierPseudonymScopeV1",
+                              "elements": [
+                                {
+                                  "name": "verifierIdentityDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "executionContextDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "audienceDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "originDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "consentDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "requestDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "challengeDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                }
+                              ]
                             }
                           },
                           {
@@ -31991,6 +34051,132 @@
       }
     },
     {
+      "name": "revocationDemoVerificationMessageId",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "verifierChallengeHash",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "verifierIdentityDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "revocationDemoVerificationThreadId",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "verifierChallengeHash",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "verifierIdentityDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
+      "name": "revocationDemoVerifierPseudonymScopeV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "verifierIdentityDigest",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "verifierChallengeHash",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Struct",
+        "name": "VerifierPseudonymScopeV1",
+        "elements": [
+          {
+            "name": "verifierIdentityDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "executionContextDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "audienceDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "originDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "consentDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "requestDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          },
+          {
+            "name": "challengeDigest",
+            "type": {
+              "type-name": "Bytes",
+              "length": 32
+            }
+          }
+        ]
+      }
+    },
+    {
       "name": "initializeLiveStatusRegistry",
       "pure": false,
       "proof": true,
@@ -32066,7 +34252,7 @@
           }
         },
         {
-          "name": "verifierDomainHash",
+          "name": "verifierIdentityDigest",
           "type": {
             "type-name": "Bytes",
             "length": 32
@@ -32300,10 +34486,61 @@
                   }
                 },
                 {
-                  "name": "verifierDomainHash",
+                  "name": "verifierPseudonymScope",
                   "type": {
-                    "type-name": "Bytes",
-                    "length": 32
+                    "type-name": "Struct",
+                    "name": "VerifierPseudonymScopeV1",
+                    "elements": [
+                      {
+                        "name": "verifierIdentityDigest",
+                        "type": {
+                          "type-name": "Bytes",
+                          "length": 32
+                        }
+                      },
+                      {
+                        "name": "executionContextDigest",
+                        "type": {
+                          "type-name": "Bytes",
+                          "length": 32
+                        }
+                      },
+                      {
+                        "name": "audienceDigest",
+                        "type": {
+                          "type-name": "Bytes",
+                          "length": 32
+                        }
+                      },
+                      {
+                        "name": "originDigest",
+                        "type": {
+                          "type-name": "Bytes",
+                          "length": 32
+                        }
+                      },
+                      {
+                        "name": "consentDigest",
+                        "type": {
+                          "type-name": "Bytes",
+                          "length": 32
+                        }
+                      },
+                      {
+                        "name": "requestDigest",
+                        "type": {
+                          "type-name": "Bytes",
+                          "length": 32
+                        }
+                      },
+                      {
+                        "name": "challengeDigest",
+                        "type": {
+                          "type-name": "Bytes",
+                          "length": 32
+                        }
+                      }
+                    ]
                   }
                 },
                 {
@@ -32363,7 +34600,7 @@
           }
         },
         {
-          "name": "verifierDomainHash",
+          "name": "verifierIdentityDigest",
           "type": {
             "type-name": "Bytes",
             "length": 32
@@ -32633,10 +34870,61 @@
                         }
                       },
                       {
-                        "name": "verifierDomainHash",
+                        "name": "verifierPseudonymScope",
                         "type": {
-                          "type-name": "Bytes",
-                          "length": 32
+                          "type-name": "Struct",
+                          "name": "VerifierPseudonymScopeV1",
+                          "elements": [
+                            {
+                              "name": "verifierIdentityDigest",
+                              "type": {
+                                "type-name": "Bytes",
+                                "length": 32
+                              }
+                            },
+                            {
+                              "name": "executionContextDigest",
+                              "type": {
+                                "type-name": "Bytes",
+                                "length": 32
+                              }
+                            },
+                            {
+                              "name": "audienceDigest",
+                              "type": {
+                                "type-name": "Bytes",
+                                "length": 32
+                              }
+                            },
+                            {
+                              "name": "originDigest",
+                              "type": {
+                                "type-name": "Bytes",
+                                "length": 32
+                              }
+                            },
+                            {
+                              "name": "consentDigest",
+                              "type": {
+                                "type-name": "Bytes",
+                                "length": 32
+                              }
+                            },
+                            {
+                              "name": "requestDigest",
+                              "type": {
+                                "type-name": "Bytes",
+                                "length": 32
+                              }
+                            },
+                            {
+                              "name": "challengeDigest",
+                              "type": {
+                                "type-name": "Bytes",
+                                "length": 32
+                              }
+                            }
+                          ]
                         }
                       },
                       {
@@ -32799,7 +35087,7 @@
           }
         },
         {
-          "name": "verifierDomainHash",
+          "name": "verifierIdentityDigest",
           "type": {
             "type-name": "Bytes",
             "length": 32
@@ -33069,10 +35357,61 @@
                         }
                       },
                       {
-                        "name": "verifierDomainHash",
+                        "name": "verifierPseudonymScope",
                         "type": {
-                          "type-name": "Bytes",
-                          "length": 32
+                          "type-name": "Struct",
+                          "name": "VerifierPseudonymScopeV1",
+                          "elements": [
+                            {
+                              "name": "verifierIdentityDigest",
+                              "type": {
+                                "type-name": "Bytes",
+                                "length": 32
+                              }
+                            },
+                            {
+                              "name": "executionContextDigest",
+                              "type": {
+                                "type-name": "Bytes",
+                                "length": 32
+                              }
+                            },
+                            {
+                              "name": "audienceDigest",
+                              "type": {
+                                "type-name": "Bytes",
+                                "length": 32
+                              }
+                            },
+                            {
+                              "name": "originDigest",
+                              "type": {
+                                "type-name": "Bytes",
+                                "length": 32
+                              }
+                            },
+                            {
+                              "name": "consentDigest",
+                              "type": {
+                                "type-name": "Bytes",
+                                "length": 32
+                              }
+                            },
+                            {
+                              "name": "requestDigest",
+                              "type": {
+                                "type-name": "Bytes",
+                                "length": 32
+                              }
+                            },
+                            {
+                              "name": "challengeDigest",
+                              "type": {
+                                "type-name": "Bytes",
+                                "length": 32
+                              }
+                            }
+                          ]
                         }
                       },
                       {
@@ -33235,7 +35574,7 @@
           }
         },
         {
-          "name": "verifierDomainHash",
+          "name": "verifierIdentityDigest",
           "type": {
             "type-name": "Bytes",
             "length": 32
@@ -33475,10 +35814,61 @@
                         }
                       },
                       {
-                        "name": "verifierDomainHash",
+                        "name": "verifierPseudonymScope",
                         "type": {
-                          "type-name": "Bytes",
-                          "length": 32
+                          "type-name": "Struct",
+                          "name": "VerifierPseudonymScopeV1",
+                          "elements": [
+                            {
+                              "name": "verifierIdentityDigest",
+                              "type": {
+                                "type-name": "Bytes",
+                                "length": 32
+                              }
+                            },
+                            {
+                              "name": "executionContextDigest",
+                              "type": {
+                                "type-name": "Bytes",
+                                "length": 32
+                              }
+                            },
+                            {
+                              "name": "audienceDigest",
+                              "type": {
+                                "type-name": "Bytes",
+                                "length": 32
+                              }
+                            },
+                            {
+                              "name": "originDigest",
+                              "type": {
+                                "type-name": "Bytes",
+                                "length": 32
+                              }
+                            },
+                            {
+                              "name": "consentDigest",
+                              "type": {
+                                "type-name": "Bytes",
+                                "length": 32
+                              }
+                            },
+                            {
+                              "name": "requestDigest",
+                              "type": {
+                                "type-name": "Bytes",
+                                "length": 32
+                              }
+                            },
+                            {
+                              "name": "challengeDigest",
+                              "type": {
+                                "type-name": "Bytes",
+                                "length": 32
+                              }
+                            }
+                          ]
                         }
                       },
                       {
@@ -34447,10 +36837,61 @@
                             }
                           },
                           {
-                            "name": "verifierDomainHash",
+                            "name": "verifierPseudonymScope",
                             "type": {
-                              "type-name": "Bytes",
-                              "length": 32
+                              "type-name": "Struct",
+                              "name": "VerifierPseudonymScopeV1",
+                              "elements": [
+                                {
+                                  "name": "verifierIdentityDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "executionContextDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "audienceDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "originDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "consentDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "requestDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "challengeDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                }
+                              ]
                             }
                           },
                           {
@@ -35942,10 +38383,61 @@
                             }
                           },
                           {
-                            "name": "verifierDomainHash",
+                            "name": "verifierPseudonymScope",
                             "type": {
-                              "type-name": "Bytes",
-                              "length": 32
+                              "type-name": "Struct",
+                              "name": "VerifierPseudonymScopeV1",
+                              "elements": [
+                                {
+                                  "name": "verifierIdentityDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "executionContextDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "audienceDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "originDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "consentDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "requestDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "challengeDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                }
+                              ]
                             }
                           },
                           {
@@ -37306,10 +39798,61 @@
                             }
                           },
                           {
-                            "name": "verifierDomainHash",
+                            "name": "verifierPseudonymScope",
                             "type": {
-                              "type-name": "Bytes",
-                              "length": 32
+                              "type-name": "Struct",
+                              "name": "VerifierPseudonymScopeV1",
+                              "elements": [
+                                {
+                                  "name": "verifierIdentityDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "executionContextDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "audienceDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "originDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "consentDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "requestDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "challengeDigest",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                }
+                              ]
                             }
                           },
                           {

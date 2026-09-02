@@ -234,6 +234,9 @@ importers:
       '@midnight-ntwrk/compact-runtime':
         specifier: ^0.16.0
         version: 0.16.0
+      '@midnight-ntwrk/credential-proofs':
+        specifier: '*'
+        version: link:../../../core/proofs
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials

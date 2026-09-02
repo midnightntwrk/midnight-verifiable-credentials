@@ -2,7 +2,8 @@
 
 Status: A1 public shape and fail-closed skeleton implemented. A2 request,
 holder-action, and credential-action nullifier derivation is implemented with a
-stateful explicit-holder age-gate atomicity fixture. Final authoritative
+stateful explicit-holder age-gate atomicity fixture. Hidden-holder status and
+pseudonym public-surface hardening is implemented by #500. Final authoritative
 Verification V1 executors remain incomplete and are owned by #499.
 
 Companion documents:
@@ -555,10 +556,21 @@ schema and validation circuit, A1 can implement only the public shape and an
 For hidden-holder profiles, every public evidence `subjectDigest` and
 `statementDigest` MUST be verifier- and challenge-scoped and bind
 `credentialBindingDigest` or `presentationBindingDigest`, never a stable
-credential root, holder DID, status handle, or status-handle commitment. The
+credential root, holder DID, status handle, or status-handle commitment. Private
+root-bound status evidence is accepted only through an injected private proof
+adapter; unavailable support is `indeterminate`, and public results replace raw
+leaf/proof correlators with challenge- and presentation-scoped digests. The
 current prototype `AuthorityAttestedStatusProof`, which exposes a stable status
 handle commitment, is not eligible for a hidden-holder final profile. It must
 be redesigned as a scoped proof or restricted to an explicit-holder prototype.
+
+A hidden-holder verifier pseudonym uses the V1 scope record containing
+verifier DID-method identity, deployment, audience, origin, consent, request,
+and challenge digests. Every field is circuit-bound. The holder authenticates
+the verifier identity against configured trust before disclosure. Because
+request and challenge are mandatory, even the same verifier receives a new
+pseudonym for a new request; the legacy domain-only derivation is compatibility
+surface and is not eligible for hidden-holder protocol output.
 
 ## Decision nullifier
 

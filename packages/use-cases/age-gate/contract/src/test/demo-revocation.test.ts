@@ -8,6 +8,7 @@ import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { describe, expect, it } from "vitest";
 
 import {
+  pureCircuits,
   RevocationAccessDecision,
   RevocationVerificationMode,
   StatusCapabilityKind,
@@ -52,6 +53,32 @@ const expectCanonicalStatusFailure = ({
 };
 
 describe("credentials demo revocation contract", () => {
+  it("binds the hidden-holder pseudonym to every verifier and request context component", () => {
+    const fixture = createDemoRevocationFixture();
+    const scope = fixture.verificationRequest.body.verifierPseudonymScope;
+    const pseudonym = pureCircuits.requestScopedVerifierPseudonymV1(
+      fixture.witness.holderSecret,
+      scope,
+    );
+
+    expect(scope).toEqual({
+      verifierIdentityDigest: fixture.witness.verifierIdentityDigest,
+      executionContextDigest: padText("vc-demo:age-gate:deployment"),
+      audienceDigest: padText("vc-demo:age-gate:audience"),
+      originDigest: padText("vc-demo:age-gate:origin"),
+      consentDigest: padText("vc-demo:age-gate:consent"),
+      requestDigest: fixture.verificationRequest.envelope.messageId,
+      challengeDigest: fixture.verificationRequest.verifierChallengeHash,
+    });
+
+    for (const [field, value] of Object.entries(scope)) {
+      expect(pureCircuits.requestScopedVerifierPseudonymV1(
+        fixture.witness.holderSecret,
+        { ...scope, [field]: new Uint8Array(32).fill(value[0]! + 1) },
+      )).not.toEqual(pseudonym);
+    }
+  });
+
   it("builds a typed verifier-supplied-root request with an accepted registry root", () => {
     const fixture = createDemoRevocationFixture();
     const simulator = new CredentialsDemoRevocationSimulator();
@@ -59,7 +86,7 @@ describe("credentials demo revocation contract", () => {
 
     const request = simulator.revocationAwareVerifierSuppliedRootRequest(
       fixture.credential.issuerVerificationMethodRef,
-      fixture.witness.verifierDomainHash,
+      fixture.witness.verifierIdentityDigest,
       fixture.verificationRequest.verifierChallengeHash,
       registryState,
     );
@@ -84,7 +111,7 @@ describe("credentials demo revocation contract", () => {
 
     const request = simulator.revocationAwareLiveStatusRequest(
       fixture.credential.issuerVerificationMethodRef,
-      fixture.witness.verifierDomainHash,
+      fixture.witness.verifierIdentityDigest,
       fixture.verificationRequest.verifierChallengeHash,
     );
 
@@ -111,7 +138,7 @@ describe("credentials demo revocation contract", () => {
     expect(() =>
       simulator.revocationAwareLiveStatusRequest(
         fixture.credential.issuerVerificationMethodRef,
-        fixture.witness.verifierDomainHash,
+        fixture.witness.verifierIdentityDigest,
         fixture.verificationRequest.verifierChallengeHash,
       ),
     ).toThrow(/live status registry is not initialized/i);
@@ -154,7 +181,7 @@ describe("credentials demo revocation contract", () => {
     simulator.initializeLiveStatusRegistry(fixture.witness.statusRegistryId);
     const request = simulator.revocationAwareLiveStatusRequest(
       fixture.credential.issuerVerificationMethodRef,
-      fixture.witness.verifierDomainHash,
+      fixture.witness.verifierIdentityDigest,
       fixture.verificationRequest.verifierChallengeHash,
     );
     const submission = buildSubmissionForLiveStatusRequest(fixture, request);
@@ -213,7 +240,7 @@ describe("credentials demo revocation contract", () => {
     simulator.initializeLiveStatusRegistry(fixture.witness.statusRegistryId);
     const request = simulator.revocationAwareLiveStatusRequest(
       fixture.credential.issuerVerificationMethodRef,
-      fixture.witness.verifierDomainHash,
+      fixture.witness.verifierIdentityDigest,
       fixture.verificationRequest.verifierChallengeHash,
     );
     const submission = buildSubmissionForLiveStatusRequest(fixture, request);
@@ -265,7 +292,7 @@ describe("credentials demo revocation contract", () => {
     simulator.initializeLiveStatusRegistry(new Uint8Array(32).fill(9));
     const request = simulator.revocationAwareLiveStatusRequest(
       fixture.credential.issuerVerificationMethodRef,
-      fixture.witness.verifierDomainHash,
+      fixture.witness.verifierIdentityDigest,
       fixture.verificationRequest.verifierChallengeHash,
     );
     // Disable the shared registry-id policy check so this test exercises the
@@ -306,7 +333,7 @@ describe("credentials demo revocation contract", () => {
     const simulator = new CredentialsDemoRevocationSimulator();
     const request = simulator.revocationAwareVerifierSuppliedRootRequest(
       fixture.credential.issuerVerificationMethodRef,
-      fixture.witness.verifierDomainHash,
+      fixture.witness.verifierIdentityDigest,
       fixture.verificationRequest.verifierChallengeHash,
       fixtureRegistryState(fixture),
     );
@@ -354,7 +381,7 @@ describe("credentials demo revocation contract", () => {
     const simulator = new CredentialsDemoRevocationSimulator();
     const request = simulator.revocationAwareAuthorityAttestedRequest(
       fixture.credential.issuerVerificationMethodRef,
-      fixture.witness.verifierDomainHash,
+      fixture.witness.verifierIdentityDigest,
       fixture.verificationRequest.verifierChallengeHash,
       fixtureRegistryState(fixture),
     );
@@ -424,7 +451,7 @@ describe("credentials demo revocation contract", () => {
     const simulator = new CredentialsDemoRevocationSimulator();
     const request = simulator.revocationAwareAuthorityAttestedRequest(
       fixture.credential.issuerVerificationMethodRef,
-      fixture.witness.verifierDomainHash,
+      fixture.witness.verifierIdentityDigest,
       fixture.verificationRequest.verifierChallengeHash,
       fixtureRegistryState(fixture),
     );
@@ -466,7 +493,7 @@ describe("credentials demo revocation contract", () => {
     const simulator = new CredentialsDemoRevocationSimulator();
     const request = simulator.revocationAwareVerifierSuppliedRootRequest(
       fixture.credential.issuerVerificationMethodRef,
-      fixture.witness.verifierDomainHash,
+      fixture.witness.verifierIdentityDigest,
       fixture.verificationRequest.verifierChallengeHash,
       fixtureRegistryState(fixture),
     );
@@ -517,7 +544,7 @@ describe("credentials demo revocation contract", () => {
     const simulator = new CredentialsDemoRevocationSimulator();
     const request = simulator.revocationAwareVerifierSuppliedRootRequest(
       fixture.credential.issuerVerificationMethodRef,
-      fixture.witness.verifierDomainHash,
+      fixture.witness.verifierIdentityDigest,
       fixture.verificationRequest.verifierChallengeHash,
       fixtureRegistryState(fixture),
     );
@@ -564,7 +591,7 @@ describe("credentials demo revocation contract", () => {
     const simulator = new CredentialsDemoRevocationSimulator();
     const request = simulator.revocationAwareAuthorityAttestedRequest(
       fixture.credential.issuerVerificationMethodRef,
-      fixture.witness.verifierDomainHash,
+      fixture.witness.verifierIdentityDigest,
       fixture.verificationRequest.verifierChallengeHash,
       fixtureRegistryState(fixture),
     );
@@ -615,7 +642,7 @@ describe("credentials demo revocation contract", () => {
     const simulator = new CredentialsDemoRevocationSimulator();
     const request = simulator.revocationAwareAuthorityAttestedRequest(
       fixture.credential.issuerVerificationMethodRef,
-      fixture.witness.verifierDomainHash,
+      fixture.witness.verifierIdentityDigest,
       fixture.verificationRequest.verifierChallengeHash,
       fixtureRegistryState(fixture),
     );
@@ -657,7 +684,7 @@ describe("credentials demo revocation contract", () => {
     const simulator = new CredentialsDemoRevocationSimulator();
     const request = simulator.revocationAwareAuthorityAttestedRequest(
       fixture.credential.issuerVerificationMethodRef,
-      fixture.witness.verifierDomainHash,
+      fixture.witness.verifierIdentityDigest,
       fixture.verificationRequest.verifierChallengeHash,
       fixtureRegistryState(fixture),
     );
@@ -699,7 +726,7 @@ describe("credentials demo revocation contract", () => {
     const simulator = new CredentialsDemoRevocationSimulator();
     const request = simulator.revocationAwareAuthorityAttestedRequest(
       fixture.credential.issuerVerificationMethodRef,
-      fixture.witness.verifierDomainHash,
+      fixture.witness.verifierIdentityDigest,
       fixture.verificationRequest.verifierChallengeHash,
       fixtureRegistryState(fixture),
     );
@@ -749,7 +776,7 @@ describe("credentials demo revocation contract", () => {
     const simulator = new CredentialsDemoRevocationSimulator();
     const request = simulator.revocationAwareVerifierSuppliedRootRequest(
       fixture.credential.issuerVerificationMethodRef,
-      fixture.witness.verifierDomainHash,
+      fixture.witness.verifierIdentityDigest,
       fixture.verificationRequest.verifierChallengeHash,
       fixtureRegistryState(fixture),
     );
@@ -807,7 +834,7 @@ describe("credentials demo revocation contract", () => {
 
     const request = simulator.revocationAwareLiveStatusRequest(
       fixture.credential.issuerVerificationMethodRef,
-      fixture.witness.verifierDomainHash,
+      fixture.witness.verifierIdentityDigest,
       fixture.verificationRequest.verifierChallengeHash,
     );
     const submission = buildSubmissionForLiveStatusRequest(fixture, request);

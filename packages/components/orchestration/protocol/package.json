@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "@midnight-ntwrk/compact-runtime": "^0.16.0",
+    "@midnight-ntwrk/credential-proofs": "*",
     "@midnight-ntwrk/midnight-did-credentials": "*",
     "@midnight-ntwrk/midnight-did-credentials-birth": "*",
     "@midnight-ntwrk/midnight-did-credentials-birth-secret": "*",

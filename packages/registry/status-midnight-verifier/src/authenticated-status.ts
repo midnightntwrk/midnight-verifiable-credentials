@@ -67,6 +67,13 @@ export interface StatusCryptographicProofVerifierV1 {
   ): Promise<boolean> | boolean;
 }
 
+/**
+ * A verifier that consumes the handle/path as private witness material. Its
+ * request must never be retained, logged, or projected into a public result.
+ */
+export interface PrivateStatusCryptographicProofVerifierV1
+  extends StatusCryptographicProofVerifierV1 {}
+
 export interface StatusRootAuthorityEvidenceV1 {
   readonly policy: AuthorityEvidencePolicyV1;
   readonly context: AuthorityVerificationContextV1;
@@ -449,6 +456,18 @@ export const createStatusRootAuthorityVerifierV1 = (input: {
   }),
 });
 
+const publicProofDigest = (
+  evidence: AuthenticatedRootStatusEvidenceV1,
+): StatusSha256DigestV1 => evidence.privacy === "public"
+  ? evidence.proofDigest
+  : computeStatusRecordDigestV1({
+      domain: "midnight:vc:private-status-proof-scope:v1",
+      challengeDigest: evidence.challengeDigest,
+      credentialBindingDigest: evidence.credentialBindingDigest,
+      presentationBindingDigest: evidence.presentationBindingDigest,
+      privateProofDigest: evidence.proofDigest,
+    });
+
 const externalTranscript = (
   policy: AuthenticatedRootStatusPolicyV1,
   evidence: AuthenticatedRootStatusEvidenceV1 | null,
@@ -469,7 +488,7 @@ const externalTranscript = (
     ? policy.acceptedAuthorityPolicyDigest
     : authorityPolicyDigestOrZero(evidence),
   authorityTranscriptDigest: null,
-  proofDigest: evidence?.proofDigest ?? null,
+  proofDigest: evidence === null ? null : publicProofDigest(evidence),
   result: "not-evaluated",
   ...overrides,
 });
@@ -519,12 +538,15 @@ export const verifyAuthenticatedRootStatusV1 = async (input: {
   readonly policy: AuthenticatedRootStatusPolicyV1;
   readonly evidence: AuthenticatedRootStatusEvidenceV1 | null | undefined;
   readonly proofVerifier: StatusCryptographicProofVerifierV1;
+  readonly privateProofVerifier?: PrivateStatusCryptographicProofVerifierV1;
   readonly authorityVerifier: StatusRootAuthorityVerifierV1;
   readonly freshnessVerifier: StatusRootFreshnessVerifierV1;
 }): Promise<StatusEvidenceVerificationResultV1> => {
   const evidence = input.evidence ?? null;
   if (evidence === null) return result("indeterminate", ["STATUS_PROOF_UNAVAILABLE"], externalTranscript(input.policy, null));
-  if (evidence.privacy === "private") return result("indeterminate", ["PRIVATE_STATUS_PROOF_UNAVAILABLE"], externalTranscript(input.policy, evidence));
+  if (evidence.privacy === "private" && input.privateProofVerifier === undefined) {
+    return result("indeterminate", ["PRIVATE_STATUS_PROOF_UNAVAILABLE"], externalTranscript(input.policy, evidence));
+  }
   let reason: string | null;
   try {
     reason = shapeReason(input.policy, evidence);
@@ -535,7 +557,10 @@ export const verifyAuthenticatedRootStatusV1 = async (input: {
 
   let proofAccepted: boolean;
   try {
-    proofAccepted = await input.proofVerifier.verify({ root: evidence.root, leaf: evidence.leaf, result: evidence.result, proof: evidence.proof });
+    const proofVerifier = evidence.privacy === "private"
+      ? input.privateProofVerifier!
+      : input.proofVerifier;
+    proofAccepted = await proofVerifier.verify({ root: evidence.root, leaf: evidence.leaf, result: evidence.result, proof: evidence.proof });
   } catch {
     return result("indeterminate", ["STATUS_PROOF_UNAVAILABLE"], externalTranscript(input.policy, evidence));
   }

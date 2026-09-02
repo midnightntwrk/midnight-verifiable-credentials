@@ -181,8 +181,14 @@ validate:
 - idempotent re-delivery of duplicate blinded-secret presentation submissions
   and duplicate blinded-secret presentation outcomes
 - request/submission and submission/result alignment enforced by Compact circuits
-- blinded holder-binding and pseudonym-specific validation through
-  `credentials-birth-secret`
+- blinded holder-binding and request-unlinkable pseudonym validation through
+  `credentials-birth-secret`; pseudonyms bind the verifier profile's DID method
+  identity plus deployment, audience, origin, consent, request, and challenge
+- holder-side verification of the allow-listed verifier's signed transport
+  wrapper, Compact validation of dynamic request/challenge scope, and atomic
+  request replay rejection before pseudonym disclosure; hidden verification
+  results retain a request-scoped presentation binding rather than a stable
+  credential root
 - same-holder composition flows through the agent layer, including a
   three-credential verifier session
 

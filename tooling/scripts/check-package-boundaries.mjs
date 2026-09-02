@@ -33,6 +33,7 @@ export const classifyWorkspacePath = (workspacePath) => {
 export const migrationExceptions = {
   "packages/components/orchestration/protocol": [
     "packages/core/primitives/credentials",
+    "packages/core/proofs",
     "packages/prototypes/credential-families/birth",
     "packages/prototypes/credential-families/birth-secret",
     "packages/use-cases/age-gate/contract",
