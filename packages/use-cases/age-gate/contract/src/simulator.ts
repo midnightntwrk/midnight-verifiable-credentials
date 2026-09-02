@@ -67,6 +67,18 @@ export class CredentialsDemoSimulator {
     );
   }
 
+  private setLedgerTime(secondsSinceEpoch: bigint): void {
+    this.circuitContext = createCircuitContext(
+      sampleContractAddress(),
+      this.circuitContext.currentZswapLocalState,
+      this.circuitContext.currentQueryContext.state,
+      this.circuitContext.currentPrivateState,
+      undefined,
+      undefined,
+      Number(secondsSinceEpoch),
+    );
+  }
+
   private executeCircuit<T>(
     circuitFn: () => CircuitResults<CredentialsDemoPrivateState, T>,
   ): T {
@@ -101,7 +113,9 @@ export class CredentialsDemoSimulator {
     presentation: BirthCredentialPresentation,
     presentationProof: Proof,
     currentDay: bigint,
+    ledgerTimeSeconds = currentDay * 86_400n,
   ): void {
+    this.setLedgerTime(ledgerTimeSeconds);
     this.executeCircuit(() =>
       this.contract.impureCircuits.verifyBirthPresentation(
         this.circuitContext,
@@ -121,7 +135,9 @@ export class CredentialsDemoSimulator {
     presentation: BirthCredentialPresentation,
     presentationProof: Proof,
     currentDay: bigint,
+    ledgerTimeSeconds = currentDay * 86_400n,
   ): void {
+    this.setLedgerTime(ledgerTimeSeconds);
     this.executeCircuit(() =>
       this.contract.impureCircuits.verifyBirthPresentationForRequest(
         this.circuitContext,
@@ -155,7 +171,9 @@ export class CredentialsDemoSimulator {
     presentationProof: Proof,
     verifierChallengeHash: Uint8Array,
     currentDay: bigint,
+    ledgerTimeSeconds = currentDay * 86_400n,
   ): Uint8Array {
+    this.setLedgerTime(ledgerTimeSeconds);
     return this.executeCircuit(() =>
       this.contract.impureCircuits.issueAgeGateCapability(
         this.circuitContext,

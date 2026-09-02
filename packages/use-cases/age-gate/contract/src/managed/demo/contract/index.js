@@ -21,28 +21,28 @@ export var AccessDecision;
   AccessDecision[AccessDecision['alreadyConsumed'] = 3] = 'alreadyConsumed';
 })(AccessDecision || (AccessDecision = {}));
 
-const _descriptor_0 = new __compactRuntime.CompactTypeEnum(3, 1);
+const _descriptor_0 = new __compactRuntime.CompactTypeUnsignedInteger(65535n, 2);
 
-const _descriptor_1 = new __compactRuntime.CompactTypeUnsignedInteger(65535n, 2);
+const _descriptor_1 = new __compactRuntime.CompactTypeEnum(3, 1);
 
 const _descriptor_2 = new __compactRuntime.CompactTypeBytes(32);
 
-const _descriptor_3 = new __compactRuntime.CompactTypeUnsignedInteger(18446744073709551615n, 8);
+const _descriptor_3 = __compactRuntime.CompactTypeBoolean;
 
 class _SchemaRef_0 {
   alignment() {
-    return _descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_1.alignment().concat(_descriptor_1.alignment())));
+    return _descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment())));
   }
   fromValue(value_0) {
     return {
       packageId: _descriptor_2.fromValue(value_0),
       schemaId: _descriptor_2.fromValue(value_0),
-      majorVersion: _descriptor_1.fromValue(value_0),
-      minorVersion: _descriptor_1.fromValue(value_0)
+      majorVersion: _descriptor_0.fromValue(value_0),
+      minorVersion: _descriptor_0.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_2.toValue(value_0.packageId).concat(_descriptor_2.toValue(value_0.schemaId).concat(_descriptor_1.toValue(value_0.majorVersion).concat(_descriptor_1.toValue(value_0.minorVersion))));
+    return _descriptor_2.toValue(value_0.packageId).concat(_descriptor_2.toValue(value_0.schemaId).concat(_descriptor_0.toValue(value_0.majorVersion).concat(_descriptor_0.toValue(value_0.minorVersion))));
   }
 }
 
@@ -112,7 +112,7 @@ class _NoStatusBinding_0 {
 
 const _descriptor_8 = new _NoStatusBinding_0();
 
-const _descriptor_9 = __compactRuntime.CompactTypeBoolean;
+const _descriptor_9 = new __compactRuntime.CompactTypeUnsignedInteger(18446744073709551615n, 8);
 
 class _NoPublicClaims_0 {
   alignment() {
@@ -150,25 +150,25 @@ const _descriptor_11 = new _BirthCredentialClaimCommitments_0();
 
 class _Credential_0 {
   alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_4.alignment().concat(_descriptor_6.alignment().concat(_descriptor_7.alignment().concat(_descriptor_8.alignment().concat(_descriptor_3.alignment().concat(_descriptor_9.alignment().concat(_descriptor_3.alignment().concat(_descriptor_10.alignment().concat(_descriptor_11.alignment().concat(_descriptor_2.alignment()))))))))));
+    return _descriptor_0.alignment().concat(_descriptor_4.alignment().concat(_descriptor_6.alignment().concat(_descriptor_7.alignment().concat(_descriptor_8.alignment().concat(_descriptor_9.alignment().concat(_descriptor_3.alignment().concat(_descriptor_9.alignment().concat(_descriptor_10.alignment().concat(_descriptor_11.alignment().concat(_descriptor_2.alignment()))))))))));
   }
   fromValue(value_0) {
     return {
-      version: _descriptor_1.fromValue(value_0),
+      version: _descriptor_0.fromValue(value_0),
       schema: _descriptor_4.fromValue(value_0),
       issuerVerificationMethodRef: _descriptor_6.fromValue(value_0),
       holderBinding: _descriptor_7.fromValue(value_0),
       statusBinding: _descriptor_8.fromValue(value_0),
-      issuedAt: _descriptor_3.fromValue(value_0),
-      hasExpiration: _descriptor_9.fromValue(value_0),
-      expiresAt: _descriptor_3.fromValue(value_0),
+      issuedAt: _descriptor_9.fromValue(value_0),
+      hasExpiration: _descriptor_3.fromValue(value_0),
+      expiresAt: _descriptor_9.fromValue(value_0),
       claims: _descriptor_10.fromValue(value_0),
       claimCommitments: _descriptor_11.fromValue(value_0),
       claimRoot: _descriptor_2.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_1.toValue(value_0.version).concat(_descriptor_4.toValue(value_0.schema).concat(_descriptor_6.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_7.toValue(value_0.holderBinding).concat(_descriptor_8.toValue(value_0.statusBinding).concat(_descriptor_3.toValue(value_0.issuedAt).concat(_descriptor_9.toValue(value_0.hasExpiration).concat(_descriptor_3.toValue(value_0.expiresAt).concat(_descriptor_10.toValue(value_0.claims).concat(_descriptor_11.toValue(value_0.claimCommitments).concat(_descriptor_2.toValue(value_0.claimRoot)))))))))));
+    return _descriptor_0.toValue(value_0.version).concat(_descriptor_4.toValue(value_0.schema).concat(_descriptor_6.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_7.toValue(value_0.holderBinding).concat(_descriptor_8.toValue(value_0.statusBinding).concat(_descriptor_9.toValue(value_0.issuedAt).concat(_descriptor_3.toValue(value_0.hasExpiration).concat(_descriptor_9.toValue(value_0.expiresAt).concat(_descriptor_10.toValue(value_0.claims).concat(_descriptor_11.toValue(value_0.claimCommitments).concat(_descriptor_2.toValue(value_0.claimRoot)))))))))));
   }
 }
 
@@ -197,19 +197,19 @@ const _descriptor_15 = new _Signature_0();
 
 class _Proof_0 {
   alignment() {
-    return _descriptor_6.alignment().concat(_descriptor_3.alignment().concat(_descriptor_2.alignment().concat(_descriptor_13.alignment().concat(_descriptor_15.alignment()))));
+    return _descriptor_6.alignment().concat(_descriptor_9.alignment().concat(_descriptor_2.alignment().concat(_descriptor_13.alignment().concat(_descriptor_15.alignment()))));
   }
   fromValue(value_0) {
     return {
       signerVerificationMethodRef: _descriptor_6.fromValue(value_0),
-      createdAt: _descriptor_3.fromValue(value_0),
+      createdAt: _descriptor_9.fromValue(value_0),
       challengeHash: _descriptor_2.fromValue(value_0),
       publicKey: _descriptor_13.fromValue(value_0),
       signature: _descriptor_15.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_6.toValue(value_0.signerVerificationMethodRef).concat(_descriptor_3.toValue(value_0.createdAt).concat(_descriptor_2.toValue(value_0.challengeHash).concat(_descriptor_13.toValue(value_0.publicKey).concat(_descriptor_15.toValue(value_0.signature)))));
+    return _descriptor_6.toValue(value_0.signerVerificationMethodRef).concat(_descriptor_9.toValue(value_0.createdAt).concat(_descriptor_2.toValue(value_0.challengeHash).concat(_descriptor_13.toValue(value_0.publicKey).concat(_descriptor_15.toValue(value_0.signature)))));
   }
 }
 
@@ -217,92 +217,92 @@ const _descriptor_16 = new _Proof_0();
 
 const _descriptor_17 = new __compactRuntime.CompactTypeUnsignedInteger(255n, 1);
 
-class _BirthCredentialDisclosures_0 {
-  alignment() {
-    return _descriptor_9.alignment().concat(_descriptor_2.alignment().concat(_descriptor_9.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_9.alignment().concat(_descriptor_17.alignment()))))));
-  }
-  fromValue(value_0) {
-    return {
-      revealSubjectIdCommitment: _descriptor_9.fromValue(value_0),
-      subjectIdCommitment: _descriptor_2.fromValue(value_0),
-      revealBirthCountryCode: _descriptor_9.fromValue(value_0),
-      birthCountryCodePadded: _descriptor_2.fromValue(value_0),
-      birthCountryCodeOpening: _descriptor_2.fromValue(value_0),
-      proveAgeOverThreshold: _descriptor_9.fromValue(value_0),
-      ageThresholdYears: _descriptor_17.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_9.toValue(value_0.revealSubjectIdCommitment).concat(_descriptor_2.toValue(value_0.subjectIdCommitment).concat(_descriptor_9.toValue(value_0.revealBirthCountryCode).concat(_descriptor_2.toValue(value_0.birthCountryCodePadded).concat(_descriptor_2.toValue(value_0.birthCountryCodeOpening).concat(_descriptor_9.toValue(value_0.proveAgeOverThreshold).concat(_descriptor_17.toValue(value_0.ageThresholdYears)))))));
-  }
-}
-
-const _descriptor_18 = new _BirthCredentialDisclosures_0();
-
-class _Presentation_0 {
-  alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_4.alignment().concat(_descriptor_2.alignment().concat(_descriptor_6.alignment().concat(_descriptor_7.alignment().concat(_descriptor_18.alignment())))));
-  }
-  fromValue(value_0) {
-    return {
-      version: _descriptor_1.fromValue(value_0),
-      schema: _descriptor_4.fromValue(value_0),
-      credentialClaimRoot: _descriptor_2.fromValue(value_0),
-      issuerVerificationMethodRef: _descriptor_6.fromValue(value_0),
-      holderBinding: _descriptor_7.fromValue(value_0),
-      disclosed: _descriptor_18.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_1.toValue(value_0.version).concat(_descriptor_4.toValue(value_0.schema).concat(_descriptor_2.toValue(value_0.credentialClaimRoot).concat(_descriptor_6.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_7.toValue(value_0.holderBinding).concat(_descriptor_18.toValue(value_0.disclosed))))));
-  }
-}
-
-const _descriptor_19 = new _Presentation_0();
-
-const _descriptor_20 = new __compactRuntime.CompactTypeUnsignedInteger(4294967295n, 4);
-
 class _BirthCredentialPresentationRequest_0 {
   alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_4.alignment().concat(_descriptor_6.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_17.alignment().concat(_descriptor_2.alignment())))))));
+    return _descriptor_0.alignment().concat(_descriptor_4.alignment().concat(_descriptor_6.alignment().concat(_descriptor_3.alignment().concat(_descriptor_3.alignment().concat(_descriptor_3.alignment().concat(_descriptor_17.alignment().concat(_descriptor_2.alignment())))))));
   }
   fromValue(value_0) {
     return {
-      version: _descriptor_1.fromValue(value_0),
+      version: _descriptor_0.fromValue(value_0),
       schema: _descriptor_4.fromValue(value_0),
       issuerVerificationMethodRef: _descriptor_6.fromValue(value_0),
-      requireSubjectIdCommitmentDisclosure: _descriptor_9.fromValue(value_0),
-      requireBirthCountryDisclosure: _descriptor_9.fromValue(value_0),
-      requireAgeOverThreshold: _descriptor_9.fromValue(value_0),
+      requireSubjectIdCommitmentDisclosure: _descriptor_3.fromValue(value_0),
+      requireBirthCountryDisclosure: _descriptor_3.fromValue(value_0),
+      requireAgeOverThreshold: _descriptor_3.fromValue(value_0),
       requestedAgeThresholdYears: _descriptor_17.fromValue(value_0),
       verifierChallengeHash: _descriptor_2.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_1.toValue(value_0.version).concat(_descriptor_4.toValue(value_0.schema).concat(_descriptor_6.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_9.toValue(value_0.requireSubjectIdCommitmentDisclosure).concat(_descriptor_9.toValue(value_0.requireBirthCountryDisclosure).concat(_descriptor_9.toValue(value_0.requireAgeOverThreshold).concat(_descriptor_17.toValue(value_0.requestedAgeThresholdYears).concat(_descriptor_2.toValue(value_0.verifierChallengeHash))))))));
+    return _descriptor_0.toValue(value_0.version).concat(_descriptor_4.toValue(value_0.schema).concat(_descriptor_6.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_3.toValue(value_0.requireSubjectIdCommitmentDisclosure).concat(_descriptor_3.toValue(value_0.requireBirthCountryDisclosure).concat(_descriptor_3.toValue(value_0.requireAgeOverThreshold).concat(_descriptor_17.toValue(value_0.requestedAgeThresholdYears).concat(_descriptor_2.toValue(value_0.verifierChallengeHash))))))));
   }
 }
 
-const _descriptor_21 = new _BirthCredentialPresentationRequest_0();
+const _descriptor_18 = new _BirthCredentialPresentationRequest_0();
 
-class _ProtocolMessageEnvelope_0 {
+class _BirthCredentialDisclosures_0 {
   alignment() {
-    return _descriptor_1.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_9.alignment().concat(_descriptor_2.alignment().concat(_descriptor_3.alignment().concat(_descriptor_9.alignment().concat(_descriptor_3.alignment())))))));
+    return _descriptor_3.alignment().concat(_descriptor_2.alignment().concat(_descriptor_3.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_3.alignment().concat(_descriptor_17.alignment()))))));
   }
   fromValue(value_0) {
     return {
-      version: _descriptor_1.fromValue(value_0),
-      messageId: _descriptor_2.fromValue(value_0),
-      threadId: _descriptor_2.fromValue(value_0),
-      initialMessage: _descriptor_9.fromValue(value_0),
-      respondsToMessageId: _descriptor_2.fromValue(value_0),
-      createdAt: _descriptor_3.fromValue(value_0),
-      hasExpiresAt: _descriptor_9.fromValue(value_0),
-      expiresAt: _descriptor_3.fromValue(value_0)
+      revealSubjectIdCommitment: _descriptor_3.fromValue(value_0),
+      subjectIdCommitment: _descriptor_2.fromValue(value_0),
+      revealBirthCountryCode: _descriptor_3.fromValue(value_0),
+      birthCountryCodePadded: _descriptor_2.fromValue(value_0),
+      birthCountryCodeOpening: _descriptor_2.fromValue(value_0),
+      proveAgeOverThreshold: _descriptor_3.fromValue(value_0),
+      ageThresholdYears: _descriptor_17.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_1.toValue(value_0.version).concat(_descriptor_2.toValue(value_0.messageId).concat(_descriptor_2.toValue(value_0.threadId).concat(_descriptor_9.toValue(value_0.initialMessage).concat(_descriptor_2.toValue(value_0.respondsToMessageId).concat(_descriptor_3.toValue(value_0.createdAt).concat(_descriptor_9.toValue(value_0.hasExpiresAt).concat(_descriptor_3.toValue(value_0.expiresAt))))))));
+    return _descriptor_3.toValue(value_0.revealSubjectIdCommitment).concat(_descriptor_2.toValue(value_0.subjectIdCommitment).concat(_descriptor_3.toValue(value_0.revealBirthCountryCode).concat(_descriptor_2.toValue(value_0.birthCountryCodePadded).concat(_descriptor_2.toValue(value_0.birthCountryCodeOpening).concat(_descriptor_3.toValue(value_0.proveAgeOverThreshold).concat(_descriptor_17.toValue(value_0.ageThresholdYears)))))));
+  }
+}
+
+const _descriptor_19 = new _BirthCredentialDisclosures_0();
+
+class _Presentation_0 {
+  alignment() {
+    return _descriptor_0.alignment().concat(_descriptor_4.alignment().concat(_descriptor_2.alignment().concat(_descriptor_6.alignment().concat(_descriptor_7.alignment().concat(_descriptor_19.alignment())))));
+  }
+  fromValue(value_0) {
+    return {
+      version: _descriptor_0.fromValue(value_0),
+      schema: _descriptor_4.fromValue(value_0),
+      credentialClaimRoot: _descriptor_2.fromValue(value_0),
+      issuerVerificationMethodRef: _descriptor_6.fromValue(value_0),
+      holderBinding: _descriptor_7.fromValue(value_0),
+      disclosed: _descriptor_19.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_0.toValue(value_0.version).concat(_descriptor_4.toValue(value_0.schema).concat(_descriptor_2.toValue(value_0.credentialClaimRoot).concat(_descriptor_6.toValue(value_0.issuerVerificationMethodRef).concat(_descriptor_7.toValue(value_0.holderBinding).concat(_descriptor_19.toValue(value_0.disclosed))))));
+  }
+}
+
+const _descriptor_20 = new _Presentation_0();
+
+const _descriptor_21 = new __compactRuntime.CompactTypeUnsignedInteger(4294967295n, 4);
+
+class _ProtocolMessageEnvelope_0 {
+  alignment() {
+    return _descriptor_0.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_3.alignment().concat(_descriptor_2.alignment().concat(_descriptor_9.alignment().concat(_descriptor_3.alignment().concat(_descriptor_9.alignment())))))));
+  }
+  fromValue(value_0) {
+    return {
+      version: _descriptor_0.fromValue(value_0),
+      messageId: _descriptor_2.fromValue(value_0),
+      threadId: _descriptor_2.fromValue(value_0),
+      initialMessage: _descriptor_3.fromValue(value_0),
+      respondsToMessageId: _descriptor_2.fromValue(value_0),
+      createdAt: _descriptor_9.fromValue(value_0),
+      hasExpiresAt: _descriptor_3.fromValue(value_0),
+      expiresAt: _descriptor_9.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_0.toValue(value_0.version).concat(_descriptor_2.toValue(value_0.messageId).concat(_descriptor_2.toValue(value_0.threadId).concat(_descriptor_3.toValue(value_0.initialMessage).concat(_descriptor_2.toValue(value_0.respondsToMessageId).concat(_descriptor_9.toValue(value_0.createdAt).concat(_descriptor_3.toValue(value_0.hasExpiresAt).concat(_descriptor_9.toValue(value_0.expiresAt))))))));
   }
 }
 
@@ -327,17 +327,17 @@ const _descriptor_23 = new _BirthCredentialVerificationResultBody_0();
 
 class _ResultMessage_0 {
   alignment() {
-    return _descriptor_22.alignment().concat(_descriptor_9.alignment().concat(_descriptor_23.alignment()));
+    return _descriptor_22.alignment().concat(_descriptor_3.alignment().concat(_descriptor_23.alignment()));
   }
   fromValue(value_0) {
     return {
       envelope: _descriptor_22.fromValue(value_0),
-      approved: _descriptor_9.fromValue(value_0),
+      approved: _descriptor_3.fromValue(value_0),
       body: _descriptor_23.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_22.toValue(value_0.envelope).concat(_descriptor_9.toValue(value_0.approved).concat(_descriptor_23.toValue(value_0.body)));
+    return _descriptor_22.toValue(value_0.envelope).concat(_descriptor_3.toValue(value_0.approved).concat(_descriptor_23.toValue(value_0.body)));
   }
 }
 
@@ -347,18 +347,18 @@ const _descriptor_25 = new __compactRuntime.CompactTypeEnum(2, 1);
 
 class _BirthCredentialVerificationSubmissionBody_0 {
   alignment() {
-    return _descriptor_12.alignment().concat(_descriptor_16.alignment().concat(_descriptor_19.alignment().concat(_descriptor_16.alignment())));
+    return _descriptor_12.alignment().concat(_descriptor_16.alignment().concat(_descriptor_20.alignment().concat(_descriptor_16.alignment())));
   }
   fromValue(value_0) {
     return {
       credential: _descriptor_12.fromValue(value_0),
       credentialProof: _descriptor_16.fromValue(value_0),
-      presentation: _descriptor_19.fromValue(value_0),
+      presentation: _descriptor_20.fromValue(value_0),
       presentationProof: _descriptor_16.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_12.toValue(value_0.credential).concat(_descriptor_16.toValue(value_0.credentialProof).concat(_descriptor_19.toValue(value_0.presentation).concat(_descriptor_16.toValue(value_0.presentationProof))));
+    return _descriptor_12.toValue(value_0.credential).concat(_descriptor_16.toValue(value_0.credentialProof).concat(_descriptor_20.toValue(value_0.presentation).concat(_descriptor_16.toValue(value_0.presentationProof))));
   }
 }
 
@@ -387,18 +387,18 @@ const _descriptor_27 = new _SubmissionMessage_0();
 
 class _CredentialProtocolFeatures_0 {
   alignment() {
-    return _descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment())));
+    return _descriptor_3.alignment().concat(_descriptor_3.alignment().concat(_descriptor_3.alignment().concat(_descriptor_3.alignment())));
   }
   fromValue(value_0) {
     return {
-      supportsSelectiveDisclosure: _descriptor_9.fromValue(value_0),
-      supportsPredicateProofs: _descriptor_9.fromValue(value_0),
-      supportsVerifierScopedPseudonym: _descriptor_9.fromValue(value_0),
-      supportsSameHolderProof: _descriptor_9.fromValue(value_0)
+      supportsSelectiveDisclosure: _descriptor_3.fromValue(value_0),
+      supportsPredicateProofs: _descriptor_3.fromValue(value_0),
+      supportsVerifierScopedPseudonym: _descriptor_3.fromValue(value_0),
+      supportsSameHolderProof: _descriptor_3.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_9.toValue(value_0.supportsSelectiveDisclosure).concat(_descriptor_9.toValue(value_0.supportsPredicateProofs).concat(_descriptor_9.toValue(value_0.supportsVerifierScopedPseudonym).concat(_descriptor_9.toValue(value_0.supportsSameHolderProof))));
+    return _descriptor_3.toValue(value_0.supportsSelectiveDisclosure).concat(_descriptor_3.toValue(value_0.supportsPredicateProofs).concat(_descriptor_3.toValue(value_0.supportsVerifierScopedPseudonym).concat(_descriptor_3.toValue(value_0.supportsSameHolderProof))));
   }
 }
 
@@ -406,18 +406,18 @@ const _descriptor_28 = new _CredentialProtocolFeatures_0();
 
 class _BirthCredentialVerificationRequestBody_0 {
   alignment() {
-    return _descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_17.alignment())));
+    return _descriptor_3.alignment().concat(_descriptor_3.alignment().concat(_descriptor_3.alignment().concat(_descriptor_17.alignment())));
   }
   fromValue(value_0) {
     return {
-      requireSubjectIdCommitmentDisclosure: _descriptor_9.fromValue(value_0),
-      requireBirthCountryDisclosure: _descriptor_9.fromValue(value_0),
-      requireAgeOverThreshold: _descriptor_9.fromValue(value_0),
+      requireSubjectIdCommitmentDisclosure: _descriptor_3.fromValue(value_0),
+      requireBirthCountryDisclosure: _descriptor_3.fromValue(value_0),
+      requireAgeOverThreshold: _descriptor_3.fromValue(value_0),
       requestedAgeThresholdYears: _descriptor_17.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_9.toValue(value_0.requireSubjectIdCommitmentDisclosure).concat(_descriptor_9.toValue(value_0.requireBirthCountryDisclosure).concat(_descriptor_9.toValue(value_0.requireAgeOverThreshold).concat(_descriptor_17.toValue(value_0.requestedAgeThresholdYears))));
+    return _descriptor_3.toValue(value_0.requireSubjectIdCommitmentDisclosure).concat(_descriptor_3.toValue(value_0.requireBirthCountryDisclosure).concat(_descriptor_3.toValue(value_0.requireAgeOverThreshold).concat(_descriptor_17.toValue(value_0.requestedAgeThresholdYears))));
   }
 }
 
@@ -447,19 +447,19 @@ const _descriptor_30 = new _RequestMessage_0();
 
 class _BirthCredentialIssuanceRequestBody_0 {
   alignment() {
-    return _descriptor_7.alignment().concat(_descriptor_13.alignment().concat(_descriptor_2.alignment().concat(_descriptor_9.alignment().concat(_descriptor_1.alignment()))));
+    return _descriptor_7.alignment().concat(_descriptor_13.alignment().concat(_descriptor_2.alignment().concat(_descriptor_3.alignment().concat(_descriptor_0.alignment()))));
   }
   fromValue(value_0) {
     return {
       holderBinding: _descriptor_7.fromValue(value_0),
       holderPublicKey: _descriptor_13.fromValue(value_0),
       holderChallengeHash: _descriptor_2.fromValue(value_0),
-      requestExpiration: _descriptor_9.fromValue(value_0),
-      requestedExpirationDays: _descriptor_1.fromValue(value_0)
+      requestExpiration: _descriptor_3.fromValue(value_0),
+      requestedExpirationDays: _descriptor_0.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_7.toValue(value_0.holderBinding).concat(_descriptor_13.toValue(value_0.holderPublicKey).concat(_descriptor_2.toValue(value_0.holderChallengeHash).concat(_descriptor_9.toValue(value_0.requestExpiration).concat(_descriptor_1.toValue(value_0.requestedExpirationDays)))));
+    return _descriptor_7.toValue(value_0.holderBinding).concat(_descriptor_13.toValue(value_0.holderPublicKey).concat(_descriptor_2.toValue(value_0.holderChallengeHash).concat(_descriptor_3.toValue(value_0.requestExpiration).concat(_descriptor_0.toValue(value_0.requestedExpirationDays)))));
   }
 }
 
@@ -487,18 +487,18 @@ const _descriptor_32 = new _RequestMessage_1();
 
 class _BirthCredentialPrivateClaims_0 {
   alignment() {
-    return _descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_20.alignment().concat(_descriptor_2.alignment())));
+    return _descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_21.alignment().concat(_descriptor_2.alignment())));
   }
   fromValue(value_0) {
     return {
       subjectId: _descriptor_2.fromValue(value_0),
       legalNamePadded: _descriptor_2.fromValue(value_0),
-      birthDateDays: _descriptor_20.fromValue(value_0),
+      birthDateDays: _descriptor_21.fromValue(value_0),
       birthCountryCodePadded: _descriptor_2.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_2.toValue(value_0.subjectId).concat(_descriptor_2.toValue(value_0.legalNamePadded).concat(_descriptor_20.toValue(value_0.birthDateDays).concat(_descriptor_2.toValue(value_0.birthCountryCodePadded))));
+    return _descriptor_2.toValue(value_0.subjectId).concat(_descriptor_2.toValue(value_0.legalNamePadded).concat(_descriptor_21.toValue(value_0.birthDateDays).concat(_descriptor_2.toValue(value_0.birthCountryCodePadded))));
   }
 }
 
@@ -582,17 +582,17 @@ const _descriptor_37 = new _ResultMessage_1();
 
 class _BirthCredentialIssuanceOfferBody_0 {
   alignment() {
-    return _descriptor_9.alignment().concat(_descriptor_1.alignment().concat(_descriptor_9.alignment()));
+    return _descriptor_3.alignment().concat(_descriptor_0.alignment().concat(_descriptor_3.alignment()));
   }
   fromValue(value_0) {
     return {
-      supportsExpiration: _descriptor_9.fromValue(value_0),
-      defaultExpirationDays: _descriptor_1.fromValue(value_0),
-      requiresHolderPublicKey: _descriptor_9.fromValue(value_0)
+      supportsExpiration: _descriptor_3.fromValue(value_0),
+      defaultExpirationDays: _descriptor_0.fromValue(value_0),
+      requiresHolderPublicKey: _descriptor_3.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_9.toValue(value_0.supportsExpiration).concat(_descriptor_1.toValue(value_0.defaultExpirationDays).concat(_descriptor_9.toValue(value_0.requiresHolderPublicKey)));
+    return _descriptor_3.toValue(value_0.supportsExpiration).concat(_descriptor_0.toValue(value_0.defaultExpirationDays).concat(_descriptor_3.toValue(value_0.requiresHolderPublicKey)));
   }
 }
 
@@ -658,18 +658,18 @@ const _descriptor_42 = new _RegistryBoundStatusBinding_0();
 
 class _SchemaCapabilities_0 {
   alignment() {
-    return _descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment().concat(_descriptor_9.alignment())));
+    return _descriptor_3.alignment().concat(_descriptor_3.alignment().concat(_descriptor_3.alignment().concat(_descriptor_3.alignment())));
   }
   fromValue(value_0) {
     return {
-      supportsSelectiveDisclosure: _descriptor_9.fromValue(value_0),
-      supportsPredicateProofs: _descriptor_9.fromValue(value_0),
-      supportsVerifierScopedPseudonym: _descriptor_9.fromValue(value_0),
-      supportsSameHolderProof: _descriptor_9.fromValue(value_0)
+      supportsSelectiveDisclosure: _descriptor_3.fromValue(value_0),
+      supportsPredicateProofs: _descriptor_3.fromValue(value_0),
+      supportsVerifierScopedPseudonym: _descriptor_3.fromValue(value_0),
+      supportsSameHolderProof: _descriptor_3.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_9.toValue(value_0.supportsSelectiveDisclosure).concat(_descriptor_9.toValue(value_0.supportsPredicateProofs).concat(_descriptor_9.toValue(value_0.supportsVerifierScopedPseudonym).concat(_descriptor_9.toValue(value_0.supportsSameHolderProof))));
+    return _descriptor_3.toValue(value_0.supportsSelectiveDisclosure).concat(_descriptor_3.toValue(value_0.supportsPredicateProofs).concat(_descriptor_3.toValue(value_0.supportsVerifierScopedPseudonym).concat(_descriptor_3.toValue(value_0.supportsSameHolderProof))));
   }
 }
 
@@ -746,16 +746,16 @@ const _descriptor_47 = new _JubjubHolderBinding_0();
 
 class _SchemaFamilyResolutionHint_0 {
   alignment() {
-    return _descriptor_9.alignment().concat(_descriptor_2.alignment());
+    return _descriptor_3.alignment().concat(_descriptor_2.alignment());
   }
   fromValue(value_0) {
     return {
-      hasResolverHint: _descriptor_9.fromValue(value_0),
+      hasResolverHint: _descriptor_3.fromValue(value_0),
       resolverHint: _descriptor_2.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_9.toValue(value_0.hasResolverHint).concat(_descriptor_2.toValue(value_0.resolverHint));
+    return _descriptor_3.toValue(value_0.hasResolverHint).concat(_descriptor_2.toValue(value_0.resolverHint));
   }
 }
 
@@ -787,17 +787,17 @@ const _descriptor_52 = new __compactRuntime.CompactTypeVector(3, _descriptor_2);
 
 class _Either_0 {
   alignment() {
-    return _descriptor_9.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment()));
+    return _descriptor_3.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment()));
   }
   fromValue(value_0) {
     return {
-      is_left: _descriptor_9.fromValue(value_0),
+      is_left: _descriptor_3.fromValue(value_0),
       left: _descriptor_2.fromValue(value_0),
       right: _descriptor_2.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_9.toValue(value_0.is_left).concat(_descriptor_2.toValue(value_0.left).concat(_descriptor_2.toValue(value_0.right)));
+    return _descriptor_3.toValue(value_0.is_left).concat(_descriptor_2.toValue(value_0.left).concat(_descriptor_2.toValue(value_0.right)));
   }
 }
 
@@ -1061,21 +1061,21 @@ export class Contract {
         if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.currentQueryContext != undefined)) {
           __compactRuntime.typeError('ageGateRequest',
                                      'argument 1 (as invoked from Typescript)',
-                                     'demo.compact line 74 char 1',
+                                     'demo.compact line 75 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
         if (!(typeof(issuerVerificationMethodRef_0) === 'object' && typeof(issuerVerificationMethodRef_0.didContractAddress) === 'object' && issuerVerificationMethodRef_0.didContractAddress.bytes.buffer instanceof ArrayBuffer && issuerVerificationMethodRef_0.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && issuerVerificationMethodRef_0.didContractAddress.bytes.length === 32 && issuerVerificationMethodRef_0.methodId.buffer instanceof ArrayBuffer && issuerVerificationMethodRef_0.methodId.BYTES_PER_ELEMENT === 1 && issuerVerificationMethodRef_0.methodId.length === 32)) {
           __compactRuntime.typeError('ageGateRequest',
                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                     'demo.compact line 74 char 1',
+                                     'demo.compact line 75 char 1',
                                      'struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>',
                                      issuerVerificationMethodRef_0)
         }
         if (!(verifierChallengeHash_0.buffer instanceof ArrayBuffer && verifierChallengeHash_0.BYTES_PER_ELEMENT === 1 && verifierChallengeHash_0.length === 32)) {
           __compactRuntime.typeError('ageGateRequest',
                                      'argument 2 (argument 3 as invoked from Typescript)',
-                                     'demo.compact line 74 char 1',
+                                     'demo.compact line 75 char 1',
                                      'Bytes<32>',
                                      verifierChallengeHash_0)
         }
@@ -1093,7 +1093,7 @@ export class Contract {
                                                 partialProofData,
                                                 issuerVerificationMethodRef_0,
                                                 verifierChallengeHash_0);
-        partialProofData.output = { value: _descriptor_21.toValue(result_0), alignment: _descriptor_21.alignment() };
+        partialProofData.output = { value: _descriptor_18.toValue(result_0), alignment: _descriptor_18.alignment() };
         return { result: result_0, context: context, proofData: partialProofData, gasCost: context.gasCost };
       },
       issueBirthCredential: (...args_1) => {
@@ -1107,21 +1107,21 @@ export class Contract {
         if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.currentQueryContext != undefined)) {
           __compactRuntime.typeError('issueBirthCredential',
                                      'argument 1 (as invoked from Typescript)',
-                                     'demo.compact line 99 char 1',
+                                     'demo.compact line 100 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
         if (!(typeof(credential_0) === 'object' && typeof(credential_0.version) === 'bigint' && credential_0.version >= 0n && credential_0.version <= 65535n && typeof(credential_0.schema) === 'object' && credential_0.schema.packageId.buffer instanceof ArrayBuffer && credential_0.schema.packageId.BYTES_PER_ELEMENT === 1 && credential_0.schema.packageId.length === 32 && credential_0.schema.schemaId.buffer instanceof ArrayBuffer && credential_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && credential_0.schema.schemaId.length === 32 && typeof(credential_0.schema.majorVersion) === 'bigint' && credential_0.schema.majorVersion >= 0n && credential_0.schema.majorVersion <= 65535n && typeof(credential_0.schema.minorVersion) === 'bigint' && credential_0.schema.minorVersion >= 0n && credential_0.schema.minorVersion <= 65535n && typeof(credential_0.issuerVerificationMethodRef) === 'object' && typeof(credential_0.issuerVerificationMethodRef.didContractAddress) === 'object' && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && credential_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credential_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credential_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(credential_0.holderBinding) === 'object' && typeof(credential_0.holderBinding.holderVerificationMethodRef) === 'object' && typeof(credential_0.holderBinding.holderVerificationMethodRef.didContractAddress) === 'object' && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.length === 32 && credential_0.holderBinding.holderVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credential_0.holderBinding.holderVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.holderVerificationMethodRef.methodId.length === 32 && typeof(credential_0.statusBinding) === 'object' && typeof(credential_0.issuedAt) === 'bigint' && credential_0.issuedAt >= 0n && credential_0.issuedAt <= 18446744073709551615n && typeof(credential_0.hasExpiration) === 'boolean' && typeof(credential_0.expiresAt) === 'bigint' && credential_0.expiresAt >= 0n && credential_0.expiresAt <= 18446744073709551615n && typeof(credential_0.claims) === 'object' && typeof(credential_0.claimCommitments) === 'object' && credential_0.claimCommitments.subjectIdCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.subjectIdCommitment.length === 32 && credential_0.claimCommitments.legalNameCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.legalNameCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.legalNameCommitment.length === 32 && credential_0.claimCommitments.birthDateCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.birthDateCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.birthDateCommitment.length === 32 && credential_0.claimCommitments.birthCountryCodeCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.birthCountryCodeCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.birthCountryCodeCommitment.length === 32 && credential_0.claimRoot.buffer instanceof ArrayBuffer && credential_0.claimRoot.BYTES_PER_ELEMENT === 1 && credential_0.claimRoot.length === 32)) {
           __compactRuntime.typeError('issueBirthCredential',
                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                     'demo.compact line 99 char 1',
+                                     'demo.compact line 100 char 1',
                                      'struct Credential<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct ExplicitHolderBinding<holderVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>>, statusBinding: struct NoStatusBinding<>, issuedAt: Uint<0..18446744073709551616>, hasExpiration: Boolean, expiresAt: Uint<0..18446744073709551616>, claims: struct NoPublicClaims<>, claimCommitments: struct BirthCredentialClaimCommitments<subjectIdCommitment: Bytes<32>, legalNameCommitment: Bytes<32>, birthDateCommitment: Bytes<32>, birthCountryCodeCommitment: Bytes<32>>, claimRoot: Bytes<32>>',
                                      credential_0)
         }
         if (!(typeof(credentialProof_0) === 'object' && typeof(credentialProof_0.signerVerificationMethodRef) === 'object' && typeof(credentialProof_0.signerVerificationMethodRef.didContractAddress) === 'object' && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && credentialProof_0.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credentialProof_0.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credentialProof_0.signerVerificationMethodRef.methodId.length === 32 && typeof(credentialProof_0.createdAt) === 'bigint' && credentialProof_0.createdAt >= 0n && credentialProof_0.createdAt <= 18446744073709551615n && credentialProof_0.challengeHash.buffer instanceof ArrayBuffer && credentialProof_0.challengeHash.BYTES_PER_ELEMENT === 1 && credentialProof_0.challengeHash.length === 32 && true && typeof(credentialProof_0.signature) === 'object' && true && typeof(credentialProof_0.signature.s) === 'bigint' && credentialProof_0.signature.s >= 0 && credentialProof_0.signature.s <= __compactRuntime.MAX_FIELD)) {
           __compactRuntime.typeError('issueBirthCredential',
                                      'argument 2 (argument 3 as invoked from Typescript)',
-                                     'demo.compact line 99 char 1',
+                                     'demo.compact line 100 char 1',
                                      'struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>',
                                      credentialProof_0)
         }
@@ -1156,50 +1156,50 @@ export class Contract {
         if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.currentQueryContext != undefined)) {
           __compactRuntime.typeError('verifyBirthPresentation',
                                      'argument 1 (as invoked from Typescript)',
-                                     'demo.compact line 122 char 1',
+                                     'demo.compact line 121 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
         if (!(typeof(credential_0) === 'object' && typeof(credential_0.version) === 'bigint' && credential_0.version >= 0n && credential_0.version <= 65535n && typeof(credential_0.schema) === 'object' && credential_0.schema.packageId.buffer instanceof ArrayBuffer && credential_0.schema.packageId.BYTES_PER_ELEMENT === 1 && credential_0.schema.packageId.length === 32 && credential_0.schema.schemaId.buffer instanceof ArrayBuffer && credential_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && credential_0.schema.schemaId.length === 32 && typeof(credential_0.schema.majorVersion) === 'bigint' && credential_0.schema.majorVersion >= 0n && credential_0.schema.majorVersion <= 65535n && typeof(credential_0.schema.minorVersion) === 'bigint' && credential_0.schema.minorVersion >= 0n && credential_0.schema.minorVersion <= 65535n && typeof(credential_0.issuerVerificationMethodRef) === 'object' && typeof(credential_0.issuerVerificationMethodRef.didContractAddress) === 'object' && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && credential_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credential_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credential_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(credential_0.holderBinding) === 'object' && typeof(credential_0.holderBinding.holderVerificationMethodRef) === 'object' && typeof(credential_0.holderBinding.holderVerificationMethodRef.didContractAddress) === 'object' && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.length === 32 && credential_0.holderBinding.holderVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credential_0.holderBinding.holderVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.holderVerificationMethodRef.methodId.length === 32 && typeof(credential_0.statusBinding) === 'object' && typeof(credential_0.issuedAt) === 'bigint' && credential_0.issuedAt >= 0n && credential_0.issuedAt <= 18446744073709551615n && typeof(credential_0.hasExpiration) === 'boolean' && typeof(credential_0.expiresAt) === 'bigint' && credential_0.expiresAt >= 0n && credential_0.expiresAt <= 18446744073709551615n && typeof(credential_0.claims) === 'object' && typeof(credential_0.claimCommitments) === 'object' && credential_0.claimCommitments.subjectIdCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.subjectIdCommitment.length === 32 && credential_0.claimCommitments.legalNameCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.legalNameCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.legalNameCommitment.length === 32 && credential_0.claimCommitments.birthDateCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.birthDateCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.birthDateCommitment.length === 32 && credential_0.claimCommitments.birthCountryCodeCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.birthCountryCodeCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.birthCountryCodeCommitment.length === 32 && credential_0.claimRoot.buffer instanceof ArrayBuffer && credential_0.claimRoot.BYTES_PER_ELEMENT === 1 && credential_0.claimRoot.length === 32)) {
           __compactRuntime.typeError('verifyBirthPresentation',
                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                     'demo.compact line 122 char 1',
+                                     'demo.compact line 121 char 1',
                                      'struct Credential<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct ExplicitHolderBinding<holderVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>>, statusBinding: struct NoStatusBinding<>, issuedAt: Uint<0..18446744073709551616>, hasExpiration: Boolean, expiresAt: Uint<0..18446744073709551616>, claims: struct NoPublicClaims<>, claimCommitments: struct BirthCredentialClaimCommitments<subjectIdCommitment: Bytes<32>, legalNameCommitment: Bytes<32>, birthDateCommitment: Bytes<32>, birthCountryCodeCommitment: Bytes<32>>, claimRoot: Bytes<32>>',
                                      credential_0)
         }
         if (!(typeof(credentialProof_0) === 'object' && typeof(credentialProof_0.signerVerificationMethodRef) === 'object' && typeof(credentialProof_0.signerVerificationMethodRef.didContractAddress) === 'object' && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && credentialProof_0.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credentialProof_0.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credentialProof_0.signerVerificationMethodRef.methodId.length === 32 && typeof(credentialProof_0.createdAt) === 'bigint' && credentialProof_0.createdAt >= 0n && credentialProof_0.createdAt <= 18446744073709551615n && credentialProof_0.challengeHash.buffer instanceof ArrayBuffer && credentialProof_0.challengeHash.BYTES_PER_ELEMENT === 1 && credentialProof_0.challengeHash.length === 32 && true && typeof(credentialProof_0.signature) === 'object' && true && typeof(credentialProof_0.signature.s) === 'bigint' && credentialProof_0.signature.s >= 0 && credentialProof_0.signature.s <= __compactRuntime.MAX_FIELD)) {
           __compactRuntime.typeError('verifyBirthPresentation',
                                      'argument 2 (argument 3 as invoked from Typescript)',
-                                     'demo.compact line 122 char 1',
+                                     'demo.compact line 121 char 1',
                                      'struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>',
                                      credentialProof_0)
         }
         if (!(typeof(presentation_0) === 'object' && typeof(presentation_0.version) === 'bigint' && presentation_0.version >= 0n && presentation_0.version <= 65535n && typeof(presentation_0.schema) === 'object' && presentation_0.schema.packageId.buffer instanceof ArrayBuffer && presentation_0.schema.packageId.BYTES_PER_ELEMENT === 1 && presentation_0.schema.packageId.length === 32 && presentation_0.schema.schemaId.buffer instanceof ArrayBuffer && presentation_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && presentation_0.schema.schemaId.length === 32 && typeof(presentation_0.schema.majorVersion) === 'bigint' && presentation_0.schema.majorVersion >= 0n && presentation_0.schema.majorVersion <= 65535n && typeof(presentation_0.schema.minorVersion) === 'bigint' && presentation_0.schema.minorVersion >= 0n && presentation_0.schema.minorVersion <= 65535n && presentation_0.credentialClaimRoot.buffer instanceof ArrayBuffer && presentation_0.credentialClaimRoot.BYTES_PER_ELEMENT === 1 && presentation_0.credentialClaimRoot.length === 32 && typeof(presentation_0.issuerVerificationMethodRef) === 'object' && typeof(presentation_0.issuerVerificationMethodRef.didContractAddress) === 'object' && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && presentation_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && presentation_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && presentation_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(presentation_0.holderBinding) === 'object' && typeof(presentation_0.holderBinding.holderVerificationMethodRef) === 'object' && typeof(presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress) === 'object' && presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.length === 32 && presentation_0.holderBinding.holderVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && presentation_0.holderBinding.holderVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && presentation_0.holderBinding.holderVerificationMethodRef.methodId.length === 32 && typeof(presentation_0.disclosed) === 'object' && typeof(presentation_0.disclosed.revealSubjectIdCommitment) === 'boolean' && presentation_0.disclosed.subjectIdCommitment.buffer instanceof ArrayBuffer && presentation_0.disclosed.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.subjectIdCommitment.length === 32 && typeof(presentation_0.disclosed.revealBirthCountryCode) === 'boolean' && presentation_0.disclosed.birthCountryCodePadded.buffer instanceof ArrayBuffer && presentation_0.disclosed.birthCountryCodePadded.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.birthCountryCodePadded.length === 32 && presentation_0.disclosed.birthCountryCodeOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.birthCountryCodeOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.birthCountryCodeOpening.length === 32 && typeof(presentation_0.disclosed.proveAgeOverThreshold) === 'boolean' && typeof(presentation_0.disclosed.ageThresholdYears) === 'bigint' && presentation_0.disclosed.ageThresholdYears >= 0n && presentation_0.disclosed.ageThresholdYears <= 255n)) {
           __compactRuntime.typeError('verifyBirthPresentation',
                                      'argument 3 (argument 4 as invoked from Typescript)',
-                                     'demo.compact line 122 char 1',
+                                     'demo.compact line 121 char 1',
                                      'struct Presentation<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, credentialClaimRoot: Bytes<32>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct ExplicitHolderBinding<holderVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>>, disclosed: struct BirthCredentialDisclosures<revealSubjectIdCommitment: Boolean, subjectIdCommitment: Bytes<32>, revealBirthCountryCode: Boolean, birthCountryCodePadded: Bytes<32>, birthCountryCodeOpening: Bytes<32>, proveAgeOverThreshold: Boolean, ageThresholdYears: Uint<0..256>>>',
                                      presentation_0)
         }
         if (!(typeof(presentationProof_0) === 'object' && typeof(presentationProof_0.signerVerificationMethodRef) === 'object' && typeof(presentationProof_0.signerVerificationMethodRef.didContractAddress) === 'object' && presentationProof_0.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && presentationProof_0.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && presentationProof_0.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && presentationProof_0.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && presentationProof_0.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && presentationProof_0.signerVerificationMethodRef.methodId.length === 32 && typeof(presentationProof_0.createdAt) === 'bigint' && presentationProof_0.createdAt >= 0n && presentationProof_0.createdAt <= 18446744073709551615n && presentationProof_0.challengeHash.buffer instanceof ArrayBuffer && presentationProof_0.challengeHash.BYTES_PER_ELEMENT === 1 && presentationProof_0.challengeHash.length === 32 && true && typeof(presentationProof_0.signature) === 'object' && true && typeof(presentationProof_0.signature.s) === 'bigint' && presentationProof_0.signature.s >= 0 && presentationProof_0.signature.s <= __compactRuntime.MAX_FIELD)) {
           __compactRuntime.typeError('verifyBirthPresentation',
                                      'argument 4 (argument 5 as invoked from Typescript)',
-                                     'demo.compact line 122 char 1',
+                                     'demo.compact line 121 char 1',
                                      'struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>',
                                      presentationProof_0)
         }
         if (!(typeof(currentDay_0) === 'bigint' && currentDay_0 >= 0n && currentDay_0 <= 4294967295n)) {
           __compactRuntime.typeError('verifyBirthPresentation',
                                      'argument 5 (argument 6 as invoked from Typescript)',
-                                     'demo.compact line 122 char 1',
+                                     'demo.compact line 121 char 1',
                                      'Uint<0..4294967296>',
                                      currentDay_0)
         }
         const context = { ...contextOrig_0, gasCost: __compactRuntime.emptyRunningCost() };
         const partialProofData = {
           input: {
-            value: _descriptor_12.toValue(credential_0).concat(_descriptor_16.toValue(credentialProof_0).concat(_descriptor_19.toValue(presentation_0).concat(_descriptor_16.toValue(presentationProof_0).concat(_descriptor_20.toValue(currentDay_0))))),
-            alignment: _descriptor_12.alignment().concat(_descriptor_16.alignment().concat(_descriptor_19.alignment().concat(_descriptor_16.alignment().concat(_descriptor_20.alignment()))))
+            value: _descriptor_12.toValue(credential_0).concat(_descriptor_16.toValue(credentialProof_0).concat(_descriptor_20.toValue(presentation_0).concat(_descriptor_16.toValue(presentationProof_0).concat(_descriptor_21.toValue(currentDay_0))))),
+            alignment: _descriptor_12.alignment().concat(_descriptor_16.alignment().concat(_descriptor_20.alignment().concat(_descriptor_16.alignment().concat(_descriptor_21.alignment()))))
           },
           output: undefined,
           publicTranscript: [],
@@ -1229,57 +1229,57 @@ export class Contract {
         if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.currentQueryContext != undefined)) {
           __compactRuntime.typeError('verifyBirthPresentationForRequest',
                                      'argument 1 (as invoked from Typescript)',
-                                     'demo.compact line 175 char 1',
+                                     'demo.compact line 179 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
         if (!(typeof(credential_0) === 'object' && typeof(credential_0.version) === 'bigint' && credential_0.version >= 0n && credential_0.version <= 65535n && typeof(credential_0.schema) === 'object' && credential_0.schema.packageId.buffer instanceof ArrayBuffer && credential_0.schema.packageId.BYTES_PER_ELEMENT === 1 && credential_0.schema.packageId.length === 32 && credential_0.schema.schemaId.buffer instanceof ArrayBuffer && credential_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && credential_0.schema.schemaId.length === 32 && typeof(credential_0.schema.majorVersion) === 'bigint' && credential_0.schema.majorVersion >= 0n && credential_0.schema.majorVersion <= 65535n && typeof(credential_0.schema.minorVersion) === 'bigint' && credential_0.schema.minorVersion >= 0n && credential_0.schema.minorVersion <= 65535n && typeof(credential_0.issuerVerificationMethodRef) === 'object' && typeof(credential_0.issuerVerificationMethodRef.didContractAddress) === 'object' && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && credential_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credential_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credential_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(credential_0.holderBinding) === 'object' && typeof(credential_0.holderBinding.holderVerificationMethodRef) === 'object' && typeof(credential_0.holderBinding.holderVerificationMethodRef.didContractAddress) === 'object' && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.length === 32 && credential_0.holderBinding.holderVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credential_0.holderBinding.holderVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.holderVerificationMethodRef.methodId.length === 32 && typeof(credential_0.statusBinding) === 'object' && typeof(credential_0.issuedAt) === 'bigint' && credential_0.issuedAt >= 0n && credential_0.issuedAt <= 18446744073709551615n && typeof(credential_0.hasExpiration) === 'boolean' && typeof(credential_0.expiresAt) === 'bigint' && credential_0.expiresAt >= 0n && credential_0.expiresAt <= 18446744073709551615n && typeof(credential_0.claims) === 'object' && typeof(credential_0.claimCommitments) === 'object' && credential_0.claimCommitments.subjectIdCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.subjectIdCommitment.length === 32 && credential_0.claimCommitments.legalNameCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.legalNameCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.legalNameCommitment.length === 32 && credential_0.claimCommitments.birthDateCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.birthDateCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.birthDateCommitment.length === 32 && credential_0.claimCommitments.birthCountryCodeCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.birthCountryCodeCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.birthCountryCodeCommitment.length === 32 && credential_0.claimRoot.buffer instanceof ArrayBuffer && credential_0.claimRoot.BYTES_PER_ELEMENT === 1 && credential_0.claimRoot.length === 32)) {
           __compactRuntime.typeError('verifyBirthPresentationForRequest',
                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                     'demo.compact line 175 char 1',
+                                     'demo.compact line 179 char 1',
                                      'struct Credential<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct ExplicitHolderBinding<holderVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>>, statusBinding: struct NoStatusBinding<>, issuedAt: Uint<0..18446744073709551616>, hasExpiration: Boolean, expiresAt: Uint<0..18446744073709551616>, claims: struct NoPublicClaims<>, claimCommitments: struct BirthCredentialClaimCommitments<subjectIdCommitment: Bytes<32>, legalNameCommitment: Bytes<32>, birthDateCommitment: Bytes<32>, birthCountryCodeCommitment: Bytes<32>>, claimRoot: Bytes<32>>',
                                      credential_0)
         }
         if (!(typeof(credentialProof_0) === 'object' && typeof(credentialProof_0.signerVerificationMethodRef) === 'object' && typeof(credentialProof_0.signerVerificationMethodRef.didContractAddress) === 'object' && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && credentialProof_0.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credentialProof_0.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credentialProof_0.signerVerificationMethodRef.methodId.length === 32 && typeof(credentialProof_0.createdAt) === 'bigint' && credentialProof_0.createdAt >= 0n && credentialProof_0.createdAt <= 18446744073709551615n && credentialProof_0.challengeHash.buffer instanceof ArrayBuffer && credentialProof_0.challengeHash.BYTES_PER_ELEMENT === 1 && credentialProof_0.challengeHash.length === 32 && true && typeof(credentialProof_0.signature) === 'object' && true && typeof(credentialProof_0.signature.s) === 'bigint' && credentialProof_0.signature.s >= 0 && credentialProof_0.signature.s <= __compactRuntime.MAX_FIELD)) {
           __compactRuntime.typeError('verifyBirthPresentationForRequest',
                                      'argument 2 (argument 3 as invoked from Typescript)',
-                                     'demo.compact line 175 char 1',
+                                     'demo.compact line 179 char 1',
                                      'struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>',
                                      credentialProof_0)
         }
         if (!(typeof(request_0) === 'object' && typeof(request_0.version) === 'bigint' && request_0.version >= 0n && request_0.version <= 65535n && typeof(request_0.schema) === 'object' && request_0.schema.packageId.buffer instanceof ArrayBuffer && request_0.schema.packageId.BYTES_PER_ELEMENT === 1 && request_0.schema.packageId.length === 32 && request_0.schema.schemaId.buffer instanceof ArrayBuffer && request_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && request_0.schema.schemaId.length === 32 && typeof(request_0.schema.majorVersion) === 'bigint' && request_0.schema.majorVersion >= 0n && request_0.schema.majorVersion <= 65535n && typeof(request_0.schema.minorVersion) === 'bigint' && request_0.schema.minorVersion >= 0n && request_0.schema.minorVersion <= 65535n && typeof(request_0.issuerVerificationMethodRef) === 'object' && typeof(request_0.issuerVerificationMethodRef.didContractAddress) === 'object' && request_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && request_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && request_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && request_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && request_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && request_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(request_0.requireSubjectIdCommitmentDisclosure) === 'boolean' && typeof(request_0.requireBirthCountryDisclosure) === 'boolean' && typeof(request_0.requireAgeOverThreshold) === 'boolean' && typeof(request_0.requestedAgeThresholdYears) === 'bigint' && request_0.requestedAgeThresholdYears >= 0n && request_0.requestedAgeThresholdYears <= 255n && request_0.verifierChallengeHash.buffer instanceof ArrayBuffer && request_0.verifierChallengeHash.BYTES_PER_ELEMENT === 1 && request_0.verifierChallengeHash.length === 32)) {
           __compactRuntime.typeError('verifyBirthPresentationForRequest',
                                      'argument 3 (argument 4 as invoked from Typescript)',
-                                     'demo.compact line 175 char 1',
+                                     'demo.compact line 179 char 1',
                                      'struct BirthCredentialPresentationRequest<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, requireSubjectIdCommitmentDisclosure: Boolean, requireBirthCountryDisclosure: Boolean, requireAgeOverThreshold: Boolean, requestedAgeThresholdYears: Uint<0..256>, verifierChallengeHash: Bytes<32>>',
                                      request_0)
         }
         if (!(typeof(presentation_0) === 'object' && typeof(presentation_0.version) === 'bigint' && presentation_0.version >= 0n && presentation_0.version <= 65535n && typeof(presentation_0.schema) === 'object' && presentation_0.schema.packageId.buffer instanceof ArrayBuffer && presentation_0.schema.packageId.BYTES_PER_ELEMENT === 1 && presentation_0.schema.packageId.length === 32 && presentation_0.schema.schemaId.buffer instanceof ArrayBuffer && presentation_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && presentation_0.schema.schemaId.length === 32 && typeof(presentation_0.schema.majorVersion) === 'bigint' && presentation_0.schema.majorVersion >= 0n && presentation_0.schema.majorVersion <= 65535n && typeof(presentation_0.schema.minorVersion) === 'bigint' && presentation_0.schema.minorVersion >= 0n && presentation_0.schema.minorVersion <= 65535n && presentation_0.credentialClaimRoot.buffer instanceof ArrayBuffer && presentation_0.credentialClaimRoot.BYTES_PER_ELEMENT === 1 && presentation_0.credentialClaimRoot.length === 32 && typeof(presentation_0.issuerVerificationMethodRef) === 'object' && typeof(presentation_0.issuerVerificationMethodRef.didContractAddress) === 'object' && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && presentation_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && presentation_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && presentation_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(presentation_0.holderBinding) === 'object' && typeof(presentation_0.holderBinding.holderVerificationMethodRef) === 'object' && typeof(presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress) === 'object' && presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.length === 32 && presentation_0.holderBinding.holderVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && presentation_0.holderBinding.holderVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && presentation_0.holderBinding.holderVerificationMethodRef.methodId.length === 32 && typeof(presentation_0.disclosed) === 'object' && typeof(presentation_0.disclosed.revealSubjectIdCommitment) === 'boolean' && presentation_0.disclosed.subjectIdCommitment.buffer instanceof ArrayBuffer && presentation_0.disclosed.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.subjectIdCommitment.length === 32 && typeof(presentation_0.disclosed.revealBirthCountryCode) === 'boolean' && presentation_0.disclosed.birthCountryCodePadded.buffer instanceof ArrayBuffer && presentation_0.disclosed.birthCountryCodePadded.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.birthCountryCodePadded.length === 32 && presentation_0.disclosed.birthCountryCodeOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.birthCountryCodeOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.birthCountryCodeOpening.length === 32 && typeof(presentation_0.disclosed.proveAgeOverThreshold) === 'boolean' && typeof(presentation_0.disclosed.ageThresholdYears) === 'bigint' && presentation_0.disclosed.ageThresholdYears >= 0n && presentation_0.disclosed.ageThresholdYears <= 255n)) {
           __compactRuntime.typeError('verifyBirthPresentationForRequest',
                                      'argument 4 (argument 5 as invoked from Typescript)',
-                                     'demo.compact line 175 char 1',
+                                     'demo.compact line 179 char 1',
                                      'struct Presentation<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, credentialClaimRoot: Bytes<32>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct ExplicitHolderBinding<holderVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>>, disclosed: struct BirthCredentialDisclosures<revealSubjectIdCommitment: Boolean, subjectIdCommitment: Bytes<32>, revealBirthCountryCode: Boolean, birthCountryCodePadded: Bytes<32>, birthCountryCodeOpening: Bytes<32>, proveAgeOverThreshold: Boolean, ageThresholdYears: Uint<0..256>>>',
                                      presentation_0)
         }
         if (!(typeof(presentationProof_0) === 'object' && typeof(presentationProof_0.signerVerificationMethodRef) === 'object' && typeof(presentationProof_0.signerVerificationMethodRef.didContractAddress) === 'object' && presentationProof_0.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && presentationProof_0.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && presentationProof_0.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && presentationProof_0.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && presentationProof_0.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && presentationProof_0.signerVerificationMethodRef.methodId.length === 32 && typeof(presentationProof_0.createdAt) === 'bigint' && presentationProof_0.createdAt >= 0n && presentationProof_0.createdAt <= 18446744073709551615n && presentationProof_0.challengeHash.buffer instanceof ArrayBuffer && presentationProof_0.challengeHash.BYTES_PER_ELEMENT === 1 && presentationProof_0.challengeHash.length === 32 && true && typeof(presentationProof_0.signature) === 'object' && true && typeof(presentationProof_0.signature.s) === 'bigint' && presentationProof_0.signature.s >= 0 && presentationProof_0.signature.s <= __compactRuntime.MAX_FIELD)) {
           __compactRuntime.typeError('verifyBirthPresentationForRequest',
                                      'argument 5 (argument 6 as invoked from Typescript)',
-                                     'demo.compact line 175 char 1',
+                                     'demo.compact line 179 char 1',
                                      'struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>',
                                      presentationProof_0)
         }
         if (!(typeof(currentDay_0) === 'bigint' && currentDay_0 >= 0n && currentDay_0 <= 4294967295n)) {
           __compactRuntime.typeError('verifyBirthPresentationForRequest',
                                      'argument 6 (argument 7 as invoked from Typescript)',
-                                     'demo.compact line 175 char 1',
+                                     'demo.compact line 179 char 1',
                                      'Uint<0..4294967296>',
                                      currentDay_0)
         }
         const context = { ...contextOrig_0, gasCost: __compactRuntime.emptyRunningCost() };
         const partialProofData = {
           input: {
-            value: _descriptor_12.toValue(credential_0).concat(_descriptor_16.toValue(credentialProof_0).concat(_descriptor_21.toValue(request_0).concat(_descriptor_19.toValue(presentation_0).concat(_descriptor_16.toValue(presentationProof_0).concat(_descriptor_20.toValue(currentDay_0)))))),
-            alignment: _descriptor_12.alignment().concat(_descriptor_16.alignment().concat(_descriptor_21.alignment().concat(_descriptor_19.alignment().concat(_descriptor_16.alignment().concat(_descriptor_20.alignment())))))
+            value: _descriptor_12.toValue(credential_0).concat(_descriptor_16.toValue(credentialProof_0).concat(_descriptor_18.toValue(request_0).concat(_descriptor_20.toValue(presentation_0).concat(_descriptor_16.toValue(presentationProof_0).concat(_descriptor_21.toValue(currentDay_0)))))),
+            alignment: _descriptor_12.alignment().concat(_descriptor_16.alignment().concat(_descriptor_18.alignment().concat(_descriptor_20.alignment().concat(_descriptor_16.alignment().concat(_descriptor_21.alignment())))))
           },
           output: undefined,
           publicTranscript: [],
@@ -1310,57 +1310,57 @@ export class Contract {
         if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.currentQueryContext != undefined)) {
           __compactRuntime.typeError('issueAgeGateCapability',
                                      'argument 1 (as invoked from Typescript)',
-                                     'demo.compact line 201 char 1',
+                                     'demo.compact line 205 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
         if (!(typeof(credential_0) === 'object' && typeof(credential_0.version) === 'bigint' && credential_0.version >= 0n && credential_0.version <= 65535n && typeof(credential_0.schema) === 'object' && credential_0.schema.packageId.buffer instanceof ArrayBuffer && credential_0.schema.packageId.BYTES_PER_ELEMENT === 1 && credential_0.schema.packageId.length === 32 && credential_0.schema.schemaId.buffer instanceof ArrayBuffer && credential_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && credential_0.schema.schemaId.length === 32 && typeof(credential_0.schema.majorVersion) === 'bigint' && credential_0.schema.majorVersion >= 0n && credential_0.schema.majorVersion <= 65535n && typeof(credential_0.schema.minorVersion) === 'bigint' && credential_0.schema.minorVersion >= 0n && credential_0.schema.minorVersion <= 65535n && typeof(credential_0.issuerVerificationMethodRef) === 'object' && typeof(credential_0.issuerVerificationMethodRef.didContractAddress) === 'object' && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credential_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && credential_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credential_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credential_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(credential_0.holderBinding) === 'object' && typeof(credential_0.holderBinding.holderVerificationMethodRef) === 'object' && typeof(credential_0.holderBinding.holderVerificationMethodRef.didContractAddress) === 'object' && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.length === 32 && credential_0.holderBinding.holderVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credential_0.holderBinding.holderVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credential_0.holderBinding.holderVerificationMethodRef.methodId.length === 32 && typeof(credential_0.statusBinding) === 'object' && typeof(credential_0.issuedAt) === 'bigint' && credential_0.issuedAt >= 0n && credential_0.issuedAt <= 18446744073709551615n && typeof(credential_0.hasExpiration) === 'boolean' && typeof(credential_0.expiresAt) === 'bigint' && credential_0.expiresAt >= 0n && credential_0.expiresAt <= 18446744073709551615n && typeof(credential_0.claims) === 'object' && typeof(credential_0.claimCommitments) === 'object' && credential_0.claimCommitments.subjectIdCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.subjectIdCommitment.length === 32 && credential_0.claimCommitments.legalNameCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.legalNameCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.legalNameCommitment.length === 32 && credential_0.claimCommitments.birthDateCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.birthDateCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.birthDateCommitment.length === 32 && credential_0.claimCommitments.birthCountryCodeCommitment.buffer instanceof ArrayBuffer && credential_0.claimCommitments.birthCountryCodeCommitment.BYTES_PER_ELEMENT === 1 && credential_0.claimCommitments.birthCountryCodeCommitment.length === 32 && credential_0.claimRoot.buffer instanceof ArrayBuffer && credential_0.claimRoot.BYTES_PER_ELEMENT === 1 && credential_0.claimRoot.length === 32)) {
           __compactRuntime.typeError('issueAgeGateCapability',
                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                     'demo.compact line 201 char 1',
+                                     'demo.compact line 205 char 1',
                                      'struct Credential<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct ExplicitHolderBinding<holderVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>>, statusBinding: struct NoStatusBinding<>, issuedAt: Uint<0..18446744073709551616>, hasExpiration: Boolean, expiresAt: Uint<0..18446744073709551616>, claims: struct NoPublicClaims<>, claimCommitments: struct BirthCredentialClaimCommitments<subjectIdCommitment: Bytes<32>, legalNameCommitment: Bytes<32>, birthDateCommitment: Bytes<32>, birthCountryCodeCommitment: Bytes<32>>, claimRoot: Bytes<32>>',
                                      credential_0)
         }
         if (!(typeof(credentialProof_0) === 'object' && typeof(credentialProof_0.signerVerificationMethodRef) === 'object' && typeof(credentialProof_0.signerVerificationMethodRef.didContractAddress) === 'object' && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && credentialProof_0.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && credentialProof_0.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && credentialProof_0.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && credentialProof_0.signerVerificationMethodRef.methodId.length === 32 && typeof(credentialProof_0.createdAt) === 'bigint' && credentialProof_0.createdAt >= 0n && credentialProof_0.createdAt <= 18446744073709551615n && credentialProof_0.challengeHash.buffer instanceof ArrayBuffer && credentialProof_0.challengeHash.BYTES_PER_ELEMENT === 1 && credentialProof_0.challengeHash.length === 32 && true && typeof(credentialProof_0.signature) === 'object' && true && typeof(credentialProof_0.signature.s) === 'bigint' && credentialProof_0.signature.s >= 0 && credentialProof_0.signature.s <= __compactRuntime.MAX_FIELD)) {
           __compactRuntime.typeError('issueAgeGateCapability',
                                      'argument 2 (argument 3 as invoked from Typescript)',
-                                     'demo.compact line 201 char 1',
+                                     'demo.compact line 205 char 1',
                                      'struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>',
                                      credentialProof_0)
         }
         if (!(typeof(presentation_0) === 'object' && typeof(presentation_0.version) === 'bigint' && presentation_0.version >= 0n && presentation_0.version <= 65535n && typeof(presentation_0.schema) === 'object' && presentation_0.schema.packageId.buffer instanceof ArrayBuffer && presentation_0.schema.packageId.BYTES_PER_ELEMENT === 1 && presentation_0.schema.packageId.length === 32 && presentation_0.schema.schemaId.buffer instanceof ArrayBuffer && presentation_0.schema.schemaId.BYTES_PER_ELEMENT === 1 && presentation_0.schema.schemaId.length === 32 && typeof(presentation_0.schema.majorVersion) === 'bigint' && presentation_0.schema.majorVersion >= 0n && presentation_0.schema.majorVersion <= 65535n && typeof(presentation_0.schema.minorVersion) === 'bigint' && presentation_0.schema.minorVersion >= 0n && presentation_0.schema.minorVersion <= 65535n && presentation_0.credentialClaimRoot.buffer instanceof ArrayBuffer && presentation_0.credentialClaimRoot.BYTES_PER_ELEMENT === 1 && presentation_0.credentialClaimRoot.length === 32 && typeof(presentation_0.issuerVerificationMethodRef) === 'object' && typeof(presentation_0.issuerVerificationMethodRef.didContractAddress) === 'object' && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && presentation_0.issuerVerificationMethodRef.didContractAddress.bytes.length === 32 && presentation_0.issuerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && presentation_0.issuerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && presentation_0.issuerVerificationMethodRef.methodId.length === 32 && typeof(presentation_0.holderBinding) === 'object' && typeof(presentation_0.holderBinding.holderVerificationMethodRef) === 'object' && typeof(presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress) === 'object' && presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && presentation_0.holderBinding.holderVerificationMethodRef.didContractAddress.bytes.length === 32 && presentation_0.holderBinding.holderVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && presentation_0.holderBinding.holderVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && presentation_0.holderBinding.holderVerificationMethodRef.methodId.length === 32 && typeof(presentation_0.disclosed) === 'object' && typeof(presentation_0.disclosed.revealSubjectIdCommitment) === 'boolean' && presentation_0.disclosed.subjectIdCommitment.buffer instanceof ArrayBuffer && presentation_0.disclosed.subjectIdCommitment.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.subjectIdCommitment.length === 32 && typeof(presentation_0.disclosed.revealBirthCountryCode) === 'boolean' && presentation_0.disclosed.birthCountryCodePadded.buffer instanceof ArrayBuffer && presentation_0.disclosed.birthCountryCodePadded.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.birthCountryCodePadded.length === 32 && presentation_0.disclosed.birthCountryCodeOpening.buffer instanceof ArrayBuffer && presentation_0.disclosed.birthCountryCodeOpening.BYTES_PER_ELEMENT === 1 && presentation_0.disclosed.birthCountryCodeOpening.length === 32 && typeof(presentation_0.disclosed.proveAgeOverThreshold) === 'boolean' && typeof(presentation_0.disclosed.ageThresholdYears) === 'bigint' && presentation_0.disclosed.ageThresholdYears >= 0n && presentation_0.disclosed.ageThresholdYears <= 255n)) {
           __compactRuntime.typeError('issueAgeGateCapability',
                                      'argument 3 (argument 4 as invoked from Typescript)',
-                                     'demo.compact line 201 char 1',
+                                     'demo.compact line 205 char 1',
                                      'struct Presentation<version: Uint<0..65536>, schema: struct SchemaRef<packageId: Bytes<32>, schemaId: Bytes<32>, majorVersion: Uint<0..65536>, minorVersion: Uint<0..65536>>, credentialClaimRoot: Bytes<32>, issuerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, holderBinding: struct ExplicitHolderBinding<holderVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>>, disclosed: struct BirthCredentialDisclosures<revealSubjectIdCommitment: Boolean, subjectIdCommitment: Bytes<32>, revealBirthCountryCode: Boolean, birthCountryCodePadded: Bytes<32>, birthCountryCodeOpening: Bytes<32>, proveAgeOverThreshold: Boolean, ageThresholdYears: Uint<0..256>>>',
                                      presentation_0)
         }
         if (!(typeof(presentationProof_0) === 'object' && typeof(presentationProof_0.signerVerificationMethodRef) === 'object' && typeof(presentationProof_0.signerVerificationMethodRef.didContractAddress) === 'object' && presentationProof_0.signerVerificationMethodRef.didContractAddress.bytes.buffer instanceof ArrayBuffer && presentationProof_0.signerVerificationMethodRef.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && presentationProof_0.signerVerificationMethodRef.didContractAddress.bytes.length === 32 && presentationProof_0.signerVerificationMethodRef.methodId.buffer instanceof ArrayBuffer && presentationProof_0.signerVerificationMethodRef.methodId.BYTES_PER_ELEMENT === 1 && presentationProof_0.signerVerificationMethodRef.methodId.length === 32 && typeof(presentationProof_0.createdAt) === 'bigint' && presentationProof_0.createdAt >= 0n && presentationProof_0.createdAt <= 18446744073709551615n && presentationProof_0.challengeHash.buffer instanceof ArrayBuffer && presentationProof_0.challengeHash.BYTES_PER_ELEMENT === 1 && presentationProof_0.challengeHash.length === 32 && true && typeof(presentationProof_0.signature) === 'object' && true && typeof(presentationProof_0.signature.s) === 'bigint' && presentationProof_0.signature.s >= 0 && presentationProof_0.signature.s <= __compactRuntime.MAX_FIELD)) {
           __compactRuntime.typeError('issueAgeGateCapability',
                                      'argument 4 (argument 5 as invoked from Typescript)',
-                                     'demo.compact line 201 char 1',
+                                     'demo.compact line 205 char 1',
                                      'struct Proof<signerVerificationMethodRef: struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>, createdAt: Uint<0..18446744073709551616>, challengeHash: Bytes<32>, publicKey: Opaque<"JubjubPoint">, signature: struct Signature<r: Opaque<"JubjubPoint">, s: Field>>',
                                      presentationProof_0)
         }
         if (!(verifierChallengeHash_0.buffer instanceof ArrayBuffer && verifierChallengeHash_0.BYTES_PER_ELEMENT === 1 && verifierChallengeHash_0.length === 32)) {
           __compactRuntime.typeError('issueAgeGateCapability',
                                      'argument 5 (argument 6 as invoked from Typescript)',
-                                     'demo.compact line 201 char 1',
+                                     'demo.compact line 205 char 1',
                                      'Bytes<32>',
                                      verifierChallengeHash_0)
         }
         if (!(typeof(currentDay_0) === 'bigint' && currentDay_0 >= 0n && currentDay_0 <= 4294967295n)) {
           __compactRuntime.typeError('issueAgeGateCapability',
                                      'argument 6 (argument 7 as invoked from Typescript)',
-                                     'demo.compact line 201 char 1',
+                                     'demo.compact line 205 char 1',
                                      'Uint<0..4294967296>',
                                      currentDay_0)
         }
         const context = { ...contextOrig_0, gasCost: __compactRuntime.emptyRunningCost() };
         const partialProofData = {
           input: {
-            value: _descriptor_12.toValue(credential_0).concat(_descriptor_16.toValue(credentialProof_0).concat(_descriptor_19.toValue(presentation_0).concat(_descriptor_16.toValue(presentationProof_0).concat(_descriptor_2.toValue(verifierChallengeHash_0).concat(_descriptor_20.toValue(currentDay_0)))))),
-            alignment: _descriptor_12.alignment().concat(_descriptor_16.alignment().concat(_descriptor_19.alignment().concat(_descriptor_16.alignment().concat(_descriptor_2.alignment().concat(_descriptor_20.alignment())))))
+            value: _descriptor_12.toValue(credential_0).concat(_descriptor_16.toValue(credentialProof_0).concat(_descriptor_20.toValue(presentation_0).concat(_descriptor_16.toValue(presentationProof_0).concat(_descriptor_2.toValue(verifierChallengeHash_0).concat(_descriptor_21.toValue(currentDay_0)))))),
+            alignment: _descriptor_12.alignment().concat(_descriptor_16.alignment().concat(_descriptor_20.alignment().concat(_descriptor_16.alignment().concat(_descriptor_2.alignment().concat(_descriptor_21.alignment())))))
           },
           output: undefined,
           publicTranscript: [],
@@ -1386,14 +1386,14 @@ export class Contract {
         if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.currentQueryContext != undefined)) {
           __compactRuntime.typeError('claimAgeGateCapability',
                                      'argument 1 (as invoked from Typescript)',
-                                     'demo.compact line 235 char 1',
+                                     'demo.compact line 239 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
         if (!(capability_0.buffer instanceof ArrayBuffer && capability_0.BYTES_PER_ELEMENT === 1 && capability_0.length === 32)) {
           __compactRuntime.typeError('claimAgeGateCapability',
                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                     'demo.compact line 235 char 1',
+                                     'demo.compact line 239 char 1',
                                      'Bytes<32>',
                                      capability_0)
         }
@@ -1410,7 +1410,7 @@ export class Contract {
         const result_0 = this._claimAgeGateCapability_0(context,
                                                         partialProofData,
                                                         capability_0);
-        partialProofData.output = { value: _descriptor_0.toValue(result_0), alignment: _descriptor_0.alignment() };
+        partialProofData.output = { value: _descriptor_1.toValue(result_0), alignment: _descriptor_1.alignment() };
         return { result: result_0, context: context, proofData: partialProofData, gasCost: context.gasCost };
       }
     };
@@ -1498,8 +1498,8 @@ export class Contract {
                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_17.toValue(0n),
                                                                                               alignment: _descriptor_17.alignment() }).encode() } },
                                        { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_20.toValue(0n),
-                                                                                              alignment: _descriptor_20.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_21.toValue(0n),
+                                                                                              alignment: _descriptor_21.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } },
                                        { ins: { cached: true, n: 1 } }]);
     __compactRuntime.queryLedgerState(context,
@@ -1515,8 +1515,8 @@ export class Contract {
                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_17.toValue(1n),
                                                                                               alignment: _descriptor_17.alignment() }).encode() } },
                                        { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_3.toValue(0n),
-                                                                                              alignment: _descriptor_3.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_9.toValue(0n),
+                                                                                              alignment: _descriptor_9.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } },
                                        { ins: { cached: true, n: 1 } }]);
     __compactRuntime.queryLedgerState(context,
@@ -1532,8 +1532,8 @@ export class Contract {
                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_17.toValue(0n),
                                                                                               alignment: _descriptor_17.alignment() }).encode() } },
                                        { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_3.toValue(0n),
-                                                                                              alignment: _descriptor_3.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_9.toValue(0n),
+                                                                                              alignment: _descriptor_9.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } },
                                        { ins: { cached: true, n: 1 } }]);
     __compactRuntime.queryLedgerState(context,
@@ -1566,8 +1566,8 @@ export class Contract {
                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_17.toValue(2n),
                                                                                               alignment: _descriptor_17.alignment() }).encode() } },
                                        { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_9.toValue(false),
-                                                                                              alignment: _descriptor_9.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_3.toValue(false),
+                                                                                              alignment: _descriptor_3.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } },
                                        { ins: { cached: true, n: 1 } }]);
     __compactRuntime.queryLedgerState(context,
@@ -1636,8 +1636,8 @@ export class Contract {
                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_17.toValue(6n),
                                                                                               alignment: _descriptor_17.alignment() }).encode() } },
                                        { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_20.toValue(0n),
-                                                                                              alignment: _descriptor_20.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_21.toValue(0n),
+                                                                                              alignment: _descriptor_21.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } },
                                        { ins: { cached: true, n: 1 } }]);
     __compactRuntime.queryLedgerState(context,
@@ -1687,8 +1687,8 @@ export class Contract {
                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_17.toValue(9n),
                                                                                               alignment: _descriptor_17.alignment() }).encode() } },
                                        { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_3.toValue(0n),
-                                                                                              alignment: _descriptor_3.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_9.toValue(0n),
+                                                                                              alignment: _descriptor_9.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } },
                                        { ins: { cached: true, n: 1 } }]);
     __compactRuntime.queryLedgerState(context,
@@ -1704,8 +1704,8 @@ export class Contract {
                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_17.toValue(10n),
                                                                                               alignment: _descriptor_17.alignment() }).encode() } },
                                        { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_3.toValue(0n),
-                                                                                              alignment: _descriptor_3.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_9.toValue(0n),
+                                                                                              alignment: _descriptor_9.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } },
                                        { ins: { cached: true, n: 1 } }]);
     __compactRuntime.queryLedgerState(context,
@@ -1774,8 +1774,8 @@ export class Contract {
                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_17.toValue(14n),
                                                                                               alignment: _descriptor_17.alignment() }).encode() } },
                                        { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(0),
-                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_1.toValue(0),
+                                                                                              alignment: _descriptor_1.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } },
                                        { ins: { cached: true, n: 1 } }]);
     const tmp_0 = 1n;
@@ -1792,8 +1792,8 @@ export class Contract {
                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_17.toValue(0n),
                                                                                               alignment: _descriptor_17.alignment() }).encode() } },
                                        { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_20.toValue(tmp_0),
-                                                                                              alignment: _descriptor_20.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_21.toValue(tmp_0),
+                                                                                              alignment: _descriptor_21.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } },
                                        { ins: { cached: true, n: 1 } }]);
     const tmp_1 = 18n;
@@ -1827,8 +1827,8 @@ export class Contract {
                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_17.toValue(2n),
                                                                                               alignment: _descriptor_17.alignment() }).encode() } },
                                        { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_9.toValue(true),
-                                                                                              alignment: _descriptor_9.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_3.toValue(true),
+                                                                                              alignment: _descriptor_3.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } },
                                        { ins: { cached: true, n: 1 } }]);
     __compactRuntime.queryLedgerState(context,
@@ -1862,8 +1862,8 @@ export class Contract {
                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_17.toValue(6n),
                                                                                               alignment: _descriptor_17.alignment() }).encode() } },
                                        { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_20.toValue(tmp_2),
-                                                                                              alignment: _descriptor_20.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_21.toValue(tmp_2),
+                                                                                              alignment: _descriptor_21.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } },
                                        { ins: { cached: true, n: 1 } }]);
     const tmp_3 = 0n;
@@ -1931,8 +1931,8 @@ export class Contract {
                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_17.toValue(14n),
                                                                                               alignment: _descriptor_17.alignment() }).encode() } },
                                        { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(0),
-                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_1.toValue(0),
+                                                                                              alignment: _descriptor_1.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } },
                                        { ins: { cached: true, n: 1 } }]);
     state_0.data = new __compactRuntime.ChargedState(context.currentQueryContext.state.state);
@@ -1942,12 +1942,33 @@ export class Contract {
       currentZswapLocalState: context.currentZswapLocalState
     }
   }
+  _blockTimeLt_0(context, partialProofData, time_0) {
+    return _descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
+                                                                     partialProofData,
+                                                                     [
+                                                                      { dup: { n: 2 } },
+                                                                      { idx: { cached: true,
+                                                                               pushPath: false,
+                                                                               path: [
+                                                                                      { tag: 'value',
+                                                                                        value: { value: _descriptor_17.toValue(2n),
+                                                                                                 alignment: _descriptor_17.alignment() } }] } },
+                                                                      { push: { storage: false,
+                                                                                value: __compactRuntime.StateValue.newCell({ value: _descriptor_9.toValue(time_0),
+                                                                                                                             alignment: _descriptor_9.alignment() }).encode() } },
+                                                                      'lt',
+                                                                      { popeq: { cached: true,
+                                                                                 result: undefined } }]).value);
+  }
+  _blockTimeGte_0(context, partialProofData, time_0) {
+    return !this._blockTimeLt_0(context, partialProofData, time_0);
+  }
   _transientHash_0(value_0) {
     const result_0 = __compactRuntime.transientHash(_descriptor_13, value_0);
     return result_0;
   }
   _transientHash_1(value_0) {
-    const result_0 = __compactRuntime.transientHash(_descriptor_3, value_0);
+    const result_0 = __compactRuntime.transientHash(_descriptor_9, value_0);
     return result_0;
   }
   _persistentHash_0(value_0) {
@@ -1967,11 +1988,11 @@ export class Contract {
     return result_0;
   }
   _persistentHash_4(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_19, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_20, value_0);
     return result_0;
   }
   _persistentHash_5(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_21, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_18, value_0);
     return result_0;
   }
   _persistentHash_6(value_0) {
@@ -1983,7 +2004,7 @@ export class Contract {
     return result_0;
   }
   _persistentCommit_0(value_0, rand_0) {
-    const result_0 = __compactRuntime.persistentCommit(_descriptor_20,
+    const result_0 = __compactRuntime.persistentCommit(_descriptor_21,
                                                        value_0,
                                                        rand_0);
     return result_0;
@@ -2956,6 +2977,31 @@ export class Contract {
                             'Age predicate does not satisfy the requested threshold');
     return [];
   }
+  _assertTrustedLedgerDayV1_0(context, partialProofData, candidateDay_0) {
+    const startSeconds_0 = ((t1) => {
+                             if (t1 > 18446744073709551615n) {
+                               throw new __compactRuntime.CompactError('trusted-time.compact line 21 char 34: cast from Field or Uint value to smaller Uint value failed: ' + t1 + ' is greater than 18446744073709551615');
+                             }
+                             return t1;
+                           })(__compactRuntime.mulField(candidateDay_0, 86400n));
+    const endSeconds_0 = ((t1) => {
+                           if (t1 > 18446744073709551615n) {
+                             throw new __compactRuntime.CompactError('trusted-time.compact line 22 char 32: cast from Field or Uint value to smaller Uint value failed: ' + t1 + ' is greater than 18446744073709551615');
+                           }
+                           return t1;
+                         })(__compactRuntime.mulField(__compactRuntime.addField(candidateDay_0,
+                                                                                1n),
+                                                      86400n));
+    __compactRuntime.assert(this._blockTimeGte_0(context,
+                                                 partialProofData,
+                                                 startSeconds_0),
+                            'Trusted day candidate is in the future');
+    __compactRuntime.assert(this._blockTimeLt_0(context,
+                                                partialProofData,
+                                                endSeconds_0),
+                            'Trusted day candidate is stale');
+    return [];
+  }
   _holderBirthDateDays_0(context, partialProofData) {
     const witnessContext_0 = __compactRuntime.createWitnessContext(ledger(context.currentQueryContext.state), context.currentPrivateState, context.currentQueryContext.address);
     const [nextPrivateState_0, result_0] = this.witnesses.holderBirthDateDays(witnessContext_0);
@@ -2963,13 +3009,13 @@ export class Contract {
     if (!(typeof(result_0) === 'bigint' && result_0 >= 0n && result_0 <= 4294967295n)) {
       __compactRuntime.typeError('holderBirthDateDays',
                                  'return value',
-                                 'demo.compact line 32 char 1',
+                                 'demo.compact line 33 char 1',
                                  'Uint<0..4294967296>',
                                  result_0)
     }
     partialProofData.privateTranscriptOutputs.push({
-      value: _descriptor_20.toValue(result_0),
-      alignment: _descriptor_20.alignment()
+      value: _descriptor_21.toValue(result_0),
+      alignment: _descriptor_21.alignment()
     });
     return result_0;
   }
@@ -2980,7 +3026,7 @@ export class Contract {
     if (!(result_0.buffer instanceof ArrayBuffer && result_0.BYTES_PER_ELEMENT === 1 && result_0.length === 32)) {
       __compactRuntime.typeError('holderBirthDateOpening',
                                  'return value',
-                                 'demo.compact line 33 char 1',
+                                 'demo.compact line 34 char 1',
                                  'Bytes<32>',
                                  result_0)
     }
@@ -3017,7 +3063,7 @@ export class Contract {
   {
     return this._ageGateRequestForPolicy_0(issuerVerificationMethodRef_0,
                                            verifierChallengeHash_0,
-                                           _descriptor_9.fromValue(__compactRuntime.queryLedgerState(context,
+                                           _descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
                                                                                                      partialProofData,
                                                                                                      [
                                                                                                       { dup: { n: 0 } },
@@ -3057,7 +3103,7 @@ export class Contract {
                                    verifierChallengeHash_0,
                                    __compactRuntime.convertFieldToBytes(32,
                                                                         issuanceIndex_0,
-                                                                        'demo.compact line 95 char 6')]);
+                                                                        'demo.compact line 96 char 6')]);
   }
   _issueBirthCredential_0(context,
                           partialProofData,
@@ -3067,7 +3113,7 @@ export class Contract {
   {
     const credentialRoot_0 = this._birthCredentialBodyRoot_0(credential_0);
     this._assertValidBirthCredential_0(credential_0, credentialProof_0);
-    __compactRuntime.assert(!_descriptor_9.fromValue(__compactRuntime.queryLedgerState(context,
+    __compactRuntime.assert(!_descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
                                                                                        partialProofData,
                                                                                        [
                                                                                         { dup: { n: 0 } },
@@ -3140,8 +3186,8 @@ export class Contract {
                                                          value: { value: _descriptor_17.toValue(1n),
                                                                   alignment: _descriptor_17.alignment() } }] } },
                                        { addi: { immediate: parseInt(__compactRuntime.valueToBigInt(
-                                                              { value: _descriptor_1.toValue(tmp_0),
-                                                                alignment: _descriptor_1.alignment() }
+                                                              { value: _descriptor_0.toValue(tmp_0),
+                                                                alignment: _descriptor_0.alignment() }
                                                                 .value
                                                             )) } },
                                        { ins: { cached: true, n: 2 } }]);
@@ -3155,13 +3201,14 @@ export class Contract {
                              presentationProof_0,
                              currentDay_0)
   {
+    this._assertTrustedLedgerDayV1_0(context, partialProofData, currentDay_0);
     const credentialRoot_0 = this._birthCredentialBodyRoot_0(credential_0);
     const disclosedPresentationProofPublicKey_0 = presentationProof_0.publicKey;
     this._assertValidBirthCredentialPresentation_0(credential_0,
                                                    credentialProof_0,
                                                    presentation_0,
                                                    presentationProof_0);
-    __compactRuntime.assert(_descriptor_9.fromValue(__compactRuntime.queryLedgerState(context,
+    __compactRuntime.assert(_descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
                                                                                       partialProofData,
                                                                                       [
                                                                                        { dup: { n: 0 } },
@@ -3229,9 +3276,13 @@ export class Contract {
                             ===
                             this._jubjubPointY_0(disclosedPresentationProofPublicKey_0),
                             'Issued credential holder key does not match the supplied presentation proof');
+    let t_0;
+    __compactRuntime.assert((t_0 = currentDay_0, t_0 >= credential_0.issuedAt),
+                            'Credential is not yet valid at trusted ledger time');
     if (credential_0.hasExpiration) {
-      __compactRuntime.assert(currentDay_0 <= credential_0.expiresAt,
-                              'Credential has expired for the supplied verification day');
+      let t_1;
+      __compactRuntime.assert((t_1 = currentDay_0, t_1 <= credential_0.expiresAt),
+                              'Credential has expired at trusted ledger time');
     }
     this._assertValidBirthCredentialAgePredicate_0(credential_0,
                                                    presentation_0,
@@ -3270,8 +3321,8 @@ export class Contract {
                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_17.toValue(6n),
                                                                                               alignment: _descriptor_17.alignment() }).encode() } },
                                        { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_20.toValue(currentDay_0),
-                                                                                              alignment: _descriptor_20.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_21.toValue(currentDay_0),
+                                                                                              alignment: _descriptor_21.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } },
                                        { ins: { cached: true, n: 1 } }]);
     const tmp_0 = presentation_0.disclosed.ageThresholdYears;
@@ -3306,8 +3357,8 @@ export class Contract {
                                                          value: { value: _descriptor_17.toValue(0n),
                                                                   alignment: _descriptor_17.alignment() } }] } },
                                        { addi: { immediate: parseInt(__compactRuntime.valueToBigInt(
-                                                              { value: _descriptor_1.toValue(tmp_1),
-                                                                alignment: _descriptor_1.alignment() }
+                                                              { value: _descriptor_0.toValue(tmp_1),
+                                                                alignment: _descriptor_0.alignment() }
                                                                 .value
                                                             )) } },
                                        { ins: { cached: true, n: 2 } }]);
@@ -3368,7 +3419,7 @@ export class Contract {
                                              verifierChallengeHash_0);
     const capability_0 = this._ageGateCapability_0(this._birthCredentialBodyRoot_0(credential_0),
                                                    verifierChallengeHash_0,
-                                                   _descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
+                                                   _descriptor_9.fromValue(__compactRuntime.queryLedgerState(context,
                                                                                                              partialProofData,
                                                                                                              [
                                                                                                               { dup: { n: 0 } },
@@ -3424,8 +3475,8 @@ export class Contract {
                                                          value: { value: _descriptor_17.toValue(9n),
                                                                   alignment: _descriptor_17.alignment() } }] } },
                                        { addi: { immediate: parseInt(__compactRuntime.valueToBigInt(
-                                                              { value: _descriptor_1.toValue(tmp_0),
-                                                                alignment: _descriptor_1.alignment() }
+                                                              { value: _descriptor_0.toValue(tmp_0),
+                                                                alignment: _descriptor_0.alignment() }
                                                                 .value
                                                             )) } },
                                        { ins: { cached: true, n: 2 } }]);
@@ -3459,15 +3510,15 @@ export class Contract {
                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_17.toValue(14n),
                                                                                               alignment: _descriptor_17.alignment() }).encode() } },
                                        { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(1),
-                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_1.toValue(1),
+                                                                                              alignment: _descriptor_1.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } },
                                        { ins: { cached: true, n: 1 } }]);
     return capability_0;
   }
   _claimAgeGateCapability_0(context, partialProofData, capability_0) {
     const disclosedCapability_0 = capability_0;
-    if (_descriptor_9.fromValue(__compactRuntime.queryLedgerState(context,
+    if (_descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
                                                                   partialProofData,
                                                                   [
                                                                    { dup: { n: 0 } },
@@ -3537,8 +3588,8 @@ export class Contract {
                                                            value: { value: _descriptor_17.toValue(10n),
                                                                     alignment: _descriptor_17.alignment() } }] } },
                                          { addi: { immediate: parseInt(__compactRuntime.valueToBigInt(
-                                                                { value: _descriptor_1.toValue(tmp_0),
-                                                                  alignment: _descriptor_1.alignment() }
+                                                                { value: _descriptor_0.toValue(tmp_0),
+                                                                  alignment: _descriptor_0.alignment() }
                                                                   .value
                                                               )) } },
                                          { ins: { cached: true, n: 2 } }]);
@@ -3555,13 +3606,13 @@ export class Contract {
                                                    value: __compactRuntime.StateValue.newCell({ value: _descriptor_17.toValue(14n),
                                                                                                 alignment: _descriptor_17.alignment() }).encode() } },
                                          { push: { storage: true,
-                                                   value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(1),
-                                                                                                alignment: _descriptor_0.alignment() }).encode() } },
+                                                   value: __compactRuntime.StateValue.newCell({ value: _descriptor_1.toValue(1),
+                                                                                                alignment: _descriptor_1.alignment() }).encode() } },
                                          { ins: { cached: false, n: 1 } },
                                          { ins: { cached: true, n: 1 } }]);
       return 1;
     } else {
-      if (_descriptor_9.fromValue(__compactRuntime.queryLedgerState(context,
+      if (_descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
                                                                     partialProofData,
                                                                     [
                                                                      { dup: { n: 0 } },
@@ -3594,8 +3645,8 @@ export class Contract {
                                                      value: __compactRuntime.StateValue.newCell({ value: _descriptor_17.toValue(14n),
                                                                                                   alignment: _descriptor_17.alignment() }).encode() } },
                                            { push: { storage: true,
-                                                     value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(3),
-                                                                                                  alignment: _descriptor_0.alignment() }).encode() } },
+                                                     value: __compactRuntime.StateValue.newCell({ value: _descriptor_1.toValue(3),
+                                                                                                  alignment: _descriptor_1.alignment() }).encode() } },
                                            { ins: { cached: false, n: 1 } },
                                            { ins: { cached: true, n: 1 } }]);
         return 3;
@@ -3613,8 +3664,8 @@ export class Contract {
                                                      value: __compactRuntime.StateValue.newCell({ value: _descriptor_17.toValue(14n),
                                                                                                   alignment: _descriptor_17.alignment() }).encode() } },
                                            { push: { storage: true,
-                                                     value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(2),
-                                                                                                  alignment: _descriptor_0.alignment() }).encode() } },
+                                                     value: __compactRuntime.StateValue.newCell({ value: _descriptor_1.toValue(2),
+                                                                                                  alignment: _descriptor_1.alignment() }).encode() } },
                                            { ins: { cached: false, n: 1 } },
                                            { ins: { cached: true, n: 1 } }]);
         return 2;
@@ -3989,7 +4040,7 @@ export function ledger(stateOrChargedState) {
   };
   return {
     get contractVersion() {
-      return _descriptor_20.fromValue(__compactRuntime.queryLedgerState(context,
+      return _descriptor_21.fromValue(__compactRuntime.queryLedgerState(context,
                                                                         partialProofData,
                                                                         [
                                                                          { dup: { n: 0 } },
@@ -4006,7 +4057,7 @@ export function ledger(stateOrChargedState) {
                                                                                     result: undefined } }]).value);
     },
     get issuedCredentialCount() {
-      return _descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
+      return _descriptor_9.fromValue(__compactRuntime.queryLedgerState(context,
                                                                        partialProofData,
                                                                        [
                                                                         { dup: { n: 0 } },
@@ -4023,7 +4074,7 @@ export function ledger(stateOrChargedState) {
                                                                                    result: undefined } }]).value);
     },
     get verifiedPresentationCount() {
-      return _descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
+      return _descriptor_9.fromValue(__compactRuntime.queryLedgerState(context,
                                                                        partialProofData,
                                                                        [
                                                                         { dup: { n: 0 } },
@@ -4057,7 +4108,7 @@ export function ledger(stateOrChargedState) {
                                                                                     result: undefined } }]).value);
     },
     get ageGateRequiresBirthCountryDisclosure() {
-      return _descriptor_9.fromValue(__compactRuntime.queryLedgerState(context,
+      return _descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
                                                                        partialProofData,
                                                                        [
                                                                         { dup: { n: 0 } },
@@ -4078,7 +4129,7 @@ export function ledger(stateOrChargedState) {
         if (args_0.length !== 0) {
           throw new __compactRuntime.CompactError(`isEmpty: expected 0 arguments, received ${args_0.length}`);
         }
-        return _descriptor_9.fromValue(__compactRuntime.queryLedgerState(context,
+        return _descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
                                                                          partialProofData,
                                                                          [
                                                                           { dup: { n: 0 } },
@@ -4093,8 +4144,8 @@ export function ledger(stateOrChargedState) {
                                                                                                      alignment: _descriptor_17.alignment() } }] } },
                                                                           'size',
                                                                           { push: { storage: false,
-                                                                                    value: __compactRuntime.StateValue.newCell({ value: _descriptor_3.toValue(0n),
-                                                                                                                                 alignment: _descriptor_3.alignment() }).encode() } },
+                                                                                    value: __compactRuntime.StateValue.newCell({ value: _descriptor_9.toValue(0n),
+                                                                                                                                 alignment: _descriptor_9.alignment() }).encode() } },
                                                                           'eq',
                                                                           { popeq: { cached: true,
                                                                                      result: undefined } }]).value);
@@ -4103,7 +4154,7 @@ export function ledger(stateOrChargedState) {
         if (args_0.length !== 0) {
           throw new __compactRuntime.CompactError(`size: expected 0 arguments, received ${args_0.length}`);
         }
-        return _descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
+        return _descriptor_9.fromValue(__compactRuntime.queryLedgerState(context,
                                                                          partialProofData,
                                                                          [
                                                                           { dup: { n: 0 } },
@@ -4128,11 +4179,11 @@ export function ledger(stateOrChargedState) {
         if (!(elem_0.buffer instanceof ArrayBuffer && elem_0.BYTES_PER_ELEMENT === 1 && elem_0.length === 32)) {
           __compactRuntime.typeError('member',
                                      'argument 1',
-                                     'demo.compact line 19 char 1',
+                                     'demo.compact line 20 char 1',
                                      'Bytes<32>',
                                      elem_0)
         }
-        return _descriptor_9.fromValue(__compactRuntime.queryLedgerState(context,
+        return _descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
                                                                          partialProofData,
                                                                          [
                                                                           { dup: { n: 0 } },
@@ -4165,7 +4216,7 @@ export function ledger(stateOrChargedState) {
         if (args_0.length !== 0) {
           throw new __compactRuntime.CompactError(`isEmpty: expected 0 arguments, received ${args_0.length}`);
         }
-        return _descriptor_9.fromValue(__compactRuntime.queryLedgerState(context,
+        return _descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
                                                                          partialProofData,
                                                                          [
                                                                           { dup: { n: 0 } },
@@ -4180,8 +4231,8 @@ export function ledger(stateOrChargedState) {
                                                                                                      alignment: _descriptor_17.alignment() } }] } },
                                                                           'size',
                                                                           { push: { storage: false,
-                                                                                    value: __compactRuntime.StateValue.newCell({ value: _descriptor_3.toValue(0n),
-                                                                                                                                 alignment: _descriptor_3.alignment() }).encode() } },
+                                                                                    value: __compactRuntime.StateValue.newCell({ value: _descriptor_9.toValue(0n),
+                                                                                                                                 alignment: _descriptor_9.alignment() }).encode() } },
                                                                           'eq',
                                                                           { popeq: { cached: true,
                                                                                      result: undefined } }]).value);
@@ -4190,7 +4241,7 @@ export function ledger(stateOrChargedState) {
         if (args_0.length !== 0) {
           throw new __compactRuntime.CompactError(`size: expected 0 arguments, received ${args_0.length}`);
         }
-        return _descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
+        return _descriptor_9.fromValue(__compactRuntime.queryLedgerState(context,
                                                                          partialProofData,
                                                                          [
                                                                           { dup: { n: 0 } },
@@ -4215,11 +4266,11 @@ export function ledger(stateOrChargedState) {
         if (!(key_0.buffer instanceof ArrayBuffer && key_0.BYTES_PER_ELEMENT === 1 && key_0.length === 32)) {
           __compactRuntime.typeError('member',
                                      'argument 1',
-                                     'demo.compact line 20 char 1',
+                                     'demo.compact line 21 char 1',
                                      'Bytes<32>',
                                      key_0)
         }
-        return _descriptor_9.fromValue(__compactRuntime.queryLedgerState(context,
+        return _descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
                                                                          partialProofData,
                                                                          [
                                                                           { dup: { n: 0 } },
@@ -4247,7 +4298,7 @@ export function ledger(stateOrChargedState) {
         if (!(key_0.buffer instanceof ArrayBuffer && key_0.BYTES_PER_ELEMENT === 1 && key_0.length === 32)) {
           __compactRuntime.typeError('lookup',
                                      'argument 1',
-                                     'demo.compact line 20 char 1',
+                                     'demo.compact line 21 char 1',
                                      'Bytes<32>',
                                      key_0)
         }
@@ -4299,7 +4350,7 @@ export function ledger(stateOrChargedState) {
                                                                                    result: undefined } }]).value);
     },
     get lastVerifiedCurrentDay() {
-      return _descriptor_20.fromValue(__compactRuntime.queryLedgerState(context,
+      return _descriptor_21.fromValue(__compactRuntime.queryLedgerState(context,
                                                                         partialProofData,
                                                                         [
                                                                          { dup: { n: 0 } },
@@ -4350,7 +4401,7 @@ export function ledger(stateOrChargedState) {
                                                                                    result: undefined } }]).value);
     },
     get issuedAccessCapabilityCount() {
-      return _descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
+      return _descriptor_9.fromValue(__compactRuntime.queryLedgerState(context,
                                                                        partialProofData,
                                                                        [
                                                                         { dup: { n: 0 } },
@@ -4367,7 +4418,7 @@ export function ledger(stateOrChargedState) {
                                                                                    result: undefined } }]).value);
     },
     get consumedAccessCapabilityCount() {
-      return _descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
+      return _descriptor_9.fromValue(__compactRuntime.queryLedgerState(context,
                                                                        partialProofData,
                                                                        [
                                                                         { dup: { n: 0 } },
@@ -4388,7 +4439,7 @@ export function ledger(stateOrChargedState) {
         if (args_0.length !== 0) {
           throw new __compactRuntime.CompactError(`isEmpty: expected 0 arguments, received ${args_0.length}`);
         }
-        return _descriptor_9.fromValue(__compactRuntime.queryLedgerState(context,
+        return _descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
                                                                          partialProofData,
                                                                          [
                                                                           { dup: { n: 0 } },
@@ -4403,8 +4454,8 @@ export function ledger(stateOrChargedState) {
                                                                                                      alignment: _descriptor_17.alignment() } }] } },
                                                                           'size',
                                                                           { push: { storage: false,
-                                                                                    value: __compactRuntime.StateValue.newCell({ value: _descriptor_3.toValue(0n),
-                                                                                                                                 alignment: _descriptor_3.alignment() }).encode() } },
+                                                                                    value: __compactRuntime.StateValue.newCell({ value: _descriptor_9.toValue(0n),
+                                                                                                                                 alignment: _descriptor_9.alignment() }).encode() } },
                                                                           'eq',
                                                                           { popeq: { cached: true,
                                                                                      result: undefined } }]).value);
@@ -4413,7 +4464,7 @@ export function ledger(stateOrChargedState) {
         if (args_0.length !== 0) {
           throw new __compactRuntime.CompactError(`size: expected 0 arguments, received ${args_0.length}`);
         }
-        return _descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
+        return _descriptor_9.fromValue(__compactRuntime.queryLedgerState(context,
                                                                          partialProofData,
                                                                          [
                                                                           { dup: { n: 0 } },
@@ -4438,11 +4489,11 @@ export function ledger(stateOrChargedState) {
         if (!(elem_0.buffer instanceof ArrayBuffer && elem_0.BYTES_PER_ELEMENT === 1 && elem_0.length === 32)) {
           __compactRuntime.typeError('member',
                                      'argument 1',
-                                     'demo.compact line 27 char 1',
+                                     'demo.compact line 28 char 1',
                                      'Bytes<32>',
                                      elem_0)
         }
-        return _descriptor_9.fromValue(__compactRuntime.queryLedgerState(context,
+        return _descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
                                                                          partialProofData,
                                                                          [
                                                                           { dup: { n: 0 } },
@@ -4475,7 +4526,7 @@ export function ledger(stateOrChargedState) {
         if (args_0.length !== 0) {
           throw new __compactRuntime.CompactError(`isEmpty: expected 0 arguments, received ${args_0.length}`);
         }
-        return _descriptor_9.fromValue(__compactRuntime.queryLedgerState(context,
+        return _descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
                                                                          partialProofData,
                                                                          [
                                                                           { dup: { n: 0 } },
@@ -4490,8 +4541,8 @@ export function ledger(stateOrChargedState) {
                                                                                                      alignment: _descriptor_17.alignment() } }] } },
                                                                           'size',
                                                                           { push: { storage: false,
-                                                                                    value: __compactRuntime.StateValue.newCell({ value: _descriptor_3.toValue(0n),
-                                                                                                                                 alignment: _descriptor_3.alignment() }).encode() } },
+                                                                                    value: __compactRuntime.StateValue.newCell({ value: _descriptor_9.toValue(0n),
+                                                                                                                                 alignment: _descriptor_9.alignment() }).encode() } },
                                                                           'eq',
                                                                           { popeq: { cached: true,
                                                                                      result: undefined } }]).value);
@@ -4500,7 +4551,7 @@ export function ledger(stateOrChargedState) {
         if (args_0.length !== 0) {
           throw new __compactRuntime.CompactError(`size: expected 0 arguments, received ${args_0.length}`);
         }
-        return _descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
+        return _descriptor_9.fromValue(__compactRuntime.queryLedgerState(context,
                                                                          partialProofData,
                                                                          [
                                                                           { dup: { n: 0 } },
@@ -4525,11 +4576,11 @@ export function ledger(stateOrChargedState) {
         if (!(elem_0.buffer instanceof ArrayBuffer && elem_0.BYTES_PER_ELEMENT === 1 && elem_0.length === 32)) {
           __compactRuntime.typeError('member',
                                      'argument 1',
-                                     'demo.compact line 28 char 1',
+                                     'demo.compact line 29 char 1',
                                      'Bytes<32>',
                                      elem_0)
         }
-        return _descriptor_9.fromValue(__compactRuntime.queryLedgerState(context,
+        return _descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
                                                                          partialProofData,
                                                                          [
                                                                           { dup: { n: 0 } },
@@ -4575,7 +4626,7 @@ export function ledger(stateOrChargedState) {
                                                                                    result: undefined } }]).value);
     },
     get lastBusinessDecision() {
-      return _descriptor_0.fromValue(__compactRuntime.queryLedgerState(context,
+      return _descriptor_1.fromValue(__compactRuntime.queryLedgerState(context,
                                                                        partialProofData,
                                                                        [
                                                                         { dup: { n: 0 } },
@@ -6089,28 +6140,28 @@ export const pureCircuits = {
     if (!(typeof(issuerVerificationMethodRef_0) === 'object' && typeof(issuerVerificationMethodRef_0.didContractAddress) === 'object' && issuerVerificationMethodRef_0.didContractAddress.bytes.buffer instanceof ArrayBuffer && issuerVerificationMethodRef_0.didContractAddress.bytes.BYTES_PER_ELEMENT === 1 && issuerVerificationMethodRef_0.didContractAddress.bytes.length === 32 && issuerVerificationMethodRef_0.methodId.buffer instanceof ArrayBuffer && issuerVerificationMethodRef_0.methodId.BYTES_PER_ELEMENT === 1 && issuerVerificationMethodRef_0.methodId.length === 32)) {
       __compactRuntime.typeError('ageGateRequestForPolicy',
                                  'argument 1',
-                                 'demo.compact line 51 char 1',
+                                 'demo.compact line 52 char 1',
                                  'struct VerificationMethodRef<didContractAddress: struct ContractAddress<bytes: Bytes<32>>, methodId: Bytes<32>>',
                                  issuerVerificationMethodRef_0)
     }
     if (!(verifierChallengeHash_0.buffer instanceof ArrayBuffer && verifierChallengeHash_0.BYTES_PER_ELEMENT === 1 && verifierChallengeHash_0.length === 32)) {
       __compactRuntime.typeError('ageGateRequestForPolicy',
                                  'argument 2',
-                                 'demo.compact line 51 char 1',
+                                 'demo.compact line 52 char 1',
                                  'Bytes<32>',
                                  verifierChallengeHash_0)
     }
     if (!(typeof(requireBirthCountryDisclosure_0) === 'boolean')) {
       __compactRuntime.typeError('ageGateRequestForPolicy',
                                  'argument 3',
-                                 'demo.compact line 51 char 1',
+                                 'demo.compact line 52 char 1',
                                  'Boolean',
                                  requireBirthCountryDisclosure_0)
     }
     if (!(typeof(requestedAgeThresholdYears_0) === 'bigint' && requestedAgeThresholdYears_0 >= 0n && requestedAgeThresholdYears_0 <= 255n)) {
       __compactRuntime.typeError('ageGateRequestForPolicy',
                                  'argument 4',
-                                 'demo.compact line 51 char 1',
+                                 'demo.compact line 52 char 1',
                                  'Uint<0..256>',
                                  requestedAgeThresholdYears_0)
     }

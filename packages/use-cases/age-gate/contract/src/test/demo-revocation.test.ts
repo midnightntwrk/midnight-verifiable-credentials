@@ -383,6 +383,29 @@ describe("credentials demo revocation contract", () => {
       fixture.witness.currentDay,
       request.verificationRequest.envelope.createdAt + 10n,
     );
+    const trustedTime = request.verificationRequest.envelope.createdAt + 10n;
+    expect(() =>
+      simulator.issueRevocationAwareCapabilityWithAuthorityAttestation(
+        fixture.credentialWithStatusBinding,
+        request,
+        submission,
+        fixture.authorityAttestedStatusProtocolInputs,
+        fixture.witness.currentDay,
+        trustedTime,
+        trustedTime + 1n,
+      ),
+    ).toThrow(/Trusted time candidate is stale/);
+    expect(() =>
+      simulator.issueRevocationAwareCapabilityWithAuthorityAttestation(
+        fixture.credentialWithStatusBinding,
+        request,
+        submission,
+        fixture.authorityAttestedStatusProtocolInputs,
+        fixture.witness.currentDay,
+        trustedTime,
+        trustedTime - 1n,
+      ),
+    ).toThrow(/Trusted time candidate is in the future/);
     const state = simulator.getLedger();
 
     expect(state.issuedCredentialCount).toEqual(1n);

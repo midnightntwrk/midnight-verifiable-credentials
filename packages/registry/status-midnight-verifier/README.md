@@ -10,7 +10,9 @@ The package exposes:
 - exact same-contract lookup over one authenticated `StatusRegistryStateV1` snapshot;
 - a SHA-256 reference Merkle verifier for membership and sorted-neighbor non-membership proofs;
 - profile-, namespace-, deployment-, registry-, root-, version-, accepted-authority-policy-, verifier-trusted subject/request-, freshness-, and transcript-bound external proof verification;
-- explicit #494 DID/trust authority and freshness provider ports; and
+- explicit #494 DID/trust authority and freshness provider ports;
+- `createTrustedTimeStatusFreshnessVerifierV1`, which rejects local clocks and
+  checks status age/expiry against scope-bound ledger or attested time; and
 - shared JSON vectors available at `./test-vectors/authenticated-status-v1.json`.
 
 Required omitted or unavailable proof, root authority, or freshness evidence is `indeterminate`. Authenticated mismatch, malformed/forged witness, stale root, or proved membership is `invalid`. Only proved non-membership for the policy's verifier-trusted leaf, credential, presentation, and challenge digests is `valid`; copying those values from holder evidence is unsafe.

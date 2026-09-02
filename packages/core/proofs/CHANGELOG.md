@@ -4,6 +4,7 @@
 
 - Added the proof-job, provider, verifier, and artifact-resolver ports.
 - Added immutable versioned proof, build, and deployment manifest contracts with validation.
+- Added scope-bound trusted-time evidence, ledger/attested adapter ports, and rollback/replay/freshness validation.
 
 This package deliberately does not ship family circuits, proving or verifier
 keys, ZKIR/BZKIR, deployment bundles, authority, verification-v1, or runtime

@@ -3,6 +3,7 @@ pragma language_version >= 0.20;
 import CompactStandardLibrary;
 
 include "../../../../../packages/prototypes/credential-families/birth-secret/src/secret-birth-credential";
+include "../../../../../packages/core/primitives/credentials/src/credentials/trusted-time";
 
 export enum RevocationVerificationMode {
   noVerification,
@@ -156,8 +157,10 @@ export circuit revokeLiveStatusHandle(
 export circuit revocationAwareAgeGateVerificationRequest(
   issuerVerificationMethodRef: VerificationMethodRef,
   verifierDomainHash: Bytes<32>,
-  verifierChallengeHash: Bytes<32>
+  verifierChallengeHash: Bytes<32>,
+  trustedTime: Uint<64>
 ): SecretBirthCredentialVerificationRequest {
+  assertTrustedLedgerTimeV1(trustedTime);
   return SecretBirthCredentialVerificationRequest {
     envelope: ProtocolMessageEnvelope {
       version: 1,
@@ -171,7 +174,7 @@ export circuit revocationAwareAgeGateVerificationRequest(
       ),
       initialMessage: true,
       respondsToMessageId: noProtocolResponseReference(),
-      createdAt: 1,
+      createdAt: trustedTime,
       hasExpiresAt: false,
       expiresAt: 0,
     },
@@ -205,13 +208,15 @@ export circuit revocationAwareVerifierSuppliedRootRequest(
   issuerVerificationMethodRef: VerificationMethodRef,
   verifierDomainHash: Bytes<32>,
   verifierChallengeHash: Bytes<32>,
-  registryState: RevocationRegistryState
+  registryState: RevocationRegistryState,
+  trustedTime: Uint<64>
 ): SecretBirthCredentialVerificationRevokedSetStatusRequest {
   return SecretBirthCredentialVerificationRevokedSetStatusRequest {
     verificationRequest: revocationAwareAgeGateVerificationRequest(
       issuerVerificationMethodRef,
       verifierDomainHash,
-      verifierChallengeHash
+      verifierChallengeHash,
+      trustedTime
     ),
     statusPolicy: revocationDemoStatusPolicy(
       StatusCapabilityKind.revokedSetNonMembership,
@@ -228,13 +233,15 @@ export circuit revocationAwareAuthorityAttestedRequest(
   issuerVerificationMethodRef: VerificationMethodRef,
   verifierDomainHash: Bytes<32>,
   verifierChallengeHash: Bytes<32>,
-  registryState: RevocationRegistryState
+  registryState: RevocationRegistryState,
+  trustedTime: Uint<64>
 ): SecretBirthCredentialVerificationAuthorityAttestedStatusRequest {
   return SecretBirthCredentialVerificationAuthorityAttestedStatusRequest {
     verificationRequest: revocationAwareAgeGateVerificationRequest(
       issuerVerificationMethodRef,
       verifierDomainHash,
-      verifierChallengeHash
+      verifierChallengeHash,
+      trustedTime
     ),
     statusPolicy: revocationDemoAuthorityAttestedStatusPolicy(
       registryState.registryId
@@ -249,7 +256,8 @@ export circuit revocationAwareAuthorityAttestedRequest(
 export circuit revocationAwareLiveStatusRequest(
   issuerVerificationMethodRef: VerificationMethodRef,
   verifierDomainHash: Bytes<32>,
-  verifierChallengeHash: Bytes<32>
+  verifierChallengeHash: Bytes<32>,
+  trustedTime: Uint<64>
 ): SecretBirthCredentialVerificationLiveStatusRequest {
   assert(
     liveStatusRegistryInitialized,
@@ -259,7 +267,8 @@ export circuit revocationAwareLiveStatusRequest(
     verificationRequest: revocationAwareAgeGateVerificationRequest(
       issuerVerificationMethodRef,
       verifierDomainHash,
-      verifierChallengeHash
+      verifierChallengeHash,
+      trustedTime
     ),
     // Reuse the revoked-set non-membership capability label here: the live
     // path still proves "status handle not present in the accepted revoked set",
@@ -317,6 +326,40 @@ export circuit issueSecretBirthCredential(
   issuedCredentialCount.increment(1);
 }
 
+circuit assertSecretBirthCredentialTrustedTime(
+  issuedAt: Uint<64>,
+  hasExpiration: Boolean,
+  expiresAt: Uint<64>,
+  currentDay: Uint<32>
+): [] {
+  assertTrustedLedgerDayV1(currentDay);
+  assert(
+    (currentDay as Uint<64>) >= issuedAt,
+    "Secret birth credential is not yet valid at trusted ledger time"
+  );
+  if (hasExpiration) {
+    assert(
+      (currentDay as Uint<64>) <= expiresAt,
+      "Secret birth credential has expired at trusted ledger time"
+    );
+  }
+}
+
+circuit assertProtocolEnvelopeTrustedTime(
+  envelope: ProtocolMessageEnvelope
+): [] {
+  assert(
+    blockTimeGte(disclose(envelope.createdAt)),
+    "Protocol request was created in the future"
+  );
+  if (disclose(envelope.hasExpiresAt)) {
+    assert(
+      blockTimeLte(disclose(envelope.expiresAt)),
+      "Protocol request has expired at trusted ledger time"
+    );
+  }
+}
+
 circuit verifySecretBirthPresentationWithVerifierSuppliedRoot(
   credentialWithStatus: SecretBirthCredentialWithStatusBinding,
   request: SecretBirthCredentialVerificationRevokedSetStatusRequest,
@@ -324,6 +367,14 @@ circuit verifySecretBirthPresentationWithVerifierSuppliedRoot(
   statusInputs: SecretBirthCredentialVerificationRevokedSetStatusInputs,
   currentDay: Uint<32>
 ): [] {
+  assertSecretBirthCredentialTrustedTime(
+    credentialWithStatus.credential.issuedAt,
+    credentialWithStatus.credential.hasExpiration,
+    credentialWithStatus.credential.expiresAt,
+    currentDay
+  );
+  assertProtocolEnvelopeTrustedTime(request.verificationRequest.envelope);
+  assertProtocolEnvelopeTrustedTime(submission.envelope);
   const plainCredential = secretBirthCredentialWithoutStatusBinding(
     credentialWithStatus.credential
   );
@@ -402,6 +453,14 @@ circuit verifySecretBirthPresentationWithLiveStatus(
   statusInputs: SecretBirthCredentialVerificationLiveStatusInputs,
   currentDay: Uint<32>
 ): [] {
+  assertSecretBirthCredentialTrustedTime(
+    credentialWithStatus.credential.issuedAt,
+    credentialWithStatus.credential.hasExpiration,
+    credentialWithStatus.credential.expiresAt,
+    currentDay
+  );
+  assertProtocolEnvelopeTrustedTime(request.verificationRequest.envelope);
+  assertProtocolEnvelopeTrustedTime(submission.envelope);
   const plainCredential = secretBirthCredentialWithoutStatusBinding(
     credentialWithStatus.credential
   );
@@ -487,6 +546,15 @@ circuit verifySecretBirthPresentationWithAuthorityAttestedStatus(
   currentDay: Uint<32>,
   currentTime: Uint<64>
 ): [] {
+  assertSecretBirthCredentialTrustedTime(
+    credentialWithStatus.credential.issuedAt,
+    credentialWithStatus.credential.hasExpiration,
+    credentialWithStatus.credential.expiresAt,
+    currentDay
+  );
+  assertTrustedLedgerTimeV1(currentTime);
+  assertProtocolEnvelopeTrustedTime(request.verificationRequest.envelope);
+  assertProtocolEnvelopeTrustedTime(submission.envelope);
   const plainCredential = secretBirthCredentialWithoutStatusBinding(
     credentialWithStatus.credential
   );

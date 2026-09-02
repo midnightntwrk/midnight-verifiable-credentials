@@ -29,6 +29,8 @@ import {
   revocationWitnesses,
 } from "./revocation-witnesses.js";
 
+const DEFAULT_REFERENCE_LEDGER_TIME = 1_103_760_010n;
+
 export class CredentialsDemoRevocationSimulator {
   readonly contract: Contract<CredentialsDemoRevocationPrivateState>;
   circuitContext: CircuitContext<CredentialsDemoRevocationPrivateState>;
@@ -93,6 +95,18 @@ export class CredentialsDemoRevocationSimulator {
     );
   }
 
+  private setLedgerTime(secondsSinceEpoch: bigint): void {
+    this.circuitContext = createCircuitContext(
+      sampleContractAddress(),
+      this.circuitContext.currentZswapLocalState,
+      this.circuitContext.currentQueryContext.state,
+      this.circuitContext.currentPrivateState,
+      undefined,
+      undefined,
+      Number(secondsSinceEpoch),
+    );
+  }
+
   private executeCircuit<T>(
     circuitFn: () => CircuitResults<CredentialsDemoRevocationPrivateState, T>,
   ): T {
@@ -142,7 +156,9 @@ export class CredentialsDemoRevocationSimulator {
     verifierDomainHash: Uint8Array,
     verifierChallengeHash: Uint8Array,
     registryState: RevocationRegistryState,
+    trustedTime = DEFAULT_REFERENCE_LEDGER_TIME,
   ): SecretBirthCredentialVerificationRevokedSetStatusRequest {
+    this.setLedgerTime(trustedTime);
     return this.executeCircuit(() =>
       this.contract.impureCircuits.revocationAwareVerifierSuppliedRootRequest(
         this.circuitContext,
@@ -150,6 +166,7 @@ export class CredentialsDemoRevocationSimulator {
         verifierDomainHash,
         verifierChallengeHash,
         registryState,
+        trustedTime,
       ),
     );
   }
@@ -159,7 +176,9 @@ export class CredentialsDemoRevocationSimulator {
     verifierDomainHash: Uint8Array,
     verifierChallengeHash: Uint8Array,
     registryState: RevocationRegistryState,
+    trustedTime = DEFAULT_REFERENCE_LEDGER_TIME,
   ): SecretBirthCredentialVerificationAuthorityAttestedStatusRequest {
+    this.setLedgerTime(trustedTime);
     return this.executeCircuit(() =>
       this.contract.impureCircuits.revocationAwareAuthorityAttestedRequest(
         this.circuitContext,
@@ -167,6 +186,7 @@ export class CredentialsDemoRevocationSimulator {
         verifierDomainHash,
         verifierChallengeHash,
         registryState,
+        trustedTime,
       ),
     );
   }
@@ -175,13 +195,16 @@ export class CredentialsDemoRevocationSimulator {
     issuerVerificationMethodRef: VerificationMethodRef,
     verifierDomainHash: Uint8Array,
     verifierChallengeHash: Uint8Array,
+    trustedTime = DEFAULT_REFERENCE_LEDGER_TIME,
   ): SecretBirthCredentialVerificationLiveStatusRequest {
+    this.setLedgerTime(trustedTime);
     return this.executeCircuit(() =>
       this.contract.impureCircuits.revocationAwareLiveStatusRequest(
         this.circuitContext,
         issuerVerificationMethodRef,
         verifierDomainHash,
         verifierChallengeHash,
+        trustedTime,
       ),
     );
   }
@@ -192,7 +215,9 @@ export class CredentialsDemoRevocationSimulator {
     submission: SecretBirthCredentialVerificationSubmission,
     statusInputs: SecretBirthCredentialVerificationRevokedSetStatusInputs,
     currentDay: bigint,
+    ledgerTimeSeconds = submission.envelope.createdAt,
   ): Uint8Array {
+    this.setLedgerTime(ledgerTimeSeconds);
     return this.executeCircuit(() =>
       this.contract.impureCircuits.issueRevocationAwareCapabilityWithVerifierSuppliedRoot(
         this.circuitContext,
@@ -212,7 +237,9 @@ export class CredentialsDemoRevocationSimulator {
     statusInputs: SecretBirthCredentialVerificationAuthorityAttestedStatusProtocolInputs,
     currentDay: bigint,
     currentTime: bigint,
+    ledgerTimeSeconds = currentTime,
   ): Uint8Array {
+    this.setLedgerTime(ledgerTimeSeconds);
     return this.executeCircuit(() =>
       this.contract.impureCircuits.issueRevocationAwareCapabilityWithAuthorityAttestation(
         this.circuitContext,
@@ -232,7 +259,9 @@ export class CredentialsDemoRevocationSimulator {
     submission: SecretBirthCredentialVerificationSubmission,
     statusInputs: SecretBirthCredentialVerificationLiveStatusInputs,
     currentDay: bigint,
+    ledgerTimeSeconds = submission.envelope.createdAt,
   ): Uint8Array {
+    this.setLedgerTime(ledgerTimeSeconds);
     return this.executeCircuit(() =>
       this.contract.impureCircuits.issueRevocationAwareCapabilityWithLiveStatus(
         this.circuitContext,

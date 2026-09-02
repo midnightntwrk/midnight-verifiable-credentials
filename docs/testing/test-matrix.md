@@ -48,6 +48,21 @@ artifacts are tracked in
 - `packages/core/proofs/src/test/authority-bound-proof-verifier.test.ts`
   - proof verification cannot be upgraded by authority evidence and proof inputs/
     bytes are excluded from canonical authority results
+- `packages/core/proofs/src/test/trusted-time.test.ts`
+  - ledger/attested/local-reference authority labels, verifier-selected attestor
+    policy substitution, full scope mutation, nested malformed/unavailable
+    evidence, inclusive skew/age boundaries, future, expiry, stale, request-A
+    sequence 10 to request-B sequence 9 rollback, and replay vectors
+- `packages/registry/status-midnight-verifier/src/test/trusted-time-freshness.test.ts`
+  - #496 status freshness consumes authoritative time and fails future, stale,
+    expired, mismatched, malformed, and unavailable evidence closed
+- `packages/registry/status-midnight-authority/src/test/authority-gate.test.ts`
+  - nominally valid trusted-time adapters returning NaN, infinity, fractional,
+    or negative values fail invalid without applying a status write
+- `packages/use-cases/age-gate/contract/src/test/demo.test.ts` and
+  `demo-revocation.test.ts`
+  - Compact/runtime parity at exact second and Unix-day boundaries; caller day/time
+    mutation, future request, credential/status expiry, and stale status rejection
 
 ## DID-aware adapter package tests
 

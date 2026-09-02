@@ -8,6 +8,12 @@ and versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- comparison-only Compact trusted-time helpers for ledger seconds, Unix days,
+  and validity intervals, consumed directly by private authoritative contracts
+  and deliberately excluded from canonical reusable Compact composition.
+
 ### Changed
 
 - defined the package as a private pre-1.0 release candidate for local tarball

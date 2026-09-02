@@ -34,6 +34,8 @@ import {
 
 const JUBJUB_SUBGROUP_ORDER =
   6554484396890773809930967563523245729705921265872317281365359162392183254199n;
+const FIXTURE_CURRENT_DAY = 3650n + 365n * 25n;
+const FIXTURE_LEDGER_TIME = FIXTURE_CURRENT_DAY * 86_400n + 10n;
 
 export type Signer = {
   readonly label: string;
@@ -114,7 +116,7 @@ const createProtocolEnvelope = (
   threadId: sha256(`protocol:thread:${threadLabel}`),
   initialMessage: true,
   respondsToMessageId: pureCircuits.noProtocolResponseReference(),
-  createdAt: 1n,
+  createdAt: FIXTURE_LEDGER_TIME,
   hasExpiresAt: false,
   expiresAt: 0n,
 });
@@ -190,7 +192,7 @@ export const createDemoRevocationFixture = (
     birthDateOpening: sha256("opening:birth-date"),
     birthCountryCodePadded: padText("CAN"),
     birthCountryCodeOpening: sha256("opening:birth-country"),
-    currentDay: 3650n + 365n * 25n,
+    currentDay: FIXTURE_CURRENT_DAY,
     statusHandle: sha256("status-handle:birth-secret:alice"),
     statusHandleOpening: sha256("opening:status-handle"),
     statusRegistryId: sha256("registry:birth-secret-status"),
