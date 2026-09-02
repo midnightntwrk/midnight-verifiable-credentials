@@ -278,6 +278,15 @@ const assertWorkflowUsesLocalSetupActions = () => {
   if (!docsOnlyJob.includes('pnpm-cache: "false"')) {
     errors.push("docs-only-validation must disable pnpm cache lookup when installation is disabled");
   }
+  if (
+    !docsOnlyJob.includes(
+      "--test-name-pattern='scaffold help and documentation advertise exactly the compiled mode matrix'",
+    )
+  ) {
+    errors.push(
+      "docs-only-validation must run the non-Compact scaffold advertised-mode contract",
+    );
+  }
 
   if (
     pnpmActionIndex !== -1 &&

@@ -28,12 +28,19 @@ a deployment.
 Issuers sign credentials off-chain by default. A credential product may ship
 reviewed contract composition recipes for the following independent roles:
 
-- an optional issuance or anchor contract when ledger-backed issuance is a
-  product requirement;
+- an optional credential-registration or anchoring contract after issuer-local
+  issuance when a ledger record is a product requirement;
 - an authenticated status registry;
 - a verifier or business contract that consumes a presentation and performs an
   action; and
 - an optional authority/governance contract for product-specific policy.
+
+Under the vocabulary accepted by
+[ADR-0015](./0015-vc-family-profile-vocabulary-and-boundaries.md), the former
+“issuance contract” or “ledger-backed issuance” role means credential
+registration or anchoring after issuer-local construction and signing.
+Ledger-native credential construction/signing is not admitted by this ADR's
+initial architecture and would require a separate decision.
 
 The default status topology is one authenticated registry per issuer and
 schema major version. A shared multi-issuer registry is allowed only when the

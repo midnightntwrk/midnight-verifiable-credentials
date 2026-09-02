@@ -82,6 +82,12 @@ jobs:
       - name: Check markdown links
         run: pnpm run docs:links
 
+      - name: Check scaffold advertised-mode contract
+        run: >-
+          node --test
+          --test-name-pattern='scaffold help and documentation advertise exactly the compiled mode matrix'
+          ./tooling/scripts/scaffold-vc-family.test.mjs
+
       - name: Record docs-only fast path
         run: |
           echo 'Docs-only change detected.'
@@ -158,6 +164,9 @@ jobs:
 
       - name: Verify Compact installation
         run: compact compile --version
+
+      - name: Compile generated VC family scaffold matrix
+        run: pnpm run test:scaffold-compact
 
       - name: Validate trusted-time capability
         run: pnpm run test:trusted-time-capability
