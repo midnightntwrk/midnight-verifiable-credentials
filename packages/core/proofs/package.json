@@ -32,6 +32,16 @@
       "import": "./dist/artifacts.js",
       "default": "./dist/artifacts.js"
     },
+    "./authority-evidence": {
+      "types": "./dist/authority-evidence.d.ts",
+      "import": "./dist/authority-evidence.js",
+      "default": "./dist/authority-evidence.js"
+    },
+    "./authority-bound-verifier": {
+      "types": "./dist/authority-bound-verifier.d.ts",
+      "import": "./dist/authority-bound-verifier.js",
+      "default": "./dist/authority-bound-verifier.js"
+    },
     "./providers": {
       "types": "./dist/providers.d.ts",
       "import": "./dist/providers.js",

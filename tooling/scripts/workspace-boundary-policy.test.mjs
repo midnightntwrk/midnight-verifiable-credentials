@@ -45,10 +45,10 @@ test("family packages deny protocol, orchestration, and use-case dependencies", 
   assert.deepEqual(findFamilySourceImportViolations(), []);
 });
 
-test("family-neutral exchange depends only on the canonical model", () => {
+test("family-neutral exchange depends only on canonical reusable core", () => {
   assert.deepEqual(
     workspaceDependencyPaths("packages/components/orchestration/exchange"),
-    ["packages/core/model"],
+    ["packages/core/model", "packages/core/proofs"],
   );
   assert.deepEqual(findFamilyNeutralExchangeSourceImportViolations(), []);
 });

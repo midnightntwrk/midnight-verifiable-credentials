@@ -37,6 +37,17 @@ artifacts are tracked in
     verification V1 record and one synthetic extension
   - direct Compact-path mutation coverage over all 47 transcript fields
   - fail-closed public-input, enum, evidence, result-state, and adapter behavior
+- `packages/core/proofs/src/test/authority-evidence.test.ts`
+  - issuer, holder, verifier, and status keys bound to profile-selected DID
+    method/relationship/network/state/lifecycle and trust scope/epoch evidence
+  - positive active replacement-key rotation and negative copied-reference
+    attacker key, wrong relationship/network/version, rotated/revoked/deactivated,
+    wrong scope/epoch, suspended/withdrawn, unauthenticated, missing, and provider
+    unavailable vectors
+  - canonical evidence identity/observation-time transcript and holder-witness exclusion
+- `packages/core/proofs/src/test/authority-bound-proof-verifier.test.ts`
+  - proof verification cannot be upgraded by authority evidence and proof inputs/
+    bytes are excluded from canonical authority results
 
 ## DID-aware adapter package tests
 
@@ -594,8 +605,9 @@ In addition to the wrapper targets above, `./run.sh` now accepts any root
 | --- | --- |
 | `packages/components/orchestration/exchange/src/test/injected-family-agents.test.ts` | The same issuer/holder/verifier orchestration runs with directly and runtime-injected family adapters; the public guard binds exact family/schema versions, rejects incomplete optional opening ports, cross-family messages fail before dispatch, and transport wrapping cannot grant validity. |
 | `packages/components/orchestration/exchange/src/test/claim-opening-delivery.test.ts` | A synthetic committed-private adapter delivers only the exact requested openings; altered, missing, additional, malformed, wrong-recipient, and mutating-adapter material fails before storage; restart revalidates private records; public receipt/presentation snapshots contain no openings or raw private claims; the canonical credential bytes remain unchanged. |
+| `packages/components/orchestration/exchange/src/test/authority-bound-verifier.test.ts` | Canonical VC/VP and request bytes are digest-bound to the reusable DID/trust authority transcript; family failures cannot be upgraded; arbitrary holder verification input is not forwarded to providers or retained in results. |
 | Birth/birth-secret Compact protocol tests and `packages/components/orchestration/protocol/src/test/{explicit-holder,secret-holder}/issuance.test.ts` | Both retained committed-private families include shared private parts in issuance results, validate every opening against the credential, reject wrong-recipient or altered material before storage, persist through file-backed restart, and selectively recover requested fields. |
-| `tooling/scripts/workspace-boundary-policy.test.mjs` | Family packages cannot depend on protocol, orchestration, or use-case workspaces; neutral exchange depends only on `credential-model`. |
+| `tooling/scripts/workspace-boundary-policy.test.mjs` | Family packages cannot depend on protocol, orchestration, or use-case workspaces; neutral exchange depends only on the family-neutral `credential-model` and `credential-proofs` packages. |
 | `tooling/scripts/test-family-neutral-exchange-consumer.mjs` | Packed model/exchange tarballs install outside the workspace; a generic wallet module with no concrete-family import resolves an authenticated runtime provider, persists/restarts, selectively recovers an opening, and completes an injected lifecycle without exposing the opening to its verifier. |
 | `packages/core/compact/src/test/compact-value-codec.test.ts` and OpenID compatibility tests | Protocol-neutral Compact value framing is canonical in `credential-compact` while the legacy OpenID export remains compatible. |
 

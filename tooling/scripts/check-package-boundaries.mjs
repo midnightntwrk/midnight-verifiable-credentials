@@ -144,7 +144,10 @@ export const findFamilySourceImportViolations = () =>
   });
 
 const familyNeutralExchangePath = "packages/components/orchestration/exchange";
-const familyNeutralExchangeAllowedImports = new Set(["packages/core/model"]);
+const familyNeutralExchangeAllowedImports = new Set([
+  "packages/core/model",
+  "packages/core/proofs",
+]);
 
 export const findFamilyNeutralExchangeSourceImportViolations = () =>
   familySourceImportPaths(familyNeutralExchangePath)

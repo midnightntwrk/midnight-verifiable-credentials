@@ -45,6 +45,13 @@ try {
   ]);
   run("pnpm", [
     "--dir",
+    "packages/core/proofs",
+    "pack",
+    "--pack-destination",
+    tarballRoot,
+  ]);
+  run("pnpm", [
+    "--dir",
     "packages/components/orchestration/exchange",
     "pack",
     "--pack-destination",
@@ -54,6 +61,10 @@ try {
   const modelTarball = path.join(
     tarballRoot,
     "midnight-ntwrk-credential-model-0.1.0.tgz",
+  );
+  const proofsTarball = path.join(
+    tarballRoot,
+    "midnight-ntwrk-credential-proofs-0.1.0.tgz",
   );
   const exchangeTarball = path.join(
     tarballRoot,
@@ -68,6 +79,7 @@ try {
         type: "module",
         dependencies: {
           "@midnight-ntwrk/credential-model": `file:${modelTarball}`,
+          "@midnight-ntwrk/credential-proofs": `file:${proofsTarball}`,
           "@midnight-ntwrk/credential-exchange": `file:${exchangeTarball}`,
         },
       },
@@ -92,6 +104,8 @@ try {
       2,
     )}\n`,
   );
+  // Includes the generic wallet lifecycle and direct packed proofs/exchange
+  // authority-bound verifier consumer.
   cpSync(
     path.join(repoRoot, "tooling/fixtures/runtime-family-wallet-consumer"),
     consumerSource,
@@ -101,7 +115,11 @@ try {
   run("npm", ["install", "--ignore-scripts", "--no-audit", "--no-fund"], consumerRoot);
   run("pnpm", ["exec", "tsc", "-p", path.join(consumerRoot, "tsconfig.json")]);
   const output = run("node", [path.join(consumerRoot, "dist/index.js")]);
+  const authorityOutput = run("node", [
+    path.join(consumerRoot, "dist/authority-consumer.js"),
+  ]);
   process.stdout.write(output);
+  process.stdout.write(authorityOutput);
 } finally {
   rmSync(temporaryRoot, { recursive: true, force: true });
 }

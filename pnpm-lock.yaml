@@ -225,6 +225,9 @@ importers:
       '@midnight-ntwrk/credential-model':
         specifier: workspace:*
         version: link:../../../core/model
+      '@midnight-ntwrk/credential-proofs':
+        specifier: workspace:*
+        version: link:../../../core/proofs
 
   packages/components/orchestration/protocol:
     dependencies:
