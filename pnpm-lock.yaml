@@ -128,6 +128,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: ^3.2.7
         version: 3.2.7(vitest@3.2.7(@types/node@26.2.0)(yaml@2.9.0))
+      esbuild:
+        specifier: 0.28.1
+        version: 0.28.1
       eslint:
         specifier: ^9.28.0
         version: 9.39.4
@@ -231,6 +234,9 @@ importers:
       '@midnight-ntwrk/compact-runtime':
         specifier: ^0.16.0
         version: 0.16.0
+      '@midnight-ntwrk/credential-exchange':
+        specifier: workspace:*
+        version: link:../exchange
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials

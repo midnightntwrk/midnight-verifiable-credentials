@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+
+import { packageTarballName } from "./package-tarball-name.mjs";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const temporaryRoot = mkdtempSync(
@@ -38,13 +40,15 @@ try {
     tarballRoot,
   ]);
 
-  const modelTarball = path.join(
-    tarballRoot,
-    "midnight-ntwrk-credential-model-0.1.0.tgz",
-  );
-  const exchangeTarball = path.join(
-    tarballRoot,
-    "midnight-ntwrk-credential-exchange-0.1.0.tgz",
+  const tarballFor = (workspacePath) => {
+    const manifest = JSON.parse(
+      readFileSync(path.join(repoRoot, workspacePath, "package.json"), "utf8"),
+    );
+    return path.join(tarballRoot, packageTarballName(manifest));
+  };
+  const modelTarball = tarballFor("packages/core/model");
+  const exchangeTarball = tarballFor(
+    "packages/components/orchestration/exchange",
   );
   writeFileSync(
     path.join(consumerRoot, "package.json"),
