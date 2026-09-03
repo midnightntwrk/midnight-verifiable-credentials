@@ -1,0 +1,129 @@
+[
+  {
+    "id": "oid4vci-ambiguous-proof",
+    "kind": "oid4vci-request",
+    "valid": false,
+    "baseId": "oid4vci-final-midnight-jwt-proof",
+    "mutation": {
+      "path": ["proofs"],
+      "value": { "jwt": ["jwt"], "attestation": ["ambiguous"] }
+    }
+  },
+  {
+    "id": "oid4vci-noncanonical-secret-challenge",
+    "kind": "oid4vci-request",
+    "valid": false,
+    "baseId": "oid4vci-final-midnight-jwt-proof",
+    "mutation": { "path": ["midnight", "holderBinding", "challenge"], "value": "0x123" }
+  },
+  {
+    "id": "oid4vci-noncanonical-secret-commitment",
+    "kind": "oid4vci-request",
+    "valid": false,
+    "baseId": "oid4vci-final-midnight-jwt-proof",
+    "mutation": { "path": ["midnight", "holderBinding", "secretCommitment"], "value": "0xABCD" }
+  },
+  {
+    "id": "oid4vci-noncanonical-blinded-challenge",
+    "kind": "oid4vci-request",
+    "valid": false,
+    "baseId": "oid4vci-final-midnight-blinded-proof",
+    "mutation": { "path": ["midnight", "holderBinding", "challenge"], "value": "a" }
+  },
+  {
+    "id": "oid4vci-noncanonical-blinded-commitment",
+    "kind": "oid4vci-request",
+    "valid": false,
+    "baseId": "oid4vci-final-midnight-blinded-proof",
+    "mutation": { "path": ["midnight", "holderBinding", "blindedCommitment"], "value": "0xABC0" }
+  },
+  {
+    "id": "oid4vp-dcql-without-holder-binding",
+    "kind": "oid4vp-request",
+    "valid": false,
+    "baseId": "oid4vp-final-dcql-midnight",
+    "mutation": {
+      "path": ["dcql_query", "credentials", 0, "require_cryptographic_holder_binding"],
+      "value": false
+    }
+  },
+  {
+    "id": "oid4vp-ambiguous-dcql-and-descriptor",
+    "kind": "oid4vp-request",
+    "valid": false,
+    "baseId": "oid4vp-final-dcql-midnight",
+    "mutation": {
+      "path": ["presentation_definition"],
+      "value": { "id": "also-present", "input_descriptors": [{ "id": "age-proof" }] }
+    }
+  },
+  {
+    "id": "oid4vp-direct-post-jwt-unsupported",
+    "kind": "oid4vp-request",
+    "valid": false,
+    "baseId": "oid4vp-final-dcql-midnight",
+    "mutation": { "path": ["response_mode"], "value": "direct_post.jwt" }
+  },
+  {
+    "id": "oid4vp-response-null-token",
+    "kind": "oid4vp-response",
+    "valid": false,
+    "baseId": "oid4vp-final-dcql-response",
+    "mutation": { "path": ["vp_token"], "value": null }
+  },
+  {
+    "id": "oid4vp-response-scalar-token",
+    "kind": "oid4vp-response",
+    "valid": false,
+    "baseId": "oid4vp-final-dcql-response",
+    "mutation": { "path": ["vp_token"], "value": "not-a-result-map" }
+  },
+  {
+    "id": "oid4vp-response-array-token",
+    "kind": "oid4vp-response",
+    "valid": false,
+    "baseId": "oid4vp-final-dcql-response",
+    "mutation": { "path": ["vp_token"], "value": [{ "canonical_message": "not-a-result-map" }] }
+  },
+  {
+    "id": "oid4vp-response-unrelated-query",
+    "kind": "oid4vp-response",
+    "valid": false,
+    "baseId": "oid4vp-final-dcql-response",
+    "mutation": {
+      "path": ["vp_token"],
+      "value": { "unrelated-query": [{ "canonical_message": "unrelated" }] }
+    }
+  },
+  {
+    "id": "oid4vp-response-missing-query",
+    "kind": "oid4vp-response",
+    "valid": false,
+    "baseId": "oid4vp-final-dcql-response",
+    "mutation": {
+      "path": ["vp_token"],
+      "value": { "age-proof": [{ "canonical_message": "age-presentation" }] }
+    }
+  },
+  {
+    "id": "oid4vp-response-extra-query",
+    "kind": "oid4vp-response",
+    "valid": false,
+    "baseId": "oid4vp-final-dcql-response",
+    "mutation": {
+      "path": ["vp_token"],
+      "value": {
+        "age-proof": [{ "canonical_message": "age-presentation" }],
+        "residency-proof": [{ "canonical_message": "residency-presentation" }],
+        "extra-query": [{ "canonical_message": "extra-presentation" }]
+      }
+    }
+  },
+  {
+    "id": "oid4vp-response-empty-presentation-array",
+    "kind": "oid4vp-response",
+    "valid": false,
+    "baseId": "oid4vp-final-dcql-response",
+    "mutation": { "path": ["vp_token", "age-proof"], "value": [] }
+  }
+]
