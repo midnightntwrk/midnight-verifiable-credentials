@@ -8636,6 +8636,47 @@
       }
     },
     {
+      "name": "blindedSecretHolderBindingDigestV1",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "binding",
+          "type": {
+            "type-name": "Struct",
+            "name": "BlindedSecretHolderBinding",
+            "elements": [
+              {
+                "name": "blindedHolderSecretCommitment",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "issuerNonce",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "requestChallengeResponse",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Bytes",
+        "length": 32
+      }
+    },
+    {
       "name": "assertSameBlindedSecretHolderBindingWitnesses",
       "pure": true,
       "proof": false,

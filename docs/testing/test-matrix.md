@@ -681,8 +681,21 @@ authority.
 Executor support is conditional on injected authoritative mechanisms. Missing
 DID/trust, status, trusted-time, artifact, prover/verifier, network, ledger, or
 confirmation providers remain bounded local-process indeterminate results.
-Aggregate decision sets (#502) and OpenID behavior (#503) are outside this
-surface.
+OpenID behavior (#503) remains outside this surface.
+
+## Aggregate Decision Set V1
+
+| Evidence | Contract |
+| --- | --- |
+| `packages/core/model/src/test/aggregate-decision.test.ts` | Aggregate profiles are fixed to pair/triple cardinality, one exact authority, explicit same-holder policy, and either an explicit read-only all-`none` tuple or a contract-derived atomic ledger mutation. |
+| `packages/core/primitives/credentials/src/test/aggregate-decision-family-fixtures.ts` | Distinct birth-secret and university-diploma fixture identities declare only privacy-safe aggregate authority evidence. |
+| `packages/core/primitives/credentials/src/test/aggregate-decision-v1.test.ts` | Pair/triple child chains bind complete Verification V1 issuer/DID, trust, explicit no-status or enabled status, time, artifact, holder, result, request/action/replay, authority, transaction, and nullifier evidence. Compact/TypeScript vectors and deterministic ordering agree. Missing/stale/indeterminate/mixed/duplicate/mismatched inputs fail closed; hidden output snapshots retain only bounded classifications and digests. |
+| `packages/core/capabilities/same-holder/src/test/aggregate-same-holder.test.ts` | Private pair witnesses derive the actual holder-binding digests and commit the exact aggregate child set before a scoped public proof-receipt statement is emitted; snapshots exclude secrets/openings. Existing standalone same-holder suites remain non-authoritative composition evidence. |
+| `packages/core/primitives/credentials/src/test/aggregate-decision-v1.test.ts` executor cases | Fabricated child receipts and forged same-holder receipts fail authentication; prepared-record rehashes, malformed observations, and confirmation mutation return bounded failures. Unavailable evidence stays indeterminate while stale evidence is invalid. Read-only commits use no mutation; approved side effects require exact atomic nullifier consumption; replay is a committed idempotent no-op. |
+
+The aggregate remains bounded to two or three children. It does not define
+OpenID #503 behavior, a dynamic Merkle set, cross-chain consensus, or
+product-specific policy.
 
 ## Artifact and deployment authority parity
 
