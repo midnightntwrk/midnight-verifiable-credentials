@@ -7,10 +7,15 @@ import { fileURLToPath } from "node:url";
 
 import { build } from "esbuild";
 
-const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+const repoRoot = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "../..",
+);
 
 test("credential-compact root remains browser-bundleable for existing imports", async () => {
-  const temporaryRoot = mkdtempSync(path.join(os.tmpdir(), "credential-compact-browser-"));
+  const temporaryRoot = mkdtempSync(
+    path.join(os.tmpdir(), "credential-compact-browser-"),
+  );
   try {
     const entryPoint = path.join(temporaryRoot, "consumer.mjs");
     writeFileSync(
@@ -26,6 +31,20 @@ test("credential-compact root remains browser-bundleable for existing imports", 
       format: "esm",
       target: "es2022",
       loader: { ".wasm": "file" },
+      plugins: [
+        {
+          name: "externalize-generated-compact-contract",
+          setup: (buildContext) => {
+            buildContext.onResolve(
+              { filter: /^\.\/managed\// },
+              ({ path: importPath }) => ({
+                external: true,
+                path: importPath,
+              }),
+            );
+          },
+        },
+      ],
       outdir: path.join(temporaryRoot, "out"),
       write: false,
       logLevel: "silent",
