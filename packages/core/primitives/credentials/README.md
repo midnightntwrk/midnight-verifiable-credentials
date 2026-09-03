@@ -62,8 +62,20 @@ Verification-contract V1 status:
   indeterminate reason and failure-stage labels
 - `compareVerificationParityV1` checks proof/decision classification parity
   without flattening executor authority labels
+- Aggregate Decision Set V1 canonically composes exactly two or three complete
+  child Verification V1 results, preserving child diagnostics while rejecting
+  omitted/stale/mixed/duplicate/mismatched authority chains; injected receipt
+  and same-holder proof verifiers authenticate ledger authority, and submission
+  revalidates immutable source snapshots before and after callbacks; its native
+  Compact surface is opt-in at `aggregate-decision-v1.compact` so unrelated
+  families do not inherit aggregate circuits or artifact growth
+- read-only ledger aggregates use the explicit all-`none` mutation tuple;
+  aggregate side effects use a contract-derived request replay scope and exact
+  aggregate nullifier, and only a confirmed atomic commit may return aggregate
+  ledger authority, while committed replay is an idempotent no-op
 - see the
-  [`verification V1 specification`](../../../../docs/spec/verification-contract-v1.md)
+  [`verification V1 specification`](../../../../docs/spec/verification-contract-v1.md),
+  [`aggregate decision specification`](../../../../docs/spec/aggregate-decision-set-v1.md),
   and
   [`encoding spike`](../../../../docs/testing/compact-persistent-hash-record-encoding-2026-07-17.md)
 

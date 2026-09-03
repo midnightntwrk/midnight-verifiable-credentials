@@ -203,6 +203,49 @@ class _SyntheticVerificationExtensionV1_0 {
 
 const _descriptor_10 = new _SyntheticVerificationExtensionV1_0();
 
+class _ActionHolderBindingV1_0 {
+  alignment() {
+    return _descriptor_0.alignment().concat(_descriptor_3.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment())))));
+  }
+  fromValue(value_0) {
+    return {
+      domain: _descriptor_0.fromValue(value_0),
+      version: _descriptor_3.fromValue(value_0),
+      deploymentDigest: _descriptor_0.fromValue(value_0),
+      verifierContractDigest: _descriptor_0.fromValue(value_0),
+      actionClassDigest: _descriptor_0.fromValue(value_0),
+      holderSubjectDigest: _descriptor_0.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_3.toValue(value_0.version).concat(_descriptor_0.toValue(value_0.deploymentDigest).concat(_descriptor_0.toValue(value_0.verifierContractDigest).concat(_descriptor_0.toValue(value_0.actionClassDigest).concat(_descriptor_0.toValue(value_0.holderSubjectDigest))))));
+  }
+}
+
+const _descriptor_11 = new _ActionHolderBindingV1_0();
+
+class _HolderActionReplayScopeV1_0 {
+  alignment() {
+    return _descriptor_0.alignment().concat(_descriptor_3.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_11.alignment()))))));
+  }
+  fromValue(value_0) {
+    return {
+      domain: _descriptor_0.fromValue(value_0),
+      version: _descriptor_3.fromValue(value_0),
+      deploymentDigest: _descriptor_0.fromValue(value_0),
+      verifierContractDigest: _descriptor_0.fromValue(value_0),
+      actionClassDigest: _descriptor_0.fromValue(value_0),
+      actionScopeParametersDigest: _descriptor_0.fromValue(value_0),
+      binding: _descriptor_11.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_3.toValue(value_0.version).concat(_descriptor_0.toValue(value_0.deploymentDigest).concat(_descriptor_0.toValue(value_0.verifierContractDigest).concat(_descriptor_0.toValue(value_0.actionClassDigest).concat(_descriptor_0.toValue(value_0.actionScopeParametersDigest).concat(_descriptor_11.toValue(value_0.binding)))))));
+  }
+}
+
+const _descriptor_12 = new _HolderActionReplayScopeV1_0();
+
 class _ActionCredentialBindingV1_0 {
   alignment() {
     return _descriptor_0.alignment().concat(_descriptor_3.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment())))))));
@@ -224,11 +267,11 @@ class _ActionCredentialBindingV1_0 {
   }
 }
 
-const _descriptor_11 = new _ActionCredentialBindingV1_0();
+const _descriptor_13 = new _ActionCredentialBindingV1_0();
 
 class _CredentialActionReplayScopeV1_0 {
   alignment() {
-    return _descriptor_0.alignment().concat(_descriptor_3.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_11.alignment()))))));
+    return _descriptor_0.alignment().concat(_descriptor_3.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_13.alignment()))))));
   }
   fromValue(value_0) {
     return {
@@ -238,15 +281,15 @@ class _CredentialActionReplayScopeV1_0 {
       verifierContractDigest: _descriptor_0.fromValue(value_0),
       actionClassDigest: _descriptor_0.fromValue(value_0),
       actionScopeParametersDigest: _descriptor_0.fromValue(value_0),
-      binding: _descriptor_11.fromValue(value_0)
+      binding: _descriptor_13.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_3.toValue(value_0.version).concat(_descriptor_0.toValue(value_0.deploymentDigest).concat(_descriptor_0.toValue(value_0.verifierContractDigest).concat(_descriptor_0.toValue(value_0.actionClassDigest).concat(_descriptor_0.toValue(value_0.actionScopeParametersDigest).concat(_descriptor_11.toValue(value_0.binding)))))));
+    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_3.toValue(value_0.version).concat(_descriptor_0.toValue(value_0.deploymentDigest).concat(_descriptor_0.toValue(value_0.verifierContractDigest).concat(_descriptor_0.toValue(value_0.actionClassDigest).concat(_descriptor_0.toValue(value_0.actionScopeParametersDigest).concat(_descriptor_13.toValue(value_0.binding)))))));
   }
 }
 
-const _descriptor_12 = new _CredentialActionReplayScopeV1_0();
+const _descriptor_14 = new _CredentialActionReplayScopeV1_0();
 
 class _RequestReplayScopeV1_0 {
   alignment() {
@@ -268,71 +311,7 @@ class _RequestReplayScopeV1_0 {
   }
 }
 
-const _descriptor_13 = new _RequestReplayScopeV1_0();
-
-class _ActionHolderBindingV1_0 {
-  alignment() {
-    return _descriptor_0.alignment().concat(_descriptor_3.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment())))));
-  }
-  fromValue(value_0) {
-    return {
-      domain: _descriptor_0.fromValue(value_0),
-      version: _descriptor_3.fromValue(value_0),
-      deploymentDigest: _descriptor_0.fromValue(value_0),
-      verifierContractDigest: _descriptor_0.fromValue(value_0),
-      actionClassDigest: _descriptor_0.fromValue(value_0),
-      holderSubjectDigest: _descriptor_0.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_3.toValue(value_0.version).concat(_descriptor_0.toValue(value_0.deploymentDigest).concat(_descriptor_0.toValue(value_0.verifierContractDigest).concat(_descriptor_0.toValue(value_0.actionClassDigest).concat(_descriptor_0.toValue(value_0.holderSubjectDigest))))));
-  }
-}
-
-const _descriptor_14 = new _ActionHolderBindingV1_0();
-
-class _HolderActionReplayScopeV1_0 {
-  alignment() {
-    return _descriptor_0.alignment().concat(_descriptor_3.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_14.alignment()))))));
-  }
-  fromValue(value_0) {
-    return {
-      domain: _descriptor_0.fromValue(value_0),
-      version: _descriptor_3.fromValue(value_0),
-      deploymentDigest: _descriptor_0.fromValue(value_0),
-      verifierContractDigest: _descriptor_0.fromValue(value_0),
-      actionClassDigest: _descriptor_0.fromValue(value_0),
-      actionScopeParametersDigest: _descriptor_0.fromValue(value_0),
-      binding: _descriptor_14.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_3.toValue(value_0.version).concat(_descriptor_0.toValue(value_0.deploymentDigest).concat(_descriptor_0.toValue(value_0.verifierContractDigest).concat(_descriptor_0.toValue(value_0.actionClassDigest).concat(_descriptor_0.toValue(value_0.actionScopeParametersDigest).concat(_descriptor_14.toValue(value_0.binding)))))));
-  }
-}
-
-const _descriptor_15 = new _HolderActionReplayScopeV1_0();
-
-class _DecisionNullifierMaterialV1_0 {
-  alignment() {
-    return _descriptor_0.alignment().concat(_descriptor_3.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_4.alignment().concat(_descriptor_0.alignment())))));
-  }
-  fromValue(value_0) {
-    return {
-      domain: _descriptor_0.fromValue(value_0),
-      version: _descriptor_3.fromValue(value_0),
-      deploymentDigest: _descriptor_0.fromValue(value_0),
-      verifierContractDigest: _descriptor_0.fromValue(value_0),
-      replayPolicy: _descriptor_4.fromValue(value_0),
-      replayScopeDigest: _descriptor_0.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_3.toValue(value_0.version).concat(_descriptor_0.toValue(value_0.deploymentDigest).concat(_descriptor_0.toValue(value_0.verifierContractDigest).concat(_descriptor_4.toValue(value_0.replayPolicy).concat(_descriptor_0.toValue(value_0.replayScopeDigest))))));
-  }
-}
-
-const _descriptor_16 = new _DecisionNullifierMaterialV1_0();
+const _descriptor_15 = new _RequestReplayScopeV1_0();
 
 class _AnchorEvidenceReceiptV1_0 {
   alignment() {
@@ -355,7 +334,71 @@ class _AnchorEvidenceReceiptV1_0 {
   }
 }
 
-const _descriptor_17 = new _AnchorEvidenceReceiptV1_0();
+const _descriptor_16 = new _AnchorEvidenceReceiptV1_0();
+
+class _DecisionNullifierMaterialV1_0 {
+  alignment() {
+    return _descriptor_0.alignment().concat(_descriptor_3.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_4.alignment().concat(_descriptor_0.alignment())))));
+  }
+  fromValue(value_0) {
+    return {
+      domain: _descriptor_0.fromValue(value_0),
+      version: _descriptor_3.fromValue(value_0),
+      deploymentDigest: _descriptor_0.fromValue(value_0),
+      verifierContractDigest: _descriptor_0.fromValue(value_0),
+      replayPolicy: _descriptor_4.fromValue(value_0),
+      replayScopeDigest: _descriptor_0.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_3.toValue(value_0.version).concat(_descriptor_0.toValue(value_0.deploymentDigest).concat(_descriptor_0.toValue(value_0.verifierContractDigest).concat(_descriptor_4.toValue(value_0.replayPolicy).concat(_descriptor_0.toValue(value_0.replayScopeDigest))))));
+  }
+}
+
+const _descriptor_17 = new _DecisionNullifierMaterialV1_0();
+
+class _PresentationBindingV1_0 {
+  alignment() {
+    return _descriptor_0.alignment().concat(_descriptor_3.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment()))))));
+  }
+  fromValue(value_0) {
+    return {
+      domain: _descriptor_0.fromValue(value_0),
+      version: _descriptor_3.fromValue(value_0),
+      credentialBindingDigest: _descriptor_0.fromValue(value_0),
+      holderBindingDigest: _descriptor_0.fromValue(value_0),
+      disclosureDigest: _descriptor_0.fromValue(value_0),
+      predicateDigest: _descriptor_0.fromValue(value_0),
+      consentDigest: _descriptor_0.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_3.toValue(value_0.version).concat(_descriptor_0.toValue(value_0.credentialBindingDigest).concat(_descriptor_0.toValue(value_0.holderBindingDigest).concat(_descriptor_0.toValue(value_0.disclosureDigest).concat(_descriptor_0.toValue(value_0.predicateDigest).concat(_descriptor_0.toValue(value_0.consentDigest)))))));
+  }
+}
+
+const _descriptor_18 = new _PresentationBindingV1_0();
+
+class _HolderBindingV1_0 {
+  alignment() {
+    return _descriptor_0.alignment().concat(_descriptor_3.alignment().concat(_descriptor_4.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment())))));
+  }
+  fromValue(value_0) {
+    return {
+      domain: _descriptor_0.fromValue(value_0),
+      version: _descriptor_3.fromValue(value_0),
+      mode: _descriptor_4.fromValue(value_0),
+      verifierContractDigest: _descriptor_0.fromValue(value_0),
+      challengeDigest: _descriptor_0.fromValue(value_0),
+      subjectBindingDigest: _descriptor_0.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_3.toValue(value_0.version).concat(_descriptor_4.toValue(value_0.mode).concat(_descriptor_0.toValue(value_0.verifierContractDigest).concat(_descriptor_0.toValue(value_0.challengeDigest).concat(_descriptor_0.toValue(value_0.subjectBindingDigest))))));
+  }
+}
+
+const _descriptor_19 = new _HolderBindingV1_0();
 
 class _ConsentBindingV1_0 {
   alignment() {
@@ -396,29 +439,7 @@ class _ConsentBindingV1_0 {
   }
 }
 
-const _descriptor_18 = new _ConsentBindingV1_0();
-
-class _PresentationBindingV1_0 {
-  alignment() {
-    return _descriptor_0.alignment().concat(_descriptor_3.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment()))))));
-  }
-  fromValue(value_0) {
-    return {
-      domain: _descriptor_0.fromValue(value_0),
-      version: _descriptor_3.fromValue(value_0),
-      credentialBindingDigest: _descriptor_0.fromValue(value_0),
-      holderBindingDigest: _descriptor_0.fromValue(value_0),
-      disclosureDigest: _descriptor_0.fromValue(value_0),
-      predicateDigest: _descriptor_0.fromValue(value_0),
-      consentDigest: _descriptor_0.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_3.toValue(value_0.version).concat(_descriptor_0.toValue(value_0.credentialBindingDigest).concat(_descriptor_0.toValue(value_0.holderBindingDigest).concat(_descriptor_0.toValue(value_0.disclosureDigest).concat(_descriptor_0.toValue(value_0.predicateDigest).concat(_descriptor_0.toValue(value_0.consentDigest)))))));
-  }
-}
-
-const _descriptor_19 = new _PresentationBindingV1_0();
+const _descriptor_20 = new _ConsentBindingV1_0();
 
 class _CredentialBindingV1_0 {
   alignment() {
@@ -441,28 +462,7 @@ class _CredentialBindingV1_0 {
   }
 }
 
-const _descriptor_20 = new _CredentialBindingV1_0();
-
-class _HolderBindingV1_0 {
-  alignment() {
-    return _descriptor_0.alignment().concat(_descriptor_3.alignment().concat(_descriptor_4.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment())))));
-  }
-  fromValue(value_0) {
-    return {
-      domain: _descriptor_0.fromValue(value_0),
-      version: _descriptor_3.fromValue(value_0),
-      mode: _descriptor_4.fromValue(value_0),
-      verifierContractDigest: _descriptor_0.fromValue(value_0),
-      challengeDigest: _descriptor_0.fromValue(value_0),
-      subjectBindingDigest: _descriptor_0.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_0.toValue(value_0.domain).concat(_descriptor_3.toValue(value_0.version).concat(_descriptor_4.toValue(value_0.mode).concat(_descriptor_0.toValue(value_0.verifierContractDigest).concat(_descriptor_0.toValue(value_0.challengeDigest).concat(_descriptor_0.toValue(value_0.subjectBindingDigest))))));
-  }
-}
-
-const _descriptor_21 = new _HolderBindingV1_0();
+const _descriptor_21 = new _CredentialBindingV1_0();
 
 const _descriptor_22 = new __compactRuntime.CompactTypeEnum(0, 0);
 
@@ -1137,6 +1137,9 @@ export class Contract {
       assertSameSecretHolderBindingWitnesses3(context, ...args_1) {
         return { result: pureCircuits.assertSameSecretHolderBindingWitnesses3(...args_1), context };
       },
+      blindedSecretHolderBindingDigestV1(context, ...args_1) {
+        return { result: pureCircuits.blindedSecretHolderBindingDigestV1(...args_1), context };
+      },
       assertSameBlindedSecretHolderBindingWitnesses(context, ...args_1) {
         return { result: pureCircuits.assertSameBlindedSecretHolderBindingWitnesses(...args_1), context };
       },
@@ -1215,19 +1218,19 @@ export class Contract {
     return result_0;
   }
   _persistentHash_7(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_20, value_0);
-    return result_0;
-  }
-  _persistentHash_8(value_0) {
     const result_0 = __compactRuntime.persistentHash(_descriptor_21, value_0);
     return result_0;
   }
+  _persistentHash_8(value_0) {
+    const result_0 = __compactRuntime.persistentHash(_descriptor_19, value_0);
+    return result_0;
+  }
   _persistentHash_9(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_18, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_20, value_0);
     return result_0;
   }
   _persistentHash_10(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_19, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_18, value_0);
     return result_0;
   }
   _persistentHash_11(value_0) {
@@ -1235,31 +1238,31 @@ export class Contract {
     return result_0;
   }
   _persistentHash_12(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_17, value_0);
-    return result_0;
-  }
-  _persistentHash_13(value_0) {
     const result_0 = __compactRuntime.persistentHash(_descriptor_16, value_0);
     return result_0;
   }
-  _persistentHash_14(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_14, value_0);
+  _persistentHash_13(value_0) {
+    const result_0 = __compactRuntime.persistentHash(_descriptor_17, value_0);
     return result_0;
   }
-  _persistentHash_15(value_0) {
+  _persistentHash_14(value_0) {
     const result_0 = __compactRuntime.persistentHash(_descriptor_11, value_0);
     return result_0;
   }
-  _persistentHash_16(value_0) {
+  _persistentHash_15(value_0) {
     const result_0 = __compactRuntime.persistentHash(_descriptor_13, value_0);
     return result_0;
   }
-  _persistentHash_17(value_0) {
+  _persistentHash_16(value_0) {
     const result_0 = __compactRuntime.persistentHash(_descriptor_15, value_0);
     return result_0;
   }
-  _persistentHash_18(value_0) {
+  _persistentHash_17(value_0) {
     const result_0 = __compactRuntime.persistentHash(_descriptor_12, value_0);
+    return result_0;
+  }
+  _persistentHash_18(value_0) {
+    const result_0 = __compactRuntime.persistentHash(_descriptor_14, value_0);
     return result_0;
   }
   _persistentHash_19(value_0) {
@@ -1268,6 +1271,10 @@ export class Contract {
   }
   _persistentHash_20(value_0) {
     const result_0 = __compactRuntime.persistentHash(_descriptor_6, value_0);
+    return result_0;
+  }
+  _persistentHash_21(value_0) {
+    const result_0 = __compactRuntime.persistentHash(_descriptor_1, value_0);
     return result_0;
   }
   _persistentCommit_0(value_0, rand_0) {
@@ -3136,6 +3143,9 @@ export class Contract {
                                              holderSecret_0,
                                              thirdOpening_0);
     return [];
+  }
+  _blindedSecretHolderBindingDigestV1_0(binding_0) {
+    return this._persistentHash_21(binding_0);
   }
   _assertSameBlindedSecretHolderBindingWitnesses_0(firstBinding_0,
                                                    secondBinding_0,
@@ -5910,6 +5920,20 @@ export const pureCircuits = {
                                                                      secondOpening_0,
                                                                      thirdOpening_0);
   },
+  blindedSecretHolderBindingDigestV1: (...args_0) => {
+    if (args_0.length !== 1) {
+      throw new __compactRuntime.CompactError(`blindedSecretHolderBindingDigestV1: expected 1 argument (as invoked from Typescript), received ${args_0.length}`);
+    }
+    const binding_0 = args_0[0];
+    if (!(typeof(binding_0) === 'object' && binding_0.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && binding_0.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && binding_0.blindedHolderSecretCommitment.length === 32 && binding_0.issuerNonce.buffer instanceof ArrayBuffer && binding_0.issuerNonce.BYTES_PER_ELEMENT === 1 && binding_0.issuerNonce.length === 32 && binding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && binding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && binding_0.requestChallengeResponse.length === 32)) {
+      __compactRuntime.typeError('blindedSecretHolderBindingDigestV1',
+                                 'argument 1',
+                                 'same-holder.compact line 99 char 1',
+                                 'struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>',
+                                 binding_0)
+    }
+    return _dummyContract._blindedSecretHolderBindingDigestV1_0(binding_0);
+  },
   assertSameBlindedSecretHolderBindingWitnesses: (...args_0) => {
     if (args_0.length !== 8) {
       throw new __compactRuntime.CompactError(`assertSameBlindedSecretHolderBindingWitnesses: expected 8 arguments (as invoked from Typescript), received ${args_0.length}`);
@@ -5925,56 +5949,56 @@ export const pureCircuits = {
     if (!(typeof(firstBinding_0) === 'object' && firstBinding_0.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && firstBinding_0.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && firstBinding_0.blindedHolderSecretCommitment.length === 32 && firstBinding_0.issuerNonce.buffer instanceof ArrayBuffer && firstBinding_0.issuerNonce.BYTES_PER_ELEMENT === 1 && firstBinding_0.issuerNonce.length === 32 && firstBinding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && firstBinding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && firstBinding_0.requestChallengeResponse.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses',
                                  'argument 1',
-                                 'same-holder.compact line 100 char 1',
+                                 'same-holder.compact line 108 char 1',
                                  'struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>',
                                  firstBinding_0)
     }
     if (!(typeof(secondBinding_0) === 'object' && secondBinding_0.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && secondBinding_0.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && secondBinding_0.blindedHolderSecretCommitment.length === 32 && secondBinding_0.issuerNonce.buffer instanceof ArrayBuffer && secondBinding_0.issuerNonce.BYTES_PER_ELEMENT === 1 && secondBinding_0.issuerNonce.length === 32 && secondBinding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && secondBinding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && secondBinding_0.requestChallengeResponse.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses',
                                  'argument 2',
-                                 'same-holder.compact line 100 char 1',
+                                 'same-holder.compact line 108 char 1',
                                  'struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>',
                                  secondBinding_0)
     }
     if (!(verifierChallengeHash_0.buffer instanceof ArrayBuffer && verifierChallengeHash_0.BYTES_PER_ELEMENT === 1 && verifierChallengeHash_0.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses',
                                  'argument 3',
-                                 'same-holder.compact line 100 char 1',
+                                 'same-holder.compact line 108 char 1',
                                  'Bytes<32>',
                                  verifierChallengeHash_0)
     }
     if (!(holderSecret_0.buffer instanceof ArrayBuffer && holderSecret_0.BYTES_PER_ELEMENT === 1 && holderSecret_0.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses',
                                  'argument 4',
-                                 'same-holder.compact line 100 char 1',
+                                 'same-holder.compact line 108 char 1',
                                  'Bytes<32>',
                                  holderSecret_0)
     }
     if (!(firstOpening_0.buffer instanceof ArrayBuffer && firstOpening_0.BYTES_PER_ELEMENT === 1 && firstOpening_0.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses',
                                  'argument 5',
-                                 'same-holder.compact line 100 char 1',
+                                 'same-holder.compact line 108 char 1',
                                  'Bytes<32>',
                                  firstOpening_0)
     }
     if (!(firstBlindingFactor_0.buffer instanceof ArrayBuffer && firstBlindingFactor_0.BYTES_PER_ELEMENT === 1 && firstBlindingFactor_0.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses',
                                  'argument 6',
-                                 'same-holder.compact line 100 char 1',
+                                 'same-holder.compact line 108 char 1',
                                  'Bytes<32>',
                                  firstBlindingFactor_0)
     }
     if (!(secondOpening_0.buffer instanceof ArrayBuffer && secondOpening_0.BYTES_PER_ELEMENT === 1 && secondOpening_0.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses',
                                  'argument 7',
-                                 'same-holder.compact line 100 char 1',
+                                 'same-holder.compact line 108 char 1',
                                  'Bytes<32>',
                                  secondOpening_0)
     }
     if (!(secondBlindingFactor_0.buffer instanceof ArrayBuffer && secondBlindingFactor_0.BYTES_PER_ELEMENT === 1 && secondBlindingFactor_0.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses',
                                  'argument 8',
-                                 'same-holder.compact line 100 char 1',
+                                 'same-holder.compact line 108 char 1',
                                  'Bytes<32>',
                                  secondBlindingFactor_0)
     }
@@ -6005,77 +6029,77 @@ export const pureCircuits = {
     if (!(typeof(firstBinding_0) === 'object' && firstBinding_0.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && firstBinding_0.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && firstBinding_0.blindedHolderSecretCommitment.length === 32 && firstBinding_0.issuerNonce.buffer instanceof ArrayBuffer && firstBinding_0.issuerNonce.BYTES_PER_ELEMENT === 1 && firstBinding_0.issuerNonce.length === 32 && firstBinding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && firstBinding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && firstBinding_0.requestChallengeResponse.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses3',
                                  'argument 1',
-                                 'same-holder.compact line 133 char 1',
+                                 'same-holder.compact line 141 char 1',
                                  'struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>',
                                  firstBinding_0)
     }
     if (!(typeof(secondBinding_0) === 'object' && secondBinding_0.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && secondBinding_0.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && secondBinding_0.blindedHolderSecretCommitment.length === 32 && secondBinding_0.issuerNonce.buffer instanceof ArrayBuffer && secondBinding_0.issuerNonce.BYTES_PER_ELEMENT === 1 && secondBinding_0.issuerNonce.length === 32 && secondBinding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && secondBinding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && secondBinding_0.requestChallengeResponse.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses3',
                                  'argument 2',
-                                 'same-holder.compact line 133 char 1',
+                                 'same-holder.compact line 141 char 1',
                                  'struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>',
                                  secondBinding_0)
     }
     if (!(typeof(thirdBinding_0) === 'object' && thirdBinding_0.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && thirdBinding_0.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && thirdBinding_0.blindedHolderSecretCommitment.length === 32 && thirdBinding_0.issuerNonce.buffer instanceof ArrayBuffer && thirdBinding_0.issuerNonce.BYTES_PER_ELEMENT === 1 && thirdBinding_0.issuerNonce.length === 32 && thirdBinding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && thirdBinding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && thirdBinding_0.requestChallengeResponse.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses3',
                                  'argument 3',
-                                 'same-holder.compact line 133 char 1',
+                                 'same-holder.compact line 141 char 1',
                                  'struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>',
                                  thirdBinding_0)
     }
     if (!(verifierChallengeHash_0.buffer instanceof ArrayBuffer && verifierChallengeHash_0.BYTES_PER_ELEMENT === 1 && verifierChallengeHash_0.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses3',
                                  'argument 4',
-                                 'same-holder.compact line 133 char 1',
+                                 'same-holder.compact line 141 char 1',
                                  'Bytes<32>',
                                  verifierChallengeHash_0)
     }
     if (!(holderSecret_0.buffer instanceof ArrayBuffer && holderSecret_0.BYTES_PER_ELEMENT === 1 && holderSecret_0.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses3',
                                  'argument 5',
-                                 'same-holder.compact line 133 char 1',
+                                 'same-holder.compact line 141 char 1',
                                  'Bytes<32>',
                                  holderSecret_0)
     }
     if (!(firstOpening_0.buffer instanceof ArrayBuffer && firstOpening_0.BYTES_PER_ELEMENT === 1 && firstOpening_0.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses3',
                                  'argument 6',
-                                 'same-holder.compact line 133 char 1',
+                                 'same-holder.compact line 141 char 1',
                                  'Bytes<32>',
                                  firstOpening_0)
     }
     if (!(firstBlindingFactor_0.buffer instanceof ArrayBuffer && firstBlindingFactor_0.BYTES_PER_ELEMENT === 1 && firstBlindingFactor_0.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses3',
                                  'argument 7',
-                                 'same-holder.compact line 133 char 1',
+                                 'same-holder.compact line 141 char 1',
                                  'Bytes<32>',
                                  firstBlindingFactor_0)
     }
     if (!(secondOpening_0.buffer instanceof ArrayBuffer && secondOpening_0.BYTES_PER_ELEMENT === 1 && secondOpening_0.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses3',
                                  'argument 8',
-                                 'same-holder.compact line 133 char 1',
+                                 'same-holder.compact line 141 char 1',
                                  'Bytes<32>',
                                  secondOpening_0)
     }
     if (!(secondBlindingFactor_0.buffer instanceof ArrayBuffer && secondBlindingFactor_0.BYTES_PER_ELEMENT === 1 && secondBlindingFactor_0.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses3',
                                  'argument 9',
-                                 'same-holder.compact line 133 char 1',
+                                 'same-holder.compact line 141 char 1',
                                  'Bytes<32>',
                                  secondBlindingFactor_0)
     }
     if (!(thirdOpening_0.buffer instanceof ArrayBuffer && thirdOpening_0.BYTES_PER_ELEMENT === 1 && thirdOpening_0.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses3',
                                  'argument 10',
-                                 'same-holder.compact line 133 char 1',
+                                 'same-holder.compact line 141 char 1',
                                  'Bytes<32>',
                                  thirdOpening_0)
     }
     if (!(thirdBlindingFactor_0.buffer instanceof ArrayBuffer && thirdBlindingFactor_0.BYTES_PER_ELEMENT === 1 && thirdBlindingFactor_0.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses3',
                                  'argument 11',
-                                 'same-holder.compact line 133 char 1',
+                                 'same-holder.compact line 141 char 1',
                                  'Bytes<32>',
                                  thirdBlindingFactor_0)
     }

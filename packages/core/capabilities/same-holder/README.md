@@ -56,6 +56,11 @@ more explicit.
 - `assertSameBlindedSecretHolderBindingWitnesses(...)`
 - `assertSameSecretHolderBindingWitnesses3(...)`
 - `assertSameBlindedSecretHolderBindingWitnesses3(...)`
+- `proveBlindedAggregateSameHolderBindingV1(...)`, which derives digests from
+  the exact blinded bindings, validates the aggregate child-set digest, and
+  executes the bounded private witness assertion before returning a scoped,
+  privacy-safe proof-receipt statement; the aggregate's injected verifier must
+  still authenticate that receipt before it contributes authority
 
 ## Compact Entry Points
 
@@ -74,7 +79,10 @@ These circuits do not define:
 - predicates such as age or residency
 
 They are capability helpers meant to be composed by a concrete credential family
-or by a business contract.
+or by a business contract. Standalone same-holder success is non-authoritative
+composition evidence. It becomes part of an authoritative multi-credential
+result only when the scoped binding and every child Verification V1 authority
+chain pass [`Aggregate Decision Set V1`](../../../../docs/spec/aggregate-decision-set-v1.md).
 
 ## Design
 

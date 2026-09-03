@@ -6,7 +6,7 @@ import { pureCircuits } from "../managed/same-holder/contract/index.js";
 
 setNetworkId("undeployed");
 
-describe("same-holder capability", () => {
+describe("same-holder capability (non-authoritative composition evidence)", () => {
   it("proves two blinded holder bindings belong to the same hidden holder secret", () => {
     const holderSecret = new Uint8Array(32).fill(11);
     const verifierChallengeHash = new Uint8Array(32).fill(12);
