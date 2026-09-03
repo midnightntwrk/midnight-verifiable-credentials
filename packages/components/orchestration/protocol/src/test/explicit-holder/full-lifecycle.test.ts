@@ -1,6 +1,12 @@
+import {
+  HolderAgent as ExchangeHolderAgent,
+  IssuerAgent as ExchangeIssuerAgent,
+  VerifierAgent as ExchangeVerifierAgent,
+} from "@midnight-ntwrk/credential-exchange";
 import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { beforeAll,describe, expect, it } from "vitest";
 
+import { createBirthInjectedCredentialFamilyAdapter } from "../../adapters/birth/exchange-adapter.js";
 import { HolderAgent } from "../../agents/holder-agent.js";
 import { type ClaimWitness,IssuerAgent } from "../../agents/issuer-agent.js";
 import { MessageBus } from "../../transport/message-bus.js";
@@ -21,6 +27,7 @@ describe("explicit-holder full lifecycle", () => {
 
   const issuerProfile = createDIDProfile("issuer", "issuer", 123456789n);
   const holderProfile = createDIDProfile("holder", "holder", 987654321n);
+  const verifierProfile = createDIDProfile("verifier", "verifier", 555555555n);
 
   const claimWitness: ClaimWitness = {
     subjectId: sha256("subject:alice"),
@@ -54,6 +61,43 @@ describe("explicit-holder full lifecycle", () => {
 
     return holder;
   };
+
+  it("routes the concrete birth lifecycle through family-neutral injected agents", () => {
+    const adapter = createBirthInjectedCredentialFamilyAdapter({
+      issuerProfile,
+      holderProfile,
+      verifierProfile,
+    });
+    const issuer = new ExchangeIssuerAgent(adapter);
+    const holder = new ExchangeHolderAgent(adapter);
+    const verifier = new ExchangeVerifierAgent(adapter);
+
+    const offer = issuer.createOffer();
+    const request = holder.createIssuanceRequest(offer);
+    holder.acceptCredential(issuer.issue(request, claimWitness));
+    const presentationRequest = verifier.createPresentationRequest({
+      issuerVerificationMethodRef: issuerProfile.signer.verificationMethodRef,
+      requireSubjectIdCommitmentDisclosure: false,
+      requireBirthCountryDisclosure: true,
+      requireAgeOverThreshold: true,
+      requestedAgeThresholdYears: 18,
+    });
+    const presentation = holder.createPresentation(presentationRequest, {
+      credentialIndex: 0,
+      currentDay,
+      birthDateDays: claimWitness.birthDateDays,
+      birthDateOpening: claimWitness.birthDateOpening,
+      birthCountryCodePadded: claimWitness.birthCountryCodePadded,
+      birthCountryCodeOpening: claimWitness.birthCountryCodeOpening,
+    });
+    const result = verifier.verify(presentation, presentationRequest, {
+      currentDay,
+      birthDateDays: claimWitness.birthDateDays,
+      birthDateOpening: claimWitness.birthDateOpening,
+    });
+
+    expect(result.valid).toBe(true);
+  });
 
   it("completes issue -> present -> verify -> capability -> claim lifecycle", () => {
     const bus = new MessageBus();
