@@ -2,6 +2,8 @@
 
 Status: authoritative local runbook for the university diploma use case.
 
+The qualification lane produces **production-shaped evidence** only. It is **not production or security approval** and does not authorize production deployment, real personal data, package publication, or University credential-product status.
+
 Use this guide when you want to run the university scenarios, inspect the
 request/response DTOs, compare simulator and standalone timing, or decide which
 lane belongs in a pull request.
@@ -31,6 +33,17 @@ If you only need protocol-level checks and already have build artifacts:
 ./run.sh university-protocol-cohort --light
 ./run.sh university-protocol-stress --light
 ```
+
+## Production-shaped evidence procedure
+
+1. Confirm fixtures are synthetic: `./run.sh university-data-profiles` and `./run.sh university-policy-catalog`.
+2. Run `pnpm run ci:university-production-evidence`. This checks profile/package resolution, public-root consumption, custody leak scans, correlated E2E outcomes, all restart points, replay/idempotency, tamper rejection, threat controls, and process/network/proof/storage faults.
+3. Run the established protocol, cohort and stress lanes listed above, then `./run.sh --light`.
+4. Inspect failed events by `correlationId`, `stage`, `policyId`, and `outcome`. Do not add credential, proof, key, claim, or signer fields to audit events.
+5. For a network, process, prover, storage, or custody failure, stop the run, preserve only redacted diagnostics, restore that provider, and rerun the full named policy. Do not treat partial output as a decision.
+6. Report only `production-shaped-evidence-only` and `productionApproved: false`. The local `offchain-public-v1` Verification V1 result is not ledger submission or finality.
+
+Threats, controls and residual risks are authoritative in [`production-evidence-threat-model.md`](./production-evidence-threat-model.md) and its tested JSON companion.
 
 ## Execution Lanes
 
@@ -77,8 +90,7 @@ Current boundary:
   claim full real-proof execution yet
 - the proof-server-contract mode records DTOs for a future proof-server
   transport; it is not a networked proof-server integration
-- no university lane currently models a production multi-process SSI deployment
-  with issuer-key isolation
+- the production-evidence lane isolates signer material behind a stable custody provider and fault-injects process/network boundaries, but it does not model a production multi-process SSI deployment, HSM/KMS, or real remote service
 
 ## Actor And DID Model
 

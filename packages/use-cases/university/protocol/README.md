@@ -3,11 +3,15 @@
 > Maturity: `demo`
 > Package class: `dist`
 
+This package supplies **production-shaped evidence** only. It is **not production or security approval**.
+
 Status:
 
 - protocol-style multi-party university flow package
 - shared-bus virtual issuer / student / company / mall orchestration over the university diploma family
-- explicit party-runtime and proof-execution seams for future standalone and proof-server backends
+- validated profile and exact intended package/export graph through `credential-model`
+- OpenID canonical-message round trips through the package root
+- explicit party-runtime, isolated custody/signing, process, network, proof-execution, checkpoint storage/restart, and redacted observability seams
 - serialized in-process transport for catching DTOs that would not survive a
   real issuer/student/verifier process boundary
 - persisted restart simulation that checkpoints in-flight issuance,
@@ -25,8 +29,13 @@ Purpose:
 Boundary:
 
 - this package is a deterministic trace harness, not a security-realistic SSI deployment
-- the student-side harness rebuilds presentation artifacts from stable local test keys and stored issuer outputs so the full flow can execute in one process
-- treat it as protocol-shape validation and bottleneck instrumentation, not as a reference for issuer-key isolation
+- signer material is absent from application party records and resolved only through an injected custody provider; the reference provider still uses process memory and is not an HSM/KMS
+- the student-side harness rebuilds presentation artifacts through that custody seam and stored issuer outputs so the full flow can execute in one process
+- the process/network fault ports do not pretend that external infrastructure exists
+- local Verification V1 outcomes use `offchain-public-v1`; one typed local attempt is emitted for every job and mall presentation result, with the canonical 47-field transcript bound through `hashVerificationTranscriptV1`
+- canonical `+json` lifecycle messages contain the tagged JSON encoding of the actual request, credential, or presentation body; the same codec round-trips Compact `bigint` and `Uint8Array` values
+- the packaged `production-evidence-policies.json` export and loader resolve from the installed module rather than a repository-relative path
+- these outcomes do not assert ledger submission, commitment, or finality; treat them as protocol-shape, boundary, restart, fault, and bottleneck evidence only
 
 ## V1 direct-claim transport limit
 

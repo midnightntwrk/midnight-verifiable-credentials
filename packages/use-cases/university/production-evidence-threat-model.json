@@ -1,0 +1,58 @@
+[
+  {
+    "id": "UNI-TM-001",
+    "seam": "process",
+    "control": "The flow is created behind an injected process boundary and fails closed when execution terminates.",
+    "tests": ["production-evidence.test.ts: process fault"],
+    "residualRisk": "The in-process fixture does not measure operating-system isolation or supervisor behavior."
+  },
+  {
+    "id": "UNI-TM-002",
+    "seam": "network",
+    "control": "Every evidence run crosses an explicit network boundary before protocol work and records outage failure.",
+    "tests": ["production-evidence.test.ts: network fault"],
+    "residualRisk": "The synthetic boundary does not establish real transport security, latency, availability, or interoperability."
+  },
+  {
+    "id": "UNI-TM-003",
+    "seam": "proof-execution",
+    "control": "Proof execution is injected and any issuance or verification backend failure aborts the run.",
+    "tests": ["production-evidence.test.ts: proof fault", "tampered-flow.test.ts"],
+    "residualRisk": "Simulator execution is not assurance for a deployed prover, proof server, or circuit implementation."
+  },
+  {
+    "id": "UNI-TM-004",
+    "seam": "storage-restart",
+    "control": "Serialized checkpoints are compatibility-validated and restored at each declared restart point.",
+    "tests": ["production-evidence.test.ts: restart and storage fault", "restart-flow.test.ts"],
+    "residualRisk": "In-memory storage does not prove database durability, backup recovery, encryption, or concurrent writers."
+  },
+  {
+    "id": "UNI-TM-005",
+    "seam": "key-custody",
+    "control": "Application party records are key-free and proof adapters request signer material through an isolated provider.",
+    "tests": ["key-custody.test.ts"],
+    "residualRisk": "The reference provider uses process memory and is not an HSM, KMS, rotation, recovery, or authorization design."
+  },
+  {
+    "id": "UNI-TM-006",
+    "seam": "replay-idempotency",
+    "control": "Duplicate issuance is idempotent and duplicate presentation threads are rejected and counted.",
+    "tests": ["production-evidence.test.ts: replay policy", "issuance-idempotency.test.ts", "request-binding-replay.test.ts"],
+    "residualRisk": "Fixture replay state does not provide a distributed or ledger-atomic replay guarantee."
+  },
+  {
+    "id": "UNI-TM-007",
+    "seam": "tampering",
+    "control": "Request, holder, issuer, claim-root and proof-binding mutations are rejected before a business approval.",
+    "tests": ["production-evidence.test.ts: tampered policy", "tampered-flow.test.ts", "negative-flow.test.ts"],
+    "residualRisk": "The tested mutation catalog is bounded and does not replace cryptographic review or penetration testing."
+  },
+  {
+    "id": "UNI-TM-008",
+    "seam": "observability",
+    "control": "Correlation and stage outcomes are emitted through typed redacted events without credentials, proofs, or keys.",
+    "tests": ["production-evidence.test.ts: correlation and leak scan", "key-custody.test.ts"],
+    "residualRisk": "Deployers must configure log access, retention, aggregation, alerting, and incident response separately."
+  }
+]
