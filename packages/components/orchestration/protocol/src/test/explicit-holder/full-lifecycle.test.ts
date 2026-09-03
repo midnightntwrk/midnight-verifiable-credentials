@@ -7,9 +7,12 @@ import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { createBirthInjectedCredentialFamilyAdapter } from "../../adapters/birth/exchange-adapter.js";
+import type { BIRTH_SCHEMA } from "../../adapters/birth/schema-descriptors.js";
+import { stableJsonProtocolStateCodec } from "../../adapters/json-protocol-state-codec.js";
 import { HolderAgent } from "../../agents/holder-agent.js";
 import { type ClaimWitness, IssuerAgent } from "../../agents/issuer-agent.js";
 import { MessageBus } from "../../transport/message-bus.js";
+import type { ProtocolMessage } from "../../transport/types.js";
 import {
   type ContractPresentationPackage,
   ContractVerifier,
@@ -66,6 +69,42 @@ describe("explicit-holder full lifecycle", () => {
     });
 
     expect(adapter.family.schema.version).toBe("1.0.0");
+  });
+
+  it("rejects canonical framing that disagrees with the birth payload", () => {
+    const adapter = createBirthInjectedCredentialFamilyAdapter({
+      issuerProfile,
+      holderProfile,
+      verifierProfile,
+    });
+    const issuer = new ExchangeIssuerAgent(adapter);
+    const holder = new ExchangeHolderAgent(adapter);
+    const offer = issuer.createOffer();
+    const decodedOffer = stableJsonProtocolStateCodec.decode(
+      offer.payload,
+    ) as ProtocolMessage & {
+      readonly body: { readonly schema: typeof BIRTH_SCHEMA };
+    };
+    const mismatchedSchemaOffer = {
+      ...offer,
+      payload: stableJsonProtocolStateCodec.encode({
+        ...decodedOffer,
+        body: {
+          ...decodedOffer.body,
+          schema: { ...decodedOffer.body.schema, majorVersion: 999n },
+        },
+      }),
+    };
+
+    expect(() => holder.createIssuanceRequest(mismatchedSchemaOffer)).toThrow(
+      /payload schema/i,
+    );
+    expect(() =>
+      holder.createIssuanceRequest({
+        ...offer,
+        mediaType: "application/json",
+      }),
+    ).toThrow(/media type/i);
   });
 
   it("routes the concrete birth lifecycle through family-neutral injected agents", () => {
