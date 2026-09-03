@@ -529,6 +529,21 @@ importers:
 
   packages/use-cases/university/protocol:
     dependencies:
+      '@midnight-ntwrk/credential-exchange':
+        specifier: workspace:*
+        version: link:../../../components/orchestration/exchange
+      '@midnight-ntwrk/credential-model':
+        specifier: workspace:*
+        version: link:../../../core/model
+      '@midnight-ntwrk/credential-proofs':
+        specifier: workspace:*
+        version: link:../../../core/proofs
+      '@midnight-ntwrk/midnight-did-credentials':
+        specifier: '*'
+        version: link:../../../core/primitives/credentials
+      '@midnight-ntwrk/midnight-did-credentials-openid':
+        specifier: workspace:*
+        version: link:../../../protocols/openid
       '@midnight-ntwrk/midnight-did-credentials-protocol':
         specifier: '*'
         version: link:../../../components/orchestration/protocol

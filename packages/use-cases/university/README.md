@@ -2,6 +2,12 @@
 
 Status:
 
+University is **production-shaped evidence only**. It is **not production or security approval**, product authority, an SLA, or permission to process real personal data.
+
+- validated production-evidence profile with exact package/export and provider resolution
+- isolated application/key-custody boundary: party records, checkpoints, and audit events are key-free
+- explicit process, network, proof, storage/restart, replay, tamper, observability, and local Verification V1 evidence
+- reviewed machine-readable threat model and policy-driven synthetic fixtures
 - large narrative prototype use case built on `credentials-university-diploma`
 - data-rich SSI flow covering issuance, job-application verification, and student-discount verification
 - operator guide covering local lane selection, backend boundaries, report paths,
@@ -116,6 +122,9 @@ Prototype family:
   - [`./contract/README.md`](./contract/README.md)
 - threaded protocol package:
   - [`./protocol/README.md`](./protocol/README.md)
+- production-shaped evidence threat model:
+  - [`./production-evidence-threat-model.md`](./production-evidence-threat-model.md)
+  - [`./production-evidence-threat-model.json`](./production-evidence-threat-model.json)
 - reporting package:
   - [`./reporting/README.md`](./reporting/README.md)
 - lane and artifact matrix:

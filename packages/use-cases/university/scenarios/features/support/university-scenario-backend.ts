@@ -17,7 +17,7 @@ import {
   type CompanyRecord,
   type MallRecord,
   type StudentRecord,
-  type UniversityPartyRecord,
+  type UniversityPartyProvisioningRecord,
   type UniversityPartyRuntime,
   type UniversityProofExecutionBackend,
   type UniversityProfile as ProtocolUniversityProfile,
@@ -209,7 +209,7 @@ const partyRecordForDid = (options: {
   readonly methodId: string;
   readonly contractAddress: string;
   readonly verificationMethodRef: string;
-}): UniversityPartyRecord => ({
+}): UniversityPartyProvisioningRecord => ({
   partyId: options.partyId,
   didUrl: options.didString,
   methodId: options.methodId,
