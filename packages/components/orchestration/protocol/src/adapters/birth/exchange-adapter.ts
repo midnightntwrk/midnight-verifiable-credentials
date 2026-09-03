@@ -26,13 +26,15 @@ const FAMILY_IDENTITY = {
   familyId: BIRTH_SCHEMA_FAMILY_ADAPTER.familyId,
   familyVersion: "1.0.0",
   schemaId: formatSchemaRef(BIRTH_SCHEMA),
-  schemaVersion: `${BIRTH_SCHEMA.majorVersion}.${BIRTH_SCHEMA.minorVersion}`,
+  schemaVersion: `${BIRTH_SCHEMA.majorVersion}.${BIRTH_SCHEMA.minorVersion}.0`,
 } as const;
 
 const MEDIA_TYPE = "application/vnd.midnight.birth.protocol-message+json";
 
 type BirthVerificationResult = VerificationResult & {
-  readonly protocolResult: ReturnType<VerifierAgent["receiveSubmissionAndEvaluate"]>["result"];
+  readonly protocolResult: ReturnType<
+    VerifierAgent["receiveSubmissionAndEvaluate"]
+  >["result"];
 };
 
 export type BirthInjectedCredentialFamilyAdapter =
@@ -64,11 +66,43 @@ export const createBirthInjectedCredentialFamilyAdapter = (
   const issuer = new IssuerAgent(options.issuerProfile, bus);
   const holder = new HolderAgent(options.holderProfile, bus);
   const verifier = new VerifierAgent(options.verifierProfile, bus);
+  const acceptedCredentials: Array<{
+    readonly credential: CanonicalMessage<"credential">;
+    readonly index: number;
+  }> = [];
+
+  const credentialIndex = (
+    credential: CanonicalMessage<"credential">,
+  ): number => {
+    for (
+      let offset = acceptedCredentials.length - 1;
+      offset >= 0;
+      offset -= 1
+    ) {
+      const accepted = acceptedCredentials[offset];
+      if (
+        accepted.credential.familyId === credential.familyId &&
+        accepted.credential.familyVersion === credential.familyVersion &&
+        accepted.credential.schemaId === credential.schemaId &&
+        accepted.credential.schemaVersion === credential.schemaVersion &&
+        accepted.credential.mediaType === credential.mediaType &&
+        accepted.credential.payload.length === credential.payload.length &&
+        accepted.credential.payload.every(
+          (byte, index) => byte === credential.payload[index],
+        )
+      ) {
+        return accepted.index;
+      }
+    }
+    throw new Error("Credential was not accepted by this birth adapter");
+  };
 
   const receive = (party: PartyId, action: string): ProtocolMessage => {
     const message = bus.receive(party);
     if (!message) {
-      throw new Error(`Birth adapter produced no ${action} message for ${party}`);
+      throw new Error(
+        `Birth adapter produced no ${action} message for ${party}`,
+      );
     }
     return message;
   };
@@ -121,7 +155,9 @@ export const createBirthInjectedCredentialFamilyAdapter = (
         );
       },
       accept: (credential) => {
+        const index = holder.credentialCount;
         holder.receiveCredentialResult(decode(credential));
+        acceptedCredentials.push({ credential, index });
         return credential;
       },
     },
@@ -139,11 +175,17 @@ export const createBirthInjectedCredentialFamilyAdapter = (
           receive(options.holderProfile.label, "presentation request"),
         );
       },
-      present: (_credential, request, input) => {
-        holder.receiveRequestAndSendPresentation(
-          decode(request),
-          requiredInput<PresentationWitness>(input, "Birth presentation witness"),
+      present: (credential, request, input) => {
+        const witness = requiredInput<PresentationWitness>(
+          input,
+          "Birth presentation witness",
         );
+        if (witness.credentialIndex !== credentialIndex(credential)) {
+          throw new Error(
+            "Birth presentation witness credential index does not match the accepted credential",
+          );
+        }
+        holder.receiveRequestAndSendPresentation(decode(request), witness);
         return encode(
           "presentation",
           receive(options.verifierProfile.label, "presentation submission"),
