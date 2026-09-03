@@ -180,6 +180,7 @@ export const workspaceCatalog = [
   workspace("packages/use-cases/university/scenarios", "demo", "scenario"),
   workspace("packages/use-cases/university/protocol", "demo", "dist"),
   workspace("packages/use-cases/university/reporting", "demo", "dist"),
+  workspace("packages/use-cases/status-openid/evidence", "demo", "dist"),
   workspace(
     "packages/components/integration/standalone-environment",
     "infrastructure",

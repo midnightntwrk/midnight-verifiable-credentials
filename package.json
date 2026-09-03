@@ -41,6 +41,7 @@
     "packages/use-cases/university/scenarios",
     "packages/use-cases/university/protocol",
     "packages/use-cases/university/reporting",
+    "packages/use-cases/status-openid/evidence",
     "packages/components/integration/standalone-environment"
   ],
   "scripts": {
@@ -131,6 +132,9 @@
     "test:release-package-consumers": "node ./tooling/scripts/check-release-package-contract.mjs --tarballs ./tooling/artifacts/npm && node ./tooling/scripts/test-release-package-consumers.mjs --tarballs ./tooling/artifacts/npm",
     "test:family-neutral-exchange-consumer": "node ./tooling/scripts/test-family-neutral-exchange-consumer.mjs",
     "test:university-production-evidence-consumer": "node ./tooling/scripts/test-university-production-evidence-consumer.mjs",
+    "test:status-openid-evidence": "pnpm --dir ./packages/use-cases/status-openid/evidence run test:evidence",
+    "test:status-openid-evidence-consumer": "node ./tooling/scripts/test-status-openid-evidence-consumer.mjs",
+    "typecheck:status-openid-evidence": "pnpm --dir ./packages/use-cases/status-openid/evidence run typecheck",
     "typecheck:light": "pnpm run build:light && pnpm run typecheck:light:from-artifacts",
     "typecheck:all": "pnpm run build:all && pnpm run typecheck:all:from-artifacts",
     "typecheck:light:from-artifacts": "node ./tooling/scripts/workspace-catalog.mjs --exec-typecheck-from-artifacts",
@@ -154,6 +158,7 @@
     "ci:dummy-claims-lab": "pnpm run lint:dummy-claims-lab && pnpm run typecheck:dummy-claims-lab && pnpm run test:dummy-claims-lab",
     "ci:university-protocol": "pnpm --dir ./packages/use-cases/university/protocol run lint && pnpm run typecheck:university-protocol && pnpm run test:university-protocol",
     "ci:university-production-evidence": "pnpm --dir ./packages/use-cases/university/protocol run lint && pnpm run typecheck:university-protocol && pnpm --dir ./packages/use-cases/university/protocol run test:production-evidence && pnpm --dir ./packages/use-cases/university/protocol run build && pnpm run test:university-production-evidence-consumer",
+    "ci:status-openid-evidence": "pnpm run build:cone:foundation && pnpm --dir ./packages/use-cases/status-openid/evidence run lint && pnpm run typecheck:status-openid-evidence && pnpm run test:status-openid-evidence && pnpm --dir ./packages/use-cases/status-openid/evidence run build && pnpm run test:status-openid-evidence-consumer",
     "ci:university-policy-catalog": "pnpm --dir ./packages/use-cases/university/protocol run lint && pnpm run typecheck:university-protocol && pnpm run test:university-policy-catalog",
     "ci:university-protocol:export": "pnpm --dir ./packages/use-cases/university/protocol run lint && pnpm run typecheck:university-protocol && pnpm run test:university-protocol:export",
     "ci:hello-smoke:from-artifacts": "pnpm run lint:hello-smoke && pnpm run typecheck:hello-smoke:from-artifacts && pnpm run test:hello-smoke:from-artifacts",

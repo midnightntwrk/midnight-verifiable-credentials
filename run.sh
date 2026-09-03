@@ -254,6 +254,10 @@ case "$target" in
     echo "[run] BDD full lane"
     pnpm run test:bdd:all
     ;;
+  status-openid-evidence)
+    echo "[run] Status-enabled OpenID production-evidence lane"
+    pnpm run ci:status-openid-evidence
+    ;;
   university-bdd)
     echo "[run] University diploma BDD lane"
     pnpm run ci:university-bdd
