@@ -8,6 +8,14 @@ import { describe, expect, it } from "vitest";
 import packageJson from "../../package.json" with { type: "json" };
 
 const root = resolve(import.meta.dirname, "../..");
+const compactAvailable = (() => {
+  try {
+    execFileSync("compact", ["--version"], { stdio: "pipe" });
+    return true;
+  } catch {
+    return false;
+  }
+})();
 const sourceSurface = (relativePath: string) =>
   resolve(root, "src", relativePath);
 const distSurface = (relativePath: string) =>
@@ -62,44 +70,48 @@ describe("hello-family package surfaces", () => {
     ).toBe(true);
   });
 
-  it("compiles the standalone Compact export outside the monorepo", () => {
-    if (!existsSync(distSurface("index.js"))) return;
+  it.skipIf(!compactAvailable)(
+    "compiles the standalone Compact export outside the monorepo",
+    () => {
+      if (!existsSync(distSurface("index.js"))) return;
 
-    const temporaryRoot = mkdtempSync(
-      join(os.tmpdir(), "hello-family-compact-package-"),
-    );
-    try {
-      cpSync(
-        distSurface("hello-family-credential.compact"),
-        join(temporaryRoot, "hello-family-credential.compact"),
+      const temporaryRoot = mkdtempSync(
+        join(os.tmpdir(), "hello-family-compact-package-"),
       );
-      cpSync(
-        distSurface("hello-family-credential"),
-        join(temporaryRoot, "hello-family-credential"),
-        { recursive: true },
-      );
-      cpSync(
-        distSurface("credential-compact"),
-        join(temporaryRoot, "credential-compact"),
-        { recursive: true },
-      );
-      execFileSync(
-        "compact",
-        [
-          "compile",
-          "+0.31.1",
-          "--skip-zk",
-          "--compact-path",
-          temporaryRoot,
+      try {
+        cpSync(
+          distSurface("hello-family-credential.compact"),
           join(temporaryRoot, "hello-family-credential.compact"),
-          join(temporaryRoot, "output"),
-        ],
-        { stdio: "pipe" },
-      );
-    } finally {
-      rmSync(temporaryRoot, { recursive: true, force: true });
-    }
-  }, 60_000);
+        );
+        cpSync(
+          distSurface("hello-family-credential"),
+          join(temporaryRoot, "hello-family-credential"),
+          { recursive: true },
+        );
+        cpSync(
+          distSurface("credential-compact"),
+          join(temporaryRoot, "credential-compact"),
+          { recursive: true },
+        );
+        execFileSync(
+          "compact",
+          [
+            "compile",
+            "+0.31.1",
+            "--skip-zk",
+            "--compact-path",
+            temporaryRoot,
+            join(temporaryRoot, "hello-family-credential.compact"),
+            join(temporaryRoot, "output"),
+          ],
+          { stdio: "pipe" },
+        );
+      } finally {
+        rmSync(temporaryRoot, { recursive: true, force: true });
+      }
+    },
+    60_000,
+  );
 
   it("keeps the generated managed contract subpaths available", () => {
     expect(
