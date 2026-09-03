@@ -1,0 +1,27 @@
+// Composition-safe hello-family surface.
+// The importing contract must include the canonical credentials composition
+// root exactly once before including this file.
+include "./claims";
+include "./model";
+
+import VC<
+  HelloFamilyClaims,
+  NoClaimCommitments,
+  ExplicitHolderBinding,
+  NoStatusBinding
+> prefix HelloFamilyVC_;
+import VP<
+  HelloFamilyDisclosures,
+  ExplicitHolderBinding
+> prefix HelloFamilyVP_;
+import CredentialPresentationRelations<
+  HelloFamilyClaims,
+  NoClaimCommitments,
+  HelloFamilyDisclosures,
+  ExplicitHolderBinding,
+  NoStatusBinding
+> prefix HelloFamilyPresentation_;
+
+export type HelloFamilyCredential = HelloFamilyVC_Credential;
+export type HelloFamilyPresentation = HelloFamilyVP_Presentation;
+include "./helpers";

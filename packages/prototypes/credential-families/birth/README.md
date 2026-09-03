@@ -27,7 +27,9 @@ Reusable outside this repo:
 Surface classification:
 
 - `On-chain + off-chain`
-- `src/birth-credential.compact` is the authoritative contract-authoring surface
+- `src/birth-credential.compact` is the standalone contract-authoring surface
+- `src/birth-credential/composable.compact` is the family-prefixed Layer 3
+  surface and assumes the canonical core composition root is included once
 - generated/runtime TypeScript exports are off-chain mirrors only
 - `./testing` is an `Off-chain only` fixture surface for integration tests;
   do not import `../<package>/src/...` from sibling workspaces
@@ -38,7 +40,9 @@ Start here:
 
 1. use this package when you want the simplest current concrete credential
    family in the repository
-2. write contracts against the Compact family entrypoint
+2. use `birth-credential.compact` for standalone compilation or include the
+   canonical core once plus `birth-credential/composable.compact` for
+   multi-family composition
 3. use generated/runtime exports only in tests, wallets, verifiers, and
    adapter code
 4. read [`../../../../docs/guides/integration-surface-map.md`](../../../../docs/guides/integration-surface-map.md)

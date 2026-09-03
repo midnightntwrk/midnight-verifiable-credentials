@@ -110,7 +110,9 @@ a direct-claim laboratory:
 ## Package structure
 
 - [`src/hello-family-credential.compact`](./src/hello-family-credential.compact)
-  thin-core family root
+  thin standalone family root that includes the canonical shared core once
+- [`src/hello-family-credential/composable.compact`](./src/hello-family-credential/composable.compact)
+  dependency-free, family-prefixed Layer 3 entrypoint
 - [`src/hello-family-credential/claims.compact`](./src/hello-family-credential/claims.compact)
   supported-claims laboratory surface
 - [`src/hello-family-credential/model.compact`](./src/hello-family-credential/model.compact)

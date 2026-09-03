@@ -24,6 +24,8 @@
       "import": "./dist/contract.js",
       "default": "./dist/contract.js"
     },
+    "./birth-credential.compact": "./dist/birth-credential.compact",
+    "./birth-credential/composable.compact": "./dist/birth-credential/composable.compact",
     "./testing": {
       "types": "./dist/testing.d.ts",
       "require": "./dist/testing.js",
@@ -57,7 +59,7 @@
     "test:ci": "vitest run",
     "prepack": "pnpm run build",
     "clean": "rm -rf dist && rm -rf coverage && rm -rf reports && rm -rf src/managed",
-    "build": "pnpm run compact && rm -rf dist && mkdir -p dist && tsc -b tsconfig.build.json --force && cp -Rf ./src/managed ./dist/ && rm -f ./dist/managed/.compact-artifact.json && cp ./src/birth-credential.compact ./dist && cp -Rf ./src/birth-credential ./dist/",
+    "build": "pnpm run compact && rm -rf dist && mkdir -p dist && tsc -b tsconfig.build.json --force && cp -Rf ./src/managed ./dist/ && rm -f ./dist/managed/.compact-artifact.json && node ../../../../tooling/scripts/stage-family-compact-surface.mjs --source ./src/birth-credential.compact --output-root ./dist --core-root ../../../../packages/core/compact/src/credentials && cp -Rf ./src/birth-credential ./dist/",
     "lint": "eslint src --ignore-pattern 'src/managed/**'",
     "lint:fix": "eslint src --fix --ignore-pattern 'src/managed/**'",
     "typecheck": "pnpm run compact && tsc -p tsconfig.json --noEmit",
@@ -65,6 +67,7 @@
   },
   "dependencies": {
     "@midnight-ntwrk/compact-runtime": "^0.16.0",
+    "@midnight-ntwrk/credential-compact": "*",
     "@midnight-ntwrk/midnight-did-credentials": "*"
   },
   "files": [

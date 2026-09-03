@@ -1,0 +1,48 @@
+// Composition-safe birth-family surface.
+// The importing contract must include the canonical credentials composition
+// root exactly once before including this file.
+include "./claims";
+include "./model";
+
+import VC<
+  NoPublicClaims,
+  BirthCredentialClaimCommitments,
+  ExplicitHolderBinding,
+  NoStatusBinding
+> prefix BirthCredentialVC_;
+import VP<
+  BirthCredentialDisclosures,
+  ExplicitHolderBinding
+> prefix BirthCredentialVP_;
+import CredentialPresentationRelations<
+  NoPublicClaims,
+  BirthCredentialClaimCommitments,
+  BirthCredentialDisclosures,
+  ExplicitHolderBinding,
+  NoStatusBinding
+> prefix BirthCredentialPresentation_;
+
+export type BirthCredential = BirthCredentialVC_Credential;
+export type BirthCredentialPresentation = BirthCredentialVP_Presentation;
+include "./protocol-model";
+
+import Issue<
+  BirthCredentialIssuanceOfferBody,
+  BirthCredentialIssuanceRequestBody,
+  BirthCredentialIssuanceResultBody
+> prefix BirthCredentialIssuance_;
+
+import Present<
+  BirthCredentialVerificationRequestBody,
+  BirthCredentialVerificationSubmissionBody,
+  BirthCredentialVerificationResultBody
+> prefix BirthCredentialVerification_;
+
+export type BirthCredentialIssuanceOffer = BirthCredentialIssuance_OfferMessage;
+export type BirthCredentialIssuanceRequest = BirthCredentialIssuance_RequestMessage;
+export type BirthCredentialIssuanceResult = BirthCredentialIssuance_ResultMessage;
+export type BirthCredentialVerificationRequest = BirthCredentialVerification_RequestMessage;
+export type BirthCredentialVerificationSubmission = BirthCredentialVerification_SubmissionMessage;
+export type BirthCredentialVerificationResult = BirthCredentialVerification_ResultMessage;
+include "./helpers";
+include "./validation";

@@ -92,161 +92,6 @@ export type RegistryBoundStatusBinding = { statusType: StatusType;
                                            statusHandleCommitment: Uint8Array
                                          };
 
-export type CredentialBindingV1 = { domain: Uint8Array;
-                                    version: bigint;
-                                    mode: bigint;
-                                    credentialFamilyDigest: Uint8Array;
-                                    schemaDigest: Uint8Array;
-                                    verifierContractDigest: Uint8Array;
-                                    challengeDigest: Uint8Array;
-                                    credentialRoot: Uint8Array
-                                  };
-
-export type HolderBindingV1 = { domain: Uint8Array;
-                                version: bigint;
-                                mode: bigint;
-                                verifierContractDigest: Uint8Array;
-                                challengeDigest: Uint8Array;
-                                subjectBindingDigest: Uint8Array
-                              };
-
-export type ConsentBindingV1 = { domain: Uint8Array;
-                                 version: bigint;
-                                 profile: bigint;
-                                 networkIdDigest: Uint8Array;
-                                 verifierContractDigest: Uint8Array;
-                                 deploymentDigest: Uint8Array;
-                                 audienceDigest: Uint8Array;
-                                 originMode: bigint;
-                                 originDigest: Uint8Array;
-                                 requestIdDigest: Uint8Array;
-                                 challengeDigest: Uint8Array;
-                                 expiresAt: bigint;
-                                 credentialFamilyDigest: Uint8Array;
-                                 schemaDigest: Uint8Array;
-                                 disclosureDigest: Uint8Array;
-                                 predicateDigest: Uint8Array;
-                                 statusMode: bigint;
-                                 statusRegistryDigest: Uint8Array;
-                                 statusRoot: Uint8Array;
-                                 statusRegistryVersion: bigint;
-                                 statusFreshnessPolicyDigest: Uint8Array;
-                                 policyDigest: Uint8Array;
-                                 actionClassDigest: Uint8Array;
-                                 actionInvocationDigest: Uint8Array;
-                                 artifactManifestDigest: Uint8Array;
-                                 replayPolicy: bigint
-                               };
-
-export type PresentationBindingV1 = { domain: Uint8Array;
-                                      version: bigint;
-                                      credentialBindingDigest: Uint8Array;
-                                      holderBindingDigest: Uint8Array;
-                                      disclosureDigest: Uint8Array;
-                                      predicateDigest: Uint8Array;
-                                      consentDigest: Uint8Array
-                                    };
-
-export type EvidenceBindingV1 = { domain: Uint8Array;
-                                  version: bigint;
-                                  mode: bigint;
-                                  authorityDigest: Uint8Array;
-                                  subjectDigest: Uint8Array;
-                                  stateAnchorDigest: Uint8Array;
-                                  statementDigest: Uint8Array;
-                                  createdAt: bigint;
-                                  expiresAt: bigint
-                                };
-
-export type AnchorEvidenceReceiptV1 = { domain: Uint8Array;
-                                        version: bigint;
-                                        issuerEvidenceDigest: Uint8Array;
-                                        trustEvidenceDigest: Uint8Array;
-                                        statusEvidenceDigest: Uint8Array;
-                                        timeEvidenceDigest: Uint8Array;
-                                        artifactEvidenceDigest: Uint8Array;
-                                        connectorEvidenceDigest: Uint8Array
-                                      };
-
-export type DecisionNullifierMaterialV1 = { domain: Uint8Array;
-                                            version: bigint;
-                                            deploymentDigest: Uint8Array;
-                                            verifierContractDigest: Uint8Array;
-                                            replayPolicy: bigint;
-                                            replayScopeDigest: Uint8Array
-                                          };
-
-export type SyntheticVerificationExtensionV1 = { domain: Uint8Array;
-                                                 version: bigint;
-                                                 familyDigest: Uint8Array;
-                                                 valueDigest: Uint8Array
-                                               };
-
-export type VerificationTranscriptV1 = { domain: Uint8Array;
-                                         version: bigint;
-                                         profile: bigint;
-                                         authority: bigint;
-                                         networkIdDigest: Uint8Array;
-                                         verifierContractDigest: Uint8Array;
-                                         deploymentDigest: Uint8Array;
-                                         audienceDigest: Uint8Array;
-                                         originMode: bigint;
-                                         originDigest: Uint8Array;
-                                         connectorEvidenceDigest: Uint8Array;
-                                         requestIdDigest: Uint8Array;
-                                         challengeDigest: Uint8Array;
-                                         expiresAt: bigint;
-                                         credentialFamilyDigest: Uint8Array;
-                                         schemaDigest: Uint8Array;
-                                         credentialBindingMode: bigint;
-                                         credentialBindingDigest: Uint8Array;
-                                         disclosureDigest: Uint8Array;
-                                         predicateDigest: Uint8Array;
-                                         holderBindingDigest: Uint8Array;
-                                         policyDigest: Uint8Array;
-                                         actionClassDigest: Uint8Array;
-                                         actionInvocationDigest: Uint8Array;
-                                         consentDigest: Uint8Array;
-                                         presentationBindingDigest: Uint8Array;
-                                         issuerDidDigest: Uint8Array;
-                                         issuerMethodDigest: Uint8Array;
-                                         issuerRelationship: bigint;
-                                         issuerEvidenceDigest: Uint8Array;
-                                         trustScopeDigest: Uint8Array;
-                                         trustEvidenceDigest: Uint8Array;
-                                         statusMode: bigint;
-                                         statusRegistryDigest: Uint8Array;
-                                         statusRoot: Uint8Array;
-                                         statusRegistryVersion: bigint;
-                                         statusFreshnessPolicyDigest: Uint8Array;
-                                         statusEvidenceDigest: Uint8Array;
-                                         timeMode: bigint;
-                                         trustedTime: bigint;
-                                         timeEvidenceDigest: Uint8Array;
-                                         artifactManifestDigest: Uint8Array;
-                                         artifactEvidenceDigest: Uint8Array;
-                                         nullifierMode: bigint;
-                                         replayPolicy: bigint;
-                                         replayScopeDigest: Uint8Array;
-                                         decisionNullifier: Uint8Array
-                                       };
-
-export type VerificationPublicInputsV1 = { transcript: VerificationTranscriptV1;
-                                           issuerEvidence: EvidenceBindingV1;
-                                           trustEvidence: EvidenceBindingV1;
-                                           statusEvidence: EvidenceBindingV1;
-                                           timeEvidence: EvidenceBindingV1;
-                                           artifactEvidence: EvidenceBindingV1;
-                                           connectorEvidence: EvidenceBindingV1
-                                         };
-
-export type SyntheticVerificationAttemptV1 = { proofStatus: bigint;
-                                               decisionStatus: bigint;
-                                               authority: bigint;
-                                               executionStatus: bigint;
-                                               transcriptDigest: Uint8Array
-                                             };
-
 export type HelloFamilyClaims = { booleanValue: boolean;
                                   smallUintValue: bigint;
                                   bigUnsignedValue: bigint;
@@ -318,17 +163,12 @@ export type PureCircuits = {
                   challenge_0: bigint): boolean;
   issuanceContextTag(): Uint8Array;
   presentationContextTag(): Uint8Array;
-  statusAttestationContextTag(): Uint8Array;
   issuanceProofPayloadRoot(bodyRoot_0: Uint8Array, proof_0: Proof): Uint8Array;
   presentationProofPayloadRoot(bodyRoot_0: Uint8Array, proof_0: Proof): Uint8Array;
   issuanceProofChallenge(bodyRoot_0: Uint8Array, proof_0: Proof): bigint;
   presentationProofChallenge(bodyRoot_0: Uint8Array, proof_0: Proof): bigint;
   assertValidIssuanceContextProof(bodyRoot_0: Uint8Array, proof_0: Proof): [];
   assertValidPresentationContextProof(bodyRoot_0: Uint8Array, proof_0: Proof): [];
-  statusAttestationProofPayloadRoot(bodyRoot_0: Uint8Array, proof_0: Proof): Uint8Array;
-  statusAttestationProofChallenge(bodyRoot_0: Uint8Array, proof_0: Proof): bigint;
-  assertValidStatusAttestationContextProof(bodyRoot_0: Uint8Array,
-                                           proof_0: Proof): [];
   assertValidExplicitHolderBinding(binding_0: ExplicitHolderBinding): [];
   assertMatchingExplicitHolderBindings(credentialBinding_0: ExplicitHolderBinding,
                                        presentationBinding_0: ExplicitHolderBinding): [];
@@ -387,35 +227,6 @@ export type PureCircuits = {
   assertValidNoStatusBinding(binding_0: NoStatusBinding): [];
   assertValidRegistryBoundStatusBinding(binding_0: RegistryBoundStatusBinding): [];
   registryBoundStatusBindingRoot(binding_0: RegistryBoundStatusBinding): Uint8Array;
-  verificationTranscriptDomainV1(): Uint8Array;
-  decisionNullifierDomainV1(): Uint8Array;
-  credentialBindingDomainV1(): Uint8Array;
-  holderBindingDomainV1(): Uint8Array;
-  consentBindingDomainV1(): Uint8Array;
-  presentationBindingDomainV1(): Uint8Array;
-  issuerEvidenceDomainV1(): Uint8Array;
-  trustEvidenceDomainV1(): Uint8Array;
-  statusEvidenceDomainV1(): Uint8Array;
-  timeEvidenceDomainV1(): Uint8Array;
-  artifactEvidenceDomainV1(): Uint8Array;
-  connectorEvidenceDomainV1(): Uint8Array;
-  anchorEvidenceReceiptDomainV1(): Uint8Array;
-  syntheticVerificationExtensionDomainV1(): Uint8Array;
-  credentialBindingV1Digest(binding_0: CredentialBindingV1): Uint8Array;
-  holderBindingV1Digest(binding_0: HolderBindingV1): Uint8Array;
-  consentBindingV1Digest(binding_0: ConsentBindingV1): Uint8Array;
-  presentationBindingV1Digest(binding_0: PresentationBindingV1): Uint8Array;
-  evidenceBindingV1Digest(binding_0: EvidenceBindingV1): Uint8Array;
-  anchorEvidenceReceiptV1Digest(receipt_0: AnchorEvidenceReceiptV1): Uint8Array;
-  decisionNullifierMaterialV1Digest(material_0: DecisionNullifierMaterialV1): Uint8Array;
-  syntheticVerificationExtensionV1Digest(extension_0: SyntheticVerificationExtensionV1): Uint8Array;
-  verificationTranscriptV1Digest(transcript_0: VerificationTranscriptV1): Uint8Array;
-  assertValidEvidenceBindingV1(binding_0: EvidenceBindingV1,
-                               expectedDomain_0: Uint8Array): [];
-  assertValidVerificationTranscriptV1(transcript_0: VerificationTranscriptV1): [];
-  assertValidVerificationPublicInputsV1(inputs_0: VerificationPublicInputsV1): [];
-  syntheticUnavailableAuthorityVerificationV1(inputs_0: VerificationPublicInputsV1,
-                                              expectedTranscriptDigest_0: Uint8Array): SyntheticVerificationAttemptV1;
   helloFamilyClaimPayloadRoot(claims_0: HelloFamilyClaims): Uint8Array;
   helloFamilyClaimRoot(claims_0: HelloFamilyClaims): Uint8Array;
   helloFamilyCredentialBodyRoot(credential_0: HelloFamilyCredential): Uint8Array;
@@ -455,7 +266,6 @@ export type Circuits<PS> = {
                   challenge_0: bigint): __compactRuntime.CircuitResults<PS, boolean>;
   issuanceContextTag(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
   presentationContextTag(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
-  statusAttestationContextTag(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
   issuanceProofPayloadRoot(context: __compactRuntime.CircuitContext<PS>,
                            bodyRoot_0: Uint8Array,
                            proof_0: Proof): __compactRuntime.CircuitResults<PS, Uint8Array>;
@@ -474,15 +284,6 @@ export type Circuits<PS> = {
   assertValidPresentationContextProof(context: __compactRuntime.CircuitContext<PS>,
                                       bodyRoot_0: Uint8Array,
                                       proof_0: Proof): __compactRuntime.CircuitResults<PS, []>;
-  statusAttestationProofPayloadRoot(context: __compactRuntime.CircuitContext<PS>,
-                                    bodyRoot_0: Uint8Array,
-                                    proof_0: Proof): __compactRuntime.CircuitResults<PS, Uint8Array>;
-  statusAttestationProofChallenge(context: __compactRuntime.CircuitContext<PS>,
-                                  bodyRoot_0: Uint8Array,
-                                  proof_0: Proof): __compactRuntime.CircuitResults<PS, bigint>;
-  assertValidStatusAttestationContextProof(context: __compactRuntime.CircuitContext<PS>,
-                                           bodyRoot_0: Uint8Array,
-                                           proof_0: Proof): __compactRuntime.CircuitResults<PS, []>;
   assertValidExplicitHolderBinding(context: __compactRuntime.CircuitContext<PS>,
                                    binding_0: ExplicitHolderBinding): __compactRuntime.CircuitResults<PS, []>;
   assertMatchingExplicitHolderBindings(context: __compactRuntime.CircuitContext<PS>,
@@ -574,48 +375,6 @@ export type Circuits<PS> = {
                                         binding_0: RegistryBoundStatusBinding): __compactRuntime.CircuitResults<PS, []>;
   registryBoundStatusBindingRoot(context: __compactRuntime.CircuitContext<PS>,
                                  binding_0: RegistryBoundStatusBinding): __compactRuntime.CircuitResults<PS, Uint8Array>;
-  verificationTranscriptDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
-  decisionNullifierDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
-  credentialBindingDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
-  holderBindingDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
-  consentBindingDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
-  presentationBindingDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
-  issuerEvidenceDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
-  trustEvidenceDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
-  statusEvidenceDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
-  timeEvidenceDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
-  artifactEvidenceDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
-  connectorEvidenceDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
-  anchorEvidenceReceiptDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
-  syntheticVerificationExtensionDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
-  credentialBindingV1Digest(context: __compactRuntime.CircuitContext<PS>,
-                            binding_0: CredentialBindingV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
-  holderBindingV1Digest(context: __compactRuntime.CircuitContext<PS>,
-                        binding_0: HolderBindingV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
-  consentBindingV1Digest(context: __compactRuntime.CircuitContext<PS>,
-                         binding_0: ConsentBindingV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
-  presentationBindingV1Digest(context: __compactRuntime.CircuitContext<PS>,
-                              binding_0: PresentationBindingV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
-  evidenceBindingV1Digest(context: __compactRuntime.CircuitContext<PS>,
-                          binding_0: EvidenceBindingV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
-  anchorEvidenceReceiptV1Digest(context: __compactRuntime.CircuitContext<PS>,
-                                receipt_0: AnchorEvidenceReceiptV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
-  decisionNullifierMaterialV1Digest(context: __compactRuntime.CircuitContext<PS>,
-                                    material_0: DecisionNullifierMaterialV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
-  syntheticVerificationExtensionV1Digest(context: __compactRuntime.CircuitContext<PS>,
-                                         extension_0: SyntheticVerificationExtensionV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
-  verificationTranscriptV1Digest(context: __compactRuntime.CircuitContext<PS>,
-                                 transcript_0: VerificationTranscriptV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
-  assertValidEvidenceBindingV1(context: __compactRuntime.CircuitContext<PS>,
-                               binding_0: EvidenceBindingV1,
-                               expectedDomain_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
-  assertValidVerificationTranscriptV1(context: __compactRuntime.CircuitContext<PS>,
-                                      transcript_0: VerificationTranscriptV1): __compactRuntime.CircuitResults<PS, []>;
-  assertValidVerificationPublicInputsV1(context: __compactRuntime.CircuitContext<PS>,
-                                        inputs_0: VerificationPublicInputsV1): __compactRuntime.CircuitResults<PS, []>;
-  syntheticUnavailableAuthorityVerificationV1(context: __compactRuntime.CircuitContext<PS>,
-                                              inputs_0: VerificationPublicInputsV1,
-                                              expectedTranscriptDigest_0: Uint8Array): __compactRuntime.CircuitResults<PS, SyntheticVerificationAttemptV1>;
   helloFamilyClaimPayloadRoot(context: __compactRuntime.CircuitContext<PS>,
                               claims_0: HelloFamilyClaims): __compactRuntime.CircuitResults<PS, Uint8Array>;
   helloFamilyClaimRoot(context: __compactRuntime.CircuitContext<PS>,

@@ -352,13 +352,22 @@ for (const releasePackage of releasePackages) {
         compileExternal(`compact-standalone-${index}`, [entrypoint]);
       }
       for (const [index, entrypoint] of composition.entries()) {
-        const output = compileExternal(`compact-composition-${index}`, ["./credentials/bindings.compact", entrypoint]);
-        run(
-          "node",
-          [path.join(fixtureRoot, "same-holder-vectors.mjs"), output],
-          consumerRoot,
-          `${sourcePackageJson.name}: same-holder semantic vectors (${index})`,
+        const isSameHolderFragment = entrypoint.includes("same-holder");
+        const includes = isSameHolderFragment
+          ? ["./credentials/bindings.compact", entrypoint]
+          : [entrypoint];
+        const output = compileExternal(
+          `compact-composition-${index}`,
+          includes,
         );
+        if (isSameHolderFragment) {
+          run(
+            "node",
+            [path.join(fixtureRoot, "same-holder-vectors.mjs"), output],
+            consumerRoot,
+            `${sourcePackageJson.name}: same-holder semantic vectors (${index})`,
+          );
+        }
       }
       for (const entrypoint of standalone) {
         if (!entrypoint.includes("same-holder")) continue;

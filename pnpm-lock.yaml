@@ -301,6 +301,9 @@ importers:
       '@midnight-ntwrk/compact-runtime':
         specifier: ^0.16.0
         version: 0.16.0
+      '@midnight-ntwrk/credential-compact':
+        specifier: '*'
+        version: link:../../../core/compact
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials
@@ -349,6 +352,9 @@ importers:
       '@midnight-ntwrk/compact-runtime':
         specifier: ^0.16.0
         version: 0.16.0
+      '@midnight-ntwrk/credential-compact':
+        specifier: '*'
+        version: link:../../../core/compact
       '@midnight-ntwrk/midnight-did-credentials':
         specifier: '*'
         version: link:../../../core/primitives/credentials

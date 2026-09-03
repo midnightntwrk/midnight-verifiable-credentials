@@ -115,7 +115,8 @@ for the closed migration exception and graduation gates.
 | Path | Package | Responsibility |
 | --- | --- | --- |
 | `packages/core/model` | `@midnight-ntwrk/credential-model` | Protocol-neutral family definitions, descriptors, codecs, composition manifests, and errors. |
-| `packages/core/primitives/credentials` | `@midnight-ntwrk/midnight-did-credentials` | Generic VC/VP Compact primitives, claim envelope, holder/status binding types, proof helpers. |
+| `packages/core/compact` | `@midnight-ntwrk/credential-compact` | Canonical reusable VC/VP Compact semantics and public standalone/composition surfaces. |
+| `packages/core/primitives/credentials` | `@midnight-ntwrk/midnight-did-credentials` | Private compatibility facade plus explicit legacy verification/status extensions; not a second canonical owner. |
 | `packages/core/capabilities/same-holder` | `@midnight-ntwrk/midnight-did-credentials-same-holder` | Same-holder composition capability. |
 | `packages/core/primitives/iso-registry` | `@midnight-ntwrk/midnight-did-credentials-iso-registry` | ISO-style registry primitives. |
 | `packages/registry/status-registry` | `@midnight-ntwrk/midnight-did-credentials-status-registry` | Status/revocation registry reference package and witness-builder helpers. |
@@ -180,11 +181,12 @@ Preferred composition model:
 
 Important shared surfaces:
 
-- `packages/core/primitives/credentials/src/credentials.compact`: standalone package root.
-- `packages/core/primitives/credentials/src/credentials/composable.compact`: Layer 3 shared root.
-- `packages/core/primitives/credentials/src/credentials/vc-support.compact`: VC/VP envelope and proof helpers.
-- `packages/core/primitives/credentials/src/credentials/protocol-support.compact`: issuance/presentation protocol modules.
-- `packages/core/primitives/credentials/src/credentials/bindings.compact`: holder-binding types and witness helpers.
+- `packages/core/compact/src/credentials.compact`: canonical standalone package root.
+- `packages/core/compact/src/credentials/composable.compact`: canonical Layer 3 shared root; include it exactly once before family composables.
+- `packages/core/compact/src/credentials/vc-support.compact`: canonical VC/VP envelope and proof helpers.
+- `packages/core/compact/src/credentials/protocol-support.compact`: canonical issuance/presentation protocol modules.
+- `packages/core/compact/src/credentials/bindings.compact`: canonical holder-binding types and witness helpers.
+- `packages/core/primitives/credentials/src/**`: private compatibility facade; retained shared files are equivalence-tested and its explicit legacy extensions are non-canonical.
 - `packages/core/capabilities/same-holder/src/same-holder/composable.compact`: same-holder composition surface.
 
 Generated outputs under `src/managed/**`, `dist/**`, and `*.tsbuildinfo` are build artifacts. Do not edit them manually.

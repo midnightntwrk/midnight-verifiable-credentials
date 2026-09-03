@@ -201,10 +201,13 @@ export pure circuit assertValidBirthCredential(
   proof: Proof
 ): [] {
   assertValidBirthSchemaRef(credential.schema);
-  assertValidCredentialEnvelope(credential, birthCredentialClaimRoot(credential.claimCommitments));
+  BirthCredentialVC_assertValidCredentialEnvelope(
+    credential,
+    birthCredentialClaimRoot(credential.claimCommitments)
+  );
   assertValidNoStatusBinding(credential.statusBinding);
   assertValidExplicitHolderBinding(credential.holderBinding);
-  assertValidCredentialProof(credential, proof);
+  BirthCredentialVC_assertValidCredentialProof(credential, proof);
 }
 
 export pure circuit assertValidBirthCredentialPresentation(
@@ -215,7 +218,7 @@ export pure circuit assertValidBirthCredentialPresentation(
 ): [] {
   assertValidBirthCredential(credential, credentialProof);
   assertValidBirthSchemaRef(presentation.schema);
-  assertValidPresentationEnvelope(presentation);
+  BirthCredentialVP_assertValidPresentationEnvelope(presentation);
   BirthCredentialPresentation_assertMatchingCredentialPresentation(
     credential,
     presentation

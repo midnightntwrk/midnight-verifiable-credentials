@@ -4,11 +4,15 @@
 > Package class: `dist`
 > Release stage: `internal`
 
-Generic Midnight VC/VP core for Compact-first credential families.
+Private compatibility facade for Compact-first Midnight VC/VP credential
+families. Canonical reusable Compact semantics are owned by
+`@midnight-ntwrk/credential-compact` in `packages/core/compact`.
 
 Status:
 
-- internal compatibility package retained while reusable surfaces are extracted
+- internal compatibility package retained while consumers migrate to the canonical package
+- shared canonical source files are byte-equivalence-tested; facade-only legacy
+  verification/status extensions remain explicitly non-canonical
 - excluded from the publication and workspace artifact pack allowlists
 - not a production-readiness claim; authority and assurance blockers remain
 
@@ -29,8 +33,9 @@ Reusable outside this repo:
 Surface classification:
 
 - `On-chain + off-chain`
-- Compact entrypoints are the authoritative contract-authoring surface
-- generated/runtime TypeScript exports are off-chain mirrors only
+- Compact entrypoints are retained compatibility surfaces, not a second owner
+  of reusable core semantics
+- generated/runtime TypeScript exports are off-chain compatibility mirrors only
 
 Verification-contract V1 status:
 
@@ -48,15 +53,16 @@ Verification-contract V1 status:
 
 Start here:
 
-1. repository authors write on-chain contracts against:
-   - `src/credentials.compact`
-   - `src/credentials/composable.compact`
-   - narrower support entrypoints when composition requires less surface
-2. use `src/index.ts` and generated/runtime exports only in wallets,
+1. new contract authors use `@midnight-ntwrk/credential-compact`, including
+   `credentials.compact` for standalone builds and
+   `credentials/composable.compact` once for Layer 3 composition
+2. existing compatibility consumers may continue using this package's
+   `src/credentials.compact`; do not add new facade-owned semantics
+3. use `src/index.ts` and generated/runtime exports only in wallets,
    verifiers, tests, and adapter code
-3. read [`../../../../docs/guides/integration-surface-map.md`](../../../../docs/guides/integration-surface-map.md)
+4. read [`../../../../docs/guides/integration-surface-map.md`](../../../../docs/guides/integration-surface-map.md)
    when choosing between Compact and TypeScript surfaces
-4. do not deploy this package root as a business contract; use it as a library surface
+5. do not deploy this package root as a business contract; use it as a library surface
    for credential families and Layer 3 verifier/business contracts
 
 ## Installed Tarball Usage
@@ -146,10 +152,14 @@ Protocol reading rule:
 
 ## Compact Entry Points
 
-- `src/credentials.compact` is the standalone entry point used for the package
-  build and generated TS/JS artifacts.
-- `src/credentials/composable.compact` is the shared Layer 3 root for contracts
-  and credential families that need the full generic surface once.
+These are retained compatibility entrypoints. Their reusable subset is locked
+to `packages/core/compact` by executable equivalence tests; the private
+`verification-v1` and status-attestation extensions are explicit legacy deltas.
+
+- `src/credentials.compact` is the standalone compatibility entry point used
+  for the package build and generated TS/JS artifacts.
+- `src/credentials/composable.compact` is the compatibility Layer 3 root for
+  existing contracts. New family composition uses the canonical package root.
 - `src/credentials/vc-support.compact` is the narrower shared surface for VC
   envelope and proof helpers.
 - `src/credentials/protocol-support.compact` is the narrower shared surface for

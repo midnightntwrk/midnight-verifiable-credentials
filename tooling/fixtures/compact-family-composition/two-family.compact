@@ -1,0 +1,23 @@
+// NON-AUTHORITATIVE COMPOSITION EVIDENCE ONLY.
+// This fixture proves that public Compact surfaces compile together. It does
+// not verify aggregate authority, make a credential decision, or authorize a
+// protected business mutation.
+pragma language_version >= 0.20;
+
+import CompactStandardLibrary;
+
+include "../../../packages/core/compact/src/credentials/composable";
+include "../../../packages/prototypes/credential-families/birth/src/birth-credential/composable";
+include "../../../packages/prototypes/credential-families/hello-family/src/hello-family-credential/composable";
+
+export pure circuit compositionEvidenceBirthCredentialRoot(
+  credential: BirthCredential
+): Bytes<32> {
+  return birthCredentialBodyRoot(credential);
+}
+
+export pure circuit compositionEvidenceHelloFamilyCredentialRoot(
+  credential: HelloFamilyCredential
+): Bytes<32> {
+  return helloFamilyCredentialBodyRoot(credential);
+}

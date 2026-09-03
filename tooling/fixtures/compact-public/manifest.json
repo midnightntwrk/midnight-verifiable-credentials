@@ -102,13 +102,13 @@
     }
   ],
   "provenance": {
-    "sourceDigest": "abbd5223c8887747da2b084ca4bd1e31e3f489d724fdb7f3e0690bfc37fd540a",
+    "sourceDigest": "0ac2a0ede9d0628777b675bba92f99a7b4a6fb9a60d7632971417079460b4791",
     "compilerVersion": "0.31.1",
-    "runtimeDigest": "4cd9a9473994f6344baddcce3eebcd400a2fa8ce7e52b690bacbf0278b44302d",
-    "lockfileDigest": "9849adf3493da765dab4857d6f89daa90368b028027ac0d15c952a55c5a9afa7",
-    "generatedAt": "2026-08-18T13:17:37.545Z",
+    "runtimeDigest": "0f4988e3898a3618f2a142938a6d436c7c27f7cbcd8fc9c89ef5d2de777a8eb4",
+    "lockfileDigest": "f8e26249344ece0b543327fc1ce09fabce3da610106c7a583aefe0a2660af30e",
+    "generatedAt": "2026-09-03T07:29:29.621Z",
     "artifactCount": 164,
-    "artifactBytes": 809912309,
+    "artifactBytes": 808674912,
     "byFixture": {
       "credentials": {
         "files": 4,
@@ -128,11 +128,11 @@
       },
       "birth": {
         "files": 4,
-        "bytes": 1140677
+        "bytes": 831315
       },
       "hello-family": {
         "files": 8,
-        "bytes": 1498136
+        "bytes": 1188926
       },
       "dummy-claims": {
         "files": 4,
@@ -148,11 +148,11 @@
       },
       "age-gate": {
         "files": 76,
-        "bytes": 538518799
+        "bytes": 538209365
       },
       "hello-verifier": {
         "files": 24,
-        "bytes": 173496430
+        "bytes": 173187039
       },
       "university-verifier": {
         "files": 12,
@@ -162,19 +162,19 @@
     "byType": {
       ".json": {
         "files": 16,
-        "bytes": 6035303
+        "bytes": 5619111
       },
       ".ts": {
         "files": 16,
-        "bytes": 872809
+        "bytes": 805777
       },
       ".js": {
         "files": 16,
-        "bytes": 8829476
+        "bytes": 8104339
       },
       ".map": {
         "files": 16,
-        "bytes": 415041
+        "bytes": 386005
       },
       ".prover": {
         "files": 25,
@@ -288,29 +288,29 @@
     },
     {
       "path": "packages/prototypes/credential-families/birth/src/managed/birth-credential/compiler/contract-info.json",
-      "bytes": 475634,
-      "sha256": "8dd52d4cd875e71fa7d3fd395dfbdb565a165fe1d4aada2b0d1ce2c476e08c4f",
+      "bytes": 371586,
+      "sha256": "d0ffc829b86153c97d6fc01fdd937c7b0fb83fa8585a2d268b7df1a6141a5090",
       "lfsPointer": false,
       "fixture": "birth"
     },
     {
       "path": "packages/prototypes/credential-families/birth/src/managed/birth-credential/contract/index.d.ts",
-      "bytes": 57414,
-      "sha256": "3c9569ac82e521232db835468278f35f0d90d631c5f7d91e95bd9d97c7bd520e",
+      "bytes": 40656,
+      "sha256": "7493956d11f774fb67ffca820ceeef00bb809c3f06df78d4638add6516036936",
       "lfsPointer": false,
       "fixture": "birth"
     },
     {
       "path": "packages/prototypes/credential-families/birth/src/managed/birth-credential/contract/index.js",
-      "bytes": 580694,
-      "sha256": "c5366f86da331f19777509bb6b377dda909b7e48f6c04790f6bd4206e83a0a1c",
+      "bytes": 399380,
+      "sha256": "0c67c39b09de72cee2458e39ef169f127b16604e7143e9e50594a05b3ecf5f9c",
       "lfsPointer": false,
       "fixture": "birth"
     },
     {
       "path": "packages/prototypes/credential-families/birth/src/managed/birth-credential/contract/index.js.map",
-      "bytes": 26935,
-      "sha256": "465e7037d5c80f1c66c7078a548ce9af4bddc0873aaac408a77d5935b106b70e",
+      "bytes": 19693,
+      "sha256": "5f64cbdf21f55a57a9a8ebbf2fe9083eec5a454a9cdfb18222a16ddeac10d98c",
       "lfsPointer": false,
       "fixture": "birth"
     },
@@ -344,29 +344,29 @@
     },
     {
       "path": "packages/prototypes/credential-families/hello-family/src/managed/hello-family-credential/compiler/contract-info.json",
-      "bytes": 270793,
-      "sha256": "f9a225a2bcad6ea43b628e71caf241013cc5459caa3bb6ca8b73e25a80e8fdad",
+      "bytes": 166745,
+      "sha256": "625e93a8a553f6b8bc0e55f04353ebc5307aa5accdfb530dddc45a6dbebaf524",
       "lfsPointer": false,
       "fixture": "hello-family"
     },
     {
       "path": "packages/prototypes/credential-families/hello-family/src/managed/hello-family-credential/contract/index.d.ts",
-      "bytes": 45778,
-      "sha256": "f8b495d409bbed3d3b146b4b910d892977758bf4c33dc3497711ca44672f2432",
+      "bytes": 29020,
+      "sha256": "1d618013127fd6c5e0f8bc4c39a8a850e6b3e67847234e9162e9a6ea882c0762",
       "lfsPointer": false,
       "fixture": "hello-family"
     },
     {
       "path": "packages/prototypes/credential-families/hello-family/src/managed/hello-family-credential/contract/index.js",
-      "bytes": 412497,
-      "sha256": "68287c19872674e0565c835d6998a1b3246d981e4e53ca74fd6c6170407b09d7",
+      "bytes": 231303,
+      "sha256": "1094884f0a89a88bbf7bc2a1cc6065a61191fd43188cf2f44d1145e25bec858c",
       "lfsPointer": false,
       "fixture": "hello-family"
     },
     {
       "path": "packages/prototypes/credential-families/hello-family/src/managed/hello-family-credential/contract/index.js.map",
-      "bytes": 21843,
-      "sha256": "22c65179a77034dda081f27e4f1ce651887a5ec3a1c72f76e73ac360ee2e7826",
+      "bytes": 14633,
+      "sha256": "b62207aa114c50655ecabfcec1cdad23f57cbb6d2d8d09037b948e22dcf58788",
       "lfsPointer": false,
       "fixture": "hello-family"
     },
@@ -904,29 +904,29 @@
     },
     {
       "path": "packages/use-cases/age-gate/contract/src/managed/demo/compiler/contract-info.json",
-      "bytes": 559132,
-      "sha256": "a9b4ecaf5dd09b10f2f41e1fd013d6f5469c063557291979461adc2ec24caf0d",
+      "bytes": 455084,
+      "sha256": "9e0a3093eebac516c6e2d194c33e1e0067687207ec1f60bc26d8fe8a457ba027",
       "lfsPointer": false,
       "fixture": "age-gate"
     },
     {
       "path": "packages/use-cases/age-gate/contract/src/managed/demo/contract/index.d.ts",
-      "bytes": 66270,
-      "sha256": "939efd1ed138f0d64c0d3f077070d86dfd05bcb5cc4c1aae63f1582766e94c87",
+      "bytes": 49512,
+      "sha256": "d6204ceab06ddd1139ef98dff08cd9e95dd368e56563ac441f2ba2e9106cf0f9",
       "lfsPointer": false,
       "fixture": "age-gate"
     },
     {
       "path": "packages/use-cases/age-gate/contract/src/managed/demo/contract/index.js",
-      "bytes": 805740,
-      "sha256": "4444ae7bdd68c4a9682cb526fd207e5a9c4496f81816e46fe4b64593f7148bc1",
+      "bytes": 624417,
+      "sha256": "151760e48bb0163c30e6ffd184b87a0e037528c91818d2d034ed508da073585f",
       "lfsPointer": false,
       "fixture": "age-gate"
     },
     {
       "path": "packages/use-cases/age-gate/contract/src/managed/demo/contract/index.js.map",
-      "bytes": 33793,
-      "sha256": "f4ab56c2ba32d9bb1a91b3b4b586cdfa961b27269385ed73c7d265ff540508d5",
+      "bytes": 26488,
+      "sha256": "7c557ab46e65d5f17fed126be88fdb69e41d6b73af909f6daa360705a87ca0fd",
       "lfsPointer": false,
       "fixture": "age-gate"
     },
@@ -1212,29 +1212,29 @@
     },
     {
       "path": "packages/use-cases/hello-verifier/contract/src/managed/hello-verifier/compiler/contract-info.json",
-      "bytes": 299761,
-      "sha256": "ca66b4a08066ae57dc25f331e8c85699856ea14963313528968f0ba3d3e83e58",
+      "bytes": 195713,
+      "sha256": "f185d0a150e3baa9ddac374d55f603604146178ac76f8a104b071ff6f3b25429",
       "lfsPointer": false,
       "fixture": "hello-verifier"
     },
     {
       "path": "packages/use-cases/hello-verifier/contract/src/managed/hello-verifier/contract/index.d.ts",
-      "bytes": 48333,
-      "sha256": "fae0b92280e893d93e0f0e4d770c602294f03ce682020d33ab62e5c0c4631232",
+      "bytes": 31575,
+      "sha256": "5dd360d54482d896ea239ed6f636c2b4838cd5a17f0ef00890e0585d140faacc",
       "lfsPointer": false,
       "fixture": "hello-verifier"
     },
     {
       "path": "packages/use-cases/hello-verifier/contract/src/managed/hello-verifier/contract/index.js",
-      "bytes": 466120,
-      "sha256": "a7ab32b0964f813e96e95906e631c8584ad10692e9151b8fd7c88e2defb2d8f7",
+      "bytes": 284814,
+      "sha256": "81ff1b07c1613969f90f1c7582e36e679a6f44c816edb3d8202452e1510b045f",
       "lfsPointer": false,
       "fixture": "hello-verifier"
     },
     {
       "path": "packages/use-cases/hello-verifier/contract/src/managed/hello-verifier/contract/index.js.map",
-      "bytes": 24291,
-      "sha256": "1cc7487f05e35bf78b0497a8e8c8d5395c7023ccedc189f74487ed751300dee7",
+      "bytes": 17012,
+      "sha256": "61ff09125d8132b24be7a6010038c019827824e28a60f1dea5737b4fa1f9ab0c",
       "lfsPointer": false,
       "fixture": "hello-verifier"
     },
