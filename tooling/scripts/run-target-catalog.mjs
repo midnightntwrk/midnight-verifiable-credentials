@@ -72,6 +72,13 @@ export const targets = [
     script: "test:bdd:all",
   },
   {
+    name: "status-openid-evidence",
+    description: "Status-enabled OID4VCI/OID4VP Final production-shaped evidence lane.",
+    category: "use-case",
+    supportsLight: false,
+    script: "ci:status-openid-evidence",
+  },
+  {
     name: "university-bdd",
     description: "Executable university diploma BDD scenarios.",
     category: "university",

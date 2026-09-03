@@ -31,6 +31,7 @@ packages:
   - packages/use-cases/university/scenarios
   - packages/use-cases/university/protocol
   - packages/use-cases/university/reporting
+  - packages/use-cases/status-openid/evidence
   - packages/components/integration/standalone-environment
 
 linkWorkspacePackages: true

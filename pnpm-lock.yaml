@@ -515,6 +515,30 @@ importers:
         specifier: '*'
         version: link:../../../prototypes/credential-families/hello-family
 
+  packages/use-cases/status-openid/evidence:
+    dependencies:
+      '@midnight-ntwrk/credential-model':
+        specifier: workspace:*
+        version: link:../../../core/model
+      '@midnight-ntwrk/credential-proofs':
+        specifier: workspace:*
+        version: link:../../../core/proofs
+      '@midnight-ntwrk/credential-status-midnight-authority':
+        specifier: workspace:*
+        version: link:../../../registry/status-midnight-authority
+      '@midnight-ntwrk/credential-status-midnight-contract':
+        specifier: workspace:*
+        version: link:../../../registry/status-midnight-contract
+      '@midnight-ntwrk/credential-status-midnight-verifier':
+        specifier: workspace:*
+        version: link:../../../registry/status-midnight-verifier
+      '@midnight-ntwrk/midnight-did-credentials':
+        specifier: '*'
+        version: link:../../../core/primitives/credentials
+      '@midnight-ntwrk/midnight-did-credentials-openid':
+        specifier: workspace:*
+        version: link:../../../protocols/openid
+
   packages/use-cases/university/contract:
     dependencies:
       '@midnight-ntwrk/compact-runtime':

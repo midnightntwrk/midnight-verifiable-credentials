@@ -58,6 +58,7 @@ conformance fixtures, removed, or graduated to an independent repository.
 | `@midnight-ntwrk/midnight-did-university-verifier-contract` | `internal` | workspace tarball only | Unassigned | Demo verifier contract |
 | `@midnight-ntwrk/midnight-did-university-protocol` | `internal` | workspace tarball only | Unassigned | Use-case orchestration |
 | `@midnight-ntwrk/midnight-did-university-reporting` | `internal` | workspace tarball only | Unassigned | Use-case reporting |
+| `@midnight-ntwrk/status-openid-production-evidence` | `internal` | workspace tarball only | Unassigned | Private production-shaped use-case evidence; not production approval |
 
 The two BDD scenario workspaces, `bdd-support`, and
 `standalone-environment` are not release packages. They remain private

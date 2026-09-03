@@ -165,6 +165,7 @@ export const ciBuildCones = [
       "packages/use-cases/university/contract/dist",
       "packages/use-cases/university/protocol/dist",
       "packages/use-cases/university/reporting/dist",
+      "packages/use-cases/status-openid/evidence/dist",
       "packages/components/integration/standalone-environment/dist",
     ],
     allowFocusedBuildScripts: true,
