@@ -7,7 +7,8 @@ All notable changes to this package are documented in this file.
 - Add independently versioned `CredentialFamilyProfileV1` and
   `CredentialDeploymentAssemblyV1` contracts.
 - Add capability-provider catalogs, strict path-specific validators, and the
-  exact fail-closed composition resolver.
+  exact fail-closed composition resolver, including exact semantic
+  proof-generation to proof-executor capability binding.
 - Preserve `CredentialFamilyDefinition` compatibility; composition adoption is
   additive and requires explicit profile, assembly, and catalog inputs.
 
