@@ -157,7 +157,13 @@ export const createBirthInjectedCredentialFamilyAdapter = (
       accept: (credential) => {
         const index = holder.credentialCount;
         holder.receiveCredentialResult(decode(credential));
-        acceptedCredentials.push({ credential, index });
+        acceptedCredentials.push({
+          credential: {
+            ...credential,
+            payload: Uint8Array.from(credential.payload),
+          },
+          index,
+        });
         return credential;
       },
     },

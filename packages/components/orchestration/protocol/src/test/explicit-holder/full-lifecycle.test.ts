@@ -147,6 +147,40 @@ describe("explicit-holder full lifecycle", () => {
     ).toThrow(/credential.*does not match/i);
   });
 
+  it("rejects caller mutation of accepted canonical credential bytes", () => {
+    const adapter = createBirthInjectedCredentialFamilyAdapter({
+      issuerProfile,
+      holderProfile,
+      verifierProfile,
+    });
+    const issuer = new ExchangeIssuerAgent(adapter);
+    const holder = new ExchangeHolderAgent(adapter);
+    const verifier = new ExchangeVerifierAgent(adapter);
+    const offer = issuer.createOffer();
+    const credential = holder.acceptCredential(
+      issuer.issue(holder.createIssuanceRequest(offer), claimWitness),
+    );
+    credential.payload.fill(0);
+    const presentationRequest = verifier.createPresentationRequest({
+      issuerVerificationMethodRef: issuerProfile.signer.verificationMethodRef,
+      requireSubjectIdCommitmentDisclosure: false,
+      requireBirthCountryDisclosure: true,
+      requireAgeOverThreshold: true,
+      requestedAgeThresholdYears: 18,
+    });
+
+    expect(() =>
+      holder.createPresentation(presentationRequest, {
+        credentialIndex: 0,
+        currentDay,
+        birthDateDays: claimWitness.birthDateDays,
+        birthDateOpening: claimWitness.birthDateOpening,
+        birthCountryCodePadded: claimWitness.birthCountryCodePadded,
+        birthCountryCodeOpening: claimWitness.birthCountryCodeOpening,
+      }),
+    ).toThrow(/not accepted/i);
+  });
+
   it("completes issue -> present -> verify -> capability -> claim lifecycle", () => {
     const bus = new MessageBus();
     const verifierChallengeHash = sha256("challenge:verifier:lifecycle");
