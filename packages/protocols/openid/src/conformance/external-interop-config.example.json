@@ -1,0 +1,9 @@
+{
+  "implementation": "independent-wallet-name-and-version",
+  "issuerMetadataUrl": "https://issuer.example/.well-known/openid-credential-issuer",
+  "credentialOfferUri": "https://issuer.example/offers/one-time-reference",
+  "walletIssuanceAutomationUrl": "https://wallet-automation.example/oid4vci/accept",
+  "verifierRequestUrl": "https://verifier.example/requests/one-time-reference",
+  "walletPresentationAutomationUrl": "https://wallet-automation.example/oid4vp/present",
+  "timeoutMs": 15000
+}

@@ -1,7 +1,7 @@
 {
   "name": "@midnight-ntwrk/midnight-did-credentials-openid",
   "version": "0.1.0",
-  "description": "OID4VCI/OID4VP-inspired domain schemas for Midnight Credentials",
+  "description": "Strict Midnight profiles for OID4VCI 1.0 Final and OID4VP 1.0 Final",
   "license": "Apache-2.0",
   "private": true,
   "type": "module",
@@ -26,6 +26,8 @@
     "pretypecheck": "pnpm run build",
     "test": "vitest run --config vitest.config.ts",
     "test:ci": "vitest run --config vitest.config.ts",
+    "test:conformance": "pnpm run build && node scripts/run-conformance.mjs",
+    "interop:external": "pnpm run build && node scripts/run-external-interop.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint \"src/**/*.ts\" --ignore-pattern '**/*.d.ts'",
     "lint:fix": "eslint \"src/**/*.ts\" --ignore-pattern '**/*.d.ts' --fix",
@@ -39,6 +41,8 @@
   },
   "files": [
     "dist/**",
+    "src/conformance/fixtures/**",
+    "scripts/**",
     "README.md",
     "package.json",
     "tsconfig.json",

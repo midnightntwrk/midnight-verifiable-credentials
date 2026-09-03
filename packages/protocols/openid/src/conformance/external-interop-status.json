@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "executed": false,
+  "issuerWallet": "not-run",
+  "verifierWallet": "not-run",
+  "reason": "No independently operated wallet automation endpoints or credentials are available in the local/CI environment.",
+  "runner": "pnpm --dir packages/protocols/openid interop:external -- --config <operator-config.json> --output <evidence.json>",
+  "claim": "This file is an explicit gap record, not interoperability evidence. A passed external run must replace the statuses with runner-produced endpoint status and body-digest evidence."
+}

@@ -409,8 +409,21 @@ Implemented prototype coverage:
 ### `credentials-openid`
 
 - Compact payload codec tests
-- OID4VCI-shaped schema tests
-- OID4VP-shaped schema tests
+- OID4VCI 1.0 Final strict Midnight request/proof lifecycle tests
+- OID4VP 1.0 Final request/response lifecycle tests with DCQL inside OID4VP
+- mandatory holder/session/transcript/consent and nonce/audience/origin/redirect binding negatives
+- canonical secret/blinded challenge and commitment byte-encoding negatives
+- replay, expiry, request substitution, malformed/ambiguous proof, unsupported `direct_post.jwt`, descriptor/DCQL negatives
+- exact DCQL `vp_token` result-map coverage for null/scalar/array/unrelated/missing/extra/empty results
+- request-object HTTPS allow-list, DNS/global-unicast SSRF (including mapped/compatible IPv4), redirect, size, media-type, expiry, audience, and exact-byte digest tests
+- independently stored positive fixtures and single-field-derived negative fixtures, explicit fixture-kind validation, and executable local runner
+- external issuer-wallet/verifier-wallet runner dry/config/completion-contract tests with an explicit checked-in `not-run` status when endpoints are unavailable
+
+### `credentials-openid` canonical-message adapter for `credential-exchange`
+
+- exact canonical family byte and identity round trips
+- unchanged delegation of family, #499 authority, and #502 aggregate results, with distinct authority-context and family-input arguments matching the authority-bound verifier shape
+- malformed/ambiguous OpenID canonical-message rejection
 
 ## Protocol/orchestration tests
 

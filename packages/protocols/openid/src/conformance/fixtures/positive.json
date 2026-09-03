@@ -1,0 +1,133 @@
+[
+  {
+    "id": "oid4vci-final-midnight-jwt-proof",
+    "kind": "oid4vci-request",
+    "valid": true,
+    "value": {
+      "credential_configuration_id": "age-v1",
+      "format": "midnight_compact_vc",
+      "proofs": { "jwt": ["eyJhbGciOiJFZERTQSJ9.e30.signature"] },
+      "midnight": {
+        "holderBinding": {
+          "method": "secret_commitment",
+          "challenge": "0x1234",
+          "secretCommitment": "0xabcd"
+        },
+        "requestedClaims": ["ageOver18"]
+      },
+      "session_binding": {
+        "profile": "org.midnight.credentials.openid.v1",
+        "protocol": "oid4vci",
+        "protocol_version": "1.0 Final",
+        "session_id": "session-503",
+        "transcript_digest": "dHJhbnNjcmlwdC1kaWdlc3Q",
+        "consent_digest": "Y29uc2VudC1kaWdlc3Q",
+        "issued_at": 1800000000,
+        "expires_at": 1800000300
+      }
+    }
+  },
+  {
+    "id": "oid4vci-final-midnight-blinded-proof",
+    "kind": "oid4vci-request",
+    "valid": true,
+    "value": {
+      "credential_configuration_id": "age-v1",
+      "format": "midnight_compact_vc",
+      "proofs": { "attestation": ["opaque-attestation-proof"] },
+      "midnight": {
+        "holderBinding": {
+          "method": "blinded_secret_commitment",
+          "challenge": "EjQ",
+          "blindedCommitment": "q80"
+        },
+        "requestedClaims": ["ageOver18"]
+      },
+      "session_binding": {
+        "profile": "org.midnight.credentials.openid.v1",
+        "protocol": "oid4vci",
+        "protocol_version": "1.0 Final",
+        "session_id": "session-503-blinded",
+        "transcript_digest": "dHJhbnNjcmlwdC1kaWdlc3Q",
+        "consent_digest": "Y29uc2VudC1kaWdlc3Q",
+        "issued_at": 1800000000,
+        "expires_at": 1800000300
+      }
+    }
+  },
+  {
+    "id": "oid4vp-final-dcql-midnight",
+    "kind": "oid4vp-request",
+    "valid": true,
+    "value": {
+      "response_type": "vp_token",
+      "response_mode": "direct_post",
+      "client_id": "did:midnight:verifier:503",
+      "response_uri": "https://verifier.example/callback",
+      "state": "state-503",
+      "nonce": "nonce-503",
+      "dcql_query": {
+        "credentials": [{
+          "id": "age-proof",
+          "format": "midnight_compact_vc",
+          "claims": [{ "path": ["credentialSubject", "ageOver18"] }],
+          "require_cryptographic_holder_binding": true
+        }]
+      },
+      "request_digest": "cmVxdWVzdC1kaWdlc3Q",
+      "midnight": {
+        "verifierDomain": "verifier.example",
+        "challenge": "0xcafe",
+        "acceptedCredentialFamilies": ["birth-secret"],
+        "requireSameHolder": false,
+        "predicateHints": []
+      },
+      "request_binding": {
+        "client_id": "did:midnight:verifier:503",
+        "nonce": "nonce-503",
+        "request_digest": "cmVxdWVzdC1kaWdlc3Q",
+        "origin": "https://verifier.example"
+      },
+      "session_binding": {
+        "profile": "org.midnight.credentials.openid.v1",
+        "protocol": "oid4vp",
+        "protocol_version": "1.0 Final",
+        "session_id": "session-503",
+        "transcript_digest": "dHJhbnNjcmlwdC1kaWdlc3Q",
+        "consent_digest": "Y29uc2VudC1kaWdlc3Q",
+        "issued_at": 1800000000,
+        "expires_at": 1800000300
+      }
+    }
+  },
+  {
+    "id": "oid4vp-final-dcql-response",
+    "kind": "oid4vp-response",
+    "valid": true,
+    "expectedDcqlQueryIds": ["age-proof", "residency-proof"],
+    "value": {
+      "state": "state-503",
+      "vp_token": {
+        "age-proof": [{ "canonical_message": "age-presentation" }],
+        "residency-proof": [{ "canonical_message": "residency-presentation" }]
+      },
+      "request_digest": "cmVxdWVzdC1kaWdlc3Q",
+      "request_binding": {
+        "client_id": "did:midnight:verifier:503",
+        "nonce": "nonce-503",
+        "request_digest": "cmVxdWVzdC1kaWdlc3Q",
+        "origin": "https://verifier.example"
+      },
+      "session_binding": {
+        "profile": "org.midnight.credentials.openid.v1",
+        "protocol": "oid4vp",
+        "protocol_version": "1.0 Final",
+        "session_id": "session-503-response",
+        "transcript_digest": "dHJhbnNjcmlwdC1kaWdlc3Q",
+        "consent_digest": "Y29uc2VudC1kaWdlc3Q",
+        "issued_at": 1800000000,
+        "expires_at": 1800000300
+      }
+    }
+  }
+]
