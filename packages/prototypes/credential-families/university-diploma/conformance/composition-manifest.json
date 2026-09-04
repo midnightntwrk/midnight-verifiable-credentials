@@ -1,0 +1,207 @@
+{
+  "formatVersion": 1,
+  "prototype": {
+    "id": "university-diploma",
+    "workspace": "packages/prototypes/credential-families/university-diploma",
+    "hypothesis": "Academic direct-claim and privacy-profile fixtures expose the disclosure boundary needed by university composition evidence.",
+    "owner": "midnight-verifiable-credentials university evidence maintainers",
+    "limitations": [
+      "Private use-case evidence only; University v1 privacy scope remains governed separately and is not production-approved."
+    ],
+    "exitCriterion": "Reduce to conformance fixtures or graduate only after security, schema, interoperability, CI, operational, and approval gates."
+  },
+  "profile": {
+    "formatVersion": 1,
+    "id": "profile.prototype.university-diploma",
+    "version": "1.0.0",
+    "family": {
+      "id": "prototype.university-diploma",
+      "version": "0.1.0",
+      "schemaId": "urn:midnight:prototype:university-diploma",
+      "schemaVersion": "1.0.0"
+    },
+    "semantics": {
+      "claims": [
+        {
+          "claimId": "diplomaId",
+          "disclosure": "public"
+        },
+        {
+          "claimId": "studentId",
+          "disclosure": "public"
+        },
+        {
+          "claimId": "graduateName",
+          "disclosure": "public"
+        },
+        {
+          "claimId": "universityName",
+          "disclosure": "public"
+        },
+        {
+          "claimId": "facultyName",
+          "disclosure": "public"
+        },
+        {
+          "claimId": "awardName",
+          "disclosure": "public"
+        },
+        {
+          "claimId": "honorsCode",
+          "disclosure": "public"
+        },
+        {
+          "claimId": "graduationYear",
+          "disclosure": "public"
+        },
+        {
+          "claimId": "graduationMonth",
+          "disclosure": "public"
+        },
+        {
+          "claimId": "finalGrade",
+          "disclosure": "public"
+        },
+        {
+          "claimId": "creditsEarned",
+          "disclosure": "public"
+        }
+      ],
+      "holderBinding": {
+        "mode": "explicit-did",
+        "capability": {
+          "id": "holder.explicit-did",
+          "version": "1.0.0"
+        }
+      },
+      "issuance": {
+        "credential": "issuer-local-issuance-v1",
+        "registration": "disabled",
+        "anchoring": "disabled"
+      },
+      "presentation": {
+        "capability": {
+          "id": "presentation.vp",
+          "version": "1.0.0"
+        },
+        "preparation": "holder-wallet-v1",
+        "proofGeneration": {
+          "capability": {
+            "id": "proof.compact",
+            "version": "1.0.0"
+          },
+          "witnessPolicy": "public-only"
+        }
+      },
+      "verification": {
+        "profile": "ledger-local-v1",
+        "location": "ledger",
+        "authority": "ledger-local",
+        "commitState": "committed",
+        "privateInputSources": []
+      },
+      "status": {
+        "mode": "disabled"
+      },
+      "did": {
+        "method": "did:midnight",
+        "relationship": "assertionMethod",
+        "network": "undeployed-fixture",
+        "versionEvidence": "package-lock"
+      },
+      "trust": {
+        "scope": "fixture-only",
+        "epochEvidence": "not-production-authority"
+      },
+      "trustedTime": {
+        "source": "none",
+        "evidence": "not-required",
+        "freshnessPolicy": "not-required"
+      },
+      "mutation": {
+        "location": "none",
+        "nullifier": "none",
+        "consumption": "none"
+      },
+      "protocols": [
+        "canonical-reference"
+      ]
+    },
+    "requirements": {
+      "packages": [
+        {
+          "name": "@midnight-ntwrk/midnight-did-credentials-university-diploma",
+          "version": "0.1.0",
+          "exports": [
+            "./university-diploma-credential.compact"
+          ],
+          "domain": "family"
+        }
+      ],
+      "compactEntrypoints": [
+        {
+          "id": "compact.university-diploma",
+          "packageName": "@midnight-ntwrk/midnight-did-credentials-university-diploma",
+          "exportPath": "./university-diploma-credential.compact",
+          "sourcePath": "packages/prototypes/credential-families/university-diploma/src/university-diploma-credential.compact"
+        }
+      ],
+      "circuits": [
+        {
+          "id": "circuit.university-diploma.root",
+          "semanticVersion": "1.0.0",
+          "entrypointId": "compact.university-diploma"
+        }
+      ],
+      "artifacts": [],
+      "providers": []
+    },
+    "compatibility": {
+      "deniedRules": [
+        "PRIVATE_INPUTS_WITH_PUBLIC_ONLY_VERIFICATION",
+        "STATUS_EVIDENCE_REQUIRED",
+        "CALLER_TIME_WITH_LEDGER_AUTHORITY",
+        "ATOMIC_REPLAY_REQUIRED",
+        "DISABLED_CAPABILITY_DEPENDENCY",
+        "LEDGER_COMMIT_REQUIRED",
+        "UNTESTED_COMBINATION"
+      ]
+    },
+    "conformance": {
+      "fixtureId": "prototype:university-diploma:composition-v1",
+      "evidenceDisposition": "tested",
+      "evidenceIds": [
+        "prototype:university-diploma:composition-v1:compile",
+        "prototype:university-diploma:composition-v1:happy",
+        "prototype:university-diploma:composition-v1:negative"
+      ]
+    },
+    "maturity": {
+      "api": {
+        "subjectId": "prototype:university-diploma:composition-v1",
+        "value": "reference"
+      },
+      "security": {
+        "subjectId": "prototype:university-diploma:composition-v1",
+        "value": "unassessed"
+      },
+      "standards": {
+        "subjectId": "prototype:university-diploma:composition-v1",
+        "value": "not-applicable"
+      },
+      "production": {
+        "subjectId": "prototype:university-diploma:composition-v1",
+        "value": "not-assessed"
+      }
+    }
+  },
+  "evidence": {
+    "fixture": "packages/prototypes/credential-families/university-diploma/src/university-diploma-credential.compact",
+    "graph": "packages/prototypes/credential-families/university-diploma/conformance/family-definition.json",
+    "happyPath": "packages/prototypes/credential-families/university-diploma/src/test/privacy-profile.test.ts#L33",
+    "negatives": [
+      "packages/prototypes/credential-families/university-diploma/src/test/validation-guards.test.ts#L9"
+    ]
+  },
+  "familyDefinition": "packages/prototypes/credential-families/university-diploma/conformance/family-definition.json"
+}

@@ -25,6 +25,7 @@
       "default": "./dist/contract.js"
     },
     "./hello-family-credential.compact": "./dist/hello-family-credential.compact",
+    "./hello-family-offchain-credential.compact": "./dist/hello-family-offchain-credential.compact",
     "./hello-family-credential/composable.compact": "./dist/hello-family-credential/composable.compact",
     "./testing": {
       "types": "./dist/testing.d.ts",

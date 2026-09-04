@@ -17,6 +17,9 @@ describe("mixed-claims package surfaces", () => {
   it("exports the default root and contract subpath", () => {
     expect(packageJson.exports).toHaveProperty(".");
     expect(packageJson.exports).toHaveProperty("./contract");
+    expect(packageJson.exports?.["./mixed-claims-credential.compact"]).toBe(
+      "./dist/mixed-claims-credential.compact",
+    );
   });
 
   it("exposes the managed contract surface for downstream type consumers", () => {

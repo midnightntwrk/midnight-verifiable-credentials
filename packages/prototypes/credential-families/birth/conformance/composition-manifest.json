@@ -1,0 +1,181 @@
+{
+  "formatVersion": 1,
+  "prototype": {
+    "id": "birth",
+    "workspace": "packages/prototypes/credential-families/birth",
+    "hypothesis": "Commitment-backed birth claims compose with explicit DID holder binding without exposing raw claim values.",
+    "owner": "midnight-verifiable-credentials maintainers",
+    "limitations": [
+      "Prototype evidence only; status is disabled and no production authority is selected."
+    ],
+    "exitCriterion": "Reduce to the minimal explicit-holder conformance fixture or graduate through the credential-family ownership gates."
+  },
+  "profile": {
+    "formatVersion": 1,
+    "id": "profile.prototype.birth",
+    "version": "1.0.0",
+    "family": {
+      "id": "prototype.birth",
+      "version": "0.1.0",
+      "schemaId": "urn:midnight:prototype:birth",
+      "schemaVersion": "1.0.0"
+    },
+    "semantics": {
+      "claims": [
+        {
+          "claimId": "subjectId",
+          "disclosure": "committed"
+        },
+        {
+          "claimId": "legalName",
+          "disclosure": "committed"
+        },
+        {
+          "claimId": "birthDate",
+          "disclosure": "committed"
+        },
+        {
+          "claimId": "birthCountryCode",
+          "disclosure": "committed"
+        }
+      ],
+      "holderBinding": {
+        "mode": "explicit-did",
+        "capability": {
+          "id": "holder.explicit-did",
+          "version": "1.0.0"
+        }
+      },
+      "issuance": {
+        "credential": "issuer-local-issuance-v1",
+        "registration": "disabled",
+        "anchoring": "disabled"
+      },
+      "presentation": {
+        "capability": {
+          "id": "presentation.vp",
+          "version": "1.0.0"
+        },
+        "preparation": "holder-wallet-v1",
+        "proofGeneration": {
+          "capability": {
+            "id": "proof.compact",
+            "version": "1.0.0"
+          },
+          "witnessPolicy": "private-compatible"
+        }
+      },
+      "verification": {
+        "profile": "ledger-local-v1",
+        "location": "ledger",
+        "authority": "ledger-local",
+        "commitState": "committed",
+        "privateInputSources": [
+          "private-predicate"
+        ]
+      },
+      "status": {
+        "mode": "disabled"
+      },
+      "did": {
+        "method": "did:midnight",
+        "relationship": "assertionMethod",
+        "network": "undeployed-fixture",
+        "versionEvidence": "package-lock"
+      },
+      "trust": {
+        "scope": "fixture-only",
+        "epochEvidence": "not-production-authority"
+      },
+      "trustedTime": {
+        "source": "none",
+        "evidence": "not-required",
+        "freshnessPolicy": "not-required"
+      },
+      "mutation": {
+        "location": "none",
+        "nullifier": "none",
+        "consumption": "none"
+      },
+      "protocols": [
+        "canonical-reference"
+      ]
+    },
+    "requirements": {
+      "packages": [
+        {
+          "name": "@midnight-ntwrk/midnight-did-credentials-birth",
+          "version": "0.1.0",
+          "exports": [
+            "./birth-credential.compact"
+          ],
+          "domain": "family"
+        }
+      ],
+      "compactEntrypoints": [
+        {
+          "id": "compact.birth",
+          "packageName": "@midnight-ntwrk/midnight-did-credentials-birth",
+          "exportPath": "./birth-credential.compact",
+          "sourcePath": "packages/prototypes/credential-families/birth/src/birth-credential.compact"
+        }
+      ],
+      "circuits": [
+        {
+          "id": "circuit.birth.root",
+          "semanticVersion": "1.0.0",
+          "entrypointId": "compact.birth"
+        }
+      ],
+      "artifacts": [],
+      "providers": []
+    },
+    "compatibility": {
+      "deniedRules": [
+        "PRIVATE_INPUTS_WITH_PUBLIC_ONLY_VERIFICATION",
+        "STATUS_EVIDENCE_REQUIRED",
+        "CALLER_TIME_WITH_LEDGER_AUTHORITY",
+        "ATOMIC_REPLAY_REQUIRED",
+        "DISABLED_CAPABILITY_DEPENDENCY",
+        "LEDGER_COMMIT_REQUIRED",
+        "UNTESTED_COMBINATION"
+      ]
+    },
+    "conformance": {
+      "fixtureId": "prototype:birth:composition-v1",
+      "evidenceDisposition": "tested",
+      "evidenceIds": [
+        "prototype:birth:composition-v1:compile",
+        "prototype:birth:composition-v1:happy",
+        "prototype:birth:composition-v1:negative"
+      ]
+    },
+    "maturity": {
+      "api": {
+        "subjectId": "prototype:birth:composition-v1",
+        "value": "reference"
+      },
+      "security": {
+        "subjectId": "prototype:birth:composition-v1",
+        "value": "unassessed"
+      },
+      "standards": {
+        "subjectId": "prototype:birth:composition-v1",
+        "value": "not-applicable"
+      },
+      "production": {
+        "subjectId": "prototype:birth:composition-v1",
+        "value": "not-assessed"
+      }
+    }
+  },
+  "evidence": {
+    "fixture": "packages/prototypes/credential-families/birth/src/birth-credential.compact",
+    "graph": "packages/prototypes/credential-families/birth/conformance/family-definition.json",
+    "happyPath": "packages/prototypes/credential-families/birth/src/test/holder-binding.test.ts#L9",
+    "negatives": [
+      "packages/prototypes/credential-families/birth/src/test/age-predicate.test.ts#L12"
+    ]
+  },
+  "familyDefinition": "packages/prototypes/credential-families/birth/conformance/family-definition.json"
+}

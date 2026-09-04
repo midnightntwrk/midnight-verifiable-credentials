@@ -1,0 +1,147 @@
+{
+  "formatVersion": 1,
+  "id": "prototype.university-diploma",
+  "version": "0.1.0",
+  "schema": {
+    "id": "urn:midnight:prototype:university-diploma",
+    "version": "1.0.0",
+    "credentialTypes": [
+      "VerifiableCredential",
+      "prototype.university-diploma"
+    ],
+    "claims": [
+      {
+        "id": "diplomaId",
+        "path": [
+          "credentialSubject",
+          "diplomaId"
+        ],
+        "disclosure": "public",
+        "required": true
+      },
+      {
+        "id": "studentId",
+        "path": [
+          "credentialSubject",
+          "studentId"
+        ],
+        "disclosure": "public",
+        "required": true
+      },
+      {
+        "id": "graduateName",
+        "path": [
+          "credentialSubject",
+          "graduateName"
+        ],
+        "disclosure": "public",
+        "required": true
+      },
+      {
+        "id": "universityName",
+        "path": [
+          "credentialSubject",
+          "universityName"
+        ],
+        "disclosure": "public",
+        "required": true
+      },
+      {
+        "id": "facultyName",
+        "path": [
+          "credentialSubject",
+          "facultyName"
+        ],
+        "disclosure": "public",
+        "required": true
+      },
+      {
+        "id": "awardName",
+        "path": [
+          "credentialSubject",
+          "awardName"
+        ],
+        "disclosure": "public",
+        "required": true
+      },
+      {
+        "id": "honorsCode",
+        "path": [
+          "credentialSubject",
+          "honorsCode"
+        ],
+        "disclosure": "public",
+        "required": true
+      },
+      {
+        "id": "graduationYear",
+        "path": [
+          "credentialSubject",
+          "graduationYear"
+        ],
+        "disclosure": "public",
+        "required": true
+      },
+      {
+        "id": "graduationMonth",
+        "path": [
+          "credentialSubject",
+          "graduationMonth"
+        ],
+        "disclosure": "public",
+        "required": true
+      },
+      {
+        "id": "finalGrade",
+        "path": [
+          "credentialSubject",
+          "finalGrade"
+        ],
+        "disclosure": "public",
+        "required": true
+      },
+      {
+        "id": "creditsEarned",
+        "path": [
+          "credentialSubject",
+          "creditsEarned"
+        ],
+        "disclosure": "public",
+        "required": true
+      }
+    ]
+  },
+  "capabilities": [
+    {
+      "id": "holder.explicit-did",
+      "kind": "holder-binding",
+      "version": "1.0.0",
+      "required": true
+    },
+    {
+      "id": "proof.compact",
+      "kind": "proof",
+      "version": "1.0.0",
+      "required": true
+    },
+    {
+      "id": "presentation.vp",
+      "kind": "presentation",
+      "version": "1.0.0",
+      "required": true
+    }
+  ],
+  "artifacts": [],
+  "composition": {
+    "formatVersion": 1,
+    "packages": [
+      {
+        "name": "@midnight-ntwrk/midnight-did-credentials-university-diploma",
+        "version": "^0.1.0",
+        "exports": [
+          "./university-diploma-credential.compact"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "formatVersion": 1,
+  "id": "coverage.fixture.family",
+  "version": "1.0.0",
+  "schema": {
+    "id": "urn:coverage:fixture:family",
+    "version": "1.0.0",
+    "credentialTypes": [
+      "VerifiableCredential",
+      "coverage.fixture.family"
+    ],
+    "claims": [
+      {
+        "id": "fixtureClaim",
+        "path": [
+          "credentialSubject",
+          "fixtureClaim"
+        ],
+        "disclosure": "public",
+        "required": true
+      }
+    ]
+  },
+  "capabilities": [],
+  "artifacts": [],
+  "composition": {
+    "formatVersion": 1,
+    "packages": [
+      {
+        "name": "profile-coverage-fixture-family",
+        "version": "^1.0.0",
+        "exports": [
+          "./family.compact"
+        ]
+      }
+    ]
+  }
+}

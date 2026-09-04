@@ -1,0 +1,93 @@
+{
+  "formatVersion": 1,
+  "id": "prototype.digital-passport",
+  "version": "0.1.0",
+  "schema": {
+    "id": "urn:midnight:prototype:digital-passport",
+    "version": "1.0.0",
+    "credentialTypes": [
+      "VerifiableCredential",
+      "prototype.digital-passport"
+    ],
+    "claims": [
+      {
+        "id": "firstName",
+        "path": [
+          "credentialSubject",
+          "firstName"
+        ],
+        "disclosure": "committed",
+        "required": true
+      },
+      {
+        "id": "lastName",
+        "path": [
+          "credentialSubject",
+          "lastName"
+        ],
+        "disclosure": "committed",
+        "required": true
+      },
+      {
+        "id": "dateOfBirth",
+        "path": [
+          "credentialSubject",
+          "dateOfBirth"
+        ],
+        "disclosure": "committed",
+        "required": true
+      },
+      {
+        "id": "documentNumber",
+        "path": [
+          "credentialSubject",
+          "documentNumber"
+        ],
+        "disclosure": "committed",
+        "required": true
+      },
+      {
+        "id": "issuingState",
+        "path": [
+          "credentialSubject",
+          "issuingState"
+        ],
+        "disclosure": "committed",
+        "required": true
+      }
+    ]
+  },
+  "capabilities": [
+    {
+      "id": "holder.explicit-did",
+      "kind": "holder-binding",
+      "version": "1.0.0",
+      "required": true
+    },
+    {
+      "id": "proof.compact",
+      "kind": "proof",
+      "version": "1.0.0",
+      "required": true
+    },
+    {
+      "id": "presentation.vp",
+      "kind": "presentation",
+      "version": "1.0.0",
+      "required": true
+    }
+  ],
+  "artifacts": [],
+  "composition": {
+    "formatVersion": 1,
+    "packages": [
+      {
+        "name": "@midnight-ntwrk/midnight-did-credentials-digital-passport",
+        "version": "^0.1.0",
+        "exports": [
+          "./digital-passport-credential.compact"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,215 @@
+{
+  "formatVersion": 1,
+  "prototype": {
+    "id": "dummy-claims",
+    "workspace": "packages/prototypes/credential-families/dummy-claims",
+    "hypothesis": "The direct-claims laboratory proves the currently admitted Compact primitive and nested claim surface.",
+    "owner": "midnight-verifiable-credentials maintainers",
+    "limitations": [
+      "Synthetic direct-claims laboratory; no status, protocol, or production semantics."
+    ],
+    "exitCriterion": "Keep only while it detects regressions not covered by reusable core consumer fixtures."
+  },
+  "profile": {
+    "formatVersion": 1,
+    "id": "profile.prototype.dummy-claims",
+    "version": "1.0.0",
+    "family": {
+      "id": "prototype.dummy-claims",
+      "version": "0.1.0",
+      "schemaId": "urn:midnight:prototype:dummy-claims",
+      "schemaVersion": "1.0.0"
+    },
+    "semantics": {
+      "claims": [
+        {
+          "claimId": "booleanValue",
+          "disclosure": "selective"
+        },
+        {
+          "claimId": "byteSizedUnsignedValue",
+          "disclosure": "selective"
+        },
+        {
+          "claimId": "mediumUnsignedValue",
+          "disclosure": "selective"
+        },
+        {
+          "claimId": "bigUnsignedValue",
+          "disclosure": "selective"
+        },
+        {
+          "claimId": "bytes16Value",
+          "disclosure": "selective"
+        },
+        {
+          "claimId": "bytes32Value",
+          "disclosure": "selective"
+        },
+        {
+          "claimId": "fieldValue",
+          "disclosure": "selective"
+        },
+        {
+          "claimId": "booleanVector",
+          "disclosure": "selective"
+        },
+        {
+          "claimId": "uintVector",
+          "disclosure": "selective"
+        },
+        {
+          "claimId": "bytesVector",
+          "disclosure": "selective"
+        },
+        {
+          "claimId": "fieldVector",
+          "disclosure": "selective"
+        },
+        {
+          "claimId": "nestedValue",
+          "disclosure": "selective"
+        },
+        {
+          "claimId": "nestedVector",
+          "disclosure": "selective"
+        }
+      ],
+      "holderBinding": {
+        "mode": "explicit-did",
+        "capability": {
+          "id": "holder.explicit-did",
+          "version": "1.0.0"
+        }
+      },
+      "issuance": {
+        "credential": "issuer-local-issuance-v1",
+        "registration": "disabled",
+        "anchoring": "disabled"
+      },
+      "presentation": {
+        "capability": {
+          "id": "presentation.vp",
+          "version": "1.0.0"
+        },
+        "preparation": "holder-wallet-v1",
+        "proofGeneration": {
+          "capability": {
+            "id": "proof.compact",
+            "version": "1.0.0"
+          },
+          "witnessPolicy": "public-only"
+        }
+      },
+      "verification": {
+        "profile": "offchain-public-v1",
+        "location": "local-process",
+        "authority": "local-process",
+        "commitState": "not-applicable",
+        "privateInputSources": []
+      },
+      "status": {
+        "mode": "disabled"
+      },
+      "did": {
+        "method": "did:midnight",
+        "relationship": "assertionMethod",
+        "network": "undeployed-fixture",
+        "versionEvidence": "package-lock"
+      },
+      "trust": {
+        "scope": "fixture-only",
+        "epochEvidence": "not-production-authority"
+      },
+      "trustedTime": {
+        "source": "none",
+        "evidence": "not-required",
+        "freshnessPolicy": "not-required"
+      },
+      "mutation": {
+        "location": "none",
+        "nullifier": "none",
+        "consumption": "none"
+      },
+      "protocols": [
+        "disabled"
+      ]
+    },
+    "requirements": {
+      "packages": [
+        {
+          "name": "@midnight-ntwrk/midnight-did-credentials-dummy-claims",
+          "version": "0.1.0",
+          "exports": [
+            "./dummy-claims-credential.compact"
+          ],
+          "domain": "family"
+        }
+      ],
+      "compactEntrypoints": [
+        {
+          "id": "compact.dummy-claims",
+          "packageName": "@midnight-ntwrk/midnight-did-credentials-dummy-claims",
+          "exportPath": "./dummy-claims-credential.compact",
+          "sourcePath": "packages/prototypes/credential-families/dummy-claims/src/dummy-claims-credential.compact"
+        }
+      ],
+      "circuits": [
+        {
+          "id": "circuit.dummy-claims.root",
+          "semanticVersion": "1.0.0",
+          "entrypointId": "compact.dummy-claims"
+        }
+      ],
+      "artifacts": [],
+      "providers": []
+    },
+    "compatibility": {
+      "deniedRules": [
+        "PRIVATE_INPUTS_WITH_PUBLIC_ONLY_VERIFICATION",
+        "STATUS_EVIDENCE_REQUIRED",
+        "CALLER_TIME_WITH_LEDGER_AUTHORITY",
+        "ATOMIC_REPLAY_REQUIRED",
+        "DISABLED_CAPABILITY_DEPENDENCY",
+        "LEDGER_COMMIT_REQUIRED",
+        "UNTESTED_COMBINATION"
+      ]
+    },
+    "conformance": {
+      "fixtureId": "prototype:dummy-claims:composition-v1",
+      "evidenceDisposition": "tested",
+      "evidenceIds": [
+        "prototype:dummy-claims:composition-v1:compile",
+        "prototype:dummy-claims:composition-v1:happy",
+        "prototype:dummy-claims:composition-v1:negative"
+      ]
+    },
+    "maturity": {
+      "api": {
+        "subjectId": "prototype:dummy-claims:composition-v1",
+        "value": "prototype"
+      },
+      "security": {
+        "subjectId": "prototype:dummy-claims:composition-v1",
+        "value": "unassessed"
+      },
+      "standards": {
+        "subjectId": "prototype:dummy-claims:composition-v1",
+        "value": "not-applicable"
+      },
+      "production": {
+        "subjectId": "prototype:dummy-claims:composition-v1",
+        "value": "not-assessed"
+      }
+    }
+  },
+  "evidence": {
+    "fixture": "packages/prototypes/credential-families/dummy-claims/src/dummy-claims-credential.compact",
+    "graph": "packages/prototypes/credential-families/dummy-claims/conformance/family-definition.json",
+    "happyPath": "packages/prototypes/credential-families/dummy-claims/src/test/selective-disclosure.test.ts#L9",
+    "negatives": [
+      "packages/prototypes/credential-families/dummy-claims/src/test/validation-guards.test.ts#L9"
+    ]
+  },
+  "familyDefinition": "packages/prototypes/credential-families/dummy-claims/conformance/family-definition.json"
+}

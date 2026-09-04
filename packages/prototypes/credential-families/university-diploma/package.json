@@ -18,6 +18,7 @@
       "import": "./dist/index.js",
       "default": "./dist/index.js"
     },
+    "./university-diploma-credential.compact": "./dist/university-diploma-credential.compact",
     "./contract": {
       "types": "./dist/contract.d.ts",
       "require": "./dist/contract.js",

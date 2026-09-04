@@ -21,8 +21,11 @@ const packageJson = JSON.parse(
 ) as { exports?: Record<string, unknown> };
 
 describe("credentials-birth-secret package surfaces", () => {
-  it("declares a stable contract subpath export", () => {
+  it("declares stable contract and Compact subpath exports", () => {
     expect(packageJson.exports?.["./contract"]).toBeDefined();
+    expect(packageJson.exports?.["./secret-birth-credential.compact"]).toBe(
+      "./dist/secret-birth-credential.compact",
+    );
     expect(existsSync(sourceSurface("contract.ts"))).toEqual(true);
   });
 
