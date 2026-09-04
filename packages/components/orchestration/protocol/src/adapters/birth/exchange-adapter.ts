@@ -1,0 +1,289 @@
+import type {
+  CanonicalMessage,
+  InjectedCredentialFamilyAdapter,
+  VerificationResult,
+} from "@midnight-ntwrk/credential-exchange";
+import {
+  type BirthCredentialIssuanceRequest,
+  type BirthCredentialIssuanceResult,
+  type BirthCredentialVerificationRequest,
+  pureCircuits,
+} from "@midnight-ntwrk/midnight-did-credentials-birth/managed/birth-credential/contract/index.js";
+
+import type { DIDProfile } from "../../agents/types.js";
+import { assertProtocolMessageEnvelopeAlignment } from "../../shared/validation.js";
+import { MessageBus } from "../../transport/message-bus.js";
+import type { PartyId, ProtocolMessage } from "../../transport/types.js";
+import { stableJsonProtocolStateCodec } from "../json-protocol-state-codec.js";
+import { HolderAgent, type PresentationWitness } from "./holder-agent.js";
+import { type ClaimWitness, IssuerAgent } from "./issuer-agent.js";
+import {
+  BIRTH_SCHEMA,
+  BIRTH_SCHEMA_FAMILY_ADAPTER,
+  formatSchemaRef,
+  schemaRefsEqual,
+} from "./schema-descriptors.js";
+import {
+  type PresentationRequirements,
+  type SimulatorWitness,
+  VerifierAgent,
+} from "./verifier-agent.js";
+
+const FAMILY_IDENTITY = {
+  familyId: BIRTH_SCHEMA_FAMILY_ADAPTER.familyId,
+  familyVersion: "1.0.0",
+  schemaId: formatSchemaRef(BIRTH_SCHEMA),
+  schemaVersion: `${BIRTH_SCHEMA.majorVersion}.${BIRTH_SCHEMA.minorVersion}.0`,
+} as const;
+
+const MEDIA_TYPE = "application/vnd.midnight.birth.protocol-message+json";
+
+type BirthVerificationResult = VerificationResult & {
+  readonly protocolResult: ReturnType<
+    VerifierAgent["receiveSubmissionAndEvaluate"]
+  >["result"];
+};
+
+export type BirthInjectedCredentialFamilyAdapter =
+  InjectedCredentialFamilyAdapter<BirthVerificationResult>;
+
+export type BirthInjectedCredentialFamilyAdapterOptions = {
+  readonly issuerProfile: DIDProfile;
+  readonly holderProfile: DIDProfile;
+  readonly verifierProfile: DIDProfile;
+};
+
+const requiredInput = <T>(value: unknown, label: string): T => {
+  if (value === undefined || value === null) {
+    throw new TypeError(`${label} is required`);
+  }
+  return value as T;
+};
+
+/**
+ * Adapts the repository's concrete explicit-holder birth lifecycle to the
+ * family-neutral directly injected exchange ports. Transport framing stays in
+ * this outward protocol package; birth Compact circuits remain the validity
+ * authority.
+ */
+export const createBirthInjectedCredentialFamilyAdapter = (
+  options: BirthInjectedCredentialFamilyAdapterOptions,
+): BirthInjectedCredentialFamilyAdapter => {
+  const bus = new MessageBus();
+  const issuer = new IssuerAgent(options.issuerProfile, bus);
+  const holder = new HolderAgent(options.holderProfile, bus);
+  const verifier = new VerifierAgent(options.verifierProfile, bus);
+  const acceptedCredentials: Array<{
+    readonly credential: CanonicalMessage<"credential">;
+    readonly index: number;
+  }> = [];
+  const pendingIssuanceRequests = new Map<
+    string,
+    BirthCredentialIssuanceRequest
+  >();
+  const messageIdKey = (messageId: Uint8Array): string =>
+    Array.from(messageId).join(",");
+
+  const credentialIndex = (
+    credential: CanonicalMessage<"credential">,
+  ): number => {
+    for (
+      let offset = acceptedCredentials.length - 1;
+      offset >= 0;
+      offset -= 1
+    ) {
+      const accepted = acceptedCredentials[offset];
+      if (
+        accepted.credential.familyId === credential.familyId &&
+        accepted.credential.familyVersion === credential.familyVersion &&
+        accepted.credential.schemaId === credential.schemaId &&
+        accepted.credential.schemaVersion === credential.schemaVersion &&
+        accepted.credential.mediaType === credential.mediaType &&
+        accepted.credential.payload.length === credential.payload.length &&
+        accepted.credential.payload.every(
+          (byte, index) => byte === credential.payload[index],
+        )
+      ) {
+        return accepted.index;
+      }
+    }
+    throw new Error("Credential was not accepted by this birth adapter");
+  };
+
+  const receive = (party: PartyId, action: string): ProtocolMessage => {
+    const message = bus.receive(party);
+    if (!message) {
+      throw new Error(
+        `Birth adapter produced no ${action} message for ${party}`,
+      );
+    }
+    return message;
+  };
+  const encode = <TKind extends CanonicalMessage["kind"]>(
+    kind: TKind,
+    message: ProtocolMessage,
+  ): CanonicalMessage<TKind> => ({
+    ...FAMILY_IDENTITY,
+    kind,
+    mediaType: MEDIA_TYPE,
+    payload: stableJsonProtocolStateCodec.encode(message),
+  });
+  const decode = <TKind extends CanonicalMessage["kind"]>(
+    message: CanonicalMessage<TKind>,
+  ): ProtocolMessage => {
+    if (message.mediaType !== MEDIA_TYPE) {
+      throw new Error(
+        `Canonical birth message media type "${message.mediaType}" does not match "${MEDIA_TYPE}"`,
+      );
+    }
+    const decoded = stableJsonProtocolStateCodec.decode(
+      message.payload,
+    ) as ProtocolMessage;
+    const payloadSchema = (decoded.body as { readonly schema?: unknown } | null)
+      ?.schema;
+    if (
+      typeof payloadSchema !== "object" ||
+      payloadSchema === null ||
+      !("packageId" in payloadSchema) ||
+      !(payloadSchema.packageId instanceof Uint8Array) ||
+      !("schemaId" in payloadSchema) ||
+      !(payloadSchema.schemaId instanceof Uint8Array) ||
+      !("majorVersion" in payloadSchema) ||
+      typeof payloadSchema.majorVersion !== "bigint" ||
+      !("minorVersion" in payloadSchema) ||
+      typeof payloadSchema.minorVersion !== "bigint" ||
+      !schemaRefsEqual(payloadSchema as typeof BIRTH_SCHEMA, BIRTH_SCHEMA)
+    ) {
+      throw new Error(
+        `Canonical birth payload schema does not match "${FAMILY_IDENTITY.schemaId}"`,
+      );
+    }
+    return decoded;
+  };
+
+  return {
+    family: {
+      id: FAMILY_IDENTITY.familyId,
+      version: FAMILY_IDENTITY.familyVersion,
+      schema: {
+        id: FAMILY_IDENTITY.schemaId,
+        version: FAMILY_IDENTITY.schemaVersion,
+      },
+    },
+    issuance: {
+      createOffer: () => {
+        issuer.createAndSendOffer(options.holderProfile.label);
+        return encode(
+          "issuance-offer",
+          receive(options.holderProfile.label, "issuance offer"),
+        );
+      },
+      createRequest: (offer) => {
+        holder.receiveOfferAndSendRequest(decode(offer));
+        const requestMessage = receive(
+          options.issuerProfile.label,
+          "issuance request",
+        );
+        assertProtocolMessageEnvelopeAlignment(requestMessage);
+        const request = requestMessage.body as BirthCredentialIssuanceRequest;
+        pureCircuits.assertValidBirthCredentialIssuanceRequest(request);
+        pendingIssuanceRequests.set(
+          messageIdKey(request.envelope.messageId),
+          request,
+        );
+        return encode("issuance-request", requestMessage);
+      },
+      issue: (request, input) => {
+        issuer.receiveRequestAndIssueCredential(
+          decode(request),
+          requiredInput<ClaimWitness>(input, "Birth claim witness"),
+        );
+        return encode(
+          "credential",
+          receive(options.holderProfile.label, "credential result"),
+        );
+      },
+      accept: (credential) => {
+        const resultMessage = decode(credential);
+        assertProtocolMessageEnvelopeAlignment(resultMessage);
+        const result = resultMessage.body as BirthCredentialIssuanceResult;
+        pureCircuits.assertValidBirthCredentialIssuanceResult(result);
+        const requestKey = messageIdKey(result.envelope.respondsToMessageId);
+        const request = pendingIssuanceRequests.get(requestKey);
+        if (!request) {
+          throw new Error(
+            "Birth credential issuance result does not match a pending issuance request",
+          );
+        }
+        pureCircuits.assertBirthCredentialIssuanceResultMatchesRequest(
+          request,
+          result,
+        );
+
+        const index = holder.credentialCount;
+        holder.receiveCredentialResult(resultMessage);
+        pendingIssuanceRequests.delete(requestKey);
+        acceptedCredentials.push({
+          credential: {
+            ...credential,
+            payload: Uint8Array.from(credential.payload),
+          },
+          index,
+        });
+        return credential;
+      },
+    },
+    presentation: {
+      createRequest: (input) => {
+        verifier.createAndSendPresentationRequest(
+          options.holderProfile.label,
+          requiredInput<PresentationRequirements>(
+            input,
+            "Birth presentation requirements",
+          ),
+        );
+        return encode(
+          "presentation-request",
+          receive(options.holderProfile.label, "presentation request"),
+        );
+      },
+      present: (credential, request, input) => {
+        const witness = requiredInput<PresentationWitness>(
+          input,
+          "Birth presentation witness",
+        );
+        if (witness.credentialIndex !== credentialIndex(credential)) {
+          throw new Error(
+            "Birth presentation witness credential index does not match the accepted credential",
+          );
+        }
+        holder.receiveRequestAndSendPresentation(decode(request), witness);
+        return encode(
+          "presentation",
+          receive(options.verifierProfile.label, "presentation submission"),
+        );
+      },
+    },
+    verification: {
+      verify: (presentation, request, input) => {
+        const witness = requiredInput<Omit<SimulatorWitness, "request">>(
+          input,
+          "Birth simulator witness",
+        );
+        const requestMessage = decode(request);
+        const evaluation = verifier.receiveSubmissionAndEvaluate(
+          decode(presentation),
+          {
+            ...witness,
+            request: requestMessage.body as BirthCredentialVerificationRequest,
+          },
+        );
+        return {
+          valid: evaluation.approved,
+          canonicalPresentation: presentation,
+          protocolResult: evaluation.result,
+        };
+      },
+    },
+  };
+};

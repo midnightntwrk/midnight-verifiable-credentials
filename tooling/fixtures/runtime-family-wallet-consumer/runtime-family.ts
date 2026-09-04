@@ -199,7 +199,13 @@ const profile = {
     compactEntrypoints: [],
     circuits: [],
     artifacts: [],
-    providers: [],
+    providers: [
+      {
+        id: "proof.requirement",
+        capability: { id: "proof.consumer", version: "1.0.0" },
+        role: "proof-executor",
+      },
+    ],
   },
   compatibility: {
     deniedRules: [
@@ -225,9 +231,17 @@ const profile = {
   },
 } as const;
 
-const components = Object.fromEntries(
-  CREDENTIAL_DEPLOYMENT_ROLES.map((role) => [role, { state: "disabled" }]),
-) as unknown as CredentialDeploymentComponents;
+const components = {
+  ...Object.fromEntries(
+    CREDENTIAL_DEPLOYMENT_ROLES.map((role) => [role, { state: "disabled" }]),
+  ),
+  "proof-executor": {
+    state: "selected",
+    requirementId: "proof.requirement",
+    provider: { id: "proof-provider.consumer", version: "1.0.0" },
+    instanceId: "proof-provider.consumer.instance@1",
+  },
+} as unknown as CredentialDeploymentComponents;
 
 const artifactDigest = "c".repeat(64);
 const record: RuntimeCredentialFamilyRecordV1 = {
@@ -243,7 +257,20 @@ const record: RuntimeCredentialFamilyRecordV1 = {
     artifacts: [],
     deployments: [],
   },
-  catalog: { formatVersion: 1, providers: [] },
+  catalog: {
+    formatVersion: 1,
+    providers: [
+      {
+        id: "proof-provider.consumer",
+        version: "1.0.0",
+        roles: ["proof-executor"],
+        capabilities: [{ id: "proof.consumer", version: "1.0.0" }],
+        packages: [],
+        witnessPolicy: "public-only",
+        atomicReplay: false,
+      },
+    ],
+  },
   publicSurface: {
     formatVersion: 1,
     family: reference,

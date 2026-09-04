@@ -1,4 +1,6 @@
-import { existsSync, readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { cpSync, existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -9,6 +11,14 @@ const packageRoot = path.resolve(
   "..",
   "..",
 );
+const compactAvailable = (() => {
+  try {
+    execFileSync("compact", ["--version"], { stdio: "pipe" });
+    return true;
+  } catch {
+    return false;
+  }
+})();
 
 const sourceSurface = (relativePath: string) =>
   path.resolve(packageRoot, "src", relativePath);
@@ -69,4 +79,47 @@ describe("credentials-birth package surfaces", () => {
       existsSync(distSurface("birth-credential/composable.compact")),
     ).toEqual(true);
   });
+
+  it.skipIf(!compactAvailable)(
+    "compiles the standalone Compact export outside the monorepo",
+    () => {
+      if (!existsSync(distSurface("index.js"))) return;
+
+      const temporaryRoot = mkdtempSync(
+        path.join(os.tmpdir(), "birth-compact-package-"),
+      );
+      try {
+        cpSync(
+          distSurface("birth-credential.compact"),
+          path.join(temporaryRoot, "birth-credential.compact"),
+        );
+        cpSync(
+          distSurface("birth-credential"),
+          path.join(temporaryRoot, "birth-credential"),
+          { recursive: true },
+        );
+        cpSync(
+          distSurface("credential-compact"),
+          path.join(temporaryRoot, "credential-compact"),
+          { recursive: true },
+        );
+        execFileSync(
+          "compact",
+          [
+            "compile",
+            "+0.31.1",
+            "--skip-zk",
+            "--compact-path",
+            temporaryRoot,
+            path.join(temporaryRoot, "birth-credential.compact"),
+            path.join(temporaryRoot, "output"),
+          ],
+          { stdio: "pipe" },
+        );
+      } finally {
+        rmSync(temporaryRoot, { recursive: true, force: true });
+      }
+    },
+    60_000,
+  );
 });
