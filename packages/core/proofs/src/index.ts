@@ -1,3 +1,34 @@
+export type { AuthorityBoundProofVerificationResultV1 } from "./authority-bound-verifier.js";
+export { verifyProofWithAuthorityV1 } from "./authority-bound-verifier.js";
+export type {
+  AuthorityActorKeyRequirementV1,
+  AuthorityActorRoleV1,
+  AuthorityEvidenceCompositionV1,
+  AuthorityEvidencePolicyV1,
+  AuthorityEvidenceProfileV1,
+  AuthorityEvidenceProviderPolicyV1,
+  AuthorityEvidenceReasonCodeV1,
+  AuthorityEvidenceVerificationResultV1,
+  AuthorityResolvedProviderIdentityV1,
+  AuthorityVerificationContextV1,
+  CanonicalAuthorityActorTranscriptV1,
+  CanonicalAuthorityVerificationTranscriptV1,
+  CanonicalDidEvidenceSelectionV1,
+  CanonicalTrustEvidenceSelectionV1,
+  DidMethodEvidenceProviderV1,
+  DidMethodEvidenceRequestV1,
+  DidMethodEvidenceV1,
+  DidMethodLifecycleStatusV1,
+  ScopedAuthorityEvidenceReasonCodeV1,
+  TrustAuthorizationEvidenceProviderV1,
+  TrustAuthorizationEvidenceRequestV1,
+  TrustAuthorizationEvidenceV1,
+} from "./authority-evidence.js";
+export {
+  AUTHORITY_ACTOR_ROLES_V1,
+  createAuthorityEvidencePolicyV1,
+  verifyAuthorityEvidenceV1,
+} from "./authority-evidence.js";
 export { CredentialProofsError, type CredentialProofsErrorCode } from "./errors.js";
 export {
   assertArtifactBytes,

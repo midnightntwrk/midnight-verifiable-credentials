@@ -15,6 +15,17 @@ Family adapters own canonical bytes and validity. Protocol adapters can only
 wrap and unwrap `CanonicalMessage` values, so OpenID, future DIDComm, HTTP, and
 other transports stay outside family packages and cannot redefine validity.
 
+`AuthorityBoundVerifierAgent` is the optional async verification runtime for
+profiles that selected exact `did-resolver` and `trust-resolver` providers. It
+first requires the injected family verifier to succeed, binds caller-supplied
+credential/proof digests and hashes canonical presentation/request identities
+into the authority context, and then applies `credential-proofs`' reusable
+issuer/holder/verifier/status DID and trust binder. It forwards no arbitrary
+verification input to resolvers, so private holder witnesses stay inside the
+family verifier. Missing or unauthenticated authority evidence is indeterminate
+and returns `valid: false`; no concrete DID method or trust registry is
+implemented here.
+
 Committed-private families may additionally provide the optional
 `IssuanceAdapter.claimOpenings` port. `HolderAgent` then creates an exact
 recipient/claim-set request, accepts a compound `CredentialIssuanceResult`, and

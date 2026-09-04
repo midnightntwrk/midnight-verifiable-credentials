@@ -1,0 +1,28 @@
+{
+  "name": "@midnight-ntwrk/credential-status-midnight-contract",
+  "version": "0.1.0",
+  "description": "Atomic Midnight status registry state and authorization-gate contract",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": [],
+  "engines": { "node": ">=24", "pnpm": ">=10" },
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js", "default": "./dist/index.js" } },
+  "scripts": {
+    "build": "rm -rf dist .cache && tsc -b tsconfig.build.json --force",
+    "prepack": "pnpm run build",
+    "test": "vitest run",
+    "test:ci": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint \"src/**/*.ts\"",
+    "lint:fix": "eslint \"src/**/*.ts\" --fix",
+    "clean": "rm -rf dist coverage .cache *.tsbuildinfo",
+    "all": "pnpm run lint && pnpm run typecheck && pnpm run build && pnpm run test:ci"
+  },
+  "dependencies": { "@midnight-ntwrk/credential-status": "^0.1.0-rc1" },
+  "files": ["dist/**", "README.md", "CHANGELOG.md", "package.json", "tsconfig.json", "tsconfig.build.json"],
+  "midnight": { "maturity": "infrastructure", "packageClass": "dist" }
+}

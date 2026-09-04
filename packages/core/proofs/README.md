@@ -4,8 +4,9 @@
 > Package class: `dist`
 > Release stage: `supported`
 
-Family-neutral proof execution ports and immutable, versioned proof/build/deployment
-manifest contracts for credential-family repositories.
+Family-neutral proof execution ports, DID/trust authority-evidence binding, and
+immutable, versioned proof/build/deployment manifest contracts for
+credential-family repositories.
 
 ## Scope
 
@@ -19,17 +20,31 @@ helper verifies the requested manifest, descriptor identity, length, and digest
 before returning artifact bytes. It performs no proof execution, artifact
 fetching/publication, signing-key custody, or deployment.
 
+The `authority-evidence` export consumes an authority-capable
+`CredentialFamilyProfileV1` and `ResolvedCredentialCompositionV1`, requires exact
+DID/trust resolver selections, and binds issuer, holder, verifier, and status
+key fingerprints to authenticated method, relationship, network, state-version,
+lifecycle, trust-scope, and trust-epoch evidence. Injected provider failures or
+unauthenticated evidence are indeterminate; authenticated mismatches are invalid.
+Its canonical JSON transcript commits selected evidence identity, observation
+time, and exact state/epoch selections without retaining proof inputs, proof
+bytes, or holder witnesses.
+`verifyProofWithAuthorityV1` applies this evidence only after cryptographic proof
+verification succeeds.
+
 The package does **not** own family circuits, proving or verifier keys, ZKIR/BZKIR,
-deployment bundles, status authority, verification-v1 decisions/transcripts, or
-runtime adapters. A complete deployable composition owns its generated artifacts
+deployment bundles, a DID method, a trust registry/governance policy, status
+authority, Compact verification-v1 decisions/transcripts, or runtime adapters. A
+complete deployable composition owns its generated artifacts
 and supplies their immutable manifests; a manifest is evidence and metadata, not
 an authority or trust decision. G1 signs the canonical deployment envelope with
 explicit `Ed25519`; the deployment digest and signature omit only the
 self-referential signature bytes, while covering the algorithm, key id, and all
 deployment binding fields. This algorithm choice is scoped to generic off-chain
 G1 manifests and does not claim interoperability with a DID or trust-registry
-authority; any external authority profile requires a separate decision. G1
-therefore remains integrity verification only: locator/publication,
+authority. Authority evidence is accepted only through the separately selected
+profile/composition provider ports; G1 therefore remains integrity verification
+only: locator/publication,
 cache/revocation, recovery, deployment integration, and external trust/authority
 layers remain follow-ups and are not silently selected by this package.
 

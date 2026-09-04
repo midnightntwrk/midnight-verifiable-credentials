@@ -51,6 +51,13 @@ try {
     "--pack-destination",
     tarballRoot,
   ]);
+  run("pnpm", [
+    "--dir",
+    "packages/core/proofs",
+    "pack",
+    "--pack-destination",
+    tarballRoot,
+  ]);
 
   const tarballFor = (workspacePath) => {
     const manifest = JSON.parse(
@@ -63,6 +70,7 @@ try {
     repoRoot,
     "packages/components/orchestration/exchange",
   );
+  const proofsTarball = tarballFor("packages/core/proofs");
   run("pnpm", ["--dir", exchangeWorkspace, "run", "build"]);
   const exchangeManifest = JSON.parse(
     readFileSync(path.join(exchangeWorkspace, "package.json"), "utf8"),
@@ -80,6 +88,7 @@ try {
         dependencies: {
           ...exchangeManifest.dependencies,
           "@midnight-ntwrk/credential-model": `file:${modelTarball}`,
+          "@midnight-ntwrk/credential-proofs": `file:${proofsTarball}`,
         },
       },
       null,
@@ -95,6 +104,7 @@ try {
         type: "module",
         dependencies: {
           "@midnight-ntwrk/credential-model": `file:${modelTarball}`,
+          "@midnight-ntwrk/credential-proofs": `file:${proofsTarball}`,
           "@midnight-ntwrk/credential-exchange": `file:${exchangePackageRoot}`,
         },
       },
@@ -119,6 +129,8 @@ try {
       2,
     )}\n`,
   );
+  // Includes the generic wallet lifecycle and direct packed proofs/exchange
+  // authority-bound verifier consumer.
   cpSync(
     path.join(repoRoot, "tooling/fixtures/runtime-family-wallet-consumer"),
     consumerSource,
@@ -128,7 +140,11 @@ try {
   run("npm", ["install", "--ignore-scripts", "--no-audit", "--no-fund"], consumerRoot);
   run("pnpm", ["exec", "tsc", "-p", path.join(consumerRoot, "tsconfig.json")]);
   const output = run("node", [path.join(consumerRoot, "dist/index.js")]);
+  const authorityOutput = run("node", [
+    path.join(consumerRoot, "dist/authority-consumer.js"),
+  ]);
   process.stdout.write(output);
+  process.stdout.write(authorityOutput);
 } finally {
   rmSync(temporaryRoot, { recursive: true, force: true });
 }

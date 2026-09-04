@@ -29,7 +29,8 @@
     "all": "pnpm run lint && pnpm run typecheck && pnpm run build && pnpm run test:ci"
   },
   "dependencies": {
-    "@midnight-ntwrk/credential-model": "workspace:*"
+    "@midnight-ntwrk/credential-model": "workspace:*",
+    "@midnight-ntwrk/credential-proofs": "workspace:*"
   },
   "files": [
     "dist/**",

@@ -49,9 +49,17 @@ Ownership:
   - owns the registry contract surface
   - owns verifier-facing status proof protocols and off-chain builders
 
+Least-privilege migration:
+
+- new state/deployment adapters use `@midnight-ntwrk/credential-status-midnight-contract`
+- new read-only verifier/witness consumers use `@midnight-ntwrk/credential-status-midnight-verifier`
+- new controller/delegate mutation services use `@midnight-ntwrk/credential-status-midnight-authority`
+- this package remains a private mixed compatibility surface and MUST NOT be a new read-only dependency
+- see [`../../../docs/guides/status-package-migration.md`](../../../docs/guides/status-package-migration.md)
+
 Surface classification:
 
-- mixed surface package
+- mixed compatibility surface package
 - `src/revocation-registry.compact` is `On-chain only`
 - `src/status-proof-protocol.compact` is `Reusable Compact proof-protocol surface`
 - TypeScript builders and managed exports are `Off-chain only`

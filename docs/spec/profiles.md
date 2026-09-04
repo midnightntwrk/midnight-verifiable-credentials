@@ -18,6 +18,7 @@ It is companion material to:
 - [`midnight-credentials.md`](./midnight-credentials.md)
 - [`claim-representation.md`](./claim-representation.md)
 - [`credential-status.md`](./credential-status.md)
+- [`did-trust-authority-evidence.md`](./did-trust-authority-evidence.md)
 - [`revocation-registry.md`](./revocation-registry.md)
 - [`../architecture/holder-binding-terminology.md`](../architecture/holder-binding-terminology.md)
 - [`../plans/hidden-holder-production-contract.md`](../plans/hidden-holder-production-contract.md)
@@ -47,9 +48,13 @@ requirement. Disabled status removes status-registry, proof, authority, and
 mutation edges without removing unrelated signing. The contract is mechanism-
 neutral: retained-prototype manifests and the finite constraint-aware coverage
 matrix are tracked in [`../testing/prototype-profile-coverage.md`](../testing/prototype-profile-coverage.md).
-That evidence proves only its stated supported-value and allowed-pair guarantees;
-concrete authority/provider mechanisms remain #494 and later, and product
-deployment values remain outside this repository's reusable model.
+That evidence proves only its stated supported-value and allowed-pair guarantees.
+The reusable #494 DID/trust consumption and binding ports are specified in
+[`did-trust-authority-evidence.md`](./did-trust-authority-evidence.md); a profile
+must still select exact resolver requirements and a composition must resolve
+exact providers before those ports can be used. Concrete DID methods, trust
+registries/governance, and product deployment values remain outside this
+repository's reusable model.
 
 Existing `CredentialFamilyDefinition` callers remain valid. Adoption is
 explicit and additive; there is no implicit migration from a family definition
