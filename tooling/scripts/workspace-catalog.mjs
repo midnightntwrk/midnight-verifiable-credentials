@@ -85,6 +85,9 @@ export const workspaceCatalog = [
   }),
   workspace("packages/core/primitives/credentials", "core", "dist"),
   workspace("packages/registry/status-registry", "reference", "dist"),
+  workspace("packages/registry/status-midnight-contract", "infrastructure", "dist"),
+  workspace("packages/registry/status-midnight-verifier", "infrastructure", "dist"),
+  workspace("packages/registry/status-midnight-authority", "infrastructure", "dist"),
   workspace("packages/core/capabilities/same-holder", "core", "dist"),
   workspace("packages/core/primitives/iso-registry", "reference", "dist"),
   workspace(

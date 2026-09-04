@@ -395,6 +395,30 @@ importers:
         specifier: '*'
         version: link:../../../core/primitives/credentials
 
+  packages/registry/status-midnight-authority:
+    dependencies:
+      '@midnight-ntwrk/credential-proofs':
+        specifier: ^0.1.0-rc1
+        version: link:../../core/proofs
+      '@midnight-ntwrk/credential-status-midnight-contract':
+        specifier: ^0.1.0
+        version: link:../status-midnight-contract
+
+  packages/registry/status-midnight-contract:
+    dependencies:
+      '@midnight-ntwrk/credential-status':
+        specifier: ^0.1.0-rc1
+        version: link:../../core/status
+
+  packages/registry/status-midnight-verifier:
+    dependencies:
+      '@midnight-ntwrk/credential-status':
+        specifier: ^0.1.0-rc1
+        version: link:../../core/status
+      '@midnight-ntwrk/credential-status-midnight-contract':
+        specifier: ^0.1.0
+        version: link:../status-midnight-contract
+
   packages/registry/status-registry:
     dependencies:
       '@midnight-ntwrk/compact-runtime':

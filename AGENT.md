@@ -119,7 +119,10 @@ for the closed migration exception and graduation gates.
 | `packages/core/primitives/credentials` | `@midnight-ntwrk/midnight-did-credentials` | Private compatibility facade plus explicit legacy verification/status extensions; not a second canonical owner. |
 | `packages/core/capabilities/same-holder` | `@midnight-ntwrk/midnight-did-credentials-same-holder` | Same-holder composition capability. |
 | `packages/core/primitives/iso-registry` | `@midnight-ntwrk/midnight-did-credentials-iso-registry` | ISO-style registry primitives. |
-| `packages/registry/status-registry` | `@midnight-ntwrk/midnight-did-credentials-status-registry` | Status/revocation registry reference package and witness-builder helpers. |
+| `packages/registry/status-registry` | `@midnight-ntwrk/midnight-did-credentials-status-registry` | Private mixed compatibility surface for legacy status/revocation Compact and helpers. |
+| `packages/registry/status-midnight-contract` | `@midnight-ntwrk/credential-status-midnight-contract` | Internal atomic status contract-state and authorization-gate boundary. |
+| `packages/registry/status-midnight-verifier` | `@midnight-ntwrk/credential-status-midnight-verifier` | Internal least-privilege status read/witness adapter. |
+| `packages/registry/status-midnight-authority` | `@midnight-ntwrk/credential-status-midnight-authority` | Internal controller/delegate write authorization and injected signing port. |
 | `packages/components/adapters/offchain-did` | `@midnight-ntwrk/midnight-did-credentials-offchain-did` | DID-aware offchain holder-binding runtime helpers. |
 | `packages/components/integration/standalone-environment` | `@midnight-ntwrk/midnight-did-standalone-environment` | Standalone Midnight/DID runtime bootstrap for integration tests. |
 | `packages/components/orchestration/exchange` | `@midnight-ntwrk/credential-exchange` | Private family-neutral issuance/presentation/verification ports and directly injected agents. |
@@ -373,6 +376,7 @@ The university scenarios should make actor requests/responses, DIDs, issued cred
 Canonical direction:
 
 - Use a revoked-set non-membership model over a dedicated status/revocation registry.
+- Keep contract state, verifier/read, and authority/write dependencies separate; see `docs/guides/status-package-migration.md`.
 - The verifier/application supplies the accepted `(registryId, revokedRoot)`.
 - The holder must not choose the accepted root unilaterally.
 - Freshness is an application/verifier policy decision around the accepted root.

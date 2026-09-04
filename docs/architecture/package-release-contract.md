@@ -35,7 +35,10 @@ conformance fixtures, removed, or graduated to an independent repository.
 | `@midnight-ntwrk/credential-status` | `supported` | npmjs `rc`; stable after explicit approval | `@midnightntwrk/ex-identus` / `@midnightntwrk/mn-sre` | Generic status semantics and replaceable ports; no registry authority or ledger implementation |
 | `@midnight-ntwrk/credential-did-midnight` | `supported` | npmjs `rc`; stable after explicit approval | `@midnightntwrk/ex-identus` / `@midnightntwrk/mn-sre` | Offchain `did:midnight` resolution and holder-binding runtime adapter; signing and key custody remain injected |
 | `@midnight-ntwrk/midnight-did-credentials` | `internal` | none | VC package maintainers | Transitional Compact compatibility package |
-| `@midnight-ntwrk/midnight-did-credentials-status-registry` | `internal` | workspace tarball only | Unassigned | Prototype trust model |
+| `@midnight-ntwrk/midnight-did-credentials-status-registry` | `internal` | workspace tarball only | Unassigned | Prototype mixed compatibility surface |
+| `@midnight-ntwrk/credential-status-midnight-contract` | `internal` | none | VC package maintainers | Reference atomic state and authorization-gate boundary; not final Compact authority |
+| `@midnight-ntwrk/credential-status-midnight-verifier` | `internal` | none | VC package maintainers | Least-privilege read/witness adapter; root-proof work remains separate |
+| `@midnight-ntwrk/credential-status-midnight-authority` | `internal` | none | VC package maintainers | #494 evidence-backed write authorization and signing port; no key custody |
 | `@midnight-ntwrk/midnight-did-credentials-same-holder` | `internal` | workspace tarball only | Unassigned | Reference capability |
 | `@midnight-ntwrk/midnight-did-credentials-iso-registry` | `internal` | workspace tarball only | Unassigned | Reference primitive |
 | `@midnight-ntwrk/midnight-did-credentials-offchain-did` | `internal` | workspace tarball only | Unassigned | DID-aware adapter |

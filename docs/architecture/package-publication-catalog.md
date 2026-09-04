@@ -9,9 +9,11 @@ inventory, and graduation gates are maintained in
 [`credential-family-ownership-policy.md`](./credential-family-ownership-policy.md).
 RC2 promotes the five-package VC development foundation:
 `credential-model`, `credential-compact`, `credential-proofs`,
-`credential-status`, and `credential-did-midnight`. The remaining rows are
-future targets rather than claims that those packages are currently supported
-or published. ADR-0014 remains Proposed; this implementation enforces only the
+`credential-status`, and `credential-did-midnight`. Issue #495 adds internal
+candidate workspaces for the three Midnight status security boundaries, with
+publication/lifecycle still deferred to #463, #466, and #444. The remaining
+rows are future publication targets rather than claims that those packages are
+currently supported or published. ADR-0014 remains Proposed; this implementation enforces only the
 five-package RC2 release surface.
 
 The naming convention uses credential-domain terms instead of the broad `ssi`
@@ -115,7 +117,7 @@ not every generated family artifact.
 | --- | --- |
 | `midnight-did-credentials` | Split stable TypeScript descriptors into `credential-model`, generic Compact/generated exports and same-holder support into `credential-compact`, proof/resource contracts into `credential-proofs`, and decision semantics into `credential-verification` |
 | `credentials-same-holder` | `credential-compact/holder-binding/same-holder` |
-| `credentials-status-registry` | Split generic status semantics into `credential-status` and Midnight implementation into contract, verifier, and authority packages |
+| `credentials-status-registry` | Generic semantics are in `credential-status`; issue #495 adds internal `credential-status-midnight-contract`, `credential-status-midnight-verifier`, and `credential-status-midnight-authority` workspaces while retaining the legacy mixed package as a private compatibility surface |
 | `credentials-protocol` | Keep family-neutral FSM, transport, durable session codecs, and storage ports in `credential-exchange`; move file storage to `credential-session-node` and birth agents/descriptors to private evidence |
 | `credentials-openid` | Move the generic Compact value codec downward, then implement OID4VCI and OID4VP as `openid4vc/issuance` and `openid4vc/presentation` |
 | `credentials-offchain-did` | `credential-did-midnight`; keep signer/key custody behind an injected port |

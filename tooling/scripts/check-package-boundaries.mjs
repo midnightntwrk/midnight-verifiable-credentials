@@ -41,6 +41,18 @@ export const migrationExceptions = {
   ],
 };
 
+export const leastPrivilegeStatusDependencyEdges = {
+  "packages/registry/status-midnight-contract": ["packages/core/status"],
+  "packages/registry/status-midnight-verifier": [
+    "packages/core/status",
+    "packages/registry/status-midnight-contract",
+  ],
+  "packages/registry/status-midnight-authority": [
+    "packages/core/proofs",
+    "packages/registry/status-midnight-contract",
+  ],
+};
+
 const packageJson = (workspacePath) =>
   JSON.parse(readFileSync(path.join(repoRoot, workspacePath, "package.json"), "utf8"));
 
@@ -71,6 +83,18 @@ export const workspaceDependencyPaths = (workspacePath) => {
     .map((name) => workspaceByName.get(name))
     .filter(Boolean)
     .sort();
+};
+
+export const transitiveWorkspaceDependencyPaths = (workspacePath) => {
+  const visited = new Set();
+  const pending = [...workspaceDependencyPaths(workspacePath)];
+  while (pending.length > 0) {
+    const dependency = pending.shift();
+    if (dependency === undefined || visited.has(dependency)) continue;
+    visited.add(dependency);
+    pending.push(...workspaceDependencyPaths(dependency));
+  }
+  return [...visited].sort();
 };
 
 const sourceExtensions = new Set([
@@ -187,6 +211,7 @@ export const findBoundaryViolations = () => {
     const ownerClass = classifyWorkspacePath(entry.path);
     const dependencies = workspaceDependencyPaths(entry.path);
     const exception = migrationExceptions[entry.path] ?? [];
+    const statusEdges = leastPrivilegeStatusDependencyEdges[entry.path] ?? [];
     if (ownerClass === "unknown") {
       violations.push(`${entry.path}: unknown ownership area`);
       continue;
@@ -196,6 +221,9 @@ export const findBoundaryViolations = () => {
     }
     if (exception.length > 0 && JSON.stringify(dependencies) !== JSON.stringify([...exception].sort())) {
       violations.push(`${entry.path}: migration exception edge list drifted; catalog must enumerate exactly [${[...exception].sort().join(", ")}] but found [${dependencies.join(", ")}]`);
+    }
+    if (statusEdges.length > 0 && JSON.stringify(dependencies) !== JSON.stringify([...statusEdges].sort())) {
+      violations.push(`${entry.path}: least-privilege status edges drifted; expected exactly [${[...statusEdges].sort().join(", ")}] but found [${dependencies.join(", ")}]`);
     }
     for (const dependency of dependencies) {
       const dependencyClass = classifyWorkspacePath(dependency);
@@ -208,7 +236,7 @@ export const findBoundaryViolations = () => {
         );
         continue;
       }
-      if (exception.includes(dependency)) continue;
+      if (exception.includes(dependency) || statusEdges.includes(dependency)) continue;
       if (!classAllows(ownerClass, dependencyClass)) {
         violations.push(`${entry.path} (${ownerClass}) must not depend on ${dependency} (${dependencyClass})`);
       }
