@@ -597,5 +597,17 @@ In addition to the wrapper targets above, `./run.sh` now accepts any root
 | `tooling/scripts/test-family-neutral-exchange-consumer.mjs` | Packed model/exchange tarballs install outside the workspace, type-check, and run an injected lifecycle. |
 | `packages/core/compact/src/test/compact-value-codec.test.ts` and OpenID compatibility tests | Protocol-neutral Compact value framing is canonical in `credential-compact` while the legacy OpenID export remains compatible. |
 
-These tests do not cover profile resolution, runtime unknown-family discovery,
-or final protocol conformance.
+These tests do not cover runtime unknown-family discovery or final protocol
+conformance.
+
+## Versioned profile and deployment resolution
+
+| Evidence | Contract |
+| --- | --- |
+| `packages/core/model/src/test/composition-resolver.test.ts` positive graph and admitted-value cases | Independently versioned semantic/deployment contracts and provider catalogs resolve exact package/export/Compact/circuit/artifact/provider/deployment/conformance identities. |
+| `packages/core/model/src/test/composition-resolver.test.ts` structural/property-style negatives | Unknown and omitted fields, deployment-role omissions, unknown values, family/profile/assembly mismatches, provider capability gaps, package conflicts, and artifact gaps fail with stable paths. |
+| `packages/core/model/src/test/composition-resolver.test.ts` ADR-0015 deny table | All mandatory denial codes are exercised, including hidden/private public-only verification, missing status proof, caller time with ledger authority, non-atomic side effects, disabled status edges, uncommitted authority, and untested combinations. |
+| `tooling/fixtures/credential-model-consumer/node-esm.mjs` | A clean packed-package consumer validates and resolves a fixture composition using only package-root exports. |
+
+These tests deliberately do not migrate prototypes, generate covering arrays,
+implement concrete authority mechanisms, or select product deployment values.

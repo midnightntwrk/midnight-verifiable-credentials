@@ -35,7 +35,7 @@ export const accessFamily = defineCredentialFamily({
       {
         id: "accessLevel",
         path: ["accessLevel"],
-        disclosure: "predicate-only",
+        disclosure: "selective",
         required: true,
       },
     ],

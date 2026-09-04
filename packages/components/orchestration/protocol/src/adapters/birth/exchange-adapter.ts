@@ -3,9 +3,15 @@ import type {
   InjectedCredentialFamilyAdapter,
   VerificationResult,
 } from "@midnight-ntwrk/credential-exchange";
-import type { BirthCredentialVerificationRequest } from "@midnight-ntwrk/midnight-did-credentials-birth/managed/birth-credential/contract/index.js";
+import {
+  type BirthCredentialIssuanceRequest,
+  type BirthCredentialIssuanceResult,
+  type BirthCredentialVerificationRequest,
+  pureCircuits,
+} from "@midnight-ntwrk/midnight-did-credentials-birth/managed/birth-credential/contract/index.js";
 
 import type { DIDProfile } from "../../agents/types.js";
+import { assertProtocolMessageEnvelopeAlignment } from "../../shared/validation.js";
 import { MessageBus } from "../../transport/message-bus.js";
 import type { PartyId, ProtocolMessage } from "../../transport/types.js";
 import { stableJsonProtocolStateCodec } from "../json-protocol-state-codec.js";
@@ -71,6 +77,12 @@ export const createBirthInjectedCredentialFamilyAdapter = (
     readonly credential: CanonicalMessage<"credential">;
     readonly index: number;
   }> = [];
+  const pendingIssuanceRequests = new Map<
+    string,
+    BirthCredentialIssuanceRequest
+  >();
+  const messageIdKey = (messageId: Uint8Array): string =>
+    Array.from(messageId).join(",");
 
   const credentialIndex = (
     credential: CanonicalMessage<"credential">,
@@ -168,10 +180,18 @@ export const createBirthInjectedCredentialFamilyAdapter = (
       },
       createRequest: (offer) => {
         holder.receiveOfferAndSendRequest(decode(offer));
-        return encode(
-          "issuance-request",
-          receive(options.issuerProfile.label, "issuance request"),
+        const requestMessage = receive(
+          options.issuerProfile.label,
+          "issuance request",
         );
+        assertProtocolMessageEnvelopeAlignment(requestMessage);
+        const request = requestMessage.body as BirthCredentialIssuanceRequest;
+        pureCircuits.assertValidBirthCredentialIssuanceRequest(request);
+        pendingIssuanceRequests.set(
+          messageIdKey(request.envelope.messageId),
+          request,
+        );
+        return encode("issuance-request", requestMessage);
       },
       issue: (request, input) => {
         issuer.receiveRequestAndIssueCredential(
@@ -184,8 +204,25 @@ export const createBirthInjectedCredentialFamilyAdapter = (
         );
       },
       accept: (credential) => {
+        const resultMessage = decode(credential);
+        assertProtocolMessageEnvelopeAlignment(resultMessage);
+        const result = resultMessage.body as BirthCredentialIssuanceResult;
+        pureCircuits.assertValidBirthCredentialIssuanceResult(result);
+        const requestKey = messageIdKey(result.envelope.respondsToMessageId);
+        const request = pendingIssuanceRequests.get(requestKey);
+        if (!request) {
+          throw new Error(
+            "Birth credential issuance result does not match a pending issuance request",
+          );
+        }
+        pureCircuits.assertBirthCredentialIssuanceResultMatchesRequest(
+          request,
+          result,
+        );
+
         const index = holder.credentialCount;
-        holder.receiveCredentialResult(decode(credential));
+        holder.receiveCredentialResult(resultMessage);
+        pendingIssuanceRequests.delete(requestKey);
         acceptedCredentials.push({
           credential: {
             ...credential,

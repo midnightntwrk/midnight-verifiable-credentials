@@ -3,6 +3,10 @@ import {
   IssuerAgent as ExchangeIssuerAgent,
   VerifierAgent as ExchangeVerifierAgent,
 } from "@midnight-ntwrk/credential-exchange";
+import type {
+  BirthCredentialIssuanceRequest,
+  BirthCredentialIssuanceResult,
+} from "@midnight-ntwrk/midnight-did-credentials-birth/managed/birth-credential/contract/index.js";
 import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { beforeAll, describe, expect, it } from "vitest";
 
@@ -42,6 +46,30 @@ describe("explicit-holder full lifecycle", () => {
   };
 
   const currentDay = 3650n + 365n * 25n; // Alice is 25 years old
+
+  const expectFirstCredentialCanBePresented = (
+    holder: ExchangeHolderAgent,
+    verifier: ExchangeVerifierAgent,
+  ): void => {
+    const presentationRequest = verifier.createPresentationRequest({
+      issuerVerificationMethodRef: issuerProfile.signer.verificationMethodRef,
+      requireSubjectIdCommitmentDisclosure: false,
+      requireBirthCountryDisclosure: true,
+      requireAgeOverThreshold: true,
+      requestedAgeThresholdYears: 18,
+    });
+
+    expect(() =>
+      holder.createPresentation(presentationRequest, {
+        credentialIndex: 0,
+        currentDay,
+        birthDateDays: claimWitness.birthDateDays,
+        birthDateOpening: claimWitness.birthDateOpening,
+        birthCountryCodePadded: claimWitness.birthCountryCodePadded,
+        birthCountryCodeOpening: claimWitness.birthCountryCodeOpening,
+      }),
+    ).not.toThrow();
+  };
 
   /**
    * Run the full protocol issuance flow: Issuer -> MessageBus -> Holder.
@@ -105,6 +133,89 @@ describe("explicit-holder full lifecycle", () => {
         mediaType: "application/json",
       }),
     ).toThrow(/media type/i);
+  });
+
+  it("rejects an invalid nested issuance result before credential state mutation", () => {
+    const adapter = createBirthInjectedCredentialFamilyAdapter({
+      issuerProfile,
+      holderProfile,
+      verifierProfile,
+    });
+    const issuer = new ExchangeIssuerAgent(adapter);
+    const holder = new ExchangeHolderAgent(adapter);
+    const verifier = new ExchangeVerifierAgent(adapter);
+    const offer = issuer.createOffer();
+    const request = holder.createIssuanceRequest(offer);
+    const credential = issuer.issue(request, claimWitness);
+    const resultMessage = stableJsonProtocolStateCodec.decode(
+      credential.payload,
+    ) as ProtocolMessage & { readonly body: BirthCredentialIssuanceResult };
+    const invalidCredential = {
+      ...credential,
+      payload: stableJsonProtocolStateCodec.encode({
+        ...resultMessage,
+        body: {
+          ...resultMessage.body,
+          body: {
+            ...resultMessage.body.body,
+            credentialProof: {
+              ...resultMessage.body.body.credentialProof,
+              challengeHash: new Uint8Array(32),
+            },
+          },
+        },
+      }),
+    };
+
+    expect(() => holder.acceptCredential(invalidCredential)).toThrow(
+      /signature verification|challenge.*issuer proof/i,
+    );
+    holder.acceptCredential(credential);
+    expectFirstCredentialCanBePresented(holder, verifier);
+  });
+
+  it("rejects an issuance result correlated to a different request before state mutation", () => {
+    const adapter = createBirthInjectedCredentialFamilyAdapter({
+      issuerProfile,
+      holderProfile,
+      verifierProfile,
+    });
+    const issuer = new ExchangeIssuerAgent(adapter);
+    const holder = new ExchangeHolderAgent(adapter);
+    const verifier = new ExchangeVerifierAgent(adapter);
+    const firstRequest = holder.createIssuanceRequest(issuer.createOffer());
+    const secondRequest = holder.createIssuanceRequest(issuer.createOffer());
+    const credential = issuer.issue(firstRequest, claimWitness);
+    const secondRequestMessage = stableJsonProtocolStateCodec.decode(
+      secondRequest.payload,
+    ) as ProtocolMessage & { readonly body: BirthCredentialIssuanceRequest };
+    const resultMessage = stableJsonProtocolStateCodec.decode(
+      credential.payload,
+    ) as ProtocolMessage & { readonly body: BirthCredentialIssuanceResult };
+    const mismatchedEnvelope = {
+      ...resultMessage.body.envelope,
+      threadId: Uint8Array.from(secondRequestMessage.body.envelope.threadId),
+      respondsToMessageId: Uint8Array.from(
+        secondRequestMessage.body.envelope.messageId,
+      ),
+    };
+    const mismatchedCredential = {
+      ...credential,
+      payload: stableJsonProtocolStateCodec.encode({
+        ...resultMessage,
+        envelope: mismatchedEnvelope,
+        body: {
+          ...resultMessage.body,
+          envelope: mismatchedEnvelope,
+        },
+      }),
+    };
+
+    expect(() => holder.acceptCredential(mismatchedCredential)).toThrow(
+      /challenge.*request/i,
+    );
+    holder.acceptCredential(credential);
+    expectFirstCredentialCanBePresented(holder, verifier);
   });
 
   it("routes the concrete birth lifecycle through family-neutral injected agents", () => {
@@ -186,7 +297,7 @@ describe("explicit-holder full lifecycle", () => {
     ).toThrow(/credential.*does not match/i);
   });
 
-  it("rejects caller mutation of accepted canonical credential bytes", () => {
+  it("isolates accepted credential state from caller byte mutation", () => {
     const adapter = createBirthInjectedCredentialFamilyAdapter({
       issuerProfile,
       holderProfile,
@@ -217,7 +328,7 @@ describe("explicit-holder full lifecycle", () => {
         birthCountryCodePadded: claimWitness.birthCountryCodePadded,
         birthCountryCodeOpening: claimWitness.birthCountryCodeOpening,
       }),
-    ).toThrow(/not accepted/i);
+    ).not.toThrow();
   });
 
   it("completes issue -> present -> verify -> capability -> claim lifecycle", () => {

@@ -4,12 +4,14 @@ Status: profile catalog for the current normative draft.
 
 This document describes the currently recognized Midnight VC holder-binding and
 verification profiles. [ADR-0015](../decisions/0015-vc-family-profile-vocabulary-and-boundaries.md)
-is the authority for composition vocabulary, the separate future
+is the authority for composition vocabulary, the separate
 `CredentialFamilyProfileV1` and `CredentialDeploymentAssemblyV1` boundaries,
 initial profile-axis admission decisions, compatibility deny rules, and the
 independent API, security, standards, and production maturity dimensions. The
-catalog below reports current implementation evidence; it does not by itself
-admit a semantic composition or imply maturity on another dimension.
+version-1 contracts, provider catalog, validators, and combined resolver are
+exported by `@midnight-ntwrk/credential-model`. The catalog below reports
+current implementation evidence; it does not by itself admit a semantic
+composition or imply maturity on another dimension.
 
 It is companion material to:
 
@@ -23,6 +25,33 @@ It is companion material to:
 For hidden-holder maturity claims, the production-contract plan is the
 canonical boundary between reference proof support and deferred deployment,
 authority, status, expiry, randomness, and interoperability guarantees.
+
+## Versioned composition contract
+
+A semantic profile declares every ADR-0015 axis, exact family/schema identity,
+provider capability version, package export, Compact entrypoint, circuit,
+artifact acceptance requirement, tested conformance fixture, mandatory deny
+rule, and subject-qualified maturity value. A deployment assembly independently
+declares every deployment role as selected or `disabled`, then binds selected
+roles to exact provider descriptor versions and instance identities. The
+`proof-executor` provider requirement is mandatory and its capability identity
+must exactly match the profile's semantic proof-generation capability; omission
+or substitution fails closed. Artifact digests and deployment immutable inputs
+belong only to the assembly.
+
+`resolveCredentialComposition(...)` accepts one explicit family definition,
+profile, assembly, and provider catalog. It returns one exact graph or throws a
+path-specific `CredentialModelError`; it never infers a profile from an
+assembly, fills an omitted axis, selects a provider, or weakens a semantic
+requirement. Disabled status removes status-registry, proof, authority, and
+mutation edges without removing unrelated signing. The contract is mechanism-
+neutral: prototype migration and finite covering arrays remain #493, concrete
+authority/provider mechanisms remain #494 and later, and product deployment
+values remain outside this repository's reusable model.
+
+Existing `CredentialFamilyDefinition` callers remain valid. Adoption is
+explicit and additive; there is no implicit migration from a family definition
+to either versioned composition contract.
 
 ## Purpose
 

@@ -274,6 +274,31 @@ Reference implementation:
 - [`../../packages/use-cases/age-gate/contract/README.md`](../../packages/use-cases/age-gate/contract/README.md)
 - [`../../packages/use-cases/hello-verifier/contract/README.md`](../../packages/use-cases/hello-verifier/contract/README.md)
 
+### 9. Versioned composition resolution
+
+A composition-resolution claim conforms when it:
+
+- validates one exact `CredentialFamilyProfileV1` and independently versioned
+  `CredentialDeploymentAssemblyV1` without defaults or mutual selection;
+- resolves provider requirements only through exact cataloged capability and
+  provider versions;
+- returns exact package/export, Compact entrypoint, circuit, immutable artifact,
+  provider-instance, deployment, and tested conformance-fixture identities;
+- rejects unknown or omitted fields and incompatible family/profile/assembly
+  identities with stable typed paths;
+- enforces all ADR-0015 mandatory deny rules, including private inputs with a
+  public-only verifier, missing status proof evidence, caller time with ledger
+  authority, non-atomic replay for ledger side effects, disabled-capability
+  dependencies, uncommitted ledger authority, and untested combinations;
+- proves that disabled status excludes status-specific registry, proof,
+  authority, and mutation edges while preserving unrelated signing.
+
+The package-level reference is
+[`../../packages/core/model/README.md`](../../packages/core/model/README.md).
+This conformance category does not claim concrete authority mechanisms,
+provider security, operator provisioning, production approval, prototype
+migration, or covering-array completeness.
+
 ## Required implementation disclosures
 
 Any implementation claiming conformance should document:
