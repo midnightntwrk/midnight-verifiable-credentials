@@ -11,11 +11,15 @@ import {
   type BirthCredentialIssuanceResult,
   pureCircuits,
 } from "@midnight-ntwrk/midnight-did-credentials-birth/managed/birth-credential/contract/index.js";
-import { describe, expect,it } from "vitest";
+import { describe, expect, it } from "vitest";
 
+import type { BirthClaimId } from "../../adapters/birth/claim-opening-recovery.js";
 import { FileSystemProtocolStateByteStore } from "../../adapters/file-protocol-state-store.js";
-import { HolderAgent } from "../../agents/holder-agent.js";
-import { type ClaimWitness,IssuerAgent } from "../../agents/issuer-agent.js";
+import {
+  HolderAgent,
+  type StoredCredential,
+} from "../../agents/holder-agent.js";
+import { type ClaimWitness, IssuerAgent } from "../../agents/issuer-agent.js";
 import {
   createCodecBackedProtocolStateStore,
   InMemoryProtocolStateStore,
@@ -117,6 +121,46 @@ describe("explicit-holder issuance", () => {
     expect(stored.credential.issuedAt).toBe(10_000n);
     expect(stored.credential.hasExpiration).toBe(true);
     expect(stored.credential.expiresAt).toBe(20_000n);
+    expect(stored.privateParts.openings.legalNameOpening).toEqual(
+      claimWitness.legalNameOpening,
+    );
+    expect(holder.recoverClaimOpenings(0, ["birthDate"])).toEqual([
+      {
+        claimId: "birthDate",
+        value: claimWitness.birthDateDays,
+        opening: claimWitness.birthDateOpening,
+      },
+    ]);
+  });
+
+  it("rejects unsupported runtime claim IDs during opening recovery", () => {
+    const bus = new MessageBus();
+    const issuer = new IssuerAgent(issuerProfile, bus);
+    const holder = new HolderAgent(holderProfile, bus);
+    issuer.createAndSendOffer("holder");
+    holder.receiveOfferAndSendRequest(bus.receive("holder")!);
+    issuer.receiveRequestAndIssueCredential(bus.receive("issuer")!, claimWitness);
+    holder.receiveCredentialResult(bus.receive("holder")!);
+
+    expect(() =>
+      holder.recoverClaimOpenings(0, ["unsupported" as BirthClaimId]),
+    ).toThrow(/unsupported claim ID/i);
+  });
+
+  it("rejects an issuance result addressed to another holder before storage", () => {
+    const bus = new MessageBus();
+    const issuer = new IssuerAgent(issuerProfile, bus);
+    const holder = new HolderAgent(holderProfile, bus);
+    issuer.createAndSendOffer("holder");
+    holder.receiveOfferAndSendRequest(bus.receive("holder")!);
+    const request = bus.receive("issuer")!;
+    issuer.receiveRequestAndIssueCredential(request, claimWitness);
+    const result = bus.receive("holder")!;
+
+    expect(() =>
+      holder.receiveCredentialResult({ ...result, to: "mallory" }),
+    ).toThrow(/parties/i);
+    expect(holder.credentialCount).toBe(0);
   });
 
   it("binds the credential to the correct holder DID", () => {
@@ -322,9 +366,45 @@ describe("explicit-holder issuance", () => {
 
       expect(restartedHolder.credentialCount).toBe(1);
       expect(restartedHolder.getCredential(0)).toEqual(originalStored);
+      expect(restartedHolder.recoverClaimOpenings(0, ["legalName"])).toEqual([
+        {
+          claimId: "legalName",
+          value: claimWitness.legalNamePadded,
+          opening: claimWitness.legalNameOpening,
+        },
+      ]);
     } finally {
       rmSync(rootDir, { recursive: true, force: true });
     }
+  });
+
+  it("revalidates persisted openings before recovery", () => {
+    const bus = new MessageBus();
+    const issuer = new IssuerAgent(issuerProfile, bus);
+    const stateStore = new InMemoryProtocolStateStore();
+    const holder = new HolderAgent(holderProfile, bus, { stateStore });
+    issuer.createAndSendOffer("holder");
+    holder.receiveOfferAndSendRequest(bus.receive("holder")!);
+    issuer.receiveRequestAndIssueCredential(bus.receive("issuer")!, claimWitness);
+    holder.receiveCredentialResult(bus.receive("holder")!);
+    const stored = holder.getCredential(0);
+    stateStore
+      .collection<StoredCredential>("holder:holder:stored-credentials")
+      .set("0", {
+        ...stored,
+        privateParts: {
+          ...stored.privateParts,
+          openings: {
+            ...stored.privateParts.openings,
+            birthDateOpening: new Uint8Array(32).fill(8),
+          },
+        },
+      });
+
+    const restarted = new HolderAgent(holderProfile, bus, { stateStore });
+    expect(() => restarted.recoverClaimOpenings(0, ["birthDate"])).toThrow(
+      /birth-date opening does not match/i,
+    );
   });
 
   it("recovers the explicit-holder credential count when stored credentials outpace metadata", () => {

@@ -8,6 +8,25 @@ export struct BirthCredentialClaimCommitments {
   birthCountryCodeCommitment: Bytes<32>,
 }
 
+export struct BirthCredentialPrivateClaims {
+  subjectId: Bytes<32>,
+  legalNamePadded: Bytes<32>,
+  birthDateDays: Uint<32>,
+  birthCountryCodePadded: Bytes<32>,
+}
+
+export struct BirthCredentialClaimOpenings {
+  subjectOpening: Bytes<32>,
+  legalNameOpening: Bytes<32>,
+  birthDateOpening: Bytes<32>,
+  birthCountryCodeOpening: Bytes<32>,
+}
+
+export struct BirthCredentialPrivateParts {
+  claims: BirthCredentialPrivateClaims,
+  openings: BirthCredentialClaimOpenings,
+}
+
 export pure circuit birthCredentialClaimRoot(
   commitments: BirthCredentialClaimCommitments
 ): Bytes<32> {
@@ -49,4 +68,38 @@ export pure circuit birthCountryCodeCommitment(
   opening: Bytes<32>
 ): Bytes<32> {
   return persistentCommit<Bytes<32>>(birthCountryCodePadded, opening);
+}
+
+export pure circuit assertBirthCredentialPrivatePartsMatchCommitments(
+  commitments: BirthCredentialClaimCommitments,
+  privateParts: BirthCredentialPrivateParts
+): [] {
+  assert(
+    subjectIdCommitment(
+      privateParts.claims.subjectId,
+      privateParts.openings.subjectOpening
+    ) == commitments.subjectIdCommitment,
+    "Delivered subject ID opening does not match the credential commitment"
+  );
+  assert(
+    legalNameCommitment(
+      privateParts.claims.legalNamePadded,
+      privateParts.openings.legalNameOpening
+    ) == commitments.legalNameCommitment,
+    "Delivered legal-name opening does not match the credential commitment"
+  );
+  assert(
+    birthDateCommitment(
+      privateParts.claims.birthDateDays,
+      privateParts.openings.birthDateOpening
+    ) == commitments.birthDateCommitment,
+    "Delivered birth-date opening does not match the credential commitment"
+  );
+  assert(
+    birthCountryCodeCommitment(
+      privateParts.claims.birthCountryCodePadded,
+      privateParts.openings.birthCountryCodeOpening
+    ) == commitments.birthCountryCodeCommitment,
+    "Delivered birth-country opening does not match the credential commitment"
+  );
 }

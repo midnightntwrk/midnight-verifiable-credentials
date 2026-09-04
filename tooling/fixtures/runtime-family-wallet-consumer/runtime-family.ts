@@ -34,6 +34,10 @@ const message = <TKind extends CanonicalMessage["kind"]>(
   payload: text.encode(payload),
 });
 
+const privateClaims = {
+  legalName: { value: "Alice Example", opening: "runtime-opening" },
+} as const;
+
 const adapter: InjectedCredentialFamilyAdapter = {
   family: {
     id: reference.id,
@@ -45,6 +49,49 @@ const adapter: InjectedCredentialFamilyAdapter = {
     createRequest: () => message("issuance-request", "request"),
     issue: () => message("credential", "credential"),
     accept: (credential) => credential,
+    claimOpenings: {
+      createDelivery: ({ holder }) => ({
+        formatVersion: 1,
+        recipientId: holder.recipientId,
+        claimIds: holder.claimIds,
+        payload: text.encode(
+          JSON.stringify(
+            Object.fromEntries(
+              holder.claimIds.map((claimId) => [
+                claimId,
+                privateClaims[claimId as keyof typeof privateClaims],
+              ]),
+            ),
+          ),
+        ),
+      }),
+      validateDelivery: ({ delivery }) => {
+        const delivered = JSON.parse(decode.decode(delivery.payload)) as Record<
+          string,
+          unknown
+        >;
+        if (
+          Object.keys(delivered).join("|") !== delivery.claimIds.join("|") ||
+          JSON.stringify(delivered.legalName) !== JSON.stringify(privateClaims.legalName)
+        ) {
+          throw new Error("runtime family rejected claim-opening delivery");
+        }
+      },
+      select: ({ delivery, claimIds }) => {
+        const delivered = JSON.parse(decode.decode(delivery.payload)) as Record<
+          string,
+          unknown
+        >;
+        return {
+          claimIds,
+          payload: text.encode(
+            JSON.stringify(
+              Object.fromEntries(claimIds.map((claimId) => [claimId, delivered[claimId]])),
+            ),
+          ),
+        };
+      },
+    },
   },
   presentation: {
     createRequest: () => message("presentation-request", "challenge"),

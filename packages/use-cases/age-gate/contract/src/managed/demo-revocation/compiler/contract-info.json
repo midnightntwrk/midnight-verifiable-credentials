@@ -11377,6 +11377,138 @@
       }
     },
     {
+      "name": "assertBirthCredentialPrivatePartsMatchCommitments",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+        {
+          "name": "commitments",
+          "type": {
+            "type-name": "Struct",
+            "name": "BirthCredentialClaimCommitments",
+            "elements": [
+              {
+                "name": "subjectIdCommitment",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "legalNameCommitment",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "birthDateCommitment",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              },
+              {
+                "name": "birthCountryCodeCommitment",
+                "type": {
+                  "type-name": "Bytes",
+                  "length": 32
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "privateParts",
+          "type": {
+            "type-name": "Struct",
+            "name": "BirthCredentialPrivateParts",
+            "elements": [
+              {
+                "name": "claims",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "BirthCredentialPrivateClaims",
+                  "elements": [
+                    {
+                      "name": "subjectId",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "legalNamePadded",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "birthDateDays",
+                      "type": {
+                        "type-name": "Uint",
+                        "maxval": 4294967295
+                      }
+                    },
+                    {
+                      "name": "birthCountryCodePadded",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "openings",
+                "type": {
+                  "type-name": "Struct",
+                  "name": "BirthCredentialClaimOpenings",
+                  "elements": [
+                    {
+                      "name": "subjectOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "legalNameOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "birthDateOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    },
+                    {
+                      "name": "birthCountryCodeOpening",
+                      "type": {
+                        "type-name": "Bytes",
+                        "length": 32
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Tuple",
+        "types": [
+        ]
+      }
+    },
+    {
       "name": "secretBirthCredentialBodyRoot",
       "pure": true,
       "proof": false,
@@ -14941,6 +15073,89 @@
                         "type-name": "Bytes",
                         "length": 32
                       }
+                    },
+                    {
+                      "name": "privateParts",
+                      "type": {
+                        "type-name": "Struct",
+                        "name": "BirthCredentialPrivateParts",
+                        "elements": [
+                          {
+                            "name": "claims",
+                            "type": {
+                              "type-name": "Struct",
+                              "name": "BirthCredentialPrivateClaims",
+                              "elements": [
+                                {
+                                  "name": "subjectId",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "legalNamePadded",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "birthDateDays",
+                                  "type": {
+                                    "type-name": "Uint",
+                                    "maxval": 4294967295
+                                  }
+                                },
+                                {
+                                  "name": "birthCountryCodePadded",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "name": "openings",
+                            "type": {
+                              "type-name": "Struct",
+                              "name": "BirthCredentialClaimOpenings",
+                              "elements": [
+                                {
+                                  "name": "subjectOpening",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "legalNameOpening",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "birthDateOpening",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "birthCountryCodeOpening",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
                     }
                   ]
                 }
@@ -15613,6 +15828,89 @@
                       "type": {
                         "type-name": "Bytes",
                         "length": 32
+                      }
+                    },
+                    {
+                      "name": "privateParts",
+                      "type": {
+                        "type-name": "Struct",
+                        "name": "BirthCredentialPrivateParts",
+                        "elements": [
+                          {
+                            "name": "claims",
+                            "type": {
+                              "type-name": "Struct",
+                              "name": "BirthCredentialPrivateClaims",
+                              "elements": [
+                                {
+                                  "name": "subjectId",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "legalNamePadded",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "birthDateDays",
+                                  "type": {
+                                    "type-name": "Uint",
+                                    "maxval": 4294967295
+                                  }
+                                },
+                                {
+                                  "name": "birthCountryCodePadded",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "name": "openings",
+                            "type": {
+                              "type-name": "Struct",
+                              "name": "BirthCredentialClaimOpenings",
+                              "elements": [
+                                {
+                                  "name": "subjectOpening",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "legalNameOpening",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "birthDateOpening",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                },
+                                {
+                                  "name": "birthCountryCodeOpening",
+                                  "type": {
+                                    "type-name": "Bytes",
+                                    "length": 32
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
                       }
                     }
                   ]

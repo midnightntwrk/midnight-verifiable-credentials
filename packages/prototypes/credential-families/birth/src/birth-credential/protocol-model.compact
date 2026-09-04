@@ -17,6 +17,7 @@ export struct BirthCredentialIssuanceResultBody {
   credentialProof: Proof,
   holderPublicKey: JubjubPoint,
   issuanceChallengeHash: Bytes<32>,
+  privateParts: BirthCredentialPrivateParts,
 }
 
 export struct BirthCredentialVerificationRequestBody {

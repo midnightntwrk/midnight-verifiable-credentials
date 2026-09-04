@@ -94,6 +94,10 @@ export pure circuit assertValidSecretBirthCredentialIssuanceResult(
     result.body.credential,
     result.body.credentialProof
   );
+  assertBirthCredentialPrivatePartsMatchCommitments(
+    result.body.credential.claimCommitments,
+    result.body.privateParts
+  );
   assert(
     result.body.credentialProof.challengeHash == result.body.issuanceChallengeHash,
     "Secret birth credential issuance result challenge must match the issuer proof challenge"

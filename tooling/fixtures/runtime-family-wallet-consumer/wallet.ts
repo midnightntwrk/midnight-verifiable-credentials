@@ -6,6 +6,7 @@ import {
 } from "@midnight-ntwrk/credential-model";
 import {
   HolderAgent,
+  type HolderAgentOptions,
   isInjectedCredentialFamilyAdapterFor,
   type InjectedCredentialFamilyAdapter,
 } from "@midnight-ntwrk/credential-exchange";
@@ -15,6 +16,7 @@ export const createRuntimeHolder = async (
   reference: CredentialFamilyReference,
   registries: readonly RuntimeCredentialFamilyRegistryV1[],
   trustVerifier: RuntimeCredentialFamilyTrustVerifier,
+  options?: HolderAgentOptions,
 ): Promise<{
   readonly holder: HolderAgent;
   readonly adapter: InjectedCredentialFamilyAdapter;
@@ -32,7 +34,7 @@ export const createRuntimeHolder = async (
     throw new Error(`${resolution.code}: ${resolution.diagnostic}`);
   }
   return {
-    holder: new HolderAgent(resolution.surface),
+    holder: new HolderAgent(resolution.surface, options),
     adapter: resolution.surface,
   };
 };

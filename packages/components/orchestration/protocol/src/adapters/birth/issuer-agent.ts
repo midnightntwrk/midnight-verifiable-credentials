@@ -194,6 +194,20 @@ export class IssuerAgent {
         credentialProof,
         holderPublicKey: issuanceRequest.body.holderPublicKey,
         issuanceChallengeHash: challengeHash,
+        privateParts: {
+          claims: {
+            subjectId: claimWitness.subjectId,
+            legalNamePadded: claimWitness.legalNamePadded,
+            birthDateDays: claimWitness.birthDateDays,
+            birthCountryCodePadded: claimWitness.birthCountryCodePadded,
+          },
+          openings: {
+            subjectOpening: claimWitness.subjectOpening,
+            legalNameOpening: claimWitness.legalNameOpening,
+            birthDateOpening: claimWitness.birthDateOpening,
+            birthCountryCodeOpening: claimWitness.birthCountryCodeOpening,
+          },
+        },
       },
     };
 
