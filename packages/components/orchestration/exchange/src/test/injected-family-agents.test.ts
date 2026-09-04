@@ -82,6 +82,56 @@ describe("family-neutral injected agents", () => {
     expect(runLifecycle(familyAdapter("hello", "hello-proof")).valid).toBe(true);
   });
 
+  it("isolates accepted credential state from caller-owned objects and bytes", () => {
+    let presentedCredential: CanonicalMessage<"credential"> | undefined;
+    const base = familyAdapter("birth", "birth-proof");
+    const adapter: InjectedCredentialFamilyAdapter = {
+      ...base,
+      presentation: {
+        ...base.presentation,
+        present: (credential, request, input) => {
+          presentedCredential = credential;
+          return base.presentation.present(credential, request, input);
+        },
+      },
+    };
+    const holder = new HolderAgent(adapter);
+    const credential = {
+      ...message("birth", "credential", "credential:birth"),
+      payload: text.encode("credential:birth"),
+    };
+    const accepted = holder.acceptCredential(credential);
+
+    credential.mediaType = "application/tampered";
+    accepted.payload.fill(0);
+    const request = message(
+      "birth",
+      "presentation-request",
+      "challenge:birth",
+    );
+    holder.createPresentation(request);
+
+    expect(presentedCredential?.mediaType).toBe(
+      "application/vnd.midnight.canonical+bytes",
+    );
+    expect(decode.decode(presentedCredential?.payload)).toBe("credential:birth");
+
+    const firstPresented = presentedCredential as
+      | CanonicalMessage<"credential">
+      | undefined;
+    if (!firstPresented) {
+      throw new Error("Adapter did not receive the stored credential snapshot");
+    }
+    Object.assign(firstPresented, { mediaType: "application/adapter-tampered" });
+    firstPresented.payload.fill(1);
+    holder.createPresentation(request);
+
+    expect(presentedCredential?.mediaType).toBe(
+      "application/vnd.midnight.canonical+bytes",
+    );
+    expect(decode.decode(presentedCredential?.payload)).toBe("credential:birth");
+  });
+
   it("keeps protocol wrapping outside family validity", () => {
     type PresentationMessage = CanonicalMessage<"presentation">;
     type Wire = { readonly body: PresentationMessage };
