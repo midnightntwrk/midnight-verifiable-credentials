@@ -73,6 +73,13 @@ const acceptanceReceipt = (
   deliveredClaimCount: record.claimOpenings.claimIds.length,
 });
 
+const snapshotCanonicalMessage = <TKind extends CanonicalMessage["kind"]>(
+  message: CanonicalMessage<TKind>,
+): CanonicalMessage<TKind> => ({
+  ...message,
+  payload: Uint8Array.from(message.payload),
+});
+
 export class IssuerAgent {
   constructor(private readonly adapter: InjectedCredentialFamilyAdapter) {}
 
@@ -168,8 +175,8 @@ export class HolderAgent {
     const accepted = this.adapter.issuance.accept(cloneCanonicalMessage(credential));
     assertCanonicalMessage(accepted, canonicalIdentity(this.adapter), "credential");
     this.holderRecord = undefined;
-    this.credential = accepted;
-    return accepted;
+    this.credential = snapshotCanonicalMessage(accepted);
+    return snapshotCanonicalMessage(accepted);
   }
 
   acceptIssuanceResult(
@@ -259,11 +266,7 @@ export class HolderAgent {
     if (loaded.recipientId !== recipientId) {
       throw new Error("Persisted claim-opening recipient does not match this holder");
     }
-    assertCanonicalMessage(
-      loaded.issuanceRequest,
-      identity,
-      "issuance-request",
-    );
+    assertCanonicalMessage(loaded.issuanceRequest, identity, "issuance-request");
     assertCanonicalMessage(loaded.credential, identity, "credential");
     const expected: HolderClaimOpeningRequest = {
       recipientId,
@@ -334,7 +337,7 @@ export class HolderAgent {
       throw new Error("Holder has no accepted credential for presentation");
     }
     const presentation = this.adapter.presentation.present(
-      cloneCanonicalMessage(this.credential),
+      snapshotCanonicalMessage(this.credential),
       cloneCanonicalMessage(request),
       input,
     );
