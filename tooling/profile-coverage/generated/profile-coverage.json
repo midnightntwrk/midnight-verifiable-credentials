@@ -3032,9 +3032,17 @@
             },
             {
               "id": "deployment.proof-executor.positive-02",
+              "version": "1.0.0",
+              "identity": "proof-executor:positive-02",
+              "networkId": "network.positive-02",
+              "chainId": "chain.positive-02",
+              "contractAddress": "contract.deployment.proof-executor.positive-02",
+              "profile": {
+                "id": "coverage.positive-02",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "proof",
-              "identity": "proof-executor:positive-02",
               "immutableInputs": {
                 "capability": "proof.compact@1.0.0"
               }
@@ -3245,9 +3253,17 @@
           },
           {
             "id": "deployment.proof-executor.positive-02",
+            "version": "1.0.0",
+            "identity": "proof-executor:positive-02",
+            "networkId": "network.positive-02",
+            "chainId": "chain.positive-02",
+            "contractAddress": "contract.deployment.proof-executor.positive-02",
+            "profile": {
+              "id": "coverage.positive-02",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "proof",
-            "identity": "proof-executor:positive-02",
             "immutableInputs": {
               "capability": "proof.compact@1.0.0"
             }
@@ -3598,9 +3614,17 @@
             },
             {
               "id": "deployment.proof-executor.positive-03",
+              "version": "1.0.0",
+              "identity": "proof-executor:positive-03",
+              "networkId": "network.positive-03",
+              "chainId": "chain.positive-03",
+              "contractAddress": "contract.deployment.proof-executor.positive-03",
+              "profile": {
+                "id": "coverage.positive-03",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "proof",
-              "identity": "proof-executor:positive-03",
               "immutableInputs": {
                 "capability": "proof.compact@1.0.0"
               }
@@ -3872,9 +3896,17 @@
           },
           {
             "id": "deployment.proof-executor.positive-03",
+            "version": "1.0.0",
+            "identity": "proof-executor:positive-03",
+            "networkId": "network.positive-03",
+            "chainId": "chain.positive-03",
+            "contractAddress": "contract.deployment.proof-executor.positive-03",
+            "profile": {
+              "id": "coverage.positive-03",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "proof",
-            "identity": "proof-executor:positive-03",
             "immutableInputs": {
               "capability": "proof.compact@1.0.0"
             }
@@ -4846,9 +4878,17 @@
             },
             {
               "id": "deployment.proof-executor.positive-05",
+              "version": "1.0.0",
+              "identity": "proof-executor:positive-05",
+              "networkId": "network.positive-05",
+              "chainId": "chain.positive-05",
+              "contractAddress": "contract.deployment.proof-executor.positive-05",
+              "profile": {
+                "id": "coverage.positive-05",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "proof",
-              "identity": "proof-executor:positive-05",
               "immutableInputs": {
                 "capability": "proof.compact@1.0.0"
               }
@@ -5120,9 +5160,17 @@
           },
           {
             "id": "deployment.proof-executor.positive-05",
+            "version": "1.0.0",
+            "identity": "proof-executor:positive-05",
+            "networkId": "network.positive-05",
+            "chainId": "chain.positive-05",
+            "contractAddress": "contract.deployment.proof-executor.positive-05",
+            "profile": {
+              "id": "coverage.positive-05",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "proof",
-            "identity": "proof-executor:positive-05",
             "immutableInputs": {
               "capability": "proof.compact@1.0.0"
             }
@@ -8139,9 +8187,17 @@
             },
             {
               "id": "deployment.proof-executor.positive-09",
+              "version": "1.0.0",
+              "identity": "proof-executor:positive-09",
+              "networkId": "network.positive-09",
+              "chainId": "chain.positive-09",
+              "contractAddress": "contract.deployment.proof-executor.positive-09",
+              "profile": {
+                "id": "coverage.positive-09",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "proof",
-              "identity": "proof-executor:positive-09",
               "immutableInputs": {
                 "capability": "proof.compact@1.0.0"
               }
@@ -8485,9 +8541,17 @@
           },
           {
             "id": "deployment.proof-executor.positive-09",
+            "version": "1.0.0",
+            "identity": "proof-executor:positive-09",
+            "networkId": "network.positive-09",
+            "chainId": "chain.positive-09",
+            "contractAddress": "contract.deployment.proof-executor.positive-09",
+            "profile": {
+              "id": "coverage.positive-09",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "proof",
-            "identity": "proof-executor:positive-09",
             "immutableInputs": {
               "capability": "proof.compact@1.0.0"
             }
@@ -8922,9 +8986,17 @@
             },
             {
               "id": "deployment.proof-executor.positive-10",
+              "version": "1.0.0",
+              "identity": "proof-executor:positive-10",
+              "networkId": "network.positive-10",
+              "chainId": "chain.positive-10",
+              "contractAddress": "contract.deployment.proof-executor.positive-10",
+              "profile": {
+                "id": "coverage.positive-10",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "proof",
-              "identity": "proof-executor:positive-10",
               "immutableInputs": {
                 "capability": "proof.compact@1.0.0"
               }
@@ -9329,9 +9401,17 @@
           },
           {
             "id": "deployment.proof-executor.positive-10",
+            "version": "1.0.0",
+            "identity": "proof-executor:positive-10",
+            "networkId": "network.positive-10",
+            "chainId": "chain.positive-10",
+            "contractAddress": "contract.deployment.proof-executor.positive-10",
+            "profile": {
+              "id": "coverage.positive-10",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "proof",
-            "identity": "proof-executor:positive-10",
             "immutableInputs": {
               "capability": "proof.compact@1.0.0"
             }
@@ -9733,9 +9813,17 @@
             },
             {
               "id": "deployment.proof-executor.positive-11",
+              "version": "1.0.0",
+              "identity": "proof-executor:positive-11",
+              "networkId": "network.positive-11",
+              "chainId": "chain.positive-11",
+              "contractAddress": "contract.deployment.proof-executor.positive-11",
+              "profile": {
+                "id": "coverage.positive-11",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "proof",
-              "identity": "proof-executor:positive-11",
               "immutableInputs": {
                 "capability": "proof.compact@1.0.0"
               }
@@ -10007,9 +10095,17 @@
           },
           {
             "id": "deployment.proof-executor.positive-11",
+            "version": "1.0.0",
+            "identity": "proof-executor:positive-11",
+            "networkId": "network.positive-11",
+            "chainId": "chain.positive-11",
+            "contractAddress": "contract.deployment.proof-executor.positive-11",
+            "profile": {
+              "id": "coverage.positive-11",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "proof",
-            "identity": "proof-executor:positive-11",
             "immutableInputs": {
               "capability": "proof.compact@1.0.0"
             }
@@ -10363,9 +10459,17 @@
             },
             {
               "id": "deployment.proof-executor.positive-12",
+              "version": "1.0.0",
+              "identity": "proof-executor:positive-12",
+              "networkId": "network.positive-12",
+              "chainId": "chain.positive-12",
+              "contractAddress": "contract.deployment.proof-executor.positive-12",
+              "profile": {
+                "id": "coverage.positive-12",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "proof",
-              "identity": "proof-executor:positive-12",
               "immutableInputs": {
                 "capability": "proof.compact@1.0.0"
               }
@@ -10576,9 +10680,17 @@
           },
           {
             "id": "deployment.proof-executor.positive-12",
+            "version": "1.0.0",
+            "identity": "proof-executor:positive-12",
+            "networkId": "network.positive-12",
+            "chainId": "chain.positive-12",
+            "contractAddress": "contract.deployment.proof-executor.positive-12",
+            "profile": {
+              "id": "coverage.positive-12",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "proof",
-            "identity": "proof-executor:positive-12",
             "immutableInputs": {
               "capability": "proof.compact@1.0.0"
             }
@@ -10929,9 +11041,17 @@
             },
             {
               "id": "deployment.proof-executor.positive-13",
+              "version": "1.0.0",
+              "identity": "proof-executor:positive-13",
+              "networkId": "network.positive-13",
+              "chainId": "chain.positive-13",
+              "contractAddress": "contract.deployment.proof-executor.positive-13",
+              "profile": {
+                "id": "coverage.positive-13",
+                "version": "1.0.0"
+              },
               "kind": "local-service",
               "domain": "proof",
-              "identity": "proof-executor:positive-13",
               "immutableInputs": {
                 "capability": "proof.compact@1.0.0"
               }
@@ -11203,9 +11323,17 @@
           },
           {
             "id": "deployment.proof-executor.positive-13",
+            "version": "1.0.0",
+            "identity": "proof-executor:positive-13",
+            "networkId": "network.positive-13",
+            "chainId": "chain.positive-13",
+            "contractAddress": "contract.deployment.proof-executor.positive-13",
+            "profile": {
+              "id": "coverage.positive-13",
+              "version": "1.0.0"
+            },
             "kind": "local-service",
             "domain": "proof",
-            "identity": "proof-executor:positive-13",
             "immutableInputs": {
               "capability": "proof.compact@1.0.0"
             }
