@@ -17,6 +17,13 @@ const canonicalIdentity = (
   schemaVersion: adapter.family.schema.version,
 });
 
+const snapshotCanonicalMessage = <TKind extends CanonicalMessage["kind"]>(
+  message: CanonicalMessage<TKind>,
+): CanonicalMessage<TKind> => ({
+  ...message,
+  payload: Uint8Array.from(message.payload),
+});
+
 export class IssuerAgent {
   constructor(private readonly adapter: InjectedCredentialFamilyAdapter) {}
 
@@ -58,8 +65,8 @@ export class HolderAgent {
     assertCanonicalMessage(credential, canonicalIdentity(this.adapter), "credential");
     const accepted = this.adapter.issuance.accept(credential);
     assertCanonicalMessage(accepted, canonicalIdentity(this.adapter), "credential");
-    this.credential = accepted;
-    return accepted;
+    this.credential = snapshotCanonicalMessage(accepted);
+    return snapshotCanonicalMessage(accepted);
   }
 
   createPresentation(
@@ -75,7 +82,7 @@ export class HolderAgent {
       throw new Error("Holder has no accepted credential for presentation");
     }
     const presentation = this.adapter.presentation.present(
-      this.credential,
+      snapshotCanonicalMessage(this.credential),
       request,
       input,
     );
