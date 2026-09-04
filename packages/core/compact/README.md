@@ -12,8 +12,9 @@ credential family, proof artifact, or registry authority.
 
 The package contains generic VC/VP envelopes, schema references, issuer and
 holder-binding shapes, proof/challenge primitives, issuance and presentation
-message envelopes, VC-side status-binding shapes, and VC/VP linkage helpers.
-`StatusRegistryRef` is vocabulary only: this package does not authenticate
+message envelopes, VC-side status-binding shapes, VC/VP linkage helpers, and
+protocol-neutral `compact-value-v1.base64url` TypeScript framing for canonical
+Compact runtime values. `StatusRegistryRef` is vocabulary only: this package does not authenticate
 registry mutation, roots, time, witnesses, or final non-membership.
 
 `verification-v1`, family claims and predicates, status-registry authority,

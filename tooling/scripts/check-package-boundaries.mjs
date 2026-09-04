@@ -7,7 +7,7 @@
  * compatibility exception explicit and reviewable.
  */
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { workspaceCatalog } from "./workspace-catalog.mjs";
@@ -27,11 +27,12 @@ export const classifyWorkspacePath = (workspacePath) => {
   }[area] ?? "unknown";
 };
 
-// Existing protocol-agent tests are a tracked migration exception. The exact
-// edge list is intentionally closed: adding another edge requires a catalog
-// and architecture-policy review rather than silently widening this waiver.
+// The legacy birth protocol package is an outward compatibility adapter. The
+// exact edge list is intentionally closed: family-neutral orchestration lives
+// in `components/orchestration/exchange` and cannot use this exception.
 export const migrationExceptions = {
   "packages/components/orchestration/protocol": [
+    "packages/components/orchestration/exchange",
     "packages/core/primitives/credentials",
     "packages/prototypes/credential-families/birth",
     "packages/prototypes/credential-families/birth-secret",
@@ -48,6 +49,18 @@ const workspaceByName = new Map(
   workspaceCatalog.map((entry) => [packageJson(entry.path).name, entry.path]),
 );
 
+export const prohibitedFamilyDependencyClasses = ["protocol", "use-case"];
+
+const isCredentialFamily = (workspacePath) =>
+  workspacePath.startsWith("packages/prototypes/credential-families/");
+
+const isOrchestrationDependency = (workspacePath) =>
+  workspacePath.startsWith("packages/components/orchestration/");
+
+export const isProhibitedFamilyDependency = (workspacePath) =>
+  prohibitedFamilyDependencyClasses.includes(classifyWorkspacePath(workspacePath)) ||
+  isOrchestrationDependency(workspacePath);
+
 export const workspaceDependencyPaths = (workspacePath) => {
   const manifest = packageJson(workspacePath);
   return Object.keys({
@@ -60,6 +73,104 @@ export const workspaceDependencyPaths = (workspacePath) => {
     .filter(Boolean)
     .sort();
 };
+
+const sourceExtensions = new Set([
+  ".js",
+  ".jsx",
+  ".mjs",
+  ".cjs",
+  ".ts",
+  ".tsx",
+  ".mts",
+  ".cts",
+]);
+export const isSupportedSourceFile = (fileName) =>
+  sourceExtensions.has(path.extname(fileName));
+const sourceImportPattern =
+  /(?:\bfrom\s*|\bimport\s*\(|\brequire\s*\()\s*["']([^"']+)["']/gu;
+const bareImportPattern = /\bimport\s*["']([^"']+)["']/gu;
+
+const workspaceSourceFiles = (workspacePath) => {
+  const files = [];
+  const visit = (directory) => {
+    for (const entry of readdirSync(directory, { withFileTypes: true })) {
+      if (["dist", "managed", "node_modules", "coverage", "reports"].includes(entry.name)) {
+        continue;
+      }
+      const absolute = path.join(directory, entry.name);
+      if (entry.isDirectory()) {
+        visit(absolute);
+      } else if (isSupportedSourceFile(entry.name)) {
+        files.push(absolute);
+      }
+    }
+  };
+  visit(path.join(repoRoot, workspacePath));
+  return files;
+};
+
+export const workspacePathForImport = (specifier, importerFile) => {
+  for (const [packageName, workspacePath] of workspaceByName) {
+    if (specifier === packageName || specifier.startsWith(`${packageName}/`)) {
+      return workspacePath;
+    }
+  }
+  if (!importerFile || !specifier.startsWith(".")) return undefined;
+
+  const importerPath = path.isAbsolute(importerFile)
+    ? importerFile
+    : path.join(repoRoot, importerFile);
+  const importedPath = path.resolve(path.dirname(importerPath), specifier);
+  for (const { path: workspacePath } of workspaceCatalog) {
+    const workspaceRoot = path.join(repoRoot, workspacePath);
+    const relative = path.relative(workspaceRoot, importedPath);
+    if (relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative))) {
+      return workspacePath;
+    }
+  }
+  return undefined;
+};
+
+export const familySourceImportPaths = (workspacePath) => {
+  const imports = new Set();
+  for (const sourceFile of workspaceSourceFiles(workspacePath)) {
+    const source = readFileSync(sourceFile, "utf8");
+    for (const pattern of [sourceImportPattern, bareImportPattern]) {
+      pattern.lastIndex = 0;
+      for (const match of source.matchAll(pattern)) {
+        const dependencyPath = workspacePathForImport(match[1], sourceFile);
+        if (dependencyPath && dependencyPath !== workspacePath) {
+          imports.add(dependencyPath);
+        }
+      }
+    }
+  }
+  return [...imports].sort();
+};
+
+export const findFamilySourceImportViolations = () =>
+  workspaceCatalog.flatMap((entry) => {
+    if (!isCredentialFamily(entry.path)) return [];
+    return familySourceImportPaths(entry.path)
+      .filter(isProhibitedFamilyDependency)
+      .map(
+        (dependency) =>
+          `${entry.path}: credential family source must not import protocol, orchestration, or use-case package ${dependency}`,
+      );
+  });
+
+const familyNeutralExchangePath = "packages/components/orchestration/exchange";
+const familyNeutralExchangeAllowedImports = new Set(["packages/core/model"]);
+
+export const findFamilyNeutralExchangeSourceImportViolations = () =>
+  familySourceImportPaths(familyNeutralExchangePath)
+    .filter(
+      (dependency) => !familyNeutralExchangeAllowedImports.has(dependency),
+    )
+    .map(
+      (dependency) =>
+        `${familyNeutralExchangePath}: family-neutral exchange source must not import ${dependency}`,
+    );
 
 const classAllows = (ownerClass, dependencyClass) => {
   switch (ownerClass) {
@@ -81,7 +192,10 @@ const classAllows = (ownerClass, dependencyClass) => {
 };
 
 export const findBoundaryViolations = () => {
-  const violations = [];
+  const violations = [
+    ...findFamilySourceImportViolations(),
+    ...findFamilyNeutralExchangeSourceImportViolations(),
+  ];
   for (const entry of workspaceCatalog) {
     const ownerClass = classifyWorkspacePath(entry.path);
     const dependencies = workspaceDependencyPaths(entry.path);
@@ -98,6 +212,15 @@ export const findBoundaryViolations = () => {
     }
     for (const dependency of dependencies) {
       const dependencyClass = classifyWorkspacePath(dependency);
+      if (
+        isCredentialFamily(entry.path) &&
+        isProhibitedFamilyDependency(dependency)
+      ) {
+        violations.push(
+          `${entry.path}: credential families must not depend on protocol, orchestration, or use-case package ${dependency}`,
+        );
+        continue;
+      }
       if (exception.includes(dependency)) continue;
       if (!classAllows(ownerClass, dependencyClass)) {
         violations.push(`${entry.path} (${ownerClass}) must not depend on ${dependency} (${dependencyClass})`);

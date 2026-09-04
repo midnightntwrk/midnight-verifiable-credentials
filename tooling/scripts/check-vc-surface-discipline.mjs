@@ -126,18 +126,18 @@ requireIncludes("tooling/scripts/scaffold-vc-family.mjs", [
 ]);
 requireIncludes("tooling/artifacts/.gitignore", ["*"]);
 
-requireIncludes("packages/components/orchestration/protocol/src/agents/schema-descriptors.ts", [
+requireIncludes("packages/components/orchestration/protocol/src/adapters/birth/schema-descriptors.ts", [
   "compatibilityFeatureHintsFromSchemaCapabilities",
   "assertCompatibilityFeatureHintsMatchSchemaDescriptor",
   "BIRTH_COMPATIBILITY_FEATURE_HINTS",
   "SECRET_BIRTH_COMPATIBILITY_FEATURE_HINTS",
 ]);
 for (const relativePath of [
-  "packages/components/orchestration/protocol/src/agents/schema-descriptors.ts",
-  "packages/components/orchestration/protocol/src/agents/issuer-agent.ts",
-  "packages/components/orchestration/protocol/src/agents/secret-issuer-agent.ts",
-  "packages/components/orchestration/protocol/src/agents/verifier-agent.ts",
-  "packages/components/orchestration/protocol/src/agents/secret-holder-agent.ts",
+  "packages/components/orchestration/protocol/src/adapters/birth/schema-descriptors.ts",
+  "packages/components/orchestration/protocol/src/adapters/birth/issuer-agent.ts",
+  "packages/components/orchestration/protocol/src/adapters/birth/secret-issuer-agent.ts",
+  "packages/components/orchestration/protocol/src/adapters/birth/verifier-agent.ts",
+  "packages/components/orchestration/protocol/src/adapters/birth/secret-holder-agent.ts",
   "packages/components/orchestration/protocol/src/test/agents/schema-descriptors.test.ts",
 ]) {
   requireNotIncludes(relativePath, [

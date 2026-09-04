@@ -122,7 +122,8 @@ for the closed migration exception and graduation gates.
 | `packages/registry/status-registry` | `@midnight-ntwrk/midnight-did-credentials-status-registry` | Status/revocation registry reference package and witness-builder helpers. |
 | `packages/components/adapters/offchain-did` | `@midnight-ntwrk/midnight-did-credentials-offchain-did` | DID-aware offchain holder-binding runtime helpers. |
 | `packages/components/integration/standalone-environment` | `@midnight-ntwrk/midnight-did-standalone-environment` | Standalone Midnight/DID runtime bootstrap for integration tests. |
-| `packages/components/orchestration/protocol` | `@midnight-ntwrk/midnight-did-credentials-protocol` | Issuer/holder/verifier protocol-state orchestration and reference lifecycle tests. |
+| `packages/components/orchestration/exchange` | `@midnight-ntwrk/credential-exchange` | Private family-neutral issuance/presentation/verification ports and directly injected agents. |
+| `packages/components/orchestration/protocol` | `@midnight-ntwrk/midnight-did-credentials-protocol` | Outward birth/birth-secret/age-gate reference adapters and compatibility lifecycle tests. |
 | `packages/protocols/openid` | `@midnight-ntwrk/midnight-did-credentials-openid` | OID4VCI/OID4VP-shaped Zod schemas and Compact value framing. |
 | `packages/prototypes/credential-families/birth` | `@midnight-ntwrk/midnight-did-credentials-birth` | Explicit-holder birth credential family. |
 | `packages/prototypes/credential-families/birth-secret` | `@midnight-ntwrk/midnight-did-credentials-birth-secret` | Hidden/secret-holder birth credential family. |

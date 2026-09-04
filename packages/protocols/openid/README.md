@@ -86,8 +86,10 @@ Protocol reading rule:
 
 ## Compact Value Codec
 
-The package includes `compact-value-v1.base64url`, a small framing format for
-Compact runtime `Value` payloads. The intended usage is:
+The protocol-neutral owner of `compact-value-v1.base64url` is now
+`@midnight-ntwrk/credential-compact`. This package re-exports the codec for one
+compatibility cycle and uses it to frame Compact runtime `Value` payloads. The
+intended usage is:
 
 1. Build the generated TypeScript value for a Compact VC/VP body or proof.
 2. Encode it with `encodeCompactPayload(descriptor, value)`.

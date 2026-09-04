@@ -5,8 +5,8 @@
  *
  * Defines `CompactType` descriptors for `DigitalPassportCredential` and `Proof`,
  * enabling compact-value-v1.base64url encoding/decoding via
- * `encodeCompactPayload` / `decodeCompactPayload` from
- * `@midnight-ntwrk/midnight-did-credentials-openid`.
+ * `encodeCompactPayload` / `decodeCompactPayload` from the protocol-neutral
+ * `@midnight-ntwrk/credential-compact` owner.
  *
  * These descriptors must match the Compact compiler's generated binary layout
  * for the `digital-passport` credential family. Field order and width are
@@ -30,7 +30,7 @@ import {
   decodeCompactPayload,
   encodeCompactPayload,
   type EncodedCompactValue,
-} from "@midnight-ntwrk/midnight-did-credentials-openid";
+} from "@midnight-ntwrk/credential-compact";
 
 import type {
   DigitalPassportClaimCommitments,

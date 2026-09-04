@@ -587,3 +587,15 @@ In addition to the wrapper targets above, `./run.sh` now accepts any root
 - `./run.sh build:cone:age-gate`
 - `./run.sh ci:package-tests`
 - `./run.sh artifacts:pack`
+
+## Family-neutral exchange and adapter boundaries
+
+| Evidence | Contract |
+| --- | --- |
+| `packages/components/orchestration/exchange/src/test/injected-family-agents.test.ts` | The same issuer/holder/verifier orchestration runs with two directly injected family adapters; cross-family messages fail before dispatch and transport wrapping cannot grant validity. |
+| `tooling/scripts/workspace-boundary-policy.test.mjs` | Family packages cannot depend on protocol, orchestration, or use-case workspaces; neutral exchange depends only on `credential-model`. |
+| `tooling/scripts/test-family-neutral-exchange-consumer.mjs` | Packed model/exchange tarballs install outside the workspace, type-check, and run an injected lifecycle. |
+| `packages/core/compact/src/test/compact-value-codec.test.ts` and OpenID compatibility tests | Protocol-neutral Compact value framing is canonical in `credential-compact` while the legacy OpenID export remains compatible. |
+
+These tests do not cover profile resolution, runtime unknown-family discovery,
+or final protocol conformance.

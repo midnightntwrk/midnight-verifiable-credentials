@@ -3,7 +3,13 @@
 > Maturity: `infrastructure`
 > Package class: `dist`
 
-Reference protocol orchestration layer for Midnight Credentials.
+Reference birth/birth-secret protocol adapter layer for Midnight Credentials.
+
+Family-neutral agents and injection ports now live in the private
+`@midnight-ntwrk/credential-exchange` candidate at
+`../exchange`. This legacy package remains the outward concrete reference and
+compatibility surface; its existing package exports and class names are
+preserved.
 
 Status:
 
@@ -77,8 +83,12 @@ authority for credential-family capabilities. Protocol message `features`
 fields are emitted only as compatibility hints for generated issue/present
 message shapes that still require them.
 
-The shared descriptor catalog lives in `src/agents/schema-descriptors.ts` and
-provides:
+Concrete adapters live under `src/adapters/birth/`; compatibility re-exports
+remain under `src/agents/`. `createBirthInjectedCredentialFamilyAdapter(...)`
+bridges the concrete explicit-holder lifecycle into the directly injected
+`credential-exchange` agents while keeping Compact validation in the birth
+family. The shared descriptor catalog lives in
+`src/adapters/birth/schema-descriptors.ts` and provides:
 
 - canonical reference `SchemaRef` values for the explicit birth and
   blinded-secret birth families
@@ -457,11 +467,11 @@ composition:
 
 ## Where To Start
 
-- `src/agents/issuer-agent.ts`
-- `src/agents/holder-agent.ts`
-- `src/agents/verifier-agent.ts`
-- `src/agents/secret-issuer-agent.ts`
-- `src/agents/secret-holder-agent.ts`
+- `src/adapters/birth/issuer-agent.ts`
+- `src/adapters/birth/holder-agent.ts`
+- `src/adapters/birth/verifier-agent.ts`
+- `src/adapters/birth/secret-issuer-agent.ts`
+- `src/adapters/birth/secret-holder-agent.ts`
 - `src/transport/message-bus.ts`
 
 ## Test Map

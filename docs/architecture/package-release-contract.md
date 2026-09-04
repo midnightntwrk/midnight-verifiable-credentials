@@ -40,6 +40,7 @@ conformance fixtures, removed, or graduated to an independent repository.
 | `@midnight-ntwrk/midnight-did-credentials-iso-registry` | `internal` | workspace tarball only | Unassigned | Reference primitive |
 | `@midnight-ntwrk/midnight-did-credentials-offchain-did` | `internal` | workspace tarball only | Unassigned | DID-aware adapter |
 | `@midnight-ntwrk/midnight-did-credentials-openid` | `internal` | workspace tarball only | Unassigned | Reference transport adapter |
+| `@midnight-ntwrk/credential-exchange` | `internal` | none | VC package maintainers | Family-neutral injected orchestration candidate; not a publication commitment |
 | `@midnight-ntwrk/credential-display` | `internal` | workspace tarball only | Unassigned | Incubating framework-neutral display metadata; not a support or publication commitment |
 | `@midnight-ntwrk/midnight-did-credentials-protocol` | `internal` | workspace tarball only | Unassigned | Evolving orchestration API |
 | `@midnight-ntwrk/midnight-did-credentials-birth` | `internal` | workspace tarball only | Unassigned | Reference family |
