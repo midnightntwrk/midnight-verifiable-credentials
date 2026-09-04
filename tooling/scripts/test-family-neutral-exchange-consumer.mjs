@@ -4,12 +4,15 @@ import {
   cpSync,
   mkdtempSync,
   mkdirSync,
+  readFileSync,
   rmSync,
   writeFileSync,
 } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+
+import { packageTarballName } from "./package-tarball-name.mjs";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const temporaryRoot = mkdtempSync(
@@ -18,6 +21,11 @@ const temporaryRoot = mkdtempSync(
 const tarballRoot = path.join(temporaryRoot, "tarballs");
 const consumerRoot = path.join(temporaryRoot, "consumer");
 const consumerSource = path.join(consumerRoot, "src");
+const exchangePackageRoot = path.join(
+  consumerRoot,
+  "vendor",
+  "exchange-package",
+);
 mkdirSync(tarballRoot, { recursive: true });
 mkdirSync(consumerSource, { recursive: true });
 
@@ -50,25 +58,42 @@ try {
     "--pack-destination",
     tarballRoot,
   ]);
-  run("pnpm", [
-    "--dir",
-    "packages/components/orchestration/exchange",
-    "pack",
-    "--pack-destination",
-    tarballRoot,
-  ]);
 
-  const modelTarball = path.join(
-    tarballRoot,
-    "midnight-ntwrk-credential-model-0.1.0.tgz",
+  const tarballFor = (workspacePath) => {
+    const manifest = JSON.parse(
+      readFileSync(path.join(repoRoot, workspacePath, "package.json"), "utf8"),
+    );
+    return path.join(tarballRoot, packageTarballName(manifest));
+  };
+  const modelTarball = tarballFor("packages/core/model");
+  const exchangeWorkspace = path.join(
+    repoRoot,
+    "packages/components/orchestration/exchange",
   );
-  const proofsTarball = path.join(
-    tarballRoot,
-    "midnight-ntwrk-credential-proofs-0.1.0.tgz",
+  const proofsTarball = tarballFor("packages/core/proofs");
+  run("pnpm", ["--dir", exchangeWorkspace, "run", "build"]);
+  const exchangeManifest = JSON.parse(
+    readFileSync(path.join(exchangeWorkspace, "package.json"), "utf8"),
   );
-  const exchangeTarball = path.join(
-    tarballRoot,
-    "midnight-ntwrk-credential-exchange-0.1.0.tgz",
+  mkdirSync(exchangePackageRoot, { recursive: true });
+  cpSync(path.join(exchangeWorkspace, "dist"), path.join(exchangePackageRoot, "dist"), {
+    recursive: true,
+  });
+  writeFileSync(
+    path.join(exchangePackageRoot, "package.json"),
+    `${JSON.stringify(
+      {
+        ...exchangeManifest,
+        scripts: {},
+        dependencies: {
+          ...exchangeManifest.dependencies,
+          "@midnight-ntwrk/credential-model": `file:${modelTarball}`,
+          "@midnight-ntwrk/credential-proofs": `file:${proofsTarball}`,
+        },
+      },
+      null,
+      2,
+    )}\n`,
   );
   writeFileSync(
     path.join(consumerRoot, "package.json"),
@@ -80,7 +105,7 @@ try {
         dependencies: {
           "@midnight-ntwrk/credential-model": `file:${modelTarball}`,
           "@midnight-ntwrk/credential-proofs": `file:${proofsTarball}`,
-          "@midnight-ntwrk/credential-exchange": `file:${exchangeTarball}`,
+          "@midnight-ntwrk/credential-exchange": `file:${exchangePackageRoot}`,
         },
       },
       null,

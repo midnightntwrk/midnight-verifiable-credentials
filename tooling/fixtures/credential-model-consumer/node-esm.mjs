@@ -212,6 +212,48 @@ const catalog = {
 assertCredentialFamilyProfileV1(profile);
 assertCredentialDeploymentAssemblyV1(assembly);
 assertCapabilityProviderCatalogV1(catalog);
+
+const missingProofProfile = structuredClone(profile);
+missingProofProfile.requirements.providers = [];
+const missingProofAssembly = structuredClone(assembly);
+missingProofAssembly.components["proof-executor"] = { state: "disabled" };
+assert.throws(
+  () =>
+    resolveCredentialComposition({
+      family: accessFamily,
+      profile: missingProofProfile,
+      assembly: missingProofAssembly,
+      catalog,
+    }),
+  (error) =>
+    error instanceof CredentialModelError &&
+    error.code === "CAPABILITY_NOT_PROVIDED" &&
+    error.path === "requirements.providers.proof-executor",
+);
+
+const substitutedProofProfile = structuredClone(profile);
+substitutedProofProfile.requirements.providers[0].capability = {
+  id: "proof.unrelated",
+  version: "1.0.0",
+};
+const substitutedProofCatalog = structuredClone(catalog);
+substitutedProofCatalog.providers[0].capabilities = [
+  { id: "proof.unrelated", version: "1.0.0" },
+];
+assert.throws(
+  () =>
+    resolveCredentialComposition({
+      family: accessFamily,
+      profile: substitutedProofProfile,
+      assembly,
+      catalog: substitutedProofCatalog,
+    }),
+  (error) =>
+    error instanceof CredentialModelError &&
+    error.code === "CONTRADICTORY_PROFILE" &&
+    error.path === "requirements.providers[0].capability",
+);
+
 const graph = resolveCredentialComposition({
   family: accessFamily,
   profile,

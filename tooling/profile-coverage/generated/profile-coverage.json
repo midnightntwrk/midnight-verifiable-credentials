@@ -251,7 +251,16 @@
             }
           ],
           "artifacts": [],
-          "providers": []
+          "providers": [
+            {
+              "id": "requirement.proof-executor",
+              "capability": {
+                "id": "proof.compact",
+                "version": "1.0.0"
+              },
+              "role": "proof-executor"
+            }
+          ]
         },
         "compatibility": {
           "deniedRules": [
@@ -348,7 +357,15 @@
           }
         ],
         "artifacts": [],
-        "providers": [],
+        "providers": [
+          {
+            "requirementId": "requirement.proof-executor",
+            "role": "proof-executor",
+            "providerId": "provider.profile.prototype.birth.proof-executor",
+            "providerVersion": "1.0.0",
+            "instanceId": "provider.profile.prototype.birth.proof-executor.instance@1"
+          }
+        ],
         "deployments": [],
         "conformance": {
           "fixtureId": "prototype:birth:composition-v1",
@@ -503,7 +520,16 @@
             }
           ],
           "artifacts": [],
-          "providers": []
+          "providers": [
+            {
+              "id": "requirement.proof-executor",
+              "capability": {
+                "id": "proof.compact",
+                "version": "1.0.0"
+              },
+              "role": "proof-executor"
+            }
+          ]
         },
         "compatibility": {
           "deniedRules": [
@@ -600,7 +626,15 @@
           }
         ],
         "artifacts": [],
-        "providers": [],
+        "providers": [
+          {
+            "requirementId": "requirement.proof-executor",
+            "role": "proof-executor",
+            "providerId": "provider.profile.prototype.birth-secret.proof-executor",
+            "providerVersion": "1.0.0",
+            "instanceId": "provider.profile.prototype.birth-secret.proof-executor.instance@1"
+          }
+        ],
         "deployments": [],
         "conformance": {
           "fixtureId": "prototype:birth-secret:composition-v1",
@@ -747,7 +781,16 @@
             }
           ],
           "artifacts": [],
-          "providers": []
+          "providers": [
+            {
+              "id": "requirement.proof-executor",
+              "capability": {
+                "id": "proof.compact",
+                "version": "1.0.0"
+              },
+              "role": "proof-executor"
+            }
+          ]
         },
         "compatibility": {
           "deniedRules": [
@@ -844,7 +887,15 @@
           }
         ],
         "artifacts": [],
-        "providers": [],
+        "providers": [
+          {
+            "requirementId": "requirement.proof-executor",
+            "role": "proof-executor",
+            "providerId": "provider.profile.prototype.digital-passport.proof-executor",
+            "providerVersion": "1.0.0",
+            "instanceId": "provider.profile.prototype.digital-passport.proof-executor.instance@1"
+          }
+        ],
         "deployments": [],
         "conformance": {
           "fixtureId": "prototype:digital-passport:composition-v1",
@@ -1021,7 +1072,16 @@
             }
           ],
           "artifacts": [],
-          "providers": []
+          "providers": [
+            {
+              "id": "requirement.proof-executor",
+              "capability": {
+                "id": "proof.compact",
+                "version": "1.0.0"
+              },
+              "role": "proof-executor"
+            }
+          ]
         },
         "compatibility": {
           "deniedRules": [
@@ -1118,7 +1178,15 @@
           }
         ],
         "artifacts": [],
-        "providers": [],
+        "providers": [
+          {
+            "requirementId": "requirement.proof-executor",
+            "role": "proof-executor",
+            "providerId": "provider.profile.prototype.dummy-claims.proof-executor",
+            "providerVersion": "1.0.0",
+            "instanceId": "provider.profile.prototype.dummy-claims.proof-executor.instance@1"
+          }
+        ],
         "deployments": [],
         "conformance": {
           "fixtureId": "prototype:dummy-claims:composition-v1",
@@ -1279,7 +1347,16 @@
             }
           ],
           "artifacts": [],
-          "providers": []
+          "providers": [
+            {
+              "id": "requirement.proof-executor",
+              "capability": {
+                "id": "proof.compact",
+                "version": "1.0.0"
+              },
+              "role": "proof-executor"
+            }
+          ]
         },
         "compatibility": {
           "deniedRules": [
@@ -1376,7 +1453,15 @@
           }
         ],
         "artifacts": [],
-        "providers": [],
+        "providers": [
+          {
+            "requirementId": "requirement.proof-executor",
+            "role": "proof-executor",
+            "providerId": "provider.profile.prototype.hello-family.proof-executor",
+            "providerVersion": "1.0.0",
+            "instanceId": "provider.profile.prototype.hello-family.proof-executor.instance@1"
+          }
+        ],
         "deployments": [],
         "conformance": {
           "fixtureId": "prototype:hello-family:composition-v1",
@@ -1527,7 +1612,16 @@
             }
           ],
           "artifacts": [],
-          "providers": []
+          "providers": [
+            {
+              "id": "requirement.proof-executor",
+              "capability": {
+                "id": "proof.compact",
+                "version": "1.0.0"
+              },
+              "role": "proof-executor"
+            }
+          ]
         },
         "compatibility": {
           "deniedRules": [
@@ -1624,7 +1718,15 @@
           }
         ],
         "artifacts": [],
-        "providers": [],
+        "providers": [
+          {
+            "requirementId": "requirement.proof-executor",
+            "role": "proof-executor",
+            "providerId": "provider.profile.prototype.mixed-claims.proof-executor",
+            "providerVersion": "1.0.0",
+            "instanceId": "provider.profile.prototype.mixed-claims.proof-executor.instance@1"
+          }
+        ],
         "deployments": [],
         "conformance": {
           "fixtureId": "prototype:mixed-claims:composition-v1",
@@ -1793,7 +1895,16 @@
             }
           ],
           "artifacts": [],
-          "providers": []
+          "providers": [
+            {
+              "id": "requirement.proof-executor",
+              "capability": {
+                "id": "proof.compact",
+                "version": "1.0.0"
+              },
+              "role": "proof-executor"
+            }
+          ]
         },
         "compatibility": {
           "deniedRules": [
@@ -1890,7 +2001,15 @@
           }
         ],
         "artifacts": [],
-        "providers": [],
+        "providers": [
+          {
+            "requirementId": "requirement.proof-executor",
+            "role": "proof-executor",
+            "providerId": "provider.profile.prototype.university-diploma.proof-executor",
+            "providerVersion": "1.0.0",
+            "instanceId": "provider.profile.prototype.university-diploma.proof-executor.instance@1"
+          }
+        ],
         "deployments": [],
         "conformance": {
           "fixtureId": "prototype:university-diploma:composition-v1",
@@ -2745,6 +2864,14 @@
                   "version": "1.0.0"
                 },
                 "role": "verification"
+              },
+              {
+                "id": "requirement.proof-executor",
+                "capability": {
+                  "id": "proof.compact",
+                  "version": "1.0.0"
+                },
+                "role": "proof-executor"
               }
             ]
           },
@@ -2825,7 +2952,13 @@
               "state": "disabled"
             },
             "proof-executor": {
-              "state": "disabled"
+              "state": "selected",
+              "requirementId": "requirement.proof-executor",
+              "provider": {
+                "id": "provider.proof-executor",
+                "version": "1.0.0"
+              },
+              "instanceId": "proof-executor:positive-02"
             },
             "artifact-resolver": {
               "state": "disabled"
@@ -2896,6 +3029,15 @@
               "immutableInputs": {
                 "capability": "verification.offchain-public-v1@1.0.0"
               }
+            },
+            {
+              "id": "deployment.proof-executor.positive-02",
+              "kind": "local-service",
+              "domain": "proof",
+              "identity": "proof-executor:positive-02",
+              "immutableInputs": {
+                "capability": "proof.compact@1.0.0"
+              }
             }
           ]
         },
@@ -2922,6 +3064,31 @@
                     "./credentials.compact"
                   ],
                   "domain": "verification"
+                }
+              ],
+              "witnessPolicy": "public-only",
+              "atomicReplay": false
+            },
+            {
+              "id": "provider.proof-executor",
+              "version": "1.0.0",
+              "roles": [
+                "proof-executor"
+              ],
+              "capabilities": [
+                {
+                  "id": "proof.compact",
+                  "version": "1.0.0"
+                }
+              ],
+              "packages": [
+                {
+                  "name": "@midnight-ntwrk/midnight-did-credentials-same-holder",
+                  "version": "0.1.0",
+                  "exports": [
+                    "./same-holder.compact"
+                  ],
+                  "domain": "proof"
                 }
               ],
               "witnessPolicy": "public-only",
@@ -2964,6 +3131,14 @@
             "domain": "holder-binding"
           },
           {
+            "name": "@midnight-ntwrk/midnight-did-credentials-same-holder",
+            "version": "0.1.0",
+            "exports": [
+              "./same-holder.compact"
+            ],
+            "domain": "proof"
+          },
+          {
             "name": "profile-coverage-fixture-family",
             "version": "1.0.0",
             "exports": [
@@ -2980,6 +3155,10 @@
           {
             "packageName": "@midnight-ntwrk/midnight-did-credentials",
             "exportPath": "./credentials.compact"
+          },
+          {
+            "packageName": "@midnight-ntwrk/midnight-did-credentials-same-holder",
+            "exportPath": "./same-holder.compact"
           },
           {
             "packageName": "profile-coverage-fixture-family",
@@ -3014,6 +3193,13 @@
         ],
         "artifacts": [],
         "providers": [
+          {
+            "requirementId": "requirement.proof-executor",
+            "role": "proof-executor",
+            "providerId": "provider.proof-executor",
+            "providerVersion": "1.0.0",
+            "instanceId": "proof-executor:positive-02"
+          },
           {
             "requirementId": "requirement.verification",
             "role": "verification",
@@ -3055,6 +3241,15 @@
             "domain": "verification",
             "immutableInputs": {
               "capability": "verification.offchain-public-v1@1.0.0"
+            }
+          },
+          {
+            "id": "deployment.proof-executor.positive-02",
+            "kind": "local-service",
+            "domain": "proof",
+            "identity": "proof-executor:positive-02",
+            "immutableInputs": {
+              "capability": "proof.compact@1.0.0"
             }
           }
         ],
@@ -3223,6 +3418,14 @@
                 "role": "verification"
               },
               {
+                "id": "requirement.proof-executor",
+                "capability": {
+                  "id": "proof.compact",
+                  "version": "1.0.0"
+                },
+                "role": "proof-executor"
+              },
+              {
                 "id": "requirement.protocol-transport",
                 "capability": {
                   "id": "protocol.oid4vp-1.0-final",
@@ -3315,7 +3518,13 @@
               "instanceId": "protocol-transport:positive-03"
             },
             "proof-executor": {
-              "state": "disabled"
+              "state": "selected",
+              "requirementId": "requirement.proof-executor",
+              "provider": {
+                "id": "provider.proof-executor",
+                "version": "1.0.0"
+              },
+              "instanceId": "proof-executor:positive-03"
             },
             "artifact-resolver": {
               "state": "disabled"
@@ -3388,6 +3597,15 @@
               }
             },
             {
+              "id": "deployment.proof-executor.positive-03",
+              "kind": "local-service",
+              "domain": "proof",
+              "identity": "proof-executor:positive-03",
+              "immutableInputs": {
+                "capability": "proof.compact@1.0.0"
+              }
+            },
+            {
               "id": "deployment.protocol-transport.positive-03",
               "version": "1.0.0",
               "identity": "protocol-transport:positive-03",
@@ -3429,6 +3647,31 @@
                     "./credentials.compact"
                   ],
                   "domain": "verification"
+                }
+              ],
+              "witnessPolicy": "public-only",
+              "atomicReplay": false
+            },
+            {
+              "id": "provider.proof-executor",
+              "version": "1.0.0",
+              "roles": [
+                "proof-executor"
+              ],
+              "capabilities": [
+                {
+                  "id": "proof.compact",
+                  "version": "1.0.0"
+                }
+              ],
+              "packages": [
+                {
+                  "name": "@midnight-ntwrk/midnight-did-credentials-same-holder",
+                  "version": "0.1.0",
+                  "exports": [
+                    "./same-holder.compact"
+                  ],
+                  "domain": "proof"
                 }
               ],
               "witnessPolicy": "public-only",
@@ -3504,6 +3747,14 @@
             "domain": "protocol"
           },
           {
+            "name": "@midnight-ntwrk/midnight-did-credentials-same-holder",
+            "version": "0.1.0",
+            "exports": [
+              "./same-holder.compact"
+            ],
+            "domain": "proof"
+          },
+          {
             "name": "profile-coverage-fixture-family",
             "version": "1.0.0",
             "exports": [
@@ -3524,6 +3775,10 @@
           {
             "packageName": "@midnight-ntwrk/midnight-did-credentials-openid",
             "exportPath": "."
+          },
+          {
+            "packageName": "@midnight-ntwrk/midnight-did-credentials-same-holder",
+            "exportPath": "./same-holder.compact"
           },
           {
             "packageName": "profile-coverage-fixture-family",
@@ -3558,6 +3813,13 @@
         ],
         "artifacts": [],
         "providers": [
+          {
+            "requirementId": "requirement.proof-executor",
+            "role": "proof-executor",
+            "providerId": "provider.proof-executor",
+            "providerVersion": "1.0.0",
+            "instanceId": "proof-executor:positive-03"
+          },
           {
             "requirementId": "requirement.protocol-transport",
             "role": "transport",
@@ -3606,6 +3868,15 @@
             "domain": "verification",
             "immutableInputs": {
               "capability": "verification.ledger-local-v1@1.0.0"
+            }
+          },
+          {
+            "id": "deployment.proof-executor.positive-03",
+            "kind": "local-service",
+            "domain": "proof",
+            "identity": "proof-executor:positive-03",
+            "immutableInputs": {
+              "capability": "proof.compact@1.0.0"
             }
           },
           {
@@ -4395,6 +4666,14 @@
                 "role": "verification"
               },
               {
+                "id": "requirement.proof-executor",
+                "capability": {
+                  "id": "proof.compact",
+                  "version": "1.0.0"
+                },
+                "role": "proof-executor"
+              },
+              {
                 "id": "requirement.atomic-replay",
                 "capability": {
                   "id": "replay.atomic",
@@ -4481,7 +4760,13 @@
               "state": "disabled"
             },
             "proof-executor": {
-              "state": "disabled"
+              "state": "selected",
+              "requirementId": "requirement.proof-executor",
+              "provider": {
+                "id": "provider.proof-executor",
+                "version": "1.0.0"
+              },
+              "instanceId": "proof-executor:positive-05"
             },
             "artifact-resolver": {
               "state": "disabled"
@@ -4560,6 +4845,15 @@
               }
             },
             {
+              "id": "deployment.proof-executor.positive-05",
+              "kind": "local-service",
+              "domain": "proof",
+              "identity": "proof-executor:positive-05",
+              "immutableInputs": {
+                "capability": "proof.compact@1.0.0"
+              }
+            },
+            {
               "id": "deployment.atomic-replay.positive-05",
               "version": "1.0.0",
               "identity": "atomic-replay:positive-05",
@@ -4601,6 +4895,31 @@
                     "./credentials.compact"
                   ],
                   "domain": "verification"
+                }
+              ],
+              "witnessPolicy": "public-only",
+              "atomicReplay": false
+            },
+            {
+              "id": "provider.proof-executor",
+              "version": "1.0.0",
+              "roles": [
+                "proof-executor"
+              ],
+              "capabilities": [
+                {
+                  "id": "proof.compact",
+                  "version": "1.0.0"
+                }
+              ],
+              "packages": [
+                {
+                  "name": "@midnight-ntwrk/midnight-did-credentials-same-holder",
+                  "version": "0.1.0",
+                  "exports": [
+                    "./same-holder.compact"
+                  ],
+                  "domain": "proof"
                 }
               ],
               "witnessPolicy": "public-only",
@@ -4668,6 +4987,14 @@
             "domain": "holder-binding"
           },
           {
+            "name": "@midnight-ntwrk/midnight-did-credentials-same-holder",
+            "version": "0.1.0",
+            "exports": [
+              "./same-holder.compact"
+            ],
+            "domain": "proof"
+          },
+          {
             "name": "fixture-atomic-replay",
             "version": "1.0.0",
             "exports": [
@@ -4692,6 +5019,10 @@
           {
             "packageName": "@midnight-ntwrk/midnight-did-credentials",
             "exportPath": "./credentials.compact"
+          },
+          {
+            "packageName": "@midnight-ntwrk/midnight-did-credentials-same-holder",
+            "exportPath": "./same-holder.compact"
           },
           {
             "packageName": "fixture-atomic-replay",
@@ -4738,6 +5069,13 @@
             "instanceId": "atomic-replay:positive-05"
           },
           {
+            "requirementId": "requirement.proof-executor",
+            "role": "proof-executor",
+            "providerId": "provider.proof-executor",
+            "providerVersion": "1.0.0",
+            "instanceId": "proof-executor:positive-05"
+          },
+          {
             "requirementId": "requirement.verification",
             "role": "verification",
             "providerId": "provider.verification",
@@ -4778,6 +5116,15 @@
             "domain": "verification",
             "immutableInputs": {
               "capability": "verification.ledger-local-v1@1.0.0"
+            }
+          },
+          {
+            "id": "deployment.proof-executor.positive-05",
+            "kind": "local-service",
+            "domain": "proof",
+            "identity": "proof-executor:positive-05",
+            "immutableInputs": {
+              "capability": "proof.compact@1.0.0"
             }
           },
           {
@@ -7598,6 +7945,14 @@
                 "role": "verification"
               },
               {
+                "id": "requirement.proof-executor",
+                "capability": {
+                  "id": "proof.compact",
+                  "version": "1.0.0"
+                },
+                "role": "proof-executor"
+              },
+              {
                 "id": "requirement.status-registry",
                 "capability": {
                   "id": "status.authority-attested",
@@ -7692,7 +8047,13 @@
               "state": "disabled"
             },
             "proof-executor": {
-              "state": "disabled"
+              "state": "selected",
+              "requirementId": "requirement.proof-executor",
+              "provider": {
+                "id": "provider.proof-executor",
+                "version": "1.0.0"
+              },
+              "instanceId": "proof-executor:positive-09"
             },
             "artifact-resolver": {
               "state": "disabled"
@@ -7777,6 +8138,15 @@
               }
             },
             {
+              "id": "deployment.proof-executor.positive-09",
+              "kind": "local-service",
+              "domain": "proof",
+              "identity": "proof-executor:positive-09",
+              "immutableInputs": {
+                "capability": "proof.compact@1.0.0"
+              }
+            },
+            {
               "id": "deployment.status-registry.positive-09",
               "version": "1.0.0",
               "identity": "status-registry:positive-09",
@@ -7835,6 +8205,31 @@
                     "./credentials.compact"
                   ],
                   "domain": "verification"
+                }
+              ],
+              "witnessPolicy": "public-only",
+              "atomicReplay": false
+            },
+            {
+              "id": "provider.proof-executor",
+              "version": "1.0.0",
+              "roles": [
+                "proof-executor"
+              ],
+              "capabilities": [
+                {
+                  "id": "proof.compact",
+                  "version": "1.0.0"
+                }
+              ],
+              "packages": [
+                {
+                  "name": "@midnight-ntwrk/midnight-did-credentials-same-holder",
+                  "version": "0.1.0",
+                  "exports": [
+                    "./same-holder.compact"
+                  ],
+                  "domain": "proof"
                 }
               ],
               "witnessPolicy": "public-only",
@@ -7927,6 +8322,14 @@
             "domain": "holder-binding"
           },
           {
+            "name": "@midnight-ntwrk/midnight-did-credentials-same-holder",
+            "version": "0.1.0",
+            "exports": [
+              "./same-holder.compact"
+            ],
+            "domain": "proof"
+          },
+          {
             "name": "@midnight-ntwrk/midnight-did-credentials-status-registry",
             "version": "0.1.0",
             "exports": [
@@ -7959,6 +8362,10 @@
           {
             "packageName": "@midnight-ntwrk/midnight-did-credentials",
             "exportPath": "./credentials.compact"
+          },
+          {
+            "packageName": "@midnight-ntwrk/midnight-did-credentials-same-holder",
+            "exportPath": "./same-holder.compact"
           },
           {
             "packageName": "@midnight-ntwrk/midnight-did-credentials-status-registry",
@@ -8020,6 +8427,13 @@
             "instanceId": "atomic-replay:positive-09"
           },
           {
+            "requirementId": "requirement.proof-executor",
+            "role": "proof-executor",
+            "providerId": "provider.proof-executor",
+            "providerVersion": "1.0.0",
+            "instanceId": "proof-executor:positive-09"
+          },
+          {
             "requirementId": "requirement.status-registry",
             "role": "status-registry",
             "providerId": "provider.status-registry",
@@ -8067,6 +8481,15 @@
             "domain": "verification",
             "immutableInputs": {
               "capability": "verification.ledger-attested-v1@1.0.0"
+            }
+          },
+          {
+            "id": "deployment.proof-executor.positive-09",
+            "kind": "local-service",
+            "domain": "proof",
+            "identity": "proof-executor:positive-09",
+            "immutableInputs": {
+              "capability": "proof.compact@1.0.0"
             }
           },
           {
@@ -8291,6 +8714,14 @@
                 "role": "verification"
               },
               {
+                "id": "requirement.proof-executor",
+                "capability": {
+                  "id": "proof.compact",
+                  "version": "1.0.0"
+                },
+                "role": "proof-executor"
+              },
+              {
                 "id": "requirement.status-registry",
                 "capability": {
                   "id": "status.ledger-local",
@@ -8399,7 +8830,13 @@
               "instanceId": "protocol-transport:positive-10"
             },
             "proof-executor": {
-              "state": "disabled"
+              "state": "selected",
+              "requirementId": "requirement.proof-executor",
+              "provider": {
+                "id": "provider.proof-executor",
+                "version": "1.0.0"
+              },
+              "instanceId": "proof-executor:positive-10"
             },
             "artifact-resolver": {
               "state": "disabled"
@@ -8484,6 +8921,15 @@
               }
             },
             {
+              "id": "deployment.proof-executor.positive-10",
+              "kind": "local-service",
+              "domain": "proof",
+              "identity": "proof-executor:positive-10",
+              "immutableInputs": {
+                "capability": "proof.compact@1.0.0"
+              }
+            },
+            {
               "id": "deployment.status-registry.positive-10",
               "version": "1.0.0",
               "identity": "status-registry:positive-10",
@@ -8559,6 +9005,31 @@
                     "./credentials.compact"
                   ],
                   "domain": "verification"
+                }
+              ],
+              "witnessPolicy": "public-only",
+              "atomicReplay": false
+            },
+            {
+              "id": "provider.proof-executor",
+              "version": "1.0.0",
+              "roles": [
+                "proof-executor"
+              ],
+              "capabilities": [
+                {
+                  "id": "proof.compact",
+                  "version": "1.0.0"
+                }
+              ],
+              "packages": [
+                {
+                  "name": "@midnight-ntwrk/midnight-did-credentials-same-holder",
+                  "version": "0.1.0",
+                  "exports": [
+                    "./same-holder.compact"
+                  ],
+                  "domain": "proof"
                 }
               ],
               "witnessPolicy": "public-only",
@@ -8684,6 +9155,14 @@
             "domain": "holder-binding"
           },
           {
+            "name": "@midnight-ntwrk/midnight-did-credentials-same-holder",
+            "version": "0.1.0",
+            "exports": [
+              "./same-holder.compact"
+            ],
+            "domain": "proof"
+          },
+          {
             "name": "@midnight-ntwrk/midnight-did-credentials-status-registry",
             "version": "0.1.0",
             "exports": [
@@ -8720,6 +9199,10 @@
           {
             "packageName": "@midnight-ntwrk/midnight-did-credentials",
             "exportPath": "./credentials.compact"
+          },
+          {
+            "packageName": "@midnight-ntwrk/midnight-did-credentials-same-holder",
+            "exportPath": "./same-holder.compact"
           },
           {
             "packageName": "@midnight-ntwrk/midnight-did-credentials-status-registry",
@@ -8781,6 +9264,13 @@
             "instanceId": "atomic-replay:positive-10"
           },
           {
+            "requirementId": "requirement.proof-executor",
+            "role": "proof-executor",
+            "providerId": "provider.proof-executor",
+            "providerVersion": "1.0.0",
+            "instanceId": "proof-executor:positive-10"
+          },
+          {
             "requirementId": "requirement.protocol-transport",
             "role": "transport",
             "providerId": "provider.protocol-transport",
@@ -8835,6 +9325,15 @@
             "domain": "verification",
             "immutableInputs": {
               "capability": "verification.ledger-local-v1@1.0.0"
+            }
+          },
+          {
+            "id": "deployment.proof-executor.positive-10",
+            "kind": "local-service",
+            "domain": "proof",
+            "identity": "proof-executor:positive-10",
+            "immutableInputs": {
+              "capability": "proof.compact@1.0.0"
             }
           },
           {
@@ -9054,6 +9553,14 @@
                 "role": "verification"
               },
               {
+                "id": "requirement.proof-executor",
+                "capability": {
+                  "id": "proof.compact",
+                  "version": "1.0.0"
+                },
+                "role": "proof-executor"
+              },
+              {
                 "id": "requirement.protocol-transport",
                 "capability": {
                   "id": "protocol.canonical-reference",
@@ -9146,7 +9653,13 @@
               "instanceId": "protocol-transport:positive-11"
             },
             "proof-executor": {
-              "state": "disabled"
+              "state": "selected",
+              "requirementId": "requirement.proof-executor",
+              "provider": {
+                "id": "provider.proof-executor",
+                "version": "1.0.0"
+              },
+              "instanceId": "proof-executor:positive-11"
             },
             "artifact-resolver": {
               "state": "disabled"
@@ -9219,6 +9732,15 @@
               }
             },
             {
+              "id": "deployment.proof-executor.positive-11",
+              "kind": "local-service",
+              "domain": "proof",
+              "identity": "proof-executor:positive-11",
+              "immutableInputs": {
+                "capability": "proof.compact@1.0.0"
+              }
+            },
+            {
               "id": "deployment.protocol-transport.positive-11",
               "version": "1.0.0",
               "identity": "protocol-transport:positive-11",
@@ -9260,6 +9782,31 @@
                     "./credentials.compact"
                   ],
                   "domain": "verification"
+                }
+              ],
+              "witnessPolicy": "public-only",
+              "atomicReplay": false
+            },
+            {
+              "id": "provider.proof-executor",
+              "version": "1.0.0",
+              "roles": [
+                "proof-executor"
+              ],
+              "capabilities": [
+                {
+                  "id": "proof.compact",
+                  "version": "1.0.0"
+                }
+              ],
+              "packages": [
+                {
+                  "name": "@midnight-ntwrk/midnight-did-credentials-same-holder",
+                  "version": "0.1.0",
+                  "exports": [
+                    "./same-holder.compact"
+                  ],
+                  "domain": "proof"
                 }
               ],
               "witnessPolicy": "public-only",
@@ -9335,6 +9882,14 @@
             "domain": "holder-binding"
           },
           {
+            "name": "@midnight-ntwrk/midnight-did-credentials-same-holder",
+            "version": "0.1.0",
+            "exports": [
+              "./same-holder.compact"
+            ],
+            "domain": "proof"
+          },
+          {
             "name": "profile-coverage-fixture-family",
             "version": "1.0.0",
             "exports": [
@@ -9355,6 +9910,10 @@
           {
             "packageName": "@midnight-ntwrk/midnight-did-credentials-offchain-did",
             "exportPath": "."
+          },
+          {
+            "packageName": "@midnight-ntwrk/midnight-did-credentials-same-holder",
+            "exportPath": "./same-holder.compact"
           },
           {
             "packageName": "profile-coverage-fixture-family",
@@ -9389,6 +9948,13 @@
         ],
         "artifacts": [],
         "providers": [
+          {
+            "requirementId": "requirement.proof-executor",
+            "role": "proof-executor",
+            "providerId": "provider.proof-executor",
+            "providerVersion": "1.0.0",
+            "instanceId": "proof-executor:positive-11"
+          },
           {
             "requirementId": "requirement.protocol-transport",
             "role": "transport",
@@ -9437,6 +10003,15 @@
             "domain": "verification",
             "immutableInputs": {
               "capability": "verification.offchain-public-v1@1.0.0"
+            }
+          },
+          {
+            "id": "deployment.proof-executor.positive-11",
+            "kind": "local-service",
+            "domain": "proof",
+            "identity": "proof-executor:positive-11",
+            "immutableInputs": {
+              "capability": "proof.compact@1.0.0"
             }
           },
           {
@@ -9620,6 +10195,14 @@
                   "version": "1.0.0"
                 },
                 "role": "verification"
+              },
+              {
+                "id": "requirement.proof-executor",
+                "capability": {
+                  "id": "proof.compact",
+                  "version": "1.0.0"
+                },
+                "role": "proof-executor"
               }
             ]
           },
@@ -9700,7 +10283,13 @@
               "state": "disabled"
             },
             "proof-executor": {
-              "state": "disabled"
+              "state": "selected",
+              "requirementId": "requirement.proof-executor",
+              "provider": {
+                "id": "provider.proof-executor",
+                "version": "1.0.0"
+              },
+              "instanceId": "proof-executor:positive-12"
             },
             "artifact-resolver": {
               "state": "disabled"
@@ -9771,6 +10360,15 @@
               "immutableInputs": {
                 "capability": "verification.offchain-public-v1@1.0.0"
               }
+            },
+            {
+              "id": "deployment.proof-executor.positive-12",
+              "kind": "local-service",
+              "domain": "proof",
+              "identity": "proof-executor:positive-12",
+              "immutableInputs": {
+                "capability": "proof.compact@1.0.0"
+              }
             }
           ]
         },
@@ -9797,6 +10395,31 @@
                     "./credentials.compact"
                   ],
                   "domain": "verification"
+                }
+              ],
+              "witnessPolicy": "public-only",
+              "atomicReplay": false
+            },
+            {
+              "id": "provider.proof-executor",
+              "version": "1.0.0",
+              "roles": [
+                "proof-executor"
+              ],
+              "capabilities": [
+                {
+                  "id": "proof.compact",
+                  "version": "1.0.0"
+                }
+              ],
+              "packages": [
+                {
+                  "name": "@midnight-ntwrk/midnight-did-credentials-same-holder",
+                  "version": "0.1.0",
+                  "exports": [
+                    "./same-holder.compact"
+                  ],
+                  "domain": "proof"
                 }
               ],
               "witnessPolicy": "public-only",
@@ -9839,6 +10462,14 @@
             "domain": "holder-binding"
           },
           {
+            "name": "@midnight-ntwrk/midnight-did-credentials-same-holder",
+            "version": "0.1.0",
+            "exports": [
+              "./same-holder.compact"
+            ],
+            "domain": "proof"
+          },
+          {
             "name": "profile-coverage-fixture-family",
             "version": "1.0.0",
             "exports": [
@@ -9855,6 +10486,10 @@
           {
             "packageName": "@midnight-ntwrk/midnight-did-credentials-offchain-did",
             "exportPath": "."
+          },
+          {
+            "packageName": "@midnight-ntwrk/midnight-did-credentials-same-holder",
+            "exportPath": "./same-holder.compact"
           },
           {
             "packageName": "profile-coverage-fixture-family",
@@ -9889,6 +10524,13 @@
         ],
         "artifacts": [],
         "providers": [
+          {
+            "requirementId": "requirement.proof-executor",
+            "role": "proof-executor",
+            "providerId": "provider.proof-executor",
+            "providerVersion": "1.0.0",
+            "instanceId": "proof-executor:positive-12"
+          },
           {
             "requirementId": "requirement.verification",
             "role": "verification",
@@ -9930,6 +10572,15 @@
             "domain": "verification",
             "immutableInputs": {
               "capability": "verification.offchain-public-v1@1.0.0"
+            }
+          },
+          {
+            "id": "deployment.proof-executor.positive-12",
+            "kind": "local-service",
+            "domain": "proof",
+            "identity": "proof-executor:positive-12",
+            "immutableInputs": {
+              "capability": "proof.compact@1.0.0"
             }
           }
         ],
@@ -10098,6 +10749,14 @@
                 "role": "verification"
               },
               {
+                "id": "requirement.proof-executor",
+                "capability": {
+                  "id": "proof.compact",
+                  "version": "1.0.0"
+                },
+                "role": "proof-executor"
+              },
+              {
                 "id": "requirement.protocol-transport",
                 "capability": {
                   "id": "protocol.oid4vp-1.0-final",
@@ -10190,7 +10849,13 @@
               "instanceId": "protocol-transport:positive-13"
             },
             "proof-executor": {
-              "state": "disabled"
+              "state": "selected",
+              "requirementId": "requirement.proof-executor",
+              "provider": {
+                "id": "provider.proof-executor",
+                "version": "1.0.0"
+              },
+              "instanceId": "proof-executor:positive-13"
             },
             "artifact-resolver": {
               "state": "disabled"
@@ -10263,6 +10928,15 @@
               }
             },
             {
+              "id": "deployment.proof-executor.positive-13",
+              "kind": "local-service",
+              "domain": "proof",
+              "identity": "proof-executor:positive-13",
+              "immutableInputs": {
+                "capability": "proof.compact@1.0.0"
+              }
+            },
+            {
               "id": "deployment.protocol-transport.positive-13",
               "version": "1.0.0",
               "identity": "protocol-transport:positive-13",
@@ -10304,6 +10978,31 @@
                     "./credentials.compact"
                   ],
                   "domain": "verification"
+                }
+              ],
+              "witnessPolicy": "public-only",
+              "atomicReplay": false
+            },
+            {
+              "id": "provider.proof-executor",
+              "version": "1.0.0",
+              "roles": [
+                "proof-executor"
+              ],
+              "capabilities": [
+                {
+                  "id": "proof.compact",
+                  "version": "1.0.0"
+                }
+              ],
+              "packages": [
+                {
+                  "name": "@midnight-ntwrk/midnight-did-credentials-same-holder",
+                  "version": "0.1.0",
+                  "exports": [
+                    "./same-holder.compact"
+                  ],
+                  "domain": "proof"
                 }
               ],
               "witnessPolicy": "public-only",
@@ -10379,6 +11078,14 @@
             "domain": "protocol"
           },
           {
+            "name": "@midnight-ntwrk/midnight-did-credentials-same-holder",
+            "version": "0.1.0",
+            "exports": [
+              "./same-holder.compact"
+            ],
+            "domain": "proof"
+          },
+          {
             "name": "profile-coverage-fixture-family",
             "version": "1.0.0",
             "exports": [
@@ -10399,6 +11106,10 @@
           {
             "packageName": "@midnight-ntwrk/midnight-did-credentials-openid",
             "exportPath": "."
+          },
+          {
+            "packageName": "@midnight-ntwrk/midnight-did-credentials-same-holder",
+            "exportPath": "./same-holder.compact"
           },
           {
             "packageName": "profile-coverage-fixture-family",
@@ -10433,6 +11144,13 @@
         ],
         "artifacts": [],
         "providers": [
+          {
+            "requirementId": "requirement.proof-executor",
+            "role": "proof-executor",
+            "providerId": "provider.proof-executor",
+            "providerVersion": "1.0.0",
+            "instanceId": "proof-executor:positive-13"
+          },
           {
             "requirementId": "requirement.protocol-transport",
             "role": "transport",
@@ -10481,6 +11199,15 @@
             "domain": "verification",
             "immutableInputs": {
               "capability": "verification.offchain-public-v1@1.0.0"
+            }
+          },
+          {
+            "id": "deployment.proof-executor.positive-13",
+            "kind": "local-service",
+            "domain": "proof",
+            "identity": "proof-executor:positive-13",
+            "immutableInputs": {
+              "capability": "proof.compact@1.0.0"
             }
           },
           {
@@ -12361,6 +13088,14 @@
                   "version": "1.0.0"
                 },
                 "role": "verification"
+              },
+              {
+                "id": "requirement.proof-executor",
+                "capability": {
+                  "id": "proof.compact",
+                  "version": "1.0.0"
+                },
+                "role": "proof-executor"
               }
             ]
           },
@@ -12562,6 +13297,14 @@
                   "version": "1.0.0"
                 },
                 "role": "verification"
+              },
+              {
+                "id": "requirement.proof-executor",
+                "capability": {
+                  "id": "proof.compact",
+                  "version": "1.0.0"
+                },
+                "role": "proof-executor"
               }
             ]
           },
@@ -12757,6 +13500,14 @@
                   "version": "1.0.0"
                 },
                 "role": "verification"
+              },
+              {
+                "id": "requirement.proof-executor",
+                "capability": {
+                  "id": "proof.compact",
+                  "version": "1.0.0"
+                },
+                "role": "proof-executor"
               }
             ]
           },
@@ -12952,6 +13703,14 @@
                   "version": "1.0.0"
                 },
                 "role": "verification"
+              },
+              {
+                "id": "requirement.proof-executor",
+                "capability": {
+                  "id": "proof.compact",
+                  "version": "1.0.0"
+                },
+                "role": "proof-executor"
               }
             ]
           },
@@ -13155,6 +13914,14 @@
                   "version": "1.0.0"
                 },
                 "role": "verification"
+              },
+              {
+                "id": "requirement.proof-executor",
+                "capability": {
+                  "id": "proof.compact",
+                  "version": "1.0.0"
+                },
+                "role": "proof-executor"
               }
             ]
           },
@@ -13350,6 +14117,14 @@
                   "version": "1.0.0"
                 },
                 "role": "verification"
+              },
+              {
+                "id": "requirement.proof-executor",
+                "capability": {
+                  "id": "proof.compact",
+                  "version": "1.0.0"
+                },
+                "role": "proof-executor"
               }
             ]
           },
@@ -13545,6 +14320,14 @@
                   "version": "1.0.0"
                 },
                 "role": "verification"
+              },
+              {
+                "id": "requirement.proof-executor",
+                "capability": {
+                  "id": "proof.compact",
+                  "version": "1.0.0"
+                },
+                "role": "proof-executor"
               }
             ]
           },
