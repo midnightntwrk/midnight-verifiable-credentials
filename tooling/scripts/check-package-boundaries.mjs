@@ -32,6 +32,7 @@ export const classifyWorkspacePath = (workspacePath) => {
 // in `components/orchestration/exchange` and cannot use this exception.
 export const migrationExceptions = {
   "packages/components/orchestration/protocol": [
+    "packages/components/orchestration/exchange",
     "packages/core/primitives/credentials",
     "packages/prototypes/credential-families/birth",
     "packages/prototypes/credential-families/birth-secret",
@@ -133,9 +134,22 @@ const workspaceSourceFiles = (workspacePath) => {
   return files;
 };
 
-const workspacePathForImport = (specifier) => {
+export const workspacePathForImport = (specifier, importerFile) => {
   for (const [packageName, workspacePath] of workspaceByName) {
     if (specifier === packageName || specifier.startsWith(`${packageName}/`)) {
+      return workspacePath;
+    }
+  }
+  if (!importerFile || !specifier.startsWith(".")) return undefined;
+
+  const importerPath = path.isAbsolute(importerFile)
+    ? importerFile
+    : path.join(repoRoot, importerFile);
+  const importedPath = path.resolve(path.dirname(importerPath), specifier);
+  for (const { path: workspacePath } of workspaceCatalog) {
+    const workspaceRoot = path.join(repoRoot, workspacePath);
+    const relative = path.relative(workspaceRoot, importedPath);
+    if (relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative))) {
       return workspacePath;
     }
   }
@@ -149,8 +163,10 @@ export const familySourceImportPaths = (workspacePath) => {
     for (const pattern of [sourceImportPattern, bareImportPattern]) {
       pattern.lastIndex = 0;
       for (const match of source.matchAll(pattern)) {
-        const dependencyPath = workspacePathForImport(match[1]);
-        if (dependencyPath) imports.add(dependencyPath);
+        const dependencyPath = workspacePathForImport(match[1], sourceFile);
+        if (dependencyPath && dependencyPath !== workspacePath) {
+          imports.add(dependencyPath);
+        }
       }
     }
   }

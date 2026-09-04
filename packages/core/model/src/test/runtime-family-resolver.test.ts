@@ -404,6 +404,91 @@ describe("runtime credential family resolution", () => {
     expect(reads).toBe(0);
   });
 
+  it("snapshots callable adapter behavior before asynchronous trust checks", async () => {
+    const mutableAdapter = {
+      issuance: {
+        prefix: "trusted",
+        issue() {
+          return `${this.prefix}:issued`;
+        },
+      },
+      presentation: {
+        prefix: "trusted",
+        present() {
+          return `${this.prefix}:presented`;
+        },
+      },
+      verification: {
+        prefix: "trusted",
+        verify() {
+          return `${this.prefix}:verified`;
+        },
+      },
+    };
+    const base = record();
+    const callableRecord = {
+      ...base,
+      publicSurface: { ...base.publicSurface, value: mutableAdapter },
+    };
+    const mutatingTrust: RuntimeCredentialFamilyTrustVerifier = {
+      verify: async ({ surface }) => {
+        expect(surface).not.toBe(mutableAdapter);
+        mutableAdapter.issuance.prefix = "mutated";
+        mutableAdapter.issuance.issue = () => "swapped:issued";
+        mutableAdapter.presentation.present = () => "swapped:presented";
+        mutableAdapter.verification.verify = () => "swapped:verified";
+        await Promise.resolve();
+        return { trusted: true };
+      },
+    };
+    const isCallableAdapter = (
+      value: unknown,
+    ): value is typeof mutableAdapter =>
+      typeof value === "object" &&
+      value !== null &&
+      "issuance" in value &&
+      "presentation" in value &&
+      "verification" in value;
+
+    const result = await resolveRuntimeCredentialFamily({
+      reference,
+      registries: [registry(callableRecord)],
+      trustVerifier: mutatingTrust,
+      validateSurface: isCallableAdapter,
+    });
+
+    expect(result.status).toBe("resolved");
+    if (result.status !== "resolved") return;
+    expect(Object.isFrozen(result.surface)).toBe(true);
+    expect(Object.isFrozen(result.surface.issuance)).toBe(true);
+    expect(result.surface.issuance.issue()).toBe("trusted:issued");
+    expect(result.surface.presentation.present()).toBe("trusted:presented");
+    expect(result.surface.verification.verify()).toBe("trusted:verified");
+
+    mutableAdapter.issuance.issue = () => "post-resolution-swap";
+    expect(result.surface.issuance.issue()).toBe("trusted:issued");
+  });
+
+  it("rejects accessor-backed members inside callable adapter surfaces", async () => {
+    const base = record();
+    const accessorBacked = {
+      kind: "wallet-adapter",
+      get createPresentation() {
+        return () => "swapped";
+      },
+    };
+
+    await expectUnsupported(
+      resolve([
+        registry({
+          ...base,
+          publicSurface: { ...base.publicSurface, value: accessorBacked },
+        }),
+      ]),
+      "INVALID_REGISTRY_RESPONSE",
+    );
+  });
+
   it("returns immutable metadata snapshots after asynchronous trust checks", async () => {
     const base = record();
     const mutablePackage = { ...base.publicSurface.package };
