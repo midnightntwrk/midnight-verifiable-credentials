@@ -15,6 +15,7 @@ import {
   BIRTH_SCHEMA,
   BIRTH_SCHEMA_FAMILY_ADAPTER,
   formatSchemaRef,
+  schemaRefsEqual,
 } from "./schema-descriptors.js";
 import {
   type PresentationRequirements,
@@ -117,8 +118,36 @@ export const createBirthInjectedCredentialFamilyAdapter = (
   });
   const decode = <TKind extends CanonicalMessage["kind"]>(
     message: CanonicalMessage<TKind>,
-  ): ProtocolMessage =>
-    stableJsonProtocolStateCodec.decode(message.payload) as ProtocolMessage;
+  ): ProtocolMessage => {
+    if (message.mediaType !== MEDIA_TYPE) {
+      throw new Error(
+        `Canonical birth message media type "${message.mediaType}" does not match "${MEDIA_TYPE}"`,
+      );
+    }
+    const decoded = stableJsonProtocolStateCodec.decode(
+      message.payload,
+    ) as ProtocolMessage;
+    const payloadSchema = (decoded.body as { readonly schema?: unknown } | null)
+      ?.schema;
+    if (
+      typeof payloadSchema !== "object" ||
+      payloadSchema === null ||
+      !("packageId" in payloadSchema) ||
+      !(payloadSchema.packageId instanceof Uint8Array) ||
+      !("schemaId" in payloadSchema) ||
+      !(payloadSchema.schemaId instanceof Uint8Array) ||
+      !("majorVersion" in payloadSchema) ||
+      typeof payloadSchema.majorVersion !== "bigint" ||
+      !("minorVersion" in payloadSchema) ||
+      typeof payloadSchema.minorVersion !== "bigint" ||
+      !schemaRefsEqual(payloadSchema as typeof BIRTH_SCHEMA, BIRTH_SCHEMA)
+    ) {
+      throw new Error(
+        `Canonical birth payload schema does not match "${FAMILY_IDENTITY.schemaId}"`,
+      );
+    }
+    return decoded;
+  };
 
   return {
     family: {
