@@ -1,0 +1,198 @@
+{
+  "formatVersion": 1,
+  "prototype": {
+    "id": "mixed-claims",
+    "workspace": "packages/prototypes/credential-families/mixed-claims",
+    "hypothesis": "One family can compose signed public claims with independently opened commitment-backed claims.",
+    "owner": "midnight-verifiable-credentials maintainers",
+    "limitations": [
+      "Claim-representation laboratory; no status, transport, or production authority."
+    ],
+    "exitCriterion": "Keep only until mixed-claim behavior is covered by reusable core conformance fixtures."
+  },
+  "profile": {
+    "formatVersion": 1,
+    "id": "profile.prototype.mixed-claims",
+    "version": "1.0.0",
+    "family": {
+      "id": "prototype.mixed-claims",
+      "version": "0.1.0",
+      "schemaId": "urn:midnight:prototype:mixed-claims",
+      "schemaVersion": "1.0.0"
+    },
+    "semantics": {
+      "claims": [
+        {
+          "claimId": "credentialTypeCode",
+          "disclosure": "public"
+        },
+        {
+          "claimId": "issuerJurisdictionCode",
+          "disclosure": "public"
+        },
+        {
+          "claimId": "assuranceLevel",
+          "disclosure": "public"
+        },
+        {
+          "claimId": "subjectId",
+          "disclosure": "committed"
+        },
+        {
+          "claimId": "birthDate",
+          "disclosure": "committed"
+        },
+        {
+          "claimId": "accountTier",
+          "disclosure": "committed"
+        }
+      ],
+      "holderBinding": {
+        "mode": "explicit-did",
+        "capability": {
+          "id": "holder.explicit-did",
+          "version": "1.0.0"
+        }
+      },
+      "issuance": {
+        "credential": "issuer-local-issuance-v1",
+        "registration": "disabled",
+        "anchoring": "disabled"
+      },
+      "presentation": {
+        "capability": {
+          "id": "presentation.vp",
+          "version": "1.0.0"
+        },
+        "preparation": "holder-wallet-v1",
+        "proofGeneration": {
+          "capability": {
+            "id": "proof.compact",
+            "version": "1.0.0"
+          },
+          "witnessPolicy": "private-compatible"
+        }
+      },
+      "verification": {
+        "profile": "ledger-local-v1",
+        "location": "ledger",
+        "authority": "ledger-local",
+        "commitState": "committed",
+        "privateInputSources": [
+          "private-predicate"
+        ]
+      },
+      "status": {
+        "mode": "disabled"
+      },
+      "did": {
+        "method": "did:midnight",
+        "relationship": "assertionMethod",
+        "network": "undeployed-fixture",
+        "versionEvidence": "package-lock"
+      },
+      "trust": {
+        "scope": "fixture-only",
+        "epochEvidence": "not-production-authority"
+      },
+      "trustedTime": {
+        "source": "none",
+        "evidence": "not-required",
+        "freshnessPolicy": "not-required"
+      },
+      "mutation": {
+        "location": "none",
+        "nullifier": "none",
+        "consumption": "none"
+      },
+      "protocols": [
+        "disabled"
+      ]
+    },
+    "requirements": {
+      "packages": [
+        {
+          "name": "@midnight-ntwrk/midnight-did-credentials-mixed-claims",
+          "version": "0.1.0",
+          "exports": [
+            "./mixed-claims-credential.compact"
+          ],
+          "domain": "family"
+        }
+      ],
+      "compactEntrypoints": [
+        {
+          "id": "compact.mixed-claims",
+          "packageName": "@midnight-ntwrk/midnight-did-credentials-mixed-claims",
+          "exportPath": "./mixed-claims-credential.compact",
+          "sourcePath": "packages/prototypes/credential-families/mixed-claims/src/mixed-claims-credential.compact"
+        }
+      ],
+      "circuits": [
+        {
+          "id": "circuit.mixed-claims.root",
+          "semanticVersion": "1.0.0",
+          "entrypointId": "compact.mixed-claims"
+        }
+      ],
+      "artifacts": [],
+      "providers": [
+        {
+          "id": "requirement.proof-executor",
+          "capability": {
+            "id": "proof.compact",
+            "version": "1.0.0"
+          },
+          "role": "proof-executor"
+        }
+      ]
+    },
+    "compatibility": {
+      "deniedRules": [
+        "PRIVATE_INPUTS_WITH_PUBLIC_ONLY_VERIFICATION",
+        "STATUS_EVIDENCE_REQUIRED",
+        "CALLER_TIME_WITH_LEDGER_AUTHORITY",
+        "ATOMIC_REPLAY_REQUIRED",
+        "DISABLED_CAPABILITY_DEPENDENCY",
+        "LEDGER_COMMIT_REQUIRED",
+        "UNTESTED_COMBINATION"
+      ]
+    },
+    "conformance": {
+      "fixtureId": "prototype:mixed-claims:composition-v1",
+      "evidenceDisposition": "tested",
+      "evidenceIds": [
+        "prototype:mixed-claims:composition-v1:compile",
+        "prototype:mixed-claims:composition-v1:happy",
+        "prototype:mixed-claims:composition-v1:negative"
+      ]
+    },
+    "maturity": {
+      "api": {
+        "subjectId": "prototype:mixed-claims:composition-v1",
+        "value": "prototype"
+      },
+      "security": {
+        "subjectId": "prototype:mixed-claims:composition-v1",
+        "value": "unassessed"
+      },
+      "standards": {
+        "subjectId": "prototype:mixed-claims:composition-v1",
+        "value": "not-applicable"
+      },
+      "production": {
+        "subjectId": "prototype:mixed-claims:composition-v1",
+        "value": "not-assessed"
+      }
+    }
+  },
+  "evidence": {
+    "fixture": "packages/prototypes/credential-families/mixed-claims/src/mixed-claims-credential.compact",
+    "graph": "packages/prototypes/credential-families/mixed-claims/conformance/family-definition.json",
+    "happyPath": "packages/prototypes/credential-families/mixed-claims/src/test/behavior.test.ts#L319",
+    "negatives": [
+      "packages/prototypes/credential-families/mixed-claims/src/test/private-commitment-guards.test.ts#L22"
+    ]
+  },
+  "familyDefinition": "packages/prototypes/credential-families/mixed-claims/conformance/family-definition.json"
+}

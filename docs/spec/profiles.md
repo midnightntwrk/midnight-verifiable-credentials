@@ -45,13 +45,25 @@ path-specific `CredentialModelError`; it never infers a profile from an
 assembly, fills an omitted axis, selects a provider, or weakens a semantic
 requirement. Disabled status removes status-registry, proof, authority, and
 mutation edges without removing unrelated signing. The contract is mechanism-
-neutral: prototype migration and finite covering arrays remain #493, concrete
-authority/provider mechanisms remain #494 and later, and product deployment
-values remain outside this repository's reusable model.
+neutral: retained-prototype manifests and the finite constraint-aware coverage
+matrix are tracked in [`../testing/prototype-profile-coverage.md`](../testing/prototype-profile-coverage.md).
+That evidence proves only its stated supported-value and allowed-pair guarantees;
+concrete authority/provider mechanisms remain #494 and later, and product
+deployment values remain outside this repository's reusable model.
 
 Existing `CredentialFamilyDefinition` callers remain valid. Adoption is
 explicit and additive; there is no implicit migration from a family definition
 to either versioned composition contract.
+
+For runtime wallet resolution, `RuntimeCredentialFamilyRegistryV1` returns an
+untrusted record carrying those same explicit composition inputs plus exact
+package/export, SHA-256 artifact, public-surface, and scheme-neutral
+authentication metadata. `resolveRuntimeCredentialFamily(...)` reuses the
+combined resolver before invoking a deployment-supplied trust verifier and
+surface guard. Typed unsupported results cover unknown, unavailable, malformed,
+version-mismatched, incompatible, artifact-mismatched, and untrusted records.
+The model does not select trust roots, fetch artifacts, execute code, or define
+a plugin sandbox; those deployment/delivery concerns are not profile defaults.
 
 ## Purpose
 

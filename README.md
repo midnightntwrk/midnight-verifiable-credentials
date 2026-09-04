@@ -61,6 +61,8 @@ Current maturity is mixed by package:
   - [`credentials`](./packages/core/primitives/credentials/README.md)
   - [`credentials-status-registry`](./packages/registry/status-registry/README.md)
     - reusable registry package with the current prototype status / revocation trust model
+  - [retained prototype composition and coverage matrix](./packages/prototypes/credential-families/README.md)
+    - generated capability, maturity, package/artifact, privacy/trust, and test evidence from validated manifests
   - [`credentials-birth`](./packages/prototypes/credential-families/birth/README.md)
   - [`credentials-birth-secret`](./packages/prototypes/credential-families/birth-secret/README.md)
   - [`credentials-hello-family`](./packages/prototypes/credential-families/hello-family/README.md)

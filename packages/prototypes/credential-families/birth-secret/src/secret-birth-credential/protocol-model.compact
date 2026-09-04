@@ -18,6 +18,7 @@ export struct SecretBirthCredentialIssuanceResultBody {
   credential: SecretBirthCredential,
   credentialProof: Proof,
   issuanceChallengeHash: Bytes<32>,
+  privateParts: BirthCredentialPrivateParts,
 }
 
 export struct SecretBirthCredentialVerificationRequestBody {

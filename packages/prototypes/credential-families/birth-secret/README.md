@@ -104,7 +104,9 @@ This package owns:
 This package supports the reference blinded-secret issuance and presentation
 happy path used by `credentials-protocol`. A credential can be bound to a
 hidden holder secret commitment and later satisfied with a private holder
-witness plus a verifier challenge.
+witness plus a verifier challenge. Its issuance result carries the shared
+`BirthCredentialPrivateParts` holder sidecar; Compact result validation opens
+all claim commitments before the protocol holder persists those private parts.
 
 What it does prove:
 

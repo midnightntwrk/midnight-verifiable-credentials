@@ -1,0 +1,165 @@
+{
+  "formatVersion": 1,
+  "id": "prototype.dummy-claims",
+  "version": "0.1.0",
+  "schema": {
+    "id": "urn:midnight:prototype:dummy-claims",
+    "version": "1.0.0",
+    "credentialTypes": [
+      "VerifiableCredential",
+      "prototype.dummy-claims"
+    ],
+    "claims": [
+      {
+        "id": "booleanValue",
+        "path": [
+          "credentialSubject",
+          "booleanValue"
+        ],
+        "disclosure": "selective",
+        "required": true
+      },
+      {
+        "id": "byteSizedUnsignedValue",
+        "path": [
+          "credentialSubject",
+          "byteSizedUnsignedValue"
+        ],
+        "disclosure": "selective",
+        "required": true
+      },
+      {
+        "id": "mediumUnsignedValue",
+        "path": [
+          "credentialSubject",
+          "mediumUnsignedValue"
+        ],
+        "disclosure": "selective",
+        "required": true
+      },
+      {
+        "id": "bigUnsignedValue",
+        "path": [
+          "credentialSubject",
+          "bigUnsignedValue"
+        ],
+        "disclosure": "selective",
+        "required": true
+      },
+      {
+        "id": "bytes16Value",
+        "path": [
+          "credentialSubject",
+          "bytes16Value"
+        ],
+        "disclosure": "selective",
+        "required": true
+      },
+      {
+        "id": "bytes32Value",
+        "path": [
+          "credentialSubject",
+          "bytes32Value"
+        ],
+        "disclosure": "selective",
+        "required": true
+      },
+      {
+        "id": "fieldValue",
+        "path": [
+          "credentialSubject",
+          "fieldValue"
+        ],
+        "disclosure": "selective",
+        "required": true
+      },
+      {
+        "id": "booleanVector",
+        "path": [
+          "credentialSubject",
+          "booleanVector"
+        ],
+        "disclosure": "selective",
+        "required": true
+      },
+      {
+        "id": "uintVector",
+        "path": [
+          "credentialSubject",
+          "uintVector"
+        ],
+        "disclosure": "selective",
+        "required": true
+      },
+      {
+        "id": "bytesVector",
+        "path": [
+          "credentialSubject",
+          "bytesVector"
+        ],
+        "disclosure": "selective",
+        "required": true
+      },
+      {
+        "id": "fieldVector",
+        "path": [
+          "credentialSubject",
+          "fieldVector"
+        ],
+        "disclosure": "selective",
+        "required": true
+      },
+      {
+        "id": "nestedValue",
+        "path": [
+          "credentialSubject",
+          "nestedValue"
+        ],
+        "disclosure": "selective",
+        "required": true
+      },
+      {
+        "id": "nestedVector",
+        "path": [
+          "credentialSubject",
+          "nestedVector"
+        ],
+        "disclosure": "selective",
+        "required": true
+      }
+    ]
+  },
+  "capabilities": [
+    {
+      "id": "holder.explicit-did",
+      "kind": "holder-binding",
+      "version": "1.0.0",
+      "required": true
+    },
+    {
+      "id": "proof.compact",
+      "kind": "proof",
+      "version": "1.0.0",
+      "required": true
+    },
+    {
+      "id": "presentation.vp",
+      "kind": "presentation",
+      "version": "1.0.0",
+      "required": true
+    }
+  ],
+  "artifacts": [],
+  "composition": {
+    "formatVersion": 1,
+    "packages": [
+      {
+        "name": "@midnight-ntwrk/midnight-did-credentials-dummy-claims",
+        "version": "^0.1.0",
+        "exports": [
+          "./dummy-claims-credential.compact"
+        ]
+      }
+    ]
+  }
+}

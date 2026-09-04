@@ -14,8 +14,11 @@ const packageJson = JSON.parse(
 };
 
 describe("university-diploma package surfaces", () => {
-  it("exports the contract surface", () => {
+  it("exports the contract and Compact surfaces", () => {
     expect(packageJson.exports).toHaveProperty("./contract");
+    expect(
+      packageJson.exports?.["./university-diploma-credential.compact"],
+    ).toBe("./dist/university-diploma-credential.compact");
   });
 
   it("exports the testing surface", () => {

@@ -17,7 +17,8 @@ The package provides:
 - bounded package composition manifests;
 - validation helpers and family-neutral errors;
 - independently versioned semantic profiles and deployment assemblies;
-- capability-provider catalogs and an exact, fail-closed composition resolver.
+- capability-provider catalogs and an exact, fail-closed composition resolver;
+- authenticated runtime family registry/provider contracts for generic wallets.
 
 ## Install
 
@@ -130,6 +131,37 @@ The API is additive: existing `CredentialFamilyDefinition` consumers need no
 migration. A consumer adopts composition resolution only when it has separate
 profile, assembly, and provider-catalog inputs. No compatibility default turns
 an old family definition into a deployment assembly.
+
+## Resolve a family at runtime
+
+`resolveRuntimeCredentialFamily(...)` lets a generic wallet query one or more
+injected `RuntimeCredentialFamilyRegistryV1` providers for an exact family and
+schema identity. Registry records are treated as untrusted data. The resolver:
+
+1. validates the V1 registry and record shape;
+2. runs the family/profile/assembly/catalog through
+   `resolveCredentialComposition(...)`;
+3. binds the public surface to an exact package version/export and lowercase
+   SHA-256 artifact identity;
+4. asks a caller-injected `RuntimeCredentialFamilyTrustVerifier` to authenticate
+   the metadata, evidence, and supplied surface; and
+5. applies a caller-supplied surface type guard before returning the value.
+
+Successful resolution returns `status: "resolved"`. Unknown, unavailable,
+malformed, version-mismatched, incompatible, artifact-mismatched, and untrusted
+answers return `status: "unsupported"` with a stable code and diagnostic. A
+bad answer from one registry fails closed rather than falling through to a
+potentially different family. An unavailable registry may fall through to the
+next configured registry; if none resolves, the result records unavailability
+instead of claiming the family is unknown.
+
+The registry order, authentication scheme, trust roots, cache/revocation policy,
+and loaded-value provenance are deployment decisions. This contract does not
+fetch packages, execute downloaded code, define a plugin sandbox, or treat a
+registry as its own trust root. Registry implementations must supply a surface
+whose loaded artifact matches the authenticated artifact identity; the trust
+verifier is given both the metadata and value so deployments can enforce that
+binding.
 
 ## Boundaries
 

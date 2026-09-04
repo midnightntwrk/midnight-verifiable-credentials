@@ -31,6 +31,9 @@ describe("hello-family package surfaces", () => {
       "./dist/hello-family-credential.compact",
     );
     expect(
+      packageJson.exports["./hello-family-offchain-credential.compact"],
+    ).toBe("./dist/hello-family-offchain-credential.compact");
+    expect(
       packageJson.exports["./hello-family-credential/composable.compact"],
     ).toBe("./dist/hello-family-credential/composable.compact");
   });
@@ -65,6 +68,9 @@ describe("hello-family package surfaces", () => {
     expect(existsSync(distSurface("hello-family-credential.compact"))).toBe(
       true,
     );
+    expect(
+      existsSync(distSurface("hello-family-offchain-credential.compact")),
+    ).toBe(true);
     expect(
       existsSync(distSurface("hello-family-credential/composable.compact")),
     ).toBe(true);

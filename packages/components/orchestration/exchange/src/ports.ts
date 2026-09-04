@@ -1,9 +1,15 @@
 import type {
   CredentialFamilyDefinition,
+  CredentialFamilyReference as RuntimeCredentialFamilyReference,
   CredentialSchemaDescriptor,
 } from "@midnight-ntwrk/credential-model";
 
 import type { CanonicalMessage } from "./canonical-messages.js";
+import type {
+  HolderClaimOpeningDelivery,
+  HolderClaimOpeningRequest,
+  HolderClaimOpeningSelection,
+} from "./claim-openings.js";
 
 export type CredentialFamilyReference = Pick<
   CredentialFamilyDefinition<unknown, unknown>,
@@ -11,6 +17,34 @@ export type CredentialFamilyReference = Pick<
 > & {
   readonly schema: Pick<CredentialSchemaDescriptor, "id" | "version">;
 };
+
+export interface ClaimOpeningAdapter {
+  /** Creates only the exact holder-requested opening set for confidential delivery. */
+  createDelivery(input: {
+    readonly request: CanonicalMessage<"issuance-request">;
+    readonly credential: CanonicalMessage<"credential">;
+    readonly holder: HolderClaimOpeningRequest;
+    readonly input?: unknown;
+  }): HolderClaimOpeningDelivery;
+
+  /**
+   * Recomputes and checks every delivered value/opening against the canonical
+   * credential. Throwing rejects acceptance and persistence.
+   */
+  validateDelivery(input: {
+    readonly request: CanonicalMessage<"issuance-request">;
+    readonly credential: CanonicalMessage<"credential">;
+    readonly delivery: HolderClaimOpeningDelivery;
+    readonly holder: HolderClaimOpeningRequest;
+  }): void;
+
+  /** Returns exactly the requested subset from an already validated delivery. */
+  select(input: {
+    readonly credential: CanonicalMessage<"credential">;
+    readonly delivery: HolderClaimOpeningDelivery;
+    readonly claimIds: readonly string[];
+  }): HolderClaimOpeningSelection;
+}
 
 export interface IssuanceAdapter {
   createOffer(input?: unknown): CanonicalMessage<"issuance-offer">;
@@ -25,6 +59,8 @@ export interface IssuanceAdapter {
   accept(
     credential: CanonicalMessage<"credential">,
   ): CanonicalMessage<"credential">;
+  /** Optional so direct-claim and existing adapters remain source compatible. */
+  readonly claimOpenings?: ClaimOpeningAdapter;
 }
 
 export interface PresentationAdapter {
@@ -52,7 +88,7 @@ export interface VerificationAdapter<
   ): TResult;
 }
 
-/** Direct injection is deliberate; family discovery/resolution is out of scope. */
+/** Agents deliberately consume an already resolved adapter by injection. */
 export interface InjectedCredentialFamilyAdapter<
   TResult extends VerificationResult = VerificationResult,
 > {
@@ -61,3 +97,61 @@ export interface InjectedCredentialFamilyAdapter<
   readonly presentation: PresentationAdapter;
   readonly verification: VerificationAdapter<TResult>;
 }
+
+type UnknownRecord = Readonly<Record<string, unknown>>;
+
+const isRecord = (value: unknown): value is UnknownRecord =>
+  typeof value === "object" && value !== null && !Array.isArray(value);
+
+const isNonEmptyString = (value: unknown): value is string =>
+  typeof value === "string" && value.trim().length > 0;
+
+const hasFunction = (value: unknown, key: string): boolean =>
+  isRecord(value) && typeof value[key] === "function";
+
+/** Runtime guard suitable for `credential-model`'s injected surface validator. */
+export const isInjectedCredentialFamilyAdapter = (
+  value: unknown,
+): value is InjectedCredentialFamilyAdapter => {
+  if (!isRecord(value) || !isRecord(value.family)) return false;
+  const family = value.family;
+  if (
+    !isNonEmptyString(family.id) ||
+    !isNonEmptyString(family.version) ||
+    !isRecord(family.schema) ||
+    !isNonEmptyString(family.schema.id) ||
+    !isNonEmptyString(family.schema.version)
+  ) {
+    return false;
+  }
+
+  const claimOpenings = isRecord(value.issuance)
+    ? value.issuance.claimOpenings
+    : undefined;
+  const validClaimOpeningSurface =
+    claimOpenings === undefined ||
+    (hasFunction(claimOpenings, "createDelivery") &&
+      hasFunction(claimOpenings, "validateDelivery") &&
+      hasFunction(claimOpenings, "select"));
+
+  return (
+    hasFunction(value.issuance, "createOffer") &&
+    hasFunction(value.issuance, "createRequest") &&
+    hasFunction(value.issuance, "issue") &&
+    hasFunction(value.issuance, "accept") &&
+    validClaimOpeningSurface &&
+    hasFunction(value.presentation, "createRequest") &&
+    hasFunction(value.presentation, "present") &&
+    hasFunction(value.verification, "verify")
+  );
+};
+
+export const isInjectedCredentialFamilyAdapterFor = (
+  reference: RuntimeCredentialFamilyReference,
+  value: unknown,
+): value is InjectedCredentialFamilyAdapter =>
+  isInjectedCredentialFamilyAdapter(value) &&
+  value.family.id === reference.id &&
+  value.family.version === reference.version &&
+  value.family.schema.id === reference.schemaId &&
+  value.family.schema.version === reference.schemaVersion;

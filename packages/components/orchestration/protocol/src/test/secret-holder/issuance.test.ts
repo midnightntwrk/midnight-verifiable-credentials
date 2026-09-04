@@ -22,7 +22,10 @@ import {
   type ProtocolStateCodecResolver,
 } from "../../agents/protocol-state-store.js";
 import type { ProtocolRandomnessSource } from "../../agents/randomness.js";
-import { SecretHolderAgent } from "../../agents/secret-holder-agent.js";
+import {
+  SecretHolderAgent,
+  type SecretStoredCredential,
+} from "../../agents/secret-holder-agent.js";
 import {
   type SecretClaimWitness,
   SecretIssuerAgent,
@@ -204,6 +207,16 @@ describe("secret-holder issuance", () => {
     expect(resultBody.body.issuanceChallengeHash).toEqual(
       requestBody.body.holderChallengeHash,
     );
+    expect(stored.privateParts.openings.legalNameOpening).toEqual(
+      claimWitness.legalNameOpening,
+    );
+    expect(holder.recoverClaimOpenings(0, ["birthCountryCode"])).toEqual([
+      {
+        claimId: "birthCountryCode",
+        value: claimWitness.birthCountryCodePadded,
+        opening: claimWitness.birthCountryCodeOpening,
+      },
+    ]);
     expect(binding.blindedHolderSecretCommitment).toEqual(
       genericPureCircuits.blindedSecretHolderCommitment(
         requestBody.body.holderSecretCommitment,
@@ -211,6 +224,39 @@ describe("secret-holder issuance", () => {
         requestBody.body.holderBindingBlindingFactor,
       ),
     );
+  });
+
+  it("rejects altered holder opening material before persistence", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const holder = new SecretHolderAgent(holderConfig, bus);
+    issuer.createAndSendOffer("holder");
+    holder.receiveOfferAndSendRequest(bus.receive("holder")!);
+    const request = bus.receive("issuer")!;
+    issuer.receiveRequestAndIssueCredential(request, claimWitness);
+    const result = bus.receive("holder")!;
+    const body = result.body as SecretBirthCredentialIssuanceResult;
+    const tampered = {
+      ...result,
+      body: {
+        ...body,
+        body: {
+          ...body.body,
+          privateParts: {
+            ...body.body.privateParts,
+            openings: {
+              ...body.body.privateParts.openings,
+              birthDateOpening: new Uint8Array(32).fill(7),
+            },
+          },
+        },
+      },
+    };
+
+    expect(() => holder.receiveCredentialResult(tampered)).toThrow(
+      /birth-date opening does not match/i,
+    );
+    expect(holder.credentialCount).toBe(0);
   });
 
   it("binds the blinded commitment to the holder secret without revealing it to the issuer", () => {
@@ -430,9 +476,47 @@ describe("secret-holder issuance", () => {
       expect(stored.credential.issuedAt).toBe(claimWitness.issuedAt);
       expect(stored.credential.expiresAt).toBe(claimWitness.expiresAt);
       expect(stored.credentialProof.signature).toBeDefined();
+      expect(restartedHolder.recoverClaimOpenings(0, ["legalName"])).toEqual([
+        {
+          claimId: "legalName",
+          value: claimWitness.legalNamePadded,
+          opening: claimWitness.legalNameOpening,
+        },
+      ]);
     } finally {
       rmSync(rootDir, { recursive: true, force: true });
     }
+  });
+
+  it("revalidates persisted hidden-holder openings before recovery", () => {
+    const bus = new MessageBus();
+    const issuer = new SecretIssuerAgent(issuerProfile, bus);
+    const stateStore = new InMemoryProtocolStateStore();
+    const holder = new SecretHolderAgent(holderConfig, bus, { stateStore });
+    issuer.createAndSendOffer("holder");
+    holder.receiveOfferAndSendRequest(bus.receive("holder")!);
+    issuer.receiveRequestAndIssueCredential(bus.receive("issuer")!, claimWitness);
+    holder.receiveIssuanceOutcome(bus.receive("holder")!);
+    const stored = holder.getCredential(0);
+    stateStore
+      .collection<SecretStoredCredential>(
+        "secret-holder:holder:stored-credentials",
+      )
+      .set("0", {
+        ...stored,
+        privateParts: {
+          ...stored.privateParts,
+          openings: {
+            ...stored.privateParts.openings,
+            legalNameOpening: new Uint8Array(32).fill(6),
+          },
+        },
+      });
+
+    const restarted = new SecretHolderAgent(holderConfig, bus, { stateStore });
+    expect(() => restarted.recoverClaimOpenings(0, ["legalName"])).toThrow(
+      /legal-name opening does not match/i,
+    );
   });
 
   it("recovers the hidden-holder credential count when stored credentials outpace metadata", () => {

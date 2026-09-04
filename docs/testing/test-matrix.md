@@ -592,13 +592,23 @@ In addition to the wrapper targets above, `./run.sh` now accepts any root
 
 | Evidence | Contract |
 | --- | --- |
-| `packages/components/orchestration/exchange/src/test/injected-family-agents.test.ts` | The same issuer/holder/verifier orchestration runs with two directly injected family adapters; cross-family messages fail before dispatch and transport wrapping cannot grant validity. |
+| `packages/components/orchestration/exchange/src/test/injected-family-agents.test.ts` | The same issuer/holder/verifier orchestration runs with directly and runtime-injected family adapters; the public guard binds exact family/schema versions, rejects incomplete optional opening ports, cross-family messages fail before dispatch, and transport wrapping cannot grant validity. |
+| `packages/components/orchestration/exchange/src/test/claim-opening-delivery.test.ts` | A synthetic committed-private adapter delivers only the exact requested openings; altered, missing, additional, malformed, wrong-recipient, and mutating-adapter material fails before storage; restart revalidates private records; public receipt/presentation snapshots contain no openings or raw private claims; the canonical credential bytes remain unchanged. |
+| Birth/birth-secret Compact protocol tests and `packages/components/orchestration/protocol/src/test/{explicit-holder,secret-holder}/issuance.test.ts` | Both retained committed-private families include shared private parts in issuance results, validate every opening against the credential, reject wrong-recipient or altered material before storage, persist through file-backed restart, and selectively recover requested fields. |
 | `tooling/scripts/workspace-boundary-policy.test.mjs` | Family packages cannot depend on protocol, orchestration, or use-case workspaces; neutral exchange depends only on `credential-model`. |
-| `tooling/scripts/test-family-neutral-exchange-consumer.mjs` | Packed model/exchange tarballs install outside the workspace, type-check, and run an injected lifecycle. |
+| `tooling/scripts/test-family-neutral-exchange-consumer.mjs` | Packed model/exchange tarballs install outside the workspace; a generic wallet module with no concrete-family import resolves an authenticated runtime provider, persists/restarts, selectively recovers an opening, and completes an injected lifecycle without exposing the opening to its verifier. |
 | `packages/core/compact/src/test/compact-value-codec.test.ts` and OpenID compatibility tests | Protocol-neutral Compact value framing is canonical in `credential-compact` while the legacy OpenID export remains compatible. |
 
-These tests do not cover runtime unknown-family discovery or final protocol
-conformance.
+These tests do not claim final protocol conformance, package delivery, plugin
+execution, or production trust-root policy.
+
+## Runtime family resolution
+
+| Evidence | Contract |
+| --- | --- |
+| `packages/core/model/src/test/runtime-family-resolver.test.ts` positive registry case | A V1 provider resolves an unknown-at-build-time family through the exact #492 composition graph, authenticated package/export and SHA-256 artifact metadata, and a consumer surface guard. |
+| `packages/core/model/src/test/runtime-family-resolver.test.ts` negative cases | Unknown, unavailable, malformed, unsupported registry version, family/schema version mismatch, package/artifact tampering, incompatible composition, untrusted evidence, trust-service failure, and rejected surfaces return typed fail-closed results. |
+| `tooling/fixtures/runtime-family-wallet-consumer/` | Wallet code stays family-neutral while a separately defined runtime provider supplies the authenticated adapter; unchanged agents consume only the resolved injection. |
 
 ## Versioned profile and deployment resolution
 
@@ -608,6 +618,9 @@ conformance.
 | `packages/core/model/src/test/composition-resolver.test.ts` structural/property-style negatives | Unknown and omitted fields, deployment-role omissions, unknown values, family/profile/assembly mismatches, provider capability gaps, package conflicts, and artifact gaps fail with stable paths. |
 | `packages/core/model/src/test/composition-resolver.test.ts` ADR-0015 deny table | All mandatory denial codes are exercised, including hidden/private public-only verification, missing status proof, caller time with ledger authority, non-atomic side effects, disabled status edges, uncommitted authority, and untested combinations. |
 | `tooling/fixtures/credential-model-consumer/node-esm.mjs` | A clean packed-package consumer validates and resolves a fixture composition using only package-root exports. |
+| `tooling/profile-coverage/profile-coverage.test.mjs` and [`prototype-profile-coverage.md`](./prototype-profile-coverage.md) | Seven retained-prototype manifests validate and resolve through the same #492 contracts. Deterministic property checks prove every declared supported value and every allowed pair across explicitly independent axes, fixed-axis rationales/interactions, all mandatory higher-order rows, every deny-rule negative, exact evidence links, and generated-output drift. |
 
-These tests deliberately do not migrate prototypes, generate covering arrays,
-implement concrete authority mechanisms, or select product deployment values.
+This evidence does not implement concrete authority mechanisms, assert
+exhaustive Cartesian coverage, claim OpenID conformance, select production
+use-case values, or promote same-holder reference evidence to production
+authority.

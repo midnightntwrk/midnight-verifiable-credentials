@@ -1,0 +1,129 @@
+{
+  "formatVersion": 1,
+  "id": "prototype.hello-family",
+  "version": "0.1.0",
+  "schema": {
+    "id": "urn:midnight:prototype:hello-family",
+    "version": "1.0.0",
+    "credentialTypes": [
+      "VerifiableCredential",
+      "prototype.hello-family"
+    ],
+    "claims": [
+      {
+        "id": "booleanValue",
+        "path": [
+          "credentialSubject",
+          "booleanValue"
+        ],
+        "disclosure": "public",
+        "required": true
+      },
+      {
+        "id": "smallUintValue",
+        "path": [
+          "credentialSubject",
+          "smallUintValue"
+        ],
+        "disclosure": "public",
+        "required": true
+      },
+      {
+        "id": "bigUnsignedValue",
+        "path": [
+          "credentialSubject",
+          "bigUnsignedValue"
+        ],
+        "disclosure": "public",
+        "required": true
+      },
+      {
+        "id": "bytesValue",
+        "path": [
+          "credentialSubject",
+          "bytesValue"
+        ],
+        "disclosure": "public",
+        "required": true
+      },
+      {
+        "id": "fieldValue",
+        "path": [
+          "credentialSubject",
+          "fieldValue"
+        ],
+        "disclosure": "public",
+        "required": true
+      },
+      {
+        "id": "booleanVector",
+        "path": [
+          "credentialSubject",
+          "booleanVector"
+        ],
+        "disclosure": "public",
+        "required": true
+      },
+      {
+        "id": "uintVector",
+        "path": [
+          "credentialSubject",
+          "uintVector"
+        ],
+        "disclosure": "public",
+        "required": true
+      },
+      {
+        "id": "bytesVector",
+        "path": [
+          "credentialSubject",
+          "bytesVector"
+        ],
+        "disclosure": "public",
+        "required": true
+      },
+      {
+        "id": "fieldVector",
+        "path": [
+          "credentialSubject",
+          "fieldVector"
+        ],
+        "disclosure": "public",
+        "required": true
+      }
+    ]
+  },
+  "capabilities": [
+    {
+      "id": "holder.offchain-did",
+      "kind": "holder-binding",
+      "version": "1.0.0",
+      "required": true
+    },
+    {
+      "id": "proof.compact",
+      "kind": "proof",
+      "version": "1.0.0",
+      "required": true
+    },
+    {
+      "id": "presentation.vp",
+      "kind": "presentation",
+      "version": "1.0.0",
+      "required": true
+    }
+  ],
+  "artifacts": [],
+  "composition": {
+    "formatVersion": 1,
+    "packages": [
+      {
+        "name": "@midnight-ntwrk/midnight-did-credentials-hello-family",
+        "version": "^0.1.0",
+        "exports": [
+          "./hello-family-offchain-credential.compact"
+        ]
+      }
+    ]
+  }
+}

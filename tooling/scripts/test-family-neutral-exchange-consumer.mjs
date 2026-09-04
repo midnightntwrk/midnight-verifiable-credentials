@@ -20,13 +20,14 @@ const temporaryRoot = mkdtempSync(
 );
 const tarballRoot = path.join(temporaryRoot, "tarballs");
 const consumerRoot = path.join(temporaryRoot, "consumer");
+const consumerSource = path.join(consumerRoot, "src");
 const exchangePackageRoot = path.join(
   consumerRoot,
   "vendor",
   "exchange-package",
 );
 mkdirSync(tarballRoot, { recursive: true });
-mkdirSync(path.join(consumerRoot, "src"), { recursive: true });
+mkdirSync(consumerSource, { recursive: true });
 
 const run = (command, args, cwd = repoRoot) => {
   const result = spawnSync(command, args, {
@@ -43,7 +44,13 @@ const run = (command, args, cwd = repoRoot) => {
 };
 
 try {
-  run("pnpm", ["--dir", "packages/core/model", "pack", "--pack-destination", tarballRoot]);
+  run("pnpm", [
+    "--dir",
+    "packages/core/model",
+    "pack",
+    "--pack-destination",
+    tarballRoot,
+  ]);
 
   const tarballFor = (workspacePath) => {
     const manifest = JSON.parse(
@@ -112,37 +119,10 @@ try {
       2,
     )}\n`,
   );
-  writeFileSync(
-    path.join(consumerRoot, "src/index.ts"),
-    `import { HolderAgent, IssuerAgent, VerifierAgent, type InjectedCredentialFamilyAdapter } from "@midnight-ntwrk/credential-exchange";
-const bytes = new TextEncoder();
-const identity = { familyId: "consumer-family", familyVersion: "1.0.0", schemaId: "consumer-family:schema", schemaVersion: "1.0.0" } as const;
-const adapter: InjectedCredentialFamilyAdapter = {
-  family: { id: "consumer-family", version: "1.0.0", schema: { id: "consumer-family:schema", version: "1.0.0" } },
-  issuance: {
-    createOffer: () => ({ ...identity, kind: "issuance-offer", mediaType: "application/example", payload: bytes.encode("offer") }),
-    createRequest: () => ({ ...identity, kind: "issuance-request", mediaType: "application/example", payload: bytes.encode("request") }),
-    issue: () => ({ ...identity, kind: "credential", mediaType: "application/example", payload: bytes.encode("credential") }),
-    accept: (credential) => credential,
-  },
-  presentation: {
-    createRequest: () => ({ ...identity, kind: "presentation-request", mediaType: "application/example", payload: bytes.encode("challenge") }),
-    present: () => ({ ...identity, kind: "presentation", mediaType: "application/example", payload: bytes.encode("presentation") }),
-  },
-  verification: {
-    verify: (presentation) => ({ valid: true, canonicalPresentation: presentation }),
-  },
-};
-const issuer = new IssuerAgent(adapter);
-const holder = new HolderAgent(adapter);
-const verifier = new VerifierAgent(adapter);
-const request = holder.createIssuanceRequest(issuer.createOffer());
-holder.acceptCredential(issuer.issue(request));
-const presentationRequest = verifier.createPresentationRequest();
-const result = verifier.verify(holder.createPresentation(presentationRequest), presentationRequest);
-if (!result.valid) throw new Error("injected clean-consumer lifecycle failed");
-console.log("[credential-exchange-consumer] OK");
-`,
+  cpSync(
+    path.join(repoRoot, "tooling/fixtures/runtime-family-wallet-consumer"),
+    consumerSource,
+    { recursive: true },
   );
 
   run("npm", ["install", "--ignore-scripts", "--no-audit", "--no-fund"], consumerRoot);

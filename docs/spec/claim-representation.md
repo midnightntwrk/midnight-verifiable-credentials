@@ -103,6 +103,23 @@ A credential family implementation:
   credential IDs, and status handles out of always-public claims unless the use
   case explicitly accepts correlation
 
+## Holder Delivery at Issuance
+
+A holder cannot use a `committedPrivate` claim from a commitment digest alone.
+Issuance therefore `MUST` deliver the raw value and opening needed for each
+holder-requested committed claim through holder-only issuance material. The
+family adapter `MUST` bind that material to the intended recipient and exact
+requested claim identifiers, recompute every commitment before holder
+acceptance, and reject malformed, missing, additional, or mismatched material
+before persistence. Stored material `MUST` be revalidated after restart.
+
+The delivery is a confidential sidecar, not part of canonical credential bytes.
+It `MUST NOT` appear in presentation/verifier messages, public receipts, logs,
+or unrelated claim selections. Protocol and transport adapters may carry the
+sidecar only over the existing confidential issuance path; they do not interpret
+claim values, openings, or commitment validity. Direct-claim families do not
+need to synthesize this sidecar.
+
 ## Compact Shape
 
 The preferred mixed representation is explicit at the type level:

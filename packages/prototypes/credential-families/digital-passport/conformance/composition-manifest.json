@@ -1,0 +1,194 @@
+{
+  "formatVersion": 1,
+  "prototype": {
+    "id": "digital-passport",
+    "workspace": "packages/prototypes/credential-families/digital-passport",
+    "hypothesis": "A commitment-only passport fixture exercises private-predicate composition and OpenID-shaped transcript binding without asserting product ownership.",
+    "owner": "independent digital-passport migration owner",
+    "limitations": [
+      "Frozen migration evidence; OpenID-shaped framing is not OpenID conformance or a production passport use case."
+    ],
+    "exitCriterion": "Move authoritative family ownership to the independent repository and remove duplicate implementation here."
+  },
+  "profile": {
+    "formatVersion": 1,
+    "id": "profile.prototype.digital-passport",
+    "version": "1.0.0",
+    "family": {
+      "id": "prototype.digital-passport",
+      "version": "0.1.0",
+      "schemaId": "urn:midnight:prototype:digital-passport",
+      "schemaVersion": "1.0.0"
+    },
+    "semantics": {
+      "claims": [
+        {
+          "claimId": "firstName",
+          "disclosure": "committed"
+        },
+        {
+          "claimId": "lastName",
+          "disclosure": "committed"
+        },
+        {
+          "claimId": "dateOfBirth",
+          "disclosure": "committed"
+        },
+        {
+          "claimId": "documentNumber",
+          "disclosure": "committed"
+        },
+        {
+          "claimId": "issuingState",
+          "disclosure": "committed"
+        }
+      ],
+      "holderBinding": {
+        "mode": "explicit-did",
+        "capability": {
+          "id": "holder.explicit-did",
+          "version": "1.0.0"
+        }
+      },
+      "issuance": {
+        "credential": "issuer-local-issuance-v1",
+        "registration": "disabled",
+        "anchoring": "disabled"
+      },
+      "presentation": {
+        "capability": {
+          "id": "presentation.vp",
+          "version": "1.0.0"
+        },
+        "preparation": "holder-wallet-v1",
+        "proofGeneration": {
+          "capability": {
+            "id": "proof.compact",
+            "version": "1.0.0"
+          },
+          "witnessPolicy": "private-compatible"
+        }
+      },
+      "verification": {
+        "profile": "ledger-local-v1",
+        "location": "ledger",
+        "authority": "ledger-local",
+        "commitState": "committed",
+        "privateInputSources": [
+          "private-predicate"
+        ]
+      },
+      "status": {
+        "mode": "disabled"
+      },
+      "did": {
+        "method": "did:midnight",
+        "relationship": "assertionMethod",
+        "network": "undeployed-fixture",
+        "versionEvidence": "package-lock"
+      },
+      "trust": {
+        "scope": "fixture-only",
+        "epochEvidence": "not-production-authority"
+      },
+      "trustedTime": {
+        "source": "none",
+        "evidence": "not-required",
+        "freshnessPolicy": "not-required"
+      },
+      "mutation": {
+        "location": "none",
+        "nullifier": "none",
+        "consumption": "none"
+      },
+      "protocols": [
+        "oid4vp-1.0-final"
+      ]
+    },
+    "requirements": {
+      "packages": [
+        {
+          "name": "@midnight-ntwrk/midnight-did-credentials-digital-passport",
+          "version": "0.1.0",
+          "exports": [
+            "./digital-passport-credential.compact"
+          ],
+          "domain": "family"
+        }
+      ],
+      "compactEntrypoints": [
+        {
+          "id": "compact.digital-passport",
+          "packageName": "@midnight-ntwrk/midnight-did-credentials-digital-passport",
+          "exportPath": "./digital-passport-credential.compact",
+          "sourcePath": "packages/prototypes/credential-families/digital-passport/src/digital-passport-credential.compact"
+        }
+      ],
+      "circuits": [
+        {
+          "id": "circuit.digital-passport.root",
+          "semanticVersion": "1.0.0",
+          "entrypointId": "compact.digital-passport"
+        }
+      ],
+      "artifacts": [],
+      "providers": [
+        {
+          "id": "requirement.proof-executor",
+          "capability": {
+            "id": "proof.compact",
+            "version": "1.0.0"
+          },
+          "role": "proof-executor"
+        }
+      ]
+    },
+    "compatibility": {
+      "deniedRules": [
+        "PRIVATE_INPUTS_WITH_PUBLIC_ONLY_VERIFICATION",
+        "STATUS_EVIDENCE_REQUIRED",
+        "CALLER_TIME_WITH_LEDGER_AUTHORITY",
+        "ATOMIC_REPLAY_REQUIRED",
+        "DISABLED_CAPABILITY_DEPENDENCY",
+        "LEDGER_COMMIT_REQUIRED",
+        "UNTESTED_COMBINATION"
+      ]
+    },
+    "conformance": {
+      "fixtureId": "prototype:digital-passport:composition-v1",
+      "evidenceDisposition": "tested",
+      "evidenceIds": [
+        "prototype:digital-passport:composition-v1:compile",
+        "prototype:digital-passport:composition-v1:happy",
+        "prototype:digital-passport:composition-v1:negative"
+      ]
+    },
+    "maturity": {
+      "api": {
+        "subjectId": "prototype:digital-passport:composition-v1",
+        "value": "prototype"
+      },
+      "security": {
+        "subjectId": "prototype:digital-passport:composition-v1",
+        "value": "unassessed"
+      },
+      "standards": {
+        "subjectId": "prototype:digital-passport:composition-v1",
+        "value": "inspired"
+      },
+      "production": {
+        "subjectId": "prototype:digital-passport:composition-v1",
+        "value": "not-assessed"
+      }
+    }
+  },
+  "evidence": {
+    "fixture": "packages/prototypes/credential-families/digital-passport/src/digital-passport-credential.compact",
+    "graph": "packages/prototypes/credential-families/digital-passport/conformance/family-definition.json",
+    "happyPath": "packages/prototypes/credential-families/digital-passport/src/test/protocol.test.ts#L9",
+    "negatives": [
+      "packages/prototypes/credential-families/digital-passport/src/test/private-parts.test.ts#L12"
+    ]
+  },
+  "familyDefinition": "packages/prototypes/credential-families/digital-passport/conformance/family-definition.json"
+}

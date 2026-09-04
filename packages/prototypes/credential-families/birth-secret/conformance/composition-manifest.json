@@ -1,0 +1,202 @@
+{
+  "formatVersion": 1,
+  "prototype": {
+    "id": "birth-secret",
+    "workspace": "packages/prototypes/credential-families/birth-secret",
+    "hypothesis": "Hidden-holder birth credentials compose with authenticated status evidence and same-holder reference proofs.",
+    "owner": "midnight-verifiable-credentials maintainers",
+    "limitations": [
+      "Authority-attested status and same-holder remain reference evidence, not production authority approval."
+    ],
+    "exitCriterion": "Retain only hidden-holder/status conformance evidence after reusable capabilities have independent consumers."
+  },
+  "profile": {
+    "formatVersion": 1,
+    "id": "profile.prototype.birth-secret",
+    "version": "1.0.0",
+    "family": {
+      "id": "prototype.birth-secret",
+      "version": "0.1.0",
+      "schemaId": "urn:midnight:prototype:birth-secret",
+      "schemaVersion": "1.0.0"
+    },
+    "semantics": {
+      "claims": [
+        {
+          "claimId": "subjectId",
+          "disclosure": "committed"
+        },
+        {
+          "claimId": "legalName",
+          "disclosure": "committed"
+        },
+        {
+          "claimId": "birthDate",
+          "disclosure": "committed"
+        },
+        {
+          "claimId": "birthCountryCode",
+          "disclosure": "committed"
+        }
+      ],
+      "holderBinding": {
+        "mode": "blinded-secret",
+        "capability": {
+          "id": "holder.blinded-secret",
+          "version": "1.0.0"
+        }
+      },
+      "issuance": {
+        "credential": "issuer-local-issuance-v1",
+        "registration": "disabled",
+        "anchoring": "disabled"
+      },
+      "presentation": {
+        "capability": {
+          "id": "presentation.vp",
+          "version": "1.0.0"
+        },
+        "preparation": "holder-wallet-v1",
+        "proofGeneration": {
+          "capability": {
+            "id": "proof.compact",
+            "version": "1.0.0"
+          },
+          "witnessPolicy": "private-compatible"
+        }
+      },
+      "verification": {
+        "profile": "ledger-attested-v1",
+        "location": "ledger",
+        "authority": "ledger-attested",
+        "commitState": "committed",
+        "privateInputSources": [
+          "hidden-holder",
+          "private-predicate"
+        ]
+      },
+      "status": {
+        "mode": "authority-attested",
+        "capability": {
+          "id": "status.authority-attested",
+          "version": "1.0.0"
+        },
+        "namespace": "prototype:birth-secret",
+        "authority": "fixture-authority",
+        "rootVersion": "1",
+        "freshnessPolicy": "fixture-challenge-window-v1",
+        "evidence": "challenge-bound-attestation",
+        "privacy": "public",
+        "authenticated": true
+      },
+      "did": {
+        "method": "did:midnight",
+        "relationship": "assertionMethod",
+        "network": "undeployed-fixture",
+        "versionEvidence": "package-lock"
+      },
+      "trust": {
+        "scope": "fixture-only",
+        "epochEvidence": "not-production-authority"
+      },
+      "trustedTime": {
+        "source": "attested",
+        "evidence": "challenge-bound-attestation",
+        "freshnessPolicy": "fixture-challenge-window-v1"
+      },
+      "mutation": {
+        "location": "none",
+        "nullifier": "none",
+        "consumption": "none"
+      },
+      "protocols": [
+        "canonical-reference"
+      ]
+    },
+    "requirements": {
+      "packages": [
+        {
+          "name": "@midnight-ntwrk/midnight-did-credentials-birth-secret",
+          "version": "0.1.0",
+          "exports": [
+            "./secret-birth-credential.compact"
+          ],
+          "domain": "family"
+        }
+      ],
+      "compactEntrypoints": [
+        {
+          "id": "compact.birth-secret",
+          "packageName": "@midnight-ntwrk/midnight-did-credentials-birth-secret",
+          "exportPath": "./secret-birth-credential.compact",
+          "sourcePath": "packages/prototypes/credential-families/birth-secret/src/secret-birth-credential.compact"
+        }
+      ],
+      "circuits": [
+        {
+          "id": "circuit.birth-secret.root",
+          "semanticVersion": "1.0.0",
+          "entrypointId": "compact.birth-secret"
+        }
+      ],
+      "artifacts": [],
+      "providers": [
+        {
+          "id": "requirement.proof-executor",
+          "capability": {
+            "id": "proof.compact",
+            "version": "1.0.0"
+          },
+          "role": "proof-executor"
+        }
+      ]
+    },
+    "compatibility": {
+      "deniedRules": [
+        "PRIVATE_INPUTS_WITH_PUBLIC_ONLY_VERIFICATION",
+        "STATUS_EVIDENCE_REQUIRED",
+        "CALLER_TIME_WITH_LEDGER_AUTHORITY",
+        "ATOMIC_REPLAY_REQUIRED",
+        "DISABLED_CAPABILITY_DEPENDENCY",
+        "LEDGER_COMMIT_REQUIRED",
+        "UNTESTED_COMBINATION"
+      ]
+    },
+    "conformance": {
+      "fixtureId": "prototype:birth-secret:composition-v1",
+      "evidenceDisposition": "tested",
+      "evidenceIds": [
+        "prototype:birth-secret:composition-v1:compile",
+        "prototype:birth-secret:composition-v1:happy",
+        "prototype:birth-secret:composition-v1:negative"
+      ]
+    },
+    "maturity": {
+      "api": {
+        "subjectId": "prototype:birth-secret:composition-v1",
+        "value": "reference"
+      },
+      "security": {
+        "subjectId": "prototype:birth-secret:composition-v1",
+        "value": "unassessed"
+      },
+      "standards": {
+        "subjectId": "prototype:birth-secret:composition-v1",
+        "value": "not-applicable"
+      },
+      "production": {
+        "subjectId": "prototype:birth-secret:composition-v1",
+        "value": "not-assessed"
+      }
+    }
+  },
+  "evidence": {
+    "fixture": "packages/prototypes/credential-families/birth-secret/src/secret-birth-credential.compact",
+    "graph": "packages/prototypes/credential-families/birth-secret/conformance/family-definition.json",
+    "happyPath": "packages/prototypes/credential-families/birth-secret/src/test/status-attestation.test.ts#L16",
+    "negatives": [
+      "packages/prototypes/credential-families/birth-secret/src/test/status.test.ts#L12"
+    ]
+  },
+  "familyDefinition": "packages/prototypes/credential-families/birth-secret/conformance/family-definition.json"
+}

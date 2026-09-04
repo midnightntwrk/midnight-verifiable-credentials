@@ -36,5 +36,8 @@ describe("dummy-claims package surfaces", () => {
       "./managed/dummy-claims-credential/contract/index.js",
     );
     expect(packageJson.exports).toHaveProperty("./testing");
+    expect(packageJson.exports?.["./dummy-claims-credential.compact"]).toBe(
+      "./dist/dummy-claims-credential.compact",
+    );
   });
 });

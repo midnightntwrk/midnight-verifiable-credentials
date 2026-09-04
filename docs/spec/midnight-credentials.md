@@ -238,6 +238,16 @@ bounded family descriptor registry: `REFERENCE_SCHEMA_FAMILY_ADAPTERS` maps
 known `SchemaRef` values to concrete family handlers without expanding the
 canonical Compact `SchemaRef`.
 
+For wallets that do not know the family at build time, the protocol-neutral
+`@midnight-ntwrk/credential-model` package exports
+`RuntimeCredentialFamilyRegistryV1` and `resolveRuntimeCredentialFamily(...)`.
+The runtime resolver binds the family identity to the versioned profile and
+assembly graph, exact package export, SHA-256 artifact identity, injected trust
+verification, and a consumer surface guard. It returns typed unsupported
+results and never treats resolver hints or registry responses as trusted by
+themselves. Artifact delivery, code execution, sandboxing, and concrete product
+plugins are separate concerns.
+
 ### Compact Claim-Type Surface
 Repository-aligned direct claim layouts are constrained by the current Compact
 compiler surface.

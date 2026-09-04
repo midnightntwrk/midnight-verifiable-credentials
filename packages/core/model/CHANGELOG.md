@@ -11,6 +11,8 @@ All notable changes to this package are documented in this file.
   proof-generation to proof-executor capability binding.
 - Preserve `CredentialFamilyDefinition` compatibility; composition adoption is
   additive and requires explicit profile, assembly, and catalog inputs.
+- Add V1 runtime family registry, authenticated public-surface metadata, trust
+  verifier injection, and typed fail-closed resolution results for wallets.
 
 ## 0.1.0-rc1 - 2026-07-26
 

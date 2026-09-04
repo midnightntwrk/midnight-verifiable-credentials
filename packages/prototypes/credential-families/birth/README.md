@@ -78,6 +78,9 @@ Claim representation:
   `claimCommitments`
 - disclosures and predicates must open back to the signed commitments before a
   verifier uses them
+- issuance results carry `BirthCredentialPrivateParts` separately from the
+  canonical credential; result validation opens all four commitments before a
+  holder adapter may persist or selectively recover those private parts
 - compare [`../../../../docs/spec/claim-representation.md`](../../../../docs/spec/claim-representation.md)
   for the repository-wide taxonomy
 

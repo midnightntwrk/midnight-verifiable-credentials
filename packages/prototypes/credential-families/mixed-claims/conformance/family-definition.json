@@ -1,0 +1,102 @@
+{
+  "formatVersion": 1,
+  "id": "prototype.mixed-claims",
+  "version": "0.1.0",
+  "schema": {
+    "id": "urn:midnight:prototype:mixed-claims",
+    "version": "1.0.0",
+    "credentialTypes": [
+      "VerifiableCredential",
+      "prototype.mixed-claims"
+    ],
+    "claims": [
+      {
+        "id": "credentialTypeCode",
+        "path": [
+          "credentialSubject",
+          "credentialTypeCode"
+        ],
+        "disclosure": "public",
+        "required": true
+      },
+      {
+        "id": "issuerJurisdictionCode",
+        "path": [
+          "credentialSubject",
+          "issuerJurisdictionCode"
+        ],
+        "disclosure": "public",
+        "required": true
+      },
+      {
+        "id": "assuranceLevel",
+        "path": [
+          "credentialSubject",
+          "assuranceLevel"
+        ],
+        "disclosure": "public",
+        "required": true
+      },
+      {
+        "id": "subjectId",
+        "path": [
+          "credentialSubject",
+          "subjectId"
+        ],
+        "disclosure": "committed",
+        "required": true
+      },
+      {
+        "id": "birthDate",
+        "path": [
+          "credentialSubject",
+          "birthDate"
+        ],
+        "disclosure": "committed",
+        "required": true
+      },
+      {
+        "id": "accountTier",
+        "path": [
+          "credentialSubject",
+          "accountTier"
+        ],
+        "disclosure": "committed",
+        "required": true
+      }
+    ]
+  },
+  "capabilities": [
+    {
+      "id": "holder.explicit-did",
+      "kind": "holder-binding",
+      "version": "1.0.0",
+      "required": true
+    },
+    {
+      "id": "proof.compact",
+      "kind": "proof",
+      "version": "1.0.0",
+      "required": true
+    },
+    {
+      "id": "presentation.vp",
+      "kind": "presentation",
+      "version": "1.0.0",
+      "required": true
+    }
+  ],
+  "artifacts": [],
+  "composition": {
+    "formatVersion": 1,
+    "packages": [
+      {
+        "name": "@midnight-ntwrk/midnight-did-credentials-mixed-claims",
+        "version": "^0.1.0",
+        "exports": [
+          "./mixed-claims-credential.compact"
+        ]
+      }
+    ]
+  }
+}

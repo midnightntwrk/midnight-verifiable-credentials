@@ -242,6 +242,10 @@ State-store foundation rule:
   outcomes now have an injectable `ProtocolStateStore` seam
 - explicit-holder and hidden-holder stored credentials also have that seam, so
   a persistent backend can support local restart recovery
+- birth and birth-secret issuance results deliver raw committed claims and
+  openings as validated holder-only private parts; holders reject mismatches or
+  wrong recipients before storage and can recover only requested fields after
+  restart, while verifier submissions retain only selected disclosures
 - holder agents recover their stored-credential counters at startup if metadata
   lags behind append-only stored credential records after a partial write
 - the exported default implementation is an in-memory reference store

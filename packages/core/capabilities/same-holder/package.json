@@ -18,6 +18,8 @@
       "import": "./dist/index.js",
       "default": "./dist/index.js"
     },
+    "./same-holder.compact": "./dist/same-holder.compact",
+    "./same-holder/composable.compact": "./dist/same-holder/composable.compact",
     "./contract": {
       "types": "./dist/contract.d.ts",
       "require": "./dist/contract.js",

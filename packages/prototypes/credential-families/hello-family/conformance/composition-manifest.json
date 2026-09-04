@@ -1,0 +1,208 @@
+{
+  "formatVersion": 1,
+  "prototype": {
+    "id": "hello-family",
+    "workspace": "packages/prototypes/credential-families/hello-family",
+    "hypothesis": "A minimal direct-claim family compiles through both canonical and offchain-DID composition surfaces.",
+    "owner": "midnight-verifiable-credentials maintainers",
+    "limitations": [
+      "Starter fixture only; offchain DID evidence does not imply resolver-backed DID authority."
+    ],
+    "exitCriterion": "Reduce to the smallest compile fixture once public package consumer coverage supersedes it."
+  },
+  "profile": {
+    "formatVersion": 1,
+    "id": "profile.prototype.hello-family",
+    "version": "1.0.0",
+    "family": {
+      "id": "prototype.hello-family",
+      "version": "0.1.0",
+      "schemaId": "urn:midnight:prototype:hello-family",
+      "schemaVersion": "1.0.0"
+    },
+    "semantics": {
+      "claims": [
+        {
+          "claimId": "booleanValue",
+          "disclosure": "public"
+        },
+        {
+          "claimId": "smallUintValue",
+          "disclosure": "public"
+        },
+        {
+          "claimId": "bigUnsignedValue",
+          "disclosure": "public"
+        },
+        {
+          "claimId": "bytesValue",
+          "disclosure": "public"
+        },
+        {
+          "claimId": "fieldValue",
+          "disclosure": "public"
+        },
+        {
+          "claimId": "booleanVector",
+          "disclosure": "public"
+        },
+        {
+          "claimId": "uintVector",
+          "disclosure": "public"
+        },
+        {
+          "claimId": "bytesVector",
+          "disclosure": "public"
+        },
+        {
+          "claimId": "fieldVector",
+          "disclosure": "public"
+        }
+      ],
+      "holderBinding": {
+        "mode": "offchain-did",
+        "capability": {
+          "id": "holder.offchain-did",
+          "version": "1.0.0"
+        }
+      },
+      "issuance": {
+        "credential": "issuer-local-issuance-v1",
+        "registration": "disabled",
+        "anchoring": "disabled"
+      },
+      "presentation": {
+        "capability": {
+          "id": "presentation.vp",
+          "version": "1.0.0"
+        },
+        "preparation": "holder-wallet-v1",
+        "proofGeneration": {
+          "capability": {
+            "id": "proof.compact",
+            "version": "1.0.0"
+          },
+          "witnessPolicy": "public-only"
+        }
+      },
+      "verification": {
+        "profile": "offchain-public-v1",
+        "location": "local-process",
+        "authority": "local-process",
+        "commitState": "not-applicable",
+        "privateInputSources": []
+      },
+      "status": {
+        "mode": "disabled"
+      },
+      "did": {
+        "method": "did:midnight",
+        "relationship": "assertionMethod",
+        "network": "undeployed-fixture",
+        "versionEvidence": "package-lock"
+      },
+      "trust": {
+        "scope": "fixture-only",
+        "epochEvidence": "not-production-authority"
+      },
+      "trustedTime": {
+        "source": "none",
+        "evidence": "not-required",
+        "freshnessPolicy": "not-required"
+      },
+      "mutation": {
+        "location": "none",
+        "nullifier": "none",
+        "consumption": "none"
+      },
+      "protocols": [
+        "disabled"
+      ]
+    },
+    "requirements": {
+      "packages": [
+        {
+          "name": "@midnight-ntwrk/midnight-did-credentials-hello-family",
+          "version": "0.1.0",
+          "exports": [
+            "./hello-family-offchain-credential.compact"
+          ],
+          "domain": "family"
+        }
+      ],
+      "compactEntrypoints": [
+        {
+          "id": "compact.hello-family",
+          "packageName": "@midnight-ntwrk/midnight-did-credentials-hello-family",
+          "exportPath": "./hello-family-offchain-credential.compact",
+          "sourcePath": "packages/prototypes/credential-families/hello-family/src/hello-family-offchain-credential.compact"
+        }
+      ],
+      "circuits": [
+        {
+          "id": "circuit.hello-family.root",
+          "semanticVersion": "1.0.0",
+          "entrypointId": "compact.hello-family"
+        }
+      ],
+      "artifacts": [],
+      "providers": [
+        {
+          "id": "requirement.proof-executor",
+          "capability": {
+            "id": "proof.compact",
+            "version": "1.0.0"
+          },
+          "role": "proof-executor"
+        }
+      ]
+    },
+    "compatibility": {
+      "deniedRules": [
+        "PRIVATE_INPUTS_WITH_PUBLIC_ONLY_VERIFICATION",
+        "STATUS_EVIDENCE_REQUIRED",
+        "CALLER_TIME_WITH_LEDGER_AUTHORITY",
+        "ATOMIC_REPLAY_REQUIRED",
+        "DISABLED_CAPABILITY_DEPENDENCY",
+        "LEDGER_COMMIT_REQUIRED",
+        "UNTESTED_COMBINATION"
+      ]
+    },
+    "conformance": {
+      "fixtureId": "prototype:hello-family:composition-v1",
+      "evidenceDisposition": "tested",
+      "evidenceIds": [
+        "prototype:hello-family:composition-v1:compile",
+        "prototype:hello-family:composition-v1:happy",
+        "prototype:hello-family:composition-v1:negative"
+      ]
+    },
+    "maturity": {
+      "api": {
+        "subjectId": "prototype:hello-family:composition-v1",
+        "value": "reference"
+      },
+      "security": {
+        "subjectId": "prototype:hello-family:composition-v1",
+        "value": "unassessed"
+      },
+      "standards": {
+        "subjectId": "prototype:hello-family:composition-v1",
+        "value": "not-applicable"
+      },
+      "production": {
+        "subjectId": "prototype:hello-family:composition-v1",
+        "value": "not-assessed"
+      }
+    }
+  },
+  "evidence": {
+    "fixture": "packages/prototypes/credential-families/hello-family/src/hello-family-offchain-credential.compact",
+    "graph": "packages/prototypes/credential-families/hello-family/conformance/family-definition.json",
+    "happyPath": "packages/prototypes/credential-families/hello-family/src/test/offchain-did-smoke.test.ts#L9",
+    "negatives": [
+      "packages/prototypes/credential-families/hello-family/src/test/presentation-request.test.ts#L32"
+    ]
+  },
+  "familyDefinition": "packages/prototypes/credential-families/hello-family/conformance/family-definition.json"
+}
