@@ -238,7 +238,7 @@
     "testcontainers": "^12.1.0",
     "ts-node": "^10.9.2",
     "turbo": "^2.5.4",
-    "typescript": "^5.8.3",
+    "typescript": "^6.0.3",
     "vitest": "^3.2.7",
     "yaml": "^2.9.0"
   },
