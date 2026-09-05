@@ -527,21 +527,25 @@ export type ImpureCircuits<PS> = {
   revocationAwareAgeGateVerificationRequest(context: __compactRuntime.CircuitContext<PS>,
                                             issuerVerificationMethodRef_0: VerificationMethodRef,
                                             verifierDomainHash_0: Uint8Array,
-                                            verifierChallengeHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationRequest>;
+                                            verifierChallengeHash_0: Uint8Array,
+                                            trustedTime_0: bigint): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationRequest>;
   revocationAwareVerifierSuppliedRootRequest(context: __compactRuntime.CircuitContext<PS>,
                                              issuerVerificationMethodRef_0: VerificationMethodRef,
                                              verifierDomainHash_0: Uint8Array,
                                              verifierChallengeHash_0: Uint8Array,
-                                             registryState_0: RevocationRegistryState): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationRevokedSetStatusRequest>;
+                                             registryState_0: RevocationRegistryState,
+                                             trustedTime_0: bigint): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationRevokedSetStatusRequest>;
   revocationAwareAuthorityAttestedRequest(context: __compactRuntime.CircuitContext<PS>,
                                           issuerVerificationMethodRef_0: VerificationMethodRef,
                                           verifierDomainHash_0: Uint8Array,
                                           verifierChallengeHash_0: Uint8Array,
-                                          registryState_0: RevocationRegistryState): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationAuthorityAttestedStatusRequest>;
+                                          registryState_0: RevocationRegistryState,
+                                          trustedTime_0: bigint): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationAuthorityAttestedStatusRequest>;
   revocationAwareLiveStatusRequest(context: __compactRuntime.CircuitContext<PS>,
                                    issuerVerificationMethodRef_0: VerificationMethodRef,
                                    verifierDomainHash_0: Uint8Array,
-                                   verifierChallengeHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationLiveStatusRequest>;
+                                   verifierChallengeHash_0: Uint8Array,
+                                   trustedTime_0: bigint): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationLiveStatusRequest>;
   issueSecretBirthCredential(context: __compactRuntime.CircuitContext<PS>,
                              credential_0: SecretBirthCredential,
                              credentialProof_0: Proof): __compactRuntime.CircuitResults<PS, []>;
@@ -576,21 +580,25 @@ export type ProvableCircuits<PS> = {
   revocationAwareAgeGateVerificationRequest(context: __compactRuntime.CircuitContext<PS>,
                                             issuerVerificationMethodRef_0: VerificationMethodRef,
                                             verifierDomainHash_0: Uint8Array,
-                                            verifierChallengeHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationRequest>;
+                                            verifierChallengeHash_0: Uint8Array,
+                                            trustedTime_0: bigint): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationRequest>;
   revocationAwareVerifierSuppliedRootRequest(context: __compactRuntime.CircuitContext<PS>,
                                              issuerVerificationMethodRef_0: VerificationMethodRef,
                                              verifierDomainHash_0: Uint8Array,
                                              verifierChallengeHash_0: Uint8Array,
-                                             registryState_0: RevocationRegistryState): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationRevokedSetStatusRequest>;
+                                             registryState_0: RevocationRegistryState,
+                                             trustedTime_0: bigint): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationRevokedSetStatusRequest>;
   revocationAwareAuthorityAttestedRequest(context: __compactRuntime.CircuitContext<PS>,
                                           issuerVerificationMethodRef_0: VerificationMethodRef,
                                           verifierDomainHash_0: Uint8Array,
                                           verifierChallengeHash_0: Uint8Array,
-                                          registryState_0: RevocationRegistryState): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationAuthorityAttestedStatusRequest>;
+                                          registryState_0: RevocationRegistryState,
+                                          trustedTime_0: bigint): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationAuthorityAttestedStatusRequest>;
   revocationAwareLiveStatusRequest(context: __compactRuntime.CircuitContext<PS>,
                                    issuerVerificationMethodRef_0: VerificationMethodRef,
                                    verifierDomainHash_0: Uint8Array,
-                                   verifierChallengeHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationLiveStatusRequest>;
+                                   verifierChallengeHash_0: Uint8Array,
+                                   trustedTime_0: bigint): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationLiveStatusRequest>;
   issueSecretBirthCredential(context: __compactRuntime.CircuitContext<PS>,
                              credential_0: SecretBirthCredential,
                              credentialProof_0: Proof): __compactRuntime.CircuitResults<PS, []>;
@@ -1388,21 +1396,25 @@ export type Circuits<PS> = {
   revocationAwareAgeGateVerificationRequest(context: __compactRuntime.CircuitContext<PS>,
                                             issuerVerificationMethodRef_0: VerificationMethodRef,
                                             verifierDomainHash_0: Uint8Array,
-                                            verifierChallengeHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationRequest>;
+                                            verifierChallengeHash_0: Uint8Array,
+                                            trustedTime_0: bigint): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationRequest>;
   revocationAwareVerifierSuppliedRootRequest(context: __compactRuntime.CircuitContext<PS>,
                                              issuerVerificationMethodRef_0: VerificationMethodRef,
                                              verifierDomainHash_0: Uint8Array,
                                              verifierChallengeHash_0: Uint8Array,
-                                             registryState_0: RevocationRegistryState): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationRevokedSetStatusRequest>;
+                                             registryState_0: RevocationRegistryState,
+                                             trustedTime_0: bigint): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationRevokedSetStatusRequest>;
   revocationAwareAuthorityAttestedRequest(context: __compactRuntime.CircuitContext<PS>,
                                           issuerVerificationMethodRef_0: VerificationMethodRef,
                                           verifierDomainHash_0: Uint8Array,
                                           verifierChallengeHash_0: Uint8Array,
-                                          registryState_0: RevocationRegistryState): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationAuthorityAttestedStatusRequest>;
+                                          registryState_0: RevocationRegistryState,
+                                          trustedTime_0: bigint): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationAuthorityAttestedStatusRequest>;
   revocationAwareLiveStatusRequest(context: __compactRuntime.CircuitContext<PS>,
                                    issuerVerificationMethodRef_0: VerificationMethodRef,
                                    verifierDomainHash_0: Uint8Array,
-                                   verifierChallengeHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationLiveStatusRequest>;
+                                   verifierChallengeHash_0: Uint8Array,
+                                   trustedTime_0: bigint): __compactRuntime.CircuitResults<PS, SecretBirthCredentialVerificationLiveStatusRequest>;
   issueSecretBirthCredential(context: __compactRuntime.CircuitContext<PS>,
                              credential_0: SecretBirthCredential,
                              credentialProof_0: Proof): __compactRuntime.CircuitResults<PS, []>;

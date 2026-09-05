@@ -3,6 +3,7 @@ pragma language_version >= 0.20;
 import CompactStandardLibrary;
 
 include "../../../../../packages/prototypes/credential-families/birth/src/birth-credential";
+include "../../../../../packages/core/primitives/credentials/src/credentials/trusted-time";
 
 export enum AccessDecision {
   noDecision,
@@ -115,10 +116,8 @@ export circuit issueBirthCredential(
   issuedCredentialCount.increment(1);
 }
 
-// TRUST BOUNDARY: currentDay is caller-supplied and not verified against an
-// on-chain time source. A malicious prover can pass an arbitrarily large value
-// to bypass age predicates. Production contracts must bound currentDay against
-// a ledger-stored timestamp or block-derived time range.
+// The disclosed day is a convenience input for calendar arithmetic, not its
+// authority: the same protected transition constrains it to ledger block time.
 export circuit verifyBirthPresentation(
   credential: BirthCredential,
   credentialProof: Proof,
@@ -126,6 +125,7 @@ export circuit verifyBirthPresentation(
   presentationProof: Proof,
   currentDay: Uint<32>
 ): [] {
+  assertTrustedLedgerDayV1(currentDay);
   const credentialRoot = disclose(birthCredentialBodyRoot(credential));
   const disclosedPresentationProofPublicKey = disclose(presentationProof.publicKey);
 
@@ -151,10 +151,14 @@ export circuit verifyBirthPresentation(
     "Issued credential holder key does not match the supplied presentation proof"
   );
 
+  assert(
+    (currentDay as Uint<64>) >= credential.issuedAt,
+    "Credential is not yet valid at trusted ledger time"
+  );
   if (credential.hasExpiration) {
     assert(
-      currentDay <= credential.expiresAt,
-      "Credential has expired for the supplied verification day"
+      (currentDay as Uint<64>) <= credential.expiresAt,
+      "Credential has expired at trusted ledger time"
     );
   }
 

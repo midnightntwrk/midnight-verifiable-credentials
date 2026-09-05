@@ -154,11 +154,30 @@ const grant = (overrides: Partial<StatusDelegateGrantEvidenceV1> = {}): StatusDe
 });
 
 const signatureVerifier = { verify: async () => true };
+const trustedTimeVerifier = {
+  verify: async () => ({
+    status: "valid" as const,
+    accepted: true,
+    authoritative: true,
+    authority: "ledger-local" as const,
+    trustedTime: 150,
+    reasonCodes: [],
+    evidenceDigest: digest("6"),
+    anchorDigest: digest("7"),
+    authorityTranscriptDigest: null,
+    checkpoint: null,
+  }),
+};
 const authorizedRequest = (
   unsigned: StatusRegistryAuthorizationRequestV1,
   evidencePolicy: AuthorityEvidencePolicyV1,
 ): StatusRegistryAuthorizationRequestV1 => {
-  const bound = bindStatusAuthorityEvidenceV1(unsigned, evidencePolicy, evidenceContext);
+  const bound = bindStatusAuthorityEvidenceV1(
+    unsigned,
+    evidencePolicy,
+    evidenceContext,
+    {} as never,
+  );
   const signature: StatusAuthoritySignatureV1 = {
     formatVersion: 1,
     signer: bound.operator,
@@ -174,7 +193,7 @@ const initializedContract = async (grantEvidence = grant()) => {
     policy: acceptedPolicy(),
     didProvider,
     trustProvider,
-    clock: { now: () => 150 },
+    trustedTimeVerifier,
     signatureVerifier,
     delegateGrantProvider: { resolve: async () => grantEvidence },
   });
@@ -190,7 +209,7 @@ describe("#494-backed status authority gate", () => {
       policy: acceptedPolicy(),
       didProvider,
       trustProvider,
-      clock: { now: () => 150 },
+      trustedTimeVerifier,
       delegateGrantProvider: { resolve: async () => undefined },
     };
     const unsignedContract = new InMemoryStatusRegistryContractV1({
@@ -218,6 +237,127 @@ describe("#494-backed status authority gate", () => {
     });
   });
 
+  it.each([
+    ["indeterminate", false, "AUTHORITY_TIME_UNAVAILABLE"],
+    ["invalid", false, "AUTHORITY_TIME_INVALID"],
+  ] as const)("fails %s trusted-time evidence closed", async (status, authoritative, reason) => {
+    const authorizationGate = createStatusRegistryAuthorityGateV1({
+      controllerDid: controller.did,
+      policy: acceptedPolicy(),
+      didProvider,
+      trustProvider,
+      trustedTimeVerifier: {
+        verify: async () => ({
+          ...(await trustedTimeVerifier.verify()),
+          status,
+          accepted: false,
+          authoritative,
+          authority: "local-process",
+          trustedTime: null,
+          reasonCodes: ["TRUSTED_TIME_EVIDENCE_UNAVAILABLE"],
+        }),
+      },
+      signatureVerifier,
+      delegateGrantProvider: { resolve: async () => undefined },
+    });
+    const contract = new InMemoryStatusRegistryContractV1({ binding, authorizationGate });
+    await expect(
+      contract.initialize(authorizedRequest(request("initialize"), policy(controller))),
+    ).resolves.toMatchObject({
+      status: status === "indeterminate" ? "indeterminate" : "rejected",
+      receipt: { reasonCodes: expect.arrayContaining([reason]) },
+    });
+  });
+
+  it.each([Number.NaN, Number.POSITIVE_INFINITY, -1, 1.5])(
+    "rejects malformed trusted time %s from an injected verifier",
+    async (trustedTime) => {
+      const authorizationGate = createStatusRegistryAuthorityGateV1({
+        controllerDid: controller.did,
+        policy: acceptedPolicy(),
+        didProvider,
+        trustProvider,
+        trustedTimeVerifier: {
+          verify: async () => ({
+            ...(await trustedTimeVerifier.verify()),
+            trustedTime,
+          }),
+        },
+        signatureVerifier,
+        delegateGrantProvider: { resolve: async () => undefined },
+      });
+      const contract = new InMemoryStatusRegistryContractV1({
+        binding,
+        authorizationGate,
+      });
+      await expect(
+        contract.initialize(
+          authorizedRequest(request("initialize"), policy(controller)),
+        ),
+      ).resolves.toMatchObject({
+        status: "rejected",
+        receipt: { reasonCodes: ["AUTHORITY_TIME_INVALID"] },
+      });
+      expect(contract.readState().initialized).toBe(false);
+    },
+  );
+
+  it("commits the trusted-time replay checkpoint before accepting a write and fails closed when persistence is unavailable", async () => {
+    let committed = 0;
+    const checkpoint = {
+      sequenceKeyDigest: digest("8"),
+      sourcePolicyDigest: digest("9"),
+      sequence: 1,
+      time: 150,
+      evidenceDigest: digest("6"),
+    };
+    const gateFor = (commit: () => Promise<void>) =>
+      createStatusRegistryAuthorityGateV1({
+        controllerDid: controller.did,
+        policy: acceptedPolicy(),
+        didProvider,
+        trustProvider,
+        trustedTimeVerifier: {
+          verify: async () => ({
+            ...(await trustedTimeVerifier.verify()),
+            checkpoint,
+          }),
+          commit,
+        },
+        signatureVerifier,
+        delegateGrantProvider: { resolve: async () => undefined },
+      });
+
+    const acceptedContract = new InMemoryStatusRegistryContractV1({
+      binding,
+      authorizationGate: gateFor(async () => {
+        committed += 1;
+      }),
+    });
+    await expect(
+      acceptedContract.initialize(
+        authorizedRequest(request("initialize"), policy(controller)),
+      ),
+    ).resolves.toMatchObject({ status: "accepted" });
+    expect(committed).toBe(1);
+
+    const unavailableContract = new InMemoryStatusRegistryContractV1({
+      binding,
+      authorizationGate: gateFor(async () => {
+        throw new Error("checkpoint store unavailable");
+      }),
+    });
+    await expect(
+      unavailableContract.initialize(
+        authorizedRequest(request("initialize"), policy(controller)),
+      ),
+    ).resolves.toMatchObject({
+      status: "indeterminate",
+      receipt: { reasonCodes: ["AUTHORITY_TIME_CHECKPOINT_UNAVAILABLE"] },
+    });
+    expect(unavailableContract.readState().initialized).toBe(false);
+  });
+
   it("rejects an accepted authority policy for a different registry network", async () => {
     const otherNetworkPolicy: AuthorityEvidencePolicyV1 = {
       ...policy(controller),
@@ -229,7 +369,7 @@ describe("#494-backed status authority gate", () => {
       policy: otherNetworkBinding,
       didProvider,
       trustProvider,
-      clock: { now: () => 150 },
+      trustedTimeVerifier,
       signatureVerifier,
       delegateGrantProvider: { resolve: async () => undefined },
     });
@@ -248,7 +388,7 @@ describe("#494-backed status authority gate", () => {
       policy: acceptedPolicy(),
       didProvider: { resolve: async () => undefined },
       trustProvider,
-      clock: { now: () => 150 },
+      trustedTimeVerifier,
       signatureVerifier,
       delegateGrantProvider: { resolve: async () => undefined },
     });
@@ -270,7 +410,7 @@ describe("#494-backed status authority gate", () => {
       policy: acceptedPolicy(),
       didProvider,
       trustProvider,
-      clock: { now: () => 150 },
+      trustedTimeVerifier,
       signatureVerifier,
       delegateGrantProvider: { resolve: async () => undefined },
     });

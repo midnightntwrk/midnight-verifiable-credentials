@@ -4,7 +4,17 @@ import {
   type DidMethodEvidenceProviderV1,
   type Sha256Digest,
   type TrustAuthorizationEvidenceProviderV1,
+  type TrustedTimeAnchorVerifierV1,
+  type TrustedTimeAttestationSignatureVerifierV1,
+  type TrustedTimeAuthorityVerifierV1,
+  type TrustedTimeCheckpointV1,
+  type TrustedTimeEvidenceV1,
+  type TrustedTimePolicyV1,
+  type TrustedTimeScopeV1,
+  type TrustedTimeSequenceKeyV1,
+  type TrustedTimeVerificationResultV1,
   verifyAuthorityEvidenceV1,
+  verifyTrustedTimeEvidenceV1,
 } from "@midnight-ntwrk/credential-proofs";
 import {
   computeStatusRecordDigestV1,
@@ -19,11 +29,75 @@ export interface StatusAuthorityEvidenceInputV1 {
   readonly policy: AuthorityEvidencePolicyV1;
   readonly context: AuthorityVerificationContextV1;
   readonly signature: StatusAuthoritySignatureV1 | null;
+  readonly trustedTimeEvidence: TrustedTimeEvidenceV1 | null;
 }
 
-export interface StatusAuthorityClockV1 {
-  now(): number;
+export interface StatusTrustedTimeVerifierV1 {
+  verify(input: {
+    readonly request: StatusRegistryAuthorizationRequestV1;
+    readonly authorizationDigest: StatusSha256DigestV1;
+    readonly evidence: TrustedTimeEvidenceV1 | null;
+  }): Promise<TrustedTimeVerificationResultV1>;
+  commit?(checkpoint: TrustedTimeCheckpointV1): Promise<void>;
 }
+
+export interface StatusTrustedTimeCheckpointStoreV1 {
+  read(key: TrustedTimeSequenceKeyV1): Promise<TrustedTimeCheckpointV1 | null>;
+  /**
+   * Atomically rejects stale, duplicate, or conflicting checkpoints for the
+   * scope/source pair. A best-effort last-write-wins store is not sufficient.
+   */
+  commit(checkpoint: TrustedTimeCheckpointV1): Promise<void>;
+}
+
+export const createStatusTrustedTimeVerifierV1 = (input: {
+  readonly policy: TrustedTimePolicyV1;
+  readonly resolveScope: (request: StatusRegistryAuthorizationRequestV1) => TrustedTimeScopeV1;
+  readonly anchorVerifier?: TrustedTimeAnchorVerifierV1;
+  readonly authorityVerifier?: TrustedTimeAuthorityVerifierV1;
+  readonly signatureVerifier?: TrustedTimeAttestationSignatureVerifierV1;
+  readonly checkpointStore?: StatusTrustedTimeCheckpointStoreV1;
+}): StatusTrustedTimeVerifierV1 => ({
+  verify: async ({ request, authorizationDigest, evidence }) => {
+    const scope = input.resolveScope(request);
+    if (scope.requestDigest !== authorizationDigest) {
+      return {
+        status: "invalid",
+        accepted: false,
+        authoritative: false,
+        authority: "local-process",
+        trustedTime: null,
+        reasonCodes: ["TRUSTED_TIME_SCOPE_MISMATCH"],
+        evidenceDigest: null,
+        anchorDigest: null,
+        authorityTranscriptDigest: null,
+        checkpoint: null,
+      };
+    }
+    const sequenceKey: TrustedTimeSequenceKeyV1 = {
+      formatVersion: 1,
+      network: scope.network,
+      deployment: scope.deployment,
+      authority: input.policy.sequenceAuthority,
+      sourcePolicyDigest: input.policy.sourcePolicyDigest,
+    };
+    const previousCheckpoint =
+      await input.checkpointStore?.read(sequenceKey) ?? null;
+    const verified = await verifyTrustedTimeEvidenceV1({
+      policy: input.policy,
+      scope,
+      evidence,
+      anchorVerifier: input.anchorVerifier,
+      authorityVerifier: input.authorityVerifier,
+      signatureVerifier: input.signatureVerifier,
+      previousCheckpoint,
+    });
+    return verified;
+  },
+  ...(input.checkpointStore === undefined
+    ? {}
+    : { commit: (checkpoint: TrustedTimeCheckpointV1) => input.checkpointStore!.commit(checkpoint) }),
+});
 
 export type StatusAuthorityPolicyBindingV1 = Omit<
   AuthorityEvidencePolicyV1,
@@ -73,6 +147,7 @@ export const bindStatusAuthorityEvidenceV1 = (
   request: StatusRegistryAuthorizationRequestV1,
   policy: AuthorityEvidencePolicyV1,
   context: Omit<AuthorityVerificationContextV1, "requestDigest">,
+  trustedTimeEvidence: TrustedTimeEvidenceV1 | null = null,
 ): StatusRegistryAuthorizationRequestV1 => {
   const authorityPolicyDigest = computeStatusAuthorityPolicyDigestV1(policy);
   const boundRequest: StatusRegistryAuthorizationRequestV1 = {
@@ -87,6 +162,7 @@ export const bindStatusAuthorityEvidenceV1 = (
       policy,
       context: { ...context, requestDigest: requestDigest as Sha256Digest },
       signature: null,
+      trustedTimeEvidence,
     } satisfies StatusAuthorityEvidenceInputV1,
   };
 };
@@ -132,7 +208,11 @@ const evidenceInput = (value: unknown): StatusAuthorityEvidenceInputV1 | null =>
   const candidate = value as Partial<StatusAuthorityEvidenceInputV1>;
   return candidate.policy === undefined || candidate.context === undefined
     ? null
-    : { ...candidate, signature: candidate.signature ?? null } as StatusAuthorityEvidenceInputV1;
+    : {
+        ...candidate,
+        signature: candidate.signature ?? null,
+        trustedTimeEvidence: candidate.trustedTimeEvidence ?? null,
+      } as StatusAuthorityEvidenceInputV1;
 };
 
 const decision = (
@@ -189,7 +269,7 @@ export const createStatusRegistryAuthorityGateV1 = (input: {
   readonly trustProvider: TrustAuthorizationEvidenceProviderV1;
   readonly signatureVerifier: StatusAuthoritySignatureVerifierV1;
   readonly delegateGrantProvider: StatusDelegateGrantEvidenceProviderV1;
-  readonly clock: StatusAuthorityClockV1;
+  readonly trustedTimeVerifier: StatusTrustedTimeVerifierV1;
 }): StatusRegistryAuthorizationGateV1 => ({
   authorize: async ({ request, authorizationDigest, currentState }) => {
     const evidence = evidenceInput(request.authorityEvidence);
@@ -211,10 +291,55 @@ export const createStatusRegistryAuthorityGateV1 = (input: {
     if (evidence.context.requestDigest !== authorizationDigest) {
       return decision("invalid", ["AUTHORIZATION_TRANSCRIPT_MISMATCH"], authorizationDigest);
     }
-    const acceptedAt = input.clock.now();
-    if (!Number.isSafeInteger(acceptedAt)) {
+    let trustedTime: TrustedTimeVerificationResultV1;
+    try {
+      trustedTime = await input.trustedTimeVerifier.verify({
+        request,
+        authorizationDigest,
+        evidence: evidence.trustedTimeEvidence,
+      });
+    } catch {
       return decision("indeterminate", ["AUTHORITY_TIME_UNAVAILABLE"], authorizationDigest);
     }
+    if (
+      trustedTime.status !== "valid" ||
+      !trustedTime.accepted ||
+      !trustedTime.authoritative ||
+      !Number.isSafeInteger(trustedTime.trustedTime) ||
+      trustedTime.trustedTime === null ||
+      trustedTime.trustedTime < 0
+    ) {
+      const unavailable = trustedTime.status === "indeterminate";
+      return decision(
+        unavailable ? "indeterminate" : "invalid",
+        [unavailable ? "AUTHORITY_TIME_UNAVAILABLE" : "AUTHORITY_TIME_INVALID", ...trustedTime.reasonCodes],
+        authorizationDigest,
+      );
+    }
+    const acceptedAt = trustedTime.trustedTime;
+    const acceptTrustedTime = async (
+      accepted: ReturnType<typeof decision>,
+    ): Promise<ReturnType<typeof decision>> => {
+      if (trustedTime.checkpoint !== null) {
+        if (input.trustedTimeVerifier.commit === undefined) {
+          return decision(
+            "indeterminate",
+            ["AUTHORITY_TIME_CHECKPOINT_UNAVAILABLE"],
+            authorizationDigest,
+          );
+        }
+        try {
+          await input.trustedTimeVerifier.commit(trustedTime.checkpoint);
+        } catch {
+          return decision(
+            "indeterminate",
+            ["AUTHORITY_TIME_CHECKPOINT_UNAVAILABLE"],
+            authorizationDigest,
+          );
+        }
+      }
+      return accepted;
+    };
     if (request.issuedAt > acceptedAt) {
       return decision("invalid", ["AUTHORIZATION_NOT_YET_VALID"], authorizationDigest);
     }
@@ -280,11 +405,11 @@ export const createStatusRegistryAuthorityGateV1 = (input: {
 
     if (request.operation === "initialize") {
       return request.operator.did === input.controllerDid
-        ? decision("valid", [], verified.transcriptDigest)
+        ? acceptTrustedTime(decision("valid", [], verified.transcriptDigest))
         : decision("invalid", ["INITIAL_CONTROLLER_MISMATCH"], verified.transcriptDigest);
     }
     if (currentState.controllerDid === request.operator.did) {
-      return decision("valid", [], verified.transcriptDigest);
+      return acceptTrustedTime(decision("valid", [], verified.transcriptDigest));
     }
     if (currentState.controllerDid === null) {
       return decision("invalid", ["CONTROLLER_STATE_UNAVAILABLE"], verified.transcriptDigest);
@@ -310,7 +435,9 @@ export const createStatusRegistryAuthorityGateV1 = (input: {
     if (reasons.length > 0) {
       return decision("invalid", reasons, verified.transcriptDigest, grant.grantDigest);
     }
-    return decision("valid", [], verified.transcriptDigest, grant.grantDigest);
+    return acceptTrustedTime(
+      decision("valid", [], verified.transcriptDigest, grant.grantDigest),
+    );
   },
 });
 

@@ -68,6 +68,90 @@ describe("credentials demo contract", () => {
     );
   });
 
+  it("rejects future and rolled-back caller days against the ledger context", () => {
+    const fixture = createBirthCredentialFixture();
+    const simulator = new CredentialsDemoSimulator();
+    simulator.issueBirthCredential(
+      fixture.credential,
+      fixture.credentialProof,
+      fixture.holder.publicKey,
+    );
+    simulator.setAgeWitness(
+      fixture.witness.birthDateDays,
+      fixture.witness.birthDateOpening,
+    );
+    const ledgerTime = fixture.witness.currentDay * 86_400n;
+
+    expect(() =>
+      simulator.verifyBirthPresentationForRequest(
+        fixture.credential,
+        fixture.credentialProof,
+        fixture.presentationRequest,
+        fixture.presentation,
+        fixture.presentationProof,
+        fixture.witness.currentDay + 1n,
+        ledgerTime,
+      ),
+    ).toThrow(/Trusted day candidate is in the future/);
+    expect(() =>
+      simulator.verifyBirthPresentationForRequest(
+        fixture.credential,
+        fixture.credentialProof,
+        fixture.presentationRequest,
+        fixture.presentation,
+        fixture.presentationProof,
+        fixture.witness.currentDay - 1n,
+        ledgerTime,
+      ),
+    ).toThrow(/Trusted day candidate is stale/);
+    expect(() =>
+      simulator.verifyBirthPresentationForRequest(
+        fixture.credential,
+        fixture.credentialProof,
+        fixture.presentationRequest,
+        fixture.presentation,
+        fixture.presentationProof,
+        fixture.witness.currentDay,
+        (fixture.witness.currentDay + 1n) * 86_400n - 1n,
+      ),
+    ).not.toThrow();
+  });
+
+  it("rejects credentials outside their ledger-bound validity interval", () => {
+    const fixture = createBirthCredentialFixture();
+    const simulator = new CredentialsDemoSimulator();
+    simulator.issueBirthCredential(
+      fixture.credential,
+      fixture.credentialProof,
+      fixture.holder.publicKey,
+    );
+    simulator.setAgeWitness(
+      fixture.witness.birthDateDays,
+      fixture.witness.birthDateOpening,
+    );
+
+    expect(() =>
+      simulator.verifyBirthPresentationForRequest(
+        fixture.credential,
+        fixture.credentialProof,
+        fixture.presentationRequest,
+        fixture.presentation,
+        fixture.presentationProof,
+        fixture.credential.issuedAt - 1n,
+      ),
+    ).toThrow(/Credential is not yet valid at trusted ledger time/);
+    expect(() =>
+      simulator.verifyBirthPresentationForRequest(
+        fixture.credential,
+        fixture.credentialProof,
+        fixture.presentationRequest,
+        fixture.presentation,
+        fixture.presentationProof,
+        fixture.credential.expiresAt + 1n,
+      ),
+    ).toThrow(/Credential has expired at trusted ledger time/);
+  });
+
   it("rejects presentation verification when the credential was never issued", () => {
     const fixture = createBirthCredentialFixture();
     const simulator = new CredentialsDemoSimulator();

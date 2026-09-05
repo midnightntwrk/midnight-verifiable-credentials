@@ -30652,6 +30652,13 @@
             "type-name": "Bytes",
             "length": 32
           }
+        },
+        {
+          "name": "trustedTime",
+          "type": {
+            "type-name": "Uint",
+            "maxval": 18446744073709551615
+          }
         }
       ],
       "result-type": {
@@ -30971,6 +30978,13 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "name": "trustedTime",
+          "type": {
+            "type-name": "Uint",
+            "maxval": 18446744073709551615
           }
         }
       ],
@@ -31401,6 +31415,13 @@
               }
             ]
           }
+        },
+        {
+          "name": "trustedTime",
+          "type": {
+            "type-name": "Uint",
+            "maxval": 18446744073709551615
+          }
         }
       ],
       "result-type": {
@@ -31799,6 +31820,13 @@
           "type": {
             "type-name": "Bytes",
             "length": 32
+          }
+        },
+        {
+          "name": "trustedTime",
+          "type": {
+            "type-name": "Uint",
+            "maxval": 18446744073709551615
           }
         }
       ],

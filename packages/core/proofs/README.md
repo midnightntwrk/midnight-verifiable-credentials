@@ -32,6 +32,17 @@ bytes, or holder witnesses.
 `verifyProofWithAuthorityV1` applies this evidence only after cryptographic proof
 verification succeeds.
 
+The `trusted-time` export defines a separate ledger/attested time port. Evidence
+is bound to network, deployment, request, challenge, audience, origin, profile,
+freshness policy, and source policy; future, stale, expired, rollback, replay, malformed, and
+mismatched evidence fails closed. Sequence checkpoints stay stable across requests by
+keying only network, deployment, verifier-selected authority, and source policy.
+Authority-attested mode recomputes the verifier-selected policy digest before it
+selects the configured actor, then composes the #494 DID/trust verifier with an
+independent execution-anchor adapter. Caller time is
+accepted only by `local-reference` under `offchain-public-v1` and remains
+`local-process`.
+
 The package does **not** own family circuits, proving or verifier keys, ZKIR/BZKIR,
 deployment bundles, a DID method, a trust registry/governance policy, status
 authority, Compact verification-v1 decisions/transcripts, or runtime adapters. A

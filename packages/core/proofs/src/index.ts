@@ -65,6 +65,35 @@ export {
   verifyDeploymentManifest,
 } from "./signatures.js";
 export type {
+  TrustedTimeAnchorV1,
+  TrustedTimeAnchorVerificationV1,
+  TrustedTimeAnchorVerifierV1,
+  TrustedTimeAttestationSignatureV1,
+  TrustedTimeAttestationSignatureVerifierV1,
+  TrustedTimeAuthorityEvidenceV1,
+  TrustedTimeAuthorityVerifierV1,
+  TrustedTimeCheckpointV1,
+  TrustedTimeEvidenceV1,
+  TrustedTimeModeV1,
+  TrustedTimePolicyV1,
+  TrustedTimeProfileV1,
+  TrustedTimeReasonCodeV1,
+  TrustedTimeScopeV1,
+  TrustedTimeSequenceKeyV1,
+  TrustedTimeStatementV1,
+  TrustedTimeVerificationResultV1,
+} from "./trusted-time.js";
+export {
+  computeTrustedTimeAnchorDigestV1,
+  computeTrustedTimeAuthorityPolicyDigestV1,
+  computeTrustedTimeEvidenceDigestV1,
+  computeTrustedTimeScopeDigestV1,
+  computeTrustedTimeSequenceKeyDigestV1,
+  computeTrustedTimeStatementDigestV1,
+  createTrustedTimeAuthorityVerifierV1,
+  verifyTrustedTimeEvidenceV1,
+} from "./trusted-time.js";
+export type {
   ArtifactResolver,
   BuildManifest,
   DeploymentManifest,

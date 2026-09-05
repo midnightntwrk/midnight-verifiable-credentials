@@ -4,7 +4,15 @@ import {
   type AuthorityVerificationContextV1,
   type DidMethodEvidenceProviderV1,
   type TrustAuthorizationEvidenceProviderV1,
+  type TrustedTimeAnchorVerifierV1,
+  type TrustedTimeAttestationSignatureVerifierV1,
+  type TrustedTimeAuthorityVerifierV1,
+  type TrustedTimeCheckpointV1,
+  type TrustedTimeEvidenceV1,
+  type TrustedTimePolicyV1,
+  type TrustedTimeScopeV1,
   verifyAuthorityEvidenceV1,
+  verifyTrustedTimeEvidenceV1,
 } from "@midnight-ntwrk/credential-proofs";
 import type { StatusVerificationOutcome } from "@midnight-ntwrk/credential-status";
 import {
@@ -86,6 +94,67 @@ export interface StatusRootFreshnessVerifierV1 {
     readonly evidence: unknown;
   }): Promise<StatusRootFreshnessVerificationV1>;
 }
+
+/**
+ * Adapts canonical trusted-time evidence to the authenticated status verifier.
+ * The anchor verifier is the only ledger integration point; this package never
+ * upgrades caller timestamps or runtime observation clocks to ledger authority.
+ */
+export const createTrustedTimeStatusFreshnessVerifierV1 = (input: {
+  readonly policy: TrustedTimePolicyV1;
+  readonly scope: TrustedTimeScopeV1;
+  readonly maximumStatusAge: number;
+  readonly anchorVerifier?: TrustedTimeAnchorVerifierV1;
+  readonly authorityVerifier?: TrustedTimeAuthorityVerifierV1;
+  readonly signatureVerifier?: TrustedTimeAttestationSignatureVerifierV1;
+  readonly previousCheckpoint?: TrustedTimeCheckpointV1 | null;
+}): StatusRootFreshnessVerifierV1 => ({
+  verify: async ({
+    binding,
+    observedAt,
+    expiresAt,
+    freshnessPolicyDigest,
+    evidence,
+  }) => {
+    if (
+      binding.network !== input.scope.network ||
+      freshnessPolicyDigest !== input.scope.freshnessPolicyDigest ||
+      binding.deployment !== input.scope.deployment ||
+      !Number.isSafeInteger(input.maximumStatusAge) ||
+      input.maximumStatusAge < 0 ||
+      !Number.isSafeInteger(observedAt) ||
+      !Number.isSafeInteger(expiresAt) ||
+      observedAt < 0 ||
+      expiresAt < observedAt
+    ) {
+      return { status: "invalid", anchorDigest: null };
+    }
+    const verified = await verifyTrustedTimeEvidenceV1({
+      policy: input.policy,
+      scope: input.scope,
+      evidence: evidence as TrustedTimeEvidenceV1 | null | undefined,
+      anchorVerifier: input.anchorVerifier,
+      authorityVerifier: input.authorityVerifier,
+      signatureVerifier: input.signatureVerifier,
+      previousCheckpoint: input.previousCheckpoint,
+    });
+    if (verified.status === "indeterminate") {
+      return { status: "indeterminate", anchorDigest: null };
+    }
+    if (
+      verified.status !== "valid" ||
+      !verified.authoritative ||
+      verified.trustedTime === null ||
+      verified.anchorDigest === null ||
+      observedAt > verified.trustedTime ||
+      verified.trustedTime > expiresAt ||
+      verified.trustedTime - observedAt > input.maximumStatusAge
+    ) {
+      return { status: "invalid", anchorDigest: verified.anchorDigest };
+    }
+    return { status: "valid", anchorDigest: verified.anchorDigest };
+  },
+});
 
 export interface AuthenticatedRootStatusEvidenceV1 {
   readonly formatVersion: 1;

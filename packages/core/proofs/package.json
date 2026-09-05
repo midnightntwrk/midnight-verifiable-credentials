@@ -46,6 +46,11 @@
       "types": "./dist/providers.d.ts",
       "import": "./dist/providers.js",
       "default": "./dist/providers.js"
+    },
+    "./trusted-time": {
+      "types": "./dist/trusted-time.d.ts",
+      "import": "./dist/trusted-time.js",
+      "default": "./dist/trusted-time.js"
     }
   },
   "scripts": {

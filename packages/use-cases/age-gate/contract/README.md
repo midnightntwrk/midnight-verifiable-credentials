@@ -5,6 +5,13 @@
 
 Concrete age-gate business contract for the Compact-first VC/VP prototype.
 
+Authoritative Compact verification constrains disclosed seconds/days with the
+ledger `blockTime*` primitives in the same transition. Request creation/expiry,
+credential validity, age predicates, and authority-attested status freshness no
+longer derive authority from simulator/caller clocks. Simulator time parameters
+only set reference ledger context for deterministic tests; production context is
+ledger-owned. See [`trusted-time-evidence-v1`](../../../../docs/spec/trusted-time-evidence-v1.md).
+
 Status:
 
 - prototype use-case contract
