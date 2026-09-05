@@ -45,15 +45,22 @@ export class UseAgeGateScenario extends Ability {
       fixture.witness.birthDateOpening,
     );
 
-    const capability = simulator.issueAgeGateCapability(
+    const transcript = simulator.ageGateDecisionTranscript(
+      fixture.credential,
+      fixture.presentation,
+      fixture.presentationRequest.verifierChallengeHash,
+      fixture.witness.currentDay,
+    );
+    const receipt = simulator.issueAgeGateCapability(
       fixture.credential,
       fixture.credentialProof,
       fixture.presentation,
       fixture.presentationProof,
       fixture.presentationRequest.verifierChallengeHash,
       fixture.witness.currentDay,
+      transcript,
     );
-    const claimDecision = simulator.claimAgeGateCapability(capability);
+    const claimDecision = simulator.claimAgeGateCapability(receipt.capability);
     const ledger = simulator.getLedger();
     const expectedCredentialRoot = pureCircuits.birthCredentialBodyRoot(
       fixture.credential,

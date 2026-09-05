@@ -1,7 +1,9 @@
 # Midnight VC Verification Contract V1
 
-Status: A1 public shape and fail-closed skeleton implemented; authoritative
-profiles and stateful nullifier semantics remain incomplete.
+Status: A1 public shape and fail-closed skeleton implemented. A2 request,
+holder-action, and credential-action nullifier derivation is implemented with a
+stateful explicit-holder age-gate atomicity fixture. Final authoritative
+Verification V1 executors remain incomplete and are owned by #499.
 
 Companion documents:
 
@@ -587,7 +589,14 @@ Each record uses `persistentHash` and the domain
 `midnight:vc:replay-scope:<request|holder-action|credential-action>:v1`.
 The product action-scope parameters are a fixed typed subset of the exact
 action invocation, declared by the product contract and included in its
-`policyDigest`. They MUST NOT be freely caller-chosen.
+`policyDigest`. They MUST NOT be freely caller-chosen. A request-policy verifier
+MUST likewise bind request ID to the initialized network, deployment, verifier,
+profile, action class, immutable request body, challenge, and original expiry in
+verifier-issued state; submission time cannot mint or refresh those fields. The
+explicit-holder age-gate fixture persists only the privacy-safe challenge digest
+and expiry behind the derived request ID, then recomputes that ID before
+side-effecting verification. Final request-issuer and caller authorization
+remains executor work owned by #499.
 
 The action-scoped bindings have exact core shapes:
 
@@ -633,10 +642,13 @@ For `nullifierMode: required`, the verifier MUST:
 
 1. finish all proof, authority, freshness, and policy checks;
 2. derive and compare the nullifier;
-3. reject an existing nullifier as `proofStatus: valid` and
-   `decisionStatus: replay`;
-4. insert the nullifier immediately before the protected write; and
-5. perform both writes atomically.
+3. retain the committed transcript digest and protected-write outcome for that
+   nullifier;
+4. classify an existing nullifier as an idempotent duplicate only when the
+   candidate transcript digest exactly matches the committed digest, and as a
+   conflict otherwise;
+5. insert a fresh nullifier immediately before the protected write; and
+6. perform both writes atomically.
 
 If policy denies a valid proof, the contract SHOULD return
 `decisionStatus: policyDenied` without consuming a side-effect nullifier unless

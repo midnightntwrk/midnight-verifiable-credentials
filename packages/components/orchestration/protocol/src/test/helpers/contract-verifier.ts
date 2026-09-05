@@ -74,16 +74,23 @@ export class ContractVerifier {
     // Set the private witness data so the contract can check the age predicate
     this.simulator.setAgeWitness(pkg.birthDateDays, pkg.birthDateOpening);
 
-    const capabilityHash = this.simulator.issueAgeGateCapability(
+    const transcript = this.simulator.ageGateDecisionTranscript(
+      credential,
+      pkg.presentation,
+      verifierChallengeHash,
+      pkg.currentDay,
+    );
+    const receipt = this.simulator.issueAgeGateCapability(
       credential,
       credentialProof,
       pkg.presentation,
       pkg.presentationProof,
       verifierChallengeHash,
       pkg.currentDay,
+      transcript,
     );
 
-    return { capabilityHash };
+    return { capabilityHash: receipt.capability };
   }
 
   /**

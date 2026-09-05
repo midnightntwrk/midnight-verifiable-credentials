@@ -233,11 +233,232 @@ export type BirthCredentialVerificationResult = { envelope: ProtocolMessageEnvel
                                                   body: BirthCredentialVerificationResultBody
                                                 };
 
+export type CredentialBindingV1 = { domain: Uint8Array;
+                                    version: bigint;
+                                    mode: bigint;
+                                    credentialFamilyDigest: Uint8Array;
+                                    schemaDigest: Uint8Array;
+                                    verifierContractDigest: Uint8Array;
+                                    challengeDigest: Uint8Array;
+                                    credentialRoot: Uint8Array
+                                  };
+
+export type HolderBindingV1 = { domain: Uint8Array;
+                                version: bigint;
+                                mode: bigint;
+                                verifierContractDigest: Uint8Array;
+                                challengeDigest: Uint8Array;
+                                subjectBindingDigest: Uint8Array
+                              };
+
+export type ConsentBindingV1 = { domain: Uint8Array;
+                                 version: bigint;
+                                 profile: bigint;
+                                 networkIdDigest: Uint8Array;
+                                 verifierContractDigest: Uint8Array;
+                                 deploymentDigest: Uint8Array;
+                                 audienceDigest: Uint8Array;
+                                 originMode: bigint;
+                                 originDigest: Uint8Array;
+                                 requestIdDigest: Uint8Array;
+                                 challengeDigest: Uint8Array;
+                                 expiresAt: bigint;
+                                 credentialFamilyDigest: Uint8Array;
+                                 schemaDigest: Uint8Array;
+                                 disclosureDigest: Uint8Array;
+                                 predicateDigest: Uint8Array;
+                                 statusMode: bigint;
+                                 statusRegistryDigest: Uint8Array;
+                                 statusRoot: Uint8Array;
+                                 statusRegistryVersion: bigint;
+                                 statusFreshnessPolicyDigest: Uint8Array;
+                                 policyDigest: Uint8Array;
+                                 actionClassDigest: Uint8Array;
+                                 actionInvocationDigest: Uint8Array;
+                                 artifactManifestDigest: Uint8Array;
+                                 replayPolicy: bigint
+                               };
+
+export type PresentationBindingV1 = { domain: Uint8Array;
+                                      version: bigint;
+                                      credentialBindingDigest: Uint8Array;
+                                      holderBindingDigest: Uint8Array;
+                                      disclosureDigest: Uint8Array;
+                                      predicateDigest: Uint8Array;
+                                      consentDigest: Uint8Array
+                                    };
+
+export type EvidenceBindingV1 = { domain: Uint8Array;
+                                  version: bigint;
+                                  mode: bigint;
+                                  authorityDigest: Uint8Array;
+                                  subjectDigest: Uint8Array;
+                                  stateAnchorDigest: Uint8Array;
+                                  statementDigest: Uint8Array;
+                                  createdAt: bigint;
+                                  expiresAt: bigint
+                                };
+
+export type AnchorEvidenceReceiptV1 = { domain: Uint8Array;
+                                        version: bigint;
+                                        issuerEvidenceDigest: Uint8Array;
+                                        trustEvidenceDigest: Uint8Array;
+                                        statusEvidenceDigest: Uint8Array;
+                                        timeEvidenceDigest: Uint8Array;
+                                        artifactEvidenceDigest: Uint8Array;
+                                        connectorEvidenceDigest: Uint8Array
+                                      };
+
+export type DecisionNullifierMaterialV1 = { domain: Uint8Array;
+                                            version: bigint;
+                                            deploymentDigest: Uint8Array;
+                                            verifierContractDigest: Uint8Array;
+                                            replayPolicy: bigint;
+                                            replayScopeDigest: Uint8Array
+                                          };
+
+export type ActionHolderBindingV1 = { domain: Uint8Array;
+                                      version: bigint;
+                                      deploymentDigest: Uint8Array;
+                                      verifierContractDigest: Uint8Array;
+                                      actionClassDigest: Uint8Array;
+                                      holderSubjectDigest: Uint8Array
+                                    };
+
+export type ActionCredentialBindingV1 = { domain: Uint8Array;
+                                          version: bigint;
+                                          deploymentDigest: Uint8Array;
+                                          verifierContractDigest: Uint8Array;
+                                          actionClassDigest: Uint8Array;
+                                          credentialFamilyDigest: Uint8Array;
+                                          schemaDigest: Uint8Array;
+                                          credentialRoot: Uint8Array
+                                        };
+
+export type RequestReplayScopeV1 = { domain: Uint8Array;
+                                     version: bigint;
+                                     deploymentDigest: Uint8Array;
+                                     verifierContractDigest: Uint8Array;
+                                     requestIdDigest: Uint8Array;
+                                     challengeDigest: Uint8Array;
+                                     actionInvocationDigest: Uint8Array
+                                   };
+
+export type HolderActionReplayScopeV1 = { domain: Uint8Array;
+                                          version: bigint;
+                                          deploymentDigest: Uint8Array;
+                                          verifierContractDigest: Uint8Array;
+                                          actionClassDigest: Uint8Array;
+                                          actionScopeParametersDigest: Uint8Array;
+                                          binding: ActionHolderBindingV1
+                                        };
+
+export type CredentialActionReplayScopeV1 = { domain: Uint8Array;
+                                              version: bigint;
+                                              deploymentDigest: Uint8Array;
+                                              verifierContractDigest: Uint8Array;
+                                              actionClassDigest: Uint8Array;
+                                              actionScopeParametersDigest: Uint8Array;
+                                              binding: ActionCredentialBindingV1
+                                            };
+
+export type SyntheticVerificationExtensionV1 = { domain: Uint8Array;
+                                                 version: bigint;
+                                                 familyDigest: Uint8Array;
+                                                 valueDigest: Uint8Array
+                                               };
+
+export type VerificationTranscriptV1 = { domain: Uint8Array;
+                                         version: bigint;
+                                         profile: bigint;
+                                         authority: bigint;
+                                         networkIdDigest: Uint8Array;
+                                         verifierContractDigest: Uint8Array;
+                                         deploymentDigest: Uint8Array;
+                                         audienceDigest: Uint8Array;
+                                         originMode: bigint;
+                                         originDigest: Uint8Array;
+                                         connectorEvidenceDigest: Uint8Array;
+                                         requestIdDigest: Uint8Array;
+                                         challengeDigest: Uint8Array;
+                                         expiresAt: bigint;
+                                         credentialFamilyDigest: Uint8Array;
+                                         schemaDigest: Uint8Array;
+                                         credentialBindingMode: bigint;
+                                         credentialBindingDigest: Uint8Array;
+                                         disclosureDigest: Uint8Array;
+                                         predicateDigest: Uint8Array;
+                                         holderBindingDigest: Uint8Array;
+                                         policyDigest: Uint8Array;
+                                         actionClassDigest: Uint8Array;
+                                         actionInvocationDigest: Uint8Array;
+                                         consentDigest: Uint8Array;
+                                         presentationBindingDigest: Uint8Array;
+                                         issuerDidDigest: Uint8Array;
+                                         issuerMethodDigest: Uint8Array;
+                                         issuerRelationship: bigint;
+                                         issuerEvidenceDigest: Uint8Array;
+                                         trustScopeDigest: Uint8Array;
+                                         trustEvidenceDigest: Uint8Array;
+                                         statusMode: bigint;
+                                         statusRegistryDigest: Uint8Array;
+                                         statusRoot: Uint8Array;
+                                         statusRegistryVersion: bigint;
+                                         statusFreshnessPolicyDigest: Uint8Array;
+                                         statusEvidenceDigest: Uint8Array;
+                                         timeMode: bigint;
+                                         trustedTime: bigint;
+                                         timeEvidenceDigest: Uint8Array;
+                                         artifactManifestDigest: Uint8Array;
+                                         artifactEvidenceDigest: Uint8Array;
+                                         nullifierMode: bigint;
+                                         replayPolicy: bigint;
+                                         replayScopeDigest: Uint8Array;
+                                         decisionNullifier: Uint8Array
+                                       };
+
+export type VerificationPublicInputsV1 = { transcript: VerificationTranscriptV1;
+                                           issuerEvidence: EvidenceBindingV1;
+                                           trustEvidence: EvidenceBindingV1;
+                                           statusEvidence: EvidenceBindingV1;
+                                           timeEvidence: EvidenceBindingV1;
+                                           artifactEvidence: EvidenceBindingV1;
+                                           connectorEvidence: EvidenceBindingV1
+                                         };
+
+export type SyntheticVerificationAttemptV1 = { proofStatus: bigint;
+                                               decisionStatus: bigint;
+                                               authority: bigint;
+                                               executionStatus: bigint;
+                                               transcriptDigest: Uint8Array
+                                             };
+
 export enum AccessDecision { noDecision = 0,
                              approved = 1,
                              unknownCapability = 2,
                              alreadyConsumed = 3
 }
+
+export enum AgeGateDecisionStatusV1 { noDecision = 0,
+                                      applied = 1,
+                                      duplicate = 2,
+                                      conflict = 3
+}
+
+export type AgeGateDecisionReceiptV1 = { status: AgeGateDecisionStatusV1;
+                                         decisionNullifier: Uint8Array;
+                                         transcriptDigest: Uint8Array;
+                                         capability: Uint8Array
+                                       };
+
+export type IssuedAgeGateRequestStateV1 = { challengeDigest: Uint8Array;
+                                            expiresAt: bigint
+                                          };
+
+export type CommittedAgeGateDecisionV1 = { status: AgeGateDecisionStatusV1;
+                                           transcriptDigest: Uint8Array;
+                                           capability: Uint8Array
+                                         };
 
 export type Witnesses<PS> = {
   holderBirthDateDays(context: __compactRuntime.WitnessContext<Ledger, PS>): [PS, bigint];
@@ -248,6 +469,11 @@ export type ImpureCircuits<PS> = {
   ageGateRequest(context: __compactRuntime.CircuitContext<PS>,
                  issuerVerificationMethodRef_0: VerificationMethodRef,
                  verifierChallengeHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, BirthCredentialPresentationRequest>;
+  issueAgeGateRequest(context: __compactRuntime.CircuitContext<PS>,
+                      issuerVerificationMethodRef_0: VerificationMethodRef,
+                      verifierChallengeHash_0: Uint8Array,
+                      currentDay_0: bigint,
+                      expiresAt_0: bigint): __compactRuntime.CircuitResults<PS, Uint8Array>;
   issueBirthCredential(context: __compactRuntime.CircuitContext<PS>,
                        credential_0: BirthCredential,
                        credentialProof_0: Proof,
@@ -271,7 +497,9 @@ export type ImpureCircuits<PS> = {
                          presentation_0: BirthCredentialPresentation,
                          presentationProof_0: Proof,
                          verifierChallengeHash_0: Uint8Array,
-                         currentDay_0: bigint): __compactRuntime.CircuitResults<PS, Uint8Array>;
+                         currentDay_0: bigint,
+                         requestIdDigest_0: Uint8Array,
+                         submittedTranscriptDigest_0: Uint8Array): __compactRuntime.CircuitResults<PS, AgeGateDecisionReceiptV1>;
   claimAgeGateCapability(context: __compactRuntime.CircuitContext<PS>,
                          capability_0: Uint8Array): __compactRuntime.CircuitResults<PS, AccessDecision>;
 }
@@ -280,6 +508,11 @@ export type ProvableCircuits<PS> = {
   ageGateRequest(context: __compactRuntime.CircuitContext<PS>,
                  issuerVerificationMethodRef_0: VerificationMethodRef,
                  verifierChallengeHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, BirthCredentialPresentationRequest>;
+  issueAgeGateRequest(context: __compactRuntime.CircuitContext<PS>,
+                      issuerVerificationMethodRef_0: VerificationMethodRef,
+                      verifierChallengeHash_0: Uint8Array,
+                      currentDay_0: bigint,
+                      expiresAt_0: bigint): __compactRuntime.CircuitResults<PS, Uint8Array>;
   issueBirthCredential(context: __compactRuntime.CircuitContext<PS>,
                        credential_0: BirthCredential,
                        credentialProof_0: Proof,
@@ -303,7 +536,9 @@ export type ProvableCircuits<PS> = {
                          presentation_0: BirthCredentialPresentation,
                          presentationProof_0: Proof,
                          verifierChallengeHash_0: Uint8Array,
-                         currentDay_0: bigint): __compactRuntime.CircuitResults<PS, Uint8Array>;
+                         currentDay_0: bigint,
+                         requestIdDigest_0: Uint8Array,
+                         submittedTranscriptDigest_0: Uint8Array): __compactRuntime.CircuitResults<PS, AgeGateDecisionReceiptV1>;
   claimAgeGateCapability(context: __compactRuntime.CircuitContext<PS>,
                          capability_0: Uint8Array): __compactRuntime.CircuitResults<PS, AccessDecision>;
 }
@@ -427,10 +662,102 @@ export type PureCircuits = {
                                          currentDay_0: bigint,
                                          birthDateDays_0: bigint,
                                          birthDateOpening_0: Uint8Array): [];
+  verificationTranscriptDomainV1(): Uint8Array;
+  decisionNullifierDomainV1(): Uint8Array;
+  replayScopeRequestDomainV1(): Uint8Array;
+  replayScopeHolderActionDomainV1(): Uint8Array;
+  replayScopeCredentialActionDomainV1(): Uint8Array;
+  actionHolderBindingDomainV1(): Uint8Array;
+  actionCredentialBindingDomainV1(): Uint8Array;
+  credentialBindingDomainV1(): Uint8Array;
+  holderBindingDomainV1(): Uint8Array;
+  consentBindingDomainV1(): Uint8Array;
+  presentationBindingDomainV1(): Uint8Array;
+  issuerEvidenceDomainV1(): Uint8Array;
+  trustEvidenceDomainV1(): Uint8Array;
+  statusEvidenceDomainV1(): Uint8Array;
+  timeEvidenceDomainV1(): Uint8Array;
+  artifactEvidenceDomainV1(): Uint8Array;
+  connectorEvidenceDomainV1(): Uint8Array;
+  anchorEvidenceReceiptDomainV1(): Uint8Array;
+  syntheticVerificationExtensionDomainV1(): Uint8Array;
+  credentialBindingV1Digest(binding_0: CredentialBindingV1): Uint8Array;
+  holderBindingV1Digest(binding_0: HolderBindingV1): Uint8Array;
+  consentBindingV1Digest(binding_0: ConsentBindingV1): Uint8Array;
+  presentationBindingV1Digest(binding_0: PresentationBindingV1): Uint8Array;
+  evidenceBindingV1Digest(binding_0: EvidenceBindingV1): Uint8Array;
+  anchorEvidenceReceiptV1Digest(receipt_0: AnchorEvidenceReceiptV1): Uint8Array;
+  decisionNullifierMaterialV1Digest(material_0: DecisionNullifierMaterialV1): Uint8Array;
+  actionHolderBindingV1Digest(binding_0: ActionHolderBindingV1): Uint8Array;
+  actionCredentialBindingV1Digest(binding_0: ActionCredentialBindingV1): Uint8Array;
+  requestReplayScopeV1Digest(scope_0: RequestReplayScopeV1): Uint8Array;
+  holderActionReplayScopeV1Digest(scope_0: HolderActionReplayScopeV1): Uint8Array;
+  credentialActionReplayScopeV1Digest(scope_0: CredentialActionReplayScopeV1): Uint8Array;
+  assertValidActionHolderBindingV1(binding_0: ActionHolderBindingV1,
+                                   expectedDeploymentDigest_0: Uint8Array,
+                                   expectedVerifierContractDigest_0: Uint8Array,
+                                   expectedActionClassDigest_0: Uint8Array): [];
+  assertValidActionCredentialBindingV1(binding_0: ActionCredentialBindingV1,
+                                       expectedDeploymentDigest_0: Uint8Array,
+                                       expectedVerifierContractDigest_0: Uint8Array,
+                                       expectedActionClassDigest_0: Uint8Array): [];
+  assertValidRequestReplayScopeV1(scope_0: RequestReplayScopeV1,
+                                  expectedDeploymentDigest_0: Uint8Array,
+                                  expectedVerifierContractDigest_0: Uint8Array): [];
+  assertValidHolderActionReplayScopeV1(scope_0: HolderActionReplayScopeV1,
+                                       expectedDeploymentDigest_0: Uint8Array,
+                                       expectedVerifierContractDigest_0: Uint8Array): [];
+  assertValidCredentialActionReplayScopeV1(scope_0: CredentialActionReplayScopeV1,
+                                           expectedDeploymentDigest_0: Uint8Array,
+                                           expectedVerifierContractDigest_0: Uint8Array): [];
+  assertValidDecisionNullifierContextV1(deploymentDigest_0: Uint8Array,
+                                        verifierContractDigest_0: Uint8Array): [];
+  deriveRequestDecisionNullifierV1(deploymentDigest_0: Uint8Array,
+                                   verifierContractDigest_0: Uint8Array,
+                                   scope_0: RequestReplayScopeV1): Uint8Array;
+  deriveHolderActionDecisionNullifierV1(deploymentDigest_0: Uint8Array,
+                                        verifierContractDigest_0: Uint8Array,
+                                        scope_0: HolderActionReplayScopeV1): Uint8Array;
+  deriveCredentialActionDecisionNullifierV1(deploymentDigest_0: Uint8Array,
+                                            verifierContractDigest_0: Uint8Array,
+                                            scope_0: CredentialActionReplayScopeV1): Uint8Array;
+  deriveNoDecisionNullifierV1(): Uint8Array;
+  syntheticVerificationExtensionV1Digest(extension_0: SyntheticVerificationExtensionV1): Uint8Array;
+  verificationTranscriptV1Digest(transcript_0: VerificationTranscriptV1): Uint8Array;
+  assertValidEvidenceBindingV1(binding_0: EvidenceBindingV1,
+                               expectedDomain_0: Uint8Array): [];
+  assertValidVerificationTranscriptV1(transcript_0: VerificationTranscriptV1): [];
+  assertValidVerificationPublicInputsV1(inputs_0: VerificationPublicInputsV1): [];
+  syntheticUnavailableAuthorityVerificationV1(inputs_0: VerificationPublicInputsV1,
+                                              expectedTranscriptDigest_0: Uint8Array): SyntheticVerificationAttemptV1;
   ageGateRequestForPolicy(issuerVerificationMethodRef_0: VerificationMethodRef,
                           verifierChallengeHash_0: Uint8Array,
                           requireBirthCountryDisclosure_0: boolean,
                           requestedAgeThresholdYears_0: bigint): BirthCredentialPresentationRequest;
+  ageGateDecisionProfileV1(): bigint;
+  ageGateDecisionActionClassV1(): Uint8Array;
+  ageGateRequestIdV1(networkIdDigest_0: Uint8Array,
+                     deploymentDigest_0: Uint8Array,
+                     verifierContractDigest_0: Uint8Array,
+                     request_0: BirthCredentialPresentationRequest,
+                     expiresAt_0: bigint): Uint8Array;
+  ageGateProtectedMutationIdentityV1(deploymentDigest_0: Uint8Array,
+                                     credentialRoot_0: Uint8Array,
+                                     verifierChallengeHash_0: Uint8Array): Uint8Array;
+  ageGateActionInvocationV1(networkIdDigest_0: Uint8Array,
+                            deploymentDigest_0: Uint8Array,
+                            credentialRoot_0: Uint8Array,
+                            verifierChallengeHash_0: Uint8Array,
+                            ageThresholdYears_0: bigint): Uint8Array;
+  ageGateDecisionTranscriptForContextV1(networkIdDigest_0: Uint8Array,
+                                        deploymentDigest_0: Uint8Array,
+                                        verifierContractDigest_0: Uint8Array,
+                                        credential_0: BirthCredential,
+                                        presentation_0: BirthCredentialPresentation,
+                                        verifierChallengeHash_0: Uint8Array,
+                                        currentDay_0: bigint,
+                                        requestIdDigest_0: Uint8Array,
+                                        requestExpiresAt_0: bigint): VerificationTranscriptV1;
 }
 
 export type Circuits<PS> = {
@@ -633,6 +960,101 @@ export type Circuits<PS> = {
                                          currentDay_0: bigint,
                                          birthDateDays_0: bigint,
                                          birthDateOpening_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  verificationTranscriptDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  decisionNullifierDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  replayScopeRequestDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  replayScopeHolderActionDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  replayScopeCredentialActionDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  actionHolderBindingDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  actionCredentialBindingDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  credentialBindingDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  holderBindingDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  consentBindingDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  presentationBindingDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  issuerEvidenceDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  trustEvidenceDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  statusEvidenceDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  timeEvidenceDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  artifactEvidenceDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  connectorEvidenceDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  anchorEvidenceReceiptDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  syntheticVerificationExtensionDomainV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  credentialBindingV1Digest(context: __compactRuntime.CircuitContext<PS>,
+                            binding_0: CredentialBindingV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  holderBindingV1Digest(context: __compactRuntime.CircuitContext<PS>,
+                        binding_0: HolderBindingV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  consentBindingV1Digest(context: __compactRuntime.CircuitContext<PS>,
+                         binding_0: ConsentBindingV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  presentationBindingV1Digest(context: __compactRuntime.CircuitContext<PS>,
+                              binding_0: PresentationBindingV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  evidenceBindingV1Digest(context: __compactRuntime.CircuitContext<PS>,
+                          binding_0: EvidenceBindingV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  anchorEvidenceReceiptV1Digest(context: __compactRuntime.CircuitContext<PS>,
+                                receipt_0: AnchorEvidenceReceiptV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  decisionNullifierMaterialV1Digest(context: __compactRuntime.CircuitContext<PS>,
+                                    material_0: DecisionNullifierMaterialV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  actionHolderBindingV1Digest(context: __compactRuntime.CircuitContext<PS>,
+                              binding_0: ActionHolderBindingV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  actionCredentialBindingV1Digest(context: __compactRuntime.CircuitContext<PS>,
+                                  binding_0: ActionCredentialBindingV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  requestReplayScopeV1Digest(context: __compactRuntime.CircuitContext<PS>,
+                             scope_0: RequestReplayScopeV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  holderActionReplayScopeV1Digest(context: __compactRuntime.CircuitContext<PS>,
+                                  scope_0: HolderActionReplayScopeV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  credentialActionReplayScopeV1Digest(context: __compactRuntime.CircuitContext<PS>,
+                                      scope_0: CredentialActionReplayScopeV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  assertValidActionHolderBindingV1(context: __compactRuntime.CircuitContext<PS>,
+                                   binding_0: ActionHolderBindingV1,
+                                   expectedDeploymentDigest_0: Uint8Array,
+                                   expectedVerifierContractDigest_0: Uint8Array,
+                                   expectedActionClassDigest_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  assertValidActionCredentialBindingV1(context: __compactRuntime.CircuitContext<PS>,
+                                       binding_0: ActionCredentialBindingV1,
+                                       expectedDeploymentDigest_0: Uint8Array,
+                                       expectedVerifierContractDigest_0: Uint8Array,
+                                       expectedActionClassDigest_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  assertValidRequestReplayScopeV1(context: __compactRuntime.CircuitContext<PS>,
+                                  scope_0: RequestReplayScopeV1,
+                                  expectedDeploymentDigest_0: Uint8Array,
+                                  expectedVerifierContractDigest_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  assertValidHolderActionReplayScopeV1(context: __compactRuntime.CircuitContext<PS>,
+                                       scope_0: HolderActionReplayScopeV1,
+                                       expectedDeploymentDigest_0: Uint8Array,
+                                       expectedVerifierContractDigest_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  assertValidCredentialActionReplayScopeV1(context: __compactRuntime.CircuitContext<PS>,
+                                           scope_0: CredentialActionReplayScopeV1,
+                                           expectedDeploymentDigest_0: Uint8Array,
+                                           expectedVerifierContractDigest_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  assertValidDecisionNullifierContextV1(context: __compactRuntime.CircuitContext<PS>,
+                                        deploymentDigest_0: Uint8Array,
+                                        verifierContractDigest_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  deriveRequestDecisionNullifierV1(context: __compactRuntime.CircuitContext<PS>,
+                                   deploymentDigest_0: Uint8Array,
+                                   verifierContractDigest_0: Uint8Array,
+                                   scope_0: RequestReplayScopeV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  deriveHolderActionDecisionNullifierV1(context: __compactRuntime.CircuitContext<PS>,
+                                        deploymentDigest_0: Uint8Array,
+                                        verifierContractDigest_0: Uint8Array,
+                                        scope_0: HolderActionReplayScopeV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  deriveCredentialActionDecisionNullifierV1(context: __compactRuntime.CircuitContext<PS>,
+                                            deploymentDigest_0: Uint8Array,
+                                            verifierContractDigest_0: Uint8Array,
+                                            scope_0: CredentialActionReplayScopeV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  deriveNoDecisionNullifierV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  syntheticVerificationExtensionV1Digest(context: __compactRuntime.CircuitContext<PS>,
+                                         extension_0: SyntheticVerificationExtensionV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  verificationTranscriptV1Digest(context: __compactRuntime.CircuitContext<PS>,
+                                 transcript_0: VerificationTranscriptV1): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  assertValidEvidenceBindingV1(context: __compactRuntime.CircuitContext<PS>,
+                               binding_0: EvidenceBindingV1,
+                               expectedDomain_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  assertValidVerificationTranscriptV1(context: __compactRuntime.CircuitContext<PS>,
+                                      transcript_0: VerificationTranscriptV1): __compactRuntime.CircuitResults<PS, []>;
+  assertValidVerificationPublicInputsV1(context: __compactRuntime.CircuitContext<PS>,
+                                        inputs_0: VerificationPublicInputsV1): __compactRuntime.CircuitResults<PS, []>;
+  syntheticUnavailableAuthorityVerificationV1(context: __compactRuntime.CircuitContext<PS>,
+                                              inputs_0: VerificationPublicInputsV1,
+                                              expectedTranscriptDigest_0: Uint8Array): __compactRuntime.CircuitResults<PS, SyntheticVerificationAttemptV1>;
   ageGateRequestForPolicy(context: __compactRuntime.CircuitContext<PS>,
                           issuerVerificationMethodRef_0: VerificationMethodRef,
                           verifierChallengeHash_0: Uint8Array,
@@ -641,6 +1063,19 @@ export type Circuits<PS> = {
   ageGateRequest(context: __compactRuntime.CircuitContext<PS>,
                  issuerVerificationMethodRef_0: VerificationMethodRef,
                  verifierChallengeHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, BirthCredentialPresentationRequest>;
+  ageGateDecisionProfileV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, bigint>;
+  ageGateDecisionActionClassV1(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  ageGateRequestIdV1(context: __compactRuntime.CircuitContext<PS>,
+                     networkIdDigest_0: Uint8Array,
+                     deploymentDigest_0: Uint8Array,
+                     verifierContractDigest_0: Uint8Array,
+                     request_0: BirthCredentialPresentationRequest,
+                     expiresAt_0: bigint): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  issueAgeGateRequest(context: __compactRuntime.CircuitContext<PS>,
+                      issuerVerificationMethodRef_0: VerificationMethodRef,
+                      verifierChallengeHash_0: Uint8Array,
+                      currentDay_0: bigint,
+                      expiresAt_0: bigint): __compactRuntime.CircuitResults<PS, Uint8Array>;
   issueBirthCredential(context: __compactRuntime.CircuitContext<PS>,
                        credential_0: BirthCredential,
                        credentialProof_0: Proof,
@@ -658,13 +1093,35 @@ export type Circuits<PS> = {
                                     presentation_0: BirthCredentialPresentation,
                                     presentationProof_0: Proof,
                                     currentDay_0: bigint): __compactRuntime.CircuitResults<PS, []>;
+  ageGateProtectedMutationIdentityV1(context: __compactRuntime.CircuitContext<PS>,
+                                     deploymentDigest_0: Uint8Array,
+                                     credentialRoot_0: Uint8Array,
+                                     verifierChallengeHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  ageGateActionInvocationV1(context: __compactRuntime.CircuitContext<PS>,
+                            networkIdDigest_0: Uint8Array,
+                            deploymentDigest_0: Uint8Array,
+                            credentialRoot_0: Uint8Array,
+                            verifierChallengeHash_0: Uint8Array,
+                            ageThresholdYears_0: bigint): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  ageGateDecisionTranscriptForContextV1(context: __compactRuntime.CircuitContext<PS>,
+                                        networkIdDigest_0: Uint8Array,
+                                        deploymentDigest_0: Uint8Array,
+                                        verifierContractDigest_0: Uint8Array,
+                                        credential_0: BirthCredential,
+                                        presentation_0: BirthCredentialPresentation,
+                                        verifierChallengeHash_0: Uint8Array,
+                                        currentDay_0: bigint,
+                                        requestIdDigest_0: Uint8Array,
+                                        requestExpiresAt_0: bigint): __compactRuntime.CircuitResults<PS, VerificationTranscriptV1>;
   issueAgeGateCapability(context: __compactRuntime.CircuitContext<PS>,
                          credential_0: BirthCredential,
                          credentialProof_0: Proof,
                          presentation_0: BirthCredentialPresentation,
                          presentationProof_0: Proof,
                          verifierChallengeHash_0: Uint8Array,
-                         currentDay_0: bigint): __compactRuntime.CircuitResults<PS, Uint8Array>;
+                         currentDay_0: bigint,
+                         requestIdDigest_0: Uint8Array,
+                         submittedTranscriptDigest_0: Uint8Array): __compactRuntime.CircuitResults<PS, AgeGateDecisionReceiptV1>;
   claimAgeGateCapability(context: __compactRuntime.CircuitContext<PS>,
                          capability_0: Uint8Array): __compactRuntime.CircuitResults<PS, AccessDecision>;
 }
@@ -675,6 +1132,9 @@ export type Ledger = {
   readonly verifiedPresentationCount: bigint;
   readonly minimumAccessAgeYears: bigint;
   readonly ageGateRequiresBirthCountryDisclosure: boolean;
+  readonly verificationNetworkIdDigest: Uint8Array;
+  readonly verificationDeploymentDigest: Uint8Array;
+  readonly verificationVerifierContractDigest: Uint8Array;
   issuedCredentialClaimRoots: {
     isEmpty(): boolean;
     size(): bigint;
@@ -706,6 +1166,49 @@ export type Ledger = {
     member(elem_0: Uint8Array): boolean;
     [Symbol.iterator](): Iterator<Uint8Array>
   };
+  readonly issuedAgeGateRequestCount: bigint;
+  issuedAgeGateRequestIds: {
+    isEmpty(): boolean;
+    size(): bigint;
+    member(elem_0: Uint8Array): boolean;
+    [Symbol.iterator](): Iterator<Uint8Array>
+  };
+  issuedAgeGateRequests: {
+    isEmpty(): boolean;
+    size(): bigint;
+    member(key_0: Uint8Array): boolean;
+    lookup(key_0: Uint8Array): IssuedAgeGateRequestStateV1;
+    [Symbol.iterator](): Iterator<[Uint8Array, IssuedAgeGateRequestStateV1]>
+  };
+  readonly consumedDecisionNullifierCount: bigint;
+  consumedDecisionNullifiers: {
+    isEmpty(): boolean;
+    size(): bigint;
+    member(elem_0: Uint8Array): boolean;
+    [Symbol.iterator](): Iterator<Uint8Array>
+  };
+  committedAgeGateDecisions: {
+    isEmpty(): boolean;
+    size(): bigint;
+    member(key_0: Uint8Array): boolean;
+    lookup(key_0: Uint8Array): CommittedAgeGateDecisionV1;
+    [Symbol.iterator](): Iterator<[Uint8Array, CommittedAgeGateDecisionV1]>
+  };
+  protectedMutationIdentities: {
+    isEmpty(): boolean;
+    size(): bigint;
+    member(elem_0: Uint8Array): boolean;
+    [Symbol.iterator](): Iterator<Uint8Array>
+  };
+  protectedMutationDecisionNullifiers: {
+    isEmpty(): boolean;
+    size(): bigint;
+    member(key_0: Uint8Array): boolean;
+    lookup(key_0: Uint8Array): Uint8Array;
+    [Symbol.iterator](): Iterator<[Uint8Array, Uint8Array]>
+  };
+  readonly lastDecisionNullifier: Uint8Array;
+  readonly lastDecisionTranscriptDigest: Uint8Array;
   readonly lastIssuedAccessCapability: Uint8Array;
   readonly lastBusinessDecision: AccessDecision;
 }
@@ -720,7 +1223,10 @@ export declare class Contract<PS = any, W extends Witnesses<PS> = Witnesses<PS>>
   impureCircuits: ImpureCircuits<PS>;
   provableCircuits: ProvableCircuits<PS>;
   constructor(witnesses: W);
-  initialState(context: __compactRuntime.ConstructorContext<PS>): __compactRuntime.ConstructorResult<PS>;
+  initialState(context: __compactRuntime.ConstructorContext<PS>,
+               networkIdDigest_0: Uint8Array,
+               deploymentDigest_0: Uint8Array,
+               verifierContractDigest_0: Uint8Array): __compactRuntime.ConstructorResult<PS>;
 }
 
 export declare function ledger(state: __compactRuntime.StateValue | __compactRuntime.ChargedState): Ledger;

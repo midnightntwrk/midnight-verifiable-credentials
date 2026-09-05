@@ -2,12 +2,14 @@
 
 Status: current execution view derived from the canonical production backlog.
 
-Last reconciled: 2026-08-11 for branch/PR state; the historical reconciliation baseline is `103e3e8` after PRs #335, #415, and #416.
+Last reconciled: 2026-09-02 for A2 implementation state; the historical branch
+baseline remains `103e3e8` after PRs #335, #415, and #416.
 
-The A2 replay/nullifier worktree contains an unmerged primitive checkpoint at
-`4b514ec`; it is not part of `origin/develop` and does not close A2. The G1
-and E2 entries below likewise record merged foundations only, not their full
-production acceptance.
+Issue #498 supersedes the old A2-only checkpoint `4b514ec`: its stacked branch
+includes those replay primitives plus the stateful age-gate restart, race,
+rollback, and atomic business-mutation fixture. A2 becomes completed baseline
+only when that focused PR merges. The G1 and E2 entries below likewise record
+merged foundations only, not their full production acceptance.
 
 This document answers one question: what still has to ship before this
 repository can describe any package or verification profile as production
@@ -25,6 +27,7 @@ are recorded in the completed baseline below.
 | --- | --- |
 | Ready | Can start from current `origin/develop` without weakening an open security decision |
 | Partial | A reference or candidate implementation exists, but production acceptance is not met |
+| In review | A focused implementation exists on an open branch/PR but is not part of the merged baseline |
 | Blocked | Must not start the final implementation until the named prerequisite is resolved |
 | External | The owning change belongs in another repository and must arrive through a released package or workspace-synced tarball |
 | Later | Ecosystem work that is not required for the first production release |
@@ -56,7 +59,7 @@ These items block a production label for the affected package or profile.
 | --- | --- | --- | --- | --- | --- |
 | X1 | External | `midnight-did` | Active DID verification-method and relationship evidence | DID package design and release | Issuer, holder, and verifier evidence binds the exact active method, relationship, network, rotation, and deactivation state, with negative vectors |
 | X2 | External | `midnight-trust-registry` | Issuer/verifier/schema authorization and epoch evidence | Trust-registry proof and release design | VC can consume pinned or fresh authorization evidence and reject suspension, removal, withdrawal, stale epochs, rollover, and migration errors |
-| A2 | Partial | VC | Atomic decision nullifier and replay contract | A1 merged (#335) | The unmerged checkpoint `4b514ec` adds Compact/TypeScript replay-scope and fixed-policy nullifier primitives; closure still requires a supported stateful Compact fixture proving restart, races, rollback, and atomic nullifier-plus-business mutation |
+| A2 | Partial / in review | VC | Atomic decision nullifier and replay contract | A1 merged (#335), trusted-time stack parent #497 | Issue #498 provides Compact/TypeScript fixed-policy replay primitives and a stateful explicit-holder age-gate fixture covering restart, concurrent duplicates, rollback, conflict receipts, and atomic nullifier-plus-business mutation; close when its focused PR merges |
 | B3 | Blocked | Compact/toolchain plus VC security review | Authoritative trusted-time adapter | Full current-execution anchor or an approved normative replacement | The final circuit binds every required time-anchor field and passes expiry, future, stale, rollback, replay, liveness, and finality vectors |
 | B1 | Blocked on B3 | VC | Authenticated status-registry authority | B3 and X1 | Initialization, mutation, delegation, rotation, migration, and issuer/schema-major namespacing are authenticated and audited; unauthorized and stale transitions fail closed |
 | B2 | Blocked on B1 and proof capability | VC | Accepted-root equality and actual non-membership proof | B1 plus supported in-circuit root/non-membership primitives | Every privacy-preserving non-revocation claim proves against the exact accepted root; revoked, stale, forked, mismatched, and malformed proofs fail |

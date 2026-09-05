@@ -111,6 +111,12 @@ describeIntegration("credentials protocol standalone integration", () => {
         protocolFixture.witness.birthDateOpening,
       );
 
+      const transcript = simulator.ageGateDecisionTranscript(
+        protocolFixture.credential,
+        protocolFixture.presentation,
+        protocolFixture.verificationRequest.verifierChallengeHash,
+        protocolFixture.witness.currentDay,
+      );
       const accessCapability = simulator.issueAgeGateCapability(
         protocolFixture.credential,
         protocolFixture.credentialProof,
@@ -118,7 +124,8 @@ describeIntegration("credentials protocol standalone integration", () => {
         protocolFixture.presentationProof,
         protocolFixture.verificationRequest.verifierChallengeHash,
         protocolFixture.witness.currentDay,
-      );
+        transcript,
+      ).capability;
       const state = simulator.getLedger();
 
       expect(accessCapability).toBeInstanceOf(Uint8Array);

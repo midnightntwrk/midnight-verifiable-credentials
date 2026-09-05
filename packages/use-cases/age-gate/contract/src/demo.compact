@@ -4,6 +4,7 @@ import CompactStandardLibrary;
 
 include "../../../../../packages/prototypes/credential-families/birth/src/birth-credential";
 include "../../../../../packages/core/primitives/credentials/src/credentials/trusted-time";
+include "../../../../../packages/core/primitives/credentials/src/credentials/verification-v1";
 
 export enum AccessDecision {
   noDecision,
@@ -12,11 +13,39 @@ export enum AccessDecision {
   alreadyConsumed
 }
 
+export enum AgeGateDecisionStatusV1 {
+  noDecision,
+  applied,
+  duplicate,
+  conflict
+}
+
+export struct AgeGateDecisionReceiptV1 {
+  status: AgeGateDecisionStatusV1,
+  decisionNullifier: Bytes<32>,
+  transcriptDigest: Bytes<32>,
+  capability: Bytes<32>,
+}
+
+export struct IssuedAgeGateRequestStateV1 {
+  challengeDigest: Bytes<32>,
+  expiresAt: Uint<64>,
+}
+
+export struct CommittedAgeGateDecisionV1 {
+  status: AgeGateDecisionStatusV1,
+  transcriptDigest: Bytes<32>,
+  capability: Bytes<32>,
+}
+
 export ledger contractVersion: Uint<32>;
 export ledger issuedCredentialCount: Counter;
 export ledger verifiedPresentationCount: Counter;
 export sealed ledger minimumAccessAgeYears: Uint<8>;
 export sealed ledger ageGateRequiresBirthCountryDisclosure: Boolean;
+export sealed ledger verificationNetworkIdDigest: Bytes<32>;
+export sealed ledger verificationDeploymentDigest: Bytes<32>;
+export sealed ledger verificationVerifierContractDigest: Bytes<32>;
 export ledger issuedCredentialClaimRoots: Set<Bytes<32>>;
 export ledger issuedCredentialHolderPublicKeys: Map<Bytes<32>, JubjubPoint>;
 export ledger lastVerifiedCredentialRoot: Bytes<32>;
@@ -27,20 +56,42 @@ export ledger issuedAccessCapabilityCount: Counter;
 export ledger consumedAccessCapabilityCount: Counter;
 export ledger activeAccessCapabilities: Set<Bytes<32>>;
 export ledger consumedAccessCapabilities: Set<Bytes<32>>;
+export ledger issuedAgeGateRequestCount: Counter;
+export ledger issuedAgeGateRequestIds: Set<Bytes<32>>;
+export ledger issuedAgeGateRequests: Map<Bytes<32>, IssuedAgeGateRequestStateV1>;
+export ledger consumedDecisionNullifierCount: Counter;
+export ledger consumedDecisionNullifiers: Set<Bytes<32>>;
+export ledger committedAgeGateDecisions: Map<Bytes<32>, CommittedAgeGateDecisionV1>;
+export ledger protectedMutationIdentities: Set<Bytes<32>>;
+export ledger protectedMutationDecisionNullifiers: Map<Bytes<32>, Bytes<32>>;
+export ledger lastDecisionNullifier: Bytes<32>;
+export ledger lastDecisionTranscriptDigest: Bytes<32>;
 export ledger lastIssuedAccessCapability: Bytes<32>;
 export ledger lastBusinessDecision: AccessDecision;
 
 witness holderBirthDateDays(): Uint<32>;
 witness holderBirthDateOpening(): Bytes<32>;
 
-constructor() {
+constructor(
+  networkIdDigest: Bytes<32>,
+  deploymentDigest: Bytes<32>,
+  verifierContractDigest: Bytes<32>
+) {
+  assert(networkIdDigest != pad(32, ""), "Verification network must be configured");
+  assert(deploymentDigest != pad(32, ""), "Verification deployment must be configured");
+  assert(verifierContractDigest != pad(32, ""), "Verifier contract identity must be configured");
   contractVersion = 1;
   minimumAccessAgeYears = 18;
   ageGateRequiresBirthCountryDisclosure = true;
+  verificationNetworkIdDigest = disclose(networkIdDigest);
+  verificationDeploymentDigest = disclose(deploymentDigest);
+  verificationVerifierContractDigest = disclose(verifierContractDigest);
   lastVerifiedCredentialRoot = pad(32, "vc-demo:none");
   lastVerifiedCurrentDay = 0;
   lastVerifiedThresholdYears = 0;
   lastVerifiedRequestChallenge = pad(32, "vc-demo:no-request");
+  lastDecisionNullifier = pad(32, "vc-demo:no-nullifier");
+  lastDecisionTranscriptDigest = pad(32, "vc-demo:no-transcript");
   lastIssuedAccessCapability = pad(32, "vc-demo:no-capability");
   lastBusinessDecision = AccessDecision.noDecision;
 }
@@ -84,17 +135,68 @@ export circuit ageGateRequest(
   );
 }
 
-pure circuit ageGateCapability(
-  credentialRoot: Bytes<32>,
-  verifierChallengeHash: Bytes<32>,
-  issuanceIndex: Uint<64>
+export pure circuit ageGateDecisionProfileV1(): Uint<8> {
+  return 1;
+}
+
+export pure circuit ageGateDecisionActionClassV1(): Bytes<32> {
+  return pad(32, "vc-demo:action:issue-age-gate");
+}
+
+export pure circuit ageGateRequestIdV1(
+  networkIdDigest: Bytes<32>,
+  deploymentDigest: Bytes<32>,
+  verifierContractDigest: Bytes<32>,
+  request: BirthCredentialPresentationRequest,
+  expiresAt: Uint<64>
 ): Bytes<32> {
-  return persistentHash<Vector<4, Bytes<32>>>([
-    pad(32, "vc-demo:age-gate"),
-    credentialRoot,
-    verifierChallengeHash,
-    ((issuanceIndex as Field) as Bytes<32>)
+  return persistentHash<Vector<9, Bytes<32>>>([
+    pad(32, "vc-demo:age-gate-request:v1"),
+    networkIdDigest,
+    deploymentDigest,
+    verifierContractDigest,
+    ((ageGateDecisionProfileV1() as Field) as Bytes<32>),
+    ageGateDecisionActionClassV1(),
+    birthCredentialPresentationRequestBodyRoot(request),
+    request.verifierChallengeHash,
+    ((expiresAt as Field) as Bytes<32>)
   ]);
+}
+
+// This is the demo's verifier-issued request-state boundary. Final caller
+// authorization belongs to the Verification V1 executors tracked in #499.
+export circuit issueAgeGateRequest(
+  issuerVerificationMethodRef: VerificationMethodRef,
+  verifierChallengeHash: Bytes<32>,
+  currentDay: Uint<32>,
+  expiresAt: Uint<64>
+): Bytes<32> {
+  assertTrustedLedgerDayV1(currentDay);
+  assert(
+    expiresAt >= (currentDay as Uint<64>),
+    "Age-gate request expiration must not precede issuance"
+  );
+  const request = ageGateRequest(
+    issuerVerificationMethodRef,
+    verifierChallengeHash
+  );
+  const requestId = disclose(ageGateRequestIdV1(
+    verificationNetworkIdDigest,
+    verificationDeploymentDigest,
+    verificationVerifierContractDigest,
+    request,
+    expiresAt
+  ));
+  if (issuedAgeGateRequestIds.member(requestId)) {
+    return requestId;
+  }
+  issuedAgeGateRequestIds.insert(requestId);
+  issuedAgeGateRequests.insert(requestId, disclose(IssuedAgeGateRequestStateV1 {
+    challengeDigest: verifierChallengeHash,
+    expiresAt: expiresAt,
+  }));
+  issuedAgeGateRequestCount.increment(1);
+  return requestId;
 }
 
 export circuit issueBirthCredential(
@@ -118,13 +220,13 @@ export circuit issueBirthCredential(
 
 // The disclosed day is a convenience input for calendar arithmetic, not its
 // authority: the same protected transition constrains it to ledger block time.
-export circuit verifyBirthPresentation(
+circuit assertBirthPresentationForAgeGate(
   credential: BirthCredential,
   credentialProof: Proof,
   presentation: BirthCredentialPresentation,
   presentationProof: Proof,
   currentDay: Uint<32>
-): [] {
+): Bytes<32> {
   assertTrustedLedgerDayV1(currentDay);
   const credentialRoot = disclose(birthCredentialBodyRoot(credential));
   const disclosedPresentationProofPublicKey = disclose(presentationProof.publicKey);
@@ -135,14 +237,10 @@ export circuit verifyBirthPresentation(
     presentation,
     presentationProof
   );
-  // The credential root is a hash of the entire credential body. Membership in
-  // issuedCredentialClaimRoots proves the credential was issued unchanged.
   assert(
     issuedCredentialClaimRoots.member(credentialRoot),
     "Credential was not issued by the demo contract"
   );
-  // Holder authentication: verify the presenter's key matches the key registered
-  // at issuance time. The credential root alone does not bind the holder key.
   assert(
     jubjubPointX(issuedCredentialHolderPublicKeys.lookup(credentialRoot))
       == jubjubPointX(disclosedPresentationProofPublicKey)
@@ -150,7 +248,6 @@ export circuit verifyBirthPresentation(
       == jubjubPointY(disclosedPresentationProofPublicKey),
     "Issued credential holder key does not match the supplied presentation proof"
   );
-
   assert(
     (currentDay as Uint<64>) >= credential.issuedAt,
     "Credential is not yet valid at trusted ledger time"
@@ -161,7 +258,6 @@ export circuit verifyBirthPresentation(
       "Credential has expired at trusted ledger time"
     );
   }
-
   assertValidBirthCredentialAgePredicate(
     credential,
     presentation,
@@ -169,11 +265,35 @@ export circuit verifyBirthPresentation(
     holderBirthDateDays(),
     holderBirthDateOpening()
   );
+  return credentialRoot;
+}
 
-  lastVerifiedCredentialRoot = credentialRoot;
+circuit recordVerifiedBirthPresentation(
+  credentialRoot: Bytes<32>,
+  presentation: BirthCredentialPresentation,
+  currentDay: Uint<32>
+): [] {
+  lastVerifiedCredentialRoot = disclose(credentialRoot);
   lastVerifiedCurrentDay = disclose(currentDay);
   lastVerifiedThresholdYears = disclose(presentation.disclosed.ageThresholdYears);
   verifiedPresentationCount.increment(1);
+}
+
+export circuit verifyBirthPresentation(
+  credential: BirthCredential,
+  credentialProof: Proof,
+  presentation: BirthCredentialPresentation,
+  presentationProof: Proof,
+  currentDay: Uint<32>
+): [] {
+  const credentialRoot = assertBirthPresentationForAgeGate(
+    credential,
+    credentialProof,
+    presentation,
+    presentationProof,
+    currentDay
+  );
+  recordVerifiedBirthPresentation(credentialRoot, presentation, currentDay);
 }
 
 export circuit verifyBirthPresentationForRequest(
@@ -184,22 +304,243 @@ export circuit verifyBirthPresentationForRequest(
   presentationProof: Proof,
   currentDay: Uint<32>
 ): [] {
-  verifyBirthPresentation(
+  const credentialRoot = assertBirthPresentationForAgeGate(
     credential,
     credentialProof,
     presentation,
     presentationProof,
     currentDay
   );
-
   assertBirthPresentationSatisfiesRequest(
     credential,
     request,
     presentation,
     presentationProof
   );
-
+  recordVerifiedBirthPresentation(credentialRoot, presentation, currentDay);
   lastVerifiedRequestChallenge = disclose(request.verifierChallengeHash);
+}
+
+export pure circuit ageGateProtectedMutationIdentityV1(
+  deploymentDigest: Bytes<32>,
+  credentialRoot: Bytes<32>,
+  verifierChallengeHash: Bytes<32>
+): Bytes<32> {
+  return persistentHash<Vector<5, Bytes<32>>>([
+    pad(32, "vc-demo:protected-mutation:v1"),
+    deploymentDigest,
+    ageGateDecisionActionClassV1(),
+    credentialRoot,
+    verifierChallengeHash
+  ]);
+}
+
+pure circuit ageGateActionInvocationForProtectedMutationV1(
+  networkIdDigest: Bytes<32>,
+  deploymentDigest: Bytes<32>,
+  protectedMutationIdentity: Bytes<32>,
+  ageThresholdYears: Uint<8>
+): Bytes<32> {
+  return persistentHash<Vector<7, Bytes<32>>>([
+    pad(32, "vc-demo:action-invocation:v1"),
+    networkIdDigest,
+    deploymentDigest,
+    ((ageGateDecisionProfileV1() as Field) as Bytes<32>),
+    ageGateDecisionActionClassV1(),
+    protectedMutationIdentity,
+    ((ageThresholdYears as Field) as Bytes<32>)
+  ]);
+}
+
+export pure circuit ageGateActionInvocationV1(
+  networkIdDigest: Bytes<32>,
+  deploymentDigest: Bytes<32>,
+  credentialRoot: Bytes<32>,
+  verifierChallengeHash: Bytes<32>,
+  ageThresholdYears: Uint<8>
+): Bytes<32> {
+  return ageGateActionInvocationForProtectedMutationV1(
+    networkIdDigest,
+    deploymentDigest,
+    ageGateProtectedMutationIdentityV1(
+      deploymentDigest,
+      credentialRoot,
+      verifierChallengeHash
+    ),
+    ageThresholdYears
+  );
+}
+
+pure circuit ageGateDecisionTranscriptForVerifiedContextV1(
+  networkIdDigest: Bytes<32>,
+  deploymentDigest: Bytes<32>,
+  verifierContractDigest: Bytes<32>,
+  credential: BirthCredential,
+  credentialRoot: Bytes<32>,
+  presentation: BirthCredentialPresentation,
+  verifierChallengeHash: Bytes<32>,
+  protectedMutationIdentity: Bytes<32>,
+  currentDay: Uint<32>,
+  requestIdDigest: Bytes<32>,
+  requestExpiresAt: Uint<64>
+): VerificationTranscriptV1 {
+  const actionInvocationDigest = ageGateActionInvocationForProtectedMutationV1(
+    networkIdDigest,
+    deploymentDigest,
+    protectedMutationIdentity,
+    presentation.disclosed.ageThresholdYears
+  );
+  const replayScope = RequestReplayScopeV1 {
+    domain: replayScopeRequestDomainV1(),
+    version: 1,
+    deploymentDigest: deploymentDigest,
+    verifierContractDigest: verifierContractDigest,
+    requestIdDigest: requestIdDigest,
+    challengeDigest: verifierChallengeHash,
+    actionInvocationDigest: actionInvocationDigest,
+  };
+  const replayScopeDigest = requestReplayScopeV1Digest(replayScope);
+  const decisionNullifier = decisionNullifierMaterialV1Digest(
+    DecisionNullifierMaterialV1 {
+      domain: decisionNullifierDomainV1(),
+      version: 1,
+      deploymentDigest: deploymentDigest,
+      verifierContractDigest: verifierContractDigest,
+      replayPolicy: 1,
+      replayScopeDigest: replayScopeDigest,
+    }
+  );
+  const issuerMethodDigest = persistentHash<VerificationMethodRef>(
+    credential.issuerVerificationMethodRef
+  );
+  const credentialBindingDigest = persistentHash<Vector<4, Bytes<32>>>([
+    pad(32, "vc-demo:credential-binding:v1"),
+    verifierContractDigest,
+    verifierChallengeHash,
+    credentialRoot
+  ]);
+  const presentationDigest = persistentHash<BirthCredentialPresentation>(presentation);
+  const policyDigest = persistentHash<Vector<3, Bytes<32>>>([
+    pad(32, "vc-demo:age-policy:v1"),
+    ageGateDecisionActionClassV1(),
+    ((presentation.disclosed.ageThresholdYears as Field) as Bytes<32>)
+  ]);
+  const timeEvidenceDigest = persistentHash<Vector<3, Bytes<32>>>([
+    pad(32, "vc-demo:ledger-time-evidence:v1"),
+    deploymentDigest,
+    ((currentDay as Field) as Bytes<32>)
+  ]);
+
+  return VerificationTranscriptV1 {
+    domain: verificationTranscriptDomainV1(),
+    version: 1,
+    profile: ageGateDecisionProfileV1(),
+    authority: 1,
+    networkIdDigest: networkIdDigest,
+    verifierContractDigest: verifierContractDigest,
+    deploymentDigest: deploymentDigest,
+    audienceDigest: verifierContractDigest,
+    originMode: 0,
+    originDigest: pad(32, ""),
+    connectorEvidenceDigest: pad(32, "vc-demo:evidence:connector:none"),
+    requestIdDigest: requestIdDigest,
+    challengeDigest: verifierChallengeHash,
+    expiresAt: requestExpiresAt,
+    credentialFamilyDigest: pad(32, "midnight-did:vc:birth:v1"),
+    schemaDigest: pad(32, "birth-credential:v1"),
+    credentialBindingMode: 1,
+    credentialBindingDigest: credentialBindingDigest,
+    disclosureDigest: persistentHash<BirthCredentialDisclosures>(presentation.disclosed),
+    predicateDigest: policyDigest,
+    holderBindingDigest: presentationDigest,
+    policyDigest: policyDigest,
+    actionClassDigest: ageGateDecisionActionClassV1(),
+    actionInvocationDigest: actionInvocationDigest,
+    consentDigest: persistentHash<Vector<4, Bytes<32>>>([
+      pad(32, "vc-demo:consent:v1"),
+      requestIdDigest,
+      verifierChallengeHash,
+      actionInvocationDigest
+    ]),
+    presentationBindingDigest: presentationDigest,
+    issuerDidDigest: persistentHash<Vector<2, Bytes<32>>>([
+      pad(32, "vc-demo:issuer-did:v1"),
+      issuerMethodDigest
+    ]),
+    issuerMethodDigest: issuerMethodDigest,
+    issuerRelationship: 1,
+    issuerEvidenceDigest: persistentHash<Vector<2, Bytes<32>>>([
+      pad(32, "vc-demo:issuer-evidence:v1"),
+      credentialRoot
+    ]),
+    trustScopeDigest: persistentHash<Vector<3, Bytes<32>>>([
+      pad(32, "vc-demo:trust-scope:v1"),
+      networkIdDigest,
+      issuerMethodDigest
+    ]),
+    trustEvidenceDigest: persistentHash<Vector<2, Bytes<32>>>([
+      pad(32, "vc-demo:trust-evidence:v1"),
+      issuerMethodDigest
+    ]),
+    statusMode: 0,
+    statusRegistryDigest: pad(32, ""),
+    statusRoot: pad(32, ""),
+    statusRegistryVersion: 0,
+    statusFreshnessPolicyDigest: pad(32, ""),
+    statusEvidenceDigest: pad(32, "vc-demo:evidence:status:none"),
+    timeMode: 1,
+    trustedTime: currentDay as Uint<64>,
+    timeEvidenceDigest: timeEvidenceDigest,
+    artifactManifestDigest: pad(32, "vc-demo:artifacts:v1"),
+    artifactEvidenceDigest: pad(32, "vc-demo:evidence:artifacts:v1"),
+    nullifierMode: 1,
+    replayPolicy: 1,
+    replayScopeDigest: replayScopeDigest,
+    decisionNullifier: decisionNullifier,
+  };
+}
+
+export pure circuit ageGateDecisionTranscriptForContextV1(
+  networkIdDigest: Bytes<32>,
+  deploymentDigest: Bytes<32>,
+  verifierContractDigest: Bytes<32>,
+  credential: BirthCredential,
+  presentation: BirthCredentialPresentation,
+  verifierChallengeHash: Bytes<32>,
+  currentDay: Uint<32>,
+  requestIdDigest: Bytes<32>,
+  requestExpiresAt: Uint<64>
+): VerificationTranscriptV1 {
+  const credentialRoot = birthCredentialBodyRoot(credential);
+  const protectedMutationIdentity = ageGateProtectedMutationIdentityV1(
+    deploymentDigest,
+    credentialRoot,
+    verifierChallengeHash
+  );
+  return ageGateDecisionTranscriptForVerifiedContextV1(
+    networkIdDigest,
+    deploymentDigest,
+    verifierContractDigest,
+    credential,
+    credentialRoot,
+    presentation,
+    verifierChallengeHash,
+    protectedMutationIdentity,
+    currentDay,
+    requestIdDigest,
+    requestExpiresAt
+  );
+}
+
+pure circuit ageGateCapabilityFromDecisionV1(
+  decisionNullifier: Bytes<32>,
+  protectedMutationIdentity: Bytes<32>
+): Bytes<32> {
+  return persistentHash<Vector<3, Bytes<32>>>([
+    pad(32, "vc-demo:age-gate-capability:v1"),
+    decisionNullifier,
+    protectedMutationIdentity
+  ]);
 }
 
 export circuit issueAgeGateCapability(
@@ -208,32 +549,145 @@ export circuit issueAgeGateCapability(
   presentation: BirthCredentialPresentation,
   presentationProof: Proof,
   verifierChallengeHash: Bytes<32>,
-  currentDay: Uint<32>
-): Bytes<32> {
+  currentDay: Uint<32>,
+  requestIdDigest: Bytes<32>,
+  submittedTranscriptDigest: Bytes<32>
+): AgeGateDecisionReceiptV1 {
   const request = ageGateRequest(
     credential.issuerVerificationMethodRef,
     verifierChallengeHash
   );
-  const capability = disclose(ageGateCapability(
-    birthCredentialBodyRoot(credential),
-    verifierChallengeHash,
-    issuedAccessCapabilityCount.read()
-  ));
-
-  verifyBirthPresentationForRequest(
+  const disclosedRequestIdDigest = disclose(requestIdDigest);
+  assert(
+    issuedAgeGateRequestIds.member(disclosedRequestIdDigest),
+    "Age-gate request id was not issued by this verifier"
+  );
+  const issuedRequest = issuedAgeGateRequests.lookup(disclosedRequestIdDigest);
+  assert(
+    issuedRequest.challengeDigest == verifierChallengeHash,
+    "Age-gate request challenge mismatch"
+  );
+  const requestExpiresAt = issuedRequest.expiresAt;
+  assert(
+    (currentDay as Uint<64>) <= requestExpiresAt,
+    "Age-gate request has expired"
+  );
+  assert(
+    ageGateRequestIdV1(
+      verificationNetworkIdDigest,
+      verificationDeploymentDigest,
+      verificationVerifierContractDigest,
+      request,
+      requestExpiresAt
+    ) == disclosedRequestIdDigest,
+    "Age-gate request state does not match the submitted request id"
+  );
+  const credentialRoot = assertBirthPresentationForAgeGate(
     credential,
     credentialProof,
-    request,
     presentation,
     presentationProof,
     currentDay
   );
+  assertBirthPresentationSatisfiesRequest(
+    credential,
+    request,
+    presentation,
+    presentationProof
+  );
+  const protectedMutationIdentity = disclose(
+    ageGateProtectedMutationIdentityV1(
+      verificationDeploymentDigest,
+      credentialRoot,
+      verifierChallengeHash
+    )
+  );
+  const expectedTranscript = ageGateDecisionTranscriptForVerifiedContextV1(
+    verificationNetworkIdDigest,
+    verificationDeploymentDigest,
+    verificationVerifierContractDigest,
+    credential,
+    credentialRoot,
+    presentation,
+    verifierChallengeHash,
+    protectedMutationIdentity,
+    currentDay,
+    disclosedRequestIdDigest,
+    requestExpiresAt
+  );
+  const expectedTranscriptDigest = verificationTranscriptV1Digest(expectedTranscript);
+  assert(
+    expectedTranscriptDigest == submittedTranscriptDigest,
+    "Submitted transcript is not the canonical age-gate decision transcript"
+  );
 
+  const decisionNullifier = disclose(expectedTranscript.decisionNullifier);
+  const transcriptDigest = disclose(expectedTranscriptDigest);
+  const capability = disclose(ageGateCapabilityFromDecisionV1(
+    decisionNullifier,
+    protectedMutationIdentity
+  ));
+
+  if (consumedDecisionNullifiers.member(decisionNullifier)) {
+    const committedDecision = committedAgeGateDecisions.lookup(decisionNullifier);
+    if (
+      committedDecision.status == AgeGateDecisionStatusV1.applied
+        && committedDecision.transcriptDigest == transcriptDigest
+    ) {
+      return AgeGateDecisionReceiptV1 {
+        status: AgeGateDecisionStatusV1.duplicate,
+        decisionNullifier: decisionNullifier,
+        transcriptDigest: committedDecision.transcriptDigest,
+        capability: committedDecision.capability,
+      };
+    }
+    return AgeGateDecisionReceiptV1 {
+      status: AgeGateDecisionStatusV1.conflict,
+      decisionNullifier: decisionNullifier,
+      transcriptDigest: committedDecision.transcriptDigest,
+      capability: committedDecision.capability,
+    };
+  }
+  if (protectedMutationIdentities.member(protectedMutationIdentity)) {
+    const committedDecisionNullifier = protectedMutationDecisionNullifiers.lookup(
+      protectedMutationIdentity
+    );
+    const committedDecision = committedAgeGateDecisions.lookup(
+      committedDecisionNullifier
+    );
+    return AgeGateDecisionReceiptV1 {
+      status: AgeGateDecisionStatusV1.conflict,
+      decisionNullifier: decisionNullifier,
+      transcriptDigest: committedDecision.transcriptDigest,
+      capability: committedDecision.capability,
+    };
+  }
+
+  // The nullifier and the protected business writes share this transaction.
+  // Any later assertion/revert rolls all of them back together.
+  consumedDecisionNullifiers.insert(decisionNullifier);
   activeAccessCapabilities.insert(capability);
+  committedAgeGateDecisions.insert(decisionNullifier, CommittedAgeGateDecisionV1 {
+    status: AgeGateDecisionStatusV1.applied,
+    transcriptDigest: transcriptDigest,
+    capability: capability,
+  });
+  protectedMutationIdentities.insert(protectedMutationIdentity);
+  protectedMutationDecisionNullifiers.insert(protectedMutationIdentity, decisionNullifier);
+  consumedDecisionNullifierCount.increment(1);
   issuedAccessCapabilityCount.increment(1);
+  recordVerifiedBirthPresentation(credentialRoot, presentation, currentDay);
+  lastVerifiedRequestChallenge = disclose(request.verifierChallengeHash);
+  lastDecisionNullifier = decisionNullifier;
+  lastDecisionTranscriptDigest = transcriptDigest;
   lastIssuedAccessCapability = capability;
   lastBusinessDecision = AccessDecision.approved;
-  return capability;
+  return AgeGateDecisionReceiptV1 {
+    status: AgeGateDecisionStatusV1.applied,
+    decisionNullifier: decisionNullifier,
+    transcriptDigest: transcriptDigest,
+    capability: capability,
+  };
 }
 
 export circuit claimAgeGateCapability(

@@ -8,14 +8,19 @@ import {
 } from "@midnight-ntwrk/compact-runtime";
 
 import {
+  type ActionCredentialBindingV1,
+  type ActionHolderBindingV1,
   type AnchorEvidenceReceiptV1,
   type ConsentBindingV1,
+  type CredentialActionReplayScopeV1,
   type CredentialBindingV1,
   type DecisionNullifierMaterialV1,
   type EvidenceBindingV1,
+  type HolderActionReplayScopeV1,
   type HolderBindingV1,
   type PresentationBindingV1,
   pureCircuits,
+  type RequestReplayScopeV1,
   type SyntheticVerificationExtensionV1,
   type VerificationPublicInputsV1,
   type VerificationTranscriptV1,
@@ -30,6 +35,16 @@ export const VERIFICATION_V1_DOMAIN_HEX = {
     "3f38c62ae292ffa355bbca4e3f9be9a9e434c1445b18a925f2be617620fbc10c",
   decisionNullifier:
     "96c1b50ca1276c97e1c2bb0c8f01940304839ba5c6c97cc4ed42373f30255a4b",
+  replayScopeRequest:
+    "c72b7a875fcfee30cb0edeb3b7ca21e2867780a36eb9700a284865cfcf7d4006",
+  replayScopeHolderAction:
+    "6e4febf6159e66bca18709daababcb4823a95d040a09c1b958770087e6441e41",
+  replayScopeCredentialAction:
+    "93970c856f94e29226a1b84f2c66f9319377bab221f72963185cd2336cb5be8e",
+  actionHolderBinding:
+    "0068d9e1a69d5be92a349c0bc726541aacd20b2e98c21d08ce1b934c3d87c080",
+  actionCredentialBinding:
+    "866e43c74410c8cb72b3a4f8df670c2211407e7f74b87299f6a935d66e3bc1aa",
   credentialBinding:
     "c54c6af1c9e53ff6dd91b5cd9423707c16a53c25bb1a4d8f0738fd897b6f5fe2",
   holderBinding:
@@ -57,6 +72,14 @@ export const VERIFICATION_V1_DOMAIN_HEX = {
 } as const;
 
 type VerificationDomainNameV1 = keyof typeof VERIFICATION_V1_DOMAIN_HEX;
+
+export type ReplayPolicyV1 = 0n | 1n | 2n | 3n;
+export type RequiredReplayPolicyV1 = 1n | 2n | 3n;
+
+export type ReplayScopeV1 =
+  | RequestReplayScopeV1
+  | HolderActionReplayScopeV1
+  | CredentialActionReplayScopeV1;
 
 type OrderedField<A extends object> = {
   readonly key: keyof A;
@@ -219,6 +242,61 @@ const anchorEvidenceReceiptDescriptor =
     field("connectorEvidenceDigest", bytes32Descriptor),
   ]);
 
+const actionHolderBindingDescriptor =
+  new OrderedStructDescriptor<ActionHolderBindingV1>([
+    field("domain", bytes32Descriptor),
+    field("version", uint16Descriptor),
+    field("deploymentDigest", bytes32Descriptor),
+    field("verifierContractDigest", bytes32Descriptor),
+    field("actionClassDigest", bytes32Descriptor),
+    field("holderSubjectDigest", bytes32Descriptor),
+  ]);
+
+const actionCredentialBindingDescriptor =
+  new OrderedStructDescriptor<ActionCredentialBindingV1>([
+    field("domain", bytes32Descriptor),
+    field("version", uint16Descriptor),
+    field("deploymentDigest", bytes32Descriptor),
+    field("verifierContractDigest", bytes32Descriptor),
+    field("actionClassDigest", bytes32Descriptor),
+    field("credentialFamilyDigest", bytes32Descriptor),
+    field("schemaDigest", bytes32Descriptor),
+    field("credentialRoot", bytes32Descriptor),
+  ]);
+
+const requestReplayScopeDescriptor =
+  new OrderedStructDescriptor<RequestReplayScopeV1>([
+    field("domain", bytes32Descriptor),
+    field("version", uint16Descriptor),
+    field("deploymentDigest", bytes32Descriptor),
+    field("verifierContractDigest", bytes32Descriptor),
+    field("requestIdDigest", bytes32Descriptor),
+    field("challengeDigest", bytes32Descriptor),
+    field("actionInvocationDigest", bytes32Descriptor),
+  ]);
+
+const holderActionReplayScopeDescriptor =
+  new OrderedStructDescriptor<HolderActionReplayScopeV1>([
+    field("domain", bytes32Descriptor),
+    field("version", uint16Descriptor),
+    field("deploymentDigest", bytes32Descriptor),
+    field("verifierContractDigest", bytes32Descriptor),
+    field("actionClassDigest", bytes32Descriptor),
+    field("actionScopeParametersDigest", bytes32Descriptor),
+    field("binding", actionHolderBindingDescriptor),
+  ]);
+
+const credentialActionReplayScopeDescriptor =
+  new OrderedStructDescriptor<CredentialActionReplayScopeV1>([
+    field("domain", bytes32Descriptor),
+    field("version", uint16Descriptor),
+    field("deploymentDigest", bytes32Descriptor),
+    field("verifierContractDigest", bytes32Descriptor),
+    field("actionClassDigest", bytes32Descriptor),
+    field("actionScopeParametersDigest", bytes32Descriptor),
+    field("binding", actionCredentialBindingDescriptor),
+  ]);
+
 const decisionNullifierMaterialDescriptor =
   new OrderedStructDescriptor<DecisionNullifierMaterialV1>([
     field("domain", bytes32Descriptor),
@@ -344,10 +422,256 @@ export const hashAnchorEvidenceReceiptV1 = (
 ): Bytes32 =>
   asBytes32(persistentHash(anchorEvidenceReceiptDescriptor, receipt));
 
+export const hashActionHolderBindingV1 = (
+  binding: ActionHolderBindingV1,
+): Bytes32 => asBytes32(persistentHash(actionHolderBindingDescriptor, binding));
+
+export const hashActionCredentialBindingV1 = (
+  binding: ActionCredentialBindingV1,
+): Bytes32 =>
+  asBytes32(persistentHash(actionCredentialBindingDescriptor, binding));
+
+export const hashRequestReplayScopeV1 = (
+  scope: RequestReplayScopeV1,
+): Bytes32 => asBytes32(persistentHash(requestReplayScopeDescriptor, scope));
+
+export const hashHolderActionReplayScopeV1 = (
+  scope: HolderActionReplayScopeV1,
+): Bytes32 =>
+  asBytes32(persistentHash(holderActionReplayScopeDescriptor, scope));
+
+export const hashCredentialActionReplayScopeV1 = (
+  scope: CredentialActionReplayScopeV1,
+): Bytes32 =>
+  asBytes32(persistentHash(credentialActionReplayScopeDescriptor, scope));
+
+export const hashReplayScopeV1 = (scope: ReplayScopeV1): Bytes32 => {
+  if (!(scope.domain instanceof Uint8Array) || scope.domain.length !== 32) {
+    throw new TypeError("Replay scope domain is malformed");
+  }
+  const domain = toHex(scope.domain);
+  if (domain === VERIFICATION_V1_DOMAIN_HEX.replayScopeRequest) {
+    return hashRequestReplayScopeV1(scope as RequestReplayScopeV1);
+  }
+  if (domain === VERIFICATION_V1_DOMAIN_HEX.replayScopeHolderAction) {
+    return hashHolderActionReplayScopeV1(scope as HolderActionReplayScopeV1);
+  }
+  if (domain === VERIFICATION_V1_DOMAIN_HEX.replayScopeCredentialAction) {
+    return hashCredentialActionReplayScopeV1(
+      scope as CredentialActionReplayScopeV1,
+    );
+  }
+  throw new TypeError("Replay scope domain is unknown");
+};
+
 export const hashDecisionNullifierMaterialV1 = (
   material: DecisionNullifierMaterialV1,
 ): Bytes32 =>
   asBytes32(persistentHash(decisionNullifierMaterialDescriptor, material));
+
+export const zeroBytes32V1 = (): Bytes32 => new Uint8Array(32) as Bytes32;
+
+const assertNonZero = (value: Uint8Array, name: string): void => {
+  if (value.length !== 32 || value.every((byte) => byte === 0)) {
+    throw new TypeError(`${name} must be set`);
+  }
+};
+
+const assertReplayScopeHeader = (
+  scope: ReplayScopeV1,
+  expectedDomain: Uint8Array,
+): void => {
+  if (scope.version !== 1n) {
+    throw new TypeError("Replay scope version must be 1");
+  }
+  if (toHex(scope.domain) !== toHex(expectedDomain)) {
+    throw new TypeError("Replay scope domain is unknown");
+  }
+};
+
+const assertActionHolderBinding = (
+  binding: ActionHolderBindingV1,
+  deploymentDigest: Uint8Array,
+  verifierContractDigest: Uint8Array,
+  actionClassDigest: Uint8Array,
+): void => {
+  if (
+    toHex(binding.domain) !== toHex(verificationDomainV1("actionHolderBinding"))
+  ) {
+    throw new TypeError("Action holder binding domain is unknown");
+  }
+  if (binding.version !== 1n) {
+    throw new TypeError("Action holder binding version must be 1");
+  }
+  if (toHex(binding.deploymentDigest) !== toHex(deploymentDigest)) {
+    throw new TypeError("Action holder deployment binding mismatch");
+  }
+  if (toHex(binding.verifierContractDigest) !== toHex(verifierContractDigest)) {
+    throw new TypeError("Action holder verifier binding mismatch");
+  }
+  if (toHex(binding.actionClassDigest) !== toHex(actionClassDigest)) {
+    throw new TypeError("Action holder action binding mismatch");
+  }
+  assertNonZero(binding.holderSubjectDigest, "Action holder subject binding");
+};
+
+const assertActionCredentialBinding = (
+  binding: ActionCredentialBindingV1,
+  deploymentDigest: Uint8Array,
+  verifierContractDigest: Uint8Array,
+  actionClassDigest: Uint8Array,
+): void => {
+  if (
+    toHex(binding.domain) !==
+    toHex(verificationDomainV1("actionCredentialBinding"))
+  ) {
+    throw new TypeError("Action credential binding domain is unknown");
+  }
+  if (binding.version !== 1n) {
+    throw new TypeError("Action credential binding version must be 1");
+  }
+  if (toHex(binding.deploymentDigest) !== toHex(deploymentDigest)) {
+    throw new TypeError("Action credential deployment binding mismatch");
+  }
+  if (toHex(binding.verifierContractDigest) !== toHex(verifierContractDigest)) {
+    throw new TypeError("Action credential verifier binding mismatch");
+  }
+  if (toHex(binding.actionClassDigest) !== toHex(actionClassDigest)) {
+    throw new TypeError("Action credential action binding mismatch");
+  }
+  assertNonZero(
+    binding.credentialFamilyDigest,
+    "Action credential family binding",
+  );
+  assertNonZero(binding.schemaDigest, "Action credential schema binding");
+  assertNonZero(binding.credentialRoot, "Action credential root binding");
+};
+
+const toHex = (value: Uint8Array): string =>
+  Array.from(value, (byte) => byte.toString(16).padStart(2, "0")).join("");
+
+// These are policy-specific primitives, not final authoritative verifiers.
+// A product/composing circuit must select one from its fixed policy configuration;
+// callers cannot select a replay policy at runtime through these entrypoints.
+export const deriveRequestDecisionNullifierV1 = (input: {
+  readonly deploymentDigest: Uint8Array;
+  readonly verifierContractDigest: Uint8Array;
+  readonly scope: RequestReplayScopeV1;
+}): Bytes32 => {
+  assertNonZero(input.deploymentDigest, "Deployment digest");
+  assertNonZero(input.verifierContractDigest, "Verifier contract digest");
+  assertReplayScopeHeader(
+    input.scope,
+    verificationDomainV1("replayScopeRequest"),
+  );
+  assertNonZero(input.scope.requestIdDigest, "Request replay request id");
+  assertNonZero(input.scope.challengeDigest, "Request replay challenge");
+  assertNonZero(
+    input.scope.actionInvocationDigest,
+    "Request replay action invocation",
+  );
+  if (toHex(input.scope.deploymentDigest) !== toHex(input.deploymentDigest)) {
+    throw new TypeError("Request replay deployment binding mismatch");
+  }
+  if (
+    toHex(input.scope.verifierContractDigest) !==
+    toHex(input.verifierContractDigest)
+  ) {
+    throw new TypeError("Request replay verifier binding mismatch");
+  }
+  return hashDecisionNullifierMaterialV1({
+    domain: verificationDomainV1("decisionNullifier"),
+    version: 1n,
+    deploymentDigest: input.deploymentDigest,
+    verifierContractDigest: input.verifierContractDigest,
+    replayPolicy: 1n,
+    replayScopeDigest: hashRequestReplayScopeV1(input.scope),
+  });
+};
+
+export const deriveHolderActionDecisionNullifierV1 = (input: {
+  readonly deploymentDigest: Uint8Array;
+  readonly verifierContractDigest: Uint8Array;
+  readonly scope: HolderActionReplayScopeV1;
+}): Bytes32 => {
+  assertNonZero(input.deploymentDigest, "Deployment digest");
+  assertNonZero(input.verifierContractDigest, "Verifier contract digest");
+  assertReplayScopeHeader(
+    input.scope,
+    verificationDomainV1("replayScopeHolderAction"),
+  );
+  assertNonZero(input.scope.actionClassDigest, "Action replay class");
+  assertNonZero(
+    input.scope.actionScopeParametersDigest,
+    "Action replay scope parameters",
+  );
+  if (toHex(input.scope.deploymentDigest) !== toHex(input.deploymentDigest)) {
+    throw new TypeError("Holder-action deployment binding mismatch");
+  }
+  if (
+    toHex(input.scope.verifierContractDigest) !==
+    toHex(input.verifierContractDigest)
+  ) {
+    throw new TypeError("Holder-action verifier binding mismatch");
+  }
+  assertActionHolderBinding(
+    input.scope.binding,
+    input.deploymentDigest,
+    input.verifierContractDigest,
+    input.scope.actionClassDigest,
+  );
+  return hashDecisionNullifierMaterialV1({
+    domain: verificationDomainV1("decisionNullifier"),
+    version: 1n,
+    deploymentDigest: input.deploymentDigest,
+    verifierContractDigest: input.verifierContractDigest,
+    replayPolicy: 2n,
+    replayScopeDigest: hashHolderActionReplayScopeV1(input.scope),
+  });
+};
+
+export const deriveCredentialActionDecisionNullifierV1 = (input: {
+  readonly deploymentDigest: Uint8Array;
+  readonly verifierContractDigest: Uint8Array;
+  readonly scope: CredentialActionReplayScopeV1;
+}): Bytes32 => {
+  assertNonZero(input.deploymentDigest, "Deployment digest");
+  assertNonZero(input.verifierContractDigest, "Verifier contract digest");
+  assertReplayScopeHeader(
+    input.scope,
+    verificationDomainV1("replayScopeCredentialAction"),
+  );
+  assertNonZero(input.scope.actionClassDigest, "Action replay class");
+  assertNonZero(
+    input.scope.actionScopeParametersDigest,
+    "Action replay scope parameters",
+  );
+  if (toHex(input.scope.deploymentDigest) !== toHex(input.deploymentDigest)) {
+    throw new TypeError("Credential-action deployment binding mismatch");
+  }
+  if (
+    toHex(input.scope.verifierContractDigest) !==
+    toHex(input.verifierContractDigest)
+  ) {
+    throw new TypeError("Credential-action verifier binding mismatch");
+  }
+  assertActionCredentialBinding(
+    input.scope.binding,
+    input.deploymentDigest,
+    input.verifierContractDigest,
+    input.scope.actionClassDigest,
+  );
+  return hashDecisionNullifierMaterialV1({
+    domain: verificationDomainV1("decisionNullifier"),
+    version: 1n,
+    deploymentDigest: input.deploymentDigest,
+    verifierContractDigest: input.verifierContractDigest,
+    replayPolicy: 3n,
+    replayScopeDigest: hashCredentialActionReplayScopeV1(input.scope),
+  });
+};
+
+export const deriveNoDecisionNullifierV1 = (): Bytes32 => zeroBytes32V1();
 
 export const hashSyntheticVerificationExtensionV1 = (
   extension: SyntheticVerificationExtensionV1,
