@@ -245,7 +245,7 @@
   "dependencies": {
     "@midnight-ntwrk/compact-runtime": "0.16.0",
     "@midnight-ntwrk/ledger-v8": "8.1.1",
-    "@midnight-ntwrk/midnight-js-contracts": "^4.0.0",
+    "@midnight-ntwrk/midnight-js-contracts": "^4.1.1",
     "@midnight-ntwrk/midnight-js-fetch-zk-config-provider": "4.1.1",
     "@midnight-ntwrk/midnight-js-http-client-proof-provider": "^4.1.1",
     "@midnight-ntwrk/midnight-js-indexer-public-data-provider": "^4.1.1",
@@ -275,7 +275,7 @@
       "@midnight-ntwrk/midnight-did-jubjub-schnorr": "0.5.0",
       "@midnight-ntwrk/midnight-did-secret-storage": "file:tooling/vendor/midnight-did/midnight-ntwrk-midnight-did-secret-storage-0.1.0.tgz",
       "@midnight-ntwrk/ledger-v8": "8.1.1",
-      "@midnight-ntwrk/midnight-js-contracts": "4.0.4",
+      "@midnight-ntwrk/midnight-js-contracts": "4.1.1",
       "@midnight-ntwrk/midnight-js-fetch-zk-config-provider": "4.1.1",
       "@midnight-ntwrk/midnight-js-http-client-proof-provider": "4.1.1",
       "@midnight-ntwrk/midnight-js-indexer-public-data-provider": "4.1.1",
