@@ -121,7 +121,7 @@ for the closed migration exception and graduation gates.
 | `packages/core/primitives/iso-registry` | `@midnight-ntwrk/midnight-did-credentials-iso-registry` | ISO-style registry primitives. |
 | `packages/registry/status-registry` | `@midnight-ntwrk/midnight-did-credentials-status-registry` | Private mixed compatibility surface for legacy status/revocation Compact and helpers. |
 | `packages/registry/status-midnight-contract` | `@midnight-ntwrk/credential-status-midnight-contract` | Internal atomic status contract-state and authorization-gate boundary. |
-| `packages/registry/status-midnight-verifier` | `@midnight-ntwrk/credential-status-midnight-verifier` | Internal least-privilege status read/witness adapter. |
+| `packages/registry/status-midnight-verifier` | `@midnight-ntwrk/credential-status-midnight-verifier` | Internal least-privilege status read/authenticated-proof adapter. |
 | `packages/registry/status-midnight-authority` | `@midnight-ntwrk/credential-status-midnight-authority` | Internal controller/delegate write authorization and injected signing port. |
 | `packages/components/adapters/offchain-did` | `@midnight-ntwrk/midnight-did-credentials-offchain-did` | DID-aware offchain holder-binding runtime helpers. |
 | `packages/components/integration/standalone-environment` | `@midnight-ntwrk/midnight-did-standalone-environment` | Standalone Midnight/DID runtime bootstrap for integration tests. |

@@ -358,6 +358,17 @@ Implemented prototype coverage:
     same-contract live-state, and authority-attested verifier paths
   - current parity coverage for `unknownRegistry`, `staleRegistryState`, and
     `unsupportedStatusProofMode`
+- `packages/registry/status-midnight-contract/src/test/contract-state.test.ts`
+  - domain-separated empty/singleton/multi-leaf authenticated-root vectors
+  - root/version/audit receipt transitions without status-handle disclosure
+- `packages/registry/status-midnight-verifier/src/test/authenticated-status.test.ts`
+  - exact same-contract active/revoked lookup and state-root consistency
+  - SHA-256 membership, empty/boundary/interior non-membership verification
+  - #494 DID/trust authority-provider integration
+  - omitted/unavailable/stale/forged and network/namespace/registry/deployment/root/version/authority/leaf/witness/profile mutation vectors
+  - public versus challenge-scoped private transcript disclosure boundary
+  - exact shared packed JSON vector parity for root/proof, #494 authority request, provider anchors, canonical transcript, and transcript digest
+  - pinned Compact feasibility probe: `checkRoot(...)` compiled, while in-circuit `root()` and `pathForLeaf(...)` did not; no native non-membership proof is claimed
 - `packages/prototypes/credential-families/birth-secret/src/test/status.test.ts`
   - hidden-holder same-contract live-status request wiring
   - hidden-holder revoked-set status request wiring

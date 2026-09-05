@@ -62,6 +62,9 @@ export const ciChangeClassificationCatalog = {
     run_revocation: [
       "packages/core/primitives/credentials/*",
       "packages/registry/status-registry/*",
+      "packages/registry/status-midnight-contract/*",
+      "packages/registry/status-midnight-verifier/*",
+      "packages/registry/status-midnight-authority/*",
       "packages/core/capabilities/same-holder/*",
       "packages/prototypes/credential-families/birth/*",
       "packages/prototypes/credential-families/birth-secret/*",
@@ -311,6 +314,12 @@ const runSelfTest = () => {
   assert.equal(
     classifyChangedFiles(["packages/registry/status-registry/src/index.ts"])
       .run_revocation,
+    true,
+  );
+  assert.equal(
+    classifyChangedFiles([
+      "packages/registry/status-midnight-verifier/src/authenticated-status.ts",
+    ]).run_revocation,
     true,
   );
   assert.equal(

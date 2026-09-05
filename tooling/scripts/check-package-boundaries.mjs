@@ -45,6 +45,7 @@ export const migrationExceptions = {
 export const leastPrivilegeStatusDependencyEdges = {
   "packages/registry/status-midnight-contract": ["packages/core/status"],
   "packages/registry/status-midnight-verifier": [
+    "packages/core/proofs",
     "packages/core/status",
     "packages/registry/status-midnight-contract",
   ],

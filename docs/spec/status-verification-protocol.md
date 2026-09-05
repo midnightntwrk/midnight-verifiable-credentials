@@ -147,10 +147,21 @@ It simply detects status invalidity outside Compact.
 
 Canonical repository helper path:
 
-- `verifyObservedRevokedSetStatus(...)` for verifier-observed snapshots
-- `verifyLiveContractStateStatus(...)` for same-contract live runtime state
+- `verifyObservedRevokedSetStatus(...)` for legacy verifier-observed snapshots
+- `verifyLiveContractStateStatus(...)` for legacy same-contract live runtime state
 - `verifyAuthorityAttestedStatus(...)` when the verifier is consuming
   delegated status evidence off-chain
+- `verifySameContractStatusV1(...)` for an exact lookup over one #495 contract-state object
+- `verifyAuthenticatedRootStatusV1(...)` for #496's root-bound SHA-256 reference membership/non-membership verifier
+
+The #496 external path additionally requires explicit cryptographic-proof,
+#494 authority-evidence, and freshness-verifier providers. The verifier policy,
+not holder evidence, supplies the accepted leaf and credential, presentation,
+and challenge digests. Its transcript binds those request inputs with the
+selected profile, network, namespace, registry, deployment, root/version,
+accepted authority-policy digest, authority transcript, proof, and freshness
+anchor. Omitted/unavailable dependencies are indeterminate; authenticated
+mismatches, stale roots, forged witnesses, and proved membership are invalid.
 
 These helpers return a typed `StatusVerificationResult` and map raw validator
 failures onto the canonical status error codes instead of leaving each
@@ -471,9 +482,18 @@ Current compatibility note:
 
 Current limitations remain:
 
-- the repository does not yet implement the final in-circuit revoked-set
-  non-membership proof
-- the current canonical witness shape therefore proves:
+- the repository now implements a cryptographic SHA-256 **TypeScript reference**
+  membership/non-membership verifier and shared vectors, but not the final
+  in-circuit revoked-set non-membership proof
+- a pinned-toolchain probe compiled an in-circuit
+  `MerkleTree.checkRoot(MerkleTreeDigest { ... })` equality check, but `root()`
+  was rejected as runtime-only and `pathForLeaf(...)` was unavailable
+  in-circuit; no native Compact non-membership proof compiled, so generated
+  Compact artifacts are unchanged by #496
+- external private/hidden-holder status remains indeterminate until a real ZK
+  adapter proves a challenge-scoped leaf relation without exposing a stable
+  handle or commitment
+- the legacy canonical Compact witness shape therefore proves:
   - request binding
   - registry-domain binding
   - status-handle-opening consistency

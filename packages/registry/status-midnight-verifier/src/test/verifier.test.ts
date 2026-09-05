@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { computeStatusRegistryRootV1 } from "@midnight-ntwrk/credential-status-midnight-contract";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -13,6 +14,7 @@ import {
 } from "../index.js";
 
 const packageRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+const revokedLeaf = `sha256:${"b".repeat(64)}` as const;
 const state = {
   formatVersion: 1 as const,
   binding: {
@@ -27,10 +29,11 @@ const state = {
   authorityGeneration: 1,
   registryVersion: 2,
   revokedStatusHandleCount: 1,
+  revokedRoot: computeStatusRegistryRootV1([revokedLeaf]),
   acceptedAuthorizationCount: 2,
   auditSequence: 2,
   auditCommitment: `sha256:${"a".repeat(64)}` as const,
-  revokedStatusHandleDigests: [`sha256:${"b".repeat(64)}` as const],
+  revokedStatusHandleDigests: [revokedLeaf],
 };
 
 describe("least-privilege status verifier", () => {
@@ -74,13 +77,14 @@ describe("least-privilege status verifier", () => {
     }
   });
 
-  it("has no authority, signing, proof-evidence, or mutation dependency", () => {
+  it("adds proof verification without signing or mutation authority", () => {
     const manifest = JSON.parse(readFileSync(path.join(packageRoot, "package.json"), "utf8")) as { dependencies: Record<string, string> };
     expect(Object.keys(manifest.dependencies).sort()).toEqual([
+      "@midnight-ntwrk/credential-proofs",
       "@midnight-ntwrk/credential-status",
       "@midnight-ntwrk/credential-status-midnight-contract",
     ]);
-    const root = readFileSync(path.join(packageRoot, "src/index.ts"), "utf8");
-    expect(root).not.toMatch(/authority|sign|mutation|credential-proofs/iu);
+    const root = readFileSync(path.join(packageRoot, "src/authenticated-status.ts"), "utf8");
+    expect(root).not.toMatch(/StatusWriter|StatusAuthoritySigner|\.revoke\(|\.initialize\(/u);
   });
 });

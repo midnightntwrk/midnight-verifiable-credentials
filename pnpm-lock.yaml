@@ -418,6 +418,9 @@ importers:
 
   packages/registry/status-midnight-verifier:
     dependencies:
+      '@midnight-ntwrk/credential-proofs':
+        specifier: ^0.1.0
+        version: link:../../core/proofs
       '@midnight-ntwrk/credential-status':
         specifier: ^0.1.0-rc1
         version: link:../../core/status
