@@ -21,7 +21,7 @@
     "tsconfig.json"
   ],
   "dependencies": {
-    "@serenity-js/core": "^3.44.3"
+    "@serenity-js/core": "^3.45.9"
   },
   "midnight": {
     "maturity": "infrastructure",

@@ -30,7 +30,7 @@
     "@midnight-ntwrk/midnight-did-credentials-demo-contract": "*",
     "@serenity-js/assertions": "3.44.3",
     "@serenity-js/console-reporter": "3.44.3",
-    "@serenity-js/core": "3.44.3",
+    "@serenity-js/core": "3.45.9",
     "@serenity-js/cucumber": "3.44.3",
     "@serenity-js/serenity-bdd": "3.45.7",
     "ts-node": "^10.9.2",
