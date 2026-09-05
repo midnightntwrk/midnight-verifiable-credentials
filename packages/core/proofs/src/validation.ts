@@ -150,6 +150,7 @@ const assertArtifact = (artifact: ProofArtifactDescriptor, index: number): void 
   const path = `build.artifacts[${index}]`;
   if (typeof artifact !== "object" || artifact === null) throw new CredentialProofsError("INVALID_ARTIFACT", path, "must be an object");
   identifier(artifact.id, `${path}.id`);
+  version(artifact.version, `${path}.version`);
   if (!["prover-key", "verifier-key", "circuit", "managed-code", "metadata"].includes(artifact.role)) {
     throw new CredentialProofsError("INVALID_ARTIFACT", `${path}.role`, "must be a supported artifact role");
   }
@@ -184,6 +185,16 @@ const assertCircuit = (circuit: ProofCircuitDescriptor, index: number): void => 
   version(circuit.version, `${path}.version`);
   if (typeof circuit.parameters !== "object" || circuit.parameters === null || Array.isArray(circuit.parameters)) throw new CredentialProofsError("INVALID_MANIFEST", `${path}.parameters`, "must be a record");
   for (const [name, value] of Object.entries(circuit.parameters)) scalar(value, `${path}.parameters.${name}`);
+  if (
+    typeof circuit.metrics !== "object" ||
+    circuit.metrics === null ||
+    !Number.isSafeInteger(circuit.metrics.k) ||
+    circuit.metrics.k <= 0 ||
+    !Number.isSafeInteger(circuit.metrics.rows) ||
+    circuit.metrics.rows <= 0
+  ) {
+    throw new CredentialProofsError("INVALID_MANIFEST", `${path}.metrics`, "must report positive safe-integer k and rows");
+  }
   array(circuit.artifactIds, `${path}.artifactIds`);
   circuit.artifactIds.forEach((id, itemIndex) => identifier(id, `${path}.artifactIds[${itemIndex}]`));
   uniqueStrings(circuit.artifactIds, `${path}.artifactIds`);
@@ -225,8 +236,12 @@ export const assertDeploymentManifest = (manifest: DeploymentManifest): void => 
     throw new CredentialProofsError("INVALID_MANIFEST", "deployment", "must use deployment manifest formatVersion 1");
   }
   digest(manifest.deploymentManifestDigest, "deployment.deploymentManifestDigest");
+  for (const [name, value] of Object.entries({ deploymentId: manifest.deploymentId, deploymentIdentity: manifest.deploymentIdentity, networkId: manifest.networkId, chainId: manifest.chainId, contractAddress: manifest.contractAddress, deploymentTransaction: manifest.deploymentTransaction, governanceOwner: manifest.governanceOwner })) identifier(value, `deployment.${name}`);
+  version(manifest.deploymentVersion, "deployment.deploymentVersion");
+  if (typeof manifest.profile !== "object" || manifest.profile === null) throw new CredentialProofsError("INVALID_MANIFEST", "deployment.profile", "must be an object");
+  identifier(manifest.profile.id, "deployment.profile.id");
+  version(manifest.profile.version, "deployment.profile.version");
   digest(manifest.buildManifestDigest, "deployment.buildManifestDigest");
-  for (const [name, value] of Object.entries({ networkId: manifest.networkId, chainId: manifest.chainId, contractAddress: manifest.contractAddress, deploymentTransaction: manifest.deploymentTransaction, governanceOwner: manifest.governanceOwner })) identifier(value, `deployment.${name}`);
   digest(manifest.constructorDigest, "deployment.constructorDigest");
   array(manifest.acceptedReferences, "deployment.acceptedReferences");
   manifest.acceptedReferences.forEach((reference, index) => { identifier(reference.id, `deployment.acceptedReferences[${index}].id`); digest(reference.digest, `deployment.acceptedReferences[${index}].digest`); });

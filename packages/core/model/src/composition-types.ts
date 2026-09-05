@@ -206,6 +206,8 @@ export interface ResolvedArtifactRequirement {
     | "zkir"
     | "bzkir"
     | "circuit-metadata";
+  /** Exact admitted circuit; prevents a valid key from crossing circuit boundaries. */
+  readonly circuitId: string;
   readonly digestAlgorithm: "sha256";
   readonly trusted: true;
 }
@@ -326,14 +328,27 @@ export type CredentialDeploymentComponents = Readonly<
 export interface ConcreteArtifactIdentity {
   readonly requirementId: string;
   readonly id: string;
+  readonly version: string;
+  readonly buildManifestDigest: string;
+  readonly deploymentManifestDigest: string;
   readonly digest: string;
+  readonly bytes: number;
+  readonly signerKeyId: string;
+  readonly profile: { readonly id: string; readonly version: string };
+  readonly circuit: { readonly id: string; readonly version: string };
+  readonly deploymentId: string;
 }
 
 export interface ConcreteDeploymentIdentity {
   readonly id: string;
+  readonly version: string;
   readonly kind: "compact-contract" | "local-service" | "network-service";
   readonly domain: CredentialPackageDomain;
   readonly identity: string;
+  readonly networkId: string;
+  readonly chainId: string;
+  readonly contractAddress: string;
+  readonly profile: { readonly id: string; readonly version: string };
   readonly immutableInputs: Readonly<Record<string, string>>;
 }
 

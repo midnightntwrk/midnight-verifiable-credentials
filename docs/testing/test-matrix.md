@@ -669,3 +669,16 @@ This evidence does not implement concrete authority mechanisms, assert
 exhaustive Cartesian coverage, claim OpenID conformance, select production
 use-case values, or promote same-holder reference evidence to production
 authority.
+
+## Artifact and deployment authority parity
+
+| Evidence | Contract |
+| --- | --- |
+| `packages/core/model/src/test/composition-resolver.test.ts` | Profile resolution requires exact build/deployment manifest digests, artifact ID/version/length/SHA-256/signer, circuit/profile versions, and immutable deployment/network identities; omitted and cross-graph identities fail closed. |
+| `packages/core/proofs/src/test/artifact-authority.test.ts` | Existing signed manifest primitives verify exact bytes, signer, profile/circuit/artifact/deployment/network/version/freshness identities, a valid #494 transcript binding, and an injected authoritative execution receipt. Tampered evidence is invalid; unavailable evidence is indeterminate. |
+| `packages/core/proofs/artifact-authority-vectors.json` | Stable controlled-regeneration provenance records source/toolchain, circuit k/rows, artifact size/digest, signed manifest digests, tamper/unavailable expectations, and valid/invalid/indeterminate parity cases. |
+| `tooling/scripts/test-family-neutral-exchange-consumer.mjs` | A clean packed wallet/exchange consumer imports the artifact-authority subpath and proves classification/binding parity while preserving distinct local and ledger authority labels. |
+
+This evidence verifies supplied path observations only. It does not implement
+#499 executors, transaction submission, #500 privacy changes, artifact
+publication, deployment operation, or release authorization.

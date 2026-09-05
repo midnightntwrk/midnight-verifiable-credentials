@@ -1,3 +1,23 @@
+export type {
+  ArtifactAuthorityClassificationV1,
+  ArtifactAuthorityCompositionV1,
+  ArtifactAuthorityLabelV1,
+  ArtifactAuthorityParityEvidenceV1,
+  ArtifactAuthorityPolicyV1,
+  ArtifactAuthorityReasonCodeV1,
+  ArtifactAuthorityResolverV1,
+  ArtifactAuthorityVerificationResultV1,
+  ArtifactExecutionReceiptVerifierV1,
+  AuthoritativeExecutionReceiptV1,
+  CanonicalArtifactAuthorityTranscriptV1,
+} from "./artifact-authority.js";
+export {
+  compareArtifactAuthorityParityV1,
+  computeArtifactAuthorityBindingDigestV1,
+  createArtifactAuthorityPolicyV1,
+  createArtifactAuthorityTranscriptV1,
+  verifyArtifactAuthorityV1,
+} from "./artifact-authority.js";
 export type { AuthorityBoundProofVerificationResultV1 } from "./authority-bound-verifier.js";
 export { verifyProofWithAuthorityV1 } from "./authority-bound-verifier.js";
 export type {

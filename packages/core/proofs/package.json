@@ -32,6 +32,11 @@
       "import": "./dist/artifacts.js",
       "default": "./dist/artifacts.js"
     },
+    "./artifact-authority": {
+      "types": "./dist/artifact-authority.d.ts",
+      "import": "./dist/artifact-authority.js",
+      "default": "./dist/artifact-authority.js"
+    },
     "./authority-evidence": {
       "types": "./dist/authority-evidence.d.ts",
       "import": "./dist/authority-evidence.js",

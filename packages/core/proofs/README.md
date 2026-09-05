@@ -32,6 +32,23 @@ bytes, or holder witnesses.
 `verifyProofWithAuthorityV1` applies this evidence only after cryptographic proof
 verification succeeds.
 
+The `artifact-authority` export derives its policy from the exact #492 resolved
+composition graph, then verifies the trusted deployment signer, exact signed
+deployment ID/version/identity/profile/network, build/circuit/artifact versions,
+artifact digest and byte length, and deployment support window. Policy creation
+accepts only a valid, profile-matched #494 authority result and binds its
+canonical transcript digest. It accepts an execution receipt only through an injected receipt
+verifier: local receipts retain `local-process`, while confirmed ledger evidence
+retains `ledger-local` or `ledger-attested`. Missing resolver, artifact,
+deployment, or receipt evidence is `indeterminate`; authenticated drift,
+tampering, truncation, staleness, and cross-deployment reuse are `invalid`.
+`createArtifactAuthorityTranscriptV1` emits the domain-separated canonical
+cross-runtime transcript. `compareArtifactAuthorityParityV1` compares supplied
+path observations by classification and binding digest without flattening those authority labels or
+implementing the final executors owned by #499. The committed test fixture
+`artifact-authority-vectors.json` records deterministic provenance, k/rows and
+artifact-size evidence, canonical digests, and parity cases for reviewable drift.
+
 The `trusted-time` export defines a separate ledger/attested time port. Evidence
 is bound to network, deployment, request, challenge, audience, origin, profile,
 freshness policy, and source policy; future, stale, expired, rollback, replay, malformed, and
@@ -47,8 +64,10 @@ The package does **not** own family circuits, proving or verifier keys, ZKIR/BZK
 deployment bundles, a DID method, a trust registry/governance policy, status
 authority, Compact verification-v1 decisions/transcripts, or runtime adapters. A
 complete deployable composition owns its generated artifacts
-and supplies their immutable manifests; a manifest is evidence and metadata, not
-an authority or trust decision. G1 signs the canonical deployment envelope with
+and supplies their immutable manifests. A manifest becomes accepted authority
+only when `artifact-authority` binds it to configured trust, current deployment,
+#494 evidence, and an authoritative receipt; an unverified manifest remains
+metadata rather than a trust decision. G1 signs the canonical deployment envelope with
 explicit `Ed25519`; the deployment digest and signature omit only the
 self-referential signature bytes, while covering the algorithm, key id, and all
 deployment binding fields. This algorithm choice is scoped to generic off-chain
@@ -87,6 +106,5 @@ const provider: ProofProvider = { prove: async (requested) => ({
 ```
 
 All package exports are ESM-only and depend only on registry-resolvable
-`@midnight-ntwrk/credential-model` types at runtime. The candidate remains
-private until clean consumer, ownership, compatibility, and release approvals
-are complete.
+`@midnight-ntwrk/credential-model` types at runtime. Publication, artifact
+promotion, and release authorization remain governed outside this package.
