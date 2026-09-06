@@ -84,7 +84,10 @@ fields are emitted only as compatibility hints for generated issue/present
 message shapes that still require them.
 
 Concrete adapters live under `src/adapters/birth/`; compatibility re-exports
-remain under `src/agents/`. The shared descriptor catalog lives in
+remain under `src/agents/`. `createBirthInjectedCredentialFamilyAdapter(...)`
+bridges the concrete explicit-holder lifecycle into the directly injected
+`credential-exchange` agents while keeping Compact validation in the birth
+family. The shared descriptor catalog lives in
 `src/adapters/birth/schema-descriptors.ts` and provides:
 
 - canonical reference `SchemaRef` values for the explicit birth and

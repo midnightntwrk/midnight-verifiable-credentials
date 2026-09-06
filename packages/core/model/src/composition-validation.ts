@@ -789,6 +789,32 @@ export function assertCredentialFamilyProfileV1(
   }
   validateRequirements(profile.requirements, disabledDomains, disabledRoles);
 
+  const providerRequirements = (
+    profile.requirements as CredentialFamilyProfileV1["requirements"]
+  ).providers;
+  const proofProviderIndex = providerRequirements.findIndex(
+    ({ role }) => role === "proof-executor",
+  );
+  if (proofProviderIndex === -1) {
+    fail(
+      "CAPABILITY_NOT_PROVIDED",
+      "requirements.providers.proof-executor",
+      "proof-generation semantics require an exact proof-executor provider requirement",
+    );
+  }
+  const proofProviderCapability = providerRequirements[proofProviderIndex].capability;
+  const proofGenerationCapability = semantics.presentation.proofGeneration.capability;
+  if (
+    proofProviderCapability.id !== proofGenerationCapability.id ||
+    proofProviderCapability.version !== proofGenerationCapability.version
+  ) {
+    fail(
+      "CONTRADICTORY_PROFILE",
+      `requirements.providers[${proofProviderIndex}].capability`,
+      "proof-executor capability must exactly match the semantic proof-generation capability",
+    );
+  }
+
   const compatibility = exactObject(profile.compatibility, "compatibility", [
     "deniedRules",
   ]);
