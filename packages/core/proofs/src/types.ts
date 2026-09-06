@@ -71,6 +71,8 @@ export type ProofArtifactRole =
 
 export interface ProofArtifactDescriptor {
   readonly id: string;
+  /** Exact artifact release identity covered by the build-manifest digest. */
+  readonly version: string;
   readonly role: ProofArtifactRole;
   readonly mediaType: string;
   readonly path: string;
@@ -82,6 +84,11 @@ export interface ProofCircuitDescriptor {
   readonly id: string;
   readonly version: string;
   readonly parameters: Readonly<Record<string, string | number | boolean>>;
+  /** Deterministic regeneration report committed into the build digest. */
+  readonly metrics: {
+    readonly k: number;
+    readonly rows: number;
+  };
   readonly artifactIds: readonly string[];
 }
 
@@ -151,6 +158,10 @@ export interface ProofDeploymentManifest {
   readonly formatVersion: 1;
   readonly manifestKind: "deployment";
   readonly deploymentManifestDigest: Sha256Digest;
+  readonly deploymentId: string;
+  readonly deploymentVersion: string;
+  readonly deploymentIdentity: string;
+  readonly profile: { readonly id: string; readonly version: string };
   readonly buildManifestDigest: Sha256Digest;
   readonly networkId: string;
   readonly chainId: string;

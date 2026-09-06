@@ -42,6 +42,10 @@ export interface DeploymentManifestVerificationOptions {
   readonly keyResolver?: ManifestKeyResolver;
   readonly buildManifest?: BuildManifest;
   readonly expectedBuildManifestDigest?: Sha256Digest;
+  readonly expectedDeploymentId?: string;
+  readonly expectedDeploymentVersion?: string;
+  readonly expectedDeploymentIdentity?: string;
+  readonly expectedProfile?: { readonly id: string; readonly version: string };
   readonly expectedNetworkId?: string;
   readonly expectedChainId?: string;
   readonly expectedContractAddress?: string;
@@ -92,6 +96,11 @@ const assertExpectedBinding = (
 ): void => {
   const checks: readonly [string, string | undefined, string][] = [
     ["buildManifestDigest", options.expectedBuildManifestDigest, manifest.buildManifestDigest],
+    ["deploymentId", options.expectedDeploymentId, manifest.deploymentId],
+    ["deploymentVersion", options.expectedDeploymentVersion, manifest.deploymentVersion],
+    ["deploymentIdentity", options.expectedDeploymentIdentity, manifest.deploymentIdentity],
+    ["profile.id", options.expectedProfile?.id, manifest.profile.id],
+    ["profile.version", options.expectedProfile?.version, manifest.profile.version],
     ["networkId", options.expectedNetworkId, manifest.networkId],
     ["chainId", options.expectedChainId, manifest.chainId],
     ["contractAddress", options.expectedContractAddress, manifest.contractAddress],

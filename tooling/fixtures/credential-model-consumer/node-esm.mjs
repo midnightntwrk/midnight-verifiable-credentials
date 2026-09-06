@@ -175,9 +175,14 @@ const assembly = {
   deployments: [
     {
       id: "fixture.clean-consumer.local@1",
+      version: "1.0.0",
       kind: "local-service",
       domain: "verification",
       identity: "urn:fixture:clean-consumer:local:1",
+      networkId: "fixture-testnet",
+      chainId: "fixture-chain-1",
+      contractAddress: "fixture-clean-consumer-1",
+      profile: { id: profile.id, version: profile.version },
       immutableInputs: { mode: "fixture" },
     },
   ],

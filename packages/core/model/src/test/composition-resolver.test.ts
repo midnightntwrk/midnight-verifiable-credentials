@@ -188,6 +188,7 @@ const profile = (): CredentialFamilyProfileV1 => ({
         id: "fixture.employee.verify.verifier",
         mediaType: "application/vnd.fixture.verifier-key",
         artifactClass: "verifier-key",
+        circuitId: "fixture.employee.verify",
         digestAlgorithm: "sha256",
         trusted: true,
       },
@@ -301,16 +302,29 @@ const assembly = (): CredentialDeploymentAssemblyV1 => {
     artifacts: [
       {
         requirementId: "fixture.employee.verify.verifier",
-        id: "sha256:fixture-verifier-key",
+        id: "fixture-verifier-key",
+        version: "1.0.0",
+        buildManifestDigest: `sha256:${"1".repeat(64)}`,
+        deploymentManifestDigest: `sha256:${"2".repeat(64)}`,
         digest: `sha256:${"0".repeat(64)}`,
+        bytes: 4096,
+        signerKeyId: "fixture-release-key-1",
+        profile: { id: "fixture.employee.offchain-public", version: "1.0.0" },
+        circuit: { id: "fixture.employee.verify", version: "1.0.0" },
+        deploymentId: "fixture.local-verifier@1",
       },
     ],
     deployments: [
       {
         id: "fixture.local-verifier@1",
+        version: "1.0.0",
         kind: "local-service",
         domain: "verification",
         identity: "urn:fixture:local-verifier:1",
+        networkId: "fixture-testnet",
+        chainId: "fixture-chain-1",
+        contractAddress: "fixture-verifier-1",
+        profile: { id: "fixture.employee.offchain-public", version: "1.0.0" },
         immutableInputs: { mode: "fixture" },
       },
     ],
@@ -347,6 +361,65 @@ describe("credential composition contracts", () => {
       "INVALID_DESCRIPTOR",
       "artifacts[0].digest",
     );
+  });
+
+  it.each([
+    ["version", "artifacts[0].version"],
+    ["buildManifestDigest", "artifacts[0].buildManifestDigest"],
+    ["deploymentManifestDigest", "artifacts[0].deploymentManifestDigest"],
+    ["digest", "artifacts[0].digest"],
+    ["bytes", "artifacts[0].bytes"],
+    ["signerKeyId", "artifacts[0].signerKeyId"],
+    ["profile", "artifacts[0].profile"],
+    ["circuit", "artifacts[0].circuit"],
+    ["deploymentId", "artifacts[0].deploymentId"],
+  ] as const)("rejects omitted artifact authority field %s", (field, path) => {
+    const candidate = clone(assembly()) as unknown as { artifacts: Record<string, unknown>[] };
+    delete candidate.artifacts[0][field];
+    expectModelError(
+      () => assertCredentialDeploymentAssemblyV1(candidate),
+      "MISSING_FIELD",
+      path,
+    );
+  });
+
+  it.each([
+    ["version", "deployments[0].version"],
+    ["networkId", "deployments[0].networkId"],
+    ["chainId", "deployments[0].chainId"],
+    ["contractAddress", "deployments[0].contractAddress"],
+    ["profile", "deployments[0].profile"],
+  ] as const)("rejects omitted deployment authority field %s", (field, path) => {
+    const candidate = clone(assembly()) as unknown as { deployments: Record<string, unknown>[] };
+    delete candidate.deployments[0][field];
+    expectModelError(
+      () => assertCredentialDeploymentAssemblyV1(candidate),
+      "MISSING_FIELD",
+      path,
+    );
+  });
+
+  it("rejects cross-profile, cross-circuit, cross-deployment, and unreferenced deployment drift", () => {
+    for (const mutate of [
+      (candidate: Mutable<CredentialDeploymentAssemblyV1>) => { candidate.artifacts[0].profile.id = "fixture.other"; },
+      (candidate: Mutable<CredentialDeploymentAssemblyV1>) => { candidate.artifacts[0].circuit.version = "2.0.0"; },
+      (candidate: Mutable<CredentialDeploymentAssemblyV1>) => { candidate.artifacts[0].deploymentId = "fixture.other@1"; },
+      (candidate: Mutable<CredentialDeploymentAssemblyV1>) => { candidate.deployments[0].profile.version = "2.0.0"; },
+      (candidate: Mutable<CredentialDeploymentAssemblyV1>) => {
+        candidate.deployments.push({
+          ...candidate.deployments[0],
+          id: "fixture.unreferenced@1",
+          identity: "urn:fixture:unreferenced:1",
+          profile: { id: "fixture.other", version: "1.0.0" },
+        });
+      },
+    ]) {
+      const candidate = clone(assembly());
+      mutate(candidate);
+      expect(() => resolveCredentialComposition({ family, profile: profile(), assembly: candidate, catalog: catalog() })).toThrowError(
+        expect.objectContaining<Partial<CredentialModelError>>({ code: "CONTRADICTORY_PROFILE" }),
+      );
+    }
   });
 
   it("admits every initial verification and holder-binding profile with explicit authority/privacy", () => {

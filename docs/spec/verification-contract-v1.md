@@ -664,7 +664,7 @@ must have a distinct action/policy digest and negative tests.
 | Trust authorization | Accepted live state or bounded signed epoch | Proof package belongs to `midnight-trust-registry` |
 | Status | Accepted root plus actual non-membership, or challenge-bound accepted authority attestation | Root equality is not a non-membership proof; external freshness remains incomplete |
 | Time | Ledger-derived time or bounded authority attestation | A caller's clock is not authoritative |
-| Artifacts/deployment | Digest-verified build and deployment manifests | ADR-0003/G1 implementation remains pending |
+| Artifacts/deployment | Exact profile/circuit/artifact/deployment identities verified against digest-checked build bytes and signer-verified deployment manifests | The family-neutral authority/transcript/receipt verifier is available; final local/ledger executor integration remains owned by #499 |
 | Browser origin | Accepted wallet/connector attestation binding origin, audience, request, and challenge | Compact cannot observe browser origin directly; without an accepted connector authority it remains local request metadata |
 
 If a required row cannot be satisfied, a final profile MUST fail

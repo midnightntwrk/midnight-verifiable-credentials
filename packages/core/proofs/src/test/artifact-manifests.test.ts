@@ -33,15 +33,19 @@ const buildInput: Omit<BuildManifest, "manifestDigest"> = {
   sourceCommit: "0123456789abcdef0123456789abcdef01234567",
   cleanTree: true,
   toolchain: { compactCompiler: "0.30.0", runtime: "0.15.0", generator: "1.0.0" },
-  circuits: [{ id: "check", version: "1.0.0", parameters: { threshold: 18 }, artifactIds: ["check-zkir"] }],
+  circuits: [{ id: "check", version: "1.0.0", parameters: { threshold: 18 }, metrics: { k: 12, rows: 2048 }, artifactIds: ["check-zkir"] }],
   proofs: [],
-  artifacts: [{ id: "check-zkir", role: "circuit", mediaType: "application/octet-stream", path: "zkir/check.bzkir", bytes: 3, sha256: digest }],
+  artifacts: [{ id: "check-zkir", version: "1.0.0", role: "circuit", mediaType: "application/octet-stream", path: "zkir/check.bzkir", bytes: 3, sha256: digest }],
   lockfileDigest: digest,
 };
 
 const deploymentInput = (buildManifestDigest: Sha256Digest): Omit<DeploymentManifest, "deploymentManifestDigest" | "signature"> => ({
   formatVersion: 1,
   manifestKind: "deployment",
+  deploymentId: "example-contract@1",
+  deploymentVersion: "1.0.0",
+  deploymentIdentity: "urn:example:contract:1",
+  profile: { id: "example.public", version: "1.0.0" },
   buildManifestDigest,
   networkId: "testnet",
   chainId: "chain-1",
