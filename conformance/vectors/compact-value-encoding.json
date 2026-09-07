@@ -33,6 +33,25 @@
       "encoding": "compact-value-v1.base64url",
       "payload": "QUFBQQAAAAA",
       "errorIncludes": "magic header"
+    },
+    {
+      "id": "reject-truncated-chunk",
+      "encoding": "compact-value-v1.base64url",
+      "payload": "TUNWMQAAAAEAAAAEAAE",
+      "errorIncludes": "exceeds payload length"
+    },
+    {
+      "id": "reject-trailing-bytes",
+      "encoding": "compact-value-v1.base64url",
+      "payload": "TUNWMQAAAAD_",
+      "errorIncludes": "trailing bytes"
+    },
+    {
+      "id": "reject-descriptor-leftovers",
+      "decoder": "single-chunk-descriptor",
+      "encoding": "compact-value-v1.base64url",
+      "payload": "TUNWMQAAAAIAAAABqgAAAAG7",
+      "errorIncludes": "trailing chunks for descriptor"
     }
   ]
 }

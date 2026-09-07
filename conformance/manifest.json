@@ -18,6 +18,20 @@
       "vectorCategory": "compact-generated"
     },
     {
+      "id": "encode-compact-value",
+      "role": "core",
+      "section": "spec/canonical-encoding.md",
+      "state": "implemented",
+      "vectorCategory": "compact-value-encoding"
+    },
+    {
+      "id": "decode-compact-value",
+      "role": "core",
+      "section": "spec/canonical-encoding.md",
+      "state": "implemented",
+      "vectorCategory": "compact-value-encoding"
+    },
+    {
       "id": "validate-credential-configuration",
       "role": "core",
       "section": "spec/configuration.md",
