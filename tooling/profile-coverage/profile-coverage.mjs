@@ -206,20 +206,46 @@ const materializeFamilyDefinition = (metadata) => ({
   },
 });
 
-const fixtureCompositionInput = (profile, familyMetadata) => ({
-  family: materializeFamilyDefinition(familyMetadata),
-  profile,
-  assembly: {
-    formatVersion: 1,
-    id: `assembly.${profile.id}`,
-    version: "1.0.0",
-    profile: { id: profile.id, version: profile.version },
-    components: disabledComponents(),
-    artifacts: [],
-    deployments: [],
-  },
-  catalog: { formatVersion: 1, providers: [] },
-});
+const fixtureCompositionInput = (profile, familyMetadata) => {
+  const proofRequirement = profile.requirements.providers.find(
+    ({ role }) => role === "proof-executor",
+  );
+  assert.ok(proofRequirement, `${profile.id} requires a proof-executor binding`);
+  const providerId = `provider.${profile.id}.proof-executor`;
+  const instanceId = `${providerId}.instance@1`;
+  const components = disabledComponents();
+  components["proof-executor"] = {
+    state: "selected",
+    requirementId: proofRequirement.id,
+    provider: { id: providerId, version: "1.0.0" },
+    instanceId,
+  };
+  return {
+    family: materializeFamilyDefinition(familyMetadata),
+    profile,
+    assembly: {
+      formatVersion: 1,
+      id: `assembly.${profile.id}`,
+      version: "1.0.0",
+      profile: { id: profile.id, version: profile.version },
+      components,
+      artifacts: [],
+      deployments: [],
+    },
+    catalog: {
+      formatVersion: 1,
+      providers: [{
+        id: providerId,
+        version: "1.0.0",
+        roles: ["proof-executor"],
+        capabilities: [proofRequirement.capability],
+        packages: [],
+        witnessPolicy: profile.semantics.presentation.proofGeneration.witnessPolicy,
+        atomicReplay: false,
+      }],
+    },
+  };
+};
 
 export const validatePrototypeManifests = (manifests = loadPrototypeManifests()) =>
   manifests.map((manifest) => {
@@ -370,18 +396,18 @@ const generatedProfileInput = (rowId, values) => {
       witnessPolicy: privateInputSources.length > 0 ? "private-compatible" : "public-only",
       atomicReplay: false,
     },
-    ...(privateInputSources.length > 0
-      ? [{
-          id: "proof-executor",
-          role: "proof-executor",
-          capability: proofCapability,
-          package: values.composition === "same-holder"
-            ? sameHolderPackage
-            : { name: "@midnight-ntwrk/midnight-did-credentials-same-holder", version: "0.1.0", exports: ["./same-holder.compact"], domain: "proof" },
-          witnessPolicy: "private-compatible",
-          atomicReplay: false,
-        }]
-      : []),
+    {
+      id: "proof-executor",
+      role: "proof-executor",
+      capability: proofCapability,
+      package: values.composition === "same-holder"
+        ? sameHolderPackage
+        : { name: "@midnight-ntwrk/midnight-did-credentials-same-holder", version: "0.1.0", exports: ["./same-holder.compact"], domain: "proof" },
+      witnessPolicy: privateInputSources.length > 0
+        ? "private-compatible"
+        : "public-only",
+      atomicReplay: false,
+    },
     ...(values.status === "disabled"
       ? []
       : [{

@@ -124,7 +124,8 @@ const exactGraph = resolveCredentialComposition({
 The three validators accept `unknown`, reject omitted and unknown fields, and
 throw `CredentialModelError` with a stable `code` and path. The resolver binds
 one exact family/profile/assembly graph and rejects identity mismatches,
-uncataloged provider capabilities, package conflicts, missing artifacts,
+omitted or substituted proof-executor capability bindings, uncataloged provider
+capabilities, package conflicts, missing artifacts,
 cross-profile/cross-circuit/cross-deployment artifact reuse, and the mandatory
 ADR-0015 deny rules. Every deployment role in
 `CREDENTIAL_DEPLOYMENT_ROLES` must be explicitly selected or `disabled`.

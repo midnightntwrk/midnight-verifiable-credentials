@@ -13,6 +13,7 @@ import {
   prohibitedFamilyDependencyClasses,
   transitiveWorkspaceDependencyPaths,
   workspaceDependencyPaths,
+  workspacePathForImport,
 } from "./check-package-boundaries.mjs";
 
 test("workspace catalog has no forbidden ownership edges", () => {
@@ -45,6 +46,16 @@ test("family packages deny protocol, orchestration, and use-case dependencies", 
     ).includes("packages/core/compact"),
   );
   assert.deepEqual(findFamilySourceImportViolations(), []);
+});
+
+test("relative imports resolve to workspace paths before denied-edge classification", () => {
+  assert.equal(
+    workspacePathForImport(
+      "../../../../protocols/openid/dist/index.js",
+      "packages/prototypes/credential-families/digital-passport/src/codecs.ts",
+    ),
+    "packages/protocols/openid",
+  );
 });
 
 test("family-neutral exchange depends only on canonical reusable core", () => {
