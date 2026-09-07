@@ -480,8 +480,33 @@ Acceptance: maintainer approval on exact keep/remove decisions.
 Acceptance: spec and implementation tests agree without protocol/use-case
 imports.
 
-### PR 3: Reduce `credential-model`
+### PR 3: Detach credential families and use cases
 
+- approve the #466 migration ledger and select maintained versus historical
+  scenarios;
+- validate the independent digital-passport repository against the current
+  public package contract before removing the local duplicate;
+- port maintained application and integration scenarios to
+  `midnight-identity-solution-examples` through released package interfaces or
+  immutable prerelease package artifacts;
+- remove in-repository family prototypes and use cases only after their named
+  destination validates, or when the ledger explicitly selects removal;
+- add the minimal synthetic conformance example; and
+- remove family/use-case generated files and LFS objects.
+
+This consumer-first step must land before removing model exports or workspace
+packages they currently import.
+
+Acceptance: no concrete credential family or product use case is a workspace,
+and the minimal example uses only public exports. Every retained runnable use
+case has a named destination owner, exact package version or artifact digest,
+and passing destination CI. The repository still installs, typechecks, and
+passes its applicable gate after consumer removal.
+
+### PR 4: Reduce `credential-model`
+
+- confirm all removed composition/profile/runtime exports have no remaining
+  in-repository consumers;
 - remove runtime discovery, deployment/provider composition, aggregate
   business decisions, and transport concepts from public exports;
 - retain bounded configuration, codecs, role operations, results, and errors;
@@ -489,21 +514,25 @@ imports.
 - prove the package from a clean consumer.
 
 Acceptance: zero runtime dependencies and no imports from adapters, protocols,
-families, registries, or use cases.
+families, registries, or use cases. Removal checks prove no workspace still
+imports a deleted export.
 
-### PR 4: Reduce `credential-compact`
+### PR 5: Reduce `credential-compact`
 
 - make it the single Compact implementation owner;
-- fold only retained same-holder/status/proof primitives;
-- remove duplicated compatibility sources;
+- fold only retained same-holder/status/proof primitives before deleting their
+  former source packages;
+- remove duplicated compatibility sources after equivalence vectors pass;
 - exclude family/application circuits and deployable keys; and
 - prove canonical TypeScript/Compact vectors.
 
 Acceptance: one generic Compact root, one composition-safe root if still
-needed, and no duplicate source owner.
+needed, no duplicate source owner, and no remaining consumer of a removed
+entry point.
 
-### PR 5: Remove high-level protocols and private architecture
+### PR 6: Remove high-level protocols and private architecture
 
+- confirm the consumer-first and retained-primitive migrations are complete;
 - remove OpenID, exchange/protocol orchestration, display, status
   implementation split, compatibility adapters, and standalone application
   infrastructure;
@@ -512,23 +541,8 @@ needed, and no duplicate source owner.
 - preserve only security vectors that protect retained core behavior.
 
 Acceptance: no high-level protocol or business workflow package remains in
-the workspace graph.
-
-### PR 6: Remove credential families and use cases
-
-- validate the independent digital-passport repository against the reduced
-  packages;
-- move maintained application and integration scenarios to
-  `midnight-identity-solution-examples` through released package interfaces or
-  immutable prerelease package artifacts;
-- remove all in-repository family prototypes and use cases after destination
-  validation;
-- add the minimal synthetic example; and
-- remove obsolete generated files and LFS objects.
-
-Acceptance: no concrete credential family is a workspace, and the minimal
-example uses only published exports. Every retained runnable use case has a
-named destination owner, package-version manifest, and passing destination CI.
+the workspace graph, no manifest references a removed workspace, and a fresh
+install plus the applicable gate succeeds.
 
 ### PR 7: Simplify CI and release tooling
 
