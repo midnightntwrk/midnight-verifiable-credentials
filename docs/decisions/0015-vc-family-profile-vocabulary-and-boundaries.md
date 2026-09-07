@@ -1,6 +1,6 @@
 # ADR-0015: VC-family profile vocabulary and boundaries
 
-- Status: Accepted
+- Status: Superseded by ADR-0016
 - Date: 2026-09-01
 - Owners: VC package, security, protocol, and product-integration maintainers
 - Supersedes: none

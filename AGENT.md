@@ -2,29 +2,31 @@
 
 Engineering guide for agents and engineers working in `midnight-verifiable-credentials`.
 
-This repository can be cloned independently or checked out as `midnight-identity-workspace/midnight-verifiable-credentials`. When it is used inside the workspace, also read the workspace-root `AGENT.md` for cross-repo coordination. This file is the authority for VC repository package boundaries, validation, packaging, BDD, and standalone integration behavior.
+This repository can be cloned independently or checked out as `midnight-identity-workspace/midnight-verifiable-credentials`. When it is used inside the workspace, also read the workspace-root `AGENT.md` for cross-repo coordination. This file is the authority for VC repository package boundaries, normative and conformance placement, validation, packaging, and migration behavior.
 
 ## Purpose
 
-`midnight-verifiable-credentials` owns the Midnight Verifiable Credentials stack:
+`midnight-verifiable-credentials` owns the protocol-independent Midnight VC/VP
+core defined by
+[`docs/decisions/0016-core-only-specification-and-implementation.md`](docs/decisions/0016-core-only-specification-and-implementation.md):
 
-- Compact-first VC/VP primitives
-- public/direct claims and commitment-backed claim representation
-- holder-binding and same-holder capabilities
-- status and revocation capability work
-- OpenID-shaped protocol bindings
-- protocol orchestration helpers
-- private credential-type prototypes used to prove reusable capabilities
-- runnable use cases and BDD living documentation used as contribution evidence
-- standalone integration infrastructure
+- the normative VC/VP specification and conformance vectors
+- canonical issuer, holder, and verifier data objects and ceremonies
+- the bounded TypeScript credential model
+- generic Compact VC/VP primitives and curated generated bindings
+- focused build, test, packaging, and release tooling for those surfaces
 
-DID method implementation belongs in `midnight-did`. Concrete credential families are private prototype evidence while they remain
-under `packages/prototypes/credential-families`; production-shaped compositions
-belong under `packages/use-cases/` only as explicitly governed evidence. A
-family graduates to an independent product repository only after the gates in
-[`docs/architecture/credential-family-ownership-policy.md`](docs/architecture/credential-family-ownership-policy.md). This repository publishes only
-reusable, schema-neutral packages. Existing family and use-case workspaces are
-private migration inventory and must not become product release surfaces.
+OpenID, DIDComm, DApp Connector integration, durable workflow orchestration,
+runtime family discovery, display/localization, concrete credential families,
+business contracts, and runnable product use cases are outside the target core
+release graph. Existing directories for those concerns are migration inventory:
+do not add features to them. Maintained use cases belong in
+`midnight-identity-solution-examples`; credential families belong in
+independently versioned repositories.
+
+DID method implementation belongs in `midnight-did`. This repository publishes
+only reusable, schema-neutral packages. Repository integration uses released
+packages or immutable package artifacts, never sibling source imports.
 
 ## Quick Start
 
@@ -93,24 +95,28 @@ Use it when a task starts from an independent `midnight-verifiable-credentials` 
 | --- | --- |
 | `docs/` | Normative specs, guides, architecture notes, test strategy, plans, decisions, and templates. |
 | `packages/core/` | Reusable VC primitives and capabilities. |
-| `packages/registry/` | Registry packages, currently status/revocation registry work. |
-| `packages/protocols/` | Transport/protocol bindings such as OpenID-shaped schemas and Compact framing. |
-| `packages/components/` | Runtime adapters, protocol orchestration, and standalone integration helpers. |
-| `packages/prototypes/` | Private credential-family prototypes and family-local quality evidence; concrete families remain here until reduced or graduated through explicit gates. |
-| `packages/use-cases/` | Private production-shaped composition evidence, BDD living documentation, contracts, and scenarios; placement does not assert production readiness. |
+| `packages/registry/` | Migration inventory; retain only generic status semantics approved for the core packages. |
+| `packages/protocols/` | Removal inventory; transport/protocol bindings move outside this repository. |
+| `packages/components/` | Removal or relocation inventory for adapters, orchestration, and application integration. |
+| `packages/prototypes/` | Extraction inventory for independently owned credential-family repositories. |
+| `packages/use-cases/` | Relocation inventory for `midnight-identity-solution-examples`. |
 | `tooling/` | Build, artifact, vendor, runner, scaffolding, and package-boundary scripts. |
 | `docs/guides/assets/` | Static explanatory assets used by human-facing guides. |
 
-BDD belongs under `packages/use-cases/`, not under low-level package tests or prototype-only directories.
+Do not add BDD, product reporting, or application scenarios to the core
+repository. Retained canonical vectors belong under `conformance/`; runnable
+use-case evidence belongs in `midnight-identity-solution-examples`.
 
-No new supported credential family may be added under `packages/`. Prototype
-work must declare an owner, capability hypothesis, limitations, and an exit
-criterion. Reusable packages must not depend on prototypes or use cases. The
+Reusable packages must not depend on prototypes or use cases. The
 workspace/package catalog and `check-package-boundaries` guard enforce the
-family-agnostic core and private evidence boundary; see the ownership policy
-for the closed migration exception and graduation gates.
+family-agnostic core during migration.
 
-## Package Map
+## Migration Package Map
+
+The following table describes the current tree, not the target supported
+surface. ADR-0016 reduces the target public release graph to
+`credential-model` and `credential-compact`; do not infer continuing ownership
+from a package's presence during migration.
 
 | Path | Package | Responsibility |
 | --- | --- | --- |

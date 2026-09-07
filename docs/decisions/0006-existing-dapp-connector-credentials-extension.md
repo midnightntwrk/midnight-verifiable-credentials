@@ -1,6 +1,6 @@
 # ADR-0006: Existing DApp Connector credentials extension
 
-- Status: Accepted
+- Status: Superseded by ADR-0016
 - Date: 2026-07-15
 - Owners: Midnight DApp Connector, wallet, and VC protocol maintainers
 - Supersedes: none

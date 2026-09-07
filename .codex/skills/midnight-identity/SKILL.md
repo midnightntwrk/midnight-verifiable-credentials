@@ -1,6 +1,6 @@
 ---
 name: midnight-identity
-description: "Use this skill for midnight-verifiable-credentials repository work: VC/VP packages, Compact claim representation, credential families, status/revocation, BDD scenarios, university use case, standalone integration, CI cones, and package distribution."
+description: "Use this skill for midnight-verifiable-credentials core work: normative VC/VP semantics, bounded TypeScript models, generic Compact implementation, conformance, CI, and package distribution."
 ---
 
 # Midnight Identity VC Skill
@@ -11,14 +11,18 @@ Use this skill from the `midnight-verifiable-credentials` repository, whether cl
 
 1. Read repository-root `AGENT.md` first.
 2. If this checkout is inside `midnight-identity-workspace`, read the workspace-root `AGENT.md` for submodule and artifact fanout rules.
-3. Keep DID method implementation in `midnight-did`; keep Passport/product flows in examples/product repos.
+3. Keep DID method implementation in `midnight-did`, credential families in
+   independent repositories, and runnable use cases in
+   `midnight-identity-solution-examples`.
 
 ## Defaults
 
-- Target branch is `develop` unless instructed otherwise.
+- Target branch is `develop` unless instructed otherwise. Core-only migration
+  PRs target the explicit `vc-core` integration branch.
 - Use DCO/GPG for repository-facing commits: `git commit -S --signoff -m "<type>: <subject>"`.
 - Preserve the generic envelope `VC<TPublicClaims, TClaimCommitments, THolderBinding, TStatusBinding>`.
-- Keep BDD under `packages/use-cases/`.
+- Do not add transports, application workflows, credential families, BDD, or
+  product reporting to the core repository.
 
 
 ## Validation selection and PR gates
@@ -59,28 +63,26 @@ args = ["exec", "midnight-mcp@latest"]
 
 ### PR isolation and consolidation
 
-- Treat `develop` as the only default PR base. Before a mutating task, run
-  `git fetch origin` and use an isolated worktree/feature branch based on
-  `origin/develop`; do not edit, validate, commit, or merge from the primary
-  checkout.
+- Treat `develop` as the normal default PR base. During the core-only campaign,
+  use the explicitly requested `vc-core` integration branch. Before a mutating
+  task, run `git fetch origin` and use an isolated worktree/feature branch based
+  on the actual PR base; do not edit, validate, commit, or merge from the
+  primary checkout.
 - Use the repository `dev-loop` entrypoint for issue/PR lifecycle work. Resolve
   the issue/PR state first; when an open linked PR exists, continue that
   canonical PR rather than opening a duplicate. Consolidate bot work only after
   selecting compatible `develop`-target PRs with current-head evidence.
 - Keep one issue/scope per PR and one writer per worktree. Never merge a branch
   into local `main`, never target `main` by default, and never run `gh pr merge`.
-  Stop at the human merge handoff.
+  The checked-in `humanMergeOnly` policy requires a human merge handoff.
 
 ### CI failure triage
 
 - Re-baseline the canonical PR and current head SHA before acting. Identify the
   failing check/job and confirm it ran against that head; use dev-loop CI-status
   and CI-log helpers rather than shell polling or blind reruns.
-- Reproduce the named lane first. For university protocol changes, start with
-  `pnpm run ci:university-protocol`; add
-  `pnpm run ci:university-protocol-profiles` for profile/cohort/stress inputs.
-  Then run `./run.sh --light` and select the necessary full or integration runner target
-  from `AGENT.md`.
+- Reproduce the named lane first. Then run `./run.sh --light` and select any
+  necessary Compact, package-consumer, or conformance target from `AGENT.md`.
 - Classify each failure as repo-fixable, flaky/transient, CI configuration,
   external-service outage, or unknown. Make one narrow validated fix per cycle.
   If logs are unavailable or classification remains unknown, report the

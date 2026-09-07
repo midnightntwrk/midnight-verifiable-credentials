@@ -1,6 +1,6 @@
 # ADR-0013: Reusable core and credential-family lifecycle
 
-- Status: Accepted
+- Status: Superseded by ADR-0016
 - Date: 2026-07-23
 - Owners: VC maintainers and credential product owners
 - Supersedes: ADR-0001

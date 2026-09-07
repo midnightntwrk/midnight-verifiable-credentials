@@ -210,6 +210,17 @@
 
 ## Decisions and plans
 
+- develop incremental audit and razor input:
+  - [`plans/vc-develop-incremental-audit-2026-09-08.md`](./plans/vc-develop-incremental-audit-2026-09-08.md)
+  - for the post-feature-stack `develop` delta, current control gaps, and the
+    proposed simplification sequence
+- core-only repository plan:
+  - [`plans/vc-core-only-repository-plan-2026-09-08.md`](./plans/vc-core-only-repository-plan-2026-09-08.md)
+  - for the AnonCreds-inspired specification, issuer/holder/verifier core, and
+    removal of high-level protocols and product workflows
+- core-only issue disposition:
+  - [`plans/vc-core-only-issue-disposition-2026-09-08.md`](./plans/vc-core-only-issue-disposition-2026-09-08.md)
+  - for retaining, absorbing, relocating, or removing the pre-ADR-0016 backlog
 - architecture decision register:
   - [`decisions/README.md`](./decisions/README.md)
   - for accepted repository, contract, artifact, rendering, verification, and

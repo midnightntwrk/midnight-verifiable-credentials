@@ -1,6 +1,6 @@
 # ADR-0014: Orthogonal package architecture
 
-- Status: Proposed
+- Status: Superseded by ADR-0016
 - Date: 2026-07-23
 - Updated: 2026-07-24
 - Owners: VC package maintainers
