@@ -30,25 +30,43 @@ describe("university party runtime", () => {
     expect(student.methodId).toBe(fixture.students[0]!.holderMethodId);
     expect(verifier.didUrl).toBe(fixture.companies[0]!.verifierDidUrl);
     expect(verifier.methodId).toBe(fixture.companies[0]!.verifierMethodId);
-    expect(issuer.secretKey).not.toBe(student.secretKey);
-    expect(student.secretKey).not.toBe(verifier.secretKey);
+    expect(issuer).not.toHaveProperty("secretKey");
+    expect(student).not.toHaveProperty("secretKey");
+    expect(verifier).not.toHaveProperty("secretKey");
+    expect(runtime.signerOptionsFor(issuer).secretKey).not.toBe(
+      runtime.signerOptionsFor(student).secretKey,
+    );
   });
 
   it("supports CRUD-style party registration and updates", () => {
     const runtime = new DeterministicUniversityPartyRuntime();
 
-    const created = runtime.createParty({
-      partyId: "verifier-1",
-      didUrl: "did:midnight:test:verifier-1",
-      methodId: "#verifier-key-1",
-      secretKey: 123n,
-      role: "verifier",
-      source: "deterministic-fixture",
-    });
-    const updated = runtime.updateParty("verifier-1", {
-      methodId: "#verifier-key-2",
-      verificationMethodRef: "did:midnight:test:verifier-1#verifier-key-2",
-    });
+    const created = runtime.createParty(
+      {
+        partyId: "verifier-1",
+        didUrl: "did:midnight:test:verifier-1",
+        methodId: "#verifier-key-1",
+        role: "verifier",
+        source: "deterministic-fixture",
+      },
+      {
+        label: "did:midnight:test:verifier-1",
+        methodId: "#verifier-key-1",
+        secretKey: 123n,
+      },
+    );
+    const updated = runtime.updateParty(
+      "verifier-1",
+      {
+        methodId: "#verifier-key-2",
+        verificationMethodRef: "did:midnight:test:verifier-1#verifier-key-2",
+      },
+      {
+        label: "did:midnight:test:verifier-1",
+        methodId: "#verifier-key-2",
+        secretKey: 456n,
+      },
+    );
 
     expect(created.methodId).toBe("#verifier-key-1");
     expect(runtime.readParty("verifier-1")?.methodId).toBe("#verifier-key-2");
@@ -56,8 +74,17 @@ describe("university party runtime", () => {
       "did:midnight:test:verifier-1#verifier-key-2",
     );
     expect(runtime.listParties()).toHaveLength(1);
+    expect(runtime.signerOptionsFor(updated).secretKey).toBe(456n);
     expect(runtime.deleteParty("verifier-1")).toBe(true);
     expect(runtime.readParty("verifier-1")).toBeUndefined();
+    expect(() => runtime.signerOptionsFor(updated)).toThrow(/unavailable/u);
+    expect(
+      runtime.createParty(created, {
+        label: created.didUrl,
+        methodId: created.methodId,
+        secretKey: 789n,
+      }),
+    ).toEqual(created);
   });
 
   it("uses preloaded provisioned party records without re-deriving them", () => {
@@ -95,15 +122,17 @@ describe("university party runtime", () => {
     ]);
 
     expect(runtime.descriptor().usesRealDidInstances).toBe(true);
-    expect(runtime.issuerProfileForUniversity(university).secretKey).toBe(11n);
-    expect(runtime.studentProfileForStudent(student).secretKey).toBe(22n);
-    expect(
-      runtime.verifierProfile(
-        company.companyId,
-        company.verifierDidUrl,
-        company.verifierMethodId,
-      ).secretKey,
-    ).toBe(33n);
+    const issuer = runtime.issuerProfileForUniversity(university);
+    const holder = runtime.studentProfileForStudent(student);
+    const verifier = runtime.verifierProfile(
+      company.companyId,
+      company.verifierDidUrl,
+      company.verifierMethodId,
+    );
+    expect(issuer).not.toHaveProperty("secretKey");
+    expect(runtime.signerOptionsFor(issuer).secretKey).toBe(11n);
+    expect(runtime.signerOptionsFor(holder).secretKey).toBe(22n);
+    expect(runtime.signerOptionsFor(verifier).secretKey).toBe(33n);
   });
 
   it("uses deterministic envelope IDs only for the fixture runtime", () => {
@@ -128,6 +157,7 @@ describe("university party runtime", () => {
     const provisionedRuntime = new PreloadedUniversityPartyRuntime(
       seedRuntime.listParties().map((party) => ({
         ...party,
+        secretKey: seedRuntime.signerOptionsFor(party).secretKey,
         source: "standalone-provisioned" as const,
       })),
     );

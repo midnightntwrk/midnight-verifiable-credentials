@@ -23,7 +23,8 @@
       "require": "./dist/testing.js",
       "import": "./dist/testing.js",
       "default": "./dist/testing.js"
-    }
+    },
+    "./production-evidence-policies.json": "./dist/production-evidence-policies.json"
   },
   "typesVersions": {
     "*": {
@@ -34,9 +35,10 @@
   },
   "scripts": {
     "prepare:deps": "node ./scripts/ensure-prereqs.mjs",
-    "build": "pnpm run prepare:deps && rm -rf dist && tsc -b tsconfig.build.json --force",
+    "build": "pnpm run prepare:deps && rm -rf dist && tsc -b tsconfig.build.json --force && cp src/production-evidence-policies.json dist/",
     "test": "pnpm run prepare:deps && vitest run",
     "test:policy-catalog": "pnpm run prepare:deps && vitest run src/test/policy-catalog.test.ts",
+    "test:production-evidence": "pnpm run prepare:deps && vitest run src/test/production-profile.test.ts src/test/key-custody.test.ts src/test/production-evidence.test.ts src/test/threat-model.test.ts",
     "test:ci": "pnpm run test",
     "export:transcript": "pnpm run build && node ./scripts/export-transcript.mjs",
     "export:transcript:from-artifacts": "node ./scripts/export-transcript.mjs",
@@ -52,6 +54,11 @@
     "prepack": "pnpm run build"
   },
   "dependencies": {
+    "@midnight-ntwrk/credential-exchange": "workspace:*",
+    "@midnight-ntwrk/credential-model": "workspace:*",
+    "@midnight-ntwrk/credential-proofs": "workspace:*",
+    "@midnight-ntwrk/midnight-did-credentials": "*",
+    "@midnight-ntwrk/midnight-did-credentials-openid": "workspace:*",
     "@midnight-ntwrk/midnight-did-credentials-protocol": "*",
     "@midnight-ntwrk/midnight-did-credentials-university-diploma": "*",
     "@midnight-ntwrk/midnight-did-university-verifier-contract": "*"

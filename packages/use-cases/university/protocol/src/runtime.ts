@@ -52,6 +52,75 @@ export type UniversityPartyRecord = AgentProfile & {
   readonly verificationMethodRef?: string;
 };
 
+export type UniversityPartyProvisioningRecord = UniversityPartyRecord & {
+  readonly secretKey: bigint;
+};
+
+export type UniversitySigningProviderDescriptor = {
+  readonly providerId: string;
+  readonly isolated: true;
+};
+
+export interface UniversitySigningProvider {
+  register(partyId: string, signer: UniversityDiplomaSignerOptions): void;
+  replace(partyId: string, signer: UniversityDiplomaSignerOptions): void;
+  remove(partyId: string): boolean;
+  resolveSigner(
+    partyId: string,
+    identity: Pick<AgentProfile, "didUrl" | "methodId">,
+  ): UniversityDiplomaSignerOptions;
+  describe(): UniversitySigningProviderDescriptor;
+}
+
+/**
+ * Reference custody provider. Secrets remain in a private slot and only the
+ * signer configuration crosses the proof-adapter call boundary.
+ */
+export class IsolatedUniversitySigningProvider
+  implements UniversitySigningProvider
+{
+  readonly #signers = new Map<string, UniversityDiplomaSignerOptions>();
+
+  register(partyId: string, signer: UniversityDiplomaSignerOptions): void {
+    if (this.#signers.has(partyId)) {
+      throw new Error(`Signing material for ${partyId} is already registered`);
+    }
+    this.#signers.set(partyId, { ...signer });
+  }
+
+  replace(partyId: string, signer: UniversityDiplomaSignerOptions): void {
+    if (!this.#signers.has(partyId)) {
+      throw new Error(`Signing material for ${partyId} is unavailable`);
+    }
+    this.#signers.set(partyId, { ...signer });
+  }
+
+  remove(partyId: string): boolean {
+    return this.#signers.delete(partyId);
+  }
+
+  resolveSigner(
+    partyId: string,
+    identity: Pick<AgentProfile, "didUrl" | "methodId">,
+  ): UniversityDiplomaSignerOptions {
+    const signer = this.#signers.get(partyId);
+    if (!signer) {
+      throw new Error(`Signing material for ${partyId} is unavailable`);
+    }
+    if (signer.label !== identity.didUrl || signer.methodId !== identity.methodId) {
+      throw new Error(`Signing identity for ${partyId} does not match custody`);
+    }
+    return { ...signer };
+  }
+
+  describe(): UniversitySigningProviderDescriptor {
+    return {
+      providerId: "university.isolated-signing.v1",
+      isolated: true,
+    };
+  }
+}
+
 export type UniversityPartyPatch = Partial<
   Omit<UniversityPartyRecord, "partyId" | "role" | "source">
 >;
@@ -101,11 +170,15 @@ const assertRecordMatches = (
 
 export interface UniversityPartyRuntime {
   descriptor(): UniversityPartyRuntimeDescriptor;
-  createParty(record: UniversityPartyRecord): UniversityPartyRecord;
+  createParty(
+    record: UniversityPartyRecord,
+    signer: UniversityDiplomaSignerOptions,
+  ): UniversityPartyRecord;
   readParty(partyId: string): UniversityPartyRecord | undefined;
   updateParty(
     partyId: string,
     patch: UniversityPartyPatch,
+    signer?: UniversityDiplomaSignerOptions,
   ): UniversityPartyRecord;
   deleteParty(partyId: string): boolean;
   listParties(): readonly UniversityPartyRecord[];
@@ -124,10 +197,16 @@ abstract class ManagedUniversityPartyRuntime implements UniversityPartyRuntime {
 
   protected constructor(
     readonly runtimeDescriptor: UniversityPartyRuntimeDescriptor,
-    initialParties: readonly UniversityPartyRecord[] = [],
+    readonly signingProvider: UniversitySigningProvider,
+    initialParties: readonly UniversityPartyProvisioningRecord[] = [],
   ) {
-    for (const record of initialParties) {
-      this.createParty(record);
+    for (const provisioningRecord of initialParties) {
+      const { secretKey, ...record } = provisioningRecord;
+      this.createParty(record, {
+        label: record.didUrl,
+        methodId: record.methodId,
+        secretKey,
+      });
     }
   }
 
@@ -135,13 +214,45 @@ abstract class ManagedUniversityPartyRuntime implements UniversityPartyRuntime {
     return { ...this.runtimeDescriptor };
   }
 
-  createParty(record: UniversityPartyRecord): UniversityPartyRecord {
+  protected storeParty(record: UniversityPartyRecord): UniversityPartyRecord {
     if (this.#parties.has(record.partyId)) {
       throw new Error(`Party ${record.partyId} already exists in the runtime`);
     }
     const cloned = clonePartyRecord(record);
     this.#parties.set(record.partyId, cloned);
     return clonePartyRecord(cloned);
+  }
+
+  createParty(
+    record: UniversityPartyRecord,
+    signer: UniversityDiplomaSignerOptions,
+  ): UniversityPartyRecord {
+    if (this.#parties.has(record.partyId)) {
+      throw new Error(`Party ${record.partyId} already exists in the runtime`);
+    }
+    if (signer.label !== record.didUrl || signer.methodId !== record.methodId) {
+      throw new Error(`Signing identity for ${record.partyId} does not match party`);
+    }
+    try {
+      this.signingProvider.register(record.partyId, signer);
+    } catch (error) {
+      try {
+        this.signingProvider.remove(record.partyId);
+      } catch {
+        // Preserve the initiating custody failure after best-effort rollback.
+      }
+      throw error;
+    }
+    try {
+      return this.storeParty(record);
+    } catch (error) {
+      try {
+        this.signingProvider.remove(record.partyId);
+      } catch {
+        // Preserve the party-store failure after best-effort rollback.
+      }
+      throw error;
+    }
   }
 
   readParty(partyId: string): UniversityPartyRecord | undefined {
@@ -152,6 +263,7 @@ abstract class ManagedUniversityPartyRuntime implements UniversityPartyRuntime {
   updateParty(
     partyId: string,
     patch: UniversityPartyPatch,
+    signer?: UniversityDiplomaSignerOptions,
   ): UniversityPartyRecord {
     const existing = this.#parties.get(partyId);
     if (!existing) {
@@ -164,12 +276,65 @@ abstract class ManagedUniversityPartyRuntime implements UniversityPartyRuntime {
       role: existing.role,
       source: existing.source,
     };
+    const signingIdentityChanged =
+      updated.didUrl !== existing.didUrl || updated.methodId !== existing.methodId;
+    if (signingIdentityChanged && !signer) {
+      throw new Error(`Updated signing material for ${partyId} is required`);
+    }
+    if (
+      signer &&
+      (signer.label !== updated.didUrl || signer.methodId !== updated.methodId)
+    ) {
+      throw new Error(`Updated signing material for ${partyId} does not match party`);
+    }
+    if (signer) {
+      const previousSigner = this.signingProvider.resolveSigner(partyId, existing);
+      try {
+        this.signingProvider.replace(partyId, signer);
+      } catch (error) {
+        this.restoreSigner(partyId, previousSigner);
+        throw error;
+      }
+    }
     this.#parties.set(partyId, updated);
     return clonePartyRecord(updated);
   }
 
   deleteParty(partyId: string): boolean {
-    return this.#parties.delete(partyId);
+    const existing = this.#parties.get(partyId);
+    if (!existing) return false;
+    const previousSigner = this.signingProvider.resolveSigner(partyId, existing);
+    try {
+      if (!this.signingProvider.remove(partyId)) {
+        throw new Error(
+          `Signing material for deleted party ${partyId} was unavailable`,
+        );
+      }
+    } catch (error) {
+      this.restoreSigner(partyId, previousSigner);
+      throw error;
+    }
+    if (!this.#parties.delete(partyId)) {
+      this.restoreSigner(partyId, previousSigner);
+      throw new Error(`Party ${partyId} disappeared during deletion`);
+    }
+    return true;
+  }
+
+  private restoreSigner(
+    partyId: string,
+    signer: UniversityDiplomaSignerOptions,
+  ): void {
+    try {
+      this.signingProvider.replace(partyId, signer);
+    } catch {
+      try {
+        this.signingProvider.register(partyId, signer);
+      } catch {
+        // The original mutation error remains authoritative; providers are
+        // required to make replace/register idempotently recoverable here.
+      }
+    }
   }
 
   listParties(): readonly UniversityPartyRecord[] {
@@ -177,11 +342,10 @@ abstract class ManagedUniversityPartyRuntime implements UniversityPartyRuntime {
   }
 
   signerOptionsFor(profile: AgentProfile): UniversityDiplomaSignerOptions {
-    return {
-      label: profile.didUrl,
+    return this.signingProvider.resolveSigner(profile.partyId, {
+      didUrl: profile.didUrl,
       methodId: profile.methodId,
-      secretKey: profile.secretKey,
-    };
+    });
   }
 
   protected requireParty(
@@ -206,7 +370,7 @@ abstract class ManagedUniversityPartyRuntime implements UniversityPartyRuntime {
   ): UniversityPartyRecord {
     const existing = this.readParty(record.partyId);
     if (!existing) {
-      return this.createParty(record);
+      throw new Error(`Party ${record.partyId} must be provisioned with signing material`);
     }
     return assertRecordMatches(existing, {
       partyId: record.partyId,
@@ -229,39 +393,54 @@ export class DeterministicUniversityPartyRuntime
   extends ManagedUniversityPartyRuntime
   implements UniversityPartyRuntime
 {
-  constructor(initialParties: readonly UniversityPartyRecord[] = []) {
+  constructor(
+    initialParties: readonly UniversityPartyProvisioningRecord[] = [],
+    signingProvider: UniversitySigningProvider = new IsolatedUniversitySigningProvider(),
+  ) {
     super(
       {
         mode: "deterministic",
         description:
-          "Deterministic fixture runtime deriving party keys from checked-in DID strings.",
+          "Deterministic fixture runtime with signing isolated behind a custody provider.",
         usesRealDidInstances: false,
         supportsDidCrud: true,
       },
+      signingProvider,
       initialParties,
     );
   }
 
-  issuerProfileForUniversity(university: UniversityProfile): AgentProfile {
-    return this.ensureParty({
-      partyId: university.universityId,
-      didUrl: university.issuerDidUrl,
-      methodId: university.issuerMethodId,
-      secretKey: scalarForLabel(`issuer:${university.issuerDidUrl}`),
-      role: "issuer",
-      source: "deterministic-fixture",
+  private ensureDeterministicParty(
+    record: UniversityPartyRecord,
+    secretLabel: string,
+  ): UniversityPartyRecord {
+    const existing = this.readParty(record.partyId);
+    if (existing) return this.ensureParty(record);
+    return this.createParty(record, {
+      label: record.didUrl,
+      methodId: record.methodId,
+      secretKey: scalarForLabel(secretLabel),
     });
   }
 
+  issuerProfileForUniversity(university: UniversityProfile): AgentProfile {
+    return this.ensureDeterministicParty({
+      partyId: university.universityId,
+      didUrl: university.issuerDidUrl,
+      methodId: university.issuerMethodId,
+      role: "issuer",
+      source: "deterministic-fixture",
+    }, `issuer:${university.issuerDidUrl}`);
+  }
+
   studentProfileForStudent(student: StudentRecord): AgentProfile {
-    return this.ensureParty({
+    return this.ensureDeterministicParty({
       partyId: student.studentId,
       didUrl: student.holderDidUrl,
       methodId: student.holderMethodId,
-      secretKey: scalarForLabel(`holder:${student.holderDidUrl}`),
       role: "holder",
       source: "deterministic-fixture",
-    });
+    }, `holder:${student.holderDidUrl}`);
   }
 
   verifierProfile(
@@ -269,14 +448,13 @@ export class DeterministicUniversityPartyRuntime
     didUrl: string,
     methodId: string,
   ): AgentProfile {
-    return this.ensureParty({
+    return this.ensureDeterministicParty({
       partyId,
       didUrl,
       methodId,
-      secretKey: scalarForLabel(`verifier:${didUrl}`),
       role: "verifier",
       source: "deterministic-fixture",
-    });
+    }, `verifier:${didUrl}`);
   }
 }
 
@@ -284,15 +462,19 @@ export class PreloadedUniversityPartyRuntime
   extends ManagedUniversityPartyRuntime
   implements UniversityPartyRuntime
 {
-  constructor(initialParties: readonly UniversityPartyRecord[]) {
+  constructor(
+    initialParties: readonly UniversityPartyProvisioningRecord[],
+    signingProvider: UniversitySigningProvider = new IsolatedUniversitySigningProvider(),
+  ) {
     super(
       {
         mode: "standalone-provisioned",
         description:
-          "Preloaded runtime backed by DID records provisioned by standalone Midnight infrastructure.",
+          "Preloaded runtime backed by DID records with isolated signing custody.",
         usesRealDidInstances: true,
         supportsDidCrud: true,
       },
+      signingProvider,
       initialParties,
     );
   }

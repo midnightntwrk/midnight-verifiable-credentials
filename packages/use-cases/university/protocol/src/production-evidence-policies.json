@@ -1,0 +1,32 @@
+[
+  {
+    "id": "synthetic-happy-restart",
+    "description": "Approved business outcomes with every durable restart point enabled.",
+    "restartPoints": [
+      "afterIssuanceRequests",
+      "afterJobApplicationRequests",
+      "afterMallDiscountRequests"
+    ],
+    "duplicateIssuanceRequestStudentIds": [],
+    "duplicateJobApplicationSubmissionStudentIds": [],
+    "jobApplicationTamperingByStudentId": {}
+  },
+  {
+    "id": "synthetic-replay-idempotency",
+    "description": "Repeated issuance and presentation are handled idempotently or rejected as replay.",
+    "restartPoints": ["afterIssuanceRequests"],
+    "duplicateIssuanceRequestStudentIds": ["STU-0001"],
+    "duplicateJobApplicationSubmissionStudentIds": ["STU-0001"],
+    "jobApplicationTamperingByStudentId": {}
+  },
+  {
+    "id": "synthetic-tampered-presentation",
+    "description": "A request challenge tamper is rejected by Verification V1 evidence mapping.",
+    "restartPoints": ["afterJobApplicationRequests"],
+    "duplicateIssuanceRequestStudentIds": [],
+    "duplicateJobApplicationSubmissionStudentIds": [],
+    "jobApplicationTamperingByStudentId": {
+      "STU-0001": "requestChallenge"
+    }
+  }
+]

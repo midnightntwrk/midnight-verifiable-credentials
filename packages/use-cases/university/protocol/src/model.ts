@@ -101,7 +101,6 @@ export type AgentProfile = {
   readonly partyId: string;
   readonly didUrl: string;
   readonly methodId: string;
-  readonly secretKey: bigint;
 };
 
 export type StoredIssuedCredential = {
