@@ -54,6 +54,21 @@ describe("credentials package surfaces", () => {
     );
   });
 
+  it("exports the opt-in aggregate decision Compact and managed surfaces", () => {
+    expect(packageJson.exports?.["./aggregate-decision-v1.compact"]).toEqual(
+      "./dist/aggregate-decision-v1.compact",
+    );
+    expect(
+      packageJson.exports?.["./managed/aggregate-decision/contract/index.js"],
+    ).toBeDefined();
+    expect(existsSync(sourceSurface("aggregate-decision-v1.compact"))).toEqual(
+      true,
+    );
+    expect(
+      existsSync(sourceSurface("credentials/aggregate-decision-v1.compact")),
+    ).toEqual(true);
+  });
+
   it("keeps the root package surface free of duplicate contract namespaces", () => {
     expect(indexSource).not.toContain("export * as CredentialsContract");
   });
@@ -98,5 +113,11 @@ describe("credentials package surfaces", () => {
     expect(existsSync(distSurface("credentials/bindings.compact"))).toEqual(
       true,
     );
+    expect(existsSync(distSurface("aggregate-decision-v1.compact"))).toEqual(
+      true,
+    );
+    expect(
+      existsSync(distSurface("managed/aggregate-decision/contract/index.js")),
+    ).toEqual(true);
   });
 });

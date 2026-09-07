@@ -237,10 +237,11 @@ Acceptance:
 - a final receipt discloses only minimal decision hashes and anchors, never raw
   claims or private witnesses.
 
-V1 is a single-credential authority chain. Authoritative multi-credential and
-same-holder VP decisions require a later aggregate decision-set contract that
-binds every credential's issuer, trust, and status evidence; they must not
-reuse one credential's chain as a proxy for the set.
+Verification V1 remains a single-credential authority chain. Authoritative
+multi-credential and same-holder VP decisions use the bounded
+[`Aggregate Decision Set V1`](../spec/aggregate-decision-set-v1.md), which binds
+each complete child result and authority/evidence chain rather than reusing one
+credential as a proxy for the set.
 
 ### P0-4. Establish a real package and release contract
 

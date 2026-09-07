@@ -1,5 +1,7 @@
+export { assertAggregateDecisionProfileV1 } from "./aggregate-decision-validation.js";
 export { resolveCredentialComposition } from "./composition-resolver.js";
 export type {
+  AggregateDecisionProfileV1,
   CapabilityProviderCatalogV1,
   CapabilityProviderDescriptor,
   CircuitRequirement,

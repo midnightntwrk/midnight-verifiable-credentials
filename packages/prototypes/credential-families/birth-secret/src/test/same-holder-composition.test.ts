@@ -6,7 +6,7 @@ import { createSecretBirthCredentialFixture } from "../testing/credential-fixtur
 
 setNetworkId("undeployed");
 
-describe("secret birth credential: same-holder composition", () => {
+describe("secret birth credential: non-authoritative same-holder composition evidence", () => {
   it("supports same-holder composition across two secret birth credentials with different issuance anchors", () => {
     const firstFixture = createSecretBirthCredentialFixture();
     const secondFixture = createSecretBirthCredentialFixture({

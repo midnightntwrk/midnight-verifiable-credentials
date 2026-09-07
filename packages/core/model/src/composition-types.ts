@@ -163,6 +163,31 @@ export interface ProtectedMutationProfile {
   readonly consumption: "none" | "atomic" | "separate";
 }
 
+/**
+ * Declarative policy for the bounded Verification V1 aggregate authority
+ * boundary. V1 deliberately admits pairs and triples only.
+ */
+export interface AggregateDecisionProfileV1 {
+  readonly formatVersion: 1;
+  readonly id: string;
+  readonly version: string;
+  readonly childCount: {
+    readonly minimum: 2;
+    readonly maximum: 3;
+  };
+  readonly requiredAuthority:
+    | "ledger-local"
+    | "ledger-attested"
+    | "local-process";
+  readonly sameHolder:
+    | { readonly mode: "not-required" }
+    | {
+        readonly mode: "required";
+        readonly capability: VersionedCapabilityReference;
+      };
+  readonly mutation: ProtectedMutationProfile;
+}
+
 export type CredentialProtocolProfile =
   | "disabled"
   | "canonical-reference"

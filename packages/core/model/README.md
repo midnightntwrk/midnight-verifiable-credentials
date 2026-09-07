@@ -18,7 +18,11 @@ The package provides:
 - validation helpers and family-neutral errors;
 - independently versioned semantic profiles and deployment assemblies;
 - capability-provider catalogs and an exact, fail-closed composition resolver;
-- authenticated runtime family registry/provider contracts for generic wallets.
+- authenticated runtime family registry/provider contracts for generic wallets;
+- `AggregateDecisionProfileV1` and its fail-closed validator for fixed
+  pair/triple authority and explicit same-holder policy. Ledger profiles choose
+  either the explicit all-`none` read-only tuple or the contract-derived atomic
+  mutation tuple; local-process profiles remain read-only.
 
 ## Install
 

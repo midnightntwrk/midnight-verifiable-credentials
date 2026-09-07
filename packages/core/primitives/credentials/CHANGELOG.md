@@ -23,7 +23,11 @@ and versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   classification evidence and bounded provider/transaction failure labels; and
 - committed-transaction confirmation plus exact transcript, evidence receipt,
   decision nullifier, and atomic business-mutation binding before a result may
-  claim ledger authority.
+  claim ledger authority; and
+- bounded Aggregate Decision Set V1 pair/triple records, canonical ordering,
+  authenticated child and same-holder proof receipts, immutable prepared-source
+  revalidation, privacy-safe diagnostics, Compact parity vectors, read-only
+  ledger decisions, and confirmed atomic aggregate execution receipts.
 
 ### Changed
 

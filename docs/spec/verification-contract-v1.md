@@ -3,8 +3,10 @@
 Status: Verification V1 executor contracts are implemented. Request-,
 holder-action-, and credential-action nullifier derivation is integrated with
 the stateful explicit-holder age-gate atomicity fixture. Hidden-holder status
-and pseudonym public-surface hardening is implemented by #500. Ledger authority
-is available only through an injected executor whose exact transcript,
+and pseudonym public-surface hardening is implemented by #500. The bounded
+[`Aggregate Decision Set V1`](./aggregate-decision-set-v1.md) composes two or
+three complete child results without changing these single-child semantics.
+Ledger authority is available only through an injected executor whose exact transcript,
 evidence receipt, nullifier, atomic mutation, and successful committed
 transaction confirmation all verify; absent mechanisms remain machine-readably
 indeterminate.
@@ -28,10 +30,11 @@ verification before the repository implements it in Compact. It defines:
 - fail-closed behavior while upstream evidence is unavailable.
 
 V1 verifies exactly one credential authority chain per transcript. A
-multi-credential or same-holder VP requires a future aggregate decision-set
-specification that commits each credential's issuer, trust, and status
-evidence; it MUST NOT be encoded by selecting one credential's authority chain
-as representative of the set.
+multi-credential or same-holder VP becomes authoritative only through
+[`Aggregate Decision Set V1`](./aggregate-decision-set-v1.md), which commits
+every child's result plus issuer, trust, status, time, artifact, holder, and
+request evidence. It MUST NOT be encoded by selecting one credential's
+authority chain as representative of the set.
 
 V1 does not define one concrete credential family, wire protocol, DID method,
 trust-registry proof, status-tree algorithm, or artifact bundle format.

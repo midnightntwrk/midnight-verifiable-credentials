@@ -220,10 +220,12 @@ not `production-approved`.
 - **ADR-0014 is still Proposed.** This ADR accepts only the narrow family/profile
   and ports-and-adapters responsibility split needed by #489. It does not
   accept ADR-0014's package names, package count, or full allowed-edge matrix.
-- **Aggregate same-holder authority is unresolved.** It remains unsupported;
-  existing rows are non-authoritative compile/composition evidence until an
-  aggregate decision set binds every credential's issuer, trust, and selected
-  status evidence.
+- **Aggregate same-holder authority requires the bounded aggregate contract.**
+  Existing standalone rows remain non-authoritative compile/composition
+  evidence. [`Aggregate Decision Set V1`](../spec/aggregate-decision-set-v1.md)
+  now authorizes only passing pair/triple sets that bind every child's complete
+  Verification V1 result and issuer, trust, status, time, artifact, and holder
+  evidence.
 - **Concrete providers and deployments are unresolved.** They are deliberately
   deferred to deployment assembly and downstream implementation issues rather
   than guessed in a semantic decision.

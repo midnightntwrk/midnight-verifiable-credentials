@@ -93,6 +93,14 @@ export pure circuit assertSameSecretHolderBindingWitnesses3(
   );
 }
 
+// Canonical public digest used to bind the aggregate proof receipt to the
+// exact blinded credential binding proved below.
+export pure circuit blindedSecretHolderBindingDigestV1(
+  binding: BlindedSecretHolderBinding
+): Bytes<32> {
+  return persistentHash<BlindedSecretHolderBinding>(binding);
+}
+
 // Same-holder composition for blinded bindings. The caller supplies the same
 // hidden holder witness together with the binding-specific opening and blinding
 // factor for each independently issued credential.

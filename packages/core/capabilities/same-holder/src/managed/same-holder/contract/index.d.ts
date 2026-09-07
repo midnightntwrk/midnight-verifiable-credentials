@@ -481,6 +481,7 @@ export type PureCircuits = {
                                           firstOpening_0: Uint8Array,
                                           secondOpening_0: Uint8Array,
                                           thirdOpening_0: Uint8Array): [];
+  blindedSecretHolderBindingDigestV1(binding_0: BlindedSecretHolderBinding): Uint8Array;
   assertSameBlindedSecretHolderBindingWitnesses(firstBinding_0: BlindedSecretHolderBinding,
                                                 secondBinding_0: BlindedSecretHolderBinding,
                                                 verifierChallengeHash_0: Uint8Array,
@@ -762,6 +763,8 @@ export type Circuits<PS> = {
                                           firstOpening_0: Uint8Array,
                                           secondOpening_0: Uint8Array,
                                           thirdOpening_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  blindedSecretHolderBindingDigestV1(context: __compactRuntime.CircuitContext<PS>,
+                                     binding_0: BlindedSecretHolderBinding): __compactRuntime.CircuitResults<PS, Uint8Array>;
   assertSameBlindedSecretHolderBindingWitnesses(context: __compactRuntime.CircuitContext<PS>,
                                                 firstBinding_0: BlindedSecretHolderBinding,
                                                 secondBinding_0: BlindedSecretHolderBinding,
