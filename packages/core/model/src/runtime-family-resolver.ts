@@ -74,6 +74,60 @@ const snapshotData = (value: unknown): unknown => {
   return Object.freeze(result);
 };
 
+const snapshotCallableSurface = (
+  value: unknown,
+  snapshots = new WeakMap<object, unknown>(),
+): unknown => {
+  if (
+    value === null ||
+    value === undefined ||
+    typeof value === "string" ||
+    typeof value === "number" ||
+    typeof value === "boolean" ||
+    typeof value === "bigint" ||
+    typeof value === "function"
+  ) {
+    return value;
+  }
+  if (typeof value !== "object") {
+    throw new TypeError("Expected callable adapter data.");
+  }
+
+  const existing = snapshots.get(value);
+  if (existing !== undefined) return existing;
+
+  const prototype = Object.getPrototypeOf(value) as unknown;
+  if (
+    !Array.isArray(value) &&
+    prototype !== Object.prototype &&
+    prototype !== null
+  ) {
+    throw new TypeError("Expected a plain callable adapter object.");
+  }
+
+  const target: Record<PropertyKey, unknown> | unknown[] = Array.isArray(value)
+    ? []
+    : (Object.create(prototype as object | null) as Record<
+        PropertyKey,
+        unknown
+      >);
+  snapshots.set(value, target);
+  for (const key of Reflect.ownKeys(value)) {
+    if (Array.isArray(value) && key === "length") continue;
+    const descriptor = Object.getOwnPropertyDescriptor(value, key);
+    if (descriptor === undefined || !("value" in descriptor)) {
+      throw new TypeError("Callable adapter accessors are not supported.");
+    }
+    Object.defineProperty(target, key, {
+      configurable: false,
+      enumerable: descriptor.enumerable,
+      writable: false,
+      value: snapshotCallableSurface(descriptor.value, snapshots),
+    });
+  }
+  return Object.freeze(target);
+};
+
 const snapshotCodec = (value: unknown): UnknownRecord => {
   if (!isRecord(value)) throw new TypeError("Expected a codec object.");
   const mediaType = ownValue(value, "mediaType");
@@ -114,7 +168,7 @@ const snapshotRuntimeRecord = (
     profile: snapshotData(ownValue(surfaceSource, "profile")),
     package: snapshotData(ownValue(surfaceSource, "package")),
     artifact: snapshotData(ownValue(surfaceSource, "artifact")),
-    value: ownValue(surfaceSource, "value"),
+    value: snapshotCallableSurface(ownValue(surfaceSource, "value")),
   });
   return Object.freeze({
     formatVersion: 1,
