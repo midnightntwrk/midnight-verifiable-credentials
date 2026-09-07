@@ -4,7 +4,8 @@ Conformance is claimed for an exact specification version, package version,
 configuration, operation set, and the SHA-256 digest of the exact manifest
 bytes recorded in
 [`../conformance/manifest.sha256`](../conformance/manifest.sha256). Partial
-primitive coverage is not a complete configuration claim.
+primitive coverage is not a complete configuration claim. The manifest records
+and binds the SHA-256 digest of every conformance vector it references.
 
 A supported configuration MUST have:
 
@@ -18,12 +19,15 @@ A supported configuration MUST have:
 
 The machine-readable source of current implementation status is
 [`../conformance/manifest.json`](../conformance/manifest.json). An operation
-marked `unsupported` MUST return or produce an explicit unsupported outcome;
-absence of an error is not conformance.
+marked `unsupported` has no conformant callable implementation in this version;
+its manifest state and reason are the explicit unsupported outcome. A future
+dispatcher that exposes such an operation MUST reject it explicitly. Absence of
+an error or silent downgrade is not conformance.
 
-Normative tests MUST import only retained core package surfaces. Protocol,
-credential-family, use-case, application, and sibling-repository source imports
-are forbidden.
+Normative test entrypoints MUST import only the exact retained core surfaces in
+the manifest allowlist. Protocol, credential-family, use-case, application, and
+sibling-repository source imports are forbidden. Repository package-boundary
+checks enforce the transitive dependency direction of retained core packages.
 
 External credential families MAY run the same vectors through released package
 versions or immutable prerelease artifacts. They own family-specific schema,

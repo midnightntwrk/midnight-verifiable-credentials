@@ -6,6 +6,11 @@ An explicit binding identifies the holder verification method. A presentation
 MUST carry the same binding, and its proof key MUST match the bound method. The
 binding and proof checks are distinct and both are required.
 
+The Compact binding contains a `holderVerificationMethodRef` with a Midnight
+`didContractAddress` and a 32-byte `methodId`. Both values MUST be non-zero. A
+core implementation MUST reject a zero contract address or zero method ID
+before comparing the credential and presentation bindings.
+
 Explicit binding primitives are verified for non-status Midnight-contract
 configurations. A full ceremony claim still requires issuance, presentation,
 and negative round-trip vectors.

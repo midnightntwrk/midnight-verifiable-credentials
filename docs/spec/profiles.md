@@ -1,6 +1,8 @@
 # Midnight VC Profiles
 
-Status: profile catalog for the current normative draft.
+Status: superseded implementation catalog; not normative for core conformance.
+
+Current normative core requirements live in [`../../spec/`](../../spec/).
 
 This document describes the currently recognized Midnight VC holder-binding and
 verification profiles. [ADR-0015](../decisions/0015-vc-family-profile-vocabulary-and-boundaries.md)

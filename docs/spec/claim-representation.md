@@ -1,6 +1,8 @@
 # Midnight VC Claim Representation
 
-Status: normative companion profile for the current Midnight Credentials draft.
+Status: superseded migration source; not normative for core conformance.
+
+Current normative core requirements live in [`../../spec/`](../../spec/).
 
 This document defines how credential families represent direct claims and claim
 commitments inside the Compact-native

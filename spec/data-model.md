@@ -6,6 +6,21 @@ A configuration identifies one schema version and selects bounded semantic
 capabilities. Its normative fields are defined in
 [configuration](./configuration.md).
 
+## Schema reference
+
+An exact schema reference has these Compact fields:
+
+- `packageId: Bytes<32>`, a non-zero identifier for the independently released
+  credential-family package;
+- `schemaId: Bytes<32>`, a non-zero identifier for the schema within that
+  package;
+- `majorVersion: Uint<16>`, which MUST be greater than zero; and
+- `minorVersion: Uint<16>`, which MAY be zero.
+
+A core implementation MUST reject a zero `packageId`, zero `schemaId`, or zero
+`majorVersion`. The pair of package and schema identifiers plus both version
+fields identifies the exact schema contract used by a credential.
+
 ## Credential
 
 A canonical VC contains:

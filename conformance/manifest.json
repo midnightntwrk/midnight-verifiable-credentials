@@ -117,16 +117,25 @@
     }
   ],
   "vectors": [
-    "conformance/vectors/compact-generated.json",
-    "conformance/vectors/compact-value-encoding.json",
-    "conformance/vectors/holder-binding.json",
-    "conformance/vectors/schema-reference.json"
+    {
+      "path": "conformance/vectors/compact-generated.json",
+      "sha256": "7dac4ba1ece08df8015b51a32f4b54c442b8fa93ae69df943a0d26ebbbabdda2"
+    },
+    {
+      "path": "conformance/vectors/compact-value-encoding.json",
+      "sha256": "744f1e8671a36d3feb988f7fc538535f862b53ea37458eb501b4f01fabf88366"
+    },
+    {
+      "path": "conformance/vectors/holder-binding.json",
+      "sha256": "908e1c9010e601ac9b77947b050cf91ba64dbf1da48e2513d4c525db960b483a"
+    },
+    {
+      "path": "conformance/vectors/schema-reference.json",
+      "sha256": "ea26d3c2fa0ca5dee676bd945daa599a11b4b473dc0f5ad86383554f6841b3ce"
+    }
   ],
-  "forbiddenImportSegments": [
-    "/packages/protocols/",
-    "/packages/prototypes/",
-    "/packages/use-cases/",
-    "/packages/components/",
-    "/packages/registry/"
+  "allowedCoreImports": [
+    "../../packages/core/compact/src/compact-value-codec.ts",
+    "../../packages/core/compact/src/managed/credentials/contract/index.js"
   ]
 }

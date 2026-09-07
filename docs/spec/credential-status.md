@@ -1,6 +1,9 @@
 # Midnight VC Credential Status
 
-Status: normative companion draft for credential status and revocation claims.
+Status: superseded implementation reference; not normative for core conformance.
+
+Current normative core status requirements live in
+[`../../spec/status.md`](../../spec/status.md).
 
 Companion documents:
 
