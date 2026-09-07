@@ -78,7 +78,7 @@ const requirementDefinitions = [
   ["access.wallet", "wallet", "wallet.synthetic"],
   ["access.network", "network", "network.injected"],
   ["access.transport", "transport", "transport.openid-final"],
-  ["access.proof", "proof-executor", "proof.injected"],
+  ["access.proof", "proof-executor", "proof.compact"],
   ["access.status-registry", "status-registry", "status.registry-v1"],
   ["access.status-proof", "status-proof", "status.authenticated-root-v1"],
   ["access.status-authority", "status-authority", "status.authority-v1"],
