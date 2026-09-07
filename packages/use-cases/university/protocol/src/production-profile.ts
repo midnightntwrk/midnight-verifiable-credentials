@@ -144,7 +144,7 @@ const universityProviderRequirements: readonly ProviderRequirement[] = [
   ["university.wallet", "wallet", "wallet.synthetic"],
   ["university.network", "network", "network.injected"],
   ["university.transport", "transport", "transport.serialized"],
-  ["university.proof", "proof-executor", "proof.injected"],
+  ["university.proof", "proof-executor", "proof.compact"],
   ["university.verification", "verification", "verification.v1.local"],
 ].map(([id, role, capability]) => ({
   id,
