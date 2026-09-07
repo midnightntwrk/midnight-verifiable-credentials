@@ -87,7 +87,7 @@ Use it to inspect Compact entry points, TypeScript package exports, generated `s
 
 This repository distributes a lightweight Codex skill at `.codex/skills/midnight-identity/`.
 
-Use it when a task starts from an independent `midnight-verifiable-credentials` clone and needs VC-specific validation, BDD, university, status/revocation, CI-cone, packaging, or DID/VC boundary reminders. The skill intentionally points agents back to this `AGENT.md` as the detailed source of truth.
+Use it when a task starts from an independent `midnight-verifiable-credentials` clone and needs VC-specific specification, model, Compact, conformance, migration, packaging, or DID/VC boundary reminders. The skill intentionally points agents back to this `AGENT.md` as the detailed source of truth.
 
 ## Repository Layout
 
@@ -454,9 +454,11 @@ Rules:
 - Keep root pnpm `overrides` out unless there is a deliberate workspace-wide reason; packages that need vendored tarballs should pin them explicitly.
 - Keep package `files` lists and build/prepack hooks correct so tarballs are self-sufficient.
 
-## CI Shape
+## Migration CI Shape
 
-The main PR path is cone-based and should remain fast unless measurements regress.
+The current PR path remains cone-based until issue #537 replaces it with the
+core-only gate. Do not add new product, family, BDD, protocol, or use-case
+cones. Existing lanes remain available only to validate extraction or deletion.
 
 Current CI pattern:
 
@@ -482,13 +484,20 @@ Heavy/focused lanes:
 - standalone protocol integration
 - university validation
 
-Do not redesign CI broadly unless wall clock, cone invalidation, artifact correctness, or Compact complexity materially regresses.
+Issue #537 owns deletion of obsolete cones and the final core-only CI design.
+Other migration PRs should change only the lanes directly owned by their
+removed or retained surfaces.
 
 ## Documentation Rules
 
 Normative/spec material:
 
-- `docs/spec/`
+- target: `spec/`
+- migration source: `docs/spec/`
+
+Issue #533 creates the target directory and moves only retained normative
+rules. Until then, edit `docs/spec/` only for corrections required by the
+migration; do not add protocol, product, or deployment specifications there.
 
 Guides:
 
@@ -511,20 +520,21 @@ Package-local details belong in package `README.md` files.
 
 High-value entry points:
 
-- `docs/spec/midnight-credentials.md`
-- `docs/spec/claim-representation.md`
-- `docs/spec/profiles.md`
-- `docs/spec/conformance.md`
+- `docs/decisions/0016-core-only-specification-and-implementation.md`
+- `docs/plans/vc-core-only-repository-plan-2026-09-08.md`
+- `docs/plans/vc-core-only-issue-disposition-2026-09-08.md`
+- `docs/spec/midnight-credentials.md` (migration source)
+- `docs/spec/claim-representation.md` (migration source)
+- `docs/spec/conformance.md` (migration source)
 - `docs/architecture/package-boundaries.md`
 - `docs/architecture/package-tier-inventory.md`
-- `docs/architecture/protocol-classification.md`
 - `docs/testing/test-matrix.md`
 - `docs/guides/package-selection.md`
 - `docs/guides/midnight-credentials-for-dummies.md`
-- `docs/plans/vc-maturity-backlog.md`
-- `docs/plans/university-improvement-backlog.md`
 
-Update docs when changing public APIs, generated credential literal shapes, package boundaries, CI lanes, BDD semantics, status/revocation semantics, or protocol flows.
+Update the normative specification and conformance vectors when changing public
+APIs, generated credential literal shapes, holder binding, disclosure,
+predicate, status, or verification semantics.
 
 ## Cross-Repository Boundaries
 
@@ -537,17 +547,25 @@ Use `midnight-did` for:
 
 Use this repo for:
 
-- generic VC/VP packages
-- reference credential families
-- status/revocation capability
-- protocol/adapters/orchestration
-- university and age-gate use cases
+- normative protocol-independent VC/VP semantics
+- the bounded `credential-model` TypeScript package
+- the generic `credential-compact` implementation package
+- canonical conformance vectors and clean package consumers
+
+Use independent credential-family repositories for:
+
+- family schemas and configurations
+- family-specific Compact circuits and artifacts
+- family ownership, versioning, testing, and releases
 
 Use `midnight-identity-solution-examples` for:
 
-- Passport/product-specific flows
-- product-specific credential families
-- multi-origin browser demos
+- runnable issuer, holder, and verifier applications
+- protocol and wallet integration experiments
+- product and cross-repository end-to-end scenarios
+
+Use independently owned adapter repositories for OID4VCI/OID4VP, DIDComm,
+DApp Connector, or other wire protocols when those integrations are required.
 
 Use `midnight-trust-registry` for:
 
