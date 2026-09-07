@@ -102,17 +102,17 @@
     }
   ],
   "provenance": {
-    "sourceDigest": "05c5829126fb9e0b1f0461ad26436d594a79cd308c066a69728e2d802dffe5bb",
+    "sourceDigest": "674c1f47ad0b40067b24fc174d6d2739afea5b8ceb215b9e2d12365987860a8e",
     "compilerVersion": "0.31.1",
     "runtimeDigest": "5f8d9f807de4646a79976816cce73cfd8eb79e1c693160d86748ace55efdb7ba",
     "lockfileDigest": "0178bf82fc1c9f0565d82828f6c2cd6cd90ba72c04f2b2f378886886d3637792",
-    "generatedAt": "2026-09-07T07:56:52.835Z",
-    "artifactCount": 168,
-    "artifactBytes": 863985381,
+    "generatedAt": "2026-09-07T09:31:37.099Z",
+    "artifactCount": 172,
+    "artifactBytes": 864075495,
     "byFixture": {
       "credentials": {
-        "files": 4,
-        "bytes": 730060
+        "files": 8,
+        "bytes": 813593
       },
       "status-registry": {
         "files": 16,
@@ -120,7 +120,7 @@
       },
       "same-holder": {
         "files": 4,
-        "bytes": 784339
+        "bytes": 787553
       },
       "iso-registry": {
         "files": 4,
@@ -148,7 +148,7 @@
       },
       "age-gate": {
         "files": 80,
-        "bytes": 591847877
+        "bytes": 591851244
       },
       "hello-verifier": {
         "files": 24,
@@ -161,20 +161,20 @@
     },
     "byType": {
       ".json": {
-        "files": 16,
-        "bytes": 6420696
+        "files": 17,
+        "bytes": 6443253
       },
       ".ts": {
-        "files": 16,
-        "bytes": 995995
+        "files": 17,
+        "bytes": 1007017
       },
       ".js": {
-        "files": 16,
-        "bytes": 9805188
+        "files": 17,
+        "bytes": 9859386
       },
       ".map": {
-        "files": 16,
-        "bytes": 470139
+        "files": 17,
+        "bytes": 472476
       },
       ".prover": {
         "files": 26,
@@ -204,31 +204,59 @@
   "artifacts": [
     {
       "path": "packages/core/capabilities/same-holder/src/managed/same-holder/compiler/contract-info.json",
-      "bytes": 243970,
-      "sha256": "e6f632c2937c1a24584c045e21859672c81d975f708f685c33f1c2cc1846c5d4",
+      "bytes": 244986,
+      "sha256": "d41faf2c604cf43b11004320c98d7d498811c2b6c1c0ecbb876dce24f0dd0147",
       "lfsPointer": false,
       "fixture": "same-holder"
     },
     {
       "path": "packages/core/capabilities/same-holder/src/managed/same-holder/contract/index.d.ts",
-      "bytes": 57510,
-      "sha256": "52e9cdc8d02e05d8599ec2e8df86790c610a5e5228e7a5958c2778cfaf321be7",
+      "bytes": 57808,
+      "sha256": "eb4c91cc6aec5e1e2d8fc42b0a0429ebb30e77d7ab49bd071bb1a59e488c68a3",
       "lfsPointer": false,
       "fixture": "same-holder"
     },
     {
       "path": "packages/core/capabilities/same-holder/src/managed/same-holder/contract/index.js",
-      "bytes": 456835,
-      "sha256": "9f9f1a95f2c568d8cdd6072bc7fc45b75f11bd7d58d2b4787fda11928164ab29",
+      "bytes": 458589,
+      "sha256": "31fca164e69a85ec14ca8219c7dae7dd0672408fad7d803d9bdacc5cbe275c28",
       "lfsPointer": false,
       "fixture": "same-holder"
     },
     {
       "path": "packages/core/capabilities/same-holder/src/managed/same-holder/contract/index.js.map",
-      "bytes": 26024,
-      "sha256": "5d60f3b1e20d1e641661c6c07fcf08c08d91efbc2e422479b4e7e17f065bf9d4",
+      "bytes": 26170,
+      "sha256": "cd59eadc7d592cf8461b468174d79128faf9588ef1416523ed90756664b3070e",
       "lfsPointer": false,
       "fixture": "same-holder"
+    },
+    {
+      "path": "packages/core/primitives/credentials/src/managed/aggregate-decision/compiler/contract-info.json",
+      "bytes": 20525,
+      "sha256": "37eaa6a97f904b18eb9b5e9b9cb35273bdca8005ebceb8aabaa1dcea2f6cbc97",
+      "lfsPointer": false,
+      "fixture": "credentials"
+    },
+    {
+      "path": "packages/core/primitives/credentials/src/managed/aggregate-decision/contract/index.d.ts",
+      "bytes": 10426,
+      "sha256": "08d074e0336d6b9bedf927fd57322577e85ca4b7c8b5c12b27d36f464597ce3d",
+      "lfsPointer": false,
+      "fixture": "credentials"
+    },
+    {
+      "path": "packages/core/primitives/credentials/src/managed/aggregate-decision/contract/index.js",
+      "bytes": 50537,
+      "sha256": "d963176d72debf346d560cd53561b95644a02fb359befb6d6004c460961aedc3",
+      "lfsPointer": false,
+      "fixture": "credentials"
+    },
+    {
+      "path": "packages/core/primitives/credentials/src/managed/aggregate-decision/contract/index.js.map",
+      "bytes": 2045,
+      "sha256": "d4decaf4798e27920f37a067b7edbbd9e92cdb018a27fce8eae10e4d1c4f9793",
+      "lfsPointer": false,
+      "fixture": "credentials"
     },
     {
       "path": "packages/core/primitives/credentials/src/managed/credentials/compiler/contract-info.json",
@@ -568,29 +596,29 @@
     },
     {
       "path": "packages/use-cases/age-gate/contract/src/managed/demo-revocation/compiler/contract-info.json",
-      "bytes": 1370633,
-      "sha256": "7ad9d5f3f55969d18671f7b47aaf526bbe30b85a1dc986e81a72968c2aadab20",
+      "bytes": 1371649,
+      "sha256": "c1758a78512dc17f8e64031d56b8b50163d16e19b2155dd138fff141418bc451",
       "lfsPointer": false,
       "fixture": "age-gate"
     },
     {
       "path": "packages/use-cases/age-gate/contract/src/managed/demo-revocation/contract/index.d.ts",
-      "bytes": 137969,
-      "sha256": "fc7b920921efa6cb902af3481c10e31de86bf3132dd34890e18200dbc04706d0",
+      "bytes": 138267,
+      "sha256": "bce0b941452b2a002525a6ea968e51617d362d3a556d20a6d51bbf341ad250a7",
       "lfsPointer": false,
       "fixture": "age-gate"
     },
     {
       "path": "packages/use-cases/age-gate/contract/src/managed/demo-revocation/contract/index.js",
-      "bytes": 1763580,
-      "sha256": "054f5159ee5417d89df31819187fc659301529e7055f19a0bc85b9cd5e839b91",
+      "bytes": 1765487,
+      "sha256": "f741e5c6dac11a29bcbfca39aad91209c34d468ca37e9771f28a09b208e92e18",
       "lfsPointer": false,
       "fixture": "age-gate"
     },
     {
       "path": "packages/use-cases/age-gate/contract/src/managed/demo-revocation/contract/index.js.map",
-      "bytes": 64212,
-      "sha256": "20ed8a1c02ffc2b4dd7e6767b022cf1c378f33d25175fbd786b8a5593f6b9d7c",
+      "bytes": 64358,
+      "sha256": "e2e7e60afc3c9c159181c810fb38bdc333097d7c6ed54cb1f3e3313ee550355c",
       "lfsPointer": false,
       "fixture": "age-gate"
     },

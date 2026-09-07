@@ -1229,6 +1229,49 @@ class _SyntheticVerificationExtensionV1_0 {
 
 const _descriptor_71 = new _SyntheticVerificationExtensionV1_0();
 
+class _ActionHolderBindingV1_0 {
+  alignment() {
+    return _descriptor_2.alignment().concat(_descriptor_1.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment())))));
+  }
+  fromValue(value_0) {
+    return {
+      domain: _descriptor_2.fromValue(value_0),
+      version: _descriptor_1.fromValue(value_0),
+      deploymentDigest: _descriptor_2.fromValue(value_0),
+      verifierContractDigest: _descriptor_2.fromValue(value_0),
+      actionClassDigest: _descriptor_2.fromValue(value_0),
+      holderSubjectDigest: _descriptor_2.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_2.toValue(value_0.domain).concat(_descriptor_1.toValue(value_0.version).concat(_descriptor_2.toValue(value_0.deploymentDigest).concat(_descriptor_2.toValue(value_0.verifierContractDigest).concat(_descriptor_2.toValue(value_0.actionClassDigest).concat(_descriptor_2.toValue(value_0.holderSubjectDigest))))));
+  }
+}
+
+const _descriptor_72 = new _ActionHolderBindingV1_0();
+
+class _HolderActionReplayScopeV1_0 {
+  alignment() {
+    return _descriptor_2.alignment().concat(_descriptor_1.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_72.alignment()))))));
+  }
+  fromValue(value_0) {
+    return {
+      domain: _descriptor_2.fromValue(value_0),
+      version: _descriptor_1.fromValue(value_0),
+      deploymentDigest: _descriptor_2.fromValue(value_0),
+      verifierContractDigest: _descriptor_2.fromValue(value_0),
+      actionClassDigest: _descriptor_2.fromValue(value_0),
+      actionScopeParametersDigest: _descriptor_2.fromValue(value_0),
+      binding: _descriptor_72.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_2.toValue(value_0.domain).concat(_descriptor_1.toValue(value_0.version).concat(_descriptor_2.toValue(value_0.deploymentDigest).concat(_descriptor_2.toValue(value_0.verifierContractDigest).concat(_descriptor_2.toValue(value_0.actionClassDigest).concat(_descriptor_2.toValue(value_0.actionScopeParametersDigest).concat(_descriptor_72.toValue(value_0.binding)))))));
+  }
+}
+
+const _descriptor_73 = new _HolderActionReplayScopeV1_0();
+
 class _ActionCredentialBindingV1_0 {
   alignment() {
     return _descriptor_2.alignment().concat(_descriptor_1.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment())))))));
@@ -1250,11 +1293,11 @@ class _ActionCredentialBindingV1_0 {
   }
 }
 
-const _descriptor_72 = new _ActionCredentialBindingV1_0();
+const _descriptor_74 = new _ActionCredentialBindingV1_0();
 
 class _CredentialActionReplayScopeV1_0 {
   alignment() {
-    return _descriptor_2.alignment().concat(_descriptor_1.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_72.alignment()))))));
+    return _descriptor_2.alignment().concat(_descriptor_1.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_74.alignment()))))));
   }
   fromValue(value_0) {
     return {
@@ -1264,15 +1307,15 @@ class _CredentialActionReplayScopeV1_0 {
       verifierContractDigest: _descriptor_2.fromValue(value_0),
       actionClassDigest: _descriptor_2.fromValue(value_0),
       actionScopeParametersDigest: _descriptor_2.fromValue(value_0),
-      binding: _descriptor_72.fromValue(value_0)
+      binding: _descriptor_74.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_2.toValue(value_0.domain).concat(_descriptor_1.toValue(value_0.version).concat(_descriptor_2.toValue(value_0.deploymentDigest).concat(_descriptor_2.toValue(value_0.verifierContractDigest).concat(_descriptor_2.toValue(value_0.actionClassDigest).concat(_descriptor_2.toValue(value_0.actionScopeParametersDigest).concat(_descriptor_72.toValue(value_0.binding)))))));
+    return _descriptor_2.toValue(value_0.domain).concat(_descriptor_1.toValue(value_0.version).concat(_descriptor_2.toValue(value_0.deploymentDigest).concat(_descriptor_2.toValue(value_0.verifierContractDigest).concat(_descriptor_2.toValue(value_0.actionClassDigest).concat(_descriptor_2.toValue(value_0.actionScopeParametersDigest).concat(_descriptor_74.toValue(value_0.binding)))))));
   }
 }
 
-const _descriptor_73 = new _CredentialActionReplayScopeV1_0();
+const _descriptor_75 = new _CredentialActionReplayScopeV1_0();
 
 class _RequestReplayScopeV1_0 {
   alignment() {
@@ -1294,71 +1337,7 @@ class _RequestReplayScopeV1_0 {
   }
 }
 
-const _descriptor_74 = new _RequestReplayScopeV1_0();
-
-class _ActionHolderBindingV1_0 {
-  alignment() {
-    return _descriptor_2.alignment().concat(_descriptor_1.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment())))));
-  }
-  fromValue(value_0) {
-    return {
-      domain: _descriptor_2.fromValue(value_0),
-      version: _descriptor_1.fromValue(value_0),
-      deploymentDigest: _descriptor_2.fromValue(value_0),
-      verifierContractDigest: _descriptor_2.fromValue(value_0),
-      actionClassDigest: _descriptor_2.fromValue(value_0),
-      holderSubjectDigest: _descriptor_2.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_2.toValue(value_0.domain).concat(_descriptor_1.toValue(value_0.version).concat(_descriptor_2.toValue(value_0.deploymentDigest).concat(_descriptor_2.toValue(value_0.verifierContractDigest).concat(_descriptor_2.toValue(value_0.actionClassDigest).concat(_descriptor_2.toValue(value_0.holderSubjectDigest))))));
-  }
-}
-
-const _descriptor_75 = new _ActionHolderBindingV1_0();
-
-class _HolderActionReplayScopeV1_0 {
-  alignment() {
-    return _descriptor_2.alignment().concat(_descriptor_1.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_75.alignment()))))));
-  }
-  fromValue(value_0) {
-    return {
-      domain: _descriptor_2.fromValue(value_0),
-      version: _descriptor_1.fromValue(value_0),
-      deploymentDigest: _descriptor_2.fromValue(value_0),
-      verifierContractDigest: _descriptor_2.fromValue(value_0),
-      actionClassDigest: _descriptor_2.fromValue(value_0),
-      actionScopeParametersDigest: _descriptor_2.fromValue(value_0),
-      binding: _descriptor_75.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_2.toValue(value_0.domain).concat(_descriptor_1.toValue(value_0.version).concat(_descriptor_2.toValue(value_0.deploymentDigest).concat(_descriptor_2.toValue(value_0.verifierContractDigest).concat(_descriptor_2.toValue(value_0.actionClassDigest).concat(_descriptor_2.toValue(value_0.actionScopeParametersDigest).concat(_descriptor_75.toValue(value_0.binding)))))));
-  }
-}
-
-const _descriptor_76 = new _HolderActionReplayScopeV1_0();
-
-class _DecisionNullifierMaterialV1_0 {
-  alignment() {
-    return _descriptor_2.alignment().concat(_descriptor_1.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_24.alignment().concat(_descriptor_2.alignment())))));
-  }
-  fromValue(value_0) {
-    return {
-      domain: _descriptor_2.fromValue(value_0),
-      version: _descriptor_1.fromValue(value_0),
-      deploymentDigest: _descriptor_2.fromValue(value_0),
-      verifierContractDigest: _descriptor_2.fromValue(value_0),
-      replayPolicy: _descriptor_24.fromValue(value_0),
-      replayScopeDigest: _descriptor_2.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_2.toValue(value_0.domain).concat(_descriptor_1.toValue(value_0.version).concat(_descriptor_2.toValue(value_0.deploymentDigest).concat(_descriptor_2.toValue(value_0.verifierContractDigest).concat(_descriptor_24.toValue(value_0.replayPolicy).concat(_descriptor_2.toValue(value_0.replayScopeDigest))))));
-  }
-}
-
-const _descriptor_77 = new _DecisionNullifierMaterialV1_0();
+const _descriptor_76 = new _RequestReplayScopeV1_0();
 
 class _AnchorEvidenceReceiptV1_0 {
   alignment() {
@@ -1381,7 +1360,71 @@ class _AnchorEvidenceReceiptV1_0 {
   }
 }
 
-const _descriptor_78 = new _AnchorEvidenceReceiptV1_0();
+const _descriptor_77 = new _AnchorEvidenceReceiptV1_0();
+
+class _DecisionNullifierMaterialV1_0 {
+  alignment() {
+    return _descriptor_2.alignment().concat(_descriptor_1.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_24.alignment().concat(_descriptor_2.alignment())))));
+  }
+  fromValue(value_0) {
+    return {
+      domain: _descriptor_2.fromValue(value_0),
+      version: _descriptor_1.fromValue(value_0),
+      deploymentDigest: _descriptor_2.fromValue(value_0),
+      verifierContractDigest: _descriptor_2.fromValue(value_0),
+      replayPolicy: _descriptor_24.fromValue(value_0),
+      replayScopeDigest: _descriptor_2.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_2.toValue(value_0.domain).concat(_descriptor_1.toValue(value_0.version).concat(_descriptor_2.toValue(value_0.deploymentDigest).concat(_descriptor_2.toValue(value_0.verifierContractDigest).concat(_descriptor_24.toValue(value_0.replayPolicy).concat(_descriptor_2.toValue(value_0.replayScopeDigest))))));
+  }
+}
+
+const _descriptor_78 = new _DecisionNullifierMaterialV1_0();
+
+class _PresentationBindingV1_0 {
+  alignment() {
+    return _descriptor_2.alignment().concat(_descriptor_1.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment()))))));
+  }
+  fromValue(value_0) {
+    return {
+      domain: _descriptor_2.fromValue(value_0),
+      version: _descriptor_1.fromValue(value_0),
+      credentialBindingDigest: _descriptor_2.fromValue(value_0),
+      holderBindingDigest: _descriptor_2.fromValue(value_0),
+      disclosureDigest: _descriptor_2.fromValue(value_0),
+      predicateDigest: _descriptor_2.fromValue(value_0),
+      consentDigest: _descriptor_2.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_2.toValue(value_0.domain).concat(_descriptor_1.toValue(value_0.version).concat(_descriptor_2.toValue(value_0.credentialBindingDigest).concat(_descriptor_2.toValue(value_0.holderBindingDigest).concat(_descriptor_2.toValue(value_0.disclosureDigest).concat(_descriptor_2.toValue(value_0.predicateDigest).concat(_descriptor_2.toValue(value_0.consentDigest)))))));
+  }
+}
+
+const _descriptor_79 = new _PresentationBindingV1_0();
+
+class _HolderBindingV1_0 {
+  alignment() {
+    return _descriptor_2.alignment().concat(_descriptor_1.alignment().concat(_descriptor_24.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment())))));
+  }
+  fromValue(value_0) {
+    return {
+      domain: _descriptor_2.fromValue(value_0),
+      version: _descriptor_1.fromValue(value_0),
+      mode: _descriptor_24.fromValue(value_0),
+      verifierContractDigest: _descriptor_2.fromValue(value_0),
+      challengeDigest: _descriptor_2.fromValue(value_0),
+      subjectBindingDigest: _descriptor_2.fromValue(value_0)
+    }
+  }
+  toValue(value_0) {
+    return _descriptor_2.toValue(value_0.domain).concat(_descriptor_1.toValue(value_0.version).concat(_descriptor_24.toValue(value_0.mode).concat(_descriptor_2.toValue(value_0.verifierContractDigest).concat(_descriptor_2.toValue(value_0.challengeDigest).concat(_descriptor_2.toValue(value_0.subjectBindingDigest))))));
+  }
+}
+
+const _descriptor_80 = new _HolderBindingV1_0();
 
 class _ConsentBindingV1_0 {
   alignment() {
@@ -1422,29 +1465,7 @@ class _ConsentBindingV1_0 {
   }
 }
 
-const _descriptor_79 = new _ConsentBindingV1_0();
-
-class _PresentationBindingV1_0 {
-  alignment() {
-    return _descriptor_2.alignment().concat(_descriptor_1.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment()))))));
-  }
-  fromValue(value_0) {
-    return {
-      domain: _descriptor_2.fromValue(value_0),
-      version: _descriptor_1.fromValue(value_0),
-      credentialBindingDigest: _descriptor_2.fromValue(value_0),
-      holderBindingDigest: _descriptor_2.fromValue(value_0),
-      disclosureDigest: _descriptor_2.fromValue(value_0),
-      predicateDigest: _descriptor_2.fromValue(value_0),
-      consentDigest: _descriptor_2.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_2.toValue(value_0.domain).concat(_descriptor_1.toValue(value_0.version).concat(_descriptor_2.toValue(value_0.credentialBindingDigest).concat(_descriptor_2.toValue(value_0.holderBindingDigest).concat(_descriptor_2.toValue(value_0.disclosureDigest).concat(_descriptor_2.toValue(value_0.predicateDigest).concat(_descriptor_2.toValue(value_0.consentDigest)))))));
-  }
-}
-
-const _descriptor_80 = new _PresentationBindingV1_0();
+const _descriptor_81 = new _ConsentBindingV1_0();
 
 class _CredentialBindingV1_0 {
   alignment() {
@@ -1467,28 +1488,7 @@ class _CredentialBindingV1_0 {
   }
 }
 
-const _descriptor_81 = new _CredentialBindingV1_0();
-
-class _HolderBindingV1_0 {
-  alignment() {
-    return _descriptor_2.alignment().concat(_descriptor_1.alignment().concat(_descriptor_24.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment().concat(_descriptor_2.alignment())))));
-  }
-  fromValue(value_0) {
-    return {
-      domain: _descriptor_2.fromValue(value_0),
-      version: _descriptor_1.fromValue(value_0),
-      mode: _descriptor_24.fromValue(value_0),
-      verifierContractDigest: _descriptor_2.fromValue(value_0),
-      challengeDigest: _descriptor_2.fromValue(value_0),
-      subjectBindingDigest: _descriptor_2.fromValue(value_0)
-    }
-  }
-  toValue(value_0) {
-    return _descriptor_2.toValue(value_0.domain).concat(_descriptor_1.toValue(value_0.version).concat(_descriptor_24.toValue(value_0.mode).concat(_descriptor_2.toValue(value_0.verifierContractDigest).concat(_descriptor_2.toValue(value_0.challengeDigest).concat(_descriptor_2.toValue(value_0.subjectBindingDigest))))));
-  }
-}
-
-const _descriptor_82 = new _HolderBindingV1_0();
+const _descriptor_82 = new _CredentialBindingV1_0();
 
 class _SchemaCapabilities_0 {
   alignment() {
@@ -1594,9 +1594,9 @@ class _SchemaDescriptor_0 {
 
 const _descriptor_88 = new _SchemaDescriptor_0();
 
-const _descriptor_89 = new __compactRuntime.CompactTypeVector(5, _descriptor_2);
+const _descriptor_89 = new __compactRuntime.CompactTypeVector(3, _descriptor_2);
 
-const _descriptor_90 = new __compactRuntime.CompactTypeVector(3, _descriptor_2);
+const _descriptor_90 = new __compactRuntime.CompactTypeVector(5, _descriptor_2);
 
 const _descriptor_91 = new __compactRuntime.CompactTypeVector(4, _descriptor_2);
 
@@ -1966,6 +1966,9 @@ export class Contract {
       },
       assertSameSecretHolderBindingWitnesses3(context, ...args_1) {
         return { result: pureCircuits.assertSameSecretHolderBindingWitnesses3(...args_1), context };
+      },
+      blindedSecretHolderBindingDigestV1(context, ...args_1) {
+        return { result: pureCircuits.blindedSecretHolderBindingDigestV1(...args_1), context };
       },
       assertSameBlindedSecretHolderBindingWitnesses(context, ...args_1) {
         return { result: pureCircuits.assertSameBlindedSecretHolderBindingWitnesses(...args_1), context };
@@ -3659,19 +3662,19 @@ export class Contract {
     return result_0;
   }
   _persistentHash_4(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_81, value_0);
-    return result_0;
-  }
-  _persistentHash_5(value_0) {
     const result_0 = __compactRuntime.persistentHash(_descriptor_82, value_0);
     return result_0;
   }
+  _persistentHash_5(value_0) {
+    const result_0 = __compactRuntime.persistentHash(_descriptor_80, value_0);
+    return result_0;
+  }
   _persistentHash_6(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_79, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_81, value_0);
     return result_0;
   }
   _persistentHash_7(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_80, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_79, value_0);
     return result_0;
   }
   _persistentHash_8(value_0) {
@@ -3679,31 +3682,31 @@ export class Contract {
     return result_0;
   }
   _persistentHash_9(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_78, value_0);
-    return result_0;
-  }
-  _persistentHash_10(value_0) {
     const result_0 = __compactRuntime.persistentHash(_descriptor_77, value_0);
     return result_0;
   }
-  _persistentHash_11(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_75, value_0);
+  _persistentHash_10(value_0) {
+    const result_0 = __compactRuntime.persistentHash(_descriptor_78, value_0);
     return result_0;
   }
-  _persistentHash_12(value_0) {
+  _persistentHash_11(value_0) {
     const result_0 = __compactRuntime.persistentHash(_descriptor_72, value_0);
     return result_0;
   }
-  _persistentHash_13(value_0) {
+  _persistentHash_12(value_0) {
     const result_0 = __compactRuntime.persistentHash(_descriptor_74, value_0);
     return result_0;
   }
-  _persistentHash_14(value_0) {
+  _persistentHash_13(value_0) {
     const result_0 = __compactRuntime.persistentHash(_descriptor_76, value_0);
     return result_0;
   }
-  _persistentHash_15(value_0) {
+  _persistentHash_14(value_0) {
     const result_0 = __compactRuntime.persistentHash(_descriptor_73, value_0);
+    return result_0;
+  }
+  _persistentHash_15(value_0) {
+    const result_0 = __compactRuntime.persistentHash(_descriptor_75, value_0);
     return result_0;
   }
   _persistentHash_16(value_0) {
@@ -3715,35 +3718,39 @@ export class Contract {
     return result_0;
   }
   _persistentHash_18(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_91, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_7, value_0);
     return result_0;
   }
   _persistentHash_19(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_38, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_91, value_0);
     return result_0;
   }
   _persistentHash_20(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_33, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_38, value_0);
     return result_0;
   }
   _persistentHash_21(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_14, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_33, value_0);
     return result_0;
   }
   _persistentHash_22(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_35, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_14, value_0);
     return result_0;
   }
   _persistentHash_23(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_51, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_35, value_0);
     return result_0;
   }
   _persistentHash_24(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_90, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_51, value_0);
     return result_0;
   }
   _persistentHash_25(value_0) {
     const result_0 = __compactRuntime.persistentHash(_descriptor_89, value_0);
+    return result_0;
+  }
+  _persistentHash_26(value_0) {
+    const result_0 = __compactRuntime.persistentHash(_descriptor_90, value_0);
     return result_0;
   }
   _persistentCommit_0(value_0, rand_0) {
@@ -3865,14 +3872,14 @@ export class Contract {
     return new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 115, 116, 97, 116, 117, 115, 45, 97, 116, 116, 101, 115, 116, 97, 116, 105, 111, 110, 0, 0]);
   }
   _proofPayloadRootForContext_0(bodyRoot_0, contextTag_0, proof_0) {
-    return this._persistentHash_25([bodyRoot_0,
+    return this._persistentHash_26([bodyRoot_0,
                                     contextTag_0,
                                     this._persistentHash_0(proof_0.signerVerificationMethodRef),
                                     this._upgradeFromTransient_0(this._transientHash_1(proof_0.createdAt)),
                                     proof_0.challengeHash]);
   }
   _proofChallengeForContext_0(bodyRoot_0, contextTag_0, proof_0) {
-    return this._degradeToTransient_0(this._persistentHash_24([this._proofPayloadRootForContext_0(bodyRoot_0,
+    return this._degradeToTransient_0(this._persistentHash_25([this._proofPayloadRootForContext_0(bodyRoot_0,
                                                                                                   contextTag_0,
                                                                                                   proof_0),
                                                                this._upgradeFromTransient_0(this._transientHash_0(proof_0.publicKey)),
@@ -3936,10 +3943,10 @@ export class Contract {
     return [];
   }
   _credentialBodyRoot_0(credential_0) {
-    return this._persistentHash_20(credential_0);
+    return this._persistentHash_21(credential_0);
   }
   _credentialBodyRoot_1(credential_0) {
-    return this._persistentHash_21(credential_0);
+    return this._persistentHash_22(credential_0);
   }
   _assertValidCredentialEnvelope_0(credential_0, expectedClaimRoot_0) {
     __compactRuntime.assert(this._equal_5(credential_0.version, 1n),
@@ -3990,7 +3997,7 @@ export class Contract {
     return [];
   }
   _presentationBodyRoot_0(presentation_0) {
-    return this._persistentHash_22(presentation_0);
+    return this._persistentHash_23(presentation_0);
   }
   _assertValidPresentationEnvelope_0(presentation_0) {
     __compactRuntime.assert(this._equal_13(presentation_0.version, 1n),
@@ -4118,12 +4125,12 @@ export class Contract {
   _secretHolderBindingChallengeResponse_0(holderSecret_0,
                                           verifierChallengeHash_0)
   {
-    return this._persistentHash_24([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 104, 111, 108, 100, 101, 114, 45, 99, 104, 97, 108, 108, 0, 0, 0, 0, 0, 0, 0, 0]),
+    return this._persistentHash_25([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 104, 111, 108, 100, 101, 114, 45, 99, 104, 97, 108, 108, 0, 0, 0, 0, 0, 0, 0, 0]),
                                     holderSecret_0,
                                     verifierChallengeHash_0]);
   }
   _verifierScopedPseudonym_0(holderSecret_0, verifierDomainHash_0) {
-    return this._persistentHash_24([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 104, 111, 108, 100, 101, 114, 45, 112, 115, 101, 117, 100, 111, 110, 121, 109, 0, 0, 0, 0]),
+    return this._persistentHash_25([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 104, 111, 108, 100, 101, 114, 45, 112, 115, 101, 117, 100, 111, 110, 121, 109, 0, 0, 0, 0]),
                                     holderSecret_0,
                                     verifierDomainHash_0]);
   }
@@ -4151,7 +4158,7 @@ export class Contract {
                                    this._persistentHash_2(scope_0)]);
   }
   _requestScopedVerifierPseudonymV1_0(holderSecret_0, scope_0) {
-    return this._persistentHash_24([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 114, 101, 113, 45, 112, 115, 101, 117, 100, 111, 110, 121, 109, 58, 118, 49, 0, 0, 0, 0]),
+    return this._persistentHash_25([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 114, 101, 113, 45, 112, 115, 101, 117, 100, 111, 110, 121, 109, 58, 118, 49, 0, 0, 0, 0]),
                                     holderSecret_0,
                                     this._verifierPseudonymScopeDigestV1_0(scope_0)]);
   }
@@ -4167,7 +4174,7 @@ export class Contract {
                                    issuerNonce_0,
                                    blindingFactor_0)
   {
-    return this._persistentHash_18([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 98, 108, 105, 110, 100, 45, 104, 111, 108, 100, 101, 114, 0, 0, 0, 0, 0, 0, 0, 0]),
+    return this._persistentHash_19([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 98, 108, 105, 110, 100, 45, 104, 111, 108, 100, 101, 114, 0, 0, 0, 0, 0, 0, 0, 0]),
                                     holderSecretCommitment_0,
                                     issuerNonce_0,
                                     blindingFactor_0]);
@@ -5796,6 +5803,9 @@ export class Contract {
                                              thirdOpening_0);
     return [];
   }
+  _blindedSecretHolderBindingDigestV1_0(binding_0) {
+    return this._persistentHash_18(binding_0);
+  }
   _assertSameBlindedSecretHolderBindingWitnesses_0(firstBinding_0,
                                                    secondBinding_0,
                                                    verifierChallengeHash_0,
@@ -5933,7 +5943,7 @@ export class Contract {
                             registryId_0,
                             issuerStatusSalt_0)
   {
-    return this._persistentHash_18([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 115, 116, 97, 116, 117, 115, 45, 104, 97, 110, 100, 108, 101, 0, 0, 0, 0, 0, 0, 0]),
+    return this._persistentHash_19([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 115, 116, 97, 116, 117, 115, 45, 104, 97, 110, 100, 108, 101, 0, 0, 0, 0, 0, 0, 0]),
                                     credentialClaimRoot_0,
                                     registryId_0,
                                     issuerStatusSalt_0]);
@@ -6009,7 +6019,7 @@ export class Contract {
     return [];
   }
   _authorityAttestedStatusStatementRoot_0(statement_0) {
-    return this._persistentHash_19(statement_0);
+    return this._persistentHash_20(statement_0);
   }
   _assertValidAuthorityAttestedStatusStatement_0(statement_0) {
     this._assertValidRevocationRegistryState_0(statement_0.registryState);
@@ -6261,7 +6271,7 @@ export class Contract {
     return [];
   }
   _birthCredentialClaimRoot_0(commitments_0) {
-    return this._persistentHash_25([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 98, 105, 114, 116, 104, 58, 118, 49, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+    return this._persistentHash_26([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 98, 105, 114, 116, 104, 58, 118, 49, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
                                     commitments_0.subjectIdCommitment,
                                     commitments_0.legalNameCommitment,
                                     commitments_0.birthDateCommitment,
@@ -6313,13 +6323,13 @@ export class Contract {
     return this._presentationBodyRoot_0(presentation_0);
   }
   _secretBirthCredentialPresentationRequestBodyRoot_0(request_0) {
-    return this._persistentHash_23(request_0);
+    return this._persistentHash_24(request_0);
   }
   _secretBirthPresentationBindingDigestV1_0(credential_0,
                                             presentation_0,
                                             request_0)
   {
-    return this._persistentHash_25([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 104, 105, 100, 100, 101, 110, 45, 112, 114, 101, 115, 101, 110, 116, 58, 118, 49, 0, 0, 0]),
+    return this._persistentHash_26([new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 118, 99, 58, 104, 105, 100, 100, 101, 110, 45, 112, 114, 101, 115, 101, 110, 116, 58, 118, 49, 0, 0, 0]),
                                     this._secretBirthCredentialBodyRoot_0(credential_0),
                                     this._secretBirthCredentialPresentationBodyRoot_0(presentation_0),
                                     this._verifierPseudonymScopeDigestV1_0(request_0.verifierPseudonymScope),
@@ -7095,14 +7105,14 @@ export class Contract {
   _revocationDemoVerificationMessageId_0(verifierChallengeHash_0,
                                          verifierIdentityDigest_0)
   {
-    return this._persistentHash_24([new Uint8Array([118, 99, 45, 100, 101, 109, 111, 58, 114, 101, 118, 58, 109, 101, 115, 115, 97, 103, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+    return this._persistentHash_25([new Uint8Array([118, 99, 45, 100, 101, 109, 111, 58, 114, 101, 118, 58, 109, 101, 115, 115, 97, 103, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
                                     verifierChallengeHash_0,
                                     verifierIdentityDigest_0]);
   }
   _revocationDemoVerificationThreadId_0(verifierChallengeHash_0,
                                         verifierIdentityDigest_0)
   {
-    return this._persistentHash_24([new Uint8Array([118, 99, 45, 100, 101, 109, 111, 58, 114, 101, 118, 58, 116, 104, 114, 101, 97, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+    return this._persistentHash_25([new Uint8Array([118, 99, 45, 100, 101, 109, 111, 58, 114, 101, 118, 58, 116, 104, 114, 101, 97, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
                                     verifierChallengeHash_0,
                                     verifierIdentityDigest_0]);
   }
@@ -7407,7 +7417,7 @@ export class Contract {
                                revokedRoot_0,
                                issuanceIndex_0)
   {
-    return this._persistentHash_25([new Uint8Array([118, 99, 45, 100, 101, 109, 111, 58, 114, 101, 118, 111, 99, 97, 116, 105, 111, 110, 45, 103, 97, 116, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+    return this._persistentHash_26([new Uint8Array([118, 99, 45, 100, 101, 109, 111, 58, 114, 101, 118, 111, 99, 97, 116, 105, 111, 110, 45, 103, 97, 116, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
                                     credentialRoot_0,
                                     verifierChallengeHash_0,
                                     revokedRoot_0,
@@ -7420,7 +7430,7 @@ export class Contract {
                                          registryId_0,
                                          issuanceIndex_0)
   {
-    return this._persistentHash_25([new Uint8Array([118, 99, 45, 100, 101, 109, 111, 58, 114, 101, 118, 111, 99, 97, 116, 105, 111, 110, 45, 103, 97, 116, 101, 58, 108, 105, 118, 101, 0, 0, 0, 0]),
+    return this._persistentHash_26([new Uint8Array([118, 99, 45, 100, 101, 109, 111, 58, 114, 101, 118, 111, 99, 97, 116, 105, 111, 110, 45, 103, 97, 116, 101, 58, 108, 105, 118, 101, 0, 0, 0, 0]),
                                     credentialRoot_0,
                                     verifierChallengeHash_0,
                                     registryId_0,
@@ -12725,6 +12735,20 @@ export const pureCircuits = {
                                                                      secondOpening_0,
                                                                      thirdOpening_0);
   },
+  blindedSecretHolderBindingDigestV1: (...args_0) => {
+    if (args_0.length !== 1) {
+      throw new __compactRuntime.CompactError(`blindedSecretHolderBindingDigestV1: expected 1 argument (as invoked from Typescript), received ${args_0.length}`);
+    }
+    const binding_0 = args_0[0];
+    if (!(typeof(binding_0) === 'object' && binding_0.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && binding_0.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && binding_0.blindedHolderSecretCommitment.length === 32 && binding_0.issuerNonce.buffer instanceof ArrayBuffer && binding_0.issuerNonce.BYTES_PER_ELEMENT === 1 && binding_0.issuerNonce.length === 32 && binding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && binding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && binding_0.requestChallengeResponse.length === 32)) {
+      __compactRuntime.typeError('blindedSecretHolderBindingDigestV1',
+                                 'argument 1',
+                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 98 char 1',
+                                 'struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>',
+                                 binding_0)
+    }
+    return _dummyContract._blindedSecretHolderBindingDigestV1_0(binding_0);
+  },
   assertSameBlindedSecretHolderBindingWitnesses: (...args_0) => {
     if (args_0.length !== 8) {
       throw new __compactRuntime.CompactError(`assertSameBlindedSecretHolderBindingWitnesses: expected 8 arguments (as invoked from Typescript), received ${args_0.length}`);
@@ -12740,56 +12764,56 @@ export const pureCircuits = {
     if (!(typeof(firstBinding_0) === 'object' && firstBinding_0.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && firstBinding_0.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && firstBinding_0.blindedHolderSecretCommitment.length === 32 && firstBinding_0.issuerNonce.buffer instanceof ArrayBuffer && firstBinding_0.issuerNonce.BYTES_PER_ELEMENT === 1 && firstBinding_0.issuerNonce.length === 32 && firstBinding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && firstBinding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && firstBinding_0.requestChallengeResponse.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses',
                                  'argument 1',
-                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 99 char 1',
+                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 107 char 1',
                                  'struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>',
                                  firstBinding_0)
     }
     if (!(typeof(secondBinding_0) === 'object' && secondBinding_0.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && secondBinding_0.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && secondBinding_0.blindedHolderSecretCommitment.length === 32 && secondBinding_0.issuerNonce.buffer instanceof ArrayBuffer && secondBinding_0.issuerNonce.BYTES_PER_ELEMENT === 1 && secondBinding_0.issuerNonce.length === 32 && secondBinding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && secondBinding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && secondBinding_0.requestChallengeResponse.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses',
                                  'argument 2',
-                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 99 char 1',
+                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 107 char 1',
                                  'struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>',
                                  secondBinding_0)
     }
     if (!(verifierChallengeHash_0.buffer instanceof ArrayBuffer && verifierChallengeHash_0.BYTES_PER_ELEMENT === 1 && verifierChallengeHash_0.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses',
                                  'argument 3',
-                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 99 char 1',
+                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 107 char 1',
                                  'Bytes<32>',
                                  verifierChallengeHash_0)
     }
     if (!(holderSecret_0.buffer instanceof ArrayBuffer && holderSecret_0.BYTES_PER_ELEMENT === 1 && holderSecret_0.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses',
                                  'argument 4',
-                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 99 char 1',
+                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 107 char 1',
                                  'Bytes<32>',
                                  holderSecret_0)
     }
     if (!(firstOpening_0.buffer instanceof ArrayBuffer && firstOpening_0.BYTES_PER_ELEMENT === 1 && firstOpening_0.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses',
                                  'argument 5',
-                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 99 char 1',
+                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 107 char 1',
                                  'Bytes<32>',
                                  firstOpening_0)
     }
     if (!(firstBlindingFactor_0.buffer instanceof ArrayBuffer && firstBlindingFactor_0.BYTES_PER_ELEMENT === 1 && firstBlindingFactor_0.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses',
                                  'argument 6',
-                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 99 char 1',
+                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 107 char 1',
                                  'Bytes<32>',
                                  firstBlindingFactor_0)
     }
     if (!(secondOpening_0.buffer instanceof ArrayBuffer && secondOpening_0.BYTES_PER_ELEMENT === 1 && secondOpening_0.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses',
                                  'argument 7',
-                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 99 char 1',
+                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 107 char 1',
                                  'Bytes<32>',
                                  secondOpening_0)
     }
     if (!(secondBlindingFactor_0.buffer instanceof ArrayBuffer && secondBlindingFactor_0.BYTES_PER_ELEMENT === 1 && secondBlindingFactor_0.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses',
                                  'argument 8',
-                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 99 char 1',
+                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 107 char 1',
                                  'Bytes<32>',
                                  secondBlindingFactor_0)
     }
@@ -12820,77 +12844,77 @@ export const pureCircuits = {
     if (!(typeof(firstBinding_0) === 'object' && firstBinding_0.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && firstBinding_0.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && firstBinding_0.blindedHolderSecretCommitment.length === 32 && firstBinding_0.issuerNonce.buffer instanceof ArrayBuffer && firstBinding_0.issuerNonce.BYTES_PER_ELEMENT === 1 && firstBinding_0.issuerNonce.length === 32 && firstBinding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && firstBinding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && firstBinding_0.requestChallengeResponse.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses3',
                                  'argument 1',
-                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 132 char 1',
+                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 140 char 1',
                                  'struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>',
                                  firstBinding_0)
     }
     if (!(typeof(secondBinding_0) === 'object' && secondBinding_0.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && secondBinding_0.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && secondBinding_0.blindedHolderSecretCommitment.length === 32 && secondBinding_0.issuerNonce.buffer instanceof ArrayBuffer && secondBinding_0.issuerNonce.BYTES_PER_ELEMENT === 1 && secondBinding_0.issuerNonce.length === 32 && secondBinding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && secondBinding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && secondBinding_0.requestChallengeResponse.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses3',
                                  'argument 2',
-                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 132 char 1',
+                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 140 char 1',
                                  'struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>',
                                  secondBinding_0)
     }
     if (!(typeof(thirdBinding_0) === 'object' && thirdBinding_0.blindedHolderSecretCommitment.buffer instanceof ArrayBuffer && thirdBinding_0.blindedHolderSecretCommitment.BYTES_PER_ELEMENT === 1 && thirdBinding_0.blindedHolderSecretCommitment.length === 32 && thirdBinding_0.issuerNonce.buffer instanceof ArrayBuffer && thirdBinding_0.issuerNonce.BYTES_PER_ELEMENT === 1 && thirdBinding_0.issuerNonce.length === 32 && thirdBinding_0.requestChallengeResponse.buffer instanceof ArrayBuffer && thirdBinding_0.requestChallengeResponse.BYTES_PER_ELEMENT === 1 && thirdBinding_0.requestChallengeResponse.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses3',
                                  'argument 3',
-                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 132 char 1',
+                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 140 char 1',
                                  'struct BlindedSecretHolderBinding<blindedHolderSecretCommitment: Bytes<32>, issuerNonce: Bytes<32>, requestChallengeResponse: Bytes<32>>',
                                  thirdBinding_0)
     }
     if (!(verifierChallengeHash_0.buffer instanceof ArrayBuffer && verifierChallengeHash_0.BYTES_PER_ELEMENT === 1 && verifierChallengeHash_0.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses3',
                                  'argument 4',
-                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 132 char 1',
+                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 140 char 1',
                                  'Bytes<32>',
                                  verifierChallengeHash_0)
     }
     if (!(holderSecret_0.buffer instanceof ArrayBuffer && holderSecret_0.BYTES_PER_ELEMENT === 1 && holderSecret_0.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses3',
                                  'argument 5',
-                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 132 char 1',
+                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 140 char 1',
                                  'Bytes<32>',
                                  holderSecret_0)
     }
     if (!(firstOpening_0.buffer instanceof ArrayBuffer && firstOpening_0.BYTES_PER_ELEMENT === 1 && firstOpening_0.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses3',
                                  'argument 6',
-                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 132 char 1',
+                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 140 char 1',
                                  'Bytes<32>',
                                  firstOpening_0)
     }
     if (!(firstBlindingFactor_0.buffer instanceof ArrayBuffer && firstBlindingFactor_0.BYTES_PER_ELEMENT === 1 && firstBlindingFactor_0.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses3',
                                  'argument 7',
-                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 132 char 1',
+                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 140 char 1',
                                  'Bytes<32>',
                                  firstBlindingFactor_0)
     }
     if (!(secondOpening_0.buffer instanceof ArrayBuffer && secondOpening_0.BYTES_PER_ELEMENT === 1 && secondOpening_0.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses3',
                                  'argument 8',
-                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 132 char 1',
+                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 140 char 1',
                                  'Bytes<32>',
                                  secondOpening_0)
     }
     if (!(secondBlindingFactor_0.buffer instanceof ArrayBuffer && secondBlindingFactor_0.BYTES_PER_ELEMENT === 1 && secondBlindingFactor_0.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses3',
                                  'argument 9',
-                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 132 char 1',
+                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 140 char 1',
                                  'Bytes<32>',
                                  secondBlindingFactor_0)
     }
     if (!(thirdOpening_0.buffer instanceof ArrayBuffer && thirdOpening_0.BYTES_PER_ELEMENT === 1 && thirdOpening_0.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses3',
                                  'argument 10',
-                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 132 char 1',
+                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 140 char 1',
                                  'Bytes<32>',
                                  thirdOpening_0)
     }
     if (!(thirdBlindingFactor_0.buffer instanceof ArrayBuffer && thirdBlindingFactor_0.BYTES_PER_ELEMENT === 1 && thirdBlindingFactor_0.length === 32)) {
       __compactRuntime.typeError('assertSameBlindedSecretHolderBindingWitnesses3',
                                  'argument 11',
-                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 132 char 1',
+                                 'src/../../../../../packages/prototypes/credential-families/birth-secret/src/../../../../../packages/core/capabilities/same-holder/src/same-holder/composable.compact line 140 char 1',
                                  'Bytes<32>',
                                  thirdBlindingFactor_0)
     }
