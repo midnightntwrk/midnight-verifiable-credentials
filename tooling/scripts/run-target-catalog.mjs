@@ -55,7 +55,7 @@ export const targets = [
     description: "Validate the normative core manifest and conformance vectors.",
     category: "core",
     supportsLight: false,
-    script: "check:core-conformance",
+    script: "test:core-conformance",
   },
   {
     name: "bdd",

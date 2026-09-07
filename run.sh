@@ -240,7 +240,7 @@ case "$target" in
     ;;
   conformance)
     echo "[run] Core conformance lane"
-    pnpm run check:core-conformance
+    pnpm run test:core-conformance
     ;;
   package)
     echo "[run] Package artifact lane"

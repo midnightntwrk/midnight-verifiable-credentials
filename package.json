@@ -73,6 +73,7 @@
     "check:turbo-cache-policy": "node ./tooling/scripts/check-turbo-cache-policy.mjs",
     "check:holder-binding-terminology": "node ./tooling/scripts/check-holder-binding-terminology.mjs",
     "check:core-conformance": "node --test ./tooling/scripts/core-conformance.test.mjs",
+    "test:core-conformance": "pnpm --dir ./packages/core/compact run compact && node --test ./tooling/scripts/core-conformance.test.mjs ./tooling/scripts/core-compact-conformance.test.mjs",
     "prepare:profile-coverage": "rm -rf ./packages/core/model/dist ./packages/core/model/.cache && pnpm exec tsc -b ./packages/core/model/tsconfig.build.json --force",
     "profile-coverage:generate": "pnpm run prepare:profile-coverage && node ./tooling/profile-coverage/profile-coverage.mjs --update",
     "test:profile-coverage": "pnpm run prepare:profile-coverage && node --test ./tooling/profile-coverage/profile-coverage.test.mjs",
