@@ -34,8 +34,11 @@ provider capability version, package export, Compact entrypoint, circuit,
 artifact acceptance requirement, tested conformance fixture, mandatory deny
 rule, and subject-qualified maturity value. A deployment assembly independently
 declares every deployment role as selected or `disabled`, then binds selected
-roles to exact provider descriptor versions and instance identities. Artifact
-digests and deployment immutable inputs belong only to the assembly.
+roles to exact provider descriptor versions and instance identities. The
+`proof-executor` provider requirement is mandatory and its capability identity
+must exactly match the profile's semantic proof-generation capability; omission
+or substitution fails closed. Artifact digests and deployment immutable inputs
+belong only to the assembly.
 
 `resolveCredentialComposition(...)` accepts one explicit family definition,
 profile, assembly, and provider catalog. It returns one exact graph or throws a

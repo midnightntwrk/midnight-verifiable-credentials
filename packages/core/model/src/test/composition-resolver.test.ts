@@ -927,6 +927,50 @@ describe("combined resolver incompatibilities", () => {
     );
   });
 
+  it("rejects an omitted or substituted proof provider requirement", () => {
+    const missingRequirementProfile = clone(profile());
+    missingRequirementProfile.requirements.providers =
+      missingRequirementProfile.requirements.providers.filter(
+        ({ id }) => id !== "fixture.proof.requirement",
+      );
+    const missingRequirementAssembly = clone(assembly());
+    missingRequirementAssembly.components["proof-executor"] = {
+      state: "disabled",
+    };
+    expectModelError(
+      () =>
+        resolveCredentialComposition({
+          family,
+          profile: missingRequirementProfile,
+          assembly: missingRequirementAssembly,
+          catalog: catalog(),
+        }),
+      "CAPABILITY_NOT_PROVIDED",
+      "requirements.providers.proof-executor",
+    );
+
+    const substitutedCapabilityProfile = clone(profile());
+    substitutedCapabilityProfile.requirements.providers[1].capability = {
+      id: "proof.unrelated",
+      version: "1.0.0",
+    };
+    const substitutedCapabilityCatalog = clone(catalog());
+    substitutedCapabilityCatalog.providers[1].capabilities = [
+      { id: "proof.unrelated", version: "1.0.0" },
+    ];
+    expectModelError(
+      () =>
+        resolveCredentialComposition({
+          family,
+          profile: substitutedCapabilityProfile,
+          assembly: assembly(),
+          catalog: substitutedCapabilityCatalog,
+        }),
+      "CONTRADICTORY_PROFILE",
+      "requirements.providers[1].capability",
+    );
+  });
+
   it("rejects unknown providers and capabilities", () => {
     const unknownProvider = clone(assembly());
     const selected = unknownProvider.components["proof-executor"];
