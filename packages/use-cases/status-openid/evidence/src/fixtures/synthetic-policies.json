@@ -1,0 +1,18 @@
+{
+  "fixtureClass": "synthetic-policy-only",
+  "profileId": "profile.use-case.contractor-access-status-openid-v1",
+  "actors": {
+    "issuer": "Northstar Safety Board",
+    "holder": "Avery Chen (synthetic contractor)",
+    "statusOperator": "Northstar Credential Operations",
+    "verifier": "Harbor Plant Access Control"
+  },
+  "businessOutcome": "Atomically grant one synthetic shift-access authorization only after an active safety credential passes OID4VP/DCQL and Verification V1.",
+  "freshness": { "maximumStatusAgeSeconds": 60, "maximumFutureSkewSeconds": 2 },
+  "openid": {
+    "issuerAudience": "https://issuer.synthetic.example/credential",
+    "verifierOrigin": "https://gate.synthetic.example",
+    "responseUri": "https://gate.synthetic.example/callback",
+    "dcqlQueryIds": ["active-safety-credential"]
+  }
+}

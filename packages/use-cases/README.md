@@ -18,6 +18,10 @@ Current subtrees:
   - `university/reporting` provides a one-page summary over BDD, transcript,
     stress, and batch-sweep artifacts
   - executable Serenity/Cucumber scenarios plus deterministic scenario datasets
+- `status-openid/evidence`
+  - independent synthetic contractor-access composition
+  - status-enabled OID4VCI/OID4VP Final with DCQL and an atomic Verification V1 decision
+  - explicit production-shaped-only and local-conformance-only evidence boundary
 
 BDD scenarios belong here because they document concrete flows rather than low-
 level prototype matrices.

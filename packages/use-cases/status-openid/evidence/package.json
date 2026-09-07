@@ -1,0 +1,37 @@
+{
+  "name": "@midnight-ntwrk/status-openid-production-evidence",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=24", "pnpm": ">=10" },
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js", "default": "./dist/index.js" },
+    "./synthetic-policies.json": "./dist/fixtures/synthetic-policies.json"
+  },
+  "scripts": {
+    "build": "rm -rf dist && tsc -b tsconfig.build.json --force && mkdir -p dist/fixtures && cp src/fixtures/synthetic-policies.json dist/fixtures/",
+    "test": "vitest run",
+    "test:ci": "pnpm run test",
+    "test:evidence": "vitest run src/test/profile.test.ts src/test/evidence-flow.test.ts src/test/seams.test.ts src/test/docs.test.ts",
+    "lint": "eslint src",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "clean": "rm -rf dist coverage",
+    "all": "pnpm run lint && pnpm run typecheck && pnpm run build && pnpm run test:ci",
+    "prepack": "pnpm run build"
+  },
+  "dependencies": {
+    "@midnight-ntwrk/credential-model": "workspace:*",
+    "@midnight-ntwrk/credential-proofs": "workspace:*",
+    "@midnight-ntwrk/midnight-did-credentials": "*",
+    "@midnight-ntwrk/midnight-did-credentials-openid": "workspace:*",
+    "@midnight-ntwrk/credential-status-midnight-authority": "workspace:*",
+    "@midnight-ntwrk/credential-status-midnight-contract": "workspace:*",
+    "@midnight-ntwrk/credential-status-midnight-verifier": "workspace:*"
+  },
+  "files": ["dist/**", "README.md", "package.json", "tsconfig.json", "tsconfig.build.json"],
+  "midnight": { "maturity": "demo", "packageClass": "dist" }
+}
