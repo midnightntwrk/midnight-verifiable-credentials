@@ -210,10 +210,11 @@
 
 ## Decisions and plans
 
-ADR-0016, the core-only plan, issue disposition, and tracker #539 are the only
-active architecture and migration backlog. Earlier feature, protocol,
-prototype, and production-readiness plans are historical inputs unless the
-issue-disposition ledger explicitly absorbs their work.
+The core-only plan, issue disposition, and tracker #539 are the only active
+migration backlog. The accepted ADRs in the decision register remain the
+architectural authority unless ADR-0016 supersedes them. Earlier feature,
+protocol, prototype, and production-readiness plans are historical inputs
+unless the issue-disposition ledger explicitly absorbs their work.
 
 - develop incremental audit and razor input:
   - [`plans/vc-develop-incremental-audit-2026-09-08.md`](./plans/vc-develop-incremental-audit-2026-09-08.md)

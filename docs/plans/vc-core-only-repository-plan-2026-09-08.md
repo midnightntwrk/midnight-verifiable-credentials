@@ -129,10 +129,11 @@ Use three explicit ownership levels:
 | `midnight-identity-solution-examples` | Runnable issuer/holder/verifier applications, protocol experiments, wallet integration, end-to-end scenarios, and cross-repository demonstrations. |
 
 Moving a use case means recreating or porting it through released package
-interfaces. Do not move source by introducing workspace-relative imports,
+interfaces or immutable prerelease package artifacts produced by the owning
+repository. Do not move source by introducing workspace-relative imports,
 shared generated trees, or direct dependencies on this repository. Each
-destination use case must declare released package versions and own its
-runtime, fixtures, CI, and deployment configuration.
+destination use case must declare exact package versions or artifact digests
+and own its runtime, fixtures, CI, and deployment configuration.
 
 Use cases are evidence that the core architecture is usable, but they are not
 part of the core release graph. The core repository should record links to
@@ -405,8 +406,9 @@ depend on:
 - application contracts; or
 - deployment-specific artifact registries.
 
-All external integrations use published package versions. Repository
-isolation rules continue to apply.
+External integrations use published package versions. Pre-release
+qualification may use immutable tarballs produced by the owning repository and
+identified by exact digest. Repository isolation rules continue to apply.
 
 ## Conformance strategy
 
@@ -517,7 +519,8 @@ the workspace graph.
 - validate the independent digital-passport repository against the reduced
   packages;
 - move maintained application and integration scenarios to
-  `midnight-identity-solution-examples` through released package interfaces;
+  `midnight-identity-solution-examples` through released package interfaces or
+  immutable prerelease package artifacts;
 - remove all in-repository family prototypes and use cases after destination
   validation;
 - add the minimal synthetic example; and
@@ -577,7 +580,7 @@ The migration is complete when:
 - a fresh clone does not require Docker or LFS for the default gate;
 - the digital-passport repository consumes only released public exports;
 - maintained runnable use cases live in `midnight-identity-solution-examples`
-  and consume released package versions;
+  and consume exact released versions or immutable prerelease artifacts;
 - no public API depends on a local package locator or provider catalog;
 - the default gate completes in a small, predictable time; and
 - high-level protocols can be added externally without changing core VC/VP

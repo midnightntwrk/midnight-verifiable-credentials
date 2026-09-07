@@ -126,6 +126,9 @@ from a package's presence during migration.
 | --- | --- | --- |
 | `packages/core/model` | `@midnight-ntwrk/credential-model` | Protocol-neutral family definitions, descriptors, codecs, composition manifests, and errors. |
 | `packages/core/compact` | `@midnight-ntwrk/credential-compact` | Canonical reusable VC/VP Compact semantics and public standalone/composition surfaces. |
+| `packages/core/proofs` | `@midnight-ntwrk/credential-proofs` | Supported proof, artifact, authority, and execution contracts to reduce or fold into the two target packages. |
+| `packages/core/status` | `@midnight-ntwrk/credential-status` | Supported generic status surface to fold unless independent lifecycle evidence justifies it. |
+| `packages/core/display` | `@midnight-ntwrk/credential-display` | Internal display/localization surface scheduled for removal from this repository. |
 | `packages/core/primitives/credentials` | `@midnight-ntwrk/midnight-did-credentials` | Private compatibility facade plus explicit legacy verification/status extensions; not a second canonical owner. |
 | `packages/core/capabilities/same-holder` | `@midnight-ntwrk/midnight-did-credentials-same-holder` | Same-holder composition capability. |
 | `packages/core/primitives/iso-registry` | `@midnight-ntwrk/midnight-did-credentials-iso-registry` | ISO-style registry primitives. |
@@ -134,6 +137,7 @@ from a package's presence during migration.
 | `packages/registry/status-midnight-verifier` | `@midnight-ntwrk/credential-status-midnight-verifier` | Internal least-privilege status read/authenticated-proof adapter. |
 | `packages/registry/status-midnight-authority` | `@midnight-ntwrk/credential-status-midnight-authority` | Internal controller/delegate write authorization and injected signing port. |
 | `packages/components/adapters/offchain-did` | `@midnight-ntwrk/midnight-did-credentials-offchain-did` | DID-aware offchain holder-binding runtime helpers. |
+| `packages/components/adapters/credential-did-midnight` | `@midnight-ntwrk/credential-did-midnight` | Supported DID-method adapter to move to a DID-owned or dedicated integration release surface. |
 | `packages/components/integration/standalone-environment` | `@midnight-ntwrk/midnight-did-standalone-environment` | Standalone Midnight/DID runtime bootstrap for integration tests. |
 | `packages/components/orchestration/exchange` | `@midnight-ntwrk/credential-exchange` | Private family-neutral issuance/presentation/verification ports and directly injected agents. |
 | `packages/components/orchestration/protocol` | `@midnight-ntwrk/midnight-did-credentials-protocol` | Outward birth/birth-secret/age-gate reference adapters and compatibility lifecycle tests. |
@@ -147,11 +151,13 @@ from a package's presence during migration.
 | `packages/prototypes/credential-families/digital-passport` | `@midnight-ntwrk/midnight-did-credentials-digital-passport` | Frozen migration evidence for the independent digital-passport repository. |
 | `packages/use-cases/age-gate/contract` | `@midnight-ntwrk/midnight-did-credentials-demo-contract` | Generic age-gate and revocation-aware verifier demo contracts. |
 | `packages/use-cases/age-gate/scenarios` | `vc-bdd-scenarios` | Age-gate Serenity/JS BDD scenarios. |
+| `packages/use-cases/bdd-support` | `@midnight-ntwrk/midnight-did-credentials-bdd-support` | Internal BDD support scheduled to move with or be removed alongside runnable use cases. |
 | `packages/use-cases/hello-verifier/contract` | `@midnight-ntwrk/midnight-did-hello-verifier-contract` | Hello verifier contract path. |
 | `packages/use-cases/university/contract` | `@midnight-ntwrk/midnight-did-university-verifier-contract` | University verifier contract path. |
 | `packages/use-cases/university/protocol` | `@midnight-ntwrk/midnight-did-university-protocol` | Multi-party university protocol flow and transcript exports. |
 | `packages/use-cases/university/reporting` | `@midnight-ntwrk/midnight-did-university-reporting` | University reporting and summary artifacts. |
 | `packages/use-cases/university/scenarios` | `vc-university-bdd-scenarios` | University diploma Serenity/JS BDD scenarios. |
+| `packages/use-cases/status-openid/evidence` | `@midnight-ntwrk/status-openid-production-evidence` | Internal status/OpenID evidence scheduled for removal or external relocation. |
 
 Only workspaces marked `candidate` or `supported` in
 `tooling/scripts/workspace-catalog.mjs` may be packed. Prototypes, use cases,
