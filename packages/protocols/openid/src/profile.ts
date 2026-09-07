@@ -14,8 +14,8 @@ import {
 } from "./shared.js";
 
 /**
- * Incubating, transport-neutral profile boundary. This is deliberately not a
- * claim of complete OID4VCI/OID4VP conformance.
+ * Strict Midnight repository profile over the pinned OID4VCI/OID4VP 1.0 Final
+ * documents. This identifier is not a certification or exhaustive-feature claim.
  */
 export const MIDNIGHT_OPENID_PROFILE_V1 =
   "org.midnight.credentials.openid.v1" as const;

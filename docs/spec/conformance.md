@@ -224,7 +224,27 @@ Reference implementation:
 
 - [`../../packages/protocols/openid/README.md`](../../packages/protocols/openid/README.md)
 
-### 7. Protocol/reference orchestration implementation
+### 7. Midnight OpenID Final profile
+
+The strict repository profile conforms to its declared subset when it:
+
+- pins OID4VCI 1.0 Final and OID4VP 1.0 Final and treats DCQL as OID4VP functionality;
+- requires non-ambiguous proof discriminators, canonical holder challenge/commitment bytes, and holder/session/transcript/consent bindings;
+- validates nonce, audience, origin, redirect, callback state, expiry, request digest, exact DCQL result-map keys, and atomic replay consumption;
+- rejects unsupported unverified `direct_post.jwt` responses;
+- applies allow-list, global-unicast-address, no-redirect, size, media-type, audience, expiry, and exact-byte digest controls before injected request-object verification;
+- preserves canonical family message bytes and delegates #499/#502 validity/results unchanged; and
+- reports local fixture conformance separately from external interoperability.
+
+The authoritative profile and evidence boundary is
+[`openid-final-profile.md`](./openid-final-profile.md). Every checked-in negative
+vector is reconstructed as one named-field mutation of an otherwise passing
+positive vector, and unknown fixture kinds are rejected. Checked-in local
+vectors are not OpenID certification. The current external status is explicitly
+`not-run` until an independent issuer-wallet and verifier-wallet run produces
+runner evidence.
+
+### 8. Protocol/reference orchestration implementation
 
 A protocol/orchestration implementation conforms when it:
 
@@ -257,7 +277,7 @@ Reference implementation:
 
 - [`../../packages/components/orchestration/protocol/README.md`](../../packages/components/orchestration/protocol/README.md)
 
-### 8. Verifier contract implementation
+### 9. Verifier contract implementation
 
 A verifier contract implementation conforms when it:
 
@@ -274,7 +294,7 @@ Reference implementation:
 - [`../../packages/use-cases/age-gate/contract/README.md`](../../packages/use-cases/age-gate/contract/README.md)
 - [`../../packages/use-cases/hello-verifier/contract/README.md`](../../packages/use-cases/hello-verifier/contract/README.md)
 
-### 9. Versioned composition resolution
+### 10. Versioned composition resolution
 
 A composition-resolution claim conforms when it:
 

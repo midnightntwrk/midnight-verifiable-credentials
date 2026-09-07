@@ -1,0 +1,14 @@
+{
+  "fixtureSet": "midnight-openid-final-v1",
+  "profile": "org.midnight.credentials.openid.v1",
+  "versions": {
+    "oid4vci": "1.0 Final",
+    "oid4vp": "1.0 Final"
+  },
+  "provenance": [
+    "https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0-final.html",
+    "https://openid.net/specs/openid-4-verifiable-presentations-1_0-final.html"
+  ],
+  "scope": "Locally executable Midnight profile schema vectors; not OpenID certification or an external wallet run.",
+  "files": ["positive.json", "negative.json"]
+}

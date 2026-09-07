@@ -5,7 +5,8 @@
 
 Status:
 
-- reference-stage profile implementation (incubating; not final conformance)
+- strict repository profile for OID4VCI 1.0 Final and OID4VP 1.0 Final
+- locally executable conformance subset; not certification or a completed external-wallet interop claim
 
 Tier:
 
@@ -42,15 +43,24 @@ Related docs:
 - companion guide: [`../../../docs/guides/midnight-credentials-for-dummies.md`](../../../docs/guides/midnight-credentials-for-dummies.md)
 - test matrix: [`../../../docs/testing/test-matrix.md`](../../../docs/testing/test-matrix.md)
 
-This package contains a bounded, transport-neutral TypeScript model for an
-incubating Midnight profile subset informed by OID4VCI/OID4VP. It intentionally
-does not claim final OpenID conformance and does not implement OAuth, HTTP
-routing, DID resolution, cryptography, JWT proof generation, or wallet UI
-behavior. The profile schemas cover DCQL-shaped queries, canonical Compact
-payload/thread bindings, proof audience/nonce/request-digest inputs,
-request-object resolver/verifier seams, format negotiation, deferred issuance,
-and protocol errors. Legacy secret-bearing URI helpers remain explicitly
-informative and are not part of the safe profile reference surface.
+This package pins [OID4VCI 1.0 Final](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0-final.html)
+and [OID4VP 1.0 Final](https://openid.net/specs/openid-4-verifiable-presentations-1_0-final.html)
+for the strict `org.midnight.credentials.openid.v1` repository profile. DCQL is
+implemented as OID4VP query functionality. Strict schemas and lifecycle helpers
+enforce the OID4VCI Final `proofs` container through an injected cryptographic
+proof verifier, required holder/session bindings, and exact nonce/audience/origin/
+`response_uri`/request/transcript/consent bindings, strict canonical holder
+challenge/commitment byte encodings, exact DCQL result keys, expiry, atomic
+replay consumption, and request-object redirect/global-unicast SSRF controls.
+The profile supports `direct_post`; it rejects `direct_post.jwt` until verified,
+request-bound JARM support is provided.
+
+OAuth token validation, HTTP/DNS fetching, JAR/signature verification, consent,
+clock, and replay persistence remain injected seams. The package does not host
+OAuth or HTTP services, resolve DIDs, generate JWT proofs, implement wallet UI,
+or decide whether canonical family proofs are valid. Legacy secret-bearing URI
+helpers remain explicitly informative and are not part of the strict profile.
+See [`../../../docs/spec/openid-final-profile.md`](../../../docs/spec/openid-final-profile.md).
 
 The goal is to keep Midnight-specific credential issuance and presentation flows
 compatible with familiar OpenID message shapes while preserving the Compact
@@ -72,17 +82,38 @@ Protocol reading rule:
 - Canonical Compact payload and message-thread identifiers that preserve
   `messageId`, `threadId`, and `respondsToMessageId` without interpreting proof
   semantics.
+- A structural, byte-preserving adapter compatible with `credential-exchange`
+  canonical messages and verifier results, without a protocol-to-component
+  package dependency or any validity interpretation.
 - Midnight extension schemas for Compact VC/VP payloads and holder-binding
   commitments.
 
 ## Non-goals
 
-- Final OID4VCI/OID4VP interoperability or conformance certification.
-- OAuth server/client, HTTP, DIDComm, or request-object fetching implementation.
+- OpenID certification, exhaustive optional-feature coverage, or a claim of successful external-wallet interoperability.
+- OAuth server/client, production HTTP hosting, DIDComm, or a built-in network fetcher.
 - DID resolution, signature/cryptographic verification, or wallet UI behavior.
-- Durable replay/nullifier consumption; that belongs to the verification and
-  session layers. Compact circuits and credential-family packages remain the
-  source of truth for verification.
+- Family proof validity, status, or aggregate-decision semantics. Compact,
+  verification, and credential-family packages remain authoritative.
+
+## Conformance and interoperability
+
+Negative vectors are single named-field mutations of conformant positive
+bases, and the runner rejects unknown fixture kinds. Run the local,
+independently stored profile vectors with:
+
+```bash
+pnpm run test:conformance
+```
+
+The external runner requires operator-supplied independent endpoints. The
+checked-in status is deliberately `not-run`, because local/CI has no such
+endpoints; see `src/conformance/external-interop-status.json`. Validate a runner
+configuration without making network or interoperability claims with:
+
+```bash
+pnpm run interop:external -- --config src/conformance/external-interop-config.example.json --dry-run
+```
 
 ## Compact Value Codec
 

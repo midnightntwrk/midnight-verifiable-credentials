@@ -1,4 +1,7 @@
+export * from "./canonical-message-adapter.js";
 export * from "./compact-value-codec.js";
+export * from "./conformance.js";
+export * from "./external-interop.js";
 export * from "./midnight.js";
 export * from "./oid4vci.js";
 export * from "./oid4vp.js";
