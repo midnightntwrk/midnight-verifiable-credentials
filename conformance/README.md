@@ -3,6 +3,8 @@
 [`manifest.json`](./manifest.json) maps every retained core operation to its
 normative section, implementation state, and vector category. Files under
 [`vectors/`](./vectors/) contain deterministic positive and negative fixtures.
+[`manifest.sha256`](./manifest.sha256) identifies the exact manifest bytes used
+for a conformance claim.
 
 Run:
 

@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { readFileSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
 import test from "node:test";
 
@@ -49,12 +50,50 @@ test("maps every retained operation to a normative section and state", () => {
     [...vectorCategories].sort(),
     "every declared vector category must map to an implemented operation",
   );
+
+  const listedVectors = [...manifest.vectors].sort();
+  const availableVectors = readdirSync(
+    resolve(root, "conformance/vectors"),
+    { withFileTypes: true },
+  )
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".json"))
+    .map((entry) => `conformance/vectors/${entry.name}`)
+    .sort();
+  assert.deepEqual(
+    listedVectors,
+    availableVectors,
+    "every vector file must be listed in the manifest",
+  );
+});
+
+test("matches the recorded conformance manifest digest", () => {
+  const manifestBytes = readFileSync(resolve(root, "conformance/manifest.json"));
+  const digestRecord = readFileSync(
+    resolve(root, "conformance/manifest.sha256"),
+    "utf8",
+  ).trim();
+  const match = digestRecord.match(/^([a-f0-9]{64})  manifest\.json$/u);
+  assert.ok(match, "manifest.sha256 must use sha256sum format");
+  assert.equal(
+    createHash("sha256").update(manifestBytes).digest("hex"),
+    match[1],
+  );
 });
 
 test("keeps conformance code independent from non-core workspaces", () => {
-  const source = readFileSync(import.meta.filename, "utf8");
-  for (const segment of manifest.forbiddenImportSegments) {
-    assert.equal(source.includes(segment), false, `forbidden import ${segment}`);
+  const testFiles = readdirSync(import.meta.dirname)
+    .filter((name) => /^core-.*conformance\.test\.mjs$/u.test(name))
+    .sort();
+  assert.ok(testFiles.length >= 2);
+  for (const testFile of testFiles) {
+    const source = readFileSync(resolve(import.meta.dirname, testFile), "utf8");
+    for (const segment of manifest.forbiddenImportSegments) {
+      assert.equal(
+        source.includes(segment),
+        false,
+        `${testFile} contains forbidden import ${segment}`,
+      );
+    }
   }
   for (const path of manifest.vectors) readJson(path);
 });

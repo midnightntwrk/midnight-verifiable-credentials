@@ -23,6 +23,18 @@
       "errorIncludes": "base64url"
     },
     {
+      "id": "reject-non-canonical-base64url",
+      "encoding": "compact-value-v1.base64url",
+      "payload": "AB",
+      "errorIncludes": "canonical unpadded base64url"
+    },
+    {
+      "id": "reject-unsupported-encoding",
+      "encoding": "compact-value-v0.base64url",
+      "payload": "TUNWMQAAAAEAAAAEAAECAw",
+      "errorIncludes": "Unsupported Compact value encoding"
+    },
+    {
       "id": "reject-empty-payload",
       "encoding": "compact-value-v1.base64url",
       "payload": "",

@@ -1,8 +1,10 @@
 # Conformance
 
 Conformance is claimed for an exact specification version, package version,
-configuration, operation set, and vector manifest digest. Partial primitive
-coverage is not a complete configuration claim.
+configuration, operation set, and the SHA-256 digest of the exact manifest
+bytes recorded in
+[`../conformance/manifest.sha256`](../conformance/manifest.sha256). Partial
+primitive coverage is not a complete configuration claim.
 
 A supported configuration MUST have:
 
