@@ -1,6 +1,6 @@
 # VC Core-Only Repository Plan
 
-Status: proposed target architecture and migration plan
+Status: accepted target architecture and active migration plan
 
 Date: 2026-09-08
 
@@ -14,7 +14,7 @@ Execution:
 - boundary decision: [ADR-0016](../decisions/0016-core-only-specification-and-implementation.md); and
 - legacy backlog disposition: [core-only issue disposition](./vc-core-only-issue-disposition-2026-09-08.md).
 
-Decision requested: reduce this repository to the Midnight VC/VP
+Decision: reduce this repository to the Midnight VC/VP
 specification, core data model, Compact implementation, conformance vectors,
 and minimal implementation tests. Remove high-level exchange protocols,
 business use cases, credential families, runtime discovery, and application
