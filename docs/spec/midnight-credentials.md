@@ -2,13 +2,17 @@
 
 Version: `0.1-draft`
 
-Status: Normative working draft
+Status: superseded migration source
+
+Normative core work now lives in [`../../spec/README.md`](../../spec/README.md).
+This document remains as source material while retained rules are migrated; it
+MUST NOT override the top-level specification.
 
 Repository scope: `midnight-verifiable-credentials`
 
 ## Abstract
-This document defines the current normative working draft for Midnight-native
-Verifiable Credentials (VCs) and Verifiable Presentations (VPs).
+This document records the previous working draft for Midnight-native Verifiable
+Credentials (VCs) and Verifiable Presentations (VPs).
 
 The specification is Compact-first. Compact structs, circuits, and generated
 runtime codecs are the canonical representation. JSON, OpenID, and other web
@@ -28,9 +32,9 @@ This draft does not define a final standards-track publication process or a
 final interoperable web wire format.
 
 ## Status And Authority
-This document is normative for the current repository draft.
+This document is not normative for the core-only repository draft.
 
-Implementations in this repository should treat this document as the primary
+Before supersession, implementations treated this document as the primary
 statement of:
 
 - canonical VC/VP semantics
@@ -58,7 +62,9 @@ Those normative companion documents are authoritative within their narrower scop
 - `revocation-registry.md` owns the repository's prototype revocation registry target
 - `hidden-holder-interoperability.md` owns the current adapter and transport obligations for hidden-holder flows
 
-This document takes precedence only where a broader repository-level requirement in this document overlaps with a narrower companion rule.
+That historical precedence rule no longer applies to the top-level core-only
+specification. All requirement language below records the previous contract
+and is informative during migration.
 - informative documents:
   - [`../guides/midnight-credentials-for-dummies.md`](../guides/midnight-credentials-for-dummies.md)
   - [`../guides/package-selection.md`](../guides/package-selection.md)

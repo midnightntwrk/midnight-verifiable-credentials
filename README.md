@@ -2,16 +2,22 @@
 
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/midnightntwrk/midnight-verifiable-credentials/badge)](https://scorecard.dev/viewer/?uri=github.com/midnightntwrk/midnight-verifiable-credentials)
 
-Compact-first Verifiable Credentials and Verifiable Presentations for Midnight.
+Protocol-independent, Compact-first Verifiable Credentials and Verifiable
+Presentations for Midnight.
 
-This repository contains:
+The target supported surface contains:
 
-- reusable Midnight VC/VP building blocks
-- private credential-family prototypes used as architecture and conformance evidence
-- transport/domain adapters
-- protocol/reference orchestration packages
-- verifier-contract demos
-- standalone integration infrastructure
+- the normative Midnight VC/VP core specification;
+- the bounded `credential-model` TypeScript package;
+- the generic `credential-compact` package; and
+- positive and negative conformance data.
+
+Protocols, adapters, credential families, product use cases, and standalone
+application infrastructure still present in the tree are migration inventory.
+They are not part of the target core release graph. See
+[`ADR-0016`](./docs/decisions/0016-core-only-specification-and-implementation.md)
+and the
+[`core-only plan`](./docs/plans/vc-core-only-repository-plan-2026-09-08.md).
 
 ## Quick start
 
@@ -35,15 +41,25 @@ installing/updating local dependencies.
 
 ## Status
 
-Current maturity is mixed by package:
+The core-only specification is a working draft. No complete production
+configuration is currently conformant; verified low-level primitives and
+unsupported operations are recorded explicitly in the conformance manifest.
+
+- normative core specification:
+  - [`spec/README.md`](./spec/README.md)
+- machine-readable conformance status and vectors:
+  - [`conformance/README.md`](./conformance/README.md)
+
+The following entries describe current migration inventory, not the target
+published surface:
 
 - canonical package/protocol tier inventory:
   - [`docs/architecture/package-tier-inventory.md`](./docs/architecture/package-tier-inventory.md)
-- normative spec draft:
+- superseded specification source material:
   - [`docs/spec/midnight-credentials.md`](./docs/spec/midnight-credentials.md)
 - profile catalog:
   - [`docs/spec/profiles.md`](./docs/spec/profiles.md)
-- conformance draft:
+- superseded conformance source material:
   - [`docs/spec/conformance.md`](./docs/spec/conformance.md)
 - claim representation companion:
   - [`docs/spec/claim-representation.md`](./docs/spec/claim-representation.md)
@@ -97,9 +113,13 @@ Current maturity is mixed by package:
 
 Start here:
 
+- normative core specification:
+  - [`spec/README.md`](./spec/README.md)
+- conformance manifest and vectors:
+  - [`conformance/README.md`](./conformance/README.md)
 - docs index:
   - [`docs/README.md`](./docs/README.md)
-- normative spec draft:
+- superseded specification source material:
   - [`docs/spec/midnight-credentials.md`](./docs/spec/midnight-credentials.md)
 - profile catalog:
   - [`docs/spec/profiles.md`](./docs/spec/profiles.md)

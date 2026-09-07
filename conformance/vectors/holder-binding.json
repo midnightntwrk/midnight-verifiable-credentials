@@ -1,0 +1,26 @@
+{
+  "formatVersion": 1,
+  "category": "holder-binding",
+  "positive": [
+    {
+      "id": "explicit-holder-binding-v1",
+      "didContractAddressHex": "0303030303030303030303030303030303030303030303030303030303030303",
+      "methodIdHex": "0404040404040404040404040404040404040404040404040404040404040404"
+    }
+  ],
+  "negative": [
+    {
+      "id": "reject-empty-holder-contract",
+      "replace": "didContractAddressHex",
+      "value": "0000000000000000000000000000000000000000000000000000000000000000",
+      "errorIncludes": "DID contract address"
+    },
+    {
+      "id": "reject-empty-holder-method",
+      "replace": "methodIdHex",
+      "value": "0000000000000000000000000000000000000000000000000000000000000000",
+      "errorIncludes": "method reference"
+    }
+  ]
+}
+

@@ -1,0 +1,27 @@
+{
+  "formatVersion": 1,
+  "category": "compact-generated",
+  "vectors": [
+    {
+      "id": "issuance-context-tag-v1",
+      "circuit": "issuanceContextTag",
+      "expectedHex": "6d69646e696768743a76633a69737375616e6365000000000000000000000000"
+    },
+    {
+      "id": "presentation-context-tag-v1",
+      "circuit": "presentationContextTag",
+      "expectedHex": "6d69646e696768743a76633a70726573656e746174696f6e0000000000000000"
+    },
+    {
+      "id": "no-schema-resolver-hint-v1",
+      "circuit": "noSchemaFamilyResolverHint",
+      "expectedHex": "6d69646e696768743a76633a736368656d613a6e6f2d68696e74000000000000"
+    },
+    {
+      "id": "no-holder-response-v1",
+      "circuit": "noSecretHolderChallengeResponse",
+      "expectedHex": "6d69646e696768743a76633a6e6f2d686f6c6465722d726573706f6e73650000"
+    }
+  ]
+}
+

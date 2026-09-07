@@ -51,6 +51,13 @@ export const targets = [
     script: "test:trusted-time-capability",
   },
   {
+    name: "conformance",
+    description: "Validate the normative core manifest and conformance vectors.",
+    category: "core",
+    supportsLight: false,
+    script: "check:core-conformance",
+  },
+  {
     name: "bdd",
     description: "Serenity/JS BDD smoke scenarios.",
     category: "bdd",

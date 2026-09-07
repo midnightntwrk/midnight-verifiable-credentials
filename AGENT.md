@@ -276,6 +276,7 @@ Core lanes:
 
 ```bash
 ./run.sh lint
+./run.sh conformance
 ./run.sh typecheck
 ./run.sh build
 ./run.sh test

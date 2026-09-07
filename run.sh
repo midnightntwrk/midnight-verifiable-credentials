@@ -238,6 +238,10 @@ case "$target" in
     echo "[run] Compact trusted-time capability lane"
     pnpm run test:trusted-time-capability
     ;;
+  conformance)
+    echo "[run] Core conformance lane"
+    pnpm run check:core-conformance
+    ;;
   package)
     echo "[run] Package artifact lane"
     pnpm run artifacts:pack
