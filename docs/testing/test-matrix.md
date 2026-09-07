@@ -670,6 +670,20 @@ exhaustive Cartesian coverage, claim OpenID conformance, select production
 use-case values, or promote same-holder reference evidence to production
 authority.
 
+## Verification V1 executors
+
+| Evidence | Contract |
+| --- | --- |
+| `packages/core/primitives/credentials/src/test/verification-v1.test.ts` | The Compact and TypeScript paths hash the exact same ordered 47-field transcript; every field, enum, domain, binding, and unavailable-evidence mutation fails closed. |
+| `packages/core/primitives/credentials/src/test/verification-v1-executors.test.ts` | Ledger-local, ledger-attested, and offchain-public produce valid/invalid/indeterminate parity while retaining distinct authority labels. Missing/throwing providers, submitted/included/reverted/unconfirmed transactions, stale/tampered transcript/evidence/receipt/time/status/artifact paths, public-only private inputs, and atomic nullifier/business mutation violations fail closed. Only independently confirmed successful committed observations produce ledger receipts. |
+| `packages/use-cases/age-gate/contract/src/test/demo.test.ts` | The side-effecting Compact fixture recomputes the V1 transcript/nullifier and atomically commits nullifier plus protected mutation; retries, concurrency, restart, conflict, verifier failure, and rollback inspect final ledger state. |
+
+Executor support is conditional on injected authoritative mechanisms. Missing
+DID/trust, status, trusted-time, artifact, prover/verifier, network, ledger, or
+confirmation providers remain bounded local-process indeterminate results.
+Aggregate decision sets (#502) and OpenID behavior (#503) are outside this
+surface.
+
 ## Artifact and deployment authority parity
 
 | Evidence | Contract |
@@ -679,8 +693,9 @@ authority.
 | `packages/core/proofs/artifact-authority-vectors.json` | Stable controlled-regeneration provenance records source/toolchain, circuit k/rows, artifact size/digest, signed manifest digests, tamper/unavailable expectations, and valid/invalid/indeterminate parity cases. |
 | `tooling/scripts/test-family-neutral-exchange-consumer.mjs` | A clean packed wallet/exchange consumer imports the artifact-authority subpath and proves classification/binding parity while preserving distinct local and ledger authority labels. |
 
-This evidence verifies supplied path observations only. It does not implement
-#499 executors, transaction submission, artifact publication, deployment
+This evidence verifies supplied artifact-authority path observations. The #499
+executor binds those observations to its canonical transcript and transaction
+confirmation boundary; neither layer performs artifact publication, deployment
 operation, or release authorization.
 
 ## Hidden-holder status and pseudonym privacy

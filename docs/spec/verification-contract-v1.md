@@ -1,10 +1,13 @@
 # Midnight VC Verification Contract V1
 
-Status: A1 public shape and fail-closed skeleton implemented. A2 request,
-holder-action, and credential-action nullifier derivation is implemented with a
-stateful explicit-holder age-gate atomicity fixture. Hidden-holder status and
-pseudonym public-surface hardening is implemented by #500. Final authoritative
-Verification V1 executors remain incomplete and are owned by #499.
+Status: Verification V1 executor contracts are implemented. Request-,
+holder-action-, and credential-action nullifier derivation is integrated with
+the stateful explicit-holder age-gate atomicity fixture. Hidden-holder status
+and pseudonym public-surface hardening is implemented by #500. Ledger authority
+is available only through an injected executor whose exact transcript,
+evidence receipt, nullifier, atomic mutation, and successful committed
+transaction confirmation all verify; absent mechanisms remain machine-readably
+indeterminate.
 
 Companion documents:
 
@@ -50,8 +53,8 @@ Generated TypeScript `pureCircuits`, resolver output, wallet checks, and
 
 ## Result contract
 
-The public API uses a discriminated union. An aborted or unsubmitted attempt is
-not a ledger receipt:
+The public API uses a discriminated union. Any noncommitted attempt is not a
+ledger receipt:
 
 ```ts
 type VerificationProofStatusV1 =
@@ -73,6 +76,8 @@ type VerificationAuthorityV1 =
 
 type VerificationExecutionStatusV1 =
   | "notSubmitted"
+  | "submitted"
+  | "included"
   | "rejected"
   | "reverted"
   | "committed";
@@ -95,7 +100,8 @@ type LocalVerificationAttemptV1 = LocalVerificationAttemptCommonV1 & (
   | {
       proofStatus: "invalid" | "indeterminate";
       decisionStatus: "notEvaluated";
-      executionStatus: "notSubmitted" | "rejected" | "reverted";
+      executionStatus:
+        | "notSubmitted" | "submitted" | "included" | "rejected" | "reverted";
     }
   | {
       targetProfile: "offchain-public-v1";
@@ -107,7 +113,8 @@ type LocalVerificationAttemptV1 = LocalVerificationAttemptCommonV1 & (
       targetProfile: "ledger-local-v1" | "ledger-attested-v1";
       proofStatus: "valid";
       decisionStatus: "approved";
-      executionStatus: "notSubmitted" | "rejected" | "reverted";
+      executionStatus:
+        | "notSubmitted" | "submitted" | "included" | "rejected" | "reverted";
     }
   | {
       targetProfile: "ledger-local-v1" | "ledger-attested-v1";
@@ -166,9 +173,10 @@ Allowed execution combinations are:
 | Result | Proof/decision | Execution |
 | --- | --- | --- |
 | Local malformed attempt | `notEvaluated` | `notSubmitted` |
-| Local invalid or indeterminate attempt | `notEvaluated` | `notSubmitted`, `rejected`, or `reverted` as observed |
+| Local invalid or indeterminate attempt | `notEvaluated` | `notSubmitted`, `submitted`, `included`, `rejected`, or `reverted` as observed |
 | Local public verification | `valid/approved` or `valid/policyDenied` | `notSubmitted` |
 | Valid ledger preflight denied by local policy | `valid/policyDenied` | `notSubmitted` |
+| Valid approved ledger attempt awaiting confirmation | `valid/approved` | `submitted` or `included` |
 | Valid approved ledger attempt whose write fails | `valid/approved` | `reverted` |
 | Ledger receipt | `valid/approved`, `valid/policyDenied`, or `valid/replay` | `committed` |
 
@@ -676,7 +684,7 @@ must have a distinct action/policy digest and negative tests.
 | Trust authorization | Accepted live state or bounded signed epoch | Proof package belongs to `midnight-trust-registry` |
 | Status | Accepted root plus actual non-membership, or challenge-bound accepted authority attestation | Root equality is not a non-membership proof; external freshness remains incomplete |
 | Time | Ledger-derived time or bounded authority attestation | A caller's clock is not authoritative |
-| Artifacts/deployment | Exact profile/circuit/artifact/deployment identities verified against digest-checked build bytes and signer-verified deployment manifests | The family-neutral authority/transcript/receipt verifier is available; final local/ledger executor integration remains owned by #499 |
+| Artifacts/deployment | Exact profile/circuit/artifact/deployment identities verified against digest-checked build bytes and signer-verified deployment manifests | The family-neutral authority/transcript/receipt verifier is available; the executor accepts its result only through an exact transcript/evidence binding and independently confirmed transaction boundary |
 | Browser origin | Accepted wallet/connector attestation binding origin, audience, request, and challenge | Compact cannot observe browser origin directly; without an accepted connector authority it remains local request metadata |
 
 If a required row cannot be satisfied, a final profile MUST fail
@@ -700,16 +708,27 @@ invalid under the status error taxonomy.
 
 ## API responsibilities
 
-- `prepareVerification` normalizes inputs and assembles evidence requests. It
-  does not decide validity.
-- `preflightVerification` mirrors public checks and reports
-  `authority: local-process`.
-- `submitLedgerVerification` submits the private witness and public inputs. A
-  committed transaction returns `LedgerVerificationReceiptV1`; decoding,
-  assertion, submission, or revert failures return
-  `LocalVerificationAttemptV1` and never claim ledger authority.
+- `prepareVerification` normalizes inputs and assembles evidence requests. A
+  composition profile is trusted only with an authenticated resolved-profile
+  identity whose exact profile/family/schema identifiers and family, schema,
+  and artifact-manifest digests match the transcript. It does not decide
+  validity.
+- `preflightVerification` mirrors public checks through an injected local
+  evaluator and reports `authority: local-process`. Without an evaluator or
+  required authority evidence it returns a bounded indeterminate result.
+- `submitLedgerVerification` submits the private witness and public inputs
+  through `LedgerVerificationExecutorV1`. A ledger receipt is constructed only
+  after exact transcript, evidence-receipt, decision-nullifier, atomic-mutation,
+  and nonzero transaction bindings match and `confirmCommitted` authenticates a
+  successful committed transaction. Submitted, included, rejected, reverted,
+  malformed, provider-failed, or unconfirmed observations remain local attempts.
 - `verifyPublicOffchain` supports only `offchain-public-v1`, public evidence,
-  and no side effects.
+  no side effects, and an exact empty private-input inventory from the
+  authenticated, transcript-bound composition profile. It independently rejects
+  verifier-scoped hidden credential bindings.
+- `compareVerificationParityV1` compares proof and decision classifications
+  across named executor paths while retaining each path's distinct authority
+  label.
 
 No API may accept a preflight success as an instruction to skip final Compact
 checks. The final circuit is callable directly in differential tests and must
